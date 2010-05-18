@@ -1,0 +1,13 @@
+    <div class="gridcell" >
+        <% if album.photos.empty? %>
+            <%= link_to image_tag( "/images/album.png"), album %>
+        <% else %>
+            <%= link_to image_tag( album.photos.first.image.url(:thumb) ), album %>
+        <% end %>
+        <div class="gridcellcaption">
+        <%= h album.name%>
+        <% if current_user?(album.user) %>
+            <%= link_to "delete", album, :method => :delete,:confirm => "You sure?" %>
+        <% end %>
+        </div>
+    </div>

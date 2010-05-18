@@ -1,0 +1,6 @@
+<% unless @feed.empty? %>
+  <table class="albums">
+    <%= render @feed %>
+  </table>
+  <%= will_paginate @feed %>
+<% end %>

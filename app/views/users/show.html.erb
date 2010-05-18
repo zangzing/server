@@ -1,0 +1,22 @@
+<table class="profile">
+  <tr>
+    <td class="main">
+      <h2>
+        <%= gravatar_for @user %>
+        <%= h @user.name %>
+      </h2>
+      <table class="albums">
+    	<% unless @user.albums.empty? %>
+	        <%= render @albums %>
+	    <% end %>
+      </table>
+      <%= will_paginate @albums %>
+
+	</td>
+    <td class="sidebar round">
+      <strong>Name</strong> <%= h @user.name %><br />
+      <strong>URL</strong> <%= link_to user_path(@user), @user %><br />
+      <strong>Albums</strong> <%= @user.albums.count %>
+    </td>
+  </tr>
+</table>

@@ -1,0 +1,21 @@
+# == Schema Information
+# Schema version: 20100513233433
+#
+# Table name: albums
+#
+#  id         :integer         not null, primary key
+#  user_id    :integer
+#  created_at :datetime
+#  updated_at :datetime
+#  name       :string(255)
+#
+
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  name: 
+  user_id: 1
+
+two:
+  name: 
+  user_id: 1

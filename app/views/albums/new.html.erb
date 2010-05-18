@@ -1,0 +1,6 @@
+<% form_for([current_user, @album]) do |f| %>
+    <%= render :partial => 'fields', :locals =>{:f => f }%>
+	<div class="actions">
+		<%= f.submit "Create Album"%>
+	</div>
+<% end %>

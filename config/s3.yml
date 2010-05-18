@@ -1,0 +1,18 @@
+#
+# s3.yml
+#
+# Credentials for s3 account
+#
+
+development:
+access_key_id: 0FCWFK7FNPAVKGA1C9G2
+secret_access_key: bV5nU+vwiJVwaxa2WeC/baHG3XCg6r96lbVqi7rG
+
+#test:
+#access_key_id: YOURSECRETACCESSID
+#secret_access_key: YOUR-secRE/TACCe\ssKEy
+
+
+#production:
+#access_key_id: YOURSECRETACCESSID
+#secret_access_key: YOUR-secRE/TACCe\ssKEy

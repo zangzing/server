@@ -1,0 +1,9 @@
+<% form_for @album do |f| %>
+  <%= f.error_messages %>
+  <div class="field">
+    <%= f.text_area :name %>
+  </div>
+  <div class="actions">
+    <%= f.submit "Submit" %>
+  </div>
+<% end %>
