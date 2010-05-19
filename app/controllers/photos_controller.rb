@@ -1,13 +1,38 @@
 class PhotosController < ApplicationController
 
   def create
-      logger.debug "The params hash in PhotosController create is #{params.inspect}"
+      logger.debug "The params hash i n PhotosController create is #{params.inspect}"
       @album = Album.find( params[:album_id] )
       @photo = @album.photos.build( params[:photo])
-      if !@photo.save
-          flash[:error] = "Unable to add Photo!"
-      end
-      redirect_to  @album
+      @album.errors.each{|attr,msg| logger.debug "#{attr} - #{msg}" }
+
+      respond_to do |format|
+        format.html{
+             if @photo.save
+                  flash[:success] = "Photo Added!"
+             else
+                  @user = @album.user
+                  @photos = @album.photos.paginate(:page =>params[:page])
+                  render 'albums/show'
+            end
+
+        }
+        format.xml{
+             if @photo.save
+              render :xml => @photo.to_xml
+             else
+              #response = '<?xml version="1.0" encoding="UTF-8"?><errors>'
+              #@photo.errors.each {|attr,msg|
+              #  response += '<error>'
+              #  response += '<attribute>'+ attr +'</attribute>'
+              #  response += '<message>'+msg +'</message>'
+              # response += '</error>'
+              #}
+              #response += '</errors>'
+              render :xml => '<?xml version="1.0" encoding="UTF-8"?>'+ @photo.errors.to_xml
+            end
+        }
+     end
   end
 
   def destroy

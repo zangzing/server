@@ -11,7 +11,8 @@
 	    <% end %>
       </table>
       <%= will_paginate @albums %>
-
+      <%= button_to "Create New Album", new_user_album_path( current_user ), :method => :get %>
+      
 	</td>
     <td class="sidebar round">
       <strong>Name</strong> <%= h @user.name %><br />

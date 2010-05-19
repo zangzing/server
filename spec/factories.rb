@@ -13,10 +13,11 @@ end
 
 
 Factory.define :album do |album|
-  album.name        "Foo bar"
+  album.name        "Foo bar album"
   album.association :user
 end
 
 Factory.define :photo do |photo|
   photo.association :album
+  
 end

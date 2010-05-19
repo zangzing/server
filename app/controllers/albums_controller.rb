@@ -8,13 +8,27 @@ class AlbumsController < ApplicationController
   end
 
   def create
-      @album  = current_user.albums.build(params[:album])
-      if @album.save
-        flash[:success] = "Album created!"
-        redirect_to @album
-      else
-        render 'new'
-      end
+      logger.debug "The params hash in AlbumController create is #{params.inspect}"
+      respond_to do |format|
+           format.html{
+                       @album  = current_user.albums.build(params[:album])
+                        if @album.save
+                            flash[:success] = "Album created!"
+                            redirect_to @album
+                        else
+                            render 'new'
+                        end
+                      }
+           format.xml {
+                        @user = User.find(params[:user_id])
+                        @album  = @user.albums.build(params[:album])                        
+                        if @album.save
+                           render :xml => @album.to_xml
+                        else
+                            render :xml => "ERROR CREATING ALBUM".to_xml
+                        end
+                      }
+         end
   end
 
 

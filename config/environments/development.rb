@@ -18,3 +18,5 @@ config.action_mailer.raise_delivery_errors = false
 
 #paperclip will look for imagemagick here
 Paperclip.options[:command_path] = "/usr/local/bin"
+Paperclip.options[:log] = true
+Paperclip.options[:log_command] = true

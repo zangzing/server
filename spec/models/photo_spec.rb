@@ -18,12 +18,12 @@ require 'spec_helper'
 
 describe Photo do
   before( :each ) do
-      @attr = { }
+      @attr = { :image => File.new(RAILS_ROOT + '/public/images/rails.png')}
       @album = Factory( :album )  
   end
 
     it "should create a new instance given valid attributes" do
-      @album.photos.create!( @attr )  
+      @album.photos.build( @attr )  
     end
     
     #
@@ -48,7 +48,8 @@ describe Photo do
     # Validations
     #
     describe "validations" do
-        it "should require an album id" do
+       @attr = {}
+        it "should require an image" do
           Photo.new(@attr).should_not be_valid
         end
     end

@@ -37,17 +37,22 @@ class Photo < ActiveRecord::Base
                     :storage => :s3,
                     :s3_credentials => "#{RAILS_ROOT}/config/s3.yml",
                     :path => ":attachment/:id/:style/:basename.:extension",
-                    :bucket => 'sample-app-maxima25-com'
+                    :bucket => 'sample-app-maxima25-com',
+                    :whiny => true
 
 
                       #,:url => "/:attachment/:id_:style.:extension",
                       #,:path => ":rails_root/public/:attachment/:id_:style.:extension"
 
-  validates_presence_of :album_id
-  validates_attachment_presence :image
-  validates_attachment_size     :image, :less_than => 2.megabytes
+  validates_presence_of             :album_id
+  validates_attachment_presence     :image,
+                                    :message => "file must be specified"
+  validates_attachment_size         :image,
+                                    :less_than => 5.megabytes,
+                                    :message => "must be under 5 Megs"
   validates_attachment_content_type :image,
-                                    :content_type => [ 'image/jpeg', 'image/png', 'image/gif' ], :message => "Only JPEG, PNG, or GIF Images allowed"
+                                    :content_type => [ 'image/jpeg', 'image/png', 'image/gif' ],
+                                    :message => " must be a JPEG, PNG, or GIF"
   
   default_scope :order => 'created_at DESC'
 

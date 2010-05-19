@@ -10,6 +10,7 @@
       <% end %>
       <%form_for [@album, @photo], :url => album_photos_path(@album), :html => { :multipart => true } do |f| %>
       <!-- < % form_for [@album, @photo] do |f| % -->
+        <%= f.error_messages %>
         <div class="field">
             <%= f.file_field :image %>
             <%= f.submit "Add Photo"%>

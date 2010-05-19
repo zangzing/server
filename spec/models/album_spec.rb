@@ -60,8 +60,10 @@ describe Album do
   describe "photo associations" do
     before(:each) do
       @album =  Factory(:album, :user =>@user)
-      @photo1 = Factory(:photo, :album => @album, :created_at => 1.day.ago)
-      @photo2 = Factory(:photo, :album => @album, :created_at => 1.hour.ago)
+      @photo1 = @album.photos.build(:image => File.new(RAILS_ROOT + '/public/images/rails.png'),
+                                    :created_at => 1.day.ago )
+      @photo2 = @album.photos.build(:image => File.new(RAILS_ROOT + '/public/images/rails.png'),
+                                    :created_at => 1.hour.ago )        
     end
 
     it "should have a photos attribute" do

@@ -29,7 +29,7 @@ describe AlbumsController do
   describe "POST 'create'" do
     before(:each) do
        @user = test_sign_in(Factory(:user))
-       @attr = { :name => "Lorem ipsum dolor" }
+       @attr = { :name => "Album for Testing" }
        @album = Factory(:album, @attr.merge(:user => @user))
        @user.albums.stub!(:build).and_return(@album)
     end
@@ -40,7 +40,7 @@ describe AlbumsController do
       end
       it "should render the home page" do
          post :create, {:user_id => @user.id, :album => @attr}
-         response.should render_template('pages/home')
+         response.should render_template('albums/new')
       end
     end
     describe "success" do
