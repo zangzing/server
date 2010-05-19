@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<album>
-  <created-at type="datetime">2010-05-18T23:26:26Z</created-at>
-  <id type="integer">305</id>
-  <name>album-made-by-xml</name>
-  <updated-at type="datetime">2010-05-18T23:26:26Z</updated-at>
-  <user-id type="integer">101</user-id>
-</album>
