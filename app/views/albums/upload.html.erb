@@ -14,6 +14,6 @@ It looks like you don't have the ZZ Agent running. Please <a href="zzagent.zip">
 
     function onAgentDetected()
     {
-        $("#content").html('<iframe style="border:0px" id="iframe" width="100%" height="100%" src="http://localhost:9090/proxy/' + urlBase + '/uploader/file_chooser.html#sessionid:XYZKJHKJHKJHKJHXYZ/">');
+        $("#content").html('<iframe style="border:0px" id="iframe" width="100%" height="600px" src="http://localhost:9090/proxy/' + urlBase + '/uploader/file_chooser.html#sessionid:XYZKJHKJHKJHKJHXYZ/"></iframe> <div align="right" ><%= button_to "Done Uploading!", album_path( @album.id ), :method => :get %></div>');
     }
 </script>

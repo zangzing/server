@@ -3,7 +3,7 @@
 }
 
 body {
-  background: #cff;
+  background: #aaa;
 }
 
 #header {
@@ -25,17 +25,30 @@ body {
 /* Links */
 
 a {
-  color: #09c;
-  text-decoration: none;
+    color: #A40d16;
+    text-decoration: none;
 }
 
 a:hover {
-  color: #069;
+  color: #A40D13;
   text-decoration: underline;
 }
 
 a:visited {
-  color: #069;
+  color: #A40D13;
+}
+
+.logo{
+    background-color: white;
+    padding: 10px 30px 10px 30px;
+    white-space: nowrap;
+    font-weight: bold;
+    font-size: 25px;
+    float: left;
+}
+
+.logo a{
+
 }
 
 /* Navigation */
@@ -66,7 +79,7 @@ ul.navigation {
 }
 
 .navigation li a:visited {
-  color: #09c;
+  color: #A40D13;
 }
 
 .navigation li a:hover {
@@ -82,7 +95,7 @@ a.signup_button {
   text-align: center;
   width: 190px;
   color: #fff;
-  background: #006400;
+  background: #A40D16;
   font-size: 150%;
   font-weight: bold;
   padding: 20px;

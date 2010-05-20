@@ -34,15 +34,14 @@ class Photo < ActiveRecord::Base
 
   has_attached_file :image,
                     :styles => { :medium =>"300x300>", :thumb   => "100x100#" },
-                    :storage => :s3,
-                    :s3_credentials => "#{RAILS_ROOT}/config/s3.yml",
-                    :path => ":attachment/:id/:style/:basename.:extension",
-                    :bucket => 'sample-app-maxima25-com',
+                    #:storage => :s3,
+                    #:s3_credentials => "#{RAILS_ROOT}/config/s3.yml",
+                    #:path => ":attachment/:id/:style/:basename.:extension",
+                    #:bucket => 'sample-app-maxima25-com',
                     :whiny => true
 
 
-                      #,:url => "/:attachment/:id_:style.:extension",
-                      #,:path => ":rails_root/public/:attachment/:id_:style.:extension"
+
 
   validates_presence_of             :album_id
   validates_attachment_presence     :image,
