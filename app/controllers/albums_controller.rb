@@ -40,6 +40,11 @@ class AlbumsController < ApplicationController
       @title = CGI.escapeHTML(@album.name)
   end
 
+  def upload
+    @album = Album.find(params[:id])
+    @title = CGI.escapeHTML(@album.name)
+  end
+
   def destroy
       # Album is found when the before filter calls authorized user
       @album.destroy

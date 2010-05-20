@@ -24,6 +24,8 @@ ActionController::Routing::Routes.draw do |map|
     map.signin '/signin', :controller => 'sessions', :action => 'new'
     map.signout '/signout', :controller => 'sessions', :action => 'destroy'
 
+    map.upload 'albums/:id/upload', :controller => 'albums', :action=>'upload'
+    
   # Sample resource route with options:
   #   map.resources :products, :member => { :short => :get, :toggle => :post }, :collection => { :sold => :get }
 
