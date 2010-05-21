@@ -1,19 +1,22 @@
 <script src="/uploader/jquery-1.4.2.js"></script>
-<div id="content">
+<div id="file-chooser">
 It looks like you don't have the ZZ Agent running. Please <a href="zzagent.zip">download</a> and start and then refresh this page.
 </div>
+
+<div id ="foo" align="right" ><%= button_to "Done Uploading!", album_path( @album.id ), :method => :get %></div>
 <script>
     //create script to detect agent...and call onAgentDetected()
-    //var urlBase = location.href.substring(0,location.href.lastIndexOf("/"));
-    var urlBase = "http://localhost:3000"
     var e = document.createElement("script");
-    e.src = "http://localhost:9090/proxy/" + urlBase + "/uploader/detect-agent.js";
+    e.src = "http://localhost:9090/proxy/null/http://" + location.host + "/uploader/detect-agent.js";
     e.type="text/javascript";
     document.getElementsByTagName("head")[0].appendChild(e);
 
 
     function onAgentDetected()
     {
-        $("#content").html('<iframe style="border:0px" id="iframe" width="100%" height="600px" src="http://localhost:9090/proxy/' + urlBase + '/uploader/file_chooser.html#sessionid:XYZKJHKJHKJHKJHXYZ/"></iframe> <div align="right" ><%= button_to "Done Uploading!", album_path( @album.id ), :method => :get %></div>');
+        var html = '<iframe style="border:0px" id="iframe" width="100%" height="600px" src="http://localhost:9090/proxy/null/http://' + location.host + '/uploader/file_chooser.html#|SESSIONID|<%=@album.id%>|/"></iframe>'
+      //  html += '<div id ="foo" align="right" ><%= button_to "Done Uploading!", album_path( @album.id ), :method => :get %></div>'
+        $("#file-chooser").html(html);
     }
 </script>
+

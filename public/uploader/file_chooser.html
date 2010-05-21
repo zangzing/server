@@ -9,13 +9,15 @@
             //extract session key
 
 
-            if(document.location.hash.substr(0,11) == "#sessionid:")
-            {
-                var sessionid = /#sessionid:(.*?)\/(.*?)/i.exec(document.location.href)[1]
-                var path = /#sessionid:(.*?)\/(.*?)/i.exec(document.location.href)[2]
-                document.location.hash = "#/" + path
-                agent.authenticate(sessionid)
-            }
+            var params = document.location.hash.split("|")
+            // 1st param is "#"
+            var sessionId = params[1];
+            var albumId = params[2];
+            var path = params[3];
+
+
+
+            document.location.hash = "#" + path
 
 
             setInterval(refreshUploader, 3000)
@@ -75,7 +77,7 @@
             function upload(path)
             {
                 justAddedToUpload=true
-                agent.uploadAsync(path, function(response) {
+                agent.uploadAsync(path, albumId, function(response) {
                     refreshFileChooser();
                     refreshUploader();
                 });

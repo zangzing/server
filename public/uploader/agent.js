@@ -2,40 +2,36 @@ var agent =  {
 		
 	getFilesAsync: function(path, onSuccess, onError)
 	{
-		agent.callAgentAsync("listdir", path, onSuccess, onError)
+		agent.callAgentAsync("listdir", path, null, onSuccess, onError)
 	},
 	
 
-	uploadAsync: function(path, onSuccess, onError)
+	uploadAsync: function(path, albumId, onSuccess, onError)
 	{
-		agent.callAgentAsync("upload", path, onSuccess, onError)
+		agent.callAgentAsync("upload", path, albumId, onSuccess, onError)
 	},
 	
 	cancelUploadAsync: function(path, onSuccess, onError)
 	{
-		agent.callAgentAsync("cancel_upload", path, onSuccess, onError)
+		agent.callAgentAsync("cancel_upload", path, null, onSuccess, onError)
 	},
 	
 	
 	getUploadStatsAsync: function(onSuccess, onError)
 	{
-		agent.callAgentAsync("upload_stats", null, onSuccess, onError)
+		agent.callAgentAsync("upload_stats",null, null, onSuccess, onError)
 	},
 	
 	getThumbnailUrl: function(path)
 	{
-		return "http://localhost:9090/thumbnail/" + path;
+		return "http://localhost:9090/thumbnail/null/" + path;
 	},
 
-    authenticate: function(sessionId)
-    {
-        //alert("authenticating with sessionid: " + sessionId)
-    },
 	
-	callAgentAsync: function(command, param, onSuccess, onError)
+	callAgentAsync: function(command, param1, param2, onSuccess, onError)
 	{
 		$.ajax({
-            url: "http://localhost:9090/" + command + "/" + param,
+            url: "http://localhost:9090/" + command + "/" + param2 + "/" + param1,
             dataType: "json", 
             success:function(response){
 				onSuccess(response)
