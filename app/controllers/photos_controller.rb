@@ -29,7 +29,7 @@ class PhotosController < ApplicationController
               # response += '</error>'
               #}
               #response += '</errors>'
-              render :xml => '<?xml version="1.0" encoding="UTF-8"?>'+ @photo.errors.to_xml
+              render :xml => '<?xml version="1.0" encoding="UTF-8"?>'+ @photo.errors.to_xml , :status=>500
             end
         }
      end
