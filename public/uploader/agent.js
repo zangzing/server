@@ -5,6 +5,11 @@ var agent =  {
 		agent.callAgentAsync("listdir", {"path":path}, onSuccess, onError)
 	},
 
+    getRootsAsync: function(onSuccess, onError)
+    {
+        agent.callAgentAsync("listroots", {}, onSuccess, onError)
+    },
+
 
 	uploadAsync: function(path, albumId, onSuccess, onError)
 	{

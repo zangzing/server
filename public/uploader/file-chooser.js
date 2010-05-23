@@ -15,9 +15,19 @@ $(function() {
 function refreshFileChooser()
 {
     var path = location.hash.substring(1)
-    agent.getFilesAsync(path, function(json) {
-        updateFileChooser(path, json);
-    });
+
+    if(path == "!")
+    {
+        agent.getRootsAsync(function(json) {
+            updateFileChooser(path, json);
+        });
+    }
+    else
+    {
+        agent.getFilesAsync(path, function(json) {
+            updateFileChooser(path, json);
+        });
+    }
 }
 
 
