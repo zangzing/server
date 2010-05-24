@@ -29,7 +29,9 @@ require 'paperclip'
 
 
 class Photo < ActiveRecord::Base
+
   attr_accessible :image
+  
   belongs_to :album
 
   has_attached_file :image,
@@ -55,6 +57,8 @@ class Photo < ActiveRecord::Base
   
   default_scope :order => 'created_at DESC'
 
-
+  def thumb_url
+    image.url(:thumb)
+  end
 
 end                       

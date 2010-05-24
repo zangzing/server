@@ -38,6 +38,16 @@ class AlbumsController < ApplicationController
       @photo = Photo.new
       @photos = @album.photos.paginate(:page =>params[:page])
       @title = CGI.escapeHTML(@album.name)
+      respond_to do |format|
+           format.html{
+                render 'show'
+           }
+           format.json{
+                headers["Content-Type"] = "text/plain; charset=utf-8"
+                render :text => @album.to_json(:only => :name,  :include => { :photos =>{:only =>[], :methods => [:thumb_url]}})
+                #render 'show'
+           }
+      end
   end
 
   def upload
