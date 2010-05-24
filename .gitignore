@@ -1,0 +1,14 @@
+Server/log/*.log
+Server/tmp/*
+Server/tmp/**/*
+Server/doc/api
+Server/doc/app
+Server/db/*.sqlite3
+Server/.idea/*
+Server/public/system/*
+Server/db/development.sqlite3
+*.swp
+*~
+.DS_Store
+.idea/*
+
