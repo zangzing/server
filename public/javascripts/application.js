@@ -24,9 +24,9 @@ function setPhotoURL( photo )
 
         //SOLVE
         if( agentPresent ){
-            photoURL = "http://localhost:3000"+photo.thumb_url; // # TODO:CHANGE TO AGENT WHEN AGENT IS READY
+            photoURL = "http://"+location.host+photo.thumb_url; // # TODO:CHANGE TO AGENT WHEN AGENT IS READY
         }else{
-            photoURL = "http://localhost:3000"+photo.thumb_url;
+            photoURL = "http://"+location.host+photo.thumb_url;
         }
 
         //DISPLAY PHOTO
