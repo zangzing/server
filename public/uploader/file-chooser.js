@@ -3,7 +3,8 @@ $(function() {
     // Bind an event to window.onhashchange that, when the hash changes, gets the
     // hash and adds the class "selected" to any matching nav link.
     $(window).bind('hashchange', function() {
-        refreshFileChooser();
+        filechooser.setPath(document.location.hash.substring(1))
+
     })
 
     // Since the event is only triggered when the hash changes, we need to trigger
@@ -12,132 +13,146 @@ $(function() {
 
 });
 
-function refreshFileChooser()
-{
-    var path = location.hash.substring(1)
 
-    if(path == "!")
+var filechooser = {
+
+
+    setPath: function(path)
     {
-        agent.getRootsAsync(function(json) {
-            updateFileChooser(path, json);
-        });
-    }
-    else
+        //console.log("setting path: " + path)
+        filechooser._path = path;
+        filechooser.refresh();
+    },
+
+    setAlbumId: function(albumId)
     {
-        agent.getFilesAsync(path, function(json) {
-            updateFileChooser(path, json);
-        });
-    }
-}
+        filechooser._albumId = albumId
+    },
 
-
-
-
-function updateFileChooser(path, json)
-{
-    $("#container").html(buildFileListHtml(path, json));
-    $("#path").html(buildBreadCrumbsHtml(path));
-}
-
-function buildFileListHtml(path, json)
-{
-    console.log("building file list for: " + path)
-
-    var html = "";
-
-    html += "";
-
-    for (var i = 0; i < json.length;i++)
+    refresh : function()
     {
 
-        html += "<div style='text-align:center; width:200px; height:160px; float:left; border:0px'>";
-
-
-        var file = json[i];
-
-        if (file.isImage == true)
+        if(filechooser._path == "!")
         {
-            html += "<img height='100' src='" + agent.getThumbnailUrl(file.path) + "'>";
-        }
-        else if (file.isDirectory == true)
-        {
-            html += "<img height='100' src='folder.jpeg'>";
+            agent.getRootsAsync(function(json) {
+                filechooser.refreshCallBack(json);
+            });
         }
         else
         {
-            html += "<img height='100' src='file.png'>";
+            agent.getFilesAsync(filechooser._path, function(json) {
+                filechooser.refreshCallBack(json);
+            });
         }
 
-        html += "<br/>"
+    },
 
-        if (file.isDirectory == true)
+    refreshCallBack: function(json)
+    {
+        $("#filechooser-files").html(filechooser.buildFileListHtml(json));
+        $("#filechooser-breadcrumbs").html(filechooser.buildBreadCrumbsHtml());
+
+    },
+
+
+
+    buildFileListHtml: function(json)
+    {
+
+        var html = "";
+
+        html += "";
+
+        for (var i = 0; i < json.length;i++)
         {
-            html += "<a href='#" + file.path + "'>";
-            html += file.name
+
+            html += "<div style='text-align:center; width:200px; height:160px; float:left; border:0px'>";
+
+
+            var file = json[i];
+
+            if (file.isImage == true)
+            {
+                html += "<img height='100' src='" + agent.getThumbnailUrl(file.path) + "'>";
+            }
+            else if (file.isDirectory == true)
+            {
+                html += "<img height='100' src='folder.jpeg'>";
+            }
+            else
+            {
+                html += "<img height='100' src='file.png'>";
+            }
+
+            html += "<br/>"
+
+            if (file.isDirectory == true)
+            {
+                html += "<a href='#" + file.path + "'>";
+                html += file.name
+                html += "</a>";
+            }
+            else
+            {
+                html += file.name
+            }
+
+            //html += "<br>" + i
+
+
+            if ((file.isMarkedForUpload != true))
+            {
+                html += "<br/>[<a href=\"javascript:uploader.upload('" + file.path + "','" + filechooser._albumId + "')\">"
+
+                if (file.isDirectory == true)
+                {
+                    html += "upload all"
+                }
+                else
+                {
+                    html += "upload"
+                }
+
+                html += "</a>]"
+
+            }
+            else
+            {
+
+                if (file.isDirectory == true)
+                {
+                    //not supported
+                    //html += "cancel upload"
+                }
+                else
+                {
+                    html += "<br/>[<a href=\"javascript:uploader.cancelUpload('" + file.path + "')\">"
+                    html += "cancel upload"
+                    html += "</a>]"
+                }
+
+            }
+
+            html += "</div>";
+        }
+        return html;
+
+    },
+
+    buildBreadCrumbsHtml: function()
+    {
+        var segments = filechooser._path.split("/");
+        var url = "!";
+        var html = "<a href='#!'>My Computer</a> ";
+        for (i = 1; i < segments.length; i++)
+        {
+
+            url += "/" + segments[i];
+            html += " / "
+            html += "<a href='#" + url + "'>";
+            html += segments[i];
             html += "</a>";
         }
-        else
-        {
-            html += file.name
-        }
-
-        //html += "<br>" + i
-
-
-        if ((file.isMarkedForUpload != true))
-        {
-            html += "<br/>[<a href=\"javascript:upload('" + file.path + "')\">"
-
-            if (file.isDirectory == true)
-            {
-                html += "upload all"
-            }
-            else
-            {
-                html += "upload"
-            }
-
-            html += "</a>]"
-
-        }
-        else
-        {
-
-            if (file.isDirectory == true)
-            {
-                //not supported
-                //html += "cancel upload"
-            }
-            else
-            {
-                html += "<br/>[<a href=\"javascript:cancelUpload('" + file.path + "')\">"
-                html += "cancel upload"
-                html += "</a>]"
-            }
-
-        }
-
-        html += "</div>";
+        return html;
     }
-    return html;
-}
-
-function buildBreadCrumbsHtml(path)
-{
-    console.log("building breadcrumbs for: " + path)
-
-    var segments = path.split("/");
-    var url = "!";
-    var html = "<a href='#!'>My Computer</a> ";
-    for (i = 1; i < segments.length; i++)
-    {
-
-        url += "/" + segments[i];
-        html += " / "
-        html += "<a href='#" + url + "'>";
-        html += segments[i];
-        html += "</a>";
-    }
-    return html;
-
 }
