@@ -102,7 +102,7 @@ var filechooser = {
 
             if ((file.isMarkedForUpload != true))
             {
-                html += "<br/>[<a href=\"javascript:uploader.upload('" + file.path + "','" + filechooser._albumId + "')\">"
+                html += "<br/>[<a href=\"javascript:filechooser.upload('" + file.path + "','" + filechooser._albumId + "')\">"
 
                 if (file.isDirectory == true)
                 {
@@ -126,7 +126,7 @@ var filechooser = {
                 }
                 else
                 {
-                    html += "<br/>[<a href=\"javascript:uploader.cancelUpload('" + file.path + "')\">"
+                    html += "<br/>[<a href=\"javascript:filechooser.cancelUpload('" + file.path + "')\">"
                     html += "cancel upload"
                     html += "</a>]"
                 }
@@ -137,6 +137,16 @@ var filechooser = {
         }
         return html;
 
+    },
+
+    upload : function(path, albumId)
+    {
+        uploader.upload(path, albumId);
+    },
+
+    cancelUpload : function(path)
+    {
+        uploader.cancelUpload(path);
     },
 
     buildBreadCrumbsHtml: function()
