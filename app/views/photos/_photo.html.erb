@@ -1,18 +1,9 @@
 <div class="gridcell" >
 
-                                 
-        <div class="gridcellphoto" style="background-image: url( <%=photo.image.url(:thumb)%> )">
-        <!--%=image_tag( photo.image.url(:thumb) ) %-->
-        <%= link_to image_tag( "/images/delete.png" ), photo, { :method => :delete, :class => 'gridcellphotoicon'} %>
+        <div class="gridcellphoto"  id="photoid<%=photo.id%>" >
+            <% #The photo is displayed as a background of this div block. The property is set by javascript in the album show view %> 
+            <%= link_to image_tag( "/images/delete.png" ), photo, { :method => :delete, :class => 'gridcellphotoicon'} %>
         </div>
-
-        <!--
-        <div class="gridcellcaption">
-            <% if current_user?(@album.user) %>
-                <%= link_to "delete", photo, :method => :delete %>
-            <% end %>
-        </div>
-        -->
 </div>
 
 
