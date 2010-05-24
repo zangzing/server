@@ -32,7 +32,7 @@
     //create script to detect agent...and call onAgentDetected()
     //var urlBase = location.href.substring(0,location.href.lastIndexOf("/"));
     var agentPresent = false;
-    var urlBase = "http://localhost:3000"
+    var urlBase = "http://" + location.host;
     var e = document.createElement("script");
     e.src = "http://localhost:9090/proxy/" + urlBase + "/uploader/detect-agent.js";
     e.type="text/javascript";

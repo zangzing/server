@@ -15,9 +15,19 @@ $(function() {
 function refreshFileChooser()
 {
     var path = location.hash.substring(1)
-    agent.getFilesAsync(path, function(json) {
-        updateFileChooser(path, json);
-    });
+
+    if(path == "!")
+    {
+        agent.getRootsAsync(function(json) {
+            updateFileChooser(path, json);
+        });
+    }
+    else
+    {
+        agent.getFilesAsync(path, function(json) {
+            updateFileChooser(path, json);
+        });
+    }
 }
 
 
@@ -25,12 +35,14 @@ function refreshFileChooser()
 
 function updateFileChooser(path, json)
 {
-    $("#container").html(buildFileList(path, json));
-    $("#path").html(buildBreadCrumbs(path));
+    $("#container").html(buildFileListHtml(path, json));
+    $("#path").html(buildBreadCrumbsHtml(path));
 }
 
-function buildFileList(path, json)
+function buildFileListHtml(path, json)
 {
+    console.log("building file list for: " + path)
+
     var html = "";
 
     html += "";
@@ -110,11 +122,13 @@ function buildFileList(path, json)
     return html;
 }
 
-function buildBreadCrumbs(path)
+function buildBreadCrumbsHtml(path)
 {
+    console.log("building breadcrumbs for: " + path)
+
     var segments = path.split("/");
-    var url = "";
-    var html = "<a href='#/'>Hard Disk</a> ";
+    var url = "!";
+    var html = "<a href='#!'>My Computer</a> ";
     for (i = 1; i < segments.length; i++)
     {
 
