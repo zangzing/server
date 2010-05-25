@@ -29,8 +29,6 @@
 </table>
 
 <script>
-    //create script to detect agent...and call onAgentDetected()
-    //var urlBase = location.href.substring(0,location.href.lastIndexOf("/"));
     var agentPresent = false;
     var urlBase = "http://" + location.host;
     var e = document.createElement("script");
@@ -38,8 +36,8 @@
     e.type="text/javascript";
     document.getElementsByTagName("head")[0].appendChild(e);
 
-    function onAgentDetected()
-    {
+    function onAgentDetected(){
+        //console.log ("agent is present")
         agentPresent = true;
         $("#uploadform").html('<%= button_to "Upload Photos", upload_path( @album.id ), :method => :get %>');
     }

@@ -3,6 +3,9 @@
 //
 
 
+
+
+
 //
 // This function is like executing body onload.
 // it is used to trigger the parsing of the album and resolution of the photo URLs
@@ -10,8 +13,9 @@
 // Global Variable albumJSON must contain the album JSON. It should be set in the view HTML
 //
 $(document).ready(  function() {
-    //console.log('application.js onload observed!');
-    showAlbumPhotos( albumJSON );
+    //console.log('application.js ready observed!');
+    showAlbumPhotos( albumJSON )
+
 });
 
 //
@@ -22,11 +26,15 @@ function setPhotoURL( photo )
 {
         //console.log("Getting url for photo ==%s== with agent %s", photo.thumb_url, agentPresent?"present":"NOT present" );
 
-        //SOLVE
+        //SOLVE URL
+        // ALERT: Until the agentPresent check is called, this view will ALWAYS behave like the agent is NOT present.
+        // agentPresent = TODO: Call Agent Present Check
+
+
         if( agentPresent ){
-            photoURL = "http://"+location.host+photo.thumb_url; // # TODO:CHANGE TO AGENT WHEN AGENT IS READY
+            photoURL = "http://"+location.host+"/photos/"+photo.id; // # TODO: ADD AGENT WHEN AGENT IS READY
         }else{
-            photoURL = "http://"+location.host+photo.thumb_url;
+            photoURL = photo.thumb_url;
         }
 
         //DISPLAY PHOTO
