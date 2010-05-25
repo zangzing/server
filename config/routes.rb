@@ -60,5 +60,7 @@ ActionController::Routing::Routes.draw do |map|
   map.help    '/help',    :controller => 'pages', :action => 'help'
   map.signup '/signup',   :controller => 'users', :action => 'new'
 
-  
+
+  map.google_connect '/google_connect/update', :controller => 'google_connect', :action=>'update'
+  map.google_connect '/google_connect/receive_token', :controller => 'google_connect', :action=>'receive_token'
 end
