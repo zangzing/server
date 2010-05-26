@@ -37,10 +37,11 @@ class Photo < ActiveRecord::Base
   has_attached_file :image,
                     :styles => { :medium =>"300x300>", :thumb   => "100x100#" },
                     :storage => :s3,
-                    :s3_credentials => "#{RAILS_ROOT}/config/s3.yml",
+                    :s3_credentials => "#{RAILS_ROOT}/config/s3.yml", #Config file also contains :bucket
                     :path => ":attachment/:id/:style/:basename.:extension",
-                    :bucket => 'development-server-zangzing-com',
                     :whiny => true
+
+
 
 
 
@@ -61,4 +62,7 @@ class Photo < ActiveRecord::Base
     image.url(:thumb)
   end
 
+  def thumb_path
+    image.path(:thumb)
+  end
 end                       

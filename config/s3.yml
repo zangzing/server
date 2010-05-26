@@ -5,8 +5,9 @@
 #
 
 development:
-access_key_id:AKIAJZR7WODGPXONMRVA 
-secret_access_key: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 
+bucket: 'development-server-zangzing-com'
+access_key_id: AKIAJZR7WODGPXONMRVA
+secret_access_key: lUEwegAXc0NSSrB16klFtBWKDuFO/LLZfyZi82DR
 
 #test:
 #access_key_id: YOURSECRETACCESSID

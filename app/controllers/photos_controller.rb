@@ -10,11 +10,10 @@ class PhotosController < ApplicationController
         format.html{
              if @photo.save
                   flash[:success] = "Photo Added!"
-             else
-                  @user = @album.user
-                  @photos = @album.photos.paginate(:page =>params[:page])
-                  render 'albums/show'
-            end
+             end
+             @user = @album.user
+             @photos = @album.photos.paginate(:page =>params[:page])
+             render 'albums/show'
 
         }
         format.xml{
