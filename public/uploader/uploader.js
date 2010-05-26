@@ -14,7 +14,7 @@ var uploader = {
     upload: function(path, albumId)
     {
 
-        console.log("uploading: " + path +" " + albumId)        
+        //console.log("uploading: " + path +" " + albumId)        
 
         uploader._justAddedToUpload = true
 
