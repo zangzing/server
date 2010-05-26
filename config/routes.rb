@@ -1,4 +1,8 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :shares
+
+
+
   # The priority is based upon order of creation: first created -> highest priority.
 
 
@@ -17,7 +21,9 @@ ActionController::Routing::Routes.draw do |map|
     map.resources :users, :shallow => true  do | user |
       user.resources :albums, :name_prefix => "user_" do | album |
         album.resources :photos, :name_prefix => "album_"
+        album.resources :shares, :name_prefix => "album_"
       end
+      #user.resources :contacts, :name_prefix => "user_"
     end
   
     map.resources :sessions, :only => [:new, :create, :destroy]
@@ -61,6 +67,7 @@ ActionController::Routing::Routes.draw do |map|
   map.signup '/signup',   :controller => 'users', :action => 'new'
 
 
-  map.google_connect '/google_connect/update', :controller => 'google_connect', :action=>'update'
+  map.google_connect '/google_connect/index', :controller => 'google_connect', :action=>'index'
+  map.google_connect '/google_connect/authorize', :controller => 'google_connect', :action=>'authorize'
   map.google_connect '/google_connect/receive_token', :controller => 'google_connect', :action=>'receive_token'
 end

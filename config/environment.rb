@@ -44,5 +44,6 @@ Rails::Initializer.run do |config|
   config.gem 'will_paginate', :version => '2.3.12'
   config.gem 'paperclip'
   config.gem "aws-s3", :version => ">= 0.6.2", :lib => "aws/s3"
+  config.gem 'gdata'
 
 end

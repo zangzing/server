@@ -1,0 +1,53 @@
+<h1>Google Contacts</h1>
+
+
+<select id="contacts" size="30" multiple>
+<% @contacts.each do|contact| %>
+
+<option value="<%=contact["email"]%>"><%=contact["name"].to_s + " [" + contact["email"] + "]"%></option>
+
+
+<% end %>
+
+</select>
+
+<br>
+<span style="float:right">
+<a href=""  onclick="cancel();return true">Cancel</a>
+&nbsp;
+<a href=""  onclick="done();return true">OK</a>
+</span>
+
+<script>
+    function cancel()
+    {
+        window.close()
+    }
+
+    function done()
+    {
+
+        var contacts = ""
+
+
+        var options = $('#contacts')[0].options
+
+        for(var i = 0; i < options.length; i++)
+        {
+           if(options[i].selected)
+           {
+              contacts += "; " +options[i].value
+           }
+        }
+
+        window.opener.addContacts(contacts)
+        window.close()
+    }
+
+
+
+</script>
+
+
+
+

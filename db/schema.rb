@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100525181117) do
+ActiveRecord::Schema.define(:version => 20100526143648) do
 
   create_table "albums", :force => true do |t|
     t.integer  "user_id"
@@ -21,19 +21,25 @@ ActiveRecord::Schema.define(:version => 20100525181117) do
   add_index "albums", ["user_id"], :name => "index_albums_on_user_id"
 
   create_table "contacts", :force => true do |t|
+    t.integer  "identity_id"
     t.string   "name"
     t.string   "address"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "contacts", ["identity_id"], :name => "index_contacts_on_identity_id"
+
   create_table "identities", :force => true do |t|
+    t.integer  "user_id"
     t.string   "credentials"
     t.datetime "last_contact_refresh"
     t.string   "identity_source"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "identities", ["user_id"], :name => "index_identities_on_user_id"
 
   create_table "photos", :force => true do |t|
     t.integer  "album_id"
@@ -47,6 +53,21 @@ ActiveRecord::Schema.define(:version => 20100525181117) do
   end
 
   add_index "photos", ["album_id"], :name => "index_photos_on_album_id"
+
+  create_table "shares", :force => true do |t|
+    t.integer  "album_id"
+    t.integer  "user_id"
+    t.string   "email_to"
+    t.string   "email_subject"
+    t.text     "email_message"
+    t.string   "twitter_message"
+    t.string   "facebook_message"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "shares", ["album_id"], :name => "index_shares_on_album_id"
+  add_index "shares", ["user_id"], :name => "index_shares_on_user_id"
 
   create_table "users", :force => true do |t|
     t.string   "name"

@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20100513233433
+# Schema version: 20100526143648
 #
 # Table name: albums
 #
@@ -15,6 +15,7 @@ class Album < ActiveRecord::Base
   
   belongs_to :user
   has_many :photos, :dependent => :destroy
+  has_many :shares, :dependent => :destroy
 
 
 
