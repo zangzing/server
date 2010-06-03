@@ -28,17 +28,33 @@
   </tr>
 </table>
 
-<script>
-    var agentPresent = false;
-    var urlBase = "http://" + location.host;
-    var e = document.createElement("script");
-    e.src = "http://localhost:9090/proxy/" + urlBase + "/uploader/detectagent.js";
-    e.type="text/javascript";
-    document.getElementsByTagName("head")[0].appendChild(e);
+<script src="/javascripts/agent.js"></script>
+<script src="/javascripts/jquery-1.4.2.js"></script>
+<script src="/javascripts/jquery.jsonp-2.0.2.js"></script>
 
-    function onAgentDetected(){
-        //console.log ("agent is present")
-        agentPresent = true;
-        $("#uploadform").html('<%= button_to "Upload Photos", upload_path( @album.id ), :method => :get %>');
+<script>
+
+    agent.isAgentPresentAsync(setAgentPresent)
+
+
+    function setAgentPresent(present)
+    {
+        if(present)
+        {
+            $("#uploadform").html('<%= button_to "Upload Photos", upload_path( @album.id ), :method => :get %>');
+       }
     }
+
+    //var agentPresent = false;
+    //var urlBase = "http://" + location.host;
+    //var e = document.createElement("script");
+    //e.src = "http://localhost:9090/proxy/" + urlBase + "/uploader/detectagent.js";
+    //e.type="text/javascript";
+    //document.getElementsByTagName("head")[0].appendChild(e);
+
+    //function onAgentDetected(){
+    //    //console.log ("agent is present")
+    //    agentPresent = true;
+    //    $("#uploadform").html('<%= button_to "Upload Photos", upload_path( @album.id ), :method => :get %>');
+    //}
 </script>
