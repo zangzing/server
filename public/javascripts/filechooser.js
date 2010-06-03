@@ -77,11 +77,11 @@ var filechooser = {
             }
             else if (file.isDirectory == true)
             {
-                html += "<img height='100' src='folder.jpeg'>";
+                html += "<img height='100' src='/images/folder.jpeg'>";
             }
             else
             {
-                html += "<img height='100' src='file.png'>";
+                html += "<img height='100' src='/images/file.png'>";
             }
 
             html += "<br/>"

@@ -1,5 +1,24 @@
 var agent =  {
 
+    isAgentPresentAsync: function(callback)
+    {
+
+        var onSuccess = function()
+        {
+            callback(true)
+        }
+
+        var onError = function()
+        {
+            callback(false)
+        }
+
+
+        //TODO: this is an expensive call, chance to something else
+        agent.callAgentAsync("listroots", {}, onSuccess, onError)
+
+    },
+
 	getFilesAsync: function(path, onSuccess, onError)
 	{
 		agent.callAgentAsync("listdir", {"path":path}, onSuccess, onError)
@@ -49,16 +68,29 @@ var agent =  {
         }
 
 
-        $.ajax({
-            url: "http://localhost:9090/" + command + "?" + query,
-            dataType: "json",
-            success:function(response){
-				onSuccess(response)
+        var url = "http://localhost:9090/" + command + "?" + query + "&jsonp=true&callback=?"
+
+        $.jsonp({
+            url: url,
+            success: function(json) {
+				onSuccess(json)
             },
-            error:function (xhr, ajaxOptions, thrownError){
-				alert("error in '/" + command + "':" + thrownError);
-				onError(thrownError);
+            error: function() {
+                onError("error calling " + url)
             }
         });
+
+
+//        $.ajax({
+//            url: "http://localhost:9090/" + command + "?" + query,
+//            dataType: "json",
+//            success:function(response){
+//				onSuccess(response)
+//            },
+//            error:function (xhr, ajaxOptions, thrownError){
+//				alert("error in '/" + command + "':" + thrownError);
+//				onError(thrownError);
+//            }
+//        });
 	}
 }
