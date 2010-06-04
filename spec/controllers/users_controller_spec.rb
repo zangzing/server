@@ -23,16 +23,13 @@ describe UsersController do
             response.should have_tag("h2", /#{@user.name}/)
     end
 
-    it "should have a profile image" do
-            get :show, :id => @user
-            response.should have_tag("h2>img", :class => "gravatar")
-    end  
+     
     it "should show the user's albums" do
           album1 = Factory(:album, :user => @user, :name => "Granmas pix")
           album2 = Factory(:album, :user => @user, :name => "Bday Pix")
           get :show, :id => @user
-          response.should have_tag("div.gridcellcaption", album1.name)
-          response.should have_tag("div.gridcellcaption", album2.name)
+          response.should have_tag("div.albumcellcaption", album1.name)
+          response.should have_tag("div.albumcellcaption", album2.name)
     end
     
 end 
@@ -110,7 +107,7 @@ end
         end
         it "should have a welcome message" do
                 post :create, :user => @attr
-                flash[:success].should =~ /welcome to the sample app/i
+                flash[:success].should =~ /welcome to ZangZing/i
         end
         it "should sign the user in" do
           post :create, :user => @attr
@@ -135,11 +132,6 @@ end
     it "should have the right title" do
       get :edit, :id => @user
       response.should have_tag("title", /edit user/i)
-    end
-    it "should have a link to the appropriate gravatar" do
-      get :edit, :id => @user
-      gravatar_url = "http://gravatar.com/emails"
-      response.should have_tag("a[href=?]", gravatar_url, /change/i)   
     end
   end
   

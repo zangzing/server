@@ -3,7 +3,7 @@ module ApplicationHelper
 
   #Return a base title with decorations if any
   def title
-    base_title = "Ruby Sample App"
+    base_title = "ZangZing"
     if @title.nil?
       base_title
     else
@@ -11,8 +11,5 @@ module ApplicationHelper
     end
   end
   
-  def logo
-    #image_tag("logo.png", :alt => "Sample App", :class => "round")
-  end
-
+  
 end

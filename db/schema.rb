@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100526143648) do
+ActiveRecord::Schema.define(:version => 20100602212717) do
 
   create_table "albums", :force => true do |t|
     t.integer  "user_id"
@@ -78,6 +78,7 @@ ActiveRecord::Schema.define(:version => 20100526143648) do
     t.string   "salt"
     t.string   "remember_token"
     t.boolean  "admin"
+    t.string   "style",              :default => "white"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

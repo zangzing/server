@@ -1,6 +1,7 @@
   <div id="header">
-              <%= link_to logo, root_path %>
-	           <ul class="navigation round">
+              <%= link_to image_tag("logo_white.jpg", :alt => "ZangZing", :class => "round"), root_path %>
+              <br>
+              <ul class="navigation round">
 	          <li><%= link_to "Home", root_path %></li>
 			  <% if signed_in? %>
 			    <li><%= link_to "Users", users_path %></li>

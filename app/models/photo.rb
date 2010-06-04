@@ -34,16 +34,21 @@ class Photo < ActiveRecord::Base
   
   belongs_to :album
 
-  has_attached_file :image,
-                    :styles => { :medium =>"300x300>", :thumb   => "100x100#" },
-                    :storage => :s3,
-                    :s3_credentials => "#{RAILS_ROOT}/config/s3.yml", #Config file also contains :bucket
-                    :path => ":attachment/:id/:style/:basename.:extension",
-                    :whiny => true
+
+  # Set photo storage options for paperclip based on the environment the app is running in
+  photo_options ||= {}
+  photo_options[:styles] ||= { :medium =>"300x300>", :thumb   => "100x100#" }
+  photo_options[:whiny]  ||= true;
+  if Rails.env.test?
+          #for test use S3
+          photo_options[:storage]  ||= :s3
+          photo_options[:s3_credentials] ||= "#{RAILS_ROOT}/config/s3.yml" #Config file also contains :bucket
+          photo_options[:path]            ||= ":attachment/:id/:style/:basename.:extension"
+  end
+  # For development environment, use the default filesystem
 
 
-
-
+  has_attached_file :image, photo_options
 
 
   validates_presence_of             :album_id

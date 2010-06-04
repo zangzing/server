@@ -1,9 +1,9 @@
-<div class="gridcell" >
-
+<div class="gridcellbox" >
+    <div class="gridcell" >
         <div class="gridcellphoto"  id="photoid<%=photo.id%>" >
             <% #The photo is displayed as a background of this div block. The property is set by javascript in the album show view %> 
             <%= link_to image_tag( "/images/delete.png" ), photo, { :method => :delete, :class => 'gridcellphotoicon'} %>
         </div>
+    </div>
 </div>
-
 
