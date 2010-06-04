@@ -2,23 +2,17 @@
   <table class="front">
     <tr>
       <td class="main">
-        <h2 class="album"><%= h current_user.name %>'s Albums</h2>
+        <h2 class="album">
+         <%= h current_user.name %>'s Albums</h2>
    	 	 <%= render 'pages/feed' %>
          <%= button_to "Create New Album", new_user_album_path( current_user ), :method => :get %>
 
       </td>
-      <td class="sidebar round">
-        <%= render 'pages/user_info' %>
-      </td>
+      
     </tr>
   </table>
 <% else %>
-	<h1>ZangZing App</h1>
-	<p>
-  		Simply Beautiful Photo Sharing
-
-  	</p>
-
+	
 	<%= link_to "Sign up now!",
 	signup_path, :class => "signup_button round" %>
 <%end%>

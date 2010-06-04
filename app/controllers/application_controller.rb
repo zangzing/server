@@ -8,4 +8,17 @@ class ApplicationController < ActionController::Base
 
   # Scrub sensitive parameters from your log
   filter_parameter_logging :password
+
+  layout :set_layout
+
+  private
+    def set_layout
+      #If there is a user logged in then et the layout to match user preferences
+      #otherwise set it to the default which is white.
+      if signed_in?
+       current_user.style
+      else
+        "white"
+      end
+    end
 end

@@ -47,7 +47,12 @@ describe "LayoutLinks" do
       visit root_path
       response.should have_tag("a[href=?]", signin_path, "Sign in")
     end
+    it "should display default (white) style layout" do
+      visit root_path
+      response.should have_tag("link[href*=white.css]")
+    end
   end
+
   describe "when signed in" do
     before(:each) do
       @user = Factory(:user)
@@ -67,5 +72,23 @@ describe "LayoutLinks" do
       visit root_path
       response.should have_tag("a[href=?]", edit_user_path(@user), "Settings")
     end
+
+    it "should display white style when users.style preference is set to white" do
+      visit root_path
+      click_link "Sign out"
+      @user.style='white';
+      test_sign_in (@user)
+      visit root_path
+      response.should have_tag("link[href*=white.css]")
+    end
+    it "should display gray style when users.style preference is set to gray" do
+      visit root_path
+      click_link "Sign out"
+      @user.style='gray';
+      integration_sign_in(@user)
+      visit root_path
+      response.should have_tag("link[href*=gray.css]")
+    end
+
   end
 end

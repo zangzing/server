@@ -23,15 +23,14 @@
 #  updated_at :datetime
 #
 
-require 'paperclip'
 
 class User < ActiveRecord::Base
   attr_accessor :password
-  attr_accessible  :name, :email, :password, :password_confirmation
+  attr_accessible  :name, :email, :password, :password_confirmation, :style
   
-  has_many :albums, :dependent => :destroy 
+  has_many :albums,     :dependent => :destroy
   has_many :identities, :dependent => :destroy
-  has_many :shares, :dependent => :destroy
+  has_many :shares,     :dependent => :destroy
 
 
   EmailRegex = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
@@ -49,6 +48,8 @@ class User < ActiveRecord::Base
   validates_length_of   :password, :within => 6..40
 
   before_save :encrypt_password
+
+
   def has_password?(submitted_password)
     encrypted_password == encrypt(submitted_password)
   end

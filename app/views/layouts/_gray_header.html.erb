@@ -1,9 +1,10 @@
   <div id="header">
-              <%= link_to logo, root_path %>
-	           <ul class="navigation round">
-	          <li><%= link_to "Home", root_path %></li>
+              <%= link_to image_tag("logo_gray.jpg", :alt => "ZangZing"), root_path %>
+	            <br>
+               <ul class="navigation round">
+	          <li><%= link_to image_tag("home.png", :alt => "Home", :height => '34px', :width => '40px' ), root_path %></li>
 			  <% if signed_in? %>
-			    <li><%= link_to "Users", users_path %></li>
+			    <li><%= link_to image_tag("users.png", :alt => "Users", :height => '33px', :width => '52px' ), users_path %></li>
 			    <li><%= link_to "Profile", current_user %></li>
 			  	<li><%= link_to "Settings", edit_user_path(current_user) %></li>
 			  <% end %>

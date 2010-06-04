@@ -21,7 +21,8 @@ describe User do
     @attr = { :name => "Example User",
               :email => "user@example.com",
               :password => "foobar",
-              :password_confirmation =>"foobar" 
+              :password_confirmation =>"foobar", 
+              :style => "white"
             }
   end
 
@@ -139,7 +140,18 @@ describe User do
       @user.remember_token.should_not be_nil
     end
   end
-  
+
+
+  describe "user preferences" do
+    before(:each) do
+      @user = User.create(@attr)
+    end
+
+    it "should have style attribute accessors" do
+      @user.should respond_to(:style)
+    end
+  end
+
   #ALBUM ASSOCIATIONS
   describe "album associations" do
     before(:each) do
