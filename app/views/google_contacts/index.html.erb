@@ -1,10 +1,10 @@
-<h2 class='album'>Google Contacts</h2>
+<h2 class='album'>Google Contacts (<%= link_to "refresh", :reload_google_contacts, :method => :get %>)</h2>
 
 
 <select id="contacts" size="30" multiple>
 <% @contacts.each do|contact| %>
 
-<option value="<%=contact["email"]%>"><%=contact["name"].to_s + " [" + contact["email"] + "]"%></option>
+<option value="<%=contact.address%>"><%=contact.name.to_s + " [" + contact.address + "]"%></option>
 
 
 <% end %>

@@ -64,6 +64,25 @@ class User < ActiveRecord::Base
        return nil  if user.nil?
        return user if user.has_password?(submitted_password)
   end
+
+
+
+
+  def identity_for_gmail
+    identity =  self.identities.find(:first, :conditions => "identity_source = 'gmail'")
+    if(!identity)
+      identity = self.identities.new
+      identity.identity_source = "gmail"
+    end
+    return identity
+  end
+
+
+
+
+
+
+
   def feed
       # This is preliminary. See Chapter 12 for the full implementation.
       Album.all(:conditions => ["user_id = ?", id])
