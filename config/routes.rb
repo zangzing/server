@@ -67,7 +67,17 @@ ActionController::Routing::Routes.draw do |map|
   map.signup '/signup',   :controller => 'users', :action => 'new'
 
 
-  map.google_connect '/google_connect/index', :controller => 'google_connect', :action=>'index'
-  map.google_connect '/google_connect/authorize', :controller => 'google_connect', :action=>'authorize'
-  map.google_connect '/google_connect/receive_token', :controller => 'google_connect', :action=>'receive_token'
+  map.connect '/google_sessions/new', :controller => 'google_sessions', :action=>'new'
+  map.connect '/google_sessions/create', :controller => 'google_sessions', :action=>'create'
+  map.connect '/google_sessions/destroy', :controller => 'google_sessions', :action=>'destroy'
+
+  map.connect '/google_contacts', :controller => 'google_contacts', :action=>'index'
+  map.reload_google_contacts '/google_contacts/reload', :controller => 'google_contacts', :action=>'reload'
+
+
+  map.connect '/facebook_sessions/new', :controller => 'facebook_sessions', :action=>'new'
+  map.connect '/facebook_sessions/create', :controller => 'facebook_sessions', :action=>'create'
+  map.connect '/facebook_sessions/destroy', :controller => 'facebook_sessions', :action=>'destroy'
+
+  map.resources :facebook_posts
 end

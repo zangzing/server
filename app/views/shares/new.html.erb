@@ -21,12 +21,12 @@
   </p>
 <% end %>
 
-<%= link_to 'Back', shares_path %>
+<%= link_to "Album", @album %>
 
 <script>
     function addGmailContacts()
     {
-        window.open("/google_connect/index", "google contacts","location=1,status=0,scrollbars=0, width=800,height=650");
+        window.open("/google_contacts", "google contacts","location=1,status=0,scrollbars=0, width=800,height=650");
     }
 
     function addContacts(contacts)

@@ -45,5 +45,5 @@ Rails::Initializer.run do |config|
   config.gem "aws-s3", :version => ">= 0.6.2", :lib => "aws/s3"
   config.gem 'gdata'
   config.gem 'delayed_job'
-  
+  config.gem 'hyper-graph', :lib=>'hyper_graph'
 end

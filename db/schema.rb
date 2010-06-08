@@ -45,6 +45,7 @@ ActiveRecord::Schema.define(:version => 20100607171606) do
 
   create_table "identities", :force => true do |t|
     t.integer  "user_id"
+    t.string   "name"
     t.string   "credentials"
     t.datetime "last_contact_refresh"
     t.string   "identity_source"
