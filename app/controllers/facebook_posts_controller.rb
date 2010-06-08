@@ -12,7 +12,7 @@ class FacebookPostsController < ApplicationController
     if(!session[:facebook_token])
 
       #Todo: move to filter in FacebookHelper
-      redirect_to "/facebook_sessions/deny_access"
+      redirect_to "/facebook_sessions/new"
       return
     end
 
@@ -26,12 +26,16 @@ class FacebookPostsController < ApplicationController
       session[:facebook_token]= nil
 
       #Todo: move to filter in FacebookHelper
-      redirect_to "/facebook_sessions/deny_access"
+      redirect_to "/facebook_sessions/new"
       return
     end
-
   end
 
+
+   def create
+     graph = HyperGraph.new(session[:facebook_token])
+     graph.post("#{params[:object_id]}/feed", :message => params[:message])
+   end
 end
 
 

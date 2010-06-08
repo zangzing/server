@@ -1,5 +1,4 @@
 ActionController::Routing::Routes.draw do |map|
-  map.resources :shares
 
 
 
@@ -78,6 +77,8 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/facebook_sessions/new', :controller => 'facebook_sessions', :action=>'new'
   map.connect '/facebook_sessions/create', :controller => 'facebook_sessions', :action=>'create'
   map.connect '/facebook_sessions/destroy', :controller => 'facebook_sessions', :action=>'destroy'
+
+  map.connect '/facebook_posts/create', :controller => 'facebook_posts', :action=>'create'
 
   map.resources :facebook_posts
 end

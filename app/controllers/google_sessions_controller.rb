@@ -12,7 +12,7 @@ class GoogleSessionsController < ApplicationController
   def new
     scope = 'http://www.google.com/m8/feeds/'
     next_url = "http://#{self.request.host}:#{self.request.port}/google_sessions/create"
-    secure = false # set secure = true for signed AuthSub requests
+    secure = false #Todo: need to use HTTPS and/or use signed request
     sess = true
     redirect_to GData::Auth::AuthSub.get_url(next_url, scope, secure, sess)
   end

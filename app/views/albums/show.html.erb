@@ -33,7 +33,8 @@
         <% end %>
       </div>
 
-      <a href="/shares/new">Share Album</a>
+      <%= link_to "Share", new_album_share_path(@album.id) %>  
+
     </td>
   </tr>
 </table>

@@ -1,6 +1,8 @@
 <h2 class="album">New share</h2>
 
-<% form_for(@share) do |f| %>
+
+<%form_for [@album, @share], :url => album_shares_path(@album)  do |f| %>
+
   <%= f.error_messages %>
 
  <p>
