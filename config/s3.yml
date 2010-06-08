@@ -16,5 +16,6 @@ secret_access_key: lUEwegAXc0NSSrB16klFtBWKDuFO/LLZfyZi82DR
 
 
 #production:
-#access_key_id: YOURSECRETACCESSID
-#secret_access_key: YOUR-secRE/TACCe\ssKEy
+bucket: 'production-server-zangzing-com'
+access_key_id: AKIAJZR7WODGPXONMRVA
+secret_access_key: lUEwegAXc0NSSrB16klFtBWKDuFO/LLZfyZi82DR

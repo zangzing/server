@@ -39,11 +39,11 @@ Rails::Initializer.run do |config|
   # config.i18n.default_locale = :de
   
   # For the pagination gem will_paginate
-  config.gem 'faker'
-  config.gem "sqlite3-ruby", :lib => "sqlite3"
+ 
   config.gem 'will_paginate', :version => '2.3.12'
   config.gem 'paperclip'
   config.gem "aws-s3", :version => ">= 0.6.2", :lib => "aws/s3"
   config.gem 'gdata'
-
+  config.gem 'delayed_job'
+  
 end

@@ -13,6 +13,7 @@ class PhotosController < ApplicationController
              end
              @user = @album.user
              @photos = @album.photos.paginate(:page =>params[:page])
+             @photo  = Photo.new
              render 'albums/show'
 
         }

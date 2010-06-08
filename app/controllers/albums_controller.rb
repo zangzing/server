@@ -45,7 +45,6 @@ class AlbumsController < ApplicationController
            format.json{
                 headers["Content-Type"] = "text/plain; charset=utf-8"
                 render :text => @album.to_json(:only => :name,  :include => { :photos =>{:only =>[], :methods => [:thumb_url]}})
-                #render 'show'
            }
       end
   end

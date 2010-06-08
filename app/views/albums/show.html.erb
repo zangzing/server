@@ -1,5 +1,15 @@
 <!-- The album JSON is stored in a golobal variable for processing in onLoad -->
-<script> albumJSON = '<%=@album.to_json(:include => {:photos => {:only =>[:id], :methods => [:thumb_url]}})%>' </script>
+<script src="/javascripts/agent.js"></script>
+<script src="/javascripts/jquery.jsonp-2.0.2.js"></script>
+
+<script>
+
+    installAlbumReadyListener('<%=@album.to_json(:include => {:photos => {:only =>[:id], :methods => [:thumb_url]}})%>')
+    console.log('albumReadyListener Installed');
+    agentPresent = false;
+
+
+</script>
 
 <h2 class="album"><%= h @album.name %></h2>
 <table class="profile">
@@ -17,7 +27,7 @@
         <%form_for [@album, @photo], :url => album_photos_path(@album), :html => { :multipart => true } do |f| %>
             <%= f.error_messages %>
             <div class="field">
-                <%= f.file_field :image %>
+                <%= f.file_field :local_image %>
                 <%= f.submit "Add Photo"%>
             </div>
         <% end %>
@@ -28,22 +38,22 @@
   </tr>
 </table>
 
-<script src="/javascripts/agent.js"></script>
-<script src="/javascripts/jquery-1.4.2.js"></script>
-<script src="/javascripts/jquery.jsonp-2.0.2.js"></script>
+
 
 <script>
 
-    agent.isAgentPresentAsync(setAgentPresent)
-
-
     function setAgentPresent(present)
     {
-        if(present)
+        console.log('agentPresent being set asynchronously to '+ present);
+        agentPresent = present;
+        if(agentPresent)
         {
             $("#uploadform").html('<%= button_to "Upload Photos", upload_path( @album.id ), :method => :get %>');
        }
     }
+
+    agent.isAgentPresentAsync(setAgentPresent)
+
 
     //var agentPresent = false;
     //var urlBase = "http://" + location.host;

@@ -2,7 +2,7 @@
         <% if album.photos.empty? %>
             <%= link_to image_tag( "/images/album.png"), album %>
         <% else %>
-            <%= link_to image_tag( album.photos.first.image.url(:thumb) ), album %>
+            <%= link_to image_tag( album.photos.first.thumb_url ), album %>
         <% end %>
         <div class="albumcellcaption">
         <%= h album.name%>

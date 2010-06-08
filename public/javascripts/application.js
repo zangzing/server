@@ -12,11 +12,15 @@
 // once the page is loaded.
 // Global Variable albumJSON must contain the album JSON. It should be set in the view HTML
 //
-$(document).ready(  function() {
-    //console.log('application.js ready observed!');
-    showAlbumPhotos( albumJSON )
 
-});
+function installAlbumReadyListener( albumJSON )
+{
+    $(document).ready(  function() {
+        console.log('application.js ready observed!');
+        showAlbumPhotos( albumJSON )
+    });
+    console.log('AlbumReadyListenerInstalled!');
+}
 
 //
 // Used to decide if the agent is present or not. If the agent is present ALL images are
