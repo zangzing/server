@@ -21,4 +21,27 @@ class FacebookSessionsController < ApplicationController
   def destroy
     session.delete(:facebook_token)
   end
+
+  def verify
+    begin
+      graph = HyperGraph.new(session[:facebook_token])
+      graph.get('me')[:name]
+      session_status = 'OK'
+    rescue FacebookError
+      session_status = 'INVALID'
+    end
+
+
+    respond_to do |format|
+      format.html {
+        render :text => session_status
+      }
+      format.json {
+        render :json => session_status.to_json
+      }
+      format.json {
+        render :xml => session_status
+      }
+    end
+  end
 end
