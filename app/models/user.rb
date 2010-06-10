@@ -77,7 +77,14 @@ class User < ActiveRecord::Base
     return identity
   end
 
-
+  def identity_for_facebook
+    identity =  self.identities.find(:first, :conditions => "identity_source = 'facebook'")
+    if(!identity)
+      identity = self.identities.new
+      identity.identity_source = "facebook"
+    end
+    return identity
+  end
 
 
 

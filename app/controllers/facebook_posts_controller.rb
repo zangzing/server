@@ -6,34 +6,33 @@ require 'hyper_graph'
 
 class FacebookPostsController < ApplicationController
 
+  include FacebookSessionHelper
+
   def index
-    puts "STORED TOKEN: " + session[:facebook_token].to_s
 
-    if(!session[:facebook_token])
+    facebook_token = get_facebook_token
 
-      #Todo: move to filter in FacebookHelper
-      redirect_to "/facebook_sessions/new"
+    if(!facebook_token)
+      redirect_to new_facebook_session_path
       return
     end
 
     begin
-      graph = HyperGraph.new(session[:facebook_token])
-      @name = graph.get('me')[:name]
+      graph = HyperGraph.new(facebook_token)
+      @name = graph.get('me/feed')
+      render :text => @name.inspect
       
-
     rescue FacebookError
       puts $!
-      session[:facebook_token]= nil
-
-      #Todo: move to filter in FacebookHelper
-      redirect_to "/facebook_sessions/new"
+      delete_facebook_token
+      redirect_to new_facebook_session_path
       return
     end
   end
 
 
    def create
-     graph = HyperGraph.new(session[:facebook_token])
+     graph = HyperGraph.new(get_facebook_token)
      graph.post("#{params[:object_id]}/feed", :message => params[:message])
    end
 end

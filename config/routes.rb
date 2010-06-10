@@ -75,7 +75,6 @@ ActionController::Routing::Routes.draw do |map|
 #
 #
 #  map.connect '/facebook_sessions/new', :controller => 'facebook_sessions', :action=>'new'
-#  map.connect '/facebook_sessions/create', :controller => 'facebook_sessions', :action=>'create'
 #  map.connect '/facebook_sessions/destroy', :controller => 'facebook_sessions', :action=>'destroy'
 #  map.connect '/facebook_sessions/verify', :controller => 'facebook_sessions', :action=>'verify'
 #
@@ -83,9 +82,15 @@ ActionController::Routing::Routes.draw do |map|
 #
 #  map.resources :facebook_posts
 
-  map.resource :facebook_sessions
+  map.create_facebook_session '/facebook_sessions/create', :controller => 'facebook_sessions', :action=>'create'
+  map.destroy_facebook_session '/facebook_sessions/destroy', :controller => 'facebook_sessions', :action=>'destroy'
+  map.resources :facebook_sessions, :method => 'get'
+
+  map.create_facebook_post '/facebook_posts/create', :controller => 'facebook_posts', :action=>'create'
   map.resources :facebook_posts
 
+  map.create_google_session '/google_sessions/create', :controller => 'google_sessions', :action=>'create'
+  map.destroy_google_session '/google_sessions/destroy', :controller => 'google_sessions', :action=>'destroy'
   map.resource :google_sessions
   map.resources :google_contacts
 

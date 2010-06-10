@@ -15,10 +15,6 @@ class GoogleContactsController < ApplicationController
     puts params.inspect
 
 
-    puts "RELOAD: "+ params[:reload].to_s
-
-
-
     if (params[:reload])
       reload
     end
@@ -95,7 +91,7 @@ class GoogleContactsController < ApplicationController
       redirect_to "/google_contacts"
 
     rescue GData::Client::AuthorizationError => exc
-      delete_token
+      delete_google_token
       redirect_to "/google_sessions/new"
     end
 

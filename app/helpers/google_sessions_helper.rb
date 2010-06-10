@@ -20,7 +20,7 @@ module GoogleSessionsHelper
     identity.save
   end
 
-  def delete_token
+  def delete_google_token
     identity = current_user.identity_for_gmail
     identity.credentials = nil
     identity.save

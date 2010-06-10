@@ -38,7 +38,7 @@ class GoogleSessionsController < ApplicationController
   end
 
   def destroy
-    session.delete(:google_token)
+    delete_google_token
   end
 
 end
