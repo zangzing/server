@@ -48,6 +48,11 @@ require 'delayed_job'
 class Photo < ActiveRecord::Base
   belongs_to :album
 
+
+  # for development do sync load
+  before_save :syncload_if_development
+
+
   # Set up an asyng call for Processing and Upload to S3
   after_save :queue_upload_to_s3
   
@@ -98,11 +103,20 @@ class Photo < ActiveRecord::Base
     image.path(:thumb)
   end
 
+  def syncload_if_development
+    if Rails.env.development?
+        self.image = local_image.to_file
+        self.state = 'ready'
+    end
+  end
+
   def queue_upload_to_s3
     logger.info "PHOTO status upon queuing upload/processing job is  #{self.state}"
-    if self.new? && self.local_image_updated_at_changed?
-      self.state = 'processing'
-      self.send_later(:upload_to_s3)
+    unless Rails.env.development?
+      if self.new? && self.local_image_updated_at_changed?
+        self.state = 'processing'
+        self.send_later(:upload_to_s3)
+      end
     end
   end
 

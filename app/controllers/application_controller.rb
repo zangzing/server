@@ -13,7 +13,7 @@ class ApplicationController < ActionController::Base
 
   private
     def set_layout
-      #If there is a user logged in then et the layout to match user preferences
+      #If there is a user logged in then set the layout to match user preferences
       #otherwise set it to the default which is white.
       if signed_in?
        current_user.style

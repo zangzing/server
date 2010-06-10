@@ -289,6 +289,37 @@ div.albumcell {
     background-color: #ffffff;
     margin: 5px;
 }
-div.albumcellcaption {
-   text-align: left;
+
+div.albumcellphoto{
+   position: relative;
+   height: 100px;
+   width: 100px;
 }
+img.albumcellshow{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100px;
+    width: 100px;
+}
+img.albumcellphotoicon{
+    position: absolute;
+ 	top: 9px;
+    left: 49px;
+    height: 36px;
+    width: 36px;
+    background-color: transparent;
+}
+a.albumcelldeleteicon{
+  position: absolute;
+  top: 75px;
+  left: 75px;
+  height: 36px;
+  width: 36px;
+  background-color: transparent;
+}
+div.albumcellcaption {
+   text-align: center;
+   color: #B1B1B1
+}
+
