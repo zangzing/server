@@ -1,5 +1,7 @@
 var agent =  {
 
+    port : 9090,
+
     isAgentPresentAsync: function(callback)
     {
 
@@ -48,7 +50,7 @@ var agent =  {
 
 	getThumbnailUrl: function(path)
 	{
-		return "http://localhost:9090/thumbnail?path=" + path;
+		return "http://localhost:" + agent.port + "/thumbnail?path=" + path;
 	},
 
 
@@ -68,7 +70,7 @@ var agent =  {
         }
 
 
-        var url = "http://localhost:9090/" + command + "?" + query + "&jsonp=true&callback=?"
+        var url = "http://localhost:" + agent.port + "/" + command + "?" + query + "&callback=?"
 
         $.jsonp({
             url: url,
@@ -79,18 +81,5 @@ var agent =  {
                 onError("error calling " + url)
             }
         });
-
-
-//        $.ajax({
-//            url: "http://localhost:9090/" + command + "?" + query,
-//            dataType: "json",
-//            success:function(response){
-//				onSuccess(response)
-//            },
-//            error:function (xhr, ajaxOptions, thrownError){
-//				alert("error in '/" + command + "':" + thrownError);
-//				onError(thrownError);
-//            }
-//        });
 	}
 }

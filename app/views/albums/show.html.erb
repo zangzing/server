@@ -22,6 +22,11 @@
         <%= will_paginate @photos %>
       <% end %>
 
+    <iframe src="http://www.facebook.com/widgets/like.php?href=http://example.com"
+        scrolling="no" frameborder="0"
+        style="border:none; width:450px; height:80px"></iframe>
+
+        
       <!-- This form is the html photo upload. Its replaced by the uploader button at runtime if agent is present -->
       <div id="uploadform">
         <%form_for [@album, @photo], :url => album_photos_path(@album), :html => { :multipart => true } do |f| %>
