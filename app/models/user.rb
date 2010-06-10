@@ -41,13 +41,14 @@ class User < ActiveRecord::Base
   validates_uniqueness_of :email, :case_sensitive =>false
 
   # Automatically create the virtual attribute 'password_confirmation'.
-  validates_confirmation_of :password
+  validates_confirmation_of :password, :if => :perform_password_validation?
+
 
   # Password validations.
-  validates_presence_of :password
-  validates_length_of   :password, :within => 6..40
+  validates_presence_of :password, :if => :perform_password_validation?
+  validates_length_of   :password, :within => 6..40, :if => :perform_password_validation?
 
-  before_save :encrypt_password
+  before_save :encrypt_password, :if => :perform_password_validation?
 
 
   def has_password?(submitted_password)
@@ -98,10 +99,8 @@ class User < ActiveRecord::Base
     private
 
       def encrypt_password
-        unless password.nil?
           self.salt = make_salt
           self.encrypted_password = encrypt(password)
-        end
       end
 
       def encrypt(string)
@@ -115,5 +114,10 @@ class User < ActiveRecord::Base
       def secure_hash(string)
         Digest::SHA2.hexdigest(string)
       end
+
+      def perform_password_validation?
+          self.new_record? ? true : !self.password.blank?
+      end
+
 end
 
