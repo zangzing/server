@@ -16,7 +16,7 @@ class SharesController < ApplicationController
 
 
     if @share.save
-      SharedAlbumMailer.deliver_shared_album_notification(@share, album_url(@share.album))  
+      Mailer.deliver_shared_album_notification(@share, album_url(@share.album))  
     else
       render 'new'
     end
