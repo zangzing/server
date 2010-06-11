@@ -25,12 +25,14 @@ ActionController::Routing::Routes.draw do |map|
       #user.resources :contacts, :name_prefix => "user_"
     end
   
-    map.resources :sessions, :only => [:new, :create, :destroy]
-    map.signin '/signin', :controller => 'sessions', :action => 'new'
-    map.signout '/signout', :controller => 'sessions', :action => 'destroy'
+    map.resources :user_sessions, :only => [:new, :create, :destroy]
+    map.signin '/signin', :controller => 'user_sessions', :action => 'new'
+    map.signout '/signout', :controller => 'user_sessions', :action => 'destroy'
 
     map.upload 'albums/:id/upload', :controller => 'albums', :action=>'upload'
     
+    map.resources :password_resets, :only => [:new, :edit, :create, :update]
+
   # Sample resource route with options:
   #   map.resources :products, :member => { :short => :get, :toggle => :post }, :collection => { :sold => :get }
 

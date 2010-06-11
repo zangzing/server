@@ -1,5 +1,5 @@
 class AlbumsController < ApplicationController
-  before_filter :authenticate
+  before_filter :require_user
   before_filter :authorized_user, :only => :destroy
 
   def new

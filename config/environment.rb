@@ -41,9 +41,11 @@ Rails::Initializer.run do |config|
   # For the pagination gem will_paginate
  
   config.gem 'will_paginate', :version => '2.3.12'
-  config.gem 'paperclip'
+  config.gem 'paperclip', :version => '2.3.1.1'
   config.gem "aws-s3", :version => ">= 0.6.2", :lib => "aws/s3"
   config.gem 'gdata'
-  config.gem 'delayed_job'
+  config.gem 'delayed_job' , :version => '2.0.3'
   config.gem 'hyper-graph', :lib=>'hyper_graph'
+  config.gem 'authlogic', :version => '2.1.5'
+  
 end

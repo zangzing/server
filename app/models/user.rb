@@ -25,7 +25,6 @@
 
 
 class User < ActiveRecord::Base
-  attr_accessor :password
   attr_accessible  :name, :email, :password, :password_confirmation, :style
   
   has_many :albums,     :dependent => :destroy
@@ -40,33 +39,8 @@ class User < ActiveRecord::Base
   validates_format_of :email, :with => EmailRegex
   validates_uniqueness_of :email, :case_sensitive =>false
 
-  # Automatically create the virtual attribute 'password_confirmation'.
-  validates_confirmation_of :password, :if => :perform_password_validation?
 
-
-  # Password validations.
-  validates_presence_of :password, :if => :perform_password_validation?
-  validates_length_of   :password, :within => 6..40, :if => :perform_password_validation?
-
-  before_save :encrypt_password, :if => :perform_password_validation?
-
-
-  def has_password?(submitted_password)
-    encrypted_password == encrypt(submitted_password)
-  end
-
-  def remember_me!
-    self.remember_token = encrypt("#{salt}--#{id}")
-    save_without_validation
-  end
-
-  def self.authenticate(email, submitted_password)
-       user = find_by_email(email)
-       return nil  if user.nil?
-       return user if user.has_password?(submitted_password)
-  end
-
-
+  acts_as_authentic
 
 
   def identity_for_gmail
@@ -78,39 +52,15 @@ class User < ActiveRecord::Base
     return identity
   end
 
-
-
-
-
-
-
   def feed
       # This is preliminary. See Chapter 12 for the full implementation.
       Album.all(:conditions => ["user_id = ?", id])
-  end 
+  end
 
-    private
-
-      def encrypt_password
-          self.salt = make_salt
-          self.encrypted_password = encrypt(password)
-      end
-
-      def encrypt(string)
-        secure_hash("#{salt}#{string}")
-      end
-
-      def make_salt
-        secure_hash("#{Time.now.utc}#{password}")
-      end
-
-      def secure_hash(string)
-        Digest::SHA2.hexdigest(string)
-      end
-
-      def perform_password_validation?
-          self.new_record? ? true : !self.password.blank?
-      end
+  def deliver_password_reset_instructions!
+      reset_perishable_token!
+      Mailer.deliver_password_reset_instructions(self)
+  end
 
 end
 

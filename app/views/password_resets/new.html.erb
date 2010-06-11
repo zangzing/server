@@ -1,0 +1,11 @@
+<h2>Password Reset Form</h2>
+
+Please fill this form to reset your password:<br />
+<br />
+
+<% form_tag password_resets_path do %>
+  <label>Email:</label><br />
+  <%= text_field_tag "email" %><br />
+  <br />
+  <%= submit_tag "Reset my password" %>
+<% end %>
