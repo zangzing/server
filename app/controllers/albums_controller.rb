@@ -57,7 +57,7 @@ class AlbumsController < ApplicationController
   def destroy
       # Album is found when the before filter calls authorized user
       @album.destroy
-      redirect_back_or root_path
+      redirect_back_or_default root_path
   end
   
   
