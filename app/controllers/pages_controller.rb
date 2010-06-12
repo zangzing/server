@@ -3,7 +3,7 @@ class PagesController < ApplicationController
   def home
      @title = "Home"
      if current_user
-       @feed = current_user.feed.paginate(:page => params[:page])
+       @albums = current_user.albums.paginate(:page => params[:page])
      end
    end
   

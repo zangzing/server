@@ -1,44 +1,56 @@
 # == Schema Information
-# Schema version: 20100602212717
+# Schema version: 20100610185856
 #
 # Table name: photos
 #
-#  id                 :integer         not null, primary key
-#  album_id           :integer
-#  created_at         :datetime
-#  updated_at         :datetime
-#  user_id            :integer
-#  image_file_name    :string(255)
-#  image_content_type :string(255)
-#  image_file_size    :integer
-#  image_updated_at   :datetime
-#
-
-# == Schema Information
-# Schema version: 20100511235524
-#
-# Table name: photos
-#
-#  id         :integer         not null, primary key
-#  album_id   :integer
-#  created_at :datetime
-#  updated_at :datetime
-#  user_id    :integer
+#  id                       :integer         not null, primary key
+#  album_id                 :integer
+#  created_at               :datetime
+#  updated_at               :datetime
+#  user_id                  :integer
+#  image_file_name          :string(255)
+#  image_content_type       :string(255)
+#  image_file_size          :integer
+#  image_updated_at         :datetime
+#  local_image_file_name    :string(255)
+#  local_image_content_type :string(255)
+#  local_image_file_size    :integer
+#  local_image_updated_at   :datetime
+#  state                    :string(255)     default("new")
 #
 
 
+#
+# Photo Model
+#
+# As a first implementation images are attached to photo objects using paperclip as
+# performance and customization changes are required the use of paperclip can be
+# revisited or we can contribute the improvements to paperclip.
+#
+# The way paperclip works is:
+# An image is received in a create or update request as part of a multi-part form post.
+# Paperclip takes the tmp image file and moves it to its destination either locally or
+# to S3. Then using the tmp file, paperclip uses imagemagick to create the required styles.
+# During the whole time, the requester is kept waiting.
+#
+# We should investigate the possibility of using graphicmagick instead if its faster.
+#
 #
 # ASYNC UPLOADING AND PROCESSING
 #
 # To improve speed of upload, the S3 backend loading and image processing is asynchronous.
 # - The default state of a photo is "new"
 # - The photo is uploaded and a local copy stored.
-# - The local photo is stored using paperclip in the local_image attribute which is set for local storage no styles.
+# - The local photo is stored into the local_image attachment attribute which is set for local storage no styles.
 # - State is set to "processing". No image processing is done
-# - An async call to upload_to_s3 is queued using delayed_job
-# - The async call sets attribute image to local_image triggering paperclip to upload and proces images
+# - Using an after_save callback an async call to upload_to_s3 is queued using delayed_job.
+# - When the queued call is processed, the image attachment attribute is set to local_image triggering paperclip
+#   to store and process image. The image attachment is set to store in S3 with styles.
 # - The state is set to "ready" local image is set to nil never to be used again =) 
 #
+# NOTES:
+# The paperclip default url is used to display a temporary graphic while the local_image is processed.
+# Code to accelerate a local development server was added and it may be removed for production TODO:
 #
 
 require 'paperclip'
@@ -63,7 +75,7 @@ class Photo < ActiveRecord::Base
   # This is the image that will be used most of the time
   # Set image storage options for paperclip based on the environment the app is running in
   image_options ||= {}
-  image_options[:styles] ||= { :medium =>"300x300>", :thumb   => "100x100#" }
+  image_options[:styles] ||= { :medium =>"800x600>", :thumb   => "100x100#" }
   image_options[:whiny]  ||= true
   image_options[:default_url]='/images/working.png'
   unless Rails.env.development?
@@ -92,7 +104,8 @@ class Photo < ActiveRecord::Base
                                     :message => " must be a JPEG, PNG, or GIF",
                                     :if =>  :new?
                                     }
-  
+
+  # when retrieving a search from the DB it will always be ordered by created date descending a.k.a Latest first
   default_scope :order => 'created_at DESC'
 
   def thumb_url
@@ -103,6 +116,11 @@ class Photo < ActiveRecord::Base
     image.path(:thumb)
   end
 
+  def medium_url
+    image.url(:medium)
+  end
+
+  # If in development set image to local_image and generate styles synchronously
   def syncload_if_development
     if Rails.env.development?
         self.image = local_image.to_file
@@ -110,6 +128,8 @@ class Photo < ActiveRecord::Base
     end
   end
 
+  #
+  # Used to queue loading and processing for async.
   def queue_upload_to_s3
     logger.info "PHOTO status upon queuing upload/processing job is  #{self.state}"
     unless Rails.env.development?
@@ -120,6 +140,9 @@ class Photo < ActiveRecord::Base
     end
   end
 
+  #
+  # Used by the workers to load the image.
+  # This call cannot be privates
   def upload_to_s3
       self.state = 'processing'
       self.image = local_image.to_file

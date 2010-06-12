@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20100602212717
+# Schema version: 20100610185856
 #
 # Table name: albums
 #

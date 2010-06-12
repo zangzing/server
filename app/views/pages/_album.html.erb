@@ -1,0 +1,6 @@
+<% unless @albums.empty? %>
+  <table class="albums">
+    <%= render @albums %>
+  </table>
+  <%= will_paginate @albums %>
+<% end %>

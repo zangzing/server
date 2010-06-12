@@ -1,5 +1,22 @@
+#
+# PasswordResetsController
+#
+# Controls the flow of the password reset process duh?
+#
+# 1.- A user clicks on the password reset lin
+# 2.- The new view is used to generate the form that asks for the user email
+# 3.- If the email is not found, try again. If found send the email
+#     Before sending the email, a one time perishable token is created and used to
+#      to build the link in the email
+# 4.- When the user clicks on the link, it is routed to edit and the user is fetched
+#     using the perishable token as a key.
+# 5.- Password is updated and user logged in.
+ s
 class PasswordResetsController < ApplicationController
+  # These operations require that no user is logged in
   before_filter :require_no_user
+
+  # Use the load.... method for edit and update
   before_filter :load_user_using_perishable_token, :only => [:edit, :update]
 
   def new
@@ -35,6 +52,9 @@ class PasswordResetsController < ApplicationController
   end
 
 private
+
+  #
+  #Retrieve the user from the DB using the perishable token if still valid
   def load_user_using_perishable_token
     @user = User.find_using_perishable_token(params[:id])
     unless @user

@@ -1,17 +1,22 @@
 # == Schema Information
-# Schema version: 20100602212717
+# Schema version: 20100610185856
 #
 # Table name: photos
 #
-#  id                 :integer         not null, primary key
-#  album_id           :integer
-#  created_at         :datetime
-#  updated_at         :datetime
-#  user_id            :integer
-#  image_file_name    :string(255)
-#  image_content_type :string(255)
-#  image_file_size    :integer
-#  image_updated_at   :datetime
+#  id                       :integer         not null, primary key
+#  album_id                 :integer
+#  created_at               :datetime
+#  updated_at               :datetime
+#  user_id                  :integer
+#  image_file_name          :string(255)
+#  image_content_type       :string(255)
+#  image_file_size          :integer
+#  image_updated_at         :datetime
+#  local_image_file_name    :string(255)
+#  local_image_content_type :string(255)
+#  local_image_file_size    :integer
+#  local_image_updated_at   :datetime
+#  state                    :string(255)     default("new")
 #
 
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html

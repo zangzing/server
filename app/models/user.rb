@@ -1,26 +1,28 @@
 # == Schema Information
-# Schema version: 20100526143648
+# Schema version: 20100610185856
 #
 # Table name: users
 #
-#  id                 :integer         not null, primary key
-#  name               :string(255)
-#  email              :string(255)
-#  created_at         :datetime
-#  updated_at         :datetime
-#  encrypted_password :string(255)
-#  salt               :string(255)
-#  remember_token     :string(255)
-#  admin              :boolean
-#
-
-# Table name: users
-#
-#  id         :integer         not null, primary key
-#  name       :string(255)
-#  email      :string(255)
-#  created_at :datetime
-#  updated_at :datetime
+#  id                  :integer         not null, primary key
+#  name                :string(255)
+#  email               :string(255)
+#  created_at          :datetime
+#  updated_at          :datetime
+#  remember_token      :string(255)
+#  admin               :boolean
+#  style               :string(255)     default("white")
+#  crypted_password    :string(255)
+#  password_salt       :string(255)
+#  persistence_token   :string(255)
+#  single_access_token :string(255)
+#  perishable_token    :string(255)     default(""), not null
+#  login_count         :integer
+#  faile_login_count   :integer
+#  last_request_at     :date
+#  current_login_at    :date
+#  last_login_at       :date
+#  current_login_ip    :string(255)
+#  last_login_ip       :string(255)
 #
 
 
@@ -30,18 +32,9 @@ class User < ActiveRecord::Base
   has_many :albums,     :dependent => :destroy
   has_many :identities, :dependent => :destroy
   has_many :shares,     :dependent => :destroy
-
-
-  EmailRegex = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
-  
-  validates_presence_of :name, :email
-  validates_length_of :name, :maximum => 50
-  validates_format_of :email, :with => EmailRegex
-  validates_uniqueness_of :email, :case_sensitive =>false
-
-
+ 
+  # This delegates all authentication details to authlogic
   acts_as_authentic
-
 
   def identity_for_gmail
     identity =  self.identities.find(:first, :conditions => "identity_source = 'gmail'")
@@ -60,11 +53,8 @@ class User < ActiveRecord::Base
     end
     return identity
   end
-  def feed
-      # This is preliminary. See Chapter 12 for the full implementation.
-      Album.all(:conditions => ["user_id = ?", id])
-  end
 
+  # Generates a new perishable token for the mailer to use in a password reset request
   def deliver_password_reset_instructions!
       reset_perishable_token!
       Mailer.deliver_password_reset_instructions(self)

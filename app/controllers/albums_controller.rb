@@ -38,15 +38,6 @@ class AlbumsController < ApplicationController
       @photo = Photo.new
       @photos = @album.photos.paginate(:page =>params[:page])
       @title = CGI.escapeHTML(@album.name)
-      respond_to do |format|
-           format.html{
-                render 'show'
-           }
-           format.json{
-                headers["Content-Type"] = "text/plain; charset=utf-8"
-                render :text => @album.to_json(:only => :name,  :include => { :photos =>{:only =>[], :methods => [:thumb_url]}})
-           }
-      end
   end
 
   def upload
@@ -62,7 +53,6 @@ class AlbumsController < ApplicationController
   
   
   private
-
       def authorized_user
         @album = Album.find(params[:id])
         redirect_to root_path unless current_user?(@album.user)

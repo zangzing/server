@@ -17,7 +17,7 @@
     <td class="main">
       <% unless @album.photos.empty? %>
         <table class="photos">
-	        <%= render @photos %>
+	        <%= render :partial => "albums/photo_thumb", :collection => @photos, :as => :photo %>
         </table>
         <%= will_paginate @photos %>
       <% end %>

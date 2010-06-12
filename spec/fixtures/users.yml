@@ -1,17 +1,28 @@
 # == Schema Information
-# Schema version: 20100526143648
+# Schema version: 20100610185856
 #
 # Table name: users
 #
-#  id                 :integer         not null, primary key
-#  name               :string(255)
-#  email              :string(255)
-#  created_at         :datetime
-#  updated_at         :datetime
-#  encrypted_password :string(255)
-#  salt               :string(255)
-#  remember_token     :string(255)
-#  admin              :boolean
+#  id                  :integer         not null, primary key
+#  name                :string(255)
+#  email               :string(255)
+#  created_at          :datetime
+#  updated_at          :datetime
+#  remember_token      :string(255)
+#  admin               :boolean
+#  style               :string(255)     default("white")
+#  crypted_password    :string(255)
+#  password_salt       :string(255)
+#  persistence_token   :string(255)
+#  single_access_token :string(255)
+#  perishable_token    :string(255)     default(""), not null
+#  login_count         :integer
+#  faile_login_count   :integer
+#  last_request_at     :date
+#  current_login_at    :date
+#  last_login_at       :date
+#  current_login_ip    :string(255)
+#  last_login_ip       :string(255)
 #
 
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html

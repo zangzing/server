@@ -4,7 +4,7 @@
       <td class="main">
         <h2 class="album">
          <%= h current_user.name %>'s Albums</h2>
-   	 	 <%= render 'pages/feed' %>
+   	 	 <%= render 'pages/album' %>
          <%= button_to "Create New Album", new_user_album_path( current_user ), :method => :get %>
 
       </td>

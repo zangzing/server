@@ -44,9 +44,9 @@ function setPhotoURL( photo )
         //DISPLAY PHOTO
         //Modify div block class "gridcellphoto" id "photoid<ID>_HERE>" created by the Photo/_photo partial
         //The photo is displayed as a background image of the div block
-        photoDivId = "#photoid"+photo.id
-        //console.log(photoDivId+" URL:"+photoURL)
-        $(photoDivId).css('background-image', 'url('+photoURL+')');
+        photoImgId = "#photoid"+photo.id
+        console.log(photoImgId+" URL:"+photoURL)
+        $(photoImgId).attr("src",photoURL);
 }
 
 //

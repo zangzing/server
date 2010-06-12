@@ -14,7 +14,7 @@ class PhotosController < ApplicationController
              @user = @album.user
              @photos = @album.photos.paginate(:page =>params[:page])
              @photo  = Photo.new
-             render 'albums/show'
+             render  'albums/show'
 
         }
         format.xml{
@@ -33,6 +33,11 @@ class PhotosController < ApplicationController
             end
         }
      end
+  end
+
+
+  def show
+    @photo = Photo.find(params[:id])
   end
 
   def destroy

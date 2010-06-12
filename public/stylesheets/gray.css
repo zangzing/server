@@ -237,6 +237,16 @@ form.new_album textarea {
   margin-bottom: 0;
 }
 
+/*one photo view */
+div.largephotocontainer{
+}
+img.largephoto {
+    background-color: #ffffff;
+    padding: 5px;
+    -webkit-box-shadow: 0px 0px 10px #AAAAAA;
+    -moz-box-shadow: 0px 0px 10px #AAAAAA;
+}
+
 /*album grid layout  */
 div.grid {
   border: 2px dashed #333;
