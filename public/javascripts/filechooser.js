@@ -102,7 +102,7 @@ var filechooser = {
 
             if ((file.isMarkedForUpload != true))
             {
-                html += "<br/>[<a href=\"javascript:filechooser.upload('" + file.path + "','" + filechooser._albumId + "')\">"
+                html += "<br/>[<a href=\"\" onclick=\"filechooser.upload('" + file.path + "','" + filechooser._albumId + "');return false;\">"
 
                 if (file.isDirectory == true)
                 {
@@ -126,7 +126,7 @@ var filechooser = {
                 }
                 else
                 {
-                    html += "<br/>[<a href=\"javascript:filechooser.cancelUpload('" + file.path + "')\">"
+                    html += "<br/>[<a href=\"\" onclick=\"filechooser.cancelUpload('" + file.path + "'); return false;\">"
                     html += "cancel upload"
                     html += "</a>]"
                 }

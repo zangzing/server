@@ -1,5 +1,5 @@
 
-setInterval("uploader.refresh()", 3000)
+setInterval("uploader.refresh()", 10000)
 
 var uploader = {
 
@@ -57,7 +57,7 @@ var uploader = {
                 html += "</div></center>"
             }
             html += "<center>" + file.name + "</center>";
-            html += "<center>[<a href=\"javascript:uploader.cancelUpload('" + file.path + "')\">cancel upload</a>]</center>";
+            html += "<center>[<a href=\"\" onclick=\"uploader.cancelUpload('" + file.path + "'); return false;\">cancel upload</a>]</center>";
 
             if(file.error!="")
             {
