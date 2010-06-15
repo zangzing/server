@@ -78,7 +78,10 @@ var agent =  {
 				onSuccess(json)
             },
             error: function() {
-                onError("error calling " + url)
+                if(onError)
+                {
+                    onError("error calling " + url)
+                }
             }
         });
 	}

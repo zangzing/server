@@ -5,7 +5,7 @@
 <script>
 
     installAlbumReadyListener('<%=@album.to_json(:include => {:photos => {:only =>[:id], :methods => [:thumb_url]}})%>')
-    console.log('albumReadyListener Installed');
+    //console.log('albumReadyListener Installed');
     agentPresent = false;
 
 
@@ -46,7 +46,7 @@
 
     function setAgentPresent(present)
     {
-        console.log('agentPresent being set asynchronously to '+ present);
+        //console.log('agentPresent being set asynchronously to '+ present);
         agentPresent = present;
         if(agentPresent)
         {
