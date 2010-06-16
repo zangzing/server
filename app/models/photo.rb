@@ -75,7 +75,7 @@ class Photo < ActiveRecord::Base
   # This is the image that will be used most of the time
   # Set image storage options for paperclip based on the environment the app is running in
   image_options ||= {}
-  image_options[:styles] ||= { :medium =>"800x600>", :thumb   => "100x100#" }
+  image_options[:styles] ||= { :medium =>"600x400>", :thumb   => "100x100#" }
   image_options[:whiny]  ||= true
   image_options[:default_url]='/images/working.png'
   unless Rails.env.development?

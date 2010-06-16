@@ -5,7 +5,7 @@
 <script>
 
     installAlbumReadyListener('<%=@album.to_json(:include => {:photos => {:only =>[:id], :methods => [:thumb_url]}})%>')
-    console.log('albumReadyListener Installed');
+    //console.log('albumReadyListener Installed');
     agentPresent = false;
 
 
@@ -17,7 +17,7 @@
     <td class="main">
       <% unless @album.photos.empty? %>
         <table class="photos">
-	        <%= render :partial => "albums/photo_thumb", :collection => @photos, :as => :photo %>
+	        <%= render :partial => "photos/photo_thumb", :collection => @photos, :as => :photo %>
         </table>
         <%= will_paginate @photos %>
       <% end %>
@@ -46,7 +46,7 @@
 
     function setAgentPresent(present)
     {
-        console.log('agentPresent being set asynchronously to '+ present);
+        //console.log('agentPresent being set asynchronously to '+ present);
         agentPresent = present;
         if(agentPresent)
         {
