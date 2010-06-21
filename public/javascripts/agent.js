@@ -17,65 +17,61 @@ var agent =  {
 
 
         //TODO: this is an expensive call, chance to something else
-        agent.callAgentAsync("listroots", {}, onSuccess, onError)
+        agent.callAgentAsync("/ping", onSuccess, onError)
 
     },
 
-	getFilesAsync: function(path, onSuccess, onError)
+	getFilesAsync: function(virtual_path, onSuccess, onError)
 	{
-		agent.callAgentAsync("listdir", {"path":path}, onSuccess, onError)
+		agent.callAgentAsync("/files/" + virtual_path, onSuccess, onError)
 	},
 
     getRootsAsync: function(onSuccess, onError)
     {
-        agent.callAgentAsync("listroots", {}, onSuccess, onError)
+        agent.callAgentAsync("/roots", onSuccess, onError)
     },
 
 
-	uploadAsync: function(path, albumId, onSuccess, onError)
+	uploadAsync: function(albumId, virtual_path, onSuccess, onError)
 	{
- 		agent.callAgentAsync("upload", {"path":path, "albumid":albumId}, onSuccess, onError)
+ 		agent.callAgentAsync("/albums/" + albumId + "/photos/create?path=" + encodeURIComponent(virtual_path), onSuccess, onError)
 	},
 
 	cancelUploadAsync: function(path, onSuccess, onError)
 	{
-		agent.callAgentAsync("cancel_upload", {"path":path}, onSuccess, onError)
+        //todo: need to call /albums/id/photos/id/delete
 	},
 
 
 	getUploadStatsAsync: function(onSuccess, onError)
 	{
-		agent.callAgentAsync("upload_stats",{}, onSuccess, onError)
+        //todo
 	},
 
 	getThumbnailUrl: function(path)
 	{
-		return "http://localhost:" + agent.port + "/thumbnail?path=" + path;
+		return "http://localhost:" + agent.port + "/files/" + encodeURIComponent(path) + "/thumbnail"
 	},
 
 
-	callAgentAsync: function(command, params, onSuccess, onError)
+	callAgentAsync: function(path, onSuccess, onError)
 	{
-		var query = ""
-
-        for(name in params)
+        var url;
+        if(path.indexOf('?')==-1)
         {
-            if(query!="")
-            {
-                query+="&";
-            }
-            query+=name;
-            query+="="
-            query+=encodeURIComponent(params[name]);
+            url = "http://localhost:" + agent.port  + path + "?callback=?"
         }
-
-
-        var url = "http://localhost:" + agent.port + "/" + command + "?" + query + "&callback=?"
-
+        else
+        {
+            url = "http://localhost:" + agent.port  + path + "&callback=?"
+        }
         $.jsonp({
             url: url,
             success: function(json) {
-				onSuccess(json)
+				if(onSuccess)
+                {
+                    onSuccess(json)
+                }
             },
             error: function() {
                 if(onError)

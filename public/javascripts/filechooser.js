@@ -16,23 +16,23 @@ $(function() {
 
 var filechooser = {
 
+    selection : [],
 
     setPath: function(path)
     {
-        //console.log("setting path: " + path)
-        filechooser._path = path;
+        filechooser.path = path;
         filechooser.refresh();
     },
 
     setAlbumId: function(albumId)
     {
-        filechooser._albumId = albumId
+        filechooser.albumId = albumId
     },
 
     refresh : function()
     {
 
-        if(filechooser._path == "!")
+        if(filechooser.path == "")
         {
             agent.getRootsAsync(function(json) {
                 filechooser.refreshCallBack(json);
@@ -40,97 +40,92 @@ var filechooser = {
         }
         else
         {
-            agent.getFilesAsync(filechooser._path, function(json) {
+            agent.getFilesAsync(filechooser.path, function(json) {
                 filechooser.refreshCallBack(json);
             });
         }
 
     },
 
+
+    selectedPhotos : function()
+    {
+        return filechooser.selection
+    },
+
+    addToSelection : function(virtual_path)
+    {
+        filechooser.selection.push(virtual_path);
+        filechooser.refreshSelection();
+        agent.uploadAsync(filechooser.albumId, virtual_path)
+    },
+    
     refreshCallBack: function(json)
     {
+        $("#filechooser-back-button").html(filechooser.buildBackButtonHtml());
+        $("#filechooser-title").html(filechooser.buildTitleHtml());
         $("#filechooser-files").html(filechooser.buildFileListHtml(json));
-        $("#filechooser-breadcrumbs").html(filechooser.buildBreadCrumbsHtml());
+    },
+
+
+    refreshSelection : function()
+    {
+        $("#filechooser-selection").html(filechooser.buildSelectionHtml());
+        $("#filechooser-selection").scrollLeft(10000);
+
 
     },
 
 
+    buildSelectionHtml : function()
+    {
+        var html = ""
+       // var width = 200 * filechooser.selection.length
+
+        html += "<table border=1><tr><td nowrap>"
+        for(var i in filechooser.selection)
+        {
+            var virtual_path = filechooser.selection[i]
+            html += "<img height='75' style='margin-left:3px; border:4px solid white' src='" + agent.getThumbnailUrl(virtual_path) + "'>";
+
+        }
+        html += "</td></tr></table>"
+        return html
+        
+    },
 
     buildFileListHtml: function(json)
     {
 
         var html = "";
 
-        html += "";
-
         for (var i = 0; i < json.length;i++)
         {
 
-            html += "<div style='text-align:center; width:200px; height:160px; float:left; border:0px'>";
+            html += "<div style='text-align:center; width:180px; height:140px; float:left; border:0px'>";
 
 
             var file = json[i];
 
-            if (file.isImage == true)
-            {
-                html += "<img height='100' src='" + agent.getThumbnailUrl(file.path) + "'>";
-            }
-            else if (file.isDirectory == true)
+            if (file.is_dir == true)
             {
                 html += "<img height='100' src='/images/folder.jpeg'>";
             }
             else
             {
-                html += "<img height='100' src='/images/file.png'>";
+                html += "<a href=\"\" onclick=\"filechooser.addToSelection(\'" + file.virtual_path + "\');return false;\">"
+
+                html += "<img height='100' style='border:4px solid white' src='" + agent.getThumbnailUrl(file.virtual_path) + "'>";
+                html += "</a>"
             }
 
             html += "<br/>"
 
-            if (file.isDirectory == true)
+            if (file.is_dir == true)
             {
-                html += "<a href='#" + file.path + "'>";
+                html += "<a href='#" + file.virtual_path + "'>";
                 html += file.name
                 html += "</a>";
-            }
-            else
-            {
-                html += file.name
-            }
-
-            //html += "<br>" + i
-
-
-            if ((file.isMarkedForUpload != true))
-            {
-                html += "<br/>[<a href=\"\" onclick=\"filechooser.upload('" + file.path + "','" + filechooser._albumId + "');return false;\">"
-
-                if (file.isDirectory == true)
-                {
-                    html += "upload all"
-                }
-                else
-                {
-                    html += "upload"
-                }
-
-                html += "</a>]"
-
-            }
-            else
-            {
-
-                if (file.isDirectory == true)
-                {
-                    //not supported
-                    //html += "cancel upload"
-                }
-                else
-                {
-                    html += "<br/>[<a href=\"\" onclick=\"filechooser.cancelUpload('" + file.path + "'); return false;\">"
-                    html += "cancel upload"
-                    html += "</a>]"
-                }
-
             }
 
             html += "</div>";
@@ -139,30 +134,61 @@ var filechooser = {
 
     },
 
-    upload : function(path, albumId)
-    {
-        uploader.upload(path, albumId);
-    },
 
-    cancelUpload : function(path)
+    buildBreadCrumbs : function()
     {
-        uploader.cancelUpload(path);
-    },
+        var breadcrumbs = []
+        var path = filechooser.path
 
-    buildBreadCrumbsHtml: function()
-    {
-        var segments = filechooser._path.split("/");
-        var url = "!";
-        var html = "<a href='#!'>My Computer</a> ";
-        for (i = 1; i < segments.length; i++)
+
+        for(;;)
         {
+            var breadcrumb = {}
+            var i = path.lastIndexOf('/')
 
-            url += "/" + segments[i];
-            html += " / "
-            html += "<a href='#" + url + "'>";
-            html += segments[i];
-            html += "</a>";
+            if(i == -1)
+            {
+                breadcrumb["title"] = "Home"
+                breadcrumb["virtual_path"] = ""
+                breadcrumbs[breadcrumbs.length] = breadcrumb
+                break;
+            }
+            else
+            {
+                breadcrumb["title"] = path.substring(i+1);
+                breadcrumb["virtual_path"] = path;
+                breadcrumbs[breadcrumbs.length] = breadcrumb
+
+                path = path.substring(0,i);
+            }
+
         }
-        return html;
+        return breadcrumbs.reverse()
+    },
+
+    buildBackButtonHtml: function()
+    {
+        var breadcrumbs = filechooser.buildBreadCrumbs()
+        breadcrumbs.pop()
+        var crumb = breadcrumbs.pop()
+        if(crumb)
+        {
+            html =   "<a href='#" + crumb["virtual_path"] + "'>"
+            html += "&lt;"
+            html += crumb["title"];
+            html += "]"
+            html += "</a>"
+            return html
+        }
+        else
+        {
+            return ""
+        }
+
+    },
+
+    buildTitleHtml: function()
+    {
+        return "[" + filechooser.buildBreadCrumbs().pop()["title"] + "]"
     }
 }
