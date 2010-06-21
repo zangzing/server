@@ -1,12 +1,12 @@
 
-setInterval("uploader.refresh()", 10000)
+setInterval("uploader.reload()", 10000)
 
 var uploader = {
 
-    refresh: function()
+    reload: function()
     {
         agent.getUploadStatsAsync(function(json) {
-            uploader.refreshCallBack(json);
+            uploader.reloadChooser(json);
         });
     },
 
@@ -21,9 +21,9 @@ var uploader = {
         agent.uploadAsync(path, albumId, function(response) {
             if(filechooser)
             {
-                filechooser.refresh();
+                filechooser.reload();
             }
-            uploader.refresh();
+            uploader.reload();
         });
     },
 
@@ -32,13 +32,13 @@ var uploader = {
         agent.cancelUploadAsync(path, function(response) {
             if(filechooser)
             {
-                filechooser.refresh();
+                filechooser.reload();
             }
-            uploader.refresh();
+            uploader.reload();
         });
     },
 
-    refreshCallBack : function(json)
+    reloadChooser : function(json)
     {
         var html="<div style='width:" + (json.length+1) * 200 + "'>"
         for(var i=0;i<json.length;i++)

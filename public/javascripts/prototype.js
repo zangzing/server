@@ -2581,7 +2581,7 @@ Element.extend = (function() {
     return element;
 
   }, {
-    refresh: function() {
+    reload: function() {
       // extend methods for all tags (Safari doesn't need this)
       if (!Prototype.BrowserFeatures.ElementExtensions) {
         Object.extend(Methods, Element.Methods);
@@ -2590,7 +2590,7 @@ Element.extend = (function() {
     }
   });
 
-  extend.refresh();
+  extend.reload();
   return extend;
 })();
 
@@ -2682,7 +2682,7 @@ Element.addMethods = function(methods) {
   Object.extend(Element, Element.Methods);
   delete Element.ByTag;
 
-  if (Element.extend.refresh) Element.extend.refresh();
+  if (Element.extend.reload) Element.extend.reload();
   Element.cache = { };
 };
 

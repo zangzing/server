@@ -32,14 +32,14 @@ var agent =  {
     },
 
 
-	uploadAsync: function(albumId, virtual_path, onSuccess, onError)
+	addPhotoAsync: function(albumId, virtual_path, onSuccess, onError)
 	{
  		agent.callAgentAsync("/albums/" + albumId + "/photos/create?path=" + encodeURIComponent(virtual_path), onSuccess, onError)
 	},
 
-	cancelUploadAsync: function(path, onSuccess, onError)
+	deletePhotoAsynch: function(albumId, photoId, onSuccess, onError)
 	{
-        //todo: need to call /albums/id/photos/id/delete
+        agent.callAgentAsync("/albums/" + albumId + "/photos/" + photoId + "/destroy", onSuccess, onError)
 	},
 
 

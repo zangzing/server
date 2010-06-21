@@ -10,7 +10,6 @@ $(function() {
     // Since the event is only triggered when the hash changes, we need to trigger
     // the event now, to handle the hash the page may have loaded with.
     $(window).trigger('hashchange');
-
 });
 
 
@@ -18,10 +17,12 @@ var filechooser = {
 
     selection : [],
 
+    json : [],
+
     setPath: function(path)
     {
         filechooser.path = path;
-        filechooser.refresh();
+        filechooser.reloadChooser();
     },
 
     setAlbumId: function(albumId)
@@ -29,22 +30,32 @@ var filechooser = {
         filechooser.albumId = albumId
     },
 
-    refresh : function()
+    reloadChooser : function()
     {
+
+        var callback = function(json)
+        {
+            filechooser.json = json
+            filechooser.repaintChooser()
+        }
+
 
         if(filechooser.path == "")
         {
-            agent.getRootsAsync(function(json) {
-                filechooser.refreshCallBack(json);
-            });
+            agent.getRootsAsync(callback);
         }
         else
         {
-            agent.getFilesAsync(filechooser.path, function(json) {
-                filechooser.refreshCallBack(json);
-            });
+            agent.getFilesAsync(filechooser.path, callback);
         }
 
+    },
+
+    repaintChooser : function()
+    {
+        $("#filechooser-back-button").html(filechooser.buildBackButtonHtml())
+        $("#filechooser-title").html(filechooser.buildTitleHtml())
+        $("#filechooser-files").html(filechooser.buildChooserHtml(filechooser.json))
     },
 
 
@@ -53,27 +64,60 @@ var filechooser = {
         return filechooser.selection
     },
 
-    addToSelection : function(virtual_path)
+    isSelected : function(virtual_path)
     {
-        filechooser.selection.push(virtual_path);
-        filechooser.refreshSelection();
-        agent.uploadAsync(filechooser.albumId, virtual_path)
+        for(var i in filechooser.selection)
+        {
+
+            logger.debug(filechooser.selection[i]["virtual_path"] + "==>" +  virtual_path)
+
+            if(filechooser.selection[i]["virtual_path"] == virtual_path)
+            {
+                return true
+            }
+        }
+        return false
     },
-    
-    refreshCallBack: function(json)
+
+    addPhoto : function(virtual_path)
     {
-        $("#filechooser-back-button").html(filechooser.buildBackButtonHtml());
-        $("#filechooser-title").html(filechooser.buildTitleHtml());
-        $("#filechooser-files").html(filechooser.buildFileListHtml(json));
+        var photo = {}
+        photo["virtual_path"] = virtual_path
+        photo["photo_id"] = null
+
+
+        filechooser.selection.push(photo)
+        filechooser.repaintSelection() //moves picture to selection tray
+
+        agent.addPhotoAsync(filechooser.albumId, virtual_path, function(response){
+            photo["photo_id"] = response["photo_id"]
+            filechooser.repaintSelection() //we now have the photo_id, so we can display the close box
+            filechooser.repaintChooser()()
+        });
     },
 
-
-    refreshSelection : function()
+    removePhoto : function(photo_id)
     {
-        $("#filechooser-selection").html(filechooser.buildSelectionHtml());
-        $("#filechooser-selection").scrollLeft(10000);
+        agent.deletePhotoAsynch(filechooser.albumId, photo_id, function(){
+            var list = [];
+            for(i in filechooser.selection)
+            {
+                var test = filechooser.selection[i]
+                if(test["photo_id"] != photo_id)
+                {
+                    list[list.length] = test
+                }
+            }
+            filechooser.selection = list
+            filechooser.repaintSelection()
+            filechooser.reloadChooser()
+        })
+    },
 
-
+    repaintSelection : function()
+    {
+        $("#filechooser-selection").html(filechooser.buildSelectionHtml())
+        $("#filechooser-selection").scrollLeft(10000)
     },
 
 
@@ -82,55 +126,72 @@ var filechooser = {
         var html = ""
        // var width = 200 * filechooser.selection.length
 
-        html += "<table border=1><tr><td nowrap>"
         for(var i in filechooser.selection)
         {
-            var virtual_path = filechooser.selection[i]
-            html += "<img height='75' style='margin-left:3px; border:4px solid white' src='" + agent.getThumbnailUrl(virtual_path) + "'>";
+
+            var photo = filechooser.selection[i]
+
+            html += "<div style='float:left'>"
+            html += "<img height='75' style='margin-left:8px; border:4px solid white' src='" + agent.getThumbnailUrl(photo['virtual_path']) + "'>";
+
+            if(photo["photo_id"] != null)
+            {
+                html += "<a style=\"float:right;margin-left:0px\" href=\"\" onclick=\"filechooser.removePhoto(" + photo['photo_id'] + ");return false;\">"
+                html += "(x)"
+                html += "</a>"
+            }
+            
+
+            html += "</div>" 
 
         }
-        html += "</td></tr></table>"
         return html
         
     },
 
-    buildFileListHtml: function(json)
+    buildChooserHtml: function(json)
     {
 
-        var html = "";
+        var html = ""
 
         for (var i = 0; i < json.length;i++)
         {
 
-            html += "<div style='text-align:center; width:180px; height:140px; float:left; border:0px'>";
+            html += "<div style='text-align:center; width:180px; height:140px; float:left; border:0px'>"
 
 
-            var file = json[i];
+            var file = json[i]
 
             if (file.is_dir == true)
             {
-                html += "<img height='100' src='/images/folder.jpeg'>";
+                html += "<img height='100' src='/images/folder.jpeg'>"
             }
             else
             {
-                html += "<a href=\"\" onclick=\"filechooser.addToSelection(\'" + file.virtual_path + "\');return false;\">"
-
-                html += "<img height='100' style='border:4px solid white' src='" + agent.getThumbnailUrl(file.virtual_path) + "'>";
-                html += "</a>"
+                if(!filechooser.isSelected(file.virtual_path))
+                {
+                    html += "<a href=\"\" onclick=\"filechooser.addPhoto(\'" + file.virtual_path + "\');return false;\">"
+                    html += "<img height='100' style='border:4px solid white' src='" + agent.getThumbnailUrl(file.virtual_path) + "'>"
+                    html += "</a>"
+                }
+                else
+                {
+                    html += "<img height='100' style='border:4px solid #AAAAAA' src='" + agent.getThumbnailUrl(file.virtual_path) + "'>"
+                }
             }
 
             html += "<br/>"
 
             if (file.is_dir == true)
             {
-                html += "<a href='#" + file.virtual_path + "'>";
+                html += "<a href='#" + file.virtual_path + "'>"
                 html += file.name
-                html += "</a>";
+                html += "</a>"
             }
 
-            html += "</div>";
+            html += "</div>"
         }
-        return html;
+        return html
 
     },
 
@@ -151,15 +212,15 @@ var filechooser = {
                 breadcrumb["title"] = "Home"
                 breadcrumb["virtual_path"] = ""
                 breadcrumbs[breadcrumbs.length] = breadcrumb
-                break;
+                break
             }
             else
             {
-                breadcrumb["title"] = path.substring(i+1);
-                breadcrumb["virtual_path"] = path;
+                breadcrumb["title"] = path.substring(i+1)
+                breadcrumb["virtual_path"] = path
                 breadcrumbs[breadcrumbs.length] = breadcrumb
 
-                path = path.substring(0,i);
+                path = path.substring(0,i)
             }
 
         }
@@ -175,7 +236,7 @@ var filechooser = {
         {
             html =   "<a href='#" + crumb["virtual_path"] + "'>"
             html += "&lt;"
-            html += crumb["title"];
+            html += crumb["title"]
             html += "]"
             html += "</a>"
             return html
