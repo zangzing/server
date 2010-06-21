@@ -1,6 +1,6 @@
 
 <div class="gridcellbox" >
-  <a href="<%=photo_path(photo.id)%>">
+  <a href="<%=slideshow_path(photo.album)%>?photoid=<%=photo.id%>">
      <div class="gridcell" >
         <div class="gridcellphoto">
             <img class="gridcellphotoshow" src="SET BY JAVASCRIPT ON BROWSER" id="photoid<%=photo.id%>">

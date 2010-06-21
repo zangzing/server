@@ -36,10 +36,6 @@ class PhotosController < ApplicationController
   end
 
 
-  def show
-    @photo = Photo.find(params[:id])
-  end
-
   def destroy
     logger.debug "The params hash in PhotosController destroy is #{params.inspect}"        
     @photo = Photo.find(params[:id])

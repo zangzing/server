@@ -1,14 +1,14 @@
-<!-- The album JSON is stored in a golobal variable for processing in onLoad -->
-<script src="/javascripts/agent.js"></script>
-<script src="/javascripts/jquery.jsonp.js"></script>
+<!-- Copyright ©2010, ZangZing LLC. All rights reserved. -->
+
+<%= javascript_include_tag "jquery.js" %>
+<%= javascript_include_tag "jquery.ba-bbq.js" %>
+<%= javascript_include_tag "jquery.jsonp.js" %>
+<%= javascript_include_tag "agent" %>
+<%= javascript_include_tag "album" %>
+
 
 <script>
-
-    installAlbumReadyListener('<%=@album.to_json(:include => {:photos => {:only =>[:id], :methods => [:thumb_url]}})%>')
-    //console.log('albumReadyListener Installed');
-    agentPresent = false;
-
-
+    album.initializeForGrid('<%=@album.to_json(:include => {:photos => {:only =>[:id], :methods => [:thumb_url]}})%>');
 </script>
 
 <h2 class="album"><%= h @album.name %></h2>
@@ -17,7 +17,7 @@
     <td class="main">
       <% unless @album.photos.empty? %>
         <table class="photos">
-	        <%= render :partial => "albums/photo_thumb", :collection => @photos, :as => :photo %>
+	        <%= render :partial => "photos/photo_thumb", :collection => @photos, :as => :photo %>
         </table>
         <%= will_paginate @photos %>
       <% end %>
@@ -25,13 +25,15 @@
        
       <!-- This form is the html photo upload. Its replaced by the uploader button at runtime if agent is present -->
       <div id="uploadform">
-        <%form_for [@album, @photo], :url => album_photos_path(@album), :html => { :multipart => true } do |f| %>
-            <%= f.error_messages %>
-            <div class="field">
-                <%= f.file_field :local_image %>
-                <%= f.submit "Add Photo"%>
-            </div>
-        <% end %>
+        <%if current_user?(@album.user) %>
+            <%form_for [@album, @photo], :url => album_photos_path(@album), :html => { :multipart => true } do |f| %>
+                <%= f.error_messages %>
+                <div class="field">
+                    <%= f.file_field :local_image %>
+                    <%= f.submit "Add Photo"%>
+                </div>
+            <% end %>
+        <%end%>
       </div>
 
       <%= link_to "Share", new_album_share_path(@album.id) %>  
@@ -39,34 +41,3 @@
     </td>
   </tr>
 </table>
-
-
-
-<script>
-
-    function setAgentPresent(present)
-    {
-        //console.log('agentPresent being set asynchronously to '+ present);
-        agentPresent = present;
-        if(agentPresent)
-        {
-            $("#uploadform").html('<%= button_to "Upload Photos", upload_path( @album.id ), :method => :get %>');
-       }
-    }
-
-    agent.isAgentPresentAsync(setAgentPresent)
-
-
-    //var agentPresent = false;
-    //var urlBase = "http://" + location.host;
-    //var e = document.createElement("script");
-    //e.src = "http://localhost:9090/proxy/" + urlBase + "/uploader/detectagent.js";
-    //e.type="text/javascript";
-    //document.getElementsByTagName("head")[0].appendChild(e);
-
-    //function onAgentDetected(){
-    //    //console.log ("agent is present")
-    //    agentPresent = true;
-    //    $("#uploadform").html('<%= button_to "Upload Photos", upload_path( @album.id ), :method => :get %>');
-    //}
-</script>

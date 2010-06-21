@@ -1,7 +1,5 @@
-  <div id="header">
-              <%= link_to image_tag("logo_white.jpg", :alt => "ZangZing", :class => "round"), root_path %>
-              <br>
-              <ul class="navigation round">
+  <div id="header" class="round shadow"> 
+            <ul class="navigation">
 	          <li><%= link_to "Home", root_url %></li>
 			  <% if signed_in? %>
 			    <li><%= link_to "Users", users_path %></li>
@@ -11,9 +9,10 @@
 	
 	          <li><%= link_to "Help", help_path %></li>
 	          <% if signed_in? %>
-			   <li><%= link_to "Sign out", signout_url%></li>
-			   <% else %>
-			    <li><%= link_to "Sign in", signin_path %></li>
+			        <li><%= link_to "Sign out", signout_url%></li>
+			  <% else %>
+			        <li><%= link_to "Sign in", signin_path %></li>
 			   <% end %>			
-	        </ul>
-	      </div>
+	       </ul>
+           <%= link_to image_tag("zangzing_bar_logo.jpg", :alt => "ZangZing", :class => "logo"), root_path %>
+  </div>

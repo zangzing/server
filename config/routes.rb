@@ -24,7 +24,12 @@ ActionController::Routing::Routes.draw do |map|
       end
       #user.resources :contacts, :name_prefix => "user_"
     end
-  
+
+    #custom album actions
+    #map.connect "web_feeds/:action", :controller  => 'web_feeds', :action => /[a-z_]+/
+    map.slideshow "albums/:id/slideshow", :controller  => 'albums', :action => 'slideshow'
+
+
     map.resources :user_sessions, :only => [:new, :create, :destroy]
     map.signin '/signin', :controller => 'user_sessions', :action => 'new'
     map.signout '/signout', :controller => 'user_sessions', :action => 'destroy'

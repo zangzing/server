@@ -1,0 +1,23 @@
+<!-- Javascript is used by the _photo_large partial. DO NOT REMOVE -->
+<%= javascript_include_tag "jquery.js" %>
+<%= javascript_include_tag "jquery.ba-bbq.js" %>
+<%= javascript_include_tag "jquery.jsonp.js" %>
+<%= javascript_include_tag "agent" %>
+<%= javascript_include_tag "album" %>
+
+<table class="profile">
+  <tr>
+    <td>
+      <%= link_to  @album.name, @album %>
+    </td>
+    <td class="main">
+      <% unless @photos.empty? %>
+        <table class="photos">
+	        <%= render :partial => "photos/photo_large", :collection => @photos, :as => :photo%>
+        </table>
+        <%= will_paginate @photos, { :class=> 'digg_pagination' } %>
+      <% end %>
+    </td>
+  </tr>
+</table>
+

@@ -1,5 +1,5 @@
 class AlbumsController < ApplicationController
-  before_filter :require_user
+  before_filter :require_user,     :only => [ :new, :create ]
   before_filter :authorized_user, :only => :destroy
 
   def new
@@ -8,35 +8,50 @@ class AlbumsController < ApplicationController
   end
 
   def create
-      logger.debug "The params hash in AlbumController create is #{params.inspect}"
       respond_to do |format|
-           format.html{
-                       @album  = current_user.albums.build(params[:album])
-                        if @album.save
-                            flash[:success] = "Album created!"
-                            redirect_to @album
-                        else
-                            render 'new'
-                        end
-                      }
-           format.xml {
-                        @user = User.find(params[:user_id])
-                        @album  = @user.albums.build(params[:album])                        
-                        if @album.save
-                           render :xml => @album.to_xml
-                        else
-                            render :xml => "ERROR CREATING ALBUM".to_xml
-                        end
-                      }
+           format.html do
+             @album  = current_user.albums.build(params[:album])
+             if @album.save
+               flash[:success] = "Album created!"
+               redirect_to @album
+             else
+               render 'new'
+             end
+           end
+           format.xml do
+             @user = User.find(params[:user_id])
+             @album  = @user.albums.build(params[:album])
+             if @album.save
+               render :xml => @album.to_xml
+             else
+               render :xml => "ERROR CREATING ALBUM".to_xml
+             end
+           end
          end
   end
 
-
+  # This is the GRID view of the album
   def show
       @album = Album.find(params[:id])
-      @user =  @album.user
-      @photo = Photo.new
+      @owner =  @album.user
+      @photo = Photo.new   #This new empty photo is used for the photo upload form
       @photos = @album.photos.paginate(:page =>params[:page])
+      @title = CGI.escapeHTML(@album.name)
+  end
+
+  # This is the SLIDESHOW View of the Album
+  def slideshow
+      @album = Album.find(params[:id])
+      @user=  @album.user
+      @photos = @album.photos.paginate({:page =>params[:page], :per_page => 1})
+      unless  params[:photoid].nil?
+        current_page = 1 if params[:page].nil?
+        until @photos[0][:id] == params[:photoid].to_i
+          current_page += 1
+          @photos = @album.photos.paginate({:page =>current_page, :per_page => 1})
+        end
+        params[:photoid] = nil
+      end
       @title = CGI.escapeHTML(@album.name)
   end
 

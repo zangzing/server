@@ -45,7 +45,7 @@ end
 # documentation for Paperclip::ClassMethods for more useful information.
 module Paperclip
 
-  VERSION = "2.3.1.1"
+  VERSION = "2.3.1.1" unless defined? VERSION
 
   class << self
     # Provides configurability to Paperclip. There are a number of options available, such as:
