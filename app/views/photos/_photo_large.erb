@@ -1,3 +1,9 @@
-<div class="largephotocontainer">
-    <%= link_to image_tag( photo.medium_url, :class => 'largephoto'  ), photo.album%>
-</div>
+    <script>
+        album.initializeForSlideshow('<%=photo.to_json(:only =>[:id], :methods => [:medium_url])%>');
+    </script>
+
+    <div class="largephotocontainer">
+        <a href="<%= album_url( photo.album.id )%>">
+            <img class="largephoto" src="SET BY JAVASCRIPT ON BROWSER" id="photoid<%=photo.id%>">
+        </a>
+    </div>

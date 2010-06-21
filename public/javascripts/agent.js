@@ -1,7 +1,25 @@
+//
+// agent.js
+//
+// Copyright ©2010, ZangZing LLC. All rights reserved.
+//
+
 var agent =  {
 
     port : 9090,
 
+    isPresent : false,
+
+
+    // Pings the agent set the isPresent flag 
+    initialize: function(){
+            //TODO: this is an expensive call, chance to something else
+            agent.callAgentAsync("listroots",
+                                 {},
+                                 function(){ agent.isPresent = true }, 
+                                 function(){ agent.isPresent = false})
+    },
+    
     isAgentPresentAsync: function(callback)
     {
 
@@ -18,7 +36,6 @@ var agent =  {
 
         //TODO: this is an expensive call, chance to something else
         agent.callAgentAsync("listroots", {}, onSuccess, onError)
-
     },
 
 	getFilesAsync: function(path, onSuccess, onError)
