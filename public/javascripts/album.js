@@ -9,6 +9,8 @@
 
 var album;
 album = {
+
+    
     //
     // initializeforGrid
     //
@@ -22,13 +24,7 @@ album = {
     initializeForGrid: function(albumJson)
     {
         // Find out if agent is present
-        agent.initialize()
-        $(document).ready(function()
-        {
-             album.insertUploadForm();
-             album.insertGridUrls(albumJson);
-
-        })
+        agent.isAgentPresentAsync( function( agentPresent ){ album.setupGrid( agentPresent, albumJson) } )
     },
 
     //
@@ -42,58 +38,54 @@ album = {
     //
     initializeForSlideshow: function(photoJson)
     {
-        // Find out if agent is present
-        agent.initialize()
-        $(document).ready(function()
-        {
-             album.insertPhotoUrl(photoJson);
-        })
-    },
-
-
-    //
-    // insertGridUrls
-    //
-    // Used to set the appropiate image url depending on agent presence.
-    // If the agent is present ALL image URLs point to the agent,
-    // otherwise all image URLs are to the server.
-    //
-    // photo: the photo object containing id and actual image urls
-    //
-    insertGridUrls: function(albumJson)
-    {
-
-        activeAlbum = jQuery.parseJSON(albumJson);
-
-        for (i = 0; i < activeAlbum.photos.length; i++) {
-            if (agent.isPresent) {
-                photoUrl = "http://" + location.host + "/photos/" + activeAlbum.photos[i].id; // # TODO: ADD AGENT WHEN AGENT IS READY
-            } else {
-                photoUrl = activeAlbum.photos[i].thumb_url;
-            }
-
-            //Modify div block which id is "photoid<ID_HERE>" created by the Photo/_photo partial
-            //The photo is displayed as a floating image of the div block
-            photoImgId = "#photoid" + activeAlbum.photos[i].id
-            $(photoImgId).attr("src", photoUrl);
-        }
+        // Find out if agent is present and callback the url setup
+        agent.isAgentPresentAsync( function( agentPresent ){  album.setupSlideshow( agentPresent, photoJson )})
     },
 
     //
-    // insertUploadForm
+    // setupGrid
+    //
+    // Does two things depending on agent presence:
+    // 1.- Replaces the default upload fields with the upload button to show the agent uploader
+    // 2.- inserts the appropiate image urls depending on agent presence.
+    //     If the agent is present ALL image URLs point to the agent,
+    //     otherwise all image URLs are to the server.
     //
     // The upload form div block has id = 'uploadform'
     // If the agent is NOT present then show a file upload field as default (done in albums/show view)
     // if the agent is present show a button to display the agent uploader
-    insertUploadForm:  function()
+    //
+    // agentPresent: true or false
+    // albumJson: the album object containing photos with ids and actual image urls
+    //
+    setupGrid: function(agentPresent, albumJson)
     {
-        if(agent.isPresent) {
-            $("#uploadform").html('<%= button_to "Upload Photos", upload_path( @album.id ), :method => :get %>');
-       }
+
+        activeAlbum = jQuery.parseJSON(albumJson);
+
+        if( agentPresent ){
+           $("#uploadform").html('<%= button_to "Upload Photos", upload_path( @album.id ), :method => :get %>');
+            for (i = 0; i < activeAlbum.photos.length; i++) {
+                photoUrl = "http://" + location.host + "/photos/" + activeAlbum.photos[i].id; // # TODO: ADD AGENT WHEN AGENT IS READY
+                //Modify div block which id is "photoid<ID_HERE>" created by the Photo/_photo partial
+                //The photo is displayed as a floating image of the div block
+                photoImgId = "#photoid" + activeAlbum.photos[i].id
+                $(photoImgId).attr("src", photoUrl);
+            }
+        }else{
+            for (i = 0; i < activeAlbum.photos.length; i++) {
+                photoUrl = activeAlbum.photos[i].thumb_url;
+                //Modify div block which id is "photoid<ID_HERE>" created by the Photo/_photo partial
+                //The photo is displayed as a floating image of the div block
+                photoImgId = "#photoid" + activeAlbum.photos[i].id
+                $(photoImgId).attr("src", photoUrl);
+            }
+        }
     },
 
-//
-    // insertPhotoUrl
+
+    //
+    // setupSlideshow
     //
     // Used to set the appropiate image url depending on agent presence.
     // If the agent is present ALL image URLs point to the agent,
@@ -101,12 +93,12 @@ album = {
     //
     // photo: the photo object containing id and actual image urls
     //
-    insertPhotoUrl: function(photoJson)
+    setupSlideshow: function(agentPresent, photoJson)
     {
 
         activePhoto = jQuery.parseJSON(photoJson);
 
-        if (agent.isPresent) {
+        if (agentPresent) {
                 photoUrl = "http://" + location.host + "/photos/" + activePhoto.id; // # TODO: ADD AGENT WHEN AGENT IS READY
         } else {
                 photoUrl = activePhoto.medium_url;
@@ -116,6 +108,5 @@ album = {
         //The photo is displayed as a floating image of the div block
         photoImgId = "#photoid" + activePhoto.id;
         $(photoImgId).attr("src", photoUrl);
-
     }
 }

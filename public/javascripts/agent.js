@@ -9,30 +9,24 @@ var agent =  {
     port : 9090,
 
     isPresent : false,
+    hasBeenPinged : false,
 
-
-    // Pings the agent set the isPresent flag 
-    initialize: function(){
-            //TODO: this is an expensive call, chance to something else
-            agent.callAgentAsync("listroots",
-                                 {},
-                                 function(){ agent.isPresent = true }, 
-                                 function(){ agent.isPresent = false})
-    },
-    
     isAgentPresentAsync: function(callback)
     {
 
         var onSuccess = function()
         {
+            agent.isPresent = true;
+            agent.hasBeenPinged = true;
             callback(true)
         }
 
         var onError = function()
         {
+            agent.isPresent = false;
+            agent.hasBeenPinged = true;
             callback(false)
         }
-
 
         //TODO: this is an expensive call, chance to something else
         agent.callAgentAsync("listroots", {}, onSuccess, onError)
