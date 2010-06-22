@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100610185856) do
+ActiveRecord::Schema.define(:version => 20100622194331) do
 
   create_table "albums", :force => true do |t|
     t.integer  "user_id"
@@ -69,6 +69,7 @@ ActiveRecord::Schema.define(:version => 20100610185856) do
     t.integer  "local_image_file_size"
     t.datetime "local_image_updated_at"
     t.string   "state",                    :default => "new"
+    t.string   "agent_id"
   end
 
   add_index "photos", ["album_id"], :name => "index_photos_on_album_id"
