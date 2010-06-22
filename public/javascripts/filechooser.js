@@ -68,9 +68,6 @@ var filechooser = {
     {
         for(var i in filechooser.selection)
         {
-
-            logger.debug(filechooser.selection[i]["virtual_path"] + "==>" +  virtual_path)
-
             if(filechooser.selection[i]["virtual_path"] == virtual_path)
             {
                 return true
@@ -87,12 +84,12 @@ var filechooser = {
 
 
         filechooser.selection.push(photo)
+        filechooser.repaintChooser() //change clicked photo to gray
         filechooser.repaintSelection() //moves picture to selection tray
 
         agent.addPhotoAsync(filechooser.albumId, virtual_path, function(response){
             photo["photo_id"] = response["photo_id"]
             filechooser.repaintSelection() //we now have the photo_id, so we can display the close box
-            filechooser.repaintChooser()()
         });
     },
 
@@ -140,8 +137,6 @@ var filechooser = {
                 html += "(x)"
                 html += "</a>"
             }
-            
-
             html += "</div>" 
 
         }
