@@ -35,23 +35,7 @@ class AlbumsController < ApplicationController
       @album = Album.find(params[:id])
       @owner =  @album.user
       @photo = Photo.new   #This new empty photo is used for the photo upload form
-      @photos = @album.photos.paginate(:page =>params[:page])
-      @title = CGI.escapeHTML(@album.name)
-  end
-
-  # This is the SLIDESHOW View of the Album
-  def slideshow
-      @album = Album.find(params[:id])
-      @user=  @album.user
-      @photos = @album.photos.paginate({:page =>params[:page], :per_page => 1})
-      unless  params[:photoid].nil?
-        current_page = 1 if params[:page].nil?
-        until @photos[0][:id] == params[:photoid].to_i
-          current_page += 1
-          @photos = @album.photos.paginate({:page =>current_page, :per_page => 1})
-        end
-        params[:photoid] = nil
-      end
+      @photos = @album.photos
       @title = CGI.escapeHTML(@album.name)
   end
 

@@ -5,6 +5,7 @@
 <%= javascript_include_tag "agent" %>
 <%= javascript_include_tag "album" %>
 
+
 <table class="profile">
   <tr>
     <td>
@@ -12,12 +13,11 @@
     </td>
     <td class="main">
       <% unless @photos.empty? %>
-        <table class="photos">
-	        <%= render :partial => "photos/photo_large", :collection => @photos, :as => :photo%>
-        </table>
-        <%= will_paginate @photos, { :class=> 'digg_pagination' } %>
+          <table class="photos">
+            <%= render @photos%>
+          </table>
+          <%= will_paginate @photos, { :class=> 'digg_pagination' } %>
       <% end %>
     </td>
   </tr>
 </table>
-

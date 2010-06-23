@@ -109,7 +109,7 @@ class Photo < ActiveRecord::Base
                                     :if =>  :pending?
                                     }
   validates_attachment_size         :local_image,{
-                                    :less_than => 5.megabytes,
+                                    :less_than => 10.megabytes,
                                     :message => "must be under 5 Megs",
                                     :if =>  :pending?
                                     }

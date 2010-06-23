@@ -19,7 +19,7 @@ ActionController::Routing::Routes.draw do |map|
 
     map.resources :users, :shallow => true  do | user |
       user.resources :albums, :name_prefix => "user_" do | album |
-        album.resources :photos, :name_prefix => "album_",:member => { :upload => :post } 
+        album.resources :photos, :name_prefix => "album_",:member => { :upload => :put } 
         album.resources :shares, :name_prefix => "album_"
       end
       #user.resources :contacts, :name_prefix => "user_"

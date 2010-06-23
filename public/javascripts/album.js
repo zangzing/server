@@ -64,9 +64,9 @@ album = {
         activeAlbum = jQuery.parseJSON(albumJson);
 
         if( agentPresent ){
-           $("#uploadform").html('<%= button_to "Upload Photos", upload_path( @album.id ), :method => :get %>');
+           $("#uploadform").html('<form method="get" action="/albums/'+activeAlbum.id+'/upload" class="button-to"><div><input type="submit" value="Upload Photos" /></div></form>');
             for (i = 0; i < activeAlbum.photos.length; i++) {
-                photoUrl = "http://" + location.host + "/photos/" + activeAlbum.photos[i].id; // # TODO: ADD AGENT WHEN AGENT IS READY
+                 photoUrl = activeAlbum.photos[i].thumb_url; // # TODO: USE AGENT WHEN AGENT IS READY
                 //Modify div block which id is "photoid<ID_HERE>" created by the Photo/_photo partial
                 //The photo is displayed as a floating image of the div block
                 photoImgId = "#photoid" + activeAlbum.photos[i].id
