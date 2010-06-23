@@ -10,159 +10,241 @@ $(function() {
     // Since the event is only triggered when the hash changes, we need to trigger
     // the event now, to handle the hash the page may have loaded with.
     $(window).trigger('hashchange');
-
 });
 
 
 var filechooser = {
 
+    selection : [],
+
+    json : [],
 
     setPath: function(path)
     {
-        //console.log("setting path: " + path)
-        filechooser._path = path;
-        filechooser.refresh();
+        filechooser.path = path;
+        filechooser.reloadChooser();
     },
 
     setAlbumId: function(albumId)
     {
-        filechooser._albumId = albumId
+        filechooser.albumId = albumId
     },
 
-    refresh : function()
+    reloadChooser : function()
     {
 
-        if(filechooser._path == "!")
+        var callback = function(json)
         {
-            agent.getRootsAsync(function(json) {
-                filechooser.refreshCallBack(json);
-            });
+            filechooser.json = json
+            filechooser.repaintChooser()
+        }
+
+
+        if(filechooser.path == "")
+        {
+            agent.getRootsAsync(callback);
         }
         else
         {
-            agent.getFilesAsync(filechooser._path, function(json) {
-                filechooser.refreshCallBack(json);
-            });
+            agent.getFilesAsync(filechooser.path, callback);
         }
 
     },
 
-    refreshCallBack: function(json)
+    repaintChooser : function()
     {
-        $("#filechooser-files").html(filechooser.buildFileListHtml(json));
-        $("#filechooser-breadcrumbs").html(filechooser.buildBreadCrumbsHtml());
-
+        $("#filechooser-back-button").html(filechooser.buildBackButtonHtml())
+        $("#filechooser-title").html(filechooser.buildTitleHtml())
+        $("#filechooser-files").html(filechooser.buildChooserHtml(filechooser.json))
     },
 
 
+    selectedPhotos : function()
+    {
+        return filechooser.selection
+    },
 
-    buildFileListHtml: function(json)
+    isSelected : function(virtual_path)
+    {
+        for(var i in filechooser.selection)
+        {
+            if(filechooser.selection[i]["virtual_path"] == virtual_path)
+            {
+                return true
+            }
+        }
+        return false
+    },
+
+    addPhoto : function(virtual_path)
+    {
+        var photo = {}
+        photo["virtual_path"] = virtual_path
+        photo["photo_id"] = null
+
+
+        filechooser.selection.push(photo)
+        filechooser.repaintChooser() //change clicked photo to gray
+        filechooser.repaintSelection() //moves picture to selection tray
+
+        agent.addPhotoAsync(filechooser.albumId, virtual_path, function(response){
+            photo["photo_id"] = response["photo_id"]
+            filechooser.repaintSelection() //we now have the photo_id, so we can display the close box
+        });
+    },
+
+    removePhoto : function(photo_id)
+    {
+        agent.deletePhotoAsynch(filechooser.albumId, photo_id, function(){
+            var list = [];
+            for(i in filechooser.selection)
+            {
+                var test = filechooser.selection[i]
+                if(test["photo_id"] != photo_id)
+                {
+                    list[list.length] = test
+                }
+            }
+            filechooser.selection = list
+            filechooser.repaintSelection()
+            filechooser.reloadChooser()
+        })
+    },
+
+    repaintSelection : function()
+    {
+        $("#filechooser-selection").html(filechooser.buildSelectionHtml())
+        $("#filechooser-selection").scrollLeft(10000)
+    },
+
+
+    buildSelectionHtml : function()
+    {
+        var html = ""
+       // var width = 200 * filechooser.selection.length
+
+        for(var i in filechooser.selection)
+        {
+
+            var photo = filechooser.selection[i]
+
+            html += "<div style='float:left'>"
+            html += "<img height='75' style='margin-left:8px; border:4px solid white' src='" + agent.getThumbnailUrl(photo['virtual_path']) + "'>";
+
+            if(photo["photo_id"] != null)
+            {
+                html += "<a style=\"float:right;margin-left:0px\" href=\"\" onclick=\"filechooser.removePhoto(" + photo['photo_id'] + ");return false;\">"
+                html += "(x)"
+                html += "</a>"
+            }
+            html += "</div>" 
+
+        }
+        return html
+        
+    },
+
+    buildChooserHtml: function(json)
     {
 
-        var html = "";
-
-        html += "";
+        var html = ""
 
         for (var i = 0; i < json.length;i++)
         {
 
-            html += "<div style='text-align:center; width:200px; height:160px; float:left; border:0px'>";
+            html += "<div style='text-align:center; width:180px; height:140px; float:left; border:0px'>"
 
 
-            var file = json[i];
+            var file = json[i]
 
-            if (file.isImage == true)
+            if (file.is_dir == true)
             {
-                html += "<img height='100' src='" + agent.getThumbnailUrl(file.path) + "'>";
-            }
-            else if (file.isDirectory == true)
-            {
-                html += "<img height='100' src='/images/folder.jpeg'>";
+                html += "<img height='100' src='/images/folder.jpeg'>"
             }
             else
             {
-                html += "<img height='100' src='/images/file.png'>";
+                if(!filechooser.isSelected(file.virtual_path))
+                {
+                    html += "<a href=\"\" onclick=\"filechooser.addPhoto(\'" + file.virtual_path + "\');return false;\">"
+                    html += "<img height='100' style='border:4px solid white' src='" + agent.getThumbnailUrl(file.virtual_path) + "'>"
+                    html += "</a>"
+                }
+                else
+                {
+                    html += "<img height='100' style='border:4px solid #AAAAAA' src='" + agent.getThumbnailUrl(file.virtual_path) + "'>"
+                }
             }
 
             html += "<br/>"
 
-            if (file.isDirectory == true)
+            if (file.is_dir == true)
             {
-                html += "<a href='#" + file.path + "'>";
+                html += "<a href='#" + file.virtual_path + "'>"
                 html += file.name
-                html += "</a>";
-            }
-            else
-            {
-                html += file.name
+                html += "</a>"
             }
 
-            //html += "<br>" + i
-
-
-            if ((file.isMarkedForUpload != true))
-            {
-                html += "<br/>[<a href=\"\" onclick=\"filechooser.upload('" + file.path + "','" + filechooser._albumId + "');return false;\">"
-
-                if (file.isDirectory == true)
-                {
-                    html += "upload all"
-                }
-                else
-                {
-                    html += "upload"
-                }
-
-                html += "</a>]"
-
-            }
-            else
-            {
-
-                if (file.isDirectory == true)
-                {
-                    //not supported
-                    //html += "cancel upload"
-                }
-                else
-                {
-                    html += "<br/>[<a href=\"\" onclick=\"filechooser.cancelUpload('" + file.path + "'); return false;\">"
-                    html += "cancel upload"
-                    html += "</a>]"
-                }
-
-            }
-
-            html += "</div>";
+            html += "</div>"
         }
-        return html;
+        return html
 
     },
 
-    upload : function(path, albumId)
-    {
-        uploader.upload(path, albumId);
-    },
 
-    cancelUpload : function(path)
+    buildBreadCrumbs : function()
     {
-        uploader.cancelUpload(path);
-    },
+        var breadcrumbs = []
+        var path = filechooser.path
 
-    buildBreadCrumbsHtml: function()
-    {
-        var segments = filechooser._path.split("/");
-        var url = "!";
-        var html = "<a href='#!'>My Computer</a> ";
-        for (i = 1; i < segments.length; i++)
+
+        for(;;)
         {
+            var breadcrumb = {}
+            var i = path.lastIndexOf('/')
 
-            url += "/" + segments[i];
-            html += " / "
-            html += "<a href='#" + url + "'>";
-            html += segments[i];
-            html += "</a>";
+            if(i == -1)
+            {
+                breadcrumb["title"] = "Home"
+                breadcrumb["virtual_path"] = ""
+                breadcrumbs[breadcrumbs.length] = breadcrumb
+                break
+            }
+            else
+            {
+                breadcrumb["title"] = path.substring(i+1)
+                breadcrumb["virtual_path"] = path
+                breadcrumbs[breadcrumbs.length] = breadcrumb
+
+                path = path.substring(0,i)
+            }
+
         }
-        return html;
+        return breadcrumbs.reverse()
+    },
+
+    buildBackButtonHtml: function()
+    {
+        var breadcrumbs = filechooser.buildBreadCrumbs()
+        breadcrumbs.pop()
+        var crumb = breadcrumbs.pop()
+        if(crumb)
+        {
+            html =   "<a href='#" + crumb["virtual_path"] + "'>"
+            html += "&lt;"
+            html += crumb["title"]
+            html += "]"
+            html += "</a>"
+            return html
+        }
+        else
+        {
+            return ""
+        }
+
+    },
+
+    buildTitleHtml: function()
+    {
+        return "[" + filechooser.buildBreadCrumbs().pop()["title"] + "]"
     }
 }
