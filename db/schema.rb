@@ -103,7 +103,7 @@ ActiveRecord::Schema.define(:version => 20100622194331) do
     t.string   "single_access_token"
     t.string   "perishable_token",    :default => "",      :null => false
     t.integer  "login_count"
-    t.integer  "faile_login_count"
+    t.integer  "failed_login_count"
     t.date     "last_request_at"
     t.date     "current_login_at"
     t.date     "last_login_at"
