@@ -89,6 +89,8 @@ var filechooser = {
         agent.addPhotoAsync(filechooser.albumId, virtual_path, function(response){
             photo["photo_id"] = response["photo_id"]
             filechooser.repaintSelection() //we now have the photo_id, so we can display the close box
+        }, function(response){
+            logger.debug(response)
         });
     },
 
@@ -165,8 +167,6 @@ var filechooser = {
                 var BOX = 125
                 var width;
                 var height;
-
-                logger.debug(file.aspect_ratio)
 
                 if(file.aspect_ratio)
                 {
