@@ -16,7 +16,6 @@ $(function() {
 var filechooser = {
 
     selection : [],
-
     json : [],
 
     setPath: function(path)
@@ -163,15 +162,46 @@ var filechooser = {
             }
             else
             {
+                var BOX = 125
+                var width;
+                var height;
+
+                logger.debug(file.aspect_ratio)
+
+                if(file.aspect_ratio)
+                {
+                    if(file.aspect_ratio == 1)
+                    {
+                        height = BOX
+                        width = BOX
+                    }
+                    else if(file.aspect_ratio < 1)
+                    {
+                        height = BOX
+                        width = BOX * file.aspect_ratio
+                    }
+                    else
+                    {
+                        width = BOX
+                        height = BOX / file.aspect_ratio
+                    }
+                }
+                else
+                {
+                    height = BOX
+                    width = BOX
+                }
+
+
                 if(!filechooser.isSelected(file.virtual_path))
                 {
                     html += "<a href=\"\" onclick=\"filechooser.addPhoto(\'" + file.virtual_path + "\');return false;\">"
-                    html += "<img height='100' style='border:4px solid white' src='" + agent.getThumbnailUrl(file.virtual_path) + "'>"
+                    html += "<img height='" + height + "' width='" + width + "' style='border:4px solid white' src='" + agent.getThumbnailUrl(file.virtual_path) + "'>"
                     html += "</a>"
                 }
                 else
                 {
-                    html += "<img height='100' style='border:4px solid #AAAAAA' src='" + agent.getThumbnailUrl(file.virtual_path) + "'>"
+                    html += "<img height='" + height + "' width='" + width + "' style='border:4px solid #AAAAAA' src='" + agent.getThumbnailUrl(file.virtual_path) + "'>"
                 }
             }
 

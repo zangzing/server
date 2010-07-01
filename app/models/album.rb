@@ -23,4 +23,5 @@ class Album < ActiveRecord::Base
   validates_length_of :name, :maximum => 50
 
   default_scope :order => 'created_at DESC'
+
 end
