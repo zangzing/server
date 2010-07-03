@@ -129,8 +129,16 @@ var filechooser = {
 
             var photo = filechooser.selection[i]
 
+
+            var hint=""
+            if(photo.hint_thumb_path)
+            {
+                hint = "hint=" + encodeURIComponent(file.hint_thumb_path)
+            }
+
+
             html += "<div style='float:left'>"
-            html += "<img height='75' style='margin-left:8px; border:4px solid white' src='" + agent.getThumbnailUrl(photo['virtual_path']) + "'>";
+            html += "<img height='75' style='margin-left:8px; border:4px solid white' src='" + agent.getThumbnailUrl(photo['virtual_path'], hint) + "'>";
 
             if(photo["photo_id"] != null)
             {
@@ -193,15 +201,22 @@ var filechooser = {
                 }
 
 
+                var hint=""
+                if(file.hint_thumb_path)
+                {
+                    hint = encodeURIComponent(file.hint_thumb_path)
+                }
+
+
                 if(!filechooser.isSelected(file.virtual_path))
                 {
                     html += "<a href=\"\" onclick=\"filechooser.addPhoto(\'" + file.virtual_path + "\');return false;\">"
-                    html += "<img height='" + height + "' width='" + width + "' style='border:4px solid white' src='" + agent.getThumbnailUrl(file.virtual_path) + "'>"
+                    html += "<img height='" + height + "' width='" + width + "' style='border:4px solid white' src='" + agent.getThumbnailUrl(file.virtual_path, hint) + "'>"
                     html += "</a>"
                 }
                 else
                 {
-                    html += "<img height='" + height + "' width='" + width + "' style='border:4px solid #AAAAAA' src='" + agent.getThumbnailUrl(file.virtual_path) + "'>"
+                    html += "<img height='" + height + "' width='" + width + "' style='border:4px solid #AAAAAA' src='" + agent.getThumbnailUrl(file.virtual_path, hint) + "'>"
                 }
             }
 

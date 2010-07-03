@@ -61,9 +61,15 @@ var agent =  {
         //todo
 	},
 
-	getThumbnailUrl: function(path)
+	getThumbnailUrl: function(path, hint)
 	{
-		return "http://localhost:" + agent.port + "/files/" + encodeURIComponent(path) + "/thumbnail"
+        url = "http://localhost:" + agent.port + "/files/" + encodeURIComponent(path) + "/thumbnail"
+        if(hint && hint.length > 0)
+        {
+            url+= "?hint=" + hint           
+        }
+        return url
+
 	},
 
 
