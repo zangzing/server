@@ -36,7 +36,7 @@ var agent =  {
 
 	getFilesAsync: function(virtual_path, onSuccess, onError)
 	{
-		agent.callAgentAsync("/files/" + virtual_path, onSuccess, onError)
+		agent.callAgentAsync("/files/" + encodeURIComponent(virtual_path), onSuccess, onError)
 	},
 
     getRootsAsync: function(onSuccess, onError)
