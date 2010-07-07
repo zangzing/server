@@ -4,100 +4,65 @@
 // Copyright ©2010, ZangZing LLC. All rights reserved.
 //
 
-var agent =  {
+var agent = {
 
     port : 9090,
 
-    isPresent : false,
-    hasBeenPinged : false,
+    isAvailable: function(callback) {
 
-    
-    isAgentPresentAsync: function(callback)
-    {
-
-        var onSuccess = function()
-        {
-            agent.isPresent = true;
-            agent.hasBeenPinged = true;
+        var onSuccess = function() {
             callback(true)
         }
 
-        var onError = function()
-        {
-            agent.isPresent = false;
-            agent.hasBeenPinged = true;
+        var onError = function() {
             callback(false)
         }
 
 
-        agent.callAgentAsync("/ping", onSuccess, onError)
+        this.callAgent("/ping", onSuccess, onError)
 
     },
 
-	getFilesAsync: function(virtual_path, onSuccess, onError)
-	{
-		agent.callAgentAsync("/files/" + encodeURIComponent(virtual_path), onSuccess, onError)
-	},
+    getFiles: function(virtualPath, onSuccess, onError) {
+        this.callAgent("/files/" + encodeURIComponent(virtualPath), onSuccess, onError)
+    },
 
-    getRootsAsync: function(onSuccess, onError)
-    {
-        agent.callAgentAsync("/roots", onSuccess, onError)
+    getRoots: function(onSuccess, onError) {
+        this.callAgent("/roots", onSuccess, onError)
     },
 
 
-	addPhotoAsync: function(albumId, virtual_path, onSuccess, onError)
-	{
- 		agent.callAgentAsync("/albums/" + albumId + "/photos/create?path=" + encodeURIComponent(virtual_path), onSuccess, onError)
-	},
+    uploadPhoto: function(albumId, photoId, virtualPath, onSuccess, onError) {
+        this.callAgent("/albums/" + albumId + "/photos/" + photoId + "/upload?path=" + encodeURIComponent(virtualPath), onSuccess, onError)
+    },
 
-	deletePhotoAsynch: function(albumId, photoId, onSuccess, onError)
-	{
-        agent.callAgentAsync("/albums/" + albumId + "/photos/" + photoId + "/destroy", onSuccess, onError)
-	},
+    cancelUpload : function(albumId, photoId, onSuccess, onError) {
+        this.callAgent("/albums/" + albumId + "/photos/" + photoId + "/cancel_upload", onSuccess, onError)
+    },
 
 
-	getUploadStatsAsync: function(onSuccess, onError)
-	{
-        //todo
-	},
-
-	getThumbnailUrl: function(path, hint)
-	{
-        url = "http://localhost:" + agent.port + "/files/" + encodeURIComponent(path) + "/thumbnail"
-        if(hint && hint.length > 0)
-        {
-            url+= "?hint=" + hint           
+    getThumbnailUrl: function(path, hint) {
+        var url = "http://localhost:" + this.port + "/files/" + encodeURIComponent(path) + "/thumbnail";
+        if (hint && hint.length > 0) {
+            url += "?hint=" + hint;
         }
-        return url
+        return url;
+    },
 
-	},
 
-
-	callAgentAsync: function(path, onSuccess, onError)
-	{
+    callAgent: function(path, onSuccess, onError) {
         var url;
-        if(path.indexOf('?')==-1)
-        {
-            url = "http://localhost:" + agent.port  + path + "?callback=?"
+        if (path.indexOf('?') == -1) {
+            url = "http://localhost:" + this.port + path + "?callback=?"
         }
-        else
-        {
-            url = "http://localhost:" + agent.port  + path + "&callback=?"
+        else {
+            url = "http://localhost:" + this.port + path + "&callback=?"
         }
+
         $.jsonp({
             url: url,
-            success: function(json) {
-				if(onSuccess)
-                {
-                    onSuccess(json)
-                }
-            },
-            error: function() {
-                if(onError)
-                {
-                    onError("error calling " + url)
-                }
-            }
+            success: onSuccess,
+            error: onError
         });
-	}
+    }
 }
