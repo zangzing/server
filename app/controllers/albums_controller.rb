@@ -30,13 +30,9 @@ class AlbumsController < ApplicationController
          end
   end
 
-  # This is the GRID view of the album
+  
   def show
-      @album = Album.find(params[:id])
-      @owner =  @album.user
-      @photo = Photo.new   #This new empty photo is used for the photo upload form
-      @photos = @album.photos
-      @title = CGI.escapeHTML(@album.name)
+      redirect_to album_photos_url( params[:id])
   end
 
   def upload
@@ -49,7 +45,11 @@ class AlbumsController < ApplicationController
       @album.destroy
       redirect_back_or_default root_path
   end
-  
+
+  def index
+       @user = User.find(params[:user_id])
+       @albums = @user.albums
+  end
   
   private
       def authorized_user

@@ -1,9 +1,9 @@
 #
 # PasswordResetsController
 #
-# Controls the flow of the password reset process duh?
+# Controls the flow of the password reset process
 #
-# 1.- A user clicks on the password reset lin
+# 1.- A user clicks on the password reset link
 # 2.- The new view is used to generate the form that asks for the user email
 # 3.- If the email is not found, try again. If found send the email
 #     Before sending the email, a one time perishable token is created and used to
@@ -56,6 +56,7 @@ private
   #
   #Retrieve the user from the DB using the perishable token if still valid
   def load_user_using_perishable_token
+    User.
     @user = User.find_using_perishable_token(params[:id])
     unless @user
       flash[:notice] = "We're sorry, but we could not locate your account. " +

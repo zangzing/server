@@ -34,6 +34,11 @@ var agent =  {
 
     },
 
+    registerAsync: function(credentials, onSuccess, onError)
+    {
+        agent.callAgentAsync("/register?" + credentials, onSuccess, onError)
+    },
+
 	getFilesAsync: function(virtual_path, onSuccess, onError)
 	{
 		agent.callAgentAsync("/files/" + virtual_path, onSuccess, onError)

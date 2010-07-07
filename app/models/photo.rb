@@ -75,7 +75,7 @@ class Photo < ActiveRecord::Base
   before_update :syncload_if_development
 
   #
-  after_validation_on_create :setToPending;
+  after_validation_on_create :set_to_assigned;
 
   # Set up an async call for Processing and Upload to S3
   after_update :queue_upload_to_s3
@@ -106,17 +106,17 @@ class Photo < ActiveRecord::Base
   
   validates_attachment_presence     :local_image,{
                                     :message => "file must be specified",
-                                    :if =>  :pending?
+                                    :if =>  :assigned?
                                     }
   validates_attachment_size         :local_image,{
                                     :less_than => 10.megabytes,
                                     :message => "must be under 5 Megs",
-                                    :if =>  :pending?
+                                    :if =>  :assigned?
                                     }
   validates_attachment_content_type :local_image,{
                                     :content_type => [ 'image/jpeg', 'image/png', 'image/gif' ],
                                     :message => " must be a JPEG, PNG, or GIF",
-                                    :if =>  :pending?
+                                    :if =>  :assigned?
                                     }
 
   # when retrieving a search from the DB it will always be ordered by created date descending a.k.a Latest first
@@ -125,8 +125,8 @@ class Photo < ActiveRecord::Base
 
   # Called after creation validations have cleared
   # it is called before the save but after validations have cleared
-  def setToPending
-    self.state = 'pending'
+  def set_to_assigned
+    self.state = 'assigned'
   end
 
   # If in development set image to local_image and generate styles synchronously
@@ -168,8 +168,8 @@ class Photo < ActiveRecord::Base
       self.state == 'new'
   end
 
-  def pending?
-    self.state == 'pending'
+  def assigned?
+    self.state == 'assigned'
   end
   
   def ready?

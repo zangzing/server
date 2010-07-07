@@ -1,0 +1,71 @@
+--- !ruby/object:Gem::Specification 
+name: hyper-graph
+version: !ruby/object:Gem::Version 
+  version: 0.3.1
+platform: ruby
+authors: 
+- Chris Dinn
+autorequire: 
+bindir: bin
+cert_chain: []
+
+date: 2010-05-03 00:00:00 -07:00
+default_executable: 
+dependencies: 
+- !ruby/object:Gem::Dependency 
+  name: json
+  type: :runtime
+  version_requirement: 
+  version_requirements: !ruby/object:Gem::Requirement 
+    requirements: 
+    - - ">="
+      - !ruby/object:Gem::Version 
+        version: "0"
+    version: 
+description: 
+email: 
+- chrisgdinn@gmail.com
+executables: []
+
+extensions: []
+
+extra_rdoc_files: []
+
+files: 
+- lib/hyper_graph.rb
+- lib/hyper_graph_object.rb
+- test/hyper_graph_object_test.rb
+- test/hyper_graph_test.rb
+- test/test_helper.rb
+- LICENSE
+- README.md
+has_rdoc: true
+homepage: http://github.com/chrisdinn/hyper-graph
+licenses: []
+
+post_install_message: 
+rdoc_options: []
+
+require_paths: 
+- lib
+required_ruby_version: !ruby/object:Gem::Requirement 
+  requirements: 
+  - - ">="
+    - !ruby/object:Gem::Version 
+      version: "0"
+  version: 
+required_rubygems_version: !ruby/object:Gem::Requirement 
+  requirements: 
+  - - ">="
+    - !ruby/object:Gem::Version 
+      version: "0"
+  version: 
+requirements: []
+
+rubyforge_project: 
+rubygems_version: 1.3.5
+signing_key: 
+specification_version: 3
+summary: A gem for working with the Facebook Graph API
+test_files: []
+

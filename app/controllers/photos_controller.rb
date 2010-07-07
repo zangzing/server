@@ -120,4 +120,17 @@ class PhotosController < ApplicationController
         render 'grid'
       end
   end
+
+  def agentindex
+    @photos = Photo.all(:conditions => ["agent_id = ? AND state = ?", params[:agent_id], 'assigned'])
+    respond_to do |format|
+      format.html do
+          render @photos
+      end
+     format.json do
+          render :json => @photos.to_json(:only =>[:id, :agent_id, :state])
+
+      end
+    end
+  end
 end

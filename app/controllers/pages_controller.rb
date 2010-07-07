@@ -1,9 +1,11 @@
 class PagesController < ApplicationController
+  before_filter :require_user, :only => :contact
+
 
   def home
      @title = "Home"
      if current_user
-       @albums = current_user.albums.paginate(:page => params[:page])
+       redirect_to user_albums_url( current_user.id )
      end
    end
   

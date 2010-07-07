@@ -1,4 +1,11 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :oauth_clients
+
+  map.test_request '/oauth/test_request', :controller => 'oauth', :action => 'test_request'
+  map.access_token '/oauth/access_token', :controller => 'oauth', :action => 'access_token'
+  map.request_token '/oauth/request_token', :controller => 'oauth', :action => 'request_token'
+  map.authorize '/oauth/authorize', :controller => 'oauth', :action => 'authorize'
+  map.oauth '/oauth', :controller => 'oauth', :action => 'index'
 
 
 
@@ -22,8 +29,11 @@ ActionController::Routing::Routes.draw do |map|
         album.resources :photos, :name_prefix => "album_",:member => { :upload => :put } 
         album.resources :shares, :name_prefix => "album_"
       end
-      #user.resources :contacts, :name_prefix => "user_"
     end
+
+    map.resources :agents, :only => [:create,:destroy]
+    map.agent_photos "agents/:agent_id/photos", :controller =>'photos', :action => 'agentindex'
+
 
     #custom album actions
     #map.connect "web_feeds/:action", :controller  => 'web_feeds', :action => /[a-z_]+/
