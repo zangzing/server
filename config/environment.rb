@@ -46,6 +46,8 @@ Rails::Initializer.run do |config|
   config.gem 'gdata'
   config.gem 'delayed_job' , :version => '2.0.3'
   config.gem 'hyper-graph', :lib=>'hyper_graph'
+  config.gem "oauth"
+  config.gem "oauth-plugin"
   config.gem 'authlogic', :version => '2.1.5'
   
 end

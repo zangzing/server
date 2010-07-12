@@ -6,7 +6,14 @@ ActionController::Routing::Routes.draw do |map|
   map.request_token '/oauth/request_token', :controller => 'oauth', :action => 'request_token'
   map.authorize '/oauth/authorize', :controller => 'oauth', :action => 'authorize'
   map.oauth '/oauth', :controller => 'oauth', :action => 'index'
+  map.resources :oauth_clients
 
+  map.test_request '/oauth/test_request', :controller => 'oauth', :action => 'test_request'
+  map.access_token '/oauth/access_token', :controller => 'oauth', :action => 'access_token'
+  map.request_token '/oauth/request_token', :controller => 'oauth', :action => 'request_token'
+  map.revoke '/oauth/revoke', :controller => 'oauth', :action => 'revoke' 
+  map.authorize '/oauth/authorize', :controller => 'oauth', :action => 'authorize'
+  
 
 
   # The priority is based upon order of creation: first created -> highest priority.
@@ -29,10 +36,20 @@ ActionController::Routing::Routes.draw do |map|
         album.resources :photos, :name_prefix => "album_",:member => { :upload => :put } 
         album.resources :shares, :name_prefix => "album_"
       end
+      user.resources :oauth_clients, :name_prefix => "user_" 
     end
 
-    map.resources :agents, :only => [:create,:destroy]
-    map.agent_photos "agents/:agent_id/photos", :controller =>'photos', :action => 'agentindex'
+
+
+    map.resources :agents   #, :only => [:create, :show]
+    map.agent_photos "/agents/:agent_id/photos.", :controller =>'photos', :action => 'agentindex'
+
+    # Oauth installation to authenticate and authorize agents
+    map.oauth '/oauth',:controller=>'oauth',:action=>'index'
+    map.authorize '/oauth/authorize',:controller=>'oauth',:action=>'authorize'
+    map.request_token '/oauth/request_token',:controller=>'oauth',:action=>'request_token'
+    map.access_token '/oauth/access_token',:controller=>'oauth',:action=>'access_token'
+    map.test_request '/oauth/test_request',:controller=>'oauth',:action=>'test_request'
 
 
     #custom album actions
@@ -44,7 +61,7 @@ ActionController::Routing::Routes.draw do |map|
     map.signin '/signin', :controller => 'user_sessions', :action => 'new'
     map.signout '/signout', :controller => 'user_sessions', :action => 'destroy'
 
-    map.upload 'albums/:id/upload', :controller => 'albums', :action=>'upload'
+    map.upload '/albums/:id/upload', :controller => 'albums', :action=>'upload'
     
     map.resources :password_resets, :only => [:new, :edit, :create, :update]
 

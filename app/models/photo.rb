@@ -55,8 +55,8 @@
 # -ready: The photo has been processed and moved to permanent storage. It is ready to use
 # -deleted: The photo has been deleted and its waiting to be removed from storage.
 #
-# Once a photo goes pending it can only be updated with a valid image. When successful it goes loaded
-# Only a pending photo can be updated. Photos in any other state cannot be updated.
+# Once a photo goes assigned it can only be updated with a valid image. When successful it goes loaded
+# Only an assigned photo can be updated. Photos in any other state cannot be updated.
 #
 # NOTES:
 # The paperclip default url is used to display a temporary graphic while the local_image is processed.
@@ -132,7 +132,7 @@ class Photo < ActiveRecord::Base
   # If in development set image to local_image and generate styles synchronously
   # TODO: Maybe removed for production
   def syncload_if_development
-    if Rails.env.development? && self.pending?
+    if Rails.env.development? && self.assigned?
         self.image = local_image.to_file
         self.state = 'ready'
     end
@@ -144,11 +144,11 @@ class Photo < ActiveRecord::Base
   def queue_upload_to_s3
     logger.info "PHOTO status upon queuing upload/processing job is  #{self.state}"
     unless Rails.env.development? # TODO: may be changed for production
-      if self.pending?
+      if self.assigned?
         self.state = 'loaded'
         self.send_later(:upload_to_s3)
       else
-        record.errors[:state] << "Photo is not pending, cannot be updated"
+        record.errors[:state] << "Photo is not assigned, cannot be updated"
       end
     end
   end

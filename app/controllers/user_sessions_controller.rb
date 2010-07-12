@@ -7,6 +7,7 @@ class UserSessionsController < ApplicationController
   end
 
   def create
+    reset_session #Prevent Session Fixation Attack
     @user_session = UserSession.new(params[:user_session])
     if @user_session.save
       redirect_back_or_default root_url 

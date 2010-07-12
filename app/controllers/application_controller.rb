@@ -68,6 +68,13 @@ class ApplicationController < ActionController::Base
       end
     end
 
+    # for act_as_authenticated compatibility with oauth plugin
+    def login_required
+      unless current_user
+        return false
+      end
+    end
+
     #
     # Filter for methods that require NO USER like sign in
     def require_no_user
@@ -99,4 +106,12 @@ class ApplicationController < ActionController::Base
        current_user
     end
 
+    #
+    # An additional way to control access to certain actions like the ones that are only available to the owner
+    # TODO: Implement this if needed.
+    # Do not remove it its for act_as_Authenticated compatibility
+    #
+    def authorized?
+      true
+    end
 end

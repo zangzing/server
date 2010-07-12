@@ -1,4 +1,5 @@
 class PhotosController < ApplicationController
+  before_filter :oauth_required, :only => [:agentindex, :create , :upload]
 
   def show
     logger.debug "The params hash i n PhotosController show is #{params.inspect}"
@@ -14,7 +15,6 @@ class PhotosController < ApplicationController
   end
 
   def create
-    logger.debug "The params hash i n PhotosController create is #{params.inspect}"
     @album = Album.find( params[:album_id] )
     @photo = @album.photos.build( params[:photo])
     respond_to do | format |

@@ -29,10 +29,13 @@
 class User < ActiveRecord::Base
   attr_accessible  :name, :email, :password, :password_confirmation, :style
   
-  has_many :albums,     :dependent => :destroy
-  has_many :identities, :dependent => :destroy
-  has_many :shares,     :dependent => :destroy
- 
+  has_many :albums,       :dependent => :destroy
+  has_many :identities,   :dependent => :destroy
+  has_many :shares,       :dependent => :destroy
+  has_many :client_applications, :dependent => :destroy 
+  has_many :tokens, :class_name=>"OauthToken",:order=>"authorized_at desc",:include=>[:client_application]
+  
+
   # This delegates all authentication details to authlogic
   acts_as_authentic
 
