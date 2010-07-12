@@ -24,7 +24,7 @@ album = {
     initializeForGrid: function(albumJson)
     {
         // Find out if agent is present
-        agent.isAgentPresentAsync( function( agentPresent ){ album.setupGrid( agentPresent, albumJson) } )
+        agent.isAvailable( function( agentPresent ){ album.setupGrid( agentPresent, albumJson) } )
     },
 
     //
@@ -39,7 +39,7 @@ album = {
     initializeForSlideshow: function(photoJson)
     {
         // Find out if agent is present and callback the url setup
-        agent.isAgentPresentAsync( function( agentPresent ){  album.setupSlideshow( agentPresent, photoJson )})
+        agent.isAvailable( function( agentPresent ){  album.setupSlideshow( agentPresent, photoJson )})
     },
 
     //

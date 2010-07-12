@@ -2,8 +2,10 @@
 <script src="/javascripts/jquery.ba-bbq.js"></script>
 <script src="/javascripts/jquery.jsonp.js"></script>
 <script src="/javascripts/agent.js"></script>
+<script src="/javascripts/server.js"></script>
 <script src="/javascripts/filechooser.js" ></script>
 <script src="/javascripts/logging.js"></script>
+<script src="/javascripts/imageloader.js"></script>
 <script>
     var params = document.location.hash.split("|")
     var sessionId = params[1];
@@ -11,7 +13,7 @@
 
     var path = ""
     filechooser.setAlbumId(albumId);
-    filechooser.setPath(path);
+    filechooser.showPath(path);
 
 </script>
 
