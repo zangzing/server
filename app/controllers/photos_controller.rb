@@ -1,5 +1,7 @@
 class PhotosController < ApplicationController
-  before_filter :oauth_required, :only => [:agentindex, :create , :upload]
+  before_filter :oauth_required, :only => [:agentindex, :upload]
+  #before_filter :require_user,   :only => [:show, :new, :create, :edit, :destroy, :index]
+
 
   def show
     logger.debug "The params hash i n PhotosController show is #{params.inspect}"
@@ -133,4 +135,6 @@ class PhotosController < ApplicationController
       end
     end
   end
+
+
 end
