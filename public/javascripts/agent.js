@@ -43,9 +43,10 @@ var agent = {
 
 
     getThumbnailUrl: function(path, hint) {
-        var url = "http://localhost:" + this.port + "/files/" + encodeURIComponent(path) + "/thumbnail";
+        var user_session = $.cookie("user_credentials");
+        var url = "http://localhost:" + this.port + "/files/" + encodeURIComponent(path) + "/thumbnail?session=" +user_session;
         if (hint && hint.length > 0) {
-            url += "?hint=" + hint;
+            url += "&hint=" + hint;
         }
         return url;
     },
@@ -53,7 +54,7 @@ var agent = {
 
     callAgent: function(path, onSuccess, onError) {
         var url;
-        user_session = $.cookie("user_credentials");
+        var user_session = $.cookie("user_credentials");
         if (path.indexOf('?') == -1) {
             url = "http://localhost:" + this.port + path + "?session="+user_session+"&callback=?"
         }
@@ -61,10 +62,31 @@ var agent = {
             url = "http://localhost:" + this.port + path + "&session="+user_session+"&callback=?"
         }
 
+
+        //this is called when the http call succeeds
+        var successHandler = function(response){
+            if(response.headers.status == 200){
+                onSuccess(response.body)
+            }
+            else{
+                //this is an error wrapped in JSON
+                errorHandler(response)
+            }
+
+        }
+
+        //this is called when the http call fails
+        var errorHandler = function(response){
+            logger.debug("error calling agent: " + response.headers.status + ":" + response.headers.error_message + " url:  " + url )
+            if(typeof(onError) != 'undefined'){
+                onError()  
+            }
+        }
+
         $.jsonp({
             url: url,
-            success: onSuccess,
-            error: onError
+            success: successHandler,
+            error: errorHandler
         });
     }
 }
