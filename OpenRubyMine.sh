@@ -1,7 +1,7 @@
 export ZANG_ZING_HOME="$PWD"
 
 
-export MAGICK_HOME="$ZANG_ZING_HOME/..agent/lib/osx/imagemagick/ImageMagick-6.6.1"
+export MAGICK_HOME="$ZANG_ZING_HOME/../agent/lib/osx/imagemagick/ImageMagick-6.6.1"
 export DYLD_LIBRARY_PATH="$MAGICK_HOME/lib:$DYLD_LIBRARY_PATH"
 
 

@@ -77,7 +77,14 @@ var agent = {
 
         //this is called when the http call fails
         var errorHandler = function(response){
-            logger.debug("error calling agent: " + response.headers.status + ":" + response.headers.error_message + " url:  " + url )
+            if(response.headers){
+                //this error is wrapped in JSON
+                logger.debug("error calling agent: " + response.headers.status + ":" + response.headers.error_message + " url:  " + url )
+            }
+            else{
+                logger.debug("no response or invalid response from agent. url: " + url )
+            }
+            
             if(typeof(onError) != 'undefined'){
                 onError()  
             }
