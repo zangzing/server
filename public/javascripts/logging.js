@@ -3,7 +3,7 @@ var logger = {
 
     debug: function(message)
     {
-        if(console)
+        if(typeof(console) != "undefined")
         {
             console.log(message)
         }
