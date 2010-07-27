@@ -70,9 +70,7 @@ class ApplicationController < ActionController::Base
 
     # for act_as_authenticated compatibility with oauth plugin
     def login_required
-      unless current_user
-        return false
-      end
+      require_user
     end
 
     #

@@ -1,6 +1,7 @@
 class PhotosController < ApplicationController
   before_filter :oauth_required, :only => [:agentindex, :upload]
-  #before_filter :require_user,   :only => [:show, :new, :create, :edit, :destroy, :index]
+  before_filter :login_required, :only => [:create]
+  before_filter :require_user,   :only => [:show, :new, :edit, :destroy, :index]
 
 
   def show
@@ -45,7 +46,6 @@ class PhotosController < ApplicationController
   end
 
   def upload
-      logger.debug "The params hash i n PhotosController update is #{params.inspect}"
       @photo = Photo.find(params[:id])
       @album = @photo.album
       respond_to do |format|
