@@ -4,6 +4,7 @@
 <%= javascript_include_tag "jquery.cookie" %>
 <%= javascript_include_tag "agent" %>
 <%= javascript_include_tag "album" %>
+<%= javascript_include_tag "logging" %>
 
 <script>
     album.initializeForGrid('<%=@album.to_json(:include => {:photos => {:only =>[:id], :methods => [:thumb_url]}})%>');
