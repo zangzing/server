@@ -1,5 +1,6 @@
 class FacebookPhotosController < FacebookController
 
+
   def index
     photos_response = facebook_graph.get("#{params[:fb_album_id]}/photos")
     @photos = photos_response.map { |p| {:name => p[:name], :id => p[:id]} }

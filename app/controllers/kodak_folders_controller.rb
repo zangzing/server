@@ -1,6 +1,5 @@
 class KodakFoldersController < KodakController
 
-  require 'import_requests/kodak_import_request'
 
 
   def index

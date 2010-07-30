@@ -48,6 +48,7 @@ Rails::Initializer.run do |config|
   config.gem 'hyper-graph', :lib=>'hyper_graph'
   config.gem "oauth"
   config.gem "oauth-plugin"
+  config.gem "flickraw"
   config.gem 'authlogic', :version => '2.1.5'
   
 end

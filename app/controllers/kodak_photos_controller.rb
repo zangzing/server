@@ -1,6 +1,5 @@
 class KodakPhotosController < KodakController
 
-  require 'import_requests/kodak_import_request'
 
   def index
     photos_list = connector.send_request("/album/#{params[:kodak_album_id]}")

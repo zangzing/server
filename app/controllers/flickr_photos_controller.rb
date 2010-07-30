@@ -1,6 +1,5 @@
 class FlickrPhotosController < FlickrController
 
-  require 'import_requests/flickr_import_request'
   
 
   def index

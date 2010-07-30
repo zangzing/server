@@ -2,7 +2,6 @@ class KodakController < ConnectorController
   require "net/http"
   require "uri"
   require 'xmlsimple'
-  include ZZ::ConnectorClasses
 
   before_filter :login_required
 

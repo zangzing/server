@@ -1,6 +1,4 @@
 class FlickrController < ConnectorController
-  include ZZ::ConnectorClasses
-
   before_filter :login_required
 
   PHOTO_SIZES = {:thumb => 'Thumbnail', :screen => 'Medium', :full => 'Large'}

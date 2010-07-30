@@ -1,0 +1,251 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Action Controller: Exception caught</title>
+  <style>
+    body { background-color: #fff; color: #333; }
+
+    body, p, ol, ul, td {
+      font-family: verdana, arial, helvetica, sans-serif;
+      font-size:   13px;
+      line-height: 18px;
+    }
+
+    pre {
+      background-color: #eee;
+      padding: 10px;
+      font-size: 11px;
+    }
+
+    a { color: #000; }
+    a:visited { color: #666; }
+    a:hover { color: #fff; background-color:#000; }
+  </style>
+</head>
+<body>
+
+<h1>
+  SocketError
+  
+    in Kodak sessionsController#create
+  
+</h1>
+<pre>getaddrinfo: nodename nor servname provided, or not known</pre>
+
+
+
+<p><code>RAILS_ROOT: /Users/Shared/dev/ZangZing/server</code></p>
+
+<div id="traces">
+  
+    
+    <a href="#" onclick="document.getElementById('Framework-Trace').style.display='none';document.getElementById('Full-Trace').style.display='none';document.getElementById('Application-Trace').style.display='block';; return false;">Application Trace</a> |
+  
+    
+    <a href="#" onclick="document.getElementById('Application-Trace').style.display='none';document.getElementById('Full-Trace').style.display='none';document.getElementById('Framework-Trace').style.display='block';; return false;">Framework Trace</a> |
+  
+    
+    <a href="#" onclick="document.getElementById('Application-Trace').style.display='none';document.getElementById('Framework-Trace').style.display='none';document.getElementById('Full-Trace').style.display='block';; return false;">Full Trace</a> 
+  
+
+  
+    <div id="Application-Trace" style="display: block;">
+      <pre><code>/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/net/http.rb:560:in `initialize'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/net/http.rb:560:in `open'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/net/http.rb:560:in `connect'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/timeout.rb:53:in `timeout'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/timeout.rb:93:in `timeout'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/net/http.rb:560:in `connect'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/net/http.rb:553:in `do_start'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/net/http.rb:542:in `start'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/net/http.rb:379:in `get_response'
+/Users/Shared/dev/ZangZing/server/lib/kodak_connector.rb:21:in `sign_in'
+/Users/Shared/dev/ZangZing/server/app/controllers/kodak_controller.rb:19:in `login'
+/Users/Shared/dev/ZangZing/server/app/controllers/kodak_sessions_controller.rb:7:in `create'</code></pre>
+    </div>
+  
+    <div id="Framework-Trace" style="display: none;">
+      <pre><code>/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/net/http.rb:560:in `initialize'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/net/http.rb:560:in `open'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/net/http.rb:560:in `connect'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/timeout.rb:53:in `timeout'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/timeout.rb:93:in `timeout'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/net/http.rb:560:in `connect'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/net/http.rb:553:in `do_start'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/net/http.rb:542:in `start'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/net/http.rb:379:in `get_response'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/base.rb:1331:in `send'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/base.rb:1331:in `perform_action_without_filters'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/filters.rb:617:in `call_filters'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/filters.rb:610:in `perform_action_without_benchmark'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/benchmarking.rb:68:in `perform_action_without_rescue'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/activesupport-2.3.5/lib/active_support/core_ext/benchmark.rb:17:in `ms'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/benchmark.rb:308:in `realtime'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/activesupport-2.3.5/lib/active_support/core_ext/benchmark.rb:17:in `ms'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/benchmarking.rb:68:in `perform_action_without_rescue'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/rescue.rb:160:in `perform_action_without_flash'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/flash.rb:146:in `perform_action'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/base.rb:532:in `send'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/base.rb:532:in `process_without_filters'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/filters.rb:606:in `process'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/base.rb:391:in `process'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/base.rb:386:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/routing/route_set.rb:437:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/dispatcher.rb:87:in `dispatch'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/dispatcher.rb:121:in `_call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/dispatcher.rb:130
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/string_coercion.rb:25:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/string_coercion.rb:25:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/rack-1.0.1/lib/rack/head.rb:9:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/rack-1.0.1/lib/rack/methodoverride.rb:24:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/params_parser.rb:15:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/session/abstract_store.rb:122:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/activerecord-2.3.5/lib/active_record/query_cache.rb:29:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/activerecord-2.3.5/lib/active_record/connection_adapters/abstract/query_cache.rb:34:in `cache'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/activerecord-2.3.5/lib/active_record/query_cache.rb:9:in `cache'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/activerecord-2.3.5/lib/active_record/query_cache.rb:28:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/activerecord-2.3.5/lib/active_record/connection_adapters/abstract/connection_pool.rb:361:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/failsafe.rb:26:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/rack-1.0.1/lib/rack/lock.rb:11:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/rack-1.0.1/lib/rack/lock.rb:11:in `synchronize'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/rack-1.0.1/lib/rack/lock.rb:11:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/dispatcher.rb:106:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/rack-1.0.1/lib/rack/lint.rb:47:in `_call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/rack-1.0.1/lib/rack/lint.rb:35:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/integration.rb:316:in `process'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/integration.rb:203:in `post'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/integration.rb:499:in `__send__'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/integration.rb:499:in `post'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/webrat-0.7.1/lib/webrat/adapters/rails.rb:50:in `send'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/webrat-0.7.1/lib/webrat/adapters/rails.rb:50:in `do_request'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/webrat-0.7.1/lib/webrat/adapters/rails.rb:19:in `post'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/webrat-0.7.1/lib/webrat/core/session.rb:280:in `send'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/webrat-0.7.1/lib/webrat/core/session.rb:280:in `process_request'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/webrat-0.7.1/lib/webrat/core/session.rb:119:in `request_page'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/webrat-0.7.1/lib/webrat/core/elements/form.rb:20:in `submit'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/webrat-0.7.1/lib/webrat/core/elements/field.rb:193:in `click'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/webrat-0.7.1/lib/webrat/core/scope.rb:291:in `click_button'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/webrat-0.7.1/lib/webrat/core/methods.rb:7:in `click_button'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/activesupport-2.3.5/lib/active_support/testing/setup_and_teardown.rb:62:in `__send__'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/activesupport-2.3.5/lib/active_support/testing/setup_and_teardown.rb:62:in `run'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/integration.rb:657:in `run'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/test/unit/testsuite.rb:34:in `run'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/test/unit/testsuite.rb:33:in `each'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/test/unit/testsuite.rb:33:in `run'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/test-unit-1.2.3/lib/test/unit/ui/testrunnermediator.rb:46:in `old_run_suite'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/test/unit/ui/testrunnerutilities.rb:29:in `run'</code></pre>
+    </div>
+  
+    <div id="Full-Trace" style="display: none;">
+      <pre><code>/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/net/http.rb:560:in `initialize'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/net/http.rb:560:in `open'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/net/http.rb:560:in `connect'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/timeout.rb:53:in `timeout'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/timeout.rb:93:in `timeout'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/net/http.rb:560:in `connect'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/net/http.rb:553:in `do_start'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/net/http.rb:542:in `start'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/net/http.rb:379:in `get_response'
+/Users/Shared/dev/ZangZing/server/lib/kodak_connector.rb:21:in `sign_in'
+/Users/Shared/dev/ZangZing/server/app/controllers/kodak_controller.rb:19:in `login'
+/Users/Shared/dev/ZangZing/server/app/controllers/kodak_sessions_controller.rb:7:in `create'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/base.rb:1331:in `send'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/base.rb:1331:in `perform_action_without_filters'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/filters.rb:617:in `call_filters'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/filters.rb:610:in `perform_action_without_benchmark'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/benchmarking.rb:68:in `perform_action_without_rescue'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/activesupport-2.3.5/lib/active_support/core_ext/benchmark.rb:17:in `ms'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/benchmark.rb:308:in `realtime'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/activesupport-2.3.5/lib/active_support/core_ext/benchmark.rb:17:in `ms'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/benchmarking.rb:68:in `perform_action_without_rescue'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/rescue.rb:160:in `perform_action_without_flash'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/flash.rb:146:in `perform_action'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/base.rb:532:in `send'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/base.rb:532:in `process_without_filters'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/filters.rb:606:in `process'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/base.rb:391:in `process'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/base.rb:386:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/routing/route_set.rb:437:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/dispatcher.rb:87:in `dispatch'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/dispatcher.rb:121:in `_call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/dispatcher.rb:130
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/string_coercion.rb:25:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/string_coercion.rb:25:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/rack-1.0.1/lib/rack/head.rb:9:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/rack-1.0.1/lib/rack/methodoverride.rb:24:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/params_parser.rb:15:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/session/abstract_store.rb:122:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/activerecord-2.3.5/lib/active_record/query_cache.rb:29:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/activerecord-2.3.5/lib/active_record/connection_adapters/abstract/query_cache.rb:34:in `cache'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/activerecord-2.3.5/lib/active_record/query_cache.rb:9:in `cache'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/activerecord-2.3.5/lib/active_record/query_cache.rb:28:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/activerecord-2.3.5/lib/active_record/connection_adapters/abstract/connection_pool.rb:361:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/failsafe.rb:26:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/rack-1.0.1/lib/rack/lock.rb:11:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/rack-1.0.1/lib/rack/lock.rb:11:in `synchronize'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/rack-1.0.1/lib/rack/lock.rb:11:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/dispatcher.rb:106:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/rack-1.0.1/lib/rack/lint.rb:47:in `_call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/rack-1.0.1/lib/rack/lint.rb:35:in `call'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/integration.rb:316:in `process'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/integration.rb:203:in `post'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/integration.rb:499:in `__send__'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/integration.rb:499:in `post'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/webrat-0.7.1/lib/webrat/adapters/rails.rb:50:in `send'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/webrat-0.7.1/lib/webrat/adapters/rails.rb:50:in `do_request'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/webrat-0.7.1/lib/webrat/adapters/rails.rb:19:in `post'
+(__FORWARDABLE__):3:in `__send__'
+(__FORWARDABLE__):3:in `post'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/webrat-0.7.1/lib/webrat/core/session.rb:280:in `send'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/webrat-0.7.1/lib/webrat/core/session.rb:280:in `process_request'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/webrat-0.7.1/lib/webrat/core/session.rb:119:in `request_page'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/webrat-0.7.1/lib/webrat/core/elements/form.rb:20:in `submit'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/webrat-0.7.1/lib/webrat/core/elements/field.rb:193:in `click'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/webrat-0.7.1/lib/webrat/core/scope.rb:291:in `click_button'
+(__FORWARDABLE__):3:in `__send__'
+(__FORWARDABLE__):3:in `click_button'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/webrat-0.7.1/lib/webrat/core/methods.rb:7:in `click_button'
+/Users/Shared/dev/ZangZing/server/test/integration/kodak_connector_test.rb:25:in `log_in'
+/Users/Shared/dev/ZangZing/server/test/integration/kodak_connector_test.rb:63:in `test_Import_whole_folder_(JSON)'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/activesupport-2.3.5/lib/active_support/testing/setup_and_teardown.rb:62:in `__send__'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/activesupport-2.3.5/lib/active_support/testing/setup_and_teardown.rb:62:in `run'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/actionpack-2.3.5/lib/action_controller/integration.rb:657:in `run'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/test/unit/testsuite.rb:34:in `run'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/test/unit/testsuite.rb:33:in `each'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/test/unit/testsuite.rb:33:in `run'
+/Users/hopemeng/.rvm/gems/ruby-1.8.7-p249/gems/test-unit-1.2.3/lib/test/unit/ui/testrunnermediator.rb:46:in `old_run_suite'
+/Applications/RubyMine 2.0.2.app/rb/testing/patch/testunit/test/unit/ui/testrunnermediator.rb:36:in `run_suite'
+/Applications/RubyMine 2.0.2.app/rb/testing/patch/testunit/test/unit/ui/teamcity/testrunner.rb:215:in `start_mediator'
+/Applications/RubyMine 2.0.2.app/rb/testing/patch/testunit/test/unit/ui/teamcity/testrunner.rb:191:in `start'
+/Users/hopemeng/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/test/unit/ui/testrunnerutilities.rb:29:in `run'
+/Applications/RubyMine 2.0.2.app/rb/testing/runner/tunit_in_folder_runner.rb:87
+/Applications/RubyMine 2.0.2.app/rb/testing/runner/tunit_in_folder_runner.rb:64:in `each_object'
+/Applications/RubyMine 2.0.2.app/rb/testing/runner/tunit_in_folder_runner.rb:64
+-e:1:in `load'
+-e:1</code></pre>
+    </div>
+  
+</div>
+
+
+
+
+
+
+<h2 style="margin-top: 30px">Request</h2>
+<p><b>Parameters</b>: <pre>{&quot;commit&quot;=&gt;&quot;Log in&quot;,
+ &quot;password&quot;=&gt;&quot;ijertyewij&quot;,
+ &quot;email&quot;=&gt;&quot;dev@zangzing.com&quot;}</pre></p>
+
+<p><a href="#" onclick="document.getElementById('session_dump').style.display='block'; return false;">Show session dump</a></p>
+<div id="session_dump" style="display:none"><pre class='debug_dump'>--- 
+</pre></div>
+
+
+<h2 style="margin-top: 30px">Response</h2>
+<p><b>Headers</b>: <pre>{&quot;Content-Type&quot;=&gt;&quot;&quot;,
+ &quot;Cache-Control&quot;=&gt;&quot;no-cache&quot;}</pre></p>
+
+
+
+</body>
+</html>
