@@ -101,7 +101,7 @@ class Photo < ActiveRecord::Base
   has_attached_file :image, image_options
 
 
-  validates_presence_of             :album_id, :agent_id
+  validates_presence_of             :album_id
 
   
   validates_attachment_presence     :local_image,{
