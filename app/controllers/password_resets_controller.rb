@@ -11,7 +11,8 @@
 # 4.- When the user clicks on the link, it is routed to edit and the user is fetched
 #     using the perishable token as a key.
 # 5.- Password is updated and user logged in.
- s
+
+
 class PasswordResetsController < ApplicationController
   # These operations require that no user is logged in
   before_filter :require_no_user
@@ -56,7 +57,7 @@ private
   #
   #Retrieve the user from the DB using the perishable token if still valid
   def load_user_using_perishable_token
-    User.
+
     @user = User.find_using_perishable_token(params[:id])
     unless @user
       flash[:notice] = "We're sorry, but we could not locate your account. " +

@@ -1,0 +1,6 @@
+Photo sets:
+<ul>
+  <% @folders.each do |folder| %>
+    <li><%= link_to folder[:name], facebook_photos_path(:fb_album_id => folder[:id]) %> (ID#<%= folder[:id] %>)</li>
+  <% end %>
+</ul>

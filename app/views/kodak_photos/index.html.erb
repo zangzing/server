@@ -1,0 +1,6 @@
+Photos in set:
+<ul>
+  <% @photos.each do |photo| %>
+    <li><%= link_to photo[:name], kodak_photo_path(:kodak_album_id => params[:kodak_album_id], :photo_id => photo[:id], :size => :screen) %> (ID#<%= photo[:id] %>)</li>
+  <% end %>
+</ul>

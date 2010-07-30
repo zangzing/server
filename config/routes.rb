@@ -113,9 +113,7 @@ ActionController::Routing::Routes.draw do |map|
 #
 #  map.resources :facebook_posts
 
-  map.create_facebook_session '/facebook_sessions/create', :controller => 'facebook_sessions', :action=>'create'
-  map.destroy_facebook_session '/facebook_sessions/destroy', :controller => 'facebook_sessions', :action=>'destroy'
-  map.resources :facebook_sessions, :method => 'get'
+
 
   map.create_facebook_post '/facebook_posts/create', :controller => 'facebook_posts', :action=>'create'
   map.resources :facebook_posts
@@ -124,5 +122,77 @@ ActionController::Routing::Routes.draw do |map|
   map.destroy_google_session '/google_sessions/destroy', :controller => 'google_sessions', :action=>'destroy'
   map.resource :google_sessions
   map.resources :google_contacts
+
+
+
+  #Flickr stuff
+  map.with_options :controller => :flickr_sessions do |flickr|
+    flickr.new_flickr_session     '/flickr/sessions/new', :action  => 'new'
+    flickr.create_flickr_session  '/flickr/sessions/create', :action  => 'create'
+    flickr.destroy_flickr_session '/flickr/sessions/destroy', :action  => 'destroy'
+  end
+
+  map.with_options :controller => :flickr_photos do |flickr|
+    flickr.flickr_photos '/flickr/folders/:set_id/photos.:format', :action  => 'index'
+    flickr.flickr_photo  '/flickr/folders/:set_id/photos/:photo_id.:size', :action  => 'show'
+    flickr.flickr_photo_action  '/flickr/folders/:set_id/photos/:photo_id/:action'
+  end
+
+  map.with_options :controller => :flickr_folders do |flickr|
+    flickr.flickr_folders '/flickr/folders.:format', :action  => 'index'
+    flickr.flickr_folder_action '/flickr/folders/:set_id/:action.:format'
+  end
+
+  #Kodak stuff
+  map.with_options :controller => :kodak_sessions do |kodak|
+    kodak.new_kodak_session     '/kodak/sessions/new', :action  => 'new'
+    kodak.create_kodak_session  '/kodak/sessions/create', :action  => 'create'
+    kodak.destroy_kodak_session '/kodak/sessions/destroy', :action  => 'destroy'
+  end
+
+  map.with_options :controller => :kodak_photos do |kodak|
+    kodak.kodak_photos '/kodak/folders/:kodak_album_id/photos.:format', :action  => 'index'
+    kodak.kodak_photo  '/kodak/folders/:kodak_album_id/photos/:photo_id.:size', :action  => 'show'
+    kodak.kodak_photo_action '/kodak/folders/:kodak_album_id/photos/:photo_id/:action'
+  end
+
+  map.with_options :controller => :kodak_folders do |kodak|
+    kodak.kodak_folders '/kodak/folders.:format', :action  => 'index'
+    kodak.kodak_folder_action '/kodak/folders/:kodak_album_id/:action.:format'
+  end
+
+  #Facebook stuff
+  map.with_options :controller => :facebook_sessions do |fb|
+    fb.new_facebook_session     '/facebook/sessions/new', :action  => 'new'
+    fb.create_facebook_session  '/facebook/sessions/create', :action  => 'create'
+    fb.destroy_facebook_session '/facebook/sessions/destroy', :action  => 'destroy'
+  end
+
+  map.with_options :controller => :facebook_photos do |fb|
+    fb.facebook_photos '/facebook/folders/:fb_album_id/photos.:format', :action  => 'index'
+    fb.facebook_photo  '/facebook/folders/:fb_album_id/photos/:photo_id.:size', :action  => 'show'
+    fb.facebook_photo_action '/facebook/folders/:fb_album_id/photos/:photo_id/:action'
+  end
+
+  map.with_options :controller => :facebook_folders do |fb|
+    fb.facebook_folders '/facebook/folders.:format', :action  => 'index'
+    fb.facebook_folder_action '/facebook/folders/:fb_album_id/:action.:format'
+  end  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 end

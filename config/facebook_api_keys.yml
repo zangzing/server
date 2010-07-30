@@ -1,0 +1,15 @@
+---
+development:
+  :api_key: f4d63fedf5efb80582e053cde0929378
+  :app_secret: d551ae9821d42fbb22de534f70502b0b
+  :app_id: 112996675412403
+
+test:
+  :api_key: f4d63fedf5efb80582e053cde0929378
+  :app_secret: d551ae9821d42fbb22de534f70502b0b
+  :app_id: 112996675412403
+
+production:
+  :api_key: f4d63fedf5efb80582e053cde0929378
+  :app_secret: d551ae9821d42fbb22de534f70502b0b
+  :app_id: 112996675412403
