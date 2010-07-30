@@ -179,7 +179,10 @@ ActionController::Routing::Routes.draw do |map|
     fb.facebook_folder_action '/facebook/folders/:fb_album_id/:action.:format'
   end  
 
-
+  map.with_options :controller => :facebook_posts do |fb|
+    fb.facebook_posts           '/facebook/posts.:format',    :action  => 'index'
+    fb.create_facebook_post  '/facebook/posts/create',     :action  => 'create'
+  end
 
 
 
