@@ -1,5 +1,5 @@
 class KodakSessionsController < KodakController
-  skip_before_filter :login_required, :only => [:new, :create]
+  skip_before_filter :service_login_required, :only => [:new, :create]
 
   def new; end
 

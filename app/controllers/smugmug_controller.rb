@@ -1,9 +1,8 @@
 class SmugmugController < ConnectorController
-  include ZZ::ConnectorClasses
 
   PHOTO_SIZES = {:thumb => :tinyurl, :screen => :largeurl, :full => :originalurl}
 
-  before_filter :login_required
+  before_filter :service_login_required
 
   def initialize(*args)
     super(*args)
@@ -13,7 +12,7 @@ class SmugmugController < ConnectorController
 
   protected
 
-  def login_required
+  def service_login_required
     unless smugmug_auth_token_string
       begin
         @token_string = token_store.get_token(current_user.id)

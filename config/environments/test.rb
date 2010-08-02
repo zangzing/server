@@ -39,3 +39,5 @@ config.gem 'webrat'
 Paperclip.options[:command_path] = ENV['IMAGEMAGICK_PATH']
 Paperclip.options[:log] = true
 Paperclip.options[:log_command] = true
+
+APPLICATION_HOST = 'localhost:3000'

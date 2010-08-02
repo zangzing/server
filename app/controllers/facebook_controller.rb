@@ -1,10 +1,9 @@
 class FacebookController < ConnectorController
   require 'hyper_graph'
-  include ZZ::ConnectorClasses
 
   PHOTO_SIZES = {:thumb => 'thumbnail', :screen => 'normal', :full => 'normal'} #Possible types are thumbnail, album, normal
 
-  before_filter :login_required
+  before_filter :service_login_required
 
   def token #TODO Remove this method
     render :text => @access_token
@@ -12,7 +11,7 @@ class FacebookController < ConnectorController
 
 protected
 
-  def login_required
+  def service_login_required
     unless facebook_auth_token
       begin
         @access_token = token_store.get_token(current_user.id)

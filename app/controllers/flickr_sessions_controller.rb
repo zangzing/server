@@ -1,5 +1,5 @@
 class FlickrSessionsController < FlickrController
-  skip_before_filter :login_required, :only => [:new, :create]
+  skip_before_filter :service_login_required, :only => [:new, :create]
 
   def new
     frob = flickr_api.auth.getFrob
