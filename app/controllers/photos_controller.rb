@@ -130,7 +130,7 @@ class PhotosController < ApplicationController
           render @photos
       end
      format.json do
-          render :json => @photos.to_json(:only =>[:id, :agent_id, :state])
+          render :json => @photos.to_json(:only =>[:id, :agent_id, :state, :album_id])
 
       end
     end
