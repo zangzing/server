@@ -1,5 +1,6 @@
 class FacebookController < ConnectorController
-  require 'token_store'
+  require 'hyper_graph'
+  include ZZ::ConnectorClasses
 
   PHOTO_SIZES = {:thumb => 'thumbnail', :screen => 'normal', :full => 'normal'} #Possible types are thumbnail, album, normal
 

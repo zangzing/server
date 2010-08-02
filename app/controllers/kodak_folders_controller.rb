@@ -1,10 +1,8 @@
 class KodakFoldersController < KodakController
 
-
-
   def index
     album_list = connector.send_request('/albumList')
-    albums = album_list['Album'].select { |a| a['type'].first=='0' } #Real albums have type attribute = 0
+    albums = album_list['AlbumList']['Album'].select { |a| a['type'].first=='0' } #Real albums have type attribute = 0
     @folders = albums.map { |f| {:name => f['name'].first, :id => f['id'].first} }
     respond_to do |wants|
       wants.html
