@@ -33,3 +33,5 @@ config.action_mailer.smtp_settings = {
 Paperclip.options[:command_path] = ENV['IMAGEMAGICK_PATH']
 Paperclip.options[:log] = true
 Paperclip.options[:log_command] = true
+
+APPLICATION_HOST = 'localhost:3000'

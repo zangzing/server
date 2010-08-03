@@ -1,39 +1,15 @@
-require 'rubygems'
-require 'hyper_graph'
+class FacebookPostsController < FacebookController
 
-
-
-
-class FacebookPostsController < ApplicationController
-
-  include FacebookSessionHelper
 
   def index
-
-    facebook_token = get_facebook_token
-
-    if(!facebook_token)
-      redirect_to new_facebook_session_path
-      return
-    end
-
-    begin
-      graph = HyperGraph.new(facebook_token)
-      @name = graph.get('me/feed')
-      render :text => @name.inspect
-      
-    rescue FacebookError
-      puts $!
-      delete_facebook_token
-      redirect_to new_facebook_session_path
-      return
-    end
+    @name = facebook_graph.get('me/feed')
+    render :text => @name.inspect
   end
 
 
    def create
-     graph = HyperGraph.new(get_facebook_token)
-     graph.post("#{params[:object_id]}/feed", :message => params[:message])
+     #graph = HyperGraph.new(get_facebook_token)
+     facebook_graph.post("#{params[:object_id]}/feed", :message => params[:message])
    end
 end
 

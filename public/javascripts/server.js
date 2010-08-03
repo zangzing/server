@@ -11,7 +11,7 @@ var server = {
            type: "POST",
            dataType: "json",
            url: "/albums/" + albumId + "/photos.json",
-           data: {'photo[agent_id]':'AGENT_ID_SET_IN_AGENT_JS'},
+           data: {'photo[agent_id]':'JEREMYS_AGENT'},  //todo: get agent id from agent
            success: onSuccess,
            error: onError
          });
@@ -24,7 +24,7 @@ var server = {
            type: "DELETE",
            dataType: "json",
            url: "/photos/" + photoId + ".json",
-           data: {'photo[agent_id]':'AGENT_ID_SET_IN_AGENT_JS'},
+           data: {'photo[agent_id]':'JEREMYS_AGENT'},  //todo: get agent id from agent
            success: onSuccess,
            error: onError
          });

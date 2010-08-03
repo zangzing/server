@@ -1,5 +1,5 @@
 class PhotosController < ApplicationController
-  before_filter :oauth_required, :only => [:agentindex, :upload]
+  #before_filter :oauth_required, :only => [:agentindex, :upload]
   before_filter :login_required, :only => [:create]
   before_filter :require_user,   :only => [:show, :new, :edit, :destroy, :index]
 
@@ -130,7 +130,7 @@ class PhotosController < ApplicationController
           render @photos
       end
      format.json do
-          render :json => @photos.to_json(:only =>[:id, :agent_id, :state])
+          render :json => @photos.to_json(:only =>[:id, :agent_id, :state, :album_id])
 
       end
     end

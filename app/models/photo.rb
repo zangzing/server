@@ -73,7 +73,7 @@ class Photo < ActiveRecord::Base
 
 
   # for development do sync load  TODO:May be removed for production
-  before_update :syncload_if_development
+#  before_update :syncload_if_development
 
   #
   after_validation_on_create :set_to_assigned;
@@ -102,7 +102,7 @@ class Photo < ActiveRecord::Base
   has_attached_file :image, image_options
 
 
-  validates_presence_of             :album_id, :agent_id
+  validates_presence_of             :album_id
 
   
   validates_attachment_presence     :local_image,{
@@ -143,14 +143,14 @@ class Photo < ActiveRecord::Base
   # Used to queue loading and processing for async.
   #
   def queue_upload_to_s3
-    logger.info "PHOTO status upon queuing upload/processing job is  #{self.state}"
-    unless Rails.env.development? # TODO: may be changed for production
-      if self.assigned?
-        self.state = 'loaded'
-        self.send_later(:upload_to_s3)
-      else
-        record.errors[:state] << "Photo is not assigned, cannot be updated"
-      end
+    unless self.state == 'ready'
+      logger.info "PHOTO status upon queuing upload/processing job is  #{self.state}"
+        if self.assigned?
+          self.state = 'loaded'
+          self.send_later(:upload_to_s3)
+        else
+          record.errors[:state] << "Photo is not assigned, cannot be updated"
+        end
     end
   end
 

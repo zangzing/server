@@ -37,3 +37,5 @@ config.action_mailer.smtp_settings = {
 
 # Enable threaded mode
 # config.threadsafe!
+
+APPLICATION_HOST = 'www.zangzing.com'

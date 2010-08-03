@@ -1,51 +1,21 @@
-class FacebookSessionsController < ApplicationController
-
-  include FacebookSessionHelper
+class FacebookSessionsController < FacebookController
+  skip_before_filter :service_login_required, :only => [:new, :create]
+  skip_before_filter :require_user, :only => [:new, :create]
 
   def new
-    #Todo: get rid of read_stream
-    url = HyperGraph.authorize_url('f4d63fedf5efb80582e053cde0929378', 'http://localhost:3000/facebook_sessions/create', :scope => 'publish_stream,read_stream', :display => 'popup')
-    puts "redirecting to " + url
-    redirect_to url
+    auth_url = HyperGraph.authorize_url(FACEBOOK_API_KEYS[:app_id], create_facebook_session_url(:host => APPLICATION_HOST), :scope => 'user_photos', :display => 'popup')
+    redirect_to auth_url
   end
 
   def create
-    code = params["code"]
-    access_token = HyperGraph.get_access_token('f4d63fedf5efb80582e053cde0929378', 'd551ae9821d42fbb22de534f70502b0b', 'http://localhost:3000/facebook_sessions/create', code)
-    save_facebook_token("", access_token)
-
-
-    puts "HERE"
-    render :text => "ACCESS TOKEN: " + access_token
+    token = HyperGraph.get_access_token(FACEBOOK_API_KEYS[:app_id], FACEBOOK_API_KEYS[:app_secret], create_facebook_session_url(:host => APPLICATION_HOST), params[:code])
+    raise InvalidCredentials unless token
+    token_store.store_token(token, current_user.id)
   end
-
-
-
 
   def destroy
-    delete_facebook_token
+    token_store.delete_token(current_user.id)
+    facebook_graph = nil
   end
 
-  def verify
-    begin
-      graph = HyperGraph.new(get_facebook_token)
-      graph.get('me')[:name]
-      session_status = 'OK'
-    rescue FacebookError
-      session_status = 'INVALID'
-    end
-
-
-    respond_to do |format|
-      format.html {
-        render :text => session_status
-      }
-      format.json {
-        render :json => session_status.to_json
-      }
-      format.json {
-        render :xml => session_status
-      }
-    end
-  end
 end
