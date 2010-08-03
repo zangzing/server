@@ -6,6 +6,8 @@ doc/app
 db/*.sqlite3
 .idea/*
 public/system/*
+nbproject
+log/*
 *.swp
 *~
 .DS_Store

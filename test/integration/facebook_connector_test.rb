@@ -119,6 +119,7 @@ class FacebookConnectorTest < ActionController::IntegrationTest
 
     # "Import photo from a photoset (JSON)" do
     visit facebook_photo_action_url(:fb_album_id => 115847311797751, :photo_id => 115847785131037, :action => :import, :format => :json, :album_id => 1)
+    result = JSON.parse(response.body)
     assert result['image_file_name'] =~ /dlink .+/
 
     log_out
