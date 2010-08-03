@@ -184,7 +184,23 @@ ActionController::Routing::Routes.draw do |map|
     fb.create_facebook_post  '/facebook/posts/create',     :action  => 'create'
   end
 
+  #SmugMug stuff
+  map.with_options :controller => :smugmug_sessions do |fb|
+    fb.new_smugmug_session     '/smugmug/sessions/new', :action  => 'new'
+    fb.create_smugmug_session  '/smugmug/sessions/create', :action  => 'create'
+    fb.destroy_smugmug_session '/smugmug/sessions/destroy', :action  => 'destroy'
+  end
 
+  map.with_options :controller => :smugmug_photos do |fb|
+    fb.smugmug_photos '/smugmug/folders/:sm_album_id/photos.:format', :action  => 'index'
+    fb.smugmug_photo  '/smugmug/folders/:sm_album_id/photos/:photo_id.:size', :action  => 'show'
+    fb.smugmug_photo_action '/smugmug/folders/:sm_album_id/photos/:photo_id/:action'
+  end
+
+  map.with_options :controller => :smugmug_folders do |fb|
+    fb.smugmug_folders '/smugmug/folders.:format', :action  => 'index'
+    fb.smugmug_folder_action '/smugmug/folders/:sm_album_id/:action.:format'
+  end
 
 
 

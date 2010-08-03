@@ -15,7 +15,7 @@ class FacebookFoldersController < FacebookController
     photos = []
     photos_list.each do |p|
       photo = Photo.create(:state => 'new', :image_file_name => p[:name], :album_id => params[:album_id])
-      Delayed::Job.enqueue(FacebookImportRequest.new(photo.id, p[:source]))
+      Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, p[:source]))
       photos << photo
     end
 

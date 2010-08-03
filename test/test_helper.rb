@@ -36,11 +36,40 @@ class ActiveSupport::TestCase
 
   # Add more helper methods to be used by all tests here...
   setup do |session|
-    session.host! 'localhost:3000'
+    session.host! APPLICATION_HOST
   end
 
 end
 
 Webrat.configure do |config|
   config.mode = :rails
+end
+
+module IntegrationHelper
+  TEST_USER_CREDENTIALS = {:email => 'test@user.org', :password => '123456'}
+  @@logged_in = false
+
+  def ensure_logged_in
+    visit root_path
+    unless response.body.include?('Sign out')
+      visit user_sessions_path, :post, :user_session => {:email => TEST_USER_CREDENTIALS[:email], :password => TEST_USER_CREDENTIALS[:password], :remember_me => true}
+      if response.body.include?('<div class="fieldWithErrors"><label for="user_session_email">') #Unsuccessful login
+        visit users_path, :post, :user => {:name => 'TestUser', :email => TEST_USER_CREDENTIALS[:email], :password => TEST_USER_CREDENTIALS[:password], :password_confirmation => TEST_USER_CREDENTIALS[:password] }
+        @@logged_in = response.body.include?('You are being') #redirected to user#show
+        visit user_albums_path(:user_id => 1), :post, :album => {:user_id => 1, :name => 'Test Album'}
+      end
+    end
+  end
+
+  def copy_cookies_to_mechanize(agent)
+    #puts cookies.inspect
+    cookies.each do |n, v|
+      #puts "N ==== #{n}    V ===== #{v}"
+      c = Mechanize::Cookie.new(n, v)
+      c.domain = 'localhost'
+      c.path = '/'
+      agent.cookie_jar.add URI.parse("http://#{APPLICATION_HOST}/"), c
+    end
+    #puts agent.cookies.inspect
+  end
 end

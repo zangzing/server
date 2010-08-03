@@ -1,5 +1,3 @@
-
-
 class InvalidToken < StandardError
   def message
     'Invalid authentication token'
@@ -17,4 +15,3 @@ class InvalidCredentials < StandardError
     'Credentials provided are invalid'
   end
 end
-

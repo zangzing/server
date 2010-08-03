@@ -114,7 +114,7 @@ ActiveRecord::Schema.define(:version => 20100707184116) do
   add_index "photos", ["album_id"], :name => "index_photos_on_album_id"
 
   create_table "sessions", :force => true do |t|
-    t.string   "session_id", :null => false
+    t.string   "session_id", :default => "", :null => false
     t.text     "data"
     t.datetime "created_at"
     t.datetime "updated_at"

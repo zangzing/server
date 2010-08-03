@@ -3,6 +3,11 @@ require 'mechanize'
 
 class FlickrConnectorTest < ActionController::IntegrationTest
   #fixtures :all
+  include IntegrationHelper
+  def setup
+    ensure_logged_in
+  end
+
   CREDENTIALS = {:login => 'zangzing_dev', :password => 'clev-vid-arch-ab-a'}
 
   test "Routing" do
@@ -21,12 +26,8 @@ class FlickrConnectorTest < ActionController::IntegrationTest
   
 
   def log_in(valid_credentials = true)
-
-    visit new_flickr_session_url
-    flickr_signin_url = response.redirected_to
-
     agent = Mechanize.new { |a| a.user_agent_alias = 'Windows Mozilla' }
-    page = agent.get flickr_signin_url
+    page = agent.get new_flickr_session_url
     form = page.forms.first
     form.login = valid_credentials ? CREDENTIALS[:login] : 'foo'
     form.passwd = valid_credentials ? CREDENTIALS[:password] : 'bar'
@@ -83,7 +84,7 @@ class FlickrConnectorTest < ActionController::IntegrationTest
 
   test "Import whole photoset (JSON)" do
     log_in
-    visit flickr_folder_action_url(:set_id => 72157624268707475, :action => :import, :format => :json)
+    visit flickr_folder_action_url(:set_id => 72157624268707475, :action => :import, :format => :json, :album_id => 1)
     result = JSON.parse response.body
     result.each do |r|
       assert r['image_file_name'] =~ /DSC_\d{4}.*/
@@ -121,7 +122,7 @@ class FlickrConnectorTest < ActionController::IntegrationTest
 
   test "Import photo from a photoset (JSON)" do
     log_in
-    visit flickr_photo_action_url(:set_id => 72157624393511168, :photo_id => 4749151477, :action => :import, :format => :json)
+    visit flickr_photo_action_url(:set_id => 72157624393511168, :photo_id => 4749151477, :action => :import, :format => :json, :album_id => 1)
     result = JSON.parse response.body
     assert result['image_file_name'] =~ /DSC_\d{4}.*/
   end

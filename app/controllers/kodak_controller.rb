@@ -3,7 +3,7 @@ class KodakController < ConnectorController
   require "uri"
   require 'xmlsimple'
 
-  before_filter :login_required
+  before_filter :service_login_required
 
   PHOTO_SIZES = {:thumb => 'photoUriThumbJpeg', :screen => 'photoUriMediumJpeg', :full => 'photoUriFullResJpeg'}
   
@@ -25,7 +25,7 @@ protected
     token_store.delete_token(current_user.id)
   end
 
-  def login_required
+  def service_login_required
     unless kodak_cookies
       cookies = token_store.get_token(current_user.id)
       raise InvalidToken unless KodakConnector.verify_cookie_as_authenticated(cookies)

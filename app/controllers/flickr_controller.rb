@@ -1,7 +1,7 @@
 class FlickrController < ConnectorController
-  before_filter :login_required
+  before_filter :service_login_required
 
-  PHOTO_SIZES = {:thumb => 'Thumbnail', :screen => 'Medium', :full => 'Large'}
+  PHOTO_SIZES = {:thumb => 'Thumbnail', :screen => 'Medium', :full => 'Big'}
   
   def initialize(*args)
     super(*args)
@@ -11,7 +11,7 @@ class FlickrController < ConnectorController
 
 protected
 
-  def login_required
+  def service_login_required
     unless flickr_auth_token
       begin
         @flickr_token = token_store.get_token(current_user.id)
@@ -24,7 +24,7 @@ protected
   end
 
   def token_store
-    @token_store ||= TokenStore.new(:kodak, session)
+    @token_store ||= TokenStore.new(:flickr, session)
   end
 
   def flickr_api
@@ -40,11 +40,8 @@ protected
     @flickr_token
   end
 
-  def get_photo_url(photo_id, size_wanted = :screen)
-    photo_sizes = flickr_api.photos.getSizes :photo_id => photo_id
-    photo_sizes.select do |ps|
-      ps.label==PHOTO_SIZES[size_wanted]
-    end.first['source']
+  def get_photo_url(photo_info, size_wanted = :screen)
+    'http://farm%s.static.flickr.com/%s/%s_%s_%s.%s' % [photo_info.farm, photo_info.server, photo_info.id, photo_info.secret, PHOTO_SIZES[size_wanted][0,1].downcase, "jpg"]
   end
 
 
