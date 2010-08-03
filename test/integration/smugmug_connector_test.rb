@@ -3,6 +3,12 @@ require 'mechanize'
 
 class SmugmugConnectorTest < ActionController::IntegrationTest
   #fixtures :all
+  include IntegrationHelper
+  def setup
+    ensure_logged_in
+  end
+
+
   CREDENTIALS = {:login => 'dev@zangzing.com', :password => 'share1001photos'}
   
   test "Routing" do

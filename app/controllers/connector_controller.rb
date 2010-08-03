@@ -3,7 +3,7 @@ class ConnectorController < ApplicationController
  
   #USER_STUB = Struct.new(:id)
 
-  before_filter :login_required
+  before_filter :require_user
   before_filter :check_params_for_import, :only => :import
 
   rescue_from(InvalidToken) { |e| error_occured(401, e) }
@@ -22,12 +22,6 @@ class ConnectorController < ApplicationController
   #end
 private
 
-  def login_required
-    unless signed_in?
-      render :text => 'You must log in to ZangZing before using 3rd-party photo service connectors', :status => :unauthorized
-    end
-  end
-  
   def check_params_for_import
       render :status => 400, :text => 'ZZ Album ID should be supplied' if params[:album_id].blank?
   end

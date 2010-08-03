@@ -2,6 +2,11 @@ require 'test_helper'
 
 class KodakConnectorTest < ActionController::IntegrationTest
   #fixtures :all
+  include IntegrationHelper
+  def setup
+    ensure_logged_in
+  end
+
   KODAK_CREDENTIALS = {:email => 'dev@zangzing.com', :password => 'ijertyewij'}
 
   test "Routing" do
@@ -61,8 +66,9 @@ class KodakConnectorTest < ActionController::IntegrationTest
 
   test "Import whole folder (JSON)" do
     log_in
-    visit kodak_folder_action_url(:kodak_album_id => 118686908115, :action => :import, :format => :json)
+    visit kodak_folder_action_url(:kodak_album_id => 118686908115, :action => :import, :format => :json, :album_id => 1)
     result = JSON.parse response.body
+    puts result.inspect
     result.each do |r|
       assert r['image_file_name'] =~ /DSC_\d{4}.*/
     end
@@ -100,7 +106,7 @@ class KodakConnectorTest < ActionController::IntegrationTest
 
   test "Import photo from an album (JSON)" do
     log_in
-    visit kodak_photo_action_url(:kodak_album_id => 513508908115, :photo_id => 939618908115, :action => :import, :format => :json)
+    visit kodak_photo_action_url(:kodak_album_id => 513508908115, :photo_id => 939618908115, :action => :import, :format => :json, :album_id => 1)
     result = JSON.parse response.body
     assert result['image_file_name'] =~ /DSC_\d{4}.*/
   end
