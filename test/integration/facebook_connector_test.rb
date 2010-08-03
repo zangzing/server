@@ -42,6 +42,7 @@ class FacebookConnectorTest < ActionController::IntegrationTest
 
   def log_in
     agent = Mechanize.new { |a| a.user_agent_alias = 'Windows Mozilla' }
+    copy_cookies_to_mechanize(agent)
     #page = agent.get 'http://localhost:3000/facebook/sessions/new'; dump_pg(page)
     page = agent.get new_facebook_session_url(:host => APPLICATION_HOST); dump_pg(page)
     agent.follow_meta_refresh = false
@@ -63,7 +64,7 @@ class FacebookConnectorTest < ActionController::IntegrationTest
     visit "http://#{APPLICATION_HOST}/facebook/sessions/create?code=#{URI.encode(code)}"
     #visit new_facebook_session_url(:host => APPLICATION_HOST, :code => URI.encode(code))
     puts response.body if @@debug
-    puts "TOKEN=====> #{session[:facebook][77]}" if @@debug
+    #puts "TOKEN=====> #{session[:facebook][77]}" if @@debug
   end
 
   def log_out
@@ -88,10 +89,10 @@ class FacebookConnectorTest < ActionController::IntegrationTest
     assert result[0]['name'] == 'Test Album 01'
 
     # "Import whole photoset (JSON)" do
-    visit facebook_folder_action_url(:fb_album_id => 115847311797751, :action => :import, :format => :json)
+    visit facebook_folder_action_url(:fb_album_id => 115847311797751, :action => :import, :format => :json, :album_id => 1)
     result = JSON.parse response.body
     result.each do |r|
-      assert r['photo']['title'] =~ /dlink .+/
+      assert r['image_file_name'] =~ /dlink .+/
     end
 
     #Photos controller
@@ -117,9 +118,8 @@ class FacebookConnectorTest < ActionController::IntegrationTest
     assert response['Content-Type'] =~ /image\/.+/
 
     # "Import photo from a photoset (JSON)" do
-    visit facebook_photo_action_url(:fb_album_id => 115847311797751, :photo_id => 115847785131037, :action => :import, :format => :json)
-    result = JSON.parse response.body
-    assert result['photo']['title'] =~ /dlink .+/
+    visit facebook_photo_action_url(:fb_album_id => 115847311797751, :photo_id => 115847785131037, :action => :import, :format => :json, :album_id => 1)
+    assert result['image_file_name'] =~ /dlink .+/
 
     log_out
     assert_contain "Signed out"

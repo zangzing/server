@@ -80,11 +80,11 @@ class SmugmugConnectorTest < ActionController::IntegrationTest
     assert result[1]['name'] == 'Fabulous me!'
 
     # "Import whole photoset (JSON)" do
-    visit smugmug_folder_action_url(:sm_album_id => '6467864_mKdzn', :action => :import, :format => :json)
+    visit smugmug_folder_action_url(:sm_album_id => '6467864_mKdzn', :action => :import, :format => :json, :album_id => 1)
     result = JSON.parse response.body
     assert result.size == 38
     result.each do |r|
-      assert r['photo']['title'] =~ /\d{4}-\d{2}-\d{2}-Serra Halloween-\d{4}\.jpg/
+      assert r['image_file_name'] =~ /\d{4}-\d{2}-\d{2}-Serra Halloween-\d{4}\.jpg/
     end
 
     #Photos controller
@@ -111,9 +111,9 @@ class SmugmugConnectorTest < ActionController::IntegrationTest
     assert response['Content-Type'] =~ /image\/.+/
 
     # "Import photo from a photoset (JSON)" do
-    visit smugmug_photo_action_url(:sm_album_id => '6467864_mKdzn', :photo_id => '412839635_dFxkP', :action => :import, :format => :json)
+    visit smugmug_photo_action_url(:sm_album_id => '6467864_mKdzn', :photo_id => '412839635_dFxkP', :action => :import, :format => :json, :album_id => 1)
     result = JSON.parse response.body
-    assert result['photo']['title'] =~ /\d{4}-\d{2}-\d{2}-Serra Halloween-\d{4}\.jpg/
+    assert result['image_file_name'] =~ /\d{4}-\d{2}-\d{2}-Serra Halloween-\d{4}\.jpg/
 
     log_out
     assert_contain "Signed out"

@@ -84,10 +84,10 @@ class FlickrConnectorTest < ActionController::IntegrationTest
 
   test "Import whole photoset (JSON)" do
     log_in
-    visit flickr_folder_action_url(:set_id => 72157624268707475, :action => :import, :format => :json)
+    visit flickr_folder_action_url(:set_id => 72157624268707475, :action => :import, :format => :json, :album_id => 1)
     result = JSON.parse response.body
     result.each do |r|
-      assert r['photo']['title'] =~ /DSC_\d{4}.*/
+      assert r['image_file_name'] =~ /DSC_\d{4}.*/
     end
   end
 
@@ -122,9 +122,9 @@ class FlickrConnectorTest < ActionController::IntegrationTest
 
   test "Import photo from a photoset (JSON)" do
     log_in
-    visit flickr_photo_action_url(:set_id => 72157624393511168, :photo_id => 4749151477, :action => :import, :format => :json)
+    visit flickr_photo_action_url(:set_id => 72157624393511168, :photo_id => 4749151477, :action => :import, :format => :json, :album_id => 1)
     result = JSON.parse response.body
-    assert result['photo']['title'] =~ /DSC_\d{4}.*/
+    assert result['image_file_name'] =~ /DSC_\d{4}.*/
   end
 
 end

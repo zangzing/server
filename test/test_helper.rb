@@ -60,4 +60,16 @@ module IntegrationHelper
       end
     end
   end
+
+  def copy_cookies_to_mechanize(agent)
+    puts cookies.inspect
+    cookies.each do |n, v|
+      puts "N ==== #{n}    V ===== #{v}"
+      c = Mechanize::Cookie.new(n, v)
+      c.domain = 'localhost'
+      c.path = '/'
+      agent.cookie_jar.add URI.parse("http://#{APPLICATION_HOST}/"), c
+    end
+    puts agent.cookies.inspect
+  end
 end
