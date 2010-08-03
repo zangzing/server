@@ -21,7 +21,7 @@ class FlickrPhotosController < FlickrController
     info = flickr_api.photos.getInfo :photo_id => params[:photo_id]
     photo_url = get_photo_url(params[:photo_id], :full)
     photo = Photo.create(:state => 'new', :image_file_name => info.title, :album_id => params[:album_id])
-    Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, photo_url, flickr_auth_token))
+    Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, photo_url))
     respond_to do |wants|
       wants.html { @photo = photo }
       wants.json { render :json => photo.to_json }
