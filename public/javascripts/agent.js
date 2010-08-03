@@ -8,7 +8,8 @@
 var agent = {
 
     port : 9090,
-
+    agentId: null,
+    
     isAvailable: function(callback) {
 
         var onSuccess = function() {
@@ -22,6 +23,24 @@ var agent = {
 
         this.callAgent("/ping", onSuccess, onError)
 
+    },
+
+
+    getAgentId: function(onSuccess, onError){
+        if(this.agentId != null){
+            onSuccess(this.agentId);
+        }
+        else{
+            var me = this;  //so we can use in handler function
+
+
+            var successHandler = function(json){
+                me.agentId = json['agent_id']
+                onSuccess(me.agentId)
+            }
+
+            this.callAgent("/ping", successHandler, onError);
+        }
     },
 
     getFiles: function(virtualPath, onSuccess, onError) {
