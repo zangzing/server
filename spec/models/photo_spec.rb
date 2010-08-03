@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20100610185856
+# Schema version: 20100707184116
 #
 # Table name: photos
 #
@@ -17,6 +17,7 @@
 #  local_image_file_size    :integer
 #  local_image_updated_at   :datetime
 #  state                    :string(255)     default("new")
+#  agent_id                 :string(255)
 #
 
 require 'spec_helper'

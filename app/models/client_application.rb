@@ -1,3 +1,20 @@
+# == Schema Information
+# Schema version: 20100707184116
+#
+# Table name: client_applications
+#
+#  id           :integer         not null, primary key
+#  name         :string(255)
+#  url          :string(255)
+#  support_url  :string(255)
+#  callback_url :string(255)
+#  key          :string(20)
+#  secret       :string(40)
+#  user_id      :integer
+#  created_at   :datetime
+#  updated_at   :datetime
+#
+
 require 'oauth'
 class ClientApplication < ActiveRecord::Base
   belongs_to :user

@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20100610185856
+# Schema version: 20100707184116
 #
 # Table name: users
 #
@@ -17,7 +17,7 @@
 #  single_access_token :string(255)
 #  perishable_token    :string(255)     default(""), not null
 #  login_count         :integer
-#  faile_login_count   :integer
+#  failed_login_count  :integer
 #  last_request_at     :date
 #  current_login_at    :date
 #  last_login_at       :date

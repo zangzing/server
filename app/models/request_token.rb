@@ -1,3 +1,22 @@
+# == Schema Information
+# Schema version: 20100707184116
+#
+# Table name: oauth_tokens
+#
+#  id                    :integer         not null, primary key
+#  user_id               :integer
+#  type                  :string(20)
+#  client_application_id :integer
+#  token                 :string(20)
+#  secret                :string(40)
+#  callback_url          :string(255)
+#  verifier              :string(20)
+#  authorized_at         :datetime
+#  invalidated_at        :datetime
+#  created_at            :datetime
+#  updated_at            :datetime
+#
+
 class RequestToken < OauthToken
   
   attr_accessor :provided_oauth_verifier
