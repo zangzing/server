@@ -1,7 +1,7 @@
 class FlickrController < ConnectorController
   before_filter :service_login_required
 
-  PHOTO_SIZES = {:thumb => 'Thumbnail', :screen => 'Medium', :full => 'Large'}
+  PHOTO_SIZES = {:thumb => 'Thumbnail', :screen => 'Medium', :full => 'Big'}
   
   def initialize(*args)
     super(*args)
@@ -40,11 +40,8 @@ protected
     @flickr_token
   end
 
-  def get_photo_url(photo_id, size_wanted = :screen)
-    photo_sizes = flickr_api.photos.getSizes :photo_id => photo_id
-    photo_sizes.select do |ps|
-      ps.label==PHOTO_SIZES[size_wanted]
-    end.first['source']
+  def get_photo_url(photo_info, size_wanted = :screen)
+    'http://farm%s.static.flickr.com/%s/%s_%s_%s.%s' % [photo_info.farm, photo_info.server, photo_info.id, photo_info.secret, PHOTO_SIZES[size_wanted][0,1].downcase, "jpg"]
   end
 
 
