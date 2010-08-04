@@ -2,7 +2,7 @@ class ShutterflyPhotosController < ShutterflyController
 require 'pp'
   def index
     photos_list = sf_api.get_images(params[:sf_album_id])
-    photos = photos_list[:entry].map { |p| {:name => p[:title], :id => p[:id] } }
+    photos = photos_list.map { |p| {:name => p[:title], :id => p[:id] } }
     respond_to do |wants|
       wants.html { @photos = photos }
       wants.json { render :json => @photos.to_json }
@@ -17,7 +17,7 @@ require 'pp'
 
   def import
     photos_list = sf_api.get_images(params[:sf_album_id])
-    photo_title = photos_list[:entry].select { |p| p[:id]==params[:photo_id] }.first[:title]
+    photo_title = photos_list.select { |p| p[:id]==params[:photo_id] }.first[:title]
     photo_url = get_photo_url(params[:photo_id], (params[:size] || :screen).to_sym)
     photo = Photo.create(:state => 'new', :image_file_name => photo_title, :album_id => params[:album_id])
     Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, photo_url))

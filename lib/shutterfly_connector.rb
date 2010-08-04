@@ -30,10 +30,6 @@ class ShutterflyConnector
     params_hash = {}
     params_hash.merge!('oflyRemoteUser' => opts[:remote_user]) if opts[:remote_user]
     params_hash.merge!('oflyCallbackUrl' => opts[:callback_url]) if opts[:callback_url]
-    #  REQUEST_TOKEN_URL = 'http://www.shutterfly.com/oflyuser/grantApp.sfly'
-    #url = "http://www.shutterfly.com/oflyuser/grantApp.sfly?#{params_hash.merge('oflyAppId' => ShutterflyConnector.app_id).to_url_params}"
-    #sign_request(url, 'oflyuser/grantApp.sfly', params_hash)
-    #http://www.shutterfly.com/oflyuser/createToken.sfly
     url = "http://www.shutterfly.com/oflyuser/createToken.sfly?#{params_hash.merge('oflyAppId' => ShutterflyConnector.app_id).to_url_params}"
     sign_request(url, 'oflyuser/createToken.sfly', params_hash)
   end
@@ -46,6 +42,7 @@ class ShutterflyConnector
     http = init_http_connection
     request['User-Agent'] = 'ZZ Server (dev)'
     response = http.request(request)
+    raise ShutterflyError.new(response.code, response.body) if (400..501).include?(response.code.to_i)
     result = XmlSimple.xml_in(response.body)
     normalize_response(extract_data(result))
   end
@@ -54,11 +51,13 @@ class ShutterflyConnector
   #http://www.shutterfly.com/documentation/api_Album.sfly
   #http://www.shutterfly.com/documentation/howto_Album.sfly
   def get_albums
-    call_api("/userid/#{userid_token}/album")
+    data = call_api("/userid/#{userid_token}/album")
+    data[:entry] || []
   end
 
   def get_images(album_id)
-    call_api("/userid/#{userid_token}/albumid/#{album_id}?category-type=image")
+    data = call_api("/userid/#{userid_token}/albumid/#{album_id}?category-type=image")
+    data[:entry] || []
   end
 
 private
