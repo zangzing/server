@@ -19,39 +19,38 @@ class PhotosController < ApplicationController
 
 
 
-
-  def create
+  def create_multiple
     @album = Album.find( params[:album_id] )
 
     count = params[:count]
-    if(count)
-      @photos = []
+    @photos = []
 
-      count.to_i.times do 
-        photo = @album.photos.build( params[:photo])
-        photo.save
-        @photos << photo
-      end
+    count.to_i.times do
+      photo = @album.photos.build( params[:photo])
+      photo.save
+      @photos << photo
+    end
 
-      render :json => @photos.to_json(:only =>[:id, :agent_id, :state])
+    render :json => @photos.to_json(:only =>[:id, :agent_id, :state])
 
-    else
-      @photo = @album.photos.build( params[:photo])
-      respond_to do | format |
-        format.html do
-          if @photo.save
-            flash[:success] = "Photo Created!"
-            render :action => :show
-          else
-            render :action => :new
-          end
+  end
+
+  def create
+    @photo = @album.photos.build( params[:photo])
+    respond_to do | format |
+      format.html do
+        if @photo.save
+          flash[:success] = "Photo Created!"
+          render :action => :show
+        else
+          render :action => :new
         end
-        format.json do
-          if @photo.save
-            render :json => @photo.to_json(:only =>[:id, :agent_id, :state])
-          else
-            render :json => @photo.errors, :status=>500
-          end
+      end
+      format.json do
+        if @photo.save
+          render :json => @photo.to_json(:only =>[:id, :agent_id, :state])
+        else
+          render :json => @photo.errors, :status=>500
         end
       end
     end

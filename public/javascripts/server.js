@@ -31,7 +31,7 @@ var server = {
             $.ajax({
                type: "POST",
                dataType: "json",
-               url: "/albums/" + albumId + "/photos.json?count=" + count,
+               url: "/albums/" + albumId + "/photos/create_multiple.json?count=" + count,
                data: {'photo[agent_id]':agentId},
                success: onSuccess,
                error: onError

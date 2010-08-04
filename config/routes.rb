@@ -18,12 +18,13 @@ ActionController::Routing::Routes.draw do |map|
 
     map.resources :users, :shallow => true  do | user |
       user.resources :albums, :name_prefix => "user_" do | album |
-        album.resources :photos, :name_prefix => "album_",:member => { :upload => :put } 
+        album.resources :photos, :name_prefix => "album_",:member => { :upload => :put }
         album.resources :shares, :name_prefix => "album_"
       end
       user.resources :oauth_clients, :name_prefix => "user_" 
     end
 
+    map.album_photo_create_multiple "/albums/:album_id/photos/create_multiple.", :controller => 'photos', :action => 'create_multiple', :conditions => { :method => :post }      
 
 
     map.resources :agents   #, :only => [:create, :show]
