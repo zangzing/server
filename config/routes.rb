@@ -202,6 +202,23 @@ ActionController::Routing::Routes.draw do |map|
     fb.smugmug_folder_action '/smugmug/folders/:sm_album_id/:action.:format'
   end
 
+  #ShutterFly stuff
+  map.with_options :controller => :shutterfly_sessions do |sf|
+    sf.new_shutterfly_session     '/shutterfly/sessions/new', :action  => 'new'
+    sf.create_shutterfly_session  '/shutterfly/sessions/create', :action  => 'create'
+    sf.destroy_shutterfly_session '/shutterfly/sessions/destroy', :action  => 'destroy'
+  end
+
+  map.with_options :controller => :shutterfly_photos do |sf|
+    sf.shutterfly_photos '/shutterfly/folders/:sf_album_id/photos.:format', :action  => 'index'
+    sf.shutterfly_photo  '/shutterfly/folders/:sf_album_id/photos/:photo_id.:size', :action  => 'show'
+    sf.shutterfly_photo_action '/shutterfly/folders/:sf_album_id/photos/:photo_id/:action'
+  end
+
+  map.with_options :controller => :shutterfly_folders do |sf|
+    sf.shutterfly_folders '/shutterfly/folders.:format', :action  => 'index'
+    sf.shutterfly_folder_action '/shutterfly/folders/:sf_album_id/:action.:format'
+  end
 
 
 
