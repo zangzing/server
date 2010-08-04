@@ -17,23 +17,41 @@ class PhotosController < ApplicationController
       @title = 'New Photo'
   end
 
+
+
+
   def create
     @album = Album.find( params[:album_id] )
-    @photo = @album.photos.build( params[:photo])
-    respond_to do | format |
-      format.html do
-        if @photo.save
-          flash[:success] = "Photo Created!"
-          render :action => :show
-        else
-          render :action => :new
-        end
+
+    count = params[:count]
+    if(count)
+      @photos = []
+
+      count.to_i.times do 
+        photo = @album.photos.build( params[:photo])
+        photo.save
+        @photos << photo
       end
-      format.json do
-        if @photo.save
-          render :json => @photo.to_json(:only =>[:id, :agent_id, :state])
-        else
-          render :json => @photo.errors, :status=>500
+
+      render :json => @photos.to_json(:only =>[:id, :agent_id, :state])
+
+    else
+      @photo = @album.photos.build( params[:photo])
+      respond_to do | format |
+        format.html do
+          if @photo.save
+            flash[:success] = "Photo Created!"
+            render :action => :show
+          else
+            render :action => :new
+          end
+        end
+        format.json do
+          if @photo.save
+            render :json => @photo.to_json(:only =>[:id, :agent_id, :state])
+          else
+            render :json => @photo.errors, :status=>500
+          end
         end
       end
     end

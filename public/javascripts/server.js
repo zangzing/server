@@ -8,12 +8,7 @@
 var server = {
     createPhoto : function(albumId, onSuccess, onError){
 
-        console.debug("create photo")
-
         var callServer = function(agentId){
-
-
-            console.debug("adding picture with agent id " + agentId)
 
             $.ajax({
                type: "POST",
@@ -26,18 +21,32 @@ var server = {
         }
         
         agent.getAgentId(callServer, onError)
-
-
-
-
     },
+
+
+    createMultiplePhotos : function(albumId, count, onSuccess, onError){
+
+        var callServer = function(agentId){
+
+            $.ajax({
+               type: "POST",
+               dataType: "json",
+               url: "/albums/" + albumId + "/photos.json?count=" + count,
+               data: {'photo[agent_id]':agentId},
+               success: onSuccess,
+               error: onError
+            });
+        }
+
+        agent.getAgentId(callServer, onError)
+    },
+
+
 
 
     destroyPhoto : function(albumId, photoId, onSuccess, onError){
 
         var callServer = function(agentId){
-
-            console.debug("deleting picture with agent id " + agentId)
 
             $.ajax({
                type: "DELETE",
