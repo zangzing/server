@@ -18,7 +18,8 @@ class ShutterflyController < ConnectorController
     unless sf_user_token
       begin
         @sf_user_token = token_store.get_token(current_user.id)
-        @api = ShutterflyConnector.new(@sf_user_token)
+        authtoken, usertoken = @sf_user_token.split('_')
+        @api = ShutterflyConnector.new(usertoken, authtoken)
         #Shutterfly_api.call_method('Shutterfly.auth.checkAccessToken')
       rescue => exception
         raise InvalidToken if exception.kind_of?(ShutterflyError)
