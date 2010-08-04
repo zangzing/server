@@ -2,30 +2,21 @@ class ShutterflyFoldersController < ShutterflyController
 
   def index
     album_list = sf_api.get_albums
-    render :text => album_list
-=begin
-    @folders = album_list.map { |f| {:name => f[:title], :id => "#{f[:id]}_#{f[:key]}"} }
+    folders = album_list[:entry].map { |f| {:name => f[:title], :id => /albumid\/([0-9a-z]+)/.match(f[:id])[1] } }
     respond_to do |wants|
-      wants.html
+      wants.html { @folders = folders }
       wants.json { render :json => @folders.to_json }
     end
-=end
-  end
-
-  def test
-    render :text => sf_api.call_api("/userid/#{sf_api.userid_token}/auth")
   end
 
   def import
-    album_id, album_key = params[:sm_album_id].split('_')
-    photos_list = Shutterfly_api.call_method('Shutterfly.images.get', {:AlbumID => album_id, :AlbumKey => album_key, :Heavy => 1})
+    photos_list = sf_api.get_images(params[:sf_album_id])
     photos = []
-    photos_list[:images].each do |p|
-      photo = Photo.create(:state => 'new', :image_file_name => (p[:caption].blank? ? p[:filename] : p[:caption]), :album_id => params[:album_id])
-      Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, p[:originalurl]))
+    photos_list[:entry].each do |p|
+      photo = Photo.create(:state => 'new', :image_file_name => p[:title], :album_id => params[:album_id])
+      Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, get_photo_url(p[:id], :full)))
       photos << photo
     end
-
     respond_to do |wants|
       wants.html { @photos = photos }
       wants.json { render :json => photos.to_json }

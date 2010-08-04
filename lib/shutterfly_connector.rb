@@ -41,25 +41,24 @@ class ShutterflyConnector
   def call_api(call_path, method_params = {})
     should_be_signed = method_params.delete(:signed) || true
     request_url = "#{call_path}#{method_params.empty? ? '' : '?'}#{method_params.to_url_params}"
-    #request_url = sign_request(request_url, call_path, method_params) if should_be_signed
     request = Net::HTTP::Get.new(request_url)
     request = sign_request(request, call_path, method_params) if should_be_signed
     http = init_http_connection
-    request['User-Agent'] = 'ZZ Server'
+    request['User-Agent'] = 'ZZ Server (dev)'
     response = http.request(request)
-    response.body
-    #normalize_response(extract_data(result))
+    result = XmlSimple.xml_in(response.body)
+    normalize_response(extract_data(result))
   end
 
 
   #http://www.shutterfly.com/documentation/api_Album.sfly
   #http://www.shutterfly.com/documentation/howto_Album.sfly
   def get_albums
-    data = call_api("/userid/#{userid_token}/album")
+    call_api("/userid/#{userid_token}/album")
   end
 
   def get_images(album_id)
-    data = call_api("/userid/#{userid_token}/albumid/#{album_id}")
+    call_api("/userid/#{userid_token}/albumid/#{album_id}?category-type=image")
   end
 
 private

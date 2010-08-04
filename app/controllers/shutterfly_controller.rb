@@ -1,8 +1,7 @@
 class ShutterflyController < ConnectorController
-
-  PHOTO_SIZES = {:thumb => :tinyurl, :screen => :largeurl, :full => :originalurl}
-
   before_filter :service_login_required
+
+  PHOTO_SIZES = {:thumb => '1', :screen => '2', :full => '3'}
 
   attr_accessor :sf_user_token
 
@@ -38,6 +37,12 @@ class ShutterflyController < ConnectorController
 
   def sf_api=(api)
     @api = api
+  end
+
+  def get_photo_url(photo_id, size_wanted)
+    img_id = photo_id.dup
+    img_id[35] = PHOTO_SIZES[size_wanted]
+    "http://im1.shutterfly.com/proctaserv/#{img_id}"
   end
 
 end
