@@ -100,7 +100,7 @@ var filechooser = {
             photo["photo_id"] = photoId;
             filechooser.repaintSelection(); //we now have the photo_id, so we can display the close box
 
-            agent.uploadPhoto(filechooser.albumId, photoId, virtual_path);
+            agent.uploadPhoto(filechooser.albumId, photoId, virtual_path, function(){}, function(){});
         }
 
         server.createPhoto(filechooser.albumId, onCreatePhoto)
@@ -122,8 +122,8 @@ var filechooser = {
         filechooser.reloadChooser()
         
 
-        server.destroyPhoto(filechooser.albumId, photoId)
-        agent.cancelUpload(filechooser.albumId, photoId)
+        server.destroyPhoto(filechooser.albumId, photoId, function(){}, function(){})
+        agent.cancelUpload(filechooser.albumId, photoId, function(){}, function(){})
 
     },
 
