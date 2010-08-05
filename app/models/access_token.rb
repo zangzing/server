@@ -26,8 +26,17 @@ class AccessToken < OauthToken
   # def capabilities
   #   {:invalidate=>"/oauth/invalidate",:capabilities=>"/oauth/capabilities"}
   # end
-  
-  protected 
+
+  def get_agent_token( agent_id )
+    return false unless authorized?
+    AccessToken.transaction do
+      agent = Agent.create(:user => user, :client_application => client_application, :agent_id => agent_id)
+      invalidate!
+      agent
+    end
+  end
+
+  protected
   
   def set_authorized_at
     self.authorized_at = Time.now

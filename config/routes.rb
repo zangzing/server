@@ -17,42 +17,28 @@ ActionController::Routing::Routes.draw do |map|
   #   map.resources :products
 
     map.resources :users, :shallow => true  do | user |
-      user.resources :albums, :name_prefix => "user_" do | album |
+      user.resources :albums, :name_prefix => "user_", :member => {:slideshow => :get} do | album |
         album.resources :photos, :name_prefix => "album_",:member => { :upload => :put } 
         album.resources :shares, :name_prefix => "album_"
       end
-      user.resources :oauth_clients, :name_prefix => "user_" 
+      user.resources :oauth_clients, :name_prefix => "user_"
+      user.resources :agents, :name_prefix => "user_", :only => [:index]
     end
 
 
 
-    map.resources :agents   #, :only => [:create, :show]
+
     map.agent_photos "/agents/:agent_id/photos.", :controller =>'photos', :action => 'agentindex'
 
-    # Oauth installation to authenticate and authorize agents
-    map.oauth '/oauth',:controller=>'oauth',:action=>'index'
-    map.authorize '/oauth/authorize',:controller=>'oauth',:action=>'authorize'
-    map.authorize '/oauth/agentauthorize',:controller=>'oauth',:action=>'agentauthorize'
-    map.revoke '/oauth/revoke', :controller => 'oauth', :action => 'revoke'
-    map.request_token '/oauth/request_token',:controller=>'oauth',:action=>'request_token'
-    map.access_token '/oauth/access_token',:controller=>'oauth',:action=>'access_token'
-    map.test_request '/oauth/test_request',:controller=>'oauth',:action=>'test_request'
-    map.test_session '/oauth/test_session', :controller => 'oauth', :action => 'test_session'
-
-    map.resources :oauth_clients
-
-
-
-
-
-
-
-
-
-    #custom album actions
-    #map.connect "web_feeds/:action", :controller  => 'web_feeds', :action => /[a-z_]+/
-    map.slideshow "albums/:id/slideshow", :controller  => 'albums', :action => 'slideshow'
-
+    # Oauth installation to authenticate and authorize agents    map.oauth          '/oauth',               :controller=>'oauth_clients',:action=>'index'
+    map.authorize      '/oauth/authorize',     :controller=>'oauth',:action=>'authorize'
+    map.agentauthorize '/oauth/agentauthorize',:controller=>'oauth',:action=>'agentauthorize'
+    map.revoke         '/oauth/revoke',        :controller=>'oauth',:action=>'revoke'
+    map.request_token  '/oauth/request_token', :controller=>'oauth',:action=>'request_token'
+    map.access_token   '/oauth/access_token',  :controller=>'oauth',:action=>'access_token'
+    map.test_request   '/oauth/test_request',  :controller=>'oauth',:action=>'test_request'
+    map.test_session   '/oauth/test_session',  :controller=>'oauth',:action=>'test_session'
+                                                                              
 
     map.resources :user_sessions, :only => [:new, :create, :destroy]
     map.signin '/signin', :controller => 'user_sessions', :action => 'new'
@@ -122,8 +108,7 @@ ActionController::Routing::Routes.draw do |map|
   map.destroy_google_session '/google_sessions/destroy', :controller => 'google_sessions', :action=>'destroy'
   map.resource :google_sessions
   map.resources :google_contacts
-
-
+  
 
   #Flickr stuff
   map.with_options :controller => :flickr_sessions do |flickr|

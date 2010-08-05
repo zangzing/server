@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100707184116) do
+ActiveRecord::Schema.define(:version => 20100804213110) do
 
   create_table "albums", :force => true do |t|
     t.integer  "user_id"
@@ -90,6 +90,7 @@ ActiveRecord::Schema.define(:version => 20100707184116) do
     t.datetime "invalidated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "agent_id"
   end
 
   add_index "oauth_tokens", ["token"], :name => "index_oauth_tokens_on_token", :unique => true
@@ -114,7 +115,7 @@ ActiveRecord::Schema.define(:version => 20100707184116) do
   add_index "photos", ["album_id"], :name => "index_photos_on_album_id"
 
   create_table "sessions", :force => true do |t|
-    t.string   "session_id", :default => "", :null => false
+    t.string   "session_id", :null => false
     t.text     "data"
     t.datetime "created_at"
     t.datetime "updated_at"
