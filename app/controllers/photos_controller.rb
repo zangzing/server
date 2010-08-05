@@ -36,6 +36,7 @@ class PhotosController < ApplicationController
   end
 
   def create
+    @album = Album.find( params[:album_id] )
     @photo = @album.photos.build( params[:photo])
     respond_to do | format |
       format.html do
