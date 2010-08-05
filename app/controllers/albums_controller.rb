@@ -36,6 +36,12 @@ class AlbumsController < ApplicationController
   end
 
 
+  def upload
+    @album = Album.find(params[:id])
+    #just show the view
+  end
+
+
 
   def destroy
       # Album is found when the before filter calls authorized user
