@@ -133,6 +133,7 @@ ActiveRecord::Schema.define(:version => 90) do
     t.integer  "album_id"
     t.integer  "user_id"
     t.string   "agent_id"
+    t.string   "source_path"
     t.string   "state",                    :default => "new"
     t.text     "caption"
     t.text     "headline"
