@@ -8,7 +8,7 @@ ActionController::Routing::Routes.draw do |map|
       user.resources :oauth_clients, :name_prefix => "user_"
     end
 
-
+    map.resources :oauth_clients
 
 
     # albums
