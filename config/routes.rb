@@ -18,13 +18,39 @@ ActionController::Routing::Routes.draw do |map|
 
     map.resources :users, :shallow => true  do | user |
       user.resources :albums, :name_prefix => "user_" do | album |
-        album.resources :photos, :name_prefix => "album_",:member => { :upload => :put }
+#        album.resources :photos, :name_prefix => "album_",:member => { :upload => :put }
         album.resources :shares, :name_prefix => "album_"
       end
       user.resources :oauth_clients, :name_prefix => "user_" 
     end
 
-    map.album_photo_create_multiple "/albums/:album_id/photos/create_multiple.", :controller => 'photos', :action => 'create_multiple', :conditions => { :method => :post }      
+
+    # oauth clients
+    # todo: need to test before making live
+#    map.with_options :controller => :photos do |oauth_clients|
+#      oauth_clients.user_oauth_clients        '/users/:user_id/oauth_clients.',     :action=>"index",   :controller=>"oauth_clients", :conditions => { :method => :get }
+#      oauth_clients.create_user_oauth_client  '/users/:user_id/oauth_clients.',     :action=>"create",  :controller=>"oauth_clients", :conditions => { :method => :post }
+#      oauth_clients.new_user_oauth_client     '/users/:user_id/oauth_clients/new.', :action=>"new",     :controller=>"oauth_clients", :conditions => { :method => :get }
+#      oauth_clients.edit_oauth_client         '/oauth_clients/:id/edit.',           :action=>"edit",    :controller=>"oauth_clients", :conditions => { :method => :get }
+#      oauth_clients.oauth_client              '/oauth_clients/:id.',                :action=>"show",    :controller=>"oauth_clients", :conditions => { :method => :get }
+#      oauth_clients.update_oauth_client       '/oauth_clients/:id.',                :action=>"update",  :controller=>"oauth_clients", :conditions => { :method => :put }
+#      oauth_clients.delete_oauth_client       '/oauth_clients/:id.',                :action=>"destroy", :controller=>"oauth_clients", :conditions => { :method => :delete }
+#    end
+
+
+    # photos
+    map.with_options :controller => :photos do |photos|
+        photos.album_photos                '/albums/:album_id/photos.',                 :action=>'index',           :controller=>'photos',  :conditions => { :method => :get }
+        photos.create_album_photo          '/albums/:album_id/photos.',                 :action=>'create',          :controller=>'photos',  :conditions => { :method => :post }
+        photos.create_multiple_album_photo '/albums/:album_id/photos/create_multiple.', :action=>'create_multiple', :controller=>'photos',  :conditions => { :method => :post }
+        photos.new_album_photo             '/albums/:album_id/photos/new.',             :action=>'new',             :controller=>'photos',  :conditions => { :method => :get }
+        photos.upload_photo                '/photos/:id/upload.',                       :action=>'upload',          :controller=>'photos',  :conditions => { :method => :put }
+        photos.edit_photo                  '/photos/:id/edit.',                         :action=>'edit',            :controller=>'photos',  :conditions => { :method => :get }
+        photos.update_photo                '/photos/:id/edit.',                         :action=>'update',          :controller=>'photos',  :conditions => { :method => :put }
+        photos.destroy_photo               '/photos/:id.',                              :action=>'destroy',         :controller=>'photos',  :conditions => { :method => :delete }
+        photos.photo                       '/photos/:id.',                              :action=>'show',            :controller=>'photos',  :conditions => { :method => :get }
+    end
+
 
 
     map.resources :agents   #, :only => [:create, :show]
