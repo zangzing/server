@@ -1,3 +1,8 @@
+#
+#   © 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
+#
+
+
 class Mailer < ActionMailer::Base
   def shared_album_notification(share, album_url)
     from       "dev@zangzing.com"

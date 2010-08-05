@@ -1,10 +1,11 @@
 # == Schema Information
-# Schema version: 20100804213110
+# Schema version: 60
 #
 # Table name: oauth_tokens
 #
 #  id                    :integer         not null, primary key
 #  user_id               :integer
+#  agent_id              :string(255)
 #  type                  :string(20)
 #  client_application_id :integer
 #  token                 :string(20)
@@ -15,11 +16,12 @@
 #  invalidated_at        :datetime
 #  created_at            :datetime
 #  updated_at            :datetime
-#  agent_id              :string(255)
+#
+
+#
+#   © 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 
 class Agent < AccessToken
   validates_presence_of :agent_id
-
-
 end

@@ -1,14 +1,13 @@
 # == Schema Information
 # Schema version: 60
 #
-# Table name: shares
+# Table name: activities
 #
 #  id         :integer         not null, primary key
-#  album_id   :integer
-#  user_id    :integer
 #  type       :string(255)
-#  subject    :string(255)
-#  message    :text
+#  user_id    :integer
+#  album_id   :integer
+#  payload    :text
 #  created_at :datetime
 #  updated_at :datetime
 #
@@ -17,12 +16,7 @@
 #   © 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 
-
-class Share < ActiveRecord::Base
-  belongs_to :user
+class AlbumActivity < Activity
   belongs_to :album
-
-  has_many :recipients, :dependent => :destroy
-
-  validates_presence_of :album_id, :user_id
+  validates_presence_of :album_id
 end

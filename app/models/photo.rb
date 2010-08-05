@@ -1,13 +1,18 @@
 # == Schema Information
-# Schema version: 20100804213110
+# Schema version: 60
 #
 # Table name: photos
 #
 #  id                       :integer         not null, primary key
 #  album_id                 :integer
-#  created_at               :datetime
-#  updated_at               :datetime
 #  user_id                  :integer
+#  agent_id                 :string(255)
+#  state                    :string(255)     default("new")
+#  caption                  :text
+#  headline                 :text
+#  capture_date             :datetime
+#  suspended                :boolean
+#  metadata                 :text
 #  image_file_name          :string(255)
 #  image_content_type       :string(255)
 #  image_file_size          :integer
@@ -16,13 +21,13 @@
 #  local_image_content_type :string(255)
 #  local_image_file_size    :integer
 #  local_image_updated_at   :datetime
-#  state                    :string(255)     default("new")
-#  agent_id                 :string(255)
+#  created_at               :datetime
+#  updated_at               :datetime
 #
-
 
 #
 # Photo Model
+# © 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 # As a first implementation images are attached to photo objects using paperclip as
 # performance and customization changes are required the use of paperclip can be
@@ -70,10 +75,11 @@ require 'delayed_job'
 
 class Photo < ActiveRecord::Base
   belongs_to :album
+  belongs_to :user
 
 
   # for development do sync load  TODO:May be removed for production
-#  before_update :syncload_if_development
+  # before_update :syncload_if_development
 
   #
   after_validation_on_create :set_to_assigned;
@@ -102,7 +108,7 @@ class Photo < ActiveRecord::Base
   has_attached_file :image, image_options
 
 
-  validates_presence_of             :album_id
+  validates_presence_of             :album_id, :user_id
 
   
   validates_attachment_presence     :local_image,{

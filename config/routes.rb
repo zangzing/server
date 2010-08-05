@@ -1,73 +1,41 @@
 ActionController::Routing::Routes.draw do |map|
 
-    map.resources :users, :shallow => true  do | user |
+  map.resources :users, :shallow => true  do | user |
 #      user.resources :albums, :name_prefix => "user_" do | album |
-##        album.resources :photos, :name_prefix => "album_",:member => { :upload => :put }
+#        album.resources :photos, :name_prefix => "album_",:member => { :upload => :put }
 #        album.resources :shares, :name_prefix => "album_"
 #      end
-      user.resources :oauth_clients, :name_prefix => "user_"
-    end
-
-    map.resources :oauth_clients
+#      user.resources :oauth_clients, :name_prefix => "user_"
+  end
 
 
-    # albums
-    map.with_options :controller => :albums do |albums|
-       albums.user_albums        '/users/:user_id/albums.',     :action=>"index",  :conditions=>{ :method => :get }
-       albums.create_user_album  '/users/:user_id/albums.',     :action=>"create", :conditions=>{ :method => :post }
-       albums.new_user_album     '/users/:user_id/albums/new.', :action=>"new",    :conditions=>{ :method => :get }
-       albums.edit_album         '/albums/:id/edit.',           :action=>"edit",   :conditions=>{ :method => :get }
-       albums.album              '/albums/:id.',                :action=>"show",   :conditions=>{ :method => :get }
-       albums.update_album       '/albums/:id.',                :action=>"update", :conditions=>{ :method => :put }
-       albums.delete_album       '/albums/:id.',                :action=>"destroy",:conditions=>{ :method => :delete }
-       albums.upload             '/albums/:id/upload',          :action=>"upload", :conditions=>{ :method => :get }
-    end
 
-
-    # oauth clients
-    # todo: need to test before making live
-#    map.with_options :controller => :oauth_clients do |oauth_clients|
-#      oauth_clients.user_oauth_clients        '/users/:user_id/oauth_clients.',     :action=>"index",    :conditions => { :method => :get }
-#      oauth_clients.create_user_oauth_client  '/users/:user_id/oauth_clients.',     :action=>"create",   :conditions => { :method => :post }
-#      oauth_clients.new_user_oauth_client     '/users/:user_id/oauth_clients/new.', :action=>"new",      :conditions => { :method => :get }
-#      oauth_clients.edit_oauth_client         '/oauth_clients/:id/edit.',           :action=>"edit",     :conditions => { :method => :get }
-#      oauth_clients.oauth_client              '/oauth_clients/:id.',                :action=>"show",     :conditions => { :method => :get }
-#      oauth_clients.update_oauth_client       '/oauth_clients/:id.',                :action=>"update",   :conditions => { :method => :put }
-#      oauth_clients.delete_oauth_client       '/oauth_clients/:id.',                :action=>"destroy",  :conditions => { :method => :delete }
-#    end
-
-
-    # photos
-    map.with_options :controller => :photos do |photos|
-        photos.album_photos                '/albums/:album_id/photos.',                 :action=>'index',           :conditions => { :method => :get }
-        photos.create_album_photo          '/albums/:album_id/photos.',                 :action=>'create',          :conditions => { :method => :post }
-        photos.create_multiple_album_photo '/albums/:album_id/photos/create_multiple.', :action=>'create_multiple', :conditions => { :method => :post }
-        photos.new_album_photo             '/albums/:album_id/photos/new.',             :action=>'new',             :conditions => { :method => :get }
-        photos.upload_photo                '/photos/:id/upload.',                       :action=>'upload',          :conditions => { :method => :put }
-        photos.edit_photo                  '/photos/:id/edit.',                         :action=>'edit',            :conditions => { :method => :get }
-        photos.update_photo                '/photos/:id/edit.',                         :action=>'update',          :conditions => { :method => :put }
-        photos.destroy_photo               '/photos/:id.',                              :action=>'destroy',         :conditions => { :method => :delete }
-        photos.photo                       '/photos/:id.',                              :action=>'show',            :conditions => { :method => :get }
-        photos.agent_photos                '/agents/:agent_id/photos.',                 :action=>'agentindex',      :conditions=>{ :method => :get }
-    end
-
+  # albums
+  map.with_options :controller => :albums do |albums|
+    albums.user_albums        '/users/:user_id/albums.',     :action=>"index",  :conditions=>{ :method => :get }
+    albums.create_user_album  '/users/:user_id/albums.',     :action=>"create", :conditions=>{ :method => :post }
+    albums.new_user_album     '/users/:user_id/albums/new.', :action=>"new",    :conditions=>{ :method => :get }
+    albums.edit_album         '/albums/:id/edit.',           :action=>"edit",   :conditions=>{ :method => :get }
+    albums.album              '/albums/:id.',                :action=>"show",   :conditions=>{ :method => :get }
+    albums.update_album       '/albums/:id.',                :action=>"update", :conditions=>{ :method => :put }
+    albums.delete_album       '/albums/:id.',                :action=>"destroy",:conditions=>{ :method => :delete }
+    albums.upload             '/albums/:id/upload',          :action=>"upload", :conditions=>{ :method => :get }
+  end
 
 
   # photos
   map.with_options :controller => :photos do |photos|
-    photos.album_photos                '/albums/:album_id/photos.',                 :action=>'index',           :conditions=>{ :method => :get }
-    photos.create_album_photo          '/albums/:album_id/photos.',                 :action=>'create',          :conditions=>{ :method => :post }
-    photos.create_multiple_album_photo '/albums/:album_id/photos/create_multiple.', :action=>'create_multiple', :conditions=>{ :method => :post }
-    photos.new_album_photo             '/albums/:album_id/photos/new.',             :action=>'new',             :conditions=>{ :method => :get }
-    photos.upload_photo                '/photos/:id/upload.',                       :action=>'upload',          :conditions=>{ :method => :put }
-    photos.edit_photo                  '/photos/:id/edit.',                         :action=>'edit',            :conditions=>{ :method => :get }
-    photos.update_photo                '/photos/:id/edit.',                         :action=>'update',          :conditions=>{ :method => :put }
-    photos.destroy_photo               '/photos/:id.',                              :action=>'destroy',         :conditions=>{ :method => :delete }
-    photos.photo                       '/photos/:id.',                              :action=>'show',            :conditions=>{ :method => :get }
+    photos.album_photos                '/albums/:album_id/photos.',                 :action=>'index',           :conditions => { :method => :get }
+    photos.create_album_photo          '/albums/:album_id/photos.',                 :action=>'create',          :conditions => { :method => :post }
+    photos.create_multiple_album_photo '/albums/:album_id/photos/create_multiple.', :action=>'create_multiple', :conditions => { :method => :post }
+    photos.new_album_photo             '/albums/:album_id/photos/new.',             :action=>'new',             :conditions => { :method => :get }
+    photos.upload_photo                '/photos/:id/upload.',                       :action=>'upload',          :conditions => { :method => :put }
+    photos.edit_photo                  '/photos/:id/edit.',                         :action=>'edit',            :conditions => { :method => :get }
+    photos.update_photo                '/photos/:id/edit.',                         :action=>'update',          :conditions => { :method => :put }
+    photos.destroy_photo               '/photos/:id.',                              :action=>'destroy',         :conditions => { :method => :delete }
+    photos.photo                       '/photos/:id.',                              :action=>'show',            :conditions => { :method => :get }
     photos.agent_photos                '/agents/:agent_id/photos.',                 :action=>'agentindex',      :conditions=>{ :method => :get }
-
   end
-
 
   #root  the root of zangzing -- just remember to delete public/index.html.
   map.root :controller => "pages", :action => 'home'
@@ -75,7 +43,9 @@ ActionController::Routing::Routes.draw do |map|
 
 
   # OAuth to authenticate and authorize agents
+  #map.resources :oauth_clients
   #map.oauth          '/oauth',               :controller=>'oauth_clients',:action=>'index'
+  map.agents         '/users/:id/agents',    :controller=>'agents',:action=>'index'
   map.authorize      '/oauth/authorize',     :controller=>'oauth',:action=>'authorize'
   map.agentauthorize '/oauth/agentauthorize',:controller=>'oauth',:action=>'agentauthorize'
   map.revoke         '/oauth/revoke',        :controller=>'oauth',:action=>'revoke'

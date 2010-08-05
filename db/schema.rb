@@ -9,13 +9,34 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100804213110) do
+ActiveRecord::Schema.define(:version => 90) do
+
+  create_table "activities", :force => true do |t|
+    t.string   "type"
+    t.integer  "user_id"
+    t.integer  "album_id"
+    t.text     "payload"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "activities", ["album_id"], :name => "index_activities_on_album_id"
+  add_index "activities", ["user_id"], :name => "index_activities_on_user_id"
 
   create_table "albums", :force => true do |t|
     t.integer  "user_id"
+    t.integer  "privacy"
+    t.string   "type"
+    t.integer  "style",           :default => 0
+    t.boolean  "open"
+    t.datetime "event_date"
+    t.string   "location"
+    t.integer  "stream_share_id"
+    t.boolean  "reminders"
+    t.string   "name"
+    t.boolean  "suspended",       :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name"
   end
 
   add_index "albums", ["user_id"], :name => "index_albums_on_user_id"
@@ -36,6 +57,7 @@ ActiveRecord::Schema.define(:version => 20100804213110) do
 
   create_table "contacts", :force => true do |t|
     t.integer  "identity_id"
+    t.string   "type"
     t.string   "name"
     t.string   "address"
     t.datetime "created_at"
@@ -57,8 +79,20 @@ ActiveRecord::Schema.define(:version => 20100804213110) do
     t.datetime "updated_at"
   end
 
+  create_table "followers", :force => true do |t|
+    t.integer  "follower_id"
+    t.integer  "leader_id"
+    t.boolean  "blocked",     :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "followers", ["follower_id"], :name => "index_followers_on_follower_id"
+  add_index "followers", ["leader_id"], :name => "index_followers_on_leader_id"
+
   create_table "identities", :force => true do |t|
     t.integer  "user_id"
+    t.string   "type"
     t.string   "name"
     t.string   "credentials"
     t.datetime "last_contact_refresh"
@@ -80,6 +114,7 @@ ActiveRecord::Schema.define(:version => 20100804213110) do
 
   create_table "oauth_tokens", :force => true do |t|
     t.integer  "user_id"
+    t.string   "agent_id"
     t.string   "type",                  :limit => 20
     t.integer  "client_application_id"
     t.string   "token",                 :limit => 20
@@ -90,16 +125,20 @@ ActiveRecord::Schema.define(:version => 20100804213110) do
     t.datetime "invalidated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "agent_id"
   end
 
   add_index "oauth_tokens", ["token"], :name => "index_oauth_tokens_on_token", :unique => true
 
   create_table "photos", :force => true do |t|
     t.integer  "album_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
     t.integer  "user_id"
+    t.string   "agent_id"
+    t.string   "state",                    :default => "new"
+    t.text     "caption"
+    t.text     "headline"
+    t.datetime "capture_date"
+    t.boolean  "suspended",                :default => false
+    t.text     "metadata"
     t.string   "image_file_name"
     t.string   "image_content_type"
     t.integer  "image_file_size"
@@ -108,11 +147,23 @@ ActiveRecord::Schema.define(:version => 20100804213110) do
     t.string   "local_image_content_type"
     t.integer  "local_image_file_size"
     t.datetime "local_image_updated_at"
-    t.string   "state",                    :default => "new"
-    t.string   "agent_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
+  add_index "photos", ["agent_id"], :name => "index_photos_on_agent_id"
   add_index "photos", ["album_id"], :name => "index_photos_on_album_id"
+
+  create_table "recipients", :force => true do |t|
+    t.integer  "share_id"
+    t.string   "type"
+    t.string   "name"
+    t.string   "address"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "recipients", ["share_id"], :name => "index_recipients_on_share_id"
 
   create_table "sessions", :force => true do |t|
     t.string   "session_id", :null => false
@@ -127,11 +178,9 @@ ActiveRecord::Schema.define(:version => 20100804213110) do
   create_table "shares", :force => true do |t|
     t.integer  "album_id"
     t.integer  "user_id"
-    t.string   "email_to"
-    t.string   "email_subject"
-    t.text     "email_message"
-    t.string   "twitter_message"
-    t.string   "facebook_message"
+    t.string   "type"
+    t.string   "subject"
+    t.text     "message"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -140,25 +189,28 @@ ActiveRecord::Schema.define(:version => 20100804213110) do
   add_index "shares", ["user_id"], :name => "index_shares_on_user_id"
 
   create_table "users", :force => true do |t|
-    t.string   "name"
     t.string   "email"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "remember_token"
-    t.boolean  "admin"
+    t.string   "role"
+    t.string   "user_name"
+    t.string   "first_name"
+    t.string   "last_name"
     t.string   "style",               :default => "white"
-    t.string   "crypted_password"
-    t.string   "password_salt"
+    t.integer  "login_count"
+    t.date     "last_login_at"
+    t.string   "last_login_ip"
+    t.date     "current_login_at"
+    t.string   "current_login_ip"
+    t.integer  "failed_login_count"
+    t.date     "last_request_at"
     t.string   "persistence_token"
     t.string   "single_access_token"
     t.string   "perishable_token",    :default => "",      :null => false
-    t.integer  "login_count"
-    t.integer  "failed_login_count"
-    t.date     "last_request_at"
-    t.date     "current_login_at"
-    t.date     "last_login_at"
-    t.string   "current_login_ip"
-    t.string   "last_login_ip"
+    t.string   "remember_token"
+    t.string   "crypted_password"
+    t.string   "password_salt"
+    t.string   "suspended",           :default => "f"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
