@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20100707184116
+# Schema version: 20100804213110
 #
 # Table name: oauth_tokens
 #
@@ -15,6 +15,7 @@
 #  invalidated_at        :datetime
 #  created_at            :datetime
 #  updated_at            :datetime
+#  agent_id              :string(255)
 #
 
 class RequestToken < OauthToken

@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20100707184116
+# Schema version: 20100804213110
 #
 # Table name: shares
 #
