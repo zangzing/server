@@ -17,6 +17,24 @@ class PhotosController < ApplicationController
       @title = 'New Photo'
   end
 
+
+
+  def create_multiple
+    @album = Album.find( params[:album_id] )
+
+    count = params[:count]
+    @photos = []
+
+    count.to_i.times do
+      photo = @album.photos.build( params[:photo])
+      photo.save
+      @photos << photo
+    end
+
+    render :json => @photos.to_json(:only =>[:id, :agent_id, :state])
+
+  end
+
   def create
     @album = Album.find( params[:album_id] )
     @photo = @album.photos.build( params[:photo])

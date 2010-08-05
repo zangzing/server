@@ -1,8 +1,10 @@
-api_creds = YAML.load(File.read("#{RAILS_ROOT}/config/flickr_api_keys.yml"))
-FLICKR_API_KEYS = api_creds[RAILS_ENV]
+api_creds = {}
+[:flickr, :facebook, :smugmug, :shutterfly].each do |service|
+  all_env_keys = YAML.load(File.read("#{RAILS_ROOT}/config/#{service}_api_keys.yml"))
+  api_creds[service] = all_env_keys[RAILS_ENV]
+end
 
-api_creds = YAML.load(File.read("#{RAILS_ROOT}/config/facebook_api_keys.yml"))
-FACEBOOK_API_KEYS = api_creds[RAILS_ENV]
-
-api_creds = YAML.load(File.read("#{RAILS_ROOT}/config/smugmug_api_keys.yml"))
-SMUGMUG_API_KEYS = api_creds[RAILS_ENV]
+FLICKR_API_KEYS = api_creds[:flickr]
+FACEBOOK_API_KEYS = api_creds[:facebook]
+SMUGMUG_API_KEYS = api_creds[:smugmug]
+SHUTTERFLY_API_KEYS = api_creds[:shutterfly]

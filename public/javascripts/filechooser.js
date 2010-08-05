@@ -84,6 +84,50 @@ var filechooser = {
         return false
     },
 
+
+    selectFolder : function(folderVirtualPath){
+
+        var onGetFiles = function(json){
+            //2. add photos to 'added photos' tray
+
+            var photos = []
+            for (i in json){
+                if(json[i]['is_dir'] == false ){
+                    var photo = {}
+                    photos[photos.length] = photo
+                    photo["virtual_path"] = json[i]["virtual_path"]
+                    photo["photo_id"] = null
+                    filechooser.selection.push(photo)
+                }
+            }
+
+
+            var onCreatePhotos = function(json){
+                //4. update photo ids of items in 'added photos' tray
+                for(i in photos){
+                    photos[i]['photo_id'] = json[i]['id']
+                }
+                filechooser.repaintSelection(); //we now have the photo_id, so we can display the close box
+                
+                //5. call the agent to upload each photo
+                for(i in photos){
+                    //todo: create agent api that uploads contents of folder given a virtual_path and a list of photo ids
+                    agent.uploadPhoto(filechooser.albumId, photos[i]['photo_id'], photos[i]['virtual_path'], function(){}, function(){});
+                }
+
+
+            }
+
+            //3. create photo object on server for each photo in folder
+            server.createMultiplePhotos(filechooser.albumId, photos.length, onCreatePhotos, function(){})
+        }
+
+
+        //1. get contents of folder from the agent
+        agent.getFiles(folderVirtualPath, onGetFiles);
+
+    },
+
     selectPhoto : function(virtual_path) {
         var photo = {}
         photo["virtual_path"] = virtual_path
@@ -92,11 +136,12 @@ var filechooser = {
 
         filechooser.selection.push(photo)
         filechooser.repaintSelection() //moves picture to selection tray
-        filechooser.repaintChooser() //change clicked photo to gray
+//        filechooser.repaintChooser() //very inefficiently change clicked photo to gray
 
 
         var onCreatePhoto = function(json){
             var photoId = json["id"];
+
             photo["photo_id"] = photoId;
             filechooser.repaintSelection(); //we now have the photo_id, so we can display the close box
 
@@ -119,7 +164,7 @@ var filechooser = {
         }
         filechooser.selection = list
         filechooser.repaintSelection()
-        filechooser.reloadChooser()
+//        filechooser.reloadChooser()
         
 
         server.destroyPhoto(filechooser.albumId, photoId, function(){}, function(){})
@@ -175,7 +220,9 @@ var filechooser = {
             var file = json[i]
 
             if (file.is_dir == true) {
+                html += "<a href=\"\" onclick=\"filechooser.selectFolder(\'" + file.virtual_path + "\');return false;\">"
                 html += "<img height='100' src='/images/folder.jpeg'>"
+                html += "</a>"
             }
             else {
                 var BOX = 125
