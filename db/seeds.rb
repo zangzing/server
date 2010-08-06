@@ -12,5 +12,5 @@ print "ZangZing User Created!\n"
 
 # ZANGZING  AGENT CLIENT APPLICATION TOKEN
 # This values are in all the agents, do not loose or change them them
-User.connection.execute("INSERT INTO client_applications (id,user_id,name,url,support_url,callback_url,key,secret) VALUES(0,0,'ZangZing Agent V1.0','http://www.zangzing.com','http://www.zangzing.com','http://www.zangzing.com','duGvzn35vc14QvspWUPk','coNkUA3exUpNA8OBGhK2hDKBur3OQnAvDZyZfcbd');")
+User.connection.execute("INSERT INTO client_applications (id,user_id,name,url,support_url,callback_url,`key`,secret) VALUES(0,0,'ZangZing Agent V1.0','http://www.zangzing.com','http://www.zangzing.com','http://www.zangzing.com','duGvzn35vc14QvspWUPk','coNkUA3exUpNA8OBGhK2hDKBur3OQnAvDZyZfcbd');")
 print "ZangZing Agent Client Application token created!\n"
