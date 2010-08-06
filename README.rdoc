@@ -15,9 +15,9 @@ To get your environment and gems ready to develop/test you need to
 this should get you ready to go.
 
 Resources:
-- [Documentation Site |http://zangzing.onconfluence.com]
-- [CruiseControl CI build server|http://build.zangzing.com] for the master branch
-- [Lighthouse issue tracking|https://zangzing.lighthouseapp.com]
+- Documentation Site[http://zangzing.onconfluence.com]
+- CruiseControl CI build server[http://build.zangzing.com] for the master branch
+- Lighthouse[https://zangzing.lighthouseapp.com]
 - Mail the team if you need access dev .at. zangzing.com
 
 
