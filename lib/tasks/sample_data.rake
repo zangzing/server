@@ -1,19 +1,18 @@
-=begin
-
 require 'faker'
 
 namespace :db do
-  desc "Fill database with sample data"
+  desc "Drop DB and fill it with sample test data"
   task :populate => :environment do
     Rake::Task['db:reset'].invoke
-    admin = User.create!(:name => "Example User",
-                 :email => "example@railstutorial.org",
+    admin = User.create!(:name => "ZZ Admin User",
+                 :email => "example-zzadmin@zangzing.org",
                  :password => "foobar",
                  :password_confirmation => "foobar")
-    admin.toggle!( :admin )
+    admin.update_attribute( :role, :admin )
+
     99.times do |n|
       name  = Faker::Name.name
-      email = "example-#{n+1}@railstutorial.org"
+      email = "example-#{n+1}@zangzing.org"
       password  = "password"
       User.create!(:name => name,
                    :email => email,
@@ -28,4 +27,3 @@ namespace :db do
   end
 end
 
-=end
