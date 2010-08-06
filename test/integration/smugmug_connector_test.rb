@@ -42,8 +42,10 @@ class SmugmugConnectorTest < ActionController::IntegrationTest
   end
 
   def log_in
+    visit new_smugmug_session_path
+    service_auth_url = response.redirected_to
     agent = Mechanize.new { |a| a.user_agent_alias = 'Windows Mozilla' }
-    page = agent.get new_smugmug_session_url(:host => APPLICATION_HOST); dump_pg(page)
+    page = agent.get service_auth_url; dump_pg(page)
     agent.follow_meta_refresh = false
     agent.redirect_ok = false
     form = page.forms.last
@@ -84,7 +86,7 @@ class SmugmugConnectorTest < ActionController::IntegrationTest
     result = JSON.parse response.body
     assert result.size == 38
     result.each do |r|
-      assert r['image_file_name'] =~ /\d{4}-\d{2}-\d{2}-Serra Halloween-\d{4}\.jpg/
+      assert r['caption'] =~ /\d{4}-\d{2}-\d{2}-Serra Halloween-\d{4}\.jpg/
     end
 
     #Photos controller
@@ -113,7 +115,7 @@ class SmugmugConnectorTest < ActionController::IntegrationTest
     # "Import photo from a photoset (JSON)" do
     visit smugmug_photo_action_url(:sm_album_id => '6467864_mKdzn', :photo_id => '412839635_dFxkP', :action => :import, :format => :json, :album_id => 1)
     result = JSON.parse response.body
-    assert result['image_file_name'] =~ /\d{4}-\d{2}-\d{2}-Serra Halloween-\d{4}\.jpg/
+    assert result['caption'] =~ /\d{4}-\d{2}-\d{2}-Serra Halloween-\d{4}\.jpg/
 
     log_out
     assert_contain "Signed out"

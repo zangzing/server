@@ -87,7 +87,7 @@ class ShutterflyConnectorTest < ActionController::IntegrationTest
     result = JSON.parse response.body
     assert result.size == 3
     result.each do |r|
-      assert r['image_file_name'] =~ /DSC_\d{4}.JPG/
+      assert r['caption'] =~ /DSC_\d{4}.JPG/
     end
 
     #Photos controller
@@ -112,7 +112,7 @@ class ShutterflyConnectorTest < ActionController::IntegrationTest
     # "Import photo from a photoset (JSON)" do
     visit shutterfly_photo_action_url(:sf_album_id => '67b0de21d1821ffc8441', :photo_id => '47a0d937b3127ccefaf59bea71a600000033100AZsm7dmzZtGYPbz4G', :action => :import, :format => :json, :album_id => 1)
     result = JSON.parse response.body
-    assert result['image_file_name'] == 'DSC_0212.JPG'
+    assert result['caption'] == 'DSC_0212.JPG'
 
     log_out
     assert_contain "Signed out"

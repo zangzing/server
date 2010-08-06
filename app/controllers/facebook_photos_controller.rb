@@ -18,7 +18,7 @@ class FacebookPhotosController < FacebookController
 
   def import
     info = facebook_graph.get(params[:photo_id])
-    photo = Photo.create(:state => 'new', :image_file_name => info[:name], :album_id => params[:album_id])
+    photo = Photo.create(:caption => info[:name], :album_id => params[:album_id])
     Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, info[:source]))
     respond_to do |wants|
       wants.html { @photo = photo }

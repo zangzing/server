@@ -41,10 +41,10 @@ class FacebookConnectorTest < ActionController::IntegrationTest
   end
 
   def log_in
+    visit new_facebook_session_path
+    service_auth_url = response.redirected_to
     agent = Mechanize.new { |a| a.user_agent_alias = 'Windows Mozilla' }
-    copy_cookies_to_mechanize(agent)
-    #page = agent.get 'http://localhost:3000/facebook/sessions/new'; dump_pg(page)
-    page = agent.get new_facebook_session_url(:host => APPLICATION_HOST); dump_pg(page)
+    page = agent.get service_auth_url; dump_pg(page)
     agent.follow_meta_refresh = false
     agent.redirect_ok = false
     begin
@@ -92,7 +92,7 @@ class FacebookConnectorTest < ActionController::IntegrationTest
     visit facebook_folder_action_url(:fb_album_id => 115847311797751, :action => :import, :format => :json, :album_id => 1)
     result = JSON.parse response.body
     result.each do |r|
-      assert r['image_file_name'] =~ /dlink .+/
+      assert r['caption'] =~ /dlink .+/
     end
 
     #Photos controller
@@ -120,7 +120,7 @@ class FacebookConnectorTest < ActionController::IntegrationTest
     # "Import photo from a photoset (JSON)" do
     visit facebook_photo_action_url(:fb_album_id => 115847311797751, :photo_id => 115847785131037, :action => :import, :format => :json, :album_id => 1)
     result = JSON.parse(response.body)
-    assert result['image_file_name'] =~ /dlink .+/
+    assert result['caption'] =~ /dlink .+/
 
     log_out
     assert_contain "Signed out"
