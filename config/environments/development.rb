@@ -18,15 +18,13 @@ config.action_mailer.raise_delivery_errors = true
 config.action_mailer.delivery_method = :smtp
 config.action_mailer.smtp_settings = {
                   :enable_starttls_auto => true,
-                  :address => 'smtp.gmail.com',
-                  :port => 587,
+                  :address => 'mail.authsmtp.com',
+                  :port => 26,
                   :authentication => :plain,
-                  :domain => 'gmail.com',
-                  :user_name => 'dev.zangzing@gmail.com',
-                  :password => 'share1001photos'
+                  :domain => 'zangzing.com',
+                  :user_name => 'ac51517',
+                  :password => 'sfmvqvm4ehbrgw'
 }
-
-
 #paperclip will look for imagemagick here
 Paperclip.options[:command_path] = ENV['IMAGEMAGICK_PATH']
 Paperclip.options[:log] = true
