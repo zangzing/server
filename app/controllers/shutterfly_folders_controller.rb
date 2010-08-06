@@ -5,7 +5,7 @@ class ShutterflyFoldersController < ShutterflyController
     folders = album_list.map { |f| {:name => f[:title], :id => /albumid\/([0-9a-z]+)/.match(f[:id])[1] } }
     respond_to do |wants|
       wants.html { @folders = folders }
-      wants.json { render :json => @folders.to_json }
+      wants.json { render :json => folders.to_json }
     end
   end
 

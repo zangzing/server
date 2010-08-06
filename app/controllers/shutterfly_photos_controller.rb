@@ -5,7 +5,7 @@ require 'pp'
     photos = photos_list.map { |p| {:name => p[:title], :id => p[:id] } }
     respond_to do |wants|
       wants.html { @photos = photos }
-      wants.json { render :json => @photos.to_json }
+      wants.json { render :json => photos.to_json }
     end
   end
 
