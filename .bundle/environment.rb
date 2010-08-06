@@ -174,9 +174,9 @@ end
 module Bundler
   ENV_LOADED   = true
   LOCKED_BY    = '0.9.26'
-  FINGERPRINT  = "009563f162a9d298847d98e8a372c270dde0322f"
+  FINGERPRINT  = "c414de8e27a20152ec10b8515b9b54154604da5e"
   HOME         = '/Users/mauricio/.bundle/ruby/1.8/bundler'
-  AUTOREQUIRES = {:default=>[["authlogic", false], ["aws/s3", true], ["delayed_job", false], ["flickraw", false], ["gdata", false], ["hyper_graph", true], ["oauth", false], ["oauth-plugin", false], ["paperclip", false], ["rails", false], ["sqlite3", true], ["will_paginate", false]]}
+  AUTOREQUIRES = {:default=>[["authlogic", false], ["aws/s3", true], ["bundler", false], ["delayed_job", false], ["flickraw", false], ["gdata", false], ["hyper_graph", true], ["oauth", false], ["oauth-plugin", false], ["paperclip", false], ["rails", false], ["sqlite3", true], ["will_paginate", false]]}
   SPECS        = [
         {:load_paths=>["/Users/mauricio/.gem/ruby/1.8/gems/rake-0.8.7/lib"], :loaded_from=>"/Users/mauricio/.gem/ruby/1.8/specifications/rake-0.8.7.gemspec", :name=>"rake"},
         {:load_paths=>["/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/lib/ruby/gems/1.8/gems/activesupport-2.3.5/lib"], :loaded_from=>"/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/lib/ruby/gems/1.8/specifications/activesupport-2.3.5.gemspec", :name=>"activesupport"},
@@ -190,9 +190,10 @@ module Bundler
         {:load_paths=>["/Library/Ruby/Gems/1.8/gems/mime-types-1.16/lib"], :loaded_from=>"/Library/Ruby/Gems/1.8/specifications/mime-types-1.16.gemspec", :name=>"mime-types"},
         {:load_paths=>["/Library/Ruby/Gems/1.8/gems/xml-simple-1.0.12/lib"], :loaded_from=>"/Library/Ruby/Gems/1.8/specifications/xml-simple-1.0.12.gemspec", :name=>"xml-simple"},
         {:load_paths=>["/Library/Ruby/Gems/1.8/gems/aws-s3-0.6.2/lib"], :loaded_from=>"/Library/Ruby/Gems/1.8/specifications/aws-s3-0.6.2.gemspec", :name=>"aws-s3"},
+        {:load_paths=>["/Library/Ruby/Gems/1.8/gems/bundler-0.9.26/lib"], :loaded_from=>"/Library/Ruby/Gems/1.8/specifications/bundler-0.9.26.gemspec", :name=>"bundler"},
         {:load_paths=>["/Users/mauricio/.bundle/ruby/1.8/gems/daemons-1.1.0/lib"], :loaded_from=>"/Users/mauricio/.bundle/ruby/1.8/specifications/daemons-1.1.0.gemspec", :name=>"daemons"},
         {:load_paths=>["/Library/Ruby/Gems/1.8/gems/delayed_job-2.0.3/lib"], :loaded_from=>"/Library/Ruby/Gems/1.8/specifications/delayed_job-2.0.3.gemspec", :name=>"delayed_job"},
-        {:load_paths=>["/Library/Ruby/Gems/1.8/gems/json-1.4.3/ext/json/ext", "/Library/Ruby/Gems/1.8/gems/json-1.4.3/ext", "/Library/Ruby/Gems/1.8/gems/json-1.4.3/lib"], :loaded_from=>"/Library/Ruby/Gems/1.8/specifications/json-1.4.3.gemspec", :name=>"json"},
+        {:load_paths=>["/Users/mauricio/.bundle/ruby/1.8/gems/json-1.4.4/ext/json/ext", "/Users/mauricio/.bundle/ruby/1.8/gems/json-1.4.4/ext", "/Users/mauricio/.bundle/ruby/1.8/gems/json-1.4.4/lib"], :loaded_from=>"/Users/mauricio/.bundle/ruby/1.8/specifications/json-1.4.4.gemspec", :name=>"json"},
         {:load_paths=>["/Users/mauricio/.gem/ruby/1.8/gems/flickraw-0.8.2/lib"], :loaded_from=>"/Users/mauricio/.gem/ruby/1.8/specifications/flickraw-0.8.2.gemspec", :name=>"flickraw"},
         {:load_paths=>["/Users/mauricio/.gem/ruby/1.8/gems/gdata-1.1.1/lib"], :loaded_from=>"/Users/mauricio/.gem/ruby/1.8/specifications/gdata-1.1.1.gemspec", :name=>"gdata"},
         {:load_paths=>["/Users/mauricio/.gem/ruby/1.8/gems/hyper-graph-0.3.1/lib"], :loaded_from=>"/Users/mauricio/.gem/ruby/1.8/specifications/hyper-graph-0.3.1.gemspec", :name=>"hyper-graph"},
