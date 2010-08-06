@@ -1,10 +1,11 @@
 # == Schema Information
-# Schema version: 20100804213110
+# Schema version: 60
 #
 # Table name: oauth_tokens
 #
 #  id                    :integer         not null, primary key
 #  user_id               :integer
+#  agent_id              :string(255)
 #  type                  :string(20)
 #  client_application_id :integer
 #  token                 :string(20)
@@ -15,23 +16,12 @@
 #  invalidated_at        :datetime
 #  created_at            :datetime
 #  updated_at            :datetime
-#  agent_id              :string(255)
 #
 
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-one:
-  id: 1
-  user_id: 1
-  client_application_id: 1
-  token: one
-  secret: MyString
-  created_at: 2007-11-19 07:31:46
-  updated_at: 2007-11-19 07:31:46
-two:
-  id: 2
-  user_id: 1
-  client_application_id: 1
-  token: two
-  secret: MyString
-  created_at: 2007-11-19 07:31:46
-  updated_at: 2007-11-19 07:31:46
+#
+#   © 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
+#
+
+class Agent < AccessToken
+  validates_presence_of :agent_id
+end

@@ -2,7 +2,7 @@ class OauthController < ApplicationController
 
   before_filter :require_user, :only => [:authorize,:revoke, :agentauthorize]
   before_filter :oauth_required, :only => [:invalidate,:capabilities, :test_request, :test_session]
-  before_filter :verify_oauth_consumer_signature, :only => [:request_token]
+  before_filter :verify_oauth_consumer_signature_agent, :only => [:request_token]
   before_filter :verify_oauth_request_token, :only => [:access_token]
   skip_before_filter :verify_authenticity_token, :only=>[:request_token, :access_token, :invalidate, :test_request, :test_session]
 
@@ -75,6 +75,7 @@ class OauthController < ApplicationController
   def access_token
     @token = current_token && current_token.exchange!
     if @token
+      @token = @token.get_agent_token( params['agent_id'] )
       render :text => @token.to_query
     else
       render :nothing => true, :status => 401
@@ -136,5 +137,11 @@ class OauthController < ApplicationController
     params[:authorize] == '1'
   end
 
+  def verify_oauth_consumer_signature_agent    
+     unless ClientApplication.find_by_key( params['oauth_consumer_key'])
+        logger.warn "WARNING: An OAuth Client Application Request Failed. It Maybe the ZangZing Agent!. Was the database seeded with the Agents Consumer Key (rake db:seed)?"
+     end
+     verify_oauth_consumer_signature
+  end
 
 end

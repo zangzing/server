@@ -1,5 +1,5 @@
 class PhotosController < ApplicationController
-  #before_filter :oauth_required, :only => [:agentindex, :upload]
+  before_filter :oauth_required, :only => [:agentindex, :upload]
   before_filter :login_required, :only => [:create]
   before_filter :require_user,   :only => [:show, :new, :edit, :destroy, :index]
 
@@ -15,6 +15,24 @@ class PhotosController < ApplicationController
       @album = Album.find( params[:album_id] )
       @photo = Photo.new
       @title = 'New Photo'
+  end
+
+
+
+  def create_multiple
+    @album = Album.find( params[:album_id] )
+
+    count = params[:count]
+    @photos = []
+
+    count.to_i.times do
+      photo = @album.photos.build( params[:photo])
+      photo.save
+      @photos << photo
+    end
+
+    render :json => @photos.to_json(:only =>[:id, :agent_id, :state])
+
   end
 
   def create

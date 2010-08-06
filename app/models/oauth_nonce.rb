@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20100707184116
+# Schema version: 60
 #
 # Table name: oauth_nonces
 #
@@ -8,6 +8,10 @@
 #  timestamp  :integer
 #  created_at :datetime
 #  updated_at :datetime
+#
+
+#
+#   © 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 
 # Simple store of nonces. The OAuth Spec requires that any given pair of nonce and timestamps are unique.

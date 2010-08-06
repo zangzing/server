@@ -35,10 +35,13 @@ class AlbumsController < ApplicationController
       redirect_to album_photos_url( params[:id])
   end
 
+
   def upload
     @album = Album.find(params[:id])
-    @title = CGI.escapeHTML(@album.name)
+    #just show the view
   end
+
+
 
   def destroy
       # Album is found when the before filter calls authorized user

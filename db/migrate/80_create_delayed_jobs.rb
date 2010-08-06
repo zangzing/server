@@ -1,6 +1,6 @@
-class DelayedJobMigration < ActiveRecord::Migration
+class CreateDelayedJobs < ActiveRecord::Migration
      def self.up
-       create_table :delayed_jobs, :force => true do |table|
+       create_table     :delayed_jobs, :force => true do |table|
          table.integer  :priority, :default => 0      # jobs can jump to the front of
          table.integer  :attempts, :default => 0      # retries, but still fail eventually
          table.text     :handler                      # YAML object dump
@@ -16,5 +16,4 @@ class DelayedJobMigration < ActiveRecord::Migration
      def self.down
        drop_table :delayed_jobs
      end
-
 end

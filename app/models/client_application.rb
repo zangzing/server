@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20100707184116
+# Schema version: 60
 #
 # Table name: client_applications
 #
@@ -13,6 +13,10 @@
 #  user_id      :integer
 #  created_at   :datetime
 #  updated_at   :datetime
+#
+
+#
+#   © 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 
 require 'oauth'

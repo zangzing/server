@@ -1,40 +1,56 @@
 # == Schema Information
-# Schema version: 20100707184116
+# Schema version: 60
 #
 # Table name: users
 #
 #  id                  :integer         not null, primary key
-#  name                :string(255)
 #  email               :string(255)
-#  created_at          :datetime
-#  updated_at          :datetime
-#  remember_token      :string(255)
-#  admin               :boolean
+#  role                :string(255)
+#  user_name           :string(255)
+#  first_name          :string(255)
+#  last_name           :string(255)
 #  style               :string(255)     default("white")
-#  crypted_password    :string(255)
-#  password_salt       :string(255)
+#  login_count         :integer
+#  last_login_at       :date
+#  last_login_ip       :string(255)
+#  current_login_at    :date
+#  current_login_ip    :string(255)
+#  failed_login_count  :integer
+#  last_request_at     :date
 #  persistence_token   :string(255)
 #  single_access_token :string(255)
 #  perishable_token    :string(255)     default(""), not null
-#  login_count         :integer
-#  failed_login_count  :integer
-#  last_request_at     :date
-#  current_login_at    :date
-#  last_login_at       :date
-#  current_login_ip    :string(255)
-#  last_login_ip       :string(255)
+#  remember_token      :string(255)
+#  crypted_password    :string(255)
+#  password_salt       :string(255)
+#  suspended           :string(255)     default("f")
+#  created_at          :datetime
+#  updated_at          :datetime
+#
+
+#
+#   © 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 
 
 class User < ActiveRecord::Base
-  attr_accessible  :name, :email, :password, :password_confirmation, :style
-  
-  has_many :albums,       :dependent => :destroy
-  has_many :identities,   :dependent => :destroy
-  has_many :shares,       :dependent => :destroy
+  before_save  :split_name
+
+  attr_writer      :name
+  attr_accessible  :email, :name, :password, :password_confirmation, :style
+
+
+
+
+  has_many :albums,              :dependent => :destroy
+  has_many :identities,          :dependent => :destroy
+  has_many :shares
+  has_many :followers,           :dependent => :destroy
+  has_many :activities,          :dependent => :destroy
+  has_many :photos
   has_many :client_applications, :dependent => :destroy 
   has_many :tokens, :class_name=>"OauthToken",:order=>"authorized_at desc",:include=>[:client_application]
-  
+
 
   # This delegates all authentication details to authlogic
   acts_as_authentic
@@ -62,4 +78,22 @@ class User < ActiveRecord::Base
       reset_perishable_token!
       Mailer.deliver_password_reset_instructions(self)
   end
+
+  def admin?
+     self.role == :admin
+  end
+
+  def name
+    @name ||= (self.first_name ? self.first_name+' ':'')+(self.last_name||'')
+  end
+
+  private
+    def split_name
+      unless name.nil?
+        names = name.split
+        self.last_name = names.pop
+        self.first_name = names.join(' ')
+      end
+    end
+
 end

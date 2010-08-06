@@ -15,6 +15,7 @@ class CreateOauthTables < ActiveRecord::Migration
     
     create_table :oauth_tokens do |t|
       t.integer :user_id
+      t.string  :agent_id 
       t.string :type, :limit => 20
       t.integer :client_application_id
       t.string :token, :limit => 20
