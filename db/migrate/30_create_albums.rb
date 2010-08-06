@@ -4,7 +4,7 @@ class CreateAlbums < ActiveRecord::Migration
         t.integer  :user_id
         t.integer  :privacy
         t.string   :type
-        t.integer  :style, :default => "white"
+        t.string   :style, :default => "white"
         t.boolean  :open
         t.datetime :event_date
         t.string   :location
