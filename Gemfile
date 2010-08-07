@@ -24,10 +24,11 @@ end
 group :test do
   # bundler requires these gems while running tests
   gem 'faker'
-  # gem "rspec"  
-  #config.gem 'faker'
-  #config.gem 'rspec-rails', :version => '>= 1.3.2', :lib => false unless File.directory?(File.join(Rails.root, 'vendor/plugins/rspec-rails'))
-  #config.gem 'factory_girl'
-  #config.gem 'webrat'
+  gem 'webrat'
+  gem 'rspec'  
+  gem 'mechanize'
+  gem 'launchy'
+  gem 'rspec-rails', '>= 1.3.2' 
+  gem 'factory_girl'
 
 end

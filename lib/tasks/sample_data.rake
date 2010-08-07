@@ -19,9 +19,9 @@ namespace :db do
                    :password => password,
                    :password_confirmation => password)
     end
-    User.all(:limit => 6).each do |user|
-          50.times do
-            user.albums.create!(:name => Faker::Lorem.words(4))
+    User.all(:limit => 10).each do |user|
+          10.times do
+            user.albums.create!(:name => Faker::Address.city()+' '+Faker::Address.us_state_abbr())
           end
     end
   end

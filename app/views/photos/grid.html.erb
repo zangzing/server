@@ -27,6 +27,8 @@
             <%form_for [@album, @photo], :url => album_photos_path(@album), :html => { :multipart => true } do |f| %>
                 <%= f.error_messages %>
                 <div class="field">
+                  <%= f.hidden_field :user_id, :value => current_user.id %>
+                  <%= f.hidden_field :agent_id, :value => "Uploaded via Web Form By User ID:#{current_user.id}" %>                 
                   <%= f.file_field :local_image %>
                   <%= f.submit "Add Photo"%>
                 </div>
