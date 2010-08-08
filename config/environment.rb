@@ -5,6 +5,7 @@ RAILS_GEM_VERSION = '2.3.5' unless defined? RAILS_GEM_VERSION
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
+require 'paperclip'
 
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here.
@@ -32,23 +33,10 @@ Rails::Initializer.run do |config|
 
   # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
   # Run "rake -D time" for a list of tasks for finding time zone names.
-  config.time_zone = 'UTC'
+  config.time_zone = 'Tijuana'
 
   # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
   # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}')]
   # config.i18n.default_locale = :de
-  
-  # For the pagination gem will_paginate
- 
-  config.gem 'will_paginate', :version => '2.3.12'
-  config.gem 'paperclip',     :version => '2.3.1.1'
-  config.gem 'aws-s3',        :version => '>= 0.6.2', :lib => 'aws/s3'
-  config.gem 'gdata',         :version => '1.1.1'
-  config.gem 'delayed_job' ,  :version => '2.0.3'
-  config.gem 'hyper-graph',   :version => '0.3.1', :lib=>'hyper_graph'
-  config.gem 'oauth',         :version => '0.4.1'
-  config.gem 'oauth-plugin',  :version => '0.3.14'
-  config.gem 'flickraw',      :version => '0.8.2'
-  config.gem 'authlogic',     :version => '2.1.5'
-  
+
 end

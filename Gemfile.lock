@@ -1,0 +1,115 @@
+--- 
+dependencies: 
+  rails: 
+    group: 
+    - :default
+    version: = 2.3.5
+  authlogic: 
+    group: 
+    - :default
+    version: = 2.1.5
+  oauth-plugin: 
+    group: 
+    - :default
+    version: = 0.3.14
+  sqlite3-ruby: 
+    group: 
+    - :default
+    version: ">= 0"
+    require: 
+    - sqlite3
+  oauth: 
+    group: 
+    - :default
+    version: = 0.4.1
+  hyper-graph: 
+    group: 
+    - :default
+    version: = 0.3.1
+    require: 
+    - hyper_graph
+  delayed_job: 
+    group: 
+    - :default
+    version: = 2.0.3
+  paperclip: 
+    group: 
+    - :default
+    version: = 2.3.1.1
+  will_paginate: 
+    group: 
+    - :default
+    version: = 2.3.12
+  bundler: 
+    group: 
+    - :default
+    version: = 0.9.26
+  gdata: 
+    group: 
+    - :default
+    version: = 1.1.1
+  aws-s3: 
+    group: 
+    - :default
+    version: ">= 0.6.2"
+    require: 
+    - aws/s3
+  flickraw: 
+    group: 
+    - :default
+    version: = 0.8.2
+specs: 
+- rake: 
+    version: 0.8.7
+- activesupport: 
+    version: 2.3.5
+- rack: 
+    version: 1.0.1
+- actionpack: 
+    version: 2.3.5
+- actionmailer: 
+    version: 2.3.5
+- activerecord: 
+    version: 2.3.5
+- activeresource: 
+    version: 2.3.5
+- authlogic: 
+    version: 2.1.5
+- builder: 
+    version: 2.1.2
+- mime-types: 
+    version: "1.16"
+- xml-simple: 
+    version: 1.0.12
+- aws-s3: 
+    version: 0.6.2
+- bundler: 
+    version: 0.9.26
+- daemons: 
+    version: 1.1.0
+- delayed_job: 
+    version: 2.0.3
+- json: 
+    version: 1.4.4
+- flickraw: 
+    version: 0.8.2
+- gdata: 
+    version: 1.1.1
+- hyper-graph: 
+    version: 0.3.1
+- oauth: 
+    version: 0.4.1
+- oauth-plugin: 
+    version: 0.3.14
+- paperclip: 
+    version: 2.3.1.1
+- rails: 
+    version: 2.3.5
+- sqlite3-ruby: 
+    version: 1.3.1
+- will_paginate: 
+    version: 2.3.12
+hash: c414de8e27a20152ec10b8515b9b54154604da5e
+sources: 
+- Rubygems: 
+    uri: http://gemcutter.org

@@ -1,0 +1,25 @@
+=ZangZing
+
+ZangZing is a Rails 2.3.5 application with bundler.
+
+To get your environment and gems ready to develop/test you need to
+
+  If you do not have the bundler gem installed
+  > sudo gem update --system
+  > sudo gem install bundler
+
+  Go to the application root [YOUR_DIR]/server
+  > bundle install
+  > rake db:migrate
+
+this should get you ready to go.
+
+Resources:
+- Documentation Site[http://zangzing.onconfluence.com]
+- CruiseControl CI build server[http://build.zangzing.com] for the master branch
+- Lighthouse[https://zangzing.lighthouseapp.com]
+- Mail the team if you need access dev .at. zangzing.com
+
+
+
+

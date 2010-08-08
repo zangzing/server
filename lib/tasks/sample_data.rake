@@ -1,3 +1,5 @@
+=begin
+
 require 'faker'
 
 namespace :db do
@@ -25,3 +27,5 @@ namespace :db do
     end
   end
 end
+
+=end

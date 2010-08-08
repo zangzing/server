@@ -1,0 +1,334 @@
+/* Reset CSS */
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-weight: inherit;
+	font-style: inherit;
+	font-size: 100%;
+	font-family: inherit;
+	vertical-align: baseline;
+}
+:focus {
+	outline: 0;
+}
+body {
+	line-height: 1;
+	color: black;
+	background: white;
+}
+ol, ul {
+	list-style: none;
+}
+table {
+	border-collapse: separate;
+	border-spacing: 0;
+}
+caption, th, td {
+	text-align: left;
+	font-weight: normal;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: "";
+}
+blockquote, q {
+	quotes: "" "";
+}
+* { outline: none; }
+
+/* Clearfix CSS */
+
+.clearfix:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+}
+.clearfix {
+    display: inline-block;
+}
+html[xmlns] .clearfix {
+    display: block;
+}
+* html .clearfix {
+    height: 1%;
+}
+
+/* Body */
+
+body { 
+  width: 98%;
+  margin: 0 auto;
+	background-color: #f9f9f9;
+  font-family: "Lucida Grande", "Lucida Sans Unicode", "Trebuchet MS", Tahoma, Helvetica, Arial, sans-serif;
+  font-size: 62.5%;
+  color: #0A0A0A;
+  /* the following fixes that annoying tell-tale js animation flicker */
+  opacity: 0.99999; 
+  -moz-opacity: 0.99999; 
+  -khtml-opacity: 0.99999; 
+  filter: alpha(opacity=99);
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 6px;
+  font-size: 2.0em;
+}
+
+h3 {
+  font-size: 1.2em;
+}
+
+/* Fixed Header and Footer */
+
+div#container {
+  width: 950px;
+  margin: 0 auto;
+}
+
+nav {
+  position: fixed;
+  width: 946px;
+  height: 51px;
+  padding: 7px 0 0 4px;
+  bottom: 0px;
+  background-image: url("../images/bg-bottom-bar.png");
+  background-repeat: no-repeat;
+  z-index: 10;
+}
+
+nav h1 {
+  float: left;
+  width: 124px;
+  height: 52px;
+  margin-right: 16px;
+  cursor: pointer;
+  background-image: url("../images/logo-zangzing.png");
+  background-repeat: no-repeat;
+}
+
+nav ul#nav-left {
+  float: left;
+  margin-top: 4px;
+}
+
+nav ul#nav-left li {
+  float: left;
+  min-width: 40px;
+  margin-right: 16px;
+  padding-top: 30px;
+  color: #a4a4a4;
+  font-size: 1.2em;
+  font-weight: 400;  
+  background-position: center; 
+  background-repeat: no-repeat;
+}
+
+nav ul#nav-left li:hover {
+  color: #0a0a0a;
+  cursor: pointer;
+}
+
+li#nav-new-album {
+  background-image: url("../images/icon-new-album.png");
+}
+
+li#nav-new-album:hover {
+  background-image: url("../images/icon-new-album-hover.png");
+}
+
+li#nav-find {
+  background-image: url("../images/icon-find.png");
+}
+
+li#nav-find:hover {
+  background-image: url("../images/icon-find-hover.png");
+}
+
+li#nav-sign-in {
+  background-image: url("../images/icon-sign-in.png");
+}
+
+li#nav-sign-in:hover {
+  background-image: url("../images/icon-sign-in-hover.png");
+}
+
+nav ul#nav-right {
+  float: right;
+  margin-top: 4px;
+  margin-right: 20px;
+}
+
+nav ul#nav-right li {
+  float: right;
+  min-width: 40px;
+  margin-left: 16px;
+  padding-top: 30px;
+  color: #a4a4a4;
+  font-size: 1.2em;
+  font-weight: 400;  
+  background-position: center; 
+  background-repeat: no-repeat;
+}
+
+nav ul#nav-right li:hover {
+  color: #0a0a0a;
+  cursor: pointer;
+}
+
+li#nav-new-photo {
+  background-image: url("../images/icon-new-photo.png");
+}
+
+li#nav-new-photo:hover {
+  background-image: url("../images/icon-new-photo-hover.png");
+}
+
+li#nav-share {
+  background-image: url("../images/icon-share.png");
+}
+
+li#nav-share:hover {
+  background-image: url("../images/icon-share-hover.png");
+}
+
+li#nav-like {
+  background-image: url("../images/icon-like.png");
+}
+
+li#nav-like:hover {
+  background-image: url("../images/icon-like-hover.png");
+}
+
+li#nav-buy {
+  background-image: url("../images/icon-cart.png");
+}
+
+li#nav-buy:hover {
+  background-image: url("../images/icon-cart-hover.png");
+}
+
+header {
+  position: fixed;
+  width: 946px;
+  height: 52px;
+  padding: 0 0 7px 4px;
+  top: 0px;
+  background-image: url("../images/bg-top-bar.png");
+  background-repeat: no-repeat;
+  z-index: 10;
+}
+
+header ul#user-info {
+  margin: 6px -145px 0 auto;
+}
+
+header ul#user-info li {
+  float: left;
+  text-align: left;
+}
+
+li#user-icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 16px;
+}
+
+header ul#view-swap {
+  float: right;
+  margin: 10px 30px 0 0;
+}
+
+header ul#view-swap li {
+  float: right;
+}
+
+div#drawer {
+  position: fixed;
+  width: 906px;
+  height: 0px;
+  margin: 0 24px 0 20px;
+  padding: 0 0 40px 4px;
+  top: 50px;
+  background-image: url("../images/bg-drawer-bottom-cap.png");
+  background-repeat: no-repeat;
+  background-position: 100% bottom;
+  z-index: 9;
+}
+
+div#drawer div.body {
+  background-image: url("../images/bg-bottom-repeat.png");
+  background-repeat: repeat-y;
+  width: 906px;
+  height: 100%;
+}
+
+div#indicator {
+  background-image: url("../images/bg-step-1-strip.png");
+  background-repeat: no-repeat;
+  position: fixed;
+  top: 54px;
+  z-index: 15;
+  margin-left: 27px;
+  width: 898px;
+  height: 37px;  
+}
+
+div#indicator img {
+  float: right;
+  margin: 5px 2px 0 0;
+}
+
+/* Grid View */
+
+article {
+  min-width: 930px;
+  margin: 0 10px;
+}
+
+ul#grid-view {
+  margin: 60px 0 45px;
+}
+
+ul#grid-view li {
+  float: left;
+  width: 150px;
+  height: 150px;
+}
+
+ul#grid-view li.wide {
+  height: 130px;
+  padding-top: 20px;
+}
+
+ul#grid-view li img {
+  border: #fff solid 5px;
+  -webkit-box-shadow: 0px 0px 5px #767676;
+  -moz-box-shadow: 0px 0px 5px #767676;
+  cursor: pointer;
+}
+
+ul#grid-view li.selected img {
+  border: 4px solid #FDD042;
+  -webkit-box-shadow: 0px 0px 5px #FDD042;
+  -moz-box-shadow: 0px 0px 5px #FDD042;
+}
+
+/* Reusables */
+
+.offset {
+  display: none;
+}
