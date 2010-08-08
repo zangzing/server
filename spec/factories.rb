@@ -1,10 +1,9 @@
 # By using the symbol ':user', we get Factory Girl to simulate the User model.
 Factory.define :user do |user|
-  user.name                  "Michael Hartl"
-  user.email                 "mhartl@example.com"
+  user.name                  "Juan Penas"
+  user.email                 "juan@penas.com"
   user.password              "foobar"
   user.password_confirmation "foobar"
-  user.style                  "gray"
 end
 
 # created a Factory sequence

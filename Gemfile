@@ -1,9 +1,9 @@
 source :gemcutter
-gem "bundler","0.9.26" 
-gem "rails", "2.3.5"
-gem "sqlite3-ruby", :require => "sqlite3"
 
 # bundler requires these gems in all environments
+gem "bundler","0.9.26"
+gem "rails", "2.3.5"
+gem "sqlite3-ruby", :require => "sqlite3"
 gem 'will_paginate', '2.3.12'
 gem 'paperclip',     '2.3.1.1'
 gem 'aws-s3',        '>= 0.6.2', :require => 'aws/s3'
@@ -18,15 +18,17 @@ gem 'authlogic',     '2.1.5'
 
 group :development do
   # bundler requires these gems in development
+  gem 'faker'  
 end
 
 group :test do
   # bundler requires these gems while running tests
-  # gem "rspec"
-  # gem "faker"
-  #config.gem 'faker'
-  #config.gem 'rspec-rails', :version => '>= 1.3.2', :lib => false unless File.directory?(File.join(Rails.root, 'vendor/plugins/rspec-rails'))
-  #config.gem 'factory_girl'
-  #config.gem 'webrat'
+  gem 'faker'
+  gem 'webrat'
+  gem 'rspec'  
+  gem 'mechanize'
+  gem 'launchy'
+  gem 'rspec-rails', '>= 1.3.2' 
+  gem 'factory_girl'
 
 end

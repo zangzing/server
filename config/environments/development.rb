@@ -26,8 +26,8 @@ config.action_mailer.smtp_settings = {
                   :password => 'sfmvqvm4ehbrgw'
 }
 #paperclip will look for imagemagick here
-Paperclip.options[:command_path] = ENV['IMAGEMAGICK_PATH']
-Paperclip.options[:log] = true
-Paperclip.options[:log_command] = true
+#Paperclip.options[:command_path] = ENV['IMAGEMAGICK_PATH']
+#Paperclip.options[:log] = true
+#Paperclip.options[:log_command] = true
 
 APPLICATION_HOST = 'localhost:3000'

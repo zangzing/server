@@ -1,29 +1,31 @@
 class CreateUsers < ActiveRecord::Migration
   def self.up
     create_table :users do |t|
-       t.string   :email
-       t.string   :role
+       t.string   :email,                 :null => false
+       t.string   :role,                  :null => false
        t.string   :user_name
-       t.string   :first_name
+       t.string   :first_name,            :null => false
        t.string   :last_name
-       t.string   :style,               :default => "white"
-       
-       t.integer  :login_count
-       t.date     :last_login_at
-       t.string   :last_login_ip
-       t.date     :current_login_at     
-       t.string   :current_login_ip
-       t.integer  :failed_login_count
-       t.date     :last_request_at
-       
-       t.string   :persistence_token       
-       t.string   :single_access_token
-       t.string   :perishable_token,    :default => "",      :null => false
-       t.string   :remember_token
-       t.string   :crypted_password
-       t.string   :password_salt
+       t.string   :style,                 :default => "white"
+       t.string   :suspended,             :default => false
 
-       t.string   :suspended,   :default => false
+       t.string   :crypted_password,      :null => false
+       t.string   :password_salt,         :null => false
+       t.string   :persistence_token,     :null => false
+       t.string   :single_access_token,   :null => false
+       t.string   :perishable_token,      :null => false
+
+       #t.integer  :login_count,           :null => false, :default => 0
+       t.integer  :failed_login_count,    :null => false, :default => 0
+       #t.date     :last_request_at
+       t.date     :current_login_at
+       t.date     :last_login_at
+       t.string   :current_login_ip
+       t.string   :last_login_ip
+       
+       t.string   :remember_token
+
+
        t.timestamps
      end
 

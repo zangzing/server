@@ -2,6 +2,8 @@
 
 ZangZing is a Rails 2.3.5 application with bundler.
 
+=Getting your dev environment setup
+
 To get your environment and gems ready to develop/test you need to
 
   If you do not have the bundler gem installed
@@ -14,7 +16,11 @@ To get your environment and gems ready to develop/test you need to
 
 this should get you ready to go.
 
-Resources:
+=Testing
+
+=Deploying
+
+=Resources
 - Documentation Site[http://zangzing.onconfluence.com]
 - CruiseControl CI build server[http://build.zangzing.com] for the master branch
 - Lighthouse[https://zangzing.lighthouseapp.com]
