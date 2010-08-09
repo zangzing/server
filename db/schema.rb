@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 90) do
+ActiveRecord::Schema.define(:version => 100) do
 
   create_table "activities", :force => true do |t|
     t.string   "type"
@@ -27,7 +27,7 @@ ActiveRecord::Schema.define(:version => 90) do
     t.integer  "user_id"
     t.integer  "privacy"
     t.string   "type"
-    t.integer  "style",           :default => 0
+    t.string   "style",           :default => "white"
     t.boolean  "open"
     t.datetime "event_date"
     t.string   "location"
@@ -94,7 +94,7 @@ ActiveRecord::Schema.define(:version => 90) do
     t.integer  "user_id"
     t.string   "type"
     t.string   "name"
-    t.string   "credentials"
+    t.string   "credentials",          :limit => 400
     t.datetime "last_contact_refresh"
     t.string   "identity_source"
     t.datetime "created_at"
@@ -167,7 +167,7 @@ ActiveRecord::Schema.define(:version => 90) do
   add_index "recipients", ["share_id"], :name => "index_recipients_on_share_id"
 
   create_table "sessions", :force => true do |t|
-    t.string   "session_id", :null => false
+    t.string   "session_id", :default => "", :null => false
     t.text     "data"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -209,7 +209,7 @@ ActiveRecord::Schema.define(:version => 90) do
     t.string   "remember_token"
     t.string   "crypted_password"
     t.string   "password_salt"
-    t.string   "suspended",           :default => "f"
+    t.string   "suspended",           :default => "0"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

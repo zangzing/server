@@ -2,7 +2,7 @@ class KodakFoldersController < KodakController
 
   def index
     album_list = connector.send_request('/albumList')
-    albums = album_list['AlbumList']['Album'].select { |a| a['type'].first=='0' } #Real albums have type attribute = 0
+    albums = album_list['Album'].select { |a| a['type'].first=='0' } #Real albums have type attribute = 0
     @folders = albums.map { |f| {:name => f['name'], :id => f['id']} }
     respond_to do |wants|
       wants.html
@@ -12,7 +12,7 @@ class KodakFoldersController < KodakController
 
   def import
     photos_list = connector.send_request("/album/#{params[:kodak_album_id]}")
-    photos_data = photos_list['Album']['pictures']
+    photos_data = photos_list['pictures']
     photos = []
     photos_data.each do |p|
       photo_url = p[PHOTO_SIZES[:full]].first

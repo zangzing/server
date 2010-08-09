@@ -42,7 +42,7 @@ protected
   end
 
   def token_store
-    @token_store ||= TokenStore.new(:kodak, session)
+    @token_store ||= TokenStore.new(:kodak)
   end
 
 end

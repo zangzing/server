@@ -1,38 +1,29 @@
 
 class TokenStore
 
-    def initialize(service_name, session)
+    def initialize(service_name)
       @service_name = service_name
-      @session = session
-      @storage = {}
-      reload
     end
 
-    def flush
-      File.open(storage_location, 'w') { |out| YAML.dump(@storage, out) }
+    def get_token(id)
+      token_record = ActiveRecord::Base.connection.select_one("SELECT * FROM `identities` WHERE `user_id`=#{id} AND `identity_source`='#{@service_name}'")
+      token_record['credentials']
     end
 
-    def reload
-      @storage = YAML.load(File.read(storage_location)) if File.exist?(storage_location)
+    def delete_token(id)
+      token_record = ActiveRecord::Base.connection.select_one("SELECT * FROM `identities` WHERE `user_id`=#{id} AND `identity_source`='#{@service_name}'")
+      if token_record
+        ActiveRecord::Base.connection.execute "UPDATE `identities` SET `credentials` = NULL, `updated_at` = NOW() WHERE `id`=#{token_record['id']}"
+      end
     end
 
-    def get_token(id = :default)
-      @storage[id]
+    def store_token(value, id)
+      token_record = ActiveRecord::Base.connection.select_one("SELECT * FROM `identities` WHERE `user_id`=#{id} AND `identity_source`='#{@service_name}'")
+      if token_record
+        ActiveRecord::Base.connection.execute "UPDATE `identities` SET `credentials` = '#{value}', `updated_at` = NOW() WHERE `id`=#{token_record['id']}"
+      else
+        ActiveRecord::Base.connection.execute "INSERT into `identities` SET `user_id` = #{id}, `identity_source` = '#{@service_name}', `credentials` = '#{value}', `created_at` = NOW(), `updated_at` = NOW()"
+      end
     end
 
-    def delete_token(id = :default)
-      @storage.delete(id)
-      flush
-    end
-
-    def store_token(value, id = :default)
-      @storage[id] = value
-      flush
-    end
-
-  private
-
-    def storage_location
-      "#{RAILS_ROOT}/config/#{@service_name}_tokens.yml"
-    end
 end
