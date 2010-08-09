@@ -32,8 +32,8 @@ config.action_mailer.delivery_method = :test
 
 
 #paperclip will look for imagemagick here
-Paperclip.options[:command_path] = ENV['IMAGEMAGICK_PATH']
-Paperclip.options[:log] = true
-Paperclip.options[:log_command] = true
+#Paperclip.options[:command_path] = ENV['IMAGEMAGICK_PATH']
+#Paperclip.options[:log] = true
+#Paperclip.options[:log_command] = true
 
 APPLICATION_HOST = 'localhost:3000'

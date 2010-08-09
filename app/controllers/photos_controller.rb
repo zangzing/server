@@ -69,10 +69,10 @@ class PhotosController < ApplicationController
       respond_to do |format|
         format.html do
           if @photo.update_attributes(params[:photo])
-            flash[:success] = "Photo Updated!"
+            flash[:success] = "Photo Uploaded!"
             render :action => :show
           else
-            render :action => :edit
+            render :action => :index
           end
         end
         format.json do

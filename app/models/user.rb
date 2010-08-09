@@ -34,13 +34,9 @@
 
 
 class User < ActiveRecord::Base
-  before_save  :split_name
 
   attr_writer      :name
   attr_accessible  :email, :name, :password, :password_confirmation, :style
-
-
-
 
   has_many :albums,              :dependent => :destroy
   has_many :identities,          :dependent => :destroy
@@ -52,8 +48,15 @@ class User < ActiveRecord::Base
   has_many :tokens, :class_name=>"OauthToken",:order=>"authorized_at desc",:include=>[:client_application]
 
 
-  # This delegates all authentication details to authlogic
-  acts_as_authentic
+  acts_as_authentic         # This delegates all authentication details to authlogic
+
+  before_save  :split_name
+
+
+
+  validates_presence_of :name
+  validates_presence_of :email
+
 
   def identity_for_gmail
     identity =  self.identities.find(:first, :conditions => "identity_source = 'gmail'")
