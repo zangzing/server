@@ -31,17 +31,15 @@ describe User do
   before(:each) do
     @attr = { :name => "Example User",
               :email => "example@user.com",
-              :password => "password",
-              :password_confirmation =>"password", 
+              :password => "1password",
+              :password_confirmation =>"1password",
               :style => "white"
-            }
+    }
   end
 
   it "should create a new instance given valid attributes" do
     User.create!(@attr)
   end
-
-
 
   it "should require a name" do
     no_name_user = User.new(@attr.merge(:name => ""))
@@ -54,12 +52,8 @@ describe User do
   end
 
 
-#  it "should reject names that are too long"  do
-#    long_name = "a" * 60
-#    long_name_user = User.new( @attr.merge(:name => long_name))
-#    long_name_user.should_not be_valid
-#  end
-    
+  it "should reject names that exceed the max size" 
+
   it "should accept valid email addresses" do
     addresses = %w[user@foo.com THE_USER@foo.bar.org first.last@foo.jp]
     addresses.each do |address|
@@ -75,7 +69,7 @@ describe User do
       invalid_email_user.should_not be_valid
     end
   end
-      
+
   it "should reject email addresses identical up to case" do
     upcased_email = @attr[:email].upcase
     User.create!(@attr.merge(:email => upcased_email))
@@ -84,17 +78,14 @@ describe User do
   end
 
 
-
   describe "password validations" do
-
-
     it "should require a password" do
       User.new(@attr.merge(:password => "", :password_confirmation => "")).
-        should_not be_valid
+              should_not be_valid
     end
     it "should require a matching password confirmation" do
       User.new(@attr.merge(:password_confirmation => "invalid")).
-        should_not be_valid
+              should_not be_valid
     end
     it "should reject short passwords" do
       short = "a" * 5
@@ -106,61 +97,8 @@ describe User do
       hash = @attr.merge(:password => long, :password_confirmation => long)
       User.new(hash).should_not be_valid
     end
+    it "should reject passwords that do not meet minimum complexity requirements"
   end
-
-=begin
-  describe "password encryption" do
-    before(:each) do
-      @user = User.create!(@attr)
-    end
-    it "should set the encrypted password" do
-      @user.encrypted_password.should_not be_blank
-    end
-    
-    describe "has_password? method" do
-     it "should be true if the passwords match" do
-       @user.has_password?(@attr[:password]).should be_true
-     end    
-     it "should be false if the passwords don't match" do
-       @user.has_password?("invalid").should be_false
-     end 
-   end
-  
-   describe "authenticate method" do
-     it "should return nil on email/password mismatch" do
-       wrong_password_user = User.authenticate(@attr[:email], "wrongpass")
-       wrong_password_user.should be_nil
-     end
-     it "should return nil for an email address with no user" do
-       nonexistent_user = User.authenticate("bar@foo.com", @attr[:password])
-       nonexistent_user.should be_nil
-     end
-     it "should return the user on email/password match" do
-       matching_user = User.authenticate(@attr[:email], @attr[:password])
-       matching_user.should == @user
-     end
-   end
-
-  end
-=end
-=begin
-
-  describe "remember me" do
-    before(:each) do
-      @user = User.create!(@attr)
-    end
-    it "should have a remember_me! method" do
-      @user.should respond_to(:remember_me!)
-    end
-    it "should have a remember token" do
-      @user.should respond_to(:remember_token)
-    end
-    it "should set the remember token" do
-      @user.remember_me!
-      @user.remember_token.should_not be_nil
-    end
-  end
-
 
   describe "user preferences" do
     before(:each) do
@@ -172,18 +110,15 @@ describe User do
     end
   end
 
-=end
-=begin
 
-  #ALBUM ASSOCIATIONS
   describe "album associations" do
     before(:each) do
-      @user = User.create(@attr)
+      @user = User.create!(@attr)
       @album1 = Factory(:album, :user => @user, :created_at => 1.day.ago)
       @album2 = Factory(:album, :user => @user, :created_at => 1.hour.ago)
     end
 
-    it "should have a albums attribute" do
+    it "should have an albums attribute" do
       @user.should respond_to(:albums)
     end
 
@@ -198,22 +133,23 @@ describe User do
           end
     end
     
-    describe "status feed" do
-          it "should have a feed" do
+    describe "homepage grid view" do
+          it "should have a grid view" do
+            pending "Not there yet but coming soon..."
             @user.should respond_to(:feed)
           end
 
           it "should include the user's albums" do
+            pending "Not there yet but coming soon..."            
             @user.feed.include?(@album1).should be_true
             @user.feed.include?(@album2).should be_true
           end
-          it "should not include a different user's albums" do
+          it "should include followees albums" do
+            pending "Not there yet but coming soon..."            
             album = Factory(:album,
                           :user => Factory(:user, :email => Factory.next(:email)))
             @user.feed.include?(album).should be_false
           end
     end
-    
   end
-=end
 end
