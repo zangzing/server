@@ -3,7 +3,7 @@ class KodakFoldersController < KodakController
   def index
     album_list = connector.send_request('/albumList')
     albums = album_list['Album'].select { |a| a['type'].first=='0' } #Real albums have type attribute = 0
-    @folders = albums.map { |f| {:name => f['name'], :id => f['id']} }
+    @folders = albums.map { |f| {:name => f['name'].first, :id => f['id'].first} }
     respond_to do |wants|
       wants.html
       wants.json { render :json => @folders.to_json }
@@ -16,7 +16,7 @@ class KodakFoldersController < KodakController
     photos = []
     photos_data.each do |p|
       photo_url = p[PHOTO_SIZES[:full]].first
-      photo = Photo.create(:caption => p['caption'], :album_id => params[:album_id])
+      photo = Photo.create(:caption => p['caption'].first, :album_id => params[:album_id])
       Delayed::Job.enqueue(KodakImportRequest.new(photo.id, photo_url, connector.auth_token))
       photos << photo
     end

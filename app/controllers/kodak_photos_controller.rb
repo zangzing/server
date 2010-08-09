@@ -4,7 +4,7 @@ class KodakPhotosController < KodakController
   def index
     photos_list = connector.send_request("/album/#{params[:kodak_album_id]}")
     photos_data = photos_list['pictures']
-    @photos = photos_data.map { |p| {:name => p['caption'], :id => p['id']} }
+    @photos = photos_data.map { |p| {:name => p['caption'].first, :id => p['id'].first} }
     respond_to do |wants|
       wants.html
       wants.json { render :json => @photos.to_json }

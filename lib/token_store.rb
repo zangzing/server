@@ -7,7 +7,7 @@ class TokenStore
 
     def get_token(id)
       token_record = ActiveRecord::Base.connection.select_one("SELECT * FROM `identities` WHERE `user_id`=#{id} AND `identity_source`='#{@service_name}'")
-      token_record['credentials']
+      token_record['credentials'] rescue nil
     end
 
     def delete_token(id)
