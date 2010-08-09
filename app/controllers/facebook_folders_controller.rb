@@ -14,7 +14,7 @@ class FacebookFoldersController < FacebookController
     photos_list = facebook_graph.get("#{params[:fb_album_id]}/photos")
     photos = []
     photos_list.each do |p|
-      photo = Photo.create(:caption => p[:name], :album_id => params[:album_id])
+      photo = Photo.create(:caption => p[:name], :album_id => params[:album_id], :user_id=>current_user.id)
       Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, p[:source]))
       photos << photo
     end

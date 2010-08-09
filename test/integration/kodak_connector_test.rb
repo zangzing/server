@@ -59,7 +59,7 @@ class KodakConnectorTest < ActionController::IntegrationTest
     log_in
     visit kodak_folders_url(:format => 'json')
     result = JSON.parse response.body
-    puts "RESPONSE >>> Get album list (JSON) >>>> #{result.inspect}"
+    #puts "RESPONSE >>> Get album list (JSON) >>>> #{result.inspect}"
     result.each do |r|
       assert r['name'] =~ /Test-Album-0\d/
     end
@@ -69,7 +69,7 @@ class KodakConnectorTest < ActionController::IntegrationTest
     log_in
     visit kodak_folder_action_url(:kodak_album_id => 118686908115, :action => :import, :format => :json, :album_id => 1)
     result = JSON.parse response.body
-    puts "RESPONSE >>> Import whole folder (JSON) >>>> #{result.inspect}" 
+    #puts "RESPONSE >>> Import whole folder (JSON) >>>> #{result.inspect}"
     result.each do |r|
       assert r['caption'] =~ /DSC_\d{4}.*/
     end

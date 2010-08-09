@@ -16,7 +16,7 @@ class FlickrFoldersController < FlickrController
     photos = []
     photo_set.photo.each do |p|
       photo_url = get_photo_url(p, :full)
-      photo = Photo.create(:caption => p.title, :album_id => params[:album_id])
+      photo = Photo.create(:caption => p.title, :album_id => params[:album_id], :user_id=>current_user.id)
       Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, photo_url))
       photos << photo
     end
