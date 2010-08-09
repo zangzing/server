@@ -1,100 +1,44 @@
-require 'rubygems'
-gem 'gdata'
-require 'gdata/auth'
-require 'gdata/client'
-require 'gdata/http'
-require 'rexml/document'
+class GoogleContactsController < GoogleController
 
-class GoogleContactsController < ApplicationController
-
-  include GoogleSessionsHelper
-
+  BATCH_SIZE = 100
 
   def index
-
-    puts params.inspect
-
-
-    if (params[:reload])
-      reload
-    end
-
-    @contacts = current_user.identity_for_gmail.contacts
+    @contacts = current_user.identity_for_google.contacts
   end
 
-
-
-
-  
-
-  private
-
-  def reload
-    token = get_google_token
-
-    if (!token)
-      redirect_to "/google_sessions/new"
-      return
-    end
-
-
-    identity = current_user.identity_for_gmail
-    identity.contacts.each do |contact|
-      contact.destroy
-    end
-
-
-    client = GData::Client::Contacts.new
-    client.authsub_token = token
-
-
+  def import
+    identity = current_user.identity_for_google
     start_index = 1
-    batch_size = 100
-
+    imported_contacts = []
     begin
-      while true
-        doc = client.get("http://www.google.com/m8/feeds/contacts/default/full?max-results=#{batch_size}&start-index=#{start_index}").to_xml
+      doc = contacts_client.get("http://www.google.com/m8/feeds/contacts/default/full?max-results=#{BATCH_SIZE}&start-index=#{start_index}").to_xml
 
-        entry_count = 0
-
-        doc.elements.each('entry') do |entry|
-          entry_count += 1
-
-          props = {}
-
-          entry.elements.each('title') do |title|
-            props['name'] = title.text.to_s
-          end
-
-
-          entry.elements.each('gd:email') do |email|
-            if email.attribute('primary')
-              props['email'] = email.attribute('address').value
-            end
-          end
-
-          if (props['email'])
-            contact = identity.contacts.new
-            contact.name = props['name']
-            contact.address = props['email']
-            contact.save
-          end
-
-        end
-
-        break if (entry_count==0)
-
-        start_index += batch_size
-
+      entry_count = 0
+      doc.elements.each('entry') do |entry|
+        entry_count += 1
+        props = {
+          :name => entry.elements['title'].text,
+          :address => entry.elements['gd:email[@primary="true"]/@address'].to_s,
+          :type => 'email'
+        }
+        next if props[:address].blank?
+        props[:name] = props[:address].split('@').first unless props[:name]
+        imported_contacts << Contact.new(props)
       end
+      start_index += BATCH_SIZE
+    end while entry_count != 0
 
-      redirect_to "/google_contacts"
-
-    rescue GData::Client::AuthorizationError => exc
-      delete_google_token
-      redirect_to "/google_sessions/new"
+    unless imported_contacts.empty?
+      identity.contacts.destroy_all
+      imported_contacts.each {|c| identity.contacts << c  }
+      if identity.save
+        redirect_to :action => 'index'
+      else
+        render :text => identity.errors.full_messages.join('<br/>')
+      end
+    else
+      render :text => 'No contacts was imported'
     end
-
   end
 
 

@@ -1,44 +1,18 @@
-require 'rubygems'
-gem 'gdata'
-require 'gdata/auth'
-require 'gdata/client'
-require 'gdata/http'
-require 'rexml/document'
-
-class GoogleSessionsController < ApplicationController
-  include GoogleSessionsHelper
-
+class GoogleSessionsController < GoogleController
+  skip_before_filter :service_login_required, :only => [:new, :create]
+  skip_before_filter :require_user, :only => [:new, :create]
 
   def new
-    scope = 'http://www.google.com/m8/feeds/'
-    next_url = "http://#{self.request.host}:#{self.request.port}/google_sessions/create"
-    secure = false #Todo: need to use HTTPS and/or use signed request
-    sess = true
-    redirect_to GData::Auth::AuthSub.get_url(next_url, scope, secure, sess)
+    redirect_to GData::Auth::AuthSub.get_url(create_google_session_url, scope)
   end
 
   def create
-    client = GData::Client::Contacts.new
-    token = params["token"]
-    client.authsub_token =  token
-    upgraded_token = client.auth_handler.upgrade()
-    client.authsub_token = upgraded_token
-
-    #create identity if necessary
-    doc = client.get("http://www.google.com/m8/feeds/contacts/default/full?max-results=1").to_xml
-
-
-    doc.elements.each('id') do |id|
-      save_google_token(id.text, upgraded_token)
-      break
-    end
-
-
-    redirect_to '/google_contacts'
+    upgrade_access_token!(params[:token])
+    token_store.store_token(permanent_token, current_user.id)
   end
 
   def destroy
-    delete_google_token
+    token_store.delete_token(current_user.id)
   end
 
 end
