@@ -87,7 +87,7 @@ class User < ActiveRecord::Base
   end
 
   def admin?
-     self.role == :admin
+     self.role == 'admin'
   end
 
   def name

@@ -8,7 +8,7 @@ namespace :db do
                  :email => "example-zzadmin@zangzing.org",
                  :password => "foobar",
                  :password_confirmation => "foobar")
-    admin.update_attribute( :role, :admin )
+    admin.update_attribute( :role,'admin' )
 
     99.times do |n|
       name  = Faker::Name.name

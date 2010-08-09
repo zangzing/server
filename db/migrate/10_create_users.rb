@@ -2,12 +2,12 @@ class CreateUsers < ActiveRecord::Migration
   def self.up
     create_table :users do |t|
        t.string   :email,                 :null => false
-       t.string   :role,                  :null => false
+       t.string   :role,                  :null => false, :default => "user"
        t.string   :user_name
        t.string   :first_name,            :null => false
        t.string   :last_name
-       t.string   :style,                 :default => "white"
-       t.string   :suspended,             :default => false
+       t.string   :style,                 :null => false, :default => "white"
+       t.string   :suspended,             :null => false, :default => false
 
        t.string   :crypted_password,      :null => false
        t.string   :password_salt,         :null => false
@@ -30,7 +30,6 @@ class CreateUsers < ActiveRecord::Migration
 
      add_index :users, :email, :unique => true
      add_index :users, :perishable_token
-     add_index :users, :remember_token
   end
 
   def self.down
