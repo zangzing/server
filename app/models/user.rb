@@ -41,13 +41,14 @@ class User < ActiveRecord::Base
   has_many :albums,              :dependent => :destroy
   has_many :identities,          :dependent => :destroy
   has_many :shares
-  has_many :followers,           :dependent => :destroy
   has_many :activities,          :dependent => :destroy
   has_many :photos
   has_many :client_applications, :dependent => :destroy 
   has_many :tokens, :class_name=>"OauthToken",:order=>"authorized_at desc",:include=>[:client_application]
 
-
+  has_many :followees, :through => :follows, :class_name => 'User', :dependent => :destroy
+  has_many :followers, :through => :follows, :class_name => 'User'
+    
   acts_as_authentic         # This delegates all authentication details to authlogic
 
   before_save  :split_name
@@ -56,6 +57,9 @@ class User < ActiveRecord::Base
 
   validates_presence_of :name
   validates_presence_of :email
+
+
+  validates_length_of   :password, :within => 6..40, :if => :require_password?, :message => "must be between 6 and 40 characters long"
 
 
   def identity_for_gmail

@@ -1,14 +1,14 @@
 class CreateSocialTables < ActiveRecord::Migration
   def self.up
 
-    create_table :followers do |t|
+    create_table :follows do |t|
       t.integer  :follower_id
-      t.integer  :leader_id
+      t.integer  :followee_id
       t.boolean  :blocked, :default => false
       t.timestamps
     end
-    add_index :followers, :follower_id
-    add_index :followers, :leader_id
+    add_index :follows, :follower_id
+    add_index :follows, :followee_id
 
     create_table :activities do |t|
       t.string  :type
