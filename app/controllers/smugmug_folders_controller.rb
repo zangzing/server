@@ -14,7 +14,7 @@ class SmugmugFoldersController < SmugmugController
     photos_list = smugmug_api.call_method('smugmug.images.get', {:AlbumID => album_id, :AlbumKey => album_key, :Heavy => 1})
     photos = []
     photos_list[:images].each do |p|
-      photo = Photo.create(:state => 'new', :image_file_name => (p[:caption].blank? ? p[:filename] : p[:caption]), :album_id => params[:album_id])
+      photo = Photo.create(:caption => (p[:caption].blank? ? p[:filename] : p[:caption]), :album_id => params[:album_id])
       Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, p[:originalurl]))
       photos << photo
     end

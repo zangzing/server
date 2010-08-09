@@ -26,8 +26,11 @@ class FlickrConnectorTest < ActionController::IntegrationTest
   
 
   def log_in(valid_credentials = true)
+
+    visit new_flickr_session_path
+    service_auth_url = response.redirected_to
     agent = Mechanize.new { |a| a.user_agent_alias = 'Windows Mozilla' }
-    page = agent.get new_flickr_session_url
+    page = agent.get service_auth_url
     form = page.forms.first
     form.login = valid_credentials ? CREDENTIALS[:login] : 'foo'
     form.passwd = valid_credentials ? CREDENTIALS[:password] : 'bar'
@@ -87,7 +90,7 @@ class FlickrConnectorTest < ActionController::IntegrationTest
     visit flickr_folder_action_url(:set_id => 72157624268707475, :action => :import, :format => :json, :album_id => 1)
     result = JSON.parse response.body
     result.each do |r|
-      assert r['image_file_name'] =~ /DSC_\d{4}.*/
+      assert r['caption'] =~ /DSC_\d{4}.*/
     end
   end
 
@@ -124,7 +127,7 @@ class FlickrConnectorTest < ActionController::IntegrationTest
     log_in
     visit flickr_photo_action_url(:set_id => 72157624393511168, :photo_id => 4749151477, :action => :import, :format => :json, :album_id => 1)
     result = JSON.parse response.body
-    assert result['image_file_name'] =~ /DSC_\d{4}.*/
+    assert result['caption'] =~ /DSC_\d{4}.*/
   end
 
 end

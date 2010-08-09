@@ -5,7 +5,7 @@ class ShutterflyFoldersController < ShutterflyController
     folders = album_list.map { |f| {:name => f[:title], :id => /albumid\/([0-9a-z]+)/.match(f[:id])[1] } }
     respond_to do |wants|
       wants.html { @folders = folders }
-      wants.json { render :json => @folders.to_json }
+      wants.json { render :json => folders.to_json }
     end
   end
 
@@ -13,7 +13,7 @@ class ShutterflyFoldersController < ShutterflyController
     photos_list = sf_api.get_images(params[:sf_album_id])
     photos = []
     photos_list.each do |p|
-      photo = Photo.create(:state => 'new', :image_file_name => p[:title], :album_id => params[:album_id])
+      photo = Photo.create(:caption => p[:title], :album_id => params[:album_id])
       Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, get_photo_url(p[:id], :full)))
       photos << photo
     end
