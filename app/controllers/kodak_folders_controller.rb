@@ -16,7 +16,7 @@ class KodakFoldersController < KodakController
     photos = []
     photos_data.each do |p|
       photo_url = p[PHOTO_SIZES[:full]].first
-      photo = Photo.create(:caption => p['caption'], :album_id => params[:album_id])
+      photo = Photo.create(:caption => p['caption'], :album_id => params[:album_id], :user_id=>current_user.id)
       Delayed::Job.enqueue(KodakImportRequest.new(photo.id, photo_url, connector.auth_token))
       photos << photo
     end

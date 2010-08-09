@@ -21,7 +21,7 @@ class FlickrPhotosController < FlickrController
   def import
     info = flickr_api.photos.getInfo :photo_id => params[:photo_id]
     photo_url = get_photo_url(info, :full)
-    photo = Photo.create(:caption => info.title, :album_id => params[:album_id])
+    photo = Photo.create(:caption => info.title, :album_id => params[:album_id], :user_id=>current_user.id)
     Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, photo_url))
     respond_to do |wants|
       wants.html { @photo = photo }

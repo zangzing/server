@@ -19,7 +19,7 @@ require 'pp'
     photos_list = sf_api.get_images(params[:sf_album_id])
     photo_title = photos_list.select { |p| p[:id]==params[:photo_id] }.first[:title]
     photo_url = get_photo_url(params[:photo_id], (params[:size] || :screen).to_sym)
-    photo = Photo.create(:caption => photo_title, :album_id => params[:album_id])
+    photo = Photo.create(:caption => photo_title, :album_id => params[:album_id], :user_id=>current_user.id)
     Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, photo_url))
     respond_to do |wants|
       wants.html { @photo = photo }
