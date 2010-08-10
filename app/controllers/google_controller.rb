@@ -7,13 +7,9 @@ protected
 
   def service_login_required
     unless permanent_token
-      begin
-        @permanent_token = token_store.get_token(current_user.id)
-        contacts_client.authsub_token = @permanent_token
-      rescue => exception
-        raise InvalidToken if exception.kind_of?(GData::Client::AuthorizationError)
-        raise HttpCallFail if exception.kind_of?(SocketError)
-      end
+      @permanent_token = token_store.get_token(current_user.id)
+      raise InvalidToken unless @permanent_token
+      contacts_client.authsub_token = @permanent_token
     end
   end
 

@@ -13,6 +13,7 @@ class GoogleSessionsController < GoogleController
 
   def destroy
     token_store.delete_token(current_user.id)
+    contacts_client.auth_handler.revoke
   end
 
 end
