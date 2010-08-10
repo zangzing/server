@@ -2,7 +2,16 @@ class FacebookPhotosController < FacebookController
 
   def index
     photos_response = facebook_graph.get("#{params[:fb_album_id]}/photos")
-    @photos = photos_response.map { |p| {:name => p[:name], :id => p[:id]} }
+    @photos = photos_response.map { |p|
+      {
+        :name => p[:name],
+        :id   => p[:id],
+        :thumb_url =>  facebook_photo_path({:photo_id =>p[:id], :size => 'thumb'}),
+        :screen_url => facebook_photo_path({:photo_id =>p[:id], :size => 'screen'}),
+        :import_url => facebook_photo_action_path({:photo_id =>p[:id], :action => 'import'})
+      }
+    }
+    
     respond_to do |wants|
       wants.html
       wants.json { render :json => @photos.to_json }
