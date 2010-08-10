@@ -12,7 +12,10 @@ To get your environment and gems ready to develop/test you need to
 
   Go to the application root [YOUR_DIR]/server
   > bundle install
+  > rake db:drop
+  > rake db:create
   > rake db:migrate
+  > rake db:seed
 
 this should get you ready to go.
 
