@@ -14,7 +14,7 @@ class CreateOauthTables < ActiveRecord::Migration
     add_index :client_applications, :key, :unique
     
     create_table :oauth_tokens,:guid => false,:force => true do |t|
-      t.references_with_guid :user
+      t.references_with_guid :user, :null => true
       t.string  :agent_id 
       t.string :type, :limit => 20
       t.integer :client_application_id

@@ -3,4 +3,5 @@
 #
 
 class UserSession < Authlogic::Session::Base
+  #UserSession.cookie_key = 'zangzing_user_session'
 end

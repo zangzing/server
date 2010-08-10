@@ -32,7 +32,6 @@
 #   © 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 
-
 class User < ActiveRecord::Base
   usesguid
   attr_writer      :name
@@ -49,7 +48,10 @@ class User < ActiveRecord::Base
   has_many :followees, :through => :follows, :class_name => 'User', :dependent => :destroy
   has_many :followers, :through => :follows, :class_name => 'User'
     
-  acts_as_authentic         # This delegates all authentication details to authlogic
+  
+  acts_as_authentic # This delegates all authentication details to authlogic
+
+  
 
   before_save  :split_name
 
