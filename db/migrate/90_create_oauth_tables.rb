@@ -1,20 +1,20 @@
 class CreateOauthTables < ActiveRecord::Migration
   def self.up
-    create_table :client_applications do |t|
+    create_table :client_applications,:guid => false,:force => true do |t|
       t.string :name
       t.string :url
       t.string :support_url
       t.string :callback_url
       t.string :key, :limit => 20
       t.string :secret, :limit => 40
-      t.integer :user_id
+      t.references_with_guid :user
 
       t.timestamps
     end
     add_index :client_applications, :key, :unique
     
-    create_table :oauth_tokens do |t|
-      t.integer :user_id
+    create_table :oauth_tokens,:guid => false,:force => true do |t|
+      t.references_with_guid :user
       t.string  :agent_id 
       t.string :type, :limit => 20
       t.integer :client_application_id
@@ -28,7 +28,7 @@ class CreateOauthTables < ActiveRecord::Migration
     
     add_index :oauth_tokens, :token, :unique
     
-    create_table :oauth_nonces do |t|
+    create_table :oauth_nonces, :guid => false,:force => true do |t|
       t.string :nonce
       t.integer :timestamp
 

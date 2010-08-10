@@ -34,7 +34,7 @@
 
 
 class User < ActiveRecord::Base
-
+  usesguid
   attr_writer      :name
   attr_accessible  :email, :name, :password, :password_confirmation, :style
 

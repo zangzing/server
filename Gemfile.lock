@@ -22,10 +22,18 @@ dependencies:
     version: ">= 0"
     require: 
     - sqlite3
+  mysql: 
+    group: 
+    - :default
+    version: ">= 0"
   oauth: 
     group: 
     - :default
     version: = 0.4.1
+  usesguid: 
+    group: 
+    - :default
+    version: ">= 0"
   mechanize: 
     group: 
     - :test
@@ -60,6 +68,10 @@ dependencies:
     group: 
     - :default
     version: = 2.3.12
+  usesguid_migrations: 
+    group: 
+    - :development
+    version: ">= 0"
   webrat: 
     group: 
     - :test
@@ -124,7 +136,7 @@ specs:
 - faker: 
     version: 0.3.1
 - json: 
-    version: 1.4.5
+    version: 1.4.6
 - flickraw: 
     version: 0.8.2
 - gdata: 
@@ -137,6 +149,8 @@ specs:
     version: 1.4.3.1
 - mechanize: 
     version: 1.0.0
+- mysql: 
+    version: 2.8.1
 - oauth: 
     version: 0.4.1
 - oauth-plugin: 
@@ -153,11 +167,15 @@ specs:
     version: 1.3.2
 - sqlite3-ruby: 
     version: 1.3.1
+- usesguid: 
+    version: 1.0.0
+- usesguid_migrations: 
+    version: 1.0.3
 - webrat: 
     version: 0.7.1
 - will_paginate: 
     version: 2.3.12
-hash: 9dfc7cd7bc6d5c92248266d570680e614a5fa2c1
+hash: babe6fe97a488435c2fb4ad8744fb4911c4fea6d
 sources: 
 - Rubygems: 
     uri: http://gemcutter.org

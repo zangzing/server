@@ -24,6 +24,7 @@
 #
 
 class Album < ActiveRecord::Base
+  usesguid
   attr_accessible :name
   
   belongs_to :user

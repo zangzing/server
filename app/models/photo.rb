@@ -74,6 +74,7 @@ require 'delayed_job'
 
 
 class Photo < ActiveRecord::Base
+  usesguid
   belongs_to :album
   belongs_to :user
 

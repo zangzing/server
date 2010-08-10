@@ -1,7 +1,7 @@
 class CreateAlbums < ActiveRecord::Migration
   def self.up
-    create_table :albums do |t|
-        t.integer  :user_id
+    create_table :albums, :force => true do |t|
+        t.references_with_guid  :user
         t.integer  :privacy
         t.string   :type
         t.string   :style, :default => "white"
