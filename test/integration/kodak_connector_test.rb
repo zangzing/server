@@ -34,10 +34,57 @@ class KodakConnectorTest < ActionController::IntegrationTest
     visit destroy_kodak_session_url
   end
   
-  #Sessions controller
-  test "Log in using correct credentials and log out" do
+  test "Log in using correct credentials, test connector, log out" do
     log_in(true)
     assert_contain "Signed in"
+    
+    #"Get album list (HTML)"
+    visit kodak_folders_url
+    assert_contain "Test-Album-01"
+    assert_contain "Test-Album-02"
+    
+    #"Get album list (JSON)"
+    visit kodak_folders_url(:format => 'json')
+    result = JSON.parse response.body
+    #puts "RESPONSE >>> Get album list (JSON) >>>> #{result.inspect}"
+    result.each do |r|
+      assert r['name'] =~ /Test-Album-0\d/
+    end
+    
+    #"Import whole folder (JSON)"
+    visit kodak_folder_action_url(:kodak_album_id => 118686908115, :action => :import, :format => :json, :album_id => 1)
+    result = JSON.parse response.body
+    #puts "RESPONSE >>> Import whole folder (JSON) >>>> #{result.inspect}"
+    result.each do |r|
+      assert r['caption'] =~ /DSC_\d{4}.*/
+    end
+    
+    #"Get photos list from 1st album"
+    visit kodak_photos_url(:kodak_album_id => 118686908115)
+    assert_contain "DSC_0185"
+    assert_contain "DSC_0188"
+    assert_contain "DSC_0189"    
+    
+    #"Get photos list from 2nd album"
+    visit kodak_photos_url(:kodak_album_id => 513508908115)
+    assert_contain "DSC_0316"
+    assert_contain "DSC_0322"
+    assert_contain "DSC_0313"
+    assert_contain "DSC_0313"
+    
+    #"Get photo thumbnail from 1st album"
+    visit kodak_photo_url(:kodak_album_id => 118686908115, :photo_id => 754857908115, :size => :thumb)
+    assert response['Content-Type'] =~ /image\/.+/
+    
+    #"Get photo thumbnail from 2nd album"
+    visit kodak_photo_url(:kodak_album_id => 513508908115, :photo_id => 818658908115, :size => :thumb)
+    assert response['Content-Type'] =~ /image\/.+/
+    
+    #"Import photo from an album (JSON)"
+    visit kodak_photo_action_url(:kodak_album_id => 513508908115, :photo_id => 939618908115, :action => :import, :format => :json, :album_id => 1)
+    result = JSON.parse response.body
+    assert result['caption'] =~ /DSC_\d{4}.*/
+    
     log_out
     assert_contain "Signed out"
   end
@@ -47,69 +94,4 @@ class KodakConnectorTest < ActionController::IntegrationTest
     assert status==401
   end
   
-  #Folders controller
-  test "Get album list (HTML)" do
-    log_in
-    visit kodak_folders_url
-    assert_contain "Test-Album-01"
-    assert_contain "Test-Album-02"
-  end
-
-  test "Get album list (JSON)" do
-    log_in
-    visit kodak_folders_url(:format => 'json')
-    result = JSON.parse response.body
-    result.each do |r|
-      assert r['name'] =~ /Test-Album-0\d/
-    end
-  end
-
-  test "Import whole folder (JSON)" do
-    log_in
-    visit kodak_folder_action_url(:kodak_album_id => 118686908115, :action => :import, :format => :json, :album_id => 1)
-    result = JSON.parse response.body
-    result.each do |r|
-      assert r['caption'] =~ /DSC_\d{4}.*/
-    end
-  end
-  
-  #Photos controller
-  test "Get photos list from 1st album" do
-    log_in
-    visit kodak_photos_url(:kodak_album_id => 118686908115)
-    assert_contain "DSC_0185"
-    assert_contain "DSC_0188"
-    assert_contain "DSC_0189"
-  end
-
-  test "Get photos list from 2nd album" do
-    log_in
-    visit kodak_photos_url(:kodak_album_id => 513508908115)
-    assert_contain "DSC_0316"
-    assert_contain "DSC_0322"
-    assert_contain "DSC_0313"
-    assert_contain "DSC_0313"
-  end
-  
-  test "Get photo thumbnail from 1st album" do
-    log_in
-    visit kodak_photo_url(:kodak_album_id => 118686908115, :photo_id => 754857908115, :size => :thumb)
-    assert response['Content-Type'] =~ /image\/.+/
-  end
-
-  test "Get photo thumbnail from 2nd album" do
-    log_in
-    visit kodak_photo_url(:kodak_album_id => 513508908115, :photo_id => 818658908115, :size => :thumb)
-    assert response['Content-Type'] =~ /image\/.+/
-  end
-
-  test "Import photo from an album (JSON)" do
-    log_in
-    visit kodak_photo_action_url(:kodak_album_id => 513508908115, :photo_id => 939618908115, :action => :import, :format => :json, :album_id => 1)
-    result = JSON.parse response.body
-    assert result['caption'] =~ /DSC_\d{4}.*/
-  end
-
-
-
 end

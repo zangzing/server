@@ -23,7 +23,7 @@ class ConnectorController < ApplicationController
 private
 
   def check_params_for_import
-      render :status => 400, :text => 'ZZ Album ID should be supplied' if params[:album_id].blank?
+      render :status => 400, :text => 'ZZ Album ID should be supplied' if params[:album_id].blank? && (controller_name.include?('folders') || controller_name.include?('photos'))
   end
 
 end

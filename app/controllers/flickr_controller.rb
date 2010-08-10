@@ -24,7 +24,7 @@ protected
   end
 
   def token_store
-    @token_store ||= TokenStore.new(:flickr, session)
+    @token_store ||= TokenStore.new(:flickr)
   end
 
   def flickr_api

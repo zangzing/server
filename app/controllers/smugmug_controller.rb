@@ -26,7 +26,7 @@ class SmugmugController < ConnectorController
   end
 
   def token_store
-    @token_store ||= TokenStore.new(:smugmug, session)
+    @token_store ||= TokenStore.new(:smugmug)
   end
 
   def smugmug_api

@@ -28,7 +28,7 @@ class ShutterflyController < ConnectorController
   end
 
   def token_store
-    @token_store ||= TokenStore.new(:shutterfly, session)
+    @token_store ||= TokenStore.new(:shutterfly)
   end
 
   def sf_api

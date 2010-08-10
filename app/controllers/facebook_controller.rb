@@ -25,7 +25,7 @@ protected
   end
 
   def token_store
-    @token_store ||= TokenStore.new(:facebook, session)
+    @token_store ||= TokenStore.new(:facebook)
   end
 
   def facebook_graph

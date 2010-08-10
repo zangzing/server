@@ -15,7 +15,7 @@
 #
 
 #
-#   © 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
+#   ï¿½ 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 
 class Identity < ActiveRecord::Base
@@ -23,7 +23,7 @@ class Identity < ActiveRecord::Base
   belongs_to :user
   has_many :contacts, :dependent => :destroy
 
-  validates_presence_of :user_id
+  validates_presence_of :user
   
   def self.new_for_gmail
     identity = self.new

@@ -13,10 +13,10 @@
 #
 
 #
-#   © 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
+#   ï¿½ 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 
 class Contact < ActiveRecord::Base
   belongs_to :identity
-  validates_presence_of :identity_id
+  validates_presence_of :identity
 end

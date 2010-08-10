@@ -161,5 +161,12 @@ ActionController::Routing::Routes.draw do |map|
     sf.shutterfly_folder_action '/shutterfly/folders/:sf_album_id/:action.:format'
   end
 
+  #Google
+  map.with_options :controller => :google_sessions do |g|
+    g.new_google_session     '/google/sessions/new', :action  => 'new'
+    g.create_google_session  '/google/sessions/create', :action  => 'create'
+    g.destroy_google_session '/google/sessions/destroy', :action  => 'destroy'
+  end
+  map.google_contacts '/google/contacts/:action', :controller => 'google_contacts'
 
 end
