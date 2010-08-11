@@ -52,8 +52,8 @@ var agent = {
     },
 
 
-    uploadPhoto: function(albumId, photoId, virtualPath, onSuccess, onError) {
-        this.callAgent("/albums/" + albumId + "/photos/" + photoId + "/upload?path=" + encodeURIComponent(virtualPath), onSuccess, onError)
+    uploadPhoto: function(albumId, virtualPath, onSuccess, onError) {
+        this.callAgent("/albums/" + albumId + "/photos/upload?path=" + encodeURIComponent(virtualPath), onSuccess, onError)
     },
 
     cancelUpload : function(albumId, photoId, onSuccess, onError) {
