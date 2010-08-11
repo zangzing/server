@@ -26,7 +26,7 @@ class LocalContactsImporterTest < ActionController::IntegrationTest
       contacts << {'first' => Faker::Name.first_name, 'last' => Faker::Name.last_name, 'email' => Faker::Internet.email}
     end
     
-    visit local_contacts_path(:action => 'import'), :post, :contacts => contacts
+    visit local_contacts_path(:action => 'import'), :post, :contacts => contacts.to_json
     visit local_contacts_path
     assert_contain "burton@fearfactory.com"
     assert_contain "info@otep.com"

@@ -15,7 +15,7 @@ class LocalContactsController < ApplicationController
 
   def import
     identity = current_user.identity_for_local
-    source_data = params[:contacts] || []
+    source_data = JSON.parse(params[:contacts]) || []
 
     imported_contacts = []
     source_data.each do |entry|
