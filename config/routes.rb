@@ -169,4 +169,8 @@ ActionController::Routing::Routes.draw do |map|
   end
   map.google_contacts '/google/contacts/:action', :controller => 'google_contacts'
 
+  #LocalContacts importer
+  map.local_contacts '/local/contacts/:action', :controller => 'local_contacts'
+
+
 end

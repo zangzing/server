@@ -10,7 +10,7 @@ class FlickrFoldersController < FlickrController
       wants.json { render :json => @folders.to_json }
     end
   end
-
+  
   def import
     photo_set = flickr_api.photosets.getPhotos :photoset_id => params[:set_id]
     photos = []

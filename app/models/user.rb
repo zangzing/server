@@ -57,7 +57,7 @@ class User < ActiveRecord::Base
   validates_presence_of :name
   validates_presence_of :email
 
-  IDENTITY_SOURCES = [:google, :flickr, :facebook, :smugmug, :shutterfly, :kodak]
+  IDENTITY_SOURCES = [:google, :flickr, :facebook, :smugmug, :shutterfly, :kodak, :local]
 
   IDENTITY_SOURCES.each do |service_name|
     define_method("identity_for_#{service_name}") do
