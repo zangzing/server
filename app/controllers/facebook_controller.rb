@@ -17,10 +17,10 @@ protected
         @access_token = token_store.get_token(current_user.id)
         @graph = HyperGraph.new(facebook_auth_token)
       rescue => exception
-        #TODO Un-comment all error handling stuff
-        #raise InvalidToken if exception.kind_of?(FacebookError)
+        raise InvalidToken if exception.kind_of?(FacebookError)
         raise HttpCallFail if exception.kind_of?(SocketError)
       end
+      raise InvalidToken unless @access_token
     end
   end
 
