@@ -16,16 +16,16 @@ dependencies:
     group: 
     - :default
     version: = 0.3.14
+  mysql: 
+    group: 
+    - :default
+    version: ">= 0"
   sqlite3-ruby: 
     group: 
     - :default
     version: ">= 0"
     require: 
     - sqlite3
-  mysql: 
-    group: 
-    - :default
-    version: ">= 0"
   oauth: 
     group: 
     - :default
@@ -175,7 +175,7 @@ specs:
     version: 0.7.1
 - will_paginate: 
     version: 2.3.12
-hash: babe6fe97a488435c2fb4ad8744fb4911c4fea6d
+hash: 2168827ea4698e6bed9c67068657a0e989e6cd31
 sources: 
 - Rubygems: 
     uri: http://gemcutter.org

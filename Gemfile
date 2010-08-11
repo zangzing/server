@@ -5,6 +5,7 @@ gem "bundler","0.9.26"
 gem "rails", "2.3.5"
 gem "mysql"
 gem "sqlite3-ruby", :require => "sqlite3"
+gem "mysql"
 gem 'will_paginate', '2.3.12'
 gem 'paperclip',     '2.3.1.1'
 gem 'aws-s3',        '>= 0.6.2', :require => 'aws/s3'

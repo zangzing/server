@@ -118,6 +118,8 @@ protected
       normalized_response = normalize_hash(response)
     when Array
       normalized_response = normalize_array(response)
+    else
+      normalized_response = response
     end
     normalized_response
   end
@@ -128,14 +130,6 @@ protected
     normalized_hash = {}
     hash.each do |k, v|
       case k
-#      when "error"
-#        raise SmugmugError.new("#{v['type']} - #{v['message']}")
-      when "id"
-        if (v == v.to_i.to_s)
-          normalized_hash[k.downcase.to_sym] = v.to_i
-        else
-          normalized_hash[k.downcase.to_sym] = v
-        end
       when /_time$/
         normalized_hash[k.downcase.to_sym] = Time.parse(v)
       else

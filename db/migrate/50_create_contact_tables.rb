@@ -4,7 +4,7 @@ class CreateContactTables < ActiveRecord::Migration
       t.references_with_guid  :user
       t.string   :type
       t.string   :name
-      t.string   :credentials
+      t.string   :credentials , :limit => 400
       t.datetime :last_contact_refresh
       t.string   :identity_source
       t.timestamps

@@ -29,7 +29,7 @@
 #
 
 #
-#   © 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
+#   ï¿½ 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 
 class User < ActiveRecord::Base
@@ -59,27 +59,18 @@ class User < ActiveRecord::Base
 
   validates_presence_of :name
   validates_presence_of :email
-
-
   validates_length_of   :password, :within => 6..40, :if => :require_password?, :message => "must be between 6 and 40 characters long"
 
 
-  def identity_for_gmail
-    identity =  self.identities.find(:first, :conditions => "identity_source = 'gmail'")
-    if(!identity)
-      identity = self.identities.new
-      identity.identity_source = "gmail"
-    end
-    return identity
-  end
+  #todo: will those code work if we add new identity types after users ahve been created?
+  IDENTITY_SOURCES = [:google, :flickr, :facebook, :smugmug, :shutterfly, :kodak]
 
-  def identity_for_facebook
-    identity =  self.identities.find(:first, :conditions => "identity_source = 'facebook'")
-    if(!identity)
-      identity = self.identities.new
-      identity.identity_source = "facebook"
+  IDENTITY_SOURCES.each do |service_name|
+    define_method("identity_for_#{service_name}") do
+      identity = self.identities.find(:first, :conditions => {:identity_source => service_name.to_s})
+      identity = self.identities.create(:identity_source => service_name.to_s) unless identity
+      identity
     end
-    return identity
   end
 
   # Generates a new perishable token for the mailer to use in a password reset request

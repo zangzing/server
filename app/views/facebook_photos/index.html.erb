@@ -1,6 +1,6 @@
 Photos in set:
 <ul>
   <% @photos.each do |photo| %>
-    <li><%= link_to photo[:name], facebook_photo_path(:fb_album_id => params[:fb_album_id], :photo_id => photo[:id], :size => :screen) %> (ID#<%= photo[:id] %>)</li>
+    <li><%= link_to photo[:name], photo[:screen_url] %>(ID#<%= photo[:id] %>)</li>
   <% end %>
 </ul>
