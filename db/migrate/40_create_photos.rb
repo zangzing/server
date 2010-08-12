@@ -1,8 +1,8 @@
 class CreatePhotos < ActiveRecord::Migration
   def self.up
     create_table :photos do |t|
-         t.integer  :album_id
-         t.integer  :user_id
+         t.integer  :album_id,                :null => false
+         t.integer  :user_id,                 :null => false
          t.string   :agent_id
          t.string   :source_path
          t.string   :state,                    :default => "new"
@@ -15,10 +15,13 @@ class CreatePhotos < ActiveRecord::Migration
          t.string   :image_content_type
          t.integer  :image_file_size
          t.datetime :image_updated_at
+         t.string   :image_path
+         t.string   :image_bucket
          t.string   :local_image_file_name
          t.string   :local_image_content_type
          t.integer  :local_image_file_size
          t.datetime :local_image_updated_at
+         t.string   :local_image_path
                   
          t.timestamps  
        end

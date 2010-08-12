@@ -17,8 +17,6 @@ class PhotosController < ApplicationController
       @title = 'New Photo'
   end
 
-
-
   def create_multiple
     @album = Album.find( params[:album_id] )
 
@@ -27,6 +25,7 @@ class PhotosController < ApplicationController
 
     count.to_i.times do
       photo = @album.photos.build( params[:photo])
+      photo.user = current_user
       photo.save
       @photos << photo
     end
@@ -38,6 +37,7 @@ class PhotosController < ApplicationController
   def create
     @album = Album.find( params[:album_id] )
     @photo = @album.photos.build( params[:photo])
+    @photo.user = current_user
     respond_to do | format |
       format.html do
         if @photo.save
@@ -118,7 +118,6 @@ class PhotosController < ApplicationController
   #              Default: First
   #
   def index
-      logger.debug "The params hash in PhotosController index is #{params.inspect}" 
       @album = Album.find(params[:album_id])
       @title = CGI.escapeHTML(@album.name)
       @user=  @album.user

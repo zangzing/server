@@ -27,7 +27,7 @@ ActiveRecord::Schema.define(:version => 90) do
     t.integer  "user_id"
     t.integer  "privacy"
     t.string   "type"
-    t.integer  "style",           :default => 0
+    t.string   "style",           :default => "white"
     t.boolean  "open"
     t.datetime "event_date"
     t.string   "location"
@@ -79,16 +79,16 @@ ActiveRecord::Schema.define(:version => 90) do
     t.datetime "updated_at"
   end
 
-  create_table "followers", :force => true do |t|
+  create_table "follows", :force => true do |t|
     t.integer  "follower_id"
-    t.integer  "leader_id"
+    t.integer  "followee_id"
     t.boolean  "blocked",     :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "followers", ["follower_id"], :name => "index_followers_on_follower_id"
-  add_index "followers", ["leader_id"], :name => "index_followers_on_leader_id"
+  add_index "follows", ["followee_id"], :name => "index_follows_on_followee_id"
+  add_index "follows", ["follower_id"], :name => "index_follows_on_follower_id"
 
   create_table "identities", :force => true do |t|
     t.integer  "user_id"
@@ -130,8 +130,8 @@ ActiveRecord::Schema.define(:version => 90) do
   add_index "oauth_tokens", ["token"], :name => "index_oauth_tokens_on_token", :unique => true
 
   create_table "photos", :force => true do |t|
-    t.integer  "album_id"
-    t.integer  "user_id"
+    t.integer  "album_id",                                    :null => false
+    t.integer  "user_id",                                     :null => false
     t.string   "agent_id"
     t.string   "source_path"
     t.string   "state",                    :default => "new"
@@ -144,10 +144,13 @@ ActiveRecord::Schema.define(:version => 90) do
     t.string   "image_content_type"
     t.integer  "image_file_size"
     t.datetime "image_updated_at"
+    t.string   "image_path"
+    t.string   "image_bucket"
     t.string   "local_image_file_name"
     t.string   "local_image_content_type"
     t.integer  "local_image_file_size"
     t.datetime "local_image_updated_at"
+    t.string   "local_image_path"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -190,32 +193,28 @@ ActiveRecord::Schema.define(:version => 90) do
   add_index "shares", ["user_id"], :name => "index_shares_on_user_id"
 
   create_table "users", :force => true do |t|
-    t.string   "email"
-    t.string   "role"
+    t.string   "email",                                    :null => false
+    t.string   "role",                :default => "user",  :null => false
     t.string   "user_name"
-    t.string   "first_name"
+    t.string   "first_name",                               :null => false
     t.string   "last_name"
-    t.string   "style",               :default => "white"
-    t.integer  "login_count"
-    t.date     "last_login_at"
-    t.string   "last_login_ip"
+    t.string   "style",               :default => "white", :null => false
+    t.string   "suspended",           :default => "f",     :null => false
+    t.string   "crypted_password",                         :null => false
+    t.string   "password_salt",                            :null => false
+    t.string   "persistence_token",                        :null => false
+    t.string   "single_access_token",                      :null => false
+    t.string   "perishable_token",                         :null => false
+    t.integer  "failed_login_count",  :default => 0,       :null => false
     t.date     "current_login_at"
+    t.date     "last_login_at"
     t.string   "current_login_ip"
-    t.integer  "failed_login_count"
-    t.date     "last_request_at"
-    t.string   "persistence_token"
-    t.string   "single_access_token"
-    t.string   "perishable_token",    :default => "",      :null => false
-    t.string   "remember_token"
-    t.string   "crypted_password"
-    t.string   "password_salt"
-    t.string   "suspended",           :default => "f"
+    t.string   "last_login_ip"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["perishable_token"], :name => "index_users_on_perishable_token"
-  add_index "users", ["remember_token"], :name => "index_users_on_remember_token"
 
 end

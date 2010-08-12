@@ -61,8 +61,8 @@
 # -ready: The photo has been processed and moved to permanent storage. It is ready to use
 # -deleted: The photo has been deleted and its waiting to be removed from storage.
 #
-# Once a photo goes assigned it can only be updated with a valid image. When successful it goes loaded
-# Only an assigned photo can be updated. Photos in any other state cannot be updated.
+# Once a photo goes assigned it needs to be updated with an image. When successful it goes loaded
+# An assigned photo that is updated will trigger an async load to s3
 #
 # NOTES:
 # The paperclip default url is used to display a temporary graphic while the local_image is processed.
@@ -77,35 +77,21 @@ class Photo < ActiveRecord::Base
   belongs_to :album
   belongs_to :user
 
+  # when retrieving a search from the DB it will always be ordered by created date descending a.k.a Latest first
+  default_scope :order => 'created_at DESC'
 
-  # for development do sync load  TODO:May be removed for production
-  # before_update :syncload_if_development
-
-  #
+  # if all args were valid on creation then set it to assigned
   after_validation_on_create :set_to_assigned;
 
+ 
   # Set up an async call for Processing and Upload to S3
   after_update :queue_upload_to_s3
   
 
   # used to receive image and queue for processing. User never sees this image. Paperclip defaults are local no styles
-  has_attached_file :local_image
-
-  # This is the image that will be used most of the time
-  # Set image storage options for paperclip based on the environment the app is running in
-  image_options ||= {}
-  image_options[:styles] ||= { :medium =>"600x400>", :thumb   => "100x100#" }
-  image_options[:whiny]  ||= true
-  image_options[:default_url]='/images/working.png'
-  unless Rails.env.development?
-          #for test use S3
-          image_options[:storage]  ||= :s3
-          image_options[:s3_credentials] ||= "#{RAILS_ROOT}/config/s3.yml" #Config file also contains :bucket
-          image_options[:path]            ||= ":attachment/:id/:style/:basename.:extension"
-  end
-  # For development environment, use the default filesystem 
-
-  has_attached_file :image, image_options
+  has_attached_file :local_image, Paperclip.options[:local_image_options]
+ 
+  has_attached_file :image, Paperclip.options[:image_options]
 
 
   validates_presence_of             :album_id, :user_id
@@ -117,7 +103,7 @@ class Photo < ActiveRecord::Base
                                     }
   validates_attachment_size         :local_image,{
                                     :less_than => 10.megabytes,
-                                    :message => "must be under 5 Megs",
+                                    :message => "must be under 10 Megs",
                                     :if =>  :assigned?
                                     }
   validates_attachment_content_type :local_image,{
@@ -126,47 +112,41 @@ class Photo < ActiveRecord::Base
                                     :if =>  :assigned?
                                     }
 
-  # when retrieving a search from the DB it will always be ordered by created date descending a.k.a Latest first
-  default_scope :order => 'created_at DESC'
+  before_local_image_post_process :set_local_image_metadata
+  before_image_post_process       :set_image_metadata
 
-
-  # Called after creation validations have cleared
-  # it is called before the save but after validations have cleared
-  def set_to_assigned
-    self.state = 'assigned'
+  def set_local_image_metadata
+    logger.debug("In local_image before post")
+    self.local_image_path = local_image.path
   end
 
-  # If in development set image to local_image and generate styles synchronously
-  # TODO: Maybe removed for production
-  def syncload_if_development
-    if Rails.env.development? && self.assigned?
-        self.image = local_image.to_file
-        self.state = 'ready'
-    end
+  def set_image_metadata
+    logger.debug("In image before post")
+    self.image_path   = image.path.gsub(image.original_filename,'')
+    self.image_bucket = image.instance_variable_get("@bucket")
   end
 
   #
   # Used to queue loading and processing for async.
   #
   def queue_upload_to_s3
-    unless self.state == 'ready'
-      logger.info "PHOTO status upon queuing upload/processing job is  #{self.state}"
-        if self.assigned?
-          self.state = 'loaded'
-          self.send_later(:upload_to_s3)
-        else
-          record.errors[:state] << "Photo is not assigned, cannot be updated"
-        end
+    # If an assigned image has been loaded with an image, reprocess and send to S3
+    if self.assigned? && self.local_image_file_name_changed?
+       self.state = 'loaded'
+       self.send_later(:upload_to_s3)
     end
   end
 
   #
   # Used by the workers to load the image.
-  # This call cannot be privates
+  # This call cannot be private
   def upload_to_s3
       self.state = 'processing'
+      self.save!
       self.image = local_image.to_file
+      self.save!
       self.local_image.clear
+      self.local_image_path = ''
       self.state = 'ready'
       self.save!
   end
@@ -184,18 +164,27 @@ class Photo < ActiveRecord::Base
   end
 
   def thumb_url
+    set_s3bucket
     image.url(:thumb)
   end
 
   def thumb_path
+    set_s3bucket
     image.path(:thumb)
   end
 
   def medium_url
+    set_s3bucket
     image.url(:medium)
   end
 
+  def set_to_assigned
+    self.state = 'assigned'
+  end
 
+  def set_s3bucket
+    image.instance_variable_set '@bucket', self.image_bucket unless self.image_bucket.nil?
+  end
 
 end
 

@@ -4,18 +4,20 @@
 # Credentials for s3 account
 #
 
-#development:
-#access_key_id: YOURSECRETACCESSID
-#secret_access_key: YOUR-secRE/TACCe\ssKEy
 
+common: &common
+  access_key_id: AKIAJZR7WODGPXONMRVA
+  secret_access_key: lUEwegAXc0NSSrB16klFtBWKDuFO/LLZfyZi82DR
+
+development:
+  <<: *common
+  bucket: 'development-server-zangzing-com'
 
 test:
-bucket: 'development-server-zangzing-com'
-access_key_id: AKIAJZR7WODGPXONMRVA
-secret_access_key: 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
+  <<: *common
+  bucket: 'test-server-zangzing-com'
 
 
-#production:
-bucket: 'production-server-zangzing-com'
-access_key_id: AKIAJZR7WODGPXONMRVA
-secret_access_key: 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
+production:
+  <<: *common
+  bucket: 'production-server-zangzing-com'
