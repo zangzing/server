@@ -124,11 +124,9 @@ class FacebookConnectorTest < ActionController::IntegrationTest
     assert result['caption'] =~ /dlink .+/
 
     #Post to a feed
-    fb_user = '100001160709056'
     test_message = "today testing message is #{Digest::SHA1.hexdigest("some randomness - #{DateTime.now.to_s}")}"
-    visit create_facebook_post_path, :post, :facebook_user_id => fb_user, :message => test_message
-    assert_contain fb_user
-    visit facebook_posts_path, :get, :facebook_user_id => fb_user
+    visit create_facebook_post_path, :post, :message => test_message
+    visit facebook_posts_path, :get
     assert_contain test_message
     
     log_out
