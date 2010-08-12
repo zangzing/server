@@ -7,14 +7,14 @@ protected
 
   def service_login_required
     unless permanent_token
-      @permanent_token = token_store.get_token(current_user.id)
+      @permanent_token = service_identity.credentials
       raise InvalidToken unless @permanent_token
       contacts_client.authsub_token = @permanent_token
     end
   end
 
-  def token_store
-    @token_store ||= TokenStore.new(:google)
+  def service_identity
+    @service_identity ||= current_user.identity_for_google
   end
 
   def contacts_client

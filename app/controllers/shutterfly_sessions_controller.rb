@@ -10,11 +10,11 @@ class ShutterflySessionsController < ShutterflyController
   def create
     sf_user_token = "#{params[:oflyUserAuthToken]}_#{params[:oflyUserid]}"
     raise InvalidCredentials unless sf_user_token
-    token_store.store_token(sf_user_token, current_user.id)
+    service_identity.update_attribute(:credentials, sf_user_token)
   end
 
   def destroy
-    token_store.delete_token(current_user.id)
+    service_identity.update_attribute(:credentials, nil)
     sf_user_token = nil
     sf_api = nil
   end

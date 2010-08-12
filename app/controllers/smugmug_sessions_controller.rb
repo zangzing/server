@@ -15,11 +15,11 @@ class SmugmugSessionsController < SmugmugController
       raise InvalidToken if e.kind_of?(SmugmugError)
     end
     raise InvalidCredentials unless smugmug_api.access_token
-    token_store.store_token(smugmug_api.access_token(true) , current_user.id)
+    service_identity.update_attribute(:credentials, smugmug_api.access_token(true))
   end
 
   def destroy
-    token_store.delete_token(current_user.id)
+    service_identity.update_attribute(:credentials, nil)
     smugmug_api = nil
   end
 end
