@@ -1,5 +1,5 @@
 class PhotosController < ApplicationController
-  before_filter :oauth_required, :only => [:agentindex, :upload]
+  before_filter :oauth_required, :only => [:agentindex, :upload, :agent_create]
   before_filter :login_required, :only => [:create]
   before_filter :require_user,   :only => [:show, :new, :edit, :destroy, :index]
 
@@ -19,21 +19,21 @@ class PhotosController < ApplicationController
 
 
 
-  def create_multiple
-    @album = Album.find( params[:album_id] )
-
-    count = params[:count]
-    @photos = []
-
-    count.to_i.times do
-      photo = @album.photos.build( params[:photo])
-      photo.save
-      @photos << photo
-    end
-
-    render :json => @photos.to_json(:only =>[:id, :agent_id, :state])
-
-  end
+#  def create_multiple
+#    @album = Album.find( params[:album_id] )
+#
+#    count = params[:count]
+#    @photos = []
+#
+#    count.to_i.times do
+#      photo = @album.photos.build( params[:photo])
+#      photo.save
+#      @photos << photo
+#    end
+#
+#    render :json => @photos.to_json(:only =>[:id, :agent_id, :state])
+#
+#  end
 
   def create
     @album = Album.find( params[:album_id] )
@@ -57,9 +57,34 @@ class PhotosController < ApplicationController
     end
   end
 
+
+  def agent_create
+    @album = Album.find( params[:album_id] )
+    @agent = Agent.find(:first, :conditions => [ "agent_id = ?", params[:agent_id]])
+
+    @photo = @album.photos.build({:user_id => @agent.user_id, :agent_id => @agent.id} )
+    respond_to do | format |
+      format.html do
+        if @photo.save
+          flash[:success] = "Photo Created!"
+          render :action => :show
+        else
+          render :action => :new
+        end
+      end
+      format.json do
+        if @photo.save
+          render :json => @photo.to_json(:only =>[:id, :agent_id, :state])
+        else
+          render :json => @photo.errors, :status=>500
+        end
+      end
+    end
+  end
+
   def edit
     @photo = Photo.find(params[:id])
-    @album = @photo.album
+    @album = @photo.album                                                      Person.find
     @title = "Update Photo"
   end
 

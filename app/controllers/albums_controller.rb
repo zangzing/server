@@ -1,5 +1,5 @@
 class AlbumsController < ApplicationController
-  before_filter :require_user,     :only => [ :new, :create ]
+  before_filter :require_user,     :only => [ :new, :create, :upload ]
   before_filter :authorized_user, :only => :destroy
 
   def new

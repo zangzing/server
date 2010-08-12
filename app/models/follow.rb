@@ -15,8 +15,8 @@
 #   © 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 
-class Follower < ActiveRecord::Base
-  belongs_to :user
-  has_one :user
-  validates_presence_of :follower_id, :leader_id
+class Follow < ActiveRecord::Base
+  belongs_to :follower, :class_name => "User"
+  belongs_to :followee, :class_name => "User"
+  validates_presence_of :follower_id, :followee_id
 end

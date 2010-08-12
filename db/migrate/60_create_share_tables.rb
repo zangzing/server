@@ -1,8 +1,8 @@
 class CreateShareTables < ActiveRecord::Migration
   def self.up
-    create_table :shares do |t|
-      t.integer  :album_id
-      t.integer  :user_id
+    create_table :shares, :guid=>false,:force=>true do |t|
+      t.references_with_guid  :album
+      t.references_with_guid  :user
       t.string   :type
       t.string   :subject
       t.text     :message
@@ -12,7 +12,7 @@ class CreateShareTables < ActiveRecord::Migration
     add_index :shares, :user_id
     add_index :shares, :album_id
   
-    create_table :recipients do |t|
+    create_table :recipients, :guid=>false,:force=>true do |t|
       t.integer :share_id
       t.string  :type
       t.string  :name

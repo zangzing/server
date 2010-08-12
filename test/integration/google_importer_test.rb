@@ -10,7 +10,7 @@ class GoogleContactsImporterTest < ActionController::IntegrationTest
 
 
   CREDENTIALS = {:login => 'dev.zangzing@gmail.com', :password => 'share1001photos'}
-  
+
   test "Routing" do
     #Sessions
     assert_routing "/google/sessions/new", {:controller => "google_sessions", :action => "new"}

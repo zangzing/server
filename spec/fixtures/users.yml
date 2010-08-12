@@ -28,9 +28,14 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 one:
-  name: MyString
-  email: MyString
+  first_name: My
+  last_name:  String
+  email: MyString@example.org
+  password: password
+
 
 two:
-  name: MyString
-  email: MyString
+  first_name: My
+  last_name:  String2
+  email: MyString2@example.org
+  password: password

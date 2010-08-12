@@ -30,6 +30,10 @@ dependencies:
     group: 
     - :default
     version: = 0.4.1
+  usesguid: 
+    group: 
+    - :default
+    version: ">= 0"
   mechanize: 
     group: 
     - :test
@@ -64,6 +68,10 @@ dependencies:
     group: 
     - :default
     version: = 2.3.12
+  usesguid_migrations: 
+    group: 
+    - :development
+    version: ">= 0"
   webrat: 
     group: 
     - :test
@@ -124,11 +132,11 @@ specs:
 - delayed_job: 
     version: 2.0.3
 - factory_girl: 
-    version: 1.3.1
+    version: 1.3.2
 - faker: 
     version: 0.3.1
 - json: 
-    version: 1.4.4
+    version: 1.4.6
 - flickraw: 
     version: 0.8.2
 - gdata: 
@@ -138,7 +146,7 @@ specs:
 - launchy: 
     version: 0.3.7
 - nokogiri: 
-    version: 1.4.2.1
+    version: 1.4.3.1
 - mechanize: 
     version: 1.0.0
 - mysql: 
@@ -159,11 +167,15 @@ specs:
     version: 1.3.2
 - sqlite3-ruby: 
     version: 1.3.1
+- usesguid: 
+    version: 1.0.0
+- usesguid_migrations: 
+    version: 1.0.3
 - webrat: 
     version: 0.7.1
 - will_paginate: 
     version: 2.3.12
-hash: 42a458e93b2ba4947131bacd6c67935a25191ea2
+hash: 2168827ea4698e6bed9c67068657a0e989e6cd31
 sources: 
 - Rubygems: 
     uri: http://gemcutter.org

@@ -1,8 +1,8 @@
 class CreatePhotos < ActiveRecord::Migration
   def self.up
-    create_table :photos do |t|
-         t.integer  :album_id
-         t.integer  :user_id
+    create_table :photos, :force => true do |t|
+         t.references_with_guid  :album
+         t.references_with_guid  :user
          t.string   :agent_id
          t.string   :source_path
          t.string   :state,                    :default => "new"

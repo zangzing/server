@@ -6,40 +6,40 @@
 
 
 var server = {
-    createPhoto : function(albumId, onSuccess, onError){
-
-        var callServer = function(agentId){
-
-            $.ajax({
-               type: "POST",
-               dataType: "json",
-               url: "/albums/" + albumId + "/photos.json",
-               data: {'photo[agent_id]':agentId},
-               success: onSuccess,
-               error: onError
-            });
-        }
-        
-        agent.getAgentId(callServer, onError)
-    },
-
-
-    createMultiplePhotos : function(albumId, count, onSuccess, onError){
-
-        var callServer = function(agentId){
-
-            $.ajax({
-               type: "POST",
-               dataType: "json",
-               url: "/albums/" + albumId + "/photos/create_multiple.json?count=" + count,
-               data: {'photo[agent_id]':agentId},
-               success: onSuccess,
-               error: onError
-            });
-        }
-
-        agent.getAgentId(callServer, onError)
-    },
+//    createPhoto : function(albumId, onSuccess, onError){
+//
+//        var callServer = function(agentId){
+//
+//            $.ajax({
+//               type: "POST",
+//               dataType: "json",
+//               url: "/albums/" + albumId + "/photos.json",
+//               data: {'photo[agent_id]':agentId},
+//               success: onSuccess,
+//               error: onError
+//            });
+//        }
+//
+//        agent.getAgentId(callServer, onError)
+//    },
+//
+//
+//    createMultiplePhotos : function(albumId, count, onSuccess, onError){
+//
+//        var callServer = function(agentId){
+//
+//            $.ajax({
+//               type: "POST",
+//               dataType: "json",
+//               url: "/albums/" + albumId + "/photos/create_multiple.json?count=" + count,
+//               data: {'photo[agent_id]':agentId},
+//               success: onSuccess,
+//               error: onError
+//            });
+//        }
+//
+//        agent.getAgentId(callServer, onError)
+//    },
 
 
 

@@ -34,7 +34,7 @@
 
 
 class User < ActiveRecord::Base
-
+  usesguid
   attr_writer      :name
   attr_accessible  :email, :name, :password, :password_confirmation, :style
 
@@ -47,6 +47,9 @@ class User < ActiveRecord::Base
   has_many :client_applications, :dependent => :destroy 
   has_many :tokens, :class_name=>"OauthToken",:order=>"authorized_at desc",:include=>[:client_application]
 
+  has_many :followees, :through => :follows, :class_name => 'User', :dependent => :destroy
+  has_many :followers, :through => :follows, :class_name => 'User'
+    
 
   acts_as_authentic         # This delegates all authentication details to authlogic
 
@@ -56,6 +59,8 @@ class User < ActiveRecord::Base
 
   validates_presence_of :name
   validates_presence_of :email
+  validates_length_of   :password, :within => 6..40, :if => :require_password?, :message => "must be between 6 and 40 characters long"
+
 
   IDENTITY_SOURCES = [:google, :flickr, :facebook, :smugmug, :shutterfly, :kodak, :local]
 
@@ -74,7 +79,7 @@ class User < ActiveRecord::Base
   end
 
   def admin?
-     self.role == :admin
+     self.role == 'admin'
   end
 
   def name
