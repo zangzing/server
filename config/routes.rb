@@ -35,7 +35,6 @@ ActionController::Routing::Routes.draw do |map|
     photos.destroy_photo               '/photos/:id.',                              :action=>'destroy',         :conditions => { :method => :delete }
     photos.photo                       '/photos/:id.',                              :action=>'show',            :conditions => { :method => :get }
     photos.agent_photos                '/agents/:agent_id/photos.',                 :action=>'agentindex',      :conditions=>{ :method => :get }
-    photos.agent_create                '/albums/:album_id/photos/agent_create.:format',  :action=>'agent_create',    :conditions=>{ :method => :post }
   end
 
   #root  the root of zangzing -- just remember to delete public/index.html.

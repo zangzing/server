@@ -19,50 +19,30 @@ class PhotosController < ApplicationController
 
 
 
-#  def create_multiple
-#    @album = Album.find( params[:album_id] )
-#
-#    count = params[:count]
-#    @photos = []
-#
-#    count.to_i.times do
-#      photo = @album.photos.build( params[:photo])
-#      photo.save
-#      @photos << photo
-#    end
-#
-#    render :json => @photos.to_json(:only =>[:id, :agent_id, :state])
-#
-#  end
+
+  def create_multiple
+    @album = Album.find( params[:album_id] )
+
+    count = params[:count]
+    @photos = []
+
+    count.to_i.times do
+      photo = @album.photos.build( params[:photo])
+      photo.user = current_user
+      if photo.save
+          @photos << photo
+      else
+          render :json => 'Error creating multiple photos' ,:status =>500
+        end
+    end
+    render :json => @photos.to_json(:only =>[:id, :agent_id, :state])
+  end
 
   def create
     @album = Album.find( params[:album_id] )
     @photo = @album.photos.build( params[:photo])
-    respond_to do | format |
-      format.html do
-        if @photo.save
-          flash[:success] = "Photo Created!"
-          render :action => :show
-        else
-          render :action => :new
-        end
-      end
-      format.json do
-        if @photo.save
-          render :json => @photo.to_json(:only =>[:id, :agent_id, :state])
-        else
-          render :json => @photo.errors, :status=>500
-        end
-      end
-    end
-  end
+    @photo.user = current_user
 
-
-  def agent_create
-    @album = Album.find( params[:album_id] )
-    @agent = Agent.find(:first, :conditions => [ "agent_id = ?", params[:agent_id]])
-
-    @photo = @album.photos.build({:user_id => @agent.user_id, :agent_id => @agent.id} )
     respond_to do | format |
       format.html do
         if @photo.save
@@ -84,7 +64,7 @@ class PhotosController < ApplicationController
 
   def edit
     @photo = Photo.find(params[:id])
-    @album = @photo.album                                                      Person.find
+    @album = @photo.album
     @title = "Update Photo"
   end
 
@@ -143,7 +123,6 @@ class PhotosController < ApplicationController
   #              Default: First
   #
   def index
-      logger.debug "The params hash in PhotosController index is #{params.inspect}" 
       @album = Album.find(params[:album_id])
       @title = CGI.escapeHTML(@album.name)
       @user=  @album.user
