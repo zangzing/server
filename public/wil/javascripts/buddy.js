@@ -1,9 +1,7 @@
-/* Core Functions 
------------------------------------------------------------------------------- */
 var zz = {
   
   /* Tracking Function - Allows us to track *everything* easily 
-  ------------------------------------------------------------------------------ */
+  --------------------------------------------------------------------------- */
 
   tracker: function(tracked){
     //TODO: Connect to ZZ's stats provider
@@ -11,8 +9,9 @@ var zz = {
   },// end zz.tracker
   
   /* Better AJAX - extends jQuery.ajax() w/retries & error/success functions
-  ------------------------------------------------------------------------------ */
+  --------------------------------------------------------------------------- */
   new_ajax: function(obj) {
+  
     $.ajax({
       data: (!obj.params) ? '' : obj.params,
       dataType: (!obj.data_type) ? 'json' : obj.data_type,
@@ -48,11 +47,13 @@ var zz = {
       type: obj.action,
       url: obj.url
     });
+  
   }, // end zz.new_ajax
   
   /* Better Load - extends jQuery(obj).load(); w/retries & error/success fns 
-  ------------------------------------------------------------------------------ */
+  --------------------------------------------------------------------------- */
   new_load: function(obj){
+  
     $(obj.element).load(obj.url, function(responseText, textStatus, XMLHttpRequest){
       if (textStatus == 'error') {
         if (obj.attempt == obj.maxtries) {
@@ -73,16 +74,45 @@ var zz = {
         }
       }
     });
+  
   }, // end zz.new_load
     
+  /* AJAX 'obj' objects 
+  --------------------------------------------------------------------------- */
+  ajax_objects: {
+    
+    sample_ajax: {
+      params: 'format=json',
+      type: 'GET',
+      url: '/get/json/data.js',
+      maxtries: 4,
+      onsuccess: function(data){
+        // zz.zang.some.function();
+      },
+      onerror: function(data) {
+        // zz..zang.some.function();
+      }
+    },
+    
+    sample_load: {
+      url: '/get/html/output',
+      maxtries: 4,
+      onsuccess: function(data){
+        // zz.zang.some.function();
+      },
+      onerror: function(data) {
+        // zz..zang.some.function();
+      }
+    }
+
+  }, 
+
   /* Form Validation objects 
-  ------------------------------------------------------------------------------ */
+  --------------------------------------------------------------------------- */
   validation: {
   
-    /* The Sign Up Form 
-    ------------------------------------------------------------------------------ */
-    sign_up: {
-      element: '#sign-up',
+    sample_sign_up: {
+      element: '#sample-sign-up',
       rules: {
         first_name: { required: true, minlength: 2 },  
         last_name: { required: true, minlength: 3 },  
@@ -112,17 +142,18 @@ var zz = {
         }  
       }
       
-    } // end zz.validation.sign_up
+    } // end zz.validation.sample_sign_up
         
   }, // end zz.validation
     
   /* ZangZing Functions and Vars 
-  ------------------------------------------------------------------------------ */
+  --------------------------------------------------------------------------- */
   
   zang: {
     
     selected_photo: 'undefined',
-    drawer_open: 'no',
+    drawer_open: 0,
+    
     highlight_selected: function(id){
     
       if (zz.zang.selected_photo != 'undefined') {
@@ -135,19 +166,48 @@ var zz = {
       $('#'+id).addClass('selected'); // select the new photo
       zz.zang.selected_photo = id; // update our constant
       zz.tracker('select-photo/'+id); // track the action
-    } // end zz.zang.highlight_selected()
+
+    }, // end zz.zang.highlight_selected()
+    
+    open_drawer: function(time){
+
+      zz.zang.screen_height = $(window).height(); // measure the screen height
+      // adjust for out top and bottom bar, the gradient padding and a margin
+      zz.zang.drawer_height = zz.zang.screen_height - 180; 
+
+      // fade out the grid
+      $('article').animate({ opacity: 0.3 }, time/2 );
+      // pull out the drawer
+      $('div#drawer').animate({ height: zz.zang.drawer_height + 'px', top: '50px' }, time );
+      $('#indicator').fadeIn('slow');
+      
+      zz.zang.drawer_open = 1; // remember position of the drawer in 
+
+    }, // end zz.zang.open_drawer()
+
+    close_drawer: function(time){
+
+      $('#indicator').fadeOut('fast');
+      // close the drawer
+      $('div#drawer').animate({ height: 0, top: '10px' }, time );
+      // fade out the grid
+      $('article').animate({ opacity: 1 }, time * 1.1 );
+      
+      zz.zang.drawer_open = 0; // remember position of the drawer in 
+
+    } // end zz.zang.open_drawer()
     
   }, // end zz.zang
-
+  
   /* INITs 
-  ------------------------------------------------------------------------------ */
+  --------------------------------------------------------------------------- */
   
   init: {
   
-    base: function(){
+    template: function(){
     
       /* Click Handlers
-      -------------------------------------------------------------------------- */
+      ----------------------------------------------------------------------- */
       
       // highlight a selected photo
       $('ul#grid-view li').click(function(){
@@ -157,19 +217,23 @@ var zz = {
       
       // open drawer demo
       $('#nav-new-album').click(function(){
-        
-        zz.zang.screen_height = $(window).height(); // measure the screen height
-        zz.zang.drawer_height = zz.zang.screen_height - 200; // adjust for out top and bottom bar, the gradient padding of 40 on the drawer and a margin
-        // fade out the grid
-        $('article').fadeOut('slow');
-        
-        // pull out the drawer
-        $('div#drawer').animate({ 
-          height: zz.zang.drawer_height + 'px'
-        }, 1800 );
-        
+      
+        if (zz.zang.drawer_open === 0) {
+          zz.zang.open_drawer(990);
+        } else {
+          zz.zang.close_drawer(880);
+        }
+                
       });
     },
+    
+    loaded: function(){
+    
+    },
+    
+    resized: function(){
+      
+    }        
   
   } // end zz.init
 

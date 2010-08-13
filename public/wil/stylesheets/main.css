@@ -1,77 +1,10 @@
-/* Reset CSS */
-
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, font, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	outline: 0;
-	font-weight: inherit;
-	font-style: inherit;
-	font-size: 100%;
-	font-family: inherit;
-	vertical-align: baseline;
-}
-:focus {
-	outline: 0;
-}
-body {
-	line-height: 1;
-	color: black;
-	background: white;
-}
-ol, ul {
-	list-style: none;
-}
-table {
-	border-collapse: separate;
-	border-spacing: 0;
-}
-caption, th, td {
-	text-align: left;
-	font-weight: normal;
-}
-blockquote:before, blockquote:after,
-q:before, q:after {
-	content: "";
-}
-blockquote, q {
-	quotes: "" "";
-}
-* { outline: none; }
-
-/* Clearfix CSS */
-
-.clearfix:after {
-    content: ".";
-    display: block;
-    clear: both;
-    visibility: hidden;
-    line-height: 0;
-    height: 0;
-}
-.clearfix {
-    display: inline-block;
-}
-html[xmlns] .clearfix {
-    display: block;
-}
-* html .clearfix {
-    height: 1%;
-}
-
-/* Body */
+/* Body, headers, text
+----------------------------------------------------------------------------- */
 
 body { 
   width: 98%;
   margin: 0 auto;
-	background-color: #f9f9f9;
+  background-color: #f3f3f3;
   font-family: "Lucida Grande", "Lucida Sans Unicode", "Trebuchet MS", Tahoma, Helvetica, Arial, sans-serif;
   font-size: 62.5%;
   color: #0A0A0A;
@@ -92,12 +25,13 @@ h3 {
   font-size: 1.2em;
 }
 
-/* Fixed Header and Footer */
+/* Fixed Header and Footer 
+----------------------------------------------------------------------------- */
 
 div#container {
   width: 950px;
   margin: 0 auto;
-}
+} /* allows the fixed-position elements to be in the center w/o js hacks */
 
 nav {
   position: fixed;
@@ -256,13 +190,16 @@ header ul#view-swap li {
   float: right;
 }
 
+/* Drawer
+----------------------------------------------------------------------------- */
+
 div#drawer {
   position: fixed;
   width: 906px;
   height: 0px;
   margin: 0 24px 0 20px;
   padding: 0 0 40px 4px;
-  top: 50px;
+  top: 10px;
   background-image: url("../images/bg-drawer-bottom-cap.png");
   background-repeat: no-repeat;
   background-position: 100% bottom;
@@ -292,7 +229,8 @@ div#indicator img {
   margin: 5px 2px 0 0;
 }
 
-/* Grid View */
+/* Grid View
+----------------------------------------------------------------------------- */
 
 article {
   min-width: 930px;
@@ -316,19 +254,17 @@ ul#grid-view li.wide {
 
 ul#grid-view li img {
   border: #fff solid 5px;
+  box-shadow: 0px 0px 5px #767676;
   -webkit-box-shadow: 0px 0px 5px #767676;
   -moz-box-shadow: 0px 0px 5px #767676;
+  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#767676, offX=0, offY=0, positive=true);
   cursor: pointer;
 }
 
 ul#grid-view li.selected img {
   border: 4px solid #FDD042;
+  box-shadow: 0px 0px 5px #FDD042;
   -webkit-box-shadow: 0px 0px 5px #FDD042;
   -moz-box-shadow: 0px 0px 5px #FDD042;
-}
-
-/* Reusables */
-
-.offset {
-  display: none;
+  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#FDD042, offX=0, offY=0, positive=true);
 }
