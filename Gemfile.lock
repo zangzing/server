@@ -60,6 +60,10 @@ dependencies:
     group: 
     - :test
     version: ">= 0"
+  usesguid_migrations: 
+    group: 
+    - :default
+    version: ">= 0"
   paperclip: 
     group: 
     - :default
@@ -68,10 +72,6 @@ dependencies:
     group: 
     - :default
     version: = 2.3.12
-  usesguid_migrations: 
-    group: 
-    - :development
-    version: ">= 0"
   webrat: 
     group: 
     - :test
@@ -175,7 +175,7 @@ specs:
     version: 0.7.1
 - will_paginate: 
     version: 2.3.12
-hash: 2168827ea4698e6bed9c67068657a0e989e6cd31
+hash: e7f2a961d18d75adb1fe4bd4f5ecc7709fc72b7c
 sources: 
 - Rubygems: 
     uri: http://gemcutter.org
