@@ -25,7 +25,7 @@ end
 # Load the paperclip.yml configuration file
 if defined?(RAILS_ROOT) and File.exists?("#{RAILS_ROOT}/config/paperclip.yml")
     Paperclip.options.merge!(YAML::load(ERB.new(File.read("#{RAILS_ROOT}/config/paperclip.yml")).result)[RAILS_ENV].recursively_symbolize_keys!)
-    print("foo")
+    puts "=> Paperclip options file loaded."
 else
      abort %{ZangZing config/paperclip.yml file not found. UNABLE TO INITIALIZE PHOTO STORAGE!}
 end

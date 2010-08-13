@@ -11,13 +11,10 @@ common: &common
 
 development:
   <<: *common
-  bucket: 'development-server-zangzing-com'
 
 test:
   <<: *common
-  bucket: 'test-server-zangzing-com'
 
 
 production:
   <<: *common
-  bucket: 'production-server-zangzing-com'
