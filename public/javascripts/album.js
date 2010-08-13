@@ -99,7 +99,9 @@ album = {
         activePhoto = jQuery.parseJSON(photoJson);
 
         if (agentPresent) {
-                photoUrl = "http://" + location.host + "/photos/" + activePhoto.id; // # TODO: ADD AGENT WHEN AGENT IS READY
+                 //:TODO when the agent is ready replace this call to point to the agent
+                //photoUrl = "http://" + location.host + "/photos/" + activePhoto.id; // # TODO: ADD AGENT WHEN AGENT IS READY
+                photoUrl = activePhoto.medium_url;
         } else {
                 photoUrl = activePhoto.medium_url;
         }
