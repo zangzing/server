@@ -18,31 +18,51 @@ class PhotosController < ApplicationController
   end
 
 
-
-
-  def create_multiple
-    @album = Album.find( params[:album_id] )
-
-    count = params[:count]
-    @photos = []
-
-    count.to_i.times do
-      photo = @album.photos.build( params[:photo])
-      photo.user = current_user
-      if photo.save
-          @photos << photo
-      else
-          render :json => 'Error creating multiple photos' ,:status =>500
-        end
-    end
-    render :json => @photos.to_json(:only =>[:id, :agent_id, :state])
-  end
+#  def create_multiple
+#    @album = Album.find( params[:album_id] )
+#
+#    count = params[:count]
+#    @photos = []
+#
+#    count.to_i.times do
+#      photo = @album.photos.build( params[:photo])
+#      photo.save
+#      @photos << photo
+#    end
+#
+#    render :json => @photos.to_json(:only =>[:id, :agent_id, :state])
+#
+#  end
 
   def create
     @album = Album.find( params[:album_id] )
     @photo = @album.photos.build( params[:photo])
     @photo.user = current_user
+    respond_to do | format |
+      format.html do
+        if @photo.save
+          flash[:success] = "Photo Created!"
+          render :action => :show
+        else
+          render :action => :new
+        end
+      end
+      format.json do
+        if @photo.save
+          render :json => @photo.to_json(:only =>[:id, :agent_id, :state])
+        else
+          render :json => @photo.errors, :status=>500
+        end
+      end
+    end
+  end
 
+
+
+  def agent_create
+    @album = Album.find( params[:album_id] )
+    @photo = @album.photos.build( params[:photo])
+    @photo.user = current_user
     respond_to do | format |
       format.html do
         if @photo.save
@@ -64,7 +84,7 @@ class PhotosController < ApplicationController
 
   def edit
     @photo = Photo.find(params[:id])
-    @album = @photo.album
+    @album = @photo.album                                                      Person.find
     @title = "Update Photo"
   end
 
@@ -131,7 +151,7 @@ class PhotosController < ApplicationController
         @photos = @album.photos.paginate({:page =>params[:page], :per_page => 1} )
         unless  params[:photoid].nil?
           current_page = 1 if params[:page].nil?
-          until @photos[0][:id] == params[:photoid].to_i
+          until @photos[0][:id] == params[:photoid]
             current_page += 1
             @photos = @album.photos.paginate({:page =>current_page, :per_page => 1})
           end
