@@ -28,11 +28,12 @@ class ApplicationController < ActionController::Base
     # otherwise set it to the default which is white.
     #
     def set_layout
-      if current_user_session
-       current_user.style
-      else
-        "white"
-      end
+      #if current_user_session
+      # current_user.style
+      #else
+      #  "white"
+      #end
+      'new'
     end
 
     #
