@@ -1,4 +1,5 @@
 class GoogleContactsController < GoogleController
+  skip_before_filter :service_login_required, :only => [:index]
 
   BATCH_SIZE = 100
 

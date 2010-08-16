@@ -16,19 +16,20 @@ class ShutterflyController < ConnectorController
   def service_login_required
     unless sf_user_token
       begin
-        @sf_user_token = token_store.get_token(current_user.id)
+        @sf_user_token = service_identity.credentials
         authtoken, usertoken = @sf_user_token.split('_')
         @api = ShutterflyConnector.new(usertoken, authtoken)
-        #Shutterfly_api.call_method('Shutterfly.auth.checkAccessToken')
+        Shutterfly_api.call_method('Shutterfly.auth.checkAccessToken')
       rescue => exception
         raise InvalidToken if exception.kind_of?(ShutterflyError)
         raise HttpCallFail if exception.kind_of?(SocketError)
       end
+      raise InvalidToken unless @sf_user_token
     end
   end
 
-  def token_store
-    @token_store ||= TokenStore.new(:shutterfly)
+  def service_identity
+    @service_identity ||= current_user.identity_for_shutterfly
   end
 
   def sf_api

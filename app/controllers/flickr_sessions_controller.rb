@@ -11,14 +11,14 @@ class FlickrSessionsController < FlickrController
   def create
     begin
       auth = flickr_api.auth.getToken :frob => params[:frob]
-      token_store.store_token(auth.token, current_user.id)
+      service_identity.update_attribute(:credentials, auth.token)
     rescue => e
       raise InvalidCredentials if e.kind_of?(FlickRaw::FailedResponse)
     end
   end
 
   def destroy
-    token_store.delete_token(current_user.id)
+    service_identity.update_attribute(:credentials, nil)
     flickr_api = nil
   end
 
