@@ -79,9 +79,11 @@ var zz = {
     
   /* AJAX 'obj' objects 
   --------------------------------------------------------------------------- */
-  ajax_objects: {
+  ajax_obj: {
     
-    sample_ajax: {
+    //makes ajax calls purdy: zz.new_ajax(zz.ajax_obj.sample_a);
+    
+    sample_a: {
       params: 'format=json',
       type: 'GET',
       url: '/get/json/data.js',
@@ -90,18 +92,18 @@ var zz = {
         // zz.zang.some.function();
       },
       onerror: function(data) {
-        // zz..zang.some.function();
+        // zz.zang.some.function();
       }
     },
     
-    sample_load: {
+    sample_l: {
       url: '/get/html/output',
       maxtries: 4,
       onsuccess: function(data){
         // zz.zang.some.function();
       },
       onerror: function(data) {
-        // zz..zang.some.function();
+        // zz.zang.some.function();
       }
     }
 
@@ -153,6 +155,8 @@ var zz = {
     
     selected_photo: 'undefined',
     drawer_open: 0,
+    indicator_step: 1,
+    indicator: 'step-add',
     
     highlight_selected: function(id){
     
@@ -179,6 +183,7 @@ var zz = {
       $('article').animate({ opacity: 0.3 }, time/2 );
       // pull out the drawer
       $('div#drawer').animate({ height: zz.zang.drawer_height + 'px', top: '50px' }, time );
+      $('div#drawer-content').animate({ height: (zz.zang.drawer_height + 20) + 'px'}, time );
       $('#indicator').fadeIn('slow');
       
       zz.zang.drawer_open = 1; // remember position of the drawer in 
@@ -190,12 +195,14 @@ var zz = {
       $('#indicator').fadeOut('fast');
       // close the drawer
       $('div#drawer').animate({ height: 0, top: '10px' }, time );
-      // fade out the grid
+      $('div#drawer-content').animate({ height: 0, top: '10px' }, time );
+      // fade in the grid
       $('article').animate({ opacity: 1 }, time * 1.1 );
       
       zz.zang.drawer_open = 0; // remember position of the drawer in 
 
     } // end zz.zang.open_drawer()
+    
     
   }, // end zz.zang
   
@@ -225,6 +232,64 @@ var zz = {
         }
                 
       });
+      
+      $('#step-style').click(function(){
+        zz.zang.indicator = $('.on').val('id');
+        if (zz.zang.indicator == 'step-style') {
+          return;
+        } else {
+          $('#indicator').addClass('step-2').removeClass('step-'+zz.zang.indicator_step);
+          $(this).addClass('on');
+          $('#'+zz.zang.indicator).removeClass('on');
+          zz.zang.indicator = 'step-style';
+          zz.zang.indicator_step = 2;
+        }
+        
+      });
+      
+      $('#step-edit').click(function(){
+        zz.zang.indicator = $('.on').val('id');
+        if (zz.zang.indicator == 'step-edit') {
+          return;
+        } else {
+          $('#indicator').addClass('step-3').removeClass('step-'+zz.zang.indicator_step);
+          $(this).addClass('on');
+          $('#'+zz.zang.indicator).removeClass('on');
+          zz.zang.indicator = 'step-edit';
+          zz.zang.indicator_step = 3;
+        }
+        
+      });
+      
+      $('#step-share').click(function(){
+        zz.zang.indicator = $('.on').val('id');
+        if (zz.zang.indicator == 'step-share') {
+          return;
+        } else {
+          $('#indicator').addClass('step-4').removeClass('step-'+zz.zang.indicator_step);
+          $(this).addClass('on');
+          $('#'+zz.zang.indicator).removeClass('on');
+          zz.zang.indicator = 'step-share';
+          zz.zang.indicator_step = 4;
+        }
+        
+      });
+      
+      $('#step-add').click(function(){
+        zz.zang.indicator = $('.on').val('id');
+        if (zz.zang.indicator == 'step-add') {
+          return;
+        } else {
+          $('#indicator').addClass('step-1').removeClass('step-'+zz.zang.indicator_step);
+          $(this).addClass('on');
+          $('#'+zz.zang.indicator).removeClass('on');
+          zz.zang.indicator = 'step-add';
+          zz.zang.indicator_step = 1;
+        }
+        
+      });      
+      
+      
     },
     
     loaded: function(){
