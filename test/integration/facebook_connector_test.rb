@@ -1,5 +1,6 @@
 require 'test_helper'
 require 'mechanize'
+require 'digest'
 
 class FacebookConnectorTest < ActionController::IntegrationTest
   #fixtures :all
@@ -122,6 +123,12 @@ class FacebookConnectorTest < ActionController::IntegrationTest
     result = JSON.parse(response.body)
     assert result['caption'] =~ /dlink .+/
 
+    #Post to a feed
+    test_message = "today testing message is #{Digest::SHA1.hexdigest("some randomness - #{DateTime.now.to_s}")}"
+    visit create_facebook_post_path, :post, :message => test_message
+    visit facebook_posts_path, :get
+    assert_contain test_message
+    
     log_out
     assert_contain "Signed out"
   end
