@@ -1,3 +1,4 @@
+var temp;var temp_width;var temp_height;var temp_top;var temp_left;     
 var zz = {
   
   /* Tracking Function - Allows us to track *everything* easily 
@@ -153,11 +154,8 @@ var zz = {
   
   zang: {
     
+    // Select Photo var & fn
     selected_photo: 'undefined',
-    drawer_open: 0,
-    indicator_step: 1,
-    indicator: 'step-add',
-    
     highlight_selected: function(id){
     
       if (zz.zang.selected_photo != 'undefined') {
@@ -167,12 +165,22 @@ var zz = {
         //console.log('selected_photo: undefined');      
       }
       
+      temp_width = $('#'+ id +' img').width() - 10;
+      temp_height = $('#'+ id +' img').height();
+      temp_top = $('#'+ id +' img').position()['top'] + temp_height - 20;
+      temp_left = $('#'+ id +' img').position()['left'] + 5;      
+
+      $('#'+ id +' figure').css({position: 'absolute', top: temp_top+'px', left: temp_left+'px', width: temp_width});
+      
       $('#'+id).addClass('selected'); // select the new photo
       zz.zang.selected_photo = id; // update our constant
       zz.tracker('select-photo/'+id); // track the action
 
     }, // end zz.zang.highlight_selected()
     
+    
+    // Open/close drawer var & fns
+    drawer_open: 0,
     open_drawer: function(time){
 
       zz.zang.screen_height = $(window).height(); // measure the screen height
@@ -189,7 +197,6 @@ var zz = {
       zz.zang.drawer_open = 1; // remember position of the drawer in 
 
     }, // end zz.zang.open_drawer()
-
     close_drawer: function(time){
 
       $('#indicator').fadeOut('fast');
@@ -201,7 +208,33 @@ var zz = {
       
       zz.zang.drawer_open = 0; // remember position of the drawer in 
 
-    } // end zz.zang.open_drawer()
+    }, // end zz.zang.open_drawer()
+    
+    // Step swap vars and fns
+    indicator_step: 1,
+    indicator: 'step-add',
+    step_switch: function(element){
+    
+      if (zz.zang.indicator != element) {
+      
+        if (element == 'step-add') {
+          temp = 1;
+        } else if (element == 'step-style') {
+          temp = 2;        
+        } else if (element == 'step-edit') {
+          temp = 3;        
+        } else if (element == 'step-share') {
+          temp = 4;        
+        }
+      
+        $('#indicator').addClass('step-'+temp).removeClass('step-'+zz.zang.indicator_step);
+        $('#'+element).addClass('on');
+        $('#'+zz.zang.indicator).removeClass('on');
+        zz.zang.indicator = element;
+        zz.zang.indicator_step = temp;
+      }
+        
+    }  // end zz.zang.step_switch()
     
     
   }, // end zz.zang
@@ -233,62 +266,12 @@ var zz = {
                 
       });
       
-      $('#step-style').click(function(){
-        zz.zang.indicator = $('.on').val('id');
-        if (zz.zang.indicator == 'step-style') {
-          return;
-        } else {
-          $('#indicator').addClass('step-2').removeClass('step-'+zz.zang.indicator_step);
-          $(this).addClass('on');
-          $('#'+zz.zang.indicator).removeClass('on');
-          zz.zang.indicator = 'step-style';
-          zz.zang.indicator_step = 2;
-        }
+      $('#indicator li').click(function(){
+        
+        temp = $(this).attr('id');
+        zz.zang.step_switch(temp);
         
       });
-      
-      $('#step-edit').click(function(){
-        zz.zang.indicator = $('.on').val('id');
-        if (zz.zang.indicator == 'step-edit') {
-          return;
-        } else {
-          $('#indicator').addClass('step-3').removeClass('step-'+zz.zang.indicator_step);
-          $(this).addClass('on');
-          $('#'+zz.zang.indicator).removeClass('on');
-          zz.zang.indicator = 'step-edit';
-          zz.zang.indicator_step = 3;
-        }
-        
-      });
-      
-      $('#step-share').click(function(){
-        zz.zang.indicator = $('.on').val('id');
-        if (zz.zang.indicator == 'step-share') {
-          return;
-        } else {
-          $('#indicator').addClass('step-4').removeClass('step-'+zz.zang.indicator_step);
-          $(this).addClass('on');
-          $('#'+zz.zang.indicator).removeClass('on');
-          zz.zang.indicator = 'step-share';
-          zz.zang.indicator_step = 4;
-        }
-        
-      });
-      
-      $('#step-add').click(function(){
-        zz.zang.indicator = $('.on').val('id');
-        if (zz.zang.indicator == 'step-add') {
-          return;
-        } else {
-          $('#indicator').addClass('step-1').removeClass('step-'+zz.zang.indicator_step);
-          $(this).addClass('on');
-          $('#'+zz.zang.indicator).removeClass('on');
-          zz.zang.indicator = 'step-add';
-          zz.zang.indicator_step = 1;
-        }
-        
-      });      
-      
       
     },
     

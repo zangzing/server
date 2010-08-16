@@ -360,7 +360,7 @@ ul#grid-view li img {
   box-shadow: 0px 0px 5px #767676;
   -webkit-box-shadow: 0px 0px 5px #767676;
   -moz-box-shadow: 0px 0px 5px #767676;
-  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#767676, offX=0, offY=0, positive=true);
+  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#767676, offX=2, offY=2, positive=true);
   cursor: pointer;
 }
 
@@ -369,5 +369,21 @@ ul#grid-view li.selected img {
   box-shadow: 0px 0px 5px #FDD042;
   -webkit-box-shadow: 0px 0px 5px #FDD042;
   -moz-box-shadow: 0px 0px 5px #FDD042;
-  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#FDD042, offX=0, offY=0, positive=true);
+  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#FDD042, offX=2, offY=2, positive=true);
+}
+
+ul#grid-view li figure {
+  display: none;
+}
+
+ul#grid-view li.selected figure {
+  display: block;
+  height: 15px;
+  background-image: url("../images/bg-blk-75.png");
+  color: #fff;
+  font-size: 1.4em;
+  padding: 5px;
+  overflow: hidden;
+  text-align: left;
+  line-height: 1.3em;
 }
