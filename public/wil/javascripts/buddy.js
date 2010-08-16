@@ -227,7 +227,7 @@ var zz = {
     indicator: 'step-add',
     step_switch: function(element){
     
-      if (element == 'next') {
+      if (element == 'step-btn') {
 
         if (zz.zang.indicator_step == 1) {
           element = 'step-style';
@@ -300,10 +300,8 @@ var zz = {
       });
       
       $('#indicator li').click(function(){
-        
         temp = $(this).attr('id');
         zz.zang.step_switch(temp);
-        
       });
       
     },
