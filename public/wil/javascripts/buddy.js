@@ -199,6 +199,18 @@ var zz = {
     }, // end zz.zang.open_drawer()
     close_drawer: function(time){
 
+      //$('#indicator').fadeOut('fast');
+      // close the drawer
+      $('div#drawer').animate({ height: '20px'}, time );
+      $('div#drawer-content').animate({ height: 0}, time );
+      // fade in the grid
+      $('article').animate({ opacity: 1 }, time * 1.1 );
+      
+      zz.zang.drawer_open = 2; // remember position of the drawer in 
+
+    }, // end zz.zang.open_drawer()
+    slam_drawer: function(time){
+
       $('#indicator').fadeOut('fast');
       // close the drawer
       $('div#drawer').animate({ height: 0, top: '10px' }, time );
@@ -215,6 +227,21 @@ var zz = {
     indicator: 'step-add',
     step_switch: function(element){
     
+      if (element == 'next') {
+
+        if (zz.zang.indicator_step == 1) {
+          element = 'step-style';
+        } else if (zz.zang.indicator_step == 2) {
+          element = 'step-edit';        
+        } else if (zz.zang.indicator_step == 3) {
+          element = 'step-share';        
+        } else if (zz.zang.indicator_step == 4) {
+          zz.zang.slam_drawer(995);
+          return;
+        }
+      
+      }
+
       if (zz.zang.indicator != element) {
       
         if (element == 'step-add') {
@@ -222,9 +249,14 @@ var zz = {
         } else if (element == 'step-style') {
           temp = 2;        
         } else if (element == 'step-edit') {
-          temp = 3;        
+          temp = 3; 
+          zz.zang.close_drawer(995);
         } else if (element == 'step-share') {
           temp = 4;        
+        }
+        
+        if (zz.zang.indicator_step == 3) {
+          zz.zang.open_drawer(995);        
         }
       
         $('#indicator').addClass('step-'+temp).removeClass('step-'+zz.zang.indicator_step);
@@ -232,6 +264,7 @@ var zz = {
         $('#'+zz.zang.indicator).removeClass('on');
         zz.zang.indicator = element;
         zz.zang.indicator_step = temp;
+                
       }
         
     }  // end zz.zang.step_switch()
@@ -261,7 +294,7 @@ var zz = {
         if (zz.zang.drawer_open === 0) {
           zz.zang.open_drawer(990);
         } else {
-          zz.zang.close_drawer(880);
+          zz.zang.slam_drawer(880);
         }
                 
       });

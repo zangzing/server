@@ -332,6 +332,10 @@ ul#indicator li.on {
   color: #fff;
 }
 
+#next-step {
+  cursor: pointer;
+}
+
 /* Grid View
 ----------------------------------------------------------------------------- */
 
