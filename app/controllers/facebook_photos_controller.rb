@@ -6,9 +6,13 @@ class FacebookPhotosController < FacebookController
       {
         :name => p[:name],
         :id   => p[:id],
-        :thumb_url =>  facebook_photo_path({:photo_id =>p[:id], :size => 'thumb'}),
-        :screen_url => facebook_photo_path({:photo_id =>p[:id], :size => 'screen'}),
-        :import_url => facebook_photo_action_path({:photo_id =>p[:id], :action => 'import'})
+#        :thumb_url =>  facebook_photo_path({:photo_id =>p[:id], :size => 'thumb'}),
+#        :screen_url => facebook_photo_path({:photo_id =>p[:id], :size => 'screen'}),
+
+        :thumb_url =>get_photo_url(p[:id], PHOTO_SIZES[:thumb]),
+        :screen_url =>get_photo_url(p[:id], PHOTO_SIZES[:thumb]),
+
+        :add_url => facebook_photo_action_path({:photo_id =>p[:id], :action => 'import'})
       }
     }
     

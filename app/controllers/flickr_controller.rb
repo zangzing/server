@@ -1,7 +1,7 @@
 class FlickrController < ConnectorController
   before_filter :service_login_required
 
-  PHOTO_SIZES = {:thumb => 'Thumbnail', :screen => 'zMedium', :full => 'Big'}
+  PHOTO_SIZES = {:thumb => 'Medium', :screen => 'Big', :full => 'Big'}
   
   def initialize(*args)
     super(*args)

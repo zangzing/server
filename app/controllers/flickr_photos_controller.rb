@@ -4,7 +4,21 @@ class FlickrPhotosController < FlickrController
 
   def index
     photos_response = flickr_api.photosets.getPhotos :photoset_id => params[:set_id]
-    @photos = photos_response.photo.map { |p| {:name => p.title, :id => p.id} }
+#    @photos = photos_response.photo.map { |p| {:name => p.title, :id => p.id} }
+
+    @photos = photos_response.photo.map { |p|
+      {
+        :name => p.title,
+        :id   => p.id,
+#        :thumb_url =>  flickr_photo_url({:photo_id =>p.id, :size => 'thumb'}),
+#        :screen_url => flickr_photo_url({:photo_id =>p.id, :size => 'screen'}),
+        :thumb_url =>  get_photo_url(p, (params[:size] || 'thumb').downcase.to_sym),
+        :screen_url =>  get_photo_url(p, (params[:size] || 'screen').downcase.to_sym),
+        :add_url => flickr_photo_action_url({:photo_id =>p.id, :action => 'import'})
+      }
+    }
+
+
     respond_to do |wants|
       wants.html
       wants.json { render :json => @photos.to_json }

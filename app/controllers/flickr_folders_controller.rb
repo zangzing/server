@@ -4,7 +4,17 @@ class FlickrFoldersController < FlickrController
 
   def index
     folders_response = flickr_api.photosets.getList
-    @folders = folders_response.map { |f| {:name => f.title, :id => f.id} }
+
+    @folders = folders_response.map { |f|
+      {
+        :name => f.title,
+        :type => "folder",
+        :id  =>  f.id,
+        :open_url => flickr_photos_url(f.id),
+        :add_url => flickr_folder_action_url({:set_id =>f.id, :action => 'import'})
+      }
+    }
+
     respond_to do |wants|
       wants.html
       wants.json { render :json => @folders.to_json }

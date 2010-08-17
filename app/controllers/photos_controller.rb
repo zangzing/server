@@ -1,7 +1,7 @@
 class PhotosController < ApplicationController
   before_filter :oauth_required, :only => [:agentindex, :upload, :agent_create]
   before_filter :login_required, :only => [:create]
-  before_filter :require_user,   :only => [:show, :new, :edit, :destroy, :index]
+  before_filter :require_user, :only => [:show, :new, :edit, :destroy, :index]
 
 
   def show
@@ -10,11 +10,11 @@ class PhotosController < ApplicationController
     @album = @photo.album
     @title = CGI.escapeHTML(@album.name)
   end
- 
+
   def new
-      @album = Album.find( params[:album_id] )
-      @photo = Photo.new
-      @title = 'New Photo'
+    @album = Album.find(params[:album_id])
+    @photo = Photo.new
+    @title = 'New Photo'
   end
 
 
@@ -35,10 +35,10 @@ class PhotosController < ApplicationController
 #  end
 
   def create
-    @album = Album.find( params[:album_id] )
-    @photo = @album.photos.build( params[:photo])
+    @album = Album.find(params[:album_id])
+    @photo = @album.photos.build(params[:photo])
     @photo.user = current_user
-    respond_to do | format |
+    respond_to do |format|
       format.html do
         if @photo.save
           flash[:success] = "Photo Created!"
@@ -58,12 +58,11 @@ class PhotosController < ApplicationController
   end
 
 
-
   def agent_create
-    @album = Album.find( params[:album_id] )
-    @photo = @album.photos.build( params[:photo])
+    @album = Album.find(params[:album_id])
+    @photo = @album.photos.build(params[:photo])
     @photo.user = current_user
-    respond_to do | format |
+    respond_to do |format|
       format.html do
         if @photo.save
           flash[:success] = "Photo Created!"
@@ -84,48 +83,48 @@ class PhotosController < ApplicationController
 
   def edit
     @photo = Photo.find(params[:id])
-    @album = @photo.album                                                      Person.find
+    @album = @photo.album Person.find
     @title = "Update Photo"
   end
 
   def upload
-      @photo = Photo.find(params[:id])
-      @album = @photo.album
-      respond_to do |format|
-        format.html do
-          if @photo.update_attributes(params[:photo])
-            flash[:success] = "Photo Uploaded!"
-            render :action => :show
-          else
-            render :action => :index
-          end
+    @photo = Photo.find(params[:id])
+    @album = @photo.album
+    respond_to do |format|
+      format.html do
+        if @photo.update_attributes(params[:photo])
+          flash[:success] = "Photo Uploaded!"
+          render :action => :show
+        else
+          render :action => :index
         end
-        format.json do
-          if @photo.update_attributes(params[:photo])
-            render :json => @photo.to_json(:only =>[:id, :agent_id, :state])
-          else
-            render :json => @photo.errors, :status=>500
-          end
+      end
+      format.json do
+        if @photo.update_attributes(params[:photo])
+          render :json => @photo.to_json(:only =>[:id, :agent_id, :state])
+        else
+          render :json => @photo.errors, :status=>500
         end
-     end
+      end
+    end
   end
 
   def destroy
-    logger.debug "The params hash in PhotosController destroy is #{params.inspect}"        
+    logger.debug "The params hash in PhotosController destroy is #{params.inspect}"
     @photo = Photo.find(params[:id])
     @album = @photo.album
-     respond_to do | format |
+    respond_to do |format|
       format.html do
-          if !@photo.destroy
-              flash[:error] = "Unable to delete photo!"
-          end
-          redirect_to @album   
+        if !@photo.destroy
+          flash[:error] = "Unable to delete photo!"
+        end
+        redirect_to @album
       end
       format.json do
-         if !@photo.destroy
-              render :json => @photo.errors, :status=>500
-         end
-         render :json => "Photo deleted".to_json
+        if !@photo.destroy
+          render :json => @photo.errors, :status=>500
+        end
+        render :json => "Photo deleted".to_json
       end
     end
   end
@@ -143,36 +142,44 @@ class PhotosController < ApplicationController
   #              Default: First
   #
   def index
-      @album = Album.find(params[:album_id])
-      @title = CGI.escapeHTML(@album.name)
-      @user=  @album.user
-      
-      if !params[:size].nil? && params[:size] == 'screenres'
-        @photos = @album.photos.paginate({:page =>params[:page], :per_page => 1} )
-        unless  params[:photoid].nil?
-          current_page = 1 if params[:page].nil?
-          until @photos[0][:id] == params[:photoid]
-            current_page += 1
-            @photos = @album.photos.paginate({:page =>current_page, :per_page => 1})
+    @album = Album.find(params[:album_id])
+    @title = CGI.escapeHTML(@album.name)
+    @user=  @album.user
+
+    respond_to do |format|
+      format.html do
+        if !params[:size].nil? && params[:size] == 'screenres'
+          @photos = @album.photos.paginate({:page =>params[:page], :per_page => 1})
+          unless  params[:photoid].nil?
+            current_page = 1 if params[:page].nil?
+            until @photos[0][:id] == params[:photoid]
+              current_page += 1
+              @photos = @album.photos.paginate({:page =>current_page, :per_page => 1})
+            end
+            params[:photoid] = nil
           end
-          params[:photoid] = nil
+          render 'slideshow'
+        else
+          @photo = Photo.new
+          @photos = @album.photos
+          render 'grid'
         end
-        render 'slideshow'
-      else
-        @photo = Photo.new
-        @photos = @album.photos
-        render 'grid'
       end
+
+      format.json do
+        render :json => @album.photos.to_json
+      end
+    end
   end
 
   def agentindex
     @photos = Photo.all(:conditions => ["agent_id = ? AND state = ?", params[:agent_id], 'assigned'])
     respond_to do |format|
       format.html do
-          render @photos
+        render @photos
       end
-     format.json do
-          render :json => @photos.to_json(:only =>[:id, :agent_id, :state, :album_id])
+      format.json do
+        render :json => @photos.to_json(:only =>[:id, :agent_id, :state, :album_id])
 
       end
     end

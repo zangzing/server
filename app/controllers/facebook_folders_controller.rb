@@ -10,7 +10,7 @@ class FacebookFoldersController < FacebookController
         :type => "folder",
         :id  =>  f[:id],
         :open_url => facebook_photos_path(f[:id]),
-        :import_url => facebook_folder_action_path({:fb_album_id =>f[:id], :action => 'import'})
+        :add_url => facebook_folder_action_path({:fb_album_id =>f[:id], :action => 'import'})
       }
     }
 

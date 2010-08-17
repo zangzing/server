@@ -220,7 +220,7 @@ var filechooser = {
 
             if (file.is_dir == true) {
                 //html += "<a href=\"\" onclick=\"filechooser.selectFolder(\'" + file.virtual_path + "\');return false;\">"
-                html += "<img height='100' src='/images/folder.jpeg'>"
+                html += "<img height='100' src='/images/folder.jpg'>"
                 //html += "</a>"
             }
             else {
