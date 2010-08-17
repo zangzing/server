@@ -33,6 +33,7 @@ class TwitterConnector
     elsif
       @access_token = token
     end
+    create_client!
   end
 
   def consumer
@@ -64,6 +65,7 @@ class TwitterConnector
     elsif
       @access_token = OAuth::AccessToken.from_hash(consumer, :oauth_token => oauth_token)
     end
+    create_client!
   end
 
   def get_authorize_url(request_token, options = {})
@@ -76,15 +78,17 @@ class TwitterConnector
   end
 
   def client
-    @client ||= create_client
+    @client
   end
 
 protected
 
-  def create_client
+  def create_client!
+    return unless @access_token
     oauth = Twitter::OAuth.new(TwitterConnector.api_key, TwitterConnector.shared_secret)
     oauth.authorize_from_access(@access_token.token, @access_token.secret)
-    Twitter::Base.new(oauth)
+    @client = Twitter::Base.new(oauth)
+    @client.home_timeline(:count => 1) #Kinda ping
   end
 
   def normalize_response(response)

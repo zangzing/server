@@ -16,9 +16,10 @@ class TwitterController < ConnectorController
         @token_string = service_identity.credentials
         @api = TwitterConnector.new(@token_string)
       rescue => exception
-        raise InvalidToken if exception.kind_of?(TwitterError)
+        raise InvalidToken if exception.kind_of?(Twitter::Unauthorized)
         raise HttpCallFail if exception.kind_of?(SocketError)
       end
+      raise InvalidToken unless @token_string
     end
   end
 
