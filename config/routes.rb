@@ -173,5 +173,25 @@ ActionController::Routing::Routes.draw do |map|
   #LocalContacts importer
   map.local_contacts '/local/contacts/:action', :controller => 'local_contacts'
 
+  #Yahoo
+  map.with_options :controller => :yahoo_sessions do |y|
+    y.new_yahoo_session     '/yahoo/sessions/new', :action  => 'new'
+    y.create_yahoo_session  '/yahoo/sessions/create', :action  => 'create'
+    y.destroy_yahoo_session '/yahoo/sessions/destroy', :action  => 'destroy'
+  end
+  map.yahoo_contacts '/yahoo/contacts/:action', :controller => 'yahoo_contacts'
+
+  #Twitter
+  map.with_options :controller => :twitter_sessions do |tw|
+    tw.new_twitter_session     '/twitter/sessions/new', :action  => 'new'
+    tw.create_twitter_session  '/twitter/sessions/create', :action  => 'create'
+    tw.destroy_twitter_session '/twitter/sessions/destroy', :action  => 'destroy'
+  end
+  map.with_options :controller => :twitter_posts do |tw|
+    tw.twitter_posts           '/twitter/posts.:format',    :action  => 'index'
+    tw.create_twitter_post     '/twitter/posts/create',     :action  => 'create'
+  end
+
+
 
 end

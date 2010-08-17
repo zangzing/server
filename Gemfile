@@ -18,6 +18,10 @@ gem 'flickraw',      '0.8.2'
 gem 'authlogic',     '2.1.5'
 gem 'usesguid'
 
+gem 'contacts'
+gem 'hpricot'
+gem 'twitter'
+
 group :development do
   # bundler requires these gems in development
   gem 'faker'
