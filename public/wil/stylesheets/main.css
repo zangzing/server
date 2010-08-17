@@ -213,20 +213,126 @@ div#drawer div.body {
   height: 100%;
 }
 
-div#indicator {
-  background-image: url("../images/bg-step-1-strip.png");
+div#drawer div.body div#drawer-content {
+  margin: 0 auto;
+  height: 0px;
+  width: 896px;
+  overflow-y: scroll;  
+}
+
+div#drawer-content ul#folders {
+  margin: 55px 15px 20px;
+}
+
+div#drawer-content ul#folders li {
+  background-image: url("../images/folders/local.png");
   background-repeat: no-repeat;
+  background-position: center top;
+  float: left;
+  width: 130px;
+  padding: 115px 20px 20px;
+  cursor: pointer;
+  font-size: 1.3em;
+  font-weight: 700;
+}
+
+div#drawer-content ul#folders li.f_iphoto {
+  background-image: url("../images/folders/apple.png");
+}
+div#drawer-content ul#folders li.f_facebook {
+  background-image: url("../images/folders/facebook.png");
+}
+div#drawer-content ul#folders li.f_flickr {
+  background-image: url("../images/folders/flickr.png");
+}
+div#drawer-content ul#folders li.f_kodak {
+  background-image: url("../images/folders/kodak.png");
+}
+div#drawer-content ul#folders li.f_pictures {
+  background-image: url("../images/folders/mypictures.png");
+}
+div#drawer-content ul#folders li.f_picasa {
+  background-image: url("../images/folders/picasa.png");
+}
+div#drawer-content ul#folders li.f_shutterfly {
+  background-image: url("../images/folders/shutterfly.png");
+}
+div#drawer-content ul#folders li.f_snapfish {
+  background-image: url("../images/folders/snapfish.png");
+}
+div#drawer-content ul#folders li.f_zangzing {
+  background-image: url("../images/folders/zangzing.png");
+}
+
+div#drawer-content ul#folders li:hover {
+  color: #FDD042;
+}
+
+ul#indicator {
   position: fixed;
   top: 54px;
   z-index: 15;
   margin-left: 27px;
   width: 898px;
-  height: 37px;  
+  height: 36px;  
 }
 
-div#indicator img {
-  float: right;
-  margin: 5px 2px 0 0;
+ul.step-1 {
+  background-image: url("../images/bg-step-1-strip.png");
+  background-repeat: no-repeat;
+}
+
+ul.step-2 {
+  background-image: url("../images/bg-step-2-strip.png");
+  background-repeat: no-repeat;
+}
+
+ul.step-3 {
+  background-image: url("../images/bg-step-3-strip.png");
+  background-repeat: no-repeat;
+}
+
+ul.step-4 {
+  background-image: url("../images/bg-step-4-strip.png");
+  background-repeat: no-repeat;
+}
+
+ul#indicator li {
+  float: left;
+  width: 155px;
+  padding-top: 9px;
+  padding-left: 40px;
+  font-size: 1.4em;
+  color: #646464;
+  text-align: center;
+  cursor: pointer;
+}
+
+ul#indicator li#step-btn {
+  width: 36px;
+  text-align: center;
+  padding-top: 5px;
+  padding-left: 22px;
+}
+
+ul#indicator li#step-edit {
+  width: 165px;
+  text-align: center;
+  padding-left: 32px;
+}
+
+ul#indicator li#step-share {
+  width: 135px;
+  text-align: center;
+  padding-left: 68px;
+}
+
+ul#indicator li.on {
+  color: #fff;
+}
+
+#next-step {
+  cursor: pointer;
 }
 
 /* Grid View
@@ -257,7 +363,7 @@ ul#grid-view li img {
   box-shadow: 0px 0px 5px #767676;
   -webkit-box-shadow: 0px 0px 5px #767676;
   -moz-box-shadow: 0px 0px 5px #767676;
-  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#767676, offX=0, offY=0, positive=true);
+  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#767676, offX=2, offY=2, positive=true);
   cursor: pointer;
 }
 
@@ -266,5 +372,21 @@ ul#grid-view li.selected img {
   box-shadow: 0px 0px 5px #FDD042;
   -webkit-box-shadow: 0px 0px 5px #FDD042;
   -moz-box-shadow: 0px 0px 5px #FDD042;
-  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#FDD042, offX=0, offY=0, positive=true);
+  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#FDD042, offX=2, offY=2, positive=true);
+}
+
+ul#grid-view li figure {
+  display: none;
+}
+
+ul#grid-view li.selected figure {
+  display: block;
+  height: 15px;
+  background-image: url("../images/bg-blk-75.png");
+  color: #fff;
+  font-size: 1.4em;
+  padding: 5px;
+  overflow: hidden;
+  text-align: left;
+  line-height: 1.3em;
 }
