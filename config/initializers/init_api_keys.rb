@@ -1,5 +1,5 @@
 api_creds = {}
-[:flickr, :facebook, :smugmug, :shutterfly, :yahoo, :twitter].each do |service|
+[:flickr, :facebook, :smugmug, :shutterfly, :twitter].each do |service|
   all_env_keys = YAML.load(File.read("#{RAILS_ROOT}/config/#{service}_api_keys.yml"))
   api_creds[service] = all_env_keys[RAILS_ENV]
 end
