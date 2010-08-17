@@ -21,6 +21,8 @@
       <% end %>
 
 
+      <form method="get" action="/albums/<%=@album.id%>/upload" class="button-to"><div><input type="submit" value="Upload Photos" /></div></form>        
+
       <!-- This form is the html photo upload. Its replaced by the uploader button at runtime if agent is present -->
       <div id="uploadform">
         <%if current_user?(@album.user) %>

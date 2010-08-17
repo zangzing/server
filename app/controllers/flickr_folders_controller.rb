@@ -14,11 +14,8 @@ class FlickrFoldersController < FlickrController
         :add_url => flickr_folder_action_url({:set_id =>f.id, :action => 'import'})
       }
     }
+    render :json => @folders.to_json
 
-    respond_to do |wants|
-      wants.html
-      wants.json { render :json => @folders.to_json }
-    end
   end
   
   def import
@@ -31,11 +28,6 @@ class FlickrFoldersController < FlickrController
       photos << photo
     end
 
-    respond_to do |wants|
-      wants.html { @photos = photos }
-      wants.json { render :json => photos.to_json }
-    end
+    render :json => photos.to_json
   end
-
-  
 end

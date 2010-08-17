@@ -1,6 +1,0 @@
-Photos in set:
-<ul>
-  <% @photos.each do |photo| %>
-    <li><%= link_to photo[:name], flickr_photo_path(:set_id => params[:set_id], :photo_id => photo[:id], :size => :screen)%> (ID#<%= photo[:id] %>)</li>
-  <% end %>
-</ul>

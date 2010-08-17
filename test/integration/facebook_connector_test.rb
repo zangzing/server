@@ -106,9 +106,9 @@ class FacebookConnectorTest < ActionController::IntegrationTest
 
     # "Get photos list from 2nd photoset" do
     visit facebook_photos_url(:fb_album_id => 113331162049366)
-    assert_contain "ID#113331218716027"
-    assert_contain "ID#113331215382694"
-    assert_contain "ID#113331212049361"
+    assert_contain "113331218716027"
+    assert_contain "113331215382694"
+    assert_contain "113331212049361"
 
     # "Get photo thumbnail from 1st photoset" do
     visit facebook_photo_url(:fb_album_id => 115847311797751, :photo_id => 115847788464370, :size => :thumb)

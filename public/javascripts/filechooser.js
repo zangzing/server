@@ -65,7 +65,10 @@ var filechooser = {
         {"open_url": "http://localhost:9090/filesystem/folders", "type": "folder", "name": "My Computer"},
         {"open_url": "http://localhost:9090/filesystem/folders/L1VzZXJzL2hvcGVtZW5n", "type": "folder", "name": "hopemeng"},
         {"open_url": "http://localhost:3000/facebook/folders.json", "type": "folder", "name": "Facebook", login_url:'http://localhost:3000/facebook/sessions/new'},
-        {"open_url": "http://localhost:3000/flickr/folders.json", "type": "folder", "name": "Flickr", login_url:'http://localhost:3000/flickr/sessions/new'}
+        {"open_url": "http://localhost:3000/flickr/folders.json", "type": "folder", "name": "Flickr", login_url:'http://localhost:3000/flickr/sessions/new'},
+        {"open_url": "http://localhost:3000/kodak/folders.json", "type": "folder", "name": "Kodak", login_url:'http://localhost:3000/kodak/sessions/new'},
+        {"open_url": "http://localhost:3000/smugmug/folders.json", "type": "folder", "name": "SmugMug", login_url:'http://localhost:3000/smugmug/sessions/new'},
+        {"open_url": "http://localhost:3000/shutterfly/folders.json", "type": "folder", "name": "Shutterfly", login_url:'http://localhost:3000/shutterfly/sessions/new'}
     ],
 
 
@@ -165,25 +168,36 @@ var filechooser = {
         for(var i in children){
 
             if(children[i].type=='folder'){
-                html += "<div class='gridcell' onclick=\"filechooser.open_folder('" + children[i].name + "','" + children[i].open_url + "','" + children[i].login_url + "')\">";
+                html += "<div class='gridcell'>";
                 html += "<img src='/images/folder.jpg'>";
                 html += "<br>"
+
+                html += "<a href='#' onclick=\"filechooser.open_folder('" + children[i].name + "','" + children[i].open_url + "','" + children[i].login_url + "'); return false;\">"
                 html += children[i].name;
+                html += "</a>"
+
+                if(children[i].add_url){
+                  html += "&nbsp;<a href='#' onclick=\"filechooser.add_folder('" + children[i].add_url + "'); return false;\">(+)</a>"
+                }
                 html += "</div>";
             }
             else{
                 var id = "photo_" + i 
                 html += "<div class='gridcell'>";
-                html += "<img id='"+ id +"' src='' onclick=\"filechooser.add_photo('" + children[i].add_url + "')\">";
+                html += "<img id='"+ id +"' src=''>";
                 html += "<br>"
                 html += children[i].name;
+                html += "&nbsp;<a href='#' onclick=\"filechooser.add_photo('" + children[i].add_url + "'); return false;\">(+)</a>"
                 html += "</div>";
 
 
 
-                //todo: only send session to agent -- not to site connectors
-                filechooser.imageloader.add(id, children[i].thumb_url + "?session=" + $.cookie("user_credentials"));
-
+                if(children[i].thumb_url.indexOf("http://localhost")===0){
+                    filechooser.imageloader.add(id, children[i].thumb_url + "?session=" + $.cookie("user_credentials"));
+                }
+                else{
+                    filechooser.imageloader.add(id, children[i].thumb_url);
+                }
             }
         }
 
@@ -222,6 +236,12 @@ var filechooser = {
 
     on_add_photo : function(){
         added_photos_tray.refresh()
+    },
+
+
+    add_folder : function(add_url){
+        //todo: need different implemenatation here
+        filechooser.add_photo(add_url)
     },
 
     open_parent_folder: function() {

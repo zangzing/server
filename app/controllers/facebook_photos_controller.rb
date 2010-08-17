@@ -6,37 +6,28 @@ class FacebookPhotosController < FacebookController
       {
         :name => p[:name],
         :id   => p[:id],
-#        :thumb_url =>  facebook_photo_path({:photo_id =>p[:id], :size => 'thumb'}),
-#        :screen_url => facebook_photo_path({:photo_id =>p[:id], :size => 'screen'}),
-
+        :type => 'photo',
         :thumb_url =>get_photo_url(p[:id], PHOTO_SIZES[:thumb]),
         :screen_url =>get_photo_url(p[:id], PHOTO_SIZES[:thumb]),
-
         :add_url => facebook_photo_action_path({:photo_id =>p[:id], :action => 'import'})
       }
     }
-    
-    respond_to do |wants|
-      wants.html
-      wants.json { render :json => @photos.to_json }
-    end
+
+    render :json => @photos.to_json
   end
 
-  def show
-    size_wanted = (params[:size] || 'screen').downcase.to_sym
-    photo_url = get_photo_url(params[:photo_id], PHOTO_SIZES[size_wanted])
-    bin_io = OpenURI.send(:open, photo_url)
-    send_data bin_io.read, :type => bin_io.meta['content-type'], :disposition => 'inline'
-  end
+#  def show
+#    size_wanted = (params[:size] || 'screen').downcase.to_sym
+#    photo_url = get_photo_url(params[:photo_id], PHOTO_SIZES[size_wanted])
+#    bin_io = OpenURI.send(:open, photo_url)
+#    send_data bin_io.read, :type => bin_io.meta['content-type'], :disposition => 'inline'
+#  end
 
   def import
     info = facebook_graph.get(params[:photo_id])
     photo = Photo.create(:caption => info[:name], :album_id => params[:album_id], :user_id=>current_user.id)
     Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, info[:source]))
-    respond_to do |wants|
-      wants.html { @photo = photo }
-      wants.json { render :json => photo.to_json }
-    end
+    render :json => photo.to_json
   end
 
 end

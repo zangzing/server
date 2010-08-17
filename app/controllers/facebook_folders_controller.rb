@@ -15,11 +15,7 @@ class FacebookFoldersController < FacebookController
     }
 
 
-
-    respond_to do |wants|
-      wants.html
-      wants.json { render :json => @folders.to_json }
-    end
+    render :json => @folders.to_json
   end
 
   def import
@@ -31,11 +27,7 @@ class FacebookFoldersController < FacebookController
       photos << photo
     end
 
-    respond_to do |wants|
-      wants.html { @photos = photos }
-      wants.json { render :json => photos.to_json }
-    end
+
+    render :json => photos.to_json
   end
-
-
 end
