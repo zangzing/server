@@ -21,7 +21,7 @@ class TwitterConnectorTest < ActionController::IntegrationTest
     assert_routing "/twitter/posts/create", {:controller => "twitter_posts", :action => "create"}
   end
 
-  @@debug = true
+  @@debug = false
   @@n=0
   def dump_pg(page)
     if @@debug
