@@ -1,0 +1,12 @@
+---
+development:
+  :consumer_secret: 2hguWHDYmHuq4ZMYCMq1zzurihw2C0NAA7O4E9VjXE
+  :app_key: qchDA1o43EXbkfIAZg5SA
+
+test:
+  :consumer_secret: 2hguWHDYmHuq4ZMYCMq1zzurihw2C0NAA7O4E9VjXE
+  :app_key: qchDA1o43EXbkfIAZg5SA
+
+production:
+  :consumer_secret: 2hguWHDYmHuq4ZMYCMq1zzurihw2C0NAA7O4E9VjXE
+  :app_key: qchDA1o43EXbkfIAZg5SA
