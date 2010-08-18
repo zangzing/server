@@ -39,7 +39,7 @@ nav {
   height: 51px;
   padding: 7px 0 0 4px;
   bottom: 0px;
-  background-image: url("../images/bg-bottom-bar.png");
+  background-image: url("/wil/images/bg-bottom-bar.png");
   background-repeat: no-repeat;
   z-index: 10;
 }
@@ -50,7 +50,7 @@ nav h1 {
   height: 52px;
   margin-right: 16px;
   cursor: pointer;
-  background-image: url("../images/logo-zangzing.png");
+  background-image: url("/wil/images/logo-zangzing.png");
   background-repeat: no-repeat;
 }
 
@@ -77,27 +77,27 @@ nav ul#nav-left li:hover {
 }
 
 li#nav-new-album {
-  background-image: url("../images/icon-new-album.png");
+  background-image: url("/wil/images/icon-new-album.png");
 }
 
 li#nav-new-album:hover {
-  background-image: url("../images/icon-new-album-hover.png");
+  background-image: url("/wil/images/icon-new-album-hover.png");
 }
 
 li#nav-find {
-  background-image: url("../images/icon-find.png");
+  background-image: url("/wil/images/icon-find.png");
 }
 
 li#nav-find:hover {
-  background-image: url("../images/icon-find-hover.png");
+  background-image: url("/wil/images/icon-find-hover.png");
 }
 
 li#nav-sign-in {
-  background-image: url("../images/icon-sign-in.png");
+  background-image: url("/wil/images/icon-sign-in.png");
 }
 
 li#nav-sign-in:hover {
-  background-image: url("../images/icon-sign-in-hover.png");
+  background-image: url("/wil/images/icon-sign-in-hover.png");
 }
 
 nav ul#nav-right {
@@ -124,35 +124,35 @@ nav ul#nav-right li:hover {
 }
 
 li#nav-new-photo {
-  background-image: url("../images/icon-new-photo.png");
+  background-image: url("/wil/images/icon-new-photo.png");
 }
 
 li#nav-new-photo:hover {
-  background-image: url("../images/icon-new-photo-hover.png");
+  background-image: url("/wil/images/icon-new-photo-hover.png");
 }
 
 li#nav-share {
-  background-image: url("../images/icon-share.png");
+  background-image: url("/wil/images/icon-share.png");
 }
 
 li#nav-share:hover {
-  background-image: url("../images/icon-share-hover.png");
+  background-image: url("/wil/images/icon-share-hover.png");
 }
 
 li#nav-like {
-  background-image: url("../images/icon-like.png");
+  background-image: url("/wil/images/icon-like.png");
 }
 
 li#nav-like:hover {
-  background-image: url("../images/icon-like-hover.png");
+  background-image: url("/wil/images/icon-like-hover.png");
 }
 
 li#nav-buy {
-  background-image: url("../images/icon-cart.png");
+  background-image: url("/wil/images/icon-cart.png");
 }
 
 li#nav-buy:hover {
-  background-image: url("../images/icon-cart-hover.png");
+  background-image: url("/wil/images/icon-cart-hover.png");
 }
 
 header {
@@ -161,7 +161,7 @@ header {
   height: 52px;
   padding: 0 0 7px 4px;
   top: 0px;
-  background-image: url("../images/bg-top-bar.png");
+  background-image: url("/wil/images/bg-top-bar.png");
   background-repeat: no-repeat;
   z-index: 10;
 }
@@ -198,70 +198,70 @@ div#drawer {
   width: 906px;
   height: 0px;
   margin: 0 24px 0 20px;
-  padding: 0 0 40px 4px;
+  padding: 0 0 26px 4px;
   top: 10px;
-  background-image: url("../images/bg-drawer-bottom-cap.png");
+  background-image: url("/wil/images/bg-drawer-bottom-cap.png");
   background-repeat: no-repeat;
   background-position: 100% bottom;
   z-index: 9;
 }
 
 div#drawer div.body {
-  background-image: url("../images/bg-bottom-repeat.png");
+  background-image: url("/wil/images/bg-bottom-repeat.png");
   background-repeat: repeat-y;
   width: 906px;
-  height: 100%;
+  padding-top: 40px;
 }
 
 div#drawer div.body div#drawer-content {
   margin: 0 auto;
   height: 0px;
-  width: 896px;
+  width: 895px;
   overflow-y: scroll;  
 }
 
 div#drawer-content ul#folders {
-  margin: 55px 15px 20px;
+  margin: 20px 15px 20px;
 }
 
 div#drawer-content ul#folders li {
-  background-image: url("../images/folders/local.png");
+  background-image: url("/wil/images/folders/local.png");
   background-repeat: no-repeat;
   background-position: center top;
   float: left;
-  width: 130px;
-  padding: 115px 20px 20px;
+  width: 128px;
+  padding: 115px 20px 15px;
   cursor: pointer;
   font-size: 1.3em;
   font-weight: 700;
 }
 
 div#drawer-content ul#folders li.f_iphoto {
-  background-image: url("../images/folders/apple.png");
+  background-image: url("/wil/images/folders/apple.png");
 }
 div#drawer-content ul#folders li.f_facebook {
-  background-image: url("../images/folders/facebook.png");
+  background-image: url("/wil/images/folders/facebook.png");
 }
 div#drawer-content ul#folders li.f_flickr {
-  background-image: url("../images/folders/flickr.png");
+  background-image: url("/wil/images/folders/flickr.png");
 }
 div#drawer-content ul#folders li.f_kodak {
-  background-image: url("../images/folders/kodak.png");
+  background-image: url("/wil/images/folders/kodak.png");
 }
 div#drawer-content ul#folders li.f_pictures {
-  background-image: url("../images/folders/mypictures.png");
+  background-image: url("/wil/images/folders/mypictures.png");
 }
 div#drawer-content ul#folders li.f_picasa {
-  background-image: url("../images/folders/picasa.png");
+  background-image: url("/wil/images/folders/picasa.png");
 }
 div#drawer-content ul#folders li.f_shutterfly {
-  background-image: url("../images/folders/shutterfly.png");
+  background-image: url("/wil/images/folders/shutterfly.png");
 }
 div#drawer-content ul#folders li.f_snapfish {
-  background-image: url("../images/folders/snapfish.png");
+  background-image: url("/wil/images/folders/snapfish.png");
 }
 div#drawer-content ul#folders li.f_zangzing {
-  background-image: url("../images/folders/zangzing.png");
+  background-image: url("/wil/images/folders/zangzing.png");
 }
 
 div#drawer-content ul#folders li:hover {
@@ -278,22 +278,22 @@ ul#indicator {
 }
 
 ul.step-1 {
-  background-image: url("../images/bg-step-1-strip.png");
+  background-image: url("/wil/images/bg-step-1-strip.png");
   background-repeat: no-repeat;
 }
 
 ul.step-2 {
-  background-image: url("../images/bg-step-2-strip.png");
+  background-image: url("/wil/images/bg-step-2-strip.png");
   background-repeat: no-repeat;
 }
 
 ul.step-3 {
-  background-image: url("../images/bg-step-3-strip.png");
+  background-image: url("/wil/images/bg-step-3-strip.png");
   background-repeat: no-repeat;
 }
 
 ul.step-4 {
-  background-image: url("../images/bg-step-4-strip.png");
+  background-image: url("/wil/images/bg-step-4-strip.png");
   background-repeat: no-repeat;
 }
 
@@ -305,6 +305,7 @@ ul#indicator li {
   font-size: 1.4em;
   color: #646464;
   text-align: center;
+  text-transform: uppercase;
   cursor: pointer;
 }
 
@@ -382,11 +383,11 @@ ul#grid-view li figure {
 ul#grid-view li.selected figure {
   display: block;
   height: 15px;
-  background-image: url("../images/bg-blk-75.png");
+  background-image: url("/wil/images/bg-blk-75.png");
   color: #fff;
-  font-size: 1.4em;
-  padding: 5px;
+  font-size: 1.2em;
+  padding: 2px 5px 7px;
   overflow: hidden;
   text-align: left;
-  line-height: 1.3em;
+  line-height: 1.5em;
 }
