@@ -206,6 +206,15 @@ var zz = {
 
     }, // end zz.zang.open_drawer()
     
+    resize_drawer: function(time){
+      zz.zang.screen_height = $(window).height(); // measure the screen height
+      // adjust for out top and bottom bar, the gradient padding and a margin
+      zz.zang.drawer_height = zz.zang.screen_height - 180; 
+      $('div#drawer').animate({ height: zz.zang.drawer_height + 'px', top: '50px' }, time );
+      $('div#drawer-content').animate({ height: (zz.zang.drawer_height - 52) + 'px'}, time );
+    
+    }, // end zz.zang.resize_drawer()
+    
     close_drawer: function(time){
 
       //$('#indicator').fadeOut('fast');
@@ -241,16 +250,16 @@ var zz = {
     new_album: function(element) {
       switch(element)  {
         case 'step-style':
-          zz.zang.step_switch(element, '');
+          zz.zang.step_switch(element, 2, '');
           break;
         case 'step-edit':
-          zz.zang.step_switch(element, '');
+          zz.zang.step_switch(element, 3, '');
           break;
         case 'step-share':
-          zz.zang.step_switch(element, '');
+          zz.zang.step_switch(element, 4, '');
           break;
         case 'step-add':
-          zz.zang.step_switch(element, '');
+          zz.zang.step_switch(element, 1, '');
           break;
         default:
           if (zz.zang.indicator_step == 1) {
@@ -272,7 +281,26 @@ var zz = {
       }
     },
     
-    step_switch: function(element){//, content_url){
+    step_switch: function(element, temp, content_url){//, content_url){
+
+      if (zz.zang.indicator != element || zz.zang.indicator != '' || zz.zang.indicator != 'undefined') {
+
+        if (zz.zang.indicator_step == 3) {
+          zz.zang.open_drawer(995);        
+        }
+      
+        $('#indicator').addClass('step-'+temp).removeClass('step-'+zz.zang.indicator_step);
+        $('#'+element).addClass('on');
+        $('#'+zz.zang.indicator).removeClass('on');
+        zz.zang.indicator = element;
+        zz.zang.indicator_step = temp;
+        $('drawer-content').load(content_url);
+                
+      }
+        
+    },  // end zz.zang.step_switch()
+
+    test_switch: function(element){//, content_url){
       if (element == 'step-btn') {
 
         if (zz.zang.indicator_step == 1) {
@@ -316,11 +344,9 @@ var zz = {
         zz.zang.indicator = element;
         zz.zang.indicator_step = temp;
                 
-      } else {
-        console.warn('From zz.zang.step_switch() in buddy.js -- this should not happen, but zz.zang.indicator = '+ zz.zang.indicator);
       }
-        
-    }  // end zz.zang.step_switch()
+              
+    }  // end zz.zang.test_switch()
     
     
   }, // end zz.zang
@@ -352,7 +378,7 @@ var zz = {
       
       $('#indicator li').click(function(){
         temp = $(this).attr('id');
-        zz.zang.step_switch(temp);
+        zz.zang.test_switch(temp);
       });
       
     },
@@ -362,7 +388,9 @@ var zz = {
     },
     
     resized: function(){
-      // TODO: check for open drwawer - resize
+      if (zz.zang.drawer_open == 1) {
+        zz.zang.resize_drawer(250);
+      }
       // TODO: check for selected photo - move caption position
     }        
   

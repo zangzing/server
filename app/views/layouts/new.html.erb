@@ -18,8 +18,8 @@
     <title>ZangZing - <%= controller.controller_name + ' ' + controller.action_name %></title>
 <%  end -%> 
    
-    <link rel="stylesheet" href="stylesheets/lib.css" type="text/css" media="all" />
-    <link rel="stylesheet" href="stylesheets/main.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/wil/stylesheets/lib.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/wil/stylesheets/main.css" type="text/css" media="all" />
 
     <!-- TODO: favicon 
     <link rel="shortcut icon" href="images/favicon.png"/> -->
@@ -58,7 +58,7 @@
           <li id="nav-sign-in">Sign In</li>
         </ul>
         
-        <img src="images/btn-play.png" style="display:none;" />
+        <img src="/wil/images/btn-play.png" style="display:none;" />
         
         <ul id="nav-right" class="clearfix">
           <li id="nav-buy">Buy</li>
@@ -71,30 +71,35 @@
       <header class="clearfix">
         <ul id="user-info" class="clearfix">
           <li id="user-icon">
-            <img src="images/user-icon-40x40.png" width="40" height="40" />
+            <img src="/wil/images/user-icon-40x40.png" width="40" height="40" />
           </li>
           <li>
-            <h2>Joseph Ansanelli</h2>
-            <h3>My Account <img src="images/icon-down-arrow-10px.png" width="10" height="10" /></h3>
+            <h2><%= h @user.name %></h2>
+            <h3>My Account <img src="/wil/images/icon-down-arrow-10px.png" width="10" height="10" /></h3>
           </li>
         </ul>
         
         <ul id="view-swap">
-          <li><a href="#"><img src="images/view-icons-friends.png" width="39" height="29" /></a></li>
-          <li><a href="#"><img src="images/view-icons-timeline.png" width="38" height="29" /></a></li>
-          <li><a href="#"><img src="images/view-icons-grid-selected.png" width="35" height="29" /></a></li>
+          <li><a href="#"><img src="/wil/images/view-icons-friends.png" width="39" height="29" /></a></li>
+          <li><a href="#"><img src="/wil/images/view-icons-timeline.png" width="38" height="29" /></a></li>
+          <li><a href="#"><img src="/wil/images/view-icons-grid-selected.png" width="35" height="29" /></a></li>
         </ul>        
       </header>
       
       <div id="drawer" style="display:none;">
         <div class="body">
-        
+          <div id="drawer-content">         
+          </div>   
         </div>
       </div>
       
-      <div id="indicator" class="clearfix" style="display:none;">
-        <a href="#"><img src="images/btn-steps-next.png" /></a>
-      </div>
+      <ul id="indicator" class="step-1 clearfix" style="display:none;">
+        <li id="step-add" class="on">Add Pictures</li>
+        <li id="step-style">Style</li>
+        <li id="step-edit">Edit</li>
+        <li id="step-share">Share</li>
+        <li id="step-btn"><img id="next-step" src="/wil/images/btn-steps-next.png" /></li>
+      </ul>
 
     </div><!-- end fixed width container -->
     
@@ -103,6 +108,7 @@
       <%= yield :layout %>
     
     </article>
+    
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript"></script>
     <script type="text/javascript" src="/wil/javascripts/lib/jquery.validate.js" ></script>
     <script type="text/javascript" src="/wil/javascripts/buddy.js" ></script>
