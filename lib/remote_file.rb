@@ -7,8 +7,8 @@ class RemoteFile < ::Tempfile
   def initialize(path, tmpdir = Dir::tmpdir, options = {})
     @original_filename  = File.basename(path)
     @remote_path        = path
+    @content_type       = 'application/x-octet-stream'
     @options            = options
-    @content_type = 'application/x-octet-stream'
 
     super Digest::SHA1.hexdigest(path), tmpdir
     fetch
@@ -24,6 +24,11 @@ class RemoteFile < ::Tempfile
     if string_io.meta['content-disposition'] =~ CONTENT_DISPOSITION_FILENAME_REGEX
       @original_filename = $1
     end
+    unless @original_filename.include?('.') && (@content_type == 'x-octet-stream')
+      extension = @content_type.split('/').last
+      @original_filename += ".#{extension}"
+    end
+
     self.binmode if is_windows?
     self.write string_io.read
     self.rewind
@@ -35,24 +40,7 @@ class RemoteFile < ::Tempfile
   end
 
   def content_type
-=begin
-    type = (self.path.match(/\.(\w+)$/)[1] rescue "octet-stream").downcase
-    case type
-    when %r"jp(e|g|eg)"            then "image/jpeg"
-    when %r"tiff?"                 then "image/tiff"
-    when %r"png", "gif", "bmp"     then "image/#{type}"
-    when "txt"                     then "text/plain"
-    when %r"html?"                 then "text/html"
-    when "js"                      then "application/js"
-    when "csv", "xml", "css"       then "text/#{type}"
-    else
-      # On BSDs, `file` doesn't give a result code of 1 if the file doesn't exist.
-      content_type = (Paperclip.run("file", "--mime-type", self.path).split(':').last.strip rescue "application/x-#{type}")
-      content_type = "application/x-#{type}" if content_type.match(/\(.*?\)/)
-      content_type
-    end
-=end
-  @content_type
+    @content_type
   end
 
   def is_windows?
