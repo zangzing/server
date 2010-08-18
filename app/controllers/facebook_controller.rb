@@ -14,18 +14,18 @@ protected
   def service_login_required
     unless facebook_auth_token
       begin
-        @access_token = token_store.get_token(current_user.id)
+        @access_token = service_identity.credentials
         @graph = HyperGraph.new(facebook_auth_token)
       rescue => exception
-        #TODO Un-comment all error handling stuff
-        #raise InvalidToken if exception.kind_of?(FacebookError)
+        raise InvalidToken if exception.kind_of?(FacebookError)
         raise HttpCallFail if exception.kind_of?(SocketError)
       end
+      raise InvalidToken unless @access_token
     end
   end
 
-  def token_store
-    @token_store ||= TokenStore.new(:facebook)
+  def service_identity
+    @service_identity ||= current_user.identity_for_facebook
   end
 
   def facebook_graph

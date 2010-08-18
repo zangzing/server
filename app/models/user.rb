@@ -32,6 +32,7 @@
 #   � 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 
+
 class User < ActiveRecord::Base
   usesguid
   attr_writer      :name
@@ -40,6 +41,7 @@ class User < ActiveRecord::Base
   has_many :albums,              :dependent => :destroy
   has_many :identities,          :dependent => :destroy
   has_many :shares
+  has_many :followers,           :dependent => :destroy
   has_many :activities,          :dependent => :destroy
   has_many :photos
   has_many :client_applications, :dependent => :destroy 
@@ -48,10 +50,8 @@ class User < ActiveRecord::Base
   has_many :followees, :through => :follows, :class_name => 'User', :dependent => :destroy
   has_many :followers, :through => :follows, :class_name => 'User'
     
-  
-  acts_as_authentic # This delegates all authentication details to authlogic
 
-  
+  acts_as_authentic         # This delegates all authentication details to authlogic
 
   before_save  :split_name
 
@@ -62,8 +62,7 @@ class User < ActiveRecord::Base
   validates_length_of   :password, :within => 6..40, :if => :require_password?, :message => "must be between 6 and 40 characters long"
 
 
-  #todo: will those code work if we add new identity types after users ahve been created?
-  IDENTITY_SOURCES = [:google, :flickr, :facebook, :smugmug, :shutterfly, :kodak]
+  IDENTITY_SOURCES = [:google, :flickr, :facebook, :smugmug, :shutterfly, :kodak, :local]
 
   IDENTITY_SOURCES.each do |service_name|
     define_method("identity_for_#{service_name}") do

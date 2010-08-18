@@ -1,8 +1,9 @@
 
 
-function ImageLoader(onImageLoadedHandler){
+function ImageLoader(onStartLoadingImage, onImageLoadedHandler){
     this.queue = [];
     this.stopped = false;
+    this.onStartLoadingImage = onStartLoadingImage;
     this.onImageLoadedHandler = onImageLoadedHandler;
 };
 
@@ -55,12 +56,16 @@ ImageLoader.prototype = {
         var img = new Image();
         props['img'] = img;
 
-        var me = this;
 
+        //this.onStartLoadingImage(props['id'], props['src'])
+
+
+        var me = this;
         img.onload = function(){
             me.handleImageLoaded(props['id'], props['src'])
             me.next();
         };
+
         img.src = props['src']
     },
 

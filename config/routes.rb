@@ -76,7 +76,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.with_options :controller => :flickr_photos do |flickr|
     flickr.flickr_photos '/flickr/folders/:set_id/photos.:format', :action  => 'index'
-    flickr.flickr_photo  '/flickr/folders/:set_id/photos/:photo_id.:size', :action  => 'show'
+#    flickr.flickr_photo  '/flickr/folders/:set_id/photos/:photo_id.:size', :action  => 'show'
     flickr.flickr_photo_action  '/flickr/folders/:set_id/photos/:photo_id/:action'
   end
 
@@ -94,7 +94,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.with_options :controller => :kodak_photos do |kodak|
     kodak.kodak_photos '/kodak/folders/:kodak_album_id/photos.:format', :action  => 'index'
-    kodak.kodak_photo  '/kodak/folders/:kodak_album_id/photos/:photo_id.:size', :action  => 'show'
+#    kodak.kodak_photo  '/kodak/folders/:kodak_album_id/photos/:photo_id.:size', :action  => 'show'
     kodak.kodak_photo_action '/kodak/folders/:kodak_album_id/photos/:photo_id/:action'
   end
 
@@ -112,7 +112,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.with_options :controller => :facebook_photos do |fb|
     fb.facebook_photos '/facebook/folders/:fb_album_id/photos.:format', :action  => 'index'
-    fb.facebook_photo  '/facebook/folders/:fb_album_id/photos/:photo_id.:size', :action  => 'show'
+#    fb.facebook_photo  '/facebook/folders/:fb_album_id/photos/:photo_id.:size', :action  => 'show'
     fb.facebook_photo_action '/facebook/folders/:fb_album_id/photos/:photo_id/:action'
   end
 
@@ -135,7 +135,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.with_options :controller => :smugmug_photos do |fb|
     fb.smugmug_photos '/smugmug/folders/:sm_album_id/photos.:format', :action  => 'index'
-    fb.smugmug_photo  '/smugmug/folders/:sm_album_id/photos/:photo_id.:size', :action  => 'show'
+#    fb.smugmug_photo  '/smugmug/folders/:sm_album_id/photos/:photo_id.:size', :action  => 'show'
     fb.smugmug_photo_action '/smugmug/folders/:sm_album_id/photos/:photo_id/:action'
   end
 
@@ -153,7 +153,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.with_options :controller => :shutterfly_photos do |sf|
     sf.shutterfly_photos '/shutterfly/folders/:sf_album_id/photos.:format', :action  => 'index'
-    sf.shutterfly_photo  '/shutterfly/folders/:sf_album_id/photos/:photo_id.:size', :action  => 'show'
+#    sf.shutterfly_photo  '/shutterfly/folders/:sf_album_id/photos/:photo_id.:size', :action  => 'show'
     sf.shutterfly_photo_action '/shutterfly/folders/:sf_album_id/photos/:photo_id/:action'
   end
 
@@ -169,5 +169,9 @@ ActionController::Routing::Routes.draw do |map|
     g.destroy_google_session '/google/sessions/destroy', :action  => 'destroy'
   end
   map.google_contacts '/google/contacts/:action', :controller => 'google_contacts'
+
+  #LocalContacts importer
+  map.local_contacts '/local/contacts/:action', :controller => 'local_contacts'
+
 
 end

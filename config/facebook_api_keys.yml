@@ -1,15 +1,15 @@
 ---
 development:
-  :api_key: f4d63fedf5efb80582e053cde0929378
-  :app_secret: d551ae9821d42fbb22de534f70502b0b
-  :app_id: 112996675412403
+  :api_key: 4e315634b2e3a915d550965bd2f9dcf8
+  :app_secret: a44c3242d69b70b32a6c6842e19f8f82
+  :app_id: 143394669017276
 
 test:
-  :api_key: f4d63fedf5efb80582e053cde0929378
-  :app_secret: d551ae9821d42fbb22de534f70502b0b
-  :app_id: 112996675412403
+  :api_key: 4e315634b2e3a915d550965bd2f9dcf8
+  :app_secret: a44c3242d69b70b32a6c6842e19f8f82
+  :app_id: 143394669017276
 
 production:
-  :api_key: f4d63fedf5efb80582e053cde0929378
-  :app_secret: d551ae9821d42fbb22de534f70502b0b
-  :app_id: 112996675412403
+  :api_key: 4e315634b2e3a915d550965bd2f9dcf8
+  :app_secret: a44c3242d69b70b32a6c6842e19f8f82
+  :app_id: 143394669017276

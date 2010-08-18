@@ -15,7 +15,7 @@ class SmugmugController < ConnectorController
   def service_login_required
     unless smugmug_auth_token_string
       begin
-        @token_string = token_store.get_token(current_user.id)
+        @token_string = service_identity.credentials
         @api = SmugmugConnector.new(@token_string)
         smugmug_api.call_method('smugmug.auth.checkAccessToken')
       rescue => exception
@@ -25,8 +25,8 @@ class SmugmugController < ConnectorController
     end
   end
 
-  def token_store
-    @token_store ||= TokenStore.new(:smugmug)
+  def service_identity
+    @service_identity ||= current_user.identity_for_smugmug
   end
 
   def smugmug_api

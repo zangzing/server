@@ -1,6 +1,0 @@
-Photo sets:
-<ul>
-  <% @folders.each do |folder| %>
-    <li><%= link_to folder[:name], flickr_photos_path(:set_id => folder[:id])%> (ID#<%= folder[:id] %>)</li>
-  <% end %>
-</ul>

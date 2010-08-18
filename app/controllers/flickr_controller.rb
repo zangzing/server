@@ -1,7 +1,7 @@
 class FlickrController < ConnectorController
   before_filter :service_login_required
 
-  PHOTO_SIZES = {:thumb => 'Thumbnail', :screen => 'Medium', :full => 'Big'}
+  PHOTO_SIZES = {:thumb => 'Medium', :screen => 'Big', :full => 'Big'}
   
   def initialize(*args)
     super(*args)
@@ -14,7 +14,7 @@ protected
   def service_login_required
     unless flickr_auth_token
       begin
-        @flickr_token = token_store.get_token(current_user.id)
+        @flickr_token = service_identity.credentials
         @flickr_auth = flickr.auth.checkToken :auth_token => flickr_auth_token
       rescue => exception
         raise InvalidToken if exception.kind_of?(FlickRaw::FailedResponse)
@@ -23,8 +23,8 @@ protected
     end
   end
 
-  def token_store
-    @token_store ||= TokenStore.new(:flickr)
+  def service_identity
+    @service_identity ||= current_user.identity_for_flickr
   end
 
   def flickr_api

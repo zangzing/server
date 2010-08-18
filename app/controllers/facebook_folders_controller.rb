@@ -10,16 +10,12 @@ class FacebookFoldersController < FacebookController
         :type => "folder",
         :id  =>  f[:id],
         :open_url => facebook_photos_path(f[:id]),
-        :import_url => facebook_folder_action_path({:fb_album_id =>f[:id], :action => 'import'})
+        :add_url => facebook_folder_action_path({:fb_album_id =>f[:id], :action => 'import'})
       }
     }
 
 
-
-    respond_to do |wants|
-      wants.html
-      wants.json { render :json => @folders.to_json }
-    end
+    render :json => @folders.to_json
   end
 
   def import
@@ -31,11 +27,7 @@ class FacebookFoldersController < FacebookController
       photos << photo
     end
 
-    respond_to do |wants|
-      wants.html { @photos = photos }
-      wants.json { render :json => photos.to_json }
-    end
+
+    render :json => photos.to_json
   end
-
-
 end

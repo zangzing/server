@@ -21,7 +21,7 @@ class ShutterflyConnectorTest < ActionController::IntegrationTest
     assert_routing "/shutterfly/folders/456/import", {:controller => "shutterfly_folders", :action => "import", :sf_album_id => '456'}
     #Photos
     assert_routing "/shutterfly/folders/123/photos", {:controller => "shutterfly_photos", :action => "index", :sf_album_id => "123"}
-    assert_routing "/shutterfly/folders/123/photos/456.screen", {:controller => "shutterfly_photos", :action => "show", :sf_album_id => "123", :photo_id => "456", :size => 'screen'}
+#    assert_routing "/shutterfly/folders/123/photos/456.screen", {:controller => "shutterfly_photos", :action => "show", :sf_album_id => "123", :photo_id => "456", :size => 'screen'}
     assert_routing "/shutterfly/folders/123/photos/456/import", {:controller => "shutterfly_photos", :action => "import", :sf_album_id => "123", :photo_id => "456"}
   end
 
@@ -100,14 +100,16 @@ class ShutterflyConnectorTest < ActionController::IntegrationTest
         assert r['name'] =~ /DSC_\d{4}.JPG/
       end
     end
-    
-    # "Get photo thumbnail from 1st photoset" do
-    visit shutterfly_photo_url(:sf_album_id => '67b0de21d1acc82084fd', :photo_id => '47a0d937b3127ccefaf4c0c0904500000033100AZsm7dmzZtGYPbz4G', :size => :thumb)
-    assert response['Content-Type'] =~ /image\/.+/
 
-    # "Get photo thumbnail from 2nd photoset" do
-    visit shutterfly_photo_url(:sf_album_id => '67b0de21d1821ffc8441', :photo_id => '47a0d937b3127ccefaf59bea71a600000033100AZsm7dmzZtGYPbz4G', :size => :thumb)
-    assert response['Content-Type'] =~ /image\/.+/
+    #todo: we no longer support the proxy. should test the thumb_url and screen_url in the JSON
+
+#    # "Get photo thumbnail from 1st photoset" do
+#    visit shutterfly_photo_url(:sf_album_id => '67b0de21d1acc82084fd', :photo_id => '47a0d937b3127ccefaf4c0c0904500000033100AZsm7dmzZtGYPbz4G', :size => :thumb)
+#    assert response['Content-Type'] =~ /image\/.+/
+#
+#    # "Get photo thumbnail from 2nd photoset" do
+#    visit shutterfly_photo_url(:sf_album_id => '67b0de21d1821ffc8441', :photo_id => '47a0d937b3127ccefaf59bea71a600000033100AZsm7dmzZtGYPbz4G', :size => :thumb)
+#    assert response['Content-Type'] =~ /image\/.+/
 
     # "Import photo from a photoset (JSON)" do
     visit shutterfly_photo_action_url(:sf_album_id => '67b0de21d1821ffc8441', :photo_id => '47a0d937b3127ccefaf59bea71a600000033100AZsm7dmzZtGYPbz4G', :action => :import, :format => :json, :album_id => 1)

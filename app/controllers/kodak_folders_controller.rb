@@ -3,11 +3,19 @@ class KodakFoldersController < KodakController
   def index
     album_list = connector.send_request('/albumList')
     albums = album_list['Album'].select { |a| a['type'].first=='0' } #Real albums have type attribute = 0
-    @folders = albums.map { |f| {:name => f['name'].first, :id => f['id'].first} }
-    respond_to do |wants|
-      wants.html
-      wants.json { render :json => @folders.to_json }
-    end
+#    @folders = albums.map { |f| {:name => f['name'].first, :id => f['id'].first} }
+
+    @folders = albums.map { |f|
+      {
+        :name => f['name'].first,
+        :type => "folder",
+        :id  =>  f['id'].first,
+        :open_url => kodak_photos_path(f['id'].first),
+        :add_url => kodak_folder_action_path({:kodak_album_id =>f['id'].first, :action => 'import'})
+      }
+    }
+
+    render :json => @folders.to_json
   end
 
   def import
@@ -21,10 +29,7 @@ class KodakFoldersController < KodakController
       photos << photo
     end
 
-    respond_to do |wants|
-      wants.html { @photos = photos }
-      wants.json { render :json => photos.to_json }
-    end
+    render :json => photos.to_json
   end
 
 end

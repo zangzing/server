@@ -5,7 +5,7 @@ class KodakController < ConnectorController
 
   before_filter :service_login_required
 
-  PHOTO_SIZES = {:thumb => 'photoUriThumbJpeg', :screen => 'photoUriMediumJpeg', :full => 'photoUriFullResJpeg'}
+  PHOTO_SIZES = {:thumb => 'photoUriSmallJpeg', :screen => 'photoUriMediumJpeg', :full => 'photoUriFullResJpeg'}
   
   def initialize(*args)
     super(*args)
@@ -17,17 +17,17 @@ protected
 
   def login(email, password)
     raise InvalidCredentials unless connector.sign_in(email, password)
-    token_store.store_token(connector.auth_token, current_user.id)
+    service_identity.update_attribute(:credentials, connector.auth_token)
   end
 
   def logout
     connector.auth_token = nil
-    token_store.delete_token(current_user.id)
+    service_identity.update_attribute(:credentials, nil)
   end
 
   def service_login_required
     unless kodak_cookies
-      cookies = token_store.get_token(current_user.id)
+      cookies = service_identity.credentials
       raise InvalidToken unless KodakConnector.verify_cookie_as_authenticated(cookies)
       @kodak_connector.auth_token = cookies
     end
@@ -41,8 +41,8 @@ protected
     @kodak_connector.auth_token
   end
 
-  def token_store
-    @token_store ||= TokenStore.new(:kodak)
+  def service_identity
+    @service_identity ||= current_user.identity_for_kodak
   end
 
 end
