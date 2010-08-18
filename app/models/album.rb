@@ -33,8 +33,8 @@ class Album < ActiveRecord::Base
   has_many :album_activities, :dependent => :destroy
 
 
-  validates_presence_of :name, :user_id
-  validates_length_of :name, :maximum => 50
+  validates_presence_of  :user_id
+  #validates_length_of :name, :maximum => 50
 
   default_scope :order => 'created_at DESC'
 end

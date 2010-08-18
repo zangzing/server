@@ -1,4 +1,4 @@
-var temp;var temp_width;var temp_height;var temp_top;var temp_left;     
+var temp;var temp_width;var temp_height;var temp_top;var temp_left; var content_url;    
 var zz = {
   
   /* Tracking Function - Allows us to track *everything* easily 
@@ -154,8 +154,11 @@ var zz = {
   
   zang: {
     
-    // Select Photo var & fn
+    /* Select Photo
+    ------------------------------------------------------------------------- */  
+    
     selected_photo: 'undefined',
+    
     highlight_selected: function(id){
     
       if (zz.zang.selected_photo != 'undefined') {
@@ -170,7 +173,7 @@ var zz = {
       temp_top = $('#'+ id +' img').position()['top'] + temp_height - 20;
       temp_left = $('#'+ id +' img').position()['left'] + 5;      
 
-      $('#'+ id +' figure').css({position: 'absolute', top: temp_top+'px', left: temp_left+'px', width: temp_width});
+      $('#'+ id +' figure').css({position: 'absolute', top: temp_top + 'px', left: temp_left + 'px', width: temp_width});
       
       $('#'+id).addClass('selected'); // select the new photo
       zz.zang.selected_photo = id; // update our constant
@@ -178,10 +181,13 @@ var zz = {
 
     }, // end zz.zang.highlight_selected()
     
+    /* Drawer Animations
+    ------------------------------------------------------------------------- */       
     
-    // Open/close drawer var & fns
     drawer_open: 0,
-    open_drawer: function(time){
+    
+    open_drawer: function(time, content_url){
+      content_url = 'http://localhost:3000/albums/cQ9scyQWyr35YDnbwEiTwe/upload';
 
       zz.zang.screen_height = $(window).height(); // measure the screen height
       // adjust for out top and bottom bar, the gradient padding and a margin
@@ -191,12 +197,24 @@ var zz = {
       $('article').animate({ opacity: 0.3 }, time/2 );
       // pull out the drawer
       $('div#drawer').animate({ height: zz.zang.drawer_height + 'px', top: '50px' }, time );
-      $('div#drawer-content').animate({ height: (zz.zang.drawer_height + 20) + 'px'}, time );
+      $('div#drawer-content').animate({ height: (zz.zang.drawer_height - 52) + 'px'}, time );
+      $('#drawer-content').load(content_url);
       $('#indicator').fadeIn('slow');
+      
       
       zz.zang.drawer_open = 1; // remember position of the drawer in 
 
     }, // end zz.zang.open_drawer()
+    
+    resize_drawer: function(time){
+      zz.zang.screen_height = $(window).height(); // measure the screen height
+      // adjust for out top and bottom bar, the gradient padding and a margin
+      zz.zang.drawer_height = zz.zang.screen_height - 180; 
+      $('div#drawer').animate({ height: zz.zang.drawer_height + 'px', top: '50px' }, time );
+      $('div#drawer-content').animate({ height: (zz.zang.drawer_height - 52) + 'px'}, time );
+    
+    }, // end zz.zang.resize_drawer()
+    
     close_drawer: function(time){
 
       //$('#indicator').fadeOut('fast');
@@ -209,6 +227,7 @@ var zz = {
       zz.zang.drawer_open = 2; // remember position of the drawer in 
 
     }, // end zz.zang.open_drawer()
+    
     slam_drawer: function(time){
 
       $('#indicator').fadeOut('fast');
@@ -222,11 +241,66 @@ var zz = {
 
     }, // end zz.zang.open_drawer()
     
-    // Step swap vars and fns
+    /* New Album Tabs
+    ------------------------------------------------------------------------- */  
+    
     indicator_step: 1,
     indicator: 'step-add',
-    step_switch: function(element){
     
+    new_album: function(element) {
+      switch(element)  {
+        case 'step-style':
+          zz.zang.step_switch(element, 2, '');
+          break;
+        case 'step-edit':
+          zz.zang.step_switch(element, 3, '');
+          break;
+        case 'step-share':
+          zz.zang.step_switch(element, 4, '');
+          break;
+        case 'step-add':
+          zz.zang.step_switch(element, 1, '');
+          break;
+        default:
+          if (zz.zang.indicator_step == 1) {
+            element = 'step-style';
+          } else if (zz.zang.indicator_step == 2) {
+            element = 'step-edit';        
+          } else if (zz.zang.indicator_step == 3) {
+            element = 'step-share';        
+          } else if (zz.zang.indicator_step == 4) {
+            zz.zang.slam_drawer(495);
+            $('#indicator').addClass('step-1').removeClass('step-4');
+            $('#step-add').addClass('on');
+            $('#step-share').removeClass('on');
+            zz.zang.indicator = 'step-add';
+            zz.zang.indicator_step = 1;
+            return;
+          }
+          zz.zang.step_switch(element, '');
+      }
+    },
+    
+    step_switch: function(element, temp, content_url){//, content_url){
+
+      if (zz.zang.indicator != element || zz.zang.indicator != '' || zz.zang.indicator != 'undefined') {
+
+        if (zz.zang.indicator_step == 3) {
+          zz.zang.open_drawer(995);        
+        }
+      
+        $('#indicator').addClass('step-'+temp).removeClass('step-'+zz.zang.indicator_step);
+        $('#'+element).addClass('on');
+        $('#'+zz.zang.indicator).removeClass('on');
+        zz.zang.indicator = element;
+        zz.zang.indicator_step = temp;
+        $('drawer-content').load(content_url);
+                
+      }
+        
+    },  // end zz.zang.step_switch()
+
+    test_switch: function(element){//, content_url){
       if (element == 'step-btn') {
 
         if (zz.zang.indicator_step == 1) {
@@ -236,18 +310,23 @@ var zz = {
         } else if (zz.zang.indicator_step == 3) {
           element = 'step-share';        
         } else if (zz.zang.indicator_step == 4) {
-          zz.zang.slam_drawer(995);
+          zz.zang.slam_drawer(495);
+          $('#indicator').addClass('step-1').removeClass('step-4');
+          $('#step-add').addClass('on');
+          $('#step-share').removeClass('on');
+          zz.zang.indicator = 'step-add';
+          zz.zang.indicator_step = 1;
           return;
         }
       
       }
-
-      if (zz.zang.indicator != element) {
+      
+      if (zz.zang.indicator != element || zz.zang.indicator != '' || zz.zang.indicator != 'undefined') {
       
         if (element == 'step-add') {
           temp = 1;
         } else if (element == 'step-style') {
-          temp = 2;        
+          temp = 2;
         } else if (element == 'step-edit') {
           temp = 3; 
           zz.zang.close_drawer(995);
@@ -266,8 +345,8 @@ var zz = {
         zz.zang.indicator_step = temp;
                 
       }
-        
-    }  // end zz.zang.step_switch()
+              
+    }  // end zz.zang.test_switch()
     
     
   }, // end zz.zang
@@ -290,18 +369,16 @@ var zz = {
       
       // open drawer demo
       $('#nav-new-album').click(function(){
-      
         if (zz.zang.drawer_open === 0) {
           zz.zang.open_drawer(990);
         } else {
           zz.zang.slam_drawer(880);
         }
-                
       });
       
       $('#indicator li').click(function(){
         temp = $(this).attr('id');
-        zz.zang.step_switch(temp);
+        zz.zang.test_switch(temp);
       });
       
     },
@@ -311,7 +388,10 @@ var zz = {
     },
     
     resized: function(){
-      
+      if (zz.zang.drawer_open == 1) {
+        zz.zang.resize_drawer(250);
+      }
+      // TODO: check for selected photo - move caption position
     }        
   
   } // end zz.init

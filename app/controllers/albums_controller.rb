@@ -8,26 +8,12 @@ class AlbumsController < ApplicationController
   end
 
   def create
-      respond_to do |format|
-           format.html do
-             @album  = current_user.albums.build(params[:album])
-             if @album.save
-               flash[:success] = "Album created!"
-               redirect_to @album
-             else
-               render 'new'
-             end
-           end
-           format.xml do
-             @user = User.find(params[:user_id])
-             @album  = @user.albums.build(params[:album])
-             if @album.save
-               render :xml => @album.to_xml
-             else
-               render :xml => "ERROR CREATING ALBUM".to_xml
-             end
-           end
-         end
+    @album  = current_user.albums.build(params[:album])
+    if @album.save
+      render :text => @album.id
+    else
+      render :text => "Error in album create."+@album.errors.to_xml()
+    end
   end
 
   

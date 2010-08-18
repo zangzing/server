@@ -3,7 +3,7 @@ class CreateAlbums < ActiveRecord::Migration
     create_table :albums, :force => true do |t|
         t.references_with_guid  :user
         t.integer  :privacy
-        t.string   :type
+        t.string   
         t.string   :style, :default => "white"
         t.boolean  :open
         t.datetime :event_date
