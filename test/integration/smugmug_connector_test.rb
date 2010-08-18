@@ -21,7 +21,7 @@ class SmugmugConnectorTest < ActionController::IntegrationTest
     assert_routing "/smugmug/folders/456/import", {:controller => "smugmug_folders", :action => "import", :sm_album_id => '456'}
     #Photos
     assert_routing "/smugmug/folders/123/photos", {:controller => "smugmug_photos", :action => "index", :sm_album_id => "123"}
-    assert_routing "/smugmug/folders/123/photos/456.screen", {:controller => "smugmug_photos", :action => "show", :sm_album_id => "123", :photo_id => "456", :size => 'screen'}
+#    assert_routing "/smugmug/folders/123/photos/456.screen", {:controller => "smugmug_photos", :action => "show", :sm_album_id => "123", :photo_id => "456", :size => 'screen'}
     assert_routing "/smugmug/folders/123/photos/456/import", {:controller => "smugmug_photos", :action => "import", :sm_album_id => "123", :photo_id => "456"}
   end
 
@@ -104,13 +104,13 @@ class SmugmugConnectorTest < ActionController::IntegrationTest
     assert result.size == 1
     assert result[0]['name'] == 'running'
 
-    # "Get photo thumbnail from 1st photoset" do
-    visit smugmug_photo_url(:sm_album_id => '6467864_mKdzn', :photo_id => '412839635_dFxkP', :size => :thumb)
-    assert response['Content-Type'] =~ /image\/.+/
-
-    # "Get photo thumbnail from 2nd photoset" do
-    visit smugmug_photo_url(:sm_album_id => '5298215_9VoYf', :photo_id => '323165888_x2jWq', :size => :thumb)
-    assert response['Content-Type'] =~ /image\/.+/
+#    # "Get photo thumbnail from 1st photoset" do
+#    visit smugmug_photo_url(:sm_album_id => '6467864_mKdzn', :photo_id => '412839635_dFxkP', :size => :thumb)
+#    assert response['Content-Type'] =~ /image\/.+/
+#
+#    # "Get photo thumbnail from 2nd photoset" do
+#    visit smugmug_photo_url(:sm_album_id => '5298215_9VoYf', :photo_id => '323165888_x2jWq', :size => :thumb)
+#    assert response['Content-Type'] =~ /image\/.+/
 
     # "Import photo from a photoset (JSON)" do
     visit smugmug_photo_action_url(:sm_album_id => '6467864_mKdzn', :photo_id => '412839635_dFxkP', :action => :import, :format => :json, :album_id => 1)

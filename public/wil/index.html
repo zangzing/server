@@ -3,15 +3,32 @@
   <head>
     <meta charset="utf-8">
     <meta name="copyright" content="Copyright 2010, ZangZing, Inc. All Rights Reserved." />
-    <meta name="title" content="ZangZing -  Mock Up" />
-    <meta name="description" content="" />
+    <meta name="DC.title" content="ZangZing - Mock Up" />
+    <meta name="title" content="ZangZing - Mock Up" />
+    <meta name="description" content="If simple and fast photo management was a rubicks cube then we'd be Will Smith in that movie he used as a vehicle for his son's career ...we can do it!" />
 
     <title>ZangZing - Mock Up</title>
 
-    <link rel="stylesheet" href="stylesheets/main.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="stylesheets/lib.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="stylesheets/main.css" type="text/css" media="all" />
+    
+    <!-- TODO: favicon 
+    <link rel="shortcut icon" href="images/favicon.png"/> -->
+    
+    <!-- TODO: iPhone/iPad icon 
+    <link rel="apple-touch-icon" href="images/zz_icon.png"/> -->
+    
+    <!--[if IE 7]>
+    <link rel="stylesheet" href="stylesheets/ie7.css" media="all" />
+    <![endif]-->
+    
+    <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <script src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE8.js"></script>
+    <![endif]-->
   </head>
   
-  <body>
+  <body id="controller-action" class="controller">
     
     <div id="container">
     
@@ -54,89 +71,293 @@
       
       <div id="drawer" style="display:none;">
         <div class="body">
-        
+          <div id="drawer-content">
+          </div>   
         </div>
       </div>
       
-      <div id="indicator" class="clearfix" style="display:none;">
-        <a href="#"><img src="images/btn-steps-next.png" /></a>
-      </div>
+      <ul id="indicator" class="step-1 clearfix" style="display:none;">
+        <li id="step-add" class="on">Add Pictures</li>
+        <li id="step-style">Style</li>
+        <li id="step-edit">Edit</li>
+        <li id="step-share">Share</li>
+        <li id="step-btn"><img id="next-step" src="images/btn-steps-next.png" /></li>
+      </ul>
 
     </div><!-- end fixed width container -->
     
     <article>
       <ul id="grid-view" class="clearfix">
-        <li id="img-1" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-2" ><img src="images/test-grid-image-tall-no-border.png" height="121" width="81" /></li>
-        <li id="img-3" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-4" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-5" ><img src="images/test-grid-image-tall-no-border.png" height="121" width="81" /></li>
-        <li id="img-6" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-7" ><img src="images/test-grid-image-tall-no-border.png" height="121" width="81" /></li>
-        <li id="img-8" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-9" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-10"><img src="images/test-grid-image-tall-no-border.png" height="121" width="81" /></li>
-        <li id="img-11" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-12" ><img src="images/test-grid-image-tall-no-border.png" height="121" width="81" /></li>
-        <li id="img-13" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-14" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-15" ><img src="images/test-grid-image-tall-no-border.png" height="121" width="81" /></li>
-        <li id="img-16" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-17" ><img src="images/test-grid-image-tall-no-border.png" height="121" width="81" /></li>
-        <li id="img-18" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-19" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-20"><img src="images/test-grid-image-tall-no-border.png" height="121" width="81" /></li>
-        <li id="img-21" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-22" ><img src="images/test-grid-image-tall-no-border.png" height="121" width="81" /></li>
-        <li id="img-23" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-24" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-25" ><img src="images/test-grid-image-tall-no-border.png" height="121" width="81" /></li>
-        <li id="img-26" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-27" ><img src="images/test-grid-image-tall-no-border.png" height="121" width="81" /></li>
-        <li id="img-28" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-29" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-30"><img src="images/test-grid-image-tall-no-border.png" height="121" width="81" /></li>
-        <li id="img-31" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-32" ><img src="images/test-grid-image-tall-no-border.png" height="121" width="81" /></li>
-        <li id="img-33" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-34" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-35" ><img src="images/test-grid-image-tall-no-border.png" height="121" width="81" /></li>
-        <li id="img-36" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-37" ><img src="images/test-grid-image-tall-no-border.png" height="121" width="81" /></li>
-        <li id="img-38" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-39" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-40"><img src="images/test-grid-image-tall-no-border.png" height="121" width="81" /></li>
-        <li id="img-41" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-42" ><img src="images/test-grid-image-tall-no-border.png" height="121" width="81" /></li>
-        <li id="img-43" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-44" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-45" ><img src="images/test-grid-image-tall-no-border.png" height="121" width="81" /></li>
-        <li id="img-46" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-47" ><img src="images/test-grid-image-tall-no-border.png" height="121" width="81" /></li>
-        <li id="img-48" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-49" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-50"><img src="images/test-grid-image-tall-no-border.png" height="121" width="81" /></li>
-        <li id="img-51" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-52" ><img src="images/test-grid-image-tall-no-border.png" height="121" width="81" /></li>
-        <li id="img-53" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-54" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-55" ><img src="images/test-grid-image-tall-no-border.png" height="121" width="81" /></li>
-        <li id="img-56" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-57" ><img src="images/test-grid-image-tall-no-border.png" height="121" width="81" /></li>
-        <li id="img-58" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-59" class="wide"><img src="images/test-grid-image-wide-no-border.png" height="81" width="121" /></li>
-        <li id="img-60"><img src="images/test-grid-image-tall-no-border.png" height="121" width="81" /></li>
+        <li id="img-1" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-2" >
+          <img src="images/test-grid-image-tall-no-border.png" height="121" width="81" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-3" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-4" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-5" >
+          <img src="images/test-grid-image-tall-no-border.png" height="121" width="81" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-6" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-7" >
+          <img src="images/test-grid-image-tall-no-border.png" height="121" width="81" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-8" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-9" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-10">
+          <img src="images/test-grid-image-tall-no-border.png" height="121" width="81" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-11" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-12" >
+          <img src="images/test-grid-image-tall-no-border.png" height="121" width="81" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-13" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-14" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-15" >
+          <img src="images/test-grid-image-tall-no-border.png" height="121" width="81" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-16" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-17" >
+          <img src="images/test-grid-image-tall-no-border.png" height="121" width="81" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-18" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-19" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-20">
+          <img src="images/test-grid-image-tall-no-border.png" height="121" width="81" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-21" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-22" >
+          <img src="images/test-grid-image-tall-no-border.png" height="121" width="81" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-23" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-24" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-25" >
+          <img src="images/test-grid-image-tall-no-border.png" height="121" width="81" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-26" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-27" >
+          <img src="images/test-grid-image-tall-no-border.png" height="121" width="81" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-28" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-29" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-30">
+          <img src="images/test-grid-image-tall-no-border.png" height="121" width="81" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-31" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-32" >
+          <img src="images/test-grid-image-tall-no-border.png" height="121" width="81" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-33" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-34" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-35" >
+          <img src="images/test-grid-image-tall-no-border.png" height="121" width="81" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-36" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-37" >
+          <img src="images/test-grid-image-tall-no-border.png" height="121" width="81" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-38" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-39" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-40">
+          <img src="images/test-grid-image-tall-no-border.png" height="121" width="81" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-41" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-42" >
+          <img src="images/test-grid-image-tall-no-border.png" height="121" width="81" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-43" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-44" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-45" >
+          <img src="images/test-grid-image-tall-no-border.png" height="121" width="81" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-46" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-47" >
+          <img src="images/test-grid-image-tall-no-border.png" height="121" width="81" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-48" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-49" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-50">
+          <img src="images/test-grid-image-tall-no-border.png" height="121" width="81" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-51" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-52" >
+          <img src="images/test-grid-image-tall-no-border.png" height="121" width="81" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-53" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-54" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-55" >
+          <img src="images/test-grid-image-tall-no-border.png" height="121" width="81" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-56" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-57" >
+          <img src="images/test-grid-image-tall-no-border.png" height="121" width="81" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-58" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-59" class="wide">
+          <img src="images/test-grid-image-wide-no-border.png" height="81" width="121" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
+        <li id="img-60">
+          <img src="images/test-grid-image-tall-no-border.png" height="121" width="81" />
+          <figure>Here&rsquo;s my caption</figure>
+        </li>
       </ul>
     </article>
-
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js" type="text/javascript"></script>
-  	<script type="text/javascript" src="javascripts/lib/jquery.validate.js" ></script>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="javascripts/lib/jquery.validate.js" ></script>
     <script type="text/javascript" src="javascripts/buddy.js" ></script>
     <script type="text/javascript">
-      $(document).ready(function(){
-        // in our layout this is how we'll manage what get loaded where in terms of event handlers, etc.
-        zz.init.base(); 
-      });
+      /* Vars our js fns need from ruby (calls/conditionals) - NO SECURE DATA
+      ----------------------------------------------------------------------- */
+    
+      /* Fire up our inits starting up the entire waxy ball!!
+      ----------------------------------------------------------------------- */
+      (function($) {
+      
+        $(function() {
+          // in our layout this is how we'll manage what get loaded on which view in terms of event handlers, etc.
+          zz.init.template(); 
+        });
+  
+        $(window).bind("load", function() {
+          // ensures that the load functionion truly waits until the DOM has finished loading to make GETs
+          setTimeout('zz.init.loaded()', 64);
+        });
+        
+        $(window).bind("resize", function() {
+          // ensures that the load functionion truly waits until the DOM has finished loading to make GETs
+          zz.init.resized(); 
+        });
+      
+      })(jQuery);
     </script>
   </body>
 </html>

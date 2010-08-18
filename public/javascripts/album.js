@@ -64,7 +64,7 @@ album = {
         activeAlbum = jQuery.parseJSON(albumJson);
 
         if( agentPresent ){
-           $("#uploadform").html('<form method="get" action="/albums/'+activeAlbum.id+'/upload" class="button-to"><div><input type="submit" value="Upload Photos" /></div></form>');
+//           $("#uploadform").html('<form method="get" action="/albums/'+activeAlbum.id+'/upload" class="button-to"><div><input type="submit" value="Upload Photos" /></div></form>');
             for (i = 0; i < activeAlbum.photos.length; i++) {
                  photoUrl = activeAlbum.photos[i].thumb_url; // # TODO: USE AGENT WHEN AGENT IS READY
                 //Modify div block which id is "photoid<ID_HERE>" created by the Photo/_photo partial
@@ -99,7 +99,9 @@ album = {
         activePhoto = jQuery.parseJSON(photoJson);
 
         if (agentPresent) {
-                photoUrl = "http://" + location.host + "/photos/" + activePhoto.id; // # TODO: ADD AGENT WHEN AGENT IS READY
+                 //:TODO when the agent is ready replace this call to point to the agent
+                //photoUrl = "http://" + location.host + "/photos/" + activePhoto.id; // # TODO: ADD AGENT WHEN AGENT IS READY
+                photoUrl = activePhoto.medium_url;
         } else {
                 photoUrl = activePhoto.medium_url;
         }

@@ -2,11 +2,17 @@ class SmugmugFoldersController < SmugmugController
 
   def index
     album_list = smugmug_api.call_method('smugmug.albums.get')
-    @folders = album_list.map { |f| {:name => f[:title], :id => "#{f[:id]}_#{f[:key]}"} }
-    respond_to do |wants|
-      wants.html
-      wants.json { render :json => @folders.to_json }
-    end
+    @folders = album_list.map { |f|
+      {
+        :name => f[:title],
+        :type => 'folder',
+        :id  =>  "#{f[:id]}_#{f[:key]}",
+        :open_url => smugmug_photos_path("#{f[:id]}_#{f[:key]}"),
+        :add_url =>  smugmug_folder_action_path({:sm_album_id =>"#{f[:id]}_#{f[:key]}", :action => 'import'})
+      }
+    }
+
+    render :json => @folders.to_json
   end
 
   def import
@@ -19,10 +25,8 @@ class SmugmugFoldersController < SmugmugController
       photos << photo
     end
 
-    respond_to do |wants|
-      wants.html { @photos = photos }
-      wants.json { render :json => photos.to_json }
-    end
+    render :json => photos.to_json
+
   end
 
 end

@@ -17,6 +17,7 @@ gem 'oauth-plugin',  '0.3.14'
 gem 'flickraw',      '0.8.2'
 gem 'authlogic',     '2.1.5'
 gem 'usesguid'
+gem 'usesguid_migrations'
 
 gem 'contacts'
 gem 'hpricot'
@@ -25,7 +26,6 @@ gem 'twitter'
 group :development do
   # bundler requires these gems in development
   gem 'faker'
-  gem 'usesguid_migrations'
 end
 
 group :test do

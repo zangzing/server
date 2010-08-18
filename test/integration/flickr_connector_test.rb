@@ -20,7 +20,7 @@ class FlickrConnectorTest < ActionController::IntegrationTest
     assert_routing "/flickr/folders/456/import", {:controller => "flickr_folders", :action => "import", :set_id => '456'}
     #Photos
     assert_routing "/flickr/folders/123/photos", {:controller => "flickr_photos", :action => "index", :set_id => "123"}
-    assert_routing "/flickr/folders/123/photos/456.screen", {:controller => "flickr_photos", :action => "show", :set_id => "123", :photo_id => "456", :size => 'screen'}
+#    assert_routing "/flickr/folders/123/photos/456.screen", {:controller => "flickr_photos", :action => "show", :set_id => "123", :photo_id => "456", :size => 'screen'}
     assert_routing "/flickr/folders/123/photos/456/import", {:controller => "flickr_photos", :action => "import", :set_id => "123", :photo_id => "456"}
   end
   
@@ -111,17 +111,17 @@ class FlickrConnectorTest < ActionController::IntegrationTest
     assert_contain "DSC_0148"
   end
 
-  test "Get photo thumbnail from 1st photoset" do
-    log_in
-    visit flickr_photo_url(:set_id => 72157624268707475, :photo_id => 4749804696, :size => :thumb)
-    assert response['Content-Type'] =~ /image\/.+/
-  end
-
-  test "Get photo thumbnail from 2nd photoset" do
-    log_in
-    visit flickr_photo_url(:set_id => 72157624393511168, :photo_id => 4749151477, :size => :thumb)
-    assert response['Content-Type'] =~ /image\/.+/
-  end
+#  test "Get photo thumbnail from 1st photoset" do
+#    log_in
+#    visit flickr_photo_url(:set_id => 72157624268707475, :photo_id => 4749804696, :size => :thumb)
+#    assert response['Content-Type'] =~ /image\/.+/
+#  end
+#
+#  test "Get photo thumbnail from 2nd photoset" do
+#    log_in
+#    visit flickr_photo_url(:set_id => 72157624393511168, :photo_id => 4749151477, :size => :thumb)
+#    assert response['Content-Type'] =~ /image\/.+/
+#  end
 
   test "Import photo from a photoset (JSON)" do
     log_in

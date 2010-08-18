@@ -11,13 +11,12 @@ task :build =>['build:db','build:rspec']
 
 namespace :build do
 
-  desc "Copy DB credentials from env and create config file. Setup DB"
+  desc "db:drop db:create db:migrate db:seed"
   task :db do
        Rake::Task['db:drop'].invoke
        Rake::Task['db:create'].invoke
        Rake::Task['db:migrate'].invoke
        Rake::Task['db:seed'].invoke
-       Rake::Task['db:test:prepare']
   end  
 
   desc "Works only in EY CruiseControl Build machine. Builds custom database.yml for testing"

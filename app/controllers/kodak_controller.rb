@@ -5,7 +5,7 @@ class KodakController < ConnectorController
 
   before_filter :service_login_required
 
-  PHOTO_SIZES = {:thumb => 'photoUriThumbJpeg', :screen => 'photoUriMediumJpeg', :full => 'photoUriFullResJpeg'}
+  PHOTO_SIZES = {:thumb => 'photoUriSmallJpeg', :screen => 'photoUriMediumJpeg', :full => 'photoUriFullResJpeg'}
   
   def initialize(*args)
     super(*args)

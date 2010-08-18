@@ -1,6 +1,0 @@
-Photo sets:
-<ul>
-  <% @folders.each do |folder| %>
-    <li><%= link_to folder[:name], smugmug_photos_path(:sm_album_id => folder[:id]) %> (ID#<%= folder[:id] %>)</li>
-  <% end %>
-</ul>

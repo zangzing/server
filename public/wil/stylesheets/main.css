@@ -1,77 +1,10 @@
-/* Reset CSS */
-
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, font, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	outline: 0;
-	font-weight: inherit;
-	font-style: inherit;
-	font-size: 100%;
-	font-family: inherit;
-	vertical-align: baseline;
-}
-:focus {
-	outline: 0;
-}
-body {
-	line-height: 1;
-	color: black;
-	background: white;
-}
-ol, ul {
-	list-style: none;
-}
-table {
-	border-collapse: separate;
-	border-spacing: 0;
-}
-caption, th, td {
-	text-align: left;
-	font-weight: normal;
-}
-blockquote:before, blockquote:after,
-q:before, q:after {
-	content: "";
-}
-blockquote, q {
-	quotes: "" "";
-}
-* { outline: none; }
-
-/* Clearfix CSS */
-
-.clearfix:after {
-    content: ".";
-    display: block;
-    clear: both;
-    visibility: hidden;
-    line-height: 0;
-    height: 0;
-}
-.clearfix {
-    display: inline-block;
-}
-html[xmlns] .clearfix {
-    display: block;
-}
-* html .clearfix {
-    height: 1%;
-}
-
-/* Body */
+/* Body, headers, text
+----------------------------------------------------------------------------- */
 
 body { 
   width: 98%;
   margin: 0 auto;
-	background-color: #f9f9f9;
+  background-color: #f3f3f3;
   font-family: "Lucida Grande", "Lucida Sans Unicode", "Trebuchet MS", Tahoma, Helvetica, Arial, sans-serif;
   font-size: 62.5%;
   color: #0A0A0A;
@@ -92,12 +25,13 @@ h3 {
   font-size: 1.2em;
 }
 
-/* Fixed Header and Footer */
+/* Fixed Header and Footer 
+----------------------------------------------------------------------------- */
 
 div#container {
   width: 950px;
   margin: 0 auto;
-}
+} /* allows the fixed-position elements to be in the center w/o js hacks */
 
 nav {
   position: fixed;
@@ -105,7 +39,7 @@ nav {
   height: 51px;
   padding: 7px 0 0 4px;
   bottom: 0px;
-  background-image: url("../images/bg-bottom-bar.png");
+  background-image: url("/wil/images/bg-bottom-bar.png");
   background-repeat: no-repeat;
   z-index: 10;
 }
@@ -116,7 +50,7 @@ nav h1 {
   height: 52px;
   margin-right: 16px;
   cursor: pointer;
-  background-image: url("../images/logo-zangzing.png");
+  background-image: url("/wil/images/logo-zangzing.png");
   background-repeat: no-repeat;
 }
 
@@ -143,27 +77,27 @@ nav ul#nav-left li:hover {
 }
 
 li#nav-new-album {
-  background-image: url("../images/icon-new-album.png");
+  background-image: url("/wil/images/icon-new-album.png");
 }
 
 li#nav-new-album:hover {
-  background-image: url("../images/icon-new-album-hover.png");
+  background-image: url("/wil/images/icon-new-album-hover.png");
 }
 
 li#nav-find {
-  background-image: url("../images/icon-find.png");
+  background-image: url("/wil/images/icon-find.png");
 }
 
 li#nav-find:hover {
-  background-image: url("../images/icon-find-hover.png");
+  background-image: url("/wil/images/icon-find-hover.png");
 }
 
 li#nav-sign-in {
-  background-image: url("../images/icon-sign-in.png");
+  background-image: url("/wil/images/icon-sign-in.png");
 }
 
 li#nav-sign-in:hover {
-  background-image: url("../images/icon-sign-in-hover.png");
+  background-image: url("/wil/images/icon-sign-in-hover.png");
 }
 
 nav ul#nav-right {
@@ -190,35 +124,35 @@ nav ul#nav-right li:hover {
 }
 
 li#nav-new-photo {
-  background-image: url("../images/icon-new-photo.png");
+  background-image: url("/wil/images/icon-new-photo.png");
 }
 
 li#nav-new-photo:hover {
-  background-image: url("../images/icon-new-photo-hover.png");
+  background-image: url("/wil/images/icon-new-photo-hover.png");
 }
 
 li#nav-share {
-  background-image: url("../images/icon-share.png");
+  background-image: url("/wil/images/icon-share.png");
 }
 
 li#nav-share:hover {
-  background-image: url("../images/icon-share-hover.png");
+  background-image: url("/wil/images/icon-share-hover.png");
 }
 
 li#nav-like {
-  background-image: url("../images/icon-like.png");
+  background-image: url("/wil/images/icon-like.png");
 }
 
 li#nav-like:hover {
-  background-image: url("../images/icon-like-hover.png");
+  background-image: url("/wil/images/icon-like-hover.png");
 }
 
 li#nav-buy {
-  background-image: url("../images/icon-cart.png");
+  background-image: url("/wil/images/icon-cart.png");
 }
 
 li#nav-buy:hover {
-  background-image: url("../images/icon-cart-hover.png");
+  background-image: url("/wil/images/icon-cart-hover.png");
 }
 
 header {
@@ -227,7 +161,7 @@ header {
   height: 52px;
   padding: 0 0 7px 4px;
   top: 0px;
-  background-image: url("../images/bg-top-bar.png");
+  background-image: url("/wil/images/bg-top-bar.png");
   background-repeat: no-repeat;
   z-index: 10;
 }
@@ -256,47 +190,158 @@ header ul#view-swap li {
   float: right;
 }
 
+/* Drawer
+----------------------------------------------------------------------------- */
+
 div#drawer {
   position: fixed;
   width: 906px;
   height: 0px;
   margin: 0 24px 0 20px;
-  padding: 0 0 40px 4px;
-  top: 50px;
-  background-image: url("../images/bg-drawer-bottom-cap.png");
+  padding: 0 0 26px 4px;
+  top: 10px;
+  background-image: url("/wil/images/bg-drawer-bottom-cap.png");
   background-repeat: no-repeat;
   background-position: 100% bottom;
   z-index: 9;
 }
 
 div#drawer div.body {
-  background-image: url("../images/bg-bottom-repeat.png");
+  background-image: url("/wil/images/bg-bottom-repeat.png");
   background-repeat: repeat-y;
   width: 906px;
-  height: 100%;
+  padding-top: 40px;
 }
 
-div#indicator {
-  background-image: url("../images/bg-step-1-strip.png");
+div#drawer div.body div#drawer-content {
+  margin: 0 auto;
+  height: 0px;
+  width: 895px;
+  overflow-y: scroll;  
+}
+
+div#drawer-content ul#folders {
+  margin: 20px 15px 20px;
+}
+
+div#drawer-content ul#folders li {
+  background-image: url("/wil/images/folders/local.png");
   background-repeat: no-repeat;
+  background-position: center top;
+  float: left;
+  width: 128px;
+  padding: 115px 20px 15px;
+  cursor: pointer;
+  font-size: 1.3em;
+  font-weight: 700;
+}
+
+div#drawer-content ul#folders li.f_iphoto {
+  background-image: url("/wil/images/folders/apple.png");
+}
+div#drawer-content ul#folders li.f_facebook {
+  background-image: url("/wil/images/folders/facebook.png");
+}
+div#drawer-content ul#folders li.f_flickr {
+  background-image: url("/wil/images/folders/flickr.png");
+}
+div#drawer-content ul#folders li.f_kodak {
+  background-image: url("/wil/images/folders/kodak.png");
+}
+div#drawer-content ul#folders li.f_pictures {
+  background-image: url("/wil/images/folders/mypictures.png");
+}
+div#drawer-content ul#folders li.f_picasa {
+  background-image: url("/wil/images/folders/picasa.png");
+}
+div#drawer-content ul#folders li.f_shutterfly {
+  background-image: url("/wil/images/folders/shutterfly.png");
+}
+div#drawer-content ul#folders li.f_snapfish {
+  background-image: url("/wil/images/folders/snapfish.png");
+}
+div#drawer-content ul#folders li.f_zangzing {
+  background-image: url("/wil/images/folders/zangzing.png");
+}
+
+div#drawer-content ul#folders li:hover {
+  color: #FDD042;
+}
+
+ul#indicator {
   position: fixed;
   top: 54px;
   z-index: 15;
   margin-left: 27px;
   width: 898px;
-  height: 37px;  
+  height: 36px;  
 }
 
-div#indicator img {
-  float: right;
-  margin: 5px 2px 0 0;
+ul.step-1 {
+  background-image: url("/wil/images/bg-step-1-strip.png");
+  background-repeat: no-repeat;
 }
 
-/* Grid View */
+ul.step-2 {
+  background-image: url("/wil/images/bg-step-2-strip.png");
+  background-repeat: no-repeat;
+}
+
+ul.step-3 {
+  background-image: url("/wil/images/bg-step-3-strip.png");
+  background-repeat: no-repeat;
+}
+
+ul.step-4 {
+  background-image: url("/wil/images/bg-step-4-strip.png");
+  background-repeat: no-repeat;
+}
+
+ul#indicator li {
+  float: left;
+  width: 155px;
+  padding-top: 9px;
+  padding-left: 40px;
+  font-size: 1.4em;
+  color: #646464;
+  text-align: center;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+ul#indicator li#step-btn {
+  width: 36px;
+  text-align: center;
+  padding-top: 5px;
+  padding-left: 22px;
+}
+
+ul#indicator li#step-edit {
+  width: 165px;
+  text-align: center;
+  padding-left: 32px;
+}
+
+ul#indicator li#step-share {
+  width: 135px;
+  text-align: center;
+  padding-left: 68px;
+}
+
+ul#indicator li.on {
+  color: #fff;
+}
+
+#next-step {
+  cursor: pointer;
+}
+
+/* Grid View
+----------------------------------------------------------------------------- */
 
 article {
   min-width: 930px;
-  margin: 0 10px;
+  margin: 70px 10px;
 }
 
 ul#grid-view {
@@ -316,19 +361,33 @@ ul#grid-view li.wide {
 
 ul#grid-view li img {
   border: #fff solid 5px;
+  box-shadow: 0px 0px 5px #767676;
   -webkit-box-shadow: 0px 0px 5px #767676;
   -moz-box-shadow: 0px 0px 5px #767676;
+  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#767676, offX=2, offY=2, positive=true);
   cursor: pointer;
 }
 
 ul#grid-view li.selected img {
   border: 4px solid #FDD042;
+  box-shadow: 0px 0px 5px #FDD042;
   -webkit-box-shadow: 0px 0px 5px #FDD042;
   -moz-box-shadow: 0px 0px 5px #FDD042;
+  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#FDD042, offX=2, offY=2, positive=true);
 }
 
-/* Reusables */
-
-.offset {
+ul#grid-view li figure {
   display: none;
+}
+
+ul#grid-view li.selected figure {
+  display: block;
+  height: 15px;
+  background-image: url("/wil/images/bg-blk-75.png");
+  color: #fff;
+  font-size: 1.2em;
+  padding: 2px 5px 7px;
+  overflow: hidden;
+  text-align: left;
+  line-height: 1.5em;
 }

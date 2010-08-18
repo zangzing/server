@@ -4,11 +4,18 @@ class FlickrFoldersController < FlickrController
 
   def index
     folders_response = flickr_api.photosets.getList
-    @folders = folders_response.map { |f| {:name => f.title, :id => f.id} }
-    respond_to do |wants|
-      wants.html
-      wants.json { render :json => @folders.to_json }
-    end
+
+    @folders = folders_response.map { |f|
+      {
+        :name => f.title,
+        :type => "folder",
+        :id  =>  f.id,
+        :open_url => flickr_photos_url(f.id),
+        :add_url => flickr_folder_action_url({:set_id =>f.id, :action => 'import'})
+      }
+    }
+    render :json => @folders.to_json
+
   end
   
   def import
@@ -21,11 +28,6 @@ class FlickrFoldersController < FlickrController
       photos << photo
     end
 
-    respond_to do |wants|
-      wants.html { @photos = photos }
-      wants.json { render :json => photos.to_json }
-    end
+    render :json => photos.to_json
   end
-
-  
 end
