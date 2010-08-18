@@ -63,7 +63,7 @@ var filechooser = {
     roots : [
         {"open_url": "http://localhost:9090/iphoto/folders", "type": "folder", "name": "iPhoto"},
         {"open_url": "http://localhost:9090/filesystem/folders", "type": "folder", "name": "My Computer"},
-        {"open_url": "http://localhost:9090/filesystem/folders/L1VzZXJzL2hvcGVtZW5n", "type": "folder", "name": "hopemeng"},
+        {"open_url": "http://localhost:9090/filesystem/folders/fg==", "type": "folder", "name": "Home"},
         {"open_url": "http://localhost:3000/facebook/folders.json", "type": "folder", "name": "Facebook", login_url:'http://localhost:3000/facebook/sessions/new'},
         {"open_url": "http://localhost:3000/flickr/folders.json", "type": "folder", "name": "Flickr", login_url:'http://localhost:3000/flickr/sessions/new'},
         {"open_url": "http://localhost:3000/kodak/folders.json", "type": "folder", "name": "Kodak", login_url:'http://localhost:3000/kodak/sessions/new'},
