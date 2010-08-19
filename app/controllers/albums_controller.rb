@@ -96,7 +96,7 @@ class AlbumsController < ApplicationController
   def choose_album_type
     self.create
     @steps = @album.wizard_steps
-    render :text => @album.id, :status => 200 
+    render :text => @album.id, :status => 200, :layout => false and return
   end
   def add_photos
     render :text => 'Success Adding Photos', :status => 200

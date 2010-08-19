@@ -203,7 +203,6 @@ var zz = {
       // pull out the drawer
       $('div#drawer').animate({ height: zz.zang.drawer_height + 'px', top: '50px' }, time );
       $('div#drawer-content').animate({ height: (zz.zang.drawer_height - 52) + 'px'}, time );
-      $('#indicator').fadeIn('slow');
       
       zz.zang.drawer_open = 1; // remember position of the drawer in 
 
@@ -255,29 +254,37 @@ var zz = {
     indicator_step: 0,
     indicator: 'undefined',
     
-    load_step_1: function(data){
-      $('#drawer-content').load('/albums/'+data+'/upload', function(){                
+    choose_album_type: function(){
+      //  open the drawer
+      zz.zang.open_drawer(995);
+
+      $('#drawer-content').load('/users/'+zz.zang.user_id+'/albums/new', function(){
+        $('#personal_album_link').click(zz.zang.create_album);
+      });      
+    },
+    
+    create_album: function(){
+      $.post('/users/'+zz.zang.user_id+'/albums/new', { album_type: "PersonalAlbum" }, function(data){
         zz.zang.album_id = data;
         zz.zang.indicator_step = 1;  
         zz.zang.indicator = 'step-add';
 
-        // fire up the filechooser
-        filechooser.init(); 
-      }); 
+        zz.zang.add_photos();
+        $('#indicator').fadeIn('slow');
+      });
+
     },
 
-    load_step_2: function(){
-      $('#drawer-content').load('/albums/'+zz.zang.album_id+'/edit');      
+    add_photos: function(){
+      $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/wizard?step=1', function(){                
+        // fire up the filechooser
+        filechooser.init(); 
+      });      
     },
-    
-    new_album: function(){
-      $.post('/users/'+ zz.zang.user_id+'/albums', function(data){
-        //  open the drawer
-        zz.zang.open_drawer(995);
-        //  load the partial
-        zz.zang.load_step_1(data);
-      });
-    } 
+
+    name_album: function(){
+      $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/edit');      
+    },
         
   }, // end zz.zang
   
@@ -301,7 +308,7 @@ var zz = {
       $('#nav-new-album').click(function(){
         if (zz.zang.drawer_open === 0) {
           console.log('new album fired');
-          zz.zang.new_album();
+          zz.zang.choose_album_type();
         } else {
           //zz.zang.slam_drawer(880);
         }
