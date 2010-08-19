@@ -41,7 +41,15 @@ protected
   end
 
   def get_photo_url(photo_info, size_wanted = :screen)
-    'http://farm%s.static.flickr.com/%s/%s_%s_%s.%s' % [photo_info.farm, photo_info.server, photo_info.id, photo_info.secret, PHOTO_SIZES[size_wanted][0,1].downcase, "jpg"]
+    extension = 'jpg'
+    size_letter = PHOTO_SIZES[size_wanted][0,1].downcase
+    secret = photo_info.secret
+    if size_wanted == :full && photo_info.originalsecret #If we've working with a Pro account
+      extension = photo_info.originalformat
+      size_letter = 'o'
+      secret = photo_info.originalsecret
+    end
+    'http://farm%s.static.flickr.com/%s/%s_%s_%s.%s' % [photo_info.farm, photo_info.server, photo_info.id, secret, size_letter, extension]
   end
 
 
