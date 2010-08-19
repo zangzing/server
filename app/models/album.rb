@@ -20,7 +20,7 @@
 #
 
 #
-#   © 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
+#   Copyright 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 
 class Album < ActiveRecord::Base
@@ -37,4 +37,21 @@ class Album < ActiveRecord::Base
   #validates_length_of :name, :maximum => 50
 
   default_scope :order => 'created_at DESC'
+
+
+  def wizard_steps
+    [:choose_album_type,:add_photos, :name_album, :edit_album, :contributors, :share]  
+  end
+
+
+  # All url, path and form helpers treat all subclasses as Album
+  def self.model_name
+    name = "album"
+    name.instance_eval do
+      def plural;   pluralize;   end
+      def singular; singularize; end
+      def human;    singularize; end # only for Rails 3
+    end
+    return name
+  end
 end

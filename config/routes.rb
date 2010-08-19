@@ -9,22 +9,21 @@ ActionController::Routing::Routes.draw do |map|
   end
 
 
-
   # albums
   map.with_options :controller => :albums do |albums|
     albums.user_albums        '/users/:user_id/albums.',     :action=>"index",  :conditions=>{ :method => :get }
     albums.create_user_album  '/users/:user_id/albums.',     :action=>"create", :conditions=>{ :method => :post }
-    albums.new_user_album     '/users/:user_id/albums/new.', :action=>"new",    :conditions=>{ :method => :get }
     albums.edit_album         '/albums/:id/edit.',           :action=>"edit",   :conditions=>{ :method => :get }
+    albums.new_user_album     '/users/:user_id/albums/new.', :action=>  'wizard'
     albums.album              '/albums/:id.',                :action=>"show",   :conditions=>{ :method => :get }
     albums.update_album       '/albums/:id.',                :action=>"update", :conditions=>{ :method => :put }
     albums.delete_album       '/albums/:id.',                :action=>"destroy",:conditions=>{ :method => :delete }
     albums.upload             '/albums/:id/upload',          :action=>"upload", :conditions=>{ :method => :get }
+    albums.album_wizard       'albums/:id/wizard',           :action => 'wizard'
   end
 
-
   # photos
-  map.with_options :controller => :photos do |photos|
+  map.with_options :controller => :photos do |photos|                                                                                                \
     photos.album_photos                '/albums/:album_id/photos.',                 :action=>'index',           :conditions => { :method => :get }
     photos.create_album_photo          '/albums/:album_id/photos.',                 :action=>'create',          :conditions => { :method => :post }
     photos.create_multiple_album_photo '/albums/:album_id/photos/create_multiple.', :action=>'create_multiple', :conditions => { :method => :post }

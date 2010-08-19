@@ -2,8 +2,9 @@ class CreateAlbums < ActiveRecord::Migration
   def self.up
     create_table :albums, :force => true do |t|
         t.references_with_guid  :user
-        t.integer  :privacy
-        t.string   
+        t.references_with_guid  :cover_photo, :null => true
+        t.string   :privacy, :default => 'public'
+        t.string   :type
         t.string   :style, :default => "white"
         t.boolean  :open
         t.datetime :event_date
