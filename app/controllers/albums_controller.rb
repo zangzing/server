@@ -99,19 +99,19 @@ class AlbumsController < ApplicationController
     render :text => @album.id, :status => 200, :layout => false and return
   end
   def add_photos
-    render :text => 'Success Adding Photos', :status => 200
+    render :text => 'Success Adding Photos', :status => 200, :layout => false and return
   end
   def name_album
-    render :text => 'Success Naming Album', :status => 200
+    render :text => 'Success Naming Album', :status => 200, :layout => false and return
   end
   def edit_album
-    render :text => 'Success Editing Album', :status => 200
+    render :text => 'Success Editing Album', :status => 200, :layout => false and return
   end
   def contributors
-    render :text => 'Success Contributors', :status => 200
+    render :text => 'Success Contributors', :status => 200, :layout => false and return
   end
   def share
-    render :text => 'Success Share', :status => 200
+    render :text => 'Success Share', :status => 200, :layout => false and return
   end
 
   private
