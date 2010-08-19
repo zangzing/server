@@ -1,5 +1,5 @@
 var temp;var temp_width;var temp_height;var temp_top;var temp_left; 
-var content_url;    
+var content_url;var serialized;
 
 /* Welcome to ZangZing
 ----------------------------------------------------------------------------- */
@@ -266,25 +266,103 @@ var zz = {
     create_album: function(){
       $.post('/users/'+zz.zang.user_id+'/albums/new', { album_type: "PersonalAlbum" }, function(data){
         zz.zang.album_id = data;
-        zz.zang.indicator_step = 1;  
-        zz.zang.indicator = 'step-add';
 
         zz.zang.add_photos();
         $('#indicator').fadeIn('slow');
       });
-
     },
 
     add_photos: function(){
       $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/wizard?step=1', function(){                
         // fire up the filechooser
         filechooser.init(); 
+        
+        zz.zang.indicator_step = 1;  
+        zz.zang.indicator = 'step-add';
       });      
     },
 
     name_album: function(){
-      $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/edit');      
+      $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/wizard?step=2', function(){                        
+        zz.zang.indicator_step = 2;  
+        zz.zang.indicator = 'step-name';
+      }); 
     },
+    
+    preview_album: function(){
+      $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/wizard?step=3', function(){                        
+        zz.zang.indicator_step = 3;  
+        zz.zang.indicator = 'step-preview';
+      }); 
+    },
+
+    share_album: function(){
+      $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/wizard?step=5', function(){                        
+        zz.zang.indicator_step = 4;  
+        zz.zang.indicator = 'step-share';
+      }); 
+    },
+    
+    change_step: function(element){
+      if (element == zz.zang.indicator) {
+        //nothing to do - same step clicked
+      } else if (zz.zang.indicator_step == 1) {
+        //dont post
+      } else if (zz.zang.indicator_step == 2) {
+        //post form
+        serialized = $(".edit_album").serialize();
+        $.post('/albums/'+zz.zang.album_id+'/wizard?step=2', serialized, function(data){
+          alert(data);
+        });
+
+      } else if (zz.zang.indicator_step == 3) {
+        //nothing for now
+      } else if (zz.zang.indicator_step == 4) {
+        //post form
+      } else {
+        //error
+      }
+      
+      if (element == zz.zang.indicator) {
+        //nothing to do - same step clicked
+      } else if (element == 'step-add') {
+        zz.zang.add_photos();
+        temp = 1;
+      } else if (element == 'step-name') {
+        zz.zang.name_album();
+        temp = 2;
+      } else if (element == 'step-preview') {
+        zz.zang.preview_album();
+        temp = 3;
+      } else if (element == 'step-share') {
+        zz.zang.share_album();
+        temp = 4;
+      } else if (element == 'step-btn') {
+
+        if (zz.zang.indicator_step == 1) {
+          zz.zang.name_album();
+          temp = 2;
+          element = 'step-name';
+        } else if (zz.zang.indicator_step == 2) {
+          zz.zang.preview_album();
+          temp = 3;
+          element = 'step-preview';
+        } else if (zz.zang.indicator_step == 3) {
+          zz.zang.share_album();
+          temp = 4;
+          element = 'step-share';
+        } else if (zz.zang.indicator_step == 4) {
+          zz.zang.slam_drawer(400);
+          setTimeout('window.location = "/albums/'+zz.zang.album_id+'"', 500);
+        }
+
+      }
+
+      $('#indicator').addClass('step-'+temp).removeClass('step-'+zz.zang.indicator_step);
+      $('#'+element).addClass('on');
+      $('#'+zz.zang.indicator).removeClass('on');
+
+    }
         
   }, // end zz.zang
   
@@ -315,9 +393,8 @@ var zz = {
       });
       
       $('#indicator li').click(function(){
-        //temp = $(this).attr('id');
-        //zz.zang.new_album(temp);
-        console.log('temporarily disabled');
+        temp = $(this).attr('id');
+        zz.zang.change_step(temp);
       });
       
     },
