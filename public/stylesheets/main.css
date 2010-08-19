@@ -22,7 +22,7 @@ h2 {
 }
 
 h3 {
-  font-size: 1.2em;
+  font-size: 1.3em;
 }
 
 /* Fixed Header and Footer 
@@ -65,10 +65,10 @@ nav ul#nav-left li {
   margin-right: 16px;
   padding-top: 30px;
   color: #a4a4a4;
-  font-size: 1.2em;
   font-weight: 400;  
   background-position: center; 
   background-repeat: no-repeat;
+  font-size: 1.3em;
 }
 
 nav ul#nav-left li:hover {
@@ -112,7 +112,7 @@ nav ul#nav-right li {
   margin-left: 16px;
   padding-top: 30px;
   color: #a4a4a4;
-  font-size: 1.2em;
+  font-size: 1.3em;
   font-weight: 400;  
   background-position: center; 
   background-repeat: no-repeat;
@@ -220,11 +220,11 @@ div#drawer div.body div#drawer-content {
   overflow-y: scroll;  
 }
 
-div#drawer-content ul#folders {
+div#drawer-content ul#folders, ul#filechooser {
   margin: 20px 15px 20px;
 }
 
-div#drawer-content ul#folders li {
+div#drawer-content ul#folders li, ul#filechooser li {
   background-image: url("/images/folders/local.png");
   background-repeat: no-repeat;
   background-position: center top;
@@ -236,36 +236,41 @@ div#drawer-content ul#folders li {
   font-weight: 700;
 }
 
-div#drawer-content ul#folders li.f_iphoto {
+div#drawer-content ul#folders li.f_iphoto, ul#filechooser li.f_iphoto {
   background-image: url("/images/folders/apple.png");
 }
-div#drawer-content ul#folders li.f_facebook {
+div#drawer-content ul#folders li.f_facebook, ul#filechooser li.f_facebook {
   background-image: url("/images/folders/facebook.png");
 }
-div#drawer-content ul#folders li.f_flickr {
+div#drawer-content ul#folders li.f_flickr, ul#filechooser li.f_flickr {
   background-image: url("/images/folders/flickr.png");
 }
-div#drawer-content ul#folders li.f_kodak {
+div#drawer-content ul#folders li.f_kodak, ul#filechooser li.f_kodak {
   background-image: url("/images/folders/kodak.png");
 }
-div#drawer-content ul#folders li.f_pictures {
+div#drawer-content ul#folders li.f_pictures, ul#filechooser li.f_pictures {
   background-image: url("/images/folders/mypictures.png");
 }
-div#drawer-content ul#folders li.f_picasa {
+div#drawer-content ul#folders li.f_picasa, ul#filechooser li.f_picasa {
   background-image: url("/images/folders/picasa.png");
 }
-div#drawer-content ul#folders li.f_shutterfly {
+div#drawer-content ul#folders li.f_shutterfly, ul#filechooser li.f_shutterfly {
   background-image: url("/images/folders/shutterfly.png");
 }
-div#drawer-content ul#folders li.f_snapfish {
+div#drawer-content ul#folders li.f_snapfish, ul#filechooser li.f_snapfish {
   background-image: url("/images/folders/snapfish.png");
 }
-div#drawer-content ul#folders li.f_zangzing {
+div#drawer-content ul#folders li.f_zangzing, ul#filechooser li.f_zangzing {
   background-image: url("/images/folders/zangzing.png");
 }
 
-div#drawer-content ul#folders li:hover {
+div#drawer-content ul#folders li:hover, ul#filechooser li:hover {
   color: #FDD042;
+}
+
+ul#filechooser a {
+  text-decoration: none;
+  color: #0a0a0a;
 }
 
 ul#indicator {
@@ -385,7 +390,7 @@ ul#grid-view li.selected figure {
   height: 15px;
   background-image: url("/images/bg-blk-75.png");
   color: #fff;
-  font-size: 1.2em;
+  font-size: 1.3em;
   padding: 2px 5px 7px;
   overflow: hidden;
   text-align: left;

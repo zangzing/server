@@ -168,9 +168,9 @@ var filechooser = {
         for(var i in children){
 
             if(children[i].type=='folder'){
-                html += "<div class='gridcell'>";
-                html += "<img src='/images/folder.jpg'>";
-                html += "<br>"
+                html += "<li class='gridcell'>";
+                //html += "<img src='/images/folder.jpg'>";
+                //html += "<br>"
 
                 html += "<a href='#' onclick=\"filechooser.open_folder('" + children[i].name + "','" + children[i].open_url + "','" + children[i].login_url + "'); return false;\">"
                 html += children[i].name;
@@ -184,11 +184,11 @@ var filechooser = {
             else{
                 var id = "photo_" + i 
                 html += "<div class='gridcell'>";
-                html += "<img id='"+ id +"' src=''>";
-                html += "<br>"
+                //html += "<img id='"+ id +"' src=''>";
+                //html += "<br>"
                 html += children[i].name;
                 html += "&nbsp;<a href='#' onclick=\"filechooser.add_photo('" + children[i].add_url + "'); return false;\">(+)</a>"
-                html += "</div>";
+                html += "</li>";
 
 
 

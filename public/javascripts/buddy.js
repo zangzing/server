@@ -186,6 +186,14 @@ var zz = {
     
     drawer_open: 0,
     
+    album_post: function(){
+      $.post('/users/'+ zz.zang.user_id+'/albums', function(data){
+        zz.zang.album_id = data;
+        alert(data);      
+      });
+    
+    }, // end zz.zang.album_post()
+    
     open_drawer: function(time, content_url){
       content_url = 'http://localhost:3000/albums/cQ9scyQWyr35YDnbwEiTwe/upload';
 
