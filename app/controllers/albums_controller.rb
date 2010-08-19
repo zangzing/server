@@ -12,12 +12,12 @@ class AlbumsController < ApplicationController
 
   def create
      if params[:album_type].nil?
-      render :text => "Error No Album Type Supplied for Choose Album Type." and return
+      render :text => "Error No Album Type Supplied for Choose Album Type.", :status=>500 and return
     end
     @album  = params[:album_type].constantize.new()
     current_user.albums << @album
     unless @album.save
-      render :text => "Error in album create."+@album.errors.to_xml() and return
+      render :text => "Error in album create."+@album.errors.to_xml(), :status=>500 and return
     end
   end
 
@@ -76,7 +76,8 @@ class AlbumsController < ApplicationController
     end
 
     if request.post?
-      self.send( @steps[@step] )
+      #invoke the method. Each method will render their own response to the post
+      current_step = @step
       if params[:next_step].nil?
         @step +=1
       else
@@ -85,23 +86,32 @@ class AlbumsController < ApplicationController
           @step = 1;
         end
       end
+      self.send( @steps[current_step] )
+    else
+      #request is a get, return the partial for the step requested
+      render :action => @steps[@step], :layout => false
     end
-    render :action => @steps[@step], :layout => false
   end
 
   def choose_album_type
     self.create
     @steps = @album.wizard_steps
+    render :text => @album.id, :status => 200 
   end
   def add_photos
+    render :text => 'Success Adding Photos', :status => 200
   end
   def name_album
+    render :text => 'Success Naming Album', :status => 200
   end
   def edit_album
+    render :text => 'Success Editing Album', :status => 200
   end
   def contributors
+    render :text => 'Success Contributors', :status => 200
   end
   def share
+    render :text => 'Success Share', :status => 200
   end
 
   private
