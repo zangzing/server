@@ -1,4 +1,9 @@
-var temp;var temp_width;var temp_height;var temp_top;var temp_left; var content_url;    
+var temp;var temp_width;var temp_height;var temp_top;var temp_left; 
+var content_url;    
+
+/* Welcome to ZangZing
+----------------------------------------------------------------------------- */
+
 var zz = {
   
   /* Tracking Function - Allows us to track *everything* easily 
@@ -185,17 +190,8 @@ var zz = {
     ------------------------------------------------------------------------- */       
     
     drawer_open: 0,
-    
-    album_post: function(){
-      $.post('/users/'+ zz.zang.user_id+'/albums', function(data){
-        zz.zang.album_id = data;
-        alert(data);      
-      });
-    
-    }, // end zz.zang.album_post()
-    
-    open_drawer: function(time, content_url){
-      content_url = 'http://localhost:3000/albums/cQ9scyQWyr35YDnbwEiTwe/upload';
+        
+    open_drawer: function(time){
 
       zz.zang.screen_height = $(window).height(); // measure the screen height
       // adjust for out top and bottom bar, the gradient padding and a margin
@@ -203,32 +199,33 @@ var zz = {
 
       // fade out the grid
       $('article').animate({ opacity: 0.3 }, time/2 );
+      
       // pull out the drawer
       $('div#drawer').animate({ height: zz.zang.drawer_height + 'px', top: '50px' }, time );
       $('div#drawer-content').animate({ height: (zz.zang.drawer_height - 52) + 'px'}, time );
-      $('#drawer-content').load(content_url);
       $('#indicator').fadeIn('slow');
-      
       
       zz.zang.drawer_open = 1; // remember position of the drawer in 
 
     }, // end zz.zang.open_drawer()
     
     resize_drawer: function(time){
+      
       zz.zang.screen_height = $(window).height(); // measure the screen height
       // adjust for out top and bottom bar, the gradient padding and a margin
       zz.zang.drawer_height = zz.zang.screen_height - 180; 
+      
       $('div#drawer').animate({ height: zz.zang.drawer_height + 'px', top: '50px' }, time );
       $('div#drawer-content').animate({ height: (zz.zang.drawer_height - 52) + 'px'}, time );
     
     }, // end zz.zang.resize_drawer()
     
     close_drawer: function(time){
-
-      //$('#indicator').fadeOut('fast');
+      
       // close the drawer
       $('div#drawer').animate({ height: '20px'}, time );
       $('div#drawer-content').animate({ height: 0}, time );
+      
       // fade in the grid
       $('article').animate({ opacity: 1 }, time * 1.1 );
       
@@ -239,9 +236,11 @@ var zz = {
     slam_drawer: function(time){
 
       $('#indicator').fadeOut('fast');
+      
       // close the drawer
       $('div#drawer').animate({ height: 0, top: '10px' }, time );
       $('div#drawer-content').animate({ height: 0, top: '10px' }, time );
+      
       // fade in the grid
       $('article').animate({ opacity: 1 }, time * 1.1 );
       
@@ -249,114 +248,37 @@ var zz = {
 
     }, // end zz.zang.open_drawer()
     
-    /* New Album Tabs
-    ------------------------------------------------------------------------- */  
+
+    /* New Album - 4 part
+    ------------------------------------------------------------------------- */
     
-    indicator_step: 1,
-    indicator: 'step-add',
+    indicator_step: 0,
+    indicator: 'undefined',
     
-    new_album: function(element) {
-      switch(element)  {
-        case 'step-style':
-          zz.zang.step_switch(element, 2, '');
-          break;
-        case 'step-edit':
-          zz.zang.step_switch(element, 3, '');
-          break;
-        case 'step-share':
-          zz.zang.step_switch(element, 4, '');
-          break;
-        case 'step-add':
-          zz.zang.step_switch(element, 1, '');
-          break;
-        default:
-          if (zz.zang.indicator_step == 1) {
-            element = 'step-style';
-          } else if (zz.zang.indicator_step == 2) {
-            element = 'step-edit';        
-          } else if (zz.zang.indicator_step == 3) {
-            element = 'step-share';        
-          } else if (zz.zang.indicator_step == 4) {
-            zz.zang.slam_drawer(495);
-            $('#indicator').addClass('step-1').removeClass('step-4');
-            $('#step-add').addClass('on');
-            $('#step-share').removeClass('on');
-            zz.zang.indicator = 'step-add';
-            zz.zang.indicator_step = 1;
-            return;
-          }
-          zz.zang.step_switch(element, '');
-      }
+    load_step_1: function(data){
+      $('#drawer-content').load('/albums/'+data+'/upload', function(){                
+        zz.zang.album_id = data;
+        zz.zang.indicator_step = 1;  
+        zz.zang.indicator = 'step-add';
+
+        // fire up the filechooser
+        filechooser.init(); 
+      }); 
+    },
+
+    load_step_2: function(){
+      $('#drawer-content').load('/albums/'+zz.zang.album_id+'/edit');      
     },
     
-    step_switch: function(element, temp, content_url){//, content_url){
-
-      if (zz.zang.indicator != element || zz.zang.indicator != '' || zz.zang.indicator != 'undefined') {
-
-        if (zz.zang.indicator_step == 3) {
-          zz.zang.open_drawer(995);        
-        }
-      
-        $('#indicator').addClass('step-'+temp).removeClass('step-'+zz.zang.indicator_step);
-        $('#'+element).addClass('on');
-        $('#'+zz.zang.indicator).removeClass('on');
-        zz.zang.indicator = element;
-        zz.zang.indicator_step = temp;
-        $('drawer-content').load(content_url);
-                
-      }
+    new_album: function(){
+      $.post('/users/'+ zz.zang.user_id+'/albums', function(data){
+        //  open the drawer
+        zz.zang.open_drawer(995);
+        //  load the partial
+        zz.zang.load_step_1(data);
+      });
+    } 
         
-    },  // end zz.zang.step_switch()
-
-    test_switch: function(element){//, content_url){
-      if (element == 'step-btn') {
-
-        if (zz.zang.indicator_step == 1) {
-          element = 'step-style';
-        } else if (zz.zang.indicator_step == 2) {
-          element = 'step-edit';        
-        } else if (zz.zang.indicator_step == 3) {
-          element = 'step-share';        
-        } else if (zz.zang.indicator_step == 4) {
-          zz.zang.slam_drawer(495);
-          $('#indicator').addClass('step-1').removeClass('step-4');
-          $('#step-add').addClass('on');
-          $('#step-share').removeClass('on');
-          zz.zang.indicator = 'step-add';
-          zz.zang.indicator_step = 1;
-          return;
-        }
-      
-      }
-      
-      if (zz.zang.indicator != element || zz.zang.indicator != '' || zz.zang.indicator != 'undefined') {
-      
-        if (element == 'step-add') {
-          temp = 1;
-        } else if (element == 'step-style') {
-          temp = 2;
-        } else if (element == 'step-edit') {
-          temp = 3; 
-          zz.zang.close_drawer(995);
-        } else if (element == 'step-share') {
-          temp = 4;        
-        }
-        
-        if (zz.zang.indicator_step == 3) {
-          zz.zang.open_drawer(995);        
-        }
-      
-        $('#indicator').addClass('step-'+temp).removeClass('step-'+zz.zang.indicator_step);
-        $('#'+element).addClass('on');
-        $('#'+zz.zang.indicator).removeClass('on');
-        zz.zang.indicator = element;
-        zz.zang.indicator_step = temp;
-                
-      }
-              
-    }  // end zz.zang.test_switch()
-    
-    
   }, // end zz.zang
   
   /* INITs 
@@ -378,15 +300,17 @@ var zz = {
       // open drawer demo
       $('#nav-new-album').click(function(){
         if (zz.zang.drawer_open === 0) {
-          zz.zang.open_drawer(990);
+          console.log('new album fired');
+          zz.zang.new_album();
         } else {
-          zz.zang.slam_drawer(880);
+          //zz.zang.slam_drawer(880);
         }
       });
       
       $('#indicator li').click(function(){
-        temp = $(this).attr('id');
-        zz.zang.test_switch(temp);
+        //temp = $(this).attr('id');
+        //zz.zang.new_album(temp);
+        console.log('temporarily disabled');
       });
       
     },

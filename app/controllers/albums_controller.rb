@@ -4,7 +4,7 @@ class AlbumsController < ApplicationController
 
   def new
     @album = Album.new
-    @title = "New Album"  
+    @title = "New Album" 
   end
 
   def create
@@ -25,6 +25,7 @@ class AlbumsController < ApplicationController
   def upload
     @album = Album.find(params[:id])
     #just show the view
+    render :layout => false  
   end
 
 
