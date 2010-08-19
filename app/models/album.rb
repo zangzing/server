@@ -32,9 +32,9 @@ class Album < ActiveRecord::Base
   has_many :shares,           :dependent => :destroy
   has_many :album_activities, :dependent => :destroy
 
-
   validates_presence_of  :user_id
-  #validates_length_of :name, :maximum => 50
+  validates_presence_of  :name
+  validates_length_of    :name, :maximum => 50
 
   default_scope :order => 'created_at DESC'
 
@@ -42,7 +42,6 @@ class Album < ActiveRecord::Base
   def wizard_steps
     [:choose_album_type,:add_photos, :name_album, :edit_album, :contributors, :share]  
   end
-
 
   # All url, path and form helpers treat all subclasses as Album
   def self.model_name

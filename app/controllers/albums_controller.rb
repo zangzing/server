@@ -16,6 +16,7 @@ class AlbumsController < ApplicationController
     end
     @album  = params[:album_type].constantize.new()
     current_user.albums << @album
+    @album.name = "Unamed Album"+ Time.new.strftime( ' %y-%m-%d %H:%M' )
     unless @album.save
       render :text => "Error in album create."+@album.errors.to_xml(), :status=>500 and return
     end
@@ -95,23 +96,23 @@ class AlbumsController < ApplicationController
 
   def choose_album_type
     self.create
-    @steps = @album.wizard_steps
     render :text => @album.id, :status => 200, :layout => false and return
   end
   def add_photos
-    render :text => 'Success Adding Photos', :status => 200
+    render :text => 'Success Adding Photos', :status => 200, :layout => false and return
   end
   def name_album
-    render :text => 'Success Naming Album', :status => 200
+    @album.update_attributes(params[:album])
+    render :text => 'Success Naming Album', :status => 200, :layout => false and return
   end
   def edit_album
-    render :text => 'Success Editing Album', :status => 200
+    render :text => 'Success Editing Album', :status => 200, :layout => false and return
   end
   def contributors
-    render :text => 'Success Contributors', :status => 200
+    render :text => 'Success Contributors', :status => 200, :layout => false and return
   end
   def share
-    render :text => 'Success Share', :status => 200
+    render :text => 'Success Share', :status => 200, :layout => false and return
   end
 
   private
