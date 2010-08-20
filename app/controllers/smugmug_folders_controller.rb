@@ -20,7 +20,14 @@ class SmugmugFoldersController < SmugmugController
     photos_list = smugmug_api.call_method('smugmug.images.get', {:AlbumID => album_id, :AlbumKey => album_key, :Heavy => 1})
     photos = []
     photos_list[:images].each do |p|
-      photo = Photo.create(:caption => (p[:caption].blank? ? p[:filename] : p[:caption]), :album_id => params[:album_id], :user_id=>current_user.id)
+      photo = Photo.create(
+              :caption => (p[:caption].blank? ? p[:filename] : p[:caption]),
+              :album_id => params[:album_id],
+              :user_id=>current_user.id,
+              :source_guid => Photo.generate_source_guid(p[:originalurl]),
+              :source_thumb_url => p[:thumburl],
+              :source_screen_url => p[:x3largeurl]
+      )
       Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, p[:originalurl]))
       photos << photo
     end

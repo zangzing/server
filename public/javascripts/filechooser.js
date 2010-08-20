@@ -33,10 +33,18 @@ var added_photos_tray = {
         var html =""
         for(var i in photos){
             html+="<div class='gridcell'>"
-            html+="<img  id='" + photos[i].id +"' src=''>"
+            html+="<img height='30' width='30' id='" + photos[i].id +"' src=''>"
             html+="</div>"
 
-            filechooser.imageloader.add(photos[i].id, "http://localhost:9090/albums/" +filechooser.album_id + "/photos/" + photos[i].id + ".thumb" + "?session=" + $.cookie("user_credentials"));
+            //todo: add primary and secondary url
+            if(photos[i].source_thumb_url){
+                filechooser.imageloader.add(photos[i].id, photos[i].source_thumb_url);
+            }
+            else{
+                filechooser.imageloader.add(photos[i].id, "http://localhost:9090/albums/" +filechooser.album_id + "/photos/" + photos[i].id + ".thumb" + "?session=" + $.cookie("user_credentials"));
+            }
+
+            
 
         }
         $("#added-pictures-tray").html(html)

@@ -12,7 +12,7 @@ class TwitterSessionsController < TwitterController
     begin
       twitter_api.create_access_token!(params[:oauth_token], true)
     rescue => e
-      raise InvalidToken if e.kind_of?(SmugmugError)
+      raise InvalidToken if e.kind_of?(SmugmugError) #todo: this should be TwitterError?
     end
     raise InvalidCredentials unless twitter_api.access_token
     service_identity.update_attribute(:credentials, twitter_api.access_token(true))

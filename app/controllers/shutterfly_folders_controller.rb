@@ -19,7 +19,14 @@ class ShutterflyFoldersController < ShutterflyController
     photos_list = sf_api.get_images(params[:sf_album_id])
     photos = []
     photos_list.each do |p|
-      photo = Photo.create(:caption => p[:title].first, :album_id => params[:album_id], :user_id=>current_user.id)
+      photo = Photo.create(
+              :caption => p[:title].first,
+              :album_id => params[:album_id],
+              :user_id=>current_user.id,
+              :source_guid => Photo.generate_source_guid(photo_url),
+              :source_thumb_url => get_photo_url(p[:id],  :thumb),
+              :source_screen_url => get_photo_url(p[:id],  :screen)
+      )
       Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, get_photo_url(p[:id].first, :full)))
       photos << photo
     end
