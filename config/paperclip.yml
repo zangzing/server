@@ -44,7 +44,7 @@ development:
 
 test:
   <<: *common
-  command_path: <%ENV['IMAGEMAGICK_PATH']%> #look for imagemagick here
+  command_path: <%=ENV['IMAGEMAGICK_PATH']%> #look for imagemagick here
 
 
 production:

@@ -7,9 +7,9 @@
       <td class="main">
         <h2 class="album">
           <% if @albums.empty? %>
-            <%= h @user.name %> Has No Albums</h2>
+            <!-- %= h @user.name %> Has No Albums</h2> -->
           <% else %>
-            <%= h @user.name %>'s Albums</h2>
+           <!-- <%= h @user.name %>'s Albums --></h2> 
    	        <table class="albums">	 
                 <%= render :partial => 'album', :collection => @albums %>
             </table>
@@ -17,14 +17,6 @@
          <%if current_user?(@user)%>
             <%= button_to "Create New Album", new_user_album_path( current_user ), :method => :get %>
          <%end%>
-
-         <script>
-           
-
-
-         </script>
-
-
       </td>
     </tr>
   </table>

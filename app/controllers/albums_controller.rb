@@ -76,7 +76,7 @@ class AlbumsController < ApplicationController
       end
     end
 
-    if request.post?
+    if request.post? || request.put?
       #invoke the method. Each method will render their own response to the post
       current_step = @step
       if params[:next_step].nil?

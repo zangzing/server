@@ -14,7 +14,7 @@ ActionController::Routing::Routes.draw do |map|
     albums.user_albums        '/users/:user_id/albums.',     :action=>"index",  :conditions=>{ :method => :get }
     albums.create_user_album  '/users/:user_id/albums.',     :action=>"create", :conditions=>{ :method => :post }
     albums.edit_album         '/albums/:id/edit.',           :action=>"edit",   :conditions=>{ :method => :get }
-    albums.new_user_album     '/users/:user_id/albums/new.', :action=>  'wizard'
+    albums.new_user_album     '/users/:user_id/albums/new.', :action=>"wizard"
     albums.album              '/albums/:id.',                :action=>"show",   :conditions=>{ :method => :get }
     albums.update_album       '/albums/:id.',                :action=>"update", :conditions=>{ :method => :put }
     albums.delete_album       '/albums/:id.',                :action=>"destroy",:conditions=>{ :method => :delete }

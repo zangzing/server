@@ -136,20 +136,26 @@ class Photo < ActiveRecord::Base
        self.state = 'loaded'
        self.send_later(:upload_to_s3)
     end
+    logger.debug("queued for upload")
   end
 
   #
   # Used by the workers to load the image.
   # This call cannot be private
   def upload_to_s3
+    begin
+      Delayed::PerformableMethod
       self.state = 'processing'
-      self.save!
       self.image = local_image.to_file
       self.save!
       self.local_image.clear
       self.local_image_path = ''
       self.state = 'ready'
       self.save!
+    rescue ActiveRecordError => ex
+        logger.debug("Upload to S3 Failed"+ex)
+    end
+    logger.debug("Upload to S3 Finished")
   end
 
   def new?

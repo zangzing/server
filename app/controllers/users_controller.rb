@@ -21,9 +21,8 @@ class UsersController < ApplicationController
   end
   
   def show
-      @user = User.find(params[:id])
-      @albums = @user.albums.paginate(:page => params[:page])
-      @title = CGI.escapeHTML(@user.name)
+      @user = User.find(params[:id]) 
+      redirect_to  user_albums_path(@user )
   end
   
   def edit 
