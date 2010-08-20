@@ -71,6 +71,7 @@
 
 require 'paperclip'
 require 'delayed_job'
+require 'digest/md5'
 
 
 class Photo < ActiveRecord::Base
@@ -191,6 +192,11 @@ class Photo < ActiveRecord::Base
 
   def set_s3bucket
     image.instance_variable_set '@bucket', self.image_bucket unless self.image_bucket.nil?
+  end
+
+
+  def self.generate_source_guid(url)
+     Digest::MD5.hexdigest(url)
   end
 
 end

@@ -22,7 +22,16 @@ class FacebookFoldersController < FacebookController
     photos_list = facebook_graph.get("#{params[:fb_album_id]}/photos")
     photos = []
     photos_list.each do |p|
-      photo = Photo.create(:caption => p[:name], :album_id => params[:album_id], :user_id=>current_user.id)
+      photo = Photo.create(
+                :caption => p[:name],
+                :album_id => params[:album_id],
+                :user_id=>current_user.id,
+                :source_guid => Photo.generate_source_guid(p[:source]),
+                :source_thumb_url => get_photo_url(p[:id], PHOTO_SIZES[:thumb]),
+                :source_screen_url => get_photo_url(p[:id], PHOTO_SIZES[:screen])
+      )
+
+
       Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, p[:source]))
       photos << photo
     end

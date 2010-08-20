@@ -22,7 +22,11 @@ class CreatePhotos < ActiveRecord::Migration
          t.integer  :local_image_file_size
          t.datetime :local_image_updated_at
          t.string   :local_image_path
-                  
+
+         t.string   :source_thumb_url
+         t.string   :source_screen_url
+         t.string   :source_guid
+         
          t.timestamps  
        end
        add_index :photos, :album_id

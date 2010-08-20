@@ -11,8 +11,8 @@ class FlickrPhotosController < FlickrController
         :name => p.title,
         :id   => p.id,
         :type => 'photo',
-        :thumb_url =>  get_photo_url(p, (params[:size] || 'thumb').downcase.to_sym),
-        :screen_url =>  get_photo_url(p, (params[:size] || 'screen').downcase.to_sym),
+        :thumb_url =>  get_photo_url(p, :thumb),
+        :screen_url =>  get_photo_url(p, :screen),
         :add_url => flickr_photo_action_url({:photo_id =>p.id, :action => 'import'})
       }
     }
@@ -30,7 +30,15 @@ class FlickrPhotosController < FlickrController
   def import
     info = flickr_api.photos.getInfo :photo_id => params[:photo_id]
     photo_url = get_photo_url(info, :full)
-    photo = Photo.create(:caption => info.title, :album_id => params[:album_id], :user_id=>current_user.id)
+    photo = Photo.create(
+              :caption => info.title,
+              :album_id => params[:album_id],
+              :user_id=>current_user.id,
+              :source_guid => Photo.generate_source_guid(photo_url),
+              :source_thumb_url => get_photo_url(info, :thumb),
+              :source_screen_url => get_photo_url(info, :screen)
+    )
+
     Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, photo_url))
     render :json => photo.to_json
   end

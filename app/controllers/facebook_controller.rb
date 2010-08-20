@@ -5,10 +5,6 @@ class FacebookController < ConnectorController
 
   before_filter :service_login_required
 
-  def token #TODO Remove this method
-    render :text => @access_token
-  end
-
 protected
 
   def service_login_required
