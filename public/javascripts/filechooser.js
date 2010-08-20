@@ -36,15 +36,26 @@ var added_photos_tray = {
             html+="<img height='30' width='30' id='" + photos[i].id +"' src=''>"
             html+="</div>"
 
-            //todo: add primary and secondary url
-            if(photos[i].source_thumb_url){
-                filechooser.imageloader.add(photos[i].id, photos[i].source_thumb_url);
+            if(photos[i].agent_id){
+                //was uploaded from agent
+                //todo: need to check that agent id matches local agent
+                if(photos[i].state == 'ready'){
+                    filechooser.imageloader.add(photos[i].id, photos[i].thumb_url);
+                }
+                else{
+                    filechooser.imageloader.add(photos[i].id, "http://localhost:9090/albums/" +filechooser.album_id + "/photos/" + photos[i].id + ".thumb" + "?session=" + $.cookie("user_credentials"));
+                }
             }
             else{
-                filechooser.imageloader.add(photos[i].id, "http://localhost:9090/albums/" +filechooser.album_id + "/photos/" + photos[i].id + ".thumb" + "?session=" + $.cookie("user_credentials"));
+                //photo was side loaded or emailed
+                if(photos[i].state == 'ready'){
+                    filechooser.imageloader.add(photos[i].id, photos[i].thumb_url);
+                }
+                else{
+                    filechooser.imageloader.add(photos[i].id, photos[i].source_thumb_url);
+                }
             }
 
-            
 
         }
         $("#added-pictures-tray").html(html)
@@ -84,6 +95,7 @@ var filechooser = {
     init : function(){
         $("#filechooser-back-button").bind('click', filechooser.open_parent_folder)
         filechooser.open_root()
+        added_photos_tray.refresh()
     },
 
 

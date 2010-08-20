@@ -173,7 +173,7 @@ class PhotosController < ApplicationController
       end
 
       format.json do
-        render :json => @album.photos.to_json
+        render :json => @album.photos.to_json( :methods => [:thumb_url, :medium_url])
       end
     end
   end
