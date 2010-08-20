@@ -9,7 +9,9 @@ class FacebookPhotosController < FacebookController
         :type => 'photo',
         :thumb_url =>get_photo_url(p[:id], PHOTO_SIZES[:thumb]),
         :screen_url =>get_photo_url(p[:id], PHOTO_SIZES[:screen]),
-        :add_url => facebook_photo_action_path({:photo_id =>p[:id], :action => 'import'})
+        :add_url => facebook_photo_action_path({:photo_id =>p[:id], :action => 'import'}),
+        :source_guid => Photo.generate_source_guid(p[:source])
+
       }
     }
 

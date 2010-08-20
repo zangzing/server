@@ -44,7 +44,7 @@ protected
     extension = 'jpg'
     size_letter = PHOTO_SIZES[size_wanted][0,1].downcase
     secret = photo_info.secret
-    if size_wanted == :full && photo_info.originalsecret #If we've working with a Pro account
+    if size_wanted == :full && photo_info.respond_to?(:originalsecret) #If we've working with a Pro account
       extension = photo_info.originalformat
       size_letter = 'o'
       secret = photo_info.originalsecret

@@ -32,29 +32,36 @@ var added_photos_tray = {
 
         var html =""
         for(var i in photos){
+            var id = 'tray-' + photos[i].source_guid;
+
             html+="<div class='gridcell'>"
-            html+="<img height='30' width='30' id='" + photos[i].id +"' src=''>"
+            html+="<img height='30' width='30' id='" + id +"' src=''>"
             html+="</div>"
 
             if(photos[i].agent_id){
                 //was uploaded from agent
                 //todo: need to check that agent id matches local agent
                 if(photos[i].state == 'ready'){
-                    filechooser.imageloader.add(photos[i].id, photos[i].thumb_url);
+                    filechooser.imageloader.add(id, photos[i].thumb_url);
                 }
                 else{
-                    filechooser.imageloader.add(photos[i].id, "http://localhost:9090/albums/" +filechooser.album_id + "/photos/" + photos[i].id + ".thumb" + "?session=" + $.cookie("user_credentials"));
+                    filechooser.imageloader.add(id, "http://localhost:9090/albums/" +filechooser.album_id + "/photos/" + photos[i].id + ".thumb" + "?session=" + $.cookie("user_credentials"));
                 }
             }
             else{
                 //photo was side loaded or emailed
                 if(photos[i].state == 'ready'){
-                    filechooser.imageloader.add(photos[i].id, photos[i].thumb_url);
+                    filechooser.imageloader.add(id, photos[i].thumb_url);
                 }
                 else{
-                    filechooser.imageloader.add(photos[i].id, photos[i].source_thumb_url);
+                    filechooser.imageloader.add(id, photos[i].source_thumb_url);
                 }
             }
+
+            //mark photo in chooser as 'added'
+            //todo: cleanup generation of element id
+            //todo: repace .wrap() with .addClass()
+            $("#chooser-" + photos[i].source_guid).wrap("<div style='border:1px solid blue'/>");
 
 
         }
@@ -202,7 +209,8 @@ var filechooser = {
                 html += "</div>";
             }
             else{
-                var id = "photo_" + i 
+                var id = "chooser-" + children[i].source_guid
+                console.log(id)
                 html += "<div class='gridcell'>";
                 html += "<img id='"+ id +"' src=''>";
                 html += "<br>"

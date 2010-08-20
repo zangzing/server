@@ -13,7 +13,9 @@ class KodakPhotosController < KodakController
         :type => 'photo',
         :thumb_url =>p[PHOTO_SIZES[:thumb]].first,
         :screen_url =>p[PHOTO_SIZES[:screen]].first,
-        :add_url => kodak_photo_action_path({:kodak_album_id => params[:kodak_album_id], :photo_id => p['id'].first, :action => 'import'})
+        :add_url => kodak_photo_action_path({:kodak_album_id => params[:kodak_album_id], :photo_id => p['id'].first, :action => 'import'}),
+        :source_guid => Photo.generate_source_guid(p[PHOTO_SIZES[:full]].first)
+
       }
     }
 
