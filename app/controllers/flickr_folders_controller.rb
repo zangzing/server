@@ -26,12 +26,12 @@ class FlickrFoldersController < FlickrController
       #todo: refactor this so that flickr_folders_controller and flickr_photos_controller can share
       photo_url = get_photo_url(p, :full)
       photo = Photo.create(
-                :caption => info.title,
+                :caption => p.title,
                 :album_id => params[:album_id],
                 :user_id=>current_user.id,
                 :source_guid => Photo.generate_source_guid(photo_url),
-                :source_thumb_url => get_photo_url(info, :thumb),
-                :source_screen_url => get_photo_url(info, :screen)
+                :source_thumb_url => get_photo_url(p, :thumb),
+                :source_screen_url => get_photo_url(p, :screen)
       )
 
       Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, photo_url))
