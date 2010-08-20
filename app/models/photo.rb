@@ -118,12 +118,10 @@ class Photo < ActiveRecord::Base
   before_image_post_process       :set_image_metadata
 
   def set_local_image_metadata
-    logger.debug("In local_image before post")
     self.local_image_path = local_image.path
   end
 
   def set_image_metadata
-    logger.debug("In image before post")
     self.image_path   = image.path.gsub(image.original_filename,'')
     self.image_bucket = image.instance_variable_get("@bucket")
   end
