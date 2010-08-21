@@ -1,15 +1,22 @@
+#
+#   Copyright 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
+#
 ActionController::Routing::Routes.draw do |map|
+  #root
+  map.root :controller => "pages", :action => 'home'
 
-  map.resources :users, :shallow => true  do | user |
-#      user.resources :albums, :name_prefix => "user_" do | album |
-#        album.resources :photos, :name_prefix => "album_",:member => { :upload => :put }
-#        album.resources :shares, :name_prefix => "album_"
-#      end
-#      user.resources :oauth_clients, :name_prefix => "user_"
+  #users
+  map.with_options :controller => :users do |users|
+    users.users        '/users',          :action=> 'index',  :conditions=>{ :method => :get }
+    users.create_user  '/users',          :action=> 'create', :conditions=>{ :method => :post }
+    users.new_user     '/users/new',      :action=> 'new',    :conditions=>{ :method => :get }
+    users.edit_user    '/users/:id/edit', :action=> 'edit',   :conditions=>{ :method => :get }
+    users.user         '/users/:id.',     :action=> 'show',   :conditions=>{ :method => :get }
+    users.update_user  '/users/:id.',     :action=> 'update', :conditions=>{ :method => :put }
+    users.delete_user  '/users/:id.',     :action=> 'destroy',:conditions=>{ :method => :delete }        
   end
 
-
-  # albums
+  #albums
   map.with_options :controller => :albums do |albums|
     albums.user_albums        '/users/:user_id/albums.',     :action=>"index",  :conditions=>{ :method => :get }
     albums.create_user_album  '/users/:user_id/albums.',     :action=>"create", :conditions=>{ :method => :post }
@@ -19,10 +26,10 @@ ActionController::Routing::Routes.draw do |map|
     albums.update_album       '/albums/:id.',                :action=>"update", :conditions=>{ :method => :put }
     albums.delete_album       '/albums/:id.',                :action=>"destroy",:conditions=>{ :method => :delete }
     albums.upload             '/albums/:id/upload',          :action=>"upload", :conditions=>{ :method => :get }
-    albums.album_wizard       'albums/:id/wizard',           :action => 'wizard'
+    albums.album_wizard       '/albums/:id/wizard',          :action => 'wizard'
   end
 
-  # photos
+  #photos
   map.with_options :controller => :photos do |photos|                                                                                                \
     photos.album_photos                '/albums/:album_id/photos.',                 :action=>'index',           :conditions => { :method => :get }
     photos.create_album_photo          '/albums/:album_id/photos.',                 :action=>'create',          :conditions => { :method => :post }
@@ -37,12 +44,7 @@ ActionController::Routing::Routes.draw do |map|
     photos.agent_create                '/albums/:album_id/photos/agent_create.:format',  :action=>'agent_create',    :conditions=>{ :method => :post }
   end
 
-  #root  the root of zangzing -- just remember to delete public/index.html.
-  map.root :controller => "pages", :action => 'home'
-
-
-
-  # OAuth to authenticate and authorize agents
+  #oauth
   #map.resources :oauth_clients
   #map.oauth          '/oauth',               :controller=>'oauth_clients',:action=>'index'
   map.agents         '/users/:id/agents',    :controller=>'agents',:action=>'index'
@@ -54,13 +56,13 @@ ActionController::Routing::Routes.draw do |map|
   map.test_request   '/oauth/test_request',  :controller=>'oauth',:action=>'test_request'
   map.test_session   '/oauth/test_session',  :controller=>'oauth',:action=>'test_session'
 
-  # LOGIN
+  #login
   map.resources :user_sessions, :only => [:new, :create, :destroy]
   map.signin '/signin', :controller => 'user_sessions', :action => 'new'
   map.signout '/signout', :controller => 'user_sessions', :action => 'destroy'
   map.resources :password_resets, :only => [:new, :edit, :create, :update]
 
-  # Static pages
+  #static pages
   map.contact '/contact', :controller => 'pages', :action => 'contact'
   map.about   '/about',   :controller => 'pages', :action => 'about'
   map.help    '/help',    :controller => 'pages', :action => 'help'
@@ -111,7 +113,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.with_options :namespace => 'connector', :controller => :facebook_photos do |fb|
     fb.facebook_photos '/facebook/folders/:fb_album_id/photos.:format', :action  => 'index'
-#    fb.facebook_photo  '/facebook/folders/:fb_album_id/photos/:photo_id.:size', :action  => 'show'
+    #fb.facebook_photo  '/facebook/folders/:fb_album_id/photos/:photo_id.:size', :action  => 'show'
     fb.facebook_photo_action '/facebook/folders/:fb_album_id/photos/:photo_id/:action'
   end
 
@@ -134,7 +136,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.with_options :namespace => 'connector', :controller => :smugmug_photos do |fb|
     fb.smugmug_photos '/smugmug/folders/:sm_album_id/photos.:format', :action  => 'index'
-#    fb.smugmug_photo  '/smugmug/folders/:sm_album_id/photos/:photo_id.:size', :action  => 'show'
+    #fb.smugmug_photo  '/smugmug/folders/:sm_album_id/photos/:photo_id.:size', :action  => 'show'
     fb.smugmug_photo_action '/smugmug/folders/:sm_album_id/photos/:photo_id/:action'
   end
 
@@ -152,7 +154,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.with_options :namespace => 'connector', :controller => :shutterfly_photos do |sf|
     sf.shutterfly_photos '/shutterfly/folders/:sf_album_id/photos.:format', :action  => 'index'
-#    sf.shutterfly_photo  '/shutterfly/folders/:sf_album_id/photos/:photo_id.:size', :action  => 'show'
+    #sf.shutterfly_photo  '/shutterfly/folders/:sf_album_id/photos/:photo_id.:size', :action  => 'show'
     sf.shutterfly_photo_action '/shutterfly/folders/:sf_album_id/photos/:photo_id/:action'
   end
 
