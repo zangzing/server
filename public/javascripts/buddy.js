@@ -190,12 +190,13 @@ var zz = {
     ------------------------------------------------------------------------- */       
     
     drawer_open: 0,
+    screen_gap: 150,
         
     open_drawer: function(time){
 
       zz.zang.screen_height = $(window).height(); // measure the screen height
       // adjust for out top and bottom bar, the gradient padding and a margin
-      zz.zang.drawer_height = zz.zang.screen_height - 180; 
+      zz.zang.drawer_height = zz.zang.screen_height - zz.zang.screen_gap; 
 
       // fade out the grid
       $('article').animate({ opacity: 0.3 }, time/2 );
@@ -212,7 +213,7 @@ var zz = {
       
       zz.zang.screen_height = $(window).height(); // measure the screen height
       // adjust for out top and bottom bar, the gradient padding and a margin
-      zz.zang.drawer_height = zz.zang.screen_height - 180; 
+      zz.zang.drawer_height = zz.zang.screen_height - zz.zang.screen_gap; 
       
       $('div#drawer').animate({ height: zz.zang.drawer_height + 'px', top: '50px' }, time );
       $('div#drawer-content').animate({ height: (zz.zang.drawer_height - 52) + 'px'}, time );
