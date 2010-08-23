@@ -170,7 +170,7 @@ var zz = {
         // the old photo is no longer selected
         $('li#'+zz.zang.selected_photo).removeClass('selected');
       } else {
-        //console.log('selected_photo: undefined');      
+        // console.log('selected_photo: undefined');      
       }
       
       temp_width = $('#'+ id +' img').width() - 10;
@@ -293,7 +293,7 @@ var zz = {
     preview_album: function(){
       $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/wizard?step=3', function(){                        
         zz.zang.indicator_step = 3;  
-        zz.zang.indicator = 'step-preview';
+        zz.zang.indicator = 'step-edit';
       }); 
     },
 
@@ -313,7 +313,6 @@ var zz = {
         //post form
         serialized = $(".edit_album").serialize();
         $.post('/albums/'+zz.zang.album_id+'/wizard?step=2', serialized, function(data){
-          alert(data);
         });
 
       } else if (zz.zang.indicator_step == 3) {
@@ -332,7 +331,7 @@ var zz = {
       } else if (element == 'step-name') {
         zz.zang.name_album();
         temp = 2;
-      } else if (element == 'step-preview') {
+      } else if (element == 'step-edit') {
         zz.zang.preview_album();
         temp = 3;
       } else if (element == 'step-share') {
@@ -347,7 +346,7 @@ var zz = {
         } else if (zz.zang.indicator_step == 2) {
           zz.zang.preview_album();
           temp = 3;
-          element = 'step-preview';
+          element = 'step-edit';
         } else if (zz.zang.indicator_step == 3) {
           zz.zang.share_album();
           temp = 4;
@@ -386,7 +385,6 @@ var zz = {
       // open drawer demo
       $('#nav-new-album').click(function(){
         if (zz.zang.drawer_open === 0) {
-          console.log('new album fired');
           zz.zang.choose_album_type();
         } else {
           //zz.zang.slam_drawer(880);
@@ -414,3 +412,26 @@ var zz = {
   } // end zz.init
 
 };
+
+/*
+
+    $('.photo img').each(function(){
+      var newImg = new Image();
+      newImg.src = $(this).attr('src');
+      var height = newImg.height;
+      var width = newImg.width;
+      console.log('file is '+height+' tall by '+width+' wide');
+      
+      if (height > width) {
+        //tall
+        var ratio = width / height; 
+        $('this').attr({height: '130px', width: (ratio * width) + 'px' });
+      } else {
+        //wide
+        var ratio = height / width; 
+        $('this').attr({height: (ratio * height) + 'px', width: '130px', paddingTop: ((130 - (ratio * height)) / 2) });
+      }
+      
+    });
+
+*/
