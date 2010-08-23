@@ -19,7 +19,7 @@ class FlickrFoldersController < FlickrController
   end
   
   def import
-    photo_set = flickr_api.photosets.getPhotos :photoset_id => params[:set_id]
+    photo_set = flickr_api.photosets.getPhotos :photoset_id => params[:set_id], :extras => 'original_format'
     photos = []
     photo_set.photo.each do |p|
       photo_url = get_photo_url(p, :full)
