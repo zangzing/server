@@ -7,7 +7,9 @@ ActionController::Routing::Routes.draw do |map|
 #      end
 #      user.resources :oauth_clients, :name_prefix => "user_"
   end
-
+  map.resources :users do |user|
+    user.resources :identities
+  end
 
 
   # albums
@@ -76,7 +78,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.with_options :controller => :flickr_photos do |flickr|
     flickr.flickr_photos '/flickr/folders/:set_id/photos.:format', :action  => 'index'
-#    flickr.flickr_photo  '/flickr/folders/:set_id/photos/:photo_id.:size', :action  => 'show'
+    #flickr.flickr_photo  '/flickr/folders/:set_id/photos/:photo_id.:size', :action  => 'show'
     flickr.flickr_photo_action  '/flickr/folders/:set_id/photos/:photo_id/:action'
   end
 
