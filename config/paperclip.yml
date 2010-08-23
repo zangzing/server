@@ -46,6 +46,13 @@ test:
   <<: *common
   command_path: <%=ENV['IMAGEMAGICK_PATH']%> #look for imagemagick here
 
+development-engineyard:
+  <<: *common
+
+test-engineyard:
+  <<: *common
+
+
 
 production:
   <<: *common

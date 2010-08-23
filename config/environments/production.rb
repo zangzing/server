@@ -27,4 +27,5 @@ config.action_mailer.delivery_method = :sendmail
 # Enable threaded mode
 # config.threadsafe!
 
+#todo: is this the right way to handle this?
 APPLICATION_HOST = 'www.zangzing.com'

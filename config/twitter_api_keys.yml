@@ -7,6 +7,15 @@ test:
   :consumer_secret: 2hguWHDYmHuq4ZMYCMq1zzurihw2C0NAA7O4E9VjXE
   :app_key: qchDA1o43EXbkfIAZg5SA
 
-production:
+development-engineyard:
   :consumer_secret: 2hguWHDYmHuq4ZMYCMq1zzurihw2C0NAA7O4E9VjXE
   :app_key: qchDA1o43EXbkfIAZg5SA
+
+test-engineyard:
+  :consumer_secret: 2hguWHDYmHuq4ZMYCMq1zzurihw2C0NAA7O4E9VjXE
+  :app_key: qchDA1o43EXbkfIAZg5SA
+
+
+production:
+  :consumer_secret:
+  :app_key: 

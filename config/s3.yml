@@ -15,6 +15,13 @@ development:
 test:
   <<: *common
 
+development-engineyard:
+  <<: *common
+
+test-engineyard:
+  <<: *common
+
+
 
 production:
   <<: *common
