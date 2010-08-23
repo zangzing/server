@@ -20,7 +20,7 @@ class ShutterflyFoldersController < ShutterflyController
     photos = []
     photos_list.each do |p|
       photo = Photo.create(:caption => p[:title].first, :album_id => params[:album_id], :user_id=>current_user.id)
-      Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, get_photo_url(p[:id].first, :full)))
+      Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, get_photo_url(p[:id].first, :full)))
       photos << photo
     end
 

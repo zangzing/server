@@ -28,7 +28,7 @@ require 'pp'
     photo_title = photos_list.select { |p| p[:id].first==params[:photo_id] }.first[:title].first
     photo_url = get_photo_url(params[:photo_id],  :full)
     photo = Photo.create(:caption => photo_title, :album_id => params[:album_id], :user_id=>current_user.id)
-    Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, photo_url))
+    Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, photo_url))
 
     render :json => photo.to_json
 

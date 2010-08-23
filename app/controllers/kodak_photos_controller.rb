@@ -36,7 +36,7 @@ class KodakPhotosController < KodakController
     p = photos_data.select { |p| p['id'].first==params[:photo_id] }.first
     photo_url = p[PHOTO_SIZES[:full]].first
     photo = Photo.create(:caption => p['caption'].first, :album_id => params[:album_id], :user_id=>current_user.id)
-    Delayed::Job.enqueue(KodakImportRequest.new(photo.id, photo_url, connector.auth_token))
+    Delayed::IoBoundJob.enqueue(KodakImportRequest.new(photo.id, photo_url, connector.auth_token))
 
     render :json => photo.to_json
   end

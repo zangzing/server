@@ -27,7 +27,7 @@
 
 #
 # Photo Model
-# © 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
+# ï¿½ 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 # As a first implementation images are attached to photo objects using paperclip as
 # performance and customization changes are required the use of paperclip can be
@@ -70,7 +70,7 @@
 #
 
 require 'paperclip'
-require 'delayed_job'
+#require 'delayed_job'
 
 
 class Photo < ActiveRecord::Base
@@ -134,7 +134,7 @@ class Photo < ActiveRecord::Base
     # If an assigned image has been loaded with an image, reprocess and send to S3
     if self.assigned? && self.local_image_file_name_changed?
        self.state = 'loaded'
-       self.send_later(:upload_to_s3)
+       self.send_later(:upload_to_s3, Delayed::IoBoundJob)
     end
   end
 

@@ -31,7 +31,7 @@ class SmugmugPhotosController < SmugmugController
     photo_id, photo_key = params[:photo_id].split('_')
     photo_info = smugmug_api.call_method('smugmug.images.getInfo', {:ImageID => photo_id, :ImageKey => photo_key})
     photo = Photo.create(:caption => (photo_info[:caption].blank? ? photo_info[:filename] : photo_info[:caption]), :album_id => params[:album_id], :user_id=>current_user.id)
-    Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, photo_info[:originalurl]))
+    Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, photo_info[:originalurl]))
 
     render :json => photo.to_json
 

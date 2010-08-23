@@ -8,6 +8,10 @@ dependencies:
     group: 
     - :default
     version: = 2.3.5
+  collectiveidea-delayed_job: 
+    group: 
+    - :default
+    version: = 1.8.2
   sqlite3-ruby: 
     group: 
     - :default
@@ -42,10 +46,6 @@ dependencies:
     group: 
     - :test
     version: ">= 0"
-  delayed_job: 
-    group: 
-    - :default
-    version: = 2.0.3
   hyper-graph: 
     group: 
     - :default
@@ -137,6 +137,8 @@ specs:
     version: 0.6.2
 - bundler: 
     version: 0.9.26
+- collectiveidea-delayed_job: 
+    version: 1.8.2
 - configuration: 
     version: 1.1.0
 - gdata: 
@@ -147,10 +149,6 @@ specs:
     version: 1.2.4
 - crack: 
     version: 0.1.6
-- daemons: 
-    version: 1.1.0
-- delayed_job: 
-    version: 2.0.3
 - factory_girl: 
     version: 1.3.2
 - faker: 
@@ -201,7 +199,9 @@ specs:
     version: 0.7.1
 - will_paginate: 
     version: 2.3.12
-hash: f6c42a2c9b03edc38aa9ce1c82da1227bd3ff610
+hash: 80642120b6dcdfa0b5b6b4f93d1b5af561cbdaa3
 sources: 
 - Rubygems: 
     uri: http://gemcutter.org
+- Rubygems: 
+    uri: http://gems.github.com

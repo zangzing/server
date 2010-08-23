@@ -26,7 +26,7 @@ class FacebookPhotosController < FacebookController
   def import
     info = facebook_graph.get(params[:photo_id])
     photo = Photo.create(:caption => info[:name], :album_id => params[:album_id], :user_id=>current_user.id)
-    Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, info[:source]))
+    Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, info[:source]))
     render :json => photo.to_json
   end
 

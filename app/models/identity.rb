@@ -24,10 +24,21 @@ class Identity < ActiveRecord::Base
   has_many :contacts, :dependent => :destroy
 
   validates_presence_of :user
-  
-  def self.new_for_gmail
-    identity = self.new
-    identity.identity_source="gmail"
-  end
 
+  UI_INFO = {
+    :google => {:name => 'Google', :icon => ''},
+    :flickr => {:name => 'Flickr', :icon => ''},
+    :yahoo => {:name => 'Yahoo!', :icon => ''},
+    :facebook => {:name => 'Facebook', :icon => ''},
+    :twitter => {:name => 'Twitter', :icon => ''},
+    :smugmug => {:name => 'SmugMug', :icon => ''},
+    :shutterfly => {:name => 'Shutterfly', :icon => ''},
+    :kodak => {:name => 'Kodak Gallery', :icon => ''},
+    :local => {:name => 'ZangZing Agent', :icon => ''}
+  }
+
+  def name
+    UI_INFO[self.identity_source.to_sym][:name]
+  end
+  
 end

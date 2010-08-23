@@ -21,7 +21,7 @@ class SmugmugFoldersController < SmugmugController
     photos = []
     photos_list[:images].each do |p|
       photo = Photo.create(:caption => (p[:caption].blank? ? p[:filename] : p[:caption]), :album_id => params[:album_id], :user_id=>current_user.id)
-      Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, p[:originalurl]))
+      Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, p[:originalurl]))
       photos << photo
     end
 
