@@ -1,32 +1,21 @@
-step:[<%= @step %>] id:[<%= @album.id %>]<hr>
-<table><tr>
-<td><h4>Add Photos</h4>
-<td><%= button_to "Name Album",  album_wizard_path(@album, :step => @step, :next_step => :name_album ) %>
-<td><%= button_to "Edit Album",  album_wizard_path(@album, :step => @step, :next_step => :edit_album) %>
-<td><%= button_to "Contributors",  album_wizard_path(@album, :step => @step, :next_step => :contributors) %>
-<td><%= button_to "Share",  album_wizard_path(@album, :step => @step, :next_step => :share) %>
-<td><%= button_to "Next",  album_wizard_path(@album, :step => @step) %>
-</tr></table><hr>
+<div class="offset">
+  step:[<%= @step %>] id:[<%= @album.id %>]<hr>
+  <table><tr>
+  <td><h4>Add Photos</h4>
+  <td><%= button_to "Name Album",  album_wizard_path(@album, :step => @step, :next_step => :name_album ) %>
+  <td><%= button_to "Edit Album",  album_wizard_path(@album, :step => @step, :next_step => :edit_album) %>
+  <td><%= button_to "Contributors",  album_wizard_path(@album, :step => @step, :next_step => :contributors) %>
+  <td><%= button_to "Share",  album_wizard_path(@album, :step => @step, :next_step => :share) %>
+  <td><%= button_to "Next",  album_wizard_path(@album, :step => @step) %>
+  </tr></table><hr>
+</div>
 
+<div id="top-section" class="clearfix">
+  <img src="/images/btn-back.png" id="filechooser-back-button" />
+  <div id="filechooser-title"></div>
+  <div id="equalizer">&nbsp;</div>
+</div>
 
-<script src="/javascripts/jquery.js"></script>
-<script src="/javascripts/jquery.ba-bbq.js"></script>
-<script src="/javascripts/jquery.jsonp.js"></script>
-<script src="/javascripts/jquery.cookie.js"></script>
-<script src="/javascripts/agent.js"></script>
-<script src="/javascripts/server.js"></script>
-<script src="/javascripts/filechooser.js" ></script>
-<script src="/javascripts/logging.js"></script>
-<script src="/javascripts/imageloader.js"></script>
-<script>
-    var album_id = "<%=@album.id%>" ;
-    filechooser.set_album_id(album_id)
-</script>
+<ul id="filechooser"></ul>
 
-  <div class="offset">
-      <div id="filechooser-back-button" style="float:left"></div>
-      <div id="filechooser-title"       style="float:right;width:350px"></div>
-  </div>
-
-  <ul id="filechooser"></ul>
-  <div id="added-pictures-tray"></div>
+<div id="added-pictures-tray"></div>
