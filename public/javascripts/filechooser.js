@@ -245,7 +245,7 @@ var filechooser = {
         html += '</a>'
 
         if (children[i].add_url) {
-          html += '&nbsp;<a href="#" onclick="filechooser.add_folder("' + children[i].add_url + '"); return false;">(+)</a>';
+          html += '&nbsp;<a href="#" onclick="filechooser.add_folder(\'' + children[i].add_url + '\'); return false;">(+)</a>';
         }
         html += '</li>';
       }
