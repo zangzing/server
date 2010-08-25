@@ -1,7 +1,4 @@
-<%form_for [current_user, @album], :url => user_albums_path(current_user)  do |f| %>
-<!-- % form_for([current_user, @album]) do |f| %-->
-    <%= render :partial => 'fields', :locals =>{:f => f }%>
-	<div class="actions">
-		<%= f.submit "Create Album"%>
-	</div>
-<% end %>
+<%= button_to "Group Album",      :action => "create", :album_type => 'GroupAlbum' %>
+<%= button_to "Personal Album",   :action => "create", :album_type => 'PersonalAlbum' %>
+<%= button_to "Event Album",      :action => "create", :album_type => 'EventAlbum'  %>
+<%= button_to "Streaming Album",  :action => "create", :album_type => 'StreamingAlbum' %>

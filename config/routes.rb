@@ -7,22 +7,20 @@ ActionController::Routing::Routes.draw do |map|
 #      end
 #      user.resources :oauth_clients, :name_prefix => "user_"
   end
-  map.resources :users do |user|
-    user.resources :identities
-  end
+
 
 
   # albums
   map.with_options :controller => :albums do |albums|
     albums.album_upload_stats '/albums/:album_id/upload_stats', :action=>'upload_stats', :conditions => { :method => :get }
-    albums.user_albums        '/users/:user_id/albums.',        :action=>"index",  :conditions=>{ :method => :get }
-    albums.create_user_album  '/users/:user_id/albums.',        :action=>"create", :conditions=>{ :method => :post }
-    albums.new_user_album     '/users/:user_id/albums/new.',    :action=>"new",    :conditions=>{ :method => :get }
-    albums.edit_album         '/albums/:id/edit.',              :action=>"edit",   :conditions=>{ :method => :get }
-    albums.album              '/albums/:id.',                   :action=>"show",   :conditions=>{ :method => :get }
-    albums.update_album       '/albums/:id.',                   :action=>"update", :conditions=>{ :method => :put }
-    albums.delete_album       '/albums/:id.',                   :action=>"destroy",:conditions=>{ :method => :delete }
-    albums.upload             '/albums/:id/upload',             :action=>"upload", :conditions=>{ :method => :get }
+    albums.user_albums        '/users/:user_id/albums.',     :action=>"index",  :conditions=>{ :method => :get }
+    albums.create_user_album  '/users/:user_id/albums.',     :action=>"create", :conditions=>{ :method => :post }
+    albums.new_user_album     '/users/:user_id/albums/new.', :action=>"new",    :conditions=>{ :method => :get }
+    albums.edit_album         '/albums/:id/edit.',           :action=>"edit",   :conditions=>{ :method => :get }
+    albums.album              '/albums/:id.',                :action=>"show",   :conditions=>{ :method => :get }
+    albums.update_album       '/albums/:id.',                :action=>"update", :conditions=>{ :method => :put }
+    albums.delete_album       '/albums/:id.',                :action=>"destroy",:conditions=>{ :method => :delete }
+    albums.upload             '/albums/:id/upload',          :action=>"upload", :conditions=>{ :method => :get }
   end
 
 
@@ -79,7 +77,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.with_options :controller => :flickr_photos do |flickr|
     flickr.flickr_photos '/flickr/folders/:set_id/photos.:format', :action  => 'index'
-    #flickr.flickr_photo  '/flickr/folders/:set_id/photos/:photo_id.:size', :action  => 'show'
+#    flickr.flickr_photo  '/flickr/folders/:set_id/photos/:photo_id.:size', :action  => 'show'
     flickr.flickr_photo_action  '/flickr/folders/:set_id/photos/:photo_id/:action'
   end
 

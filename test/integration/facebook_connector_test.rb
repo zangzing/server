@@ -21,7 +21,7 @@ class FacebookConnectorTest < ActionController::IntegrationTest
     assert_routing "/facebook/folders/456/import", {:controller => "facebook_folders", :action => "import", :fb_album_id => '456'}
     #Photos
     assert_routing "/facebook/folders/123/photos", {:controller => "facebook_photos", :action => "index", :fb_album_id => "123"}
-    assert_routing "/facebook/folders/123/photos/456.screen", {:controller => "facebook_photos", :action => "show", :fb_album_id => "123", :photo_id => "456", :size => 'screen'}
+#    assert_routing "/facebook/folders/123/photos/456.screen", {:controller => "facebook_photos", :action => "show", :fb_album_id => "123", :photo_id => "456", :size => 'screen'}
     assert_routing "/facebook/folders/123/photos/456/import", {:controller => "facebook_photos", :action => "import", :fb_album_id => "123", :photo_id => "456"}
   end
 
@@ -110,13 +110,15 @@ class FacebookConnectorTest < ActionController::IntegrationTest
     assert_contain "113331215382694"
     assert_contain "113331212049361"
 
-    # "Get photo thumbnail from 1st photoset" do
-    visit facebook_photo_url(:fb_album_id => 115847311797751, :photo_id => 115847788464370, :size => :thumb)
-    assert response['Content-Type'] =~ /image\/.+/
 
-    # "Get photo thumbnail from 2nd photoset" do
-    visit facebook_photo_url(:fb_album_id => 113331162049366, :photo_id => 113331215382694, :size => :thumb)
-    assert response['Content-Type'] =~ /image\/.+/
+# commented out because we no longe support image proxy
+#    # "Get photo thumbnail from 1st photoset" do
+#    visit facebook_photo_url(:fb_album_id => 115847311797751, :photo_id => 115847788464370, :size => :thumb)
+#    assert response['Content-Type'] =~ /image\/.+/
+#
+#    # "Get photo thumbnail from 2nd photoset" do
+#    visit facebook_photo_url(:fb_album_id => 113331162049366, :photo_id => 113331215382694, :size => :thumb)
+#    assert response['Content-Type'] =~ /image\/.+/
 
     # "Import photo from a photoset (JSON)" do
     visit facebook_photo_action_url(:fb_album_id => 115847311797751, :photo_id => 115847785131037, :action => :import, :format => :json, :album_id => 1)

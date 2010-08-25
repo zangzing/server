@@ -38,5 +38,8 @@ group :test do
   gem 'launchy'
   gem 'rspec-rails', '>= 1.3.2' 
   gem 'factory_girl'
-  #gem 'usesguid_migrations'
+end
+
+group :production do
+  # bundler requires these gems for production
 end

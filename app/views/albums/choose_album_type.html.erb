@@ -1,0 +1,13 @@
+<h2>Choose Album Type</h2>
+
+<H2>step is <%= @step %></H2>
+
+<%= button_to "Group Album",      new_user_album_path( current_user, :step => @step, :album_type => 'GroupAlbum') %>
+<%= button_to "Personal Album",   new_user_album_path( current_user, :step => @step, :album_type => 'PersonalAlbum') %>
+<%= button_to "Event Album",      new_user_album_path( current_user, :step => @step, :album_type => 'EventAlbum') %>
+<%= button_to "Streaming Album",  new_user_album_path( current_user, :step => @step, :album_type => 'StreamingAlbum') %>
+
+<p><a href="javascript:void(0);" id="personal_album_link">Personal Album</a></p>
+
+
+

@@ -1,0 +1,9 @@
+step:[<%= @step %>] id:[<%= @album.id %>] <hr>
+<table><tr>
+<td><%= button_to "Add Photos",  album_wizard_path(@album, :step => @step, :next_step => :add_photos ) %>
+<td><%= button_to "Name Album",  album_wizard_path(@album, :step => @step, :next_step => :name_album) %>
+<td><H4> Edit Album</H4>
+<td><%= button_to "Contributors",  album_wizard_path(@album, :step => @step, :next_step => :contributors) %>
+<td><%= button_to "Share",  album_wizard_path(@album, :step => @step, :next_step => :share) %>
+<td><%= button_to "Next",  album_wizard_path(@album, :step => @step) %>
+</tr></table><hr>

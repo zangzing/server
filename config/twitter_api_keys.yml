@@ -1,12 +1,21 @@
 ---
 development:
-  :consumer_secret: 2hguWHDYmHuq4ZMYCMq1zzurihw2C0NAA7O4E9VjXE
-  :app_key: qchDA1o43EXbkfIAZg5SA
+  :consumer_secret: kSAdo76olC43lX6EyC7xNQjBF1Geh0CZdO505uFjKMo
+  :app_key: 8NTjD0j6csRr1aGrGGuLA
 
 test:
-  :consumer_secret: 2hguWHDYmHuq4ZMYCMq1zzurihw2C0NAA7O4E9VjXE
-  :app_key: qchDA1o43EXbkfIAZg5SA
+  :consumer_secret: kSAdo76olC43lX6EyC7xNQjBF1Geh0CZdO505uFjKMo
+  :app_key: 8NTjD0j6csRr1aGrGGuLA
+
+development-engineyard:
+  :consumer_secret: kSAdo76olC43lX6EyC7xNQjBF1Geh0CZdO505uFjKMo
+  :app_key: 8NTjD0j6csRr1aGrGGuLA
+
+test-engineyard:
+  :consumer_secret: kSAdo76olC43lX6EyC7xNQjBF1Geh0CZdO505uFjKMo
+  :app_key: 8NTjD0j6csRr1aGrGGuLA
+
 
 production:
-  :consumer_secret: 2hguWHDYmHuq4ZMYCMq1zzurihw2C0NAA7O4E9VjXE
-  :app_key: qchDA1o43EXbkfIAZg5SA
+  :consumer_secret:
+  :app_key: 

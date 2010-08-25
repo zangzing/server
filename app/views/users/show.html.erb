@@ -6,7 +6,7 @@
       </h2>
       <table class="albums">
     	<% unless @user.albums.empty? %>
-	        <%= render @albums %>
+	        <%= render :partial => "albums/album", :collection =>  @albums  %>
 	    <% end %>
       </table>
       <%= will_paginate @albums %>

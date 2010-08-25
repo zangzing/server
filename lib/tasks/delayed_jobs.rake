@@ -1,6 +1,3 @@
-require 'delayed_job'
-require 'cpu_bound_job'
-
 namespace :jobs do
   desc "Clear the CpuBound delayed_job queue."
   task :cpubound_clear => :environment do
@@ -14,12 +11,12 @@ namespace :jobs do
 
 
   desc "Clear the IoBound delayed_job queue."
-  task :cpubound_clear => :environment do
+  task :iobound_clear => :environment do
     Delayed::IoBoundJob.delete_all
   end
 
   desc "Start a IoBound delayed_job worker."
-  task :cpubound_work => :environment do
+  task :iobound_work => :environment do
     Delayed::IoBoundWorker.new(:min_priority => ENV['MIN_PRIORITY'], :max_priority => ENV['MAX_PRIORITY']).start
   end
 

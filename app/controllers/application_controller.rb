@@ -20,22 +20,11 @@ class ApplicationController < ActionController::Base
 
   #protect_from_forgery # See ActionController::RequestForgeryProtection XSScripting protection
 
-  layout :set_layout  # Sets the whole application layout
+  layout 'new' # Sets the whole application layout
 
   private
 
-    # If there is a user logged in then set the layout to match user preferences
-    # otherwise set it to the default which is white.
-    #
-    def set_layout
-      if current_user_session
-       current_user.style
-      else
-        "white"
-      end
-    end
-
-    #
+      
     # Authentication based on authlogic
     # returns false or the current user session
     def current_user_session

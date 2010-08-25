@@ -1,0 +1,29 @@
+step:[<%= @step %>] id:[<%= @album.id %>]<hr>
+<table><tr>
+<td><%= button_to "Add Photos",  album_wizard_path(@album, :step => @step, :next_step => :add_photos ) %>
+<td><h4>Name Album</h4>
+<td><%= button_to "Edit Album",  album_wizard_path(@album, :step => @step, :next_step => :edit_album) %>
+<td><%= button_to "Contributors",  album_wizard_path(@album, :step => @step, :next_step => :contributors) %>
+<td><%= button_to "Share",  album_wizard_path(@album, :step => @step, :next_step => :share) %>
+<td><%= button_to "Next",  album_wizard_path(@album, :step => @step) %>
+</tr></table><hr>
+
+
+
+<H2>Name Album</H2>
+<H3>Name the album and choose an album cover photo</H3>
+<% form_for @album do | f|  %>
+     <%= f.error_messages %>
+     <div class="field">
+        <%= f.label :name %><br />
+        <%= f.text_field :name %>
+    </div>
+    <div class="field">
+        Album Cover Selection Should Go Here
+        <!-- TODO: Album cover selection code -->
+   </div>
+   <!-- This form should be submitted by any of the buttons above --> 
+<% end %>
+
+
+
