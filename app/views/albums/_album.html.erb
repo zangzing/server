@@ -1,25 +1,23 @@
-    <div class="albumcell" >
+  <li>
+<%  if album.photos.empty? -%>
+    <img src="/images/album_no_pics.png" />
+<%  else -%>
+    <a href="<%=url_for(album)%>">
+      <img class="albumcellshow"  src="/images/album_pics.png" />                  
+<%
+#      <img class="albumcellphotoicon"  src="<%=album.photos.first.thumb_url" />
+%>
+    </a>
+<%  end 
 
-                <a href="<%=url_for(album)%>">
+    if current_user?(album.user) -%>
 
-                <div class="albumcellphoto" >
+  <%= link_to image_tag( "/images/delete.png" ), album, { :method => :delete, 
+      :confirm => "Are you sure you want to delete the album?\n\tThis operation cannot be undone",
+      :class => 'albumcelldeleteicon'} %>
 
-                <% if album.photos.empty? %>
-                    <img class="albumcellshow"  src="/images/album_no_pics.png" />
-                <% else %>
-                   <img class="albumcellshow"  src="/images/album_pics.png" />                  
-                   <img class="albumcellphotoicon"  src="<%=album.photos.first.thumb_url%>" />
-                 <% end %>
-                   <% if current_user?(album.user) %>
-                      <%= link_to image_tag( "/images/delete.png" ), album, { :method => :delete,
-                                                                           :confirm => "Are you sure you want to delete the album?\n\tThis operation cannot be undone",
-                                                                           :class => 'albumcelldeleteicon'} %>
-                    <% end %>
-                </div>
-                </a>
-
-
-        <div class="albumcellcaption">
-        <%= h album.name%>
-        </div>
+<%  end -%>
+    <div class="albumcellcaption">
+      <%= h album.name%>
     </div>
+  </li>

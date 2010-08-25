@@ -97,13 +97,13 @@ var filechooser = {
       open_url: 'http://localhost:9090/filesystem/folders',
       type: 'folder', 
       name: 'My Computer',
-      class: 'none'
+      class: 'f_mycomputer'
     },
     {
       open_url: 'http://localhost:9090/filesystem/folders/fg==',
       type: 'folder',
-      name: 'Home',
-      class: 'none'
+      name: 'My Home',
+      class: 'f_home'
     },
     {
        open_url: 'http://localhost:3000/facebook/folders.json',

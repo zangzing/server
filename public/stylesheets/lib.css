@@ -89,6 +89,11 @@ hr {
 input, select {
   vertical-align:middle;
 }
+/* Missing from the html5doctor reset - some would say rightly so...
+----------------------------------------------------------------------------- */
+ol, ul {
+  list-style: none;
+}
 /* Clearfix CSS
 ----------------------------------------------------------------------------- */
 .clearfix:after {
@@ -113,11 +118,11 @@ html[xmlns] .clearfix {
   height: 0;
   visibility: hidden;
 }
-/* Missing from the html5doctor reset
+/* Helpful Reusables
 ----------------------------------------------------------------------------- */
-ol, ul {
-  list-style: none;
-}
-.offset { /* ok, so this wouldn't be expected there, but it's a common friend */
+.offset {
   display: none;
+}
+.link {
+  cursor: pointer;
 }

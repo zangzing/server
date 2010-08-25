@@ -220,106 +220,6 @@ div#drawer div.body div#drawer-content {
   overflow-y: scroll;  
 }
 
-div#drawer-content div#top-section {
-  padding: 10px 10px 0;
-  height: 30px;
-  width: 840px;
-}
-
-div#top-section img#filechooser-back-button {
-  float: left;
-  width: 91px;
-  cursor: pointer;
-}
-
-div#top-section #filechooser-title {
-  margin: 3px auto 0;
-  width: 300px;
-  text-align: center;
-  font-size: 1.7em;
-}
-
-div#top-section #equalizer {
-  width: 91px;
-  float: right;
-}
-
-div#drawer-content ul#folders, ul#filechooser {
-  margin: 20px 15px 20px;
-}
-
-div#drawer-content ul#folders li, ul#filechooser li {
-  background-image: url("/images/folders/local.png");
-  background-repeat: no-repeat;
-  background-position: center top;
-  float: left;
-  width: 128px;
-  padding: 115px 20px 15px;
-  cursor: pointer;
-  font-size: 1.3em;
-  font-weight: 700;
-  overflow: hidden;
-  height: 20px;
-}
-
-div#drawer-content ul#folders li.photo, ul#filechooser li.photo {
-  padding: 15px 20px;
-  height: 120px;
-  overflow: hidden;
-  cursor: pointer;
-  background-image: none;
-}
-
-div#drawer-content ul#folders li.photo, ul#filechooser li.photo img {
-  max-height: 130px;
-  max-width: 130px;
-  border: #fff solid 5px;
-  box-shadow: 0px 0px 5px #767676;
-  -webkit-box-shadow: 0px 0px 5px #767676;
-  -moz-box-shadow: 0px 0px 5px #767676;
-  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#767676, offX=2, offY=2, positive=true);
-}
-
-div#drawer-content ul#folders li.f_iphoto, ul#filechooser li.f_iphoto {
-  background-image: url("/images/folders/apple.png");
-}
-div#drawer-content ul#folders li.f_facebook, ul#filechooser li.f_facebook {
-  background-image: url("/images/folders/facebook.png");
-}
-div#drawer-content ul#folders li.f_flickr, ul#filechooser li.f_flickr {
-  background-image: url("/images/folders/flickr.png");
-}
-div#drawer-content ul#folders li.f_kodak, ul#filechooser li.f_kodak {
-  background-image: url("/images/folders/kodak.png");
-}
-div#drawer-content ul#folders li.f_pictures, ul#filechooser li.f_pictures {
-  background-image: url("/images/folders/mypictures.png");
-}
-div#drawer-content ul#folders li.f_picasa, ul#filechooser li.f_picasa {
-  background-image: url("/images/folders/picasa.png");
-}
-div#drawer-content ul#folders li.f_shutterfly, ul#filechooser li.f_shutterfly {
-  background-image: url("/images/folders/shutterfly.png");
-}
-div#drawer-content ul#folders li.f_snapfish, ul#filechooser li.f_snapfish {
-  background-image: url("/images/folders/snapfish.png");
-}
-div#drawer-content ul#folders li.f_smugmug, ul#filechooser li.f_smugmug {
-  background-image: url("/images/folders/smugmug.png");
-}
-div#drawer-content ul#folders li.f_zangzing, ul#filechooser li.f_zangzing {
-  background-image: url("/images/folders/zangzing.png");
-}
-
-div#drawer-content ul#folders li:hover, ul#filechooser li:hover {
-  color: #FDD042;
-}
-
-ul#filechooser a {
-  text-decoration: none;
-  color: #0a0a0a;
-}
-
 ul#indicator {
   position: fixed;
   top: 54px;
@@ -395,30 +295,234 @@ ul#indicator li.on {
   cursor: pointer;
 }
 
+/* Create Album
+----------------------------------------------------------------------------- */
+div#drawer-content div#top-section {
+  padding: 10px 10px 0;
+  width: 840px;
+  margin-top: 15px;
+}
+
+div#top-section img#filechooser-back-button {
+  float: left;
+  width: 91px;
+  cursor: pointer;
+}
+
+div#top-section #equalizer {
+  width: 91px;
+  float: right;
+}
+
+div#drawer-content ul#folders, ul#filechooser {
+  margin: 20px 15px 20px;
+}
+
+div#drawer-content ul#folders li, ul#filechooser li {
+  background-image: url("/images/folders/zangzing.png");
+  background-repeat: no-repeat;
+  background-position: center top;
+  float: left;
+  width: 128px;
+  padding: 115px 20px 15px;
+  cursor: pointer;
+  font-size: 1.3em;
+  font-weight: 700;
+  overflow: hidden;
+  height: 20px;
+}
+
+div#drawer-content ul#folders li.photo, ul#filechooser li.photo {
+  padding: 15px 20px;
+  height: 120px;
+  overflow: hidden;
+  cursor: pointer;
+  background-image: none;
+}
+
+div#drawer-content ul#folders li.photo, ul#filechooser li.photo img {
+  max-height: 130px;
+  max-width: 130px;
+  border: #fff solid 5px;
+  box-shadow: 0px 0px 5px #767676;
+  -webkit-box-shadow: 0px 0px 5px #767676;
+  -moz-box-shadow: 0px 0px 5px #767676;
+  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#767676, offX=2, offY=2, positive=true);
+}
+
+div#drawer-content ul#folders li.f_iphoto, ul#filechooser li.f_iphoto {
+  background-image: url("/images/folders/apple.png");
+}
+div#drawer-content ul#folders li.f_facebook, ul#filechooser li.f_facebook {
+  background-image: url("/images/folders/facebook.png");
+}
+div#drawer-content ul#folders li.f_flickr, ul#filechooser li.f_flickr {
+  background-image: url("/images/folders/flickr.png");
+}
+div#drawer-content ul#folders li.f_home, ul#filechooser li.f_home {
+  background-image: url("/images/folders/myhome.png");
+}
+div#drawer-content ul#folders li.f_kodak, ul#filechooser li.f_kodak {
+  background-image: url("/images/folders/kodak.png");
+}
+div#drawer-content ul#folders li.f_mycomputer, ul#filechooser li.f_mycomputer {
+  background-image: url("/images/folders/mycomputer.png");
+}
+div#drawer-content ul#folders li.f_pictures, ul#filechooser li.f_pictures {
+  background-image: url("/images/folders/mypictures.png");
+}
+div#drawer-content ul#folders li.f_picasa, ul#filechooser li.f_picasa {
+  background-image: url("/images/folders/picasa.png");
+}
+div#drawer-content ul#folders li.f_shutterfly, ul#filechooser li.f_shutterfly {
+  background-image: url("/images/folders/shutterfly.png");
+}
+div#drawer-content ul#folders li.f_snapfish, ul#filechooser li.f_snapfish {
+  background-image: url("/images/folders/snapfish.png");
+}
+div#drawer-content ul#folders li.f_smugmug, ul#filechooser li.f_smugmug {
+  background-image: url("/images/folders/smugmug.png");
+}
+div#drawer-content ul#folders li.f_zangzing, ul#filechooser li.f_zangzing {
+  background-image: url("/images/folders/zangzing.png");
+}
+
+div#drawer-content ul#folders li:hover, ul#filechooser li:hover {
+  color: #FDD042;
+}
+
+ul#filechooser a {
+  text-decoration: none;
+  color: #0a0a0a;
+}
+
+ul#choose-album-type {
+  width: 830px;
+  margin: 30px auto 0;
+}
+
+ul#choose-album-type li {
+  float: left;
+  width: 151px;
+  height: 294px;
+  background-image: url('/images/bg-album-type.png');
+  background-repeat: no-repeat;
+  text-align: center;
+  margin: 0 5px;
+  padding: 40px 20px 0;
+  color: #686868;
+}
+
+ul#choose-album-type li:hover {
+  background-image: url('/images/bg-album-type-selected.png');
+}
+
+ul#choose-album-type li img {
+  margin-bottom: 30px;
+}
+
+ul#choose-album-type li p {
+  margin-bottom: 15px;
+  line-height: 1.3em;
+}
+
+ul#choose-album-type li div {
+  height: 90px;
+  margin-bottom: 10px;
+}
+
+div#drawer-content h3 {
+  font-size: 1.7em;
+  font-weight: 500;
+  color: #0a0a0a;
+}
+
+div#drawer-content h4 {
+  font-size: 1.4em;
+  font-weight: 500;
+  margin-bottom: 15px;
+  color: #0a0a0a;
+}
+
+div#drawer-content .album-header {
+  margin: 25px auto 45px;
+  width: 600px;
+  min-height: 75px;
+  line-height: 1.4em;
+  background-image: url('/images/faux-hr.png');
+  background-position: bottom center;
+  background-repeat: no-repeat;
+}
+
+div#drawer-content #top-section .album-header {
+  margin: 0 auto 0;
+}
+
+div#drawer-content .album-header h3, div#drawer-content .album-header h4 {
+  margin-bottom: 20px;
+}
+
+div#drawer-content dl.form {
+  width: 800px;
+  margin: 0 auto 30px;
+}
+
+div#drawer-content dl.form dt {
+  float: left;
+  font-size: 1.8em;
+  color: #0a0a0a;
+  text-align: right;
+  width: 180px;
+  margin-right: 20px; 
+  padding-top: 7px; 
+}
+
+div#drawer-content dl.form dd {
+  float: left;
+  width: 600px;
+  text-align: left;
+}
+
+div#drawer-content dl.form dd input#album_name {
+  width: 500px;
+  padding: 5px;
+  text-align: left;
+  font-size: 1.8em;
+  background-color: #fff;
+  border: solid 2px #afafaf;
+}
+
+div#drawer-content dl.form dd input#album_name:focus {
+  box-shadow: 0px 0px 10px #FDD042;
+  -webkit-box-shadow: 0px 0px 10px #FDD042;
+  -moz-box-shadow: 0px 0px 10px #FDD042;
+  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#FDD042, offX=2, offY=2, positive=true);  
+}
+
 /* Grid View
 ----------------------------------------------------------------------------- */
 
 article {
   min-width: 930px;
-  margin: 70px 10px;
+  margin: 10px;
 }
 
-ul#grid-view {
+ul.grid-view {
   margin: 60px 0 45px;
 }
 
-ul#grid-view li {
+ul.grid-view li {
   float: left;
   width: 150px;
   height: 150px;
 }
 
-ul#grid-view li.wide {
+ul.grid-view li.wide {
   height: 130px;
   padding-top: 20px;
 }
 
-ul#grid-view li img {
+ul.grid-view li img {
   border: #fff solid 5px;
   box-shadow: 0px 0px 5px #767676;
   -webkit-box-shadow: 0px 0px 5px #767676;
@@ -427,7 +531,14 @@ ul#grid-view li img {
   cursor: pointer;
 }
 
-ul#grid-view li.selected img {
+ul#albums li img {
+  border:none;
+  box-shadow: 0px 0px 0px #767676;
+  -webkit-box-shadow: 0px 0px 0px #767676;
+  -moz-box-shadow: 0px 0px 0px #767676;
+}
+
+ul.grid-view li.selected img {
   border: 4px solid #FDD042;
   box-shadow: 0px 0px 5px #FDD042;
   -webkit-box-shadow: 0px 0px 5px #FDD042;
@@ -435,11 +546,18 @@ ul#grid-view li.selected img {
   filter: progid:DXImageTransform.Microsoft.dropShadow(color=#FDD042, offX=2, offY=2, positive=true);
 }
 
-ul#grid-view li figure {
+ul#albums li.selected img {
+  border:none;
+  box-shadow: 0px 0px 0px #767676;
+  -webkit-box-shadow: 0px 0px 0px #767676;
+  -moz-box-shadow: 0px 0px 0px #767676;
+}
+
+ul.grid-view li figure {
   display: none;
 }
 
-ul#grid-view li.selected figure {
+ul.grid-view li.selected figure {
   display: block;
   height: 15px;
   background-image: url("/images/bg-blk-75.png");
