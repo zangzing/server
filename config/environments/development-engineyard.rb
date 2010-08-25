@@ -31,4 +31,4 @@ config.action_mailer.smtp_settings = {
 #Paperclip.options[:log_command] = true
 
 #todo: is this the right way to handle this?
-APPLICATION_HOST = 'localhost:3000'
+APPLICATION_HOST = 'share1001photos.zangzing.com'

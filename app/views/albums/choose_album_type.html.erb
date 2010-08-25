@@ -1,13 +1,41 @@
-<h2>Choose Album Type</h2>
+<h3>Choose Album Type</h3>
 
-<H2>step is <%= @step %></H2>
+<ul id="choose-album-type" class="clearfix">
+  <li>
+    <img src="/images/stack-group.png" />
+    <div>
+      <h4>Group Album</h4>
+      <p>An album in which you and your friends can add and share all your photos in one place.</p>
+    </div> 
+    <img id="group_album_link" src="/images/btn-type-group.png" class="link" />
+  </li>
+  <li>
+    <img src="/images/stack-personal.png" />  
+    <div>
+      <h4>Personal Album</h4>
+      <p>An album in which you are the only one that can add photos. Friends can only view the album.</p>
+    </div> 
+    <img id="personal_album_link" src="/images/btn-type-personal.png" class="link" />
+  </li>
+  <li>
+    <img src="/images/stack-event.png" />
+    <div>
+      <h4>Event Album</h4>
+      <p>An album for events with reminders in which you and your friends can add and share photos.</p>
+    </div> 
+    <img id="event_album_link" src="/images/btn-type-event.png" class="link" />
+  </li>
+  <li>
+    <img src="/images/stack-stream.png" /> 
+    <div>
+      <h4>Streaming Album</h4>
+      <p>An album in which all new photos are automatically emailed or posted to Facebook and/or Twitter.</p>    
+    </div> 
+    <img id="streaming_album_link" src="/images/btn-type-streaming.png" class="link" />
+  </li>
+</ul>
 
-<%= button_to "Group Album",      new_user_album_path( current_user, :step => @step, :album_type => 'GroupAlbum') %>
-<%= button_to "Personal Album",   new_user_album_path( current_user, :step => @step, :album_type => 'PersonalAlbum') %>
-<%= button_to "Event Album",      new_user_album_path( current_user, :step => @step, :album_type => 'EventAlbum') %>
-<%= button_to "Streaming Album",  new_user_album_path( current_user, :step => @step, :album_type => 'StreamingAlbum') %>
 
-<p><a href="javascript:void(0);" id="personal_album_link">Personal Album</a></p>
 
 
 

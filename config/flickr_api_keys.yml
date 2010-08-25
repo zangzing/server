@@ -7,6 +7,16 @@ test:
   :shared_secret: b05c82999aa78f38
   :api_key: 2e7e51d6b8fa04fb33ac856484a33535
 
+development-engineyard:
+  :shared_secret: f8940e84726a5e17
+  :api_key: cbcd54aeabffef35d77cb02e321c01bf
+
+test-engineyard:
+  :shared_secret: f8940e84726a5e17
+  :api_key: cbcd54aeabffef35d77cb02e321c01bf
+
+
+
 production:
-  :shared_secret: b05c82999aa78f38
-  :api_key: 2e7e51d6b8fa04fb33ac856484a33535
+  :shared_secret:
+  :api_key:

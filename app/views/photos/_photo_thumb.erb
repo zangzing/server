@@ -3,7 +3,7 @@
   <a href="<%=album_photos_path(photo.album)%>?size=screenres&photoid=<%=photo.id%>">
      <div class="gridcell" >
         <div class="gridcellphoto">
-            <img class="gridcellphotoshow" src="<%#PHOTO SRC WILL BE SET BY JAVASCRIPT IN BROWSER%>" id="photoid<%=photo.id%>">
+            <img class="gridcellphotoshow" src="" id="photo-<%=photo.id%>">
              <% if current_user?(photo.album.user) %>
                 <%= link_to image_tag( "/images/delete.png" ), photo, { :method => :delete, :class => 'gridcellphotoicon'} %>
              <% end %>

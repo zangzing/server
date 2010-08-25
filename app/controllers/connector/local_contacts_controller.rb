@@ -1,16 +1,8 @@
 class Connector::LocalContactsController < ApplicationController
-  before_filter :require_user
+  before_filter :oauth_required, :only => [:import]
 
   def index
     @contacts = current_user.identity_for_local.contacts
-  end
-
-  def do_import
-    contacts = []
-    50.times do
-      contacts << {'first' => Faker::Name.first_name, 'last' => Faker::Name.last_name, 'email' => Faker::Internet.email}
-    end
-    redirect_to :action => 'import', :contacts => contacts, :method => :post
   end
 
   def import
@@ -20,8 +12,8 @@ class Connector::LocalContactsController < ApplicationController
     imported_contacts = []
     source_data.each do |entry|
       props = {
-        :name => [entry['first'], entry['last']].join(' ').strip,
-        :address => entry['email']
+        :name => [entry['First'], entry['Last']].join(' ').strip,
+        :address => entry['Email']
       }
       next if props[:address].blank?
       props[:name] = props[:address].split('@').first unless props[:name]
@@ -32,12 +24,12 @@ class Connector::LocalContactsController < ApplicationController
       identity.contacts.destroy_all
       imported_contacts.each {|c| identity.contacts << c  }
       if identity.save
-        redirect_to :action => 'index'
+        render :json => {:contact_count => imported_contacts.size}
       else
-        render :text => identity.errors.full_messages.join('<br/>')
+        render :status => 500, :text => identity.errors.full_messages.join(', ')
       end
     else
-      render :text => 'No contacts was imported'
+      render :json => {:contact_count => imported_contacts.size}
     end
   end
 

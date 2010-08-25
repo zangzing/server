@@ -3,12 +3,13 @@
 <%= javascript_include_tag "jquery.jsonp.js" %>
 <%= javascript_include_tag "jquery.cookie" %>
 <%= javascript_include_tag "agent" %>
-<%= javascript_include_tag "album" %>
 <%= javascript_include_tag "logging" %>
+<%= javascript_include_tag "imageloader" %>
 
 <script>
-    album.initializeForGrid('<%=@album.to_json(:include => {:photos => {:only =>[:id], :methods => [:thumb_url]}})%>');
+   //album.initializeForGrid('<%=@album.to_json(:include => {:photos => {:only =>[:id], :methods => [:thumb_url]}})%>');
 </script>
+
 
 <h2 class="album"><%= h @album.name %></h2>
 <table class="profile">
@@ -19,24 +20,46 @@
             <%= render :partial => "photo_thumb", :collection => @photos, :as => :photo %>
           </table>
       <% end %>
-
-
-      <form method="get" action="/albums/<%=@album.id%>/upload" class="button-to"><div><input type="submit" value="Upload Photos" /></div></form>        
-
-      <!-- This form is the html photo upload. Its replaced by the uploader button at runtime if agent is present -->
-      <div id="uploadform">
-        <%if current_user?(@album.user) %>
-            <%form_for [@album, @photo], :url => album_photos_path(@album), :html => { :multipart => true } do |f| %>
-                <%= f.error_messages %>
-                <div class="field">
-                  <%= f.hidden_field :user_id, :value => current_user.id %>
-                  <%= f.hidden_field :agent_id, :value => "Uploaded via Web Form By User ID:#{current_user.id}" %>                 
-                  <%= f.file_field :local_image %>
-                  <%= f.submit "Add Photo"%>
-                </div>
-            <% end %>
-        <%end%>
-      </div>
     </td>
   </tr>
 </table>
+
+
+
+<script>
+    var json = '<%=@album.to_json(:include => {:photos => {:only =>[:id, :source_thumb_url, :state], :methods => [:thumb_url]}})%>';
+    var photos = jQuery.parseJSON(json).photos;
+
+
+    var onStartLoadingImage = function(id, src) {
+      $('#' + id).attr('src', '/images/loading.gif');
+    };
+
+    var onImageLoaded = function(id, src, width, height) {
+      $('#' + id).attr('src', src);
+    };
+
+    var imageloader = new ImageLoader(onStartLoadingImage, onImageLoaded);
+
+
+    for(var i in photos){
+        var id = 'photo-' + photos[i].id;
+        var url = null
+        if (photos[i].state == 'ready') {
+            url = photos[i].thumb_url;
+        } else {
+            url = photos[i].source_thumb_url;
+        }
+
+        if (url.indexOf('http://localhost') === 0) {
+            url += '?session=' + $.cookie('user_credentials')
+        }
+
+        imageloader.add(id, url);
+
+    }
+
+    imageloader.start(5)
+
+
+</script>

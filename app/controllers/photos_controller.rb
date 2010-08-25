@@ -63,28 +63,19 @@ class PhotosController < ApplicationController
     @photo = @album.photos.build(:agent_id => params[:agent_id], :source_guid => params[:source_guid])
     @photo.user = current_user
 
-    #todo: need to handle agent port and url templates in central place
-#    @photo.source_thumb_url = "http://localhost:9090/albums/#{@album.id}/photos/#{@photo.id}.thumb"
-#    @photo.source_screen_url = "http://localhost:9090/albums/#{@album.id}/photos/#{@photo.id}.screen"
+    if @photo.save
+      #todo: need to handle agent port and url templates in central place
+      @photo.source_thumb_url = "http://localhost:9090/albums/#{@album.id}/photos/#{@photo.id}.thumb"
+      @photo.source_screen_url = "http://localhost:9090/albums/#{@album.id}/photos/#{@photo.id}.screen"
 
-
-    respond_to do |format|
-      format.html do
-        if @photo.save
-          flash[:success] = "Photo Created!"
-          render :action => :show
-        else
-          render :action => :new
-        end
-      end
-      format.json do
-        if @photo.save
-          render :json => @photo.to_json(:only =>[:id, :agent_id, :state])
-        else
-          render :json => @photo.errors, :status=>500
-        end
+      if @photo.save
+        render :json => @photo.to_json(:only =>[:id, :agent_id, :state])
+        return
       end
     end
+
+    render :json => @photo.errors, :status=>500
+
   end
 
   def edit

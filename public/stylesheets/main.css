@@ -220,12 +220,106 @@ div#drawer div.body div#drawer-content {
   overflow-y: scroll;  
 }
 
+ul#indicator {
+  position: fixed;
+  top: 54px;
+  z-index: 15;
+  margin-left: 28px;
+  width: 898px;
+  height: 36px;  
+}
+
+ul.step-1 {
+  background-image: url("/images/bg-4step-1-strip.png");
+  background-repeat: no-repeat;
+}
+
+ul.step-2 {
+  background-image: url("/images/bg-4step-2-strip.png");
+  background-repeat: no-repeat;
+}
+
+ul.step-3 {
+  background-image: url("/images/bg-4step-3-strip.png");
+  background-repeat: no-repeat;
+}
+
+ul.step-4 {
+  background-image: url("/images/bg-4step-4-strip.png");
+  background-repeat: no-repeat;
+}
+
+ul#indicator li {
+  float: left;
+  padding-top: 10px;
+  font-size: 1.4em;
+  font-weight: 400;
+  color: #646464;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+ul#indicator li#step-add {
+  padding-left: 72px;
+  width: 124px;
+}
+
+ul#indicator li#step-name {
+  padding-left: 74px;
+  width: 124px;
+}
+
+ul#indicator li#step-edit {
+  width: 120px;
+  padding-left: 80px;
+}
+
+ul#indicator li#step-share {
+  width: 115px;
+  padding-left: 78px;
+}
+
+ul#indicator li#step-btn {
+  width: 36px;
+  text-align: center;
+  padding-top: 5px;
+  padding-left: 22px;
+}
+
+ul#indicator li.on {
+  color: #fff;
+}
+
+#next-step {
+  cursor: pointer;
+}
+
+/* Create Album
+----------------------------------------------------------------------------- */
+div#drawer-content div#top-section {
+  padding: 10px 10px 0;
+  width: 840px;
+  margin-top: 15px;
+}
+
+div#top-section img#filechooser-back-button {
+  float: left;
+  width: 91px;
+  cursor: pointer;
+}
+
+div#top-section #equalizer {
+  width: 91px;
+  float: right;
+}
+
 div#drawer-content ul#folders, ul#filechooser {
   margin: 20px 15px 20px;
 }
 
 div#drawer-content ul#folders li, ul#filechooser li {
-  background-image: url("/images/folders/local.png");
+  background-image: url("/images/folders/zangzing.png");
   background-repeat: no-repeat;
   background-position: center top;
   float: left;
@@ -234,6 +328,26 @@ div#drawer-content ul#folders li, ul#filechooser li {
   cursor: pointer;
   font-size: 1.3em;
   font-weight: 700;
+  overflow: hidden;
+  height: 20px;
+}
+
+div#drawer-content ul#folders li.photo, ul#filechooser li.photo {
+  padding: 15px 20px;
+  height: 120px;
+  overflow: hidden;
+  cursor: pointer;
+  background-image: none;
+}
+
+div#drawer-content ul#folders li.photo, ul#filechooser li.photo img {
+  max-height: 130px;
+  max-width: 130px;
+  border: #fff solid 5px;
+  box-shadow: 0px 0px 5px #767676;
+  -webkit-box-shadow: 0px 0px 5px #767676;
+  -moz-box-shadow: 0px 0px 5px #767676;
+  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#767676, offX=2, offY=2, positive=true);
 }
 
 div#drawer-content ul#folders li.f_iphoto, ul#filechooser li.f_iphoto {
@@ -245,8 +359,14 @@ div#drawer-content ul#folders li.f_facebook, ul#filechooser li.f_facebook {
 div#drawer-content ul#folders li.f_flickr, ul#filechooser li.f_flickr {
   background-image: url("/images/folders/flickr.png");
 }
+div#drawer-content ul#folders li.f_home, ul#filechooser li.f_home {
+  background-image: url("/images/folders/myhome.png");
+}
 div#drawer-content ul#folders li.f_kodak, ul#filechooser li.f_kodak {
   background-image: url("/images/folders/kodak.png");
+}
+div#drawer-content ul#folders li.f_mycomputer, ul#filechooser li.f_mycomputer {
+  background-image: url("/images/folders/mycomputer.png");
 }
 div#drawer-content ul#folders li.f_pictures, ul#filechooser li.f_pictures {
   background-image: url("/images/folders/mypictures.png");
@@ -259,6 +379,9 @@ div#drawer-content ul#folders li.f_shutterfly, ul#filechooser li.f_shutterfly {
 }
 div#drawer-content ul#folders li.f_snapfish, ul#filechooser li.f_snapfish {
   background-image: url("/images/folders/snapfish.png");
+}
+div#drawer-content ul#folders li.f_smugmug, ul#filechooser li.f_smugmug {
+  background-image: url("/images/folders/smugmug.png");
 }
 div#drawer-content ul#folders li.f_zangzing, ul#filechooser li.f_zangzing {
   background-image: url("/images/folders/zangzing.png");
@@ -273,72 +396,107 @@ ul#filechooser a {
   color: #0a0a0a;
 }
 
-ul#indicator {
-  position: fixed;
-  top: 54px;
-  z-index: 15;
-  margin-left: 27px;
-  width: 898px;
-  height: 36px;  
+ul#choose-album-type {
+  width: 830px;
+  margin: 30px auto 0;
 }
 
-ul.step-1 {
-  background-image: url("/images/bg-step-1-strip.png");
-  background-repeat: no-repeat;
-}
-
-ul.step-2 {
-  background-image: url("/images/bg-step-2-strip.png");
-  background-repeat: no-repeat;
-}
-
-ul.step-3 {
-  background-image: url("/images/bg-step-3-strip.png");
-  background-repeat: no-repeat;
-}
-
-ul.step-4 {
-  background-image: url("/images/bg-step-4-strip.png");
-  background-repeat: no-repeat;
-}
-
-ul#indicator li {
+ul#choose-album-type li {
   float: left;
-  width: 155px;
-  padding-top: 9px;
-  padding-left: 40px;
+  width: 151px;
+  height: 294px;
+  background-image: url('/images/bg-album-type.png');
+  background-repeat: no-repeat;
+  text-align: center;
+  margin: 0 5px;
+  padding: 40px 20px 0;
+  color: #686868;
+}
+
+ul#choose-album-type li:hover {
+  background-image: url('/images/bg-album-type-selected.png');
+}
+
+ul#choose-album-type li img {
+  margin-bottom: 30px;
+}
+
+ul#choose-album-type li p {
+  margin-bottom: 15px;
+  line-height: 1.3em;
+}
+
+ul#choose-album-type li div {
+  height: 90px;
+  margin-bottom: 10px;
+}
+
+div#drawer-content h3 {
+  font-size: 1.7em;
+  font-weight: 500;
+  color: #0a0a0a;
+}
+
+div#drawer-content h4 {
   font-size: 1.4em;
-  color: #646464;
-  text-align: center;
-  text-transform: uppercase;
-  cursor: pointer;
+  font-weight: 500;
+  margin-bottom: 15px;
+  color: #0a0a0a;
 }
 
-ul#indicator li#step-btn {
-  width: 36px;
-  text-align: center;
-  padding-top: 5px;
-  padding-left: 22px;
+div#drawer-content .album-header {
+  margin: 25px auto 45px;
+  width: 600px;
+  min-height: 75px;
+  line-height: 1.4em;
+  background-image: url('/images/faux-hr.png');
+  background-position: bottom center;
+  background-repeat: no-repeat;
 }
 
-ul#indicator li#step-edit {
-  width: 165px;
-  text-align: center;
-  padding-left: 32px;
+div#drawer-content #top-section .album-header {
+  margin: 0 auto 0;
 }
 
-ul#indicator li#step-share {
-  width: 135px;
-  text-align: center;
-  padding-left: 68px;
+div#drawer-content .album-header h3, div#drawer-content .album-header h4 {
+  margin-bottom: 20px;
 }
 
-ul#indicator li.on {
-  color: #fff;
+div#drawer-content dl.form {
+  width: 800px;
+  margin: 0 auto 30px;
 }
 
-#next-step {
-  cursor: pointer;
+div#drawer-content dl.form dt {
+  float: left;
+  font-size: 1.8em;
+  color: #0a0a0a;
+  text-align: right;
+  width: 180px;
+  margin-right: 20px; 
+  padding-top: 7px; 
+}
+
+div#drawer-content dl.form dd {
+  float: left;
+  width: 600px;
+  text-align: left;
+}
+
+div#drawer-content dl.form dd input#album_name {
+  width: 500px;
+  padding: 5px;
+  text-align: left;
+  font-size: 1.8em;
+  background-color: #fff;
+  border: solid 2px #afafaf;
+}
+
+div#drawer-content dl.form dd input#album_name:focus {
+  box-shadow: 0px 0px 10px #FDD042;
+  -webkit-box-shadow: 0px 0px 10px #FDD042;
+  -moz-box-shadow: 0px 0px 10px #FDD042;
+  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#FDD042, offX=2, offY=2, positive=true);  
 }
 
 /* Grid View
@@ -346,25 +504,25 @@ ul#indicator li.on {
 
 article {
   min-width: 930px;
-  margin: 70px 10px;
+  margin: 10px;
 }
 
-ul#grid-view {
+ul.grid-view {
   margin: 60px 0 45px;
 }
 
-ul#grid-view li {
+ul.grid-view li {
   float: left;
   width: 150px;
   height: 150px;
 }
 
-ul#grid-view li.wide {
+ul.grid-view li.wide {
   height: 130px;
   padding-top: 20px;
 }
 
-ul#grid-view li img {
+ul.grid-view li img {
   border: #fff solid 5px;
   box-shadow: 0px 0px 5px #767676;
   -webkit-box-shadow: 0px 0px 5px #767676;
@@ -373,7 +531,14 @@ ul#grid-view li img {
   cursor: pointer;
 }
 
-ul#grid-view li.selected img {
+ul#albums li img {
+  border:none;
+  box-shadow: 0px 0px 0px #767676;
+  -webkit-box-shadow: 0px 0px 0px #767676;
+  -moz-box-shadow: 0px 0px 0px #767676;
+}
+
+ul.grid-view li.selected img {
   border: 4px solid #FDD042;
   box-shadow: 0px 0px 5px #FDD042;
   -webkit-box-shadow: 0px 0px 5px #FDD042;
@@ -381,11 +546,18 @@ ul#grid-view li.selected img {
   filter: progid:DXImageTransform.Microsoft.dropShadow(color=#FDD042, offX=2, offY=2, positive=true);
 }
 
-ul#grid-view li figure {
+ul#albums li.selected img {
+  border:none;
+  box-shadow: 0px 0px 0px #767676;
+  -webkit-box-shadow: 0px 0px 0px #767676;
+  -moz-box-shadow: 0px 0px 0px #767676;
+}
+
+ul.grid-view li figure {
   display: none;
 }
 
-ul#grid-view li.selected figure {
+ul.grid-view li.selected figure {
   display: block;
   height: 15px;
   background-image: url("/images/bg-blk-75.png");

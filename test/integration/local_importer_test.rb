@@ -5,12 +5,11 @@ class LocalContactsImporterTest < ActionController::IntegrationTest
   #fixtures :all
   include IntegrationHelper
   def setup
-    ensure_logged_in
+
   end
 
   test "Routing" do
     #Contact import
-    assert_routing "/local/contacts", {:controller => "local_contacts", :action => "index"}
     assert_routing "/local/contacts/import", {:controller => "local_contacts", :action => "import"}
   end
 
@@ -18,12 +17,12 @@ class LocalContactsImporterTest < ActionController::IntegrationTest
     # "Imoprt contacts" do
     
     contacts = [
-      {'first' => 'Burton', 'last' => 'Bell', 'email' => 'burton@fearfactory.com'},
-      {'first' => 'Otep', 'last' => 'Shamaya', 'email' => 'info@otep.com'},
-      {'first' => 'Artem', 'last' => 'Lotskih', 'email' => 'nelson@stigmata.ru'},
+      {'First' => 'Burton', 'Last' => 'Bell', 'Email' => 'burton@fearfactory.com'},
+      {'First' => 'Otep', 'Last' => 'Shamaya', 'Email' => 'info@otep.com'},
+      {'First' => 'Artem', 'Last' => 'Lotskih', 'Email' => 'nelson@stigmata.ru'},
     ]
     40.times do
-      contacts << {'first' => Faker::Name.first_name, 'last' => Faker::Name.last_name, 'email' => Faker::Internet.email}
+      contacts << {'First' => Faker::Name.first_name, 'Last' => Faker::Name.last_name, 'Email' => Faker::Internet.email}
     end
     
     visit local_contacts_path(:action => 'import'), :post, :contacts => contacts.to_json

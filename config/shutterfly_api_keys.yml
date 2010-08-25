@@ -7,6 +7,16 @@ test:
   :shared_secret: ea7d8b584d1bf5b9
   :app_id: 8f51abb9a4885b7cb357db545f52d92e
 
-production:
+development-engineyard:
   :shared_secret: ea7d8b584d1bf5b9
   :app_id: 8f51abb9a4885b7cb357db545f52d92e
+
+test-engineyard:
+  :shared_secret: ea7d8b584d1bf5b9
+  :app_id: 8f51abb9a4885b7cb357db545f52d92e
+
+
+
+production:
+  :shared_secret:
+  :app_id:
