@@ -318,7 +318,7 @@ var filechooser = {
 
   on_error_opening_folder : function(error) {
     if (error.status === 401) {
-      $('#filechooser').html('you need to log into your account before you can see this folder; click <a href="" onclick="filechooser.open_login_window();return false">here</a> to log in');
+      $('#filechooser').html('you need to log into your account before you can see this folder; click <a href="#" onClick="filechooser.open_login_window();return false;">here</a> to log in');
     }
   },
 
@@ -328,7 +328,10 @@ var filechooser = {
 
   open_login_window : function() {
     var current = filechooser.ancestors[filechooser.ancestors.length - 1];
-    window.open(current.login_url, 'login', 'status=0,toolbar=0,width=500,height=500');
+
+    oauthmanager.login(current.login_url, filechooser.on_login)
+
+//    window.open(current.login_url, 'login', 'status=0,toolbar=0,width=500,height=500');
 
   },
 
