@@ -23,7 +23,7 @@ var added_photos_tray = {
       $('#' + id).attr('src', '/images/loading.gif');
     };
 
-    var onImageLoaded = function(id, src) {
+    var onImageLoaded = function(id, src, width, height) {
       $('#' + id).attr('src', src);
     };
 
@@ -214,7 +214,7 @@ var filechooser = {
       $('#' + id).attr('src', '/images/loading.gif');
     };
 
-    var onImageLoaded = function(id, src) {
+    var onImageLoaded = function(id, src, width, height) {
       $('#' + id).attr('src', src);
     };
 

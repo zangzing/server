@@ -62,15 +62,15 @@ ImageLoader.prototype = {
 
         var me = this;
         img.onload = function(){
-            me.handleImageLoaded(props['id'], props['src'])
+            me.handleImageLoaded(props['id'], props['src'], img.width, img.height)
             me.next();
         };
 
         img.src = props['src']
     },
 
-    handleImageLoaded : function(id, src){
-        this.onImageLoadedHandler(id, src);
+    handleImageLoaded : function(id, src, width, height){
+        this.onImageLoadedHandler(id, src, width, height);
     }
 }
 
