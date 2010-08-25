@@ -57,7 +57,7 @@ ImageLoader.prototype = {
         props['img'] = img;
 
 
-        //this.onStartLoadingImage(props['id'], props['src'])
+//        this.onStartLoadingImage(props['id'], props['src'])
 
 
         var me = this;

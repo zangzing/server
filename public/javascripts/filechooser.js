@@ -45,7 +45,7 @@ var added_photos_tray = {
           filechooser.imageloader.add(id, photos[i].thumb_url);
         } else {
           filechooser.imageloader.add(id, 'http://localhost:9090/albums/' + 
-              filechooser.album_id + '/photos/' + photos[i].id + '.thumb' + 
+              zz.zang.album_id + '/photos/' + photos[i].id + '.thumb' +
               '?session=' + $.cookie('user_credentials'));
         }
         
@@ -85,7 +85,6 @@ var filechooser = {
 
   imageloader: null,
   ancestors: [],
-  album_id: null,
   roots: [
     {
       open_url: 'http://localhost:9090/iphoto/folders',
@@ -149,9 +148,9 @@ var filechooser = {
   },
 
 
-  set_album_id : function(album_id) {
-    filechooser.album_id = album_id;
-  },
+//  set_album_id : function(album_id) {
+//    filechooser.album_id = album_id;
+//  },
 
 
   open_root: function() {
