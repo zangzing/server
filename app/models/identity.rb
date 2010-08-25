@@ -15,7 +15,7 @@
 #
 
 #
-#   � 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
+#   Copyright 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 
 class Identity < ActiveRecord::Base
@@ -24,10 +24,22 @@ class Identity < ActiveRecord::Base
   has_many :contacts, :dependent => :destroy
 
   validates_presence_of :user
-  
-  def self.new_for_gmail
-    identity = self.new
-    identity.identity_source="gmail"
+
+  def self.factory( user, identity_source )
+    class_name = identity_source.capitalize+'Identity'
+    begin
+       @new_id = class_name.constantize.new(:identity_source => identity_source )
+    rescue NameError
+       @new_id = Identity.new(:identity_source => identity_source)
+    end
+    user.identities << @new_id
+    @new_id.save!
+    return @new_id
+  end
+
+  def credentials_valid?
+    # we may want to validate with a call to the specific service
+    self.credentials
   end
 
 end

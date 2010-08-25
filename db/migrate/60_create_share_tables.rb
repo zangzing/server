@@ -14,7 +14,7 @@ class CreateShareTables < ActiveRecord::Migration
   
     create_table :recipients, :guid=>false,:force=>true do |t|
       t.integer :share_id
-      t.string  :type
+      t.string  :service
       t.string  :name
       t.string  :address
       t.timestamps

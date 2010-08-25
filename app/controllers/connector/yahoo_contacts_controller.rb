@@ -12,6 +12,7 @@ class Connector::YahooContactsController < Connector::YahooController
     unless imported_contacts.empty?
       service_identity.contacts.destroy_all
       imported_contacts.each {|c| service_identity.contacts << c  }
+      service_identity.last_contact_refresh = Time.now
       if service_identity.save
         redirect_to :action => 'index'
       else

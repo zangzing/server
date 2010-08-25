@@ -1,0 +1,11 @@
+<h3 class="album">New Post Share</h3>
+<%form_for @share, :url => create_album_share_path(@album)  do |f| %>
+    <%= f.error_messages %>
+
+    <table><tr>
+    <% f.fields_for :recipients do |g| %>
+        <td><%= g.object.name %>:<%= g.check_box( 'service',{},g.object.name.downcase,"") %></td>
+    <% end %>
+    <tr><td>Post: <%= f.text_area( :message, :cols=>40,  :rows=>10) %></td><td><%= f.submit "Post"%></td></tr>
+    </table>
+<% end %>

@@ -1,24 +1,48 @@
 class SharesController < ApplicationController
 
-  def index
-    
+  layout false
+
+  def index   
   end
 
   def new
-    @share = Share.new
-    @album = Album.find(params[:album_id])
+     @album = Album.find(params[:album_id])
   end
 
+  def newpost
+      @album = Album.find(params[:album_id])
+      @share = PostShare.new
+      @share.recipients.build(:name => 'Twitter')
+      @share.recipients.build(:name => 'Facebook')
+  end
+
+  def newmail
+    @album = Album.find(params[:album_id])
+    @share = MailShare.new
+    
+    @google_id = current_user.identity_for_google
+    @yahoo_id  = current_user.identity_for_yahoo
+    @contacts = []
+    @contacts.concat @google_id.contacts unless @google_id.nil?
+    @contacts.concat @yahoo_id.contacts unless @yahoo_id.nil?  
+
+  end
+  
   def create
-    @share = Share.new(params[:share])
-    @share.album_id = params[:album_id]
-    @share.user_id = current_user.id
-
-
+    @album = Album.find(params[:album_id])
+    @share = Share.factory( current_user, @album, params)
     if @share.save
-      Mailer.deliver_shared_album_notification(@share, album_url(@share.album))  
+       flash[:success] = "You will be notified and your album will be shared as soon as your photos finish uploading"
+       render 'new'
     else
-      render 'new'
+      render 'newmail' and return  if params[:mail_share]
+      render 'newpost' and return  if params[:post_share]
     end
+  end
+
+  def edit
+    @mail_share = Share.find(params[:id]) 
+    @album = @mail_share.album
+    render :new, :layout => false
   end
 end

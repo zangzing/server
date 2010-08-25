@@ -1,0 +1,142 @@
+<script type="text/javascript" src="/javascripts/jquery.js"></script>
+<script type='text/javascript' src="/javascripts/jquery.autocomplete.js"></script>
+<link rel="stylesheet" type="text/css" href="/stylesheets/jquery.autocomplete.css" />
+
+<h3 class="album">New Mail Share</h3>
+ <table>
+   <tr>
+     <td> Gmail:</td>
+     <% unless @google_id.credentials_valid? %>
+        <td><%= link_to "Import", new_google_session_url%></td>
+     <% else %>
+        <td> <%= button_to_function "Refresh", "call_google_import()" %></td>
+        <td>Last Imported on:</td><td> <div id="last_import" ><%= @google_id.last_contact_refresh %></div></td>
+        <td><%= link_to "Index", google_contacts_url(:index) %></td>
+     <% end %>    
+   </tr>
+   <tr>
+     <td>Yahoo: </td>
+     <% unless @yahoo_id.credentials_valid? %>
+        <td><%= link_to "Import", new_yahoo_session_url%></td>
+     <% else %>
+        <td> <%= link_to "Refresh", yahoo_contacts_url(:import)%></td>
+        <td>Last Imported on: <%= @yahoo_id.last_contact_refresh %></td>
+        <td><%= link_to "Index", yahoo_contacts_url(:index) %></td>
+     <% end %>
+   </tr>
+ </table>
+<%form_for [@share], :url => create_album_share_path(@album)  do |f| %>
+   <%= f.error_messages %>
+   <table>     
+   <tr><td>To: <%= f.text_field(  :to, :size=>40, :id => "ToField") %></td></tr>
+   <tr><td>Subject: <%= f.text_field(  :subject, :size=>40) %></td></tr>
+   <tr><td>Message: <%= f.text_area(   :message, :cols=>40,  :rows=>10) %></td><td><%= f.submit "Send"%></td></tr>
+   </table>
+<% end %>
+
+<form action="" onsubmit="return false;">
+	<p>
+		Local Contact Autocomplete:
+		<input type="text" id="CityLocal" value="" />
+		<input type="button" value="Get Value" onclick="lookupLocal();" />
+		(Shows a max of 10 entries)
+	</p>
+</form>
+
+<script type="text/javascript">
+function findValue(li) {
+	if( li == null ) return alert("No match!");
+
+	// if coming from an AJAX call, let's use the CityId as the value
+	if( !!li.extra ) var sValue = li.extra[0];
+
+	// otherwise, let's just display the value in the text box
+	else var sValue = li.selectValue;
+
+    var recipients = $("#ToField").val()
+    if( recipients.length > 0 ) recipients+=(";")
+    recipients +=  sValue
+    $("#ToField").val( recipients )
+
+	alert("The value you selected was: " + sValue);
+}
+
+function selectItem(li) {
+	findValue(li);
+}
+
+function formatItem(row) {
+	return row[0] + " (id: " + row[1] + ")";
+}
+
+function lookupLocal(){
+	var oSuggest = $("#CityLocal")[0].autocompleter;
+	oSuggest.findValue();
+	return false;
+}
+
+var google_contacts = [
+        <% @google_id.contacts.each do|contact| %>
+        ["<%=contact.name%>","<%=contact.name.to_s%> <<%=contact.address%>>"],
+        ["<%=contact.address%>","<%=contact.name.to_s%> <<%=contact.address%>>"],
+        <% end %>
+        "ZZangZZing"
+    ];
+
+var yahoo_contacts = [
+    <% @yahoo_id.contacts.each do|contact| %>
+    ["<%=contact.name%>","<%=contact.name.to_s%> <<%=contact.address%>>"],
+    ["<%=contact.address%>","<%=contact.name.to_s%> <<%=contact.address%>>"],
+    <% end %>
+    "ZZZangZZZing"
+];
+
+function call_google_import() {
+    $("#last_import").html("Refreshing...")
+    $.ajax({
+      dataType: 'json',
+      url: '<%=google_contacts_url(:import)%>',
+      success: import_google_success,
+      error: import_google_failure
+    });
+}
+
+function import_google_success( contacts ){
+    var full_address
+    var google_contacts = [];
+    for each ( var c in contacts) {
+        full_address = '<' +c.name+ '> '+c.address
+        google_contacts.push( [ c.name, full_address] );
+        google_contacts.push( [ c.address, full_address] );
+    }
+    loadAutocompleter()
+    $("#last_import").html("A second ago.")
+}
+
+function import_google_failure( errors ){
+   alert("Unable to refresh google contacts at the moment. Please try later")
+}
+
+
+
+function loadAutocompleter () {
+	$("#CityLocal").autocompleteArray(
+            google_contacts.concat( yahoo_contacts ),
+                {
+                    delay:10,
+                    minChars:1,
+                    matchSubset:1,
+                    onItemSelect:selectItem,
+                    onFindValue:findValue,
+                    autoFill:true,
+                    maxItemsToShow:10
+                }
+            );
+}
+
+
+$(document).ready( loadAutocompleter() );
+
+</script>
+
+

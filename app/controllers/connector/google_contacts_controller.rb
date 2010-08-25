@@ -1,5 +1,6 @@
 class Connector::GoogleContactsController < Connector::GoogleController
   skip_before_filter :service_login_required, :only => [:index]
+  layout false
 
   BATCH_SIZE = 100
 
@@ -32,13 +33,14 @@ class Connector::GoogleContactsController < Connector::GoogleController
     unless imported_contacts.empty?
       identity.contacts.destroy_all
       imported_contacts.each {|c| identity.contacts << c  }
+      identity.last_contact_refresh = Time.now
       if identity.save
-        redirect_to :action => 'index'
+        render :json => imported_contacts.to_json( :only => [ :name, :address ])
       else
-        render :text => identity.errors.full_messages.join('<br/>')
+        render :json => identity.errors.full_messages.to_json, :status => 401
       end
     else
-      render :text => 'No contacts was imported'
+      render :json => imported_contacts.to_json( :only => [ :name, :address ])
     end
   end
 

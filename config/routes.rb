@@ -29,6 +29,19 @@ ActionController::Routing::Routes.draw do |map|
     albums.album_wizard       '/albums/:id/wizard',          :action => 'wizard'
   end
 
+ #shares
+  map.with_options :controller => :shares do |shares|
+    shares.album_shares        '/albums/:album_id/shares',         :action=> 'index',  :conditions=>{ :method => :get }
+    shares.create_album_share  '/albums/:album_id/shares',         :action=> 'create', :conditions=>{ :method => :post }
+    shares.new_album_share     '/albums/:album_id/shares/new',     :action=> 'new',    :conditions=>{ :method => :get }
+    shares.new_album_postshare '/albums/:album_id/shares/newpost', :action=> 'newpost',:conditions=>{ :method => :get }
+    shares.new_album_mailshare '/albums/:album_id/shares/newmail', :action=> 'newmail',:conditions=>{ :method => :get }
+    shares.edit_share          '/shares/:id/edit',                 :action=> 'edit',   :conditions=>{ :method => :get }
+    shares.share               '/shares/:id.',                     :action=> 'show',   :conditions=>{ :method => :get }
+    shares.update_share        '/shares/:id.',                     :action=> 'update', :conditions=>{ :method => :put }
+    shares.delete_share        '/shares/:id.',                     :action=> 'destroy',:conditions=>{ :method => :delete }
+  end
+
   #photos
   map.with_options :controller => :photos do |photos|                                                                                                \
     photos.album_photos                '/albums/:album_id/photos.',                 :action=>'index',           :conditions => { :method => :get }
@@ -169,7 +182,7 @@ ActionController::Routing::Routes.draw do |map|
     g.create_google_session  '/google/sessions/create', :action  => 'create'
     g.destroy_google_session '/google/sessions/destroy', :action  => 'destroy'
   end
-  map.google_contacts '/google/contacts/:action', :controller => 'google_contacts'
+  map.google_contacts '/google/contacts/:action', :namespace => 'connector',  :controller => 'google_contacts'
 
   #LocalContacts importer
   map.local_contacts '/local/contacts/:action', :namespace => 'connector', :controller => 'local_contacts'

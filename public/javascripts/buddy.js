@@ -297,7 +297,7 @@ var zz = {
     },
 
     share_album: function(){
-      $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/wizard?step=5', function(){                        
+      $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/shares/new', function(){                        
         zz.zang.indicator_step = 4;  
         zz.zang.indicator = 'step-share';
       }); 

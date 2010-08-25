@@ -1,40 +1,8 @@
-<h2 class="album">New share</h2>
 
+<% flash.each do |key, value| %>
+	          <div class="flash <%= key %>"><%= value %></div>
+<% end %> 
 
-<%form_for [@album, @share], :url => album_shares_path(@album)  do |f| %>
+<%= link_to "Share this album on Facebook or Twitter", new_album_postshare_url( @album ) %>
 
-  <%= f.error_messages %>
-
- <p>
-   <%= f.label :email_to %><br />
-   <%= f.text_field :email_to, :size => 100%>
-   <a href="" onclick="addGmailContacts();return true">add Gmail contacts</a>
- </p>
-  <p>
-    <%= f.label :email_subject %><br />
-    <%= f.text_field :email_subject, :size => 100 %>
-  </p>
-  <p>
-    <%= f.label :email_message %><br />
-    <%= f.text_field :email_message, :size => 100 %>
-  </p>
-  <p>
-    <%= f.submit 'Create' %>
-  </p>
-<% end %>
-
-<%= link_to "Album", @album %>
-
-<script>
-    function addGmailContacts()
-    {
-        window.open("/google_contacts", "google contacts","location=1,status=0,scrollbars=0, width=800,height=650");
-    }
-
-    function addContacts(contacts)
-    {
-        $("#share_email_to")[0].value = $("#share_email_to")[0].value + contacts 
-    }
-
-
-</script>
+<%= link_to "Share this album by email", new_album_mailshare_url( @album ) %>

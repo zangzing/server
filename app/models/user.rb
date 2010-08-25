@@ -67,7 +67,10 @@ class User < ActiveRecord::Base
   IDENTITY_SOURCES.each do |service_name|
     define_method("identity_for_#{service_name}") do
       identity = self.identities.find(:first, :conditions => {:identity_source => service_name.to_s})
-      identity = self.identities.create(:identity_source => service_name.to_s) unless identity
+      #identity = self.identities.create(:identity_source => service_name.to_s) unless identity
+      unless identity
+        identity = Identity.factory(self, service_name.to_s)
+      end
       identity
     end
   end
