@@ -134,7 +134,8 @@ class Photo < ActiveRecord::Base
     # If an assigned image has been loaded with an image, reprocess and send to S3
     if self.assigned? && self.local_image_file_name_changed?
        self.state = 'loaded'
-       self.send_later(:upload_to_s3, Delayed::CpuBoundJob)
+       #self.send_later(:upload_to_s3, Delayed::CpuBoundJob)
+       Delayed::CpuBoundJob.enqueue(S3UploadRequest.new(self.id))
     end
     logger.debug("queued for upload")
   end
@@ -143,18 +144,17 @@ class Photo < ActiveRecord::Base
   # Used by the workers to load the image.
   # This call cannot be private
   def upload_to_s3
-    begin
-      Delayed::PerformableMethod
-      self.state = 'processing'
+    #begin
+      #Delayed::PerformableMethod
+      self.update_attribute(:state,  'processing')
       self.image = local_image.to_file
-      self.save!
       self.local_image.clear
       self.local_image_path = ''
       self.state = 'ready'
       self.save!
-    rescue ActiveRecordError => ex
-        logger.debug("Upload to S3 Failed"+ex)
-    end
+    #rescue ActiveRecordError => ex
+    #    logger.debug("Upload to S3 Failed"+ex)
+    #end
     logger.debug("Upload to S3 Finished")
   end
 
