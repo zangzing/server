@@ -1,7 +1,7 @@
 class Connector::FacebookController < Connector::ConnectorController
   require 'hyper_graph'
 
-  PHOTO_SIZES = {:thumb => 'thumbnail', :screen => 'normal', :full => 'normal'} #Possible types are thumbnail, album, normal
+  PHOTO_SIZES = {:thumb => 'album', :screen => 'normal', :full => 'normal'} #Possible types are thumbnail, album, normal
 
   before_filter :service_login_required
 

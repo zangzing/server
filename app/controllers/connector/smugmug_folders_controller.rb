@@ -25,8 +25,8 @@ class Connector::SmugmugFoldersController < Connector::SmugmugController
               :album_id => params[:album_id],
               :user_id=>current_user.id,
               :source_guid => Photo.generate_source_guid(p[:originalurl]),
-              :source_thumb_url => p[:thumburl],
-              :source_screen_url => p[:x3largeurl]
+              :source_thumb_url => '/proxy?url=' + p[:smallurl],
+              :source_screen_url => '/proxy?url=' + p[:x3largeurl]
       )
       Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, p[:originalurl]))
       photos << photo
