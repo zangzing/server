@@ -84,6 +84,7 @@ var added_photos_tray = {
  ----------------------------------------------------------------------------- */
 var filechooser = {
 
+  pending_open_folder_request : null,
   imageloader: null,
   ancestors: [],
   roots: [
@@ -160,6 +161,11 @@ var filechooser = {
 
   open_folder: function(name, url, login_url) {
 
+    if(filechooser.pending_open_folder_request){
+        filechooser.pending_open_folder_request.abort();
+    }
+
+
     filechooser.ancestors.push({name:name, url:url, login_url:login_url});
     //update title and back button
     if (filechooser.ancestors.length > 1) {
@@ -179,7 +185,7 @@ var filechooser = {
         var user_session = $.cookie('user_credentials');
         url += '?session=' + user_session + '&callback=?';
 
-        $.jsonp({
+        filechooser.pending_open_folder_request = $.jsonp({
           url: url,
           success: function(json) {
             filechooser.on_open_folder(name, url, json);
@@ -187,7 +193,7 @@ var filechooser = {
           error: filechooser.on_error_opening_folder
         });
       } else {
-        $.ajax({
+        filechooser.pending_open_folder_request = $.ajax({
           dataType: 'json',
           url: url,
           success: function(json) {
@@ -205,6 +211,8 @@ var filechooser = {
   },
 
   on_open_folder : function(name, url, children) {
+
+    filechooser.pending_open_folder_request = null;  
 
     //setup the imageloader
     if (filechooser.imageloader) {
