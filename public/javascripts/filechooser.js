@@ -288,7 +288,7 @@ var filechooser = {
       $.jsonp({
         url: add_url,
         success: function(json) {
-          filechooser.on_add_photo();
+          filechooser.on_add_photo(json);
         },
         error: filechooser.on_error_adding_photo
       });
@@ -297,7 +297,7 @@ var filechooser = {
         dataType: 'json',
         url: add_url,
         success: function(json) {
-          filechooser.on_add_photo();
+          filechooser.on_add_photo(json);
         },
         error: filechooser.on_error_adding_photo
       });
@@ -305,8 +305,11 @@ var filechooser = {
   },
 
 
-  on_add_photo : function() {
-    added_photos_tray.refresh();
+  on_add_photo : function(json) {
+      //note: until we create a separate implementation for add_folder,
+      //      the json object here will be either a single picture, or a list of pictures
+      console.log(json)
+      added_photos_tray.refresh();
   },
 
 
