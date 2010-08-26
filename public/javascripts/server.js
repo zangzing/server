@@ -43,23 +43,23 @@ var server = {
 
 
 
-
-    destroyPhoto : function(albumId, photoId, onSuccess, onError){
-
-        var callServer = function(agentId){
-
-            $.ajax({
-               type: "DELETE",
-               dataType: "json",
-               url: "/photos/" + photoId + ".json",
-               data: {'photo[agent_id]':agentId},  
-               success: onSuccess,
-               error: onError
-            });
-        }
-
-        agent.getAgentId(callServer, onError)
-
-
-   }
+//
+//    destroyPhoto : function(albumId, photoId, onSuccess, onError){
+//
+//        var callServer = function(agentId){
+//
+//            $.ajax({
+//               type: "DELETE",
+//               dataType: "json",
+//               url: "/photos/" + photoId + ".json",
+//               data: {'photo[agent_id]':agentId},
+//               success: onSuccess,
+//               error: onError
+//            });
+//        }
+//
+//        agent.getAgentId(callServer, onError)
+//
+//
+//   }
 }

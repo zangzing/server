@@ -1,5 +1,5 @@
 var temp;var temp_width;var temp_height;var temp_top;var temp_left; 
-var content_url;var serialized;
+var content_url;var serialized;var temp_top_new;var temp_left_new;
 
 /* Welcome to ZangZing
 ----------------------------------------------------------------------------- */
@@ -248,6 +248,47 @@ var zz = {
 
     }, // end zz.zang.open_drawer()
     
+    show_tray: function(){
+          
+      $('#added-pictures-tray').css({bottom: '5px', left: '7px'}).fadeIn('fast');
+    
+    }, // end zz.zang.show_tray()
+    
+    tray_zoom_in: function(element){
+      $('#'+element).stop().animate({ height: '100px', width: '100px', bottom: '0px' }, 500);   
+    }, // end zz.zang.tray_zoom_in()
+    
+    tray_zoom_out: function(element){
+      $('#'+element).stop().animate({ height: '30px', width: '30px', bottom: '0px' }, 500);   
+    },  // end zz.zang.tray_zoom_out()  
+    
+    image_pop: function(element){
+      temp_top = $('#'+element).offset().top;
+      temp_left = $('#'+element).offset().top;
+      temp_top_new = $('#added-pictures-tray li:first').offset().top;
+      temp_left_new = $('#added-pictures-tray li:first').offset().top;
+      
+      $('#'+element).clone()
+                    .attr({id: 'traversing'})
+                    .css({position: 'absolute', zIndex: 2000, left: temp_left, top: temp_top})
+                    .appendTo('body');
+      
+      $('#traversing').animate({ 
+        width: '30px',
+        height: '30px',
+        top: temp_top_new+'px',
+        left: temp_left_new+'px',
+      }, 900, function(){
+      
+        $('#added-pictures-tray li:first img').show();
+         $('#traversing').remove();
+      } );
+      
+      
+
+                           
+
+    }, // end zz.zang.image_pop
 
     /* New Album - 4 part
     ------------------------------------------------------------------------- */
@@ -277,6 +318,8 @@ var zz = {
       $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/wizard?step=1', function(){                
         // fire up the filechooser
         filechooser.init(); 
+        
+        setTimeout('zz.zang.show_tray()', 550);
         
         zz.zang.indicator_step = 1;  
         zz.zang.indicator = 'step-add';
@@ -381,7 +424,7 @@ var zz = {
         zz.zang.new_photo = $(this).attr('id');
         zz.zang.highlight_selected(zz.zang.new_photo);
       });
-      
+            
       // open drawer demo
       $('#nav-new-album').click(function(){
         if (zz.zang.drawer_open === 0) {
@@ -407,6 +450,19 @@ var zz = {
         zz.zang.resize_drawer(250);
       }
       // TODO: check for selected photo - move caption position
+    },
+    
+    tray: function(){
+     
+      $('#added-pictures-tray li img').unbind().hover(function() {
+        temp = $(this).attr('id');
+        zz.zang.tray_zoom_in(temp);
+      }, function() {
+        temp = $(this).attr('id');
+        zz.zang.tray_zoom_out(temp);
+      });
+
+    
     }        
   
   } // end zz.init

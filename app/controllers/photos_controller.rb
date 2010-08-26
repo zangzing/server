@@ -69,7 +69,7 @@ class PhotosController < ApplicationController
       @photo.source_screen_url = "http://localhost:9090/albums/#{@album.id}/photos/#{@photo.id}.screen"
 
       if @photo.save
-        render :json => @photo.to_json(:only =>[:id, :agent_id, :state])
+        render :json => @photo.to_json(:only =>[:id, :agent_id, :state, :source_thumb_url, :source_screen_url, :source_guid], :methods => [:thumb_url, :medium_url])
         return
       end
     end

@@ -220,6 +220,54 @@ div#drawer div.body div#drawer-content {
   overflow-y: scroll;  
 }
 
+ul#added-pictures-tray {
+  position: absolute;
+  display: none;
+  width: 878px;
+  height: 40px;
+  background-image: url('/images/bg-picture-tray.png');
+  background-repeat: no-repeat;
+  z-index: 100;
+  padding: 10px;
+  margin-right: 2px;
+}
+
+ul#added-pictures-tray li {
+  float: left;
+  margin-top: 12px;
+  width: 35px;
+  height: 35px;
+}
+
+ul#added-pictures-tray li div {
+  position: relative;
+  height: 35px;
+  width: 35px;
+}
+
+ul#added-pictures-tray li img {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 101;
+  border: 4px solid #e1e1e1;
+  box-shadow: 0px 0px 5px #e1e1e1;
+  -webkit-box-shadow: 0px 0px 5px #e1e1e1;
+  -moz-box-shadow: 0px 0px 5px #e1e1e1;
+  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#e1e1e1, offX=2, offY=2, positive=true);
+}
+
+ul#added-pictures-tray li img:hover {
+  bottom: 0;
+  left: 0;
+  border: 4px solid #FDD042;
+  box-shadow: 0px 0px 5px #FDD042;
+  -webkit-box-shadow: 0px 0px 5px #FDD042;
+  -moz-box-shadow: 0px 0px 5px #FDD042;
+  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#FDD042, offX=2, offY=2, positive=true);
+  z-index: 105;
+}
+
 ul#indicator {
   position: fixed;
   top: 54px;
@@ -319,7 +367,7 @@ div#drawer-content ul#folders, ul#filechooser {
 }
 
 div#drawer-content ul#folders li, ul#filechooser li {
-  background-image: url("/images/folders/zangzing.png");
+  background-image: url("/images/folders/blank.png");
   background-repeat: no-repeat;
   background-position: center top;
   float: left;
@@ -341,8 +389,8 @@ div#drawer-content ul#folders li.photo, ul#filechooser li.photo {
 }
 
 div#drawer-content ul#folders li.photo, ul#filechooser li.photo img {
-  max-height: 130px;
-  max-width: 130px;
+  max-height: 115px;
+  max-width: 115px;
   border: #fff solid 5px;
   box-shadow: 0px 0px 5px #767676;
   -webkit-box-shadow: 0px 0px 5px #767676;
@@ -351,44 +399,115 @@ div#drawer-content ul#folders li.photo, ul#filechooser li.photo img {
 }
 
 div#drawer-content ul#folders li.f_iphoto, ul#filechooser li.f_iphoto {
-  background-image: url("/images/folders/apple.png");
+  background-image: url("/images/folders/apple_off.png");
 }
 div#drawer-content ul#folders li.f_facebook, ul#filechooser li.f_facebook {
-  background-image: url("/images/folders/facebook.png");
+  background-image: url("/images/folders/facebook_off.png");
 }
 div#drawer-content ul#folders li.f_flickr, ul#filechooser li.f_flickr {
-  background-image: url("/images/folders/flickr.png");
+  background-image: url("/images/folders/flickr_off.png");
 }
 div#drawer-content ul#folders li.f_home, ul#filechooser li.f_home {
-  background-image: url("/images/folders/myhome.png");
+  background-image: url("/images/folders/myhome_off.png");
 }
 div#drawer-content ul#folders li.f_kodak, ul#filechooser li.f_kodak {
-  background-image: url("/images/folders/kodak.png");
+  background-image: url("/images/folders/kodak_off.png");
 }
 div#drawer-content ul#folders li.f_mycomputer, ul#filechooser li.f_mycomputer {
-  background-image: url("/images/folders/mycomputer.png");
+  background-image: url("/images/folders/mycomputer_off.png");
 }
 div#drawer-content ul#folders li.f_pictures, ul#filechooser li.f_pictures {
-  background-image: url("/images/folders/mypictures.png");
+  background-image: url("/images/folders/mypictures_off.png");
 }
 div#drawer-content ul#folders li.f_picasa, ul#filechooser li.f_picasa {
-  background-image: url("/images/folders/picasa.png");
+  background-image: url("/images/folders/picasa_off.png");
 }
 div#drawer-content ul#folders li.f_shutterfly, ul#filechooser li.f_shutterfly {
-  background-image: url("/images/folders/shutterfly.png");
+  background-image: url("/images/folders/shutterfly_off.png");
 }
 div#drawer-content ul#folders li.f_snapfish, ul#filechooser li.f_snapfish {
-  background-image: url("/images/folders/snapfish.png");
+  background-image: url("/images/folders/snapfish_off.png");
 }
 div#drawer-content ul#folders li.f_smugmug, ul#filechooser li.f_smugmug {
-  background-image: url("/images/folders/smugmug.png");
+  background-image: url("/images/folders/smugmug_off.png");
 }
 div#drawer-content ul#folders li.f_zangzing, ul#filechooser li.f_zangzing {
+  background-image: url("/images/folders/zangzing_off.png");
+}
+
+div#drawer-content ul#folders li.f_iphoto:hover, ul#filechooser li.f_iphoto:hover {
+  background-image: url("/images/folders/apple.png");
+}
+div#drawer-content ul#folders li.f_facebook:hover, ul#filechooser li.f_facebook:hover {
+  background-image: url("/images/folders/facebook.png");
+}
+div#drawer-content ul#folders li.f_flickr:hover, ul#filechooser li.f_flickr:hover {
+  background-image: url("/images/folders/flickr.png");
+}
+div#drawer-content ul#folders li.f_home:hover, ul#filechooser li.f_home:hover {
+  background-image: url("/images/folders/myhome.png");
+}
+div#drawer-content ul#folders li.f_kodak:hover, ul#filechooser li.f_kodak:hover {
+  background-image: url("/images/folders/kodak.png");
+}
+div#drawer-content ul#folders li.f_mycomputer:hover, ul#filechooser li.f_mycomputer:hover {
+  background-image: url("/images/folders/mycomputer.png");
+}
+div#drawer-content ul#folders li.f_pictures:hover, ul#filechooser li.f_pictures:hover {
+  background-image: url("/images/folders/mypictures.png");
+}
+div#drawer-content ul#folders li.f_picasa:hover, ul#filechooser li.f_picasa:hover {
+  background-image: url("/images/folders/picasa.png");
+}
+div#drawer-content ul#folders li.f_shutterfly:hover, ul#filechooser li.f_shutterfly:hover {
+  background-image: url("/images/folders/shutterfly.png");
+}
+div#drawer-content ul#folders li.f_snapfish:hover, ul#filechooser li.f_snapfish:hover {
+  background-image: url("/images/folders/snapfish.png");
+}
+div#drawer-content ul#folders li.f_smugmug:hover, ul#filechooser li.f_smugmug:hover {
+  background-image: url("/images/folders/smugmug.png");
+}
+div#drawer-content ul#folders li.f_zangzing:hover, ul#filechooser li.f_zangzing:hover {
   background-image: url("/images/folders/zangzing.png");
 }
 
 div#drawer-content ul#folders li:hover, ul#filechooser li:hover {
   color: #FDD042;
+}
+
+ul#filechooser li.photo:hover img {
+  border: 5px solid #FDD042;
+  box-shadow: 0px 0px 5px #FDD042;
+  -webkit-box-shadow: 0px 0px 5px #FDD042;
+  -moz-box-shadow: 0px 0px 5px #FDD042;
+  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#FDD042, offX=2, offY=2, positive=true);
+}
+
+ul#filechooser li figure {
+  display: none;
+}
+
+ul#filechooser li:hover figure {
+  display: block;
+  position: absolute;
+  bottom: 24px;
+  left: 2px;
+  height: 15px;
+  width: 97%;
+  background-image: url("/images/bg-blk-75.png");
+  color: #fff;
+  font-size: 1.3em;
+  padding: 2px 0 7px;
+  overflow: hidden;
+  text-align: center;
+  line-height: 1.5em;
+}
+
+ul#filechooser li.photo div {
+  position: relative;
+  width: 128px;
+  height: 120px;
 }
 
 ul#filechooser a {

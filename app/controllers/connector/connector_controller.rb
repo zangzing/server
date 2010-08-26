@@ -3,6 +3,8 @@ class Connector::ConnectorController < ApplicationController
 
   #USER_STUB = Struct.new(:id)
 
+  layout false
+  
   before_filter :require_user
   before_filter :check_params_for_import, :only => :import
 

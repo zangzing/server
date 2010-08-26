@@ -35,7 +35,7 @@ var added_photos_tray = {
       var id = 'tray-' + photos[i].source_guid;
 
       html += '<li>';
-      html += '<img height="30" width="30" id="' + id + '" src="">';
+      html += '<div><img height="30" width="30" id="' + id + '" src=""></div>';
       html += '</li>';
 
       if (photos[i].agent_id) {
@@ -63,20 +63,34 @@ var added_photos_tray = {
       //mark photo in chooser as 'added'
       //todo: cleanup generation of element id
       //todo: repace .wrap() with .addClass()
-      $('#chooser-' + photos[i].source_guid).wrap('<div style="border:1px solid blue"/>');
+      //$('#chooser-' + photos[i].source_guid).wrap('<div style="border:1px solid blue"/>');
 
 
     }
 
     $('#added-pictures-tray').html(html);
+    zz.init.tray();
     filechooser.imageloader.start(5);
     
   },
 
   on_refresh_error : function(error) {
 
-  }
+  },
 
+  delete_photo : function(photo_id){
+    $.ajax({
+       type: "DELETE",
+       dataType: "json",
+       url: "/photos/" + photo_id + ".json",
+       success: added_photos_tray.refresh,
+       error: function(){}
+    });
+
+    //todo: if local photo, need to cancel from agent upload -- http://localhost:9090/albums/:album_id/photos/:photo_id/cancel_upload
+  
+
+  }
 };
 
 /* Filechooser
@@ -234,28 +248,33 @@ var filechooser = {
 
       if (children[i].type == 'folder') {
         
-        html += '<li id="'+ children[i].type +'-'+ i +'" class="'+ children[i].class +'">';
+        //html += '<li id="'+ children[i].type +'-'+ i +'" class="'+ children[i].class +'">';
         
         //html += '<img src="/images/folder.jpg">';
         //html += '<br>';
 
-        html += '<a href="#" onclick="filechooser.open_folder(\'' + children[i].name + '\',\'' + children[i].open_url + '\',\'' + children[i].login_url + '\'); return false;\">';
-        html += children[i].name;
-        html += '</a>'
+        //html += '<a href="#" onclick="filechooser.open_folder(\'' + children[i].name + '\',\'' + children[i].open_url + '\',\'' + children[i].login_url + '\'); return false;\">';
+        //html += children[i].name;
+        //html += '</a>'
+        var theClick = 'onclick="filechooser.open_folder(\'' + children[i].name + '\',\'' + children[i].open_url + '\',\'' + children[i].login_url + '\'); return false;"';
+        html += '<li id="'+ children[i].type +'-'+ i +'" class="'+ children[i].class +'" '+theClick+'>';
+        html += children[i].name;        
 
         if (children[i].add_url) {
           html += '&nbsp;<a href="#" onclick="filechooser.add_folder(\'' + children[i].add_url + '\'); return false;">(+)</a>';
         }
+        
         html += '</li>';
-      }
-      else {
-      
+    
+      } else {
+        var theClick = 'onclick="filechooser.add_photo(\'' + children[i].add_url + '\'); return false;"';
         var id = 'chooser-' + children[i].source_guid;
-        html += '<li id="'+ children[i].type +'-'+ i +'" class="photo">';
-        html += '<img id="' + id + '" src="">';
-        html += '<br>';
-        html += children[i].name;
-        html += '&nbsp;<a href="#" onclick="filechooser.add_photo(\'' + children[i].add_url + '\'); return false;">(+)</a>';
+        html += '<li id="'+ children[i].type +'-'+ i +'" class="photo" '+theClick+'>';
+        html += '<div><img id="' + id + '" src="">';
+        //html += '<br>';
+        html+= '<figure>Add Photo</figure></div>';
+        //html += children[i].name;
+        //html += '&nbsp;<a href="#" onclick="filechooser.add_photo(\'' + children[i].add_url + '\'); return false;">(+)</a>';
         html += '</li>';
 
 
@@ -282,7 +301,7 @@ var filechooser = {
       $.jsonp({
         url: add_url,
         success: function(json) {
-          filechooser.on_add_photo();
+          filechooser.on_add_photo(json);
         },
         error: filechooser.on_error_adding_photo
       });
@@ -291,7 +310,7 @@ var filechooser = {
         dataType: 'json',
         url: add_url,
         success: function(json) {
-          filechooser.on_add_photo();
+          filechooser.on_add_photo(json);
         },
         error: filechooser.on_error_adding_photo
       });
@@ -299,8 +318,11 @@ var filechooser = {
   },
 
 
-  on_add_photo : function() {
-    added_photos_tray.refresh();
+  on_add_photo : function(json) {
+      //note: until we create a separate implementation for add_folder,
+      //      the json object here will be either a single picture, or a list of pictures
+      console.log(json)
+      added_photos_tray.refresh();
   },
 
 

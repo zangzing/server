@@ -8,8 +8,8 @@ class Connector::SmugmugPhotosController < Connector::SmugmugController
         :name => (p[:caption].blank? ? p[:filename] : p[:caption]),
         :id   => "#{p[:id]}_#{p[:key]}",
         :type => 'photo',
-        :thumb_url => p[:thumburl],
-        :screen_url => p[:x3largeurl],
+        :thumb_url => '/proxy?url=' + p[:smallurl],
+        :screen_url => '/proxy?url=' + p[:x3largeurl],
         :add_url => smugmug_photo_action_url({:sm_album_id =>album_id, :photo_id => "#{p[:id]}_#{p[:key]}", :action => 'import'}),
         :source_guid => Photo.generate_source_guid(p[:originalurl])
         
@@ -37,8 +37,8 @@ class Connector::SmugmugPhotosController < Connector::SmugmugController
             :album_id => params[:album_id],
             :user_id=>current_user.id,
             :source_guid => Photo.generate_source_guid(photo_info[:originalurl]),
-            :source_thumb_url => photo_info[:thumburl],
-            :source_screen_url => photo_info[:x3largeurl]
+            :source_thumb_url => '/proxy?url=' + photo_info[:smallurl],
+            :source_screen_url => '/proxy?url=' + photo_info[:x3largeurl]
 
     )
     Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, photo_info[:originalurl]))
