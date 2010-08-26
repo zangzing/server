@@ -1,5 +1,5 @@
 source :gemcutter
-source 'http://gems.github.com'
+#source 'http://gems.github.com'
 
 # bundler requires these gems in all environments
 gem "bundler","0.9.26"
@@ -11,7 +11,7 @@ gem 'will_paginate', '2.3.12'
 gem 'paperclip',     '2.3.1.1'
 gem 'aws-s3',        '>= 0.6.2', :require => 'aws/s3'
 gem 'gdata',         '1.1.1'
-gem 'collectiveidea-delayed_job' ,  '1.8.2'
+gem 'delayed_job' ,  '2.0.3'
 gem 'hyper-graph',   '0.3.1', :require=>'hyper_graph'
 gem 'oauth',         '0.4.1'
 gem 'oauth-plugin',  '0.3.14'
