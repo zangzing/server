@@ -14,12 +14,12 @@ class Connector::YahooContactsController < Connector::YahooController
       imported_contacts.each {|c| service_identity.contacts << c  }
       service_identity.last_contact_refresh = Time.now
       if service_identity.save
-        redirect_to :action => 'index'
+        render :json => imported_contacts.to_json( :only => [ :name, :address ])
       else
-        render :text => service_identity.errors.full_messages.join('<br/>')
+        render :json => identity.errors.full_messages.to_json, :status => 401
       end
     else
-      render :text => 'No contacts was imported'
+      render :json => imported_contacts.to_json(:only => [ :name, :address ])
     end
   end
 

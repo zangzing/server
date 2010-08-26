@@ -1,11 +1,48 @@
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/javascripts/lib/jquery.validate.js" ></script>
+    <script type="text/javascript" src="/javascripts/buddy.js" ></script>
+    <script type="text/javascript" src="/javascripts/jquery.ba-bbq.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.jsonp.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/javascripts/agent.js"></script>
+    <script type="text/javascript" src="/javascripts/server.js"></script>
+    <script type="text/javascript" src="/javascripts/filechooser.js" ></script>
+    <script type="text/javascript" src="/javascripts/oauthmanager.js" ></script>
+    <script type="text/javascript" src="/javascripts/logging.js"></script>
+    <script type="text/javascript" src="/javascripts/imageloader.js"></script>
+
 <h3 class="album">New Post Share</h3>
 <%form_for @share, :url => create_album_share_path(@album)  do |f| %>
     <%= f.error_messages %>
 
-    <table><tr>
-    <% f.fields_for :recipients do |g| %>
-        <td><%= g.object.name %>:<%= g.check_box( 'service',{},g.object.name.downcase,"") %></td>
-    <% end %>
-    <tr><td>Post: <%= f.text_area( :message, :cols=>40,  :rows=>10) %></td><td><%= f.submit "Post"%></td></tr>
+    <table>
+      <tr>
+        <td>Twitter:<%= f.check_box(  'twitter',{ :id => "twitter_box", :onclick => "call_new_twitter_session();"}) %></td>
+        <td>Facebook:<%= f.check_box( 'facebook',{:authorized => "yes",:id => "facebook_box", :onclick => "call_new_facebook_session();"}) %></td>
+      </tr>
+      <tr>
+        <td>Post: <%= f.text_area( :message, :cols=>40,  :rows=>10) %></td><td><%= f.submit "Post"%></td>
+      </tr>
     </table>
 <% end %>
+
+<script type="text/javascript">
+function call_new_facebook_session(){
+    
+    if($("#facebook_box").is(':checked') && !$("#facebook_box").attr('authorized')){
+        oauthmanager.login( '<%=new_facebook_session_url%>', facebook_login_success);
+    }
+}
+function facebook_login_success(){
+   $("#facebook_box").attr('authorized', 'yes')
+}
+function call_new_twitter_session(){
+    if($("#twitter_box").is(':checked') && !$("#twitter_box").attr('authorized')){
+       alert("Checking with twitter ");
+        // oauthmanager.login( '<%=new_twitter_session_url%>', twitter_login_success)
+    }
+}
+function twitter_login_success(){
+    $("#twitter_box").attr('authorized', 'yes')
+}
+</script>

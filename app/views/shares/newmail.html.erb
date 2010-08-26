@@ -1,27 +1,37 @@
-<script type="text/javascript" src="/javascripts/jquery.js"></script>
-<script type='text/javascript' src="/javascripts/jquery.autocomplete.js"></script>
-<link rel="stylesheet" type="text/css" href="/stylesheets/jquery.autocomplete.css" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/javascripts/lib/jquery.validate.js" ></script>
+    <script type="text/javascript" src="/javascripts/buddy.js" ></script>
+    <script type="text/javascript" src="/javascripts/jquery.ba-bbq.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.jsonp.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.autocomplete.js"></script>
+    <script type="text/javascript" src="/javascripts/agent.js"></script>
+    <script type="text/javascript" src="/javascripts/server.js"></script>
+    <script type="text/javascript" src="/javascripts/filechooser.js" ></script>
+    <script type="text/javascript" src="/javascripts/oauthmanager.js" ></script>
+    <script type="text/javascript" src="/javascripts/logging.js"></script>
+    <script type="text/javascript" src="/javascripts/imageloader.js"></script>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/jquery.autocomplete.css" />
 
 <h3 class="album">New Mail Share</h3>
  <table>
    <tr>
      <td> Gmail:</td>
      <% unless @google_id.credentials_valid? %>
-        <td><%= link_to "Import", new_google_session_url%></td>
+         <td> <%= button_to_function "Import", "call_new_google_session();return false;", :id => "google_import_button" %></td>
+         <td> <div id="last_google_import" ></div></td>
      <% else %>
-        <td> <%= button_to_function "Refresh", "call_google_import()" %></td>
-        <td>Last Imported on:</td><td> <div id="last_import" ><%= @google_id.last_contact_refresh %></div></td>
-        <td><%= link_to "Index", google_contacts_url(:index) %></td>
+        <td> <%= button_to_function "Refresh", "call_google_import();return false;", :id => "google_import_button" %></td>
+        <td> <div id="last_google_import" >Last imported on: <%= @google_id.last_contact_refresh %></div></td>
      <% end %>    
    </tr>
-   <tr>
-     <td>Yahoo: </td>
+   <td> Yahoo:</td>
      <% unless @yahoo_id.credentials_valid? %>
-        <td><%= link_to "Import", new_yahoo_session_url%></td>
+         <td> <%= button_to_function "Import", "call_new_yahoo_session();return false;", :id => "yahoo_import_button" %></td>
+         <td> <div id="last_yahoo_import" ></div></td>
      <% else %>
-        <td> <%= link_to "Refresh", yahoo_contacts_url(:import)%></td>
-        <td>Last Imported on: <%= @yahoo_id.last_contact_refresh %></td>
-        <td><%= link_to "Index", yahoo_contacts_url(:index) %></td>
+        <td> <%= button_to_function "Refresh", "call_yahoo_import();return false;", :id => "yahoo_import_button" %></td>
+        <td> <div id="last_yahoo_import" >Last imported on: <%= @yahoo_id.last_contact_refresh %></div></td>
      <% end %>
    </tr>
  </table>
@@ -44,6 +54,9 @@
 </form>
 
 <script type="text/javascript">
+
+
+
 function findValue(li) {
 	if( li == null ) return alert("No match!");
 
@@ -57,14 +70,11 @@ function findValue(li) {
     if( recipients.length > 0 ) recipients+=(";")
     recipients +=  sValue
     $("#ToField").val( recipients )
-
-	alert("The value you selected was: " + sValue);
 }
 
 function selectItem(li) {
 	findValue(li);
 }
-
 function formatItem(row) {
 	return row[0] + " (id: " + row[1] + ")";
 }
@@ -74,6 +84,81 @@ function lookupLocal(){
 	oSuggest.findValue();
 	return false;
 }
+
+function call_new_google_session(){
+    $("#google_import_button").attr('disabled', 'disabled')
+    oauthmanager.login( '<%=new_google_session_url%>', google_login_success)
+}
+function google_login_success(){
+    call_google_import()
+    $("#google_import_button").attr('onclick', '').click(call_google_import);
+    $("#google_import_button").attr('value', 'Refresh')
+}
+function call_google_import() {
+    $("#google_import_button").attr('disabled', 'disabled')
+    $("#last_google_import").html("Refreshing...");
+    $.ajax({
+      dataType: 'json',
+      url: '<%=google_contacts_url(:import)%>',
+      success: import_google_success,
+      error: import_google_failure
+    });
+}
+function import_google_success( contacts ){
+    var full_address
+    google_contacts = [];
+    for each ( var c in contacts) {
+        full_address = '<' +c.name+ '> '+c.address
+        google_contacts.push( [ c.name, full_address] );
+        google_contacts.push( [ c.address, full_address] );
+    }
+    loadAutocompleter()
+    $("#last_google_import").html("Last imported a second ago.")
+    $("#google_import_button").attr('disabled','')
+}
+function import_google_failure( errors ){
+   alert("Unable to refresh google contacts at the moment. Please try later")
+   $("#last_google_import").html("")
+   $("#google_import_button").attr('disabled','')
+}
+
+function call_new_yahoo_session(){
+    $("#yahoo_import_button").attr('disabled', 'disabled')
+    oauthmanager.login( '<%=new_yahoo_session_url%>', yahoo_login_success)
+}
+function yahoo_login_success(){
+    call_yahoo_import()
+    $("#yahoo_import_button").attr('onclick', '').click(call_yahoo_import);
+    $("#yahoo_import_button").attr('value', 'Refresh')
+}
+function call_yahoo_import() {
+    $("#yahoo_import_button").attr('disabled', 'disabled')
+    $("#last_yahoo_import").html("Refreshing...");
+    $.ajax({
+      dataType: 'json',
+      url: '<%=yahoo_contacts_url(:import)%>',
+      success: import_yahoo_success,
+      error: import_yahoo_failure
+    });
+}
+function import_yahoo_success( contacts ){
+    var full_address
+    yahoo_contacts = [];
+    for each ( var c in contacts) {
+        full_address = '<' +c.name+ '> '+c.address
+        yahoo_contacts.push( [ c.name, full_address] );
+        yahoo_contacts.push( [ c.address, full_address] );
+    }
+    loadAutocompleter()
+    $("#last_yahoo_import").html("Last imported a second ago.")
+    $("#yahoo_import_button").attr('disabled','')
+}
+function import_yahoo_failure( errors ){
+   alert("Unable to refresh yahoo contacts at the moment. Please try later")
+   $("#last_yahoo_import").html("")
+   $("#yahoo_import_button").attr('disabled','')
+}
+
 
 var google_contacts = [
         <% @google_id.contacts.each do|contact| %>
@@ -91,33 +176,6 @@ var yahoo_contacts = [
     "ZZZangZZZing"
 ];
 
-function call_google_import() {
-    $("#last_import").html("Refreshing...")
-    $.ajax({
-      dataType: 'json',
-      url: '<%=google_contacts_url(:import)%>',
-      success: import_google_success,
-      error: import_google_failure
-    });
-}
-
-function import_google_success( contacts ){
-    var full_address
-    var google_contacts = [];
-    for each ( var c in contacts) {
-        full_address = '<' +c.name+ '> '+c.address
-        google_contacts.push( [ c.name, full_address] );
-        google_contacts.push( [ c.address, full_address] );
-    }
-    loadAutocompleter()
-    $("#last_import").html("A second ago.")
-}
-
-function import_google_failure( errors ){
-   alert("Unable to refresh google contacts at the moment. Please try later")
-}
-
-
 
 function loadAutocompleter () {
 	$("#CityLocal").autocompleteArray(
@@ -129,13 +187,22 @@ function loadAutocompleter () {
                     onItemSelect:selectItem,
                     onFindValue:findValue,
                     autoFill:true,
-                    maxItemsToShow:10
+                    maxItemsToShow:10,
+                    selectFirst:true,
+                    selectOnly:true,
+
+
                 }
             );
 }
 
 
+
+
+
 $(document).ready( loadAutocompleter() );
+
+
 
 </script>
 
