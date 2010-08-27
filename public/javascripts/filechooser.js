@@ -36,6 +36,7 @@ var added_photos_tray = {
 
       html += '<li>';
       html += '<div><img height="30" width="30" id="' + id + '" src=""></div>';
+      html += '<a href="" onclick="added_photos_tray.delete_photo(\'' + photos[i].id+ '\'); return false;">(x)</a>';
       html += '</li>';
 
       if (photos[i].agent_id) {
