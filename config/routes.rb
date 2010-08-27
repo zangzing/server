@@ -16,6 +16,9 @@ ActionController::Routing::Routes.draw do |map|
     users.update_user  '/users/:id.',     :action=> 'update', :conditions=>{ :method => :put }
     users.delete_user  '/users/:id.',     :action=> 'destroy',:conditions=>{ :method => :delete }
   end
+  map.resources :users do |user|
+    user.resources :identities
+  end
 
   #albums
   map.with_options :controller => :albums do |albums|
