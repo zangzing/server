@@ -3,19 +3,18 @@ class Connector::TwitterSessionsController < Connector::TwitterController
   skip_before_filter :require_user, :only => [:new, :create]
 
   def new
-    request_token = twitter_api.consumer.get_request_token
-    auth_url = twitter_api.get_authorize_url(request_token, :oauth_callback => create_twitter_session_url)
-    redirect_to auth_url
+    request_token = twitter_api.consumer.request_token(:oauth_callback => create_twitter_session_url)
+    session[:twitter_request_token_secret] = request_token.secret
+    redirect_to request_token.authorize_url
   end
 
   def create
     begin
-      twitter_api.create_access_token!(params[:oauth_token], true)
-    rescue => e
-      raise InvalidToken if e.kind_of?(SmugmugError) #todo: this should be TwitterError?
+      twitter_api.create_access_token!(params[:oauth_token], session[:twitter_request_token_secret], params[:oauth_verifier])
+    rescue TwitterError => e
+      raise InvalidToken
     end
-    raise InvalidCredentials unless twitter_api.access_token
-    service_identity.update_attribute(:credentials, twitter_api.access_token(true))
+    service_identity.update_attribute(:credentials, twitter_api.access_token)
   end
 
   def destroy

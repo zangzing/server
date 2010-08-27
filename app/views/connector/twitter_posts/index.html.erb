@@ -1,6 +1,6 @@
 <% @feed.each do |entry| %>
 <p>
-  <b><i><%= entry[:created_at] %></i> from <%= entry[:user][:name] %></b><br/>
-  <%= entry[:text] || '&lt;<i>message is empty</i>&gt;' %>
+  <b><i><%= entry['created_at'] %></i> from <%= entry['user']['name'] %></b><br/>
+  <%= entry['text'] || '&lt;<i>message is empty</i>&gt;' %>
 </p>
 <% end %>
