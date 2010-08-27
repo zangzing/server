@@ -143,7 +143,6 @@ class Photo < ActiveRecord::Base
   # This call cannot be private
   def upload_to_s3
     begin
-      Delayed::PerformableMethod
       self.state = 'processing'
       self.image = local_image.to_file
       self.save!
