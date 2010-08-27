@@ -17,4 +17,9 @@ class PostShare < Share
     return @share
   end
 
+  def after_initialize
+    @twitter  ="0"
+    @facebook ="0"
+  end
+
 end

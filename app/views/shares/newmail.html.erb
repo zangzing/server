@@ -7,8 +7,8 @@
   <div id="form-container-2" class="clearfix">
     <ul id="email-sync" class="clearfix">
       <li class="title">Import contacts from</li>
-      <li><img src="/images/btn-outlook-sync.png" id="outlook-sync" /></li>
       <li><img src="/images/btn-gmail-sync.png" id="gmail-sync" /></li>
+      <li><img src="/images/btn-outlook-sync.png" id="outlook-sync" /></li>
       <li><img src="/images/btn-yahoo-sync.png" id="yahoo-sync" /></li>
     </ul>
     <div class="clear-fix"></div>
@@ -105,18 +105,27 @@ function lookupLocal(){
 	return false;
 }
 
+function setup_contact_buttons(){
+    if( <%=( @google_id.credentials_valid? ? 1 : 0 ) %> == 1 ){
+        $("#gmail-sync").click(call_google_import);
+        $("#gmail-sync").attr('title','Last import on: <%= @google_id.last_contact_refresh %>');
+    }else{
+        $("#gmail-sync").click(call_new_google_session);
+        $("#gmail-sync").attr('title','Authorize access to your gmail account and import contacts');
+   }
+}
+
 function call_new_google_session(){
-    $("#google_import_button").attr('disabled', 'disabled')
-    oauthmanager.login( '<%=new_google_session_url%>', google_login_success)
+    oauthmanager.login( '<%=new_google_session_url%>', google_login_success);
 }
 function google_login_success(){
-    call_google_import()
-    $("#google_import_button").attr('onclick', '').click(call_google_import);
-    $("#google_import_button").attr('value', 'Refresh')
+    //console.log('inside google login succes');
+    $("#gmail-sync").unbind().click(call_google_import);
+    call_google_import();
 }
 function call_google_import() {
-    $("#google_import_button").attr('disabled', 'disabled')
-    $("#last_google_import").html("Refreshing...");
+    //$("#gmail-sync").attr('disabled', 'disabled');
+    $("#gmail-sync").attr('title','Refreshing...');
     $.ajax({
       dataType: 'json',
       url: '<%=google_contacts_url(:import)%>',
@@ -125,21 +134,20 @@ function call_google_import() {
     });
 }
 function import_google_success( contacts ){
-    var full_address
+    //console.log('inside google import succes');
+    var full_address;
     google_contacts = [];
     for each ( var c in contacts) {
         full_address = '<' +c.name+ '> '+c.address
         google_contacts.push( [ c.name, full_address] );
         google_contacts.push( [ c.address, full_address] );
     }
-    loadAutocompleter()
-    $("#last_google_import").html("Last imported a second ago.")
-    $("#google_import_button").attr('disabled','')
+    //loadAutocompleter();
+    $("#gmail-sync").attr('title','Last imported a second ago.');
 }
 function import_google_failure( errors ){
-   alert("Unable to refresh google contacts at the moment. Please try later")
-   $("#last_google_import").html("")
-   $("#google_import_button").attr('disabled','')
+   alert("Unable to refresh google contacts at the moment. Please try later");
+   $("#gmail-sync").attr('title','');
 }
 
 function call_new_yahoo_session(){
@@ -216,7 +224,7 @@ function loadAutocompleter () {
             );
 }
 
-//$(document).ready( loadAutocompleter() );
+$(document).ready(  setup_contact_buttons );
 
 </script>
 </div>
