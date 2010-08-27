@@ -7,12 +7,11 @@ class AlbumsController < ApplicationController
   before_filter :authorized_user,  :only =>   [ :edit, :update, :destroy]
 
   def new
-    render :choose_album_type;
   end
 
   def create
-     if params[:album_type].nil?
-      render :text => "Error No Album Type Supplied for Choose Album Type.", :status=>500 and return
+    if params[:album_type].nil?
+      render :text => "Error No Album Type Supplied. Please Choose Album Type.", :status=>500 and return
     end
     @album  = params[:album_type].constantize.new()
     current_user.albums << @album
@@ -20,6 +19,7 @@ class AlbumsController < ApplicationController
     unless @album.save
       render :text => "Error in album create."+@album.errors.to_xml(), :status=>500 and return
     end
+    render :text => @album.id, :status => 200, :layout => false and return
   end
 
   def upload
@@ -37,7 +37,7 @@ class AlbumsController < ApplicationController
   def update
     @album = Album.find(params[:id])
     @album.update_attributes( params[:album] )
-    render :action => :edit
+    render :text => 'Success Updating Album', :status => 200, :layout => false
   end
 
   def index
@@ -60,6 +60,12 @@ class AlbumsController < ApplicationController
     @album.destroy
     redirect_back_or_default root_path
   end
+
+  def add_photos
+     @album = Album.find(params[:id])
+     render :layout => false 
+  end
+ 
 
   def wizard
     if params[:id].nil?
@@ -94,17 +100,12 @@ class AlbumsController < ApplicationController
     end
   end
 
-  def choose_album_type
-    self.create
-    render :text => @album.id, :status => 200, :layout => false and return
-  end
-  def add_photos
-    render :text => 'Success Adding Photos', :status => 200, :layout => false and return
-  end
+
   def name_album
-    @album.update_attributes(params[:album])
-    render :text => 'Success Naming Album', :status => 200, :layout => false and return
+    @album = Album.find(params[:id])
+    render :layout => false
   end
+
   def edit_album
     render :text => 'Success Editing Album', :status => 200, :layout => false and return
   end

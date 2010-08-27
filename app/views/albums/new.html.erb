@@ -1,4 +1,41 @@
-<%= button_to "Group Album",      :action => "create", :album_type => 'GroupAlbum' %>
-<%= button_to "Personal Album",   :action => "create", :album_type => 'PersonalAlbum' %>
-<%= button_to "Event Album",      :action => "create", :album_type => 'EventAlbum'  %>
-<%= button_to "Streaming Album",  :action => "create", :album_type => 'StreamingAlbum' %>
+<h3>Choose Album Type</h3>
+
+<ul id="choose-album-type" class="clearfix">
+  <li>
+    <img src="/images/stack-group.png" />
+    <div>
+      <h4>Group Album</h4>
+      <p>An album in which you and your friends can add and share all your photos in one place.</p>
+    </div> 
+    <img id="group_album_link" src="/images/btn-type-group.png" class="link" />
+  </li>
+  <li>
+    <img src="/images/stack-personal.png" />  
+    <div>
+      <h4>Personal Album</h4>
+      <p>An album in which you are the only one that can add photos. Friends can only view the album.</p>
+    </div> 
+    <img id="personal_album_link" src="/images/btn-type-personal.png" class="link" />
+  </li>
+  <li>
+    <img src="/images/stack-event.png" />
+    <div>
+      <h4>Event Album</h4>
+      <p>An album for events with reminders in which you and your friends can add and share photos.</p>
+    </div> 
+    <img id="event_album_link" src="/images/btn-type-event.png" class="link" />
+  </li>
+  <li>
+    <img src="/images/stack-stream.png" /> 
+    <div>
+      <h4>Streaming Album</h4>
+      <p>An album in which all new photos are automatically emailed or posted to Facebook and/or Twitter.</p>    
+    </div> 
+    <img id="streaming_album_link" src="/images/btn-type-streaming.png" class="link" />
+  </li>
+</ul>
+
+
+
+
+

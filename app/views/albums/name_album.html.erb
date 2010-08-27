@@ -1,15 +1,3 @@
-<div class="offset">
-  step:[<%= @step %>] id:[<%= @album.id %>]<hr>
-  <table><tr>
-  <td><%= button_to "Add Photos",  album_wizard_path(@album, :step => @step, :next_step => :add_photos ) %>
-  <td><h4>Name Album</h4>
-  <td><%= button_to "Edit Album",  album_wizard_path(@album, :step => @step, :next_step => :edit_album) %>
-  <td><%= button_to "Contributors",  album_wizard_path(@album, :step => @step, :next_step => :contributors) %>
-  <td><%= button_to "Share",  album_wizard_path(@album, :step => @step, :next_step => :share) %>
-  <td><%= button_to "Next",  album_wizard_path(@album, :step => @step) %>
-  </tr></table><hr>
-</div>
-
 <div class="album-header">
   <h3>Name Album</h3>
   <h4>Name the album and choose an album cover photo</h4>
@@ -17,10 +5,10 @@
 
 <% form_for @album do | f|  %>
   <%= f.error_messages %>
-     
   <dl class="form clearfix">
+
     <dt><label for="album_name">Album Name:</label></dt>
-    <dd><input type="text" name="album_name" id="album_name"</dd>
+    <dd><input type="text" name="album[name]" id="album_name" value="<%=@album.name%>"></dd>
   </dl>
   
   <div class="field">
