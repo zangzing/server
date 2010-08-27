@@ -229,6 +229,8 @@ ul#added-pictures-tray {
   z-index: 100;
   padding: 10px;
   margin-right: 2px;
+  bottom: 5px;
+  left: 7px;
 }
 
 ul#added-pictures-tray li {
