@@ -217,7 +217,8 @@ var zz = {
       
       $('div#drawer').animate({ height: zz.zang.drawer_height + 'px', top: '50px' }, time );
       $('div#drawer-content').animate({ height: (zz.zang.drawer_height - 52) + 'px'}, time );
-    
+      $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
+
     }, // end zz.zang.resize_drawer()
     
     close_drawer: function(time){
@@ -302,6 +303,7 @@ var zz = {
 
       $('#drawer-content').load('/users/'+zz.zang.user_id+'/albums/new', function(){
         $('#personal_album_link').click(zz.zang.create_album);
+        $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 70) + 'px'});
       });      
     },
     
@@ -320,6 +322,7 @@ var zz = {
         filechooser.init(); 
         
         setTimeout('zz.zang.show_tray()', 550);
+        $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
         
         zz.zang.indicator_step = 1;  
         zz.zang.indicator = 'step-add';
@@ -330,6 +333,7 @@ var zz = {
       $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/wizard?step=2', function(){                        
         zz.zang.indicator_step = 2;  
         zz.zang.indicator = 'step-name';
+        $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
       }); 
     },
     
@@ -337,6 +341,7 @@ var zz = {
       $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/wizard?step=3', function(){                        
         zz.zang.indicator_step = 3;  
         zz.zang.indicator = 'step-edit';
+        $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
       }); 
     },
 
@@ -344,19 +349,41 @@ var zz = {
       $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/shares/new', function(){                        
         zz.zang.indicator_step = 4;  
         zz.zang.indicator = 'step-share';
+        $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
+        $('.social-share').click(zz.zang.social_share);
+        $('.email-share').click(zz.zang.email_share);
       }); 
     },
     
+    social_share: function(){
+      $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/shares/newpost', function(){                        
+        zz.zang.indicator_step = 4;  
+        zz.zang.indicator = 'step-share';
+        $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
+      });     
+    },
+    
+    email_share: function(){
+      $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/shares/newmail', function(){                        
+        zz.zang.indicator_step = 4;  
+        zz.zang.indicator = 'step-share';
+        $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
+      });     
+    
+    },
+
     change_step: function(element){
       if (element == zz.zang.indicator) {
         //nothing to do - same step clicked
       } else if (zz.zang.indicator_step == 1) {
-        //dont post
+        //hide the tray
+        $('#added-pictures-tray').fadeOut('fast');
+  
       } else if (zz.zang.indicator_step == 2) {
         //post form
         serialized = $(".edit_album").serialize();
-        $.post('/albums/'+zz.zang.album_id+'/wizard?step=2', serialized, function(data){
-        });
+  
+        $.post('/albums/'+zz.zang.album_id+'/wizard?step=2', serialized);
 
       } else if (zz.zang.indicator_step == 3) {
         //nothing for now

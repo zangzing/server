@@ -217,7 +217,6 @@ div#drawer div.body div#drawer-content {
   margin: 0 auto;
   height: 0px;
   width: 895px;
-  overflow-y: scroll;  
 }
 
 ul#added-pictures-tray {
@@ -346,9 +345,15 @@ ul#indicator li.on {
 /* Create Album
 ----------------------------------------------------------------------------- */
 div#drawer-content div#top-section {
-  padding: 10px 10px 0;
+  padding: 0px 10px;
   width: 840px;
   margin-top: 15px;
+  height: 75px;
+}
+
+div#drawer-content div#scroll-body {
+  overflow-y: auto;  
+  height: 0px; 
 }
 
 div#top-section img#filechooser-back-button {
@@ -543,6 +548,7 @@ ul#choose-album-type li img {
 ul#choose-album-type li p {
   margin-bottom: 15px;
   line-height: 1.3em;
+  line-height: 1.1em;
 }
 
 ul#choose-album-type li div {
@@ -616,6 +622,109 @@ div#drawer-content dl.form dd input#album_name:focus {
   -webkit-box-shadow: 0px 0px 10px #FDD042;
   -moz-box-shadow: 0px 0px 10px #FDD042;
   filter: progid:DXImageTransform.Microsoft.dropShadow(color=#FDD042, offX=2, offY=2, positive=true);  
+}
+
+ul#share-pick {
+  width: 800px;
+  margin: 20px auto;
+}
+
+ul#share-pick li {
+  float: left;
+  width: 50%;
+  text-align: center;
+  font-size: 1.4em;
+}
+
+ul#share-pick li a {
+  color: #646464;
+}
+
+ul#share-pick li img {
+  margin-bottom: 10px;
+}
+
+div#form-container {
+  width: 800px;
+  margin: 20px auto;  
+  font-size: 1.4em;
+}
+
+div#form-container-2 {
+  width: 800px;
+  margin: 0px auto;  
+  font-size: 1.4em;
+}
+
+dl#social-form dt {
+  float: left;
+  width: 50px;
+  text-align: right;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+dl#social-form dt img {
+  vertical-align: -30%;
+}
+
+dl#social-form dt#network {
+  margin-left: 50px;
+}
+
+dl#social-form dd {
+  text-align: left;
+  float: left;
+  margin-bottom: 10px;
+}
+
+dl#social-form dd#post-text {
+  width: 690px;
+}
+
+dl#social-form dd#post-text textarea {
+  width: 690px;
+  padding: 5px;
+  color: #646464;
+}
+
+#social-submit, #mail-submit {
+  float: right;
+  margin: 20px 20px 0 0;
+}
+
+ul#email-sync {
+  margin: 0 0 10px 125px;
+  float: left;
+}
+
+ul#email-sync li {
+  float: left;
+}
+
+ul#email-sync li.title {
+  padding: 10px;
+  color: #646464;
+}
+
+dl#email-share-form dt {
+  float: left;
+  text-align: right;
+  margin-right: 10px;
+  width: 50px;
+  margin-bottom: 10px;
+}
+
+dl#email-share-form dd {
+  float: left;
+  text-align: right;
+  margin-bottom: 10px;
+}
+
+dl#email-share-form dd input, dl#email-share-form dd textarea {
+  width: 690px;
+  padding: 5px;
+  color: #646464;
 }
 
 /* Grid View

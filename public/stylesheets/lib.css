@@ -3,10 +3,12 @@
 
 /* 
 html5doctor.com Reset Stylesheet
-v1.4.1 
-2010-03-01
-Author: Richard Clark - http://richclarkdesign.com - @rich_clark
+v1.6
+Last Updated: 2010-08-18
+Author: Richard Clark - http://richclarkdesign.com 
+Twitter: @rich_clark
 */
+
 html, body, div, span, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 abbr, address, cite, code,
@@ -19,75 +21,87 @@ table, caption, tbody, tfoot, thead, tr, th, td,
 article, aside, canvas, details, figcaption, figure, 
 footer, header, hgroup, menu, nav, section, summary,
 time, mark, audio, video {
-  margin:0;
-  padding:0;
-  border:0;
-  outline:0;
-  font-size:100%;
-  vertical-align:baseline;
-  background:transparent;
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
 }
+
 body {
-  line-height:1;
+    line-height:1;
 }
-:focus {
-  outline: 1;
+
+article,aside,details,figcaption,figure,
+footer,header,hgroup,menu,nav,section { 
+	display:block;
 }
-article,aside,canvas,details,figcaption,figure,
-footer,header,hgroup,menu,nav,section,summary { 
-  display:block;
-}
+
 nav ul {
-  list-style:none;
+    list-style:none;
 }
+
 blockquote, q {
-  quotes:none;
+    quotes:none;
 }
+
 blockquote:before, blockquote:after,
 q:before, q:after {
-  content:'';
-  content:none;
+    content:'';
+    content:none;
 }
+
 a {
-  margin:0;
-  padding:0;
-  border:0;
-  font-size:100%;
-  vertical-align:baseline;
-  background:transparent;
+    margin:0;
+    padding:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
 }
+
+/* change colours to suit your needs */
 ins {
-  background-color:#ff9;
-  color:#000;
-  text-decoration:none;
+    background-color:#ff9;
+    color:#000;
+    text-decoration:none;
 }
+
+/* change colours to suit your needs */
 mark {
-  background-color:#ff9;
-  color:#000; 
-  font-style:italic;
-  font-weight:bold;
+    background-color:#ff9;
+    color:#000; 
+    font-style:italic;
+    font-weight:bold;
 }
+
 del {
-  text-decoration: line-through;
+    text-decoration: line-through;
 }
+
 abbr[title], dfn[title] {
-  border-bottom:1px dotted #000;
-  cursor:help;
+    border-bottom:1px dotted inherit;
+    cursor:help;
 }
+
 table {
-  border-collapse:collapse;
-  border-spacing:0;
+    border-collapse:collapse;
+    border-spacing:0;
 }
+
+/* change border colour to suit your needs */
 hr {
-  display:block;
-  height:1px;
-  border:0;   
-  border-top:1px solid #cccccc;
-  margin:1em 0;
-  padding:0;
+    display:block;
+    height:1px;
+    border:0;   
+    border-top:1px solid #cccccc;
+    margin:1em 0;
+    padding:0;
 }
+
 input, select {
-  vertical-align:middle;
+    vertical-align:middle;
 }
 /* Missing from the html5doctor reset - some would say rightly so...
 ----------------------------------------------------------------------------- */

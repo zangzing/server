@@ -1,3 +1,4 @@
+<div class="offset">
 step:[<%= @step %>] id:[<%= @album.id %>] <hr>
 <table><tr>
 <td><%= button_to "Add Photos",  album_wizard_path(@album, :step => @step, :next_step => :add_photos ) %>
@@ -7,7 +8,14 @@ step:[<%= @step %>] id:[<%= @album.id %>] <hr>
 <td><h4>Share</h4>
 <td><%= button_to "End",  album_path(@album), :method => :get %>
 </tr></table><hr>
+</div>
 
+<div class="album-header">
+  <h3>Share Album</h3>
+  <h4>Set Privacy Settings and Share this Album with Your Friends</h4>
+</div>
+
+<div id="scroll-body">
 
 <% form_for @share = Share.new, :url => album_wizard_url( @album ) do |f| %>
     Outlook:<%= f.check_box 'rand' %> Gmail:<%= f.check_box 'rand' %>Yahoo:<%= f.check_box 'rand'  %></br>   
@@ -19,4 +27,5 @@ step:[<%= @step %>] id:[<%= @album.id %>] <hr>
     Post: <%= f.text_area(      :message, :cols=>40,  :rows=>10) %> </br>
 <% end %>
 
+</div>
 

@@ -1,15 +1,3 @@
-<div class="offset">
-  step:[<%= @step %>] id:[<%= @album.id %>]<hr>
-  <table><tr>
-  <td><h4>Add Photos</h4>
-  <td><%= button_to "Name Album",  album_wizard_path(@album, :step => @step, :next_step => :name_album ) %>
-  <td><%= button_to "Edit Album",  album_wizard_path(@album, :step => @step, :next_step => :edit_album) %>
-  <td><%= button_to "Contributors",  album_wizard_path(@album, :step => @step, :next_step => :contributors) %>
-  <td><%= button_to "Share",  album_wizard_path(@album, :step => @step, :next_step => :share) %>
-  <td><%= button_to "Next",  album_wizard_path(@album, :step => @step) %>
-  </tr></table><hr>
-</div>
-
 <div id="top-section" class="clearfix">
   <img src="/images/btn-back.png" id="filechooser-back-button" />
   <div class="album-header">
@@ -19,7 +7,9 @@
   <div id="equalizer">&nbsp;</div>
 </div>
 
-<ul id="filechooser"></ul>
+<div id="scroll-body">
+  <ul id="filechooser"></ul>
+</div>
 
 <ul id="added-pictures-tray">
   <li id="here">&nbsp;</li>

@@ -1,11 +1,24 @@
-<h3 class="album">New Post Share</h3>
-<%form_for @share, :url => create_album_share_path(@album)  do |f| %>
-    <%= f.error_messages %>
+<div class="album-header">
+  <h3>Post Your Album</h3>
+  <h4>Share your album with all your friends on Facebook or Twitter!</h4>
+</div>
 
-    <table><tr>
-    <% f.fields_for :recipients do |g| %>
-        <td><%= g.object.name %>:<%= g.check_box( 'service',{},g.object.name.downcase,"") %></td>
-    <% end %>
-    <tr><td>Post: <%= f.text_area( :message, :cols=>40,  :rows=>10) %></td><td><%= f.submit "Post"%></td></tr>
-    </table>
-<% end %>
+<div id="scroll-body">
+  <%form_for @share, :url => create_album_share_path(@album)  do |f| %>
+    <div class="offset"><%= f.error_messages %></div>
+    
+    <div id="form-container" class="clearfix">
+      <dl id="social-form" class="clearfix">
+        <dt id="network"><input type="checkbox" name="post_share[facebook]" /> <img src="/images/icon-facebook-16.png" /></dt>
+        <dd>Facebook</dd>
+        <dt><input type="checkbox" name="post_share[twitter]" /> <img src="/images/icon-twitter-16.png" /></dt>
+        <dd>Twitter</dd>
+        <div class="clear-fix"></div>
+        <dt>Post</dt>
+        <dd id="post-text"><textarea rows="3" name="post_share[message]" id="post_share_message"></textarea></dd>    
+      </dl>  
+      
+      <input type="image" src="/images/btn-post.png" name="submit" id="social-submit" />
+    </div>
+  <% end %>
+</div>

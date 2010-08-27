@@ -1,8 +1,28 @@
-
+<div class="offset">
 <% flash.each do |key, value| %>
-	          <div class="flash <%= key %>"><%= value %></div>
+  <div class="flash <%= key %>"><%= value %></div>
 <% end %> 
 
 <%= link_to "Share this album on Facebook or Twitter", new_album_postshare_url( @album ) %>
 
 <%= link_to "Share this album by email", new_album_mailshare_url( @album ) %>
+</div>
+
+<div class="album-header">
+  <h3>Share Album</h3>
+  <h4>Set Privacy Settings and Share this Album with Your Friends</h4>
+</div>
+
+<div id="scroll-body">
+ <ul id="share-pick">
+   <li class="social-share link">
+     <p><img src="/images/social-btns.png" /></p>
+     <p><a href="javascript:void(0);">Share this album on Facebook or Twitter</a></p>
+   </li>
+   <li class="email-share link">
+     <p><img src="/images/email-btn.png" /></p>
+     <p><a href="javascript:void(0);">Share this album by Email</a></p>
+   </li>
+ </ul> 
+
+</div>
