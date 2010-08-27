@@ -13,6 +13,7 @@ class CreateAlbums < ActiveRecord::Migration
         t.boolean  :reminders
         t.string   :name
         t.boolean  :suspended , :default => false
+        t.datetime :last_upload_started_at
         t.timestamps
     end
     add_index :albums, :user_id

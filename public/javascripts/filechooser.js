@@ -76,8 +76,21 @@ var added_photos_tray = {
 
   on_refresh_error : function(error) {
 
-  }
+  },
 
+  delete_photo : function(photo_id){
+    $.ajax({
+       type: "DELETE",
+       dataType: "json",
+       url: "/photos/" + photo_id + ".json",
+       success: added_photos_tray.refresh,
+       error: function(){}
+    });
+
+    //todo: if local photo, need to cancel from agent upload -- http://localhost:9090/albums/:album_id/photos/:photo_id/cancel_upload
+  
+
+  }
 };
 
 /* Filechooser
@@ -308,7 +321,6 @@ var filechooser = {
   on_add_photo : function(json) {
       //note: until we create a separate implementation for add_folder,
       //      the json object here will be either a single picture, or a list of pictures
-      console.log(json)
       added_photos_tray.refresh();
   },
 

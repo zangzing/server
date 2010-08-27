@@ -1,6 +1,5 @@
 class Connector::GoogleContactsController < Connector::GoogleController
   skip_before_filter :service_login_required, :only => [:index]
-  layout false
 
   BATCH_SIZE = 100
 
@@ -40,10 +39,8 @@ class Connector::GoogleContactsController < Connector::GoogleController
         render :json => identity.errors.full_messages.to_json, :status => 401
       end
     else
-      render :json => imported_contacts.to_json( :only => [ :name, :address ])
+      render :json => imported_contacts.to_json(:only => [ :name, :address ])
     end
   end
-
-
 end
 

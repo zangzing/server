@@ -3,13 +3,18 @@
 #
 
 class PostShare < Share
-  
+  attr_accessor :twitter, :facebook
+
   def self.factory(user, params)
-    @new_share = PostShare.new( params )
-    @new_share.recipients.each do |rec|
-       rec.name = user.name
-       rec.address = user.id
+    @share = PostShare.new( params )
+
+    if params[:facebook] && params[:facebook ] != "0"
+      @share.recipients.build( :service => 'facebook',:name    => user.name,:address => user.id)
     end
-    return @new_share
+    if params[:twitter] && params[:twitter ] != "0"
+      @share.recipients.build( :service => 'twitter',:name    => user.name,:address => user.id)
+    end
+    return @share
   end
+
 end

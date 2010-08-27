@@ -17,7 +17,7 @@ class Connector::SmugmugController < Connector::ConnectorController
       begin
         @token_string = service_identity.credentials
         @api = SmugmugConnector.new(@token_string)
-        smugmug_api.call_method('smugmug.auth.checkAccessToken')
+        @owner = smugmug_api.call_method('smugmug.auth.checkAccessToken')
       rescue => exception
         raise InvalidToken if exception.kind_of?(SmugmugError)
         raise HttpCallFail if exception.kind_of?(SocketError)
@@ -27,6 +27,10 @@ class Connector::SmugmugController < Connector::ConnectorController
 
   def service_identity
     @service_identity ||= current_user.identity_for_smugmug
+  end
+
+  def owner_info
+    @owner
   end
 
   def smugmug_api

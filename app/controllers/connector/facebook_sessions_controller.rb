@@ -11,6 +11,7 @@ class Connector::FacebookSessionsController < Connector::FacebookController
     token = HyperGraph.get_access_token(FACEBOOK_API_KEYS[:app_id], FACEBOOK_API_KEYS[:app_secret], create_facebook_session_url(:host => APPLICATION_HOST), params[:code])
     raise InvalidCredentials unless token
     service_identity.update_attribute(:credentials, token)
+    render :layout => false
   end
 
   def destroy

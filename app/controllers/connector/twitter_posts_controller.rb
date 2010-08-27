@@ -9,6 +9,6 @@ class Connector::TwitterPostsController < Connector::TwitterController
 
   def create
     response = twitter_api.client.update(params[:message])
-    render :text => response.inspect
+    render :json => response
   end
 end

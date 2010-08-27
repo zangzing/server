@@ -7,12 +7,12 @@ class AlbumsController < ApplicationController
   before_filter :authorized_user,  :only =>   [ :edit, :update, :destroy]
 
   def new
-    render :choose_album_type;
+    render :layout => false
   end
 
   def create
-     if params[:album_type].nil?
-      render :text => "Error No Album Type Supplied for Choose Album Type.", :status=>500 and return
+    if params[:album_type].nil?
+      render :text => "Error No Album Type Supplied. Please Choose Album Type.", :status=>500 and return
     end
     @album  = params[:album_type].constantize.new()
     current_user.albums << @album
@@ -20,11 +20,31 @@ class AlbumsController < ApplicationController
     unless @album.save
       render :text => "Error in album create."+@album.errors.to_xml(), :status=>500 and return
     end
+    render :text => @album.id, :status => 200, :layout => false and return
   end
 
   def upload
     #just show the view to load the filechooser.js
     @album = Album.find(params[:id])
+  end
+
+  def upload_stat
+    album = Album.find(params[:album_id])
+    album.update_attribute(:last_upload_started_at, Time.now) if params[:reset_last_upload_timestamp]
+    photos_pending = Photo.find(:all, :conditions => {:album_id => params[:album_id], :state => ['assigned', 'loaded', 'processing']})
+    photos_completed = Photo.find(:all, :conditions => {:album_id => params[:album_id], :state => 'ready', :image_updated_at => album.last_upload_started_at.utc..DateTime.now.utc })
+    unless photos_completed.empty?
+      #est_time = (photos_completed.map{ |p| (p.image_updated_at.to_time - p.created_at.to_time)/3600 }.sum / photos_completed.count) * photos_pending.count
+      est_time = (photos_completed.map(&:image_updated_at).max - photos_completed.map(&:created_at).min)/3600 * photos_pending.count
+    else
+      est_time = 0
+    end
+    render :json => {
+      'percent-complete' => (photos_completed.count.to_f/(photos_completed.count+photos_pending.count).to_f)*100,
+      'time-remaining' => est_time,
+      'photos-complete' => photos_completed.count,
+      'photos-pending' => photos_pending.count
+    }
   end
 
   def edit
@@ -37,7 +57,7 @@ class AlbumsController < ApplicationController
   def update
     @album = Album.find(params[:id])
     @album.update_attributes( params[:album] )
-    render :action => :edit
+    render :text => 'Success Updating Album', :status => 200, :layout => false
   end
 
   def index
@@ -60,6 +80,12 @@ class AlbumsController < ApplicationController
     @album.destroy
     redirect_back_or_default root_path
   end
+
+  def add_photos
+     @album = Album.find(params[:id])
+     render :layout => false 
+  end
+ 
 
   def wizard
     if params[:id].nil?
@@ -94,17 +120,12 @@ class AlbumsController < ApplicationController
     end
   end
 
-  def choose_album_type
-    self.create
-    render :text => @album.id, :status => 200, :layout => false and return
-  end
-  def add_photos
-    render :text => 'Success Adding Photos', :status => 200, :layout => false and return
-  end
+
   def name_album
-    @album.update_attributes(params[:album])
-    render :text => 'Success Naming Album', :status => 200, :layout => false and return
+    @album = Album.find(params[:id])
+    render :layout => false
   end
+
   def edit_album
     render :text => 'Success Editing Album', :status => 200, :layout => false and return
   end

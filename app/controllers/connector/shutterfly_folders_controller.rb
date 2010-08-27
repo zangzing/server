@@ -27,7 +27,7 @@ class Connector::ShutterflyFoldersController < Connector::ShutterflyController
               :source_thumb_url => get_photo_url(p[:id],  :thumb),
               :source_screen_url => get_photo_url(p[:id],  :screen)
       )
-      Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, get_photo_url(p[:id].first, :full)))
+      Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, get_photo_url(p[:id].first, :full)))
       photos << photo
     end
 

@@ -29,7 +29,7 @@ class Connector::FlickrPhotosController < Connector::FlickrController
 #  end
 
   def import
-    info = flickr_api.photos.getInfo :photo_id => params[:photo_id]
+    info = flickr_api.photos.getInfo :photo_id => params[:photo_id], :extras => 'original_format'
     photo_url = get_photo_url(info, :full)
     photo = Photo.create(
               :caption => info.title,
@@ -39,8 +39,7 @@ class Connector::FlickrPhotosController < Connector::FlickrController
               :source_thumb_url => get_photo_url(info, :thumb),
               :source_screen_url => get_photo_url(info, :screen)
     )
-
-    Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, photo_url))
+    Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, photo_url))
     render :json => photo.to_json
   end
 end

@@ -41,7 +41,7 @@ class Connector::SmugmugPhotosController < Connector::SmugmugController
             :source_screen_url => '/proxy?url=' + photo_info[:x3largeurl]
 
     )
-    Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, photo_info[:originalurl]))
+    Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, photo_info[:originalurl]))
 
     render :json => photo.to_json
 

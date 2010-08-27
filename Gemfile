@@ -1,4 +1,5 @@
 source :gemcutter
+#source 'http://gems.github.com'
 
 # bundler requires these gems in all environments
 gem "bundler","0.9.26"
@@ -21,7 +22,7 @@ gem 'usesguid_migrations'
 
 gem 'contacts'
 gem 'hpricot'
-gem 'twitter'
+gem 'twitter_oauth'
 
 group :development do
   # bundler requires these gems in development

@@ -8,32 +8,21 @@ class TwitterError < StandardError
 end
 
 class TwitterConnector
-  require 'oauth/consumer'
-  require 'twitter'
-
-  API_ENDPOINT = '/services/api/json/1.2.2/'
+  require 'twitter_oauth'
 
   def initialize(token = nil)
     self.access_token = token
   end
 
-  def access_token(as_string = false)
-    unless as_string
-      @access_token
-    else
-      [@access_token.token, @access_token.secret].join('_')
-    end
+  def access_token
+    [@access_token_token, @access_token_secret].join('_')
   end
 
   def access_token=(token)
     if token.kind_of?(String) && token.include?('_')
-      parts = token.split('_')
-      @access_token = OAuth::AccessToken.from_hash(consumer, {:oauth_token => parts[0], :oauth_token_secret => parts[1]})
-      #create_access_token!(parts[0], parts[1])
-    elsif
-      @access_token = token
+      @access_token_token, @access_token_secret = token.split('_')
+      create_client!
     end
-    create_client!
   end
 
   def consumer
@@ -41,40 +30,20 @@ class TwitterConnector
   end
 
   def create_consumer
-    OAuth::Consumer.new(TwitterConnector.api_key, TwitterConnector.shared_secret, {
-      :site                 => 'http://twitter.com', #'http://api.twitter.com',
-      :scheme               => :query_string,
-      :http_method          => :get,
-      :request_token_path   => '/oauth/request_token',
-      :access_token_path    => '/oauth/access_token',
-      :authorize_path       => '/oauth/authorize'
-    })
+    TwitterOAuth::Client.new(
+        :consumer_key => TwitterConnector.api_key,
+        :consumer_secret => TwitterConnector.shared_secret
+    )
   end
 
-  def create_access_token!(oauth_token, first_time = false)
-    if first_time
-      req_token = OAuth::RequestToken.from_hash(consumer, :oauth_token => oauth_token)
-      begin
-        @access_token = req_token.get_access_token
-      rescue => e
-        if e.kind_of?(OAuth::Unauthorized)
-          code, msg = e.message.split(' ')
-          raise TwitterError.new(code, "#{msg} (invalid/expired oauth request token)")
-        end
-      end
-    elsif
-      @access_token = OAuth::AccessToken.from_hash(consumer, :oauth_token => oauth_token)
-    end
-    create_client!
-  end
-
-  def get_authorize_url(request_token, options = {})
-    auth_params = {
-      #'Access' => options[:access] || :Public,
-      #'Permissions' => options[:permissions] || :Read,
-      'oauth_token_secret' => request_token.secret
-    }
-    request_token.authorize_url(options.merge(auth_params))
+  def create_access_token!(oauth_token, request_token_secret, oauth_verifier)
+    oauth_access_token = consumer.authorize(
+      oauth_token,
+      request_token_secret,
+      :oauth_verifier => oauth_verifier
+    )
+    @access_token_token = oauth_access_token.token
+    @access_token_secret = oauth_access_token.secret
   end
 
   def client
@@ -84,11 +53,13 @@ class TwitterConnector
 protected
 
   def create_client!
-    return unless @access_token
-    oauth = Twitter::OAuth.new(TwitterConnector.api_key, TwitterConnector.shared_secret)
-    oauth.authorize_from_access(@access_token.token, @access_token.secret)
-    @client = Twitter::Base.new(oauth)
-    @client.home_timeline(:count => 1) #Kinda ping
+    return unless @access_token_token || @access_token_secret
+    @client = TwitterOAuth::Client.new(
+      :consumer_key => TwitterConnector.api_key,
+      :consumer_secret => TwitterConnector.shared_secret,
+      :token => @access_token_token,
+      :secret => @access_token_secret
+    )
   end
 
   def normalize_response(response)

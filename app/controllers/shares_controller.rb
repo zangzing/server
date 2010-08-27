@@ -12,20 +12,15 @@ class SharesController < ApplicationController
   def newpost
       @album = Album.find(params[:album_id])
       @share = PostShare.new
-      @share.recipients.build(:name => 'Twitter')
-      @share.recipients.build(:name => 'Facebook')
+      @share.twitter  = ( current_user.identity_for_twitter.credentials_valid? ? "1" :"0" )
+      @share.facebook = ( current_user.identity_for_facebook.credentials_valid? ? "1" :"0" )    
   end
 
   def newmail
     @album = Album.find(params[:album_id])
-    @share = MailShare.new
-    
+    @share = MailShare.new    
     @google_id = current_user.identity_for_google
     @yahoo_id  = current_user.identity_for_yahoo
-    @contacts = []
-    @contacts.concat @google_id.contacts unless @google_id.nil?
-    @contacts.concat @yahoo_id.contacts unless @yahoo_id.nil?  
-
   end
   
   def create
@@ -33,7 +28,7 @@ class SharesController < ApplicationController
     @share = Share.factory( current_user, @album, params)
     if @share.save
        flash[:success] = "You will be notified and your album will be shared as soon as your photos finish uploading"
-       render 'new'
+       redirect_to edit_share_path(@share)
     else
       render 'newmail' and return  if params[:mail_share]
       render 'newpost' and return  if params[:post_share]
@@ -41,8 +36,20 @@ class SharesController < ApplicationController
   end
 
   def edit
-    @mail_share = Share.find(params[:id]) 
-    @album = @mail_share.album
-    render :new, :layout => false
+    @share = Share.find(params[:id])
+    @album = @share.album
+
+    case @share
+      when MailShare then
+        @google_id = current_user.identity_for_google
+        @yahoo_id  = current_user.identity_for_yahoo
+        @contacts = []
+        @contacts.concat @google_id.contacts unless @google_id.nil?
+        @contacts.concat @yahoo_id.contacts unless @yahoo_id.nil?
+        render 'newmail'
+      when PostShare then
+        render 'newpost'
+    end
   end
+
 end

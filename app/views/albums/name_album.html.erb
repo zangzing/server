@@ -4,17 +4,17 @@
 </div>
 
 <div id="scroll-body">
-  <% form_for @album do | f|  %>
-    <%= f.error_messages %>
-       
-    <dl class="form clearfix">
-      <dt><label for="album_name">Album Name:</label></dt>
-      <dd><input type="text" name="album_name" id="album_name" value=""/></dd>
-    </dl>
-    
-    <div class="field">
-      Album Cover Selection Should Go Here
-      <!-- TODO: Album cover selection code -->
-    </div>
-  <% end %>
+<% form_for @album do | f|  %>
+  <%= f.error_messages %>
+  <dl class="form clearfix">
+
+    <dt><label for="album_name">Album Name:</label></dt>
+    <dd><input type="text" name="album[name]" id="album_name" value="<%=@album.name%>"></dd>
+  </dl>
+  
+  <div class="field">
+    Album Cover Selection Should Go Here
+    <!-- TODO: Album cover selection code -->
+  </div>
+<% end %>
 </div>

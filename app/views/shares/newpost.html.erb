@@ -22,3 +22,42 @@
     </div>
   <% end %>
 </div>
+
+<div class="offset">
+
+<h3 class="album">New Post Share</h3>
+<%form_for @share, :url => create_album_share_path(@album)  do |f| %>
+    <%= f.error_messages %>
+
+    <table>
+      <tr>
+        <td>Twitter:<%= f.check_box(  'twitter',{ :id => "twitter_box", :onclick => "call_new_twitter_session();"}) %></td>
+        <td>Facebook:<%= f.check_box( 'facebook',{:authorized => "yes",:id => "facebook_box", :onclick => "call_new_facebook_session();"}) %></td>
+      </tr>
+      <tr>
+        <td>Post: <%= f.text_area( :message, :cols=>40,  :rows=>10) %></td><td><%= f.submit "Post"%></td>
+      </tr>
+    </table>
+<% end %>
+
+<script type="text/javascript">
+function call_new_facebook_session(){
+    
+    if($("#facebook_box").is(':checked') && !$("#facebook_box").attr('authorized')){
+        oauthmanager.login( '<%=new_facebook_session_url%>', facebook_login_success);
+    }
+}
+function facebook_login_success(){
+   $("#facebook_box").attr('authorized', 'yes')
+}
+function call_new_twitter_session(){
+    if($("#twitter_box").is(':checked') && !$("#twitter_box").attr('authorized')){
+       alert("Checking with twitter ");
+        // oauthmanager.login( '<%=new_twitter_session_url%>', twitter_login_success)
+    }
+}
+function twitter_login_success(){
+    $("#twitter_box").attr('authorized', 'yes')
+}
+</script>
+</div>

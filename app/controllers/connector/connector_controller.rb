@@ -1,6 +1,6 @@
 class Connector::ConnectorController < ApplicationController
   require 'connector_exceptions'
- 
+
   #USER_STUB = Struct.new(:id)
 
   layout false

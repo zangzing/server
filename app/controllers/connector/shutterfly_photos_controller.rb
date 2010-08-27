@@ -37,7 +37,7 @@ require 'pp'
             :source_thumb_url => get_photo_url(params[:photo_id],  :thumb),
             :source_screen_url => get_photo_url(params[:photo_id],  :screen)
     )
-    Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, photo_url))
+    Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, photo_url))
 
     render :json => photo.to_json
 
