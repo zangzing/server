@@ -365,7 +365,7 @@ var zz = {
     },
     
     email_share: function(){
-      $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/shares/newmail', function(){                        
+      $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/shares/newemail', function(){                        
         zz.zang.indicator_step = 4;  
         zz.zang.indicator = 'step-share';
         $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
