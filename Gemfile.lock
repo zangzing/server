@@ -1,5 +1,9 @@
 --- 
 dependencies: 
+  twitter_oauth: 
+    group: 
+    - :default
+    version: ">= 0"
   faker: 
     group: 
     - :test
@@ -106,10 +110,6 @@ dependencies:
     group: 
     - :test
     version: ">= 0"
-  twitter: 
-    group: 
-    - :default
-    version: ">= 0"
 specs: 
 - rake: 
     version: 0.8.7
@@ -145,8 +145,6 @@ specs:
     version: 1.4.6
 - contacts: 
     version: 1.2.4
-- crack: 
-    version: 0.1.6
 - daemons: 
     version: 1.1.0
 - delayed_job: 
@@ -157,12 +155,8 @@ specs:
     version: 0.3.1
 - flickraw: 
     version: 0.8.2
-- hashie: 
-    version: 0.2.2
 - hpricot: 
     version: 0.8.2
-- httparty: 
-    version: 0.5.2
 - hyper-graph: 
     version: 0.3.1
 - launchy: 
@@ -189,10 +183,8 @@ specs:
     version: 1.3.2
 - sqlite3-ruby: 
     version: 1.3.1
-- yajl-ruby: 
-    version: 0.7.7
-- twitter: 
-    version: 0.9.8
+- twitter_oauth: 
+    version: 0.4.3
 - usesguid: 
     version: 1.0.0
 - usesguid_migrations: 
@@ -201,7 +193,7 @@ specs:
     version: 0.7.1
 - will_paginate: 
     version: 2.3.12
-hash: 04114e084c4a3613063c6884dafcbdf8b7a0fdf7
+hash: 44b0bc48f446ff098ad51e0bf481b0dc4be22639
 sources: 
 - Rubygems: 
     uri: http://gemcutter.org
