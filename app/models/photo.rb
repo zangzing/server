@@ -87,7 +87,7 @@ class Photo < ActiveRecord::Base
 
  
   # Set up an async call for Processing and Upload to S3
-  after_update :queue_upload_to_s3
+  after_validation_on_update :queue_upload_to_s3
   
 
   # used to receive image and queue for processing. User never sees this image. Paperclip defaults are local no styles

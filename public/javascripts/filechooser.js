@@ -321,7 +321,6 @@ var filechooser = {
   on_add_photo : function(json) {
       //note: until we create a separate implementation for add_folder,
       //      the json object here will be either a single picture, or a list of pictures
-      console.log(json)
       added_photos_tray.refresh();
   },
 
