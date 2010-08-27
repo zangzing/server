@@ -33,7 +33,7 @@ class Connector::KodakFoldersController < Connector::KodakController
               :source_screen_url => p[PHOTO_SIZES[:screen]].first
       )
       
-      Delayed::Job.enqueue(KodakImportRequest.new(photo.id, photo_url, connector.auth_token))
+      Delayed::IoBoundJob.enqueue(KodakImportRequest.new(photo.id, photo_url, connector.auth_token))
       photos << photo
     end
 

@@ -201,7 +201,7 @@ specs:
     version: 0.7.1
 - will_paginate: 
     version: 2.3.12
-hash: 5fe5b93152488476572a4b4c7faccf568493d847
+hash: 04114e084c4a3613063c6884dafcbdf8b7a0fdf7
 sources: 
 - Rubygems: 
     uri: http://gemcutter.org

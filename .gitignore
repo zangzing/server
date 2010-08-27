@@ -1,3 +1,4 @@
+/config/initializers/win_patches.rb
 log/*.log
 tmp/*
 tmp/**/*

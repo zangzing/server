@@ -1,7 +1,7 @@
 class Connector::SmugmugFoldersController < Connector::SmugmugController
 
   def index
-    album_list = smugmug_api.call_method('smugmug.albums.get')
+    album_list = smugmug_api.call_method('smugmug.albums.get', :Extras => 'Passworded,PasswordHint,Password')
     @folders = album_list.map { |f|
       {
         :name => f[:title],
@@ -28,7 +28,7 @@ class Connector::SmugmugFoldersController < Connector::SmugmugController
               :source_thumb_url => '/proxy?url=' + p[:smallurl],
               :source_screen_url => '/proxy?url=' + p[:x3largeurl]
       )
-      Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, p[:originalurl]))
+      Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, p[:originalurl]))
       photos << photo
     end
 

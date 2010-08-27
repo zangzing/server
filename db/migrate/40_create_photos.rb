@@ -26,8 +26,10 @@ class CreatePhotos < ActiveRecord::Migration
          t.string   :source_thumb_url
          t.string   :source_screen_url
          t.string   :source_guid
-         
-         t.timestamps  
+
+         t.string   :error_message
+
+         t.timestamps
        end
        add_index :photos, :album_id
        add_index :photos, :agent_id      

@@ -62,9 +62,7 @@ class User < ActiveRecord::Base
   validates_length_of   :password, :within => 6..40, :if => :require_password?, :message => "must be between 6 and 40 characters long"
 
 
-  IDENTITY_SOURCES = [:google, :flickr, :yahoo, :facebook, :twitter, :smugmug, :shutterfly, :kodak, :local]
-
-  IDENTITY_SOURCES.each do |service_name|
+  Identity::UI_INFO.keys.each do |service_name|
     define_method("identity_for_#{service_name}") do
       identity = self.identities.find(:first, :conditions => {:identity_source => service_name.to_s})
       #identity = self.identities.create(:identity_source => service_name.to_s) unless identity
