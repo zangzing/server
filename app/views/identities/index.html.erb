@@ -1,0 +1,20 @@
+<h2>Identities</h2>
+
+<table width="100%">
+  <tr>
+    <td>Type</td>
+    <td>Date created</td>
+    <td>Number of contacts</td>
+    <td>Username</td>
+    <td>Action</td>
+  </tr>
+  <% @identities.each do |identity| %>
+    <tr>
+      <td><%= identity.name %> </td>
+      <td><%= identity.created_at %> </td>
+      <td><%= identity.contacts.count %> </td>
+      <td><%= 'n/a' %> </td>
+      <td><%= link_to '[Delete]', user_identity_path(:id => identity.id, :user_id => params[:user_id]), :method => :delete, :confirm => "Are you sure you want to delete your #{identity.name} identity?" %></td>
+    </tr>
+  <% end %>
+</table>

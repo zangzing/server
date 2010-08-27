@@ -19,7 +19,7 @@ class Connector::FlickrFoldersController < Connector::FlickrController
   end
   
   def import
-    photo_set = flickr_api.photosets.getPhotos :photoset_id => params[:set_id]
+    photo_set = flickr_api.photosets.getPhotos :photoset_id => params[:set_id], :extras => 'original_format'
     photos = []
     photo_set.photo.each do |p|
 
@@ -34,7 +34,7 @@ class Connector::FlickrFoldersController < Connector::FlickrController
                 :source_screen_url => get_photo_url(p, :screen)
       )
 
-      Delayed::Job.enqueue(GeneralImportRequest.new(photo.id, photo_url))
+      Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, photo_url))
       photos << photo
     end
 

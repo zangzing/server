@@ -1,4 +1,5 @@
 source :gemcutter
+#source 'http://gems.github.com'
 
 # bundler requires these gems in all environments
 gem "bundler","0.9.26"

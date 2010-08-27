@@ -27,7 +27,7 @@
 
 #
 # Photo Model
-# © 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
+# ï¿½ 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 # As a first implementation images are attached to photo objects using paperclip as
 # performance and customization changes are required the use of paperclip can be
@@ -118,10 +118,12 @@ class Photo < ActiveRecord::Base
   before_image_post_process       :set_image_metadata
 
   def set_local_image_metadata
+    logger.debug("In local_image before post")
     self.local_image_path = local_image.path
   end
 
   def set_image_metadata
+    logger.debug("In image before post")
     self.image_path   = image.path.gsub(image.original_filename,'')
     self.image_bucket = image.instance_variable_get("@bucket")
   end
@@ -133,7 +135,8 @@ class Photo < ActiveRecord::Base
     # If an assigned image has been loaded with an image, reprocess and send to S3
     if self.assigned? && self.local_image_file_name_changed?
        self.state = 'loaded'
-       self.send_later(:upload_to_s3)
+       #self.send_later(:upload_to_s3, Delayed::CpuBoundJob)
+       Delayed::CpuBoundJob.enqueue(S3UploadRequest.new(self.id))
     end
     logger.debug("queued for upload")
   end

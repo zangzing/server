@@ -4,6 +4,7 @@
 ActionController::Routing::Routes.draw do |map|
   #root
   map.root :controller => "pages", :action => 'home'
+  map.test '/test', :controller => 'photos', :action => 'test'
 
   #users
   map.with_options :controller => :users do |users|
@@ -13,7 +14,10 @@ ActionController::Routing::Routes.draw do |map|
     users.edit_user    '/users/:id/edit', :action=> 'edit',   :conditions=>{ :method => :get }
     users.user         '/users/:id.',     :action=> 'show',   :conditions=>{ :method => :get }
     users.update_user  '/users/:id.',     :action=> 'update', :conditions=>{ :method => :put }
-    users.delete_user  '/users/:id.',     :action=> 'destroy',:conditions=>{ :method => :delete }        
+    users.delete_user  '/users/:id.',     :action=> 'destroy',:conditions=>{ :method => :delete }
+  end
+  map.resources :users do |user|
+    user.resources :identities
   end
 
   #albums
@@ -26,6 +30,7 @@ ActionController::Routing::Routes.draw do |map|
     albums.update_album       '/albums/:id.',                :action=>"update", :conditions=>{ :method => :put }
     albums.delete_album       '/albums/:id.',                :action=>"destroy",:conditions=>{ :method => :delete }
     albums.upload             '/albums/:id/upload',          :action=>"upload", :conditions=>{ :method => :get }
+    albums.album_upload_stat  '/albums/:album_id/upload_stat', :action=>'upload_stat', :conditions => { :method => :get }
     albums.album_wizard       '/albums/:id/wizard',          :action => 'wizard'
   end
 
