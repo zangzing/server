@@ -1,7 +1,7 @@
 class Connector::SmugmugFoldersController < Connector::SmugmugController
 
   def index
-    album_list = smugmug_api.call_method('smugmug.albums.get')
+    album_list = smugmug_api.call_method('smugmug.albums.get', :Extras => 'Passworded,PasswordHint,Password')
     @folders = album_list.map { |f|
       {
         :name => f[:title],
