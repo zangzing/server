@@ -383,7 +383,8 @@ var zz = {
       } else if (zz.zang.indicator_step == 2) {
         //post form
         serialized = $(".edit_album").serialize();
-          $.post('/albums/'+zz.zang.album_id, serialized, function(data){
+        $.post('/albums/'+zz.zang.album_id, serialized, function(data){
+        
         });
       } else if (zz.zang.indicator_step == 3) {
         //nothing for now
