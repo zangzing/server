@@ -22,7 +22,7 @@ gem 'usesguid_migrations'
 
 gem 'contacts'
 gem 'hpricot'
-gem 'twitter'
+gem 'twitter_oauth'
 
 group :development do
   # bundler requires these gems in development
