@@ -12,17 +12,12 @@
 
 
 <h2 class="album"><%= h @album.name %></h2>
-<table class="profile">
-  <tr>
-    <td class="main">
-      <% unless @album.photos.empty? %>
-          <table class="photos">
-            <%= render :partial => "photo_thumb", :collection => @photos, :as => :photo %>
-          </table>
-      <% end %>
-    </td>
-  </tr>
-</table>
+
+<% unless @album.photos.empty? %>
+  <ul class="grid-view">
+    <%= render :partial => "photo_thumb", :collection => @photos, :as => :photo %>
+  </ul>
+<% end %>
 
 
 
