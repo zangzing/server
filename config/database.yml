@@ -7,13 +7,13 @@ development:
  pool: 5
 
 
-development-engineyard:
+eydevelopment:
  adapter: mysql
  database: server_development
  encoding: utf8
  pool: 5
 
-test-engineyard:
+eytest:
   adapter: mysql
   database: server_test
   encoding: utf8
@@ -29,13 +29,13 @@ test:
   pool: 5
 
 
-development-engineyard:
+eydevelopment:
  adapter: mysql
  database: server_development
  encoding: utf8
  pool: 5
 
-test-engineyard:
+eytest:
   adapter: mysql
   database: server_test
   encoding: utf8

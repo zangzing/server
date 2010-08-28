@@ -8,11 +8,11 @@ test:
   :api_key: l2bd6h6GW1FcoJDGy6h31pxKMsAWjSjH
 
 
-development-engineyard:
+eydevelopment:
   :shared_secret: 19a4c10a346ef517cc880411e2fbc8b4
   :api_key: bzyJIL3paLs5MbNDrOJNmQjikMOwa5sN
 
-test-engineyard:
+eytest:
   :shared_secret: 19a4c10a346ef517cc880411e2fbc8b4
   :api_key: bzyJIL3paLs5MbNDrOJNmQjikMOwa5sN
 

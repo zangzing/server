@@ -15,10 +15,10 @@ development:
 test:
   <<: *common
 
-development-engineyard:
+eydevelopment:
   <<: *common
 
-test-engineyard:
+eytest:
   <<: *common
 
 
