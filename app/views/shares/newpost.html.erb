@@ -33,16 +33,15 @@ function call_new_facebook_session(){
     }
 }
 function facebook_login_success(){
-   $("#facebook_box").attr('authorized', 'yes')
+   $("#facebook_box").attr('authorized', 'yes');
 }
 function call_new_twitter_session(){
     if($("#twitter_box").is(':checked') && !$("#twitter_box").attr('authorized')){
-       alert("Checking with twitter ");
-       oauthmanager.login( '<%=new_twitter_session_url%>', twitter_login_success)
+       oauthmanager.login( '<%=new_twitter_session_url%>', twitter_login_success);
     }
 }
 function twitter_login_success(){
-    $("#twitter_box").attr('authorized', 'yes')
+    $("#twitter_box").attr('authorized', 'yes');
 }
 </script>
 </div>

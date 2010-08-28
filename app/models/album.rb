@@ -38,7 +38,7 @@ class Album < ActiveRecord::Base
 
   default_scope :order => 'created_at DESC'
 
-  PRIVACIES = {'Public' =>:public,'Hidden' => :hidden};
+  PRIVACIES = {'Public' =>'public','Hidden' => 'hidden'};
 
   def wizard_steps
     [:choose_album_type,:add_photos, :name_album, :edit_album, :contributors, :share]  

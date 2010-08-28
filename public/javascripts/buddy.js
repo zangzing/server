@@ -382,10 +382,7 @@ var zz = {
     },
 
     album_update: function(){
-              console.log('about to update album');
-              serialized = $(".edit_album").serialize();
-              $.post('/albums/'+zz.zang.album_id, serialized, function(data){});
-              console.log('album updated!');
+        $.post('/albums/'+zz.zang.album_id, $(".edit_album").serialize());
     },
 
 

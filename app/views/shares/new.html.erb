@@ -23,7 +23,7 @@
   </select>
 -->
   <%form_for @album, :url => update_album_url(@album)  do |f| %>
-      <%=select :album, :privacy, Album::PRIVACIES, {:selected =>:public},  {:class => "album_privacy"}%>
+      <%=select :album, :privacy, Album::PRIVACIES, {:selected =>@album.privacy },  {:class => "album_privacy"}%>
     <%end%>
   &nbsp;&nbsp;<div id="privacy-description"> Allows everyone to see this album</div>
     
