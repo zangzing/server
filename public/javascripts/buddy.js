@@ -360,10 +360,10 @@ var zz = {
         $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
         $('.social-share').click(zz.zang.social_share);
         $('.email-share').click(zz.zang.email_share);
+        $('.album_privacy').change(zz.zang.album_update);
       }); 
     },
 
-    
     social_share: function(){
       $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/shares/newpost', function(){                        
         zz.zang.indicator_step = 4;  
@@ -381,6 +381,14 @@ var zz = {
     
     },
 
+    album_update: function(){
+              console.log('about to update album');
+              serialized = $(".edit_album").serialize();
+              $.post('/albums/'+zz.zang.album_id, serialized, function(data){});
+              console.log('album updated!');
+    },
+
+
     change_step: function(element){
       if (element == zz.zang.indicator) {
         //nothing to do - same step clicked
@@ -391,9 +399,7 @@ var zz = {
       } else if (zz.zang.indicator_step == 2) {
         //post form
         serialized = $(".edit_album").serialize();
-        $.post('/albums/'+zz.zang.album_id, serialized, function(data){
-        
-        });
+        $.post('/albums/'+zz.zang.album_id, serialized, function(data){ });
       } else if (zz.zang.indicator_step == 3) {
         //nothing for now
       } else if (zz.zang.indicator_step == 4) {

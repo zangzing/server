@@ -7,13 +7,13 @@ class EmailShare < Share
 
   
   def self.factory(user, params)
-    @share = EmailShare.new( params )
+    share = EmailShare.new( params )
 
     #parse to field and create recipients for mail
 
     params[:to].split(';').each  do |person|
-       @share.recipients.build( :service => 'email', :name    => person,:address => person)
+       share.recipients.build( :service => 'email', :name    => person,:address => person)
     end
-    return @share
+    return share
   end
 end

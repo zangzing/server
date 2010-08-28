@@ -21,16 +21,14 @@ class Share < ActiveRecord::Base
   belongs_to :album
 
   has_many :recipients, :dependent => :destroy
-  accepts_nested_attributes_for :recipients,  :reject_if => proc { |attrs| attrs['service'] == "" }
-
   validates_presence_of :album_id, :user_id
 
   def self.factory(user, album, params)
-    @share = EmailShare.factory(user, params[:email_share]) if params[:mail_share]
-    @share = PostShare.factory(user, params[:post_share]) if params[:post_share]
-    user.shares  << @share
-    album.shares << @share
-    return @share
+    share = EmailShare.factory(user, params[:email_share]) if params[:email_share]
+    share = PostShare.factory(user, params[:post_share]) if params[:post_share]
+    user.shares  << share
+    album.shares << share
+    return share
   end
 
 

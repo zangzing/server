@@ -25,7 +25,7 @@
 
 class Album < ActiveRecord::Base
   usesguid
-  attr_accessible :name
+  attr_accessible :name, :privacy
   
   belongs_to :user
   has_many :photos,           :dependent => :destroy
@@ -38,6 +38,7 @@ class Album < ActiveRecord::Base
 
   default_scope :order => 'created_at DESC'
 
+  PRIVACIES = {'Public' =>:public,'Hidden' => :hidden};
 
   def wizard_steps
     [:choose_album_type,:add_photos, :name_album, :edit_album, :contributors, :share]  

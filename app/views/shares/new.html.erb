@@ -1,7 +1,7 @@
 <div class="offset">
 <% flash.each do |key, value| %>
   <div class="flash <%= key %>"><%= value %></div>
-<% end %> 
+<% end %>
 
 <%= link_to "Share this album on Facebook or Twitter", new_album_postshare_url( @album ) %>
 
@@ -15,16 +15,21 @@
 
 <div id="scroll-body">
 
+
+ <!--
   <select id="album-privacy">
     <option value="public" selected="selected">Public</option>
-    <option value="private">Private</option>
+    <option value="hidden">Hidden</option>
   </select>
-  
-  &nbsp;&nbsp;Allows everyone to see this album
-  
-  <hr>
+-->
+  <%form_for @album, :url => update_album_url(@album)  do |f| %>
+      <%=select :album, :privacy, Album::PRIVACIES, {:selected =>:public},  {:class => "album_privacy"}%>
+    <%end%>
+  &nbsp;&nbsp;<div id="privacy-description"> Allows everyone to see this album</div>
+    
 
-  <ul id="share-pick">
+  <hr>
+   <ul id="share-pick">
     <li class="social-share link">
       <p><img src="/images/social-btns.png" /></p>
       <p><a href="javascript:void(0);">Share this album on Facebook or Twitter</a></p>
