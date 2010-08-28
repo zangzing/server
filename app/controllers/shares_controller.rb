@@ -16,9 +16,9 @@ class SharesController < ApplicationController
       @share.facebook = ( current_user.identity_for_facebook.credentials_valid? ? "1" :"0" )    
   end
 
-  def newmail
+  def newemail
     @album = Album.find(params[:album_id])
-    @share = MailShare.new    
+    @share = EmailShare.new    
     @google_id = current_user.identity_for_google
     @yahoo_id  = current_user.identity_for_yahoo
   end
@@ -30,7 +30,7 @@ class SharesController < ApplicationController
        flash[:success] = "You will be notified and your album will be shared as soon as your photos finish uploading"
        redirect_to edit_share_path(@share)
     else
-      render 'newmail' and return  if params[:mail_share]
+      render 'newemail' and return  if params[:mail_share]
       render 'newpost' and return  if params[:post_share]
     end
   end
@@ -40,13 +40,13 @@ class SharesController < ApplicationController
     @album = @share.album
 
     case @share
-      when MailShare then
+      when EmailShare then
         @google_id = current_user.identity_for_google
         @yahoo_id  = current_user.identity_for_yahoo
         @contacts = []
         @contacts.concat @google_id.contacts unless @google_id.nil?
         @contacts.concat @yahoo_id.contacts unless @yahoo_id.nil?
-        render 'newmail'
+        render 'newemail'
       when PostShare then
         render 'newpost'
     end

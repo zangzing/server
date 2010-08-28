@@ -26,7 +26,7 @@ class Share < ActiveRecord::Base
   validates_presence_of :album_id, :user_id
 
   def self.factory(user, album, params)
-    @share = MailShare.factory(user, params[:mail_share]) if params[:mail_share]
+    @share = EmailShare.factory(user, params[:email_share]) if params[:mail_share]
     @share = PostShare.factory(user, params[:post_share]) if params[:post_share]
     user.shares  << @share
     album.shares << @share

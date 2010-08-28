@@ -5,7 +5,7 @@
 
 <%= link_to "Share this album on Facebook or Twitter", new_album_postshare_url( @album ) %>
 
-<%= link_to "Share this album by email", new_album_mailshare_url( @album ) %>
+<%= link_to "Share this album by email", new_album_emailshare_url( @album ) %>
 </div>
 
 <div class="album-header">
@@ -14,15 +14,25 @@
 </div>
 
 <div id="scroll-body">
- <ul id="share-pick">
-   <li class="social-share link">
-     <p><img src="/images/social-btns.png" /></p>
-     <p><a href="javascript:void(0);">Share this album on Facebook or Twitter</a></p>
-   </li>
-   <li class="email-share link">
-     <p><img src="/images/email-btn.png" /></p>
-     <p><a href="javascript:void(0);">Share this album by Email</a></p>
-   </li>
- </ul> 
+
+  <select id="album-privacy">
+    <option value="public" selected="selected">Public</option>
+    <option value="private">Private</option>
+  </select>
+  
+  &nbsp;&nbsp;Allows everyone to see this album
+  
+  <hr>
+
+  <ul id="share-pick">
+    <li class="social-share link">
+      <p><img src="/images/social-btns.png" /></p>
+      <p><a href="javascript:void(0);">Share this album on Facebook or Twitter</a></p>
+    </li>
+    <li class="email-share link">
+      <p><img src="/images/email-btn.png" /></p>
+      <p><a href="javascript:void(0);">Share this album by Email</a></p>
+    </li>
+  </ul> 
 
 </div>

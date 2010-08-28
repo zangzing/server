@@ -40,15 +40,15 @@ ActionController::Routing::Routes.draw do |map|
 
  #shares
   map.with_options :controller => :shares do |shares|
-    shares.album_shares        '/albums/:album_id/shares',         :action=> 'index',  :conditions=>{ :method => :get }
-    shares.create_album_share  '/albums/:album_id/shares',         :action=> 'create', :conditions=>{ :method => :post }
-    shares.new_album_share     '/albums/:album_id/shares/new',     :action=> 'new',    :conditions=>{ :method => :get }
-    shares.new_album_postshare '/albums/:album_id/shares/newpost', :action=> 'newpost',:conditions=>{ :method => :get }
-    shares.new_album_mailshare '/albums/:album_id/shares/newmail', :action=> 'newmail',:conditions=>{ :method => :get }
-    shares.edit_share          '/shares/:id/edit',                 :action=> 'edit',   :conditions=>{ :method => :get }
-    shares.share               '/shares/:id.',                     :action=> 'show',   :conditions=>{ :method => :get }
-    shares.update_share        '/shares/:id.',                     :action=> 'update', :conditions=>{ :method => :put }
-    shares.delete_share        '/shares/:id.',                     :action=> 'destroy',:conditions=>{ :method => :delete }
+    shares.album_shares         '/albums/:album_id/shares',          :action=> 'index',   :conditions=>{ :method => :get }
+    shares.create_album_share   '/albums/:album_id/shares',          :action=> 'create',  :conditions=>{ :method => :post }
+    shares.new_album_share      '/albums/:album_id/shares/new',      :action=> 'new',     :conditions=>{ :method => :get }
+    shares.new_album_postshare  '/albums/:album_id/shares/newpost',  :action=> 'newpost', :conditions=>{ :method => :get }
+    shares.new_album_emailshare '/albums/:album_id/shares/newemail', :action=> 'newemail',:conditions=>{ :method => :get }
+    shares.edit_share           '/shares/:id/edit',                  :action=> 'edit',    :conditions=>{ :method => :get }
+    shares.share                '/shares/:id.',                      :action=> 'show',    :conditions=>{ :method => :get }
+    shares.update_share         '/shares/:id.',                      :action=> 'update',  :conditions=>{ :method => :put }
+    shares.delete_share         '/shares/:id.',                      :action=> 'destroy', :conditions=>{ :method => :delete }
   end
 
   #photos

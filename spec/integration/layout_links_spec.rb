@@ -39,7 +39,7 @@ describe "LayoutLinks" do
     click_link "Home"
     response.should render_template('pages/home')
     click_link "Sign up now!"
-    response.should render_template('users/newmail.html.erb')
+    response.should render_template('users/newemail.html.erb')
   end
       
   describe "when not signed in" do

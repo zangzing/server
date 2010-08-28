@@ -119,6 +119,20 @@ var zz = {
   --------------------------------------------------------------------------- */
   validation: {
   
+    new_post_share: {
+      element: '#new_post_share',
+      rules: {
+        'post_share[message]': { required: true },  
+      },
+      submitHandler: function() {
+        serialized = $('#new_post_share').serialize();
+        $.post('/albums/'+zz.zang.album_id+'/shares', serialized, function(data){
+          zz.zang.share_album();
+        });
+      }
+      
+    }, // end zz.validation.new_post_share
+    
     sample_sign_up: {
       element: '#sample-sign-up',
       rules: {
@@ -249,12 +263,6 @@ var zz = {
 
     }, // end zz.zang.open_drawer()
     
-    show_tray: function(){
-          
-      $('#added-pictures-tray').css({bottom: '5px', left: '7px'}).fadeIn('fast');
-    
-    }, // end zz.zang.show_tray()
-    
     tray_zoom_in: function(element){
       $('#'+element).stop().animate({ height: '100px', width: '100px', bottom: '0px' }, 500);   
     }, // end zz.zang.tray_zoom_in()
@@ -321,7 +329,7 @@ var zz = {
         // fire up the filechooser
         filechooser.init(); 
         
-        setTimeout('zz.zang.show_tray()', 550);
+        setTimeout('$("#added-pictures-tray").fadeIn("fast")', 550);
         $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
         
         zz.zang.indicator_step = 1;  
@@ -365,7 +373,7 @@ var zz = {
     },
     
     email_share: function(){
-      $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/shares/newmail', function(){                        
+      $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/shares/newemail', function(){                        
         zz.zang.indicator_step = 4;  
         zz.zang.indicator = 'step-share';
         $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
@@ -383,7 +391,8 @@ var zz = {
       } else if (zz.zang.indicator_step == 2) {
         //post form
         serialized = $(".edit_album").serialize();
-          $.post('/albums/'+zz.zang.album_id, serialized, function(data){
+        $.post('/albums/'+zz.zang.album_id, serialized, function(data){
+        
         });
       } else if (zz.zang.indicator_step == 3) {
         //nothing for now

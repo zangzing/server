@@ -186,10 +186,16 @@ var filechooser = {
 
     //update files
     $('#filechooser').html('<img src="/images/loading.gif"> Loading ...');
+    
     if (url == '') {
+    
       filechooser.on_open_root(name, url);
+    
     } else {
+    
       if (url.indexOf('http://localhost:9090') === 0) {
+        // if agent
+
         var user_session = $.cookie('user_credentials');
         url += '?session=' + user_session + '&callback=?';
 
@@ -200,7 +206,10 @@ var filechooser = {
           },
           error: filechooser.on_error_opening_folder
         });
+      
       } else {
+        // on the server
+    
         $.ajax({
           dataType: 'json',
           url: url,
@@ -220,7 +229,7 @@ var filechooser = {
 
   on_open_folder : function(name, url, children) {
 
-    //setup the imageloader
+    //setup the imageloader -- if active, kill it
     if (filechooser.imageloader) {
       filechooser.imageloader.stop();
     }
@@ -231,6 +240,7 @@ var filechooser = {
 
     var onImageLoaded = function(id, src, width, height) {
       $('#' + id).attr('src', src);
+      // TODO this is where you do your padding and scaling
     };
 
     filechooser.imageloader = new ImageLoader(onStartLoadingImage, onImageLoaded);
@@ -280,7 +290,7 @@ var filechooser = {
 
 
         if (children[i].thumb_url.indexOf('http://localhost') === 0) {
-          filechooser.imageloader.add(id, children[i].thumb_url + '?session=' + $.cookie('user_credentials'));
+          filechooser.imageloader.add(id, children[i].thumb_url + '?session=' + $.cookie('user_credentials')); //extra business to auth with agent
         } else {
           filechooser.imageloader.add(id, children[i].thumb_url);
         }
@@ -322,7 +332,7 @@ var filechooser = {
   on_add_photo : function(json) {
       //note: until we create a separate implementation for add_folder,
       //      the json object here will be either a single picture, or a list of pictures
-      added_photos_tray.refresh();
+      added_photos_tray.refresh(); // TODO - here is the refresh
   },
 
 
@@ -348,6 +358,7 @@ var filechooser = {
     alert('error adding photo');
   },
 
+  // for oauth window
   open_login_window : function() {
     var current = filechooser.ancestors[filechooser.ancestors.length - 1];
 
@@ -357,6 +368,7 @@ var filechooser = {
 
   },
 
+  // for oauth window - return
   on_login : function() {
     var current = filechooser.ancestors.pop(); //discard this
     filechooser.open_folder(current.name, current.url);

@@ -7,8 +7,8 @@
   <div id="form-container-2" class="clearfix">
     <ul id="email-sync" class="clearfix">
       <li class="title">Import contacts from</li>
-      <li><img src="/images/btn-outlook-sync.png" id="outlook-sync" /></li>
       <li><img src="/images/btn-gmail-sync.png" id="gmail-sync" /></li>
+      <li><img src="/images/btn-outlook-sync.png" id="outlook-sync" /></li>
       <li><img src="/images/btn-yahoo-sync.png" id="yahoo-sync" /></li>
     </ul>
     <div class="clear-fix"></div>
@@ -75,8 +75,118 @@
 
 <script type="text/javascript">
 
+$(document).ready(  setup_contacts );
+//----------------- CONTACTS --------------------------
+function setup_contacts(){
+    if( <%=( @google_id.credentials_valid? ? 1 : 0 ) %> == 1 ){
+        $("#gmail-sync").click(call_google_import);
+        $("#gmail-sync").attr('title','Last import on: <%= @google_id.last_contact_refresh %>');
+    }else{
+        $("#gmail-sync").click(call_new_google_session);
+        $("#gmail-sync").attr('title','Authorize access to your gmail account and import contacts');
+   }
 
+   if( <%=( @yahoo_id.credentials_valid? ? 1 : 0 ) %> == 1 ){
+        $("#yahoo-sync").click(call_yahoo_import);
+        $("#yahoo-sync").attr('title','Last import on: <%= @yahoo_id.last_contact_refresh %>');
+    }else{
+        $("#yahoo-sync").click(call_new_yahoo_session);
+        $("#yahoo-sync").attr('title','Authorize access to your yahoo account and import contacts');
+   }
+   reloadAutocompleter()
+}
 
+// ------ GOOGLE CONTACTS ---------
+function call_new_google_session(){
+    $("#gmail-sync").attr('disabled', 'disabled');
+    oauthmanager.login( '<%=new_google_session_url%>', google_login_success);
+}
+function google_login_success(){
+    $("#gmail-sync").click(call_google_import);
+    call_google_import();
+}
+function call_google_import() {
+    $("#gmail-sync").attr('title','Refreshing...');
+    $("#gmail-sync").attr('disabled', 'disabled');
+    $.ajax({
+      dataType: 'json',
+      url: '<%=google_contacts_url(:import)%>',
+      success: import_google_success,
+      error: import_google_failure
+    });
+}
+function import_google_success( contacts ){
+    //console.log('inside google import succes');
+    var full_address;
+    google_contacts = [];
+    for each ( var c in contacts) {
+        full_address = '<' +c.name+ '> '+c.address
+        google_contacts.push( [ c.name, full_address] );
+        google_contacts.push( [ c.address, full_address] );
+    }
+    reloadAutocompleter();
+    $("#gmail-sync").attr('disabled','');
+    $("#gmail-sync").attr('title','Last imported a second ago.');
+}
+function import_google_failure( errors ){
+   alert("Unable to refresh google contacts at the moment. Please try later");
+   $("#gmail-sync").attr('disabled','');
+   $("#gmail-sync").attr('title','Unable to refresh google contacts at the moment. Please try later');
+}
+var google_contacts = [
+        <% @google_id.contacts.each do|contact| %>
+        ["<%=contact.name%>","<%=contact.name.to_s%> <<%=contact.address%>>"],
+        ["<%=contact.address%>","<%=contact.name.to_s%> <<%=contact.address%>>"],
+        <% end %>
+        "ZZangZZing"
+    ];
+
+// ------ YAHOO CONTACTS ---------
+function call_new_yahoo_session(){
+    $("#yahoo-sync").attr('disabled', 'disabled');
+    oauthmanager.login( '<%=new_yahoo_session_url%>', yahoo_login_success);
+}
+function yahoo_login_success(){
+    call_yahoo_import();
+    $("#yahoo-sync").click(call_yahoo_import);
+}
+function call_yahoo_import() {
+    $("#yahoo-sync").attr('title','Refreshing...');
+    $("#yahoo-sync").attr('disabled', 'disabled');    
+    $.ajax({
+      dataType: 'json',
+      url: '<%=yahoo_contacts_url(:import)%>',
+      success: import_yahoo_success,
+      error: import_yahoo_failure
+    });
+}
+function import_yahoo_success( contacts ){
+    var full_address;
+    yahoo_contacts = [];
+    for each ( var c in contacts) {
+        full_address = '<' +c.name+ '> '+c.address;
+        yahoo_contacts.push( [ c.name, full_address] );
+        yahoo_contacts.push( [ c.address, full_address] );
+    }
+    reloadAutocompleter()
+    $("#yahoo-sync").attr('disabled','');
+    $("#yahoo-sync").attr('title','Last imported a second ago.');
+}
+function import_yahoo_failure( errors ){
+   alert('Unable to refresh yahoo contacts at the moment. Please try later');
+   $("#yahoo-sync").attr('title','Unable to refresh yahoo contacts at the moment. Please try later');
+   $("#yahoo-sync").attr('disabled','');
+}
+
+var yahoo_contacts = [
+    <% @yahoo_id.contacts.each do|contact| %>
+    ["<%=contact.name%>","<%=contact.name.to_s%> <<%=contact.address%>>"],
+    ["<%=contact.address%>","<%=contact.name.to_s%> <<%=contact.address%>>"],
+    <% end %>
+    "ZZZangZZZing"
+];
+
+// -------------------- AUTOCOMPLETE -----------------------------
 function findValue(li) {
 	if( li == null ) return alert("No match!");
 
@@ -91,113 +201,18 @@ function findValue(li) {
     recipients +=  sValue
     $("#ToField").val( recipients )
 }
-
 function selectItem(li) {
 	findValue(li);
 }
 function formatItem(row) {
 	return row[0] + " (id: " + row[1] + ")";
 }
-
 function lookupLocal(){
 	var oSuggest = $("#CityLocal")[0].autocompleter;
 	oSuggest.findValue();
 	return false;
 }
-
-function call_new_google_session(){
-    $("#google_import_button").attr('disabled', 'disabled')
-    oauthmanager.login( '<%=new_google_session_url%>', google_login_success)
-}
-function google_login_success(){
-    call_google_import()
-    $("#google_import_button").attr('onclick', '').click(call_google_import);
-    $("#google_import_button").attr('value', 'Refresh')
-}
-function call_google_import() {
-    $("#google_import_button").attr('disabled', 'disabled')
-    $("#last_google_import").html("Refreshing...");
-    $.ajax({
-      dataType: 'json',
-      url: '<%=google_contacts_url(:import)%>',
-      success: import_google_success,
-      error: import_google_failure
-    });
-}
-function import_google_success( contacts ){
-    var full_address
-    google_contacts = [];
-    for each ( var c in contacts) {
-        full_address = '<' +c.name+ '> '+c.address
-        google_contacts.push( [ c.name, full_address] );
-        google_contacts.push( [ c.address, full_address] );
-    }
-    loadAutocompleter()
-    $("#last_google_import").html("Last imported a second ago.")
-    $("#google_import_button").attr('disabled','')
-}
-function import_google_failure( errors ){
-   alert("Unable to refresh google contacts at the moment. Please try later")
-   $("#last_google_import").html("")
-   $("#google_import_button").attr('disabled','')
-}
-
-function call_new_yahoo_session(){
-    $("#yahoo_import_button").attr('disabled', 'disabled')
-    oauthmanager.login( '<%=new_yahoo_session_url%>', yahoo_login_success)
-}
-function yahoo_login_success(){
-    call_yahoo_import()
-    $("#yahoo_import_button").attr('onclick', '').click(call_yahoo_import);
-    $("#yahoo_import_button").attr('value', 'Refresh')
-}
-function call_yahoo_import() {
-    $("#yahoo_import_button").attr('disabled', 'disabled')
-    $("#last_yahoo_import").html("Refreshing...");
-    $.ajax({
-      dataType: 'json',
-      url: '<%=yahoo_contacts_url(:import)%>',
-      success: import_yahoo_success,
-      error: import_yahoo_failure
-    });
-}
-function import_yahoo_success( contacts ){
-    var full_address
-    yahoo_contacts = [];
-    for each ( var c in contacts) {
-        full_address = '<' +c.name+ '> '+c.address
-        yahoo_contacts.push( [ c.name, full_address] );
-        yahoo_contacts.push( [ c.address, full_address] );
-    }
-    loadAutocompleter()
-    $("#last_yahoo_import").html("Last imported a second ago.")
-    $("#yahoo_import_button").attr('disabled','')
-}
-function import_yahoo_failure( errors ){
-   alert("Unable to refresh yahoo contacts at the moment. Please try later")
-   $("#last_yahoo_import").html("")
-   $("#yahoo_import_button").attr('disabled','')
-}
-
-
-var google_contacts = [
-        <% @google_id.contacts.each do|contact| %>
-        ["<%=contact.name%>","<%=contact.name.to_s%> <<%=contact.address%>>"],
-        ["<%=contact.address%>","<%=contact.name.to_s%> <<%=contact.address%>>"],
-        <% end %>
-        "ZZangZZing"
-    ];
-
-var yahoo_contacts = [
-    <% @yahoo_id.contacts.each do|contact| %>
-    ["<%=contact.name%>","<%=contact.name.to_s%> <<%=contact.address%>>"],
-    ["<%=contact.address%>","<%=contact.name.to_s%> <<%=contact.address%>>"],
-    <% end %>
-    "ZZZangZZZing"
-];
-
-
-function loadAutocompleter () {
+function reloadAutocompleter () {
 	$("#CityLocal").autocompleteArray(
             google_contacts.concat( yahoo_contacts ),
                 {
@@ -215,8 +230,5 @@ function loadAutocompleter () {
                 }
             );
 }
-
-//$(document).ready( loadAutocompleter() );
-
 </script>
 </div>
