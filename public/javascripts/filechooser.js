@@ -120,38 +120,38 @@ var filechooser = {
       class: 'f_home'
     },
     {
-       open_url: 'http://localhost:3000/facebook/folders.json',
+       open_url: '/facebook/folders.json',
       type: 'folder',
       name: 'Facebook',
-      login_url: 'http://localhost:3000/facebook/sessions/new',
+      login_url: '/facebook/sessions/new',
       class: 'f_facebook'
     },
     {
-      open_url: 'http://localhost:3000/flickr/folders.json',
+      open_url: '/flickr/folders.json',
       type: 'folder',
       name: 'Flickr',
-      login_url: 'http://localhost:3000/flickr/sessions/new',
+      login_url: '/flickr/sessions/new',
       class: 'f_flickr'
     },
     {
-      open_url: 'http://localhost:3000/kodak/folders.json',
+      open_url: '/kodak/folders.json',
       type: 'folder',
       name: 'Kodak',
-      login_url:'http://localhost:3000/kodak/sessions/new',
+      login_url:'/kodak/sessions/new',
       class: 'f_kodak'
     },
     {
-      open_url: 'http://localhost:3000/smugmug/folders.json',
+      open_url: '/smugmug/folders.json',
       type: 'folder',
       name: 'SmugMug',
-      login_url: 'http://localhost:3000/smugmug/sessions/new',
+      login_url: '/smugmug/sessions/new',
       class: 'f_smugmug'
     },
     {
-      open_url: 'http://localhost:3000/shutterfly/folders.json',
+      open_url: '/shutterfly/folders.json',
       type: 'folder',
       name: 'Shutterfly',
-      login_url: 'http://localhost:3000/shutterfly/sessions/new',
+      login_url: '/shutterfly/sessions/new',
       class: 'f_shutterfly'
     }
   ],
