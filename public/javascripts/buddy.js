@@ -273,9 +273,11 @@ var zz = {
     
     image_pop: function(element){
       temp_top = $('#'+element).offset().top;
-      temp_left = $('#'+element).offset().top;
-      temp_top_new = $('#added-pictures-tray li:first').offset().top;
-      temp_left_new = $('#added-pictures-tray li:first').offset().top;
+      temp_left = $('#'+element).offset().left;
+
+      //todo: this element doesn't exist the first time. should check and set top and left to ~0
+      temp_top_new = $('#added-pictures-tray li:last').offset().top;
+      temp_left_new = $('#added-pictures-tray li:last').offset().left + 30;
       
       $('#'+element).clone()
                     .attr({id: 'traversing'})
@@ -286,10 +288,10 @@ var zz = {
         width: '30px',
         height: '30px',
         top: temp_top_new+'px',
-        left: temp_left_new+'px',
-      }, 900, function(){
+        left: temp_left_new+'px'
+      }, 500, function(){
       
-        $('#added-pictures-tray li:first img').show();
+       // $('#added-pictures-tray li:first img').show();
          $('#traversing').remove();
       } );
       

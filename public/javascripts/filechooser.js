@@ -167,16 +167,15 @@ var filechooser = {
                 html += '<a href="" ' + theClick + '>' + children[i].name + '</a>';
 
                 if (children[i].add_url) {
-                    html += '&nbsp;<a href="#" onclick="filechooser.add_folder(\'' + children[i].add_url + '\'); return false;">(+)</a>';
+                    html += '&nbsp;<a href="#" onclick="filechooser.add_folder(\'' + children[i].add_url + '\', \'' + id + '\'); return false;">(+)</a>';
                 }
 
                 html += '</li>';
 
             } else {
-                var theClick = 'onclick="filechooser.add_photos(\'' + children[i].add_url + '\'); return false;"';
                 var id = 'chooser-photo-' + children[i].source_guid;
                 var img_id = 'chooser-photo-img-' + children[i].source_guid;
-                
+                var theClick = 'onclick="filechooser.add_photos(\'' + children[i].add_url + '\', \'' + img_id + '\'); return false;"';                
                 html += '<li id="' + id + '" class="photo" ' + theClick + '>';
                 html += '<div><img id="' + img_id + '" src="">';
                 html += '<figure>Add Photo</figure></div>';
@@ -195,7 +194,7 @@ var filechooser = {
         filechooser.imageloader.start(5);
     },
 
-    add_photos : function(add_url) {
+    add_photos : function(add_url, element_id) {
 
         add_url += '?album_id=' + zz.zang.album_id;
 
@@ -219,6 +218,10 @@ var filechooser = {
                 error: filechooser.on_error_adding_photos
             });
         }
+
+
+        zz.zang.image_pop(element_id);
+
     },
 
 
@@ -237,9 +240,9 @@ var filechooser = {
     },
 
 
-    add_folder : function(add_url) {
+    add_folder : function(add_url, element_id) {
         //todo: need different implemenatation here
-        filechooser.add_photos(add_url);
+        filechooser.add_photos(add_url, element_id);
     },
 
     open_parent_folder: function() {
