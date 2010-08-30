@@ -64,6 +64,29 @@ ImageLoader.prototype = {
         img.onload = function(){
             me.handleImageLoaded(props['id'], props['src'], img.width, img.height)
             me.next();
+            
+        var new_size = 110;
+      
+        if (img.height > img.width) {
+          //tall
+          var ratio = img.width / img.height; 
+          $('#'+props['id']).css({height: new_size+'px', width: (ratio * new_size) + 'px' });
+
+          var guuu = $('#'+props['id']).attr('id').split('-')[3];
+          $('li#photo-'+ guuu +' figure').css({bottom: '0px', width: ((ratio * new_size) + 10)+'px', marginLeft: (((new_size - (ratio * new_size)) / 2 ) + 2)+ 'px'});
+          
+          
+        } else {
+          //wide
+
+          var ratio = img.height / img.width; 
+          $('#'+props['id']).css({height: (ratio * new_size) + 'px', width: new_size+'px', marginTop: ((new_size - (ratio * new_size)) / 2) + 'px' });
+
+          var guuu = $('#'+props['id']).attr('id').split('-')[3];
+          $('li#photo-'+ guuu +' figure').css({bottom: ((new_size - (ratio * new_size)) / 2) - 1+'px'});
+        }
+          
+            
         };
 
         img.src = props['src']

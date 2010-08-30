@@ -176,9 +176,10 @@ var filechooser = {
                 var id = 'chooser-photo-' + children[i].source_guid;
                 var img_id = 'chooser-photo-img-' + children[i].source_guid;
                 var theClick = 'onclick="filechooser.add_photos(\'' + children[i].add_url + '\', \'' + img_id + '\'); return false;"';                
-                html += '<li id="' + id + '" class="photo" ' + theClick + '>';
+                html += '<li id="photo-' + children[i].source_guid + '" class="photo" ' + theClick + '>';
                 html += '<div><img id="' + img_id + '" src="">';
                 html += '<figure>Add Photo</figure></div>';
+                html += '<a href="" ' + theClick + '>' + children[i].name + '</a>';
                 html += '</li>';
 
 

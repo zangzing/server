@@ -272,6 +272,7 @@ var zz = {
     },  // end zz.zang.tray_zoom_out()  
     
     image_pop: function(element){
+      $('#traversing').remove();
       temp_top = $('#'+element).offset().top;
       temp_left = $('#'+element).offset().left;
 
@@ -287,16 +288,10 @@ var zz = {
       $('#traversing').animate({ 
         width: '30px',
         height: '30px',
-        top: temp_top_new+'px',
-        left: temp_left_new+'px'
-      }, 500, function(){
+        top: (temp_top_new + 1) +'px',
+        left: (temp_left_new + 9) +'px'
+      }, 500);
       
-       // $('#added-pictures-tray li:first img').show();
-         $('#traversing').remove();
-      } );
-      
-      
-
                            
 
     }, // end zz.zang.image_pop
