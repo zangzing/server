@@ -1,5 +1,7 @@
 /* Filechooser
  ----------------------------------------------------------------------------- */
+
+
 var filechooser = {
 
     imageloader: null,
@@ -325,8 +327,9 @@ var tray = {
         tray.imageloader = new ImageLoader(onStartLoadingImage, onImageLoaded);
 
         var html = '';
-        for each(var photo in tray.album_photos) {
-
+        for (var i in tray.album_photos) {
+            var photo = tray.album_photos[i];
+            
             var id = 'tray-' + photo.id;
 
             html += '<li>';
