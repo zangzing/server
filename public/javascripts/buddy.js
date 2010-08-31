@@ -272,12 +272,13 @@ var zz = {
     },  // end zz.zang.tray_zoom_out()  
     
     image_pop: function(element){
+      temp = $('#'+element).css('margin-top').split('px')[0];
       $('#traversing').remove();
-      temp_top = $('#'+element).offset().top;
+      temp_top = $('#'+element).offset().top - temp;
       temp_left = $('#'+element).offset().left;
 
       //todo: this element doesn't exist the first time. should check and set top and left to ~0
-      temp_top_new = $('#added-pictures-tray li:last').offset().top;
+      temp_top_new = $('#added-pictures-tray li:last').offset().top - temp;
       temp_left_new = $('#added-pictures-tray li:last').offset().left + 30;
       
       $('#'+element).clone()
@@ -490,14 +491,14 @@ var zz = {
     
     tray: function(){
      
-      $('#added-pictures-tray li img').unbind().hover(function() {
+      /*$('#added-pictures-tray li img').unbind().hover(function() {
         temp = $(this).attr('id');
         zz.zang.tray_zoom_in(temp);
       }, function() {
         temp = $(this).attr('id');
         zz.zang.tray_zoom_out(temp);
       });
-
+*/
     
     }        
   
