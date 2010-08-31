@@ -140,3 +140,11 @@ html[xmlns] .clearfix {
 .link {
   cursor: pointer;
 }
+div.relative {
+  position: relative;
+}
+.rounded { 
+  border-radius: 8px;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+}

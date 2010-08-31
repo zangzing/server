@@ -349,7 +349,7 @@ ul#indicator li.on {
 div#drawer-content div#top-section {
   padding: 0px 10px;
   width: 840px;
-  margin-top: 15px;
+  margin: 15px 0 5px;
   height: 75px;
 }
 
@@ -389,7 +389,7 @@ div#drawer-content ul#folders li, ul#filechooser li {
 
 div#drawer-content ul#folders li.photo, ul#filechooser li.photo {
   padding: 15px 20px;
-  height: 120px;
+  height: 135px;
   overflow: hidden;
   cursor: pointer;
   background-image: none;
@@ -504,17 +504,60 @@ ul#filechooser li:hover figure {
   width: 97%;
   background-image: url("/images/bg-blk-75.png");
   color: #fff;
-  font-size: 1.3em;
+  font-weight: 500;
   padding: 2px 0 7px;
   overflow: hidden;
   text-align: center;
   line-height: 1.5em;
 }
 
-ul#filechooser li.photo div {
-  position: relative;
+ul#filechooser li .checkmark {
+  display: none;
+  position: absolute;
+  background-image: url("/images/check-off.png");
+  background-repeat: no-repeat;
+  width: 36px;
+  height: 36px;
+  bottom: 14px;
+  left: 0px;
+  z-index: 10;
+}
+
+ul#filechooser li.in-tray .checkmark { 
+  background-image: url("/images/check-on.png");
+  background-repeat: no-repeat;
+  display: block;
+}
+
+ul#filechooser li:hover .checkmark {
+  display: block;
+}
+
+
+ul#filechooser li.photo div.relative {
   width: 128px;
-  height: 120px;
+  height: 135px;
+}
+
+ul#filechooser li.photo:hover figure {
+  display: block;
+  position: absolute;
+  bottom: 24px;
+  left: 2px;
+  height: 15px;
+  width: 97%;
+  background-image: url("/images/bg-blk-75.png");
+  color: #fff;
+  font-weight: 500;
+  padding: 2px 0 7px;
+  overflow: hidden;
+  text-align: center;
+  line-height: 1.5em;
+  z-index: 5;
+}
+
+ul#filechooser li.in-tray:hover figure {
+  display: none;
 }
 
 ul#filechooser a {
@@ -569,6 +612,13 @@ div#drawer-content h4 {
   font-weight: 500;
   margin-bottom: 15px;
   color: #0a0a0a;
+}
+
+span.h4 {
+  font-size: 1.4em;
+  font-weight: 500;
+  color: #0a0a0a;
+  line-height: 2.2em;
 }
 
 div#drawer-content .album-header {
@@ -729,6 +779,20 @@ dl#email-share-form dd input, dl#email-share-form dd textarea {
   color: #646464;
 }
 
+select.album_privacy {
+  background-color: #fbfbfb;
+  background: -moz-linear-gradient(top, #fbfbfb, #dcdcdc);
+  background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#dcdcdc));
+  border: 1px #dcdcdc solid;
+  font-size: 1.2em;
+  font-weight: 400;
+  color: #646464;
+  padding: 4px;
+  height: 28px;
+  width: 80px;
+  margin-right: 10px;
+}
+
 /* Grid View
 ----------------------------------------------------------------------------- */
 
@@ -768,7 +832,7 @@ ul#albums li img {
   -moz-box-shadow: 0px 0px 0px #767676;
 }
 
-ul.grid-view li.selected img {
+ul.grid-view li:hover img {
   border: 4px solid #FDD042;
   box-shadow: 0px 0px 5px #FDD042;
   -webkit-box-shadow: 0px 0px 5px #FDD042;
@@ -776,7 +840,7 @@ ul.grid-view li.selected img {
   filter: progid:DXImageTransform.Microsoft.dropShadow(color=#FDD042, offX=2, offY=2, positive=true);
 }
 
-ul#albums li.selected img {
+ul#albums li:hover img {
   border:none;
   box-shadow: 0px 0px 0px #767676;
   -webkit-box-shadow: 0px 0px 0px #767676;
@@ -787,8 +851,9 @@ ul.grid-view li figure {
   display: none;
 }
 
-ul.grid-view li.selected figure {
+ul.grid-view li:hover figure {
   display: block;
+  position: absolute;
   height: 15px;
   background-image: url("/images/bg-blk-75.png");
   color: #fff;
@@ -797,4 +862,21 @@ ul.grid-view li.selected figure {
   overflow: hidden;
   text-align: left;
   line-height: 1.5em;
+}
+
+ul.grid-view a.delete img {
+  display: none;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  z-index: 10;
+  border: none;
+  box-shadow: 0 0 0 #000;
+  -webkit-box-shadow: 0 0 0 #000;
+  -moz-box-shadow: 0 0 0 #000;
+  filter: progid:DXImageTransform.Microsoft.dropShadow(color=none, offX=0, offY=0, positive=true);
+}
+
+ul.grid-view li:hover a.delete img {
+  display: block;
 }

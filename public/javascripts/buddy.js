@@ -122,7 +122,7 @@ var zz = {
     new_post_share: {
       element: '#new_post_share',
       rules: {
-        'post_share[message]': { required: true },  
+        'post_share[message]': { required: true, maxlength: 140 },  
       },
       submitHandler: function() {
         serialized = $('#new_post_share').serialize();
@@ -132,6 +132,8 @@ var zz = {
       }
       
     }, // end zz.validation.new_post_share
+    
+    
     
     sample_sign_up: {
       element: '#sample-sign-up',
@@ -206,14 +208,20 @@ var zz = {
     drawer_open: 0,
     screen_gap: 150,
         
-    open_drawer: function(time){
+    open_drawer: function(time, percent){
 
       zz.zang.screen_height = $(window).height(); // measure the screen height
       // adjust for out top and bottom bar, the gradient padding and a margin
       zz.zang.drawer_height = zz.zang.screen_height - zz.zang.screen_gap; 
 
+      if (typeof percent == 'number') {
+        temp = percent;
+      } else {
+        temp = 0;
+      }
+      
       // fade out the grid
-      $('article').animate({ opacity: 0.3 }, time/2 );
+      $('article').animate({ opacity: temp }, time/2 ).html('');
       
       // pull out the drawer
       $('div#drawer').animate({ height: zz.zang.drawer_height + 'px', top: '50px' }, time );
@@ -246,7 +254,7 @@ var zz = {
       
       zz.zang.drawer_open = 2; // remember position of the drawer in 
 
-    }, // end zz.zang.open_drawer()
+    }, // end zz.zang.close_drawer()
     
     slam_drawer: function(time){
 
@@ -261,7 +269,7 @@ var zz = {
       
       zz.zang.drawer_open = 0; // remember position of the drawer in 
 
-    }, // end zz.zang.open_drawer()
+    }, // end zz.zang.slam_drawer()
     
     tray_zoom_in: function(element){
       $('#'+element).stop().animate({ height: '100px', width: '100px', bottom: '0px' }, 500);   
@@ -272,11 +280,13 @@ var zz = {
     },  // end zz.zang.tray_zoom_out()  
     
     image_pop: function(element){
-      temp_top = $('#'+element).offset().top;
+      temp = $('#'+element).css('margin-top').split('px')[0];
+      $('#traversing').remove();
+      temp_top = $('#'+element).offset().top - temp;
       temp_left = $('#'+element).offset().left;
 
       //todo: this element doesn't exist the first time. should check and set top and left to ~0
-      temp_top_new = $('#added-pictures-tray li:last').offset().top;
+      temp_top_new = $('#added-pictures-tray li:last').offset().top - temp;
       temp_left_new = $('#added-pictures-tray li:last').offset().left + 30;
       
       $('#'+element).clone()
@@ -287,16 +297,10 @@ var zz = {
       $('#traversing').animate({ 
         width: '30px',
         height: '30px',
-        top: temp_top_new+'px',
-        left: temp_left_new+'px'
-      }, 500, function(){
+        top: (temp_top_new + 1) +'px',
+        left: (temp_left_new + 9) +'px'
+      }, 500);
       
-       // $('#added-pictures-tray li:first img').show();
-         $('#traversing').remove();
-      } );
-      
-      
-
                            
 
     }, // end zz.zang.image_pop
@@ -348,11 +352,12 @@ var zz = {
     },
     
     preview_album: function(){
-      $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/wizard?step=3', function(){                        
+      $('#drawer-content').empty();
+      $('article').empty().hide().load('/albums/'+zz.zang.album_id+'/wizard?step=3', function(){                        
+        zz.zang.close_drawer();
         zz.zang.indicator_step = 3;  
         zz.zang.indicator = 'step-edit';
-        $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
-      }); 
+      }).css({marginTop: '80px', opacity: 1}).fadeIn('fast'); 
     },
 
     share_album: function(){
@@ -400,7 +405,8 @@ var zz = {
         serialized = $(".edit_album").serialize();
         $.post('/albums/'+zz.zang.album_id, serialized, function(data){ });
       } else if (zz.zang.indicator_step == 3) {
-        //nothing for now
+        //re-open the drawer
+        zz.zang.open_drawer();
       } else if (zz.zang.indicator_step == 4) {
         //post form
       } else {
@@ -480,6 +486,8 @@ var zz = {
         zz.zang.change_step(temp);
       });
       
+      $('#post-share-form').validate(zz.validation.new_post_share);
+      
     },
     
     loaded: function(){
@@ -493,16 +501,9 @@ var zz = {
       // TODO: check for selected photo - move caption position
     },
     
+    
+    
     tray: function(){
-     
-      $('#added-pictures-tray li img').unbind().hover(function() {
-        temp = $(this).attr('id');
-        zz.zang.tray_zoom_in(temp);
-      }, function() {
-        temp = $(this).attr('id');
-        zz.zang.tray_zoom_out(temp);
-      });
-
     
     }        
   

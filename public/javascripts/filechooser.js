@@ -1,5 +1,7 @@
 /* Filechooser
  ----------------------------------------------------------------------------- */
+
+
 var filechooser = {
 
     imageloader: null,
@@ -9,54 +11,54 @@ var filechooser = {
             open_url: 'http://localhost:9090/iphoto/folders',
             type: 'folder',
             name: 'iPhoto',
-            class: 'f_iphoto'
+            clazz: 'f_iphoto'
         },
         {
             open_url: 'http://localhost:9090/filesystem/folders',
             type: 'folder',
             name: 'My Computer',
-            class: 'f_mycomputer'
+            clazz: 'f_mycomputer'
         },
         {
             open_url: 'http://localhost:9090/filesystem/folders/fg==',
             type: 'folder',
             name: 'My Home',
-            class: 'f_home'
+            clazz: 'f_home'
         },
         {
             open_url: '/facebook/folders.json',
             type: 'folder',
             name: 'Facebook',
             login_url: '/facebook/sessions/new',
-            class: 'f_facebook'
+            clazz: 'f_facebook'
         },
         {
             open_url: '/flickr/folders.json',
             type: 'folder',
             name: 'Flickr',
             login_url: '/flickr/sessions/new',
-            class: 'f_flickr'
+            clazz: 'f_flickr'
         },
         {
             open_url: '/kodak/folders.json',
             type: 'folder',
             name: 'Kodak',
             login_url:'/kodak/sessions/new',
-            class: 'f_kodak'
+            clazz: 'f_kodak'
         },
         {
             open_url: '/smugmug/folders.json',
             type: 'folder',
             name: 'SmugMug',
             login_url: '/smugmug/sessions/new',
-            class: 'f_smugmug'
+            clazz: 'f_smugmug'
         },
         {
             open_url: '/shutterfly/folders.json',
             type: 'folder',
             name: 'Shutterfly',
             login_url: '/shutterfly/sessions/new',
-            class: 'f_shutterfly'
+            clazz: 'f_shutterfly'
         }
     ],
 
@@ -138,8 +140,49 @@ var filechooser = {
         };
 
         var onImageLoaded = function(id, src, width, height) {
-            $('#' + id).attr('src', src);
-            // TODO this is where you do your padding and scaling
+            var new_size = 115;
+            //console.log('id: #'+id+', src: '+src+', width: '+width+', height: '+height);
+          
+            if (height > width) {
+              //console.log('tall');
+              //tall
+              var ratio = width / height; 
+              $('#' + id).attr('src', src).css({
+                      height: new_size+'px', 
+                      width: (ratio * new_size) + 'px' 
+              });
+    
+              var guuu = $('#'+id).attr('id').split('-')[3];
+              $('li#photo-'+ guuu +' figure').css({
+                      bottom: '9px', 
+                      width: ((ratio * new_size) + 10)+'px', 
+                      marginLeft: (((new_size - (ratio * new_size)) / 2 ) + 2)+ 'px'
+              });
+              $('li#photo-'+ guuu +' .checkmark').css({bottom: '3px'});
+              
+            } else {
+            
+              //wide
+              //console.log('wide');
+    
+              var ratio = height / width; 
+              
+              $('#' + id).attr('src', src).attr('src', src).css({
+                      height: (ratio * new_size) + 'px', 
+                      width: new_size+'px', 
+                      marginTop: ((new_size - (ratio * new_size)) / 2) + 'px' 
+              });
+    
+              var guuu = $('#'+id).attr('id').split('-')[3];
+              $('li#photo-'+ guuu +' figure').css({
+                      bottom: ((new_size - (ratio * new_size)) / 2) + 9 +'px'
+              });
+              temp = $('li#photo-'+ guuu +' .checkmark').css('left');
+              $('li#photo-'+ guuu +' .checkmark').css({
+                      bottom: ((new_size - (ratio * new_size)) / 2) + 3 + 'px', 
+                      left: '-10px' });
+              //console.log(guuu);
+            }
         };
 
         filechooser.imageloader = new ImageLoader(onStartLoadingImage, onImageLoaded);
@@ -148,8 +191,6 @@ var filechooser = {
         if (children.body) {
             children = children.body;
         }
-
-
 
 
         //build html for list of files/folders
@@ -162,7 +203,7 @@ var filechooser = {
                 var a_id = 'chooser-folder-a-' + i;
 
                 var theClick = 'onclick="filechooser.open_folder(\'' + children[i].name + '\',\'' + children[i].open_url + '\',\'' + children[i].login_url + '\'); return false;"';
-                html += '<li id="' + id + '" class="' + children[i].class + '">';
+                html += '<li id="' + id + '" class="' + children[i].clazz + '">';
 
                 html += '<a href="" ' + theClick + '>' + children[i].name + '</a>';
 
@@ -173,12 +214,16 @@ var filechooser = {
                 html += '</li>';
 
             } else {
-                var id = 'chooser-photo-' + children[i].source_guid;
+//                var id = 'chooser-photo-' + children[i].source_guid;
                 var img_id = 'chooser-photo-img-' + children[i].source_guid;
                 var theClick = 'onclick="filechooser.add_photos(\'' + children[i].add_url + '\', \'' + img_id + '\'); return false;"';                
-                html += '<li id="' + id + '" class="photo" ' + theClick + '>';
-                html += '<div><img id="' + img_id + '" src="">';
-                html += '<figure>Add Photo</figure></div>';
+                html += '<li id="photo-' + children[i].source_guid + '" class="photo" ' + theClick + '>';
+                html += '<div class="relative">'
+                html += '<img id="' + img_id + '" src="">';
+                html += '<figure>Add Photo</figure>';
+                html += '<div class="checkmark"></div>';
+                html += '</div>';
+                html += '<a href="" ' + theClick + '>' + children[i].name + '</a>';
                 html += '</li>';
 
 
@@ -191,7 +236,23 @@ var filechooser = {
         }
 
         $('#filechooser').html(html);
+
+        filechooser.update_checkmarks();
+
         filechooser.imageloader.start(5);
+    },
+
+
+    update_checkmarks : function(){
+
+        //uncheck all
+        $('li').removeClass('in-tray');
+
+        //check the ones in the tray
+        for(var i in tray.album_photos){
+            $("li#photo-" + tray.album_photos[i].source_guid).addClass('in-tray');
+        }
+
     },
 
     add_photos : function(add_url, element_id) {
@@ -237,6 +298,8 @@ var filechooser = {
         }
 
         tray.add_photos(photos);
+
+        filechooser.update_checkmarks();
     },
 
 
@@ -325,8 +388,9 @@ var tray = {
         tray.imageloader = new ImageLoader(onStartLoadingImage, onImageLoaded);
 
         var html = '';
-        for each(var photo in tray.album_photos) {
-
+        for (var i in tray.album_photos) {
+            var photo = tray.album_photos[i];
+            
             var id = 'tray-' + photo.id;
 
             html += '<li>';
@@ -355,15 +419,10 @@ var tray = {
 
             }
 
-            //mark photo in chooser as 'added'
-            //todo: cleanup generation of element id
-            //todo: repace .wrap() with .addClass()
-            //$('#chooser-' + photos[i].source_guid).wrap('<div style="border:1px solid blue"/>');
-
-
         }
 
         $('#added-pictures-tray').html(html);
+        $('#traversing').hide().remove();
         zz.init.tray();
         tray.imageloader.start(5);
 
@@ -393,6 +452,7 @@ var tray = {
                 break;
             }
         }
+        filechooser.update_checkmarks();
     }
 };
 
