@@ -8,28 +8,21 @@
 <%= link_to "Share this album by email", new_album_emailshare_url( @album ) %>
 </div>
 
-<div class="album-header">
-  <h3>Share Album</h3>
-  <h4>Set Privacy Settings and Share this Album with Your Friends</h4>
+<div id="top-section">
+  <div class="album-header">
+    <h3>Share Album</h3>
+    <h4>Set Privacy Settings and Share this Album with Your Friends</h4>
+  </div>
+
 </div>
-
-<div id="scroll-body">
-
-
- <!--
-  <select id="album-privacy">
-    <option value="public" selected="selected">Public</option>
-    <option value="hidden">Hidden</option>
-  </select>
--->
   <%form_for @album, :url => update_album_url(@album)  do |f| %>
-      <%=select :album, :privacy, Album::PRIVACIES, {:selected =>@album.privacy },  {:class => "album_privacy"}%>
-    <%end%>
-  &nbsp;&nbsp;<div id="privacy-description"> Allows everyone to see this album</div>
-    
-
+    <%=select :album, :privacy, Album::PRIVACIES, {:selected =>@album.privacy },  {:class => "album_privacy rounded"}%> &nbsp; <span class="h4">Allows everyone to see this album</span>
+  <%end%>
   <hr>
-   <ul id="share-pick">
+
+<div id="scroll-body">  
+  
+  <ul id="share-pick">
     <li class="social-share link">
       <p><img src="/images/social-btns.png" /></p>
       <p><a href="javascript:void(0);">Share this album on Facebook or Twitter</a></p>

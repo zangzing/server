@@ -422,6 +422,7 @@ var tray = {
         }
 
         $('#added-pictures-tray').html(html);
+        $('#traversing').hide().remove();
         zz.init.tray();
         tray.imageloader.start(5);
 

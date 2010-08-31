@@ -349,7 +349,7 @@ ul#indicator li.on {
 div#drawer-content div#top-section {
   padding: 0px 10px;
   width: 840px;
-  margin-top: 15px;
+  margin: 15px 0 5px;
   height: 75px;
 }
 
@@ -614,6 +614,13 @@ div#drawer-content h4 {
   color: #0a0a0a;
 }
 
+span.h4 {
+  font-size: 1.4em;
+  font-weight: 500;
+  color: #0a0a0a;
+  line-height: 2.2em;
+}
+
 div#drawer-content .album-header {
   margin: 25px auto 45px;
   width: 600px;
@@ -772,6 +779,20 @@ dl#email-share-form dd input, dl#email-share-form dd textarea {
   color: #646464;
 }
 
+select.album_privacy {
+  background-color: #fbfbfb;
+  background: -moz-linear-gradient(top, #fbfbfb, #dcdcdc);
+  background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#dcdcdc));
+  border: 1px #dcdcdc solid;
+  font-size: 1.2em;
+  font-weight: 400;
+  color: #646464;
+  padding: 4px;
+  height: 28px;
+  width: 80px;
+  margin-right: 10px;
+}
+
 /* Grid View
 ----------------------------------------------------------------------------- */
 
@@ -844,6 +865,7 @@ ul.grid-view li:hover figure {
 }
 
 ul.grid-view a.delete img {
+  display: none;
   position: absolute;
   top: 0px;
   right: 0px;
@@ -853,4 +875,8 @@ ul.grid-view a.delete img {
   -webkit-box-shadow: 0 0 0 #000;
   -moz-box-shadow: 0 0 0 #000;
   filter: progid:DXImageTransform.Microsoft.dropShadow(color=none, offX=0, offY=0, positive=true);
+}
+
+ul.grid-view li:hover a.delete img {
+  display: block;
 }
