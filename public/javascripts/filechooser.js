@@ -177,8 +177,6 @@ var filechooser = {
         }
 
 
-
-
         //build html for list of files/folders
         var html = '';
         for (var i in children) {
@@ -200,7 +198,7 @@ var filechooser = {
                 html += '</li>';
 
             } else {
-                var id = 'chooser-photo-' + children[i].source_guid;
+//                var id = 'chooser-photo-' + children[i].source_guid;
                 var img_id = 'chooser-photo-img-' + children[i].source_guid;
                 var theClick = 'onclick="filechooser.add_photos(\'' + children[i].add_url + '\', \'' + img_id + '\'); return false;"';                
                 html += '<li id="photo-' + children[i].source_guid + '" class="photo" ' + theClick + '>';
@@ -222,7 +220,23 @@ var filechooser = {
         }
 
         $('#filechooser').html(html);
+
+        filechooser.update_checkmarks();
+
         filechooser.imageloader.start(5);
+    },
+
+
+    update_checkmarks : function(){
+
+        //uncheck all
+        $('li').removeClass('in-tray');
+
+        //check the ones in the tray
+        for(var i in tray.album_photos){
+            $("li#photo-" + tray.album_photos[i].source_guid).addClass('in-tray');
+        }
+
     },
 
     add_photos : function(add_url, element_id) {
@@ -268,6 +282,8 @@ var filechooser = {
         }
 
         tray.add_photos(photos);
+
+        filechooser.update_checkmarks();
     },
 
 
@@ -387,12 +403,6 @@ var tray = {
 
             }
 
-            //mark photo in chooser as 'added'
-            //todo: cleanup generation of element id
-            //todo: repace .wrap() with .addClass()
-            //$('#chooser-' + photos[i].source_guid).wrap('<div style="border:1px solid blue"/>');
-
-
         }
 
         $('#added-pictures-tray').html(html);
@@ -425,6 +435,7 @@ var tray = {
                 break;
             }
         }
+        filechooser.update_checkmarks();
     }
 };
 

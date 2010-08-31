@@ -526,6 +526,7 @@ ul#filechooser li .checkmark {
 ul#filechooser li.in-tray .checkmark { 
   background-image: url("/images/check-on.png");
   background-repeat: no-repeat;
+  display:block;
 }
 
 ul#filechooser li:hover .checkmark {
