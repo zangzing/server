@@ -122,7 +122,7 @@ var zz = {
     new_post_share: {
       element: '#new_post_share',
       rules: {
-        'post_share[message]': { required: true },  
+        'post_share[message]': { required: true, maxlength: 140 },  
       },
       submitHandler: function() {
         serialized = $('#new_post_share').serialize();
@@ -132,6 +132,8 @@ var zz = {
       }
       
     }, // end zz.validation.new_post_share
+    
+    
     
     sample_sign_up: {
       element: '#sample-sign-up',
@@ -484,6 +486,8 @@ var zz = {
         zz.zang.change_step(temp);
       });
       
+      $('#post-share-form').validate(zz.validation.new_post_share);
+      
     },
     
     loaded: function(){
@@ -497,16 +501,9 @@ var zz = {
       // TODO: check for selected photo - move caption position
     },
     
+    
+    
     tray: function(){
-     
-      /*$('#added-pictures-tray li img').unbind().hover(function() {
-        temp = $(this).attr('id');
-        zz.zang.tray_zoom_in(temp);
-      }, function() {
-        temp = $(this).attr('id');
-        zz.zang.tray_zoom_out(temp);
-      });
-*/
     
     }        
   
