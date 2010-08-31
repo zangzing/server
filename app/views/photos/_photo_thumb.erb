@@ -1,9 +1,11 @@
-
-<li>
-  <a href="<%=album_photos_path(photo.album)%>?size=screenres&photoid=<%=photo.id%>">
-    <img src="" id="photo-<%=photo.id%>">
-     <% if current_user?(photo.album.user) %>
-        <%= link_to image_tag( "/images/delete.png" ), photo, { :method => :delete, :class => 'gridcellphotoicon'} %>
-     <% end %>
-  </a>
+<li id="photo-<%=photo.id%>-li">
+  <div class="relative">
+    <a href="<%=album_photos_path(photo.album)%>?size=screenres&photoid=<%=photo.id%>">
+      <img src="" id="photo-<%=photo.id%>">
+      <figure><%=photo.caption%></figure>
+       <% if current_user?(photo.album.user) %>
+          <%= link_to image_tag( "/images/btn-delete.png" ), photo, { :method => :delete, :class => 'delete'} %>
+       <% end %>
+    </a>
+  </div>
 </li>

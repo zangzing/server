@@ -252,7 +252,7 @@ var zz = {
       
       zz.zang.drawer_open = 2; // remember position of the drawer in 
 
-    }, // end zz.zang.open_drawer()
+    }, // end zz.zang.close_drawer()
     
     slam_drawer: function(time){
 
@@ -267,7 +267,7 @@ var zz = {
       
       zz.zang.drawer_open = 0; // remember position of the drawer in 
 
-    }, // end zz.zang.open_drawer()
+    }, // end zz.zang.slam_drawer()
     
     tray_zoom_in: function(element){
       $('#'+element).stop().animate({ height: '100px', width: '100px', bottom: '0px' }, 500);   
@@ -350,11 +350,12 @@ var zz = {
     },
     
     preview_album: function(){
-      $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/wizard?step=3', function(){                        
+      $('#drawer-content').empty();
+      $('article').empty().hide().load('/albums/'+zz.zang.album_id+'/wizard?step=3', function(){                        
+        zz.zang.close_drawer();
         zz.zang.indicator_step = 3;  
         zz.zang.indicator = 'step-edit';
-        $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
-      }); 
+      }).css({marginTop: '80px', opacity: 1}).fadeIn('fast'); 
     },
 
     share_album: function(){
@@ -402,7 +403,8 @@ var zz = {
         serialized = $(".edit_album").serialize();
         $.post('/albums/'+zz.zang.album_id, serialized, function(data){ });
       } else if (zz.zang.indicator_step == 3) {
-        //nothing for now
+        //re-open the drawer
+        zz.zang.open_drawer();
       } else if (zz.zang.indicator_step == 4) {
         //post form
       } else {
