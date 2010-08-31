@@ -4,6 +4,16 @@
 
 
 class Mailer < ActionMailer::Base
+
+  default :from => "ZangZing Communications <do-not-reply@zangzing.com>" 
+
+  def album_upload_complete_message( user, album )
+    recipients user.email
+    subject "Your album "+album.name+" is ready!"
+    body
+
+  end
+
   def shared_album_notification(share, album_url)
     from       "dev@zangzing.com"
     recipients "dev.zangzing@gmail.com"

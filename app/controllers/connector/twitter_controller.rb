@@ -11,17 +11,7 @@ class Connector::TwitterController < Connector::ConnectorController
   protected
 
   def service_login_required
-    unless twitter_auth_token_string
-      @token_string = service_identity.credentials
-      raise InvalidToken unless @token_string
-      begin
-        @api = TwitterConnector.new(@token_string)
-      rescue => exception
-        raise InvalidToken if exception.kind_of?(Twitter::Unauthorized)
-        raise HttpCallFail if exception.kind_of?(SocketError)
-      end
-      raise InvalidToken unless twitter_api.client.authorized?
-    end
+    @api = service_identity.twitter.api
   end
 
   def service_identity
@@ -31,13 +21,4 @@ class Connector::TwitterController < Connector::ConnectorController
   def twitter_api
     @api ||= TwitterConnector.new
   end
-
-  def twitter_api=(api)
-    @api = api
-  end
-
-  def twitter_auth_token_string
-    @token_string
-  end
-
 end

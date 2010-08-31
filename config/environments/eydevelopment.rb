@@ -13,18 +13,6 @@ config.action_controller.consider_all_requests_local = true
 config.action_view.debug_rjs                         = true
 config.action_controller.perform_caching             = false
 
-# Don't care if the mailer can't send
-config.action_mailer.raise_delivery_errors = true
-config.action_mailer.delivery_method = :smtp
-config.action_mailer.smtp_settings = {
-                  :enable_starttls_auto => true,
-                  :address => 'mail.authsmtp.com',
-                  :port => 26,
-                  :authentication => :plain,
-                  :domain => 'zangzing.com',
-                  :user_name => 'ac51517',
-                  :password => 'sfmvqvm4ehbrgw'
-}
 #paperclip will look for imagemagick here
 #Paperclip.options[:command_path] = ENV['IMAGEMAGICK_PATH']
 #Paperclip.options[:log] = true

@@ -4,22 +4,21 @@
 
 class FacebookIdentity < Identity
 
-
   def facebook_graph
-    raise InvalidToken unless self.valid?
-    begin
-      @graph ||= HyperGraph.new(self.credentials)
-    rescue => exception
+    unless @graph
+      raise InvalidToken unless self.credentials
+      begin
+        @graph = HyperGraph.new(self.credentials)
+      rescue => exception
        raise InvalidToken if exception.kind_of?(FacebookError)
-       raise HttpCallFail if exception.kind_of?(SocketError)
-    end
+        raise HttpCallFail if exception.kind_of?(SocketError)
+      end
+      raise InvalidToken unless @graph
+    end    
+    return @graph
   end
 
-  def facebook_graph=(val)
-    @graph = val
-  end
-
-  def facebook_auth_token
-    self.credentials
+   def post( message="" )
+     self.facebook_graph.post("me/feed", :message => message)
   end
 end

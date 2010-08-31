@@ -89,8 +89,6 @@ class PhotosController < ApplicationController
     end
 
     render :json => @photos.to_json(:only =>[:id, :agent_id, :state, :source_thumb_url, :source_screen_url, :source_guid], :methods => [:thumb_url, :medium_url])
-
-
   end
 
   def edit

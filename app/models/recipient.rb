@@ -26,7 +26,7 @@ class Recipient < ActiveRecord::Base
   def service_credentials
     case self.service
       when 'facebook', 'twitter'
-        #verify that the user has a valid facebook idenityt
+        #verify that the user has a valid facebook identity
         user = User.find( self.address );
         errors.add(:name,  "User id not set for #{self.service.capitalize} Recipient") unless user
         errors.add_to_base("#{self.service.capitalize} Credentials Not Set (or expired)")  unless user.send("identity_for_#{self.service}").credentials_valid?

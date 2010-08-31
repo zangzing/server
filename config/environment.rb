@@ -40,5 +40,7 @@ Rails::Initializer.run do |config|
 
   # This allows for GUID use in primary keys 
   config.active_record.schema_format = :sql
+
+  config.action_mailer.delivery_method = :sendmail
 end
 
