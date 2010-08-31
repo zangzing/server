@@ -11,54 +11,54 @@ var filechooser = {
             open_url: 'http://localhost:9090/iphoto/folders',
             type: 'folder',
             name: 'iPhoto',
-            class: 'f_iphoto'
+            clazz: 'f_iphoto'
         },
         {
             open_url: 'http://localhost:9090/filesystem/folders',
             type: 'folder',
             name: 'My Computer',
-            class: 'f_mycomputer'
+            clazz: 'f_mycomputer'
         },
         {
             open_url: 'http://localhost:9090/filesystem/folders/fg==',
             type: 'folder',
             name: 'My Home',
-            class: 'f_home'
+            clazz: 'f_home'
         },
         {
             open_url: '/facebook/folders.json',
             type: 'folder',
             name: 'Facebook',
             login_url: '/facebook/sessions/new',
-            class: 'f_facebook'
+            clazz: 'f_facebook'
         },
         {
             open_url: '/flickr/folders.json',
             type: 'folder',
             name: 'Flickr',
             login_url: '/flickr/sessions/new',
-            class: 'f_flickr'
+            clazz: 'f_flickr'
         },
         {
             open_url: '/kodak/folders.json',
             type: 'folder',
             name: 'Kodak',
             login_url:'/kodak/sessions/new',
-            class: 'f_kodak'
+            clazz: 'f_kodak'
         },
         {
             open_url: '/smugmug/folders.json',
             type: 'folder',
             name: 'SmugMug',
             login_url: '/smugmug/sessions/new',
-            class: 'f_smugmug'
+            clazz: 'f_smugmug'
         },
         {
             open_url: '/shutterfly/folders.json',
             type: 'folder',
             name: 'Shutterfly',
             login_url: '/shutterfly/sessions/new',
-            class: 'f_shutterfly'
+            clazz: 'f_shutterfly'
         }
     ],
 
@@ -203,7 +203,7 @@ var filechooser = {
                 var a_id = 'chooser-folder-a-' + i;
 
                 var theClick = 'onclick="filechooser.open_folder(\'' + children[i].name + '\',\'' + children[i].open_url + '\',\'' + children[i].login_url + '\'); return false;"';
-                html += '<li id="' + id + '" class="' + children[i].class + '">';
+                html += '<li id="' + id + '" class="' + children[i].clazz + '">';
 
                 html += '<a href="" ' + theClick + '>' + children[i].name + '</a>';
 
