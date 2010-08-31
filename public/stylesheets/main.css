@@ -389,7 +389,7 @@ div#drawer-content ul#folders li, ul#filechooser li {
 
 div#drawer-content ul#folders li.photo, ul#filechooser li.photo {
   padding: 15px 20px;
-  height: 130px;
+  height: 128px;
   overflow: hidden;
   cursor: pointer;
   background-image: none;
@@ -511,10 +511,49 @@ ul#filechooser li:hover figure {
   line-height: 1.5em;
 }
 
-ul#filechooser li.photo div {
+ul#filechooser li .checkmark {
+  display: none;
+  position: absolute;
+  background-image: url("/images/check-off.png");
+  background-repeat: no-repeat;
+  width: 36px;
+  height: 36px;
+  bottom: 14px;
+  left: 0px;
+  z-index: 10;
+}
+
+ul#filechooser li.in-tray .checkmark { 
+  background-image: url("/images/check-on.png");
+  background-repeat: no-repeat;
+}
+
+ul#filechooser li:hover .checkmark {
+  display: block;
+}
+
+
+ul#filechooser li.photo div.relative {
   position: relative;
   width: 128px;
   height: 128px;
+}
+
+ul#filechooser li.photo:hover figure {
+  display: block;
+  position: absolute;
+  bottom: 24px;
+  left: 2px;
+  height: 15px;
+  width: 97%;
+  background-image: url("/images/bg-blk-75.png");
+  color: #fff;
+  font-weight: 500;
+  padding: 2px 0 7px;
+  overflow: hidden;
+  text-align: center;
+  line-height: 1.5em;
+  z-index: 5;
 }
 
 ul#filechooser a {

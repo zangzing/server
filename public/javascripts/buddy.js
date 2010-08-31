@@ -206,14 +206,20 @@ var zz = {
     drawer_open: 0,
     screen_gap: 150,
         
-    open_drawer: function(time){
+    open_drawer: function(time, percent){
 
       zz.zang.screen_height = $(window).height(); // measure the screen height
       // adjust for out top and bottom bar, the gradient padding and a margin
       zz.zang.drawer_height = zz.zang.screen_height - zz.zang.screen_gap; 
 
+      if (typeof percent == 'number') {
+        temp = percent;
+      } else {
+        temp = 0;
+      }
+      
       // fade out the grid
-      $('article').animate({ opacity: 0.3 }, time/2 );
+      $('article').animate({ opacity: temp }, time/2 ).html('');
       
       // pull out the drawer
       $('div#drawer').animate({ height: zz.zang.drawer_height + 'px', top: '50px' }, time );
