@@ -206,14 +206,20 @@ var zz = {
     drawer_open: 0,
     screen_gap: 150,
         
-    open_drawer: function(time){
+    open_drawer: function(time, percent){
 
       zz.zang.screen_height = $(window).height(); // measure the screen height
       // adjust for out top and bottom bar, the gradient padding and a margin
       zz.zang.drawer_height = zz.zang.screen_height - zz.zang.screen_gap; 
 
+      if (typeof percent == 'number') {
+        temp = percent;
+      } else {
+        temp = 0;
+      }
+      
       // fade out the grid
-      $('article').animate({ opacity: 0.3 }, time/2 );
+      $('article').animate({ opacity: temp }, time/2 ).html('');
       
       // pull out the drawer
       $('div#drawer').animate({ height: zz.zang.drawer_height + 'px', top: '50px' }, time );
@@ -272,11 +278,13 @@ var zz = {
     },  // end zz.zang.tray_zoom_out()  
     
     image_pop: function(element){
-      temp_top = $('#'+element).offset().top;
+      temp = $('#'+element).css('margin-top').split('px')[0];
+      $('#traversing').remove();
+      temp_top = $('#'+element).offset().top - temp;
       temp_left = $('#'+element).offset().left;
 
       //todo: this element doesn't exist the first time. should check and set top and left to ~0
-      temp_top_new = $('#added-pictures-tray li:last').offset().top;
+      temp_top_new = $('#added-pictures-tray li:last').offset().top - temp;
       temp_left_new = $('#added-pictures-tray li:last').offset().left + 30;
       
       $('#'+element).clone()
@@ -287,16 +295,10 @@ var zz = {
       $('#traversing').animate({ 
         width: '30px',
         height: '30px',
-        top: temp_top_new+'px',
-        left: temp_left_new+'px'
-      }, 500, function(){
+        top: (temp_top_new + 1) +'px',
+        left: (temp_left_new + 9) +'px'
+      }, 500);
       
-       // $('#added-pictures-tray li:first img').show();
-         $('#traversing').remove();
-      } );
-      
-      
-
                            
 
     }, // end zz.zang.image_pop
@@ -495,14 +497,14 @@ var zz = {
     
     tray: function(){
      
-      $('#added-pictures-tray li img').unbind().hover(function() {
+      /*$('#added-pictures-tray li img').unbind().hover(function() {
         temp = $(this).attr('id');
         zz.zang.tray_zoom_in(temp);
       }, function() {
         temp = $(this).attr('id');
         zz.zang.tray_zoom_out(temp);
       });
-
+*/
     
     }        
   

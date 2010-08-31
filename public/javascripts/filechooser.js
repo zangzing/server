@@ -140,7 +140,32 @@ var filechooser = {
         };
 
         var onImageLoaded = function(id, src, width, height) {
-            $('#' + id).attr('src', src);
+            var new_size = 110;
+            //console.log('id: #'+id+', src: '+src+', width: '+width+', height: '+height);
+          
+            if (height > width) {
+              //console.log('tall');
+              //tall
+              var ratio = width / height; 
+              $('#' + id).attr('src', src).css({height: new_size+'px', width: (ratio * new_size) + 'px' });
+    
+              var guuu = $('#'+id).attr('id').split('-')[3];
+              $('li#photo-'+ guuu +' figure').css({bottom: '9px', width: ((ratio * new_size) + 10)+'px', marginLeft: (((new_size - (ratio * new_size)) / 2 ) + 2)+ 'px'});
+              $('li#photo-'+ guuu +' .checkmark').css({bottom: '3px'});
+              
+            } else {
+              //wide
+              //console.log('wide');
+    
+              var ratio = height / width; 
+              $('#' + id).attr('src', src).attr('src', src).css({height: (ratio * new_size) + 'px', width: new_size+'px', marginTop: ((new_size - (ratio * new_size)) / 2) + 'px' });
+    
+              var guuu = $('#'+id).attr('id').split('-')[3];
+              $('li#photo-'+ guuu +' figure').css({bottom: ((new_size - (ratio * new_size)) / 2) + 9 +'px'});
+              temp = $('li#photo-'+ guuu +' .checkmark').css('left');
+              $('li#photo-'+ guuu +' .checkmark').css({bottom: ((new_size - (ratio * new_size)) / 2) + 3 + 'px', left: '-10px' });
+              //console.log(guuu);
+            }
             // TODO this is where you do your padding and scaling
         };
 
@@ -178,9 +203,13 @@ var filechooser = {
                 var id = 'chooser-photo-' + children[i].source_guid;
                 var img_id = 'chooser-photo-img-' + children[i].source_guid;
                 var theClick = 'onclick="filechooser.add_photos(\'' + children[i].add_url + '\', \'' + img_id + '\'); return false;"';                
-                html += '<li id="' + id + '" class="photo" ' + theClick + '>';
-                html += '<div><img id="' + img_id + '" src="">';
-                html += '<figure>Add Photo</figure></div>';
+                html += '<li id="photo-' + children[i].source_guid + '" class="photo" ' + theClick + '>';
+                html += '<div class="relative">'
+                html += '<img id="' + img_id + '" src="">';
+                html += '<figure>Add Photo</figure>';
+                html += '<div class="checkmark"></div>';
+                html += '</div>';
+                html += '<a href="" ' + theClick + '>' + children[i].name + '</a>';
                 html += '</li>';
 
 
