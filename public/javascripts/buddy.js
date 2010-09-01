@@ -295,10 +295,10 @@ var zz = {
                     .appendTo('body');
       
       $('#traversing').animate({ 
-        width: '30px',
-        height: '30px',
+        width: '20px',
+        height: '20px',
         top: (temp_top_new + 1) +'px',
-        left: (temp_left_new + 9) +'px'
+        left: (temp_left_new + 1) +'px'
       }, 500);
       
                            
