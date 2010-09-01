@@ -287,7 +287,7 @@ var zz = {
 
       //todo: this element doesn't exist the first time. should check and set top and left to ~0
       temp_top_new = $('#added-pictures-tray li:last').offset().top - temp;
-      temp_left_new = $('#added-pictures-tray li:last').offset().left + 30;
+      temp_left_new = $('#added-pictures-tray li:last').offset().left + 20;
       
       $('#'+element).clone()
                     .attr({id: 'traversing'})
@@ -297,8 +297,8 @@ var zz = {
       $('#traversing').animate({ 
         width: '20px',
         height: '20px',
-        top: (temp_top_new + 1) +'px',
-        left: (temp_left_new + 1) +'px'
+        top: (temp_top_new - 2) +'px',
+        left: (temp_left_new + 3) +'px'
       }, 500);
       
                            
