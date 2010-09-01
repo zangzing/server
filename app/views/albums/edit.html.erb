@@ -1,12 +1,6 @@
 <script>
-    var json = '<%=@album.to_json(:include => {:photos => {:only =>[:id, :source_thumb_url, :state], :methods => [:thumb_url]}})%>';
-
-    <!--
-
-            you need to run the image loader to replace the src's with the actual urls look at photos/grid.html.erb 
-
-
-     -->
+//    zz.json = [<%=@album.to_json(:include => {:photos => {:only =>[:id, :source_thumb_url, :state], :methods => [:thumb_url]}})%>];
+//    console.log('I ran!');
 </script>
 <h2 class="album"><%= h @album.name %></h2>
 

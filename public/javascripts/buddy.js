@@ -357,6 +357,9 @@ var zz = {
         zz.zang.close_drawer();
         zz.zang.indicator_step = 3;  
         zz.zang.indicator = 'step-edit';
+        
+        //console.log(json);
+        
       }).css({marginTop: '80px', opacity: 1}).fadeIn('fast'); 
     },
 
