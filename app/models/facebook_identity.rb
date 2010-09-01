@@ -20,5 +20,10 @@ class FacebookIdentity < Identity
 
    def post( message="" )
      self.facebook_graph.post("me/feed", :message => message)
+   end
+
+  def facebook_auth_token
+    self.credentials
   end
+
 end

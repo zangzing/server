@@ -21,7 +21,7 @@ protected
 
 
   def get_photo_url(photo_id, size)
-    url = URI.escape("/#{photo_id}/picture?access_token=#{facebook_auth_token}&type=#{size}")
+    url = URI.escape("/#{photo_id}/picture?access_token=#{service_identity.facebook_auth_token}&type=#{size}")
     http = Net::HTTP.new(HyperGraph::API_URL, 443) 
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
