@@ -25,7 +25,7 @@ config.action_mailer.smtp_settings = {
                   :user_name => 'ac51517',
                   :password => 'sfmvqvm4ehbrgw'
 }
-ActionMailer::Base.default :from => 'default@development-server.com'
+
 
 #paperclip will look for imagemagick here
 #Paperclip.options[:command_path] = ENV['IMAGEMAGICK_PATH']
