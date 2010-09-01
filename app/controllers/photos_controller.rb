@@ -5,7 +5,6 @@ class PhotosController < ApplicationController
 
 
   def show
-    logger.debug "The params hash i n PhotosController show is #{params.inspect}"
     @photo = Photo.find(params[:id])
     @album = @photo.album
     @title = CGI.escapeHTML(@album.name)
@@ -89,12 +88,6 @@ class PhotosController < ApplicationController
     end
 
     render :json => @photos.to_json(:only =>[:id, :agent_id, :state, :source_thumb_url, :source_screen_url, :source_guid], :methods => [:thumb_url, :medium_url])
-  end
-
-  def edit
-    @photo = Photo.find(params[:id])
-    @album = @photo.album Person.find
-    @title = "Update Photo"
   end
 
   def upload
@@ -191,6 +184,49 @@ class PhotosController < ApplicationController
       format.json do
         render :json => @photos.to_json(:only =>[:id, :agent_id, :state, :album_id])
 
+      end
+    end
+  end
+
+#
+  # Shows all photos for a given album
+  #
+  # Photos can be shown in a slideshow or a grid based on the query arguments
+  #
+  # size         thumb|screeenres  Show all thumbnails or 1 screenres.
+  #              Default: show all thumbs
+  # photoid      Id of photo that should be displayed when in screenres
+  #              Default: Show first pic in album
+  # page         Page desired when in screenres
+  #              Default: First
+  #
+  def edit
+    @album = Album.find(params[:album_id])
+    @title = CGI.escapeHTML(@album.name)
+    @user=  @album.user
+
+    respond_to do |format|
+      format.html do
+        if !params[:size].nil? && params[:size] == 'screenres'
+          @photos = @album.photos.paginate({:page =>params[:page], :per_page => 1})
+          unless  params[:photoid].nil?
+            current_page = 1 if params[:page].nil?
+            until @photos[0][:id] == params[:photoid]
+              current_page += 1
+              @photos = @album.photos.paginate({:page =>current_page, :per_page => 1})
+            end
+            params[:photoid] = nil
+          end
+          render 'slideshow'
+        else
+          @photo = Photo.new
+          @photos = @album.photos
+          render 'grid'
+        end
+      end
+
+      format.json do
+        render :json => @album.photos.to_json( :methods => [:thumb_url, :medium_url])
       end
     end
   end

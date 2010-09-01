@@ -353,7 +353,7 @@ var zz = {
     
     preview_album: function(){
       $('#drawer-content').empty();
-      $('article').empty().hide().load('/albums/'+zz.zang.album_id+'/wizard?step=3', function(){                        
+      $('article').empty().hide().load('/albums/'+zz.zang.album_id+'/edit', function(){                        
         zz.zang.close_drawer();
         zz.zang.indicator_step = 3;  
         zz.zang.indicator = 'step-edit';

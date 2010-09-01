@@ -4,24 +4,18 @@
 
 
 class Mailer < ActionMailer::Base
-
+  default_url_options[:host] = "localhost:3000"
   default :from => "ZangZing Communications <do-not-reply@zangzing.com>" 
 
   def album_upload_complete_message( user, album )
     recipients user.email
     subject "Your album "+album.name+" is ready!"
-    body
-
   end
 
-  def shared_album_notification(share, album_url)
-    from       "dev@zangzing.com"
-    recipients "dev.zangzing@gmail.com"
-    subject    share.email_subject
-    body       share.email_message + " " + album_url
+  def album_shared_with_you_message(from_user,to_user,album)
+    recipients to_user.email
+    subject "#{from_user.name} has shared a ZangZing album: #{album.name} with you."
   end
-
-  default_url_options[:host] = "localhost:3000"
 
   def password_reset_instructions(user)
     subject       "ZangZing Password Reset Instructions"

@@ -21,7 +21,9 @@ class EmailShare < Share
      self.recipients.each do |rec|
       user = User.find( rec.address )
        Mailer.deliver_password_reset_instructions(self)
-    end
+     end
+     self.sent_at = Time.now
+     self.save
   end
 
 end

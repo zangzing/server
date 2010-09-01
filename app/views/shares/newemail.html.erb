@@ -33,49 +33,9 @@
   </div>
 </div>
 
-<div class="offset">
- <table>
-   <tr>
-     <td> Gmail:</td>
-     <% unless @google_id.credentials_valid? %>
-         <td> <%= button_to_function "Import", "call_new_google_session();return false;", :id => "google_import_button" %></td>
-         <td> <div id="last_google_import" ></div></td>
-     <% else %>
-        <td> <%= button_to_function "Refresh", "call_google_import();return false;", :id => "google_import_button" %></td>
-        <td> <div id="last_google_import" >Last imported on: <%= @google_id.last_contact_refresh %></div></td>
-     <% end %>    
-   </tr>
-   <td> Yahoo:</td>
-     <% unless @yahoo_id.credentials_valid? %>
-         <td> <%= button_to_function "Import", "call_new_yahoo_session();return false;", :id => "yahoo_import_button" %></td>
-         <td> <div id="last_yahoo_import" ></div></td>
-     <% else %>
-        <td> <%= button_to_function "Refresh", "call_yahoo_import();return false;", :id => "yahoo_import_button" %></td>
-        <td> <div id="last_yahoo_import" >Last imported on: <%= @yahoo_id.last_contact_refresh %></div></td>
-     <% end %>
-   </tr>
- </table>
-<%form_for [@share], :url => create_album_share_path(@album)  do |f| %>
-   <%= f.error_messages %>
-   <table>     
-   <tr><td>To: <%= f.text_field(  :to, :size=>40, :id => "ToField") %></td></tr>
-   <tr><td>Subject: <%= f.text_field(  :subject, :size=>40) %></td></tr>
-   <tr><td>Message: <%= f.text_area(   :message, :cols=>40,  :rows=>10) %></td><td><%= f.submit "Send"%></td></tr>
-   </table>
-<% end %>
 
-<form action="" onsubmit="return false;">
-	<p>
-		Local Contact Autocomplete:
-		<input type="text" id="CityLocal" value="" />
-		<input type="button" value="Get Value" onclick="lookupLocal();" />
-		(Shows a max of 10 entries)
-	</p>
-</form>
-
-<script type="text/javascript" src="/javascripts/sharecontacts.js" ></script>
 <script type="text/javascript">
-  
+
 $(document).ready( function(){
  sharecontacts.setup( <%=( @google_id.credentials_valid? ? 1 : 0 ) %> == 1,
                  "<%= @google_id.last_contact_refresh%>",
@@ -143,4 +103,3 @@ function reloadAutocompleter () {
             );
 }
 </script>
-</div>

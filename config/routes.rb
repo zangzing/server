@@ -23,19 +23,18 @@ ActionController::Routing::Routes.draw do |map|
   #albums
   map.with_options :controller => :albums do |albums|
     albums.user_albums        '/users/:user_id/albums.',     :action=>"index",     :conditions=>{ :method => :get }
+    albums.album              '/albums/:id.',                :action=>"show",       :conditions=>{ :method => :get }
+
     albums.new_user_album     '/users/:user_id/albums/new.', :action=>"new",       :conditions=>{ :method => :get }
     albums.create_user_album  '/users/:user_id/albums.',     :action=>"create",    :conditions=>{ :method => :post }
+
     albums.name_album         '/albums/:id/name_album.',     :action=>"name_album",:conditions=>{ :method => :get }
-    albums.update_album       '/albums/:id.',                :action=>"update",    :conditions=>{ :method => :put }
     albums.add_photos         '/albums/:id/add_photos',      :action=>"add_photos",:conditions=>{ :method => :get }
-
-
     albums.edit_album         '/albums/:id/edit.',           :action=>"edit",       :conditions=>{ :method => :get }
-    albums.album              '/albums/:id.',                :action=>"show",       :conditions=>{ :method => :get }
+    albums.update_album       '/albums/:id.',                :action=>"update",    :conditions=>{ :method => :put }
 
     albums.delete_album       '/albums/:id.',                :action=>"destroy",    :conditions=>{ :method => :delete }
     albums.album_upload_stat  '/albums/:album_id/upload_stat', :action=>'upload_stat', :conditions => { :method => :get }
-    albums.album_wizard       '/albums/:id/wizard',          :action => 'wizard'
   end
 
  #shares

@@ -1,10 +1,7 @@
 <% content_for :page_javascript do  # this places our page-specific js with the rest of the js at the bottom of the html -%>
 <script>
-   //album.initializeForGrid('<%=@album.to_json(:include => {:photos => {:only =>[:id], :methods => [:thumb_url]}})%>');
-
     var json = '<%=@album.to_json(:include => {:photos => {:only =>[:id, :source_thumb_url, :state], :methods => [:thumb_url]}})%>';
     var photos = jQuery.parseJSON(json).photos;
-
 
     var onStartLoadingImage = function(id, src) {
       $('#' + id).attr('src', '/images/loading.gif');
@@ -71,6 +68,6 @@
 
 <% unless @album.photos.empty? %>
   <ul class="grid-view clearfix">
-    <%= render :partial => "photo_thumb", :collection => @photos, :as => :photo %>
+    <%= render :partial => "photos/photo_thumb", :collection => @photos, :as => :photo %>
   </ul>
 <% end %>

@@ -28,6 +28,8 @@ class PostShare < Share
       user = User.find( rec.address )
       user.send("identity_for_#{rec.service}").post( self.message )
     end
+    self.sent_at = Time.now
+    self.save
   end
 
 end
