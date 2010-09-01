@@ -55,9 +55,8 @@ class AlbumsController < ApplicationController
 
   def edit
     @album = Album.find(params[:id])
-    @user=  @album.user
     @photos = @album.photos
-    render 'photos/grid', :layout => Proc.new{ "page_js_only"}
+    render :layout => false 
   end
 
   def update

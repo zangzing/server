@@ -1,7 +1,17 @@
-<% form_for @album do | f|  %>
+<script>
+    var json = '<%=@album.to_json(:include => {:photos => {:only =>[:id, :source_thumb_url, :state], :methods => [:thumb_url]}})%>';
 
-      <%= render :partial => 'fields', :locals =>{:f => f }%>
-  <div class="actions">
-      <%= f.submit "Update"%>
-  </div>
-  <% end %>
+    <!--
+
+            you need to run the image loader to replace the src's with the actual urls look at photos/grid.html.erb 
+
+
+     -->
+</script>
+<h2 class="album"><%= h @album.name %></h2>
+
+<% unless @album.photos.empty? %>
+  <ul class="grid-view clearfix">
+    <%= render :partial => "photos/photo_thumb", :collection => @photos, :as => :photo %>
+  </ul>
+<% end %>
