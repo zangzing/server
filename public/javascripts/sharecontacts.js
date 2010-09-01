@@ -3,7 +3,7 @@ var sharecontacts = {
          //console.lob("in contacts setup");
         if (hasGoogleId) {
             $("#gmail-sync").click(sharecontacts.call_google_import);
-            $("#gmail-sync").attr('title', 'Last import on: '+googleLastImport);
+            $("#gmail-sync").attr({title: 'Last import on: '+googleLastImport, src: '/images/btn-gmail-on.png'});
         } else {
             $("#gmail-sync").click(sharecontacts.call_new_google_session);
             $("#gmail-sync").attr('title', 'Authorize access to your gmail account and import contacts');
@@ -11,7 +11,7 @@ var sharecontacts = {
 
         if (hasYahooId) {
             $("#yahoo-sync").click(sharecontacts.call_yahoo_import);
-            $("#yahoo-sync").attr('title', 'Last import on:'+yahooLastImport);
+            $("#yahoo-sync").attr({title: 'Last import on:'+yahooLastImport, src: '/images/btn-gmail-on.png'});
         } else {
             $("#yahoo-sync").click(sharecontacts.call_new_yahoo_session);
             $("#yahoo-sync").attr('title', 'Authorize access to your yahoo account and import contacts');
@@ -55,6 +55,7 @@ var sharecontacts = {
         //reloadAutocompleter();
         $("#gmail-sync").attr('disabled', '');
         $("#gmail-sync").attr('title', 'Last imported a second ago.');
+        $("#gmail-sync").attr('src', '/images/btn-gmail-on.png');
     },
     import_google_failure : function(errors) {
         alert("Unable to refresh google contacts at the moment. Please try later");
@@ -93,6 +94,7 @@ var sharecontacts = {
         //reloadAutocompleter()
         $("#yahoo-sync").attr('disabled', '');
         $("#yahoo-sync").attr('title', 'Last imported a second ago.');
+        $("#yahoo-sync").attr('src', '/images/btn-yahoo-on.png');
     },
     import_yahoo_failure : function( errors ){
         alert('Unable to refresh yahoo contacts at the moment. Please try later');

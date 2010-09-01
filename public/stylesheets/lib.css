@@ -148,3 +148,6 @@ div.relative {
   -moz-border-radius: 8px;
   -webkit-border-radius: 8px;
 }
+small {
+  font-size: 80%;
+}
