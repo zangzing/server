@@ -315,6 +315,12 @@ var zz = {
       //  open the drawer
       zz.zang.open_drawer(995);
 
+      //switch to show album badge       
+      $('#album-info').css('display', 'inline-block');
+      $('#user-info').css('display', 'none');
+
+
+
       $('#drawer-content').load('/users/'+zz.zang.user_id+'/albums/new', function(){
         $('#personal_album_link').click(zz.zang.create_album);
         $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 70) + 'px'});
@@ -327,6 +333,8 @@ var zz = {
 
         zz.zang.add_photos();
         $('#indicator').fadeIn('slow');
+
+
       });
     },
 
@@ -348,6 +356,12 @@ var zz = {
         zz.zang.indicator_step = 2;  
         zz.zang.indicator = 'step-name';
         $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
+
+
+        //todo: move this into the "name_album" layout
+        //setup change handler on text box
+        $('#album_name').keypress(function(){setTimeout(function(){ $('#album-header-title').html($('#album_name').val())}, 10)});
+
       }); 
     },
     
@@ -517,6 +531,9 @@ var zz = {
       $('#'+zz.zang.indicator).removeClass('on');
 
     }
+
+
+
         
   }, // end zz.zang
   

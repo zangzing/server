@@ -85,7 +85,11 @@
             <img src="/images/test-img-50px.jpg" width="40" height="33" id="album-header-icon" />
           </li>
           <li>
-            <h2 id="album-header-title">Album Title</h2>
+            <h2 id="album-header-title">
+                <% if @album %>
+                <%=   @album.name %>
+                <% end %>
+            </h2>
             <h3>by <%= @badge_name %></h3>
           </li>
         </ul>        
