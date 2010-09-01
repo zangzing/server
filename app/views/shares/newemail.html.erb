@@ -82,8 +82,17 @@
 	</p>
 </form>
 
+<script type="text/javascript" src="/javascripts/sharecontacts.js" ></script>
 <script type="text/javascript">
+  
+$(document).ready( function(){
+ sharecontacts.setup( <%=( @google_id.credentials_valid? ? 1 : 0 ) %> == 1,
+                 "<%= @google_id.last_contact_refresh%>",
+                 <%=( @yahoo_id.credentials_valid? ? 1 : 0 ) %> == 1,
+                 "<%= @yahoo_id.last_contact_refresh%>")
+});
 
+<<<<<<< HEAD
 $(document).ready(  setup_contacts );
 //----------------- CONTACTS --------------------------
 function setup_contacts(){
@@ -142,52 +151,15 @@ function import_google_failure( errors ){
    $("#gmail-sync").attr('disabled','');
    $("#gmail-sync").attr('title','Unable to refresh google contacts at the moment. Please try later');
 }
-var google_contacts = [
+
+google_contacts = [
         <% @google_id.contacts.each do|contact| %>
         ["<%=contact.name%>","<%=contact.name.to_s%> <<%=contact.address%>>"],
         ["<%=contact.address%>","<%=contact.name.to_s%> <<%=contact.address%>>"],
         <% end %>
         "ZZangZZing"
     ];
-
-// ------ YAHOO CONTACTS ---------
-function call_new_yahoo_session(){
-    $("#yahoo-sync").attr('disabled', 'disabled');
-    oauthmanager.login( '<%=new_yahoo_session_url%>', yahoo_login_success);
-}
-function yahoo_login_success(){
-    call_yahoo_import();
-    $("#yahoo-sync").click(call_yahoo_import);
-}
-function call_yahoo_import() {
-    $("#yahoo-sync").attr('title','Refreshing...');
-    $("#yahoo-sync").attr('disabled', 'disabled');    
-    $.ajax({
-      dataType: 'json',
-      url: '<%=yahoo_contacts_url(:import)%>',
-      success: import_yahoo_success,
-      error: import_yahoo_failure
-    });
-}
-function import_yahoo_success( contacts ){
-    var full_address;
-    yahoo_contacts = [];
-    for each ( var c in contacts) {
-        full_address = '<' +c.name+ '> '+c.address;
-        yahoo_contacts.push( [ c.name, full_address] );
-        yahoo_contacts.push( [ c.address, full_address] );
-    }
-    reloadAutocompleter()
-    $("#yahoo-sync").attr('disabled','');
-    $("#yahoo-sync").attr('title','Last imported a second ago.');
-}
-function import_yahoo_failure( errors ){
-   alert('Unable to refresh yahoo contacts at the moment. Please try later');
-   $("#yahoo-sync").attr('title','Unable to refresh yahoo contacts at the moment. Please try later');
-   $("#yahoo-sync").attr('disabled','');
-}
-
-var yahoo_contacts = [
+yahoo_contacts = [
     <% @yahoo_id.contacts.each do|contact| %>
     ["<%=contact.name%>","<%=contact.name.to_s%> <<%=contact.address%>>"],
     ["<%=contact.address%>","<%=contact.name.to_s%> <<%=contact.address%>>"],

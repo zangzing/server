@@ -11,7 +11,9 @@ class TwitterConnector
   require 'twitter_oauth'
 
   def initialize(token = nil)
-    self.access_token = token
+    TwitterConnector.api_key = TWITTER_API_KEYS[:app_key]
+    TwitterConnector.shared_secret = TWITTER_API_KEYS[:consumer_secret]
+    self.access_token = token    
   end
 
   def access_token

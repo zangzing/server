@@ -8,16 +8,7 @@ class Connector::FacebookController < Connector::ConnectorController
 protected
 
   def service_login_required
-    unless facebook_auth_token
-      begin
-        @access_token = service_identity.credentials
-        @graph = HyperGraph.new(facebook_auth_token)
-      rescue => exception
-        raise InvalidToken if exception.kind_of?(FacebookError)
-        raise HttpCallFail if exception.kind_of?(SocketError)
-      end
-      raise InvalidToken unless @access_token
-    end
+        @graph ||= service_identity.facebook_graph
   end
 
   def service_identity
@@ -25,17 +16,10 @@ protected
   end
 
   def facebook_graph
-    @graph ||= HyperGraph.new(facebook_auth_token)
+    @graph ||= service_identity.facebook_graph
   end
 
-  def facebook_graph=(val)
-    @graph = val
-  end
 
-  def facebook_auth_token
-    @access_token
-  end
-  
   def get_photo_url(photo_id, size)
     url = URI.escape("/#{photo_id}/picture?access_token=#{facebook_auth_token}&type=#{size}")
     http = Net::HTTP.new(HyperGraph::API_URL, 443) 

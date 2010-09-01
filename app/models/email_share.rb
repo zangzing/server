@@ -5,7 +5,7 @@
 class EmailShare < Share
   attr_accessor :to
 
-  
+
   def self.factory(user, params)
     share = EmailShare.new( params )
 
@@ -16,4 +16,12 @@ class EmailShare < Share
     end
     return share
   end
+
+  def deliver
+     self.recipients.each do |rec|
+      user = User.find( rec.address )
+       Mailer.deliver_password_reset_instructions(self)
+    end
+  end
+
 end

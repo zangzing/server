@@ -1,7 +1,7 @@
 <% if @albums.empty? %>
   <!-- %= h @user.name %> Has No Albums</h2> -->
 <% else %>
-  <!-- <%= h @user.name %>'s Albums --></h2> 
+  <!-- <%= h @user.name %>'s Albums -->
   <ul id="albums" class="grid-view clearfix">	 
     <%= render :partial => 'album', :collection => @albums %>
   </ul>
