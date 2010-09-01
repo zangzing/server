@@ -376,6 +376,7 @@ var zz = {
         zz.zang.indicator_step = 4;  
         zz.zang.indicator = 'step-share';
         $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
+        
       });     
     },
     
@@ -384,6 +385,9 @@ var zz = {
         zz.zang.indicator_step = 4;  
         zz.zang.indicator = 'step-share';
         $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
+        $('ul#the-recipients li').click(function(){
+          $('#you-complete-me').focus();
+        });
       });     
     
     },

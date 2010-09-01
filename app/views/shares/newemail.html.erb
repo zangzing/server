@@ -7,22 +7,31 @@
   <div id="form-container-2" class="clearfix">
     <ul id="email-sync" class="clearfix">
       <li class="title">Import contacts from</li>
-      <li><img src="/images/btn-gmail-sync.png" id="gmail-sync" /></li>
-      <li><img src="/images/btn-outlook-sync.png" id="outlook-sync" /></li>
-      <li><img src="/images/btn-yahoo-sync.png" id="yahoo-sync" /></li>
+      <li><img src="/images/btn-outlook-off.png" id="outlook-sync" class="link" /></li>
+      <li><img src="/images/btn-gmail-off.png" id="gmail-sync" class="link" /></li>
+      <li><img src="/images/btn-yahoo-off.png" id="yahoo-sync" class="link" /></li>
     </ul>
     <div class="clear-fix"></div>
     
     <%form_for [@share], :url => create_album_share_path(@album)  do |f| %>
       <%= f.error_messages %>  
       <dl id="email-share-form">
-        <dt>To:</dt>
-        <dd><input type="text" name="email_share[to]" id="email_share_recipients" /></dd>
+        <dt>To</dt>
+        <dd>
+          <input type="hidden" name="email_share[to]" id="email_share_recipients" />
+          <ul id="the-recipients" class="clearfix">
+            <li id="clone-added"></li>
+            <li>Wil Everts,</li>
+            <li>Jeremy Hermann,</li>
+            <li>Alexander Massario,</li>
+            <li id="autocomplete"><input type="text" id="you-complete-me" /></li>
+          </ul>
+        </dd>
         <div class="clear-fix"></div>
-        <dt>Subject:</dt>
+        <dt>Subject</dt>
         <dd><input type="text" name="email_share[subject]" id="email_share_subject" /></dd>
         <div class="clear-fix"></div>
-        <dt>Message:</dt>
+        <dt>Message</dt>
         <dd class="textarea"><textarea rows="6" name="email_share[message]" id="email_share_message"></textarea></dd>
       </dl>
       <div class="clear-fix"></div>
@@ -80,7 +89,7 @@ $(document).ready(  setup_contacts );
 function setup_contacts(){
     if( <%=( @google_id.credentials_valid? ? 1 : 0 ) %> == 1 ){
         $("#gmail-sync").click(call_google_import);
-        $("#gmail-sync").attr('title','Last import on: <%= @google_id.last_contact_refresh %>');
+        $("#gmail-sync").attr({title: 'Last import on: <%= @google_id.last_contact_refresh %>', src: '/images/btn-gmail-on.png'});
     }else{
         $("#gmail-sync").click(call_new_google_session);
         $("#gmail-sync").attr('title','Authorize access to your gmail account and import contacts');
@@ -88,7 +97,7 @@ function setup_contacts(){
 
    if( <%=( @yahoo_id.credentials_valid? ? 1 : 0 ) %> == 1 ){
         $("#yahoo-sync").click(call_yahoo_import);
-        $("#yahoo-sync").attr('title','Last import on: <%= @yahoo_id.last_contact_refresh %>');
+        $("#yahoo-sync").attr({title: 'Last import on: <%= @yahoo_id.last_contact_refresh %>', src: '/images/btn-yahoo-on.png'});
     }else{
         $("#yahoo-sync").click(call_new_yahoo_session);
         $("#yahoo-sync").attr('title','Authorize access to your yahoo account and import contacts');

@@ -746,12 +746,13 @@ dl#social-form dd#post-text textarea {
 }
 
 ul#email-sync {
-  margin: 0 0 10px 125px;
+  margin: 0 0 10px 78px;
   float: left;
 }
 
 ul#email-sync li {
   float: left;
+  margin-right: 10px;
 }
 
 ul#email-sync li.title {
@@ -762,9 +763,9 @@ ul#email-sync li.title {
 dl#email-share-form dt {
   float: left;
   text-align: right;
-  margin-right: 10px;
-  width: 50px;
-  margin-bottom: 10px;
+  margin: 8px;
+  width: 60px;
+  color: #8c8c8c;
 }
 
 dl#email-share-form dd {
@@ -776,7 +777,41 @@ dl#email-share-form dd {
 dl#email-share-form dd input, dl#email-share-form dd textarea {
   width: 690px;
   padding: 5px;
-  color: #646464;
+  color: #8c8c8c;
+  border: 1px #8c8c8c solid;
+  font-weight: 400;
+  font-size: 1.05em;
+}
+
+dl#email-share-form dd input {
+  height: 20px;
+}
+
+ul#the-recipients {
+  width: 690px;
+  padding: 0 5px;
+  color: #8c8c8c;
+  border: 1px #8c8c8c solid;
+}
+
+ul#the-recipients li {
+  float: left;
+  height: 20px;
+  color: #0a0a0a;
+  margin: 5px 5px 5px 0;
+  text-align: left;
+}
+
+ul#the-recipients li#autocomplete {
+  margin: 0 0 0;
+}
+
+dl#email-share-form dd input#you-complete-me {
+  background-color: #fff;
+  border: 1px #fff solid;
+  width: 100px;
+  height: 16px;
+  padding: 3px 5px 5px 0px;
 }
 
 select.album_privacy {
