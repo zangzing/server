@@ -353,11 +353,71 @@ var zz = {
     
     preview_album: function(){
       $('#drawer-content').empty();
-      $('article').empty().hide().load('/albums/'+zz.zang.album_id+'/edit', function(){                        
+      $('article').empty().load('/albums/'+zz.zang.album_id+'/edit', function(data){                        
         zz.zang.close_drawer();
         zz.zang.indicator_step = 3;  
         zz.zang.indicator = 'step-edit';
-      }).css({marginTop: '80px', opacity: 1}).fadeIn('fast'); 
+        //console.log(json);
+        temp = jQuery.parseJSON(json).photos;
+        
+      var onStartLoadingImage = function(id, src) {
+        $('#' + id).attr('src', '/images/loading.gif');
+      };
+        
+      var onImageLoaded = function(id, src, width, height) {
+        var new_size = 120;
+        //console.log('id: #'+id+', src: '+src+', width: '+width+', height: '+height);
+      
+        if (height > width) {
+          //console.log('tall');
+          //tall
+          var ratio = width / height; 
+          $('#' + id).attr('src', src).css({height: new_size+'px', width: (ratio * new_size) + 'px' });
+          
+          
+          var guuu = $('#'+id).attr('id').split('photo-')[1];
+          $('#' + id).parent('li').attr({id: 'photo-'+guuu});              
+          $('li#photo-'+ guuu +'-li figure').css({bottom: '0px', width: (new_size * ratio) + 'px', left: $('#' + id).position()['left'] + 'px' });
+          $('li#photo-'+ guuu +'-li a.delete img').css({top: '-16px', right: (150 - $('#' + id).outerWidth() - 20) / 2  +'px'} );
+    
+        } else {
+          //wide
+          //console.log('wide');
+    
+          var ratio = height / width; 
+          $('#' + id).attr('src', src).attr('src', src).css({height: (ratio * new_size) + 'px', width: new_size+'px', marginTop: ((new_size - (ratio * new_size)) / 2) + 'px' });
+    
+          var guuu = $('#'+id).attr('id').split('photo-')[1];
+          //$('li#photo-'+ guuu +'-li a.delete img').css({top: ($('#' + id).position()['top'] - 26), right: '-26px'});
+          $('li#photo-'+ guuu +'-li figure').css({width: new_size + 'px', bottom:  0, left: (140 - new_size) / 2 +'px'});
+          //console.log(guuu);
+        }
+  
+      };
+  
+      var imageloader = new ImageLoader(onStartLoadingImage, onImageLoaded);
+  
+      for(var i in temp){
+          var id = 'photo-' + temp[i].id;
+          var url = null
+          if (temp[i].state == 'ready') {
+              url = temp[i].thumb_url;
+          } else {
+              url = temp[i].source_thumb_url;
+          }
+  
+          if (url.indexOf('http://localhost') === 0) {
+              url += '?session=' + $.cookie('user_credentials')
+          }
+  
+          imageloader.add(id, url);
+  
+      }
+  
+      imageloader.start(5)
+
+        
+      }).css({marginTop: '60px', opacity: 1}); 
     },
 
     share_album: function(){
