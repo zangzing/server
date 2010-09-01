@@ -29,7 +29,7 @@
 #
 
 #
-#   � 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
+#   ÔøΩ 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 
 
@@ -73,10 +73,10 @@ class User < ActiveRecord::Base
     end
   end
 
-  # Generates a new perishable token for the mailer to use in a password reset request
+  # Generates a new perishable token for the notifier to use in a password reset request
   def deliver_password_reset_instructions!
       reset_perishable_token!
-      Mailer.deliver_password_reset_instructions(self)
+      Emailer.deliver_password_reset_instructions(self)
   end
 
   def admin?

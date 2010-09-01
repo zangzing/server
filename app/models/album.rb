@@ -54,4 +54,11 @@ class Album < ActiveRecord::Base
     end
     return name
   end
+
+  def upload_by_user_complete( user )
+    shares = Share.find_all_by_user_id_and_sent_at( user.id, nil);
+    shares.each { |s| s.deliver() } if shares
+    Notifier.deliver_album_upload_complete(user, self).deliver
+  end
+
 end

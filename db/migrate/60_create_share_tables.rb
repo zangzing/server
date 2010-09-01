@@ -6,7 +6,7 @@ class CreateShareTables < ActiveRecord::Migration
       t.string   :type
       t.string   :subject
       t.text     :message
-      t.timedate :sent_at
+      t.datetime :sent_at
       t.timestamps
     end
     add_index :shares, :user_id

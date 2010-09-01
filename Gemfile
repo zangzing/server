@@ -19,6 +19,7 @@ gem 'flickraw',      '0.8.2'
 gem 'authlogic',     '2.1.5'
 gem 'usesguid'
 gem 'usesguid_migrations'
+gem 'actionmailer'
 
 gem 'contacts'
 gem 'hpricot'

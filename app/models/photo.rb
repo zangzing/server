@@ -194,10 +194,17 @@ class Photo < ActiveRecord::Base
     image.instance_variable_set '@bucket', self.image_bucket unless self.image_bucket.nil?
   end
 
-
   def self.generate_source_guid(url)
      Digest::MD5.hexdigest(url)
   end
+
+  def is_upload_finished?
+    # If the owner of this photo has no more assigned photos in this album then the upload is done
+    unless Photo.find_by_user_id_and_state( self.user.id, 'assigned' );
+       self.album.upload_complete
+    end
+  end
+
 
 end
 
