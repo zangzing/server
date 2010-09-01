@@ -166,13 +166,29 @@ header {
   z-index: 10;
 }
 
-header ul#user-info {
+header ul#user-info, header ul#album-info {
   margin: 6px -145px 0 auto;
 }
 
-header ul#user-info li {
+header ul#user-info {
+  display: inline-block;
+}
+
+header ul#album-info {
+  display: none;
+}
+
+header ul#user-info li, header ul#album-info li {
   float: left;
   text-align: left;
+}
+
+#album-header-icon {
+  border: 3px solid #fff;
+  box-shadow: 0px 0px 3px #767676;
+  -webkit-box-shadow: 0px 0px 3px #767676;
+  -moz-box-shadow: 0px 0px 3px #767676;
+  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#767676, offX=1, offY=1, positive=true);
 }
 
 li#user-icon {
