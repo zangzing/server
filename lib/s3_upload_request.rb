@@ -11,5 +11,4 @@ class S3UploadRequest < Struct.new(:photo_id)
   def photo
     @photo ||= Photo.find(photo_id)
   end
-
 end
