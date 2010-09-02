@@ -18,12 +18,12 @@ class EmailShare < Share
   end
 
   def deliver
-     self.recipients.each do |rec|
-      user = User.find( rec.address )
-       Mailer.deliver_password_reset_instructions(self)
+     if self.sent_at.nil?
+      self.recipients.each do |rec|
+        Notifier.deliver_album_shared_with_you(self.user,rec.address,self.album)
+      end
+      self.sent_at = Time.now
+      self.save
      end
-     self.sent_at = Time.now
-     self.save
   end
-
 end

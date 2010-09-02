@@ -52,10 +52,17 @@ $(document).ready( function(){
                  "<%= @yahoo_id.last_contact_refresh%>")
 });
 
-google_contacts = [
+var emails = [
+<%    @google_id.contacts.each do|contact| %>
+	{ name: "<%=contact.name%>", to: "<%=contact.address%>" },
+<% end %>
+	{ name: "", to: "" }
+];
+
+
+var google_contacts = [
         <% @google_id.contacts.each do|contact| %>
-        ["<%=contact.name%>","<%=contact.name.to_s%> <<%=contact.address%>>"],
-        ["<%=contact.address%>","<%=contact.name.to_s%> <<%=contact.address%>>"],
+        "<%=contact.name%>",
         <% end %>
         "ZZangZZing"
     ];

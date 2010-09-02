@@ -31,5 +31,8 @@ class Share < ActiveRecord::Base
     return share
   end
 
-
+  def deliver_later
+     Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(self, :deliver, [])
+  end
+   
 end

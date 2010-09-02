@@ -191,10 +191,16 @@ header ul#user-info li, header ul#album-info li {
   filter: progid:DXImageTransform.Microsoft.dropShadow(color=#767676, offX=1, offY=1, positive=true);
 }
 
-li#user-icon {
+ul#user-info li#user-icon {
   width: 40px;
   height: 40px;
   margin-right: 16px;
+}
+
+ul#album-info li#user-icon {
+  width: 58px;
+  height: 40px;
+  margin-right: 6px;
 }
 
 header ul#view-swap {
