@@ -78,9 +78,9 @@ var filechooser = {
         filechooser.ancestors.push({name:name, url:url, login_url:login_url});
         //update title and back button
         if (filechooser.ancestors.length > 1) {
-            $('#filechooser-back-button').html(filechooser.ancestors[filechooser.ancestors.length - 2].name);
+            $('#filechooser-back-button').html(filechooser.ancestors[filechooser.ancestors.length - 2].name).show();
         } else {
-            $('#filechooser-back-button').html('');
+            $('#filechooser-back-button').html('').hide();
         }
 
         $('#filechooser-title').html(name);
