@@ -1,7 +1,5 @@
 /* Filechooser
  ----------------------------------------------------------------------------- */
-
-
 var filechooser = {
 
     imageloader: null,
@@ -79,8 +77,10 @@ var filechooser = {
         //update title and back button
         if (filechooser.ancestors.length > 1) {
             $('#filechooser-back-button').html(filechooser.ancestors[filechooser.ancestors.length - 2].name).show();
+            $('#choose-header').removeClass('album-header').addClass('album-header-off');
         } else {
             $('#filechooser-back-button').html('').hide();
+            $('#choose-header').removeClass('album-header-off').addClass('album-header');
         }
 
         $('#filechooser-title').html(name);

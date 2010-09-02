@@ -33,9 +33,8 @@ var sharecontacts = {
         sharecontacts.call_google_import();
     },
     call_google_import : function() {
-        //console.lob("in call google import");        
-        $("#gmail-sync").attr('title', 'Refreshing...');
-        $("#gmail-sync").attr('disabled', 'disabled');
+        //console.lob("in call google import");  
+        $("#gmail-sync").attr({disabled: 'disabled', src: '/images/btn-gmail-sync.png', title: 'Refreshing...'});
         $.ajax({
             dataType: 'json',
             url: '/google/contacts/import',
@@ -59,8 +58,7 @@ var sharecontacts = {
     },
     import_google_failure : function(errors) {
         alert("Unable to refresh google contacts at the moment. Please try later");
-        $("#gmail-sync").attr('disabled', '');
-        $("#gmail-sync").attr('title', 'Unable to refresh google contacts at the moment. Please try later');
+        $("#gmail-sync").attr({disabled: '', src: '/images/btn-gmail-error.png', title: 'Unable to refresh gmail contacts at the moment. Please try later'});
     },
 
     // ------ YAHOO CONTACTS ---------
@@ -74,8 +72,7 @@ var sharecontacts = {
         sharecontacts.call_yahoo_import();
     },
     call_yahoo_import : function() {
-        $("#yahoo-sync").attr('title', 'Refreshing...');
-        $("#yahoo-sync").attr('disabled', 'disabled');
+        $("#yahoo-sync").attr({disabled: 'disabled', src: '/images/btn-yahoo-sync.png', title: 'Refreshing...'});
         $.ajax({
             dataType: 'json',
             url: '/yahoo/contacts/import',
@@ -98,8 +95,8 @@ var sharecontacts = {
     },
     import_yahoo_failure : function( errors ){
         alert('Unable to refresh yahoo contacts at the moment. Please try later');
-        $("#yahoo-sync").attr('title','Unable to refresh yahoo contacts at the moment. Please try later');
-        $("#yahoo-sync").attr('disabled','');
+        $("#yahoo-sync").attr({disabled: '', src: '/images/btn-yahoo-error.png', title: 'Unable to refresh yahoo contacts at the moment. Please try later'});
+
     }
 };
 var google_contacts = [ "ZZangZZing"];

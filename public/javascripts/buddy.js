@@ -125,18 +125,7 @@ var zz = {
       submitHandler: function() {
         serialized = $('#new_post_share').serialize();
         $.post('/albums/'+zz.zang.album_id+'/shares', serialized, function(data){
-
-          $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/shares/new', function(){                        
-            zz.zang.indicator_step = 4;  
-            zz.zang.indicator = 'step-share';
-            $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
-            $('.social-share').click(zz.zang.social_share);
-            $('.email-share').click(zz.zang.email_share);
-            $('.album_privacy').change(zz.zang.album_update);
-          }); 
-
-
-
+          zz.zang.reload_share();
         });
       }
       
@@ -147,18 +136,7 @@ var zz = {
       submitHandler: function() {
         serialized = $('#new_email_share').serialize();
         $.post('/albums/'+zz.zang.album_id+'/shares', serialized, function(data){
-
-          $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/shares/new', function(){                        
-            zz.zang.indicator_step = 4;  
-            zz.zang.indicator = 'step-share';
-            $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
-            $('.social-share').click(zz.zang.social_share);
-            $('.email-share').click(zz.zang.email_share);
-            $('.album_privacy').change(zz.zang.album_update);
-          }); 
-
-
-
+          zz.zang.reload_share();
         });
       }
       
@@ -464,6 +442,17 @@ var zz = {
       }).css({marginTop: '60px', opacity: 1}); 
     },
 
+    reload_share: function(){
+      $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/shares/new', function(){                        
+        zz.zang.indicator_step = 4;  
+        zz.zang.indicator = 'step-share';
+        $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
+        $('.social-share').click(zz.zang.social_share);
+        $('.email-share').click(zz.zang.email_share);
+        $('.album_privacy').change(zz.zang.album_update);
+      });
+    },
+
     share_album: function(){
       $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/shares/new', function(){                        
         zz.zang.indicator_step = 4;  
@@ -479,6 +468,7 @@ var zz = {
       $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/shares/newpost', function(){                        
         $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
         $('#new_post_share').validate(zz.validation.new_post_share);
+        $('#cancel-share').click(zz.zang.reload_share);
       });     
     },
     
@@ -489,6 +479,7 @@ var zz = {
           $('#you-complete-me').focus();
         });
         $('#new_email_share').validate(zz.validation.new_email_share);
+        $('#cancel-share').click(zz.zang.reload_share);
       });     
     
     },
