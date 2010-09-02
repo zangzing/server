@@ -394,7 +394,7 @@ var tray = {
             var id = 'tray-' + photo.id;
 
             html += '<li>';
-            html += '<div><img height="30" width="30" id="' + id + '" src=""></div>';
+            html += '<div><img height="20" width="20" id="' + id + '" src=""></div>';
             html += '<a href="" onclick="tray.delete_photo(\'' + photo.id + '\'); return false;">(x)</a>';
             html += '</li>';
 

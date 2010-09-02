@@ -7,22 +7,31 @@
   <div id="form-container-2" class="clearfix">
     <ul id="email-sync" class="clearfix">
       <li class="title">Import contacts from</li>
-      <li><img src="/images/btn-gmail-sync.png" id="gmail-sync" /></li>
-      <li><img src="/images/btn-outlook-sync.png" id="outlook-sync" /></li>
-      <li><img src="/images/btn-yahoo-sync.png" id="yahoo-sync" /></li>
+      <li><img src="/images/btn-gmail-off.png" id="gmail-sync" /></li>
+      <li><img src="/images/btn-outlook-off.png" id="outlook-sync" /></li>
+      <li><img src="/images/btn-yahoo-off.png" id="yahoo-sync" /></li>
     </ul>
     <div class="clear-fix"></div>
     
     <%form_for [@share], :url => create_album_share_path(@album)  do |f| %>
       <%= f.error_messages %>  
       <dl id="email-share-form">
-        <dt>To:</dt>
-        <dd><input type="text" name="email_share[to]" id="email_share_recipients" /></dd>
+        <dt>To</dt>
+        <dd>
+          <input type="hidden" name="email_share[to]" id="email_share_recipients" />
+          <ul id="the-recipients" class="clearfix">
+            <li id="clone-added"></li>
+            <li class="rounded">Wil Everts <img src="/images/btn-delete-small.png" class="link" /></li>
+            <li class="rounded">Jeremy Hermann <img src="/images/btn-delete-small.png" class="link" /></li>
+            <li class="rounded">Alexander Massario <img src="/images/btn-delete-small.png" class="link" /></li>
+            <li id="autocomplete"><input type="text" id="you-complete-me" /></li>
+          </ul>
+       </dd>
         <div class="clear-fix"></div>
-        <dt>Subject:</dt>
+        <dt>Subject</dt>
         <dd><input type="text" name="email_share[subject]" id="email_share_subject" /></dd>
         <div class="clear-fix"></div>
-        <dt>Message:</dt>
+        <dt>Message</dt>
         <dd class="textarea"><textarea rows="6" name="email_share[message]" id="email_share_message"></textarea></dd>
       </dl>
       <div class="clear-fix"></div>
