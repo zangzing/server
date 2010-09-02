@@ -1,4 +1,4 @@
-<div class="album-header">
+<div class="album-header" style="margin-bottom: 25px;">
   <h3>Share Your Album</h3>
   <h4>Email a link to your album to selected friends.</h4>
 </div>
@@ -7,9 +7,9 @@
   <div id="form-container-2" class="clearfix">
     <ul id="email-sync" class="clearfix">
       <li class="title">Import contacts from</li>
-      <li><img src="/images/btn-gmail-off.png" id="gmail-sync" /></li>
-      <li><img src="/images/btn-outlook-off.png" id="outlook-sync" /></li>
-      <li><img src="/images/btn-yahoo-off.png" id="yahoo-sync" /></li>
+      <li><img src="/images/btn-gmail-off.png" id="gmail-sync" class="link" /></li>
+      <li><img src="/images/btn-outlook-off.png" id="outlook-sync" class="link" /></li>
+      <li><img src="/images/btn-yahoo-off.png" id="yahoo-sync" class="link" /></li>
     </ul>
     <div class="clear-fix"></div>
     
@@ -32,11 +32,13 @@
         <dd><input type="text" name="email_share[subject]" id="email_share_subject" /></dd>
         <div class="clear-fix"></div>
         <dt>Message</dt>
-        <dd class="textarea"><textarea rows="6" name="email_share[message]" id="email_share_message"></textarea></dd>
+        <dd class="textarea"><textarea rows="5" name="email_share[message]" id="email_share_message"></textarea></dd>
       </dl>
       <div class="clear-fix"></div>
       
-      <input type="image" src="/images/btn-send.png" name="submit" id="mail-submit" />
+      <div id="form-actions">
+        <a href="javascript:void(0);" id="cancel-share">Cancel</a> <input type="image" src="/images/btn-send.png" name="submit" id="mail-submit" />
+      </div>
   
     <% end %>
   </div>

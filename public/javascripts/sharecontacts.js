@@ -33,9 +33,8 @@ var sharecontacts = {
         sharecontacts.call_google_import();
     },
     call_google_import : function() {
-        //console.lob("in call google import");        
-        $("#gmail-sync").attr('title', 'Refreshing...');
-        $("#gmail-sync").attr('disabled', 'disabled');
+        //console.lob("in call google import");  
+        $("#gmail-sync").attr({disabled: 'disabled', src: '/images/btn-gmail-sync.png', title: 'Refreshing...'});
         $.ajax({
             dataType: 'json',
             url: '/google/contacts/import',
@@ -74,8 +73,7 @@ var sharecontacts = {
         sharecontacts.call_yahoo_import();
     },
     call_yahoo_import : function() {
-        $("#yahoo-sync").attr('title', 'Refreshing...');
-        $("#yahoo-sync").attr('disabled', 'disabled');
+        $("#yahoo-sync").attr({disabled: 'disabled', src: '/images/btn-yahoo-sync.png', title: 'Refreshing...'});
         $.ajax({
             dataType: 'json',
             url: '/yahoo/contacts/import',

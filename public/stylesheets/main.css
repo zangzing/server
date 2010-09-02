@@ -662,12 +662,22 @@ div#drawer-content .album-header {
   background-repeat: no-repeat;
 }
 
-div#drawer-content #top-section .album-header {
+div#drawer-content #top-section .album-header,
+div#drawer-content #top-section .album-header-off {
   margin: 0 auto 0;
 }
 
+div#drawer-content .album-header-off h3, div#drawer-content .album-header-off h4,
 div#drawer-content .album-header h3, div#drawer-content .album-header h4 {
   margin-bottom: 20px;
+}
+
+div#drawer-content .album-header-off {
+  margin: 25px auto 25px;
+  width: 600px;
+  min-height: 50px;
+  line-height: 1.4em;
+  background-image: none;
 }
 
 div#drawer-content dl.form {
@@ -771,9 +781,19 @@ dl#social-form dd#post-text textarea {
   color: #646464;
 }
 
-#social-submit, #mail-submit {
+#form-actions {
   float: right;
   margin: 20px 20px 0 0;
+  color: #646464;
+}
+
+#form-actions a {
+  color: #646464;
+  text-decoration: underline;
+}
+
+#social-submit, #mail-submit {
+  margin-left: 20px;
 }
 
 ul#email-sync {
