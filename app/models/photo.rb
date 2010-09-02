@@ -153,10 +153,11 @@ class Photo < ActiveRecord::Base
       self.local_image_path = ''
       self.state = 'ready'
       self.save!
-    rescue ActiveRecordError => ex
+    rescue ActiveRecord::ActiveRecordError => ex
         logger.debug("Upload to S3 Failed"+ex)
     end
     logger.debug("Upload to S3 Finished")
+    self.is_upload_finished?    
   end
 
   def new?
@@ -200,8 +201,8 @@ class Photo < ActiveRecord::Base
 
   def is_upload_finished?
     # If the owner of this photo has no more assigned photos in this album then the upload is done
-    unless Photo.find_by_user_id_and_state( self.user.id, 'assigned' );
-       self.album.upload_complete
+    unless Photo.find_by_user_id_and_album_id_and_state( self.user.id, self.album.id, ['assigned','loaded','processing','error'] );
+       self.album.upload_by_user_complete(self.user)
     end
   end
 

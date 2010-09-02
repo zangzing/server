@@ -56,9 +56,10 @@ class Album < ActiveRecord::Base
   end
 
   def upload_by_user_complete( user )
-    shares = Share.find_all_by_user_id_and_sent_at( user.id, nil);
-    shares.each { |s| s.deliver() } if shares
-    Notifier.deliver_album_upload_complete(user, self).deliver
+    shares = Share.find_all_by_user_id_and_album_id( user.id, self.id)
+    shares.each { |s| s.deliver_later() } if shares
+    msg = Notifier.create_album_upload_complete(user, self)
+    Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(Notifier, :deliver, [msg] )
   end
 
 end
