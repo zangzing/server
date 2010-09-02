@@ -1,5 +1,6 @@
 var temp;var temp_width;var temp_height;var temp_top;var temp_left; 
 var content_url;var serialized;var temp_top_new;var temp_left_new;
+var value;
 
 /* Welcome to ZangZing
 ----------------------------------------------------------------------------- */
@@ -121,19 +122,47 @@ var zz = {
   
     new_post_share: {
       element: '#new_post_share',
-      rules: {
-        'post_share[message]': { required: true, maxlength: 140 },  
-      },
       submitHandler: function() {
         serialized = $('#new_post_share').serialize();
         $.post('/albums/'+zz.zang.album_id+'/shares', serialized, function(data){
-          zz.zang.share_album();
+
+          $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/shares/new', function(){                        
+            zz.zang.indicator_step = 4;  
+            zz.zang.indicator = 'step-share';
+            $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
+            $('.social-share').click(zz.zang.social_share);
+            $('.email-share').click(zz.zang.email_share);
+            $('.album_privacy').change(zz.zang.album_update);
+          }); 
+
+
+
         });
       }
       
     }, // end zz.validation.new_post_share
     
-    
+    new_email_share: {
+      element: '#new_email_share',
+      submitHandler: function() {
+        serialized = $('#new_email_share').serialize();
+        $.post('/albums/'+zz.zang.album_id+'/shares', serialized, function(data){
+
+          $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/shares/new', function(){                        
+            zz.zang.indicator_step = 4;  
+            zz.zang.indicator = 'step-share';
+            $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
+            $('.social-share').click(zz.zang.social_share);
+            $('.email-share').click(zz.zang.email_share);
+            $('.album_privacy').change(zz.zang.album_update);
+          }); 
+
+
+
+        });
+      }
+      
+    }, // end zz.validation.new_post_share    
     
     sample_sign_up: {
       element: '#sample-sign-up',
@@ -326,6 +355,7 @@ var zz = {
         zz.zang.album_id = data;
 
         zz.zang.add_photos();
+        $('#user-info').fadeOut('fast');
         $('#indicator').fadeIn('slow');
       });
     },
@@ -334,8 +364,8 @@ var zz = {
       $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/add_photos', function(){                
         // fire up the filechooser
         filechooser.init(); 
-        
-        setTimeout('$("#added-pictures-tray").fadeIn("fast")', 550);
+        setTimeout("$('#album-info').css('display', 'inline-block')", 200);
+        setTimeout('$("#added-pictures-tray").fadeIn("fast")', 300);
         $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
         
         zz.zang.indicator_step = 1;  
@@ -433,21 +463,18 @@ var zz = {
 
     social_share: function(){
       $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/shares/newpost', function(){                        
-        zz.zang.indicator_step = 4;  
-        zz.zang.indicator = 'step-share';
         $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
-        
+        $('#new_post_share').validate(zz.validation.new_post_share);
       });     
     },
     
     email_share: function(){
       $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/shares/newemail', function(){                        
-        zz.zang.indicator_step = 4;
-        zz.zang.indicator = 'step-share';
         $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
         $('ul#the-recipients li').click(function(){
           $('#you-complete-me').focus();
         });
+        $('#new_email_share').validate(zz.validation.new_email_share);
       });     
     
     },
@@ -467,7 +494,11 @@ var zz = {
       } else if (zz.zang.indicator_step == 2) {
         //post form
         serialized = $(".edit_album").serialize();
-        $.post('/albums/'+zz.zang.album_id, serialized, function(data){ });
+        value = $('#album_name').val();
+        $('h2#album-header-title').html(value);
+        $.post('/albums/'+zz.zang.album_id, serialized, function(data){ 
+          
+        });
       } else if (zz.zang.indicator_step == 3) {
         //re-open the drawer
         zz.zang.open_drawer();
@@ -477,9 +508,7 @@ var zz = {
         //error
       }
       
-      if (element == zz.zang.indicator) {
-        //nothing to do - same step clicked
-      } else if (element == 'step-add') {
+      if (element == 'step-add') {
         zz.zang.add_photos();
         temp = 1;
       } else if (element == 'step-name') {
@@ -511,11 +540,15 @@ var zz = {
         }
 
       }
+  
+      if (zz.zang.indicator_step == temp) {
+      
+      } else {
+        $('#indicator').removeClass('step-'+zz.zang.indicator_step).addClass('step-'+temp);
+        $('#'+zz.zang.indicator).removeClass('on');
+        $('#'+element).addClass('on');
 
-      $('#indicator').addClass('step-'+temp).removeClass('step-'+zz.zang.indicator_step);
-      $('#'+element).addClass('on');
-      $('#'+zz.zang.indicator).removeClass('on');
-
+      }
     }
         
   }, // end zz.zang
@@ -549,9 +582,7 @@ var zz = {
         temp = $(this).attr('id');
         zz.zang.change_step(temp);
       });
-      
-      $('#post-share-form').validate(zz.validation.new_post_share);
-      
+            
     },
     
     loaded: function(){
