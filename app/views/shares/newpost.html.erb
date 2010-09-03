@@ -4,8 +4,7 @@
 </div>
 
 <div id="scroll-body">
-  <%form_for @share, :url => create_album_share_path(@album), :id => 'post-share-form'  do |f| %>
-    <div class="offset"><%= f.error_messages %></div>
+<form method="post" id="new_post_share" action="">
     
     <div id="form-container" class="clearfix">
       <dl id="social-form" class="clearfix">
@@ -18,9 +17,12 @@
         <dd id="post-text"><textarea rows="3" name="post_share[message]" id="post_share_message"></textarea></dd>    
       </dl>  
       
-      <input type="image" src="/images/btn-post.png" name="submit" id="social-submit" />
+      <div id="form-actions">
+        <a href="javascript:void(0);" id="cancel-share">Cancel</a> <input type="image" src="/images/btn-post.png" name="submit" id="social-submit" />
+      </div>
+      
     </div>
-  <% end %>
+  </form>
 </div>
 
 <div class="offset">

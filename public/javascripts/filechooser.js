@@ -1,7 +1,5 @@
 /* Filechooser
  ----------------------------------------------------------------------------- */
-
-
 var filechooser = {
 
     imageloader: null,
@@ -64,6 +62,7 @@ var filechooser = {
 
     init: function() {
         $('#filechooser-back-button').click(filechooser.open_parent_folder);
+        filechooser.ancestors = [],
         filechooser.open_root();
         tray.reload();
     },
@@ -78,9 +77,11 @@ var filechooser = {
         filechooser.ancestors.push({name:name, url:url, login_url:login_url});
         //update title and back button
         if (filechooser.ancestors.length > 1) {
-            $('#filechooser-back-button').html(filechooser.ancestors[filechooser.ancestors.length - 2].name);
+            $('#filechooser-back-button').html(filechooser.ancestors[filechooser.ancestors.length - 2].name).show();
+            $('#choose-header').removeClass('album-header').addClass('album-header-off');
         } else {
-            $('#filechooser-back-button').html('');
+            $('#filechooser-back-button').html('').hide();
+            $('#choose-header').removeClass('album-header-off').addClass('album-header');
         }
 
         $('#filechooser-title').html(name);
@@ -317,7 +318,7 @@ var filechooser = {
 
     on_error_opening_folder : function(error) {
         if (error.status === 401) {
-            $('#filechooser').html('you need to log into your account before you can see this folder; click <a href="#" onClick="filechooser.open_login_window();return false;">here</a> to log in');
+            $('#filechooser').html('<h4>You need to log into your account before you can see this folder; click <a href="#" onClick="filechooser.open_login_window();return false;">here</a> to log in</h4>');
         }
     },
 
