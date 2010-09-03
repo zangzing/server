@@ -62,6 +62,7 @@ var filechooser = {
 
     init: function() {
         $('#filechooser-back-button').click(filechooser.open_parent_folder);
+        filechooser.ancestors = [],
         filechooser.open_root();
         tray.reload();
     },
@@ -317,7 +318,7 @@ var filechooser = {
 
     on_error_opening_folder : function(error) {
         if (error.status === 401) {
-            $('#filechooser').html('you need to log into your account before you can see this folder; click <a href="#" onClick="filechooser.open_login_window();return false;">here</a> to log in');
+            $('#filechooser').html('<h4>You need to log into your account before you can see this folder; click <a href="#" onClick="filechooser.open_login_window();return false;">here</a> to log in</h4>');
         }
     },
 

@@ -148,6 +148,7 @@ class PhotosController < ApplicationController
     @album = Album.find(params[:album_id])
     @title = CGI.escapeHTML(@album.name)
     @user=  @album.user
+    @badge_name = @user.name
 
     respond_to do |format|
       format.html do
