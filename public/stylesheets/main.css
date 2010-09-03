@@ -870,7 +870,11 @@ ul#the-recipients li img.link {
   vertical-align: -30%;
 }
 
-li.rounded {
+ul#the-recipients li.rounded {
+  display: none;
+}
+
+ul#the-recipients li.rounded input {
   display: none;
 }
 

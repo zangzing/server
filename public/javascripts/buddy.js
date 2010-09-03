@@ -473,6 +473,25 @@ var zz = {
     },
     
     email_id: 0,
+
+    clone_recipient: function(data){
+      temp = $(data).html().split('&')[0];
+      console.log('Add '+ temp +' to the view and a ' + $(data).html() + ' checkbox to the form.');
+      value = $(data).html();
+      zz.zang.email_id++;
+      $('#you-complete-me').val('');
+      $('#clone-added').clone()
+                       .attr({id: 'm-'+zz.zang.email_id})
+                       .prependTo('#the-recipients');
+      
+      $('#m-'+zz.zang.email_id+' span').empty().html(temp);
+      $('#m-'+zz.zang.email_id+' input').attr({name: 'i-' + zz.zang.email_id, checked: 'checked'}).val(value);
+      $('#m-'+zz.zang.email_id).fadeIn('fast');
+      $('#m-'+zz.zang.email_id+' img.link').click(function(){
+        $('#m-'+zz.zang.email_id).fadeOut('fast').remove();
+      });              
+
+    },
     
     email_share: function(){
       $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/shares/newemail', function(){                        
@@ -482,17 +501,7 @@ var zz = {
         });
           $('#you-complete-me').autocompleteArray(google_contacts, {
             onItemSelect: function(data){
-              temp = $(data).html().split('&')[0];
-              console.log('Add '+ temp +' to the view and a ' + $(data).html() + ' checkbox to the form.');
-              zz.zang.email_id++;
-              $('#you-complete-me').val('');
-              $('#clone-added').clone()
-                               .attr({id: 'm-'+zz.zang.email_id})
-                               .prependTo('#the-recipients');
-              
-              $('#m-'+zz.zang.email_id+' span').empty().html(temp);
-              $('#m-'+zz.zang.email_id).fadeIn('fast');
-              
+              zz.zang.clone_recipient(data);
             },
             width: 700,
             position_element: 'dd#the-list',
