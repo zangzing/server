@@ -122,6 +122,12 @@ var zz = {
   
     new_post_share: {
       element: '#new_post_share',
+      rules: {
+        'post_share[message]': { required: true, minlength: 10, maxlength: 118 }
+      },
+      messages: {
+        'post_share[message]': '' 
+      },      
       submitHandler: function() {
         serialized = $('#new_post_share').serialize();
         $.post('/albums/'+zz.zang.album_id+'/shares', serialized, function(data){
@@ -133,6 +139,15 @@ var zz = {
     
     new_email_share: {
       element: '#new_email_share',
+      rules: {
+        'email_share[subject]': { required: true, minlength: 10 },
+        'email_share[message]': { required: true, minlength: 10 }
+      },
+      messages: {
+        'email_share[subject]': '',  
+        'email_share[message]': '' 
+      },  
+
       submitHandler: function() {
         serialized = $('#new_email_share').serialize();
         $.post('/albums/'+zz.zang.album_id+'/shares', serialized, function(data){
@@ -325,9 +340,6 @@ var zz = {
       //switch to show album badge       
       $('#album-info').css('display', 'inline-block');
       $('#user-info').css('display', 'none');
-
-
-
       $('#drawer-content').load('/users/'+zz.zang.user_id+'/albums/new', function(){
         $('#personal_album_link').click(zz.zang.create_album);
         $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 70) + 'px'});
@@ -337,12 +349,9 @@ var zz = {
     create_album: function(){
       $.post('/users/'+zz.zang.user_id+'/albums', { album_type: "PersonalAlbum" }, function(data){
         zz.zang.album_id = data;
-
         zz.zang.add_photos();
         $('#user-info').fadeOut('fast');
         $('#indicator').fadeIn('slow');
-
-
       });
     },
 

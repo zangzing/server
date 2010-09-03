@@ -781,6 +781,11 @@ dl#social-form dd#post-text textarea {
   color: #646464;
 }
 
+dl#social-form dd#post-text textarea.error {
+  border: 1px #ff0000 solid;
+
+}
+
 #form-actions {
   float: right;
   margin: 20px 20px 0 0;
@@ -834,6 +839,10 @@ dl#email-share-form dd input, dl#email-share-form dd textarea {
   font-size: 1.05em;
 }
 
+dl#email-share-form dd input.error, dl#email-share-form dd textarea.error {
+  border: 1px #ff0000 solid;
+}
+
 dl#email-share-form dd input {
   height: 20px;
 }
@@ -885,6 +894,10 @@ ul#the-recipients li#autocomplete {
   padding: 0;
   background: none;
   border: none;
+}
+
+dl#email-share-form label.error {
+  display: none;
 }
 
 dl#email-share-form dd input#you-complete-me {
