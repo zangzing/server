@@ -7,7 +7,11 @@ jQuery.autocomplete = function(input, options) {
 
 	// Apply inputClass if necessary
 	if (options.inputClass) $input.addClass(options.inputClass);
-
+  var pos = findPos(input);
+  
+  //add a hook for position element
+  var listTop = $(options.position_element).position().top + $(options.position_element).outerHeight() + "px";
+	var listLeft = $(options.position_element).position().left + "px";
 	// Create results
 	var results = document.createElement("div");
 	// Create jQuery object for results
@@ -16,7 +20,7 @@ jQuery.autocomplete = function(input, options) {
 	if( options.width > 0 ) $results.css("width", options.width);
 
 	// Add to body element
-	$("body").append(results);
+	$(options.append).append(results);
 
 	input.autocompleter = me;
 
@@ -216,14 +220,13 @@ jQuery.autocomplete = function(input, options) {
 
 	function showResults() {
 		// get the position of the input field right now (in case the DOM is shifted)
-		var pos = findPos(input);
 		// either use the specified width, or autocalculate based on form element
 		var iWidth = (options.width > 0) ? options.width : $input.width();
 		// reposition
 		$results.css({
 			width: parseInt(iWidth) + "px",
-			top: (pos.y + input.offsetHeight) + "px",
-			left: pos.x + "px"
+			top: listTop,
+			left: listLeft
 		}).show();
 	};
 

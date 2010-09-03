@@ -11,7 +11,7 @@ var sharecontacts = {
 
         if (hasYahooId) {
             $("#yahoo-sync").click(sharecontacts.call_yahoo_import);
-            $("#yahoo-sync").attr({title: 'Last import on:'+yahooLastImport, src: '/images/btn-gmail-on.png'});
+            $("#yahoo-sync").attr({title: 'Last import on:'+yahooLastImport, src: '/images/btn-yahoo-on.png'});
         } else {
             $("#yahoo-sync").click(sharecontacts.call_new_yahoo_session);
             $("#yahoo-sync").attr('title', 'Authorize access to your yahoo account and import contacts');

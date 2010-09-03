@@ -17,14 +17,12 @@
       <%= f.error_messages %>  
       <dl id="email-share-form">
         <dt>To</dt>
-        <dd>
+        <dd id="the-list">
           <input type="hidden" name="email_share[to]" id="email_share_recipients" />
           <ul id="the-recipients" class="clearfix">
-            <li id="clone-added"></li>
-            <li class="rounded">Wil Everts <img src="/images/btn-delete-small.png" class="link" /></li>
-            <li class="rounded">Jeremy Hermann <img src="/images/btn-delete-small.png" class="link" /></li>
-            <li class="rounded">Alexander Massario <img src="/images/btn-delete-small.png" class="link" /></li>
+            <li id="clone-added"class="rounded"><span>Text</span> <img src="/images/btn-delete-small.png" class="link" /></li>
             <li id="autocomplete"><input type="text" id="you-complete-me" /></li>
+            <div class="clear-fix"></div>
           </ul>
        </dd>
         <div class="clear-fix"></div>
@@ -48,7 +46,7 @@
 <script type="text/javascript">
 
 $(document).ready( function(){
- sharecontacts.setup( <%=( @google_id.credentials_valid? ? 1 : 0 ) %> == 1,
+sharecontacts.setup( <%=( @google_id.credentials_valid? ? 1 : 0 ) %> == 1,
                  "<%= @google_id.last_contact_refresh%>",
                  <%=( @yahoo_id.credentials_valid? ? 1 : 0 ) %> == 1,
                  "<%= @yahoo_id.last_contact_refresh%>")
@@ -61,13 +59,14 @@ var emails = [
 	{ name: "", to: "" }
 ];
 
+google_contacts = [
+    <% @google_id.contacts.each do|contact| %>
+    '<%=contact.name.to_s%> &LT;<%=contact.address%>&GT;',
+    '<%=contact.address%>',
+    <% end %>
+    ""
+];
 
-var google_contacts = [
-        <% @google_id.contacts.each do|contact| %>
-        "<%=contact.name%>",
-        <% end %>
-        "ZZangZZing"
-    ];
 yahoo_contacts = [
     <% @yahoo_id.contacts.each do|contact| %>
     ["<%=contact.name%>","<%=contact.name.to_s%> <<%=contact.address%>>"],

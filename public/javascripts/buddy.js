@@ -458,12 +458,32 @@ var zz = {
       });     
     },
     
+    email_id: 0,
+    
     email_share: function(){
       $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/shares/newemail', function(){                        
         $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
-        $('ul#the-recipients li').click(function(){
+        $('#the-list').click(function(){
           $('#you-complete-me').focus();
         });
+          $('#you-complete-me').autocompleteArray(google_contacts, {
+            onItemSelect: function(data){
+              temp = $(data).html().split('&')[0];
+              console.log('Add '+ temp +' to the view and a ' + $(data).html() + ' checkbox to the form.');
+              zz.zang.email_id++;
+              $('#you-complete-me').val('');
+              $('#clone-added').clone()
+                               .attr({id: 'm-'+zz.zang.email_id})
+                               .prependTo('#the-recipients');
+              
+              $('#m-'+zz.zang.email_id+' span').empty().html(temp);
+              $('#m-'+zz.zang.email_id).fadeIn('fast');
+              
+            },
+            width: 700,
+            position_element: 'dd#the-list',
+            append: 'div.body'
+          });
         $('#new_email_share').validate(zz.validation.new_email_share);
         $('#cancel-share').click(zz.zang.reload_share);
       });     
@@ -583,6 +603,7 @@ var zz = {
     resized: function(){
       if (zz.zang.drawer_open == 1) {
         zz.zang.resize_drawer(250);
+        //gow scroll body
       }
       // TODO: check for selected photo - move caption position
     },
@@ -596,26 +617,3 @@ var zz = {
   } // end zz.init
 
 };
-
-/*
-
-    $('.photo img').each(function(){
-      var newImg = new Image();
-      newImg.src = $(this).attr('src');
-      var height = newImg.height;
-      var width = newImg.width;
-      console.log('file is '+height+' tall by '+width+' wide');
-      
-      if (height > width) {
-        //tall
-        var ratio = width / height; 
-        $('this').attr({height: '130px', width: (ratio * width) + 'px' });
-      } else {
-        //wide
-        var ratio = height / width; 
-        $('this').attr({height: (ratio * height) + 'px', width: '130px', paddingTop: ((130 - (ratio * height)) / 2) });
-      }
-      
-    });
-
-*/

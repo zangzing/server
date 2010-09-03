@@ -838,11 +838,18 @@ dl#email-share-form dd input {
   height: 20px;
 }
 
-ul#the-recipients {
-  width: 690px;
-  padding: 0 5px;
-  color: #8c8c8c;
+dl#email-share-form dd#the-list {
   border: 1px #8c8c8c solid;
+  min-height: 36px;
+  padding: 0 5px;
+  width: 690px;
+}
+
+ul#the-recipients {
+  min-height: 36px;
+  padding: 0 5px;
+  width: 690px;
+  color: #8c8c8c;
 }
 
 ul#the-recipients li {
@@ -863,26 +870,25 @@ ul#the-recipients li img.link {
   vertical-align: -30%;
 }
 
+li.rounded {
+  display: none;
+}
+
 ul#the-recipients li#autocomplete {
+  height: 16px;
+  text-align: left;
   margin: 0;
   padding: 0;
   background: none;
   border: none;
-  padding: 0;
-
-}
-
-ul#the-recipients li#clone-added{
-  display: none;
 }
 
 dl#email-share-form dd input#you-complete-me {
   background-color: #fff;
   border: 1px #fff solid;
-  width: 100px;
-  height: 16px;
-  padding: 3px 5px 5px 0px;
-  margin: 5px;
+  width: 200px;
+  height: 15px;
+  padding: 3px 0px;
 }
 
 select.album_privacy {
