@@ -476,21 +476,21 @@ var zz = {
 
     clone_recipient: function(data){
       temp = $(data).html().split('&')[0];
-      console.log('Add '+ temp +' to the view and a ' + $(data).html() + ' checkbox to the form.');
       value = $(data).html();
       zz.zang.email_id++;
+      console.log('ID: '+ zz.zang.email_id +'-- Add '+ temp +' to the view and a ' + $(data).html() + ' checkbox to the form.');
       $('#you-complete-me').val('');
-      $('#clone-added').clone()
+      $('#m-clone-added').clone()
                        .attr({id: 'm-'+zz.zang.email_id})
                        .prependTo('#the-recipients');
       
       $('#m-'+zz.zang.email_id+' span').empty().html(temp);
       $('#m-'+zz.zang.email_id+' input').attr({name: 'i-' + zz.zang.email_id, checked: 'checked'}).val(value);
       $('#m-'+zz.zang.email_id).fadeIn('fast');
-      $('#m-'+zz.zang.email_id+' img.link').click(function(){
-        $('#m-'+zz.zang.email_id).fadeOut('fast').remove();
-      });              
-
+      $('#m-'+zz.zang.email_id+' img').attr('id', 'img-'+zz.zang.email_id);
+      $('li.rounded img').click(function(){
+        $(this).parent('li').fadeOut('fast').remove();
+      });            
     },
     
     email_share: function(){
