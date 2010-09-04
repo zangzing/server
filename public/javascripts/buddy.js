@@ -307,20 +307,26 @@ var zz = {
       temp_top = $('#'+element).offset().top - temp;
       temp_left = $('#'+element).offset().left;
 
-      //todo: this element doesn't exist the first time. should check and set top and left to ~0
-      temp_top_new = $('#added-pictures-tray li:last').offset().top - temp;
-      temp_left_new = $('#added-pictures-tray li:last').offset().left + 20;
-      
+      if($('#added-pictures-tray li:last').offset() !== null){
+          temp_top_new = $('#added-pictures-tray li:last').offset().top - temp;
+          temp_left_new = $('#added-pictures-tray li:last').offset().left + 20;
+      }
+      else{
+          temp_top_new = $('#added-pictures-tray').offset().top - temp;
+          temp_left_new = $('#added-pictures-tray').offset().left + 20;
+
+      }
+
       $('#'+element).clone()
                     .attr({id: 'traversing'})
                     .css({position: 'absolute', zIndex: 2000, left: temp_left, top: temp_top})
                     .appendTo('body');
       
       $('#traversing').animate({ 
-        width: '20px',
-        height: '20px',
-        top: (temp_top_new - 2) +'px',
-        left: (temp_left_new + 3) +'px'
+        width: '30px',
+        height: '30px',
+        top: (temp_top_new ) +'px',
+        left: (temp_left_new + 13) +'px'
       }, 500);
       
                            

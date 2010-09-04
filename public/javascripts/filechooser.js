@@ -260,6 +260,10 @@ var filechooser = {
 
         add_url += '?album_id=' + zz.zang.album_id;
 
+
+        zz.zang.image_pop(element_id);
+
+
         if (add_url.indexOf('http://localhost:9090') === 0) {
             add_url += '&session=' + $.cookie('user_credentials') + '&callback=?';
 
@@ -282,7 +286,6 @@ var filechooser = {
         }
 
 
-        zz.zang.image_pop(element_id);
 
     },
 
@@ -395,8 +398,10 @@ var tray = {
               });
               
               $('#del-' + id).css({
-                top: '-152px',
-                left: ((ratio * 120) / 2) + 'px' 
+//                top: '-152px',
+//                left: ((ratio * 120) / 2) + 'px'
+                  top: '-15px',
+                  left: '15px'
               });
               
               
@@ -412,9 +417,11 @@ var tray = {
 
               });
               $('#del-' + id).css({
-                top: '-'+((ratio * 120) + 32) + 'px',
-                left: '60px' 
-              });              
+//                top: '-'+((ratio * 120) + 32) + 'px',
+//                left: '60px'
+                  top: '-15px',
+                  left: '15px'
+              });
             
             
             }
@@ -477,7 +484,7 @@ var tray = {
         }
 
         $('#added-pictures-tray').html(html);
-        $('#traversing').hide().remove();
+        setTimeout(function(){$('#traversing').hide().remove();}, 500);
         zz.init.tray();
         tray.imageloader.start(5);
 
