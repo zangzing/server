@@ -384,6 +384,40 @@ var tray = {
 
         var onImageLoaded = function(id, src, width, height) {
             $('#' + id).attr('src', src);
+            
+            if (height > width) {
+              var ratio = (width / height); 
+              $('#hover-' + id).attr('src', src).css({
+                height: '120px', 
+                top: '-132px',
+                width: (ratio * 120) + 'px',
+                left: '-' + (((ratio * 120) / 2) - 15) + 'px' 
+              });
+              
+              $('#del-' + id).css({
+                top: '-152px',
+                left: ((ratio * 120) / 2) + 'px' 
+              });
+              
+              
+            } else {
+
+              var ratio = (height / width);
+              //console.log(ratio);
+              $('#hover-' + id).attr('src', src).css({
+                height: (ratio * 120) + 'px',
+                top: '-' + ((ratio * 120) + 12) + 'px', 
+                width: '120px', 
+                left: '-45px'
+
+              });
+              $('#del-' + id).css({
+                top: '-'+((ratio * 120) + 32) + 'px',
+                left: '60px' 
+              });              
+            
+            
+            }
         };
 
         tray.imageloader = new ImageLoader(onStartLoadingImage, onImageLoaded);
@@ -393,10 +427,30 @@ var tray = {
             var photo = tray.album_photos[i];
             
             var id = 'tray-' + photo.id;
+            
+            /*
+            
+            from my firebug edits:
+            <li>
+
+            <div>
+
+            <img width="20" height="20" src="http://farm1.static.flickr.com/28/63236798_316a95d732_m.jpg" id="tray-bbJRmOT4Kr35cyXcWddDor">
+
+            <a href="" onclick="tray.delete_photo('bbJRmOT4Kr35cyXcWddDor'); return false;">(x)</a>
+            
+
+            </div>
+            </li>
+            
+            */
 
             html += '<li>';
-            html += '<div><img height="20" width="20" id="' + id + '" src=""></div>';
-            html += '<a href="" onclick="tray.delete_photo(\'' + photo.id + '\'); return false;">(x)</a>';
+            html += '<div>';
+            html += '<img height="30" width="30" id="' + id + '" class="trayed-up" src="" style="z-index:5;">';
+            html += '<a href="javascript:void(0);" onclick="tray.delete_photo(\'' + photo.id + '\'); return false;"><img src="/images/btn-delete.png" class="delete" id="del-'+ id +'" /></a>';
+            html += '<img width="120" class="hover-thumbnail" src="" id="hover-'+ id +'">';
+            html += '</div>';
             html += '</li>';
 
             if (photo.agent_id) {          //todo: need to check that agent id matches local agent

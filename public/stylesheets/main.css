@@ -249,7 +249,7 @@ ul#added-pictures-tray {
   background-image: url('/images/bg-picture-tray.png');
   background-repeat: no-repeat;
   z-index: 100;
-  padding: 10px;
+  padding: 17px 10px 3px;
   margin-right: 2px;
   bottom: 5px;
   left: 7px;
@@ -257,18 +257,19 @@ ul#added-pictures-tray {
 
 ul#added-pictures-tray li {
   float: left;
-  margin-top: 12px;
-  width: 20px;
-  height: 20px;
+  margin-top: 7px;
+  margin-right: 2px;
+  width: 30px;
+  height: 30px;
 }
 
 ul#added-pictures-tray li div {
   position: relative;
-  height: 20px;
-  width: 20px;
+  height: 30px;
+  width: 30px;
 }
 
-ul#added-pictures-tray li img {
+ul#added-pictures-tray li img.trayed-up {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -280,15 +281,40 @@ ul#added-pictures-tray li img {
   filter: progid:DXImageTransform.Microsoft.dropShadow(color=#e1e1e1, offX=2, offY=2, positive=true);
 }
 
-ul#added-pictures-tray li img:hover {
+ul#added-pictures-tray li:hover img.trayed-up {
   bottom: 0;
   left: 0;
-  border: 2px solid #FDD042;
-  box-shadow: 0px 0px 5px #FDD042;
-  -webkit-box-shadow: 0px 0px 5px #FDD042;
-  -moz-box-shadow: 0px 0px 5px #FDD042;
-  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#FDD042, offX=2, offY=2, positive=true);
   z-index: 105;
+}
+
+ul#added-pictures-tray li .hover-thumbnail {
+  display: none;
+  position: absolute; 
+  z-index: 102; 
+  border: 4px solid #fff; 
+  top: -120px; 
+  left: -45px;
+  box-shadow: 0px 0px 8px #FDD042;
+  -webkit-box-shadow: 0px 0px 8px #FDD042;
+  -moz-box-shadow: 0px 0px 8px #FDD042;
+  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#FDD042, offX=2, offY=2, positive=true);
+
+}
+
+ul#added-pictures-tray li:hover .hover-thumbnail {
+  display: block;
+}
+
+
+ul#added-pictures-tray li img.delete {
+  display: none;
+  position: absolute; 
+  z-index: 9999;
+  cursor: pointer;
+}
+
+ul#added-pictures-tray li:hover img.delete {
+  display: block;
 }
 
 ul#indicator {

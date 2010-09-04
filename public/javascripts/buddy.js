@@ -487,7 +487,7 @@ var zz = {
       temp = $(data).html().split('&')[0];
       value = $(data).html();
       zz.zang.email_id++;
-      console.log('ID: '+ zz.zang.email_id +'-- Add '+ temp +' to the view and a ' + $(data).html() + ' checkbox to the form.');
+      //console.log('ID: '+ zz.zang.email_id +'-- Add '+ temp +' to the view and a ' + $(data).html() + ' checkbox to the form.');
       $('#you-complete-me').val('');
       $('#m-clone-added').clone()
                        .attr({id: 'm-'+zz.zang.email_id})
@@ -502,20 +502,24 @@ var zz = {
       });            
     },
     
+    email_autocomplete: function(){
+      $('#you-complete-me').autocompleteArray(google_contacts, {
+        onItemSelect: function(data){
+          zz.zang.clone_recipient(data);
+        },
+        width: 700,
+        position_element: 'dd#the-list',
+        append: 'div.body'
+      });    
+    },
+    
     email_share: function(){
       $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/shares/newemail', function(){                        
         $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
         $('#the-list').click(function(){
           $('#you-complete-me').focus();
         });
-          $('#you-complete-me').autocompleteArray(google_contacts, {
-            onItemSelect: function(data){
-              zz.zang.clone_recipient(data);
-            },
-            width: 700,
-            position_element: 'dd#the-list',
-            append: 'div.body'
-          });
+           zz.zang.email_autocomplete();
         $('#new_email_share').validate(zz.validation.new_email_share);
         $('#cancel-share').click(zz.zang.reload_share);
       });     
