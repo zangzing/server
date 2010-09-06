@@ -1,9 +1,9 @@
  <script>
-        album.initializeForSlideshow('<%=photo.to_json(:only =>[:id], :methods => [:medium_url])%>');
-    </script>
+       // album.initializeForSlideshow('<%=photo.to_json(:only =>[:id], :methods => [:medium_url])%>');
+ </script>
 
     <div class="largephotocontainer">
         <a href="<%= album_photos_url( photo.album.id )%>">
-            <img class="largephoto" src="<%#PHOTO SRC WILL BE SET BY JAVASCRIPT IN BROWSER%>" id="photoid<%=photo.id%>">
+            <img class="largephoto" src="<%=photo.medium_url%>" id="photoid<%=photo.id%>">
         </a>
     </div>
