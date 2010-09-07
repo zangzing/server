@@ -24,12 +24,12 @@ class Connector::LocalContactsController < ApplicationController
       identity.contacts.destroy_all
       imported_contacts.each {|c| identity.contacts << c  }
       if identity.save
-        render :json => {:contact_count => imported_contacts.size}
+        render :json => imported_contacts.to_json( :only => [ :name, :address ])
       else
         render :status => 500, :text => identity.errors.full_messages.join(', ')
       end
     else
-      render :json => {:contact_count => imported_contacts.size}
+      render :json => imported_contacts.to_json( :only => [ :name, :address ])
     end
   end
 
