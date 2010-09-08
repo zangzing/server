@@ -63,8 +63,9 @@ var sharecontacts = {
             }        
     },
 
-    import_local_success : function( cts ){
+    import_local_success : function( response ){
         var full_address;
+        cts = response.body
         local_contacts = [];
         for (var i = 0; i < cts.length; i++) {
             full_address = '<' + cts[i].name + '> ' + cts[i].address
