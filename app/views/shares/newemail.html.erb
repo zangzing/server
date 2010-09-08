@@ -53,13 +53,6 @@ sharecontacts.setup( <%=( @google_id.credentials_valid? ? 1 : 0 ) %> == 1,
                  "<%= @local_id.last_contact_refresh%>");
 });
 
-var emails = [
-<%    @google_id.contacts.each do|contact| %>
-	{ name: "<%=contact.name%>", to: "<%=contact.address%>" },
-<% end %>
-	{ name: "", to: "" }
-];
-
 google_contacts = [
     <% @google_id.contacts.each do|contact| %>
     '<%=contact.name.to_s%> &LT;<%=contact.address%>&GT;',
@@ -70,10 +63,10 @@ google_contacts = [
 
 yahoo_contacts = [
     <% @yahoo_id.contacts.each do|contact| %>
-    ["<%=contact.name%>","<%=contact.name.to_s%> <<%=contact.address%>>"],
-    ["<%=contact.address%>","<%=contact.name.to_s%> <<%=contact.address%>>"],
+    '<%=contact.name.to_s%> &LT;<%=contact.address%>&GT;',
+    '<%=contact.address%>',
     <% end %>
-    "ZZZangZZZing"
+    ""
 ];
 
 local_contacts = [

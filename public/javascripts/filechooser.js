@@ -260,6 +260,10 @@ var filechooser = {
 
         add_url += '?album_id=' + zz.zang.album_id;
 
+
+        zz.zang.image_pop(element_id);
+
+
         if (add_url.indexOf('http://localhost:9090') === 0) {
             add_url += '&session=' + $.cookie('user_credentials') + '&callback=?';
 
@@ -282,7 +286,6 @@ var filechooser = {
         }
 
 
-        zz.zang.image_pop(element_id);
 
     },
 
@@ -384,19 +387,96 @@ var tray = {
 
         var onImageLoaded = function(id, src, width, height) {
             $('#' + id).attr('src', src);
+            
+            if (height > width) {
+              var ratio = (width / height); 
+              $('#hover-' + id).attr('src', src).css({
+                height: '120px', 
+                top: '-132px',
+                width: (ratio * 120) + 'px',
+                left: '-' + (((ratio * 120) / 2) - 15) + 'px' 
+              });
+              
+              $('#del-' + id).css({
+//                top: '-152px',
+//                left: ((ratio * 120) / 2) + 'px'
+                  top: '-15px',
+                  left: '-15px'
+              });
+              
+              
+            } else {
+
+              var ratio = (height / width);
+              //console.log(ratio);
+              $('#hover-' + id).attr('src', src).css({
+                height: (ratio * 120) + 'px',
+                top: '-' + ((ratio * 120) + 12) + 'px', 
+                width: '120px', 
+                left: '-45px'
+
+              });
+              $('#del-' + id).css({
+//                top: '-'+((ratio * 120) + 32) + 'px',
+//                left: '60px'
+                  top: '-15px',
+                  left: '-15px'
+              });
+            
+            
+            }
         };
 
         tray.imageloader = new ImageLoader(onStartLoadingImage, onImageLoaded);
 
+        //calculate margin-left of items so they all fit
+        var TRAY_WIDTH = 890;
+        var DEFAULT_ITEM_WIDTH = 32;
+        var count = tray.album_photos.length;
+        var item_width = (TRAY_WIDTH / count) - .3;
+
+        if(item_width > DEFAULT_ITEM_WIDTH){
+            item_width = DEFAULT_ITEM_WIDTH;
+        }
+        var margin_left = item_width - DEFAULT_ITEM_WIDTH;
+
+
         var html = '';
-        for (var i in tray.album_photos) {
+
+        for (var i =0;i<tray.album_photos.length; i++) {
             var photo = tray.album_photos[i];
             
             var id = 'tray-' + photo.id;
+            
+            /*
+            
+            from my firebug edits:
+            <li>
 
-            html += '<li>';
-            html += '<div><img height="20" width="20" id="' + id + '" src=""></div>';
-            html += '<a href="" onclick="tray.delete_photo(\'' + photo.id + '\'); return false;">(x)</a>';
+            <div>
+
+            <img width="20" height="20" src="http://farm1.static.flickr.com/28/63236798_316a95d732_m.jpg" id="tray-bbJRmOT4Kr35cyXcWddDor">
+
+            <a href="" onclick="tray.delete_photo('bbJRmOT4Kr35cyXcWddDor'); return false;">(x)</a>
+            
+
+            </div>
+            </li>
+            
+            */
+
+            if(i===0){
+                html+="<li>"
+            }
+            else{
+                html += '<li style="margin-left:' + margin_left + 'px">';
+            }
+            
+            html += '<div>';
+            html += '<img height="30" width="30" id="' + id + '" class="trayed-up" src="" style="z-index:5;">';
+            html += '<a href="javascript:void(0);" onclick="tray.delete_photo(\'' + photo.id + '\'); return false;"><img src="/images/btn-delete.png" class="delete" id="del-'+ id +'" /></a>';
+            html += '<img width="120" class="hover-thumbnail" src="" id="hover-'+ id +'">';
+            html += '</div>';
             html += '</li>';
 
             if (photo.agent_id) {          //todo: need to check that agent id matches local agent
@@ -423,7 +503,7 @@ var tray = {
         }
 
         $('#added-pictures-tray').html(html);
-        $('#traversing').hide().remove();
+        setTimeout(function(){$('#traversing').hide().remove();}, 500);
         zz.init.tray();
         tray.imageloader.start(5);
 

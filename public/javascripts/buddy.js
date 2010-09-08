@@ -307,20 +307,26 @@ var zz = {
       temp_top = $('#'+element).offset().top - temp;
       temp_left = $('#'+element).offset().left;
 
-      //todo: this element doesn't exist the first time. should check and set top and left to ~0
-      temp_top_new = $('#added-pictures-tray li:last').offset().top - temp;
-      temp_left_new = $('#added-pictures-tray li:last').offset().left + 20;
-      
+      if($('#added-pictures-tray li:last').offset() !== null){
+          temp_top_new = $('#added-pictures-tray li:last').offset().top - temp;
+          temp_left_new = $('#added-pictures-tray li:last').offset().left + 20;
+      }
+      else{
+          temp_top_new = $('#added-pictures-tray').offset().top - temp;
+          temp_left_new = $('#added-pictures-tray').offset().left + 20;
+
+      }
+
       $('#'+element).clone()
                     .attr({id: 'traversing'})
                     .css({position: 'absolute', zIndex: 2000, left: temp_left, top: temp_top})
                     .appendTo('body');
       
       $('#traversing').animate({ 
-        width: '20px',
-        height: '20px',
-        top: (temp_top_new - 2) +'px',
-        left: (temp_left_new + 3) +'px'
+        width: '30px',
+        height: '30px',
+        top: (temp_top_new ) +'px',
+        left: (temp_left_new + 13) +'px'
       }, 500);
       
                            
@@ -487,7 +493,7 @@ var zz = {
       temp = $(data).html().split('&')[0];
       value = $(data).html();
       zz.zang.email_id++;
-      console.log('ID: '+ zz.zang.email_id +'-- Add '+ temp +' to the view and a ' + $(data).html() + ' checkbox to the form.');
+      //console.log('ID: '+ zz.zang.email_id +'-- Add '+ temp +' to the view and a ' + $(data).html() + ' checkbox to the form.');
       $('#you-complete-me').val('');
       $('#m-clone-added').clone()
                        .attr({id: 'm-'+zz.zang.email_id})
@@ -502,20 +508,24 @@ var zz = {
       });            
     },
     
+    email_autocomplete: function(){
+      $('#you-complete-me').autocompleteArray(google_contacts, {
+        onItemSelect: function(data){
+          zz.zang.clone_recipient(data);
+        },
+        width: 700,
+        position_element: 'dd#the-list',
+        append: 'div.body'
+      });    
+    },
+    
     email_share: function(){
       $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/shares/newemail', function(){                        
         $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
         $('#the-list').click(function(){
           $('#you-complete-me').focus();
         });
-          $('#you-complete-me').autocompleteArray(google_contacts, {
-            onItemSelect: function(data){
-              zz.zang.clone_recipient(data);
-            },
-            width: 700,
-            position_element: 'dd#the-list',
-            append: 'div.body'
-          });
+           zz.zang.email_autocomplete();
         $('#new_email_share').validate(zz.validation.new_email_share);
         $('#cancel-share').click(zz.zang.reload_share);
       });     
