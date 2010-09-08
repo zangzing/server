@@ -401,7 +401,7 @@ var tray = {
 //                top: '-152px',
 //                left: ((ratio * 120) / 2) + 'px'
                   top: '-15px',
-                  left: '15px'
+                  left: '-15px'
               });
               
               
@@ -420,7 +420,7 @@ var tray = {
 //                top: '-'+((ratio * 120) + 32) + 'px',
 //                left: '60px'
                   top: '-15px',
-                  left: '15px'
+                  left: '-15px'
               });
             
             
@@ -429,8 +429,21 @@ var tray = {
 
         tray.imageloader = new ImageLoader(onStartLoadingImage, onImageLoaded);
 
+        //calculate margin-left of items so they all fit
+        var TRAY_WIDTH = 890;
+        var DEFAULT_ITEM_WIDTH = 32;
+        var count = tray.album_photos.length;
+        var item_width = (TRAY_WIDTH / count) - .3;
+
+        if(item_width > DEFAULT_ITEM_WIDTH){
+            item_width = DEFAULT_ITEM_WIDTH;
+        }
+        var margin_left = item_width - DEFAULT_ITEM_WIDTH;
+
+
         var html = '';
-        for (var i in tray.album_photos) {
+
+        for (var i =0;i<tray.album_photos.length; i++) {
             var photo = tray.album_photos[i];
             
             var id = 'tray-' + photo.id;
@@ -452,7 +465,13 @@ var tray = {
             
             */
 
-            html += '<li>';
+            if(i===0){
+                html+="<li>"
+            }
+            else{
+                html += '<li style="margin-left:' + margin_left + 'px">';
+            }
+            
             html += '<div>';
             html += '<img height="30" width="30" id="' + id + '" class="trayed-up" src="" style="z-index:5;">';
             html += '<a href="javascript:void(0);" onclick="tray.delete_photo(\'' + photo.id + '\'); return false;"><img src="/images/btn-delete.png" class="delete" id="del-'+ id +'" /></a>';
