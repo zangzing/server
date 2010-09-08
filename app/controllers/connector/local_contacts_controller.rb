@@ -7,8 +7,7 @@ class Connector::LocalContactsController < ApplicationController
 
   def import
     identity = current_user.identity_for_local
-    source_data = JSON.parse(params[:contacts]) || []
-
+    source_data = (  params[:contacts] ? JSON.parse(params[:contacts]) : [] )
     imported_contacts = []
     source_data.each do |entry|
       props = {
@@ -23,6 +22,7 @@ class Connector::LocalContactsController < ApplicationController
     unless imported_contacts.empty?
       identity.contacts.destroy_all
       imported_contacts.each {|c| identity.contacts << c  }
+      identity.contacts_refreshed
       if identity.save
         render :json => {:contact_count => imported_contacts.size}
       else
