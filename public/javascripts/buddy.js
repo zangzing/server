@@ -309,7 +309,7 @@ var zz = {
 
       //todo: this element doesn't exist the first time. should check and set top and left to ~0
       temp_top_new = $('#added-pictures-tray li:last').offset().top - temp;
-      temp_left_new = $('#added-pictures-tray li:last').offset().left + 20;
+      temp_left_new = $('#added-pictures-tray li:last').offset().left + 30;
       
       $('#'+element).clone()
                     .attr({id: 'traversing'})
@@ -317,8 +317,8 @@ var zz = {
                     .appendTo('body');
       
       $('#traversing').animate({ 
-        width: '20px',
-        height: '20px',
+        width: '30px',
+        height: '30px',
         top: (temp_top_new - 2) +'px',
         left: (temp_left_new + 3) +'px'
       }, 500);
@@ -503,23 +503,21 @@ var zz = {
     },
     
     email_autocomplete: function(){
-      $('#you-complete-me').autocompleteArray(google_contacts, {
+      $('input#email_share_to').autoSuggest(google_contacts);
+      /*$('#you-complete-me').autocompleteArray(google_contacts, {
         onItemSelect: function(data){
           zz.zang.clone_recipient(data);
         },
         width: 700,
         position_element: 'dd#the-list',
         append: 'div.body'
-      });    
+      });  */  
     },
     
     email_share: function(){
       $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/shares/newemail', function(){                        
         $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
-        $('#the-list').click(function(){
-          $('#you-complete-me').focus();
-        });
-           zz.zang.email_autocomplete();
+           setTimeout(zz.zang.email_autocomplete, 500);
         $('#new_email_share').validate(zz.validation.new_email_share);
         $('#cancel-share').click(zz.zang.reload_share);
       });     
@@ -601,58 +599,6 @@ var zz = {
 
 
         
-  }, // end zz.zang
+  } // end zz.zang
   
-  /* INITs 
-  --------------------------------------------------------------------------- */
-  
-  init: {
-  
-    template: function(){
-    
-      /* Click Handlers
-      ----------------------------------------------------------------------- */
-      
-      // highlight a selected photo
-      $('ul#grid-view li').click(function(){
-        zz.zang.new_photo = $(this).attr('id');
-        zz.zang.highlight_selected(zz.zang.new_photo);
-      });
-            
-      // open drawer demo
-      $('#nav-new-album').click(function(){
-        if (zz.zang.drawer_open === 0) {
-          zz.zang.choose_album_type();
-        } else {
-          //zz.zang.slam_drawer(880);
-        }
-      });
-      
-      $('#indicator li').click(function(){
-        temp = $(this).attr('id');
-        zz.zang.change_step(temp);
-      });
-            
-    },
-    
-    loaded: function(){
-    
-    },
-    
-    resized: function(){
-      if (zz.zang.drawer_open == 1) {
-        zz.zang.resize_drawer(250);
-        //gow scroll body
-      }
-      // TODO: check for selected photo - move caption position
-    },
-    
-    
-    
-    tray: function(){
-    
-    }        
-  
-  } // end zz.init
-
 };

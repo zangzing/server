@@ -477,7 +477,7 @@ var tray = {
         }
 
         $('#added-pictures-tray').html(html);
-        $('#traversing').hide().remove();
+        setTimeout("$('#traversing').hide().remove()", 500);
         zz.init.tray();
         tray.imageloader.start(5);
 

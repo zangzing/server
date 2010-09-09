@@ -17,14 +17,7 @@
       <%= f.error_messages %>  
       <dl id="email-share-form">
         <dt>To</dt>
-        <dd id="the-list">
-          <input type="hidden" name="email_share[to]" id="email_share_recipients" />
-          <ul id="the-recipients" class="clearfix">
-            <li id="m-clone-added"class="rounded"><span>Text</span> <img src="/images/btn-delete-small.png" id="img-clone-added" class="link" /> <input type="checkbox" value="" /></li>
-            <li id="autocomplete"><input type="text" id="you-complete-me" /></li>
-            <div class="clear-fix"></div>
-          </ul>
-       </dd>
+        <dd><input type="text" name="email_share[to]" id="email_share_to" /></dd>
         <div class="clear-fix"></div>
         <dt>Subject</dt>
         <dd><input type="text" name="email_share[subject]" id="email_share_subject" /></dd>
@@ -50,15 +43,6 @@ sharecontacts.setup( <%=( @google_id.credentials_valid? ? 1 : 0 ) %> == 1,
                  <%=( @yahoo_id.credentials_valid? ? 1 : 0 ) %> == 1,
                  "<%= @yahoo_id.last_contact_refresh%>")
 });
-
-google_contacts = [
-    <% @google_id.contacts.each do|contact| %>
-    '<%=contact.name.to_s%> &LT;<%=contact.address%>&GT;',
-    '<%=contact.address%>',
-    <% end %>
-    ""
-];
-
 yahoo_contacts = [
     <% @yahoo_id.contacts.each do|contact| %>
     '<%=contact.name.to_s%> &LT;<%=contact.address%>&GT;',
@@ -66,6 +50,13 @@ yahoo_contacts = [
     <% end %>
     ""
 ];
+
+var google_contacts = {items: [
+    <% @google_id.contacts.each_with_index do |contact, index| %>
+    {value: '<%= index %>', name: '<%=contact.name.to_s%> &gt;<%=contact.address%>&lt;'},
+    <% end %>
+    {value: '11111111', name: 'ZangZing'}
+]}; //as found: http://code.drewwilson.com/entry/autosuggest-jquery-plugin
 
 // -------------------- AUTOCOMPLETE -----------------------------
 function findValue(li) {

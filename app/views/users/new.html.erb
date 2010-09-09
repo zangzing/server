@@ -1,10 +1,10 @@
-<h2>Sign up</h2>
-
-<!-- % form_for(@user) do |f| % -->
-    <% form_for :user, @user, :url => {:action => "create"}, :html => { :multipart => true } do |f| %>
-  	<%= render :partial => 'fields', :locals =>{:f => f }%>
-	<div class="actions">
-		<%= f.submit "Sign up"%>
-	</div>
+<% content_for :page_javascript do  # this places our page-specific js with the rest of the js at the bottom of the html -%>
+<script>
+  (function($) {
+      $('#sign-up').show();
+      $('#sign-in').hide();  
+      $('#small-drawer').animate({height: '410px', top: '53px'});
+      zz.zang.drawer_open = 1 ;  
+   })(jQuery);
+</script>
 <% end %>
-

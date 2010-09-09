@@ -170,15 +170,15 @@ header ul#user-info, header ul#album-info {
   margin: 6px -145px 0 auto;
 }
 
-header ul#user-info {
+header ul#new-info {
+  margin: 6px 0 0;
+}
+
+header ul#user-info, header ul#album-info, header ul#new-info {
   display: inline-block;
 }
 
-header ul#album-info {
-  display: none;
-}
-
-header ul#user-info li, header ul#album-info li {
+header ul#user-info li, header ul#album-info li, header ul#new-info li {
   float: left;
   text-align: left;
 }
@@ -197,7 +197,7 @@ ul#user-info li#user-icon {
   margin-right: 16px;
 }
 
-ul#album-info li#user-icon {
+ul#album-info li#user-icon, ul#new-info li#user-icon {
   width: 58px;
   height: 40px;
   margin-right: 6px;
@@ -228,11 +228,32 @@ div#drawer {
   z-index: 9;
 }
 
+div#small-drawer {
+  position: fixed;
+  width: 453px;
+  height: 0px;
+  margin: 0 250px;
+  padding: 0 0 26px;
+  top: 28px;
+  background-image: url("/images/bg-small-drawer-bottom-cap.png");
+  background-repeat: no-repeat;
+  background-position: 100% bottom;
+  z-index: 9;
+  overflow: hidden;
+}
+
 div#drawer div.body {
   background-image: url("/images/bg-bottom-repeat.png");
   background-repeat: repeat-y;
   width: 906px;
   padding-top: 40px;
+}
+
+div#small-drawer div.body {
+  background-image: url("/images/bg-small-bottom-repeat.png");
+  background-repeat: repeat-y;
+  width: 453px;
+  height: 396px;
 }
 
 div#drawer div.body div#drawer-content {
@@ -391,6 +412,115 @@ ul#indicator li.on {
 #next-step {
   cursor: pointer;
 }
+
+ul#small-indicator {
+  margin-left: 1px;
+  width: 448px;
+  overflow: hidden;
+  height: 37px;
+  z-index: 15;
+  border-left: solid 1px gray; 
+}
+
+ul#small-indicator li {
+  float: left;
+  width: 221px;
+  height: 36px;
+  border: none;
+  border-right: solid 1px gray;
+  border-left: solid 1px silver;
+  border-bottom: solid 1px gray;
+}
+
+ul#small-indicator li#step-sign-in-on {
+  background-image: url("/images/bg-sign-in-on.png");
+}
+
+ul#small-indicator li#step-sign-in-off {
+  background-image: url("/images/bg-sign-in-off.png");
+  cursor: pointer;
+}
+
+ul#small-indicator li#step-sign-in-off:hover {
+  background-image: url("/images/bg-sign-in-off-over.png");
+  cursor: pointer;
+}
+
+ul#small-indicator li#step-join-on {
+  background-image: url("/images/bg-join-on.png");
+}
+
+ul#small-indicator li#step-join-off {
+  background-image: url("/images/bg-join-off.png");
+  cursor: pointer;
+}
+
+ul#small-indicator li#step-join-off:hover {
+  background-image: url("/images/bg-join-off-over.png");
+  cursor: pointer;
+}
+
+div#small-top {
+  margin: 15px auto 15px; 
+  width: 350px; 
+  text-align: center; 
+  padding-bottom: 15px; 
+  border-bottom: 1px solid #ccc;
+}
+
+div#small-drawer h2 {
+  font-size: 1.9em;
+  font-weight: 500;
+  color: #0a0a0a;
+}
+
+div#small-drawer h3 {
+  font-size: 1.4em;
+  font-weight: 500;
+  color: #0a0a0a;
+}
+
+div#small-drawer dl {
+  width: 380px;
+  margin: 10px auto;
+}
+
+div#small-drawer dl dt, div#small-drawer dl dd {
+  width: 100%;
+  text-align: left;
+  margin-bottom: 15px;
+}
+
+div#small-drawer dl dt {
+  font-size: 1.2em;
+  font-weight: 700;
+}
+
+div#small-drawer dl input[type=text], div#small-drawer dl input[type=password] {
+  width: 370px;
+  padding: 5px;
+  text-align: left;
+  font-size: 1.8em;
+  background-color: #fff;
+  border: solid 1px #afafaf;
+}
+
+div#small-drawer dl dt.button {
+  float: left;
+  width: 50%;
+  padding-top: 8px;
+}
+
+div#small-drawer dl dt.button a {
+  color: #0a0a0a;
+}
+
+div#small-drawer dl dd.button {
+  float: right;
+  text-align: right;
+  width: 40%
+}
+
 
 /* Create Album
 ----------------------------------------------------------------------------- */

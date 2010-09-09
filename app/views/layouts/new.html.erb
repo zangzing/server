@@ -20,7 +20,7 @@
    
     <link rel="stylesheet" href="/stylesheets/lib.css" media="all" />
     <link rel="stylesheet" href="/stylesheets/main.css" media="all" />
-    <link rel="stylesheet" href="/stylesheets/jquery.autocomplete.css" media="all" />
+    <link rel="stylesheet" href="/stylesheets/jquery.autoSuggest.css" media="all" />
 
     <!-- TODO: favicon 
     <link rel="shortcut icon" href="images/favicon.png"/> -->
@@ -70,56 +70,14 @@
       </nav>
 
       <header class="clearfix">
-        <ul id="user-info" class="clearfix">
-          <li id="user-icon">
-            <img src="/images/user-icon-40x40.png" width="40" height="40" />
-          </li>
-          <li>
-            <h2><%= @badge_name %></h2>
-            <h3>My Account <img src="/images/icon-down-arrow-10px.png" width="10" height="10" /></h3>
-          </li>
-        </ul>
+<%    if controller.controller_name == 'albums' -%>
+      <%= render :partial => 'layouts/album_nav' %>
+<%    elsif current_user -%>
+      <%= render :partial => 'layouts/user_nav' %>
+<%    else -%>
+      <%= render :partial => 'layouts/new_nav' %>
+<%    end -%>
         
-        <ul id="album-info" class="clearfix">
-          <li id="user-icon">
-            <img src="/images/blank-image.png" width="50" height="33" id="album-header-icon" />
-          </li>
-          <li>
-            <h2 id="album-header-title">
-                <% if @album %>
-                <%=   @album.name %>
-                <% end %>
-            </h2>
-            <h3>by <%= @badge_name %></h3>
-          </li>
-        </ul>        
-        
-        <ul id="view-swap">
-          <li><a href="#"><img src="/images/view-icons-friends.png" width="39" height="29" /></a></li>
-          <li><a href="#"><img src="/images/view-icons-timeline.png" width="38" height="29" /></a></li>
-          <li><a href="#"><img src="/images/view-icons-grid-selected.png" width="35" height="29" /></a></li>
-        </ul>        
-      </header>
-      
-      <div id="drawer" style="display:none;">
-        <div class="body">
-          <div id="drawer-content">  
-            <div id="scroll-body">
-            </div>       
-          </div>   
-        </div>
-      </div>
-      
-      <ul id="indicator" class="step-1 clearfix" style="display:none;">
-        <li id="step-add" class="on">Add Photos</li>
-        <li id="step-name">Name Album</li>
-        <li id="step-edit">Edit Album</li>
-        <li id="step-share">Share Album</li>
-        <li id="step-btn"><img id="next-step" src="/images/btn-steps-next.png" /></li>
-      </ul>
-
-    </div><!-- end fixed width container -->
-    
     <article>
     
       <%= yield :layout %>
@@ -128,7 +86,7 @@
     
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript"></script>
     <script type="text/javascript" src="/javascripts/lib/jquery.validate.js" ></script>
-    <script type="text/javascript" src="/javascripts/lib/jquery.autocomplete.js"></script>    
+    <script type="text/javascript" src="/javascripts/lib/jquery.autoSuggest.js"></script>    
 
     <script type="text/javascript" src="/javascripts/lib/jquery.ba-bbq.js"></script>
     <script type="text/javascript" src="/javascripts/lib/jquery.jsonp.js"></script>
@@ -137,6 +95,7 @@
     <script type="text/javascript" src="/javascripts/server.js"></script>
 
     <script type="text/javascript" src="/javascripts/buddy.js" ></script>
+    <script type="text/javascript" src="/javascripts/inits.js" ></script>
 
     <script type="text/javascript" src="/javascripts/filechooser.js" ></script>
     <script type="text/javascript" src="/javascripts/oauthmanager.js" ></script>
@@ -163,7 +122,19 @@
       
         $(function() {
 <%      # This will become dynamic, allowing us to load the right event handlers based on what page we're on. -%>
-          zz.init.template(); 
+<%    if current_user && controller.controller_name == 'albums' -%>
+        zz.init.template(); 
+        zz.init.album();
+<%    elsif current_user -%>
+        zz.init.template(); 
+<%    elsif controller.controller_name == 'albums' -%>
+        zz.init.new_user(); 
+        zz.init.album();
+<%    else -%>
+        zz.init.new_user(); 
+<%    end -%>
+        
+          
         });
   
         $(window).bind("load", function() {
