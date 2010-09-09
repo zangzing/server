@@ -8,7 +8,7 @@
     <ul id="email-sync" class="clearfix">
       <li class="title">Import contacts from</li>
       <li><img src="/images/btn-gmail-off.png" id="gmail-sync" class="link" /></li>
-      <li><img src="/images/btn-outlook-off.png" id="outlook-sync" class="link" /></li>
+      <li><img src="/images/btn-outlook-off.png" id="local-sync" class="link" /></li>
       <li><img src="/images/btn-yahoo-off.png" id="yahoo-sync" class="link" /></li>
     </ul>
     <div class="clear-fix"></div>
@@ -41,7 +41,9 @@ $(document).ready( function(){
 sharecontacts.setup( <%=( @google_id.credentials_valid? ? 1 : 0 ) %> == 1,
                  "<%= @google_id.last_contact_refresh%>",
                  <%=( @yahoo_id.credentials_valid? ? 1 : 0 ) %> == 1,
-                 "<%= @yahoo_id.last_contact_refresh%>")
+                 "<%= @yahoo_id.last_contact_refresh%>",
+                 <%=( @local_id.credentials_valid? ? 1 : 0 ) %> == 1,
+                 "<%= @local_id.last_contact_refresh%>");
 });
 yahoo_contacts = [
     <% @yahoo_id.contacts.each do|contact| %>
@@ -51,12 +53,19 @@ yahoo_contacts = [
     ""
 ];
 
-var google_contacts = {items: [
+google_contacts = {items: [
     <% @google_id.contacts.each_with_index do |contact, index| %>
     {value: '<%= index %>', name: '<%=contact.name.to_s%> &gt;<%=contact.address%>&lt;'},
     <% end %>
     {value: '11111111', name: 'ZangZing'}
 ]}; //as found: http://code.drewwilson.com/entry/autosuggest-jquery-plugin
+local_contacts = [
+    <% @local_id.contacts.each do|contact| %>
+        ["<%=contact.name%>","<%=contact.name.to_s%> <<%=contact.address%>>"],
+        ["<%=contact.address%>","<%=contact.name.to_s%> <<%=contact.address%>>"],
+    <% end %>
+    "ZZZZangZZZZing"
+];
 
 // -------------------- AUTOCOMPLETE -----------------------------
 function findValue(li) {

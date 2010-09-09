@@ -70,7 +70,7 @@
       </nav>
 
       <header class="clearfix">
-<%    if controller.controller_name == 'albums' -%>
+<%    if controller.controller_name == 'photos' -%>
       <%= render :partial => 'layouts/album_nav' %>
 <%    elsif current_user -%>
       <%= render :partial => 'layouts/user_nav' %>
@@ -112,17 +112,20 @@
       ----------------------------------------------------------------------- */
 <%    if signed_in?  -%>      
       zz.zang.user_id = '<%= current_user.id %>';
+<%    end -%><%  if @album  -%>      
+      zz.zang.album_id = '<%= @album.id %>';
 <%    end
       # This is where we pass things on to js that we need from ruby.
       # Remember to use the zz.zang namespace. 
 -%>    
+
       /* Fire up our inits starting up the entire waxy ball!!
       ----------------------------------------------------------------------- */
       (function($) {
       
         $(function() {
 <%      # This will become dynamic, allowing us to load the right event handlers based on what page we're on. -%>
-<%    if current_user && controller.controller_name == 'albums' -%>
+<%    if current_user && controller.controller_name == 'photos' -%>
         zz.init.template(); 
         zz.init.album();
 <%    elsif current_user -%>

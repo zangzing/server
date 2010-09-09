@@ -30,7 +30,7 @@ class FlickrConnectorTest < ActionController::IntegrationTest
     visit new_flickr_session_path
     service_auth_url = response.redirected_to
     agent = Mechanize.new { |a| a.user_agent_alias = 'Windows Mozilla' }
-    page = agent.get service_auth_url
+    page = agent.service_auth_url
     form = page.forms.first
     form.login = valid_credentials ? CREDENTIALS[:login] : 'foo'
     form.passwd = valid_credentials ? CREDENTIALS[:password] : 'bar'

@@ -46,19 +46,15 @@ var server = {
 
     delete_photo : function(photoId, onSuccess, onError){
 
-        var callServer = function(agentId){
 
-            $.ajax({
-               type: "DELETE",
-               dataType: "json",
-               url: "/photos/" + photoId + ".json",
-               success: onSuccess,
-               error: onError
-            });
-        }
+        $.ajax({
+           type: "DELETE",
+           dataType: "json",
+           url: "/photos/" + photoId + ".json",
+           success: onSuccess,
+           error: onError
+        });
 
-        agent.getAgentId(callServer, onError)
-
-
+        //todo: on sucess, call agent to cancel upload
    }
 }

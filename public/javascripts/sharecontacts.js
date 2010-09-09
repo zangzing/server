@@ -1,6 +1,6 @@
 var sharecontacts = {
-    setup : function(hasGoogleId, googleLastImport, hasYahooId, yahooLastImport) {
-         //console.lob("in contacts setup");
+    setup : function(hasGoogleId, googleLastImport, hasYahooId, yahooLastImport, hasLocalId, localLastImport ) {
+         //console.log("in contacts setup");
         if (hasGoogleId) {
             $("#gmail-sync").click(sharecontacts.call_google_import);
             $("#gmail-sync").attr({title: 'Last import on: '+googleLastImport, src: '/images/btn-gmail-on.png'});
@@ -16,7 +16,71 @@ var sharecontacts = {
             $("#yahoo-sync").click(sharecontacts.call_new_yahoo_session);
             $("#yahoo-sync").attr('title', 'Authorize access to your yahoo account and import contacts');
         }
+
+        // Setup local button based on agent present
+        if (hasLocalId) {
+                     $("#local-sync").attr({title: 'Last import on:'+localLastImport, src: '/images/btn-outlook-on.png'});
+        }
+        agent.isAvailable(  sharecontacts.setup_local_button );
+
         //reloadAutocompleter()
+    },
+
+    // ------ LOCAL C ---------
+    setup_local_button : function( agentPresent ){
+        title = $("#local-sync").attr('title');
+        if( agentPresent ){
+            $("#local-sync").click(sharecontacts.call_local_import);
+            if(title == '')
+                $("#local-sync").attr('title', "Click to import your local contacts.");    
+            else
+                $("#local-sync").attr('title', title+". Click to refresh your contacts.");
+        } else {
+            $("#local-sync").unbind('click');
+            if(title == '')
+                $("#local-sync").attr('title', "Local Agent is not present. Unable to import local contacts from this machine");
+            else
+                $("#local-sync").attr('title', title+". Local Agent is not present. Unable to refresh local contacts at the moment");
+        }
+    },
+
+    call_local_import : function() {
+         $("#local-sync").attr({disabled: 'disabled', src: '/images/btn-outlook-sync.png', title: 'Refreshing...'});
+        agent.isAvailable(  sharecontacts.call_agent_local_import )
+    },
+
+    call_agent_local_import :function(agentPresent){
+         if( agentPresent ) {
+                var user_session = $.cookie('user_credentials');
+                url = 'http://localhost:9090/contacts/import?session=' + user_session + '&callback=?';
+                $.jsonp({
+                    url: url,
+                    success: sharecontacts.import_local_success,
+                    error: sharecontacts.import_local_error
+                });
+            } else {
+                $("#local-sync").attr({disabled: '', src: '/images/btn-outlook-error.png', title: 'Unable to refresh local contacts at the moment because the local agent is not present on this machine. Please try later'});
+            }        
+    },
+
+    import_local_success : function( response ){
+        var full_address;
+        cts = response.body
+        local_contacts = [];
+        for (var i = 0; i < cts.length; i++) {
+            full_address = '<' + cts[i].name + '> ' + cts[i].address
+            local_contacts.push([ cts[i].name, full_address]);
+            local_contacts.push([ cts[i].address, full_address]);
+        }
+
+        //reloadAutocompleter();
+        $("#local-sync").attr('disabled', '');
+        $("#local-sync").attr('title', 'Last imported a second ago.');
+        $("#local-sync").attr('src', '/images/btn-outlook-on.png');
+    },
+
+    import_local_failure : function(){
+        $("#local-sync").attr({disabled: '', src: '/images/btn-outlook-error.png', title: 'Unable to refresh local contacts at the moment. Please try later'});
     },
 
     // ------ GOOGLE C ---------
@@ -57,7 +121,7 @@ var sharecontacts = {
         $("#gmail-sync").attr('src', '/images/btn-gmail-on.png');
     },
     import_google_failure : function(errors) {
-        alert("Unable to refresh google contacts at the moment. Please try later");
+        //alert("Unable to refresh google contacts at the moment. Please try later");
         $("#gmail-sync").attr({disabled: '', src: '/images/btn-gmail-error.png', title: 'Unable to refresh gmail contacts at the moment. Please try later'});
     },
 
@@ -94,11 +158,12 @@ var sharecontacts = {
         $("#yahoo-sync").attr('src', '/images/btn-yahoo-on.png');
     },
     import_yahoo_failure : function( errors ){
-        alert('Unable to refresh yahoo contacts at the moment. Please try later');
+        //alert('Unable to refresh yahoo contacts at the moment. Please try later');
         $("#yahoo-sync").attr({disabled: '', src: '/images/btn-yahoo-error.png', title: 'Unable to refresh yahoo contacts at the moment. Please try later'});
 
     }
 };
 var google_contacts = [ "ZZangZZing"];
 var yahoo_contacts = [ "ZZZangZZZing" ];
+var local_contacts = [ "ZZZZangZZZZing" ];
 

@@ -342,7 +342,7 @@ ul#indicator {
   position: fixed;
   top: 54px;
   z-index: 15;
-  margin-left: 28px;
+  margin-left: 5px;
   width: 898px;
   height: 36px;  
 }

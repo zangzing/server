@@ -21,8 +21,8 @@ common: &common
     s3_credentials: <%=File.join(Rails.root, 'config', 's3.yml')%>   #Config file also contains :bucket
     default_url:    "/images/working.png"
     styles:
-      medium: "600x400>"
-      thumb:  "100x100#"
+      medium: "1024x768>"
+      thumb:  "120x120>"
     s3_headers:
       x-amz-storage-class: REDUCED_REDUNDANCY
       Expires:  <%=1.year.from_now.httpdate%>

@@ -45,13 +45,13 @@ zz.init = {
     album: function(){
     
     
-      $('#nav-new-album').click(function(){
+      $('#nav-new-photo').click(function(){
         if (typeof zz.zang.album_id == 'undefined') {
           
         } else if (zz.zang.drawer_open === 0) {
           zz.zang.open_drawer(500);
           zz.zang.add_photos();
-          
+          $('#indicator').fadeIn('slow');
         }
       });  
       
@@ -61,7 +61,11 @@ zz.init = {
         } else if (zz.zang.drawer_open === 0) {
           zz.zang.open_drawer(500);
           zz.zang.share_album();
-          
+          $('#indicator').removeClass('step-'+zz.zang.indicator_step).addClass('step-4').fadeIn('slow');
+          $('#step-add').removeClass('on');
+          zz.zang.indicator = 'step-share';
+          zz.zang.indicator_step = 4;
+          $('#step-share').addClass('on');
         }
       });    
       
