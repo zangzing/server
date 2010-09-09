@@ -21,6 +21,7 @@ class SharesController < ApplicationController
     @share = EmailShare.new    
     @google_id = current_user.identity_for_google
     @yahoo_id  = current_user.identity_for_yahoo
+    @local_id  = current_user.identity_for_local
   end
   
   def create
