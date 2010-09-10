@@ -1,0 +1,26 @@
+---
+development:
+  :consumer_secret: 669115f39f45f7be301dcc5443ffae67bc7d6b1c
+  :app_key: dj0yJmk9TVFrMnFCZnlSeDBNJmQ9WVdrOU1rOUdiRTFtTkhNbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD1iMg--
+  :app_id: 2OFlMf4s
+
+test:
+  :consumer_secret: 669115f39f45f7be301dcc5443ffae67bc7d6b1c
+  :app_key: dj0yJmk9TVFrMnFCZnlSeDBNJmQ9WVdrOU1rOUdiRTFtTkhNbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD1iMg--
+  :app_id: 2OFlMf4s
+
+development-engineyard:
+  :consumer_secret: 669115f39f45f7be301dcc5443ffae67bc7d6b1c
+  :app_key: dj0yJmk9TVFrMnFCZnlSeDBNJmQ9WVdrOU1rOUdiRTFtTkhNbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD1iMg--
+  :app_id: 2OFlMf4s
+
+test-engineyard:
+  :consumer_secret: 669115f39f45f7be301dcc5443ffae67bc7d6b1c
+  :app_key: dj0yJmk9TVFrMnFCZnlSeDBNJmQ9WVdrOU1rOUdiRTFtTkhNbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD1iMg--
+  :app_id: 2OFlMf4s
+
+
+production:
+  :consumer_secret:
+  :app_key: 
+  :app_id: 

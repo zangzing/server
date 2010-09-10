@@ -184,6 +184,17 @@ ActionController::Routing::Routes.draw do |map|
     sf.shutterfly_folder_action '/shutterfly/folders/:sf_album_id/:action.:format'
   end
 
+  #ZangZing (local)
+  map.with_options :namespace => 'connector', :controller => :zangzing_photos do |sf|
+    sf.zangzing_photos '/zangzing/folders/:zz_album_id/photos.:format', :action  => 'index'
+    sf.zangzing_photo_action '/zangzing/folders/:zz_album_id/photos/:photo_id/:action'
+  end
+
+  map.with_options :namespace => 'connector', :controller => :zangzing_folders do |sf|
+    sf.zangzing_folders '/zangzing/folders.:format', :action  => 'index'
+    sf.zangzing_folder_action '/zangzing/folders/:zz_album_id/:action.:format'
+  end
+
   #Google
   map.with_options :namespace => 'connector', :controller => :google_sessions do |g|
     g.new_google_session     '/google/sessions/new', :action  => 'new'
@@ -213,6 +224,8 @@ ActionController::Routing::Routes.draw do |map|
     tw.twitter_posts           '/twitter/posts.:format',    :action  => 'index'
     tw.create_twitter_post     '/twitter/posts/create',     :action  => 'create'
   end
+
+  map.sendgrid_import '/sendgrid/import', :controller => :sendgrid, :action => :import
 
   #proxy
   map.with_options :namespace => 'connector', :controller => :proxy do |proxy|
