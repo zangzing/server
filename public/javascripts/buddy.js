@@ -533,21 +533,53 @@ var zz = {
       $('#m-'+zz.zang.email_id+' img').attr('id', 'img-'+zz.zang.email_id);
       $('li.rounded img').click(function(){
         $(this).parent('li').fadeOut('fast').remove();
-      });            
+      });
+      zz.zang.build_address_list(data);  
     },
-    
+
+    autocompleter: 0,
+    //address_list: 0,
     email_autocomplete: function(){
-      //$('input#email_share_to').autoSuggest(google_contacts);
-      $('#you-complete-me').autocompleteArray(google_contacts, {
-        onItemSelect: function(data){
-          zz.zang.clone_recipient(data);
-        },
-        width: 700,
-        position_element: 'dd#the-list',
-        append: 'div.body'
-      });  
+      zz.zang.autocompleter = $('#you-complete-me').autocompleteArray(
+          google_contacts.concat( yahoo_contacts.concat( local_contacts ) ),
+          {
+              width: 700,
+              position_element: 'dd#the-list',
+              append: 'div.body',
+              onItemSelect: zz.zang.clone_recipient, 
+              onFindValue: zz.zang.build_address_list
+          }
+          );
+        //zz.zang.address_list = '';
     },
-    
+
+    email_autocompleter_reload: function(){
+        zz.zang.autocompleter[0].autocompleter.setData(google_contacts.concat( yahoo_contacts.concat( local_contacts ) ));
+    },
+
+    build_address_list: function( li ) {
+	    if( li == null ) return;
+
+	    // if li has additional cells they come in extra. If present then use the 0th cell as the value
+	    // otherwise, let's just take the value
+	    if( !!li.extra )
+            var sValue = li.extra[0];
+	    else
+            var sValue = li.selectValue;
+
+       // if( zz.zang.address_list.length > 0 )
+       //    zz.zang.address_list+=(";")
+        
+       // zz.zang.address_list +=  sValue
+
+        var recipients = $('#email_share_recipients').val();
+        if( recipients.length > 0 )
+            recipients+=(';');
+        recipients += sValue;
+        $('#email_share_recipients').val( recipients );
+    },
+
+
     email_share: function(){
       $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/shares/newemail', function(){                        
         $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});

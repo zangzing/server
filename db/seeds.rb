@@ -8,6 +8,7 @@
 
 # ZANGZING USER
 user = User.create(  {:name                   => 'ZangZing Paying User V1.0',
+                      :username               => 'zangzing',    
                       :email                  => 'user@zangzing.com',
                       :password               => 'password',
                       :password_confirmation  => 'password'})

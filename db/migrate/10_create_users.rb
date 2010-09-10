@@ -9,7 +9,7 @@ class CreateUsers < ActiveRecord::Migration
        t.string   :style,                 :null => false, :default => "white"
        t.string   :suspended,             :null => false, :default => false
 
-       t.string   :crypted_passwor\d,      :null => false
+       t.string   :crypted_password,      :null => false
        t.string   :password_salt,         :null => false
        t.string   :persistence_token,     :null => false
        t.string   :single_access_token,   :null => false

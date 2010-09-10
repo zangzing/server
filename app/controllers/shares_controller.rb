@@ -27,12 +27,9 @@ class SharesController < ApplicationController
   def create
     @album = Album.find(params[:album_id])
     @share = Share.factory( current_user, @album, params)
-    if @share.save
-       flash[:success] = "You will be notified and your album will be shared as soon as your photos finish uploading"
-       redirect_to edit_share_path(@share)
-    else
-      render 'newemail' and return  if params[:mail_share]
-      render 'newpost' and return  if params[:post_share]
+    unless @share.save
+          render 'newemail' and return  if params[:mail_share]
+          render 'newpost' and return  if params[:post_share]
     end
   end
 

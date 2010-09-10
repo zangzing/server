@@ -409,6 +409,42 @@ jQuery.autocomplete = function(input, options) {
 		options.extraParams = p;
 	};
 
+	this.setData = function( data ){
+		options.data = ((typeof data == "object") && (data.constructor == Array)) ? data : null;
+		flushCache();
+		// if there is a data array supplied
+		if( options.data != null ){
+			var sFirstChar = "", stMatchSets = {}, row = [];
+
+			// no url was specified, we need to adjust the cache length to make sure it fits the local data store
+			if( typeof options.url != "string" ) options.cacheLength = 1;
+
+			// loop through the array and create a lookup structure
+			for( var i=0; i < options.data.length; i++ ){
+				// if row is a string, make an array otherwise just reference the array
+				row = ((typeof options.data[i] == "string") ? [options.data[i]] : options.data[i]);
+
+				// if the length is zero, don't add to list
+				if( row[0].length > 0 ){
+					// get the first character
+					sFirstChar = row[0].substring(0, 1).toLowerCase();
+					// if no lookup array for this character exists, look it up now
+					if( !stMatchSets[sFirstChar] ) stMatchSets[sFirstChar] = [];
+					// if the match is a string
+					stMatchSets[sFirstChar].push(row);
+				}
+			}
+
+			// add the data items to the cache
+			for( var k in stMatchSets ){
+				// increase the cache size
+				options.cacheLength++;
+				// add to the cache
+				addToCache(k, stMatchSets[k]);
+			}
+		}
+	}
+
 	this.findValue = function(){
 		var q = $input.val();
 

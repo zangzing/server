@@ -22,8 +22,6 @@ var sharecontacts = {
                      $("#local-sync").attr({title: 'Last import on:'+localLastImport, src: '/images/btn-outlook-on.png'});
         }
         agent.isAvailable(  sharecontacts.setup_local_button );
-
-        //reloadAutocompleter()
     },
 
     // ------ LOCAL C ---------
@@ -68,12 +66,12 @@ var sharecontacts = {
         cts = response.body
         local_contacts = [];
         for (var i = 0; i < cts.length; i++) {
-            full_address = '<' + cts[i].name + '> ' + cts[i].address
+            full_address = '\"'+cts[i].name +'\"<' + cts[i].address + '>';  
             local_contacts.push([ cts[i].name, full_address]);
             local_contacts.push([ cts[i].address, full_address]);
         }
 
-        //reloadAutocompleter();
+        zz.zang.email_autocompleter_reload();
         $("#local-sync").attr('disabled', '');
         $("#local-sync").attr('title', 'Last imported a second ago.');
         $("#local-sync").attr('src', '/images/btn-outlook-on.png');
@@ -85,19 +83,19 @@ var sharecontacts = {
 
     // ------ GOOGLE C ---------
     call_new_google_session : function() {
-        //console.lob("in call new google session");
+        //console.log("in call new google session");
         $("#gmail-sync").attr('disabled', 'disabled');
         oauthmanager.login('/google/sessions/new', sharecontacts.google_login_success);
     },
 
     google_login_success : function() {
-        //console.lob("in call google login success");
+        //console.log("in call google login success");
         $("#gmail-sync").unbind("click");
         $("#gmail-sync").click(sharecontacts.call_google_import);
         sharecontacts.call_google_import();
     },
     call_google_import : function() {
-        //console.lob("in call google import");  
+        //console.log("in call google import");
         $("#gmail-sync").attr({disabled: 'disabled', src: '/images/btn-gmail-sync.png', title: 'Refreshing...'});
         $.ajax({
             dataType: 'json',
@@ -107,15 +105,15 @@ var sharecontacts = {
         });
     },
     import_google_success :  function(cts) {
-        //console.lob('inside google import succes');
+        //console.log('inside google import succes');
         var full_address;
         google_contacts = [];
         for (var i = 0; i < cts.length; i++) {
-            full_address = '<' + cts[i].name + '> ' + cts[i].address
+            full_address = '\"'+cts[i].name +'\"<' + cts[i].address + '>';
             google_contacts.push([ cts[i].name, full_address]);
             google_contacts.push([ cts[i].address, full_address]);
         }
-        //reloadAutocompleter();
+       zz.zang.email_autocompleter_reload();
         $("#gmail-sync").attr('disabled', '');
         $("#gmail-sync").attr('title', 'Last imported a second ago.');
         $("#gmail-sync").attr('src', '/images/btn-gmail-on.png');
@@ -148,11 +146,11 @@ var sharecontacts = {
         var full_address;
         yahoo_contacts = [];
         for (var i = 0; i < cts.length; i++) {
-            full_address = '<' + cts[i].name + '> ' + cts[i].address;
+            full_address = '\"'+cts[i].name +'\"<' + cts[i].address + '>';
             yahoo_contacts.push([ cts[i].name, full_address]);
             yahoo_contacts.push([ cts[i].address, full_address]);
         }
-        //reloadAutocompleter()
+       zz.zang.email_autocompleter_reload();
         $("#yahoo-sync").attr('disabled', '');
         $("#yahoo-sync").attr('title', 'Last imported a second ago.');
         $("#yahoo-sync").attr('src', '/images/btn-yahoo-on.png');
@@ -160,10 +158,9 @@ var sharecontacts = {
     import_yahoo_failure : function( errors ){
         //alert('Unable to refresh yahoo contacts at the moment. Please try later');
         $("#yahoo-sync").attr({disabled: '', src: '/images/btn-yahoo-error.png', title: 'Unable to refresh yahoo contacts at the moment. Please try later'});
-
     }
 };
-var google_contacts = [ "ZZangZZing"];
-var yahoo_contacts = [ "ZZZangZZZing" ];
-var local_contacts = [ "ZZZZangZZZZing" ];
+var google_contacts = [];
+var yahoo_contacts = [];
+var local_contacts = [];
 
