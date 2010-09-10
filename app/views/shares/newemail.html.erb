@@ -25,6 +25,7 @@
             <div class="clear-fix"></div>
           </ul>
        </dd>
+        
         <div class="clear-fix"></div>
         <dt>Subject</dt>
         <dd><input type="text" name="email_share[subject]" id="email_share_subject" /></dd>
@@ -52,17 +53,16 @@ sharecontacts.setup( <%=( @google_id.credentials_valid? ? 1 : 0 ) %> == 1,
                  <%=( @local_id.credentials_valid? ? 1 : 0 ) %> == 1,
                  "<%= @local_id.last_contact_refresh%>");
 });
-
-google_contacts = [
-    <% @google_id.contacts.each do|contact| %>
+yahoo_contacts = [
+    <% @yahoo_id.contacts.each do|contact| %>
     '<%=contact.name.to_s%> &LT;<%=contact.address%>&GT;',
     '<%=contact.address%>',
     <% end %>
     ""
 ];
 
-yahoo_contacts = [
-    <% @yahoo_id.contacts.each do|contact| %>
+google_contacts = [
+    <% @google_id.contacts.each_with_index do |contact, index| %>
     '<%=contact.name.to_s%> &LT;<%=contact.address%>&GT;',
     '<%=contact.address%>',
     <% end %>
@@ -76,8 +76,6 @@ local_contacts = [
     <% end %>
     "ZZZZangZZZZing"
 ];
-
-
 
 // -------------------- AUTOCOMPLETE -----------------------------
 function findValue(li) {

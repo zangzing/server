@@ -78,10 +78,14 @@ class Photo < ActiveRecord::Base
   usesguid
   belongs_to :album
   belongs_to :user
+  belongs_to :upload_batch
 
   # when retrieving a search from the DB it will always be ordered by created date descending a.k.a Latest first
   default_scope :order => 'created_at DESC'
 
+  before_create :assign_batch
+  after_create  :update_batch
+  
   # if all args were valid on creation then set it to assigned
   after_validation_on_create :set_to_assigned;
 
@@ -156,7 +160,7 @@ class Photo < ActiveRecord::Base
         logger.debug("Upload to S3 Failed"+ex)
     end
     logger.debug("Upload to S3 Finished")
-    self.is_upload_finished?    
+    self.upload_batch.finish    
   end
 
   def new?
@@ -198,14 +202,17 @@ class Photo < ActiveRecord::Base
      Digest::MD5.hexdigest(url)
   end
 
-  def is_upload_finished?
-    # If the owner of this photo has no more assigned photos in this album then the upload is done
-    unless Photo.find_by_user_id_and_album_id_and_state( self.user.id, self.album.id, ['assigned','loaded','processing','error'] );
-       self.album.upload_by_user_complete(self.user)
-    end
+  def assign_batch
+     logger.debug("IN ASSIGN BATCH")
+     @up =  UploadBatch.get_current( self.user, self.album );
+
   end
 
-
+  def update_batch
+    logger.debug("IN UPDATE BATCH")  
+    @up.photos << self unless @up.nil?
+  end
+  
 end
 
 

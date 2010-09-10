@@ -3,13 +3,13 @@ class CreateUsers < ActiveRecord::Migration
     create_table :users, :force => true do |t|
        t.string   :email,                 :null => false
        t.string   :role,                  :null => false, :default => "user"
-       t.string   :user_name
+       t.string   :username,              :null => false
        t.string   :first_name,            :null => false
        t.string   :last_name
        t.string   :style,                 :null => false, :default => "white"
        t.string   :suspended,             :null => false, :default => false
 
-       t.string   :crypted_password,      :null => false
+       t.string   :crypted_passwor\d,      :null => false
        t.string   :password_salt,         :null => false
        t.string   :persistence_token,     :null => false
        t.string   :single_access_token,   :null => false
@@ -24,6 +24,7 @@ class CreateUsers < ActiveRecord::Migration
      end
 
      add_index :users, :email, :unique => true
+     add_index :users, :username, :unique => true
      add_index :users, :perishable_token
   end
 

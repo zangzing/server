@@ -307,6 +307,7 @@ var zz = {
       temp_top = $('#'+element).offset().top - temp;
       temp_left = $('#'+element).offset().left;
 
+
       if($('#added-pictures-tray li:last').offset() !== null){
           temp_top_new = $('#added-pictures-tray li:last').offset().top - temp;
           temp_left_new = $('#added-pictures-tray li:last').offset().left + 20;
@@ -487,7 +488,34 @@ var zz = {
       });     
     },
     
+    delete_btn: 0,
     email_id: 0,
+
+    add_recipient: function(comma){
+      if (comma == 1) {
+        value = $('#you-complete-me').val();
+        value = value.split(',')[0];
+        $('#you-complete-me').val('');
+      } else {
+        value = $('#you-complete-me').val();
+        $('#you-complete-me').val('');
+      
+      }
+      
+      zz.zang.email_id++;
+      //console.log('ID: '+ zz.zang.email_id +'-- Add '+ temp +' to the view and a ' + $(data).html() + ' checkbox to the form.');
+      $('#m-clone-added').clone()
+                       .attr({id: 'm-'+zz.zang.email_id})
+                       .insertAfter('#the-recipients li.rounded:last');
+      
+      $('#m-'+zz.zang.email_id+' span').empty().html(value);
+      $('#m-'+zz.zang.email_id+' input').attr({name: 'i-' + zz.zang.email_id, checked: 'checked'}).val(value);
+      $('#m-'+zz.zang.email_id).fadeIn('fast');
+      $('#m-'+zz.zang.email_id+' img').attr('id', 'img-'+zz.zang.email_id);
+      $('li.rounded img').click(function(){
+        $(this).parent('li').fadeOut('fast').remove();
+      });            
+    },
 
     clone_recipient: function(data){
       temp = $(data).html().split('&')[0];
@@ -497,7 +525,7 @@ var zz = {
       $('#you-complete-me').val('');
       $('#m-clone-added').clone()
                        .attr({id: 'm-'+zz.zang.email_id})
-                       .prependTo('#the-recipients');
+                       .insertAfter('#the-recipients li.rounded:last');
       
       $('#m-'+zz.zang.email_id+' span').empty().html(temp);
       $('#m-'+zz.zang.email_id+' input').attr({name: 'i-' + zz.zang.email_id, checked: 'checked'}).val(value);
@@ -509,6 +537,7 @@ var zz = {
     },
     
     email_autocomplete: function(){
+      //$('input#email_share_to').autoSuggest(google_contacts);
       $('#you-complete-me').autocompleteArray(google_contacts, {
         onItemSelect: function(data){
           zz.zang.clone_recipient(data);
@@ -516,16 +545,13 @@ var zz = {
         width: 700,
         position_element: 'dd#the-list',
         append: 'div.body'
-      });    
+      });  
     },
     
     email_share: function(){
       $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/shares/newemail', function(){                        
         $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
-        $('#the-list').click(function(){
-          $('#you-complete-me').focus();
-        });
-           zz.zang.email_autocomplete();
+           setTimeout(zz.zang.email_autocomplete, 500);
         $('#new_email_share').validate(zz.validation.new_email_share);
         $('#cancel-share').click(zz.zang.reload_share);
       });     
@@ -607,58 +633,6 @@ var zz = {
 
 
         
-  }, // end zz.zang
+  } // end zz.zang
   
-  /* INITs 
-  --------------------------------------------------------------------------- */
-  
-  init: {
-  
-    template: function(){
-    
-      /* Click Handlers
-      ----------------------------------------------------------------------- */
-      
-      // highlight a selected photo
-      $('ul#grid-view li').click(function(){
-        zz.zang.new_photo = $(this).attr('id');
-        zz.zang.highlight_selected(zz.zang.new_photo);
-      });
-            
-      // open drawer demo
-      $('#nav-new-album').click(function(){
-        if (zz.zang.drawer_open === 0) {
-          zz.zang.choose_album_type();
-        } else {
-          //zz.zang.slam_drawer(880);
-        }
-      });
-      
-      $('#indicator li').click(function(){
-        temp = $(this).attr('id');
-        zz.zang.change_step(temp);
-      });
-            
-    },
-    
-    loaded: function(){
-    
-    },
-    
-    resized: function(){
-      if (zz.zang.drawer_open == 1) {
-        zz.zang.resize_drawer(250);
-        //gow scroll body
-      }
-      // TODO: check for selected photo - move caption position
-    },
-    
-    
-    
-    tray: function(){
-    
-    }        
-  
-  } // end zz.init
-
 };

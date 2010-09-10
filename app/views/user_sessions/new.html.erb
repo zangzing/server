@@ -1,24 +1,25 @@
-<h2>Sign in</h2>
-
-<% form_for(@user_session, :url => user_sessions_path) do |f| %>
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.text_field :email %>
-  </div>
-  <div class="field">
-    <%= f.label :password %><br />
-    <%= f.password_field :password %>
-  </div>
-  <div class="field">
-    <%= f.check_box :remember_me %>
-    <%= f.label :remember_me %><br />
-  </div>
-  <div class="actions">
-    <%= f.submit "Sign in" %>
-  </div>
+<div class="offset" >
+  <H2>START FLASHES </H2>
+  <% flash.each do |key, value| %>
+        <div class="flash <%= key %>"><%= value %></div>
+  <% end %>
+  <H2>END FLASHES </H2> 
+  <H2>START NICE ERRORS</H2>
+  <%= error_messages_for :user_session, :header_message => "Is it really you?", :message => "We could not sign you in because:"%>
+  <H2>END NICE ERRORS</H2>
+  <H2>START FORMAT HOWEVER WE WANT ERRORS</H2>
+  <% @user_session.errors.each do | key, value| %>
+    <%= key %>:  <%=value %>
+  <%end %>
+  <H2>END FORMAT HOWEVER WE WANT ERRORS</H2>
+</div>
+<% content_for :page_javascript do  # this places our page-specific js with the rest of the js at the bottom of the html -%>
+<script>
+  (function($) {
+      $('#sign-up').hide();
+      $('#sign-in').show();  
+      $('#small-drawer').animate({height: '410px', top: '53px'});
+      zz.zang.drawer_open = 1 ;  
+   })(jQuery);
+</script>
 <% end %>
-
-<p>New user? <%= link_to " Sign up!", signup_path %></p>
-<br>
-<p>Forgot your password? <%= link_to "Reset my password", new_password_reset_path %></p>
-_
