@@ -86,7 +86,7 @@ zz.init = {
           $('#sign-in').show();
           $('#sign-up').hide();        
 
-          $('#small-drawer').animate({height: '410px', top: '53px'});
+          $('#small-drawer').animate({height: '450px', top: '53px'});
           zz.zang.drawer_open = 1;
           
         } else {
@@ -98,7 +98,7 @@ zz.init = {
         $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
           $('#sign-in').show();
           $('#sign-up').hide();  
-          $('#small-drawer').animate({height: '410px', top: '53px'});
+          $('#small-drawer').animate({height: '450px', top: '53px'});
         });
         
 
@@ -107,7 +107,7 @@ zz.init = {
         $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
           $('#sign-up').show();
           $('#sign-in').hide();  
-          $('#small-drawer').animate({height: '410px', top: '53px'});
+          $('#small-drawer').animate({height: '450px', top: '53px'});
         });      
       });
       
@@ -116,7 +116,7 @@ zz.init = {
           $('#sign-in').show();
           $('#sign-up').hide();        
 
-          $('#small-drawer').animate({height: '410px', top: '53px'});
+          $('#small-drawer').animate({height: '450px', top: '53px'});
           zz.zang.drawer_open = 1;
           
         } else {

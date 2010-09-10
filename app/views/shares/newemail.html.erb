@@ -17,7 +17,15 @@
       <%= f.error_messages %>  
       <dl id="email-share-form">
         <dt>To</dt>
-        <dd><input type="text" name="email_share[to]" id="email_share_to" /></dd>
+        <dd id="the-list">
+          <input type="hidden" name="email_share[to]" id="email_share_recipients" />
+          <ul id="the-recipients" class="clearfix">
+            <li id="m-clone-added"class="rounded"><span>Text</span> <img src="/images/btn-delete-small.png" id="img-clone-added" class="link" /> <input type="checkbox" value="" /></li>
+            <li id="autocomplete"><input type="text" id="you-complete-me" /></li>
+            <div class="clear-fix"></div>
+          </ul>
+       </dd>
+        
         <div class="clear-fix"></div>
         <dt>Subject</dt>
         <dd><input type="text" name="email_share[subject]" id="email_share_subject" /></dd>
@@ -53,12 +61,14 @@ yahoo_contacts = [
     ""
 ];
 
-google_contacts = {items: [
+google_contacts = [
     <% @google_id.contacts.each_with_index do |contact, index| %>
-    {value: '<%= index %>', name: '<%=contact.name.to_s%> &gt;<%=contact.address%>&lt;'},
+    '<%=contact.name.to_s%> &LT;<%=contact.address%>&GT;',
+    '<%=contact.address%>',
     <% end %>
-    {value: '11111111', name: 'ZangZing'}
-]}; //as found: http://code.drewwilson.com/entry/autosuggest-jquery-plugin
+    ""
+];
+
 local_contacts = [
     <% @local_id.contacts.each do|contact| %>
         ["<%=contact.name%>","<%=contact.name.to_s%> <<%=contact.address%>>"],

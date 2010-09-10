@@ -510,15 +510,15 @@ var zz = {
     },
     
     email_autocomplete: function(){
-      $('input#email_share_to').autoSuggest(google_contacts);
-      /*$('#you-complete-me').autocompleteArray(google_contacts, {
+      //$('input#email_share_to').autoSuggest(google_contacts);
+      $('#you-complete-me').autocompleteArray(google_contacts, {
         onItemSelect: function(data){
           zz.zang.clone_recipient(data);
         },
         width: 700,
         position_element: 'dd#the-list',
         append: 'div.body'
-      });  */  
+      });  
     },
     
     email_share: function(){

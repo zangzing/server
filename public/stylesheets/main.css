@@ -253,7 +253,7 @@ div#small-drawer div.body {
   background-image: url("/images/bg-small-bottom-repeat.png");
   background-repeat: repeat-y;
   width: 453px;
-  height: 396px;
+  height: 436px;
 }
 
 div#drawer div.body div#drawer-content {
@@ -494,6 +494,7 @@ div#small-drawer dl dt, div#small-drawer dl dd {
 div#small-drawer dl dt {
   font-size: 1.2em;
   font-weight: 700;
+  margin-bottom: 5px;
 }
 
 div#small-drawer dl input[type=text], div#small-drawer dl input[type=password] {
@@ -1044,7 +1045,7 @@ ul#the-recipients li.rounded input {
 }
 
 ul#the-recipients li#autocomplete {
-  height: 16px;
+  height: 36px;
   text-align: left;
   margin: 0;
   padding: 0;
@@ -1060,8 +1061,8 @@ dl#email-share-form dd input#you-complete-me {
   background-color: #fff;
   border: 1px #fff solid;
   width: 200px;
-  height: 15px;
-  padding: 3px 0px;
+  height: 36px;
+  padding: 0px 0px;
 }
 
 select.album_privacy {
