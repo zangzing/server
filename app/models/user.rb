@@ -6,7 +6,7 @@
 #  id                  :integer         not null, primary key
 #  email               :string(255)
 #  role                :string(255)
-#  user_name           :string(255)
+#  username            :string(255)
 #  first_name          :string(255)
 #  last_name           :string(255)
 #  style               :string(255)     default("white")
@@ -29,14 +29,14 @@
 #
 
 #
-#   √î√∏Œ© 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
+#   Copyright 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 
 
 class User < ActiveRecord::Base
   usesguid
   attr_writer      :name
-  attr_accessible  :email, :name, :password, :password_confirmation, :style
+  attr_accessible  :email, :name, :username, :password
 
   has_many :albums,              :dependent => :destroy
   has_many :identities,          :dependent => :destroy
@@ -51,14 +51,16 @@ class User < ActiveRecord::Base
   has_many :followees, :through => :follows, :class_name => 'User', :dependent => :destroy
   has_many :followers, :through => :follows, :class_name => 'User'
     
-
-  acts_as_authentic         # This delegates all authentication details to authlogic
+  # This delegates all authentication details to authlogic
+  acts_as_authentic do |c|
+    c.require_password_confirmation = false
+    c.login_field = :email 
+  end
 
   before_save  :split_name
 
-
-
   validates_presence_of :name
+  validates_presence_of :username
   validates_presence_of :email
   validates_length_of   :password, :within => 6..40, :if => :require_password?, :message => "must be between 6 and 40 characters long"
 
@@ -77,7 +79,9 @@ class User < ActiveRecord::Base
   # Generates a new perishable token for the notifier to use in a password reset request
   def deliver_password_reset_instructions!
       reset_perishable_token!
-      Emailer.deliver_password_reset_instructions(self)
+      msg = Notifier.create_password_reset_instructions(self)
+      Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(Notifier, :deliver, [msg] )
+
   end
 
   def admin?
@@ -86,6 +90,10 @@ class User < ActiveRecord::Base
 
   def name
     @name ||= (self.first_name ? self.first_name+' ':'')+(self.last_name||'')
+  end
+
+  def self.find_by_email_or_username(login)
+    find_by_email(login) || find_by_username(login)
   end
 
   private
