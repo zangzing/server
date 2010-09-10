@@ -20,6 +20,7 @@ class PhotosController < ApplicationController
     @album = Album.find(params[:album_id])
     @photo = @album.photos.build(params[:photo])
     @photo.user = current_user
+    
     respond_to do |format|
       format.html do
         if @photo.save
@@ -132,6 +133,7 @@ class PhotosController < ApplicationController
     @title = CGI.escapeHTML(@album.name)
     @user=  @album.user
     @badge_name = @user.name
+    UploadBatch.close_open_batches( @user, @album)
 
     respond_to do |format|
       format.html do
