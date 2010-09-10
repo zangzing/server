@@ -135,7 +135,6 @@ class Photo < ActiveRecord::Base
     # If an assigned image has been loaded with an image, reprocess and send to S3
     if self.assigned? && self.local_image_file_name_changed?
        self.state = 'loaded'
-       #self.send_later(:upload_to_s3, Delayed::CpuBoundJob)
        Delayed::CpuBoundJob.enqueue(S3UploadRequest.new(self.id))
     end
     logger.debug("queued for upload")
