@@ -17,7 +17,9 @@ class Connector::ZangzingFoldersController < Connector::ConnectorController
 
   def import
     photos = []
-    current_user.albums.find_by_id(params[:zz_album_id]).photos.each do |p|
+    source_photos = current_user.albums.find(params[:zz_album_id]).photos
+    source_photos.each do |p|
+      next unless p.ready?
       photo = Photo.create(
                 :caption => p.caption,
                 :album_id => params[:album_id],
@@ -27,11 +29,9 @@ class Connector::ZangzingFoldersController < Connector::ConnectorController
                 :source_screen_url => p.source_screen_url
       )
 
-      #Delayed::IoBoundJob.enqueue(ZzCopyRequest.new(photo.id, p.id))
       Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, p.image.url))
       photos << photo
     end
-
 
     render :json => photos.to_json
   end
