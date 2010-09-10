@@ -8,11 +8,12 @@ class Notifier < ActionMailer::Base
   
   default_url_options[:host] = APPLICATION_HOST
 
-  def album_upload_complete( user, album )
+  def upload_batch_finished( batch )
     from         @@zzfrom
-    recipients user.email
-    subject "Your album "+album.name+" is ready!"
-    body :user => user, :album => album, :album_url => album_url( album )
+    recipients batch.user.email
+    subject "Your album "+batch.album.name+" is ready!"
+    content_type "text/html"
+    body :user => batch.user, :album => batch.album, :album_url => album_url( batch.album ), :photos => batch.photos
   end
 
   def album_shared_with_you(from_user,to_address,album)

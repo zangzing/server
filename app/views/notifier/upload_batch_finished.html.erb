@@ -1,0 +1,28 @@
+<!DOCTYPE html> 
+<HTML>
+<body>
+
+Dear <%= @user.name %>,
+</p>
+The photos you added to ZangZing album titled <B><%= @album.name %></B> are now ready.
+If you shared your album, your messages and posts have been sent.
+Click the link below to see the album
+</p>
+<%= @album_url %>
+</p>
+If the above link does not work try copying and pasting it into your browser.
+If you need help plase feel free to contact us at support@zangzing.com
+</p>
+<h3>The ZangZing Team</h3>
+<hr>
+<table>
+<tr>
+<% @photos.each do |photo| %>
+ <td> <img src="<%=photo.thumb_url%>"></td>
+<%end%>
+</tr>
+</table>
+
+
+</body>
+</HTML>

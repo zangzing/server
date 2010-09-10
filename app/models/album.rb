@@ -31,6 +31,7 @@ class Album < ActiveRecord::Base
   has_many :photos,           :dependent => :destroy
   has_many :shares,           :dependent => :destroy
   has_many :album_activities, :dependent => :destroy
+  has_many :upload_batches
 
   validates_presence_of  :user_id
   validates_presence_of  :name
@@ -53,13 +54,6 @@ class Album < ActiveRecord::Base
       def human;    singularize; end # only for Rails 3
     end
     return name
-  end
-
-  def upload_by_user_complete( user )
-    shares = Share.find_all_by_user_id_and_album_id( user.id, self.id)
-    shares.each { |s| s.deliver_later() } if shares
-    msg = Notifier.create_album_upload_complete(user, self)
-    Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(Notifier, :deliver, [msg] )
   end
 
 end

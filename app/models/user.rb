@@ -29,7 +29,7 @@
 #
 
 #
-#   ÔøΩ 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
+#   √î√∏Œ© 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 
 
@@ -44,6 +44,7 @@ class User < ActiveRecord::Base
   has_many :followers,           :dependent => :destroy
   has_many :activities,          :dependent => :destroy
   has_many :photos
+  has_many :upload_batches
   has_many :client_applications, :dependent => :destroy 
   has_many :tokens, :class_name=>"OauthToken",:order=>"authorized_at desc",:include=>[:client_application]
 

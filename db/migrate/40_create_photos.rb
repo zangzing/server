@@ -3,6 +3,7 @@ class CreatePhotos < ActiveRecord::Migration
     create_table :photos, :force => true do |t|
          t.references_with_guid  :album
          t.references_with_guid  :user
+         t.string   :upload_batch_id
          t.string   :agent_id
          t.string   :source_path
          t.string   :state,                    :default => "new"
@@ -32,7 +33,8 @@ class CreatePhotos < ActiveRecord::Migration
          t.timestamps
        end
        add_index :photos, :album_id
-       add_index :photos, :agent_id      
+       add_index :photos, :agent_id
+       add_index :photos, :upload_batch_id
   end
   def self.down
     drop_table :photos
