@@ -79,6 +79,9 @@ jQuery.autocomplete = function(input, options) {
 		// track last key pressed
 		lastKeyPressCode = e.keyCode;
 		switch(e.keyCode) {
+			case 188: // comma
+			  zz.zang.add_recipient(1);
+				break;
 			case 38: // up
 				e.preventDefault();
 				moveSelect(-1);
@@ -93,6 +96,9 @@ jQuery.autocomplete = function(input, options) {
 					// make sure to blur off the current field
 					$input.get(0).blur();
 					e.preventDefault();
+				} else {
+				  zz.zang.add_recipient(0);
+				  e.preventDefault();
 				}
 				break;
 			default:
@@ -116,7 +122,27 @@ jQuery.autocomplete = function(input, options) {
 
 	function onChange() {
 		// ignore if the following keys are pressed: [del] [shift] [capslock]
-		if( lastKeyPressCode == 46 || (lastKeyPressCode > 8 && lastKeyPressCode < 32) ) return $results.hide();
+		if(lastKeyPressCode == 8) {
+		  //alert('DELETE KEY');
+		  if ($('#you-complete-me').val().length == 0 && zz.zang.delete_btn == 2) {
+		    //console.log('Delete the last item!');
+		    $('#the-recipients li.rounded:last').remove();
+		    zz.zang.delete_btn = 0;
+		  } else if ($('#you-complete-me').val().length == 0 && zz.zang.delete_btn == 1) {
+		    //console.log('Select the last item!');
+		    $('#the-recipients li.rounded:last').addClass('del');
+		    zz.zang.delete_btn = 2;
+		  } else if ($('#you-complete-me').val().length == 0 && zz.zang.delete_btn == 0){
+		    zz.zang.delete_btn = 1;
+		  }
+		} else if (lastKeyPressCode == 46 || lastKeyPressCode > 8 && lastKeyPressCode < 32) {
+		  zz.zang.delete_btn = 0;
+		  $('#the-recipients li.rounded:last').removeClass('del');
+		  return $results.hide();
+		} else {
+		  zz.zang.delete_btn = 0;
+		  $('#the-recipients li.rounded:last').removeClass('del');
+		}
 		var v = $input.val();
 		if (v == prev) return;
 		prev = v;

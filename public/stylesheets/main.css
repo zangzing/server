@@ -1031,6 +1031,11 @@ ul#the-recipients li {
   margin: 5px;
 }
 
+ul#the-recipients li.del {
+  border: 1px #ff0000 solid;
+  background: -moz-linear-gradient(top, #fbfbfb, pink);
+  background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(pink));}
+
 ul#the-recipients li img.link {
   margin: 0 3px 0 5px;
   vertical-align: -30%;
