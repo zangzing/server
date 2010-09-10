@@ -25,6 +25,7 @@ each album has an email address in the form <album_id>@sendgrid-post.zangzing.co
                 :caption => attached_image.original_filename,
                 :album_id => album_id,
                 :user_id => album.user.id,
+                #todo: should use random/uuid/guid for source_guid
                 :source_guid => Photo.generate_source_guid("#{params[:html]}_#{params[:text]}_#{Time.now.to_i}_#{attach_index}")
         )
         photo.local_image = attached_image

@@ -57,6 +57,12 @@ var filechooser = {
             name: 'Shutterfly',
             login_url: '/shutterfly/sessions/new',
             clazz: 'f_shutterfly'
+        },
+        {
+            open_url: '/zangzing/folders.json',
+            type: 'folder',
+            name: 'ZangZing',
+            clazz: 'f_zangzing'
         }
     ],
 

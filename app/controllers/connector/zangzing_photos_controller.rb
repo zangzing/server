@@ -1,7 +1,7 @@
 class Connector::ZangzingPhotosController < Connector::ConnectorController
 
   def index
-    @photos = current_user.albums.find(params[:zz_album_id]).photos.map do |p|
+    @photos = current_user.albums.find(params[:zz_album_id]).photos.all(:conditions=>{ :state=>'ready'}).map do |p|
       {
         :name => p.caption,
         :id   => p.id,
