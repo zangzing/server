@@ -122,7 +122,14 @@ jQuery.autocomplete = function(input, options) {
 
 	function onChange() {
 		// ignore if the following keys are pressed: [del] [shift] [capslock]
-		if( lastKeyPressCode == 46 || (lastKeyPressCode > 8 && lastKeyPressCode < 32) ) return $results.hide();
+		if(lastKeyPressCode == 8) {
+		  //alert('DELETE KEY');
+		  if ($('#you-complete-me').val().length == 0) {
+		    alert('Delete the last item!');
+		  }
+		} else if (lastKeyPressCode == 46 || lastKeyPressCode > 8 && lastKeyPressCode < 32) {
+		  return $results.hide();
+		} 
 		var v = $input.val();
 		if (v == prev) return;
 		prev = v;
