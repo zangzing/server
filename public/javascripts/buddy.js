@@ -488,6 +488,33 @@ var zz = {
       });     
     },
     
+
+    add_recipient: function(comma){
+      if (comma == 1) {
+        value = $('#you-complete-me').val();
+        value = value.split(',')[0];
+        $('#you-complete-me').val('');
+      } else {
+        value = $('#you-complete-me').val();
+        $('#you-complete-me').val('');
+      
+      }
+      
+      zz.zang.email_id++;
+      //console.log('ID: '+ zz.zang.email_id +'-- Add '+ temp +' to the view and a ' + $(data).html() + ' checkbox to the form.');
+      $('#m-clone-added').clone()
+                       .attr({id: 'm-'+zz.zang.email_id})
+                       .prependTo('#the-recipients');
+      
+      $('#m-'+zz.zang.email_id+' span').empty().html(value);
+      $('#m-'+zz.zang.email_id+' input').attr({name: 'i-' + zz.zang.email_id, checked: 'checked'}).val(value);
+      $('#m-'+zz.zang.email_id).fadeIn('fast');
+      $('#m-'+zz.zang.email_id+' img').attr('id', 'img-'+zz.zang.email_id);
+      $('li.rounded img').click(function(){
+        $(this).parent('li').fadeOut('fast').remove();
+      });            
+    },
+
     email_id: 0,
 
     clone_recipient: function(data){

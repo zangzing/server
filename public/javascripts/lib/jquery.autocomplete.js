@@ -79,6 +79,9 @@ jQuery.autocomplete = function(input, options) {
 		// track last key pressed
 		lastKeyPressCode = e.keyCode;
 		switch(e.keyCode) {
+			case 188: // comma
+			  zz.zang.add_recipient(1);
+				break;
 			case 38: // up
 				e.preventDefault();
 				moveSelect(-1);
@@ -93,6 +96,9 @@ jQuery.autocomplete = function(input, options) {
 					// make sure to blur off the current field
 					$input.get(0).blur();
 					e.preventDefault();
+				} else {
+				  zz.zang.add_recipient(0);
+				  e.preventDefault();
 				}
 				break;
 			default:
