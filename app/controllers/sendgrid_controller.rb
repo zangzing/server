@@ -21,7 +21,7 @@ each album has an email address in the form <album_id>@sendgrid-post.zangzing.co
       photos_count = params[:attachments].to_i
       1.upto(photos_count) do |attach_index|
         attached_image = params["attachment#{attach_index}"]
-        photo = Photo.new(
+        photo = Photo.create(
                 :caption => attached_image.original_filename,
                 :album_id => album_id,
                 :user_id => album.user.id,
@@ -29,11 +29,6 @@ each album has an email address in the form <album_id>@sendgrid-post.zangzing.co
         )
         photo.local_image = attached_image
         photo.save
-        #photo.source_thumb_url = photo.local_image.url(:thumb)
-        #photo.source_screen_url = photo.local_image.url(:medium)
-        #photo.save
-        photo.queue_upload_to_s3
-        album.photos << photo
       end
     end
     render :nothing => true, :status => :ok
