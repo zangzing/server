@@ -488,6 +488,8 @@ var zz = {
       });     
     },
     
+    delete_btn: 0,
+    email_id: 0,
 
     add_recipient: function(comma){
       if (comma == 1) {
@@ -504,7 +506,7 @@ var zz = {
       //console.log('ID: '+ zz.zang.email_id +'-- Add '+ temp +' to the view and a ' + $(data).html() + ' checkbox to the form.');
       $('#m-clone-added').clone()
                        .attr({id: 'm-'+zz.zang.email_id})
-                       .prependTo('#the-recipients');
+                       .insertAfter('#the-recipients li.rounded:last');
       
       $('#m-'+zz.zang.email_id+' span').empty().html(value);
       $('#m-'+zz.zang.email_id+' input').attr({name: 'i-' + zz.zang.email_id, checked: 'checked'}).val(value);
@@ -515,8 +517,6 @@ var zz = {
       });            
     },
 
-    email_id: 0,
-
     clone_recipient: function(data){
       temp = $(data).html().split('&')[0];
       value = $(data).html();
@@ -525,7 +525,7 @@ var zz = {
       $('#you-complete-me').val('');
       $('#m-clone-added').clone()
                        .attr({id: 'm-'+zz.zang.email_id})
-                       .prependTo('#the-recipients');
+                       .insertAfter('#the-recipients li.rounded:last');
       
       $('#m-'+zz.zang.email_id+' span').empty().html(temp);
       $('#m-'+zz.zang.email_id+' input').attr({name: 'i-' + zz.zang.email_id, checked: 'checked'}).val(value);

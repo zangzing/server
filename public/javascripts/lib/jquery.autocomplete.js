@@ -124,12 +124,25 @@ jQuery.autocomplete = function(input, options) {
 		// ignore if the following keys are pressed: [del] [shift] [capslock]
 		if(lastKeyPressCode == 8) {
 		  //alert('DELETE KEY');
-		  if ($('#you-complete-me').val().length == 0) {
-		    alert('Delete the last item!');
+		  if ($('#you-complete-me').val().length == 0 && zz.zang.delete_btn == 2) {
+		    //console.log('Delete the last item!');
+		    $('#the-recipients li.rounded:last').remove();
+		    zz.zang.delete_btn = 0;
+		  } else if ($('#you-complete-me').val().length == 0 && zz.zang.delete_btn == 1) {
+		    //console.log('Select the last item!');
+		    $('#the-recipients li.rounded:last').addClass('del');
+		    zz.zang.delete_btn = 2;
+		  } else if ($('#you-complete-me').val().length == 0 && zz.zang.delete_btn == 0){
+		    zz.zang.delete_btn = 1;
 		  }
 		} else if (lastKeyPressCode == 46 || lastKeyPressCode > 8 && lastKeyPressCode < 32) {
+		  zz.zang.delete_btn = 0;
+		  $('#the-recipients li.rounded:last').removeClass('del');
 		  return $results.hide();
-		} 
+		} else {
+		  zz.zang.delete_btn = 0;
+		  $('#the-recipients li.rounded:last').removeClass('del');
+		}
 		var v = $input.val();
 		if (v == prev) return;
 		prev = v;
