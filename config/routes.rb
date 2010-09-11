@@ -8,13 +8,15 @@ ActionController::Routing::Routes.draw do |map|
 
   #users
   map.with_options :controller => :users do |users|
-    users.users        '/users',          :action=> 'index',  :conditions=>{ :method => :get }
-    users.create_user  '/users',          :action=> 'create', :conditions=>{ :method => :post }
-    users.new_user     '/users/new',      :action=> 'new',    :conditions=>{ :method => :get }
-    users.edit_user    '/users/:id/edit', :action=> 'edit',   :conditions=>{ :method => :get }
-    users.user         '/users/:id.',     :action=> 'show',   :conditions=>{ :method => :get }
-    users.update_user  '/users/:id.',     :action=> 'update', :conditions=>{ :method => :put }
-    users.delete_user  '/users/:id.',     :action=> 'destroy',:conditions=>{ :method => :delete }
+    users.users             '/users',          :action=> 'index',  :conditions=>{ :method => :get }
+    users.create_user       '/users',          :action=> 'create', :conditions=>{ :method => :post }
+    users.new_user          '/users/new',      :action=> 'new',    :conditions=>{ :method => :get }
+    users.edit_user         '/users/:id/edit', :action=> 'edit',   :conditions=>{ :method => :get }
+    users.validate_email    '/users/validate_email', :action=> 'validate_email', :conditions=>{ :method => :get }
+    users.validate_username '/users/validate_username', :action=> 'validate_username', :conditions=>{ :method => :get }
+    users.user              '/users/:id.',     :action=> 'show',   :conditions=>{ :method => :get }
+    users.update_user       '/users/:id.',     :action=> 'update', :conditions=>{ :method => :put }
+    users.delete_user       '/users/:id.',     :action=> 'destroy',:conditions=>{ :method => :delete }
   end
   map.resources :users do |user|
     user.resources :identities

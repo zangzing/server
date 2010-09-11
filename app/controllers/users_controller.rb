@@ -56,7 +56,16 @@ class UsersController < ApplicationController
     end
     redirect_to users_path
   end
-  
+
+  def validate_email
+    @user = User.find_by_email(params[:user][:email]) if params[:user] && params[:user][:email]
+    render :json => !@user 
+  end
+
+  def validate_username
+    @user = User.find_by_username(params[:user][:username]) if params[:user] && params[:user][:username]
+    render :json => !@user
+  end
 
   private
     def admin_user
