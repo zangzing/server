@@ -24,6 +24,12 @@ var filechooser = {
             clazz: 'f_home'
         },
         {
+            open_url: 'http://localhost:9090/filesystem/folders/fi9QaWN0dXJlcw==',
+            type: 'folder',
+            name: 'My Pictures',
+            clazz: 'f_pictures'
+        },
+        {
             open_url: '/facebook/folders.json',
             type: 'folder',
             name: 'Facebook',
