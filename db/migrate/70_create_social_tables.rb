@@ -3,12 +3,12 @@ class CreateSocialTables < ActiveRecord::Migration
 
     create_table :follows,:guid => false,:force => true do |t|
       t.references_with_guid  :follower
-      t.references_with_guid  :followee
+      t.references_with_guid  :followed
       t.boolean  :blocked, :default => false
       t.timestamps
     end
     add_index :follows, :follower_id
-    add_index :follows, :followee_id
+    add_index :follows, :followed_id
 
     create_table :activities, :guid => false, :force => true do |t|
       t.string  :type
@@ -25,6 +25,6 @@ class CreateSocialTables < ActiveRecord::Migration
   
   def self.down
     drop_table :activities
-    drop_table :followers
+    drop_table :follows
   end
 end

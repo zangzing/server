@@ -41,15 +41,18 @@ class User < ActiveRecord::Base
   has_many :albums,              :dependent => :destroy
   has_many :identities,          :dependent => :destroy
   has_many :shares
-  has_many :followers,           :dependent => :destroy
   has_many :activities,          :dependent => :destroy
   has_many :photos
   has_many :upload_batches
   has_many :client_applications, :dependent => :destroy 
   has_many :tokens, :class_name=>"OauthToken",:order=>"authorized_at desc",:include=>[:client_application]
 
-  has_many :followees, :through => :follows, :class_name => 'User', :dependent => :destroy
-  has_many :followers, :through => :follows, :class_name => 'User'
+
+  has_many :followers, :class_name => 'Follow', :foreign_key => 'followed_id'
+  has_many :follower_users, :through => :followers, :source => :follower
+  has_many :follows,   :class_name => 'Follow', :foreign_key => 'follower_id', :dependent => :destroy
+ has_many  :follows_users, :through => :follows,  :source => :followed
+
     
   # This delegates all authentication details to authlogic
   acts_as_authentic do |c|

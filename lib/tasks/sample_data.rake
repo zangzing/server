@@ -5,27 +5,38 @@ begin
   namespace :db do
     desc "Drop DB and fill it with sample test data"
     task :populate => :environment do
-      Rake::Task['db:reset'].invoke
-      admin = User.create!(:name => "ZZ Admin User",
-                           :email => "example-zzadmin@zangzing.org",
-                           :password => "foobar",
-                           :password_confirmation => "foobar")
-      admin.update_attribute( :role,'admin' )
+      Rake::Task['build:db'].invoke
 
-      99.times do |n|
+      # create 50 users
+      users = []
+      50.times do |n|
         name  = Faker::Name.name
         email = "example-#{n+1}@zangzing.org"
         password  = "password"
-        User.create!(:name => name,
+        username  = Faker::Internet.user_name+n.to_s 
+        users[n]  = User.create!(:name => name,
+                     :username => username, 
                      :email => email,
                      :password => password,
                      :password_confirmation => password)
       end
+
+      # create albums for first 10 users
       User.all(:limit => 10).each do |user|
-        10.times do
-          user.albums.create!(:name => Faker::Address.city()+' '+Faker::Address.us_state_abbr())
+        rand(15).times do
+         user.albums.create!( :name => Faker::Address.city()+' '+Faker::Address.us_state_abbr())         
         end
       end
+
+      # create follows
+      User.all(:limit => 10).each do |user|
+        rand(15).times do
+          Follow.factory( user, users[rand(50)]).save
+          Follow.factory( users[rand(50)], user).save
+        end
+      end
+
+
     end
   end
 rescue LoadError
