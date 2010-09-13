@@ -1,0 +1,42 @@
+
+body { 
+  width: 98%;
+  margin: 0 auto;
+  background-color: #f3f3f3;
+  font-family: "Lucida Grande", "Lucida Sans Unicode", "Trebuchet MS", Tahoma, Helvetica, Arial, sans-serif;
+  font-size: 62.5%;
+  color: #0A0A0A;
+  opacity: 0.99999; 
+  -moz-opacity: 0.99999; 
+  -khtml-opacity: 0.99999; 
+  filter: alpha(opacity=99);
+}
+
+h1 {
+  margin-top: 16px;
+  margin-bottom: 16px;
+  font-size: 2.4em;	
+}
+
+h2 {
+  margin-bottom: 6px;
+  font-size: 2.0em;
+}
+
+h3 {
+  font-size: 1.3em;
+}
+
+table {
+  font-size: 0.3em;
+}
+
+.bsection{
+	background-color: #dfdfdf;
+	padding-right:7px;
+	padding-left:7px;
+	padding-bottom:5px;
+	padding-top:1px;
+	-moz-border-radius:0.4em;
+	-khtml-border-radius:0.4em;
+}
