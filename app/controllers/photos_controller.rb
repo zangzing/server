@@ -54,17 +54,12 @@ class PhotosController < ApplicationController
       @photo.user = current_user
 
 
+      #todo: need to handle agent port and url templates in central place
+      @photo.source_thumb_url = "http://localhost:9090/albums/#{@album.id}/photos/:photo_id.thumb"
+      @photo.source_screen_url = "http://localhost:9090/albums/#{@album.id}/photos/:photo_id.screen"
+
       if @photo.save
-        #todo: need to handle agent port and url templates in central place
-        @photo.source_thumb_url = "http://localhost:9090/albums/#{@album.id}/photos/#{@photo.id}.thumb"
-        @photo.source_screen_url = "http://localhost:9090/albums/#{@album.id}/photos/#{@photo.id}.screen"
 
-        if @photo.save
-
-        else
-          render :json => photo.errors, :status=>500
-          return
-        end
       else
         render :json => photo.errors, :status=>500
         return
