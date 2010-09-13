@@ -4,75 +4,146 @@ var filechooser = {
 
     imageloader: null,
     ancestors: [],
-    roots: [
-        {
-            open_url: 'http://localhost:9090/iphoto/folders',
-            type: 'folder',
-            name: 'iPhoto',
-            clazz: 'f_iphoto'
-        },
-        {
-            open_url: 'http://localhost:9090/filesystem/folders',
-            type: 'folder',
-            name: 'My Computer',
-            clazz: 'f_mycomputer'
-        },
-        {
-            open_url: 'http://localhost:9090/filesystem/folders/fg==',
-            type: 'folder',
-            name: 'My Home',
-            clazz: 'f_home'
-        },
-        {
-            open_url: 'http://localhost:9090/filesystem/folders/fi9QaWN0dXJlcw==',
-            type: 'folder',
-            name: 'My Pictures',
-            clazz: 'f_pictures'
-        },
-        {
-            open_url: '/facebook/folders.json',
-            type: 'folder',
-            name: 'Facebook',
-            login_url: '/facebook/sessions/new',
-            clazz: 'f_facebook'
-        },
-        {
-            open_url: '/flickr/folders.json',
-            type: 'folder',
-            name: 'Flickr',
-            login_url: '/flickr/sessions/new',
-            clazz: 'f_flickr'
-        },
-        {
-            open_url: '/kodak/folders.json',
-            type: 'folder',
-            name: 'Kodak',
-            login_url:'/kodak/sessions/new',
-            clazz: 'f_kodak'
-        },
-        {
-            open_url: '/smugmug/folders.json',
-            type: 'folder',
-            name: 'SmugMug',
-            login_url: '/smugmug/sessions/new',
-            clazz: 'f_smugmug'
-        },
-        {
-            open_url: '/shutterfly/folders.json',
-            type: 'folder',
-            name: 'Shutterfly',
-            login_url: '/shutterfly/sessions/new',
-            clazz: 'f_shutterfly'
-        },
-        {
-            open_url: '/zangzing/folders.json',
-            type: 'folder',
-            name: 'ZangZing',
-            clazz: 'f_zangzing'
-        }
-    ],
+    roots: [],
 
     init: function() {
+
+        if(filechooser.is_mac()){
+            filechooser.roots.push(
+                {
+                    open_url: 'http://localhost:9090/iphoto/folders',
+                    type: 'folder',
+                    name: 'iPhoto',
+                    clazz: 'f_iphoto'
+                }
+            );
+        }
+
+        if(filechooser.is_windows()){
+            filechooser.roots.push(
+                {
+                    open_url: 'http://localhost:9090/picasa/folders',
+                    type: 'folder',
+                    name: 'iPicasa',
+                    clazz: 'f_picasa'
+                }
+            );
+        }
+
+
+        filechooser.roots.push(
+            {
+                open_url: 'http://localhost:9090/filesystem/folders',
+                type: 'folder',
+                name: 'My Computer',
+                clazz: 'f_mycomputer'
+            }
+        );
+
+
+        if(filechooser.is_mac()){
+            filechooser.roots.push(
+                {
+                    open_url: 'http://localhost:9090/filesystem/folders/fg==',
+                    type: 'folder',
+                    name: 'My Home',
+                    clazz: 'f_home'
+                }
+            );
+
+            filechooser.roots.push(
+                {
+                    open_url: 'http://localhost:9090/filesystem/folders/fi9QaWN0dXJlcw==',
+                    type: 'folder',
+                    name: 'My Pictures',
+                    clazz: 'f_pictures'
+                }
+            );
+        }
+        
+        if(filechooser.is_windows()){
+            filechooser.roots.push(
+                {
+                    open_url: 'http://localhost:9090/filesystem/folders/fg==',
+                    type: 'folder',
+                    name: 'My Home',
+                    clazz: 'f_home'
+                }
+            );
+
+            filechooser.roots.push(
+                {
+//                    open_url: 'http://localhost:9090/filesystem/folders/fi9NeSBEb2N1bWVudHMvTXkgUGljdHVyZXM=',
+                    open_url: 'http://localhost:9090/filesystem/folders/flxNeSBEb2N1bWVudHNcTXkgUGljdHVyZXM=',
+                    type: 'folder',
+                    name: 'My Pictures',
+                    clazz: 'f_pictures'
+                }
+            );
+        }
+
+
+
+        filechooser.roots.push(
+            {
+                open_url: '/facebook/folders.json',
+                type: 'folder',
+                name: 'Facebook',
+                login_url: '/facebook/sessions/new',
+                clazz: 'f_facebook'
+            }
+        );
+
+        filechooser.roots.push(
+            {
+                open_url: '/flickr/folders.json',
+                type: 'folder',
+                name: 'Flickr',
+                login_url: '/flickr/sessions/new',
+                clazz: 'f_flickr'
+            }
+        );
+
+        filechooser.roots.push(
+            {
+                open_url: '/kodak/folders.json',
+                type: 'folder',
+                name: 'Kodak',
+                login_url:'/kodak/sessions/new',
+                clazz: 'f_kodak'
+            }
+        );
+
+        filechooser.roots.push(
+            {
+                open_url: '/smugmug/folders.json',
+                type: 'folder',
+                name: 'SmugMug',
+                login_url: '/smugmug/sessions/new',
+                clazz: 'f_smugmug'
+            }
+        );
+
+        filechooser.roots.push(
+            {
+                open_url: '/shutterfly/folders.json',
+                type: 'folder',
+                name: 'Shutterfly',
+                login_url: '/shutterfly/sessions/new',
+                clazz: 'f_shutterfly'
+            }
+        );
+
+        filechooser.roots.push(
+            {
+                open_url: '/zangzing/folders.json',
+                type: 'folder',
+                name: 'ZangZing',
+                clazz: 'f_zangzing'
+            }
+        );
+
+
         $('#filechooser-back-button').click(filechooser.open_parent_folder);
         filechooser.ancestors = [],
         filechooser.open_root();
@@ -83,6 +154,15 @@ var filechooser = {
     open_root: function() {
         filechooser.open_folder('Home', '', '');
     },
+
+    is_windows : function() {
+        return (navigator.appVersion.indexOf("Win")!=-1);
+    },
+
+    is_mac : function() {
+        return (navigator.appVersion.indexOf("Mac")!=-1);
+    },
+
 
     open_folder: function(name, url, login_url) {
 
