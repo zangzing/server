@@ -251,8 +251,8 @@ jQuery.autocomplete = function(input, options) {
 		// reposition
 		$results.css({
 			width: parseInt(iWidth) + "px",
-			top: listTop,
-			left: listLeft
+			top: $(options.position_element).position().top + $(options.position_element).outerHeight() + "px",
+			left: $(options.position_element).position().left + "px"
 		}).show();
 	};
 
