@@ -17,6 +17,8 @@
 #
 
 class AlbumActivity < Activity
+  attr_accessible :album
+
   belongs_to :album
   validates_presence_of :album_id
 end

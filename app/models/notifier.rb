@@ -23,6 +23,16 @@ class Notifier < ActionMailer::Base
     body     :from_user => from_user, :album => album  
   end
 
+  def you_are_being_followed( follower, followed)
+    from @@zzfrom
+    recipients followed.email
+    subject    "#{follower.name} thinks the world of you"
+    content_type "text/html"
+    body       :follower => follower, :followed =>followed
+  end
+
+
+
   def password_reset_instructions(user)
     subject       "ZangZing Password Reset Instructions"
     recipients    user.email

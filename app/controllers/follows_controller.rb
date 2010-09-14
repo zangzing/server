@@ -20,6 +20,7 @@ class FollowsController < ApplicationController
     unless f.save
         render :text => "Could not save follower relationship", :status=>500 and return
     end
+    redirect_to user_path( followed ) and return if params[:redirect] 
     render :text => "Follower relationship setup!", :status => 200 and return
   end
 

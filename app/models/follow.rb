@@ -21,7 +21,7 @@ class Follow < ActiveRecord::Base
   belongs_to :followed, :class_name => "User"
   validates_presence_of :follower_id, :followed_id
 
-  after_create :create_activity
+  after_create :socialize
 
   def self.factory(follower, followed)
     existing_f = Follow.find_by_follower_id_and_followed_id( follower.id, followed.id )
@@ -42,8 +42,11 @@ class Follow < ActiveRecord::Base
   end
 
   protected
-  def create_activity
-
+  def socialize
+    FollowActivity.factory( self.follower, self.followed)
+    #Notify followed that she is being followed
+    msg = Notifier.create_you_are_being_followed( self.follower, self.followed)
+    Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(Notifier, :deliver, [msg] )
   end
     
 end
