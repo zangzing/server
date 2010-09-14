@@ -502,6 +502,10 @@ div#small-drawer dl dt, div#small-drawer dl dd {
   margin-bottom: 15px;
 }
 
+div#small-drawer dl dd {
+  position: relative;
+}
+
 div#small-drawer dl dt {
   font-size: 1.2em;
   font-weight: 700;
@@ -519,6 +523,17 @@ div#small-drawer dl input[type=text], div#small-drawer dl input[type=password] {
 
 div#small-drawer dl input[type=text].error, div#small-drawer dl input[type=password].error {
   border: solid 1px #ff0000;
+}
+
+div#small-drawer dl dd label.error {
+  color: pink;
+  font-size: 1.2em;
+  font-weight: 700;
+  text-align: right;
+  position: absolute;
+  bottom: 5px;
+  right:5px;
+  width: 400px;
 }
 
 div#small-drawer dl dt.button {

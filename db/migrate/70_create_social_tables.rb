@@ -13,7 +13,7 @@ class CreateSocialTables < ActiveRecord::Migration
     create_table :activities, :guid => false, :force => true do |t|
       t.string  :type
       t.references_with_guid :user
-      t.references_with_guid :album
+      t.references_with_guid :album, :null => true
       t.text    :payload
       t.timestamps
     end  

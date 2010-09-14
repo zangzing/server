@@ -4,22 +4,24 @@ zz.validation = {
   
   sign_in: {
     element: '#new_user_session',
+    errorContainer: 'div#sign-in p.error-notice',
     rules: {
       'user_session[email]': { required: true, minlength: 5 },
       'user_session[password]': { required: true, minlength: 5 }
     },
     messages: {
-      'user_session[email]': '',
-      'user_session[password]': '' 
-    },
+      'user_session[email]': 'Please enter your username or email address.',
+      'user_session[password]': 'Please enter your password.' 
+    }/*,
     errorPlacement: function(message) {
       $('div#sign-in p.error-notice').fadeIn('fast');
-    }      
+    } */     
   
   },
 
   join: {
     element: '#join-form',
+    errorContainer: 'div#sign-up p.error-notice',
     rules: {
       'user[name]': { required: true, minlength: 5 },
       'user[username]': { required: true, minlength: 5 },
@@ -27,15 +29,11 @@ zz.validation = {
       'user[password]': { required: true, minlength: 5 }
     },
     messages: {
-      'user[name]': '',
-      'user[username]': '',
-      'user[email]': '',
-      'user[password]': ''
-    },
-    errorPlacement: function(message) {
-      $('div#sign-up p.error-notice').fadeIn('fast');
-    }      
-  
+      'user[name]': 'Please enter your name.',
+      'user[username]': 'A username allows us to create personal links.',
+      'user[email]': 'We promise we won&rsquo;t spam you.',
+      'user[password]': 'Six characters or more please.'
+    }
   },
 
   new_post_share: {

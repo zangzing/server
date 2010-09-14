@@ -58,6 +58,7 @@ Paperclip.options[:image_options][:bucket] =
 
 
 
+
 #
 #The YAML File looks like this
 #development: &non_production_settings
