@@ -9,6 +9,9 @@ class AlbumsController < ApplicationController
   def new
     render :layout => false
   end
+  
+  def timeline
+  end
 
   def create
     if params[:album_type].nil?

@@ -7,7 +7,7 @@ body {
   background-color: #f3f3f3;
   font-family: "Lucida Grande", "Lucida Sans Unicode", "Trebuchet MS", Tahoma, Helvetica, Arial, sans-serif;
   font-size: 62.5%;
-  color: #0A0A0A;
+  color: #0a0a0a;
   /* the following fixes that annoying tell-tale js animation flicker */
   opacity: 0.99999; 
   -moz-opacity: 0.99999; 
@@ -1223,4 +1223,96 @@ ul.grid-view a.delete img {
 
 ul.grid-view li:hover a.delete img {
   display: block;
+}
+
+/* Timeline View
+----------------------------------------------------------------------------- */
+
+ul#album-timeline {
+  width: 930px;
+  margin-top: 70px;
+}
+
+ul#album-timeline li {
+  padding: 20px 10px;
+  width: 900px;
+  min-height: 50px;
+  font-size: 1.4em;
+  color: #0a0a0a;
+  border-bottom: solid #cfcfcf 1px;
+}
+
+div.timeline-icon {
+  float: left;
+  width: 90px;
+  margin-right: 20px;
+}
+
+div.timeline-icon img.icon {
+  margin: 5px;
+}
+
+div.timeline-icon p {
+  margin: 0;
+  color: #232323;
+  font-size: .8em;
+}
+
+div.timeline-action {
+  width: 790px;
+  float: left;
+  text-align: left;
+  padding-top: 10px;
+}
+
+div.timeline-action p {
+  margin-bottom: 6px;
+}
+
+div.timeline-action p.timeline-when {
+  color: #232323;
+}
+
+div.timeline-action p a {
+  color: #486faa;
+  text-decoration: underline;
+}
+
+div.timeline-action p.timeline-when {
+  font-size: .85em;
+  margin: 0;
+}
+
+div.timeline-action figure {
+  width: 170px;
+  text-align: center;
+}
+
+div.timeline-action figure img.timeline-picon {
+  margin: 15px 10px 10px;
+}
+
+ul#album-timeline li div.timeline-action ul.timeline-grid {
+  margin: 15px 10px 10px;
+  width: 770px;
+  overflow: hidden;
+  height: 160px;
+  padding: 0;
+}
+
+ul#album-timeline li div.timeline-action ul.timeline-grid li {
+  float: left;
+  width: 130px;
+  border-bottom: none;
+  text-align: center;
+}
+
+ul#album-timeline li div.timeline-action ul.timeline-grid li img {
+  max-height: 120px;
+  max-width: 120px;
+  border: #fff solid 5px;
+  box-shadow: 0px 0px 5px #767676;
+  -webkit-box-shadow: 0px 0px 5px #767676;
+  -moz-box-shadow: 0px 0px 5px #767676;
+  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#767676, offX=2, offY=2, positive=true);
 }
