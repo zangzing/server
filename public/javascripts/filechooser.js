@@ -8,6 +8,8 @@ var filechooser = {
 
     init: function() {
 
+        filechooser.roots = [];
+
         if(filechooser.is_mac()){
             filechooser.roots.push(
                 {
