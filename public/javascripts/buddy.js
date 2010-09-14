@@ -238,7 +238,7 @@ var zz = {
       }
       else{
           temp_top_new = $('#added-pictures-tray').offset().top - temp;
-          temp_left_new = $('#added-pictures-tray').offset().left + 20;
+          temp_left_new = $('#added-pictures-tray').offset().left;
 
       }
 

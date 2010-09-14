@@ -67,6 +67,14 @@ ActionController::Routing::Routes.draw do |map|
     photos.agent_create                '/albums/:album_id/photos/agent_create.:format',  :action=>'agent_create',    :conditions=>{ :method => :post }
   end
 
+
+  #activities
+  map.with_options :controller => :activities do |activities|                                                                                                \
+      activities.album_activities                '/albums/:album_id/activities.',   :action=>'index',           :conditions => { :method => :get }
+      activities.user_activities                 '/users/:user_id/activities.',   :action=>'index',             :conditions => { :method => :get }
+  end
+
+
   #followers
   map.with_options :controller => :follows do |f|                                                                                                \
     f.user_follows       '/users/:user_id/follows.',       :action=>"index",    :conditions=>{ :method => :get }
