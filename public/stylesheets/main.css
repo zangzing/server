@@ -1059,7 +1059,7 @@ dl#email-share-form dd input {
 
 dl#email-share-form dd#the-list {
   border: 1px #8c8c8c solid;
-  min-height: 36px;
+  min-height: 42px;
   padding: 0 5px;
   width: 690px;
 }
@@ -1121,6 +1121,10 @@ dl#email-share-form dd input#you-complete-me {
   width: 200px;
   height: 36px;
   padding: 0px 0px;
+}
+
+dl#email-share-form dd input#you-complete-me:focus {
+  outline: none;
 }
 
 select.album_privacy {
