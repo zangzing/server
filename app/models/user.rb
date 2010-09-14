@@ -51,7 +51,7 @@ class User < ActiveRecord::Base
   has_many :followers, :class_name => 'Follow', :foreign_key => 'followed_id'
   has_many :follower_users, :through => :followers, :source => :follower
   has_many :follows,   :class_name => 'Follow', :foreign_key => 'follower_id', :dependent => :destroy
- has_many  :follows_users, :through => :follows,  :source => :followed
+  has_many :follows_users, :through => :follows,  :source => :followed
 
     
   # This delegates all authentication details to authlogic
@@ -64,7 +64,9 @@ class User < ActiveRecord::Base
 
   validates_presence_of :name
   validates_presence_of :username
+  validates_uniqueness_of :username, :message => "Sorry, username already taken"   
   validates_presence_of :email
+  validates_uniqueness_of :email, :message => "Email already used for a ZangZing account"
   validates_length_of   :password, :within => 6..40, :if => :require_password?, :message => "must be between 6 and 40 characters long"
 
 
