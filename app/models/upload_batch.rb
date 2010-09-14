@@ -1,6 +1,6 @@
 class UploadBatch < ActiveRecord::Base
-  attr_accessible  :album_id
-
+  attr_accessible :album_id
+  
   belongs_to :user
   belongs_to :album
   has_many :photos
@@ -78,7 +78,8 @@ class UploadBatch < ActiveRecord::Base
       shares = Share.find_all_by_user_id_and_album_id( user.id, self.id)
       shares.each { |s| s.deliver_later() } if shares
 
-      # TODO: Create upload photo activity
+      # Create Activity
+      ua = UploadActivity.create( :user => self.user, :album => self.album, :upload_batch => self )
 
       self.state = 'finished'
       self.save

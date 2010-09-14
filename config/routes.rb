@@ -69,12 +69,12 @@ ActionController::Routing::Routes.draw do |map|
 
   #followers
   map.with_options :controller => :follows do |f|                                                                                                \
-    f.user_follows       '/users/:user_id/follows.',     :action=>"index",    :conditions=>{ :method => :get }
-    f.create_user_follow '/users/:user_id/follows.',     :action=>'create',   :conditions => { :method => :post }
-    f.new_user_follow    '/users/:user_id/follows/new.', :action=>'new',      :conditions => { :method => :get }
-    f.unfollow           '/follows/:id/unfollow',        :action=>'unfollow', :conditions => { :method => :delete }
-    f.block_follow       '/follows/:id/block',           :action=>'block',    :conditions=>{ :method => :put }
-    f.unblock_follow     '/follows/:id/unblock',         :action=>'unblock',  :conditions=>{ :method => :put }
+    f.user_follows       '/users/:user_id/follows.',       :action=>"index",    :conditions=>{ :method => :get }
+    f.create_user_follow '/users/:user_id/follows/create',:action=>'create'   
+    f.new_user_follow    '/users/:user_id/follows/new.',  :action=>'new',      :conditions => { :method => :get }
+    f.unfollow           '/follows/:id/unfollow',         :action=>'unfollow', :conditions => { :method => :delete }
+    f.block_follow       '/follows/:id/block',            :action=>'block',    :conditions=>{ :method => :put }
+    f.unblock_follow     '/follows/:id/unblock',          :action=>'unblock',  :conditions=>{ :method => :put }
   end
 
   #oauth

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<HTML>
+<body>
+
+Dear <%= @followed.name %>,
+</p>
+<%= @follower.name%> really likes your photos and is now following
+your work. <a href="<%=create_user_follow_url(@followed)%>?follow[followed_id]=<%= @follower.id%>&redirect=true"> Click to Follow back.</a>
+</p>
+<a href="<%= user_url(@follower)%>"> Click to see <%= @follower.name%>'s  profile </a></p>
+<a href="<%= user_url(@follower)%>"> Click to see <%= @follower.name%>'s  photos </a></p>
+</p>
+At ZangZing we love it when you become the center of attention!</p>
+<h>The ZangZing Team</h>
+
+</body>
+</HTML>

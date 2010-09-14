@@ -84,6 +84,8 @@ class Photo < ActiveRecord::Base
   default_scope :order => 'created_at DESC'
 
   before_create :assign_batch
+  before_create :substitute_source_urls
+
   after_create  :update_batch
   
   # if all args were valid on creation then set it to assigned
@@ -212,7 +214,13 @@ class Photo < ActiveRecord::Base
     logger.debug("IN UPDATE BATCH")  
     @up.photos << self unless @up.nil?
   end
-  
+
+
+  def substitute_source_urls
+    self.source_thumb_url = self.source_thumb_url.gsub(':photo_id', self.id)
+    self.source_screen_url =  self.source_screen_url.gsub(':photo_id', self.id)
+  end
+
 end
 
 

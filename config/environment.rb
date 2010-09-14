@@ -42,5 +42,7 @@ Rails::Initializer.run do |config|
   config.active_record.schema_format = :sql
 
   config.action_mailer.delivery_method = :sendmail
+
 end
+ActiveRecord::Base.guid_generator = :mysql
 
