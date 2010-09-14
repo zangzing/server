@@ -1,24 +1,12 @@
-<div class="offset" >
-  <H2>START FLASHES </H2>
-  <% flash.each do |key, value| %>
-        <div class="flash <%= key %>"><%= value %></div>
-  <% end %>
-  <H2>END FLASHES </H2>
-  <H2>START NICE ERRORS</H2>
-  <%= error_messages_for :user, :header_message => "Please try again!", :message => "We could not create your new account because:" %>
-  <H2>END NICE ERRORS</H2>
-  <H2>START FORMAT HOWEVER WE WANT ERRORS</H2>
-  <% @user.errors.each do | key, value| %>
-     <%= key %>: <%=value %>
-  <%end %>
-  <H2>END FORMAT HOWEVER WE WANT ERRORS</H2>
-</div>
 <% content_for :page_javascript do  # this places our page-specific js with the rest of the js at the bottom of the html -%>
 <script>
   (function($) {
+<%    if @user && @user.errors -%>
+      $('#sign-in p.error-notice').show();
+<%    end -%>
       $('#sign-up').show();
       $('#sign-in').hide();  
-      $('#small-drawer').animate({height: '410px', top: '53px'});
+      $('#small-drawer').animate({height: '460px', top: '53px'});
       zz.zang.drawer_open = 1 ;  
    })(jQuery);
 </script>

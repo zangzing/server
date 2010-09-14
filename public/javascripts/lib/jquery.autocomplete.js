@@ -94,7 +94,7 @@ jQuery.autocomplete = function(input, options) {
 			case 13: // return
 				if( selectCurrent() ){
 					// make sure to blur off the current field
-					$input.get(0).blur();
+					//$input.get(0).blur();
 					e.preventDefault();
 				} else {
 				  zz.zang.add_recipient(0);

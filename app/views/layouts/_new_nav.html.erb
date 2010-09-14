@@ -19,6 +19,14 @@
           </ul>
           
           <p class="error-notice">Please check the highlighted field(s) below...</p>
+          
+<%      if @user && @user.errors 
+          @user.errors.each do | key, value| -%>
+          <p class="error-notice">Oops! (<%=key %>) <%=value %></p>
+<%        end 
+        else -%>
+          <p class="error-notice">Please check the highlighted field(s) below...</p>
+<%      end -%> 
 
           <form id="join-form" method="post" enctype="multipart/form-data" action="/users">
             <dl class="clearfix">
@@ -56,8 +64,17 @@
             <h3>Welcome Back!</h3>        
           </div>
 
+<%      if @user_session && @user_session.errors 
+          @user_session.errors.each do | key, value| 
+            if key == 'email' || key == 'password' -%>
+          <p class="error-notice">Oops, <%=key %> <%=value %></p>
+<%          else %>
+          <p class="error-notice">Oops, <%=value %></p>
+<%          end
+          end 
+        else -%>
           <p class="error-notice">Please check the highlighted field(s) below...</p>
-
+<%      end -%>        
           
             <form method="post" id="new_user_session" class="new_user_session" action="/user_sessions">
               <dl class="clearfix">
