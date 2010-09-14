@@ -20,7 +20,7 @@ class PhotosController < ApplicationController
     @album = Album.find(params[:album_id])
     @photo = @album.photos.build(params[:photo])
     @photo.user = current_user
-    
+
     respond_to do |format|
       format.html do
         if @photo.save
@@ -70,24 +70,25 @@ class PhotosController < ApplicationController
   end
 
   def upload
-    @photo = Photo.find(params[:id])
-    @album = @photo.album
-    respond_to do |format|
-      format.html do
-        if @photo.update_attributes(params[:photo])
-          flash[:success] = "Photo Uploaded!"
-          render :action => :show
-        else
-          render :action => :index
-        end
+    begin
+      @photo = Photo.find(params[:id])
+      @album = @photo.album
+      if @photo.update_attributes(params[:photo])
+        render :json => @photo.to_json(:only =>[:id, :agent_id, :state])
+      else
+        render :json => @photo.errors, :status=>400
       end
-      format.json do
-        if @photo.update_attributes(params[:photo])
-          render :json => @photo.to_json(:only =>[:id, :agent_id, :state])
-        else
-          render :json => @photo.errors, :status=>500
-        end
-      end
+    rescue ActiveRecord::RecordNotFound => ex
+      #photo or album have been deleted
+      render :json => ex.to_s, :status=>400
+
+    rescue ActiveRecord::StatementInvalid
+      #this seems to mean connection issue with database
+      render :json => ex.to_s, :status=>500
+
+    rescue Exception => ex
+      #todo: make sure none of these should be 4xx errors
+      render :json => ex.to_s, :status=>500
     end
   end
 
@@ -130,7 +131,7 @@ class PhotosController < ApplicationController
     @title = CGI.escapeHTML(@album.name)
     @user=  @album.user
     @badge_name = @user.name
-    UploadBatch.close_open_batches( @user, @album )
+    UploadBatch.close_open_batches(@user, @album)
 
     if params[:upload_batch] && @upload_batch = UploadBatch.find(params[:upload_batch])
       @all_photos = @upload_batch.photos
@@ -159,7 +160,7 @@ class PhotosController < ApplicationController
       end
 
       format.json do
-        render :json => @all_photos.to_json( :methods => [:thumb_url, :medium_url])
+        render :json => @all_photos.to_json(:methods => [:thumb_url, :medium_url])
       end
     end
   end
@@ -215,7 +216,7 @@ class PhotosController < ApplicationController
       end
 
       format.json do
-        render :json => @album.photos.to_json( :methods => [:thumb_url, :medium_url])
+        render :json => @album.photos.to_json(:methods => [:thumb_url, :medium_url])
       end
     end
   end
