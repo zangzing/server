@@ -1,6 +1,6 @@
 
 #
-#   © 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
+#   Copyright 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 
 ENV_DB_CONFIG_FILE=  "/data/CruiseControl/shared/config/database.yml"

@@ -21,6 +21,8 @@ class Follow < ActiveRecord::Base
   belongs_to :followed, :class_name => "User"
   validates_presence_of :follower_id, :followed_id
 
+  after_create :create_activity
+
   def self.factory(follower, followed)
     existing_f = Follow.find_by_follower_id_and_followed_id( follower.id, followed.id )
     return existing_f if existing_f
@@ -37,6 +39,11 @@ class Follow < ActiveRecord::Base
   def unblock
     write_attribute(:blocked,  false)
     save
+  end
+
+  protected
+  def create_activity
+
   end
     
 end
