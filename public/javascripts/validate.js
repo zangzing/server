@@ -12,10 +12,10 @@ zz.validation = {
     messages: {
       'user_session[email]': 'Please enter your username or email address.',
       'user_session[password]': 'Please enter your password.' 
-    }/*,
+    },
     errorPlacement: function(message) {
-      $('div#sign-in p.error-notice').fadeIn('fast');
-    } */     
+      $('div#sign-in p.error-notice').html('Please check the highlighted field(s) below...');
+    }     
   
   },
 

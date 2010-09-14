@@ -254,6 +254,7 @@ div#small-drawer div.body {
   background-repeat: repeat-y;
   width: 453px;
   height: 446px;
+  overflow: hidden;
 }
 
 div#drawer div.body div#drawer-content {
@@ -485,6 +486,7 @@ div#small-drawer p.error-notice {
   text-align: center;
   color: #ff0000;
   font-weight: 700;
+  text-transform: capitalize;
 }
 
 div#sign-up p.error-notice {
