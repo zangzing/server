@@ -253,7 +253,7 @@ div#small-drawer div.body {
   background-image: url("/images/bg-small-bottom-repeat.png");
   background-repeat: repeat-y;
   width: 453px;
-  height: 436px;
+  height: 446px;
 }
 
 div#drawer div.body div#drawer-content {
@@ -340,9 +340,8 @@ ul#added-pictures-tray li:hover img.delete {
 
 ul#indicator {
   position: fixed;
-  top: 54px;
   z-index: 15;
-  margin-left: 5px;
+  margin: 4px;
   width: 898px;
   height: 36px;  
 }
@@ -480,6 +479,18 @@ div#small-drawer h3 {
   color: #0a0a0a;
 }
 
+div#small-drawer p.error-notice {
+  display: none;
+  font-size: 1.3em;
+  text-align: center;
+  color: #ff0000;
+  font-weight: 700;
+}
+
+div#sign-up p.error-notice {
+  margin-top: 10px;
+}
+
 div#small-drawer dl {
   width: 380px;
   margin: 10px auto;
@@ -489,6 +500,10 @@ div#small-drawer dl dt, div#small-drawer dl dd {
   width: 100%;
   text-align: left;
   margin-bottom: 15px;
+}
+
+div#small-drawer dl dd {
+  position: relative;
 }
 
 div#small-drawer dl dt {
@@ -506,6 +521,21 @@ div#small-drawer dl input[type=text], div#small-drawer dl input[type=password] {
   border: solid 1px #afafaf;
 }
 
+div#small-drawer dl input[type=text].error, div#small-drawer dl input[type=password].error {
+  border: solid 1px #ff0000;
+}
+
+div#small-drawer dl dd label.error {
+  color: pink;
+  font-size: 1.2em;
+  font-weight: 700;
+  text-align: right;
+  position: absolute;
+  bottom: 5px;
+  right:5px;
+  width: 400px;
+}
+
 div#small-drawer dl dt.button {
   float: left;
   width: 50%;
@@ -520,6 +550,16 @@ div#small-drawer dl dd.button {
   float: right;
   text-align: right;
   width: 40%
+}
+
+div#small-drawer dl dt.full-t {
+  width: 90%;
+  color: #646464;
+  margin-bottom: 25px;
+}
+
+div#small-drawer dl dd.full-t {
+  width: 10%;
 }
 
 
@@ -943,13 +983,23 @@ dl#social-form dd#post-text textarea.error {
 
 }
 
+dd.button {
+  font-size: 1.3em;
+}
+
+dd.button a {
+  margin-right: 10px;
+  color: #646464;
+  text-decoration: underline;
+}
+
 #form-actions {
   float: right;
-  margin: 20px 20px 0 0;
+  margin: 15px 24px 0 0;
   color: #646464;
 }
 
-#form-actions a {
+#form-actions a, dd.button a {
   color: #646464;
   text-decoration: underline;
 }
@@ -1002,6 +1052,7 @@ dl#email-share-form dd input.error, dl#email-share-form dd textarea.error {
 
 dl#email-share-form dd input {
   height: 20px;
+  padding: 12px 5px;
 }
 
 dl#email-share-form dd#the-list {
