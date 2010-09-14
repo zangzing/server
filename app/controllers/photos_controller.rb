@@ -128,35 +128,43 @@ class PhotosController < ApplicationController
   # page         Page desired when in screenres                         
   #              Default: First
   #
+  # upload_batch Display only album photos in given upload_batch
+  #              upload_batch must belong to album
   def index
     @album = Album.find(params[:album_id])
     @title = CGI.escapeHTML(@album.name)
     @user=  @album.user
     @badge_name = @user.name
-    UploadBatch.close_open_batches( @user, @album)
+    UploadBatch.close_open_batches( @user, @album )
+
+    if params[:upload_batch] && @upload_batch = UploadBatch.find(params[:upload_batch])
+      @all_photos = @upload_batch.photos
+    else
+      @all_photos = @album.photos
+    end
 
     respond_to do |format|
       format.html do
         if !params[:size].nil? && params[:size] == 'screenres'
-          @photos = @album.photos.paginate({:page =>params[:page], :per_page => 1})
+          @photos = @all_photos.paginate({:page =>params[:page], :per_page => 1})
           unless  params[:photoid].nil?
             current_page = 1 if params[:page].nil?
             until @photos[0][:id] == params[:photoid]
               current_page += 1
-              @photos = @album.photos.paginate({:page =>current_page, :per_page => 1})
+              @photos = @all_photos.paginate({:page =>current_page, :per_page => 1})
             end
             params[:photoid] = nil
           end
           render 'slideshow'
         else
           @photo = Photo.new
-          @photos = @album.photos
+          @photos = @all_photos
           render 'grid'
         end
       end
 
       format.json do
-        render :json => @album.photos.to_json( :methods => [:thumb_url, :medium_url])
+        render :json => @all_photos.to_json( :methods => [:thumb_url, :medium_url])
       end
     end
   end
