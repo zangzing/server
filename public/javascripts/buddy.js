@@ -115,82 +115,6 @@ var zz = {
     }
 
   }, 
-
-  /* Form Validation objects 
-  --------------------------------------------------------------------------- */
-  validation: {
-  
-    new_post_share: {
-      element: '#new_post_share',
-      rules: {
-        'post_share[message]': { required: true, minlength: 10, maxlength: 118 }
-      },
-      messages: {
-        'post_share[message]': '' 
-      },      
-      submitHandler: function() {
-        serialized = $('#new_post_share').serialize();
-        $.post('/albums/'+zz.zang.album_id+'/shares', serialized, function(data){
-          zz.zang.reload_share();
-        });
-      }
-      
-    }, // end zz.validation.new_post_share
-    
-    new_email_share: {
-      element: '#new_email_share',
-      rules: {
-        'email_share[subject]': { required: true, minlength: 10 },
-        'email_share[message]': { required: true, minlength: 10 }
-      },
-      messages: {
-        'email_share[subject]': '',  
-        'email_share[message]': '' 
-      },  
-
-      submitHandler: function() {
-        serialized = $('#new_email_share').serialize();
-        $.post('/albums/'+zz.zang.album_id+'/shares', serialized, function(data){
-          zz.zang.reload_share();
-        });
-      }
-      
-    }, // end zz.validation.new_post_share    
-    
-    sample_sign_up: {
-      element: '#sample-sign-up',
-      rules: {
-        first_name: { required: true, minlength: 2 },  
-        last_name: { required: true, minlength: 3 },  
-        email: { required: true, email: true }, 
-        password: { required: true, minlength: 6 },
-        terms: { required: true }
-      },
-      messages: {
-        first_name: { 
-          required: '', 
-          minlength: '' 
-        },  
-        last_name: { 
-          required: '', 
-          minlength: '' 
-        },  
-        email: { 
-          required: '', 
-          email: '' 
-        }, 
-        password: { 
-          required: '', 
-          minlength: '' 
-        },
-        terms: { 
-          required: '' 
-        }  
-      }
-      
-    } // end zz.validation.sample_sign_up
-        
-  }, // end zz.validation
     
   /* ZangZing Functions and Vars 
   --------------------------------------------------------------------------- */
@@ -483,7 +407,7 @@ var zz = {
     social_share: function(){
       $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/shares/newpost', function(){                        
         $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
-        $('#new_post_share').validate(zz.validation.new_post_share);
+        $(zz.validation.new_post_share.element).validate(zz.validation.new_post_share);
         $('#cancel-share').click(zz.zang.reload_share);
       });     
     },
@@ -514,12 +438,17 @@ var zz = {
       $('#m-'+zz.zang.email_id+' img').attr('id', 'img-'+zz.zang.email_id);
       $('li.rounded img').click(function(){
         $(this).parent('li').fadeOut('fast').remove();
-      });            
+      });
+      console.log(value);
+      zz.zang.build_address_list('add', value);            
     },
 
     clone_recipient: function(data){
       temp = $(data).html().split('&')[0];
       value = $(data).html();
+      console.log(value);
+      console.log(data);
+
       zz.zang.email_id++;
       //console.log('ID: '+ zz.zang.email_id +'-- Add '+ temp +' to the view and a ' + $(data).html() + ' checkbox to the form.');
       $('#you-complete-me').val('');
@@ -534,7 +463,7 @@ var zz = {
       $('li.rounded img').click(function(){
         $(this).parent('li').fadeOut('fast').remove();
       });
-      zz.zang.build_address_list(data);  
+      zz.zang.build_address_list('clone', data);  
     },
 
     autocompleter: 0,
@@ -557,26 +486,26 @@ var zz = {
         zz.zang.autocompleter[0].autocompleter.setData(google_contacts.concat( yahoo_contacts.concat( local_contacts ) ));
     },
 
-    build_address_list: function( li ) {
-	    if( li == null ) return;
-
-	    // if li has additional cells they come in extra. If present then use the 0th cell as the value
-	    // otherwise, let's just take the value
-	    if( !!li.extra )
-            var sValue = li.extra[0];
-	    else
-            var sValue = li.selectValue;
-
-       // if( zz.zang.address_list.length > 0 )
-       //    zz.zang.address_list+=(";")
+    build_address_list: function(type, li) {
+	    if(li == null) return;
+      if (type == 'clone') {
+        if( !!li.extra ) {
+          var sValue = li.extra[0];        
+        } else {
+          var sValue = li.selectValue;
+        }
+      
+      } else if (type == 'add') {
+      
+        var sValue = li;
+      
+      }
         
-       // zz.zang.address_list +=  sValue
-
-        var recipients = $('#email_share_recipients').val();
-        if( recipients.length > 0 )
-            recipients+=(';');
-        recipients += sValue;
-        $('#email_share_recipients').val( recipients );
+      var recipients = $('#email_share_recipients').val();
+      if( recipients.length > 0 )
+          recipients+=(';');
+      recipients += sValue;
+      $('#email_share_recipients').val(recipients);
     },
 
 
@@ -584,7 +513,7 @@ var zz = {
       $('#drawer-content').empty().load('/albums/'+zz.zang.album_id+'/shares/newemail', function(){                        
         $('div#drawer-content div#scroll-body').css({height: (zz.zang.drawer_height - 170) + 'px'});
            setTimeout(zz.zang.email_autocomplete, 500);
-        $('#new_email_share').validate(zz.validation.new_email_share);
+        $(zz.validation.new_email_share.element).validate(zz.validation.new_email_share);
         $('#cancel-share').click(zz.zang.reload_share);
       });     
     

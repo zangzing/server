@@ -17,13 +17,13 @@
       <%= f.error_messages %>  
       <dl id="email-share-form">
         <dt>To</dt>
-        <input type="hidden" name="email_share[to]" id="email_share_recipients" />
         <dd id="the-list">         
           <ul id="the-recipients" class="clearfix">
             <li id="m-clone-added"class="rounded"><span>Text</span> <img src="/images/btn-delete-small.png" id="img-clone-added" class="link" /> <input type="checkbox" value="" /></li>
             <li id="autocomplete"><input type="text" id="you-complete-me" /></li>
             <div class="clear-fix"></div>
           </ul>
+            <input type="hidden" name="email_share[to]" id="email_share_recipients" />
        </dd>
         
         <div class="clear-fix"></div>
@@ -31,7 +31,7 @@
         <dd><input type="text" name="email_share[subject]" id="email_share_subject" /></dd>
         <div class="clear-fix"></div>
         <dt>Message</dt>
-        <dd class="textarea"><textarea rows="5" name="email_share[message]" id="email_share_message"></textarea></dd>
+        <dd class="textarea"><textarea rows="4" name="email_share[message]" id="email_share_message"></textarea></dd>
       </dl>
       <div class="clear-fix"></div>
       
