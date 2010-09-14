@@ -17,9 +17,7 @@
             <li id="step-join-on"></li>
             <li id="step-sign-in-off"></li>
           </ul>
-          
-          <p class="error-notice">Please check the highlighted field(s) below...</p>
-          
+                    
 <%      if @user && @user.errors 
           @user.errors.each do | key, value| -%>
           <p class="error-notice">Oops! (<%=key %>) <%=value %></p>
