@@ -3,6 +3,11 @@
     <a href="<%=album_photos_path(photo.album)%>?size=screenres&photoid=<%=photo.id%>">
       <img src="" id="photo-<%=photo.id%>">
       <figure><%=photo.caption%></figure>
+       <% if current_user?(photo.album.user) %>
+          <a href="#" class="delete" onclick="server.delete_photo('<%=photo.id%>', function(){$('#photo-<%=photo.id%>-li').remove();}, function(){alert('error deleting photo');});">
+                <img src="/images/btn-delete.png">
+          </a>
+       <% end %>        
     </a>
   </div>
 </li>
