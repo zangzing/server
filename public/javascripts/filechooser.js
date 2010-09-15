@@ -20,7 +20,7 @@ var filechooser = {
                     open_url: 'http://localhost:9090/filesystem/folders/fi9QaWN0dXJlcw==',
                     type: 'folder',
                     name: 'My Pictures',
-                    clazz: 'f_pictures'
+                    classy: 'f_pictures'
                 }
             );
 
@@ -30,7 +30,7 @@ var filechooser = {
                     open_url: 'http://localhost:9090/iphoto/folders',
                     type: 'folder',
                     name: 'iPhoto',
-                    clazz: 'f_iphoto'
+                    classy: 'f_iphoto'
                 }
             );
 
@@ -40,7 +40,7 @@ var filechooser = {
                     open_url: 'http://localhost:9090/filesystem/folders/fg==',
                     type: 'folder',
                     name: 'My Home',
-                    clazz: 'f_home'
+                    classy: 'f_home'
                 }
             );
 
@@ -50,7 +50,7 @@ var filechooser = {
                     open_url: 'http://localhost:9090/filesystem/folders/L1ZvbHVtZXM=',
                     type: 'folder',
                     name: 'My Computer',
-                    clazz: 'f_mycomputer'
+                    classy: 'f_mycomputer'
                 }
             );
 
@@ -72,7 +72,7 @@ var filechooser = {
                     open_url: 'http://localhost:9090/filesystem/folders/flxNeSBEb2N1bWVudHNcTXkgUGljdHVyZXM=',
                     type: 'folder',
                     name: 'My Pictures',
-                    clazz: 'f_pictures'
+                    classy: 'f_pictures'
                 }
             );
 
@@ -83,7 +83,7 @@ var filechooser = {
                     open_url: 'http://localhost:9090/picasa/folders',
                     type: 'folder',
                     name: 'iPicasa',
-                    clazz: 'f_picasa'
+                    classy: 'f_picasa'
                 }
             );
 
@@ -93,7 +93,7 @@ var filechooser = {
                     open_url: 'http://localhost:9090/filesystem/folders/fg==',
                     type: 'folder',
                     name: 'My Home',
-                    clazz: 'f_home'
+                    classy: 'f_home'
                 }
             );
 
@@ -103,7 +103,7 @@ var filechooser = {
                     open_url: 'http://localhost:9090/filesystem/folders',
                     type: 'folder',
                     name: 'My Computer',
-                    clazz: 'f_mycomputer'
+                    classy: 'f_mycomputer'
                 }
             );
         }
@@ -116,7 +116,7 @@ var filechooser = {
                 type: 'folder',
                 name: 'Shutterfly',
                 login_url: '/shutterfly/sessions/new',
-                clazz: 'f_shutterfly'
+                classy: 'f_shutterfly'
             }
         );
 
@@ -127,7 +127,7 @@ var filechooser = {
                 type: 'folder',
                 name: 'Kodak',
                 login_url:'/kodak/sessions/new',
-                clazz: 'f_kodak'
+                classy: 'f_kodak'
             }
         );        
 
@@ -139,7 +139,7 @@ var filechooser = {
                 type: 'folder',
                 name: 'SmugMug',
                 login_url: '/smugmug/sessions/new',
-                clazz: 'f_smugmug'
+                classy: 'f_smugmug'
             }
         );
 
@@ -151,7 +151,7 @@ var filechooser = {
                 type: 'folder',
                 name: 'Facebook',
                 login_url: '/facebook/sessions/new',
-                clazz: 'f_facebook'
+                classy: 'f_facebook'
             }
         );
 
@@ -162,18 +162,18 @@ var filechooser = {
                 type: 'folder',
                 name: 'Flickr',
                 login_url: '/flickr/sessions/new',
-                clazz: 'f_flickr'
+                classy: 'f_flickr'
             }
         );
 
 
-        //ZangZing
+        //zingZing
         filechooser.roots.push(
             {
-                open_url: '/zangzing/folders.json',
+                open_url: '/zingzing/folders.json',
                 type: 'folder',
-                name: 'ZangZing',
-                clazz: 'f_zangzing'
+                name: 'zingZing',
+                classy: 'f_zingzing'
             }
         );
 
@@ -330,7 +330,7 @@ var filechooser = {
                 var a_id = 'chooser-folder-a-' + i;
 
                 var theClick = 'onclick="filechooser.open_folder(\'' + children[i].name + '\',\'' + children[i].open_url + '\',\'' + children[i].login_url + '\'); return false;"';
-                html += '<li id="' + id + '" class="' + children[i].clazz + '">';
+                html += '<li id="' + id + '" class="' + children[i].classy + '">';
 
                 html += '<a href="" ' + theClick + '>' + children[i].name + '</a>';
 
@@ -384,10 +384,10 @@ var filechooser = {
 
     add_photos : function(add_url, element_id) {
 
-        add_url += '?album_id=' + zz.zang.album_id;
+        add_url += '?album_id=' + zang.zing.album_id;
 
 
-        zz.zang.image_pop(element_id);
+        zang.zing.image_pop(element_id);
 
 
         if (add_url.indexOf('http://localhost:9090') === 0) {
@@ -478,7 +478,7 @@ var tray = {
     album_photos : [],
 
     reload : function() {
-        var get_album_photos_url = '/albums/' + zz.zang.album_id + '/photos.json';
+        var get_album_photos_url = '/albums/' + zang.zing.album_id + '/photos.json';
         $.ajax({
             dataType: 'json',
             url: get_album_photos_url,
@@ -611,7 +611,7 @@ var tray = {
                     tray.imageloader.add(id, photo.thumb_url);
                 } else {
                     tray.imageloader.add(id, 'http://localhost:9090/albums/' +
-                                             zz.zang.album_id + '/photos/' + photo.id + '.thumb' +
+                                             zang.zing.album_id + '/photos/' + photo.id + '.thumb' +
                                              '?session=' + $.cookie('user_credentials'));
                 }
 
@@ -630,7 +630,7 @@ var tray = {
 
         $('#added-pictures-tray').html(html);
         setTimeout(function(){$('#traversing').hide().remove();}, 500);
-        zz.init.tray();
+        zang.init.tray();
         tray.imageloader.start(5);
 
     },

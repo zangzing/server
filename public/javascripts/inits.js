@@ -27,7 +27,7 @@ zz.init = {
         temp = $(this).attr('id');
         zz.zang.change_step(temp);
       });
-            
+                  
     },
     
     loaded: function(){
@@ -92,8 +92,13 @@ zz.init = {
         } else {
           //zz.zang.slam_drawer(880);
         }
-      });    
+      });
       
+      $('#user_username').keyup(function(event){
+        value = $('#user_username').val();
+        $('#update-username').empty().html(value);
+      });
+
       $('#step-sign-in-off').click(function(){
         $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
           $('#sign-in').show();

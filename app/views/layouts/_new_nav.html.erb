@@ -1,11 +1,19 @@
+      <header class="clearfix">
         <ul id="new-info" class="clearfix">
           <li id="user-icon">
             <img src="/images/blank-image.png" width="50" height="33"  id="album-header-icon" />
           </li>
+<%        if controller.controller_name == 'photos' || controller.controller_name == 'albums' -%>
+          <li>
+            <h2 id="album-header-title"><%= @album ? @album.name : 'New Album' %></h2>
+            <h3>by <%= @badge_name %></h3>
+          </li>
+<%        else -%>
           <li>
             <h2>Welcome to ZangZing!</h2>
             <h3>Fast, simple, social photo management.</h3>
           </li>
+<%      end -%> 
         </ul>
           
       </header>
@@ -19,9 +27,11 @@
           </ul>
                     
 <%      if @user && @user.errors 
-          @user.errors.each do | key, value| -%>
+          @user.errors.each_with_index do | key, value, index| 
+            if index == 1 -%>
           <p class="error-notice">Oops! (<%=key %>) <%=value %></p>
-<%        end 
+<%          end
+          end 
         else -%>
           <p class="error-notice">Please check the highlighted field(s) below...</p>
 <%      end -%> 

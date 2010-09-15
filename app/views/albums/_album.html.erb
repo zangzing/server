@@ -8,13 +8,6 @@
 #      <img class="albumcellphotoicon"  src="<%=album.photos.first.thumb_url" />
 %>
     </a>
-<%  end 
-
-    if current_user?(album.user) -%>
-
-  <%= link_to image_tag( "/images/delete.png" ), album, { :method => :delete, 
-      :confirm => "Are you sure you want to delete the album?\n\tThis operation cannot be undone",
-      :class => 'albumcelldeleteicon'} %>
 
 <%  end -%>
     <div class="albumcellcaption">

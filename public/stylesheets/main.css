@@ -344,7 +344,9 @@ ul#indicator {
   z-index: 15;
   margin: 4px;
   width: 898px;
-  height: 36px;  
+  height: 36px; 
+  top: 50px;
+  margin-left: 28px; 
 }
 
 ul.step-1 {

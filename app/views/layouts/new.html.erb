@@ -69,12 +69,14 @@
         </ul>
       </nav>
 
-      <header class="clearfix">
-<%    if controller.controller_name == 'photos' -%>
+<%    if current_user && controller.controller_name == 'photos' || current_user && controller.controller_name == 'albums'
+         #this loads a version of the top nav with the album header & main drawer -%>
       <%= render :partial => 'layouts/album_nav' %>
-<%    elsif current_user -%>
-      <%= render :partial => 'layouts/user_nav' %>
-<%    else -%>
+<%    elsif current_user  
+         #this loads a version of the top nav with the user header & main drawer -%>
+      <%= render :partial => 'layouts/user_nav'  %>
+<%    else  
+         #this loads a version of the top nav with the album header & sign-in/sign-up drawer -%>
       <%= render :partial => 'layouts/new_nav' %>
 <%    end -%>
         
@@ -94,9 +96,10 @@
     <script type="text/javascript" src="/javascripts/agent.js"></script>
     <script type="text/javascript" src="/javascripts/server.js"></script>
 
-    <script type="text/javascript" src="/javascripts/buddy.js" ></script>
-    <script type="text/javascript" src="/javascripts/validate.js" ></script>
-    <script type="text/javascript" src="/javascripts/inits.js" ></script>
+    <script type="text/javascript" src="/javascripts/zz/zang.core.js" ></script>
+    <script type="text/javascript" src="/javascripts/zz/zang.inits.js" ></script>
+    <script type="text/javascript" src="/javascripts/zz/zang.validate.js" ></script>
+    <script type="text/javascript" src="/javascripts/zz/zang.zing.create-album.js" ></script>
 
     <script type="text/javascript" src="/javascripts/filechooser.js" ></script>
     <script type="text/javascript" src="/javascripts/oauthmanager.js" ></script>
@@ -112,9 +115,9 @@
       /* Vars our js fns need from ruby (calls/conditionals) - NO SECURE DATA
       ----------------------------------------------------------------------- */
 <%    if signed_in?  -%>      
-      zz.zang.user_id = '<%= current_user.id %>';
+      zang.zing.user_id = '<%= current_user.id %>';
 <%    end -%><%  if @album  -%>      
-      zz.zang.album_id = '<%= @album.id %>';
+      zang.zing.album_id = '<%= @album.id %>';
 <%    end
       # This is where we pass things on to js that we need from ruby.
       # Remember to use the zz.zang namespace. 
@@ -127,15 +130,15 @@
         $(function() {
 <%      # This will become dynamic, allowing us to load the right event handlers based on what page we're on. -%>
 <%    if current_user && controller.controller_name == 'photos' -%>
-        zz.init.template(); 
-        zz.init.album();
+        zang.init.template(); 
+        zang.init.album();
 <%    elsif current_user -%>
-        zz.init.template(); 
-<%    elsif controller.controller_name == 'albums' -%>
-        zz.init.new_user(); 
-        zz.init.album();
+        zang.init.template(); 
+<%    elsif controller.controller_name == 'albums' || controller.controller_name == 'photos' -%>
+        zang.init.new_user(); 
+        zang.init.album();
 <%    else -%>
-        zz.init.new_user(); 
+        zang.init.new_user(); 
 <%    end -%>
         
           
@@ -143,12 +146,12 @@
   
         $(window).bind("load", function() {
 <%      # Same here... -%>
-          setTimeout('zz.init.loaded()', 64);
+          setTimeout('zang.init.loaded()', 64);
         });
         
         $(window).bind("resize", function() {
 <%      # And here... -%>
-          zz.init.resized(); 
+          zang.init.resized(); 
         });
       
       })(jQuery);

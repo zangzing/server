@@ -515,6 +515,9 @@ var zz = {
            setTimeout(zz.zang.email_autocomplete, 500);
         $(zz.validation.new_email_share.element).validate(zz.validation.new_email_share);
         $('#cancel-share').click(zz.zang.reload_share);
+        $('#the-list').click(function(){
+          $('#you-complete-me').focus();
+        });
       });     
     
     },
