@@ -6,7 +6,7 @@ class Notifier < ActionMailer::Base
     @@zzfrom = '"ZangZing '+Rails.env.capitalize+' Environment" <do-not-reply@zangzing.com>'
   end
   
-  default_url_options[:host] = APPLICATION_HOST
+  #default_url_options[:host] = APPLICATION_HOST
 
   def upload_batch_finished( batch )
     from         @@zzfrom
@@ -31,18 +31,33 @@ class Notifier < ActionMailer::Base
     body       :follower => follower, :followed =>followed
   end
 
-
+  def activation_instructions(user)
+      subject       "Account Activation Instructions for your ZangZing Account"
+      from          @@zzfrom
+      recipients    user.email
+      sent_on       Time.now
+      body          :account_activation_url => activate_url(user.perishable_token)
+  end
 
   def password_reset_instructions(user)
     subject       "ZangZing Password Reset Instructions"
+    from          @@zzfrom
     recipients    user.email
     sent_on       Time.now
     body          :edit_password_reset_url => edit_password_reset_url(user.perishable_token)
   end
 
-  def test_email
+  def welcome(user)
+    subject       "Welcome to ZangZing!"
+    from          @@zzfrom
+    recipients    user.email
+    sent_on       Time.now
+    body          :root_url => root_url
+  end
+
+  def test_email( to )
     from         @@zzfrom  
-    recipients  "mauricio@zangzing.com"
+    recipients  to
     subject     "Test from ZangZing #{Rails.env.capitalize} Environment"
     body        "this is the body of the test"
   end

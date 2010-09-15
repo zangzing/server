@@ -34,3 +34,4 @@ config.action_mailer.smtp_settings = {
 
 #todo: is this the right way to handle this?
 APPLICATION_HOST = 'localhost:3000'
+config.action_mailer.default_url_options = {:host => APPLICATION_HOST }

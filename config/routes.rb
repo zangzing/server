@@ -93,6 +93,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :user_sessions, :only => [:new, :create, :destroy]
   map.signin '/signin', :controller => 'user_sessions', :action => 'new'
   map.signout '/signout', :controller => 'user_sessions', :action => 'destroy'
+  map.activate '/activate/:activation_code', :controller => 'activations', :action => 'create'
+  map.resend_activation '/resend_activation', :controller => 'activations', :action => 'resend_activation'
   map.resources :password_resets, :only => [:new, :edit, :create, :update]
 
   #static pages

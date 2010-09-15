@@ -86,8 +86,23 @@ class User < ActiveRecord::Base
       reset_perishable_token!
       msg = Notifier.create_password_reset_instructions(self)
       Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(Notifier, :deliver, [msg] )
-
   end
+
+  def deliver_activation_instructions!
+      reset_perishable_token!
+      # We may want to delay this action but we need to do it fast!
+      msg = Notifier.create_activation_instructions(self)
+      Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(Notifier, :deliver, [msg] )
+  end
+
+  def deliver_welcome!
+     reset_perishable_token!
+     msg = Notifier.create_welcome(self)
+     Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(Notifier, :deliver, [msg] )
+  end
+
+
+  
 
   def admin?
      self.role == 'admin'
@@ -96,6 +111,13 @@ class User < ActiveRecord::Base
   def name
     @name ||= (self.first_name ? self.first_name+' ':'')+(self.last_name||'')
   end
+
+  def activate!
+      self.active = true
+      save
+  end
+  
+
 
   def self.find_by_email_or_username(login)
     find_by_email(login) || find_by_username(login)
