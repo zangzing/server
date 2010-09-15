@@ -69,6 +69,23 @@ class PhotosController < ApplicationController
     render :json => @photos.to_json(:only =>[:id, :agent_id, :state, :source_thumb_url, :source_screen_url, :source_guid], :methods => [:thumb_url, :medium_url])
   end
 
+
+  def agentindex
+    begin
+      @photos = Photo.all(:conditions => ["agent_id = ? AND state = ?", params[:agent_id], 'assigned'])
+      render :json => @photos.to_json(:only =>[:id, :agent_id, :state, :album_id])
+
+    rescue ActiveRecord::StatementInvalid => ex
+      #this seems to mean connection issue with database
+      render :json => ex.to_s, :status=>500
+
+    rescue Exception => ex
+      render :json => ex.to_s, :status=>500
+
+    end
+  end
+
+
   def upload
     begin
       @photo = Photo.find(params[:id])
@@ -82,7 +99,7 @@ class PhotosController < ApplicationController
       #photo or album have been deleted
       render :json => ex.to_s, :status=>400
 
-    rescue ActiveRecord::StatementInvalid
+    rescue ActiveRecord::StatementInvalid => ex
       #this seems to mean connection issue with database
       render :json => ex.to_s, :status=>500
 
@@ -165,18 +182,8 @@ class PhotosController < ApplicationController
     end
   end
 
-  def agentindex
-    @photos = Photo.all(:conditions => ["agent_id = ? AND state = ?", params[:agent_id], 'assigned'])
-    respond_to do |format|
-      format.html do
-        render @photos
-      end
-      format.json do
-        render :json => @photos.to_json(:only =>[:id, :agent_id, :state, :album_id])
 
-      end
-    end
-  end
+
 
 #
   # Shows all photos for a given album
