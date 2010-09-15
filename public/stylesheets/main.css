@@ -797,6 +797,11 @@ ul#filechooser a {
   color: #0a0a0a;
 }
 
+ul#filechooser h4 a {
+  color: #486faa;
+  text-decoration: underline;
+}
+
 ul#choose-album-type {
   width: 830px;
   margin: 30px auto 0;
