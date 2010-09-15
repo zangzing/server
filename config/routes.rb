@@ -70,8 +70,8 @@ ActionController::Routing::Routes.draw do |map|
 
   #activities
   map.with_options :controller => :activities do |activities|
-      activities.album_activities                '/albums/:album_id/activities.',   :action=>'index',           :conditions => { :method => :get }
-      activities.user_activities                 '/users/:user_id/activities.',   :action=>'index',             :conditions => { :method => :get }
+      activities.album_activities                '/albums/:album_id/activities.',   :action=>'album_index',           :conditions => { :method => :get }
+      activities.user_activities                 '/users/:user_id/activities.',   :action=>'user_index',             :conditions => { :method => :get }
   end
 
   #people

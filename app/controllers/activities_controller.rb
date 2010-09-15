@@ -1,5 +1,9 @@
 class ActivitiesController < ApplicationController
-  def index
+  def album_index
+    
+  end
+
+  def user_index
   end
 
 end
