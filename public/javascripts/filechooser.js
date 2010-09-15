@@ -167,13 +167,13 @@ var filechooser = {
         );
 
 
-        //zingZing
+        //ZangZing
         filechooser.roots.push(
             {
-                open_url: '/zingzing/folders.json',
+                open_url: '/zangzing/folders.json',
                 type: 'folder',
-                name: 'zingZing',
-                classy: 'f_zingzing'
+                name: 'ZangZing',
+                classy: 'f_zangzing'
             }
         );
 
