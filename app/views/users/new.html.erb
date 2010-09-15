@@ -1,3 +1,8 @@
+<div class="offset" >
+  <% @user.errors.each do | key, value| %>
+    <%= key %>:  <%=value %>
+  <%end %>
+</div>
 <% content_for :page_javascript do  # this places our page-specific js with the rest of the js at the bottom of the html -%>
 <script>
   (function($) {
@@ -7,7 +12,7 @@
       $('#sign-up').show();
       $('#sign-in').hide();  
       $('#small-drawer').animate({height: '460px', top: '53px'});
-      zz.zang.drawer_open = 1 ;  
+      zang.zing.drawer_open = 1 ;  
    })(jQuery);
 </script>
 <% end %>

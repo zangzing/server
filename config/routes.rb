@@ -53,7 +53,7 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   #photos
-  map.with_options :controller => :photos do |photos|                                                                                                \
+  map.with_options :controller => :photos do |photos|                                                                                                
     photos.album_photos                '/albums/:album_id/photos.',                 :action=>'index',           :conditions => { :method => :get }
     photos.create_album_photo          '/albums/:album_id/photos.',                 :action=>'create',          :conditions => { :method => :post }
     photos.create_multiple_album_photo '/albums/:album_id/photos/create_multiple.', :action=>'create_multiple', :conditions => { :method => :post }
@@ -67,8 +67,23 @@ ActionController::Routing::Routes.draw do |map|
     photos.agent_create                '/albums/:album_id/photos/agent_create.:format',  :action=>'agent_create',    :conditions=>{ :method => :post }
   end
 
+
+  #activities
+  map.with_options :controller => :activities do |activities|
+      activities.album_activities                '/albums/:album_id/activities.',   :action=>'album_index',           :conditions => { :method => :get }
+      activities.user_activities                 '/users/:user_id/activities.',   :action=>'user_index',             :conditions => { :method => :get }
+  end
+
+  #people
+  map.with_options :controller => :people do |people|
+      people.album_activities                '/albums/:album_id/people.',   :action=>'album_index',           :conditions => { :method => :get }
+      people.user_activities                 '/users/:user_id/people.',     :action=>'user_index',             :conditions => { :method => :get }
+  end
+
+
+
   #followers
-  map.with_options :controller => :follows do |f|                                                                                                \
+  map.with_options :controller => :follows do |f|
     f.user_follows       '/users/:user_id/follows.',       :action=>"index",    :conditions=>{ :method => :get }
     f.create_user_follow '/users/:user_id/follows/create',:action=>'create'   
     f.new_user_follow    '/users/:user_id/follows/new.',  :action=>'new',      :conditions => { :method => :get }

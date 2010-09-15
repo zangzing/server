@@ -10,138 +10,170 @@ var filechooser = {
 
         filechooser.roots = [];
 
+
+        //mac
         if(filechooser.is_mac()){
-            filechooser.roots.push(
-                {
-                    open_url: 'http://localhost:9090/iphoto/folders',
-                    type: 'folder',
-                    name: 'iPhoto',
-                    clazz: 'f_iphoto'
-                }
-            );
-        }
 
-        if(filechooser.is_windows()){
-            filechooser.roots.push(
-                {
-                    open_url: 'http://localhost:9090/picasa/folders',
-                    type: 'folder',
-                    name: 'iPicasa',
-                    clazz: 'f_picasa'
-                }
-            );
-        }
-
-
-        filechooser.roots.push(
-            {
-                open_url: 'http://localhost:9090/filesystem/folders',
-                type: 'folder',
-                name: 'My Computer',
-                clazz: 'f_mycomputer'
-            }
-        );
-
-
-        if(filechooser.is_mac()){
-            filechooser.roots.push(
-                {
-                    open_url: 'http://localhost:9090/filesystem/folders/fg==',
-                    type: 'folder',
-                    name: 'My Home',
-                    clazz: 'f_home'
-                }
-            );
-
+            //My Pictures
             filechooser.roots.push(
                 {
                     open_url: 'http://localhost:9090/filesystem/folders/fi9QaWN0dXJlcw==',
                     type: 'folder',
                     name: 'My Pictures',
-                    clazz: 'f_pictures'
+                    classy: 'f_pictures'
                 }
             );
-        }
-        
-        if(filechooser.is_windows()){
+
+            //iPhoto
+            filechooser.roots.push(
+                {
+                    open_url: 'http://localhost:9090/iphoto/folders',
+                    type: 'folder',
+                    name: 'iPhoto',
+                    classy: 'f_iphoto'
+                }
+            );
+
+            //My Home
             filechooser.roots.push(
                 {
                     open_url: 'http://localhost:9090/filesystem/folders/fg==',
                     type: 'folder',
                     name: 'My Home',
-                    clazz: 'f_home'
+                    classy: 'f_home'
                 }
             );
 
+            //My Computer
             filechooser.roots.push(
                 {
-//                    open_url: 'http://localhost:9090/filesystem/folders/fi9NeSBEb2N1bWVudHMvTXkgUGljdHVyZXM=',
+                    open_url: 'http://localhost:9090/filesystem/folders/L1ZvbHVtZXM=',
+                    type: 'folder',
+                    name: 'My Computer',
+                    classy: 'f_mycomputer'
+                }
+            );
+
+
+
+        }
+
+
+
+
+
+
+        //windows
+        if(filechooser.is_windows()){
+
+            //My Pictures
+            filechooser.roots.push(
+                {
                     open_url: 'http://localhost:9090/filesystem/folders/flxNeSBEb2N1bWVudHNcTXkgUGljdHVyZXM=',
                     type: 'folder',
                     name: 'My Pictures',
-                    clazz: 'f_pictures'
+                    classy: 'f_pictures'
+                }
+            );
+
+
+            //Picassa
+            filechooser.roots.push(
+                {
+                    open_url: 'http://localhost:9090/picasa/folders',
+                    type: 'folder',
+                    name: 'iPicasa',
+                    classy: 'f_picasa'
+                }
+            );
+
+            //My Home
+            filechooser.roots.push(
+                {
+                    open_url: 'http://localhost:9090/filesystem/folders/fg==',
+                    type: 'folder',
+                    name: 'My Home',
+                    classy: 'f_home'
+                }
+            );
+
+            //My Computer
+            filechooser.roots.push(
+                {
+                    open_url: 'http://localhost:9090/filesystem/folders',
+                    type: 'folder',
+                    name: 'My Computer',
+                    classy: 'f_mycomputer'
                 }
             );
         }
 
 
-
-        filechooser.roots.push(
-            {
-                open_url: '/facebook/folders.json',
-                type: 'folder',
-                name: 'Facebook',
-                login_url: '/facebook/sessions/new',
-                clazz: 'f_facebook'
-            }
-        );
-
-        filechooser.roots.push(
-            {
-                open_url: '/flickr/folders.json',
-                type: 'folder',
-                name: 'Flickr',
-                login_url: '/flickr/sessions/new',
-                clazz: 'f_flickr'
-            }
-        );
-
-        filechooser.roots.push(
-            {
-                open_url: '/kodak/folders.json',
-                type: 'folder',
-                name: 'Kodak',
-                login_url:'/kodak/sessions/new',
-                clazz: 'f_kodak'
-            }
-        );
-
-        filechooser.roots.push(
-            {
-                open_url: '/smugmug/folders.json',
-                type: 'folder',
-                name: 'SmugMug',
-                login_url: '/smugmug/sessions/new',
-                clazz: 'f_smugmug'
-            }
-        );
-
+        //Shutterfly
         filechooser.roots.push(
             {
                 open_url: '/shutterfly/folders.json',
                 type: 'folder',
                 name: 'Shutterfly',
                 login_url: '/shutterfly/sessions/new',
-                clazz: 'f_shutterfly'
+                classy: 'f_shutterfly'
             }
         );
 
+        //Kodak
+        filechooser.roots.push(
+            {
+                open_url: '/kodak/folders.json',
+                type: 'folder',
+                name: 'Kodak',
+                login_url:'/kodak/sessions/new',
+                classy: 'f_kodak'
+            }
+        );        
+
+
+        //SmugMug
+        filechooser.roots.push(
+            {
+                open_url: '/smugmug/folders.json',
+                type: 'folder',
+                name: 'SmugMug',
+                login_url: '/smugmug/sessions/new',
+                classy: 'f_smugmug'
+            }
+        );
+
+
+        //Facebook
+        filechooser.roots.push(
+            {
+                open_url: '/facebook/folders.json',
+                type: 'folder',
+                name: 'Facebook',
+                login_url: '/facebook/sessions/new',
+                classy: 'f_facebook'
+            }
+        );
+
+        //Flickr
+        filechooser.roots.push(
+            {
+                open_url: '/flickr/folders.json',
+                type: 'folder',
+                name: 'Flickr',
+                login_url: '/flickr/sessions/new',
+                classy: 'f_flickr'
+            }
+        );
+
+
+        //ZangZing
         filechooser.roots.push(
             {
                 open_url: '/zangzing/folders.json',
                 type: 'folder',
                 name: 'ZangZing',
-                clazz: 'f_zangzing'
+                classy: 'f_zangzing'
             }
         );
 
@@ -298,7 +330,7 @@ var filechooser = {
                 var a_id = 'chooser-folder-a-' + i;
 
                 var theClick = 'onclick="filechooser.open_folder(\'' + children[i].name + '\',\'' + children[i].open_url + '\',\'' + children[i].login_url + '\'); return false;"';
-                html += '<li id="' + id + '" class="' + children[i].clazz + '">';
+                html += '<li id="' + id + '" class="' + children[i].classy + '">';
 
                 html += '<a href="" ' + theClick + '>' + children[i].name + '</a>';
 
@@ -352,10 +384,10 @@ var filechooser = {
 
     add_photos : function(add_url, element_id) {
 
-        add_url += '?album_id=' + zz.zang.album_id;
+        add_url += '?album_id=' + zang.zing.album_id;
 
 
-        zz.zang.image_pop(element_id);
+        zang.zing.image_pop(element_id);
 
 
         if (add_url.indexOf('http://localhost:9090') === 0) {
@@ -446,7 +478,7 @@ var tray = {
     album_photos : [],
 
     reload : function() {
-        var get_album_photos_url = '/albums/' + zz.zang.album_id + '/photos.json';
+        var get_album_photos_url = '/albums/' + zang.zing.album_id + '/photos.json';
         $.ajax({
             dataType: 'json',
             url: get_album_photos_url,
@@ -579,7 +611,7 @@ var tray = {
                     tray.imageloader.add(id, photo.thumb_url);
                 } else {
                     tray.imageloader.add(id, 'http://localhost:9090/albums/' +
-                                             zz.zang.album_id + '/photos/' + photo.id + '.thumb' +
+                                             zang.zing.album_id + '/photos/' + photo.id + '.thumb' +
                                              '?session=' + $.cookie('user_credentials'));
                 }
 
@@ -598,7 +630,7 @@ var tray = {
 
         $('#added-pictures-tray').html(html);
         setTimeout(function(){$('#traversing').hide().remove();}, 500);
-        zz.init.tray();
+        zang.init.tray();
         tray.imageloader.start(5);
 
     },

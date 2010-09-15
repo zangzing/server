@@ -344,7 +344,9 @@ ul#indicator {
   z-index: 15;
   margin: 4px;
   width: 898px;
-  height: 36px;  
+  height: 36px; 
+  top: 50px;
+  margin-left: 28px; 
 }
 
 ul.step-1 {
@@ -793,6 +795,11 @@ ul#filechooser li.in-tray:hover figure {
 ul#filechooser a {
   text-decoration: none;
   color: #0a0a0a;
+}
+
+ul#filechooser h4 a {
+  color: #486faa;
+  text-decoration: underline;
 }
 
 ul#choose-album-type {

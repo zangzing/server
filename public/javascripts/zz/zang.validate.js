@@ -1,7 +1,7 @@
-  /* Form Validation objects 
+/* Form Validation objects 
   --------------------------------------------------------------------------- */
-zz.validation = {
-  
+zang.validation = {
+
   sign_in: {
     element: '#new_user_session',
     errorContainer: 'div#sign-in p.error-notice',
@@ -18,7 +18,7 @@ zz.validation = {
     }     
   
   },
-
+  
   join: {
     element: '#join-form',
     errorContainer: 'div#sign-up p.error-notice',
@@ -35,7 +35,7 @@ zz.validation = {
       'user[password]': 'Six characters or more please.'
     }
   },
-
+  
   new_post_share: {
     element: '#new_post_share',
     rules: {
@@ -46,12 +46,12 @@ zz.validation = {
     },      
     submitHandler: function() {
       serialized = $('#new_post_share').serialize();
-      $.post('/albums/'+zz.zang.album_id+'/shares', serialized, function(data){
-        zz.zang.reload_share();
+      $.post('/albums/'+zang.zing.album_id+'/shares', serialized, function(data){
+        zang.zing.reload_share();
       });
     }
     
-  }, // end zz.validation.new_post_share
+  }, // end zang.validation.new_post_share
   
   new_email_share: {
     element: '#new_email_share',
@@ -65,15 +65,15 @@ zz.validation = {
       'email_share[subject]': '',  
       'email_share[message]': '' 
     },  
-
+  
     submitHandler: function() {
       serialized = $('#new_email_share').serialize();
-      $.post('/albums/'+zz.zang.album_id+'/shares', serialized, function(data){
-        zz.zang.reload_share();
+      $.post('/albums/'+zang.zing.album_id+'/shares', serialized, function(data){
+        zang.zing.reload_share();
       });
     }
     
-  }, // end zz.validation.new_post_share    
+  }, // end zang.validation.new_post_share    
   
   sample_sign_up: {
     element: '#sample-sign-up',
@@ -106,6 +106,6 @@ zz.validation = {
       }  
     }
     
-  } // end zz.validation.sample_sign_up
-      
-}; // end zz.validation
+  } // end zang.validation.sample_sign_up
+    
+}; // end zang.validation
