@@ -331,7 +331,7 @@ var filechooser = {
 
                 var theClick = 'onclick="filechooser.open_folder(\'' + children[i].name + '\',\'' + children[i].open_url + '\',\'' + children[i].login_url + '\'); return false;"';
                 html += '<li id="' + id + '" class="' + children[i].classy + '">';
-
+                html += '<a href="" ' + theClick + '><img src="/images/blank-folder.png" /></a>';
                 html += '<a href="" ' + theClick + '>' + children[i].name + '</a>';
 
                 if (children[i].add_url) {

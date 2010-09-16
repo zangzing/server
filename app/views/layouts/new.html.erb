@@ -69,7 +69,7 @@
         </ul>
       </nav>
 
-<%    if current_user && controller.controller_name == 'photos' || current_user && controller.controller_name == 'albums'
+<%    if current_user && controller.controller_name == 'photos' || current_user && controller.controller_name == 'albums' || controller.controller_name == 'people' && controller.action_name == 'album_index' || controller.controller_name == 'activities' && controller.action_name == 'album_index'
          #this loads a version of the top nav with the album header & main drawer -%>
       <%= render :partial => 'layouts/album_nav' %>
 <%    elsif current_user  
