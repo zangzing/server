@@ -4,6 +4,6 @@
 
 <% unless @album.photos.empty? %>
   <ul class="grid-view clearfix">
-    <%= render :partial => "photos/photo_thumb", :collection => @photos, :as => :photo %>
+    <%= render :partial => "photos/photo_thumb", :collection => @photos, :as => :photo, :locals => {:delete => true} %>
   </ul>
 <% end %>
