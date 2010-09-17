@@ -1,11 +1,13 @@
 require 'open-uri'
 
- # Due to how ImageMagick handles its image format conversion and how Tempfile
-  # handles its naming scheme, it is necessary to override how Tempfile makes
-  # its names so as to allow for file extensions. Idea taken from the comments
-  # on this blog post:
-  # http://marsorange.com/archives/of-mogrify-ruby-tempfile-dynamic-class-definitions
-class ZZTempfile < Tempfile
+
+class Tempfile
+  # Due to how ImageMagick handles its image format conversion and how Tempfile
+   # handles its naming scheme, it is necessary to override how Tempfile makes
+   # its names so as to allow for file extensions. Idea taken from the comments
+   # on this blog post:
+   # http://marsorange.com/archives/of-mogrify-ruby-tempfile-dynamic-class-definitions
+
     def make_tmpname(basename, n)
       # force tempfile to use basename's extension if provided
       ext = File::extname(basename)
@@ -14,62 +16,82 @@ class ZZTempfile < Tempfile
     end
 end
 
-class Picon
-
-  @@temp_files = []
-
-  def self.test()
-     photo1 ="http://alpha.dev.zangzing.s3.amazonaws.com/images/dZfehqR4Cr34tHacjbkp0q/dZfehqR4Cr34tHacjbkp0q_thumb.jpeg"
-     photo2="http://alpha.dev.zangzing.s3.amazonaws.com/images/dZbzJ4V0mr34MJeJe7ePYv/dZbzJ4V0mr34MJeJe7ePYv_thumb.jpeg"
+module Picon
+class << self
+  @@hold_it =[]
+  def test()
+     photo1="http://alpha.dev.zangzing.s3.amazonaws.com/images/dZbzJ4V0mr34MJeJe7ePYv/dZbzJ4V0mr34MJeJe7ePYv_thumb.jpeg"
+     photo2 ="http://bravo.dev.zangzing.s3.amazonaws.com/images/c88QEWV_Cr352veJe7ePYv/c88QEWV_Cr352veJe7ePYv_thumb.jpeg"
+     photo3 ="http://alpha.dev.zangzing.s3.amazonaws.com/images/dZfehqR4Cr34tHacjbkp0q/dZfehqR4Cr34tHacjbkp0q_thumb.jpeg"          
      cover = "http://alpha.dev.zangzing.s3.amazonaws.com/images/dKJ1NAVter35uDeJe7ePYv/dKJ1NAVter35uDeJe7ePYv_thumb.jpeg"
-     Picon.create(cover,photo1,photo2)
+     dst = Processor.new(cover,:stack=>[photo1,photo2]).make
+     @@hold_it << dst
+     puts "Picon was successfully created into #{File.expand_path( dst.path )}"
   end
+end
 
-  def self.create( cover_uri, photo1_uri, photo2_uri)
-    cover_path = Picon.download( cover_uri )
-    photo1_path = Picon.download( photo1_uri )
-    photo2_path = Picon.download( photo2_uri )
-
-    result = ZZTempfile.new('picon.png',"#{Rails.root}/tmp")
-    result_path  = result.path
-    puts("Building Picon....")
-    cmd = "/usr/local/bin/convert #{photo1_path} #{photo2_path} #{cover_path}  \
-     -bordercolor white  -border 6 \
-     -bordercolor grey60 -border 1 \
-     -bordercolor none  -background  none \
-     \\( -clone 0 -rotate -20 \\) \
-     \\( -clone 1 -rotate +10 \\) \
-     \\( -clone 2 -rotate +40 \\) \
-     -delete 0 -delete 1 -delete 2 -border 100x80  -gravity center \
-     -crop 200x160+0+0  +repage  -flatten  -trim +repage \
-     -background black \\( +clone -shadow 60x4+4+4 \\) +swap \
-     -background none  -flatten \
-     #{result_path}"
-
-    puts("Picon CMD ====>  #{cmd} <<====")
-    puts("Building Picon....")
-    `#{cmd}`
-    puts $?
-    result.close()
-    puts("Picon Built! Successfully into ==> #{ result.path }")
-    Picon.cleanup
-    @@temp_files << result
-    return result
-  end
-
-  private
-  def self.download( image_uri )
-    temp_file =  Tempfile.new('thump4picon', "#{Rails.root}/tmp")
-    open(image_uri)  do |src|
-      temp_file.write(src.read)
+class Processor 
+    # Creates a Picon
+    def initialize file, options = {}
+      if file.is_a?(File)
+        @cover = file
+      else
+        @cover = download( file )
+      end
+      @stack=[]
+      options[:stack].each {|f| (f.is_a?(File) ? @stack << f : @stack << download( f ))} unless options[:stack].nil?
     end
-    temp_file.flush
-    temp_file.close()
-    @@temp_files << temp_file
-    temp_file.path
-  end
+  
+    # Performs the conversion of the +file+ into a thumbnail. Returns the Tempfile
+    # that contains the new image.
+    def make
+      cover = @cover
+      dst = Tempfile.new(['picon', 'png'].compact.join("."))
+      dst.binmode
+      begin
+        parameters = []
+        @stack.each do |s|
+          parameters << File.expand_path(s.path)
+        end
+        parameters << File.expand_path(@cover.path)
+        parameters << picon_command
+        parameters << File.expand_path(dst.path)
+        parameters = parameters.flatten.compact.join(" ").strip.squeeze(" ")
 
-  def self.cleanup
-    @@temp_files.each {|f| f.close(true)}
-  end
+        success = Paperclip.run("convert", parameters)
+      rescue PaperclipCommandLineError => e
+        raise PaperclipError, "There was an error building the picon for for #{@cover}" 
+      end
+      dst
+    end
+
+    private  
+    #downloads uris into temp file
+    def download( image_uri )
+      temp_file =  Tempfile.new('thump4picon', "#{Rails.root}/tmp")
+      open(image_uri)  do |src|
+        temp_file.write(src.read)
+      end
+      temp_file.flush
+      temp_file.close()
+      temp_file
+    end
+
+    # Returns the command ImageMagick's +convert+ needs to make a Picon
+    def picon_command
+     cmd = []
+     cmd << "-bordercolor white  -border 6"
+     cmd << "-bordercolor grey60 -border 1"
+     cmd << "-bordercolor none  -background  none"
+     cmd << "\\( -clone 0 -rotate -20 \\)" #back
+     cmd << "\\( -clone 1 -rotate +10 \\)" #middle
+     cmd << "\\( -clone 2 -rotate +40 \\)" #cover
+     cmd << "-delete 0,1,2"
+     cmd << "-border 100x80  -gravity center"
+     cmd << "-crop 200x160+0+0  +repage  -flatten  -trim +repage"
+     cmd << "-background black \\( +clone -shadow 60x4+4+4 \\) +swap"
+     cmd << "-background none  -flatten"
+     cmd
+    end
+end
 end
