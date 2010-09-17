@@ -71,7 +71,7 @@ var sharecontacts = {
             local_contacts.push([ cts[i].address, full_address]);
         }
 
-        zz.zang.email_autocompleter_reload();
+        zang.zing.email_autocompleter_reload();
         $("#local-sync").attr('disabled', '');
         $("#local-sync").attr('title', 'Last imported a second ago.');
         $("#local-sync").attr('src', '/images/btn-outlook-on.png');
@@ -113,7 +113,7 @@ var sharecontacts = {
             google_contacts.push([ cts[i].name, full_address]);
             google_contacts.push([ cts[i].address, full_address]);
         }
-       zz.zang.email_autocompleter_reload();
+       zang.zing.email_autocompleter_reload();
         $("#gmail-sync").attr('disabled', '');
         $("#gmail-sync").attr('title', 'Last imported a second ago.');
         $("#gmail-sync").attr('src', '/images/btn-gmail-on.png');
@@ -150,7 +150,7 @@ var sharecontacts = {
             yahoo_contacts.push([ cts[i].name, full_address]);
             yahoo_contacts.push([ cts[i].address, full_address]);
         }
-       zz.zang.email_autocompleter_reload();
+       zang.zing.email_autocompleter_reload();
         $("#yahoo-sync").attr('disabled', '');
         $("#yahoo-sync").attr('title', 'Last imported a second ago.');
         $("#yahoo-sync").attr('src', '/images/btn-yahoo-on.png');

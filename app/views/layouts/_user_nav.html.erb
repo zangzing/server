@@ -4,7 +4,7 @@
             <img src="/images/user-icon-40x40.png" width="40" height="40" />
           </li>
           <li>
-            <h2><%= @badge_name %></h2>
+            <h2><%=  @user ? @user.name : @badge_name %></h2>
             <h3>My Account <img src="/images/icon-down-arrow-10px.png" width="10" height="10" /></h3>
           </li>
         </ul>
@@ -15,14 +15,14 @@
           </li>
           <li>
             <h2 id="album-header-title"><%= @album ? @album.name : 'New Album' %></h2>
-            <h3>by <%= @badge_name %></h3>
+            <h3>by <%=  @user ? @user.name : @badge_name %></h3>
           </li>
         </ul>          
         
         <ul id="view-swap">
-          <li><a href="<%= controller.controller_name == 'photos' || controller.controller_name == 'albums' || controller.controller_name == 'people' && controller.action_name == 'album_index' || controller.controller_name == 'activities' && controller.action_name == 'album_index'  ? '/albums/' + @album.id + '/people' : '/users/' + current_user.id + '/people' %>"><img src="<%= controller.controller_name == 'people' ? '/images/view-icons-friends-on.png' : '/images/view-icons-friends.png' %>" /></a></li>
-          <li><a href="<%= controller.controller_name == 'photos' || controller.controller_name == 'albums' ? '/albums/' + @album.id + '/activities' : '/users/' + current_user.id + '/activities' %>"><img src="<%= controller.controller_name == 'activities' ? '/images/view-icons-timeline-on.png' : '/images/view-icons-timeline.png' %>" /></a></li>
-          <li><a href="javascript:void(0);"><img src="/images/view-icons-grid.png" /></a></li>
+          <li><a href="<%= '/users/' + @user.id + '/people' %>"><img src="<%= controller.controller_name == 'people' ? '/images/view-icons-friends-on.png' : '/images/view-icons-friends.png' %>" /></a></li>
+          <li><a href="<%= '/users/' + @user.id + '/activities' %>"><img src="<%= controller.controller_name == 'activities' ? '/images/view-icons-timeline-on.png' : '/images/view-icons-timeline.png' %>" /></a></li>
+          <li><a href="<%= '/users/' + @user.id + '/albums' %>"><img src="<%= controller.controller_name == 'albums' ? '/images/view-icons-grid-on.png' : '/images/view-icons-grid.png' %>" /></a></li>
         </ul>    
   
       </header>
