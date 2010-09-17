@@ -25,38 +25,9 @@
             <li id="step-join-on"></li>
             <li id="step-sign-in-off"></li>
           </ul>
-                    
-<%      if @user && @user.errors 
-          @user.errors.each do | key, value| -%>
-          <p class="error-notice">(<%=key %>) <%=value %></p>
-<%        end 
-        else -%>
-          <p class="error-notice">Please check the highlighted field(s) below...</p>
-<%      end -%> 
 
-          <form id="join-form" method="post" enctype="multipart/form-data" action="/users">
-            <dl class="clearfix">
-              <dt><label for="user_name">First and Last Name</label></dt>
-              <dd><input type="text" value="" size="30" name="user[name]" id="user_name"></dd>
-              <dt><label for="user_username">Username</label></dt>
-              <dd><input type="text" value="" size="30" name="user[username]" id="user_username"></dd>
-              <dt class="full-t">zangzing.com/<span id="update-username">your_username</span></dt>
-              <dd class="full-t"></dd>
-              <dt><label for="user_email">Email Address</label></dt>
-              <dd><input type="text" value="" size="30" name="user[email]" id="user_email"></dd>
-              <dt><label for="user_session_password">Password</label></dt>
-              <dd><input type="password" size="30" name="user[password]" id="user_password"></dd>
-              <dt class="full-t">By joining you accept and agree to <a target="_blank" href="/tos.html" onClick="window.open('/tos.html','TOC','status=yes,scrollbars=yes,resizable=yes,width=600,height=480'); return false">the terms of service</a></dt>
-              <dd class="full-t"></dd>              
-
-              <dt class="button"></dt>
-              <dd class="button">
-                <a href="javascript:void(0);" class="cancel-mini">Cancel</a> <input type="image" name="submit" src="/images/btn-sign-up.png">
-              </dd>            
-            </dl>
-  
-          </form>          
-
+        <%= render :partial => 'user_sessions/sign_up_form' %>
+        
         </div>
         
         <div id="sign-in" class="body">
@@ -68,33 +39,9 @@
           <div id="small-top">
             <h2>Sign in</h2>
             <h3>Welcome Back!</h3>        
-          </div>
-
-<%      if @user_session && @user_session.errors 
-          @user_session.errors.each do | key, value| 
-            if key == 'email' || key == 'password' -%>
-          <p class="error-notice"><%=key %> <%=value %></p>
-<%          else %>
-          <p class="error-notice"><%=value %></p>
-<%          end
-          end 
-        else -%>
-          <p class="error-notice">Please check the highlighted field(s) below...</p>
-<%      end -%>        
+          </div>     
           
-            <form method="post" id="new_user_session" class="new_user_session" action="/user_sessions">
-              <dl class="clearfix">
-                <dt><label for="user_session_email">Username or Email Address</label></dt>
-                <dd><input type="text" size="30" name="user_session[email]" id="user_session_email"></dd>
-                <dt><label for="user_session_password">Password</label></dt>
-                <dd><input type="password" size="30" name="user_session[password]" id="user_session_password"></dd>
-                <dt class="button"><a href="/password_resets/new">Forgot your password?</a></dt>
-                <dd class="button">
-                  <a href="javascript:void(0);" class="cancel-mini">Cancel</a> <input type="image" name="submit" src="/images/btn-sign-in.png">
-                </dd>            
-              </dl>
-    
-            </form>          
+        <%= render :partial => 'users/join_form' %>
         
         </div>
       </div>
