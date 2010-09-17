@@ -27,7 +27,7 @@
 
 #
 # Photo Model
-# � 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
+# Copyright 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 # As a first implementation images are attached to photo objects using paperclip as
 # performance and customization changes are required the use of paperclip can be
@@ -96,8 +96,7 @@ class Photo < ActiveRecord::Base
   after_validation_on_update :queue_upload_to_s3
   
 
-  # used to receive image and queue for processing. User never sees this image. Paperclip defaults are local no styles
-  has_attached_file :local_image, Paperclip.options[:local_image_options]
+  # used to receive image and queue for processing. User never sees this image. Paperclip options are set in paperclip.rb
  
   has_attached_file :image, Paperclip.options[:image_options]
 
@@ -207,7 +206,6 @@ class Photo < ActiveRecord::Base
   def assign_batch
      logger.debug("IN ASSIGN BATCH")
      @up =  UploadBatch.get_current( self.user, self.album );
-
   end
 
   def update_batch

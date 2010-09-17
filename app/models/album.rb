@@ -28,10 +28,11 @@ class Album < ActiveRecord::Base
   attr_accessible :name, :privacy
   
   belongs_to :user
-  has_many :photos,           :dependent => :destroy
-  has_many :shares,           :dependent => :destroy
-  has_many :album_activities, :dependent => :destroy
-  has_many :upload_batches
+  belongs_to :picon,         :inverse_of => :album,  :dependent => :destroy, :class_name => :photo
+  has_many :photos,          :inverse_of => :album, :dependent => :destroy
+  has_many :shares,          :inverse_of => :album, :dependent => :destroy
+  has_many :album_activities,:inverse_of => :album, :dependent => :destroy
+  has_many :upload_batches,  :inverse_of => :album
 
   validates_presence_of  :user_id
   validates_presence_of  :name
@@ -54,6 +55,29 @@ class Album < ActiveRecord::Base
       def human;    singularize; end # only for Rails 3
     end
     return name
+  end
+
+  def cover
+    return nil if self.photos.nil?
+    if self.cover_photo_id.nil?
+      self.cover_photo_id = self.photos.first.id
+      self.save
+    end
+    Photo.find( self.cover_photo_id )
+  end
+
+  def cover=( photo )
+    if self.photos.find( photo )
+      self.cover_photo_id = photo.id
+      self.save
+      # Queue Picon Generation
+    end
+  end
+
+  def update_picon
+    if self.picon.nil?
+      self.picon = 
+    end
   end
 
 end

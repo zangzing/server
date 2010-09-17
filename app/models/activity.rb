@@ -21,4 +21,10 @@ class Activity < ActiveRecord::Base
 
   belongs_to :user
   validates_presence_of :user_id
+
+  ##
+  ## ATTENTION: If you want helpers and forms treat all subtypes as Activities see
+  ## the trick that we use for albums in Album.rb
+  ##
+
 end
