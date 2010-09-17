@@ -104,7 +104,7 @@ zang.zing = {
       $('#'+element).stop().animate({ height: '30px', width: '30px', bottom: '0px' }, 500);   
     },  // end zang.zing.tray_zoom_out()  
     
-    image_pop: function(element){
+    image_pop: function(element, callback){
       temp = $('#'+element).css('margin-top').split('px')[0];
       $('#traversing').remove();
       temp_top = $('#'+element).offset().top - temp;
@@ -131,7 +131,7 @@ zang.zing = {
         height: '30px',
         top: (temp_top_new ) +'px',
         left: (temp_left_new + 13) +'px'
-      }, 500);
+      }, 500, 'swing', callback);
       
                            
 
