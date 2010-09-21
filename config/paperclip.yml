@@ -8,39 +8,41 @@
 #  WARNING: INDENTATION HAS SEMANTIC MEANING! BE CAREFUL WHEN EDITING
 #
 
+# FOR ALL REMOTE Paperclip IMAGES (Can override per attachment below)
+images_common: &images_common
+  storage:        :s3
+  path:           ":attachment/:id/:id_:style.:extension"
+  url:            :s3_domain_url
+  s3_credentials: <%=File.join(Rails.root, 'config', 's3.yml')%>
+  s3_headers:
+    x-amz-storage-class: REDUCED_REDUNDANCY
+    Expires:  <%=1.year.from_now.httpdate%>
+  s3buckets:
+    - alpha.dev.zangzing
+    - bravo.dev.zangzing
+    - charlie.dev.zangzing
+    - delta.dev.zangzing
+    - eco.dev.zangzing
 
 #FOR All ENVS
 common: &common
   local_image_options:
     url:         "/system/:attachment/:id/:id_:style.:extension"
     default_url: "/images/working.png"
+  picon_options:
+    <<: *images_common
+    default_url: "/images/album_no_pics.png"  
   image_options:
-    storage:        :s3
-    path:           ":attachment/:id/:id_:style.:extension"
-    url:            :s3_domain_url
-    s3_credentials: <%=File.join(Rails.root, 'config', 's3.yml')%>   #Config file also contains :bucket
-    default_url:    "/images/working.png"
+    <<: *images_common
+    default_url: "/images/working.png"
     styles:
       medium: "1024x768>"
       thumb:  "120x120>"
-    s3_headers:
-      x-amz-storage-class: REDUCED_REDUNDANCY
-      Expires:  <%=1.year.from_now.httpdate%>
-    s3buckets:
-      - alpha.dev.zangzing
-      - bravo.dev.zangzing
-      - charlie.dev.zangzing
-      - delta.dev.zangzing
-      - eco.dev.zangzing
 
 development:
   <<: *common
   command_path: <%=ENV['IMAGEMAGICK_PATH']%> #look for imagemagick here
   log_command:  true
-#  image_options:
-#    storage: :Filesysem
-#    path:    "/system/:attachment/:id/:id_:style.:extension"
-
 
 test:
   <<: *common
@@ -51,8 +53,6 @@ eydevelopment:
 
 eytest:
   <<: *common
-
-
 
 production:
   <<: *common

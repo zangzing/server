@@ -26,13 +26,15 @@
 class Album < ActiveRecord::Base
   usesguid
   attr_accessible :name, :privacy
-  
+
   belongs_to :user
-  belongs_to :picon,         :inverse_of => :album,  :dependent => :destroy, :class_name => :photo
-  has_many :photos,          :inverse_of => :album, :dependent => :destroy
-  has_many :shares,          :inverse_of => :album, :dependent => :destroy
-  has_many :album_activities,:inverse_of => :album, :dependent => :destroy
-  has_many :upload_batches,  :inverse_of => :album
+  has_many :photos,           :dependent => :destroy
+  has_many :shares,           :dependent => :destroy
+  has_many :album_activities, :dependent => :destroy
+  has_many :upload_batches
+
+  has_attached_file :picon, Paperclip.options[:picon_options]
+  before_picon_post_process       :set_picon_metadata
 
   validates_presence_of  :user_id
   validates_presence_of  :name
@@ -41,10 +43,6 @@ class Album < ActiveRecord::Base
   default_scope :order => 'created_at DESC'
 
   PRIVACIES = {'Public' =>'public','Hidden' => 'hidden'};
-
-  def wizard_steps
-    [:choose_album_type,:add_photos, :name_album, :edit_album, :contributors, :share]  
-  end
 
   # All url, path and form helpers treat all subclasses as Album
   def self.model_name
@@ -62,22 +60,31 @@ class Album < ActiveRecord::Base
     if self.cover_photo_id.nil?
       self.cover_photo_id = self.photos.first.id
       self.save
+      return self.photos.first
+    else
+      return Photo.find( self.cover_photo_id )
     end
-    Photo.find( self.cover_photo_id )
   end
 
   def cover=( photo )
     if self.photos.find( photo )
       self.cover_photo_id = photo.id
       self.save
-      # Queue Picon Generation
+      self.update_picon_later
     end
   end
 
   def update_picon
-    if self.picon.nil?
-      self.picon = 
-    end
+      self.picon = Picon.build( self )
+      self.save
+  end
+  
+  def update_picon_later
+     Delayed::CpuBoundJob.enqueue Delayed::PerformableMethod.new(self, :update_picon, [] )
   end
 
+  def set_picon_metadata
+    self.picon_path   = picon.path.gsub(picon.original_filename,'')
+    self.picon_bucket = picon.instance_variable_get("@bucket")
+  end
 end
