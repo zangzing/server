@@ -331,7 +331,7 @@ var filechooser = {
 
                 var theClick = 'onclick="filechooser.open_folder(\'' + children[i].name + '\',\'' + children[i].open_url + '\',\'' + children[i].login_url + '\'); return false;"';
                 html += '<li id="' + id + '" class="' + children[i].classy + '">';
-
+                html += '<a href="" ' + theClick + '><img src="/images/blank-folder.png" /></a>';
                 html += '<a href="" ' + theClick + '>' + children[i].name + '</a>';
 
                 if (children[i].add_url) {
@@ -386,32 +386,31 @@ var filechooser = {
 
         add_url += '?album_id=' + zang.zing.album_id;
 
+        var after_animate = function(){
+            if (add_url.indexOf('http://localhost:9090') === 0) {
+                add_url += '&session=' + $.cookie('user_credentials') + '&callback=?';
 
-        zang.zing.image_pop(element_id);
-
-
-        if (add_url.indexOf('http://localhost:9090') === 0) {
-            add_url += '&session=' + $.cookie('user_credentials') + '&callback=?';
-
-            $.jsonp({
-                url: add_url,
-                success: function(json) {
-                    filechooser.on_add_photos(json);
-                },
-                error: filechooser.on_error_adding_photos
-            });
-        } else {
-            $.ajax({
-                dataType: 'json',
-                url: add_url,
-                success: function(json) {
-                    filechooser.on_add_photos(json);
-                },
-                error: filechooser.on_error_adding_photos
-            });
+                $.jsonp({
+                    url: add_url,
+                    success: function(json) {
+                        filechooser.on_add_photos(json);
+                    },
+                    error: filechooser.on_error_adding_photos
+                });
+            } else {
+                $.ajax({
+                    dataType: 'json',
+                    url: add_url,
+                    success: function(json) {
+                        filechooser.on_add_photos(json);
+                    },
+                    error: filechooser.on_error_adding_photos
+                });
+            }
         }
 
 
+        zang.zing.image_pop(element_id, after_animate);
 
     },
 

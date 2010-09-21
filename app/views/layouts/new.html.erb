@@ -69,7 +69,10 @@
         </ul>
       </nav>
 
-<%    if current_user && controller.controller_name == 'photos' || current_user && controller.controller_name == 'albums'
+<%    if current_user && controller.controller_name == 'photos' || 
+         current_user && controller.controller_name == 'albums' && controller.action_name != 'index' || 
+         controller.controller_name == 'people' && controller.action_name == 'album_index' || 
+         controller.controller_name == 'activities' && controller.action_name == 'album_index'
          #this loads a version of the top nav with the album header & main drawer -%>
       <%= render :partial => 'layouts/album_nav' %>
 <%    elsif current_user  
@@ -140,8 +143,6 @@
 <%    else -%>
         zang.init.new_user(); 
 <%    end -%>
-        
-          
         });
   
         $(window).bind("load", function() {

@@ -104,7 +104,7 @@ zang.zing = {
       $('#'+element).stop().animate({ height: '30px', width: '30px', bottom: '0px' }, 500);   
     },  // end zang.zing.tray_zoom_out()  
     
-    image_pop: function(element){
+    image_pop: function(element, callback){
       temp = $('#'+element).css('margin-top').split('px')[0];
       $('#traversing').remove();
       temp_top = $('#'+element).offset().top - temp;
@@ -131,11 +131,24 @@ zang.zing = {
         height: '30px',
         top: (temp_top_new ) +'px',
         left: (temp_left_new + 13) +'px'
-      }, 500);
+      }, 500, 'swing', callback);
       
                            
 
     }, // end zang.zing.image_pop
+    
+        
+    easy_drawer: function(time, opacity, url, fn) {
+      // time - how fast to animate the drawer
+      // opacity - how much to fade out the article contents
+      // url - partial to load into the drawer...
+      // fn gets loaded on callback
+      zang.zing.open_drawer(time, opacity);
+      
+      $('#drawer-content').empty().load(url, function(){                
+        fn;
+      });     
+    },
 
     /* New Album - 4 part
     ------------------------------------------------------------------------- */
@@ -280,6 +293,7 @@ zang.zing = {
         $('.social-share').click(zang.zing.social_share);
         $('.email-share').click(zang.zing.email_share);
         $('.album_privacy').change(zang.zing.album_update);
+        $('#next-step').attr('src', '/images/btn-wizard-done.png');
       }); 
     },
 
@@ -305,44 +319,54 @@ zang.zing = {
       
       }
       
-      zang.zing.email_id++;
-      //console.log('ID: '+ zang.zing.email_id +'-- Add '+ temp +' to the view and a ' + $(data).html() + ' checkbox to the form.');
-      $('#m-clone-added').clone()
-                       .attr({id: 'm-'+zang.zing.email_id})
-                       .insertAfter('#the-recipients li.rounded:last');
+      if (value.length < 6) {
+        
+      } else {
+
       
-      $('#m-'+zang.zing.email_id+' span').empty().html(value);
-      $('#m-'+zang.zing.email_id+' input').attr({name: 'i-' + zang.zing.email_id, checked: 'checked'}).val(value);
-      $('#m-'+zang.zing.email_id).fadeIn('fast');
-      $('#m-'+zang.zing.email_id+' img').attr('id', 'img-'+zang.zing.email_id);
-      $('li.rounded img').click(function(){
-        $(this).parent('li').fadeOut('fast').remove();
-      });
-      console.log(value);
-      zang.zing.build_address_list('add', value);            
+        zang.zing.email_id++;
+        //console.log('ID: '+ zang.zing.email_id +'-- Add '+ temp +' to the view and a ' + $(data).html() + ' checkbox to the form.');
+        $('#m-clone-added').clone()
+                         .attr({id: 'm-'+zang.zing.email_id})
+                         .insertAfter('#the-recipients li.rounded:last');
+        
+        $('#m-'+zang.zing.email_id+' span').empty().html(value);
+        $('#m-'+zang.zing.email_id+' input').attr({name: 'i-' + zang.zing.email_id, checked: 'checked'}).val(value);
+        $('#m-'+zang.zing.email_id).fadeIn('fast');
+        $('#m-'+zang.zing.email_id+' img').attr('id', 'img-'+zang.zing.email_id);
+        $('li.rounded img').click(function(){
+          $(this).parent('li').fadeOut('fast').remove();
+        });
+        console.log(value);
+        zang.zing.build_address_list('add', value);            
+      }
     },
 
     clone_recipient: function(data){
-      temp = $(data).html().split('&')[0];
-      value = $(data).html();
-      console.log(value);
-      console.log(data);
-
-      zang.zing.email_id++;
-      //console.log('ID: '+ zang.zing.email_id +'-- Add '+ temp +' to the view and a ' + $(data).html() + ' checkbox to the form.');
-      $('#you-complete-me').val('');
-      $('#m-clone-added').clone()
-                       .attr({id: 'm-'+zang.zing.email_id})
-                       .insertAfter('#the-recipients li.rounded:last');
-      
-      $('#m-'+zang.zing.email_id+' span').empty().html(temp);
-      $('#m-'+zang.zing.email_id+' input').attr({name: 'i-' + zang.zing.email_id, checked: 'checked'}).val(value);
-      $('#m-'+zang.zing.email_id).fadeIn('fast');
-      $('#m-'+zang.zing.email_id+' img').attr('id', 'img-'+zang.zing.email_id);
-      $('li.rounded img').click(function(){
-        $(this).parent('li').fadeOut('fast').remove();
-      });
-      zang.zing.build_address_list('clone', data);  
+      if (data.length < 6) {
+        
+      } else {
+        temp = $(data).html().split('&')[0];
+        value = $(data).html();
+        console.log(value);
+        console.log(data);
+  
+        zang.zing.email_id++;
+        //console.log('ID: '+ zang.zing.email_id +'-- Add '+ temp +' to the view and a ' + $(data).html() + ' checkbox to the form.');
+        $('#you-complete-me').val('');
+        $('#m-clone-added').clone()
+                         .attr({id: 'm-'+zang.zing.email_id})
+                         .insertAfter('#the-recipients li.rounded:last');
+        
+        $('#m-'+zang.zing.email_id+' span').empty().html(temp);
+        $('#m-'+zang.zing.email_id+' input').attr({name: 'i-' + zang.zing.email_id, checked: 'checked'}).val(value);
+        $('#m-'+zang.zing.email_id).fadeIn('fast');
+        $('#m-'+zang.zing.email_id+' img').attr('id', 'img-'+zang.zing.email_id);
+        $('li.rounded img').click(function(){
+          $(this).parent('li').fadeOut('fast').remove();
+        });
+        zang.zing.build_address_list('clone', data);  
+      }
     },
 
     autocompleter: 0,
@@ -425,7 +449,8 @@ zang.zing = {
         //re-open the drawer
         zang.zing.open_drawer();
       } else if (zang.zing.indicator_step == 4) {
-        //post form
+        $('#next-step').attr('src', '/images/btn-steps-next.png');
+
       } else {
         //error
       }
