@@ -45,9 +45,12 @@ class PhotosController < ApplicationController
     @album = Album.find(params[:album_id])
     @photos = []
 
-    params['source_guid'].values.each do |source_guid|
+    (0...params[:source_guid].length).each do |index|
+      source_guid = params[:source_guid][index.to_s]
+      size = params[:size][index.to_s]
+      caption = params[:caption][index.to_s]
 
-      @photo = @album.photos.build(:agent_id => params[:agent_id], :source_guid => source_guid)
+      @photo = @album.photos.build(:agent_id => params[:agent_id], :source_guid => source_guid, :caption => caption, :image_file_size => size)
 
       @photos << @photo
 
