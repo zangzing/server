@@ -55,10 +55,6 @@ end
 Paperclip.options[:image_options][:bucket] =
     Proc.new {|a| (a.options[:s3buckets].push a.options[:s3buckets].shift)[0]}
 
-Picon.test()
-
-
-
 
 #
 #The YAML File looks like this
