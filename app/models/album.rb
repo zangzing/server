@@ -34,7 +34,7 @@ class Album < ActiveRecord::Base
   has_many :upload_batches
 
   has_attached_file :picon, Paperclip.options[:picon_options]
-  before_picon_post_process       :set_picon_metadata
+  before_picon_post_process    :set_picon_metadata
 
   validates_presence_of  :user_id
   validates_presence_of  :name
@@ -56,25 +56,28 @@ class Album < ActiveRecord::Base
   end
 
   def cover
-    return nil if self.photos.nil?
+    return nil if self.photos.empty?
     if self.cover_photo_id.nil?
-      self.cover_photo_id = self.photos.first.id
-      self.save
       return self.photos.first
     else
       return Photo.find( self.cover_photo_id )
-    end
+    end                        
   end
 
   def cover=( photo )
-    if self.photos.find( photo )
-      self.cover_photo_id = photo.id
-      self.save
-      self.update_picon_later
+    if photo.nil?
+       return if self.cover_photo_id.nil? # cover has not changed do not do anything
+       self.cover_photo_id = nil;
+    else
+      return if self.cover_photo_id == photo.id # cover has not changed do not do anything
+      self.cover_photo_id = photo.id if self.photos.find( photo )
     end
+    self.save
+    self.update_picon_later
   end
 
   def update_picon
+      self.picon.clear unless self.picon.nil?
       self.picon = Picon.build( self )
       self.save
   end
@@ -83,7 +86,13 @@ class Album < ActiveRecord::Base
      Delayed::CpuBoundJob.enqueue Delayed::PerformableMethod.new(self, :update_picon, [] )
   end
 
+  def picon_url
+    picon.instance_variable_set '@bucket', self.picon_bucket unless self.picon_bucket.nil?
+    picon.url
+  end
+
   def set_picon_metadata
+    logger.debug("In picon before post")
     self.picon_path   = picon.path.gsub(picon.original_filename,'')
     self.picon_bucket = picon.instance_variable_get("@bucket")
   end

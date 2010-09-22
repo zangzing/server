@@ -31,7 +31,7 @@ common: &common
     default_url: "/images/working.png"
   picon_options:
     <<: *images_common
-    default_url: "/images/album_no_pics.png"  
+    default_url: "/images/folders/blank.png"  
   image_options:
     <<: *images_common
     default_url: "/images/working.png"

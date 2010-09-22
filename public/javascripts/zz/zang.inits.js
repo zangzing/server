@@ -7,7 +7,7 @@ zang.init = {
   
     /* Click Handlers
       ----------------------------------------------------------------------- */
-    console.log('hello world?');
+    //console.log('hello world?');
     // highlight a selected photo
     $('ul#grid-view li').click(function(){
       zang.zing.new_photo = $(this).attr('id');
