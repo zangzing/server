@@ -122,8 +122,6 @@
       zang.zing.user_id = '<%= current_user.id %>';
 <%    end -%><%  if @album  -%>      
       zang.zing.album_id = '<%= @album.id %>';
-      <% else %>
-      zang.zing.album_id = 'cVETSpWAur35908SufYEeo';
 <%    end
       # This is where we pass things on to js that we need from ruby.
       # Remember to use the zz.zang namespace. 

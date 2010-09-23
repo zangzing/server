@@ -80,7 +80,7 @@ zz.wizard = {
         zz.wizard.rebind(obj, id);
       });
     } else {
-      console.warn('This should never happen. Context: zz.wizard.change_step, Type: '+item.type+', Drawer State: '+zz.drawer_open);
+      console.warn('This should never happen. Context: zz.wizard.change_step, Type: '+obj.steps[id].type+', Drawer State: '+zz.drawer_open);
     }
   
     
