@@ -280,7 +280,7 @@ ul#added-pictures-tray {
 ul#added-pictures-tray li {
   float: left;
   margin-top: 7px;
-  margin-right: 2px;
+  /*margin-right: 2px;*/
   width: 30px;
   height: 30px;
 }
@@ -296,11 +296,11 @@ ul#added-pictures-tray li img.trayed-up {
   bottom: 0;
   left: 0;
   z-index: 101;
-  border: 2px solid #e1e1e1;
-  box-shadow: 0px 0px 5px #e1e1e1;
-  -webkit-box-shadow: 0px 0px 5px #e1e1e1;
-  -moz-box-shadow: 0px 0px 5px #e1e1e1;
-  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#e1e1e1, offX=2, offY=2, positive=true);
+  /*border: 2px solid #e1e1e1;*/
+  /*box-shadow: 0px 0px 5px #e1e1e1;*/
+  /*-webkit-box-shadow: 0px 0px 5px #e1e1e1;*/
+  /*-moz-box-shadow: 0px 0px 5px #e1e1e1;*/
+  /*filter: progid:DXImageTransform.Microsoft.dropShadow(color=#e1e1e1, offX=2, offY=2, positive=true);*/
 }
 
 ul#added-pictures-tray li:hover img.trayed-up {

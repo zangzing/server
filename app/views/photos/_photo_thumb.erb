@@ -1,7 +1,7 @@
 <li id="photo-<%=photo.id%>-li">
   <div class="relative">
     <a href="<%=album_photos_path(photo.album)%>?size=screenres&photoid=<%=photo.id%>">
-      <img src="" id="photo-<%=photo.id%>">
+      <img src="/images/loading.gif" id="photo-<%=photo.id%>">
       <figure><%=photo.caption%></figure>
        <% if delete == true && current_user?(photo.album.user) %>
           <a href="#" class="delete" onclick="server.delete_photo('<%=photo.id%>', function(){$('#photo-<%=photo.id%>-li').remove();}, function(){alert('error deleting photo');});">
