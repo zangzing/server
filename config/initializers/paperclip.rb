@@ -54,9 +54,8 @@ end
 # Create a proc to compute the right bucket and store it in the options
 Paperclip.options[:image_options][:bucket] =
     Proc.new {|a| (a.options[:s3buckets].push a.options[:s3buckets].shift)[0]}
-
-
-
+Paperclip.options[:picon_options][:bucket] =
+    Proc.new {|a| (a.options[:s3buckets].push a.options[:s3buckets].shift)[0]}
 
 
 #

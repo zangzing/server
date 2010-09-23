@@ -27,7 +27,7 @@
 
 #
 # Photo Model
-# � 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
+# Copyright 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 # As a first implementation images are attached to photo objects using paperclip as
 # performance and customization changes are required the use of paperclip can be
@@ -87,24 +87,24 @@ class Photo < ActiveRecord::Base
   before_create :substitute_source_urls
 
   after_create  :update_batch
-  
+
   # if all args were valid on creation then set it to assigned
   after_validation_on_create :set_to_assigned;
 
- 
+
   # Set up an async call for Processing and Upload to S3
   after_validation_on_update :queue_upload_to_s3
-  
+
 
   # used to receive image and queue for processing. User never sees this image. Paperclip defaults are local no styles
   has_attached_file :local_image, Paperclip.options[:local_image_options]
- 
+
   has_attached_file :image, Paperclip.options[:image_options]
 
 
   validates_presence_of             :album_id, :user_id
 
-  
+
   validates_attachment_presence     :local_image,{
                                     :message => "file must be specified",
                                     :if =>  :assigned?
@@ -162,7 +162,7 @@ class Photo < ActiveRecord::Base
         logger.debug("Upload to S3 Failed"+ex)
     end
     logger.debug("Upload to S3 Finished")
-    self.upload_batch.finish    
+    self.upload_batch.finish
   end
 
   def new?
@@ -172,7 +172,7 @@ class Photo < ActiveRecord::Base
   def assigned?
     self.state == 'assigned'
   end
-  
+
   def ready?
     self.state == 'ready'
   end
@@ -211,7 +211,7 @@ class Photo < ActiveRecord::Base
   end
 
   def update_batch
-    logger.debug("IN UPDATE BATCH")  
+    logger.debug("IN UPDATE BATCH")
     @up.photos << self unless @up.nil?
   end
 

@@ -3,7 +3,7 @@ class CreatePhotos < ActiveRecord::Migration
     create_table :photos, :force => true do |t|
          t.references_with_guid  :album
          t.references_with_guid  :user
-         t.string   :upload_batch_id
+         t.integer  :upload_batch_id
          t.string   :agent_id
          t.string   :source_path
          t.string   :state,                    :default => "new"

@@ -213,7 +213,7 @@ var filechooser = {
         $('#filechooser-title').html(name);
 
         //update files
-        $('#filechooser').html('<img src="/images/loading.gif"> Loading ...');
+        $('#filechooser').html('<img src="/images/loading.gif">');
 
         if (url == '') {
 
@@ -346,7 +346,7 @@ var filechooser = {
                 var theClick = 'onclick="filechooser.add_photos(\'' + children[i].add_url + '\', \'' + img_id + '\'); return false;"';                
                 html += '<li id="photo-' + children[i].source_guid + '" class="photo" ' + theClick + '>';
                 html += '<div class="relative">'
-                html += '<img id="' + img_id + '" src="">';
+                html += '<img id="' + img_id + '" src="/images/loading.gif">';
                 html += '<figure>Add Photo</figure>';
                 html += '<div class="checkmark"></div>';
                 html += '</div>';
@@ -555,15 +555,16 @@ var tray = {
         tray.imageloader = new ImageLoader(onStartLoadingImage, onImageLoaded);
 
         //calculate margin-left of items so they all fit
-        var TRAY_WIDTH = 890;
-        var DEFAULT_ITEM_WIDTH = 32;
+        var TRAY_WIDTH = 878;
+        var ITEM_WIDTH = 30;
         var count = tray.album_photos.length;
-        var item_width = (TRAY_WIDTH / count) - .3;
+        var allocated_space = (TRAY_WIDTH / (count+1));
 
-        if(item_width > DEFAULT_ITEM_WIDTH){
-            item_width = DEFAULT_ITEM_WIDTH;
+        if(allocated_space > ITEM_WIDTH){
+            allocated_space = ITEM_WIDTH;
         }
-        var margin_left = item_width - DEFAULT_ITEM_WIDTH;
+
+        var overlap = ITEM_WIDTH - allocated_space;
 
 
         var html = '';
@@ -594,11 +595,11 @@ var tray = {
                 html+="<li>"
             }
             else{
-                html += '<li style="margin-left:' + margin_left + 'px">';
+                html += '<li style="margin-left:' + (-1 * overlap) + 'px">';
             }
             
             html += '<div>';
-            html += '<img height="30" width="30" id="' + id + '" class="trayed-up" src="" style="z-index:5;">';
+            html += '<img height="30" width="30" id="' + id + '" class="trayed-up" src="/images/loading.gif" style="z-index:5;">';
             html += '<a href="javascript:void(0);" onclick="tray.delete_photo(\'' + photo.id + '\'); return false;"><img src="/images/btn-delete.png" class="delete" id="del-'+ id +'" /></a>';
             html += '<img width="120" class="hover-thumbnail" src="" id="hover-'+ id +'">';
             html += '</div>';

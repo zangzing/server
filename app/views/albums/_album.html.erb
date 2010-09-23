@@ -1,15 +1,7 @@
   <li>
-<%  if album.photos.empty? -%>
-    <img src="/images/album_no_pics.png" />
-<%  else -%>
     <a href="<%=url_for(album)%>">
-      <img class="albumcellshow"  src="/images/album_pics.png" />                  
-<%
-#      <img class="albumcellphotoicon"  src="<%=album.photos.first.thumb_url" />
-%>
+      <img class="albumcellshow"  src="<%=album.picon_url%>" />                  
     </a>
-
-<%  end -%>
     <div class="albumcellcaption">
       <%= h album.name%>
     </div>

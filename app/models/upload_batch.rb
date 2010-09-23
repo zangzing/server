@@ -78,6 +78,9 @@ class UploadBatch < ActiveRecord::Base
       shares = Share.find_all_by_user_id_and_album_id( user.id, self.id)
       shares.each { |s| s.deliver_later() } if shares
 
+      #Update album picon
+      self.album.update_picon_later
+
       # Create Activity
       ua = UploadActivity.create( :user => self.user, :album => self.album, :upload_batch => self )
 
