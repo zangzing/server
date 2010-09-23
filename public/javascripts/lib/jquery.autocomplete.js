@@ -80,7 +80,7 @@ jQuery.autocomplete = function(input, options) {
 		lastKeyPressCode = e.keyCode;
 		switch(e.keyCode) {
 			case 188: // comma
-			  zang.zing.add_recipient(1);
+			  zang.zing.wizard.add_recipient(1);
 				break;
 			case 38: // up
 				e.preventDefault();
@@ -97,7 +97,7 @@ jQuery.autocomplete = function(input, options) {
 					//$input.get(0).blur();
 					e.preventDefault();
 				} else {
-				  zang.zing.add_recipient(0);
+				  zang.zing.wizard.add_recipient(0);
 				  e.preventDefault();
 				}
 				break;
@@ -124,23 +124,23 @@ jQuery.autocomplete = function(input, options) {
 		// ignore if the following keys are pressed: [del] [shift] [capslock]
 		if(lastKeyPressCode == 8) {
 		  //alert('DELETE KEY');
-		  if ($('#you-complete-me').val().length == 0 && zang.zing.delete_btn == 2) {
+		  if ($('#you-complete-me').val().length == 0 && zang.zing.wizard.delete_btn == 2) {
 		    //console.log('Delete the last item!');
 		    $('#the-recipients li.rounded:last').remove();
-		    zang.zing.delete_btn = 0;
-		  } else if ($('#you-complete-me').val().length == 0 && zang.zing.delete_btn == 1) {
+		    zang.zing.wizard.delete_btn = 1;
+		  } else if ($('#you-complete-me').val().length == 0 && zang.zing.wizard.delete_btn == 1) {
 		    //console.log('Select the last item!');
 		    $('#the-recipients li.rounded:last').addClass('del');
-		    zang.zing.delete_btn = 2;
-		  } else if ($('#you-complete-me').val().length == 0 && zang.zing.delete_btn == 0){
-		    zang.zing.delete_btn = 1;
+		    zang.zing.wizard.delete_btn = 2;
+		  } else if ($('#you-complete-me').val().length == 0 && zang.zing.wizard.delete_btn == 0){
+		    zang.zing.wizard.delete_btn = 1;
 		  }
 		} else if (lastKeyPressCode == 46 || lastKeyPressCode > 8 && lastKeyPressCode < 32) {
-		  zang.zing.delete_btn = 0;
+		  zang.zing.wizard.delete_btn = 1;
 		  $('#the-recipients li.rounded:last').removeClass('del');
 		  return $results.hide();
 		} else {
-		  zang.zing.delete_btn = 0;
+		  zang.zing.wizard.delete_btn = 1;
 		  $('#the-recipients li.rounded:last').removeClass('del');
 		}
 		var v = $input.val();

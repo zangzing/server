@@ -23,7 +23,6 @@
             <li id="autocomplete"><input type="text" id="you-complete-me" /></li>
             <div class="clear-fix"></div>
           </ul>
-            <input type="hidden" name="email_share[to]" id="email_share_recipients" />
        </dd>
         
         <div class="clear-fix"></div>
@@ -55,7 +54,7 @@ sharecontacts.setup( <%=( @google_id.credentials_valid? ? 1 : 0 ) %> == 1,
 });
 yahoo_contacts = [
     <% @yahoo_id.contacts.each do|contact| %>
-    ["<%=contact.name%>","\"<%=contact.name.to_s%>\" <<%=contact.address%>>"],
+    ["<%=contact.name%> &lt;<%=contact.address%>&gt;","\"<%=contact.name.to_s%>\" <<%=contact.address%>>"],
       ["<%=contact.address%>","\"<%=contact.name.to_s%>\" <<%=contact.address%>>"],
     <% end %>
     " +O"
@@ -63,7 +62,7 @@ yahoo_contacts = [
 
 google_contacts = [
     <% @google_id.contacts.each_with_index do |contact, index| %>
-      ["<%=contact.name%>","\"<%=contact.name.to_s%>\" <<%=contact.address%>>"],
+      ["<%=contact.name%> &lt;<%=contact.address%>&gt;","\"<%=contact.name.to_s%>\" <<%=contact.address%>>"],
       ["<%=contact.address%>","\"<%=contact.name.to_s%>\" <<%=contact.address%>>"],
     <% end %>
     " +P"
@@ -71,7 +70,7 @@ google_contacts = [
 
 local_contacts = [
     <% @local_id.contacts.each do|contact| %>
-       ["<%=contact.name%>","\"<%=contact.name.to_s%>\" <<%=contact.address%>>"],
+       ["<%=contact.name%> &lt;<%=contact.address%>&gt;","\"<%=contact.name.to_s%>\" <<%=contact.address%>>"],
       ["<%=contact.address%>","\"<%=contact.name.to_s%>\" <<%=contact.address%>>"],
     <% end %>
    " +Q"

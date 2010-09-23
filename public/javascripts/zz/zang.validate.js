@@ -1,6 +1,6 @@
 /* Form Validation objects 
   --------------------------------------------------------------------------- */
-zang.validation = {
+zang.validate = {
 
   sign_in: {
     element: '#new_user_session',
@@ -46,8 +46,8 @@ zang.validation = {
     },      
     submitHandler: function() {
       serialized = $('#new_post_share').serialize();
-      $.post('/albums/'+zang.zing.album_id+'/shares', serialized, function(data){
-        zang.zing.reload_share();
+      $.post('/albums/'+zz.album_id+'/shares', serialized, function(data){
+        zz.wizard.reload_share();
       });
     }
     
@@ -68,8 +68,8 @@ zang.validation = {
   
     submitHandler: function() {
       serialized = $('#new_email_share').serialize();
-      $.post('/albums/'+zang.zing.album_id+'/shares', serialized, function(data){
-        zang.zing.reload_share();
+      $.post('/albums/'+zz.album_id+'/shares', serialized, function(data){
+        zz.wizard.reload_share();
       });
     }
     

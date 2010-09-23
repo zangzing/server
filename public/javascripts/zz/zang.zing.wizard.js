@@ -1,0 +1,304 @@
+zz.wizard = {
+
+  /* Wizard Functions
+    ------------------------------------------------------------------------- */
+    
+  make_drawer: function(obj, step){
+    /* obj contains: obj.next_element, obj.done_redirect, obj.steps.step.id, 
+                     obj.steps.step.element, obj.steps.step.info, 
+                     obj.steps.step.type, obj.steps.step.init, 
+                     obj.steps.step.bounce */
+    
+    if (zz.drawer_open == 0) {
+      zz.open_drawer(obj.time, obj.percent);  
+    }
+    
+    if (!step) {
+      temp = obj.steps[obj.first].url.split('undefined')[0] + zz.album_id + obj.steps[obj.first].url.split('undefined')[1];
+      $('#drawer-content').empty().load(temp, function(){
+        $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 170) + 'px'});        
+  
+        $.each(obj.steps, function(i, item) {
+          
+          $(item.element).click(function(e){
+            e.preventDefault();
+            temp_id = $(this).attr('id').split('wizard-')[1];
+            temp_url = $(this).attr('href');
+  
+            obj.steps[obj.first].bounce();
+            zz.wizard.change_step(temp_id, temp_url, obj);              
+          });
+                  
+          //console.log('URL: '+obj.url+', Info: '+item.info+', Drawer Type: '+item.type+'...');
+        });                    
+        obj.steps[obj.first].init();
+      });
+    }
+  
+  },
+  
+  change_step: function(id, url, obj){
+  
+    //console.log('URL: '+obj.url+', Next: '+obj.steps[id].next+', Drawer: '+zz.drawer_open);
+    
+    if (obj.steps[id].type == 'partial' && zz.drawer_open == 1) {
+      $('#drawer-content').empty();
+      zz.close_drawer(obj.time);
+      $('article').empty().load(url, function(data){
+        $('#clone-indicator').clone().attr('id', 'indicator').appendTo('#drawer-content', function(){
+          $('#clone-indicator').remove(function(){
+            obj.steps[id].init();
+            zz.wizard.rebind(obj, id);            
+          });
+        });
+      });
+    
+    } else if (obj.steps[id].type == 'partial' && zz.drawer_open == 2) {
+      $('article').empty().load(url, function(data){
+        obj.steps[id].init();
+        zz.wizard.rebind(obj, id);
+        
+      });
+    } else if (obj.steps[id].type == 'full' && zz.drawer_open != 1) {
+      zz.open_drawer(obj.time);
+      $('#drawer-content').empty().load(url, function(data){
+        obj.steps[id].init();
+        zz.wizard.rebind(obj, id);
+  
+      });      
+    } else if (obj.steps[id].type == 'full' && zz.drawer_open == 1) {
+      $('#drawer-content').empty().load(url, function(data){
+        obj.steps[id].init();
+        zz.wizard.rebind(obj, id);
+  
+      });      
+    } else if (obj.steps[id].type == 'partial' && zz.drawer_open == 0) {
+      zz.open_drawer(80, obj.percent);
+      zz.close_drawer(obj.time);
+      $('article').empty().load(url, function(data){
+        obj.steps[id].init();
+        zz.wizard.rebind(obj, id);
+      });
+    } else {
+      console.warn('This should never happen. Context: zz.wizard.change_step, Type: '+item.type+', Drawer State: '+zz.drawer_open);
+    }
+  
+    
+  },
+  
+  rebind: function(obj, id){
+    $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 170) + 'px'});        
+    $.each(obj.steps, function(i, item) {        
+      $(item.element).click(function(e){
+        e.preventDefault();
+        obj.steps[id].bounce();
+        temp_id = $(this).attr('id').split('wizard-')[1];
+        temp_url = $(this).attr('href');
+  
+        zz.wizard.change_step(temp_id, temp_url, obj);           
+      });
+              
+    });
+  
+  },
+  
+  
+  
+  
+
+  /* Wizard Object Functions - used to make special things happen
+    ------------------------------------------------------------------------- */
+  
+  delete_btn: 1,
+  email_id: 0,
+  autocompleter: 0,
+  
+  create_album: function(){
+    $.post('/users/'+zz.user_id+'/albums', { album_type: "PersonalAlbum" }, function(data){
+      zz.album_id = data;
+      zz.wizard.make_drawer(zz.drawers.personal_album);
+    });
+  },
+  
+  // load_images is used to build the grid view of an album using json results
+  load_images: function(){
+    //console.log(json);
+    temp = jQuery.parseJSON(json).photos;
+      
+    var onStartLoadingImage = function(id, src) {
+      $('#' + id).attr('src', '/images/loading.gif');
+    };
+      
+    var onImageLoaded = function(id, src, width, height) {
+      var new_size = 120;
+      //console.log('id: #'+id+', src: '+src+', width: '+width+', height: '+height);
+    
+      if (height > width) {
+        //console.log('tall');
+        //tall
+        var ratio = width / height; 
+        $('#' + id).attr('src', src).css({height: new_size+'px', width: (ratio * new_size) + 'px' });
+        
+        
+        var guuu = $('#'+id).attr('id').split('photo-')[1];
+        $('#' + id).parent('li').attr({id: 'photo-'+guuu});              
+        $('li#photo-'+ guuu +'-li figure').css({bottom: '0px', width: (new_size * ratio) + 'px', left: $('#' + id).position()['left'] + 'px' });
+        $('li#photo-'+ guuu +'-li a.delete img').css({top: '-16px', right: (150 - $('#' + id).outerWidth() - 20) / 2  +'px'} );
+  
+      } else {
+        //wide
+        //console.log('wide');
+  
+        var ratio = height / width; 
+        $('#' + id).attr('src', src).css({height: (ratio * new_size) + 'px', width: new_size+'px', marginTop: ((new_size - (ratio * new_size)) / 2) + 'px' });
+  
+        var guuu = $('#'+id).attr('id').split('photo-')[1];
+        //$('li#photo-'+ guuu +'-li a.delete img').css({top: ($('#' + id).position()['top'] - 26), right: '-26px'});
+        $('li#photo-'+ guuu +'-li figure').css({width: new_size + 'px', bottom:  0, left: (140 - new_size) / 2 +'px'});
+        //console.log(guuu);
+      }
+    
+    };
+
+    var imageloader = new ImageLoader(onStartLoadingImage, onImageLoaded);
+
+    for(var i in temp){
+        var id = 'photo-' + temp[i].id;
+        var url = null
+        if (temp[i].state == 'ready') {
+            url = temp[i].thumb_url;
+        } else {
+            url = temp[i].source_thumb_url;
+        }
+
+        if (url.indexOf('http://localhost') === 0) {
+            url += '?session=' + $.cookie('user_credentials')
+        }
+
+        imageloader.add(id, url);
+
+    }
+
+    imageloader.start(5);
+
+  },
+
+  // loads the status message post form in place of the type switcher on the share step
+  social_share: function(){
+    $('div#share-body').empty().load('/albums/'+zz.album_id+'/shares/newpost', function(){                        
+      $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 170) + 'px'});
+      $(z.validation.new_post_share.element).validate(z.validate.new_post_share);
+      $('#cancel-share').click(zz.wizard.reload_share);
+    });     
+  },
+  
+  // loads the email post form in place of the type switcher on the share step
+  email_share: function(){
+    $('div#share-body').empty().load('/albums/'+zz.album_id+'/shares/newemail', function(){                        
+      $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 170) + 'px'});
+      setTimeout(function(){zz.wizard.email_autocomplete()}, 500);
+      $(z.validate.new_email_share.element).validate(z.validate.new_email_share);
+      $('#cancel-share').click(zz.wizard.reload_share);
+      $('#the-list').click(function(){
+        $('#you-complete-me').focus();
+      });
+    });     
+  
+  },
+  
+  // reloads the main share part in place of the type switcher on the share step
+  reload_share: function(){
+      $('#drawer-content').empty().load('/albums/'+zz.album_id+'/shares/new', function(){                        
+        $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 170) + 'px'});
+        $('.social-share').click(zz.wizard.social_share);
+        $('.email-share').click(zz.wizard.email_share);
+        $('.album_privacy').change(zz.wizard.album_update);
+      });
+    },
+
+  // adds a recipient to the autocomplete area on keypress
+  add_recipient: function(comma){
+    if (comma == 1) {
+      value = $('#you-complete-me').val();
+      value = value.split(',')[0];
+      $('#you-complete-me').val('');
+    } else {
+      value = $('#you-complete-me').val();
+      $('#you-complete-me').val('');
+    
+    }
+    
+    if (value.length < 6) {
+      
+    } else {
+
+    
+      zz.wizard.email_id++;
+      //console.log('ID: '+ zz.wizard.email_id +'-- Add '+ temp +' to the view and a ' + $(data).html() + ' checkbox to the form.');
+      $('#m-clone-added').clone()
+                       .attr({id: 'm-'+zz.wizard.email_id})
+                       .insertAfter('#the-recipients li.rounded:last');
+      
+      $('#m-'+zz.wizard.email_id+' span').empty().html(value);
+      $('#m-'+zz.wizard.email_id+' input').attr({name: 'i-' + zz.wizard.email_id, checked: 'checked'}).val(value);
+      $('#m-'+zz.wizard.email_id).fadeIn('fast');
+      $('#m-'+zz.wizard.email_id+' img').attr('id', 'img-'+zz.wizard.email_id);
+      $('li.rounded img').click(function(){
+        $(this).parent('li').fadeOut('fast').remove();
+      });
+      //console.log(value);
+    }
+  },
+
+  // clones a recipient from the selection list
+  clone_recipient: function(data){
+    if (data.length < 6) {
+      
+    } else {
+      
+      temp = $(data).html().split('&')[0];
+      value = $(data).html();
+      //console.log(value);
+      //console.log(data);
+
+      zz.wizard.email_id++;
+      //console.log('ID: '+ zz.wizard.email_id +'-- Add '+ temp +' to the view and a ' + $(data).html() + ' checkbox to the form.');
+      $('#you-complete-me').val('');
+      $('#m-clone-added').clone()
+                       .attr({id: 'm-'+zz.wizard.email_id})
+                       .insertAfter('#the-recipients li.rounded:last');
+      
+      $('#m-'+zz.wizard.email_id+' span').empty().html(temp);
+      $('#m-'+zz.wizard.email_id+' input').attr({name: 'i-' + zz.wizard.email_id, checked: 'checked'}).val(value);
+      $('#m-'+zz.wizard.email_id).fadeIn('fast');
+      $('#m-'+zz.wizard.email_id+' img').attr('id', 'img-'+zz.wizard.email_id);
+      $('li.rounded img').click(function(){
+        $(this).parent('li').fadeOut('fast').remove();
+      });
+    }
+  },
+
+  //set up email autocomplete
+  email_autocomplete: function(){
+    zz.autocompleter = $('#you-complete-me').autocompleteArray(
+        google_contacts.concat( yahoo_contacts.concat( local_contacts ) ),
+        {
+            width: 700,
+            position_element: 'dd#the-list',
+            append: 'div.body',
+            onItemSelect: zz.wizard.clone_recipient
+        }
+        );
+      //zz.address_list = '';
+  },
+
+  // reloads the autocompletetion data
+  email_autocompleter_reload: function(){
+      zz.autocompleter[0].autocompleter.setData(google_contacts.concat( yahoo_contacts.concat( local_contacts ) ));
+  },
+
+  album_update: function(){
+    $.post('/albums/'+zz.album_id, $(".edit_album").serialize());
+  }
+
+};

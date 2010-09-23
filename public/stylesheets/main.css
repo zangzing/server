@@ -246,7 +246,6 @@ div#drawer div.body {
   background-image: url("/images/bg-bottom-repeat.png");
   background-repeat: repeat-y;
   width: 906px;
-  padding-top: 40px;
 }
 
 div#small-drawer div.body {
@@ -260,7 +259,7 @@ div#small-drawer div.body {
 div#drawer div.body div#drawer-content {
   margin: 0 auto;
   height: 0px;
-  width: 895px;
+  width: 898px;
 }
 
 ul#added-pictures-tray {
@@ -339,14 +338,13 @@ ul#added-pictures-tray li:hover img.delete {
   display: block;
 }
 
+ul#clone-indicator {
+  display: none;
+}
 ul#indicator {
-  position: fixed;
-  z-index: 15;
-  margin: 4px;
   width: 898px;
-  height: 36px; 
-  top: 50px;
-  margin-left: 28px; 
+  height: 36px;
+  margin-top: 4px; 
 }
 
 ul.step-1 {
@@ -378,6 +376,15 @@ ul#indicator li {
   text-align: left;
   text-transform: uppercase;
   cursor: pointer;
+}
+
+ul#indicator li a {
+  color: #646464;
+  text-decoration: none;
+}
+
+ul#indicator li.on a {
+  color: #fff;
 }
 
 ul#indicator li#step-add {
@@ -721,6 +728,10 @@ ul#filechooser li.photo:hover img {
   -webkit-box-shadow: 0px 0px 5px #FDD042;
   -moz-box-shadow: 0px 0px 5px #FDD042;
   filter: progid:DXImageTransform.Microsoft.dropShadow(color=#FDD042, offX=2, offY=2, positive=true);
+}
+
+div#headline {
+  padding-top: 30px;
 }
 
 ul#filechooser li figure {

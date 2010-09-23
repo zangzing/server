@@ -102,7 +102,8 @@
     <script type="text/javascript" src="/javascripts/zz/zang.core.js" ></script>
     <script type="text/javascript" src="/javascripts/zz/zang.inits.js" ></script>
     <script type="text/javascript" src="/javascripts/zz/zang.validate.js" ></script>
-    <script type="text/javascript" src="/javascripts/zz/zang.zing.create-album.js" ></script>
+    <script type="text/javascript" src="/javascripts/zz/zang.zing.wizard.js" ></script>
+    <script type="text/javascript" src="/javascripts/zz/zang.zing.drawers.js" ></script>
 
     <script type="text/javascript" src="/javascripts/filechooser.js" ></script>
     <script type="text/javascript" src="/javascripts/oauthmanager.js" ></script>
@@ -121,6 +122,8 @@
       zang.zing.user_id = '<%= current_user.id %>';
 <%    end -%><%  if @album  -%>      
       zang.zing.album_id = '<%= @album.id %>';
+      <% else %>
+      zang.zing.album_id = 'cVETSpWAur35908SufYEeo';
 <%    end
       # This is where we pass things on to js that we need from ruby.
       # Remember to use the zz.zang namespace. 
