@@ -6,7 +6,9 @@ class Connector::YahooContactsController < Connector::YahooController
   end
 
   def import
-    contacts = yahoo_api.get_contacts('me')
+    contacts = yahoo_api.get_contacts(yahoo_api.current_user_guid)
+    render :text => contacts.inspect
+=begin
     imported_contacts = contacts.collect{ |c| Contact.new(:name => c[0], :address => c[1])  }
 
     unless imported_contacts.empty?
@@ -21,7 +23,8 @@ class Connector::YahooContactsController < Connector::YahooController
     else
       render :json => imported_contacts.to_json(:only => [ :name, :address ])
     end
-  end
+=end
+    end
 
 
 end

@@ -14,6 +14,28 @@ class YahooConnector
 
   TOKEN_SPLITTER = '<K1ND@SPL1773R>'
 
+  OAUTH_OPTIONS = {
+    :auth => {
+      :site => "https://api.login.yahoo.com",
+      :request_token_path => "/oauth/v2/get_request_token",
+      :authorize_path => "/oauth/v2/request_auth",
+      :access_token_path => "/oauth/v2/get_token",
+      :scheme => :query_string,
+      :http_method => :get
+    },
+    :social_api => {
+      :site                 => 'http://social.yahooapis.com/',
+      :yahoo_hack           => true,
+      :scheme               => :header,
+      :realm                => 'yahooapis.com',
+      :http_method          => :get,
+      :request_token_path   => '/oauth/v2/get_request_token',
+      :access_token_path    => '/oauth/v2/get_token',
+      :authorize_path       => '/oauth/v2/request_auth'
+    }
+  }
+
+
   def initialize(token = nil)
     self.access_token = token
   end
@@ -36,18 +58,15 @@ class YahooConnector
   end
 
   def consumer
-    @consumer ||= create_consumer
+    @consumer ||= create_consumer(:auth)
   end
 
-  def create_consumer
-    OAuth::Consumer.new(YahooConnector.api_key, YahooConnector.shared_secret,
-                                   :site => "https://api.login.yahoo.com",
-                                   :request_token_path => "/oauth/v2/get_request_token",
-                                   :authorize_path => "/oauth/v2/request_auth",
-                                   :access_token_path => "/oauth/v2/get_token",
-                                   :http_method => :get,
-                                   :scheme => :query_string
-                                 )
+  def api_consumer
+    @api_consumer ||= create_consumer(:social_api)
+  end
+
+  def create_consumer(realm)
+    OAuth::Consumer.new(YahooConnector.api_key, YahooConnector.shared_secret, OAUTH_OPTIONS[realm])
   end
 
   def create_access_token!(oauth_token, oauth_token_secret, first_time = false, oauth_verifier = nil)
@@ -58,37 +77,34 @@ class YahooConnector
       rescue => e
         if e.kind_of?(OAuth::Unauthorized)
           code, msg = e.message.split(' ')
-          raise SmugmugError.new(code, "#{msg} (invalid/expired oauth request token)")
+          raise YahooError.new(code, "#{msg} (invalid/expired oauth request token)")
         end
       end
     elsif
-      @access_token = OAuth::AccessToken.from_hash(consumer, {:oauth_token => oauth_token, :oauth_token_secret => oauth_token_secret})
+      @access_token = OAuth::AccessToken.from_hash(api_consumer, {:oauth_token => oauth_token, :oauth_token_secret => oauth_token_secret})
     end
   end
-
-  def get_authorize_url(request_token, options = {})
-    auth_params = {
-      'oauth_token_secret' => request_token.secret,
-      :oauth_callback => options[:callback] || 'oob'
-    }
-    "#{request_token.authorize_url}&#{auth_params.to_url_params}"
-    #request_token.authorize_url(auth_params)
+  
+  def current_user_guid
+    unless @current_user_guid
+      guid_info = call_method('/v1/me/guid')
+      @current_user_guid = guid_info[:value]
+    end
+    @current_user_guid
   end
 
-  def get_contacts(guid, parameters = {})
-    call_method("http://social.yahooapis.com/v1/user/#{guid}/contacts", parameters)
+  def get_contacts(user_guid, parameters = {})
+    call_method("/v1/user/#{user_guid}/contacts", parameters)
   end
 
 protected
 
   def call_method(url, method_params = {})
-    api_query = method_params.merge(:method => method_name)
-    raise SmugmugError.new(36, "An access token in needed") unless @access_token
-    response = @access_token.get "#{url}?#{api_query.to_url_params}"
+    raise YahooError.new(36, "An access token in needed") unless @access_token
+    response = @access_token.get "#{url}?#{method_params.merge(:format => :json).to_url_params}"
     result = JSON.parse(response.body)
-#    raise SmugmugError.new(result['code'], result['message']) if stat == 'fail'
-#    normalize_response(extract_data(result))
-    result
+#    raise YahooError.new(result['code'], result['message']) if stat == 'fail'
+    normalize_response(extract_data(result))
   end
 
   def normalize_response(response)
@@ -109,7 +125,7 @@ protected
     hash.each do |k, v|
       case k
 #      when "error"
-#        raise SmugmugError.new("#{v['type']} - #{v['message']}")
+#        raise YahooError.new("#{v['type']} - #{v['message']}")
       when "id"
         if (v == v.to_i.to_s)
           normalized_hash[k.downcase.to_sym] = v.to_i
