@@ -9,9 +9,9 @@ class EmailShare < Share
   def self.factory(user, params)
     share = EmailShare.new( params )
 
-    #parse to field and create recipients for mail
-
-    params[:to].split(';').each  do |person|
+    #parse to field and create recipients for mail, the field is an array of values
+    params[:to].each  do |person|
+        #TODO:validate addresses
        share.recipients.build( :service => 'email', :name    => person,:address => person)
     end
     return share

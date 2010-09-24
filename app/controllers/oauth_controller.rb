@@ -115,7 +115,7 @@ class OauthController < ApplicationController
     render :text => params.collect{|k,v|"#{k}=#{v}"}.join("&")
   end
 
-  # requires a valid oauth call with a sessio hash
+  # requires a valid oauth call with a session hash
   # validates that the token owner and the session hash match
   def test_session
     if( current_token )

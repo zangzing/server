@@ -237,7 +237,8 @@ zz.wizard = {
                        .insertAfter('#the-recipients li.rounded:last');
       
       $('#m-'+zz.wizard.email_id+' span').empty().html(value);
-      $('#m-'+zz.wizard.email_id+' input').attr({name: 'i-' + zz.wizard.email_id, checked: 'checked'}).val(value);
+      //$('#m-'+zz.wizard.email_id+' input').attr({name: 'i-' + zz.wizard.email_id, checked: 'checked'}).val(value);
+      $('#m-'+zz.wizard.email_id+' input').attr({name: 'email_share[to][]', checked: 'checked'}).val(value);       
       $('#m-'+zz.wizard.email_id).fadeIn('fast');
       $('#m-'+zz.wizard.email_id+' img').attr('id', 'img-'+zz.wizard.email_id);
       $('li.rounded img').click(function(){
@@ -252,11 +253,15 @@ zz.wizard = {
     if (data.length < 6) {
       
     } else {
-      
+      //console.log(data);     
       temp = $(data).html().split('&')[0];
-      value = $(data).html();
-      //console.log(value);
-      //console.log(data);
+        if( !!data.extra )
+            var value = data.extra[0];
+        else
+            var value = $(data).html();
+      //console.log(value);  
+
+
 
       zz.wizard.email_id++;
       //console.log('ID: '+ zz.wizard.email_id +'-- Add '+ temp +' to the view and a ' + $(data).html() + ' checkbox to the form.');
@@ -266,7 +271,9 @@ zz.wizard = {
                        .insertAfter('#the-recipients li.rounded:last');
       
       $('#m-'+zz.wizard.email_id+' span').empty().html(temp);
-      $('#m-'+zz.wizard.email_id+' input').attr({name: 'i-' + zz.wizard.email_id, checked: 'checked'}).val(value);
+     // $('#m-'+zz.wizard.email_id+' input').attr({name: 'i-' + zz.wizard.email_id, checked: 'checked'}).val(value);
+      $('#m-'+zz.wizard.email_id+' input').attr({name: 'email_share[to][]', checked: 'checked'}).val(value);
+
       $('#m-'+zz.wizard.email_id).fadeIn('fast');
       $('#m-'+zz.wizard.email_id+' img').attr('id', 'img-'+zz.wizard.email_id);
       $('li.rounded img').click(function(){
