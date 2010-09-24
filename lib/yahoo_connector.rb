@@ -12,6 +12,8 @@ class YahooConnector
 
   cattr_accessor :api_key, :shared_secret
 
+  TOKEN_SPLITTER = '<K1ND@SPL1773R>'
+
   def initialize(token = nil)
     self.access_token = token
   end
@@ -20,13 +22,13 @@ class YahooConnector
     unless as_string
       @access_token
     else
-      [@access_token.token, @access_token.secret].join('_')
+      [@access_token.token, @access_token.secret].join(TOKEN_SPLITTER)
     end
   end
 
   def access_token=(token)
-    if token.kind_of?(String) && token.include?('_')
-      parts = token.split('_')
+    if token.kind_of?(String) && token.include?(TOKEN_SPLITTER)
+      parts = token.split(TOKEN_SPLITTER)
       create_access_token!(parts[0], parts[1])
     elsif
       @access_token = token
@@ -48,11 +50,11 @@ class YahooConnector
                                  )
   end
 
-  def create_access_token!(oauth_token, oauth_token_secret, first_time = false)
+  def create_access_token!(oauth_token, oauth_token_secret, first_time = false, oauth_verifier = nil)
     if first_time
       req_token = OAuth::RequestToken.from_hash(consumer, {:oauth_token => oauth_token, :oauth_token_secret => oauth_token_secret})
       begin
-        @access_token = req_token.get_access_token
+        @access_token = req_token.get_access_token(:oauth_verifier => oauth_verifier)
       rescue => e
         if e.kind_of?(OAuth::Unauthorized)
           code, msg = e.message.split(' ')
@@ -66,8 +68,8 @@ class YahooConnector
 
   def get_authorize_url(request_token, options = {})
     auth_params = {
-      'oauth_token_secret' => request_token.secret #,
-      #:oauth_callback => options[:callback] || 'oob'
+      'oauth_token_secret' => request_token.secret,
+      :oauth_callback => options[:callback] || 'oob'
     }
     "#{request_token.authorize_url}&#{auth_params.to_url_params}"
     #request_token.authorize_url(auth_params)
