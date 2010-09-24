@@ -6,7 +6,7 @@ class Connector::YahooContactsController < Connector::YahooController
   end
 
   def import
-    contacts = contact_api.contacts
+    contacts = yahoo_api.get_contacts('me')
     imported_contacts = contacts.collect{ |c| Contact.new(:name => c[0], :address => c[1])  }
 
     unless imported_contacts.empty?
