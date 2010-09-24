@@ -1,8 +1,6 @@
 class Connector::YahooController < Connector::ConnectorController
-  #require "contacts"
-
   before_filter :service_login_required
-  
+
   def initialize(*args)
     super(*args)
     YahooConnector.api_key = YAHOO_API_KEYS[:app_key]
@@ -16,7 +14,7 @@ protected
       begin
         @token_string = service_identity.credentials
         @api = YahooConnector.new(@token_string)
-        #@owner = yahoo_api.call_method('yahoo.auth.checkAccessToken')
+        @api.current_user_guid #Aimed to check if token is not expired
       rescue => exception
         raise InvalidToken if exception.kind_of?(YahooError)
         raise HttpCallFail if exception.kind_of?(SocketError)

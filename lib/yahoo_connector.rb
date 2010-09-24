@@ -101,7 +101,11 @@ protected
 
   def call_method(url, method_params = {})
     raise YahooError.new(36, "An access token in needed") unless @access_token
-    response = @access_token.get "#{url}?#{method_params.merge(:format => :json).to_url_params}"
+    begin
+      response = @access_token.get "#{url}?#{method_params.merge(:format => :json).to_url_params}"
+    rescue => e
+      raise YahooError.new(403, e.message) if e.kind_of?(OAuth::Problem)
+    end
     result = JSON.parse(response.body)
 #    raise YahooError.new(result['code'], result['message']) if stat == 'fail'
     normalize_response(extract_data(result))
