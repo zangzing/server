@@ -20,7 +20,7 @@ zz.wizard = {
   
         $.each(obj.steps, function(i, item) {
           
-          $(item.element).click(function(e){
+          $('#indicator '+item.element).click(function(e){
             e.preventDefault();
             temp_id = $(this).attr('id').split('wizard-')[1];
             temp_url = $(this).attr('href');
@@ -46,10 +46,9 @@ zz.wizard = {
       zz.close_drawer(obj.time);
       $('article').empty().load(url, function(data){
         $('#clone-indicator').clone().attr('id', 'indicator').appendTo('#drawer-content', function(){
-          $('#clone-indicator').remove(function(){
-            obj.steps[id].init();
-            zz.wizard.rebind(obj, id);            
-          });
+          $('#clone-indicator').remove();
+          setTimeout(function(){obj.steps[id].init()}, 2000);
+          setTimeout(function(){zz.wizard.rebind(obj, id)}, 2000);            
         });
       });
     
@@ -89,7 +88,7 @@ zz.wizard = {
   rebind: function(obj, id){
     $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 170) + 'px'});        
     $.each(obj.steps, function(i, item) {        
-      $(item.element).click(function(e){
+      $('#indicator a'+item.element).click(function(e){
         e.preventDefault();
         obj.steps[id].bounce();
         temp_id = $(this).attr('id').split('wizard-')[1];
@@ -185,9 +184,9 @@ zz.wizard = {
 
   // loads the status message post form in place of the type switcher on the share step
   social_share: function(){
-    $('div#share-body').empty().load('/albums/'+zz.album_id+'/shares/newpost', function(){                        
+    $('div#share-body').empty().load('/albums/'+zz.album_id+'/shares/newpost', function(){
       $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 170) + 'px'});
-      $(z.validation.new_post_share.element).validate(z.validate.new_post_share);
+      $(z.validate.new_post_share.element).validate(z.validate.new_post_share);
       $('#cancel-share').click(zz.wizard.reload_share);
     });     
   },
@@ -209,10 +208,8 @@ zz.wizard = {
   // reloads the main share part in place of the type switcher on the share step
   reload_share: function(){
       $('#drawer-content').empty().load('/albums/'+zz.album_id+'/shares/new', function(){                        
-        $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 170) + 'px'});
-        $('.social-share').click(zz.wizard.social_share);
-        $('.email-share').click(zz.wizard.email_share);
-        $('.album_privacy').change(zz.wizard.album_update);
+        zz.wizard.rebind(zz.drawers.personal_album, 'share');  
+        zz.drawers.personal_album.steps.share.init();                      
       });
     },
 
