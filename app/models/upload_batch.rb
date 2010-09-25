@@ -26,8 +26,12 @@ class UploadBatch < ActiveRecord::Base
     return UploadBatch.factory( user, album )
   end
 
-  def self.close_open_batches( user, album)
-    existing_batches = UploadBatch.find_all_by_user_id_and_album_id_and_state(user.id, album.id, 'open')
+  def self.close_open_batches( user, album=nil )
+    if album.nil?
+      existing_batches = UploadBatch.find_all_by_user_id_and_state(user.id, 'open')
+    else
+      existing_batches = UploadBatch.find_all_by_user_id_and_album_id_and_state(user.id, album.id, 'open')
+    end
     existing_batches.each { |batch|  batch.close } unless existing_batches.nil?
   end
 
@@ -75,7 +79,7 @@ class UploadBatch < ActiveRecord::Base
       Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(Notifier, :deliver, [msg] )
 
       #If this user has any undelivered shares for this album, send them now
-      shares = Share.find_all_by_user_id_and_album_id( user.id, self.id)
+      shares = Share.find_all_by_user_id_and_album_id( user.id, self.album.id)
       shares.each { |s| s.deliver_later() } if shares
 
       #Update album picon

@@ -282,6 +282,7 @@ zz.wizard = {
     }
   },
 
+ 
   //set up email autocomplete
   email_autocomplete: function(){
     zz.autocompleter = $('#you-complete-me').autocompleteArray(

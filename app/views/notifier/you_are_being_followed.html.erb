@@ -2,7 +2,9 @@
 <HTML>
 <body>
 
-Dear <%= @followed.name %>,
+<%= render(:partial => 'zz_email_banner') %>
+
+<p>Dear <%= @followed.name %>, </p>
 </p>
 <%= @follower.name%> really likes your photos and is now following
 your work. <a href="<%=create_user_follow_url(@followed)%>?follow[followed_id]=<%= @follower.id%>&redirect=true"> Click to Follow back.</a>

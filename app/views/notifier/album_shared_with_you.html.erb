@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<HTML>
+<body>
+<%= render(:partial => 'zz_email_banner') %>
+
+<p>
+  Great News,
+</p>
+
+<p>
+  <%=h @from_user.name %> has shared a ZangZing album with you. Click the link below to see it.
+</p>
+
+
+<p><center><b>
+    <%=link_to (@album.picon_bucket.nil? ? (h @album.name) : (image_tag @album.picon_url ) ), album_url( @album) %>
+</b></center></p>
+
+<p>
+  If you need help plase feel free to <a href="emailto:support@zangzing.com">contact us</a>. 
+</p>
+<p>
+  The ZangZing Team
+</p>
+</body>
+</HTML>

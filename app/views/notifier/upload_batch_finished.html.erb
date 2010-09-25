@@ -1,17 +1,15 @@
 <!DOCTYPE html> 
 <HTML>
 <body>
+<%= render(:partial => 'zz_email_banner') %>
 
-Dear <%= @user.name %>,
-</p>
-The photos you added to ZangZing album titled <B><%= @album.name %></B> are now ready.
+
+
+<p>Dear <%=h @user.name %>,</p>
+<br>
+<p>
+The photos you added to ZangZing album  <B><%=link_to (h @album.name), @album_url  %></B> are now ready.
 If you shared your album, your messages and posts have been sent.
-Click the link below to see the album
-</p>
-<%= @album_url %>
-</p>
-If the above link does not work try copying and pasting it into your browser.
-If you need help plase feel free to contact us at support@zangzing.com
 </p>
 <h3>The ZangZing Team</h3>
 <hr>

@@ -69,6 +69,7 @@ class AlbumsController < ApplicationController
   end
 
   def index
+    UploadBatch.close_open_batches(current_user) if signed_in?
     @user = User.find(params[:user_id])
     if(current_user? @user)
       @albums = @user.albums  #show all albums

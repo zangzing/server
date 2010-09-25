@@ -19,11 +19,11 @@ class EmailShare < Share
 
   def deliver
      if self.sent_at.nil?
-      self.recipients.each do |rec|
+       self.recipients.each do |rec|
         Notifier.deliver_album_shared_with_you(self.user,rec.address,self.album)
-      end
-      self.sent_at = Time.now
-      self.save
+       end
+       self.sent_at = Time.now
+       self.save
      end
   end
 end

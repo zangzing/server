@@ -20,6 +20,7 @@ class Notifier < ActionMailer::Base
     from         @@zzfrom  
     recipients to_address
     subject "#{from_user.name} has shared ZangZing album: #{album.name} with you."
+    content_type "text/html"
     body     :from_user => from_user, :album => album  
   end
 
