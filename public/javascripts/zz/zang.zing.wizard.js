@@ -12,29 +12,18 @@ zz.wizard = {
     if (zz.drawer_open == 0) {
       zz.open_drawer(obj.time, obj.percent);  
     }
+
     
     if (!step) {
       temp = obj.steps[obj.first].url.split('undefined')[0] + zz.album_id + obj.steps[obj.first].url.split('undefined')[1];
       $('#drawer-content').empty().load(temp, function(){
-        $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 170) + 'px'});        
-  
-        $.each(obj.steps, function(i, item) {
-          
-          $('#indicator '+item.element).click(function(e){
-            e.preventDefault();
-            temp_id = $(this).attr('id').split('wizard-')[1];
-            temp_url = $(this).attr('href');
-  
-            obj.steps[obj.first].bounce();
-            zz.wizard.change_step(temp_id, temp_url, obj);              
-          });
-                  
-          //console.log('URL: '+obj.url+', Info: '+item.info+', Drawer Type: '+item.type+'...');
-        });                    
+
+        zz.wizard.rebind(obj, obj.first);              
         obj.steps[obj.first].init();
-      });
+
+      });  
     }
-  
+ 
   },
   
   change_step: function(id, url, obj){
@@ -42,14 +31,21 @@ zz.wizard = {
     //console.log('URL: '+obj.url+', Next: '+obj.steps[id].next+', Drawer: '+zz.drawer_open);
     
     if (obj.steps[id].type == 'partial' && zz.drawer_open == 1) {
+      
+      //console.log('oh snap, were gonna have to ditch the drawer for this');
       $('#drawer-content').empty();
       zz.close_drawer(obj.time);
+      
+      //console.log('drawer: emptied and closing... empty the article and load our partial');
       $('article').empty().load(url, function(data){
-        $('#clone-indicator').clone().attr('id', 'indicator').appendTo('#drawer-content', function(){
-          $('#clone-indicator').remove();
-          setTimeout(function(){obj.steps[id].init()}, 2000);
-          setTimeout(function(){zz.wizard.rebind(obj, id)}, 2000);            
-        });
+        //console.log('clone the indicator');
+
+        $('#clone-indicator').clone().attr('id', 'indicator').appendTo('#drawer-content');
+        $('#clone-indicator').remove();
+        
+        obj.steps[id].init();
+        zz.wizard.rebind(obj, id);  
+      
       });
     
     } else if (obj.steps[id].type == 'partial' && zz.drawer_open == 2) {
@@ -88,7 +84,7 @@ zz.wizard = {
   rebind: function(obj, id){
     $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 170) + 'px'});        
     $.each(obj.steps, function(i, item) {        
-      $('#indicator a'+item.element).click(function(e){
+      $('#indicator a'+ item.element).click(function(e){
         e.preventDefault();
         obj.steps[id].bounce();
         temp_id = $(this).attr('id').split('wizard-')[1];
@@ -98,6 +94,27 @@ zz.wizard = {
       });
               
     });
+    
+    if (obj.last == id) {
+      //console.log('last');
+      $(obj.next_element).click(function(e){
+        $('#drawer .body').fadeOut('fast');
+        zz.slam_drawer(400);
+        temp_url = $(this).attr('href');
+        setTimeout('window.location = "'+temp_url+'"', 500);
+      });
+    } else {
+      //console.log('NOT last');
+      $(obj.next_element).click(function(e){
+        e.preventDefault();
+        obj.steps[id].bounce();
+        temp_id = $(this).attr('class').split('wizard-')[1];
+        temp_url = $(this).attr('href');
+  
+        zz.wizard.change_step(temp_id, temp_url, obj);   
+    
+      });  
+    }
   
   },
   

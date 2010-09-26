@@ -56,31 +56,7 @@ zang.init = {
   
   album: function(){
   
-  
-    $('#nav-new-photo').click(function(){
-      if (typeof zz.album_id == 'undefined') {
-        
-      } else if (zz.drawer_open === 0) {
-        zz.open_drawer(500);
-        zz.add_photos();
-        $('#indicator').fadeIn('slow');
-      }
-    });  
-    
-    $('#nav-share').click(function(){
-      if (typeof zz.album_id == 'undefined') {
-        
-      } else if (zz.drawer_open === 0) {
-        zz.open_drawer(500);
-        zz.share_album();
-        $('#indicator').removeClass('step-'+zz.indicator_step).addClass('step-4').fadeIn('slow');
-        $('#step-add').removeClass('on');
-        zz.indicator = 'step-share';
-        zz.indicator_step = 4;
-        $('#step-share').addClass('on');
-      }
-    });    
-    
+      
   
   },
   
