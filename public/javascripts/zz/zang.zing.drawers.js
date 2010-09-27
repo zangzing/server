@@ -15,7 +15,6 @@ zz.drawers = {
       add: {
         id: 'add',
         next: 'name',
-        element: '#wizard-add',
         info: 'Add Photo Step',
         type: 'full',
         url: '/albums/'+ zz.album_id +'/add_photos',
@@ -36,7 +35,6 @@ zz.drawers = {
       name: {
         id: 'name',
         next: 'edit',
-        element: '#wizard-name',
         info: 'Name Step',
         type: 'full',
 
@@ -59,7 +57,6 @@ zz.drawers = {
       edit: {
         id: 'edit',        
         next: 'share',
-        element: '#wizard-edit',
         info: 'Edit Step',
         type: 'partial',
         
@@ -76,8 +73,6 @@ zz.drawers = {
       share: {
         id: 'share',
         next: 0,
-        id: 'share',
-        element: '#wizard-share',
         info: 'Share Step',
         type: 'full',
 

@@ -23,6 +23,8 @@ zz.wizard = {
 
       });  
     }
+    
+    $('body').addClass('drawer');
  
   },
   
@@ -50,6 +52,9 @@ zz.wizard = {
     
     } else if (obj.steps[id].type == 'partial' && zz.drawer_open == 2) {
       $('article').empty().load(url, function(data){
+        $('#clone-indicator').clone().attr('id', 'indicator').appendTo('#drawer-content');
+        $('#clone-indicator').remove();
+        
         obj.steps[id].init();
         zz.wizard.rebind(obj, id);
         
@@ -84,7 +89,7 @@ zz.wizard = {
   rebind: function(obj, id){
     $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 170) + 'px'});        
     $.each(obj.steps, function(i, item) {        
-      $('#indicator a'+ item.element).click(function(e){
+      $('#indicator a#wizard-'+ item.id).click(function(e){
         e.preventDefault();
         obj.steps[id].bounce();
         temp_id = $(this).attr('id').split('wizard-')[1];

@@ -1062,6 +1062,7 @@ dl#email-share-form dd input, dl#email-share-form dd textarea {
   padding: 5px;
   color: #8c8c8c;
   border: 1px #8c8c8c solid;
+  font-family: "Lucida Grande", "Lucida Sans Unicode", "Trebuchet MS", Tahoma, Helvetica, Arial, sans-serif;
   font-weight: 400;
   font-size: 1.05em;
 }
@@ -1165,6 +1166,11 @@ select.album_privacy {
 article {
   min-width: 930px;
   margin: 10px;
+}
+
+body.drawer article {
+  margin-top: 50px;
+
 }
 
 ul.grid-view {
