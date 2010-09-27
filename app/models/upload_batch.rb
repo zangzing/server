@@ -49,7 +49,7 @@ class UploadBatch < ActiveRecord::Base
     return false if self.state != 'open' 
     self.state = 'closed'
     self.save
-    if self.ready? self.finish
+    self.finish if self.ready? 
   end
 
   def ready?
