@@ -12,32 +12,32 @@ dependencies:
     group: 
     - :default
     version: = 2.3.5
-  authlogic: 
-    group: 
-    - :default
-    version: = 2.1.5
-  oauth-plugin: 
-    group: 
-    - :default
-    version: = 0.3.14
-  mysql: 
-    group: 
-    - :default
-    version: ">= 0"
   sqlite3-ruby: 
     group: 
     - :default
     version: ">= 0"
     require: 
     - sqlite3
-  oauth: 
+  mysql: 
     group: 
     - :default
-    version: = 0.4.1
+    version: ">= 0"
+  oauth-plugin: 
+    group: 
+    - :default
+    version: = 0.3.14
+  authlogic: 
+    group: 
+    - :default
+    version: = 2.1.5
   usesguid: 
     group: 
     - :default
     version: ">= 0"
+  oauth: 
+    group: 
+    - :default
+    version: = 0.4.1
   mechanize: 
     group: 
     - :test
@@ -46,16 +46,16 @@ dependencies:
     group: 
     - :test
     version: ">= 0"
+  delayed_job: 
+    group: 
+    - :default
+    version: = 2.0.3
   hyper-graph: 
     group: 
     - :default
     version: = 0.3.1
     require: 
     - hyper_graph
-  delayed_job: 
-    group: 
-    - :default
-    version: = 2.0.3
   rspec-rails: 
     group: 
     - :test
@@ -64,18 +64,18 @@ dependencies:
     group: 
     - :test
     version: ">= 0"
-  usesguid_migrations: 
-    group: 
-    - :default
-    version: ">= 0"
-  paperclip: 
-    group: 
-    - :default
-    version: = 2.3.1.1
   will_paginate: 
     group: 
     - :default
     version: = 2.3.12
+  paperclip: 
+    group: 
+    - :default
+    version: = 2.3.1.1
+  usesguid_migrations: 
+    group: 
+    - :default
+    version: ">= 0"
   webrat: 
     group: 
     - :test
@@ -84,7 +84,7 @@ dependencies:
     group: 
     - :default
     version: = 0.9.26
-  contacts: 
+  actionmailer: 
     group: 
     - :default
     version: ">= 0"
@@ -92,20 +92,16 @@ dependencies:
     group: 
     - :default
     version: = 1.1.1
-  actionmailer: 
+  flickraw: 
     group: 
     - :default
-    version: ">= 0"
+    version: = 0.8.2
   aws-s3: 
     group: 
     - :default
     version: ">= 0.6.2"
     require: 
     - aws/s3
-  flickraw: 
-    group: 
-    - :default
-    version: = 0.8.2
   hpricot: 
     group: 
     - :default
@@ -143,12 +139,6 @@ specs:
     version: 0.9.26
 - configuration: 
     version: 1.1.0
-- gdata: 
-    version: 1.1.1
-- json: 
-    version: 1.4.6
-- contacts: 
-    version: 1.2.4
 - daemons: 
     version: 1.1.0
 - delayed_job: 
@@ -157,8 +147,12 @@ specs:
     version: 1.3.2
 - faker: 
     version: 0.3.1
+- json: 
+    version: 1.4.6
 - flickraw: 
     version: 0.8.2
+- gdata: 
+    version: 1.1.1
 - hpricot: 
     version: 0.8.2
 - hyper-graph: 
@@ -178,7 +172,7 @@ specs:
 - paperclip: 
     version: 2.3.1.1
 - rack-test: 
-    version: 0.5.4
+    version: 0.5.6
 - rails: 
     version: 2.3.5
 - rspec: 
@@ -197,7 +191,7 @@ specs:
     version: 0.7.1
 - will_paginate: 
     version: 2.3.12
-hash: 2a340d062ae23a30e4937039af2348160a1c5121
+hash: 21136c596716b65b0e6b4b8c1feef8b70787107b
 sources: 
 - Rubygems: 
     uri: http://gemcutter.org
