@@ -21,7 +21,6 @@ gem 'usesguid'
 gem 'usesguid_migrations'
 gem 'actionmailer'
 
-gem 'contacts'
 gem 'hpricot'
 gem 'twitter_oauth'
 

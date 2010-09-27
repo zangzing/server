@@ -1,52 +1,45 @@
 class Connector::YahooController < Connector::ConnectorController
-  require "contacts"
-
   before_filter :service_login_required
-  
+
+  def initialize(*args)
+    super(*args)
+    YahooConnector.api_key = YAHOO_API_KEYS[:app_key]
+    YahooConnector.shared_secret = YAHOO_API_KEYS[:consumer_secret]
+  end
 
 protected
 
   def service_login_required
-    unless login_data?
-      load_login_data!
-      raise InvalidToken unless login_data?
+    unless yahoo_auth_token_string
+      begin
+        @token_string = service_identity.credentials
+        @api = YahooConnector.new(@token_string)
+        @api.current_user_guid #Aimed to check if token is not expired
+      rescue => exception
+        raise InvalidToken if exception.kind_of?(YahooError)
+        raise HttpCallFail if exception.kind_of?(SocketError)
+      end
     end
-    begin
-      contact_api
-    rescue => e
-      raise InvalidCredentials if e.kind_of?(Contacts::AuthenticationError)
-    end
-  end
-
-  def login_data?
-    @login && @password
-  end
-
-  def store_login_data(login, password)
-    @login = login
-    @password = password
-    service_identity.update_attribute(:credentials, {:login => @login, :password => @password}.to_yaml)
-  end
-
-  def load_login_data!
-    return if service_identity.credentials.blank?
-    data = YAML.load(service_identity.credentials)
-    @login = data[:login].to_s
-    @password = data[:password].to_s
-  end
-
-  def wipe_login_data!
-    @login = nil
-    @password = nil
-    service_identity.update_attribute(:credentials, nil)
-  end
-
-  def contact_api
-    @api ||= Contacts::Yahoo.new(@login, @password)
   end
 
   def service_identity
     @service_identity ||= current_user.identity_for_yahoo
+  end
+
+  def owner_info
+    @owner
+  end
+
+  def yahoo_api
+    @api ||= YahooConnector.new
+  end
+
+  def yahoo_api=(api)
+    @api = api
+  end
+
+  def yahoo_auth_token_string
+    @token_string
   end
 
 end
