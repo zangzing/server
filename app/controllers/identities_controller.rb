@@ -1,4 +1,7 @@
 class IdentitiesController < ApplicationController
+
+  layout false
+
   def index
     @identities = current_user.identities
   end
