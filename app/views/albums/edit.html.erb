@@ -6,7 +6,7 @@
   <li id="step-name"><a href="<%= '/albums/'+@album.id+'/name_album' %>" id="wizard-name">Name Album</a></li>
   <li id="step-edit" class="on"><a href="<%= '/albums/'+@album.id+'/edit' %>" id="wizard-edit">Edit Album</a></li>
   <li id="step-share"><a href="<%= '/albums/'+@album.id+'/shares/new' %>" id="wizard-share">Share Album</a></li>
-  <li id="step-btn"><a href="javascript:void(0)" id=""><img id="next-step" src="/images/btn-steps-next.png" /></a></li>
+  <li id="step-btn"><a href="<%= '/albums/'+@album.id+'/shares/new' %>" id="wizard-next" class="wizard-share"><img id="next-step" src="/images/btn-steps-next.png" /></a></li>
 </ul>
 
 <% unless @album.photos.empty? %>

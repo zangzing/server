@@ -5,7 +5,8 @@ zz.drawers = {
   personal_album: {
   
     first: 'add',
-    next_element: '#next-button',
+    last: 'share',
+    next_element: '#wizard-next',
     percent: 0.0,
     time: 600,
  
@@ -75,7 +76,7 @@ zz.drawers = {
       share: {
         id: 'share',
         next: 0,
-        id: 4,
+        id: 'share',
         element: '#wizard-share',
         info: 'Share Step',
         type: 'full',

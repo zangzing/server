@@ -383,11 +383,16 @@ var filechooser = {
     },
 
     add_photos : function(add_url, element_id) {
-
-        add_url += '?album_id=' + zang.zing.album_id;
+		
+		if (add_url.indexOf('?x=') == -1)
+			add_url += '?'
+		else
+			add_url += '&'
+        add_url += 'album_id=' + zang.zing.album_id;
 
         var after_animate = function(){
             if (add_url.indexOf('http://localhost:9090') === 0) {
+				
                 add_url += '&session=' + $.cookie('user_credentials') + '&callback=?';
 
                 $.jsonp({
