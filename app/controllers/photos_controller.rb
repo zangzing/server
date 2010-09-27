@@ -45,6 +45,10 @@ class PhotosController < ApplicationController
     @album = Album.find(params[:album_id])
     @photos = []
 
+    if params[:source_guid].nil?
+      render :json => "source_guid parameter required. Unable to create photos", :status=>400
+    end
+
     (0...params[:source_guid].length).each do |index|
       source_guid = params[:source_guid][index.to_s]
       size = params[:size][index.to_s]

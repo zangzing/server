@@ -45,10 +45,11 @@ class UploadBatch < ActiveRecord::Base
   end
 
   def close
-    return if self.state == 'closed'
+    return true if self.state == 'closed'
+    return false if self.state != 'open' 
     self.state = 'closed'
     self.save
-    self.finish
+    if self.ready? self.finish
   end
 
   def ready?
@@ -70,27 +71,26 @@ class UploadBatch < ActiveRecord::Base
     return false;
   end
 
-  def finish    
-    return if self.state == 'finished'
+  def finish
+    return true if self.state == 'finished'
+    return false if self.state != 'ready'
 
-    if  self.ready?
-      #Notify contributor that upload batch is finished
-      msg = Notifier.create_upload_batch_finished( self)
-      Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(Notifier, :deliver, [msg] )
+    #Notify contributor that upload batch is finished
+    msg = Notifier.create_upload_batch_finished( self)
+    Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(Notifier, :deliver, [msg] )
 
-      #If this user has any undelivered shares for this album, send them now
-      shares = Share.find_all_by_user_id_and_album_id( user.id, self.album.id)
-      shares.each { |s| s.deliver_later() } if shares
+    #If this user has any undelivered shares for this album, send them now
+    shares = Share.find_all_by_user_id_and_album_id( user.id, self.album.id)
+    shares.each { |s| s.deliver_later() } if shares
 
-      #Update album picon
-      self.album.update_picon_later
+    #Update album picon
+    self.album.update_picon_later
 
-      # Create Activity
-      ua = UploadActivity.create( :user => self.user, :album => self.album, :upload_batch => self )
+    # Create Activity
+    ua = UploadActivity.create( :user => self.user, :album => self.album, :upload_batch => self )
 
-      self.state = 'finished'
-      self.save
-    end
+    self.state = 'finished'
+    self.save
   end
 
   protected
