@@ -140,11 +140,11 @@ zz.wizard = {
       console.log('set up the url');
       if (obj.steps[id].url_type == 'album') {
         console.log('album');    
-        temp_url = 'http://' + zz.base + obj.steps[item.id].url.split('$$')[0] + zz.album_id;          
+        temp_url = 'http://' + zz.base + obj.steps[item.id].url.split('$$')[0] + zz.album_id + obj.steps[item.id].url.split('$$')[1];          
         console.log(temp);    
       } else if (obj.steps[id].url_type == 'user') {
         console.log('user');    
-        temp_url = 'http://' + zz.base + obj.steps[item.id].url.split('$$')[0] + zz.user_id;                    
+        temp_url = 'http://' + zz.base + obj.steps[item.id].url.split('$$')[0] + zz.user_id + obj.steps[item.id].url.split('$$')[1];                    
         console.log(temp);    
       }
   

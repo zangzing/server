@@ -4,14 +4,16 @@ zz.drawers = {
       
   personal_album: {
   
+    // set up the album variables
     first: 'add',
     last: 'share',
     next_element: '#next-step',
     percent: 0.0,
     time: 600,
-    redirect: '/albums/$$',
+    redirect: '/albums/$$/photos',
     redirect_type: 'album',
  
+    // set up the wizard steps
     steps: {
     
       add: {
@@ -61,7 +63,7 @@ zz.drawers = {
     
       edit: {
         id: 'edit',        
-        next: 'share',
+        next: 'privacy',
         title: 'Edit Album',
         type: 'partial',
         url: '/albums/$$/edit',
@@ -112,8 +114,11 @@ zz.drawers = {
         
         }
 
-      }
-    }
-  }
+      } 
+    
+    } // end zz.drawers.personal_album.steps
+    
+  } // end zz.drawers.personal_album
 
-};
+
+}; // end zz.drawers
