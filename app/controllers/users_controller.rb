@@ -32,6 +32,7 @@ class UsersController < ApplicationController
   def edit 
     @title = "Edit user"
     @user = @current_user    
+    render :layout => false
   end
   
   def update

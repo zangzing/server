@@ -1,16 +1,15 @@
+<div id="headline">
+    <h3>User Account</h3>
+</div>
+<br/>
 
- <!-- % form_for :user, @user, :url => {:action => "update"}, :html => { :method => :put, :multipart => true } do |f| %-->
-    <% form_for @user do | f|  %>
+  <% form_for @user, {:id=>"update-user-form"} do | f|  %>
 	    <%= render :partial => 'fields', :locals =>{:f => f }%>
-        <div class="field">
-            <%= f.label :style, "Style" %><br />
-            <%= f.radio_button  :style, "gray" %>Midnight Breeze
-            <%= f.radio_button  :style, "white" %>Pearly White
-        </div>
 	<div class="actions">
-		<%= f.submit "Update"%>
+		<%= f.submit "Update", {:id=>"update-user-button"}%>
 	</div>
 
+<% end %>
      <p>
        <b>Last login at:</b>
        <%=h @user.last_login_at %>
@@ -30,5 +29,3 @@
        <b>Current login ip:</b>
        <%=h @user.current_login_ip %>
      </p>
-     
-<% end %>

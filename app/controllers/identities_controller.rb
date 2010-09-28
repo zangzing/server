@@ -1,16 +1,22 @@
 class IdentitiesController < ApplicationController
+
+  before_filter :require_user
+
+  layout false
+
   def index
-    @identities = current_user.identities
+   render
   end
 
   def destroy
-    identity = current_user.identities.find(:first, :conditions => {:id => params[:id]})
+    identity = current_user.identities.find_by_id( params[:id] )
     if identity.destroy
-      flash[:notice] = "Identity ##{identity.id} was deleted"
+      flash[:notice] = "#{identity.type.to_s.capitalize } Identity  was deleted"
+      render :action => 'index', :result => 200
     else
-      flash[:notice] = "Identity ##{identity.id} was not deleted"
+      flash[:error] = "Unable to delete #{identity.type.to_s.capitalize}"
+      render :action => 'index', :result => 500
     end
-    redirect_to :action => 'index'
   end
 
 end
