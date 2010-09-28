@@ -5,8 +5,7 @@ class Notifier < ActionMailer::Base
   else
     @@zzfrom = '"ZangZing '+Rails.env.capitalize+' Environment" <do-not-reply@zangzing.com>'
   end
-  
-  #default_url_options[:host] = APPLICATION_HOST
+
 
   def upload_batch_finished( batch )
     from         @@zzfrom
@@ -37,6 +36,7 @@ class Notifier < ActionMailer::Base
       from          @@zzfrom
       recipients    user.email
       sent_on       Time.now
+      content_type "text/html"
       body          :account_activation_url => activate_url(user.perishable_token)
   end
 
@@ -45,6 +45,7 @@ class Notifier < ActionMailer::Base
     from          @@zzfrom
     recipients    user.email
     sent_on       Time.now
+    content_type "text/html"
     body          :edit_password_reset_url => edit_password_reset_url(user.perishable_token)
   end
 
@@ -53,6 +54,7 @@ class Notifier < ActionMailer::Base
     from          @@zzfrom
     recipients    user.email
     sent_on       Time.now
+    content_type "text/html"
     body          :root_url => root_url
   end
 
