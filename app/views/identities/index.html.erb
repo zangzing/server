@@ -1,40 +1,26 @@
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<h2>Identities</h2>
-
+<div id="headline">
+    <h3>Identities</h3>
+</div>
+<div id="delete-results">
+  
+</div>
 <table width="100%">
   <tr>
-    <td>Type</td>
-    <td>Date created</td>
-    <td>Number of contacts</td>
-    <td>Username</td>
-    <td>Action</td>
+    <th>Type</th>
+    <th>Date created</th>
+    <th>Number of contacts</th>
+    <th>Action</th>
   </tr>
-  <% @identities.each do |identity| %>
+  <% current_user.identities.each_index do |i|
+     identity = current_user.identities.fetch( i ) %>
     <tr>
       <td><%= identity.name %> </td>
       <td><%= identity.created_at %> </td>
       <td><%= identity.contacts.count %> </td>
-      <td><%= 'n/a' %> </td>
-      <td><%= link_to '[Delete]', user_identity_path(:id => identity.id, :user_id => params[:user_id]), :method => :delete, :confirm => "Are you sure you want to delete your #{identity.name} identity?" %></td>
+      <td><button  class="delete-id-button"
+               id="delete-id-button-<%=i%>"
+               value="<%= user_identity_path(:id => identity.id, :user_id => params[:user_id])%>">
+               [Delete]</button></td>
     </tr>
   <% end %>
 </table>

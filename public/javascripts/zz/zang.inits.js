@@ -20,7 +20,25 @@ zang.init = {
       };
       zz.easy_drawer(600, 0.0, '/users/'+zz.user_id+'/albums/new', temp);
     });
-    
+
+    $('#nav-like').click(function(){
+      callback = function(){
+        $('.delete-id-button').click(zz.wizard.delete_identity);
+      };
+      zz.easy_drawer(600, 0.0, '/users/'+zz.user_id+'/identities', callback);
+    });
+
+    $('#nav-buy').click(function(){
+      callback = function(){
+        $(zang.validate.user_update.element).validate(zang.validate.user_update);  
+        $('#update-user-button').click(zz.wizard.update_user);
+      };
+      zz.easy_drawer(600, 0.0, '/users/'+zz.user_id+'/edit', callback);
+    });
+
+
+
+
     /*  
     // open drawer demo
     $('#nav-new-album').click(function(){

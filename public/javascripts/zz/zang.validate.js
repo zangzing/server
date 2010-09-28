@@ -35,7 +35,21 @@ zang.validate = {
       'user[password]': 'Six characters or more please.'
     }
   },
-  
+
+  user_update: {
+    element: '#user-update-form',
+    rules: {
+      'user[name]': { required: true, minlength: 5 },
+      'user[email]': { required: true, email: true },
+    },
+    messages: {
+      'user[name]': 'Please enter your name.',
+      'user[email]': 'We promise we won&rsquo;t spam you.',
+    }
+  },
+
+
+
   new_post_share: {
     element: '#new_post_share',
     rules: {

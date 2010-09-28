@@ -326,6 +326,18 @@ zz.wizard = {
 
   album_update: function(){
     $.post('/albums/'+zz.album_id, $(".edit_album").serialize());
-  }
+  },
 
+  delete_identity: function(){
+         //if ( confirm('Are you sure you want to delete this identity?')){
+             $.post(this.value, {"_method": "delete"}, function(data){
+                 $("#drawer-content").html("").html( data );
+                });
+         //}
+  },
+  update_user: function(){
+             $.post(this.value, $("#update-user-form").serialize, function(data){
+                 $("#drawer-content").html("").html( data );
+                });
+  }
 };
