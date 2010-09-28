@@ -89,6 +89,12 @@
     
     </article>
     
+    <div id="clones">
+      <ul id="clone-indicator" class="clearfix">
+        <li></li>
+      </ul>
+    </div>
+    
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript"></script>
     <script type="text/javascript" src="/javascripts/lib/jquery.validate.js" ></script>
     <script type="text/javascript" src="/javascripts/lib/jquery.autocomplete.js"></script>    
@@ -126,6 +132,7 @@
       # This is where we pass things on to js that we need from ruby.
       # Remember to use the zz.zang namespace. 
 -%>    
+      zang.zing.base = '<%= request.env['HTTP_HOST'] %>';
 
       /* Fire up our inits starting up the entire waxy ball!!
       ----------------------------------------------------------------------- */

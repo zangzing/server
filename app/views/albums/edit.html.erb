@@ -1,9 +1,6 @@
 <script>
     var json = '<%=@album.to_json(:include => {:photos => {:only =>[:id, :source_thumb_url, :state], :methods => [:thumb_url]}})%>';
 </script>
-<ul id="clone-indicator" class="clearfix">
-  <li></li>
-</ul>
 
 <% unless @album.photos.empty? %>
   <ul class="grid-view clearfix">

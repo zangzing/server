@@ -14,8 +14,18 @@ zz.wizard = {
     }
 
     
-    if (!step) { // USER ID or ALBUM
-      temp = obj.steps[obj.first].url.split('undefined')[0] + zz.album_id + obj.steps[obj.first].url.split('undefined')[1];
+    if (!step) { 
+      console.log('set up the url');
+      if (obj.steps[obj.first].url_type == 'album') {
+        console.log('album');    
+        temp = 'http://' + zz.base + obj.steps[obj.first].url.split('$$')[0] + zz.album_id + obj.steps[obj.first].url.split('$$')[1];          
+        console.log(temp);    
+      } else if (obj.steps[obj.first].url_type == 'user') {
+        console.log('user');    
+        temp = 'http://' + zz.base + obj.steps[obj.first].url.split('$$')[0] + zz.user_id + obj.steps[obj.first].url.split('$$')[1];                    
+        console.log(temp);    
+      }
+
       $('#drawer-content').empty().load(temp, function(){
 
         zz.wizard.build_nav(obj, obj.first);              
@@ -42,21 +52,18 @@ zz.wizard = {
       //console.log('drawer: emptied and closing... empty the article and load our partial');
       $('article').empty().load(url, function(data){
         //console.log('clone the indicator');
-
-        $('#clone-indicator').clone().attr('id', 'indicator').appendTo('#drawer-content');
-        $('#clone-indicator').remove();
         
         obj.steps[id].init();
+        zz.wizard.build_nav(obj, id);  
         zz.wizard.rebind(obj, id);  
       
       });
     
     } else if (obj.steps[id].type == 'partial' && zz.drawer_open == 2) {
       $('article').empty().load(url, function(data){
-        $('#clone-indicator').clone().attr('id', 'indicator').appendTo('#drawer-content');
-        $('#clone-indicator').remove();
-        
-        obj.steps[id].init();
+              
+        obj.steps[id].init();         
+        zz.wizard.build_nav(obj, id);  
         zz.wizard.rebind(obj, id);
         
       });
@@ -64,12 +71,14 @@ zz.wizard = {
       zz.open_drawer(obj.time);
       $('#drawer-content').empty().load(url, function(data){
         obj.steps[id].init();
+        zz.wizard.build_nav(obj, id);  
         zz.wizard.rebind(obj, id);
   
       });      
     } else if (obj.steps[id].type == 'full' && zz.drawer_open == 1) {
       $('#drawer-content').empty().load(url, function(data){
         obj.steps[id].init();
+        zz.wizard.build_nav(obj, id);  
         zz.wizard.rebind(obj, id);
   
       });      
@@ -78,6 +87,7 @@ zz.wizard = {
       zz.close_drawer(obj.time);
       $('article').empty().load(url, function(data){
         obj.steps[id].init();
+        zz.wizard.build_nav(obj, id);  
         zz.wizard.rebind(obj, id);
       });
     } else {
@@ -89,46 +99,59 @@ zz.wizard = {
   
   build_nav: function(obj, id){
   
-  temp_id = 1;
-  temp = '';
-  $.each(obj.steps, function(i, item) { 
-    if (item.id == id) {
-      value = temp_id;
-      temp += '<li id="wizard-'+ item.id + '" class="on">';
-      temp += '<img src="/images/wiz-num-'+temp_id+'-on.png" class="num"> '+ item.title +'</li>';   
+    temp_id = 1;
+    temp = '';
+    $.each(obj.steps, function(i, item) { 
+      if (item.id == id) {
+        value = temp_id;
+        temp += '<li id="wizard-'+ item.id + '" class="on">';
+        temp += '<img src="/images/wiz-num-'+temp_id+'-on.png" class="num"> '+ item.title +'</li>';   
+      } else {
+        temp += '<li id="wizard-'+ item.id + '">';
+        temp += '<img src="/images/wiz-num-'+temp_id+'.png" class="num"> '+ item.title +'</li>';       
+      }
+      
+      temp_id++;
+                    
+    });
+    
+    if (obj.steps[id].next == 0) {
+      temp += '<li id="step-btn"><img id="next-step" src="/images/btn-wizard-done.png" /></li>';    
     } else {
-      temp += '<li id="wizard-'+ item.id + '">';
-      temp += '<img src="/images/wiz-num-'+temp_id+'.png" class="num"> '+ item.title +'</li>';       
+      temp += '<li id="step-btn"><img id="next-step" src="/images/btn-steps-next.png" /></li>';  
     }
     
-    temp_id++;
-                  
-  });
+    //console.log(temp);
   
-  if (obj.steps[id].next == 0) {
-    temp += '<li id="step-btn"><img id="next-step" src="/images/btn-wizard-done.png" /></li>';    
-  } else {
-    temp += '<li id="step-btn"><img id="next-step" src="/images/btn-steps-next.png" /></li>';  
-  }
-  
-  //console.log(temp);
-
-  $('#clone-indicator').clone().attr('id', 'indicator').addClass('step-'+value+'-5').html(temp).prependTo('#drawer-content');
+    $('#clone-indicator').clone().attr('id', 'indicator').addClass('step-'+value+'-5').html(temp).prependTo('#drawer-content');
   
   },
   
   
   rebind: function(obj, id){
     $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 170) + 'px'});        
-/*    $.each(obj.steps, function(i, item) {        
+
+    $.each(obj.steps, function(i, item) {        
       $('#indicator li#wizard-'+ item.id).click(function(e){
         e.preventDefault();
         obj.steps[id].bounce();
         temp_id = $(this).attr('id').split('wizard-')[1];
-        temp_url = $(this).attr('href');
+
+      console.log('set up the url');
+      if (obj.steps[id].url_type == 'album') {
+        console.log('album');    
+        temp_url = 'http://' + zz.base + obj.steps[item.id].url.split('$$')[0] + zz.album_id;          
+        console.log(temp);    
+      } else if (obj.steps[id].url_type == 'user') {
+        console.log('user');    
+        temp_url = 'http://' + zz.base + obj.steps[item.id].url.split('$$')[0] + zz.user_id;                    
+        console.log(temp);    
+      }
   
         zz.wizard.change_step(temp_id, temp_url, obj);           
       });
+
+
               
     });
     
@@ -137,7 +160,11 @@ zz.wizard = {
       $(obj.next_element).click(function(e){
         $('#drawer .body').fadeOut('fast');
         zz.slam_drawer(400);
-        temp_url = $(this).attr('href');
+        if (obj.redirect_type == 'album') {
+          temp_url = 'http://' + zz.base + obj.redirect.split('$$')[0] + zz.album_id + obj.redirect.split('$$')[1];          
+        } else if (obj.redirect_type == 'user') {
+          temp_url = 'http://' + zz.base + obj.redirect.split('$$')[0] + zz.user_id + obj.redirect.split('$$')[1];                    
+        }
         setTimeout('window.location = "'+temp_url+'"', 500);
       });
     } else {
@@ -145,14 +172,19 @@ zz.wizard = {
       $(obj.next_element).click(function(e){
         e.preventDefault();
         obj.steps[id].bounce();
-        temp_id = $(this).attr('class').split('wizard-')[1];
-        temp_url = $(this).attr('href');
-  
+        temp_id = obj.steps[id].next;
+
+        if (obj.steps[obj.steps[id].next].url_type == 'album') {
+          temp_url = 'http://' + zz.base + obj.steps[obj.steps[id].next].url.split('$$')[0] + zz.album_id + obj.steps[obj.steps[id].next].url.split('$$')[1];          
+        } else if (obj.steps[obj.steps[id].next].url_type == 'user') {
+          temp_url = 'http://' + zz.base + obj.steps[obj.steps[id].next].url.split('$$')[0] + zz.user_id + obj.steps[obj.steps[id].next].url.split('$$')[1];                    
+        }
+
+        console.log('id: '+temp_id+', url: '+temp_url);
         zz.wizard.change_step(temp_id, temp_url, obj);   
     
       });  
     }
-*/  
   },
   
   

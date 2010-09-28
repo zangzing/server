@@ -1,47 +1,16 @@
 /* Wizard Drawer objects 
 --------------------------------------------------------------------------- */
 zz.drawers = {
-
-  sample: {
-    first: 'test', // steps.id of the first step
-    last: 'test', // steps.id of the last step
-    next_element: '#next',
-    percent: 0.0,
-    time: 600,
- 
-    steps: {
-    
-      test: {
-        id: 'test', // nav target = 'wizard-' + id
-        next: 0, // next button
-        info: 'Sample Wizard Step', //not used, just for context
-        type: 'full', // 'full' to load the partial in the drawer, 'partial' to load into the article
-        url: '/albums/'+ zz.album_id +'/add_photos',  // first step url
-
-        init: function(){ // run this after the partial has loaded
-          filechooser.init(); 
-          setTimeout('$("#added-pictures-tray").fadeIn("fast")', 300);
-          $('#user-info').css('display', 'none');
-          setTimeout("$('#album-info').css('display', 'inline-block')", 200);
-        },
-        
-        bounce: function(){ // run this before loading the next view
-          $('#added-pictures-tray').fadeOut('fast');
-        }
-      
-      }
-      
-    }
-     
-  },
       
   personal_album: {
   
     first: 'add',
     last: 'share',
-    next_element: '#wizard-next',
+    next_element: '#next-step',
     percent: 0.0,
     time: 600,
+    redirect: '/albums/$$',
+    redirect_type: 'album',
  
     steps: {
     
@@ -50,7 +19,8 @@ zz.drawers = {
         next: 'name',
         title: 'Add Photos',
         type: 'full',
-        url: '/albums/'+ zz.album_id +'/add_photos',
+        url: '/albums/$$/add_photos',
+        url_type: 'album',
 
         init: function(){
           filechooser.init(); 
@@ -70,6 +40,8 @@ zz.drawers = {
         next: 'edit',
         title: 'Name Album',
         type: 'full',
+        url: '/albums/$$/name_album',
+        url_type: 'album',
 
         init: function(){
           $('#album_name').keypress( function(){
@@ -92,7 +64,9 @@ zz.drawers = {
         next: 'share',
         title: 'Edit Album',
         type: 'partial',
-        
+        url: '/albums/$$/edit',
+        url_type: 'album',
+                
         init: function(){
           zz.wizard.load_images();
         },
@@ -108,7 +82,9 @@ zz.drawers = {
         next: 'share',
         title: 'Album Privacy',
         type: 'full',
-
+        url: '/albums/$$/privacy',
+        url_type: 'album',
+        
         init: function(){
 
         },
@@ -123,7 +99,9 @@ zz.drawers = {
         next: 0,
         title: 'Share Album',
         type: 'full',
-
+        url: '/albums/$$/shares/new',
+        url_type: 'album',
+        
         init: function(){
           $('.social-share').click(zz.wizard.social_share);
           $('.email-share').click(zz.wizard.email_share);
