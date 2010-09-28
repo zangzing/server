@@ -341,10 +341,12 @@ ul#added-pictures-tray li:hover img.delete {
 ul#clone-indicator {
   display: none;
 }
+
 ul#indicator {
   width: 898px;
   height: 36px;
   margin-top: 4px; 
+  padding-left: 14px;
 }
 
 ul.step-1 {
@@ -367,15 +369,46 @@ ul.step-4 {
   background-repeat: no-repeat;
 }
 
+ul.step-1-5 {
+  background-image: url("/images/bg-5step-strip-1.png");
+  background-repeat: no-repeat;
+}
+
+ul.step-2-5 {
+  background-image: url("/images/bg-5step-strip-2.png");
+  background-repeat: no-repeat;
+}
+
+ul.step-3-5 {
+  background-image: url("/images/bg-5step-strip-3.png");
+  background-repeat: no-repeat;
+}
+
+ul.step-4-5 {
+  background-image: url("/images/bg-5step-strip-4.png");
+  background-repeat: no-repeat;
+}
+
+ul.step-5-5 {
+  background-image: url("/images/bg-5step-strip-5.png");
+  background-repeat: no-repeat;
+}
+
 ul#indicator li {
   float: left;
-  padding-top: 10px;
-  font-size: 1.4em;
+  padding: 8px 19px 0 0;
+  width: 139px;
+  font-size: 1.3em;
   font-weight: 400;
   color: #646464;
-  text-align: left;
+  text-align: center;
   text-transform: uppercase;
   cursor: pointer;
+  overflow: hidden;
+}
+
+ul#indicator li img.num {
+  vertical-align: -40%;
 }
 
 ul#indicator li a {
@@ -387,31 +420,11 @@ ul#indicator li.on a {
   color: #fff;
 }
 
-ul#indicator li#step-add {
-  padding-left: 72px;
-  width: 124px;
-}
-
-ul#indicator li#step-name {
-  padding-left: 74px;
-  width: 124px;
-}
-
-ul#indicator li#step-edit {
-  width: 120px;
-  padding-left: 80px;
-}
-
-ul#indicator li#step-share {
-  width: 115px;
-  padding-left: 78px;
-}
-
 ul#indicator li#step-btn {
-  width: 36px;
+  width: 66px;
   text-align: center;
-  padding-top: 5px;
-  padding-left: 22px;
+  padding-top: 2px;
+  padding-left: 2px;
 }
 
 ul#indicator li.on {

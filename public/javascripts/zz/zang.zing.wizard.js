@@ -14,10 +14,11 @@ zz.wizard = {
     }
 
     
-    if (!step) {
+    if (!step) { // USER ID or ALBUM
       temp = obj.steps[obj.first].url.split('undefined')[0] + zz.album_id + obj.steps[obj.first].url.split('undefined')[1];
       $('#drawer-content').empty().load(temp, function(){
 
+        zz.wizard.build_nav(obj, obj.first);              
         zz.wizard.rebind(obj, obj.first);              
         obj.steps[obj.first].init();
 
@@ -86,10 +87,41 @@ zz.wizard = {
     
   },
   
+  build_nav: function(obj, id){
+  
+  temp_id = 1;
+  temp = '';
+  $.each(obj.steps, function(i, item) { 
+    if (item.id == id) {
+      value = temp_id;
+      temp += '<li id="wizard-'+ item.id + '" class="on">';
+      temp += '<img src="/images/wiz-num-'+temp_id+'-on.png" class="num"> '+ item.title +'</li>';   
+    } else {
+      temp += '<li id="wizard-'+ item.id + '">';
+      temp += '<img src="/images/wiz-num-'+temp_id+'.png" class="num"> '+ item.title +'</li>';       
+    }
+    
+    temp_id++;
+                  
+  });
+  
+  if (obj.steps[id].next == 0) {
+    temp += '<li id="step-btn"><img id="next-step" src="/images/btn-wizard-done.png" /></li>';    
+  } else {
+    temp += '<li id="step-btn"><img id="next-step" src="/images/btn-steps-next.png" /></li>';  
+  }
+  
+  //console.log(temp);
+
+  $('#clone-indicator').clone().attr('id', 'indicator').addClass('step-'+value+'-5').html(temp).prependTo('#drawer-content');
+  
+  },
+  
+  
   rebind: function(obj, id){
     $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 170) + 'px'});        
-    $.each(obj.steps, function(i, item) {        
-      $('#indicator a#wizard-'+ item.id).click(function(e){
+/*    $.each(obj.steps, function(i, item) {        
+      $('#indicator li#wizard-'+ item.id).click(function(e){
         e.preventDefault();
         obj.steps[id].bounce();
         temp_id = $(this).attr('id').split('wizard-')[1];
@@ -120,7 +152,7 @@ zz.wizard = {
     
       });  
     }
-  
+*/  
   },
   
   

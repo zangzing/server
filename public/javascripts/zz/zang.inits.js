@@ -15,11 +15,14 @@ zang.init = {
     });
     
     $('#nav-new-album').click(function(){
-      temp = function(){
+      callback = function(){
         $('#personal_album_link').click(zz.wizard.create_album);
       };
-      zz.easy_drawer(600, 0.0, '/users/'+zz.user_id+'/albums/new', temp);
+      
+      zz.easy_drawer(600, 0.0, '/users/'+zz.user_id+'/albums/new', callback);
     });
+    
+    
     
     /*  
     // open drawer demo

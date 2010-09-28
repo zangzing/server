@@ -1,12 +1,8 @@
 <script>
     var json = '<%=@album.to_json(:include => {:photos => {:only =>[:id, :source_thumb_url, :state], :methods => [:thumb_url]}})%>';
 </script>
-<ul id="clone-indicator" class="step-3 clearfix">
-  <li id="step-add"><a href="<%= '/albums/'+@album.id+'/add_photos' %>" id="wizard-add">Add Photos</a></li>
-  <li id="step-name"><a href="<%= '/albums/'+@album.id+'/name_album' %>" id="wizard-name">Name Album</a></li>
-  <li id="step-edit" class="on"><a href="<%= '/albums/'+@album.id+'/edit' %>" id="wizard-edit">Edit Album</a></li>
-  <li id="step-share"><a href="<%= '/albums/'+@album.id+'/shares/new' %>" id="wizard-share">Share Album</a></li>
-  <li id="step-btn"><a href="<%= '/albums/'+@album.id+'/shares/new' %>" id="wizard-next" class="wizard-share"><img id="next-step" src="/images/btn-steps-next.png" /></a></li>
+<ul id="clone-indicator" class="clearfix">
+  <li></li>
 </ul>
 
 <% unless @album.photos.empty? %>

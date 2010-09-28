@@ -1,7 +1,40 @@
 /* Wizard Drawer objects 
 --------------------------------------------------------------------------- */
 zz.drawers = {
+
+  sample: {
+    first: 'test', // steps.id of the first step
+    last: 'test', // steps.id of the last step
+    next_element: '#next',
+    percent: 0.0,
+    time: 600,
+ 
+    steps: {
     
+      test: {
+        id: 'test', // nav target = 'wizard-' + id
+        next: 0, // next button
+        info: 'Sample Wizard Step', //not used, just for context
+        type: 'full', // 'full' to load the partial in the drawer, 'partial' to load into the article
+        url: '/albums/'+ zz.album_id +'/add_photos',  // first step url
+
+        init: function(){ // run this after the partial has loaded
+          filechooser.init(); 
+          setTimeout('$("#added-pictures-tray").fadeIn("fast")', 300);
+          $('#user-info').css('display', 'none');
+          setTimeout("$('#album-info').css('display', 'inline-block')", 200);
+        },
+        
+        bounce: function(){ // run this before loading the next view
+          $('#added-pictures-tray').fadeOut('fast');
+        }
+      
+      }
+      
+    }
+     
+  },
+      
   personal_album: {
   
     first: 'add',
@@ -15,7 +48,7 @@ zz.drawers = {
       add: {
         id: 'add',
         next: 'name',
-        info: 'Add Photo Step',
+        title: 'Add Photos',
         type: 'full',
         url: '/albums/'+ zz.album_id +'/add_photos',
 
@@ -35,7 +68,7 @@ zz.drawers = {
       name: {
         id: 'name',
         next: 'edit',
-        info: 'Name Step',
+        title: 'Name Album',
         type: 'full',
 
         init: function(){
@@ -57,7 +90,7 @@ zz.drawers = {
       edit: {
         id: 'edit',        
         next: 'share',
-        info: 'Edit Step',
+        title: 'Edit Album',
         type: 'partial',
         
         init: function(){
@@ -69,11 +102,26 @@ zz.drawers = {
         }
 
       },
+      
+      privacy: {
+        id: 'privacy',
+        next: 'share',
+        title: 'Album Privacy',
+        type: 'full',
+
+        init: function(){
+
+        },
+        
+        bounce: function(){
+
+        }      
+      },
     
       share: {
         id: 'share',
         next: 0,
-        info: 'Share Step',
+        title: 'Share Album',
         type: 'full',
 
         init: function(){

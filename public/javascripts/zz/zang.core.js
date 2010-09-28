@@ -1,6 +1,6 @@
 var temp;var temp_width;var temp_height;var temp_top;var temp_left; 
 var temp_id;var temp_url;var content_url;var serialized;var temp_top_new;
-var temp_left_new;var value;
+var temp_left_new;var value;var callback;
 
 /* Welcome to ZangZing
 ----------------------------------------------------------------------------- */
@@ -192,8 +192,8 @@ var zang = {
       zang.zing.open_drawer(time, opacity);
       
       $('#drawer-content').empty().load(url, function(){
+        $('div#drawer-content div#scroll-body').css({height: (zang.zing.drawer_height - 50) + 'px'});
         funct();
-        $('div#drawer-content div#scroll-body').css({height: (zang.zing.drawer_height - 131) + 'px'});
       });     
     },
   
