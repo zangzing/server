@@ -23,7 +23,7 @@ class Connector::FacebookFoldersController < Connector::FacebookController
     photos = []
     photos_list.each do |p|
       photo = Photo.create(
-                :caption => p[:name],
+                :caption => p[:name] || '',
                 :album_id => params[:album_id],
                 :user_id=>current_user.id,
                 :source_guid => Photo.generate_source_guid(p[:source]),
