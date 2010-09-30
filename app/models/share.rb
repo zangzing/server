@@ -22,7 +22,7 @@ class Share < ActiveRecord::Base
 
   has_many :recipients, :dependent => :destroy
   validates_presence_of :album_id, :user_id
-
+  
   def self.factory(user, album, params)
     share = EmailShare.factory(user, params[:email_share]) if params[:email_share]
     share = PostShare.factory(user, params[:post_share]) if params[:post_share]

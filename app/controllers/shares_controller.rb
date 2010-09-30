@@ -1,3 +1,7 @@
+#
+#   Copyright 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
+#
+
 class SharesController < ApplicationController
 
   layout false
@@ -28,9 +32,17 @@ class SharesController < ApplicationController
     @album = Album.find(params[:album_id])
     @share = Share.factory( current_user, @album, params)
     unless @share.save
-          render 'newemail' and return  if params[:mail_share]
-          render 'newpost' and return  if params[:post_share]
+      respond_to do |format |
+          format.html { render 'newemail' and return  if params[:mail_share]
+                        render 'newpost' and return  if params[:post_share]  }
+          format.json {  render :json=> {:status => 400, :errors => @share.errors.full_messages} and return }
+      end
     end
+    flash[:notice] = "Share Created"
+    respond_to do |format |
+          format.html   
+          format.json {  render :json=> {:status => 200, :flash => flash } and return }
+    end    
   end
 
   def edit

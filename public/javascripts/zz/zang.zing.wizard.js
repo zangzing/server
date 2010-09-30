@@ -198,13 +198,21 @@ zz.wizard = {
   email_id: 0,
   autocompleter: 0,
   
-  create_album: function(){
+  create_personal_album: function(){
     $.post('/users/'+zz.user_id+'/albums', { album_type: "PersonalAlbum" }, function(data){
       zz.album_id = data;
       zz.wizard.make_drawer(zz.drawers.personal_album);
     });
   },
-  
+
+  create_group_album: function(){
+    $.post('/users/'+zz.user_id+'/albums', { album_type: "GroupAlbum" }, function(data){
+      zz.album_id = data;
+      zz.wizard.make_drawer(zz.drawers.group_album);
+    });
+  },
+
+
   // load_images is used to build the grid view of an album using json results
   load_images: function(){
     //console.log(json);
@@ -404,4 +412,6 @@ zz.wizard = {
                  $("#drawer-content").html("").html( data );
                 });
   }
+
+
 };

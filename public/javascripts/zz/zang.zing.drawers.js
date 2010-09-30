@@ -118,7 +118,123 @@ zz.drawers = {
     
     } // end zz.drawers.personal_album.steps
     
-  } // end zz.drawers.personal_album
+  }, // end zz.drawers.personal_album
 
+ group_album: {
+
+    // set up the album variables
+    first: 'add',
+    last: 'share',
+    next_element: '#next-step',
+    percent: 0.0,
+    time: 600,
+    redirect: '/albums/$$/photos',
+    redirect_type: 'album',
+
+    // set up the wizard steps
+    steps: {
+
+      add: {
+        id: 'add',
+        next: 'name',
+        title: 'Add Photos',
+        type: 'full',
+        url: '/albums/$$/add_photos',
+        url_type: 'album',
+
+        init: function(){
+          filechooser.init();
+          setTimeout('$("#added-pictures-tray").fadeIn("fast")', 300);
+          $('#user-info').css('display', 'none');
+          setTimeout("$('#album-info').css('display', 'inline-block')", 200);
+        },
+
+        bounce: function(){
+          $('#added-pictures-tray').fadeOut('fast');
+        }
+
+      },
+
+      name: {
+        id: 'name',
+        next: 'contributors',
+        title: 'Name Album',
+        type: 'full',
+        url: '/albums/$$/name_album',
+        url_type: 'album',
+
+        init: function(){
+          $('#album_name').keypress( function(){
+            setTimeout(function(){ $('#album-header-title').html( $('#album_name').val() ) }, 10);
+          });
+        },
+
+        bounce: function(){
+          //post form
+          serialized = $(".edit_album").serialize();
+          value = $('#album_name').val();
+          $('h2#album-header-title').html(value);
+          $.post('/albums/'+zz.album_id, serialized);
+        }
+
+      },
+
+      contributors: {
+        id: 'contributors',
+        next: 'privacy',
+        title: 'Contributors',
+        type: 'full',
+        url: '/albums/$$/contributors/new',
+        url_type: 'album',
+
+        init: function(){
+            setTimeout(function(){zz.wizard.email_autocomplete()}, 500);
+            $(z.validate.new_contributors.element).validate(z.validate.new_contributors);
+            $('#the-list').click(function(){ $('#you-complete-me').focus();});
+        },
+
+        bounce: function() {
+        }
+      },
+
+      privacy: {
+        id: 'privacy',
+        next: 'share',
+        title: 'Album Privacy',
+        type: 'full',
+        url: '/albums/$$/privacy',
+        url_type: 'album',
+        init: function(){
+
+        },
+
+        bounce: function(){
+
+        }
+      },
+
+      share: {
+        id: 'share',
+        next: 0,
+        title: 'Share Album',
+        type: 'full',
+        url: '/albums/$$/shares/new',
+        url_type: 'album',
+
+        init: function(){
+          $('.social-share').click(zz.wizard.social_share);
+          $('.email-share').click(zz.wizard.email_share);
+          $('.album_privacy').change(zz.wizard.album_update);
+        },
+
+        bounce: function(){
+
+        }
+
+      }
+
+    } // end zz.drawers.personal_album.steps
+
+  } // end zz.drawers.personal_album
 
 }; // end zz.drawers
