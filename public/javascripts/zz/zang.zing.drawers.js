@@ -3,7 +3,6 @@
 zz.drawers = {
       
   personal_album: {
-  
     // set up the album variables
     first: 'add',
     last: 'share',
@@ -16,7 +15,7 @@ zz.drawers = {
     // set up the wizard steps
     steps: {
     
-      add: {
+      add: {  //personal album
         id: 'add',
         next: 'name',
         title: 'Add Photos',
@@ -37,31 +36,24 @@ zz.drawers = {
       
       },
     
-      name: {
+      name: {  //personal album
         id: 'name',
         next: 'edit',
         title: 'Name Album',
         type: 'full',
         url: '/albums/$$/name_album',
         url_type: 'album',
-
         init: function(){
           $('#album_name').keypress( function(){
             setTimeout(function(){ $('#album-header-title').html( $('#album_name').val() ) }, 10);
           });
         },
-        
         bounce: function(){
-          //post form
-          serialized = $(".edit_album").serialize();
-          value = $('#album_name').val();
-          $('h2#album-header-title').html(value);
-          $.post('/albums/'+zz.album_id, serialized);
+           zz.wizard.album_update()
         }
-
       },
     
-      edit: {
+      edit: {  //personal album
         id: 'edit',        
         next: 'privacy',
         title: 'Edit Album',
@@ -79,7 +71,7 @@ zz.drawers = {
 
       },
       
-      privacy: {
+      privacy: {  //personal album
         id: 'privacy',
         next: 'share',
         title: 'Album Privacy',
@@ -88,15 +80,14 @@ zz.drawers = {
         url_type: 'album',
         
         init: function(){
-
+            $('.album_privacy').change(zz.wizard.album_update);
         },
         
-        bounce: function(){
-
+        bounce: function(){          
         }      
       },
     
-      share: {
+      share: {   //personal album
         id: 'share',
         next: 0,
         title: 'Share Album',
@@ -107,21 +98,16 @@ zz.drawers = {
         init: function(){
           $('.social-share').click(zz.wizard.social_share);
           $('.email-share').click(zz.wizard.email_share);
-          $('.album_privacy').change(zz.wizard.album_update);        
         },
-        
         bounce: function(){
-        
         }
-
-      } 
+      } //end zz.drawers.personal_album.steps.share
     
     } // end zz.drawers.personal_album.steps
     
   }, // end zz.drawers.personal_album
 
  group_album: {
-
     // set up the album variables
     first: 'add',
     last: 'share',
@@ -133,106 +119,97 @@ zz.drawers = {
 
     // set up the wizard steps
     steps: {
-
-      add: {
+      add: {  //group album
         id: 'add',
         next: 'name',
         title: 'Add Photos',
         type: 'full',
         url: '/albums/$$/add_photos',
         url_type: 'album',
-
         init: function(){
           filechooser.init();
           setTimeout('$("#added-pictures-tray").fadeIn("fast")', 300);
           $('#user-info').css('display', 'none');
           setTimeout("$('#album-info').css('display', 'inline-block')", 200);
         },
-
         bounce: function(){
           $('#added-pictures-tray').fadeOut('fast');
         }
-
       },
-
-      name: {
-        id: 'name',
-        next: 'contributors',
-        title: 'Name Album',
-        type: 'full',
-        url: '/albums/$$/name_album',
-        url_type: 'album',
-
-        init: function(){
-          $('#album_name').keypress( function(){
-            setTimeout(function(){ $('#album-header-title').html( $('#album_name').val() ) }, 10);
-          });
-        },
-
-        bounce: function(){
-          //post form
-          serialized = $(".edit_album").serialize();
-          value = $('#album_name').val();
-          $('h2#album-header-title').html(value);
-          $.post('/albums/'+zz.album_id, serialized);
-        }
-
+      name: {  //group album
+            id: 'name',
+            next: 'edit',
+            title: 'Name Album',
+            type: 'full',
+            url: '/albums/$$/name_album',
+            url_type: 'album',
+            init: function(){
+                $('#album_name').keypress( function(){
+                setTimeout(function(){ $('#album-header-title').html( $('#album_name').val() ) }, 10);
+                });
+            },
+            bounce: function(){
+               zz.wizard.album_update(); //post edit-album form
+            }
       },
-
-      contributors: {
-        id: 'contributors',
+      edit: {    //group album
+        id: 'edit',
         next: 'privacy',
-        title: 'Contributors',
-        type: 'full',
-        url: '/albums/$$/contributors/new',
+        title: 'Edit Album',
+        type: 'partial',
+        url: '/albums/$$/edit',
         url_type: 'album',
-
         init: function(){
-            setTimeout(function(){zz.wizard.email_autocomplete()}, 500);
-            $(z.validate.new_contributors.element).validate(z.validate.new_contributors);
-            $('#the-list').click(function(){ $('#you-complete-me').focus();});
+          zz.wizard.load_images();
         },
-
         bounce: function() {
+          zz.open_drawer();
         }
-      },
 
-      privacy: {
+      },
+      privacy: {   //group album
         id: 'privacy',
-        next: 'share',
+        next: 'contributors',
         title: 'Album Privacy',
         type: 'full',
         url: '/albums/$$/privacy',
         url_type: 'album',
         init: function(){
-
+            $('.album_privacy').change(zz.wizard.album_update);
         },
-
         bounce: function(){
-
         }
       },
-
-      share: {
+      contributors: { // group album
+        id: 'contributors',
+        next: 'share',
+        title: 'Contributors',
+        type: 'full',
+        url: '/albums/$$/contributors/new',
+        url_type: 'album',
+        init: function(){
+            setTimeout(function(){zz.wizard.email_autocomplete()}, 500);
+            $(z.validate.new_contributors.element).validate(z.validate.new_contributors);
+            $('#the-list').click(function(){ $('#you-complete-me').focus();});
+        },
+        bounce: function() {
+        }
+      },
+      share: {  // group album 
         id: 'share',
         next: 0,
         title: 'Share Album',
         type: 'full',
         url: '/albums/$$/shares/new',
         url_type: 'album',
-
         init: function(){
-          $('.social-share').click(zz.wizard.social_share);
-          $('.email-share').click(zz.wizard.email_share);
-          $('.album_privacy').change(zz.wizard.album_update);
+           $('.social-share').click(zz.wizard.social_share);
+           $('.email-share').click(zz.wizard.email_share);
+           $('.album_privacy').change(zz.wizard.album_update);
         },
-
         bounce: function(){
-
         }
-
       }
-
     } // end zz.drawers.personal_album.steps
 
   } // end zz.drawers.personal_album

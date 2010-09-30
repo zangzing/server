@@ -31,6 +31,7 @@ ActionController::Routing::Routes.draw do |map|
     albums.create_user_album  '/users/:user_id/albums.',     :action=>"create",    :conditions=>{ :method => :post }
 
     albums.name_album         '/albums/:id/name_album.',     :action=>"name_album",:conditions=>{ :method => :get }
+    albums.privacy            '/albums/:id/privacy.',        :action=>"privacy",   :conditions=>{ :method => :get }
     albums.add_photos         '/albums/:id/add_photos',      :action=>"add_photos",:conditions=>{ :method => :get }
     albums.edit_album         '/albums/:id/edit.',           :action=>"edit",       :conditions=>{ :method => :get }
     albums.update_album       '/albums/:id.',                :action=>"update",    :conditions=>{ :method => :put }

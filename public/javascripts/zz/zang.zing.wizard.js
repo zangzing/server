@@ -15,15 +15,15 @@ zz.wizard = {
 
     
     if (!step) { 
-      console.log('set up the url');
+      //console.log('set up the url');
       if (obj.steps[obj.first].url_type == 'album') {
-        console.log('album');    
+        //console.log('album');
         temp = 'http://' + zz.base + obj.steps[obj.first].url.split('$$')[0] + zz.album_id + obj.steps[obj.first].url.split('$$')[1];          
-        console.log(temp);    
+        //console.log(temp);
       } else if (obj.steps[obj.first].url_type == 'user') {
-        console.log('user');    
+        //console.log('user');
         temp = 'http://' + zz.base + obj.steps[obj.first].url.split('$$')[0] + zz.user_id + obj.steps[obj.first].url.split('$$')[1];                    
-        console.log(temp);    
+        //console.log(temp);    
       }
 
       $('#drawer-content').empty().load(temp, function(){
@@ -137,15 +137,15 @@ zz.wizard = {
         obj.steps[id].bounce();
         temp_id = $(this).attr('id').split('wizard-')[1];
 
-      console.log('set up the url');
+      //console.log('set up the url');
       if (obj.steps[id].url_type == 'album') {
-        console.log('album');    
+        //console.log('album');
         temp_url = 'http://' + zz.base + obj.steps[item.id].url.split('$$')[0] + zz.album_id + obj.steps[item.id].url.split('$$')[1];          
-        console.log(temp);    
+        //console.log(temp);
       } else if (obj.steps[id].url_type == 'user') {
-        console.log('user');    
+        //console.log('user');
         temp_url = 'http://' + zz.base + obj.steps[item.id].url.split('$$')[0] + zz.user_id + obj.steps[item.id].url.split('$$')[1];                    
-        console.log(temp);    
+        //console.log(temp);    
       }
   
         zz.wizard.change_step(temp_id, temp_url, obj);           
@@ -397,7 +397,7 @@ zz.wizard = {
   },
 
   album_update: function(){
-    $.post('/albums/'+zz.album_id, $(".edit_album").serialize());
+    $.post('/albums/'+zz.album_id,$(".edit_album").serialize() );
   },
 
   delete_identity: function(){
