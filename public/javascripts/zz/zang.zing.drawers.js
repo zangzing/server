@@ -8,33 +8,34 @@ zz.drawers = {
   personal_album: {
     // set up the album variables
     style: 'create', // or edit
-    first: 'add',
-    last: 'share',
-    list_element: 'indicator', // 'indicator' becomes #indicator-5 etc
-    next_element: 'none',
-    percent: 0.0,
-    time: 600,
-    redirect: '/albums/$$/photos',
-    redirect_type: 'album',
+    first: 'add', // first item in the object
+    last: 'share', // last item in the object
+    list_element: 'indicator', // 'indicator' : #indicator-4, #indicator-5, etc
+    next_element: '#next-step', // 'none' shows no next/done btn
+    numbers: 1, // 1 = show the number images, 0 = don't
+    percent: 0.0, // how far to fade the page contents when opening the drawer
+    time: 600, // how fast to open the drawer
+    redirect: '/albums/$$/photos', // where do we go when we're done
+    redirect_type: 'album', // replace $$ w/album_id or user_id
  
     // set up the wizard steps
     steps: {
     
       add: {  //personal album
-        next: 'name',
-        title: 'Add Photos',
-        type: 'full',
-        url: '/albums/$$/add_photos',
-        url_type: 'album',
+        next: 'name', // next in line
+        title: 'Add Photos', // link text
+        type: 'full', // drawer position - full(y open) or partial(ly open)
+        url: '/albums/$$/add_photos', // url of the drawer template
+        url_type: 'album', // replace $$ with album_id ('album') or user_id ('user')
 
-        init: function(){
+        init: function(){ // run when loading the drawer up
           filechooser.init(); 
           setTimeout('$("#added-pictures-tray").fadeIn("fast")', 300);
           $('#user-info').css('display', 'none');
           setTimeout("$('#album-info').css('display', 'inline-block')", 200);
         },
         
-        bounce: function(){
+        bounce: function(){ // run before you leave
           $('#added-pictures-tray').fadeOut('fast');
         }
       
@@ -120,6 +121,7 @@ zz.drawers = {
     last: 'share',
     list_element: 'indicator', // 'indicator' becomes #indicator-5 etc
     next_element: '#next-step',
+    numbers: 1,
     percent: 0.0,
     time: 600,
     redirect: '/albums/$$/photos',

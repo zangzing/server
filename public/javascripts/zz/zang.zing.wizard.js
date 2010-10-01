@@ -115,13 +115,18 @@ zz.wizard = {
     temp_id = 1;
     temp = '';
     $.each(obj.steps, function(i, item) { 
-      if (i == id) {
+      if (i == id && obj.numbers == 1) {
         value = temp_id;
         temp += '<li id="wizard-'+ i + '" class="on">';
         temp += '<img src="/images/wiz-num-'+temp_id+'-on.png" class="num"> '+ item.title +'</li>';   
-      } else {
+      } else if (i == id) {
+        value = temp_id;
+        temp += '<li id="wizard-'+ i + '" class="on">'+ item.title +'</li>';   
+      } else if (obj.numbers == 1) {
         temp += '<li id="wizard-'+ i + '">';
-        temp += '<img src="/images/wiz-num-'+temp_id+'.png" class="num"> '+ item.title +'</li>';       
+        temp += '<img src="/images/wiz-num-'+temp_id+'.png" class="num"> '+ item.title +'</li>';             
+      } else {
+        temp += '<li id="wizard-'+ i + '">'+ item.title +'</li>';       
       }
       temp_id++;
                     
