@@ -47,7 +47,7 @@ class ContributorsController < ApplicationController
       render :action =>'new'
     end
     if @album.contributors.count <= 0
-      renter :action => 'new'
+      render :action => 'new'
     end
     @contributors = @album.contributors
  end
