@@ -22,6 +22,10 @@ zang.init = {
       
       zz.easy_drawer(600, 0.0, '/users/'+zz.user_id+'/albums/new', callback);
     });
+    
+    $('h1#home-link').click(function(){
+      window.location = "http://"+zz.base;
+    });
 
     $('#nav-like').click(function(){
       callback = function(){

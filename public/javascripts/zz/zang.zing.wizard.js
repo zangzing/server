@@ -31,6 +31,26 @@ zz.wizard = {
         obj.steps[obj.first].init();
 
       });  
+    } else {
+    
+      if (obj.steps[step].url_type == 'album') {
+        //console.log('album');
+        temp = 'http://' + zz.base + obj.steps[step].url.split('$$')[0] + zz.album_id + obj.steps[step].url.split('$$')[1];          
+        //console.log(temp);
+      } else if (obj.steps[step].url_type == 'user') {
+        //console.log('user');
+        temp = 'http://' + zz.base + obj.steps[step].url.split('$$')[0] + zz.user_id + obj.steps[step].url.split('$$')[1];                    
+        //console.log(temp);    
+      }
+
+      $('#drawer-content').empty().load(temp, function(){
+
+        zz.wizard.build_nav(obj, step);              
+        obj.steps[step].init();
+
+      });  
+
+      
     }
     
     $('body').addClass('drawer');
@@ -110,7 +130,9 @@ zz.wizard = {
     // the last time we incrimented it didn't load a step - we use this to know the length of the list below
     temp_id--;
     
-    if (obj.steps[id].next == 0 || obj.style == 'edit') {
+    if (obj.next_element == 'none') {
+      // no next button neded
+    } else if (obj.steps[id].next == 0 || obj.style == 'edit') {
       temp += '<li id="step-btn"><img id="next-step" src="/images/btn-wizard-done.png" /></li>';    
     } else {
       temp += '<li id="step-btn"><img id="next-step" src="/images/btn-steps-next.png" /></li>';  
@@ -118,9 +140,9 @@ zz.wizard = {
     
     //console.log(temp);
     if (obj.style == 'edit') {
-      $('#clone-indicator').clone().attr('id', 'indicator-'+temp_id).addClass('edit-'+value+'-'+temp_id).html(temp).prependTo('#drawer-content');    
+      $('#clone-indicator').clone().attr('id', obj.list_element+'-'+temp_id).addClass('edit-'+value+'-'+temp_id).html(temp).prependTo('#drawer-content');    
     } else {
-      $('#clone-indicator').clone().attr('id', 'indicator-'+temp_id).addClass('step-'+value+'-'+temp_id).html(temp).prependTo('#drawer-content');
+      $('#clone-indicator').clone().attr('id', obj.list_element+'-'+temp_id).addClass('step-'+value+'-'+temp_id).html(temp).prependTo('#drawer-content');
     }
     
     zz.wizard.rebind(obj, id, temp_id); //now that we've built the nav let's bind all the nav events
@@ -155,7 +177,9 @@ zz.wizard = {
               
     });
     
-    if (obj.last == id || obj.style == 'edit') {
+    if (obj.next_element == 'none') {
+      // no next button neded
+    } else if (obj.last == id || obj.style == 'edit') {
       //console.log('last');
       $(obj.next_element).click(function(e){
         $('#drawer .body').fadeOut('fast');

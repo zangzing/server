@@ -7,7 +7,8 @@ zz.drawers = {
     style: 'create', // or edit
     first: 'add',
     last: 'share',
-    next_element: '#next-step',
+    list_element: 'indicator', // '#indicator' becomes #indicator-5 etc
+    next_element: 'none',
     percent: 0.0,
     time: 600,
     redirect: '/albums/$$/photos',
@@ -112,6 +113,7 @@ zz.drawers = {
     // set up the album variables
     first: 'add',
     last: 'share',
+    list_element: 'indicator', // 'indicator' becomes #indicator-5 etc
     next_element: '#next-step',
     percent: 0.0,
     time: 600,
