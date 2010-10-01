@@ -133,8 +133,8 @@ class Photo < ActiveRecord::Base
       self.length = (data['EXIF']['ExifImageLength'].to_i rescue nil)
       self.width = (data['EXIF']['ExifImageWidth'].to_i rescue nil)
       self.orientation = (data['EXIF']['Orientation'].to_i rescue nil)
-      self.latitude = (PhotoInfo.decode_gps_coord(data['EXIF']['GPSLatitude']) rescue nil)
-      self.longitude = (PhotoInfo.decode_gps_coord(data['EXIF']['GPSLongitude']) rescue nil)
+      self.latitude = (PhotoInfo.decode_gps_coord(data['EXIF']['GPSLatitude'], data['EXIF']['GPSLatitudeRef']) rescue nil)
+      self.longitude = (PhotoInfo.decode_gps_coord(data['EXIF']['GPSLongitude'], data['EXIF']['GPSLongitudeRef']) rescue nil)
       self.headline = (data['IPTC']['Headline'] || '') if self.headline.blank?
       self.caption = (data['IPTC']['Caption'] || '') if self.caption.blank?
     end
