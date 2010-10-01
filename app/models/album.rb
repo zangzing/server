@@ -42,7 +42,7 @@ class Album < ActiveRecord::Base
 
   default_scope :order => 'created_at DESC'
 
-  PRIVACIES = {'Public' =>'public','Hidden' => 'hidden'};
+  PRIVACIES = {'Public' =>'public','Hidden' => 'hidden','Password' => 'password'};
 
   # All url, path and form helpers treat all subclasses as Album
   def self.model_name

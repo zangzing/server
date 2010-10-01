@@ -56,6 +56,11 @@ class AlbumsController < ApplicationController
     render :layout => false
   end
 
+  def privacy
+    @album = current_user.albums.find( params[:id] )
+    render :layout => false
+  end
+
   def edit
     @album = Album.find(params[:id])
     @photos = @album.photos

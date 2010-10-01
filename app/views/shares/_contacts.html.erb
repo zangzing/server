@@ -1,0 +1,33 @@
+<script type="text/javascript">
+$(document).ready( function(){
+    sharecontacts.setup( <%=( @google_id.credentials_valid? ? 1 : 0 ) %> == 1,
+                        "<%= @google_id.last_contact_refresh%>",
+                         <%=( @yahoo_id.credentials_valid? ? 1 : 0 ) %> == 1,
+                        "<%= @yahoo_id.last_contact_refresh%>",
+                         <%=( @local_id.credentials_valid? ? 1 : 0 ) %> == 1,
+                        "<%= @local_id.last_contact_refresh%>");
+});
+yahoo_contacts = [
+    <% @yahoo_id.contacts.each do|contact| %>
+    ["<%=contact.name%> &lt;<%=contact.address%>&gt;","\"<%=contact.name.to_s%>\" <<%=contact.address%>>"],
+      ["<%=contact.address%>","\"<%=contact.name.to_s%>\" <<%=contact.address%>>"],
+    <% end %>
+    " +O"
+];
+
+google_contacts = [
+    <% @google_id.contacts.each_with_index do |contact, index| %>
+      ["<%=contact.name%> &lt;<%=contact.address%>&gt;","\"<%=contact.name.to_s%>\" <<%=contact.address%>>"],
+      ["<%=contact.address%>","\"<%=contact.name.to_s%>\" <<%=contact.address%>>"],
+    <% end %>
+    " +P"
+];
+
+local_contacts = [
+    <% @local_id.contacts.each do|contact| %>
+       ["<%=contact.name%> &lt;<%=contact.address%>&gt;","\"<%=contact.name.to_s%>\" <<%=contact.address%>>"],
+      ["<%=contact.address%>","\"<%=contact.name.to_s%>\" <<%=contact.address%>>"],
+    <% end %>
+   " +Q"
+];
+</script>

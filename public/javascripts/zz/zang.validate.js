@@ -70,25 +70,58 @@ zang.validate = {
   new_email_share: {
     element: '#new_email_share',
     rules: {
-      'email_share[to]': { required: true, minlength: 10 },
-      'email_share[subject]': { required: true, minlength: 10 },
+      'email_share[to]': { required: true, minlength: 10 },    
       'email_share[message]': { required: true, minlength: 10 }
     },
     messages: {
-      'email_share[to]': '',  
-      'email_share[subject]': '',  
+      'email_share[to]': '',
       'email_share[message]': '' 
     },  
   
     submitHandler: function() {
       serialized = $('#new_email_share').serialize();
-      $.post('/albums/'+zz.album_id+'/shares', serialized, function(data){
-        zz.wizard.reload_share();
-      });
+      $.post('/albums/'+zz.album_id+'/shares.json', serialized, function(data ){
+       if( data.status == 200 ){
+            zz.wizard.reload_share();
+        }else{
+          alert( data.errors.length + " Errors "+data.errors[0]);  
+        }
+      },"json");
     }
     
   }, // end zang.validation.new_post_share    
-  
+
+  new_contributors: {
+    element: '#new_contributors',
+    rules: {
+      'email_share[message]': { required: true, minlength: 10, maxlength: 118 }
+    },
+    messages: {
+      'email_share[message]': ''
+    },
+    submitHandler: function() {
+      serialized = $('#new_contributors').serialize();
+      $.post('/albums/'+zz.album_id+'/contributors.json', serialized, function(data){
+      if( data.flash != undefined ){
+          if( data.flash.error !=undefined)
+            alert( "Error Flash "+data.flash.error);
+          if( data.flash.notice !=undefined)
+            alert( "Notice Flash "+data.flash.notice);
+      }
+      if( data.status == 200 ){
+      }else{
+          if( data.errors != undefined){
+            alert( data.errors.length + " Errors "+data.errors[0]);
+          }
+       }
+      },"json");
+    }
+
+  }, // end zang.validation.new_post_share
+
+
+
+
   sample_sign_up: {
     element: '#sample-sign-up',
     rules: {

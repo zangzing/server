@@ -16,7 +16,8 @@ zang.init = {
     
     $('#nav-new-album').click(function(){
       callback = function(){
-        $('#personal_album_link').click(zz.wizard.create_album);
+        $('#personal_album_link').click(zz.wizard.create_personal_album);
+        $('#group_album_link').click(zz.wizard.create_group_album);
       };
       
       zz.easy_drawer(600, 0.0, '/users/'+zz.user_id+'/albums/new', callback);

@@ -31,6 +31,7 @@ ActionController::Routing::Routes.draw do |map|
     albums.create_user_album  '/users/:user_id/albums.',     :action=>"create",    :conditions=>{ :method => :post }
 
     albums.name_album         '/albums/:id/name_album.',     :action=>"name_album",:conditions=>{ :method => :get }
+    albums.privacy            '/albums/:id/privacy.',        :action=>"privacy",   :conditions=>{ :method => :get }
     albums.add_photos         '/albums/:id/add_photos',      :action=>"add_photos",:conditions=>{ :method => :get }
     albums.edit_album         '/albums/:id/edit.',           :action=>"edit",       :conditions=>{ :method => :get }
     albums.update_album       '/albums/:id.',                :action=>"update",    :conditions=>{ :method => :put }
@@ -42,7 +43,7 @@ ActionController::Routing::Routes.draw do |map|
  #shares
   map.with_options :controller => :shares do |shares|
     shares.album_shares         '/albums/:album_id/shares',          :action=> 'index',   :conditions=>{ :method => :get }
-    shares.create_album_share   '/albums/:album_id/shares',          :action=> 'create',  :conditions=>{ :method => :post }
+    shares.create_album_share   '/albums/:album_id/shares.',         :action=> 'create',  :conditions=>{ :method => :post }
     shares.new_album_share      '/albums/:album_id/shares/new',      :action=> 'new',     :conditions=>{ :method => :get }
     shares.new_album_postshare  '/albums/:album_id/shares/newpost',  :action=> 'newpost', :conditions=>{ :method => :get }
     shares.new_album_emailshare '/albums/:album_id/shares/newemail', :action=> 'newemail',:conditions=>{ :method => :get }
@@ -80,8 +81,6 @@ ActionController::Routing::Routes.draw do |map|
       people.user_activities                 '/users/:user_id/people.',     :action=>'user_index',             :conditions => { :method => :get }
   end
 
-
-
   #followers
   map.with_options :controller => :follows do |f|
     f.user_follows       '/users/:user_id/follows.',       :action=>"index",    :conditions=>{ :method => :get }
@@ -91,6 +90,15 @@ ActionController::Routing::Routes.draw do |map|
     f.block_follow       '/follows/:id/block',            :action=>'block',    :conditions=>{ :method => :put }
     f.unblock_follow     '/follows/:id/unblock',          :action=>'unblock',  :conditions=>{ :method => :put }
   end
+
+  #contributors
+  map.with_options :controller => :contributors do |f|
+      f.album_contributors        '/albums/:album_id/contributors.',    :action=>"index",    :conditions=>{ :method => :get }
+      f.new_album_contributors    '/albums/:album_id/contributors/new', :action=>"new",      :conditions=>{ :method => :get }
+      f.create_album_contributors '/albums/:album_id/contributors.',    :action=>'create',   :conditions=>{ :method => :post}
+      f.destroy_album_contributor '/contributors/:id.',                :action=>'destroy',  :conditions=>{ :method => :delete }
+  end
+
 
   #oauth
   #map.resources :oauth_clients

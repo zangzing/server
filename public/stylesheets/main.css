@@ -349,6 +349,10 @@ ul#indicator-4, ul#indicator-5, ul#indicator-6 {
   padding-left: 14px;
 }
 
+ul#indicator-6 {
+  padding-left: 10px;
+}
+
 ul.step-1-4 {
   background-image: url("/images/bg-4step-strip-1.png");
   background-repeat: no-repeat;
@@ -531,8 +535,8 @@ ul#indicator-5 li {
 
 ul#indicator-6 li {
   float: left;
-  padding: 8px 19px 0 0;
-  width: 114px;
+  padding: 8px 18px 0 0;
+  width: 115px;
   font-size: 1.2em;
   font-weight: 400;
   color: #646464;
@@ -572,6 +576,11 @@ ul#indicator-4 li.on, ul#indicator-5 li.on, ul#indicator-6 li.on {
 #next-step {
   cursor: pointer;
   padding: 1px;
+}
+
+
+ul#indicator-6 #next-step {
+  padding: 0;
 }
 
 ul#small-indicator {

@@ -34,6 +34,18 @@ var filechooser = {
                 }
             );
 
+
+            //Picasa
+            filechooser.roots.push(
+                {
+                    open_url: 'http://localhost:9090/picasa/folders',
+                    type: 'folder',
+                    name: 'Picasa',
+                    classy: 'f_picasa'
+                }
+            );
+
+
             //My Home
             filechooser.roots.push(
                 {

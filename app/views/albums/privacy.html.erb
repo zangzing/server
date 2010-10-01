@@ -1,0 +1,10 @@
+<div class="album-header">
+  <h3>Privacy</h3>
+  <h4>Choose who shall be able to see your album</h4>
+</div>
+
+<div id="scroll-body">
+    <%form_for @album, :url => update_album_url(@album)  do |f| %>
+      <%=select :album, :privacy, Album::PRIVACIES, {:selected =>@album.privacy },  {:class => "album_privacy rounded"}%> &nbsp; <span class="h4">Allows everyone to see this album</span>
+    <%end%>
+</div>    
