@@ -1010,6 +1010,43 @@ ul#choose-album-type li div {
   margin-bottom: 10px;
 }
 
+ul#privacy-menu {
+  width: 660px;
+  margin: 0 auto;
+}
+
+ul#privacy-menu li {
+  float: left;
+  width: 170px;
+  height: 180px;
+  padding: 110px 20px 10px;
+  margin: 0 5px;
+  color: #686868;
+  cursor: pointer;
+}
+
+ul#privacy-menu li div {
+  height: 100px;
+}
+
+ul#privacy-menu li p {
+  margin-bottom: 20px;
+  line-height: 1.5em;
+  line-height: 1.3em;
+}
+
+ul#privacy-menu li#privacy-public {
+  background: url(/images/bg-privacy-public-off.png) no-repeat;
+}
+
+ul#privacy-menu li#privacy-hidden {
+  background: url(/images/bg-privacy-private-off.png) no-repeat;
+}
+
+ul#privacy-menu li#privacy-password {
+  background: url(/images/bg-privacy-password-off.png) no-repeat;
+}
+
 div#drawer-content h3 {
   font-size: 1.7em;
   font-weight: 500;

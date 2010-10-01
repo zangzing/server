@@ -4,7 +4,28 @@
 </div>
 
 <div id="scroll-body">
-    <%form_for @album, :url => update_album_url(@album)  do |f| %>
-      <%=select :album, :privacy, Album::PRIVACIES, {:selected =>@album.privacy },  {:class => "album_privacy rounded"}%> &nbsp; <span class="h4">Allows everyone to see this album</span>
-    <%end%>
+  <ul id="privacy-menu" class="clearfix">
+    <li id="privacy-public"<%= @album.privacy == 'public' ? ' class="current"' : '' %>>
+      <div>
+        <h4>Public</h4>
+        <p>Anyone can see this album on your Home Page</p>
+      </div>
+      <img class="select-button" src="/images/btn-round-selected-<%= @album.privacy == 'public' ? 'on' : 'off' %>.png" />
+    </li>
+    <li id="privacy-hidden"<%= @album.privacy == 'hidden' ? ' class="current"' : '' %>>
+      <div>
+        <h4>Hidden</h4>
+        <p>People with whom you share this album or anyone who knows the album web address can see the album</p>
+      </div>
+      <img class="select-button" src="/images/btn-round-selected-<%= @album.privacy == 'hidden' ? 'on' : 'off' %>.png" />
+    </li>
+    <li id="privacy-password"<%= @album.privacy == 'password' ? ' class="current"' : '' %>>
+      <div>
+        <h4>Password</h4>
+        <p>Only people with whom you share this album and have a ZangZing account can see the album</p>
+      </div>
+      <img class="select-button" src="/images/btn-round-selected-<%= @album.privacy == 'password' ? 'on' : 'off' %>.png" />
+    </li>
+  </ul>
+
 </div>    
