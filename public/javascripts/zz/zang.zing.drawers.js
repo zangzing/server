@@ -5,6 +5,7 @@ zz.drawers = {
   personal_album: {
   
     // set up the album variables
+    style: 'create', // or edit
     first: 'add',
     last: 'share',
     next_element: '#next-step',
@@ -60,7 +61,7 @@ zz.drawers = {
         }
 
       },
-    
+
       edit: {
         id: 'edit',        
         next: 'privacy',

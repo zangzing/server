@@ -342,32 +342,53 @@ ul#clone-indicator {
   display: none;
 }
 
-ul#indicator {
+ul#indicator-4, ul#indicator-5, ul#indicator-6 {
   width: 898px;
   height: 36px;
   margin-top: 4px; 
   padding-left: 14px;
 }
 
-ul.step-1 {
-  background-image: url("/images/bg-4step-1-strip.png");
+ul.step-1-4 {
+  background-image: url("/images/bg-4step-strip-1.png");
   background-repeat: no-repeat;
 }
 
-ul.step-2 {
-  background-image: url("/images/bg-4step-2-strip.png");
+ul.step-2-4 {
+  background-image: url("/images/bg-4step-strip-2.png");
   background-repeat: no-repeat;
 }
 
-ul.step-3 {
-  background-image: url("/images/bg-4step-3-strip.png");
+ul.step-3-4 {
+  background-image: url("/images/bg-4step-strip-3.png");
   background-repeat: no-repeat;
 }
 
-ul.step-4 {
-  background-image: url("/images/bg-4step-4-strip.png");
+ul.step-4-4 {
+  background-image: url("/images/bg-4step-strip-4.png");
   background-repeat: no-repeat;
 }
+
+ul.edit-1-4 {
+  background-image: url("/images/bg-4step-strip-1.png");
+  background-repeat: no-repeat;
+}
+
+ul.edit-2-4 {
+  background-image: url("/images/bg-4step-strip-2.png");
+  background-repeat: no-repeat;
+}
+
+ul.edit-3-4 {
+  background-image: url("/images/bg-4step-strip-3.png");
+  background-repeat: no-repeat;
+}
+
+ul.edit-4-4 {
+  background-image: url("/images/bg-4step-strip-4.png");
+  background-repeat: no-repeat;
+}
+
 
 ul.step-1-5 {
   background-image: url("/images/bg-5step-strip-1.png");
@@ -394,7 +415,107 @@ ul.step-5-5 {
   background-repeat: no-repeat;
 }
 
-ul#indicator li {
+ul.edit-1-5 {
+  background-image: url("/images/bg-5step-edit-1.png");
+  background-repeat: no-repeat;
+}
+
+ul.edit-2-5 {
+  background-image: url("/images/bg-5step-edit-2.png");
+  background-repeat: no-repeat;
+}
+
+ul.edit-3-5 {
+  background-image: url("/images/bg-5step-edit-3.png");
+  background-repeat: no-repeat;
+}
+
+ul.edit-4-5 {
+  background-image: url("/images/bg-5step-edit-4.png");
+  background-repeat: no-repeat;
+}
+
+ul.edit-5-5 {
+  background-image: url("/images/bg-5step-edit-5.png");
+  background-repeat: no-repeat;
+}
+
+ul.step-1-6 {
+  background-image: url("/images/bg-6step-strip-1.png");
+  background-repeat: no-repeat;
+}
+
+ul.step-2-6 {
+  background-image: url("/images/bg-6step-strip-2.png");
+  background-repeat: no-repeat;
+}
+
+ul.step-3-6 {
+  background-image: url("/images/bg-6step-strip-3.png");
+  background-repeat: no-repeat;
+}
+
+ul.step-4-6 {
+  background-image: url("/images/bg-6step-strip-4.png");
+  background-repeat: no-repeat;
+}
+
+ul.step-5-6 {
+  background-image: url("/images/bg-6step-strip-5.png");
+  background-repeat: no-repeat;
+}
+
+ul.step-6-6 {
+  background-image: url("/images/bg-6step-strip-6.png");
+  background-repeat: no-repeat;
+}
+
+ul.edit-1-6 {
+  background-image: url("/images/bg-6step-edit-1.png");
+  background-repeat: no-repeat;
+}
+
+ul.edit-2-6 {
+  background-image: url("/images/bg-6step-edit-2.png");
+  background-repeat: no-repeat;
+}
+
+ul.edit-3-6 {
+  background-image: url("/images/bg-6step-edit-3.png");
+  background-repeat: no-repeat;
+}
+
+ul.edit-4-6 {
+  background-image: url("/images/bg-6step-edit-4.png");
+  background-repeat: no-repeat;
+}
+
+ul.edit-5-6 {
+  background-image: url("/images/bg-6step-edit-5.png");
+  background-repeat: no-repeat;
+}
+
+ul.edit-6-6 {
+  background-image: url("/images/bg-6step-edit-6.png");
+  background-repeat: no-repeat;
+}
+
+ul#indicator-4 li {
+  float: left;
+  padding: 8px 19px 0 0;
+  width: 179px;
+  font-size: 1.3em;
+  font-weight: 400;
+  color: #646464;
+  text-align: center;
+  text-transform: uppercase;
+  cursor: pointer;
+  overflow: hidden;
+  height: 19px;
+}
+
+
+ul#indicator-5 li {
   float: left;
   padding: 8px 19px 0 0;
   width: 139px;
@@ -405,34 +526,52 @@ ul#indicator li {
   text-transform: uppercase;
   cursor: pointer;
   overflow: hidden;
+  height: 19px;
 }
 
-ul#indicator li img.num {
+ul#indicator-6 li {
+  float: left;
+  padding: 8px 19px 0 0;
+  width: 114px;
+  font-size: 1.2em;
+  font-weight: 400;
+  color: #646464;
+  text-align: center;
+  text-transform: uppercase;
+  cursor: pointer;
+  overflow: hidden;
+  height: 19px;
+}
+
+
+ul#indicator-4 li img.num, ul#indicator-5 li img.num, ul#indicator-6 li img.num {
   vertical-align: -40%;
 }
 
-ul#indicator li a {
+ul#indicator-4 li a, ul#indicator-5 li a, ul#indicator-6 li a {
   color: #646464;
   text-decoration: none;
 }
 
-ul#indicator li.on a {
+ul#indicator-4 li.on a, ul#indicator-5 li.on a, ul#indicator-6 li.on a {
   color: #fff;
 }
 
-ul#indicator li#step-btn {
+ul#indicator-4 li#step-btn, ul#indicator-5 li#step-btn, ul#indicator-6 li#step-btn {
   width: 66px;
   text-align: center;
   padding-top: 2px;
   padding-left: 2px;
+  height: 34px;
 }
 
-ul#indicator li.on {
+ul#indicator-4 li.on, ul#indicator-5 li.on, ul#indicator-6 li.on {
   color: #fff;
 }
 
 #next-step {
   cursor: pointer;
+  padding: 1px;
 }
 
 ul#small-indicator {
