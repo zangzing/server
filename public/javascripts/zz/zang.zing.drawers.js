@@ -91,6 +91,7 @@ zz.drawers = {
         
         bounce: function(){          
         }      
+        
       }, //end zz.drawers.personal_album.steps.privacy
     
       share: {
@@ -104,8 +105,10 @@ zz.drawers = {
           $('.social-share').click(zz.wizard.social_share);
           $('.email-share').click(zz.wizard.email_share);
         },
+        
         bounce: function(){
         }
+        
       } //end zz.drawers.personal_album.steps.share
     
     } // end zz.drawers.personal_album.steps
