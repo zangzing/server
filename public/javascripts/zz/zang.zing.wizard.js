@@ -115,12 +115,12 @@ zz.wizard = {
     temp_id = 1;
     temp = '';
     $.each(obj.steps, function(i, item) { 
-      if (item.id == id) {
+      if (i == id) {
         value = temp_id;
-        temp += '<li id="wizard-'+ item.id + '" class="on">';
+        temp += '<li id="wizard-'+ i + '" class="on">';
         temp += '<img src="/images/wiz-num-'+temp_id+'-on.png" class="num"> '+ item.title +'</li>';   
       } else {
-        temp += '<li id="wizard-'+ item.id + '">';
+        temp += '<li id="wizard-'+ i + '">';
         temp += '<img src="/images/wiz-num-'+temp_id+'.png" class="num"> '+ item.title +'</li>';       
       }
       temp_id++;
@@ -154,7 +154,7 @@ zz.wizard = {
     $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 170) + 'px'});        
 
     $.each(obj.steps, function(i, item) {        
-      $('li#wizard-'+ item.id).click(function(e){
+      $('li#wizard-'+ i).click(function(e){
         e.preventDefault();
         obj.steps[id].bounce();
         temp_id = $(this).attr('id').split('wizard-')[1];
@@ -162,11 +162,11 @@ zz.wizard = {
       //console.log('set up the url');
       if (obj.steps[id].url_type == 'album') {
         //console.log('album');
-        temp_url = 'http://' + zz.base + obj.steps[item.id].url.split('$$')[0] + zz.album_id + obj.steps[item.id].url.split('$$')[1];          
+        temp_url = 'http://' + zz.base + obj.steps[i].url.split('$$')[0] + zz.album_id + obj.steps[i].url.split('$$')[1];          
         //console.log(temp);
       } else if (obj.steps[id].url_type == 'user') {
         //console.log('user');
-        temp_url = 'http://' + zz.base + obj.steps[item.id].url.split('$$')[0] + zz.user_id + obj.steps[item.id].url.split('$$')[1];                    
+        temp_url = 'http://' + zz.base + obj.steps[i].url.split('$$')[0] + zz.user_id + obj.steps[i].url.split('$$')[1];                    
         //console.log(temp);    
       }
   

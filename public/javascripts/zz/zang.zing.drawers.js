@@ -1,13 +1,16 @@
 /* Wizard Drawer objects 
 --------------------------------------------------------------------------- */
 zz.drawers = {
-      
+
+
+  /* Create PERSONAL Album 
+  ------------------------------------------------------------------------- */      
   personal_album: {
     // set up the album variables
     style: 'create', // or edit
     first: 'add',
     last: 'share',
-    list_element: 'indicator', // '#indicator' becomes #indicator-5 etc
+    list_element: 'indicator', // 'indicator' becomes #indicator-5 etc
     next_element: 'none',
     percent: 0.0,
     time: 600,
@@ -18,7 +21,6 @@ zz.drawers = {
     steps: {
     
       add: {  //personal album
-        id: 'add',
         next: 'name',
         title: 'Add Photos',
         type: 'full',
@@ -39,24 +41,25 @@ zz.drawers = {
       },
     
       name: {  //personal album
-        id: 'name',
         next: 'edit',
         title: 'Name Album',
         type: 'full',
         url: '/albums/$$/name_album',
         url_type: 'album',
+        
         init: function(){
           $('#album_name').keypress( function(){
             setTimeout(function(){ $('#album-header-title').html( $('#album_name').val() ) }, 10);
           });
         },
+        
         bounce: function(){
            zz.wizard.album_update()
         }
+      
       },
 
       edit: {  //personal album
-        id: 'edit',        
         next: 'privacy',
         title: 'Edit Album',
         type: 'partial',
@@ -74,7 +77,6 @@ zz.drawers = {
       },
       
       privacy: {  //personal album
-        id: 'privacy',
         next: 'share',
         title: 'Album Privacy',
         type: 'full',
@@ -82,7 +84,7 @@ zz.drawers = {
         url_type: 'album',
         
         init: function(){
-            $('.album_privacy').change(zz.wizard.album_update);
+          $('.album_privacy').change(zz.wizard.album_update);
         },
         
         bounce: function(){          
@@ -90,7 +92,6 @@ zz.drawers = {
       },
     
       share: {   //personal album
-        id: 'share',
         next: 0,
         title: 'Share Album',
         type: 'full',
@@ -109,7 +110,11 @@ zz.drawers = {
     
   }, // end zz.drawers.personal_album
 
- group_album: {
+
+  /* Create GROUP Album 
+  ------------------------------------------------------------------------- */ 
+  group_album: {
+ 
     // set up the album variables
     first: 'add',
     last: 'share',
@@ -122,99 +127,117 @@ zz.drawers = {
 
     // set up the wizard steps
     steps: {
+    
       add: {  //group album
-        id: 'add',
         next: 'name',
         title: 'Add Photos',
         type: 'full',
         url: '/albums/$$/add_photos',
         url_type: 'album',
+      
         init: function(){
           filechooser.init();
           setTimeout('$("#added-pictures-tray").fadeIn("fast")', 300);
           $('#user-info').css('display', 'none');
           setTimeout("$('#album-info').css('display', 'inline-block')", 200);
         },
+      
         bounce: function(){
           $('#added-pictures-tray').fadeOut('fast');
         }
+      
       },
+      
       name: {  //group album
-            id: 'name',
-            next: 'edit',
-            title: 'Name Album',
-            type: 'full',
-            url: '/albums/$$/name_album',
-            url_type: 'album',
-            init: function(){
-                $('#album_name').keypress( function(){
-                setTimeout(function(){ $('#album-header-title').html( $('#album_name').val() ) }, 10);
-                });
-            },
-            bounce: function(){
-               zz.wizard.album_update(); //post edit-album form
+        next: 'edit',
+        title: 'Name Album',
+        type: 'full',
+        url: '/albums/$$/name_album',
+        url_type: 'album',
+  
+        init: function(){
+            $('#album_name').keypress( function(){
+            setTimeout(function(){ $('#album-header-title').html( $('#album_name').val() ) }, 10);
+            });
+        },
+  
+        bounce: function(){
+           zz.wizard.album_update(); //post edit-album form
             }
+      
       },
+      
       edit: {    //group album
-        id: 'edit',
         next: 'privacy',
         title: 'Edit Album',
         type: 'partial',
         url: '/albums/$$/edit',
         url_type: 'album',
+       
         init: function(){
           zz.wizard.load_images();
         },
+       
         bounce: function() {
           zz.open_drawer();
         }
 
       },
+      
       privacy: {   //group album
-        id: 'privacy',
         next: 'contributors',
         title: 'Privacy',
         type: 'full',
         url: '/albums/$$/privacy',
         url_type: 'album',
+       
         init: function(){
             $('.album_privacy').change(zz.wizard.album_update);
         },
+      
         bounce: function(){
         }
+      
       },
+      
       contributors: { // group album
-        id: 'contributors',
         next: 'share',
         title: 'Contributors',
         type: 'full',
         url: '/albums/$$/contributors/new',
         url_type: 'album',
+      
         init: function(){
             setTimeout(function(){zz.wizard.email_autocomplete()}, 500);
             $(z.validate.new_contributors.element).validate(z.validate.new_contributors);
             $('#the-list').click(function(){ $('#you-complete-me').focus();});
         },
+      
         bounce: function() {
         }
+      
       },
+      
       share: {  // group album 
-        id: 'share',
         next: 0,
         title: 'Share Album',
         type: 'full',
         url: '/albums/$$/shares/new',
         url_type: 'album',
+      
         init: function(){
            $('.social-share').click(zz.wizard.social_share);
            $('.email-share').click(zz.wizard.email_share);
            $('.album_privacy').change(zz.wizard.album_update);
         },
+      
         bounce: function(){
         }
+      
       }
-    } // end zz.drawers.personal_album.steps
+      
+    } // end zz.drawers.group_album.steps
 
-  } // end zz.drawers.personal_album
+  } // end zz.drawers.group_album
 
 }; // end zz.drawers
