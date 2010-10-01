@@ -3,30 +3,31 @@
 zz.drawers = {
 
 
-  /* Create PERSONAL Album 
+  /* Create ***PERSONAL*** Album 
   ------------------------------------------------------------------------- */      
   personal_album: {
+  
     // set up the album variables
-    style: 'create', // or edit
     first: 'add', // first item in the object
     last: 'share', // last item in the object
     list_element: 'indicator', // 'indicator' : #indicator-4, #indicator-5, etc
-    next_element: '#next-step', // 'none' shows no next/done btn
+    next_element: '#next-step', // alternately, 'none' shows no next/done btn
     numbers: 1, // 1 = show the number images, 0 = don't
     percent: 0.0, // how far to fade the page contents when opening the drawer
+    style: 'create', // create or edit
     time: 600, // how fast to open the drawer
     redirect: '/albums/$$/photos', // where do we go when we're done
-    redirect_type: 'album', // replace $$ w/album_id or user_id
+    redirect_type: 'album', // replace $$ w/the id of the album or user
  
     // set up the wizard steps
     steps: {
     
-      add: {  //personal album
+      add: { 
         next: 'name', // next in line
         title: 'Add Photos', // link text
         type: 'full', // drawer position - full(y open) or partial(ly open)
         url: '/albums/$$/add_photos', // url of the drawer template
-        url_type: 'album', // replace $$ with album_id ('album') or user_id ('user')
+        url_type: 'album', // replace $$ w/the id of the album or user
 
         init: function(){ // run when loading the drawer up
           filechooser.init(); 
@@ -39,9 +40,9 @@ zz.drawers = {
           $('#added-pictures-tray').fadeOut('fast');
         }
       
-      },
+      }, //end zz.drawers.personal_album.steps.add
     
-      name: {  //personal album
+      name: {
         next: 'edit',
         title: 'Name Album',
         type: 'full',
@@ -55,12 +56,12 @@ zz.drawers = {
         },
         
         bounce: function(){
-           zz.wizard.album_update()
+           zz.wizard.album_update();
         }
       
-      },
+      }, //end zz.drawers.personal_album.steps.name
 
-      edit: {  //personal album
+      edit: {
         next: 'privacy',
         title: 'Edit Album',
         type: 'partial',
@@ -75,9 +76,9 @@ zz.drawers = {
           zz.open_drawer();
         }
 
-      },
+      }, //end zz.drawers.personal_album.steps.edit
       
-      privacy: {  //personal album
+      privacy: {
         next: 'share',
         title: 'Album Privacy',
         type: 'full',
@@ -90,9 +91,9 @@ zz.drawers = {
         
         bounce: function(){          
         }      
-      },
+      }, //end zz.drawers.personal_album.steps.privacy
     
-      share: {   //personal album
+      share: {
         next: 0,
         title: 'Share Album',
         type: 'full',
@@ -112,17 +113,18 @@ zz.drawers = {
   }, // end zz.drawers.personal_album
 
 
-  /* Create GROUP Album 
+  /* Create ***GROUP*** Album 
   ------------------------------------------------------------------------- */ 
   group_album: {
  
     // set up the album variables
     first: 'add',
     last: 'share',
-    list_element: 'indicator', // 'indicator' becomes #indicator-5 etc
+    list_element: 'indicator',
     next_element: '#next-step',
     numbers: 1,
     percent: 0.0,
+    style: 'create',
     time: 600,
     redirect: '/albums/$$/photos',
     redirect_type: 'album',
@@ -130,7 +132,7 @@ zz.drawers = {
     // set up the wizard steps
     steps: {
     
-      add: {  //group album
+      add: {
         next: 'name',
         title: 'Add Photos',
         type: 'full',
@@ -148,9 +150,9 @@ zz.drawers = {
           $('#added-pictures-tray').fadeOut('fast');
         }
       
-      },
+      }, //end zz.drawers.group_album.steps.add
       
-      name: {  //group album
+      name: {
         next: 'edit',
         title: 'Name Album',
         type: 'full',
@@ -158,18 +160,18 @@ zz.drawers = {
         url_type: 'album',
   
         init: function(){
-            $('#album_name').keypress( function(){
+          $('#album_name').keypress( function(){
             setTimeout(function(){ $('#album-header-title').html( $('#album_name').val() ) }, 10);
-            });
+          });
         },
   
         bounce: function(){
            zz.wizard.album_update(); //post edit-album form
             }
       
-      },
+      }, //end zz.drawers.group_album.steps.name
       
-      edit: {    //group album
+      edit: {
         next: 'privacy',
         title: 'Edit Album',
         type: 'partial',
@@ -184,9 +186,9 @@ zz.drawers = {
           zz.open_drawer();
         }
 
-      },
+      }, //end zz.drawers.group_album.steps.edit
       
-      privacy: {   //group album
+      privacy: {
         next: 'contributors',
         title: 'Privacy',
         type: 'full',
@@ -200,9 +202,9 @@ zz.drawers = {
         bounce: function(){
         }
       
-      },
+      }, //end zz.drawers.group_album.steps.privacy
       
-      contributors: { // group album
+      contributors: {
         next: 'share',
         title: 'Contributors',
         type: 'full',
@@ -218,9 +220,9 @@ zz.drawers = {
         bounce: function() {
         }
       
-      },
+      }, //end zz.drawers.group_album.steps.contributors
       
-      share: {  // group album 
+      share: {
         next: 0,
         title: 'Share Album',
         type: 'full',
@@ -236,7 +238,7 @@ zz.drawers = {
         bounce: function(){
         }
       
-      }
+      } //end zz.drawers.group_album.steps.share
       
     } // end zz.drawers.group_album.steps
 
