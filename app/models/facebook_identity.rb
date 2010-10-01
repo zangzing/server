@@ -10,7 +10,7 @@ class FacebookIdentity < Identity
       begin
         @graph = HyperGraph.new(self.credentials)
       rescue => exception
-       raise InvalidToken if exception.kind_of?(FacebookError)
+        raise InvalidToken if exception.kind_of?(FacebookError)
         raise HttpCallFail if exception.kind_of?(SocketError)
       end
       raise InvalidToken unless @graph
@@ -18,8 +18,8 @@ class FacebookIdentity < Identity
     return @graph
   end
 
-   def post( message="" )
-     self.facebook_graph.post("me/feed", :message => message)
+   def post(link, message = '')
+     self.facebook_graph.post("me/feed", :message => message, :link => link)
    end
 
   def facebook_auth_token

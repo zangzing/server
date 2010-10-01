@@ -27,9 +27,12 @@ class SharesController < ApplicationController
   def create
     @album = Album.find(params[:album_id])
     @share = Share.factory( current_user, @album, params)
+    @share.link_to_share = album_photos_url(@album)
     unless @share.save
           render 'newemail' and return  if params[:mail_share]
           render 'newpost' and return  if params[:post_share]
+    else
+      @share.deliver_later
     end
   end
 
