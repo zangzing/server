@@ -76,6 +76,7 @@ require 'digest/md5'
 
 class Photo < ActiveRecord::Base
   usesguid
+  has_one :photo_info, :dependent => :destroy
   belongs_to :album
   belongs_to :user
   belongs_to :upload_batch
@@ -126,6 +127,17 @@ class Photo < ActiveRecord::Base
   def set_local_image_metadata
     logger.debug("In local_image before post")
     self.local_image_path = local_image.path
+    self.photo_info = PhotoInfo.factory(self)
+    if data = self.metadata
+      self.capture_date = (DateTime.parse(data['EXIF']['DateTimeOriginal']) rescue nil)
+      self.length = (data['EXIF']['ExifImageLength'].to_i rescue nil)
+      self.width = (data['EXIF']['ExifImageWidth'].to_i rescue nil)
+      self.orientation = (data['EXIF']['Orientation'].to_i rescue nil)
+      self.latitude = (PhotoInfo.decode_gps_coord(data['EXIF']['GPSLatitude'], data['EXIF']['GPSLatitudeRef']) rescue nil)
+      self.longitude = (PhotoInfo.decode_gps_coord(data['EXIF']['GPSLongitude'], data['EXIF']['GPSLongitudeRef']) rescue nil)
+      self.headline = (data['IPTC']['Headline'] || '') if self.headline.blank?
+      self.caption = (data['IPTC']['Caption'] || '') if self.caption.blank?
+    end
   end
 
   def set_image_metadata
@@ -219,6 +231,17 @@ class Photo < ActiveRecord::Base
   def substitute_source_urls
     self.source_thumb_url = self.source_thumb_url.gsub(':photo_id', self.id)
     self.source_screen_url =  self.source_screen_url.gsub(':photo_id', self.id)
+  end
+
+  def metadata
+    if photo_info
+      JSON.parse(photo_info.metadata)
+    end
+  end
+
+  def metadata=(value_hash)
+    photo_info = PhotoInfo.new unless photo_info
+    photo_info.metadata = value_hash.to_json
   end
 
 end

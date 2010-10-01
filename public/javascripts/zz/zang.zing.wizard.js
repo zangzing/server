@@ -12,7 +12,6 @@ zz.wizard = {
     if (zz.drawer_open == 0) {
       zz.open_drawer(obj.time, obj.percent);  
     }
-
     
     if (!step) { 
       //console.log('set up the url');
@@ -29,10 +28,29 @@ zz.wizard = {
       $('#drawer-content').empty().load(temp, function(){
 
         zz.wizard.build_nav(obj, obj.first);              
-        zz.wizard.rebind(obj, obj.first);              
         obj.steps[obj.first].init();
 
       });  
+    } else {
+    
+      if (obj.steps[step].url_type == 'album') {
+        //console.log('album');
+        temp = 'http://' + zz.base + obj.steps[step].url.split('$$')[0] + zz.album_id + obj.steps[step].url.split('$$')[1];          
+        //console.log(temp);
+      } else if (obj.steps[step].url_type == 'user') {
+        //console.log('user');
+        temp = 'http://' + zz.base + obj.steps[step].url.split('$$')[0] + zz.user_id + obj.steps[step].url.split('$$')[1];                    
+        //console.log(temp);    
+      }
+
+      $('#drawer-content').empty().load(temp, function(){
+
+        zz.wizard.build_nav(obj, step);              
+        obj.steps[step].init();
+
+      });  
+
+      
     }
     
     $('body').addClass('drawer');
@@ -55,7 +73,6 @@ zz.wizard = {
         
         obj.steps[id].init();
         zz.wizard.build_nav(obj, id);  
-        zz.wizard.rebind(obj, id);  
       
       });
     
@@ -64,7 +81,6 @@ zz.wizard = {
               
         obj.steps[id].init();         
         zz.wizard.build_nav(obj, id);  
-        zz.wizard.rebind(obj, id);
         
       });
     } else if (obj.steps[id].type == 'full' && zz.drawer_open != 1) {
@@ -72,14 +88,12 @@ zz.wizard = {
       $('#drawer-content').empty().load(url, function(data){
         obj.steps[id].init();
         zz.wizard.build_nav(obj, id);  
-        zz.wizard.rebind(obj, id);
   
       });      
     } else if (obj.steps[id].type == 'full' && zz.drawer_open == 1) {
       $('#drawer-content').empty().load(url, function(data){
         obj.steps[id].init();
         zz.wizard.build_nav(obj, id);  
-        zz.wizard.rebind(obj, id);
   
       });      
     } else if (obj.steps[id].type == 'partial' && zz.drawer_open == 0) {
@@ -88,7 +102,6 @@ zz.wizard = {
       $('article').empty().load(url, function(data){
         obj.steps[id].init();
         zz.wizard.build_nav(obj, id);  
-        zz.wizard.rebind(obj, id);
       });
     } else {
       console.warn('This should never happen. Context: zz.wizard.change_step, Type: '+obj.steps[id].type+', Drawer State: '+zz.drawer_open);
@@ -102,37 +115,51 @@ zz.wizard = {
     temp_id = 1;
     temp = '';
     $.each(obj.steps, function(i, item) { 
-      if (item.id == id) {
+      if (i == id && obj.numbers == 1) {
         value = temp_id;
-        temp += '<li id="wizard-'+ item.id + '" class="on">';
+        temp += '<li id="wizard-'+ i + '" class="on">';
         temp += '<img src="/images/wiz-num-'+temp_id+'-on.png" class="num"> '+ item.title +'</li>';   
+      } else if (i == id) {
+        value = temp_id;
+        temp += '<li id="wizard-'+ i + '" class="on">'+ item.title +'</li>';   
+      } else if (obj.numbers == 1) {
+        temp += '<li id="wizard-'+ i + '">';
+        temp += '<img src="/images/wiz-num-'+temp_id+'.png" class="num"> '+ item.title +'</li>';             
       } else {
-        temp += '<li id="wizard-'+ item.id + '">';
-        temp += '<img src="/images/wiz-num-'+temp_id+'.png" class="num"> '+ item.title +'</li>';       
+        temp += '<li id="wizard-'+ i + '">'+ item.title +'</li>';       
       }
-      
       temp_id++;
                     
     });
     
-    if (obj.steps[id].next == 0) {
+    // the last time we incrimented it didn't load a step - we use this to know the length of the list below
+    temp_id--;
+    
+    if (obj.next_element == 'none') {
+      // no next button neded
+    } else if (obj.steps[id].next == 0 || obj.style == 'edit') {
       temp += '<li id="step-btn"><img id="next-step" src="/images/btn-wizard-done.png" /></li>';    
     } else {
       temp += '<li id="step-btn"><img id="next-step" src="/images/btn-steps-next.png" /></li>';  
-    }
+    }    
     
     //console.log(temp);
-  
-    $('#clone-indicator').clone().attr('id', 'indicator').addClass('step-'+value+'-5').html(temp).prependTo('#drawer-content');
+    if (obj.style == 'edit') {
+      $('#clone-indicator').clone().attr('id', obj.list_element+'-'+temp_id).addClass('edit-'+value+'-'+temp_id).html(temp).prependTo('#drawer-content');    
+    } else {
+      $('#clone-indicator').clone().attr('id', obj.list_element+'-'+temp_id).addClass('step-'+value+'-'+temp_id).html(temp).prependTo('#drawer-content');
+    }
+    
+    zz.wizard.rebind(obj, id, temp_id); //now that we've built the nav let's bind all the nav events
   
   },
   
   
-  rebind: function(obj, id){
+  rebind: function(obj, id, num_steps){
     $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 170) + 'px'});        
 
     $.each(obj.steps, function(i, item) {        
-      $('#indicator li#wizard-'+ item.id).click(function(e){
+      $('li#wizard-'+ i).click(function(e){
         e.preventDefault();
         obj.steps[id].bounce();
         temp_id = $(this).attr('id').split('wizard-')[1];
@@ -140,11 +167,11 @@ zz.wizard = {
       //console.log('set up the url');
       if (obj.steps[id].url_type == 'album') {
         //console.log('album');
-        temp_url = 'http://' + zz.base + obj.steps[item.id].url.split('$$')[0] + zz.album_id + obj.steps[item.id].url.split('$$')[1];          
+        temp_url = 'http://' + zz.base + obj.steps[i].url.split('$$')[0] + zz.album_id + obj.steps[i].url.split('$$')[1];          
         //console.log(temp);
       } else if (obj.steps[id].url_type == 'user') {
         //console.log('user');
-        temp_url = 'http://' + zz.base + obj.steps[item.id].url.split('$$')[0] + zz.user_id + obj.steps[item.id].url.split('$$')[1];                    
+        temp_url = 'http://' + zz.base + obj.steps[i].url.split('$$')[0] + zz.user_id + obj.steps[i].url.split('$$')[1];                    
         //console.log(temp);    
       }
   
@@ -155,7 +182,9 @@ zz.wizard = {
               
     });
     
-    if (obj.last == id) {
+    if (obj.next_element == 'none') {
+      // no next button neded
+    } else if (obj.last == id || obj.style == 'edit') {
       //console.log('last');
       $(obj.next_element).click(function(e){
         $('#drawer .body').fadeOut('fast');
@@ -302,7 +331,7 @@ zz.wizard = {
   // reloads the main share part in place of the type switcher on the share step
   reload_share: function(){
       $('#drawer-content').empty().load('/albums/'+zz.album_id+'/shares/new', function(){                        
-        zz.wizard.rebind(zz.drawers.personal_album, 'share');  
+        zz.wizard.build_nav(zz.drawers.personal_album, 'share');  
         zz.drawers.personal_album.steps.share.init();                      
       });
     },
