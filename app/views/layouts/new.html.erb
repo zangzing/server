@@ -128,6 +128,8 @@
       zang.zing.user_id = '<%= current_user.id %>';
 <%    end -%><%  if @album  -%>      
       zang.zing.album_id = '<%= @album.id %>';
+      zang.zing.album_type = '<%= @album.type %>';
+      zang.zing.album_type = zang.zing.album_type.split('Album')[0].toLowerCase();
 <%    end
       # This is where we pass things on to js that we need from ruby.
       # Remember to use the zz.zang namespace. 

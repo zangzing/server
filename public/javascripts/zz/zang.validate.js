@@ -61,7 +61,7 @@ zang.validate = {
     submitHandler: function() {
       serialized = $('#new_post_share').serialize();
       $.post('/albums/'+zz.album_id+'/shares', serialized, function(data){
-        zz.wizard.reload_share();
+        zz.wizard.reload_share(zz.drawers[zz.album_type+'_album'], 'share');
       });
     }
     
@@ -82,7 +82,7 @@ zang.validate = {
       serialized = $('#new_email_share').serialize();
       $.post('/albums/'+zz.album_id+'/shares.json', serialized, function(data ){
        if( data.status == 200 ){
-            zz.wizard.reload_share();
+          zz.wizard.reload_share(zz.drawers[zz.album_type+'_album'], 'share');
         }else{
           alert( data.errors.length + " Errors "+data.errors[0]);  
         }

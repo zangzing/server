@@ -34,6 +34,8 @@ zz.drawers = {
           setTimeout('$("#added-pictures-tray").fadeIn("fast")', 300);
           $('#user-info').css('display', 'none');
           setTimeout("$('#album-info').css('display', 'inline-block')", 200);
+          zz.album_type = 'personal';
+
         },
         
         bounce: function(){ // run before you leave
@@ -149,6 +151,7 @@ zz.drawers = {
           setTimeout('$("#added-pictures-tray").fadeIn("fast")', 300);
           $('#user-info').css('display', 'none');
           setTimeout("$('#album-info').css('display', 'inline-block')", 200);
+          zz.album_type = 'group';
         },
       
         bounce: function(){
