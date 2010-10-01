@@ -1,4 +1,9 @@
 <script type="text/javascript">
+<%
+    @google_id = current_user.identity_for_google
+    @yahoo_id  = current_user.identity_for_yahoo
+    @local_id  = current_user.identity_for_local
+%>
 $(document).ready( function(){
     sharecontacts.setup( <%=( @google_id.credentials_valid? ? 1 : 0 ) %> == 1,
                         "<%= @google_id.last_contact_refresh%>",

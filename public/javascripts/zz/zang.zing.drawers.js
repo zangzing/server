@@ -215,7 +215,7 @@ zz.drawers = {
         next: 'share',
         title: 'Contributors',
         type: 'full',
-        url: '/albums/$$/contributors/new',
+        url: '/albums/$$/contributors',
         url_type: 'album',
       
         init: function(){

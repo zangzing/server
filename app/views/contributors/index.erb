@@ -1,0 +1,37 @@
+<div class="album-header" style="margin-bottom: 25px;">
+  <h3>Contributors</h3>
+  <h4>These are the people you have authorized to contribute photos to your album</h4>
+</div>
+
+<div id="flashes-here">
+</div>
+
+<div id="scroll-body">
+  <div id="form-container-2" class="clearfix">
+    <div class="clear-fix"></div>
+    <%form_for [Share.new()], :url => create_album_share_path(Album.new())  do |f| %>
+        <%= f.error_messages %>
+        <dl id="email-share-form">
+          <dd id="the-list">
+            <ul id="the-recipients" class="clearfix">
+              <li id="m-clone-added"class="rounded"><span>Text</span> <img src="/images/btn-delete-small.png" id="img-clone-added" class="link" /> <input type="checkbox" value="" /></li>
+             
+              <li id="autocomplete"></li>
+              <div class="clear-fix"></div>
+            </ul>
+          </dd>
+        </dl>
+    <% end %>
+    <div class="clear-fix"></div>
+
+    <div id="form-actions">
+      <input type="image" src="/images/btn-send.png" name="submit" id="mail-submit" />
+    </div>
+  </div>
+</div>
+
+<script>
+<% @contributors.each do |c | %>
+  zz.wizard.insert_recipient_bubble( "<%=( c.name.nil? ? c.email : c.name )%>","<%=c.id%>");
+<% end %>
+</script>                                                                        <%= album_contributor_path(:id => identity.id, :user_id => params[:user_id])%>

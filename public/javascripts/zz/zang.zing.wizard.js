@@ -409,6 +409,22 @@ zz.wizard = {
     }
   },
 
+
+ insert_contributor_bubble: function(label,value){
+	zz.wizard.email_id++;
+ 	$('#m-clone-added').clone()
+                  .attr({id: 'm-'+zz.wizard.email_id})
+                  .insertAfter('#the-recipients li.rounded:last');
+ 	$('#m-'+zz.wizard.email_id+' span').empty().html(label);
+ 	$('#m-'+zz.wizard.email_id).fadeIn('fast');
+ 	$('#m-'+zz.wizard.email_id+' img').attr('id', 'img-'+zz.wizard.email_id);
+ 	$('li.rounded img').click(function(){
+        $.post(this.value, {"_method": "delete"}, function(data){ });
+   		$(this).parent('li').fadeOut('fast').remove();
+ 	});
+ },
+
+
  
   //set up email autocomplete
   email_autocomplete: function(){

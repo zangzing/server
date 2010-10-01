@@ -4,9 +4,6 @@ class ContributorsController < ApplicationController
 
   def new
     @album = current_user.albums.find(params[:album_id])    
-    @google_id = current_user.identity_for_google
-    @yahoo_id  = current_user.identity_for_yahoo
-    @local_id  = current_user.identity_for_local
     @contributor = Album.new(); #TODO:Contributor model
   end
 
