@@ -104,8 +104,8 @@ zz.drawers = {
         url_type: 'album',
         
         init: function(){
-          $('.social-share').click(zz.wizard.social_share);
-          $('.email-share').click(zz.wizard.email_share);
+          $('.social-share').click(function(){zz.wizard.social_share(zz.drawers.personal_album, 'share')});
+          $('.email-share').click(function(){zz.wizard.email_share(zz.drawers.personal_album, 'share')});
         },
         
         bounce: function(){
@@ -234,9 +234,8 @@ zz.drawers = {
         url_type: 'album',
       
         init: function(){
-           $('.social-share').click(zz.wizard.social_share);
-           $('.email-share').click(zz.wizard.email_share);
-           $('.album_privacy').change(zz.wizard.album_update);
+          $('.social-share').click(function(){zz.wizard.social_share(zz.drawers.group_album, 'share')});
+          $('.email-share').click(function(){zz.wizard.email_share(zz.drawers.group_album, 'share')});
         },
       
         bounce: function(){

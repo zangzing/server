@@ -306,21 +306,25 @@ zz.wizard = {
   },
 
   // loads the status message post form in place of the type switcher on the share step
-  social_share: function(){
+  social_share: function(obj, id){
     $('div#share-body').empty().load('/albums/'+zz.album_id+'/shares/newpost', function(){
       $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 170) + 'px'});
       $(z.validate.new_post_share.element).validate(z.validate.new_post_share);
-      $('#cancel-share').click(zz.wizard.reload_share);
+      $('#cancel-share').click(function(){
+        zz.wizard.reload_share(obj, id);
+      });
     });     
   },
   
   // loads the email post form in place of the type switcher on the share step
-  email_share: function(){
+  email_share: function(obj, id){
     $('div#share-body').empty().load('/albums/'+zz.album_id+'/shares/newemail', function(){                        
       $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 170) + 'px'});
       setTimeout(function(){zz.wizard.email_autocomplete()}, 500);
       $(z.validate.new_email_share.element).validate(z.validate.new_email_share);
-      $('#cancel-share').click(zz.wizard.reload_share);
+      $('#cancel-share').click(function(){
+        zz.wizard.reload_share(obj, id);
+      });
       $('#the-list').click(function(){
         $('#you-complete-me').focus();
       });
@@ -329,9 +333,9 @@ zz.wizard = {
   },
   
   // reloads the main share part in place of the type switcher on the share step
-  reload_share: function(){
+  reload_share: function(obj, id){
       $('#drawer-content').empty().load('/albums/'+zz.album_id+'/shares/new', function(){                        
-        zz.wizard.build_nav(zz.drawers.personal_album, 'share');  
+        zz.wizard.build_nav(obj, id);  
         zz.drawers.personal_album.steps.share.init();                      
       });
     },
