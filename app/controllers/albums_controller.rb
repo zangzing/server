@@ -19,7 +19,7 @@ class AlbumsController < ApplicationController
     end
     @album  = params[:album_type].constantize.new()
     current_user.albums << @album
-    @album.name = "Unamed Album"+ Time.new.strftime( ' %y-%m-%d %H:%M' )
+    @album.name = "New Album"
     unless @album.save
       render :text => "Error in album create."+@album.errors.to_xml(), :status=>500 and return
     end

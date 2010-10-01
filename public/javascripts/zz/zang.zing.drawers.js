@@ -50,6 +50,8 @@ zz.drawers = {
         url_type: 'album',
         
         init: function(){
+         //Set The Album Name at the top of the screen
+          $('h2#album-header-title').html($('#album_name').val());   
           $('#album_name').keypress( function(){
             setTimeout(function(){ $('#album-header-title').html( $('#album_name').val() ) }, 10);
           });
@@ -141,7 +143,7 @@ zz.drawers = {
         type: 'full',
         url: '/albums/$$/add_photos',
         url_type: 'album',
-      
+
         init: function(){
           filechooser.init();
           setTimeout('$("#added-pictures-tray").fadeIn("fast")', 300);
@@ -152,24 +154,23 @@ zz.drawers = {
         bounce: function(){
           $('#added-pictures-tray').fadeOut('fast');
         }
-      
-      }, //end zz.drawers.group_album.steps.add
-      
-      name: {
-        next: 'edit',
-        title: 'Name Album',
-        type: 'full',
-        url: '/albums/$$/name_album',
-        url_type: 'album',
-  
-        init: function(){
-          $('#album_name').keypress( function(){
-            setTimeout(function(){ $('#album-header-title').html( $('#album_name').val() ) }, 10);
-          });
-        },
-  
-        bounce: function(){
-           zz.wizard.album_update(); //post edit-album form
+      },
+      name: {  //group album
+            id: 'name',
+            next: 'edit',
+            title: 'Name Album',
+            type: 'full',
+            url: '/albums/$$/name_album',
+            url_type: 'album',
+            init: function(){
+                //Set The Album Name at the top of the screen
+                $('h2#album-header-title').html($('#album_name').val());
+                $('#album_name').keypress( function(){
+                setTimeout(function(){ $('#album-header-title').html( $('#album_name').val() ) }, 10);
+                });
+            },
+            bounce: function(){
+               zz.wizard.album_update(); //post edit-album form
             }
       
       }, //end zz.drawers.group_album.steps.name

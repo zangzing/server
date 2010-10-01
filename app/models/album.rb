@@ -32,6 +32,7 @@ class Album < ActiveRecord::Base
   has_many :shares,           :dependent => :destroy
   has_many :album_activities, :dependent => :destroy
   has_many :upload_batches
+  has_many :contributors
 
   has_attached_file :picon, Paperclip.options[:picon_options]
   before_picon_post_process    :set_picon_metadata
