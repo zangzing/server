@@ -44,6 +44,8 @@ zz.drawers = {
         url: '/albums/$$/name_album',
         url_type: 'album',
         init: function(){
+         //Set The Album Name at the top of the screen
+          $('h2#album-header-title').html($('#album_name').val());   
           $('#album_name').keypress( function(){
             setTimeout(function(){ $('#album-header-title').html( $('#album_name').val() ) }, 10);
           });
@@ -126,7 +128,7 @@ zz.drawers = {
         type: 'full',
         url: '/albums/$$/add_photos',
         url_type: 'album',
-        init: function(){
+        init: function(){  
           filechooser.init();
           setTimeout('$("#added-pictures-tray").fadeIn("fast")', 300);
           $('#user-info').css('display', 'none');
@@ -144,6 +146,8 @@ zz.drawers = {
             url: '/albums/$$/name_album',
             url_type: 'album',
             init: function(){
+                //Set The Album Name at the top of the screen
+                $('h2#album-header-title').html($('#album_name').val());
                 $('#album_name').keypress( function(){
                 setTimeout(function(){ $('#album-header-title').html( $('#album_name').val() ) }, 10);
                 });

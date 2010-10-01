@@ -4,6 +4,7 @@
 </div>
 
 <div id="scroll-body">
+  <div id="add-new-contributors">
   <div id="form-container-2" class="clearfix">
     <ul id="email-sync" class="clearfix">
       <li class="title">Import contacts from</li>
@@ -12,7 +13,6 @@
       <li><img src="/images/btn-yahoo-off.png" id="yahoo-sync" class="link" /></li>
     </ul>
     <div class="clear-fix"></div>
-
     <form action="<%= create_album_contributors_path(@album)%>" id="new_contributors" method="post">
       <dl id="email-share-form">
         <dt>To</dt>
@@ -32,7 +32,8 @@
        <input type="image" src="/images/btn-send-add-conts.png" name="submit" id="mail-submit" />
       </div>
     </form>
-  </div>
+   </div>
+  </div> <!--add-new-contributors-->  
 </div>
 
 
