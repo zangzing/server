@@ -152,7 +152,7 @@ var zang = {
       
       $('div#drawer').animate({ height: zang.zing.drawer_height + 'px', top: '50px' }, time );
       $('div#drawer-content').animate({ height: (zang.zing.drawer_height - 14) + 'px'}, time );
-      $('div#drawer-content div#scroll-body').css({height: (zang.zing.drawer_height - 131) + 'px'});
+      $('div#drawer-content div#scroll-body').css({height: (zang.zing.drawer_height - 180) + 'px'});
   
     }, // end zang.zing.resize_drawer()
     
