@@ -1096,15 +1096,32 @@ div#drawer-content dl.form dd input#album_name:focus {
 }
 
 ul#share-pick {
-  width: 800px;
+  width: 460px;
   margin: 20px auto;
 }
 
 ul#share-pick li {
   float: left;
   width: 50%;
+  height: 260px;
   text-align: center;
   font-size: 1.4em;
+}
+
+ul#share-pick li.social-share {
+  background: url(/images/btn-share-by-post.png) center center no-repeat;
+}
+
+ul#share-pick li.social-share:hover {
+  background: url(/images/btn-share-by-post-on.png) center center no-repeat;
+}
+
+ul#share-pick li.email-share {
+  background: url(/images/btn-share-by-email.png) center center no-repeat;
+}
+
+ul#share-pick li.email-share:hover {
+  background: url(/images/btn-share-by-email-on.png) center center no-repeat;
 }
 
 ul#share-pick li a {
