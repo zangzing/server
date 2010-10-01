@@ -336,7 +336,7 @@ zz.wizard = {
   reload_share: function(obj, id){
       $('#drawer-content').empty().load('/albums/'+zz.album_id+'/shares/new', function(){                        
         zz.wizard.build_nav(obj, id);  
-        zz.drawers.personal_album.steps.share.init();                      
+        obj.steps[id].init();                      
       });
     },
 
