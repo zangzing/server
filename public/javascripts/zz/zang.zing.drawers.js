@@ -91,18 +91,18 @@ zz.drawers = {
         
         init: function(){
           $('#privacy-public').click(function(){
-                $.post('/albums/'+zz.album_id, '_method=put&album_privacy=public', function(){
+                $.post('/albums/'+zz.album_id, '_method=put&album%5Bprivacy%5D=public', function(){
                   $('img.select-button').attr('src', '/images/btn-round-selected-off.png');                  
                   $('#privacy-public img.select-button').attr('src', '/images/btn-round-selected-on.png');
                 });
           });
           $('#privacy-hidden').click(function(){
-                $.post('/albums/'+zz.album_id, '_method=put&album_privacy=hidden');
+                $.post('/albums/'+zz.album_id, '_method=put&album%5Bprivacy%5D=hidden');
                   $('img.select-button').attr('src', '/images/btn-round-selected-off.png');                  
                   $('#privacy-hidden img.select-button').attr('src', '/images/btn-round-selected-on.png');
           });
           $('#privacy-password').click(function(){
-                $.post('/albums/'+zz.album_id, '_method=put&album_privacy=password');
+                $.post('/albums/'+zz.album_id, '_method=put&album%5Bprivacy%5D=password');
                   $('img.select-button').attr('src', '/images/btn-round-selected-off.png');                  
                   $('#privacy-password img.select-button').attr('src', '/images/btn-round-selected-on.png');
           });
@@ -219,18 +219,18 @@ zz.drawers = {
        
         init: function(){
           $('#privacy-public').click(function(){
-                $.post('/albums/'+zz.album_id, '_method=put&album_privacy=public', function(){
+                $.post('/albums/'+zz.album_id, '_method=put&album%5Bprivacy%5D=public', function(){
                   $('img.select-button').attr('src', '/images/btn-round-selected-off.png');                  
                   $('#privacy-public img.select-button').attr('src', '/images/btn-round-selected-on.png');
                 });
           });
           $('#privacy-hidden').click(function(){
-                $.post('/albums/'+zz.album_id, '_method=put&album_privacy=hidden');
+                $.post('/albums/'+zz.album_id, '_method=put&album%5Bprivacy%5D=hidden');
                   $('img.select-button').attr('src', '/images/btn-round-selected-off.png');                  
                   $('#privacy-hidden img.select-button').attr('src', '/images/btn-round-selected-on.png');
           });
           $('#privacy-password').click(function(){
-                $.post('/albums/'+zz.album_id, '_method=put&album_privacy=password');
+                $.post('/albums/'+zz.album_id, '_method=put&album%5Bprivacy%5D=password');
                   $('img.select-button').attr('src', '/images/btn-round-selected-off.png');                  
                   $('#privacy-password img.select-button').attr('src', '/images/btn-round-selected-on.png');
           });
