@@ -249,13 +249,10 @@ zz.drawers = {
         url_type: 'album',
       
         init: function(){
-             console.log("in contributors drawer init") ;
              if( zz.wizard.contributor_count <= 0){
-                  console.log("No contributors, going to new...") ;
                  zz.wizard.show_new_contributors();
              }else{
-                 console.log( zz.wizard.contributor_count+" contributors. Initializing");
-                $('#add-contributors-btn').click(function(){ alert("add conts clicked");zz.wizard.show_new_contributors();});
+                $('#add-contributors-btn').click(function(){zz.wizard.show_new_contributors();});
              }
         },
       
