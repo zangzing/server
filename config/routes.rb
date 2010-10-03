@@ -92,11 +92,8 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   #contributors
-  map.with_options :controller => :contributors do |f|
-      f.album_contributors        '/albums/:album_id/contributors.',     :action=>"index",    :conditions=>{ :method => :get }
-      f.new_album_contributors    '/albums/:album_id/contributors/new.', :action=>"new",      :conditions=>{ :method => :get }
-      f.create_album_contributors '/albums/:album_id/contributors.',     :action=>'create',   :conditions=>{ :method => :post}
-      f.delete_album_contributors '/contributors/:id.',                  :action=>'destroy',  :conditions=>{ :method => :delete }
+  map.resources :albums, :shallow => true do |album|
+    album.resources :contributors
   end
 
 

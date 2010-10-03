@@ -249,9 +249,14 @@ zz.drawers = {
         url_type: 'album',
       
         init: function(){
-            setTimeout(function(){zz.wizard.email_autocomplete()}, 500);
-            $(z.validate.new_contributors.element).validate(z.validate.new_contributors);
-            $('#the-list').click(function(){ $('#you-complete-me').focus();});
+             console.log("in contributors drawer init") ;
+             if( zz.wizard.contributor_count <= 0){
+                  console.log("No contributors, going to new...") ;
+                 zz.wizard.show_new_contributors();
+             }else{
+                 console.log( zz.wizard.contributor_count+" contributors. Initializing");
+                $('#add-contributors-btn').click(function(){ alert("add conts clicked");zz.wizard.show_new_contributors();});
+             }
         },
       
         bounce: function() {
@@ -279,5 +284,9 @@ zz.drawers = {
     } // end zz.drawers.group_album.steps
 
   } // end zz.drawers.group_album
+
+    
+
+
 
 }; // end zz.drawers

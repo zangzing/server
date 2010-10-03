@@ -43,12 +43,21 @@ class ContributorsController < ApplicationController
       flash[:error] = "Album not found. Unable to display contributors"
       render :action =>'new'
     end
-    if @album.contributors.count <= 0
-      render :action => 'new'
-    end
     @contributors = @album.contributors
  end
 
   def destroy
+    @contributor = Contributor.find( params[:id] )
+    if @contributor.nil?
+      flash[:error] ="Contributor with id=#{params[:id]} not found."
+      render :status => 404 and return
+    end
+    if current_user == @contributor.album.user || current_user.admin?
+      @contributor.destroy
+      flash[:notice] = "Contributor deleted"
+      render and return
+    end
+    flash[:error] ="Only album owners and admins can delete contributors."
+    render :status => 500 and return        
   end
 end
