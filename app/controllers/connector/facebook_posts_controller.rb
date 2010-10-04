@@ -9,7 +9,14 @@ class Connector::FacebookPostsController < Connector::FacebookController
   end
 
   def create
-    response = facebook_graph.post("me/feed", :message => params[:message])
+    response = facebook_graph.post("me/feed", :message => params[:message],
+        :link => album_photos_url(params[:album_id]) #,
+        #:picture => 'http://duhast.homeip.net/images/logo-zangzing.png',
+        #:name => 'NAme here',
+        #:caption => "Smith hails 'unique' Wable legacy",
+        #:description => 'John Smith claims beautiful football is the main legacy of Akhil Wable''s decade at the club.',
+        #:source => 'http://www.elance.com'
+      )
     render :text => response.inspect
   end
 end

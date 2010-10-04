@@ -5,7 +5,7 @@
 
 <div id="scroll-body">
 <!-- <form method="post" id="new_post_share" action=""> -->
-<% form_for :post_share, @post_share, :url => create_album_share_path(@album.id) do %>
+<% remote_form_for :post_share, @post_share, :url => create_album_share_path(@album.id), :update => 'scroll-body' do %>
     <div id="form-container" class="clearfix">
       <dl id="social-form" class="clearfix">
         <dt id="network"><input type="checkbox" name="post_share[facebook]" id="facebook_box" onclick="call_new_facebook_session();" value="1" <%=( @share.facebook == '1' ? "authorized='yes' checked='checked'" : "" )%> /> <img src="/images/icon-facebook-16.png" /></dt>
