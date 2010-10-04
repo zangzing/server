@@ -31,6 +31,8 @@ class SharesController < ApplicationController
   def create
     @album = Album.find(params[:album_id])
     @share = Share.factory( current_user, @album, params)
+    @share.link_to_share = album_photos_url(@album)
+    
     unless @share.save
       respond_to do |format |
           format.html { render 'newemail' and return  if params[:mail_share]
@@ -38,6 +40,7 @@ class SharesController < ApplicationController
           format.json {  render :json=> {:status => 400, :errors => @share.errors.full_messages} and return }
       end
     end
+    @share.deliver_later
     flash[:notice] = "Share Created"
     respond_to do |format |
           format.html   
