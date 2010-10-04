@@ -13,19 +13,22 @@ zang.init = {
       zz.new_photo = $(this).attr('id');
       zz.highlight_selected(zz.new_photo);
     });
-    
+
+    //Bottom Menu
+    $('h1#home-link').click(function(){
+            window.location = "http://"+zz.base;
+     });
+
     $('#nav-new-album').click(function(){
       callback = function(){
         $('#personal_album_link').click(zz.wizard.create_personal_album);
         $('#group_album_link').click(zz.wizard.create_group_album);
       };
-      
       zz.easy_drawer(600, 0.0, '/users/'+zz.user_id+'/albums/new', callback);
     });
     
-    $('h1#home-link').click(function(){
-      window.location = "http://"+zz.base;
-    });
+    $('#nav-new-photo').click(function(){ zz.wizard.open_edit_album_wizard('add') });
+    $('#nav-share').click(function(){ zz.wizard.open_edit_album_wizard('share') });
 
     $('#nav-like').click(function(){
       callback = function(){

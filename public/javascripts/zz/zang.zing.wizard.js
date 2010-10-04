@@ -226,6 +226,7 @@ zz.wizard = {
   delete_btn: 1,
   email_id: 0,
   autocompleter: 0,
+  contributor_count: 0,  
   
   create_personal_album: function(){
     $.post('/users/'+zz.user_id+'/albums', { album_type: "PersonalAlbum" }, function(data){
@@ -241,6 +242,24 @@ zz.wizard = {
     });
   },
 
+  open_edit_album_wizard: function( step ){
+    switch(  zz.album_type ){
+        case 'personal':
+            if( typeof(zz.drawers.edit_personal_album) == "undefined" ){
+                zz.drawers.edit_personal_album = zz.drawers.personal_album;
+                zz.drawers.edit_personal_album.style='edit'
+             }
+             zz.wizard.make_drawer(zz.drawers.edit_personal_album, step);
+            break;
+        case 'group':
+             if( typeof(zz.drawers.edit_group_album) == "undefined" ){
+                zz.drawers.edit_group_album = zz.drawers.group_album;
+                zz.drawers.edit_group_album.style='edit'
+             }
+             zz.wizard.make_drawer(zz.drawers.edit_group_album, step );
+            break;
+      }
+  },  
 
   // load_images is used to build the grid view of an album using json results
   load_images: function(){
@@ -340,6 +359,8 @@ zz.wizard = {
       });
     },
 
+    
+
   // adds a recipient to the autocomplete area on keypress
   add_recipient: function(comma){
     if (comma == 1) {
@@ -407,6 +428,45 @@ zz.wizard = {
         $(this).parent('li').fadeOut('fast').remove();
       });
     }
+  },
+
+
+ insert_contributor_bubble: function(label,value){
+	zz.wizard.email_id++;
+ 	$('#m-clone-added').clone()
+                  .attr({id: 'm-'+zz.wizard.email_id})
+                  .insertAfter('#the-recipients li.rounded:last');
+ 	$('#m-'+zz.wizard.email_id+' span').empty().html(label);
+ 	$('#m-'+zz.wizard.email_id).fadeIn('fast');
+ 	$('#m-'+zz.wizard.email_id+' img').attr('id', 'img-'+zz.wizard.email_id);
+    $('#m-'+zz.wizard.email_id+' input').attr({name: 'delete-url', checked: 'checked'}).val(value);
+ 	$('#m-'+zz.wizard.email_id+' img').click(function(){
+        $.post($(this).siblings('input').val(), {"_method": "delete"}, function(data){ });
+   		$(this).parent('li').fadeOut('fast').remove();
+ 	});
+ },
+
+ // loads the form to add contibutors on the contributors drawer
+  show_new_contributors: function(){
+    //console.log("Loading new contributors...") ;
+    $('div#contributors-body').empty().load('/albums/'+zz.album_id+'/contributors/new', function(){
+      //zz.wizard.build_nav(zz.drawers.group_album, 'contributors');
+      //zz.drawers.group_album.steps['contributors'].init();
+      //console.log("Initializing new contributors...") ;
+      $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 170) + 'px'});
+      setTimeout(function(){zz.wizard.email_autocomplete()}, 500);
+      $(z.validate.new_contributors.element).validate(z.validate.new_contributors);
+      $('#the-list').click(function(){
+        $('#you-complete-me').focus();
+      });  
+      $('#cancel-new-contributors').click(function(){
+          //console.log("Canceling new contributors...") ;      
+          $('#drawer-content').empty().load('/albums/'+zz.album_id+'/contributors', function(){
+                zz.wizard.build_nav(zz.drawers.group_album, 'contributors');  
+                zz.drawers.group_album.steps['contributors'].init();
+           });
+      });
+    });
   },
 
  

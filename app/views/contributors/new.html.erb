@@ -1,3 +1,4 @@
+
 <div class="album-header" style="margin-bottom: 25px;">
   <h3>Contributors</h3>
   <h4>Invite people to add their pictures to the album</h4>
@@ -13,7 +14,7 @@
       <li><img src="/images/btn-yahoo-off.png" id="yahoo-sync" class="link" /></li>
     </ul>
     <div class="clear-fix"></div>
-    <form action="<%= create_album_contributors_path(@album)%>" id="new_contributors" method="post">
+    <form action="<%= album_contributors_path(@album)%>" id="new_contributors" method="post">
       <dl id="email-share-form">
         <dt>To</dt>
         <dd id="the-list">
@@ -29,7 +30,10 @@
       <div class="clear-fix"></div>
 
       <div id="form-actions">
-       <input type="image" src="/images/btn-send-add-conts.png" name="submit" id="mail-submit" />
+       <% if @album.contributors.count > 0 %>
+            <a href="javascript:void(0);" id="cancel-new-contributors">Cancel</a>
+       <%end%>     
+       <input type="image" src="/images/btn-contributors-send-add.png" name="submit" id="mail-submit" />
       </div>
     </form>
    </div>

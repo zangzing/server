@@ -4,9 +4,6 @@ class ContributorsController < ApplicationController
 
   def new
     @album = current_user.albums.find(params[:album_id])    
-    @google_id = current_user.identity_for_google
-    @yahoo_id  = current_user.identity_for_yahoo
-    @local_id  = current_user.identity_for_local
     @contributor = Album.new(); #TODO:Contributor model
   end
 
@@ -46,12 +43,21 @@ class ContributorsController < ApplicationController
       flash[:error] = "Album not found. Unable to display contributors"
       render :action =>'new'
     end
-    if @album.contributors.count <= 0
-      renter :action => 'new'
-    end
     @contributors = @album.contributors
  end
 
   def destroy
+    @contributor = Contributor.find( params[:id] )
+    if @contributor.nil?
+      flash[:error] ="Contributor with id=#{params[:id]} not found."
+      render :status => 404 and return
+    end
+    if current_user == @contributor.album.user || current_user.admin?
+      @contributor.destroy
+      flash[:notice] = "Contributor deleted"
+      render and return
+    end
+    flash[:error] ="Only album owners and admins can delete contributors."
+    render :status => 500 and return        
   end
 end

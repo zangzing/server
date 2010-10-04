@@ -245,13 +245,15 @@ zz.drawers = {
         next: 'share',
         title: 'Contributors',
         type: 'full',
-        url: '/albums/$$/contributors/new',
+        url: '/albums/$$/contributors',
         url_type: 'album',
       
         init: function(){
-            setTimeout(function(){zz.wizard.email_autocomplete()}, 500);
-            $(z.validate.new_contributors.element).validate(z.validate.new_contributors);
-            $('#the-list').click(function(){ $('#you-complete-me').focus();});
+             if( zz.wizard.contributor_count <= 0){
+                 zz.wizard.show_new_contributors();
+             }else{
+                $('#add-contributors-btn').click(function(){zz.wizard.show_new_contributors();});
+             }
         },
       
         bounce: function() {
@@ -279,5 +281,9 @@ zz.drawers = {
     } // end zz.drawers.group_album.steps
 
   } // end zz.drawers.group_album
+
+    
+
+
 
 }; // end zz.drawers

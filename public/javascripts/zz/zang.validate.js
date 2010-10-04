@@ -109,9 +109,13 @@ zang.validate = {
             alert( "Notice Flash "+data.flash.notice);
       }
       if( data.status == 200 ){
+           $('#drawer-content').empty().load('/albums/'+zz.album_id+'/contributors', function(){  
+                zz.wizard.build_nav(zz.drawers.group_album, 'contributors');
+                zz.drawers.group_album.steps['contributors'].init();
+            });
       }else{
           if( data.errors != undefined){
-            alert( data.errors.length + " Errors "+data.errors[0]);
+            alert( " Errors "+data.errors);
           }
        }
       },"json");

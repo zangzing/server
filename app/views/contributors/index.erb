@@ -1,0 +1,34 @@
+<div id="contributors-body">
+  <div class="album-header" style="margin-bottom: 25px;">
+    <h3>Contributors</h3>
+    <h4>These are the people you have authorized to contribute photos to your album</h4>
+  </div>
+
+  <div id="flashes-here"> </div>
+
+
+  <div id="scroll-body">
+    <div id="form-container-2" class="clearfix">
+      <div class="clear-fix"></div>
+      <dl id="contributor-index">
+        <dd id="the-list" class="tall-list">
+          <ul id="the-recipients" class="clearfix">
+            <li id="m-clone-added"class="rounded"><span>Text</span> <img src="/images/btn-delete-small.png" id="img-clone-added" class="link" /> <input type="checkbox" value="" /></li>
+            <li id="autocomplete"></li>
+            <div class="clear-fix"></div>
+          </ul>
+        </dd>
+      </dl>
+      <div class="clear-fix"></div>
+      <div id="form-actions">
+      <img id="add-contributors-btn" class="link" src="/images/btn-contributors-add.png" />
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    zz.wizard.contributor_count = <%= @contributors.length %>;
+    <% @contributors.each do |c | %>
+    zz.wizard.insert_contributor_bubble("<%=( c.name.nil? || c.name.length <= 0 ? c.email : c.name )%>","<%= contributor_path(c.id)%>");
+    <% end %>
+</script>
