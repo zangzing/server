@@ -1047,6 +1047,18 @@ ul#privacy-menu li#privacy-password {
   background: url(/images/bg-privacy-password-off.png) no-repeat;
 }
 
+ul#privacy-menu li#privacy-public:hover {
+  background: url(/images/bg-privacy-public-on.png) no-repeat;
+}
+
+ul#privacy-menu li#privacy-hidden:hover {
+  background: url(/images/bg-privacy-private-on.png) no-repeat;
+}
+
+ul#privacy-menu li#privacy-password:hover {
+  background: url(/images/bg-privacy-password-on.png) no-repeat;
+}
+
 div#drawer-content h3 {
   font-size: 1.7em;
   font-weight: 500;
