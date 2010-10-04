@@ -64,6 +64,14 @@
 </script>
 <% end %>
 
+<% content_for :page_head do %>
+  <meta name="title" content="<%= h @album.name %>" />
+  <% unless @photos.empty? %>
+    <% thumb_path = @photos.first.image? ? @photos.first.thumb_url : @photos.first.source_thumb_url %>
+    <link rel="image_src" href="<%= thumb_path %>" />
+  <% end %>
+<% end %>
+
 <h2 class="album"><%= h @album.name %></h2>
 
 <% unless @album.photos.empty? %>

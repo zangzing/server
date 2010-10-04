@@ -5,7 +5,7 @@
 
 <div id="scroll-body">
 <form method="post" id="new_post_share" action="">
-    
+
     <div id="form-container" class="clearfix">
       <dl id="social-form" class="clearfix">
         <dt id="network"><input type="checkbox" name="post_share[facebook]" id="facebook_box" onclick="call_new_facebook_session();" value="1" <%=( @share.facebook == '1' ? "authorized='yes' checked='checked'" : "" )%> /> <img src="/images/icon-facebook-16.png" /></dt>
@@ -22,6 +22,7 @@
       </div>
       
     </div>
+  <% end %>
   </form>
 </div>
 

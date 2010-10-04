@@ -20,6 +20,8 @@ class Share < ActiveRecord::Base
   belongs_to :user
   belongs_to :album
 
+  attr_accessor :link_to_share
+
   has_many :recipients, :dependent => :destroy
   validates_presence_of :album_id, :user_id
   
@@ -32,7 +34,8 @@ class Share < ActiveRecord::Base
   end
 
   def deliver_later
-     Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(self, :deliver, [])
+     #Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(self, :deliver, [])
+     Delayed::IoBoundJob.enqueue LinkShareRequest.new(self.id, self.link_to_share)
   end
    
 end
