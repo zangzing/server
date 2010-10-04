@@ -45,4 +45,4 @@ Rails::Initializer.run do |config|
 
 end
 ActiveRecord::Base.guid_generator = :mysql
-ZANGZING_VERSION="Version Goes Here"
+ZANGZING_VERSION="I6 10-4-10"
