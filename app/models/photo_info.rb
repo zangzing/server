@@ -30,7 +30,7 @@ class PhotoInfo < ActiveRecord::Base
       end
       #fix_date_values(iptc_tags)
     rescue PaperclipCommandLineError
-      raise PaperclipError, "There was an error getting metadata from #{file_name}" if whiny
+      raise PaperclipError, "There was an error getting metadata from #{file_name}"
     end
 
     {:EXIF => exif_tags, :IPTC => iptc_tags}

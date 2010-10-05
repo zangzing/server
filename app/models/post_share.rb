@@ -25,8 +25,8 @@ class PostShare < Share
   def deliver
     if self.sent_at.nil?
       self.recipients.each do |rec|
-        user = User.find( rec.address )
-        user.send("identity_for_#{rec.service}").post( self.message )
+        user = User.find(rec.address)
+        user.send("identity_for_#{rec.service}").post(self.link_to_share, self.message)
       end
       self.sent_at = Time.now
       self.save
