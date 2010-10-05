@@ -102,6 +102,13 @@ class Album < ActiveRecord::Base
     self.picon_bucket = picon.instance_variable_get("@bucket")
   end
 
+  def is_contributor?( email )
+    c = self.contributors.find_by_email( email );
+    if c
+      return User.find_by_email_or_create_automatic( c.email, c.name )
+    end
+  end
+
   private
   def set_email
       # Remove spaces and @

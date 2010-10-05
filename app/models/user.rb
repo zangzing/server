@@ -32,11 +32,13 @@
 #   Copyright 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 
+# "automatic" users are created when a contributor adds photos by email but does not have
+# an accoung
 
 class User < ActiveRecord::Base
   usesguid
   attr_writer      :name
-  attr_accessible  :email, :name, :username, :password
+  attr_accessible  :email, :name, :username, :password, :automatic
 
   has_many :albums,              :dependent => :destroy
   has_many :identities,          :dependent => :destroy
@@ -62,12 +64,12 @@ class User < ActiveRecord::Base
 
   before_save  :split_name
 
-  validates_presence_of :name
-  validates_presence_of :username
-  validates_uniqueness_of :username, :message => "Sorry, username already taken"   
+  validates_presence_of :name, :unless => :automatic?
+  validates_presence_of :username, :unless => :automatic?
+  validates_uniqueness_of :username, :message => "Sorry, username already taken", :unless => :automatic?
   validates_presence_of :email
   validates_uniqueness_of :email, :message => "Email already used for a ZangZing account"
-  validates_length_of   :password, :within => 6..40, :if => :require_password?, :message => "must be between 6 and 40 characters long"
+  validates_length_of  :password, :within => 6..40, :if => :require_password?, :message => "must be between 6 and 40 characters long"
 
 
   Identity::UI_INFO.keys.each do |service_name|
@@ -79,6 +81,24 @@ class User < ActiveRecord::Base
       end
       identity
     end
+  end
+
+
+  def self.find_by_email_or_create_automatic( email, name='' )
+    user = User.find_by_email( email );
+    if user.nil?
+      #user not fount create an automatic user with a random password
+      user = User.create!(  :automatic => true,
+                           :email => email,
+                           :name => name,
+                           :password => UUID.random_create.to_s);
+    end
+    return user
+  end
+
+  # automatic users were created by the system from contributors emailing photos or OAuth login i.e. FaceBookConnect
+  def automatic?
+    self.automatic
   end
 
   # Generates a new perishable token for the notifier to use in a password reset request
@@ -101,9 +121,6 @@ class User < ActiveRecord::Base
      Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(Notifier, :deliver, [msg] )
   end
 
-
-  
-
   def admin?
      self.role == 'admin'
   end
@@ -116,8 +133,6 @@ class User < ActiveRecord::Base
       self.active = true
       save
   end
-  
-
 
   def self.find_by_email_or_username(login)
     find_by_email(login) || find_by_username(login)
