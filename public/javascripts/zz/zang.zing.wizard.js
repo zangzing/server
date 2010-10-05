@@ -489,8 +489,6 @@ zz.wizard = {
       zz.autocompleter[0].autocompleter.setData(google_contacts.concat( yahoo_contacts.concat( local_contacts ) ));
   },
 
-
-
   delete_identity: function(){
          //if ( confirm('Are you sure you want to delete this identity?')){
              $.post(this.value, {"_method": "delete"}, function(data){

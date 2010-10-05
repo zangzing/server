@@ -650,7 +650,19 @@ div#small-drawer h3 {
   color: #0a0a0a;
 }
 
-div#small-drawer p.error-notice {
+.flash-notice {
+    display: none;
+    font-size: 1.3em;
+    text-align: center;
+    height: 18px;
+    color: green;
+    font-weight: 700;
+    text-transform: capitalize;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+div#small-drawer p.error-notice, .error-notice {
   display: none;
   font-size: 1.3em;
   text-align: center;
@@ -659,7 +671,7 @@ div#small-drawer p.error-notice {
   text-transform: capitalize;
 }
 
-div#sign-up p.error-notice {
+div#sign-up p.error-notice, .error-notice {
   margin-top: 10px;
 }
 

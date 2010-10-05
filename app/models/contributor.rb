@@ -15,6 +15,7 @@ class Contributor < ActiveRecord::Base
   belongs_to :user
 
   validates_presence_of :album_id
+  validates_presence_of :email
   validates_format_of   :email,
                         :with       => /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i,
                         :message    => 'must be a valid email address'
@@ -43,9 +44,16 @@ class Contributor < ActiveRecord::Base
     c = nil
     matches = address.match(/^"(.*)" <(.*)>$/i)
     if matches
-       album.contributors.create( :name => matches[1], :email => matches[2] )
-   else
-      album.contributors.create( :email => address )
+       c = album.contributors.build( :name => matches[1], :email => matches[2] )
+      else
+      c = album.contributors.build( :email => address )
+    end
+    if !c.valid? 
+         if msg = c.errors.on(:email)
+            c.errors.clear
+            c.errors.add(:email,  address+' '+msg   )
+         end
+         raise ActiveRecord::RecordInvalid.new( c )
     end
   end
 end

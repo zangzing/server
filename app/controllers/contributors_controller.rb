@@ -21,18 +21,18 @@ class ContributorsController < ApplicationController
       begin
         Contributor.factory( @album, params[:email_share][:to])
         @album.save!
-      rescue Exception => e
-        flash[:error] = "Unable to create contributor list"
+      rescue ActiveRecord::RecordInvalid => invalid
         respond_to do |format|
           format.html  { redirect_to new_album_contributors_url(@album)   }
-          format.json { render :json =>{:status => 400, :flash => flash, :errors => e } and return}
+          format.json  { errors_to_headers( invalid.record )
+                         render :json => "", :status => 400 and return}
         end
       end    
 
-      flash[:notice] = "The new contributor list was added to your album"
+      flash[:notice] = "The contributors were added to your album"
       respond_to do |format|
           format.html  { redirect_to album_url(@album)   }
-          format.json { render :json =>{:status => 200, :flash => flash } and return }
+          format.json { render :json => "", :status => 200 and return }
        end
     end
   end

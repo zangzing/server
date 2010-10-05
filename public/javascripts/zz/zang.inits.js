@@ -67,6 +67,23 @@ zang.init = {
   },
   
   loaded: function(){
+     $('#drawer-content').ajaxError(function(event, request) {
+         var data = request.getResponseHeader('X-Errors');
+         if( data ){
+            var errors = (new Function( "return( " + data + " );" ))(); //parse json using function contstructor
+            $('#error-notice').html(errors[0][1]).show();
+         }
+     });
+     $('#drawer-content').ajaxSuccess(function(event, request) {
+         var data = request.getResponseHeader('X-Flash');
+         if( data && data.length>0 ){
+             var flash = (new Function( "return( " + data + " );" ))(); //parse json using function contstructor
+             setTimeout(function(){$('#flashes-notice').html(flash.notice).show();},20);
+             setTimeout(function(){$('#flashes-notice').fadeOut('fast', function(){$('#flashes-notice').html('    ');})}, 4000);
+         }else{
+             setTimeout(function(){$('#flashes-notice').html('    ');},20);
+         }
+     });
   
   },
   

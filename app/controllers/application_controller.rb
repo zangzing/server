@@ -18,13 +18,30 @@ class ApplicationController < ActionController::Base
   helper_method :current_user_session, :current_user, :current_user?, :signed_in?
   filter_parameter_logging :password, :password_confirmation # Scrub sensitive parameters from log
 
+  after_filter :flash_to_headers
+  
   #protect_from_forgery # See ActionController::RequestForgeryProtection XSScripting protection
 
-  layout 'new' # Sets the whole application layout
+  layout  proc{ |c| c.request.xhr? ? false : 'new' }
 
   private
 
-      
+  # If its an AJAX request, move the flashes to a custom header for JS handling on the client
+  def flash_to_headers
+    return unless request.xhr?
+    response.headers['X-Flash'] = flash.to_json if flash.length > 0
+    response.headers['X-Status'] = response.status.split[0]
+    flash.discard  # don't want the flash to appear when you reload page 
+  end
+
+  def errors_to_headers( record )
+      return unless request.xhr?
+      response.headers['X-RecordType'] = record.class.name
+      response.headers['X-Errors'] = record.errors.to_json
+  end
+
+
+
     # Authentication based on authlogic
     # returns false or the current user session
     def current_user_session
