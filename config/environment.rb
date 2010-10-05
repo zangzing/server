@@ -46,3 +46,4 @@ Rails::Initializer.run do |config|
 end
 ActiveRecord::Base.guid_generator = :mysql
 ZANGZING_VERSION="I6 10-4-10"
+ALBUM_EMAIL_HOST="sendgrid-post.zangzing.com"

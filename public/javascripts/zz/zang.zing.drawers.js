@@ -30,12 +30,7 @@ zz.drawers = {
         url_type: 'album', // replace $$ w/the id of the album or user
 
         init: function(){ // run when loading the drawer up
-          filechooser.init(); 
-          setTimeout('$("#added-pictures-tray").fadeIn("fast")', 300);
-          $('#user-info').css('display', 'none');
-          setTimeout("$('#album-info').css('display', 'inline-block')", 200);
-          zz.album_type = 'personal';
-
+          zz.wizard.init_add_tab('personal');  
         },
         
         bounce: function(){ // run before you leave
@@ -52,15 +47,11 @@ zz.drawers = {
         url_type: 'album',
         
         init: function(){
-         //Set The Album Name at the top of the screen
-          $('h2#album-header-title').html($('#album_name').val());   
-          $('#album_name').keypress( function(){
-            setTimeout(function(){ $('#album-header-title').html( $('#album_name').val() ) }, 10);
-          });
+            zz.wizard.init_name_tab();
         },
         
         bounce: function(){
-           zz.wizard.album_update();
+           zz.wizard.update_album();
         }
       
       }, //end zz.drawers.personal_album.steps.name
@@ -162,13 +153,8 @@ zz.drawers = {
         url_type: 'album',
 
         init: function(){
-          filechooser.init();
-          setTimeout('$("#added-pictures-tray").fadeIn("fast")', 300);
-          $('#user-info').css('display', 'none');
-          setTimeout("$('#album-info').css('display', 'inline-block')", 200);
-          zz.album_type = 'group';
-        },
-      
+         zz.wizard.init_add_tab('group');   
+        },      
         bounce: function(){
           $('#added-pictures-tray').fadeOut('fast');
         }
@@ -181,14 +167,10 @@ zz.drawers = {
             url: '/albums/$$/name_album',
             url_type: 'album',
             init: function(){
-                //Set The Album Name at the top of the screen
-                $('h2#album-header-title').html($('#album_name').val());
-                $('#album_name').keypress( function(){
-                setTimeout(function(){ $('#album-header-title').html( $('#album_name').val() ) }, 10);
-                });
+                zz.wizard.init_name_tab();
             },
             bounce: function(){
-               zz.wizard.album_update(); //post edit-album form
+               zz.wizard.update_album(); //post edit-album form
             }
       
       }, //end zz.drawers.group_album.steps.name

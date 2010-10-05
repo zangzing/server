@@ -1,5 +1,5 @@
       <header class="clearfix">
-        <% if Rails.env.development? %>
+        <% if !Rails.env.production? %>
         <ul id="dev-version" class="clearfix">
           <li id="version-string">
             DEVELOPMENT ENVIRONMENT<br>

@@ -10,6 +10,8 @@
 
     <dt><label for="album_name">Album Name:</label></dt>
     <dd><input type="text" name="album[name]" id="album_name" value="<%=@album.name%>"></dd>
+    <dt><label for="album_email">Album Email:</label></dt>
+    <dd><%=@album.user.username.downcase%>.<input id="album_email" type="text" name="album[email]" readonly="readonly" value="<%=@album.name.downcase.gsub(/ /,'')%>"><%="@#{ALBUM_EMAIL_HOST}"%>   </dd>    
   </dl>
   
   <div class="field">

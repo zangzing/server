@@ -41,6 +41,9 @@ class Album < ActiveRecord::Base
   validates_presence_of  :name
   validates_length_of    :name, :maximum => 50
 
+  before_create :set_email
+  before_save   :set_email, :if => :name_changed?
+
   default_scope :order => 'created_at DESC'
 
   PRIVACIES = {'Public' =>'public','Hidden' => 'hidden','Password' => 'password'};
@@ -55,6 +58,7 @@ class Album < ActiveRecord::Base
     end
     return name
   end
+
 
   def cover
     return nil if self.photos.empty?
@@ -96,5 +100,21 @@ class Album < ActiveRecord::Base
     logger.debug("In picon before post")
     self.picon_path   = picon.path.gsub(picon.original_filename,'')
     self.picon_bucket = picon.instance_variable_get("@bucket")
+  end
+
+  private
+  def set_email
+      # Remove spaces and @
+      self.email = dashify(name)
+  end
+
+  def dashify( s )
+      # change everything to lowercase
+      # trim leading and trailing spaces
+      # change all spaces and underscores to a hyphen
+      # remove all non-alphanumeric characters except the hyphen
+      # replace multiple instances of the hyphen with a single instance
+      # trim leading and trailing hyphens
+      s.downcase.gsub(/^\s+|\s+$/, "").gsub(/[_|\s]+/, "-").gsub(/[^a-z0-9-]+/, "").gsub(/[-]+/, "-").gsub(/^-+|-+$/, "")
   end
 end

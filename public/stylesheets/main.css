@@ -1128,13 +1128,24 @@ div#drawer-content dl.form dd {
   text-align: left;
 }
 
-div#drawer-content dl.form dd input#album_name {
+div#drawer-content dl.form dd input#album_name{
   width: 500px;
   padding: 5px;
   text-align: left;
   font-size: 1.8em;
   background-color: #fff;
   border: solid 2px #afafaf;
+}
+
+div#drawer-content dl.form dd input#album_email {
+  margin_top: 50px;
+  width: 300px;
+  padding: 5px;
+  text-align: left;
+  font-size: 1.5em;
+  font-weight: bold;
+  background-color: #fff;
+  border: none;
 }
 
 div#drawer-content dl.form dd input#album_name:focus {

@@ -489,9 +489,7 @@ zz.wizard = {
       zz.autocompleter[0].autocompleter.setData(google_contacts.concat( yahoo_contacts.concat( local_contacts ) ));
   },
 
-  album_update: function(){
-    $.post('/albums/'+zz.album_id,$(".edit_album").serialize() );
-  },
+
 
   delete_identity: function(){
          //if ( confirm('Are you sure you want to delete this identity?')){
@@ -500,10 +498,45 @@ zz.wizard = {
                 });
          //}
   },
+
+  update_album: function(){
+    $.post('/albums/'+zz.album_id,$(".edit_album").serialize() );
+  },  
+
   update_user: function(){
              $.post(this.value, $("#update-user-form").serialize, function(data){
                  $("#drawer-content").html("").html( data );
                 });
+  },
+
+  dashify: function(s){
+      return   s
+              .toLowerCase() // change everything to lowercase
+              .replace(/^\s+|\s+$/g, "") // trim leading and trailing spaces
+              .replace(/[_|\s]+/g, "-") // change all spaces and underscores to a hyphen
+              .replace(/[^a-z0-9-]+/g, "") // remove all non-alphanumeric characters except the hyphen
+              .replace(/[-]+/g, "-") // replace multiple instances of the hyphen with a single instance
+              .replace(/^-+|-+$/g, "") // trim leading and trailing hyphens
+              ;             
+  },
+
+  init_add_tab: function( album_type ){
+       filechooser.init();
+       setTimeout('$("#added-pictures-tray").fadeIn("fast")', 300);
+       $('#user-info').css('display', 'none');
+       setTimeout("$('#album-info').css('display', 'inline-block')", 200);
+      zz.album_type = album_type;
+  },  
+
+  init_name_tab: function(){
+      //Set The Album Name at the top of the screen
+      $('h2#album-header-title').html($('#album_name').val());
+      $('#album_email').val( zz.wizard.dashify($('#album_name').val()));
+      $('#album_name').keypress( function(){
+         setTimeout(function(){ $('#album-header-title').html( $('#album_name').val() );
+                                $('#album_email').val( zz.wizard.dashify($('#album_name').val()) );
+                              }, 10);
+       });
   }
 
 
