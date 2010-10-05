@@ -60,8 +60,9 @@ zang.validate = {
     },      
     submitHandler: function() {
       serialized = $('#new_post_share').serialize();
-      $.post('/albums/'+zz.album_id+'/shares', serialized, function(data){
+      $.post('/albums/'+zz.album_id+'/shares.json', serialized, function(data,status,request){
         zz.wizard.reload_share(zz.drawers[zz.album_type+'_album'], 'share');
+        zz.wizard.display_flashes(  request,200 );  
       });
     }
     
@@ -80,12 +81,9 @@ zang.validate = {
   
     submitHandler: function() {
       serialized = $('#new_email_share').serialize();
-      $.post('/albums/'+zz.album_id+'/shares.json', serialized, function(data ){
-       if( data.status == 200 ){
+      $.post('/albums/'+zz.album_id+'/shares.json', serialized, function(data,status,request ){
           zz.wizard.reload_share(zz.drawers[zz.album_type+'_album'], 'share');
-        }else{
-          alert( data.errors.length + " Errors "+data.errors[0]);  
-        }
+          zz.wizard.display_flashes( request,200 );
       },"json");
     }
     
@@ -100,11 +98,12 @@ zang.validate = {
       'email_share[message]': ''
     },
     submitHandler: function() {
-      $.post('/albums/'+zz.album_id+'/contributors.json', $('#new_contributors').serialize(), function(data){
-      $('#drawer-content').empty().load('/albums/'+zz.album_id+'/contributors', function(){
-                zz.wizard.build_nav(zz.drawers.group_album, 'contributors');
-                zz.drawers.group_album.steps['contributors'].init();
-            });
+      $.post('/albums/'+zz.album_id+'/contributors.json', $('#new_contributors').serialize(), function(data,status,request){    
+         $('#drawer-content').empty().load('/albums/'+zz.album_id+'/contributors', function(){
+            zz.wizard.build_nav(zz.drawers.group_album, 'contributors');
+            zz.drawers.group_album.steps['contributors'].init();
+            zz.wizard.display_flashes(  request,200 );
+          });
       },"json");
     }
 

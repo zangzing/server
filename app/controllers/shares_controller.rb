@@ -37,14 +37,20 @@ class SharesController < ApplicationController
       respond_to do |format |
           format.html { render 'newemail' and return  if params[:mail_share]
                         render 'newpost' and return  if params[:post_share]  }
-          format.json {  render :json=> {:status => 400, :errors => @share.errors.full_messages} and return }
+          format.json  { errors_to_headers( @share )
+                         render :json => "", :status => 400 and return}
       end
     end
     @share.deliver_later
-    flash[:notice] = "Share Created"
+    case @share.type
+      when 'PostShare'
+        flash[:notice] = "Your message will be tweeted and/or posted on your wall as soon as the album is ready."
+      when 'EmailShare'
+        flash[:notice] = "Instructions to access the album will be emailed  to your friends as soon as the album is ready."
+    end
     respond_to do |format |
           format.html   
-          format.json {  render :json=> {:status => 200, :flash => flash } and return }
+          format.json {  render :json =>"", :status => 200 and return }
     end    
   end
 
