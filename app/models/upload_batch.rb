@@ -21,10 +21,6 @@ class UploadBatch < ActiveRecord::Base
     return current_batch
   end
 
-  def self.start_new( user,album)
-    self.close_open_batches( user, album )
-    return UploadBatch.factory( user, album )
-  end
 
   def self.close_open_batches( user, album=nil )
     if album.nil?
@@ -45,61 +41,55 @@ class UploadBatch < ActiveRecord::Base
   end
 
   def close
-    return true if self.state == 'closed'
-    return false if self.state != 'open' 
-    self.state = 'closed'
-    self.save
-    self.finish if self.ready? 
-  end
-
-  def ready?
-    return true if self.state == 'ready'
-    return false if self.state != 'closed'
-    photos = Photo.find_all_by_upload_batch_id_and_state( self.id, 'ready' )
-    if photos.nil?
-      return false if self.photos.count > 0
-      self.state = 'ready'
+    if self.state == 'open'
+      self.state = 'closed'
       self.save
-      return true
+      self.finish
     end
-
-    if photos.count == self.photos.count
-      self.state = 'ready'
-      self.save
-      return true;
-    end
-    return false;
   end
 
   def finish
-    return true if self.state == 'finished'
-    return false if self.state != 'ready'
+    if self.state == 'closed' && self.ready?
+      #Notify contributor that upload batch is finished
+      msg = Notifier.create_upload_batch_finished( self)
+      Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(Notifier, :deliver, [msg] )
 
-    #Notify contributor that upload batch is finished
-    msg = Notifier.create_upload_batch_finished( self)
-    Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(Notifier, :deliver, [msg] )
+      #If this user has any undelivered shares for this album, send them now
+      shares = Share.find_all_by_user_id_and_album_id( user.id, self.album.id)
+      shares.each { |s| s.deliver_later() } if shares
 
-    #If this user has any undelivered shares for this album, send them now
-    shares = Share.find_all_by_user_id_and_album_id( user.id, self.album.id)
-    shares.each { |s| s.deliver_later() } if shares
+      #Update album picon
+      self.album.update_picon_later
 
-    #Update album picon
-    self.album.update_picon_later
+      # Create Activity
+      ua = UploadActivity.create( :user => self.user, :album => self.album, :upload_batch => self )
+      self.album.activities << ua
 
-    # Create Activity
-    ua = UploadActivity.create( :user => self.user, :album => self.album, :upload_batch => self )
-
-    self.state = 'finished'
-    self.save
+      self.state = 'finished'
+      self.save
+    end
   end
 
   protected
+  def ready?
+    if self.state == 'closed'
+      photos = Photo.find_all_by_upload_batch_id_and_state( self.id, 'ready' )
+      if photos.nil?
+         return true if self.photos.count <= 0
+      else
+         return true if photos.count == self.photos.count
+      end
+    end
+    return false
+  end
+  
+
   def self.factory( user, album )
     raise Exception.new( "User and Album Params must not be null for the UploadBatch factory") if( user.nil? or album.nil? )
     nb = user.upload_batches.create({:album_id => album.id})
     album.upload_batches << nb
     #schedule the closing of the batch 30 minutes from now
-    Delayed::IoBoundJob.enqueue(  Delayed::PerformableMethod.new( nb, :close, {} ) , 0 ,  25.minutes.from_now  );
+    Delayed::IoBoundJob.enqueue(  Delayed::PerformableMethod.new( nb, :close, {} ) , 0 ,  30.minutes.from_now  );
     return nb
   end
 end

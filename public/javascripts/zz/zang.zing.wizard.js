@@ -544,6 +544,12 @@ zz.wizard = {
             setTimeout(function(){$('#flashes-notice').html(flash.notice).show();},delay);
             setTimeout(function(){$('#flashes-notice').fadeOut('fast', function(){$('#flashes-notice').html('    ');})}, delay+4000);
        }
+
+       //For the timeline album view more button
+
+
+
+
   }
 
 };

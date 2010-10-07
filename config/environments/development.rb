@@ -26,12 +26,3 @@ config.action_mailer.smtp_settings = {
                   :password => 'sfmvqvm4ehbrgw'
 }
 
-
-#paperclip will look for imagemagick here
-#Paperclip.options[:command_path] = ENV['IMAGEMAGICK_PATH']
-#Paperclip.options[:log] = true
-#Paperclip.options[:log_command] = true
-
-#todo: is this the right way to handle this?
-APPLICATION_HOST = 'localhost:3000'
-config.action_mailer.default_url_options = {:host => APPLICATION_HOST }

@@ -1,0 +1,16 @@
+<li class="clearfix">
+        <%= render :partial => 'users/timeline_badge', :locals => { :user => activity.user }    %>
+ <div class="timeline-action">
+      <p><a href="<%=user_path(activity.user)%>"><%=activity.user.name%></a> added
+        <% i = activity.upload_batch.photos.length %>
+        <%=i%> <%=( i > 1 ? "photos" : "photo")%>  to &ldquo;<%=activity.album.name%>&rdquo;</p>
+      <p class="timeline-when">about <%=time_ago_in_words(activity.upload_batch.created_at) %> ago </p>
+
+      <ul class="timeline-grid">
+        <% activity.upload_batch.photos.each do | photo | %>
+            <li><img src="<%=photo.thumb_url%>" /></li>
+        <% end %>
+      </ul>
+        <%if i> 5  %><a href="javascript:void(0);"  class="more-less-btn">more...</a><%end%>    
+    </div>
+ </li>
