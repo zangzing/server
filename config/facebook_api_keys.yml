@@ -14,6 +14,12 @@ eydevelopment:
   :app_secret: 2c1b2b2dfa22045de91e5e946b5e03be
   :app_id: 130253193685746
 
+eysandbox:
+  :api_key: e036bf7fd30b549d820dc2f9b3db8d28
+  :app_secret: 2c1b2b2dfa22045de91e5e946b5e03be
+  :app_id: 130253193685746
+
+
 eytest:
   :api_key: e036bf7fd30b549d820dc2f9b3db8d28
   :app_secret: 2c1b2b2dfa22045de91e5e946b5e03be
