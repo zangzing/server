@@ -87,10 +87,17 @@ class User < ActiveRecord::Base
   def self.find_by_email_or_create_automatic( email, name='' )
     user = User.find_by_email( email );
     if user.nil?
+      mail_name = username = email.split('@').first
+      i = 1
+      begin
+        username = "#{mail_name}#{i}"
+        i += 1
+      end while User.find_by_username(username)
       #user not fount create an automatic user with a random password
       user = User.create!(  :automatic => true,
                            :email => email,
                            :name => name,
+                           :username => username,  #username is in DB index, so '' won't work
                            :password => UUID.random_create.to_s);
     end
     return user
@@ -126,7 +133,7 @@ class User < ActiveRecord::Base
   end
 
   def name
-    @name ||= (self.first_name ? self.first_name+' ':'')+(self.last_name||'')
+    @name ||= [first_name, last_name].compact.join(' ')
   end
 
   def activate!

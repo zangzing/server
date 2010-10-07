@@ -20,7 +20,9 @@ class Contributor < ActiveRecord::Base
                         :with       => /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i,
                         :message    => 'must be a valid email address'
   validates_uniqueness_of :email, :scope => :album_id, :message => "is already registered as a contributor for this album."
+
   before_create :set_user_id
+  after_create :deliver_notification
 
   def self.factory( album, addresses = [] )
     return if album.nil? || addresses.nil?
@@ -34,12 +36,18 @@ class Contributor < ActiveRecord::Base
   def is_a_user?
     self.user_id ||= ( @user = User.find_by_email( self.email ) ? @user.id : false )
   end
+
+  def deliver_notification
+    msg = Notifier.create_contributors_added(self)
+    Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(Notifier, :deliver, [msg] )
+  end
     
   private
   def set_user_id
      self.is_a_user?
      true #its a before save filter, always return true to avoid stopping the save
   end  
+
   def self.singleton_factory( album, address )
     c = nil
     matches = address.match(/^"(.*)" <(.*)>$/i)
