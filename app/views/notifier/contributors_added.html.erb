@@ -1,0 +1,11 @@
+<%= render(:partial => 'zz_email_banner') %>
+
+<h3>You were added as an album contributor!</h3>
+
+<p>
+  <%= @user.name %> has created an album '<%= @album.name  %>' and added your email to contributors list.
+  <br/>
+  To add photos to this album, just attach them to an email and send it to <a href="mailto:<%= @album_mail %>"><%= @album_mail %></a> (or reply this email)
+</p>
+
+<%= render(:partial => 'zz_email_signature') %> 

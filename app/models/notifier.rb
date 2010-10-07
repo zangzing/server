@@ -1,4 +1,5 @@
 class Notifier < ActionMailer::Base
+  require 'vpim/vcard'
 
   if Rails.env == 'production'
     @@zzfrom = '"ZangZing Communications" <do-not-reply@zangzing.com>'
@@ -6,6 +7,23 @@ class Notifier < ActionMailer::Base
     @@zzfrom = '"ZangZing '+Rails.env.capitalize+' Environment" <do-not-reply@zangzing.com>'
   end
 
+  def contributors_added(contributor)
+    recipients   contributor.email
+    subject      "You were added as a contributor to '#{contributor.album.name}' album!"
+    sent_on       Time.now
+    content_type "text/html"
+    album_mail = "#{contributor.album.id}@#{ALBUM_EMAIL_HOST}"
+    from         album_mail
+
+    vcard = Vpim::Vcard::Maker.make2 do |vc|
+      vc.add_name do |name|
+        name.given = contributor.album.name
+      end
+      vc.add_email album_mail
+    end
+    part :content_type => "text/html", :body => render_message('contributors_added', :user => contributor.album.user, :album => contributor.album, :album_mail => album_mail)
+    attachment :filename => 'album.vcf', :content_type => 'text/x-vcard', :body =>vcard.to_s
+  end
 
   def upload_batch_finished( batch )
     from         @@zzfrom

@@ -11,6 +11,11 @@ eydevelopment:
   :shared_secret: f8940e84726a5e17
   :api_key: cbcd54aeabffef35d77cb02e321c01bf
 
+eysandbox:
+  :shared_secret: f8940e84726a5e17
+  :api_key: cbcd54aeabffef35d77cb02e321c01bf
+
+
 eytest:
   :shared_secret: f8940e84726a5e17
   :api_key: cbcd54aeabffef35d77cb02e321c01bf

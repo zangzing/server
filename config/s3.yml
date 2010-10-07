@@ -18,6 +18,10 @@ test:
 eydevelopment:
   <<: *common
 
+eysandbox:
+  <<: *common
+
+
 eytest:
   <<: *common
 

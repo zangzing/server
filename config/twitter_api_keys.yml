@@ -11,6 +11,11 @@ eydevelopment:
   :consumer_secret: kSAdo76olC43lX6EyC7xNQjBF1Geh0CZdO505uFjKMo
   :app_key: 8NTjD0j6csRr1aGrGGuLA
 
+eysandbox:
+  :consumer_secret: kSAdo76olC43lX6EyC7xNQjBF1Geh0CZdO505uFjKMo
+  :app_key: 8NTjD0j6csRr1aGrGGuLA
+
+
 eytest:
   :consumer_secret: kSAdo76olC43lX6EyC7xNQjBF1Geh0CZdO505uFjKMo
   :app_key: 8NTjD0j6csRr1aGrGGuLA
