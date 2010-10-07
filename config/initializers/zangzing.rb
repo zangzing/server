@@ -1,4 +1,4 @@
-fname = "/etc/chef/dna.json"
+fname = "/home/deploy/dna.json"
 msg = []
 msg << "=> ZangZing Initializer"
 if File.exists?( fname )
