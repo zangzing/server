@@ -20,6 +20,7 @@ gem 'authlogic',     '2.1.5'
 gem 'usesguid'
 gem 'usesguid_migrations'
 gem 'actionmailer'
+gem 'vpim'
 
 gem 'hpricot'
 gem 'twitter_oauth'
