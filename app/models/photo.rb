@@ -229,8 +229,8 @@ class Photo < ActiveRecord::Base
 
 
   def substitute_source_urls
-    self.source_thumb_url = self.source_thumb_url.gsub(':photo_id', self.id)
-    self.source_screen_url =  self.source_screen_url.gsub(':photo_id', self.id)
+    self.source_thumb_url = self.source_thumb_url.gsub(':photo_id', self.id) if self.source_thumb_url
+    self.source_screen_url =  self.source_screen_url.gsub(':photo_id', self.id) if self.source_screen_url
   end
 
   def metadata
