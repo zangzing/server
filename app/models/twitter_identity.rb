@@ -15,8 +15,8 @@ class TwitterIdentity < Identity
     return @api
   end
 
-  def post( message="" )
-      self.twitter_api.client.update( message )
+  def post( link, message="" )
+      self.twitter_api.client.update( message + ' ' + link)
   end
 
 end
