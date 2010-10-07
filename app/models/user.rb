@@ -133,7 +133,7 @@ class User < ActiveRecord::Base
   end
 
   def name
-    @name ||= (self.first_name ? self.first_name+' ':'')+(self.last_name||'')
+    @name ||= [first_name, last_name].compact.join(' ')
   end
 
   def activate!
