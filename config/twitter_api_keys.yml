@@ -1,24 +1,24 @@
 ---
 development:
-  :consumer_secret: kSAdo76olC43lX6EyC7xNQjBF1Geh0CZdO505uFjKMo
-  :app_key: 8NTjD0j6csRr1aGrGGuLA
+  :consumer_secret: LVwYEbWO9XUMMuqVcIBlAEASOWLdoW7ufYujiYbzI
+  :app_key: IzGoUFOmtnSFoebjtFWJCQ
 
 test:
-  :consumer_secret: kSAdo76olC43lX6EyC7xNQjBF1Geh0CZdO505uFjKMo
-  :app_key: 8NTjD0j6csRr1aGrGGuLA
+  :consumer_secret: LVwYEbWO9XUMMuqVcIBlAEASOWLdoW7ufYujiYbzI
+  :app_key: IzGoUFOmtnSFoebjtFWJCQ
 
 eydevelopment:
-  :consumer_secret: kSAdo76olC43lX6EyC7xNQjBF1Geh0CZdO505uFjKMo
-  :app_key: 8NTjD0j6csRr1aGrGGuLA
+  :consumer_secret: LVwYEbWO9XUMMuqVcIBlAEASOWLdoW7ufYujiYbzI
+  :app_key: IzGoUFOmtnSFoebjtFWJCQ
 
 eysandbox:
-  :consumer_secret: kSAdo76olC43lX6EyC7xNQjBF1Geh0CZdO505uFjKMo
-  :app_key: 8NTjD0j6csRr1aGrGGuLA
+  :consumer_secret: LVwYEbWO9XUMMuqVcIBlAEASOWLdoW7ufYujiYbzI
+  :app_key: IzGoUFOmtnSFoebjtFWJCQ
 
 
 eytest:
-  :consumer_secret: kSAdo76olC43lX6EyC7xNQjBF1Geh0CZdO505uFjKMo
-  :app_key: 8NTjD0j6csRr1aGrGGuLA
+  :consumer_secret: LVwYEbWO9XUMMuqVcIBlAEASOWLdoW7ufYujiYbzI
+  :app_key: IzGoUFOmtnSFoebjtFWJCQ
 
 
 production:
