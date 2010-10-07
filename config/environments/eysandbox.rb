@@ -13,11 +13,3 @@ config.action_controller.consider_all_requests_local = true
 config.action_view.debug_rjs                         = true
 config.action_controller.perform_caching             = false
 
-#paperclip will look for imagemagick here
-#Paperclip.options[:command_path] = ENV['IMAGEMAGICK_PATH']
-#Paperclip.options[:log] = true
-#Paperclip.options[:log_command] = true
-
-#todo: is this the right way to handle this?
-APPLICATION_HOST = 'share2002photos.zangzing.com'
-config.action_mailer.default_url_options = {:host => APPLICATION_HOST }
