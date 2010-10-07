@@ -18,6 +18,3 @@ config.action_controller.perform_caching             = false
 #Paperclip.options[:log] = true
 #Paperclip.options[:log_command] = true
 
-#todo: is this the right way to handle this?
-APPLICATION_HOST = 'share1001photos.zangzing.com'
-config.action_mailer.default_url_options = {:host => APPLICATION_HOST }

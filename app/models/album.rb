@@ -30,7 +30,7 @@ class Album < ActiveRecord::Base
   belongs_to :user
   has_many :photos,           :dependent => :destroy
   has_many :shares,           :dependent => :destroy
-  has_many :album_activities, :dependent => :destroy
+  has_many :activities,       :dependent => :destroy
   has_many :upload_batches
   has_many :contributors
 

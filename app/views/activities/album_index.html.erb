@@ -1,4 +1,9 @@
 <ul id="album-timeline">
+
+  <% @activities.each do |activity| %>
+                        <%= render :partial => 'upload_activity', :locals => {:activity => activity } %>
+  <%end%>
+
   <li class="clearfix">
     <div class="timeline-icon">
       <img src="/images/user-icon-54x54.png" width="54" height="54" class="icon" />
@@ -8,22 +13,6 @@
     <div class="timeline-action">
       <p><a href="">Joseph Ansanelli</a> purchased a customized &ldquo;New Zealand&rdquo; Photo Album</p>
       <p class="timeline-when">about an hour ago.</p>
-    </div>
-  </li>
-  <li class="clearfix">
-    <div class="timeline-icon">
-      <img src="/images/user-icon-2-54x54.png" width="54" height="54" class="icon" />
-      <p><img src="/images/icon-star-12px.png" /> Following  <img src="/images/icon-down-arrow-10px.png" /></p>
-    </div>
-    
-    <div class="timeline-action">
-      <p><a href="">Zang</a> added 3 photos to &ldquo;New Zealand&rdquo;</p>
-      <p class="timeline-when">about a day ago.</p>
-      <ul class="timeline-grid">
-        <li><img src="/images/test-grid-image-tall-no-border.png" /></li>
-        <li><img src="/images/test-grid-image-wide-no-border.png" /></li>
-        <li><img src="/images/test-grid-image-tall-no-border.png" /></li>
-      </ul>
     </div>
   </li>
   <li class="clearfix">

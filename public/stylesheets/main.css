@@ -1590,6 +1590,8 @@ div.timeline-action figure {
   text-align: center;
 }
 
+
+
 div.timeline-action figure img.timeline-picon {
   margin: 15px 10px 10px;
 }
@@ -1601,6 +1603,10 @@ ul#contributors li div.timeline-action ul.timeline-grid {
   overflow: hidden;
   height: 160px;
   padding: 0;
+}
+.timeline-action a.more-less-btn{
+  margin-left:auto;
+  margin-right:auto;
 }
 
 ul#contributors li div.timeline-action ul.timeline-grid {
