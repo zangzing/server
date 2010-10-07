@@ -42,8 +42,12 @@ Rails::Initializer.run do |config|
   config.active_record.schema_format = :sql 
   config.action_mailer.delivery_method = :sendmail
 
+  #This is the default host. Wet it as an env variable to override. Read log at startup for info
   APPLICATION_HOST = 'localhost:3000'
+  
+  ALBUM_EMAIL_HOST=  'sendgrid-post.zangzing.com'
   ZANGZING_VERSION = 'I6 10-4-10'
-
 end
 ActiveRecord::Base.guid_generator = :mysql
+ActionMailer::Base.default_url_options = { :host => APPLICATION_HOST.split(':')[0],
+                                           :port => APPLICATION_HOST.split(':')[1] }

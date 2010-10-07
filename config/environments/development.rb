@@ -26,8 +26,3 @@ config.action_mailer.smtp_settings = {
                   :password => 'sfmvqvm4ehbrgw'
 }
 
-
-
-#todo: is this the right way to handle this?
-
-config.action_mailer.default_url_options = {:host => APPLICATION_HOST }
