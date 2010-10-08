@@ -34,7 +34,7 @@ class Contributor < ActiveRecord::Base
   end
 
   def is_a_user?
-    self.user_id ||= ( @user = User.find_by_email( self.email ) ? @user.id : false )
+    self.user_id ||= ( user = User.find_by_email( self.email ) ? user.id : false )
   end
 
   def deliver_notification
