@@ -1679,3 +1679,6 @@ h3.people {
 h3.first {
   margin-top: 70px;
 }
+.roundground {
+ -moz-border-radius: 10%;
+}
