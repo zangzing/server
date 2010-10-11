@@ -40,9 +40,9 @@ class SampleDataLoader
 
   def create_albums
     puts "      Creating Albums"
-    # create albums for first 10 users max 150
+    # create albums for first 10 users max 100
     User.all(:limit => 10).each do |user|
-      rand(12).times do
+      rand(10).times do
 
         album= nil;
         case rand(2)
