@@ -43,6 +43,15 @@ class Hash
 end
 
 
+# Monkey patch paperclip attachment, add original_path and override path()
+Paperclip.interpolates :directory do |att, style|
+  if att.instance_read(:path).nil?
+    "#{attachment( att, style)}/#{id( att, style)}"
+  else
+     "#{att.instance_read(:path)}"
+  end
+end
+
 # Load the paperclip.yml configuration file
 if defined?(RAILS_ROOT) and File.exists?("#{RAILS_ROOT}/config/paperclip.yml")
     Paperclip.options.merge!(YAML::load(ERB.new(File.read("#{RAILS_ROOT}/config/paperclip.yml")).result)[RAILS_ENV].recursively_symbolize_keys!)

@@ -1,6 +1,6 @@
 <% content_for :page_javascript do  # this places our page-specific js with the rest of the js at the bottom of the html -%>
 <script>
-    var json = '<%=@album.to_json(:include => {:photos => {:only =>[:id, :source_thumb_url, :state], :methods => [:thumb_url]}})%>';
+    var json = '<%=escape_javascript( @album.to_json(:include => {:photos => {:only =>[:id, :source_thumb_url, :state], :methods => [:thumb_url]}}))%>';
     var photos = jQuery.parseJSON(json).photos;
 
     var onStartLoadingImage = function(id, src) {

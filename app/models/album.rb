@@ -109,6 +109,7 @@ class Album < ActiveRecord::Base
     end
   end
 
+
   private
   def set_email
       # Remove spaces and @

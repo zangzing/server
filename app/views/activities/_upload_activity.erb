@@ -1,22 +1,27 @@
 <li class="clearfix">
-        <%= render :partial => 'users/timeline_badge', :locals => { :user => activity.user }    %>
- <div class="timeline-action">
-      <p><a href="<%=user_path(activity.user)%>"><%=activity.user.name%></a> added
-        <% i = activity.upload_batch.photos.length %>
-        <%=i%> <%=( i > 1 ? "photos" : "photo")%>  to &ldquo;<%=activity.album.name%>&rdquo;</p>
-      <p class="timeline-when">about <%=time_ago_in_words(activity.upload_batch.created_at) %> ago </p>
+  <a name="<%=activity.upload_batch.id%>"></a>
+  <div class="timeline-badge">
+    <%= render :partial => 'users/stacked_badge', :locals => { :user => activity.user }    %>
+  </div>
+  <div class="timeline-action">
+    <p><a href="<%=user_path(activity.user)%>"><%=activity.user.name%></a> added
+      <% i = activity.upload_batch.photos.length %>
+      <%=i%> <%=( i > 1 ? "photos" : "photo")%>  to &ldquo;<%=activity.album.name%>&rdquo;</p>
+    <p class="timeline-when">about <%=time_ago_in_words(activity.upload_batch.created_at) %> ago </p>
 
-      <ul class="timeline-grid">
+    <ul class="timeline-grid">
       <% activity.upload_batch.photos.each_index do | i | %>
-           <li id="<%=activity.upload_batch.photos[i].id%>">
-          <%if i>=5 %>
-              <img class="thumbnail" src="/images/grey.gif" original="<%=activity.upload_batch.photos[i].thumb_url%>"/>
-          <%else%>
-              <img src="<%=activity.upload_batch.photos[i].thumb_url%>"/>
-          <%end%>
-          </li>
-       <% end %>
-      </ul>
-        <%if i> 5  %><a href="javascript:void(0);"  class="more-less-btn">more...</a><%end%>    
-    </div>
- </li>
+          <a href="<%=album_photos_path(album)%>?size=screenres&upload_batch=<%=activity.upload_batch.id%>&photoid=<%=activity.upload_batch.photos[i].id%>">
+            <li id="<%=activity.upload_batch.photos[i].id%>">
+              <%if i>=5 %>
+                  <img class="lazy-thumb" src="/images/grey.gif" original="<%=activity.upload_batch.photos[i].thumb_url%>"/>
+              <%else%>
+                  <img src="<%=activity.upload_batch.photos[i].thumb_url%>"/>
+              <%end%>
+            </li>
+          </a>
+      <% end %>
+    </ul>
+    <%if i> 5  %><a href="javascript:void(0);"  class="more-less-btn">more...</a><%end%>
+  </div>
+</li>

@@ -4,7 +4,6 @@
 ActionController::Routing::Routes.draw do |map|
   #root
   map.root :controller => "pages", :action => 'home'
-  map.test '/test', :controller => 'photos', :action => 'test'
 
   #users
   map.with_options :controller => :users do |users|
@@ -40,6 +39,7 @@ ActionController::Routing::Routes.draw do |map|
     albums.album_upload_stat  '/albums/:album_id/upload_stat', :action=>'upload_stat', :conditions => { :method => :get }
   end
 
+
  #shares
   map.with_options :controller => :shares do |shares|
     shares.album_shares         '/albums/:album_id/shares',          :action=> 'index',   :conditions=>{ :method => :get }
@@ -57,8 +57,6 @@ ActionController::Routing::Routes.draw do |map|
   map.with_options :controller => :photos do |photos|                                                                                                
     photos.album_photos                '/albums/:album_id/photos.',                 :action=>'index',           :conditions => { :method => :get }
     photos.create_album_photo          '/albums/:album_id/photos.',                 :action=>'create',          :conditions => { :method => :post }
-    photos.create_multiple_album_photo '/albums/:album_id/photos/create_multiple.', :action=>'create_multiple', :conditions => { :method => :post }
-    photos.new_album_photo             '/albums/:album_id/photos/new.',             :action=>'new',             :conditions => { :method => :get }
     photos.upload_photo                '/photos/:id/upload.',                       :action=>'upload',          :conditions => { :method => :put }
     photos.edit_photo                  '/photos/:id/edit.',                         :action=>'edit',            :conditions => { :method => :get }
     photos.update_photo                '/photos/:id/edit.',                         :action=>'update',          :conditions => { :method => :put }
@@ -68,7 +66,6 @@ ActionController::Routing::Routes.draw do |map|
     photos.agent_create                '/albums/:album_id/photos/agent_create.:format',  :action=>'agent_create',    :conditions=>{ :method => :post }
   end
 
-
   #activities
   map.with_options :controller => :activities do |activities|
       activities.album_activities                '/albums/:album_id/activities.',   :action=>'album_index',           :conditions => { :method => :get }
@@ -77,8 +74,8 @@ ActionController::Routing::Routes.draw do |map|
 
   #people
   map.with_options :controller => :people do |people|
-      people.album_activities                '/albums/:album_id/people.',   :action=>'album_index',           :conditions => { :method => :get }
-      people.user_activities                 '/users/:user_id/people.',     :action=>'user_index',             :conditions => { :method => :get }
+      people.album_people               '/albums/:album_id/people.',   :action=>'album_index',           :conditions => { :method => :get }
+      people.user_people                 '/users/:user_id/people.',     :action=>'user_index',             :conditions => { :method => :get }
   end
 
   #followers
