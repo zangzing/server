@@ -33,7 +33,6 @@ end
 
 group :test do
   # bundler requires these gems while running tests
-  gem 'faker'
   gem 'webrat'
   gem 'rspec'  
   gem 'mechanize'
