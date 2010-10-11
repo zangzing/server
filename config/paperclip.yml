@@ -11,7 +11,6 @@
 # FOR ALL REMOTE Paperclip IMAGES (Can override per attachment below)
 images_common: &images_common
   storage:        :s3
-  path:           ":directory/:style/:filename"
   url:            :s3_domain_url
   s3_credentials: <%=File.join(Rails.root, 'config', 's3.yml')%>
   s3_headers:
@@ -23,6 +22,7 @@ images_common: &images_common
     - charlie.dev.zangzing
     - delta.dev.zangzing
     - eco.dev.zangzing
+    - foxtrot.dev.zangzing
 
 #FOR All ENVS
 common: &common
@@ -32,9 +32,11 @@ common: &common
     default_url: "/images/working.png"
   picon_options:
     <<: *images_common
+    path:        ":attachment/:id/:filename"
     default_url: "/images/folders/blank.png"  
   image_options:
     <<: *images_common
+    path:        ":directory/:style/:filename"
     default_url: "/images/working.png"
     styles:
       medium: "1024x768>"

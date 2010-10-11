@@ -1,6 +1,14 @@
 require 'faker'
 require 'aws/s3'
 
+class Array
+  def shuffle!
+    size.downto(1) { |n| push delete_at(rand(n)) }
+    self
+  end
+end
+
+
 class SampleDataLoader
 
   USER_COUNT=25
@@ -128,7 +136,6 @@ class SampleDataLoader
   def test_photo_names (bucket_name)
        puts "      Analyzing existing images in  S3 bucket #{ bucket_name } ..."
        @s3bucket = AWS::S3::Bucket.find( bucket_name )
-       @image_names = []
        @s3bucket.objects.each do | o |
          matches = o.key.match(/^(.*)\/(.*)_(original|thumb|medium)\.(jpeg|jpg)$/i)
          if !matches.nil?
@@ -161,7 +168,7 @@ class SampleDataLoader
      )
      @s3buckets = Paperclip.options[:image_options][:s3buckets]
      @s3options = {:access => :public_read }.merge( Paperclip.options[:image_options][:s3_headers] )
-     puts @s3options
+     @image_names = []
      puts "      S3 connection up"
   end
 
@@ -170,7 +177,6 @@ class SampleDataLoader
      bucket_name =  (@s3buckets.push @s3buckets.shift)[0]
      puts "      Analyzing existing images in  S3 bucket #{ bucket_name } ..."
      @s3bucket = AWS::S3::Bucket.find( bucket_name )
-     @image_names = []
      @s3bucket.objects.each do | o |
        matches = o.key.match(/^(.*)\/original\/(.*\.(jpeg|jpg))$/i)
       if !matches.nil?
@@ -180,12 +186,12 @@ class SampleDataLoader
      end
      #@image_names.each {|o| puts o[:path]+"  "+o[:name]}
      @image_name_counter = 0
+     @image_names.shuffle!
     puts "      Found and re-using #{@image_names.length.to_s} existing images."
   end
 
   def image_name
    load_more_image_names if @image_name_counter >= @image_names.length-1
-   #puts "IMAGENAME COUNTER #{@image_name_counter} of #{ @image_names.length}"
    return @image_names[@image_name_counter+=1]
   end
 
