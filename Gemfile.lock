@@ -147,6 +147,8 @@ specs:
     version: 1.1.0
 - delayed_job: 
     version: 2.0.3
+- diff-lcs: 
+    version: 1.1.2
 - factory_girl: 
     version: 1.3.2
 - faker: 
@@ -179,10 +181,16 @@ specs:
     version: 0.5.6
 - rails: 
     version: 2.3.5
+- rspec-core: 
+    version: 2.0.0
+- rspec-expectations: 
+    version: 2.0.0
+- rspec-mocks: 
+    version: 2.0.0
 - rspec: 
-    version: 1.3.0
+    version: 2.0.0
 - rspec-rails: 
-    version: 1.3.2
+    version: 2.0.0
 - sqlite3-ruby: 
     version: 1.3.1
 - twitter_oauth: 
@@ -197,7 +205,7 @@ specs:
     version: 0.7.1
 - will_paginate: 
     version: 2.3.12
-hash: d27d792899caafa914bcc753a6f2244084f3b644
+hash: 9b4087b6f297bc591b88f6f213c503c335c3ba27
 sources: 
 - Rubygems: 
     uri: http://gemcutter.org
