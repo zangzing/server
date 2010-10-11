@@ -145,6 +145,9 @@ class User < ActiveRecord::Base
     find_by_email(login) || find_by_username(login)
   end
 
+  def avatar_url
+    return gravatar_url_for( self.email )
+  end
   private
     def split_name
       unless name.nil?
@@ -153,5 +156,9 @@ class User < ActiveRecord::Base
         self.first_name = names.join(' ')
       end
     end
+
+  def gravatar_url_for(email)
+    "http://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(email)}"
+  end
 
 end

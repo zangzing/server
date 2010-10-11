@@ -90,17 +90,12 @@ zang.init = {
     // TODO: check for selected photo - move caption position
   },
   
-  album: function(){
-
-
-  
+  album: function(){ 
   },
   
   
   tray: function(){
-  
-    
-  
+
   },
   
   new_user: function(){
@@ -164,8 +159,13 @@ zang.init = {
   
   },
 
-  init_album_timeline_view: function(){
+  album_timeline_view: function(){
         // Bind more button for ALL upload Activities
+        $(".thumbnail").lazyload({
+            placeholder : "/images/grey.gif",
+            event : "more",
+            effect : "fadeIn"
+        });
         var GRID_HEIGHT = 170;
         $('.timeline-action a.more-less-btn').click(function(){
             var photoGrid = $(this).siblings('.timeline-grid');
@@ -174,6 +174,7 @@ zang.init = {
                 var rows = ( Math.floor(  photo_count / 5 ) );
                 if( photo_count % 5 > 0 )  rows++;
                 photoGrid.animate({ height: (rows * GRID_HEIGHT) }, 500 );
+                $(".thumbnail").trigger("more");
                 $(this).html('less');
             } else{
                 photoGrid.animate({ height: GRID_HEIGHT }, 500 );

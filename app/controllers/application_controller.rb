@@ -5,14 +5,12 @@
 #
 #  Base class for all controllers
 
-
-
 class ApplicationController < ActionController::Base
 
   # Filters added to this controller apply to all controllers in the application.
   # Public Methods added will be available for all controllers.
   # helper_method methods will also be available in all views
-                                                               
+
 
   helper :all # include all helpers, all the time
   helper_method :current_user_session, :current_user, :current_user?, :signed_in?
@@ -118,4 +116,6 @@ class ApplicationController < ActionController::Base
     def authorized?
       true
     end
+
+
 end

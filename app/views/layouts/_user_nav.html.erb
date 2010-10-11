@@ -27,7 +27,7 @@
           </li>
         </ul>          
         
-        <ul id="view-swap">
+        <ul   class="offset" id="view-swap">
           <li><a href="<%= '/users/' + @user.id + '/people' %>"><img src="<%= controller.controller_name == 'people' ? '/images/view-icons-friends-on.png' : '/images/view-icons-friends.png' %>" /></a></li>
           <li><a href="<%= '/users/' + @user.id + '/activities' %>"><img src="<%= controller.controller_name == 'activities' ? '/images/view-icons-timeline-on.png' : '/images/view-icons-timeline.png' %>" /></a></li>
           <li><a href="<%= '/users/' + @user.id + '/albums' %>"><img src="<%= controller.controller_name == 'albums' ? '/images/view-icons-grid-on.png' : '/images/view-icons-grid.png' %>" /></a></li>
