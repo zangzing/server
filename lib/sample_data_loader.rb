@@ -8,7 +8,7 @@ class SampleDataLoader
 
   def initialize()
      initializeS3
-     @users = []
+
   end
 
   def create_all
@@ -22,11 +22,11 @@ class SampleDataLoader
 
   def create_users
     puts  "      Creating Users"
-
+    @users = []
     USER_COUNT.times do |n|
       name  = Faker::Name.name
       password  = "password"
-     email = "user#{n}@test.zangzing.com"
+      email = "user#{n}@test.zangzing.com"
       @users[n]  = User.new(:name => name,
                            :username => "user#{n}",
                            :email => email,
@@ -139,7 +139,17 @@ class SampleDataLoader
        end
   end
   
-
+# def delete_new (bucket_name)
+#      puts "      Deleting new images in  S3 bucket #{ bucket_name } ..."
+#       @s3bucket = AWS::S3::Bucket.find( bucket_name )
+#       @s3bucket.objects.each do | o |
+#         matches = o.key.match(/^(.*)\/(original)\/(.*)$/i)
+#         if !matches.nil?
+#          puts "deleting ==> "+o.key
+#          o.delete
+#         end
+#       end
+#  end
 
   
   def initializeS3
@@ -151,12 +161,13 @@ class SampleDataLoader
      )
      @s3buckets = Paperclip.options[:image_options][:s3buckets]
      @s3options = {:access => :public_read }.merge( Paperclip.options[:image_options][:s3_headers] )
+     puts @s3options
      puts "      S3 connection up"
   end
 
 
   def load_more_image_names()
-     bucket_name =  "bravo.dev.zangzing"  #(@s3buckets.push @s3buckets.shift)[0]
+     bucket_name =  (@s3buckets.push @s3buckets.shift)[0]
      puts "      Analyzing existing images in  S3 bucket #{ bucket_name } ..."
      @s3bucket = AWS::S3::Bucket.find( bucket_name )
      @image_names = []
