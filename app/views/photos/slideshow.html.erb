@@ -16,7 +16,7 @@
     <td class="main">
       <% unless @photos.empty? %>
           <table class="photos">
-            <%= render @photos%>
+            <%= render :partial => "photo", :collection => @photos, :locals => {:return_to_link => @return_to_link} %> 
           </table>
           <%= will_paginate @photos, { :class=> 'digg_pagination' } %>
       <% end %>

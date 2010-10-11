@@ -1515,6 +1515,20 @@ ul.grid-view li:hover a.delete img {
 
 /* Timeline & People Views
 ----------------------------------------------------------------------------- */
+div.stacked-badge div.avatar {
+  margin: 5px;
+  display: inline-block;
+  height: 54px;
+  width: 54px;
+ -moz-border-radius: 10%;
+ -webkit-border-radius: 10%;
+}
+
+div.stacked-badge p {
+  margin: 0;
+  color: #232323;
+  font-size: .8em;
+}
 
 ul#album-timeline, ul#following, ul#contributors  {
   width: 930px;
@@ -1544,20 +1558,10 @@ ul#contributors li {
   border-bottom: none;
 }
 
-div.timeline-icon {
+div.timeline-badge {
   float: left;
   width: 90px;
   margin-right: 20px;
-}
-
-div.timeline-icon img.icon {
-  margin: 5px;
-}
-
-div.timeline-icon p {
-  margin: 0;
-  color: #232323;
-  font-size: .8em;
 }
 
 div.timeline-action {
@@ -1604,10 +1608,7 @@ ul#contributors li div.timeline-action ul.timeline-grid {
   height: 160px;
   padding: 0;
 }
-.timeline-action a.more-less-btn{
-  margin-left:auto;
-  margin-right:auto;
-}
+
 
 ul#contributors li div.timeline-action ul.timeline-grid {
   margin-top: 0;
@@ -1678,7 +1679,4 @@ h3.people {
 
 h3.first {
   margin-top: 70px;
-}
-.roundground {
- -moz-border-radius: 10%;
 }

@@ -161,20 +161,20 @@ zang.init = {
 
   album_timeline_view: function(){
         // Bind more button for ALL upload Activities
-        $(".thumbnail").lazyload({
-            placeholder : "/images/grey.gif",
-            event : "more",
-            effect : "fadeIn"
+        $('.lazy-thumb').lazyload({
+            placeholder : '/images/grey.gif',
+            event : 'more',
+            effect : 'fadeIn'
         });
         var GRID_HEIGHT = 170;
         $('.timeline-action a.more-less-btn').click(function(){
             var photoGrid = $(this).siblings('.timeline-grid');
             if( photoGrid.height() <= GRID_HEIGHT ){
-                photo_count = photoGrid.children().length;
+                photo_count = photoGrid.children('li').length;
                 var rows = ( Math.floor(  photo_count / 5 ) );
                 if( photo_count % 5 > 0 )  rows++;
                 photoGrid.animate({ height: (rows * GRID_HEIGHT) }, 500 );
-                $(".thumbnail").trigger("more");
+                $(this).siblings('ul.timeline-grid').children('li').children('a').children().trigger('more');
                 $(this).html('less');
             } else{
                 photoGrid.animate({ height: GRID_HEIGHT }, 500 );

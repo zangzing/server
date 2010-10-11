@@ -10,12 +10,6 @@ class PhotosController < ApplicationController
     @title = CGI.escapeHTML(@album.name)
   end
 
-  def new
-    @album = Album.find(params[:album_id])
-    @photo = Photo.new
-    @title = 'New Photo'
-  end
-
   def create
     @album = Album.find(params[:album_id])
     @photo = @album.photos.build(params[:photo])
@@ -55,10 +49,8 @@ class PhotosController < ApplicationController
       caption = params[:caption][index.to_s]
 
       @photo = @album.photos.build(:agent_id => params[:agent_id], :source_guid => source_guid, :caption => caption, :image_file_size => size)
-
-      @photos << @photo
-
       @photo.user = current_user
+      @photos << @photo
 
 
       #todo: need to handle agent port and url templates in central place
@@ -159,8 +151,10 @@ class PhotosController < ApplicationController
 
     if params[:upload_batch] && @upload_batch = UploadBatch.find(params[:upload_batch])
       @all_photos = @upload_batch.photos
+      @return_to_link = "#{album_activities_path( @album )}##{@upload_batch.id}"
     else
       @all_photos = @album.photos
+      @return_to_link = album_photos_url( @album.id )
     end
 
     respond_to do |format|

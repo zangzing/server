@@ -46,7 +46,7 @@ Rails::Initializer.run do |config|
   APPLICATION_HOST = 'localhost:3000'
   
   ALBUM_EMAIL_HOST=  'sendgrid-post.zangzing.com'
-  ZANGZING_VERSION = 'I6 10-4-10'
+  ZANGZING_VERSION = 'I7 10-10-10'
 end
 ActiveRecord::Base.guid_generator = :mysql
 ActionMailer::Base.default_url_options = { :host => APPLICATION_HOST.split(':')[0],

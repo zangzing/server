@@ -125,7 +125,6 @@ class Photo < ActiveRecord::Base
   before_image_post_process       :set_image_metadata
 
   def set_local_image_metadata
-    logger.debug("In local_image before post")
     self.local_image_path = local_image.path
     self.photo_info = PhotoInfo.factory(self)
     if data = self.metadata
@@ -141,8 +140,7 @@ class Photo < ActiveRecord::Base
   end
 
   def set_image_metadata
-    logger.debug("In image before post")
-    self.image_path   = image.path.gsub(image.original_filename,'')
+    self.image_path   = image.path.match(/(^.*)\/original\/(.*$)/i)[1]
     self.image_bucket = image.instance_variable_get("@bucket")
   end
 
@@ -217,13 +215,10 @@ class Photo < ActiveRecord::Base
   end
 
   def assign_batch
-     logger.debug("IN ASSIGN BATCH")
      @up =  UploadBatch.get_current( self.user, self.album );
-
   end
 
   def update_batch
-    logger.debug("IN UPDATE BATCH")
     @up.photos << self unless @up.nil?
   end
 
