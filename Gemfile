@@ -24,10 +24,11 @@ gem 'vpim'
 
 gem 'hpricot'
 gem 'twitter_oauth'
+gem 'faker'
 
 group :development do
   # bundler requires these gems in development
-  gem 'faker'
+
 end
 
 group :test do
