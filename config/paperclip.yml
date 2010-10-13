@@ -37,7 +37,9 @@ common: &common
     default_url: "/images/working.png"
     styles:
       medium: "1024x768>"
-      thumb:  "120x120>"
+      thumb: "120x120>"
+    convert_options:
+      thumb: '-strip -depth 8 -density 72 -quality 80'
 
 development:
   <<: *common
