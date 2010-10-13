@@ -14,7 +14,7 @@ class Connector::FacebookFoldersController < Connector::FacebookController
         },
         {
           :name => 'Photos of You', :type => 'folder', :id => 'tagged-with-me',
-          :open_url => facebook_folders_path(:target => 'me/photos'), :add_url => nil
+          :open_url => facebook_photos_path('me'), :add_url => nil
         }
       ]
       @folders = fb_root
@@ -23,7 +23,7 @@ class Connector::FacebookFoldersController < Connector::FacebookController
       album_list.reject! { |a| a[:type] == 'profile' } #Remove 'Profile Pictures'
       @folders = album_list.map do |f|
         {
-          :name => f[:from][:name] + ' - ' + (f[:name] || "Created #{f[:created_time].strftime('%d %b %Y')}"),
+          :name => f[:name] || "Created #{f[:created_time].strftime('%d %b %Y')}",
           :type => "folder",
           :id  =>  f[:id]
         }
@@ -32,8 +32,6 @@ class Connector::FacebookFoldersController < Connector::FacebookController
         f[:add_url] = nil
         if target=='me/friends'
           f[:open_url] = facebook_folders_path(:target => "#{f[:id]}/albums")
-        elsif target=='me/photos'
-          f[:open_url] = facebook_photos_path('me')
         elsif target.match(/\w+\/albums/)
           f[:open_url] = facebook_photos_path(f[:id])
           f[:add_url] = facebook_folder_action_path({:fb_album_id =>f[:id], :action => 'import'})
