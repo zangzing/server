@@ -1,6 +1,8 @@
 class PeopleController < ApplicationController
   def album_index
     @album = Album.find(params[:album_id])
+    @contributors = []
+    @album.contributors.each { |c| @contributors << c if c.is_a_user? }
   end
 
   def user_index

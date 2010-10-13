@@ -1,6 +1,7 @@
 class ActivitiesController < ApplicationController
   def album_index
     @album = Album.find(params[:album_id])
+    @activities = @album.activities
   end
 
   def user_index

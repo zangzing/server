@@ -1,6 +1,6 @@
 <% content_for :page_javascript do  # this places our page-specific js with the rest of the js at the bottom of the html -%>
 <script>
-    var json = '<%=@album.to_json(:include => {:photos => {:only =>[:id, :source_thumb_url, :state], :methods => [:thumb_url]}})%>';
+    var json = '<%=escape_javascript( @album.to_json(:include => {:photos => {:only =>[:id, :source_thumb_url, :state], :methods => [:thumb_url]}}))%>';
     var photos = jQuery.parseJSON(json).photos;
 
     var onStartLoadingImage = function(id, src) {
@@ -65,11 +65,7 @@
 <% end %>
 
 <% content_for :page_head do %>
-  <meta name="title" content="<%= h @album.name %>" />
-  <% unless @photos.empty? %>
-    <% thumb_path = @photos.first.image? ? @photos.first.thumb_url : '' %>
-    <link rel="image_src" href="<%= thumb_path %>" />
-  <% end %>
+    <%= render :partial => "photos/facebook_opengraph_tags", :object => @album %>
 <% end %>
 
 <h2 class="album"><%= h @album.name %></h2>

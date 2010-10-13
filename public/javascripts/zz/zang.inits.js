@@ -78,7 +78,8 @@ zang.init = {
      $('#drawer-content').ajaxSuccess(function(event, request) {
          zz.wizard.display_flashes(request, 50);
      });
-  
+
+    
   },
   
   resized: function(){
@@ -89,17 +90,12 @@ zang.init = {
     // TODO: check for selected photo - move caption position
   },
   
-  album: function(){
-  
-      
-  
+  album: function(){ 
   },
   
   
   tray: function(){
-  
-    
-  
+
   },
   
   new_user: function(){
@@ -161,5 +157,28 @@ zang.init = {
     $(zang.validate.join.element).validate(zang.validate.join);
 
   
-  }
+  },
+
+  album_timeline_view: function(){
+        // Bind more button for ALL upload Activities
+        $('.lazy-thumb').lazyload({
+            placeholder : '/images/grey.gif',
+            event : 'more',
+            effect : 'fadeIn'
+        });
+        var GRID_HEIGHT = 170;
+        $('.timeline-action a.more-less-btn').click(function(){
+            var photoGrid = $(this).siblings('.timeline-grid');
+            if( photoGrid.height() <= GRID_HEIGHT ){
+                photo_count = photoGrid.children('li').length;
+                var rows = Math.ceil(  photo_count / 5 );
+                $(this).siblings('ul.timeline-grid').children('li').children('a').children().trigger('more'); 
+                photoGrid.animate({ height: (rows * GRID_HEIGHT) }, 500 );
+                $(this).html('less');
+            } else{
+                photoGrid.animate({ height: GRID_HEIGHT }, 500 );
+                $(this).html('more...');
+            }
+        })
+    }
 }; // end zang.init

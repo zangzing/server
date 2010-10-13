@@ -43,10 +43,21 @@ class Hash
 end
 
 
+# Monkey patch paperclip attachment, add original_path and override path()
+Paperclip.interpolates :directory do |att, style|
+  if att.instance_read(:path).nil?
+    "#{attachment( att, style)}/#{id( att, style)}"
+  else
+     "#{att.instance_read(:path)}"
+  end
+end
+
 # Load the paperclip.yml configuration file
 if defined?(RAILS_ROOT) and File.exists?("#{RAILS_ROOT}/config/paperclip.yml")
     Paperclip.options.merge!(YAML::load(ERB.new(File.read("#{RAILS_ROOT}/config/paperclip.yml")).result)[RAILS_ENV].recursively_symbolize_keys!)
-    puts "=> Paperclip options file loaded. command_path for ImageMagick is: "+ ( Paperclip.options[:command_path]?Paperclip.options[:command_path] : "NOT SET")
+    msg = "=> Paperclip options file loaded. command_path for ImageMagick is: "+ ( Paperclip.options[:command_path]?Paperclip.options[:command_path] : "NOT SET")
+    Rails.logger.info msg
+    puts msg
 else
      abort %{ZangZing config/paperclip.yml file not found. UNABLE TO INITIALIZE PHOTO STORAGE!}
 end
@@ -56,7 +67,6 @@ Paperclip.options[:image_options][:bucket] =
     Proc.new {|a| (a.options[:s3buckets].push a.options[:s3buckets].shift)[0]}
 Paperclip.options[:picon_options][:bucket] =
     Proc.new {|a| (a.options[:s3buckets].push a.options[:s3buckets].shift)[0]}
-
 
 #
 #The YAML File looks like this

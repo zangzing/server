@@ -8,13 +8,12 @@ class Notifier < ActionMailer::Base
   end
 
   def contributors_added(contributor)
+    album_mail = "#{contributor.album.id}@#{ALBUM_EMAIL_HOST}"
+    from         "\"#{contributor.album.name}\" <#{album_mail}>"
     recipients   contributor.email
-    subject      "You were added as a contributor to '#{contributor.album.name}' album!"
+    subject      "You have been invited to contribute photos to '#{contributor.album.name}'!"
     sent_on       Time.now
     content_type "text/html"
-    album_mail = "#{contributor.album.id}@#{ALBUM_EMAIL_HOST}"
-    from         album_mail
-
     vcard = Vpim::Vcard::Maker.make2 do |vc|
       vc.add_name do |name|
         name.given = contributor.album.name

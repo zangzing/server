@@ -33,6 +33,7 @@ class CreatePhotos < ActiveRecord::Migration
          t.timestamps
        end
        add_index :photos, :album_id
+       add_index :photos, :user_id 
        add_index :photos, :agent_id
        add_index :photos, :upload_batch_id
   end

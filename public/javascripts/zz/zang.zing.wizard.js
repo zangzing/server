@@ -209,7 +209,6 @@ zz.wizard = {
           temp_url = 'http://' + zz.base + obj.steps[obj.steps[id].next].url.split('$$')[0] + zz.user_id + obj.steps[obj.steps[id].next].url.split('$$')[1];                    
         }
 
-        console.log('id: '+temp_id+', url: '+temp_url);
         zz.wizard.change_step(temp_id, temp_url, obj);   
     
       });  
@@ -544,6 +543,12 @@ zz.wizard = {
             setTimeout(function(){$('#flashes-notice').html(flash.notice).show();},delay);
             setTimeout(function(){$('#flashes-notice').fadeOut('fast', function(){$('#flashes-notice').html('    ');})}, delay+4000);
        }
+
+       //For the timeline album view more button
+
+
+
+
   }
 
 };

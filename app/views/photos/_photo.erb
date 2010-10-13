@@ -3,7 +3,7 @@
  </script>
 
     <div class="largephotocontainer">
-        <a href="<%= album_photos_url( photo.album.id )%>">
+        <a href="<%=return_to_link%>">
             <img class="largephoto" src="<%=photo.medium_url%>" id="photoid<%=photo.id%>">
         </a>
     </div>

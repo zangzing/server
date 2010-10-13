@@ -1,8 +1,11 @@
 <h3 class="people first">Contributors</h3>
 
 <ul id="contributors">
+  <% @contributors.each do | contributor | %>
+         <%= render :partial => 'contributor', :locals => {:contributor => contributor } %>
+  <%end%>    
   <li class="clearfix">
-    <div class="timeline-icon">
+    <div class="timeline-badge">
       <img src="/images/user-icon-54x54.png" width="54" height="54" class="icon" />
       <h4>Kathryn Corro</h4>
       <p><img src="/images/icon-star-12px.png" /> Following  <img src="/images/icon-down-arrow-10px.png" /></p>
