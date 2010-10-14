@@ -151,7 +151,7 @@
             zang.init.album();
       <%end%>
 
-      <%if controller.controller_name == 'activities' ||  controller.action_name == 'album_index' -%>
+      <%if (controller.controller_name == 'activities' ||  controller.controller_name == 'people') && controller.action_name == 'album_index' -%>
             zang.init.album_timeline_view();
       <%end%>
        });
