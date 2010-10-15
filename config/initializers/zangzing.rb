@@ -10,7 +10,7 @@ msg = []
 msg << "=> ZangZing Initializer"
 if File.exists?( fname )
   dna =  ActiveSupport::JSON.decode( File.read( fname ))
-  APPLICATION_HOST = dna['engineyard']['environment']['apps'][0]['vhosts'][0]['domain_name']
+  APPLICATION_HOST = dna['engineyard']['environment']['apps'][0]['vhosts'][0]['domain_name']+':80'
   msg << "      Deployment information from : "+fname
   msg << "      ZangZing Server deployed at : EngineYard"
   msg << "      EngineYard environment      : "+dna['engineyard']['environment']['name']
