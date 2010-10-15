@@ -2,18 +2,25 @@ class Connector::FacebookPhotosController < Connector::FacebookController
 
   def index
     photos_response = facebook_graph.get("#{params[:fb_album_id]}/photos")
-    @photos = photos_response.map { |p|
-      {
-        :name => p[:name] || '',
-        :id   => p[:id],
-        :type => 'photo',
-        :thumb_url =>get_photo_url(p[:id], PHOTO_SIZES[:thumb]),
-        :screen_url =>get_photo_url(p[:id], PHOTO_SIZES[:screen]),
-        :add_url => facebook_photo_action_path({:photo_id =>p[:id], :action => 'import'}),
-        :source_guid => Photo.generate_source_guid(p[:source])
+    unless photos_response.empty?
+      if photos_response.first[:updated_time]
+        photos_response.sort!{|a, b| b[:updated_time] <=> a[:updated_time] }
+      end
+      @photos = photos_response.map { |p|
+        {
+          :name => p[:name] || '',
+          :id   => p[:id],
+          :type => 'photo',
+          :thumb_url =>get_photo_url(p[:id], PHOTO_SIZES[:thumb]),
+          :screen_url =>get_photo_url(p[:id], PHOTO_SIZES[:screen]),
+          :add_url => facebook_photo_action_path({:photo_id =>p[:id], :action => 'import'}),
+          :source_guid => Photo.generate_source_guid(p[:source])
 
+        }
       }
-    }
+    else
+      @photos = []
+    end
 
     render :json => @photos.to_json
   end
