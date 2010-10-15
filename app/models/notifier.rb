@@ -32,12 +32,12 @@ class Notifier < ActionMailer::Base
     body :user => batch.user, :album => batch.album, :album_url => album_url( batch.album ), :photos => batch.photos
   end
 
-  def album_shared_with_you(from_user,to_address,album)
+  def album_shared_with_you(from_user,to_address,album, message)
     from         @@zzfrom  
     recipients to_address
     subject "#{from_user.name} has shared ZangZing album: #{album.name} with you."
     content_type "text/html"
-    body     :from_user => from_user, :album => album  
+    body     :from_user => from_user, :album => album, :message=>message  
   end
 
   def you_are_being_followed( follower, followed)

@@ -5,7 +5,7 @@ var filechooser = {
     imageloader: null,
     ancestors: [],
     roots: [],
-
+    children: [],
     init: function() {
 
         filechooser.roots = [];
@@ -229,7 +229,7 @@ var filechooser = {
 
         if (url == '') {
 
-            filechooser.on_open_root(name, url);
+            filechooser.on_open_root();
 
         } else {
 
@@ -242,7 +242,7 @@ var filechooser = {
                 $.jsonp({
                     url: url,
                     success: function(json) {
-                        filechooser.on_open_folder(name, url, json);
+                        filechooser.on_open_folder(json);
                     },
                     error: filechooser.on_error_opening_folder
                 });
@@ -254,7 +254,7 @@ var filechooser = {
                     dataType: 'json',
                     url: url,
                     success: function(json) {
-                        filechooser.on_open_folder(name, url, json);
+                        filechooser.on_open_folder(json);
                     },
                     error: filechooser.on_error_opening_folder
                 });
@@ -263,11 +263,18 @@ var filechooser = {
     },
 
 
-    on_open_root : function(name, url) {
-        filechooser.on_open_folder(name, url, filechooser.roots);
+    on_open_root : function(url) {
+        filechooser.on_open_folder(filechooser.roots);
     },
 
-    on_open_folder : function(name, url, children) {
+    on_open_folder : function(children) {
+
+        //unpack response
+        if (children.body) {
+            children = children.body;
+        }
+
+        filechooser.children = children
 
         //setup the imageloader -- if active, kill it
         if (filechooser.imageloader) {
@@ -283,7 +290,6 @@ var filechooser = {
             //console.log('id: #'+id+', src: '+src+', width: '+width+', height: '+height);
           
             if (height > width) {
-              //console.log('tall');
               //tall
               var ratio = width / height; 
               $('#' + id).attr('src', src).css({
@@ -320,7 +326,6 @@ var filechooser = {
               $('li#photo-'+ guuu +' .checkmark').css({
                       bottom: ((new_size - (ratio * new_size)) / 2) + 3 + 'px', 
                       left: '-10px' });
-              //console.log(guuu);
             }
         };
 
@@ -355,14 +360,16 @@ var filechooser = {
             } else {
 //                var id = 'chooser-photo-' + children[i].source_guid;
                 var img_id = 'chooser-photo-img-' + children[i].source_guid;
-                var theClick = 'onclick="filechooser.add_photos(\'' + children[i].add_url + '\', \'' + img_id + '\'); return false;"';                
-                html += '<li id="photo-' + children[i].source_guid + '" class="photo" ' + theClick + '>';
+                var add_photo_handler = 'onclick="filechooser.add_photos(\'' + children[i].add_url + '\', \'' + img_id + '\'); return false;"';
+                var picture_view_handler = 'onclick="filechooser.picture_view(' + i + ');return false;"';
+
+                html += '<li id="photo-' + children[i].source_guid + '" class="photo" >';
                 html += '<div class="relative">'
-                html += '<img id="' + img_id + '" src="/images/loading.gif">';
-                html += '<figure>Add Photo</figure>';
+                html += '<img id="' + img_id + '" src="/images/loading.gif" '+ picture_view_handler +'>';
+                html += '<figure ' + add_photo_handler + '>Add Photo</figure>';
                 html += '<div class="checkmark"></div>';
                 html += '</div>';
-                html += '<a href="" ' + theClick + '>' + children[i].name + '</a>';
+                html += children[i].name;
                 html += '</li>';
 
 
@@ -379,6 +386,59 @@ var filechooser = {
         filechooser.update_checkmarks();
 
         filechooser.imageloader.start(5);
+    },
+
+    picture_view : function(i){
+        var children = filechooser.children
+
+        if(i > children.length-1){
+            i = children.length-1
+        }
+
+        if(i < 0){
+            i = 0;
+        }
+
+
+        var html = '';
+        var previous_image_handler = 'onclick="filechooser.picture_view(' + (i - 1) + ');return false;"';
+        var next_image_handler = 'onclick="filechooser.picture_view(' + (i + 1) + ');return false;"';
+
+        html += '<a href="" ' + previous_image_handler + '><img src="/images/btn-prev-photo.png"></a>';
+        html += '<a href="" ' + next_image_handler + '><img src="/images/btn-next-photo.png"></a>';
+
+        if(children[i].type === 'folder'){
+            var id = 'chooser-folder-' + i;
+
+            var theClick = 'onclick="filechooser.open_folder(\'' + children[i].name + '\',\'' + children[i].open_url + '\',\'' + children[i].login_url + '\'); return false;"';
+            html += '<a href="" ' + theClick + '><img src="/images/blank-folder.png" /></a>';
+            html += '<a href="" ' + theClick + '>' + children[i].name + '</a>';
+
+            if (children[i].add_url) {
+                html += '&nbsp;<a href="#" onclick="filechooser.add_folder(\'' + children[i].add_url + '\', \'' + id + '\'); return false;">(+)</a>';
+            }
+        }
+        else{
+            var grid_view_handler = 'onclick="filechooser.grid_view();return false;"';
+
+            var image_url = children[i].screen_url;
+
+            if (image_url.indexOf('http://localhost') === 0) {
+                image_url += '?session=' + $.cookie('user_credentials'); //extra business to auth with agent
+            }
+
+            html += '<img src="'+ image_url +'" '+ grid_view_handler +'>';
+            html += '<br>';
+            html += children[i].name;
+
+        }
+
+
+        $('#filechooser').html(html);
+    },
+
+    grid_view :function(){
+        filechooser.on_open_folder(filechooser.children)
     },
 
 
