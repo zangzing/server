@@ -807,6 +807,8 @@ div#drawer-content ul#folders li.photo, ul#filechooser li.photo {
   background-image: none;
 }
 
+
+
 div#drawer-content ul#folders li.photo, ul#filechooser li.photo img {
   max-height: 115px;
   max-width: 115px;
@@ -1558,7 +1560,7 @@ ul#contributors li {
   border-bottom: none;
 }
 
-div.timeline-badge {
+div.stacked-badge {
   float: left;
   width: 90px;
   margin-right: 20px;

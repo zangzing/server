@@ -8,14 +8,17 @@
 <%  # Add in controller or action based meta description
     if @meta_description -%>
     <meta name="description" content="<%= @meta_description %>" />
-<%  end
+<%  end %>
     # Add in controller or action based page title
-    if @page_title_override -%>
-    <title><%= @page_title_override %></title>
-<%  else -%>
-    <title>ZangZing - <%= controller.controller_name + ' ' + controller.action_name %></title>
-<%  end -%> 
-
+    <% if @page_title_override 
+       title = @page_title_override
+    else
+       title = "ZangZing" 
+    end
+    if ! Rails.env.production?
+      title = "#{title} Version: #{ZANGZING_VERSION} Controller: #{controller.controller_name} Action: #{ controller.action_name}"
+    end %>
+    <title><%=title%></title>
     <link rel="stylesheet" href="/stylesheets/lib.css" media="all" />
     <link rel="stylesheet" href="/stylesheets/main.css" media="all" />
     <link rel="stylesheet" href="/stylesheets/jquery.autocomplete.css" media="all" />
@@ -54,7 +57,11 @@
         <ul id="nav-left" class="clearfix">
           <li id="nav-new-album">New Album</li>
           <li id="nav-find">Find</li>
-          <li id="nav-sign-in">Sign In</li>
+          <% if current_user %>
+              <li id="nav-sign-in"><a name="<%=signout_url%>"></a>Sign Out</li> 
+           <%else %>
+              <li id="nav-sign-in">Sign In</li>
+           <%end%>
         </ul>
         
         <img src="/images/btn-play.png" style="display:none;" />
@@ -73,7 +80,7 @@
          controller.controller_name == 'activities' && controller.action_name == 'album_index'
          #this loads a version of the top nav with the album header & main drawer -%>
       <%= render :partial => 'layouts/album_nav' %>
-<%    elsif current_user  
+      <%    elsif current_user
          #this loads a version of the top nav with the user header & main drawer -%>
       <%= render :partial => 'layouts/user_nav'  %>
 <%    else  
@@ -151,7 +158,7 @@
             zang.init.album();
       <%end%>
 
-      <%if controller.controller_name == 'activities' ||  controller.action_name == 'album_index' -%>
+      <%if (controller.controller_name == 'activities' ||  controller.controller_name == 'people') && controller.action_name == 'album_index' -%>
             zang.init.album_timeline_view();
       <%end%>
        });

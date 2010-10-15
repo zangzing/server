@@ -139,9 +139,10 @@ class PhotosController < ApplicationController
   #              Default: Show first pic in album
   # page         Page desired when in screenres                         
   #              Default: First
-  #
   # upload_batch Display only album photos in given upload_batch
   #              upload_batch must belong to album
+  # contributor  Display only photos contributed by certain contributor.
+  #              contributor must be in albums contributor list
   def index
     @album = Album.find(params[:album_id])
     @title = CGI.escapeHTML(@album.name)
@@ -152,6 +153,9 @@ class PhotosController < ApplicationController
     if params[:upload_batch] && @upload_batch = UploadBatch.find(params[:upload_batch])
       @all_photos = @upload_batch.photos
       @return_to_link = "#{album_activities_path( @album )}##{@upload_batch.id}"
+    elsif params[:contributor] && @contributor = Contributor.find(params[:contributor])
+      @all_photos = @contributor.photos
+      @return_to_link = "#{album_people_path( @album )}##{@contributor.id}"
     else
       @all_photos = @album.photos
       @return_to_link = album_photos_url( @album.id )

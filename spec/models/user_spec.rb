@@ -30,10 +30,8 @@ require 'spec_helper'
 describe User do
   before(:each) do
     @attr = { :name => "Example User",
-              :email => "example@user.com",
-              :password => "1password",
-              :password_confirmation =>"1password",
-              :style => "white"
+              :email => "example@test.zangzing.com",
+              :password => "password",
     }
   end
 

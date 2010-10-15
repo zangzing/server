@@ -1,3 +1,10 @@
+
+# SET VERSION
+git_cmd = File.join(*[ENV['IMAGEMAGICK_PATH'], "git"].compact)
+silence_warnings do
+  ZANGZING_VERSION = `#{git_cmd} describe`
+end
+# GET AND SET ENVIRONMENT
 fname = "/home/deploy/dna.json"
 msg = []
 msg << "=> ZangZing Initializer"

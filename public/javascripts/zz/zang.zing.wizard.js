@@ -327,6 +327,7 @@ zz.wizard = {
   social_share: function(obj, id){
     $('div#share-body').empty().load('/albums/'+zz.album_id+'/shares/newpost', function(){
       $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 170) + 'px'});
+      oauthmanager.init_social();
       $(z.validate.new_post_share.element).validate(z.validate.new_post_share);
       $('#cancel-share').click(function(){
         zz.wizard.reload_share(obj, id);

@@ -26,19 +26,19 @@ var sharecontacts = {
 
     // ------ LOCAL C ---------
     setup_local_button : function( agentPresent ){
-        title = $("#local-sync").attr('title');
+        var current_title = $("#local-sync").attr('title');
         if( agentPresent ){
             $("#local-sync").click(sharecontacts.call_local_import);
-            if(title == '')
+            if(current_title == '')
                 $("#local-sync").attr('title', "Click to import your local contacts.");    
             else
-                $("#local-sync").attr('title', title+". Click to refresh your contacts.");
+                $("#local-sync").attr('title', current_title+". Click to refresh your contacts.");
         } else {
             $("#local-sync").unbind('click');
-            if(title == '')
+            if(current_title == '')
                 $("#local-sync").attr('title', "Local Agent is not present. Unable to import local contacts from this machine");
             else
-                $("#local-sync").attr('title', title+". Local Agent is not present. Unable to refresh local contacts at the moment");
+                $("#local-sync").attr('title', current_title+". Local Agent is not present. Unable to refresh local contacts at the moment");
         }
     },
 
