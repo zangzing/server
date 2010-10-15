@@ -26,7 +26,13 @@ zang.init = {
       };
       zz.easy_drawer(600, 0.0, '/users/'+zz.user_id+'/albums/new', callback);
     });
+    $('#nav-sign-in').click(function(){
+   //When a user is signed this is the sign out button
+   alert('This button will  sign you out');
+   window.location = $(this).children('a').attr('name');
+   });
     
+
     $('#nav-new-photo').click(function(){ zz.wizard.open_edit_album_wizard('add') });
     $('#nav-share').click(function(){ zz.wizard.open_edit_album_wizard('share') });
 
@@ -44,6 +50,7 @@ zang.init = {
       };
       zz.easy_drawer(600, 0.0, '/users/'+zz.user_id+'/edit', callback);
     });
+
 
     /*  
     // open drawer demo
@@ -77,9 +84,7 @@ zang.init = {
      });
      $('#drawer-content').ajaxSuccess(function(event, request) {
          zz.wizard.display_flashes(request, 50);
-     });
-
-    
+     });  
   },
   
   resized: function(){
@@ -90,7 +95,8 @@ zang.init = {
     // TODO: check for selected photo - move caption position
   },
   
-  album: function(){ 
+  album: function(){
+
   },
   
   
@@ -136,15 +142,12 @@ zang.init = {
     });
     
     $('#nav-sign-in').click(function(){
-      if (zz.drawer_open === 0) {
-        $('#sign-in').show();
-        $('#sign-up').hide();        
+        if (zz.drawer_open === 0) {
+            $('#sign-in').show();
+            $('#sign-up').hide();
 
-        $('#small-drawer').animate({height: '460px', top: '53px'});
-        zz.drawer_open = 1;
-        
-      } else {
-        //zz.slam_drawer(880);
+            $('#small-drawer').animate({height: '460px', top: '53px'});
+            zz.drawer_open = 1;
       }
     });
     

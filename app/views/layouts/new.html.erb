@@ -57,7 +57,11 @@
         <ul id="nav-left" class="clearfix">
           <li id="nav-new-album">New Album</li>
           <li id="nav-find">Find</li>
-          <li id="nav-sign-in">Sign In</li>
+          <% if current_user %>
+              <li id="nav-sign-in"><a name="<%=signout_url%>"></a>Sign Out</li> 
+           <%else %>
+              <li id="nav-sign-in">Sign In</li>
+           <%end%>
         </ul>
         
         <img src="/images/btn-play.png" style="display:none;" />
@@ -76,7 +80,7 @@
          controller.controller_name == 'activities' && controller.action_name == 'album_index'
          #this loads a version of the top nav with the album header & main drawer -%>
       <%= render :partial => 'layouts/album_nav' %>
-<%    elsif current_user  
+      <%    elsif current_user
          #this loads a version of the top nav with the user header & main drawer -%>
       <%= render :partial => 'layouts/user_nav'  %>
 <%    else  
