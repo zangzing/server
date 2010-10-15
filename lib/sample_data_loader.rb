@@ -1,22 +1,13 @@
 require 'faker'
 require 'aws/s3'
 
-class Array
-  def shuffle!
-    size.downto(1) { |n| push delete_at(rand(n)) }
-    self
-  end
-end
-
-
 class SampleDataLoader
 
   USER_COUNT=25
 
-
   def initialize()
      initializeS3
-
+     load_image_names
   end
 
   def create_all
@@ -49,9 +40,9 @@ class SampleDataLoader
 
   def create_albums
     puts "      Creating Albums"
-    # create albums for first 10 users max 150
+    # create albums for first 10 users max 100
     User.all(:limit => 10).each do |user|
-      rand(12).times do
+      rand(10).times do
 
         album= nil;
         case rand(2)
@@ -68,7 +59,6 @@ class SampleDataLoader
 
   def create_photos
     puts "      Creating Photos"
-    load_more_image_names
     Album.all(:limit => 50).each do |album|
       puts "      Adding photos to album #{album.name}"
       (rand( 3 )+1).times do
@@ -127,38 +117,10 @@ class SampleDataLoader
     end
   end
 
-
   def event
     %w(Roompah Rave Concert Tournament Wedding Party Baptism Reunion Marriage Bar-Mitzvah Christmas Hannukah Labor-day Memorial-day Camp Funeral Graduation Surgery Jury-Duty Driving-Test Confirmation Commencement Premiere Vacation Road-Trip Recital).rand
   end
 
-
-  def test_photo_names (bucket_name)
-       puts "      Analyzing existing images in  S3 bucket #{ bucket_name } ..."
-       @s3bucket = AWS::S3::Bucket.find( bucket_name )
-       @s3bucket.objects.each do | o |
-         matches = o.key.match(/^(.*)\/(.*)_(original|thumb|medium)\.(jpeg|jpg)$/i)
-         if !matches.nil?
-          new_name = "#{matches[1]}/#{matches[3]}/#{matches[2]}.#{matches[4]}"
-          puts o.key + " ==> " + new_name
-          AWS::S3::S3Object.copy( o.key, new_name, bucket_name, @s3options )
-         end
-       end
-  end
-  
-# def delete_new (bucket_name)
-#      puts "      Deleting new images in  S3 bucket #{ bucket_name } ..."
-#       @s3bucket = AWS::S3::Bucket.find( bucket_name )
-#       @s3bucket.objects.each do | o |
-#         matches = o.key.match(/^(.*)\/(original)\/(.*)$/i)
-#         if !matches.nil?
-#          puts "deleting ==> "+o.key
-#          o.delete
-#         end
-#       end
-#  end
-
-  
   def initializeS3
     puts "      Initializing connection to S3..."
     @s3creds = YAML::load(ERB.new(File.read("#{RAILS_ROOT}/config/s3.yml")).result)[RAILS_ENV].recursively_symbolize_keys!
@@ -168,30 +130,31 @@ class SampleDataLoader
      )
      @s3buckets = Paperclip.options[:image_options][:s3buckets]
      @s3options = {:access => :public_read }.merge( Paperclip.options[:image_options][:s3_headers] )
-     @image_names = []
      puts "      S3 connection up"
   end
 
 
-  def load_more_image_names()
-     bucket_name =  (@s3buckets.push @s3buckets.shift)[0]
-     puts "      Analyzing existing images in  S3 bucket #{ bucket_name } ..."
-     @s3bucket = AWS::S3::Bucket.find( bucket_name )
-     @s3bucket.objects.each do | o |
-       matches = o.key.match(/^(.*)\/original\/(.*\.(jpeg|jpg))$/i)
-      if !matches.nil?
-        @image_names << { :key =>matches[0], :bucket => bucket_name, :path=>matches[1], :name=>matches[2] }
-        #puts "path => #{matches[1]}  name => #{matches[2]}"
-      end
+
+
+  def load_image_names()
+     puts "        Analyzing existing images in  S3..."
+     @image_names=[]
+     @s3buckets.each do | bucket_name |
+        @s3bucket = AWS::S3::Bucket.find( bucket_name )
+        @s3bucket.objects.each do | o |
+          matches = o.key.match(/^(.*)\/original\/(.*\.(jpeg|jpg))$/i)
+          if !matches.nil?
+            @image_names.insert( rand( @image_names.length ), { :key =>matches[0], :bucket => bucket_name, :path=>matches[1], :name=>matches[2] })
+          end
+        end
+      @image_name_counter = 0
+      puts "        Found and re-using #{@image_names.length.to_s} images in  S3 bucket #{ bucket_name }."
      end
-     #@image_names.each {|o| puts o[:path]+"  "+o[:name]}
-     @image_name_counter = 0
-     @image_names.shuffle!
-    puts "      Found and re-using #{@image_names.length.to_s} existing images."
+     puts "        S3 Existing Image Array Ready..."
   end
 
   def image_name
-   load_more_image_names if @image_name_counter >= @image_names.length-1
+   @image_name_counter = 0 if @image_name_counter >= @image_names.length-1
    return @image_names[@image_name_counter+=1]
   end
 
@@ -211,3 +174,50 @@ class SampleDataLoader
     return photo
   end
 end
+
+
+
+
+#  def test_photo_names (bucket_name)
+#       puts "      Analyzing existing images in  S3 bucket #{ bucket_name } ..."
+#       @s3bucket = AWS::S3::Bucket.find( bucket_name )
+#       @s3bucket.objects.each do | o |
+#         matches = o.key.match(/^(.*)\/(.*)_(original|thumb|medium)\.(jpeg|jpg)$/i)
+#         if !matches.nil?
+#          new_name = "#{matches[1]}/#{matches[3]}/#{matches[2]}.#{matches[4]}"
+#          puts o.key + " ==> " + new_name
+#          AWS::S3::S3Object.copy( o.key, new_name, bucket_name, @s3options )
+#         end
+#       end
+#  end
+#
+# def delete_new (bucket_name)
+#      puts "      Deleting new images in  S3 bucket #{ bucket_name } ..."
+#       @s3bucket = AWS::S3::Bucket.find( bucket_name )
+#       @s3bucket.objects.each do | o |
+#         matches = o.key.match(/^(.*)\/(original)\/(.*)$/i)
+#         if !matches.nil?
+#          puts "deleting ==> "+o.key
+#          o.delete
+#         end
+#       end
+#  end
+
+
+#def load_more_image_names()
+#     bucket_name =  (@s3buckets.push @s3buckets.shift)[0]
+#     puts "      Analyzing existing images in  S3 bucket #{ bucket_name } ..."
+#     @s3bucket = AWS::S3::Bucket.find( bucket_name )
+#     @s3bucket.objects.each do | o |
+#       matches = o.key.match(/^(.*)\/original\/(.*\.(jpeg|jpg))$/i)
+#      if !matches.nil?
+#        @image_names << { :key =>matches[0], :bucket => bucket_name, :path=>matches[1], :name=>matches[2] }
+#        #puts "path => #{matches[1]}  name => #{matches[2]}"
+#      end
+#     end
+#     #@image_names.each {|o| puts o[:path]+"  "+o[:name]}
+#     @image_name_counter = 0
+#    puts "      Found and re-using #{@image_names.length.to_s} existing images."
+#  end
+#
+  

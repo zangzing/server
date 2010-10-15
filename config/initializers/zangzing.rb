@@ -1,3 +1,9 @@
+
+# SET VERSION
+git_cmd = File.join(*[ENV['IMAGEMAGICK_PATH'], "git"].compact)
+ZANGZING_VERSION = `#{git_cmd} describe`
+
+# GET AND SET ENVIRONMENT
 fname = "/home/deploy/dna.json"
 msg = []
 msg << "=> ZangZing Initializer"
@@ -13,6 +19,7 @@ if File.exists?( fname )
   msg << "      Port                        : " + APPLICATION_HOST.split(':')[1]
   msg << "      Source Repo                 : " + dna['engineyard']['environment']['apps'][0]['repository_name']
   msg << "      Source Repo Branch          : " + dna['engineyard']['environment']['apps'][0]['branch']
+  msg << "      Source Version (from git)   : " + ZANGZING_VERSION
 else
   if ENV['APPLICATION_HOST']
     APPLICATION_HOST=ENV['APPLICATION_HOST'];
@@ -23,6 +30,7 @@ else
    msg << "      Rails environment           : " + Rails.env
    msg << "      Domain Name                 : " + APPLICATION_HOST.split(':')[0]
    msg << "      Port                        : " + APPLICATION_HOST.split(':')[1]
+   msg << "      Source Version (from git)   : " + ZANGZING_VERSION
 end
 msg = msg.flatten.compact.join("\n")
 puts msg

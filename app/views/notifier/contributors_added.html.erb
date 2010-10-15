@@ -1,11 +1,12 @@
 <%= render(:partial => 'zz_email_banner') %>
 
-<h3>You were added as an album contributor!</h3>
+<h3>You can contribute photos into a ZangZing Group Album</h3>
 
 <p>
-  <%= @user.name %> has created an album '<%= @album.name  %>' and added your email to contributors list.
+  <%= @user.name %> invites you to contribute photos for '<%= @album.name  %>'. Your email is now in the contributors list.
   <br/>
-  To add photos to this album, just attach them to an email and send it to <a href="mailto:<%= @album_mail %>"><%= @album_mail %></a> (or reply this email)
+  To add photos to this album by email, attach them to a message and send it to <a href="mailto:<%= @album_mail %>"><%= @album.name %></a> or reply to this email.
+  You can see the complete album, get updates and interact with other contributors by logging into <a href="http://<%=APPLICATION_HOST%>">ZangZing</a>  using this email.
 </p>
 
 <%= render(:partial => 'zz_email_signature') %> 

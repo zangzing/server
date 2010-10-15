@@ -171,10 +171,9 @@ zang.init = {
             var photoGrid = $(this).siblings('.timeline-grid');
             if( photoGrid.height() <= GRID_HEIGHT ){
                 photo_count = photoGrid.children('li').length;
-                var rows = ( Math.floor(  photo_count / 5 ) );
-                if( photo_count % 5 > 0 )  rows++;
+                var rows = Math.ceil(  photo_count / 5 );
+                $(this).siblings('ul.timeline-grid').children('li').children('a').children().trigger('more'); 
                 photoGrid.animate({ height: (rows * GRID_HEIGHT) }, 500 );
-                $(this).siblings('ul.timeline-grid').children('li').children('a').children().trigger('more');
                 $(this).html('less');
             } else{
                 photoGrid.animate({ height: GRID_HEIGHT }, 500 );

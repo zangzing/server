@@ -34,19 +34,30 @@ class Contributor < ActiveRecord::Base
   end
 
   def is_a_user?
-    self.user_id ||= ( (user = User.find_by_email( self.email )) ? user.id : false )
+    if self.user.nil?
+       user = User.find_by_email( self.email )
+       if user.nil?
+         return false
+       else
+         self.user = user
+         self.save
+         return self.user.id
+       end
+    else
+      return self.user_id
+    end
   end
 
   def photos
     return [] unless self.is_a_user?
-    @photos ||= Photos.find_all_by_user_id_and_album_id(self.user_id, self.album_id )
+    @photos ||= Photo.find_all_by_user_id_and_album_id(self.user_id, self.album_id )
   end
 
   def deliver_notification
     msg = Notifier.create_contributors_added(self)
     Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(Notifier, :deliver, [msg] )
   end
-    
+
   private
   def set_user_id
      self.is_a_user?
@@ -57,11 +68,11 @@ class Contributor < ActiveRecord::Base
     c = nil
     matches = address.match(/^"(.*)" <(.*)>$/i)
     if matches
-       c = album.contributors.build( :name => matches[1], :email => matches[2] )
-      else
+      c = album.contributors.build( :name => matches[1], :email => matches[2])
+    else
       c = album.contributors.build( :email => address )
     end
-    if !c.valid? 
+    if !c.valid?
          if msg = c.errors.on(:email)
             c.errors.clear
             c.errors.add(:email,  address+' '+msg   )
