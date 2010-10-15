@@ -8,14 +8,17 @@
 <%  # Add in controller or action based meta description
     if @meta_description -%>
     <meta name="description" content="<%= @meta_description %>" />
-<%  end
+<%  end %>
     # Add in controller or action based page title
-    if @page_title_override -%>
-    <title><%= @page_title_override %></title>
-<%  else -%>
-    <title>ZangZing - <%= controller.controller_name + ' ' + controller.action_name %></title>
-<%  end -%> 
-
+    <% if @page_title_override 
+       title = @page_title_override
+    else
+       title = "ZangZing" 
+    end
+    if ! Rails.env.production?
+      title = "#{title} Version: #{ZANGZING_VERSION} Controller: #{controller.controller_name} Action: #{ controller.action_name}"
+    end %>
+    <title><%=title%></title>
     <link rel="stylesheet" href="/stylesheets/lib.css" media="all" />
     <link rel="stylesheet" href="/stylesheets/main.css" media="all" />
     <link rel="stylesheet" href="/stylesheets/jquery.autocomplete.css" media="all" />

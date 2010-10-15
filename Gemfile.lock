@@ -1,10 +1,10 @@
 --- 
 dependencies: 
-  twitter_oauth: 
+  faker: 
     group: 
     - :default
     version: ">= 0"
-  faker: 
+  twitter_oauth: 
     group: 
     - :default
     version: ">= 0"
@@ -12,32 +12,32 @@ dependencies:
     group: 
     - :default
     version: = 2.3.5
-  authlogic: 
-    group: 
-    - :default
-    version: = 2.1.5
-  oauth-plugin: 
-    group: 
-    - :default
-    version: = 0.3.14
-  mysql: 
-    group: 
-    - :default
-    version: ">= 0"
   sqlite3-ruby: 
     group: 
     - :default
     version: ">= 0"
     require: 
     - sqlite3
-  oauth: 
+  mysql: 
     group: 
     - :default
-    version: = 0.4.1
+    version: ">= 0"
+  oauth-plugin: 
+    group: 
+    - :default
+    version: = 0.3.14
+  authlogic: 
+    group: 
+    - :default
+    version: = 2.1.5
   usesguid: 
     group: 
     - :default
     version: ">= 0"
+  oauth: 
+    group: 
+    - :default
+    version: = 0.4.1
   mechanize: 
     group: 
     - :test
@@ -46,16 +46,16 @@ dependencies:
     group: 
     - :test
     version: ">= 0"
+  delayed_job: 
+    group: 
+    - :default
+    version: = 2.0.3
   hyper-graph: 
     group: 
     - :default
     version: = 0.3.1
     require: 
     - hyper_graph
-  delayed_job: 
-    group: 
-    - :default
-    version: = 2.0.3
   rspec-rails: 
     group: 
     - :test
@@ -64,18 +64,18 @@ dependencies:
     group: 
     - :test
     version: ">= 0"
-  usesguid_migrations: 
-    group: 
-    - :default
-    version: ">= 0"
-  paperclip: 
-    group: 
-    - :default
-    version: = 2.3.1.1
   will_paginate: 
     group: 
     - :default
     version: = 2.3.12
+  paperclip: 
+    group: 
+    - :default
+    version: = 2.3.1.1
+  usesguid_migrations: 
+    group: 
+    - :default
+    version: ">= 0"
   webrat: 
     group: 
     - :test
@@ -84,28 +84,28 @@ dependencies:
     group: 
     - :default
     version: = 0.9.26
-  gdata: 
-    group: 
-    - :default
-    version: = 1.1.1
   actionmailer: 
     group: 
     - :default
     version: ">= 0"
+  gdata: 
+    group: 
+    - :default
+    version: = 1.1.1
+  hpricot: 
+    group: 
+    - :default
+    version: ">= 0"
+  flickraw: 
+    group: 
+    - :default
+    version: = 0.8.2
   aws-s3: 
     group: 
     - :default
     version: ">= 0.6.2"
     require: 
     - aws/s3
-  flickraw: 
-    group: 
-    - :default
-    version: = 0.8.2
-  hpricot: 
-    group: 
-    - :default
-    version: ">= 0"
   launchy: 
     group: 
     - :test
@@ -205,7 +205,7 @@ specs:
     version: 0.7.1
 - will_paginate: 
     version: 2.3.12
-hash: 59341d486ccfa0275abf24bdb889575980ec9b58
+hash: c644f17fccfe80e6525d914ce66874a1ba547afc
 sources: 
 - Rubygems: 
     uri: http://gemcutter.org

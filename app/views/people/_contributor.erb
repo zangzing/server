@@ -1,4 +1,5 @@
 <li class="clearfix">
+    <a name="<%=contributor.id%>"></a>
     <div class="timeline-badge">
         <%= render :partial => 'users/stacked_badge', :locals => { :user => contributor.user }    %>
     </div>
@@ -6,6 +7,7 @@
     <div class="timeline-action">
       <ul class="timeline-grid">
         <% contributor.photos.each_index do | i | %>
+           <a href="<%=album_photos_path(contributor.album)%>?size=screenres&contributor=<%=contributor.id%>&photoid=<%=contributor.photos[i].id%>">           
           <li id="<%=contributor.photos[i].id%>">
             <%if i>=5 %>
                 <img class="lazy-thumb" src="/images/grey.gif" original="<%=contributor.photos[i].thumb_url%>"/>
@@ -13,6 +15,7 @@
                 <img src="<%=contributor.photos[i].thumb_url%>"/>
             <%end%>
           </li>
+          </a>     
       <% end %>
       </ul>
       <%if contributor.photos.length> 5  %><a href="javascript:void(0);"  class="more-less-btn">more...</a><%end%>

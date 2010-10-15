@@ -1558,7 +1558,7 @@ ul#contributors li {
   border-bottom: none;
 }
 
-div.timeline-badge {
+div.stacked-badge {
   float: left;
   width: 90px;
   margin-right: 20px;

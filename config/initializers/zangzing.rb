@@ -1,8 +1,9 @@
 
 # SET VERSION
 git_cmd = File.join(*[ENV['IMAGEMAGICK_PATH'], "git"].compact)
-ZANGZING_VERSION = `#{git_cmd} describe`
-
+silence_warnings do
+  ZANGZING_VERSION = `#{git_cmd} describe`
+end
 # GET AND SET ENVIRONMENT
 fname = "/home/deploy/dna.json"
 msg = []
