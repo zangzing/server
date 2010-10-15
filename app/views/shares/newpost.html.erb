@@ -8,9 +8,9 @@
 
     <div id="form-container" class="clearfix">
       <dl id="social-form" class="clearfix">
-        <dt id="network"><input type="checkbox" name="post_share[facebook]" id="facebook_box" onclick="call_new_facebook_session();" value="1" <%=( @share.facebook == '1' ? "authorized='yes' checked='checked'" : "" )%> /> <img src="/images/icon-facebook-16.png" /></dt>
+        <dt id="network"><input type="checkbox" name="post_share[facebook]" id="facebook_box"  value="1" <%=( @share.facebook == '1' ? "authorized='yes' checked='checked'" : "" )%> /> <img src="/images/icon-facebook-16.png" /></dt>
         <dd>Facebook</dd>
-        <dt><input type="checkbox" name="post_share[twitter]" id="twitter_box" onclick="call_new_twitter_session();" value="1" <%=( @share.twitter == '1' ? "authorized='yes' checked='checked'" : "" )%>  /> <img src="/images/icon-twitter-16.png" /></dt>
+        <dt><input type="checkbox" name="post_share[twitter]" id="twitter_box"  value="1" <%=( @share.twitter == '1' ? "authorized='yes' checked='checked'" : "" )%>  /> <img src="/images/icon-twitter-16.png" /></dt>
         <dd>Twitter</dd>
         <div class="clear-fix"></div>
         <dt>Post</dt>
@@ -25,25 +25,3 @@
   </form>
 </div>
 
-<div class="offset">
-
-<script type="text/javascript">
-function call_new_facebook_session(){
-    
-    if($("#facebook_box").is(':checked') && !$("#facebook_box").attr('authorized')){
-        oauthmanager.login( '<%=new_facebook_session_url%>', facebook_login_success);
-    }
-}
-function facebook_login_success(){
-   $("#facebook_box").attr('authorized', 'yes');
-}
-function call_new_twitter_session(){
-    if($("#twitter_box").is(':checked') && !$("#twitter_box").attr('authorized')){
-       oauthmanager.login( '<%=new_twitter_session_url%>', twitter_login_success);
-    }
-}
-function twitter_login_success(){
-    $("#twitter_box").attr('authorized', 'yes');
-}
-</script>
-</div>
