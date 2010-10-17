@@ -9,7 +9,7 @@ class Connector::FacebookFoldersController < Connector::FacebookController
           :open_url => facebook_folders_path(:target => 'me/albums'), :add_url => nil
         },
         {
-          :name => 'My Friends\' Albums', :type => 'folder', :id => 'my-friends',
+          :name => 'My Friends Albums', :type => 'folder', :id => 'my-friends',
           :open_url => facebook_folders_path(:target => 'me/friends'), :add_url => nil
         },
         {
