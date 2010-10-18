@@ -94,7 +94,7 @@ var filechooser = {
                 {
                     open_url: 'http://localhost:9090/picasa/folders',
                     type: 'folder',
-                    name: 'iPicasa',
+                    name: 'Picasa',
                     classy: 'f_picasa'
                 }
             );
