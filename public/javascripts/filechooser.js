@@ -20,7 +20,8 @@ var filechooser = {
                     open_url: 'http://localhost:9090/filesystem/folders/fi9QaWN0dXJlcw==',
                     type: 'folder',
                     name: 'My Pictures',
-                    classy: 'f_pictures'
+                    classy: 'f_pictures',
+                    connect_message_url: ''
                 }
             );
 
@@ -30,7 +31,9 @@ var filechooser = {
                     open_url: 'http://localhost:9090/iphoto/folders',
                     type: 'folder',
                     name: 'iPhoto',
-                    classy: 'f_iphoto'
+                    classy: 'f_iphoto',
+                    connect_message_url: ''
+                    
                 }
             );
 
@@ -41,7 +44,9 @@ var filechooser = {
                     open_url: 'http://localhost:9090/picasa/folders',
                     type: 'folder',
                     name: 'Picasa',
-                    classy: 'f_picasa'
+                    classy: 'f_picasa',
+                    connect_message_url: ''
+
                 }
             );
 
@@ -52,7 +57,9 @@ var filechooser = {
                     open_url: 'http://localhost:9090/filesystem/folders/fg==',
                     type: 'folder',
                     name: 'My Home',
-                    classy: 'f_home'
+                    classy: 'f_home',
+                    connect_message_url: ''
+
                 }
             );
 
@@ -62,12 +69,11 @@ var filechooser = {
                     open_url: 'http://localhost:9090/filesystem/folders/L1ZvbHVtZXM=',
                     type: 'folder',
                     name: 'My Computer',
-                    classy: 'f_mycomputer'
+                    classy: 'f_mycomputer',
+                    connect_message_url: ''
+
                 }
             );
-
-
-
         }
 
 
@@ -84,7 +90,9 @@ var filechooser = {
                     open_url: 'http://localhost:9090/filesystem/folders/flxNeSBEb2N1bWVudHNcTXkgUGljdHVyZXM=',
                     type: 'folder',
                     name: 'My Pictures',
-                    classy: 'f_pictures'
+                    classy: 'f_pictures',
+                    connect_message_url: ''
+
                 }
             );
 
@@ -95,7 +103,9 @@ var filechooser = {
                     open_url: 'http://localhost:9090/picasa/folders',
                     type: 'folder',
                     name: 'Picasa',
-                    classy: 'f_picasa'
+                    classy: 'f_picasa',
+                    connect_message_url: ''
+
                 }
             );
 
@@ -105,7 +115,9 @@ var filechooser = {
                     open_url: 'http://localhost:9090/filesystem/folders/fg==',
                     type: 'folder',
                     name: 'My Home',
-                    classy: 'f_home'
+                    classy: 'f_home',
+                    connect_message_url: ''
+
                 }
             );
 
@@ -115,7 +127,8 @@ var filechooser = {
                     open_url: 'http://localhost:9090/filesystem/folders',
                     type: 'folder',
                     name: 'My Computer',
-                    classy: 'f_mycomputer'
+                    classy: 'f_mycomputer',
+                    connect_message_url: ''
                 }
             );
         }
@@ -128,7 +141,8 @@ var filechooser = {
                 type: 'folder',
                 name: 'Shutterfly',
                 login_url: '/shutterfly/sessions/new',
-                classy: 'f_shutterfly'
+                classy: 'f_shutterfly',
+                connect_message_url: '/static/connect_messages/connect_to_shutterfly.html'
             }
         );
 
@@ -139,7 +153,8 @@ var filechooser = {
                 type: 'folder',
                 name: 'Kodak',
                 login_url:'/kodak/sessions/new',
-                classy: 'f_kodak'
+                classy: 'f_kodak',
+                connect_message_url: '/static/connect_messages/connect_to_kodak.html'
             }
         );        
 
@@ -151,7 +166,8 @@ var filechooser = {
                 type: 'folder',
                 name: 'SmugMug',
                 login_url: '/smugmug/sessions/new',
-                classy: 'f_smugmug'
+                classy: 'f_smugmug',
+                connect_message_url: '/static/connect_messages/connect_to_smugmug.html'
             }
         );
 
@@ -163,7 +179,9 @@ var filechooser = {
                 type: 'folder',
                 name: 'Facebook',
                 login_url: '/facebook/sessions/new',
-                classy: 'f_facebook'
+                classy: 'f_facebook',
+                connect_message_url: '/static/connect_messages/connect_to_facebook.html'
+
             }
         );
 
@@ -174,7 +192,8 @@ var filechooser = {
                 type: 'folder',
                 name: 'Flickr',
                 login_url: '/flickr/sessions/new',
-                classy: 'f_flickr'
+                classy: 'f_flickr',
+                connect_message_url: '/static/connect_messages/connect_to_flickr.html'
             }
         );
 
@@ -185,7 +204,8 @@ var filechooser = {
                 open_url: '/zangzing/folders.json',
                 type: 'folder',
                 name: 'ZangZing',
-                classy: 'f_zangzing'
+                classy: 'f_zangzing',
+                connect_message_url: ''
             }
         );
 
@@ -198,7 +218,7 @@ var filechooser = {
 
 
     open_root: function() {
-        filechooser.open_folder('Home', '', '');
+        filechooser.open_folder('Home', '', '', '');
     },
 
     is_windows : function() {
@@ -210,9 +230,9 @@ var filechooser = {
     },
 
 
-    open_folder: function(name, url, login_url) {
+    open_folder: function(name, url, login_url, connect_message_url) {
 
-        filechooser.ancestors.push({name:name, url:url, login_url:login_url});
+        filechooser.ancestors.push({name:name, url:url, login_url:login_url, connect_message_url: connect_message_url});
         //update title and back button
         if (filechooser.ancestors.length > 1) {
             $('#filechooser-back-button').html(filechooser.ancestors[filechooser.ancestors.length - 2].name).show();
@@ -346,7 +366,9 @@ var filechooser = {
                 var id = 'chooser-folder-' + i;
                 var a_id = 'chooser-folder-a-' + i;
 
-                var theClick = 'onclick="filechooser.open_folder(\'' + children[i].name + '\',\'' + children[i].open_url + '\',\'' + children[i].login_url + '\'); return false;"';
+                var theClick = 'onclick="filechooser.open_folder(\'' + children[i].name + '\',\'' + children[i].open_url + '\',\'' + children[i].login_url + '\',\'' + children[i].connect_message_url + '\'); return false;"';
+
+
                 html += '<li id="' + id + '" class="' + children[i].classy + '">';
                 html += '<a href="" ' + theClick + '><img src="/images/blank-folder.png" /></a>';
                 html += '<a href="" ' + theClick + '>' + children[i].name + '</a>';
@@ -527,7 +549,12 @@ var filechooser = {
 
     on_error_opening_folder : function(error) {
         if (error.status === 401) {
-            $('#filechooser').html('<h4>You need to log into your account before you can see this folder; click <a href="#" onClick="filechooser.open_login_window();return false;">here</a> to log in</h4>');
+            var current = filechooser.ancestors[filechooser.ancestors.length - 1];
+            $('#filechooser').load(current.connect_message_url);
+        }
+        else{
+            var current = filechooser.ancestors[filechooser.ancestors.length - 1];
+            $('#filechooser').load(current.connect_message_url);
         }
     },
 
