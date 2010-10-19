@@ -1,7 +1,11 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
+<% if @content_for_meta_tags -%>
+  <%= @content_for_meta_tags %>
+<% end -%>
+
+    <meta charset="utf-8"/>
     <meta name="copyright" content="Copyright 2010, ZangZing, Inc. All Rights Reserved." />
     <meta name="DC.title" content="ZangZing" />
     <meta name="title" content="ZangZing" />
