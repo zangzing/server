@@ -36,7 +36,7 @@ ActionController::Routing::Routes.draw do |map|
     albums.update_album       '/albums/:id.',                :action=>"update",    :conditions=>{ :method => :put }
 
     albums.delete_album       '/albums/:id.',                :action=>"destroy",    :conditions=>{ :method => :delete }
-    albums.album_upload_stat  '/albums/:album_id/upload_stat', :action=>'upload_stat', :conditions => { :method => :get }
+    albums.album_upload_stat  '/albums/:id/upload_stat', :action=>'upload_stat', :conditions => { :method => :get }
   end
 
 
