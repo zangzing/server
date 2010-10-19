@@ -401,10 +401,14 @@ var filechooser = {
 
 
         var html = '';
+        var img_id = 'chooser-photo-img-' + children[i].source_guid;
+
         var previous_image_handler = 'onclick="filechooser.picture_view(' + (i - 1) + ');return false;"';
         var next_image_handler = 'onclick="filechooser.picture_view(' + (i + 1) + ');return false;"';
+        var add_photo_handler = 'onclick="filechooser.add_photos(\'' + children[i].add_url + '\', \'' + img_id + '\'); return false;"';
 
         html += '<a href="" ' + previous_image_handler + '><img src="/images/btn-prev-photo.png"></a>';
+        html += '<a href="" ' + add_photo_handler + '>[add to album]</a>';
         html += '<a href="" ' + next_image_handler + '><img src="/images/btn-next-photo.png"></a>';
 
         if(children[i].type === 'folder'){
@@ -427,7 +431,7 @@ var filechooser = {
                 image_url += '?session=' + $.cookie('user_credentials'); //extra business to auth with agent
             }
 
-            html += '<img src="'+ image_url +'" '+ grid_view_handler +'>';
+            html += '<img id="' + img_id + '" src="'+ image_url +'" '+ grid_view_handler +'>';
             html += '<br>';
             html += children[i].name;
 
