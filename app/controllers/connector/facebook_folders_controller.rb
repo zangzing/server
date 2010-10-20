@@ -5,15 +5,15 @@ class Connector::FacebookFoldersController < Connector::FacebookController
     unless target
       fb_root = [
         {
-          :name => 'My albums', :type => 'folder', :id => 'my-albums',
+          :name => 'My Albums', :type => 'folder', :id => 'my-albums',
           :open_url => facebook_folders_path(:target => 'me/albums'), :add_url => nil
         },
         {
-          :name => 'All Friends', :type => 'folder', :id => 'my-friends',
+          :name => 'My Friends Albums', :type => 'folder', :id => 'my-friends',
           :open_url => facebook_folders_path(:target => 'me/friends'), :add_url => nil
         },
         {
-          :name => 'Photos of You', :type => 'folder', :id => 'tagged-with-me',
+          :name => 'Photos of Me', :type => 'folder', :id => 'tagged-with-me',
           :open_url => facebook_photos_path('me'), :add_url => nil
         }
       ]

@@ -6,9 +6,51 @@ var filechooser = {
     ancestors: [],
     roots: [],
     children: [],
+    
     init: function() {
 
         filechooser.roots = [];
+
+
+        var file_system_on_error = function(error){
+            if(typeof(error.status) === 'undefined'){
+                $('#filechooser').load('/static/connect_messages/no_agent.html');
+            }
+            else if(error.status === 401){
+                $('#filechooser').load('/static/connect_messages/wrong_agent_account.html');
+            }
+            else if(error.status === 500){
+                $('#filechooser').load('/static/connect_messages/general_agent_error.html');
+            }
+
+
+        }
+
+        var picasa_on_error = function(error){
+            if(typeof(error.status) === 'undefined'){
+                $('#filechooser').load('/static/connect_messages/no_agent.html');
+            }
+            else if(error.status === 401){
+                $('#filechooser').load('/static/connect_messages/wrong_agent_account.html');
+            }
+            else if(error.status === 500){
+                $('#filechooser').load('/static/connect_messages/general_agent_error.html');
+            }
+
+        }
+
+        var iphoto_on_error = function(error){
+            if(typeof(error.status) === 'undefined'){
+                $('#filechooser').load('/static/connect_messages/no_agent.html');
+            }
+            else if(error.status === 401){
+                $('#filechooser').load('/static/connect_messages/wrong_agent_account.html');
+            }
+            else if(error.status === 500){
+                $('#filechooser').load('/static/connect_messages/general_agent_error.html');
+            }
+
+        }
 
 
         //mac
@@ -20,7 +62,8 @@ var filechooser = {
                     open_url: 'http://localhost:9090/filesystem/folders/fi9QaWN0dXJlcw==',
                     type: 'folder',
                     name: 'My Pictures',
-                    classy: 'f_pictures'
+                    classy: 'f_pictures',
+                    on_error: file_system_on_error
                 }
             );
 
@@ -30,7 +73,8 @@ var filechooser = {
                     open_url: 'http://localhost:9090/iphoto/folders',
                     type: 'folder',
                     name: 'iPhoto',
-                    classy: 'f_iphoto'
+                    classy: 'f_iphoto',
+                    on_error: iphoto_on_error
                 }
             );
 
@@ -41,7 +85,8 @@ var filechooser = {
                     open_url: 'http://localhost:9090/picasa/folders',
                     type: 'folder',
                     name: 'Picasa',
-                    classy: 'f_picasa'
+                    classy: 'f_picasa',
+                    on_error: picasa_on_error
                 }
             );
 
@@ -52,7 +97,8 @@ var filechooser = {
                     open_url: 'http://localhost:9090/filesystem/folders/fg==',
                     type: 'folder',
                     name: 'My Home',
-                    classy: 'f_home'
+                    classy: 'f_home',
+                    on_error: file_system_on_error
                 }
             );
 
@@ -62,12 +108,10 @@ var filechooser = {
                     open_url: 'http://localhost:9090/filesystem/folders/L1ZvbHVtZXM=',
                     type: 'folder',
                     name: 'My Computer',
-                    classy: 'f_mycomputer'
+                    classy: 'f_mycomputer',
+                    on_error: file_system_on_error
                 }
             );
-
-
-
         }
 
 
@@ -84,7 +128,8 @@ var filechooser = {
                     open_url: 'http://localhost:9090/filesystem/folders/flxNeSBEb2N1bWVudHNcTXkgUGljdHVyZXM=',
                     type: 'folder',
                     name: 'My Pictures',
-                    classy: 'f_pictures'
+                    classy: 'f_pictures',
+                    on_error: file_system_on_error
                 }
             );
 
@@ -94,8 +139,9 @@ var filechooser = {
                 {
                     open_url: 'http://localhost:9090/picasa/folders',
                     type: 'folder',
-                    name: 'iPicasa',
-                    classy: 'f_picasa'
+                    name: 'Picasa',
+                    classy: 'f_picasa',
+                    on_error: picasa_on_error
                 }
             );
 
@@ -105,7 +151,8 @@ var filechooser = {
                     open_url: 'http://localhost:9090/filesystem/folders/fg==',
                     type: 'folder',
                     name: 'My Home',
-                    classy: 'f_home'
+                    classy: 'f_home',
+                    on_error: file_system_on_error
                 }
             );
 
@@ -115,7 +162,8 @@ var filechooser = {
                     open_url: 'http://localhost:9090/filesystem/folders',
                     type: 'folder',
                     name: 'My Computer',
-                    classy: 'f_mycomputer'
+                    classy: 'f_mycomputer',
+                    on_error: file_system_on_error
                 }
             );
         }
@@ -128,7 +176,11 @@ var filechooser = {
                 type: 'folder',
                 name: 'Shutterfly',
                 login_url: '/shutterfly/sessions/new',
-                classy: 'f_shutterfly'
+                classy: 'f_shutterfly',
+                connect_message_url: '/static/connect_messages/connect_to_shutterfly.html',
+                on_error: function(error){
+                  $('#filechooser').load('/static/connect_messages/connect_to_shutterfly.html');  
+                }
             }
         );
 
@@ -139,7 +191,11 @@ var filechooser = {
                 type: 'folder',
                 name: 'Kodak',
                 login_url:'/kodak/sessions/new',
-                classy: 'f_kodak'
+                classy: 'f_kodak',
+                connect_message_url: '/static/connect_messages/connect_to_kodak.html',
+                on_error: function(error){
+                  $('#filechooser').load('/static/connect_messages/connect_to_kodak.html');
+                }
             }
         );        
 
@@ -151,7 +207,11 @@ var filechooser = {
                 type: 'folder',
                 name: 'SmugMug',
                 login_url: '/smugmug/sessions/new',
-                classy: 'f_smugmug'
+                classy: 'f_smugmug',
+                connect_message_url: '/static/connect_messages/connect_to_smugmug.html',
+                on_error: function(error){
+                  $('#filechooser').load('/static/connect_messages/connect_to_smugmug.html');
+                }
             }
         );
 
@@ -163,7 +223,12 @@ var filechooser = {
                 type: 'folder',
                 name: 'Facebook',
                 login_url: '/facebook/sessions/new',
-                classy: 'f_facebook'
+                classy: 'f_facebook',
+                connect_message_url: '/static/connect_messages/connect_to_facebook.html',
+                on_error: function(error){
+                  $('#filechooser').load('/static/connect_messages/connect_to_facebook.html');
+                }
+
             }
         );
 
@@ -174,7 +239,11 @@ var filechooser = {
                 type: 'folder',
                 name: 'Flickr',
                 login_url: '/flickr/sessions/new',
-                classy: 'f_flickr'
+                classy: 'f_flickr',
+                connect_message_url: '/static/connect_messages/connect_to_flickr.html',
+                on_error: function(error){
+                  $('#filechooser').load('/static/connect_messages/connect_to_flickr.html');
+                }
             }
         );
 
@@ -185,7 +254,8 @@ var filechooser = {
                 open_url: '/zangzing/folders.json',
                 type: 'folder',
                 name: 'ZangZing',
-                classy: 'f_zangzing'
+                classy: 'f_zangzing',
+                connect_message_url: ''
             }
         );
 
@@ -198,7 +268,7 @@ var filechooser = {
 
 
     open_root: function() {
-        filechooser.open_folder('Home', '', '');
+        filechooser.open_folder('Home', '', '', '');
     },
 
     is_windows : function() {
@@ -210,9 +280,9 @@ var filechooser = {
     },
 
 
-    open_folder: function(name, url, login_url) {
+    open_folder: function(name, open_url, login_url) {
 
-        filechooser.ancestors.push({name:name, url:url, login_url:login_url});
+        filechooser.ancestors.push({name:name, open_url:open_url, login_url:login_url});
         //update title and back button
         if (filechooser.ancestors.length > 1) {
             $('#filechooser-back-button').html(filechooser.ancestors[filechooser.ancestors.length - 2].name).show();
@@ -227,21 +297,24 @@ var filechooser = {
         //update files
         $('#filechooser').html('<img src="/images/loading.gif">');
 
-        if (url == '') {
+        if (open_url == '') {
 
             filechooser.on_open_root();
 
         } else {
 
-            if (url.indexOf('http://localhost:9090') === 0) {
+            if (open_url.indexOf('http://localhost:9090') === 0) {
                 // if agent
 
                 var user_session = $.cookie('user_credentials');
-                url += '?session=' + user_session + '&callback=?';
+                open_url += '?session=' + user_session + '&callback=?';
 
                 $.jsonp({
-                    url: url,
+                    url: open_url,
                     success: function(json) {
+                        if(json.headers.status !== 200){
+                            filechooser.on_error_opening_folder(json.headers)
+                        }
                         filechooser.on_open_folder(json);
                     },
                     error: filechooser.on_error_opening_folder
@@ -252,7 +325,7 @@ var filechooser = {
 
                 $.ajax({
                     dataType: 'json',
-                    url: url,
+                    url: open_url,
                     success: function(json) {
                         filechooser.on_open_folder(json);
                     },
@@ -346,7 +419,9 @@ var filechooser = {
                 var id = 'chooser-folder-' + i;
                 var a_id = 'chooser-folder-a-' + i;
 
-                var theClick = 'onclick="filechooser.open_folder(\'' + children[i].name + '\',\'' + children[i].open_url + '\',\'' + children[i].login_url + '\'); return false;"';
+                var theClick = 'onclick="filechooser.open_folder(\'' + children[i].name + '\',\'' + children[i].open_url + '\',\'' + children[i].login_url + '\',\'' + children[i].connect_message_url + '\'); return false;"';
+
+
                 html += '<li id="' + id + '" class="' + children[i].classy + '">';
                 html += '<a href="" ' + theClick + '><img src="/images/blank-folder.png" /></a>';
                 html += '<a href="" ' + theClick + '>' + children[i].name + '</a>';
@@ -401,10 +476,14 @@ var filechooser = {
 
 
         var html = '';
+        var img_id = 'chooser-photo-img-' + children[i].source_guid;
+
         var previous_image_handler = 'onclick="filechooser.picture_view(' + (i - 1) + ');return false;"';
         var next_image_handler = 'onclick="filechooser.picture_view(' + (i + 1) + ');return false;"';
+        var add_photo_handler = 'onclick="filechooser.add_photos(\'' + children[i].add_url + '\', \'' + img_id + '\'); return false;"';
 
         html += '<a href="" ' + previous_image_handler + '><img src="/images/btn-prev-photo.png"></a>';
+        html += '<a href="" ' + add_photo_handler + '>[add to album]</a>';
         html += '<a href="" ' + next_image_handler + '><img src="/images/btn-next-photo.png"></a>';
 
         if(children[i].type === 'folder'){
@@ -427,7 +506,7 @@ var filechooser = {
                 image_url += '?session=' + $.cookie('user_credentials'); //extra business to auth with agent
             }
 
-            html += '<img src="'+ image_url +'" '+ grid_view_handler +'>';
+            html += '<img id="' + img_id + '" src="'+ image_url +'" '+ grid_view_handler +'>';
             html += '<br>';
             html += children[i].name;
 
@@ -517,13 +596,17 @@ var filechooser = {
     open_parent_folder: function() {
         var current = filechooser.ancestors.pop(); //discard this
         var parent = filechooser.ancestors.pop();
-        filechooser.open_folder(parent.name, parent.url, parent.login_url);
+        filechooser.open_folder(parent.name, parent.open_url, parent.login_url);
     },
 
 
     on_error_opening_folder : function(error) {
-        if (error.status === 401) {
-            $('#filechooser').html('<h4>You need to log into your account before you can see this folder; click <a href="#" onClick="filechooser.open_login_window();return false;">here</a> to log in</h4>');
+        var current = filechooser.ancestors[filechooser.ancestors.length - 1];
+        for(var i in filechooser.roots){
+            if(filechooser.roots[i].open_url === current.open_url){
+                filechooser.roots[i].on_error(error);
+                break;
+            }
         }
     },
 
@@ -540,7 +623,7 @@ var filechooser = {
     // for oauth window - return
     on_login : function() {
         var current = filechooser.ancestors.pop(); //discard this
-        filechooser.open_folder(current.name, current.url, current.login_url);
+        filechooser.open_folder(current.name, current.open_url, current.login_url);
     }
 
 };
@@ -589,7 +672,7 @@ var tray = {
 
         var onImageLoaded = function(id, src, width, height) {
             $('#' + id).attr('src', src);
-            
+
             if (height > width) {
               var ratio = (width / height); 
               $('#hover-' + id).attr('src', src).css({
@@ -624,8 +707,8 @@ var tray = {
                   top: '-15px',
                   left: '-15px'
               });
-            
-            
+
+
             }
         };
 

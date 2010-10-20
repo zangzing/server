@@ -1,8 +1,8 @@
 ---
 development:
-  :api_key: 4e315634b2e3a915d550965bd2f9dcf8
-  :app_secret: a44c3242d69b70b32a6c6842e19f8f82
-  :app_id: 143394669017276
+  :api_key: 2c9277b993a2c7f0c601d63363dcfda0
+  :app_secret: 164f6a82a15b5aec5a86ec0bf72baf61
+  :app_id: 111042492291584
 
 test:
   :api_key: 4e315634b2e3a915d550965bd2f9dcf8
