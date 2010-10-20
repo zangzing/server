@@ -131,7 +131,7 @@ class ApplicationController < ActionController::Base
       
       }
       unless allowed[:actions].include?("#{params[:controller]}##{params[:action]}")
-        authenticate_or_request_with_http_basic('ZZ SERVER') do |username, password|
+        authenticate_or_request_with_http_basic('ZangZing') do |username, password|
           username == HTTP_AUTH_CREDENTIALS[:login] && password == HTTP_AUTH_CREDENTIALS[:password]
         end
       end
