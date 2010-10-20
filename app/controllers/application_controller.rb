@@ -120,17 +120,17 @@ class ApplicationController < ActionController::Base
 
     def protect_with_http_auth
       allowed = {
-        :environments => [],
         :actions => ['photos#agentindex',
                      'photos#agent_create',
                      'photos#upload',
+                     'oauth#access_token',
                      'oauth#request_token',
                      'oauth#agentauthorize',
                      'oauth#test_request',
                      'oauth#test_session']
       
       }
-      unless allowed[:environments].include?(RAILS_ENV) && allowed[:actions].include?("#{params[:controller]}##{params[:action]}")
+      unless allowed[:actions].include?("#{params[:controller]}##{params[:action]}")
         authenticate_or_request_with_http_basic('ZZ SERVER') do |username, password|
           username == HTTP_AUTH_CREDENTIALS[:login] && password == HTTP_AUTH_CREDENTIALS[:password]
         end
