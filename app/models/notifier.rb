@@ -8,19 +8,31 @@ class Notifier < ActionMailer::Base
   end
 
   def contributors_added(contributor)
-    from         contributor.album.long_email
+    from         @@zzfrom
+    reply_to     contributor.album.long_email
     recipients   contributor.email
     subject      "You have been invited to contribute photos to '#{contributor.album.name}'!"
     sent_on       Time.now
     content_type "multipart/mixed"
 
+    part(:content_type => "multipart/alternative")  do |p|
+         p.part( :content_type => "text/plain",
+                 :body => render_message('contributors_added.text.plain.erb',
+                                         :user => contributor.album.user,
+                                         :album => contributor.album,
+                                         :album_mail => contributor.album.short_email))
+         p.part( :content_type => "text/html",
+                 :body => render_message('contributors_added.text.html.erb',
+                                         :user => contributor.album.user,
+                                         :album => contributor.album,
+                                         :album_mail => contributor.album.short_email))
+    end
     vcard = Vpim::Vcard::Maker.make2 do |vc|
       vc.add_name do |name|
         name.given = contributor.album.name
       end
       vc.add_email contributor.album.short_email
     end
-    part :content_type => "text/html", :body => render_message('contributors_added', :user => contributor.album.user, :album => contributor.album, :album_mail => contributor.album.short_email)
     attachment :content_type => 'text/x-vcard',:filename => 'album.vcf', :body =>vcard.to_s
   end
 
@@ -32,16 +44,14 @@ class Notifier < ActionMailer::Base
     content_type "multipart/mixed"
 
     part(:content_type => "multipart/alternative")  do |p|
-        p.part(:content_type => "text/plain") do |plain|
-              plain.body = render_message( 'upload_batch_finished.text.plain.erb',
-                                           :user => batch.user, :album => batch.album,
-                                           :album_url => album_url( batch.album ), :photos => batch.photos)
-         end
-         p.part(:content_type => "text/html") do |html|
-              html.body = render_message( 'upload_batch_finished.text.html.erb',
-                                          :user => batch.user, :album => batch.album,
-                                          :album_url => album_url( batch.album ), :photos => batch.photos)
-         end
+        p.part(:content_type => "text/plain",
+               :body => render_message( 'upload_batch_finished.text.plain.erb',
+                                        :user => batch.user, :album => batch.album,
+                                        :album_url => album_url( batch.album ), :photos => batch.photos))
+         p.part(:content_type => "text/html",
+             :body => render_message( 'upload_batch_finished.text.html.erb',
+                                      :user => batch.user, :album => batch.album,
+                                      :album_url => album_url( batch.album ), :photos => batch.photos))
     end
 
     vcard = Vpim::Vcard::Maker.make2 do |vc|
