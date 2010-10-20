@@ -15,6 +15,7 @@ class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   helper_method :current_user_session, :current_user, :current_user?, :signed_in?
   filter_parameter_logging :password, :password_confirmation # Scrub sensitive parameters from log
+  before_filter :protect_with_http_auth
 
   after_filter :flash_to_headers
   
@@ -115,6 +116,18 @@ class ApplicationController < ActionController::Base
     #
     def authorized?
       true
+    end
+
+    def protect_with_http_auth
+      allowed = {
+        :environments => ['development', 'eydevelopment'],
+        :actions => ['photos#index', 'photos#agentindex', 'photos#agent_create', 'photos#upload']
+      }
+      unless allowed[:environments].include?(RAILS_ENV) && allowed[:actions].include?("#{params[:controller]}##{params[:action]}")
+        authenticate_or_request_with_http_basic('ZZ SERVER') do |username, password|
+          username == HTTP_AUTH_CREDENTIALS[:login] && password == HTTP_AUTH_CREDENTIALS[:password]
+        end
+      end
     end
 
 
