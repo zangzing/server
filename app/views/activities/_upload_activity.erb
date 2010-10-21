@@ -11,7 +11,7 @@
 
     <ul class="timeline-grid">
       <% activity.upload_batch.photos.each_index do | i | %>
-          <a href="<%=album_photos_path(album)%>?size=screenres&upload_batch=<%=activity.upload_batch.id%>&photoid=<%=activity.upload_batch.photos[i].id%>">
+          <a href="<%=album_photos_path(album)%>?view=slideshow&upload_batch=<%=activity.upload_batch.id%>&photoid=<%=activity.upload_batch.photos[i].id%>">
             <li id="<%=activity.upload_batch.photos[i].id%>">
               <%if i>=5 %>
                   <img class="lazy-thumb" src="/images/grey.gif" original="<%=activity.upload_batch.photos[i].thumb_url%>"/>

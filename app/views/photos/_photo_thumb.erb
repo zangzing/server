@@ -1,6 +1,6 @@
 <li id="photo-<%=photo.id%>-li">
   <div class="relative">
-    <a href="<%=album_photos_path(photo.album)%>?size=screenres&photoid=<%=photo.id%>">
+    <a href="<%=album_photos_path(photo.album)%>?view=slideshow&photoid=<%=photo.id%>">
       <img src="/images/loading.gif" id="photo-<%=photo.id%>">
       <figure><%=photo.caption%></figure>
        <% if delete == true && current_user?(photo.album.user) %>

@@ -7,7 +7,7 @@
     <div class="timeline-action">
       <ul class="timeline-grid">
         <% contributor.photos.each_index do | i | %>
-           <a href="<%=album_photos_path(contributor.album)%>?size=screenres&contributor=<%=contributor.id%>&photoid=<%=contributor.photos[i].id%>">           
+           <a href="<%=album_photos_path(contributor.album)%>?view=slideshow&contributor=<%=contributor.id%>&photoid=<%=contributor.photos[i].id%>">           
           <li id="<%=contributor.photos[i].id%>">
             <%if i>=5 %>
                 <img class="lazy-thumb" src="/images/grey.gif" original="<%=contributor.photos[i].thumb_url%>"/>
