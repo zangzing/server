@@ -233,6 +233,7 @@ header ul#top-nav li#nav-account {
   padding: 6px 0 4px 12px;
   font-size: 1.1em;
   text-align: left;
+  float: right;
 }
 
 li#nav-account img {
