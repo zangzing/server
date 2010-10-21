@@ -109,6 +109,13 @@ class Album < ActiveRecord::Base
     end
   end
 
+  def long_email
+      " \"#{self.name}\" <#{self.id}@#{ALBUM_EMAIL_HOST}>"
+  end
+
+  def short_email
+      "#{self.id}@#{ALBUM_EMAIL_HOST}"
+  end
 
   private
   def set_email
