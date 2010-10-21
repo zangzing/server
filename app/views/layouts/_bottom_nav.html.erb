@@ -1,0 +1,25 @@
+      <nav>        
+        <ul id="bottom-nav" class="clearfix">
+          <li id="left-half" class="clearfix">
+            <ul id="owner-nav">
+              <li id="nav-help">Help</li>
+              <li id="nav-new-album">New Album</li>
+<% if @album %>              
+              <li id="nav-edit-album">Edit Album</li>
+              <li id="nav-add-photo">Add Photo</li>
+              <li id="nav-status" class="one-half">5 minutes...</li>
+<% end %>
+            </ul>
+          </li>
+          <li id="play-btn">
+            <a href=""><img src="/images/btn-play.png" /></a>
+          </li>
+          <li id="right-half" class="clearfix">
+            <ul id="viewer-nav">
+              <li id="nav-buy">Buy</li>
+              <li id="nav-like">Like</li>
+              <li id="nav-share">Share</li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
