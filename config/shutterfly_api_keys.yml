@@ -8,12 +8,12 @@ test:
   :app_id: 8f51abb9a4885b7cb357db545f52d92e
 
 eydevelopment:
-  :shared_secret: f8940e84726a5e17
-  :api_key: cbcd54aeabffef35d77cb02e321c01bf
+  :shared_secret: ea7d8b584d1bf5b9
+  :app_id: 8f51abb9a4885b7cb357db545f52d92e
 
 eysandbox:
-  :shared_secret: f8940e84726a5e17
-  :api_key: cbcd54aeabffef35d77cb02e321c01bf
+  :shared_secret: ea7d8b584d1bf5b9
+  :app_id: 8f51abb9a4885b7cb357db545f52d92e
 
 
 
