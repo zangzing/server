@@ -19,10 +19,12 @@ body {
 h2 {
   margin-bottom: 6px;
   font-size: 2.0em;
+  font-weight: 500;
 }
 
 h3 {
   font-size: 1.3em;
+  font-weight: 500;
 }
 
 /* Fixed Header and Footer 
@@ -35,143 +37,237 @@ div#container {
 
 nav {
   position: fixed;
-  width: 946px;
-  height: 51px;
-  padding: 7px 0 0 4px;
+  width: 950px;
+  height: 55px;
+  padding: 0;
   bottom: 0px;
   background-image: url("/images/bg-bottom-bar.png");
   background-repeat: no-repeat;
   z-index: 10;
 }
 
-nav h1 {
+
+ul#bottom-nav li {
   float: left;
-  width: 124px;
-  height: 52px;
-  margin-right: 16px;
-  cursor: pointer;
-  background-image: url("/images/logo-zangzing.png");
-  background-repeat: no-repeat;
 }
 
-nav ul#nav-left {
-  float: left;
-  margin-top: 4px;
+ul#bottom-nav li#play-btn {
+  width: 40px;
+  padding: 10px 5px;
 }
 
-nav ul#nav-left li {
-  float: left;
-  min-width: 40px;
-  margin-right: 16px;
-  padding-top: 30px;
-  color: #a4a4a4;
-  font-weight: 400;  
-  background-position: center; 
-  background-repeat: no-repeat;
-  font-size: 1.3em;
+ul#bottom-nav li#left-half, ul#bottom-nav li#right-half {
+  width: 430px;
 }
 
-nav ul#nav-left li:hover {
-  color: #0a0a0a;
-  cursor: pointer;
-}
-
-li#nav-new-album {
-  background-image: url("/images/icon-new-album.png");
-}
-
-li#nav-new-album:hover {
-  background-image: url("/images/icon-new-album-hover.png");
-}
-
-li#nav-find {
-  background-image: url("/images/icon-find.png");
-}
-
-li#nav-find:hover {
-  background-image: url("/images/icon-find-hover.png");
-}
-
-li#nav-sign-in {
-  background-image: url("/images/icon-sign-in.png");
-}
-
-li#nav-sign-in:hover {
-  background-image: url("/images/icon-sign-in-hover.png");
-}
-
-nav ul#nav-right {
-  float: right;
-  margin-top: 4px;
+ul#bottom-nav li#left-half {
   margin-right: 20px;
 }
 
-nav ul#nav-right li {
-  float: right;
-  min-width: 40px;
-  margin-left: 16px;
-  padding-top: 30px;
-  color: #a4a4a4;
-  font-size: 1.3em;
-  font-weight: 400;  
-  background-position: center; 
+ul#bottom-nav li#right-half {
+  margin-left: 20px;
+}
+
+ul#bottom-nav li ul#owner-nav {
+  width: 420px;
+  margin-left: 10px;
+}
+
+ul#bottom-nav li ul#owner-nav li {
+  float: left;
+  width: 70px;
+  margin-left: 12px;
+  background-position: center 15%;
   background-repeat: no-repeat;
-}
-
-nav ul#nav-right li:hover {
-  color: #0a0a0a;
+  padding-top: 40px;
   cursor: pointer;
+  color: #a4a4a4;
+  font-size: 1.2em;
 }
 
-li#nav-new-photo {
-  background-image: url("/images/icon-new-photo.png");
+ul#bottom-nav li ul#viewer-nav {
+  width: 420px;
+  margin-right: 10px;
 }
 
-li#nav-new-photo:hover {
-  background-image: url("/images/icon-new-photo-hover.png");
+ul#bottom-nav li ul#viewer-nav li {
+  float: right;
+  width: 50px;
+  margin-left: 12px;
+  background-position: center 15%;
+  background-repeat: no-repeat;
+  padding-top: 40px;
+  cursor: pointer;
+  color: #a4a4a4;
+  font-size: 1.2em;}
+
+ul#bottom-nav li ul#owner-nav li:hover {
+  color: #0a0a0a;
+}
+
+ul#bottom-nav li ul#owner-nav  li#nav-status {
+  background-position: center 25%;
+}
+
+li#nav-new-album {
+  background-image: url("/images/bg-new-album-off.png");
+}
+
+li#nav-new-album:hover {
+  background-image: url("/images/bg-new-album-on.png");
+}
+
+li#nav-edit-album {
+  background-image: url("/images/bg-edit-album-off.png");
+}
+
+li#nav-edit-album:hover {
+  background-image: url("/images/bg-edit-album-on.png");
+}
+
+li.one-quarter {
+  background-image: url("/images/upload-quarter.png");
+}
+
+li.one-half {
+  background-image: url("/images/upload-half.png");
+}
+
+li.three-quarters {
+  background-image: url("/images/upload-three-quarters.png");
+}
+
+li.complete {
+  background-image: url("/images/upload-complete.png");
+}
+
+li#nav-help {
+  background-image: url("/images/bg-help-off.png");
+}
+
+li#nav-help:hover {
+  background-image: url("/images/bg-help-on.png");
+}
+
+li#nav-add-photo {
+  background-image: url("/images/bg-add-photo-off.png");
+}
+
+li#nav-add-photo:hover {
+  background-image: url("/images/bg-add-photo-on.png");
 }
 
 li#nav-share {
-  background-image: url("/images/icon-share.png");
+  background-image: url("/images/bg-share-off.png");
 }
 
 li#nav-share:hover {
-  background-image: url("/images/icon-share-hover.png");
+  background-image: url("/images/bg-share-on.png");
 }
 
 li#nav-like {
-  background-image: url("/images/icon-like.png");
+  background-image: url("/images/bg-like-off.png");
 }
 
 li#nav-like:hover {
-  background-image: url("/images/icon-like-hover.png");
+  background-image: url("/images/bg-like-on.png");
 }
 
 li#nav-buy {
-  background-image: url("/images/icon-cart.png");
+  background-image: url("/images/bg-buy-off.png");
 }
 
 li#nav-buy:hover {
-  background-image: url("/images/icon-cart-hover.png");
+  background-image: url("/images/bg-buy-on.png");
 }
 
 header {
   position: fixed;
-  width: 946px;
-  height: 52px;
-  padding: 0 0 7px 4px;
+  width: 950px;
+  height: 60px;
   top: 0px;
-  background-image: url("/images/bg-top-bar.png");
+  background-image: url("/images/bg-top-bar-oct.png");
   background-repeat: no-repeat;
   z-index: 10;
 }
 
+header ul#top-nav li {
+  float: left;
+  margin-right: 15px;
+}
+
+li#nav-home {
+  width: 140px;
+  height: 60px;
+  cursor: pointer;
+}
+
+li#nav-back {
+  padding: 15px 0;
+  text-align: center;
+  width: 100px;
+  height: 40px;
+}
+
+li#nav-main {
+  width: 410px;  
+}
+
+li#nav-main ul li h2 {
+  margin-top: 3px;
+}
+
+li#nav-views {
+  width: 165px;
+  padding: 12px 0;
+}
+
+header ul#top-nav li ul#view-swap li {
+  float: left;
+  margin: 0 0 0 0;
+}
+
+header ul#top-nav li#nav-account {
+  width: 58px;
+  margin-right: 0px;
+  padding: 6px 0 4px 12px;
+  font-size: 1.1em;
+  text-align: left;
+}
+
+li#nav-account img {
+  float: left;
+  margin: 0 2px 4px 0;
+}
+
+header ul#top-nav li#nav-sign-up {
+  width: 45px;
+  padding: 34px 12px 0;
+  margin-right: 16px;
+  color: #a4a4a4;
+  font-weight: 400;  
+  background-image: url(/images/btn-sign-in-off.png);
+  background-position: center 40%; 
+  background-repeat: no-repeat;
+  font-size: 1.2em;
+  font-weight: 600;
+  line-height: 0.5em;
+  margin-right: 0px;
+  text-align: center;
+  cursor: pointer;
+}
+
+header ul#top-nav li#nav-sign-up:hover {
+  background-image: url(/images/btn-sign-in-on.png);
+  color: #0a0a0a;
+}
+
 header ul#user-info, header ul#album-info {
-  margin: 6px -145px 0 auto;
+  margin: 6px auto;
 }
 
 header ul#new-info {
-  margin: 6px 0 0;
+  margin: 2px 0 0;
 }
 
 header ul#user-info, header ul#album-info, header ul#new-info {
@@ -198,14 +294,14 @@ ul#user-info li#user-icon {
 }
 
 ul#album-info li#user-icon, ul#new-info li#user-icon {
-  width: 58px;
+  width: 72px;
   height: 40px;
   margin-right: 6px;
 }
 
 header ul#view-swap {
   float: right;
-  margin: 10px 30px 0 0;
+  margin: 0;
 }
 
 header ul#view-swap li {
