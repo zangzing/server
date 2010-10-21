@@ -28,7 +28,7 @@
           <li id="nav-views">
             <ul id="view-swap" class="clearfix">
               <li><a href="<%= '/albums/' + @album.id + '/photos' %>"><img src="<%= (controller.controller_name == 'photos' && (params[:view].nil? || params[:view]=='grid')) ? '/images/btn-grid-view-on.png' : '/images/btn-grid-view-off.png' %>" /></a></li>
-              <li><a href="<%= '/albums/' + @album.id + '/photos?format=slideshow' %>"><img src="<%= (controller.controller_name == 'photos' && params[:view]=='slideshow') ? '/images/btn-photo-view-on.png' : '/images/btn-photo-view-off.png' %>" /></a></li>
+              <li><a href="<%= '/albums/' + @album.id + '/photos?view=slideshow' %>"><img src="<%= (controller.controller_name == 'photos' && params[:view]=='slideshow') ? '/images/btn-photo-view-on.png' : '/images/btn-photo-view-off.png' %>" /></a></li>
               <li><a href="<%= '/albums/' + @album.id + '/activities' %>"><img src="<%= controller.controller_name == 'activities' ? '/images/btn-timeline-view-on.png' : '/images/btn-timeline-view-off.png' %>" /></a></li>
               <li><a href="<%= '/albums/' + @album.id + '/people' %>"><img src="<%= controller.controller_name == 'people' ? '/images/btn-people-view-on.png' : '/images/btn-people-view-off.png' %>" /></a></li>
             </ul>  
