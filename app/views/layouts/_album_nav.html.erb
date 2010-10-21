@@ -27,7 +27,7 @@
           </li>
           <li id="nav-views">
             <ul id="view-swap" class="clearfix">
-              <li><a href="<%= '/albums/' + @album.id + '/albums' %>"><img src="<%= controller.controller_name == 'albums' ? '/images/btn-grid-view-on.png' : '/images/btn-grid-view-off.png' %>" /></a></li>
+              <li><a href="<%= '/albums/' + @album.id + '/photos' %>"><img src="<%= controller.controller_name == 'photos' ? '/images/btn-grid-view-on.png' : '/images/btn-grid-view-off.png' %>" /></a></li>
               <li><a href="#"><img src="/images/btn-photo-view-off.png" /></a></li>
               <li><a href="<%= '/albums/' + @album.id + '/activities' %>"><img src="<%= controller.controller_name == 'activities' ? '/images/btn-timeline-view-on.png' : '/images/btn-timeline-view-off.png' %>" /></a></li>
               <li><a href="<%= '/albums/' + @album.id + '/people' %>"><img src="<%= controller.controller_name == 'people' ? '/images/btn-people-view-on.png' : '/images/btn-people-view-off.png' %>" /></a></li>
