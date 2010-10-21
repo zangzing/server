@@ -109,6 +109,10 @@ class Album < ActiveRecord::Base
     end
   end
 
+  def is_user_contributor?( user )
+    return is_contributor? user.email
+  end
+
   def long_email
       " \"#{self.name}\" <#{self.id}@#{ALBUM_EMAIL_HOST}>"
   end

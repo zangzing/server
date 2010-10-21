@@ -174,6 +174,9 @@ class PhotosController < ApplicationController
             params[:photoid] = nil
           end
           render 'slideshow'
+        elsif !params[:view].nil? && params[:view] == 'movie'
+          @photos = @all_photos
+          render 'movie'
         else
           @photo = Photo.new
           @photos = @all_photos

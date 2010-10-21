@@ -6,14 +6,20 @@
               <li id="nav-new-album">New Album</li>
 <% if @album %>              
               <li id="nav-edit-album">Edit Album</li>
+
+<%    if @album.is_user_contributor? current_user %>
               <li id="nav-add-photo">Add Photo</li>
+<%    end %>
+
               <li id="nav-status" class="one-half">5 minutes...</li>
 <% end %>
             </ul>
           </li>
+<% if @album %>
           <li id="play-btn">
-            <a href=""><img src="/images/btn-play.png" /></a>
+            <a href="<%='/albums/' + @album.id + '/photos?view=movie'%>"><img src="/images/btn-play.png" /></a>
           </li>
+<% end %>
           <li id="right-half" class="clearfix">
             <ul id="viewer-nav">
               <li id="nav-buy">Buy</li>
