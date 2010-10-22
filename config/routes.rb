@@ -264,6 +264,10 @@ ActionController::Routing::Routes.draw do |map|
     proxy.proxy            '/proxy',    :action  => 'proxy'
   end
 
-
+  #logs
+  map.with_options :controller => :logs do |logs|
+    logs.logs '/logs', :action => "index"
+    logs.log_retrieve '/logs/:logname', :action => :retrieve
+  end
 
 end
