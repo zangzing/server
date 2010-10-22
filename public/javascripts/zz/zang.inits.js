@@ -33,6 +33,10 @@ zang.init = {
    });
     
 
+      //only album contributers can do this
+    $('#nav-home').click(function(){ document.location.href = '/' });
+
+
     //only album contributers can do this
     $('#nav-add-photo').click(function(){ zz.wizard.open_edit_album_wizard('add') });
 

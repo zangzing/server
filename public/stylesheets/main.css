@@ -202,6 +202,13 @@ li#nav-home {
   cursor: pointer;
 }
 
+li#nav-home a {
+  width: 140px;
+  height: 60px;
+  cursor: pointer;
+}
+
+
 li#nav-back {
   padding: 15px 0;
   text-align: center;
