@@ -1,17 +1,20 @@
 /* Body, headers, text
 ----------------------------------------------------------------------------- */
 
+html {overflow-y: scroll;}
+
+
 body { 
   width: 98%;
   margin: 0 auto;
-  background-color: #ffffff;
+  background-color: #f3f3f3;
   font-family: "Lucida Grande", "Lucida Sans Unicode", "Trebuchet MS", Tahoma, Helvetica, Arial, sans-serif;
   font-size: 62.5%;
   color: #0a0a0a;
   /* the following fixes that annoying tell-tale js animation flicker */
   opacity: 0.99999; 
   -moz-opacity: 0.99999; 
-  -khtml-opacity: 0.99999; 
+  -html-opacity: 0.99999;
   filter: alpha(opacity=99);
   text-align: center;
 }
@@ -201,13 +204,6 @@ li#nav-home {
   height: 60px;
   cursor: pointer;
 }
-
-li#nav-home a {
-  width: 140px;
-  height: 60px;
-  cursor: pointer;
-}
-
 
 li#nav-back {
   padding: 15px 0;
@@ -1014,11 +1010,15 @@ div#headline {
 }
 
 ul#filechooser li figure {
-  display: none;
+  display: block;
+  opacity: 0.0;
+
 }
 
-ul#filechooser li:hover figure {
+ul#filechooser li figure:hover {
   display: block;
+  opacity: 1.0;
+
   position: absolute;
   bottom: 24px;
   left: 2px;
@@ -1034,7 +1034,9 @@ ul#filechooser li:hover figure {
 }
 
 ul#filechooser li .checkmark {
-  display: none;
+  display: block;
+  opacity: 0.0;
+
   position: absolute;
   background-image: url("/images/check-off.png");
   background-repeat: no-repeat;
@@ -1045,15 +1047,19 @@ ul#filechooser li .checkmark {
   z-index: 10;
 }
 
-ul#filechooser li.in-tray .checkmark { 
+ul#filechooser li figure:hover + .checkmark {
+  display: block;
+  opacity: 1.0;
+
+}
+
+ul#filechooser li.in-tray .checkmark {
   background-image: url("/images/check-on.png");
   background-repeat: no-repeat;
   display: block;
 }
 
-ul#filechooser li:hover .checkmark {
-  display: block;
-}
+
 
 
 ul#filechooser li.photo div.relative {
