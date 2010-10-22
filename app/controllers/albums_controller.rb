@@ -27,11 +27,11 @@ class AlbumsController < ApplicationController
   end
 
   def upload_stat
-    batch = UploadBatch.find_by_user_id_and_album_id_and_state(current_user.id, params[:id], 'open')
+    batch = Photo.find(:all, :conditions => {:user_id => current_user.id, :album_id => params[:id]})
 
     if batch
-      photos_pending = batch.photos.find(:all, :conditions => {:state => ['assigned', 'loaded', 'processing']})
-      photos_completed = batch.photos.find(:all, :conditions => {:state => 'ready'})
+      photos_pending = batch.select{|p| ['assigned', 'loaded', 'processing'].include?(p.state)}
+      photos_completed = batch.select{|p| p.state=='ready' }
       unless photos_completed.empty?
         #est_time = (photos_completed.map{ |p| (p.image_updated_at.to_time - p.created_at.to_time)/60 }.sum / photos_completed.count) * photos_pending.count
         est_time = ((photos_completed.map(&:image_updated_at).max - photos_completed.map(&:created_at).min)/photos_completed.size)/60 * photos_pending.size
@@ -46,7 +46,7 @@ class AlbumsController < ApplicationController
       }
     else
       #No active upload batches
-      render :json => {'percent-complete' => 100, 'time-remaining' => 0, 'photos-complete' => nil, 'photos-pending' => nil}
+      render :json => {'percent-complete' => 0, 'time-remaining' => nil, 'photos-complete' => 0, 'photos-pending' => nil}
     end
   end
 
