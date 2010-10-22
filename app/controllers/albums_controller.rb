@@ -32,7 +32,7 @@ class AlbumsController < ApplicationController
     if batch
       photos_pending = batch.select{|p| ['assigned', 'loaded', 'processing'].include?(p.state)}
       photos_completed = batch.select{|p| p.state=='ready' }
-      unless photos_completed.empty?
+      unless photos_completed.empty? || photos_pending.empty?
         #est_time = (photos_completed.map{ |p| (p.image_updated_at.to_time - p.created_at.to_time)/60 }.sum / photos_completed.count) * photos_pending.count
         est_time = ((photos_completed.map(&:image_updated_at).max - photos_completed.map(&:created_at).min)/photos_completed.size)/60 * photos_pending.size
       else
