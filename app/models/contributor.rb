@@ -40,7 +40,6 @@ class Contributor < ActiveRecord::Base
          return false
        else
          self.user = user
-         self.save
          return self.user.id
        end
     else
@@ -75,7 +74,7 @@ class Contributor < ActiveRecord::Base
     if !c.valid?
          if msg = c.errors.on(:email)
             c.errors.clear
-            c.errors.add(:email,  address+' '+msg   )
+            c.errors.add(:email,  address+' '+msg  )
          end
          raise ActiveRecord::RecordInvalid.new( c )
     end
