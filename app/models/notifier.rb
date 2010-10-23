@@ -46,11 +46,11 @@ class Notifier < ActionMailer::Base
     part(:content_type => "multipart/alternative")  do |p|
         p.part(:content_type => "text/plain",
                :body => render_message( 'upload_batch_finished.text.plain.erb',
-                                        :user => batch.user, :album => batch.album,
+                                        :album => batch.album,
                                         :album_url => album_url( batch.album ), :photos => batch.photos))
          p.part(:content_type => "text/html",
              :body => render_message( 'upload_batch_finished.text.html.erb',
-                                      :user => batch.user, :album => batch.album,
+                                      :album => batch.album,
                                       :album_url => album_url( batch.album ), :photos => batch.photos))
     end
 
