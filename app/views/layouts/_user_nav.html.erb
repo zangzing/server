@@ -1,30 +1,36 @@
       <header class="clearfix">
-        <ul id="user-info" class="clearfix">
-          <li id="user-icon">
-            <img src="/images/user-icon-40x40.png" width="40" height="40" />
+        <ul id="top-nav">
+          <li id="nav-home"></li>
+          <li id="nav-back">
           </li>
-          <li>
-            <h2><%= @user ? @user.username : @badge_name %></h2>
-            <h3>My Account <img src="/images/icon-down-arrow-10px.png" width="10" height="10" /></h3>
+          <li id="nav-main">
+            <ul id="user-info" class="clearfix">
+              <li id="user-icon">
+                <img src="/images/user-icon-40x40.png" width="40" height="40" />
+              </li>
+              <li>
+                <h2><%= @user ? @user.username : @badge_name %></h2>
+              </li>
+            </ul>
+            
+            <ul id="album-info" class="clearfix" style="display:none;">
+              <li id="user-icon">
+                <img src="/images/blank-image.png" width="50" height="33" id="album-header-icon" />
+              </li>
+              <li>
+                <h2 id="album-header-title"><%= @album ? @album.name : 'New Album' %></h2>
+                <h3>by <%= @user ? @user.username : @badge_name %></h3>
+              </li>
+            </ul>              
+
+          </li>
+          <li id="nav-account" class="clearfix">
+            <img src="/images/user-icon-25x25.png" width="25" height="25" /> <img src="/images/icon-down-arrow-22px.png" />
+            <div class="clear-fix"></div>
+            Account
           </li>
         </ul>
-        
-        <ul id="album-info" class="clearfix" style="display:none;">
-          <li id="user-icon">
-            <img src="/images/blank-image.png" width="50" height="33" id="album-header-icon" />
-          </li>
-          <li>
-            <h2 id="album-header-title"><%= @album ? @album.name : 'New Album' %></h2>
-            <h3>by <%= @user ? @user.username : @badge_name %></h3>
-          </li>
-        </ul>          
-        
-        <ul   class="offset" id="view-swap">
-          <li><a href="<%= '/users/' + @user.id + '/people' %>"><img src="<%= controller.controller_name == 'people' ? '/images/view-icons-friends-on.png' : '/images/view-icons-friends.png' %>" /></a></li>
-          <li><a href="<%= '/users/' + @user.id + '/activities' %>"><img src="<%= controller.controller_name == 'activities' ? '/images/view-icons-timeline-on.png' : '/images/view-icons-timeline.png' %>" /></a></li>
-          <li><a href="<%= '/users/' + @user.id + '/albums' %>"><img src="<%= controller.controller_name == 'albums' ? '/images/view-icons-grid-on.png' : '/images/view-icons-grid.png' %>" /></a></li>
-        </ul>    
-  
+      
       </header>
       
       <div id="drawer" style="display:none;">

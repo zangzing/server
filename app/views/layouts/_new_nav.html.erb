@@ -1,21 +1,34 @@
       <header class="clearfix">
-        <ul id="new-info" class="clearfix">
-          <li id="user-icon">
-            <img src="/images/blank-image.png" width="50" height="33"  id="album-header-icon" />
+        <ul id="top-nav">
+          <li id="nav-home"></li>
+            <h1 class="offset">ZangZing</h1>
           </li>
-<%        if controller.controller_name == 'photos' || controller.controller_name == 'albums' -%>
-          <li>
-            <h2 id="album-header-title"><%= @album ? @album.name : 'New Album' %></h2>
-            <h3>by <%= @badge_name %></h3>
+          <li id="nav-back">
+            <a href="/"><img src="/images/btn-back-all-albums.png" /></a>
           </li>
-<%        else -%>
-          <li>
-            <h2>Welcome to ZangZing!</h2>
-            <h3>Fast, simple, social photo management.</h3>
+          <li id="nav-main">
+            <ul id="new-info" class="clearfix">
+              <li id="user-icon">
+                <img src="/images/bg-album-default.png" width="64" height="44"  id="album-header-icon" />
+              </li>
+    <%        if controller.controller_name == 'photos' || controller.controller_name == 'albums' -%>
+              <li>
+                <h2 id="album-header-title"><%= @album ? @album.name : 'New Album' %></h2>
+                <h3>by <%= @badge_name %></h3>
+              </li>
+    <%        else -%>
+              <li>
+                <h2>Welcome to ZangZing!</h2>
+                <h3>Fast, simple, social photo management.</h3>
+              </li>
+    <%      end -%> 
+            </ul>         
+
           </li>
-<%      end -%> 
+          <li id="nav-views"></li>
+          <li id="nav-sign-up">Sign-in</li>
         </ul>
-          
+      
       </header>
       
       <div id="small-drawer">

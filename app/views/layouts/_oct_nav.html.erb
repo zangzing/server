@@ -5,7 +5,7 @@
             <a href="/"><img src="/images/btn-back-all-albums.png" /></a>
           </li>
           <li id="nav-main">
-            <ul id="user-info" class="clearfix" style="display:none;">
+            <ul id="user-info" class="clearfix">
               <li id="user-icon">
                 <img src="/images/user-icon-40x40.png" width="40" height="40" />
               </li>
@@ -14,7 +14,7 @@
               </li>
             </ul>
             
-            <ul id="album-info" class="clearfix">
+            <ul id="album-info" class="clearfix" style="display:none;">
               <li id="user-icon">
                 <img src="/images/blank-image.png" width="50" height="33" id="album-header-icon" />
               </li>
@@ -22,16 +22,16 @@
                 <h2 id="album-header-title"><%= @album ? @album.name : 'New Album' %></h2>
                 <h3>by <%= @user ? @user.username : @badge_name %></h3>
               </li>
-            </ul>      
+            </ul>          
 
           </li>
           <li id="nav-views">
             <ul id="view-swap" class="clearfix">
-              <li><a href="<%= '/albums/' + @album.id + '/photos' %>"><img src="<%= (controller.controller_name == 'photos' && (params[:view].nil? || params[:view]=='grid')) ? '/images/btn-grid-view-on.png' : '/images/btn-grid-view-off.png' %>" /></a></li>
-              <li><a href="<%= '/albums/' + @album.id + '/photos?view=slideshow' %>"><img src="<%= (controller.controller_name == 'photos' && params[:view]=='slideshow') ? '/images/btn-photo-view-on.png' : '/images/btn-photo-view-off.png' %>" /></a></li>
-              <li><a href="<%= '/albums/' + @album.id + '/activities' %>"><img src="<%= controller.controller_name == 'activities' ? '/images/btn-timeline-view-on.png' : '/images/btn-timeline-view-off.png' %>" /></a></li>
-              <li><a href="<%= '/albums/' + @album.id + '/people' %>"><img src="<%= controller.controller_name == 'people' ? '/images/btn-people-view-on.png' : '/images/btn-people-view-off.png' %>" /></a></li>
-            </ul>  
+              <li><a href=""><img src="/images/btn-grid-view-off.png" /></a></li>
+              <li><a href=""><img src="/images/btn-photo-view-off.png" /></a></li>
+              <li><a href=""><img src="/images/btn-timeline-view-off.png" /></a></li>
+              <li><a href=""><img src="/images/btn-people-view-off.png" /></a></li>
+            </ul>    
           </li>
           <li id="nav-account" class="clearfix">
             <img src="/images/user-icon-25x25.png" width="25" height="25" /> <img src="/images/icon-down-arrow-22px.png" />
@@ -43,8 +43,9 @@
       </header>
       
       <div id="drawer" style="display:none;">
+        <div id="drawer-tabs"></div>
         <div class="body">
-          <div id="drawer-content">  
+          <div id="drawer-content">
             <div id="scroll-body">
             </div>       
           </div>   

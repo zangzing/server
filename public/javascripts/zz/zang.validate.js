@@ -40,11 +40,11 @@ zang.validate = {
     element: '#user-update-form',
     rules: {
       'user[name]': { required: true, minlength: 5 },
-      'user[email]': { required: true, email: true },
+      'user[email]': { required: true, email: true }
     },
     messages: {
       'user[name]': 'Please enter your name.',
-      'user[email]': 'We promise we won&rsquo;t spam you.',
+      'user[email]': 'We promise we won&rsquo;t spam you.'
     }
   },
 

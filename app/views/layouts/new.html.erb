@@ -1,11 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
-<% if @content_for_meta_tags -%>
-  <%= @content_for_meta_tags %>
-<% end -%>
-
-    <meta charset="utf-8"/>
+    <meta charset="utf-8">
     <meta name="copyright" content="Copyright 2010, ZangZing, Inc. All Rights Reserved." />
     <meta name="DC.title" content="ZangZing" />
     <meta name="title" content="ZangZing" />
@@ -37,9 +33,8 @@
     <link rel="stylesheet" href="stylesheets/ie7.css" media="all" />
     <![endif]-->
     
-    <!--[if lt IE 9]>
+    <!--[if lte IE 8]>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <script src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE8.js"></script>
     <![endif]-->
 
 <%  # Add in template based style tags by defining this in the template
@@ -55,28 +50,7 @@
     
     <div id="container">
     
-      <nav class="clearfix">
-        <h1 id="home-link"><span class="offset"><a href="#">ZangZing</a></span></h1>
-        
-        <ul id="nav-left" class="clearfix">
-          <li id="nav-new-album">New Album</li>
-          <li id="nav-find">Find</li>
-          <% if current_user %>
-              <li id="nav-sign-in"><a name="<%=signout_url%>"></a>Sign Out</li> 
-           <%else %>
-              <li id="nav-sign-in">Sign In</li>
-           <%end%>
-        </ul>
-        
-        <img src="/images/btn-play.png" style="display:none;" />
-        
-        <ul id="nav-right" class="clearfix">
-          <li id="nav-buy">Buy</li>
-          <li id="nav-like">Like</li>
-          <li id="nav-share">Share</li>
-          <li id="nav-new-photo">Add Photo</li>
-        </ul>
-      </nav>
+      <%= render :partial => 'layouts/bottom_nav' %>
 
 <%    if current_user && controller.controller_name == 'photos' || 
          current_user && controller.controller_name == 'albums' && controller.action_name != 'index' || 
@@ -84,7 +58,7 @@
          controller.controller_name == 'activities' && controller.action_name == 'album_index'
          #this loads a version of the top nav with the album header & main drawer -%>
       <%= render :partial => 'layouts/album_nav' %>
-      <%    elsif current_user
+<%    elsif current_user  
          #this loads a version of the top nav with the user header & main drawer -%>
       <%= render :partial => 'layouts/user_nav'  %>
 <%    else  
@@ -92,12 +66,14 @@
       <%= render :partial => 'layouts/new_nav' %>
 <%    end -%>
         
-    <article>
-    
-      <%= yield :layout %>
-    
-    </article>
-    
+        <article>
+
+          <%= yield :layout %>
+
+        </article>
+
+    </div>
+
     <div id="clones">
       <ul id="clone-indicator" class="clearfix">
         <li></li>
@@ -107,7 +83,7 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript"></script>
     <script type="text/javascript" src="/javascripts/lib/jquery.validate.js" ></script>
     <script type="text/javascript" src="/javascripts/lib/jquery.autocomplete.js"></script>
-       <script type="text/javascript" src="/javascripts/lib/jquery.lazyload.mini.js"></script>  
+       <script type="text/javascript" src="/javascripts/lib/jquery.lazyload.mini.js"></script>
 
     <script type="text/javascript" src="/javascripts/lib/jquery.ba-bbq.js"></script>
     <script type="text/javascript" src="/javascripts/lib/jquery.jsonp.js"></script>
@@ -126,7 +102,7 @@
     <script type="text/javascript" src="/javascripts/logging.js"></script>
     <script type="text/javascript" src="/javascripts/imageloader.js"></script>
     <script type="text/javascript" src="/javascripts/sharecontacts.js" ></script>
-    
+
 <%  # Add in template based javascript by defining this in the template
     if @content_for_page_javascript -%>
     <%= @content_for_page_javascript %>
@@ -134,22 +110,22 @@
     <script type="text/javascript">
       /* Vars our js fns need from ruby (calls/conditionals) - NO SECURE DATA
       ----------------------------------------------------------------------- */
-<%    if signed_in?  -%>      
+<%    if signed_in?  -%>
       zang.zing.user_id = '<%= current_user.id %>';
-<%    end -%><%  if @album  -%>      
+<%    end -%><%  if @album  -%>
       zang.zing.album_id = '<%= @album.id %>';
       zang.zing.album_type = '<%= @album.type %>';
       zang.zing.album_type = zang.zing.album_type.split('Album')[0].toLowerCase();
 <%    end
       # This is where we pass things on to js that we need from ruby.
-      # Remember to use the zz.zang namespace. 
--%>    
+      # Remember to use the zz.zang namespace.
+-%>
       zang.zing.base = '<%= request.env['HTTP_HOST'] %>';
 
       /* Fire up our inits starting up the entire waxy ball!!
       ----------------------------------------------------------------------- */
       (function($) {
-      
+
       $(function() {
       <%      # This will become dynamic, allowing us to load the right event handlers based on what page we're on. -%>
       <%    if current_user  %>
@@ -170,12 +146,12 @@
 <%      # Same here... -%>
           setTimeout('zang.init.loaded()', 64);
         });
-        
+
         $(window).bind("resize", function() {
 <%      # And here... -%>
-          zang.init.resized(); 
+          zang.init.resized();
         });
-      
+
       })(jQuery);
     </script>
   </body>

@@ -33,8 +33,18 @@ zang.init = {
    });
     
 
-    $('#nav-new-photo').click(function(){ zz.wizard.open_edit_album_wizard('add') });
+      //only album contributers can do this
+    $('#nav-home').click(function(){ document.location.href = '/' });
+
+
+    //only album contributers can do this
+    $('#nav-add-photo').click(function(){ zz.wizard.open_edit_album_wizard('add') });
+
+    //any signed in user can do this
     $('#nav-share').click(function(){ zz.wizard.open_edit_album_wizard('share') });
+
+    //only album owner can do this
+    $('#nav-edit-album').click(function(){ zz.wizard.open_edit_album_wizard('add') });
 
     $('#nav-like').click(function(){
       callback = function(){

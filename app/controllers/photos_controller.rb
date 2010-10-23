@@ -163,7 +163,7 @@ class PhotosController < ApplicationController
 
     respond_to do |format|
       format.html do
-        if !params[:size].nil? && params[:size] == 'screenres'
+        if !params[:view].nil? && params[:view] == 'slideshow'
           @photos = @all_photos.paginate({:page =>params[:page], :per_page => 1})
           unless  params[:photoid].nil?
             current_page = 1 if params[:page].nil?
@@ -174,6 +174,9 @@ class PhotosController < ApplicationController
             params[:photoid] = nil
           end
           render 'slideshow'
+        elsif !params[:view].nil? && params[:view] == 'movie'
+          @photos = @all_photos
+          render 'movie'
         else
           @photo = Photo.new
           @photos = @all_photos
@@ -209,7 +212,7 @@ class PhotosController < ApplicationController
 
     respond_to do |format|
       format.html do
-        if !params[:size].nil? && params[:size] == 'screenres'
+        if !params[:view].nil? && params[:view] == 'slideshow'
           @photos = @album.photos.paginate({:page =>params[:page], :per_page => 1})
           unless  params[:photoid].nil?
             current_page = 1 if params[:page].nil?
