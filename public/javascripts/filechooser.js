@@ -59,7 +59,7 @@ var filechooser = {
             //My Pictures
             filechooser.roots.push(
                 {
-                    open_url: 'http://localhost:9090/filesystem/folders/fi9QaWN0dXJlcw==',
+                    open_url: agent.buildAgentUrl('/filesystem/folders/fi9QaWN0dXJlcw=='),
                     type: 'folder',
                     name: 'My Pictures',
                     classy: 'f_pictures',
@@ -70,7 +70,7 @@ var filechooser = {
             //iPhoto
             filechooser.roots.push(
                 {
-                    open_url: 'http://localhost:9090/iphoto/folders',
+                    open_url: agent.buildAgentUrl('/iphoto/folders'),
                     type: 'folder',
                     name: 'iPhoto',
                     classy: 'f_iphoto',
@@ -82,7 +82,7 @@ var filechooser = {
             //Picasa
             filechooser.roots.push(
                 {
-                    open_url: 'http://localhost:9090/picasa/folders',
+                    open_url: agent.buildAgentUrl('/picasa/folders'),
                     type: 'folder',
                     name: 'Picasa',
                     classy: 'f_picasa',
@@ -94,7 +94,7 @@ var filechooser = {
             //My Home
             filechooser.roots.push(
                 {
-                    open_url: 'http://localhost:9090/filesystem/folders/fg==',
+                    open_url: agent.buildAgentUrl('/filesystem/folders/fg=='),
                     type: 'folder',
                     name: 'My Home',
                     classy: 'f_home',
@@ -105,7 +105,7 @@ var filechooser = {
             //My Computer
             filechooser.roots.push(
                 {
-                    open_url: 'http://localhost:9090/filesystem/folders/L1ZvbHVtZXM=',
+                    open_url: agent.buildAgentUrl('/filesystem/folders/L1ZvbHVtZXM='),
                     type: 'folder',
                     name: 'My Computer',
                     classy: 'f_mycomputer',
@@ -125,7 +125,7 @@ var filechooser = {
             //My Pictures
             filechooser.roots.push(
                 {
-                    open_url: 'http://localhost:9090/filesystem/folders/flxNeSBEb2N1bWVudHNcTXkgUGljdHVyZXM=',
+                    open_url: agent.buildAgentUrl('/filesystem/folders/flxNeSBEb2N1bWVudHNcTXkgUGljdHVyZXM='),
                     type: 'folder',
                     name: 'My Pictures',
                     classy: 'f_pictures',
@@ -137,7 +137,7 @@ var filechooser = {
             //Picassa
             filechooser.roots.push(
                 {
-                    open_url: 'http://localhost:9090/picasa/folders',
+                    open_url: agent.buildAgentUrl('/picasa/folders'),
                     type: 'folder',
                     name: 'Picasa',
                     classy: 'f_picasa',
@@ -148,7 +148,7 @@ var filechooser = {
             //My Home
             filechooser.roots.push(
                 {
-                    open_url: 'http://localhost:9090/filesystem/folders/fg==',
+                    open_url: agent.buildAgentUrl('/filesystem/folders/fg=='),
                     type: 'folder',
                     name: 'My Home',
                     classy: 'f_home',
@@ -159,7 +159,7 @@ var filechooser = {
             //My Computer
             filechooser.roots.push(
                 {
-                    open_url: 'http://localhost:9090/filesystem/folders',
+                    open_url: agent.buildAgentUrl('/filesystem/folders'),
                     type: 'folder',
                     name: 'My Computer',
                     classy: 'f_mycomputer',
@@ -303,11 +303,10 @@ var filechooser = {
 
         } else {
 
-            if (open_url.indexOf('http://localhost:9090') === 0) {
+            if (agent.isAgentUrl(open_url)) {
                 // if agent
 
-                var user_session = $.cookie('user_credentials');
-                open_url += '?session=' + user_session + '&callback=?';
+                open_url = agent.buildAgentUrl(open_url);
 
                 $.jsonp({
                     url: open_url,
@@ -448,8 +447,8 @@ var filechooser = {
                 html += '</li>';
 
 
-                if (children[i].thumb_url.indexOf('http://localhost') === 0) {
-                    filechooser.imageloader.add(img_id, children[i].thumb_url + '?session=' + $.cookie('user_credentials')); //extra business to auth with agent
+                if (agent.isAgentUrl(children[i].thumb_url)) {
+                    filechooser.imageloader.add(img_id, agent.buildAgentUrl(children[i].thumb_url));
                 } else {
                     filechooser.imageloader.add(img_id, children[i].thumb_url);
                 }
@@ -502,8 +501,8 @@ var filechooser = {
 
             var image_url = children[i].screen_url;
 
-            if (image_url.indexOf('http://localhost') === 0) {
-                image_url += '?session=' + $.cookie('user_credentials'); //extra business to auth with agent
+            if (agent.isAgentUrl(image_url)) {
+                image_url = agent.buildAgentUrl(image_url);
             }
 
             html += '<img id="' + img_id + '" src="'+ image_url +'" '+ grid_view_handler +'>';
@@ -542,9 +541,9 @@ var filechooser = {
         add_url += 'album_id=' + zang.zing.album_id;
 
         var after_animate = function(){
-            if (add_url.indexOf('http://localhost:9090') === 0) {
+            if (agent.isAgentUrl(add_url)) {
 				
-                add_url += '&session=' + $.cookie('user_credentials') + '&callback=?';
+                add_url = agent.buildAgentUrl(add_url);
 
                 $.jsonp({
                     url: add_url,
@@ -770,9 +769,8 @@ var tray = {
                 if (photo.state == 'ready') {
                     tray.imageloader.add(id, photo.thumb_url);
                 } else {
-                    tray.imageloader.add(id, 'http://localhost:9090/albums/' +
-                                             zang.zing.album_id + '/photos/' + photo.id + '.thumb' +
-                                             '?session=' + $.cookie('user_credentials'));
+                    tray.imageloader.add(id, agent.buildAgentUrl('/albums/' + zang.zing.album_id + '/photos/' + photo.id + '.thumb'));
+
                 }
 
             } else {

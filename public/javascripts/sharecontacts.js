@@ -49,8 +49,7 @@ var sharecontacts = {
 
     call_agent_local_import :function(agentPresent){
          if( agentPresent ) {
-                var user_session = $.cookie('user_credentials');
-                url = 'http://localhost:9090/contacts/import?session=' + user_session + '&callback=?';
+                var url = agent.buildAgentUrl('/contacts/import');
                 $.jsonp({
                     url: url,
                     success: sharecontacts.import_local_success,

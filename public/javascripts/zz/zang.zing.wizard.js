@@ -311,8 +311,8 @@ zz.wizard = {
             url = temp[i].source_thumb_url;
         }
 
-        if (url.indexOf('http://localhost') === 0) {
-            url += '?session=' + $.cookie('user_credentials')
+        if (agent.isAgentUrl(url)) {
+            url = agent.buildAgentUrl(url);
         }
 
         imageloader.add(id, url);
