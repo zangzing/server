@@ -47,7 +47,7 @@ var agent = {
                 url += '?';
             }
 
-            url += 'session=' + $.cookie('user_credentials') + '&user_id=' + zz.user_id + '&callback=?';
+            url += 'session=' + $.cookie('user_credentials') + '&user_id=' + user_id + '&callback=?';
 //            url += 'session=' + $.cookie('user_credentials') + '&callback=?';
         }
 
