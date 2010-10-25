@@ -30,7 +30,7 @@ h3 {
   font-weight: 500;
 }
 
-/* Fixed Header and Footer 
+/* Fixed Header and Footer
 ----------------------------------------------------------------------------- */
 
 div#container {
@@ -213,7 +213,7 @@ li#nav-back {
 }
 
 li#nav-main {
-  width: 410px;  
+  width: 410px;
 }
 
 li#nav-main ul li h2 {
@@ -249,9 +249,9 @@ header ul#top-nav li#nav-sign-up {
   padding: 34px 12px 0;
   margin-right: 16px;
   color: #a4a4a4;
-  font-weight: 400;  
+  font-weight: 400;
   background-image: url(/images/btn-sign-in-off.png);
-  background-position: center 40%; 
+  background-position: center 40%;
   background-repeat: no-repeat;
   font-size: 1.2em;
   font-weight: 600;
@@ -410,10 +410,10 @@ ul#added-pictures-tray li:hover img.trayed-up {
 
 ul#added-pictures-tray li .hover-thumbnail {
   display: none;
-  position: absolute; 
-  z-index: 102; 
-  border: 4px solid #fff; 
-  top: -120px; 
+  position: absolute;
+  z-index: 102;
+  border: 4px solid #fff;
+  top: -120px;
   left: -45px;
   box-shadow: 0px 0px 8px #FDD042;
   -webkit-box-shadow: 0px 0px 8px #FDD042;
@@ -429,7 +429,7 @@ ul#added-pictures-tray li:hover .hover-thumbnail {
 
 ul#added-pictures-tray li img.delete {
   display: none;
-  position: absolute; 
+  position: absolute;
   z-index: 9999;
   cursor: pointer;
 }
@@ -445,7 +445,7 @@ ul#clone-indicator {
 ul#indicator-4, ul#indicator-5, ul#indicator-6 {
   width: 898px;
   height: 36px;
-  margin-top: 4px; 
+  margin-top: 4px;
   padding-left: 14px;
 }
 
@@ -689,7 +689,7 @@ ul#small-indicator {
   overflow: hidden;
   height: 37px;
   z-index: 15;
-  border-left: solid 1px gray; 
+  border-left: solid 1px gray;
 }
 
 ul#small-indicator li {
@@ -731,10 +731,10 @@ ul#small-indicator li#step-join-off:hover {
 }
 
 div#small-top {
-  margin: 15px auto 15px; 
-  width: 350px; 
-  text-align: center; 
-  padding-bottom: 15px; 
+  margin: 15px auto 15px;
+  width: 350px;
+  text-align: center;
+  padding-bottom: 15px;
   border-bottom: 1px solid #ccc;
 }
 
@@ -857,8 +857,8 @@ div#drawer-content div#top-section {
 }
 
 div#drawer-content div#scroll-body {
-  overflow-y: auto;  
-  height: 0px; 
+  overflow-y: auto;
+  height: 0px;
 }
 
 div#top-section #filechooser-back-button {
@@ -1010,15 +1010,11 @@ div#headline {
 }
 
 ul#filechooser li figure {
-  display: block;
-  opacity: 0.0;
-
+  display: none;
 }
 
-ul#filechooser li figure:hover {
+ul#filechooser li:hover figure {
   display: block;
-  opacity: 1.0;
-
   position: absolute;
   bottom: 24px;
   left: 2px;
@@ -1034,9 +1030,7 @@ ul#filechooser li figure:hover {
 }
 
 ul#filechooser li .checkmark {
-  display: block;
-  opacity: 0.0;
-
+  display: none;
   position: absolute;
   background-image: url("/images/check-off.png");
   background-repeat: no-repeat;
@@ -1047,19 +1041,15 @@ ul#filechooser li .checkmark {
   z-index: 10;
 }
 
-ul#filechooser li figure:hover + .checkmark {
-  display: block;
-  opacity: 1.0;
-
-}
-
 ul#filechooser li.in-tray .checkmark {
   background-image: url("/images/check-on.png");
   background-repeat: no-repeat;
   display: block;
 }
 
-
+ul#filechooser li:hover .checkmark {
+  display: block;
+}
 
 
 ul#filechooser li.photo div.relative {
@@ -1242,8 +1232,8 @@ div#drawer-content dl.form dt {
   color: #0a0a0a;
   text-align: right;
   width: 180px;
-  margin-right: 20px; 
-  padding-top: 7px; 
+  margin-right: 20px;
+  padding-top: 7px;
 }
 
 div#drawer-content dl.form dd {
@@ -1276,7 +1266,7 @@ div#drawer-content dl.form dd input#album_name:focus {
   box-shadow: 0px 0px 10px #FDD042;
   -webkit-box-shadow: 0px 0px 10px #FDD042;
   -moz-box-shadow: 0px 0px 10px #FDD042;
-  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#FDD042, offX=2, offY=2, positive=true);  
+  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#FDD042, offX=2, offY=2, positive=true);
 }
 
 ul#share-pick {
@@ -1318,13 +1308,13 @@ ul#share-pick li img {
 
 div#form-container {
   width: 800px;
-  margin: 20px auto;  
+  margin: 20px auto;
   font-size: 1.4em;
 }
 
 div#form-container-2 {
   width: 800px;
-  margin: 0px auto;  
+  margin: 0px auto;
   font-size: 1.4em;
 }
 
@@ -1471,7 +1461,7 @@ ul#the-recipients li {
   background: -moz-linear-gradient(top, #fbfbfb, #dcdcdc);
   background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#dcdcdc));
   border: 1px #dcdcdc solid;
-  padding: 4px 4px 4px 7px;  
+  padding: 4px 4px 4px 7px;
   margin: 5px;
 }
 
@@ -1712,7 +1702,7 @@ div.timeline-action figure img.timeline-picon {
   margin: 15px 10px 10px;
 }
 
-ul#album-timeline li div.timeline-action ul.timeline-grid, 
+ul#album-timeline li div.timeline-action ul.timeline-grid,
 ul#contributors li div.timeline-action ul.timeline-grid {
   margin: 15px 10px 10px;
   width: 770px;
@@ -1730,7 +1720,7 @@ ul.following-grid {
   margin: 0;
 }
 
-ul#album-timeline li div.timeline-action ul.timeline-grid li, 
+ul#album-timeline li div.timeline-action ul.timeline-grid li,
 ul#contributors li div.timeline-action ul.timeline-grid li {
   float: left;
   width: 130px;
