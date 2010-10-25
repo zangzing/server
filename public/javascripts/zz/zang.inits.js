@@ -126,7 +126,7 @@ zang.init = {
                         $('#nav-status').addClass('one-half');
                     }
                     else if(percent_complete <=75){
-                        $('#nav-status').addClass('three-quarter');
+                        $('#nav-status').addClass('three-quarters');
                     }
                     else{
                         $('#nav-status').addClass('complete');
