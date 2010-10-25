@@ -128,7 +128,8 @@ class ApplicationController < ActionController::Base
                      'oauth#agentauthorize',
                      'oauth#test_request',
                      'oauth#test_session',
-                     'connector/local_contacts#import']
+                     'connector/local_contacts#import',
+                     'sendgrid#import']
       
       }
       unless allowed[:actions].include?("#{params[:controller]}##{params[:action]}")
