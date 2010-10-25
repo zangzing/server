@@ -22,6 +22,7 @@ gem 'usesguid_migrations'
 gem 'actionmailer'
 gem 'vpim'
 gem 'newrelic_rpm'
+gem 'rpm_contrib'
 
 gem 'hpricot'
 gem 'twitter_oauth'
