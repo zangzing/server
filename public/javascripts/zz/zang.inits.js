@@ -106,7 +106,51 @@ zang.init = {
   },
   
   album: function(){
+    $('#nav-status').hide();
 
+    //update album upload status every 10 seconds
+    var updateProgressMeter = function(){
+        $.ajax({
+            url: '/albums/' + zz.album_id + '/upload_stat',
+            success: function(json){
+                if(json['photos-pending'] > 0){
+                    var percent_complete = Math.round(json['percent-complete']);
+
+                    $('#nav-status').removeClass('one-quarter').removeClass('one-half').removeClass('three-quarters').removeClass('complete');
+
+
+                    if(percent_complete <= 25){
+                        $('#nav-status').addClass('one-quarter');
+                    }
+                    else if(percent_complete <= 50){
+                        $('#nav-status').addClass('one-half');
+                    }
+                    else if(percent_complete <=75){
+                        $('#nav-status').addClass('three-quarter');
+                    }
+                    else{
+                        $('#nav-status').addClass('complete');
+                    }
+
+
+                    if(percent_complete == 0){
+                        $('#nav-status').html(Math.round(json['time-remaining']) + ' Calculating...');
+                    }
+                    else{
+                        $('#nav-status').html(Math.round(json['time-remaining']) + ' Minutes...');
+                    }
+                    $('#nav-status').show();
+                }
+                else{
+                    $('#nav-status').hide();
+                }
+            }
+        });
+    }
+
+    updateProgressMeter();  
+
+    setInterval( updateProgressMeter ,10000);
   },
   
   

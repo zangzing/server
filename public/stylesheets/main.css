@@ -52,6 +52,7 @@ nav {
 
 ul#bottom-nav li {
   float: left;
+  white-space:nowrap;
 }
 
 ul#bottom-nav li#play-btn {
