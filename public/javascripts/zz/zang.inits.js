@@ -116,22 +116,16 @@ zang.init = {
                 if(json['photos-pending'] > 0){
                     var percent_complete = Math.round(json['percent-complete']);
 
-                    $('#nav-status').removeClass('one-quarter').removeClass('one-half').removeClass('three-quarters').removeClass('complete');
+                    logger.debug('percent complete ' + percent_complete);
+                    var step = 0;
 
+                    if(percent_complete > 0){
+                         step = Math.round(percent_complete / 6.25);
+                    }
+                    
+                    logger.debug('step ' + step);
 
-                    if(percent_complete <= 25){
-                        $('#nav-status').addClass('one-quarter');
-                    }
-                    else if(percent_complete <= 50){
-                        $('#nav-status').addClass('one-half');
-                    }
-                    else if(percent_complete <=75){
-                        $('#nav-status').addClass('three-quarters');
-                    }
-                    else{
-                        $('#nav-status').addClass('complete');
-                    }
-
+                    $('#nav-status').css('background-image', 'url(/images/upload-'+ step +'.png)');
 
                     if(percent_complete == 0){
                         $('#nav-status').html(Math.round(json['time-remaining']) + ' Calculating...');

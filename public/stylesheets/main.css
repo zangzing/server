@@ -129,22 +129,6 @@ li#nav-edit-album:hover {
   background-image: url("/images/bg-edit-album-on.png");
 }
 
-li.one-quarter {
-  background-image: url("/images/upload-quarter.png");
-}
-
-li.one-half {
-  background-image: url("/images/upload-half.png");
-}
-
-li.three-quarters {
-  background-image: url("/images/upload-three-quarters.png");
-}
-
-li.complete {
-  background-image: url("/images/upload-complete.png");
-}
-
 li#nav-help {
   background-image: url("/images/bg-help-off.png");
 }
