@@ -8,7 +8,9 @@ zz.wizard = {
                      obj.steps.step.element, obj.steps.step.info, 
                      obj.steps.step.type, obj.steps.step.init, 
                      obj.steps.step.bounce */
-    
+
+    var temp; //todo: rename to somethign meaningful
+
     if (zz.drawer_open == 0) {
       zz.open_drawer(obj.time, obj.percent);  
     }
@@ -21,7 +23,7 @@ zz.wizard = {
         //console.log(temp);
       } else if (obj.steps[obj.first].url_type == 'user') {
         //console.log('user');
-        temp = 'http://' + zz.base + obj.steps[obj.first].url.split('$$')[0] + zz.user_id + obj.steps[obj.first].url.split('$$')[1];                    
+        temp = 'http://' + zz.base + obj.steps[obj.first].url.split('$$')[0] + zz.current_user_id + obj.steps[obj.first].url.split('$$')[1];
         //console.log(temp);    
       }
 
@@ -39,7 +41,7 @@ zz.wizard = {
         //console.log(temp);
       } else if (obj.steps[step].url_type == 'user') {
         //console.log('user');
-        temp = 'http://' + zz.base + obj.steps[step].url.split('$$')[0] + zz.user_id + obj.steps[step].url.split('$$')[1];                    
+        temp = 'http://' + zz.base + obj.steps[step].url.split('$$')[0] + zz.current_user_id + obj.steps[step].url.split('$$')[1];
         //console.log(temp);    
       }
 
@@ -112,8 +114,8 @@ zz.wizard = {
   
   build_nav: function(obj, id){
   
-    temp_id = 1;
-    temp = '';
+    var temp_id = 1;
+    var temp = '';
     $.each(obj.steps, function(i, item) { 
       if (i == id && obj.numbers == 1) {
         value = temp_id;
@@ -171,7 +173,7 @@ zz.wizard = {
         //console.log(temp);
       } else if (obj.steps[id].url_type == 'user') {
         //console.log('user');
-        temp_url = 'http://' + zz.base + obj.steps[i].url.split('$$')[0] + zz.user_id + obj.steps[i].url.split('$$')[1];                    
+        temp_url = 'http://' + zz.base + obj.steps[i].url.split('$$')[0] + zz.current_user_id + obj.steps[i].url.split('$$')[1];
         //console.log(temp);    
       }
   
@@ -192,7 +194,7 @@ zz.wizard = {
         if (obj.redirect_type == 'album') {
           temp_url = 'http://' + zz.base + obj.redirect.split('$$')[0] + zz.album_id + obj.redirect.split('$$')[1];          
         } else if (obj.redirect_type == 'user') {
-          temp_url = 'http://' + zz.base + obj.redirect.split('$$')[0] + zz.user_id + obj.redirect.split('$$')[1];                    
+          temp_url = 'http://' + zz.base + obj.redirect.split('$$')[0] + zz.current_user_id + obj.redirect.split('$$')[1];
         }
         setTimeout('window.location = "'+temp_url+'"', 500);
       });
@@ -206,7 +208,7 @@ zz.wizard = {
         if (obj.steps[obj.steps[id].next].url_type == 'album') {
           temp_url = 'http://' + zz.base + obj.steps[obj.steps[id].next].url.split('$$')[0] + zz.album_id + obj.steps[obj.steps[id].next].url.split('$$')[1];          
         } else if (obj.steps[obj.steps[id].next].url_type == 'user') {
-          temp_url = 'http://' + zz.base + obj.steps[obj.steps[id].next].url.split('$$')[0] + zz.user_id + obj.steps[obj.steps[id].next].url.split('$$')[1];                    
+          temp_url = 'http://' + zz.base + obj.steps[obj.steps[id].next].url.split('$$')[0] + zz.current_user_id + obj.steps[obj.steps[id].next].url.split('$$')[1];
         }
 
         zz.wizard.change_step(temp_id, temp_url, obj);   
@@ -228,14 +230,14 @@ zz.wizard = {
   contributor_count: 0,  
   
   create_personal_album: function(){
-    $.post('/users/'+zz.user_id+'/albums', { album_type: "PersonalAlbum" }, function(data){
+    $.post('/users/'+zz.current_user_id+'/albums', { album_type: "PersonalAlbum" }, function(data){
       zz.album_id = data;
       zz.wizard.make_drawer(zz.drawers.personal_album);
     });
   },
 
   create_group_album: function(){
-    $.post('/users/'+zz.user_id+'/albums', { album_type: "GroupAlbum" }, function(data){
+    $.post('/users/'+zz.current_user_id+'/albums', { album_type: "GroupAlbum" }, function(data){
       zz.album_id = data;
       zz.wizard.make_drawer(zz.drawers.group_album);
     });
@@ -328,7 +330,7 @@ zz.wizard = {
     $('div#share-body').empty().load('/albums/'+zz.album_id+'/shares/newpost', function(){
       $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 170) + 'px'});
       oauthmanager.init_social();
-      $(z.validate.new_post_share.element).validate(z.validate.new_post_share);
+      $(zz.validate.new_post_share.element).validate(zz.validate.new_post_share);
       $('#cancel-share').click(function(){
         zz.wizard.reload_share(obj, id);
       });
@@ -340,7 +342,7 @@ zz.wizard = {
     $('div#share-body').empty().load('/albums/'+zz.album_id+'/shares/newemail', function(){                        
       $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 170) + 'px'});
       setTimeout(function(){zz.wizard.email_autocomplete()}, 500);
-      $(z.validate.new_email_share.element).validate(z.validate.new_email_share);
+      $(zz.validate.new_email_share.element).validate(zz.validate.new_email_share);
       $('#cancel-share').click(function(){
         zz.wizard.reload_share(obj, id);
       });
@@ -455,7 +457,7 @@ zz.wizard = {
       //console.log("Initializing new contributors...") ;
       $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 170) + 'px'});
       setTimeout(function(){zz.wizard.email_autocomplete()}, 500);
-      $(z.validate.new_contributors.element).validate(z.validate.new_contributors);
+      $(zz.validate.new_contributors.element).validate(zz.validate.new_contributors);
       $('#the-list').click(function(){
         $('#you-complete-me').focus();
       });  
@@ -472,21 +474,29 @@ zz.wizard = {
  
   //set up email autocomplete
   email_autocomplete: function(){
+
+    logger.debug('start email_autocomplete');
+
     zz.autocompleter = $('#you-complete-me').autocompleteArray(
         google_contacts.concat( yahoo_contacts.concat( local_contacts ) ),
         {
             width: 700,
             position_element: 'dd#the-list',
-            append: 'div.body',
+            append: '#drawer div.body',
             onItemSelect: zz.wizard.clone_recipient
         }
         );
       //zz.address_list = '';
+      logger.debug('end email_autocomplete');  
+
   },
 
   // reloads the autocompletetion data
   email_autocompleter_reload: function(){
+      logger.debug('start email_autocompleter_reload');
       zz.autocompleter[0].autocompleter.setData(google_contacts.concat( yahoo_contacts.concat( local_contacts ) ));
+      logger.debug('end email_autocompleter_reload');  
+
   },
 
   delete_identity: function(){
@@ -521,8 +531,7 @@ zz.wizard = {
   init_add_tab: function( album_type ){
        filechooser.init();
        setTimeout('$("#added-pictures-tray").fadeIn("fast")', 300);
-       $('#user-info').css('display', 'none');
-       setTimeout("$('#album-info').css('display', 'inline-block')", 200);
+
       zz.album_type = album_type;
   },  
 

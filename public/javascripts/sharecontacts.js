@@ -1,5 +1,6 @@
 var sharecontacts = {
     setup : function(hasGoogleId, googleLastImport, hasYahooId, yahooLastImport, hasLocalId, localLastImport ) {
+        logger.debug('in contacts setup')
          //console.log("in contacts setup");
         if (hasGoogleId) {
             $("#gmail-sync").click(sharecontacts.call_google_import);

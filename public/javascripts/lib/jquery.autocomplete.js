@@ -13,7 +13,9 @@ jQuery.autocomplete = function(input, options) {
   var listTop = $(options.position_element).position().top + $(options.position_element).outerHeight() + "px";
 	var listLeft = $(options.position_element).position().left + "px";
 	// Create results
-	var results = document.createElement("div");
+
+    logger.debug('creating results div');
+    var results = document.createElement("div");
 	// Create jQuery object for results
 	var $results = $(results);
 	$results.hide().addClass(options.resultsClass).css("position", "absolute");
@@ -80,7 +82,7 @@ jQuery.autocomplete = function(input, options) {
 		lastKeyPressCode = e.keyCode;
 		switch(e.keyCode) {
 			case 188: // comma
-			  zang.zing.wizard.add_recipient(1);
+			  zz.wizard.add_recipient(1);
 				break;
 			case 38: // up
 				e.preventDefault();
@@ -97,7 +99,7 @@ jQuery.autocomplete = function(input, options) {
 					//$input.get(0).blur();
 					e.preventDefault();
 				} else {
-				  zang.zing.wizard.add_recipient(0);
+				  zz.wizard.add_recipient(0);
 				  e.preventDefault();
 				}
 				break;
@@ -124,23 +126,23 @@ jQuery.autocomplete = function(input, options) {
 		// ignore if the following keys are pressed: [del] [shift] [capslock]
 		if(lastKeyPressCode == 8) {
 		  //alert('DELETE KEY');
-		  if ($('#you-complete-me').val().length == 0 && zang.zing.wizard.delete_btn == 2) {
+		  if ($('#you-complete-me').val().length == 0 && zz.wizard.delete_btn == 2) {
 		    //console.log('Delete the last item!');
 		    $('#the-recipients li.rounded:last').remove();
-		    zang.zing.wizard.delete_btn = 1;
-		  } else if ($('#you-complete-me').val().length == 0 && zang.zing.wizard.delete_btn == 1) {
+		    zz.wizard.delete_btn = 1;
+		  } else if ($('#you-complete-me').val().length == 0 && zz.wizard.delete_btn == 1) {
 		    //console.log('Select the last item!');
 		    $('#the-recipients li.rounded:last').addClass('del');
-		    zang.zing.wizard.delete_btn = 2;
-		  } else if ($('#you-complete-me').val().length == 0 && zang.zing.wizard.delete_btn == 0){
-		    zang.zing.wizard.delete_btn = 1;
+		    zz.wizard.delete_btn = 2;
+		  } else if ($('#you-complete-me').val().length == 0 && zz.wizard.delete_btn == 0){
+		    zz.wizard.delete_btn = 1;
 		  }
 		} else if (lastKeyPressCode == 46 || lastKeyPressCode > 8 && lastKeyPressCode < 32) {
-		  zang.zing.wizard.delete_btn = 1;
+		  zz.wizard.delete_btn = 1;
 		  $('#the-recipients li.rounded:last').removeClass('del');
 		  return $results.hide();
 		} else {
-		  zang.zing.wizard.delete_btn = 1;
+		  zz.wizard.delete_btn = 1;
 		  $('#the-recipients li.rounded:last').removeClass('del');
 		}
 		var v = $input.val();
@@ -254,6 +256,8 @@ jQuery.autocomplete = function(input, options) {
 			top: $(options.position_element).position().top + $(options.position_element).outerHeight() + "px",
 			left: $(options.position_element).position().left + "px"
 		}).show();
+
+        logger.debug('done showResults');
 	};
 
 	function hideResults() {

@@ -3,11 +3,13 @@
           <li id="left-half" class="clearfix">
             <ul id="owner-nav">
               <li id="nav-help">Help</li>
+<% if current_user %>
               <li id="nav-new-album">New Album</li>
-<% if @album %>              
+<% end %>                  
+<% if @album && current_user && (@album.user == current_user)%>              
               <li id="nav-edit-album">Edit Album</li>
 
-<%    if @album.is_user_contributor? current_user %>
+<%    if current_user && @album.is_user_contributor?(current_user) %>
               <li id="nav-add-photo">Add Photo</li>
 <%    end %>
 
@@ -24,7 +26,7 @@
             <ul id="viewer-nav">
               <li id="nav-buy">Buy</li>
               <li id="nav-like">Like</li>
-<% if @album %>
+<% if @album && current_user %>
               <li id="nav-share">Share</li>
 <% end %>
             </ul>

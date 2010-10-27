@@ -1,37 +1,22 @@
 /* INITs 
   --------------------------------------------------------------------------- */
 
-zang.init = {
+zz.init = {
 
   template: function(){
   
     /* Click Handlers
       ----------------------------------------------------------------------- */
-    //console.log('hello world?');
-    // highlight a selected photo
-    $('ul#grid-view li').click(function(){
-      zz.new_photo = $(this).attr('id');
-      zz.highlight_selected(zz.new_photo);
-    });
-
-    //Bottom Menu
-    $('h1#home-link').click(function(){
-            window.location = "http://"+zz.base;
-     });
 
     $('#nav-new-album').click(function(){
-      callback = function(){
+      var callback = function(){
         $('#personal_album_link').click(zz.wizard.create_personal_album);
         $('#group_album_link').click(zz.wizard.create_group_album);
       };
-      zz.easy_drawer(600, 0.0, '/users/'+zz.user_id+'/albums/new', callback);
+      zz.toolbars.init_new_album();
+      zz.easy_drawer(600, 0.0, '/users/'+zz.current_user_id+'/albums/new', callback);
     });
-    $('#nav-sign-in').click(function(){
-   //When a user is signed this is the sign out button
-   alert('This button will  sign you out');
-   window.location = $(this).children('a').attr('name');
-   });
-    
+
 
       //only album contributers can do this
     $('#nav-home').click(function(){ document.location.href = '/' });
@@ -47,40 +32,65 @@ zang.init = {
     $('#nav-edit-album').click(function(){ zz.wizard.open_edit_album_wizard('add') });
 
     $('#nav-like').click(function(){
-      callback = function(){
+      var callback = function(){
         $('.delete-id-button').click(zz.wizard.delete_identity);
       };
-      zz.easy_drawer(600, 0.0, '/users/'+zz.user_id+'/identities', callback);
+      zz.easy_drawer(600, 0.0, '/users/'+zz.current_user_id+'/identities', callback);
     });
 
     $('#nav-buy').click(function(){
-      callback = function(){
-        $(zang.validate.user_update.element).validate(zang.validate.user_update);  
+      var callback = function(){
+        $(zz.validate.user_update.element).validate(zz.validate.user_update);
         $('#update-user-button').click(zz.wizard.update_user);
       };
-      zz.easy_drawer(600, 0.0, '/users/'+zz.user_id+'/edit', callback);
+      zz.easy_drawer(600, 0.0, '/users/'+zz.current_user_id+'/edit', callback);
     });
 
 
-    /*  
-    // open drawer demo
-    $('#nav-new-album').click(function(){
-      if (zz.drawer_open === 0) {
-      
-        $(element).drawer(obj);
-        
-        zz.choose_album_type();
-      } else {
-        //zz.slam_drawer(880);
+    /* new user stuff   */
+    /* ---------------------------------*/
+
+    $('#user_username').keyup(function(event){
+      var value = $('#user_username').val();
+      $('#update-username').empty().html(value);
+    });
+
+    $('#step-sign-in-off').click(function(){
+      $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
+        $('#sign-in').show();
+        $('#sign-up').hide();
+        $('#small-drawer').animate({height: '460px', top: '53px'});
+      });
+
+
+    });
+    $('#step-join-off').click(function(){
+      $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
+        $('#sign-up').show();
+        $('#sign-in').hide();
+        $('#small-drawer').animate({height: '460px', top: '53px'});
+      });
+    });
+
+    $('#nav-sign-in').click(function(){
+        if (zz.drawer_open === 0) {
+            $('#sign-in').show();
+            $('#sign-up').hide();
+
+            $('#small-drawer').animate({height: '460px', top: '53px'});
+            zz.drawer_open = 1;
       }
     });
-    
-    $('#indicator li').click(function(){
-      temp = $(this).attr('id');
-      zz.change_step(temp);
+
+    $('.cancel-mini').click(function(){
+      $('#small-drawer').animate({height: '0px', top: '28px'});
+      zz.drawer_open = 0;
     });
-    */
-                
+
+    $(zz.validate.sign_in.element).validate(zz.validate.sign_in);
+    $(zz.validate.join.element).validate(zz.validate.join);      
+
+
   },
   
   loaded: function(){
@@ -152,63 +162,63 @@ zang.init = {
 
   },
   
-  new_user: function(){
-  
-    $('#nav-new-album').click(function(){
-      if (zz.drawer_open === 0) {
-        $('#sign-in').show();
-        $('#sign-up').hide();        
-
-        $('#small-drawer').animate({height: '460px', top: '53px'});
-        zz.drawer_open = 1;
-        
-      } else {
-        //zz.slam_drawer(880);
-      }
-    });
-    
-    $('#user_username').keyup(function(event){
-      value = $('#user_username').val();
-      $('#update-username').empty().html(value);
-    });
-
-    $('#step-sign-in-off').click(function(){
-      $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
-        $('#sign-in').show();
-        $('#sign-up').hide();  
-        $('#small-drawer').animate({height: '460px', top: '53px'});
-      });
-      
-
-    });
-    $('#step-join-off').click(function(){
-      $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
-        $('#sign-up').show();
-        $('#sign-in').hide();  
-        $('#small-drawer').animate({height: '460px', top: '53px'});
-      });      
-    });
-    
-    $('#nav-sign-in').click(function(){
-        if (zz.drawer_open === 0) {
-            $('#sign-in').show();
-            $('#sign-up').hide();
-
-            $('#small-drawer').animate({height: '460px', top: '53px'});
-            zz.drawer_open = 1;
-      }
-    });
-    
-    $('.cancel-mini').click(function(){
-      $('#small-drawer').animate({height: '0px', top: '28px'});
-      zz.drawer_open = 0;
-    });      
-    
-    $(zang.validate.sign_in.element).validate(zang.validate.sign_in);
-    $(zang.validate.join.element).validate(zang.validate.join);
-
-  
-  },
+//  new_user: function(){
+//
+//    $('#nav-new-album').click(function(){
+//      if (zz.drawer_open === 0) {
+//        $('#sign-in').show();
+//        $('#sign-up').hide();
+//
+//        $('#small-drawer').animate({height: '460px', top: '53px'});
+//        zz.drawer_open = 1;
+//
+//      } else {
+//        //zz.slam_drawer(880);
+//      }
+//    });
+//
+//    $('#user_username').keyup(function(event){
+//      value = $('#user_username').val();
+//      $('#update-username').empty().html(value);
+//    });
+//
+//    $('#step-sign-in-off').click(function(){
+//      $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
+//        $('#sign-in').show();
+//        $('#sign-up').hide();
+//        $('#small-drawer').animate({height: '460px', top: '53px'});
+//      });
+//
+//
+//    });
+//    $('#step-join-off').click(function(){
+//      $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
+//        $('#sign-up').show();
+//        $('#sign-in').hide();
+//        $('#small-drawer').animate({height: '460px', top: '53px'});
+//      });
+//    });
+//
+//    $('#nav-sign-in').click(function(){
+//        if (zz.drawer_open === 0) {
+//            $('#sign-in').show();
+//            $('#sign-up').hide();
+//
+//            $('#small-drawer').animate({height: '460px', top: '53px'});
+//            zz.drawer_open = 1;
+//      }
+//    });
+//
+//    $('.cancel-mini').click(function(){
+//      $('#small-drawer').animate({height: '0px', top: '28px'});
+//      zz.drawer_open = 0;
+//    });
+//
+//    $(zz.validate.sign_in.element).validate(zz.validate.sign_in);
+//    $(zz.validate.join.element).validate(zz.validate.join);
+//
+//
+//  },
 
   album_timeline_view: function(){
         // Bind more button for ALL upload Activities
@@ -232,4 +242,4 @@ zang.init = {
             }
         })
     }
-}; // end zang.init
+}; // end zz.init

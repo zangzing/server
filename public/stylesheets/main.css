@@ -229,26 +229,28 @@ li#nav-account img {
   margin: 0 2px 4px 0;
 }
 
-header ul#top-nav li#nav-sign-up {
+header ul#top-nav li#nav-sign-in {
   width: 45px;
   padding: 34px 12px 0;
   margin-right: 16px;
   color: #a4a4a4;
-  font-weight: 400;
+  /*font-weight: 400;*/
   background-image: url(/images/btn-sign-in-off.png);
   background-position: center 40%;
   background-repeat: no-repeat;
   font-size: 1.2em;
-  font-weight: 600;
+  /*font-weight: 600;*/
   line-height: 0.5em;
   margin-right: 0px;
   text-align: center;
   cursor: pointer;
+  float:right;
 }
 
-header ul#top-nav li#nav-sign-up:hover {
+header ul#top-nav li#nav-sign-in:hover {
   background-image: url(/images/btn-sign-in-on.png);
   color: #0a0a0a;
+  float:right;
 }
 
 header ul#user-info, header ul#album-info {

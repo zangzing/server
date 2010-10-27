@@ -1,6 +1,6 @@
 /* Form Validation objects 
   --------------------------------------------------------------------------- */
-zang.validate = {
+zz.validate = {
 
   sign_in: {
     element: '#new_user_session',
@@ -59,14 +59,14 @@ zang.validate = {
       'post_share[message]': '' 
     },      
     submitHandler: function() {
-      serialized = $('#new_post_share').serialize();
+      var serialized = $('#new_post_share').serialize();
       $.post('/albums/'+zz.album_id+'/shares.json', serialized, function(data,status,request){
         zz.wizard.reload_share(zz.drawers[zz.album_type+'_album'], 'share');
         zz.wizard.display_flashes(  request,200 );  
       });
     }
     
-  }, // end zang.validation.new_post_share
+  }, // end zz.validation.new_post_share
   
   new_email_share: {
     element: '#new_email_share',
@@ -80,14 +80,14 @@ zang.validate = {
     },  
   
     submitHandler: function() {
-      serialized = $('#new_email_share').serialize();
+      var serialized = $('#new_email_share').serialize();
       $.post('/albums/'+zz.album_id+'/shares.json', serialized, function(data,status,request ){
           zz.wizard.reload_share(zz.drawers[zz.album_type+'_album'], 'share');
           zz.wizard.display_flashes( request,200 );
       },"json");
     }
     
-  }, // end zang.validation.new_post_share    
+  }, // end zz.validation.new_post_share
 
   new_contributors: {
     element: '#new_contributors',
@@ -107,7 +107,7 @@ zang.validate = {
       },"json");
     }
 
-  }, // end zang.validation.new_post_share
+  }, // end zz.validation.new_post_share
 
 
 
@@ -143,6 +143,6 @@ zang.validate = {
       }  
     }
     
-  } // end zang.validation.sample_sign_up
+  } // end zz.validation.sample_sign_up
     
-}; // end zang.validation
+}; // end zz.validation

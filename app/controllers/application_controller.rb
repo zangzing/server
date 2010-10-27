@@ -21,7 +21,7 @@ class ApplicationController < ActionController::Base
   
   #protect_from_forgery # See ActionController::RequestForgeryProtection XSScripting protection
 
-  layout  proc{ |c| c.request.xhr? ? false : 'new' }
+  layout  proc{ |c| c.request.xhr? ? false : 'main' }
 
   private
 

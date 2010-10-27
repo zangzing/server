@@ -538,7 +538,7 @@ var filechooser = {
 			add_url += '?'
 		else
 			add_url += '&'
-        add_url += 'album_id=' + zang.zing.album_id;
+        add_url += 'album_id=' + zz.album_id;
 
         var after_animate = function(){
             if (agent.isAgentUrl(add_url)) {
@@ -565,7 +565,7 @@ var filechooser = {
         }
 
 
-        zang.zing.image_pop(element_id, after_animate);
+        zz.image_pop(element_id, after_animate);
 
     },
 
@@ -636,7 +636,7 @@ var tray = {
     album_photos : [],
 
     reload : function() {
-        var get_album_photos_url = '/albums/' + zang.zing.album_id + '/photos.json';
+        var get_album_photos_url = '/albums/' + zz.album_id + '/photos.json';
         $.ajax({
             dataType: 'json',
             url: get_album_photos_url,
@@ -769,7 +769,7 @@ var tray = {
                 if (photo.state == 'ready') {
                     tray.imageloader.add(id, photo.thumb_url);
                 } else {
-                    tray.imageloader.add(id, agent.buildAgentUrl('/albums/' + zang.zing.album_id + '/photos/' + photo.id + '.thumb'));
+                    tray.imageloader.add(id, agent.buildAgentUrl('/albums/' + zz.album_id + '/photos/' + photo.id + '.thumb'));
 
                 }
 
@@ -788,7 +788,7 @@ var tray = {
 
         $('#added-pictures-tray').html(html);
         setTimeout(function(){$('#traversing').hide().remove();}, 500);
-        zang.init.tray();
+        zz.init.tray();
         tray.imageloader.start(5);
 
     },
