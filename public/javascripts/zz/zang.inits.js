@@ -128,7 +128,7 @@ zang.init = {
                     $('#nav-status').css('background-image', 'url(/images/upload-'+ step +'.png)');
 
                     if(percent_complete == 0){
-                        $('#nav-status').html(Math.round(json['time-remaining']) + ' Calculating...');
+                        $('#nav-status').html('Calculating...');
                     }
                     else{
                         $('#nav-status').html(Math.round(json['time-remaining']) + ' Minutes...');
