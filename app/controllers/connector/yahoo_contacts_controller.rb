@@ -17,7 +17,7 @@ class Connector::YahooContactsController < Connector::YahooController
       contacts_page = yahoo_api.get_contacts(yahoo_api.current_user_guid, :count => BATCH_SIZE, :start => start_index)
       contacts_count = contacts_page[:total] unless contacts_count
       entry_count = 0
-      contacts_page[:contact].each do |entry|
+      (contacts_page[:contact] || []).each do |entry|
         entry_count += 1
 
         entry_fields = {}
