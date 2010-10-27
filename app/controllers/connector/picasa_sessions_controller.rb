@@ -12,8 +12,8 @@ class Connector::PicasaSessionsController < Connector::PicasaController
   end
 
   def destroy
+    client.auth_handler.revoke
     service_identity.update_attribute(:credentials, nil)
-    contacts_client.auth_handler.revoke
   end
 
 end

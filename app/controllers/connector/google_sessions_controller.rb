@@ -12,8 +12,8 @@ class Connector::GoogleSessionsController < Connector::GoogleController
   end
 
   def destroy
-    service_identity.update_attribute(:credentials, nil)
     contacts_client.auth_handler.revoke
+    service_identity.update_attribute(:credentials, nil)
   end
 
 end
