@@ -1,9 +1,9 @@
-class Connector::GoogleSessionsController < Connector::GoogleController
+class Connector::PicasaSessionsController < Connector::PicasaController
   skip_before_filter :service_login_required, :only => [:new, :create]
   skip_before_filter :require_user, :only => [:new, :create]
 
   def new
-    redirect_to GData::Auth::AuthSub.get_url(create_google_session_url, scope)
+    redirect_to GData::Auth::AuthSub.get_url(create_picasa_session_url, scope)
   end
 
   def create
@@ -12,7 +12,7 @@ class Connector::GoogleSessionsController < Connector::GoogleController
   end
 
   def destroy
-    contacts_client.auth_handler.revoke
+    client.auth_handler.revoke
     service_identity.update_attribute(:credentials, nil)
   end
 

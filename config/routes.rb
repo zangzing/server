@@ -235,6 +235,21 @@ ActionController::Routing::Routes.draw do |map|
   end
   map.google_contacts '/google/contacts/:action', :namespace => 'connector',  :controller => 'google_contacts'
 
+  #Picasa
+  map.with_options :namespace => 'connector', :controller => :picasa_sessions do |g|
+    g.new_picasa_session     '/picasa/sessions/new', :action  => 'new'
+    g.create_picasa_session  '/picasa/sessions/create', :action  => 'create'
+    g.destroy_picasa_session '/picasa/sessions/destroy', :action  => 'destroy'
+  end
+  map.with_options :namespace => 'connector', :controller => :picasa_photos do |sf|
+    sf.picasa_photos        '/picasa/folders/:picasa_album_id/photos.:format', :action  => 'index'
+    sf.picasa_photo_action  '/picasa/folders/:picasa_album_id/photos/:photo_id/:action'
+  end
+  map.with_options :namespace => 'connector', :controller => :picasa_folders do |sf|
+    sf.picasa_folders       '/picasa/folders.:format', :action  => 'index'
+    sf.picasa_folder_action '/picasa/folders/:picasa_album_id/:action.:format'
+  end
+
   #LocalContacts importer
   map.local_contacts '/local/contacts/:action', :namespace => 'connector', :controller => 'local_contacts'
 

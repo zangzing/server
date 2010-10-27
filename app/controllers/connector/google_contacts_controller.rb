@@ -12,7 +12,7 @@ class Connector::GoogleContactsController < Connector::GoogleController
     start_index = 1
     imported_contacts = []
     begin
-      doc = contacts_client.get("http://www.google.com/m8/feeds/contacts/default/full?max-results=#{BATCH_SIZE}&start-index=#{start_index}").to_xml
+      doc = client.get("http://www.google.com/m8/feeds/contacts/default/full?max-results=#{BATCH_SIZE}&start-index=#{start_index}").to_xml
 
       entry_count = 0
       doc.elements.each('entry') do |entry|

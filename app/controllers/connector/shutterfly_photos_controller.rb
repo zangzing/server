@@ -1,5 +1,5 @@
 class Connector::ShutterflyPhotosController < Connector::ShutterflyController
-require 'pp'
+
   def index
     photos_list = sf_api.get_images(params[:sf_album_id])
     photos = photos_list.map { |p|
