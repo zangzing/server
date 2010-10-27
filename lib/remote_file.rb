@@ -22,17 +22,21 @@ class RemoteFile < ::Tempfile
   def fetch
     uri = URI::parse(@remote_path)
     self.binmode if is_windows?
-    Net::HTTP.start(uri.host, uri.port) do |http|
-      http.request_get(uri.path, @options) do |remote_side|
-        @content_type = remote_side.header['content-type']
-        if remote_side.header['content-disposition'] =~ CONTENT_DISPOSITION_FILENAME_REGEX
-          @original_filename = $1
-        end
-        remote_side.read_body do |chunk|
-          self.write chunk
-        end
+    http = Net::HTTP.new(uri.host, uri.port)
+    if uri.scheme == 'https'
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    end
+    http.request_get(uri.path, @options) do |remote_side|
+      @content_type = remote_side.header['content-type']
+      if remote_side.header['content-disposition'] =~ CONTENT_DISPOSITION_FILENAME_REGEX
+        @original_filename = $1
+      end
+      remote_side.read_body do |chunk|
+        self.write chunk
       end
     end
+
     unless @original_filename.include?('.') && (@content_type == 'x-octet-stream')
       extension = @content_type.split('/').last
       @original_filename += ".#{extension}"
