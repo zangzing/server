@@ -9,7 +9,7 @@ protected
     unless permanent_token
       @permanent_token = service_identity.credentials
       raise InvalidToken unless @permanent_token
-      contacts_client.authsub_token = @permanent_token
+      client.authsub_token = @permanent_token
     end
   end
 
@@ -17,7 +17,7 @@ protected
     @service_identity ||= current_user.identity_for_google
   end
 
-  def contacts_client
+  def client
     @client ||= GData::Client::Contacts.new
   end
 
@@ -26,9 +26,9 @@ protected
   end
 
   def upgrade_access_token!(request_token)
-    contacts_client.authsub_token = request_token
-    @permanent_token = contacts_client.auth_handler.upgrade()
-    contacts_client.authsub_token = @permanent_token
+    client.authsub_token = request_token
+    @permanent_token = client.auth_handler.upgrade()
+    client.authsub_token = @permanent_token
   end
   
   def permanent_token
@@ -37,7 +37,7 @@ protected
 
   def permanent_token=(new_token)
     @permanent_token = new_token
-    contacts_client.authsub_token = new_token
+    client.authsub_token = new_token
   end
 
 end
