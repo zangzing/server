@@ -232,14 +232,11 @@ li#nav-account img {
 header ul#top-nav li#nav-sign-in {
   width: 45px;
   padding: 34px 12px 0;
-  margin-right: 16px;
   color: #a4a4a4;
-  /*font-weight: 400;*/
   background-image: url(/images/btn-sign-in-off.png);
   background-position: center 40%;
   background-repeat: no-repeat;
   font-size: 1.2em;
-  /*font-weight: 600;*/
   line-height: 0.5em;
   margin-right: 0px;
   text-align: center;
@@ -257,26 +254,12 @@ header ul#user-info, header ul#album-info {
   margin: 6px auto;
 }
 
-header ul#new-info {
-  margin: 2px 0 0;
-}
-
-header ul#user-info, header ul#album-info, header ul#new-info {
-  display: inline-block;
-}
 
 header ul#user-info li, header ul#album-info li, header ul#new-info li {
   float: left;
   text-align: left;
 }
 
-#album-header-icon {
-  border: 3px solid #fff;
-  box-shadow: 0px 0px 3px #767676;
-  -webkit-box-shadow: 0px 0px 3px #767676;
-  -moz-box-shadow: 0px 0px 3px #767676;
-  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#767676, offX=1, offY=1, positive=true);
-}
 
 ul#user-info li#user-icon {
   width: 40px;
@@ -349,81 +332,10 @@ div#drawer div.body div#drawer-content {
   width: 898px;
 }
 
-ul#added-pictures-tray {
-  position: absolute;
-  display: none;
-  width: 878px;
-  height: 40px;
-  background-image: url('/images/bg-picture-tray.png');
-  background-repeat: no-repeat;
-  z-index: 100;
-  padding: 17px 10px 3px;
-  margin-right: 2px;
-  bottom: 5px;
-  left: 7px;
-}
-
-ul#added-pictures-tray li {
-  float: left;
-  margin-top: 7px;
-  /*margin-right: 2px;*/
-  width: 30px;
-  height: 30px;
-}
-
-ul#added-pictures-tray li div {
-  position: relative;
-  height: 30px;
-  width: 30px;
-}
-
-ul#added-pictures-tray li img.trayed-up {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  z-index: 101;
-  /*border: 2px solid #e1e1e1;*/
-  /*box-shadow: 0px 0px 5px #e1e1e1;*/
-  /*-webkit-box-shadow: 0px 0px 5px #e1e1e1;*/
-  /*-moz-box-shadow: 0px 0px 5px #e1e1e1;*/
-  /*filter: progid:DXImageTransform.Microsoft.dropShadow(color=#e1e1e1, offX=2, offY=2, positive=true);*/
-}
-
-ul#added-pictures-tray li:hover img.trayed-up {
-  bottom: 0;
-  left: 0;
-  z-index: 105;
-}
-
-ul#added-pictures-tray li .hover-thumbnail {
-  display: none;
-  position: absolute;
-  z-index: 102;
-  border: 4px solid #fff;
-  top: -120px;
-  left: -45px;
-  box-shadow: 0px 0px 8px #FDD042;
-  -webkit-box-shadow: 0px 0px 8px #FDD042;
-  -moz-box-shadow: 0px 0px 8px #FDD042;
-  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#FDD042, offX=2, offY=2, positive=true);
-
-}
-
-ul#added-pictures-tray li:hover .hover-thumbnail {
-  display: block;
-}
 
 
-ul#added-pictures-tray li img.delete {
-  display: none;
-  position: absolute;
-  z-index: 9999;
-  cursor: pointer;
-}
-
-ul#added-pictures-tray li:hover img.delete {
-  display: block;
-}
+/* Drawer/Wizard Tabs
+----------------------------------------------------------------------------- */
 
 ul#clone-indicator {
   display: none;
@@ -670,6 +582,12 @@ ul#indicator-6 #next-step {
   padding: 0;
 }
 
+
+
+/*  Small Drawer
+---------------------------------------------------------------------------*/
+
+
 ul#small-indicator {
   margin-left: 1px;
   width: 448px;
@@ -717,6 +635,8 @@ ul#small-indicator li#step-join-off:hover {
   cursor: pointer;
 }
 
+
+
 div#small-top {
   margin: 15px auto 15px;
   width: 350px;
@@ -724,6 +644,7 @@ div#small-top {
   padding-bottom: 15px;
   border-bottom: 1px solid #ccc;
 }
+
 
 div#small-drawer h2 {
   font-size: 1.9em;
@@ -848,6 +769,94 @@ div#drawer-content div#scroll-body {
   height: 0px;
 }
 
+div#top-section #equalizer {
+  width: 91px;
+  float: right;
+}
+
+
+
+
+/* Filechooser
+----------------------------------------------------------------------------- */
+
+ul#added-pictures-tray {
+  position: absolute;
+  display: none;
+  width: 878px;
+  height: 40px;
+  background-image: url('/images/bg-picture-tray.png');
+  background-repeat: no-repeat;
+  z-index: 100;
+  padding: 17px 10px 3px;
+  margin-right: 2px;
+  bottom: 5px;
+  left: 7px;
+}
+
+ul#added-pictures-tray li {
+  float: left;
+  margin-top: 7px;
+  /*margin-right: 2px;*/
+  width: 30px;
+  height: 30px;
+}
+
+ul#added-pictures-tray li div {
+  position: relative;
+  height: 30px;
+  width: 30px;
+}
+
+ul#added-pictures-tray li img.trayed-up {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 101;
+  border: 2px solid #e1e1e1;
+  box-shadow: 0px 0px 5px #e1e1e1;
+  -webkit-box-shadow: 0px 0px 5px #e1e1e1;
+  -moz-box-shadow: 0px 0px 5px #e1e1e1;
+  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#e1e1e1, offX=2, offY=2, positive=true);
+}
+
+ul#added-pictures-tray li:hover img.trayed-up {
+  bottom: 0;
+  left: 0;
+  z-index: 105;
+}
+
+ul#added-pictures-tray li .hover-thumbnail {
+  display: none;
+  position: absolute;
+  z-index: 102;
+  border: 4px solid #fff;
+  top: -120px;
+  left: -45px;
+  box-shadow: 0px 0px 8px #FDD042;
+  -webkit-box-shadow: 0px 0px 8px #FDD042;
+  -moz-box-shadow: 0px 0px 8px #FDD042;
+  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#FDD042, offX=2, offY=2, positive=true);
+
+}
+
+ul#added-pictures-tray li:hover .hover-thumbnail {
+  display: block;
+}
+
+
+ul#added-pictures-tray li img.delete {
+  display: none;
+  position: absolute;
+  z-index: 9999;
+  cursor: pointer;
+}
+
+ul#added-pictures-tray li:hover img.delete {
+  display: block;
+}
+
+
 div#top-section #filechooser-back-button {
   float: left;
   width: 120px;
@@ -863,10 +872,7 @@ div#top-section #filechooser-back-button {
   padding-bottom: 4px;
 }
 
-div#top-section #equalizer {
-  width: 91px;
-  float: right;
-}
+
 
 div#drawer-content ul#folders, ul#filechooser {
   margin: 20px 15px 20px;
@@ -1075,6 +1081,10 @@ ul#filechooser h4 a {
   text-decoration: underline;
 }
 
+
+/* Album Type
+-----------------------------------------------------------------------------*/
+
 ul#choose-album-type {
   width: 830px;
   margin: 30px auto 0;
@@ -1102,7 +1112,6 @@ ul#choose-album-type li img {
 
 ul#choose-album-type li p {
   margin-bottom: 15px;
-  line-height: 1.3em;
   line-height: 1.1em;
 }
 
@@ -1110,6 +1119,13 @@ ul#choose-album-type li div {
   height: 90px;
   margin-bottom: 10px;
 }
+
+
+
+/* Album Privacy
+---------------------------------------------------------------------*/
+
+
 
 ul#privacy-menu {
   width: 660px;
@@ -1132,7 +1148,6 @@ ul#privacy-menu li div {
 
 ul#privacy-menu li p {
   margin-bottom: 20px;
-  line-height: 1.5em;
   line-height: 1.3em;
 }
 
@@ -1159,6 +1174,13 @@ ul#privacy-menu li#privacy-hidden:hover {
 ul#privacy-menu li#privacy-password:hover {
   background: url(/images/bg-privacy-password-on.png) no-repeat;
 }
+
+
+
+
+
+
+
 
 div#drawer-content h3 {
   font-size: 1.7em;
