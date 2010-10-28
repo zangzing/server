@@ -243,6 +243,22 @@ var filechooser = {
                 connect_message_url: '/static/connect_messages/connect_to_flickr.html',
                 on_error: function(error){
                   $('#filechooser').load('/static/connect_messages/connect_to_flickr.html');
+                }                                                
+            }
+        );
+
+
+        //Picasa Web
+        filechooser.roots.push(
+            {
+                open_url: '/picasa/folders.json',
+                type: 'folder',
+                name: 'Picasa Web',
+                login_url: '/picasa/sessions/new',
+                classy: 'f_picasa',
+                connect_message_url: '/static/connect_messages/connect_to_picasa_web.html',
+                on_error: function(error){
+                  $('#filechooser').load('/static/connect_messages/connect_to_picasa_web.html');
                 }
             }
         );
