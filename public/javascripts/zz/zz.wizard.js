@@ -333,19 +333,20 @@ zz.wizard = {
 
   // loads the status message post form in place of the type switcher on the share step
   social_share: function(obj, id){
-    $('div#share-body').empty().load('/albums/'+zz.album_id+'/shares/newpost', function(){
+    $('div#share-body').fadeOut('fast').load('/albums/'+zz.album_id+'/shares/newpost', function(){
       zz.wizard.resize_scroll_body()
       oauthmanager.init_social();
       $(zz.validate.new_post_share.element).validate(zz.validate.new_post_share);
       $('#cancel-share').click(function(){
         zz.wizard.reload_share(obj, id);
       });
+      $('div#share-body').fadeIn('fast'); 
     });     
   },
   
   // loads the email post form in place of the type switcher on the share step
   email_share: function(obj, id){
-    $('div#share-body').empty().load('/albums/'+zz.album_id+'/shares/newemail', function(){                        
+    $('div#share-body').fadeOut('fast').load('/albums/'+zz.album_id+'/shares/newemail', function(){
       zz.wizard.resize_scroll_body()
       setTimeout(function(){zz.wizard.email_autocomplete()}, 500);
       $(zz.validate.new_email_share.element).validate(zz.validate.new_email_share);
@@ -355,15 +356,17 @@ zz.wizard = {
       $('#the-list').click(function(){
         $('#you-complete-me').focus();
       });
+      $('div#share-body').fadeIn('fast');  
     });     
   
   },
   
   // reloads the main share part in place of the type switcher on the share step
   reload_share: function(obj, id){
-      $('#tab-content').load('/albums/'+zz.album_id+'/shares/new', function(){
+      $('#tab-content').fadeOut('fast').load('/albums/'+zz.album_id+'/shares/new', function(){
         zz.wizard.build_nav(obj, id);  
-        obj.steps[id].init();                      
+        obj.steps[id].init();
+        $('#tab-content').fadeIn('fast');  
       });
     },
 
@@ -457,7 +460,7 @@ zz.wizard = {
  // loads the form to add contibutors on the contributors drawer
   show_new_contributors: function(){
     //console.log("Loading new contributors...") ;
-    $('div#contributors-body').empty().load('/albums/'+zz.album_id+'/contributors/new', function(){
+    $('div#contributors-body').fadeOut('fast').load('/albums/'+zz.album_id+'/contributors/new', function(){
       //zz.wizard.build_nav(zz.drawers.group_album, 'contributors');
       //zz.drawers.group_album.steps['contributors'].init();
       //console.log("Initializing new contributors...") ;
@@ -469,12 +472,14 @@ zz.wizard = {
       });  
       $('#cancel-new-contributors').click(function(){
           //console.log("Canceling new contributors...") ;      
-          $('#tab-content').load('/albums/'+zz.album_id+'/contributors', function(){
+          $('#tab-content').fadeOut('fast').load('/albums/'+zz.album_id+'/contributors', function(){
                 zz.wizard.build_nav(zz.drawers.group_album, 'contributors');  
                 zz.drawers.group_album.steps['contributors'].init();
+                $('#tab-content').fadeIn('fast');
            });
       });
     });
+    $('div#contributors-body').fadeIn('fast');  
   },
 
  
