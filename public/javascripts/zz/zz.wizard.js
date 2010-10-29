@@ -568,10 +568,11 @@ zz.wizard = {
     init_name_tab: function(){
         //Set The Album Name at the top of the screen
         $('h2#album-header-title').html($('#album_name').val());
-        $('#album_email').val( zz.wizard.dashify($('#album_name').val()));
+//        $('#album_email').val( zz.wizard.dashify($('#album_name').val()));
         $('#album_name').keypress( function(){
-            setTimeout(function(){ $('#album-header-title').html( $('#album_name').val() );
-                $('#album_email').val( zz.wizard.dashify($('#album_name').val()) );
+            setTimeout(function(){
+                $('#album-header-title').html( $('#album_name').val() );
+//                $('#album_email').val( zz.wizard.dashify($('#album_name').val()) );
             }, 10);
         });
     },

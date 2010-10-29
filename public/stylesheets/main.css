@@ -1269,12 +1269,13 @@ div#drawer-content dl.form dd input#album_name{
 
 div#drawer-content dl.form dd input#album_email {
   margin_top: 50px;
-  width: 300px;
+  width: 500px;
   padding: 5px;
   text-align: left;
-  font-size: 1.5em;
-  font-weight: bold;
+  font-size: 1.8em;
+  /*font-weight: bold;*/
   background-color: #fff;
+  color: #a4a4a4;
   border: none;
 }
 
