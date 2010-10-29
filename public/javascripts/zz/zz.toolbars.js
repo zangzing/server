@@ -1,10 +1,10 @@
 zz.toolbars = {
-    
-//    init_user : function(){
-//       $('#user-info').css('display', 'inline-block');
-//       $('#album-info').css('display', 'none');
-//
-//    },
+
+    //    init_user : function(){
+    //       $('#user-info').css('display', 'inline-block');
+    //       $('#album-info').css('display', 'none');
+    //
+    //    },
 
     init_new_album : function(){
         $('#user-info').css('display', 'none');

@@ -411,7 +411,7 @@ zz.wizard = {
             $('#m-'+zz.wizard.email_id+' img').attr('id', 'img-'+zz.wizard.email_id);
             $('li.rounded img').click(function(){
                 $(this).parent('li').fadeOut('fast', function(){
-                    $(this).parent('li').remove();   
+                    $(this).parent('li').remove();
                 });
             });
             //console.log(value);
@@ -448,7 +448,7 @@ zz.wizard = {
             $('#m-'+zz.wizard.email_id+' img').attr('id', 'img-'+zz.wizard.email_id);
             $('li.rounded img').click(function(){
                 $(this).parent('li').fadeOut('fast', function(){
-                     $(this).parent('li').remove();
+                    $(this).parent('li').remove();
                 });
             });
         }
@@ -467,7 +467,7 @@ zz.wizard = {
         $('#m-'+zz.wizard.email_id+' img').click(function(){
             $.post($(this).siblings('input').val(), {"_method": "delete"}, function(data){ });
             $(this).parent('li').fadeOut('fast', function(){
-                $(this).parent('li').remove();    
+                $(this).parent('li').remove();
             });
         });
     },

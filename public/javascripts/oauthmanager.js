@@ -11,16 +11,16 @@ var oauthmanager = {
     },
 
     init_social: function(){
-      $("#facebook_box").click( function(){
-                if( $(this).is(':checked')  && !$("#facebook_box").attr('authorized')){
-                         $(this).attr('checked', false);
-                         oauthmanager.login( '/facebook/sessions/new', oauthmanager.facebook_login_success);
-                }});
-      $("#twitter_box").click( function(){
-                if($(this).is(':checked') && !$("#twitter_box").attr('authorized')){
-                    $(this).attr('checked', false);                        
-                    oauthmanager.login( '/twitter/sessions/new', oauthmanager.twitter_login_success );
-                }});
+        $("#facebook_box").click( function(){
+            if( $(this).is(':checked')  && !$("#facebook_box").attr('authorized')){
+                $(this).attr('checked', false);
+                oauthmanager.login( '/facebook/sessions/new', oauthmanager.facebook_login_success);
+            }});
+        $("#twitter_box").click( function(){
+            if($(this).is(':checked') && !$("#twitter_box").attr('authorized')){
+                $(this).attr('checked', false);
+                oauthmanager.login( '/twitter/sessions/new', oauthmanager.twitter_login_success );
+            }});
     },
 
     facebook_login_success: function(){

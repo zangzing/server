@@ -10,7 +10,7 @@
 var album;
 album = {
 
-    
+
     //
     // initializeforGrid
     //
@@ -64,9 +64,9 @@ album = {
         activeAlbum = jQuery.parseJSON(albumJson);
 
         if( agentPresent ){
-//           $("#uploadform").html('<form method="get" action="/albums/'+activeAlbum.id+'/upload" class="button-to"><div><input type="submit" value="Upload Photos" /></div></form>');
+            //           $("#uploadform").html('<form method="get" action="/albums/'+activeAlbum.id+'/upload" class="button-to"><div><input type="submit" value="Upload Photos" /></div></form>');
             for (i = 0; i < activeAlbum.photos.length; i++) {
-                 photoUrl = activeAlbum.photos[i].thumb_url; // # TODO: USE AGENT WHEN AGENT IS READY
+                photoUrl = activeAlbum.photos[i].thumb_url; // # TODO: USE AGENT WHEN AGENT IS READY
                 //Modify div block which id is "photoid<ID_HERE>" created by the Photo/_photo partial
                 //The photo is displayed as a floating image of the div block
                 photoImgId = "#photoid" + activeAlbum.photos[i].id
@@ -99,11 +99,11 @@ album = {
         activePhoto = jQuery.parseJSON(photoJson);
 
         if (agentPresent) {
-                 //:TODO when the agent is ready replace this call to point to the agent
-                //photoUrl = "http://" + location.host + "/photos/" + activePhoto.id; // # TODO: ADD AGENT WHEN AGENT IS READY
-                photoUrl = activePhoto.medium_url;
+            //:TODO when the agent is ready replace this call to point to the agent
+            //photoUrl = "http://" + location.host + "/photos/" + activePhoto.id; // # TODO: ADD AGENT WHEN AGENT IS READY
+            photoUrl = activePhoto.medium_url;
         } else {
-                photoUrl = activePhoto.medium_url;
+            photoUrl = activePhoto.medium_url;
         }
 
         //Modify div block which id is "photoid<ID_HERE>" created by the Photo/_photo partial

@@ -9,7 +9,7 @@ var agent = {
 
     port : 9090,
     agentId: null,
-    
+
     isAvailable: function(callback) {
 
         var onSuccess = function() {
@@ -77,7 +77,7 @@ var agent = {
                 errorHandler(response)
             }
 
-        } 
+        }
 
         //this is called when the http call fails
         var errorHandler = function(response){
@@ -88,9 +88,9 @@ var agent = {
             else{
                 logger.debug("no response or invalid response from agent. url: " + url )
             }
-            
+
             if(typeof(onError) != 'undefined'){
-                onError()  
+                onError()
             }
         }
 

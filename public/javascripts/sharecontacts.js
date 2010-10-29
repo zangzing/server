@@ -1,7 +1,7 @@
 var sharecontacts = {
     setup : function(hasGoogleId, googleLastImport, hasYahooId, yahooLastImport, hasLocalId, localLastImport ) {
         logger.debug('in contacts setup')
-         //console.log("in contacts setup");
+        //console.log("in contacts setup");
         if (hasGoogleId) {
             $("#gmail-sync").click(sharecontacts.call_google_import);
             $("#gmail-sync").attr({title: 'Last import on: '+googleLastImport, src: '/images/btn-gmail-on.png'});
@@ -20,7 +20,7 @@ var sharecontacts = {
 
         // Setup local button based on agent present
         if (hasLocalId) {
-                     $("#local-sync").attr({title: 'Last import on:'+localLastImport, src: '/images/btn-outlook-on.png'});
+            $("#local-sync").attr({title: 'Last import on:'+localLastImport, src: '/images/btn-outlook-on.png'});
         }
         agent.isAvailable(  sharecontacts.setup_local_button );
     },
@@ -31,7 +31,7 @@ var sharecontacts = {
         if( agentPresent ){
             $("#local-sync").click(sharecontacts.call_local_import);
             if(current_title == '')
-                $("#local-sync").attr('title', "Click to import your local contacts.");    
+                $("#local-sync").attr('title', "Click to import your local contacts.");
             else
                 $("#local-sync").attr('title', current_title+". Click to refresh your contacts.");
         } else {
@@ -44,21 +44,21 @@ var sharecontacts = {
     },
 
     call_local_import : function() {
-         $("#local-sync").attr({disabled: 'disabled', src: '/images/btn-outlook-sync.png', title: 'Refreshing...'});
+        $("#local-sync").attr({disabled: 'disabled', src: '/images/btn-outlook-sync.png', title: 'Refreshing...'});
         agent.isAvailable(  sharecontacts.call_agent_local_import )
     },
 
     call_agent_local_import :function(agentPresent){
-         if( agentPresent ) {
-                var url = agent.buildAgentUrl('/contacts/import');
-                $.jsonp({
-                    url: url,
-                    success: sharecontacts.import_local_success,
-                    error: sharecontacts.import_local_error
-                });
-            } else {
-                $("#local-sync").attr({disabled: '', src: '/images/btn-outlook-error.png', title: 'Unable to refresh local contacts at the moment because the local agent is not present on this machine. Please try later'});
-            }        
+        if( agentPresent ) {
+            var url = agent.buildAgentUrl('/contacts/import');
+            $.jsonp({
+                url: url,
+                success: sharecontacts.import_local_success,
+                error: sharecontacts.import_local_error
+            });
+        } else {
+            $("#local-sync").attr({disabled: '', src: '/images/btn-outlook-error.png', title: 'Unable to refresh local contacts at the moment because the local agent is not present on this machine. Please try later'});
+        }
     },
 
     import_local_success : function( response ){
@@ -66,7 +66,7 @@ var sharecontacts = {
         cts = response.body
         local_contacts = [];
         for (var i = 0; i < cts.length; i++) {
-            full_address = '\"'+cts[i].name +'\"<' + cts[i].address + '>';  
+            full_address = '\"'+cts[i].name +'\"<' + cts[i].address + '>';
             local_contacts.push([ cts[i].name, full_address]);
             local_contacts.push([ cts[i].address, full_address]);
         }
@@ -113,7 +113,7 @@ var sharecontacts = {
             google_contacts.push([ cts[i].name, full_address]);
             google_contacts.push([ cts[i].address, full_address]);
         }
-       zz.wizard.email_autocompleter_reload();
+        zz.wizard.email_autocompleter_reload();
         $("#gmail-sync").attr('disabled', '');
         $("#gmail-sync").attr('title', 'Last imported a second ago.');
         $("#gmail-sync").attr('src', '/images/btn-gmail-on.png');
@@ -129,7 +129,7 @@ var sharecontacts = {
         oauthmanager.login('/yahoo/sessions/new', sharecontacts.yahoo_login_success);
     },
     yahoo_login_success : function() {
-        $("#yahoo-sync").unbind("click");        
+        $("#yahoo-sync").unbind("click");
         $("#yahoo-sync").click(sharecontacts.call_yahoo_import);
         sharecontacts.call_yahoo_import();
     },
@@ -150,7 +150,7 @@ var sharecontacts = {
             yahoo_contacts.push([ cts[i].name, full_address]);
             yahoo_contacts.push([ cts[i].address, full_address]);
         }
-       zz.wizard.email_autocompleter_reload();
+        zz.wizard.email_autocompleter_reload();
         $("#yahoo-sync").attr('disabled', '');
         $("#yahoo-sync").attr('title', 'Last imported a second ago.');
         $("#yahoo-sync").attr('src', '/images/btn-yahoo-on.png');

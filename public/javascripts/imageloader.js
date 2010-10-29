@@ -6,7 +6,7 @@ var image_preloader = {
     load_image : function(src){
         logger.debug('loading image: ' + src);
 
-        var image = new Image();    
+        var image = new Image();
         image.src = src;
         image_preloader.images.push(image);
     }
@@ -85,7 +85,7 @@ ImageLoader.prototype = {
             me.next();
         }
 
-       img.src = props['src']
+        img.src = props['src']
     },
 
     handleImageLoaded : function(id, src, width, height){
