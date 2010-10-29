@@ -1,9 +1,14 @@
 var image_preloader = {
 
-    iamge : new Image(),
+    images : [],
+
 
     load_image : function(src){
-        image_preloader.image.src = src;
+        logger.debug('loading image: ' + src);
+
+        var image = new Image();    
+        image.src = src;
+        image_preloader.images.push(image);
     }
 
 }

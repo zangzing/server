@@ -91,6 +91,8 @@ zz.init = {
     $(zz.validate.join.element).validate(zz.validate.join);      
 
 
+    zz.init.preload_rollover_images();  
+
   },
   
   loaded: function(){
@@ -159,6 +161,98 @@ zz.init = {
   
   
   tray: function(){
+
+  },
+
+  preload_rollover_images : function(){
+
+      //todo: is there a way to query CSS to get all these?
+      
+      //wizard buttons/tabs
+      for(var i=1;i<=5; i++){
+        var src = "/images/bg-5step-strip-" + i + ".png"
+        image_preloader.load_image(src)
+
+        var src = "/images/bg-5step-edit-" + i + ".png"
+        image_preloader.load_image(src)
+    }
+
+      for(var i=1;i<=6; i++){
+          var src = "/images/bg-6step-strip-" + i + ".png"
+          image_preloader.load_image(src)
+
+          var src = "/images/bg-6step-edit-" + i + ".png"
+          image_preloader.load_image(src)
+      }
+
+
+      for(var i=1;i<=6; i++){
+          var src = "/images/wiz-num-" + i + "-on.png"
+          image_preloader.load_image(src)
+
+          var src = "/images/wiz-num-" + i + ".png"
+          image_preloader.load_image(src)
+      }
+
+
+
+      //toolbar buttons
+      image_preloader.load_image("/images/bg-help-on.png");
+    image_preloader.load_image("/images/bg-new-album-on.png");
+    image_preloader.load_image("/images/bg-share-on.png");
+    image_preloader.load_image("/images/bg-like-on.png");
+    image_preloader.load_image("/images/bg-buy-on.png");
+    image_preloader.load_image("/images/bg-edit-album-on.png");
+    image_preloader.load_image("/images/bg-add-photo-on.png");
+
+
+      //new album type rollover
+      image_preloader.load_image("/images/bg-album-type-selected.png");
+
+      //file chooser root folders rollover
+    image_preloader.load_image("/images/folders/apple.png");
+    image_preloader.load_image("/images/folders/facebook.png");
+    image_preloader.load_image("/images/folders/flickr.png");
+    image_preloader.load_image("/images/folders/myhome.png");
+    image_preloader.load_image("/images/folders/kodak.png");
+    image_preloader.load_image("/images/folders/mycomputer.png");
+    image_preloader.load_image("/images/folders/mypictures.png");
+    image_preloader.load_image("/images/folders/picasa.png");
+    image_preloader.load_image("/images/folders/shutterfly.png");
+    image_preloader.load_image("/images/folders/snapfish.png");
+    image_preloader.load_image("/images/folders/smugmug.png");
+    image_preloader.load_image("/images/folders/zangzing.png");
+          
+    image_preloader.load_image("/images/folders/apple-off.png");
+    image_preloader.load_image("/images/folders/facebook-off.png");
+    image_preloader.load_image("/images/folders/flickr-off.png");
+    image_preloader.load_image("/images/folders/myhome-off.png");
+    image_preloader.load_image("/images/folders/kodak-off.png");
+    image_preloader.load_image("/images/folders/mycomputer-off.png");
+    image_preloader.load_image("/images/folders/mypictures-off.png");
+    image_preloader.load_image("/images/folders/picasa-off.png");
+    image_preloader.load_image("/images/folders/shutterfly-off.png");
+    image_preloader.load_image("/images/folders/snapfish-off.png");
+    image_preloader.load_image("/images/folders/smugmug-off.png");
+    image_preloader.load_image("/images/folders/zangzing-off.png");
+
+
+
+    //album privacy
+    image_preloader.load_image("/images/bg-privacy-public-off.png");
+    image_preloader.load_image("/images/bg-privacy-private-off.png");
+    image_preloader.load_image("/images/bg-privacy-password-off.png");
+    image_preloader.load_image("/images/bg-privacy-public-on.png");
+    image_preloader.load_image("/images/bg-privacy-private-on.png");
+    image_preloader.load_image("/images/bg-privacy-password-on.png");
+      
+
+
+    //share album
+    image_preloader.load_image("/images/btn-share-by-post.png");
+    image_preloader.load_image("/images/btn-share-by-post-on.png");
+    image_preloader.load_image("/images/btn-share-by-email.png");
+    image_preloader.load_image("/images/btn-share-by-email-on.png");
 
   },
   
