@@ -7,6 +7,42 @@ var filechooser = {
     roots: [],
     children: [],
 
+    agent_or_server : {      //wrap calls to agent vs server
+
+        call : function(params){
+            var url = params['url'];
+            var success_handler = params['success'];
+            var error_handler = params['error'];
+
+            if (agent.isAgentUrl(url)) {
+                url = agent.buildAgentUrl(url);
+                $.jsonp({
+                    url: url,
+                    success: function(json) {
+                        filechooser.agent_or_server.handle_agent_response(json, success_handler, error_handler)
+                    },
+                    error: error_handler
+                });
+            }
+            else {
+                $.ajax({
+                    url: url,
+                    success: success_handler,
+                    error: error_handler
+                });
+            }
+        },
+
+        handle_agent_response: function(json, success_handler, error_handler){
+            if(json.headers.status == 200){
+                success_handler(json.body);
+            }
+            else{
+                error_handler(json);
+            }
+        }
+    },
+
     init: function() {
 
         filechooser.roots = [];
@@ -299,54 +335,26 @@ var filechooser = {
 
 
             if (open_url == '') {
-
                 filechooser.on_open_root();
-
-            } else {
-
-                if (agent.isAgentUrl(open_url)) {
-                    // if agent
-
-                    open_url = agent.buildAgentUrl(open_url);
-
-                    $.jsonp({
-                        url: open_url,
-                        success: function(json) {
-                            if(json.headers.status !== 200){
-                                filechooser.on_error_opening_folder(json.headers)
-                            }
-                            filechooser.on_open_folder(json);
-                        },
-                        error: filechooser.on_error_opening_folder
-                    });
-
-                } else {
-                    // on the server
-
-                    $.ajax({
-                        dataType: 'json',
-                        url: open_url,
-                        success: function(json) {
-                            filechooser.on_open_folder(json);
-                        },
-                        error: filechooser.on_error_opening_folder
-                    });
-                }
+            }
+            else {
+                filechooser.agent_or_server.call({
+                    url: open_url,
+                    success: function(json) {
+                        filechooser.on_open_folder(json);
+                    },
+                    error: filechooser.on_error_opening_folder
+                });
             }
         });
     },
 
 
-    on_open_root : function(url) {
+    on_open_root : function() {
         filechooser.on_open_folder(filechooser.roots);
     },
 
     on_open_folder : function(children) {
-
-        //unpack response
-        if (children.body) {
-            children = children.body;
-        }
 
         filechooser.children = children
 
@@ -405,11 +413,6 @@ var filechooser = {
 
         filechooser.imageloader = new ImageLoader(onStartLoadingImage, onImageLoaded);
 
-        //unpack the jsonp resonse
-        if (children.body) {
-            children = children.body;
-        }
-
 
         //build html for list of files/folders
         var html = '';
@@ -447,7 +450,6 @@ var filechooser = {
                 html += '</div>';
                 html += children[i].name;
                 html += '</li>';
-
 
                 if (agent.isAgentUrl(children[i].thumb_url)) {
                     filechooser.imageloader.add(img_id, agent.buildAgentUrl(children[i].thumb_url));
@@ -546,27 +548,14 @@ var filechooser = {
         add_url += 'album_id=' + zz.album_id;
 
         var after_animate = function(){
-            if (agent.isAgentUrl(add_url)) {
 
-                add_url = agent.buildAgentUrl(add_url);
-
-                $.jsonp({
-                    url: add_url,
-                    success: function(json) {
-                        filechooser.on_add_photos(json);
-                    },
-                    error: filechooser.on_error_adding_photos
-                });
-            } else {
-                $.ajax({
-                    dataType: 'json',
-                    url: add_url,
-                    success: function(json) {
-                        filechooser.on_add_photos(json);
-                    },
-                    error: filechooser.on_error_adding_photos
-                });
-            }
+            filechooser.agent_or_server.call({
+                url: add_url,
+                success: function(json) {
+                    filechooser.on_add_photos(json);
+                },
+                error: filechooser.on_error_adding_photos
+            });
         }
 
 
@@ -576,15 +565,7 @@ var filechooser = {
 
 
     on_add_photos : function(json) {
-        var photos;
-
-        if (json.body) {
-            //unpack response from agent
-            photos = json.body
-        }
-        else {
-            photos = json
-        }
+        var photos = json;
 
         tray.add_photos(photos);
 
