@@ -14,43 +14,25 @@ var filechooser = {
 
         var file_system_on_error = function(error){
             if(typeof(error.status) === 'undefined'){
-                $('#filechooser').load('/static/connect_messages/no_agent.html');
+                $('#filechooser').hide().load('/static/connect_messages/no_agent.html', function(){
+                    $('#filechooser').fadeIn('fast');    
+                });
             }
             else if(error.status === 401){
-                $('#filechooser').load('/static/connect_messages/wrong_agent_account.html');
+                $('#filechooser').hide().load('/static/connect_messages/wrong_agent_account.html', function(){
+                    $('#filechooser').fadeIn('fast');
+                });
             }
             else if(error.status === 500){
-                $('#filechooser').load('/static/connect_messages/general_agent_error.html');
+                $('#filechooser').hide().load('/static/connect_messages/general_agent_error.html', function(){
+                    $('#filechooser').fadeIn('fast');
+                });
             }
-
-
         }
 
-        var picasa_on_error = function(error){
-            if(typeof(error.status) === 'undefined'){
-                $('#filechooser').load('/static/connect_messages/no_agent.html');
-            }
-            else if(error.status === 401){
-                $('#filechooser').load('/static/connect_messages/wrong_agent_account.html');
-            }
-            else if(error.status === 500){
-                $('#filechooser').load('/static/connect_messages/general_agent_error.html');
-            }
+        var picasa_on_error = file_system_on_error;
 
-        }
-
-        var iphoto_on_error = function(error){
-            if(typeof(error.status) === 'undefined'){
-                $('#filechooser').load('/static/connect_messages/no_agent.html');
-            }
-            else if(error.status === 401){
-                $('#filechooser').load('/static/connect_messages/wrong_agent_account.html');
-            }
-            else if(error.status === 500){
-                $('#filechooser').load('/static/connect_messages/general_agent_error.html');
-            }
-
-        }
+        var iphoto_on_error = file_system_on_error;
 
 
         //mac
@@ -64,8 +46,7 @@ var filechooser = {
                 name: 'My Pictures',
                 classy: 'f_pictures',
                 on_error: file_system_on_error
-            }
-                    );
+            });
 
             //iPhoto
             filechooser.roots.push(
@@ -75,8 +56,7 @@ var filechooser = {
                 name: 'iPhoto',
                 classy: 'f_iphoto',
                 on_error: iphoto_on_error
-            }
-                    );
+            });
 
 
             //Picasa
@@ -87,8 +67,7 @@ var filechooser = {
                 name: 'Picasa',
                 classy: 'f_picasa',
                 on_error: picasa_on_error
-            }
-                    );
+            });
 
 
             //My Home
@@ -99,8 +78,7 @@ var filechooser = {
                 name: 'My Home',
                 classy: 'f_home',
                 on_error: file_system_on_error
-            }
-                    );
+            });
 
             //My Computer
             filechooser.roots.push(
@@ -110,8 +88,7 @@ var filechooser = {
                 name: 'My Computer',
                 classy: 'f_mycomputer',
                 on_error: file_system_on_error
-            }
-                    );
+            });
         }
 
 
@@ -130,8 +107,7 @@ var filechooser = {
                 name: 'My Pictures',
                 classy: 'f_pictures',
                 on_error: file_system_on_error
-            }
-                    );
+            });
 
 
             //Picassa
@@ -142,8 +118,7 @@ var filechooser = {
                 name: 'Picasa',
                 classy: 'f_picasa',
                 on_error: picasa_on_error
-            }
-                    );
+            });
 
             //My Home
             filechooser.roots.push(
@@ -153,8 +128,7 @@ var filechooser = {
                 name: 'My Home',
                 classy: 'f_home',
                 on_error: file_system_on_error
-            }
-                    );
+            });
 
             //My Computer
             filechooser.roots.push(
@@ -164,8 +138,7 @@ var filechooser = {
                 name: 'My Computer',
                 classy: 'f_mycomputer',
                 on_error: file_system_on_error
-            }
-                    );
+            });
         }
 
 
@@ -179,10 +152,12 @@ var filechooser = {
             classy: 'f_shutterfly',
             connect_message_url: '/static/connect_messages/connect_to_shutterfly.html',
             on_error: function(error){
-                $('#filechooser').load('/static/connect_messages/connect_to_shutterfly.html');
+                $('#filechooser').hide().load('/static/connect_messages/connect_to_shutterfly.html', function(){
+                    $('#filechooser').fadeIn('fast');
+                });
+
             }
-        }
-                );
+        });
 
         //Kodak
         filechooser.roots.push(
@@ -194,10 +169,11 @@ var filechooser = {
             classy: 'f_kodak',
             connect_message_url: '/static/connect_messages/connect_to_kodak.html',
             on_error: function(error){
-                $('#filechooser').load('/static/connect_messages/connect_to_kodak.html');
+                $('#filechooser').hide().load('/static/connect_messages/connect_to_kodak.html', function(){
+                    $('#filechooser').fadeIn('fast');
+                });
             }
-        }
-                );
+        });
 
 
         //SmugMug
@@ -210,10 +186,11 @@ var filechooser = {
             classy: 'f_smugmug',
             connect_message_url: '/static/connect_messages/connect_to_smugmug.html',
             on_error: function(error){
-                $('#filechooser').load('/static/connect_messages/connect_to_smugmug.html');
+                $('#filechooser').hide().load('/static/connect_messages/connect_to_smugmug.html', function(){
+                    $('#filechooser').fadeIn('fast');
+                });
             }
-        }
-                );
+        });
 
 
         //Facebook
@@ -226,11 +203,13 @@ var filechooser = {
             classy: 'f_facebook',
             connect_message_url: '/static/connect_messages/connect_to_facebook.html',
             on_error: function(error){
-                $('#filechooser').load('/static/connect_messages/connect_to_facebook.html');
+                $('#filechooser').hide().load('/static/connect_messages/connect_to_facebook.html', function(){
+                    $('#filechooser').fadeIn('fast');
+                });
+
             }
 
-        }
-                );
+        });
 
         //Flickr
         filechooser.roots.push(
@@ -242,10 +221,11 @@ var filechooser = {
             classy: 'f_flickr',
             connect_message_url: '/static/connect_messages/connect_to_flickr.html',
             on_error: function(error){
-                $('#filechooser').load('/static/connect_messages/connect_to_flickr.html');
+                $('#filechooser').hide().load('/static/connect_messages/connect_to_flickr.html', function(){
+                    $('#filechooser').fadeIn('fast');
+                });
             }
-        }
-                );
+        });
 
 
         //Picasa Web
@@ -258,10 +238,12 @@ var filechooser = {
             classy: 'f_picasa',
             connect_message_url: '/static/connect_messages/connect_to_picasa_web.html',
             on_error: function(error){
-                $('#filechooser').load('/static/connect_messages/connect_to_picasa_web.html');
+                $('#filechooser').hide().load('/static/connect_messages/connect_to_picasa_web.html', function(){
+                    $('#filechooser').fadeIn('fast');
+                });
+
             }
-        }
-                );
+        });
 
 
         //ZangZing
@@ -272,19 +254,18 @@ var filechooser = {
             name: 'ZangZing',
             classy: 'f_zangzing',
             connect_message_url: ''
-        }
-                );
+        });
 
 
         $('#filechooser-back-button').click(filechooser.open_parent_folder);
-        filechooser.ancestors = [],
-                filechooser.open_root();
+        filechooser.ancestors = [];
+        filechooser.open_root();
         tray.reload();
     },
 
 
     open_root: function() {
-        filechooser.open_folder('Home', '', '', '');
+        filechooser.open_folder('Home', '', '');
     },
 
     is_windows : function() {
