@@ -569,7 +569,7 @@ ul#indicator-4 li.on a, ul#indicator-5 li.on a, ul#indicator-6 li.on a {
 ul#indicator-4 li#step-btn, ul#indicator-5 li#step-btn, ul#indicator-6 li#step-btn {
   width: 66px;
   text-align: center;
-  padding-top: 2px;
+  padding-top: 3px;
   padding-left: 2px;
   height: 34px;
 }
