@@ -298,6 +298,7 @@ var filechooser = {
 
     open_folder: function(name, open_url, login_url) {
 
+
         filechooser.ancestors.push({name:name, open_url:open_url, login_url:login_url});
         //update title and back button
         if (filechooser.ancestors.length > 1) {
@@ -311,43 +312,47 @@ var filechooser = {
         $('#filechooser-title').html(name);
 
         //update files
-        $('#filechooser').html('<img src="/images/loading.gif">');
+        $('#filechooser').fadeOut('fast', function(){
+            $('#filechooser').html('<img src="/images/loading.gif">');
+            $('#filechooser').show();
 
-        if (open_url == '') {
 
-            filechooser.on_open_root();
+            if (open_url == '') {
 
-        } else {
-
-            if (agent.isAgentUrl(open_url)) {
-                // if agent
-
-                open_url = agent.buildAgentUrl(open_url);
-
-                $.jsonp({
-                    url: open_url,
-                    success: function(json) {
-                        if(json.headers.status !== 200){
-                            filechooser.on_error_opening_folder(json.headers)
-                        }
-                        filechooser.on_open_folder(json);
-                    },
-                    error: filechooser.on_error_opening_folder
-                });
+                filechooser.on_open_root();
 
             } else {
-                // on the server
 
-                $.ajax({
-                    dataType: 'json',
-                    url: open_url,
-                    success: function(json) {
-                        filechooser.on_open_folder(json);
-                    },
-                    error: filechooser.on_error_opening_folder
-                });
+                if (agent.isAgentUrl(open_url)) {
+                    // if agent
+
+                    open_url = agent.buildAgentUrl(open_url);
+
+                    $.jsonp({
+                        url: open_url,
+                        success: function(json) {
+                            if(json.headers.status !== 200){
+                                filechooser.on_error_opening_folder(json.headers)
+                            }
+                            filechooser.on_open_folder(json);
+                        },
+                        error: filechooser.on_error_opening_folder
+                    });
+
+                } else {
+                    // on the server
+
+                    $.ajax({
+                        dataType: 'json',
+                        url: open_url,
+                        success: function(json) {
+                            filechooser.on_open_folder(json);
+                        },
+                        error: filechooser.on_error_opening_folder
+                    });
+                }
             }
-        }
+        });
     },
 
 
@@ -370,7 +375,7 @@ var filechooser = {
         }
 
         var onStartLoadingImage = function(id, src) {
-            $('#' + id).attr('src', '/images/loading.gif');
+//            $('#' + id).attr('src', '/images/loading.gif');
         };
 
         var onImageLoaded = function(id, src, width, height) {
@@ -455,7 +460,7 @@ var filechooser = {
 
                 html += '<li id="photo-' + children[i].source_guid + '" class="photo" >';
                 html += '<div class="relative">'
-                html += '<img id="' + img_id + '" src="/images/loading.gif" '+ picture_view_handler +'>';
+                html += '<img id="' + img_id + '" src="/images/blank-image.png" '+ picture_view_handler +'>';
                 html += '<figure ' + add_photo_handler + '>Add Photo</figure>';
                 html += '<div class="checkmark"></div>';
                 html += '</div>';
@@ -471,7 +476,10 @@ var filechooser = {
             }
         }
 
+
+        $('#filechooser').hide();
         $('#filechooser').html(html);
+        $('#filechooser').fadeIn('fast');
 
         filechooser.update_checkmarks();
 
