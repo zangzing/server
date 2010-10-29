@@ -1476,13 +1476,13 @@ ul#the-recipients li {
   background-color: #fbfbfb;
   background: -moz-linear-gradient(top, #fbfbfb, #dcdcdc);
   background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#dcdcdc));
-  border: 1px #dcdcdc solid;
+  border: 2px #dcdcdc solid;
   padding: 4px 4px 4px 7px;
   margin: 5px;
 }
 
 ul#the-recipients li.del {
-  border: 1px #ff0000 solid;
+  border: 2px #ff0000 solid;
   background: -moz-linear-gradient(top, #fbfbfb, pink);
   background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(pink));}
 
@@ -1500,7 +1500,7 @@ ul#the-recipients li.rounded input {
 }
 
 ul#the-recipients li#autocomplete {
-  height: 36px;
+  height: 24px;
   text-align: left;
   margin: 0;
   padding: 0;
@@ -1516,7 +1516,7 @@ dl#email-share-form dd input#you-complete-me {
   background-color: #fff;
   border: 1px #fff solid;
   width: 200px;
-  height: 36px;
+  height: 24px;
   padding: 0px 0px;
 }
 

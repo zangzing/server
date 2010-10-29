@@ -1,38 +1,38 @@
 jQuery.autocomplete = function(input, options) {
-	// Create a link to self
-	var me = this;
+    // Create a link to self
+    var me = this;
 
-	// Create jQuery object for input element
-	var $input = $(input).attr("autocomplete", "off");
+    // Create jQuery object for input element
+    var $input = $(input).attr("autocomplete", "off");
 
-	// Apply inputClass if necessary
-	if (options.inputClass) $input.addClass(options.inputClass);
-  var pos = findPos(input);
-  
-  //add a hook for position element
-  var listTop = $(options.position_element).position().top + $(options.position_element).outerHeight() + "px";
-	var listLeft = $(options.position_element).position().left + "px";
-	// Create results
+    // Apply inputClass if necessary
+    if (options.inputClass) $input.addClass(options.inputClass);
+    var pos = findPos(input);
+
+    //add a hook for position element
+    var listTop = $(options.position_element).position().top + $(options.position_element).outerHeight() + "px";
+    var listLeft = $(options.position_element).position().left + "px";
+    // Create results
 
     logger.debug('creating results div');
     var results = document.createElement("div");
-	// Create jQuery object for results
-	var $results = $(results);
-	$results.hide().addClass(options.resultsClass).css("position", "absolute");
-	if( options.width > 0 ) $results.css("width", options.width);
+    // Create jQuery object for results
+    var $results = $(results);
+    $results.hide().addClass(options.resultsClass).css("position", "absolute");
+    if( options.width > 0 ) $results.css("width", options.width);
 
-	// Add to body element
-	$(options.append).append(results);
+    // Add to body element
+    $(options.append).append(results);
 
-	input.autocompleter = me;
+    input.autocompleter = me;
 
-	var timeout = null;
-	var prev = "";
-	var active = -1;
-	var cache = {};
-	var keyb = false;
-	var hasFocus = false;
-	var lastKeyPressCode = null;
+    var timeout = null;
+    var prev = "";
+    var active = -1;
+    var cache = {};
+    var keyb = false;
+    var hasFocus = false;
+    var lastKeyPressCode = null;
 
 	// flush cache
 	function flushCache(){
@@ -76,13 +76,13 @@ jQuery.autocomplete = function(input, options) {
 		}
 	}
 
-	$input
-	.keydown(function(e) {
+	$input.keydown(function(e) {
 		// track last key pressed
 		lastKeyPressCode = e.keyCode;
 		switch(e.keyCode) {
 			case 188: // comma
-			  zz.wizard.add_recipient(1);
+			    zz.wizard.add_recipient(1);
+                e.preventDefault();
 				break;
 			case 38: // up
 				e.preventDefault();
@@ -93,6 +93,8 @@ jQuery.autocomplete = function(input, options) {
 				moveSelect(1);
 				break;
 			case 9:  // tab
+                zz.wizard.add_recipient(1);
+                break;
 			case 13: // return
 				if( selectCurrent() ){
 					// make sure to blur off the current field
@@ -103,6 +105,12 @@ jQuery.autocomplete = function(input, options) {
 				  e.preventDefault();
 				}
 				break;
+            case 8: // delete (same as default, but no delay
+                active = -1;
+                if (timeout) clearTimeout(timeout);
+                onChange();
+                break;
+
 			default:
 				active = -1;
 				if (timeout) clearTimeout(timeout);
@@ -123,38 +131,40 @@ jQuery.autocomplete = function(input, options) {
 	hideResultsNow();
 
 	function onChange() {
-		// ignore if the following keys are pressed: [del] [shift] [capslock]
-		if(lastKeyPressCode == 8) {
-		  //alert('DELETE KEY');
-		  if ($('#you-complete-me').val().length == 0 && zz.wizard.delete_btn == 2) {
-		    //console.log('Delete the last item!');
-		    $('#the-recipients li.rounded:last').remove();
-		    zz.wizard.delete_btn = 1;
-		  } else if ($('#you-complete-me').val().length == 0 && zz.wizard.delete_btn == 1) {
-		    //console.log('Select the last item!');
-		    $('#the-recipients li.rounded:last').addClass('del');
-		    zz.wizard.delete_btn = 2;
-		  } else if ($('#you-complete-me').val().length == 0 && zz.wizard.delete_btn == 0){
-		    zz.wizard.delete_btn = 1;
-		  }
-		} else if (lastKeyPressCode == 46 || lastKeyPressCode > 8 && lastKeyPressCode < 32) {
-		  zz.wizard.delete_btn = 1;
-		  $('#the-recipients li.rounded:last').removeClass('del');
-		  return $results.hide();
-		} else {
-		  zz.wizard.delete_btn = 1;
-		  $('#the-recipients li.rounded:last').removeClass('del');
-		}
-		var v = $input.val();
-		if (v == prev) return;
-		prev = v;
-		if (v.length >= options.minChars) {
-			$input.addClass(options.loadingClass);
-			requestData(v);
-		} else {
-			$input.removeClass(options.loadingClass);
-			$results.hide();
-		}
+        // ignore if the following keys are pressed: [del] [shift] [capslock]
+        if(lastKeyPressCode == 8) {
+            //alert('DELETE KEY');
+            if ($('#you-complete-me').val().length == 0 && zz.wizard.delete_btn == 2) {
+                //console.log('Delete the last item!');
+                $('#the-recipients li.rounded:last').fadeOut('fast', function(){
+                    $('#the-recipients li.rounded:last').remove();
+                });
+                zz.wizard.delete_btn = 1;
+            } else if ($('#you-complete-me').val().length == 0 && zz.wizard.delete_btn == 1) {
+                //console.log('Select the last item!');
+                $('#the-recipients li.rounded:last').addClass('del');
+                zz.wizard.delete_btn = 2;
+            } else if ($('#you-complete-me').val().length == 0 && zz.wizard.delete_btn == 0){
+                zz.wizard.delete_btn = 1;
+            }
+        } else if (lastKeyPressCode == 46 || lastKeyPressCode > 8 && lastKeyPressCode < 32) {
+            zz.wizard.delete_btn = 1;
+            $('#the-recipients li.rounded:last').removeClass('del');
+            return $results.hide();
+        } else {
+            zz.wizard.delete_btn = 1;
+            $('#the-recipients li.rounded:last').removeClass('del');
+        }
+        var v = $input.val();
+        if (v == prev) return;
+        prev = v;
+        if (v.length >= options.minChars) {
+            $input.addClass(options.loadingClass);
+            requestData(v);
+        } else {
+            $input.removeClass(options.loadingClass);
+            $results.hide();
+        }
 	};
 
  	function moveSelect(step) {
