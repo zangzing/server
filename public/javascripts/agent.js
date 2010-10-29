@@ -50,8 +50,6 @@ var agent = {
             url += 'session=' + $.cookie('user_credentials') + '&user_id=' + user_id + '&callback=?';
         }
 
-        logger.debug(url);
-
         return url;
     },
 

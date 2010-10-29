@@ -27,12 +27,12 @@ zz.wizard = {
         //console.log(temp);    
       }
 
-      $('#drawer-content').empty().load(temp, function(){
 
-        zz.wizard.build_nav(obj, obj.first);              
+      zz.wizard.build_nav(obj, obj.first);              
+      $('#tab-content').load(temp, function(){
+        zz.wizard.resize_scroll_body()
         obj.steps[obj.first].init();
-
-      });  
+      });
     } else {
     
       if (obj.steps[step].url_type == 'album') {
@@ -45,12 +45,11 @@ zz.wizard = {
         //console.log(temp);    
       }
 
-      $('#drawer-content').empty().load(temp, function(){
-
-        zz.wizard.build_nav(obj, step);              
+      zz.wizard.build_nav(obj, step);              
+      $('#tab-content').load(temp, function(){
+        zz.wizard.resize_scroll_body()
         obj.steps[step].init();
-
-      });  
+      });
 
       
     }
@@ -61,49 +60,47 @@ zz.wizard = {
   
   change_step: function(id, url, obj){
   
-    //console.log('URL: '+obj.url+', Next: '+obj.steps[id].next+', Drawer: '+zz.drawer_open);
+    logger.debug(obj.steps[id].type + "    " + zz.drawer_open);
     
     if (obj.steps[id].type == 'partial' && zz.drawer_open == 1) {
       
       //console.log('oh snap, were gonna have to ditch the drawer for this');
-      $('#drawer-content').empty();
+      $('#tab-content').empty();
       zz.close_drawer(obj.time);
       
-      //console.log('drawer: emptied and closing... empty the article and load our partial');
-      $('article').empty().load(url, function(data){
-        //console.log('clone the indicator');
-        
+      zz.wizard.build_nav(obj, id);
+      $('article').load(url, function(data){
+        zz.wizard.resize_scroll_body();
         obj.steps[id].init();
-        zz.wizard.build_nav(obj, id);  
-      
       });
     
     } else if (obj.steps[id].type == 'partial' && zz.drawer_open == 2) {
-      $('article').empty().load(url, function(data){
-              
-        obj.steps[id].init();         
-        zz.wizard.build_nav(obj, id);  
-        
+      zz.wizard.build_nav(obj, id);
+      $('article').load(url, function(data){
+        zz.wizard.resize_scroll_body();
+        obj.steps[id].init();
       });
     } else if (obj.steps[id].type == 'full' && zz.drawer_open != 1) {
-      zz.open_drawer(obj.time);
-      $('#drawer-content').empty().load(url, function(data){
+      zz.wizard.build_nav(obj, id);
+      $('#tab-content').load(url, function(data){
+        zz.wizard.resize_scroll_body();
         obj.steps[id].init();
-        zz.wizard.build_nav(obj, id);  
-  
-      });      
+        zz.open_drawer(obj.time);
+      });
     } else if (obj.steps[id].type == 'full' && zz.drawer_open == 1) {
-      $('#drawer-content').empty().load(url, function(data){
+      zz.wizard.build_nav(obj, id);
+      $('#tab-content').load(url, function(data){
+        zz.wizard.resize_scroll_body();
         obj.steps[id].init();
-        zz.wizard.build_nav(obj, id);  
-  
-      });      
+        $('#tab-content').show();
+      });
     } else if (obj.steps[id].type == 'partial' && zz.drawer_open == 0) {
       zz.open_drawer(80, obj.percent);
       zz.close_drawer(obj.time);
-      $('article').empty().load(url, function(data){
+      zz.wizard.build_nav(obj, id);  
+      $('article').load(url, function(data){
+        zz.wizard.resize_scroll_body();
         obj.steps[id].init();
-        zz.wizard.build_nav(obj, id);  
       });
     } else {
       console.warn('This should never happen. Context: zz.wizard.change_step, Type: '+obj.steps[id].type+', Drawer State: '+zz.drawer_open);
@@ -113,7 +110,8 @@ zz.wizard = {
   },
   
   build_nav: function(obj, id){
-  
+
+
     var temp_id = 1;
     var temp = '';
     $.each(obj.steps, function(i, item) { 
@@ -147,18 +145,25 @@ zz.wizard = {
     
     //console.log(temp);
     if (obj.style == 'edit') {
-      $('#clone-indicator').clone().attr('id', obj.list_element+'-'+temp_id).addClass('edit-'+value+'-'+temp_id).html(temp).prependTo('#drawer-content');    
+//      $('#clone-indicator').clone().attr('id', obj.list_element+'-'+temp_id).addClass('edit-'+value+'-'+temp_id).html(temp).prependTo('#drawer-content');
+      $('#drawer-tabs').html($('#clone-indicator').clone().attr('id', obj.list_element+'-'+temp_id).addClass('edit-'+value+'-'+temp_id).html(temp));
     } else {
-      $('#clone-indicator').clone().attr('id', obj.list_element+'-'+temp_id).addClass('step-'+value+'-'+temp_id).html(temp).prependTo('#drawer-content');
+      $('#drawer-tabs').html($('#clone-indicator').clone().attr('id', obj.list_element+'-'+temp_id).addClass('step-'+value+'-'+temp_id).html(temp));
+//      $('#clone-indicator').clone().attr('id', obj.list_element+'-'+temp_id).addClass('step-'+value+'-'+temp_id).html(temp).prependTo('#drawer-content');
     }
     
     zz.wizard.rebind(obj, id, temp_id); //now that we've built the nav let's bind all the nav events
   
   },
-  
+
+  resize_scroll_body: function(){
+      $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 165) + 'px'});
+  },
   
   rebind: function(obj, id, num_steps){
-    $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 170) + 'px'});        
+
+    zz.wizard.resize_scroll_body()
+
 
     $.each(obj.steps, function(i, item) {        
       $('li#wizard-'+ i).click(function(e){
@@ -328,7 +333,7 @@ zz.wizard = {
   // loads the status message post form in place of the type switcher on the share step
   social_share: function(obj, id){
     $('div#share-body').empty().load('/albums/'+zz.album_id+'/shares/newpost', function(){
-      $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 170) + 'px'});
+      zz.wizard.resize_scroll_body()
       oauthmanager.init_social();
       $(zz.validate.new_post_share.element).validate(zz.validate.new_post_share);
       $('#cancel-share').click(function(){
@@ -340,7 +345,7 @@ zz.wizard = {
   // loads the email post form in place of the type switcher on the share step
   email_share: function(obj, id){
     $('div#share-body').empty().load('/albums/'+zz.album_id+'/shares/newemail', function(){                        
-      $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 170) + 'px'});
+      zz.wizard.resize_scroll_body()
       setTimeout(function(){zz.wizard.email_autocomplete()}, 500);
       $(zz.validate.new_email_share.element).validate(zz.validate.new_email_share);
       $('#cancel-share').click(function(){
@@ -355,7 +360,7 @@ zz.wizard = {
   
   // reloads the main share part in place of the type switcher on the share step
   reload_share: function(obj, id){
-      $('#drawer-content').empty().load('/albums/'+zz.album_id+'/shares/new', function(){                        
+      $('#tab-content').load('/albums/'+zz.album_id+'/shares/new', function(){
         zz.wizard.build_nav(obj, id);  
         obj.steps[id].init();                      
       });
@@ -455,7 +460,7 @@ zz.wizard = {
       //zz.wizard.build_nav(zz.drawers.group_album, 'contributors');
       //zz.drawers.group_album.steps['contributors'].init();
       //console.log("Initializing new contributors...") ;
-      $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 170) + 'px'});
+      zz.wizard.resize_scroll_body()
       setTimeout(function(){zz.wizard.email_autocomplete()}, 500);
       $(zz.validate.new_contributors.element).validate(zz.validate.new_contributors);
       $('#the-list').click(function(){
@@ -463,7 +468,7 @@ zz.wizard = {
       });  
       $('#cancel-new-contributors').click(function(){
           //console.log("Canceling new contributors...") ;      
-          $('#drawer-content').empty().load('/albums/'+zz.album_id+'/contributors', function(){
+          $('#tab-content').load('/albums/'+zz.album_id+'/contributors', function(){
                 zz.wizard.build_nav(zz.drawers.group_album, 'contributors');  
                 zz.drawers.group_album.steps['contributors'].init();
            });

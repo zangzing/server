@@ -332,6 +332,12 @@ div#drawer div.body div#drawer-content {
   width: 898px;
 }
 
+div#drawer div#drawer-tabs{
+    margin: 0 auto;
+    width: 898px;
+    height: 36px;
+}
+
 
 
 /* Drawer/Wizard Tabs
@@ -767,6 +773,7 @@ div#drawer-content div#top-section {
 div#drawer-content div#scroll-body {
   overflow-y: auto;
   height: 0px;
+  width: 898px;  
 }
 
 div#top-section #equalizer {

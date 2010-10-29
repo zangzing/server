@@ -99,7 +99,7 @@ zz.validate = {
     },
     submitHandler: function() {
       $.post('/albums/'+zz.album_id+'/contributors.json', $('#new_contributors').serialize(), function(data,status,request){    
-         $('#drawer-content').empty().load('/albums/'+zz.album_id+'/contributors', function(){
+         $('#tab-content').load('/albums/'+zz.album_id+'/contributors', function(){
             zz.wizard.build_nav(zz.drawers.group_album, 'contributors');
             zz.drawers.group_album.steps['contributors'].init();
             zz.wizard.display_flashes(  request,200 );

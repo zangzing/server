@@ -32,6 +32,7 @@ var zz = {
       // pull out the drawer
       $('div#drawer').animate({ height: zz.drawer_height + 'px', top: '50px' }, time );
       $('div#drawer-content').animate({ height: (zz.drawer_height - 14) + 'px'}, time );
+      zz.wizard.resize_scroll_body()
       
       zz.drawer_open = 1; // remember position of the drawer in
   
@@ -45,15 +46,15 @@ var zz = {
       
       $('div#drawer').animate({ height: zz.drawer_height + 'px', top: '50px' }, time );
       $('div#drawer-content').animate({ height: (zz.drawer_height - 14) + 'px'}, time );
-      $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 180) + 'px'});
-  
+      zz.wizard.resize_scroll_body()
+
     }, // end zz.resize_drawer()
     
     close_drawer: function(time){
       
       // close the drawer
-      $('div#drawer').animate({ height: '20px'}, time );
-      $('div#drawer-content').animate({ height: 0}, time );
+      $('div#drawer').animate({ height: '24px'}, time );
+      $('div#drawer-content').animate({ height: '24px'}, time );
       
       // fade in the grid
       $('article').animate({ opacity: 1 }, time * 1.1 );
@@ -84,7 +85,7 @@ var zz = {
       // fn gets loaded on callback
       zz.open_drawer(time, opacity);
       
-      $('#drawer-content').empty().load(url, function(){
+      $('#drawer-content').load(url, function(){
         $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 50) + 'px'});
         funct();
       });     
