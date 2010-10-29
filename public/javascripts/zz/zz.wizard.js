@@ -29,9 +29,10 @@ zz.wizard = {
 
 
       zz.wizard.build_nav(obj, obj.first);              
-      $('#tab-content').load(temp, function(){
+      $('#tab-content').fadeOut('fast').load(temp, function(){
         zz.wizard.resize_scroll_body()
         obj.steps[obj.first].init();
+        $('#tab-content').fadeIn('fast');  
       });
     } else {
     
@@ -65,7 +66,7 @@ zz.wizard = {
     if (obj.steps[id].type == 'partial' && zz.drawer_open == 1) {
       
       //console.log('oh snap, were gonna have to ditch the drawer for this');
-      $('#tab-content').empty();
+      $('#tab-content').fadeOut('fast');
       zz.close_drawer(obj.time);
       
       zz.wizard.build_nav(obj, id);
@@ -89,10 +90,10 @@ zz.wizard = {
       });
     } else if (obj.steps[id].type == 'full' && zz.drawer_open == 1) {
       zz.wizard.build_nav(obj, id);
-      $('#tab-content').load(url, function(data){
+      $('#tab-content').fadeOut('fast').load(url, function(data){
         zz.wizard.resize_scroll_body();
         obj.steps[id].init();
-        $('#tab-content').show();
+        $('#tab-content').fadeIn('fast');
       });
     } else if (obj.steps[id].type == 'partial' && zz.drawer_open == 0) {
       zz.open_drawer(80, obj.percent);
@@ -564,6 +565,17 @@ zz.wizard = {
 
 
 
+  },
+
+
+  preload_wizard_images : function(){
+
+  },
+
+  preload_edit_drawer_images : function(){
+
   }
+
+
 
 };

@@ -85,7 +85,7 @@ var zz = {
       // fn gets loaded on callback
       zz.open_drawer(time, opacity);
       
-      $('#drawer-content').load(url, function(){
+      $('#tab-content').load(url, function(){
         $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 50) + 'px'});
         funct();
       });     

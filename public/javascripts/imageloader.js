@@ -1,3 +1,12 @@
+var image_preloader = {
+
+    iamge : new Image(),
+
+    load_image : function(src){
+        image_preloader.image.src = src;
+    }
+
+}
 
 
 function ImageLoader(onStartLoadingImage, onImageLoadedHandler){
