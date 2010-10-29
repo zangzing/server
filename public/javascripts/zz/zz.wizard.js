@@ -496,8 +496,8 @@ zz.wizard = {
                         });
                     })
                 });
+                $('div#contributors-body').fadeIn('fast');
             });
-            $('div#contributors-body').fadeIn('fast');
         })
     },
 

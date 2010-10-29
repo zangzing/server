@@ -231,11 +231,11 @@ zz.drawers = {
                 url_type: 'album',
 
                 init: function(){
-                    if( zz.wizard.contributor_count <= 0){
-                        zz.wizard.show_new_contributors();
-                    }else{
+//                    if( zz.wizard.contributor_count <= 0){
+//                        zz.wizard.show_new_contributors();
+//                    }else{
                         $('#add-contributors-btn').click(function(){zz.wizard.show_new_contributors();});
-                    }
+//                    }
                 },
 
                 bounce: function() {
