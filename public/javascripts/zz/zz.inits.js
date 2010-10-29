@@ -204,6 +204,7 @@ zz.init = {
         image_preloader.load_image("/images/bg-buy-on.png");
         image_preloader.load_image("/images/bg-edit-album-on.png");
         image_preloader.load_image("/images/bg-add-photo-on.png");
+        image_preloader.load_image("/images/btn-sign-in-on.png");
 
 
         //new album type rollover
