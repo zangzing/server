@@ -254,6 +254,21 @@ zz.init = {
     image_preloader.load_image("/images/btn-share-by-email.png");
     image_preloader.load_image("/images/btn-share-by-email-on.png");
 
+    //drawer images types
+    image_preloader.load_image("/images/bg-drawer-bottom-cap.png");
+    image_preloader.load_image("/images/bg-bottom-repeat.png");
+
+          //album types
+    image_preloader.load_image("/images/bg-album-type.png");
+    image_preloader.load_image("/images/stack-group.png");
+    image_preloader.load_image("/images/btn-type-group.png");
+    image_preloader.load_image("/images/stack-personal.png");
+    image_preloader.load_image("/images/btn-type-personal.png");
+    image_preloader.load_image("/images/stack-event.png");
+    image_preloader.load_image("/images/btn-type-event.png");
+    image_preloader.load_image("/images/stack-stream.png");
+    image_preloader.load_image("/images/btn-type-streaming.png");
+
   },
   
 //  new_user: function(){

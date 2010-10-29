@@ -99,15 +99,16 @@ zz.validate = {
     },
     submitHandler: function() {
       $.post('/albums/'+zz.album_id+'/contributors.json', $('#new_contributors').serialize(), function(data,status,request){    
-         $('#tab-content').fadeOut('fast').load('/albums/'+zz.album_id+'/contributors', function(){
-            zz.wizard.build_nav(zz.drawers.group_album, 'contributors');
-            zz.drawers.group_album.steps['contributors'].init();
-            zz.wizard.display_flashes(  request,200 );
-            $('#tab-content').fadeIn('fast'); 
-          });
-      },"json");
+         $('#tab-content').fadeOut('fast', function(){
+            $('#tab-content').load('/albums/'+zz.album_id+'/contributors', function(){
+                    zz.wizard.build_nav(zz.drawers.group_album, 'contributors');
+                    zz.drawers.group_album.steps['contributors'].init();
+                    zz.wizard.display_flashes(  request,200 );
+                    $('#tab-content').fadeIn('fast');
+                  });
+              },"json");
+         });
     }
-
   }, // end zz.validation.new_post_share
 
 
