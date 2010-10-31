@@ -518,8 +518,11 @@ var filechooser = {
 
         }
 
+        $('#filechooser').fadeOut('fast', function(){
+            $('#filechooser').html(html);
+            $('#filechooser').fadeIn('fast');
+        });
 
-        $('#filechooser').html(html);
     },
 
     grid_view :function(){
