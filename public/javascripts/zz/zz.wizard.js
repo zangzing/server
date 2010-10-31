@@ -28,7 +28,7 @@ zz.wizard = {
             }
 
 
-            zz.wizard.build_nav(obj, obj.first);
+            zz.wizard.build_nav(obj, obj.first, true);
             $('#tab-content').fadeOut('fast', function(){
                 $('#tab-content').load(temp, function(){
                     zz.wizard.resize_scroll_body()
@@ -114,7 +114,7 @@ zz.wizard = {
 
     },
 
-    build_nav: function(obj, id){
+    build_nav: function(obj, id, fade_in){
 
 
         var temp_id = 1;
@@ -148,7 +148,9 @@ zz.wizard = {
             temp += '<li id="step-btn"><img id="next-step" src="/images/btn-steps-next.png" /></li>';
         }
 
-        //console.log(temp);
+        if(fade_in){
+            $('#drawer-tabs').hide();
+        }
         if (obj.style == 'edit') {
             //      $('#clone-indicator').clone().attr('id', obj.list_element+'-'+temp_id).addClass('edit-'+value+'-'+temp_id).html(temp).prependTo('#drawer-content');
             $('#drawer-tabs').html($('#clone-indicator').clone().attr('id', obj.list_element+'-'+temp_id).addClass('edit-'+value+'-'+temp_id).html(temp));
@@ -156,6 +158,10 @@ zz.wizard = {
             $('#drawer-tabs').html($('#clone-indicator').clone().attr('id', obj.list_element+'-'+temp_id).addClass('step-'+value+'-'+temp_id).html(temp));
             //      $('#clone-indicator').clone().attr('id', obj.list_element+'-'+temp_id).addClass('step-'+value+'-'+temp_id).html(temp).prependTo('#drawer-content');
         }
+        if(fade_in){
+            $('#drawer-tabs').fadeIn('fast');   
+        }
+
 
         zz.wizard.rebind(obj, id, temp_id); //now that we've built the nav let's bind all the nav events
 
