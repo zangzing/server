@@ -6,7 +6,43 @@ var filechooser = {
     ancestors: [],
     roots: [],
     children: [],
-    
+
+    agent_or_server : {      //wrap calls to agent vs server
+
+        call : function(params){
+            var url = params['url'];
+            var success_handler = params['success'];
+            var error_handler = params['error'];
+
+            if (agent.isAgentUrl(url)) {
+                url = agent.buildAgentUrl(url);
+                $.jsonp({
+                    url: url,
+                    success: function(json) {
+                        filechooser.agent_or_server.handle_agent_response(json, success_handler, error_handler)
+                    },
+                    error: error_handler
+                });
+            }
+            else {
+                $.ajax({
+                    url: url,
+                    success: success_handler,
+                    error: error_handler
+                });
+            }
+        },
+
+        handle_agent_response: function(json, success_handler, error_handler){
+            if(json.headers.status == 200){
+                success_handler(json.body);
+            }
+            else{
+                error_handler(json);
+            }
+        }
+    },
+
     init: function() {
 
         filechooser.roots = [];
@@ -14,43 +50,25 @@ var filechooser = {
 
         var file_system_on_error = function(error){
             if(typeof(error.status) === 'undefined'){
-                $('#filechooser').load('/static/connect_messages/no_agent.html');
+                $('#filechooser').hide().load('/static/connect_messages/no_agent.html', function(){
+                    $('#filechooser').fadeIn('fast');    
+                });
             }
             else if(error.status === 401){
-                $('#filechooser').load('/static/connect_messages/wrong_agent_account.html');
+                $('#filechooser').hide().load('/static/connect_messages/wrong_agent_account.html', function(){
+                    $('#filechooser').fadeIn('fast');
+                });
             }
             else if(error.status === 500){
-                $('#filechooser').load('/static/connect_messages/general_agent_error.html');
+                $('#filechooser').hide().load('/static/connect_messages/general_agent_error.html', function(){
+                    $('#filechooser').fadeIn('fast');
+                });
             }
-
-
         }
 
-        var picasa_on_error = function(error){
-            if(typeof(error.status) === 'undefined'){
-                $('#filechooser').load('/static/connect_messages/no_agent.html');
-            }
-            else if(error.status === 401){
-                $('#filechooser').load('/static/connect_messages/wrong_agent_account.html');
-            }
-            else if(error.status === 500){
-                $('#filechooser').load('/static/connect_messages/general_agent_error.html');
-            }
+        var picasa_on_error = file_system_on_error;
 
-        }
-
-        var iphoto_on_error = function(error){
-            if(typeof(error.status) === 'undefined'){
-                $('#filechooser').load('/static/connect_messages/no_agent.html');
-            }
-            else if(error.status === 401){
-                $('#filechooser').load('/static/connect_messages/wrong_agent_account.html');
-            }
-            else if(error.status === 500){
-                $('#filechooser').load('/static/connect_messages/general_agent_error.html');
-            }
-
-        }
+        var iphoto_on_error = file_system_on_error;
 
 
         //mac
@@ -58,60 +76,55 @@ var filechooser = {
 
             //My Pictures
             filechooser.roots.push(
-                {
-                    open_url: agent.buildAgentUrl('/filesystem/folders/fi9QaWN0dXJlcw=='),
-                    type: 'folder',
-                    name: 'My Pictures',
-                    classy: 'f_pictures',
-                    on_error: file_system_on_error
-                }
-            );
+            {
+                open_url: agent.buildAgentUrl('/filesystem/folders/fi9QaWN0dXJlcw=='),
+                type: 'folder',
+                name: 'My Pictures',
+                classy: 'f_pictures',
+                on_error: file_system_on_error
+            });
 
             //iPhoto
             filechooser.roots.push(
-                {
-                    open_url: agent.buildAgentUrl('/iphoto/folders'),
-                    type: 'folder',
-                    name: 'iPhoto',
-                    classy: 'f_iphoto',
-                    on_error: iphoto_on_error
-                }
-            );
+            {
+                open_url: agent.buildAgentUrl('/iphoto/folders'),
+                type: 'folder',
+                name: 'iPhoto',
+                classy: 'f_iphoto',
+                on_error: iphoto_on_error
+            });
 
 
             //Picasa
             filechooser.roots.push(
-                {
-                    open_url: agent.buildAgentUrl('/picasa/folders'),
-                    type: 'folder',
-                    name: 'Picasa',
-                    classy: 'f_picasa',
-                    on_error: picasa_on_error
-                }
-            );
+            {
+                open_url: agent.buildAgentUrl('/picasa/folders'),
+                type: 'folder',
+                name: 'Picasa',
+                classy: 'f_picasa',
+                on_error: picasa_on_error
+            });
 
 
             //My Home
             filechooser.roots.push(
-                {
-                    open_url: agent.buildAgentUrl('/filesystem/folders/fg=='),
-                    type: 'folder',
-                    name: 'My Home',
-                    classy: 'f_home',
-                    on_error: file_system_on_error
-                }
-            );
+            {
+                open_url: agent.buildAgentUrl('/filesystem/folders/fg=='),
+                type: 'folder',
+                name: 'My Home',
+                classy: 'f_home',
+                on_error: file_system_on_error
+            });
 
             //My Computer
             filechooser.roots.push(
-                {
-                    open_url: agent.buildAgentUrl('/filesystem/folders/L1ZvbHVtZXM='),
-                    type: 'folder',
-                    name: 'My Computer',
-                    classy: 'f_mycomputer',
-                    on_error: file_system_on_error
-                }
-            );
+            {
+                open_url: agent.buildAgentUrl('/filesystem/folders/L1ZvbHVtZXM='),
+                type: 'folder',
+                name: 'My Computer',
+                classy: 'f_mycomputer',
+                on_error: file_system_on_error
+            });
         }
 
 
@@ -124,151 +137,171 @@ var filechooser = {
 
             //My Pictures
             filechooser.roots.push(
-                {
-                    open_url: agent.buildAgentUrl('/filesystem/folders/flxNeSBEb2N1bWVudHNcTXkgUGljdHVyZXM='),
-                    type: 'folder',
-                    name: 'My Pictures',
-                    classy: 'f_pictures',
-                    on_error: file_system_on_error
-                }
-            );
+            {
+                open_url: agent.buildAgentUrl('/filesystem/folders/flxNeSBEb2N1bWVudHNcTXkgUGljdHVyZXM='),
+                type: 'folder',
+                name: 'My Pictures',
+                classy: 'f_pictures',
+                on_error: file_system_on_error
+            });
 
 
             //Picassa
             filechooser.roots.push(
-                {
-                    open_url: agent.buildAgentUrl('/picasa/folders'),
-                    type: 'folder',
-                    name: 'Picasa',
-                    classy: 'f_picasa',
-                    on_error: picasa_on_error
-                }
-            );
+            {
+                open_url: agent.buildAgentUrl('/picasa/folders'),
+                type: 'folder',
+                name: 'Picasa',
+                classy: 'f_picasa',
+                on_error: picasa_on_error
+            });
 
             //My Home
             filechooser.roots.push(
-                {
-                    open_url: agent.buildAgentUrl('/filesystem/folders/fg=='),
-                    type: 'folder',
-                    name: 'My Home',
-                    classy: 'f_home',
-                    on_error: file_system_on_error
-                }
-            );
+            {
+                open_url: agent.buildAgentUrl('/filesystem/folders/fg=='),
+                type: 'folder',
+                name: 'My Home',
+                classy: 'f_home',
+                on_error: file_system_on_error
+            });
 
             //My Computer
             filechooser.roots.push(
-                {
-                    open_url: agent.buildAgentUrl('/filesystem/folders'),
-                    type: 'folder',
-                    name: 'My Computer',
-                    classy: 'f_mycomputer',
-                    on_error: file_system_on_error
-                }
-            );
+            {
+                open_url: agent.buildAgentUrl('/filesystem/folders'),
+                type: 'folder',
+                name: 'My Computer',
+                classy: 'f_mycomputer',
+                on_error: file_system_on_error
+            });
         }
 
 
         //Shutterfly
         filechooser.roots.push(
-            {
-                open_url: '/shutterfly/folders.json',
-                type: 'folder',
-                name: 'Shutterfly',
-                login_url: '/shutterfly/sessions/new',
-                classy: 'f_shutterfly',
-                connect_message_url: '/static/connect_messages/connect_to_shutterfly.html',
-                on_error: function(error){
-                  $('#filechooser').load('/static/connect_messages/connect_to_shutterfly.html');  
-                }
+        {
+            open_url: '/shutterfly/folders.json',
+            type: 'folder',
+            name: 'Shutterfly',
+            login_url: '/shutterfly/sessions/new',
+            classy: 'f_shutterfly',
+            connect_message_url: '/static/connect_messages/connect_to_shutterfly.html',
+            on_error: function(error){
+                $('#filechooser').hide().load('/static/connect_messages/connect_to_shutterfly.html', function(){
+                    $('#filechooser').fadeIn('fast');
+                });
+
             }
-        );
+        });
 
         //Kodak
         filechooser.roots.push(
-            {
-                open_url: '/kodak/folders.json',
-                type: 'folder',
-                name: 'Kodak',
-                login_url:'/kodak/sessions/new',
-                classy: 'f_kodak',
-                connect_message_url: '/static/connect_messages/connect_to_kodak.html',
-                on_error: function(error){
-                  $('#filechooser').load('/static/connect_messages/connect_to_kodak.html');
-                }
+        {
+            open_url: '/kodak/folders.json',
+            type: 'folder',
+            name: 'Kodak',
+            login_url:'/kodak/sessions/new',
+            classy: 'f_kodak',
+            connect_message_url: '/static/connect_messages/connect_to_kodak.html',
+            on_error: function(error){
+                $('#filechooser').hide().load('/static/connect_messages/connect_to_kodak.html', function(){
+                    $('#filechooser').fadeIn('fast');
+                });
             }
-        );        
+        });
 
 
         //SmugMug
         filechooser.roots.push(
-            {
-                open_url: '/smugmug/folders.json',
-                type: 'folder',
-                name: 'SmugMug',
-                login_url: '/smugmug/sessions/new',
-                classy: 'f_smugmug',
-                connect_message_url: '/static/connect_messages/connect_to_smugmug.html',
-                on_error: function(error){
-                  $('#filechooser').load('/static/connect_messages/connect_to_smugmug.html');
-                }
+        {
+            open_url: '/smugmug/folders.json',
+            type: 'folder',
+            name: 'SmugMug',
+            login_url: '/smugmug/sessions/new',
+            classy: 'f_smugmug',
+            connect_message_url: '/static/connect_messages/connect_to_smugmug.html',
+            on_error: function(error){
+                $('#filechooser').hide().load('/static/connect_messages/connect_to_smugmug.html', function(){
+                    $('#filechooser').fadeIn('fast');
+                });
             }
-        );
+        });
 
 
         //Facebook
         filechooser.roots.push(
-            {
-                open_url: '/facebook/folders.json',
-                type: 'folder',
-                name: 'Facebook',
-                login_url: '/facebook/sessions/new',
-                classy: 'f_facebook',
-                connect_message_url: '/static/connect_messages/connect_to_facebook.html',
-                on_error: function(error){
-                  $('#filechooser').load('/static/connect_messages/connect_to_facebook.html');
-                }
+        {
+            open_url: '/facebook/folders.json',
+            type: 'folder',
+            name: 'Facebook',
+            login_url: '/facebook/sessions/new',
+            classy: 'f_facebook',
+            connect_message_url: '/static/connect_messages/connect_to_facebook.html',
+            on_error: function(error){
+                $('#filechooser').hide().load('/static/connect_messages/connect_to_facebook.html', function(){
+                    $('#filechooser').fadeIn('fast');
+                });
 
             }
-        );
+
+        });
 
         //Flickr
         filechooser.roots.push(
-            {
-                open_url: '/flickr/folders.json',
-                type: 'folder',
-                name: 'Flickr',
-                login_url: '/flickr/sessions/new',
-                classy: 'f_flickr',
-                connect_message_url: '/static/connect_messages/connect_to_flickr.html',
-                on_error: function(error){
-                  $('#filechooser').load('/static/connect_messages/connect_to_flickr.html');
-                }
+        {
+            open_url: '/flickr/folders.json',
+            type: 'folder',
+            name: 'Flickr',
+            login_url: '/flickr/sessions/new',
+            classy: 'f_flickr',
+            connect_message_url: '/static/connect_messages/connect_to_flickr.html',
+            on_error: function(error){
+                $('#filechooser').hide().load('/static/connect_messages/connect_to_flickr.html', function(){
+                    $('#filechooser').fadeIn('fast');
+                });
             }
-        );
+        });
+
+
+        //Picasa Web
+        filechooser.roots.push(
+        {
+            open_url: '/picasa/folders.json',
+            type: 'folder',
+            name: 'Picasa Web',
+            login_url: '/picasa/sessions/new',
+            classy: 'f_picasa',
+            connect_message_url: '/static/connect_messages/connect_to_picasa_web.html',
+            on_error: function(error){
+                $('#filechooser').hide().load('/static/connect_messages/connect_to_picasa_web.html', function(){
+                    $('#filechooser').fadeIn('fast');
+                });
+
+            }
+        });
 
 
         //ZangZing
         filechooser.roots.push(
-            {
-                open_url: '/zangzing/folders.json',
-                type: 'folder',
-                name: 'ZangZing',
-                classy: 'f_zangzing',
-                connect_message_url: ''
-            }
-        );
+        {
+            open_url: '/zangzing/folders.json',
+            type: 'folder',
+            name: 'ZangZing',
+            classy: 'f_zangzing',
+            connect_message_url: ''
+        });
 
 
         $('#filechooser-back-button').click(filechooser.open_parent_folder);
-        filechooser.ancestors = [],
+        filechooser.ancestors = [];
         filechooser.open_root();
         tray.reload();
     },
 
 
     open_root: function() {
-        filechooser.open_folder('Home', '', '', '');
+        filechooser.open_folder('Home', '', '');
     },
 
     is_windows : function() {
@@ -281,6 +314,7 @@ var filechooser = {
 
 
     open_folder: function(name, open_url, login_url) {
+
 
         filechooser.ancestors.push({name:name, open_url:open_url, login_url:login_url});
         //update title and back button
@@ -295,35 +329,16 @@ var filechooser = {
         $('#filechooser-title').html(name);
 
         //update files
-        $('#filechooser').html('<img src="/images/loading.gif">');
+        $('#filechooser').fadeOut('fast', function(){
+            $('#filechooser').html('<img src="/images/loading.gif">');
+            $('#filechooser').show();
 
-        if (open_url == '') {
 
-            filechooser.on_open_root();
-
-        } else {
-
-            if (agent.isAgentUrl(open_url)) {
-                // if agent
-
-                open_url = agent.buildAgentUrl(open_url);
-
-                $.jsonp({
-                    url: open_url,
-                    success: function(json) {
-                        if(json.headers.status !== 200){
-                            filechooser.on_error_opening_folder(json.headers)
-                        }
-                        filechooser.on_open_folder(json);
-                    },
-                    error: filechooser.on_error_opening_folder
-                });
-
-            } else {
-                // on the server
-
-                $.ajax({
-                    dataType: 'json',
+            if (open_url == '') {
+                filechooser.on_open_root();
+            }
+            else {
+                filechooser.agent_or_server.call({
                     url: open_url,
                     success: function(json) {
                         filechooser.on_open_folder(json);
@@ -331,20 +346,15 @@ var filechooser = {
                     error: filechooser.on_error_opening_folder
                 });
             }
-        }
+        });
     },
 
 
-    on_open_root : function(url) {
+    on_open_root : function() {
         filechooser.on_open_folder(filechooser.roots);
     },
 
     on_open_folder : function(children) {
-
-        //unpack response
-        if (children.body) {
-            children = children.body;
-        }
 
         filechooser.children = children
 
@@ -354,59 +364,54 @@ var filechooser = {
         }
 
         var onStartLoadingImage = function(id, src) {
-            $('#' + id).attr('src', '/images/loading.gif');
+            //            $('#' + id).attr('src', '/images/loading.gif');
         };
 
         var onImageLoaded = function(id, src, width, height) {
             var new_size = 115;
             //console.log('id: #'+id+', src: '+src+', width: '+width+', height: '+height);
-          
+
             if (height > width) {
-              //tall
-              var ratio = width / height; 
-              $('#' + id).attr('src', src).css({
-                      height: new_size+'px', 
-                      width: (ratio * new_size) + 'px' 
-              });
-    
-              var guuu = $('#'+id).attr('id').split('-')[3];
-              $('li#photo-'+ guuu +' figure').css({
-                      bottom: '9px', 
-                      width: ((ratio * new_size) + 10)+'px', 
-                      marginLeft: (((new_size - (ratio * new_size)) / 2 ) + 2)+ 'px'
-              });
-              $('li#photo-'+ guuu +' .checkmark').css({bottom: '3px'});
-              
+                //tall
+                var ratio = width / height;
+                $('#' + id).attr('src', src).css({
+                    height: new_size+'px',
+                    width: (ratio * new_size) + 'px'
+                });
+
+                var guuu = $('#'+id).attr('id').split('-')[3];
+                $('li#photo-'+ guuu +' figure').css({
+                    bottom: '9px',
+                    width: ((ratio * new_size) + 10)+'px',
+                    marginLeft: (((new_size - (ratio * new_size)) / 2 ) + 2)+ 'px'
+                });
+                $('li#photo-'+ guuu +' .checkmark').css({bottom: '3px'});
+
             } else {
-            
-              //wide
-              //console.log('wide');
-    
-              var ratio = height / width; 
-              
-              $('#' + id).attr('src', src).attr('src', src).css({
-                      height: (ratio * new_size) + 'px', 
-                      width: new_size+'px', 
-                      marginTop: ((new_size - (ratio * new_size)) / 2) + 'px' 
-              });
-    
-              var guuu = $('#'+id).attr('id').split('-')[3];
-              $('li#photo-'+ guuu +' figure').css({
-                      bottom: ((new_size - (ratio * new_size)) / 2) + 9 +'px'
-              });
-              temp = $('li#photo-'+ guuu +' .checkmark').css('left');
-              $('li#photo-'+ guuu +' .checkmark').css({
-                      bottom: ((new_size - (ratio * new_size)) / 2) + 3 + 'px', 
-                      left: '-10px' });
+
+                //wide
+                //console.log('wide');
+
+                var ratio = height / width;
+
+                $('#' + id).attr('src', src).attr('src', src).css({
+                    height: (ratio * new_size) + 'px',
+                    width: new_size+'px',
+                    marginTop: ((new_size - (ratio * new_size)) / 2) + 'px'
+                });
+
+                var guuu = $('#'+id).attr('id').split('-')[3];
+                $('li#photo-'+ guuu +' figure').css({
+                    bottom: ((new_size - (ratio * new_size)) / 2) + 9 +'px'
+                });
+                temp = $('li#photo-'+ guuu +' .checkmark').css('left');
+                $('li#photo-'+ guuu +' .checkmark').css({
+                    bottom: ((new_size - (ratio * new_size)) / 2) + 3 + 'px',
+                    left: '-10px' });
             }
         };
 
         filechooser.imageloader = new ImageLoader(onStartLoadingImage, onImageLoaded);
-
-        //unpack the jsonp resonse
-        if (children.body) {
-            children = children.body;
-        }
 
 
         //build html for list of files/folders
@@ -432,20 +437,19 @@ var filechooser = {
                 html += '</li>';
 
             } else {
-//                var id = 'chooser-photo-' + children[i].source_guid;
+                //                var id = 'chooser-photo-' + children[i].source_guid;
                 var img_id = 'chooser-photo-img-' + children[i].source_guid;
                 var add_photo_handler = 'onclick="filechooser.add_photos(\'' + children[i].add_url + '\', \'' + img_id + '\'); return false;"';
                 var picture_view_handler = 'onclick="filechooser.picture_view(' + i + ');return false;"';
 
                 html += '<li id="photo-' + children[i].source_guid + '" class="photo" >';
                 html += '<div class="relative">'
-                html += '<img id="' + img_id + '" src="/images/loading.gif" '+ picture_view_handler +'>';
+                html += '<img id="' + img_id + '" src="/images/blank-image.png" '+ picture_view_handler +'>';
                 html += '<figure ' + add_photo_handler + '>Add Photo</figure>';
                 html += '<div class="checkmark"></div>';
                 html += '</div>';
                 html += children[i].name;
                 html += '</li>';
-
 
                 if (agent.isAgentUrl(children[i].thumb_url)) {
                     filechooser.imageloader.add(img_id, agent.buildAgentUrl(children[i].thumb_url));
@@ -455,7 +459,10 @@ var filechooser = {
             }
         }
 
+
+        $('#filechooser').hide();
         $('#filechooser').html(html);
+        $('#filechooser').fadeIn('fast');
 
         filechooser.update_checkmarks();
 
@@ -533,53 +540,32 @@ var filechooser = {
     },
 
     add_photos : function(add_url, element_id) {
-		
-		if (add_url.indexOf('?x=') == -1)
-			add_url += '?'
-		else
-			add_url += '&'
-        add_url += 'album_id=' + zang.zing.album_id;
+
+        if (add_url.indexOf('?x=') == -1)
+            add_url += '?'
+        else
+            add_url += '&'
+        add_url += 'album_id=' + zz.album_id;
 
         var after_animate = function(){
-            if (agent.isAgentUrl(add_url)) {
-				
-                add_url = agent.buildAgentUrl(add_url);
 
-                $.jsonp({
-                    url: add_url,
-                    success: function(json) {
-                        filechooser.on_add_photos(json);
-                    },
-                    error: filechooser.on_error_adding_photos
-                });
-            } else {
-                $.ajax({
-                    dataType: 'json',
-                    url: add_url,
-                    success: function(json) {
-                        filechooser.on_add_photos(json);
-                    },
-                    error: filechooser.on_error_adding_photos
-                });
-            }
+            filechooser.agent_or_server.call({
+                url: add_url,
+                success: function(json) {
+                    filechooser.on_add_photos(json);
+                },
+                error: filechooser.on_error_adding_photos
+            });
         }
 
 
-        zang.zing.image_pop(element_id, after_animate);
+        zz.image_pop(element_id, after_animate);
 
     },
 
 
     on_add_photos : function(json) {
-        var photos;
-
-        if (json.body) {
-            //unpack response from agent
-            photos = json.body
-        }
-        else {
-            photos = json
-        }
+        var photos = json;
 
         tray.add_photos(photos);
 
@@ -636,7 +622,7 @@ var tray = {
     album_photos : [],
 
     reload : function() {
-        var get_album_photos_url = '/albums/' + zang.zing.album_id + '/photos.json';
+        var get_album_photos_url = '/albums/' + zz.album_id + '/photos.json';
         $.ajax({
             dataType: 'json',
             url: get_album_photos_url,
@@ -673,39 +659,39 @@ var tray = {
             $('#' + id).attr('src', src);
 
             if (height > width) {
-              var ratio = (width / height); 
-              $('#hover-' + id).attr('src', src).css({
-                height: '120px', 
-                top: '-132px',
-                width: (ratio * 120) + 'px',
-                left: '-' + (((ratio * 120) / 2) - 15) + 'px' 
-              });
-              
-              $('#del-' + id).css({
-//                top: '-152px',
-//                left: ((ratio * 120) / 2) + 'px'
-                  top: '-15px',
-                  left: '-15px'
-              });
-              
-              
+                var ratio = (width / height);
+                $('#hover-' + id).attr('src', src).css({
+                    height: '120px',
+                    top: '-132px',
+                    width: (ratio * 120) + 'px',
+                    left: '-' + (((ratio * 120) / 2) - 15) + 'px'
+                });
+
+                $('#del-' + id).css({
+                    //                top: '-152px',
+                    //                left: ((ratio * 120) / 2) + 'px'
+                    top: '-15px',
+                    left: '-15px'
+                });
+
+
             } else {
 
-              var ratio = (height / width);
-              //console.log(ratio);
-              $('#hover-' + id).attr('src', src).css({
-                height: (ratio * 120) + 'px',
-                top: '-' + ((ratio * 120) + 12) + 'px', 
-                width: '120px', 
-                left: '-45px'
+                var ratio = (height / width);
+                //console.log(ratio);
+                $('#hover-' + id).attr('src', src).css({
+                    height: (ratio * 120) + 'px',
+                    top: '-' + ((ratio * 120) + 12) + 'px',
+                    width: '120px',
+                    left: '-45px'
 
-              });
-              $('#del-' + id).css({
-//                top: '-'+((ratio * 120) + 32) + 'px',
-//                left: '60px'
-                  top: '-15px',
-                  left: '-15px'
-              });
+                });
+                $('#del-' + id).css({
+                    //                top: '-'+((ratio * 120) + 32) + 'px',
+                    //                left: '60px'
+                    top: '-15px',
+                    left: '-15px'
+                });
 
 
             }
@@ -730,25 +716,25 @@ var tray = {
 
         for (var i =0;i<tray.album_photos.length; i++) {
             var photo = tray.album_photos[i];
-            
+
             var id = 'tray-' + photo.id;
-            
+
             /*
-            
-            from my firebug edits:
-            <li>
 
-            <div>
+             from my firebug edits:
+             <li>
 
-            <img width="20" height="20" src="http://farm1.static.flickr.com/28/63236798_316a95d732_m.jpg" id="tray-bbJRmOT4Kr35cyXcWddDor">
+             <div>
 
-            <a href="" onclick="tray.delete_photo('bbJRmOT4Kr35cyXcWddDor'); return false;">(x)</a>
-            
+             <img width="20" height="20" src="http://farm1.static.flickr.com/28/63236798_316a95d732_m.jpg" id="tray-bbJRmOT4Kr35cyXcWddDor">
 
-            </div>
-            </li>
-            
-            */
+             <a href="" onclick="tray.delete_photo('bbJRmOT4Kr35cyXcWddDor'); return false;">(x)</a>
+
+
+             </div>
+             </li>
+
+             */
 
             if(i===0){
                 html+="<li>"
@@ -756,7 +742,7 @@ var tray = {
             else{
                 html += '<li style="margin-left:' + (-1 * overlap) + 'px">';
             }
-            
+
             html += '<div>';
             html += '<img height="30" width="30" id="' + id + '" class="trayed-up" src="/images/loading.gif" style="z-index:5;">';
             html += '<a href="javascript:void(0);" onclick="tray.delete_photo(\'' + photo.id + '\'); return false;"><img src="/images/btn-delete.png" class="delete" id="del-'+ id +'" /></a>';
@@ -769,7 +755,7 @@ var tray = {
                 if (photo.state == 'ready') {
                     tray.imageloader.add(id, photo.thumb_url);
                 } else {
-                    tray.imageloader.add(id, agent.buildAgentUrl('/albums/' + zang.zing.album_id + '/photos/' + photo.id + '.thumb'));
+                    tray.imageloader.add(id, agent.buildAgentUrl('/albums/' + zz.album_id + '/photos/' + photo.id + '.thumb'));
 
                 }
 
@@ -788,7 +774,7 @@ var tray = {
 
         $('#added-pictures-tray').html(html);
         setTimeout(function(){$('#traversing').hide().remove();}, 500);
-        zang.init.tray();
+        zz.init.tray();
         tray.imageloader.start(5);
 
     },

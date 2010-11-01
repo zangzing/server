@@ -146,8 +146,7 @@ class PhotosController < ApplicationController
   def index
     @album = Album.find(params[:album_id])
     @title = CGI.escapeHTML(@album.name)
-    @user=  @album.user
-    @badge_name = @user.name
+
     UploadBatch.close_open_batches( current_user, @album) if signed_in?
 
     if params[:upload_batch] && @upload_batch = UploadBatch.find(params[:upload_batch])
@@ -208,7 +207,6 @@ class PhotosController < ApplicationController
   def edit
     @album = Album.find(params[:album_id])
     @title = CGI.escapeHTML(@album.name)
-    @user=  @album.user
 
     respond_to do |format|
       format.html do

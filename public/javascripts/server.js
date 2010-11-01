@@ -10,13 +10,13 @@ var server = {
 
 
         $.ajax({
-           type: "DELETE",
-           dataType: "json",
-           url: "/photos/" + photoId + ".json",
-           success: onSuccess,
-           error: onError
+            type: "DELETE",
+            dataType: "json",
+            url: "/photos/" + photoId + ".json",
+            success: onSuccess,
+            error: onError
         });
 
         //todo: on sucess, call agent to cancel upload
-   }
+    }
 }

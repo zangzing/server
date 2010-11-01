@@ -229,52 +229,37 @@ li#nav-account img {
   margin: 0 2px 4px 0;
 }
 
-header ul#top-nav li#nav-sign-up {
+header ul#top-nav li#nav-sign-in {
   width: 45px;
   padding: 34px 12px 0;
-  margin-right: 16px;
   color: #a4a4a4;
-  font-weight: 400;
   background-image: url(/images/btn-sign-in-off.png);
   background-position: center 40%;
   background-repeat: no-repeat;
   font-size: 1.2em;
-  font-weight: 600;
   line-height: 0.5em;
   margin-right: 0px;
   text-align: center;
   cursor: pointer;
+  float:right;
 }
 
-header ul#top-nav li#nav-sign-up:hover {
+header ul#top-nav li#nav-sign-in:hover {
   background-image: url(/images/btn-sign-in-on.png);
   color: #0a0a0a;
+  float:right;
 }
 
 header ul#user-info, header ul#album-info {
   margin: 6px auto;
 }
 
-header ul#new-info {
-  margin: 2px 0 0;
-}
-
-header ul#user-info, header ul#album-info, header ul#new-info {
-  display: inline-block;
-}
 
 header ul#user-info li, header ul#album-info li, header ul#new-info li {
   float: left;
   text-align: left;
 }
 
-#album-header-icon {
-  border: 3px solid #fff;
-  box-shadow: 0px 0px 3px #767676;
-  -webkit-box-shadow: 0px 0px 3px #767676;
-  -moz-box-shadow: 0px 0px 3px #767676;
-  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#767676, offX=1, offY=1, positive=true);
-}
 
 ul#user-info li#user-icon {
   width: 40px;
@@ -347,81 +332,16 @@ div#drawer div.body div#drawer-content {
   width: 898px;
 }
 
-ul#added-pictures-tray {
-  position: absolute;
-  display: none;
-  width: 878px;
-  height: 40px;
-  background-image: url('/images/bg-picture-tray.png');
-  background-repeat: no-repeat;
-  z-index: 100;
-  padding: 17px 10px 3px;
-  margin-right: 2px;
-  bottom: 5px;
-  left: 7px;
-}
-
-ul#added-pictures-tray li {
-  float: left;
-  margin-top: 7px;
-  /*margin-right: 2px;*/
-  width: 30px;
-  height: 30px;
-}
-
-ul#added-pictures-tray li div {
-  position: relative;
-  height: 30px;
-  width: 30px;
-}
-
-ul#added-pictures-tray li img.trayed-up {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  z-index: 101;
-  /*border: 2px solid #e1e1e1;*/
-  /*box-shadow: 0px 0px 5px #e1e1e1;*/
-  /*-webkit-box-shadow: 0px 0px 5px #e1e1e1;*/
-  /*-moz-box-shadow: 0px 0px 5px #e1e1e1;*/
-  /*filter: progid:DXImageTransform.Microsoft.dropShadow(color=#e1e1e1, offX=2, offY=2, positive=true);*/
-}
-
-ul#added-pictures-tray li:hover img.trayed-up {
-  bottom: 0;
-  left: 0;
-  z-index: 105;
-}
-
-ul#added-pictures-tray li .hover-thumbnail {
-  display: none;
-  position: absolute;
-  z-index: 102;
-  border: 4px solid #fff;
-  top: -120px;
-  left: -45px;
-  box-shadow: 0px 0px 8px #FDD042;
-  -webkit-box-shadow: 0px 0px 8px #FDD042;
-  -moz-box-shadow: 0px 0px 8px #FDD042;
-  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#FDD042, offX=2, offY=2, positive=true);
-
-}
-
-ul#added-pictures-tray li:hover .hover-thumbnail {
-  display: block;
+div#drawer div#drawer-tabs{
+    margin: 0 auto;
+    width: 898px;
+    height: 36px;
 }
 
 
-ul#added-pictures-tray li img.delete {
-  display: none;
-  position: absolute;
-  z-index: 9999;
-  cursor: pointer;
-}
 
-ul#added-pictures-tray li:hover img.delete {
-  display: block;
-}
+/* Drawer/Wizard Tabs
+----------------------------------------------------------------------------- */
 
 ul#clone-indicator {
   display: none;
@@ -438,45 +358,45 @@ ul#indicator-6 {
   padding-left: 10px;
 }
 
-ul.step-1-4 {
-  background-image: url("/images/bg-4step-strip-1.png");
-  background-repeat: no-repeat;
-}
+/*ul.step-1-4 {*/
+  /*background-image: url("/images/bg-4step-strip-1.png");*/
+  /*background-repeat: no-repeat;*/
+/*}*/
 
-ul.step-2-4 {
-  background-image: url("/images/bg-4step-strip-2.png");
-  background-repeat: no-repeat;
-}
+/*ul.step-2-4 {*/
+  /*background-image: url("/images/bg-4step-strip-2.png");*/
+  /*background-repeat: no-repeat;*/
+/*}*/
 
-ul.step-3-4 {
-  background-image: url("/images/bg-4step-strip-3.png");
-  background-repeat: no-repeat;
-}
+/*ul.step-3-4 {*/
+  /*background-image: url("/images/bg-4step-strip-3.png");*/
+  /*background-repeat: no-repeat;*/
+/*}*/
 
-ul.step-4-4 {
-  background-image: url("/images/bg-4step-strip-4.png");
-  background-repeat: no-repeat;
-}
+/*ul.step-4-4 {*/
+  /*background-image: url("/images/bg-4step-strip-4.png");*/
+  /*background-repeat: no-repeat;*/
+/*}*/
 
-ul.edit-1-4 {
-  background-image: url("/images/bg-4step-strip-1.png");
-  background-repeat: no-repeat;
-}
+/*ul.edit-1-4 {*/
+  /*background-image: url("/images/bg-4step-strip-1.png");*/
+  /*background-repeat: no-repeat;*/
+/*}*/
 
-ul.edit-2-4 {
-  background-image: url("/images/bg-4step-strip-2.png");
-  background-repeat: no-repeat;
-}
+/*ul.edit-2-4 {*/
+  /*background-image: url("/images/bg-4step-strip-2.png");*/
+  /*background-repeat: no-repeat;*/
+/*}*/
 
-ul.edit-3-4 {
-  background-image: url("/images/bg-4step-strip-3.png");
-  background-repeat: no-repeat;
-}
+/*ul.edit-3-4 {*/
+  /*background-image: url("/images/bg-4step-strip-3.png");*/
+  /*background-repeat: no-repeat;*/
+/*}*/
 
-ul.edit-4-4 {
-  background-image: url("/images/bg-4step-strip-4.png");
-  background-repeat: no-repeat;
-}
+/*ul.edit-4-4 {*/
+  /*background-image: url("/images/bg-4step-strip-4.png");*/
+  /*background-repeat: no-repeat;*/
+/*}*/
 
 
 ul.step-1-5 {
@@ -649,7 +569,7 @@ ul#indicator-4 li.on a, ul#indicator-5 li.on a, ul#indicator-6 li.on a {
 ul#indicator-4 li#step-btn, ul#indicator-5 li#step-btn, ul#indicator-6 li#step-btn {
   width: 66px;
   text-align: center;
-  padding-top: 2px;
+  padding-top: 3px;
   padding-left: 2px;
   height: 34px;
 }
@@ -667,6 +587,12 @@ ul#indicator-4 li.on, ul#indicator-5 li.on, ul#indicator-6 li.on {
 ul#indicator-6 #next-step {
   padding: 0;
 }
+
+
+
+/*  Small Drawer
+---------------------------------------------------------------------------*/
+
 
 ul#small-indicator {
   margin-left: 1px;
@@ -715,6 +641,8 @@ ul#small-indicator li#step-join-off:hover {
   cursor: pointer;
 }
 
+
+
 div#small-top {
   margin: 15px auto 15px;
   width: 350px;
@@ -722,6 +650,7 @@ div#small-top {
   padding-bottom: 15px;
   border-bottom: 1px solid #ccc;
 }
+
 
 div#small-drawer h2 {
   font-size: 1.9em;
@@ -844,7 +773,96 @@ div#drawer-content div#top-section {
 div#drawer-content div#scroll-body {
   overflow-y: auto;
   height: 0px;
+  width: 898px;  
 }
+
+div#top-section #equalizer {
+  width: 91px;
+  float: right;
+}
+
+
+
+
+/* Filechooser
+----------------------------------------------------------------------------- */
+
+ul#added-pictures-tray {
+  position: absolute;
+  display: none;
+  width: 878px;
+  height: 40px;
+  background-image: url('/images/bg-picture-tray.png');
+  background-repeat: no-repeat;
+  z-index: 100;
+  padding: 17px 10px 3px;
+  margin-right: 2px;
+  bottom: 5px;
+  left: 7px;
+}
+
+ul#added-pictures-tray li {
+  float: left;
+  margin-top: 7px;
+  /*margin-right: 2px;*/
+  width: 30px;
+  height: 30px;
+}
+
+ul#added-pictures-tray li div {
+  position: relative;
+  height: 30px;
+  width: 30px;
+}
+
+ul#added-pictures-tray li img.trayed-up {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 101;
+  border: 2px solid #e1e1e1;
+  box-shadow: 0px 0px 5px #e1e1e1;
+  -webkit-box-shadow: 0px 0px 5px #e1e1e1;
+  -moz-box-shadow: 0px 0px 5px #e1e1e1;
+  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#e1e1e1, offX=2, offY=2, positive=true);
+}
+
+ul#added-pictures-tray li:hover img.trayed-up {
+  bottom: 0;
+  left: 0;
+  z-index: 105;
+}
+
+ul#added-pictures-tray li .hover-thumbnail {
+  display: none;
+  position: absolute;
+  z-index: 102;
+  border: 4px solid #fff;
+  top: -120px;
+  left: -45px;
+  box-shadow: 0px 0px 8px #FDD042;
+  -webkit-box-shadow: 0px 0px 8px #FDD042;
+  -moz-box-shadow: 0px 0px 8px #FDD042;
+  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#FDD042, offX=2, offY=2, positive=true);
+
+}
+
+ul#added-pictures-tray li:hover .hover-thumbnail {
+  display: block;
+}
+
+
+ul#added-pictures-tray li img.delete {
+  display: none;
+  position: absolute;
+  z-index: 9999;
+  cursor: pointer;
+}
+
+ul#added-pictures-tray li:hover img.delete {
+  display: block;
+}
+
 
 div#top-section #filechooser-back-button {
   float: left;
@@ -861,16 +879,13 @@ div#top-section #filechooser-back-button {
   padding-bottom: 4px;
 }
 
-div#top-section #equalizer {
-  width: 91px;
-  float: right;
-}
 
-div#drawer-content ul#folders, ul#filechooser {
+
+div#drawer-content ul#filechooser {
   margin: 20px 15px 20px;
 }
 
-div#drawer-content ul#folders li, ul#filechooser li {
+div#drawer-content ul#filechooser li {
   background-image: url("/images/folders/blank.png");
   background-repeat: no-repeat;
   background-position: center top;
@@ -884,7 +899,7 @@ div#drawer-content ul#folders li, ul#filechooser li {
   height: 135px;
 }
 
-div#drawer-content ul#folders li.photo, ul#filechooser li.photo {
+div#drawer-content ul#filechooser li.photo {
   padding: 15px 20px;
   height: 135px;
   overflow: hidden;
@@ -894,7 +909,7 @@ div#drawer-content ul#folders li.photo, ul#filechooser li.photo {
 
 
 
-div#drawer-content ul#folders li.photo, ul#filechooser li.photo img {
+div#drawer-content ul#filechooser li.photo img {
   max-height: 115px;
   max-width: 115px;
   border: #fff solid 5px;
@@ -904,81 +919,81 @@ div#drawer-content ul#folders li.photo, ul#filechooser li.photo img {
   filter: progid:DXImageTransform.Microsoft.dropShadow(color=#767676, offX=2, offY=2, positive=true);
 }
 
-div#drawer-content ul#folders li.f_iphoto, ul#filechooser li.f_iphoto {
+div#drawer-content ul#filechooser li.f_iphoto {
   background-image: url("/images/folders/apple_off.png");
 }
-div#drawer-content ul#folders li.f_facebook, ul#filechooser li.f_facebook {
+div#drawer-content ul#filechooser li.f_facebook {
   background-image: url("/images/folders/facebook_off.png");
 }
-div#drawer-content ul#folders li.f_flickr, ul#filechooser li.f_flickr {
+div#drawer-content ul#filechooser li.f_flickr {
   background-image: url("/images/folders/flickr_off.png");
 }
-div#drawer-content ul#folders li.f_home, ul#filechooser li.f_home {
+div#drawer-content ul#filechooser li.f_home {
   background-image: url("/images/folders/myhome_off.png");
 }
-div#drawer-content ul#folders li.f_kodak, ul#filechooser li.f_kodak {
+div#drawer-content ul#filechooser li.f_kodak {
   background-image: url("/images/folders/kodak_off.png");
 }
-div#drawer-content ul#folders li.f_mycomputer, ul#filechooser li.f_mycomputer {
+div#drawer-content ul#filechooser li.f_mycomputer {
   background-image: url("/images/folders/mycomputer_off.png");
 }
-div#drawer-content ul#folders li.f_pictures, ul#filechooser li.f_pictures {
+div#drawer-content ul#filechooser li.f_pictures {
   background-image: url("/images/folders/mypictures_off.png");
 }
-div#drawer-content ul#folders li.f_picasa, ul#filechooser li.f_picasa {
+div#drawer-content ul#filechooser li.f_picasa {
   background-image: url("/images/folders/picasa_off.png");
 }
-div#drawer-content ul#folders li.f_shutterfly, ul#filechooser li.f_shutterfly {
+div#drawer-content ul#filechooser li.f_shutterfly {
   background-image: url("/images/folders/shutterfly_off.png");
 }
-div#drawer-content ul#folders li.f_snapfish, ul#filechooser li.f_snapfish {
+div#drawer-content ul#filechooser li.f_snapfish {
   background-image: url("/images/folders/snapfish_off.png");
 }
-div#drawer-content ul#folders li.f_smugmug, ul#filechooser li.f_smugmug {
+div#drawer-content ul#filechooser li.f_smugmug {
   background-image: url("/images/folders/smugmug_off.png");
 }
-div#drawer-content ul#folders li.f_zangzing, ul#filechooser li.f_zangzing {
+div#drawer-content ul#filechooser li.f_zangzing {
   background-image: url("/images/folders/zangzing_off.png");
 }
 
-div#drawer-content ul#folders li.f_iphoto:hover, ul#filechooser li.f_iphoto:hover {
+div#drawer-content ul#filechooser li.f_iphoto:hover {
   background-image: url("/images/folders/apple.png");
 }
-div#drawer-content ul#folders li.f_facebook:hover, ul#filechooser li.f_facebook:hover {
+div#drawer-content ul#filechooser li.f_facebook:hover {
   background-image: url("/images/folders/facebook.png");
 }
-div#drawer-content ul#folders li.f_flickr:hover, ul#filechooser li.f_flickr:hover {
+div#drawer-content ul#filechooser li.f_flickr:hover {
   background-image: url("/images/folders/flickr.png");
 }
-div#drawer-content ul#folders li.f_home:hover, ul#filechooser li.f_home:hover {
+div#drawer-content ul#filechooser li.f_home:hover {
   background-image: url("/images/folders/myhome.png");
 }
-div#drawer-content ul#folders li.f_kodak:hover, ul#filechooser li.f_kodak:hover {
+div#drawer-content ul#filechooser li.f_kodak:hover {
   background-image: url("/images/folders/kodak.png");
 }
-div#drawer-content ul#folders li.f_mycomputer:hover, ul#filechooser li.f_mycomputer:hover {
+div#drawer-content ul#filechooser li.f_mycomputer:hover {
   background-image: url("/images/folders/mycomputer.png");
 }
-div#drawer-content ul#folders li.f_pictures:hover, ul#filechooser li.f_pictures:hover {
+div#drawer-content ul#filechooser li.f_pictures:hover {
   background-image: url("/images/folders/mypictures.png");
 }
-div#drawer-content ul#folders li.f_picasa:hover, ul#filechooser li.f_picasa:hover {
+div#drawer-content ul#filechooser li.f_picasa:hover {
   background-image: url("/images/folders/picasa.png");
 }
-div#drawer-content ul#folders li.f_shutterfly:hover, ul#filechooser li.f_shutterfly:hover {
+div#drawer-content ul#filechooser li.f_shutterfly:hover {
   background-image: url("/images/folders/shutterfly.png");
 }
-div#drawer-content ul#folders li.f_snapfish:hover, ul#filechooser li.f_snapfish:hover {
+div#drawer-content ul#filechooser li.f_snapfish:hover {
   background-image: url("/images/folders/snapfish.png");
 }
-div#drawer-content ul#folders li.f_smugmug:hover, ul#filechooser li.f_smugmug:hover {
+div#drawer-content ul#filechooser li.f_smugmug:hover {
   background-image: url("/images/folders/smugmug.png");
 }
-div#drawer-content ul#folders li.f_zangzing:hover, ul#filechooser li.f_zangzing:hover {
+div#drawer-content ul#filechooser li.f_zangzing:hover {
   background-image: url("/images/folders/zangzing.png");
 }
 
-div#drawer-content ul#folders li:hover, ul#filechooser li:hover {
+div#drawer-content ul#filechooser li:hover {
   color: #FDD042;
 }
 
@@ -1073,6 +1088,10 @@ ul#filechooser h4 a {
   text-decoration: underline;
 }
 
+
+/* Album Type
+-----------------------------------------------------------------------------*/
+
 ul#choose-album-type {
   width: 830px;
   margin: 30px auto 0;
@@ -1100,7 +1119,6 @@ ul#choose-album-type li img {
 
 ul#choose-album-type li p {
   margin-bottom: 15px;
-  line-height: 1.3em;
   line-height: 1.1em;
 }
 
@@ -1108,6 +1126,13 @@ ul#choose-album-type li div {
   height: 90px;
   margin-bottom: 10px;
 }
+
+
+
+/* Album Privacy
+---------------------------------------------------------------------*/
+
+
 
 ul#privacy-menu {
   width: 660px;
@@ -1130,7 +1155,6 @@ ul#privacy-menu li div {
 
 ul#privacy-menu li p {
   margin-bottom: 20px;
-  line-height: 1.5em;
   line-height: 1.3em;
 }
 
@@ -1157,6 +1181,13 @@ ul#privacy-menu li#privacy-hidden:hover {
 ul#privacy-menu li#privacy-password:hover {
   background: url(/images/bg-privacy-password-on.png) no-repeat;
 }
+
+
+
+
+
+
+
 
 div#drawer-content h3 {
   font-size: 1.7em;
@@ -1238,12 +1269,13 @@ div#drawer-content dl.form dd input#album_name{
 
 div#drawer-content dl.form dd input#album_email {
   margin_top: 50px;
-  width: 300px;
+  width: 500px;
   padding: 5px;
   text-align: left;
-  font-size: 1.5em;
-  font-weight: bold;
+  font-size: 1.8em;
+  /*font-weight: bold;*/
   background-color: #fff;
+  color: #a4a4a4;
   border: none;
 }
 
@@ -1445,13 +1477,13 @@ ul#the-recipients li {
   background-color: #fbfbfb;
   background: -moz-linear-gradient(top, #fbfbfb, #dcdcdc);
   background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#dcdcdc));
-  border: 1px #dcdcdc solid;
+  border: 2px #dcdcdc solid;
   padding: 4px 4px 4px 7px;
   margin: 5px;
 }
 
 ul#the-recipients li.del {
-  border: 1px #ff0000 solid;
+  border: 2px #ff0000 solid;
   background: -moz-linear-gradient(top, #fbfbfb, pink);
   background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(pink));}
 
@@ -1469,7 +1501,7 @@ ul#the-recipients li.rounded input {
 }
 
 ul#the-recipients li#autocomplete {
-  height: 36px;
+  height: 24px;
   text-align: left;
   margin: 0;
   padding: 0;
@@ -1485,7 +1517,7 @@ dl#email-share-form dd input#you-complete-me {
   background-color: #fff;
   border: 1px #fff solid;
   width: 200px;
-  height: 36px;
+  height: 24px;
   padding: 0px 0px;
 }
 
