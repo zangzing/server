@@ -1,0 +1,40 @@
+/* Body, headers, text
+----------------------------------------------------------------------------- */
+
+html {overflow-y: scroll;}
+
+
+body {
+  width: 98%;
+  margin: 0 auto;
+  background-color: #ffffff;
+  font-family: "Lucida Grande", "Lucida Sans Unicode", "Trebuchet MS", Tahoma, Helvetica, Arial, sans-serif;
+  font-size: 62.5%;
+  color: #0a0a0a;
+  text-align: center;
+}
+
+
+ul.grid-view li {
+  float: left;
+  width: 150px;
+  height: 150px;
+}
+
+ul.grid-view li img {
+    cursor: pointer;
+}
+
+
+ul.grid-view .image-border{
+    display:inline-block;
+    box-shadow: 0px 0px 5px #767676;
+    -webkit-box-shadow: 0px 0px 5px #767676;
+    -moz-box-shadow: 0px 0px 5px #767676;
+    padding: 5px 5px 5px 5px;
+    background-color: #ffffff;
+
+}
+
+
+

@@ -236,6 +236,7 @@ zz.init = {
         image_preloader.load_image("/images/folders/snapfish-off.png");
         image_preloader.load_image("/images/folders/smugmug-off.png");
         image_preloader.load_image("/images/folders/zangzing-off.png");
+        image_preloader.load_image("/images/folders/photobucket-off.png");
 
 
 

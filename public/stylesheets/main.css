@@ -956,6 +956,10 @@ div#drawer-content ul#filechooser li.f_zangzing {
   background-image: url("/images/folders/zangzing_off.png");
 }
 
+div#drawer-content ul#filechooser li.f_photobucket {
+  background-image: url("/images/folders/photobucket_off.png");
+}
+
 div#drawer-content ul#filechooser li.f_iphoto:hover {
   background-image: url("/images/folders/apple.png");
 }
@@ -992,6 +996,11 @@ div#drawer-content ul#filechooser li.f_smugmug:hover {
 div#drawer-content ul#filechooser li.f_zangzing:hover {
   background-image: url("/images/folders/zangzing.png");
 }
+
+div#drawer-content ul#filechooser li.f_photobucket:hover {
+  background-image: url("/images/folders/photobucket.png");
+}
+
 
 div#drawer-content ul#filechooser li:hover {
   color: #FDD042;

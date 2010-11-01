@@ -282,6 +282,24 @@ var filechooser = {
         });
 
 
+        //Photobucket
+        filechooser.roots.push(
+        {
+            open_url: '/photobucket/folders.json',
+            type: 'folder',
+            name: 'Photobucket',
+            login_url: '/photobucket/sessions/new',
+            classy: 'f_photobucket',
+            connect_message_url: '/static/connect_messages/connect_to_photobucket.html',
+            on_error: function(error){
+                $('#filechooser').hide().load('/static/connect_messages/connect_to_photobucket.html', function(){
+                    $('#filechooser').fadeIn('fast');
+                });
+
+            }
+        });
+
+
         //ZangZing
         filechooser.roots.push(
         {
@@ -486,7 +504,7 @@ var filechooser = {
 
         var previous_image_handler = 'onclick="filechooser.picture_view(' + (i - 1) + ');return false;"';
         var next_image_handler = 'onclick="filechooser.picture_view(' + (i + 1) + ');return false;"';
-        var add_photo_handler = 'onclick="filechooser.add_photos(\'' + children[i].add_url + '\', \'' + img_id + '\'); return false;"';
+        var add_photo_handler = 'onclick="filechooser.add_photos(\'' + children[i].add_url + '\', \'' + img_id + '\'); return false;"';                          
 
         html += '<a href="" ' + previous_image_handler + '><img src="/images/btn-prev-photo.png"></a>';
         html += '<a href="" ' + add_photo_handler + '>[add to album]</a>';

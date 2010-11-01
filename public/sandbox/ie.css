@@ -1,0 +1,9 @@
+
+
+
+ul.grid-view .image-border{
+    border:1px solid #767676;
+    padding: 5px 5px 5px 5px;
+    filter: progid:DXImageTransform.Microsoft.dropShadow(color=#e1e1e1, offX=2, offY=2, positive=true);
+
+}
