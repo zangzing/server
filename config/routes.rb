@@ -216,6 +216,14 @@ ActionController::Routing::Routes.draw do |map|
     sf.shutterfly_folder_action '/shutterfly/folders/:sf_album_id/:action.:format'
   end
 
+  #Photobucket
+  map.with_options :namespace => 'connector', :controller => :photobucket_sessions do |fb|
+    fb.new_photobucket_session     '/photobucket/sessions/new', :action  => 'new'
+    fb.create_photobucket_session  '/photobucket/sessions/create', :action  => 'create'
+    fb.destroy_photobucket_session '/photobucket/sessions/destroy', :action  => 'destroy'
+  end
+  map.photobucket_folders '/photobucket/folders/:action', :controller => :photobucket_folders, :namespace => 'connector'
+
   #ZangZing (local)
   map.with_options :namespace => 'connector', :controller => :zangzing_photos do |sf|
     sf.zangzing_photos '/zangzing/folders/:zz_album_id/photos.:format', :action  => 'index'
