@@ -22,6 +22,7 @@ each album has an email address in the form <album_id>@sendgrid-post.zangzing.co
         add_photos(album, album.user)
       elsif album.kind_of?(GroupAlbum) && (contributor = album.is_contributor?(sender_mail))
         add_photos(album, contributor)
+        album.contributors.find_by_email(sender_mail).last_contribution = DateTime.now
       end
     end
     render :nothing => true, :status => :ok
