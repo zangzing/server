@@ -326,17 +326,25 @@ div#small-drawer div.body {
   overflow: hidden;
 }
 
-div#drawer div.body div#drawer-content {
+div#drawer div#drawer-content {
   margin: 0 auto;
   height: 0px;
   width: 898px;
 }
+
+
 
 div#drawer div#drawer-tabs{
     margin: 0 auto;
     width: 898px;
     height: 36px;
 }
+
+div#drawer div#tab-content {
+    margin: 0 auto;
+    width: 898px;
+}
+
 
 
 
