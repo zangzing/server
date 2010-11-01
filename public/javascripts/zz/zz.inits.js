@@ -224,19 +224,19 @@ zz.init = {
         image_preloader.load_image("/images/folders/smugmug.png");
         image_preloader.load_image("/images/folders/zangzing.png");
 
-        image_preloader.load_image("/images/folders/apple-off.png");
-        image_preloader.load_image("/images/folders/facebook-off.png");
-        image_preloader.load_image("/images/folders/flickr-off.png");
-        image_preloader.load_image("/images/folders/myhome-off.png");
-        image_preloader.load_image("/images/folders/kodak-off.png");
-        image_preloader.load_image("/images/folders/mycomputer-off.png");
-        image_preloader.load_image("/images/folders/mypictures-off.png");
-        image_preloader.load_image("/images/folders/picasa-off.png");
-        image_preloader.load_image("/images/folders/shutterfly-off.png");
-        image_preloader.load_image("/images/folders/snapfish-off.png");
-        image_preloader.load_image("/images/folders/smugmug-off.png");
-        image_preloader.load_image("/images/folders/zangzing-off.png");
-        image_preloader.load_image("/images/folders/photobucket-off.png");
+        image_preloader.load_image("/images/folders/apple_off.png");
+        image_preloader.load_image("/images/folders/facebook_off.png");
+        image_preloader.load_image("/images/folders/flickr_off.png");
+        image_preloader.load_image("/images/folders/myhome_off.png");
+        image_preloader.load_image("/images/folders/kodak_off.png");
+        image_preloader.load_image("/images/folders/mycomputer_off.png");
+        image_preloader.load_image("/images/folders/mypictures_off.png");
+        image_preloader.load_image("/images/folders/picasa_off.png");
+        image_preloader.load_image("/images/folders/shutterfly_off.png");
+        image_preloader.load_image("/images/folders/snapfish_off.png");
+        image_preloader.load_image("/images/folders/smugmug_off.png");
+        image_preloader.load_image("/images/folders/zangzing_off.png");
+        image_preloader.load_image("/images/folders/photobucket_off.png");
 
 
 
