@@ -1,15 +1,15 @@
 ---
 development:
-  :consumer_key: 149830597
+  :consumer_key: 149830627
   :consumer_secret: 26966cb4dfc585d73adc11f7879a556d
 
 ---
 eydevelopment:
-  :consumer_key: 149830597
-  :consumer_secret: 26966cb4dfc585d73adc11f7879a556d
+  :consumer_key: 149830626
+  :consumer_secret: 9fd3eef0b1c3410d4dcbe8a82c1c3ed6
 
 
 ---
 eysandbox:
-  :consumer_key: 149830597
-  :consumer_secret: 26966cb4dfc585d73adc11f7879a556d
+  :consumer_key: 149830626
+  :consumer_secret: 9fd3eef0b1c3410d4dcbe8a82c1c3ed6
