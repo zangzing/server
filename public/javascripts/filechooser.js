@@ -285,7 +285,7 @@ var filechooser = {
         //Photobucket
         filechooser.roots.push(
         {
-            open_url: '/photobucket/folders.json',
+            open_url: '/photobucket/folders', //No need for .json cause this connector has unusual structure
             type: 'folder',
             name: 'Photobucket',
             login_url: '/photobucket/sessions/new',
@@ -561,11 +561,7 @@ var filechooser = {
     },
 
     add_photos : function(add_url, element_id) {
-
-        if (add_url.indexOf('?x=') == -1)
-            add_url += '?'
-        else
-            add_url += '&'
+        add_url += (add_url.indexOf('?') == -1) ? '?' : '&'
         add_url += 'album_id=' + zz.album_id;
 
         var after_animate = function(){
