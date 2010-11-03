@@ -1446,7 +1446,7 @@ dl#email-share-form dd {
 dl#email-share-form dd input, dl#email-share-form dd textarea {
   width: 690px;
   padding: 5px;
-  color: #8c8c8c;
+  color: #000000;
   border: 1px #8c8c8c solid;
   font-family: "Lucida Grande", "Lucida Sans Unicode", "Trebuchet MS", Tahoma, Helvetica, Arial, sans-serif;
   font-weight: 400;
@@ -1483,13 +1483,13 @@ ul#the-recipients {
   min-height: 36px;
   padding: 0 5px;
   width: 690px;
-  color: #8c8c8c;
+  color: #000000;
 }
 
 ul#the-recipients li {
   float: left;
   height: 16px;
-  color: #0a0a0a;
+  color: #000000;
   text-align: left;
   background-color: #fbfbfb;
   background: -moz-linear-gradient(top, #fbfbfb, #dcdcdc);
