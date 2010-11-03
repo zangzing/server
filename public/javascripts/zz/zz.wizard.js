@@ -581,6 +581,7 @@ zz.wizard = {
 //                $('#album_email').val( zz.wizard.dashify($('#album_name').val()) );
             }, 10);
         });
+        setTimeout(function(){$('#album_name').select();},100);
     },
 
     display_flashes: function( request, delay ){
