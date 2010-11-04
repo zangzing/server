@@ -685,10 +685,10 @@ var tray = {
                 });
 
                 $('#del-' + id).css({
-                    //                top: '-152px',
-                    //                left: ((ratio * 120) / 2) + 'px'
-                    top: '-15px',
-                    left: '-15px'
+                    top: '-152px',
+                    left: ((ratio * 120) / 2) + 'px'
+//                    top: '-15px',
+//                    left: '-15px'
                 });
 
 
@@ -704,10 +704,10 @@ var tray = {
 
                 });
                 $('#del-' + id).css({
-                    //                top: '-'+((ratio * 120) + 32) + 'px',
-                    //                left: '60px'
-                    top: '-15px',
-                    left: '-15px'
+                    top: '-'+((ratio * 120) + 32) + 'px',
+                    left: '60px'
+//                    top: '-15px',
+//                    left: '-15px'
                 });
 
 
