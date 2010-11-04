@@ -53,7 +53,8 @@ class Identity < ActiveRecord::Base
     :photobucket => {:name => 'Photobucket', :icon => ''},
     :shutterfly => {:name => 'Shutterfly', :icon => ''},
     :kodak => {:name => 'Kodak Gallery', :icon => ''},
-    :local => {:name => 'ZangZing Agent', :icon => ''}
+    :local => {:name => 'ZangZing Agent', :icon => ''},
+    :mslive => {:name => 'Windows Live ID', :icon => ''}
   }
 
   def name
