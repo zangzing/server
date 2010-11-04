@@ -1,14 +1,15 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml">
+<!doctype html>
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="copyright" content="Copyright 2010, ZangZing, Inc. All Rights Reserved." />
     <meta name="DC.title" content="ZangZing" />
     <meta name="title" content="ZangZing" />
-<%  if @meta_description -%>
+<%  # Add in controller or action based meta description
+    if @meta_description -%>
     <meta name="description" content="<%= @meta_description %>" />
 <%  end %>
-
+    # Add in controller or action based page title
     <% if @page_title_override 
        title = @page_title_override
     else
@@ -51,12 +52,20 @@
     
       <%= render :partial => 'layouts/bottom_nav' %>
 
-
-      <%= render :partial => 'layouts/top_nav'  %>
-
-
-
-
+<%    if current_user && controller.controller_name == 'photos' || 
+         current_user && controller.controller_name == 'albums' && controller.action_name != 'index' || 
+         controller.controller_name == 'people' && controller.action_name == 'album_index' || 
+         controller.controller_name == 'activities' && controller.action_name == 'album_index'
+         #this loads a version of the top nav with the album header & main drawer -%>
+      <%= render :partial => 'layouts/album_nav' %>
+<%    elsif current_user  
+         #this loads a version of the top nav with the user header & main drawer -%>
+      <%= render :partial => 'layouts/user_nav'  %>
+<%    else  
+         #this loads a version of the top nav with the album header & sign-in/sign-up drawer -%>
+      <%= render :partial => 'layouts/new_nav' %>
+<%    end -%>
+        
         <article>
 
           <%= yield :layout %>
@@ -71,29 +80,27 @@
       </ul>
     </div>
     
-    <script type="text/javascript" src="/javascripts/lib/jquery.js" ></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript"></script>
     <script type="text/javascript" src="/javascripts/lib/jquery.validate.js" ></script>
-    <script type="text/javascript" src="/javascripts/lib/jquery.autocomplete.js"></script>
     <script type="text/javascript" src="/javascripts/lib/jquery.lazyload.mini.js"></script>
-    <script type="text/javascript" src="/javascripts/lib/jquery.client.js"></script>
+
 
     <script type="text/javascript" src="/javascripts/lib/jquery.ba-bbq.js"></script>
     <script type="text/javascript" src="/javascripts/lib/jquery.jsonp.js"></script>
     <script type="text/javascript" src="/javascripts/lib/jquery.cookie.js"></script>
     <script type="text/javascript" src="/javascripts/agent.js"></script>
     <script type="text/javascript" src="/javascripts/server.js"></script>
-    <script type="text/javascript" src="/javascripts/logging.js"></script>
-    <script type="text/javascript" src="/javascripts/imageloader.js"></script>
 
-    <script type="text/javascript" src="/javascripts/zz/zz.core.js" ></script>
-    <script type="text/javascript" src="/javascripts/zz/zz.inits.js" ></script>
-    <script type="text/javascript" src="/javascripts/zz/zz.validate.js" ></script>
-    <script type="text/javascript" src="/javascripts/zz/zz.wizard.js" ></script>
-    <script type="text/javascript" src="/javascripts/zz/zz.drawers.js" ></script>
-    <script type="text/javascript" src="/javascripts/zz/zz.toolbars.js" ></script>
+    <script type="text/javascript" src="/javascripts/zz/zang.core.js" ></script>
+    <script type="text/javascript" src="/javascripts/zz/zang.inits.js" ></script>
+    <script type="text/javascript" src="/javascripts/zz/zang.validate.js" ></script>
+    <script type="text/javascript" src="/javascripts/zz/zang.zing.wizard.js" ></script>
+    <script type="text/javascript" src="/javascripts/zz/zang.zing.drawers.js" ></script>
 
     <script type="text/javascript" src="/javascripts/filechooser.js" ></script>
     <script type="text/javascript" src="/javascripts/oauthmanager.js" ></script>
+    <script type="text/javascript" src="/javascripts/logging.js"></script>
+    <script type="text/javascript" src="/javascripts/imageloader.js"></script>
     <script type="text/javascript" src="/javascripts/sharecontacts.js" ></script>
 
 <%  # Add in template based javascript by defining this in the template
@@ -104,49 +111,48 @@
       /* Vars our js fns need from ruby (calls/conditionals) - NO SECURE DATA
       ----------------------------------------------------------------------- */
 <%    if signed_in?  -%>
-      zz.current_user_id = '<%= current_user.id %>';
-      zz.current_user_name = '<%= current_user.username %>';
-
-<%    end -%>
-
-<%  if @album  -%>
-      zz.album_id = '<%= @album.id %>';
-      zz.album_type = '<%= @album.type %>';
-      zz.album_type = zz.album_type.split('Album')[0].toLowerCase();
+      zang.zing.user_id = '<%= current_user.id %>';
+<%    end -%><%  if @album  -%>
+      zang.zing.album_id = '<%= @album.id %>';
+      zang.zing.album_type = '<%= @album.type %>';
+      zang.zing.album_type = zang.zing.album_type.split('Album')[0].toLowerCase();
 <%    end
       # This is where we pass things on to js that we need from ruby.
       # Remember to use the zz.zang namespace.
 -%>
-      zz.base = '<%= request.env['HTTP_HOST'] %>';
+      zang.zing.base = '<%= request.env['HTTP_HOST'] %>';
 
       /* Fire up our inits starting up the entire waxy ball!!
       ----------------------------------------------------------------------- */
       (function($) {
 
       $(function() {
-            zz.init.template();
+      <%      # This will become dynamic, allowing us to load the right event handlers based on what page we're on. -%>
+      <%    if current_user  %>
+            zang.init.template();
+      <%    else %>
+            zang.init.new_user();
+      <% end %>
 
-      <%if controller.controller_name == 'photos' -%>
-            zz.init.album();
+      <%if controller.controller_name == 'albums' -%>
+            zang.init.album();
       <%end%>
 
       <%if (controller.controller_name == 'activities' ||  controller.controller_name == 'people') && controller.action_name == 'album_index' -%>
-            zz.init.album_timeline_view();
+            zang.init.album_timeline_view();
       <%end%>
        });
        $(window).bind("load", function() {
 <%      # Same here... -%>
-          setTimeout('zz.init.loaded()', 64);
+          setTimeout('zang.init.loaded()', 64);
         });
 
         $(window).bind("resize", function() {
 <%      # And here... -%>
-          zz.init.resized();
+          zang.init.resized();
         });
 
       })(jQuery);
     </script>
-
-
   </body>
 </html>

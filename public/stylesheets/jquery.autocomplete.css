@@ -1,3 +1,8 @@
+input.ac_input{
+    font-size: 1.2em;
+}
+
+
 .ac_results {
 	padding: 0px;
 	border: 1px solid WindowFrame;

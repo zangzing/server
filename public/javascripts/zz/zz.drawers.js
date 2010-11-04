@@ -41,7 +41,7 @@ zz.drawers = {
 
             name: {
                 next: 'edit',
-                title: 'Name Album',
+                title: 'Name',
                 type: 'full',
                 url: '/albums/$$/name_album',
                 url_type: 'album',
@@ -58,7 +58,7 @@ zz.drawers = {
 
             edit: {
                 next: 'privacy',
-                title: 'Edit Album',
+                title: 'Edit',
                 type: 'partial',
                 url: '/albums/$$/edit',
                 url_type: 'album',
@@ -162,7 +162,7 @@ zz.drawers = {
             name: {  //group album
                 id: 'name',
                 next: 'edit',
-                title: 'Name Album',
+                title: 'Name',
                 type: 'full',
                 url: '/albums/$$/name_album',
                 url_type: 'album',
@@ -177,7 +177,7 @@ zz.drawers = {
 
             edit: {
                 next: 'privacy',
-                title: 'Edit Album',
+                title: 'Edit',
                 type: 'partial',
                 url: '/albums/$$/edit',
                 url_type: 'album',

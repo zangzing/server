@@ -533,6 +533,8 @@ jQuery.autocomplete = function(input, options) {
 }
 
 jQuery.fn.autocomplete = function(url, options, data) {
+
+
 	// Make sure options exists
 	options = options || {};
 	// Set url as option
@@ -570,7 +572,7 @@ jQuery.fn.autocomplete = function(url, options, data) {
 }
 
 jQuery.fn.autocompleteArray = function(data, options) {
-	return this.autocomplete(null, options, data);
+    return this.autocomplete(null, options, data);
 }
 
 jQuery.fn.indexOf = function(e){

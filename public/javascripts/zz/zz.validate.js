@@ -53,7 +53,7 @@ zz.validate = {
     new_post_share: {
         element: '#new_post_share',
         rules: {
-            'post_share[message]': { required: true, minlength: 10, maxlength: 118 }
+            'post_share[message]': { required: true, minlength: 0, maxlength: 118 }
         },
         messages: {
             'post_share[message]': ''
@@ -71,8 +71,8 @@ zz.validate = {
     new_email_share: {
         element: '#new_email_share',
         rules: {
-            'email_share[to]': { required: true, minlength: 10 },
-            'email_share[message]': { required: true, minlength: 10 }
+            'email_share[to]': { required: true, minlength: 0 },
+            'email_share[message]': { required: true, minlength: 0 }
         },
         messages: {
             'email_share[to]': '',
@@ -92,7 +92,7 @@ zz.validate = {
     new_contributors: {
         element: '#new_contributors',
         rules: {
-            'email_share[message]': { required: true, minlength: 10, maxlength: 118 }
+            'email_share[message]': { required: true, minlength: 0}
         },
         messages: {
             'email_share[message]': ''
