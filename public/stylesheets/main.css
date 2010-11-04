@@ -1281,10 +1281,10 @@ div#drawer-content dl.form dd input#album_name{
   text-align: left;
   font-size: 1.8em;
   background-color: #fff;
-  border: solid 2px #afafaf;
+  border: 1px #8c8c8c solid;
 }
 
-div#drawer-content dl.form dd input#album_email {
+div#drawer-content input#album_email {
   margin_top: 50px;
   width: 500px;
   padding: 5px;
@@ -1296,7 +1296,7 @@ div#drawer-content dl.form dd input#album_email {
   border: none;
 }
 
-div#drawer-content dl.form dd input#album_name:focus {
+div#drawer-content :focus {
   box-shadow: 0px 0px 10px #FDD042;
   -webkit-box-shadow: 0px 0px 10px #FDD042;
   -moz-box-shadow: 0px 0px 10px #FDD042;
@@ -1373,6 +1373,13 @@ dl#social-form dd {
   float: left;
   margin-bottom: 10px;
 }
+
+
+dl#social-form dd#character-count {
+  float:right;
+  margin-right: 40px;
+}
+
 
 dl#social-form dd#post-text {
   width: 690px;

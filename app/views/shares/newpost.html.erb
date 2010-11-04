@@ -12,7 +12,9 @@
         <dd>Facebook</dd>
         <dt><input type="checkbox" name="post_share[twitter]" id="twitter_box"  value="1" <%=( @share.twitter == '1' ? "authorized='yes' checked='checked'" : "" )%>  /> <img src="/images/icon-twitter-16.png" /></dt>
         <dd>Twitter</dd>
+        <dt></dt><dd id="character-count">0 characters</dd>        
         <div class="clear-fix"></div>
+        
         <dt>Post</dt>
         <dd id="post-text"><textarea rows="3" name="post_share[message]" id="post_share_message"></textarea></dd>    
       </dl>  

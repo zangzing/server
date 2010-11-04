@@ -351,6 +351,21 @@ zz.wizard = {
                 $('#cancel-share').click(function(){
                     zz.wizard.reload_share(obj, id);
                 });
+                
+                $('#post_share_message').keypress( function(){
+                    setTimeout(function(){
+                        var text = 'characters';
+                        var count = $('#post_share_message').val().length
+                        if(count === 1){
+                            text = 'character';
+                        }
+                        $('#character-count').html(count + ' ' + text);
+                    }, 10);
+                });
+
+
+
+
                 $('div#share-body').fadeIn('fast');
             });
         });
