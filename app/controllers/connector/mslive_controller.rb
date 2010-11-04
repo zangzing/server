@@ -52,7 +52,7 @@ protected
       http.use_ssl = true
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
     end
-    request = http.get(service_uri.request_uri, 'Authorization' => "DelegatedToken dt=\"#{consent_token.delegationtoken}\"")
+    request = Net::HTTP::Get.new(service_uri.request_uri, 'Authorization' => "DelegatedToken dt=\"#{consent_token.delegationtoken}\"")
     begin
       response = http.request(request)
     rescue => e
