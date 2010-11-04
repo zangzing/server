@@ -2,5 +2,15 @@
 
 --- 
 development: 
-  :client_id: 000000004C037458 
-  :secret_key: hx8NNs3n54C5bnGcc8F9XiwGGfupXmhc
+  :client_id: xx
+  :secret_key: xxx
+
+
+eysandbox: 
+  :client_id: 000000004804221F
+  :secret_key: wNKEtVYRfY7Yy1wpq2JdKZExE1ZTRIIw
+
+
+eydevelopment: 
+  :client_id: 0000000048042120
+  :secret_key: l7wGkpBrRQQ5D1uBuFl1G2iBB1NyPdun
