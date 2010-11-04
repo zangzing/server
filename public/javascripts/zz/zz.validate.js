@@ -92,7 +92,7 @@ zz.validate = {
     new_contributors: {
         element: '#new_contributors',
         rules: {
-            'email_share[message]': { required: true, minlength: 0, maxlength: 0 }
+            'email_share[message]': { required: true, minlength: 0}
         },
         messages: {
             'email_share[message]': ''

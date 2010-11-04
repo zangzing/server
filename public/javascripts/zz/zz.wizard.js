@@ -384,6 +384,21 @@ zz.wizard = {
                 $('#the-list').click(function(){
                     $('#you-complete-me').focus();
                 });
+
+
+                //todo: move these into auto-complete widget
+                $('#you-complete-me').focus(function(){
+                    $('#the-list').addClass("focus");
+                });
+
+
+                $('#you-complete-me').blur(function(){
+                    $('#the-list').removeClass("focus");
+                });
+                
+                setTimeout(function(){$('#you-complete-me').focus();},100);
+                
+
                 $('div#share-body').fadeIn('fast');
             });
         });
@@ -517,6 +532,21 @@ zz.wizard = {
                         });
                     })
                 });
+
+
+                //todo: move these into auto-complete widget
+                $('#you-complete-me').focus(function(){
+                    $('#the-list').addClass("focus");
+                });
+
+
+                $('#you-complete-me').blur(function(){
+                    $('#the-list').removeClass("focus");
+                });
+
+                setTimeout(function(){$('#you-complete-me').focus();},100);
+
+
                 $('div#contributors-body').fadeIn('fast');
             });
         })
@@ -535,8 +565,10 @@ zz.wizard = {
             position_element: 'dd#the-list',
             append: '#drawer div.body',
             onItemSelect: zz.wizard.clone_recipient
+
+
         }
-                );
+        );
         //zz.address_list = '';
         logger.debug('end email_autocomplete');
 
