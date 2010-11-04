@@ -544,7 +544,9 @@ zz.wizard = {
                     $('#the-list').removeClass("focus");
                 });
 
-                setTimeout(function(){$('#you-complete-me').focus();},100);
+
+                //todo: for some reason this breaks auto-complete
+                //  setTimeout(function(){$('#you-complete-me').focus();},100);
 
 
                 $('div#contributors-body').fadeIn('fast');
