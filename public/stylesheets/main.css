@@ -405,7 +405,7 @@ ul#indicator-4, ul#indicator-5, ul#indicator-6 {
 }
 
 ul#indicator-6 {
-  padding-left: 10px;
+  padding-left: 15px;
 }
 
 /*ul.step-1-4 {*/
@@ -1567,7 +1567,7 @@ ul#the-recipients li.rounded input {
 }
 
 ul#the-recipients li#autocomplete {
-  height: 24px;
+  height: 36px;
   text-align: left;
   margin: 0;
   padding: 0;
