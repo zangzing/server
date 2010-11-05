@@ -561,7 +561,7 @@ zz.wizard = {
         logger.debug('start email_autocomplete');
 
         zz.autocompleter = $('#you-complete-me').autocompleteArray(
-                google_contacts.concat( yahoo_contacts.concat( local_contacts ) ),
+                google_contacts.concat( yahoo_contacts.concat( mslive_contacts.concat(local_contacts )) ),
         {
             width: 700,
             position_element: 'dd#the-list',
@@ -579,7 +579,7 @@ zz.wizard = {
     // reloads the autocompletetion data
     email_autocompleter_reload: function(){
         logger.debug('start email_autocompleter_reload');
-        zz.autocompleter[0].autocompleter.setData(google_contacts.concat( yahoo_contacts.concat( local_contacts ) ));
+        zz.autocompleter[0].autocompleter.setData(google_contacts.concat( yahoo_contacts.concat( mslive_contacts.concat(local_contacts )) ));
         logger.debug('end email_autocompleter_reload');
 
     },

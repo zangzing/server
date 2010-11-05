@@ -2,6 +2,7 @@
 <%
     @google_id = current_user.identity_for_google
     @yahoo_id  = current_user.identity_for_yahoo
+    @mslive_id  = current_user.identity_for_mslive
     @local_id  = current_user.identity_for_local
 %>
 $(document).ready( function(){
@@ -9,9 +10,22 @@ $(document).ready( function(){
                         "<%= @google_id.last_contact_refresh%>",
                          <%=( @yahoo_id.credentials_valid? ? 1 : 0 ) %> == 1,
                         "<%= @yahoo_id.last_contact_refresh%>",
+                         <%=( @mslive_id.credentials_valid? ? 1 : 0 ) %> == 1,
+                        "<%= @mslive_id.last_contact_refresh%>",
                          <%=( @local_id.credentials_valid? ? 1 : 0 ) %> == 1,
                         "<%= @local_id.last_contact_refresh%>");
 });
+
+mslive_contacts = [
+    <% @mslive_id.contacts.each do|contact| %>
+    ["<%=contact.name%> &lt;<%=contact.address%>&gt;","\"<%=contact.name.to_s%>\" <<%=contact.address%>>"],
+      ["<%=contact.address%>","\"<%=contact.name.to_s%>\" <<%=contact.address%>>"],
+    <% end %>
+    " +N"
+];
+
+
+
 yahoo_contacts = [
     <% @yahoo_id.contacts.each do|contact| %>
     ["<%=contact.name%> &lt;<%=contact.address%>&gt;","\"<%=contact.name.to_s%>\" <<%=contact.address%>>"],

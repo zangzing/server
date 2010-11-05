@@ -269,6 +269,15 @@ ActionController::Routing::Routes.draw do |map|
   end
   map.yahoo_contacts '/yahoo/contacts/:action', :namespace => 'connector', :controller => 'yahoo_contacts'
 
+  #Hotmail / MS Windows Live
+  map.with_options :namespace => 'connector', :controller => :mslive_sessions do |live|
+    live.new_mslive_session     '/mslive/sessions/new', :action  => 'new'
+    live.create_mslive_session  '/mslive/sessions/create', :action  => 'delauth'
+    live.destroy_mslive_session '/mslive/sessions/destroy', :action  => 'destroy'
+  end
+  map.mslive_contacts '/mslive/contacts/:action', :namespace => 'connector', :controller => 'mslive_contacts'
+
+
   #Twitter
   map.with_options :namespace => 'connector', :controller => :twitter_sessions do |tw|
     tw.new_twitter_session     '/twitter/sessions/new', :action  => 'new'
