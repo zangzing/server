@@ -2,7 +2,7 @@ source :gemcutter
 #source 'http://gems.github.com'
 
 # bundler requires these gems in all environments
-gem "bundler","0.9.26"
+gem "bundler","1.0.3"
 gem "rails", "2.3.5"
 gem "mysql"
 gem "sqlite3-ruby", :require => "sqlite3"
@@ -17,7 +17,7 @@ gem 'oauth',         '0.4.1'
 gem 'oauth-plugin',  '0.3.14'
 gem 'flickraw',      '0.8.2'
 gem 'authlogic',     '2.1.5'
-gem 'usesguid'
+gem 'usesguid',      :git => 'git://github.com/zangzing/usesguid.git'
 gem 'usesguid_migrations'
 gem 'actionmailer'
 gem 'vpim'
