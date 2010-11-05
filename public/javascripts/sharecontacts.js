@@ -1,5 +1,5 @@
 var sharecontacts = {
-    setup : function(hasGoogleId, googleLastImport, hasYahooId, yahooLastImport, hasLocalId, localLastImport ) {
+    setup : function(hasGoogleId, googleLastImport, hasYahooId, yahooLastImport, hasMsliveId, msliveLastImport, hasLocalId, localLastImport ) {
         logger.debug('in contacts setup')
         //console.log("in contacts setup");
         if (hasGoogleId) {
@@ -10,6 +10,16 @@ var sharecontacts = {
             $("#gmail-sync").attr('title', 'Authorize access to your gmail account and import contacts');
         }
 
+        
+        if (hasMsliveId) {
+            $("#mslive-sync").click(sharecontacts.call_mslive_import);
+            $("#mslive-sync").attr({title: 'Last import on:'+msliveLastImport, src: '/images/btn-mslive-on.png'});
+        } else {
+            $("#mslive-sync").click(sharecontacts.call_new_mslive_session);
+            $("#mslive-sync").attr('title', 'Authorize access to your mslive account and import contacts');
+        }
+        
+        
         if (hasYahooId) {
             $("#yahoo-sync").click(sharecontacts.call_yahoo_import);
             $("#yahoo-sync").attr({title: 'Last import on:'+yahooLastImport, src: '/images/btn-yahoo-on.png'});
@@ -124,6 +134,45 @@ var sharecontacts = {
         $("#gmail-sync").attr({disabled: '', src: '/images/btn-gmail-error.png', title: 'Unable to refresh gmail contacts at the moment. Please try later'});
     },
 
+
+    // ------ mslive CONTACTS ---------
+    call_new_mslive_session : function() {
+        $("#mslive-sync").attr('disabled', 'disabled');
+        oauthmanager.login('/mslive/sessions/new', sharecontacts.mslive_login_success);
+    },
+    mslive_login_success : function() {
+        $("#mslive-sync").unbind("click");
+        $("#mslive-sync").click(sharecontacts.call_mslive_import);
+        sharecontacts.call_mslive_import();
+    },
+    call_mslive_import : function() {
+        $("#mslive-sync").attr({disabled: 'disabled', src: '/images/btn-mslive-sync.png', title: 'Refreshing...'});
+        $.ajax({
+            dataType: 'json',
+            url: '/mslive/contacts/import',
+            success: sharecontacts.import_mslive_success,
+            error: sharecontacts.import_mslive_failure
+        });
+    },
+    import_mslive_success : function(cts) {
+        var full_address;
+        mslive_contacts = [];
+        for (var i = 0; i < cts.length; i++) {
+            full_address = '\"'+cts[i].name +'\"<' + cts[i].address + '>';
+            mslive_contacts.push([ cts[i].name, full_address]);
+            mslive_contacts.push([ cts[i].address, full_address]);
+        }
+        zz.wizard.email_autocompleter_reload();
+        $("#mslive-sync").attr('disabled', '');
+        $("#mslive-sync").attr('title', 'Last imported a second ago.');
+        $("#mslive-sync").attr('src', '/images/btn-mslive-on.png');
+    },
+    
+    import_mslive_failure : function( errors ){
+        $("#mslive-sync").attr({disabled: '', src: '/images/btn-mslive-error.png', title: 'Unable to refresh Hot Mail contacts at the moment. Please try later'});
+    },
+
+
     // ------ YAHOO CONTACTS ---------
     call_new_yahoo_session : function() {
         $("#yahoo-sync").attr('disabled', 'disabled');
@@ -161,6 +210,12 @@ var sharecontacts = {
         $("#yahoo-sync").attr({disabled: '', src: '/images/btn-yahoo-error.png', title: 'Unable to refresh yahoo contacts at the moment. Please try later'});
     },
 
+
+
+
+
+
+
     otlk_or_addbk :function(){
         if(  $.client.os =="Mac" ){
             return "addressbook";
@@ -172,5 +227,6 @@ var sharecontacts = {
 };
 var google_contacts = [];
 var yahoo_contacts = [];
+var mslive_contacts = [];
 var local_contacts = [];
 
