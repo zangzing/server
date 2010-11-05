@@ -54,8 +54,8 @@ class PhotosController < ApplicationController
 
 
       #todo: need to handle agent port and url templates in central place
-      @photo.source_thumb_url = "http://localhost:9090/albums/#{@album.id}/photos/:photo_id.thumb"
-      @photo.source_screen_url = "http://localhost:9090/albums/#{@album.id}/photos/:photo_id.screen"
+      @photo.source_thumb_url = "http://localhost:30777/albums/#{@album.id}/photos/:photo_id.thumb"
+      @photo.source_screen_url = "http://localhost:30777/albums/#{@album.id}/photos/:photo_id.screen"
 
       if @photo.save
 
