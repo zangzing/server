@@ -69,10 +69,6 @@
 # Code to accelerate a local development server was added and it may be removed for production TODO:
 #
 
-require 'paperclip'
-require 'delayed_job'
-require 'digest/md5'
-
 
 class Photo < ActiveRecord::Base
   usesguid
@@ -151,7 +147,8 @@ class Photo < ActiveRecord::Base
     # If an assigned image has been loaded with an image, reprocess and send to S3
     if self.assigned? && self.local_image_file_name_changed?
        self.state = 'loaded'
-       Delayed::CpuBoundJob.enqueue(S3UploadRequest.new(self.id))
+       #Delayed::CpuBoundJob.enqueue(S3UploadRequest.new(self.id))
+       ZZ::Async::S3Upload.enqueue( self.id )
     end
     logger.debug("queued for upload")
   end

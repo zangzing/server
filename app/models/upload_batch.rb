@@ -51,15 +51,16 @@ class UploadBatch < ActiveRecord::Base
   def finish
     if self.state == 'closed' && self.ready?
       #Notify contributor that upload batch is finished
-      msg = Notifier.create_upload_batch_finished( self)
-      Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(Notifier, :deliver, [msg] )
-
+      #msg = Notifier.create_upload_batch_finished( self)
+      #Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(Notifier, :deliver, [msg] )
+      ZZ::Async::Email.enqueue( :upload_batch_finished, self.id )
+      
       #If this user has any undelivered shares for this album, send them now
       shares = Share.find_all_by_user_id_and_album_id( user.id, self.album.id)
       shares.each { |s| s.deliver_later() } if shares
 
       #Update album picon
-      self.album.update_picon_later
+      self.album.queue_update_picon
 
       # Create Activity
       ua = UploadActivity.create( :user => self.user, :album => self.album, :upload_batch => self )
@@ -89,7 +90,8 @@ class UploadBatch < ActiveRecord::Base
     nb = user.upload_batches.create({:album_id => album.id})
     album.upload_batches << nb
     #schedule the closing of the batch 30 minutes from now
-    Delayed::IoBoundJob.enqueue(  Delayed::PerformableMethod.new( nb, :close, {} ) , 0 ,  30.minutes.from_now  );
+    # TODO: If needed use resque-scheduler to close batches
+    #Delayed::IoBoundJob.enqueue(  Delayed::PerformableMethod.new( nb, :close, {} ) , 0 ,  30.minutes.from_now  );
     return nb
   end
 end

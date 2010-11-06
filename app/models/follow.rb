@@ -45,8 +45,9 @@ class Follow < ActiveRecord::Base
   def socialize
     FollowActivity.factory( self.follower, self.followed)
     #Notify followed that she is being followed
-    msg = Notifier.create_you_are_being_followed( self.follower, self.followed)
-    Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(Notifier, :deliver, [msg] )
+    #msg = Notifier.create_you_are_being_followed( self.follower, self.followed)
+    #Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(Notifier, :deliver, [msg] )
+    ZZ::Async::Email.enqueue( :you_are_being_followed, follower.id, followed.id)
   end
     
 end

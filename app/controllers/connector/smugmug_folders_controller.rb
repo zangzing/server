@@ -28,7 +28,8 @@ class Connector::SmugmugFoldersController < Connector::SmugmugController
               :source_thumb_url => '/proxy?url=' + p[:smallurl],
               :source_screen_url => '/proxy?url=' + p[:x3largeurl]
       )
-      Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, p[:originalurl]))
+      #Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, p[:originalurl]))
+      ZZ::Async::GeneralImport.enqueue( photo.id,  p[:originalurl] )
       photos << photo
     end
 

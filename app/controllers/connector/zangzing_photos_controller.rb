@@ -34,7 +34,8 @@ class Connector::ZangzingPhotosController < Connector::ConnectorController
               :source_screen_url => source_photo.source_screen_url
     )
 
-    Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, source_photo.image.url))
+    #Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, source_photo.image.url))
+    ZZ::Async::GeneralImport.enqueue( photo.id, source_photo.image.url )
     render :json => photo.to_json
   end
 

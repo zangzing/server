@@ -34,7 +34,8 @@ class Connector::FlickrFoldersController < Connector::FlickrController
                 :source_screen_url => get_photo_url(p, :screen)
       )
 
-      Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, photo_url))
+      #Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, photo_url))
+      ZZ::Async::GeneralImport.enqueue( photo.id, photo_url )
       photos << photo
     end
 

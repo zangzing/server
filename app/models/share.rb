@@ -34,8 +34,8 @@ class Share < ActiveRecord::Base
   end
 
   def deliver_later
-     #Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(self, :deliver, [])
-     Delayed::IoBoundJob.enqueue LinkShareRequest.new(self.id, self.link_to_share)
+     #Delayed::IoBoundJob.enqueue LinkShareRequest.new(self.id, self.link_to_share)
+     ZZ::Async::SocialPost.enqueue( self.id, self.link_to_share )
   end
    
 end

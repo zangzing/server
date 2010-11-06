@@ -10,6 +10,12 @@ require 'rake/rdoctask'
 require 'tasks/rails'
 
 begin
+  require 'resque/tasks'
+rescue LoadError
+  STDERR.puts "Resque is not installed. Check your gemfile"
+end
+
+begin
   require 'delayed_job'
   require 'delayed/tasks'
 rescue LoadError

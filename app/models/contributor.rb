@@ -53,8 +53,9 @@ class Contributor < ActiveRecord::Base
   end
 
   def deliver_notification
-    msg = Notifier.create_contributors_added(self)
-    Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(Notifier, :deliver, [msg] )
+    #msg = Notifier.create_contributors_added(self)
+    #Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(Notifier, :deliver, [msg] )
+    ZZ::Async::Email.enqueue( :contributors_added, self.id )
   end
 
   private

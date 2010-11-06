@@ -30,7 +30,8 @@ class Connector::PicasaFoldersController < Connector::PicasaController
               :source_thumb_url => get_photo_url(entry.elements['media:group'], :thumb),
               :source_screen_url => get_photo_url(entry.elements['media:group'], :screen)
       )
-      Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, get_photo_url(entry.elements['media:group'], :full)))
+      #Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, get_photo_url(entry.elements['media:group'], :full)))
+      ZZ::Async::GeneralImport.enqueue( photo.id,  get_photo_url(entry.elements['media:group'], :full) )
       photos << photo
     end
     render :json => photos.to_json

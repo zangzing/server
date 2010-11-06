@@ -7,10 +7,11 @@ class Notifier < ActionMailer::Base
     @@zzfrom = '"ZangZing '+Rails.env.capitalize+' Environment" <do-not-reply@zangzing.com>'
   end
 
-  def contributors_added(contributor)
+  def contributors_added(contributor_id)
+    contributor = Contributor.find( contributor_id )
+    recipients   contributor.email
     from         contributor.album.long_email
     reply_to     contributor.album.long_email
-    recipients   contributor.email
     subject      "You have been invited to contribute photos to '#{contributor.album.name}'!"
     sent_on       Time.now
     content_type "multipart/mixed"
@@ -36,10 +37,11 @@ class Notifier < ActionMailer::Base
     attachment :content_type => 'text/x-vcard',:filename => 'album.vcf', :body =>vcard.to_s
   end
 
-  def upload_batch_finished( batch )
+  def upload_batch_finished( batch_id )
+    batch = UploadBatch.find( batch_id )
+    recipients   batch.user.email
     from         batch.album.long_email
     reply_to     batch.album.long_email
-    recipients   batch.user.email
     subject      "Your album "+batch.album.name+" is ready!"
     content_type "multipart/mixed"
 
@@ -63,52 +65,62 @@ class Notifier < ActionMailer::Base
     attachment :content_type => 'text/x-vcard',:filename => "#{batch.album.name}.vcf", :body =>vcard.to_s
   end
 
-  def album_shared_with_you(from_user,to_address,album, message)
+  def album_shared_with_you( share_id, recipient_address)
+    share = Share.find( share_id )
+    from_user = share.user
+    album     = share.album
+    message   = share.message
+    
+    recipients recipient_address
     from       @@zzfrom 
-    recipients to_address
     subject "#{from_user.name} has shared ZangZing album: #{album.name} with you."
     content_type "text/html"
     body     :from_user => from_user, :album => album, :message=>message  
   end
 
-  def you_are_being_followed( follower, followed)
-    from @@zzfrom
+  def you_are_being_followed( follower_id, followed_id )
+    follower = User.find( follower_id )
+    followed = User.find( follwoed_id )
     recipients followed.email
+    from @@zzfrom
     subject    "#{follower.name} thinks the world of you"
     content_type "text/html"
     body       :follower => follower, :followed =>followed
   end
 
-  def activation_instructions(user)
-      subject       "Account Activation Instructions for your ZangZing Account"
-      from          @@zzfrom
+  def activation_instructions(user_id)
+      user = User.find( user_id )
       recipients    user.email
+      from          @@zzfrom
+      subject       "Account Activation Instructions for your ZangZing Account"
       sent_on       Time.now
       content_type "text/html"
       body          :account_activation_url => activate_url(user.perishable_token)
   end
 
-  def password_reset_instructions(user)
-    subject       "ZangZing Password Reset Instructions"
-    from          @@zzfrom
+  def password_reset_instructions(user_id)
+    user = User.find( user_id )
     recipients    user.email
+    from          @@zzfrom
+    subject       "ZangZing Password Reset Instructions"
     sent_on       Time.now
     content_type "text/html"
     body          :edit_password_reset_url => edit_password_reset_url(user.perishable_token)
   end
 
-  def welcome(user)
+  def welcome(userid)
+    user = User.find( user_id )
+    recipients    user.email
     subject       "Welcome to ZangZing!"
     from          @@zzfrom
-    recipients    user.email
     sent_on       Time.now
     content_type "text/html"
     body          :root_url => root_url
   end
 
   def test_email( to )
-    from         @@zzfrom  
     recipients  to
+    from         @@zzfrom  
     subject     "Test from ZangZing #{Rails.env.capitalize} Environment"
     body        "this is the body of the test"
   end

@@ -41,7 +41,8 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
               :source_thumb_url => photo_data[:thumb].first,
               :source_screen_url => photo_data[:thumb].first
       )
-      Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, photo_data[:url].first))
+      #Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, photo_data[:url].first))
+      ZZ::Async::GeneralImport.enqueue( photo.id, photo_data[:url].first )
       photos << photo
     end
     render :json => photos
@@ -57,7 +58,8 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
             :source_thumb_url => photo_data[:thumb].first,
             :source_screen_url => photo_data[:thumb].first
     )
-    Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, photo_data[:url].first))
+    #Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, photo_data[:url].first))
+    ZZ::Async::GeneralImport.enqueue( photo.id, photo_data[:url].first )
     render :json => photo
   end
 

@@ -23,8 +23,9 @@ class EmailShare < Share
 
   def deliver
      if self.sent_at.nil?
-       self.recipients.each do |rec|
-        Notifier.deliver_album_shared_with_you(self.user,rec.address,self.album, self.message)
+       self.recipients.each do |recipient |
+        #Notifier.deliver_album_shared_with_you(self.user,rec.address,self.album, self.message)
+        ZZ::Async::Email.enqueue( :album_shared_with_you, self.id, recipient.address )
        end
        self.sent_at = Time.now
        self.save

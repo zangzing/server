@@ -78,7 +78,7 @@ class Album < ActiveRecord::Base
       self.cover_photo_id = photo.id if self.photos.find( photo )
     end
     self.save
-    self.update_picon_later
+    self.queue_update_picon
   end
 
   def update_picon
@@ -87,8 +87,9 @@ class Album < ActiveRecord::Base
       self.save
   end
   
-  def update_picon_later
-     Delayed::CpuBoundJob.enqueue Delayed::PerformableMethod.new(self, :update_picon, [] )
+  def queue_update_picon
+     #Delayed::CpuBoundJob.enqueue Delayed::PerformableMethod.new(self, :update_picon, [] )
+     ZZ::Async::UpdatePicon.enqueue( self.id )
   end
 
   def picon_url
