@@ -111,23 +111,17 @@ class User < ActiveRecord::Base
   # Generates a new perishable token for the notifier to use in a password reset request
   def deliver_password_reset_instructions!
       reset_perishable_token!
-      #msg = Notifier.create_password_reset_instructions(self)
-      #Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(Notifier, :deliver, [msg] )
       ZZ::Async::Email.enqueue( :password_reset_instructions, self.id )
   end
 
   def deliver_activation_instructions!
       reset_perishable_token!
-      # We may want to delay this action but we need to do it fast!
-      #msg = Notifier.create_activation_instructions(self)
-      #Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(Notifier, :deliver, [msg] )
+      # We may want to delay this action but we need to do it fast, maybe to its own queue!
       ZZ::Async::Email.enqueue( :activation_instructions, self.id )
   end
 
   def deliver_welcome!
      reset_perishable_token!
-     #msg = Notifier.create_welcome(self)
-     #Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(Notifier, :deliver, [msg] )
      ZZ::Async::Email.enqueue( :welcome, self.id )
   end
 

@@ -45,7 +45,7 @@ class Connector::KodakPhotosController < Connector::KodakController
             :source_thumb_url => p[PHOTO_SIZES[:thumb]].first,
             :source_screen_url => p[PHOTO_SIZES[:screen]].first
     )
-    #Delayed::IoBoundJob.enqueue(KodakImportRequest.new(photo.id, photo_url, connector.auth_token))
+    
     ZZ::Async::KodakImport.enqueue( photo.id, photo_url, connector.auth_token )
     render :json => photo.to_json
   end

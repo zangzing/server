@@ -29,7 +29,7 @@ class Connector::ZangzingFoldersController < Connector::ConnectorController
                 :source_screen_url => p.source_screen_url
       )
 
-      #Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, p.image.url))
+      
       ZZ::Async::GeneralImport.enqueue( photo.id,  p.image.url )
       photos << photo
     end

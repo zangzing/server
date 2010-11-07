@@ -39,7 +39,7 @@ class Connector::FlickrPhotosController < Connector::FlickrController
               :source_thumb_url => get_photo_url(info, :thumb),
               :source_screen_url => get_photo_url(info, :screen)
     )
-    #Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, photo_url))
+    
     ZZ::Async::GeneralImport.enqueue( photo.id, photo_url )
     render :json => photo.to_json
   end

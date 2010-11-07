@@ -47,7 +47,7 @@ class Connector::FacebookPhotosController < Connector::FacebookController
 
 
 
-    #Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, info[:source]))
+  
     ZZ::Async::GeneralImport.enqueue( photo.id, info[:source] )
     render :json => photo.to_json
   end

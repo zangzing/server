@@ -88,7 +88,6 @@ class Album < ActiveRecord::Base
   end
   
   def queue_update_picon
-     #Delayed::CpuBoundJob.enqueue Delayed::PerformableMethod.new(self, :update_picon, [] )
      ZZ::Async::UpdatePicon.enqueue( self.id )
   end
 

@@ -48,7 +48,7 @@
 # To improve speed of upload, the S3 backend loading and image processing is asynchronous.
 # - The photo uploaded into a tmp file by the web server.
 # - The tmp photo is stored into the local_image attachment attribute which is set for local storage no styles.
-# - Using an after_save callback an async call to upload_to_s3 is queued using delayed_job.
+# - Using an after_save callback an async call to upload_to_s3 is queued using resque.
 # - When the queued call is processed, the image attribute is set to local_image triggering paperclip
 #   to store and process image. The image attachment is set to store in S3 with styles.
 # - local_image is set to nil never to be used again =)
@@ -147,7 +147,6 @@ class Photo < ActiveRecord::Base
     # If an assigned image has been loaded with an image, reprocess and send to S3
     if self.assigned? && self.local_image_file_name_changed?
        self.state = 'loaded'
-       #Delayed::CpuBoundJob.enqueue(S3UploadRequest.new(self.id))
        ZZ::Async::S3Upload.enqueue( self.id )
     end
     logger.debug("queued for upload")

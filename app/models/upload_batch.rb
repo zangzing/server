@@ -51,8 +51,6 @@ class UploadBatch < ActiveRecord::Base
   def finish
     if self.state == 'closed' && self.ready?
       #Notify contributor that upload batch is finished
-      #msg = Notifier.create_upload_batch_finished( self)
-      #Delayed::IoBoundJob.enqueue Delayed::PerformableMethod.new(Notifier, :deliver, [msg] )
       ZZ::Async::Email.enqueue( :upload_batch_finished, self.id )
       
       #If this user has any undelivered shares for this album, send them now
@@ -90,8 +88,7 @@ class UploadBatch < ActiveRecord::Base
     nb = user.upload_batches.create({:album_id => album.id})
     album.upload_batches << nb
     #schedule the closing of the batch 30 minutes from now
-    # TODO: If needed use resque-scheduler to close batches
-    #Delayed::IoBoundJob.enqueue(  Delayed::PerformableMethod.new( nb, :close, {} ) , 0 ,  30.minutes.from_now  );
+    # TODO: If needed use resque-scheduler to close batches 30 minutes after they were open
     return nb
   end
 end

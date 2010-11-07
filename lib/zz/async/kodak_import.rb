@@ -1,7 +1,7 @@
 module ZZ
   module Async
 
-    class KodakImport < GeneralImportRequest
+    class KodakImport < GeneralImport
 
       def self.enqueue( photo_id, source_url, auth_token )
           super( photo_id, source_url, auth_token )

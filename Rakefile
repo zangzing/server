@@ -12,12 +12,6 @@ require 'tasks/rails'
 begin
   require 'resque/tasks'
 rescue LoadError
-  STDERR.puts "Resque is not installed. Check your gemfile"
+  STDERR.puts "Resque not installed. bundle install or gem install resque"
 end
 
-begin
-  require 'delayed_job'
-  require 'delayed/tasks'
-rescue LoadError
-  STDERR.puts "Run `rake gems:install` to install delayed_job"
-end

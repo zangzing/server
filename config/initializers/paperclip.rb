@@ -16,16 +16,6 @@ module Kernel
   end
 end
 
-# Monkey patch replacement for a regular expression used by delayed_job on IDs. The original did not work
-# with dashes in the id and since guid uses dashed then we monkey patch this version.
-# the original can be found inside  the delayed_job gem  lib/performable_method.rb line 12
-silence_warnings do
-  module Delayed
-    class PerformableMethod
-      STRING_FORMAT = /^LOAD\;([A-Z|-][\w\:]+)(?:\;([\w-]+))?$/
-    end
-  end
-end
 
 # Monkey load a method to recursively symbolize keys into the Hash class
 class Hash

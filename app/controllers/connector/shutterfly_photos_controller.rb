@@ -37,7 +37,7 @@ class Connector::ShutterflyPhotosController < Connector::ShutterflyController
             :source_thumb_url => get_photo_url(params[:photo_id],  :thumb),
             :source_screen_url => get_photo_url(params[:photo_id],  :screen)
     )
-    #Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, photo_url))
+    
     ZZ::Async::GeneralImport.enqueue( photo.id,  photo_url )
     render :json => photo.to_json
 

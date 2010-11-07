@@ -63,7 +63,7 @@ class Connector::FacebookFoldersController < Connector::FacebookController
       )
 
 
-      #Delayed::IoBoundJob.enqueue(GeneralImportRequest.new(photo.id, p[:source]))
+    
       ZZ::Async::GeneralImport.enqueue( photo.id, p[:source] )
       photos << photo
     end
