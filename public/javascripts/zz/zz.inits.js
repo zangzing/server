@@ -122,7 +122,10 @@ zz.init = {
 
         //update album upload status every 10 seconds
         var updateProgressMeter = function(){
-            upload_stats.stats_for_album(zz.album_id,100, function(time_remaining, percent_complete){
+
+            var photo_count = photos.length; //todo: photos shouln't be a global variable
+
+            upload_stats.stats_for_album(zz.album_id,photo_count, function(time_remaining, percent_complete){
                 percent_complete = Math.round(percent_complete);
 
                 if(percent_complete < 100 ){
