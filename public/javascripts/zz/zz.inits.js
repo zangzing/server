@@ -138,12 +138,17 @@ zz.init = {
 
                     $('#nav-status').css('background-image', 'url(/images/upload-'+ step +'.png)');
 
-                    var minutes_text = "Minutes...";
-                    if(minutes === 1){
-                        minutes_text = "Minute..."    
-                    }
 
-                    $('#nav-status').html(minutes + ' ' + minutes_text);
+                    if(minutes === Infinity){
+                        $('#nav-status').html("Calculating...");
+                    }
+                    else{
+                        var minutes_text = "Minutes...";
+                        if(minutes === 1){
+                            minutes_text = "Minute..."
+                        }
+                        $('#nav-status').html(minutes + ' ' + minutes_text);
+                    }
 
                     $('#nav-status').show();
                 }
