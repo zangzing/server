@@ -3,7 +3,7 @@ var upload_stats = {
     stats_for_album: function(album_id, photos_in_album, callback){
         agent.callAgent("/upload_status", function(json){
             var in_progress = json['uploads_in_progress'];
-            var in_queue = json['queued'].reverse();
+            var in_queue = json['queued'];
             var list = [];
 
             for(var i in in_progress){
