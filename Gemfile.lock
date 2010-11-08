@@ -23,8 +23,12 @@ GEM
       builder
       mime-types
       xml-simple
+    bitly (0.5.3)
+      crack (>= 0.1.4)
+      httparty (>= 0.5.2)
     builder (2.1.2)
     configuration (1.1.0)
+    crack (0.1.8)
     daemons (1.1.0)
     delayed_job (2.0.3)
       daemons
@@ -35,6 +39,8 @@ GEM
       json (>= 1.1.1)
     gdata (1.1.1)
     hpricot (0.8.2)
+    httparty (0.6.1)
+      crack (= 0.1.8)
     hyper-graph (0.3.1)
       json
     json (1.4.6)
@@ -99,6 +105,7 @@ DEPENDENCIES
   actionmailer
   authlogic (= 2.1.5)
   aws-s3 (>= 0.6.2)
+  bitly
   bundler (= 1.0.3)
   delayed_job (= 2.0.3)
   factory_girl
