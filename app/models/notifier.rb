@@ -8,7 +8,7 @@ class Notifier < ActionMailer::Base
   end
 
   def contributors_added(contributor)
-    from         @@zzfrom
+    from         contributor.album.long_email
     reply_to     contributor.album.long_email
     recipients   contributor.email
     subject      "You have been invited to contribute photos to '#{contributor.album.name}'!"
@@ -37,7 +37,7 @@ class Notifier < ActionMailer::Base
   end
 
   def upload_batch_finished( batch )
-    from         @@zzfrom
+    from         batch.album.long_email
     reply_to     batch.album.long_email
     recipients   batch.user.email
     subject      "Your album "+batch.album.name+" is ready!"
@@ -64,7 +64,7 @@ class Notifier < ActionMailer::Base
   end
 
   def album_shared_with_you(from_user,to_address,album, message)
-    from         @@zzfrom  
+    from       @@zzfrom 
     recipients to_address
     subject "#{from_user.name} has shared ZangZing album: #{album.name} with you."
     content_type "text/html"

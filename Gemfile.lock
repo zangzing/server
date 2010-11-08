@@ -1,219 +1,126 @@
---- 
-dependencies: 
-  faker: 
-    group: 
-    - :default
-    version: ">= 0"
-  rpm_contrib: 
-    group: 
-    - :default
-    version: ">= 0"
-  twitter_oauth: 
-    group: 
-    - :default
-    version: ">= 0"
-  rails: 
-    group: 
-    - :default
-    version: = 2.3.5
-  authlogic: 
-    group: 
-    - :default
-    version: = 2.1.5
-  oauth-plugin: 
-    group: 
-    - :default
-    version: = 0.3.14
-  mysql: 
-    group: 
-    - :default
-    version: ">= 0"
-  sqlite3-ruby: 
-    group: 
-    - :default
-    version: ">= 0"
-    require: 
-    - sqlite3
-  oauth: 
-    group: 
-    - :default
-    version: = 0.4.1
-  usesguid: 
-    group: 
-    - :default
-    version: ">= 0"
-  mechanize: 
-    group: 
-    - :test
-    version: ">= 0"
-  rspec: 
-    group: 
-    - :test
-    version: ">= 0"
-  hyper-graph: 
-    group: 
-    - :default
-    version: = 0.3.1
-    require: 
-    - hyper_graph
-  delayed_job: 
-    group: 
-    - :default
-    version: = 2.0.3
-  rspec-rails: 
-    group: 
-    - :test
-    version: ">= 1.3.2"
-  factory_girl: 
-    group: 
-    - :test
-    version: ">= 0"
-  usesguid_migrations: 
-    group: 
-    - :default
-    version: ">= 0"
-  paperclip: 
-    group: 
-    - :default
-    version: = 2.3.1.1
-  will_paginate: 
-    group: 
-    - :default
-    version: = 2.3.12
-  webrat: 
-    group: 
-    - :test
-    version: ">= 0"
-  bundler: 
-    group: 
-    - :default
-    version: = 0.9.26
-  gdata: 
-    group: 
-    - :default
-    version: = 1.1.1
-  actionmailer: 
-    group: 
-    - :default
-    version: ">= 0"
-  hpricot: 
-    group: 
-    - :default
-    version: ">= 0"
-  aws-s3: 
-    group: 
-    - :default
-    version: ">= 0.6.2"
-    require: 
-    - aws/s3
-  flickraw: 
-    group: 
-    - :default
-    version: = 0.8.2
-  launchy: 
-    group: 
-    - :test
-    version: ">= 0"
-  vpim: 
-    group: 
-    - :default
-    version: ">= 0"
-specs: 
-- rake: 
-    version: 0.8.7
-- activesupport: 
-    version: 2.3.5
-- rack: 
-    version: 1.0.1
-- actionpack: 
-    version: 2.3.5
-- actionmailer: 
-    version: 2.3.5
-- activerecord: 
-    version: 2.3.5
-- activeresource: 
-    version: 2.3.5
-- authlogic: 
-    version: 2.1.5
-- builder: 
-    version: 2.1.2
-- mime-types: 
-    version: "1.16"
-- xml-simple: 
-    version: 1.0.12
-- aws-s3: 
-    version: 0.6.2
-- bundler: 
-    version: 0.9.26
-- configuration: 
-    version: 1.1.0
-- daemons: 
-    version: 1.1.0
-- delayed_job: 
-    version: 2.0.3
-- diff-lcs: 
-    version: 1.1.2
-- factory_girl: 
-    version: 1.3.2
-- faker: 
-    version: 0.3.1
-- json: 
-    version: 1.4.6
-- flickraw: 
-    version: 0.8.2
-- gdata: 
-    version: 1.1.1
-- hpricot: 
-    version: 0.8.2
-- hyper-graph: 
-    version: 0.3.1
-- launchy: 
-    version: 0.3.7
-- nokogiri: 
-    version: 1.4.3.1
-- mechanize: 
-    version: 1.0.0
-- mysql: 
-    version: 2.8.1
-- newrelic_rpm: 
-    version: 2.13.2
-- oauth: 
-    version: 0.4.1
-- oauth-plugin: 
-    version: 0.3.14
-- paperclip: 
-    version: 2.3.1.1
-- rack-test: 
-    version: 0.5.6
-- rails: 
-    version: 2.3.5
-- rpm_contrib: 
-    version: 1.0.12
-- rspec-core: 
-    version: 2.0.1
-- rspec-expectations: 
-    version: 2.0.1
-- rspec-mocks: 
-    version: 2.0.1
-- rspec: 
-    version: 2.0.1
-- rspec-rails: 
-    version: 2.0.1
-- sqlite3-ruby: 
-    version: 1.3.1
-- twitter_oauth: 
-    version: 0.4.3
-- usesguid: 
-    version: 1.0.0
-- usesguid_migrations: 
-    version: 1.0.3
-- vpim: 
-    version: "0.695"
-- webrat: 
-    version: 0.7.2
-- will_paginate: 
-    version: 2.3.12
-hash: 7e25a5cb8d63ece4371459c926f1cf1ecfb88dc0
-sources: 
-- Rubygems: 
-    uri: http://gemcutter.org
+GIT
+  remote: git://github.com/zangzing/usesguid.git
+  revision: 9f688f1fb3ff56d021a2d1fca852a467e7dd2857
+  specs:
+    usesguid (1.0.0)
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    actionmailer (2.3.5)
+      actionpack (= 2.3.5)
+    actionpack (2.3.5)
+      activesupport (= 2.3.5)
+      rack (~> 1.0.0)
+    activerecord (2.3.5)
+      activesupport (= 2.3.5)
+    activeresource (2.3.5)
+      activesupport (= 2.3.5)
+    activesupport (2.3.5)
+    authlogic (2.1.5)
+      activesupport
+    aws-s3 (0.6.2)
+      builder
+      mime-types
+      xml-simple
+    builder (2.1.2)
+    configuration (1.1.0)
+    daemons (1.1.0)
+    delayed_job (2.0.3)
+      daemons
+    diff-lcs (1.1.2)
+    factory_girl (1.3.2)
+    faker (0.3.1)
+    flickraw (0.8.2)
+      json (>= 1.1.1)
+    gdata (1.1.1)
+    hpricot (0.8.2)
+    hyper-graph (0.3.1)
+      json
+    json (1.4.6)
+    launchy (0.3.7)
+      configuration (>= 0.0.5)
+      rake (>= 0.8.1)
+    mechanize (1.0.0)
+      nokogiri (>= 1.2.1)
+    mime-types (1.16)
+    mysql (2.8.1)
+    newrelic_rpm (2.13.3)
+    nokogiri (1.4.3.1)
+    oauth (0.4.1)
+    oauth-plugin (0.3.14)
+      oauth (>= 0.3.5)
+    paperclip (2.3.1.1)
+    rack (1.0.1)
+    rack-test (0.5.6)
+      rack (>= 1.0)
+    rails (2.3.5)
+      actionmailer (= 2.3.5)
+      actionpack (= 2.3.5)
+      activerecord (= 2.3.5)
+      activeresource (= 2.3.5)
+      activesupport (= 2.3.5)
+      rake (>= 0.8.3)
+    rake (0.8.7)
+    rpm_contrib (1.0.13)
+      newrelic_rpm (>= 2.13.1)
+    rspec (2.0.1)
+      rspec-core (~> 2.0.1)
+      rspec-expectations (~> 2.0.1)
+      rspec-mocks (~> 2.0.1)
+    rspec-core (2.0.1)
+    rspec-expectations (2.0.1)
+      diff-lcs (>= 1.1.2)
+    rspec-mocks (2.0.1)
+      rspec-core (~> 2.0.1)
+      rspec-expectations (~> 2.0.1)
+    rspec-rails (2.0.1)
+      rspec (~> 2.0.0)
+    sqlite3-ruby (1.3.2)
+    twitter_oauth (0.4.3)
+      json (>= 1.1.9)
+      mime-types (>= 1.16)
+      oauth (>= 0.4.1)
+    usesguid_migrations (1.0.3)
+      activerecord (>= 2.3)
+      usesguid
+    vpim (0.695)
+    webrat (0.7.2)
+      nokogiri (>= 1.2.0)
+      rack (>= 1.0)
+      rack-test (>= 0.5.3)
+    will_paginate (2.3.12)
+    xml-simple (1.0.12)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  actionmailer
+  authlogic (= 2.1.5)
+  aws-s3 (>= 0.6.2)
+  bundler (= 1.0.3)
+  delayed_job (= 2.0.3)
+  factory_girl
+  faker
+  flickraw (= 0.8.2)
+  gdata (= 1.1.1)
+  hpricot
+  hyper-graph (= 0.3.1)
+  launchy
+  mechanize
+  mysql
+  oauth (= 0.4.1)
+  oauth-plugin (= 0.3.14)
+  paperclip (= 2.3.1.1)
+  rails (= 2.3.5)
+  rpm_contrib
+  rspec
+  rspec-rails (>= 1.3.2)
+  sqlite3-ruby
+  twitter_oauth
+  usesguid!
+  usesguid_migrations
+  vpim
+  webrat
+  will_paginate (= 2.3.12)

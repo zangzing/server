@@ -297,9 +297,11 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   #logs
-  map.with_options :controller => :logs do |logs|
-    logs.logs '/logs', :action => "index"
-    logs.log_retrieve '/logs/:logname', :action => :retrieve
+  
+  unless Rails.env.production?
+    map.with_options :controller => :logs do |logs|
+      logs.logs '/logs', :action => "index"
+      logs.log_retrieve '/logs/:logname', :action => :retrieve
+    end
   end
-
 end

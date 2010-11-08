@@ -809,7 +809,7 @@ var tray = {
             }
         });
 
-        //todo: if local photo, need to cancel from agent upload -- http://localhost:9090/albums/:album_id/photos/:photo_id/cancel_upload
+        //todo: if local photo, need to cancel from agent upload -- http://localhost:30777/albums/:album_id/photos/:photo_id/cancel_upload
     },
 
     on_delete_photo :function(photo_id) {
