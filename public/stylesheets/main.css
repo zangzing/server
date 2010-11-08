@@ -12,10 +12,10 @@ body {
   font-size: 62.5%;
   color: #0a0a0a;
   /* the following fixes that annoying tell-tale js animation flicker */
-  opacity: 0.99999; 
-  -moz-opacity: 0.99999; 
-  -html-opacity: 0.99999;
-  filter: alpha(opacity=99);
+  /*opacity: 0.99999; */
+  /*-moz-opacity: 0.99999; */
+  /*-html-opacity: 0.99999;*/
+  /*filter: alpha(opacity=99);*/
   text-align: center;
 }
 
