@@ -297,6 +297,7 @@ input[type=text], input[type=password], input[type=checkbox] , textarea{
 
 input[type=text]:focus, input[type=password]:focus, input[type=checkbox]:focus , textarea:focus{
     border: solid 1px #FDD042;
+    outline: none;
     box-shadow: 0px 0px 10px #FDD042;
     -webkit-box-shadow: 0px 0px 10px #FDD042;
     -moz-box-shadow: 0px 0px 10px #FDD042;
