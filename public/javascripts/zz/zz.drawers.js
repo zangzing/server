@@ -106,7 +106,7 @@ zz.drawers = {
 
             share: {
                 next: 0,
-                title: 'Share Album',
+                title: 'Share',
                 type: 'full',
                 url: '/albums/$$/shares/new',
                 url_type: 'album',
@@ -245,7 +245,7 @@ zz.drawers = {
 
             share: {
                 next: 0,
-                title: 'Share Album',
+                title: 'Share',
                 type: 'full',
                 url: '/albums/$$/shares/new',
                 url_type: 'album',
