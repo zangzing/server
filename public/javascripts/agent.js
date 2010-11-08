@@ -27,9 +27,10 @@ var agent = {
 
 
     isAgentUrl: function(url){
-        return url.indexOf('http://localhost:' + agent.port) === 0;
+        return url.indexOf('http://localhost:') === 0;
     },
 
+    /* path may be full url or just path portion */
     buildAgentUrl: function(path){
         var url = '';
         if(! agent.isAgentUrl(path)){
@@ -37,6 +38,10 @@ var agent = {
         }
 
         url += path;
+
+
+        //fix agent port
+        url = url.replace(/http:\/\/localhost:[^\/]*/,"http://localhost:" + agent.port);
 
         if(url.indexOf('session=') === -1)
         {
