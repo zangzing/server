@@ -1,0 +1,736 @@
+/* Drawer/Wizard Tabs
+----------------------------------------------------------------------------- */
+
+ul#clone-indicator {
+  display: none;
+}
+
+ul#indicator-4, ul#indicator-5, ul#indicator-6 {
+  width: 898px;
+  height: 36px;
+  margin-top: 4px;
+  padding-left: 14px;
+}
+
+ul#indicator-6 {
+  padding-left: 15px;
+}
+
+/*ul.step-1-4 {*/
+  /*background-image: url("/images/bg-4step-strip-1.png");*/
+  /*background-repeat: no-repeat;*/
+/*}*/
+
+/*ul.step-2-4 {*/
+  /*background-image: url("/images/bg-4step-strip-2.png");*/
+  /*background-repeat: no-repeat;*/
+/*}*/
+
+/*ul.step-3-4 {*/
+  /*background-image: url("/images/bg-4step-strip-3.png");*/
+  /*background-repeat: no-repeat;*/
+/*}*/
+
+/*ul.step-4-4 {*/
+  /*background-image: url("/images/bg-4step-strip-4.png");*/
+  /*background-repeat: no-repeat;*/
+/*}*/
+
+/*ul.edit-1-4 {*/
+  /*background-image: url("/images/bg-4step-strip-1.png");*/
+  /*background-repeat: no-repeat;*/
+/*}*/
+
+/*ul.edit-2-4 {*/
+  /*background-image: url("/images/bg-4step-strip-2.png");*/
+  /*background-repeat: no-repeat;*/
+/*}*/
+
+/*ul.edit-3-4 {*/
+  /*background-image: url("/images/bg-4step-strip-3.png");*/
+  /*background-repeat: no-repeat;*/
+/*}*/
+
+/*ul.edit-4-4 {*/
+  /*background-image: url("/images/bg-4step-strip-4.png");*/
+  /*background-repeat: no-repeat;*/
+/*}*/
+
+
+ul.step-1-5 {
+  background-image: url("/images/bg-5step-strip-1.png");
+  background-repeat: no-repeat;
+}
+
+ul.step-2-5 {
+  background-image: url("/images/bg-5step-strip-2.png");
+  background-repeat: no-repeat;
+}
+
+ul.step-3-5 {
+  background-image: url("/images/bg-5step-strip-3.png");
+  background-repeat: no-repeat;
+}
+
+ul.step-4-5 {
+  background-image: url("/images/bg-5step-strip-4.png");
+  background-repeat: no-repeat;
+}
+
+ul.step-5-5 {
+  background-image: url("/images/bg-5step-strip-5.png");
+  background-repeat: no-repeat;
+}
+
+ul.edit-1-5 {
+  background-image: url("/images/bg-5step-edit-1.png");
+  background-repeat: no-repeat;
+}
+
+ul.edit-2-5 {
+  background-image: url("/images/bg-5step-edit-2.png");
+  background-repeat: no-repeat;
+}
+
+ul.edit-3-5 {
+  background-image: url("/images/bg-5step-edit-3.png");
+  background-repeat: no-repeat;
+}
+
+ul.edit-4-5 {
+  background-image: url("/images/bg-5step-edit-4.png");
+  background-repeat: no-repeat;
+}
+
+ul.edit-5-5 {
+  background-image: url("/images/bg-5step-edit-5.png");
+  background-repeat: no-repeat;
+}
+
+ul.step-1-6 {
+  background-image: url("/images/bg-6step-strip-1.png");
+  background-repeat: no-repeat;
+}
+
+ul.step-2-6 {
+  background-image: url("/images/bg-6step-strip-2.png");
+  background-repeat: no-repeat;
+}
+
+ul.step-3-6 {
+  background-image: url("/images/bg-6step-strip-3.png");
+  background-repeat: no-repeat;
+}
+
+ul.step-4-6 {
+  background-image: url("/images/bg-6step-strip-4.png");
+  background-repeat: no-repeat;
+}
+
+ul.step-5-6 {
+  background-image: url("/images/bg-6step-strip-5.png");
+  background-repeat: no-repeat;
+}
+
+ul.step-6-6 {
+  background-image: url("/images/bg-6step-strip-6.png");
+  background-repeat: no-repeat;
+}
+
+ul.edit-1-6 {
+  background-image: url("/images/bg-6step-edit-1.png");
+  background-repeat: no-repeat;
+}
+
+ul.edit-2-6 {
+  background-image: url("/images/bg-6step-edit-2.png");
+  background-repeat: no-repeat;
+}
+
+ul.edit-3-6 {
+  background-image: url("/images/bg-6step-edit-3.png");
+  background-repeat: no-repeat;
+}
+
+ul.edit-4-6 {
+  background-image: url("/images/bg-6step-edit-4.png");
+  background-repeat: no-repeat;
+}
+
+ul.edit-5-6 {
+  background-image: url("/images/bg-6step-edit-5.png");
+  background-repeat: no-repeat;
+}
+
+ul.edit-6-6 {
+  background-image: url("/images/bg-6step-edit-6.png");
+  background-repeat: no-repeat;
+}
+
+ul#indicator-4 li {
+  float: left;
+  padding: 8px 19px 0 0;
+  width: 179px;
+  font-size: 1.3em;
+  font-weight: 400;
+  color: #646464;
+  text-align: center;
+  text-transform: uppercase;
+  cursor: pointer;
+  overflow: hidden;
+  height: 19px;
+}
+
+
+ul#indicator-5 li {
+  float: left;
+  padding: 8px 19px 0 0;
+  width: 139px;
+  font-size: 1.3em;
+  font-weight: 400;
+  color: #646464;
+  text-align: center;
+  text-transform: uppercase;
+  cursor: pointer;
+  overflow: hidden;
+  height: 19px;
+}
+
+ul#indicator-6 li {
+  float: left;
+  padding: 8px 18px 0 0;
+  width: 115px;
+  font-size: 1.2em;
+  font-weight: 400;
+  color: #646464;
+  text-align: center;
+  text-transform: uppercase;
+  cursor: pointer;
+  overflow: hidden;
+  height: 19px;
+}
+
+
+ul#indicator-4 li img.num, ul#indicator-5 li img.num, ul#indicator-6 li img.num {
+  vertical-align: -40%;
+}
+
+ul#indicator-4 li a, ul#indicator-5 li a, ul#indicator-6 li a {
+  color: #646464;
+  text-decoration: none;
+}
+
+ul#indicator-4 li.on a, ul#indicator-5 li.on a, ul#indicator-6 li.on a {
+  color: #fff;
+}
+
+ul#indicator-4 li#step-btn, ul#indicator-5 li#step-btn, ul#indicator-6 li#step-btn {
+  width: 66px;
+  text-align: center;
+  padding-top: 3px;
+  padding-left: 2px;
+  height: 34px;
+}
+
+ul#indicator-4 li.on, ul#indicator-5 li.on, ul#indicator-6 li.on {
+  color: #fff;
+}
+
+#next-step {
+  cursor: pointer;
+  padding: 1px;
+}
+
+
+ul#indicator-6 #next-step {
+  padding: 0;
+}
+
+
+
+/* Create Album
+----------------------------------------------------------------------------- */
+div#drawer-content div#top-section {
+  padding: 0px 10px;
+  width: 840px;
+  margin: 15px 0 5px;
+  height: 75px;
+}
+
+div#drawer-content div#scroll-body {
+  overflow-y: auto;
+  height: 0px;
+  width: 898px;
+}
+
+div#top-section #equalizer {
+  width: 91px;
+  float: right;
+}
+
+
+
+
+
+
+/* Album Type
+-----------------------------------------------------------------------------*/
+
+ul#choose-album-type {
+  width: 830px;
+  margin: 30px auto 0;
+}
+
+ul#choose-album-type li {
+  float: left;
+  width: 151px;
+  height: 294px;
+  background-image: url('/images/bg-album-type.png');
+  background-repeat: no-repeat;
+  text-align: center;
+  margin: 0 5px;
+  padding: 40px 20px 0;
+  color: #686868;
+}
+
+ul#choose-album-type li:hover {
+  background-image: url('/images/bg-album-type-selected.png');
+}
+
+ul#choose-album-type li img {
+  margin-bottom: 30px;
+}
+
+ul#choose-album-type li p {
+  margin-bottom: 15px;
+  line-height: 1.1em;
+}
+
+ul#choose-album-type li div {
+  height: 90px;
+  margin-bottom: 10px;
+}
+
+
+
+/* Album Privacy
+---------------------------------------------------------------------*/
+
+
+
+ul#privacy-menu {
+  width: 660px;
+  margin: 0 auto;
+}
+
+ul#privacy-menu li {
+  float: left;
+  width: 170px;
+  height: 180px;
+  padding: 110px 20px 10px;
+  margin: 0 5px;
+  color: #686868;
+  cursor: pointer;
+}
+
+ul#privacy-menu li div {
+  height: 100px;
+}
+
+ul#privacy-menu li p {
+  margin-bottom: 20px;
+  line-height: 1.3em;
+}
+
+ul#privacy-menu li#privacy-public {
+  background: url(/images/bg-privacy-public-off.png) no-repeat;
+}
+
+ul#privacy-menu li#privacy-hidden {
+  background: url(/images/bg-privacy-private-off.png) no-repeat;
+}
+
+ul#privacy-menu li#privacy-password {
+  background: url(/images/bg-privacy-password-off.png) no-repeat;
+}
+
+ul#privacy-menu li#privacy-public:hover {
+  background: url(/images/bg-privacy-public-on.png) no-repeat;
+}
+
+ul#privacy-menu li#privacy-hidden:hover {
+  background: url(/images/bg-privacy-private-on.png) no-repeat;
+}
+
+ul#privacy-menu li#privacy-password:hover {
+  background: url(/images/bg-privacy-password-on.png) no-repeat;
+}
+
+
+
+
+
+
+
+
+div#drawer-content h3 {
+  font-size: 1.7em;
+  font-weight: 500;
+  color: #0a0a0a;
+}
+
+div#drawer-content h4 {
+  font-size: 1.4em;
+  font-weight: 500;
+  margin-bottom: 15px;
+  color: #0a0a0a;
+}
+
+span.h4 {
+  font-size: 1.4em;
+  font-weight: 500;
+  color: #0a0a0a;
+  line-height: 2.2em;
+}
+
+div#drawer-content .album-header {
+  margin: 25px auto 45px;
+  width: 600px;
+  min-height: 75px;
+  line-height: 1.4em;
+  background-image: url('/images/faux-hr.png');
+  background-position: bottom center;
+  background-repeat: no-repeat;
+}
+
+div#drawer-content #top-section .album-header,
+div#drawer-content #top-section .album-header-off {
+  margin: 0 auto 0;
+}
+
+div#drawer-content .album-header-off h3, div#drawer-content .album-header-off h4,
+div#drawer-content .album-header h3, div#drawer-content .album-header h4 {
+  margin-bottom: 20px;
+}
+
+div#drawer-content .album-header-off {
+  margin: 25px auto 25px;
+  width: 600px;
+  min-height: 50px;
+  line-height: 1.4em;
+  background-image: none;
+}
+
+div#drawer-content dl.form {
+  width: 800px;
+  margin: 0 auto 30px;
+}
+
+div#drawer-content dl.form dt {
+  float: left;
+  font-size: 1.8em;
+  color: #0a0a0a;
+  text-align: right;
+  width: 180px;
+  margin-right: 20px;
+  padding-top: 7px;
+}
+
+div#drawer-content dl.form dd {
+  float: left;
+  width: 600px;
+  text-align: left;
+}
+
+div#drawer-content dl.form dd input#album_name{
+  width: 500px;
+  /*padding: 5px;*/
+  /*text-align: left;*/
+  /*font-size: 1.8em;*/
+  /*background-color: #fff;*/
+  /*border: 1px #8c8c8c solid;*/
+}
+
+div#drawer-content input#album_email {
+  margin_top: 50px;
+  width: 500px;
+  /*padding: 5px;*/
+  /*text-align: left;*/
+  /*font-size: 1.8em;*/
+  /*font-weight: bold;*/
+  /*background-color: #fff;*/
+  color: #a4a4a4;
+  border: none;
+}
+
+/*div#drawer-content :focus {*/
+  /*box-shadow: 0px 0px 10px #FDD042;*/
+  /*-webkit-box-shadow: 0px 0px 10px #FDD042;*/
+  /*-moz-box-shadow: 0px 0px 10px #FDD042;*/
+  /*filter: progid:DXImageTransform.Microsoft.dropShadow(color=#FDD042, offX=2, offY=2, positive=true);*/
+/*}*/
+
+ul#share-pick {
+  width: 410px;
+  margin: 20px auto;
+}
+
+ul#share-pick li {
+  float: left;
+  width: 50%;
+  height: 260px;
+  text-align: center;
+  font-size: 1.4em;
+}
+
+ul#share-pick li.social-share {
+  background: url(/images/btn-share-by-post.png) center center no-repeat;
+}
+
+ul#share-pick li.social-share:hover {
+  background: url(/images/btn-share-by-post-on.png) center center no-repeat;
+}
+
+ul#share-pick li.email-share {
+  background: url(/images/btn-share-by-email.png) center center no-repeat;
+}
+
+ul#share-pick li.email-share:hover {
+  background: url(/images/btn-share-by-email-on.png) center center no-repeat;
+}
+
+ul#share-pick li a {
+  color: #646464;
+}
+
+ul#share-pick li img {
+  margin-bottom: 10px;
+}
+
+div#form-container {
+  width: 800px;
+  margin: 20px auto;
+  font-size: 1.4em;
+}
+
+div#form-container-2 {
+  width: 800px;
+  margin: 0px auto;
+  font-size: 1.4em;
+}
+
+dl#social-form dt {
+  float: left;
+  width: 50px;
+  text-align: right;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+dl#social-form dt img {
+  vertical-align: -30%;
+}
+
+dl#social-form dt#network {
+  margin-left: 50px;
+}
+
+dl#social-form dd {
+  text-align: left;
+  float: left;
+  margin-bottom: 10px;
+}
+
+
+dl#social-form dd#character-count {
+  float:right;
+  margin-right: 40px;
+}
+
+
+dl#social-form dd#post-text {
+  width: 690px;
+}
+
+dl#social-form dd#post-text textarea {
+  width: 690px;
+  /*padding: 5px;*/
+  /*color: #646464;*/
+}
+
+/*dl#social-form dd#post-text textarea.error {*/
+  /*border: 1px #ff0000 solid;*/
+
+/*}*/
+
+dd.button {
+  font-size: 1.3em;
+}
+
+dd.button a {
+  margin-right: 10px;
+  color: #646464;
+  text-decoration: underline;
+}
+
+#form-actions {
+  float: right;
+  margin: 15px 24px 0 0;
+  color: #646464;
+}
+
+#form-actions a, dd.button a {
+  color: #646464;
+  text-decoration: underline;
+}
+
+#social-submit, #mail-submit {
+  margin-left: 20px;
+}
+
+ul#email-sync {
+  margin: 0 0 10px 78px;
+  float: left;
+}
+
+ul#email-sync li {
+  float: left;
+  margin-right: 10px;
+}
+
+ul#email-sync li.title {
+  padding: 10px;
+  color: #646464;
+}
+
+dl#email-share-form dt {
+  float: left;
+  text-align: right;
+  margin: 8px;
+  width: 60px;
+  color: #8c8c8c;
+}
+
+dl#email-share-form dd {
+  float: left;
+  text-align: right;
+  margin-bottom: 10px;
+}
+
+dl#email-share-form dd input, dl#email-share-form dd textarea {
+  width: 690px;
+  /*padding: 5px;*/
+  /*color: #000000;*/
+  /*border: 1px #8c8c8c solid;*/
+  /*font-family: "Lucida Grande", "Lucida Sans Unicode", "Trebuchet MS", Tahoma, Helvetica, Arial, sans-serif;*/
+  /*font-weight: 400;*/
+  /*font-size: 1.05em;*/
+}
+
+/*dl#email-share-form dd input.error, dl#email-share-form dd textarea.error {*/
+  /*border: 1px #ff0000 solid;*/
+}
+
+dl#email-share-form dd input {
+  height: 20px;
+  padding: 12px 5px;
+}
+
+
+dl#email-share-form dd#the-list {
+  border: 1px #afafaf solid;
+  min-height: 42px;
+  padding: 0 5px;
+  width: 690px;
+}
+
+dl#contributor-index dd#the-list {
+  border: 1px #afafaf solid;
+  min-height: 126px;
+  padding: 0 5px;
+  width: 720px;
+  margin-left: 43px;
+}
+
+
+ul#the-recipients {
+  min-height: 28px;
+  padding: 0 5px;
+  width: 690px;
+  color: #000000;
+}
+
+ul#the-recipients li {
+  float: left;
+  height: 16px;
+  color: #000000;
+  text-align: left;
+  background-color: #fbfbfb;
+  background: -moz-linear-gradient(top, #fbfbfb, #dcdcdc);
+  background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#dcdcdc));
+  border: 2px #dcdcdc solid;
+  padding: 4px 4px 4px 7px;
+  margin: 5px;
+}
+
+ul#the-recipients li.del {
+  border: 2px #ff0000 solid;
+  background: -moz-linear-gradient(top, #fbfbfb, pink);
+  background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(pink));}
+
+ul#the-recipients li img.link {
+  margin: 0 3px 0 5px;
+  vertical-align: -30%;
+}
+
+ul#the-recipients li.rounded {
+  display: none;
+}
+
+ul#the-recipients li.rounded input {
+  display: none;
+}
+
+ul#the-recipients li#autocomplete {
+  height: 36px;
+  text-align: left;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: none;
+}
+
+dl#email-share-form label.error {
+  display: none;
+}
+
+dl#email-share-form dd input#you-complete-me {
+  background-color: #fff;
+  border: 1px #fff solid;
+  width: 200px;
+  height: 24px;
+  padding: 5px 0px;
+}
+
+dl#email-share-form dd input#you-complete-me:focus {
+  outline: none;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    filter: none;
+
+}
+
+select.album_privacy {
+  background-color: #fbfbfb;
+  background: -moz-linear-gradient(top, #fbfbfb, #dcdcdc);
+  background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#dcdcdc));
+  border: 1px #dcdcdc solid;
+  font-size: 1.2em;
+  font-weight: 400;
+  color: #646464;
+  padding: 4px;
+  height: 28px;
+  width: 80px;
+  margin-right: 10px;
+}
