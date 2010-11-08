@@ -1,0 +1,8 @@
+# This points resque to the appropriate redis host and port
+
+development:   localhost:6379
+eydevelopment: localhost:6379
+eysandbox:     localhost:6379
+eytest:        localhost:6379
+test:          localhost:6379     
+production:    localhost:6379

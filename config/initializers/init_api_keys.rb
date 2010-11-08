@@ -12,3 +12,7 @@ PHOTOBUCKET_API_KEYS = api_creds[:photobucket]
 YAHOO_API_KEYS = api_creds[:yahoo]
 TWITTER_API_KEYS = api_creds[:twitter]
 WINDOWS_LIVE_API_KEYS = api_creds[:ms_live]
+
+msg = "=> Connector API keys loaded."
+Rails.logger.info msg
+puts msg
