@@ -23,6 +23,7 @@ gem 'actionmailer'
 gem 'vpim'
 gem 'rpm_contrib'
 #gem 'newrelic_rpm'
+gem 'bitly'
 
 gem 'hpricot'
 gem 'twitter_oauth'
