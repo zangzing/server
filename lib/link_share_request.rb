@@ -9,7 +9,8 @@ class LinkShareRequest < Struct.new(:share_id, :url_to_share)
   end
 
   def on_permanent_failure
-    photo.update_attributes(:state => 'error', :error_message => 'Failed to share the link')
+    #TODO Report an error in a more effective way
+    logger.error "Failed to share the link. ShareID=#{share_id}"
   end
 
 end
