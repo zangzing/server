@@ -344,8 +344,8 @@ zz.init = {
             event : 'more',
             effect : 'fadeIn'
         });
-        var GRID_HEIGHT = 170;
         $('.timeline-action a.more-less-btn').click(function(){
+            var GRID_HEIGHT = 170;
             var photoGrid = $(this).siblings('.timeline-grid');
             if( photoGrid.height() <= GRID_HEIGHT ){
                 photo_count = photoGrid.children('li').length;
