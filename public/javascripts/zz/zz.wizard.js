@@ -206,6 +206,7 @@ zz.wizard = {
             //console.log('last');
             $(obj.next_element).click(function(e){
                 $('#drawer .body').fadeOut('fast');
+                obj.steps[id].bounce();
                 zz.slam_drawer(400);
                 if (obj.redirect_type == 'album') {
                     temp_url = 'http://' + zz.base + obj.redirect.split('$$')[0] + zz.album_id + obj.redirect.split('$$')[1];
