@@ -187,6 +187,7 @@ ul#album-timeline li div.timeline-action ul.timeline-grid li,
 ul#contributors li div.timeline-action ul.timeline-grid li {
   float: left;
   width: 130px;
+  height: 130px;
   border-bottom: none;
   text-align: center;
 }
