@@ -32,7 +32,6 @@ GEM
     flickraw (0.8.2)
       json (>= 1.1.1)
     gdata (1.1.1)
-    hpricot (0.8.2)
     hyper-graph (0.3.1)
       json
     json (1.4.6)
@@ -84,7 +83,6 @@ GEM
       rspec (~> 2.0.0)
     sinatra (1.0)
       rack (>= 1.0)
-    sqlite3-ruby (1.3.2)
     twitter_oauth (0.4.3)
       json (>= 1.1.9)
       mime-types (>= 1.16)
@@ -115,7 +113,6 @@ DEPENDENCIES
   faker
   flickraw (= 0.8.2)
   gdata (= 1.1.1)
-  hpricot
   hyper-graph (= 0.3.1)
   launchy
   mechanize
@@ -128,7 +125,6 @@ DEPENDENCIES
   rpm_contrib
   rspec
   rspec-rails (>= 1.3.2)
-  sqlite3-ruby
   twitter_oauth
   usesguid!
   usesguid_migrations
