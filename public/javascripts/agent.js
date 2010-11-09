@@ -27,7 +27,12 @@ var agent = {
 
 
     isAgentUrl: function(url){
-        return url.indexOf('http://localhost:') === 0;
+        if(url){
+            return url.indexOf('http://localhost:') === 0;
+        }
+        else{
+            return false;
+        }
     },
 
     /* path may be full url or just path portion */
