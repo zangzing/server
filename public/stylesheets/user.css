@@ -1,0 +1,36 @@
+ul.albums-grid-view {
+    margin: 60px 0 45px;
+}
+
+ul.albums-grid-view li {
+    float: left;
+    width: 180px;
+    height: 180px;
+
+    font-size: 1.3em;
+    font-weight: 700;
+    overflow: hidden;
+
+}
+
+
+
+
+
+
+/*ul#albums li img {*/
+/*border:none;*/
+/*box-shadow: 0px 0px 0px #767676;*/
+/*-webkit-box-shadow: 0px 0px 0px #767676;*/
+/*-moz-box-shadow: 0px 0px 0px #767676;*/
+/*}*/
+
+
+/*ul#albums li:hover img {*/
+/*border:none;*/
+/*box-shadow: 0px 0px 0px #767676;*/
+/*-webkit-box-shadow: 0px 0px 0px #767676;*/
+/*-moz-box-shadow: 0px 0px 0px #767676;*/
+/*}*/
+
+

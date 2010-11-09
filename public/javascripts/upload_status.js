@@ -33,12 +33,13 @@ var upload_stats = {
                 }
             }
 
+            
             var time_remaining = 0
             if(bytes_remaining > 0){
                 time_remaining = bytes_remaining / json['ave_bytes_sec'];
             }
                 
-            var percent_complete = photos_in_album - album_photos_remaining * 100 / photos_in_album;
+            var percent_complete = 100 * (photos_in_album - album_photos_remaining) / photos_in_album;  
 
 
 

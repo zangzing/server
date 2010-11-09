@@ -16,7 +16,7 @@ each album has an email address in the form <album_id>@sendgrid-post.zangzing.co
 =end
     album_id = params[:to].match(/\b([A-Z0-9._%+-]+)@[A-Z0-9.-]+\.[A-Z]{2,4}\b/i)[1] rescue ''
     album = Album.find_by_id(album_id)
-    sender_mail = params[:from]
+    sender_mail = params[:from].match(/\b([A-Z0-9._%+-]+)@[A-Z0-9.-]+\.[A-Z]{2,4}\b/i)[0] rescue ''
     if request.post? && album
       if sender_mail==album.user.email # && album.kind_of?(PersonalAlbum)
         add_photos(album, album.user)

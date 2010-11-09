@@ -14,10 +14,8 @@ gem 'oauth-plugin',  '0.3.14'
 
 gem 'paperclip',     '2.3.1.1'
 gem 'aws-s3',        '>= 0.6.2', :require => 'aws/s3' # S3
-
 gem 'resque'                                          # Queuing
 gem 'SystemTimer'                                     # For Random numbers (resque uuid)
-
 gem 'actionmailer'
 gem 'will_paginate', '2.3.12'                         # Pagination
 
@@ -25,6 +23,8 @@ gem 'gdata',         '1.1.1'  						  # Google Data
 gem 'twitter_oauth'   		                          # Twitter 
 gem 'hyper-graph',   '0.3.1', :require=>'hyper_graph' # Facebook
 gem 'flickraw',      '0.8.2'                          # Flickr
+gem 'bitly'                                           # Bitly duh?
+
 gem 'vpim'                                            # VCard creator
 gem 'rpm_contrib'                                     # For New Relic Performance Instrumentation
 gem 'faker'                                           # To load sample data

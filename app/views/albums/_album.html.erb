@@ -1,8 +1,8 @@
   <li>
-    <a href="<%=url_for(album)%>">
-      <img class="albumcellshow"  src="<%=album.picon_url%>" />                  
-    </a>
-    <div class="albumcellcaption">
-      <%= h album.name%>
-    </div>
+    <div class="relative">
+        <a href="<%=url_for(album)%>">
+          <img class="albumcellshow"  src="<%=album.picon_url%>" />
+        </a>
+     </div>
+    <%= h album.name%>
   </li>

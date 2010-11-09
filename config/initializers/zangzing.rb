@@ -1,4 +1,7 @@
-silence_warnings do
+# Bitly API Setup
+Bitly.use_api_version_3
+
+silence_warnings do #To avoid warning of overwriting constant
   # SET VERSION
   git_cmd = File.join(*[ENV['IMAGEMAGICK_PATH'], "git"].compact)
   ZANGZING_VERSION = `#{git_cmd} describe` || 'UNKNOWN'

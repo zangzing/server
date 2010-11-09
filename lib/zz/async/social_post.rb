@@ -10,7 +10,9 @@ module ZZ
 
       def self.perform( share_id, url_to_share )
         share = Share.find(share_id)
-        share.link_to_share = url_to_share
+        bitly = Bitly.new(BITLY_API_KEYS[:username], BITLY_API_KEYS[:api_key])
+        url = bitly.shorten(url_to_share)
+        share.link_to_share = url.short_url
         share.deliver
       end
 
