@@ -78,7 +78,7 @@ class Photo < ActiveRecord::Base
   belongs_to :upload_batch
 
   # when retrieving a search from the DB it will always be ordered by created date descending a.k.a Latest first
-  default_scope :order => 'created_at DESC'
+  default_scope :order => 'capture_date DESC, created_at DESC'
 
   before_create :assign_batch
   before_create :substitute_source_urls
