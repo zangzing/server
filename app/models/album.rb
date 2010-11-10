@@ -44,7 +44,7 @@ class Album < ActiveRecord::Base
   before_create :set_email
   before_save   :set_email, :if => :name_changed?
 
-  default_scope :order => 'created_at DESC'
+  default_scope :order => 'updated_at DESC'
 
   PRIVACIES = {'Public' =>'public','Hidden' => 'hidden','Password' => 'password'};
 
