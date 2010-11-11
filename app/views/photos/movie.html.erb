@@ -3,15 +3,24 @@
   <head>
     <style type="text/css" id="page-css">
             /* Styles specific to this particular page */
+            html {
+                overflow-y: hidden;
+                overflow-x: hidden;
+            }
+
+
             body
             {
                 margin: 0 0 0 0;
                 padding: 0 0 0 0;
+                width:100%;
+                height:100%;
             }
     </style>
 
     <script type="text/javascript" src="/javascripts/slideshow/swfobject.js"></script>
     <script type="text/javascript" src="/javascripts/slideshow/SimpleFade.js"></script>
+    <script type="text/javascript" src="/javascripts/lib/jquery.js"></script>
     <script type="text/javascript">
       swfobject.registerObject("SimpleFade1276267724640", "9.0.115", "", function(e) {
         if (e.success==false){
@@ -45,6 +54,25 @@
           }catch(err){}
         }
       });
+
+      var resizeBody = function(){
+          $('body').width(window.innerWidth);
+          $('body').height(window.innerHeight);
+
+
+      }
+
+
+      $(document).ready(function() {
+          resizeBody();
+
+      });
+
+      $(window).resize(function() {
+          resizeBody();
+      });
+            
+
     </script>
   </head>
 <body>
