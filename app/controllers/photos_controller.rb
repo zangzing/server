@@ -175,7 +175,7 @@ class PhotosController < ApplicationController
           render 'slideshow'
         elsif !params[:view].nil? && params[:view] == 'movie'
           @photos = @all_photos
-          render 'movie'
+          render 'movie', :layout => false
         else
           @photo = Photo.new
           @photos = @all_photos
