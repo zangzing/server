@@ -57,6 +57,7 @@ ActionController::Routing::Routes.draw do |map|
   map.with_options :controller => :photos do |photos|                                                                                                
     photos.album_photos                '/albums/:album_id/photos.',                 :action=>'index',           :conditions => { :method => :get }
     photos.create_album_photo          '/albums/:album_id/photos.',                 :action=>'create',          :conditions => { :method => :post }
+    photos.slideshow_source            '/albums/:album_id/slides_source.:format',   :action=>'slideshowbox_source', :conditions => { :method => :get }
     photos.upload_photo                '/photos/:id/upload.',                       :action=>'upload',          :conditions => { :method => :put }
     photos.edit_photo                  '/photos/:id/edit.',                         :action=>'edit',            :conditions => { :method => :get }
     photos.update_photo                '/photos/:id/edit.',                         :action=>'update',          :conditions => { :method => :put }

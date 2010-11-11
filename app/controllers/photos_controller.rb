@@ -189,7 +189,13 @@ class PhotosController < ApplicationController
     end
   end
 
-
+  def slideshowbox_source
+    @album = Album.find(params[:album_id])
+    @photos = @album.photos
+    respond_to do |format|
+      format.xml
+    end
+  end
 
 
 #
