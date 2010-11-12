@@ -6,15 +6,18 @@ ul.albums-grid-view li {
     float: left;
     width: 180px;
     height: 180px;
-
     font-size: 1.3em;
     font-weight: 700;
     overflow: hidden;
 
 }
 
-
-
+ul.albums-grid-view li td {
+    vertical-align:middle;
+    text-align:center;
+    height:160px;
+    width:180px
+}
 
 
 
