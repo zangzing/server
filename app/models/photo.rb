@@ -80,10 +80,12 @@ class Photo < ActiveRecord::Base
   # when retrieving a search from the DB it will always be ordered by created date descending a.k.a Latest first
   default_scope :order => 'capture_date DESC, created_at DESC'
 
-  before_create :assign_batch
+
   before_create :substitute_source_urls
 
-  after_create  :update_batch
+  #before_create :assign_batch
+  #after_create  :update_batch
+  after_create :assign_to_batch
 
   # if all args were valid on creation then set it to assigned
   after_validation_on_create :set_to_assigned;
@@ -168,7 +170,7 @@ class Photo < ActiveRecord::Base
         logger.debug("Upload to S3 Failed"+ex)
     end
     logger.debug("Upload to S3 Finished")
-    self.upload_batch.finish
+    upload_batch.finish
   end
 
   def new?
@@ -210,14 +212,9 @@ class Photo < ActiveRecord::Base
      Digest::MD5.hexdigest(url)
   end
 
-  def assign_batch
-     @up =  UploadBatch.get_current( self.user, self.album );
+  def assign_to_batch
+      UploadBatch.get_current( self.user, self.album ).photos << self
   end
-
-  def update_batch
-    @up.photos << self unless @up.nil?
-  end
-
 
   def substitute_source_urls
     self.source_thumb_url = self.source_thumb_url.gsub(':photo_id', self.id) if self.source_thumb_url
