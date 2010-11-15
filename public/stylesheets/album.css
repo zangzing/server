@@ -5,6 +5,7 @@
 
 ul.photos {
   margin: 60px 0 45px;
+  backgdound-color:#ffffff;
 }
 
 
@@ -51,10 +52,10 @@ ul.photos a.delete img {
   right: 0px;
   z-index: 10;
   border: none;
-  box-shadow: 0 0 0 #000;
-  -webkit-box-shadow: 0 0 0 #000;
-  -moz-box-shadow: 0 0 0 #000;
-  filter: progid:DXImageTransform.Microsoft.dropShadow(color=none, offX=0, offY=0, positive=true);
+  /*box-shadow: 0 0 0 #000;*/
+  /*-webkit-box-shadow: 0 0 0 #000;*/
+  /*-moz-box-shadow: 0 0 0 #000;*/
+  /*filter: progid:DXImageTransform.Microsoft.dropShadow(color=none, offX=0, offY=0, positive=true);*/
 }
 
 ul.photos li:hover a.delete img {
