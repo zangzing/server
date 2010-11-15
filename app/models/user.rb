@@ -59,16 +59,17 @@ class User < ActiveRecord::Base
   # This delegates all authentication details to authlogic
   acts_as_authentic do |c|
     c.require_password_confirmation = false
-    c.login_field = :email 
+    c.login_field = :email
+    c.validate_login_field = false
   end
 
   before_save  :split_name
 
   validates_presence_of :name, :unless => :automatic?
   validates_presence_of :username, :unless => :automatic?
-  validates_uniqueness_of :username, :message => "Sorry, username already taken", :unless => :automatic?
+  validates_uniqueness_of :username, :message => "Has already been taken", :unless => :automatic?
   validates_presence_of :email
-  validates_uniqueness_of :email, :message => "Email already used for a ZangZing account"
+  #validates_uniqueness_of :email, :message => "Email already used for a ZangZing account"
   validates_length_of  :password, :within => 6..40, :if => :require_password?, :message => "must be between 6 and 40 characters long"
 
 
