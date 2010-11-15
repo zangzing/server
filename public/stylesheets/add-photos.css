@@ -36,6 +36,7 @@ ul#filechooser li {
   font-weight: 700;
   overflow: hidden;
   height: 135px;
+  background-color:#ffffff;
 }
 
 ul#filechooser li.photo {
