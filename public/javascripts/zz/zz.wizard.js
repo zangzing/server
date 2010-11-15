@@ -457,38 +457,29 @@ zz.wizard = {
 
     // clones a recipient from the selection list
     clone_recipient: function(data){
-        if (data.length < 6) {
-
-        } else {
-            //console.log(data);
-            temp = $(data).html().split('&')[0];
-            if( !!data.extra )
-                var value = data.extra[0];
-            else
-                var value = $(data).html();
-            //console.log(value);
+        var value = data.extra[0];
+        var display_value = data.extra[0].split('&')[0];
+        display_value = display_value.replace(/"/g,''); //strip out quotes
 
 
+        zz.wizard.email_id++;
+        //console.log('ID: '+ zz.wizard.email_id +'-- Add '+ temp +' to the view and a ' + $(data).html() + ' checkbox to the form.');
+        $('#you-complete-me').val('');
+        $('#m-clone-added').clone()
+                .attr({id: 'm-'+zz.wizard.email_id})
+                .insertAfter('#the-recipients li.rounded:last');
 
-            zz.wizard.email_id++;
-            //console.log('ID: '+ zz.wizard.email_id +'-- Add '+ temp +' to the view and a ' + $(data).html() + ' checkbox to the form.');
-            $('#you-complete-me').val('');
-            $('#m-clone-added').clone()
-                    .attr({id: 'm-'+zz.wizard.email_id})
-                    .insertAfter('#the-recipients li.rounded:last');
+        $('#m-'+zz.wizard.email_id+' span').empty().html(display_value);
+        // $('#m-'+zz.wizard.email_id+' input').attr({name: 'i-' + zz.wizard.email_id, checked: 'checked'}).val(value);
+        $('#m-'+zz.wizard.email_id+' input').attr({name: 'email_share[to][]', checked: 'checked'}).val(value);
 
-            $('#m-'+zz.wizard.email_id+' span').empty().html(temp);
-            // $('#m-'+zz.wizard.email_id+' input').attr({name: 'i-' + zz.wizard.email_id, checked: 'checked'}).val(value);
-            $('#m-'+zz.wizard.email_id+' input').attr({name: 'email_share[to][]', checked: 'checked'}).val(value);
-
-            $('#m-'+zz.wizard.email_id).fadeIn('fast');
-            $('#m-'+zz.wizard.email_id+' img').attr('id', 'img-'+zz.wizard.email_id);
-            $('li.rounded img').click(function(){
-                $(this).parent('li').fadeOut('fast', function(){
-                    $(this).parent('li').remove();
-                });
+        $('#m-'+zz.wizard.email_id).fadeIn('fast');
+        $('#m-'+zz.wizard.email_id+' img').attr('id', 'img-'+zz.wizard.email_id);
+        $('li.rounded img').click(function(){
+            $(this).parent('li').fadeOut('fast', function(){
+                $(this).parent('li').remove();
             });
-        }
+        });
     },
 
 
