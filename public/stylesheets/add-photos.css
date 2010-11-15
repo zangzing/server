@@ -58,6 +58,20 @@ ul#filechooser li.photo img {
   filter: progid:DXImageTransform.Microsoft.dropShadow(color=#767676, offX=2, offY=2, positive=true);
 }
 
+
+ul#filechooser img.large-photo {
+  max-height: 400px;
+  max-width: 600px;
+  border: #fff solid 5px;
+  box-shadow: 0px 0px 5px #767676;
+  -webkit-box-shadow: 0px 0px 5px #767676;
+  -moz-box-shadow: 0px 0px 5px #767676;
+  filter: progid:DXImageTransform.Microsoft.dropShadow(color=#767676, offX=2, offY=2, positive=true);
+}
+
+
+
+
 ul#filechooser li.f_iphoto {
   background-image: url("/images/folders/apple_off.png");
 }

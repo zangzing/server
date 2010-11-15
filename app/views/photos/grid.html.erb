@@ -71,7 +71,7 @@
 <h2 class="album"><%= h @album.name %></h2>
 
 <% unless @album.photos.empty? %>
-  <ul class="photos-grid-view clearfix">
+  <ul class="photos photos-grid-view clearfix">
     <%= render :partial => "photos/photo_thumb", :collection => @photos, :as => :photo, :locals => {:delete => false} %>
   </ul>
 <% end %>

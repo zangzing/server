@@ -506,9 +506,6 @@ var filechooser = {
         var next_image_handler = 'onclick="filechooser.picture_view(' + (i + 1) + ');return false;"';
         var add_photo_handler = 'onclick="filechooser.add_photos(\'' + children[i].add_url + '\', \'' + img_id + '\'); return false;"';                          
 
-        html += '<a href="" ' + previous_image_handler + '><img src="/images/btn-prev-photo.png"></a>';
-        html += '<a href="" ' + add_photo_handler + '>[add to album]</a>';
-        html += '<a href="" ' + next_image_handler + '><img src="/images/btn-next-photo.png"></a>';
 
         if(children[i].type === 'folder'){
             var id = 'chooser-folder-' + i;
@@ -517,9 +514,9 @@ var filechooser = {
             html += '<a href="" ' + theClick + '><img src="/images/blank-folder.png" /></a>';
             html += '<a href="" ' + theClick + '>' + children[i].name + '</a>';
 
-            if (children[i].add_url) {
-                html += '&nbsp;<a href="#" onclick="filechooser.add_folder(\'' + children[i].add_url + '\', \'' + id + '\'); return false;">(+)</a>';
-            }
+//            if (children[i].add_url) {
+//                html += '&nbsp;<a href="#" onclick="filechooser.add_folder(\'' + children[i].add_url + '\', \'' + id + '\'); return false;">(+)</a>';
+//            }
         }
         else{
             var grid_view_handler = 'onclick="filechooser.grid_view();return false;"';
@@ -530,11 +527,15 @@ var filechooser = {
                 image_url = agent.buildAgentUrl(image_url);
             }
 
-            html += '<img id="' + img_id + '" src="'+ image_url +'" '+ grid_view_handler +'>';
-            html += '<br>';
-            html += children[i].name;
+            html += '<img class="large-photo" id="' + img_id + '" src="'+ image_url +'" '+ grid_view_handler +'>';
 
         }
+
+        html += '<br>';
+        html += '<a href="" ' + previous_image_handler + '><img src="/images/btn-prev-photo.png"></a>';
+        html += '<a href="" ' + add_photo_handler + '> ' + children[i].name +' [add to album]</a>';
+        html += '<a href="" ' + next_image_handler + '><img src="/images/btn-next-photo.png"></a>';
+
 
         $('#filechooser').fadeOut('fast', function(){
             $('#filechooser').html(html);
