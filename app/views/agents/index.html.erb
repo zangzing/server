@@ -5,11 +5,11 @@
 <table>
   <tr><th>Agent Id</th><th>Issued</th><th>&nbsp;</th></tr>
   <% @agents.each do |agent|%>
-    <% content_tag_for :tr, agent do %>
+    <%= content_tag_for :tr, agent do %>
       <td><%= agent.agent_id %></td>
       <td><%= agent.authorized_at %></td>
       <td>
-        <% form_tag :controller => 'oauth', :action => 'revoke' do %>
+        <%= form_tag :controller => 'oauth', :action => 'revoke' do %>
         <%= hidden_field_tag 'token', agent.token %>
         <%= submit_tag "Revoke!" %>
         <% end %>

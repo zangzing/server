@@ -219,7 +219,7 @@ Server::Application.routes.draw do
     match '/logs/:logname' => 'logs#retrieve', :as => :log_retrieve
   end
   
-  #resque
+  #Resque: mount the resque server 
   mount Resque::Server.new, :at => "/resque"
   
 end

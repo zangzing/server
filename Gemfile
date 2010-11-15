@@ -12,7 +12,7 @@ source :gemcutter
 gem "bundler",              '1.0.3'
 gem "rails",                '3.0.1'
 gem "mysql",                '2.8.1' 
-gem 'authlogic',            '2.1.5'
+gem 'authlogic',            :git => 'git://github.com/odorcicd/authlogic.git',:branch => 'rails3'
 gem 'usesguid',             :git => 'git://github.com/zangzing/usesguid.git'
 gem 'usesguid_migrations',  '1.0.3'
 

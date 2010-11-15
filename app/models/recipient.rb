@@ -19,7 +19,7 @@
 class Recipient < ActiveRecord::Base
   belongs_to :share
 
-  validate_on_create :service_credentials
+  validate :service_credentials, :on => :create, 
   #validates_presence_of :share_id   #TODO: Nested model forms and updates fail with this validation because of a Rails 2.3.5 bug will be fixed for rails 3
 
   private

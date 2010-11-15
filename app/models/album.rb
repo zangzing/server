@@ -114,11 +114,11 @@ class Album < ActiveRecord::Base
   end
 
   def long_email
-      " \"#{self.name}\" <#{self.id}@#{ALBUM_EMAIL_HOST}>"
+      " \"#{self.name}\" <#{self.id}@#{Server::Application.config.album_email_host}>"
   end
 
   def short_email
-      "#{self.id}@#{ALBUM_EMAIL_HOST}"
+      "#{self.id}@#{Server::Application.config.album_email_host}"
   end
 
   private

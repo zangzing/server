@@ -1,6 +1,6 @@
 ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
-require 'test_help'
+require 'rails/test_help'
 
 class ActiveSupport::TestCase
   # Transactional fixtures accelerate your tests by wrapping each test method
@@ -36,7 +36,7 @@ class ActiveSupport::TestCase
 
   # Add more helper methods to be used by all tests here...
   setup do |session|
-    session.host! APPLICATION_HOST
+    session.host! Server::Application.config.application_host
   end
 
 end
@@ -68,7 +68,7 @@ module IntegrationHelper
       c = Mechanize::Cookie.new(n, v)
       c.domain = 'localhost'
       c.path = '/'
-      agent.cookie_jar.add URI.parse("http://#{APPLICATION_HOST}/"), c
+      agent.cookie_jar.add URI.parse("http://#{Server::Application.config.application_host}/"), c
     end
     #puts agent.cookies.inspect
   end

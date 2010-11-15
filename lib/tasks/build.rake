@@ -22,7 +22,7 @@ namespace :build do
   desc "Works only in EY CruiseControl Build machine. Builds custom database.yml for testing"
   task :dbconfig do
        #open deploy.rb get db password and setup database.yml
-       config_opts = YAML.load_file(ENV_DB_CONFIG_FILE)[RAILS_ENV].symbolize_keys
+       config_opts = YAML.load_file(ENV_DB_CONFIG_FILE)[Rails.env].symbolize_keys
        password=config_opts[:password]
        print password
        dev_opts= {'adapter'  => 'mysql',

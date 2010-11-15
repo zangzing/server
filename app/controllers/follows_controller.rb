@@ -2,7 +2,7 @@ class FollowsController < ApplicationController
   before_filter :login_required
 
   def new
-    @users = User.find(:all)
+    @users = User.find()
     @follow = Follow.new()
     render :layout => false
   end

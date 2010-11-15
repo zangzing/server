@@ -14,7 +14,6 @@ class ApplicationController < ActionController::Base
 
   helper :all # include all helpers, all the time
   helper_method :current_user_session, :current_user, :current_user?, :signed_in?
-  filter_parameter_logging :password, :password_confirmation # Scrub sensitive parameters from log
   before_filter :protect_with_http_auth
 
   after_filter :flash_to_headers
@@ -29,7 +28,7 @@ class ApplicationController < ActionController::Base
   def flash_to_headers
     return unless request.xhr?
     response.headers['X-Flash'] = flash.to_json if flash.length > 0
-    response.headers['X-Status'] = response.status.split[0]
+    response.headers['X-Status'] = response.status
     flash.discard  # don't want the flash to appear when you reload page 
   end
 
@@ -92,7 +91,7 @@ class ApplicationController < ActionController::Base
     #
     #  Stores the intended destination of a rerquest to take the user there after log in
     def store_location
-      session[:return_to] = request.request_uri
+      session[:return_to] = request.fullpath
     end
 
     #
@@ -134,7 +133,7 @@ class ApplicationController < ActionController::Base
       }
       unless allowed[:actions].include?("#{params[:controller]}##{params[:action]}")
         authenticate_or_request_with_http_basic('ZangZing') do |username, password|
-          username == HTTP_AUTH_CREDENTIALS[:login] && password == HTTP_AUTH_CREDENTIALS[:password]
+          username == Server::Application.config.http_auth_credentials[:login] && password == Server::Application.config.http_auth_credentials[:password]
         end
       end
     end

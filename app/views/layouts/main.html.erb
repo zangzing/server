@@ -15,7 +15,7 @@
        title = "ZangZing" 
     end
     if ! Rails.env.production?
-      title = "#{title} Version: #{ZANGZING_VERSION} Controller: #{controller.controller_name} Action: #{ controller.action_name}"
+      title = "#{title} Version: #{Server::Application.config.zangzing_version} Controller: #{controller.controller_name} Action: #{ controller.action_name}"
     end %>
     <title><%=title%></title>
     <link rel="stylesheet" href="/stylesheets/lib.css" media="all" />

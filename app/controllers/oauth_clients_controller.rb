@@ -4,7 +4,7 @@ class OauthClientsController < ApplicationController
   
   def index
     @client_applications = current_user.client_applications
-    @tokens = current_user.tokens.find :all, :conditions => 'oauth_tokens.invalidated_at is null and oauth_tokens.authorized_at is not null'
+    @tokens = current_user.tokens.where( "oauth_tokens.invalidated_at is null and oauth_tokens.authorized_at is not null" )
   end
 
   def new
