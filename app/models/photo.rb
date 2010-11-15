@@ -82,9 +82,6 @@ class Photo < ActiveRecord::Base
 
 
   before_create :substitute_source_urls
-
-  #before_create :assign_batch
-  #after_create  :update_batch
   after_create :assign_to_batch
 
   # if all args were valid on creation then set it to assigned
