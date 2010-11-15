@@ -534,7 +534,7 @@ var filechooser = {
         html += '<br>';
         html += '<a href="" ' + previous_image_handler + '><img src="/images/btn-prev-photo.png"></a>';
         html += '<a href="" ' + add_photo_handler + '> ' + children[i].name +' [add to album]</a>';
-        html += '<a href="" ' + next_image_handler + '><img src="/images/btn-next-photo.png"></a>';
+        html += '<a href="" ' + next_image_handler + '><img src="/images/bt n-next-photo.png"></a>';
 
 
         $('#filechooser').fadeOut('fast', function(){
