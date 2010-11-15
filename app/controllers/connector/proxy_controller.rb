@@ -6,9 +6,9 @@ class Connector::ProxyController < ApplicationController
   def proxy
     #todo: should stream this
     url = params[:url]
-    if %w(production eysandbox sandbox).include?(RAILS_ENV)
-      #x_accel_redirect url, :disposition => 'inline'
-      response.headers['X-Accel-Redirect'] = url
+    if %w(production eysandbox sandboxb).include?(RAILS_ENV)
+      uri = URI.parse(url)
+      response.headers['X-Accel-Redirect'] = "/nginx_redirect/#{uri.host}#{uri.path}"
       render :nothing => true
     else
       bin_io = OpenURI.send(:open, url)
