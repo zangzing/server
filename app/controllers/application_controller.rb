@@ -28,7 +28,7 @@ class ApplicationController < ActionController::Base
   def flash_to_headers
     return unless request.xhr?
     response.headers['X-Flash'] = flash.to_json if flash.length > 0
-    response.headers['X-Status'] = response.status
+    response.headers['X-Status'] = response.status.to_s
     flash.discard  # don't want the flash to appear when you reload page 
   end
 

@@ -10,10 +10,10 @@ Server::Application.routes.draw do
   get    '/users'                   => 'users#index',             :as => :users
   get    '/users/new'               => 'users#new',               :as => :new_user
   post   '/users'                   => 'users#create',            :as => :create_user
-  get    '/users/:id.'              => 'users#show',              :as => :user
+  get    '/users/:id'              => 'users#show',              :as => :user
   get    '/users/:id/edit'          => 'users#edit',              :as => :edit_user
-  put    '/users/:id.'              => 'users#update',            :as => :update_user
-  delete '/users/:id.'              => 'users#destroy',           :as => :delete_user
+  put    '/users/:id'              => 'users#update',            :as => :update_user
+  delete '/users/:id'              => 'users#destroy',           :as => :delete_user
   get    '/users/validate_email'    => 'users#validate_email',    :as => :validate_email
   get    '/users/validate_username' => 'users#validate_username', :as => :validate_username
 
@@ -21,32 +21,32 @@ Server::Application.routes.draw do
   get    '/users/:id/identities'     => 'identities#index',       :as => :user_identities
   get    '/users/:id/identities/new' => 'identities#new',         :as => :new_user_identity
   post   '/users/:id/identities'     => 'identities#create',      :as => :create_user_identity
-  get    '/identities/:id.'          => 'identities#show',        :as => :identity
+  get    '/identities/:id'          => 'identities#show',        :as => :identity
   get    '/identities/:id/edit'      => 'identities#edit',        :as => :edit_identity
-  put    '/identities/:id.'          => 'identities#update',      :as => :update_identity
-  delete '/identities/:id.'          => 'identities#destroy',     :as => :delete_identity
+  put    '/identities/:id'          => 'identities#update',      :as => :update_identity
+  delete '/identities/:id'          => 'identities#destroy',     :as => :delete_identity
 
   #albums
-  get    '/users/:user_id/albums.'     => 'albums#index',         :as => :user_albums
-  get    '/users/:user_id/albums/new.' => 'albums#new',           :as => :new_user_album
-  post   '/users/:user_id/albums.'     => 'albums#create',        :as => :create_user_album
-  get    '/albums/:id.'                => 'albums#show',          :as => :album
-  get    '/albums/:id/edit.'           => 'albums#edit',          :as => :edit_album
-  put    '/albums/:id.'                => 'albums#update',        :as => :update_album
-  delete '/albums/:id.'                => 'albums#destroy',       :as => :delete_album
-  get    '/albums/:id/name_album.'     => 'albums#name_album',    :as => :name_album
-  get    '/albums/:id/privacy.'        => 'albums#privacy',       :as => :privacy
+  get    '/users/:user_id/albums'     => 'albums#index',         :as => :user_albums
+  get    '/users/:user_id/albums/new' => 'albums#new',           :as => :new_user_album
+  post   '/users/:user_id/albums'     => 'albums#create',        :as => :create_user_album
+  get    '/albums/:id'                => 'albums#show',          :as => :album
+  get    '/albums/:id/edit'           => 'albums#edit',          :as => :edit_album
+  put    '/albums/:id'                => 'albums#update',        :as => :update_album
+  delete '/albums/:id'                => 'albums#destroy',       :as => :delete_album
+  get    '/albums/:id/name_album'     => 'albums#name_album',    :as => :name_album
+  get    '/albums/:id/privacy'        => 'albums#privacy',       :as => :privacy
   get    '/albums/:id/add_photos'      => 'albums#add_photos',    :as => :add_photos
   get    '/albums/:id/upload_stat'     => 'albums#upload_stat',   :as => :album_upload_stat
  
   #shares
   get '/albums/:album_id/shares'          => 'shares#index',      :as => :album_shares
   get '/albums/:album_id/shares/new'      => 'shares#new',        :as => :new_album_share
-  post '/albums/:album_id/shares.'        => 'shares#create',     :as => :create_album_share
-  get '/shares/:id.'                      => 'shares#show',       :as => :share
+  post '/albums/:album_id/shares'        => 'shares#create',     :as => :create_album_share
+  get '/shares/:id'                      => 'shares#show',       :as => :share
   get '/shares/:id/edit'                  => 'shares#edit',       :as => :edit_share
-  put '/shares/:id.'                      => 'shares#update',     :as => :update_share
-  delete '/shares/:id.'                   => 'shares#destroy',    :as => :delete_share
+  put '/shares/:id'                      => 'shares#update',     :as => :update_share
+  delete '/shares/:id'                   => 'shares#destroy',    :as => :delete_share
   get '/albums/:album_id/shares/newpost'  => 'shares#newpost',    :as => :new_album_postshare
   get '/albums/:album_id/shares/newemail' => 'shares#newemail',   :as => :new_album_emailshare
  
@@ -54,42 +54,42 @@ Server::Application.routes.draw do
   #contributors
   get    '/albums/:album_id/contributors'          => 'contributors#index',      :as => :album_contributors
   get    '/albums/:album_id/contributors/new'      => 'contributors#new',        :as => :new_album_contributor
-  post   '/albums/:album_id/contributors.'         => 'contributors#create',     :as => :create_album_contributor
-  get    '/contributors/:id.'                      => 'contributors#show',       :as => :contributor
+  post   '/albums/:album_id/contributors'         => 'contributors#create',     :as => :create_album_contributor
+  get    '/contributors/:id'                      => 'contributors#show',       :as => :contributor
   get    '/contributors/:id/edit'                  => 'contributors#edit',       :as => :edit_contributor
-  put    '/contributors/:id.'                      => 'contributors#update',     :as => :update_contributor
-  delete '/contributors/:id.'                      => 'contributors#destroy',    :as => :delete_contributor 
+  put    '/contributors/:id'                      => 'contributors#update',     :as => :update_contributor
+  delete '/contributors/:id'                      => 'contributors#destroy',    :as => :delete_contributor 
     
   #photos
-  get    '/albums/:album_id/photos.'      => 'photos#index',                     :as => :album_photos
-  post   '/albums/:album_id/photos.'      => 'photos#create',                    :as => :create_album_photo
-  get    '/photos/:id.'                   => 'photos#show',                      :as => :photo
-  get    '/photos/:id/edit.'              => 'photos#edit',                      :as => :edit_photo
-  put    '/photos/:id/edit.'              => 'photos#update',                    :as => :update_photo
-  delete '/photos/:id.'                   => 'photos#destroy',                   :as => :destroy_photo
-  put    '/photos/:id/upload.'            => 'photos#upload',                    :as => :upload_photo
-  get    '/agents/:agent_id/photos.'      => 'photos#agentindex',                :as => :agent_photos
-  post   '/albums/:album_id/photos/agent_create.' => 'photos#agent_create',      :as => :agent_create
+  get    '/albums/:album_id/photos'      => 'photos#index',                     :as => :album_photos
+  post   '/albums/:album_id/photos'      => 'photos#create',                    :as => :create_album_photo
+  get    '/photos/:id'                   => 'photos#show',                      :as => :photo
+  get    '/photos/:id/edit'              => 'photos#edit',                      :as => :edit_photo
+  put    '/photos/:id/edit'              => 'photos#update',                    :as => :update_photo
+  delete '/photos/:id'                   => 'photos#destroy',                   :as => :destroy_photo
+  put    '/photos/:id/upload'            => 'photos#upload',                    :as => :upload_photo
+  get    '/agents/:agent_id/photos'      => 'photos#agentindex',                :as => :agent_photos
+  post   '/albums/:album_id/photos/agent_create' => 'photos#agent_create',      :as => :agent_create
   
   # timeline views
-  get '/albums/:album_id/activities.' => 'activities#album_index', :as => :album_activities
-  get '/users/:user_id/activities.'   => 'activities#user_index',  :as => :user_activities
+  get '/albums/:album_id/activities' => 'activities#album_index', :as => :album_activities
+  get '/users/:user_id/activities'   => 'activities#user_index',  :as => :user_activities
 
   # people views
-  get '/albums/:album_id/people.' => 'people#album_index',         :as => :album_people
-  get '/users/:user_id/people.'   => 'people#user_index',          :as => :user_people
+  get '/albums/:album_id/people' => 'people#album_index',         :as => :album_people
+  get '/users/:user_id/people'   => 'people#user_index',          :as => :user_people
 
   #follows
-  get    '/users/:user_id/follows.'       => 'follows#index',      :as => :user_follows
+  get    '/users/:user_id/follows'       => 'follows#index',      :as => :user_follows
   post   '/users/:user_id/follows/create' => 'follows#create',     :as => :create_user_follow
-  get    '/users/:user_id/follows/new.'   => 'follows#new',        :as => :new_user_follow
+  get    '/users/:user_id/follows/new'   => 'follows#new',        :as => :new_user_follow
   delete '/follows/:id/unfollow'          => 'follows#unfollow',   :as => :unfollow
   put    '/follows/:id/block'             => 'follows#block',      :as => :block_follow
   put    '/follows/:id/unblock'           => 'follows#unblock',    :as => :unblock_follow
 
   # oauth
   match '/users/:id/agents'     => 'agents#index',                 :as => :agents
-  match '/agent/info.'          => 'agents#info',                  :as => :agent_info
+  match '/agent/info'          => 'agents#info',                  :as => :agent_info
   match '/oauth/authorize'      => 'oauth#authorize',              :as => :authorize
   match '/oauth/agentauthorize' => 'oauth#agentauthorize',         :as => :agentauthorize
   match '/oauth/revoke'         => 'oauth#revoke',                 :as => :revoke
@@ -120,7 +120,7 @@ Server::Application.routes.draw do
   match '/flickr/sessions/new' => 'flickr_sessions#new', :as => :new_flickr_session, :namespace => 'connector'
   match '/flickr/sessions/create' => 'flickr_sessions#create', :as => :create_flickr_session, :namespace => 'connector'
   match '/flickr/sessions/destroy' => 'flickr_sessions#destroy', :as => :destroy_flickr_session, :namespace => 'connector'
-  match '/flickr/folders/:set_id/photos.' => 'flickr_photos#index', :as => :flickr_photos, :namespace => 'connector'
+  match '/flickr/folders/:set_id/photos' => 'flickr_photos#index', :as => :flickr_photos, :namespace => 'connector'
   match '/flickr/folders/:set_id/photos/:photo_id/:action' => 'flickr_photos#index', :as => :flickr_photo_action, :namespace => 'connector'
   match '/flickr/folders.:format' => 'flickr_folders#index', :as => :flickr_folders, :namespace => 'connector'
   match '/flickr/folders/:set_id/:action.:format' => 'flickr_folders#index', :as => :flickr_folder_action,:namespace => 'connector'

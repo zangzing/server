@@ -636,17 +636,12 @@ zz.wizard = {
 
     display_flashes: function( request, delay ){
         var data = request.getResponseHeader('X-Flash');
-        if( data && data.length>0 ){
+        if( data && data.length>0 && $('#flashes-notice').length>0 ){
             var flash = (new Function( "return( " + data + " );" ))();  //parse json using function contstructor
-            setTimeout(function(){$('#flashes-notice').html(flash.notice).show();},delay);
-            setTimeout(function(){$('#flashes-notice').fadeOut('fast', function(){$('#flashes-notice').html('    ');})}, delay+4000);
-        }
-
+             setTimeout(function(){$('#flashes-notice').html(flash.notice).show();},delay);
+             setTimeout(function(){$('#flashes-notice').fadeOut('fast', function(){$('#flashes-notice').html('    ');})}, delay+4000);
+		}
         //For the timeline album view more button
-
-
-
-
     },
 
 
