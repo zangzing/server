@@ -23,15 +23,25 @@ zz.validate = {
         element: '#join-form',
         errorContainer: 'div#sign-up p.error-notice',
         rules: {
-            'user[name]': { required: true, minlength: 5 },
-            'user[username]': { required: true, minlength: 5 },
-            'user[email]': { required: true, email: true },
-            'user[password]': { required: true, minlength: 5 }
+            'user[name]':     { required: true,
+                                minlength: 5 },
+            'user[username]': { required: true,
+                                minlength: 5,
+                                remote: '/users/validate_username' },
+            'user[email]':    { required: true,
+                                email: true,
+                                remote: '/users/validate_email' },
+            'user[password]': { required: true,
+                                minlength: 5 }
         },
         messages: {
-            'user[name]': 'Please enter your name.',
-            'user[username]': 'A username allows us to create personal links.',
-            'user[email]': 'We promise we won&rsquo;t spam you.',
+            'user[name]':    { required: 'Please enter your name.',
+                               minlength: 'Please enter at least 5 letters'},
+            'user[username]':{ required: 'A username is required.',
+                               remote: 'username not available'},
+            'user[email]':   { required: 'We promise we won&rsquo;t spam you.',
+                               email: 'Is that a valid email?',
+                               remote: 'Email already used'},
             'user[password]': 'Six characters or more please.'
         }
     },
