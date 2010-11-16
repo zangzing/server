@@ -73,6 +73,15 @@ zz.validate = {
             $.post('/albums/'+zz.album_id+'/shares.json', serialized, function(data,status,request){
                 zz.wizard.reload_share(zz.drawers[zz.album_type+'_album'], 'share');
                 zz.wizard.display_flashes(  request,200 );
+      //$('#tab-content').fadeOut('fast', function(){
+       //             $('#tab-content').load('/albums/'+zz.album_id+'/shares/new', function(){
+        //            zz.wizard.build_nav(obj, id);
+         //           zz.drawers[zz.album_type+'_album'].steps['share'].init();
+          //          zz.wizard.display_flashes( request,200 );
+           //         $('#tab-content').fadeIn('fast');
+            //});
+        //})
+
             });
         }
 

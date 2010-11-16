@@ -629,8 +629,9 @@ zz.wizard = {
         var data = request.getResponseHeader('X-Flash');
         if( data && data.length>0 ){
             var flash = (new Function( "return( " + data + " );" ))();  //parse json using function contstructor
-            setTimeout(function(){$('#flashes-notice').html(flash.notice).show();},delay);
+            $('#flashes-notice').html(flash.notice).fadeIn('fast', function(){
             setTimeout(function(){$('#flashes-notice').fadeOut('fast', function(){$('#flashes-notice').html('    ');})}, delay+4000);
+            });    
         }
 
         //For the timeline album view more button
