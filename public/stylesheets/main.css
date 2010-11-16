@@ -324,6 +324,12 @@ textarea{
     filter: progid:DXImageTransform.Microsoft.dropShadow(color=#FDD042, offX=2, offY=2, positive=true);
 }
 
+
+div#headline {
+  padding-top: 30px;
+}
+
+
 /* Content (Article)
 ----------------------------------------------------------------------------- */
 
