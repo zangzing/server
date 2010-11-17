@@ -58,13 +58,11 @@ class Connector::FacebookFoldersController < Connector::FacebookController
                 :album_id => params[:album_id],
                 :user_id=>current_user.id,
                 :source_guid => Photo.generate_source_guid(p[:source]),
-                :source_thumb_url => get_photo_url(p[:id], PHOTO_SIZES[:thumb]),
-                :source_screen_url => get_photo_url(p[:id], PHOTO_SIZES[:screen])
+                :source_thumb_url => get_photo_url(p, :thumb),
+                :source_screen_url => get_photo_url(p, :screen)
       )
 
-
-    
-      ZZ::Async::GeneralImport.enqueue( photo.id, p[:source] )
+      ZZ::Async::GeneralImport.enqueue( photo.id, get_photo_url(p, :full) )
       photos << photo
     end
 

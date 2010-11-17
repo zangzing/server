@@ -71,8 +71,9 @@ zz.validate = {
         submitHandler: function() {
             var serialized = $('#new_post_share').serialize();
             $.post('/albums/'+zz.album_id+'/shares.json', serialized, function(data,status,request){
-                zz.wizard.reload_share(zz.drawers[zz.album_type+'_album'], 'share');
-                zz.wizard.display_flashes(  request,200 );
+                zz.wizard.reload_share(zz.drawers[zz.album_type+'_album'], 'share', function(){
+                    zz.wizard.display_flashes(  request,200 )
+                    });
             });
         }
 
@@ -92,8 +93,9 @@ zz.validate = {
         submitHandler: function() {
             var serialized = $('#new_email_share').serialize();
             $.post('/albums/'+zz.album_id+'/shares.json', serialized, function(data,status,request ){
-                zz.wizard.reload_share(zz.drawers[zz.album_type+'_album'], 'share');
-                zz.wizard.display_flashes( request,200 );
+                zz.wizard.reload_share(zz.drawers[zz.album_type+'_album'], 'share', function(){
+                    zz.wizard.display_flashes(  request,200 )
+                    });   
             },"json");
         }
 

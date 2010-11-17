@@ -11,8 +11,8 @@ class Connector::FacebookPhotosController < Connector::FacebookController
           :name => p[:name] || '',
           :id   => p[:id],
           :type => 'photo',
-          :thumb_url =>get_photo_url(p[:id], PHOTO_SIZES[:thumb]),
-          :screen_url =>get_photo_url(p[:id], PHOTO_SIZES[:screen]),
+          :thumb_url =>get_photo_url(p, :thumb),
+          :screen_url =>get_photo_url(p, :screen),
           :add_url => facebook_photo_action_path({:photo_id =>p[:id], :action => 'import'}),
           :source_guid => Photo.generate_source_guid(p[:source])
 
@@ -39,16 +39,11 @@ class Connector::FacebookPhotosController < Connector::FacebookController
             :album_id => params[:album_id],
             :user_id=>current_user.id,
             :source_guid => Photo.generate_source_guid(info[:source]),
-            :source_thumb_url => get_photo_url(info[:id], PHOTO_SIZES[:thumb]),
-            :source_screen_url => get_photo_url(info[:id], PHOTO_SIZES[:screen])
+            :source_thumb_url => get_photo_url(info, :thumb),
+            :source_screen_url => get_photo_url(info, :screen)
     )
-
-
-
-
-
   
-    ZZ::Async::GeneralImport.enqueue( photo.id, info[:source] )
+    ZZ::Async::GeneralImport.enqueue( photo.id, get_photo_url(info, :full) )
     render :json => photo.to_json
   end
 

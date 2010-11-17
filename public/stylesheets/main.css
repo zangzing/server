@@ -489,16 +489,18 @@ div#small-drawer h3 {
   color: #0a0a0a;
 }
 
-.flash-notice {
-    display: none;
-    font-size: 1.3em;
-    text-align: center;
-    height: 18px;
-    color: green;
-    font-weight: 700;
-    text-transform: capitalize;
+.flash-box{
+    display: block;
+    height: 20px;
     margin-top: 10px;
     margin-bottom: 10px;
+}
+.flash-notice{
+    font-size: 1.3em;
+    text-align: center;
+    color: green;
+    font-weight: 700;
+    text-transform: capitalize;    
 }
 
 div#small-drawer p.error-notice, .error-notice {

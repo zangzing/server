@@ -373,7 +373,7 @@ zz.wizard = {
     },
 
     // loads the email post form in place of the type switcher on the share step
-    email_share: function(obj, id){
+    email_share: function(obj, id ){
         $('div#share-body').fadeOut('fast', function(){
             $('div#share-body').load('/albums/'+zz.album_id+'/shares/newemail', function(){
                 zz.wizard.resize_scroll_body()
@@ -406,12 +406,15 @@ zz.wizard = {
     },
 
     // reloads the main share part in place of the type switcher on the share step
-    reload_share: function(obj, id){
+    reload_share: function(obj, id, callback){
         $('#tab-content').fadeOut('fast', function(){
             $('#tab-content').load('/albums/'+zz.album_id+'/shares/new', function(){
                 zz.wizard.build_nav(obj, id);
                 obj.steps[id].init();
                 $('#tab-content').fadeIn('fast');
+                 if( typeof(callback) != "undefined" ){
+                     callback();
+                 }
             });
         })
     },
@@ -629,8 +632,9 @@ zz.wizard = {
         var data = request.getResponseHeader('X-Flash');
         if( data && data.length>0 ){
             var flash = (new Function( "return( " + data + " );" ))();  //parse json using function contstructor
-            setTimeout(function(){$('#flashes-notice').html(flash.notice).show();},delay);
+            $('#flashes-notice').html(flash.notice).fadeIn('fast', function(){
             setTimeout(function(){$('#flashes-notice').fadeOut('fast', function(){$('#flashes-notice').html('    ');})}, delay+4000);
+            });    
         }
 
         //For the timeline album view more button

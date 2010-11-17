@@ -1,7 +1,7 @@
 class Connector::FacebookController < Connector::ConnectorController
   require 'hyper_graph'
 
-  PHOTO_SIZES = {:thumb => 'album', :screen => 'normal', :full => 'normal'} #Possible types are thumbnail, album, normal
+  PHOTO_SIZES = {:thumb => 'a', :screen => 'n', :full => ['o', 'n']}
 
   before_filter :service_login_required
 
@@ -20,18 +20,10 @@ protected
   end
 
 
-  def get_photo_url(photo_id, size)
-    url = URI.escape("/#{photo_id}/picture?access_token=#{service_identity.facebook_auth_token}&type=#{size}")
-    http = Net::HTTP.new(HyperGraph::API_URL, 443) 
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    response = http.get(url)
-    response['Location']
-  end
-
-  def compose_photo_url(photo_info, size)
-    url = photo_info[:source]
-    url.gsub(/_n\./, "_#{size[0,1]}.")
+  def get_photo_url(photo_info, size)
+    urls = photo_info[:images].map{|i| i[:source]}
+    sz_letter = PHOTO_SIZES[size].is_a?(Array) ? "(#{PHOTO_SIZES[size].join('|')})" : PHOTO_SIZES[size]
+    urls.select{|url| url =~ /_#{sz_letter}\.\w+$/ }.first
   end
 
 

@@ -7,7 +7,7 @@
             <a href="/"><img src="/images/btn-back-all-albums.png" /></a>
 <% end %>
           </li>
-
+          
           <li id="nav-main">
             <ul id="album-info" class="clearfix" style="display:<%= @album ? 'inline-block' : 'none' %>">
               <li>
@@ -17,13 +17,12 @@
 
             </ul>
 
-
-            <ul id="user-info" class="clearfix" style="display:<%= current_user ? 'inline-block' : 'none' %>">
+            <ul id="user-info" class="clearfix" style="display:<%= @user && !@user.changed? ? 'inline-block' : 'none' %>">
               <li id="user-icon">
                 <img src="/images/user-icon-40x40.png" width="40" height="40" />
               </li>
               <li>
-                <h2><%= current_user ? current_user.username : '' %></h2>
+                <h2><%= @user ? @user.username : '' %></h2>
               </li>
             </ul>
           </li>
