@@ -20,7 +20,7 @@
       </dl>  
       
       <div id="form-actions">
-        <a href="javascript:void(0);" id="cancel-share">Cancel</a> <input type="image" src="/images/btn-post.png" name="submit" id="social-submit" />
+        <a href="javascript:void(0);" id="cancel-share">Cancel</a> <input type="image" id="post_share_button" src="/images/btn-post-<%=( @share.twitter == '1' || @share.facebook == '1' ? "on" : "off" )%>.png" name="submit" id="social-submit" />
       </div>
       
     </div>

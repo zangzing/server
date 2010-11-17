@@ -11,7 +11,7 @@ class IdentitiesController < ApplicationController
   def destroy
     identity = current_user.identities.find_by_id( params[:id] )
     if identity.destroy
-      flash[:notice] = "#{identity.type.to_s.capitalize } Identity  was deleted"
+      flash[:notice] = "#{identity.class.to_s.capitalize } Identity  was deleted"
       render :action => 'index', :result => 200
     else
       flash[:error] = "Unable to delete #{identity.type.to_s.capitalize}"

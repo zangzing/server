@@ -69,9 +69,8 @@ class User < ActiveRecord::Base
   validates_presence_of :username, :unless => :automatic?
   validates_uniqueness_of :username, :message => "Has already been taken", :unless => :automatic?
   validates_presence_of :email
-  #validates_uniqueness_of :email, :message => "Email already used for a ZangZing account"
   validates_length_of  :password, :within => 6..40, :if => :require_password?, :message => "must be between 6 and 40 characters long"
-
+  
 
   Identity::UI_INFO.keys.each do |service_name|
     define_method("identity_for_#{service_name}") do

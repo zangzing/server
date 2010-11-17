@@ -63,10 +63,14 @@ zz.validate = {
     new_post_share: {
         element: '#new_post_share',
         rules: {
-            'post_share[message]': { required: true, minlength: 0, maxlength: 118 }
+            'post_share[message]':  { required: true, minlength: 0, maxlength: 118 },
+            'post_share[facebook]': { required: "#twitter_box:unchecked" },
+            'post_share[twitter]':  { required:  "#facebook_box:unchecked"}
         },
         messages: {
-            'post_share[message]': ''
+            'post_share[message]': '',
+            'post_share[facebook]': '',
+            'post_share[twitter]': ''
         },
         submitHandler: function() {
             var serialized = $('#new_post_share').serialize();
