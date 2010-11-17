@@ -25,9 +25,6 @@ ul#filechooser {
 }
 
 ul#filechooser li {
-  background-image: url("/images/folders/blank.png");
-  background-repeat: no-repeat;
-  background-position: center top;
   float: left;
   width: 128px;
   padding: 0px 20px 15px;
@@ -38,6 +35,7 @@ ul#filechooser li {
   height: 135px;
   background-color:#ffffff;
 }
+
 
 ul#filechooser li.photo {
   padding: 15px 20px;
@@ -73,85 +71,94 @@ ul#filechooser img.large-photo {
 
 
 
-ul#filechooser li.f_iphoto {
+ul#filechooser li.folder {
+  background-repeat: no-repeat;
+  background-position: center top;
+}
+
+ul#filechooser li.folder.f_blank {
+  background-image: url("/images/folders/blank.png");
+}
+
+ul#filechooser li.folder.f_iphoto {
   background-image: url("/images/folders/apple_off.png");
 }
-ul#filechooser li.f_facebook {
+ul#filechooser li.folder.f_facebook {
   background-image: url("/images/folders/facebook_off.png");
 }
-ul#filechooser li.f_flickr {
+ul#filechooser li.folder.f_flickr {
   background-image: url("/images/folders/flickr_off.png");
 }
-ul#filechooser li.f_home {
+ul#filechooser li.folder.f_home {
   background-image: url("/images/folders/myhome_off.png");
 }
-ul#filechooser li.f_kodak {
+ul#filechooser li.folder.f_kodak {
   background-image: url("/images/folders/kodak_off.png");
 }
-ul#filechooser li.f_mycomputer {
+ul#filechooser li.folder.f_mycomputer {
   background-image: url("/images/folders/mycomputer_off.png");
 }
-ul#filechooser li.f_pictures {
+ul#filechooser li.folder.f_pictures {
   background-image: url("/images/folders/mypictures_off.png");
 }
-ul#filechooser li.f_picasa {
+ul#filechooser li.folder.f_picasa {
   background-image: url("/images/folders/picasa_off.png");
 }
-ul#filechooser li.f_shutterfly {
+ul#filechooser li.folder.f_shutterfly {
   background-image: url("/images/folders/shutterfly_off.png");
 }
-ul#filechooser li.f_snapfish {
+ul#filechooser li.folder.f_snapfish {
   background-image: url("/images/folders/snapfish_off.png");
 }
-ul#filechooser li.f_smugmug {
+ul#filechooser li.folder.f_smugmug {
   background-image: url("/images/folders/smugmug_off.png");
 }
-ul#filechooser li.f_zangzing {
+ul#filechooser li.folder.f_zangzing {
   background-image: url("/images/folders/zangzing_off.png");
 }
 
-ul#filechooser li.f_photobucket {
+ul#filechooser li.folder.f_photobucket {
   background-image: url("/images/folders/photobucket_off.png");
 }
 
-ul#filechooser li.f_iphoto:hover {
+ul#filechooser li.folder.f_iphoto:hover {
   background-image: url("/images/folders/apple.png");
 }
-ul#filechooser li.f_facebook:hover {
+ul#filechooser li.folder.f_facebook:hover {
   background-image: url("/images/folders/facebook.png");
 }
-ul#filechooser li.f_flickr:hover {
+ul#filechooser li.folder.f_flickr:hover {
   background-image: url("/images/folders/flickr.png");
 }
-ul#filechooser li.f_home:hover {
+ul#filechooser li.folder.f_home:hover {
   background-image: url("/images/folders/myhome.png");
 }
-ul#filechooser li.f_kodak:hover {
+ul#filechooser li.folder.f_kodak:hover {
   background-image: url("/images/folders/kodak.png");
 }
-ul#filechooser li.f_mycomputer:hover {
+ul#filechooser li.folder.f_mycomputer:hover {
   background-image: url("/images/folders/mycomputer.png");
 }
-ul#filechooser li.f_pictures:hover {
+ul#filechooser li.folder.f_pictures:hover {
   background-image: url("/images/folders/mypictures.png");
 }
-ul#filechooser li.f_picasa:hover {
+ul#filechooser li.folder.f_picasa:hover {
   background-image: url("/images/folders/picasa.png");
 }
-ul#filechooser li.f_shutterfly:hover {
+ul#filechooser li.folder.f_shutterfly:hover {
   background-image: url("/images/folders/shutterfly.png");
 }
-ul#filechooser li.f_snapfish:hover {
+ul#filechooser li.folder.f_snapfish:hover {
   background-image: url("/images/folders/snapfish.png");
 }
-ul#filechooser li.f_smugmug:hover {
+ul#filechooser li.folder.f_smugmug:hover {
   background-image: url("/images/folders/smugmug.png");
 }
-ul#filechooser li.f_zangzing:hover {
+ul#filechooser li.folder.f_zangzing:hover {
   background-image: url("/images/folders/zangzing.png");
 }
 
-ul#filechooser li.f_photobucket:hover {
+ul#filechooser li.folder.f_photobucket:hover {
   background-image: url("/images/folders/photobucket.png");
 }
 
@@ -168,9 +175,6 @@ ul#filechooser li.photo:hover img {
   filter: progid:DXImageTransform.Microsoft.dropShadow(color=#FDD042, offX=2, offY=2, positive=true);
 }
 
-div#headline {
-  padding-top: 30px;
-}
 
 ul#filechooser li figure {
   display: none;
