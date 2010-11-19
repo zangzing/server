@@ -11,7 +11,7 @@
           <li id="nav-main">
             <ul id="album-info" class="clearfix" style="display:<%= @album ? 'inline-block' : 'none' %>">
               <li>
-                <h2 id="album-header-title"><%= @album ? @album.name : '' %></h2>
+                <h2 id="album-header-title"><%= truncate((@album ? @album.name : ''), :length => 30) %></h2>
                 <h3><%= @album ? 'by ' + @album.user.username : '' %></h3>
               </li>
 
