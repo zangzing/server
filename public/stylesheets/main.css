@@ -587,6 +587,11 @@ div#small-drawer dl dd.full-t {
   width: 10%;
 }
 
-
+.autocomplete-match{
+ color: green;
+ font-weight: 900;
+ font-size: 110%;
+ text-decoration: underline;   
+}
 
 

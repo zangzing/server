@@ -80,7 +80,6 @@ zz.validate = {
                     });
             });
         }
-
     }, // end zz.validation.new_post_share
 
     new_email_share: {
@@ -90,7 +89,7 @@ zz.validate = {
             'email_share[message]': { required: true, minlength: 0 }
         },
         messages: {
-            'email_share[to]': '',
+            'email_share[to]': 'At least one recipient is required',
             'email_share[message]': ''
         },
 
@@ -108,9 +107,11 @@ zz.validate = {
     new_contributors: {
         element: '#new_contributors',
         rules: {
+            'email_share[to]': { required: true},           
             'email_share[message]': { required: true, minlength: 0}
         },
         messages: {
+            'email_share[message]': '',
             'email_share[message]': ''
         },
         submitHandler: function() {
