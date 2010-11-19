@@ -1,3 +1,18 @@
+/* Custom validators
+ --------------------------------------------------------------------------- */
+
+jQuery.validator.addMethod(
+        "regex",
+        function(value, element, regexp) {
+            var check = false;
+            var re = new RegExp(regexp);
+            return this.optional(element) || re.test(value);
+        },
+        "Please check your input."
+);
+
+
+
 /* Form Validation objects 
  --------------------------------------------------------------------------- */
 zz.validate = {
@@ -27,6 +42,7 @@ zz.validate = {
                                 minlength: 5 },
             'user[username]': { required: true,
                                 minlength: 5,
+                                regex: "^[a-z0-9]+$",
                                 remote: '/users/validate_username' },
             'user[email]':    { required: true,
                                 email: true,
@@ -38,6 +54,7 @@ zz.validate = {
             'user[name]':    { required: 'Please enter your name.',
                                minlength: 'Please enter at least 5 letters'},
             'user[username]':{ required: 'A username is required.',
+                               regex: 'Only lowercase alphanumeric characters allowed',
                                remote: 'username not available'},
             'user[email]':   { required: 'We promise we won&rsquo;t spam you.',
                                email: 'Is that a valid email?',

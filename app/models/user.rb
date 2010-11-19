@@ -67,6 +67,7 @@ class User < ActiveRecord::Base
 
   validates_presence_of :name, :unless => :automatic?
   validates_presence_of :username, :unless => :automatic?
+  validates_format_of :username, :with => /^[a-z0-9]+$/, :on => :create, :message => 'Should contaion only lowercase alphanumeric characters'
   validates_uniqueness_of :username, :message => "Has already been taken", :unless => :automatic?
   validates_presence_of :email
   validates_length_of  :password, :within => 6..40, :if => :require_password?, :message => "must be between 6 and 40 characters long"

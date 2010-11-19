@@ -8,5 +8,5 @@
         </td>
       </tr>
     </table>
-    <%= h album.name%>
+    <%= truncate(h(album.name), :length => 20) %>
   </li>
