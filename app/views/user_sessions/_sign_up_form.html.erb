@@ -9,13 +9,13 @@
           <form id="join-form" method="post" enctype="multipart/form-data" action="/users">
             <dl class="clearfix">
               <dt><label for="user_name">First and Last Name</label></dt>
-              <dd><input type="text" value="" size="30" name="user[name]" id="user_name"></dd>
+              <dd><input type="text" value="<%=(@user ? @user.name : '')%>" size="30" name="user[name]" id="user_name"></dd>
               <dt><label for="user_username">Username</label></dt>
-              <dd><input type="text" value="" size="30" name="user[username]" id="user_username"></dd>
+              <dd><input type="text" value="<%=(@user ? @user.username: '')%>" size="30" name="user[username]" id="user_username"></dd>
               <dt class="full-t">zangzing.com/<span id="update-username">your_username</span></dt>
               <dd class="full-t"></dd>
               <dt><label for="user_email">Email Address</label></dt>
-              <dd><input type="text" value="" size="30" name="user[email]" id="user_email"></dd>
+              <dd><input type="text" value="<%=(@user ? @user.email: '')%>" size="30" name="user[email]" id="user_email"></dd>
               <dt><label for="user_session_password">Password</label></dt>
               <dd><input type="password" size="30" name="user[password]" id="user_password"></dd>
               <dt class="full-t">By joining you accept and agree to <a target="_blank" href="/tos.html" onClick="window.open('/tos.html','TOC','status=yes,scrollbars=yes,resizable=yes,width=600,height=480'); return false">the terms of service</a></dt>

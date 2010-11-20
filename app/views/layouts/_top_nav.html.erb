@@ -7,18 +7,17 @@
             <a href="/"><img src="/images/btn-back-all-albums.png" /></a>
 <% end %>
           </li>
-
+          
           <li id="nav-main">
             <ul id="album-info" class="clearfix" style="display:<%= @album ? 'inline-block' : 'none' %>">
               <li>
-                <h2 id="album-header-title"><%= @album ? @album.name : '' %></h2>
+                <h2 id="album-header-title"><%= truncate((@album ? @album.name : ''), :length => 30) %></h2>
                 <h3><%= @album ? 'by ' + @album.user.username : '' %></h3>
               </li>
 
             </ul>
 
-
-            <ul id="user-info" class="clearfix" style="display:<%= @user ? 'inline-block' : 'none' %>">
+            <ul id="user-info" class="clearfix" style="display:<%= @user && !@user.changed? ? 'inline-block' : 'none' %>">
               <li id="user-icon">
                 <img src="/images/user-icon-40x40.png" width="40" height="40" />
               </li>

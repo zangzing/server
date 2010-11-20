@@ -1,25 +1,10 @@
-<!-- Javascript is used by the _photo partial. DO NOT REMOVE -->
-<%= javascript_include_tag "jquery.js" %>
-<%= javascript_include_tag "jquery.ba-bbq.js" %>
-<%= javascript_include_tag "jquery.jsonp.js" %>
-<%= javascript_include_tag "jquery.cookie" %>
-<%= javascript_include_tag "agent.js" %>
-<%= javascript_include_tag "album" %>
-<%= javascript_include_tag "logging" %>
-
-
-<table class="profile">
-  <tr>
-    <td>
-      <%= link_to  @album.name, @album %>
-    </td>
-    <td class="main">
-      <% unless @photos.empty? %>
-          <table class="photos">
-            <%= render :partial => "photo", :collection => @photos, :locals => {:return_to_link => @return_to_link} %> 
-          </table>
-          <%= will_paginate @photos, { :class=> 'digg_pagination' } %>
-      <% end %>
-    </td>
-  </tr>
-</table>
+<% unless @photos.empty? %>
+     <ul class="photos photos-single-view">
+         <li>
+             <a href="<%=@return_to_link%>">
+                 <img class="largephoto" src="<%=@photos.first.medium_url%>" id="photoid<%=@photos.first.id%>">
+             </a>
+         </li>
+       </ul>
+  <%= will_paginate @photos, { :class=> 'digg_pagination' } %>
+<% end %>

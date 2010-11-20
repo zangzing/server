@@ -11,13 +11,6 @@ class UserSessionsController < ApplicationController
     @user_session = UserSession.new(params[:user_session])
     if @user_session.save
       redirect_back_or_default user_url( @user_session.record )
-    #elsif @user_session.attempted_record &&
-    #    !@user_session.invalid_password? &&
-    #    !@user_session.attempted_record.active?
-    #     @user_session.errors.add( :base, '<a href="'+
-    #                    resend_activation_path(:username => @user_session.attempted_record.username)+
-    #                   '">Resend activation email</a>');
-    #  render :action => :new
     else
       render :action => :new
     end

@@ -41,41 +41,11 @@ jQuery.autocomplete = function(input, options) {
 		cache.length = 0;
 	};
 
-	// flush cache
-	flushCache();
 
-	// if there is a data array supplied
-	if( options.data != null ){
-		var sFirstChar = "", stMatchSets = {}, row = [];
-
-		// no url was specified, we need to adjust the cache length to make sure it fits the local data store
-		if( typeof options.url != "string" ) options.cacheLength = 1;
-
-		// loop through the array and create a lookup structure
-		for( var i=0; i < options.data.length; i++ ){
-			// if row is a string, make an array otherwise just reference the array
-			row = ((typeof options.data[i] == "string") ? [options.data[i]] : options.data[i]);
-
-			// if the length is zero, don't add to list
-			if( row[0].length > 0 ){
-				// get the first character
-				sFirstChar = row[0].substring(0, 1).toLowerCase();
-				// if no lookup array for this character exists, look it up now
-				if( !stMatchSets[sFirstChar] ) stMatchSets[sFirstChar] = [];
-				// if the match is a string
-				stMatchSets[sFirstChar].push(row);
-			}
-		}
-
-		// add the data items to the cache
-		for( var k in stMatchSets ){
-			// increase the cache size
-			options.cacheLength++;
-			// add to the cache
-			addToCache(k, stMatchSets[k]);
-		}
-	}
-
+    if( options.data != null ){
+            setData( options.data );
+    }
+      
 	$input.keydown(function(e) {
 		// track last key pressed
 		lastKeyPressCode = e.keyCode;
@@ -359,11 +329,12 @@ jQuery.autocomplete = function(input, options) {
 	};
 
 	function requestData(q) {
-		if (!options.matchCase) q = q.toLowerCase();
+    	if (!options.matchCase) q = q.toLowerCase();
 		var data = options.cacheLength ? loadFromCache(q) : null;
 		// recieve the cached data
 		if (data) {
-			receiveData(q, data);
+            var cleanData = deDupeResultData(q,  data )
+			receiveData(q, cleanData);
 		// if an AJAX url has been supplied, try loading the data now
 		} else if( (typeof options.url == "string") && (options.url.length > 0) ){
 			$.get(makeUrl(q), function(data) {
@@ -415,6 +386,67 @@ jQuery.autocomplete = function(input, options) {
 		return i == 0 || options.matchContains;
 	};
 
+    function cleanData( data ){
+        //it removes duplicate email addresses assumes that each entry in data is [name,email]
+        var r = new Array();
+        o:for(var i = 0, n = data.length; i < n; i++){
+            for(var x = 0, y = r.length; x < y; x++){
+                if(r[x][1]==data[i][1]) continue o;
+            }
+            r[r.length] = data[i];
+        }
+        return r;
+    };
+
+
+    function setData( dirtyData ){
+        //remove duplicates and clean data
+        var data = cleanData( dirtyData );
+        options.data = ((typeof data == "object") && (data.constructor == Array)) ? data : null;
+        flushCache();
+        // if there is a data array supplied
+        if( options.data != null ){
+            var sFirstChar = "", stMatchSets = {}, row = [];
+
+            // no url was specified, we need to adjust the cache length to make sure it fits the local data store
+            if( typeof options.url != "string" ) options.cacheLength = 1;
+
+            // loop through the array and create a lookup structure
+            for( var i=0; i < options.data.length; i++ ){
+                // if row is a string, make an array otherwise just reference the array
+                row = ((typeof options.data[i] == "string") ? [options.data[i]] : options.data[i]);
+
+                // if the length is zero, don't add to list
+                if( row[0].length > 0 ){
+                    var namerow = [row[0], row[0],row[1], i,  1,0 ];
+                    // get the first character
+                    sFirstChar = row[0].substring(0, 1).toLowerCase();
+                    // if no lookup array for this character exists, look it up now
+                    if( !stMatchSets[sFirstChar] ) stMatchSets[sFirstChar] = [];
+                    // if the match is a string
+                    stMatchSets[sFirstChar].push(namerow);
+                }
+                if( row[1].length > 0 ){
+                    var addressrow = [row[1], row[0],row[1], i,  0,1 ];
+                    // get the first character
+                    sFirstChar = addressrow[0].substring(0, 1).toLowerCase();
+                    // if no lookup array for this character exists, look it up now
+                    if( !stMatchSets[sFirstChar] ) stMatchSets[sFirstChar] = [];
+                    // if the match is a string
+                    stMatchSets[sFirstChar].push(addressrow);
+                }
+            }
+
+            // add the data items to the cache
+            for( var k in stMatchSets ){
+                // increase the cache size
+                options.cacheLength++;
+                // add to the cache
+                addToCache(k, stMatchSets[k]);
+            }
+        }
+    };
+    
 	this.flushCache = function() {
 		flushCache();
 	};
@@ -423,60 +455,53 @@ jQuery.autocomplete = function(input, options) {
 		options.extraParams = p;
 	};
 
-	this.setData = function( data ){
-		options.data = ((typeof data == "object") && (data.constructor == Array)) ? data : null;
-		flushCache();
-		// if there is a data array supplied
-		if( options.data != null ){
-			var sFirstChar = "", stMatchSets = {}, row = [];
+    this.setData = function( data ){
+        setData( data );
+    };
+  
 
-			// no url was specified, we need to adjust the cache length to make sure it fits the local data store
-			if( typeof options.url != "string" ) options.cacheLength = 1;
+    function deDupeResultData( q, data ){
+          if(data != null){
+              sparseData = {};
+              for( var i=0; i < data.length; i++ ){
+                    var index = data[i][3];
+                    if( sparseData[ index ] == null){
+                          //                      [name,email,match-length,isNameMatch,isEmailMatch] 
+                          sparseData[ index ] = [data[i][1], data[i][2], q.length, data[i][4], data[i][5]];
+                    } else {
+                          if( data[i][4] ==1  ) { sparseData[ index ][3] = 1; }
+                          if( data[i][5] ==1  ) { sparseData[ index ][4] = 1; }
+                    }
 
-			// loop through the array and create a lookup structure
-			for( var i=0; i < options.data.length; i++ ){
-				// if row is a string, make an array otherwise just reference the array
-				row = ((typeof options.data[i] == "string") ? [options.data[i]] : options.data[i]);
+                }
+              cleanData = [];
+              for(var j in sparseData ){
+                  cleanData.push(sparseData[j]);
+              }
+           return cleanData;
+          }
+          return[];
+     };
 
-				// if the length is zero, don't add to list
-				if( row[0].length > 0 ){
-					// get the first character
-					sFirstChar = row[0].substring(0, 1).toLowerCase();
-					// if no lookup array for this character exists, look it up now
-					if( !stMatchSets[sFirstChar] ) stMatchSets[sFirstChar] = [];
-					// if the match is a string
-					stMatchSets[sFirstChar].push(row);
-				}
-			}
+	this.findValue = function() {
+        var q = $input.val();
 
-			// add the data items to the cache
-			for( var k in stMatchSets ){
-				// increase the cache size
-				options.cacheLength++;
-				// add to the cache
-				addToCache(k, stMatchSets[k]);
-			}
-		}
-	}
-
-	this.findValue = function(){
-		var q = $input.val();
-
-		if (!options.matchCase) q = q.toLowerCase();
-		var data = options.cacheLength ? loadFromCache(q) : null;
-		if (data) {
-			findValueCallback(q, data);
-		} else if( (typeof options.url == "string") && (options.url.length > 0) ){
-			$.get(makeUrl(q), function(data) {
-				data = parseData(data)
-				addToCache(q, data);
-				findValueCallback(q, data);
-			});
-		} else {
-			// no matches
-			findValueCallback(q, null);
-		}
-	}
+        if (!options.matchCase) q = q.toLowerCase();
+        var data = options.cacheLength ? loadFromCache(q) : null;
+        if (data) {
+            var cleanData = deDupeResultData(q,  data );
+            findValueCallback(q, cleanData);
+        } else if ((typeof options.url == "string") && (options.url.length > 0)) {
+            $.get(makeUrl(q), function(data) {
+                data = parseData(data)
+                addToCache(q, data);
+                findValueCallback(q, data);
+            });
+        } else {
+            // no matches
+            findValueCallback(q, null);
+        }
+    };
 
 	function findValueCallback(q, data){
 		if (data) $input.removeClass(options.loadingClass);
@@ -559,7 +584,7 @@ jQuery.fn.autocomplete = function(url, options, data) {
 	options.selectFirst = options.selectFirst || false;
 	options.selectOnly = options.selectOnly || false;
 	options.maxItemsToShow = options.maxItemsToShow || -1;
-	options.autoFill = options.autoFill || false;
+	options.autoFill = options.autoFill || true;
 	options.width = parseInt(options.width, 10) || 0;
 
 	this.each(function() {

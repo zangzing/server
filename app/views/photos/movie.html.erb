@@ -1,31 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml">
+  <head>
+    <style type="text/css" id="page-css">
+            /* Styles specific to this particular page */
+            html {
+                overflow-y: hidden;
+                overflow-x: hidden;
+            }
 
 
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
+            body
+            {
+                margin: 0 0 0 0;
+                padding: 0 0 0 0;
+                width:100%;
+                height:100%;
+                background-color: #000000;
+            }
+    </style>
 
-<h1>MOVIE GOES HERE</h1>
+    <script type="text/javascript" src="/javascripts/slideshow/swfobject.js"></script>
+    <script type="text/javascript" src="/javascripts/slideshow/SimpleFade.js"></script>
+    <script type="text/javascript" src="/javascripts/lib/jquery.js"></script>
+    <script type="text/javascript">
+      swfobject.registerObject("SimpleFade1276267724640", "9.0.115", "", function(e) {
+        if (e.success==false){
+          var err;
+          try{
+            $("#SimpleFade1276267724640").hide();
+            $.slideshowBoxEmbedCanvas.init({
+                appendToID:"SimpleFadeJS1276267724640",
+                imagesXmlPath:"slides_source.xml",
+                width:800,
+                height:600,
+                autoHideControls:"true",
+                autoSlideShow:"true",
+                backgroundVisible:"true",
+                loadOriginalImages:"false",
+                slideShowSpeed:"6",
+                backgroundColor:"#FFFFFF",
+                backgroundImage:"",
+                scaleBackground:"true",
+                controlBarAlpha:"0.8",
+                controlBarPrimaryColor:"#333333",
+                controlBarSecondaryColor:"#FFFFFF",
+                navigationControls:"true",
+                slideShowControls:"true",
+                fullScreenButton:"true",
+                controlsHideSpeed:"2",
+                showImageInfos:"true",
+                showImageIndex:"true",
+                scaleMode:"scaleCrop"
+            });
+          }catch(err){}
+        }
+      });
+
+      var resizeBody = function(){
+          $('body').width(window.innerWidth);
+          $('body').height(window.innerHeight);
+
+
+      }
+
+
+      $(document).ready(function() {
+          resizeBody();
+
+      });
+
+      $(window).resize(function() {
+          resizeBody();
+      });
+            
+
+    </script>
+  </head>
+<body>
+  <div id="SimpleFadeJS1276267724640" style="width:100%;height:100%; background-color:#000000">
+      <object id="SimpleFade1276267724640" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%">
+        <param name="movie" value="/swf/SimpleFade.swf"/>
+        <param name="allowFullScreen" value="true"/>
+        <param name="bgcolor" value="#FFFFFF"/>
+        <param name="flashvars" value="source=slides_source.xml&autoHideControls=true&autoSlideShow=true&backgroundVisible=true&loadOriginalImages=false&overrideFullScreenChange=false&slideShowSpeed=6&backgroundColor=1842204&backgroundImage=&scaleBackground=true&controlBarAlpha=0.8&controlBarPrimaryColor=3355443&controlBarSecondaryColor=16777215&navigationControls=true&slideShowControls=true&fullScreenButton=true&controlsHideSpeed=2&showImageInfos=true&showImageIndex=true&scaleMode=scaleCrop" />
+        <!--[if !IE]>-->
+        <object type="application/x-shockwave-flash" data="/swf/SimpleFade.swf" width="100%" height="100%">
+        <!--<![endif]-->
+                Please install the latest version of Flash Player to view this content
+                <param name="allowFullScreen" value="true"/>
+                <param name="bgcolor" value="#FFFFFF"/>
+                <param name="flashvars" value="source=slides_source.xml&autoHideControls=true&autoSlideShow=true&backgroundVisible=true&loadOriginalImages=false&overrideFullScreenChange=false&slideShowSpeed=6&backgroundColor=1842204&backgroundImage=&scaleBackground=true&controlBarAlpha=0.8&controlBarPrimaryColor=3355443&controlBarSecondaryColor=16777215&navigationControls=true&slideShowControls=true&fullScreenButton=true&controlsHideSpeed=2&showImageInfos=true&showImageIndex=true&scaleMode=scaleCrop" />
+        <!--[if !IE]>-->
+        </object>
+        <!--<![endif]-->
+      </object>
+    </div>
+</body>

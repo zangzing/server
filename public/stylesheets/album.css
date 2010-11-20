@@ -1,24 +1,15 @@
-/* Grid View
+/* Photos
 ----------------------------------------------------------------------------- */
 
 
 
-ul.photos-grid-view {
+ul.photos {
   margin: 60px 0 45px;
+  backgdound-color:#ffffff;
 }
 
-ul.photos-grid-view li {
-  float: left;
-  width: 150px;
-  height: 150px;
-}
 
-/*ul.photos-grid-view li.wide {*/
-  /*height: 130px;*/
-  /*padding-top: 20px;*/
-/*}*/
-
-ul.photos-grid-view li img {
+ul.photos li img {
   border: #fff solid 5px;
   box-shadow: 0px 0px 5px #767676;
   -webkit-box-shadow: 0px 0px 5px #767676;
@@ -28,7 +19,7 @@ ul.photos-grid-view li img {
 }
 
 
-ul.photos-grid-view li:hover img {
+ul.photos li:hover img {
   border: 5px solid #ffffff;
   box-shadow: 0px 0px 5px #FDD042;
   -webkit-box-shadow: 0px 0px 5px #FDD042;
@@ -37,11 +28,11 @@ ul.photos-grid-view li:hover img {
 }
 
 
-ul.photos-grid-view li figure {
+ul.photos li figure {
   display: none;
 }
 
-ul.photos-grid-view li:hover figure {
+ul.photos li:hover figure {
   display: block;
   position: absolute;
   height: 15px;
@@ -54,21 +45,53 @@ ul.photos-grid-view li:hover figure {
   line-height: 1.5em;
 }
 
-ul.photos-grid-view a.delete img {
+ul.photos a.delete img {
   display: none;
   position: absolute;
   top: 0px;
   right: 0px;
   z-index: 10;
   border: none;
-  box-shadow: 0 0 0 #000;
-  -webkit-box-shadow: 0 0 0 #000;
-  -moz-box-shadow: 0 0 0 #000;
-  filter: progid:DXImageTransform.Microsoft.dropShadow(color=none, offX=0, offY=0, positive=true);
+  /*box-shadow: 0 0 0 #000;*/
+  /*-webkit-box-shadow: 0 0 0 #000;*/
+  /*-moz-box-shadow: 0 0 0 #000;*/
+  /*filter: progid:DXImageTransform.Microsoft.dropShadow(color=none, offX=0, offY=0, positive=true);*/
 }
 
-ul.photos-grid-view li:hover a.delete img {
+ul.photos li:hover a.delete img {
   display: block;
+}
+
+
+
+/* Grid View
+----------------------------------------------------------------------------- */
+
+ul.photos-grid-view li {
+  float: left;
+  width: 150px;
+  height: 150px;
+}
+
+ul.photos-grid-view li img {
+    max-width: 120px;
+    max-height: 120px;
+}
+
+
+
+/* Single Picture View
+----------------------------------------------------------------------------- */
+ul.photos-single-view li {
+  margin-left: auto;
+  margin-right: auto;
+  /*width: 800px;*/
+  /*height: 600px;  */
+}
+
+ul.photos-single-view li img {
+    max-width: 800px;
+    max-height: 600px;
 }
 
 

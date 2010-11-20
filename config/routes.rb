@@ -49,8 +49,7 @@ Server::Application.routes.draw do
   delete '/shares/:id'                   => 'shares#destroy',    :as => :delete_share
   get '/albums/:album_id/shares/newpost'  => 'shares#newpost',    :as => :new_album_postshare
   get '/albums/:album_id/shares/newemail' => 'shares#newemail',   :as => :new_album_emailshare
- 
- 
+
   #contributors
   get    '/albums/:album_id/contributors'          => 'contributors#index',      :as => :album_contributors
   get    '/albums/:album_id/contributors/new'      => 'contributors#new',        :as => :new_album_contributor

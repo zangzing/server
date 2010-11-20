@@ -321,6 +321,8 @@ ul#choose-album-type li div {
 ul#privacy-menu {
   width: 660px;
   margin: 0 auto;
+  background-color:#ffffff;
+
 }
 
 ul#privacy-menu li {
@@ -331,10 +333,13 @@ ul#privacy-menu li {
   margin: 0 5px;
   color: #686868;
   cursor: pointer;
+  background-color:#ffffff;
 }
 
 ul#privacy-menu li div {
   height: 100px;
+  background-color:#ffffff;
+
 }
 
 ul#privacy-menu li p {
@@ -485,27 +490,33 @@ ul#share-pick li {
 
 ul#share-pick li.social-share {
   background: url(/images/btn-share-by-post.png) center center no-repeat;
+  background-color:#ffffff;
 }
 
 ul#share-pick li.social-share:hover {
   background: url(/images/btn-share-by-post-on.png) center center no-repeat;
+    background-color:#ffffff;
 }
 
 ul#share-pick li.email-share {
   background: url(/images/btn-share-by-email.png) center center no-repeat;
+  background-color:#ffffff;
 }
 
 ul#share-pick li.email-share:hover {
   background: url(/images/btn-share-by-email-on.png) center center no-repeat;
+    background-color:#ffffff;
 }
 
-ul#share-pick li a {
-  color: #646464;
-}
+/*ul#share-pick li a {*/
+  /*color: #646464;*/
+  /*background-color:#ffffff*/
 
-ul#share-pick li img {
-  margin-bottom: 10px;
-}
+/*}*/
+
+/*ul#share-pick li img {*/
+  /*margin-bottom: 10px;*/
+/*}*/
 
 div#form-container {
   width: 800px;
@@ -596,6 +607,7 @@ ul#email-sync {
 ul#email-sync li {
   float: left;
   margin-right: 10px;
+  background-color:#ffffff;
 }
 
 ul#email-sync li.title {
@@ -707,7 +719,7 @@ dl#email-share-form label.error {
 dl#email-share-form dd input#you-complete-me {
   background-color: #fff;
   border: 1px #fff solid;
-  width: 200px;
+  width: 300px;
   height: 24px;
   padding: 5px 0px;
 }
