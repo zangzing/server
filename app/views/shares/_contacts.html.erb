@@ -18,35 +18,31 @@ $(document).ready( function(){
 
 mslive_contacts = [
     <% @mslive_id.contacts.each do|contact| %>
-    ["<%=contact.name%> &lt;<%=contact.address%>&gt;","\"<%=contact.name.to_s%>\" <<%=contact.address%>>"],
-      ["<%=contact.address%>","\"<%=contact.name.to_s%>\" <<%=contact.address%>>"],
+       ["<%=contact.name.to_s%>","<%=contact.address%>"],
     <% end %>
-    " +N"
+     ['','']
 ];
 
 
 
 yahoo_contacts = [
     <% @yahoo_id.contacts.each do|contact| %>
-    ["<%=contact.name%> &lt;<%=contact.address%>&gt;","\"<%=contact.name.to_s%>\" <<%=contact.address%>>"],
-      ["<%=contact.address%>","\"<%=contact.name.to_s%>\" <<%=contact.address%>>"],
+       ["<%=contact.name.to_s%>","<%=contact.address%>"],
     <% end %>
-    " +O"
+    ['','']
 ];
 
 google_contacts = [
     <% @google_id.contacts.each_with_index do |contact, index| %>
-      ["<%=contact.name%> &lt;<%=contact.address%>&gt;","\"<%=contact.name.to_s%>\" <<%=contact.address%>>"],
-      ["<%=contact.address%>","\"<%=contact.name.to_s%>\" <<%=contact.address%>>"],
+       ["<%=contact.name.to_s%>","<%=contact.address%>"],
     <% end %>
-    " +P"
+    ['','']
 ];
 
 local_contacts = [
     <% @local_id.contacts.each do|contact| %>
-       ["<%=contact.name%> &lt;<%=contact.address%>&gt;","\"<%=contact.name.to_s%>\" <<%=contact.address%>>"],
-      ["<%=contact.address%>","\"<%=contact.name.to_s%>\" <<%=contact.address%>>"],
+       ["<%=contact.name.to_s%>","<%=contact.address%>"],
     <% end %>
-   " +Q"
+    ['','']
 ];
 </script>

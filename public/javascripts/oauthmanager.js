@@ -26,11 +26,13 @@ var oauthmanager = {
     facebook_login_success: function(){
         $("#facebook_box").attr('checked', true);
         $("#facebook_box").attr('authorized', 'yes');
+        $("#post_share_button").attr('src','/images/btn-post-on.png');
     },
 
     twitter_login_success: function(){
         $("#twitter_box").attr('checked', true);
         $("#twitter_box").attr('authorized', 'yes');
+        $("#post_share_button").attr('src','/images/btn-post-on.png')
     }
 };
 

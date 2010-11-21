@@ -1,3 +1,18 @@
+/* Custom validators
+ --------------------------------------------------------------------------- */
+
+jQuery.validator.addMethod(
+        "regex",
+        function(value, element, regexp) {
+            var check = false;
+            var re = new RegExp(regexp);
+            return this.optional(element) || re.test(value);
+        },
+        "Please check your input."
+);
+
+
+
 /* Form Validation objects 
  --------------------------------------------------------------------------- */
 zz.validate = {
@@ -27,6 +42,7 @@ zz.validate = {
                                 minlength: 5 },
             'user[username]': { required: true,
                                 minlength: 5,
+                                regex: "^[a-z0-9]+$",
                                 remote: '/users/validate_username' },
             'user[email]':    { required: true,
                                 email: true,
@@ -38,6 +54,7 @@ zz.validate = {
             'user[name]':    { required: 'Please enter your name.',
                                minlength: 'Please enter at least 5 letters'},
             'user[username]':{ required: 'A username is required.',
+                               regex: 'Only lowercase alphanumeric characters allowed',
                                remote: 'username not available'},
             'user[email]':   { required: 'We promise we won&rsquo;t spam you.',
                                email: 'Is that a valid email?',
@@ -63,10 +80,14 @@ zz.validate = {
     new_post_share: {
         element: '#new_post_share',
         rules: {
-            'post_share[message]': { required: true, minlength: 0, maxlength: 118 }
+            'post_share[message]':  { required: true, minlength: 0, maxlength: 118 },
+            'post_share[facebook]': { required: "#twitter_box:unchecked" },
+            'post_share[twitter]':  { required:  "#facebook_box:unchecked"}
         },
         messages: {
-            'post_share[message]': ''
+            'post_share[message]': '',
+            'post_share[facebook]': '',
+            'post_share[twitter]': ''
         },
         submitHandler: function() {
             var serialized = $('#new_post_share').serialize();
@@ -76,7 +97,6 @@ zz.validate = {
                     });
             });
         }
-
     }, // end zz.validation.new_post_share
 
     new_email_share: {
@@ -86,7 +106,7 @@ zz.validate = {
             'email_share[message]': { required: true, minlength: 0 }
         },
         messages: {
-            'email_share[to]': '',
+            'email_share[to]': 'At least one recipient is required',
             'email_share[message]': ''
         },
 
@@ -104,9 +124,11 @@ zz.validate = {
     new_contributors: {
         element: '#new_contributors',
         rules: {
+            'email_share[to]': { required: true},           
             'email_share[message]': { required: true, minlength: 0}
         },
         messages: {
+            'email_share[message]': '',
             'email_share[message]': ''
         },
         submitHandler: function() {
