@@ -76,7 +76,7 @@ zz.init = {
             if (zz.drawer_open === 0) {
                 $('#sign-in').show();
                 $('#sign-up').hide();
-
+                
                 $('#small-drawer').animate({height: '460px', top: '53px'});
                 zz.drawer_open = 1;
             }
