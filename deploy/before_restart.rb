@@ -6,6 +6,6 @@
 # Symlink Resque Files
 
 # Restart Resque workers
-sudo run "monit restart all -g zangzing_resque"
+run "sudo monit restart all -g zangzing_resque"
 
 #ALL DONE! Restart the App.
