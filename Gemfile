@@ -18,12 +18,14 @@ gem 'resque'                                          # Queuing
 gem 'SystemTimer'                                     # For Random numbers (resque uuid)
 gem 'actionmailer'
 gem 'will_paginate', '2.3.12'                         # Pagination
+gem "friendly_id", "~> 3.1"                           #User-friendly links to albums and users' pages
+
 
 gem 'gdata',         '1.1.1'  						  # Google Data 
 gem 'twitter_oauth'   		                          # Twitter 
 gem 'hyper-graph',   '0.3.1', :require=>'hyper_graph' # Facebook
 gem 'flickraw',      '0.8.2'                          # Flickr
-gem 'bitly'                                           # Bitly duh?
+gem 'bitly'                                           # Bitly duh? -=- Bit.ly API consumer, yeah:)
 
 gem 'vpim'                                            # VCard creator
 gem 'rpm_contrib'                                     # For New Relic Performance Instrumentation
