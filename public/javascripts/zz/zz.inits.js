@@ -217,32 +217,35 @@ zz.init = {
         image_preloader.load_image("/images/bg-album-type-selected.png");
 
         //file chooser root folders rollover
-        image_preloader.load_image("/images/folders/apple.png");
-        image_preloader.load_image("/images/folders/facebook.png");
-        image_preloader.load_image("/images/folders/flickr.png");
-        image_preloader.load_image("/images/folders/myhome.png");
-        image_preloader.load_image("/images/folders/kodak.png");
-        image_preloader.load_image("/images/folders/mycomputer.png");
-        image_preloader.load_image("/images/folders/mypictures.png");
-        image_preloader.load_image("/images/folders/picasa.png");
-        image_preloader.load_image("/images/folders/shutterfly.png");
-        image_preloader.load_image("/images/folders/snapfish.png");
-        image_preloader.load_image("/images/folders/smugmug.png");
-        image_preloader.load_image("/images/folders/zangzing.png");
+        image_preloader.load_image("/images/folders/blank_on.jpg");
 
-        image_preloader.load_image("/images/folders/apple_off.png");
-        image_preloader.load_image("/images/folders/facebook_off.png");
-        image_preloader.load_image("/images/folders/flickr_off.png");
-        image_preloader.load_image("/images/folders/myhome_off.png");
-        image_preloader.load_image("/images/folders/kodak_off.png");
-        image_preloader.load_image("/images/folders/mycomputer_off.png");
-        image_preloader.load_image("/images/folders/mypictures_off.png");
-        image_preloader.load_image("/images/folders/picasa_off.png");
-        image_preloader.load_image("/images/folders/shutterfly_off.png");
-        image_preloader.load_image("/images/folders/snapfish_off.png");
-        image_preloader.load_image("/images/folders/smugmug_off.png");
-        image_preloader.load_image("/images/folders/zangzing_off.png");
-        image_preloader.load_image("/images/folders/photobucket_off.png");
+        image_preloader.load_image("/images/folders/apple_on.jpg");
+        image_preloader.load_image("/images/folders/facebook_on.jpg");
+        image_preloader.load_image("/images/folders/flickr_on.jpg");
+        image_preloader.load_image("/images/folders/myhome_on.jpg");
+        image_preloader.load_image("/images/folders/kodak_on.jpg");
+        image_preloader.load_image("/images/folders/mycomputer_on.jpg");
+        image_preloader.load_image("/images/folders/mypictures_on.jpg");
+        image_preloader.load_image("/images/folders/picasa_on.jpg");
+        image_preloader.load_image("/images/folders/shutterfly_on.jpg");
+        image_preloader.load_image("/images/folders/snapfish_on.jpg");
+        image_preloader.load_image("/images/folders/smugmug_on.jpg");
+        image_preloader.load_image("/images/folders/zangzing_on.jpg");
+
+        image_preloader.load_image("/images/folders/blank_off.jpg");
+        image_preloader.load_image("/images/folders/apple_off.jpg");
+        image_preloader.load_image("/images/folders/facebook_off.jpg");
+        image_preloader.load_image("/images/folders/flickr_off.jpg");
+        image_preloader.load_image("/images/folders/myhome_off.jpg");
+        image_preloader.load_image("/images/folders/kodak_off.jpg");
+        image_preloader.load_image("/images/folders/mycomputer_off.jpg");
+        image_preloader.load_image("/images/folders/mypictures_off.jpg");
+        image_preloader.load_image("/images/folders/picasa_off.jpg");
+        image_preloader.load_image("/images/folders/shutterfly_off.jpg");
+        image_preloader.load_image("/images/folders/snapfish_off.jpg");
+        image_preloader.load_image("/images/folders/smugmug_off.jpg");
+        image_preloader.load_image("/images/folders/zangzing_off.jpg");
+        image_preloader.load_image("/images/folders/photobucket_off.jpg");
 
 
 
