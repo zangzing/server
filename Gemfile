@@ -23,7 +23,7 @@ gem 'paperclip',            '2.3.5'
 gem 'aws-s3',               '>= 0.6.2', :require => 'aws/s3' # S3
 gem 'resque',               '1.10.0'                         # Queuing
 gem 'SystemTimer',          '1.2'                            # Interruptions based Timeout
-gem 'will_paginate',        '3.0.pre'                        # Pagination
+gem 'will_paginate',        '3.0.pre2'                        # Pagination
 
 gem 'gdata',                '1.1.1'  					     # Google Data 
 gem 'twitter_oauth',   		'0.4.3'                          # Twitter 

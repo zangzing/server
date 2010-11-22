@@ -104,18 +104,15 @@
     <script type="text/javascript" src="/javascripts/oauthmanager.js" ></script>
     <script type="text/javascript" src="/javascripts/sharecontacts.js" ></script>
 
-<%  # Add in template based javascript by defining this in the template
-    if @content_for_page_javascript -%>
-    <%= @content_for_page_javascript %>
-<%  end -%>
+<%= content_for :page_javascript %>
     <script type="text/javascript">
-      /* Vars our js fns need from ruby (calls/conditionals) - NO SECURE DATA
+      /*Vars our js fns need from ruby (calls/conditionals) - NO SECURE DATA
       ----------------------------------------------------------------------- */
-<%    if signed_in?  -%>
+<%    if signed_in?  %>
       zz.current_user_id = '<%= current_user.id %>';
       zz.current_user_name = '<%= current_user.username %>';
 
-<%    end -%>
+<%    end %>
 
 <%  if @album  -%>
       zz.album_id = '<%= @album.id %>';

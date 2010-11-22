@@ -11,7 +11,7 @@
 # FOR ALL REMOTE Paperclip IMAGES (Can override per attachment below)
 images_common: &images_common
   storage:        :s3
-  url:            :s3_domain_url
+  url:            ":s3_domain_url"
   s3_credentials: <%=File.join(Rails.root, 'config', 's3.yml')%>
   s3_headers:
     x-amz-storage-class: REDUCED_REDUNDANCY

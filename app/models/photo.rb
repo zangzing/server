@@ -85,11 +85,12 @@ class Photo < ActiveRecord::Base
   after_create :assign_to_batch
 
   # if all args were valid on creation then set it to assigned
-  after_validation_on_create :set_to_assigned;
+  after_validation :set_to_assigned, :on => :create
 
 
   # Set up an async call for Processing and Upload to S3
-  after_validation_on_update :queue_upload_to_s3
+  after_validation :queue_upload_to_s3, :on => :update 
+
 
 
   # used to receive image and queue for processing. User never sees this image. Paperclip defaults are local no styles

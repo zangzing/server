@@ -150,41 +150,41 @@ class PhotosController < ApplicationController
     UploadBatch.close_open_batches( current_user, @album) if signed_in?
 
     if params[:upload_batch] && @upload_batch = UploadBatch.find(params[:upload_batch])
-      @all_photos = @upload_batch.photos
+      @photos = @upload_batch.photos
       @return_to_link = "#{album_activities_path( @album )}##{@upload_batch.id}"
     elsif params[:contributor] && @contributor = Contributor.find(params[:contributor])
-      @all_photos = @contributor.photos
+      @photos = @contributor.photos
       @return_to_link = "#{album_people_path( @album )}##{@contributor.id}"
     else
-      @all_photos = @album.photos
+      @photos = @album.photos
       @return_to_link = album_photos_url( @album.id )
     end
 
     respond_to do |format|
+      format.json do
+         render :json => @photos.to_json(:methods => [:thumb_url, :medium_url]) and return
+     end
+#
       format.html do
         if !params[:view].nil? && params[:view] == 'slideshow'
-          @photos = @all_photos.paginate({:page =>params[:page], :per_page => 1})
-          unless  params[:photoid].nil?
-            current_page = 1 if params[:page].nil?
+          if params[:photoid].nil?
+            @photos = @photos.paginate({:page =>params[:page], :per_page => 1})
+          else
+            if params[:page].nil?
+              current_page = 1
+            end
             until @photos[0][:id] == params[:photoid]
               current_page += 1
-              @photos = @all_photos.paginate({:page =>current_page, :per_page => 1})
+              @photos = @photos.paginate({:page =>current_page, :per_page => 1})
             end
             params[:photoid] = nil
           end
-          render 'slideshow'
+          render 'slideshow' and return
         elsif !params[:view].nil? && params[:view] == 'movie'
-          @photos = @all_photos
-          render 'movie', :layout => false
+          render 'movie', :layout => false and return
         else
-          @photo = Photo.new
-          @photos = @all_photos
-          render 'grid'
+         render 'grid' and return
         end
-      end
-
-      format.json do
-        render :json => @all_photos.to_json(:methods => [:thumb_url, :medium_url])
       end
     end
   end
