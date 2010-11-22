@@ -675,7 +675,7 @@ var filechooser = {
     },
 
     // for oauth window
-    open_login_windowimage : function() {
+    open_login_window : function() {
         var current = filechooser.ancestors[filechooser.ancestors.length - 1];
         oauthmanager.login(current.login_url, filechooser.on_login);
     },
