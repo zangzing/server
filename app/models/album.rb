@@ -63,7 +63,7 @@ class Album < ActiveRecord::Base
   def cover
     return nil if self.photos.empty?
     if self.cover_photo_id.nil?
-      return self.photos.first
+      return self.photos.find(:first, :order => 'created_at DESC')
     else
       return Photo.find( self.cover_photo_id )
     end                        
@@ -83,7 +83,7 @@ class Album < ActiveRecord::Base
 
   def update_picon
       self.picon.clear unless self.picon.nil?
-      self.picon = Picon.build( self )
+      self.picon = Picon.make( self )
       self.save
   end
   
@@ -97,7 +97,6 @@ class Album < ActiveRecord::Base
   end
 
   def set_picon_metadata
-    logger.debug("In picon before post")
     self.picon_path   = picon.path.gsub(picon.original_filename,'')
     self.picon_bucket = picon.instance_variable_get("@bucket")
   end

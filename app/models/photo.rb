@@ -137,6 +137,9 @@ class Photo < ActiveRecord::Base
   def set_image_metadata
     self.image_path   = image.path.match(/(^.*)\/original\/(.*$)/i)[1]
     self.image_bucket = image.instance_variable_get("@bucket")
+    if uploading?
+        false # halts thumbnail it will be queued in upload_to S3
+    end
   end
 
   #
@@ -147,8 +150,8 @@ class Photo < ActiveRecord::Base
     if self.assigned? && self.local_image_file_name_changed?
        self.state = 'loaded'
        ZZ::Async::S3Upload.enqueue( self.id )
+       logger.debug("queued for upload")
     end
-    logger.debug("queued for upload")
   end
 
   #
@@ -156,19 +159,31 @@ class Photo < ActiveRecord::Base
   # This call cannot be private
   def upload_to_s3
     begin
-      self.state = 'processing'
+      self.state = 'uploading'
       self.image = local_image.to_file
       self.save!
       self.local_image.clear
       self.local_image_path = ''
-      self.state = 'ready'
+      self.state = 'processing'
       self.save!
     rescue ActiveRecord::ActiveRecordError => ex
         logger.debug("Upload to S3 Failed"+ex)
     end
     logger.debug("Upload to S3 Finished")
-    upload_batch.finish
+    ZZ::Async::GenerateThumbnails.enqueue( self.id )
   end
+
+  def generate_thumbnails
+    begin
+     self.image.reprocess!
+     self.state = 'ready'
+     self.save!
+    rescue ActiveRecord::ActiveRecordError => ex
+        logger.debug("Thumbnail generation failed!" + ex)
+    end
+    logger.debug("Thumbnail generation Finished")   
+    upload_batch.finish
+   end
 
   def new?
       self.state == 'new'
@@ -176,6 +191,18 @@ class Photo < ActiveRecord::Base
 
   def assigned?
     self.state == 'assigned'
+  end
+
+  def loaded?
+    self.state == 'loaded'
+  end
+
+  def uploading?
+    self.state == 'uploading'
+  end
+
+  def processing?
+    self.state == 'processing'
   end
 
   def ready?
@@ -229,6 +256,13 @@ class Photo < ActiveRecord::Base
     photo_info.metadata = value_hash.to_json
   end
 
+# detect if our source file has changed
+  def image_changed?
+    self.image_file_size_changed? ||
+    self.image_file_name_changed? ||
+    self.image_content_type_changed? ||
+    self.image_updated_at_changed?
+  end
 end
 
 
