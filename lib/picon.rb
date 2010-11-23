@@ -87,12 +87,12 @@ class Picon
       case stack.length
         when 0   # use the cover without rotation
         when 1   # rotate cover and 1 background
-          cmd << "\\( -clone 0 -rotate -"+(rand(20)+10).to_s+" \\)" #middle
+          cmd << "\\( -clone 0 -rotate -"+(rand(10)+0).to_s+" \\)" #middle
           cmd << "\\( -clone 1 -rotate +0 \\)" #cover
           cmd << "-delete 0,1"
         else # rotate cover and 2 backgrounds
-          cmd << "\\( -clone 0 -rotate -"+(rand(10)+20).to_s+" \\)" #back
-          cmd << "\\( -clone 1 -rotate +"+(rand(10)+10).to_s+" \\)" #middle
+          cmd << "\\( -clone 0 -rotate -"+(rand(5)+10).to_s+" \\)" #20 back
+          cmd << "\\( -clone 1 -rotate +"+(rand(5)+0).to_s+" \\)" #10 middle
           cmd << "\\( -clone 2 -rotate +0 \\)" #cover
           cmd << "-delete 0,1,2"
       end
