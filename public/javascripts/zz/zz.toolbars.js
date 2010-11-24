@@ -13,5 +13,13 @@ zz.toolbars = {
         $('#album-info h3').html("by " + zz.current_user_name);
 
         $('#album-info').css('display', 'inline-block');
+    },
+
+    show_acct_badge_dropdown : function(){
+          //Following events are applied to the acct-dropdown itself (moving dropdown up and down)
+          $('#acct-dropdown').slideDown('fast').show(); //Drop down the menu on click
+          $('#acct-dropdown').hover(function() {}, function(){
+              $("#acct-dropdown").slideUp('slow'); //When the mouse hovers out of the menu, roll it back up
+            });
     }
 }

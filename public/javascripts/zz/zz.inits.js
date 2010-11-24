@@ -8,6 +8,8 @@ zz.init = {
         /* Click Handlers
          ----------------------------------------------------------------------- */
 
+        $('#acct-anchor').click(function(){zz.toolbars.show_acct_badge_dropdown()});
+
         $('#nav-new-album').click(function(){
             var callback = function(){
                 $('#personal_album_link').click(zz.wizard.create_personal_album);
