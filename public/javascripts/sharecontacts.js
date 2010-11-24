@@ -77,11 +77,8 @@ var sharecontacts = {
         cts = response.body
         local_contacts = [];
         for (var i = 0; i < cts.length; i++) {
-            full_address = '\"'+cts[i].name +'\"<' + cts[i].address + '>';
-            local_contacts.push([ cts[i].name, full_address]);
-            local_contacts.push([ cts[i].address, full_address]);
+            local_contacts.push([ cts[i].name, cts[i].address ]);
         }
-
         zz.wizard.email_autocompleter_reload();
         $("#local-sync").attr('disabled', '');
         $("#local-sync").attr('title', 'Last imported a second ago.');
@@ -120,9 +117,7 @@ var sharecontacts = {
         var full_address;
         google_contacts = [];
         for (var i = 0; i < cts.length; i++) {
-            full_address = '\"'+cts[i].name +'\"<' + cts[i].address + '>';
-            google_contacts.push([ cts[i].name, full_address]);
-            google_contacts.push([ cts[i].address, full_address]);
+            google_contacts.push([ cts[i].name, cts[i].address]);
         }
         zz.wizard.email_autocompleter_reload();
         $("#gmail-sync").attr('disabled', '');
@@ -158,9 +153,7 @@ var sharecontacts = {
         var full_address;
         mslive_contacts = [];
         for (var i = 0; i < cts.length; i++) {
-            full_address = '\"'+cts[i].name +'\"<' + cts[i].address + '>';
-            mslive_contacts.push([ cts[i].name, full_address]);
-            mslive_contacts.push([ cts[i].address, full_address]);
+            mslive_contacts.push([ cts[i].name, cts[i].address ]);
         }
         zz.wizard.email_autocompleter_reload();
         $("#mslive-sync").attr('disabled', '');
@@ -196,9 +189,7 @@ var sharecontacts = {
         var full_address;
         yahoo_contacts = [];
         for (var i = 0; i < cts.length; i++) {
-            full_address = '\"'+cts[i].name +'\"<' + cts[i].address + '>';
-            yahoo_contacts.push([ cts[i].name, full_address]);
-            yahoo_contacts.push([ cts[i].address, full_address]);
+            yahoo_contacts.push([ cts[i].name, cts[i].address ]);
         }
         zz.wizard.email_autocompleter_reload();
         $("#yahoo-sync").attr('disabled', '');

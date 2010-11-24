@@ -42,7 +42,7 @@ class SampleDataLoader
     puts "      Creating Albums"
     # create albums for first 10 users max 100
     User.all(:limit => 10).each do |user|
-      rand(10).times do
+      (rand(10)+2).times do
 
         album= nil;
         case rand(2)
