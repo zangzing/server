@@ -1,8 +1,6 @@
 /* Wizard Drawer objects 
  --------------------------------------------------------------------------- */
 zz.drawers = {
-
-
     /* Create ***PERSONAL*** Album
      ------------------------------------------------------------------------- */
     personal_album: {
@@ -262,10 +260,88 @@ zz.drawers = {
 
         } // end zz.drawers.group_album.steps
 
-    } // end zz.drawers.group_album
+    }, // end zz.drawers.group_album
 
+    settings: {
 
+         // set up the album variables
+         first: 'profile',              // first item in the object
+         last: 'linked_accts',          // last item in the object
+         list_element: 'indicator',     // 'indicator' : #indicator-4, #indicator-5, etc
+         next_element: 'none',          // alternately, 'none' shows no next/done btn
+         numbers: 0,                    // 1 = show the number images, 0 = don't
+         percent: 0.0,                  // how far to fade the page contents when opening the drawer
+         style: 'edit',               // create or edit
+         time: 600,                     // how fast to open the drawer
+         redirect: '/users/$$/albums', // where do we go when we're done
+         redirect_type: 'user',        // replace $$ w/the id of the album or user
 
+         // set up the wizard steps
+         steps: {
 
+             profile: {
+                 next: 'account',               // next in line
+                 title: 'Profile',              // link text
+                 type: 'full',                  // drawer position - full(y open) or partial(ly open)
+                 url: '/users/$$/edit',         // url of the drawer template
+                 url_type: 'user',              // replace $$ w/the id of the album or user
+
+                 init: function(){ // run when loading the drawer up
+                        $(zz.validate.user_update.element).validate(zz.validate.user_update);
+                        $('#update-user-button').click(zz.wizard.update_user);
+                 },
+
+                 bounce: function(){ zz.wizard.update_user()} // run before you leave
+             }, //end zz.drawers.account_settings.steps.profile
+
+             account: {
+                 next: 'notifications',
+                 title: 'Account',
+                 type: 'full',
+                 url: '/albums/$$/name_album',
+                 url_type: 'album',
+
+                 init: function(){
+                     zz.wizard.init_name_tab();
+                 },
+
+                 bounce: function(){
+                     zz.wizard.update_album();
+                 }
+
+             }, //end zz.drawers.account_settings.steps.account
+
+             notifications: {
+                 next: 'linked-accts',
+                 title: 'Notifications',
+                 type: 'full',
+                 url: '/albums/$$/name_album',
+                 url_type: 'album',
+
+                 init: function(){
+                     zz.wizard.init_name_tab();
+                 },
+
+                 bounce: function(){
+                    zz.wizard.update_album();
+                 }
+
+             }, //end zz.drawers.account_settings.steps.notifications
+
+             linked_accts: {
+                next: 0,
+                title: 'Linked Accounts',
+                type: 'full',
+                url: '/users/$$/identities',
+                url_type: 'user',
+                init: function(){
+                   zz.init.identities_settings();
+                },
+                bounce: function(){}
+              } //end zz.drawers.account_settings.steps.linked_accts
+
+         } // end zz.drawers.account_settings.steps
+
+    } //end zz.drawers.account_settings
 
 }; // end zz.drawers

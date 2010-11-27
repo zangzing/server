@@ -1,26 +1,90 @@
-<div id="headline">
-    <h3>Identities</h3>
-</div>
-<div id="delete-results">
-  
-</div>
-<table width="100%">
+<style type="text/css">
+
+.identities-table{
+    padding: 0px 40px;
+    overflow: auto;
+    line-height: 2.4em;
+    font-size: 115%;
+    font-weight:bold;
+    text-align: left;
+}
+
+.identities-table td{
+    padding: 0px 10px;
+}
+
+.identities-table th{
+    font-size: 120%;
+    font-weight:bold;
+    text-align: left;
+}
+
+
+.id-service-name{
+    padding: 0px 25px;
+}
+.grayrow {
+    background-color:#f4f4f4;
+}
+.whiterow {
+}
+
+.id-action-button{
+    color: #0000EE;
+    cursor: pointer;
+}
+.setting-buttons{
+   padding: 10px 80px;
+   float: right;
+}
+
+
+</style>
+<div class="flash-box"><div class="flash-notice" id="flashes-notice">  </div></div>
+<div id="scroll-body">
+<div class="identities-table">
+<table   width="100%">
   <tr>
-    <th>Type</th>
-    <th>Date created</th>
-    <th>Number of contacts</th>
+    <th></th>
+    <th>Status</th>
     <th>Action</th>
   </tr>
-  <% current_user.identities.each_index do |i|
-     identity = current_user.identities.fetch( i ) %>
-    <tr>
-      <td><%= identity.name %> </td>
-      <td><%= identity.created_at %> </td>
-      <td><%= identity.contacts.count %> </td>
-      <td><button  class="delete-id-button"
-               id="delete-id-button-<%=i%>"
-               value="<%= user_identity_path(:id => identity.id, :user_id => params[:user_id])%>">
-               [Delete]</button></td>
-    </tr>
-  <% end %>
+  <%    Identity::UI_INFO.keys.each_index do | i |
+        service_key = Identity::UI_INFO.keys[i]
+        id = current_user.has_identity?(service_key)%>
+  <tr class="row <%= ( i%2 == 0? "grayrow" : "whiterow" )%>">
+    <td><img src="/images/logos/<%=service_key%>-sq.png" style="vertical-align:middle;">
+      <span class="id-service-name"><%= Identity::UI_INFO[service_key][:name] %></span>
+    </td>
+    <td
+      <div class="id-status" id="<%=service_key%>-status" service="<%=service_key%>" style="<%=(  id  ? "" : "display:none" ) %>">
+          <img src="/images/btn-check-on.png" style="vertical-align:middle;">
+          Linked
+      </div>
+    </td>
+    <td>
+      <div class="id-action-button" id="<%=service_key%>-action" service="<%=service_key%>">
+          <a class="delete-id-button"
+                id="<%=service_key%>-delete"
+                service="<%=service_key%>"
+                value="<%=user_identity_path(:id => service_key, :user_id => params[:user_id])%>"
+                style="<%=(  id  ? "": "display:none" )%>">
+	        Unlink
+          </a>
+          <a class="authorize-id-button"
+                id="<%=service_key%>-authorize"
+                service="<%=service_key%>"
+                value="/<%=service_key%>/sessions/new"
+                style="<%=(  id  ?  "display:none" : "")%>">
+	         Link
+          </a>
+      </div>
+     </td>
+  </tr>
+<% end %>
 </table>
+</div>
+</div>
+ <div id="action-buttons" class="setting-buttons">
+       <img  src="/images/btn-wizard-done.png" onclick="javascript: $('#drawer .body').fadeOut('fast'); zz.slam_drawer(400);">
+ </div>      

@@ -21,5 +21,6 @@ zz.toolbars = {
           $('#acct-dropdown').hover(function() {}, function(){
               $("#acct-dropdown").slideUp('slow'); //When the mouse hovers out of the menu, roll it back up
             });
+          $('#acct-dropdown li a').click(function(){  $("#acct-dropdown").slideUp('fast');  });
     }
 }

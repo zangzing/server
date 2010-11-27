@@ -159,7 +159,7 @@ zz.wizard = {
             //      $('#clone-indicator').clone().attr('id', obj.list_element+'-'+temp_id).addClass('step-'+value+'-'+temp_id).html(temp).prependTo('#drawer-content');
         }
         if(fade_in){
-            $('#drawer-tabs').fadeIn('fast');   
+            $('#drawer-tabs').fadeIn('fast');
         }
 
 
@@ -352,7 +352,7 @@ zz.wizard = {
                 $('#cancel-share').click(function(){
                     zz.wizard.reload_share(obj, id);
                 });
-                
+
                 $('#post_share_message').keypress( function(){
                     setTimeout(function(){
                         var text = 'characters';
@@ -457,7 +457,7 @@ zz.wizard = {
         // data.selectValue is name|email
         var value = '\"'+data.selectValue+'\" \<'+data.extra[0]+'\>';
         var display_value = ( data.selectValue.length >0 ? data.selectValue : data.extra[0] );
-       
+
         zz.wizard.email_id++;
         //console.log('ID: '+ zz.wizard.email_id +'-- Add '+ temp +' to the view and a ' + $(data).html() + ' checkbox to the form.');
         $('#you-complete-me').val('');
@@ -526,7 +526,7 @@ zz.wizard = {
                 });
                 $('#you-complete-me').blur(function(){
                     $('#the-list').removeClass("focus");
-                });    
+                });
                 $('div#contributors-body').fadeIn('fast', function(){$('#you-complete-me').focus();});
             });
         })
@@ -544,7 +544,7 @@ zz.wizard = {
             formattedRow+= "</span>";
             formattedRow+= name.substr(match_len)+' ';
         } else {
-          formattedRow+= ' '+name+' '; //push name  
+          formattedRow+= ' '+name+' '; //push name
         }
 
         if( row[4] == 1){
@@ -554,7 +554,7 @@ zz.wizard = {
             formattedRow+= "</span>";
             formattedRow+= add.substr(match_len);
         } else {
-         formattedRow+= ' '+add+' '; //push add  
+         formattedRow+= ' '+add+' '; //push add
         }
         return formattedRow;
     },
@@ -587,12 +587,44 @@ zz.wizard = {
     },
 
     delete_identity: function(){
-        //if ( confirm('Are you sure you want to delete this identity?')){
-        $.post(this.value, {"_method": "delete"}, function(data){
-            $("#drawer-content").html("").html( data );
-        });
-        //}
+        logger.debug("Deleting ID with URL =  "+ $(this).attr('value'));
+        $("#"+$(this).attr('service')+"-status").bind( 'identity_deleted' , zz.wizard.identity_deleted_handler );
+        $.post($(this).attr('value'), {"_method": "delete"}, function(data){$('.id-status').trigger( 'identity_deleted' );});
     },
+
+    authorize_identity: function(){
+           logger.debug("Authorizing ID with URL =  "+ $(this).attr('value'));
+           $("#"+$(this).attr('service')+"-status").bind( 'identity_linked' , zz.wizard.identity_linked_handler );
+           oauthmanager.login( $(this).attr('value') , function(){ $('.id-status').trigger( 'identity_linked' );} );
+     },
+
+    identity_linked_handler: function(){
+        logger.debug( "identity_linked event for service "+$(this).attr('service'));
+        $(this).unbind( 'identity_linked' ); //remove the event handler
+        $(this).fadeIn('slow'); //display the linked status
+        $("#"+$(this).attr('service')+"-authorize").fadeOut( 'fast', function(){  //remove the link button
+            $("#"+$(this).attr('service')+"-delete").fadeIn( 'fast', function(){
+                if( $('#flashes-notice')){
+                    var msg = "Your can now use "+ $(this).attr('service')+" features throughout ZangZing";
+                    $('#flashes-notice').html(msg).fadeIn('fast', function(){
+                        setTimeout(function(){$('#flashes-notice').fadeOut('fast', function(){$('#flashes-notice').html('    ');})}, 3000);
+                });
+                }
+            });//display the unlink button
+        });
+    },
+
+    identity_deleted_handler: function(){
+         logger.debug( "identity_deleted event for service "+$(this).attr('service'));
+         $(this).unbind( 'identity_deleted' ); //remove the event handler
+         $(this).fadeOut('slow'); //hide the linked status
+         $("#"+$(this).attr('service')+"-delete").fadeOut( 'fast', function(){  //remove the unlink button
+             $("#"+$(this).attr('service')+"-authorize").fadeIn( 'fast');//display the link button
+         });
+     },
+
+
+
 
     update_album: function(){
         $.post('/albums/'+zz.album_id,$(".edit_album").serialize() );
@@ -635,31 +667,20 @@ zz.wizard = {
         setTimeout(function(){$('#album_name').select();},100);
     },
 
+    open_settings_wizard: function( step ){
+        zz.wizard.make_drawer(zz.drawers.settings, step);
+    },
+
     display_flashes: function( request, delay ){
         var data = request.getResponseHeader('X-Flash');
-        if( data && data.length>0 ){
+        if( data && data.length>0 && $('#flashes-notice')){
             var flash = (new Function( "return( " + data + " );" ))();  //parse json using function contstructor
-            $('#flashes-notice').html(flash.notice).fadeIn('fast', function(){
-            setTimeout(function(){$('#flashes-notice').fadeOut('fast', function(){$('#flashes-notice').html('    ');})}, delay+4000);
-            });    
+            if( flash.notice ){
+                $('#flashes-notice').html(flash.notice).fadeIn('fast', function(){
+                    setTimeout(function(){$('#flashes-notice').fadeOut('fast', function(){$('#flashes-notice').html('    ');})}, delay+3000);
+                });
+            }
         }
-
-        //For the timeline album view more button
-
-
-
-
-    },
-
-
-    preload_wizard_images : function(){
-
-    },
-
-    preload_edit_drawer_images : function(){
-
     }
-
-
 
 };

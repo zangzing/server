@@ -8,8 +8,6 @@ zz.init = {
         /* Click Handlers
          ----------------------------------------------------------------------- */
 
-        $('#acct-anchor').click(function(){zz.toolbars.show_acct_badge_dropdown()});
-
         $('#nav-new-album').click(function(){
             var callback = function(){
                 $('#personal_album_link').click(zz.wizard.create_personal_album);
@@ -19,8 +17,7 @@ zz.init = {
             zz.easy_drawer(600, 0.0, '/users/'+zz.current_user_id+'/albums/new', callback);
         });
 
-
-        //only album contributers can do this
+        //any signed in user can do this        
         $('#nav-home').click(function(){ document.location.href = '/' });
 
 
@@ -33,21 +30,10 @@ zz.init = {
         //only album owner can do this
         $('#nav-edit-album').click(function(){ zz.wizard.open_edit_album_wizard('add') });
 
-        $('#nav-like').click(function(){
-            var callback = function(){
-                $('.delete-id-button').click(zz.wizard.delete_identity);
-            };
-            zz.easy_drawer(600, 0.0, '/users/'+zz.current_user_id+'/identities', callback);
-        });
+        $('#nav-like').click(function(){ zz.wizard.open_settings_wizard('linked_accts') });
 
-        $('#nav-buy').click(function(){
-            var callback = function(){
-                $(zz.validate.user_update.element).validate(zz.validate.user_update);
-                $('#update-user-button').click(zz.wizard.update_user);
-            };
-            zz.easy_drawer(600, 0.0, '/users/'+zz.current_user_id+'/edit', callback);
-        });
-
+        $('#nav-buy').click(function(){ zz.wizard.open_settings_wizard('profile') });
+        
 
         /* new user stuff   */
         /* ---------------------------------*/
@@ -92,6 +78,7 @@ zz.init = {
         $(zz.validate.sign_in.element).validate(zz.validate.sign_in);
         $(zz.validate.join.element).validate(zz.validate.join);
 
+        zz.init.acct_badge();
 
         zz.init.preload_rollover_images();
 
@@ -173,9 +160,16 @@ zz.init = {
     },
 
     preload_rollover_images : function(){
-
         //todo: is there a way to query CSS to get all these?
+         //wizard buttons/tabs
+        for(var i=1;i<=4; i++){
+            var src = "/images/bg-4step-strip-" + i + ".png"
+            image_preloader.load_image(src)
 
+            var src = "/images/bg-4step-edit-" + i + ".png"
+            image_preloader.load_image(src)
+        }
+        
         //wizard buttons/tabs
         for(var i=1;i<=5; i++){
             var src = "/images/bg-5step-strip-" + i + ".png"
@@ -363,5 +357,20 @@ zz.init = {
                 $(this).html('more...');
             }
         })
+    },
+
+    acct_badge: function(){
+        $('#acct-anchor').click(function(){zz.toolbars.show_acct_badge_dropdown()});
+        $('#acct-settings-btn').click(function(){ zz.wizard.open_settings_wizard('profile') });
+    },
+
+    identities_settings: function(){
+         $('.delete-id-button').click(zz.wizard.delete_identity);
+         $('.authorize-id-button').click(zz.wizard.authorize_identity);
+         $('.id-status').each( function(){
+
+             logger.debug("Binding id:"+this.id+" service:"+$(this).attr('service'));
+         });
+        $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height -120) + 'px'});
     }
 }; // end zz.init

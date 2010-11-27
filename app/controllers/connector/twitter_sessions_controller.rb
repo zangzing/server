@@ -15,6 +15,7 @@ class Connector::TwitterSessionsController < Connector::TwitterController
       raise InvalidToken
     end
     service_identity.update_attribute(:credentials, twitter_api.access_token)
+    flash[:notice] = "You are now able to share your ZangZing albums through Twitter"
   end
 
   def destroy

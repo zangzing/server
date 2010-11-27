@@ -85,6 +85,7 @@ class User < ActiveRecord::Base
   end
 
 
+
   def self.find_by_email_or_create_automatic( email, name='' )
     user = User.find_by_email( email );
     if user.nil?
@@ -102,6 +103,10 @@ class User < ActiveRecord::Base
                            :password => UUID.random_create.to_s);
     end
     return user
+  end
+
+  def has_identity?( service_name )
+    self.identities.find(:first, :conditions => {:identity_source => service_name.to_s})
   end
 
   # automatic users were created by the system from contributors emailing photos or OAuth login i.e. FaceBookConnect

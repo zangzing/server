@@ -5,11 +5,19 @@ ul#clone-indicator {
   display: none;
 }
 
-ul#indicator-4, ul#indicator-5, ul#indicator-6 {
+ul#indicator-5, ul#indicator-6 {
   width: 898px;
   height: 36px;
   margin-top: 4px;
   padding-left: 14px;
+}
+
+ul#indicator-4{
+  width: 898px;
+  height: 36px;
+  margin-top: 4px;
+  margin-left: -1px;
+  padding-left: 55px;
 }
 
 ul#indicator-6 {
@@ -36,26 +44,24 @@ ul#indicator-6 {
   /*background-repeat: no-repeat;*/
 /*}*/
 
-/*ul.edit-1-4 {*/
-  /*background-image: url("/images/bg-4step-strip-1.png");*/
-  /*background-repeat: no-repeat;*/
-/*}*/
+ul.edit-1-4 {
+  background-image: url("/images/bg-4step-edit-1.png");
+  background-repeat: no-repeat;
+}
 
-/*ul.edit-2-4 {*/
-  /*background-image: url("/images/bg-4step-strip-2.png");*/
-  /*background-repeat: no-repeat;*/
-/*}*/
+ul.edit-2-4 {
+  background-image: url("/images/bg-4step-edit-2.png");
+  background-repeat: no-repeat;
+}
 
-/*ul.edit-3-4 {*/
-  /*background-image: url("/images/bg-4step-strip-3.png");*/
-  /*background-repeat: no-repeat;*/
-/*}*/
-
-/*ul.edit-4-4 {*/
-  /*background-image: url("/images/bg-4step-strip-4.png");*/
-  /*background-repeat: no-repeat;*/
-/*}*/
-
+ul.edit-3-4 {
+  background-image: url("/images/bg-4step-edit-3.png");
+  background-repeat: no-repeat;
+}
+ul.edit-4-4 {
+  background-image: url("/images/bg-4step-edit-4.png");
+  background-repeat: no-repeat;
+}
 
 ul.step-1-5 {
   background-image: url("/images/bg-5step-strip-1.png");
@@ -169,7 +175,7 @@ ul.edit-6-6 {
 
 ul#indicator-4 li {
   float: left;
-  padding: 8px 19px 0 0;
+  padding: 11px 19px 0 0;
   width: 179px;
   font-size: 1.3em;
   font-weight: 400;
@@ -232,9 +238,14 @@ ul#indicator-4 li#step-btn, ul#indicator-5 li#step-btn, ul#indicator-6 li#step-b
   height: 34px;
 }
 
-ul#indicator-4 li.on, ul#indicator-5 li.on, ul#indicator-6 li.on {
+ul#indicator-5 li.on, ul#indicator-6 li.on {
   color: #fff;
 }
+
+ul#indicator-4 li.on{
+    color: #000000;
+}
+
 
 #next-step {
   cursor: pointer;

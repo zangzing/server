@@ -63,7 +63,7 @@ var zz = {
 
     }, // end zz.close_drawer()
 
-    slam_drawer: function(time){
+        slam_drawer: function(time){
 
         $('#indicator').fadeOut('fast');
 
