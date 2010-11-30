@@ -46,7 +46,7 @@ class UsersController < ApplicationController
   def update
     @user = current_user
     if @user.update_attributes( params[:user])
-      flash[:success] = "Your Profile Has Been Updated."
+      flash[:notice] = "Your Profile Has Been Updated."
       respond_to do |format|
           format.html  { redirect_to @user   }
           format.json { render :json => "", :status => 200 and return }

@@ -36,7 +36,7 @@ class User < ActiveRecord::Base
 
   before_save  :split_name 
 
-  validates_presence_of :name, :unless => :automatic?
+  validates_presence_of :name, :on => :create, :unless => :automatic?
   validates_presence_of :username, :unless => :automatic?
   validates_format_of :username, :with => /^[a-z0-9]+$/, :on => :create, :message => 'Should contaion only lowercase alphanumeric characters'
   validates_uniqueness_of :username, :message => "Has already been taken", :unless => :automatic?
@@ -124,8 +124,8 @@ class User < ActiveRecord::Base
   end
   private
     def split_name
-      unless name.nil?
-        names = name.split
+      unless @name.nil? || first_name_changed? || last_name_changed?
+        names = @name.split
         self.last_name = names.pop
         self.first_name = names.join(' ')
       end

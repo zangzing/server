@@ -681,6 +681,9 @@ zz.wizard = {
                 });
             }
         }
-    }
+    },
 
+    display_errors: function( request, delay ){
+
+    }
 };

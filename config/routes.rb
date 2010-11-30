@@ -98,9 +98,9 @@ ActionController::Routing::Routes.draw do |map|
   #oauth
   #map.resources :oauth_clients
   #map.oauth          '/oauth',               :controller=>'oauth_clients',:action=>'index'
-  map.agents         '/users/:id/agents',    :controller=>'agents',:action=>'index'
-  map.agent_info     '/agent/info.',         :controller=>'agents',:action=>'info'
-  map.agent_check    '/agent/check.',        :controller=> 'agents', :action=> 'check'
+  map.agents         '/users/:id/agents.',   :controller=>'agents',:action=>'index', :conditions=>{ :method => :get }
+  map.agent_info     '/agents/info.',         :controller=>'agents',:action=>'info', :conditions=>{ :method => :get }
+  map.agent_check    '/agents/check.',        :controller=> 'agents',:action=>'check', :conditions=>{ :method => :get }
   map.authorize      '/oauth/authorize',     :controller=>'oauth',:action=>'authorize'
   map.agentauthorize '/oauth/agentauthorize',:controller=>'oauth',:action=>'agentauthorize'
   map.revoke         '/oauth/revoke',        :controller=>'oauth',:action=>'revoke'
