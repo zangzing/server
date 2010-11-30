@@ -371,6 +371,12 @@ zz.init = {
 
              logger.debug("Binding id:"+this.id+" service:"+$(this).attr('service'));
          });
-        $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height -120) + 'px'});
+        $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height -110) + 'px'});
+    },
+    profile_settings: function(){
+        alert("validator enabled")
+       $(zz.validate.profile_form.element).validate(zz.validate.profile_form);
+       //                 $('#update-user-button').click(zz.wizard.update_user);
+        $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height -100) + 'px'});
     }
 }; // end zz.init

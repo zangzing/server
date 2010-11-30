@@ -63,19 +63,38 @@ zz.validate = {
         }
     },
 
-    user_update: {
-        element: '#user-update-form',
+    profile_form: {
+        element: '#actual_profile_form',
+        errorContainer: '#flashes-notice',
         rules: {
-            'user[name]': { required: true, minlength: 5 },
-            'user[email]': { required: true, email: true }
+            'user[first_name]':     { required: true,
+                                minlength: 5 },
+            'user[last_name]':     { required: true,
+                                minlength: 5 },
+            'user[username]': { required: true,
+                                minlength: 5,
+                                regex: "^[a-z0-9]+$",
+                                remote: '/users/validate_username' },
+            'user[email]':    { required: true,
+                                email: true,
+                                remote: '/users/validate_email' },
+            'user[password]': { required: true,
+                                minlength: 5 }
         },
         messages: {
-            'user[name]': 'Please enter your name.',
-            'user[email]': 'We promise we won&rsquo;t spam you.'
+            'user[first_name]':{ required: 'Please enter your first name.',
+                                 minlength: 'Please enter at least 5 letters'},
+            'user[last_name]': { required: 'Please enter your last name.',
+                                 minlength: 'Please enter at least 5 letters'},
+            'user[username]': {  required: 'A username is required.',
+                                 regex: 'Only lowercase alphanumeric characters allowed',
+                                 remote: 'username not available'},
+            'user[email]':   {   required: 'We promise we won&rsquo;t spam you.',
+                                 email: 'Is that a valid email?',
+                                 remote: 'Email already used'},
+            'user[password]': 'Six characters or more please.'
         }
     },
-
-
 
     new_post_share: {
         element: '#new_post_share',

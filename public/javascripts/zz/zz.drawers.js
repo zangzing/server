@@ -286,11 +286,7 @@ zz.drawers = {
                  url: '/users/$$/edit',         // url of the drawer template
                  url_type: 'user',              // replace $$ w/the id of the album or user
 
-                 init: function(){ // run when loading the drawer up
-                        $(zz.validate.user_update.element).validate(zz.validate.user_update);
-                        $('#update-user-button').click(zz.wizard.update_user);
-                 },
-
+                 init: zz.init.profile_settings, // run when loading the drawer up
                  bounce: function(){ zz.wizard.update_user()} // run before you leave
              }, //end zz.drawers.account_settings.steps.profile
 

@@ -286,6 +286,22 @@ header ul#view-swap li {
 /* Forms
 ----------------------------------------------------------------------------- */
 
+label,
+.form_label{
+ font-size: 120%;
+ line-height: 1;
+ font-weight: bold;
+ text-align: left;   
+}
+
+.form_label_small{
+ text-align: left;
+ font-size:  110%;
+ line-height: 1;
+ font-weight: 400;
+ font-style: italic;
+}
+
 input[type=text], input[type=password], input[type=checkbox] , textarea{
   text-align: left;
   font-size: 1.8em;
