@@ -124,7 +124,7 @@ class User < ActiveRecord::Base
   end
   private
     def split_name
-      if name_changed? && !name.nil?  
+      unless name.nil?
         names = name.split
         self.last_name = names.pop
         self.first_name = names.join(' ')
