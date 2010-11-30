@@ -27,6 +27,6 @@ class AgentsController < ApplicationController
 	    response[:message]     = "Download this version to fix: #{Faker::Company.catch_phrase}"
     end
 
-    render :text => response;
+    render :json => response;
   end
 end
