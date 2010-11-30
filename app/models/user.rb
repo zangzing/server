@@ -34,7 +34,7 @@ class User < ActiveRecord::Base
     c.validate_login_field = false
   end
 
-  before_save  :split_name
+  before_save  :split_name 
 
   validates_presence_of :name, :unless => :automatic?
   validates_presence_of :username, :unless => :automatic?
@@ -124,7 +124,7 @@ class User < ActiveRecord::Base
   end
   private
     def split_name
-      unless name.nil?
+      if name_changed? && !name.nil?  
         names = name.split
         self.last_name = names.pop
         self.first_name = names.join(' ')

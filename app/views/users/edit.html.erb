@@ -53,7 +53,7 @@
     <% form_for @user, {:id=>"actual_profile_form"} do | f|  %>
       <dl class="clearfix" >
         <%= render :partial => 'fields', :locals =>{:f => f, :user => @user }%>
-        <%= image_submit_tag "/images/btn-send.png" %>
+        <%= image_submit_tag "/images/btn-send.png", {:name => 'submit'} %>
       </dl>
     <% end %>
   </div>
@@ -65,6 +65,7 @@
     </div>
 </div>
 <div class="flash-box"><div class="flash-notice" id="flashes-notice">Flashes Here</div></div>
+<div class="flash-box"><div class="error-notice" id="error-notice">Errors Here</div></div>
     <div class="settings-buttons">
     <dd class="button">
               <a href="javascript:void(0);" class="cancel-mini">Cancel</a>

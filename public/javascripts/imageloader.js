@@ -4,7 +4,7 @@ var image_preloader = {
 
 
     load_image : function(src){
-        logger.debug('loading image: ' + src);
+        //logger.debug('loading image: ' + src);
 
         var image = new Image();
         image.src = src;

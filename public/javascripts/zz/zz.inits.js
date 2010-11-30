@@ -368,21 +368,21 @@ zz.init = {
 
 //==================================== Settings Wizard  ===========================================
     id_settings: function(){
-         $('.delete-id-button').click(zz.wizard.delete_identity);
-         $('.authorize-id-button').click(zz.wizard.authorize_identity);
-         $('.id-status').each( function(){
+      $('.delete-id-button').click(zz.wizard.delete_identity);
+      $('.authorize-id-button').click(zz.wizard.authorize_identity);
+      $('.id-status').each( function(){
 
              logger.debug("Binding id:"+this.id+" service:"+$(this).attr('service'));
-         });
-        $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height -110) + 'px'});
+      });
+      $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height -110) + 'px'});
     },
     profile_settings: function(){
-      // $(zz.validate.profile_form.element).validate(zz.validate.profile_form);
-        $('#user_username').keypress( function(){
+      $(zz.validate.profile_form.element).validate(zz.validate.profile_form);
+      $('#user_username').keypress( function(){
             setTimeout(function(){
                 $('#username_path').html( $('#user_username').val() );
             }, 10);
-        });
-       $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height -100) + 'px'});
+      });
+      $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height -100) + 'px'});
     }
 }; // end zz.init

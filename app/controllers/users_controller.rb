@@ -44,13 +44,19 @@ class UsersController < ApplicationController
   end
   
   def update
-    @user = @current_user
+    @user = current_user
     if @user.update_attributes( params[:user])
-      flash[:success] = "Profile updated."
-      redirect_to @user
+      flash[:success] = "Your Profile Has Been Updated."
+      respond_to do |format|
+          format.html  { redirect_to @user   }
+          format.json { render :json => "", :status => 200 and return }
+       end
     else
-      @title ="Edit user"
-      render :action => :edit 
+      respond_to do |format|
+          format.html  { render :action => :edit   }
+          format.json  { errors_to_headers( @user )
+                         render :json => "", :status => 400 and return}
+       end
     end
   end
   
@@ -76,7 +82,7 @@ class UsersController < ApplicationController
       if @user == current_user #if the email returns the current user this means its a profile edit
         @user = nil
       end
-      render :json => !@user
+      render :json => !@user and return
     end
     render :json => true #Invalid call return not valid
   end

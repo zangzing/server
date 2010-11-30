@@ -79,6 +79,11 @@ zz.validate = {
             'user[email]':    { required: true,
                                 email: true,
                                 remote: '/users/validate_email' },
+            'user[old_password]':{ minlength: 5,
+                                   required:{ depends: function(element) {
+                                              logger.debug( "length is "+ $("#user_password").val().length);
+                                              return $("#user_password").val().length > 0;}
+                                  }},
             'user[password]': { minlength: 5 }
         },
         messages: {
@@ -93,9 +98,18 @@ zz.validate = {
                                  email: 'Is that a valid email?',
                                  remote: 'Email already used'},
             'user[password]': 'Six characters or more please.'
+        },
+        submitHandler: function() {
+            logger.debug('AJAX-posting profile_form');
+            var serialized = $(zz.validate.profile_form.element).serialize();
+            $.post('/users/'+zz.current_user_id+'.json', serialized, function(data,status,request){
+               logger.debug('profile_form post was successfull');
+               zz.wizard.display_flashes(  request,200 )
+            });
         }
     },
 
+//=========================== Social Post Form - Edit/New Album Wizard ============================
     new_post_share: {
         element: '#new_post_share',
         rules: {
@@ -118,6 +132,7 @@ zz.validate = {
         }
     }, // end zz.validation.new_post_share
 
+//============================ Email Share Form - Edit/New Album Wizard ===========================
     new_email_share: {
         element: '#new_email_share',
         rules: {
