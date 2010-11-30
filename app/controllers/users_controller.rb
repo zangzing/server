@@ -71,15 +71,29 @@ class UsersController < ApplicationController
   end
 
   def validate_email
-    @user = User.find_by_email(params[:user][:email]) if params[:user] && params[:user][:email]
-    render :json => !@user 
+    if params[:user] && params[:user][:email]
+      @user = User.find_by_email(params[:user][:email])
+      if @user == current_user #if the email returns the current user this means its a profile edit
+        @user = nil
+      end
+      render :json => !@user
+    end
+    render :json => true #Invalid call return not valid
   end
 
   def validate_username
-    @user = User.find_by_username(params[:user][:username]) if params[:user] && params[:user][:username]
-    render :json => !@user
-  end
 
+    if params[:user] && params[:user][:username]
+
+      @user = User.find_by_username(params[:user][:username])
+      if @user == current_user #if the email returns the current user this means its a profile edit
+        @user = nil
+      end
+      render :json => !@user and return
+
+    end
+    render :json => true #Invalid call return not valid
+  end
   
 
   private

@@ -33,7 +33,7 @@ class ApplicationController < ActionController::Base
     flash.discard  # don't want the flash to appear when you reload page 
   end
 
-  def errors_to_headers( record )
+  def errors_to_headers( xs )
       return unless request.xhr?
       response.headers['X-RecordType'] = record.class.name
       response.headers['X-Errors'] = record.errors.to_json

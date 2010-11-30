@@ -50,34 +50,12 @@
 </style>
 <div id="scroll-body">
   <div id="profile_form">
-    <form id="actual_profile_form" method="post" action="/users/cbH05Jgi5cUBUAOD-XQ3W2"  >
-      <dl>
-      <div class="entry_area" id="firstname":>
-          <dt><label for="user_first_name"> First Name</label></dt>
-          <dd><input id="user_first_name" name="user[first_name]" size="30" type="text" value="Odell" /></dd>
-      </div>
-      <div class="entry_area" id="lastname">
-          <dt><label for="user_last_name">Last Name</label></dt>
-          <dd><input id="user_last_name" name="user[last_name]" size="30" type="text" value="Kautzer" /></dd>
-      </div>
-
-        <dt>
-          <label for="user_username">Username</label>
-          <span class="form_label_small" id = "username_full">
-            <span id="username_host">www.zangzing.com/</span><span id="username_path">toothless</span>
-          </span>
-        </dt>
-        <dd><input id="user_username" name="user[username]" size="30" type="text" value="toothless" /></dd>
-        <dt><label for="user_email">Email</label></dt>
-        <dd><input id="user_email" name="user[email]" size="30" type="text" value="user3@test.zangzing.com" /></dd>
-        <dt><label for="user_oldpassword">Old Password</label></dt>
-        <dd><input id="user_oldpassword" name="user[oldpassword]" size="30" type="password" /></dd>
-        <dt><label for="user_password">New Password</label></dt>
-        <dd><input id="user_password" name="user[password]" size="30" type="password" /></dd>
-        <input name="_method" type="hidden" value="put" />
-        <input type="image" src="/images/btn-send.png" name="submit" id="mail-submit" />
+    <% form_for @user, {:id=>"actual_profile_form"} do | f|  %>
+      <dl class="clearfix" >
+        <%= render :partial => 'fields', :locals =>{:f => f, :user => @user }%>
+        <%= image_submit_tag "/images/btn-send.png" %>
       </dl>
-    </form>
+    <% end %>
   </div>
 
     <div id="profile_photo">

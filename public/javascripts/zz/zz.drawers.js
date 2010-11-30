@@ -262,6 +262,7 @@ zz.drawers = {
 
     }, // end zz.drawers.group_album
 
+//====================================== SETTINGS WIZARD ================================================    
     settings: {
 
          // set up the album variables
@@ -288,7 +289,7 @@ zz.drawers = {
 
                  init: zz.init.profile_settings, // run when loading the drawer up
                  bounce: function(){ zz.wizard.update_user()} // run before you leave
-             }, //end zz.drawers.account_settings.steps.profile
+             }, //end zz.drawers.settings.steps.profile
 
              account: {
                  next: 'notifications',
@@ -305,7 +306,7 @@ zz.drawers = {
                      zz.wizard.update_album();
                  }
 
-             }, //end zz.drawers.account_settings.steps.account
+             }, //end zz.drawers.settings.steps.account
 
              notifications: {
                  next: 'linked-accts',
@@ -322,7 +323,7 @@ zz.drawers = {
                     zz.wizard.update_album();
                  }
 
-             }, //end zz.drawers.account_settings.steps.notifications
+             }, //end zz.drawers.settings.steps.notifications
 
              linked_accts: {
                 next: 0,
@@ -331,13 +332,13 @@ zz.drawers = {
                 url: '/users/$$/identities',
                 url_type: 'user',
                 init: function(){
-                   zz.init.identities_settings();
+                   zz.init.id_settings();
                 },
                 bounce: function(){}
-              } //end zz.drawers.account_settings.steps.linked_accts
+              } //end zz.drawers.settings.steps.linked_accts
 
-         } // end zz.drawers.account_settings.steps
+         } // end zz.drawers.settings.steps
 
-    } //end zz.drawers.account_settings
+    } //end zz.drawers.settings
 
 }; // end zz.drawers

@@ -63,8 +63,9 @@ zz.validate = {
         }
     },
 
+//================================= Profile Form - Settings Wizard ================================
     profile_form: {
-        element: '#actual_profile_form',
+        element: '#profile_form form',
         errorContainer: '#flashes-notice',
         rules: {
             'user[first_name]':     { required: true,
@@ -78,8 +79,7 @@ zz.validate = {
             'user[email]':    { required: true,
                                 email: true,
                                 remote: '/users/validate_email' },
-            'user[password]': { required: true,
-                                minlength: 5 }
+            'user[password]': { minlength: 5 }
         },
         messages: {
             'user[first_name]':{ required: 'Please enter your first name.',

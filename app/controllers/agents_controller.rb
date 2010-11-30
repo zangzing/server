@@ -21,12 +21,12 @@ class AgentsController < ApplicationController
       response[:version]    = "OK"
     else
       response[:version]    = "update"
-      response[:update_type] = ( rand(1) ? "optional" : "required" )
+      response[:update_type] = ( rand(1000) > 500 ? "optional" : "required" )
       response[:url]         = "http://www.zangzing.com/#{params[:platform]}/1/ZangZing-Setup-v#{ Faker::PhoneNumber.phone_number}.exe"
 	    response[:url_readme]  =	"http://www.zangzing.com/#{params[:platform]}/1/readme.html"
 	    response[:message]     = "Download this version to fix: #{Faker::Company.catch_phrase}"
     end
 
-    render :json => response;
+    render :text => response;
   end
 end
