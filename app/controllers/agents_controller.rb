@@ -8,4 +8,25 @@ class AgentsController < ApplicationController
   def info
     render :json=> "Statistics received. Thank you", :status=>200 and return #TODO:Do something with the statistics
   end
+
+  def check
+    render :json => "ERROR: Version argument missing" ,:status => 400 and return unless params[:version]
+    render :json => "ERROR: Platform argument missing", :status => 400 and return unless params[:platform]
+    render :json => "ERROR: Platform Version argument missing", :status => 400 and return unless params[:platform_version]
+
+    response ={}
+
+
+    if( rand(1000) > 500  )
+      response[:version]    = "OK"
+    else
+      response[:version]    = "update"
+      response[:update_type] = ( rand(1) ? "optional" : "required" )
+      response[:url]         = "http://www.zangzing.com/#{params[:platform]}/1/ZangZing-Setup-v#{ Faker::PhoneNumber.phone_number}.exe"
+	    response[:url_readme]  =	"http://www.zangzing.com/#{params[:platform]}/1/readme.html"
+	    response[:message]     = "Download this version to fix: #{Faker::Company.catch_phrase}"
+    end
+
+    render :json => response;
+  end
 end
