@@ -263,6 +263,27 @@ class Photo < ActiveRecord::Base
     self.image_content_type_changed? ||
     self.image_updated_at_changed?
   end
+
+  attr_accessor :tmp_upload_dir
+  after_create  :clean_tmp_upload_dir
+
+  # handle nginx upload module params
+  def fast_local_image=(file)
+    if file && file.respond_to?('[]')
+      self.tmp_upload_dir = "#{file['filepath']}_1"
+      tmp_file_path = "#{self.tmp_upload_dir}/#{file['original_name']}"
+      FileUtils.mkdir_p(self.tmp_upload_dir)
+      FileUtils.mv(file['filepath'], tmp_file_path)
+      self.local_image = File.new(tmp_file_path)
+    end
+  end
+
+private
+  # clean tmp directory used in handling new param
+  def clean_tmp_upload_dir
+    FileUtils.rm_r(tmp_upload_dir) if self.tmp_upload_dir && File.directory?(self.tmp_upload_dir)
+  end
+
 end
 
 
