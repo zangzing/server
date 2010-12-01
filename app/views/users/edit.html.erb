@@ -59,7 +59,7 @@
     <% form_for @user, {:id=>"actual_profile_form"} do | f|  %>
       <dl class="clearfix" >
         <%= render :partial => 'fields', :locals =>{:f => f, :user => @user }%>
-        <input name="submit" alt="" type="image" />        
+        <input name="submit" alt="" type="image" style="visibility:hidden;" />        
       </dl>
     <% end %>
   </div>
