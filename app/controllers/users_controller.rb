@@ -38,8 +38,17 @@ class UsersController < ApplicationController
   end
   
   def edit 
-    @title = "Edit user"
     @user = @current_user    
+    render :layout => false
+  end
+
+  def account
+    @user = @current_user
+    render :layout => false
+  end
+
+  def notifications
+    @user = @current_user
     render :layout => false
   end
   

@@ -302,6 +302,16 @@ label,
  font-style: italic;
 }
 
+.cancel-button{
+ font-size:  120%;
+ font-weight: 700;   
+ color: #646464;
+ text-decoration: underline;
+ text-align: left;
+ margin: 0 10px;
+ vertical-align: middle;
+}
+
 input[type=text], input[type=password], input[type=checkbox] , textarea{
   text-align: left;
   font-size: 1.8em;

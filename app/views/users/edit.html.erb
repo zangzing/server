@@ -59,7 +59,7 @@
     <% form_for @user, {:id=>"actual_profile_form"} do | f|  %>
       <dl class="clearfix" >
         <%= render :partial => 'fields', :locals =>{:f => f, :user => @user }%>
-        <%= image_submit_tag "/images/btn-send.png", {:name => 'submit'} %>
+        <input name="submit" alt="" type="image" />        
       </dl>
     <% end %>
   </div>
@@ -71,10 +71,8 @@
     </div>
 </div>
     <div class="settings-buttons">
-    <dd class="button">
-              <a href="javascript:void(0);" class="cancel-mini">Cancel</a>
-              <input type="image" name="submit" src="/images/btn-wizard-done.png">
-    </dd>
+              <a     id="cancel_profile_button" href="javascript:void(0);" class="cancel-button">Cancel</a>
+              <input id="ok_profile_button" type="image" name="submit" src="/images/btn-wizard-done.png">
     </div>
 
 

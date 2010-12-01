@@ -238,25 +238,23 @@ zz.drawers = {
 
          // set up the wizard steps
          steps: {
-
              profile: {
                  next: 'account',               // next in line
                  title: 'Profile',              // link text
                  type: 'full',                  // drawer position - full(y open) or partial(ly open)
                  url: '/users/$$/edit',         // url of the drawer template
                  url_type: 'user',              // replace $$ w/the id of the album or user
-
                  init:   zz.init.profile_settings, // run when loading the drawer up
-                 bounce: function(){ zz.wizard.update_user() } // run before you leave
+                 bounce: function(){ zz.wizard.update_profile(function(){}, function(){zz.wizard.open_settings_drawer('profile');} ) } // run before you leave
              }, //end zz.drawers.settings.steps.profile
 
              account: {
                  next: 'notifications',
                  title: 'Account',
                  type: 'full',
-                 url: '/albums/$$/name_album',
-                 url_type: 'album',
-                 init: function(){ zz.wizard.init_name_tab(); },
+                 url: '/users/$$/account',
+                 url_type: 'user',
+                 init: function(){ },
                  bounce: function(){ }
              }, //end zz.drawers.settings.steps.account
 
@@ -264,8 +262,8 @@ zz.drawers = {
                  next: 'linked-accts',
                  title: 'Notifications',
                  type: 'full',
-                 url: '/albums/$$/name_album',
-                 url_type: 'album',
+                 url: '/users/$$/notifications',
+                 url_type: 'user',
                  init: function(){ },
                  bounce: function(){ }
              }, //end zz.drawers.settings.steps.notifications

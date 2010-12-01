@@ -173,7 +173,7 @@ zz.wizard = {
 
     rebind: function(obj, id, num_steps){
 
-        zz.wizard.resize_scroll_body()
+        zz.wizard.resize_scroll_body();
 
 
         $.each(obj.steps, function(i, item) {
@@ -587,9 +587,9 @@ zz.wizard = {
     },
 
 //=========================================== SETTINGS DRAWER =====================================    
-    update_profile: function() {
-            logger.debug('AJAX-posting profile_form');
-            var serialized = $(zz.validate.profile_form.element).serialize();
+    update_profile: function(success,failure) {
+        logger.debug('AJAX-posting profile_form');
+        var serialized = $(zz.validate.profile_form.element).serialize();
         $.ajax({
           type: 'POST',
           url: '/users/'+zz.current_user_id+'.json',
@@ -597,10 +597,12 @@ zz.wizard = {
           success: function(){
                         $('#user_old_password').val('');
                         $('#user_password').val('');
+                        if (typeof(success) !== 'undefined') success();
           },
-          error: function( ){
+          error: function(request){
                         $('#user_old_password').val('');
                         $('#user_password').val('');
+                        if (typeof(failure) !== 'undefined') failure();
           }
         });
     },
@@ -642,6 +644,16 @@ zz.wizard = {
          });
      },
 
+    open_settings_drawer: function( step ){
+           zz.wizard.make_drawer(zz.drawers.settings, step);
+    },
+
+    close_settings_drawer: function(){
+        $('#drawer .body').fadeOut('fast');
+        zz.slam_drawer(400);
+        setTimeout('window.location = "'+zz.drawers.settings.redirect+'"', 500);
+    },
+
 
 
 
@@ -682,9 +694,6 @@ zz.wizard = {
         setTimeout(function(){$('#album_name').select();},100);
     },
 
-    open_settings_wizard: function( step ){
-        zz.wizard.make_drawer(zz.drawers.settings, step);
-    },
 
     display_flashes: function( request, delay ){
         var data = request.getResponseHeader('X-Flash');

@@ -763,4 +763,7 @@ select.album_privacy {
 .settings-buttons{
    padding: 10px 80px;
    float: right;
+    bottom: 20px;
+    left: 600px;
+    position: absolute;
 }

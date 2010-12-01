@@ -11,6 +11,8 @@ ActionController::Routing::Routes.draw do |map|
     users.create_user       '/users',          :action=> 'create', :conditions=>{ :method => :post }
     users.new_user          '/users/new',      :action=> 'new',    :conditions=>{ :method => :get }
     users.edit_user         '/users/:id/edit', :action=> 'edit',   :conditions=>{ :method => :get }
+    users.user_account      '/users/:id/account', :action=> 'account',   :conditions=>{ :method => :get }
+    users.user_notifications'/users/:id/notifications', :action=> 'notifications',   :conditions=>{ :method => :get }
     users.validate_email    '/users/validate_email', :action=> 'validate_email', :conditions=>{ :method => :get }
     users.validate_username '/users/validate_username', :action=> 'validate_username', :conditions=>{ :method => :get }
     users.user              '/users/:id.',     :action=> 'show',   :conditions=>{ :method => :get }
