@@ -99,14 +99,7 @@ zz.validate = {
                                  remote: 'Email already used'},
             'user[password]': 'Six characters or more please.'
         },
-        submitHandler: function() {
-            logger.debug('AJAX-posting profile_form');
-            var serialized = $(zz.validate.profile_form.element).serialize();
-            $.post('/users/'+zz.current_user_id+'.json', serialized, function(data,status,request){
-               logger.debug('profile_form post was successfull');
-               zz.wizard.display_flashes(  request,200 )
-            });
-        }
+        submitHandler: function(){ zz.wizard.update_profile() }
     },
 
 //=========================== Social Post Form - Edit/New Album Wizard ============================

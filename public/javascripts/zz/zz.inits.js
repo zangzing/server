@@ -4,7 +4,6 @@
 zz.init = {
 
     template: function(){
-
         /* Click Handlers
          ----------------------------------------------------------------------- */
 
@@ -86,11 +85,7 @@ zz.init = {
 
     loaded: function(){
         $('#drawer-content').ajaxError(function(event, request) {
-            var data = request.getResponseHeader('X-Errors');
-            if( data ){
-                var errors = (new Function( "return( " + data + " );" ))(); //parse json using function contstructor
-                $('#error-notice').html(errors[0][1]).show();
-            }
+            zz.wizard.display_errors( request, 50);
             zz.wizard.display_flashes(request, 50);
         });
         $('#drawer-content').ajaxSuccess(function(event, request) {
@@ -383,6 +378,6 @@ zz.init = {
                 $('#username_path').html( $('#user_username').val() );
             }, 10);
       });
-      $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height -100) + 'px'});
+      $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height -140) + 'px'});
     }
 }; // end zz.init
