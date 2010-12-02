@@ -33,6 +33,9 @@ class Album < ActiveRecord::Base
   has_many :activities,       :dependent => :destroy
   has_many :upload_batches
   has_many :contributors
+  
+  has_friendly_id :name, :use_slug => true, :scope => :user, :reserved_words => ["photos", "shares", 'activities', 'slides_source', 'people'], :approximate_ascii => true
+
 
   has_attached_file :picon, Paperclip.options[:picon_options]
   before_picon_post_process    :set_picon_metadata
@@ -44,7 +47,7 @@ class Album < ActiveRecord::Base
   before_create :set_email
   before_save   :set_email, :if => :name_changed?
 
-  default_scope :order => 'updated_at DESC'
+  default_scope :order => "#{quoted_table_name}.updated_at DESC"
 
   PRIVACIES = {'Public' =>'public','Hidden' => 'hidden','Password' => 'password'};
 
@@ -120,7 +123,12 @@ class Album < ActiveRecord::Base
       "#{self.id}@#{ALBUM_EMAIL_HOST}"
   end
 
-  private
+  def to_param #overide friendly_id's
+    (id = self.id) ? id.to_s : nil
+  end
+
+private
+
   def set_email
       # Remove spaces and @
       self.email = dashify(name)

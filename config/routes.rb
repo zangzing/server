@@ -305,4 +305,9 @@ ActionController::Routing::Routes.draw do |map|
       logs.log_retrieve '/logs/:logname', :action => :retrieve
     end
   end
+
+  #friendly users and albums
+  map.user_friendly '/:user_id', :controller => :albums, :action=>"index", :friendly => true
+  map.user_album_friendly '/:user_id/:album_id', :controller => :photos, :action=>"index", :friendly => true
+
 end
