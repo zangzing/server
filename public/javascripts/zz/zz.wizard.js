@@ -173,7 +173,7 @@ zz.wizard = {
 
     rebind: function(obj, id, num_steps){
 
-        zz.wizard.resize_scroll_body()
+        zz.wizard.resize_scroll_body();
 
 
         $.each(obj.steps, function(i, item) {
@@ -205,8 +205,8 @@ zz.wizard = {
         } else if (obj.last == id || obj.style == 'edit') {
             //console.log('last');
             $(obj.next_element).click(function(e){
+                 obj.steps[id].bounce();
                 $('#drawer .body').fadeOut('fast');
-                obj.steps[id].bounce();
                 zz.slam_drawer(400);
                 if (obj.redirect_type == 'album') {
                     temp_url = 'http://' + zz.base + obj.redirect.split('$$')[0] + zz.album_id + obj.redirect.split('$$')[1];
@@ -586,6 +586,27 @@ zz.wizard = {
 
     },
 
+//=========================================== SETTINGS DRAWER =====================================    
+    update_profile: function(success,failure) {
+        logger.debug('AJAX-posting profile_form');
+        var serialized = $(zz.validate.profile_form.element).serialize();
+        $.ajax({
+          type: 'POST',
+          url: '/users/'+zz.current_user_id+'.json',
+          data: serialized,
+          success: function(){
+                        $('#user_old_password').val('');
+                        $('#user_password').val('');
+                        if (typeof(success) !== 'undefined') success();
+          },
+          error: function(request){
+                        $('#user_old_password').val('');
+                        $('#user_password').val('');
+                        if (typeof(failure) !== 'undefined') failure();
+          }
+        });
+    },
+
     delete_identity: function(){
         logger.debug("Deleting ID with URL =  "+ $(this).attr('value'));
         $("#"+$(this).attr('service')+"-status").bind( 'identity_deleted' , zz.wizard.identity_deleted_handler );
@@ -623,18 +644,24 @@ zz.wizard = {
          });
      },
 
+    open_settings_drawer: function( step ){
+           zz.wizard.make_drawer(zz.drawers.settings, step);
+    },
+
+    close_settings_drawer: function(){
+        $('#drawer .body').fadeOut('fast');
+        zz.slam_drawer(400);
+        setTimeout('window.location = "'+zz.drawers.settings.redirect+'"', 500);
+    },
+
 
 
 
     update_album: function(){
         $.post('/albums/'+zz.album_id,$(".edit_album").serialize() );
+        return true;
     },
 
-    update_user: function(){
-        $.post(this.value, $("#update-user-form").serialize, function(data){
-            $("#drawer-content").html("").html( data );
-        });
-    },
 
     dashify: function(s){
         return   s
@@ -667,9 +694,6 @@ zz.wizard = {
         setTimeout(function(){$('#album_name').select();},100);
     },
 
-    open_settings_wizard: function( step ){
-        zz.wizard.make_drawer(zz.drawers.settings, step);
-    },
 
     display_flashes: function( request, delay ){
         var data = request.getResponseHeader('X-Flash');
@@ -681,6 +705,17 @@ zz.wizard = {
                 });
             }
         }
-    }
+    },
 
+    display_errors: function( request, delay ){
+          var data = request.getResponseHeader('X-Errors');
+            if( data ){
+                var errors = (new Function( "return( " + data + " );" ))(); //parse json using function contstructor
+                $('#error-notice').html(errors[0][1]).fadeIn('fast', function(){
+                    if( delay >0 ){
+                        setTimeout(function(){$('#error-notice').fadeOut('fast', function(){$('#error-notice').html('    ');})}, delay+3000);
+                    }
+                });
+            }
+    }
 };

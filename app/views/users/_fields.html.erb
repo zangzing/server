@@ -1,17 +1,28 @@
-<%= f.error_messages %>
-  <div class="field">
-    <%= f.label :name %>
-    <%= f.text_field :name %>
-  </div>
-  <div class="field">
-    <%= f.label :email %>
-    <%= f.text_field :email %>
-  </div>
-  <div class="field">
-    <%= f.label :password %>
-    <%= f.password_field :password %>
-  </div>
+     <div class="entry_area" id="firstname":>
+          <dt><%= f.label :first_name %></dt>
+          <dd><%= f.text_field :first_name %></dd>
+     </div>
+     <div class="entry_area" id="lastname">
+          <dt><%= f.label :last_name %></dt>
+          <dd><%= f.text_field :last_name %></dd>
+     </div>
 
- 
+     <dt>
+          <%= f.label :username %>
+          <span class="form_label_small" id = "username_full">
+            <span id="username_host">www.zangzing.com/</span><span id="username_path"><%=user.username%></span>
+          </span>
+     </dt>
+     <dd><%= f.text_field :username %></dd>
+
+     <dt><%= f.label :email %></dt>
+     <dd><%= f.text_field :email %></dd>
+
+     <dt><%= f.label :old_password %></dt>
+     <dd><%= f.password_field :old_password %></dd>
+
+     <dt><%= f.label :password %></dt>
+     <dd><%= f.password_field :password %></dd>
+
 
 

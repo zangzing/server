@@ -4,7 +4,6 @@
 zz.init = {
 
     template: function(){
-
         /* Click Handlers
          ----------------------------------------------------------------------- */
 
@@ -30,9 +29,9 @@ zz.init = {
         //only album owner can do this
         $('#nav-edit-album').click(function(){ zz.wizard.open_edit_album_wizard('add') });
 
-        $('#nav-like').click(function(){ zz.wizard.open_settings_wizard('linked_accts') });
+        $('#nav-like').click(function(){ zz.wizard.open_settings_drawer('linked_accts') });
 
-        $('#nav-buy').click(function(){ zz.wizard.open_settings_wizard('profile') });
+        $('#nav-buy').click(function(){ zz.wizard.open_settings_drawer('profile') });
         
 
         /* new user stuff   */
@@ -86,11 +85,7 @@ zz.init = {
 
     loaded: function(){
         $('#drawer-content').ajaxError(function(event, request) {
-            var data = request.getResponseHeader('X-Errors');
-            if( data ){
-                var errors = (new Function( "return( " + data + " );" ))(); //parse json using function contstructor
-                $('#error-notice').html(errors[0][1]).show();
-            }
+            zz.wizard.display_errors( request, 50);
             zz.wizard.display_flashes(request, 50);
         });
         $('#drawer-content').ajaxSuccess(function(event, request) {
@@ -359,18 +354,37 @@ zz.init = {
         })
     },
 
+//====================================== Account Badge  ===========================================
+
     acct_badge: function(){
         $('#acct-anchor').click(function(){zz.toolbars.show_acct_badge_dropdown()});
-        $('#acct-settings-btn').click(function(){ zz.wizard.open_settings_wizard('profile') });
+        $('#acct-settings-btn').click(function(){ zz.wizard.open_settings_drawer('profile') });
     },
 
-    identities_settings: function(){
-         $('.delete-id-button').click(zz.wizard.delete_identity);
-         $('.authorize-id-button').click(zz.wizard.authorize_identity);
-         $('.id-status').each( function(){
+//==================================== Settings Wizard  ===========================================
+    id_settings: function(){
+      zz.drawers.settings.redirect =  window.location;  
+      $('.delete-id-button').click(zz.wizard.delete_identity);
+      $('.authorize-id-button').click(zz.wizard.authorize_identity);
+      $('.id-status').each( function(){
 
              logger.debug("Binding id:"+this.id+" service:"+$(this).attr('service'));
-         });
-        $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height -120) + 'px'});
+      });
+      $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height -110) + 'px'});
+      $('#ok_id_button').click(zz.wizard.close_settings_drawer)
+    },
+    profile_settings: function(){
+       zz.drawers.settings.redirect =  window.location;
+      $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height -140) + 'px'});       
+      $(zz.validate.profile_form.element).validate(zz.validate.profile_form);
+      $('#user_username').keypress( function(){
+            setTimeout(function(){
+                $('#username_path').html( $('#user_username').val() );
+            }, 10);
+      });
+      $('#ok_profile_button').click(function(){
+            zz.wizard.update_profile( zz.wizard.close_settings_drawer)
+      });
+      $('#cancel_profile_button').click(zz.wizard.close_settings_drawer)
     }
 }; // end zz.init

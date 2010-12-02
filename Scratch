@@ -1,0 +1,51 @@
+<div class="flash-box"><div class="flash-notice" id="flashes-notice">  </div></div>
+<div id="scroll-body">
+  <div class="settings_form">
+    <form method="post" action="/users/cbH05Jgi5cUBUAOD-XQ3W2" class="edit_user" id="edit_user" >
+      <dl class="clearfix">
+        <div class="name_area">
+          <div class="first_name_area">
+            <dt><label for="user_first_name"> First Name</label></dt>
+            <dd><input id="user_first_name" name="user[first_name]" size="30" type="text" value="Odell" /></dd>
+          </div>
+          <div class="last_name_area">
+            <dt><label for="user_last_name">Last Name</label></dt>
+            <dd><input id="user_last_name" name="user[last_name]" size="30" type="text" value="Kautzer" /></dd>
+          </div>
+        </div>
+        <dt><label for="user_email">Email</label></dt>
+        <dd><input id="user_email" name="user[email]" size="30" type="text" value="user3@test.zangzing.com" /></dd>
+        <dt><label for="user_password">Password</label></dt>
+        <dd><input id="user_password" name="user[password]" size="30" type="password" /></dd>
+        <input name="_method" type="hidden" value="put" />
+        <dd class="button">
+          <a href="javascript:void(0);" class="cancel-mini">Cancel</a>
+          <input type="image" name="submit" src="/images/btn-send.png">
+        </dd>
+        <input id="update-user-button" name="commit" type="submit" value="Update" />
+      </dl>
+    </form>
+  </div>
+
+<p>
+
+<p>
+       <b>Last login at:</b>
+       <%=h @user.last_login_at %>
+     </p>
+
+     <p>
+       <b>Current login at:</b>
+       <%=h @user.current_login_at %>
+     </p>
+
+     <p>
+       <b>Last login ip:</b>
+       <%=h @user.last_login_ip %>
+     </p>
+
+     <p>
+       <b>Current login ip:</b>
+       <%=h @user.current_login_ip %>
+     </p>
+</div>

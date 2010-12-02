@@ -118,7 +118,7 @@ class SampleDataLoader
   end
 
   def event
-    %w(Roompah Rave Concert Tournament Wedding Party Baptism Reunion Marriage Bar-Mitzvah Christmas Hannukah Labor-day Memorial-day Camp Funeral Graduation Surgery Jury-Duty Driving-Test Confirmation Commencement Premiere Vacation Road-Trip Recital).rand
+    %w(Roompah Rave Concert Tournament Wedding Party Baptism Reunion Marriage Bar-Mitzvah Christmas Hannukah Labor-day Memorial-day Camp Graduation Surgery Jury-Duty Driving-Test Confirmation Commencement Premiere Vacation Road-Trip Recital).rand
   end
 
   def initializeS3

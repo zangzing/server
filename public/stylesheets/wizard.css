@@ -242,8 +242,9 @@ ul#indicator-5 li.on, ul#indicator-6 li.on {
   color: #fff;
 }
 
-ul#indicator-4 li.on{
+ul#indicator-4 li.on, ul#indicator-4 li:hover{
     color: #000000;
+    font-weight: 400;
 }
 
 
@@ -756,4 +757,13 @@ select.album_privacy {
   height: 28px;
   width: 80px;
   margin-right: 10px;
+}
+
+/*-------------- Settings Drawer -----------------------------------------*/
+.settings-buttons{
+   padding: 10px 80px;
+   float: right;
+    bottom: 20px;
+    left: 600px;
+    position: absolute;
 }

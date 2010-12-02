@@ -43,15 +43,8 @@ zz.drawers = {
                 type: 'full',
                 url: '/albums/$$/name_album',
                 url_type: 'album',
-
-                init: function(){
-                    zz.wizard.init_name_tab();
-                },
-
-                bounce: function(){
-                    zz.wizard.update_album();
-                }
-
+                init:   function(){  zz.wizard.init_name_tab(); },
+                bounce: function(){ zz.wizard.update_album(); }
             }, //end zz.drawers.personal_album.steps.name
 
             edit: {
@@ -60,15 +53,8 @@ zz.drawers = {
                 type: 'partial',
                 url: '/albums/$$/edit',
                 url_type: 'album',
-
-                init: function(){
-                    zz.wizard.load_images();
-                },
-
-                bounce: function() {
-                    zz.open_drawer();
-                }
-
+                init:   function(){ zz.wizard.load_images(); },
+                bounce: function(){ zz.open_drawer(); }
             }, //end zz.drawers.personal_album.steps.edit
 
             privacy: {
@@ -97,9 +83,7 @@ zz.drawers = {
                     });
                 },
 
-                bounce: function(){
-                }
-
+                bounce: function(){ }
             }, //end zz.drawers.personal_album.steps.privacy
 
             share: {
@@ -114,9 +98,7 @@ zz.drawers = {
                     $('.email-share').click(function(){zz.wizard.email_share(zz.drawers.personal_album, 'share')});
                 },
 
-                bounce: function(){
-                }
-
+                bounce: function(){ }
             } //end zz.drawers.personal_album.steps.share
 
         } // end zz.drawers.personal_album.steps
@@ -149,28 +131,22 @@ zz.drawers = {
                 type: 'full',
                 url: '/albums/$$/add_photos',
                 url_type: 'album',
+                init: function(){  zz.wizard.init_add_tab('group'); },
 
-                init: function(){
-                    zz.wizard.init_add_tab('group');
-                },
                 bounce: function(){
                     $('#added-pictures-tray').fadeOut('fast');
                 }
+
             },
             name: {  //group album
                 id: 'name',
                 next: 'edit',
                 title: 'Name',
                 type: 'full',
-                url: '/albums/$$/name_album',
+                url:  '/albums/$$/name_album',
                 url_type: 'album',
-                init: function(){
-                    zz.wizard.init_name_tab();
-                },
-                bounce: function(){
-                    zz.wizard.update_album(); //post edit-album form
-                }
-
+                init:   function(){ zz.wizard.init_name_tab();  },
+                bounce: function(){ zz.wizard.update_album(); }
             }, //end zz.drawers.group_album.steps.name
 
             edit: {
@@ -179,15 +155,8 @@ zz.drawers = {
                 type: 'partial',
                 url: '/albums/$$/edit',
                 url_type: 'album',
-
-                init: function(){
-                    zz.wizard.load_images();
-                },
-
-                bounce: function() {
-                    zz.open_drawer();
-                }
-
+                init:   function(){ zz.wizard.load_images(); },
+                bounce: function(){ zz.open_drawer(); }
             }, //end zz.drawers.group_album.steps.edit
 
             privacy: {
@@ -216,9 +185,7 @@ zz.drawers = {
                     });
                 },
 
-                bounce: function(){
-                }
-
+                bounce: function(){ }
             }, //end zz.drawers.group_album.steps.privacy
 
             contributors: {
@@ -229,16 +196,10 @@ zz.drawers = {
                 url_type: 'album',
 
                 init: function(){
-//                    if( zz.wizard.contributor_count <= 0){
-//                        zz.wizard.show_new_contributors();
-//                    }else{
                         $('#add-contributors-btn').click(function(){zz.wizard.show_new_contributors();});
-//                    }
                 },
 
-                bounce: function() {
-                }
-
+                bounce: function(){ }
             }, //end zz.drawers.group_album.steps.contributors
 
             share: {
@@ -253,15 +214,14 @@ zz.drawers = {
                     $('.email-share').click(function(){zz.wizard.email_share(zz.drawers.group_album, 'share')});
                 },
 
-                bounce: function(){
-                }
-
+                bounce: function(){ }
             } //end zz.drawers.group_album.steps.share
 
         } // end zz.drawers.group_album.steps
 
     }, // end zz.drawers.group_album
 
+//====================================== SETTINGS WIZARD ================================================    
     settings: {
 
          // set up the album variables
@@ -278,55 +238,35 @@ zz.drawers = {
 
          // set up the wizard steps
          steps: {
-
              profile: {
                  next: 'account',               // next in line
                  title: 'Profile',              // link text
                  type: 'full',                  // drawer position - full(y open) or partial(ly open)
                  url: '/users/$$/edit',         // url of the drawer template
                  url_type: 'user',              // replace $$ w/the id of the album or user
-
-                 init: function(){ // run when loading the drawer up
-                        $(zz.validate.user_update.element).validate(zz.validate.user_update);
-                        $('#update-user-button').click(zz.wizard.update_user);
-                 },
-
-                 bounce: function(){ zz.wizard.update_user()} // run before you leave
-             }, //end zz.drawers.account_settings.steps.profile
+                 init:   zz.init.profile_settings, // run when loading the drawer up
+                 bounce: function(){ zz.wizard.update_profile(function(){}, function(){zz.wizard.open_settings_drawer('profile');} ) } // run before you leave
+             }, //end zz.drawers.settings.steps.profile
 
              account: {
                  next: 'notifications',
                  title: 'Account',
                  type: 'full',
-                 url: '/albums/$$/name_album',
-                 url_type: 'album',
-
-                 init: function(){
-                     zz.wizard.init_name_tab();
-                 },
-
-                 bounce: function(){
-                     zz.wizard.update_album();
-                 }
-
-             }, //end zz.drawers.account_settings.steps.account
+                 url: '/users/$$/account',
+                 url_type: 'user',
+                 init: function(){ },
+                 bounce: function(){ }
+             }, //end zz.drawers.settings.steps.account
 
              notifications: {
                  next: 'linked-accts',
                  title: 'Notifications',
                  type: 'full',
-                 url: '/albums/$$/name_album',
-                 url_type: 'album',
-
-                 init: function(){
-                     zz.wizard.init_name_tab();
-                 },
-
-                 bounce: function(){
-                    zz.wizard.update_album();
-                 }
-
-             }, //end zz.drawers.account_settings.steps.notifications
+                 url: '/users/$$/notifications',
+                 url_type: 'user',
+                 init: function(){ },
+                 bounce: function(){ }
+             }, //end zz.drawers.settings.steps.notifications
 
              linked_accts: {
                 next: 0,
@@ -334,14 +274,12 @@ zz.drawers = {
                 type: 'full',
                 url: '/users/$$/identities',
                 url_type: 'user',
-                init: function(){
-                   zz.init.identities_settings();
-                },
-                bounce: function(){}
-              } //end zz.drawers.account_settings.steps.linked_accts
+                init: function(){ zz.init.id_settings(); },
+                bounce: function(){ }
+              } //end zz.drawers.settings.steps.linked_accts
 
-         } // end zz.drawers.account_settings.steps
+         } // end zz.drawers.settings.steps
 
-    } //end zz.drawers.account_settings
+    } //end zz.drawers.settings
 
 }; // end zz.drawers

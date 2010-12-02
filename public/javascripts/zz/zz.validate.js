@@ -63,20 +63,46 @@ zz.validate = {
         }
     },
 
-    user_update: {
-        element: '#user-update-form',
+//================================= Profile Form - Settings Wizard ================================
+    profile_form: {
+        element: '#profile_form form',
+        errorContainer: '#flashes-notice',
         rules: {
-            'user[name]': { required: true, minlength: 5 },
-            'user[email]': { required: true, email: true }
+            'user[first_name]':     { required: true,
+                                minlength: 5 },
+            'user[last_name]':     { required: true,
+                                minlength: 5 },
+            'user[username]': { required: true,
+                                minlength: 5,
+                                regex: "^[a-z0-9]+$",
+                                remote: '/users/validate_username' },
+            'user[email]':    { required: true,
+                                email: true,
+                                remote: '/users/validate_email' },
+            'user[old_password]':{ minlength: 5,
+                                   required:{ depends: function(element) {
+                                              logger.debug( "length is "+ $("#user_password").val().length);
+                                              return $("#user_password").val().length > 0;}
+                                  }},
+            'user[password]': { minlength: 5 }
         },
         messages: {
-            'user[name]': 'Please enter your name.',
-            'user[email]': 'We promise we won&rsquo;t spam you.'
-        }
+            'user[first_name]':{ required: 'Please enter your first name.',
+                                 minlength: 'Please enter at least 5 letters'},
+            'user[last_name]': { required: 'Please enter your last name.',
+                                 minlength: 'Please enter at least 5 letters'},
+            'user[username]': {  required: 'A username is required.',
+                                 regex: 'Only lowercase alphanumeric characters allowed',
+                                 remote: 'username not available'},
+            'user[email]':   {   required: 'We promise we won&rsquo;t spam you.',
+                                 email: 'Is that a valid email?',
+                                 remote: 'Email already used'},
+            'user[password]': 'Six characters or more please.'
+        },
+        submitHandler: function(){ zz.wizard.update_profile() }
     },
 
-
-
+//=========================== Social Post Form - Edit/New Album Wizard ============================
     new_post_share: {
         element: '#new_post_share',
         rules: {
@@ -99,6 +125,7 @@ zz.validate = {
         }
     }, // end zz.validation.new_post_share
 
+//============================ Email Share Form - Edit/New Album Wizard ===========================
     new_email_share: {
         element: '#new_email_share',
         rules: {

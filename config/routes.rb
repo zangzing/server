@@ -11,6 +11,8 @@ ActionController::Routing::Routes.draw do |map|
     users.create_user       '/users',          :action=> 'create', :conditions=>{ :method => :post }
     users.new_user          '/users/new',      :action=> 'new',    :conditions=>{ :method => :get }
     users.edit_user         '/users/:id/edit', :action=> 'edit',   :conditions=>{ :method => :get }
+    users.user_account      '/users/:id/account', :action=> 'account',   :conditions=>{ :method => :get }
+    users.user_notifications'/users/:id/notifications', :action=> 'notifications',   :conditions=>{ :method => :get }
     users.validate_email    '/users/validate_email', :action=> 'validate_email', :conditions=>{ :method => :get }
     users.validate_username '/users/validate_username', :action=> 'validate_username', :conditions=>{ :method => :get }
     users.user              '/users/:id.',     :action=> 'show',   :conditions=>{ :method => :get }
@@ -98,8 +100,9 @@ ActionController::Routing::Routes.draw do |map|
   #oauth
   #map.resources :oauth_clients
   #map.oauth          '/oauth',               :controller=>'oauth_clients',:action=>'index'
-  map.agents         '/users/:id/agents',    :controller=>'agents',:action=>'index'
-  map.agent_info     '/agent/info.',         :controller=>'agents',:action=>'info'
+  map.agents         '/users/:id/agents.',   :controller=>'agents',:action=>'index', :conditions=>{ :method => :get }
+  map.agent_info     '/agents/info.',         :controller=>'agents',:action=>'info', :conditions=>{ :method => :get }
+  map.agent_check    '/agents/check.',        :controller=> 'agents',:action=>'check', :conditions=>{ :method => :get }
   map.authorize      '/oauth/authorize',     :controller=>'oauth',:action=>'authorize'
   map.agentauthorize '/oauth/agentauthorize',:controller=>'oauth',:action=>'agentauthorize'
   map.revoke         '/oauth/revoke',        :controller=>'oauth',:action=>'revoke'
