@@ -549,12 +549,12 @@ zz.wizard = {
 
         if( row[4] == 1){
             //address match
-            formattedRow += '<span class="autocomplete-match">';
+            formattedRow += '<<span class="autocomplete-match">';
             formattedRow+= add.substr(0,match_len);
             formattedRow+= "</span>";
-            formattedRow+= add.substr(match_len);
+            formattedRow+= add.substr(match_len)+'>';
         } else {
-         formattedRow+= ' '+add+' '; //push add
+         formattedRow+= ' <'+add+'> '; //push add
         }
         return formattedRow;
     },
