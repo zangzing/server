@@ -14,8 +14,9 @@ each album has an email address in the form <album_id>@sendgrid-post.zangzing.co
     *      attachments - Number of attachments included in email.
     *      attachment1, attachment2, …, attachmentN - File upload names. The numbers are sequence numbers starting from 1 and ending on the number specified by the attachments parameter. If attachments is 0, there will be no attachment files. If attachments is 3, parameters attachment1, attachment2, and attachment3 will have file uploads.
 =end
-    album_id = params[:to].match(/\b([A-Z0-9._%+-]+)@[A-Z0-9.-]+\.[A-Z]{2,4}\b/i)[1] rescue ''
-    album = Album.find_by_id(album_id)
+    album_mail = params[:to].match(/\b([A-Z0-9._%+-]+)@[A-Z0-9.-]+\.[A-Z]{2,4}\b/i)[1] rescue ''
+    album_slug, user_slug = album_mail.split('.')
+    album = Album.find(album_slug, :scope => user_slug)
     sender_mail = params[:from].match(/\b([A-Z0-9._%+-]+)@[A-Z0-9.-]+\.[A-Z]{2,4}\b/i)[0] rescue ''
     if request.post? && album
       if sender_mail==album.user.email # && album.kind_of?(PersonalAlbum)

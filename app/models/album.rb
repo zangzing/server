@@ -44,10 +44,13 @@ class Album < ActiveRecord::Base
   validates_presence_of  :name
   validates_length_of    :name, :maximum => 50
 
-  before_create :set_email
-  before_save   :set_email, :if => :name_changed?
+  #before_create :set_email
+  attr_accessor :name_had_changed
+  before_save  Proc.new { |model| model.name_had_changed = true }, :if => :name_changed?
+  after_save   :set_email, :if => :name_had_changed
+  #before_save   :set_email, :if => :new_slug_needed? #:name_changed?
 
-  default_scope :order => "#{quoted_table_name}.updated_at DESC"
+  default_scope :order => "`albums`.updated_at DESC"
 
   PRIVACIES = {'Public' =>'public','Hidden' => 'hidden','Password' => 'password'};
 
@@ -116,11 +119,11 @@ class Album < ActiveRecord::Base
   end
 
   def long_email
-      " \"#{self.name}\" <#{self.id}@#{ALBUM_EMAIL_HOST}>"
+      " \"#{self.name}\" <#{short_emai}>"
   end
 
   def short_email
-      "#{self.id}@#{ALBUM_EMAIL_HOST}"
+      "#{self.email}@#{ALBUM_EMAIL_HOST}"
   end
 
   def to_param #overide friendly_id's
@@ -130,8 +133,11 @@ class Album < ActiveRecord::Base
 private
 
   def set_email
-      # Remove spaces and @
-      self.email = dashify(name)
+    # Remove spaces and @
+    mail_address = "#{self.friendly_id}.#{self.user.friendly_id}"
+    self.connection.execute "UPDATE `albums` SET `email`='#{mail_address}' WHERE `id`='#{self.id}'" if self.id
+    self.name_had_changed = false
+    #self.email = dashify(name)
   end
 
   def dashify( s )
