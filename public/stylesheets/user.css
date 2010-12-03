@@ -31,12 +31,11 @@ ul.albums-grid-view li td {
     top:55px;
 }
 
+/*======================================LIKE - CONTEXT MENU =====================================*/
 #like-popup{
     background: url("/images/bg-like-popup.png") no-repeat scroll 0 0 transparent;
     width:92px;
     height: 107px;
-    right: 186px;
-    bottom:52px;
 }
 
 #like-popup li{

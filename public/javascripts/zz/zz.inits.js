@@ -361,7 +361,7 @@ zz.init = {
 //======================================= Like Menu  ==============================================
     like_menu: function(){
         zz.toolbars.init_like_menu();
-        $('#like-anchor').click( zz.toolbars.show_like_menu );
+        $('#nav-like').click( zz.toolbars.show_like_menu );
     },
 
 //==================================== Settings Wizard  ===========================================

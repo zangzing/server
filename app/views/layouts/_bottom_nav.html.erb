@@ -24,14 +24,9 @@
 <% end %>
           <li id="right-half" class="clearfix">
             <ul id="viewer-nav">
-              <li id="nav-buy">Buy</li>
+             <li id="nav-buy">Buy</li>
+             <li id="nav-like"> Like </li>
 
-                <li id="nav-like">
-                  <div id="like-anchor">
-                  Like
-                  </div>  
-
-                </li>
 
 <% if @album && current_user %>
               <li id="nav-share">Share</li>
@@ -40,11 +35,12 @@
           </li>
         </ul>
       </nav>
-      <ul class="context_menu popup" id="like-popup">
-           <li id="like-person">PERSON</li>
-           <li id="like-album">ALBUM</li>
-           <li id="like-photo">PHOTO</li>
-      </ul>
+
+<ul class="context_menu popup" id="like-popup">
+        <li id="like-person">PERSON</li>
+        <li id="like-album">ALBUM</li>
+        <li id="like-photo">PHOTO</li>
+</ul>
 
 
 
