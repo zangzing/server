@@ -1,15 +1,12 @@
 <html>
     <head>
 
-        <style type="text/css" id="page-css">
-
-        </style>
+        <link href="../../stylesheets/thumbtray.css" media="screen" rel="stylesheet" type="text/css" /> 
 
 
-        <script type="text/javascript" src="jquery.js"></script>
-        <script type="text/javascript" src="jquery-ui-1.8.6.custom.min.js"></script>
-        <script type="text/javascript" src="jquery.tmpl.js"></script>
-        <script type="text/javascript" src="thumb-tray.js"></script>
+        <script type="text/javascript" src="../../javascripts/lib/jquery.js"></script>
+        <script type="text/javascript" src="../../javascripts/lib/jquery-ui-1.8.6.custom.min.js"></script>
+        <script type="text/javascript" src="../../javascripts/thumbtray.js"></script>
 
         <script type="text/javascript">
             var tray;
@@ -49,7 +46,9 @@
                     {
                         photos:photos,
                         showSelection:false,
-                        onSelectPhoto:function(index){},
+                        onSelectPhoto:function(index, photo){
+                            $('#tray0-message').html('selected photo:'  + photo.src);
+                        },
                         selectedIndex:10
                     }).data().zz_thumbtray;
 
@@ -57,7 +56,9 @@
                     {
                         photos:photos,
                         showSelection:true,
-                        onSelectPhoto:function(index){},
+                        onSelectPhoto:function(index, photo){
+                            $('#tray1-message').html('selected photo:'  + photo.src);
+                        },
                         selectedIndex:10
                     }).data().zz_thumbtray;
 
@@ -65,8 +66,15 @@
                     {
                         photos:photos,
                         allowDelete:true,
-                        onDeletePhoto:function(index){}
-                    }).data().zz_thumbtray;
+                        onSelectPhoto:function(index, photo){
+                            if(photo){
+                                $('#tray2-message').html('selected photo:'  + photo.src);
+                            }
+                        },
+                        onDeletePhoto:function(index, photo){
+                            $('#tray2-message').html('deleted photo: ' + photo.src);
+                        }
+                     }).data().zz_thumbtray;
             });
 
         </script>
@@ -81,7 +89,10 @@
         <br>
         Scroller
         <div id='tray0' style="position:relative;width:800px; height:20px; border:1px solid black"></div>
-
+        <br>
+        <span id="tray0-message" style="border:1px solid #999999"></span>
+        <br>
+        <br>
         <br>
         <br>
         <br>
@@ -94,6 +105,8 @@
         <br>
         <div id='tray1' style="position:relative;width:800px; height:20px; border:1px solid black"></div>
         <br>
+        <span id="tray1-message" style="border:1px solid #999999"></span>
+        <br>
         <br>
         <br>
        <br>
@@ -102,6 +115,8 @@
         Add/Remove
         <br>
         <div id='tray2' style="position:relative;width:800px; height:20px; border:1px solid black"></div>
+        <br>
+        <span id="tray2-message" style="border:1px solid #999999"></span>
 
     </body>
 

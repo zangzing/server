@@ -1,0 +1,60 @@
+
+
+.thumbtray-wrapper{
+    position:relative
+}
+
+.thumbtray-thumbnails{
+    z-index:0;
+    position:absolute;
+    left:0;
+    top:0
+}
+
+.thumbtray-selection{
+    display:none;
+    position:absolute;
+    left:0;
+    bottom:21;
+    border:solid 1px #FDD042
+}
+
+.thumbtray-selection img{
+    border:3px solid #fff
+}
+
+.thumbtray-preview{
+    display:none;
+    position:absolute;
+    left:0;
+    bottom:21;
+    border:solid 1px #FDD042
+}
+
+.thumbtray-preview img{
+    border:3px solid #fff
+}
+
+.thumbtray-preview .thumbtray-delete-button{
+    display:none;
+    position:absolute;
+    right:-16;
+    top:-16;
+    cursor: pointer;
+    height:32;
+    width:32;
+    background-image: url("/images/btn-delete.png");
+    background-repeat: no-repeat;
+
+
+}
+
+.thumbtray-scrim{
+    z-index:0;
+    position:absolute;
+    left:0;
+    top:0;
+    opacity:.5;
+    filter:alpha(opacity=50);
+    background-color:#fff
+}
