@@ -6,13 +6,47 @@
         </style>
 
 
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+        <script type="text/javascript" src="jquery.js"></script>
+        <script type="text/javascript" src="jquery-ui-1.8.6.custom.min.js"></script>
+        <script type="text/javascript" src="jquery.tmpl.js"></script>
+        <script type="text/javascript" src="thumb-tray.js"></script>
 
         <script type="text/javascript">
             var tray;
-            $(document).ready(function(){
-                tray = new thumb_tray('tray', 'horizontal');
-                
+
+            $(document).ready(function() {
+                var photos = [
+                    {id:'photo1', src:'http://farm3.static.flickr.com/2721/4345453336_1a3d42fb44_m.jpg'},
+                    {id:'photo2', src:'http://farm3.static.flickr.com/2533/4344709669_ea4825b9b6_m.jpg'},
+                    {id:'photo3', src:'http://farm5.static.flickr.com/4034/4350680566_c6b42e9865_m.jpg'},
+                    {id:'photo4', src:'http://farm3.static.flickr.com/2682/4399737437_d4d2fa3599_m.jpg'},
+                    {id:'photo5', src:'http://farm5.static.flickr.com/4053/4409233149_52f7af90c5_m.jpg'},
+                    {id:'photo6', src:'http://farm5.static.flickr.com/4017/4443599784_e3c472d21d_m.jpg'},
+                    {id:'photo7', src:'http://farm5.static.flickr.com/4002/4438972720_d9e517d573_m.jpg'},
+                    {id:'photo1', src:'http://farm3.static.flickr.com/2721/4345453336_1a3d42fb44_m.jpg'},
+                    {id:'photo2', src:'http://farm3.static.flickr.com/2533/4344709669_ea4825b9b6_m.jpg'},
+                    {id:'photo3', src:'http://farm5.static.flickr.com/4034/4350680566_c6b42e9865_m.jpg'},
+                    {id:'photo4', src:'http://farm3.static.flickr.com/2682/4399737437_d4d2fa3599_m.jpg'},
+                    {id:'photo5', src:'http://farm5.static.flickr.com/4053/4409233149_52f7af90c5_m.jpg'},
+                    {id:'photo6', src:'http://farm5.static.flickr.com/4017/4443599784_e3c472d21d_m.jpg'},
+                    {id:'photo7', src:'http://farm5.static.flickr.com/4002/4438972720_d9e517d573_m.jpg'},
+                    {id:'photo1', src:'http://farm3.static.flickr.com/2721/4345453336_1a3d42fb44_m.jpg'},
+                    {id:'photo2', src:'http://farm3.static.flickr.com/2533/4344709669_ea4825b9b6_m.jpg'},
+                    {id:'photo3', src:'http://farm5.static.flickr.com/4034/4350680566_c6b42e9865_m.jpg'},
+                    {id:'photo4', src:'http://farm3.static.flickr.com/2682/4399737437_d4d2fa3599_m.jpg'},
+                    {id:'photo5', src:'http://farm5.static.flickr.com/4053/4409233149_52f7af90c5_m.jpg'},
+                    {id:'photo6', src:'http://farm5.static.flickr.com/4017/4443599784_e3c472d21d_m.jpg'},
+                    {id:'photo7', src:'http://farm5.static.flickr.com/4002/4438972720_d9e517d573_m.jpg'},
+                    {id:'photo1', src:'http://farm3.static.flickr.com/2721/4345453336_1a3d42fb44_m.jpg'},
+                    {id:'photo2', src:'http://farm3.static.flickr.com/2533/4344709669_ea4825b9b6_m.jpg'},
+                    {id:'photo3', src:'http://farm5.static.flickr.com/4034/4350680566_c6b42e9865_m.jpg'},
+                    {id:'photo4', src:'http://farm3.static.flickr.com/2682/4399737437_d4d2fa3599_m.jpg'},
+                    {id:'photo5', src:'http://farm5.static.flickr.com/4053/4409233149_52f7af90c5_m.jpg'},
+                    {id:'photo6', src:'http://farm5.static.flickr.com/4017/4443599784_e3c472d21d_m.jpg'},
+                    {id:'photo7', src:'http://farm5.static.flickr.com/4002/4438972720_d9e517d573_m.jpg'}
+                ];
+
+                tray = $("#tray").zz_thumbtray({photos:photos, onDeletePhoto:function(index){alert('delete ' + index);return true;}}).data().zz_thumbtray;
             });
 
         </script>
@@ -20,8 +54,17 @@
     </head>
 
     <body>
+        <br>
+        <br>
+ 
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
 
-        <div id='tray' style="width:400px; height:20px; border:1px solid black"></div>
+        <div id='tray' style="position:relative;width:800px; height:20px; border:1px solid black"></div>
 
     </body>
 
