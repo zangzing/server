@@ -5,8 +5,9 @@
             photos: [],
             previewSize: 115,
             allowDelete: false,
-            showSelection: true,
-            onDeletePhoto: function(){}
+            showSelection: false,
+            onDeletePhoto: function(index){return true;},
+            onSelectPhoto: function(index){return true;}
         },
 
         currentIndex : -1,
@@ -41,10 +42,13 @@
 
         _setSelectedIndex: function(index){
             this.selectedItem = index;
-            if(this.options.showSelection === true){
-                this.selectionElement.find('img').attr('src', this.options.photos[index].src)
-                this.selectionElement.css('left', this._getPositionForIndex(index) - this.selectionElement.width() / 2);
-                this.selectionElement.show();
+
+            if(index !== -1){
+                if(this.options.showSelection === true){
+                    this.selectionElement.find('img').attr('src', this.options.photos[index].src)
+                    this.selectionElement.css('left', this._getPositionForIndex(index) - this.selectionElement.width() / 2);
+                    this.selectionElement.show();
+                }
             }
         },
 
