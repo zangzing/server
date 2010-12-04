@@ -3,16 +3,19 @@
     $.widget( "ui.zz_thumbtray", {
         options: {
             photos: [],
-            previewSize: 115,
+            previewSize: 80,
+            selectionSize: 115,
             allowDelete: false,
             showSelection: false,
+            selectedIndex:-1,
             onDeletePhoto: function(index){return true;},
             onSelectPhoto: function(index){return true;}
         },
 
         currentIndex : -1,
         selectedIndex : -1,
-
+        thumbnailSize: 0,
+        
         _getMaxVisibleThumbnails: function(){
             return this.element.width() / this.thumbnailSize;
         },
@@ -26,6 +29,10 @@
                 return this.element.width() / len;
             }
 
+        },
+
+        _getThumbnailSize: function(){
+            return this.thumbnailSize;
         },
 
         _setCurrentIndex: function(index){
@@ -80,18 +87,19 @@
             template += '<div class="wrapper" style="height:${height};width:${width};position:relative">';
             template += '    <div class="thumbnails"   style="z-index:0;height:${height};width:${width};position:absolute;left:0;top:0"></div>'
             template += '    <div class="selection" style="display:none;position:absolute;left:0;bottom:21;border:1px solid #CCCCCC">';
-            template += '        <img src="" style="height:115px">';
+            template += '        <img src="" style="height:${selectionSize}px">';
             template += '    </div>';
             template += '    <div class="preview" style="display:none;position:absolute;left:0;bottom:21;border:1px solid #00FF00; background-color:#00FF00">';
-            template += '        <img src="" style="height:80px">';
+            template += '        <img src="" style="height:${previewSize}px">';
             template += '        <div class="delete" style="display:none;position:absolute;right:-10;top:-10;cursor: pointer">(x)</div>';
             template += '    </div>';
-            template += '    <div class="scrim"   style="z-index:0;height:${height};width:${width};position:absolute;left:0;top:0;opacity:.5;filter:alpha(opacity=50);background-color:#fff"></div>'
+            template += '    <div class="scrim" style="z-index:0;height:${height};width:${width};position:absolute;left:0;top:0;opacity:.5;filter:alpha(opacity=50);background-color:#fff"></div>'
             template += '</div>';
 
-            $.tmpl( $.template(null, template), {height: height, width: width} ).appendTo(this.element);
+            $.tmpl( $.template(null, template), {height: height, width: width, previewSize:this.options.previewSize, selectionSize:this.options.selectionSize} ).appendTo(this.element);
 
 
+            this.wrapperElement = this.element.find('.wrapper');
             this.scrimElement = this.element.find('.scrim');
             this.previewElement = this.element.find('.preview');
             this.selectionElement = this.element.find('.selection');
@@ -103,24 +111,30 @@
             var showPreview = function(){
                 mouseOver = true;
                 self.previewElement.fadeIn('fast');
+                if(self.options.showSelection){
+                    self.selectionElement.animate({opacity:.5},100);
+                }
             }
 
             var hidePreview = function(){
                 mouseOver = false;
                 setTimeout(function(){
-                    if(!mouseOver){
-                        self.previewElement.fadeOut('slow');
-                    }
-                },200);
+                     if(!mouseOver){
+                         self.previewElement.fadeOut('fast');
+                         if(self.options.showSelection){
+                             self.selectionElement.animate({opacity:1},100);
+                         }
+                     }
+               },100);
             }
 
             //delete photo
 
             if(this.options.allowDelete){
                 self.previewElement.find('.delete').show().click(function(){
-                    if(self.removePhoto(self._getCurrentIndex())){
-                        hidePreview();
-                    }
+                    self.previewElement.fadeOut('fast', function(){
+                        self.removePhoto(self._getCurrentIndex())
+                    });
                 });
             }
 
@@ -131,7 +145,7 @@
                     self._setCurrentIndex(self._getIndexForPosition(event.pageX - self.element.offset().left));
                 }
                 else{
-                    self.previewElement.hide();
+                    hidePreview();
                     self._setCurrentIndex(-1);
                 }
             });
@@ -149,6 +163,7 @@
                 self._setSelectedIndex(self._getCurrentIndex());
                 if(self.options.showSelection === true){
                     self.previewElement.hide();
+                    self.selectionElement.css({opacity:1});
                 }
             });
 
@@ -169,6 +184,8 @@
             });
 
             this._repaintThumbnails();
+
+            this._setSelectedIndex(this.options.selectedIndex)
         },
 
         _repaintThumbnails: function(){
@@ -181,18 +198,18 @@
                 var removeEach = Math.floor((photos.length - 2) / extra);
                 for(var i = extra;i > 0; i--){
                     var indexToRemove = 1 + (i*removeEach)
-                    console.log(indexToRemove);
                     photos.splice(indexToRemove, 1);
                 }
             }
 
             for(var i in photos){
                 var photo = this.options.photos[i];
-                html += '<img style="height:' + this.thumbnailSize + ';width:' + this.thumbnailSize + '" src="' + photo.src + '">'
+                html += '<img style="height:' + this._getThumbnailSize() + ';width:' + this._getThumbnailSize() + '" src="' + photo.src + '">'
             }
 
             this.thumbnailsElement.html(html);
 
+            this.scrimElement.css('width', (photos.length * this._getThumbnailSize()));
 
         },
 
@@ -202,15 +219,8 @@
 
 
         removePhoto: function(index){
-            if(this.options.onDeletePhoto(index) === true){
-                this.options.photos.splice(index,1);
-                this._repaintThumbnails();
-                return true;
-            }
-            else{
-                return false;
-            }
-
+            this.options.photos.splice(index,1);
+            this._repaintThumbnails();
         }
     });
 
