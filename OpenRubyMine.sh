@@ -5,4 +5,4 @@ export MAGICK_HOME="$ZANG_ZING_HOME/../agent/lib/osx/imagemagick/ImageMagick-6.6
 export DYLD_LIBRARY_PATH="$MAGICK_HOME/lib:$DYLD_LIBRARY_PATH"
 export PATH="$MAGICK_HOME/bin:$PATH"
 
-open "/Applications/RubyMine 2.0.2.app"
+open "/Applications/RubyMine 3.0.app"

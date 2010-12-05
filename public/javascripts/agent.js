@@ -28,7 +28,7 @@ var agent = {
 
     isAgentUrl: function(url){
         if(url){
-            return url.indexOf('http://localhost:') === 0;
+            return url.indexOf('http://localhost:' + agent.port) === 0;
         }
         else{
             return false;
