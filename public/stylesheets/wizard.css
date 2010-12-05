@@ -468,6 +468,15 @@ div#drawer-content dl.form dd input#album_name{
   /*border: 1px #8c8c8c solid;*/
 }
 
+#album-cover-picker {
+    border: 1px solid #8C8C8C;
+    height: 20px;
+    position: absolute;
+    top: 400px;
+    width: 760px;
+    left:75px;
+}
+
 div#drawer-content input#album_email {
   margin_top: 50px;
   width: 500px;

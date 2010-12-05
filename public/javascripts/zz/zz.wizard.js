@@ -692,6 +692,51 @@ zz.wizard = {
             }, 10);
         });
         setTimeout(function(){$('#album_name').select();},100);
+
+
+        //setup album cover picker
+        $.ajax({
+            dataType: 'json',
+            url: '/albums/' + zz.album_id + '/photos.json',
+            success: function(json){
+                var selectedIndex=-1;
+                var currentId = $('#album_cover_photo').val();
+                var photos = $.map(json, function(element, index){
+                    var id = element.id;
+
+                    if(id == currentId){
+                        selectedIndex = index;
+                    }
+                    var src;
+                    if(element.state === 'ready'){
+                        src = element.thumb_url;
+                    }
+                    else{
+                        src = element.source_thumb_url;
+                    }
+
+                    if (agent.isAgentUrl(src)){
+                        src = agent.buildAgentUrl(src);
+                    }
+
+                    return {id:id, src:src};
+                });
+
+                $("#album-cover-picker").zz_thumbtray({
+                       photos:photos,
+                       showSelection:true,
+                       selectedIndex:selectedIndex,
+                       onSelectPhoto: function(index, photo){
+                           var photo_id = '';
+                           if(index!==-1){
+                              photo_id = photo.id
+                           }
+                           $('#album_cover_photo').val(photo_id);
+                       }
+                  });
+                
+            }
+        });
     },
 
 

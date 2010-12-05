@@ -25,7 +25,7 @@
 
 class Album < ActiveRecord::Base
   usesguid
-  attr_accessible :name, :privacy
+  attr_accessible :name, :privacy, :cover_photo_id
 
   belongs_to :user
   has_many :photos,           :dependent => :destroy

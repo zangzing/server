@@ -220,16 +220,16 @@
             if(photos.length > this._getMaxVisibleThumbnails()){
                 //trim extra from middle of list
                 var extra = photos.length - this._getMaxVisibleThumbnails();
-                var removeEach = Math.floor((photos.length - 2) / extra);
+                var removeEach = (photos.length - 2) / extra;
                 for(var i = extra;i > 0; i--){
-                    var indexToRemove = 1 + (i*removeEach)
+                    var indexToRemove = Math.round(i*removeEach)
                     photos.splice(indexToRemove, 1);
                 }
             }
 
             for(var i in photos){
-                var photo = this.options.photos[i];
-                html += '<img style="height:' + this._getThumbnailSize() + ';width:' + this._getThumbnailSize() + '" src="' + photo.src + '">'
+                var photo = photos[i];
+                html += '<img style="height:' + this._getThumbnailSize() + 'px; width:' + this._getThumbnailSize() + 'px" src="' + photo.src + '">'
             }
 
             this.thumbnailsElement.html(html);
