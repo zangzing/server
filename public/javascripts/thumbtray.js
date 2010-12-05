@@ -228,7 +228,7 @@
             }
 
             for(var i in photos){
-                var photo = this.options.photos[i];
+                var photo = photos[i];
                 html += '<img style="height:' + this._getThumbnailSize() + 'px; width:' + this._getThumbnailSize() + 'px" src="' + photo.src + '">'
             }
 
