@@ -222,7 +222,7 @@
                 var extra = photos.length - this._getMaxVisibleThumbnails();
                 var removeEach = (photos.length - 2) / extra;
                 for(var i = extra;i > 0; i--){
-                    var indexToRemove = 1 + Math.round(i*removeEach)
+                    var indexToRemove = Math.round(i*removeEach)
                     photos.splice(indexToRemove, 1);
                 }
             }
