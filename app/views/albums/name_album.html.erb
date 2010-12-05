@@ -13,30 +13,15 @@
     <dt><label for="album_email">Album Email:</label></dt>
     <dd><input id="album_email" type="text" name="album[email]" readonly="readonly" value="<#%= @album.short_email %>"></dd>
     -->
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
+
     <dt><label>Album Cover:</label></dt>
     <dd>
-      <div id="album-cover-picker"></div>
       <input type="hidden" id="album_cover_photo" name="album[cover_photo_id]" value="<%=@album.cover_photo_id%>">
     </dd>
 
   </dl>
-                                                                
+
+  <div id="album-cover-picker"></div>
+
 <% end %>
 </div>

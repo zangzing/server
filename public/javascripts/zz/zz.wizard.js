@@ -714,6 +714,11 @@ zz.wizard = {
                     else{
                         src = element.source_thumb_url;
                     }
+
+                    if (agent.isAgentUrl(src)){
+                        src = agent.buildAgentUrl(src);
+                    }
+
                     return {id:id, src:src};
                 });
 
