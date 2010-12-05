@@ -229,7 +229,7 @@
 
             for(var i in photos){
                 var photo = this.options.photos[i];
-                html += '<img style="height:' + this._getThumbnailSize() + ';width:' + this._getThumbnailSize() + '" src="' + photo.src + '">'
+                html += '<img style="height:' + this._getThumbnailSize() + 'px; width:' + this._getThumbnailSize() + 'px" src="' + photo.src + '">'
             }
 
             this.thumbnailsElement.html(html);

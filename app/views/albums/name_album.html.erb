@@ -13,11 +13,30 @@
     <dt><label for="album_email">Album Email:</label></dt>
     <dd><input id="album_email" type="text" name="album[email]" readonly="readonly" value="<#%= @album.short_email %>"></dd>
     -->
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <dt><label>Album Cover:</label></dt>
+    <dd>
+      <div id="album-cover-picker"></div>
+      <input type="hidden" id="album_cover_photo" name="album[cover]" value="<%=@album.cover%>">
+    </dd>
+
   </dl>
                                                                 
-  <div class="field">
-    Album Cover Selection Should Go Here
-    <!-- TODO: Album cover selection code -->
-  </div>
 <% end %>
 </div>
