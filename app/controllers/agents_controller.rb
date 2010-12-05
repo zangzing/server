@@ -15,18 +15,7 @@ class AgentsController < ApplicationController
     render :json => "ERROR: Platform Version argument missing", :status => 400 and return unless params[:platform_version]
 
     response ={}
-
-
-    if( rand(1000) > 500  )
-      response[:check]    = "OK"
-    else
-      response[:check]    = "update"
-      response[:version]  = "1234"
-      response[:update_type] = ( rand(1000) > 500 ? "optional" : "required" )
-      response[:url]         = "http://www.zangzing.com/#{params[:platform]}/1/ZangZing-Setup-v#{ Faker::PhoneNumber.phone_number}.exe"
-	    response[:url_readme]  =	"http://www.zangzing.com/#{params[:platform]}/1/readme.html"
-	    response[:message]     = "Download this version to fix: #{Faker::Company.catch_phrase}"
-    end
+    response[:check]    = "OK"
 
     render :json => response;
   end
