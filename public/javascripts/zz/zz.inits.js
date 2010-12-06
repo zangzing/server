@@ -385,8 +385,15 @@ zz.init = {
                 $('#username_path').html( $('#user_username').val() );
             }, 10);
       });
+      // unbind next tab button
+      var handler = $('#wizard-account').data('events')['click'][0];
+      $('#wizard-account').unbind('click');
+      $('#wizard-account').click( function(){
+          zz.wizard.update_profile(function(){zz.wizard.open_settings_drawer('account')})
+      });
+          
       $('#ok_profile_button').click(function(){
-            $('#profile_form form').submit();
+          zz.wizard.update_profile( zz.wizard.close_settings_drawer); 
       });
       $('#cancel_profile_button').click(zz.wizard.close_settings_drawer)
     }

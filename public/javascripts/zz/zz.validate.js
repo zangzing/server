@@ -99,7 +99,7 @@ zz.validate = {
                                  remote: 'Email already used'},
             'user[password]': 'Six characters or more please.'
         },
-        submitHandler: function(form){ zz.wizard.update_profile(function(){zz.wizard.close_settings_drawer();}, function(){} ) }
+        submitHandler: function(form){ zz.wizard.update_profile(function(){zz.wizard.close_settings_drawer();}) }
     },
 
 //=========================== Social Post Form - Edit/New Album Wizard ============================

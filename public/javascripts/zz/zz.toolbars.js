@@ -19,6 +19,7 @@ zz.toolbars = {
         
        //Bind Each Menu Item
        $('#acct-settings-btn').click(function(){ zz.wizard.open_settings_drawer('profile') });
+       $('#acct-signout-btn').click(function(){ window.location = '/signout' }); 
     },
 
     show_acct_badge_menu : function(event){

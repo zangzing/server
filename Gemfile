@@ -2,7 +2,7 @@ source :gemcutter
 #source 'http://gems.github.com'
 
 # bundler requires these gems in all environments
-gem "bundler","1.0.3"
+gem "bundler",">= 1.0.3"
 gem "rails", "2.3.5"
 gem "mysql"
 gem 'authlogic',     '2.1.5'

@@ -587,7 +587,8 @@ zz.wizard = {
     },
 
 //=========================================== SETTINGS DRAWER =====================================    
-    update_profile: function(success,failure) {
+    update_profile: function(success) {
+      if( $(zz.validate.profile_form.element).valid() ){
         var serialized = $(zz.validate.profile_form.element).serialize();
         $.ajax({
           type: 'POST',
@@ -601,9 +602,9 @@ zz.wizard = {
           error: function(request){
                         $('#user_old_password').val('');
                         $('#user_password').val('');
-                        if (typeof(failure) !== 'undefined') failure();
           }
         });
+      }
     },
 
     delete_identity: function(){
