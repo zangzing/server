@@ -101,7 +101,7 @@ class UsersController < ApplicationController
     if params[:user] && params[:user][:username]
 
       @user = User.find_by_username(params[:user][:username])
-      if @user == current_user #if the email returns the current user this means its a profile edit
+      if @user == current_user #if the username returns the current user this means its a profile edit
         @user = nil
       end
       render :json => !@user and return

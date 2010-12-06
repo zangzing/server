@@ -588,7 +588,6 @@ zz.wizard = {
 
 //=========================================== SETTINGS DRAWER =====================================    
     update_profile: function(success,failure) {
-        logger.debug('AJAX-posting profile_form');
         var serialized = $(zz.validate.profile_form.element).serialize();
         $.ajax({
           type: 'POST',

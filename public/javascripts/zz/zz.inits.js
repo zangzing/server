@@ -386,7 +386,7 @@ zz.init = {
             }, 10);
       });
       $('#ok_profile_button').click(function(){
-            zz.wizard.update_profile( zz.wizard.close_settings_drawer)
+            $('#profile_form form').submit();
       });
       $('#cancel_profile_button').click(zz.wizard.close_settings_drawer)
     }
