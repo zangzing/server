@@ -189,9 +189,7 @@ zz.wizard = {
      ------------------------------------------------------------------------- */
 
     
-    email_id: 0,
     autocompleter: 0,
-//    contributor_count: 0,
 
     create_personal_album: function(){
         $.post('/users/'+zz.current_user_id+'/albums', { album_type: "PersonalAlbum" }, function(data){

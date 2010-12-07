@@ -422,11 +422,11 @@ pages.album_contributors_tab = {
                         $.post('/albums/'+zz.album_id+'/contributors.json', $('#new_contributors').serialize(), function(data,status,request){
                             $('#tab-content').fadeOut('fast', function(){
                                 $('#tab-content').load('/albums/'+zz.album_id+'/contributors', function(){
-                                    zz.wizard.build_nav(zz.drawers.group_album, 'contributors');
-                                    zz.drawers.group_album.steps['contributors'].init();
-                                    zz.wizard.display_flashes(  request,200 );
-                                    $('#tab-content').fadeIn('fast');
-                                });
+                                    self.init(function(){
+                                        zz.wizard.display_flashes(  request,200 );
+                                        $('#tab-content').fadeIn('fast');
+                                    });
+                                 });
                             },"json");
                         });
                     }
@@ -440,9 +440,11 @@ pages.album_contributors_tab = {
                 $('#cancel-new-contributors').click(function(){
                     $('#tab-content').fadeOut('fast', function(){
                         $('#tab-content').load('/albums/'+zz.album_id+'/contributors', function(){
-                            zz.wizard.build_nav(zz.drawers.group_album, 'contributors'); //todo: should just reload the contributors like we do for the share screen. no need to use the wizard
-                            zz.drawers.group_album.steps['contributors'].init();
-                            $('#tab-content').fadeIn('fast');
+//                            zz.wizard.build_nav(zz.drawers.group_album, 'contributors'); //todo: should just reload the contributors like we do for the share screen. no need to use the wizard
+//                            zz.drawers.group_album.steps['contributors'].init();
+                            self.init(function(){
+                                $('#tab-content').fadeIn('fast');
+                            });
                         });
                     })
                 });
@@ -462,15 +464,11 @@ pages.album_contributors_tab = {
 
 
     insert_contributor_bubble: function(label,value){
-        zz.wizard.email_id++;
-        $('#m-clone-added').clone()
-                .attr({id: 'm-'+zz.wizard.email_id})
-                .insertAfter('#the-recipients li.rounded:last');
-        $('#m-'+zz.wizard.email_id+' span').empty().html(label);
-        $('#m-'+zz.wizard.email_id).fadeIn('fast');
-        $('#m-'+zz.wizard.email_id+' img').attr('id', 'img-'+zz.wizard.email_id);
-        $('#m-'+zz.wizard.email_id+' input').attr({name: 'delete-url', checked: 'checked'}).val(value);
-        $('#m-'+zz.wizard.email_id+' img').click(function(){
+        var bubble = $('#m-clone-added').clone().insertAfter('#the-recipients li.rounded:last');
+        bubble.find('span').empty().html(label);
+        bubble.fadeIn('fast');
+        bubble.find('input').attr({name: 'delete-url', checked: 'checked'}).val(value);
+        bubble.find('img').click(function(){
             $.post($(this).siblings('input').val(), {"_method": "delete"}, function(data){ });
             $(this).parent('li').fadeOut('fast', function(){
                 $(this).remove();

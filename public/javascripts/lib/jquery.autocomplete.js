@@ -591,24 +591,16 @@ jQuery.autocomplete = function(input, options) {
 
         } else {
 
-
-            zz.wizard.email_id++;
-            //console.log('ID: '+ zz.wizard.email_id +'-- Add '+ temp +' to the view and a ' + $(data).html() + ' checkbox to the form.');
-            $('#m-clone-added').clone()
-                    .attr({id: 'm-'+zz.wizard.email_id})
-                    .insertAfter('#the-recipients li.rounded:last');
-
-            $('#m-'+zz.wizard.email_id+' span').empty().html(value);
-            //$('#m-'+zz.wizard.email_id+' input').attr({name: 'i-' + zz.wizard.email_id, checked: 'checked'}).val(value);
-            $('#m-'+zz.wizard.email_id+' input').attr({name: 'email_share[to][]', checked: 'checked'}).val(value);
-            $('#m-'+zz.wizard.email_id).fadeIn('fast');
-            $('#m-'+zz.wizard.email_id+' img').attr('id', 'img-'+zz.wizard.email_id);
-            $('li.rounded img').click(function(){
+            //todo: this block is copied several places
+            var bubble = $('#m-clone-added').clone().insertAfter('#the-recipients li.rounded:last');
+            bubble.find('span').empty().html(value);
+            bubble.find('input').attr({name: 'email_share[to][]', checked: 'checked'}).val(value);
+            bubble.fadeIn('fast');
+            bubble.find('img').click(function(){
                 $(this).parent('li').fadeOut('fast', function(){
                     $(this).parent('li').remove();
                 });
             });
-            //console.log(value);
         }
     };
 
@@ -617,18 +609,14 @@ jQuery.autocomplete = function(input, options) {
         var value = '\"'+data.selectValue+'\" \<'+data.extra[0]+'\>';
         var display_value = ( data.selectValue.length >0 ? data.selectValue : data.extra[0] );
 
-        zz.wizard.email_id++;
-        //console.log('ID: '+ zz.wizard.email_id +'-- Add '+ temp +' to the view and a ' + $(data).html() + ' checkbox to the form.');
         $('#you-complete-me').val('');
-        $('#m-clone-added').clone()
-                .attr({id: 'm-'+zz.wizard.email_id})
-                .insertAfter('#the-recipients li.rounded:last');
 
-        $('#m-'+zz.wizard.email_id+' span').empty().html(display_value);
-        $('#m-'+zz.wizard.email_id+' input').attr({name: 'email_share[to][]', checked: 'checked'}).val(value);
-         $('#m-'+zz.wizard.email_id).fadeIn('fast');
-        $('#m-'+zz.wizard.email_id+' img').attr('id', 'img-'+zz.wizard.email_id);
-        $('#img-'+zz.wizard.email_id).click(function(){
+        //todo: this block is copied several places
+        var bubble = $('#m-clone-added').clone().insertAfter('#the-recipients li.rounded:last');
+        bubble.find('span').empty().html(display_value);
+        bubble.find('input').attr({name: 'email_share[to][]', checked: 'checked'}).val(value);
+        bubble.fadeIn('fast');
+        bubble.find('img').click(function(){
              $(this).parent('li').fadeOut('fast', function(){
                 $(this).remove();
             });
