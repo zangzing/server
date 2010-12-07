@@ -5,13 +5,12 @@ pages.album_add_photos_tab = {
         var url = '/albums/' + zz.album_id + '/add_photos';
         $('#tab-content').load(url, function(){
             filechooser.init();
-            setTimeout('$("#added-pictures-tray").fadeIn("fast")', 300);
+//            setTimeout('$("#added-pictures-tray").fadeIn("fast")', 300);
             callback();
         });
     },
 
     bounce: function(){
-        $('#added-pictures-tray').fadeOut('fast');
     }
 };
 
@@ -33,7 +32,10 @@ pages.album_name_tab = {
     //                $('#album_email').val( zz.wizard.dashify($('#album_name').val()) );
                 }, 10);
             });
-            setTimeout(function(){$('#album_name').select();},100);
+
+            setTimeout(function(){
+                $('#album_name').select();
+            },100);
 
 
             //setup album cover picker
@@ -368,16 +370,7 @@ pages.album_share_tab = {
                 }
                 
             });
-
-//            $('#tab-content').load('/albums/'+zz.album_id+'/shares/new', function(){
-//                zz.wizard.build_nav(obj, id);
-//                obj.steps[id].init();
-//                $('#tab-content').fadeIn('fast');
-//                if( typeof(callback) != "undefined" ){
-//                    callback();
-//                }
-//            });
-        })
+        });
     }
 
 
@@ -653,7 +646,11 @@ pages.account_settings_linked_accounts = {
                 if( $('#flashes-notice')){
                     var msg = "Your can now use "+ $(this).attr('service')+" features throughout ZangZing";
                     $('#flashes-notice').html(msg).fadeIn('fast', function(){
-                        setTimeout(function(){$('#flashes-notice').fadeOut('fast', function(){$('#flashes-notice').html('    ');})}, 3000);
+                        setTimeout(function(){
+                            $('#flashes-notice').fadeOut('fast', function(){
+                                $('#flashes-notice').html('    ');
+                            });
+                        }, 3000);
                     });
                 }
             });//display the unlink button
