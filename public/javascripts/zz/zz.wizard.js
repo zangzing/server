@@ -8,7 +8,6 @@ zz.wizard = {
 
         obj.init();
 
-//        var temp; //todo: rename to somethign meaningful
 
         if (zz.drawer_state == zz.DRAWER_CLOSED) {
             zz.open_drawer(obj.time, obj.percent);
@@ -16,27 +15,12 @@ zz.wizard = {
 
 
 
-//        if (obj.steps[step].url_type == 'album') {
-//            //console.log('album');
-//            temp = 'http://' + zz.base + obj.steps[step].url.split('$$')[0] + zz.album_id + obj.steps[step].url.split('$$')[1];
-//            //console.log(temp);
-//        } else if (obj.steps[step].url_type == 'user') {
-//            //console.log('user');
-//            temp = 'http://' + zz.base + obj.steps[step].url.split('$$')[0] + zz.current_user_id + obj.steps[step].url.split('$$')[1];
-//            //console.log(temp);
-//        }
-
         zz.wizard.build_nav(obj, step);
 
         obj.steps[step].init(function(){
             zz.wizard.resize_scroll_body()
         });
 
-
-//        $('#tab-content').load(temp, function(){
-//            zz.wizard.resize_scroll_body()
-//            obj.steps[step].init();
-//        });
 
 
         $('body').addClass('drawer');
@@ -57,10 +41,6 @@ zz.wizard = {
                 zz.wizard.resize_scroll_body();
             });
 
-//            $('article').load(url, function(data){
-//                zz.wizard.resize_scroll_body();
-//                obj.steps[id].init();
-//            });
 
         } else if (obj.steps[id].type == 'partial' && zz.drawer_state == zz.DRAWER_PARTIAL) {
             zz.wizard.build_nav(obj, id);
@@ -68,10 +48,6 @@ zz.wizard = {
                 zz.wizard.resize_scroll_body();
             });
 
-//            $('article').load(url, function(data){
-//                zz.wizard.resize_scroll_body();
-//                obj.steps[id].init();
-//            });
         } else if (obj.steps[id].type == 'full' && zz.drawer_state != zz.DRAWER_OPEN) {
             zz.wizard.build_nav(obj, id);
 
@@ -80,11 +56,6 @@ zz.wizard = {
                 zz.open_drawer(obj.time);
             });
 
-//            $('#tab-content').load(url, function(data){
-//                zz.wizard.resize_scroll_body();
-//                obj.steps[id].init();
-//                zz.open_drawer(obj.time);
-//            });
         } else if (obj.steps[id].type == 'full' && zz.drawer_state == zz.DRAWER_OPEN) {
             zz.wizard.build_nav(obj, id);
             $('#tab-content').fadeOut('fast', function(){
@@ -93,11 +64,6 @@ zz.wizard = {
                     $('#tab-content').fadeIn('fast');
                 });
 
-//                $('#tab-content').load(url, function(data){
-//                    zz.wizard.resize_scroll_body();
-//                    obj.steps[id].init();
-//                    $('#tab-content').fadeIn('fast');
-//                });
             });
         } else if (obj.steps[id].type == 'partial' && zz.drawer_state == zz.DRAWER_CLOSED) {
             zz.open_drawer(80, obj.percent);
@@ -108,10 +74,6 @@ zz.wizard = {
                 zz.wizard.resize_scroll_body();
             });
 
-//            $('article').load(url, function(data){
-//                zz.wizard.resize_scroll_body();
-//                obj.steps[id].init();
-//            });
         } else {
             console.warn('This should never happen. Context: zz.wizard.change_step, Type: '+obj.steps[id].type+', Drawer State: '+zz.drawer_state);
         }
@@ -145,7 +107,7 @@ zz.wizard = {
         // the last time we incrimented it didn't load a step - we use this to know the length of the list below
         temp_id--;
 
-        if (obj.next_element == 'none') {
+        if (obj.show_next_button !== true) {
             // no next button neded
         } else if (obj.steps[id].next == 0 || obj.style == 'edit') {
             temp += '<li id="step-btn"><img id="next-step" src="/images/btn-wizard-done.png" /></li>';
@@ -158,9 +120,9 @@ zz.wizard = {
         }
         if (obj.style == 'edit') {
             //      $('#clone-indicator').clone().attr('id', obj.list_element+'-'+temp_id).addClass('edit-'+value+'-'+temp_id).html(temp).prependTo('#drawer-content');
-            $('#drawer-tabs').html($('#clone-indicator').clone().attr('id', obj.list_element+'-'+temp_id).addClass('edit-'+value+'-'+temp_id).html(temp));
+            $('#drawer-tabs').html($('#clone-indicator').clone().attr('id', 'indicator' + '-' + temp_id).addClass('edit-'+value+'-'+temp_id).html(temp));
         } else {
-            $('#drawer-tabs').html($('#clone-indicator').clone().attr('id', obj.list_element+'-'+temp_id).addClass('step-'+value+'-'+temp_id).html(temp));
+            $('#drawer-tabs').html($('#clone-indicator').clone().attr('id', 'indicator' + '-' + temp_id).addClass('step-'+value+'-'+temp_id).html(temp));
             //      $('#clone-indicator').clone().attr('id', obj.list_element+'-'+temp_id).addClass('step-'+value+'-'+temp_id).html(temp).prependTo('#drawer-content');
         }
         if(fade_in){
@@ -178,17 +140,6 @@ zz.wizard = {
                 obj.steps[id].bounce();
                 temp_id = $(this).attr('id').split('wizard-')[1];
 
-                //console.log('set up the url');
-//                if (obj.steps[id].url_type == 'album') {
-//                    //console.log('album');
-//                    temp_url = 'http://' + zz.base + obj.steps[i].url.split('$$')[0] + zz.album_id + obj.steps[i].url.split('$$')[1];
-//                    //console.log(temp);
-//                } else if (obj.steps[id].url_type == 'user') {
-//                    //console.log('user');
-//                    temp_url = 'http://' + zz.base + obj.steps[i].url.split('$$')[0] + zz.current_user_id + obj.steps[i].url.split('$$')[1];
-//                    //console.log(temp);
-//                }
-
                 zz.wizard.change_step(temp_id, obj);
             });
 
@@ -196,24 +147,19 @@ zz.wizard = {
 
         });
 
-        if (obj.next_element == 'none') {
+        if (obj.show_next_button !== true) {
             // no next button neded
         } else if (obj.last == id || obj.style == 'edit') {
-            //console.log('last');
-            $(obj.next_element).click(function(e){
+            $('#next-step').click(function(e){
                  obj.steps[id].bounce();
                 $('#drawer .body').fadeOut('fast');
                 zz.close_drawer(400);
-                if (obj.redirect_type == 'album') {
-                    temp_url = 'http://' + zz.base + obj.redirect.split('$$')[0] + zz.album_id + obj.redirect.split('$$')[1];
-                } else if (obj.redirect_type == 'user') {
-                    temp_url = 'http://' + zz.base + obj.redirect.split('$$')[0] + zz.current_user_id + obj.redirect.split('$$')[1];
-                }
-                setTimeout('window.location = "'+temp_url+'"', 500);
+
+                obj.on_close();
+
             });
         } else {
-            //console.log('NOT last');
-            $(obj.next_element).click(function(e){
+            $('#next-step').click(function(e){
                 e.preventDefault();
                 obj.steps[id].bounce();
                 temp_id = obj.steps[id].next;
@@ -241,7 +187,7 @@ zz.wizard = {
     /* Wizard Object Functions - used to make special things happen
      ------------------------------------------------------------------------- */
 
-    delete_btn: 1,
+    
     email_id: 0,
     autocompleter: 0,
 //    contributor_count: 0,
@@ -320,7 +266,7 @@ zz.wizard = {
     close_settings_drawer: function(){
         $('#drawer .body').fadeOut('fast');
         zz.close_drawer(400);
-        setTimeout('window.location = "'+zz.drawers.settings.redirect+'"', 500);
+        setTimeout('window.location = "'+zz.drawers.settings.redirect+'"', 1);
     },
 
 

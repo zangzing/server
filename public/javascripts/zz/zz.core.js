@@ -1,7 +1,3 @@
-//var temp;var temp_width;var temp_height;var temp_top;var temp_left;
-//var temp_id;var temp_url;var content_url;var serialized;var temp_top_new;
-//var temp_left_new;var value;var callback;
-
 
 var zz = {
 
