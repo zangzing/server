@@ -64,43 +64,6 @@ zz.validate = {
     },
 
 //================================= Profile Form - Settings Wizard ================================
-    profile_form: {
-        element: '#profile_form form',
-        errorContainer: '#flashes-notice',
-        rules: {
-            'user[first_name]':     { required: true,
-                                minlength: 5 },
-            'user[last_name]':     { required: true,
-                                minlength: 5 },
-            'user[username]': { required: true,
-                                minlength: 5,
-                                regex: "^[a-z0-9]+$",
-                                remote: '/users/validate_username' },
-            'user[email]':    { required: true,
-                                email: true,
-                                remote: '/users/validate_email' },
-            'user[old_password]':{ minlength: 5,
-                                   required:{ depends: function(element) {
-                                              logger.debug( "length is "+ $("#user_password").val().length);
-                                              return $("#user_password").val().length > 0;}
-                                  }},
-            'user[password]': { minlength: 5 }
-        },
-        messages: {
-            'user[first_name]':{ required: 'Please enter your first name.',
-                                 minlength: 'Please enter at least 5 letters'},
-            'user[last_name]': { required: 'Please enter your last name.',
-                                 minlength: 'Please enter at least 5 letters'},
-            'user[username]': {  required: 'A username is required.',
-                                 regex: 'Only lowercase alphanumeric characters allowed',
-                                 remote: 'username not available'},
-            'user[email]':   {   required: 'We promise we won&rsquo;t spam you.',
-                                 email: 'Is that a valid email?',
-                                 remote: 'Email already used'},
-            'user[password]': 'Six characters or more please.'
-        },
-        submitHandler: function(form){ zz.wizard.update_profile(function(){zz.wizard.close_settings_drawer();}) }
-    },
 
 //=========================== Social Post Form - Edit/New Album Wizard ============================
 
@@ -112,37 +75,37 @@ zz.validate = {
 
 
 
-    sample_sign_up: {
-        element: '#sample-sign-up',
-        rules: {
-            first_name: { required: true, minlength: 2 },
-            last_name: { required: true, minlength: 3 },
-            email: { required: true, email: true },
-            password: { required: true, minlength: 6 },
-            terms: { required: true }
-        },
-        messages: {
-            first_name: {
-                required: '',
-                minlength: ''
-            },
-            last_name: {
-                required: '',
-                minlength: ''
-            },
-            email: {
-                required: '',
-                email: ''
-            },
-            password: {
-                required: '',
-                minlength: ''
-            },
-            terms: {
-                required: ''
-            }
-        }
-
-    } // end zz.validation.sample_sign_up
+//    sample_sign_up: {
+//        element: '#sample-sign-up',
+//        rules: {
+//            first_name: { required: true, minlength: 2 },
+//            last_name: { required: true, minlength: 3 },
+//            email: { required: true, email: true },
+//            password: { required: true, minlength: 6 },
+//            terms: { required: true }
+//        },
+//        messages: {
+//            first_name: {
+//                required: '',
+//                minlength: ''
+//            },
+//            last_name: {
+//                required: '',
+//                minlength: ''
+//            },
+//            email: {
+//                required: '',
+//                email: ''
+//            },
+//            password: {
+//                required: '',
+//                minlength: ''
+//            },
+//            terms: {
+//                required: ''
+//            }
+//        }
+//
+//    } // end zz.validation.sample_sign_up
 
 }; // end zz.validation

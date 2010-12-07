@@ -8,7 +8,7 @@ var oauthmanager = {
 
     on_login: function(){
         oauthmanager.callback()
-    },
+    }
 
 };
 

@@ -284,114 +284,18 @@ zz.wizard = {
 
 
 
-
-
-    // adds a recipient to the autocomplete area on keypress
-    add_recipient: function(comma){
-        if (comma == 1) {
-            value = $('#you-complete-me').val();
-            value = value.split(',')[0];
-            $('#you-complete-me').val('');
-        } else {
-            value = $('#you-complete-me').val();
-            $('#you-complete-me').val('');
-
-        }
-
-        if (value.length < 6) {
-
-        } else {
-
-
-            zz.wizard.email_id++;
-            //console.log('ID: '+ zz.wizard.email_id +'-- Add '+ temp +' to the view and a ' + $(data).html() + ' checkbox to the form.');
-            $('#m-clone-added').clone()
-                    .attr({id: 'm-'+zz.wizard.email_id})
-                    .insertAfter('#the-recipients li.rounded:last');
-
-            $('#m-'+zz.wizard.email_id+' span').empty().html(value);
-            //$('#m-'+zz.wizard.email_id+' input').attr({name: 'i-' + zz.wizard.email_id, checked: 'checked'}).val(value);
-            $('#m-'+zz.wizard.email_id+' input').attr({name: 'email_share[to][]', checked: 'checked'}).val(value);
-            $('#m-'+zz.wizard.email_id).fadeIn('fast');
-            $('#m-'+zz.wizard.email_id+' img').attr('id', 'img-'+zz.wizard.email_id);
-            $('li.rounded img').click(function(){
-                $(this).parent('li').fadeOut('fast', function(){
-                    $(this).parent('li').remove();
-                });
-            });
-            //console.log(value);
-        }
-    },
-
-    // clones a recipient from the selection list
-    clone_recipient: function(data){
-        // data.selectValue is name|email
-        var value = '\"'+data.selectValue+'\" \<'+data.extra[0]+'\>';
-        var display_value = ( data.selectValue.length >0 ? data.selectValue : data.extra[0] );
-
-        zz.wizard.email_id++;
-        //console.log('ID: '+ zz.wizard.email_id +'-- Add '+ temp +' to the view and a ' + $(data).html() + ' checkbox to the form.');
-        $('#you-complete-me').val('');
-        $('#m-clone-added').clone()
-                .attr({id: 'm-'+zz.wizard.email_id})
-                .insertAfter('#the-recipients li.rounded:last');
-
-        $('#m-'+zz.wizard.email_id+' span').empty().html(display_value);
-        $('#m-'+zz.wizard.email_id+' input').attr({name: 'email_share[to][]', checked: 'checked'}).val(value);
-         $('#m-'+zz.wizard.email_id).fadeIn('fast');
-        $('#m-'+zz.wizard.email_id+' img').attr('id', 'img-'+zz.wizard.email_id);
-        $('#img-'+zz.wizard.email_id).click(function(){
-             $(this).parent('li').fadeOut('fast', function(){
-                $(this).remove();
-            });
-        });
-    },
-
-
-
-
-
-
-    format_autocomplete_row: function(row) {
-        var formattedRow ='';
-        var name         = row[0];
-        var add          = row[1];
-        var match_len    = row[2];
-        if( row[3] == 1  ){
-            //name match
-            formattedRow+= '<span class="autocomplete-match">';
-            formattedRow+= name.substr(0,match_len);
-            formattedRow+= "</span>";
-            formattedRow+= name.substr(match_len)+' ';
-        } else {
-          formattedRow+= ' '+name+' '; //push name
-        }
-
-        if( row[4] == 1){
-            //address match
-            formattedRow += '<<span class="autocomplete-match">';
-            formattedRow+= add.substr(0,match_len);
-            formattedRow+= "</span>";
-            formattedRow+= add.substr(match_len)+'>';
-        } else {
-         formattedRow+= ' <'+add+'> '; //push add
-        }
-        return formattedRow;
-    },
     //set up email autocomplete
-    email_autocomplete: function(){
+    init_email_autocompleter: function(){
 
         logger.debug('start email_autocomplete');
 
         zz.autocompleter = $('#you-complete-me').autocompleteArray(
                 google_contacts.concat( yahoo_contacts.concat( mslive_contacts.concat(local_contacts )) ),
-        {
-            width: 700,
-            position_element: 'dd#the-list',
-            append: '#drawer div.body',
-            onItemSelect: zz.wizard.clone_recipient,
-            formatItem: zz.wizard.format_autocomplete_row
-        }
+            {
+                width: 700,
+                position_element: 'dd#the-list',
+                append: '#drawer div.body',
+            }
         );
         //zz.address_list = '';
         logger.debug('end email_autocomplete');
@@ -399,7 +303,7 @@ zz.wizard = {
     },
 
     // reloads the autocompletetion data
-    email_autocompleter_reload: function(){
+    reload_email_autocompleter: function(){
         logger.debug('start email_autocompleter_reload');
         zz.autocompleter[0].autocompleter.setData(google_contacts.concat( yahoo_contacts.concat( mslive_contacts.concat(local_contacts )) ));
         logger.debug('end email_autocompleter_reload');
@@ -407,62 +311,9 @@ zz.wizard = {
     },
 
 //=========================================== SETTINGS DRAWER =====================================    
-    update_profile: function(success) {
-      if( $(zz.validate.profile_form.element).valid() ){
-        var serialized = $(zz.validate.profile_form.element).serialize();
-        $.ajax({
-          type: 'POST',
-          url: '/users/'+zz.current_user_id+'.json',
-          data: serialized,
-          success: function(){
-                        $('#user_old_password').val('');
-                        $('#user_password').val('');
-                        if (typeof(success) !== 'undefined') success();
-          },
-          error: function(request){
-                        $('#user_old_password').val('');
-                        $('#user_password').val('');
-          }
-        });
-      }
-    },
 
-    delete_identity: function(){
-        logger.debug("Deleting ID with URL =  "+ $(this).attr('value'));
-        $("#"+$(this).attr('service')+"-status").bind( 'identity_deleted' , zz.wizard.identity_deleted_handler );
-        $.post($(this).attr('value'), {"_method": "delete"}, function(data){$('.id-status').trigger( 'identity_deleted' );});
-    },
 
-    authorize_identity: function(){
-           logger.debug("Authorizing ID with URL =  "+ $(this).attr('value'));
-           $("#"+$(this).attr('service')+"-status").bind( 'identity_linked' , zz.wizard.identity_linked_handler );
-           oauthmanager.login( $(this).attr('value') , function(){ $('.id-status').trigger( 'identity_linked' );} );
-     },
 
-    identity_linked_handler: function(){
-        logger.debug( "identity_linked event for service "+$(this).attr('service'));
-        $(this).unbind( 'identity_linked' ); //remove the event handler
-        $(this).fadeIn('slow'); //display the linked status
-        $("#"+$(this).attr('service')+"-authorize").fadeOut( 'fast', function(){  //remove the link button
-            $("#"+$(this).attr('service')+"-delete").fadeIn( 'fast', function(){
-                if( $('#flashes-notice')){
-                    var msg = "Your can now use "+ $(this).attr('service')+" features throughout ZangZing";
-                    $('#flashes-notice').html(msg).fadeIn('fast', function(){
-                        setTimeout(function(){$('#flashes-notice').fadeOut('fast', function(){$('#flashes-notice').html('    ');})}, 3000);
-                });
-                }
-            });//display the unlink button
-        });
-    },
-
-    identity_deleted_handler: function(){
-         logger.debug( "identity_deleted event for service "+$(this).attr('service'));
-         $(this).unbind( 'identity_deleted' ); //remove the event handler
-         $(this).fadeOut('slow'); //hide the linked status
-         $("#"+$(this).attr('service')+"-delete").fadeOut( 'fast', function(){  //remove the unlink button
-             $("#"+$(this).attr('service')+"-authorize").fadeIn( 'fast');//display the link button
-         });
-     },
 
     open_settings_drawer: function( step ){
            zz.wizard.make_drawer(zz.drawers.settings, step);
@@ -493,8 +344,6 @@ zz.wizard = {
                 .replace(/^-+|-+$/g, "") // trim leading and trailing hyphens
                 ;
     },
-
-
 
 
     display_flashes: function( request, delay ){

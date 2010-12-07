@@ -79,7 +79,7 @@ var sharecontacts = {
         for (var i = 0; i < cts.length; i++) {
             local_contacts.push([ cts[i].name, cts[i].address ]);
         }
-        zz.wizard.email_autocompleter_reload();
+        zz.wizard.reload_email_autocompleter();
         $("#local-sync").attr('disabled', '');
         $("#local-sync").attr('title', 'Last imported a second ago.');
         $("#local-sync").attr('src', '/images/btn-'+sharecontacts.otlk_or_addbk()+'-on.png');
@@ -119,7 +119,7 @@ var sharecontacts = {
         for (var i = 0; i < cts.length; i++) {
             google_contacts.push([ cts[i].name, cts[i].address]);
         }
-        zz.wizard.email_autocompleter_reload();
+        zz.wizard.reload_email_autocompleter();
         $("#gmail-sync").attr('disabled', '');
         $("#gmail-sync").attr('title', 'Last imported a second ago.');
         $("#gmail-sync").attr('src', '/images/btn-gmail-on.png');
@@ -155,7 +155,7 @@ var sharecontacts = {
         for (var i = 0; i < cts.length; i++) {
             mslive_contacts.push([ cts[i].name, cts[i].address ]);
         }
-        zz.wizard.email_autocompleter_reload();
+        zz.wizard.reload_email_autocompleter();
         $("#mslive-sync").attr('disabled', '');
         $("#mslive-sync").attr('title', 'Last imported a second ago.');
         $("#mslive-sync").attr('src', '/images/btn-mslive-on.png');
@@ -191,7 +191,7 @@ var sharecontacts = {
         for (var i = 0; i < cts.length; i++) {
             yahoo_contacts.push([ cts[i].name, cts[i].address ]);
         }
-        zz.wizard.email_autocompleter_reload();
+        zz.wizard.reload_email_autocompleter();
         $("#yahoo-sync").attr('disabled', '');
         $("#yahoo-sync").attr('title', 'Last imported a second ago.');
         $("#yahoo-sync").attr('src', '/images/btn-yahoo-on.png');
