@@ -487,33 +487,41 @@ pages.album_contributors_tab = {
 
 
 pages.account_settings_profile_tab = {
-    init: function(){
+
+    init: function(callback){
+        var url = '/users/' + zz.current_user_id +'/edit';
         var self = this;
-        zz.drawers.settings.redirect =  window.location;
-        $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height -140) + 'px'});
-        $(this.validator.element).validate(this.validator);
-        $('#user_username').keypress( function(){
-            setTimeout(function(){
-                $('#username_path').html( $('#user_username').val() );
-            }, 10);
-        });
 
-          // unbind next tab button
-//        var handler = $('#wizard-account').data('events')['click'][0];
-//        $('#wizard-account').unbind('click');
-//        $('#wizard-account').click( function(){
-//            self.update_profile(function(){
-//                zz.wizard.open_settings_drawer('account')
-//            });
-//        });
+        $('#tab-content').load(url, function(){
 
-        //todo: i think this prevents the validator from running
-        $('#ok_profile_button').click(function(){
-            self.update_profile( function(){
-                zz.wizard.close_settings_drawer();
+            zz.drawers.settings.redirect =  window.location;
+            $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height -140) + 'px'});
+            $(self.validator.element).validate(self.validator);
+            $('#user_username').keypress( function(){
+                setTimeout(function(){
+                    $('#username_path').html( $('#user_username').val() );
+                }, 10);
             });
+
+              // unbind next tab button
+    //        var handler = $('#wizard-account').data('events')['click'][0];
+    //        $('#wizard-account').unbind('click');
+    //        $('#wizard-account').click( function(){
+    //            self.update_profile(function(){
+    //                zz.wizard.open_settings_drawer('account')
+    //            });
+    //        });
+
+            //todo: i think this prevents the validator from running
+            $('#ok_profile_button').click(function(){
+                self.update_profile( function(){
+                    zz.wizard.close_settings_drawer();
+                });
+            });
+            $('#cancel_profile_button').click(zz.wizard.close_settings_drawer)
+
+            callback();
         });
-        $('#cancel_profile_button').click(zz.wizard.close_settings_drawer)
     },
 
     bounce: function(){
@@ -593,21 +601,28 @@ pages.account_settings_profile_tab = {
 };
 
 pages.account_settings_linked_accounts = {
-    init: function(){
+    init: function(callback){
+        var url ='/users/' + zz.current_user_id + '/identities';
+
         var self = this;
-        zz.drawers.settings.redirect =  window.location;
-        $('.delete-id-button').click(pages.account_settings_linked_accounts.delete_identity);
 
-        $('.authorize-id-button').click(pages.account_settings_linked_accounts.authorize_identity);
+        $('#tab-content').load(url, function(){
+            zz.drawers.settings.redirect =  window.location;
+            $('.delete-id-button').click(pages.account_settings_linked_accounts.delete_identity);
 
-        $('.id-status').each( function(){
+            $('.authorize-id-button').click(pages.account_settings_linked_accounts.authorize_identity);
 
-            logger.debug("Binding id:"+this.id+" service:"+$(this).attr('service'));
-        });
-        $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height -110) + 'px'});
+            $('.id-status').each( function(){
 
-        $('#ok_id_button').click(function(){
-            zz.wizard.close_settings_drawer();
+                logger.debug("Binding id:"+this.id+" service:"+$(this).attr('service'));
+            });
+            $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height -110) + 'px'});
+
+            $('#ok_id_button').click(function(){
+                zz.wizard.close_settings_drawer();
+            });
+            
+            callback();
         });
     },
 
@@ -616,7 +631,6 @@ pages.account_settings_linked_accounts = {
     },
 
     delete_identity: function(){
-        var self = this;
         logger.debug("Deleting ID with URL =  "+ $(this).attr('value'));
         $("#"+$(this).attr('service')+"-status").bind( 'identity_deleted' , pages.account_settings_linked_accounts.identity_deleted_handler);
 
@@ -625,7 +639,6 @@ pages.account_settings_linked_accounts = {
     },
 
     authorize_identity: function(){
-        var self = this;
         logger.debug("Authorizing ID with URL =  "+ $(this).attr('value'));
         $("#"+$(this).attr('service')+"-status").bind( 'identity_linked' , pages.account_settings_linked_accounts.identity_linked_handler);
         oauthmanager.login( $(this).attr('value') , function(){ $('.id-status').trigger( 'identity_linked' );} );

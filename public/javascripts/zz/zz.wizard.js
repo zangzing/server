@@ -4,14 +4,11 @@ zz.wizard = {
      ------------------------------------------------------------------------- */
 
     make_drawer: function(obj, step){
-        /* obj contains: obj.next_element, obj.done_redirect, obj.steps.step.id,
-         obj.steps.step.element, obj.steps.step.info,
-         obj.steps.step.type, obj.steps.step.init,
-         obj.steps.step.bounce */
+
 
         obj.init();
 
-        var temp; //todo: rename to somethign meaningful
+//        var temp; //todo: rename to somethign meaningful
 
         if (zz.drawer_state == zz.DRAWER_CLOSED) {
             zz.open_drawer(obj.time, obj.percent);
@@ -227,7 +224,7 @@ zz.wizard = {
                     temp_url = 'http://' + zz.base + obj.steps[obj.steps[id].next].url.split('$$')[0] + zz.current_user_id + obj.steps[obj.steps[id].next].url.split('$$')[1];
                 }
 
-                zz.wizard.change_step(temp_id, temp_url, obj);
+                zz.wizard.change_step(temp_id, obj);
 
             });
         }
@@ -247,7 +244,7 @@ zz.wizard = {
     delete_btn: 1,
     email_id: 0,
     autocompleter: 0,
-    contributor_count: 0,
+//    contributor_count: 0,
 
     create_personal_album: function(){
         $.post('/users/'+zz.current_user_id+'/albums', { album_type: "PersonalAlbum" }, function(data){

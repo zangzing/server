@@ -251,10 +251,10 @@ zz.drawers = {
                  next: 'account',               // next in line
                  title: 'Profile',              // link text
                  type: 'full',                  // drawer position - full(y open) or partial(ly open)
-                 url: '/users/$$/edit',         // url of the drawer template
-                 url_type: 'user',              // replace $$ w/the id of the album or user
-                 init:   function(){
-                    pages.account_settings_profile_tab.init();    
+//                 url: '/users/$$/edit',         // url of the drawer template
+//                 url_type: 'user',              // replace $$ w/the id of the album or user
+                 init:   function(callback){
+                    pages.account_settings_profile_tab.init(callback);    
                  },
                  bounce: function(){
                      pages.account_settings_profile_tab.bounce();    
@@ -266,8 +266,8 @@ zz.drawers = {
                  next: 'notifications',
                  title: 'Account',
                  type: 'full',
-                 url: '/users/$$/account',
-                 url_type: 'user',
+//                 url: '/users/$$/account',
+//                 url_type: 'user',
                  init: function(){ },
                  bounce: function(){ }
              },
@@ -276,8 +276,8 @@ zz.drawers = {
                  next: 'linked-accts',
                  title: 'Notifications',
                  type: 'full',
-                 url: '/users/$$/notifications',
-                 url_type: 'user',
+//                 url: '/users/$$/notifications',
+//                 url_type: 'user',
                  init: function(){ },
                  bounce: function(){ }
              },
@@ -286,10 +286,10 @@ zz.drawers = {
                 next: 0,
                 title: 'Linked Accounts',
                 type: 'full',
-                url: '/users/$$/identities',
-                url_type: 'user',
-                init: function(){
-                    pages.account_settings_linked_accounts.init();
+//                url: '/users/$$/identities',
+//                url_type: 'user',
+                init: function(callback){
+                    pages.account_settings_linked_accounts.init(callback);
                 },
 
                  bounce: function(){
