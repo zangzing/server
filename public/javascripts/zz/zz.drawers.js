@@ -35,8 +35,8 @@ zz.drawers = {
                     pages.album_add_photos_tab.init(callback);
                 },
 
-                bounce: function(){ // run before you leave
-                    pages.album_add_photos_tab.bounce();
+                bounce: function(success, failure){ // run before you leave
+                    pages.album_add_photos_tab.bounce(success, failure);
                 }
 
             },
@@ -48,8 +48,8 @@ zz.drawers = {
                 init:   function(callback){
                     pages.album_name_tab.init(callback);
                 },
-                bounce: function(){
-                    pages.album_name_tab.bounce(); 
+                bounce: function(success, failure){
+                    pages.album_name_tab.bounce(success, failure);
                 }
             },
 
@@ -60,8 +60,8 @@ zz.drawers = {
                 init:   function(callback){
                     pages.edit_album_tab.init(callback);
                 },
-                bounce: function(){
-                    pages.edit_album_tab.bounce();
+                bounce: function(success, failure){
+                    pages.edit_album_tab.bounce(success, failure);
                 }
             },
 
@@ -74,8 +74,8 @@ zz.drawers = {
                     pages.album_privacy_tab.init(callback);
                 },
 
-                bounce: function(){
-                    pages.album_privacy_tab.bounce();
+                bounce: function(success, failure){
+                    pages.album_privacy_tab.bounce(success, failure);
                 }
             },
 
@@ -88,8 +88,8 @@ zz.drawers = {
                     pages.album_share_tab.init(callback);
                 },
 
-                bounce: function(){
-                    pages.album_share_tab.bounce();
+                bounce: function(success, failure){
+                    pages.album_share_tab.bounce(success, failure);
                 }
             }
 
@@ -133,8 +133,8 @@ zz.drawers = {
                     pages.album_add_photos_tab.init(callback);
                 },
 
-                bounce: function(){ // run before you leave
-                    pages.album_add_photos_tab.bounce();
+                bounce: function(success, failure){ // run before you leave
+                    pages.album_add_photos_tab.bounce(success, failure);
                 }
 
             },
@@ -147,8 +147,8 @@ zz.drawers = {
                 init:   function(callback){
                     pages.album_name_tab.init(callback);
                 },
-                bounce: function(){
-                    pages.album_name_tab.bounce();
+                bounce: function(success, failure){
+                    pages.album_name_tab.bounce(success, failure);
                 }
             },
 
@@ -160,8 +160,8 @@ zz.drawers = {
                 init:   function(callback){
                     pages.edit_album_tab.init(callback);
                 },
-                bounce: function(){
-                    pages.edit_album_tab.bounce();
+                bounce: function(success, failure){
+                    pages.edit_album_tab.bounce(success, failure);
                 }
             },
 
@@ -175,8 +175,8 @@ zz.drawers = {
                     pages.album_privacy_tab.init(callback);
                 },
 
-                bounce: function(){
-                    pages.album_privacy_tab.bounce();
+                bounce: function(success, failure){
+                    pages.album_privacy_tab.bounce(success, failure);
                 }
             },
 
@@ -190,8 +190,8 @@ zz.drawers = {
                     pages.album_contributors_tab.init(callback);
                 },
 
-                bounce: function(){
-                    pages.album_contributors_tab.bounce();
+                bounce: function(success, failure){
+                    pages.album_contributors_tab.bounce(success, failure);
                 }
             },
 
@@ -205,8 +205,8 @@ zz.drawers = {
                     pages.album_share_tab.init(callback);
                 },
 
-                bounce: function(){
-                    pages.album_share_tab.bounce();
+                bounce: function(success, failure){
+                    pages.album_share_tab.bounce(success, failure);
                 }
             }
 
@@ -250,8 +250,8 @@ zz.drawers = {
                  init:   function(callback){
                     pages.account_settings_profile_tab.init(callback);    
                  },
-                 bounce: function(){
-                     pages.account_settings_profile_tab.bounce();    
+                 bounce: function(success, failure){
+                     pages.account_settings_profile_tab.bounce(success, failure);
                  }
 
              },
@@ -262,8 +262,12 @@ zz.drawers = {
                  type: 'full',
 //                 url: '/users/$$/account',
 //                 url_type: 'user',
-                 init: function(){ },
-                 bounce: function(){ }
+                 init: function(callback){
+                    pages.account_setings_account_tab.init(callback);
+                 },
+                 bounce: function(success, failure){
+                     pages.account_setings_account_tab.bounce(success, failure);
+                 }
              },
 
              notifications: {
@@ -272,8 +276,12 @@ zz.drawers = {
                  type: 'full',
 //                 url: '/users/$$/notifications',
 //                 url_type: 'user',
-                 init: function(){ },
-                 bounce: function(){ }
+                 init: function(callback){
+                    pages.account_setings_notifications_tab.init(callback);
+                 },
+                 bounce: function(success, failure){
+                     pages.account_setings_notifications_tab.bounce(success, failure);
+                 }
              },
 
              linked_accts: {
@@ -286,8 +294,8 @@ zz.drawers = {
                     pages.account_settings_linked_accounts.init(callback);
                 },
 
-                 bounce: function(){
-                     pages.account_settings_linked_accounts.bounce(); 
+                 bounce: function(success, failure){
+                     pages.account_settings_linked_accounts.bounce(success, failure);
                  }
               }
 

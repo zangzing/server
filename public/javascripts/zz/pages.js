@@ -9,7 +9,8 @@ pages.album_add_photos_tab = {
         });
     },
 
-    bounce: function(){
+    bounce: function(success, failure){
+        success();
     }
 };
 
@@ -86,8 +87,9 @@ pages.album_name_tab = {
 
     },
 
-    bounce: function(){
-        zz.wizard.update_album();
+    bounce: function(success, failure){
+        zz.wizard.update_album();  //todo: need success and failure handlers for the 'update album' call
+        success();
     }
 };
 
@@ -158,8 +160,9 @@ pages.edit_album_tab = {
         });
     },
 
-    bounce: function(){
-        zz.open_drawer();
+    bounce: function(success, failure){
+        zz.open_drawer(); //todo: is this needed?
+        success();
     }
 
 };
@@ -190,8 +193,8 @@ pages.album_privacy_tab = {
         });
     },
 
-    bounce: function(){
-
+    bounce: function(success, failure){
+        success();
     }
 };
 
@@ -228,8 +231,8 @@ pages.album_share_tab = {
         });
     },
 
-    bounce: function(){
-
+    bounce: function(success, failure){
+        success();
     },
 
     // loads the status message post form in place of the type switcher on the share step
@@ -392,8 +395,8 @@ pages.album_contributors_tab = {
         });
     },
 
-    bounce: function(){
-
+    bounce: function(success, failure){
+        success();
     },
 
 
@@ -516,9 +519,9 @@ pages.account_settings_profile_tab = {
         });
     },
 
-    bounce: function(){
+    bounce: function(success, failure){
         this.update_profile(function(){
-//            zz.wizard.open_settings_drawer('account')
+            success();
         });
     },
 
@@ -592,6 +595,32 @@ pages.account_settings_profile_tab = {
 
 };
 
+pages.account_setings_account_tab = {
+    init: function(callback){
+        $('#tab-content').empty();
+        callback();
+    },
+
+    bounce: function(success, failure){
+        success();
+    }
+
+};
+
+pages.account_setings_notifications_tab = {
+    init: function(callback){
+        $('#tab-content').empty();
+        callback();
+    },
+
+    bounce: function(success, failure){
+        success();
+    }
+
+};
+
+
+
 pages.account_settings_linked_accounts = {
     init: function(callback){
         var url ='/users/' + zz.current_user_id + '/identities';
@@ -618,8 +647,8 @@ pages.account_settings_linked_accounts = {
         });
     },
 
-    bounce: function(){
-
+    bounce: function(success, failure){
+         success();
     },
 
     delete_identity: function(){

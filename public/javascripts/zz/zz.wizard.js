@@ -137,10 +137,11 @@ zz.wizard = {
         $.each(obj.steps, function(i, item) {
             $('li#wizard-'+ i).click(function(e){
                 e.preventDefault();
-                obj.steps[id].bounce();
                 temp_id = $(this).attr('id').split('wizard-')[1];
-
-                zz.wizard.change_step(temp_id, obj);
+                
+                obj.steps[id].bounce(function(){
+                    zz.wizard.change_step(temp_id, obj);
+                });
             });
 
 
@@ -151,27 +152,26 @@ zz.wizard = {
             // no next button neded
         } else if (obj.last == id || obj.style == 'edit') {
             $('#next-step').click(function(e){
-                 obj.steps[id].bounce();
-                $('#drawer .body').fadeOut('fast');
-                zz.close_drawer(400);
-
-                obj.on_close();
-
+                 obj.steps[id].bounce(function(){
+                     $('#drawer .body').fadeOut('fast');
+                     zz.close_drawer(400);
+                     obj.on_close();
+                 });
             });
         } else {
             $('#next-step').click(function(e){
                 e.preventDefault();
-                obj.steps[id].bounce();
-                temp_id = obj.steps[id].next;
+                obj.steps[id].bounce(function(){
+                    temp_id = obj.steps[id].next;
 
-                if (obj.steps[obj.steps[id].next].url_type == 'album') {
-                    temp_url = 'http://' + zz.base + obj.steps[obj.steps[id].next].url.split('$$')[0] + zz.album_id + obj.steps[obj.steps[id].next].url.split('$$')[1];
-                } else if (obj.steps[obj.steps[id].next].url_type == 'user') {
-                    temp_url = 'http://' + zz.base + obj.steps[obj.steps[id].next].url.split('$$')[0] + zz.current_user_id + obj.steps[obj.steps[id].next].url.split('$$')[1];
-                }
+//                    if (obj.steps[obj.steps[id].next].url_type == 'album') {
+//                        temp_url = 'http://' + zz.base + obj.steps[obj.steps[id].next].url.split('$$')[0] + zz.album_id + obj.steps[obj.steps[id].next].url.split('$$')[1];
+//                    } else if (obj.steps[obj.steps[id].next].url_type == 'user') {
+//                        temp_url = 'http://' + zz.base + obj.steps[obj.steps[id].next].url.split('$$')[0] + zz.current_user_id + obj.steps[obj.steps[id].next].url.split('$$')[1];
+//                    }
 
-                zz.wizard.change_step(temp_id, obj);
-
+                    zz.wizard.change_step(temp_id, obj);
+                });
             });
         }
     },
