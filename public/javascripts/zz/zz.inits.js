@@ -29,8 +29,6 @@ zz.init = {
         //only album owner can do this
         $('#nav-edit-album').click(function(){ zz.wizard.open_edit_album_wizard('add') });
 
-        $('#nav-like').click(function(){ zz.wizard.open_settings_drawer('linked_accts') });
-
         $('#nav-buy').click(function(){ zz.wizard.open_settings_drawer('profile') });
         
 
@@ -78,7 +76,7 @@ zz.init = {
         $(zz.validate.join.element).validate(zz.validate.join);
 
         zz.init.acct_badge();
-
+        zz.init.like_menu();
         zz.init.preload_rollover_images();
 
     },
@@ -355,10 +353,15 @@ zz.init = {
     },
 
 //====================================== Account Badge  ===========================================
-
     acct_badge: function(){
-        $('#acct-anchor').click(function(){zz.toolbars.show_acct_badge_dropdown()});
-        $('#acct-settings-btn').click(function(){ zz.wizard.open_settings_drawer('profile') });
+        zz.toolbars.init_acct_badge_menu();
+        $('#acct-anchor').click( zz.toolbars.show_acct_badge_menu );
+    },
+
+//======================================= Like Menu  ==============================================
+    like_menu: function(){
+        zz.toolbars.init_like_menu();
+        $('#nav-like').click( zz.toolbars.show_like_menu );
     },
 
 //==================================== Settings Wizard  ===========================================
@@ -382,8 +385,15 @@ zz.init = {
                 $('#username_path').html( $('#user_username').val() );
             }, 10);
       });
+      // unbind next tab button
+      var handler = $('#wizard-account').data('events')['click'][0];
+      $('#wizard-account').unbind('click');
+      $('#wizard-account').click( function(){
+          zz.wizard.update_profile(function(){zz.wizard.open_settings_drawer('account')})
+      });
+          
       $('#ok_profile_button').click(function(){
-            zz.wizard.update_profile( zz.wizard.close_settings_drawer)
+          zz.wizard.update_profile( zz.wizard.close_settings_drawer); 
       });
       $('#cancel_profile_button').click(zz.wizard.close_settings_drawer)
     }

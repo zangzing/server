@@ -36,13 +36,11 @@
     cursor: pointer;
 }
 
-
-
 </style>
 <div class="flash-box"><div class="flash-notice" id="flashes-notice">  </div></div>
 <div id="scroll-body">
-<div id="id-table" class="clearfix">
-<table class="clearfix" >
+<div id="id-table" >
+<table  >
   <tr class="form_label">
     <th></th>
     <th>Status</th>
@@ -56,10 +54,12 @@
       <span class="form_label id-service-name"><%= Identity::UI_INFO[service_key][:name] %></span>
     </td>
     <td
+      <div>
       <div class="form_label id-status" id="<%=service_key%>-status" service="<%=service_key%>" style="<%=(  id  ? "" : "display:none" ) %>">
           <img src="/images/btn-check-on.png" >
           Linked
       </div>
+      </div>  
     </td>
     <td>
       <div class="form_label id-action-button" id="<%=service_key%>-action" service="<%=service_key%>">

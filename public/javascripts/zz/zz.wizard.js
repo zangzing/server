@@ -489,12 +489,12 @@ zz.wizard = {
 
         if( row[4] == 1){
             //address match
-            formattedRow += '<span class="autocomplete-match">';
+            formattedRow += '<<span class="autocomplete-match">';
             formattedRow+= add.substr(0,match_len);
             formattedRow+= "</span>";
-            formattedRow+= add.substr(match_len);
+            formattedRow+= add.substr(match_len)+'>';
         } else {
-         formattedRow+= ' '+add+' '; //push add
+         formattedRow+= ' <'+add+'> '; //push add
         }
         return formattedRow;
     },
@@ -527,8 +527,8 @@ zz.wizard = {
     },
 
 //=========================================== SETTINGS DRAWER =====================================    
-    update_profile: function(success,failure) {
-        logger.debug('AJAX-posting profile_form');
+    update_profile: function(success) {
+      if( $(zz.validate.profile_form.element).valid() ){
         var serialized = $(zz.validate.profile_form.element).serialize();
         $.ajax({
           type: 'POST',
@@ -542,9 +542,9 @@ zz.wizard = {
           error: function(request){
                         $('#user_old_password').val('');
                         $('#user_password').val('');
-                        if (typeof(failure) !== 'undefined') failure();
           }
         });
+      }
     },
 
     delete_identity: function(){

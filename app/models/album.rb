@@ -119,7 +119,7 @@ class Album < ActiveRecord::Base
   end
 
   def long_email
-      " \"#{self.name}\" <#{short_emai}>"
+      " \"#{self.name}\" <#{short_email}>"
   end
 
   def short_email

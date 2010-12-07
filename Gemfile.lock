@@ -118,7 +118,7 @@ DEPENDENCIES
   authlogic (= 2.1.5)
   aws-s3 (>= 0.6.2)
   bitly
-  bundler (= 1.0.3)
+  bundler (>= 1.0.3)
   factory_girl
   faker
   flickraw (= 0.8.2)
