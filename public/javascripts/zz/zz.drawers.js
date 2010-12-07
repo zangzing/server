@@ -17,6 +17,10 @@ zz.drawers = {
         redirect: '/albums/$$/photos', // where do we go when we're done
         redirect_type: 'album', // replace $$ w/the id of the album or user
 
+        init: function(){
+            zz.album_type = 'personal';
+        },
+
         // set up the wizard steps
         steps: {
 
@@ -28,14 +32,14 @@ zz.drawers = {
                 url_type: 'album', // replace $$ w/the id of the album or user
 
                 init: function(){ // run when loading the drawer up
-                    zz.wizard.init_add_tab('personal');
+                    pages.album_add_photos_tab.init();
                 },
 
                 bounce: function(){ // run before you leave
-                    $('#added-pictures-tray').fadeOut('fast');
+                    pages.album_add_photos_tab.bounce();
                 }
 
-            }, //end zz.drawers.personal_album.steps.add
+            },
 
             name: {
                 next: 'edit',
@@ -43,9 +47,13 @@ zz.drawers = {
                 type: 'full',
                 url: '/albums/$$/name_album',
                 url_type: 'album',
-                init:   function(){  zz.wizard.init_name_tab(); },
-                bounce: function(){ zz.wizard.update_album(); }
-            }, //end zz.drawers.personal_album.steps.name
+                init:   function(){
+                    pages.album_name_tab.init();
+                },
+                bounce: function(){
+                    pages.album_name_tab.bounce(); 
+                }
+            },
 
             edit: {
                 next: 'privacy',
@@ -53,9 +61,13 @@ zz.drawers = {
                 type: 'partial',
                 url: '/albums/$$/edit',
                 url_type: 'album',
-                init:   function(){ zz.wizard.load_images(); },
-                bounce: function(){ zz.open_drawer(); }
-            }, //end zz.drawers.personal_album.steps.edit
+                init:   function(){
+                    pages.edit_album_tab.init();
+                },
+                bounce: function(){
+                    pages.edit_album_tab.bounce();
+                }
+            },
 
             privacy: {
                 next: 'share',
@@ -65,26 +77,13 @@ zz.drawers = {
                 url_type: 'album',
 
                 init: function(){
-                    $('#privacy-public').click(function(){
-                        $.post('/albums/'+zz.album_id, '_method=put&album%5Bprivacy%5D=public', function(){
-                            $('img.select-button').attr('src', '/images/btn-round-selected-off.png');
-                            $('#privacy-public img.select-button').attr('src', '/images/btn-round-selected-on.png');
-                        });
-                    });
-                    $('#privacy-hidden').click(function(){
-                        $.post('/albums/'+zz.album_id, '_method=put&album%5Bprivacy%5D=hidden');
-                        $('img.select-button').attr('src', '/images/btn-round-selected-off.png');
-                        $('#privacy-hidden img.select-button').attr('src', '/images/btn-round-selected-on.png');
-                    });
-                    $('#privacy-password').click(function(){
-                        $.post('/albums/'+zz.album_id, '_method=put&album%5Bprivacy%5D=password');
-                        $('img.select-button').attr('src', '/images/btn-round-selected-off.png');
-                        $('#privacy-password img.select-button').attr('src', '/images/btn-round-selected-on.png');
-                    });
+                    pages.album_privacy_tab.init();
                 },
 
-                bounce: function(){ }
-            }, //end zz.drawers.personal_album.steps.privacy
+                bounce: function(){
+                    pages.album_privacy_tab.bounce();
+                }
+            },
 
             share: {
                 next: 0,
@@ -94,16 +93,17 @@ zz.drawers = {
                 url_type: 'album',
 
                 init: function(){
-                    $('.social-share').click(function(){zz.wizard.social_share(zz.drawers.personal_album, 'share')});
-                    $('.email-share').click(function(){zz.wizard.email_share(zz.drawers.personal_album, 'share')});
+                    pages.album_share_tab.init();
                 },
 
-                bounce: function(){ }
-            } //end zz.drawers.personal_album.steps.share
+                bounce: function(){
+                    pages.album_share_tab.bounce();
+                }
+            }
 
-        } // end zz.drawers.personal_album.steps
+        }
 
-    }, // end zz.drawers.personal_album
+    },
 
 
     /* Create ***GROUP*** Album
@@ -122,6 +122,10 @@ zz.drawers = {
         redirect: '/albums/$$/photos',
         redirect_type: 'album',
 
+        init: function(){
+            zz.album_type = 'group';
+        },
+
         // set up the wizard steps
         steps: {
 
@@ -131,10 +135,13 @@ zz.drawers = {
                 type: 'full',
                 url: '/albums/$$/add_photos',
                 url_type: 'album',
-                init: function(){  zz.wizard.init_add_tab('group'); },
 
-                bounce: function(){
-                    $('#added-pictures-tray').fadeOut('fast');
+                init: function(){ // run when loading the drawer up
+                    pages.album_add_photos_tab.init();
+                },
+
+                bounce: function(){ // run before you leave
+                    pages.album_add_photos_tab.bounce();
                 }
 
             },
@@ -145,9 +152,13 @@ zz.drawers = {
                 type: 'full',
                 url:  '/albums/$$/name_album',
                 url_type: 'album',
-                init:   function(){ zz.wizard.init_name_tab();  },
-                bounce: function(){ zz.wizard.update_album(); }
-            }, //end zz.drawers.group_album.steps.name
+                init:   function(){
+                    pages.album_name_tab.init();
+                },
+                bounce: function(){
+                    pages.album_name_tab.bounce();
+                }
+            },
 
             edit: {
                 next: 'privacy',
@@ -155,9 +166,13 @@ zz.drawers = {
                 type: 'partial',
                 url: '/albums/$$/edit',
                 url_type: 'album',
-                init:   function(){ zz.wizard.load_images(); },
-                bounce: function(){ zz.open_drawer(); }
-            }, //end zz.drawers.group_album.steps.edit
+                init:   function(){
+                    pages.edit_album_tab.init();
+                },
+                bounce: function(){
+                    pages.edit_album_tab.bounce();
+                }
+            },
 
             privacy: {
                 next: 'contributors',
@@ -167,26 +182,13 @@ zz.drawers = {
                 url_type: 'album',
 
                 init: function(){
-                    $('#privacy-public').click(function(){
-                        $.post('/albums/'+zz.album_id, '_method=put&album%5Bprivacy%5D=public', function(){
-                            $('img.select-button').attr('src', '/images/btn-round-selected-off.png');
-                            $('#privacy-public img.select-button').attr('src', '/images/btn-round-selected-on.png');
-                        });
-                    });
-                    $('#privacy-hidden').click(function(){
-                        $.post('/albums/'+zz.album_id, '_method=put&album%5Bprivacy%5D=hidden');
-                        $('img.select-button').attr('src', '/images/btn-round-selected-off.png');
-                        $('#privacy-hidden img.select-button').attr('src', '/images/btn-round-selected-on.png');
-                    });
-                    $('#privacy-password').click(function(){
-                        $.post('/albums/'+zz.album_id, '_method=put&album%5Bprivacy%5D=password');
-                        $('img.select-button').attr('src', '/images/btn-round-selected-off.png');
-                        $('#privacy-password img.select-button').attr('src', '/images/btn-round-selected-on.png');
-                    });
+                    pages.album_privacy_tab.init();
                 },
 
-                bounce: function(){ }
-            }, //end zz.drawers.group_album.steps.privacy
+                bounce: function(){
+                    pages.album_privacy_tab.bounce();
+                }
+            },
 
             contributors: {
                 next: 'share',
@@ -196,11 +198,13 @@ zz.drawers = {
                 url_type: 'album',
 
                 init: function(){
-                        $('#add-contributors-btn').click(function(){zz.wizard.show_new_contributors();});
+                    pages.album_contributors_tab.init();
                 },
 
-                bounce: function(){ }
-            }, //end zz.drawers.group_album.steps.contributors
+                bounce: function(){
+                    pages.album_contributors_tab.bounce();
+                }
+            },
 
             share: {
                 next: 0,
@@ -210,16 +214,19 @@ zz.drawers = {
                 url_type: 'album',
 
                 init: function(){
-                    $('.social-share').click(function(){zz.wizard.social_share(zz.drawers.group_album, 'share')});
-                    $('.email-share').click(function(){zz.wizard.email_share(zz.drawers.group_album, 'share')});
+                    pages.album_share_tab.init();
+//                    $('.social-share').click(function(){zz.wizard.social_share(zz.drawers.group_album, 'share')});
+//                    $('.email-share').click(function(){zz.wizard.email_share(zz.drawers.group_album, 'share')});
                 },
 
-                bounce: function(){ }
-            } //end zz.drawers.group_album.steps.share
+                bounce: function(){
+                    pages.album_share_tab.bounce();
+                }
+            }
 
-        } // end zz.drawers.group_album.steps
+        }
 
-    }, // end zz.drawers.group_album
+    }, 
 
 //====================================== SETTINGS WIZARD ================================================    
     settings: {
@@ -235,6 +242,10 @@ zz.drawers = {
          time: 600,                     // how fast to open the drawer
          redirect: '/users/$$/albums', // where do we go when we're done
          redirect_type: 'user',        // replace $$ w/the id of the album or user
+
+         init: function(){
+             
+         }, 
 
          // set up the wizard steps
          steps: {
