@@ -19,10 +19,17 @@
 .thumbtray-selection{
     display:none;
     position:absolute;
-    left:0px;
-    bottom:21px;
     border:solid 1px #FDD042
 }
+
+.thumbtray-selection.x{
+    bottom:21px;
+}
+
+.thumbtray-selection.y{
+    right:21px;
+}
+
 
 .thumbtray-selection img{
     border:3px solid #fff
@@ -31,10 +38,17 @@
 .thumbtray-preview{
     display:none;
     position:absolute;
-    left:0px;
-    bottom:21px;
     border:solid 1px #FDD042
 }
+
+.thumbtray-preview.x{
+    bottom:21px;
+}
+
+.thumbtray-preview.y{
+    right:21px;
+}
+
 
 .thumbtray-preview img{
     border:3px solid #fff
@@ -43,16 +57,24 @@
 .thumbtray-preview .thumbtray-delete-button{
     display:none;
     position:absolute;
-    right:-16;
-    top:-16;
     cursor: pointer;
     height:32;
     width:32;
     background-image: url("/images/btn-delete.png");
     background-repeat: no-repeat;
-
-
 }
+
+.thumbtray-preview.x .thumbtray-delete-button{
+    right:-16;
+    top:-16;
+}
+
+.thumbtray-preview.y .thumbtray-delete-button{
+    left:-16;
+    top:-16;
+}
+
+
 
 .thumbtray-scrim{
     z-index:0;
