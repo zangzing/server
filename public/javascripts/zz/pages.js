@@ -5,7 +5,6 @@ pages.album_add_photos_tab = {
         var url = '/albums/' + zz.album_id + '/add_photos';
         $('#tab-content').load(url, function(){
             filechooser.init();
-//            setTimeout('$("#added-pictures-tray").fadeIn("fast")', 300);
             callback();
         });
     },
