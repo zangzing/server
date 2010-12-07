@@ -1,0 +1,35 @@
+#
+#   Copyright 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
+#
+#  WARNING: INDENTATION HAS SEMANTIC MEANING! BE CAREFUL WHEN EDITING
+#
+#  agent_config.yml
+#
+
+agents:
+  '0.5': &agent_version_default
+    darwin:
+      '6.5':
+        check: OK
+      default:
+        check: OK
+    win32:
+      '5.3':
+        check: update
+        type: required
+        url: http://www.keep-the-drama-for-your-mama.com/the53source.exe
+        url_readme: http://www.keep-the-drama-for-your-mama.com/the53readme.txt
+        message: This is the one you really cant miss
+      '6.1':
+        check: update
+        type: optional
+        url: http://www.keep-the-drama-for-your-mama.com/the61source.exe
+        url_readme: http://www.keep-the-drama-for-your-mama.com/the61readme.txt
+        message: This is the one you really cant miss
+      default:
+        check: OK
+    default:
+      default:
+        check: OK
+  default:
+    <<: *agent_version_default
