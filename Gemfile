@@ -9,12 +9,14 @@ source :gemcutter
 
 # Bundler requires these gems in all environments (keep executables light by being frugal)
 
-gem "bundler",              '1.0.3'
-gem "rails",                '3.0.1'
-gem "mysql",                '2.8.1' 
-gem 'authlogic',            :git => 'git://github.com/odorcicd/authlogic.git',:branch => 'rails3'
+gem "bundler"
+gem "rails"
+gem "mysql"
+#gem 'authlogic',            :git => 'git://github.com/odorcicd/authlogic.git',:branch => 'rails3'
+#gem 'authlogic', 			:git => 'git://github.com/binarylogic/authlogic.git'
+gem 'authlogic'
 gem 'usesguid',             :git => 'git://github.com/zangzing/usesguid.git'
-gem 'usesguid_migrations',  '1.0.3'
+gem 'usesguid_migrations',  :git => 'git://github.com/fidel/usesguid_migrations.git'
 
 gem 'oauth',                '0.4.1'  
 gem 'oauth-plugin',         '0.3.14'

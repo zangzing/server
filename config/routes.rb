@@ -98,7 +98,7 @@ Server::Application.routes.draw do
   match '/oauth/test_session'   => 'oauth#test_session',           :as => :test_session
 
   #sessions
-  resources :user_sessions
+  resource :user_sessions
   resources :password_resets
   match '/signin'                    => 'user_sessions#new',            :as => :signin
   match '/signout'                   => 'user_sessions#destroy',        :as => :signout

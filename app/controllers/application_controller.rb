@@ -14,6 +14,9 @@ class ApplicationController < ActionController::Base
 
   helper :all # include all helpers, all the time
   helper_method :current_user_session, :current_user, :current_user?, :signed_in?
+  # this basic filter uses a hardcoded username/password - we must turn off the
+  # AuthLogic  support with allow_http_basic_auth false on the UserSession since
+  # it can't seem to cope with a seperate scheme in rails 3
   before_filter :protect_with_http_auth
 
   after_filter :flash_to_headers

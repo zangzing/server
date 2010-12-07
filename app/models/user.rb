@@ -59,7 +59,7 @@ class User < ActiveRecord::Base
   # This delegates all authentication details to authlogic
   acts_as_authentic do |c|
     c.require_password_confirmation = false
-    c.login_field = :email
+    #c.login_field = :email
     c.validate_login_field = false
   end
 
