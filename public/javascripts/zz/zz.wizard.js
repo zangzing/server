@@ -13,81 +13,110 @@ zz.wizard = {
 
         var temp; //todo: rename to somethign meaningful
 
-        if (zz.drawer_open == 0) {
+        if (zz.drawer_state == zz.DRAWER_CLOSED) {
             zz.open_drawer(obj.time, obj.percent);
         }
 
 
 
-        if (obj.steps[step].url_type == 'album') {
-            //console.log('album');
-            temp = 'http://' + zz.base + obj.steps[step].url.split('$$')[0] + zz.album_id + obj.steps[step].url.split('$$')[1];
-            //console.log(temp);
-        } else if (obj.steps[step].url_type == 'user') {
-            //console.log('user');
-            temp = 'http://' + zz.base + obj.steps[step].url.split('$$')[0] + zz.current_user_id + obj.steps[step].url.split('$$')[1];
-            //console.log(temp);
-        }
+//        if (obj.steps[step].url_type == 'album') {
+//            //console.log('album');
+//            temp = 'http://' + zz.base + obj.steps[step].url.split('$$')[0] + zz.album_id + obj.steps[step].url.split('$$')[1];
+//            //console.log(temp);
+//        } else if (obj.steps[step].url_type == 'user') {
+//            //console.log('user');
+//            temp = 'http://' + zz.base + obj.steps[step].url.split('$$')[0] + zz.current_user_id + obj.steps[step].url.split('$$')[1];
+//            //console.log(temp);
+//        }
 
         zz.wizard.build_nav(obj, step);
-        $('#tab-content').load(temp, function(){
+
+        obj.steps[step].init(function(){
             zz.wizard.resize_scroll_body()
-            obj.steps[step].init();
         });
+
+
+//        $('#tab-content').load(temp, function(){
+//            zz.wizard.resize_scroll_body()
+//            obj.steps[step].init();
+//        });
 
 
         $('body').addClass('drawer');
 
     },
 
-    change_step: function(id, url, obj){
+    change_step: function(id, obj){
 
-        logger.debug(obj.steps[id].type + "    " + zz.drawer_open);
+        logger.debug(obj.steps[id].type + "    " + zz.drawer_state);
 
-        if (obj.steps[id].type == 'partial' && zz.drawer_open == 1) {
-
-            //console.log('oh snap, were gonna have to ditch the drawer for this');
+        if (obj.steps[id].type == 'partial' && zz.drawer_state == zz.DRAWER_OPEN) {
             $('#tab-content').fadeOut('fast');
-            zz.close_drawer(obj.time);
+            zz.close_drawer_partially(obj.time);
 
             zz.wizard.build_nav(obj, id);
-            $('article').load(url, function(data){
+
+            obj.steps[id].init(function(){
                 zz.wizard.resize_scroll_body();
-                obj.steps[id].init();
             });
 
-        } else if (obj.steps[id].type == 'partial' && zz.drawer_open == 2) {
+//            $('article').load(url, function(data){
+//                zz.wizard.resize_scroll_body();
+//                obj.steps[id].init();
+//            });
+
+        } else if (obj.steps[id].type == 'partial' && zz.drawer_state == zz.DRAWER_PARTIAL) {
             zz.wizard.build_nav(obj, id);
-            $('article').load(url, function(data){
+            obj.steps[id].init(function(){
                 zz.wizard.resize_scroll_body();
-                obj.steps[id].init();
             });
-        } else if (obj.steps[id].type == 'full' && zz.drawer_open != 1) {
+
+//            $('article').load(url, function(data){
+//                zz.wizard.resize_scroll_body();
+//                obj.steps[id].init();
+//            });
+        } else if (obj.steps[id].type == 'full' && zz.drawer_state != zz.DRAWER_OPEN) {
             zz.wizard.build_nav(obj, id);
-            $('#tab-content').load(url, function(data){
+
+            obj.steps[id].init(function(){
                 zz.wizard.resize_scroll_body();
-                obj.steps[id].init();
                 zz.open_drawer(obj.time);
             });
-        } else if (obj.steps[id].type == 'full' && zz.drawer_open == 1) {
+
+//            $('#tab-content').load(url, function(data){
+//                zz.wizard.resize_scroll_body();
+//                obj.steps[id].init();
+//                zz.open_drawer(obj.time);
+//            });
+        } else if (obj.steps[id].type == 'full' && zz.drawer_state == zz.DRAWER_OPEN) {
             zz.wizard.build_nav(obj, id);
             $('#tab-content').fadeOut('fast', function(){
-                $('#tab-content').load(url, function(data){
+                obj.steps[id].init(function(){
                     zz.wizard.resize_scroll_body();
-                    obj.steps[id].init();
                     $('#tab-content').fadeIn('fast');
                 });
+
+//                $('#tab-content').load(url, function(data){
+//                    zz.wizard.resize_scroll_body();
+//                    obj.steps[id].init();
+//                    $('#tab-content').fadeIn('fast');
+//                });
             });
-        } else if (obj.steps[id].type == 'partial' && zz.drawer_open == 0) {
+        } else if (obj.steps[id].type == 'partial' && zz.drawer_state == zz.DRAWER_CLOSED) {
             zz.open_drawer(80, obj.percent);
-            zz.close_drawer(obj.time);
+            zz.close_drawer_partially(obj.time);
             zz.wizard.build_nav(obj, id);
-            $('article').load(url, function(data){
+
+            obj.steps[id].init(function(){
                 zz.wizard.resize_scroll_body();
-                obj.steps[id].init();
             });
+
+//            $('article').load(url, function(data){
+//                zz.wizard.resize_scroll_body();
+//                obj.steps[id].init();
+//            });
         } else {
-            console.warn('This should never happen. Context: zz.wizard.change_step, Type: '+obj.steps[id].type+', Drawer State: '+zz.drawer_open);
+            console.warn('This should never happen. Context: zz.wizard.change_step, Type: '+obj.steps[id].type+', Drawer State: '+zz.drawer_state);
         }
 
 
@@ -153,17 +182,17 @@ zz.wizard = {
                 temp_id = $(this).attr('id').split('wizard-')[1];
 
                 //console.log('set up the url');
-                if (obj.steps[id].url_type == 'album') {
-                    //console.log('album');
-                    temp_url = 'http://' + zz.base + obj.steps[i].url.split('$$')[0] + zz.album_id + obj.steps[i].url.split('$$')[1];
-                    //console.log(temp);
-                } else if (obj.steps[id].url_type == 'user') {
-                    //console.log('user');
-                    temp_url = 'http://' + zz.base + obj.steps[i].url.split('$$')[0] + zz.current_user_id + obj.steps[i].url.split('$$')[1];
-                    //console.log(temp);
-                }
+//                if (obj.steps[id].url_type == 'album') {
+//                    //console.log('album');
+//                    temp_url = 'http://' + zz.base + obj.steps[i].url.split('$$')[0] + zz.album_id + obj.steps[i].url.split('$$')[1];
+//                    //console.log(temp);
+//                } else if (obj.steps[id].url_type == 'user') {
+//                    //console.log('user');
+//                    temp_url = 'http://' + zz.base + obj.steps[i].url.split('$$')[0] + zz.current_user_id + obj.steps[i].url.split('$$')[1];
+//                    //console.log(temp);
+//                }
 
-                zz.wizard.change_step(temp_id, temp_url, obj);
+                zz.wizard.change_step(temp_id, obj);
             });
 
 
@@ -177,7 +206,7 @@ zz.wizard = {
             $(obj.next_element).click(function(e){
                  obj.steps[id].bounce();
                 $('#drawer .body').fadeOut('fast');
-                zz.slam_drawer(400);
+                zz.close_drawer(400);
                 if (obj.redirect_type == 'album') {
                     temp_url = 'http://' + zz.base + obj.redirect.split('$$')[0] + zz.album_id + obj.redirect.split('$$')[1];
                 } else if (obj.redirect_type == 'user') {
@@ -266,7 +295,7 @@ zz.wizard = {
             {
                 width: 700,
                 position_element: 'dd#the-list',
-                append: '#drawer div.body',
+                append: '#drawer div.body'
             }
         );
         //zz.address_list = '';
@@ -293,7 +322,7 @@ zz.wizard = {
 
     close_settings_drawer: function(){
         $('#drawer .body').fadeOut('fast');
-        zz.slam_drawer(400);
+        zz.close_drawer(400);
         setTimeout('window.location = "'+zz.drawers.settings.redirect+'"', 500);
     },
 

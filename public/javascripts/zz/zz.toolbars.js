@@ -53,4 +53,4 @@ zz.toolbars = {
           $('#like-popup').slideDown( 'fast' );// Show - slide down
         }
     }
-}
+};

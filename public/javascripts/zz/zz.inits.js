@@ -58,18 +58,18 @@ zz.init = {
         });
 
         $('#nav-sign-in').click(function(){
-            if (zz.drawer_open === 0) {
+            if (zz.drawer_state === zz.DRAWER_CLOSED) {
                 $('#sign-in').show();
                 $('#sign-up').hide();
                 
                 $('#small-drawer').animate({height: '460px', top: '53px'});
-                zz.drawer_open = 1;
+                zz.drawer_state = zz.DRAWER_OPEN;
             }
         });
 
         $('.cancel-mini').click(function(){
             $('#small-drawer').animate({height: '0px', top: '28px'});
-            zz.drawer_open = 0;
+            zz.drawer_state = zz.DRAWER_CLOSED;
         });
 
         $(zz.validate.sign_in.element).validate(zz.validate.sign_in);
@@ -92,7 +92,7 @@ zz.init = {
     },
 
     resized: function(){
-        if (zz.drawer_open == 1) {
+        if (zz.drawer_state == zz.DRAWER_OPEN) {
             zz.resize_drawer(250);
             //gow scroll body
         }
@@ -362,7 +362,7 @@ zz.init = {
     like_menu: function(){
         zz.toolbars.init_like_menu();
         $('#nav-like').click( zz.toolbars.show_like_menu );
-    },
+    }
 
 //==================================== Settings Wizard  ===========================================
 

@@ -61,7 +61,7 @@ zz.validate = {
                                remote: 'Email already used'},
             'user[password]': 'Six characters or more please.'
         }
-    },
+    }
 
 //================================= Profile Form - Settings Wizard ================================
 

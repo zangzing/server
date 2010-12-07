@@ -28,11 +28,11 @@ zz.drawers = {
                 next: 'name', // next in line
                 title: 'Add Photos', // link text
                 type: 'full', // drawer position - full(y open) or partial(ly open)
-                url: '/albums/$$/add_photos', // url of the drawer template
-                url_type: 'album', // replace $$ w/the id of the album or user
+//                url: '/albums/$$/add_photos', // url of the drawer template
+//                url_type: 'album', // replace $$ w/the id of the album or user
 
-                init: function(){ // run when loading the drawer up
-                    pages.album_add_photos_tab.init();
+                init: function(callback){ // run when loading the drawer up
+                    pages.album_add_photos_tab.init(callback);
                 },
 
                 bounce: function(){ // run before you leave
@@ -45,10 +45,10 @@ zz.drawers = {
                 next: 'edit',
                 title: 'Name',
                 type: 'full',
-                url: '/albums/$$/name_album',
-                url_type: 'album',
-                init:   function(){
-                    pages.album_name_tab.init();
+//                url: '/albums/$$/name_album',
+//                url_type: 'album',
+                init:   function(callback){
+                    pages.album_name_tab.init(callback);
                 },
                 bounce: function(){
                     pages.album_name_tab.bounce(); 
@@ -59,10 +59,10 @@ zz.drawers = {
                 next: 'privacy',
                 title: 'Edit',
                 type: 'partial',
-                url: '/albums/$$/edit',
-                url_type: 'album',
-                init:   function(){
-                    pages.edit_album_tab.init();
+//                url: '/albums/$$/edit',
+//                url_type: 'album',
+                init:   function(callback){
+                    pages.edit_album_tab.init(callback);
                 },
                 bounce: function(){
                     pages.edit_album_tab.bounce();
@@ -73,11 +73,11 @@ zz.drawers = {
                 next: 'share',
                 title: 'Album Privacy',
                 type: 'full',
-                url: '/albums/$$/privacy',
-                url_type: 'album',
+//                url: '/albums/$$/privacy',
+//                url_type: 'album',
 
-                init: function(){
-                    pages.album_privacy_tab.init();
+                init: function(callback){
+                    pages.album_privacy_tab.init(callback);
                 },
 
                 bounce: function(){
@@ -89,11 +89,11 @@ zz.drawers = {
                 next: 0,
                 title: 'Share',
                 type: 'full',
-                url: '/albums/$$/shares/new',
-                url_type: 'album',
+//                url: '/albums/$$/shares/new',
+//                url_type: 'album',
 
-                init: function(){
-                    pages.album_share_tab.init();
+                init: function(callback){
+                    pages.album_share_tab.init(callback);
                 },
 
                 bounce: function(){
@@ -133,11 +133,11 @@ zz.drawers = {
                 next: 'name',
                 title: 'Add Photos',
                 type: 'full',
-                url: '/albums/$$/add_photos',
-                url_type: 'album',
+//                url: '/albums/$$/add_photos',
+//                url_type: 'album',
 
-                init: function(){ // run when loading the drawer up
-                    pages.album_add_photos_tab.init();
+                init: function(callback){ // run when loading the drawer up
+                    pages.album_add_photos_tab.init(callback);
                 },
 
                 bounce: function(){ // run before you leave
@@ -150,10 +150,10 @@ zz.drawers = {
                 next: 'edit',
                 title: 'Name',
                 type: 'full',
-                url:  '/albums/$$/name_album',
-                url_type: 'album',
-                init:   function(){
-                    pages.album_name_tab.init();
+//                url:  '/albums/$$/name_album',
+//                url_type: 'album',
+                init:   function(callback){
+                    pages.album_name_tab.init(callback);
                 },
                 bounce: function(){
                     pages.album_name_tab.bounce();
@@ -164,10 +164,10 @@ zz.drawers = {
                 next: 'privacy',
                 title: 'Edit',
                 type: 'partial',
-                url: '/albums/$$/edit',
-                url_type: 'album',
-                init:   function(){
-                    pages.edit_album_tab.init();
+//                url: '/albums/$$/edit',
+//                url_type: 'album',
+                init:   function(callback){
+                    pages.edit_album_tab.init(callback);
                 },
                 bounce: function(){
                     pages.edit_album_tab.bounce();
@@ -178,11 +178,11 @@ zz.drawers = {
                 next: 'contributors',
                 title: 'Privacy',
                 type: 'full',
-                url: '/albums/$$/privacy',
-                url_type: 'album',
+//                url: '/albums/$$/privacy',
+//                url_type: 'album',
 
-                init: function(){
-                    pages.album_privacy_tab.init();
+                init: function(callback){
+                    pages.album_privacy_tab.init(callback);
                 },
 
                 bounce: function(){
@@ -194,11 +194,11 @@ zz.drawers = {
                 next: 'share',
                 title: 'Contributors',
                 type: 'full',
-                url: '/albums/$$/contributors',
-                url_type: 'album',
+//                url: '/albums/$$/contributors',
+//                url_type: 'album',
 
-                init: function(){
-                    pages.album_contributors_tab.init();
+                init: function(callback){
+                    pages.album_contributors_tab.init(callback);
                 },
 
                 bounce: function(){
@@ -210,11 +210,11 @@ zz.drawers = {
                 next: 0,
                 title: 'Share',
                 type: 'full',
-                url: '/albums/$$/shares/new',
-                url_type: 'album',
+//                url: '/albums/$$/shares/new',
+//                url_type: 'album',
 
-                init: function(){
-                    pages.album_share_tab.init();
+                init: function(callback){
+                    pages.album_share_tab.init(callback);
                 },
 
                 bounce: function(){
