@@ -232,7 +232,7 @@ zz.wizard = {
 
         logger.debug('start email_autocomplete');
 
-        zz.autocompleter = $('#you-complete-me').autocompleteArray(
+        $('#you-complete-me').autocompleteArray(
                 google_contacts.concat( yahoo_contacts.concat( mslive_contacts.concat(local_contacts )) ),
             {
                 width: 700,
@@ -248,7 +248,10 @@ zz.wizard = {
     // reloads the autocompletetion data
     reload_email_autocompleter: function(){
         logger.debug('start email_autocompleter_reload');
-        zz.autocompleter[0].autocompleter.setData(google_contacts.concat( yahoo_contacts.concat( mslive_contacts.concat(local_contacts )) ));
+
+        //todo: is there a better way to get a handle to the plugin?
+        $('#you-complete-me')[0].autocompleter.setData(google_contacts.concat( yahoo_contacts.concat( mslive_contacts.concat(local_contacts )) ));
+
         logger.debug('end email_autocompleter_reload');
 
     },
