@@ -17,47 +17,24 @@ zz.wizard = {
             zz.open_drawer(obj.time, obj.percent);
         }
 
-        if (!step) {
-            //console.log('set up the url');
-            if (obj.steps[obj.first].url_type == 'album') {
-                //console.log('album');
-                temp = 'http://' + zz.base + obj.steps[obj.first].url.split('$$')[0] + zz.album_id + obj.steps[obj.first].url.split('$$')[1];
-                //console.log(temp);
-            } else if (obj.steps[obj.first].url_type == 'user') {
-                //console.log('user');
-                temp = 'http://' + zz.base + obj.steps[obj.first].url.split('$$')[0] + zz.current_user_id + obj.steps[obj.first].url.split('$$')[1];
-                //console.log(temp);
-            }
 
 
-            zz.wizard.build_nav(obj, obj.first, true);
-            $('#tab-content').fadeOut('fast', function(){
-                $('#tab-content').load(temp, function(){
-                    zz.wizard.resize_scroll_body()
-                    obj.steps[obj.first].init();
-                    $('#tab-content').fadeIn('fast');
-                });
-            });
-        } else {
-
-            if (obj.steps[step].url_type == 'album') {
-                //console.log('album');
-                temp = 'http://' + zz.base + obj.steps[step].url.split('$$')[0] + zz.album_id + obj.steps[step].url.split('$$')[1];
-                //console.log(temp);
-            } else if (obj.steps[step].url_type == 'user') {
-                //console.log('user');
-                temp = 'http://' + zz.base + obj.steps[step].url.split('$$')[0] + zz.current_user_id + obj.steps[step].url.split('$$')[1];
-                //console.log(temp);
-            }
-
-            zz.wizard.build_nav(obj, step);
-            $('#tab-content').load(temp, function(){
-                zz.wizard.resize_scroll_body()
-                obj.steps[step].init();
-            });
-
-
+        if (obj.steps[step].url_type == 'album') {
+            //console.log('album');
+            temp = 'http://' + zz.base + obj.steps[step].url.split('$$')[0] + zz.album_id + obj.steps[step].url.split('$$')[1];
+            //console.log(temp);
+        } else if (obj.steps[step].url_type == 'user') {
+            //console.log('user');
+            temp = 'http://' + zz.base + obj.steps[step].url.split('$$')[0] + zz.current_user_id + obj.steps[step].url.split('$$')[1];
+            //console.log(temp);
         }
+
+        zz.wizard.build_nav(obj, step);
+        $('#tab-content').load(temp, function(){
+            zz.wizard.resize_scroll_body()
+            obj.steps[step].init();
+        });
+
 
         $('body').addClass('drawer');
 
@@ -165,19 +142,10 @@ zz.wizard = {
         }
 
 
-        zz.wizard.rebind(obj, id, temp_id); //now that we've built the nav let's bind all the nav events
-
-    },
-
-    resize_scroll_body: function(){
-        $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 165) + 'px'});
-    },
-
-    rebind: function(obj, id, num_steps){
-
         zz.wizard.resize_scroll_body();
 
 
+        //bind the event handlers
         $.each(obj.steps, function(i, item) {
             $('li#wizard-'+ i).click(function(e){
                 e.preventDefault();
@@ -236,6 +204,10 @@ zz.wizard = {
         }
     },
 
+    resize_scroll_body: function(){
+        $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 165) + 'px'});
+    },
+
 
 
 
@@ -251,14 +223,14 @@ zz.wizard = {
     create_personal_album: function(){
         $.post('/users/'+zz.current_user_id+'/albums', { album_type: "PersonalAlbum" }, function(data){
             zz.album_id = data;
-            zz.wizard.make_drawer(zz.drawers.personal_album);
+            zz.wizard.make_drawer(zz.drawers.personal_album, 'add');
         });
     },
 
     create_group_album: function(){
         $.post('/users/'+zz.current_user_id+'/albums', { album_type: "GroupAlbum" }, function(data){
             zz.album_id = data;
-            zz.wizard.make_drawer(zz.drawers.group_album);
+            zz.wizard.make_drawer(zz.drawers.group_album, 'add');
         });
     },
 
