@@ -215,8 +215,6 @@ zz.drawers = {
 
                 init: function(){
                     pages.album_share_tab.init();
-//                    $('.social-share').click(function(){zz.wizard.social_share(zz.drawers.group_album, 'share')});
-//                    $('.email-share').click(function(){zz.wizard.email_share(zz.drawers.group_album, 'share')});
                 },
 
                 bounce: function(){
@@ -255,9 +253,14 @@ zz.drawers = {
                  type: 'full',                  // drawer position - full(y open) or partial(ly open)
                  url: '/users/$$/edit',         // url of the drawer template
                  url_type: 'user',              // replace $$ w/the id of the album or user
-                 init:   zz.init.profile_settings, // run when loading the drawer up
-                 bounce: function(){ } // run before you leave
-             }, //end zz.drawers.settings.steps.profile
+                 init:   function(){
+                    pages.account_settings_profile_tab.init();    
+                 },
+                 bounce: function(){
+                     pages.account_settings_profile_tab.bounce();    
+                 }
+
+             },
 
              account: {
                  next: 'notifications',
@@ -267,7 +270,7 @@ zz.drawers = {
                  url_type: 'user',
                  init: function(){ },
                  bounce: function(){ }
-             }, //end zz.drawers.settings.steps.account
+             },
 
              notifications: {
                  next: 'linked-accts',
@@ -277,7 +280,7 @@ zz.drawers = {
                  url_type: 'user',
                  init: function(){ },
                  bounce: function(){ }
-             }, //end zz.drawers.settings.steps.notifications
+             },
 
              linked_accts: {
                 next: 0,
@@ -285,12 +288,17 @@ zz.drawers = {
                 type: 'full',
                 url: '/users/$$/identities',
                 url_type: 'user',
-                init: function(){ zz.init.id_settings(); },
-                bounce: function(){ }
-              } //end zz.drawers.settings.steps.linked_accts
+                init: function(){
+                    pages.account_settings_linked_accounts.init();
+                },
 
-         } // end zz.drawers.settings.steps
+                 bounce: function(){
+                     pages.account_settings_linked_accounts.bounce(); 
+                 }
+              }
 
-    } //end zz.drawers.settings
+         }
 
-}; // end zz.drawers
+    }
+
+};

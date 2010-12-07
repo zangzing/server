@@ -365,36 +365,5 @@ zz.init = {
     },
 
 //==================================== Settings Wizard  ===========================================
-    id_settings: function(){
-      zz.drawers.settings.redirect =  window.location;  
-      $('.delete-id-button').click(zz.wizard.delete_identity);
-      $('.authorize-id-button').click(zz.wizard.authorize_identity);
-      $('.id-status').each( function(){
 
-             logger.debug("Binding id:"+this.id+" service:"+$(this).attr('service'));
-      });
-      $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height -110) + 'px'});
-      $('#ok_id_button').click(zz.wizard.close_settings_drawer)
-    },
-    profile_settings: function(){
-       zz.drawers.settings.redirect =  window.location;
-      $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height -140) + 'px'});       
-      $(zz.validate.profile_form.element).validate(zz.validate.profile_form);
-      $('#user_username').keypress( function(){
-            setTimeout(function(){
-                $('#username_path').html( $('#user_username').val() );
-            }, 10);
-      });
-      // unbind next tab button
-      var handler = $('#wizard-account').data('events')['click'][0];
-      $('#wizard-account').unbind('click');
-      $('#wizard-account').click( function(){
-          zz.wizard.update_profile(function(){zz.wizard.open_settings_drawer('account')})
-      });
-          
-      $('#ok_profile_button').click(function(){
-          zz.wizard.update_profile( zz.wizard.close_settings_drawer); 
-      });
-      $('#cancel_profile_button').click(zz.wizard.close_settings_drawer)
-    }
 }; // end zz.init

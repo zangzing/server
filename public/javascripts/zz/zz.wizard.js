@@ -282,76 +282,7 @@ zz.wizard = {
     },
 
 
-    // loads the status message post form in place of the type switcher on the share step
-    social_share: function(obj, id){
-        $('div#share-body').fadeOut('fast', function(){
-            $('div#share-body').load('/albums/'+zz.album_id+'/shares/newpost', function(){
-                zz.wizard.resize_scroll_body()
-                oauthmanager.init_social();
-                $(zz.validate.new_post_share.element).validate(zz.validate.new_post_share);
-                $('#cancel-share').click(function(){
-                    zz.wizard.reload_share(obj, id);
-                });
 
-                $('#post_share_message').keypress( function(){
-                    setTimeout(function(){
-                        var text = 'characters';
-                        var count = $('#post_share_message').val().length
-                        if(count === 1){
-                            text = 'character';
-                        }
-                        $('#character-count').html(count + ' ' + text);
-                    }, 10);
-                });
-
-
-
-
-                $('div#share-body').fadeIn('fast');
-            });
-        });
-    },
-
-    // loads the email post form in place of the type switcher on the share step
-    email_share: function(obj, id ){
-        $('div#share-body').fadeOut('fast', function(){
-            $('div#share-body').load('/albums/'+zz.album_id+'/shares/newemail', function(){
-                zz.wizard.resize_scroll_body();
-                zz.wizard.email_autocomplete();
-                $(zz.validate.new_email_share.element).validate(zz.validate.new_email_share);
-
-                $('#cancel-share').click(function(){
-                    zz.wizard.reload_share(obj, id);
-                });
-                $('#the-list').click(function(){
-                    $('#you-complete-me').focus();
-                });
-
-                //todo: move these into auto-complete widget
-                $('#you-complete-me').focus(function(){
-                    $('#the-list').addClass("focus");
-                });
-                $('#you-complete-me').blur(function(){
-                    $('#the-list').removeClass("focus");
-                });
-                $('div#share-body').fadeIn('fast', function(){ $('#you-complete-me').focus();});
-            });
-        });
-    },
-
-    // reloads the main share part in place of the type switcher on the share step
-    reload_share: function(obj, id, callback){
-        $('#tab-content').fadeOut('fast', function(){
-            $('#tab-content').load('/albums/'+zz.album_id+'/shares/new', function(){
-                zz.wizard.build_nav(obj, id);
-                obj.steps[id].init();
-                $('#tab-content').fadeIn('fast');
-                 if( typeof(callback) != "undefined" ){
-                     callback();
-                 }
-            });
-        })
-    },
 
 
 
@@ -417,60 +348,9 @@ zz.wizard = {
     },
 
 
-    insert_contributor_bubble: function(label,value){
-        zz.wizard.email_id++;
-        $('#m-clone-added').clone()
-                .attr({id: 'm-'+zz.wizard.email_id})
-                .insertAfter('#the-recipients li.rounded:last');
-        $('#m-'+zz.wizard.email_id+' span').empty().html(label);
-        $('#m-'+zz.wizard.email_id).fadeIn('fast');
-        $('#m-'+zz.wizard.email_id+' img').attr('id', 'img-'+zz.wizard.email_id);
-        $('#m-'+zz.wizard.email_id+' input').attr({name: 'delete-url', checked: 'checked'}).val(value);
-        $('#m-'+zz.wizard.email_id+' img').click(function(){
-            $.post($(this).siblings('input').val(), {"_method": "delete"}, function(data){ });
-            $(this).parent('li').fadeOut('fast', function(){
-                $(this).remove();
-            });
-        });
-    },
-
-    // loads the form to add contibutors on the contributors drawer
-    show_new_contributors: function(){
-        //console.log("Loading new contributors...") ;
-        $('div#contributors-body').fadeOut('fast', function(){
-            $('div#contributors-body').load('/albums/'+zz.album_id+'/contributors/new', function(){
-                //zz.wizard.build_nav(zz.drawers.group_album, 'contributors');
-                //zz.drawers.group_album.steps['contributors'].init();
-                //console.log("Initializing new contributors...") ;
-                zz.wizard.resize_scroll_body()
-                zz.wizard.email_autocomplete();
-                $(zz.validate.new_contributors.element).validate(zz.validate.new_contributors);
-                $('#the-list').click(function(){
-                    $('#you-complete-me').focus();
-                });
-                $('#cancel-new-contributors').click(function(){
-                    //console.log("Canceling new contributors...") ;
-                    $('#tab-content').fadeOut('fast', function(){
-                        $('#tab-content').load('/albums/'+zz.album_id+'/contributors', function(){
-                            zz.wizard.build_nav(zz.drawers.group_album, 'contributors');
-                            zz.drawers.group_album.steps['contributors'].init();
-                            $('#tab-content').fadeIn('fast');
-                        });
-                    })
-                });
 
 
-                //todo: move these into auto-complete widget
-                $('#you-complete-me').focus(function(){
-                    $('#the-list').addClass("focus");
-                });
-                $('#you-complete-me').blur(function(){
-                    $('#the-list').removeClass("focus");
-                });
-                $('div#contributors-body').fadeIn('fast', function(){$('#you-complete-me').focus();});
-            });
-        })
-    },
+
 
     format_autocomplete_row: function(row) {
         var formattedRow ='';

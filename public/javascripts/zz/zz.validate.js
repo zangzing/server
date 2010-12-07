@@ -103,74 +103,11 @@ zz.validate = {
     },
 
 //=========================== Social Post Form - Edit/New Album Wizard ============================
-    new_post_share: {
-        element: '#new_post_share',
-        rules: {
-            'post_share[message]':  { required: true, minlength: 0, maxlength: 118 },
-            'post_share[facebook]': { required: "#twitter_box:unchecked" },
-            'post_share[twitter]':  { required:  "#facebook_box:unchecked"}
-        },
-        messages: {
-            'post_share[message]': '',
-            'post_share[facebook]': '',
-            'post_share[twitter]': ''
-        },
-        submitHandler: function() {
-            var serialized = $('#new_post_share').serialize();
-            $.post('/albums/'+zz.album_id+'/shares.json', serialized, function(data,status,request){
-                zz.wizard.reload_share(zz.drawers[zz.album_type+'_album'], 'share', function(){
-                    zz.wizard.display_flashes(  request,200 )
-                    });
-            });
-        }
-    }, // end zz.validation.new_post_share
+
 
 //============================ Email Share Form - Edit/New Album Wizard ===========================
-    new_email_share: {
-        element: '#new_email_share',
-        rules: {
-            'email_share[to]': { required: true, minlength: 0 },
-            'email_share[message]': { required: true, minlength: 0 }
-        },
-        messages: {
-            'email_share[to]': 'At least one recipient is required',
-            'email_share[message]': ''
-        },
 
-        submitHandler: function() {
-            var serialized = $('#new_email_share').serialize();
-            $.post('/albums/'+zz.album_id+'/shares.json', serialized, function(data,status,request ){
-                zz.wizard.reload_share(zz.drawers[zz.album_type+'_album'], 'share', function(){
-                    zz.wizard.display_flashes(  request,200 )
-                    });   
-            },"json");
-        }
 
-    }, // end zz.validation.new_post_share
-
-    new_contributors: {
-        element: '#new_contributors',
-        rules: {
-            'email_share[to]': { required: true},           
-            'email_share[message]': { required: true, minlength: 0}
-        },
-        messages: {
-            'email_share[message]': '',
-            'email_share[message]': ''
-        },
-        submitHandler: function() {
-            $.post('/albums/'+zz.album_id+'/contributors.json', $('#new_contributors').serialize(), function(data,status,request){
-                $('#tab-content').fadeOut('fast', function(){
-                    $('#tab-content').load('/albums/'+zz.album_id+'/contributors', function(){
-                        zz.wizard.build_nav(zz.drawers.group_album, 'contributors');
-                        zz.drawers.group_album.steps['contributors'].init();
-                        zz.wizard.display_flashes(  request,200 );
-                        $('#tab-content').fadeIn('fast');
-                    });
-                },"json");
-            });
-        }
-    }, // end zz.validation.new_post_share
 
 
 
