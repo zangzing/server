@@ -8,13 +8,13 @@
             allowDelete: false,
             showSelection: false,
             selectedIndex:-1,
+            thumbnailSize: 20,
             onDeletePhoto: function(index, photo){},
             onSelectPhoto: function(index, photo){}
         },
 
         currentIndex : -1,
         selectedIndex : -1,
-        thumbnailSize: 20,
         traySize:null,
         orientation: null,
         ORIENTATION_X: 'x',
@@ -182,13 +182,13 @@
         },
 
         _getMaxVisibleThumbnails: function(){
-            return this.traySize / this.thumbnailSize;
+            return this.traySize / this.options.thumbnailSize;
         },
 
         _getThumbnailActiveSize: function(){
             var len = this.options.photos.length;
-            if(len * this.thumbnailSize < this.traySize){
-                return this.thumbnailSize;
+            if(len * this.options.thumbnailSize < this.traySize){
+                return this.options.thumbnailSize;
             }
             else{
                 return this.traySize / len;
@@ -197,7 +197,7 @@
         },
 
         _getThumbnailSize: function(){
-            return this.thumbnailSize;
+            return this.options.thumbnailSize;
         },
 
         _setCurrentIndex: function(index){
