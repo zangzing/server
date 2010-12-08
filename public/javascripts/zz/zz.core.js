@@ -31,19 +31,23 @@ var zz = {
 
         // pull out the drawer
         $('div#drawer').animate({ height: zz.drawer_height + 'px', top: '50px' }, time );
+        //$('div#drawer').css( { height: zz.drawer_height + 'px', top: '50px' } );
+        //$('div#drawer').slideDown( time );
         $('div#drawer-content').animate({ height: (zz.drawer_height - 14) + 'px'}, time );
-        zz.wizard.resize_scroll_body()
+        zz.wizard.resize_scroll_body();
 
         zz.drawer_open = 1; // remember position of the drawer in
 
     }, // end zz.open_drawer()
 
-    resize_drawer: function(time){
+    resize_drawer: function(time, size){
 
         zz.screen_height = $(window).height(); // measure the screen height
         // adjust for out top and bottom bar, the gradient padding and a margin
         zz.drawer_height = zz.screen_height - zz.screen_gap;
 
+        if(typeof(size) != 'undefined' && size < zz.drawer_height )  zz.drawer_height = size;
+        
         $('div#drawer').animate({ height: zz.drawer_height + 'px', top: '50px' }, time );
         $('div#drawer-content').animate({ height: (zz.drawer_height - 14) + 'px'}, time );
         zz.wizard.resize_scroll_body()

@@ -28,7 +28,7 @@ zz.drawers = {
                 url_type: 'album', // replace $$ w/the id of the album or user
 
                 init: function(){ // run when loading the drawer up
-                    zz.wizard.init_add_tab('personal');
+                    zz.wizard.init_add_tab('personal', zz.drawers.personal_album.style);
                 },
 
                 bounce: function(){ // run before you leave
@@ -131,7 +131,7 @@ zz.drawers = {
                 type: 'full',
                 url: '/albums/$$/add_photos',
                 url_type: 'album',
-                init: function(){  zz.wizard.init_add_tab('group'); },
+                init: function(){  zz.wizard.init_add_tab('group',zz.drawers.group_album.style); },
 
                 bounce: function(){
                     $('#added-pictures-tray').fadeOut('fast');

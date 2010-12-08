@@ -7,6 +7,11 @@ zz.toolbars = {
         $('#album-info h3').html("by " + zz.current_user_name);
 
         $('#album-info').css('display', 'inline-block');
+        zz.wizard.set_wizard_style( 'create');
+        $('div#cancel-drawer-btn').unbind('click').click( function(){
+                $('#drawer .body').fadeOut('fast', function(){window.location.reload()});
+                zz.slam_drawer(400);
+        });
     },
 
     //============================== ACCOUNT BADGE MENU ===========================================

@@ -330,7 +330,7 @@ ul#added-pictures-tray {
   z-index: 100;
   padding: 17px 10px 3px;
   margin-right: 2px;
-  bottom: 5px;
+  bottom: 5px; /*25pix for bottom bar with cancel button*/
   left: 7px;
 }
 

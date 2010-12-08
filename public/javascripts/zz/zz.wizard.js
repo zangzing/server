@@ -10,6 +10,7 @@ zz.wizard = {
          obj.steps.step.bounce */
 
         var temp; //todo: rename to somethign meaningful
+        zz.wizard.set_wizard_style( obj.style );
 
         if (zz.drawer_open == 0) {
             zz.open_drawer(obj.time, obj.percent);
@@ -69,12 +70,18 @@ zz.wizard = {
 
             //console.log('oh snap, were gonna have to ditch the drawer for this');
             $('#tab-content').fadeOut('fast');
-            zz.close_drawer(obj.time);
+            //zz.close_drawer(obj.time);
 
             zz.wizard.build_nav(obj, id);
             $('article').load(url, function(data){
-                zz.wizard.resize_scroll_body();
-                obj.steps[id].init();
+               if( obj.style =='edit'){
+                zz.resize_drawer(100, 60);
+               } else {
+                zz.resize_drawer(100, 40);   
+               }
+               zz.drawer_open = 2;
+               //zz.wizard.resize_scroll_body();
+               obj.steps[id].init();
             });
 
         } else if (obj.steps[id].type == 'partial' && zz.drawer_open == 2) {
@@ -153,7 +160,7 @@ zz.wizard = {
         }
         if (obj.style == 'edit') {
             //      $('#clone-indicator').clone().attr('id', obj.list_element+'-'+temp_id).addClass('edit-'+value+'-'+temp_id).html(temp).prependTo('#drawer-content');
-            $('#drawer-tabs').html($('#clone-indicator').clone().attr('id', obj.list_element+'-'+temp_id).addClass('edit-'+value+'-'+temp_id).html(temp));
+            $('#drawer-tabs').html($('#clone-indicator').clone().attr('id', obj.list_element+'-'+temp_id).addClass('edit-'+value+'-'+temp_id).html(temp));            
         } else {
             $('#drawer-tabs').html($('#clone-indicator').clone().attr('id', obj.list_element+'-'+temp_id).addClass('step-'+value+'-'+temp_id).html(temp));
             //      $('#clone-indicator').clone().attr('id', obj.list_element+'-'+temp_id).addClass('step-'+value+'-'+temp_id).html(temp).prependTo('#drawer-content');
@@ -235,8 +242,17 @@ zz.wizard = {
     },
 
 
-
-
+    set_wizard_style: function(style){
+      if( style == 'edit'){
+            $('div#drawer').css('background-image','url(/images/bg-drawer-bottom-cap.png)');
+            $('div#cancel-drawer-btn').hide();
+            zz.screen_gap =  150;
+        } else {
+            $('div#drawer').css('background-image','url(/images/bg-drawer-bottom-cap-with-cancel.png)');
+            $('div#cancel-drawer-btn').show();
+            zz.screen_gap = 130;
+        }
+    },
 
     /* Wizard Object Functions - used to make special things happen
      ------------------------------------------------------------------------- */
@@ -674,8 +690,13 @@ zz.wizard = {
                 ;
     },
 
-    init_add_tab: function( album_type ){
+    init_add_tab: function( album_type, drawer_style ){
         filechooser.init();
+        if( drawer_style == 'edit'){
+            $('ul#added-pictures-tray').css('bottom','5px')
+        } else {
+            $('ul#added-pictures-tray').css('bottom','24px')
+        }
         setTimeout('$("#added-pictures-tray").fadeIn("fast")', 300);
 
         zz.album_type = album_type;
