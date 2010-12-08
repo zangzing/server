@@ -76,6 +76,24 @@
                             $('#tray2-message').html('deleted photo: ' + photo.src);
                         }
                      }).data().zz_thumbtray;
+
+                var tray3 = $("#tray3").zz_thumbtray(
+                    {
+                        photos:photos,
+                        allowDelete:false,
+                        showSelection:true,
+                        onSelectPhoto:function(index, photo){
+                            if(photo){
+                                $('#tray3-message').html('selected photo:'  + photo.src);
+                            }
+                        },
+                        onDeletePhoto:function(index, photo){
+                            $('#tray3-message').html('deleted photo: ' + photo.src);
+                        }
+                     }).data().zz_thumbtray;
+
+
+
             });
 
         </script>
@@ -83,6 +101,13 @@
     </head>
 
     <body>
+        Vertical
+        <div id='tray3' style="position:relative;left:200px;width:20px; height:800px; border:1px solid black"></div>
+        <br>
+        <span id="tray3-message" style="border:1px solid #999999"></span>
+
+
+
         <br>
         <br>
         <br>
@@ -118,6 +143,19 @@
         <div id='tray2' style="position:relative;width:800px; height:20px; border:1px solid black"></div>
         <br>
         <span id="tray2-message" style="border:1px solid #999999"></span>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+
+
+
 
     </body>
 

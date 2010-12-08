@@ -33,6 +33,7 @@ jQuery.autocomplete = function(input, options) {
     var keyb = false;
     var hasFocus = false;
     var lastKeyPressCode = null;
+    var zz_delete_btn = 1;
 
 	// flush cache
 	function flushCache(){
@@ -51,7 +52,7 @@ jQuery.autocomplete = function(input, options) {
 		lastKeyPressCode = e.keyCode;
 		switch(e.keyCode) {
 			case 188: // comma
-			    zz.wizard.add_recipient(1);
+			    zz_add_recipient(1);
                 e.preventDefault();
 				break;
 			case 38: // up
@@ -63,7 +64,7 @@ jQuery.autocomplete = function(input, options) {
 				moveSelect(1);
 				break;
 			case 9:  // tab
-                zz.wizard.add_recipient(1);
+                zz_add_recipient(1);
                 break;
 			case 13: // return
 				if( selectCurrent() ){
@@ -71,7 +72,7 @@ jQuery.autocomplete = function(input, options) {
 					//$input.get(0).blur();
 					e.preventDefault();
 				} else {
-				  zz.wizard.add_recipient(0);
+				  zz_add_recipient(0);
 				  e.preventDefault();
 				}
 				break;
@@ -104,25 +105,25 @@ jQuery.autocomplete = function(input, options) {
         // ignore if the following keys are pressed: [del] [shift] [capslock]
         if(lastKeyPressCode == 8) {
             //alert('DELETE KEY');
-            if ($('#you-complete-me').val().length == 0 && zz.wizard.delete_btn == 2) {
+            if ($('#you-complete-me').val().length == 0 && this.zz_delete_btn == 2) {
                 //console.log('Delete the last item!');
                 $('#the-recipients li.rounded:last').fadeOut('fast', function(){
                     $('#the-recipients li.rounded:last').remove();
                 });
-                zz.wizard.delete_btn = 1;
-            } else if ($('#you-complete-me').val().length == 0 && zz.wizard.delete_btn == 1) {
+                this.zz_delete_btn = 1;
+            } else if ($('#you-complete-me').val().length == 0 && this.zz_delete_btn == 1) {
                 //console.log('Select the last item!');
                 $('#the-recipients li.rounded:last').addClass('del');
-                zz.wizard.delete_btn = 2;
-            } else if ($('#you-complete-me').val().length == 0 && zz.wizard.delete_btn == 0){
-                zz.wizard.delete_btn = 1;
+                this.zz_delete_btn = 2;
+            } else if ($('#you-complete-me').val().length == 0 && this.zz_delete_btn == 0){
+                this.zz_delete_btn = 1;
             }
         } else if (lastKeyPressCode == 46 || lastKeyPressCode > 8 && lastKeyPressCode < 32) {
-            zz.wizard.delete_btn = 1;
+            this.zz_delete_btn = 1;
             $('#the-recipients li.rounded:last').removeClass('del');
             return $results.hide();
         } else {
-            zz.wizard.delete_btn = 1;
+            this.zz_delete_btn = 1;
             $('#the-recipients li.rounded:last').removeClass('del');
         }
         var v = $input.val();
@@ -192,6 +193,11 @@ jQuery.autocomplete = function(input, options) {
 		$input.val(v);
 		hideResultsNow();
 		if (options.onItemSelect) setTimeout(function() { options.onItemSelect(li) }, 1);
+
+        setTimeout(function(){
+            zz_clone_recipient(li);
+        },1);
+
 	};
 
 	// selects a portion of the input string
@@ -304,13 +310,20 @@ jQuery.autocomplete = function(input, options) {
 			var row = data[i];
 			if (!row) continue;
 			var li = document.createElement("li");
-			if (options.formatItem) {
-				li.innerHTML = options.formatItem(row, i, num);
-				li.selectValue = row[0];
-			} else {
-				li.innerHTML = row[0];
-				li.selectValue = row[0];
-			}
+
+
+
+            //hardcode the zz formatter
+            li.innerHTML = zz_format_autocomplete_row(row, i, num);
+            li.selectValue = row[0];
+
+//			if (options.formatItem) {
+//				li.innerHTML = options.formatItem(row, i, num);
+//				li.selectValue = row[0];
+//			} else {
+//				li.innerHTML = row[0];
+//				li.selectValue = row[0];
+//			}
 			var extra = null;
 			if (row.length > 1) {
 				extra = [];
@@ -559,7 +572,86 @@ jQuery.autocomplete = function(input, options) {
 			curtop += obj.offsetTop
 		}
 		return {x:curleft,y:curtop};
-	}
+	};
+
+
+        // adds a recipient to the autocomplete area on keypress
+    function zz_add_recipient(comma){
+        if (comma == 1) {
+            value = $('#you-complete-me').val();
+            value = value.split(',')[0];
+            $('#you-complete-me').val('');
+        } else {
+            value = $('#you-complete-me').val();
+            $('#you-complete-me').val('');
+
+        }
+
+        if (value.length < 6) {
+
+        } else {
+
+            //todo: this block is copied several places
+            var bubble = $('#m-clone-added').clone().insertAfter('#the-recipients li.rounded:last');
+            bubble.find('span').empty().html(value);
+            bubble.find('input').attr({name: 'email_share[to][]', checked: 'checked'}).val(value);
+            bubble.fadeIn('fast');
+            bubble.find('img').click(function(){
+                $(this).parent('li').fadeOut('fast', function(){
+                    $(this).parent('li').remove();
+                });
+            });
+        }
+    };
+
+    function zz_clone_recipient(data){
+        // data.selectValue is name|email
+        var value = '\"'+data.selectValue+'\" \<'+data.extra[0]+'\>';
+        var display_value = ( data.selectValue.length >0 ? data.selectValue : data.extra[0] );
+
+        $('#you-complete-me').val('');
+
+        //todo: this block is copied several places
+        var bubble = $('#m-clone-added').clone().insertAfter('#the-recipients li.rounded:last');
+        bubble.find('span').empty().html(display_value);
+        bubble.find('input').attr({name: 'email_share[to][]', checked: 'checked'}).val(value);
+        bubble.fadeIn('fast');
+        bubble.find('img').click(function(){
+             $(this).parent('li').fadeOut('fast', function(){
+                $(this).remove();
+            });
+        });
+    };
+
+
+    function zz_format_autocomplete_row(row) {
+        var formattedRow ='';
+        var name         = row[0];
+        var add          = row[1];
+        var match_len    = row[2];
+        if( row[3] == 1  ){
+            //name match
+            formattedRow+= '<span class="autocomplete-match">';
+            formattedRow+= name.substr(0,match_len);
+            formattedRow+= "</span>";
+            formattedRow+= name.substr(match_len)+' ';
+        } else {
+          formattedRow+= ' '+name+' '; //push name
+        }
+
+        if( row[4] == 1){
+            //address match
+            formattedRow += '<<span class="autocomplete-match">';
+            formattedRow+= add.substr(0,match_len);
+            formattedRow+= "</span>";
+            formattedRow+= add.substr(match_len)+'>';
+        } else {
+         formattedRow+= ' <'+add+'> '; //push add
+        }
+        return formattedRow;
+    };
+
+
 }
 
 jQuery.fn.autocomplete = function(url, options, data) {

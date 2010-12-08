@@ -10,7 +10,7 @@ zz.toolbars = {
         zz.wizard.set_wizard_style( 'create');
         $('div#cancel-drawer-btn').unbind('click').click( function(){
                 $('#drawer .body').fadeOut('fast', function(){window.location.reload()});
-                zz.slam_drawer(400);
+                zz.close_drawer(400);
         });
     },
 
@@ -58,4 +58,4 @@ zz.toolbars = {
           $('#like-popup').slideDown( 'fast' );// Show - slide down
         }
     }
-}
+};

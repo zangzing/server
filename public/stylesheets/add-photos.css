@@ -322,7 +322,7 @@ ul#filechooser h4 a {
 
 ul#added-pictures-tray {
   position: absolute;
-  display: none;
+  display: block;
   width: 878px;
   height: 40px;
   background-image: url('/images/bg-picture-tray.png');
