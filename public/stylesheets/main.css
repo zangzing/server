@@ -406,6 +406,7 @@ div#drawer div.body {
   background-image: url("/images/bg-bottom-repeat.png");
   background-repeat: repeat-y;
   width: 906px;
+  padding: 0 0 1px 0;
 }
 
 div#small-drawer div.body {
@@ -435,7 +436,20 @@ div#drawer div#tab-content {
     width: 898px;
 }
 
-
+div#cancel-drawer-btn{
+    position: absolute;
+    bottom: 9px;
+    right: 12px;
+    font-weight: 700;
+    line-height: 1.4em;
+    font-size: 1em;
+    width: 137px;
+    background-image:url("/images/btn-delete-mini.png");
+    background-repeat: no-repeat;
+    background-position: 121px;
+    cursor: pointer;
+    display:inherit;
+}
 
 
 

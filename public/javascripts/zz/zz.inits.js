@@ -93,7 +93,7 @@ zz.init = {
 
     resized: function(){
         if (zz.drawer_state == zz.DRAWER_OPEN) {
-            zz.resize_drawer(250);
+            zz.resize_drawer(50);
             //gow scroll body
         }
         // TODO: check for selected photo - move caption position
