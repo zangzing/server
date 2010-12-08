@@ -12,6 +12,7 @@ gem 'usesguid_migrations',  :git => 'git://github.com/fidel/usesguid_migrations.
 gem 'oauth',         '0.4.1'
 gem 'oauth-plugin',  '0.3.14'
 
+gem 'i18n'
 gem 'paperclip',     '2.3.5'
 gem 'aws-s3',        '>= 0.6.2', :require => 'aws/s3' # S3
 gem 'resque'                                          # Queuing

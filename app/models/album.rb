@@ -54,16 +54,30 @@ class Album < ActiveRecord::Base
 
   PRIVACIES = {'Public' =>'public','Hidden' => 'hidden','Password' => 'password'};
 
-  # All url, path and form helpers treat all subclasses as Album
+  # build our base model name for this class and
+  # hold onto it as a class variable since we only
+  # need to generate it once.  The name built up
+  # has all the support needed by ActiveModel to properly
+  # fetch the singular and pluralized versions of the name
+  # we do this rather than the default since we want
+  # our child classes to use this classes table name
+  # in other words we don't want PersonalAlbum to use the
+  # personal_albums table we want it to use the 
+  # albums table
   def self.model_name
-    name = "album"
-    name.instance_eval do
-      def plural;   pluralize;   end
-      def singular; singularize; end
-      def human;    singularize; end # only for Rails 3
-    end
-    return name
+    @@_model_name ||= ActiveModel::Name.new(Album)
   end
+#GWS - bug, use extend ActiveModel::Naming instead
+  # All url, path and form helpers treat all subclasses as Album
+#  def self.model_name
+#    name = "album"
+#    name.instance_eval do
+#      def plural;   pluralize;   end
+#      def singular; singularize; end
+#      def human;    singularize; end # only for Rails 3
+#    end
+#    return name
+#  end
 
 
   def cover
@@ -120,11 +134,11 @@ class Album < ActiveRecord::Base
   end
 
   def long_email
-      " \"#{self.name}\" <#{self.id}@#{ALBUM_EMAIL_HOST}>"
+    " \"#{self.name}\" <#{short_email}>"
   end
 
   def short_email
-      "#{self.id}@#{ALBUM_EMAIL_HOST}"
+      "#{self.id}@#{Server::Application.config.album_email_host}"
   end
 
   private
