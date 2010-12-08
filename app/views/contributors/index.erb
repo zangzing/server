@@ -27,8 +27,10 @@
   </div>
 </div>
 <script>
-    zz.wizard.contributor_count = <%= @contributors.length %>;
+//    zz.wizard.contributor_count = <%= @contributors.length %>;
     <% @contributors.each do |c | %>
-    zz.wizard.insert_contributor_bubble("<%=( c.name.nil? || c.name.length <= 0 ? c.email : c.name )%>","<%= contributor_path(c.id)%>");
+
+    //todo: this this should be in pages.album_contributors_tab.init()
+    pages.album_contributors_tab.insert_contributor_bubble("<%=( c.name.nil? || c.name.length <= 0 ? c.email : c.name )%>","<%= contributor_path(c.id)%>");
     <% end %>
 </script>

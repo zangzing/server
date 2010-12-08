@@ -1,5 +1,5 @@
 class AgentsController < ApplicationController
-  before_filter :oauth_required
+  #before_filter :oauth_required
 
   def index
     @agents = Agent.where(['oauth_tokens.user_id = ? and oauth_tokens.invalidated_at is null and oauth_tokens.authorized_at is not null',current_user.id])
@@ -13,10 +13,11 @@ class AgentsController < ApplicationController
     render :json => "ERROR: Version argument missing" ,:status => 400 and return unless params[:version]
     render :json => "ERROR: Platform argument missing", :status => 400 and return unless params[:platform]
     render :json => "ERROR: Platform Version argument missing", :status => 400 and return unless params[:platform_version]
+   
+    agent = ZANGZING_AGENT_CONFIG['agents'][params[:version]] ||ZANGZING_AGENT_CONFIG['agents']['default']
+    platform = agent[params[:platform]] || agent['default']
+    response = platform[params[:platform_version]] || platform['default']
 
-    response ={}
-    response[:check]    = "OK"
-
-    render :json => response;
+    render :text => response.to_json;
   end
 end

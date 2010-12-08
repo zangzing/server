@@ -8,18 +8,32 @@
             allowDelete: false,
             showSelection: false,
             selectedIndex:-1,
+            thumbnailSize: 20,
             onDeletePhoto: function(index, photo){},
             onSelectPhoto: function(index, photo){}
         },
 
         currentIndex : -1,
         selectedIndex : -1,
-        thumbnailSize: 0,
+        traySize:null,
+        orientation: null,
+        ORIENTATION_X: 'x',
+        ORIENTATION_Y: 'y',
+
         
         _create: function() {
             var self = this;
+
+            //these only work if element's is visible (ie display !- none)
             var width = this.element.width();
             var height = this.element.height();
+
+            if(width > height){
+                this.orientation = this.ORIENTATION_X;
+            }
+            else{
+                this.orientation = this.ORIENTATION_Y;
+            }
 
             var html = '';
             html += '<div class="thumbtray-wrapper">';
@@ -42,14 +56,28 @@
             this.previewElement = this.element.find('.thumbtray-preview');
             this.selectionElement = this.element.find('.thumbtray-selection');
             this.thumbnailsElement = this.element.find('.thumbtray-thumbnails');
-            this.thumbnailSize = this.element.height();
 
 
             this.wrapperElement.css({width:width, height:height});
             this.scrimElement.css({width:width, height:height});
             this.thumbnailsElement.css({width:width, height:height});
-            this.selectionElement.find('img').css({height:this.options.selectionSize});
-            this.previewElement.find('img').css({height:this.options.previewSize});
+
+            if(this.orientation === this.ORIENTATION_X){
+                this.previewElement.addClass('x');
+                this.selectionElement.addClass('x');
+                this.selectionElement.find('img').css({height:this.options.selectionSize});
+                this.previewElement.find('img').css({height:this.options.previewSize});
+                this.traySize = width;
+            }
+            else{
+                this.previewElement.addClass('y');
+                this.selectionElement.addClass('y');
+                this.selectionElement.find('img').css({width:this.options.selectionSize});
+                this.previewElement.find('img').css({width:this.options.previewSize});
+                this.traySize = height;
+
+            }
+
 
 
 
@@ -92,10 +120,25 @@
 
 
             self.scrimElement.mousemove(function(event){
-                var index = self._getIndexForPosition(event.pageX - self.element.offset().left);
+                var index = null;
+
+                if(self.orientation === self.ORIENTATION_X){
+                    self._getIndexForPosition(event.pageX - self.element.offset().left);
+                }
+                else{
+                    self._getIndexForPosition(event.pageY - self.element.offset().top);
+                }
+
                 if(index !== -1){
                     self.previewElement.show();
-                    self._setCurrentIndex(self._getIndexForPosition(event.pageX - self.element.offset().left));
+
+                    if(self.orientation === self.ORIENTATION_X){
+                        self._setCurrentIndex(self._getIndexForPosition(event.pageX - self.element.offset().left));
+                    }
+                    else{
+                        self._setCurrentIndex(self._getIndexForPosition(event.pageY - self.element.offset().top));
+                    }
+
                 }
                 else{
                     hidePreview();
@@ -139,22 +182,22 @@
         },
 
         _getMaxVisibleThumbnails: function(){
-            return this.element.width() / this.thumbnailSize;
+            return this.traySize / this.options.thumbnailSize;
         },
 
         _getThumbnailActiveSize: function(){
             var len = this.options.photos.length;
-            if(len * this.thumbnailSize < this.element.width()){
-                return this.thumbnailSize;
+            if(len * this.options.thumbnailSize < this.traySize){
+                return this.options.thumbnailSize;
             }
             else{
-                return this.element.width() / len;
+                return this.traySize / len;
             }
 
         },
 
         _getThumbnailSize: function(){
-            return this.thumbnailSize;
+            return this.options.thumbnailSize;
         },
 
         _setCurrentIndex: function(index){
@@ -163,7 +206,14 @@
 
                 if(index !== -1){
                     this.previewElement.find('img').attr('src', this.options.photos[index].src)
-                    this.previewElement.css('left', this._getPositionForIndex(index) - this.previewElement.width() / 2);
+
+                    if(this.orientation === this.ORIENTATION_X){
+                        this.previewElement.css('left', this._getPositionForIndex(index) - this.previewElement.width() / 2);
+                    }
+                    else{
+                        this.previewElement.css('top', this._getPositionForIndex(index) - this.previewElement.height() / 2);
+                    }
+
 
                     if(this.options.showSelection){
                         this.selectionElement.css({opacity:.5});
@@ -185,9 +235,17 @@
             if(index !== -1){
                 if(this.options.showSelection === true){
                     this.selectionElement.find('img').attr('src', this.options.photos[index].src)
-                    this.selectionElement.css('left', this._getPositionForIndex(index) - this.selectionElement.width() / 2);
                     this.selectionElement.show();
                     this.selectionElement.css({opacity:1});
+
+
+                    if(this.orientation === this.ORIENTATION_X){
+                        this.selectionElement.css('left', this._getPositionForIndex(index) - this.selectionElement.width() / 2);
+                    }
+                    else{
+                        this.selectionElement.css('top', this._getPositionForIndex(index) - this.selectionElement.height() / 2);
+                    }
+
 
                 }
             }
@@ -234,7 +292,12 @@
 
             this.thumbnailsElement.html(html);
 
-            this.scrimElement.css('width', (photos.length * this._getThumbnailSize()));
+            if(this.orientation === this.ORIENTATION_X){
+                this.scrimElement.css('width', (photos.length * this._getThumbnailSize()));
+            }
+            else{
+                this.scrimElement.css('height', (photos.length * this._getThumbnailSize()));
+            }
 
         },
 

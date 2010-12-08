@@ -8,32 +8,8 @@ var oauthmanager = {
 
     on_login: function(){
         oauthmanager.callback()
-    },
-
-    init_social: function(){
-        $("#facebook_box").click( function(){
-            if( $(this).is(':checked')  && !$("#facebook_box").attr('authorized')){
-                $(this).attr('checked', false);
-                oauthmanager.login( '/facebook/sessions/new', oauthmanager.facebook_login_success);
-            }});
-        $("#twitter_box").click( function(){
-            if($(this).is(':checked') && !$("#twitter_box").attr('authorized')){
-                $(this).attr('checked', false);
-                oauthmanager.login( '/twitter/sessions/new', oauthmanager.twitter_login_success );
-            }});
-    },
-
-    facebook_login_success: function(){
-        $("#facebook_box").attr('checked', true);
-        $("#facebook_box").attr('authorized', 'yes');
-        $("#post_share_button").attr('src','/images/btn-post-on.png');
-    },
-
-    twitter_login_success: function(){
-        $("#twitter_box").attr('checked', true);
-        $("#twitter_box").attr('authorized', 'yes');
-        $("#post_share_button").attr('src','/images/btn-post-on.png')
     }
+
 };
 
 

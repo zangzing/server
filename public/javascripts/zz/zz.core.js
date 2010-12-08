@@ -1,7 +1,3 @@
-//var temp;var temp_width;var temp_height;var temp_top;var temp_left;
-//var temp_id;var temp_url;var content_url;var serialized;var temp_top_new;
-//var temp_left_new;var value;var callback;
-
 
 var zz = {
 
@@ -11,7 +7,13 @@ var zz = {
     /* Drawer Animations
      ------------------------------------------------------------------------- */
 
-    drawer_open: 0,
+
+    DRAWER_CLOSED: 0,
+    DRAWER_OPEN: 1,
+    DRAWER_PARTIAL: 2,
+
+
+    drawer_state: 0,
     screen_gap: 150,
 
     open_drawer: function(time, percent){
@@ -34,9 +36,9 @@ var zz = {
         $('div#drawer-content').animate({ height: (zz.drawer_height - 14) + 'px'}, time );
         zz.wizard.resize_scroll_body()
 
-        zz.drawer_open = 1; // remember position of the drawer in
+        zz.drawer_state = zz.DRAWER_OPEN; // remember position of the drawer in
 
-    }, // end zz.open_drawer()
+    },
 
     resize_drawer: function(time){
 
@@ -48,9 +50,9 @@ var zz = {
         $('div#drawer-content').animate({ height: (zz.drawer_height - 14) + 'px'}, time );
         zz.wizard.resize_scroll_body()
 
-    }, // end zz.resize_drawer()
+    },
 
-    close_drawer: function(time){
+    close_drawer_partially: function(time){
 
         // close the drawer
         $('div#drawer').animate({ height: '24px'}, time );
@@ -59,11 +61,11 @@ var zz = {
         // fade in the grid
         $('article').animate({ opacity: 1 }, time * 1.1 );
 
-        zz.drawer_open = 2; // remember position of the drawer in
+        zz.drawer_state = zz.DRAWER_PARTIAL; // remember position of the drawer in
 
-    }, // end zz.close_drawer()
+    },
 
-        slam_drawer: function(time){
+    close_drawer: function(time){
 
         $('#indicator').fadeOut('fast');
 
@@ -74,9 +76,9 @@ var zz = {
         // fade in the grid
         $('article').animate({ opacity: 1 }, time * 1.1 );
 
-        zz.drawer_open = 0; // remember position of the drawer in
+        zz.drawer_state = zz.DRAWER_CLOSED; // remember position of the drawer in
 
-    }, // end zz.slam_drawer()
+    },
 
     easy_drawer: function(time, opacity, url, funct) {
         // time - how fast to animate the drawer
@@ -89,7 +91,7 @@ var zz = {
             $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 50) + 'px'});
             funct();
         });
-    },
+    }
 
 
 
