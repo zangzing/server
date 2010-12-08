@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
   before_filter :protect_with_http_auth
 
   after_filter :flash_to_headers
-  
+
   #protect_from_forgery # See ActionController::RequestForgeryProtection XSScripting protection
 
   layout  proc{ |c| c.request.xhr? ? false : 'main' }

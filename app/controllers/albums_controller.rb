@@ -75,8 +75,17 @@ class AlbumsController < ApplicationController
 
   def update
     @album = Album.find(params[:id])
-    @album.update_attributes( params[:album] )
-    render :text => 'Success Updating Album', :status => 200, :layout => false
+    # The AlbumCoverPicker sends an empty string when no cover has been selected. Delete param if that is the case
+    # TODO: Fix AlbumCoverPicker to omit cover_photo_id parameter if not set by user
+    params[:album].delete(:cover_photo_id) if params[:album][:cover_photo_id] && params[:album][:cover_photo_id].length <= 0  
+    if @album && @album.update_attributes( params[:album] )
+      flash[:notice] = "Album Updated!"
+      render :text => 'Success Updating Album', :status => 200, :layout => false
+    else
+      flash[:error]="Your album update did not succeed please check X-Errors header for details"
+      errors_to_headers( @album )
+      render :text => 'Album update did not succeed', :status => 500, :layout => false
+    end
   end
 
   def index
