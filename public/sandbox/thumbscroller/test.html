@@ -7,17 +7,15 @@
         <link href="../../stylesheets/lib.css" media="screen" rel="stylesheet" type="text/css" />
 
         <style type="text/css" id="page-css">
-			/* Styles specific to this particular page */
 			.scroll-pane
 			{
-				width: 500px;
+				position:absolute;
+                top:50;
+                left:100;
+                width: 500px;
 				height: 500px;
 				overflow: auto;
-			}
-			.horizontal-only
-			{
-				height: auto;
-				max-height: 200px;
+                border:1px solid #cccccc;
 			}
 		</style>
 
@@ -34,10 +32,13 @@
 			$(function()
 			{
 				$('.scroll-pane').jScrollPane({
-                    dragMinHeight: 20,
-                    dragMaxHeight: 20,
+                    verticalDragMinHeight: 20,
+                    verticalDragMaxHeight: 20,
+                    horizontalDragMinWidth: 20,
+                    horizontalDragMaxWidth: 20,
                     scrollbarWidth: 20,
-                    animateTo: true
+                    animateScroll: true,
+                    animateDuration:200
                 });
 
                 $('.jspTrack').prepend('<div class="thumbtray" style="position:absolute;left:0;width:16px;height:500px"></div>');
@@ -120,7 +121,13 @@
                         }
                     });
 
+                $('.scroll-pane').bind('jsp-scroll-y', function(event){
 
+                    var center = Math.floor($(".jspDrag").position().top + $(".jspDrag").height()/2);
+
+                    $(".thumbtray").data().zz_thumbtray.showPreviewForPosition(center);
+
+                });
 
 
 			});
@@ -130,7 +137,6 @@
 
     <body>
 
-    <h2>Vertical only</h2>
     <div class="scroll-pane">
         <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec in ligula id sem tristique ultrices
