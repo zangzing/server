@@ -1,24 +1,3 @@
-# == Schema Information
-# Schema version: 60
-#
-# Table name: albums
-#
-#  id              :integer         not null, primary key
-#  user_id         :integer
-#  privacy         :integer
-#  type            :string(255)
-#  style           :integer         default(0)
-#  open            :boolean
-#  event_date      :datetime
-#  location        :string(255)
-#  stream_share_id :integer
-#  reminders       :boolean
-#  name            :string(255)
-#  suspended       :boolean
-#  created_at      :datetime
-#  updated_at      :datetime
-#
-
 #
 #   Copyright 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
@@ -43,10 +22,13 @@ class Album < ActiveRecord::Base
   validates_presence_of  :user_id
   validates_presence_of  :name
   validates_length_of    :name, :maximum => 50
+  validates_length_of    :cover_photo_id, :is => 22, :message => "Invalid ID for cover photo must be GUID(22)", :if => :cover_photo_id_changed?
+
 
   #before_create :set_email
   attr_accessor :name_had_changed
   before_save  Proc.new { |model| model.name_had_changed = true }, :if => :name_changed?
+  before_save  :cover_photo_id_valid?, :if => :cover_photo_id_changed?
   after_save   :set_email, :if => :name_had_changed
   #before_save   :set_email, :if => :new_slug_needed? #:name_changed?
 
@@ -131,6 +113,14 @@ class Album < ActiveRecord::Base
   end
 
 private
+  def cover_photo_id_valid?
+    begin
+      cover_photo_id.length = 22 && photos.find(cover_photo_id)
+    rescue ActiveRecord::RecordNotFound => e
+       errors.add(:cover_photo_id,"Could not find photo with ID:"+cover_photo_id+" in this album")
+       return false 
+    end
+  end
 
   def set_email
     # Remove spaces and @
