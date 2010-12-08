@@ -1,31 +1,85 @@
-<div id="headline">
-    <h3>User Account</h3>
+<style type="text/css">
+
+    #profile_form {
+        float: left;
+        width: 45%;
+        padding: 15px 40px 0 20px;
+
+    }
+
+    #profile_form dl dt{
+        width: 100%;
+        text-align: left;
+        margin-bottom: 5px;
+    }
+
+    #profile_form input[type=text],
+    #profile_form input[type=password]{
+        width: 100%;
+        float: left;
+        margin-bottom: 15px;
+    }
+    #firstname{
+        width: 48%;
+        float: left;
+    }
+    #lastname{
+        width: 48%;
+        float:right;
+    }
+    #username_full{
+        padding-left: 10px;
+    }
+    #username_path{
+        color: green;
+    }
+
+    #profile_photo{
+        float: right;
+        padding: 15px 120px;
+    }
+
+    #profile_photo div{
+        width: 100%;
+    }
+
+    #profile_photo div{
+        margin-bottom: 15px;
+    }
+    
+    .profile_message_box{
+        margin: 0;
+        padding: 10px 0 0 0;
+    }
+
+</style>
+<div class="flash-box profile_message_box"><div class="error-notice" id="error-notice"></div><div class="flash-notice" id="flashes-notice"></div></div>
+<div id="scroll-body">
+  <div id="profile_form">
+    <% form_for @user, {:id=>"actual_profile_form"} do | f|  %>
+      <dl class="clearfix" >
+        <%= render :partial => 'fields', :locals =>{:f => f, :user => @user }%>
+        <input name="submit" alt="" type="image" style="visibility:hidden;" />        
+      </dl>
+    <% end %>
+  </div>
+
+    <div id="profile_photo">
+        <span><div class="form_label" id="profile_photo_label">Profile Photo</div></span>
+        <div><img src="/images/bg-profile-photo.png"></div>
+        <div><img src="/images/btn-upload-photo.png"></div>
+    </div>
 </div>
-<br/>
+    <div class="settings-buttons">
+              <a     id="cancel_profile_button" href="javascript:void(0);" class="cancel-button">Cancel</a>
+              <input id="ok_profile_button" type="image" name="submit" src="/images/btn-wizard-done.png">
+    </div>
 
-  <%= form_for @user, {:id=>"update-user-form"} do | f|  %>
-	    <%= render :partial => 'fields', :locals =>{:f => f }%>
-	<div class="actions">
-		<%= f.submit "Update", {:id=>"update-user-button"}%>
-	</div>
 
-<% end %>
-     <p>
-       <b>Last login at:</b>
-       <%=h @user.last_login_at %>
-     </p>
 
-     <p>
-       <b>Current login at:</b>
-       <%=h @user.current_login_at %>
-     </p>
 
-     <p>
-       <b>Last login ip:</b>
-       <%=h @user.last_login_ip %>
-     </p>
 
-     <p>
-       <b>Current login ip:</b>
-       <%=h @user.current_login_ip %>
-     </p>
+
+
+
+

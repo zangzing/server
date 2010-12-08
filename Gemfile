@@ -1,41 +1,34 @@
 source :gemcutter
 #source 'http://gems.github.com'
 
-#
-#   Copyright 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
-#
-
-# All Gems MUST have a version number (Avoid having to chase a bug caused by an updated gem)
-
-# Bundler requires these gems in all environments (keep executables light by being frugal)
-
-gem "bundler"
-gem "rails"
+# bundler requires these gems in all environments
+gem "bundler",">= 1.0.3"
+gem "rails", "3.0.3"
 gem "mysql"
-#gem 'authlogic',            :git => 'git://github.com/odorcicd/authlogic.git',:branch => 'rails3'
-#gem 'authlogic', 			:git => 'git://github.com/binarylogic/authlogic.git'
-gem 'authlogic'
-gem 'usesguid',             :git => 'git://github.com/zangzing/usesguid.git'
+gem 'authlogic',     '2.1.6'
+gem 'usesguid',      :git => 'git://github.com/zangzing/usesguid.git'
 gem 'usesguid_migrations',  :git => 'git://github.com/fidel/usesguid_migrations.git'
 
-gem 'oauth',                '0.4.1'  
-gem 'oauth-plugin',         '0.3.14'
+gem 'oauth',         '0.4.1'
+gem 'oauth-plugin',  '0.3.14'
 
-gem 'paperclip',            '2.3.5'
-gem 'aws-s3',               '>= 0.6.2', :require => 'aws/s3' # S3
-gem 'resque',               '1.10.0'                         # Queuing
-gem 'SystemTimer',          '1.2'                            # Interruptions based Timeout
+gem 'paperclip',     '2.3.5'
+gem 'aws-s3',        '>= 0.6.2', :require => 'aws/s3' # S3
+gem 'resque'                                          # Queuing
+gem 'SystemTimer'                                     # For Random numbers (resque uuid)
+gem 'actionmailer'
 gem 'will_paginate',        '3.0.pre2'                        # Pagination
+gem "friendly_id", "~> 3.1"                           #User-friendly links to albums and users' pages
 
-gem 'gdata',                '1.1.1'  					     # Google Data 
-gem 'twitter_oauth',   		'0.4.3'                          # Twitter 
-gem 'hyper-graph',          '0.3.1', :require=>'hyper_graph' # Facebook
-gem 'flickraw',             '0.8.2'                          # Flickr
-gem 'bitly',                '0.5.3'                          # Bitly duh?
+gem 'gdata',         '1.1.1'  						  # Google Data 
+gem 'twitter_oauth'   		                          # Twitter 
+gem 'hyper-graph',   '0.3.1', :require=>'hyper_graph' # Facebook
+gem 'flickraw',      '0.8.2'                          # Flickr
+gem 'bitly'                                           # Bitly duh?
 
-gem 'vpim',                 '0.695'                          # VCard creator
-gem 'rpm_contrib',          '1.0.13'                         # New Relic Perf Instrumentation
-gem 'faker',                '0.3.1'                          # To load sample data
+gem 'vpim'                                            # VCard creator
+gem 'rpm_contrib'                                     # For New Relic Performance Instrumentation
+gem 'faker'                                           # To load sample data
 
 group :development do
   # bundler requires these gems in development

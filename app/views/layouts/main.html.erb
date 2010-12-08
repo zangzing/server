@@ -18,7 +18,7 @@
        title = "ZangZing" 
     end
     if ! Rails.env.production?
-      title = "#{title} Version: #{Server::Application.config.zangzing_version} Controller: #{controller.controller_name} Action: #{ controller.action_name}"
+      title = "#{title} Version: #{ZANGZING_VERSION} Controller: #{controller.controller_name} Action: #{ controller.action_name}"
     end %>
     <title><%=title%></title>
     <link rel="stylesheet" href="/stylesheets/lib.css" media="all" />
@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="/stylesheets/album.css" media="all" />
     <link rel="stylesheet" href="/stylesheets/add-photos.css" media="all" />
     <link rel="stylesheet" href="/stylesheets/user.css" media="all" />
+    <link rel="stylesheet" href="/stylesheets/thumbtray.css" media="all" />
     <link rel="stylesheet" href="/stylesheets/jquery.autocomplete.css" media="all" />
 
     <!-- TODO: favicon 
@@ -83,6 +84,7 @@
     <script type="text/javascript" src="/javascripts/lib/jquery.autocomplete.js"></script>
     <script type="text/javascript" src="/javascripts/lib/jquery.lazyload.mini.js"></script>
     <script type="text/javascript" src="/javascripts/lib/jquery.client.js"></script>
+    <script type="text/javascript" src="/javascripts/lib/jquery-ui-1.8.6.custom.min.js"></script>
 
     <script type="text/javascript" src="/javascripts/lib/jquery.ba-bbq.js"></script>
     <script type="text/javascript" src="/javascripts/lib/jquery.jsonp.js"></script>
@@ -103,16 +105,19 @@
     <script type="text/javascript" src="/javascripts/filechooser.js" ></script>
     <script type="text/javascript" src="/javascripts/oauthmanager.js" ></script>
     <script type="text/javascript" src="/javascripts/sharecontacts.js" ></script>
+    <script type="text/javascript" src="/javascripts/thumbtray.js" ></script>
 
-<%= content_for :page_javascript %>
+<%  # Add in template based javascript by defining this in the template
+    if @content_for_page_javascript -%>
+    <%= @content_for_page_javascript %>
+<%  end -%>
     <script type="text/javascript">
-      /*Vars our js fns need from ruby (calls/conditionals) - NO SECURE DATA
+      /* Vars our js fns need from ruby (calls/conditionals) - NO SECURE DATA
       ----------------------------------------------------------------------- */
-<%    if signed_in?  %>
+<%    if signed_in?  -%>
       zz.current_user_id = '<%= current_user.id %>';
       zz.current_user_name = '<%= current_user.username %>';
-
-<%    end %>
+<%    end -%>
 
 <%  if @album  -%>
       zz.album_id = '<%= @album.id %>';

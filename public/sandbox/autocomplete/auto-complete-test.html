@@ -1,0 +1,28 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="autoSuggest.css"> 
+		<script src="http://drewwilson.com/js/jquery.js"></script>	
+		<script src="jquery.autoSuggest.js"></script>
+		<script>
+			$(document).ready(function(){
+				var data = {items: [
+				{value: "21", name: "Mick Jagger"},
+				{value: "43", name: "Johnny Storm"},
+				{value: "46", name: "Richard Hatch"},
+				{value: "54", name: "Kelly Slater"},
+				{value: "55", name: "Rudy Hamilton"},
+				{value: "79", name: "Michael Jordan"}
+				]};
+			
+				$("input[type=text]").autoSuggest(data.items, {selectedItemProp: "name", searchObjProps: "name"});			
+			});
+		</script>
+	</head>
+	
+	
+	<body>
+		demo <input type='text'>
+	</body>
+
+
+</html>

@@ -25,7 +25,7 @@
 
 class Album < ActiveRecord::Base
   usesguid
-  attr_accessible :name, :privacy
+  attr_accessible :name, :privacy, :cover_photo_id
 
   belongs_to :user
   has_many :photos,           :dependent => :destroy
@@ -33,6 +33,9 @@ class Album < ActiveRecord::Base
   has_many :activities,       :dependent => :destroy
   has_many :upload_batches
   has_many :contributors
+  
+  has_friendly_id :name, :use_slug => true, :scope => :user, :reserved_words => ["photos", "shares", 'activities', 'slides_source', 'people'], :approximate_ascii => true
+
 
   has_attached_file :picon, Paperclip.options[:picon_options]
   before_picon_post_process    :set_picon_metadata
@@ -41,10 +44,13 @@ class Album < ActiveRecord::Base
   validates_presence_of  :name
   validates_length_of    :name, :maximum => 50
 
-  before_create :set_email
-  before_save   :set_email, :if => :name_changed?
+  #before_create :set_email
+  attr_accessor :name_had_changed
+  before_save  Proc.new { |model| model.name_had_changed = true }, :if => :name_changed?
+  after_save   :set_email, :if => :name_had_changed
+  #before_save   :set_email, :if => :new_slug_needed? #:name_changed?
 
-  default_scope :order => 'updated_at DESC'
+  default_scope :order => "`albums`.updated_at DESC"
 
   PRIVACIES = {'Public' =>'public','Hidden' => 'hidden','Password' => 'password'};
 
@@ -114,11 +120,11 @@ class Album < ActiveRecord::Base
   end
 
   def long_email
-      " \"#{self.name}\" <#{self.id}@#{Server::Application.config.album_email_host}>"
+      " \"#{self.name}\" <#{self.id}@#{ALBUM_EMAIL_HOST}>"
   end
 
   def short_email
-      "#{self.id}@#{Server::Application.config.album_email_host}"
+      "#{self.id}@#{ALBUM_EMAIL_HOST}"
   end
 
   private

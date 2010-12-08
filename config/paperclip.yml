@@ -33,7 +33,7 @@ common: &common
   picon_options:
     <<: *images_common
     path:        ":attachment/:id/:filename"
-    default_url: "/images/folders/blank.png"  
+    default_url: "/images/folders/blank.jpg"  
   image_options:
     <<: *images_common
     path:        ":directory/:style/:filename"

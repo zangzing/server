@@ -1,33 +1,3 @@
-# == Schema Information
-# Schema version: 60
-#
-# Table name: users
-#
-#  id                  :integer         not null, primary key
-#  email               :string(255)
-#  role                :string(255)
-#  username            :string(255)
-#  first_name          :string(255)
-#  last_name           :string(255)
-#  style               :string(255)     default("white")
-#  login_count         :integer
-#  last_login_at       :date
-#  last_login_ip       :string(255)
-#  current_login_at    :date
-#  current_login_ip    :string(255)
-#  failed_login_count  :integer
-#  last_request_at     :date
-#  persistence_token   :string(255)
-#  single_access_token :string(255)
-#  perishable_token    :string(255)     default(""), not null
-#  remember_token      :string(255)
-#  crypted_password    :string(255)
-#  password_salt       :string(255)
-#  suspended           :string(255)     default("f")
-#  created_at          :datetime
-#  updated_at          :datetime
-#
-
 #
 #   Copyright 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
@@ -38,7 +8,8 @@
 class User < ActiveRecord::Base
   usesguid
   attr_writer      :name
-  attr_accessible  :email, :name, :username, :password, :automatic
+  attr_accessor    :old_password, :reset_password
+  attr_accessible  :email, :name, :first_name, :last_name, :username,  :password, :old_password, :automatic
 
   has_many :albums,              :dependent => :destroy
   has_many :identities,          :dependent => :destroy
@@ -71,7 +42,9 @@ class User < ActiveRecord::Base
   validates_uniqueness_of :username, :message => "Has already been taken", :unless => :automatic?
   validates_presence_of :email
   validates_length_of  :password, :within => 6..40, :if => :require_password?, :message => "must be between 6 and 40 characters long"
-  
+  validate :old_password_valid?, :on => :update, :unless => :reset_password
+
+  has_friendly_id :username
 
   Identity::UI_INFO.keys.each do |service_name|
     define_method("identity_for_#{service_name}") do
@@ -83,6 +56,7 @@ class User < ActiveRecord::Base
       identity
     end
   end
+
 
 
   def self.find_by_email_or_create_automatic( email, name='' )
@@ -102,6 +76,10 @@ class User < ActiveRecord::Base
                            :password => UUID.random_create.to_s);
     end
     return user
+  end
+
+  def has_identity?( service_name )
+    self.identities.find(:first, :conditions => {:identity_source => service_name.to_s})
   end
 
   # automatic users were created by the system from contributors emailing photos or OAuth login i.e. FaceBookConnect
@@ -146,14 +124,30 @@ class User < ActiveRecord::Base
   def avatar_url
     return gravatar_url_for( self.email )
   end
+
   private
-    def split_name
+  def old_password_valid?
+    if require_password? && !new_record? && !valid_password?(old_password)
+      errors.add(:old_password, "You old password does not match our records")
+      false
+    else
+      true
+    end
+  end
+
+  def require_password?
+    # only require password if password field changed in an update or if resseting your password
+    password_changed? || (crypted_password.blank? && !new_record?) || reset_password
+  end
+
+
+  def split_name
       unless name.nil?
         names = name.split
         self.last_name = names.pop
         self.first_name = names.join(' ')
       end
-    end
+  end
 
   def gravatar_url_for(email)
     "http://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(email)}"

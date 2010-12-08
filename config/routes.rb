@@ -14,6 +14,8 @@ Server::Application.routes.draw do
   get    '/users/:id/edit'          => 'users#edit',              :as => :edit_user
   put    '/users/:id'              => 'users#update',            :as => :update_user
   delete '/users/:id'              => 'users#destroy',           :as => :delete_user
+  get    '/users/:id/account'    => 'users#account',    :as => :account
+  get    '/users/:id/notifications'    => 'users#notifications',    :as => :notifications
   get    '/users/validate_email'    => 'users#validate_email',    :as => :validate_email
   get    '/users/validate_username' => 'users#validate_username', :as => :validate_username
 
@@ -50,18 +52,10 @@ Server::Application.routes.draw do
   get '/albums/:album_id/shares/newpost'  => 'shares#newpost',    :as => :new_album_postshare
   get '/albums/:album_id/shares/newemail' => 'shares#newemail',   :as => :new_album_emailshare
 
-  #contributors
-  get    '/albums/:album_id/contributors'          => 'contributors#index',      :as => :album_contributors
-  get    '/albums/:album_id/contributors/new'      => 'contributors#new',        :as => :new_album_contributor
-  post   '/albums/:album_id/contributors'         => 'contributors#create',     :as => :create_album_contributor
-  get    '/contributors/:id'                      => 'contributors#show',       :as => :contributor
-  get    '/contributors/:id/edit'                  => 'contributors#edit',       :as => :edit_contributor
-  put    '/contributors/:id'                      => 'contributors#update',     :as => :update_contributor
-  delete '/contributors/:id'                      => 'contributors#destroy',    :as => :delete_contributor 
-    
   #photos
   get    '/albums/:album_id/photos'      => 'photos#index',                     :as => :album_photos
   post   '/albums/:album_id/photos'      => 'photos#create',                    :as => :create_album_photo
+  get    '/albums/:album_id/slides_source.:format' => 'photos#slideshowbox_source',    :as => :slideshow_source
   get    '/photos/:id'                   => 'photos#show',                      :as => :photo
   get    '/photos/:id/edit'              => 'photos#edit',                      :as => :edit_photo
   put    '/photos/:id/edit'              => 'photos#update',                    :as => :update_photo
@@ -70,11 +64,11 @@ Server::Application.routes.draw do
   get    '/agents/:agent_id/photos'      => 'photos#agentindex',                :as => :agent_photos
   post   '/albums/:album_id/photos/agent_create' => 'photos#agent_create',      :as => :agent_create
   
-  # timeline views
+  #activities
   get '/albums/:album_id/activities' => 'activities#album_index', :as => :album_activities
   get '/users/:user_id/activities'   => 'activities#user_index',  :as => :user_activities
 
-  # people views
+  #people
   get '/albums/:album_id/people' => 'people#album_index',         :as => :album_people
   get '/users/:user_id/people'   => 'people#user_index',          :as => :user_people
 
@@ -86,9 +80,20 @@ Server::Application.routes.draw do
   put    '/follows/:id/block'             => 'follows#block',      :as => :block_follow
   put    '/follows/:id/unblock'           => 'follows#unblock',    :as => :unblock_follow
 
+  #contributors
+  get    '/albums/:album_id/contributors'          => 'contributors#index',      :as => :album_contributors
+  get    '/albums/:album_id/contributors/new'      => 'contributors#new',        :as => :new_album_contributor
+  post   '/albums/:album_id/contributors'         => 'contributors#create',     :as => :create_album_contributor
+  get    '/contributors/:id'                      => 'contributors#show',       :as => :contributor
+  get    '/contributors/:id/edit'                  => 'contributors#edit',       :as => :edit_contributor
+  put    '/contributors/:id'                      => 'contributors#update',     :as => :update_contributor
+  delete '/contributors/:id'                      => 'contributors#destroy',    :as => :delete_contributor 
+    
+
   # oauth
   match '/users/:id/agents'     => 'agents#index',                 :as => :agents
   match '/agent/info'          => 'agents#info',                  :as => :agent_info
+  match '/agents/check'      => 'agents#check',              :as => :check
   match '/oauth/authorize'      => 'oauth#authorize',              :as => :authorize
   match '/oauth/agentauthorize' => 'oauth#agentauthorize',         :as => :agentauthorize
   match '/oauth/revoke'         => 'oauth#revoke',                 :as => :revoke
@@ -97,14 +102,13 @@ Server::Application.routes.draw do
   match '/oauth/test_request'   => 'oauth#test_request',           :as => :test_request
   match '/oauth/test_session'   => 'oauth#test_session',           :as => :test_session
 
-  #sessions
+  #sessions - login
   resource :user_sessions
-  resources :password_resets
   match '/signin'                    => 'user_sessions#new',            :as => :signin
   match '/signout'                   => 'user_sessions#destroy',        :as => :signout
   match '/activate/:activation_code' => 'activations#create',           :as => :activate
   match '/resend_activation'        => 'activations#resend_activation', :as => :resend_activation
-
+  resources :password_resets
 
 
   #static pages
@@ -114,16 +118,14 @@ Server::Application.routes.draw do
   get '/signup'   => 'users#new',     :as => :signup
 
 
-
   #flickr
   match '/flickr/sessions/new' => 'flickr_sessions#new', :as => :new_flickr_session, :namespace => 'connector'
   match '/flickr/sessions/create' => 'flickr_sessions#create', :as => :create_flickr_session, :namespace => 'connector'
   match '/flickr/sessions/destroy' => 'flickr_sessions#destroy', :as => :destroy_flickr_session, :namespace => 'connector'
-  match '/flickr/folders/:set_id/photos' => 'flickr_photos#index', :as => :flickr_photos, :namespace => 'connector'
-  match '/flickr/folders/:set_id/photos/:photo_id/:action' => 'flickr_photos#index', :as => :flickr_photo_action, :namespace => 'connector'
+  match '/flickr/folders/:set_id/photos.:format' => 'flickr_photos#index', :as => :flickr_photos, :namespace => 'connector'
+  match '/flickr/folders/:set_id/photos/:photo_id/:action' => 'flickr_photos#action', :as => :flickr_photo_action, :namespace => 'connector'
   match '/flickr/folders.:format' => 'flickr_folders#index', :as => :flickr_folders, :namespace => 'connector'
   match '/flickr/folders/:set_id/:action.:format' => 'flickr_folders#index', :as => :flickr_folder_action,:namespace => 'connector'
-
 
   #kodak
   match '/kodak/sessions/new' => 'kodak_sessions#new', :as => :new_kodak_session, :namespace => 'connector'
@@ -199,12 +201,19 @@ Server::Application.routes.draw do
   match '/yahoo/sessions/destroy' => 'yahoo_sessions#destroy', :as => :destroy_yahoo_session, :namespace => 'connector'
   match '/yahoo/contacts/:action' => 'yahoo_contacts#index', :as => :yahoo_contacts, :namespace => 'connector'
 
+  #Hotmail / MS Windows Live
+  match '/mslive/sessions/new' => 'mslive_sessions#new', :as => :new_mslive_session, :namespace => 'connector'
+  match '/mslive/sessions/create' => 'mslive_sessions#delauth',:as => :create_mslive_session, :namespace => 'connector'
+  match '/mslive/sessions/destroy' => 'mslive_sessions#destroy', :as => :destroy_mslive_session, :namespace => 'connector'
+  match '/mslive/contacts/:action' => 'mslive_contacts#index', :as => :mslive_contacts, :namespace => 'connector'
+
   #twitter
   match '/twitter/sessions/new' => 'twitter_sessions#new', :as => :new_twitter_session, :namespace => 'connector'
   match '/twitter/sessions/create'=> 'twitter_sessions#create', :as => :create_twitter_session, :namespace => 'connector'
   match '/twitter/sessions/destroy' => 'twitter_sessions#destroy', :as => :destroy_twitter_session, :namespace => 'connector'
   match '/twitter/posts.:format' => 'twitter_posts#index', :as => :twitter_posts, :namespace => 'connector'
   match '/twitter/posts/create' => 'twitter_posts#create', :as => :create_twitter_post, :namespace => 'connector'
+
 
   #sendgrid
   match '/sendgrid/import' => 'sendgrid#import', :as => :sendgrid_import

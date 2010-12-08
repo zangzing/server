@@ -15,7 +15,7 @@ GIT
 GEM
   remote: http://rubygems.org/
   specs:
-    SystemTimer (1.2)
+    SystemTimer (1.2.1)
     abstract (1.0.0)
     actionmailer (3.0.3)
       actionpack (= 3.0.3)
@@ -50,7 +50,8 @@ GEM
       builder
       mime-types
       xml-simple
-    bitly (0.5.3)
+    babosa (0.2.0)
+    bitly (0.5.4)
       crack (>= 0.1.4)
       httparty (>= 0.5.2)
     builder (2.1.2)
@@ -63,6 +64,8 @@ GEM
     faker (0.3.1)
     flickraw (0.8.2)
       json (>= 1.1.1)
+    friendly_id (3.1.8)
+      babosa (~> 0.2.0)
     gdata (1.1.1)
     httparty (0.6.1)
       crack (= 0.1.8)
@@ -159,14 +162,16 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  SystemTimer (= 1.2)
-  authlogic
+  SystemTimer
+  actionmailer
+  authlogic (= 2.1.6)
   aws-s3 (>= 0.6.2)
-  bitly (= 0.5.3)
-  bundler
+  bitly
+  bundler (>= 1.0.3)
   factory_girl
-  faker (= 0.3.1)
+  faker
   flickraw (= 0.8.2)
+  friendly_id (~> 3.1)
   gdata (= 1.1.1)
   hyper-graph (= 0.3.1)
   launchy
@@ -175,14 +180,14 @@ DEPENDENCIES
   oauth (= 0.4.1)
   oauth-plugin (= 0.3.14)
   paperclip (= 2.3.5)
-  rails
-  resque (= 1.10.0)
-  rpm_contrib (= 1.0.13)
+  rails (= 3.0.3)
+  resque
+  rpm_contrib
   rspec
   rspec-rails (>= 1.3.2)
-  twitter_oauth (= 0.4.3)
+  twitter_oauth
   usesguid!
   usesguid_migrations!
-  vpim (= 0.695)
+  vpim
   webrat
   will_paginate (= 3.0.pre2)

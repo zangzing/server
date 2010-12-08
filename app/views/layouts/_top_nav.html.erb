@@ -40,11 +40,8 @@
           </li>
 
 <% if current_user %>
-          <li id="nav-account" class="clearfix">
-            <img src="/images/user-icon-25x25.png" width="25" height="25" /> <img src="/images/icon-down-arrow-22px.png" />
-            <div class="clear-fix"></div>
-            Account
-         </li>
+           
+   <%= render :partial => 'layouts/acct_badge' %>
 <% else %>
          <li id="nav-sign-in">Sign-in</li>
 <% end %>
@@ -63,28 +60,21 @@
 
       <div id="small-drawer">
         <div id="sign-up" class="body" style="display:none;">
-
           <ul id="small-indicator" class="clearfix">
             <li id="step-join-on"></li>
             <li id="step-sign-in-off"></li>
           </ul>
-
-        <%= render :partial => 'user_sessions/sign_up_form' %>
-
+          <%= render :partial => 'user_sessions/sign_up_form' %>
         </div>
-
         <div id="sign-in" class="body">
           <ul id="small-indicator" class="clearfix">
             <li id="step-join-off"></li>
             <li id="step-sign-in-on"></li>
           </ul>
-
           <div id="small-top">
             <h2>Sign in</h2>
             <h3>Welcome Back!</h3>
           </div>
-
-        <%= render :partial => 'users/join_form' %>
-
+          <%= render :partial => 'users/signin_form' %>
         </div>
       </div>

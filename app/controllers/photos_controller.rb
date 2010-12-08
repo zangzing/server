@@ -2,7 +2,7 @@ class PhotosController < ApplicationController
   before_filter :oauth_required, :only => [:agentindex, :upload, :agent_create]
   before_filter :login_required, :only => [:create]
   before_filter :require_user, :only => [:show, :new, :edit, :destroy] # , :index] #TODO Sort out album security so facebook can freely dig into album page
-
+  before_filter :determine_album_user #For friendly_id's scope
 
   def show
     @photo = Photo.find(params[:id])
@@ -11,7 +11,7 @@ class PhotosController < ApplicationController
   end
 
   def create
-    @album = Album.find(params[:album_id])
+    @album = fetch_album
     @photo = @album.photos.build(params[:photo])
     @photo.user = current_user
 
@@ -36,7 +36,7 @@ class PhotosController < ApplicationController
 
 
   def agent_create
-    @album = Album.find(params[:album_id])
+    @album = fetch_album
     @photos = []
 
     if params[:source_guid].nil?
@@ -144,7 +144,7 @@ class PhotosController < ApplicationController
   # contributor  Display only photos contributed by certain contributor.
   #              contributor must be in albums contributor list
   def index
-    @album = Album.find(params[:album_id])
+    @album = fetch_album
     @title = CGI.escapeHTML(@album.name)
 
     UploadBatch.close_open_batches( current_user, @album) if signed_in?
@@ -190,7 +190,7 @@ class PhotosController < ApplicationController
   end
 
   def slideshowbox_source
-    @album = Album.find(params[:album_id])
+    @album = fetch_album
     @photos = @album.photos
     respond_to do |format|
       format.xml
@@ -211,7 +211,7 @@ class PhotosController < ApplicationController
   #              Default: First
   #
   def edit
-    @album = Album.find(params[:album_id])
+    @album = fetch_album
     @title = CGI.escapeHTML(@album.name)
 
     respond_to do |format|
@@ -240,5 +240,14 @@ class PhotosController < ApplicationController
     end
   end
 
+private
+
+  def fetch_album
+    params[:friendly] ? Album.find(params[:album_id], :scope => params[:user_id]) : Album.find(:first, :conditions => {:id => params[:album_id]})
+  end
+
+  def determine_album_user
+    @album_user_id = params[:user_id] #|| current_user.to_param
+  end
 
 end

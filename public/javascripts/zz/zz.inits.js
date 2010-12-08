@@ -4,7 +4,6 @@
 zz.init = {
 
     template: function(){
-
         /* Click Handlers
          ----------------------------------------------------------------------- */
 
@@ -17,8 +16,7 @@ zz.init = {
             zz.easy_drawer(600, 0.0, '/users/'+zz.current_user_id+'/albums/new', callback);
         });
 
-
-        //only album contributers can do this
+        //any signed in user can do this        
         $('#nav-home').click(function(){ document.location.href = '/' });
 
 
@@ -31,21 +29,8 @@ zz.init = {
         //only album owner can do this
         $('#nav-edit-album').click(function(){ zz.wizard.open_edit_album_wizard('add') });
 
-        $('#nav-like').click(function(){
-            var callback = function(){
-                $('.delete-id-button').click(zz.wizard.delete_identity);
-            };
-            zz.easy_drawer(600, 0.0, '/users/'+zz.current_user_id+'/identities', callback);
-        });
-
-        $('#nav-buy').click(function(){
-            var callback = function(){
-                $(zz.validate.user_update.element).validate(zz.validate.user_update);
-                $('#update-user-button').click(zz.wizard.update_user);
-            };
-            zz.easy_drawer(600, 0.0, '/users/'+zz.current_user_id+'/edit', callback);
-        });
-
+        $('#nav-buy').click(function(){ zz.wizard.open_settings_drawer('profile') });
+        
 
         /* new user stuff   */
         /* ---------------------------------*/
@@ -76,7 +61,7 @@ zz.init = {
             if (zz.drawer_open === 0) {
                 $('#sign-in').show();
                 $('#sign-up').hide();
-
+                
                 $('#small-drawer').animate({height: '460px', top: '53px'});
                 zz.drawer_open = 1;
             }
@@ -90,18 +75,15 @@ zz.init = {
         $(zz.validate.sign_in.element).validate(zz.validate.sign_in);
         $(zz.validate.join.element).validate(zz.validate.join);
 
-
+        zz.init.acct_badge();
+        zz.init.like_menu();
         zz.init.preload_rollover_images();
 
     },
 
     loaded: function(){
         $('#drawer-content').ajaxError(function(event, request) {
-            var data = request.getResponseHeader('X-Errors');
-            if( data ){
-                var errors = (new Function( "return( " + data + " );" ))(); //parse json using function contstructor
-                $('#error-notice').html(errors[0][1]).show();
-            }
+            zz.wizard.display_errors( request, 50);
             zz.wizard.display_flashes(request, 50);
         });
         $('#drawer-content').ajaxSuccess(function(event, request) {
@@ -171,9 +153,16 @@ zz.init = {
     },
 
     preload_rollover_images : function(){
-
         //todo: is there a way to query CSS to get all these?
+         //wizard buttons/tabs
+        for(var i=1;i<=4; i++){
+            var src = "/images/bg-4step-strip-" + i + ".png"
+            image_preloader.load_image(src)
 
+            var src = "/images/bg-4step-edit-" + i + ".png"
+            image_preloader.load_image(src)
+        }
+        
         //wizard buttons/tabs
         for(var i=1;i<=5; i++){
             var src = "/images/bg-5step-strip-" + i + ".png"
@@ -217,32 +206,35 @@ zz.init = {
         image_preloader.load_image("/images/bg-album-type-selected.png");
 
         //file chooser root folders rollover
-        image_preloader.load_image("/images/folders/apple.png");
-        image_preloader.load_image("/images/folders/facebook.png");
-        image_preloader.load_image("/images/folders/flickr.png");
-        image_preloader.load_image("/images/folders/myhome.png");
-        image_preloader.load_image("/images/folders/kodak.png");
-        image_preloader.load_image("/images/folders/mycomputer.png");
-        image_preloader.load_image("/images/folders/mypictures.png");
-        image_preloader.load_image("/images/folders/picasa.png");
-        image_preloader.load_image("/images/folders/shutterfly.png");
-        image_preloader.load_image("/images/folders/snapfish.png");
-        image_preloader.load_image("/images/folders/smugmug.png");
-        image_preloader.load_image("/images/folders/zangzing.png");
+        image_preloader.load_image("/images/folders/blank_on.jpg");
 
-        image_preloader.load_image("/images/folders/apple_off.png");
-        image_preloader.load_image("/images/folders/facebook_off.png");
-        image_preloader.load_image("/images/folders/flickr_off.png");
-        image_preloader.load_image("/images/folders/myhome_off.png");
-        image_preloader.load_image("/images/folders/kodak_off.png");
-        image_preloader.load_image("/images/folders/mycomputer_off.png");
-        image_preloader.load_image("/images/folders/mypictures_off.png");
-        image_preloader.load_image("/images/folders/picasa_off.png");
-        image_preloader.load_image("/images/folders/shutterfly_off.png");
-        image_preloader.load_image("/images/folders/snapfish_off.png");
-        image_preloader.load_image("/images/folders/smugmug_off.png");
-        image_preloader.load_image("/images/folders/zangzing_off.png");
-        image_preloader.load_image("/images/folders/photobucket_off.png");
+        image_preloader.load_image("/images/folders/apple_on.jpg");
+        image_preloader.load_image("/images/folders/facebook_on.jpg");
+        image_preloader.load_image("/images/folders/flickr_on.jpg");
+        image_preloader.load_image("/images/folders/myhome_on.jpg");
+        image_preloader.load_image("/images/folders/kodak_on.jpg");
+        image_preloader.load_image("/images/folders/mycomputer_on.jpg");
+        image_preloader.load_image("/images/folders/mypictures_on.jpg");
+        image_preloader.load_image("/images/folders/picasa_on.jpg");
+        image_preloader.load_image("/images/folders/shutterfly_on.jpg");
+        image_preloader.load_image("/images/folders/snapfish_on.jpg");
+        image_preloader.load_image("/images/folders/smugmug_on.jpg");
+        image_preloader.load_image("/images/folders/zangzing_on.jpg");
+
+        image_preloader.load_image("/images/folders/blank_off.jpg");
+        image_preloader.load_image("/images/folders/apple_off.jpg");
+        image_preloader.load_image("/images/folders/facebook_off.jpg");
+        image_preloader.load_image("/images/folders/flickr_off.jpg");
+        image_preloader.load_image("/images/folders/myhome_off.jpg");
+        image_preloader.load_image("/images/folders/kodak_off.jpg");
+        image_preloader.load_image("/images/folders/mycomputer_off.jpg");
+        image_preloader.load_image("/images/folders/mypictures_off.jpg");
+        image_preloader.load_image("/images/folders/picasa_off.jpg");
+        image_preloader.load_image("/images/folders/shutterfly_off.jpg");
+        image_preloader.load_image("/images/folders/snapfish_off.jpg");
+        image_preloader.load_image("/images/folders/smugmug_off.jpg");
+        image_preloader.load_image("/images/folders/zangzing_off.jpg");
+        image_preloader.load_image("/images/folders/photobucket_off.jpg");
 
 
 
@@ -358,5 +350,51 @@ zz.init = {
                 $(this).html('more...');
             }
         })
+    },
+
+//====================================== Account Badge  ===========================================
+    acct_badge: function(){
+        zz.toolbars.init_acct_badge_menu();
+        $('#acct-anchor').click( zz.toolbars.show_acct_badge_menu );
+    },
+
+//======================================= Like Menu  ==============================================
+    like_menu: function(){
+        zz.toolbars.init_like_menu();
+        $('#nav-like').click( zz.toolbars.show_like_menu );
+    },
+
+//==================================== Settings Wizard  ===========================================
+    id_settings: function(){
+      zz.drawers.settings.redirect =  window.location;  
+      $('.delete-id-button').click(zz.wizard.delete_identity);
+      $('.authorize-id-button').click(zz.wizard.authorize_identity);
+      $('.id-status').each( function(){
+
+             logger.debug("Binding id:"+this.id+" service:"+$(this).attr('service'));
+      });
+      $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height -110) + 'px'});
+      $('#ok_id_button').click(zz.wizard.close_settings_drawer)
+    },
+    profile_settings: function(){
+       zz.drawers.settings.redirect =  window.location;
+      $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height -140) + 'px'});       
+      $(zz.validate.profile_form.element).validate(zz.validate.profile_form);
+      $('#user_username').keypress( function(){
+            setTimeout(function(){
+                $('#username_path').html( $('#user_username').val() );
+            }, 10);
+      });
+      // unbind next tab button
+      var handler = $('#wizard-account').data('events')['click'][0];
+      $('#wizard-account').unbind('click');
+      $('#wizard-account').click( function(){
+          zz.wizard.update_profile(function(){zz.wizard.open_settings_drawer('account')})
+      });
+          
+      $('#ok_profile_button').click(function(){
+          zz.wizard.update_profile( zz.wizard.close_settings_drawer); 
+      });
+      $('#cancel_profile_button').click(zz.wizard.close_settings_drawer)
     }
 }; // end zz.init

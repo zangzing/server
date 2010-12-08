@@ -131,7 +131,10 @@ class ApplicationController < ActionController::Base
                      'oauth#test_request',
                      'oauth#test_session',
                      'connector/local_contacts#import',
-                     'sendgrid#import']
+                     'sendgrid#import',
+                     'agents#check',
+                     'agents#info',
+                     'agents#index']
       
       }
       unless allowed[:actions].include?("#{params[:controller]}##{params[:action]}")

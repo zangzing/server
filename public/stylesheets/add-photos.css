@@ -77,90 +77,122 @@ ul#filechooser li.folder {
 }
 
 ul#filechooser li.folder.f_blank {
-  background-image: url("/images/folders/blank.png");
+  background-image: url("/images/folders/blank_off.jpg");
 }
+
+ul#filechooser li.folder.f_blank:hover {
+  background-image: url("/images/folders/blank_on.jpg");
+}
+
 
 ul#filechooser li.folder.f_iphoto {
-  background-image: url("/images/folders/apple_off.png");
-}
-ul#filechooser li.folder.f_facebook {
-  background-image: url("/images/folders/facebook_off.png");
-}
-ul#filechooser li.folder.f_flickr {
-  background-image: url("/images/folders/flickr_off.png");
-}
-ul#filechooser li.folder.f_home {
-  background-image: url("/images/folders/myhome_off.png");
-}
-ul#filechooser li.folder.f_kodak {
-  background-image: url("/images/folders/kodak_off.png");
-}
-ul#filechooser li.folder.f_mycomputer {
-  background-image: url("/images/folders/mycomputer_off.png");
-}
-ul#filechooser li.folder.f_pictures {
-  background-image: url("/images/folders/mypictures_off.png");
-}
-ul#filechooser li.folder.f_picasa {
-  background-image: url("/images/folders/picasa_off.png");
-}
-ul#filechooser li.folder.f_shutterfly {
-  background-image: url("/images/folders/shutterfly_off.png");
-}
-ul#filechooser li.folder.f_snapfish {
-  background-image: url("/images/folders/snapfish_off.png");
-}
-ul#filechooser li.folder.f_smugmug {
-  background-image: url("/images/folders/smugmug_off.png");
-}
-ul#filechooser li.folder.f_zangzing {
-  background-image: url("/images/folders/zangzing_off.png");
-}
-
-ul#filechooser li.folder.f_photobucket {
-  background-image: url("/images/folders/photobucket_off.png");
+  background-image: url("/images/folders/apple_off.jpg");
 }
 
 ul#filechooser li.folder.f_iphoto:hover {
-  background-image: url("/images/folders/apple.png");
+  background-image: url("/images/folders/apple_on.jpg");
 }
+
+
+ul#filechooser li.folder.f_facebook {
+  background-image: url("/images/folders/facebook_off.jpg");
+}
+
 ul#filechooser li.folder.f_facebook:hover {
-  background-image: url("/images/folders/facebook.png");
+  background-image: url("/images/folders/facebook_on.jpg");
 }
+
+ul#filechooser li.folder.f_flickr {
+  background-image: url("/images/folders/flickr_off.jpg");
+}
+
 ul#filechooser li.folder.f_flickr:hover {
-  background-image: url("/images/folders/flickr.png");
+  background-image: url("/images/folders/flickr_on.jpg");
 }
+
+ul#filechooser li.folder.f_home {
+  background-image: url("/images/folders/myhome_off.jpg");
+}
+
 ul#filechooser li.folder.f_home:hover {
-  background-image: url("/images/folders/myhome.png");
+  background-image: url("/images/folders/myhome_on.jpg");
 }
+
+ul#filechooser li.folder.f_kodak {
+  background-image: url("/images/folders/kodak_off.jpg");
+}
+
 ul#filechooser li.folder.f_kodak:hover {
-  background-image: url("/images/folders/kodak.png");
+  background-image: url("/images/folders/kodak_on.jpg");
 }
+
+ul#filechooser li.folder.f_mycomputer {
+  background-image: url("/images/folders/mycomputer_off.jpg");
+}
+
 ul#filechooser li.folder.f_mycomputer:hover {
-  background-image: url("/images/folders/mycomputer.png");
+  background-image: url("/images/folders/mycomputer_on.jpg");
 }
+
+ul#filechooser li.folder.f_pictures {
+  background-image: url("/images/folders/mypictures_off.jpg");
+}
+
 ul#filechooser li.folder.f_pictures:hover {
-  background-image: url("/images/folders/mypictures.png");
+  background-image: url("/images/folders/mypictures_on.jpg");
 }
+
+ul#filechooser li.folder.f_picasa {
+  background-image: url("/images/folders/picasa_off.jpg");
+}
+
 ul#filechooser li.folder.f_picasa:hover {
-  background-image: url("/images/folders/picasa.png");
+  background-image: url("/images/folders/picasa_on.jpg");
 }
+
+ul#filechooser li.folder.f_shutterfly {
+  background-image: url("/images/folders/shutterfly_off.jpg");
+}
+
 ul#filechooser li.folder.f_shutterfly:hover {
-  background-image: url("/images/folders/shutterfly.png");
+  background-image: url("/images/folders/shutterfly_on.jpg");
 }
+
+ul#filechooser li.folder.f_snapfish {
+  background-image: url("/images/folders/snapfish_off.jpg");
+}
+
 ul#filechooser li.folder.f_snapfish:hover {
-  background-image: url("/images/folders/snapfish.png");
+  background-image: url("/images/folders/snapfish_on.jpg");
 }
+
+ul#filechooser li.folder.f_smugmug {
+  background-image: url("/images/folders/smugmug_off.jpg");
+}
+
 ul#filechooser li.folder.f_smugmug:hover {
-  background-image: url("/images/folders/smugmug.png");
+  background-image: url("/images/folders/smugmug_on.jpg");
 }
+
+ul#filechooser li.folder.f_zangzing {
+  background-image: url("/images/folders/zangzing_off.jpg");
+}
+
 ul#filechooser li.folder.f_zangzing:hover {
-  background-image: url("/images/folders/zangzing.png");
+  background-image: url("/images/folders/zangzing_on.jpg");
+}
+
+ul#filechooser li.folder.f_photobucket {
+  background-image: url("/images/folders/photobucket_off.jpg");
 }
 
 ul#filechooser li.folder.f_photobucket:hover {
-  background-image: url("/images/folders/photobucket.png");
+  background-image: url("/images/folders/photobucket_on.jpg");
 }
+
+
+
+
 
 
 ul#filechooser li:hover {
@@ -259,7 +291,22 @@ ul#filechooser h4 a {
 
 
 
+/* Animations
+------------------------------------------------------------------------------*/
 
+#animate-photo-to-tray {
+    border: #fff solid 5px;
+    box-shadow: 0px 0px 5px #767676;
+    -webkit-box-shadow: 0px 0px 5px #767676;
+    -moz-box-shadow: 0px 0px 5px #767676;
+    filter: progid:DXImageTransform.Microsoft.dropShadow(color=#767676, offX=2, offY=2, positive=true);
+}
+
+
+.animate-folder-to-tray{
+    border: #fff solid 5px;
+    background-color: #cccccc;
+}
 
 
 

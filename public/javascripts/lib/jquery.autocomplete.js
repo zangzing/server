@@ -333,8 +333,8 @@ jQuery.autocomplete = function(input, options) {
 		var data = options.cacheLength ? loadFromCache(q) : null;
 		// recieve the cached data
 		if (data) {
-            var cleanData = deDupeResultData(q,  data )
-			receiveData(q, cleanData);
+            var pure_data = deDupeResultData(q,  data )
+			receiveData(q, pure_data);
 		// if an AJAX url has been supplied, try loading the data now
 		} else if( (typeof options.url == "string") && (options.url.length > 0) ){
 			$.get(makeUrl(q), function(data) {
@@ -416,6 +416,10 @@ jQuery.autocomplete = function(input, options) {
                 // if row is a string, make an array otherwise just reference the array
                 row = ((typeof options.data[i] == "string") ? [options.data[i]] : options.data[i]);
 
+                // Each data row is [name,email]
+                // two rows go in the matchSet one for name and one for email
+                // matchSet rows are [ matchableString , name, email, index, oneifName, oneifEmail ]
+
                 // if the length is zero, don't add to list
                 if( row[0].length > 0 ){
                     var namerow = [row[0], row[0],row[1], i,  1,0 ];
@@ -426,6 +430,7 @@ jQuery.autocomplete = function(input, options) {
                     // if the match is a string
                     stMatchSets[sFirstChar].push(namerow);
                 }
+                // if the length is zero, don't add to list
                 if( row[1].length > 0 ){
                     var addressrow = [row[1], row[0],row[1], i,  0,1 ];
                     // get the first character
@@ -474,11 +479,11 @@ jQuery.autocomplete = function(input, options) {
                     }
 
                 }
-              cleanData = [];
+              pure_data = [];
               for(var j in sparseData ){
-                  cleanData.push(sparseData[j]);
+                  pure_data.push(sparseData[j]);
               }
-           return cleanData;
+           return pure_data;
           }
           return[];
      };
@@ -489,8 +494,8 @@ jQuery.autocomplete = function(input, options) {
         if (!options.matchCase) q = q.toLowerCase();
         var data = options.cacheLength ? loadFromCache(q) : null;
         if (data) {
-            var cleanData = deDupeResultData(q,  data );
-            findValueCallback(q, cleanData);
+            var pure_data = deDupeResultData(q,  data );
+            findValueCallback(q, pure_data);
         } else if ((typeof options.url == "string") && (options.url.length > 0)) {
             $.get(makeUrl(q), function(data) {
                 data = parseData(data)
@@ -584,7 +589,7 @@ jQuery.fn.autocomplete = function(url, options, data) {
 	options.selectFirst = options.selectFirst || false;
 	options.selectOnly = options.selectOnly || false;
 	options.maxItemsToShow = options.maxItemsToShow || -1;
-	options.autoFill = options.autoFill || true;
+	options.autoFill = options.autoFill || false;
 	options.width = parseInt(options.width, 10) || 0;
 
 	this.each(function() {

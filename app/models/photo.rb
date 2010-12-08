@@ -138,6 +138,9 @@ class Photo < ActiveRecord::Base
   def set_image_metadata
     self.image_path   = image.path.match(/(^.*)\/original\/(.*$)/i)[1]
     self.image_bucket = image.instance_variable_get("@bucket")
+    if uploading?
+        false # halts thumbnail it will be queued in upload_to S3
+    end
   end
 
   #
@@ -148,8 +151,8 @@ class Photo < ActiveRecord::Base
     if self.assigned? && self.local_image_file_name_changed?
        self.state = 'loaded'
        ZZ::Async::S3Upload.enqueue( self.id )
+       logger.debug("queued for upload")
     end
-    logger.debug("queued for upload")
   end
 
   #
@@ -157,19 +160,31 @@ class Photo < ActiveRecord::Base
   # This call cannot be private
   def upload_to_s3
     begin
-      self.state = 'processing'
+      self.state = 'uploading'
       self.image = local_image.to_file
       self.save!
       self.local_image.clear
       self.local_image_path = ''
-      self.state = 'ready'
+      self.state = 'processing'
       self.save!
     rescue ActiveRecord::ActiveRecordError => ex
         logger.debug("Upload to S3 Failed"+ex)
     end
     logger.debug("Upload to S3 Finished")
-    upload_batch.finish
+    ZZ::Async::GenerateThumbnails.enqueue( self.id )
   end
+
+  def generate_thumbnails
+    begin
+     self.image.reprocess!
+     self.state = 'ready'
+     self.save!
+    rescue ActiveRecord::ActiveRecordError => ex
+        logger.debug("Thumbnail generation failed!" + ex)
+    end
+    logger.debug("Thumbnail generation Finished")   
+    upload_batch.finish
+   end
 
   def new?
       self.state == 'new'
@@ -177,6 +192,18 @@ class Photo < ActiveRecord::Base
 
   def assigned?
     self.state == 'assigned'
+  end
+
+  def loaded?
+    self.state == 'loaded'
+  end
+
+  def uploading?
+    self.state == 'uploading'
+  end
+
+  def processing?
+    self.state == 'processing'
   end
 
   def ready?
@@ -228,6 +255,34 @@ class Photo < ActiveRecord::Base
   def metadata=(value_hash)
     photo_info = PhotoInfo.new unless photo_info
     photo_info.metadata = value_hash.to_json
+  end
+
+# detect if our source file has changed
+  def image_changed?
+    self.image_file_size_changed? ||
+    self.image_file_name_changed? ||
+    self.image_content_type_changed? ||
+    self.image_updated_at_changed?
+  end
+
+  attr_accessor :tmp_upload_dir
+  after_create  :clean_tmp_upload_dir
+
+  # handle nginx upload module params
+  def fast_local_image=(file)
+    if file && file.respond_to?('[]')
+      self.tmp_upload_dir = "#{file['filepath']}_1"
+      tmp_file_path = "#{self.tmp_upload_dir}/#{file['original_name']}"
+      FileUtils.mkdir_p(self.tmp_upload_dir)
+      FileUtils.mv(file['filepath'], tmp_file_path)
+      self.local_image = File.new(tmp_file_path)
+    end
+  end
+
+private
+  # clean tmp directory used in handling new param
+  def clean_tmp_upload_dir
+    FileUtils.rm_r(tmp_upload_dir) if self.tmp_upload_dir && File.directory?(self.tmp_upload_dir)
   end
 
 end

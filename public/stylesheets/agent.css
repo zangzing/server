@@ -38,5 +38,5 @@ table {
 	padding-bottom:5px;
 	padding-top:1px;
 	-moz-border-radius:0.4em;
-	-khtml-border-radius:0.4em;
+    -webkit-border-radius:0.4em;
 }
