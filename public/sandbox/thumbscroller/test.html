@@ -7,7 +7,14 @@
         <link href="../../stylesheets/lib.css" media="screen" rel="stylesheet" type="text/css" />
 
         <style type="text/css" id="page-css">
-			.scroll-pane
+            #easing
+			{
+				position:absolute;
+                top:20;
+                left:100;
+			}
+
+            .scroll-pane
 			{
 				position:absolute;
                 top:50;
@@ -54,6 +61,7 @@
         <script type="text/javascript" src="../../javascripts/lib/jquery-ui-1.8.6.custom.min.js"></script>
         <script type="text/javascript" src="../../javascripts/lib/jquery.jscrollpane.js"></script>
         <script type="text/javascript" src="../../javascripts/lib/jquery.mousewheel.js"></script>
+        <script type="text/javascript" src="../../javascripts/lib/jquery.easing.js"></script>
         <script type="text/javascript" src="../../javascripts/lib/mwheelIntent.js"></script>
         <script type="text/javascript" src="../../javascripts/thumbtray.js"></script>
         <script type="text/javascript" src="../../javascripts/thumbscroller.js"></script>
@@ -140,18 +148,7 @@
 
 
 
-                $(function()
-                {
-                    $('.scroll-pane').jScrollPane({
-                        verticalDragMinHeight: 20,
-                        verticalDragMaxHeight: 20,
-                        horizontalDragMinWidth: 20,
-                        horizontalDragMaxWidth: 20,
-                        scrollbarWidth: 20,
-                        animateScroll: true,
-                        animateDuration:200
-                    });
-
+                var injectThumbtray = function(){
                     $('.jspTrack').prepend('<div class="thumbtray" style="position:absolute;left:0;width:16px;height:500px"></div>');
 
 
@@ -178,7 +175,7 @@
 
                                 $('img sr')
 
-                            },
+                            }
 
 //                            onPreviewPhoto: function(index, photo){
 //                                if(photo){
@@ -190,6 +187,42 @@
 
 
                         });
+                };
+
+
+                $(function()
+                {
+                    $('.scroll-pane').jScrollPane({
+                        verticalDragMinHeight: 20,
+                        verticalDragMaxHeight: 20,
+                        horizontalDragMinWidth: 20,
+                        horizontalDragMaxWidth: 20,
+                        scrollbarWidth: 20,
+                        animateScroll: true,
+                        animateDuration:400,
+                        animateEase: $('#easing').val()
+                    });
+
+                    injectThumbtray();
+
+
+                    $('#easing').change(function(){
+                       console.log($('#easing').val());
+
+                        $('.scroll-pane').data().jsp.reinitialise({
+                            verticalDragMinHeight: 20,
+                            verticalDragMaxHeight: 20,
+                            horizontalDragMinWidth: 20,
+                            horizontalDragMaxWidth: 20,
+                            scrollbarWidth: 20,
+                            animateScroll: true,
+                            animateDuration:400,
+                            animateEase: $('#easing').val()
+                        });
+
+                        injectThumbtray();
+                    });
+
 
     //                $('.scroll-pane').bind('jsp-scroll-y', function(event){
     //
@@ -208,6 +241,45 @@
     </head>
 
     <body>
+
+
+    <select id="easing">
+        <option value="jswing">linear</option>
+        <option value="jswing">swing</option>
+        <option value="jswing">jswing</option>
+        <option value="def">def</option>
+        <option value="easeInQuad">easeInQuad</option>
+        <option value="easeOutQuad">easeOutQuad</option>
+        <option value="easeInOutQuad">easeInOutQuad</option>
+        <option value="easeInCubic">easeInCubic</option>
+        <option value="easeOutCubic">easeOutCubic</option>
+        <option value="easeInOutCubic">easeInOutCubic</option>
+        <option value="easeInQuart">easeInQuart</option>
+        <option value="easeOutQuart">easeOutQuart</option>
+        <option value="easeInOutQuart">easeInOutQuart</option>
+        <option value="easeInQuint">easeInQuint</option>
+        <option value="easeOutQuint">easeOutQuint</option>
+        <option value="easeInOutQuint">easeInOutQuint</option>
+        <option value="easeInSine">easeInSine</option>
+        <option value="easeOutSine">easeOutSine</option>
+        <option value="easeInOutSine">easeInOutSine</option>
+        <option value="easeInExpo">easeInExpo</option>
+        <option value="easeOutExpo">easeOutExpo</option>
+        <option value="easeInOutExpo">easeInOutExpo</option>
+        <option value="easeInCirc">easeInCirc</option>
+        <option value="easeOutCirc">easeOutCirc</option>
+        <option value="easeInOutCirc">easeInOutCirc</option>
+        <option value="easeInElastic">easeInElastic</option>
+        <option value="easeOutElastic">easeOutElastic</option>
+        <option value="easeInOutElastic">easeInOutElastic</option>
+        <option value="easeInBack">easeInBack</option>
+        <option value="easeOutBack">easeOutBack</option>
+        <option value="easeInOutBack">easeInOutBack</option>
+        <option value="easeInBounce">easeInBounce</option>
+        <option value="easeOutBounce">easeOutBounce</option>
+        <option value="easeInOutBounce">easeInOutBounce</option>
+    </select>
+
 
     <div id="scroll-pane" class="scroll-pane">
         <p>
