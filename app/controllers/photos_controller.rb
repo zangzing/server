@@ -1,5 +1,5 @@
 class PhotosController < ApplicationController
-  before_filter :oauth_required, :only => [:agentindex, :upload, :agent_create]
+  before_filter :oauth_required, :only => [:agentindex,  :agent_create]
   before_filter :login_required, :only => [:create]
   before_filter :require_user, :only => [:show, :new, :edit, :destroy] # , :index] #TODO Sort out album security so facebook can freely dig into album page
   before_filter :determine_album_user #For friendly_id's scope
@@ -238,6 +238,17 @@ class PhotosController < ApplicationController
         render :json => @album.photos.to_json(:methods => [:thumb_url, :medium_url])
       end
     end
+  end
+
+  def profile
+     @album = Album.find( params[:album_id])
+     @photo = @album.photos.build(:agent_id => "PROFILE_PHOTO",
+                                  :source_guid => "PROFILE_FORM",
+                                  :caption => "LUCKY ME",
+                                  :image_file_size => 128)
+      @photo.user = current_user
+      @photo.save
+      render :layout =>false
   end
 
 private
