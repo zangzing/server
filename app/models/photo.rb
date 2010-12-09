@@ -264,8 +264,6 @@ class Photo < ActiveRecord::Base
     self.image_updated_at_changed?
   end
 
-  attr_accessor :tmp_upload_dir
-  after_create  :clean_tmp_upload_dir
 
   # handle nginx upload_module params
   def fast_local_image=(fast_local_params)
@@ -276,12 +274,6 @@ class Photo < ActiveRecord::Base
       #fast_local_params['content_type']
       self.local_image = ZZ::NginxTempfile.new( fast_local_params['filepath'])
     end
-  end
-
-private
-  # clean tmp directory used in handling new param
-  def clean_tmp_upload_dir
-    FileUtils.rm_r(tmp_upload_dir) if self.tmp_upload_dir && File.directory?(self.tmp_upload_dir)
   end
 
 end

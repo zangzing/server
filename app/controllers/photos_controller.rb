@@ -92,6 +92,7 @@ class PhotosController < ApplicationController
       if @photo.update_attributes(params[:photo])
         render :json => @photo.to_json(:only =>[:id, :agent_id, :state])
       else
+        errors_to_headers( @photo )
         render :json => @photo.errors, :status=>400
       end
     rescue ActiveRecord::RecordNotFound => ex
