@@ -267,14 +267,14 @@ class Photo < ActiveRecord::Base
   attr_accessor :tmp_upload_dir
   after_create  :clean_tmp_upload_dir
 
-  # handle nginx upload module params
-  def fast_local_image=(file)
-    if file && file.respond_to?('[]')
-      self.tmp_upload_dir = "#{file['filepath']}_1"
-      tmp_file_path = "#{self.tmp_upload_dir}/#{file['original_name']}"
-      FileUtils.mkdir_p(self.tmp_upload_dir)
-      FileUtils.mv(file['filepath'], tmp_file_path)
-      self.local_image = File.new(tmp_file_path)
+  # handle nginx upload_module params
+  def fast_local_image=(fast_local_params)
+    # to prevent paperclip from copying the nginx tmp file onto another tmpfile
+    # we use ZZ::NginxTempfile which overloads to_tempfile() and returns a file itself instead of a new tempfile.
+    if fast_local_params && fast_local_params.respond_to?('[]')
+      #fast_local_params['original_name']
+      #fast_local_params['content_type']
+      self.local_image = ZZ::NginxTempfile.new( fast_local_params['filepath'])
     end
   end
 
