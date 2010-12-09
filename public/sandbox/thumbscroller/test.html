@@ -143,7 +143,7 @@
                                     $('.photo img#'+ photo.id).addClass('selected');
                                     console.log('highlighting ' + photo.id);
                                     setTimeout(function(){
-                                        $('.photo img#'+ photo.id).removeClass('selected',2000);
+                                        $('.photo img#'+ photo.id).removeClass('selected',parseInt($('#animateduration').val()) + 1500);
 
                                     },1000);
                                 }
