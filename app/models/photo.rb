@@ -85,7 +85,7 @@ class Photo < ActiveRecord::Base
   after_create :assign_to_batch
 
   # if all args were valid on creation then set it to assigned
-  after_validation_on_create :set_to_assigned;
+  after_validation_on_create :set_to_assigned
 
 
   # Set up an async call for Processing and Upload to S3
@@ -166,11 +166,11 @@ class Photo < ActiveRecord::Base
       self.local_image_path = ''
       self.state = 'processing'
       self.save!
+      logger.debug("Upload to S3 Finished")
+      ZZ::Async::GenerateThumbnails.enqueue( self.id )
     rescue ActiveRecord::ActiveRecordError => ex
         logger.debug("Upload to S3 Failed"+ex)
     end
-    logger.debug("Upload to S3 Finished")
-    ZZ::Async::GenerateThumbnails.enqueue( self.id )
   end
 
   def generate_thumbnails
