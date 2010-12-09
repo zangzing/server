@@ -107,22 +107,29 @@
                             showSelection:false,
                             thumbnailSize:16,
                             onSelectPhoto: function(index, photo){
-                                var contentHeight = $('.jspPane').height();
-                                var paneHeight = $('.scroll-pane').height();
-                                var y = index/photos.length * (contentHeight - paneHeight);
 
                                 if(photo){
                                     $('.photo img').removeClass('selected');
-                                    $('#'+ photo.id).addClass('selected');
+                                    $('.photo img#'+ photo.id).addClass('selected');
+                                    console.log('highlighting ' + photo.id);
                                     setTimeout(function(){
-                                        $('#'+ photo.id).removeClass('selected',500);
+                                        $('.photo img#'+ photo.id).removeClass('selected',2000);
 
                                     },1000);
                                 }
+//
+//                                var contentHeight = $('.jspPane').height();
+//                                var paneHeight = $('.scroll-pane').height();
+//                                var y = index/photos.length * (contentHeight - paneHeight);
+//                                $('.scroll-pane').data().jsp.scrollTo(0,y);
+
+
+                                var y = (Math.ceil((index+1) / 5)-1)*100;
+
+                                console.log('scroll to ' + y);  
 
                                 $('.scroll-pane').data().jsp.scrollTo(0,y);
 
-                                $('img sr')
 
                             }
                         });
