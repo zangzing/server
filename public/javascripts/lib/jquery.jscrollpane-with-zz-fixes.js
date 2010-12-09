@@ -12,7 +12,7 @@
 //
 // Project Home - http://jscrollpane.kelvinluck.com/
 // GitHub       - http://github.com/vitch/jScrollPane
-// Source       - http://github.com/vitch/jScrollPane/raw/master/script/jquery.jscrollpane.js
+// Source       - http://github.com/vitch/jScrollPane/raw/master/script/jquery.jscrollpane-with-zz-fixes.js
 // (Minified)   - http://github.com/vitch/jScrollPane/raw/master/script/jquery.jscrollpane.min.js
 //
 // About: License
@@ -1043,7 +1043,7 @@
 							params,
 							{
 								'duration'	: settings.animateDuration,
-								'ease'		: settings.animateEase,
+								'easing'		: settings.animateEase,
 								'queue'		: false,
 								'step'		: stepCallback
 							}
