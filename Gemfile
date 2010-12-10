@@ -13,7 +13,7 @@ gem 'oauth',         "0.4.5.pre2", :git => 'git://github.com/zangzing/oauth-ruby
 gem "oauth-plugin", ">=0.4.0.pre1"
 
 gem 'i18n'
-gem 'paperclip',     '2.3.5'
+gem 'paperclip',     '2.3.6'
 gem 'aws-s3',        '>= 0.6.2', :require => 'aws/s3' # S3
 gem 'resque'                                          # Queuing
 gem 'SystemTimer'                                     # For Random numbers (resque uuid)

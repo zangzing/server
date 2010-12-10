@@ -63,7 +63,8 @@ Server::Application.routes.draw do
   put    '/photos/:id/upload'            => 'photos#upload',                    :as => :upload_photo
   get    '/agents/:agent_id/photos'      => 'photos#agentindex',                :as => :agent_photos
   post   '/albums/:album_id/photos/agent_create.:format' => 'photos#agent_create',      :as => :agent_create
-  
+  get    '/albums/:album_id/profile'      => 'photos#profile',                  :as => :profile
+
   #activities
   get '/albums/:album_id/activities.' => 'activities#album_index', :as => :album_activities
   get '/users/:user_id/activities.'   => 'activities#user_index',  :as => :user_activities

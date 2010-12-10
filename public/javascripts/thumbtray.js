@@ -10,7 +10,8 @@
             selectedIndex:-1,
             thumbnailSize: 20,
             onDeletePhoto: function(index, photo){},
-            onSelectPhoto: function(index, photo){}
+            onSelectPhoto: function(index, photo){},
+            onPreviewPhoto: function(index, photo){}
         },
 
         currentIndex : -1,
@@ -182,7 +183,9 @@
         },
 
         showPreviewForPosition: function(position){
-            this._setCurrentIndex(this._getIndexForPosition(position));
+            var index = this._getIndexForPosition(position)
+            this._setCurrentIndex(index);
+            this.options.onPreviewPhoto(index, this.options.photos[index]);
             this.previewElement.show();
         },
 

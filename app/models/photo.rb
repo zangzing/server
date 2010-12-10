@@ -1,34 +1,7 @@
-# == Schema Information
-# Schema version: 60
 #
-# Table name: photos
-#
-#  id                       :integer         not null, primary key
-#  album_id                 :integer
-#  user_id                  :integer
-#  agent_id                 :string(255)
-#  state                    :string(255)     default("new")
-#  caption                  :text
-#  headline                 :text
-#  capture_date             :datetime
-#  suspended                :boolean
-#  metadata                 :text
-#  image_file_name          :string(255)
-#  image_content_type       :string(255)
-#  image_file_size          :integer
-#  image_updated_at         :datetime
-#  local_image_file_name    :string(255)
-#  local_image_content_type :string(255)
-#  local_image_file_size    :integer
-#  local_image_updated_at   :datetime
-#  created_at               :datetime
-#  updated_at               :datetime
-#
-
-#
-# Photo Model
 # Copyright 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
+# Photo Model
 # As a first implementation images are attached to photo objects using paperclip as
 # performance and customization changes are required the use of paperclip can be
 # revisited or we can contribute the improvements to paperclip.
@@ -82,15 +55,15 @@ class Photo < ActiveRecord::Base
 
 
   before_create :substitute_source_urls
-  after_create :assign_to_batch
+  before_create :assign_to_batch
 
   # if all args were valid on creation then set it to assigned
-  after_validation :set_to_assigned, :on => :create
+  after_validation_on_create :set_to_assigned
+
 
 
   # Set up an async call for Processing and Upload to S3
-  after_validation :queue_upload_to_s3, :on => :update 
-
+  after_validation_on_update :queue_upload_to_s3
 
 
   # used to receive image and queue for processing. User never sees this image. Paperclip defaults are local no styles
@@ -99,7 +72,7 @@ class Photo < ActiveRecord::Base
   has_attached_file :image, Paperclip.options[:image_options]
 
 
-  validates_presence_of             :album_id, :user_id
+  validates_presence_of             :album_id, :user_id, :upload_batch_id
 
 
   validates_attachment_presence     :local_image,{
@@ -167,11 +140,11 @@ class Photo < ActiveRecord::Base
       self.local_image_path = ''
       self.state = 'processing'
       self.save!
+      logger.debug("Upload to S3 Finished")
+      ZZ::Async::GenerateThumbnails.enqueue( self.id )
     rescue ActiveRecord::ActiveRecordError => ex
         logger.debug("Upload to S3 Failed"+ex)
     end
-    logger.debug("Upload to S3 Finished")
-    ZZ::Async::GenerateThumbnails.enqueue( self.id )
   end
 
   def generate_thumbnails
@@ -265,24 +238,16 @@ class Photo < ActiveRecord::Base
     self.image_updated_at_changed?
   end
 
-  attr_accessor :tmp_upload_dir
-  after_create  :clean_tmp_upload_dir
 
-  # handle nginx upload module params
-  def fast_local_image=(file)
-    if file && file.respond_to?('[]')
-      self.tmp_upload_dir = "#{file['filepath']}_1"
-      tmp_file_path = "#{self.tmp_upload_dir}/#{file['original_name']}"
-      FileUtils.mkdir_p(self.tmp_upload_dir)
-      FileUtils.mv(file['filepath'], tmp_file_path)
-      self.local_image = File.new(tmp_file_path)
+  # handle nginx upload_module params
+  def fast_local_image=(fast_local_params)
+    # to prevent paperclip from copying the nginx tmp file onto another tmpfile
+    # we use ZZ::NginxTempfile which overloads to_tempfile() and returns a file itself instead of a new tempfile.
+    if fast_local_params && fast_local_params.respond_to?('[]')
+      #fast_local_params['original_name']
+      #fast_local_params['content_type']
+      self.local_image = ZZ::NginxTempfile.new( fast_local_params['filepath'])
     end
-  end
-
-private
-  # clean tmp directory used in handling new param
-  def clean_tmp_upload_dir
-    FileUtils.rm_r(tmp_upload_dir) if self.tmp_upload_dir && File.directory?(self.tmp_upload_dir)
   end
 
 end
