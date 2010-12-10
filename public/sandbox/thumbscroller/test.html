@@ -39,6 +39,26 @@
                 border:1px solid #cccccc;
 			}
 
+            .native-pane{
+                position:absolute;
+                top:100;
+                left:700;
+                width: 530px;
+                height: 500px;
+                overflow-y: scroll;
+                border:1px solid #cccccc;
+            }
+
+            #native-pane-thumbtray{
+                position:absolute;
+                top:100px;
+                left:1214px;
+                width:16px;
+                height:500px;
+                border:1px solid #cccccc;
+                background-color: #cccccc;
+            }
+
 
             div.photo img {
                 border: 5px solid #ffffff;
@@ -108,6 +128,7 @@
 
 
                 $('#scroll-pane').html(html);
+                $('#native-pane').html(html);
 
 
                 var getScrollPaneOptions = function(){
@@ -159,7 +180,40 @@
 
 
                             }
-                        });
+                      });
+
+                    $("#native-pane-thumbtray").zz_thumbtray(
+                       {
+                           photos:photos,
+                           showSelection:false,
+                           thumbnailSize:16,
+                           onSelectPhoto: function(index, photo){
+
+                               if(photo){
+                                   $('.photo img').removeClass('selected');
+                                   $('.photo img#'+ photo.id).addClass('selected');
+                                   setTimeout(function(){
+                                       $('.photo img#'+ photo.id).removeClass('selected',parseInt($('#animateduration').val()) + 1500);
+
+                                   },1000);
+                               }
+//
+//                                var contentHeight = $('.jspPane').height();
+//                                var paneHeight = $('.scroll-pane').height();
+//                                var y = index/photos.length * (contentHeight - paneHeight);
+//                                $('.scroll-pane').data().jsp.scrollTo(0,y);
+
+
+                               var y = (Math.ceil((index+1) / 5)-1)*100;
+
+
+                               $("#native-pane").animate({scrollTop: y}, parseInt($('#animateduration').val()), $('#easing').val() )
+
+
+                           }
+                       });
+                    
+
                 };
 
                 var reinitizlize = function(){
@@ -187,7 +241,6 @@
                     $('#animateduration').change(function(){
                          reinitizlize();
                      });
-
 
 
 
@@ -275,8 +328,9 @@
 
     </select>
 
-    <div id="scroll-pane" class="scroll-pane">
-    </div>
+    <div id="scroll-pane" class="scroll-pane"></div>
+    <div id="native-pane" class="native-pane"></div>
+    <div id="native-pane-thumbtray"></div>
 
 
     </body>
