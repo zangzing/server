@@ -1,9 +1,14 @@
 var pages = {};
 
 pages.album_add_photos_tab = {
-    init: function(callback){
+    init: function(callback, drawer_style){
         var url = '/albums/' + zz.album_id + '/add_photos';
         $('#tab-content').load(url, function(){
+            if( drawer_style == 'edit'){
+                $('ul#added-pictures-tray').css('bottom','5px')
+            } else {
+                $('ul#added-pictures-tray').css('bottom','24px')
+            }
             filechooser.init();
             callback();
         });
@@ -13,7 +18,6 @@ pages.album_add_photos_tab = {
         success();
     }
 };
-
 
 
 pages.album_name_tab = {
@@ -652,9 +656,7 @@ pages.account_settings_linked_accounts = {
     delete_identity: function(){
         logger.debug("Deleting ID with URL =  "+ $(this).attr('value'));
         $("#"+$(this).attr('service')+"-status").bind( 'identity_deleted' , pages.account_settings_linked_accounts.identity_deleted_handler);
-
         $.post($(this).attr('value'), {"_method": "delete"}, function(data){$('.id-status').trigger( 'identity_deleted' );});
-//        $.post($(this).attr('value'), {"_method": "delete"}, function(data){$('.id-status').trigger( 'identity_deleted' );});
     },
 
     authorize_identity: function(){
@@ -691,6 +693,4 @@ pages.account_settings_linked_accounts = {
             $("#"+$(this).attr('service')+"-authorize").fadeIn( 'fast');//display the link button
         });
     }
-
-
 };

@@ -7,6 +7,12 @@ GIT
       usesguid
 
 GIT
+  remote: git://github.com/zangzing/oauth-ruby.git
+  revision: f892521f5073eed43a75bb4c3d80bc74dcf2d019
+  specs:
+    oauth (0.4.5.pre2)
+
+GIT
   remote: git://github.com/zangzing/usesguid.git
   revision: 9f688f1fb3ff56d021a2d1fca852a467e7dd2857
   specs:
@@ -85,11 +91,10 @@ GEM
       nokogiri (>= 1.2.1)
     mime-types (1.16)
     mysql (2.8.1)
-    newrelic_rpm (2.13.3)
+    newrelic_rpm (2.13.4)
     nokogiri (1.4.4)
-    oauth (0.4.1)
-    oauth-plugin (0.3.14)
-      oauth (>= 0.3.5)
+    oauth-plugin (0.4.0.pre3)
+      oauth (>= 0.4.4)
     paperclip (2.3.5)
       activerecord
       activesupport
@@ -167,7 +172,7 @@ DEPENDENCIES
   authlogic (= 2.1.6)
   aws-s3 (>= 0.6.2)
   bitly
-  bundler (>= 1.0.3)
+  bundler (>= 1.0.7)
   factory_girl
   faker
   flickraw (= 0.8.2)
@@ -178,8 +183,8 @@ DEPENDENCIES
   launchy
   mechanize
   mysql
-  oauth (= 0.4.1)
-  oauth-plugin (= 0.3.14)
+  oauth (= 0.4.5.pre2)!
+  oauth-plugin (>= 0.4.0.pre1)
   paperclip (= 2.3.5)
   rails (= 3.0.3)
   resque

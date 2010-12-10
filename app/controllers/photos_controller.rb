@@ -65,7 +65,10 @@ class PhotosController < ApplicationController
       end
     end
 
-    render :json => @photos.to_json(:only =>[:id, :agent_id, :state, :source_thumb_url, :source_screen_url, :source_guid], :methods => [:thumb_url, :medium_url])
+#    render :json => @photos.to_json(:only =>[:id, :agent_id, :state, :source_thumb_url, :source_screen_url, :source_guid], :methods => [:thumb_url, :medium_url])
+    #GWS debugging aid, put above line back when done
+    debugstr = @photos.to_json(:only =>[:id, :agent_id, :state, :source_thumb_url, :source_screen_url, :source_guid], :methods => [:thumb_url, :medium_url])
+    render :json => debugstr
   end
 
 
@@ -243,7 +246,7 @@ class PhotosController < ApplicationController
 private
 
   def fetch_album
-    params[:friendly] ? Album.find(params[:album_id], :scope => params[:user_id]) : Album.find(:first, :conditions => {:id => params[:album_id]})
+    params[:friendly] ? Album.find(params[:album_id], :scope => params[:user_id]) : Album.first(:conditions => {:id => params[:album_id]})
   end
 
   def determine_album_user

@@ -101,6 +101,9 @@
             //mouse over and click handlers
             var mouseOver = false;
 
+
+
+
             var showPreview = function(){
                 mouseOver = true;
                 self.previewElement.fadeIn('fast');
@@ -130,15 +133,12 @@
                 }
 
                 if(index !== -1){
-                    self.previewElement.show();
-
                     if(self.orientation === self.ORIENTATION_X){
-                        self._setCurrentIndex(self._getIndexForPosition(event.pageX - self.element.offset().left));
+                        self.showPreviewForPosition(event.pageX - self.element.offset().left);
                     }
                     else{
-                        self._setCurrentIndex(self._getIndexForPosition(event.pageY - self.element.offset().top));
+                        self.showPreviewForPosition(event.pageY - self.element.offset().top);
                     }
-
                 }
                 else{
                     hidePreview();
@@ -179,6 +179,11 @@
                 }
             });
 
+        },
+
+        showPreviewForPosition: function(position){
+            this._setCurrentIndex(this._getIndexForPosition(position));
+            this.previewElement.show();
         },
 
         _getMaxVisibleThumbnails: function(){
@@ -300,6 +305,8 @@
             }
 
         },
+
+
 
         destroy: function() {
             $.Widget.prototype.destroy.apply( this, arguments );

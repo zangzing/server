@@ -5,23 +5,17 @@ zz.wizard = {
 
     make_drawer: function(obj, step){
 
-
         obj.init();
-
 
         if (zz.drawer_state == zz.DRAWER_CLOSED) {
             zz.open_drawer(obj.time, obj.percent);
         }
-
-
 
         zz.wizard.build_nav(obj, step);
 
         obj.steps[step].init(function(){
             zz.wizard.resize_scroll_body()
         });
-
-
 
         $('body').addClass('drawer');
 
@@ -33,10 +27,12 @@ zz.wizard = {
 
         if (obj.steps[id].type == 'partial' && zz.drawer_state == zz.DRAWER_OPEN) {
             $('#tab-content').fadeOut('fast');
-            zz.close_drawer_partially(obj.time);
-
+            if( obj.style == 'edit' ){
+                zz.close_drawer_partially(obj.time, 40);
+            }else{
+                zz.close_drawer_partially(obj.time, 40);
+            }
             zz.wizard.build_nav(obj, id);
-
             obj.steps[id].init(function(){
                 zz.wizard.resize_scroll_body();
             });
@@ -128,8 +124,6 @@ zz.wizard = {
         if(fade_in){
             $('#drawer-tabs').fadeIn('fast');
         }
-
-
         zz.wizard.resize_scroll_body();
 
 
@@ -182,8 +176,17 @@ zz.wizard = {
     },
 
 
-
-
+    set_wizard_style: function(style){
+      if( style == 'edit'){
+            $('div#drawer').css('background-image','url(/images/bg-drawer-bottom-cap.png)');
+            $('div#cancel-drawer-btn').hide();
+            zz.screen_gap =  150;
+        } else {
+            $('div#drawer').css('background-image','url(/images/bg-drawer-bottom-cap-with-cancel.png)');
+            $('div#cancel-drawer-btn').show();
+            zz.screen_gap = 130;
+        }
+    },
 
     /* Wizard Object Functions - used to make special things happen
      ------------------------------------------------------------------------- */

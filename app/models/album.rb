@@ -43,10 +43,13 @@ class Album < ActiveRecord::Base
   validates_presence_of  :user_id
   validates_presence_of  :name
   validates_length_of    :name, :maximum => 50
+  validates_length_of    :cover_photo_id, :is => 22, :message => "Invalid ID for cover photo must be GUID(22)", :if => :cover_photo_id_changed?
+
 
   #before_create :set_email
   attr_accessor :name_had_changed
   before_save  Proc.new { |model| model.name_had_changed = true }, :if => :name_changed?
+  before_save  :cover_photo_id_valid?, :if => :cover_photo_id_changed?
   after_save   :set_email, :if => :name_had_changed
   #before_save   :set_email, :if => :new_slug_needed? #:name_changed?
 
@@ -83,7 +86,7 @@ class Album < ActiveRecord::Base
   def cover
     return nil if self.photos.empty?
     if self.cover_photo_id.nil?
-      return self.photos.first
+      return self.photos.first(:order => 'created_at DESC')
     else
       return Photo.find( self.cover_photo_id )
     end                        
@@ -98,12 +101,11 @@ class Album < ActiveRecord::Base
       self.cover_photo_id = photo.id if self.photos.find( photo )
     end
     self.save
-    self.queue_update_picon
   end
 
   def update_picon
       self.picon.clear unless self.picon.nil?
-      self.picon = Picon.build( self )
+      self.picon = Picon.make( self )
       self.save
   end
   
@@ -117,7 +119,6 @@ class Album < ActiveRecord::Base
   end
 
   def set_picon_metadata
-    logger.debug("In picon before post")
     self.picon_path   = picon.path.gsub(picon.original_filename,'')
     self.picon_bucket = picon.instance_variable_get("@bucket")
   end
@@ -134,17 +135,35 @@ class Album < ActiveRecord::Base
   end
 
   def long_email
-    " \"#{self.name}\" <#{short_email}>"
+      " \"#{self.name}\" <#{short_email}>"
   end
 
   def short_email
       "#{self.id}@#{Server::Application.config.album_email_host}"
   end
 
-  private
+  def to_param #overide friendly_id's
+    (id = self.id) ? id.to_s : nil
+  end
+
+private
+  def cover_photo_id_valid?
+    begin
+      cover_photo_id.length = 22 && photos.find(cover_photo_id)
+      queue_update_picon
+      return true
+    rescue ActiveRecord::RecordNotFound => e
+       errors.add(:cover_photo_id,"Could not find photo with ID:"+cover_photo_id+" in this album")
+       return false 
+    end
+  end
+
   def set_email
-      # Remove spaces and @
-      self.email = dashify(name)
+    # Remove spaces and @
+    mail_address = "#{self.friendly_id}.#{self.user.friendly_id}"
+    self.connection.execute "UPDATE `albums` SET `email`='#{mail_address}' WHERE `id`='#{self.id}'" if self.id
+    self.name_had_changed = false
+    #self.email = dashify(name)
   end
 
   def dashify( s )

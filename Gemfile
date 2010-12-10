@@ -2,15 +2,15 @@ source :gemcutter
 #source 'http://gems.github.com'
 
 # bundler requires these gems in all environments
-gem "bundler",">= 1.0.3"
+gem "bundler", ">=1.0.7"
 gem "rails", "3.0.3"
 gem "mysql"
 gem 'authlogic',     '2.1.6'
 gem 'usesguid',      :git => 'git://github.com/zangzing/usesguid.git'
 gem 'usesguid_migrations',  :git => 'git://github.com/fidel/usesguid_migrations.git'
 
-gem 'oauth',         '0.4.1'
-gem 'oauth-plugin',  '0.3.14'
+gem 'oauth',         "0.4.5.pre2", :git => 'git://github.com/zangzing/oauth-ruby.git'
+gem "oauth-plugin", ">=0.4.0.pre1"
 
 gem 'i18n'
 gem 'paperclip',     '2.3.5'

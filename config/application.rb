@@ -14,7 +14,7 @@ Bundler.require(:default, Rails.env) if defined?(Bundler)
 
 module Server
   class Application < Rails::Application
-  
+
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     config.time_zone = 'Tijuana'
     
@@ -43,6 +43,12 @@ module Server
     config.active_support.deprecation = :log
 
     ActiveRecord::Base.guid_generator = :random
+
+    # in rails 3 the default is to include the type of object as a
+    # key in the output json.  we want the rails 2 behavior where
+    # the key is not included 
+    ActiveRecord::Base.include_root_in_json = false
+
   end
 end
 

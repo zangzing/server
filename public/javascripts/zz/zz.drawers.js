@@ -31,8 +31,9 @@ zz.drawers = {
                 title: 'Add Photos', // link text
                 type: 'full', // drawer position - full(y open) or partial(ly open)
 
+
                 init: function(callback){ // run when loading the drawer up
-                    pages.album_add_photos_tab.init(callback);
+                    pages.album_add_photos_tab.init(callback, zz.drawers.personal_album.style);
                 },
 
                 bounce: function(success, failure){ // run before you leave
@@ -128,9 +129,11 @@ zz.drawers = {
                 next: 'name',
                 title: 'Add Photos',
                 type: 'full',
+                url: '/albums/$$/add_photos',
+                url_type: 'album',
 
                 init: function(callback){ // run when loading the drawer up
-                    pages.album_add_photos_tab.init(callback);
+                    pages.album_add_photos_tab.init(callback, zz.drawers.group_album.style);
                 },
 
                 bounce: function(success, failure){ // run before you leave
