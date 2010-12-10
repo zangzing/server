@@ -65,8 +65,9 @@ ActionController::Routing::Routes.draw do |map|
     photos.update_photo                '/photos/:id/edit.',                         :action=>'update',          :conditions => { :method => :put }
     photos.destroy_photo               '/photos/:id.',                              :action=>'destroy',         :conditions => { :method => :delete }
     photos.photo                       '/photos/:id.',                              :action=>'show',            :conditions => { :method => :get }
-    photos.agent_photos                '/agents/:agent_id/photos.',                 :action=>'agentindex',      :conditions=>{ :method => :get }
-    photos.agent_create                '/albums/:album_id/photos/agent_create.:format',  :action=>'agent_create',    :conditions=>{ :method => :post }
+    photos.agent_photos                '/agents/:agent_id/photos.',                 :action=>'agentindex',       :conditions=>{ :method => :get }
+    photos.agent_create                '/albums/:album_id/photos/agent_create.:format',  :action=>'agent_create',:conditions=>{ :method => :post }
+    photos.profile                      '/albums/:album_id/profile',                     :action=> 'profile',        :conditions=>{ :method => :get }
   end
 
   #activities
