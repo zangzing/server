@@ -49,6 +49,7 @@
                 border:1px solid #cccccc;
             }
 
+
             #native-pane-thumbtray{
                 position:absolute;
                 top:100px;
@@ -59,8 +60,45 @@
                 background-color: #cccccc;
             }
 
+            .native-pane-horizontal{
+                position:absolute;
+                top:700;
+                left:700;
+                width: 500px;
+                height: 500px;
+                overflow-x: scroll;
+                border:1px solid #cccccc;
+            }
 
-            div.photo img {
+
+            #native-pane-thumbtray-horizontal{
+                position:absolute;
+                top:1184px;
+                left:700px;
+                width:500px;
+                height:16px;
+                border:1px solid #cccccc;
+                background-color: #cccccc;
+            }
+
+
+            .photo{
+                float:left;
+                width:100;
+                height:100
+            }
+
+            .native-pane-horizontal .photo{
+                width:400;
+                height:400;
+                float:none;
+                display:inline;
+                margin-left:50px;
+                margin-left:50px;
+                
+            }
+
+            .photo img {
                 border: 5px solid #ffffff;
                 box-shadow: 0px 0px 5px #767676;
                 -webkit-box-shadow: 0px 0px 5px #767676;
@@ -72,7 +110,19 @@
                 width:80;
             }
 
-            div.photo img.selected {
+
+            .native-pane-horizontal .photo img {
+                height:400;
+                width:400;
+                margin-top:0;
+                margin-left:0;
+            }
+
+            .native-pane-horizontal ul{
+                width:1000000;
+            }
+
+            .photo img.selected {
                 border: 5px solid #FDD042;
                 box-shadow: 0px 0px 5px #FDD042;
                 -webkit-box-shadow: 0px 0px 5px #FDD042;
@@ -82,11 +132,7 @@
             }
 
 
-            div.photo{
-                float:left;
-                width:100;
-                height:100
-            }
+
 
 		</style>
 
@@ -96,7 +142,7 @@
         <script type="text/javascript" src="../../javascripts/lib/jquery.jscrollpane-with-zz-fixes.js"></script>
         <script type="text/javascript" src="../../javascripts/lib/jquery.mousewheel.js"></script>
         <script type="text/javascript" src="../../javascripts/lib/jquery.easing.js"></script>
-        <!--<script type="text/javascript" src="../../javascripts/lib/mwheelIntent.js"></script>-->
+        <script type="text/javascript" src="../../javascripts/lib/mwheelIntent.js"></script>
         <script type="text/javascript" src="../../javascripts/thumbtray.js"></script>
         <script type="text/javascript" src="../../javascripts/thumbscroller.js"></script>
 
@@ -117,18 +163,21 @@
                 }
 
 
-                var html =''
+                var html ='<ul>'
 
                 for(var i in photos){
-                    html+='<div class="photo">';
+                    html+='<li class="photo">';
                     html+='<img id="' + photos[i].id + '" src="'+ photos[i].src +'">';
-                    html+='</div>'
+                    html+='</li>';
 
                 }
-
+                html += '</ul>';
 
                 $('#scroll-pane').html(html);
                 $('#native-pane').html(html);
+                $('#native-pane-horizontal').html(html);
+
+
 
 
                 var getScrollPaneOptions = function(){
@@ -159,10 +208,10 @@
                             onSelectPhoto: function(index, photo){
 
                                 if(photo){
-                                    $('.photo img').removeClass('selected');
-                                    $('.photo img#'+ photo.id).addClass('selected');
+                                    $('.thumbtray .photo img').removeClass('selected');
+                                    $('.thumbtray .photo img#'+ photo.id).addClass('selected');
                                     setTimeout(function(){
-                                        $('.photo img#'+ photo.id).removeClass('selected',parseInt($('#animateduration').val()) + 1500);
+                                        $('.thumbtray .photo img#'+ photo.id).removeClass('selected',parseInt($('#animateduration').val()) + 1500);
 
                                     },1000);
                                 }
@@ -190,20 +239,13 @@
                            onSelectPhoto: function(index, photo){
 
                                if(photo){
-                                   $('.photo img').removeClass('selected');
-                                   $('.photo img#'+ photo.id).addClass('selected');
+                                   $('#native-pane-thumbtray .photo img').removeClass('selected');
+                                   $('#native-pane-thumbtray .photo img#'+ photo.id).addClass('selected');
                                    setTimeout(function(){
-                                       $('.photo img#'+ photo.id).removeClass('selected',parseInt($('#animateduration').val()) + 1500);
+                                       $('#native-pane-thumbtray .photo img#'+ photo.id).removeClass('selected',parseInt($('#animateduration').val()) + 1500);
 
                                    },1000);
                                }
-//
-//                                var contentHeight = $('.jspPane').height();
-//                                var paneHeight = $('.scroll-pane').height();
-//                                var y = index/photos.length * (contentHeight - paneHeight);
-//                                $('.scroll-pane').data().jsp.scrollTo(0,y);
-
-
                                var y = (Math.ceil((index+1) / 5)-1)*100;
 
 
@@ -213,6 +255,32 @@
                            }
                        });
                     
+
+                    $("#native-pane-thumbtray-horizontal").zz_thumbtray(
+                       {
+                           photos:photos,
+                           showSelection:false,
+                           thumbnailSize:16,
+                           onSelectPhoto: function(index, photo){
+
+                               if(photo){
+                                   $('#native-pane-thumbtray-horizontal .photo img').removeClass('selected');
+                                   $('#native-pane-thumbtray-horizontal .photo img#'+ photo.id).addClass('selected');
+                                   setTimeout(function(){
+                                       $('.photo img#'+ photo.id).removeClass('selected',parseInt($('#animateduration').val()) + 1500);
+
+                                   },1000);
+                               }
+                               var x = 25 + (index * 450);
+
+
+                               $("#native-pane-horizontal").animate({scrollLeft: x}, parseInt($('#animateduration').val()), $('#easing').val() )
+
+
+                           }
+                       });
+
+
 
                 };
 
@@ -330,7 +398,9 @@
 
     <div id="scroll-pane" class="scroll-pane"></div>
     <div id="native-pane" class="native-pane"></div>
+    <div id="native-pane-horizontal" class="native-pane-horizontal"></div>
     <div id="native-pane-thumbtray"></div>
+    <div id="native-pane-thumbtray-horizontal"></div>
 
 
     </body>
