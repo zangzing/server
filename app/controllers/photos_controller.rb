@@ -240,6 +240,17 @@ class PhotosController < ApplicationController
     end
   end
 
+  def profile
+     @album = Album.find( params[:album_id])
+     @photo = @album.photos.build(:agent_id => "PROFILE_PHOTO",
+                                  :source_guid => "PROFILE_FORM",
+                                  :caption => "LUCKY ME",
+                                  :image_file_size => 128)
+      @photo.user = current_user
+      @photo.save
+      render :layout =>false
+  end
+
 private
 
   def fetch_album

@@ -12,7 +12,7 @@ gem 'usesguid_migrations'
 gem 'oauth',         '0.4.1'
 gem 'oauth-plugin',  '0.3.14'
 
-gem 'paperclip',     '2.3.1.1'
+gem 'paperclip',     '2.3.6'
 gem 'aws-s3',        '>= 0.6.2', :require => 'aws/s3' # S3
 gem 'resque'                                          # Queuing
 gem 'SystemTimer'                                     # For Random numbers (resque uuid)
