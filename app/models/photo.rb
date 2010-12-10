@@ -1,34 +1,7 @@
-# == Schema Information
-# Schema version: 60
 #
-# Table name: photos
-#
-#  id                       :integer         not null, primary key
-#  album_id                 :integer
-#  user_id                  :integer
-#  agent_id                 :string(255)
-#  state                    :string(255)     default("new")
-#  caption                  :text
-#  headline                 :text
-#  capture_date             :datetime
-#  suspended                :boolean
-#  metadata                 :text
-#  image_file_name          :string(255)
-#  image_content_type       :string(255)
-#  image_file_size          :integer
-#  image_updated_at         :datetime
-#  local_image_file_name    :string(255)
-#  local_image_content_type :string(255)
-#  local_image_file_size    :integer
-#  local_image_updated_at   :datetime
-#  created_at               :datetime
-#  updated_at               :datetime
-#
-
-#
-# Photo Model
 # Copyright 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
+# Photo Model
 # As a first implementation images are attached to photo objects using paperclip as
 # performance and customization changes are required the use of paperclip can be
 # revisited or we can contribute the improvements to paperclip.
@@ -82,10 +55,11 @@ class Photo < ActiveRecord::Base
 
 
   before_create :substitute_source_urls
-  after_create :assign_to_batch
+  before_create :assign_to_batch
 
   # if all args were valid on creation then set it to assigned
   after_validation_on_create :set_to_assigned
+
 
 
   # Set up an async call for Processing and Upload to S3
@@ -98,7 +72,7 @@ class Photo < ActiveRecord::Base
   has_attached_file :image, Paperclip.options[:image_options]
 
 
-  validates_presence_of             :album_id, :user_id
+  validates_presence_of             :album_id, :user_id, :upload_batch_id
 
 
   validates_attachment_presence     :local_image,{
