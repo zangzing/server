@@ -14,6 +14,7 @@ class ApplicationController < ActionController::Base
 
   helper :all # include all helpers, all the time
   helper_method :current_user_session, :current_user, :current_user?, :signed_in?
+  filter_parameter_logging :password, :password_confirmation # Scrub sensitive parameters from log
   # this basic filter uses a hardcoded username/password - we must turn off the
   # AuthLogic  support with allow_http_basic_auth false on the UserSession since
   # it can't seem to cope with a seperate scheme in rails 3
@@ -31,7 +32,7 @@ class ApplicationController < ActionController::Base
   def flash_to_headers
     return unless request.xhr?
     response.headers['X-Flash'] = flash.to_json if flash.length > 0
-    response.headers['X-Status'] = response.status.to_s
+    response.headers['X-Status'] = response.status.split[0]
     flash.discard  # don't want the flash to appear when you reload page 
   end
 
@@ -94,7 +95,7 @@ class ApplicationController < ActionController::Base
     #
     #  Stores the intended destination of a rerquest to take the user there after log in
     def store_location
-      session[:return_to] = request.fullpath
+      session[:return_to] = request.request_uri
     end
 
     #
