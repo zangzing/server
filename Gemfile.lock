@@ -56,7 +56,9 @@ GEM
     oauth (0.4.1)
     oauth-plugin (0.3.14)
       oauth (>= 0.3.5)
-    paperclip (2.3.1.1)
+    paperclip (2.3.6)
+      activerecord
+      activesupport
     rack (1.0.1)
     rack-test (0.5.6)
       rack (>= 1.0)
@@ -130,7 +132,7 @@ DEPENDENCIES
   mysql
   oauth (= 0.4.1)
   oauth-plugin (= 0.3.14)
-  paperclip (= 2.3.1.1)
+  paperclip (= 2.3.6)
   rails (= 2.3.5)
   resque
   rpm_contrib

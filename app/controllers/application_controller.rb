@@ -34,7 +34,7 @@ class ApplicationController < ActionController::Base
   end
 
   def errors_to_headers( record )
-      return unless request.xhr?
+      #return unless request.xhr?
       response.headers['X-RecordType'] = record.class.name
       response.headers['X-Errors'] = record.errors.to_json
   end

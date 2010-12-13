@@ -60,7 +60,7 @@ class PhotosController < ApplicationController
       if @photo.save
 
       else
-        render :json => photo.errors, :status=>500
+        render :json => @photo.errors, :status=>500
         return
       end
     end
@@ -238,6 +238,17 @@ class PhotosController < ApplicationController
         render :json => @album.photos.to_json(:methods => [:thumb_url, :medium_url])
       end
     end
+  end
+
+  def profile
+     @album = Album.find( params[:album_id])
+     @photo = @album.photos.build(:agent_id => "PROFILE_PHOTO",
+                                  :source_guid => "PROFILE_FORM",
+                                  :caption => "LUCKY ME",
+                                  :image_file_size => 128)
+      @photo.user = current_user
+      @photo.save
+      render :layout =>false
   end
 
 private
