@@ -1,54 +1,57 @@
-      <nav>        
-        <ul id="bottom-nav" class="clearfix">
-          <li id="left-half" class="clearfix">
-            <ul id="owner-nav">
-              <li id="nav-help">Help</li>
-<% if current_user %>
-              <li id="nav-new-album">New Album</li>
-<% end %>                  
-<% if @album && current_user && (@album.user == current_user)%>              
-              <li id="nav-edit-album">Edit Album</li>
+<div id="footer">
+  <% if current_user %>
+      <div id="new-album-button"><div class='footer-button-label'>Create</div></div>
+  <% end %>
+  <% if @album && current_user && (@album.user == current_user)%>
+      <div id="edit-album-button"><div class='footer-button-label'>Edit</div></div>
 
-<%    if current_user && @album.is_user_contributor?(current_user) %>
-              <li id="nav-add-photo">Add Photo</li>
-<%    end %>
-
-              <li id="nav-status"></li>
-<% end %>
-            </ul>
-          </li>
-<% if @album %>
-          <li id="play-btn">
-            <a href="<%='/albums/' + @album.id + '/photos?view=movie'%>"><img src="/images/btn-play.png" /></a>
-          </li>
-<% end %>
-          <li id="right-half" class="clearfix">
-            <ul id="viewer-nav">
-             <li id="nav-buy">Buy</li>
-             <li id="nav-like"> Like </li>
+      <% if current_user && @album.is_user_contributor?(current_user) %>
+          <div id="add-photos-button"><div class='footer-button-label'>Add</div></div>
+      <% end %>
 
 
-<% if @album && current_user %>
-              <li id="nav-share">Share</li>
-<% end %>
-            </ul>
-          </li>
-        </ul>
-      </nav>
+  <% end %>
+
+
+  <% if @album %>
+      <div id="play-button"></div>
+  <% end %>
+
+
+
+
+  <% if @album && current_user %>
+      <div id="share-button"><div class="footer-button-label">Share</div></div>
+  <% end %>
+
+  <div id="like-button"><div class="footer-button-label">Like</div></div>
+  <div id="buy-button"><div class="footer-button-label">Buy</div></div>
+
+
+
+
+
+
+
+  <% if current_user %>
+      <script>
+          var user_id = '<%=current_user.id%>';
+      </script>
+  <% end %>
+
+  <% if @album %>
+      <script>
+          var album_id = '<%=@album.id%>';
+      </script>
+
+  <% end %>
+
+
+</div>
+
 
 <ul class="context_menu popup" id="like-popup">
-        <li id="like-person">PERSON</li>
-        <li id="like-album">ALBUM</li>
-        <li id="like-photo">PHOTO</li>
+  <li id="like-person">PERSON</li>
+  <li id="like-album">ALBUM</li>
+  <li id="like-photo">PHOTO</li>
 </ul>
-
-
-
-<% if current_user %>
-      <script>
-         var user_id = '<%=current_user.id%>';
-      </script>
-<% end %>
-
-
-

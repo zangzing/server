@@ -4,6 +4,7 @@ source :gemcutter
 # bundler requires these gems in all environments
 gem "bundler", ">=1.0.7"
 gem "rails", "3.0.3"
+gem "dynamic_form"
 gem "mysql"
 gem 'authlogic',     '2.1.6'
 gem 'usesguid',      :git => 'git://github.com/zangzing/usesguid.git'

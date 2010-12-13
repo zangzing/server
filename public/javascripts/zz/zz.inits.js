@@ -1,4 +1,4 @@
-/* INITs 
+/* INITs
  --------------------------------------------------------------------------- */
 
 zz.init = {
@@ -7,30 +7,98 @@ zz.init = {
         /* Click Handlers
          ----------------------------------------------------------------------- */
 
-        $('#nav-new-album').click(function(){
-            var callback = function(){
-                $('#personal_album_link').click(zz.wizard.create_personal_album);
-                $('#group_album_link').click(zz.wizard.create_group_album);
-            };
-            zz.toolbars.init_new_album();
-            zz.easy_drawer(600, 0.0, '/users/'+zz.current_user_id+'/albums/new', callback);
+        //top bar
+        $('header #home-button').click(function(){ document.location.href = '/' });
+
+        $('header #back-button').click(function(){ document.location.href = '/' });
+
+
+        if(document.location.href.indexOf("/photos?view=slideshow") !== -1){
+            $('header #view-buttons #picture-view-button').addClass('selected');
+        }
+        else if(document.location.href.indexOf("/photos") !== -1){
+            $('header #view-buttons #grid-view-button').addClass('selected');
+        }
+        else if(document.location.href.indexOf("/people") !== -1){
+            $('header #view-buttons #people-view-button').addClass('selected');
+        }
+        else if(document.location.href.indexOf("/activities") !== -1){
+            $('header #view-buttons #activities-view-button').addClass('selected');
+        }
+
+
+        $('header #view-buttons #grid-view-button').click(function(){
+            document.location.href = '/albums/' + album_id + "/photos";
         });
 
-        //any signed in user can do this        
-        $('#nav-home').click(function(){ document.location.href = '/' });
+        $('header #view-buttons #picture-view-button').click(function(){
+            document.location.href = '/albums/' + album_id + "/photos?view=slideshow";
+
+        });
+
+        $('header #view-buttons #people-view-button').click(function(){
+            document.location.href = '/albums/' + album_id + "/people";
+
+        });
+
+        $('header #view-buttons #activities-view-button').click(function(){
+            document.location.href = '/albums/' + album_id + "/activities";
+
+        });
+
+
+
+        $('header #sign-in-button').click(function(){
+            if (zz.drawer_state === zz.DRAWER_CLOSED) {
+                $('#sign-in').show();
+                $('#sign-up').hide();
+
+                $('#small-drawer').animate({height: '460px', top: '53px'});
+                zz.drawer_state = zz.DRAWER_OPEN;
+            }
+        });
+
+
+
+        $('#footer #play-button').click(function(){
+            document.location.href = '/albums/' + album_id + '/photos?view=movie'; //global variable set in _bottom_nav
+        });
+
+        $('#footer #new-album-button').click(function(){
+            $('#footer #new-album-button').addClass('selected');
+
+
+            zz.toolbars.init_new_album();
+            zz.easy_drawer(600, 0.0, '/users/'+zz.current_user_id+'/albums/new', function(){
+                $('#personal_album_link').click(zz.wizard.create_personal_album);
+                $('#group_album_link').click(zz.wizard.create_group_album);
+            });
+        });
+
 
 
         //only album contributers can do this
-        $('#nav-add-photo').click(function(){ zz.wizard.open_edit_album_wizard('add') });
+        $('#footer #add-photo-button').click(function(){
+            $('#footer #add-photo-button').addClass('selected');
+            zz.wizard.open_edit_album_wizard('add')
+        });
 
         //any signed in user can do this
-        $('#nav-share').click(function(){ zz.wizard.open_edit_album_wizard('share') });
+        $('#footer #share-button').click(function(){
+            $('#footer #share-button').addClass('selected');
+            zz.wizard.open_edit_album_wizard('share')
+        });
 
         //only album owner can do this
-        $('#nav-edit-album').click(function(){ zz.wizard.open_edit_album_wizard('add') });
+        $('#footer #edit-album-button').click(function(){
+            $('#footer #edit-album-button').addClass('selected');
+            zz.wizard.open_edit_album_wizard('add')
+        });
 
-        $('#nav-buy').click(function(){ zz.wizard.open_settings_drawer('profile') });
+        $('#footer #buy-button').click(function(){  });
         
+
+
 
         /* new user stuff   */
         /* ---------------------------------*/
@@ -57,15 +125,7 @@ zz.init = {
             });
         });
 
-        $('#nav-sign-in').click(function(){
-            if (zz.drawer_state === zz.DRAWER_CLOSED) {
-                $('#sign-in').show();
-                $('#sign-up').hide();
-                
-                $('#small-drawer').animate({height: '460px', top: '53px'});
-                zz.drawer_state = zz.DRAWER_OPEN;
-            }
-        });
+
 
         $('.cancel-mini').click(function(){
             $('#small-drawer').animate({height: '0px', top: '28px'});
@@ -80,6 +140,7 @@ zz.init = {
         zz.init.preload_rollover_images();
 
     },
+
 
     loaded: function(){
         $('#drawer-content').ajaxError(function(event, request) {
@@ -355,13 +416,13 @@ zz.init = {
 //====================================== Account Badge  ===========================================
     acct_badge: function(){
         zz.toolbars.init_acct_badge_menu();
-        $('#acct-anchor').click( zz.toolbars.show_acct_badge_menu );
+        $('#account-badge').click( zz.toolbars.show_acct_badge_menu );
     },
 
 //======================================= Like Menu  ==============================================
     like_menu: function(){
         zz.toolbars.init_like_menu();
-        $('#nav-like').click( zz.toolbars.show_like_menu );
+        $('#footer #like-button').click( zz.toolbars.show_like_menu );
     }
 
 //==================================== Settings Wizard  ===========================================

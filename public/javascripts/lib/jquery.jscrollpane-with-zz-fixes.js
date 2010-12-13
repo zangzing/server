@@ -795,7 +795,7 @@
 					mwEvent,
 					function (event, delta, deltaX, deltaY) {
 						var dX = horizontalDragPosition, dY = verticalDragPosition;
-						positionDragX(horizontalDragPosition + deltaX * settings.mouseWheelSpeed, false)
+						positionDragX(horizontalDragPosition + deltaX * settings.mouseWheelSpeed, false );
 						positionDragY(verticalDragPosition - deltaY * settings.mouseWheelSpeed, false);
 						// return true if there was no movement so rest of screen can scroll
 						return dX == horizontalDragPosition && dY == verticalDragPosition;

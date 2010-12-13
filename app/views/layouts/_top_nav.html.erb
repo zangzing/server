@@ -1,81 +1,85 @@
-      <header class="clearfix">
-        <ul id="top-nav">
-          <li id="nav-home"></li>
-
-          <li id="nav-back">
-<% if @album %>
-            <a href="/"><img src="/images/btn-back-all-albums.png" /></a>
-<% end %>
-          </li>
-          
-          <li id="nav-main">
-            <ul id="album-info" class="clearfix" style="display:<%= @album ? 'inline-block' : 'none' %>">
-              <li>
-                <h2 id="album-header-title"><%= truncate((@album ? @album.name : ''), :length => 30) %></h2>
-                <h3><%= @album ? 'by ' + @album.user.username : '' %></h3>
-              </li>
-
-            </ul>
-
-            <ul id="user-info" class="clearfix" style="display:<%= @user && !@user.changed? ? 'inline-block' : 'none' %>">
-              <li id="user-icon">
-                <img src="/images/user-icon-40x40.png" width="40" height="40" />
-              </li>
-              <li>
-                <h2><%= @user ? @user.username : '' %></h2>
-              </li>
-            </ul>
-          </li>
+<header>
+  <div id="home-button"></div>
+  <% if @album %>
+      <div id="back-button" class="back-button"><span>All Albums</span></div>
+  <% end %>
 
 
-          <li id="nav-views">
-<% if @album %>
-            <ul id="view-swap" class="clearfix">
-              <li><a href="<%= '/albums/' + @album.id + '/photos' %>"><img src="<%= (controller.controller_name == 'photos' && (params[:view].nil? || params[:view]=='grid')) ? '/images/btn-grid-view-on.png' : '/images/btn-grid-view-off.png' %>" /></a></li>
-              <li><a href="<%= '/albums/' + @album.id + '/photos?view=slideshow' %>"><img src="<%= (controller.controller_name == 'photos' && params[:view]=='slideshow') ? '/images/btn-photo-view-on.png' : '/images/btn-photo-view-off.png' %>" /></a></li>
-              <li><a href="<%= '/albums/' + @album.id + '/activities' %>"><img src="<%= controller.controller_name == 'activities' ? '/images/btn-timeline-view-on.png' : '/images/btn-timeline-view-off.png' %>" /></a></li>
-              <li><a href="<%= '/albums/' + @album.id + '/people' %>"><img src="<%= controller.controller_name == 'people' ? '/images/btn-people-view-on.png' : '/images/btn-people-view-off.png' %>" /></a></li>
-            </ul>
-<% end %>
-          </li>
 
-<% if current_user %>
-           
-   <%= render :partial => 'layouts/acct_badge' %>
-<% else %>
-         <li id="nav-sign-in">Sign-in</li>
-<% end %>
-        </ul>
 
-      </header>
 
-      <div id="drawer" style="display:none;">
-        <div class="body">
-          <div id="drawer-content">
-            <div id="drawer-tabs"></div>
-            <div id="tab-content"></div>
-          </div>
-        </div>
-        <div id="cancel-drawer-btn" style="display:none;">Cancel New Album</div>
-      </div>
+  <div id="album-info" style="display:<%= @album ? 'inline-block' : 'none' %>">
+    <h2 id="album-header-title"><%= truncate((@album ? @album.name : ''), :length => 30) %></h2>
+    <h3><%= @album ? 'by ' + @album.user.username : '' %></h3>
+  </div>
 
-      <div id="small-drawer">
-        <div id="sign-up" class="body" style="display:none;">
-          <ul id="small-indicator" class="clearfix">
-            <li id="step-join-on"></li>
-            <li id="step-sign-in-off"></li>
-          </ul>
-          <%= render :partial => 'user_sessions/sign_up_form' %>
-        </div>
-        <div id="sign-in" class="body">
-          <ul id="small-indicator" class="clearfix">
-            <li id="step-join-off"></li>
-            <li id="step-sign-in-on"></li>
-          </ul>
-          <div id="small-top">
-            <h2>Sign in</h2>
-            <h3>Welcome Back!</h3>
-          </div>
-          <%= render :partial => 'users/signin_form' %>
-        </div>
-      </div>
+  <div id="user-info" style="display:<%= @user && !@user.changed? ? 'inline-block' : 'none' %>">
+    <h2><img id="profile-picture" src="/images/user-icon-40x40.png" width="40" height="40"/><%= @user ? @user.username : '' %></h2>
+  </div>
+
+
+  <% if @album %>
+  <ul id="view-buttons">
+      <li id="grid-view-button"></li>
+      <li id="picture-view-button"></li>
+      <li id="people-view-button"></li>
+      <li id="activities-view-button"></li>
+  </ul>
+  <% end %>
+
+  <div id="help-button"><div class="header-button-label">Help</div></div>
+
+
+  <% if current_user %>
+    <div id="account-badge">
+      <img id="account-image" src="/images/user-icon-25x25.png" width="25" height="25" />
+      <img id="arrow-image" src="/images/icon-down-arrow-22px.png" />
+      <div class="header-button-label">Account</div>
+      <ul class="context_menu dropdown" id="acct-dropdown">
+        <li id="acct-settings-btn">Settings</li>
+        <li id="acct-help-btn">Help</li>
+        <li id="acct-signout-btn" href="/signout">Signout</li>
+      </ul>
+
+    </div>
+  <% else %>
+      <div id="sign-in-button"><div class="header-button-label">Sign In</div></div>
+  <% end %>
+
+
+</header>
+
+
+
+
+<div id="drawer" style="display:none;">
+  <div class="body">
+    <div id="drawer-content">
+      <div id="drawer-tabs"></div>
+      <div id="tab-content"></div>
+    </div>
+  </div>
+  <div id="cancel-drawer-btn" style="display:none;">Cancel New Album</div>
+</div>
+
+<div id="small-drawer" style="display:none">
+  <div id="sign-up" class="body" style="display:none;">
+    <ul id="small-indicator" class="clearfix">
+      <li id="step-join-on"></li>
+      <li id="step-sign-in-off"></li>
+    </ul>
+    <%= render :partial => 'user_sessions/sign_up_form' %>
+  </div>
+
+  <div id="sign-in" class="body">
+    <ul id="small-indicator" class="clearfix">
+      <li id="step-join-off"></li>
+      <li id="step-sign-in-on"></li>
+    </ul>
+    <div id="small-top">
+      <h2>Sign in</h2>
+      <h3>Welcome Back!</h3>
+    </div>
+    <%= render :partial => 'users/signin_form' %>
+  </div>
+</div>
