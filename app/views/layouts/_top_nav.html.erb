@@ -18,22 +18,30 @@
   </div>
 
 
-  <li id="nav-views">
-    <% if @album %>
-        <ul id="view-swap" class="clearfix">
-          <li><a href="<%= '/albums/' + @album.id + '/photos' %>"><img src="<%= (controller.controller_name == 'photos' && (params[:view].nil? || params[:view]=='grid')) ? '/images/btn-grid-view-on.png' : '/images/btn-grid-view-off.png' %>" /></a></li>
-          <li><a href="<%= '/albums/' + @album.id + '/photos?view=slideshow' %>"><img src="<%= (controller.controller_name == 'photos' && params[:view]=='slideshow') ? '/images/btn-photo-view-on.png' : '/images/btn-photo-view-off.png' %>" /></a></li>
-          <li><a href="<%= '/albums/' + @album.id + '/activities' %>"><img src="<%= controller.controller_name == 'activities' ? '/images/btn-timeline-view-on.png' : '/images/btn-timeline-view-off.png' %>" /></a></li>
-          <li><a href="<%= '/albums/' + @album.id + '/people' %>"><img src="<%= controller.controller_name == 'people' ? '/images/btn-people-view-on.png' : '/images/btn-people-view-off.png' %>" /></a></li>
-        </ul>
-    <% end %>
-  </li>
+  <% if @album %>
+  <ul id="view-buttons">
+      <li id="grid-view-button"></li>
+      <li id="picture-view-button"></li>
+      <li id="people-view-button"></li>
+      <li id="activities-view-button"></li>
+  </ul>
+  <% end %>
 
   <div id="help-button"><div class="header-button-label">Help</div></div>
 
 
   <% if current_user %>
-      <%= render :partial => 'layouts/acct_badge' %>
+    <div id="account-badge">
+      <img id="account-image" src="/images/user-icon-25x25.png" width="25" height="25" />
+      <img id="arrow-image" src="/images/icon-down-arrow-22px.png" />
+      <div class="header-button-label">Account</div>
+      <ul class="context_menu dropdown" id="acct-dropdown">
+        <li id="acct-settings-btn">Settings</li>
+        <li id="acct-help-btn">Help</li>
+        <li id="acct-signout-btn" href="/signout">Signout</li>
+      </ul>
+
+    </div>
   <% else %>
       <div id="sign-in-button"><div class="header-button-label">Sign In</div></div>
   <% end %>

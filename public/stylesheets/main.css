@@ -59,6 +59,8 @@ header {
     position:absolute;
     bottom: 3px;
     width:100%;
+    font-size: 1.1em;
+    
 }
 
 
@@ -90,14 +92,14 @@ header #back-button:hover{
 
 header #album-info{
     position:absolute;
-    left:350px;
+    left:325px;
     top:10px;
     width:300px;
 }
 
 header #user-info{
     position:absolute;
-    left:350px;
+    left:325px;
     top:10px;
     width:300px;
 }
@@ -110,6 +112,81 @@ header #user-info img#profile-picture{
 }
 
 
+header #view-buttons{
+    position:absolute;
+    left:670px;
+    top:14px;
+}
+
+header #view-buttons #grid-view-button{
+    float:left;
+    width:37px;
+    height:32px;
+    background: url("/images/btn-header-grid-view.png") no-repeat scroll 0px 0px transparent;
+    cursor:pointer;
+}
+
+header #view-buttons #grid-view-button:hover{
+    background: url("/images/btn-header-grid-view.png") no-repeat scroll 0px -32px transparent;
+}
+
+header #view-buttons #grid-view-button.selected{
+    background: url("/images/btn-header-grid-view.png") no-repeat scroll 0px -64px transparent;
+}
+
+
+header #view-buttons #picture-view-button{
+    float:left;
+    width:31px; /*todo: we need a new image that is 32px wide*/
+    height:32px;
+    background: url("/images/btn-header-picture-view.png") no-repeat scroll 0px 0px transparent;
+    cursor:pointer;
+}
+
+header #view-buttons #picture-view-button:hover{
+    background: url("/images/btn-header-picture-view.png") no-repeat scroll 0px -32px transparent;
+}
+
+header #view-buttons #picture-view-button.selected{
+    background: url("/images/btn-header-picture-view.png") no-repeat scroll 0px -64px transparent;
+}
+
+
+header #view-buttons #people-view-button{
+    float:left;
+    width:32px;
+    height:32px;
+    background: url("/images/btn-header-people-view.png") no-repeat scroll 0px 0px transparent;
+    cursor:pointer;
+}
+
+header #view-buttons #people-view-button:hover{
+    background: url("/images/btn-header-people-view.png") no-repeat scroll 0px -32px transparent;
+}
+
+header #view-buttons #people-view-button.selected{
+    background: url("/images/btn-header-people-view.png") no-repeat scroll 0px -64px transparent;
+}
+
+
+
+header #view-buttons #activities-view-button{
+    float:left;
+    width:37px;
+    height:32px;
+    background: url("/images/btn-header-activitites-view.png") no-repeat scroll 0px 0px transparent;
+    cursor:pointer;
+}
+
+header #view-buttons #activities-view-button:hover{
+    background: url("/images/btn-header-activitites-view.png") no-repeat scroll 0px -32px transparent;
+}
+
+header #view-buttons #activities-view-button.selected{
+    background: url("/images/btn-header-activitites-view.png") no-repeat scroll 0px -64px transparent;
+}
+
+
 header #help-button{
     position: absolute;
     top: 1px;
@@ -118,8 +195,9 @@ header #help-button{
     height: 55px;
     background: url("/images/btn-header-help.png") no-repeat scroll 0px 0px transparent;
     cursor: pointer;
-
 }
+
+
 
 header #help-button:hover{
     background: url("/images/btn-header-help.png") no-repeat scroll 0px -55px transparent;
@@ -128,9 +206,6 @@ header #help-button:hover{
 header #help-button.selected{
     background: url("/images/btn-header-help.png") no-repeat scroll 0px -110px transparent;
 }
-
-
-
 
 
 header #sign-in-button{
@@ -152,6 +227,36 @@ header #sign-in-button.selected{
     background: url("/images/btn-header-sign-in.png") no-repeat scroll 0px -110px transparent;
 }
 
+
+header #account-badge {
+  position:absolute;
+  left:890px;
+  top:1px;
+  width:58px;
+  height:55px;
+  cursor: pointer;
+}
+
+header #account-badge img#account-image {
+    position:absolute;
+    top:8px;
+    left:4px;
+
+}
+
+header #account-badge img#arrow-image {
+    position:absolute;
+    top:8px;
+    right:4px;
+}
+
+
+
+#acct-dropdown{
+    width:110px;
+    right:5px;
+    top:55px;
+}
 
 
 
@@ -176,6 +281,8 @@ header #sign-in-button.selected{
     position:relative;
     top: 42px;
     width:100%;
+    font-size: 1.1em;
+    
 }
 
 #footer #new-album-button{
@@ -307,19 +414,7 @@ header #sign-in-button.selected{
     background: url("/images/btn-footer-buy.png") no-repeat scroll 0px -110px transparent;
 }
 
-header #nav-account {
-  width: 58px;
-  margin-right: 0px;
-  padding: 6px 0 4px 12px;
-  font-size: 1.1em;
-  text-align: left;
-  float: right;
-}
 
-li#nav-account img {
-  float: left;
-  margin: 0 2px 4px 0;
-}
 
 
 

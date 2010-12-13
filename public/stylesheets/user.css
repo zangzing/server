@@ -19,17 +19,7 @@ ul.albums-grid-view li td {
     width:180px
 }
 
-/* ACCOUNT BADGE (with dropdown menu) */
-.acct-badge{
-    cursor: pointer;
-    /*position: relative; --Declare X and Y axis base for sub navigation--*/
- }
 
-#acct-dropdown{
-    width:110px;
-    right:12px;
-    top:55px;
-}
 
 /*======================================LIKE - CONTEXT MENU =====================================*/
 #like-popup{

@@ -1,4 +1,4 @@
-/* INITs 
+/* INITs
  --------------------------------------------------------------------------- */
 
 zz.init = {
@@ -11,6 +11,42 @@ zz.init = {
         $('header #home-button').click(function(){ document.location.href = '/' });
 
         $('header #back-button').click(function(){ document.location.href = '/' });
+
+
+        if(document.location.href.indexOf("/photos?view=slideshow") !== -1){
+            $('header #view-buttons #picture-view-button').addClass('selected');
+        }
+        else if(document.location.href.indexOf("/photos") !== -1){
+            $('header #view-buttons #grid-view-button').addClass('selected');
+        }
+        else if(document.location.href.indexOf("/people") !== -1){
+            $('header #view-buttons #people-view-button').addClass('selected');
+        }
+        else if(document.location.href.indexOf("/activities") !== -1){
+            $('header #view-buttons #activities-view-button').addClass('selected');
+        }
+
+
+        $('header #view-buttons #grid-view-button').click(function(){
+            document.location.href = '/albums/' + album_id + "/photos";
+        });
+
+        $('header #view-buttons #picture-view-button').click(function(){
+            document.location.href = '/albums/' + album_id + "/photos?view=slideshow";
+
+        });
+
+        $('header #view-buttons #people-view-button').click(function(){
+            document.location.href = '/albums/' + album_id + "/people";
+
+        });
+
+        $('header #view-buttons #activities-view-button').click(function(){
+            document.location.href = '/albums/' + album_id + "/activities";
+
+        });
+
+
 
         $('header #sign-in-button').click(function(){
             if (zz.drawer_state === zz.DRAWER_CLOSED) {
@@ -380,7 +416,7 @@ zz.init = {
 //====================================== Account Badge  ===========================================
     acct_badge: function(){
         zz.toolbars.init_acct_badge_menu();
-        $('#acct-anchor').click( zz.toolbars.show_acct_badge_menu );
+        $('#account-badge').click( zz.toolbars.show_acct_badge_menu );
     },
 
 //======================================= Like Menu  ==============================================
