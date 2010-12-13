@@ -67,12 +67,12 @@ zz.init = {
         $('#footer #new-album-button').click(function(){
             $('#footer #new-album-button').addClass('selected');
 
-            var callback = function(){
+
+            zz.toolbars.init_new_album();
+            zz.easy_drawer(600, 0.0, '/users/'+zz.current_user_id+'/albums/new', function(){
                 $('#personal_album_link').click(zz.wizard.create_personal_album);
                 $('#group_album_link').click(zz.wizard.create_group_album);
-            };
-            zz.toolbars.init_new_album();
-            zz.easy_drawer(600, 0.0, '/users/'+zz.current_user_id+'/albums/new', callback);
+            });
         });
 
 
