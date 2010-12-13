@@ -60,7 +60,7 @@ class PhotosController < ApplicationController
       if @photo.save
 
       else
-        render :json => photo.errors, :status=>500
+        render :json => @photo.errors, :status=>500
         return
       end
     end
