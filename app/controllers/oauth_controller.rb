@@ -137,15 +137,9 @@ class OauthController < ApplicationController
   end
 
   def verify_oauth_consumer_signature_agent
-    #GWS TODO: This is redundant, see verify_oauth_consumer_signature method below - it does the same check
-     unless ClientApplication.find_by_key( params['oauth_consumer_key'])
+     unless verify_oauth_consumer_signature
         logger.warn "WARNING: An OAuth Client Application Request Failed. It Maybe the ZangZing Agent!. Was the database seeded with the Agents Consumer Key (rake db:seed)?"
      end
-     #GWS
-    #verify_oauth_consumer_signature
-    verify_oauth_consumer_signature
-     #fil = FIlter.new
-     #Authenticator.two_legged
   end
 
 
@@ -165,6 +159,7 @@ class OauthController < ApplicationController
     end
 
     invalid_oauth_response unless valid
+    valid
   end
   
   def verify_oauth_request_token

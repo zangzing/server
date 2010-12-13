@@ -46,11 +46,7 @@ class ClientApplication < ActiveRecord::Base
     begin
       signature = OAuth::Signature.build(request, options, &block)
       return false unless OauthNonce.remember(signature.request.nonce, signature.request.timestamp)
-      #GWS
-      expected_sig = signature.signature
-      compare_sig = signature.request.signature
       value = signature.verify
-      value
     rescue OAuth::Signature::UnknownSignatureMethod => e
       logger.info "ERROR"+e.to_s
       false

@@ -70,17 +70,6 @@ class Album < ActiveRecord::Base
   def self.model_name
     @@_model_name ||= ActiveModel::Name.new(Album)
   end
-#GWS - bug, use extend ActiveModel::Naming instead
-  # All url, path and form helpers treat all subclasses as Album
-#  def self.model_name
-#    name = "album"
-#    name.instance_eval do
-#      def plural;   pluralize;   end
-#      def singular; singularize; end
-#      def human;    singularize; end # only for Rails 3
-#    end
-#    return name
-#  end
 
 
   def cover
@@ -149,7 +138,7 @@ class Album < ActiveRecord::Base
 private
   def cover_photo_id_valid?
     begin
-      cover_photo_id.length = 22 && photos.find(cover_photo_id)
+      cover_photo_id.length == 22 && photos.find(cover_photo_id)
       queue_update_picon
       return true
     rescue ActiveRecord::RecordNotFound => e

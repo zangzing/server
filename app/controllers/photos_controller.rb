@@ -49,6 +49,9 @@ class PhotosController < ApplicationController
       caption = params[:caption][index.to_s]
 
       @photo = @album.photos.build(:agent_id => params[:agent_id], :source_guid => source_guid, :caption => caption, :image_file_size => size)
+
+      @photo.requires_local_image = false # we don't have an incoming file so don't want paperclip to require one
+
       @photo.user = current_user
       @photos << @photo
 
@@ -57,6 +60,9 @@ class PhotosController < ApplicationController
       @photo.source_thumb_url = "http://localhost:30777/albums/#{@album.id}/photos/:photo_id.thumb"
       @photo.source_screen_url = "http://localhost:30777/albums/#{@album.id}/photos/:photo_id.screen"
 
+      # workaround for paperclip issue on Rails 3
+      # load directly
+      
       if @photo.save
 
       else
@@ -65,10 +71,7 @@ class PhotosController < ApplicationController
       end
     end
 
-#    render :json => @photos.to_json(:only =>[:id, :agent_id, :state, :source_thumb_url, :source_screen_url, :source_guid], :methods => [:thumb_url, :medium_url])
-    #GWS debugging aid, put above line back when done
-    debugstr = @photos.to_json(:only =>[:id, :agent_id, :state, :source_thumb_url, :source_screen_url, :source_guid], :methods => [:thumb_url, :medium_url])
-    render :json => debugstr
+    render :json => @photos.to_json(:only =>[:id, :agent_id, :state, :source_thumb_url, :source_screen_url, :source_guid], :methods => [:thumb_url, :medium_url])
   end
 
 

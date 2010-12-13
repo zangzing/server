@@ -24,6 +24,7 @@ class Connector::PicasaPhotosController < Connector::PicasaController
     photo = nil
     doc.elements.each('entry') do |entry|
       photoid = /photoid\/([0-9a-z]+)/.match(entry.elements['id'].text)[1]
+      photo_url = get_photo_url(entry.elements['media:group'], :full)
       if(photoid==params[:photo_id])
         photo = Photo.create(
                 :caption => entry.elements['title'].text,
@@ -33,8 +34,8 @@ class Connector::PicasaPhotosController < Connector::PicasaController
                 :source_thumb_url => get_photo_url(entry.elements['media:group'], :thumb),
                 :source_screen_url => get_photo_url(entry.elements['media:group'], :screen)
         )
-        
-        ZZ::Async::GeneralImport.enqueue( photo.id,  get_photo_url(entry.elements['media:group'], :full) )
+
+        ZZ::Async::GeneralImport.enqueue(photo.id,  photo_url)
         break
       end
     end

@@ -108,7 +108,7 @@ class Notifier < ActionMailer::Base
     body          :edit_password_reset_url => edit_password_reset_url(user.perishable_token)
   end
 
-  def welcome(userid)
+  def welcome(user_id)
     user = User.find( user_id )
     recipients    user.email
     subject       "Welcome to ZangZing!"

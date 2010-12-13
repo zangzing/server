@@ -55,7 +55,7 @@ class Photo < ActiveRecord::Base
 
 
   before_create :substitute_source_urls
-  before_create :assign_to_batch
+  after_create :assign_to_batch
 
   # if all args were valid on creation then set it to assigned
   after_validation_on_create :set_to_assigned
@@ -72,26 +72,51 @@ class Photo < ActiveRecord::Base
   has_attached_file :image, Paperclip.options[:image_options]
 
 
-  validates_presence_of             :album_id, :user_id, :upload_batch_id
+  validates_presence_of             :album_id, :user_id
 
 
   validates_attachment_presence     :local_image,{
                                     :message => "file must be specified",
-                                    :if =>  :assigned?
+                                    :if =>  :requires_local_image?
                                     }
   validates_attachment_size         :local_image,{
                                     :less_than => 10.megabytes,
                                     :message => "must be under 10 Megs",
-                                    :if =>  :assigned?
+                                    :if =>  :requires_local_image?
                                     }
   validates_attachment_content_type :local_image,{
                                     :content_type => [ 'image/jpeg', 'image/png', 'image/gif' ],
                                     :message => " must be a JPEG, PNG, or GIF",
-                                    :if =>  :assigned?
+                                    :if =>  :requires_local_image?
                                     }
 
   before_local_image_post_process :set_local_image_metadata
   before_image_post_process       :set_image_metadata
+
+  # Set the default conditions of this instance.
+  # We require the local image unless
+  # told otherwise.
+  # Classes that inherit from ActiveRecord
+  # need to use after_initialize not initialize
+  def after_initialize
+    @requires_local_image = true
+  end
+
+  # set this value before performing a save
+  # to control whether paperclip needs an incoming
+  # attachment - use true if the image is required
+  def requires_local_image=(required)
+    @requires_local_image = required
+  end
+
+  # this is attached to paperclip as
+  # the attachment_presence validator
+  # and lets us operate without an incoming
+  # attachment for cases that don't need one
+  # such as agent_crate
+  def requires_local_image?
+    @requires_local_image
+  end
 
   def set_local_image_metadata
     self.local_image_path = local_image.path
