@@ -72,7 +72,7 @@ class Photo < ActiveRecord::Base
   has_attached_file :image, Paperclip.options[:image_options]
 
 
-  validates_presence_of             :album_id, :user_id, :upload_batch_id
+  validates_presence_of             :album_id, :user_id
 
 
   validates_attachment_presence     :local_image,{
