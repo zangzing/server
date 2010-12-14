@@ -177,7 +177,7 @@ ul#indicator-4 li {
   float: left;
   padding: 11px 19px 0 0;
   width: 179px;
-  font-size: 1.3em;
+  font-size: 1.1em;
   font-weight: 400;
   color: #646464;
   text-align: center;
@@ -192,7 +192,7 @@ ul#indicator-5 li {
   float: left;
   padding: 8px 19px 0 0;
   width: 139px;
-  font-size: 1.3em;
+  font-size: 1.1em;
   font-weight: 400;
   color: #646464;
   text-align: center;
@@ -206,7 +206,7 @@ ul#indicator-6 li {
   float: left;
   padding: 8px 18px 0 0;
   width: 115px;
-  font-size: 1.2em;
+  font-size: 1.1em;
   font-weight: 400;
   color: #646464;
   text-align: center;
@@ -542,12 +542,19 @@ ul#share-pick li.email-share:hover {
 div#form-container {
   width: 800px;
   margin: 20px auto;
+  /*font-size: 1.4em;*/
+}
+
+dl#email-share-form{
   font-size: 1.4em;
 }
 
 div#form-container-2 {
   width: 800px;
   margin: 0px auto;
+}
+
+dl#social-form{
   font-size: 1.4em;
 }
 
@@ -595,34 +602,35 @@ dl#social-form dd#post-text textarea {
 
 /*}*/
 
-dd.button {
-  font-size: 1.3em;
-}
+/*dd.button {*/
+  /*font-size: 1.3em;*/
+/*}*/
 
-dd.button a {
-  margin-right: 10px;
-  color: #646464;
-  text-decoration: underline;
-}
+/*dd.button a {*/
+  /*margin-right: 10px;*/
+  /*color: #646464;*/
+  /*text-decoration: underline;*/
+/*}*/
 
 #form-actions {
   float: right;
   margin: 15px 24px 0 0;
-  color: #646464;
+  /*color: #646464;*/
 }
 
-#form-actions a, dd.button a {
-  color: #646464;
-  text-decoration: underline;
-}
+/*#form-actions a, dd.button a {*/
+  /*color: #646464;*/
+  /*text-decoration: underline;*/
+/*}*/
 
-#social-submit, #mail-submit {
-  margin-left: 20px;
-}
+/*#social-submit, #mail-submit {*/
+  /*margin-left: 20px;*/
+/*}*/
 
 ul#email-sync {
   margin: 0 0 10px 78px;
   float: left;
+  font-size:1.4em;
 }
 
 ul#email-sync li {
@@ -675,6 +683,10 @@ dl#email-share-form dd#the-list {
   min-height: 42px;
   padding: 0 5px;
   width: 690px;
+}
+
+dl#contributor-index{
+    font-size:1.4em;
 }
 
 dl#contributor-index dd#the-list {
