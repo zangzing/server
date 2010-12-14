@@ -842,20 +842,19 @@ div#small-drawer dl dd label.error {
   width: 400px;
 }
 
-div#small-drawer dl dt.button {
+div#small-drawer dl dt.dialog-buttons {
   float: left;
   width: 50%;
   padding-top: 8px;
 }
 
-div#small-drawer dl dt.button a {
-  color: #0a0a0a;
-}
+/*div#small-drawer dl dt.button a {*/
+  /*color: #0a0a0a;*/
+/*}*/
 
-div#small-drawer dl dd.button {
+div#small-drawer dl dd.dialog-buttons {
   float: right;
-  text-align: right;
-  width: 40%
+  width: 50%
 }
 
 div#small-drawer dl dt.full-t {
@@ -877,8 +876,24 @@ div#small-drawer dl dd.full-t {
 
 
 
-/*  generic buttons
+/*  hyperlink button
  **************************************************************************/
+
+a.hyperlink-button{
+    text-decoration:underline;
+    font-size:1.1em;
+    font-weight:200;
+    cursor:pointer;
+    color: #000000
+}
+
+a.hyperlink-button:hover{
+    color: #00FF00;
+}
+
+a.hyperlink-button:active{
+    color: #FF0000;
+}
 
 /*  back button
  *************************************************************/
@@ -1053,7 +1068,7 @@ a.green-add-button{
     background: url("/images/btn-green-add-endcap.png") no-repeat scroll top right;
     color:#ffffff;
     display: block;
-    float: left;
+    /*float: left;*/
     font-size: 1.2em;
     height: 30px;
     margin-right: 6px;
