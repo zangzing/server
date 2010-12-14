@@ -18,12 +18,14 @@ class Connector::ShutterflyFoldersController < Connector::ShutterflyController
   def import
     photos_list = sf_api.get_images(params[:sf_album_id])
     photos = []
+    current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
     photos_list.each do |p|
       photo = Photo.create(
               :caption => p[:title].first,
               :album_id => params[:album_id],
               :user_id=>current_user.id,
-              :source_guid => Photo.generate_source_guid(photo_url),
+              :upload_batch_id => current_batch.id,              
+              :source_guid => "shutterfly:"+Photo.generate_source_guid(photo_url),
               :source_thumb_url => get_photo_url(p[:id],  :thumb),
               :source_screen_url => get_photo_url(p[:id],  :screen)
       )

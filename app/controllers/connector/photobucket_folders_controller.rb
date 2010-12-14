@@ -32,12 +32,14 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
   def import
     album_contents = photobucket_api.open_album(params[:album_path]).first
     photos = []
+    current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
     (album_contents[:media] || []).each do |photo_data|
       photo = Photo.create(
               :caption => photo_data[:title].first.is_a?(Hash) ? photo_data[:name] : photo_data[:title].first,
               :album_id => params[:album_id],
               :user_id => current_user.id,
-              :source_guid => Photo.generate_source_guid(photo_data[:url].first),
+              :upload_batch_id => current_batch.id,              
+              :source_guid => "photobucket:"+Photo.generate_source_guid(photo_data[:url].first),
               :source_thumb_url => photo_data[:thumb].first,
               :source_screen_url => photo_data[:thumb].first
       )
@@ -50,11 +52,13 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
 
   def import_photo
     photo_data = photobucket_api.call_method("/media/#{params[:photo_path]}").first
+    current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
     photo = Photo.create(
             :caption => photo_data[:title].first.is_a?(Hash) ? photo_data[:name] : photo_data[:title].first,
             :album_id => params[:album_id],
             :user_id => current_user.id,
-            :source_guid => Photo.generate_source_guid(photo_data[:url].first),
+            :upload_batch_id => current_batch.id,            
+            :source_guid => "photobucket:"+Photo.generate_source_guid(photo_data[:url].first),
             :source_thumb_url => photo_data[:thumb].first,
             :source_screen_url => photo_data[:thumb].first
     )

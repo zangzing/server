@@ -34,14 +34,16 @@ protected
   def add_photos(album, user)
     photos_count = params[:attachments].to_i
     last_photo = nil
+    current_batch = UploadBatch.get_current( user.id, album.id )
     1.upto(photos_count) do |attach_index|
       attached_image = params["attachment#{attach_index}"]
       photo = Photo.create(
-              :caption => attached_image.original_filename,
-              :album_id => album.id,
               :user_id => user.id,
+              :album_id => album.id,
+              :upload_batch_id => current_batch.id,    
+              :caption => attached_image.original_filename,
               #todo: should use random/uuid/guid for source_guid
-              :source_guid => Photo.generate_source_guid("#{params[:html]}_#{params[:text]}_#{Time.now.to_i}_#{attach_index}")
+              :source_guid => "email:"+Photo.generate_source_guid("#{params[:html]}_#{params[:text]}_#{Time.now.to_i}_#{attach_index}")
       )
       photo.local_image = attached_image
       photo.save

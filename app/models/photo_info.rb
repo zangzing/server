@@ -4,8 +4,8 @@ class PhotoInfo < ActiveRecord::Base
   validates_presence_of :photo
 
   def self.factory(photo)
-    return nil unless photo.local_image?
-    all_tags = get_image_metadata(photo.local_image.to_file.path)
+    return nil unless photo.image?
+    all_tags = get_image_metadata(photo.image.to_file.path)
     PhotoInfo.new(:metadata => all_tags.to_json)
   end
   

@@ -36,36 +36,32 @@ class PhotosController < ApplicationController
 
 
   def agent_create
-    @album = fetch_album
-    @photos = []
 
     if params[:source_guid].nil?
-      render :json => "source_guid parameter required. Unable to create photos", :status=>400
+      render :json => "source_guid parameter required. Unable to create photos", :status=>400 and return
     end
 
+    album = fetch_album
+    photos = []
+    current_batch = UploadBatch.get_current( current_user.id, album.id )
     (0...params[:source_guid].length).each do |index|
-      source_guid = params[:source_guid][index.to_s]
-      size = params[:size][index.to_s]
-      caption = params[:caption][index.to_s]
-
-      @photo = @album.photos.build(:agent_id => params[:agent_id], :source_guid => source_guid, :caption => caption, :image_file_size => size)
-      @photo.user = current_user
-      @photos << @photo
-
-
-      #todo: need to handle agent port and url templates in central place
-      @photo.source_thumb_url = "http://localhost:30777/albums/#{@album.id}/photos/:photo_id.thumb"
-      @photo.source_screen_url = "http://localhost:30777/albums/#{@album.id}/photos/:photo_id.screen"
-
-      if @photo.save
-
+      photo = album.photos.build(   :user_id =>           current_user.id,
+                                    :upload_batch_id =>   current_batch.id,
+                                    :agent_id =>          params[:agent_id],
+                                    :source_guid =>       params[:source_guid][index.to_s],
+                                    :caption =>           params[:caption][index.to_s],
+                                    :image_file_size =>   params[:size][index.to_s],
+                                    :source_thumb_url =>  "http://localhost:30777/albums/#{album.id}/photos/:photo_id.thumb",
+                                    :source_screen_url => "http://localhost:30777/albums/#{album.id}/photos/:photo_id.screen")
+                                    #todo: need to handle agent port and url templates in central place for source thumb_url and screen_url
+      if photo.save
+         photos << photo
       else
-        render :json => @photo.errors, :status=>500
-        return
+        render :json => photo.errors, :status=>500 and return
       end
     end
 
-    render :json => @photos.to_json(:only =>[:id, :agent_id, :state, :source_thumb_url, :source_screen_url, :source_guid], :methods => [:thumb_url, :medium_url])
+    render :json => photos.to_json(:only =>[:id, :agent_id, :state, :source_thumb_url, :source_screen_url, :source_guid], :methods => [:thumb_url, :medium_url])
   end
 
 

@@ -34,11 +34,13 @@ class Connector::FacebookPhotosController < Connector::FacebookController
 
   def import
     info = facebook_graph.get(params[:photo_id])
+    current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
     photo = Photo.create(
-            :caption => info[:name] || '',
-            :album_id => params[:album_id],
             :user_id=>current_user.id,
-            :source_guid => Photo.generate_source_guid(info[:source]),
+            :album_id => params[:album_id],
+            :upload_batch_id => current_batch.id,
+            :caption => info[:name] || '',
+            :source_guid => "facebook:"+Photo.generate_source_guid(info[:source]),
             :source_thumb_url => get_photo_url(info, :thumb),
             :source_screen_url => get_photo_url(info, :screen)
     )

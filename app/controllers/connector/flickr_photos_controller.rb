@@ -31,11 +31,13 @@ class Connector::FlickrPhotosController < Connector::FlickrController
   def import
     info = flickr_api.photos.getInfo :photo_id => params[:photo_id], :extras => 'original_format'
     photo_url = get_photo_url(info, :full)
+    current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
     photo = Photo.create(
-              :caption => info.title,
-              :album_id => params[:album_id],
               :user_id=>current_user.id,
-              :source_guid => Photo.generate_source_guid(photo_url),
+              :album_id => params[:album_id],
+              :upload_batch_id => current_batch.id,
+              :caption => info.title,
+              :source_guid => "flickr:"+Photo.generate_source_guid(photo_url),
               :source_thumb_url => get_photo_url(info, :thumb),
               :source_screen_url => get_photo_url(info, :screen)
     )
