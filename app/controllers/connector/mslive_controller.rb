@@ -28,7 +28,7 @@ protected
 
   def live_api
     #Manage apps here: https://manage.dev.live.com
-    @api ||= WindowsLiveLogin.new(WINDOWS_LIVE_API_KEYS[:client_id], WINDOWS_LIVE_API_KEYS[:secret_key], 'wsignin1.0', true, "http://#{APPLICATION_HOST}/tos.html")
+    @api ||= WindowsLiveLogin.new(WINDOWS_LIVE_API_KEYS[:client_id], WINDOWS_LIVE_API_KEYS[:secret_key], 'wsignin1.0', true, "http://#{Server::Application.config.application_host}/tos.html")
   end
   
   def consent_token

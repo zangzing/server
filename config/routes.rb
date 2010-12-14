@@ -1,317 +1,238 @@
 #
 #   Copyright 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
-ActionController::Routing::Routes.draw do |map|
-  #root
-  map.root :controller => "pages", :action => 'home'
+
+Server::Application.routes.draw do
+
+  root :to => 'pages#home'
 
   #users
-  map.with_options :controller => :users do |users|
-    users.users             '/users',          :action=> 'index',  :conditions=>{ :method => :get }
-    users.create_user       '/users',          :action=> 'create', :conditions=>{ :method => :post }
-    users.new_user          '/users/new',      :action=> 'new',    :conditions=>{ :method => :get }
-    users.edit_user         '/users/:id/edit', :action=> 'edit',   :conditions=>{ :method => :get }
-    users.user_account      '/users/:id/account', :action=> 'account',   :conditions=>{ :method => :get }
-    users.user_notifications'/users/:id/notifications', :action=> 'notifications',   :conditions=>{ :method => :get }
-    users.validate_email    '/users/validate_email', :action=> 'validate_email', :conditions=>{ :method => :get }
-    users.validate_username '/users/validate_username', :action=> 'validate_username', :conditions=>{ :method => :get }
-    users.user              '/users/:id.',     :action=> 'show',   :conditions=>{ :method => :get }
-    users.update_user       '/users/:id.',     :action=> 'update', :conditions=>{ :method => :put }
-    users.delete_user       '/users/:id.',     :action=> 'destroy',:conditions=>{ :method => :delete }
-  end
-  map.resources :users do |user|
-    user.resources :identities
-  end
+  get    '/users'                   => 'users#index',             :as => :users
+  get    '/users/new'               => 'users#new',               :as => :new_user
+  get    '/users/validate_email'    => 'users#validate_email',    :as => :validate_email
+  get    '/users/validate_username' => 'users#validate_username', :as => :validate_username
+  post   '/users'                   => 'users#create',            :as => :create_user
+  get    '/users/:id'              => 'users#show',              :as => :user
+  get    '/users/:id/edit'          => 'users#edit',              :as => :edit_user
+  put    '/users/:id'              => 'users#update',            :as => :update_user
+  delete '/users/:id'              => 'users#destroy',           :as => :delete_user
+  get    '/users/:id/account'    => 'users#account',    :as => :account
+  get    '/users/:id/notifications'    => 'users#notifications',    :as => :notifications
+
+  #identities  
+  get    '/users/:id/identities'     => 'identities#index',       :as => :user_identities
+  get    '/users/:id/identities/new' => 'identities#new',         :as => :new_user_identity
+  post   '/users/:id/identities'     => 'identities#create',      :as => :create_user_identity
+  get    '/identities/:id'          => 'identities#show',        :as => :identity
+  get    '/identities/:id/edit'      => 'identities#edit',        :as => :edit_identity
+  put    '/identities/:id'          => 'identities#update',      :as => :update_identity
+  delete '/identities/:id'          => 'identities#destroy',     :as => :delete_identity
 
   #albums
-  map.with_options :controller => :albums do |albums|
-    albums.user_albums        '/users/:user_id/albums.',     :action=>"index",     :conditions=>{ :method => :get }
-    albums.album              '/albums/:id.',                :action=>"show",       :conditions=>{ :method => :get }
+  get    '/users/:user_id/albums'     => 'albums#index',         :as => :user_albums
+  get    '/users/:user_id/albums/new' => 'albums#new',           :as => :new_user_album
+  post   '/users/:user_id/albums'     => 'albums#create',        :as => :create_user_album
+  get    '/albums/:id/name_album'     => 'albums#name_album',    :as => :name_album
+  get    '/albums/:id/privacy'        => 'albums#privacy',       :as => :privacy
+  get    '/albums/:id/add_photos'      => 'albums#add_photos',    :as => :add_photos
+  get    '/albums/:id/upload_stat'     => 'albums#upload_stat',   :as => :album_upload_stat
+  get    '/albums/:id'                => 'albums#show',          :as => :album
+  get    '/albums/:id/edit'           => 'albums#edit',          :as => :edit_album
+  put    '/albums/:id'                => 'albums#update',        :as => :update_album
+  delete '/albums/:id'                => 'albums#destroy',       :as => :delete_album
 
-    albums.new_user_album     '/users/:user_id/albums/new.', :action=>"new",       :conditions=>{ :method => :get }
-    albums.create_user_album  '/users/:user_id/albums.',     :action=>"create",    :conditions=>{ :method => :post }
-
-    albums.name_album         '/albums/:id/name_album.',     :action=>"name_album",:conditions=>{ :method => :get }
-    albums.privacy            '/albums/:id/privacy.',        :action=>"privacy",   :conditions=>{ :method => :get }
-    albums.add_photos         '/albums/:id/add_photos',      :action=>"add_photos",:conditions=>{ :method => :get }
-    albums.edit_album         '/albums/:id/edit.',           :action=>"edit",       :conditions=>{ :method => :get }
-    albums.update_album       '/albums/:id.',                :action=>"update",    :conditions=>{ :method => :put }
-
-    albums.delete_album       '/albums/:id.',                :action=>"destroy",    :conditions=>{ :method => :delete }
-    albums.album_upload_stat  '/albums/:id/upload_stat', :action=>'upload_stat', :conditions => { :method => :get }
-  end
-
-
- #shares
-  map.with_options :controller => :shares do |shares|
-    shares.album_shares         '/albums/:album_id/shares',          :action=> 'index',   :conditions=>{ :method => :get }
-    shares.create_album_share   '/albums/:album_id/shares.',         :action=> 'create',  :conditions=>{ :method => :post }
-    shares.new_album_share      '/albums/:album_id/shares/new',      :action=> 'new',     :conditions=>{ :method => :get }
-    shares.new_album_postshare  '/albums/:album_id/shares/newpost',  :action=> 'newpost', :conditions=>{ :method => :get }
-    shares.new_album_emailshare '/albums/:album_id/shares/newemail', :action=> 'newemail',:conditions=>{ :method => :get }
-    shares.edit_share           '/shares/:id/edit',                  :action=> 'edit',    :conditions=>{ :method => :get }
-    shares.share                '/shares/:id.',                      :action=> 'show',    :conditions=>{ :method => :get }
-    shares.update_share         '/shares/:id.',                      :action=> 'update',  :conditions=>{ :method => :put }
-    shares.delete_share         '/shares/:id.',                      :action=> 'destroy', :conditions=>{ :method => :delete }
-  end
+  #shares
+  get '/albums/:album_id/shares'          => 'shares#index',      :as => :album_shares
+  get '/albums/:album_id/shares/new'      => 'shares#new',        :as => :new_album_share
+  get '/albums/:album_id/shares/newpost'  => 'shares#newpost',    :as => :new_album_postshare
+  get '/albums/:album_id/shares/newemail' => 'shares#newemail',   :as => :new_album_emailshare
+  post '/albums/:album_id/shares'        => 'shares#create',     :as => :create_album_share
+  get '/shares/:id'                      => 'shares#show',       :as => :share
+  get '/shares/:id/edit'                  => 'shares#edit',       :as => :edit_share
+  put '/shares/:id'                      => 'shares#update',     :as => :update_share
+  delete '/shares/:id'                   => 'shares#destroy',    :as => :delete_share
 
   #photos
-  map.with_options :controller => :photos do |photos|                                                                                                
-    photos.album_photos                '/albums/:album_id/photos.',                 :action=>'index',           :conditions => { :method => :get }
-    photos.create_album_photo          '/albums/:album_id/photos.',                 :action=>'create',          :conditions => { :method => :post }
-    photos.slideshow_source            '/albums/:album_id/slides_source.:format',   :action=>'slideshowbox_source', :conditions => { :method => :get }
-    photos.upload_photo                '/photos/:id/upload.',                       :action=>'upload',          :conditions => { :method => :put }
-    photos.edit_photo                  '/photos/:id/edit.',                         :action=>'edit',            :conditions => { :method => :get }
-    photos.update_photo                '/photos/:id/edit.',                         :action=>'update',          :conditions => { :method => :put }
-    photos.destroy_photo               '/photos/:id.',                              :action=>'destroy',         :conditions => { :method => :delete }
-    photos.photo                       '/photos/:id.',                              :action=>'show',            :conditions => { :method => :get }
-    photos.agent_photos                '/agents/:agent_id/photos.',                 :action=>'agentindex',       :conditions=>{ :method => :get }
-    photos.agent_create                '/albums/:album_id/photos/agent_create.:format',  :action=>'agent_create',:conditions=>{ :method => :post }
-    photos.profile                      '/albums/:album_id/profile',                     :action=> 'profile',        :conditions=>{ :method => :get }
-  end
+  get    '/albums/:album_id/photos'      => 'photos#index',                     :as => :album_photos
+  post   '/albums/:album_id/photos'      => 'photos#create',                    :as => :create_album_photo
+  get    '/albums/:album_id/slides_source.:format' => 'photos#slideshowbox_source',    :as => :slideshow_source
+  get    '/photos/:id'                   => 'photos#show',                      :as => :photo
+  get    '/photos/:id/edit'              => 'photos#edit',                      :as => :edit_photo
+  put    '/photos/:id/edit'              => 'photos#update',                    :as => :update_photo
+  delete '/photos/:id'                   => 'photos#destroy',                   :as => :destroy_photo
+  put    '/photos/:id/upload'            => 'photos#upload',                    :as => :upload_photo
+  get    '/agents/:agent_id/photos'      => 'photos#agentindex',                :as => :agent_photos
+  post   '/albums/:album_id/photos/agent_create.:format' => 'photos#agent_create',      :as => :agent_create
+  get    '/albums/:album_id/profile'      => 'photos#profile',                  :as => :profile
 
   #activities
-  map.with_options :controller => :activities do |activities|
-      activities.album_activities                '/albums/:album_id/activities.',   :action=>'album_index',           :conditions => { :method => :get }
-      activities.user_activities                 '/users/:user_id/activities.',   :action=>'user_index',             :conditions => { :method => :get }
-  end
+  get '/albums/:album_id/activities.' => 'activities#album_index', :as => :album_activities
+  get '/users/:user_id/activities.'   => 'activities#user_index',  :as => :user_activities
 
   #people
-  map.with_options :controller => :people do |people|
-      people.album_people               '/albums/:album_id/people.',   :action=>'album_index',           :conditions => { :method => :get }
-      people.user_people                 '/users/:user_id/people.',     :action=>'user_index',             :conditions => { :method => :get }
-  end
+  get '/albums/:album_id/people' => 'people#album_index',         :as => :album_people
+  get '/users/:user_id/people'   => 'people#user_index',          :as => :user_people
 
-  #followers
-  map.with_options :controller => :follows do |f|
-    f.user_follows       '/users/:user_id/follows.',       :action=>"index",    :conditions=>{ :method => :get }
-    f.create_user_follow '/users/:user_id/follows/create',:action=>'create'   
-    f.new_user_follow    '/users/:user_id/follows/new.',  :action=>'new',      :conditions => { :method => :get }
-    f.unfollow           '/follows/:id/unfollow',         :action=>'unfollow', :conditions => { :method => :delete }
-    f.block_follow       '/follows/:id/block',            :action=>'block',    :conditions=>{ :method => :put }
-    f.unblock_follow     '/follows/:id/unblock',          :action=>'unblock',  :conditions=>{ :method => :put }
-  end
+  #follows
+  get    '/users/:user_id/follows'       => 'follows#index',      :as => :user_follows
+  post   '/users/:user_id/follows/create' => 'follows#create',     :as => :create_user_follow
+  get    '/users/:user_id/follows/new'   => 'follows#new',        :as => :new_user_follow
+  delete '/follows/:id/unfollow'          => 'follows#unfollow',   :as => :unfollow
+  put    '/follows/:id/block'             => 'follows#block',      :as => :block_follow
+  put    '/follows/:id/unblock'           => 'follows#unblock',    :as => :unblock_follow
 
   #contributors
-  map.resources :albums, :shallow => true do |album|
-    album.resources :contributors
-  end
+  get    '/albums/:album_id/contributors'          => 'contributors#index',      :as => :album_contributors
+  get    '/albums/:album_id/contributors/new'      => 'contributors#new',        :as => :new_album_contributor
+  post   '/albums/:album_id/contributors'         => 'contributors#create',     :as => :create_album_contributor
+  get    '/contributors/:id'                      => 'contributors#show',       :as => :contributor
+  get    '/contributors/:id/edit'                  => 'contributors#edit',       :as => :edit_contributor
+  put    '/contributors/:id'                      => 'contributors#update',     :as => :update_contributor
+  delete '/contributors/:id'                      => 'contributors#destroy',    :as => :delete_contributor 
+    
 
+  # oauth
+  match '/users/:id/agents'     => 'agents#index',                 :as => :agents
+  match '/agent/info'          => 'agents#info',                  :as => :agent_info
+  match '/agents/check'      => 'agents#check',              :as => :check
+  match '/oauth/authorize'      => 'oauth#authorize',              :as => :authorize
+  match '/oauth/agentauthorize' => 'oauth#agentauthorize',         :as => :agentauthorize
+  match '/oauth/revoke'         => 'oauth#revoke',                 :as => :revoke
+  match '/oauth/request_token'  => 'oauth#request_token',          :as => :request_token
+  match '/oauth/access_token'   => 'oauth#access_token',           :as => :access_token
+  match '/oauth/test_request'   => 'oauth#test_request',           :as => :test_request
+  match '/oauth/test_session'   => 'oauth#test_session',           :as => :test_session
 
-  #oauth
-  #map.resources :oauth_clients
-  #map.oauth          '/oauth',               :controller=>'oauth_clients',:action=>'index'
-  map.agents         '/users/:id/agents.',   :controller=>'agents',:action=>'index', :conditions=>{ :method => :get }
-  map.agent_info     '/agents/info.',         :controller=>'agents',:action=>'info', :conditions=>{ :method => :get }
-  map.agent_check    '/agents/check.',        :controller=> 'agents',:action=>'check', :conditions=>{ :method => :get }
-  map.authorize      '/oauth/authorize',     :controller=>'oauth',:action=>'authorize'
-  map.agentauthorize '/oauth/agentauthorize',:controller=>'oauth',:action=>'agentauthorize'
-  map.revoke         '/oauth/revoke',        :controller=>'oauth',:action=>'revoke'
-  map.request_token  '/oauth/request_token', :controller=>'oauth',:action=>'request_token'
-  map.access_token   '/oauth/access_token',  :controller=>'oauth',:action=>'access_token'
-  map.test_request   '/oauth/test_request',  :controller=>'oauth',:action=>'test_request'
-  map.test_session   '/oauth/test_session',  :controller=>'oauth',:action=>'test_session'
-
-  #login
-  map.resources :user_sessions, :only => [:new, :create, :destroy]
-  map.signin '/signin', :controller => 'user_sessions', :action => 'new'
-  map.signout '/signout', :controller => 'user_sessions', :action => 'destroy'
-  map.activate '/activate/:activation_code', :controller => 'activations', :action => 'create'
-  map.resend_activation '/resend_activation', :controller => 'activations', :action => 'resend_activation'
-  map.resources :password_resets, :only => [:new, :edit, :create, :update]
+  #sessions - login
+  resources :user_sessions, :only => [:new, :create, :destroy]
+  match '/signin'                    => 'user_sessions#new',            :as => :signin
+  match '/signout'                   => 'user_sessions#destroy',        :as => :signout
+  match '/activate/:activation_code' => 'activations#create',           :as => :activate
+  match '/resend_activation'        => 'activations#resend_activation', :as => :resend_activation
+  resources :password_resets, :only => [:new, :edit, :create, :update]
+\
 
   #static pages
-  map.contact '/contact', :controller => 'pages', :action => 'contact'
-  map.about   '/about',   :controller => 'pages', :action => 'about'
-  map.help    '/help',    :controller => 'pages', :action => 'help'
-  map.signup '/signup',   :controller => 'users', :action => 'new'
-
-  #Flickr
-  map.with_options :namespace => 'connector', :controller => :flickr_sessions do |flickr|
-    flickr.new_flickr_session     '/flickr/sessions/new', :action  => 'new'
-    flickr.create_flickr_session  '/flickr/sessions/create', :action  => 'create'
-    flickr.destroy_flickr_session '/flickr/sessions/destroy', :action  => 'destroy'
-  end
-
-  map.with_options :namespace => 'connector', :controller => :flickr_photos do |flickr|
-    flickr.flickr_photos '/flickr/folders/:set_id/photos.:format', :action  => 'index'
-    #flickr.flickr_photo  '/flickr/folders/:set_id/photos/:photo_id.:size', :action  => 'show'
-    flickr.flickr_photo_action  '/flickr/folders/:set_id/photos/:photo_id/:action'
-  end
-
-  map.with_options :namespace => 'connector',:controller => :flickr_folders do |flickr|
-    flickr.flickr_folders '/flickr/folders.:format', :action  => 'index'
-    flickr.flickr_folder_action '/flickr/folders/:set_id/:action.:format'
-  end
-
-  #Kodak
-  map.with_options :namespace => 'connector',:controller => :kodak_sessions do |kodak|
-    kodak.new_kodak_session     '/kodak/sessions/new', :action  => 'new'
-    kodak.create_kodak_session  '/kodak/sessions/create', :action  => 'create'
-    kodak.destroy_kodak_session '/kodak/sessions/destroy', :action  => 'destroy'
-  end
-
-  map.with_options :namespace => 'connector', :controller => :kodak_photos do |kodak|
-    kodak.kodak_photos '/kodak/folders/:kodak_album_id/photos.:format', :action  => 'index'
-#    kodak.kodak_photo  '/kodak/folders/:kodak_album_id/photos/:photo_id.:size', :action  => 'show'
-    kodak.kodak_photo_action '/kodak/folders/:kodak_album_id/photos/:photo_id/:action'
-  end
-
-  map.with_options :namespace => 'connector', :controller => :kodak_folders do |kodak|
-    kodak.kodak_folders '/kodak/folders.:format', :action  => 'index'
-    kodak.kodak_folder_action '/kodak/folders/:kodak_album_id/:action.:format'
-  end
-
-  #Facebook
-  map.with_options :namespace => 'connector', :controller => :facebook_sessions do |fb|
-    fb.new_facebook_session     '/facebook/sessions/new', :action  => 'new'
-    fb.create_facebook_session  '/facebook/sessions/create', :action  => 'create'
-    fb.destroy_facebook_session '/facebook/sessions/destroy', :action  => 'destroy'
-  end
-
-  map.with_options :namespace => 'connector', :controller => :facebook_photos do |fb|
-    fb.facebook_photos '/facebook/folders/:fb_album_id/photos.:format', :action  => 'index'
-    #fb.facebook_photo  '/facebook/folders/:fb_album_id/photos/:photo_id.:size', :action  => 'show'
-    fb.facebook_photo_action '/facebook/folders/:fb_album_id/photos/:photo_id/:action'
-  end
-
-  map.with_options :namespace => 'connector', :controller => :facebook_folders do |fb|
-    fb.facebook_folders '/facebook/folders.:format', :action  => 'index'
-    fb.facebook_folder_action '/facebook/folders/:fb_album_id/:action.:format'
-  end
-
-  map.with_options :namespace => 'connector', :controller => :facebook_posts do |fb|
-    fb.facebook_posts           '/facebook/posts.:format',    :action  => 'index'
-    fb.create_facebook_post  '/facebook/posts/create',     :action  => 'create'
-  end
-
-  #SmugMug
-  map.with_options :namespace => 'connector', :controller => :smugmug_sessions do |fb|
-    fb.new_smugmug_session     '/smugmug/sessions/new', :action  => 'new'
-    fb.create_smugmug_session  '/smugmug/sessions/create', :action  => 'create'
-    fb.destroy_smugmug_session '/smugmug/sessions/destroy', :action  => 'destroy'
-  end
-
-  map.with_options :namespace => 'connector', :controller => :smugmug_photos do |fb|
-    fb.smugmug_photos '/smugmug/folders/:sm_album_id/photos.:format', :action  => 'index'
-#    fb.smugmug_photo  '/smugmug/folders/:sm_album_id/photos/:photo_id.:size', :action  => 'show'
-    fb.smugmug_photo_action '/smugmug/folders/:sm_album_id/photos/:photo_id/:action'
-  end
-
-  map.with_options :namespace => 'connector', :controller => :smugmug_folders do |fb|
-    fb.smugmug_folders '/smugmug/folders.:format', :action  => 'index'
-    fb.smugmug_folder_action '/smugmug/folders/:sm_album_id/:action.:format'
-  end
-
-  #ShutterFly
-  map.with_options :namespace => 'connector', :controller => :shutterfly_sessions do |sf|
-    sf.new_shutterfly_session     '/shutterfly/sessions/new', :action  => 'new'
-    sf.create_shutterfly_session  '/shutterfly/sessions/create', :action  => 'create'
-    sf.destroy_shutterfly_session '/shutterfly/sessions/destroy', :action  => 'destroy'
-  end
-
-  map.with_options :namespace => 'connector', :controller => :shutterfly_photos do |sf|
-    sf.shutterfly_photos '/shutterfly/folders/:sf_album_id/photos.:format', :action  => 'index'
-    #sf.shutterfly_photo  '/shutterfly/folders/:sf_album_id/photos/:photo_id.:size', :action  => 'show'
-    sf.shutterfly_photo_action '/shutterfly/folders/:sf_album_id/photos/:photo_id/:action'
-  end
-
-  map.with_options :namespace => 'connector', :controller => :shutterfly_folders do |sf|
-    sf.shutterfly_folders '/shutterfly/folders.:format', :action  => 'index'
-    sf.shutterfly_folder_action '/shutterfly/folders/:sf_album_id/:action.:format'
-  end
-
-  #Photobucket
-  map.with_options :namespace => 'connector', :controller => :photobucket_sessions do |fb|
-    fb.new_photobucket_session     '/photobucket/sessions/new', :action  => 'new'
-    fb.create_photobucket_session  '/photobucket/sessions/create', :action  => 'create'
-    fb.destroy_photobucket_session '/photobucket/sessions/destroy', :action  => 'destroy'
-  end
-  map.photobucket_folders '/photobucket/folders/:action', :controller => :photobucket_folders, :namespace => 'connector'
-
-  #ZangZing (local)
-  map.with_options :namespace => 'connector', :controller => :zangzing_photos do |sf|
-    sf.zangzing_photos '/zangzing/folders/:zz_album_id/photos.:format', :action  => 'index'
-    sf.zangzing_photo_action '/zangzing/folders/:zz_album_id/photos/:photo_id/:action'
-  end
-
-  map.with_options :namespace => 'connector', :controller => :zangzing_folders do |sf|
-    sf.zangzing_folders '/zangzing/folders.:format', :action  => 'index'
-    sf.zangzing_folder_action '/zangzing/folders/:zz_album_id/:action.:format'
-  end
-
-  #Google
-  map.with_options :namespace => 'connector', :controller => :google_sessions do |g|
-    g.new_google_session     '/google/sessions/new', :action  => 'new'
-    g.create_google_session  '/google/sessions/create', :action  => 'create'
-    g.destroy_google_session '/google/sessions/destroy', :action  => 'destroy'
-  end
-  map.google_contacts '/google/contacts/:action', :namespace => 'connector',  :controller => 'google_contacts'
-
-  #Picasa
-  map.with_options :namespace => 'connector', :controller => :picasa_sessions do |g|
-    g.new_picasa_session     '/picasa/sessions/new', :action  => 'new'
-    g.create_picasa_session  '/picasa/sessions/create', :action  => 'create'
-    g.destroy_picasa_session '/picasa/sessions/destroy', :action  => 'destroy'
-  end
-  map.with_options :namespace => 'connector', :controller => :picasa_photos do |sf|
-    sf.picasa_photos        '/picasa/folders/:picasa_album_id/photos.:format', :action  => 'index'
-    sf.picasa_photo_action  '/picasa/folders/:picasa_album_id/photos/:photo_id/:action'
-  end
-  map.with_options :namespace => 'connector', :controller => :picasa_folders do |sf|
-    sf.picasa_folders       '/picasa/folders.:format', :action  => 'index'
-    sf.picasa_folder_action '/picasa/folders/:picasa_album_id/:action.:format'
-  end
-
-  #LocalContacts importer
-  map.local_contacts '/local/contacts/:action', :namespace => 'connector', :controller => 'local_contacts'
-
-  #Yahoo
-  map.with_options :namespace => 'connector', :controller => :yahoo_sessions do |y|
-    y.new_yahoo_session     '/yahoo/sessions/new', :action  => 'new'
-    y.create_yahoo_session  '/yahoo/sessions/create', :action  => 'create'
-    y.destroy_yahoo_session '/yahoo/sessions/destroy', :action  => 'destroy'
-  end
-  map.yahoo_contacts '/yahoo/contacts/:action', :namespace => 'connector', :controller => 'yahoo_contacts'
-
-  #Hotmail / MS Windows Live
-  map.with_options :namespace => 'connector', :controller => :mslive_sessions do |live|
-    live.new_mslive_session     '/mslive/sessions/new', :action  => 'new'
-    live.create_mslive_session  '/mslive/sessions/create', :action  => 'delauth'
-    live.destroy_mslive_session '/mslive/sessions/destroy', :action  => 'destroy'
-  end
-  map.mslive_contacts '/mslive/contacts/:action', :namespace => 'connector', :controller => 'mslive_contacts'
+  get '/contact'  => 'pages#contact', :as => :contact
+  get '/about'    => 'pages#about',   :as => :about
+  get '/help'     => 'pages#help',    :as => :help
+  get '/signup'   => 'users#new',     :as => :signup
 
 
-  #Twitter
-  map.with_options :namespace => 'connector', :controller => :twitter_sessions do |tw|
-    tw.new_twitter_session     '/twitter/sessions/new', :action  => 'new'
-    tw.create_twitter_session  '/twitter/sessions/create', :action  => 'create'
-    tw.destroy_twitter_session '/twitter/sessions/destroy', :action  => 'destroy'
-  end
-  map.with_options :namespace => 'connector', :controller => :twitter_posts do |tw|
-    tw.twitter_posts           '/twitter/posts.:format',    :action  => 'index'
-    tw.create_twitter_post     '/twitter/posts/create',     :action  => 'create'
-  end
+  # all in this section are in the Connector namespace but don't include it in the path
+  scope :module => "connector" do
+    #flickr
+    match '/flickr/sessions/new' => 'flickr_sessions#new', :as => :new_flickr_session
+    match '/flickr/sessions/create' => 'flickr_sessions#create', :as => :create_flickr_session
+    match '/flickr/sessions/destroy' => 'flickr_sessions#destroy', :as => :destroy_flickr_session
+    match '/flickr/folders/:set_id/photos.:format' => 'flickr_photos#index', :as => :flickr_photos
+    match '/flickr/folders/:set_id/photos/:photo_id/:action' => 'flickr_photos#action', :as => :flickr_photo_action
+    match '/flickr/folders.:format' => 'flickr_folders#index', :as => :flickr_folders
+    match '/flickr/folders/:set_id/:action.:format' => 'flickr_folders#index', :as => :flickr_folder_action
 
-  map.sendgrid_import '/sendgrid/import', :controller => :sendgrid, :action => :import
+    #kodak
+    match '/kodak/sessions/new' => 'kodak_sessions#new', :as => :new_kodak_session
+    match '/kodak/sessions/create' => 'kodak_sessions#create', :as => :create_kodak_session
+    match '/kodak/sessions/destroy' => 'kodak_sessions#destroy', :as => :destroy_kodak_session
+    match '/kodak/folders/:kodak_album_id/photos.:format' => 'kodak_photos#index', :as => :kodak_photos
+    match '/kodak/folders/:kodak_album_id/photos/:photo_id/:action' => 'kodak_photos#index', :as => :kodak_photo_action
+    match '/kodak/folders.:format' => 'kodak_folders#index', :as => :kodak_folders
+    match '/kodak/folders/:kodak_album_id/:action.:format' => 'kodak_folders#index', :as => :kodak_folder_action
 
-  #proxy
-  map.with_options :namespace => 'connector', :controller => :proxy do |proxy|
-    proxy.proxy            '/proxy',    :action  => 'proxy'
-  end
+    #facebook
+    match '/facebook/sessions/new' => 'facebook_sessions#new', :as => :new_facebook_session
+    match '/facebook/sessions/create' => 'facebook_sessions#create', :as => :create_facebook_session
+    match '/facebook/sessions/destroy' => 'facebook_sessions#destroy', :as => :destroy_facebook_session
+    match '/facebook/folders/:fb_album_id/photos.:format' => 'facebook_photos#index', :as => :facebook_photos
+    match '/facebook/folders/:fb_album_id/photos/:photo_id/:action' => 'facebook_photos#index', :as => :facebook_photo_action
+    match '/facebook/folders.:format' => 'facebook_folders#index', :as => :facebook_folders
+    match '/facebook/folders/:fb_album_id/:action.:format' => 'facebook_folders#index', :as => :facebook_folder_action
+    match '/facebook/posts.:format' => 'facebook_posts#index', :as => :facebook_posts
+    match '/facebook/posts/create' => 'facebook_posts#create', :as => :create_facebook_post
+
+    #smugmug
+    match '/smugmug/sessions/new' => 'smugmug_sessions#new', :as => :new_smugmug_session
+    match '/smugmug/sessions/create' => 'smugmug_sessions#create', :as => :create_smugmug_session
+    match '/smugmug/sessions/destroy' => 'smugmug_sessions#destroy', :as => :destroy_smugmug_session
+    match '/smugmug/folders/:sm_album_id/photos.:format' => 'smugmug_photos#index', :as => :smugmug_photos
+    match '/smugmug/folders/:sm_album_id/photos/:photo_id/:action' => 'smugmug_photos#index', :as => :smugmug_photo_action
+    match '/smugmug/folders.:format' => 'smugmug_folders#index', :as => :smugmug_folders
+    match '/smugmug/folders/:sm_album_id/:action.:format' => 'smugmug_folders#index', :as => :smugmug_folder_action
+
+    #shutterfly
+    match '/shutterfly/sessions/new' => 'shutterfly_sessions#new', :as => :new_shutterfly_session
+    match '/shutterfly/sessions/create' => 'shutterfly_sessions#create', :as => :create_shutterfly_session
+    match '/shutterfly/sessions/destroy' => 'shutterfly_sessions#destroy', :as => :destroy_shutterfly_session
+    match '/shutterfly/folders/:sf_album_id/photos.:format' => 'shutterfly_photos#index', :as => :shutterfly_photos
+    match '/shutterfly/folders/:sf_album_id/photos/:photo_id/:action' => 'shutterfly_photos#index', :as => :shutterfly_photo_action
+    match '/shutterfly/folders.:format' => 'shutterfly_folders#index', :as => :shutterfly_folders
+    match '/shutterfly/folders/:sf_album_id/:action.:format' => 'shutterfly_folders#index', :as => :shutterfly_folder_action
+
+    #photobucket
+    match '/photobucket/sessions/new' => 'photobucket_sessions#new', :as => :new_photobucket_session
+    match '/photobucket/sessions/create' => 'photobucket_sessions#create', :as => :create_photobucket_session
+    match '/photobucket/sessions/destroy' => 'photobucket_sessions#destroy', :as => :destroy_photobucket_session
+    match '/photobucket/folders/:action' => 'photobucket_folders#index', :as => :photobucket_folders
+
+    #zangzing
+    match '/zangzing/folders/:zz_album_id/photos.:format' => 'zangzing_photos#index', :as => :zangzing_photos
+    match '/zangzing/folders/:zz_album_id/photos/:photo_id/:action' => 'zangzing_photos#index', :as => :zangzing_photo_action
+    match '/zangzing/folders.:format' => 'zangzing_folders#index', :as => :zangzing_folders
+    match '/zangzing/folders/:zz_album_id/:action.:format' => 'zangzing_folders#index', :as => :zangzing_folder_action
+
+    #google
+    match '/google/sessions/new' => 'google_sessions#new', :as => :new_google_session
+    match '/google/sessions/create' => 'google_sessions#create', :as => :create_google_session
+    match '/google/sessions/destroy' => 'google_sessions#destroy', :as => :destroy_google_session
+    match '/google/contacts/:action' => 'google_contacts#index', :as => :google_contacts
+
+    #picasa
+    match '/picasa/sessions/new' => 'picasa_sessions#new', :as => :new_picasa_session
+    match '/picasa/sessions/create' => 'picasa_sessions#create', :as => :create_picasa_session
+    match '/picasa/sessions/destroy' => 'picasa_sessions#destroy', :as => :destroy_picasa_session
+    match '/picasa/folders/:picasa_album_id/photos.:format' => 'picasa_photos#index', :as => :picasa_photos
+    match '/picasa/folders/:picasa_album_id/photos/:photo_id/:action' => 'picasa_photos#index', :as => :picasa_photo_action
+    match '/picasa/folders.:format' => 'picasa_folders#index', :as => :picasa_folders
+    match '/picasa/folders/:picasa_album_id/:action.:format' => 'picasa_folders#index', :as => :picasa_folder_action
+
+    #local contacts
+    match '/local/contacts/:action' => 'local_contacts#index', :as => :local_contacts
+
+    #yahoo
+    match '/yahoo/sessions/new' => 'yahoo_sessions#new', :as => :new_yahoo_session
+    match '/yahoo/sessions/create' => 'yahoo_sessions#create',:as => :create_yahoo_session
+    match '/yahoo/sessions/destroy' => 'yahoo_sessions#destroy', :as => :destroy_yahoo_session
+    match '/yahoo/contacts/:action' => 'yahoo_contacts#index', :as => :yahoo_contacts
+
+    #Hotmail / MS Windows Live
+    match '/mslive/sessions/new' => 'mslive_sessions#new', :as => :new_mslive_session
+    match '/mslive/sessions/create' => 'mslive_sessions#delauth',:as => :create_mslive_session
+    match '/mslive/sessions/destroy' => 'mslive_sessions#destroy', :as => :destroy_mslive_session
+    match '/mslive/contacts/:action' => 'mslive_contacts#index', :as => :mslive_contacts
+
+    #twitter
+    match '/twitter/sessions/new' => 'twitter_sessions#new', :as => :new_twitter_session
+    match '/twitter/sessions/create'=> 'twitter_sessions#create', :as => :create_twitter_session
+    match '/twitter/sessions/destroy' => 'twitter_sessions#destroy', :as => :destroy_twitter_session
+    match '/twitter/posts.:format' => 'twitter_posts#index', :as => :twitter_posts
+    match '/twitter/posts/create' => 'twitter_posts#create', :as => :create_twitter_post
+
+    #proxy
+    match '/proxy' => 'proxy#proxy', :as => :proxy
+
+  end # end of the namespace segment
+  
+  #sendgrid
+  match '/sendgrid/import' => 'sendgrid#import', :as => :sendgrid_import
+
 
   #logs
-  
   unless Rails.env.production?
-    map.with_options :controller => :logs do |logs|
-      logs.logs '/logs', :action => "index"
-      logs.log_retrieve '/logs/:logname', :action => :retrieve
-    end
+    match '/logs' => 'logs#index', :as => :logs
+    match '/logs/:logname' => 'logs#retrieve', :as => :log_retrieve
   end
-
-  #friendly users and albums
-  map.user_friendly '/:user_id', :controller => :albums, :action=>"index", :friendly => true
-  map.user_album_friendly '/:user_id/:album_id', :controller => :photos, :action=>"index", :friendly => true
-
+  
+  #Resque: mount the resque server 
+  mount Resque::Server.new, :at => "/resque"
+  
 end

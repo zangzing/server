@@ -3,7 +3,7 @@
 <ul>
   <% @followers.each  do | follow | %>
      <li>
-     <% form_for follow,:url => (follow.blocked? ? unblock_follow_path(follow) : block_follow_path(follow) ) do |f| %>
+     <%= form_for follow,:url => (follow.blocked? ? unblock_follow_path(follow) : block_follow_path(follow) ) do |f| %>
         <%=hidden_field( :follow, :follow_id, :value => follow.id) %>
         <%= link_to h(follow.follower.name), follow.follower %> |
         <%=f.submit "#{(follow.blocked? ? 'Unblock' : 'Block')}" %>
@@ -15,7 +15,7 @@
 <ul>
   <% @follows.each  do | follow | %>
      <li>
-     <% form_for follow, :url => unfollow_path(follow), :html => { :method => :delete } do |f| %>
+     <%= form_for follow, :url => unfollow_path(follow), :html => { :method => :delete } do |f| %>
         <%=hidden_field( :follow, :follow_id, :value => follow.id) %>
         <%= link_to h(follow.followed.name), follow.followed %> |
         <%= f.submit "Unfollow" %>

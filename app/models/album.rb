@@ -1,3 +1,24 @@
+# == Schema Information
+# Schema version: 60
+#
+# Table name: albums
+#
+#  id              :integer         not null, primary key
+#  user_id         :integer
+#  privacy         :integer
+#  type            :string(255)
+#  style           :integer         default(0)
+#  open            :boolean
+#  event_date      :datetime
+#  location        :string(255)
+#  stream_share_id :integer
+#  reminders       :boolean
+#  name            :string(255)
+#  suspended       :boolean
+#  created_at      :datetime
+#  updated_at      :datetime
+#
+
 #
 #   Copyright 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
@@ -36,22 +57,25 @@ class Album < ActiveRecord::Base
 
   PRIVACIES = {'Public' =>'public','Hidden' => 'hidden','Password' => 'password'};
 
-  # All url, path and form helpers treat all subclasses as Album
+  # build our base model name for this class and
+  # hold onto it as a class variable since we only
+  # need to generate it once.  The name built up
+  # has all the support needed by ActiveModel to properly
+  # fetch the singular and pluralized versions of the name
+  # we do this rather than the default since we want
+  # our child classes to use this classes table name
+  # in other words we don't want PersonalAlbum to use the
+  # personal_albums table we want it to use the 
+  # albums table
   def self.model_name
-    name = "album"
-    name.instance_eval do
-      def plural;   pluralize;   end
-      def singular; singularize; end
-      def human;    singularize; end # only for Rails 3
-    end
-    return name
+    @@_model_name ||= ActiveModel::Name.new(Album)
   end
 
 
   def cover
     return nil if self.photos.empty?
     if self.cover_photo_id.nil?
-      return self.photos.find(:first, :order => 'created_at DESC')
+      return self.photos.first(:order => 'created_at DESC')
     else
       return Photo.find( self.cover_photo_id )
     end                        
@@ -104,7 +128,7 @@ class Album < ActiveRecord::Base
   end
 
   def short_email
-      "#{self.email}@#{ALBUM_EMAIL_HOST}"
+      "#{self.id}@#{Server::Application.config.album_email_host}"
   end
 
   def to_param #overide friendly_id's

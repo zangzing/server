@@ -62,8 +62,8 @@ class FacebookConnectorTest < ActionController::IntegrationTest
     puts "o_O) #{create_session_link}" if @@debug
     code = URI.decode(create_session_link.match(/code=(.+)/).to_a.last)
     puts "CODE=#{code}" if @@debug
-    visit "http://#{APPLICATION_HOST}/facebook/sessions/create?code=#{URI.encode(code)}"
-    #visit new_facebook_session_url(:host => APPLICATION_HOST, :code => URI.encode(code))
+    visit "http://#{Server::Application.config.application_host}/facebook/sessions/create?code=#{URI.encode(code)}"
+    #visit new_facebook_session_url(:host => Server::Application.config.application_host, :code => URI.encode(code))
     puts response.body if @@debug
     #puts "TOKEN=====> #{session[:facebook][77]}" if @@debug
   end

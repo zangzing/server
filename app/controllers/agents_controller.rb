@@ -2,7 +2,7 @@ class AgentsController < ApplicationController
   #before_filter :oauth_required
 
   def index
-    @agents = Agent.find_all_by_user_id(current_user.id, :conditions => 'oauth_tokens.invalidated_at is null and oauth_tokens.authorized_at is not null')
+    @agents = Agent.where(['oauth_tokens.user_id = ? and oauth_tokens.invalidated_at is null and oauth_tokens.authorized_at is not null',current_user.id])
   end
 
   def info

@@ -6,7 +6,7 @@ class CreateUploadBatches < ActiveRecord::Migration
       t.string :state, :default => 'open'
       t.timestamps
     end
-    add_index :upload_batches, :id, :unique
+    add_index :upload_batches, :id, :unique  => true
     add_index :upload_batches, :album_id
     add_index :upload_batches, :user_id
   end

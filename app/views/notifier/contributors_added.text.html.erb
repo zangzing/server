@@ -6,7 +6,7 @@
   <%= @user.name %> invites you to contribute photos for '<%= @album.name  %>'. Your email is now in the contributors list.
   <br/>
   To add photos to this album by email, attach them to a message and send it to <a href="mailto:<%= @album_mail %>"><%= @album.name %></a> or reply to this email.
-  You can see the complete album, get updates and interact with other contributors by logging into <a href="http://<%=APPLICATION_HOST%>">ZangZing</a>  using this email.
+  You can see the complete album, get updates and interact with other contributors by logging into <a href="http://<%=Server::Application.config.application_host%>">ZangZing</a>  using this email.
 </p>
 
 <%= render(:partial => 'zz_email_signature') %> 

@@ -1,6 +1,6 @@
-<script>
-    var json = '<%=@album.to_json(:include => {:photos => {:only =>[:id, :source_thumb_url, :state], :methods => [:thumb_url]}})%>';
-</script>
+<%= javascript_tag do %>
+    var json = '<%=escape_javascript(raw @album.to_json(:include => {:photos => {:only =>[:id, :source_thumb_url, :state], :methods => [:thumb_url]}}))%>';
+<% end %>
 
 <% unless @album.photos.empty? %>
   <ul class="photos-grid-view photos clearfix">

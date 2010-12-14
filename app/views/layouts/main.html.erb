@@ -18,7 +18,7 @@
        title = "ZangZing" 
     end
     if ! Rails.env.production?
-      title = "#{title} Version: #{ZANGZING_VERSION} Controller: #{controller.controller_name} Action: #{ controller.action_name}"
+      title = "#{title} Version: #{Server::Application.config.zangzing_version} Controller: #{controller.controller_name} Action: #{ controller.action_name}"
     end %>
     <title><%=title%></title>
     <link rel="stylesheet" href="/stylesheets/lib.css" media="all" />
@@ -44,14 +44,10 @@
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-<%  # Add in template based style tags by defining this in the template
-    if @content_for_page_stylesheet -%>
-    <%= @content_for_page_stylesheet %>
-<%  end 
-    # Add in template based scripts that need to be in the head by defining this in the template
-    if @content_for_page_head -%>
-    <%= @content_for_page_head %>
-<%  end -%>    
+<%  # Add in template based style tags by defining this in the template -%>
+    <% yield :page_stylesheet %>
+<%   # Add in template based scripts that need to be in the head by defining this in the template -%>
+    <%= yield :page_head %>
   </head>
   <body id="<%= controller.controller_name + '-' + controller.action_name %>" class="<%= controller.controller_name %>">
     
@@ -107,11 +103,8 @@
     <script type="text/javascript" src="/javascripts/oauthmanager.js" ></script>
     <script type="text/javascript" src="/javascripts/sharecontacts.js" ></script>
     <script type="text/javascript" src="/javascripts/thumbtray.js" ></script>
-
-<%  # Add in template based javascript by defining this in the template
-    if @content_for_page_javascript -%>
-    <%= @content_for_page_javascript %>
-<%  end -%>
+<%   # Pull in generated javascript for the page -%>
+    <%= yield :page_javascript %>
     <script type="text/javascript">
       /* Vars our js fns need from ruby (calls/conditionals) - NO SECURE DATA
       ----------------------------------------------------------------------- */

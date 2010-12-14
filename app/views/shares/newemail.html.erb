@@ -14,7 +14,7 @@
     </ul>
     <div class="clear-fix"></div>
     
-    <%form_for [@share], :url => create_album_share_path(@album)  do |f| %>
+    <%= form_for [@share], :url => create_album_share_path(@album)  do |f| %>
       <%= f.error_messages %>  
       <dl id="email-share-form">
         <dt>To</dt>

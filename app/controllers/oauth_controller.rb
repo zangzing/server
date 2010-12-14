@@ -1,5 +1,4 @@
 class OauthController < ApplicationController
-
   before_filter :require_user, :only => [:authorize,:revoke, :agentauthorize]
   before_filter :oauth_required, :only => [:invalidate,:capabilities, :test_request, :test_session]
   before_filter :verify_oauth_consumer_signature_agent, :only => [:request_token]
@@ -137,11 +136,58 @@ class OauthController < ApplicationController
     params[:authorize] == '1'
   end
 
-  def verify_oauth_consumer_signature_agent    
-     unless ClientApplication.find_by_key( params['oauth_consumer_key'])
+  def verify_oauth_consumer_signature_agent
+     unless verify_oauth_consumer_signature
         logger.warn "WARNING: An OAuth Client Application Request Failed. It Maybe the ZangZing Agent!. Was the database seeded with the Agents Consumer Key (rake db:seed)?"
      end
-     verify_oauth_consumer_signature
+  end
+
+
+  def verify_oauth_consumer_signature
+    begin
+      valid = ClientApplication.verify_request(request) do |request_proxy|
+        @current_client_application = ClientApplication.find_by_key(request_proxy.consumer_key)
+
+        # Store this temporarily in client_application object for use in request token generation
+        @current_client_application.token_callback_url=request_proxy.oauth_callback if request_proxy.oauth_callback
+
+        # return the token secret and the consumer secret
+        [nil, @current_client_application.secret]
+      end
+    rescue
+      valid=false
+    end
+
+    invalid_oauth_response unless valid
+    valid
+  end
+  
+  def verify_oauth_request_token
+    verify_oauth_signature && current_token.is_a?(::RequestToken)
+  end
+
+  def invalid_oauth_response(code=401,message="Invalid OAuth Request")
+    render :text => message, :status => code
+  end
+
+
+  # Implement this for your own application using app-specific models
+  def verify_oauth_signature
+    begin
+      valid = ClientApplication.verify_request(request) do |request_proxy|
+        self.current_token = ClientApplication.find_token(request_proxy.token)
+        if self.current_token.respond_to?(:provided_oauth_verifier=)
+          self.current_token.provided_oauth_verifier=request_proxy.oauth_verifier
+        end
+        # return the token secret and the consumer secret
+        [(current_token.nil? ? nil : current_token.secret), (current_client_application.nil? ? nil : current_client_application.secret)]
+      end
+      # reset @current_user to clear state for restful_...._authentication
+      @current_user = nil if (!valid)
+      valid
+    rescue
+      false
+    end
   end
 
 end

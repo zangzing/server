@@ -1,6 +1,6 @@
 <meta property="og:title" content="<%= @album.name %>"/>
 <meta property="og:type" content="website"/>
-<meta property="og:url" content="<%= 'http://' + APPLICATION_HOST + request.request_uri %>"/>
+<meta property="og:url" content="<%= 'http://' + Server::Application.config.application_host + request.request_uri %>"/>
 <meta property="og:image" content="<%= @album.cover ? @album.cover.thumb_url : ''%>"/>
 <meta property="og:site_name" content="ZangZing"/>
 <meta property="fb:app_id" content="<%=FACEBOOK_API_KEYS[:app_id]%>" />    

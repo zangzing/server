@@ -27,7 +27,7 @@ class AlbumsController < ApplicationController
   end
 
   def upload_stat
-    batch = Photo.find(:all, :conditions => {:user_id => current_user.id, :album_id => params[:id]})
+    batch = Photo.find_all_by_user_id_and_album_id( current_user.id,  params[:id])
 
     if batch
 #      photos_pending = batch.select{|p| ['assigned', 'loaded', 'processing'].include?(p.state)}

@@ -250,7 +250,7 @@ class PhotosController < ApplicationController
 private
 
   def fetch_album
-    params[:friendly] ? Album.find(params[:album_id], :scope => params[:user_id]) : Album.find(:first, :conditions => {:id => params[:album_id]})
+    params[:friendly] ? Album.find(params[:album_id], :scope => params[:user_id]) : Album.first(:conditions => {:id => params[:album_id]})
   end
 
   def determine_album_user

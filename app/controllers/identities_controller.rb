@@ -9,7 +9,7 @@ class IdentitiesController < ApplicationController
   end
 
   def destroy
-    if params[:id].is_a? (Integer)
+    if params[:id].is_a?(Integer)
       identity = current_user.identities.find_by_id( params[:id] )
     else
       identity = current_user.send( "identity_for_#{params[:id]}" );

@@ -2,7 +2,7 @@
 <ul class="users">
   <% @users.each  do | user | %>
      <li>
-     <% form_for @follow, :url => { :action => "create" } do |f| %>
+     <%= form_for @follow, :url => { :action => "create" } do |f| %>
         <%=hidden_field( :follow, :followed_id, :value => user.id) %>
         <%= link_to h(user.name), user %> |
         <%= link_to h(user.username), user %> |   

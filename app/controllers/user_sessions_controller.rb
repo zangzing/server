@@ -10,14 +10,7 @@ class UserSessionsController < ApplicationController
     reset_session #Prevent Session Fixation Attack
     @user_session = UserSession.new(params[:user_session])
     if @user_session.save
-      redirect_back_or_default root_url
-    #elsif @user_session.attempted_record &&
-    #    !@user_session.invalid_password? &&
-    #    !@user_session.attempted_record.active?
-    #     @user_session.errors.add( :base, '<a href="'+
-    #                    resend_activation_path(:username => @user_session.attempted_record.username)+
-    #                   '">Resend activation email</a>');
-    #  render :action => :new
+      redirect_back_or_default user_url( @user_session.record )
     else
       render :action => :new
     end

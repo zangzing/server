@@ -123,7 +123,7 @@ class SampleDataLoader
 
   def initializeS3
     puts "      Initializing connection to S3..."
-    @s3creds = YAML::load(ERB.new(File.read("#{RAILS_ROOT}/config/s3.yml")).result)[RAILS_ENV].recursively_symbolize_keys!
+    @s3creds = YAML::load(ERB.new(File.read("#{Rails.root}/config/s3.yml")).result)[Rails.env].recursively_symbolize_keys!
      AWS::S3::Base.establish_connection!(
              :access_key_id => @s3creds[:access_key_id],
             :secret_access_key =>@s3creds[:secret_access_key]
