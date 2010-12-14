@@ -6,7 +6,7 @@ class Connector::ProxyController < ApplicationController
   def proxy
     #todo: should stream this
     url = params[:url]
-    if %w(production eysandbox sandbox).include?(RAILS_ENV)
+    if %w(production eysandbox sandbox).include?(Rails.root)
       uri = URI.parse(url)
       response.headers['X-Accel-Redirect'] = "/nginx_redirect/#{uri.host}#{uri.path}"
       render :nothing => true

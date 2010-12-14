@@ -4,13 +4,18 @@
 
 
 # Load the agent_config.yml configuration file
+
 if defined?(Rails.root) and File.exists?("#{Rails.root}/config/agent_config.yml")
-    ZANGZING_AGENT_CONFIG = YAML::load(File.read("#{Rails.root}/config/agent_config.yml"))
+    silence_warnings do #To avoid warning of overwriting constant
+      ZANGZING_AGENT_CONFIG = YAML::load(File.read("#{Rails.root}/config/agent_config.yml"))
+    end
     msg = "=> Agent configuration file loaded."
     Rails.logger.info msg
     puts msg
 else
-    ZANGZING_AGENT_CONFIG = []
+    silence_warnings do #To avoid warning of overwriting constant
+      ZANGZING_AGENT_CONFIG = []
+    end
     abort %{ZangZing config/agent_config.yml file not found. UNABLE TO CONFIGURE AGENT OPTIONS!}
 end
 

@@ -1,5 +1,5 @@
 #
-#   © 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
+#   ï¿½ 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 
 # For more S3 options
@@ -30,8 +30,8 @@ Paperclip.interpolates :directory do |att, style|
 end
 
 # Load the paperclip.yml configuration file
-if defined?(RAILS_ROOT) and File.exists?("#{RAILS_ROOT}/config/paperclip.yml")
-    Paperclip.options.merge!(YAML::load(ERB.new(File.read("#{RAILS_ROOT}/config/paperclip.yml")).result)[RAILS_ENV].recursively_symbolize_keys!)
+if defined?(Rails.root) and File.exists?("#{Rails.root}/config/paperclip.yml")
+    Paperclip.options.merge!(YAML::load(ERB.new(File.read("#{Rails.root}/config/paperclip.yml")).result)[Rails.env].recursively_symbolize_keys!)
     msg = "=> Paperclip options file loaded. command_path for ImageMagick is: "+ ( Paperclip.options[:command_path]?Paperclip.options[:command_path] : "NOT SET")
     Rails.logger.info msg
     puts msg

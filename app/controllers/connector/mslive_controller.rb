@@ -68,7 +68,7 @@ protected
   CONTACTS_API_URL = 'https://livecontacts.services.live.com/users/@L@%s/REST'
   def request_contacts_service(relative_url)
     make_signed_request("#{CONTACTS_API_URL % consent_token.locationid.upcase}#{relative_url}")
-    #XmlSimple.xml_in("#{RAILS_ROOT}/live_contacts.xml")
+    #XmlSimple.xml_in("#{Rails.root}/live_contacts.xml")
   end
 
 end

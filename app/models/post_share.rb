@@ -5,6 +5,9 @@
 class PostShare < Share
   attr_accessor :twitter, :facebook
 
+  @twitter  ="0"
+  @facebook ="0"
+
   def self.factory(user, params)
     @share = PostShare.new( params )
 
@@ -15,11 +18,6 @@ class PostShare < Share
       @share.recipients.build( :service => 'twitter',:name    => user.name,:address => user.id)
     end
     return @share
-  end
-
-  def after_initialize
-    @twitter  ="0"
-    @facebook ="0"
   end
 
   def deliver
