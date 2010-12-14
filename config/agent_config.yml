@@ -13,6 +13,7 @@ agents:
         check: OK
       default:
         check: OK
+        check_interval: 1800
     win32:
       '5.3':
         check: update
@@ -28,8 +29,10 @@ agents:
         message: This is the one you really cant miss
       default:
         check: OK
+        check_interval: 1800
     default:
       default:
         check: OK
+        check_interval: 1800
   default:
     <<: *agent_version_default
