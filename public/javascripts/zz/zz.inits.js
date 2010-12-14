@@ -187,11 +187,11 @@ zz.init = {
                         $('#nav-status').html("Calculating...");
                     }
                     else{
-                        var minutes_text = "Minutes...";
+                        var minutes_text = "Minutes";
                         if(minutes === 1){
-                            minutes_text = "Minute..."
+                            minutes_text = "Minute"
                         }
-                        $('#progress-meter').html(minutes + ' ' + minutes_text);
+                        $('#progress-meter-label').html(minutes + ' ' + minutes_text);
                     }
 
                     $('#progress-meter').show();

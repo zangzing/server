@@ -342,10 +342,10 @@ header #account-badge img#arrow-image {
     display:none;
     position:absolute;
     left:300px;
-    top:26px;
-    background: url("/images/upload-0.png") no-repeat transparent;
-    height:26px;
-    width:26px;
+    top:4px;
+    background: url("/images/upload-0.png") no-repeat scroll 37px 10px transparent;
+    height:55px;
+    width:100px;
 
 }
 
