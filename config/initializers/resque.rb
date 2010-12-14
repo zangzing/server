@@ -5,14 +5,15 @@
 
 require 'resque/server'
 
-rails_root = ENV['RAILS_ROOT'] || File.dirname(__FILE__) + '/../..'
-rails_env = ENV['RAILS_ENV'] || 'development'
 
-resque_config = YAML.load_file(rails_root + '/config/resque.yml')
-Resque.redis = resque_config[rails_env]
+if defined?(Rails.root) and File.exists?("#{Rails.root}/config/resque.yml")
 
-#in routes.rb: mount the resque server at a specific route
-#in routes.rb: mount Resque::Server.new, :at => "/resque"
+  resque_config =   YAML::load_file("#{Rails.root}/config/resque.yml")
+  Resque.redis = resque_config[Rails.env]
+else
+     abort %{ZangZing config/resque.yml file not found. UNABLE TO INITIALIZE QUEUEING SYSTEM!}
+end
+
 
 # HTTP Auth For Resque Console
 if Server::Application.config.http_auth_credentials
@@ -22,6 +23,6 @@ if Server::Application.config.http_auth_credentials
   end
 end
 
-msg = "=> Resque options loaded. redis host is: "+  resque_config[rails_env]
+msg = "=> Resque options loaded. redis host is: "+  resque_config[Rails.env]
 Rails.logger.info msg
 puts msg

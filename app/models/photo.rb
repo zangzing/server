@@ -58,7 +58,7 @@ class Photo < ActiveRecord::Base
 
 
   # Set up an async call for Processing and Upload to S3
-  after_validation_on_update :queue_upload_to_s3
+  after_validation  :queue_upload_to_s3, :on => :update
 
 
   # used to receive image and queue for processing. User never sees this image. Paperclip defaults are local no styles
@@ -90,31 +90,6 @@ class Photo < ActiveRecord::Base
 
   before_local_image_post_process :set_local_image_metadata
   before_image_post_process       :set_image_metadata
-
-  # Set the default conditions of this instance.
-  # We require the local image unless
-  # told otherwise.
-  # Classes that inherit from ActiveRecord
-  # need to use after_initialize not initialize
-  def after_initialize
-    @requires_local_image = true
-  end
-
-  # set this value before performing a save
-  # to control whether paperclip needs an incoming
-  # attachment - use true if the image is required
-  def requires_local_image=(required)
-    @requires_local_image = required
-  end
-
-  # this is attached to paperclip as
-  # the attachment_presence validator
-  # and lets us operate without an incoming
-  # attachment for cases that don't need one
-  # such as agent_crate
-  def requires_local_image?
-    @requires_local_image
-  end
 
   def set_local_image_metadata
     self.local_image_path = local_image.path
