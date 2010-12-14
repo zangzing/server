@@ -868,168 +868,211 @@ div#small-drawer dl dd.full-t {
 /*  generic buttons
  **************************************************************************/
 
-            /*  back button
-             *************************************************************/
-            a.back-button{
-                background: url("/images/btn-back-endcap.png") no-repeat scroll top right;
-                color:#ffffff;
-                display: block;
-                float: left;
-                font-size: 1.2em;
-                height: 30px;
-                margin-right: 6px;
-                padding-right: 8px; /* sliding doors padding */
-                text-decoration: none;
-                cursor: pointer;
-            }
+/*  back button
+ *************************************************************/
+a.back-button{
+    background: url("/images/btn-back-endcap.png") no-repeat scroll top right;
+    color:#ffffff;
+    display: block;
+    float: left;
+    font-size: 1.2em;
+    height: 30px;
+    margin-right: 6px;
+    padding-right: 8px; /* sliding doors padding */
+    text-decoration: none;
+    cursor: pointer;
+}
 
-            a.back-button:hover{
-                background: url("/images/btn-back-endcap.png") no-repeat scroll right -30px; /* todo: need rollover image*/
-            }
+a.back-button:hover{
+    background: url("/images/btn-back-endcap.png") no-repeat scroll right -30px; /* todo: need rollover image*/
+}
 
-            a.back-button:active{
-                background: url("/images/btn-back-endcap.png") no-repeat scroll right -60px; /* todo: need rollover image*/
-            }
-
-
-            a.back-button span{
-                background: transparent url('/images/btn-back.png') no-repeat;
-                display: block;
-                line-height: 16px;
-                height: 20px;
-                padding: 5px 0 5px 18px;
-                cursor: pointer;
-            }
-
-            a.back-button:hover span{
-                background: transparent url('/images/btn-back.png') no-repeat 0 -30px; /* todo: need rollover image*/
-            }
-
-            a.back-button:active span{
-                background: transparent url('/images/btn-back.png') no-repeat 0 -60px; /* todo: need rollover image*/
-            }
+a.back-button:active{
+    background: url("/images/btn-back-endcap.png") no-repeat scroll right -60px; /* todo: need rollover image*/
+}
 
 
-            /*  next button
-             *************************************************************/
-            a.next-button{
-                background: url("/images/btn-next-endcap.png") no-repeat scroll top right;
-                color:#ffffff;
-                display: block;
-                float: left;
-                font-size: 1.2em;
-                height: 30px;
-                margin-right: 6px;
-                padding-right: 15px; /* sliding doors padding */
-                text-decoration: none;
-                cursor: pointer;
-            }
+a.back-button span{
+    background: transparent url('/images/btn-back.png') no-repeat;
+    display: block;
+    line-height: 20px;
+    height: 20px;
+    padding: 5px 0 5px 18px;
+    cursor: pointer;
+}
 
-            a.next-button:hover{
-                background: url("/images/btn-next-endcap.png") no-repeat scroll right -30px; /* todo: need rollover image*/
-            }
+a.back-button:hover span{
+    background: transparent url('/images/btn-back.png') no-repeat 0 -30px; /* todo: need rollover image*/
+}
 
-            a.next-button:active{
-                background: url("/images/btn-next-endcap.png") no-repeat scroll right -60px; /* todo: need rollover image*/
-            }
+a.back-button:active span{
+    background: transparent url('/images/btn-back.png') no-repeat 0 -60px; /* todo: need rollover image*/
+}
 
 
-            a.next-button span{
-                background: transparent url('/images/btn-next.png') no-repeat;
-                display: block;
-                line-height: 16px;
-                height: 20px;
-                padding: 5px 0 5px 8px;
-                cursor: pointer;
-            }
+/*  next button
+ *************************************************************/
+a.next-button{
+    background: url("/images/btn-next-endcap.png") no-repeat scroll top right;
+    color:#ffffff;
+    display: block;
+    float: left;
+    font-size: 1.2em;
+    height: 30px;
+    margin-right: 6px;
+    padding-right: 15px; /* sliding doors padding */
+    text-decoration: none;
+    cursor: pointer;
+}
 
-            a.next-button:hover span{
-                background: transparent url('/images/btn-next.png') no-repeat 0 -30px; /* todo: need rollover image*/
-            }
+a.next-button:hover{
+    background: url("/images/btn-next-endcap.png") no-repeat scroll right -30px; /* todo: need rollover image*/
+}
 
-            a.next-button:active span{
-                background: transparent url('/images/btn-next.png') no-repeat 0 -60px; /* todo: need rollover image*/
-            }
-
-
-            /*  green button
-             *************************************************************/
-            a.green-button{
-                background: url("/images/btn-green-endcap.png") no-repeat scroll top right;
-                color:#ffffff;
-                display: block;
-                float: left;
-                font-size: 1.2em;
-                height: 30px;
-                margin-right: 6px;
-                padding-right: 8px; /* sliding doors padding */
-                text-decoration: none;
-                cursor: pointer;
-            }
-
-            a.green-button:hover{
-                background: url("/images/btn-green-endcap.png") no-repeat scroll right -30px; /* todo: need rollover image*/
-            }
-
-            a.green-button:active{
-                background: url("/images/btn-green-endcap.png") no-repeat scroll right -60px; /* todo: need rollover image*/
-            }
+a.next-button:active{
+    background: url("/images/btn-next-endcap.png") no-repeat scroll right -60px; /* todo: need rollover image*/
+}
 
 
-            a.green-button span{
-                background: transparent url('/images/btn-green.png') no-repeat;
-                display: block;
-                line-height: 16px;
-                height: 20px;
-                padding: 5px 0 5px 8px;
-                cursor: pointer;
-            }
+a.next-button span{
+    background: transparent url('/images/btn-next.png') no-repeat;
+    display: block;
+    line-height: 20px;
+    height: 20px;
+    padding: 5px 0 5px 8px;
+    cursor: pointer;
+}
 
-            a.green-button:hover span{
-                background: transparent url('/images/btn-green.png') no-repeat 0 -30px; /* todo: need rollover image*/
-            }
+a.next-button:hover span{
+    background: transparent url('/images/btn-next.png') no-repeat 0 -30px; /* todo: need rollover image*/
+}
 
-            a.green-button:active span{
-                background: transparent url('/images/btn-green.png') no-repeat 0 -60px; /* todo: need rollover image*/
-            }
-
-           /*  black button
-             *************************************************************/
-            a.black-button{
-                background: url("/images/btn-black-endcap.png") no-repeat scroll top right;
-                color:#ffffff;
-                display: block;
-                float: left;
-                font-size: 1.2em;
-                height: 30px;
-                margin-right: 6px;
-                padding-right: 8px; /* sliding doors padding */
-                text-decoration: none;
-                cursor: pointer;
-            }
-
-            a.black-button:hover{
-                background: url("/images/btn-black-endcap.png") no-repeat scroll right -30px; /* todo: need rollover image*/
-            }
-
-            a.black-button:active{
-                background: url("/images/btn-black-endcap.png") no-repeat scroll right -60px; /* todo: need rollover image*/
-            }
+a.next-button:active span{
+    background: transparent url('/images/btn-next.png') no-repeat 0 -60px; /* todo: need rollover image*/
+}
 
 
-            a.black-button span{
-                background: transparent url('/images/btn-black.png') no-repeat;
-                display: block;
-                line-height: 16px;
-                height: 20px;
-                padding: 5px 0 5px 8px;
-                cursor: pointer;
-            }
+/*  green button
+ *************************************************************/
+a.green-button{
+    background: url("/images/btn-green-endcap.png") no-repeat scroll top right;
+    color:#ffffff;
+    display: block;
+    float: left;
+    font-size: 1.2em;
+    height: 30px;
+    margin-right: 6px;
+    padding-right: 8px; /* sliding doors padding */
+    text-decoration: none;
+    cursor: pointer;
+}
 
-            a.black-button:hover span{
-                background: transparent url('/images/btn-black.png') no-repeat 0 -30px; /* todo: need rollover image*/
-            }
+a.green-button:hover{
+    background: url("/images/btn-green-endcap.png") no-repeat scroll right -30px; /* todo: need rollover image*/
+}
 
-            a.black-button:active span{
-                background: transparent url('/images/btn-black.png') no-repeat 0 -60px; /* todo: need rollover image*/
-            }
+a.green-button:active{
+    background: url("/images/btn-green-endcap.png") no-repeat scroll right -60px; /* todo: need rollover image*/
+}
+
+
+a.green-button span{
+    background: transparent url('/images/btn-green.png') no-repeat;
+    display: block;
+    line-height: 20px;
+    height: 20px;
+    padding: 5px 0 5px 8px;
+    cursor: pointer;
+}
+
+a.green-button:hover span{
+    background: transparent url('/images/btn-green.png') no-repeat 0 -30px; /* todo: need rollover image*/
+}
+
+a.green-button:active span{
+    background: transparent url('/images/btn-green.png') no-repeat 0 -60px; /* todo: need rollover image*/
+}
+
+/*  black button
+ *************************************************************/
+a.black-button{
+    background: url("/images/btn-black-endcap.png") no-repeat scroll top right;
+    color:#ffffff;
+    display: block;
+    float: left;
+    font-size: 1.2em;
+    height: 30px;
+    margin-right: 6px;
+    padding-right: 8px; /* sliding doors padding */
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a.black-button:hover{
+    background: url("/images/btn-black-endcap.png") no-repeat scroll right -30px; /* todo: need rollover image*/
+}
+
+a.black-button:active{
+    background: url("/images/btn-black-endcap.png") no-repeat scroll right -60px; /* todo: need rollover image*/
+}
+
+
+a.black-button span{
+    background: transparent url('/images/btn-black.png') no-repeat;
+    display: block;
+    line-height: 20px;
+    height: 20px;
+    padding: 5px 0 5px 8px;
+    cursor: pointer;
+}
+
+a.black-button:hover span{
+    background: transparent url('/images/btn-black.png') no-repeat 0 -30px; /* todo: need rollover image*/
+}
+
+a.black-button:active span{
+    background: transparent url('/images/btn-black.png') no-repeat 0 -60px; /* todo: need rollover image*/
+}
+
+
+/*  green add button
+ *************************************************************/
+a.green-add-button{
+    background: url("/images/btn-green-add-endcap.png") no-repeat scroll top right;
+    color:#ffffff;
+    display: block;
+    float: left;
+    font-size: 1.2em;
+    height: 30px;
+    margin-right: 6px;
+    padding-right: 8px; /* sliding doors padding */
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a.green-add-button:hover{
+    background: url("/images/btn-green-add-endcap.png") no-repeat scroll right -30px; /* todo: need rollover image*/
+}
+
+a.green-add-button:active{
+    background: url("/images/btn-green-add-endcap.png") no-repeat scroll right -60px; /* todo: need rollover image*/
+}
+
+
+a.green-add-button span{
+    background: transparent url('/images/btn-green-add.png') no-repeat;
+    display: block;
+    line-height: 20px;
+    height: 20px;
+    padding: 5px 0 5px 28px;
+    cursor: pointer;
+}
+
+a.green-add-button:hover span{
+    background: transparent url('/images/btn-green-add.png') no-repeat 0 -30px; /* todo: need rollover image*/
+}
+
+a.green-add-button:active span{
+    background: transparent url('/images/btn-green-add.png') no-repeat 0 -60px; /* todo: need rollover image*/
+}
+
