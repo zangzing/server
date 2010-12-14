@@ -27,8 +27,8 @@
 # - local_image is set to nil never to be used again =)
 #
 # PHOTO STATE DEFINITION AND TRANSITIONS
-# -new: Default when created, has not been assigned to a photo or server
-# -assigned: The photo has been created by an agent and has been assigned to it. Its waiting to be updated with an image
+# -new:  No longer used. The DB default for a new photo is assigned
+# -assigned: DB Default.  The photo has been created by an agent and has been assigned to it. Its waiting to be updated with an image
 # -loaded: The photo has been updated with an image and is waiting to be processed
 # -processing: The photo has been taken for the processing queue and its being processed
 # -ready: The photo has been processed and moved to permanent storage. It is ready to use
@@ -55,11 +55,6 @@ class Photo < ActiveRecord::Base
 
 
   before_create :substitute_source_urls
-  after_create :assign_to_batch
-
-  # if all args were valid on creation then set it to assigned
-  after_validation_on_create :set_to_assigned
-
 
 
   # Set up an async call for Processing and Upload to S3
@@ -72,22 +67,25 @@ class Photo < ActiveRecord::Base
   has_attached_file :image, Paperclip.options[:image_options]
 
 
-  validates_presence_of             :album_id, :user_id
+  validates_presence_of             :album_id, :user_id, :upload_batch_id
 
 
   validates_attachment_presence     :local_image,{
                                     :message => "file must be specified",
-                                    :if =>  :requires_local_image?
+                                    :if =>  "persisted? && assigned?"
+                                    #:if =>  :requires_local_image?
                                     }
   validates_attachment_size         :local_image,{
                                     :less_than => 10.megabytes,
                                     :message => "must be under 10 Megs",
-                                    :if =>  :requires_local_image?
+                                    :if =>  "persisted? && assigned?"
+                                    #:if =>  :requires_local_image?
                                     }
   validates_attachment_content_type :local_image,{
                                     :content_type => [ 'image/jpeg', 'image/png', 'image/gif' ],
                                     :message => " must be a JPEG, PNG, or GIF",
-                                    :if =>  :requires_local_image?
+                                    :if =>  "persisted? && assigned?"
+                                    #:if =>  :requires_local_image?
                                     }
 
   before_local_image_post_process :set_local_image_metadata
@@ -120,6 +118,12 @@ class Photo < ActiveRecord::Base
 
   def set_local_image_metadata
     self.local_image_path = local_image.path
+    false
+  end
+
+  def set_image_metadata
+    self.image_path   = image.path.match(/(^.*)\/original\/(.*$)/i)[1]
+    self.image_bucket = image.instance_variable_get("@bucket")
     self.photo_info = PhotoInfo.factory(self)
     if data = self.metadata
       self.capture_date = (DateTime.parse(data['EXIF']['DateTimeOriginal']) rescue nil)
@@ -131,11 +135,6 @@ class Photo < ActiveRecord::Base
       self.headline = (data['IPTC']['Headline'] || '') if self.headline.blank?
       self.caption = (data['IPTC']['Caption'] || '') if self.caption.blank?
     end
-  end
-
-  def set_image_metadata
-    self.image_path   = image.path.match(/(^.*)\/original\/(.*$)/i)[1]
-    self.image_bucket = image.instance_variable_get("@bucket")
     if uploading?
         false # halts thumbnail it will be queued in upload_to S3
     end
@@ -177,11 +176,11 @@ class Photo < ActiveRecord::Base
      self.image.reprocess!
      self.state = 'ready'
      self.save!
+     upload_batch.finish 
     rescue ActiveRecord::ActiveRecordError => ex
         logger.debug("Thumbnail generation failed!" + ex)
     end
     logger.debug("Thumbnail generation Finished")   
-    upload_batch.finish
    end
 
   def new?
@@ -223,20 +222,12 @@ class Photo < ActiveRecord::Base
     image.url(:medium)
   end
 
-  def set_to_assigned
-    self.state = 'assigned'
-  end
-
   def set_s3bucket
     image.instance_variable_set '@bucket', self.image_bucket unless self.image_bucket.nil?
   end
 
   def self.generate_source_guid(url)
      Digest::MD5.hexdigest(url)
-  end
-
-  def assign_to_batch
-      UploadBatch.get_current( self.user, self.album ).photos << self
   end
 
   def substitute_source_urls

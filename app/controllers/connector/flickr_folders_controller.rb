@@ -21,15 +21,16 @@ class Connector::FlickrFoldersController < Connector::FlickrController
   def import
     photo_set = flickr_api.photosets.getPhotos :photoset_id => params[:set_id], :extras => 'original_format'
     photos = []
+    current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
     photo_set.photo.each do |p|
-
       #todo: refactor this so that flickr_folders_controller and flickr_photos_controller can share
       photo_url = get_photo_url(p, :full)
       photo = Photo.create(
-                :caption => p.title,
-                :album_id => params[:album_id],
                 :user_id=>current_user.id,
-                :source_guid => Photo.generate_source_guid(photo_url),
+                :album_id => params[:album_id],
+                :upload_batch_id => current_batch.id,
+                :caption => p.title,
+                :source_guid => "flickr:"+Photo.generate_source_guid(photo_url),
                 :source_thumb_url => get_photo_url(p, :thumb),
                 :source_screen_url => get_photo_url(p, :screen)
       )

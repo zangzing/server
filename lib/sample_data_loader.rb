@@ -159,19 +159,21 @@ class SampleDataLoader
   end
 
   def new_photo(album, user)
-   photo = Photo.new( )
-          album.photos << photo
-          user.photos << photo
-          photo.agent_id          = Faker::PhoneNumber.phone_number
-          photo.caption           = Faker::Lorem.sentence( rand(10) )
-          photo.capture_date      = Time.now - rand( 1000 ).days
-          i = image_name
-          photo.image_file_name   = i[:name]
-          photo.image_path        = i[:path]
-          photo.image_bucket      = i[:bucket]
-          photo.state             = 'ready'
-          photo.save!
-    return photo
+   i = image_name
+   current_batch = UploadBatch.get_current( user.id, album.id )
+   photo = Photo.create(
+          :user_id           => user.id,
+          :album_id          => album.id,
+          :upload_batch_id   => current_batch.id,
+          :agent_id          => Faker::PhoneNumber.phone_number,
+          :caption           => Faker::Lorem.sentence( rand(10) ),
+          :capture_date      => Time.now - rand( 1000 ).days,
+          :image_file_name   => i[:name],
+          :image_path        => i[:path],
+          :image_bucket      => i[:bucket],
+          :state             => 'ready'
+   )
+   return photo
   end
 end
 

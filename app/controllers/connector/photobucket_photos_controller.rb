@@ -31,12 +31,15 @@ class Connector::PhotobucketPhotosController < Connector::PhotobucketController
 
   def import
     photo_id, photo_key = params[:photo_id].split('_')
+    #What is this smugmug code doing here? Have we tested this?
     photo_info = smugmug_api.call_method('smugmug.images.getInfo', {:ImageID => photo_id, :ImageKey => photo_key})
+    current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
     photo = Photo.create(
             :caption => (photo_info[:caption].blank? ? photo_info[:filename] : photo_info[:caption]),
             :album_id => params[:album_id],
             :user_id=>current_user.id,
-            :source_guid => Photo.generate_source_guid(photo_info[:originalurl]),
+            :upload_batch_id => current_batch.id,            
+            :source_guid => "photobucket:"+Photo.generate_source_guid(photo_info[:originalurl]),
             :source_thumb_url => '/proxy?url=' + photo_info[:smallurl],
             :source_screen_url => '/proxy?url=' + photo_info[:x3largeurl]
 

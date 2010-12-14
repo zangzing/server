@@ -7,15 +7,15 @@ class UploadBatch < ActiveRecord::Base
 
   default_scope :order => 'created_at DESC'
 
-  def self.get_current( user, album )
-    current_batch = UploadBatch.find_by_user_id_and_album_id_and_state(user.id, album.id, 'open')
+  def self.get_current( user_id, album_id )
+    current_batch = UploadBatch.find_by_user_id_and_album_id_and_state(user_id, album_id, 'open')
     if current_batch.nil?
-      return UploadBatch.factory( user, album )
+      return UploadBatch.factory( user_id, album_id )
     end
 
     if current_batch.stale?
       current_batch.close
-      return UploadBatch.factory( user, album )
+      return UploadBatch.factory( user_id, album_id )
     end
 
     return current_batch
@@ -83,8 +83,10 @@ class UploadBatch < ActiveRecord::Base
   end
   
 
-  def self.factory( user, album )
-    raise Exception.new( "User and Album Params must not be null for the UploadBatch factory") if( user.nil? or album.nil? )
+  def self.factory( user_id, album_id )
+    raise Exception.new( "User and Album Params must not be null for the UploadBatch factory") if( user_id.nil? or album_id.nil? )
+    user = User.find( user_id )
+    album = Album.find( album_id)
     nb = user.upload_batches.create({:album_id => album.id})
     album.upload_batches << nb
     #schedule the closing of the batch 30 minutes from now

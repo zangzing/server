@@ -52,12 +52,14 @@ class Connector::FacebookFoldersController < Connector::FacebookController
   def import
     photos_list = facebook_graph.get("#{params[:fb_album_id]}/photos")
     photos = []
+    current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
     photos_list.each do |p|
       photo = Photo.create(
-                :caption => p[:name] || '',
-                :album_id => params[:album_id],
                 :user_id=>current_user.id,
-                :source_guid => Photo.generate_source_guid(p[:source]),
+                :album_id => params[:album_id],
+                :upload_batch_id => current_batch.id,
+                :caption => p[:name] || '',
+                :source_guid => "facebook:"+Photo.generate_source_guid(p[:source]),
                 :source_thumb_url => get_photo_url(p, :thumb),
                 :source_screen_url => get_photo_url(p, :screen)
       )
