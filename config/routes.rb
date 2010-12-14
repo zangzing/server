@@ -66,8 +66,8 @@ Server::Application.routes.draw do
   get    '/albums/:album_id/profile'      => 'photos#profile',                  :as => :profile
 
   #activities
-  get '/albums/:album_id/activities.' => 'activities#album_index', :as => :album_activities
-  get '/users/:user_id/activities.'   => 'activities#user_index',  :as => :user_activities
+  get '/albums/:album_id/activities' => 'activities#album_index', :as => :album_activities
+  get '/users/:user_id/activities'   => 'activities#user_index',  :as => :user_activities
 
   #people
   get '/albums/:album_id/people' => 'people#album_index',         :as => :album_people

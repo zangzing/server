@@ -50,6 +50,7 @@ zz.init = {
 
         $('header #sign-in-button').click(function(){
             if (zz.drawer_state === zz.DRAWER_CLOSED) {
+                $('header #sign-in-button').addClass('selected');
                 $('#sign-in').show();
                 $('#sign-up').hide();
 
@@ -125,12 +126,30 @@ zz.init = {
             });
         });
 
+        $('#join_form_submit_button').click(function(){
+            $('form#join-form').submit();
+        });
 
-
-        $('.cancel-mini').click(function(){
+        $('#join_form_cancel_button').click(function(){
             $('#small-drawer').animate({height: '0px', top: '28px'});
             zz.drawer_state = zz.DRAWER_CLOSED;
         });
+
+
+
+
+        /* sign in   */
+        /* ---------------------------------*/
+        $('#signin-form-cancel-button').click(function(){
+            $('#small-drawer').animate({height: '0px', top: '28px'});
+            zz.drawer_state = zz.DRAWER_CLOSED;
+        });
+
+
+        $('#signin-form-submit-button').click(function(){
+            $("form#new_user_session").submit();
+        });
+
 
         $(zz.validate.sign_in.element).validate(zz.validate.sign_in);
         $(zz.validate.join.element).validate(zz.validate.join);
@@ -161,7 +180,7 @@ zz.init = {
     },
 
     album: function(){
-        $('#nav-status').hide();
+        $('#progress-meter').hide();
 
         var updateProgressMeter = function(){
 
@@ -179,24 +198,24 @@ zz.init = {
                     }
 
 
-                    $('#nav-status').css('background-image', 'url(/images/upload-'+ step +'.png)');
+                    $('#progress-meter').css('background-image', 'url(/images/upload-'+ step +'.png)');
 
 
                     if(minutes === Infinity){
                         $('#nav-status').html("Calculating...");
                     }
                     else{
-                        var minutes_text = "Minutes...";
+                        var minutes_text = "Minutes";
                         if(minutes === 1){
-                            minutes_text = "Minute..."
+                            minutes_text = "Minute"
                         }
-                        $('#nav-status').html(minutes + ' ' + minutes_text);
+                        $('#progress-meter-label').html(minutes + ' ' + minutes_text);
                     }
 
-                    $('#nav-status').show();
+                    $('#progress-meter').show();
                 }
                 else{
-                    $('#nav-status').hide();
+                    $('#progress-meter').hide();
                 }
             });
         }
