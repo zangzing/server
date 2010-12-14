@@ -338,6 +338,18 @@ header #account-badge img#arrow-image {
 }
 
 
+#footer #progress-meter{
+    display:none;
+    position:absolute;
+    left:300px;
+    top:26px;
+    background: url("/images/upload-0.png") no-repeat transparent;
+    height:26px;
+    width:26px;
+
+}
+
+
 #footer #play-button{
     position: absolute;
     top: 10px;

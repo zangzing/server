@@ -50,6 +50,7 @@ zz.init = {
 
         $('header #sign-in-button').click(function(){
             if (zz.drawer_state === zz.DRAWER_CLOSED) {
+                $('header #sign-in-button').addClass('selected');
                 $('#sign-in').show();
                 $('#sign-up').hide();
 
@@ -161,7 +162,7 @@ zz.init = {
     },
 
     album: function(){
-        $('#nav-status').hide();
+        $('#progress-meter').hide();
 
         var updateProgressMeter = function(){
 
@@ -179,7 +180,7 @@ zz.init = {
                     }
 
 
-                    $('#nav-status').css('background-image', 'url(/images/upload-'+ step +'.png)');
+                    $('#progress-meter').css('background-image', 'url(/images/upload-'+ step +'.png)');
 
 
                     if(minutes === Infinity){
@@ -190,13 +191,13 @@ zz.init = {
                         if(minutes === 1){
                             minutes_text = "Minute..."
                         }
-                        $('#nav-status').html(minutes + ' ' + minutes_text);
+                        $('#progress-meter').html(minutes + ' ' + minutes_text);
                     }
 
-                    $('#nav-status').show();
+                    $('#progress-meter').show();
                 }
                 else{
-                    $('#nav-status').hide();
+                    $('#progress-meter').hide();
                 }
             });
         }

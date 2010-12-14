@@ -26,13 +26,15 @@ ul.albums-grid-view li td {
     background: url("/images/bg-like-popup.png") no-repeat scroll 0 0 transparent;
     width:92px;
     height: 107px;
+    z-index:1000;
 }
 
 #like-popup li{
     background-image: url("/images/btn-like.png");
     background-repeat: no-repeat;
     background-attachment: scroll;
-    padding: 11px 12px 9px 34px;    
+    padding: 11px 12px 9px 34px;
+    cursor:pointer;
 }
 #like-person{  background-position: 0 0; }
 #like-album {  background-position: 0 -30px; }
