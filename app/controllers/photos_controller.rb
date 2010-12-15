@@ -143,7 +143,7 @@ class PhotosController < ApplicationController
     @album = fetch_album
     @title = CGI.escapeHTML(@album.name)
 
-    UploadBatch.close_open_batches( current_user, @album) if signed_in?
+    UploadBatch.close_open_batches( current_user.id, @album.id) if signed_in?
 
     if params[:upload_batch] && @upload_batch = UploadBatch.find(params[:upload_batch])
       @all_photos = @upload_batch.photos

@@ -5,6 +5,7 @@ tmp/**/*
 doc/api
 doc/app
 db/*.sqlite3
+/.idea
 .idea*/*
 public/system/*
 nbproject
@@ -14,4 +15,3 @@ log/*
 .DS_Store
 .bundle/*
 .bundle
-

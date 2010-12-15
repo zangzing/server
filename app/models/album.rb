@@ -75,9 +75,9 @@ class Album < ActiveRecord::Base
   def cover
     return nil if self.photos.empty?
     if self.cover_photo_id.nil?
-      return self.photos.first(:order => 'created_at DESC')
+      self.photos.first
     else
-      return Photo.find( self.cover_photo_id )
+      @cover ||= self.photos.find( self.cover_photo_id )
     end                        
   end
 
@@ -94,7 +94,7 @@ class Album < ActiveRecord::Base
 
   def update_picon
       self.picon.clear unless self.picon.nil?
-      self.picon = Picon.make( self )
+      self.picon = ZZ::Picon.make( self )
       self.save
   end
   

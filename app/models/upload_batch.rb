@@ -22,11 +22,11 @@ class UploadBatch < ActiveRecord::Base
   end
 
 
-  def self.close_open_batches( user, album=nil )
-    if album.nil?
-      existing_batches = UploadBatch.find_all_by_user_id_and_state(user.id, 'open')
+  def self.close_open_batches( user_id, album_id=nil )
+    if album_id.nil?
+      existing_batches = UploadBatch.find_all_by_user_id_and_state(user_id, 'open')
     else
-      existing_batches = UploadBatch.find_all_by_user_id_and_album_id_and_state(user.id, album.id, 'open')
+      existing_batches = UploadBatch.find_all_by_user_id_and_album_id_and_state(user_id, album_id, 'open')
     end
     existing_batches.each { |batch|  batch.close } unless existing_batches.nil?
   end
