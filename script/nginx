@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+export NGINX_PATH=/usr/local/nginx/sbin
+export WORK=`pwd`
+
+$NGINX_PATH/nginx -p $WORK/ -c $WORK/config/nginx/nginx.localhost.conf 

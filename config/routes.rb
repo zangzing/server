@@ -61,6 +61,7 @@ Server::Application.routes.draw do
   put    '/photos/:id/edit'              => 'photos#update',                    :as => :update_photo
   delete '/photos/:id'                   => 'photos#destroy',                   :as => :destroy_photo
   put    '/photos/:id/upload'            => 'photos#upload',                    :as => :upload_photo
+  put    '/photos/:id/upload_fast'       => 'photos#upload_fast',               :as => :upload_photo_fast
   get    '/agents/:agent_id/photos'      => 'photos#agentindex',                :as => :agent_photos
   post   '/albums/:album_id/photos/agent_create.:format' => 'photos#agent_create',      :as => :agent_create
   get    '/albums/:album_id/profile'      => 'photos#profile',                  :as => :profile
