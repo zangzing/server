@@ -337,10 +337,12 @@ var filechooser = {
         filechooser.ancestors.push({name:name, open_url:open_url, login_url:login_url});
         //update title and back button
         if (filechooser.ancestors.length > 1) {
-            $('#filechooser-back-button').html(filechooser.ancestors[filechooser.ancestors.length - 2].name).show();
+            $('#filechooser-back-button span').html(filechooser.ancestors[filechooser.ancestors.length - 2].name);
+            $('#filechooser-back-button').show();
             $('#choose-header').removeClass('album-header').addClass('album-header-off');
         } else {
-            $('#filechooser-back-button').html('').hide();
+            $('#filechooser-back-button').hide();
+            $('#filechooser-back-button span').html('');
             $('#choose-header').removeClass('album-header-off').addClass('album-header');
         }
 

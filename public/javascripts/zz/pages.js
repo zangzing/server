@@ -255,7 +255,7 @@ pages.album_share_tab = {
                         oauthmanager.login( '/facebook/sessions/new', function(){
                             $("#facebook_box").attr('checked', true);
                             $("#facebook_box").attr('authorized', 'yes');
-                            $("#post_share_button").attr('src','/images/btn-post-on.png');
+//                            $("#post_share_button").attr('src','/images/btn-post-on.png');
                         });
                     }
                 });
@@ -266,7 +266,7 @@ pages.album_share_tab = {
                         oauthmanager.login( '/twitter/sessions/new', function(){
                             $("#twitter_box").attr('checked', true);
                             $("#twitter_box").attr('authorized', 'yes');
-                            $("#post_share_button").attr('src','/images/btn-post-on.png')
+//                            $("#post_share_button").attr('src','/images/btn-post-on.png')
                         });
                     }
                 });
@@ -296,6 +296,12 @@ pages.album_share_tab = {
                 $('#cancel-share').click(function(){
                     self.reload_share(obj, id);
                 });
+
+                $('#post_share_button').click(function(){
+                    $('form#new_post_share').submit();
+                });
+
+
 
                 $('#post_share_message').keypress( function(){
                     setTimeout(function(){
@@ -346,6 +352,11 @@ pages.album_share_tab = {
                 $('#cancel-share').click(function(){
                     self.reload_share(obj, id);
                 });
+
+                $('#mail-submit').click(function(){
+                   $('form#new_email_share').submit(); 
+                });
+
                 $('#the-list').click(function(){
                     $('#you-complete-me').focus();
                 });
@@ -407,8 +418,8 @@ pages.album_contributors_tab = {
     show_new_contributors: function(){
         var self = this;
 
-        $('div#contributors-body').fadeOut('fast', function(){
-            $('div#contributors-body').load('/albums/'+zz.album_id+'/contributors/new', function(){
+        $('#tab-content').fadeOut('fast', function(){
+            $('#tab-content').load('/albums/'+zz.album_id+'/contributors/new', function(){
                 zz.wizard.resize_scroll_body()
                 zz.wizard.init_email_autocompleter();
 
@@ -421,6 +432,8 @@ pages.album_contributors_tab = {
                         'email_share[message]': '',
                         'email_share[message]': ''
                     },
+
+                    //todo: submit errors are not being shown properly
 
                     submitHandler: function() {
                         $.post('/albums/'+zz.album_id+'/contributors.json', $('#new_contributors').serialize(), function(data,status,request){
@@ -453,6 +466,10 @@ pages.album_contributors_tab = {
                     })
                 });
 
+                $('#submit-new-contributors').click(function(){
+                    $('form#new_contributors').submit();
+                });
+
 
                 //todo: move these into auto-complete widget
                 $('#you-complete-me').focus(function(){
@@ -461,7 +478,7 @@ pages.album_contributors_tab = {
                 $('#you-complete-me').blur(function(){
                     $('#the-list').removeClass("focus");
                 });
-                $('div#contributors-body').fadeIn('fast', function(){$('#you-complete-me').focus();});
+                $('#tab-content').fadeIn('fast', function(){$('#you-complete-me').focus();});
             });
         })
     },

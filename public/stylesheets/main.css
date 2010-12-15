@@ -983,15 +983,15 @@ a.next-button:active span{
  *************************************************************/
 a.green-button{
     background: url("/images/btn-green-endcap.png") no-repeat scroll top right;
-    color:#ffffff;
     display: block;
     float: left;
-    font-size: 1.2em;
     height: 30px;
     margin-right: 6px;
     padding-right: 8px; /* sliding doors padding */
-    text-decoration: none;
     cursor: pointer;
+    color:#ffffff;
+    font-size: 1.2em;
+    text-decoration: none;
 }
 
 a.green-button:hover{
