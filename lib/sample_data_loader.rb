@@ -42,7 +42,7 @@ class SampleDataLoader
     puts "      Creating Albums"
     # create albums for first 10 users max 100
     User.all(:limit => 10).each do |user|
-      (rand(10)+2).times do
+      (rand(12)+3).times do
 
         album= nil;
         case rand(2)
@@ -62,11 +62,12 @@ class SampleDataLoader
     Album.all(:limit => 50).each do |album|
       puts "      Adding photos to album #{album.name}"
       (rand( 3 )+1).times do
-        UploadBatch.close_open_batches( album.user, album )
+        UploadBatch.close_open_batches( album.user.id, album.id )
         (rand( 20 )+1).times do
             new_photo(album, album.user)
         end
-        puts "          Batch of #{UploadBatch.get_current( album.user, album ).photos.length} photos added"
+        UploadBatch.get_current( album.user.id, album.id ).save
+        puts "          Batch of #{UploadBatch.get_current( album.user.id, album.id ).photos.length} photos added"
       end
     end
     puts "      Done Creating Photos...."
@@ -92,11 +93,12 @@ class SampleDataLoader
          album.contributors.create( :name => users[i].name,
                                     :email =>users[i].email )
          (rand( 3 )+1).times do
-            UploadBatch.close_open_batches( users[i], album )
+            UploadBatch.close_open_batches( users[i].id, album.id )
             (rand( 15 )+1).times do
               new_photo(album, users[i])
             end
-            puts "          Batch of #{UploadBatch.get_current( users[i], album ).photos.length} photos added"
+            UploadBatch.get_current( users[i].id, album.id ).save
+            puts "          Batch of #{UploadBatch.get_current( users[i].id, album.id ).photos.length} photos added"
           end
        end
        (rand(2)+1).times do
