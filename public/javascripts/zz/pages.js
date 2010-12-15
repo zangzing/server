@@ -5,9 +5,9 @@ pages.album_add_photos_tab = {
         var url = '/albums/' + zz.album_id + '/add_photos';
         $('#tab-content').load(url, function(){
             if( drawer_style == 'edit'){
-                $('ul#added-pictures-tray').css('bottom','5px')
+                $('#added-pictures-tray-container').css('bottom','5px')
             } else {
-                $('ul#added-pictures-tray').css('bottom','24px')
+                $('#added-pictures-tray-container').css('bottom','24px')
             }
             filechooser.init();
             callback();

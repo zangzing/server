@@ -314,7 +314,11 @@ var filechooser = {
         $('#filechooser-back-button').click(filechooser.open_parent_folder);
         filechooser.ancestors = [];
         filechooser.open_root();
-        tray.reload();
+
+        tray.init(); 
+
+
+
     },
 
 
@@ -583,7 +587,9 @@ var filechooser = {
                 success: function(json) {
                     filechooser.on_add_photos(json);
                 },
-                error: filechooser.on_error_adding_photos
+                error: function(error){
+                    logger.debug(error);
+                }
             });
         }
 
@@ -614,9 +620,10 @@ var filechooser = {
         var temp_top_new;
         var temp_left_new;
 
-        if($('#added-pictures-tray li:last').offset() !== null){
-            temp_top_new = $('#added-pictures-tray li:last').offset().top - temp;
-            temp_left_new = $('#added-pictures-tray li:last').offset().left + 20;
+        //todo: filechooser shouldn't know about thumbtray internals
+        if($('#added-pictures-tray .thumbtray-thumbnails img:last').offset() !== null){
+            temp_top_new = $('#added-pictures-tray .thumbtray-thumbnails img:last').offset().top - temp;
+            temp_left_new = $('#added-pictures-tray .thumbtray-thumbnails img:last').offset().left + 20;
         }
         else{
             temp_top_new = $('#added-pictures-tray').offset().top - temp;
@@ -672,9 +679,9 @@ var filechooser = {
         }
     },
 
-    on_error_adding_photos :function() {
-        alert('error adding photo');
-    },
+//    on_error_adding_photos :function() {
+//        alert('error adding photo');
+//    },
 
     // for oauth window
     open_login_window : function() {
@@ -691,195 +698,267 @@ var filechooser = {
 };
 
 
-/* Added Photos Tray
- ----------------------------------------------------------------------------- */
 var tray = {
 
-    imageloader : null,
-    album_photos : [],
+    widget: null,
+
+    init: function(){
+
+//        if(tray.widget){
+//            tray.widget.destroy();
+//        }
+
+        tray.widget =  $("#added-pictures-tray").zz_thumbtray({
+                photos:[],
+                allowDelete:true,
+                allowSelect:false,
+                onDeletePhoto:function(index, photo){
+                    tray.delete_photo(photo);
+                }
+             }).data().zz_thumbtray;
+
+        tray.reload();
+    },
 
     reload : function() {
         var get_album_photos_url = '/albums/' + zz.album_id + '/photos.json';
         $.ajax({
             dataType: 'json',
             url: get_album_photos_url,
-            success: tray.on_reload,
-            error: function() {
-                alert('error reloading tray');
-            }  //todo: remove alerty
+            success: function(photos){
+                tray.widget.setPhotos(tray.map_photos(photos));
+            }
+
         });
     },
 
-    on_reload : function(photos) {
-        tray.album_photos = photos;
-        tray.repaint();
-    },
 
-    //add single or array of photos to tray
     add_photos : function(photos) {
-        tray.album_photos = tray.album_photos.concat(photos);
-        tray.repaint();
+
+        tray.widget.addPhotos(tray.map_photos(photos));
     },
 
-
-    //redraws the contents of the tray; called after photos are added or removed
-    repaint : function() {
-        //setup the imageloader
-        if (tray.imageloader) {
-            tray.imageloader.stop();
-        }
-        var onStartLoadingImage = function(id, src) {
-            $('#' + id).attr('src', '/images/loading.gif');
-        };
-
-        var onImageLoaded = function(id, src, width, height) {
-            $('#' + id).attr('src', src);
-
-            if (height > width) {
-                var ratio = (width / height);
-                $('#hover-' + id).attr('src', src).css({
-                    height: '120px',
-                    top: '-132px',
-                    width: (ratio * 120) + 'px',
-                    left: '-' + (((ratio * 120) / 2) - 15) + 'px'
-                });
-
-                $('#del-' + id).css({
-                    top: '-152px',
-                    left: ((ratio * 120) / 2) + 'px'
-//                    top: '-15px',
-//                    left: '-15px'
-                });
-
-
-            } else {
-
-                var ratio = (height / width);
-                //console.log(ratio);
-                $('#hover-' + id).attr('src', src).css({
-                    height: (ratio * 120) + 'px',
-                    top: '-' + ((ratio * 120) + 12) + 'px',
-                    width: '120px',
-                    left: '-45px'
-
-                });
-                $('#del-' + id).css({
-                    top: '-'+((ratio * 120) + 32) + 'px',
-                    left: '60px'
-//                    top: '-15px',
-//                    left: '-15px'
-                });
-
-
-            }
-        };
-
-        tray.imageloader = new ImageLoader(onStartLoadingImage, onImageLoaded);
-
-        //calculate margin-left of items so they all fit
-        var TRAY_WIDTH = 878;
-        var ITEM_WIDTH = 30;
-        var count = tray.album_photos.length;
-        var allocated_space = (TRAY_WIDTH / (count+1));
-
-        if(allocated_space > ITEM_WIDTH){
-            allocated_space = ITEM_WIDTH;
+    map_photos:function(photos){
+        if(! $.isArray(photos)){
+            var photos = [photos];
         }
 
-        var overlap = ITEM_WIDTH - allocated_space;
+        photos = $.map(photos, function(photo, index){
+            var id = photo.id;
+            var src = photo.source_thumb_url;
+            src = agent.buildAgentUrl(src);
+            return {id:id, src:src};
+        });
 
-
-        var html = '';
-
-        for (var i =0;i<tray.album_photos.length; i++) {
-            var photo = tray.album_photos[i];
-
-            var id = 'tray-' + photo.id;
-
-            /*
-
-             from my firebug edits:
-             <li>
-
-             <div>
-
-             <img width="20" height="20" src="http://farm1.static.flickr.com/28/63236798_316a95d732_m.jpg" id="tray-bbJRmOT4Kr35cyXcWddDor">
-
-             <a href="" onclick="tray.delete_photo('bbJRmOT4Kr35cyXcWddDor'); return false;">(x)</a>
-
-
-             </div>
-             </li>
-
-             */
-
-            if(i===0){
-                html+="<li>"
-            }
-            else{
-                html += '<li style="margin-left:' + (-1 * overlap) + 'px">';
-            }
-
-            html += '<div>';
-            html += '<img height="30" width="30" id="' + id + '" class="trayed-up" src="/images/loading.gif" style="z-index:5;">';
-            html += '<a href="javascript:void(0);" onclick="tray.delete_photo(\'' + photo.id + '\'); return false;"><img src="/images/btn-delete.png" class="delete" id="del-'+ id +'" /></a>';
-            html += '<img width="120" class="hover-thumbnail" src="" id="hover-'+ id +'">';
-            html += '</div>';
-            html += '</li>';
-
-            if (photo.agent_id) {          //todo: need to check that agent id matches local agent
-                //was uploaded from agent
-                if (photo.state == 'ready') {
-                    tray.imageloader.add(id, photo.thumb_url);
-                } else {
-                    tray.imageloader.add(id, agent.buildAgentUrl('/albums/' + zz.album_id + '/photos/' + photo.id + '.thumb'));
-
-                }
-
-            } else {
-
-                //photo was side loaded or emailed
-                if (photo.state == 'ready') {
-                    tray.imageloader.add(id, photo.thumb_url);
-                } else {
-                    tray.imageloader.add(id, photo.source_thumb_url);
-                }
-
-            }
-
-        }
-
-        $('#added-pictures-tray').html(html);
-        zz.init.tray();
-        tray.imageloader.start(5);
-
+        return photos;
     },
 
-
-    delete_photo : function(photo_id) {
+    delete_photo: function(photo){
         $.ajax({
             type: "DELETE",
             dataType: "json",
-            url: "/photos/" + photo_id + ".json",
-            success: function() {
-                tray.on_delete_photo(photo_id);
-            },
-            error: function() {
-            }
+            url: "/photos/" + photo.id + ".json"
         });
-
-        //todo: if local photo, need to cancel from agent upload -- http://localhost:30777/albums/:album_id/photos/:photo_id/cancel_upload
-    },
-
-    on_delete_photo :function(photo_id) {
-        for (var i in tray.album_photos) {
-            if (tray.album_photos[i].id === photo_id) {
-                tray.album_photos.splice(i, 1); //remove from photos list
-                tray.repaint();
-                break;
-            }
-        }
-        filechooser.update_checkmarks();
     }
+
+
+
+
+
+
+
 };
+
+
+/* Added Photos Tray
+ ----------------------------------------------------------------------------- */
+//var tray = {
+//
+//    imageloader : null,
+//    album_photos : [],
+//
+//    reload : function() {
+//        var get_album_photos_url = '/albums/' + zz.album_id + '/photos.json';
+//        $.ajax({
+//            dataType: 'json',
+//            url: get_album_photos_url,
+//            success: tray.on_reload,
+//            error: function() {
+//                alert('error reloading tray');
+//            }  //todo: remove alerty
+//        });
+//    },
+//
+//    on_reload : function(photos) {
+//        tray.album_photos = photos;
+//        tray.repaint();
+//    },
+//
+//    //add single or array of photos to tray
+//    add_photos : function(photos) {
+//        tray.album_photos = tray.album_photos.concat(photos);
+//        tray.repaint();
+//    },
+//
+//
+//    //redraws the contents of the tray; called after photos are added or removed
+//    repaint : function() {
+//        //setup the imageloader
+//        if (tray.imageloader) {
+//            tray.imageloader.stop();
+//        }
+//        var onStartLoadingImage = function(id, src) {
+//            $('#' + id).attr('src', '/images/loading.gif');
+//        };
+//
+//        var onImageLoaded = function(id, src, width, height) {
+//            $('#' + id).attr('src', src);
+//
+//            if (height > width) {
+//                var ratio = (width / height);
+//                $('#hover-' + id).attr('src', src).css({
+//                    height: '120px',
+//                    top: '-132px',
+//                    width: (ratio * 120) + 'px',
+//                    left: '-' + (((ratio * 120) / 2) - 15) + 'px'
+//                });
+//
+//                $('#del-' + id).css({
+//                    top: '-152px',
+//                    left: ((ratio * 120) / 2) + 'px'
+////                    top: '-15px',
+////                    left: '-15px'
+//                });
+//
+//
+//            } else {
+//
+//                var ratio = (height / width);
+//                //console.log(ratio);
+//                $('#hover-' + id).attr('src', src).css({
+//                    height: (ratio * 120) + 'px',
+//                    top: '-' + ((ratio * 120) + 12) + 'px',
+//                    width: '120px',
+//                    left: '-45px'
+//
+//                });
+//                $('#del-' + id).css({
+//                    top: '-'+((ratio * 120) + 32) + 'px',
+//                    left: '60px'
+////                    top: '-15px',
+////                    left: '-15px'
+//                });
+//
+//
+//            }
+//        };
+//
+//        tray.imageloader = new ImageLoader(onStartLoadingImage, onImageLoaded);
+//
+//        //calculate margin-left of items so they all fit
+//        var TRAY_WIDTH = 878;
+//        var ITEM_WIDTH = 30;
+//        var count = tray.album_photos.length;
+//        var allocated_space = (TRAY_WIDTH / (count+1));
+//
+//        if(allocated_space > ITEM_WIDTH){
+//            allocated_space = ITEM_WIDTH;
+//        }
+//
+//        var overlap = ITEM_WIDTH - allocated_space;
+//
+//
+//        var html = '';
+//
+//        for (var i =0;i<tray.album_photos.length; i++) {
+//            var photo = tray.album_photos[i];
+//
+//            var id = 'tray-' + photo.id;
+//
+//            /*
+//
+//             from my firebug edits:
+//             <li>
+//
+//             <div>
+//
+//             <img width="20" height="20" src="http://farm1.static.flickr.com/28/63236798_316a95d732_m.jpg" id="tray-bbJRmOT4Kr35cyXcWddDor">
+//
+//             <a href="" onclick="tray.delete_photo('bbJRmOT4Kr35cyXcWddDor'); return false;">(x)</a>
+//
+//
+//             </div>
+//             </li>
+//
+//             */
+//
+//            if(i===0){
+//                html+="<li>"
+//            }
+//            else{
+//                html += '<li style="margin-left:' + (-1 * overlap) + 'px">';
+//            }
+//
+//            html += '<div>';
+//            html += '<img height="30" width="30" id="' + id + '" class="trayed-up" src="/images/loading.gif" style="z-index:5;">';
+//            html += '<a href="javascript:void(0);" onclick="tray.delete_photo(\'' + photo.id + '\'); return false;"><img src="/images/btn-delete.png" class="delete" id="del-'+ id +'" /></a>';
+//            html += '<img width="120" class="hover-thumbnail" src="" id="hover-'+ id +'">';
+//            html += '</div>';
+//            html += '</li>';
+//
+//            if (photo.agent_id) {          //todo: need to check that agent id matches local agent
+//                //was uploaded from agent
+//                if (photo.state == 'ready') {
+//                    tray.imageloader.add(id, photo.thumb_url);
+//                } else {
+//                    tray.imageloader.add(id, agent.buildAgentUrl('/albums/' + zz.album_id + '/photos/' + photo.id + '.thumb'));
+//
+//                }
+//
+//            } else {
+//
+//                //photo was side loaded or emailed
+//                if (photo.state == 'ready') {
+//                    tray.imageloader.add(id, photo.thumb_url);
+//                } else {
+//                    tray.imageloader.add(id, photo.source_thumb_url);
+//                }
+//
+//            }
+//
+//        }
+//
+//        $('#added-pictures-tray').html(html);
+//        zz.init.tray();
+//        tray.imageloader.start(5);
+//
+//    },
+//
+//
+//    delete_photo : function(photo_id) {
+//        $.ajax({
+//            type: "DELETE",
+//            dataType: "json",
+//            url: "/photos/" + photo_id + ".json",
+//            success: function() {
+//                tray.on_delete_photo(photo_id);
+//            },
+//            error: function() {
+//            }
+//        });
+//
+//        //todo: if local photo, need to cancel from agent upload -- http://localhost:30777/albums/:album_id/photos/:photo_id/cancel_upload
+//    },
+//
+//    on_delete_photo :function(photo_id) {
+//        for (var i in tray.album_photos) {
+//            if (tray.album_photos[i].id === photo_id) {
+//                tray.album_photos.splice(i, 1); //remove from photos list
+//                tray.repaint();
+//                break;
+//            }
+//        }
+//        filechooser.update_checkmarks();
+//    }
+//};
 
