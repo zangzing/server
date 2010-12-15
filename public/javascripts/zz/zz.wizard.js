@@ -54,10 +54,13 @@ zz.wizard = {
 
         } else if (obj.steps[id].type == 'full' && zz.drawer_state == zz.DRAWER_OPEN) {
             zz.wizard.build_nav(obj, id);
-            $('#tab-content').fadeOut('fast', function(){
+            $('#tab-content').fadeOut(100, function(){
+                $('#tab-content').empty();
+                $('#tab-content').show();
+//                $('#tab-content').css({opacity:0});
                 obj.steps[id].init(function(){
                     zz.wizard.resize_scroll_body();
-                    $('#tab-content').fadeIn('fast');
+//                    $('#tab-content').fadeIn('fast');
                 });
 
             });

@@ -213,7 +213,7 @@
                 this.currentIndex = index;
 
                 if(index !== -1){
-                    this.previewElement.find('img').attr('src', this.options.photos[index].src)
+                    this.previewElement.find('img').attr('src', this.options.photos[index]['src']);
 
                     if(this.orientation === this.ORIENTATION_X){
                         this.previewElement.css('left', this._getPositionForIndex(index) - this.previewElement.width() / 2);
@@ -242,7 +242,7 @@
 
             if(index !== -1){
                 if(this.options.showSelection === true){
-                    this.selectionElement.find('img').attr('src', this.options.photos[index].src)
+                    this.selectionElement.find('img').attr('src', this.options.photos[index]['src'])
                     this.selectionElement.show();
                     this.selectionElement.css({opacity:1});
 
@@ -281,37 +281,37 @@
 
         _repaintThumbnails: function(){
             var html = '';
-            var photos = this.options.photos.slice(0); //copy the array so we dont modify the original
+            var thumbnails = this.options.photos.slice(); //copy the array so we dont modify the original
 
-            if(photos.length > this._getMaxVisibleThumbnails()){
+            if(thumbnails.length > this._getMaxVisibleThumbnails()){
                 //trim extra from middle of list
-                var extra = photos.length - this._getMaxVisibleThumbnails();
-                var removeEach = (photos.length - 2) / extra;
+                var extra = thumbnails.length - this._getMaxVisibleThumbnails();
+                var removeEach = (thumbnails.length - 2) / extra;
                 for(var i = extra;i > 0; i--){
                     var indexToRemove = Math.round(i*removeEach)
-                    photos.splice(indexToRemove, 1);
+                    thumbnails.splice(indexToRemove, 1);
                 }
             }
 
-            for(var i in photos){
-                var photo = photos[i];
-                html += '<img style="height:' + this._getThumbnailSize() + 'px; width:' + this._getThumbnailSize() + 'px" src="' + photo.src + '">'
+            for(var i in thumbnails){
+                var thumbnail = thumbnails[i];
+                html += '<img style="height:' + this._getThumbnailSize() + 'px; width:' + this._getThumbnailSize() + 'px" src="' + thumbnail['src'] + '">'
             }
 
             this.thumbnailsElement.html(html);
 
             if(this.orientation === this.ORIENTATION_X){
-                this.scrimElement.css('width', (photos.length * this._getThumbnailSize()));
+                this.scrimElement.css('width', (thumbnails.length * this._getThumbnailSize()));
             }
             else{
-                this.scrimElement.css('height', (photos.length * this._getThumbnailSize()));
+                this.scrimElement.css('height', (thumbnails.length * this._getThumbnailSize()));
             }
 
         },
 
 
-
         destroy: function() {
+            this.element.html('');
             $.Widget.prototype.destroy.apply( this, arguments );
         },
 
@@ -320,7 +320,20 @@
             this.options.onDeletePhoto(index, this.options.photos[index]);
             this.options.photos.splice(index,1);
             this._repaintThumbnails();
+        },
+
+        setPhotos: function(photos){
+            this.options.photos = photos;
+            this._setSelectedIndex(-1);
+            this._repaintThumbnails();
+        },
+
+        addPhotos: function(photos){
+            this.options.photos = this.options.photos.concat(photos);
+            this._repaintThumbnails();
         }
+
+
     });
 
 

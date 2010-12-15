@@ -7,8 +7,8 @@
 .thumbtray-thumbnails{
     z-index:0;
     position:absolute;
-    left:0;
-    top:0
+    left:0px;
+    top:0px
 }
 
 .thumbtray-thumbnails img{
@@ -58,20 +58,21 @@
     display:none;
     position:absolute;
     cursor: pointer;
-    height:32;
-    width:32;
+    height:32px;
+    width:32px;
     background-image: url("/images/btn-delete.png");
     background-repeat: no-repeat;
 }
 
 .thumbtray-preview.x .thumbtray-delete-button{
-    right:-16;
-    top:-16;
+    right:-16px;
+    top:-16px;
+    /*z-index:1000;*/
 }
 
 .thumbtray-preview.y .thumbtray-delete-button{
-    left:-16;
-    top:-16;
+    left:-16px;
+    top:-16px;
 }
 
 
@@ -79,8 +80,8 @@
 .thumbtray-scrim{
     z-index:0;
     position:absolute;
-    left:0;
-    top:0;
+    left:0px;
+    top:0px;
     opacity:.5;
     filter:alpha(opacity=50);
     background-color:#fff
