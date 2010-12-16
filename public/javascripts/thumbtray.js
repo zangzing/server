@@ -92,9 +92,13 @@
             //delete button
             if(this.options.allowDelete){
                 self.previewElement.find('.thumbtray-delete-button').show().click(function(){
-                    self.previewElement.fadeOut('fast', function(){
+                    self.previewElement.hide("scale", {}, 500, function(){
                         self.removePhoto(self._getCurrentIndex())
                     });
+                    
+//                    self.previewElement.fadeOut('fast', function(){
+//                        self.removePhoto(self._getCurrentIndex())
+//                    });
                 });
             }
 
@@ -121,6 +125,7 @@
                      }
                },100);
             }
+
 
 
             self.scrimElement.mousemove(function(event){
