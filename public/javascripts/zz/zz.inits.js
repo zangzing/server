@@ -46,6 +46,9 @@ zz.init = {
 
         });
 
+        $('header #help-button').click(function(){
+            GSFN.show();
+        });
 
 
         $('header #sign-in-button').click(function(){

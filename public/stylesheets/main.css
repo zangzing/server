@@ -95,6 +95,10 @@ header #album-info{
     width:300px;
 }
 
+header #album-info h3{
+    color: #7a7a7a;
+}
+
 header #user-info{
     position:absolute;
     left:325px;
