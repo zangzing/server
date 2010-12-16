@@ -458,7 +458,7 @@ var filechooser = {
                 html += '<a href="" ' + theClick + '>' + children[i].name + '</a>';
 
                 if (children[i].add_url) {
-                    html += '&nbsp;<a href="#" onclick="filechooser.add_folder(\'' + children[i].add_url + '\', \'' + id + '\'); return false;">(+)</a>';
+                    html += '&nbsp;<a href="#" onclick="filechooser.add_folder_to_tray(\'' + children[i].add_url + '\', \'' + id + '\'); return false;">(+)</a>';
                 }
 
                 html += '</li>';
@@ -466,7 +466,7 @@ var filechooser = {
             } else {
 
                 var img_id = 'chooser-photo-img-' + children[i].source_guid;
-                var add_photo_handler = 'onclick="filechooser.add_photos(\'' + children[i].add_url + '\', \'' + img_id + '\'); return false;"';
+                var add_photo_handler = 'onclick="filechooser.add_photo_to_tray(\'' + children[i].add_url + '\', \'' + img_id + '\'); return false;"';
                 var picture_view_handler = 'onclick="filechooser.picture_view(' + i + ');return false;"';
 
                 html += '<li id="photo-' + children[i].source_guid + '" class="filechooser photo" >';
@@ -513,7 +513,7 @@ var filechooser = {
 
         var previous_image_handler = 'onclick="filechooser.picture_view(' + (i - 1) + ');return false;"';
         var next_image_handler = 'onclick="filechooser.picture_view(' + (i + 1) + ');return false;"';
-        var add_photo_handler = 'onclick="filechooser.add_photos(\'' + children[i].add_url + '\', \'' + img_id + '\'); return false;"';                          
+        var add_photo_handler = 'onclick="filechooser.add_photo_to_tray(\'' + children[i].add_url + '\', \'' + img_id + '\'); return false;"';
 
 
         if(children[i].type === 'folder'){
@@ -571,50 +571,27 @@ var filechooser = {
 
     },
 
-    add_folder : function(add_url, element_id) {
-        filechooser.add_photos(add_url, element_id, true);
-    },
-
-    add_photos : function(add_url, element_id, is_folder) {
-        add_url += (add_url.indexOf('?') == -1) ? '?' : '&'
-        add_url += 'album_id=' + zz.album_id;
-
-        var after_animate = function(){
-
-            filechooser.agent_or_server.call({
-                url: add_url,
-                success: function(json) {
-                    filechooser.on_add_photos(json);
-                },
-                error: function(error){
-                    logger.debug(error);
-                }
-            });
-        }
-
-        if(is_folder===true){
-            filechooser.animate_folder_to_tray(element_id, after_animate);
-        }
-        else{
-            filechooser.animate_photo_to_tray(element_id, after_animate);
-        }
-    },
 
 
 
-    animate_folder_to_tray: function(element, callback){
-        var margin_top = $('#'+element).css('margin-top').split('px')[0];
+
+
+
+
+    add_folder_to_tray : function(add_url, element_id) {
+        var element = $('#'+element_id);
+        var margin_top = element.css('margin-top').split('px')[0];
         var border_top = 5;
         var border_left = 5;
-        var start_top = $('#'+element).offset().top - margin_top + border_top;
-        var start_left = $('#'+element).offset().left + border_left;
+        var start_top = element.offset().top - margin_top + border_top;
+        var start_left = element.offset().left + border_left;
 
         var end_top = tray.element.offset().top - margin_top;
         var end_left = tray.next_thumb_offset_x();
 
 
         var on_finish_animation = function(){
-            callback();
+            tray.add_photos_to_album(add_url);
             $(this).remove();
         }
 
@@ -636,23 +613,25 @@ var filechooser = {
     },
 
 
-    animate_photo_to_tray: function(element, callback){
-        var margin_top = $('#'+element).css('margin-top').split('px')[0];
+    add_photo_to_tray: function(add_url, element_id){
+        var element = $('#'+element_id);
+
+        var margin_top = element.css('margin-top').split('px')[0];
         var border_top = 5;
         var border_left = 5;
-        var start_top = $('#'+element).offset().top - margin_top + border_top;
-        var start_left = $('#'+element).offset().left + border_left;
+        var start_top = element.offset().top - margin_top + border_top;
+        var start_left = element.offset().left + border_left;
 
         var end_top = tray.element.offset().top - margin_top;
         var end_left = tray.next_thumb_offset_x();
 
 
         var on_finish_animation = function(){
-            callback();
-            $(this).remove();            
+            tray.add_photos_to_album(add_url);
+            $(this).remove();
         }
 
-        $('#'+element).clone()
+        element.clone()
                 .css({position: 'absolute', zIndex: 2000, left: start_left, top: start_top})
                 .appendTo('body')
                 .addClass('animate-photo-to-tray')
@@ -748,10 +727,30 @@ var tray = {
         });
     },
 
+    add_photos_to_album: function(add_url){
+
+        add_url += (add_url.indexOf('?') == -1) ? '?' : '&'
+        add_url += 'album_id=' + zz.album_id;
+
+        tray.show_loading_indicator();
+        filechooser.agent_or_server.call({
+            url: add_url,
+            success: function(json) {
+                tray.add_photos(json);
+                tray.hide_loading_indicator();
+
+            },
+            error: function(error){
+                logger.debug(error);
+            }
+        });
+
+    },
 
     add_photos : function(photos) {
         tray.photos = tray.photos.concat(photos);
         tray.widget.setPhotos(tray.map_photos(tray.photos));
+        tray.hide_loading_indicator
     },
 
     get_photos: function(){
@@ -791,6 +790,14 @@ var tray = {
 
     next_thumb_offset_x: function(){
         return this.widget.nextThumbOffsetX();
+    },
+
+    show_loading_indicator: function(){
+        this.widget.showLoadingIndicator();
+    },
+
+    hide_loading_indicator: function(){
+        this.widget.hideLoadingIndicator();
     }
 };
 

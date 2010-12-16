@@ -46,6 +46,7 @@
             html += '        <img src="">';
             html += '        <div class="thumbtray-delete-button"></div>';
             html += '    </div>';
+            html += '    <img class="thumbtray-loading-indicator" src="/images/loading.gif"/>'
             html += '    <div class="thumbtray-scrim"></div>'
             html += '</div>';
 
@@ -57,6 +58,7 @@
             this.previewElement = this.element.find('.thumbtray-preview');
             this.selectionElement = this.element.find('.thumbtray-selection');
             this.thumbnailsElement = this.element.find('.thumbtray-thumbnails');
+            this.loadingIndicator = this.element.find('.thumbtray-loading-indicator');
 
 
             this.wrapperElement.css({width:width, height:height});
@@ -348,9 +350,18 @@
             else{
                 return this.thumbnailsElement.offset().left + (this.options.photos.length * 20);
             }
-        }
+        },
 
-        
+
+        showLoadingIndicator: function(){
+            this.loadingIndicator.css('left', this.nextThumbOffsetX() - this.wrapperElement.offset().left);
+            this.loadingIndicator.show();
+
+        },
+
+        hideLoadingIndicator: function(){
+            this.loadingIndicator.hide();
+        }
 
 
 
