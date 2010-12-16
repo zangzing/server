@@ -646,13 +646,13 @@ var filechooser = {
 
 
 
-    on_add_photos : function(json) {
-        var photos = json;
-
-        tray.add_photos(photos);
-
-        filechooser.update_checkmarks();
-    },
+//    on_add_photos : function(json) {
+//        var photos = json;
+//
+//        tray.add_photos(photos);
+//
+//        filechooser.update_checkmarks();
+//    },
 
 
 
@@ -735,9 +735,11 @@ var tray = {
         tray.show_loading_indicator();
         filechooser.agent_or_server.call({
             url: add_url,
-            success: function(json) {
-                tray.add_photos(json);
+            success: function(photos) {
+                tray.photos = tray.photos.concat(photos);
+                tray.widget.setPhotos(tray.map_photos(tray.photos));
                 tray.hide_loading_indicator();
+                filechooser.update_checkmarks();                
 
             },
             error: function(error){
@@ -747,11 +749,7 @@ var tray = {
 
     },
 
-    add_photos : function(photos) {
-        tray.photos = tray.photos.concat(photos);
-        tray.widget.setPhotos(tray.map_photos(tray.photos));
-        tray.hide_loading_indicator
-    },
+
 
     get_photos: function(){
         return tray.photos;
