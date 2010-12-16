@@ -66,13 +66,13 @@ header {
 
 
 header #home-button{
-    position:absolute;
     position: absolute;
     top: 1px;
     left: 4px;
     width: 115px;
     height: 55px;
     cursor: pointer;
+    background: url("/images/bg-top-logo.png") no-repeat scroll 0 0 transparent;
 }
 
 header #back-button{
