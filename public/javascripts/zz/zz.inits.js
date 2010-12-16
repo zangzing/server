@@ -271,14 +271,8 @@ zz.init = {
 
 
 
+
         //toolbar buttons
-        image_preloader.load_image("/images/bg-help-on.png");
-        image_preloader.load_image("/images/bg-new-album-on.png");
-        image_preloader.load_image("/images/bg-share-on.png");
-        image_preloader.load_image("/images/bg-like-on.png");
-        image_preloader.load_image("/images/bg-buy-on.png");
-        image_preloader.load_image("/images/bg-edit-album-on.png");
-        image_preloader.load_image("/images/bg-add-photo-on.png");
         image_preloader.load_image("/images/btn-sign-in-on.png");
 
 
@@ -286,6 +280,10 @@ zz.init = {
         image_preloader.load_image("/images/bg-album-type-selected.png");
 
         //file chooser root folders rollover
+
+
+        image_preloader.load_image("/images/folders/blank.png"); //for folder animate to tray
+
         image_preloader.load_image("/images/folders/blank_on.jpg");
 
         image_preloader.load_image("/images/folders/apple_on.jpg");

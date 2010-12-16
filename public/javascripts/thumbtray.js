@@ -323,7 +323,7 @@
         },
 
         setPhotos: function(photos){
-            this.options.photos = photos;
+            this.options.photos = photos.slice();
             this._setSelectedIndex(-1);
             this._repaintThumbnails();
         },
@@ -331,7 +331,22 @@
         addPhotos: function(photos){
             this.options.photos = this.options.photos.concat(photos);
             this._repaintThumbnails();
+        },
+
+        nextThumbOffsetX: function(){
+            if(this.options.photos.length === 0){
+                return this.thumbnailsElement.offset().left;
+            }
+            else if(this.options.photos.length >= this._getMaxVisibleThumbnails()){
+                return this.thumbnailsElement.offset().left + this.thumbnailsElement.width() - 20;
+            }
+            else{
+                return this.thumbnailsElement.offset().left + (this.options.photos.length * 20);
+            }
         }
+
+        
+
 
 
     });

@@ -298,7 +298,7 @@ ul#filechooser h4 a {
 /* Animations
 ------------------------------------------------------------------------------*/
 
-#animate-photo-to-tray {
+.animate-photo-to-tray {
     border: #fff solid 5px;
     box-shadow: 0px 0px 5px #767676;
     -webkit-box-shadow: 0px 0px 5px #767676;
@@ -308,8 +308,8 @@ ul#filechooser h4 a {
 
 
 .animate-folder-to-tray{
-    border: #fff solid 5px;
-    background-color: #cccccc;
+    /*border: #fff solid 5px;*/
+    /*background-color: #cccccc;*/
 }
 
 
@@ -327,7 +327,7 @@ ul#filechooser h4 a {
 #added-pictures-tray-container {
   position: absolute;
   display: block;
-  width: 878px;
+  width: 880px;
   height: 40px;
   background-image: url('/images/bg-picture-tray.png');
   background-repeat: no-repeat;
@@ -342,10 +342,8 @@ ul#filechooser h4 a {
     position: relative;
     top:10px;
     display: block;
-    width: 878px;
+    width: 880px;
     height: 20px;
-    border: 1px solid #8C8C8C;
-
 }
 
 
