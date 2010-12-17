@@ -41,6 +41,21 @@ pages.album_name_tab = {
                 $('#album_name').select();
             },100);
 
+            //Get album email when 1.2 sec elapsed after user finishes typing
+            $('#album_name').keypress(function(){
+                album_email_call_lock++;
+                setTimeout(function(){
+                    album_email_call_lock--;
+                    if(album_email_call_lock==0){
+                        $.ajax({
+                            url: '/albums/' + zz.album_id + '/preview_album_email?' + $.param({album_name: $('#album_name').val()}),
+                            success: function(new_mail){
+                                $('#album_email').val(new_mail)
+                            }
+                        });
+                    }
+                }, 1200);
+            });
 
             //setup album cover picker
             $.ajax({

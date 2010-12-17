@@ -33,6 +33,7 @@ Server::Application.routes.draw do
   get    '/users/:user_id/albums/new' => 'albums#new',           :as => :new_user_album
   post   '/users/:user_id/albums'     => 'albums#create',        :as => :create_user_album
   get    '/albums/:id/name_album'     => 'albums#name_album',    :as => :name_album
+  get    '/albums/:id/preview_album_email' => "albums#preview_album_email", :as => :preview_album_email
   get    '/albums/:id/privacy'        => 'albums#privacy',       :as => :privacy
   get    '/albums/:id/add_photos'      => 'albums#add_photos',    :as => :add_photos
   get    '/albums/:id/upload_stat'     => 'albums#upload_stat',   :as => :album_upload_stat
