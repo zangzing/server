@@ -88,16 +88,16 @@ zz.wizard = {
         $.each(obj.steps, function(i, item) {
             if (i == id && obj.numbers == 1) {
                 value = temp_id;
-                temp += '<li id="wizard-'+ i + '" class="on">';
+                temp += '<li id="wizard-'+ i + '" class="tab on">';
                 temp += '<img src="/images/wiz-num-'+temp_id+'-on.png" class="num"> '+ item.title +'</li>';
             } else if (i == id) {
                 value = temp_id;
-                temp += '<li id="wizard-'+ i + '" class="on">'+ item.title +'</li>';
+                temp += '<li id="wizard-'+ i + '" class="tab on">'+ item.title +'</li>';
             } else if (obj.numbers == 1) {
-                temp += '<li id="wizard-'+ i + '">';
+                temp += '<li id="wizard-'+ i + '" class="tab">';
                 temp += '<img src="/images/wiz-num-'+temp_id+'.png" class="num"> '+ item.title +'</li>';
             } else {
-                temp += '<li id="wizard-'+ i + '">'+ item.title +'</li>';
+                temp += '<li id="wizard-'+ i + '" class="tab">'+ item.title +'</li>';
             }
             temp_id++;
 
@@ -109,9 +109,15 @@ zz.wizard = {
         if (obj.show_next_button !== true) {
             // no next button neded
         } else if (obj.steps[id].next == 0 || obj.style == 'edit') {
-            temp += '<li id="step-btn"><img id="next-step" src="/images/btn-wizard-done.png" /></li>';
+//            temp += '<li id="step-btn"><img id="next-step" src="/images/btn-wizard-done.png" /></li>';
+            temp += '<li class="next-done">';
+            temp += '<a id="next-step" class="green-button"><span>Done</span></a>';
+            temp += '</li>';
         } else {
-            temp += '<li id="step-btn"><img id="next-step" src="/images/btn-steps-next.png" /></li>';
+//            temp += '<li id="step-btn"><img id="next-step" src="/images/btn-steps-next.png" /></li>';
+            temp += '<li class="next-done">';
+            temp += '<a id="next-step" class="next-button"><span>Next</span></a>';
+            temp += '</li>';
         }
 
         if(fade_in){
