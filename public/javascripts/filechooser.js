@@ -642,6 +642,12 @@ var filechooser = {
                     top: (end_top) +'px',
                     left: (end_left) +'px'
                 }, 1000, 'easeInOutCubic', on_finish_animation);
+
+
+        element.parents('li').addClass('in-tray');
+
+
+
     },
 
 
