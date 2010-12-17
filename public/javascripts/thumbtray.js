@@ -9,6 +9,7 @@
             showSelection: false,
             selectedIndex:-1,
             thumbnailSize: 20,
+            showSelectedIndexIndicator:false,
             onDeletePhoto: function(index, photo){},
             onSelectPhoto: function(index, photo){},
             onPreviewPhoto: function(index, photo){}
@@ -46,6 +47,8 @@
             html += '        <img src="">';
             html += '        <div class="thumbtray-delete-button"></div>';
             html += '    </div>';
+            html += '    <img class="thumbtray-loading-indicator" src="/images/loading.gif"/>'
+            html += '    <div class="thumbtray-current-index-indicator"></div>'
             html += '    <div class="thumbtray-scrim"></div>'
             html += '</div>';
 
@@ -57,6 +60,8 @@
             this.previewElement = this.element.find('.thumbtray-preview');
             this.selectionElement = this.element.find('.thumbtray-selection');
             this.thumbnailsElement = this.element.find('.thumbtray-thumbnails');
+            this.loadingIndicator = this.element.find('.thumbtray-loading-indicator');
+            this.selectedIndexIndicator = this.element.find('.thumbtray-current-index-indicator');
 
 
             this.wrapperElement.css({width:width, height:height});
@@ -92,16 +97,20 @@
             //delete button
             if(this.options.allowDelete){
                 self.previewElement.find('.thumbtray-delete-button').show().click(function(){
-                    self.previewElement.fadeOut('fast', function(){
+                    self.previewElement.hide("scale", {}, 500, function(){
                         self.removePhoto(self._getCurrentIndex())
                     });
+                    
+//                    self.previewElement.fadeOut('fast', function(){
+//                        self.removePhoto(self._getCurrentIndex())
+//                    });
                 });
             }
 
 
             //mouse over and click handlers
             var mouseOver = false;
-
+       
 
 
 
@@ -121,6 +130,7 @@
                      }
                },100);
             }
+
 
 
             self.scrimElement.mousemove(function(event){
@@ -250,9 +260,19 @@
                     else{
                         this.selectionElement.css('top', this._getPositionForIndex(index) - this.selectionElement.height() / 2);
                     }
-
-
                 }
+
+                if(this.options.showSelectedIndexIndicator){
+                    if(this.orientation === this.ORIENTATION_X){
+                        this.selectedIndexIndicator.css('left', this._getPositionForIndex(index) - this.selectedIndexIndicator.width() / 2);
+                    }
+                    else{
+                        this.selectedIndexIndicator.css('top', this._getPositionForIndex(index) - this.selectedIndexIndicator.height() / 2);
+                    }
+                    this.selectedIndexIndicator.show();
+                }
+                
+
             }
 
             this.options.onSelectPhoto(index, this.options.photos[index])
@@ -266,7 +286,6 @@
             var len = this.options.photos.length;
             var index = Math.floor(position / this._getThumbnailActiveSize());
             if(index >= len){
-                return -1;
             }
             else{
                 return index;
@@ -322,7 +341,7 @@
         },
 
         setPhotos: function(photos){
-            this.options.photos = photos;
+            this.options.photos = photos.slice();
             this._setSelectedIndex(-1);
             this._repaintThumbnails();
         },
@@ -330,7 +349,34 @@
         addPhotos: function(photos){
             this.options.photos = this.options.photos.concat(photos);
             this._repaintThumbnails();
+        },
+
+        nextThumbOffsetX: function(){
+            if(this.options.photos.length === 0){
+                return this.thumbnailsElement.offset().left;
+            }
+            else if(this.options.photos.length >= this._getMaxVisibleThumbnails()){
+                return this.thumbnailsElement.offset().left + this.thumbnailsElement.width() - 20;
+            }
+            else{
+                return this.thumbnailsElement.offset().left + (this.options.photos.length * 20);
+            }
+        },
+
+        setSelectedIndex: function(index){
+            this._setSelectedIndex(index);
+        },
+
+        showLoadingIndicator: function(){
+            this.loadingIndicator.css('left', this.nextThumbOffsetX() - this.wrapperElement.offset().left);
+            this.loadingIndicator.show();
+
+        },
+
+        hideLoadingIndicator: function(){
+            this.loadingIndicator.hide();
         }
+
 
 
     });

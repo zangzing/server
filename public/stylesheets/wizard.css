@@ -173,9 +173,11 @@ ul.edit-6-6 {
   background-repeat: no-repeat;
 }
 
-ul#indicator-4 li {
+
+
+ul#indicator-4 li.tab {
   float: left;
-  padding: 11px 19px 0 0;
+  padding: 13px 19px 0 0;
   width: 179px;
   font-size: 1.1em;
   font-weight: 400;
@@ -188,7 +190,7 @@ ul#indicator-4 li {
 }
 
 
-ul#indicator-5 li {
+ul#indicator-5 li.tab {
   float: left;
   padding: 8px 19px 0 0;
   width: 139px;
@@ -202,7 +204,9 @@ ul#indicator-5 li {
   height: 19px;
 }
 
-ul#indicator-6 li {
+
+
+ul#indicator-6 li.tab {
   float: left;
   padding: 8px 18px 0 0;
   width: 115px;
@@ -217,46 +221,59 @@ ul#indicator-6 li {
 }
 
 
-ul#indicator-4 li img.num, ul#indicator-5 li img.num, ul#indicator-6 li img.num {
+
+
+ul#indicator-4 li.tab img.num, ul#indicator-5 li.tab img.num, ul#indicator-6 li.tab img.num {
   vertical-align: -40%;
 }
 
-ul#indicator-4 li a, ul#indicator-5 li a, ul#indicator-6 li a {
+ul#indicator-4 li.tab a, ul#indicator-5 li.tab a, ul#indicator-6 li.tab a {
   color: #646464;
   text-decoration: none;
 }
 
-ul#indicator-4 li.on a, ul#indicator-5 li.on a, ul#indicator-6 li.on a {
+ul#indicator-4 li.tab.on a, ul#indicator-5 li.tab.on a, ul#indicator-6 li.tab.on a {
   color: #fff;
 }
 
-ul#indicator-4 li#step-btn, ul#indicator-5 li#step-btn, ul#indicator-6 li#step-btn {
-  width: 66px;
+ul#indicator-4 li.next-done, ul#indicator-5 li.next-done, ul#indicator-6 li.next-done {
   text-align: center;
   padding-top: 3px;
   padding-left: 2px;
   height: 34px;
+  cursor: pointer;
 }
 
-ul#indicator-5 li.on, ul#indicator-6 li.on {
+
+ul#indicator-4 li.next-done a.green-button, ul#indicator-5 li.next-done a.green-button, ul#indicator-6 li.next-done a.green-button {
+    width:60px;
+    margin-left:6px;
+}
+
+ul#indicator-4 li.next-done a.next-button, ul#indicator-5 li.next-done a.next-button, ul#indicator-6 li.next-done a.next-button {
+    width:60px;
+    margin-left:2px;
+}
+
+
+ul#indicator-5 li.tab.on, ul#indicator-6 li.tab.on {
   color: #fff;
 }
 
-ul#indicator-4 li.on, ul#indicator-4 li:hover{
+ul#indicator-4 li.tab.on, ul#indicator-4 li.tab:hover{
     color: #000000;
     font-weight: 400;
 }
 
 
-#next-step {
-  cursor: pointer;
-  padding: 1px;
-}
+/*#next-step {*/
+
+/*}*/
 
 
-ul#indicator-6 #next-step {
-  padding: 0;
-}
+/*ul#indicator-6 #next-step {*/
+  /*padding: 0;*/
+/*}*/
 
 
 
@@ -266,7 +283,7 @@ div#drawer-content div#top-section {
   padding: 0px 10px;
   width: 840px;
   margin: 15px 0 5px;
-  height: 75px;
+  height: 50px;
 }
 
 div#drawer-content div#scroll-body {
@@ -411,9 +428,9 @@ span.h4 {
 }
 
 div#drawer-content .album-header {
-  margin: 25px auto 45px;
+  margin: 10px auto 45px;
   width: 600px;
-  min-height: 75px;
+  min-height: 60px;
   line-height: 1.4em;
   background-image: url('/images/faux-hr.png');
   background-position: bottom center;
@@ -427,7 +444,7 @@ div#drawer-content #top-section .album-header-off {
 
 div#drawer-content .album-header-off h3, div#drawer-content .album-header-off h4,
 div#drawer-content .album-header h3, div#drawer-content .album-header h4 {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 div#drawer-content .album-header-off {

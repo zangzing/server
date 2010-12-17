@@ -393,7 +393,6 @@ var filechooser = {
 
         var onImageLoaded = function(id, src, width, height) {
             var new_size = 115;
-            //console.log('id: #'+id+', src: '+src+', width: '+width+', height: '+height);
 
             if (height > width) {
                 //tall
@@ -413,8 +412,7 @@ var filechooser = {
 
             } else {
 
-                //wide
-                //console.log('wide');
+
 
                 var ratio = height / width;
 
@@ -460,15 +458,15 @@ var filechooser = {
                 html += '<a href="" ' + theClick + '>' + children[i].name + '</a>';
 
                 if (children[i].add_url) {
-                    html += '&nbsp;<a href="#" onclick="filechooser.add_folder(\'' + children[i].add_url + '\', \'' + id + '\'); return false;">(+)</a>';
+                    html += '&nbsp;<a href="#" onclick="filechooser.add_folder_to_tray(\'' + children[i].add_url + '\', \'' + id + '\'); return false;">(+)</a>';
                 }
 
                 html += '</li>';
 
             } else {
-                //                var id = 'chooser-photo-' + children[i].source_guid;
+
                 var img_id = 'chooser-photo-img-' + children[i].source_guid;
-                var add_photo_handler = 'onclick="filechooser.add_photos(\'' + children[i].add_url + '\', \'' + img_id + '\'); return false;"';
+                var add_photo_handler = 'onclick="filechooser.add_photo_to_tray(\'' + children[i].add_url + '\', \'' + img_id + '\'); return false;"';
                 var picture_view_handler = 'onclick="filechooser.picture_view(' + i + ');return false;"';
 
                 html += '<li id="photo-' + children[i].source_guid + '" class="filechooser photo" >';
@@ -515,7 +513,7 @@ var filechooser = {
 
         var previous_image_handler = 'onclick="filechooser.picture_view(' + (i - 1) + ');return false;"';
         var next_image_handler = 'onclick="filechooser.picture_view(' + (i + 1) + ');return false;"';
-        var add_photo_handler = 'onclick="filechooser.add_photos(\'' + children[i].add_url + '\', \'' + img_id + '\'); return false;"';                          
+        var add_photo_handler = 'onclick="filechooser.add_photo_to_tray(\'' + children[i].add_url + '\', \'' + img_id + '\'); return false;"';
 
 
         if(children[i].type === 'folder'){
@@ -566,98 +564,99 @@ var filechooser = {
         $('li').removeClass('in-tray');
 
         //check the ones in the tray
-        for(var i in tray.album_photos){
-            $("li#photo-" + tray.album_photos[i].source_guid).addClass('in-tray');
+        var tray_photos = tray.get_photos();
+        for(var i in tray_photos){
+            $("li#photo-" + tray_photos[i].source_guid).addClass('in-tray');
         }
 
     },
 
-    add_folder : function(add_url, element_id) {
-        filechooser.add_photos(add_url, element_id, true);
-    },
-
-    add_photos : function(add_url, element_id, is_folder) {
-        add_url += (add_url.indexOf('?') == -1) ? '?' : '&'
-        add_url += 'album_id=' + zz.album_id;
-
-        var after_animate = function(){
-
-            filechooser.agent_or_server.call({
-                url: add_url,
-                success: function(json) {
-                    filechooser.on_add_photos(json);
-                },
-                error: function(error){
-                    logger.debug(error);
-                }
-            });
-        }
-
-        if(is_folder===true){
-            filechooser.animate_folder_to_tray(element_id, after_animate);
-        }
-        else{
-            filechooser.animate_photo_to_tray(element_id, after_animate);
-        }
 
 
-    },
 
 
-    animate_photo_to_tray: function(element, callback){
-        filechooser.animate_to_tray(element, "animate-photo-to-tray", callback);
-    },
-
-    animate_folder_to_tray: function(element, callback){
-        filechooser.animate_to_tray(element, "animate-folder-to-tray", callback);
-    },
 
 
-    animate_to_tray: function(element, clazz, callback){
-        var temp = $('#'+element).css('margin-top').split('px')[0];
-        var temp_top = $('#'+element).offset().top - temp;
-        var temp_left = $('#'+element).offset().left;
-        var temp_top_new;
-        var temp_left_new;
 
-        //todo: filechooser shouldn't know about thumbtray internals
-        if($('#added-pictures-tray .thumbtray-thumbnails img:last').offset() !== null){
-            temp_top_new = $('#added-pictures-tray .thumbtray-thumbnails img:last').offset().top - temp;
-            temp_left_new = $('#added-pictures-tray .thumbtray-thumbnails img:last').offset().left + 20;
-        }
-        else{
-            temp_top_new = $('#added-pictures-tray').offset().top - temp;
-            temp_left_new = $('#added-pictures-tray').offset().left;
+    add_folder_to_tray : function(add_url, element_id) {
+        var element = $('#'+element_id);
+        var margin_top = element.css('margin-top').split('px')[0];
+        var border_top = 5;
+        var border_left = 5;
+        var start_top = element.offset().top - margin_top + border_top;
+        var start_left = element.offset().left + border_left;
 
-        }
+        var end_top = tray.element.offset().top - margin_top;
+        var end_left = tray.next_thumb_offset_x();
+
 
         var on_finish_animation = function(){
-            callback();
-            $(this).remove();            
+            tray.add_photos_to_album(add_url);
+            $(this).remove();
         }
 
-        $('#'+element).clone()
-                .css({position: 'absolute', zIndex: 2000, left: temp_left, top: temp_top})
-                .appendTo('body')
-                .attr('id', 'animate-photo-to-tray')
-                .addClass(clazz)
+
+        var img = $('<img src="/images/folders/blank.png" style="display:none" width="135px" left="110px"/>');
+        
+        img.appendTo('body')
+                .css({position: 'absolute', zIndex: 2000, left: start_left, top: start_top})
+                .show()
+                .addClass('animate-folder-to-tray')
                 .animate({
                     width: '20px',
                     height: '20px',
-                    top: (temp_top_new + 2) +'px',
-                    left: (temp_left_new + 13) +'px'
-                }, 500, 'swing', on_finish_animation);
+                    top: (end_top) +'px',
+                    left: (end_left) +'px'
+                }, 1000, 'easeInOutCubic', on_finish_animation);
+
+    },
+
+
+    add_photo_to_tray: function(add_url, element_id){
+        var element = $('#'+element_id);
+
+        var margin_top = element.css('margin-top').split('px')[0];
+        var border_top = 5;
+        var border_left = 5;
+        var start_top = element.offset().top - margin_top + border_top;
+        var start_left = element.offset().left + border_left;
+
+        var end_top = tray.element.offset().top - margin_top;
+        var end_left = tray.next_thumb_offset_x();
+
+
+        var on_finish_animation = function(){
+            tray.add_photos_to_album(add_url);
+            $(this).remove();
+        }
+
+        element.clone()
+                .css({position: 'absolute', zIndex: 2000, left: start_left, top: start_top})
+                .appendTo('body')
+                .addClass('animate-photo-to-tray')
+                .animate({
+                    width: '20px',
+                    height: '20px',
+                    top: (end_top) +'px',
+                    left: (end_left) +'px'
+                }, 1000, 'easeInOutCubic', on_finish_animation);
+
+
+        element.parents('li').addClass('in-tray');
+
+
+
     },
 
 
 
-    on_add_photos : function(json) {
-        var photos = json;
-
-        tray.add_photos(photos);
-
-        filechooser.update_checkmarks();
-    },
+//    on_add_photos : function(json) {
+//        var photos = json;
+//
+//        tray.add_photos(photos);
+//
+//        filechooser.update_checkmarks();
+//    },
 
 
 
@@ -701,18 +700,18 @@ var filechooser = {
 var tray = {
 
     widget: null,
+    photos: [],
+    element: null,
 
     init: function(){
-
-//        if(tray.widget){
-//            tray.widget.destroy();
-//        }
-
-        tray.widget =  $("#added-pictures-tray").zz_thumbtray({
+        tray.element = $("#added-pictures-tray")
+        tray.widget =  tray.element.zz_thumbtray({
                 photos:[],
                 allowDelete:true,
                 allowSelect:false,
                 onDeletePhoto:function(index, photo){
+                    tray.photos = tray.photos.splice(index,1);
+                    filechooser.update_checkmarks();
                     tray.delete_photo(photo);
                 }
              }).data().zz_thumbtray;
@@ -721,21 +720,43 @@ var tray = {
     },
 
     reload : function() {
-        var get_album_photos_url = '/albums/' + zz.album_id + '/photos.json';
         $.ajax({
             dataType: 'json',
-            url: get_album_photos_url,
+            url: '/albums/' + zz.album_id + '/photos.json',
             success: function(photos){
-                tray.widget.setPhotos(tray.map_photos(photos));
+                tray.photos = photos;
+                tray.widget.setPhotos(tray.map_photos(tray.photos));
             }
 
         });
     },
 
+    add_photos_to_album: function(add_url){
 
-    add_photos : function(photos) {
+        add_url += (add_url.indexOf('?') == -1) ? '?' : '&'
+        add_url += 'album_id=' + zz.album_id;
 
-        tray.widget.addPhotos(tray.map_photos(photos));
+        tray.show_loading_indicator();
+        filechooser.agent_or_server.call({
+            url: add_url,
+            success: function(photos) {
+                tray.photos = tray.photos.concat(photos);
+                tray.widget.setPhotos(tray.map_photos(tray.photos));
+                tray.hide_loading_indicator();
+                filechooser.update_checkmarks();                
+
+            },
+            error: function(error){
+                logger.debug(error);
+            }
+        });
+
+    },
+
+
+
+    get_photos: function(){
+        return tray.photos;
     },
 
     map_photos:function(photos){
@@ -746,7 +767,15 @@ var tray = {
         photos = $.map(photos, function(photo, index){
             var id = photo.id;
             var src = photo.source_thumb_url;
-            src = agent.buildAgentUrl(src);
+
+            if(photo.state === 'ready'){
+                src = photo.thumb_url;
+            }
+
+            if(agent.isAgentUrl(src)){
+               src = agent.buildAgentUrl(src); 
+            }
+            
             return {id:id, src:src};
         });
 
@@ -759,206 +788,18 @@ var tray = {
             dataType: "json",
             url: "/photos/" + photo.id + ".json"
         });
+    },
+
+    next_thumb_offset_x: function(){
+        return this.widget.nextThumbOffsetX();
+    },
+
+    show_loading_indicator: function(){
+        this.widget.showLoadingIndicator();
+    },
+
+    hide_loading_indicator: function(){
+        this.widget.hideLoadingIndicator();
     }
-
-
-
-
-
-
-
 };
-
-
-/* Added Photos Tray
- ----------------------------------------------------------------------------- */
-//var tray = {
-//
-//    imageloader : null,
-//    album_photos : [],
-//
-//    reload : function() {
-//        var get_album_photos_url = '/albums/' + zz.album_id + '/photos.json';
-//        $.ajax({
-//            dataType: 'json',
-//            url: get_album_photos_url,
-//            success: tray.on_reload,
-//            error: function() {
-//                alert('error reloading tray');
-//            }  //todo: remove alerty
-//        });
-//    },
-//
-//    on_reload : function(photos) {
-//        tray.album_photos = photos;
-//        tray.repaint();
-//    },
-//
-//    //add single or array of photos to tray
-//    add_photos : function(photos) {
-//        tray.album_photos = tray.album_photos.concat(photos);
-//        tray.repaint();
-//    },
-//
-//
-//    //redraws the contents of the tray; called after photos are added or removed
-//    repaint : function() {
-//        //setup the imageloader
-//        if (tray.imageloader) {
-//            tray.imageloader.stop();
-//        }
-//        var onStartLoadingImage = function(id, src) {
-//            $('#' + id).attr('src', '/images/loading.gif');
-//        };
-//
-//        var onImageLoaded = function(id, src, width, height) {
-//            $('#' + id).attr('src', src);
-//
-//            if (height > width) {
-//                var ratio = (width / height);
-//                $('#hover-' + id).attr('src', src).css({
-//                    height: '120px',
-//                    top: '-132px',
-//                    width: (ratio * 120) + 'px',
-//                    left: '-' + (((ratio * 120) / 2) - 15) + 'px'
-//                });
-//
-//                $('#del-' + id).css({
-//                    top: '-152px',
-//                    left: ((ratio * 120) / 2) + 'px'
-////                    top: '-15px',
-////                    left: '-15px'
-//                });
-//
-//
-//            } else {
-//
-//                var ratio = (height / width);
-//                //console.log(ratio);
-//                $('#hover-' + id).attr('src', src).css({
-//                    height: (ratio * 120) + 'px',
-//                    top: '-' + ((ratio * 120) + 12) + 'px',
-//                    width: '120px',
-//                    left: '-45px'
-//
-//                });
-//                $('#del-' + id).css({
-//                    top: '-'+((ratio * 120) + 32) + 'px',
-//                    left: '60px'
-////                    top: '-15px',
-////                    left: '-15px'
-//                });
-//
-//
-//            }
-//        };
-//
-//        tray.imageloader = new ImageLoader(onStartLoadingImage, onImageLoaded);
-//
-//        //calculate margin-left of items so they all fit
-//        var TRAY_WIDTH = 878;
-//        var ITEM_WIDTH = 30;
-//        var count = tray.album_photos.length;
-//        var allocated_space = (TRAY_WIDTH / (count+1));
-//
-//        if(allocated_space > ITEM_WIDTH){
-//            allocated_space = ITEM_WIDTH;
-//        }
-//
-//        var overlap = ITEM_WIDTH - allocated_space;
-//
-//
-//        var html = '';
-//
-//        for (var i =0;i<tray.album_photos.length; i++) {
-//            var photo = tray.album_photos[i];
-//
-//            var id = 'tray-' + photo.id;
-//
-//            /*
-//
-//             from my firebug edits:
-//             <li>
-//
-//             <div>
-//
-//             <img width="20" height="20" src="http://farm1.static.flickr.com/28/63236798_316a95d732_m.jpg" id="tray-bbJRmOT4Kr35cyXcWddDor">
-//
-//             <a href="" onclick="tray.delete_photo('bbJRmOT4Kr35cyXcWddDor'); return false;">(x)</a>
-//
-//
-//             </div>
-//             </li>
-//
-//             */
-//
-//            if(i===0){
-//                html+="<li>"
-//            }
-//            else{
-//                html += '<li style="margin-left:' + (-1 * overlap) + 'px">';
-//            }
-//
-//            html += '<div>';
-//            html += '<img height="30" width="30" id="' + id + '" class="trayed-up" src="/images/loading.gif" style="z-index:5;">';
-//            html += '<a href="javascript:void(0);" onclick="tray.delete_photo(\'' + photo.id + '\'); return false;"><img src="/images/btn-delete.png" class="delete" id="del-'+ id +'" /></a>';
-//            html += '<img width="120" class="hover-thumbnail" src="" id="hover-'+ id +'">';
-//            html += '</div>';
-//            html += '</li>';
-//
-//            if (photo.agent_id) {          //todo: need to check that agent id matches local agent
-//                //was uploaded from agent
-//                if (photo.state == 'ready') {
-//                    tray.imageloader.add(id, photo.thumb_url);
-//                } else {
-//                    tray.imageloader.add(id, agent.buildAgentUrl('/albums/' + zz.album_id + '/photos/' + photo.id + '.thumb'));
-//
-//                }
-//
-//            } else {
-//
-//                //photo was side loaded or emailed
-//                if (photo.state == 'ready') {
-//                    tray.imageloader.add(id, photo.thumb_url);
-//                } else {
-//                    tray.imageloader.add(id, photo.source_thumb_url);
-//                }
-//
-//            }
-//
-//        }
-//
-//        $('#added-pictures-tray').html(html);
-//        zz.init.tray();
-//        tray.imageloader.start(5);
-//
-//    },
-//
-//
-//    delete_photo : function(photo_id) {
-//        $.ajax({
-//            type: "DELETE",
-//            dataType: "json",
-//            url: "/photos/" + photo_id + ".json",
-//            success: function() {
-//                tray.on_delete_photo(photo_id);
-//            },
-//            error: function() {
-//            }
-//        });
-//
-//        //todo: if local photo, need to cancel from agent upload -- http://localhost:30777/albums/:album_id/photos/:photo_id/cancel_upload
-//    },
-//
-//    on_delete_photo :function(photo_id) {
-//        for (var i in tray.album_photos) {
-//            if (tray.album_photos[i].id === photo_id) {
-//                tray.album_photos.splice(i, 1); //remove from photos list
-//                tray.repaint();
-//                break;
-//            }
-//        }
-//        filechooser.update_checkmarks();
-//    }
-//};
 

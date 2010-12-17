@@ -230,7 +230,7 @@ eydevelopment:
 
 eysandbox:
   <<: *default_settings
-  monitor_mode: true
+  monitor_mode: false
   app_name: ZangZing (sandbox)
 
 

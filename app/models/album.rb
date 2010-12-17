@@ -137,7 +137,7 @@ class Album < ActiveRecord::Base
   end
 
   def short_email
-      "#{self.id}@#{Server::Application.config.album_email_host}"
+      "#{self.friendly_id}.#{self.user.friendly_id}@#{Server::Application.config.album_email_host}"
   end
 
   def to_param #overide friendly_id's

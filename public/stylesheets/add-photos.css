@@ -6,7 +6,7 @@
 #filechooser-back-button {
     position:absolute;
     left:30px;
-    top:60px;
+    top:50px;
 
   /*float: left;*/
   /*width: 120px;*/
@@ -34,7 +34,7 @@ ul#filechooser li {
   padding: 0px 20px 15px;
   cursor: pointer;
   font-size: 1.3em;
-  font-weight: 700;
+  font-weight: 400;
   overflow: hidden;
   height: 135px;
   background-color:#ffffff;
@@ -79,6 +79,11 @@ ul#filechooser li.folder {
   background-repeat: no-repeat;
   background-position: center top;
 }
+
+ul#filechooser li.folder a{
+    outline: none;
+}
+
 
 ul#filechooser li.folder.f_blank {
   background-image: url("/images/folders/blank_off.jpg");
@@ -298,7 +303,7 @@ ul#filechooser h4 a {
 /* Animations
 ------------------------------------------------------------------------------*/
 
-#animate-photo-to-tray {
+.animate-photo-to-tray {
     border: #fff solid 5px;
     box-shadow: 0px 0px 5px #767676;
     -webkit-box-shadow: 0px 0px 5px #767676;
@@ -308,8 +313,8 @@ ul#filechooser h4 a {
 
 
 .animate-folder-to-tray{
-    border: #fff solid 5px;
-    background-color: #cccccc;
+    /*border: #fff solid 5px;*/
+    /*background-color: #cccccc;*/
 }
 
 
@@ -327,7 +332,7 @@ ul#filechooser h4 a {
 #added-pictures-tray-container {
   position: absolute;
   display: block;
-  width: 878px;
+  width: 880px;
   height: 40px;
   background-image: url('/images/bg-picture-tray.png');
   background-repeat: no-repeat;
@@ -342,10 +347,8 @@ ul#filechooser h4 a {
     position: relative;
     top:10px;
     display: block;
-    width: 878px;
+    width: 880px;
     height: 20px;
-    border: 1px solid #8C8C8C;
-
 }
 
 
