@@ -177,7 +177,7 @@ ul.edit-6-6 {
 
 ul#indicator-4 li.tab {
   float: left;
-  padding: 15px 19px 0 0;
+  padding: 13px 19px 0 0;
   width: 179px;
   font-size: 1.1em;
   font-weight: 400;
@@ -192,7 +192,7 @@ ul#indicator-4 li.tab {
 
 ul#indicator-5 li.tab {
   float: left;
-  padding: 10px 19px 0 0;
+  padding: 8px 19px 0 0;
   width: 139px;
   font-size: 1.1em;
   font-weight: 400;
@@ -208,7 +208,7 @@ ul#indicator-5 li.tab {
 
 ul#indicator-6 li.tab {
   float: left;
-  padding: 10px 18px 0 0;
+  padding: 8px 18px 0 0;
   width: 115px;
   font-size: 1.1em;
   font-weight: 400;
@@ -238,7 +238,7 @@ ul#indicator-4 li.tab.on a, ul#indicator-5 li.tab.on a, ul#indicator-6 li.tab.on
 
 ul#indicator-4 li.next-done, ul#indicator-5 li.next-done, ul#indicator-6 li.next-done {
   text-align: center;
-  padding-top: 5px;
+  padding-top: 3px;
   padding-left: 2px;
   height: 34px;
   cursor: pointer;
