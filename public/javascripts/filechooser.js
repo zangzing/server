@@ -605,7 +605,6 @@ var filechooser = {
                 .animate({
                     width: '20px',
                     height: '20px',
-                    border: '1px solid #ffffff',
                     top: (end_top) +'px',
                     left: (end_left) +'px'
                 }, 1000, 'easeInOutCubic', on_finish_animation);
@@ -638,7 +637,6 @@ var filechooser = {
                 .animate({
                     width: '20px',
                     height: '20px',
-                    border: '1px solid #ffffff',
                     top: (end_top) +'px',
                     left: (end_left) +'px'
                 }, 1000, 'easeInOutCubic', on_finish_animation);
