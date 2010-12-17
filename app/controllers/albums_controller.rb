@@ -53,7 +53,6 @@ class AlbumsController < ApplicationController
 
 
   def add_photos
-    @album = Album.find(params[:id])
     render :layout => false
   end
 

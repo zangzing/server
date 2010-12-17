@@ -73,24 +73,33 @@ class Album < ActiveRecord::Base
 
 
   def cover
-    return nil if self.photos.empty?
-    if self.cover_photo_id.nil?
-      self.photos.first
-    else
-      @cover ||= self.photos.find( self.cover_photo_id )
-    end                        
+    unless self.cover_photo_id.nil?
+      if self.photos.empty?
+         self.cover_photo_id = nil
+         self.save
+         return nil
+      else
+         cover_photo = self.photos.find_by_id( self.cover_photo_id )
+         if cover_photo.nil?
+             self.cover_photo_id = nil
+             self.save
+             return nil
+         end
+         return cover_photo
+      end
+    end
+    self.photos.order("created_at ASC").first    
   end
 
   def cover=( photo )
     if photo.nil?
-       return if self.cover_photo_id.nil? # cover has not changed do not do anything
-       self.cover_photo_id = nil;
+      self.cover_photo_id = nil;
     else
-      return if self.cover_photo_id == photo.id # cover has not changed do not do anything
-      self.cover_photo_id = photo.id if self.photos.find( photo )
+      self.cover_photo_id = photo.id 
     end
     self.save
   end
+
 
   def update_picon
       self.picon.clear unless self.picon.nil?

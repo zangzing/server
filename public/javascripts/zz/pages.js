@@ -245,7 +245,7 @@ pages.album_share_tab = {
 
         $('div#share-body').fadeOut('fast', function(){
             $('div#share-body').load('/albums/'+zz.album_id+'/shares/newpost', function(){
-                zz.wizard.resize_scroll_body()
+                zz.wizard.resize_scroll_body();
 
 
 
@@ -502,9 +502,11 @@ pages.album_contributors_tab = {
 
 pages.account_settings_profile_tab = {
 
+    profile_photo_picker: 'undefined',
+
     init: function(callback){
         var url = '/users/' + zz.current_user_id +'/edit';
-        var self = this;
+        var self = pages.account_settings_profile_tab;
 
         $('#tab-content').load(url, function(){
 
@@ -513,7 +515,7 @@ pages.account_settings_profile_tab = {
             $(self.validator.element).validate(self.validator);
             $('#user_username').keypress( function(){
                 setTimeout(function(){
-                    $('#username_path').html( $('#user_username').val() );
+                    $('#username-path').html( $('#user_username').val() );
                 }, 10);
             });
 
@@ -526,23 +528,124 @@ pages.account_settings_profile_tab = {
     //            });
     //        });
 
-            //todo: i think this prevents the validator from running
-            $('#ok_profile_button').click(function(){
-                self.update_profile( function(){
-                    zz.wizard.close_settings_drawer();
+            self.init_profile_photo_picker();
+            self.refresh_profile_photo_picker();
+            self.init_add_photos_dialog();
+
+            $('#profile-photo-button').click( pages.account_settings_profile_tab.show_add_photos_dialog );
+            $('#ok-profile-button').click(function(){
+                    self.update_profile( function(){
+                        zz.wizard.close_settings_drawer();
                 });
             });
-            $('#cancel_profile_button').click(zz.wizard.close_settings_drawer)
+            $('#cancel-profile-button').click(zz.wizard.close_settings_drawer)
 
             callback();
         });
     },
 
     bounce: function(success, failure){
-        this.update_profile(function(){
-            success();
-        });
+        this.update_profile( success );
     },
+
+    init_profile_photo_picker: function(){
+        $.ajax({
+            dataType: 'json',
+            url: '/albums/' + zz.album_id + '/photos.json',
+            success: function(json){
+                var selectedIndex=-1;
+                var currentId = $('#profile-photo-id').val();
+                var photos = $.map(json, function(element, index){
+                    var id = element.id;
+
+                    if(id == currentId){
+                        selectedIndex = index;
+                    }
+                    var src;
+                    if(element.state === 'ready'){
+                        src = element.thumb_url;
+                    }
+                    else{
+                        src = element.source_thumb_url;
+                    }
+
+                    if (agent.isAgentUrl(src)){
+                        src = agent.buildAgentUrl(src);
+                    }
+
+                    return {id:id, src:src};
+                });
+                self.profile_photo_picker =
+                $("#profile-photo-picker").zz_thumbtray({
+                    photos:photos,
+                    showSelection:true,
+                    selectedIndex:selectedIndex,
+                    onSelectPhoto: function(index, photo){
+                        var photo_id = '';
+                        if(index!==-1){
+                            photo_id = photo.id
+                        }
+                        $('#profile-photo-id').val(photo_id);
+                        $('div#profile-photo-picker div.thumbtray-wrapper div.thumbtray-selection').css('top', 0);
+                    }
+                }).data().zz_thumbtray;    
+            }
+        });
+
+    },
+
+    refresh_profile_photo_picker: function(){
+        //alert( "In Account Setting Page Init user: "+zz.current_user_id+" Album: "+zz.album_id);
+        //setup album cover picker
+        $.ajax({
+            dataType: 'json',
+            url: '/albums/' + zz.album_id + '/photos.json',
+            success: function(json){
+                var selectedIndex=-1;
+                var currentId = $('#profile-photo-id').val();
+                var photos = $.map(json, function(element, index){
+                    var id = element.id;
+
+                    if(id == currentId){
+                        selectedIndex = index;
+                    }
+                    var src;
+                    if(element.state === 'ready'){
+                        src = element.thumb_url;
+                    }
+                    else{
+                        src = element.source_thumb_url;
+                    }
+
+                    if (agent.isAgentUrl(src)){
+                        src = agent.buildAgentUrl(src);
+                    }
+
+                    return {id:id, src:src};
+                });
+                pages.account_settings_profile_tab.profile_photo_picker.addPhotos( photos );
+            }
+        });
+    },  
+
+    init_add_photos_dialog: function(){
+        //for the add_photos call, the id is irrelevant, it just delivers the filechooser DOM
+        $('<div id="add-photos-dialog"></div>').load( '/albums/lkj789074XsSXkd/add_photos' )
+                                               .dialog({ title: 'Load Profile Pictures',
+                                                         width: 920,
+                                                         minHeight: 350,
+                                                         position: [130,40],
+                                                         modal: true,
+                                                         autoOpen: false,
+                                                         open:   function(event, ui){ filechooser.init(); },
+                                                         close:  function(event, ui){ pages.account_settings_profile_tab.init_profile_photo_picker()}
+                 });
+    },
+
+    show_add_photos_dialog: function(event){
+        $('#add-photos-dialog').dialog('open');
+    },
+
 
     update_profile: function(success) {
         if( $(this.validator.element).validate() ){
@@ -566,7 +669,7 @@ pages.account_settings_profile_tab = {
 
     //todo: because we attach a click handler to the '#ok_profile_button', the validator is never run
     validator: {
-        element: '#profile_form form',
+        element: '#profile-form form',
         errorContainer: '#flashes-notice',
         rules: {
             'user[first_name]':     { required: true,
@@ -594,7 +697,7 @@ pages.account_settings_profile_tab = {
                 minlength: 'Please enter at least 5 letters'},
             'user[username]': {  required: 'A username is required.',
                 regex: 'Only lowercase alphanumeric characters allowed',
-                remote: 'username not available'},
+                remote: 'username already taken'},
             'user[email]':   {   required: 'We promise we won&rsquo;t spam you.',
                 email: 'Is that a valid email?',
                 remote: 'Email already used'},

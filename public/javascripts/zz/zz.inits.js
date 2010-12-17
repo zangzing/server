@@ -96,7 +96,6 @@ zz.init = {
             zz.wizard.open_edit_album_wizard('add')
         });
 
-        $('#footer #buy-button').click(function(){  });
         
 
 
@@ -156,6 +155,7 @@ zz.init = {
 
         zz.init.acct_badge();
         zz.init.like_menu();
+        zz.init.buy_button();        
         zz.init.preload_rollover_images();
 
     },
@@ -272,14 +272,14 @@ zz.init = {
 
 
         //toolbar buttons
-        image_preloader.load_image("/images/bg-help-on.png");
-        image_preloader.load_image("/images/bg-new-album-on.png");
-        image_preloader.load_image("/images/bg-share-on.png");
-        image_preloader.load_image("/images/bg-like-on.png");
-        image_preloader.load_image("/images/bg-buy-on.png");
-        image_preloader.load_image("/images/bg-edit-album-on.png");
-        image_preloader.load_image("/images/bg-add-photo-on.png");
-        image_preloader.load_image("/images/btn-sign-in-on.png");
+        //image_preloader.load_image("/images/bg-help-on.png");
+        //image_preloader.load_image("/images/bg-new-album-on.png");
+        //image_preloader.load_image("/images/bg-share-on.png");
+        //image_preloader.load_image("/images/bg-like-on.png");
+        //image_preloader.load_image("/images/bg-buy-on.png");
+        //image_preloader.load_image("/images/bg-edit-album-on.png");
+        //image_preloader.load_image("/images/bg-add-photo-on.png");
+        //image_preloader.load_image("/images/btn-sign-in-on.png");
 
 
         //new album type rollover
@@ -442,8 +442,10 @@ zz.init = {
     like_menu: function(){
         zz.toolbars.init_like_menu();
         $('#footer #like-button').click( zz.toolbars.show_like_menu );
+    },
+    //======================================   ===============================================
+    buy_button: function(){
+ 
     }
-
-//==================================== Settings Wizard  ===========================================
 
 }; // end zz.init

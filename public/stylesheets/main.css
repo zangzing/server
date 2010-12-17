@@ -88,12 +88,22 @@ header #back-button{
 
 
 
+
 header #album-info{
     position:absolute;
     left:325px;
     top:10px;
     width:300px;
 }
+
+.profile-picture {
+ -moz-border-radius: 10%;
+ -webkit-border-radius: 10%;
+  background-size: cover;
+ -moz-background-size: cover;
+
+}
+
 
 header #user-info{
     position:absolute;
@@ -103,11 +113,22 @@ header #user-info{
 }
 
 
-header #user-info img#profile-picture{
-    vertical-align:middle;
-    margin-right:10px;
 
+header #user-info div#user-info-picture{
+     float: left;
+    height: 40px;
+    width: 40px;
+    vertical-align:bottom;
+    margin-right:15px;
 }
+
+header div#user-info h2{
+    float: left;
+    padding: 8px 0 0 0;
+}
+
+
+
 
 
 header #view-buttons{
@@ -235,11 +256,12 @@ header #account-badge {
   cursor: pointer;
 }
 
-header #account-badge img#account-image {
+header #account-badge div#account-image {
     position:absolute;
     top:8px;
     left:4px;
-
+    height: 25px;
+    width: 25px;
 }
 
 header #account-badge img#arrow-image {

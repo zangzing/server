@@ -29,6 +29,7 @@
     <link rel="stylesheet" href="/stylesheets/user.css" media="all" />
     <link rel="stylesheet" href="/stylesheets/thumbtray.css" media="all" />
     <link rel="stylesheet" href="/stylesheets/jquery.autocomplete.css" media="all" />
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/themes/base/jquery-ui.css" type="text/css" media="all" />
 
     <!-- TODO: favicon 
     <link rel="shortcut icon" href="images/favicon.png"/> -->
@@ -52,7 +53,11 @@
   <body id="<%= controller.controller_name + '-' + controller.action_name %>" class="<%= controller.controller_name %>">
     
     <div id="container">
-    
+      <div id="dialog-modal" title="Basic modal dialog">
+          <p>Adding the modal overlay screen makes the dialog look more prominent because it dims out the page content.</p>
+      </div>
+      
+
       <%= render :partial => 'layouts/bottom_nav' %>
 
 
@@ -74,7 +79,6 @@
         <li></li>
       </ul>
     </div>
-    
     <script type="text/javascript" src="/javascripts/lib/jquery.js" ></script>
     <script type="text/javascript" src="/javascripts/lib/jquery.validate.js" ></script>
     <script type="text/javascript" src="/javascripts/lib/jquery.autocomplete.js"></script>
