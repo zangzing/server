@@ -282,6 +282,7 @@
 
         $('#previous-button').click(function(){
             if(!nextPrevActive){
+                nextPrevActive = true;
                 var x =  $("#native-pane-horizontal").scrollLeft() - 460;
                 $("#native-pane-horizontal").animate({scrollLeft: x}, parseInt($('#animateduration').val()/3), $('#easing').val(),function(){
                     nextPrevActive = false;
@@ -292,6 +293,7 @@
 
 
 //        var lastMouseWheelEvent= null;
+//        var mouseWheelChange = 0
         $('#native-pane-horizontal').mousewheel(function(event){
 //            console.log(event);
 //
@@ -303,12 +305,19 @@
 //
 //            lastMouseWheelEvent = event.timeStamp;
 
-//            if(event.detail < 0){
-//                $('#previous-button').click();
+//            mouseWheelChange+=Math.abs(event.detail);
+//            console.log(mouseWheelChange);
+//            if(mouseWheelChange<200){
+//                return false;
 //            }
-//            else{
-//                $('#next-button').click();
-//            }
+//            mouseWheelChange=0;
+
+            if(event.detail < 0){
+                $('#previous-button').click();
+            }
+            else{
+                $('#next-button').click();
+            }
 
             return false;
         });
