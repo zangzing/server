@@ -80,6 +80,11 @@ ul#filechooser li.folder {
   background-position: center top;
 }
 
+ul#filechooser li.folder a{
+    outline: none;
+}
+
+
 ul#filechooser li.folder.f_blank {
   background-image: url("/images/folders/blank_off.jpg");
 }
