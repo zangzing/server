@@ -75,6 +75,12 @@
     top:-16px;
 }
 
+.thumbtray-loading-indicator{
+    position:absolute;
+    display:none;
+    width:20px;
+    height:20px;
+}
 
 
 .thumbtray-scrim{

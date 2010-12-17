@@ -178,6 +178,33 @@
                 $('#native-pane-horizontal').html(html);
 
 
+                $( "#native-pane .photo" ).draggable({
+                    start: function(){
+                        $(this).css({'z-index':1000});
+                    },
+                    stop: function(){
+//                        alert('drop');
+                    },
+//                    helper:'clone',
+                    revert: true,
+                    revertDuration:100,
+                    zIndex: 2700
+
+
+                });
+                $( "#native-pane .photo" ).droppable({
+                    over: function(event){
+                        $(this).css({'background-color':'red'});
+                        console.log(event)
+                    },
+                    out: function(){
+                        $(this).css({'background-color':'transparent'});
+                    },
+                    drop: function(){
+                        $(this).css({'background-color':'transparent'});
+                    }
+
+                });
 
 
                 var getScrollPaneOptions = function(){

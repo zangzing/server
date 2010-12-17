@@ -175,7 +175,7 @@ zz.wizard = {
 
     //todo: why is this needed?
     resize_scroll_body: function(){
-        $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 165) + 'px'});
+        $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 140) + 'px'});
     },
 
 

@@ -46,6 +46,7 @@
             html += '        <img src="">';
             html += '        <div class="thumbtray-delete-button"></div>';
             html += '    </div>';
+            html += '    <img class="thumbtray-loading-indicator" src="/images/loading.gif"/>'
             html += '    <div class="thumbtray-scrim"></div>'
             html += '</div>';
 
@@ -57,6 +58,7 @@
             this.previewElement = this.element.find('.thumbtray-preview');
             this.selectionElement = this.element.find('.thumbtray-selection');
             this.thumbnailsElement = this.element.find('.thumbtray-thumbnails');
+            this.loadingIndicator = this.element.find('.thumbtray-loading-indicator');
 
 
             this.wrapperElement.css({width:width, height:height});
@@ -92,9 +94,13 @@
             //delete button
             if(this.options.allowDelete){
                 self.previewElement.find('.thumbtray-delete-button').show().click(function(){
-                    self.previewElement.fadeOut('fast', function(){
+                    self.previewElement.hide("scale", {}, 500, function(){
                         self.removePhoto(self._getCurrentIndex())
                     });
+                    
+//                    self.previewElement.fadeOut('fast', function(){
+//                        self.removePhoto(self._getCurrentIndex())
+//                    });
                 });
             }
 
@@ -121,6 +127,7 @@
                      }
                },100);
             }
+
 
 
             self.scrimElement.mousemove(function(event){
@@ -323,7 +330,7 @@
         },
 
         setPhotos: function(photos){
-            this.options.photos = photos;
+            this.options.photos = photos.slice();
             this._setSelectedIndex(-1);
             this._repaintThumbnails();
         },
@@ -331,7 +338,31 @@
         addPhotos: function(photos){
             this.options.photos = this.options.photos.concat(photos);
             this._repaintThumbnails();
+        },
+
+        nextThumbOffsetX: function(){
+            if(this.options.photos.length === 0){
+                return this.thumbnailsElement.offset().left;
+            }
+            else if(this.options.photos.length >= this._getMaxVisibleThumbnails()){
+                return this.thumbnailsElement.offset().left + this.thumbnailsElement.width() - 20;
+            }
+            else{
+                return this.thumbnailsElement.offset().left + (this.options.photos.length * 20);
+            }
+        },
+
+
+        showLoadingIndicator: function(){
+            this.loadingIndicator.css('left', this.nextThumbOffsetX() - this.wrapperElement.offset().left);
+            this.loadingIndicator.show();
+
+        },
+
+        hideLoadingIndicator: function(){
+            this.loadingIndicator.hide();
         }
+
 
 
     });
