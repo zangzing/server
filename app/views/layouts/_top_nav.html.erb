@@ -14,7 +14,9 @@
   </div>
 
   <div id="user-info" style="display:<%= @user && !@user.changed? ? 'inline-block' : 'none' %>">
-    <h2><img id="profile-picture" src="/images/user-icon-40x40.png" width="40" height="40"/><%= @user ? @user.username : '' %></h2>
+
+        <div class="profile-picture" id="user-info-picture" style="background-image:   url('<%=( @user ? @user.profile_photo_url : '' )%>');"></div>
+    <h2><%= @user ? @user.username : '' %></h2>
   </div>
 
 
@@ -32,7 +34,7 @@
 
   <% if current_user %>
     <div id="account-badge">
-      <img id="account-image" src="/images/user-icon-25x25.png" width="25" height="25" />
+      <div class="profile-picture" id="account-image" style="background-image:   url('<%= current_user.profile_photo_url %>');"></div>
       <img id="arrow-image" src="/images/icon-down-arrow-22px.png" />
       <div class="header-button-label">Account</div>
       <ul class="context_menu dropdown" id="acct-dropdown">

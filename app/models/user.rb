@@ -9,9 +9,10 @@ class User < ActiveRecord::Base
   usesguid
   attr_writer      :name
   attr_accessor    :old_password, :reset_password
-  attr_accessible  :email, :name, :first_name, :last_name, :username,  :password, :old_password, :automatic
+  attr_accessible  :email, :name, :first_name, :last_name, :username,  :password, :old_password, :automatic, :profile_photo_id
 
   has_many :albums,              :dependent => :destroy
+  has_one  :profile_album,       :dependent => :destroy, :autosave => true
   has_many :identities,          :dependent => :destroy
   has_many :shares
   has_many :activities,          :dependent => :destroy
@@ -34,7 +35,8 @@ class User < ActiveRecord::Base
     c.validate_login_field = false
   end
 
-  before_save  :split_name
+  before_save    :split_name
+  before_create  :build_profile_album
 
   validates_presence_of :name, :unless => :automatic?
   validates_presence_of :username, :unless => :automatic?
@@ -121,9 +123,22 @@ class User < ActiveRecord::Base
     find_by_email(login) || find_by_username(login)
   end
 
-  def avatar_url
-    return gravatar_url_for( self.email )
+  def profile_photo_id=(id)
+      build_profile_album if profile_album.nil?
+      profile_album.profile_photo_id=id
+      profile_album.save
   end
+  
+  def profile_photo_id
+      create_profile_album if profile_album.nil?  
+      @profile_photo_id ||= profile_album.profile_photo_id
+  end
+
+  def profile_photo_url
+      create_profile_album if profile_album.nil?    
+      @profile_photo_url ||= profile_album.profile_photo_url
+  end
+
 
   private
   def old_password_valid?
@@ -147,10 +162,6 @@ class User < ActiveRecord::Base
         self.last_name = names.pop
         self.first_name = names.join(' ')
       end
-  end
-
-  def gravatar_url_for(email)
-    "http://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(email)}"
   end
 
 end

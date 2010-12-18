@@ -1,16 +1,16 @@
-     <div class="entry_area" id="firstname":>
+     <div class="entry-area" id="firstname":>
           <dt><%= f.label :first_name %></dt>
           <dd><%= f.text_field :first_name %></dd>
      </div>
-     <div class="entry_area" id="lastname">
+     <div class="entry-area" id="lastname">
           <dt><%= f.label :last_name %></dt>
           <dd><%= f.text_field :last_name %></dd>
      </div>
 
      <dt>
           <%= f.label :username %>
-          <span class="form_label_small" id = "username_full">
-            <span id="username_host">www.zangzing.com/</span><span id="username_path"><%=user.username%></span>
+          <span class="form-label-small" id = "username-full">
+            <span id="username-host">www.zangzing.com/</span><span id="username-path"><%=user.username%></span>
           </span>
      </dt>
      <dd><%= f.text_field :username %></dd>
@@ -24,5 +24,6 @@
      <dt><%= f.label :password %></dt>
      <dd><%= f.password_field :password %></dd>
 
+     <input type="hidden" id="profile-photo-id" name="user[profile_photo_id]" value="<%=user.profile_photo_id%>">
 
 

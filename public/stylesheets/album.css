@@ -103,13 +103,11 @@ ul.photos-single-view li img {
 
 /* Timeline & People Views
 ----------------------------------------------------------------------------- */
-div.stacked-badge div.avatar {
+div.stacked-badge div.profile-picture {
+  height:54px;
+  width: 54px;
   margin: 5px;
   display: inline-block;
-  height: 54px;
-  width: 54px;
- -moz-border-radius: 10%;
- -webkit-border-radius: 10%;
 }
 
 div.stacked-badge p {

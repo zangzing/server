@@ -99,7 +99,6 @@ zz.init = {
             zz.wizard.open_edit_album_wizard('add')
         });
 
-        $('#footer #buy-button').click(function(){  });
         
 
 
@@ -159,6 +158,7 @@ zz.init = {
 
         zz.init.acct_badge();
         zz.init.like_menu();
+        zz.init.buy_button();        
         zz.init.preload_rollover_images();
 
     },
@@ -277,7 +277,6 @@ zz.init = {
 
         //toolbar buttons
         image_preloader.load_image("/images/btn-sign-in-on.png");
-
 
         //new album type rollover
         image_preloader.load_image("/images/bg-album-type-selected.png");
@@ -443,8 +442,10 @@ zz.init = {
     like_menu: function(){
         zz.toolbars.init_like_menu();
         $('#footer #like-button').click( zz.toolbars.show_like_menu );
+    },
+    //======================================   ===============================================
+    buy_button: function(){
+ 
     }
-
-//==================================== Settings Wizard  ===========================================
 
 }; // end zz.init

@@ -247,9 +247,6 @@
         _setSelectedIndex: function(index){
             this.selectedItem = index;
 
-            this.options.onSelectPhoto(index, this.options.photos[index])
-            
-
             if(index !== -1){
                 if(this.options.showSelection === true){
                     this.selectionElement.find('img').attr('src', this.options.photos[index]['src'])
@@ -277,6 +274,8 @@
                 
 
             }
+
+            this.options.onSelectPhoto(index, this.options.photos[index])
         },
 
         _getSelectedIndex: function(){

@@ -218,6 +218,7 @@ zz.wizard = {
 
     open_edit_album_wizard: function( step ){
         switch(  zz.album_type ){
+            case 'profile':
             case 'personal':
                 if( typeof(zz.drawers.edit_personal_album) == "undefined" ){
                     zz.drawers.edit_personal_album = zz.drawers.personal_album;
@@ -232,6 +233,10 @@ zz.wizard = {
                 }
                 zz.wizard.make_drawer(zz.drawers.edit_group_album, step );
                 break;
+            default:
+                logger.debug('zz.wizard.open_edit_album_wizard: Albums of type: '+zz.album_type+' are not supported yet.')    
+                alert('Albums of type: '+zz.album_type+' are not supported yet.')
+                break
         }
     },
 

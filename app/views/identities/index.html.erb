@@ -66,7 +66,7 @@
           <a class="delete-id-button"
                 id="<%=service_key%>-delete"
                 service="<%=service_key%>"
-                value="<%=user_identity_path(:id => service_key, :user_id => params[:user_id])%>"
+                value="<%=delete_identity_path(:id => service_key)%>"
                 style="<%=(  id  ? "": "display:none" )%>">
 	        Unlink
           </a>
