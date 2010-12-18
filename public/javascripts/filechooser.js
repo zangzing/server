@@ -599,7 +599,7 @@ var filechooser = {
         var img = $('<img src="/images/folders/blank.png" style="display:none" width="135px" left="110px"/>');
         
         img.appendTo('body')
-                .css({position: 'absolute', zIndex: 2000, left: start_left, top: start_top})
+                .css({position: 'absolute', zIndex: 2000, left: start_left, top: start_top, border:'none'})
                 .show()
                 .addClass('animate-folder-to-tray')
                 .animate({
@@ -631,7 +631,7 @@ var filechooser = {
         }
 
         element.clone()
-                .css({position: 'absolute', zIndex: 2000, left: start_left, top: start_top})
+                .css({position: 'absolute', zIndex: 2000, left: start_left, top: start_top,border:'1px solid #ffffff'})
                 .appendTo('body')
                 .addClass('animate-photo-to-tray')
                 .animate({
