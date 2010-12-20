@@ -14,7 +14,7 @@ class Connector::FlickrPhotosController < Connector::FlickrController
         :thumb_url =>  get_photo_url(p, :thumb),
         :screen_url =>  get_photo_url(p, :screen),
         :add_url => flickr_photo_action_url({:photo_id =>p.id, :action => 'import'}),
-        :source_guid => Photo.generate_source_guid(get_photo_url(p, :full))
+        :source_guid => "flickr:"+Photo.generate_source_guid(get_photo_url(p, :full))
       }
     }
 

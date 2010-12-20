@@ -22,7 +22,7 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
         :thumb_url => media[:thumb].first,
         :screen_url => media[:thumb].first,
         :add_url => photobucket_folders_path({:photo_path => CGI::escape(media[:url].first), :action => 'import_photo'}),
-        :source_guid => Photo.generate_source_guid(media[:url].first)
+        :source_guid => "photobucket:"+Photo.generate_source_guid(media[:url].first)
       }
     end
 

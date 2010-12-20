@@ -11,7 +11,7 @@ class Connector::SmugmugPhotosController < Connector::SmugmugController
         :thumb_url => '/proxy?url=' + p[:smallurl],
         :screen_url => '/proxy?url=' + p[:x3largeurl],
         :add_url => smugmug_photo_action_url({:sm_album_id =>album_id, :photo_id => "#{p[:id]}_#{p[:key]}", :action => 'import'}),
-        :source_guid => Photo.generate_source_guid(p[:originalurl])
+        :source_guid => "smugmug:"+Photo.generate_source_guid(p[:originalurl])
         
       }
     }

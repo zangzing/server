@@ -10,7 +10,7 @@ class Connector::ShutterflyPhotosController < Connector::ShutterflyController
         :thumb_url => get_photo_url(p[:id].first, :thumb),
         :screen_url => get_photo_url(p[:id].first, :screen),
         :add_url => shutterfly_photo_action_path({:sf_album_id =>params[:sf_album_id], :photo_id => p[:id].first, :action => 'import'}),
-        :source_guid => Photo.generate_source_guid(get_photo_url(p[:id],  :full))
+        :source_guid => "shutterfly:"+Photo.generate_source_guid(get_photo_url(p[:id],  :full))
 
      }
     }
