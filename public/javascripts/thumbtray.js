@@ -55,6 +55,7 @@
             this.element.html(html);
 
 
+
             this.wrapperElement = this.element.find('.thumbtray-wrapper');
             this.scrimElement = this.element.find('.thumbtray-scrim');
             this.previewElement = this.element.find('.thumbtray-preview');
@@ -97,10 +98,12 @@
             //delete button
             if(this.options.allowDelete){
                 self.previewElement.find('.thumbtray-delete-button').show().click(function(){
-                    self.previewElement.hide("scale", {}, 500, function(){
-                        self.removePhoto(self._getCurrentIndex())
+                    self.previewElement.find('.thumbtray-delete-button').hide();
+                    self.previewElement.hide("scale", {}, 300, function(){
+                        self.removePhoto(self._getCurrentIndex());
+                        self.previewElement.find('.thumbtray-delete-button').show();
                     });
-                    
+
 //                    self.previewElement.fadeOut('fast', function(){
 //                        self.removePhoto(self._getCurrentIndex())
 //                    });

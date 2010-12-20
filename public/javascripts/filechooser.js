@@ -748,6 +748,7 @@ var tray = {
             },
             error: function(error){
                 logger.debug(error);
+                $.jGrowl("" + error);
             }
         });
 
