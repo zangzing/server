@@ -23,6 +23,8 @@ class Connector::PicasaFoldersController < Connector::PicasaController
     current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
     doc.elements.each('entry') do |entry|
       #photoid = /photoid\/([0-9a-z]+)/.match(entry.elements['id'].text)[1]
+      photo_url = get_photo_url(entry.elements['media:group'], :full)
+           
       photo = Photo.create(
               :caption => entry.elements['title'].text,
               :album_id => params[:album_id],
