@@ -25,6 +25,10 @@ protected
     sz_letter = PHOTO_SIZES[size].is_a?(Array) ? "(#{PHOTO_SIZES[size].join('|')})" : PHOTO_SIZES[size]
     urls.select{|url| url =~ /_#{sz_letter}\.\w+$/ }.first
   end
+  
+  def make_source_guid(photo_info)
+    "facebook_"+Photo.generate_source_guid(photo_info[:source])
+  end
 
 
 end

@@ -22,7 +22,7 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
         :thumb_url => media[:thumb].first,
         :screen_url => media[:thumb].first,
         :add_url => photobucket_folders_path({:photo_path => CGI::escape(media[:url].first), :action => 'import_photo'}),
-        :source_guid => "photobucket:"+Photo.generate_source_guid(media[:url].first)
+        :source_guid => make_source_guid(media[:url].first)
       }
     end
 
@@ -39,7 +39,7 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
               :album_id => params[:album_id],
               :user_id => current_user.id,
               :upload_batch_id => current_batch.id,              
-              :source_guid => "photobucket:"+Photo.generate_source_guid(photo_data[:url].first),
+              :source_guid => make_source_guid(photo_data[:url].first),
               :source_thumb_url => photo_data[:thumb].first,
               :source_screen_url => photo_data[:thumb].first
       )
@@ -58,7 +58,7 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
             :album_id => params[:album_id],
             :user_id => current_user.id,
             :upload_batch_id => current_batch.id,            
-            :source_guid => "photobucket:"+Photo.generate_source_guid(photo_data[:url].first),
+            :source_guid => make_source_guid(photo_data[:url].first),
             :source_thumb_url => photo_data[:thumb].first,
             :source_screen_url => photo_data[:thumb].first
     )

@@ -45,4 +45,8 @@ protected
     @service_identity ||= current_user.identity_for_kodak
   end
 
+  def make_source_guid(photo_info)
+    "kodak_"+Photo.generate_source_guid(photo_info[PHOTO_SIZES[:full]].first)
+  end
+  
 end

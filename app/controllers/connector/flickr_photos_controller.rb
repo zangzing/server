@@ -14,7 +14,7 @@ class Connector::FlickrPhotosController < Connector::FlickrController
         :thumb_url =>  get_photo_url(p, :thumb),
         :screen_url =>  get_photo_url(p, :screen),
         :add_url => flickr_photo_action_url({:photo_id =>p.id, :action => 'import'}),
-        :source_guid => "flickr:"+Photo.generate_source_guid(get_photo_url(p, :full))
+        :source_guid => make_source_guid(p)
       }
     }
 
@@ -37,7 +37,7 @@ class Connector::FlickrPhotosController < Connector::FlickrController
               :album_id => params[:album_id],
               :upload_batch_id => current_batch.id,
               :caption => info.title,
-              :source_guid => "flickr:"+Photo.generate_source_guid(photo_url),
+              :source_guid => make_source_guid(info),
               :source_thumb_url => get_photo_url(info, :thumb),
               :source_screen_url => get_photo_url(info, :screen)
     )

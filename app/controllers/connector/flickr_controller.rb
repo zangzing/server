@@ -52,5 +52,8 @@ protected
     'http://farm%s.static.flickr.com/%s/%s_%s_%s.%s' % [photo_info.farm, photo_info.server, photo_info.id, secret, size_letter, extension]
   end
 
+  def make_source_guid(photo_info)
+    "flickr_"+Photo.generate_source_guid(get_photo_url(photo_info, :full))
+  end
 
 end

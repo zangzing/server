@@ -32,4 +32,9 @@ protected
     end
   end
 
+  def make_source_guid(media_element)
+    "picasa_"+Photo.generate_source_guid(get_photo_url(media_element, :full))
+  end
+
+
 end

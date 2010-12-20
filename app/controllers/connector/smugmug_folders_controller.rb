@@ -26,7 +26,7 @@ class Connector::SmugmugFoldersController < Connector::SmugmugController
               :album_id => params[:album_id],
               :user_id=>current_user.id,
               :upload_batch_id => current_batch.id,
-              :source_guid => "smugmug:"+Photo.generate_source_guid(p[:originalurl]),
+              :source_guid => make_source_guid(p),
               :source_thumb_url => '/proxy?url=' + p[:smallurl],
               :source_screen_url => '/proxy?url=' + p[:x3largeurl]
       )

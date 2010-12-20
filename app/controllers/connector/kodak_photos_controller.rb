@@ -14,7 +14,7 @@ class Connector::KodakPhotosController < Connector::KodakController
         :thumb_url =>p[PHOTO_SIZES[:thumb]].first,
         :screen_url =>p[PHOTO_SIZES[:screen]].first,
         :add_url => kodak_photo_action_path({:kodak_album_id => params[:kodak_album_id], :photo_id => p['id'].first, :action => 'import'}),
-        :source_guid => "kodak:"+Photo.generate_source_guid(p[PHOTO_SIZES[:full]].first)
+        :source_guid => make_source_guid(p)
 
       }
     }
@@ -43,7 +43,7 @@ class Connector::KodakPhotosController < Connector::KodakController
             :album_id => params[:album_id],
             :upload_batch_id => current_batch.id,
             :caption => p['caption'].first,
-            :source_guid => "kodak:"+Photo.generate_source_guid(photo_url),
+            :source_guid => make_source_guid(p),
             :source_thumb_url => p[PHOTO_SIZES[:thumb]].first,
             :source_screen_url => p[PHOTO_SIZES[:screen]].first
     )

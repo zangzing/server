@@ -25,7 +25,7 @@ class Connector::ShutterflyFoldersController < Connector::ShutterflyController
               :album_id => params[:album_id],
               :user_id=>current_user.id,
               :upload_batch_id => current_batch.id,              
-              :source_guid => "shutterfly:"+Photo.generate_source_guid(get_photo_url(p[:id],  :full)),
+              :source_guid => make_source_guid(p),
               :source_thumb_url => get_photo_url(p[:id],  :thumb),
               :source_screen_url => get_photo_url(p[:id],  :screen)
       )

@@ -59,7 +59,7 @@ class Connector::FacebookFoldersController < Connector::FacebookController
                 :album_id => params[:album_id],
                 :upload_batch_id => current_batch.id,
                 :caption => p[:name] || '',
-                :source_guid => "facebook:"+Photo.generate_source_guid(p[:source]),
+                :source_guid => make_source_guid(p),
                 :source_thumb_url => get_photo_url(p, :thumb),
                 :source_screen_url => get_photo_url(p, :screen)
       )

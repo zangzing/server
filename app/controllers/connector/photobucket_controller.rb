@@ -40,4 +40,9 @@ class Connector::PhotobucketController < Connector::ConnectorController
     @token_string
   end
 
+  def make_source_guid(url)
+    "photobucket_"+Photo.generate_source_guid(url)
+  end
+
+  
 end
