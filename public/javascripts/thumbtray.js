@@ -169,7 +169,7 @@
             });
 
 
-            self.scrimElement.click(function(event){
+            self.scrimElement.mousedown(function(event){
                 self._setSelectedIndex(self._getCurrentIndex());
                 if(self.options.showSelection === true){
                     self.previewElement.hide();
@@ -267,10 +267,10 @@
 
                 if(this.options.showSelectedIndexIndicator){
                     if(this.orientation === this.ORIENTATION_X){
-                        this.selectedIndexIndicator.css('left', this._getPositionForIndex(index) - this.selectedIndexIndicator.width() / 2);
+                        this.selectedIndexIndicator.css('left', this._getPositionForIndex(index) - this.selectedIndexIndicator.width()); //for some reason 'width()' rather than 'width() / 2' works
                     }
                     else{
-                        this.selectedIndexIndicator.css('top', this._getPositionForIndex(index) - this.selectedIndexIndicator.height() / 2);
+                        this.selectedIndexIndicator.css('top', this._getPositionForIndex(index) - this.selectedIndexIndicator.height()); //for some reason 'width()' rather than 'width() / 2' works
                     }
                     this.selectedIndexIndicator.show();
                 }
