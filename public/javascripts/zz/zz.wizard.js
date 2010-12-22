@@ -311,10 +311,14 @@ zz.wizard = {
     display_flashes: function( request, delay ){
         var data = request.getResponseHeader('X-Flash');
         if( data && data.length>0 && $('#flashes-notice')){
-            var flash = (new Function( "return( " + data + " );" ))();  //parse json using function contstructor
+            var flash = $.parseJSON(data);
             if( flash.notice ){
                 $('#flashes-notice').html(flash.notice).fadeIn('fast', function(){
-                    setTimeout(function(){$('#flashes-notice').fadeOut('fast', function(){$('#flashes-notice').html('    ');})}, delay+3000);
+                    setTimeout(function(){
+                        $('#flashes-notice').fadeOut('fast', function(){
+                            $('#flashes-notice').html('    ');
+                        })
+                    }, delay+3000);
                 });
             }
         }
@@ -323,10 +327,25 @@ zz.wizard = {
     display_errors: function( request, delay ){
           var data = request.getResponseHeader('X-Errors');
             if( data ){
-                var errors = (new Function( "return( " + data + " );" ))(); //parse json using function contstructor
-                $('#error-notice').html(errors[0][1]).fadeIn('fast', function(){
+                var errors = $.parseJSON(data);
+
+                //extract the value of the first attribute
+                var message = ""
+                for(var i in errors){
+                    if(typeof(i) !== 'undefined'){
+                        message = errors[i];
+                        break;
+                    }
+                }
+
+                $('#error-notice').html(message).fadeIn('fast', function(){
                     if( delay >0 ){
-                        setTimeout(function(){$('#error-notice').fadeOut('fast', function(){$('#error-notice').html('    ');})}, delay+3000);
+                        setTimeout(function(){
+                            $('#error-notice').fadeOut('fast', function(){
+                                $('#error-notice').html('    ');
+                            })
+                        }, delay+3000);
+
                     }
                 });
             }

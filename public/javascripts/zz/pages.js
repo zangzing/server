@@ -564,6 +564,8 @@ pages.account_settings_profile_tab = {
     },
 
     init_profile_photo_picker: function(){
+        var self = this;
+
         $.ajax({
             dataType: 'json',
             url: '/albums/' + zz.album_id + '/photos.json',
@@ -590,8 +592,9 @@ pages.account_settings_profile_tab = {
 
                     return {id:id, src:src};
                 });
-                self.profile_photo_picker =
-                $("#profile-photo-picker").zz_thumbtray({
+
+
+                self.profile_photo_picker = $("#profile-photo-picker").zz_thumbtray({
                     photos:photos,
                     showSelection:true,
                     selectedIndex:selectedIndex,
