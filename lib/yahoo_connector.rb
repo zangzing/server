@@ -11,6 +11,7 @@ class YahooConnector
   require 'oauth/consumer'
 
   cattr_accessor :api_key, :shared_secret
+  cattr_accessor :http_timeout
 
   TOKEN_SPLITTER = '<K1ND@SPL1773R>'
 
@@ -21,7 +22,8 @@ class YahooConnector
       :authorize_path => "/oauth/v2/request_auth",
       :access_token_path => "/oauth/v2/get_token",
       :scheme => :query_string,
-      :http_method => :get
+      :http_method => :get,
+      :http_timeout => YahooConnector.http_timeout
     },
     :social_api => {
       :site                 => 'http://social.yahooapis.com/',
@@ -31,7 +33,8 @@ class YahooConnector
       :http_method          => :get,
       :request_token_path   => '/oauth/v2/get_request_token',
       :access_token_path    => '/oauth/v2/get_token',
-      :authorize_path       => '/oauth/v2/request_auth'
+      :authorize_path       => '/oauth/v2/request_auth',
+      :http_timeout => YahooConnector.http_timeout
     }
   }
 
