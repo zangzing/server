@@ -22,7 +22,7 @@ class KodakConnector
     #First, retrieve a bunch of cookies for the session
     http = Net::HTTP.new(uri.host, uri.port)
     http.read_timeout = http.open_timeout = KodakConnector.http_timeout
-    response = http.request_get(nil)
+    response = http.get(uri.path)
     incomplete_cookies = response['set-cookie']
     login_data = CGI::escape("{\"email\":\"#{email}\",\"password\":\"#{password}\"}")
     incomplete_cookies += ", ssoCookies=#{login_data}; Path=/"

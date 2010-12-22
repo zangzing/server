@@ -1,3 +1,6 @@
+#Loading timeouts
+SERVICE_CALL_TIMEOUT = YAML.load(File.read("#{Rails.root}/config/service_timeouts.yml"))
+
 #Facebook (HyperGraph)
 class HyperGraph
 private

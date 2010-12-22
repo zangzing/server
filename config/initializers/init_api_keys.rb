@@ -1,5 +1,3 @@
-SERVICE_CALL_TIMEOUT = YAML.load(File.read("#{Rails.root}/config/service_timeouts.yml"))
-
 api_creds = {}
 [:flickr, :facebook, :smugmug, :shutterfly, :twitter, :yahoo, :photobucket, :ms_live].each do |service|
   all_env_keys = YAML.load(File.read("#{Rails.root}/config/#{service}_api_keys.yml"))
