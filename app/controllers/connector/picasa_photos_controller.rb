@@ -12,7 +12,7 @@ class Connector::PicasaPhotosController < Connector::PicasaController
         :thumb_url => get_photo_url(entry.elements['media:group'], :thumb),
         :screen_url => get_photo_url(entry.elements['media:group'], :screen),
         :add_url => picasa_photo_action_path({:picasa_album_id =>params[:picasa_album_id], :photo_id => photoid, :action => 'import'}),
-        :source_guid => Photo.generate_source_guid(get_photo_url(entry.elements['media:group'], :full))
+        :source_guid => make_source_guid(entry.elements['media:group'])
      }
     end
 
@@ -32,7 +32,7 @@ class Connector::PicasaPhotosController < Connector::PicasaController
                 :album_id => params[:album_id],
                 :user_id=>current_user.id,
                 :upload_batch_id => current_batch.id,
-                :source_guid => "picasa:"+Photo.generate_source_guid(photo_url),
+                :source_guid => make_source_guid(entry.elements['media:group']),
                 :source_thumb_url => get_photo_url(entry.elements['media:group'], :thumb),
                 :source_screen_url => get_photo_url(entry.elements['media:group'], :screen)
         )

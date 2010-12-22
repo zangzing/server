@@ -30,7 +30,7 @@ class Connector::KodakFoldersController < Connector::KodakController
               :album_id => params[:album_id],
               :upload_batch_id => current_batch.id,
               :caption => p['caption'].first,
-              :source_guid => "kodak:"+Photo.generate_source_guid(photo_url),
+              :source_guid => make_source_guid(p),
               :source_thumb_url => p[PHOTO_SIZES[:thumb]].first,
               :source_screen_url => p[PHOTO_SIZES[:screen]].first
       )

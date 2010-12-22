@@ -46,4 +46,9 @@ class Connector::ShutterflyController < Connector::ConnectorController
     "http://im1.shutterfly.com/proctaserv/#{img_id}"
   end
 
+  def make_source_guid(photo_info)
+    "shutterfly_"+Photo.generate_source_guid(get_photo_url(photo_info[:id], :full))
+  end
+
+  
 end

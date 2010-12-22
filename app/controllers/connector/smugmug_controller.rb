@@ -45,4 +45,8 @@ class Connector::SmugmugController < Connector::ConnectorController
     @token_string
   end
 
+  def make_source_guid(photo_info)
+    "smugmug_"+Photo.generate_source_guid(photo_info[:originalurl])
+  end
+
 end
