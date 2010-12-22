@@ -12,6 +12,8 @@ class SmugmugConnector
 
   API_ENDPOINT = '/services/api/json/1.2.2/'
 
+  cattr_accessor :http_timeout
+
   def initialize(token = nil)
     self.access_token = token
   end
@@ -44,13 +46,14 @@ class SmugmugConnector
                                    :authorize_path => "/services/oauth/authorize.mg",
                                    :access_token_path => "/services/oauth/getAccessToken.mg",
                                    :http_method => :get,
-                                   :scheme => :query_string
+                                   :scheme => :query_string,
+                                   :http_timeout => SmugmugConnector.http_timeout
                                  )
   end
 
   def create_access_token!(oauth_token, oauth_token_secret, first_time = false)
     if first_time
-      req_token = OAuth::RequestToken.from_hash(consumer, {:oauth_token => oauth_token, :oauth_token_secret => oauth_token_secret})
+      req_token = OAuth::RequestToken.from_hash(consumer, {:oauth_token => oauth_token, :oauth_token_secret => oauth_token_secret, :http_timeout => SmugmugConnector.http_timeout})
       begin
         @access_token = req_token.get_access_token
       rescue => e
@@ -60,7 +63,7 @@ class SmugmugConnector
         end
       end
     elsif
-      @access_token = OAuth::AccessToken.from_hash(consumer, {:oauth_token => oauth_token, :oauth_token_secret => oauth_token_secret})
+      @access_token = OAuth::AccessToken.from_hash(consumer, {:oauth_token => oauth_token, :oauth_token_secret => oauth_token_secret, :http_timeout => SmugmugConnector.http_timeout})
     end
   end
 

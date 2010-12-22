@@ -10,6 +10,7 @@ end
 class PhotobucketConnector
   require 'oauth/consumer'
   cattr_accessor :consumer_key, :consumer_secret
+  cattr_accessor :http_timeout
 
   API_SITE = 'http://api.photobucket.com'
   TOKEN_DIVIDER = '<//>'
@@ -43,13 +44,14 @@ class PhotobucketConnector
         :access_token_url => "http://api.photobucket.com/login/access",
         :authorize_url => "http://photobucket.com/apilogin/login",
         :http_method => :post,
-        :scheme => :query_string
+        :scheme => :query_string,
+        :http_timeout => PhotobucketConnector.http_timeout
       })
   end
 
   def create_access_token!(oauth_token, oauth_token_secret, first_time = false)
     if first_time
-      req_token = OAuth::RequestToken.from_hash(consumer, {:oauth_token => oauth_token, :oauth_token_secret => oauth_token_secret})
+      req_token = OAuth::RequestToken.from_hash(consumer, {:oauth_token => oauth_token, :oauth_token_secret => oauth_token_secret, :http_timeout => PhotobucketConnector.http_timeout})
       begin
         @access_token = req_token.get_access_token
       rescue => e
@@ -59,7 +61,7 @@ class PhotobucketConnector
         end
       end
     elsif
-      @access_token = OAuth::AccessToken.from_hash(consumer, {:oauth_token => oauth_token, :oauth_token_secret => oauth_token_secret})
+      @access_token = OAuth::AccessToken.from_hash(consumer, {:oauth_token => oauth_token, :oauth_token_secret => oauth_token_secret, :http_timeout => PhotobucketConnector.http_timeout})
       refresh_owner_info!
     end
   end
@@ -94,7 +96,9 @@ class PhotobucketConnector
     raise PhotobucketError.new(36, "An access token is needed") unless @access_token
     response = @access_token.get "#{method_name}?#{query_params.to_url_params}", query_params
     if response.code=='301' && response['location'] #PB API redirect
-      response = Net::HTTP.get_response(URI.parse(response['location']))
+     http = Net::HTTP.new(URI.parse(response['location']))
+     http.read_timeout = http.open_timeout = PhotobucketConnector.http_timeout
+     response = http.get
     end
     result = XmlSimple.xml_in(response.body) #JSON.parse(response.body)
     stat = result['status'].first.downcase

@@ -3,6 +3,8 @@ class KodakConnector
 
   REST_API_URL = 'http://www.kodakgallery.com/site/rest/v1.0'
 
+  cattr_accessor :http_timeout
+
   def initialize(token = nil)
     @auth_cookies = token
   end
@@ -18,7 +20,9 @@ class KodakConnector
   def sign_in(email, password)
     uri = URI.parse("http://www.kodakgallery.com/gallery/welcome.jsp")
     #First, retrieve a bunch of cookies for the session
-    response = Net::HTTP.get_response(uri)
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.read_timeout = http.open_timeout = KodakConnector.http_timeout
+    response = http.request_get(nil)
     incomplete_cookies = response['set-cookie']
     login_data = CGI::escape("{\"email\":\"#{email}\",\"password\":\"#{password}\"}")
     incomplete_cookies += ", ssoCookies=#{login_data}; Path=/"
@@ -43,6 +47,7 @@ class KodakConnector
   def send_request(url)
     service_uri = URI.parse("#{REST_API_URL}#{url}")
     http = Net::HTTP.new(service_uri.host, service_uri.port)
+    http.read_timeout = http.open_timeout = KodakConnector.http_timeout
     request = Net::HTTP::Get.new(service_uri.request_uri, {'cookie' => @auth_cookies})
     begin
       response = http.request(request)
