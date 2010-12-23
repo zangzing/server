@@ -24,154 +24,153 @@ ul#indicator-6 {
   padding-left: 15px;
 }
 
-/*ul.step-1-4 {*/
-  /*background-image: url("/images/bg-4step-strip-1.png");*/
-  /*background-repeat: no-repeat;*/
-/*}*/
-
-/*ul.step-2-4 {*/
-  /*background-image: url("/images/bg-4step-strip-2.png");*/
-  /*background-repeat: no-repeat;*/
-/*}*/
-
-/*ul.step-3-4 {*/
-  /*background-image: url("/images/bg-4step-strip-3.png");*/
-  /*background-repeat: no-repeat;*/
-/*}*/
-
-/*ul.step-4-4 {*/
-  /*background-image: url("/images/bg-4step-strip-4.png");*/
-  /*background-repeat: no-repeat;*/
-/*}*/
-
 ul.edit-1-4 {
-  background-image: url("/images/bg-4step-edit-1.png");
-  background-repeat: no-repeat;
+  background: url("/images/bg-4step-edit.png") no-repeat scroll 0px 0px;
 }
 
 ul.edit-2-4 {
-  background-image: url("/images/bg-4step-edit-2.png");
-  background-repeat: no-repeat;
+  background: url("/images/bg-4step-edit.png") no-repeat scroll 0px -37px;
 }
 
 ul.edit-3-4 {
-  background-image: url("/images/bg-4step-edit-3.png");
-  background-repeat: no-repeat;
+  background: url("/images/bg-4step-edit.png") no-repeat scroll 0px -74px;
 }
 ul.edit-4-4 {
-  background-image: url("/images/bg-4step-edit-4.png");
-  background-repeat: no-repeat;
+  background: url("/images/bg-4step-edit.png") no-repeat scroll 0px -111px;
 }
 
+
 ul.step-1-5 {
-  background-image: url("/images/bg-5step-strip-1.png");
-  background-repeat: no-repeat;
+    background: url("/images/bg-5step-strip.png") no-repeat scroll 0px 0px;
 }
 
 ul.step-2-5 {
-  background-image: url("/images/bg-5step-strip-2.png");
-  background-repeat: no-repeat;
+    background: url("/images/bg-5step-strip.png") no-repeat scroll 0px -37px;
 }
 
 ul.step-3-5 {
-  background-image: url("/images/bg-5step-strip-3.png");
-  background-repeat: no-repeat;
+    background: url("/images/bg-5step-strip.png") no-repeat scroll 0px -74px;
+
 }
 
 ul.step-4-5 {
-  background-image: url("/images/bg-5step-strip-4.png");
-  background-repeat: no-repeat;
+    background: url("/images/bg-5step-strip.png") no-repeat scroll 0px -111px;
 }
 
 ul.step-5-5 {
-  background-image: url("/images/bg-5step-strip-5.png");
-  background-repeat: no-repeat;
+    background: url("/images/bg-5step-strip.png") no-repeat scroll 0px -148px;
 }
 
+
 ul.edit-1-5 {
-  background-image: url("/images/bg-5step-edit-1.png");
-  background-repeat: no-repeat;
+    background: url("/images/bg-5step-edit.png") no-repeat scroll 0px 0px;
 }
 
 ul.edit-2-5 {
-  background-image: url("/images/bg-5step-edit-2.png");
-  background-repeat: no-repeat;
+    background: url("/images/bg-5step-edit.png") no-repeat scroll 0px -37px;
 }
 
 ul.edit-3-5 {
-  background-image: url("/images/bg-5step-edit-3.png");
-  background-repeat: no-repeat;
+    background: url("/images/bg-5step-edit.png") no-repeat scroll 0px -74px;
+
 }
 
 ul.edit-4-5 {
-  background-image: url("/images/bg-5step-edit-4.png");
-  background-repeat: no-repeat;
+    background: url("/images/bg-5step-edit.png") no-repeat scroll 0px -111px;
 }
 
 ul.edit-5-5 {
-  background-image: url("/images/bg-5step-edit-5.png");
-  background-repeat: no-repeat;
+    background: url("/images/bg-5step-edit.png") no-repeat scroll 0px -148px;
 }
 
+
+
+
+
 ul.step-1-6 {
-  background-image: url("/images/bg-6step-strip-1.png");
-  background-repeat: no-repeat;
+    background: url("/images/bg-6step-strip.png") no-repeat scroll 0px 0px;
 }
 
 ul.step-2-6 {
-  background-image: url("/images/bg-6step-strip-2.png");
-  background-repeat: no-repeat;
+    background: url("/images/bg-6step-strip.png") no-repeat scroll 0px -37px;
 }
 
 ul.step-3-6 {
-  background-image: url("/images/bg-6step-strip-3.png");
-  background-repeat: no-repeat;
+    background: url("/images/bg-6step-strip.png") no-repeat scroll 0px -74px;
 }
 
 ul.step-4-6 {
-  background-image: url("/images/bg-6step-strip-4.png");
-  background-repeat: no-repeat;
+    background: url("/images/bg-6step-strip.png") no-repeat scroll 0px -111px;
 }
 
 ul.step-5-6 {
-  background-image: url("/images/bg-6step-strip-5.png");
-  background-repeat: no-repeat;
+    background: url("/images/bg-6step-strip.png") no-repeat scroll 0px -148px;
 }
 
 ul.step-6-6 {
-  background-image: url("/images/bg-6step-strip-6.png");
-  background-repeat: no-repeat;
+    background: url("/images/bg-6step-strip.png") no-repeat scroll 0px -185px;
 }
 
+
+
+
+
 ul.edit-1-6 {
-  background-image: url("/images/bg-6step-edit-1.png");
-  background-repeat: no-repeat;
+    background: url("/images/bg-6step-edit.png") no-repeat scroll 0px 0px;
 }
 
 ul.edit-2-6 {
-  background-image: url("/images/bg-6step-edit-2.png");
-  background-repeat: no-repeat;
+    background: url("/images/bg-6step-edit.png") no-repeat scroll 0px -37px;
 }
 
 ul.edit-3-6 {
-  background-image: url("/images/bg-6step-edit-3.png");
-  background-repeat: no-repeat;
+    background: url("/images/bg-6step-edit.png") no-repeat scroll 0px -74px;
 }
 
 ul.edit-4-6 {
-  background-image: url("/images/bg-6step-edit-4.png");
-  background-repeat: no-repeat;
+    background: url("/images/bg-6step-edit.png") no-repeat scroll 0px -111px;
 }
 
 ul.edit-5-6 {
-  background-image: url("/images/bg-6step-edit-5.png");
-  background-repeat: no-repeat;
+    background: url("/images/bg-6step-edit.png") no-repeat scroll 0px -148px;
 }
 
 ul.edit-6-6 {
-  background-image: url("/images/bg-6step-edit-6.png");
-  background-repeat: no-repeat;
+    background: url("/images/bg-6step-edit.png") no-repeat scroll 0px -185px;
 }
+
+
+
+
+/*ul.edit-1-6 {*/
+  /*background-image: url("/images/bg-6step-edit-1.png");*/
+  /*background-repeat: no-repeat;*/
+/*}*/
+
+/*ul.edit-2-6 {*/
+  /*background-image: url("/images/bg-6step-edit-2.png");*/
+  /*background-repeat: no-repeat;*/
+/*}*/
+
+/*ul.edit-3-6 {*/
+  /*background-image: url("/images/bg-6step-edit-3.png");*/
+  /*background-repeat: no-repeat;*/
+/*}*/
+
+/*ul.edit-4-6 {*/
+  /*background-image: url("/images/bg-6step-edit-4.png");*/
+  /*background-repeat: no-repeat;*/
+/*}*/
+
+/*ul.edit-5-6 {*/
+  /*background-image: url("/images/bg-6step-edit-5.png");*/
+  /*background-repeat: no-repeat;*/
+/*}*/
+
+/*ul.edit-6-6 {*/
+  /*background-image: url("/images/bg-6step-edit-6.png");*/
+  /*background-repeat: no-repeat;*/
+/*}*/
 
 
 

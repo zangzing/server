@@ -238,32 +238,32 @@ zz.init = {
     preload_rollover_images : function(){
         //todo: is there a way to query CSS to get all these?
          //wizard buttons/tabs
-        for(var i=1;i<=4; i++){
-            var src = "/images/bg-4step-strip-" + i + ".png"
-            image_preloader.load_image(src)
-
-            var src = "/images/bg-4step-edit-" + i + ".png"
-            image_preloader.load_image(src)
-        }
-        
-        //wizard buttons/tabs
-        for(var i=1;i<=5; i++){
-            var src = "/images/bg-5step-strip-" + i + ".png"
-            image_preloader.load_image(src)
-
-            var src = "/images/bg-5step-edit-" + i + ".png"
-            image_preloader.load_image(src)
-        }
-
-        for(var i=1;i<=6; i++){
-            var src = "/images/bg-6step-strip-" + i + ".png"
-            image_preloader.load_image(src)
-
-            var src = "/images/bg-6step-edit-" + i + ".png"
-            image_preloader.load_image(src)
-        }
-
-
+//        for(var i=1;i<=4; i++){
+//            var src = "/images/bg-4step-strip-" + i + ".png"
+//            image_preloader.load_image(src)
+//
+//            var src = "/images/bg-4step-edit-" + i + ".png"
+//            image_preloader.load_image(src)
+//        }
+//
+//        //wizard buttons/tabs
+//        for(var i=1;i<=5; i++){
+//            var src = "/images/bg-5step-strip-" + i + ".png"
+//            image_preloader.load_image(src)
+//
+//            var src = "/images/bg-5step-edit-" + i + ".png"
+//            image_preloader.load_image(src)
+//        }
+//
+//        for(var i=1;i<=6; i++){
+//            var src = "/images/bg-6step-strip-" + i + ".png"
+//            image_preloader.load_image(src)
+//
+//            var src = "/images/bg-6step-edit-" + i + ".png"
+//            image_preloader.load_image(src)
+//        }
+//
+//
         for(var i=1;i<=6; i++){
             var src = "/images/wiz-num-" + i + "-on.png"
             image_preloader.load_image(src)
