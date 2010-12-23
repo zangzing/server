@@ -65,9 +65,10 @@ header {
 
 .header-button-label{
     position:absolute;
-    bottom: 3px;
+    bottom: 5px;
     width:100%;
     font-size: 1.2em;
+    text-align:center;
     
 }
 
@@ -298,7 +299,7 @@ header #account-badge img#arrow-image {
 
 .footer-button-label{
     position:relative;
-    top: 42px;
+    top: 38px;
     width:100%;
     font-size: 1.2em;
     
