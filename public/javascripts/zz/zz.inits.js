@@ -57,7 +57,7 @@ zz.init = {
                 $('#sign-in').show();
                 $('#sign-up').hide();
 
-                $('#small-drawer').animate({height: '460px', top: '53px'});
+                $('#small-drawer').animate({height: '460px', top: '56px'});
                 zz.drawer_state = zz.DRAWER_OPEN;
             }
         });
@@ -115,7 +115,7 @@ zz.init = {
             $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
                 $('#sign-in').show();
                 $('#sign-up').hide();
-                $('#small-drawer').animate({height: '460px', top: '53px'});
+                $('#small-drawer').animate({height: '460px', top: '56px'});
             });
 
 
@@ -124,7 +124,7 @@ zz.init = {
             $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
                 $('#sign-up').show();
                 $('#sign-in').hide();
-                $('#small-drawer').animate({height: '460px', top: '53px'});
+                $('#small-drawer').animate({height: '460px', top: '56px'});
             });
         });
 

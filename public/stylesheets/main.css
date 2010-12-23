@@ -57,7 +57,7 @@ header {
   position: fixed;
   width: 950px;
   height: 60px;
-  top: 0px;
+  top: -2px;
   background-image: url("/images/bg-top-bar.png");
   background-repeat: no-repeat;
   z-index: 10;
@@ -722,7 +722,7 @@ div#cancel-drawer-btn{
 
 
 ul#small-indicator {
-  margin-left: 1px;
+  margin-left: 3px;
   width: 448px;
   overflow: hidden;
   height: 37px;
@@ -1007,7 +1007,7 @@ a.green-button{
     display: block;
     float: left;
     height: 30px;
-    margin-right: 6px;
+    /*margin-right: 6px;*/
     padding-right: 8px; /* sliding doors padding */
     cursor: pointer;
     color:#ffffff;
