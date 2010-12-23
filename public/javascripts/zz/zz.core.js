@@ -30,7 +30,7 @@ var zz = {
         $('article').animate({ opacity: opacity }, time/2 ).html('');
 
         // pull out the drawer
-        $('div#drawer').animate({ height: zz.drawer_height + 'px', top: '54px' }, time );
+        $('div#drawer').animate({ height: zz.drawer_height + 'px', top: '52px' }, time );
         //$('div#drawer').css( { height: zz.drawer_height + 'px', top: '50px' } );
         //$('div#drawer').slideDown( time );
         $('div#drawer-content').animate({ height: (zz.drawer_height - 14) + 'px'}, time );
@@ -48,7 +48,7 @@ var zz = {
 
         if(typeof(size) != 'undefined' && size < zz.drawer_height )  zz.drawer_height = size;
         
-        $('div#drawer').animate({ height: zz.drawer_height + 'px', top: '54px' }, time );
+        $('div#drawer').animate({ height: zz.drawer_height + 'px', top: '52px' }, time );
         $('div#drawer-content').animate({ height: (zz.drawer_height - 14) + 'px'}, time );
         zz.wizard.resize_scroll_body()
 
@@ -84,7 +84,7 @@ var zz = {
         zz.open_drawer(time, opacity);
 
         $('#tab-content').load(url, function(){
-            $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 54) + 'px'});
+            $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 52) + 'px'});
             funct();
         });
     }

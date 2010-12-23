@@ -276,7 +276,7 @@ zz.init = {
 
 
         //toolbar buttons
-        image_preloader.load_image("/images/btn-sign-in-on.png");
+//        image_preloader.load_image("/images/btn-sign-in-on.png");
 
         //new album type rollover
         image_preloader.load_image("/images/bg-album-type-selected.png");
