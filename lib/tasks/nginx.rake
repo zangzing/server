@@ -1,5 +1,5 @@
 namespace :nginx do
-    desc "Drop DB and fill it with sample test data"
+    desc "Nginx web server front end"
     task :run  do
        sh 'script/nginx'
     end

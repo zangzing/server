@@ -39,6 +39,7 @@ module Server
     #This is actionmailer default config
     config.action_mailer.delivery_method = :sendmail
     config.action_mailer.default_url_options = {:host => config.application_host }
+    config.action_mailer.sendmail_settings = {:arguments => '-i'} # workaround for sSMTP bug not accepting -t option
 
     config.active_support.deprecation = :log
 
