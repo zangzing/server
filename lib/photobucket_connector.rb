@@ -96,9 +96,10 @@ class PhotobucketConnector
     raise PhotobucketError.new(36, "An access token is needed") unless @access_token
     response = @access_token.get "#{method_name}?#{query_params.to_url_params}", query_params
     if response.code=='301' && response['location'] #PB API redirect
-     http = Net::HTTP.new(URI.parse(response['location']))
+     uri = URI.parse(response['location'])
+     http = Net::HTTP.new(uri.host, uri.port)
      http.read_timeout = http.open_timeout = PhotobucketConnector.http_timeout
-     response = http.get
+     response = http.get("#{uri.path}?#{uri.query}")
     end
     result = XmlSimple.xml_in(response.body) #JSON.parse(response.body)
     stat = result['status'].first.downcase
