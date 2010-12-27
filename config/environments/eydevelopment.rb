@@ -15,5 +15,5 @@ Server::Application.configure do
   config.action_controller.perform_caching             = true
 
     # Enable threaded mode
-  config.threadsafe!
+#  config.threadsafe!
 end

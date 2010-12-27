@@ -78,7 +78,12 @@
                     maxWidth:280,
                     maxHeight:280,
                     allowDelete:true,
-                    caption: "This is a photo caption"
+                    caption: "This is a photo caption",
+                    onDelete:function(){
+                        alert('delete ' + photo.src);
+                    },
+                    allowEditCaption:true,
+
                 });
             });
 

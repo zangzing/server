@@ -9,6 +9,8 @@
             maxHeight:100,
             maxWidth:100,
             caption:null,
+            allowEditCaption:false,
+            onChangeCaption:jQuery.noop,
             src:null,
             rolloverSrc:null
         },
@@ -27,8 +29,9 @@
             html += '</div>';
             
             self.wrapperElement = $(html);
-            self.imageElement = self.wrapperElement.find('img.photo-image');
-
+            self.imageElement = self.wrapperElement.find('.photo-image');
+            self.captionElement = self.wrapperElement.find('.photo-caption');
+            
             self.imageElement.css({
                 width: self.options.maxWidth,
                 height: self.options.maxHeight,
@@ -92,11 +95,19 @@
             self.imageObject.src = self.options.src;
 
 
+            //delete
+            if(self.options.allowDelete){
+                self.wrapperElement.find('.photo-delete-button').click(function(){
+                    self.options.onDelete();
+                })
+            };
 
-
-
-
-
+            if(self.options.allowEditCaption){
+                var clickCaptionHandler = function(){
+                   self.captionElement.html('<form><input type="text"></form>');
+                   self.captionElement.find('input').focus(); 
+                });
+            }
 
         },
 
