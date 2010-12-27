@@ -9,8 +9,8 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
         :name => album[:name],
         :type => 'folder',
         :id  => album_path,
-        :open_url => photobucket_folders_path(:album_path => album_path),
-        :add_url  => photobucket_folders_path(:album_path => album_path, :action => :import)
+        :open_url => photobucket_path(:album_path => album_path),
+        :add_url  => photobucket_path(:album_path => album_path, :action => :import)
       }
     end
     (album_contents[:media] || []).each do |media|
@@ -21,7 +21,7 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
         :type => 'photo',
         :thumb_url => media[:thumb].first,
         :screen_url => media[:thumb].first,
-        :add_url => photobucket_folders_path({:photo_path => CGI::escape(media[:url].first), :action => 'import_photo'}),
+        :add_url => photobucket_path({:photo_path => CGI::escape(media[:url].first), :action => 'import_photo'}),
         :source_guid => make_source_guid(media[:url].first)
       }
     end

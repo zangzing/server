@@ -174,7 +174,8 @@ Server::Application.routes.draw do
     match '/photobucket/sessions/new' => 'photobucket_sessions#new', :as => :new_photobucket_session
     match '/photobucket/sessions/create' => 'photobucket_sessions#create', :as => :create_photobucket_session
     match '/photobucket/sessions/destroy' => 'photobucket_sessions#destroy', :as => :destroy_photobucket_session
-    match '/photobucket/folders/:action' => 'photobucket_folders#index', :as => :photobucket_folders
+    match '/photobucket/folders' => 'photobucket_folders#index', :as => :photobucket_folders
+    match '/photobucket/folders/:action' => 'photobucket_folders', :as => :photobucket
 
     #zangzing
     match '/zangzing/folders/:zz_album_id/photos.:format' => 'zangzing_photos#index', :as => :zangzing_photos
