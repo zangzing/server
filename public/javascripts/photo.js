@@ -150,7 +150,7 @@
 
 
                 drop: function(event, ui){
-                    $('.photo-droppable-marker').hide();
+//                    $('.photo-droppable-marker').hide();
 
                     self.element.animate({
                         'margin-left':'0px',
