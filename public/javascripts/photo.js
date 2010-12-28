@@ -13,7 +13,8 @@
             onChangeCaption:jQuery.noop,
             src:null,
             rolloverSrc:null,
-            scrollContainer:null
+            scrollContainer:null,
+            onClick:jQuery.noop
         },
 
         _create: function() {
@@ -24,10 +25,7 @@
             html += '<div class="photo-droppable"><div class="photo-droppable-marker"></div></div>'
             html += '<div class="photo-border">'
             html += '<img class="photo-image" src="/images/bg-blk-75.png">';
-
-            if(self.options.allowDelete){
-                html += '<img class="photo-delete-button" src="/images/btn-delete-photo.png">';
-            }
+            html += '<img class="photo-delete-button" src="/images/btn-delete-photo.png">';
             html += '<div class="photo-caption">' + self.options.caption +'</div>';
             html += '</div>';
 
@@ -104,6 +102,11 @@
             self.imageObject.src = self.options.src;
 
 
+            //click
+//            self.imageElement.click(function(event){
+//                self.options.onClick(event);
+//            })
+
             //draggable
             this.borderElement.draggable({
                 start: function(){
@@ -122,7 +125,7 @@
 
             //droppable
             this.droppableElement.droppable({
-                tolerance: 'pointer', 
+                tolerance: 'pointer',
 
                 over: function(event){
                     self.droppableMarkerElement.show();
@@ -130,10 +133,10 @@
                 out: function(){
                     self.droppableMarkerElement.hide();
                 },
-                
+
                 drop: function(event, ui){
                     $('.photo-droppable-marker').hide();
-                    
+
 
                     var droppedPhotoContainer = ui.draggable.parent().data().zz_photo.element;
                     if(droppedPhotoContainer !== self){
@@ -155,7 +158,7 @@
                         clone.animate({width: 0},500, function(){
                             clone.remove();
                         });
-                        
+
 
                     }
                 }
@@ -171,7 +174,7 @@
                         self.captionElement.hide();
                         self.deleteButtonElement.hide();
                         self.borderElement.hide("scale", {}, 300, function(){
-                           self.element.remove();
+                            self.element.remove();
                         });
                     }
                 });
@@ -181,49 +184,8 @@
             //edit caption
             var isEditingCaption = false;
             if(self.options.allowEditCaption){
-                self.captionElement.click(function(){
-                    if(!isEditingCaption){
-                        isEditingCaption = true;
-
-                        var textBoxElement = $('<input type="text">');
-                        self.captionElement.html(textBoxElement);
-
-                        textBoxElement.val(self.options.caption);
-                        textBoxElement.focus();
-                        textBoxElement.select();
-
-                        textBoxElement.blur(function(){
-                            var newCaption = textBoxElement.val()
-                            if(newCaption !== self.options.caption){
-                                self.options.caption = newCaption
-                                self.options.onChangeCaption(newCaption);
-                            }
-                            self.captionElement.html(newCaption);
-                            isEditingCaption = false;
-
-                        });
-
-                        textBoxElement.keydown(function(event){
-                            if (event.which === 13) {  //enter key
-                                console.log('enter');
-                                textBoxElement.blur();
-                            }
-                            else if(event.which === 9){ //tab key
-                                if(event.shiftKey){
-                                    console.log('shift tab');
-                                    textBoxElement.blur();
-                                    //todo: jump to previous caption
-                                }
-                                else{
-                                    console.log('tab');
-
-                                    textBoxElement.blur();
-                                    //todo: jump to next caption
-                                }
-
-                            }
-                        });
-                    }
+                self.captionElement.click(function(event){
+                    self.editCaption();
                 });
             }
         },
@@ -231,7 +193,55 @@
 
 
         editCaption: function(){
-            this.captionElement.click();   
+            var self = this;
+
+            if(!self.isEditingCaption){
+                self.isEditingCaption = true;
+
+                var textBoxElement = $('<input type="text">');
+                self.captionElement.html(textBoxElement);
+
+                textBoxElement.val(self.options.caption);
+                textBoxElement.focus();
+                textBoxElement.select();
+
+                textBoxElement.blur(function(){
+                    var newCaption = textBoxElement.val()
+                    if(newCaption !== self.options.caption){
+                        self.options.caption = newCaption
+                        self.options.onChangeCaption(newCaption);
+                    }
+                    self.captionElement.html(newCaption);
+                    self.isEditingCaption = false;
+
+                });
+
+                textBoxElement.keydown(function(event){
+
+                    console.log(event);
+
+                    if (event.which == 13) {  //enter key
+                        console.log('enter');
+                        textBoxElement.blur();
+                        return false;
+                    }
+                    else if(event.which == 9){ //tab key
+                        if(event.shiftKey){
+                            console.log('tab');
+                            textBoxElement.blur();
+                            self.element.prev().data().zz_photo.editCaption();
+                        }
+                        else{
+                            console.log('shift + enter');
+                            textBoxElement.blur();
+                            self.element.next().data().zz_photo.editCaption();
+                        }
+                        event.stopPropagation();
+                        return false;
+                    }
+                });
+            }
+
         },
 
         destroy: function() {
