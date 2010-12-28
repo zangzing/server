@@ -113,9 +113,10 @@
 
             $.each(photos,function(index, photo){
                 $('<div class="cell"></div>').appendTo('body').zz_photo({
-                    src: photo.src,
-                    maxWidth:150,
-                    maxHeight:150,
+                    previewSrc: photo.src.replace('_m.jpg','_t.jpg'),
+                    src: photo.src.replace('_m.jpg','_m.jpg'),
+                    maxWidth:120,
+                    maxHeight:120,
                     allowDelete:true,
                     caption: "This is a photo caption",
                     onDelete:function(){
@@ -125,7 +126,8 @@
                     allowEditCaption:true,
                     onChangeCaption:function(newCaption){
 //                        alert('caption changed to ' + newCaption);
-                    }
+                    },
+                    scrollContainer: window
 
                 });
             });

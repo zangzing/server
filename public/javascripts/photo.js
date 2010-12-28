@@ -12,8 +12,9 @@
             allowEditCaption:false,
             onChangeCaption:jQuery.noop,
             src:null,
-            rolloverSrc:null,
+            previewSrc:null,
             scrollContainer:null,
+            lazyLoadThreshold:0,
             onClick:jQuery.noop
         },
 
@@ -62,6 +63,12 @@
             });
 
 
+            //load image
+            var initialSrc = self.options.src;
+
+            if(self.options.previewSrc){
+                initialSrc= self.options.previewSrc;
+            }
 
             self.imageObject = new Image();
             self.imageObject.onload = function(){
@@ -96,10 +103,33 @@
                     height: wrapperHeight
                 });
 
-                self.imageElement.attr("src",self.options.src);
+                self.imageElement.attr("src", initialSrc);
+
+
+                //if we are visible, show the full version
+                if(self._inLazyLoadRegion()){
+                    self.imageElement.attr("src", self.options.src);
+                }
+                
             };
 
-            self.imageObject.src = self.options.src;
+            self.imageObject.src = initialSrc;
+
+
+            //bind lazy loader to scroll container
+            //todo: may want to have delegate handle the timer so we don't have lots and lots of timers running
+            if(self.options.scrollContainer){
+                var timer;
+                $(self.options.scrollContainer).scroll(function(){
+                    clearTimeout(timer);
+                    if(self._inLazyLoadRegion()){
+                        timer = setTimeout(function(){
+                            self.imageElement.attr("src", self.options.src);
+                        },300);
+                    }
+                });
+            }
+
 
 
 
@@ -214,6 +244,52 @@
             }
         },
 
+        _inLazyLoadRegion: function(){
+            return (!this._belowView(this.element, this.options.scrollContainer,this.options.lazyLoadThreshold) &&
+                    !this._rightOfView(this.element, this.options.scrollContainer,this.options.lazyLoadThreshold) &&
+                    !this._aboveView(this.element, this.options.scrollContainer,this.options.lazyLoadThreshold) &&
+                    !this._leftOfView(this.element, this.options.scrollContainer,this.options.lazyLoadThreshold)
+                    );
+
+
+
+        },
+
+        _belowView : function(element, container, threshold) {
+            if (container === undefined || container === window) {
+                var fold = $(window).height() + $(window).scrollTop();
+            } else {
+                var fold = $(container).offset().top + $(container).height();
+            }
+            return fold <= $(element).offset().top - threshold;
+        },
+
+        _rightOfView : function(element, container, threshold) {
+            if (container === undefined || container === window) {
+                var fold = $(window).width() + $(window).scrollLeft();
+            } else {
+                var fold = $(container).offset().left + $(container).width();
+            }
+            return fold <= $(element).offset().left - threshold;
+        },
+
+        _aboveView : function(element, container, threshold) {
+            if (container === undefined || container === window) {
+                var fold = $(window).scrollTop();
+            } else {
+                var fold = $(container).offset().top;
+            }
+            return fold >= $(element).offset().top + threshold  + $(element).height();
+        },
+
+        _leftOfView : function(element, container, threshold) {
+            if (container === undefined || container === window) {
+                var fold = $(window).scrollLeft();
+            } else {
+                var fold = $(container).offset().left;
+            }
+            return fold >= $(element).offset().left + threshold + $(element).width();
+        },
 
 
         editCaption: function(){
