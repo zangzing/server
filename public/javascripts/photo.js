@@ -132,16 +132,31 @@
                 },
                 
                 drop: function(event, ui){
+                    $('.photo-droppable-marker').hide();
+                    
+
                     var droppedPhotoContainer = ui.draggable.parent().data().zz_photo.element;
                     if(droppedPhotoContainer !== self){
                         var width = droppedPhotoContainer.width();
-                        droppedPhotoContainer.hide();
+                        var clone = droppedPhotoContainer.clone();
+
+
                         droppedPhotoContainer.children().hide();
                         droppedPhotoContainer.css({width:'0px'})
+
+                        clone.insertBefore(droppedPhotoContainer);
+
+
                         droppedPhotoContainer.insertBefore(self.element);
                         droppedPhotoContainer.animate({width: width},500, function(){
                             droppedPhotoContainer.children().fadeIn('fast');
                         });
+
+                        clone.animate({width: 0},500, function(){
+                            clone.remove();
+                        });
+                        
+
                     }
                 }
 
