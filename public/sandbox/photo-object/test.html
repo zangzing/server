@@ -10,14 +10,38 @@
             float:left;
             width:300px;
             height:300px;
+            /*border:1px solid black;*/
+            position: relative;
         }
 
-        .photo-wrapper{
+        .photo-droppable{
+            position:absolute;
+            left:-50px;
+            height:100px;
+            width:100px;
+            vertical-align: center;
+            background-color: transparent;
+            z-index:-1;
+        }
+
+
+        .photo-droppable-marker{
+            position:absolute;
+            top:0px;
+            left:48px;
+            width:5px;
+            background-color: #FDD042;
+            height:100%;
+            display:none;
+        }
+
+
+        .photo-border{
             box-shadow: 0px 0px 5px #767676;
             -webkit-box-shadow: 0px 0px 5px #767676;
             -moz-box-shadow: 0px 0px 5px #767676;
             -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=135, Color='#767676')";
-            position:relative;
+            position:absolute;
             cursor: pointer;
             padding:0px;
             border:1px solid #7a7a7a;
@@ -36,8 +60,9 @@
             display:none;
         }
 
-        .photo-wrapper:hover .photo-delete-button{
+        .photo-border:hover .photo-delete-button{
             display:block;
+            z-index:3000;
         }
 
         .photo-delete-button:hover {
@@ -51,10 +76,20 @@
             position:absolute;
             bottom:5px;
             left:5px;
+            right:5px;
             background-image: url("/images/bg-blk-75.png");
             display:block;
+            padding:5px;
+            height:20px;
         }
 
+        .photo-caption input{
+            position:absolute;
+            left:0px;
+            right:0px;
+            /*top:2px;*/
+
+        }
 
     </style>
 
@@ -81,9 +116,12 @@
                     caption: "This is a photo caption",
                     onDelete:function(){
                         alert('delete ' + photo.src);
+                        return true;
                     },
                     allowEditCaption:true,
-
+                    onChangeCaption:function(newCaption){
+                        alert('caption changed to ' + newCaption);  
+                    }
                 });
             });
 
