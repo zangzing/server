@@ -115,7 +115,7 @@
 
                 },
                 revert: true,
-                revertDuration:100,
+                revertDuration:400,
                 zIndex: 2700,
                 opacity:0.25
             });
@@ -125,14 +125,41 @@
                 tolerance: 'pointer',
 
                 over: function(event){
-                    self.droppableMarkerElement.show();
+//                    self.droppableMarkerElement.show();
+                    self.element.animate({
+                        'margin-left':'20px',
+                        'margin-right':'-20px'
+                    },100);
+                    self.element.prev().animate({
+                        'margin-left':'-20px',
+                        'margin-right':'20px'
+                    },100)
                 },
                 out: function(){
-                    self.droppableMarkerElement.hide();
+//                    self.droppableMarkerElement.hide();
+                    self.element.animate({
+                        'margin-left':'0px',
+                        'margin-right':'0px'
+                    },100);
+                    self.element.prev().animate({
+                        'margin-left':'0px',
+                        'margin-right':'0px'
+                    },100)
+
                 },
+
 
                 drop: function(event, ui){
                     $('.photo-droppable-marker').hide();
+
+                    self.element.animate({
+                        'margin-left':'0px',
+                        'margin-right':'0px'
+                    },100);
+                    self.element.prev().animate({
+                        'margin-left':'0px',
+                        'margin-right':'0px'
+                    },100)
 
 
                     var droppedPhotoContainer = ui.draggable.parent().data().zz_photo.element;
