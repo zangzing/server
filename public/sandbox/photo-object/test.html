@@ -8,8 +8,8 @@
     <style type="text/css" id="page-css">
         .cell{
             float:left;
-            width:180px;
-            height:180px;
+            width:400px;
+            height:400px;
             /*border:1px solid black;*/
             position: relative;
         }
@@ -114,8 +114,8 @@
             $.each(photos,function(index, photo){
                 $('<div class="cell"></div>').appendTo('body').zz_photo({
                     src: photo.src,
-                    maxWidth:150,
-                    maxHeight:150,
+                    maxWidth:350,
+                    maxHeight:350,
                     allowDelete:true,
                     caption: "This is a photo caption",
                     onDelete:function(){

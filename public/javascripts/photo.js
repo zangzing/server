@@ -218,23 +218,30 @@
 
                 textBoxElement.keydown(function(event){
 
-                    console.log(event);
 
                     if (event.which == 13) {  //enter key
-                        console.log('enter');
                         textBoxElement.blur();
                         return false;
                     }
                     else if(event.which == 9){ //tab key
                         if(event.shiftKey){
-                            console.log('tab');
                             textBoxElement.blur();
-                            self.element.prev().data().zz_photo.editCaption();
+
+                            if(self.element.prev().length !== 0){
+                                self.element.prev().data().zz_photo.editCaption();
+                            }
+                            else{
+                                self.element.parent().children().last().data().zz_photo.editCaption();
+                            }
                         }
                         else{
-                            console.log('shift + enter');
                             textBoxElement.blur();
-                            self.element.next().data().zz_photo.editCaption();
+                            if(self.element.next().length !== 0){
+                                self.element.next().data().zz_photo.editCaption();
+                            }
+                            else{
+                                self.element.parent().children().first().data().zz_photo.editCaption();
+                            }
                         }
                         event.stopPropagation();
                         return false;
