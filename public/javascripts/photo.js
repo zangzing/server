@@ -102,10 +102,7 @@
             self.imageObject.src = self.options.src;
 
 
-            //click
-//            self.imageElement.click(function(event){
-//                self.options.onClick(event);
-//            })
+
 
             //draggable
             this.borderElement.draggable({
