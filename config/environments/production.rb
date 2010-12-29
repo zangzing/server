@@ -26,5 +26,5 @@ Server::Application.configure do
   config.action_mailer.delivery_method = :sendmail
 
   # Enable threaded mode
-  # config.threadsafe!
+  config.threadsafe!
 end
