@@ -6,8 +6,8 @@
             onDelete:jQuery.noop,
             allowRename: false,
             onRename:jQuery.noop,
-            maxHeight:100,
-            maxWidth:100,
+            maxHeight:120,
+            maxWidth:120,
             caption:null,
             allowEditCaption:false,
             onChangeCaption:jQuery.noop,
@@ -68,72 +68,35 @@
             var wrapperWidth = self.options.maxWidth + 10;
             var wrapperHeight = self.options.maxHeight + 10;
 
+//            self.borderElement.css({
+//                position: "relative",
+//                top: (this.element.height() - wrapperWidth) / 2,
+//                left: (this.element.width() - wrapperHeight) / 2,
+//                width: wrapperWidth,
+//                height: wrapperHeight
+//            })
+
+
             self.borderElement.css({
                 position: "relative",
-                top: (this.element.height() - wrapperWidth) / 2,
-                left: (this.element.width() - wrapperHeight) / 2,
+                top: (parseInt(self.element.css('height')) - wrapperHeight) / 2,
+                left: (parseInt(self.element.css('width')) - wrapperWidth) / 2,
                 width: wrapperWidth,
                 height: wrapperHeight
-            })
-
-            self.droppableElement.css({
-                top: (this.element.height() - Math.floor(self.options.maxHeight * .75) ) / 2,
-                height: Math.floor(self.options.maxHeight * .75)
             });
 
 
-            //load image
-            var initialSrc = self.options.src;
-
-            if(self.options.previewSrc){
-                initialSrc= self.options.previewSrc;
-            }
-
-            self.imageObject = new Image();
-            self.imageObject.onload = function(){
-
-                var height;
-                var width;
-
-                if(self.imageObject.width >= self.imageObject.height){
-                    width = self.options.maxWidth;
-                    height = self.imageObject.height * (self.options.maxWidth / self.imageObject.width);
-                }
-                else{
-                    width = self.imageObject.width * (self.options.maxHeight / self.imageObject.height);
-                    height = self.options.maxHeight;
-
-                }
-
-                self.imageElement.css({
-                    width: width,
-                    height: height
-                });
+            self.droppableElement.css({
+                top: (parseInt(this.element.css('height')) - Math.floor(self.options.maxHeight * .75) ) / 2,
+                height: Math.floor(self.options.maxHeight * .75),
+                width: Math.floor(self.options.maxHeight * .5),
+                left: -1* Math.floor(self.options.maxHeight * .5)/2 
+            });
 
 
-                var wrapperWidth = width + 10;
-                var wrapperHeight = height + 10;
-
-                self.borderElement.css({
-                    position: "relative",
-                    top: (self.element.height() - wrapperHeight) / 2,
-                    left: (self.element.width() - wrapperWidth) / 2,
-                    width: wrapperWidth,
-                    height: wrapperHeight
-                });
-
-                self.imageElement.attr("src", initialSrc);
 
 
-                //if we are visible, show the full version
-                if(self._inLazyLoadRegion()){
-                    self.imageElement.attr("src", self.options.src);
-                }
-                
-            };
-
-            self.imageObject.src = initialSrc;
-
+            self.loadIfVisible();
 
             //bind lazy loader to scroll container
             //todo: may want to have delegate handle the timer so we don't have lots and lots of timers running
@@ -143,8 +106,8 @@
                     clearTimeout(timer);
                     if(self._inLazyLoadRegion()){
                         timer = setTimeout(function(){
-                            self.imageElement.attr("src", self.options.src);
-                        },300);
+                            self._loadImage();
+                        },100);
                     }
                 });
             }
@@ -264,6 +227,71 @@
                 });
             }
         },
+
+        loadIfVisible: function(){
+            var self = this;
+            if(self._inLazyLoadRegion()){
+                self._loadImage();
+            }
+
+        },
+
+        _loadImage : function(){
+            var self = this;
+
+            var initialSrc = self.options.src;
+
+            if(self.options.previewSrc){
+                initialSrc= self.options.previewSrc;
+            }
+
+
+            self.imageObject = new Image();
+
+            self.imageObject.onload = function(){
+
+                var height;
+                var width;
+
+                if(self.imageObject.width >= self.imageObject.height){
+                    width = self.options.maxWidth;
+                    height = self.imageObject.height * (self.options.maxWidth / self.imageObject.width);
+                }
+                else{
+                    width = self.imageObject.width * (self.options.maxHeight / self.imageObject.height);
+                    height = self.options.maxHeight;
+
+                }
+
+                self.imageElement.css({
+                    width: width,
+                    height: height
+                });
+
+
+                var wrapperWidth = width + 10;
+                var wrapperHeight = height + 10;
+
+
+                self.borderElement.css({
+                    position: "relative",
+                    top: (parseInt(self.element.css('height')) - wrapperHeight) / 2,
+                    left: (parseInt(self.element.css('width')) - wrapperWidth) / 2,
+                    width: wrapperWidth,
+                    height: wrapperHeight
+                });
+
+                //show the small version
+                self.imageElement.attr("src", initialSrc);
+
+                //show the full version
+                self.imageElement.attr("src", self.options.src);
+
+            };
+
+            self.imageObject.src = initialSrc;
+        },
+
 
         _inLazyLoadRegion: function(){
             return (!this._belowView(this.element, this.options.scrollContainer,this.options.lazyLoadThreshold) &&
