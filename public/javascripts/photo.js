@@ -46,6 +46,25 @@
             });
 
 
+
+
+
+            //click
+            self.imageElement.mousedown(function(mouseDownEvent){
+                var mouseUpHandler = function(mouseUpEvent){
+                    if(mouseDownEvent.pageX === mouseUpEvent.pageX && mouseDownEvent.pageY === mouseUpEvent.pageY){
+                        self.options.onClick(mouseUpEvent);
+                    }
+                    self.imageElement.unbind('mouseup', mouseUpHandler);
+                };
+                self.imageElement.mouseup(mouseUpHandler);
+
+            });
+
+
+
+
+
             var wrapperWidth = self.options.maxWidth + 10;
             var wrapperHeight = self.options.maxHeight + 10;
 
@@ -134,6 +153,7 @@
 
 
 
+
             //draggable
             this.borderElement.draggable({
                 start: function(){
@@ -147,8 +167,7 @@
                 revert: true,
                 revertDuration:400,
                 zIndex: 2700,
-                opacity:0.25,
-
+                opacity:0.25
             });
 
             //droppable
