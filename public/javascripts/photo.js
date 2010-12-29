@@ -198,7 +198,6 @@
                         var width = droppedPhotoContainer.width();
                         var clone = droppedPhotoContainer.clone();
 
-
                         droppedPhotoContainer.children().hide();
                         droppedPhotoContainer.css({width:'0px'})
 
@@ -229,7 +228,9 @@
                         self.captionElement.hide();
                         self.deleteButtonElement.hide();
                         self.borderElement.hide("scale", {}, 300, function(){
-                            self.element.remove();
+                            self.element.animate({width:0},500, function(){
+                                self.element.remove();
+                            })
                         });
                     }
                 });
