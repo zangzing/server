@@ -147,7 +147,8 @@
                 revert: true,
                 revertDuration:400,
                 zIndex: 2700,
-                opacity:0.25
+                opacity:0.25,
+
             });
 
             //droppable
