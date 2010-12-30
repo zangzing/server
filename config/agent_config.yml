@@ -12,24 +12,32 @@ agents:
       '6.5':
         check: OK
       default:
-        check: OK
+        check: update
+        update_type: optional
         check_interval: 1800
+        url: https://s3.amazonaws.com/zzagent/ZangZing-Setup-v0.001-251.pkg
+        version: v0.001-251
+        message: This is the one you really cant miss
     win32:
       '5.3':
         check: update
-        type: required
+        update_type: required
         url: http://www.keep-the-drama-for-your-mama.com/the53source.exe
         url_readme: http://www.keep-the-drama-for-your-mama.com/the53readme.txt
         message: This is the one you really cant miss
       '6.1':
         check: update
-        type: optional
+        update_type: optional
         url: http://www.keep-the-drama-for-your-mama.com/the61source.exe
         url_readme: http://www.keep-the-drama-for-your-mama.com/the61readme.txt
         message: This is the one you really cant miss
       default:
-        check: OK
-        check_interval: 1800
+          check: update
+          update_type: optional
+          check_interval: 1800
+          url: https://s3.amazonaws.com/zzagent/ZangZing-Setup-v0.001-251.exe
+          version: v0.001-251
+          message: This is the one you really cant miss
     default:
       default:
         check: OK
