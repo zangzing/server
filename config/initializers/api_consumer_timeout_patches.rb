@@ -111,7 +111,7 @@ module OAuth
         http_object = Net::HTTP.new(our_uri.host, our_uri.port, proxy_uri.host, proxy_uri.port, proxy_uri.user, proxy_uri.password)
       end
       http_object.use_ssl = (our_uri.scheme == 'https')
-      http.read_timeout = http.open_timeout = @options[:http_timeout] if @options[:http_timeout]
+      http_object.read_timeout = http_object.open_timeout = @options[:http_timeout] if @options[:http_timeout]
 
       if @options[:ca_file] || CA_FILE
         http_object.ca_file = @options[:ca_file] || CA_FILE
