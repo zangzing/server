@@ -45,6 +45,9 @@ group :test do
   gem 'launchy'
   gem 'rspec-rails', '>= 1.3.2' 
   gem 'factory_girl'
+  gem 'selenium'
+  gem 'selenium-client'
+  gem 'zip'
 end
 
 group :production do
