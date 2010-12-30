@@ -3,13 +3,15 @@ SERVICE_CALL_TIMEOUT = YAML.load(File.read("#{Rails.root}/config/service_timeout
 
 #Facebook (HyperGraph)
 class HyperGraph
-private
-  def initialize_http_connection
-    http = Net::HTTP.new(API_URL, 443)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    http.read_timeout = http.open_timeout = SERVICE_CALL_TIMEOUT[:facebook]
-    http
+  class << self
+    private
+    def initialize_http_connection
+      http = Net::HTTP.new(API_URL, 443)
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      http.read_timeout = http.open_timeout = SERVICE_CALL_TIMEOUT[:facebook]
+      http
+    end
   end
 end
 
