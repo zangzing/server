@@ -1,13 +1,14 @@
 #set up in api_consumer_timeout_patches.rb
 
-:google: 3
+:google: 5
 #:picasa: 3 #google used
-:flickr: 3
-:yahoo: 3
-:facebook: 3
-:twitter: 3
-:smugmug: 3
-:photobucket: 3
-:shutterfly: 3
-:kodak: 3
-:mslive: 3
+:flickr: 5
+:yahoo: 5
+:facebook: 5
+:twitter: 5
+:smugmug: 5
+:photobucket: 5
+:shutterfly: 5
+:kodak: 5
+:mslive: 5
+:mslive: 5
