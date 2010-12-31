@@ -15,8 +15,8 @@ agents:
         check: update
         update_type: optional
         check_interval: 1800
-        url: https://s3.amazonaws.com/zzagent/ZangZing-Setup-v0.001-251.pkg
-        version: v0.001-251
+        url: https://s3.amazonaws.com/zzagent/ZangZing-Setup-v0.001-253.pkg
+        version: v0.001-253
         message: This is the one you really cant miss
     win32:
       '5.3':
@@ -35,8 +35,8 @@ agents:
           check: update
           update_type: optional
           check_interval: 1800
-          url: https://s3.amazonaws.com/zzagent/ZangZing-Setup-v0.001-251.exe
-          version: v0.001-251
+          url: https://s3.amazonaws.com/zzagent/ZangZing-Setup-v0.001-253.exe
+          version: v0.001-253
           message: This is the one you really cant miss
     default:
       default:
