@@ -110,7 +110,7 @@
 
 
             //draggable
-            this.borderElement.draggable({
+            this.element.draggable({
                 start: function(){
                     $(this).css({'z-index':1000});
                 },
@@ -119,7 +119,7 @@
                     $('.photo-droppable-marker').hide();
 
                 },
-                revert: true,
+                revert: 'invalid',
                 revertDuration:400,
                 zIndex: 2700,
                 opacity:0.25
@@ -127,29 +127,27 @@
 
             //droppable
             this.droppableElement.droppable({
-                tolerance: 'pointer',
+                tolerance: 'intersect',
 
                 over: function(event){
-//                    self.droppableMarkerElement.show();
-                    self.element.animate({
-                        'margin-left':'20px',
-                        'margin-right':'-20px'
-                    },100);
-                    self.element.prev().animate({
-                        'margin-left':'-20px',
-                        'margin-right':'20px'
-                    },100)
+                    self._rowLeft(false).animate({
+                        left: -1 * Math.floor(self.width / 2)
+                    },300);
+
+                    self._rowRight(true).animate({
+                        left: Math.floor(self.width / 2)
+                    },300);
                 },
                 out: function(){
-//                    self.droppableMarkerElement.hide();
-                    self.element.animate({
-                        'margin-left':'0px',
-                        'margin-right':'0px'
-                    },100);
-                    self.element.prev().animate({
-                        'margin-left':'0px',
-                        'margin-right':'0px'
-                    },100)
+
+                    self._rowLeft(false).animate({
+                        left: 0
+                    },300);
+
+                    self._rowRight(true).animate({
+                        left: 0
+                    },300);
+
 
                 },
 
@@ -157,36 +155,20 @@
                 drop: function(event, ui){
 //                    $('.photo-droppable-marker').hide();
 
-                    self.element.animate({
-                        'margin-left':'0px',
-                        'margin-right':'0px'
-                    },100);
-                    self.element.prev().animate({
-                        'margin-left':'0px',
-                        'margin-right':'0px'
-                    },100)
 
 
-                    var droppedPhotoContainer = ui.draggable.parent().data().zz_photo.element;
-                    if(droppedPhotoContainer !== self){
-                        var width = droppedPhotoContainer.width();
-                        var clone = droppedPhotoContainer.clone();
+                    var droppedCell = ui.draggable.data().zz_photo.element;
 
-                        droppedPhotoContainer.children().hide();
-                        droppedPhotoContainer.css({width:'0px'})
+                    self._rowLeft(false).css({
+                        left: 0
+                    });
 
-                        clone.insertBefore(droppedPhotoContainer);
+                    self._rowRight(true).css({
+                        left: 0
+                    });
 
-
-                        droppedPhotoContainer.insertBefore(self.element);
-                        droppedPhotoContainer.animate({width: width},500, function(){
-                            droppedPhotoContainer.children().fadeIn('fast');
-                        });
-
-                        clone.animate({width: 0},500, function(){
-                            clone.remove();
-                        });
-
+                    if(droppedCell !== self){
+                        droppedCell.css({top:0, left:0}).insertBefore(self.element);
 
                     }
                 }
@@ -227,6 +209,37 @@
             }
 
         },
+
+        _rowLeft: function(includeSelf){
+            var top = this.element.position().top;
+            var sibling = this.element.prev();
+            var list = [];
+            if(includeSelf){
+                list.push(this.element[0]);
+            }
+            while(sibling.length > 0 && sibling.position().top === top){
+                list.push(sibling[0]);
+                sibling = sibling.prev();
+            }
+            return $(list);
+        },
+
+        _rowRight: function(includeSelf){
+            var top = this.element.position().top;
+            var sibling = this.element.next();
+            var list = [];
+            if(includeSelf){
+                list.push(this.element[0]);
+            }
+            while(sibling.length > 0 && sibling.position().top === top){
+                list.push(sibling[0]);
+                sibling = sibling.next();
+            }
+            return $(list);
+
+        },
+
+
 
         _loadImage : function(){
             var self = this;
