@@ -46,6 +46,9 @@
             });
 
 
+            //element is probably invisible at this point, so we need to check the css attributes
+            self.width = parseInt(self.element.css('width'));
+            self.height = parseInt(self.element.css('height'));
 
 
 
@@ -68,35 +71,24 @@
             var wrapperWidth = self.options.maxWidth + 10;
             var wrapperHeight = self.options.maxHeight + 10;
 
-//            self.borderElement.css({
-//                position: "relative",
-//                top: (this.element.height() - wrapperWidth) / 2,
-//                left: (this.element.width() - wrapperHeight) / 2,
-//                width: wrapperWidth,
-//                height: wrapperHeight
-//            })
 
 
             self.borderElement.css({
                 position: "relative",
-                top: (parseInt(self.element.css('height')) - wrapperHeight) / 2,
-                left: (parseInt(self.element.css('width')) - wrapperWidth) / 2,
+                top: (self.height - wrapperHeight) / 2,
+                left: (self.width - wrapperWidth) / 2,
                 width: wrapperWidth,
                 height: wrapperHeight
             });
 
 
             self.droppableElement.css({
-                top: (parseInt(this.element.css('height')) - Math.floor(self.options.maxHeight * .75) ) / 2,
+                top: (self.height - Math.floor(self.options.maxHeight * .75) ) / 2,
                 height: Math.floor(self.options.maxHeight * .75),
                 width: Math.floor(self.options.maxHeight * .5),
-                left: -1* Math.floor(self.options.maxHeight * .5)/2 
+                left: -1* Math.floor(self.options.maxHeight * .5)/2
             });
 
-
-
-
-            self.loadIfVisible();
 
             //bind lazy loader to scroll container
             //todo: may want to have delegate handle the timer so we don't have lots and lots of timers running
@@ -275,8 +267,8 @@
 
                 self.borderElement.css({
                     position: "relative",
-                    top: (parseInt(self.element.css('height')) - wrapperHeight) / 2,
-                    left: (parseInt(self.element.css('width')) - wrapperWidth) / 2,
+                    top: (self.height - wrapperHeight) / 2,
+                    left: (self.width - wrapperWidth) / 2,
                     width: wrapperWidth,
                     height: wrapperHeight
                 });
@@ -294,6 +286,7 @@
 
 
         _inLazyLoadRegion: function(){
+            //todo: for some reason, this method works with jquery 1.4.2 but not jquery 1.4.4 
             return (!this._belowView(this.element, this.options.scrollContainer,this.options.lazyLoadThreshold) &&
                     !this._rightOfView(this.element, this.options.scrollContainer,this.options.lazyLoadThreshold) &&
                     !this._aboveView(this.element, this.options.scrollContainer,this.options.lazyLoadThreshold) &&
