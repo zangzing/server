@@ -4,6 +4,11 @@ development:
   :app_key: dj0yJmk9YWx6d3gxZXJMbk15JmQ9WVdrOU5uRmhWVlJUTjJzbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD1iNA--
   :app_id: 6qaUTS7k
 
+perftest:
+  :consumer_secret: 44f4e5a139ef78d9ca7f35fa641b5d54b7043223
+  :app_key: dj0yJmk9YWx6d3gxZXJMbk15JmQ9WVdrOU5uRmhWVlJUTjJzbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD1iNA--
+  :app_id: 6qaUTS7k
+
 test:
   :consumer_secret: 669115f39f45f7be301dcc5443ffae67bc7d6b1c
   :app_key: dj0yJmk9TVFrMnFCZnlSeDBNJmQ9WVdrOU1rOUdiRTFtTkhNbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD1iMg--

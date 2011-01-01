@@ -126,7 +126,6 @@ class ApplicationController < ActionController::Base
       allowed = {
         :actions => ['photos#agentindex',
                      'photos#agent_create',
-                     'photos#upload',
                      'photos#upload_fast',
                      'oauth#access_token',
                      'oauth#request_token',
@@ -134,7 +133,7 @@ class ApplicationController < ActionController::Base
                      'oauth#test_request',
                      'oauth#test_session',
                      'connector/local_contacts#import',
-                     'sendgrid#import',
+                     'sendgrid#import_fast',
                      'agents#check',
                      'agents#info',
                      'agents#index']

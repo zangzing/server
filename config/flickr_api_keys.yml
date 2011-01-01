@@ -3,6 +3,10 @@ development:
   :shared_secret: b05c82999aa78f38
   :api_key: 2e7e51d6b8fa04fb33ac856484a33535
 
+perftest:
+  :shared_secret: b05c82999aa78f38
+  :api_key: 2e7e51d6b8fa04fb33ac856484a33535
+
 test:
   :shared_secret: b05c82999aa78f38
   :api_key: 2e7e51d6b8fa04fb33ac856484a33535

@@ -3,6 +3,10 @@ development:
   :shared_secret: fd095cf29564dc9711169fd657cfd51f
   :api_key: l2bd6h6GW1FcoJDGy6h31pxKMsAWjSjH
 
+peftest:
+  :shared_secret: fd095cf29564dc9711169fd657cfd51f
+  :api_key: l2bd6h6GW1FcoJDGy6h31pxKMsAWjSjH
+
 test:
   :shared_secret: fd095cf29564dc9711169fd657cfd51f
   :api_key: l2bd6h6GW1FcoJDGy6h31pxKMsAWjSjH

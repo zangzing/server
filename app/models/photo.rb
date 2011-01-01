@@ -101,17 +101,30 @@ class Photo < ActiveRecord::Base
     self.image_bucket = image.instance_variable_get("@bucket")
     self.photo_info = PhotoInfo.factory(self)
     if data = self.metadata
-      self.capture_date = (DateTime.parse(data['EXIF']['DateTimeOriginal']) rescue nil)
-      self.length = (data['EXIF']['ExifImageLength'].to_i rescue nil)
-      self.width = (data['EXIF']['ExifImageWidth'].to_i rescue nil)
-      self.orientation = (data['EXIF']['Orientation'].to_i rescue nil)
-      self.latitude = (PhotoInfo.decode_gps_coord(data['EXIF']['GPSLatitude'], data['EXIF']['GPSLatitudeRef']) rescue nil)
-      self.longitude = (PhotoInfo.decode_gps_coord(data['EXIF']['GPSLongitude'], data['EXIF']['GPSLongitudeRef']) rescue nil)
-      self.headline = (data['IPTC']['Headline'] || '') if self.headline.blank?
-      self.caption = (data['IPTC']['Caption'] || '') if self.caption.blank?
+      if exif = data["EXIF"]
+        val = exif['DateTimeOriginal']
+        self.capture_date = DateTime.parse(val) unless val.nil?
+        val = exif['ExifImageHeight']
+        self.length = val.to_i unless val.nil?
+        val = exif['ExifImageWidth']
+        self.width = val.to_i unless val.nil?
+        # 1 means horizontal, 0 vertical
+        val = exif['Orientation']
+        self.orientation = val == "Horizontal (normal)" ? 1 : 0 unless val.nil?
+        val = exif['GPSLatitude']
+        val_ref = exif['GPSLatitudeRef']
+        self.latitude = PhotoInfo.decode_gps_coord(val, val_ref) unless val.nil? || val_ref.nil?
+        val = exif['GPSLongitude']
+        val_ref = exif['GPSLongitudeRef']
+        self.longitude = PhotoInfo.decode_gps_coord(val, val_ref) unless val.nil? || val_ref.nil?
+      end
+      if iptc = data["IPTC"]
+        self.headline = (iptc['Headline'] || '') if self.headline.blank?
+        self.caption = (iptc['Caption'] || '') if self.caption.blank?
+      end
     end
     if uploading?
-        false # halts thumbnail it will be queued in upload_to S3
+        false # halts thumbnail it will be queued in upload_to S3 - not currently used due to one step process
     end
   end
 
@@ -127,25 +140,56 @@ class Photo < ActiveRecord::Base
     end
   end
 
+#GWS - short term hack to do upload and thumbnail in one step
+#due to paperclip issues
+
   #
   # Used by the workers to load the image.
   # This call cannot be private
+  #
+  #GWS - currently we are bypassing the two stage process
+  # of uploading and then thumbnail generation and upload
+  # since paperclip is not really designed to seperate out
+  # those two steps it was causing multiple uploads so we
+  # are now doing the upload and thumb generation in one step
+  # but still deferred and called from resque
   def upload_to_s3
     begin
-      self.state = 'uploading'
       self.image = local_image.to_file
-      self.save!
       self.local_image.clear
       self.local_image_path = ''
-      self.state = 'processing'
+      self.state = 'ready'
       self.save!
-      logger.debug("Upload to S3 Finished")
-      ZZ::Async::GenerateThumbnails.enqueue( self.id )
+
+      logger.debug("Upload and thumbnail generation to S3 Finished")
     rescue ActiveRecord::ActiveRecordError => ex
         logger.debug("Upload to S3 Failed"+ex)
     end
   end
 
+#  #
+#  # Used by the workers to load the image.
+#  # This call cannot be private
+#  def upload_to_s3
+#    begin
+#      self.state = 'uploading'
+#      self.image = local_image.to_file
+#      self.save!
+#      self.local_image.clear
+#      self.local_image_path = ''
+#      self.state = 'processing'
+#      self.save!
+#      logger.debug("Upload to S3 Finished")
+#      ZZ::Async::GenerateThumbnails.enqueue( self.id )
+#    rescue ActiveRecord::ActiveRecordError => ex
+#        logger.debug("Upload to S3 Failed"+ex)
+#    end
+#  end
+
+#GWS temporarily turned off - changed upload_to_s3 to do the work
+#until we decide what to do about paperclip usage
+#this caused a second full file upload and issues with bucket
+#being different due to two stage process
   def generate_thumbnails
     begin
      self.image.reprocess!
@@ -234,7 +278,7 @@ class Photo < ActiveRecord::Base
   def fast_local_image=(fast_local_params)
     # to prevent paperclip from copying the nginx tmp file onto another tmpfile
     # we use ZZ::NginxTempfile which overloads to_tempfile() and returns a file itself instead of a new tempfile.
-    if fast_local_params && fast_local_params.respond_to?('[]')
+    if fast_local_params
       #fast_local_params['original_name']
       #fast_local_params['content_type']
       self.local_image = ZZ::NginxTempfile.new( fast_local_params['filepath'])

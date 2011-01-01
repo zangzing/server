@@ -10,27 +10,32 @@ class PhotoInfo < ActiveRecord::Base
   end
   
   def self.get_image_metadata(file_name)
-    exif_tags = {}
-    iptc_tags = {}
+    exif_tags = nil
+    iptc_tags = nil
 
     begin
-      cmd = %Q[-verbose "#{file_name}"]
-      src_data = Paperclip.run('identify', cmd)
+      # tool must be in same dir as paperclip command path (or a sym link to it)
+      # the following asks exiftool to return json formatted data grouped by type
+      # and only requests EXIF and IPTC currently
+      cmd = Paperclip.options[:command_path]+"/exiftool " + %Q[-j -g -EXIF:All -IPTC:All -d "%Y-%m-%dT%H:%M:%S" "#{file_name}"]
 
-      exif_regexp = /^\s{4}exif:(\w+): (.+)$/i
-      src_data.scan(exif_regexp) do |groups|
-        exif_tags[groups[0].strip] = groups[1].strip
+      #execute the command - using paperclip seems to screw up large result sets so call directly
+      #the syntax of calling the shell command is to wrap it with back quotes `shellcommand`
+      src_data = `#{cmd}`
+      if src_data.nil?
+        raise "No data was returned from call to #{cmd}"
       end
-      fix_date_values(exif_tags)
-
-      iptc_regexp = /^\s{6}(\w+)\[(\d+,\d+)\]:(.+)$/i
-      src_data.scan(iptc_regexp) do |groups|
-        #groups[1] is a tag code, i.e. [2,25]
-        iptc_tags[groups[0].strip] = groups[2].strip
+      
+      # the exiftool -j option returns a nice and convenient json formatted result so turn into ruby object
+      metainfo = JSON.parse(src_data)
+      data_set = metainfo[0]
+      if data_set
+        # pull out the group tags that we care about
+        exif_tags = data_set["EXIF"]
+        iptc_tags = data_set["IPTC"]
       end
-      #fix_date_values(iptc_tags)
-    rescue PaperclipCommandLineError
-      raise PaperclipError, "There was an error getting metadata from #{file_name}"
+    rescue => ex
+      raise ex, "There was an error getting metadata with exiftool from #{file_name} : " + ex.to_s
     end
 
     {:EXIF => exif_tags, :IPTC => iptc_tags}

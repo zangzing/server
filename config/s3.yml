@@ -12,6 +12,9 @@ common: &common
 development:
   <<: *common
 
+perftest:
+  <<: *common
+
 test:
   <<: *common
 
