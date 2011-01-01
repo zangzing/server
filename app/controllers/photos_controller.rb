@@ -88,8 +88,10 @@ class PhotosController < ApplicationController
     if params[:fast_upload_secret] == "this-is-a-key-from-nginx" && (attachments = params[:fast_local_image]) && attachments.count == 1
       begin
         @photo = Photo.find(params[:id])
+logger.error "Upload_fast found photo"
         @album = @photo.album
         fast_local_image = {"fast_local_image" => attachments[0]} # extract only the first one
+logger.error "Upload_fast found album"
         if @photo.update_attributes(fast_local_image)
           render :json => @photo.to_json(:only =>[:id, :agent_id, :state]), :status => 200 and return
         else
@@ -105,6 +107,8 @@ class PhotosController < ApplicationController
 
       rescue Exception => ex
         #todo: make sure none of these should be 4xx errors
+#GWS - debug to figure out missing ZZ const error
+logger.error ex.backtrace.to_s
         render :json => ex.to_s, :status=>500
       end
     else
