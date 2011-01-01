@@ -61,7 +61,6 @@ Server::Application.routes.draw do
   get    '/photos/:id/edit'              => 'photos#edit',                      :as => :edit_photo
   put    '/photos/:id/edit'              => 'photos#update',                    :as => :update_photo
   delete '/photos/:id'                   => 'photos#destroy',                   :as => :destroy_photo
-  put    '/photos/:id/upload'            => 'photos#upload',                    :as => :upload_photo
   put    '/photos/:id/upload_fast'       => 'photos#upload_fast',               :as => :upload_photo_fast
   get    '/agents/:agent_id/photos'      => 'photos#agentindex',                :as => :agent_photos
   post   '/albums/:album_id/photos/agent_create.:format' => 'photos#agent_create',      :as => :agent_create
@@ -226,7 +225,7 @@ Server::Application.routes.draw do
   end # end of the namespace segment
   
   #sendgrid
-  match '/sendgrid/import' => 'sendgrid#import', :as => :sendgrid_import
+  match '/sendgrid/import_fast' => 'sendgrid#import_fast', :as => :sendgrid_import_fast
 
 
   #logs
