@@ -32,7 +32,14 @@ end
 # Load the paperclip.yml configuration file
 if defined?(Rails.root) and File.exists?("#{Rails.root}/config/paperclip.yml")
     Paperclip.options.merge!(YAML::load(ERB.new(File.read("#{Rails.root}/config/paperclip.yml")).result)[Rails.env].recursively_symbolize_keys!)
-    msg = "=> Paperclip options file loaded. command_path for ImageMagick is: "+ ( Paperclip.options[:command_path]?Paperclip.options[:command_path] : "NOT SET")
+    command_path = Paperclip.options[:command_path]
+    default_msg = ""
+    if command_path.nil?
+      default_msg = " WARNING: PATH WAS NOT SET, USING DEFAULT, MAKE SURE THIS MATCHES YOUR ENVIRONMENT"
+      command_path = "/usr/bin"
+      Paperclip.options[:command_path] = command_path
+    end
+    msg = "=> Paperclip options file loaded. command_path for ImageMagick is: " + command_path + default_msg
     Rails.logger.info msg
     puts msg
 else
