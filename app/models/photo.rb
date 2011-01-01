@@ -274,7 +274,7 @@ class Photo < ActiveRecord::Base
   end
 
 
-  # handle nginx upload_module params
+  # handle Nginx upload_module params
   def fast_local_image=(fast_local_params)
     # to prevent paperclip from copying the nginx tmp file onto another tmpfile
     # we use ZZ::NginxTempfile which overloads to_tempfile() and returns a file itself instead of a new tempfile.
