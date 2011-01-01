@@ -130,9 +130,6 @@
 
                 over: function(event, ui){
 
-//                    console.log(ui.draggable);
-//                    console.log(self.element.prev());
-
                     if(ui.draggable[0] == self.element.prev()[0]){
                         return;
                     }
@@ -186,7 +183,7 @@
                         }
 
 
-                        console.log('drag down');
+//                        console.log('drag down');
 
                     }
                     else if(droppedCell.position().top > self.element.position().top) { //drag up between rows
@@ -203,11 +200,11 @@
                             droppedCell.css({top:0, left:Math.floor(self.width / 2)}).insertBefore(self.element).animate({left:0},duration);
                         }
 
-                        console.log('drag up');
+//                        console.log('drag up');
                     }
                     else if(droppedCell.position().left < self.element.position().left){ //drag right, same row
 
-                        console.log('drag right');
+//                        console.log('drag right');
                         self._rowLeft().css({left:Math.floor(self.width / 2)}).animate({
                             left: 0
                         },duration);
@@ -235,7 +232,7 @@
                             droppedCell.css({top:0, left:-1 * Math.floor(self.width / 2)}).insertBefore(self.element).animate({left:0},duration);
                         }
 
-                        console.log('drag left');
+//                        console.log('drag left');
                     }
 
                 }
@@ -317,36 +314,8 @@
 
             self.imageObject.onload = function(){
 
-                var height;
-                var width;
 
-                if(self.imageObject.width >= self.imageObject.height){
-                    width = self.options.maxWidth;
-                    height = self.imageObject.height * (self.options.maxWidth / self.imageObject.width);
-                }
-                else{
-                    width = self.imageObject.width * (self.options.maxHeight / self.imageObject.height);
-                    height = self.options.maxHeight;
-
-                }
-
-                self.imageElement.css({
-                    width: width,
-                    height: height
-                });
-
-
-                var wrapperWidth = width + 10;
-                var wrapperHeight = height + 10;
-
-
-                self.borderElement.css({
-                    position: "relative",
-                    top: (self.height - wrapperHeight) / 2,
-                    left: (self.width - wrapperWidth) / 2,
-                    width: wrapperWidth,
-                    height: wrapperHeight
-                });
+                self._resize(1);
 
                 //show the small version
                 self.imageElement.attr("src", initialSrc);
@@ -354,10 +323,63 @@
                 //show the full version
                 self.imageElement.attr("src", self.options.src);
 
+
+//                self.borderElement.mouseover(function(){
+//                    self._resize(1.15);
+//                    self.element.css({'z-index':1000});
+//                });
+//
+//                self.borderElement.mouseout(function(){
+//                    self._resize(1);
+//                    self.element.css({'z-index':-1});
+//                })
+
+
             };
 
             self.imageObject.src = initialSrc;
         },
+
+        _resize: function(percent){
+            var self = this;
+
+            var height;
+            var width;
+
+            if(self.imageObject.width >= self.imageObject.height){
+                width = self.options.maxWidth;
+                height = self.imageObject.height * (self.options.maxWidth / self.imageObject.width);
+            }
+            else{
+                width = self.imageObject.width * (self.options.maxHeight / self.imageObject.height);
+                height = self.options.maxHeight;
+
+            }
+
+            height = Math.floor(percent * height);
+            width = Math.floor(percent * width);
+
+
+            var wrapperWidth = width + 10;
+            var wrapperHeight = height + 10;
+
+
+            self.borderElement.css({
+                top: (self.height - wrapperHeight) / 2,
+                left: (self.width - wrapperWidth) / 2,
+                width: wrapperWidth,
+                height: wrapperHeight
+            });
+
+            self.imageElement.css({
+                width: width,
+                height: height
+            });
+
+
+
+        },
+
 
 
         _inLazyLoadRegion: function(){
