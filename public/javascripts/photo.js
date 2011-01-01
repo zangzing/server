@@ -139,21 +139,21 @@
                         return;
                     }
 
-                    self._rowLeft(false).animate({
+                    self._rowLeft().animate({
                         left: -1 * Math.floor(self.width / 2)
                     },100);
 
-                    self._rowRight(true).animate({
+                    self._rowRight().add(self.element).animate({
                         left: Math.floor(self.width / 2)
                     },100);
                 },
                 out: function(){
 
-                    self._rowLeft(false).animate({
+                    self._rowLeft().animate({
                         left: 0
                     },100);
 
-                    self._rowRight(true).animate({
+                    self._rowRight().add(self.element).animate({
                         left: 0
                     },100);
 
@@ -165,21 +165,81 @@
 //                    $('.photo-droppable-marker').hide();
 
 
-
+                    var duration = 700;
                     var droppedCell = ui.draggable.data().zz_photo.element;
 
-                    self._rowLeft(false).css({left:Math.floor(self.width / 2)}).animate({
-                        left: 0
-                    },1000);
 
-                    self._rowRight(true).animate({
-                        left: 0
-                    },1000);
+                    if(droppedCell.position().top < self.element.position().top ){ //drag down between rows
 
-                    if(droppedCell !== self){
-                        droppedCell.css({top:0, left:Math.floor(self.width / 2)}).insertBefore(self.element).animate({left:0},1000);
+                        var rowLeft = self._rowLeft();
+
+                        rowLeft.slice(-1).css({left:0});
+
+                        rowLeft.slice(0,-1).css({left:Math.floor(self.width / 2)}).animate({
+                            left: 0
+                        },duration);
+
+                        self._rowRight().add(self.element).animate({
+                            left: 0
+                        },duration);
+
+                        if(droppedCell !== self){
+                            droppedCell.css({top:0, left:Math.floor(self.width / 2)}).insertBefore(self.element).animate({left:0},duration);
+                        }
+
+
+                        console.log('drag down');
 
                     }
+                    else if(droppedCell.position().top > self.element.position().top) { //drag up between rows
+
+                        self._rowLeft().css({left:Math.floor(self.width / 2)}).animate({
+                            left: 0
+                        },duration);
+
+                        self._rowRight().add(self.element).animate({
+                            left: 0
+                        },duration);
+
+                        if(droppedCell !== self){
+                            droppedCell.css({top:0, left:Math.floor(self.width / 2)}).insertBefore(self.element).animate({left:0},duration);
+                        }
+
+                        console.log('drag up');
+                    }
+                    else if(droppedCell.position().left < self.element.position().left){ //drag right, same row
+
+                        console.log('drag right');
+                        self._rowLeft().css({left:Math.floor(self.width / 2)}).animate({
+                            left: 0
+                        },duration);
+
+                        self._rowRight().add(self.element).animate({
+                            left: 0
+                        },duration);
+
+                        if(droppedCell !== self){
+                            droppedCell.css({top:0, left:Math.floor(self.width / 2)}).insertBefore(self.element).animate({left:0},duration);
+                        }
+
+                    }
+                    else{  //drag left, same row
+
+                        self._rowLeft().css({left:Math.floor(self.width / 2)}).animate({
+                            left: 0
+                        },duration);
+
+                        self._rowRight().add(self.element).animate({
+                            left: 0
+                        },duration);
+
+                        if(droppedCell !== self){
+                            droppedCell.css({top:0, left:-1 * Math.floor(self.width / 2)}).insertBefore(self.element).animate({left:0},duration);
+                        }
+
+                        console.log('drag left');
+                    }
+
                 }
 
             });
@@ -219,13 +279,10 @@
 
         },
 
-        _rowLeft: function(includeSelf){
+        _rowLeft: function(){
             var top = this.element.position().top;
             var sibling = this.element.prev();
             var list = [];
-            if(includeSelf){
-                list.push(this.element[0]);
-            }
             while(sibling.length > 0 && sibling.position().top === top){
                 list.push(sibling[0]);
                 sibling = sibling.prev();
@@ -233,13 +290,11 @@
             return $(list);
         },
 
-        _rowRight: function(includeSelf){
+        _rowRight: function(){
             var top = this.element.position().top;
             var sibling = this.element.next();
             var list = [];
-            if(includeSelf){
-                list.push(this.element[0]);
-            }
+
             while(sibling.length > 0 && sibling.position().top === top){
                 list.push(sibling[0]);
                 sibling = sibling.next();
