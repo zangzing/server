@@ -122,31 +122,40 @@
                 revert: 'invalid',
                 revertDuration:400,
                 zIndex: 2700,
-                opacity:0.25
+                opacity:0.25,
+                helper: 'clone'
             });
 
             //droppable
             this.droppableElement.droppable({
                 tolerance: 'intersect',
 
-                over: function(event){
+                over: function(event, ui){
+
+//                    console.log(ui.draggable);
+//                    console.log(self.element.prev());
+
+                    if(ui.draggable[0] == self.element.prev()[0]){
+                        return;
+                    }
+
                     self._rowLeft(false).animate({
                         left: -1 * Math.floor(self.width / 2)
-                    },300);
+                    },100);
 
                     self._rowRight(true).animate({
                         left: Math.floor(self.width / 2)
-                    },300);
+                    },100);
                 },
                 out: function(){
 
                     self._rowLeft(false).animate({
                         left: 0
-                    },300);
+                    },100);
 
                     self._rowRight(true).animate({
                         left: 0
-                    },300);
+                    },100);
 
 
                 },
@@ -159,16 +168,16 @@
 
                     var droppedCell = ui.draggable.data().zz_photo.element;
 
-                    self._rowLeft(false).css({
+                    self._rowLeft(false).css({left:Math.floor(self.width / 2)}).animate({
                         left: 0
-                    });
+                    },1000);
 
-                    self._rowRight(true).css({
+                    self._rowRight(true).animate({
                         left: 0
-                    });
+                    },1000);
 
                     if(droppedCell !== self){
-                        droppedCell.css({top:0, left:0}).insertBefore(self.element);
+                        droppedCell.css({top:0, left:Math.floor(self.width / 2)}).insertBefore(self.element).animate({left:0},1000);
 
                     }
                 }
