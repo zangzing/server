@@ -112,12 +112,10 @@
             //draggable
             this.element.draggable({
                 start: function(){
-                    $(this).css({'z-index':1000});
+                    $(this).addClass('highlighted');
                 },
                 stop: function(){
-                    //clear droppable targets
-                    $('.photo-droppable-marker').hide();
-
+                    $(this).removeClass('highlighted');
                 },
                 revert: 'invalid',
                 revertDuration:400,
