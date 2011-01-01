@@ -192,19 +192,44 @@ common: &default_settings
 
 development:
   <<: *default_settings
-  # Turn off communication to RPM service in development mode (also 
+  license_key: '8d53617e3783d347231d7874078e4cd630ea327a'
+  # Turn off communication to RPM service in development mode (also
   # 'enabled').
-  # NOTE: for initial evaluation purposes, you may want to temporarily 
+  # NOTE: for initial evaluation purposes, you may want to temporarily
   # turn the agent on in development mode.
   monitor_mode: false
 
-  # Rails Only - when running in Developer Mode, the New Relic Agent will 
+  app_name: ZangZing (devlopment)
+
+  # Rails Only - when running in Developer Mode, the New Relic Agent will
   # present performance information on the last 100 transactions you have
   # executed since starting the mongrel.
   # NOTE: There is substantial overhead when running in developer mode.
-  # Do not use for production or load testing.  
+  # Do not use for production or load testing.
+  developer_mode: true
+
+  # Enable textmate links
+  # textmate: true
+
+
+perftest:
+  <<: *default_settings
+  license_key: '8d53617e3783d347231d7874078e4cd630ea327a'
+  # Turn off communication to RPM service in development mode (also
+  # 'enabled').
+  # NOTE: for initial evaluation purposes, you may want to temporarily
+  # turn the agent on in development mode.
+  monitor_mode: true
+
+  app_name: ZangZing (perftest)
+
+  # Rails Only - when running in Developer Mode, the New Relic Agent will
+  # present performance information on the last 100 transactions you have
+  # executed since starting the mongrel.
+  # NOTE: There is substantial overhead when running in developer mode.
+  # Do not use for production or load testing.
   developer_mode: false
-  
+
   # Enable textmate links
   # textmate: true
 

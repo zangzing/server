@@ -5,6 +5,11 @@ development:
  encoding: utf8
  pool: 5
 
+perftest:
+ adapter: mysql
+ database: server_development
+ encoding: utf8
+ pool: 5
 
 eydevelopment:
  adapter: mysql

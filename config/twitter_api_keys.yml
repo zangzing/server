@@ -3,6 +3,10 @@ development:
   :consumer_secret: LVwYEbWO9XUMMuqVcIBlAEASOWLdoW7ufYujiYbzI
   :app_key: IzGoUFOmtnSFoebjtFWJCQ
 
+perftest:
+  :consumer_secret: LVwYEbWO9XUMMuqVcIBlAEASOWLdoW7ufYujiYbzI
+  :app_key: IzGoUFOmtnSFoebjtFWJCQ
+
 test:
   :consumer_secret: LVwYEbWO9XUMMuqVcIBlAEASOWLdoW7ufYujiYbzI
   :app_key: IzGoUFOmtnSFoebjtFWJCQ

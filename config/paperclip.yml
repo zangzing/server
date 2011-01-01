@@ -16,6 +16,9 @@ images_common: &images_common
   s3_headers:
     x-amz-storage-class: REDUCED_REDUNDANCY
     Expires:  <%=1.year.from_now.httpdate%>
+#  s3buckets:
+#    - gregtest.dev.zangzing
+#    - gregtest2.dev.zangzing
   s3buckets:
     - alpha.dev.zangzing
     - bravo.dev.zangzing
@@ -48,6 +51,10 @@ development:
   <<: *common
   command_path: <%=ENV['IMAGEMAGICK_PATH']%> #look for imagemagick here
   log_command:  true
+
+perftest:
+  <<: *common
+  command_path: <%=ENV['IMAGEMAGICK_PATH']%> #look for imagemagick here
 
 test:
   <<: *common
