@@ -112,12 +112,10 @@
             //draggable
             this.element.draggable({
                 start: function(){
-                    $(this).css({'z-index':1000});
+                    $(this).addClass('highlighted');
                 },
                 stop: function(){
-                    //clear droppable targets
-                    $('.photo-droppable-marker').hide();
-
+                    $(this).removeClass('highlighted');
                 },
                 revert: 'invalid',
                 revertDuration:400,
@@ -132,28 +130,25 @@
 
                 over: function(event, ui){
 
-//                    console.log(ui.draggable);
-//                    console.log(self.element.prev());
-
                     if(ui.draggable[0] == self.element.prev()[0]){
                         return;
                     }
 
-                    self._rowLeft(false).animate({
+                    self._rowLeft().animate({
                         left: -1 * Math.floor(self.width / 2)
                     },100);
 
-                    self._rowRight(true).animate({
+                    self._rowRight().add(self.element).animate({
                         left: Math.floor(self.width / 2)
                     },100);
                 },
                 out: function(){
 
-                    self._rowLeft(false).animate({
+                    self._rowLeft().animate({
                         left: 0
                     },100);
 
-                    self._rowRight(true).animate({
+                    self._rowRight().add(self.element).animate({
                         left: 0
                     },100);
 
@@ -165,21 +160,81 @@
 //                    $('.photo-droppable-marker').hide();
 
 
-
+                    var duration = 700;
                     var droppedCell = ui.draggable.data().zz_photo.element;
 
-                    self._rowLeft(false).css({left:Math.floor(self.width / 2)}).animate({
-                        left: 0
-                    },1000);
 
-                    self._rowRight(true).animate({
-                        left: 0
-                    },1000);
+                    if(droppedCell.position().top < self.element.position().top ){ //drag down between rows
 
-                    if(droppedCell !== self){
-                        droppedCell.css({top:0, left:Math.floor(self.width / 2)}).insertBefore(self.element).animate({left:0},1000);
+                        var rowLeft = self._rowLeft();
+
+                        rowLeft.slice(-1).css({left:0});
+
+                        rowLeft.slice(0,-1).css({left:Math.floor(self.width / 2)}).animate({
+                            left: 0
+                        },duration);
+
+                        self._rowRight().add(self.element).animate({
+                            left: 0
+                        },duration);
+
+                        if(droppedCell !== self){
+                            droppedCell.css({top:0, left:Math.floor(self.width / 2)}).insertBefore(self.element).animate({left:0},duration);
+                        }
+
+
+//                        console.log('drag down');
 
                     }
+                    else if(droppedCell.position().top > self.element.position().top) { //drag up between rows
+
+                        self._rowLeft().css({left:Math.floor(self.width / 2)}).animate({
+                            left: 0
+                        },duration);
+
+                        self._rowRight().add(self.element).animate({
+                            left: 0
+                        },duration);
+
+                        if(droppedCell !== self){
+                            droppedCell.css({top:0, left:Math.floor(self.width / 2)}).insertBefore(self.element).animate({left:0},duration);
+                        }
+
+//                        console.log('drag up');
+                    }
+                    else if(droppedCell.position().left < self.element.position().left){ //drag right, same row
+
+//                        console.log('drag right');
+                        self._rowLeft().css({left:Math.floor(self.width / 2)}).animate({
+                            left: 0
+                        },duration);
+
+                        self._rowRight().add(self.element).animate({
+                            left: 0
+                        },duration);
+
+                        if(droppedCell !== self){
+                            droppedCell.css({top:0, left:Math.floor(self.width / 2)}).insertBefore(self.element).animate({left:0},duration);
+                        }
+
+                    }
+                    else{  //drag left, same row
+
+                        self._rowLeft().css({left:Math.floor(self.width / 2)}).animate({
+                            left: 0
+                        },duration);
+
+                        self._rowRight().add(self.element).animate({
+                            left: 0
+                        },duration);
+
+                        if(droppedCell !== self){
+                            droppedCell.css({top:0, left:-1 * Math.floor(self.width / 2)}).insertBefore(self.element).animate({left:0},duration);
+                        }
+
+//                        console.log('drag left');
+                    }
+
                 }
 
             });
@@ -219,13 +274,10 @@
 
         },
 
-        _rowLeft: function(includeSelf){
+        _rowLeft: function(){
             var top = this.element.position().top;
             var sibling = this.element.prev();
             var list = [];
-            if(includeSelf){
-                list.push(this.element[0]);
-            }
             while(sibling.length > 0 && sibling.position().top === top){
                 list.push(sibling[0]);
                 sibling = sibling.prev();
@@ -233,13 +285,11 @@
             return $(list);
         },
 
-        _rowRight: function(includeSelf){
+        _rowRight: function(){
             var top = this.element.position().top;
             var sibling = this.element.next();
             var list = [];
-            if(includeSelf){
-                list.push(this.element[0]);
-            }
+
             while(sibling.length > 0 && sibling.position().top === top){
                 list.push(sibling[0]);
                 sibling = sibling.next();
@@ -264,36 +314,8 @@
 
             self.imageObject.onload = function(){
 
-                var height;
-                var width;
 
-                if(self.imageObject.width >= self.imageObject.height){
-                    width = self.options.maxWidth;
-                    height = self.imageObject.height * (self.options.maxWidth / self.imageObject.width);
-                }
-                else{
-                    width = self.imageObject.width * (self.options.maxHeight / self.imageObject.height);
-                    height = self.options.maxHeight;
-
-                }
-
-                self.imageElement.css({
-                    width: width,
-                    height: height
-                });
-
-
-                var wrapperWidth = width + 10;
-                var wrapperHeight = height + 10;
-
-
-                self.borderElement.css({
-                    position: "relative",
-                    top: (self.height - wrapperHeight) / 2,
-                    left: (self.width - wrapperWidth) / 2,
-                    width: wrapperWidth,
-                    height: wrapperHeight
-                });
+                self._resize(1);
 
                 //show the small version
                 self.imageElement.attr("src", initialSrc);
@@ -301,10 +323,63 @@
                 //show the full version
                 self.imageElement.attr("src", self.options.src);
 
+
+//                self.borderElement.mouseover(function(){
+//                    self._resize(1.15);
+//                    self.element.css({'z-index':1000});
+//                });
+//
+//                self.borderElement.mouseout(function(){
+//                    self._resize(1);
+//                    self.element.css({'z-index':-1});
+//                })
+
+
             };
 
             self.imageObject.src = initialSrc;
         },
+
+        _resize: function(percent){
+            var self = this;
+
+            var height;
+            var width;
+
+            if(self.imageObject.width >= self.imageObject.height){
+                width = self.options.maxWidth;
+                height = self.imageObject.height * (self.options.maxWidth / self.imageObject.width);
+            }
+            else{
+                width = self.imageObject.width * (self.options.maxHeight / self.imageObject.height);
+                height = self.options.maxHeight;
+
+            }
+
+            height = Math.floor(percent * height);
+            width = Math.floor(percent * width);
+
+
+            var wrapperWidth = width + 10;
+            var wrapperHeight = height + 10;
+
+
+            self.borderElement.css({
+                top: (self.height - wrapperHeight) / 2,
+                left: (self.width - wrapperWidth) / 2,
+                width: wrapperWidth,
+                height: wrapperHeight
+            });
+
+            self.imageElement.css({
+                width: width,
+                height: height
+            });
+
+
+
+        },
+
 
 
         _inLazyLoadRegion: function(){
