@@ -17,7 +17,7 @@ class PhotoInfo < ActiveRecord::Base
       # tool must be in same dir as paperclip command path (or a sym link to it)
       # the following asks exiftool to return json formatted data grouped by type
       # and only requests EXIF and IPTC currently
-      cmd = Paperclip.options[:command_path]+"/Xexiftool " + %Q[-j -g -EXIF:All -IPTC:All -d "%Y-%m-%dT%H:%M:%S" "#{file_name}"]
+      cmd = Paperclip.options[:command_path]+"/exiftool " + %Q[-j -g -EXIF:All -IPTC:All -d "%Y-%m-%dT%H:%M:%S" "#{file_name}"]
 
       #execute the command - using paperclip seems to screw up large result sets so call directly
       #the syntax of calling the shell command is to wrap it with back quotes `shellcommand`
