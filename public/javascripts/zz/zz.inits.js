@@ -57,7 +57,7 @@ zz.init = {
                 $('#sign-in').show();
                 $('#sign-up').hide();
 
-                $('#small-drawer').animate({height: '460px', top: '56px'});
+                $('#small-drawer').show().animate({height: '460px', top: '56px'},500);
                 zz.drawer_state = zz.DRAWER_OPEN;
             }
         });
