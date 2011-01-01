@@ -168,7 +168,7 @@
 
                     var droppedCell = ui.draggable.data().zz_photo.element;
 
-                    self._rowLeft(false).animate({
+                    self._rowLeft(false).css({left:Math.floor(self.width / 2)}).animate({
                         left: 0
                     },1000);
 
