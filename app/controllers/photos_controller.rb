@@ -1,5 +1,5 @@
 class PhotosController < ApplicationController
-  before_filter :oauth_required, :only => [:agentindex, :upload, :agent_create]
+  before_filter :oauth_required, :only => [:agentindex, :agent_create]
   before_filter :login_required, :only => [:create ]
   before_filter :require_user, :only => [:show, :new, :edit, :destroy] # , :index] #TODO Sort out album security so facebook can freely dig into album page
   before_filter :determine_album_user #For friendly_id's scope
@@ -83,29 +83,33 @@ class PhotosController < ApplicationController
 
   def upload_fast
     #nginx add params so it breaks oauth. use this validation to ensure it is coming from nginx
-    upload if params[:fast_upload_secret] == "this-is-a-key-from-nginx" && params[:photo] && params[:photo][:fast_local_image]    
-  end
+    #currently we only handle one photo attachment but the input is structured to send multiple
+    #as is done with the sendgrid#import_fast
+    if params[:fast_upload_secret] == "this-is-a-key-from-nginx" && (attachments = params[:fast_local_image]) && attachments.count == 1
+      begin
+        @photo = Photo.find(params[:id])
+        @album = @photo.album
+        fast_local_image = {"fast_local_image" => attachments[0]} # extract only the first one
+        if @photo.update_attributes(fast_local_image)
+          render :json => @photo.to_json(:only =>[:id, :agent_id, :state]), :status => 200 and return
+        else
+          render :json => @photo.errors, :status=>400
+        end
+      rescue ActiveRecord::RecordNotFound => ex
+        #photo or album have been deleted
+        render :json => ex.to_s, :status=>400
 
-  def upload
-    begin
-      @photo = Photo.find(params[:id])
-      @album = @photo.album
-      if @photo.update_attributes(params[:photo])
-        render :json => @photo.to_json(:only =>[:id, :agent_id, :state]), :status => 200 and return
-      else
-        render :json => @photo.errors, :status=>400
+      rescue ActiveRecord::StatementInvalid => ex
+        #this seems to mean connection issue with database
+        render :json => ex.to_s, :status=>500
+
+      rescue Exception => ex
+        #todo: make sure none of these should be 4xx errors
+        render :json => ex.to_s, :status=>500
       end
-    rescue ActiveRecord::RecordNotFound => ex
-      #photo or album have been deleted
-      render :json => ex.to_s, :status=>400
-
-    rescue ActiveRecord::StatementInvalid => ex
-      #this seems to mean connection issue with database
-      render :json => ex.to_s, :status=>500
-
-    rescue Exception => ex
-      #todo: make sure none of these should be 4xx errors
-      render :json => ex.to_s, :status=>500
+    else
+      # call did not come through remapped upload via nginx so reject it
+      render :json => "Invalid upload_fast arguments.", :status=>400
     end
   end
 

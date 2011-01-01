@@ -75,7 +75,7 @@ class User < ActiveRecord::Base
                            :email => email,
                            :name => name,
                            :username => username,  #username is in DB index, so '' won't work
-                           :password => UUID.random_create.to_s);
+                           :password => UUIDTools::UUID.random_create.to_s);
     end
     return user
   end

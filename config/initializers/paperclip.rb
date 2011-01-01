@@ -39,11 +39,23 @@ else
      abort %{ZangZing config/paperclip.yml file not found. UNABLE TO INITIALIZE PHOTO STORAGE!}
 end
 
+def get_bucket_picker
+  Proc.new {|a|
+    buckets = a.options[:s3buckets]
+    # pick a random bucket - this is important because
+    # the old technique always ended up with the same one
+    # due to the forking behavior of resque tasks
+    z = buckets[rand(buckets.count)]
+    #GWS debugging while testing - remove later
+    puts "using bucket: " + z
+    z
+    }
+end
+
 # Create a proc to compute the right bucket and store it in the options
-Paperclip.options[:image_options][:bucket] =
-    Proc.new {|a| (a.options[:s3buckets].push a.options[:s3buckets].shift)[0]}
-Paperclip.options[:picon_options][:bucket] =
-    Proc.new {|a| (a.options[:s3buckets].push a.options[:s3buckets].shift)[0]}
+Paperclip.options[:image_options][:bucket] = get_bucket_picker
+Paperclip.options[:picon_options][:bucket] = get_bucket_picker
+
 
 #
 #The YAML File looks like this
