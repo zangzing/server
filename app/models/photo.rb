@@ -41,7 +41,7 @@
 # The paperclip default url is used to display a temporary graphic while the local_image is processed.
 # Code to accelerate a local development server was added and it may be removed for production TODO:
 #
-require 'zz/nginx_tempfile'
+require 'zz'
 
 class Photo < ActiveRecord::Base
   usesguid
