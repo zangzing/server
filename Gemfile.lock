@@ -128,6 +128,7 @@ GEM
     redis (2.1.1)
     redis-namespace (0.8.0)
       redis (< 3.0.0)
+    require_all (1.2.0)
     resque (1.10.0)
       json (~> 1.4.6)
       redis-namespace (~> 0.8.0)
@@ -199,6 +200,7 @@ DEPENDENCIES
   oauth-plugin (>= 0.4.0.pre1)
   paperclip (= 2.3.6)
   rails (= 3.0.3)
+  require_all
   resque
   rpm_contrib
   rspec
