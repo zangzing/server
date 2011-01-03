@@ -92,14 +92,17 @@
 
             //bind lazy loader to scroll container
             //todo: may want to have delegate handle the timer so we don't have lots and lots of timers running
+            self.imageLoaded = false;
             if(self.options.scrollContainer){
                 var timer;
                 $(self.options.scrollContainer).scroll(function(){
-                    clearTimeout(timer);
-                    if(self._inLazyLoadRegion()){
-                        timer = setTimeout(function(){
-                            self._loadImage();
-                        },100);
+                    if(!self.imageLoaded){
+                        clearTimeout(timer);
+                        if(self._inLazyLoadRegion()){
+                            timer = setTimeout(function(){
+                                self._loadImage();
+                            },100);
+                        }
                     }
                 });
             }
@@ -112,21 +115,23 @@
             //draggable
             this.element.draggable({
                 start: function(){
-                    $(this).addClass('highlighted');
+                    self.borderElement.addClass('highlighted');
                 },
                 stop: function(){
-                    $(this).removeClass('highlighted');
+                    self.borderElement.removeClass('highlighted');
                 },
                 revert: 'invalid',
                 revertDuration:400,
                 zIndex: 2700,
-                opacity:0.25,
-                helper: 'clone'
+                opacity:0.50,
+                helper: 'clone',
+                scrollSensitivity: self.height / 2,
+                scrollSpeed:self.height / 3
             });
 
             //droppable
             this.droppableElement.droppable({
-                tolerance: 'intersect',
+                tolerance: 'pointer',
 
                 over: function(event, ui){
 
@@ -159,80 +164,97 @@
                 drop: function(event, ui){
 //                    $('.photo-droppable-marker').hide();
 
+                    if(droppedCell !== self){
 
-                    var duration = 700;
-                    var droppedCell = ui.draggable.data().zz_photo.element;
+                        var duration = 700;
+                        var droppedCell = ui.draggable.data().zz_photo.element;
 
 
-                    if(droppedCell.position().top < self.element.position().top ){ //drag down between rows
+//                        var spacer = $('<div></div>').addClass('cell').css({width:self.width, height:self.height});
+//                        spacer.insertBefore(droppedCell)
+//                        spacer.animate({width:0},duration,'linear', function(){
+//                            spacer.remove();
+//                        });
 
-                        var rowLeft = self._rowLeft();
 
-                        rowLeft.slice(-1).css({left:0});
 
-                        rowLeft.slice(0,-1).css({left:Math.floor(self.width / 2)}).animate({
-                            left: 0
-                        },duration);
+                        if(droppedCell.position().top < self.element.position().top ){ //drag down between rows
 
-                        self._rowRight().add(self.element).animate({
-                            left: 0
-                        },duration);
+                            var rowLeft = self._rowLeft();
 
-                        if(droppedCell !== self){
+                            rowLeft.slice(-1).css({left:0});
+
+                            rowLeft.slice(0,-1).css({left:Math.floor(self.width / 2)}).animate({
+                                left: 0
+                            },duration);
+
+                            self._rowRight().add(self.element).animate({
+                                left: 0
+                            },duration);
+
                             droppedCell.css({top:0, left:Math.floor(self.width / 2)}).insertBefore(self.element).animate({left:0},duration);
-                        }
+
 
 
 //                        console.log('drag down');
 
-                    }
-                    else if(droppedCell.position().top > self.element.position().top) { //drag up between rows
-
-                        self._rowLeft().css({left:Math.floor(self.width / 2)}).animate({
-                            left: 0
-                        },duration);
-
-                        self._rowRight().add(self.element).animate({
-                            left: 0
-                        },duration);
-
-                        if(droppedCell !== self){
-                            droppedCell.css({top:0, left:Math.floor(self.width / 2)}).insertBefore(self.element).animate({left:0},duration);
                         }
+                        else if(droppedCell.position().top > self.element.position().top) { //drag up between rows
+
+                            self._rowLeft().css({left:Math.floor(self.width / 2)}).animate({
+                                left: 0
+                            },duration);
+
+                            self._rowRight().slice(0,-1).add(self.element).animate({
+                                left: 0
+                            },duration);
+
+                            self._rowRight().slice(-1).css({left:0});
+
+                            droppedCell.css({top:0, left:Math.floor(self.width / 2)}).insertBefore(self.element).animate({left:0},duration);
 
 //                        console.log('drag up');
-                    }
-                    else if(droppedCell.position().left < self.element.position().left){ //drag right, same row
+                        }
+                        else if(droppedCell.position().left < self.element.position().left){ //drag right, same row
 
 //                        console.log('drag right');
-                        self._rowLeft().css({left:Math.floor(self.width / 2)}).animate({
-                            left: 0
-                        },duration);
+                            self._rowLeft().css({left:Math.floor(self.width / 2)}).animate({
+                                left: 0
+                            },duration);
 
-                        self._rowRight().add(self.element).animate({
-                            left: 0
-                        },duration);
+                            self._rowRight().add(self.element).animate({
+                                left: 0
+                            },duration);
 
-                        if(droppedCell !== self){
                             droppedCell.css({top:0, left:Math.floor(self.width / 2)}).insertBefore(self.element).animate({left:0},duration);
+
                         }
+                        else{  //drag left, same row
 
-                    }
-                    else{  //drag left, same row
+//                            droppedCell.data().zz_photo._rowLeft().add(self.element).animate({
+//                                left: 0
+//                            },duration);
 
-                        self._rowLeft().css({left:Math.floor(self.width / 2)}).animate({
-                            left: 0
-                        },duration);
 
-                        self._rowRight().add(self.element).animate({
-                            left: 0
-                        },duration);
+                            droppedCell.insertBefore(self.element).css({top:0, left:-1 * Math.floor(self.width / 2)});
 
-                        if(droppedCell !== self){
-                            droppedCell.css({top:0, left:-1 * Math.floor(self.width / 2)}).insertBefore(self.element).animate({left:0},duration);
-                        }
+//                            droppedCell.data().zz_photo._rowRight().add(droppedCell).animate({
+//                                left: 0
+//                            },duration);
+
+
+                            console.log(self.element.css('left'))
+
+                            
+//
+//                         self._rowLeft().css({left:Math.floor(self.width / 2)}).animate({
+//                            left: 0
+//                        },duration);
+//
+
 
 //                        console.log('drag left');
+                        }
                     }
 
                 }
@@ -268,10 +290,11 @@
 
         loadIfVisible: function(){
             var self = this;
-            if(self._inLazyLoadRegion()){
-                self._loadImage();
+            if(!self.imageLoaded){
+                if(self._inLazyLoadRegion()){
+                    self._loadImage();
+                }
             }
-
         },
 
         _rowLeft: function(){
@@ -314,7 +337,7 @@
 
             self.imageObject.onload = function(){
 
-
+                self.imageLoaded = true;
                 self._resize(1);
 
                 //show the small version
