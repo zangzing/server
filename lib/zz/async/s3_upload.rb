@@ -11,11 +11,15 @@ module ZZ
         def self.perform( photo_id )
           photo = Photo.find(photo_id)
           photo.upload_to_s3
+          photo = nil
+          GC.start # force gc to cleanup before we leave
         end
 
         def self.on_failure_notify_photo(e, photo_id )
           photo = Photo.find(photo_id)
           photo.update_attributes(:state => 'error', :error_message => 'Failed to upload the image to S3')
+          photo = nil
+          GC.start # force gc to cleanup before we leave
         end
         
     end
