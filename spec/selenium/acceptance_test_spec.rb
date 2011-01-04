@@ -13,7 +13,7 @@ def wait_for_element_visible selector
 end
 
 
-describe "Acceptance test" do
+describe "acceptance test" do
 
   before(:all) do
     @browser = Selenium::Client::Driver.new \
@@ -36,7 +36,7 @@ describe "Acceptance test" do
 
 
 
-  it "should create album with one facebook picture" do
+  it "should create album with one photo from 'Medium Album' and all 3 photos from 'Small Album'" do
     username = 'user' +Time.now.to_i.to_s
     password = 'share1001photos'
     email = username + "@test.zangzing.com"
@@ -94,19 +94,36 @@ describe "Acceptance test" do
 
 
     #open "Small Album'
-    wait_for_element_visible 'css=a:contains("Small Album")'
-    @browser.click 'css=a:contains("Small Album")'
+    wait_for_element_visible 'css=a:contains("Medium Album")'
+    @browser.click 'css=a:contains("Medium Album")'
 
 
     #add the first picture
     wait_for_element_visible 'css=.filechooser.photo'
     @browser.click 'css=.filechooser.photo figure'
-    sleep 5 #wait for animation and facebook import #todo: is there a way to test so we don't have timing issues?
+    sleep 2 #wait for animation and facebook import #todo: is there a way to test so we don't have timing issues?
+
+
+    #go back up a level
+    @browser.click 'css=#filechooser-back-button'
+
+    #add the whole 'Small Album'
+    wait_for_element_visible 'css=a:contains("Small Album") + a'
+    @browser.click 'css=a:contains("Small Album") + a'
+    sleep 4 #wait for animation and facebook import #todo: is there a way to test so we don't have timing issues?
+
 
 
     #close the wizard
     @browser.click 'css=#wizard-share'
     @browser.click 'css=#next-step' #done button
+
+
+    #check for 4 photos in album
+    @browser.wait_for_page_to_load "30000"
+    @browser.is_element_present("css=ul.photos li:nth-child(4)").should be_true #todo: might be easier to check the json version of the ablum
+    @browser.is_element_present("css=ul.photos li:nth-child(5)").should be_false #todo: might be easier to check the json version of the ablum
+
 
   end
 end
