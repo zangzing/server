@@ -39,6 +39,7 @@ Server::Application.routes.draw do
   get    '/albums/:id/upload_stat'     => 'albums#upload_stat',   :as => :album_upload_stat
   get    '/albums/:id'                => 'albums#show',          :as => :album
   get    '/albums/:id/edit'           => 'albums#edit',          :as => :edit_album
+  get    '/albums/:id/close_batch'    => 'albums#close_batch',   :as => :close_batch
   put    '/albums/:id'                => 'albums#update',        :as => :update_album
   delete '/albums/:id'                => 'albums#destroy',       :as => :delete_album
 

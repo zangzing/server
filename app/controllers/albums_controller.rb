@@ -122,6 +122,13 @@ class AlbumsController < ApplicationController
     redirect_back_or_default root_path
   end
 
+  def close_batch
+     if params[:id]
+        UploadBatch.close_open_batches( current_user.id, params[:album_id])
+     end
+  end
+
+
   private
   def authorized_user
     @album = Album.find(params[:id])

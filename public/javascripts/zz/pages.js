@@ -613,8 +613,7 @@ pages.account_settings_profile_tab = {
     },
 
     refresh_profile_photo_picker: function(){
-        //alert( "In Account Setting Page Init user: "+zz.current_user_id+" Album: "+zz.album_id);
-        //setup album cover picker
+        //refresh album cover picker
         $.ajax({
             dataType: 'json',
             url: '/albums/' + zz.album_id + '/photos.json',
@@ -656,7 +655,11 @@ pages.account_settings_profile_tab = {
                                                          modal: true,
                                                          autoOpen: false,
                                                          open:   function(event, ui){ filechooser.init(); },
-                                                         close:  function(event, ui){ pages.account_settings_profile_tab.init_profile_photo_picker()}
+                                                         close:  function(event, ui){
+                                                             $.get( '/albums/' +zz.album_id + '/close_batch', function(){
+                                                                pages.account_settings_profile_tab.refresh_profile_photo_picker()
+                                                             });
+                                                         }
                  });
     },
 
