@@ -19,6 +19,7 @@ zz.drawers = {
         },
 
         on_close: function(){
+            $.get( '/albums/' +zz.album_id + '/close_batch' );
             var url = '/albums/' +zz.album_id + '/photos';
             setTimeout('window.location = "' + url + '"', 1);
         },
@@ -117,6 +118,7 @@ zz.drawers = {
         },
 
         on_close: function(){
+            $.get( '/albums/' +zz.album_id + '/close_batch' );
             var url = '/albums/' +zz.album_id + '/photos';
             setTimeout('window.location = "' + url + '"', 1);
         },

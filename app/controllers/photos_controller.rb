@@ -148,11 +148,10 @@ class PhotosController < ApplicationController
   #              upload_batch must belong to album
   # contributor  Display only photos contributed by certain contributor.
   #              contributor must be in albums contributor list
+
   def index
     @album = fetch_album
     @title = CGI.escapeHTML(@album.name)
-
-    UploadBatch.close_open_batches( current_user.id, @album.id) if signed_in?
 
     if params[:upload_batch] && @upload_batch = UploadBatch.find(params[:upload_batch])
       @all_photos = @upload_batch.photos

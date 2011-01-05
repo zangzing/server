@@ -42,9 +42,14 @@ class UploadBatch < ActiveRecord::Base
 
   def close
     if self.state == 'open'
-      self.state = 'closed'
-      self.save
-      self.finish
+      #if there are no photos in batch, destroy it
+      if photos.length > 0
+        self.state = 'closed'
+        self.save 
+        self.finish
+      else
+        self.destroy
+      end
     end
   end
 
