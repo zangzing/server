@@ -30,8 +30,8 @@ images_common: &images_common
 #FOR All ENVS
 common: &common
   local_image_options:
-    path:        ":rails_root/public/system/:attachment/:id/:style/:id.:extension"
-    url:         "/system/:attachment/:id/:style/:id.:extension"
+    path:        ":tmpdir/paperclip-local-temp/:id.:extension"  # use :tmpdir to have file copied to tmp directory for now
+    url:         "/system/paperclip-local-temp/:id.:extension"  # basically irrelevant since we don't actually use the file from this location
     default_url: "/images/working.png"
   picon_options:
     <<: *images_common

@@ -16,25 +16,42 @@
 #
 #   Copyright 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
+
 class Share < ActiveRecord::Base
   belongs_to :user
   belongs_to :album
 
-  attr_accessor :link_to_share
-
   has_many :recipients, :dependent => :destroy
   validates_presence_of :album_id, :user_id
   
-  def self.factory(user, album, params)
+  def self.factory(user, album, album_url, params)
     share = EmailShare.factory(user, params[:email_share]) if params[:email_share]
     share = PostShare.factory(user, params[:post_share]) if params[:post_share]
+    share.album_url = album_url
     user.shares  << share
     album.shares << share
     return share
   end
 
-  def deliver_later
-     ZZ::Async::SocialPost.enqueue( self.id, self.link_to_share )
+  def self.send_album_shares( user_id, album_id )
+    if album_id.nil? || user_id.nil?
+      raise Exception.new("Album Id and User Id must be valid Ids (not nil)")
+    end
+
+    shares = Share.find_all_by_user_id_and_album_id(user_id, album_id)
+    shares.each { |share|  ZZ::Async::AlbumShare.enqueue( share.id ) } unless shares.nil?
   end
-   
+
+  protected
+  def deliver
+      if self.sent_at.nil?
+        self.sent_at = Time.now
+        bitly = Bitly.new(BITLY_API_KEYS[:username], BITLY_API_KEYS[:api_key])
+        url = bitly.shorten( self.album_url )
+        self.bitly = url.short_url
+        return self.save
+      end
+      return false  
+  end
+
 end

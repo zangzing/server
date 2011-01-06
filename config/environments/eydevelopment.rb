@@ -16,4 +16,7 @@ Server::Application.configure do
 
     # Enable threaded mode
   config.threadsafe!
+
+  # override location of temp directory on EY servers
+  ENV['TMPDIR'] = '/mnt/tmp'
 end

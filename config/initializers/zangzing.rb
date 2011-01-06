@@ -1,5 +1,3 @@
-# Bitly API Setup
-Bitly.use_api_version_3
 
 silence_warnings do #To avoid warning of overwriting constant
   # SET VERSION
@@ -9,8 +7,11 @@ silence_warnings do #To avoid warning of overwriting constant
   # GET AND SET ENVIRONMENT
   fname = "/home/deploy/dna.json"
   msg = []
+
   msg << "=> ZangZing Initializer"
   msg << "      Task started at             : " + Time.now.to_s
+  msg << "      Tempfile Directory          : " + Dir.tmpdir
+
   if File.exists?( fname )
     dna =  ActiveSupport::JSON.decode( File.read( fname ))
     Server::Application.config.application_host = dna['engineyard']['environment']['apps'][0]['vhosts'][0]['domain_name']

@@ -21,13 +21,14 @@ class PostShare < Share
   end
 
   def deliver
-    if self.sent_at.nil?
+    if super
       self.recipients.each do |rec|
         user = User.find(rec.address)
-        user.send("identity_for_#{rec.service}").post(self.link_to_share, self.message)
+        user.send("identity_for_#{rec.service}").post(self.bitly, self.message)
       end
-      self.sent_at = Time.now
-      self.save
+      #Create Activity
+      #ua = UploadActivity.create( :user => self.user, :album => self.album, :upload_batch => self )
+      #self.album.activities << ua
     end
   end
 

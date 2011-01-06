@@ -22,13 +22,14 @@ class EmailShare < Share
   end
 
   def deliver
-     if self.sent_at.nil?
+    if super
        self.recipients.each do |recipient |
-        #Notifier.deliver_album_shared_with_you(self.user,rec.address,self.album, self.message)
-        ZZ::Async::Email.enqueue( :album_shared_with_you, self.id, recipient.address )
+          ZZ::Async::Email.enqueue( :album_shared_with_you, user.id, recipient.address, album.id, message )
        end
-       self.sent_at = Time.now
-       self.save
+       #Create Activity
+       #ua = UploadActivity.create( :user => self.user, :album => self.album, :upload_batch => self )
+       #self.album.activities << ua
      end
   end
+
 end

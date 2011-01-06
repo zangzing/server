@@ -42,36 +42,44 @@ class UploadBatch < ActiveRecord::Base
 
   def close
     if self.state == 'open'
-      self.state = 'closed'
-      self.save
-      self.finish
+      #if there are no photos in batch, destroy it
+        self.state = 'closed'
+        self.save 
+        self.finish
     end
   end
 
   def finish
     if self.state == 'closed' && self.ready?
-      #Notify contributor that upload batch is finished
-      ZZ::Async::Email.enqueue( :upload_batch_finished, self.id )
+
+       #send album shares even if there were no photos uploaded
+       Share.send_album_shares( self.user_id, self.album_id )
+
+       if photos.length > 0
+          #Notify contributor that upload batch is finished
+          ZZ::Async::Email.enqueue( :upload_batch_finished, self.id )
       
-      #If this user has any undelivered shares for this album, send them now
-      shares = Share.find_all_by_user_id_and_album_id( user.id, self.album.id)
-      shares.each { |s| s.deliver_later() } if shares
+          #Update album picon
+          self.album.queue_update_picon
 
-      #Update album picon
-      self.album.queue_update_picon
+          #Create Activity
+          ua = UploadActivity.create( :user => self.user, :album => self.album, :upload_batch => self )
+          self.album.activities << ua
 
-      # Create Activity
-      ua = UploadActivity.create( :user => self.user, :album => self.album, :upload_batch => self )
-      self.album.activities << ua
-
-      self.state = 'finished'
-      self.save
+          self.state = 'finished'
+          self.save
+       else
+          self.destroy #the batch has no photos, destroy it
+      end
     end
   end
 
   protected
   def ready?
     if self.state == 'closed'
+      if self.photos.count <= 0
+        return true;
+      end
       photos = Photo.find_all_by_upload_batch_id_and_state( self.id, 'ready' )
       if photos.nil?
          return true if self.photos.count <= 0
