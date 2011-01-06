@@ -160,7 +160,7 @@ class Photo < ActiveRecord::Base
       self.local_image_path = ''
       self.state = 'ready'
       self.save!
-      upload_batch.finish 
+      upload_batch.finish
       logger.debug("Upload and thumbnail generation to S3 Finished")
     rescue ActiveRecord::ActiveRecordError => ex
         logger.debug("Upload to S3 Failed"+ex)

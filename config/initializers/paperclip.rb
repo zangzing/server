@@ -29,6 +29,11 @@ Paperclip.interpolates :directory do |att, style|
   end
 end
 
+# path element that lets you use the tmp directory
+Paperclip.interpolates :tmpdir do |att, style|
+  Dir.tmpdir
+end
+
 # Load the paperclip.yml configuration file
 if defined?(Rails.root) and File.exists?("#{Rails.root}/config/paperclip.yml")
     Paperclip.options.merge!(YAML::load(ERB.new(File.read("#{Rails.root}/config/paperclip.yml")).result)[Rails.env].recursively_symbolize_keys!)
@@ -52,10 +57,7 @@ def get_bucket_picker
     # pick a random bucket - this is important because
     # the old technique always ended up with the same one
     # due to the forking behavior of resque tasks
-    z = buckets[rand(buckets.count)]
-    #GWS debugging while testing - remove later
-    puts "using bucket: " + z
-    z
+    buckets[rand(buckets.count)]
     }
 end
 
@@ -63,19 +65,3 @@ end
 Paperclip.options[:image_options][:bucket] = get_bucket_picker
 Paperclip.options[:picon_options][:bucket] = get_bucket_picker
 
-
-#
-#The YAML File looks like this
-#development: &non_production_settings
-#  url: "/system/:class/:attachment/:id/:basename-:style.:extension"
-#  path: ":rails_root/public:url"
-#
-#test:
-#  url: "/system/:class/:attachment/:id/:basename-:style.:extension"
-#  path: ":rails_root/public:url"
-#
-#production:
-#  url: "/system/:class/:attachment/:id/:basename-:style.:extension"
-#  path: ":rails_root/public:url"
-#  storage: ":s3"
-#  bucket: "my-bucket"
