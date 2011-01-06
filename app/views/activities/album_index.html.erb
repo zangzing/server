@@ -5,7 +5,12 @@
 <ul id="album-timeline">
 
   <% @activities.each do |activity| %>
-                        <%= render :partial => 'upload_activity', :locals => {:activity => activity, :album => @album } %>
+                    <%case activity %>
+                        <% when UploadActivity then%>
+                            <%= render :partial => 'upload_activity', :locals => {:activity => activity, :album => @album } %>
+                        <% when ShareActivity then%>
+                            <%= render :partial => 'share_activity', :locals => {:activity => activity, :album => @album } %>
+                    <%end%>
   <%end%>
 
   <div class="offset">

@@ -1,3 +1,7 @@
+#
+#   Copyright 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
+#
+
 class UploadActivity < AlbumActivity
   attr_accessible :upload_batch
   validates_presence_of :upload_batch

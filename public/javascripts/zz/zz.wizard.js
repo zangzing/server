@@ -288,26 +288,6 @@ zz.wizard = {
     },
 
 
-
-
-    update_album: function(){
-        $.post('/albums/'+zz.album_id,$(".edit_album").serialize() );
-        return true;
-    },
-
-
-    dashify: function(s){
-        return   s
-                .toLowerCase() // change everything to lowercase
-                .replace(/^\s+|\s+$/g, "") // trim leading and trailing spaces
-                .replace(/[_|\s]+/g, "-") // change all spaces and underscores to a hyphen
-                .replace(/[^a-z0-9-]+/g, "") // remove all non-alphanumeric characters except the hyphen
-                .replace(/[-]+/g, "-") // replace multiple instances of the hyphen with a single instance
-                .replace(/^-+|-+$/g, "") // trim leading and trailing hyphens
-                ;
-    },
-
-
     display_flashes: function( request, delay ){
         var data = request.getResponseHeader('X-Flash');
         if( data && data.length>0 && $('#flashes-notice')){
@@ -317,6 +297,15 @@ zz.wizard = {
                     setTimeout(function(){
                         $('#flashes-notice').fadeOut('fast', function(){
                             $('#flashes-notice').html('    ');
+                        })
+                    }, delay+3000);
+                });
+            }
+            if( flash.error ){
+                $('#error-notice').html(flash.error).fadeIn('fast', function(){
+                    setTimeout(function(){
+                        $('#error-notice').fadeOut('fast', function(){
+                            $('#error-notice').html('    ');
                         })
                     }, delay+3000);
                 });

@@ -21,19 +21,19 @@ pages.album_add_photos_tab = {
 
 
 pages.album_name_tab = {
+    original_album_name: '',
     init: function(callback){
         var url = '/albums/' + zz.album_id + '/name_album';
 
         $('#tab-content').load(url, function(){
+            //save album name and set header album name
+            pages.album_name_tab.original_album_name = $('#album_name').val();
+            $('h2#album-header-title').html(pages.album_name_tab.original_album_name);
 
-            $('h2#album-header-title').html($('#album_name').val());
-
-    //        $('#album_email').val( zz.wizard.dashify($('#album_name').val()));
-
+            //change header album name as you type new album name
             $('#album_name').keypress( function(){
                 setTimeout(function(){
                     $('#album-header-title').html( $('#album_name').val() );
-    //                $('#album_email').val( zz.wizard.dashify($('#album_name').val()) );
                 }, 10);
             });
 
@@ -50,11 +50,15 @@ pages.album_name_tab = {
                         $.ajax({
                             url: '/albums/' + zz.album_id + '/preview_album_email?' + $.param({album_name: $('#album_name').val()}),
                             success: function(new_mail){
-                                $('#album_email').val(new_mail)
+                                $('#album_email').val(new_mail);
+                            },
+                            error: function(){
+                                $('#album_name').val(pages.album_name_tab.original_album_name);
+                                $('h2#album-header-title').html(pages.album_name_tab.original_album_name);
                             }
                         });
                     }
-                }, 1200);
+                }, 1000);
             });
 
             //setup album cover picker
@@ -107,8 +111,17 @@ pages.album_name_tab = {
     },
 
     bounce: function(success, failure){
-        zz.wizard.update_album();  //todo: need success and failure handlers for the 'update album' call
-        success();
+            $.ajax({ type: 'POST',
+                     url:'/albums/'+zz.album_id,
+                     data:$(".edit_album").serialize(),
+                     success: success ,
+                     error:  function(){
+                                 //restore name and header to valid value
+                                 $('#album_name').val(pages.album_name_tab.original_album_name);
+                                 $('h2#album-header-title').html(pages.album_name_tab.original_album_name);
+                                 $('#album_name').keypress();
+                     }
+            });
     }
 };
 

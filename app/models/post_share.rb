@@ -26,9 +26,6 @@ class PostShare < Share
         user = User.find(rec.address)
         user.send("identity_for_#{rec.service}").post(self.bitly, self.message)
       end
-      #Create Activity
-      #ua = UploadActivity.create( :user => self.user, :album => self.album, :upload_batch => self )
-      #self.album.activities << ua
     end
   end
 
