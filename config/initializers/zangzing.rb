@@ -1,5 +1,3 @@
-# Bitly API Setup
-Bitly.use_api_version_3
 
 silence_warnings do #To avoid warning of overwriting constant
   # SET VERSION

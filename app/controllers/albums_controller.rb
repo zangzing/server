@@ -124,7 +124,7 @@ class AlbumsController < ApplicationController
 
   def close_batch
      if params[:id]
-        UploadBatch.close_open_batches( current_user.id, params[:album_id])
+        UploadBatch.close_open_batches( current_user.id, params[:id])
      end
   end
 

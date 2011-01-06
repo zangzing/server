@@ -30,8 +30,7 @@ class SharesController < ApplicationController
   
   def create
     @album = Album.find(params[:album_id])
-    @share = Share.factory( current_user, @album, params)
-    @share.link_to_share = album_photos_url(@album)
+    @share = Share.factory( current_user, @album, album_photos_url(@album), params)
     
     unless @share.save
       respond_to do |format |
@@ -41,7 +40,9 @@ class SharesController < ApplicationController
                          render :json => "", :status => 400 and return}
       end
     end
-    @share.deliver_later
+
+    #get the current batch (make sure a batch is open since shares will be sent only when the current batch is finished)
+    UploadBatch.get_current( current_user.id, @album.id )
     case @share.type
       when 'PostShare'
         flash[:notice] = "Your message will be tweeted and/or posted on your wall as soon as the album is ready."

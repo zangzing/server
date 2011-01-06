@@ -29,19 +29,19 @@ Server::Application.routes.draw do
   delete '/identities/:id'          => 'identities#destroy',     :as => :delete_identity
 
   #albums
-  get    '/users/:user_id/albums'     => 'albums#index',         :as => :user_albums
-  get    '/users/:user_id/albums/new' => 'albums#new',           :as => :new_user_album
-  post   '/users/:user_id/albums'     => 'albums#create',        :as => :create_user_album
-  get    '/albums/:id/name_album'     => 'albums#name_album',    :as => :name_album
+  get    '/users/:user_id/albums'          => 'albums#index',               :as => :user_albums
+  get    '/users/:user_id/albums/new'      => 'albums#new',                 :as => :new_user_album
+  post   '/users/:user_id/albums'          => 'albums#create',              :as => :create_user_album
+  get    '/albums/:id/name_album'          => 'albums#name_album',          :as => :name_album
   get    '/albums/:id/preview_album_email' => "albums#preview_album_email", :as => :preview_album_email
-  get    '/albums/:id/privacy'        => 'albums#privacy',       :as => :privacy
-  get    '/albums/:id/add_photos'      => 'albums#add_photos',    :as => :add_photos
-  get    '/albums/:id/upload_stat'     => 'albums#upload_stat',   :as => :album_upload_stat
-  get    '/albums/:id'                => 'albums#show',          :as => :album
-  get    '/albums/:id/edit'           => 'albums#edit',          :as => :edit_album
-  get    '/albums/:id/close_batch'    => 'albums#close_batch',   :as => :close_batch
-  put    '/albums/:id'                => 'albums#update',        :as => :update_album
-  delete '/albums/:id'                => 'albums#destroy',       :as => :delete_album
+  get    '/albums/:id/privacy'             => 'albums#privacy',             :as => :privacy
+  get    '/albums/:id/add_photos'          => 'albums#add_photos',          :as => :add_photos
+  get    '/albums/:id/upload_stat'         => 'albums#upload_stat',         :as => :album_upload_stat
+  get    '/albums/:id'                     => 'albums#show',                :as => :album
+  get    '/albums/:id/edit'                => 'albums#edit',                :as => :edit_album
+  get    '/albums/:id/close_batch'         => 'albums#close_batch',         :as => :close_batch
+  put    '/albums/:id'                     => 'albums#update',              :as => :update_album
+  delete '/albums/:id'                     => 'albums#destroy',             :as => :delete_album
 
   #shares
   get '/albums/:album_id/shares'          => 'shares#index',      :as => :album_shares

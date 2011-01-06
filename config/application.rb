@@ -52,6 +52,8 @@ module Server
     # the key is not included 
     ActiveRecord::Base.include_root_in_json = false
 
+    # Bitly API Setup
+    Bitly.use_api_version_3
   end
 end
 
