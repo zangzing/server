@@ -21,6 +21,11 @@
         _create: function() {
             var self = this;
 
+            if(self.options.scrollContainer.data().zz_photogrid){
+                self.photoGrid = self.options.scrollContainer.data().zz_photogrid;
+            }
+
+
             var html = '';
 
             html += '<div class="photo-border">'
@@ -81,7 +86,7 @@
 
 
 
-
+/*
             //bind lazy loader to scroll container
             //todo: may want to have delegate handle the timer so we don't have lots and lots of timers running (and scroll event handlers)
             self.imageLoaded = false;
@@ -101,7 +106,7 @@
                 });
             }
 
-
+*/
 
             //uploading glyph
 
@@ -114,6 +119,11 @@
                         self.borderElement.hide("scale", {}, 300, function(){
                             self.element.animate({width:0},500, function(){
                                 self.element.remove();
+
+                                if(self.photoGrid){
+                                    self.photoGrid.resetLayout();
+                                }
+
                             })
                         });
                     }
