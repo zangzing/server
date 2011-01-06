@@ -9,7 +9,8 @@
     <meta name="DC.title" content="ZangZing" />
     <meta name="title" content="ZangZing" />
 
-    <script type="text/javascript" src="../../javascripts/lib/jquery.js"></script>
+    <script type="text/javascript" src="/swf/ZZSlideShow.js"></script> <!--includes jquery 1.4.2-->
+    <script type="text/javascript" src="/swf/swfobject.js"></script> 
 
     <style type="text/css">
         body {
@@ -19,15 +20,75 @@
             background-color: #333333;
         }
 
-        div {
+        #content {
             position: relative;
             top:30px;
             margin: auto;
             text-align: center;
         }
+
+        .javascript-movie{
+            margin-left:30px;
+        }
     </style>
+
+
+
     <script type="text/javascript">
+        var force_javascript = (document.location.search.indexOf('js=true') !== -1)
+
+
         $(document).ready(function(){
+
+            swfobject.registerObject("movie", "9.0.115", "", function(e) {
+                if (e.success == false || force_javascript) {
+                    var err;
+                    try {
+                        $("#movie").replaceWith('<div id="movie" class="javascript-movie"></div>');
+
+
+                        $.CustomSimpleFade.init({
+
+                            appendToID:			'movie',
+                            source:				'slides_source.xml',
+                            width: $(window).width() - 60,
+                            height: $(window).height() - 60,
+
+                            autoHideControls:	false,
+                            autoSlideShow:		true,
+
+                            backgroundColor:	'#000000',
+                            backgroundImage:	'',
+                            backgroundVisible:	true,
+                            borderColor:		'#ffffff',
+                            borderSize:			5,
+
+                            controlsHideSpeed:	2,
+
+                            exitButton:			true,
+                            exitButtonURL:		'/',
+
+                            iconsURL:			'http://www.jumpeye.com/flo/customProjects/SimpleFadeCustom/js/icons/',
+
+                            loadOriginalImages: false,
+
+                            scaleBackground:	true,
+                            scaleMode:			'scale',
+                            shadowColor:		'#000000',
+                            shadowDistance:		5,
+                            slideShowSpeed:		6,
+
+                            transitionSpeed:	0.5,
+                            transitionType:		'fade'
+
+                        });
+                    } catch(err) {
+                    }
+                }
+            });
+
+
+
 
             var resizeMovie = function(){
                 $('#movie').css({
@@ -36,73 +97,29 @@
                 });
             }
 
-
-            resizeMovie();
-
             $(window).resize(function(){
                 resizeMovie();
             });
+
+            resizeMovie();
+
+
         });
 
 
 
 
-//	    <!-- Begin Vertical alignment -->
-//        function getWindowHeight() {
-//            var windowHeight = 0;
-//            if (typeof(window.innerHeight) == 'number') {
-//                windowHeight = window.innerHeight;
-//            } else {
-//                if (document.documentElement && document.documentElement.clientHeight) {
-//                    windowHeight = document.documentElement.clientHeight;
-//                } else {
-//                    if (document.body && document.body.clientHeight) {
-//                        windowHeight = document.body.clientHeight;
-//                    }
-//                }
-//            }
-//            return windowHeight;
-//        }
-//        function setContent() {
-//            if (document.getElementById) {
-//                var windowHeight = getWindowHeight();
-//                if (windowHeight > 0) {
-//                    var contentElement = document.getElementById('content');
-//
-//                    contentElement.offsetWidth
-//
-//
-//
-//                    var contentHeight = contentElement.offsetHeight;
-//                    if (windowHeight - contentHeight > 0) {
-//                        contentElement.style.position = 'relative';
-//                        contentElement.style.top = ((windowHeight / 2) - (contentHeight / 2)) + 'px';
-//                    } else {
-//                        contentElement.style.position = 'static';
-//                    }
-//                }
-//            }
-//        }
-//        window.onload = function() {setContent();}
-//		window.onresize = function() {setContent();}
-//		<!-- END Vertical alignment -->
-	</script>
+    </script>
 </head>
 
 <body>
 	<div id="content">
-
-		<!-- Insert your embed code below -->
-
-				<object id="movie" type="application/x-shockwave-flash" data="/swf/ZZSlideShow.swf" width="1000" height="800">
-					<param name="movie" value="/swf/ZZSlideShow.swf">
-					<param name="allowFullScreen" value="true">
-					<param name="bgcolor" value="#1C1C1C">
-					<param name="flashvars" value="source=slides_source.xml&autoHideControls=false&autoSlideShow=true&backgroundColor=000000&backgroundImage=&backgroundVisible=true&borderSize=5&borderColor=FFFFFF&controlsHideSpeed=2&exitButton=true&exitButtonURL=/&loadOriginalImages=false&overrideFullScreenChange=false&scaleBackground=true&scaleMode=scale&shadowColor=0x000000&slideshowDistance=5&slideShowSpeed=6&transitionSpeed=0.7&transitionType=slide"/>
-				</object>
-
-		<!-- Embed code ends here -->
-
+        <object id="movie" type="application/x-shockwave-flash" data="/swf/ZZSlideShow.swf" width="1000" height="800">
+            <param name="movie" value="/swf/ZZSlideShow.swf">
+            <param name="allowFullScreen" value="true">
+            <param name="bgcolor" value="#1C1C1C">
+            <param name="flashvars" value="source=slides_source.xml&autoHideControls=false&autoSlideShow=true&backgroundColor=000000&backgroundImage=&backgroundVisible=true&borderSize=5&borderColor=FFFFFF&controlsHideSpeed=2&exitButton=true&exitButtonURL=/&loadOriginalImages=false&overrideFullScreenChange=false&scaleBackground=true&scaleMode=scale&shadowColor=0x000000&slideshowDistance=5&slideShowSpeed=6&transitionSpeed=0.7&transitionType=slide"/>
+        </object>
 	</div>
 </body>
  
