@@ -49,9 +49,15 @@ class Share < ActiveRecord::Base
         bitly = Bitly.new(BITLY_API_KEYS[:username], BITLY_API_KEYS[:api_key])
         url = bitly.shorten( self.album_url )
         self.bitly = url.short_url
-        return self.save
+        if self.save
+          #Create ShareActivity
+          sa = ShareActivity.create( :user => self.user, :album => self.album, :share => self )
+          self.album.activities << sa
+          return true
+        end
       end
       return false  
   end
+
 
 end

@@ -26,9 +26,6 @@ class EmailShare < Share
        self.recipients.each do |recipient |
           ZZ::Async::Email.enqueue( :album_shared_with_you, user.id, recipient.address, album.id, message )
        end
-       #Create Activity
-       #ua = UploadActivity.create( :user => self.user, :album => self.album, :upload_batch => self )
-       #self.album.activities << ua
      end
   end
 

@@ -1,0 +1,18 @@
+<li class="clearfix">
+  <a name="<%=activity.share.id%>"></a>
+  <div class="timeline-badge">
+    <%= render :partial => 'users/stacked_badge', :locals => { :user => activity.user }    %>
+  </div>
+  <div class="timeline-action">
+    <p><a href="<%=user_path(activity.user)%>"><%=activity.user.name%></a> shared  "<%=activity.album.name%>"
+    <%case activity.share%>
+        <% when EmailShare then%>
+          by Email
+        <% when PostShare  then%>
+          on <%= activity.share.recipients.first.service.capitalize%>
+         <%= ( activity.share.recipients.count >1 ? ' and '+activity.share.recipients.last.service.capitalize : '' )  %>
+    <%end%>
+    </p>
+    <p class="timeline-when"><%=time_ago_in_words(activity.share.created_at) %> ago </p>
+  </div>
+</li>
