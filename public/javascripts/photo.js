@@ -21,20 +21,22 @@
         _create: function() {
             var self = this;
 
+            if(self.options.scrollContainer.data().zz_photogrid){
+                self.photoGrid = self.options.scrollContainer.data().zz_photogrid;
+            }
+
+
             var html = '';
 
-            html += '<div class="photo-droppable"><div class="photo-droppable-marker"></div></div>'
             html += '<div class="photo-border">'
             html += '<img class="photo-image" src="/images/bg-blk-75.png">';
             html += '<img class="photo-delete-button" src="/images/btn-delete-photo.png">';
             html += '<div class="photo-caption">' + self.options.caption +'</div>';
             html += '</div>';
 
-            this.element.html(html);
+            $(html).appendTo(this.element);
 
             self.borderElement = self.element.find('.photo-border');
-            self.droppableElement = self.element.find('.photo-droppable');
-            self.droppableMarkerElement = self.element.find('.photo-droppable-marker');
             self.imageElement = self.element.find('.photo-image');
             self.captionElement = self.element.find('.photo-caption');
             self.deleteButtonElement = self.element.find('.photo-delete-button');
@@ -82,22 +84,19 @@
             });
 
 
-            self.droppableElement.css({
-                top: (self.height - Math.floor(self.options.maxHeight * .75) ) / 2,
-                height: Math.floor(self.options.maxHeight * .75),
-                width: Math.floor(self.options.maxHeight * .5),
-                left: -1* Math.floor(self.options.maxHeight * .5)/2
-            });
 
 
+/*
             //bind lazy loader to scroll container
-            //todo: may want to have delegate handle the timer so we don't have lots and lots of timers running
+            //todo: may want to have delegate handle the timer so we don't have lots and lots of timers running (and scroll event handlers)
             self.imageLoaded = false;
             if(self.options.scrollContainer){
-                var timer;
+                var timer = null;
                 $(self.options.scrollContainer).scroll(function(){
                     if(!self.imageLoaded){
-                        clearTimeout(timer);
+                        if(timer){
+                            clearTimeout(timer);
+                        }
                         if(self._inLazyLoadRegion()){
                             timer = setTimeout(function(){
                                 self._loadImage();
@@ -107,159 +106,7 @@
                 });
             }
 
-
-
-
-
-
-            //draggable
-            this.element.draggable({
-                start: function(){
-                    self.borderElement.addClass('highlighted');
-                },
-                stop: function(){
-                    self.borderElement.removeClass('highlighted');
-                },
-                revert: 'invalid',
-                revertDuration:400,
-                zIndex: 2700,
-                opacity:0.50,
-                helper: 'clone',
-                scrollSensitivity: self.height / 2,
-                scrollSpeed:self.height / 3
-            });
-
-            //droppable
-            this.droppableElement.droppable({
-                tolerance: 'pointer',
-
-                over: function(event, ui){
-
-                    if(ui.draggable[0] == self.element.prev()[0]){
-                        return;
-                    }
-
-                    self._rowLeft().animate({
-                        left: -1 * Math.floor(self.width / 2)
-                    },100);
-
-                    self._rowRight().add(self.element).animate({
-                        left: Math.floor(self.width / 2)
-                    },100);
-                },
-                out: function(){
-
-                    self._rowLeft().animate({
-                        left: 0
-                    },100);
-
-                    self._rowRight().add(self.element).animate({
-                        left: 0
-                    },100);
-
-
-                },
-
-
-                drop: function(event, ui){
-//                    $('.photo-droppable-marker').hide();
-
-                    if(droppedCell !== self){
-
-                        var duration = 700;
-                        var droppedCell = ui.draggable.data().zz_photo.element;
-
-
-//                        var spacer = $('<div></div>').addClass('cell').css({width:self.width, height:self.height});
-//                        spacer.insertBefore(droppedCell)
-//                        spacer.animate({width:0},duration,'linear', function(){
-//                            spacer.remove();
-//                        });
-
-
-
-                        if(droppedCell.position().top < self.element.position().top ){ //drag down between rows
-
-                            var rowLeft = self._rowLeft();
-
-                            rowLeft.slice(-1).css({left:0});
-
-                            rowLeft.slice(0,-1).css({left:Math.floor(self.width / 2)}).animate({
-                                left: 0
-                            },duration);
-
-                            self._rowRight().add(self.element).animate({
-                                left: 0
-                            },duration);
-
-                            droppedCell.css({top:0, left:Math.floor(self.width / 2)}).insertBefore(self.element).animate({left:0},duration);
-
-
-
-//                        console.log('drag down');
-
-                        }
-                        else if(droppedCell.position().top > self.element.position().top) { //drag up between rows
-
-                            self._rowLeft().css({left:Math.floor(self.width / 2)}).animate({
-                                left: 0
-                            },duration);
-
-                            self._rowRight().slice(0,-1).add(self.element).animate({
-                                left: 0
-                            },duration);
-
-                            self._rowRight().slice(-1).css({left:0});
-
-                            droppedCell.css({top:0, left:Math.floor(self.width / 2)}).insertBefore(self.element).animate({left:0},duration);
-
-//                        console.log('drag up');
-                        }
-                        else if(droppedCell.position().left < self.element.position().left){ //drag right, same row
-
-//                        console.log('drag right');
-                            self._rowLeft().css({left:Math.floor(self.width / 2)}).animate({
-                                left: 0
-                            },duration);
-
-                            self._rowRight().add(self.element).animate({
-                                left: 0
-                            },duration);
-
-                            droppedCell.css({top:0, left:Math.floor(self.width / 2)}).insertBefore(self.element).animate({left:0},duration);
-
-                        }
-                        else{  //drag left, same row
-
-//                            droppedCell.data().zz_photo._rowLeft().add(self.element).animate({
-//                                left: 0
-//                            },duration);
-
-
-                            droppedCell.insertBefore(self.element).css({top:0, left:-1 * Math.floor(self.width / 2)});
-
-//                            droppedCell.data().zz_photo._rowRight().add(droppedCell).animate({
-//                                left: 0
-//                            },duration);
-
-
-                            console.log(self.element.css('left'))
-
-                            
-//
-//                         self._rowLeft().css({left:Math.floor(self.width / 2)}).animate({
-//                            left: 0
-//                        },duration);
-//
-
-
-//                        console.log('drag left');
-                        }
-                    }
-
-                }
-
-            });
+*/
 
             //uploading glyph
 
@@ -272,6 +119,11 @@
                         self.borderElement.hide("scale", {}, 300, function(){
                             self.element.animate({width:0},500, function(){
                                 self.element.remove();
+
+                                if(self.photoGrid){
+                                    self.photoGrid.resetLayout();
+                                }
+
                             })
                         });
                     }
@@ -296,31 +148,6 @@
                 }
             }
         },
-
-        _rowLeft: function(){
-            var top = this.element.position().top;
-            var sibling = this.element.prev();
-            var list = [];
-            while(sibling.length > 0 && sibling.position().top === top){
-                list.push(sibling[0]);
-                sibling = sibling.prev();
-            }
-            return $(list);
-        },
-
-        _rowRight: function(){
-            var top = this.element.position().top;
-            var sibling = this.element.next();
-            var list = [];
-
-            while(sibling.length > 0 && sibling.position().top === top){
-                list.push(sibling[0]);
-                sibling = sibling.next();
-            }
-            return $(list);
-
-        },
-
 
 
         _loadImage : function(){
@@ -347,12 +174,12 @@
                 self.imageElement.attr("src", self.options.src);
 
 
-//                self.borderElement.mouseover(function(){
+//                self.element.mouseover(function(){
 //                    self._resize(1.15);
 //                    self.element.css({'z-index':1000});
 //                });
 //
-//                self.borderElement.mouseout(function(){
+//                self.element.mouseout(function(){
 //                    self._resize(1);
 //                    self.element.css({'z-index':-1});
 //                })
@@ -406,12 +233,13 @@
 
 
         _inLazyLoadRegion: function(){
-            //todo: for some reason, this method works with jquery 1.4.2 but not jquery 1.4.4 
-            return (!this._belowView(this.element, this.options.scrollContainer,this.options.lazyLoadThreshold) &&
-                    !this._rightOfView(this.element, this.options.scrollContainer,this.options.lazyLoadThreshold) &&
-                    !this._aboveView(this.element, this.options.scrollContainer,this.options.lazyLoadThreshold) &&
-                    !this._leftOfView(this.element, this.options.scrollContainer,this.options.lazyLoadThreshold)
-                    );
+            var below = this._belowView(this.element, this.options.scrollContainer,this.options.lazyLoadThreshold);
+            var right = this._rightOfView(this.element, this.options.scrollContainer,this.options.lazyLoadThreshold);
+            var above = this._aboveView(this.element, this.options.scrollContainer,this.options.lazyLoadThreshold);
+            var left =  this._leftOfView(this.element, this.options.scrollContainer,this.options.lazyLoadThreshold);
+
+
+            return (!below) && (!right) && (!above) && (!below);
 
 
 
@@ -511,6 +339,20 @@
                 });
             }
 
+        },
+
+        dragStart: function(){
+            this.element.addClass('dragging');
+        },
+
+        dragEnd: function(){
+            this.element.removeClass('dragging');
+        },
+
+        dragHelper: function(){
+            var helper = this.element.clone();
+            helper.find('.photo-delete-button').hide();
+            return helper;
         },
 
         destroy: function() {
