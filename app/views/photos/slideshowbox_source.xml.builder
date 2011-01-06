@@ -13,7 +13,7 @@ xml.SlideshowBox do
           xml.fullScreenImagePath photo.source_screen_url.include?('/proxy?') ? photo.source_screen_url : "/proxy?url=#{photo.source_screen_url}"
         end
         xml.title photo.caption
-        xml.description photo.headline
+        xml.description photo.caption
       end
     end
   end
