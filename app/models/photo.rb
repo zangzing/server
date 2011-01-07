@@ -226,48 +226,51 @@ class Photo < ActiveRecord::Base
     self.state == 'ready'
   end
 
+#  def thumb_url
+#    set_s3bucket
+#    image.url(:thumb)
+#  end
+#
+#  def thumb_path
+#    set_s3bucket
+#    image.path(:thumb)
+#  end
+#
+#  def medium_url
+#    set_s3bucket
+#    image.url(:medium)
+#  end
+
+
+
+  def stamp_url
+    if self.ready?
+      set_s3bucket
+      image.url(:thumb)
+    else
+      return self.source_thumb_url
+    end
+  end
+
   def thumb_url
-    set_s3bucket
-    image.url(:thumb)
-  end
-
-  def thumb_path
-    set_s3bucket
-    image.path(:thumb)
-  end
-
-  def medium_url
-    set_s3bucket
-    image.url(:medium)
-  end
-
-
-
-  def current_stamp_url
     if self.ready?
-      return self.thumb_url
+      set_s3bucket
+      image.url(:thumb)
     else
       return self.source_thumb_url
     end
   end
 
-  def current_thumb_url
+  def screen_url
     if self.ready?
-      return self.thumb_url
-    else
-      return self.source_thumb_url
-    end
-  end
-
-  def current_screen_url
-    if self.ready?
-      return self.medium_url
+      set_s3bucket
+      image.url(:medium)
     else
       return self.source_screen_url
     end
   end
 
-  def current_original_url
+  def original_url
     if self.ready?
       return self.image.url
     else

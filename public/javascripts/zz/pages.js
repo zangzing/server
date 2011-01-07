@@ -74,7 +74,7 @@ pages.album_name_tab = {
                         if(id == currentId){
                             selectedIndex = index;
                         }
-                        var src = element.current_thumb_url;
+                        var src = element.thumb_url;
 
                         
                         if (agent.isAgentUrl(src)){
@@ -168,7 +168,7 @@ pages.edit_album_tab = {
 
             for(var i in temp){
                 var id = 'photo-' + temp[i].id;
-                var url = temp[i].current_thumb_url;
+                var url = temp[i].thumb_url;
 
                 
                 if (agent.isAgentUrl(url)) {
@@ -582,7 +582,7 @@ pages.account_settings_profile_tab = {
                     if(id == currentId){
                         selectedIndex = index;
                     }
-                    var src = element.current_thumb_url;
+                    var src = element.thumb_url;
 
                     
                     if (agent.isAgentUrl(src)){
@@ -625,7 +625,7 @@ pages.account_settings_profile_tab = {
                     if(id == currentId){
                         selectedIndex = index;
                     }
-                    var src = element.current_thumb_url;
+                    var src = element.thumb_url;
 
                     
                     if (agent.isAgentUrl(src)){

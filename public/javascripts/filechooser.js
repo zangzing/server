@@ -767,7 +767,7 @@ var tray = {
 
         photos = $.map(photos, function(photo, index){
             var id = photo.id;
-            var src = photo.current_thumb_url;
+            var src = photo.thumb_url;
 
             if(agent.isAgentUrl(src)){
                src = agent.buildAgentUrl(src); 
