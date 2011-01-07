@@ -1,11 +1,15 @@
 /* Body, headers, text
 ----------------------------------------------------------------------------- */
 
-html {overflow-y: scroll;}
+html {
+    overflow-y: scroll;
+    height:100%;
+}
 
 
 body { 
   width: 98%;
+  height:100%;
   margin: 0 auto;
   background-color: #ffffff;
   /*font-family: "Lucida Grande", "Lucida Sans Unicode", "Trebuchet MS", Tahoma, Helvetica, Arial, sans-serif;*/

@@ -30,6 +30,17 @@
         .javascript-movie{
             margin-left:30px;
         }
+
+        #scrim{
+            position:absolute;
+            top:0;
+            left:0;
+            height:100%;
+            width:100%;
+            background-color: #000000;
+            z-index:100000;
+        }
+
     </style>
 
 
@@ -102,7 +113,8 @@
             });
 
             resizeMovie();
-
+//
+            $('#scrim').fadeOut(3000);
 
         });
 
@@ -121,6 +133,7 @@
             <param name="flashvars" value="source=slides_source.xml&autoHideControls=false&autoSlideShow=true&backgroundColor=000000&backgroundImage=&backgroundVisible=true&borderSize=5&borderColor=FFFFFF&controlsHideSpeed=2&exitButton=true&exitButtonURL=/&loadOriginalImages=false&overrideFullScreenChange=false&scaleBackground=true&scaleMode=scale&shadowColor=0x000000&slideshowDistance=5&slideShowSpeed=6&transitionSpeed=0.7&transitionType=slide"/>
         </object>
 	</div>
+    <div id="scrim"></div>
 </body>
  
 </html>

@@ -65,7 +65,21 @@ zz.init = {
 
 
         $('#footer #play-button').click(function(){
-            document.location.href = '/albums/' + album_id + '/photos?view=movie'; //global variable set in _bottom_nav
+            $('<div></div>').css({
+                position: 'absolute',
+                top:0,
+                left:0,
+                height:'100%',
+                width:'100%',
+                'z-index':3000,
+                'background-color':'#000000',
+                opacity: 0
+            }).appendTo('body').animate({opacity:1},500, function(){
+                document.location.href = '/albums/' + album_id + '/photos?view=movie'; //global variable set in _bottom_nav
+            });
+
+
+
         });
 
         $('#footer #new-album-button').click(function(){
