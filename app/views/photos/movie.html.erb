@@ -9,27 +9,32 @@
     <meta name="DC.title" content="ZangZing" />
     <meta name="title" content="ZangZing" />
 
-    <script type="text/javascript" src="/swf/ZZSlideShow.js"></script> <!--includes jquery 1.4.2-->
-    <script type="text/javascript" src="/swf/swfobject.js"></script> 
 
     <style type="text/css">
+        html{
+            overflow: hidden;
+        }
+
         body {
             margin: 0;
             padding: 0;
             text-align: center;
-            background-color: #333333;
+            background-color: #000000;
         }
 
-        #content {
-            position: relative;
-            top:30px;
-            margin: auto;
-            text-align: center;
+        /*#content {*/
+            /*position: relative;*/
+            /*margin: auto;*/
+            /*text-align: center;*/
+        /*}*/
+
+        #movie {
+            height:100%;
+            width:100%;
         }
 
-        .javascript-movie{
-            margin-left:30px;
-        }
+        /*.javascript-movie{*/
+        /*}*/
 
         #scrim{
             position:absolute;
@@ -44,8 +49,10 @@
     </style>
 
 
-
+    <script type="text/javascript" src="/swf/ZZSlideShow.js"></script> <!--includes jquery 1.4.2-->
+    <script type="text/javascript" src="/swf/swfobject.js"></script>
     <script type="text/javascript">
+      
         var force_javascript = (document.location.search.indexOf('js=true') !== -1)
 
 
@@ -54,73 +61,71 @@
             swfobject.registerObject("movie", "9.0.115", "", function(e) {
                 if (e.success == false || force_javascript) {
                     var err;
-                    try {
 
-                        $("#movie").replaceWith('<div id="movie" class="javascript-movie"></div>');
+                    $("#movie").replaceWith('<div id="movie" class="javascript-movie"></div>');
 
 
-                        $.CustomSimpleFade.init({
+                    $.CustomSimpleFade.init({
 
-                            appendToID:			'movie',
-                            source:				'slides_source.xml',
-                            width: $(window).width() - 60,
-                            height: $(window).height() - 60,
+                        appendToID:			'movie',
+                        source:				'slides_source.xml',
+                        width: $(window).width() - 60,
+                        height: $(window).height() - 60,
 
-                            autoHideControls:	false,
-                            autoSlideShow:		true,
+                        autoHideControls:	false,
+                        autoSlideShow:		true,
 
-                            backgroundColor:	'#000000',
-                            backgroundImage:	'',
-                            backgroundVisible:	true,
-                            borderColor:		'#ffffff',
-                            borderSize:			5,
+                        backgroundColor:	'#000000',
+                        backgroundImage:	'',
+                        backgroundVisible:	true,
+                        borderColor:		'#ffffff',
+                        borderSize:			5,
 
-                            controlsHideSpeed:	2,
+                        controlsHideSpeed:	2,
 
-                            exitButton:			true,
-                            exitButtonURL:		'/',
+                        exitButton:			true,
+                        exitButtonURL:		'/',
 
-                            iconsURL:			'http://www.jumpeye.com/flo/customProjects/SimpleFadeCustom/js/icons/',
+                        iconsURL:			'http://www.jumpeye.com/flo/customProjects/SimpleFadeCustom/js/icons/',
 
-                            loadOriginalImages: false,
+                        loadOriginalImages: false,
 
-                            scaleBackground:	true,
-                            scaleMode:			'scale',
-                            shadowColor:		'#000000',
-                            shadowDistance:		5,
-                            slideShowSpeed:		6,
+                        scaleBackground:	true,
+                        scaleMode:			'scale',
+                        shadowColor:		'#000000',
+                        shadowDistance:		5,
+                        slideShowSpeed:		6,
 
-                            transitionSpeed:	0.5,
-                            transitionType:		'slide'
+                        transitionSpeed:	0.5,
+                        transitionType:		'slide',
 
-                        });
-                    } catch(err) {
-                    }
+
+                    });
+
+                    $.CustomSimpleFade.showFullScreen();
+
                 }
             });
 
 
-
-
-            var resizeMovie = function(){
+            var setSize = function(){
                 $('#movie').css({
-                    width: $(window).width() - 60,
-                    height: $(window).height() - 60
+                    height: $(window).height(),
+                    width: $(window).width()
                 });
             }
 
             $(window).resize(function(){
-                resizeMovie();
-            });
+                setSize();
+            })
 
-            resizeMovie();
-//
-
+            setSize();
         });
 
         $(window).ready(function(){
+            $('#movie').css('visibility', 'visible');
             $('#scrim').fadeOut(1000);
-        });    
+        });
 
 
 
@@ -128,14 +133,12 @@
 </head>
 
 <body>
-	<div id="content">
-        <object id="movie" type="application/x-shockwave-flash" data="/swf/ZZSlideShow.swf" width="1000" height="800">
-            <param name="movie" value="/swf/ZZSlideShow.swf">
-            <param name="allowFullScreen" value="true">
-            <param name="bgcolor" value="#1C1C1C">
-            <param name="flashvars" value="source=slides_source.xml&autoHideControls=false&autoSlideShow=true&backgroundColor=000000&backgroundImage=&backgroundVisible=true&borderSize=5&borderColor=FFFFFF&controlsHideSpeed=2&exitButton=true&exitButtonURL=/&loadOriginalImages=false&overrideFullScreenChange=false&scaleBackground=true&scaleMode=scale&shadowColor=0x000000&slideshowDistance=5&slideShowSpeed=6&transitionSpeed=0.7&transitionType=slide"/>
-        </object>
-	</div>
+    <object id="movie" type="application/x-shockwave-flash" data="/swf/ZZSlideShow.swf">
+        <param name="movie" value="/swf/ZZSlideShow.swf">
+        <param name="allowFullScreen" value="true">
+        <param name="bgcolor" value="#1C1C1C">
+        <param name="flashvars" value="source=slides_source.xml&autoHideControls=false&autoSlideShow=true&backgroundColor=000000&backgroundImage=&backgroundVisible=true&borderSize=5&borderColor=FFFFFF&controlsHideSpeed=2&exitButton=true&exitButtonURL=/&loadOriginalImages=false&overrideFullScreenChange=false&scaleBackground=true&scaleMode=scale&shadowColor=0x000000&slideshowDistance=5&slideShowSpeed=6&transitionSpeed=0.7&transitionType=slide"/>
+    </object>
     <div id="scrim"></div>
 </body>
  
