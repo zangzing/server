@@ -188,7 +188,10 @@ class PhotosController < ApplicationController
       end
 
       format.json do
+        t1 = Time.now
         render :json => @all_photos.to_json(:only => [:id, :caption, :source_guid ] , :methods => [:stamp_url, :thumb_url, :screen_url, :original_url])
+        t2 = Time.now
+        logger.debug "time: " + (t2-t1).to_s
       end
     end
   end
