@@ -241,6 +241,43 @@ class Photo < ActiveRecord::Base
     image.url(:medium)
   end
 
+
+
+  def current_stamp_url
+    if self.ready?
+      return self.thumb_url
+    else
+      return self.source_thumb_url
+    end
+  end
+
+  def current_thumb_url
+    if self.ready?
+      return self.thumb_url
+    else
+      return self.source_thumb_url
+    end
+  end
+
+  def current_screen_url
+    if self.ready?
+      return self.medium_url
+    else
+      return self.source_screen_url
+    end
+  end
+
+  def current_original_url
+    if self.ready?
+      return self.image.url
+    else
+      return self.source_screen_url
+    end
+  end
+
+
+
+
   def set_s3bucket
     image.instance_variable_set '@bucket', self.image_bucket unless self.image_bucket.nil?
   end

@@ -188,7 +188,7 @@ class PhotosController < ApplicationController
       end
 
       format.json do
-        render :json => @all_photos.to_json(:methods => [:thumb_url, :medium_url])
+        render :json => @all_photos.to_json(:only => [:id, :caption, :source_guid ] , :methods => [:current_stamp_url, :current_thumb_url, :current_screen_url, :current_original_url])
       end
     end
   end

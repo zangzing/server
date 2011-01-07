@@ -74,14 +74,9 @@ pages.album_name_tab = {
                         if(id == currentId){
                             selectedIndex = index;
                         }
-                        var src;
-                        if(element.state === 'ready'){
-                            src = element.thumb_url;
-                        }
-                        else{
-                            src = element.source_thumb_url;
-                        }
+                        var src = element.current_thumb_url;
 
+                        
                         if (agent.isAgentUrl(src)){
                             src = agent.buildAgentUrl(src);
                         }
@@ -173,13 +168,9 @@ pages.edit_album_tab = {
 
             for(var i in temp){
                 var id = 'photo-' + temp[i].id;
-                var url = null
-                if (temp[i].state == 'ready') {
-                    url = temp[i].thumb_url;
-                } else {
-                    url = temp[i].source_thumb_url;
-                }
+                var url = temp[i].current_thumb_url;
 
+                
                 if (agent.isAgentUrl(url)) {
                     url = agent.buildAgentUrl(url);
                 }
@@ -591,14 +582,9 @@ pages.account_settings_profile_tab = {
                     if(id == currentId){
                         selectedIndex = index;
                     }
-                    var src;
-                    if(element.state === 'ready'){
-                        src = element.thumb_url;
-                    }
-                    else{
-                        src = element.source_thumb_url;
-                    }
+                    var src = element.current_thumb_url;
 
+                    
                     if (agent.isAgentUrl(src)){
                         src = agent.buildAgentUrl(src);
                     }
@@ -639,14 +625,9 @@ pages.account_settings_profile_tab = {
                     if(id == currentId){
                         selectedIndex = index;
                     }
-                    var src;
-                    if(element.state === 'ready'){
-                        src = element.thumb_url;
-                    }
-                    else{
-                        src = element.source_thumb_url;
-                    }
+                    var src = element.current_thumb_url;
 
+                    
                     if (agent.isAgentUrl(src)){
                         src = agent.buildAgentUrl(src);
                     }
