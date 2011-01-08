@@ -113,12 +113,11 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    display:none;
 }
 
-.photo-border:hover .photo-caption{
-    display:block;
-}
+/*.photo-border:hover .photo-caption{*/
+    /*display:block;*/
+/*}*/
 
 .photo-caption input{
     position:absolute;
