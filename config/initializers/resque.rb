@@ -4,6 +4,8 @@
 #   From suggestions found in https://github.com/defunkt/resque/blob/master/README.markdown
 
 require 'resque/server'
+require 'resque-retry'
+require 'resque-retry/server'
 
 
 if defined?(Rails.root) and File.exists?("#{Rails.root}/config/resque.yml")

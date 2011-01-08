@@ -18,6 +18,7 @@ gem 'i18n'
 gem 'paperclip',     '2.3.6'
 gem 'aws-s3',        '>= 0.6.2', :require => 'aws/s3' # S3
 gem 'resque'                                          # Queuing
+gem 'resque-retry'
 gem 'SystemTimer'                                     # For Random numbers (resque uuid)
 gem 'actionmailer'
 gem 'will_paginate',        '3.0.pre2'                        # Pagination
@@ -44,7 +45,7 @@ group :test do
   gem 'rspec'  
   gem 'mechanize'
   gem 'launchy'
-  gem 'rspec-rails', '>= 1.3.2' 
+  gem 'rspec-rails'
   gem 'factory_girl'
   gem 'selenium'
   gem 'selenium-client'
