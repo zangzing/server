@@ -61,7 +61,7 @@ class PhotosController < ApplicationController
       end
     end
 
-    render :json => photos.to_json(:only =>[:id, :agent_id, :state, :source_thumb_url, :source_screen_url, :source_guid], :methods => [:thumb_url, :medium_url])
+    render :json => photos.to_json(:only =>[:id, :agent_id, :state, :source_thumb_url, :source_screen_url, :source_guid], :methods => [:thumb_url, :screen_url])
   end
 
 
@@ -239,7 +239,7 @@ class PhotosController < ApplicationController
       end
 
       format.json do
-        render :json => @album.photos.to_json(:methods => [:thumb_url, :medium_url])
+        render :json => @album.photos.to_json(:methods => [:thumb_url, :screen_url])
       end
     end
   end

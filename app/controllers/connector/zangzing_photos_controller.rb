@@ -7,7 +7,7 @@ class Connector::ZangzingPhotosController < Connector::ConnectorController
         :id   => p.id,
         :type => 'photo',
         :thumb_url => p.thumb_url,
-        :screen_url => p.medium_url,
+        :screen_url => p.screen_url,
         :add_url => zangzing_photo_action_path({:photo_id => p.id, :action => 'import'}),
         :source_guid => p.source_guid
       }
