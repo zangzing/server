@@ -10,6 +10,7 @@
             selectedIndex:-1,
             thumbnailSize: 20,
             showSelectedIndexIndicator:false,
+            repaintOnResize:false,
             onDeletePhoto: function(index, photo){},
             onSelectPhoto: function(index, photo){},
             onPreviewPhoto: function(index, photo){}
@@ -26,16 +27,6 @@
         _create: function() {
             var self = this;
 
-            //these only work if element's is visible (ie display !- none)
-            var width = this.element.width();
-            var height = this.element.height();
-
-            if(width > height){
-                this.orientation = this.ORIENTATION_X;
-            }
-            else{
-                this.orientation = this.ORIENTATION_Y;
-            }
 
             var html = '';
             html += '<div class="thumbtray-wrapper">';
@@ -65,25 +56,48 @@
             this.selectedIndexIndicator = this.element.find('.thumbtray-current-index-indicator');
 
 
-            this.wrapperElement.css({width:width, height:height});
-            this.scrimElement.css({width:width, height:height});
-            this.thumbnailsElement.css({width:width, height:height});
 
-            if(this.orientation === this.ORIENTATION_X){
-                this.previewElement.addClass('x');
-                this.selectionElement.addClass('x');
-                this.selectionElement.find('img').css({height:this.options.selectionSize});
-                this.previewElement.find('img').css({height:this.options.previewSize});
-                this.traySize = width;
-            }
-            else{
-                this.previewElement.addClass('y');
-                this.selectionElement.addClass('y');
-                this.selectionElement.find('img').css({width:this.options.selectionSize});
-                this.previewElement.find('img').css({width:this.options.previewSize});
-                this.traySize = height;
+            //size and resize
+            var setSize = function(){
+                //these only work if element's is visible (ie display !- none)
+                var width = self.element.width();
+                var height = self.element.height();
 
-            }
+                if(width > height){
+                    self.orientation = self.ORIENTATION_X;
+                }
+                else{
+                    self.orientation = self.ORIENTATION_Y;
+                }
+                
+                self.wrapperElement.css({width:width, height:height});
+                self.scrimElement.css({width:width, height:height});
+                self.thumbnailsElement.css({width:width, height:height});
+
+
+                if(self.orientation === self.ORIENTATION_X){
+                    self.previewElement.addClass('x');
+                    self.selectionElement.addClass('x');
+                    self.selectionElement.find('img').css({height:self.options.selectionSize});
+                    self.previewElement.find('img').css({height:self.options.previewSize});
+                    self.traySize = width;
+                }
+                else{
+                    self.previewElement.addClass('y');
+                    self.selectionElement.addClass('y');
+                    self.selectionElement.find('img').css({width:self.options.selectionSize});
+                    self.previewElement.find('img').css({width:self.options.previewSize});
+                    self.traySize = height;
+                }
+            };
+            setSize();
+
+            if(self.options.repaintOnResize){
+                $(window).resize(function(){
+                    setSize();
+                    self._repaintThumbnails();
+                });
+            };
 
 
 
@@ -192,6 +206,9 @@
                     self.previewElement.hide();
                 }
             });
+
+
+
 
         },
 

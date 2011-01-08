@@ -226,6 +226,7 @@
                     showSelection:false,
                     thumbnailSize:16,
                     showSelectedIndexIndicator:true,
+                    repaintOnResize:true,
                     onSelectPhoto: function(index, photo){
                         if(!nativeScrollActive){
                             if(photo){
