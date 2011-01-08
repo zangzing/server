@@ -17,7 +17,7 @@
 
             onClickPhoto: jQuery.noop,
 
-            thumbscroller: true
+            showThumbscroller: true
         },
 
 
@@ -215,12 +215,10 @@
 
 
             //thumbscroller
+            if(self.options.showThumbscroller){
+                var animateScrollActive = false;
+                var nativeScrollActive = false;
 
-
-            var animateScrollActive = false;
-            var nativeScrollActive = false;
-
-            if(self.options.thumbscroller){
                 var thumbscrollerElement = $('<div class=".photogrid-thumbscroller"></div>').addClass('photogrid-thumbscroller').appendTo(self.element.parent());
 
 
@@ -262,14 +260,7 @@
                         nativeScrollActive = false;
                     }
                 });
-
-
-
-
-
             }
-
-
         },
 
 
@@ -328,6 +319,10 @@
 
 
         destroy: function() {
+            if(this.thumbscroller){
+                this.thumbscroller.element.remove();
+            }
+
             $.Widget.prototype.destroy.apply( this, arguments );
         }
     });

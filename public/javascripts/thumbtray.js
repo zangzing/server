@@ -39,6 +39,7 @@
             html += '        <div class="thumbtray-delete-button"></div>';
             html += '    </div>';
             html += '    <img class="thumbtray-loading-indicator" src="/images/loading.gif"/>'
+            html += '    <div class="thumbtray-mask"></div>'
             html += '    <div class="thumbtray-current-index-indicator"></div>'
             html += '    <div class="thumbtray-scrim"></div>'
             html += '</div>';
@@ -49,6 +50,7 @@
 
             this.wrapperElement = this.element.find('.thumbtray-wrapper');
             this.scrimElement = this.element.find('.thumbtray-scrim');
+           this.maskElement = this.element.find('.thumbtray-mask');
             this.previewElement = this.element.find('.thumbtray-preview');
             this.selectionElement = this.element.find('.thumbtray-selection');
             this.thumbnailsElement = this.element.find('.thumbtray-thumbnails');
@@ -72,6 +74,7 @@
                 
                 self.wrapperElement.css({width:width, height:height});
                 self.scrimElement.css({width:width, height:height});
+                self.maskElement.css({width:width, height:height});
                 self.thumbnailsElement.css({width:width, height:height});
 
 

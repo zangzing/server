@@ -123,63 +123,39 @@ pages.album_name_tab = {
 
 pages.edit_album_tab = {
     init: function(callback){
-        var url =  '/albums/' + zz.album_id + '/edit';
+        $.ajax({
+            dataType: 'json',
+            url: '/albums/' + zz.album_id + '/photos.json',
+            success: function(json){
 
-        $('article').load(url, function(){
+                var ps = $(json).map(function(index, element){
+                    var photo = {};
+                    photo.stamp_url = element.stamp_url;
+                    photo.thumb_url = element.thumb_url;
+                    photo.src =       element.thumb_url;
+                    photo.screen_url = element.screen_url;
 
-            var temp = jQuery.parseJSON(json).photos;
+                    photo.caption = element.caption;
+                    photo.id = element.id;
 
-            var onStartLoadingImage = function(id, src) {
-                $('#' + id).attr('src', '/images/loading.gif');
-            };
+                    return photo;
+                });
 
-            var onImageLoaded = function(id, src, width, height) {
-                var new_size = 120;
-                //console.log('id: #'+id+', src: '+src+', width: '+width+', height: '+height);
+                $('article').remove();
+                $('body').prepend('<article></article>');
 
-                if (height > width) {
-                    //console.log('tall');
-                    //tall
-                    var ratio = width / height;
-                    $('#' + id).attr('src', src).css({height: new_size+'px', width: (ratio * new_size) + 'px' });
+                var grid = $('article').zz_photogrid({
+                    photos:ps,
+                    allowDelete: true,
+                    allowEditCaption: true,
+                    allowReorder: true,
+                    cellHeight: 150,
+                    cellWidth: 150,
+                    showThumbscroller: true
+                }).data().zz_photogrid;
 
-
-                    var guuu = $('#'+id).attr('id').split('photo-')[1];
-                    $('#' + id).parent('li').attr({id: 'photo-'+guuu});
-                    $('li#photo-'+ guuu +'-li figure').css({bottom: '0px', width: (new_size * ratio) + 'px', left: $('#' + id).position()['left'] + 'px' });
-                    $('li#photo-'+ guuu +'-li a.delete img').css({top: '-16px', right: (150 - $('#' + id).outerWidth() - 20) / 2  +'px'} );
-
-                } else {
-                    //wide
-                    //console.log('wide');
-
-                    var ratio = height / width;
-                    $('#' + id).attr('src', src).css({height: (ratio * new_size) + 'px', width: new_size+'px', marginTop: ((new_size - (ratio * new_size)) / 2) + 'px' });
-
-                    var guuu = $('#'+id).attr('id').split('photo-')[1];
-                    //$('li#photo-'+ guuu +'-li a.delete img').css({top: ($('#' + id).position()['top'] - 26), right: '-26px'});
-                    $('li#photo-'+ guuu +'-li figure').css({width: new_size + 'px', bottom:  0, left: (140 - new_size) / 2 +'px'});
-                    //console.log(guuu);
-                }
-
-            };
-
-            var imageloader = new ImageLoader(onStartLoadingImage, onImageLoaded);
-
-            for(var i in temp){
-                var id = 'photo-' + temp[i].id;
-                var url = temp[i].thumb_url;
-
-                
-                if (agent.isAgentUrl(url)) {
-                    url = agent.buildAgentUrl(url);
-                }
-
-                imageloader.add(id, url);
-
+                $('article').show();
             }
-
-            imageloader.start(5);
         });
     },
 

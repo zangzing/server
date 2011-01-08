@@ -4,8 +4,6 @@
         options: {
             allowDelete: false,
             onDelete:jQuery.noop,
-            allowRename: false,
-            onRename:jQuery.noop,
             maxHeight:120,
             maxWidth:120,
             caption:null,
@@ -129,7 +127,10 @@
                         });
                     }
                 });
-            };
+            }
+            else{
+                self.deleteButtonElement.remove();   
+            }
 
 
             //edit caption

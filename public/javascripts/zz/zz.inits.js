@@ -219,19 +219,17 @@ zz.init = {
                         return photo;
                     });
 
-                    $(document).ready(function(){
-                        var grid = $('article').zz_photogrid({
-                            photos:photos,
-                            allowDelete: true,
-                            allowEditCaption: true,
-                            allowReorder: true,
-                            cellHeight: 150,
-                            cellWidth: 150,
-                            onClickPhoto: function(index, photo){
-                                document.location.href = "/albums/" + album_id +"/photos?view=slideshow&page=" + (index+1);
-                            }
-                        }).data().zz_photogrid;
-                    });
+                    var grid = $('article').zz_photogrid({
+                        photos:photos,
+                        allowDelete: false,
+                        allowEditCaption: false,
+                        allowReorder: false,
+                        cellHeight: 150,
+                        cellWidth: 150,
+                        onClickPhoto: function(index, photo){
+                            document.location.href = "/albums/" + album_id +"/photos?view=slideshow&page=" + (index+1);
+                        }
+                    }).data().zz_photogrid;
 
                     //setup upload progress smeter
                     $('#progress-meter').hide();
