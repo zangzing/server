@@ -32,7 +32,10 @@ module ZZ
         end 
           
         def self.perform( photo_id )
-          raise Exception.new("testing")
+
+# used to force failures for testing
+#          raise Exception.new("testing")
+
           photo = Photo.find(photo_id)
           photo.upload_to_s3
           photo = nil
