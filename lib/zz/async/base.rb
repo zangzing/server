@@ -71,9 +71,8 @@ module ZZ
           # pull out the match list for the given exception name
           ex_name = ex.class.name
           ex_message = ex.message
-          filter = dont_retry_filter
           match = dont_retry_filter[ex_name]
-          if match == nil
+          if match.nil?
             # no string match, look for an exception match
             # by scanning all explicitly since an Exception
             # can match against sub classes
@@ -87,7 +86,9 @@ module ZZ
               end
             }
           end
-          if match != nil && (ex_message =~ match) != nil # when found exit with false since we don't want retry if we matched
+          # if we have something to match on try it with a regular expression
+          if match && (ex_message =~ match) != nil
+            # when found exit with false since we don't want retry if we matched
             Rails.logger.error "Will not retry job for due to matching filter exception of #{ex_name} : #{ex_message} for #{self.name}"
             return false
           end
