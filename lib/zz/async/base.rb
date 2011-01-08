@@ -48,12 +48,13 @@ module ZZ
       # so use with caution
       #
       self.dont_retry_filter = {
-        BitlyError.name             => /^MISSING_ARG"/i,
-        "Errno::ENOENT"             => /.*/,
-        ArgumentError.name          => /.*/,
-        NoMethodError.name          => /.*/,
-        SyntaxError.name            => /.*/,
-        RuntimeError.name           => /.*/
+        BitlyError.name                               => /^MISSING_ARG"/i,
+        "Errno::ENOENT"                               => /.*/,
+        ArgumentError.name                            => /.*/,
+        NoMethodError.name                            => /.*/,
+        SyntaxError.name                              => /.*/,
+        ActiveRecord::RecordNotFound.name             => /.*/,
+        RuntimeError.name                             => /.*/
       }
 
 
