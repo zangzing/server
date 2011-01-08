@@ -13,7 +13,9 @@
             onChangeCaption:jQuery.noop,
 
             allowReorder: false,
-            onChangeOrder: jQuery.noop
+            onChangeOrder: jQuery.noop,
+
+            thumbscroller: true
         },
 
 
@@ -53,6 +55,7 @@
                 cell.appendTo(self.element)
 
                 cell.zz_photo({
+                    photoId: photo.id,
                     previewSrc: photo.stamp_url,
                     src: photo.thumb_url,
                     maxWidth: Math.floor(self.options.cellWidth * .85),
@@ -126,7 +129,7 @@
                         },
 
                         out: function(){
-                            self.resetLayout();
+                            self.resetLayout(100);
                         },
 
                         drop: function(event, ui){
@@ -150,15 +153,6 @@
 
 
                             self.resetLayout(800, 'easeInOutCubic');
-
-                            
-//                            //todo: try fade out / in
-//                            ui.draggable.insertBefore(droppable.parent());
-//                            ui.draggable.css({
-//                                top: parseInt(droppable.parent().css('top')),
-//                                left: parseInt(droppable.parent().css('left')) - self.options.cellWidth
-//                            });
-//                            self.resetLayout(800, 'easeInOutCubic');
                         }
 
                     });
@@ -217,7 +211,64 @@
 
 
 
+            //thumbscroller
+
+
+            var animateScrollActive = false;
+            var nativeScrollActive = false;
+
+            if(self.options.thumbscroller){
+                var thumbscrollerElement = $('<div class=".photogrid-thumbscroller"></div>').addClass('photogrid-thumbscroller').appendTo(self.element.parent());
+
+
+                self.thumbscroller = thumbscrollerElement.zz_thumbtray({
+                    photos:self.options.photos,
+                    showSelection:false,
+                    thumbnailSize:16,
+                    showSelectedIndexIndicator:true,
+                    onSelectPhoto: function(index, photo){
+                        if(!nativeScrollActive){
+                            if(photo){
+                                var highlighted = self.cellAtIndex(index).find('.photo-border').addClass('highlighted');
+
+                                setTimeout(function(){
+                                    highlighted.removeClass('highlighted');
+
+                                },1000 + 1500);
+                            }
+
+
+
+                            var y = (Math.floor(index / self.cellsPerRow())  ) * self.options.cellHeight ;
+
+
+                            animateScrollActive = true;
+                            self.element.animate({scrollTop: y}, 1000, 'easeOutCubic', function(){
+                                animateScrollActive = false;
+                            });
+                        }
+                    }
+                }).data().zz_thumbtray;
+
+                self.element.scroll(function(event){
+                    if(! animateScrollActive){
+                        nativeScrollActive = true;
+                        var index = Math.floor($("#photo-grid").scrollTop() / self.options.cellHeight * self.cellsPerRow());
+                        self.thumbscroller.setSelectedIndex(index);
+                        nativeScrollActive = false;
+                    }
+                });
+
+
+
+
+
+            }
+
+
         },
+
+
 
         resetLayout: function(duration, easing){
             var self = this;
@@ -238,8 +289,7 @@
                     left: position.left
                 };
 
-                //todo: check that there is change before making change
-
+                //todo: moght want to check that things have actuall changed before setting new properties
                 if(duration > 0){
                     $(element).animate(css, duration, easing);
                 }
@@ -250,9 +300,18 @@
             });
         },
 
+        cellAtIndex : function(index){
+            return this.element.children(':nth-child(' + (index + 1 ) + ')');
+        },
+
+        cellsPerRow : function(){
+            var self = this;
+            return Math.floor(self.width / self.options.cellWidth);
+        },
+
         positionForIndex: function(index){
             var self = this;
-            var cellsPerRow = Math.floor(self.width / self.options.cellWidth);
+            var cellsPerRow = self.cellsPerRow();
             var row = Math.floor(index / cellsPerRow);
             var col = index % cellsPerRow;
 
