@@ -38,8 +38,15 @@ var agent = {
     /* path may be full url or just path portion */
     buildAgentUrl: function(path){
         var url = '';
+
+
         if(! agent.isAgentUrl(path)){
-            url = 'http://localhost:' + agent.port;
+            if(path.indexOf('http://')!== -1){
+                return path;
+            }
+            else{
+                url = 'http://localhost:' + agent.port;
+            }
         }
 
         url += path;
