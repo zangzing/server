@@ -40,7 +40,7 @@ class Connector::KodakFoldersController < Connector::KodakController
       photos << photo
     end
 
-    render :json => photos.to_json
+    render :json => photos.to_json(:only => [:id, :caption, :source_guid ] , :methods => [:stamp_url, :thumb_url, :screen_url, :original_url])
   end
 
 end

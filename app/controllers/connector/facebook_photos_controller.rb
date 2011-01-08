@@ -46,7 +46,7 @@ class Connector::FacebookPhotosController < Connector::FacebookController
     )
   
     ZZ::Async::GeneralImport.enqueue( photo.id, get_photo_url(info, :full) )
-    render :json => photo.to_json
+    render :json => photo.to_json(:only => [:id, :caption, :source_guid ] , :methods => [:stamp_url, :thumb_url, :screen_url, :original_url])
   end
 
 end

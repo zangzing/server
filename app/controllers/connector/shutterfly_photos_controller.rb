@@ -43,7 +43,7 @@ class Connector::ShutterflyPhotosController < Connector::ShutterflyController
     )
     
     ZZ::Async::GeneralImport.enqueue( photo.id,  photo_url )
-    render :json => photo.to_json
+    render :json => photo.to_json(:only => [:id, :caption, :source_guid ] , :methods => [:stamp_url, :thumb_url, :screen_url, :original_url])
 
   end
 
