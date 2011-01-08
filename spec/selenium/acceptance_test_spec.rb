@@ -2,14 +2,16 @@ require "rspec"
 require "selenium"
 
 def wait_for_element_visible selector
-  !60.times do
-    if (@browser.is_element_present selector) && (@browser.is_visible selector)
-      return true
-    end
-    sleep 1
-  end
-
-  raise 'element not found: ' + selector
+  @browser.wait_for :wait_for => :element, :element => selector
+  @browser.wait_for :wait_for => :visible, :element => selector
+#  !60.times do
+#    if (@browser.is_element_present selector) && (@browser.is_visible selector)
+#      return true
+#    end
+#    sleep 1
+#  end
+#
+#  raise 'element not found: ' + selector
 end
 
 
@@ -19,14 +21,13 @@ describe "acceptance test" do
     @browser = Selenium::Client::Driver.new \
       :host => "localhost",
       :port => 4444,
-      #      :browser => "*googlechrome",
-      :browser => "*firefox",
+            :browser => "*googlechrome",
+#      :browser => "*firefox",
       :url => "http://zzadmin:sharezzphotos@share1001photos.zangzing.com/",
       :timeout_in_second => 60,
       :javascript_framework => :jquery
 
-
-    @browser.start_new_browser_session
+      @browser.start_new_browser_session('commandLineFlags' => '--disable-web-security')
 
   end
 
@@ -70,8 +71,8 @@ describe "acceptance test" do
     @browser.click "css=#group_album_link"
 
     #open the facebook folder
-    wait_for_element_visible "css=.f_facebook"
-    @browser.click "css=.f_facebook img"
+    wait_for_element_visible 'css=a:contains("Facebook")'
+    @browser.click 'css=a:contains("Facebook")'
 
 
     #connect via oauth
@@ -79,6 +80,7 @@ describe "acceptance test" do
     @browser.click "css=img[src='/images/service-connect-button.jpg']"
 
     @browser.select_window "oauthlogin" #select the oauth sign in window
+    sleep 20
     wait_for_element_visible "css=#email"
 
     @browser.type "css=#email", "jeremy@zangzing.com"
@@ -101,7 +103,8 @@ describe "acceptance test" do
     #add the first picture
     wait_for_element_visible 'css=.filechooser.photo'
     @browser.click 'css=.filechooser.photo figure'
-    sleep 2 #wait for animation and facebook import #todo: is there a way to test so we don't have timing issues?
+    sleep 1 #wait for animation
+    @browser.wait_for  :wait_for => :ajax
 
 
     #go back up a level
@@ -110,7 +113,8 @@ describe "acceptance test" do
     #add the whole 'Small Album'
     wait_for_element_visible 'css=a:contains("Small Album") + a'
     @browser.click 'css=a:contains("Small Album") + a'
-    sleep 4 #wait for animation and facebook import #todo: is there a way to test so we don't have timing issues?
+    sleep 1 #wait for animation
+    @browser.wait_for  :wait_for => :ajax
 
 
 

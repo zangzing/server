@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="/stylesheets/album.css" media="all" />
     <link rel="stylesheet" href="/stylesheets/add-photos.css" media="all" />
     <link rel="stylesheet" href="/stylesheets/user.css" media="all" />
+    <link rel="stylesheet" href="/stylesheets/photo.css" media="all" />
     <link rel="stylesheet" href="/stylesheets/thumbtray.css" media="all" />
     <link rel="stylesheet" href="/stylesheets/jquery.autocomplete.css" media="all" />
     <link rel="stylesheet" href="/stylesheets/jquery.jgrowl.css" media="all" />
@@ -54,32 +55,30 @@
   </head>
   <body id="<%= controller.controller_name + '-' + controller.action_name %>" class="<%= controller.controller_name %>">
     
+
+    <article>
+
+      <%= yield :layout %>
+
+    </article>
+
     <div id="container">
-      <div id="dialog-modal" title="Basic modal dialog">
-      </div>
+      <div id="dialog-modal" title="Basic modal dialog"></div>
       
-
-      <%= render :partial => 'layouts/bottom_nav' %>
-
-
       <%= render :partial => 'layouts/top_nav'  %>
-
-
-
-
-        <article>
-
-          <%= yield :layout %>
-
-        </article>
+      
+      <%= render :partial => 'layouts/bottom_nav' %>
 
     </div>
 
+
+    <!--todo:get rid of this. move to wizard.js -->
     <div id="clones">
       <ul id="clone-indicator" class="clearfix">
         <li></li>
       </ul>
     </div>
+
     <script type="text/javascript" src="/javascripts/lib/jquery.js" ></script>
     <script type="text/javascript" src="/javascripts/lib/jquery.validate.js" ></script>
     <script type="text/javascript" src="/javascripts/lib/jquery.autocomplete.js"></script>
@@ -91,11 +90,15 @@
     <script type="text/javascript" src="/javascripts/lib/jquery.jsonp.js"></script>
     <script type="text/javascript" src="/javascripts/lib/jquery.cookie.js"></script>
     <script type="text/javascript" src="/javascripts/lib/jquery.jgrowl.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery-zz.js"></script>
+    
     <script type="text/javascript" src="/javascripts/agent.js"></script>
     <script type="text/javascript" src="/javascripts/upload_status.js"></script>
     <script type="text/javascript" src="/javascripts/server.js"></script>
     <script type="text/javascript" src="/javascripts/logging.js"></script>
     <script type="text/javascript" src="/javascripts/imageloader.js"></script>
+    <script type="text/javascript" src="/javascripts/photo.js"></script>
+    <script type="text/javascript" src="/javascripts/photogrid.js"></script>
 
     <script type="text/javascript" src="/javascripts/zz/zz.core.js" ></script>
     <script type="text/javascript" src="/javascripts/zz/zz.inits.js" ></script>

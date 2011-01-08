@@ -113,7 +113,7 @@ zz.init = {
             zz.wizard.open_edit_album_wizard('add')
         });
 
-        
+
 
 
 
@@ -172,7 +172,7 @@ zz.init = {
 
         zz.init.acct_badge();
         zz.init.like_menu();
-        zz.init.buy_button();        
+        zz.init.buy_button();
         zz.init.preload_rollover_images();
 
     },
@@ -197,61 +197,103 @@ zz.init = {
     },
 
     album: function(){
-        $('#progress-meter').hide();
+        //setup grid view
 
-        var updateProgressMeter = function(){
+        if(document.location.href.indexOf('view=slideshow') == -1){ //nack to prevent this from showing on the slideshow and movie modes
 
-            var photo_count = photos.length; //todo: photos shouln't be a global variable
+            $.ajax({
+                dataType: 'json',
+                url: '/albums/' + zz.album_id + '/photos.json',
+                success: function(json){
 
-            upload_stats.stats_for_album(zz.album_id,photo_count, function(time_remaining, percent_complete){
-                percent_complete = Math.round(percent_complete);
+                    var photos = $(json).map(function(index, element){
+                        var photo = {};
+                        photo.stamp_url = element.stamp_url;
+                        photo.thumb_url = element.thumb_url;
+                        photo.src =       element.thumb_url;
+                        photo.screen_url = element.screen_url;
 
-                if(percent_complete < 100 ){
-                    var minutes = Math.round(time_remaining / 60);
-                    var step = 0;
+                        photo.caption = element.caption;
+                        photo.id = element.id;
 
-                    if(percent_complete > 0){
-                        step = Math.round(percent_complete / 6.25);
-                    }
+                        return photo;
+                    });
 
+                    $(document).ready(function(){
+                        var grid = $('article').zz_photogrid({
+                            photos:photos,
+                            allowDelete: true,
+                            allowEditCaption: true,
+                            allowReorder: true,
+                            cellHeight: 150,
+                            cellWidth: 150,
+                            onClickPhoto: function(index, photo){
+                                document.location.href = "/albums/" + album_id +"/photos?view=slideshow&page=" + (index+1);
+                            }
+                        }).data().zz_photogrid;
+                    });
 
-                    $('#progress-meter').css('background-image', 'url(/images/upload-'+ step +'.png)');
-
-
-                    if(minutes === Infinity){
-                        $('#nav-status').html("Calculating...");
-                    }
-                    else{
-                        var minutes_text = "Minutes";
-                        if(minutes === 1){
-                            minutes_text = "Minute"
-                        }
-                        $('#progress-meter-label').html(minutes + ' ' + minutes_text);
-                    }
-
-                    $('#progress-meter').show();
-                }
-                else{
+                    //setup upload progress smeter
                     $('#progress-meter').hide();
+
+                    var updateProgressMeter = function(){
+
+                        var photo_count = photos.length; //todo: photos shouln't be a global variable
+
+                        upload_stats.stats_for_album(zz.album_id,photo_count, function(time_remaining, percent_complete){
+                            percent_complete = Math.round(percent_complete);
+
+                            if(percent_complete < 100 ){
+                                var minutes = Math.round(time_remaining / 60);
+                                var step = 0;
+
+                                if(percent_complete > 0){
+                                    step = Math.round(percent_complete / 6.25);
+                                }
+
+
+                                $('#progress-meter').css('background-image', 'url(/images/upload-'+ step +'.png)');
+
+
+                                if(minutes === Infinity){
+                                    $('#nav-status').html("Calculating...");
+                                }
+                                else{
+                                    var minutes_text = "Minutes";
+                                    if(minutes === 1){
+                                        minutes_text = "Minute"
+                                    }
+                                    $('#progress-meter-label').html(minutes + ' ' + minutes_text);
+                                }
+
+                                $('#progress-meter').show();
+                            }
+                            else{
+                                $('#progress-meter').hide();
+                            }
+                        });
+                    }
+
+                    updateProgressMeter();
+
+                    //todo: need to shut this down if we leave album page ajax-ly
+                    //update album upload status every 10 seconds
+                    setInterval( updateProgressMeter ,10000);
+
+
                 }
             });
         }
-
-        updateProgressMeter();
-
-        //todo: need to shut this down if we leave album page ajax-ly
-        //update album upload status every 10 seconds
-        setInterval( updateProgressMeter ,10000);
     },
 
 
-    tray: function(){
-
-    },
+//    tray: function(){
+//
+//    },
 
     preload_rollover_images : function(){
         //todo: is there a way to query CSS to get all these?
-         //wizard buttons/tabs
+        //wizard buttons/tabs
 //        for(var i=1;i<=4; i++){
 //            var src = "/images/bg-4step-strip-" + i + ".png"
 //            image_preloader.load_image(src)
@@ -365,63 +407,63 @@ zz.init = {
 
     },
 
-    //  new_user: function(){
-    //
-    //    $('#nav-new-album').click(function(){
-    //      if (zz.drawer_open === 0) {
-    //        $('#sign-in').show();
-    //        $('#sign-up').hide();
-    //
-    //        $('#small-drawer').animate({height: '460px', top: '53px'});
-    //        zz.drawer_open = 1;
-    //
-    //      } else {
-    //        //zz.slam_drawer(880);
-    //      }
-    //    });
-    //
-    //    $('#user_username').keyup(function(event){
-    //      value = $('#user_username').val();
-    //      $('#update-username').empty().html(value);
-    //    });
-    //
-    //    $('#step-sign-in-off').click(function(){
-    //      $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
-    //        $('#sign-in').show();
-    //        $('#sign-up').hide();
-    //        $('#small-drawer').animate({height: '460px', top: '53px'});
-    //      });
-    //
-    //
-    //    });
-    //    $('#step-join-off').click(function(){
-    //      $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
-    //        $('#sign-up').show();
-    //        $('#sign-in').hide();
-    //        $('#small-drawer').animate({height: '460px', top: '53px'});
-    //      });
-    //    });
-    //
-    //    $('#nav-sign-in').click(function(){
-    //        if (zz.drawer_open === 0) {
-    //            $('#sign-in').show();
-    //            $('#sign-up').hide();
-    //
-    //            $('#small-drawer').animate({height: '460px', top: '53px'});
-    //            zz.drawer_open = 1;
-    //      }
-    //    });
-    //
-    //    $('.cancel-mini').click(function(){
-    //      $('#small-drawer').animate({height: '0px', top: '28px'});
-    //      zz.drawer_open = 0;
-    //    });
-    //
-    //    $(zz.validate.sign_in.element).validate(zz.validate.sign_in);
-    //    $(zz.validate.join.element).validate(zz.validate.join);
-    //
-    //
-    //  },
+//  new_user: function(){
+//
+//    $('#nav-new-album').click(function(){
+//      if (zz.drawer_open === 0) {
+//        $('#sign-in').show();
+//        $('#sign-up').hide();
+//
+//        $('#small-drawer').animate({height: '460px', top: '53px'});
+//        zz.drawer_open = 1;
+//
+//      } else {
+//        //zz.slam_drawer(880);
+//      }
+//    });
+//
+//    $('#user_username').keyup(function(event){
+//      value = $('#user_username').val();
+//      $('#update-username').empty().html(value);
+//    });
+//
+//    $('#step-sign-in-off').click(function(){
+//      $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
+//        $('#sign-in').show();
+//        $('#sign-up').hide();
+//        $('#small-drawer').animate({height: '460px', top: '53px'});
+//      });
+//
+//
+//    });
+//    $('#step-join-off').click(function(){
+//      $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
+//        $('#sign-up').show();
+//        $('#sign-in').hide();
+//        $('#small-drawer').animate({height: '460px', top: '53px'});
+//      });
+//    });
+//
+//    $('#nav-sign-in').click(function(){
+//        if (zz.drawer_open === 0) {
+//            $('#sign-in').show();
+//            $('#sign-up').hide();
+//
+//            $('#small-drawer').animate({height: '460px', top: '53px'});
+//            zz.drawer_open = 1;
+//      }
+//    });
+//
+//    $('.cancel-mini').click(function(){
+//      $('#small-drawer').animate({height: '0px', top: '28px'});
+//      zz.drawer_open = 0;
+//    });
+//
+//    $(zz.validate.sign_in.element).validate(zz.validate.sign_in);
+//    $(zz.validate.join.element).validate(zz.validate.join);
+//
+//
+//  },
 
     album_timeline_view: function(){
         // Bind more button for ALL upload Activities
@@ -457,9 +499,9 @@ zz.init = {
         zz.toolbars.init_like_menu();
         $('#footer #like-button').click( zz.toolbars.show_like_menu );
     },
-    //======================================   ===============================================
+//======================================   ===============================================
     buy_button: function(){
- 
+
     }
 
 }; // end zz.init

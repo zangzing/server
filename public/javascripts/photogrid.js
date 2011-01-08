@@ -15,6 +15,8 @@
             allowReorder: false,
             onChangeOrder: jQuery.noop,
 
+            onClickPhoto: jQuery.noop,
+
             thumbscroller: true
         },
 
@@ -64,16 +66,17 @@
                     caption: photo.caption,
 
                     onDelete:function(){
-                        alert('delete ' + photo.src);
-                        return true;
+                        return self.options.onDelete(index,photo);
                     },
 
                     allowEditCaption:self.options.allowEditCaption,
-                    onChangeCaption:function(newCaption){
+
+                    onChangeCaption:function(caption){
+                        return self.options.onChangeCaption(index, photo, caption);
                     },
 
                     onClick: function(){
-                        alert('this would take us to single picture view');
+                        self.options.onClickPhoto(index, photo);
                     },
 
                     scrollContainer: self.element
@@ -244,7 +247,7 @@
 
 
                             animateScrollActive = true;
-                            self.element.animate({scrollTop: y}, 1000, 'easeOutCubic', function(){
+                            self.element.animate({scrollTop: y}, 500, 'easeOutCubic', function(){
                                 animateScrollActive = false;
                             });
                         }
@@ -254,7 +257,7 @@
                 self.element.scroll(function(event){
                     if(! animateScrollActive){
                         nativeScrollActive = true;
-                        var index = Math.floor($("#photo-grid").scrollTop() / self.options.cellHeight * self.cellsPerRow());
+                        var index = Math.floor(self.element.scrollTop() / self.options.cellHeight * self.cellsPerRow());
                         self.thumbscroller.setSelectedIndex(index);
                         nativeScrollActive = false;
                     }

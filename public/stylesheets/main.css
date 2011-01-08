@@ -2,13 +2,13 @@
 ----------------------------------------------------------------------------- */
 
 html {
-    overflow-y: scroll;
+    overflow: hidden;
     height:100%;
 }
 
 
 body { 
-  width: 98%;
+  width: 100%;
   height:100%;
   margin: 0 auto;
   background-color: #ffffff;
@@ -41,6 +41,7 @@ h3 {
 div#container {
   width: 950px;
   margin: 0 auto;
+  height:100%;  
 } /* allows the fixed-position elements to be in the center w/o js hacks */
 
 
@@ -630,11 +631,16 @@ div#headline {
 ----------------------------------------------------------------------------- */
 
 article {
-  min-width: 930px;
-  margin: 10px;
+  width:100%;
+  height:100%;
+  overflow-y:scroll;
+  position: relative;
+  /*margin: 10px;*/
+  /*margin-top: 100px;*/
+
 }
 
-body.drawer article {
+body.drawer  {
   margin-top: 100px;
 
 }
