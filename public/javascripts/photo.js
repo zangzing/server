@@ -15,7 +15,8 @@
             previewSrc:null,
             scrollContainer:null,
             lazyLoadThreshold:0,
-            onClick:jQuery.noop
+            onClick:jQuery.noop,
+            photoId:null
         },
 
         _create: function() {

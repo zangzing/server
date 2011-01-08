@@ -314,7 +314,7 @@
                 }
             }
 
-            for(var i in thumbnails){
+            for(var i=0; i<thumbnails.length; i++){
                 var thumbnail = thumbnails[i];
                 html += '<img style="height:' + this._getThumbnailSize() + 'px; width:' + this._getThumbnailSize() + 'px" src="' + thumbnail['src'] + '">'
             }
