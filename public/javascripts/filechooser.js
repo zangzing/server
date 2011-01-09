@@ -783,7 +783,7 @@ var tray = {
         $.ajax({
             type: "DELETE",
             dataType: "json",
-            url: "/photos/" + photo.id + ".json"
+            url: "/photos/" + photo.id + ".json",
             error: function(error){
                 logger.debug(error);
                 $.jGrowl("" + error);
