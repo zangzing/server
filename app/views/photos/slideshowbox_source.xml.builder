@@ -7,7 +7,7 @@ xml.SlideshowBox do
           #todo:does this proxy stuff work?
           xml.thumbnailPath photo.thumb_url.include?('/proxy?') ? photo.thumb_url : "/proxy?url=#{photo.thumb_url}"
           xml.largeImagePath photo.screen_url.include?('/proxy?') ? photo.screen_url : "/proxy?url=#{photo.screen_url}"
-          xml.fullScreenImagePath photo.original_url.include?('/proxy?') ? photo.original_url : "/proxy?url=#{photo.screen_url}"
+          xml.fullScreenImagePath photo.screen_url.include?('/proxy?') ? photo.screen_url : "/proxy?url=#{photo.screen_url}"
         
 
         xml.title photo.caption

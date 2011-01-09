@@ -185,9 +185,8 @@
 //                    self._resize(1);
 //                    self.element.css({'z-index':-1});
 //                })
+           };
 
-
-            };
 
             self.imageObject.src = initialSrc;
         },
