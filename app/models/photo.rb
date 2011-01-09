@@ -246,7 +246,7 @@ class Photo < ActiveRecord::Base
   def stamp_url
     if self.ready?
       set_s3bucket
-      image.url(:thumb)
+      image.url(:stamp)
     else
       return self.source_thumb_url
     end
