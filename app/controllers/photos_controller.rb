@@ -257,6 +257,20 @@ class PhotosController < ApplicationController
       render :layout =>false
   end
 
+
+  def update
+    @photo = Photo.find(params[:id])
+
+    if @photo && @photo.update_attributes( params[:photo] )
+      flash[:notice] = "Photo Updated!"
+      render :text => 'Success Updating Photo', :status => 200, :layout => false
+    else
+      errors_to_headers( @photo )
+      render :text => 'Photo update did not succeed', :status => 500, :layout => false
+    end
+  end
+
+
 private
 
   def fetch_album

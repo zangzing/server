@@ -161,6 +161,21 @@ pages.edit_album_tab = {
                         return true;                          
                     },
                     allowEditCaption: true,
+                    onChangeCaption: function(index, photo, caption){
+                        $.ajax({
+                            type: "PUT",
+                            dataType: "json",
+                            url: "/photos/" + photo.id + ".json",
+                            data: {'photo[caption]':caption},
+                            error: function(error){
+                                logger.debug(error);
+//                                $.jGrowl("" + error);
+                            }
+
+                        });
+                        return true;
+
+                    },
                     allowReorder: true,
 //                    cellHeight: 150,
 //                    cellWidth: 150,
