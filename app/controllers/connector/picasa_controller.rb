@@ -16,15 +16,15 @@ protected
 
 protected
   def get_photo_url(media_group, size)
-    if size == :full || size == :screen 
-      media_group.elements['media:content'].attributes['url']
+    if size == :full || size == :screen
+      make_plain_http(media_group.elements['media:content'].attributes['url'])
     elsif size == :thumb
       thumbnails = []
       media_group.elements.each('media:thumbnail') do |thumb|
         thumbnails << {:url => thumb.attributes['url'], :width => thumb.attributes['width'].to_i, :height => thumb.attributes['height'].to_i}
       end
       thumbnails.sort_by {|thumb| thumb[:height]*thumb[:width] }
-      thumbnails.last[:url]
+      make_plain_http(thumbnails.last[:url])
     end
   end
 
@@ -32,5 +32,13 @@ protected
     "picasa_"+Photo.generate_source_guid(get_photo_url(media_element, :full))
   end
 
-
+  # take a potentially https url and make it http
+  def make_plain_http(url)
+    converted =  url.gsub(/^https:\/\//, 'http://')
+    if converted.nil?
+      return url
+    else
+      return converted
+    end
+  end
 end
