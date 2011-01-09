@@ -147,10 +147,23 @@ pages.edit_album_tab = {
                 var grid = $('article').zz_photogrid({
                     photos:ps,
                     allowDelete: true,
+                    onDelete: function(index, photo){
+                        $.ajax({
+                            type: "DELETE",
+                            dataType: "json",
+                            url: "/photos/" + photo.id + ".json",
+                            error: function(error){
+                                logger.debug(error);
+                                $.jGrowl("" + error);
+                            }
+                            
+                        });
+                        return true;                          
+                    },
                     allowEditCaption: true,
                     allowReorder: true,
-                    cellHeight: 150,
-                    cellWidth: 150,
+//                    cellHeight: 150,
+//                    cellWidth: 150,
                     showThumbscroller: true
                 }).data().zz_photogrid;
 
