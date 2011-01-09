@@ -25,7 +25,7 @@ module ZZ
         end
       end
 
-      def self.on_failure_notify_photo(e, photo_id, source_url )
+      def self.on_failure_notify_photo(e, photo_id, source_url, auth_token )
         photo = Photo.find(photo_id)
         photo.update_attributes(:state => 'error', :error_message => "Failed to load photo from because of network issues #{e}" )
       end
