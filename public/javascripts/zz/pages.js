@@ -132,7 +132,7 @@ pages.edit_album_tab = {
                     var photo = {};
                     photo.stamp_url = agent.buildAgentUrl(element.stamp_url);
                     photo.thumb_url = agent.buildAgentUrl(element.thumb_url);
-                    photo.src =       agent.buildAgentUrl(element.thumb_url);
+                    photo.src =       agent.buildAgentUrl(element.stamp_url);
                     photo.screen_url = agent.buildAgentUrl(element.screen_url);
 
                     photo.caption = element.caption;
