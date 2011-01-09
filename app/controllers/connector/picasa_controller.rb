@@ -16,19 +16,15 @@ protected
 
 protected
   def get_photo_url(media_group, size)
-    if size == :full
+    if size == :full || size == :screen 
       media_group.elements['media:content'].attributes['url']
-    else
+    elsif size == :thumb
       thumbnails = []
       media_group.elements.each('media:thumbnail') do |thumb|
         thumbnails << {:url => thumb.attributes['url'], :width => thumb.attributes['width'].to_i, :height => thumb.attributes['height'].to_i}
       end
       thumbnails.sort_by {|thumb| thumb[:height]*thumb[:width] }
-      if size == :thumb
-        thumbnails.first[:url]
-      else #screen (largest of thumbnails)
-        thumbnails.last[:url]
-      end
+      thumbnails.last[:url]
     end
   end
 
