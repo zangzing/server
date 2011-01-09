@@ -25,7 +25,7 @@ var agent = {
 
     },
 
-
+    //todo: this needs to be cleaned up
     isAgentUrl: function(url){
         if(url){
             return url.indexOf('http://localhost:' + agent.port) === 0;
@@ -35,13 +35,14 @@ var agent = {
         }
     },
 
+    //todo: this needs to be cleaned up
     /* path may be full url or just path portion */
     buildAgentUrl: function(path){
         var url = '';
 
 
         if(! agent.isAgentUrl(path)){
-            if(path.indexOf('http://')!== -1){
+            if((path.indexOf('http://')!== -1) || (path.indexOf('https://')!== -1)){
                 return path;
             }
             else{
