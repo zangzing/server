@@ -1,7 +1,7 @@
 class PhotosController < ApplicationController
   before_filter :oauth_required, :only => [:agentindex, :agent_create]
   before_filter :login_required, :only => [:create ]
-  before_filter :require_user, :only => [:show, :new, :edit, :destroy] # , :index] #TODO Sort out album security so facebook can freely dig into album page
+  before_filter :require_user, :only => [:show, :new, :edit, :destroy, :update] # , :index] #TODO Sort out album security so facebook can freely dig into album page
   before_filter :determine_album_user #For friendly_id's scope
 
   def show
