@@ -68,7 +68,7 @@ module ZZ
 
         Paperclip.run("convert", parameters)
       rescue Paperclip::PaperclipCommandLineError => e
-        raise Paperclip::PaperclipError, "There was an error building the picon for for #{cover} "+ e
+        raise Paperclip::PaperclipError, "There was an error building the picon "+ e
       end
       dst
     end
