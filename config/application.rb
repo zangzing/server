@@ -11,9 +11,12 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(:default, Rails.env) if defined?(Bundler)
 
-
 module Server
   class Application < Rails::Application
+
+    # pull in all files within lib
+    require_all 'lib'
+
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     config.time_zone = 'Tijuana'
