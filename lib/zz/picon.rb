@@ -105,7 +105,7 @@ module ZZ
       cmd << "-crop 200x160+0+0  +repage  -flatten  -trim +repage"
       cmd << "-background black \\( +clone -shadow 50x2+0+0 \\) +swap"  #shadow args opacityXsigma+XAngle+YAngle
       cmd << "-background none  -flatten"
-      cmd << "-scale 120x120>"
+      cmd << "-thumbnail 150x150>"
       cmd
     end
   end
