@@ -21,8 +21,8 @@ describe "acceptance test" do
     @browser = Selenium::Client::Driver.new \
       :host => "localhost",
       :port => 4444,
-            :browser => "*googlechrome",
-#      :browser => "*firefox",
+#            :browser => "*googlechrome",
+      :browser => "*firefox",
       :url => "http://zzadmin:sharezzphotos@share1001photos.zangzing.com/",
       :timeout_in_second => 60,
       :javascript_framework => :jquery
@@ -125,8 +125,10 @@ describe "acceptance test" do
 
     #check for 4 photos in album
     @browser.wait_for_page_to_load "30000"
-    @browser.is_element_present("css=ul.photos li:nth-child(4)").should be_true #todo: might be easier to check the json version of the ablum
-    @browser.is_element_present("css=ul.photos li:nth-child(5)").should be_false #todo: might be easier to check the json version of the ablum
+    @browser.wait_for  :wait_for => :ajax
+    
+    @browser.is_element_present("css=.photogrid-cell:nth-child(4)").should be_true #todo: might be easier to check the json version of the ablum
+    @browser.is_element_present("css=.photogrid-cell:nth-child(5)").should be_false #todo: might be easier to check the json version of the ablum
 
 
   end
