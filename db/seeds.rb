@@ -7,6 +7,9 @@
 #   Major.create(:name => 'Daley', :city => cities.first)
 
 # ZANGZING USER
+
+require 'user'
+
 user = User.create(  {:name                   => 'ZangZing Paying User V1.0',
                       :username               => 'zangzing',    
                       :email                  => 'user@zangzing.com',
