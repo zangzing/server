@@ -9,6 +9,7 @@
 # ZANGZING USER
 
 require 'user'
+require 'identity'
 
 user = User.create(  {:name                   => 'ZangZing Paying User V1.0',
                       :username               => 'zangzing',    
