@@ -460,7 +460,7 @@ pages.album_contributors_tab = {
 
                     submitHandler: function() {
                         $.post('/albums/'+zz.album_id+'/contributors.json', $('#new_contributors').serialize(), function(data,status,request){
-                            $('#tab-content').fadeOut('fast', function(){
+                            $('#tab-content').fadeOut('fast', 'swing', function(){  //for some reason when we moved to jquery 1.4.4, we have to have the 'easing' specified here
                                 $('#tab-content').load('/albums/'+zz.album_id+'/contributors', function(){
                                     self.init(function(){
                                         zz.wizard.display_flashes(  request,200 );
