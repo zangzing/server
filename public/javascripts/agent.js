@@ -78,10 +78,10 @@ var agent = {
         var url;
         var user_session = $.cookie("user_credentials");
         if (path.indexOf('?') == -1) {
-            url = "http://localhost:" + this.port + path + "?session="+user_session + "&callback=?"
+            url = "http://localhost:" + this.port + path + "?session=" + user_session + '&user_id=' + user_id +"&callback=?"
         }
         else {
-            url = "http://localhost:" + this.port + path + "&session="+user_session + "&callback=?"
+            url = "http://localhost:" + this.port + path + "&session=" + user_session + '&user_id=' + user_id +"&callback=?"
         }
 
 
