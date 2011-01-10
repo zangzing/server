@@ -87,6 +87,7 @@ module ZZ
     # Returns the command ImageMagick's +convert+ needs to make a Picon
     def self.build_picon_command( file_stack )
       cmd = []
+      cmd << "-scale 120x120>"                        
       cmd << "-bordercolor white  -border 5"                        # Add 5px white border
       cmd << "-bordercolor none  -background  none"                 # Clear background
       case file_stack.length
