@@ -15,7 +15,7 @@ Server::Application.configure do
   config.action_controller.perform_caching             = true
 
     # Enable threaded mode
-#  config.threadsafe!
+  config.threadsafe!
 
   # override location of temp directory on EY servers
   ENV['TMPDIR'] = '/mnt/tmp'
