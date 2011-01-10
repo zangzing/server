@@ -21,30 +21,17 @@
       title = "#{title} Version: #{Server::Application.config.zangzing_version} Controller: #{controller.controller_name} Action: #{ controller.action_name}"
     end %>
     <title><%=title%></title>
-    <link rel="stylesheet" href="/stylesheets/lib.css" media="all" />
-    <link rel="stylesheet" href="/stylesheets/main.css" media="all" />
-    <link rel="stylesheet" href="/stylesheets/wizard.css" media="all" />
-    <link rel="stylesheet" href="/stylesheets/album.css" media="all" />
-    <link rel="stylesheet" href="/stylesheets/add-photos.css" media="all" />
-    <link rel="stylesheet" href="/stylesheets/user.css" media="all" />
-    <link rel="stylesheet" href="/stylesheets/photo.css" media="all" />
-    <link rel="stylesheet" href="/stylesheets/thumbtray.css" media="all" />
-    <link rel="stylesheet" href="/stylesheets/jquery.autocomplete.css" media="all" />
-    <link rel="stylesheet" href="/stylesheets/jquery.jgrowl.css" media="all" />
+
+    
+    <%= stylesheet_link_tag :all, :cache => true %>
     <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/themes/base/jquery-ui.css" type="text/css" media="all" />
     <link href="http://s3.amazonaws.com/getsatisfaction.com/feedback/feedback.css" rel="stylesheet" type="text/css" />
 
-    <!-- TODO: favicon 
     <link rel="shortcut icon" href="images/favicon.png"/> -->
-    
-    <!-- TODO: iPhone/iPad icon 
-    <link rel="apple-touch-icon" href="images/zz_icon.png"/> -->
-    
-    <!--[if IE 7]>
-    <link rel="stylesheet" href="stylesheets/ie7.css" media="all" />
-    <![endif]-->
+
     
     <!--[if lte IE 8]>
+    <!--todo: get rid of this -- this is just so we can use html5 'article' and 'header' tags-->
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
@@ -79,39 +66,9 @@
       </ul>
     </div>
 
-    <script type="text/javascript" src="/javascripts/lib/jquery.js" ></script>
-    <script type="text/javascript" src="/javascripts/lib/jquery.validate.js" ></script>
-    <script type="text/javascript" src="/javascripts/lib/jquery.autocomplete.js"></script>
-    <script type="text/javascript" src="/javascripts/lib/jquery.lazyload.mini.js"></script>
-    <script type="text/javascript" src="/javascripts/lib/jquery.client.js"></script>
-    <script type="text/javascript" src="/javascripts/lib/jquery-ui-1.8.6.custom.min.js"></script>
 
-    <script type="text/javascript" src="/javascripts/lib/jquery.ba-bbq.js"></script>
-    <script type="text/javascript" src="/javascripts/lib/jquery.jsonp.js"></script>
-    <script type="text/javascript" src="/javascripts/lib/jquery.cookie.js"></script>
-    <script type="text/javascript" src="/javascripts/lib/jquery.jgrowl.js"></script>
-    <script type="text/javascript" src="/javascripts/jquery-zz.js"></script>
-    
-    <script type="text/javascript" src="/javascripts/agent.js"></script>
-    <script type="text/javascript" src="/javascripts/upload_status.js"></script>
-    <script type="text/javascript" src="/javascripts/server.js"></script>
-    <script type="text/javascript" src="/javascripts/logging.js"></script>
-    <script type="text/javascript" src="/javascripts/imageloader.js"></script>
-    <script type="text/javascript" src="/javascripts/photo.js"></script>
-    <script type="text/javascript" src="/javascripts/photogrid.js"></script>
 
-    <script type="text/javascript" src="/javascripts/zz/zz.core.js" ></script>
-    <script type="text/javascript" src="/javascripts/zz/zz.inits.js" ></script>
-    <script type="text/javascript" src="/javascripts/zz/zz.validate.js" ></script>
-    <script type="text/javascript" src="/javascripts/zz/zz.wizard.js" ></script>
-    <script type="text/javascript" src="/javascripts/zz/zz.drawers.js" ></script>
-    <script type="text/javascript" src="/javascripts/zz/zz.toolbars.js" ></script>
-    <script type="text/javascript" src="/javascripts/zz/pages.js" ></script>
-
-    <script type="text/javascript" src="/javascripts/filechooser.js" ></script>
-    <script type="text/javascript" src="/javascripts/oauthmanager.js" ></script>
-    <script type="text/javascript" src="/javascripts/sharecontacts.js" ></script>
-    <script type="text/javascript" src="/javascripts/thumbtray.js" ></script>
+    <%= javascript_include_tag :all, :cache => true, :recursive => true %>
 
     <script src='http://s3.amazonaws.com/getsatisfaction.com/feedback/feedback.js' type='text/javascript'></script>
     <script type="text/javascript" charset="utf-8">
