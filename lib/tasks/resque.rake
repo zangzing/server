@@ -4,6 +4,7 @@ require 'resque_scheduler/tasks'
 
 task "resque:setup" => :environment do
   puts "resque:setup"
+  raise Exception "should fail"
   if Rails.env == "development"
     puts "Not preloading in development environment"
   else
