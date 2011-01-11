@@ -15,7 +15,8 @@ module Server
   class Application < Rails::Application
 
     # pull in all files within lib
-    require_all 'lib'
+    #GWS - pulling this out for now since it has conflicts in deployment EY
+    #require_all 'lib'
 
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.

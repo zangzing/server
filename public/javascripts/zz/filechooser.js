@@ -748,7 +748,7 @@ var tray = {
             },
             error: function(error){
                 logger.debug(error);
-                $.jGrowl("" + error);
+//                $.jGrowl("" + error);
             }
         });
 
@@ -786,7 +786,7 @@ var tray = {
             url: "/photos/" + photo.id + ".json",
             error: function(error){
                 logger.debug(error);
-                $.jGrowl("" + error);
+//                $.jGrowl("" + error);
             }
         });
     },
