@@ -31,7 +31,7 @@ class Connector::ZangzingFoldersController < Connector::ConnectorController
                 :source_screen_url => p.source_screen_url
       )
 
-      
+      p.set_s3bucket
       ZZ::Async::GeneralImport.enqueue( photo.id,  p.image.url )
       photos << photo
     end
