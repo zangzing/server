@@ -154,7 +154,7 @@ pages.edit_album_tab = {
                             url: "/photos/" + photo.id + ".json",
                             error: function(error){
                                 logger.debug(error);
-                                $.jGrowl("" + error);
+//                                $.jGrowl("" + error);
                             }
                             
                         });
