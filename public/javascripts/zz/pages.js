@@ -141,10 +141,10 @@ pages.edit_album_tab = {
                     return photo;
                 });
 
-                $('article').remove();
-                $('body').prepend('<article></article>');
+                $('#article').remove();
+                $('body').prepend('<div id="article"></div>');
 
-                var grid = $('article').zz_photogrid({
+                var grid = $('#article').zz_photogrid({
                     photos:ps,
                     allowDelete: true,
                     onDelete: function(index, photo){
@@ -182,7 +182,7 @@ pages.edit_album_tab = {
                     showThumbscroller: true
                 }).data().zz_photogrid;
 
-                $('article').show();
+                $('#article').show();
             }
         });
     },
