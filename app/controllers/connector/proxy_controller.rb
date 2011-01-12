@@ -1,8 +1,6 @@
 class Connector::ProxyController < ApplicationController
 #  before_filter :require_user
 
-  #todo: need to restrict what we allow to be proxied. should probably just be smugmug
-  #todo: should use nginx redirect header for production
   def proxy
     #now that we rely on nginx, all requests are proxied by nginx so we
     #don't have to serve the request up slowly from Rails
