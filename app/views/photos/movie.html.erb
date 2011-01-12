@@ -84,7 +84,7 @@
                         controlsHideSpeed:	2,
 
                         exitButton:			true,
-                        exitButtonURL:		'/',
+                        exitButtonURL:		'javascript:history.go(-1)',
 
                         iconsURL:			'http://www.jumpeye.com/flo/customProjects/SimpleFadeCustom/js/icons/',
 
@@ -98,6 +98,8 @@
 
                         transitionSpeed:	0.5,
                         transitionType:		'slide',
+
+                        slideShowControls: true
 
 
                     });
@@ -137,7 +139,7 @@
         <param name="movie" value="/swf/ZZSlideShow.swf">
         <param name="allowFullScreen" value="true">
         <param name="bgcolor" value="#000000">
-        <param name="flashvars" value="source=slides_source.xml&autoHideControls=false&autoSlideShow=true&backgroundColor=000000&backgroundImage=&backgroundVisible=true&borderSize=5&borderColor=FFFFFF&controlsHideSpeed=2&exitButton=true&exitButtonURL=/&loadOriginalImages=false&overrideFullScreenChange=false&scaleBackground=true&scaleMode=scale&shadowColor=0x000000&slideshowDistance=5&slideShowSpeed=6&transitionSpeed=0.7&transitionType=slide"/>
+        <param name="flashvars" value="source=slides_source.xml&autoHideControls=false&autoSlideShow=true&backgroundColor=000000&backgroundImage=&backgroundVisible=true&borderSize=5&borderColor=FFFFFF&controlsHideSpeed=2&exitButton=true&exitButtonURL=javascript:history.go(-1)&loadOriginalImages=false&overrideFullScreenChange=false&scaleBackground=true&scaleMode=scale&shadowColor=0x000000&slideshowDistance=5&slideShowSpeed=6&transitionSpeed=0.7&transitionType=slide&slideShowControls=true"/>
     </object>
     <div id="scrim"></div>
 </body>
