@@ -14,6 +14,7 @@ Server::Application.configure do
   config.action_view.debug_rjs                         = false
   config.action_controller.perform_caching             = true
 
-    # Enable threaded mode
-  config.threadsafe!
+# Keep rails in single threaded mode since we not utilized for our app server configurations
+#    # Enable threaded mode
+#  config.threadsafe!
 end
