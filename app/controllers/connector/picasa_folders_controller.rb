@@ -36,7 +36,7 @@ class Connector::PicasaFoldersController < Connector::PicasaController
       ZZ::Async::GeneralImport.enqueue( photo.id,  get_photo_url(entry.elements['media:group'], :full) )
       photos << photo
     end
-    render :json => photos.to_json(:only => [:id, :caption, :source_guid ] , :methods => [:stamp_url, :thumb_url, :screen_url])
+    render :json => Photo.to_json_lite(photos)
   end
 
 end

@@ -325,6 +325,10 @@ class Photo < ActiveRecord::Base
     end
   end
 
+  def self.to_json_lite(photos)
+    return photos.to_json(:only =>[:id, :agent_id, :state, :source_thumb_url, :source_screen_url, :source_guid], :methods => [:thumb_url, :screen_url])
+  end
+
 end
 
 

@@ -69,7 +69,7 @@ class Connector::FacebookFoldersController < Connector::FacebookController
     end
 
 
-    render :json => photos.to_json(:only => [:id, :caption, :source_guid ] , :methods => [:stamp_url, :thumb_url, :screen_url])
+    render :json => Photo.to_json_lite(photos)
   end
 
 end

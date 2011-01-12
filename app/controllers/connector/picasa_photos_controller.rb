@@ -41,7 +41,7 @@ class Connector::PicasaPhotosController < Connector::PicasaController
         break
       end
     end
-    render :json => photo.to_json(:only => [:id, :caption, :source_guid ] , :methods => [:stamp_url, :thumb_url, :screen_url])
+    render :json => Photo.to_json_lite(photo)
   end
 
 end
