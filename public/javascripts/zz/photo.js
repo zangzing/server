@@ -28,7 +28,7 @@
             var html = '';
 
             html += '<div class="photo-border">'
-            html += '<img class="photo-image" src="/images/bg-blk-75.png">';
+            html += '<img class="photo-image" src="/images/photo_placeholder.png">';
             html += '<img class="photo-delete-button" src="/images/btn-delete-photo.png">';
             html += '<div class="photo-caption">' + self.options.caption +'</div>';
             html += '</div>';

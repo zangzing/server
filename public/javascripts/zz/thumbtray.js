@@ -22,7 +22,7 @@
         orientation: null,
         ORIENTATION_X: 'x',
         ORIENTATION_Y: 'y',
-
+        PLACEHOLDER_IMAGE: '/images/photo_placeholder.png',
         
         _create: function() {
             var self = this;
@@ -32,10 +32,10 @@
             html += '<div class="thumbtray-wrapper">';
             html += '    <div class="thumbtray-thumbnails"></div>'
             html += '    <div class="thumbtray-selection">';
-            html += '        <img src="">';
+            html += '        <img src="/images/photo_placeholder.png">';
             html += '    </div>';
             html += '    <div class="thumbtray-preview">';
-            html += '        <img src="">';
+            html += '        <img src="/images/photo_placeholder.png">';
             html += '        <div class="thumbtray-delete-button"></div>';
             html += '    </div>';
             html += '    <img class="thumbtray-loading-indicator" src="/images/loading.gif"/>'
@@ -246,6 +246,7 @@
                 this.currentIndex = index;
 
                 if(index !== -1){
+                    this.previewElement.find('img').attr('src', this.PLACEHOLDER_IMAGE);
                     this.previewElement.find('img').attr('src', this.options.photos[index]['src']);
 
                     if(this.orientation === this.ORIENTATION_X){
@@ -272,6 +273,7 @@
 
             if(index !== -1){
                 if(this.options.showSelection === true){
+                    this.selectionElement.find('img').attr('src', this.PLACEHOLDER_IMAGE);
                     this.selectionElement.find('img').attr('src', this.options.photos[index]['src'])
                     this.selectionElement.show();
                     this.selectionElement.css({opacity:1});
