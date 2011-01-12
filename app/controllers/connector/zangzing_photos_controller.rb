@@ -1,7 +1,8 @@
 class Connector::ZangzingPhotosController < Connector::ConnectorController
 
   def index
-    @photos = current_user.albums.find(params[:zz_album_id]).photos.all(:conditions=>{ :state=>'ready'}).map do |p|
+    album = current_user.albums.find(params[:zz_album_id])
+    @photos = album.photos.all(:conditions=>{ :state=>'ready'}).map do |p|
       {
         :name => p.caption,
         :id   => p.id,
@@ -37,7 +38,7 @@ class Connector::ZangzingPhotosController < Connector::ConnectorController
               :source_screen_url => source_photo.source_screen_url
     )
 
-    
+    source_photo.set_s3bucket
     ZZ::Async::GeneralImport.enqueue( photo.id, source_photo.image.url )
     render :json => Photo.to_json_lite(photo)
   end
