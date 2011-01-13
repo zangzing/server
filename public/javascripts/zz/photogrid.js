@@ -191,7 +191,7 @@
                     });
 
 
-                },100);
+                },500);
             });
 
             //handle scroll
@@ -208,7 +208,7 @@
                             $(element).data().zz_photo.loadIfVisible();
                         }
                     });
-                },100);
+                },500);
 
             });
 

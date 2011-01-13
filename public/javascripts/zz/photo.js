@@ -234,54 +234,40 @@
 
 
         _inLazyLoadRegion: function(){
-            var below = this._belowView(this.element, this.options.scrollContainer,this.options.lazyLoadThreshold);
-            var right = this._rightOfView(this.element, this.options.scrollContainer,this.options.lazyLoadThreshold);
-            var above = this._aboveView(this.element, this.options.scrollContainer,this.options.lazyLoadThreshold);
-            var left =  this._leftOfView(this.element, this.options.scrollContainer,this.options.lazyLoadThreshold);
+            var container = this.options.scrollContainer;
+            var threshold = this.options.lazyLoadThreshold;
 
+            var containerOffset = $(container).offset();
+            var containerHeight = $(container).height();
+            var containerWidth = $(container).width();
 
-            return (!below) && (!right) && (!above) && (!below);
+            var elementOffset = $(this.element).offset();
+            var elementWidth =  this.options.maxWidth; // $(element).width();
+            var elementHeight = this.options.maxHeight; //$(element).height()
 
-
-
-        },
-
-        _belowView : function(element, container, threshold) {
             if (container === undefined || container === window) {
-                var fold = $(window).height() + $(window).scrollTop();
+                var foldBottom = $(window).height() + $(window).scrollTop();
+                var foldRight =  $(window).width() + $(window).scrollLeft();
+                var foldTop =    $(window).scrollTop();
+                var foldLeft =   $(window).scrollLeft();
             } else {
-                var fold = $(container).offset().top + $(container).height();
+                var foldBottom = containerOffset.top + containerHeight;
+                var foldRight =  containerOffset.left + containerWidth;
+                var foldTop =    containerOffset.top;
+                var foldLeft =   containerOffset.left;
             }
-            return fold <= $(element).offset().top - threshold;
-        },
 
-        _rightOfView : function(element, container, threshold) {
-            if (container === undefined || container === window) {
-                var fold = $(window).width() + $(window).scrollLeft();
-            } else {
-                var fold = $(container).offset().left + $(container).width();
-            }
-            return fold <= $(element).offset().left - threshold;
-        },
 
-        _aboveView : function(element, container, threshold) {
-            if (container === undefined || container === window) {
-                var fold = $(window).scrollTop();
-            } else {
-                var fold = $(container).offset().top;
-            }
-            return fold >= $(element).offset().top + threshold  + $(element).height();
-        },
+            var left =  (foldLeft >= elementOffset.left + threshold + elementWidth);
+            var above = (foldTop >= elementOffset.top + threshold  + elementHeight);
+            var right = (foldRight <= elementOffset.left - threshold);
+            var below = (foldBottom <= elementOffset.top - threshold);
 
-        _leftOfView : function(element, container, threshold) {
-            if (container === undefined || container === window) {
-                var fold = $(window).scrollLeft();
-            } else {
-                var fold = $(container).offset().left;
-            }
-            return fold >= $(element).offset().left + threshold + $(element).width();
-        },
+            return (!left) && (!right) && (!above) && (!below);
 
+
+
+        },
 
         editCaption: function(){
             var self = this;
