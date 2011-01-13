@@ -142,10 +142,10 @@
             }
         },
 
-        loadIfVisible: function(){
+        loadIfVisible: function(containerDimensions){
             var self = this;
             if(!self.imageLoaded){
-                if(self._inLazyLoadRegion()){
+                if(self._inLazyLoadRegion(containerDimensions)){
                     self._loadImage();
                 }
             }
@@ -233,17 +233,25 @@
 
 
 
-        _inLazyLoadRegion: function(){
+        _inLazyLoadRegion: function(containerDimensions){
             var container = this.options.scrollContainer;
             var threshold = this.options.lazyLoadThreshold;
 
-            var containerOffset = $(container).offset();
-            var containerHeight = $(container).height();
-            var containerWidth = $(container).width();
+            if(containerDimensions){
+                var containerOffset = containerDimensions.offset;
+                var containerHeight = containerDimensions.height;  //todo: expensive call. cache/pass-in if possible
+                var containerWidth = containerDimensions.width;    //todo: expensive call. cache/pass-in if possible
+            }
+            else{
+                var containerOffset = $(container).offset();  //todo: expensive call. cache/pass-in if possible
+                var containerHeight = $(container).height();  //todo: expensive call. cache/pass-in if possible
+                var containerWidth = $(container).width();    //todo: expensive call. cache/pass-in if possible
+            }
 
-            var elementOffset = $(this.element).offset();
-            var elementWidth =  this.options.maxWidth; // $(element).width();
-            var elementHeight = this.options.maxHeight; //$(element).height()
+
+            var elementOffset = $(this.element).offset(); //todo: expensive call. cache/pass-in if possible
+            var elementWidth =  this.options.maxWidth;
+            var elementHeight = this.options.maxHeight; 
 
             if (container === undefined || container === window) {
                 var foldBottom = $(window).height() + $(window).scrollTop();

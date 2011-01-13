@@ -203,9 +203,16 @@
                 }
 
                 scrollTimer = setTimeout(function(){
+
+                    var containerDimensions = {
+                        offset: self.element.offset(),
+                        height: self.element.height(),
+                        width: self.element.width()
+                    };
+
                     self.element.children('.photogrid-cell').each(function(index, element){
                         if($(element).data().zz_photo){ //not sure why this woultn't be here -- maybe if it is a scroll helper?? in any case was seeing js errors
-                            $(element).data().zz_photo.loadIfVisible();
+                            $(element).data().zz_photo.loadIfVisible(containerDimensions);
                         }
                     });
                 },500);
