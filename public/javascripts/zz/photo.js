@@ -239,17 +239,18 @@
 
             if(containerDimensions){
                 var containerOffset = containerDimensions.offset;
-                var containerHeight = containerDimensions.height;  //todo: expensive call. cache/pass-in if possible
-                var containerWidth = containerDimensions.width;    //todo: expensive call. cache/pass-in if possible
+                var containerHeight = containerDimensions.height;
+                var containerWidth = containerDimensions.width;
             }
             else{
-                var containerOffset = $(container).offset();  //todo: expensive call. cache/pass-in if possible
-                var containerHeight = $(container).height();  //todo: expensive call. cache/pass-in if possible
-                var containerWidth = $(container).width();    //todo: expensive call. cache/pass-in if possible
+                var containerOffset = $(container).offset();
+                var containerHeight = $(container).height();
+                var containerWidth = $(container).width();
             }
 
 
-            var elementOffset = $(this.element).offset(); //todo: expensive call. cache/pass-in if possible
+
+            var elementOffset = $(this.element).offset(); //todo: expensive call. cache/pass-in if possible; maybe can cache after grid resize
             var elementWidth =  this.options.maxWidth;
             var elementHeight = this.options.maxHeight; 
 
