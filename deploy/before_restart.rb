@@ -6,6 +6,7 @@
 # Symlink Resque Files
 
 # Restart Resque workers
-run "sudo monit restart all -g zangzing_resque"
+#GWS - this is being done in the custom chef script which runs last
+#run "sudo monit restart all -g zangzing_resque"
 
 #ALL DONE! Restart the App.
