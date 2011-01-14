@@ -198,7 +198,7 @@ class PhotosController < ApplicationController
 
       format.json do
           self.class.trace_execution_scoped(['photos_controller/index/to_json']) do
-            render :json => @all_photos.to_json(:only => [:id, :caption, :source_guid ] , :methods => [:stamp_url, :thumb_url, :screen_url])
+            render :json => Photo.to_json_lite(@all_photos)
           end
       end
     end

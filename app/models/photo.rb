@@ -44,6 +44,10 @@
 require 'zz'
 
 class Photo < ActiveRecord::Base
+
+  extend NewRelic::Agent::MethodTracer
+
+
   usesguid
   has_one :photo_info, :dependent => :destroy
   belongs_to :album
@@ -282,7 +286,9 @@ class Photo < ActiveRecord::Base
 
 
   def set_s3bucket
-    image.instance_variable_set '@bucket', self.image_bucket unless self.image_bucket.nil?
+    self.class.trace_execution_scoped(['photo/set_s3bucket']) do
+      image.instance_variable_set '@bucket', self.image_bucket unless self.image_bucket.nil?
+    end
   end
 
   def self.generate_source_guid(url)
@@ -326,7 +332,7 @@ class Photo < ActiveRecord::Base
   end
 
   def self.to_json_lite(photos)
-    return photos.to_json(:only =>[:id, :agent_id, :state, :source_thumb_url, :source_screen_url, :source_guid], :methods => [:thumb_url, :screen_url])
+    return photos.to_json(:only =>[:id, :agent_id, :state, :source_thumb_url, :source_screen_url, :source_guid], :methods => [:stamp_url, :thumb_url, :screen_url])
   end
 
 end
