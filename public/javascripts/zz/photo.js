@@ -233,7 +233,8 @@
 
 
 
-        _inLazyLoadRegion: function(containerDimensions){
+
+        _inLazyLoadRegion: function(containerDimensions /*optional param with container dimensions */){
             var container = this.options.scrollContainer;
             var threshold = this.options.lazyLoadThreshold;
 

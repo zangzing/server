@@ -116,8 +116,8 @@
             if(this.options.allowDelete){
                 self.previewElement.find('.thumbtray-delete-button').show().click(function(){
                     self.previewElement.find('.thumbtray-delete-button').hide();
+                    self.removePhoto(self._getCurrentIndex());
                     self.previewElement.hide("scale", {}, 300, function(){
-                        self.removePhoto(self._getCurrentIndex());
                         self.previewElement.find('.thumbtray-delete-button').show();
                     });
 

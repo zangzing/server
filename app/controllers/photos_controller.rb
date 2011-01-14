@@ -193,6 +193,7 @@ class PhotosController < ApplicationController
     end
   end
 
+
   def slideshowbox_source
     @album = fetch_album
     @photos = @album.photos
