@@ -1,0 +1,33 @@
+<h1>Listing bench_test_s3s</h1>
+
+<table>
+  <tr>
+    <th>Result message</th>
+    <th>Start</th>
+    <th>Stop</th>
+    <th>Iterations</th>
+    <th>File size</th>
+    <th>Upload</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @bench_test_s3s.each do |bench_test_s3| %>
+  <tr>
+    <td><%= bench_test_s3.result_message %></td>
+    <td><%= bench_test_s3.start %></td>
+    <td><%= bench_test_s3.stop %></td>
+    <td><%= bench_test_s3.iterations %></td>
+    <td><%= bench_test_s3.file_size %></td>
+    <td><%= bench_test_s3.upload %></td>
+    <td><%= link_to 'Show', bench_test_s3 %></td>
+    <td><%= link_to 'Edit', edit_bench_test_s3_path(bench_test_s3) %></td>
+    <td><%= link_to 'Destroy', bench_test_s3, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New S3', new_bench_test_s3_path %>

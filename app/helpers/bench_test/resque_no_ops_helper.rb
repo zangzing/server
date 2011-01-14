@@ -1,0 +1,2 @@
+module BenchTest::ResqueNoOpsHelper
+end

@@ -1,0 +1,51 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Result code:</b>
+  <%= @bench_test_resque_no_op.result_code %>
+</p>
+
+<p>
+  <b>Result message:</b>
+  <%= @bench_test_resque_no_op.result_message %>
+</p>
+
+<p>
+  <b>Start:</b>
+  <%= @bench_test_resque_no_op.start %>
+</p>
+
+<p>
+  <b>Stop:</b>
+  <%= @bench_test_resque_no_op.stop %>
+</p>
+
+<p>
+  <%
+      if @bench_test_resque_no_op.stop && @bench_test_resque_no_op.start
+        @duration = @bench_test_resque_no_op.stop - @bench_test_resque_no_op.start
+        @callrate = @bench_test_resque_no_op.iterations / @duration
+      end
+  %>
+  <b>Duration:</b>
+  <%=
+      @duration
+  %>
+ </p>
+
+<p>
+  <b>Calls Per Sec:</b>
+   <%=
+       @callrate
+   %>
+ </p>
+
+
+<p>
+  <b>Iterations:</b>
+  <%= @bench_test_resque_no_op.iterations %>
+</p>
+
+
+<%= link_to 'Edit', edit_bench_test_resque_no_op_path(@bench_test_resque_no_op) %> |
+<%= link_to 'Back', bench_test_resque_no_ops_path %>

@@ -1,0 +1,67 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Result code:</b>
+  <%= @bench_test_s3.result_code %>
+</p>
+
+<p>
+  <b>Result message:</b>
+  <%= @bench_test_s3.result_message %>
+</p>
+
+<p>
+  <b>Start:</b>
+  <%= @bench_test_s3.start %>
+</p>
+
+<p>
+  <b>Stop:</b>
+  <%= @bench_test_s3.stop %>
+</p>
+
+<p>
+  <b>Iterations:</b>
+  <%= @bench_test_s3.iterations %>
+</p>
+
+<p>
+  <b>File size:</b>
+  <%= @bench_test_s3.file_size %>
+</p>
+
+<p>
+  <b>Upload:</b>
+  <%= @bench_test_s3.upload %>
+</p>
+<p>
+  <%
+      if @bench_test_s3.stop && @bench_test_s3.start
+        @duration = @bench_test_s3.stop - @bench_test_s3.start
+        @callrate = @bench_test_s3.iterations / @duration
+        @byterate = (@bench_test_s3.file_size * @bench_test_s3.iterations) / @duration
+      end
+  %>
+  <b>Duration:</b>
+  <%=
+      @duration
+  %>
+</p>
+
+<p>
+  <b>Calls Per Sec:</b>
+   <%=
+       @callrate
+   %>
+</p>
+
+<p>
+  <b>Bytes Per Sec:</b>
+   <%=
+       @byterate
+   %>
+</p>
+
+
+<%= link_to 'Edit', edit_bench_test_s3_path(@bench_test_s3) %> |
+<%= link_to 'Back', bench_test_s3s_path %>
