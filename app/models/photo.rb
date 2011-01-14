@@ -250,7 +250,9 @@ class Photo < ActiveRecord::Base
   def stamp_url
     if self.ready?
       set_s3bucket
-      image.url(:stamp)
+      self.class.trace_execution_scoped(['photo/image/url']) do
+        image.url(:stamp)
+      end
     else
       return self.source_thumb_url
     end
@@ -259,7 +261,9 @@ class Photo < ActiveRecord::Base
   def thumb_url
     if self.ready?
       set_s3bucket
-      image.url(:thumb)
+      self.class.trace_execution_scoped(['photo/image/url']) do
+        image.url(:thumb)
+      end
     else
       return self.source_thumb_url
     end
@@ -268,7 +272,9 @@ class Photo < ActiveRecord::Base
   def screen_url
     if self.ready?
       set_s3bucket
-      image.url(:medium)
+      self.class.trace_execution_scoped(['photo/image/url']) do
+        image.url(:medium)
+      end
     else
       return self.source_screen_url
     end
