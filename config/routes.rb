@@ -4,6 +4,15 @@
 
 Server::Application.routes.draw do
 
+  if Server::Application.config.bench_test_allowed
+    scope :module => "bench_test" do
+      get    '/bench_test'                   => 'bench_tests#showtests',             :as => :bench_tests
+    end
+    namespace :bench_test do resources :resque_no_ops end
+
+    namespace :bench_test do resources :s3s end
+  end
+
   root :to => 'pages#home'
 
   #users

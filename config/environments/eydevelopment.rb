@@ -20,4 +20,7 @@ Server::Application.configure do
 
   # override location of temp directory on EY servers
   ENV['TMPDIR'] = '/mnt/tmp'
+
+  # set this in the environment you want to allow benchmark testing
+  config.bench_test_allowed = false
 end

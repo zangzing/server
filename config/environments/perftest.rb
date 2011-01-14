@@ -17,4 +17,6 @@ Server::Application.configure do
 # Keep rails in single threaded mode since we not utilized for our app server configurations
 #    # Enable threaded mode
 #  config.threadsafe!
+  # set this in the environment you want to allow benchmark testing
+  config.bench_test_allowed = true
 end

@@ -7,10 +7,13 @@ silence_warnings do #To avoid warning of overwriting constant
   # GET AND SET ENVIRONMENT
   fname = "/home/deploy/dna.json"
   msg = []
-
+#TODO: Debug only, get rid of after testing
+puts "dd is in: " + `which dd`
+puts `dd -h`
   msg << "=> ZangZing Initializer"
   msg << "      Task started at             : " + Time.now.to_s
   msg << "      Tempfile Directory          : " + Dir.tmpdir
+  msg << "      Path                        : " + ENV['PATH']
 
   if File.exists?( fname )
     dna =  ActiveSupport::JSON.decode( File.read( fname ))

@@ -25,5 +25,8 @@ Server::Application.configure do
   # ActionMailer::Base.deliveries array.
   config.action_mailer.delivery_method = :test
 
+  # set this in the environment you want to allow benchmark testing
+  config.bench_test_allowed = false
+
 end
 
