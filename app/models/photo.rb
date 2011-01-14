@@ -44,10 +44,6 @@
 require 'zz'
 
 class Photo < ActiveRecord::Base
-
-  extend NewRelic::Agent::MethodTracer
-
-
   usesguid
   has_one :photo_info, :dependent => :destroy
   belongs_to :album
@@ -250,9 +246,7 @@ class Photo < ActiveRecord::Base
   def stamp_url
     if self.ready?
       set_s3bucket
-      self.class.trace_execution_scoped(['photo/image/url']) do
-        image.url(:stamp)
-      end
+      image.url(:stamp)
     else
       return self.source_thumb_url
     end
@@ -261,9 +255,7 @@ class Photo < ActiveRecord::Base
   def thumb_url
     if self.ready?
       set_s3bucket
-      self.class.trace_execution_scoped(['photo/image/url']) do
-        image.url(:thumb)
-      end
+      image.url(:thumb)
     else
       return self.source_thumb_url
     end
@@ -272,9 +264,7 @@ class Photo < ActiveRecord::Base
   def screen_url
     if self.ready?
       set_s3bucket
-      self.class.trace_execution_scoped(['photo/image/url']) do
-        image.url(:medium)
-      end
+      image.url(:medium)
     else
       return self.source_screen_url
     end
@@ -292,9 +282,7 @@ class Photo < ActiveRecord::Base
 
 
   def set_s3bucket
-    self.class.trace_execution_scoped(['photo/set_s3bucket']) do
-      image.instance_variable_set '@bucket', self.image_bucket unless self.image_bucket.nil?
-    end
+    image.instance_variable_set '@bucket', self.image_bucket unless self.image_bucket.nil?
   end
 
   def self.generate_source_guid(url)

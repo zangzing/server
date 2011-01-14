@@ -1,8 +1,4 @@
 class PhotosController < ApplicationController
-  extend NewRelic::Agent::MethodTracer
-
-  
-
   before_filter :oauth_required, :only => [:agentindex, :agent_create]
   before_filter :login_required, :only => [:create ]
   before_filter :require_user, :only => [:show, :new, :edit, :destroy, :update] # , :index] #TODO Sort out album security so facebook can freely dig into album page
@@ -154,25 +150,20 @@ class PhotosController < ApplicationController
   #              contributor must be in albums contributor list
 
   def index
+    @album = fetch_album
+    @title = CGI.escapeHTML(@album.name)
 
-    self.class.trace_execution_scoped(['photos_controller/index/get_photos']) do
-
-      @album = fetch_album
-      @title = CGI.escapeHTML(@album.name)
-
-      if params[:upload_batch] && @upload_batch = UploadBatch.find(params[:upload_batch])
-        @all_photos = @upload_batch.photos
-        @return_to_link = "#{album_activities_path( @album )}##{@upload_batch.id}"
-      elsif params[:contributor] && @contributor = Contributor.find(params[:contributor])
-        @all_photos = @contributor.photos
-        @return_to_link = "#{album_people_path( @album )}##{@contributor.id}"
-      else
-        @all_photos = @album.photos
-        @return_to_link = album_photos_url( @album.id )
-      end
-
+    if params[:upload_batch] && @upload_batch = UploadBatch.find(params[:upload_batch])
+      @all_photos = @upload_batch.photos
+      @return_to_link = "#{album_activities_path( @album )}##{@upload_batch.id}"
+    elsif params[:contributor] && @contributor = Contributor.find(params[:contributor])
+      @all_photos = @contributor.photos
+      @return_to_link = "#{album_people_path( @album )}##{@contributor.id}"
+    else
+      @all_photos = @album.photos
+      @return_to_link = album_photos_url( @album.id )
     end
-    
+
     respond_to do |format|
       format.html do
         if !params[:view].nil? && params[:view] == 'slideshow'
@@ -197,9 +188,7 @@ class PhotosController < ApplicationController
       end
 
       format.json do
-          self.class.trace_execution_scoped(['photos_controller/index/to_json']) do
-            render :json => Photo.to_json_lite(@all_photos)
-          end
+        render :json => @all_photos.to_json(:only => [:id, :caption, :source_guid ] , :methods => [:stamp_url, :thumb_url, :screen_url])
       end
     end
   end
