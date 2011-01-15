@@ -59,7 +59,10 @@ module ZZ
 
       # cleanup to end test
       def end_test
-        File.delete(@test_file.path) if @test_file
+        if @test_file
+          File.delete(@test_file.path) if @test_file
+          AWS::S3::S3Object.delete self.file_name, self.s3_bucket
+        end
         @test_file = nil
         @test = nil
       end
@@ -96,7 +99,7 @@ module ZZ
       def upload_one
         # make sure file is at start
         @test_file.rewind
-        AWS::S3::S3Object.store(self.file_name, @test_file, s3_bucket)
+        AWS::S3::S3Object.store(self.file_name, @test_file, self.s3_bucket)
         true
       end
 
@@ -113,7 +116,7 @@ module ZZ
 
       # download a single file
       def download_one
-        raw_data = AWS::S3::S3Object.value(self.file_name, s3_bucket)
+        raw_data = AWS::S3::S3Object.value(self.file_name, self.s3_bucket)
         raw_data
       end
     end
