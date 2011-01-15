@@ -53,16 +53,18 @@ module ZZ
       # make a single instance of the test runner
       def self.factory(test)
         runner = S3TestRunner.new()
-        runner.prepare_test(test)
+        runner.init_test(test)
         runner
       end
 
       # cleanup to end test
       def end_test
         if @test_file
-          File.delete(@test_file.path) if @test_file
+          File.delete(@test_file.path)
           AWS::S3::S3Object.delete self.file_name, self.s3_bucket
+#          @s3.delete self.s3_bucket, self.file_name if @s3
         end
+        @s3 = nil
         @test_file = nil
         @test = nil
       end
@@ -70,7 +72,7 @@ module ZZ
       # make a temporary test file for upload
       # note, we rely on the fact that S3 has already been
       # initialized with credentials at init time
-      def prepare_test test
+      def init_test test
         @test = test
         file_size = @test.file_size
         self.file_name = "s3test-#{file_size.to_s}-#{rand(9999999999).to_s}"
@@ -85,6 +87,10 @@ module ZZ
         # now open the file we just created
         @test_file = File.new(file_path, "rb")
         self.s3_bucket = "perftest.dev.zangzing"
+#        @s3 = RightAws::S3Interface.new(Server::Application.config.s3_access_key_id,
+#          Server::Application.config.s3_secret_access_key,
+#          {:port => 80, :protocol => 'http', :multi_thread => false}
+#        )
       end
 
       # perform the upload test
@@ -100,6 +106,7 @@ module ZZ
         # make sure file is at start
         @test_file.rewind
         AWS::S3::S3Object.store(self.file_name, @test_file, self.s3_bucket)
+        #@s3.put(self.s3_bucket, self.file_name, @test_file)
         true
       end
 
@@ -117,6 +124,7 @@ module ZZ
       # download a single file
       def download_one
         raw_data = AWS::S3::S3Object.value(self.file_name, self.s3_bucket)
+        #raw_data = @s3.get(self.s3_bucket, self.file_name)
         raw_data
       end
     end
