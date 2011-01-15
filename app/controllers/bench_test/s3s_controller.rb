@@ -2,7 +2,7 @@ class BenchTest::S3sController < BenchTest::BenchTestsController
   # GET /bench_test/s3s
   # GET /bench_test/s3s.xml
   def index
-    @bench_test_s3s = BenchTest::S3.all
+    @bench_test_s3s = BenchTest::S3.order("start DESC").limit(5)
 
     respond_to do |format|
       format.html # index.html.erb
