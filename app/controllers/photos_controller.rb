@@ -189,8 +189,18 @@ class PhotosController < ApplicationController
 
 
       format.json do
-        render :json => Photo.to_json_lite(@all_photos)
-      end
+        cache_key = @album.id + '-' + @album.photos_last_updated_at.to_s + '.json'
+        json = Rails.cache.read(cache_key)
+        if(json.nil?)
+          json = Photo.to_json_lite(@all_photos)
+          Rails.cache.write(cache_key, json)
+          logger.debug 'caching photo json'
+        else
+          logger.debug 'using cached photo json'
+        end
+
+        render :json => json
+     end
     end
   end
 

@@ -46,7 +46,7 @@ require 'zz'
 class Photo < ActiveRecord::Base
   usesguid
   has_one :photo_info, :dependent => :destroy
-  belongs_to :album
+  belongs_to :album, :touch => :photos_last_updated_at
   belongs_to :user
   belongs_to :upload_batch
 
