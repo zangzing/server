@@ -189,16 +189,7 @@ class PhotosController < ApplicationController
 
 
       format.json do
-        require 'ruby-prof'
-#        RubyProf.start
-
         render :json => Photo.to_json_lite(@all_photos)
-
-#
-#        result = RubyProf.stop
-#        printer = RubyProf::FlatPrinter.new(result)
-#        printer.print(STDOUT, 0)
-
       end
     end
   end
