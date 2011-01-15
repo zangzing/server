@@ -36,7 +36,7 @@ gem 'faker'                                           # To load sample data
 
 group :development do
   # bundler requires these gems in development
-
+  gem 'ruby-prof'
 end
 
 group :test do
