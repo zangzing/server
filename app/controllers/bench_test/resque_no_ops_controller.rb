@@ -43,16 +43,7 @@ class BenchTest::ResqueNoOpsController < BenchTest::BenchTestsController
   def create
     @bench_test_resque_no_op = BenchTest::ResqueNoOp.new(params[:bench_test_resque_no_op])
 
-    iterations = @bench_test_resque_no_op.iterations
-    if (iterations.nil? || iterations == 0)
-      @bench_test_resque_no_op.result_message = "Less than 1 iteration was given, test not run."
-    else
-      mark_as_starting @bench_test_resque_no_op
-
-      # now kick off the work
-      create_work @bench_test_resque_no_op
-    end
-
+    mark_as_starting @bench_test_resque_no_op
 
     respond_to do |format|
       if @bench_test_resque_no_op.save

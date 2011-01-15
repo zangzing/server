@@ -110,6 +110,7 @@ module ZZ
       # the zz is to go last since these are
       # called in alphabetical order
       def self.after_perform_zz_gc(*args)
+        #TODO:Remove the GC after Photo Rework since causes significant performance issues
         GC.start # force gc to cleanup before we leave
       end
 
@@ -117,6 +118,7 @@ module ZZ
       # the zz is to go last since these are
       # called in alphabetical order
       def self.on_failure_zz_gc(*args)
+        #TODO:Remove the GC after Photo Rework since causes significant performance issues
         GC.start # force gc to cleanup before we leave
       end
 
