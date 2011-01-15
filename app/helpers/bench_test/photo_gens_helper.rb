@@ -1,0 +1,2 @@
+module BenchTest::PhotoGensHelper
+end

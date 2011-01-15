@@ -4,6 +4,8 @@
 
 Server::Application.routes.draw do
 
+  namespace :bench_test do resources :photo_gens end
+
   if Server::Application.config.bench_test_allowed
     scope :module => "bench_test" do
       get    '/bench_test'                   => 'bench_tests#showtests',             :as => :bench_tests

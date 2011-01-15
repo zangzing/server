@@ -3,7 +3,7 @@ class BenchTest::ResqueNoOpsController < BenchTest::BenchTestsController
   # GET /bench_test/resque_no_ops
   # GET /bench_test/resque_no_ops.xml
   def index
-    @bench_test_resque_no_ops = BenchTest::ResqueNoOp.order("start DESC").limit(5)
+    @bench_test_resque_no_ops = BenchTest::ResqueNoOp.order("created_at DESC").limit(5)
 
     respond_to do |format|
       format.html # index.html.erb
