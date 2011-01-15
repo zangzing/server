@@ -187,8 +187,18 @@ class PhotosController < ApplicationController
         end
       end
 
+
       format.json do
-        render :json => @all_photos.to_json(:only => [:id, :caption, :source_guid ] , :methods => [:stamp_url, :thumb_url, :screen_url])
+        require 'ruby-prof'
+#        RubyProf.start
+
+        render :json => Photo.to_json_lite(@all_photos)
+
+#
+#        result = RubyProf.stop
+#        printer = RubyProf::FlatPrinter.new(result)
+#        printer.print(STDOUT, 0)
+
       end
     end
   end
