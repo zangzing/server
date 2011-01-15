@@ -42,6 +42,9 @@ class BenchTest::S3sController < BenchTest::BenchTestsController
   def create
     @bench_test_s3 = BenchTest::S3.new(params[:bench_test_s3])
 
+    mark_as_starting @bench_test_s3
+
+
     respond_to do |format|
       if @bench_test_s3.save
         format.html { redirect_to(@bench_test_s3, :notice => 'S3 was successfully created.') }
@@ -80,4 +83,20 @@ class BenchTest::S3sController < BenchTest::BenchTestsController
       format.xml  { head :ok }
     end
   end
+
+  def mark_as_starting data
+    # validate stuff then pass on
+    if data.file_size? == false
+      data.file_size = 1000000 # default
+    end
+    if data.upload? == false
+      data.upload = false
+    end
+    super(data)
+  end
+
+  def create_work data
+    ZZ::Async::TestS3.enqueue data.id
+  end
+
 end
