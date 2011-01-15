@@ -151,21 +151,26 @@ class PhotosController < ApplicationController
 
   def index
     @album = fetch_album
-    @title = CGI.escapeHTML(@album.name)
-
-    if params[:upload_batch] && @upload_batch = UploadBatch.find(params[:upload_batch])
-      @all_photos = @upload_batch.photos
-      @return_to_link = "#{album_activities_path( @album )}##{@upload_batch.id}"
-    elsif params[:contributor] && @contributor = Contributor.find(params[:contributor])
-      @all_photos = @contributor.photos
-      @return_to_link = "#{album_people_path( @album )}##{@contributor.id}"
-    else
-      @all_photos = @album.photos
-      @return_to_link = album_photos_url( @album.id )
-    end
 
     respond_to do |format|
       format.html do
+
+
+        @title = CGI.escapeHTML(@album.name)
+
+        if params[:upload_batch] && @upload_batch = UploadBatch.find(params[:upload_batch])
+          @all_photos = @upload_batch.photos
+          @return_to_link = "#{album_activities_path( @album )}##{@upload_batch.id}"
+        elsif params[:contributor] && @contributor = Contributor.find(params[:contributor])
+          @all_photos = @contributor.photos
+          @return_to_link = "#{album_people_path( @album )}##{@contributor.id}"
+        else
+          @all_photos = @album.photos
+          @return_to_link = album_photos_url( @album.id )
+        end
+
+
+
         if !params[:view].nil? && params[:view] == 'slideshow'
           @photos = @all_photos.paginate({:page =>params[:page], :per_page => 1})
           unless  params[:photoid].nil?
@@ -192,7 +197,7 @@ class PhotosController < ApplicationController
         cache_key = @album.id + '-' + @album.photos_last_updated_at.to_s + '.json'
         json = Rails.cache.read(cache_key)
         if(json.nil?)
-          json = Photo.to_json_lite(@all_photos)
+          json = Photo.to_json_lite(@album.photos)
           Rails.cache.write(cache_key, json)
           logger.debug 'caching photo json'
         else
