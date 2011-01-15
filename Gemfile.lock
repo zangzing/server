@@ -102,6 +102,7 @@ GEM
       treetop (~> 1.4.8)
     mechanize (1.0.0)
       nokogiri (>= 1.2.1)
+    memcache-client (1.8.5)
     mime-types (1.16)
     multi_json (0.0.5)
     multipart-post (1.1.0)
@@ -216,6 +217,7 @@ DEPENDENCIES
   i18n
   launchy
   mechanize
+  memcache-client
   mysql
   oauth (= 0.4.5.pre2)!
   oauth-plugin (>= 0.4.0.pre1)

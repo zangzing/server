@@ -33,6 +33,7 @@ gem 'bitly'                                           # Bitly duh?
 gem 'vpim'                                            # VCard creator
 gem 'rpm_contrib'                                     # For New Relic Performance Instrumentation
 gem 'faker'                                           # To load sample data
+gem 'memcache-client'
 
 group :development do
   # bundler requires these gems in development
