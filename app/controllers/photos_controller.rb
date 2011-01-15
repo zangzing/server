@@ -194,18 +194,20 @@ class PhotosController < ApplicationController
 
 
       format.json do
-        cache_key = @album.id + '-' + @album.photos_last_updated_at.to_s + '.json'
-        json = Rails.cache.read(cache_key)
-        if(json.nil?)
-          json = Photo.to_json_lite(@album.photos)
-          Rails.cache.write(cache_key, json)
-          logger.debug 'caching photo json'
-        else
-          logger.debug 'using cached photo json'
-        end
+        if stale?(:last_modified => @album.photos_last_updated_at.utc, :etag => @album)
+          cache_key = @album.id + '-' + @album.photos_last_updated_at.to_s + '.json'
+          json = Rails.cache.read(cache_key)
+          if(json.nil?)
+            json = Photo.to_json_lite(@album.photos)
+            Rails.cache.write(cache_key, json)
+            logger.debug 'caching photo json'
+          else
+            logger.debug 'using cached photo json'
+          end
 
-        render :json => json
-     end
+          render :json => json
+        end
+      end
     end
   end
 
