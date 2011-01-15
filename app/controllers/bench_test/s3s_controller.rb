@@ -1,3 +1,7 @@
+#
+# Generated initially with
+# rails generate scaffold BenchTest/S3 result_message:string start:datetime stop:datetime iterations:integer file_size:integer upload:boolean
+#
 class BenchTest::S3sController < BenchTest::BenchTestsController
   # GET /bench_test/s3s
   # GET /bench_test/s3s.xml
