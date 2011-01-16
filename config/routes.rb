@@ -4,15 +4,13 @@
 
 Server::Application.routes.draw do
 
-  namespace :bench_test do resources :photo_gens end
-
   if Server::Application.config.bench_test_allowed
     scope :module => "bench_test" do
       get    '/bench_test'                   => 'bench_tests#showtests',             :as => :bench_tests
     end
     namespace :bench_test do resources :resque_no_ops end
-
     namespace :bench_test do resources :s3s end
+    namespace :bench_test do resources :photo_gens end
   end
 
   root :to => 'pages#home'
