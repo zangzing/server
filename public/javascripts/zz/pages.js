@@ -128,24 +128,19 @@ pages.edit_album_tab = {
             url: '/albums/' + zz.album_id + '/photos.json',
             success: function(json){
 
-                var ps = $(json).map(function(index, element){
-                    var photo = {};
-                    photo.stamp_url = agent.buildAgentUrl(element.stamp_url);
-                    photo.thumb_url = agent.buildAgentUrl(element.thumb_url);
-                    photo.src =       agent.buildAgentUrl(element.stamp_url);
-                    photo.screen_url = agent.buildAgentUrl(element.screen_url);
-
-                    photo.caption = element.caption;
-                    photo.id = element.id;
-
-                    return photo;
-                });
+                for(var i =0;i<json.length;i++){
+                    var photo = json[i];
+                    photo.stamp_url = agent.buildAgentUrl(photo.stamp_url);
+                    photo.thumb_url = agent.buildAgentUrl(photo.thumb_url);
+                    photo.src =       agent.buildAgentUrl(photo.stamp_url);
+                    photo.screen_url = agent.buildAgentUrl(photo.screen_url);
+                }
 
                 $('#article').remove();
                 $('body').prepend('<div id="article"></div>');
 
                 var grid = $('#article').zz_photogrid({
-                    photos:ps,
+                    photos:json,
                     allowDelete: true,
                     onDelete: function(index, photo){
                         $.ajax({
