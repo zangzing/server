@@ -49,10 +49,23 @@
     </style>
 
 
-    <script type="text/javascript" src="/swf/ZZSlideShow.js"></script> <!--includes jquery 1.4.2-->
-    <script type="text/javascript" src="/swf/swfobject.js"></script>
+</head>
+
+<body>
+    <object id="movie" type="application/x-shockwave-flash" data="/swf/ZZSlideShow.swf">
+        <param name="movie" value="/swf/ZZSlideShow.swf">
+        <param name="allowFullScreen" value="true">
+        <param name="bgcolor" value="#000000">
+        <param name="flashvars" value="source=slides_source.xml&autoHideControls=false&autoSlideShow=true&backgroundColor=000000&backgroundImage=&backgroundVisible=true&borderSize=5&borderColor=FFFFFF&controlsHideSpeed=2&exitButton=true&exitButtonURL=javascript:history.go(-1)&loadOriginalImages=false&overrideFullScreenChange=false&scaleBackground=true&scaleMode=scale&shadowColor=0x000000&slideshowDistance=5&slideShowSpeed=6&transitionSpeed=0.7&transitionType=slide&slideShowControls=true"/>
+    </object>
+    <div id="scrim"></div>
+
+
+    <%= javascript_include_tag "/swf/ZZSlideShow.js" %>
+    <%= javascript_include_tag "/swf/swfobject.js" %>
+
     <script type="text/javascript">
-      
+
         var force_javascript = (document.location.search.indexOf('js=true') !== -1)
 
 
@@ -104,7 +117,7 @@
 
                     });
 
-                    $.CustomSimpleFade.showFullScreen();
+//                    $.CustomSimpleFade.showFullScreen();
 
                 }
             });
@@ -132,16 +145,13 @@
 
 
     </script>
-</head>
 
-<body>
-    <object id="movie" type="application/x-shockwave-flash" data="/swf/ZZSlideShow.swf">
-        <param name="movie" value="/swf/ZZSlideShow.swf">
-        <param name="allowFullScreen" value="true">
-        <param name="bgcolor" value="#000000">
-        <param name="flashvars" value="source=slides_source.xml&autoHideControls=false&autoSlideShow=true&backgroundColor=000000&backgroundImage=&backgroundVisible=true&borderSize=5&borderColor=FFFFFF&controlsHideSpeed=2&exitButton=true&exitButtonURL=javascript:history.go(-1)&loadOriginalImages=false&overrideFullScreenChange=false&scaleBackground=true&scaleMode=scale&shadowColor=0x000000&slideshowDistance=5&slideShowSpeed=6&transitionSpeed=0.7&transitionType=slide&slideShowControls=true"/>
-    </object>
-    <div id="scrim"></div>
+
+
+
+
+
+
 </body>
  
 </html>
