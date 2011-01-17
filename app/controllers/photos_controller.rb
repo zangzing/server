@@ -199,6 +199,8 @@ class PhotosController < ApplicationController
 
           cache_key = @album.id + '-' + @album.photos_last_updated_at.to_s + '.json'
 
+          logger.debug 'cache key: ' + cache_key
+
           json = Rails.cache.read(cache_key)
 
           if(json.nil?)
