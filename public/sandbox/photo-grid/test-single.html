@@ -39,7 +39,9 @@
     <script type="text/javascript" src="../../javascripts/lib/jquery.js"></script>
     <script type="text/javascript" src="../../javascripts/lib/jquery-ui-1.8.6.custom.min.js"></script>
     <script type="text/javascript" src="../../javascripts/lib/jquery.easing.js"></script>
+    <script type="text/javascript" src="../../javascripts/lib/jquery.mousewheel.js"></script>
     <script type="text/javascript" src="../../javascripts/zz/photo.js"></script>
+    <script type="text/javascript" src="../../javascripts/zz/logging.js"></script>
     <script type="text/javascript" src="../../javascripts/zz/photogrid.js"></script>
     <script type="text/javascript" src="../../javascripts/zz/jquery-zz.js"></script>
     <script type="text/javascript" src="../../javascripts/zz/thumbtray.js"></script>
@@ -49,9 +51,8 @@
         var size = parseInt(document.location.search.substring(1));
 
         if(!size){
-            size = 180;
+            size = 1024;
         }
-
 
 
 
@@ -62,10 +63,8 @@
 
         var photos = $(json).map(function(index, element){
             var photo = {};
-            photo.stamp_url = element.stamp_url;
-            photo.thumb_url = element.thumb_url;
-            photo.src =       element.thumb_url;
-            photo.screen_url = element.screen_url;
+            photo.previewSrc = element.stamp_url;
+            photo.src =       element.screen_url;
 
             photo.caption = element.caption;
             photo.id = element.id;
@@ -80,7 +79,9 @@
                 allowEditCaption: true,
                 allowReorder: true,
                 cellHeight: size,
-                cellWidth: size
+                cellWidth: size,
+                scrollMode: 'picture'
+
             }).data().zz_photogrid;
 
 

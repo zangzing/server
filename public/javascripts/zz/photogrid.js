@@ -17,7 +17,10 @@
 
             onClickPhoto: jQuery.noop,
 
-            showThumbscroller: true
+            showThumbscroller: true,
+
+            scrollMode: 'smooth'
+
         },
 
 
@@ -59,8 +62,8 @@
 
                 cell.zz_photo({
                     photoId: photo.id,
-                    previewSrc: photo.stamp_url,
-                    src: photo.thumb_url,
+                    previewSrc: photo.previewSrc,
+                    src: photo.src,
                     maxWidth: Math.floor(self.options.cellWidth * .85),
                     maxHeight: Math.floor(self.options.cellHeight * .85),
                     allowDelete: self.options.allowDelete,
@@ -232,6 +235,7 @@
 
                 self.thumbscroller = self.thumbscrollerElement.zz_thumbtray({
                     photos:self.options.photos,
+                    srcAttribute: 'previewSrc',
                     showSelection:false,
                     thumbnailSize:16,
                     showSelectedIndexIndicator:true,
@@ -269,8 +273,64 @@
                     }
                 });
             }
+
+
+            //mousewheel for single picture
+            if(self.options.scrollMode === 'picture'){
+                this.element.mousewheel(function(event){
+
+                    var delta;
+
+                    if(typeof(event.wheelDelta)!== 'undefined'){
+                        delta = event.wheelDelta;
+                    }
+                    else{
+                        delta = -1 * event.detail;
+                    }
+
+                    logger.debug(delta);
+
+                    if(delta < 0){
+                        self.nextPicture();
+                    }
+                    else{
+                        self.previousPicture();
+                    }
+
+                    return false;
+                });
+            }
         },
 
+
+        nextPrevActive : false,
+        
+
+        nextPicture: function(){
+            var self = this;
+
+            if(!self.nextPrevActive){
+                self.nextPrevActive = true;
+                var x =  this.element.scrollTop() + self.options.cellHeight;
+                self.element.animate({scrollTop: x}, 500, 'easeOutCubic', function(){
+                    self.nextPrevActive = false;
+                });
+            }
+
+        },
+
+        previousPicture: function(){
+            var self = this;
+
+            if(!self.nextPrevActive){
+                self.nextPrevActive = true;
+                var x =  this.element.scrollTop() - self.options.cellHeight;
+                self.element.animate({scrollTop: x}, 500, 'easeOutCubic' ,function(){
+                    self.nextPrevActive = false;
+                });
+            }
+
+        },
 
 
         resetLayout: function(duration, easing){

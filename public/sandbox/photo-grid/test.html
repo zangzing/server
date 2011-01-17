@@ -62,10 +62,8 @@
         
         var photos = $(json).map(function(index, element){
             var photo = {};
-            photo.stamp_url = element.stamp_url;
-            photo.thumb_url = element.thumb_url;
+            photo.previewSrc = element.stamp_url;
             photo.src =       element.thumb_url;
-            photo.screen_url = element.screen_url;
 
             photo.caption = element.caption;
             photo.id = element.id;

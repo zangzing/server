@@ -3,6 +3,7 @@
     $.widget( "ui.zz_thumbtray", {
         options: {
             photos: [],
+            srcAttribute: 'src',
             previewSize: 80,
             selectionSize: 115,
             allowDelete: false,
@@ -247,7 +248,7 @@
 
                 if(index !== -1){
                     this.previewElement.find('img').attr('src', this.PLACEHOLDER_IMAGE);
-                    this.previewElement.find('img').attr('src', this.options.photos[index]['src']);
+                    this.previewElement.find('img').attr('src', this.options.photos[index][this.options.srcAttribute]);
 
                     if(this.orientation === this.ORIENTATION_X){
                         this.previewElement.css('left', this._getPositionForIndex(index) - this.previewElement.width() / 2);
@@ -274,7 +275,7 @@
             if(index !== -1){
                 if(this.options.showSelection === true){
                     this.selectionElement.find('img').attr('src', this.PLACEHOLDER_IMAGE);
-                    this.selectionElement.find('img').attr('src', this.options.photos[index]['src'])
+                    this.selectionElement.find('img').attr('src', this.options.photos[index][self.options.srcAttribute])
                     this.selectionElement.show();
                     this.selectionElement.css({opacity:1});
 
@@ -338,7 +339,7 @@
 
             for(var i=0; i<thumbnails.length; i++){
                 var thumbnail = thumbnails[i];
-                html += '<img style="height:' + this._getThumbnailSize() + 'px; width:' + this._getThumbnailSize() + 'px" src="' + thumbnail['src'] + '">'
+                html += '<img style="height:' + this._getThumbnailSize() + 'px; width:' + this._getThumbnailSize() + 'px" src="' + thumbnail[this.options.srcAttribute] + '">'
             }
 
             this.thumbnailsElement.html(html);

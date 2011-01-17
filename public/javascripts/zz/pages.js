@@ -130,10 +130,8 @@ pages.edit_album_tab = {
 
                 for(var i =0;i<json.length;i++){
                     var photo = json[i];
-                    photo.stamp_url = agent.buildAgentUrl(photo.stamp_url);
-                    photo.thumb_url = agent.buildAgentUrl(photo.thumb_url);
-                    photo.src =       agent.buildAgentUrl(photo.stamp_url);
-                    photo.screen_url = agent.buildAgentUrl(photo.screen_url);
+                    photo.previewSrc = agent.buildAgentUrl(photo.stamp_url);
+                    photo.src =       agent.buildAgentUrl(photo.thumb_url);
                 }
 
 

@@ -171,18 +171,19 @@ class PhotosController < ApplicationController
 
 
 
-        if !params[:view].nil? && params[:view] == 'slideshow'
-          @photos = @all_photos.paginate({:page =>params[:page], :per_page => 1})
-          unless  params[:photoid].nil?
-            current_page = 1 if params[:page].nil?
-            until @photos[0][:id] == params[:photoid]
-              current_page += 1
-              @photos = @all_photos.paginate({:page =>current_page, :per_page => 1})
-            end
-            params[:photoid] = nil
-          end
-          render 'slideshow'
-        elsif !params[:view].nil? && params[:view] == 'movie'
+#        if !params[:view].nil? && params[:view] == 'slideshow'
+#          @photos = @all_photos.paginate({:page =>params[:page], :per_page => 1})
+#          unless  params[:photoid].nil?
+#            current_page = 1 if params[:page].nil?
+#            until @photos[0][:id] == params[:photoid]
+#              current_page += 1
+#              @photos = @all_photos.paginate({:page =>current_page, :per_page => 1})
+#            end
+#            params[:photoid] = nil
+#          end
+#          render 'slideshow'
+
+        if !params[:view].nil? && params[:view] == 'movie'
           @photos = @all_photos
           render 'movie', :layout => false
         else
