@@ -29,6 +29,7 @@
 
 
             //template for cells
+            //todo: when allowReorder is 'false' don't add the drop target elements
             var template = $('<div class="photogrid-cell"><div class="photogrid-droppable"></div></div>');
             template.css({
                 width: self.options.cellWidth,
@@ -191,7 +192,7 @@
                     });
 
 
-                },500);
+                },100);
             });
 
             //handle scroll
