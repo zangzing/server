@@ -326,7 +326,6 @@
 
 
         destroy: function() {
-            console.log('destroying grid')
             if(this.thumbscrollerElement){
                 this.thumbscrollerElement.remove();
             }
