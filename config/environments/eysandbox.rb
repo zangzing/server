@@ -24,5 +24,5 @@ Server::Application.configure do
   # set this in the environment you want to allow benchmark testing
   config.bench_test_allowed = true
 
-  ActionController::Base.cache_store = :mem_cache_store, "localhost:11211"
+  ActionController::Base.cache_store = :memory_store
 end
