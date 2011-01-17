@@ -327,22 +327,28 @@ class Photo < ActiveRecord::Base
 
   def self.to_json_lite(photos)
 
+#      todo: manual creation of json may be 2x to 3x faster than to_json
+#      json = '['
+#      photos.each do |photo|
+#       #todo: any more escaping we need to do here to be safe?
+#
+#        caption = photo.caption.gsub(/"/, '\\"')
+#
+#        json << "{\"id\":\"#{photo.id}\",\"state\":\"#{photo.state}\",\"caption\":\"#{caption}\",\"source_thumb_url\":\"#{photo.source_thumb_url}\",\"source_screen_url\":\"#{photo.source_screen_url}\",\"source_guid\":\"#{photo.source_guid}\",\"stamp_url\":\"#{photo.stamp_url}\",\"thumb_url\":\"#{photo.thumb_url}\",\"screen_url\":\"#{photo.screen_url}\"},"
+#      end
+#
+#      if(json[-1] == ',')
+#        json[-1]= ']' #get rid of last comma and close the array
+#      else
+#        json << ']'
+#      end
 
-      json = '['
-      photos.each do |photo|
 
-        #todo: any more escaping we need to do here to be safe?
-        caption = photo.caption.gsub(/"/, '\\"')
+      json= photos.to_json(:only =>[:id, :caption, :state, :source_thumb_url, :source_screen_url, :source_guid], :methods => [:stamp_url, :thumb_url, :screen_url])
 
-        json << "{\"id\":\"#{photo.id}\",\"state\":\"#{photo.state}\",\"caption\":\"#{caption}\",\"source_thumb_url\":\"#{photo.source_thumb_url}\",\"source_screen_url\":\"#{photo.source_screen_url}\",\"source_guid\":\"#{photo.source_guid}\",\"stamp_url\":\"#{photo.stamp_url}\",\"thumb_url\":\"#{photo.thumb_url}\",\"screen_url\":\"#{photo.screen_url}\"},"
-      end
-
-      json[-1]= ']' #get rid of last comma and close the array
 
       return json
 
-    # manual creation of json is 2x to 3x faster than to_json
-#    return photos.to_json(:only =>[:id, :state, :source_thumb_url, :source_screen_url, :source_guid], :methods => [:stamp_url, :thumb_url, :screen_url])
   end
 
 end

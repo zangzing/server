@@ -194,18 +194,29 @@ class PhotosController < ApplicationController
 
 
       format.json do
+
         if stale?(:last_modified => @album.photos_last_updated_at.utc, :etag => @album)
+
           cache_key = @album.id + '-' + @album.photos_last_updated_at.to_s + '.json'
+
           json = Rails.cache.read(cache_key)
+
           if(json.nil?)
             json = Photo.to_json_lite(@album.photos)
+
+            #compress the content once before caching: save memory and save nginx from compressing every response
+            json = ActiveSupport::Gzip.compress(json)
+
             Rails.cache.write(cache_key, json)
-            logger.debug 'caching photo json'
+            logger.debug 'caching photos.json'
           else
-            logger.debug 'using cached photo json'
+            logger.debug 'using cached photo.json'
           end
 
+          response.headers['Content-Encoding'] = "gzip"
           render :json => json
+        else
+          logger.debug 'etag match, sending 304'
         end
       end
     end
