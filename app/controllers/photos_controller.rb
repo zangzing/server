@@ -198,6 +198,7 @@ class PhotosController < ApplicationController
         if stale?(:last_modified => @album.photos_last_updated_at.utc, :etag => @album)
 
           cache_key = @album.id + '-' + @album.photos_last_updated_at.to_s + '.json'
+          cache_key = cache_key.gsub(' ', '_')
 
           logger.debug 'cache key: ' + cache_key
 
