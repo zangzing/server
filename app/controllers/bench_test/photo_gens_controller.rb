@@ -52,6 +52,7 @@ class BenchTest::PhotoGensController < BenchTest::BenchTestsController
           end
           @bench_test_photo_gen.good_count = good_count
           @bench_test_photo_gen.error_count = error_count
+          @bench_test_photo_gen.result_message = "Test Complete."
         end
       end
     end
