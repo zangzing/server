@@ -136,10 +136,12 @@ pages.edit_album_tab = {
                     photo.screen_url = agent.buildAgentUrl(photo.screen_url);
                 }
 
-                $('#article').remove();
-                $('body').prepend('<div id="article"></div>');
 
-                var grid = $('#article').zz_photogrid({
+                var gridElement = $("<div class='photogrid-container-vertical'></div>");
+
+                $('#article').html(gridElement);
+
+                var grid = gridElement.zz_photogrid({
                     photos:json,
                     allowDelete: true,
                     onDelete: function(index, photo){

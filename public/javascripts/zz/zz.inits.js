@@ -213,7 +213,6 @@ zz.init = {
                 url: '/albums/' + zz.album_id + '/photos.json',
                 success: function(json){
 
-
                     for(var i =0;i<json.length;i++){
                         var photo = json[i];
                         photo.stamp_url = agent.buildAgentUrl(photo.stamp_url);
@@ -221,9 +220,14 @@ zz.init = {
                         photo.src =       agent.buildAgentUrl(photo.stamp_url);
                         photo.screen_url = agent.buildAgentUrl(photo.screen_url);
                     }
-                    
 
-                    var grid = $('#article').zz_photogrid({
+
+                    var gridElement = $("<div class='photogrid-container-vertical'></div>");
+
+                    $('#article').html(gridElement);
+
+
+                    var grid = gridElement.zz_photogrid({
                         photos:json,
                         allowDelete: false,
                         allowEditCaption: false,
@@ -240,7 +244,7 @@ zz.init = {
 
                     var updateProgressMeter = function(){
 
-                        var photo_count = photos.length; //todo: photos shouln't be a global variable
+                        var photo_count = json.length; //todo: photos shouln't be a global variable
 
                         upload_stats.stats_for_album(zz.album_id,photo_count, function(time_remaining, percent_complete){
                             percent_complete = Math.round(percent_complete);

@@ -29,6 +29,8 @@ var zz = {
         // fade out the grid
         $('#article').animate({ opacity: opacity }, time/2 ).html('');
 
+
+
         // pull out the drawer
         $('div#drawer').animate({ height: zz.drawer_height + 'px', top: '52px' }, time );
         //$('div#drawer').css( { height: zz.drawer_height + 'px', top: '50px' } );

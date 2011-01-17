@@ -1,3 +1,20 @@
+.photogrid-container-vertical{
+    width:100%;
+    height:100%;
+    overflow-y:scroll;
+    overflow-x:hidden;
+    position:relative;
+    /*background-color:#eeeeee;*/
+}
+
+.photogrid-container-horizontal{
+    width:100%;
+    height:100%;
+    overflow-x:scroll;
+    position:relative;
+}
+
+
 .photogrid-cell{
     position: absolute;
 }
@@ -8,8 +25,8 @@
     z-index:-1;
 }
 
-.photogrid-thumbscroller{
-    border:1px solid #999999;
+.photogrid-thumbscroller-vertical{
+    border-left:1px solid #999999;
     background-color:#cccccc;
     position:absolute;
     height: 100%;

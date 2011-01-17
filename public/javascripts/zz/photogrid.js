@@ -226,10 +226,10 @@
                 var animateScrollActive = false;
                 var nativeScrollActive = false;
 
-                var thumbscrollerElement = $('<div class=".photogrid-thumbscroller"></div>').addClass('photogrid-thumbscroller').appendTo(self.element.parent());
+                self.thumbscrollerElement = $('<div class="photogrid-thumbscroller-vertical"></div>').appendTo(self.element.parent());
 
 
-                self.thumbscroller = thumbscrollerElement.zz_thumbtray({
+                self.thumbscroller = self.thumbscrollerElement.zz_thumbtray({
                     photos:self.options.photos,
                     showSelection:false,
                     thumbnailSize:16,
@@ -326,8 +326,9 @@
 
 
         destroy: function() {
-            if(this.thumbscroller){
-                this.thumbscroller.element.remove();
+            console.log('destroying grid')
+            if(this.thumbscrollerElement){
+                this.thumbscrollerElement.remove();
             }
 
             $.Widget.prototype.destroy.apply( this, arguments );
