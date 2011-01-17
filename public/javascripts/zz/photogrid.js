@@ -318,9 +318,14 @@
             var row = Math.floor(index / cellsPerRow);
             var col = index % cellsPerRow;
 
+            var paddingLeft = Math.floor((self.width - (cellsPerRow * self.options.cellWidth))/2);
+
+            var paddingLeft = paddingLeft - (16/2); //account for scroller //todo: use constant or lookup value for scroller width 
+
+
             return {
                 top: row * self.options.cellHeight,
-                left: col * self.options.cellWidth
+                left: paddingLeft + (col * self.options.cellWidth) 
             };
 
         },
