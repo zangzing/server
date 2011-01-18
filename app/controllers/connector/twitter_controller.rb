@@ -1,4 +1,5 @@
 class Connector::TwitterController < Connector::ConnectorController
+  require 'twitter_connector'
 
   before_filter :service_login_required
 

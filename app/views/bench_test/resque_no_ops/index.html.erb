@@ -1,0 +1,27 @@
+<h1>Listing bench_test_resque_no_ops</h1>
+
+<table>
+  <tr>
+    <th>Result message</th>
+    <th>Start</th>
+    <th>Stop</th>
+    <th>Iterations</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @bench_test_resque_no_ops.each do |bench_test_resque_no_op| %>
+  <tr>
+    <td><%= bench_test_resque_no_op.result_message %></td>
+    <td><%= bench_test_resque_no_op.start %></td>
+    <td><%= bench_test_resque_no_op.stop %></td>
+    <td><%= bench_test_resque_no_op.iterations %></td>
+    <td><%= link_to 'Show', bench_test_resque_no_op %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Resque no op', new_bench_test_resque_no_op_path %>

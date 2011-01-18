@@ -1,0 +1,29 @@
+<%= form_for(@bench_test_s3) do |f| %>
+  <% if @bench_test_s3.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@bench_test_s3.errors.count, "error") %> prohibited this bench_test_s3 from being saved:</h2>
+
+      <ul>
+      <% @bench_test_s3.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :iterations %><br />
+    <%= f.text_field :iterations %>
+  </div>
+  <div class="field">
+    <%= f.label :file_size %><br />
+    <%= f.text_field :file_size %>
+  </div>
+  <div class="field">
+    <%= f.label :upload %><br />
+    <%= f.check_box :upload %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

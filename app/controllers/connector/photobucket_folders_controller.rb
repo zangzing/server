@@ -47,7 +47,7 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
       ZZ::Async::GeneralImport.enqueue( photo.id, photo_data[:url].first )
       photos << photo
     end
-    render :json => photos
+    render :json => Photo.to_json_lite(photos)
   end
 
   def import_photo
@@ -64,7 +64,7 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
     )
     
     ZZ::Async::GeneralImport.enqueue( photo.id, photo_data[:url].first )
-    render :json => photo
+    render :json => Photo.to_json_lite(photo)
   end
 
 end

@@ -25,6 +25,9 @@ class Connector::FacebookFoldersController < Connector::FacebookController
         if album_list.first[:updated_time]
           album_list.sort!{|a, b| b[:updated_time] <=> a[:updated_time] }
         end
+        if target=='me/friends' #Sort by last names
+          album_list = album_list.sort_by { |friend| friend[:name].split(' ').last }
+        end
         @folders = album_list.map do |f|
           {
             :name => f[:name] || "Created #{f[:created_time].strftime('%d %b %Y')}",
@@ -69,7 +72,7 @@ class Connector::FacebookFoldersController < Connector::FacebookController
     end
 
 
-    render :json => photos.to_json
+    render :json => Photo.to_json_lite(photos)
   end
 
 end

@@ -4,6 +4,14 @@ module ZZ
     class UpdatePicon < Base
       @queue = :image_processing
 
+      # only add ourselves one time
+      if @retry_criteria_checks.length == 0
+        # plug ourselves into the retry framework
+        retry_criteria_check do |exception, *args|
+          self.should_retry exception, args
+        end
+      end
+
       def self.enqueue( album_id )
           super( album_id )
       end

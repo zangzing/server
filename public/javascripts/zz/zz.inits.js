@@ -8,56 +8,58 @@ zz.init = {
          ----------------------------------------------------------------------- */
 
         //top bar
-        $('header #home-button').click(function(){ document.location.href = '/' });
+        $('#header #home-button').click(function(){ document.location.href = '/' });
 
-        $('header #back-button').click(function(){ document.location.href = '/' });
+        $('#header #back-button').click(function(){ document.location.href = '/' });
 
 
         if(document.location.href.indexOf("/photos?view=slideshow") !== -1){
-            $('header #view-buttons #picture-view-button').addClass('selected');
+            $('#header #view-buttons #picture-view-button').addClass('selected');
         }
         else if(document.location.href.indexOf("/photos") !== -1){
-            $('header #view-buttons #grid-view-button').addClass('selected');
+            $('#header #view-buttons #grid-view-button').addClass('selected');
         }
         else if(document.location.href.indexOf("/people") !== -1){
-            $('header #view-buttons #people-view-button').addClass('selected');
+            $('#header #view-buttons #people-view-button').addClass('selected');
         }
         else if(document.location.href.indexOf("/activities") !== -1){
-            $('header #view-buttons #activities-view-button').addClass('selected');
+            $('#header #view-buttons #activities-view-button').addClass('selected');
         }
 
 
-        $('header #view-buttons #grid-view-button').click(function(){
+        $('#header #view-buttons #grid-view-button').click(function(){
             document.location.href = '/albums/' + album_id + "/photos";
         });
 
-        $('header #view-buttons #picture-view-button').click(function(){
+        $('#header #view-buttons #picture-view-button').click(function(){
             document.location.href = '/albums/' + album_id + "/photos?view=slideshow";
 
         });
 
-        $('header #view-buttons #people-view-button').click(function(){
+        $('#header #view-buttons #people-view-button').click(function(){
             document.location.href = '/albums/' + album_id + "/people";
 
         });
 
-        $('header #view-buttons #activities-view-button').click(function(){
+        $('#header #view-buttons #activities-view-button').click(function(){
             document.location.href = '/albums/' + album_id + "/activities";
 
         });
 
-        $('header #help-button').click(function(){
+        $('#header #help-button').click(function(){
             GSFN.show();
         });
 
 
-        $('header #sign-in-button').click(function(){
+        $('#header #sign-in-button').click(function(){
             if (zz.drawer_state === zz.DRAWER_CLOSED) {
-                $('header #sign-in-button').addClass('selected');
+                $('#header #sign-in-button').addClass('selected');
                 $('#sign-in').show();
                 $('#sign-up').hide();
 
-                $('#small-drawer').show().animate({height: '460px', top: '56px'},500);
+                $('#small-drawer').show().animate({height: '460px', top: '56px'},500, 'linear', function(){
+                    $('#user_session_email').focus();
+                });
                 zz.drawer_state = zz.DRAWER_OPEN;
             }
         });
@@ -65,7 +67,21 @@ zz.init = {
 
 
         $('#footer #play-button').click(function(){
-            document.location.href = '/albums/' + album_id + '/photos?view=movie'; //global variable set in _bottom_nav
+            $('<div></div>').css({
+                position: 'absolute',
+                top:0,
+                left:0,
+                height:'100%',
+                width:'100%',
+                'z-index':3000,
+                'background-color':'#000000',
+                opacity: 0
+            }).appendTo('body').animate({opacity:1},500, function(){
+                document.location.href = '/albums/' + album_id + '/photos?view=movie'; //global variable set in _bottom_nav
+            });
+
+
+
         });
 
         $('#footer #new-album-button').click(function(){
@@ -99,7 +115,7 @@ zz.init = {
             zz.wizard.open_edit_album_wizard('add')
         });
 
-        
+
 
 
 
@@ -115,7 +131,9 @@ zz.init = {
             $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
                 $('#sign-in').show();
                 $('#sign-up').hide();
-                $('#small-drawer').animate({height: '460px', top: '56px'});
+                $('#small-drawer').animate({height: '460px', top: '56px'}, 500, 'linear', function(){
+                    $('#user_session_email').focus();
+                });
             });
 
 
@@ -124,7 +142,10 @@ zz.init = {
             $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
                 $('#sign-up').show();
                 $('#sign-in').hide();
-                $('#small-drawer').animate({height: '460px', top: '56px'});
+                $('#small-drawer').animate({height: '460px', top: '56px'}, 500, 'linear', function(){
+                    $('#user_name').focus();
+
+                });
             });
         });
 
@@ -158,7 +179,7 @@ zz.init = {
 
         zz.init.acct_badge();
         zz.init.like_menu();
-        zz.init.buy_button();        
+        zz.init.buy_button();
         zz.init.preload_rollover_images();
 
     },
@@ -183,61 +204,132 @@ zz.init = {
     },
 
     album: function(){
-        $('#progress-meter').hide();
+        //setup grid view
 
-        var updateProgressMeter = function(){
+        var view = 'grid';
 
-            var photo_count = photos.length; //todo: photos shouln't be a global variable
-
-            upload_stats.stats_for_album(zz.album_id,photo_count, function(time_remaining, percent_complete){
-                percent_complete = Math.round(percent_complete);
-
-                if(percent_complete < 100 ){
-                    var minutes = Math.round(time_remaining / 60);
-                    var step = 0;
-
-                    if(percent_complete > 0){
-                        step = Math.round(percent_complete / 6.25);
-                    }
-
-
-                    $('#progress-meter').css('background-image', 'url(/images/upload-'+ step +'.png)');
-
-
-                    if(minutes === Infinity){
-                        $('#nav-status').html("Calculating...");
-                    }
-                    else{
-                        var minutes_text = "Minutes";
-                        if(minutes === 1){
-                            minutes_text = "Minute"
-                        }
-                        $('#progress-meter-label').html(minutes + ' ' + minutes_text);
-                    }
-
-                    $('#progress-meter').show();
-                }
-                else{
-                    $('#progress-meter').hide();
-                }
-            });
+        if(document.location.href.indexOf('view=slideshow') !== -1){
+            view = 'picture';
         }
 
-        updateProgressMeter();
 
-        //todo: need to shut this down if we leave album page ajax-ly
-        //update album upload status every 10 seconds
-        setInterval( updateProgressMeter ,10000);
+
+        $.ajax({
+            dataType: 'json',
+            url: '/albums/' + zz.album_id + '/photos.json',
+            success: function(json){
+
+
+            var gridElement = $("<div class='photogrid-container-vertical'></div>");
+            $('#article').html(gridElement);
+
+
+            if(view === 'grid'){
+                for(var i =0;i<json.length;i++){
+                    var photo = json[i];
+                    photo.previewSrc = agent.buildAgentUrl(photo.stamp_url);
+                    photo.src =       agent.buildAgentUrl(photo.thumb_url);
+                }
+
+                var grid = gridElement.zz_photogrid({
+                    photos:json,
+                    allowDelete: false,
+                    allowEditCaption: false,
+                    allowReorder: false,
+                    cellWidth: 180,
+                    cellHeight: 180,
+                    onClickPhoto: function(index, photo){
+                        document.location.href = "/albums/" + album_id +"/photos?view=slideshow#index=" + (index+1);
+                    }
+                }).data().zz_photogrid;
+
+            }
+            else{
+                for(var i =0;i<json.length;i++){
+                    var photo = json[i];
+                    photo.previewSrc = agent.buildAgentUrl(photo.stamp_url);
+                    photo.src =       agent.buildAgentUrl(photo.screen_url);
+                }
+
+                var grid = gridElement.zz_photogrid({
+                    photos:json,
+                    allowDelete: false,
+                    allowEditCaption: false,
+                    allowReorder: false,
+                    cellWidth: 1024,
+                    cellHeight: 1024,
+                    onClickPhoto: function(index, photo){
+                        document.location.href = "/albums/" + album_id +"/photos#index=" + (index+1);
+                    },
+                    scrollMode: 'picture'
+
+                }).data().zz_photogrid;
+
+            }
+
+
+
+                //setup upload progress smeter
+                $('#progress-meter').hide();
+
+                var updateProgressMeter = function(){
+
+                    var photo_count = json.length; //todo: photos shouln't be a global variable
+
+                    upload_stats.stats_for_album(zz.album_id,photo_count, function(time_remaining, percent_complete){
+                        percent_complete = Math.round(percent_complete);
+
+                        if(percent_complete < 100 ){
+                            var minutes = Math.round(time_remaining / 60);
+                            var step = 0;
+
+                            if(percent_complete > 0){
+                                step = Math.round(percent_complete / 6.25);
+                            }
+
+
+                            $('#progress-meter').css('background-image', 'url(/images/upload-'+ step +'.png)');
+
+
+                            if(minutes === Infinity){
+                                $('#nav-status').html("Calculating...");
+                            }
+                            else{
+                                var minutes_text = "Minutes";
+                                if(minutes === 1){
+                                    minutes_text = "Minute"
+                                }
+                                $('#progress-meter-label').html(minutes + ' ' + minutes_text);
+                            }
+
+                            $('#progress-meter').show();
+                        }
+                        else{
+                            $('#progress-meter').hide();
+                        }
+                    });
+                }
+
+                updateProgressMeter();
+
+                //todo: need to shut this down if we leave album page ajax-ly
+                //update album upload status every 10 seconds
+                setInterval( updateProgressMeter ,10000);
+
+
+            }
+        });
+
     },
 
 
-    tray: function(){
-
-    },
+//    tray: function(){
+//
+//    },
 
     preload_rollover_images : function(){
         //todo: is there a way to query CSS to get all these?
-         //wizard buttons/tabs
+        //wizard buttons/tabs
 //        for(var i=1;i<=4; i++){
 //            var src = "/images/bg-4step-strip-" + i + ".png"
 //            image_preloader.load_image(src)
@@ -351,63 +443,63 @@ zz.init = {
 
     },
 
-    //  new_user: function(){
-    //
-    //    $('#nav-new-album').click(function(){
-    //      if (zz.drawer_open === 0) {
-    //        $('#sign-in').show();
-    //        $('#sign-up').hide();
-    //
-    //        $('#small-drawer').animate({height: '460px', top: '53px'});
-    //        zz.drawer_open = 1;
-    //
-    //      } else {
-    //        //zz.slam_drawer(880);
-    //      }
-    //    });
-    //
-    //    $('#user_username').keyup(function(event){
-    //      value = $('#user_username').val();
-    //      $('#update-username').empty().html(value);
-    //    });
-    //
-    //    $('#step-sign-in-off').click(function(){
-    //      $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
-    //        $('#sign-in').show();
-    //        $('#sign-up').hide();
-    //        $('#small-drawer').animate({height: '460px', top: '53px'});
-    //      });
-    //
-    //
-    //    });
-    //    $('#step-join-off').click(function(){
-    //      $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
-    //        $('#sign-up').show();
-    //        $('#sign-in').hide();
-    //        $('#small-drawer').animate({height: '460px', top: '53px'});
-    //      });
-    //    });
-    //
-    //    $('#nav-sign-in').click(function(){
-    //        if (zz.drawer_open === 0) {
-    //            $('#sign-in').show();
-    //            $('#sign-up').hide();
-    //
-    //            $('#small-drawer').animate({height: '460px', top: '53px'});
-    //            zz.drawer_open = 1;
-    //      }
-    //    });
-    //
-    //    $('.cancel-mini').click(function(){
-    //      $('#small-drawer').animate({height: '0px', top: '28px'});
-    //      zz.drawer_open = 0;
-    //    });
-    //
-    //    $(zz.validate.sign_in.element).validate(zz.validate.sign_in);
-    //    $(zz.validate.join.element).validate(zz.validate.join);
-    //
-    //
-    //  },
+//  new_user: function(){
+//
+//    $('#nav-new-album').click(function(){
+//      if (zz.drawer_open === 0) {
+//        $('#sign-in').show();
+//        $('#sign-up').hide();
+//
+//        $('#small-drawer').animate({height: '460px', top: '53px'});
+//        zz.drawer_open = 1;
+//
+//      } else {
+//        //zz.slam_drawer(880);
+//      }
+//    });
+//
+//    $('#user_username').keyup(function(event){
+//      value = $('#user_username').val();
+//      $('#update-username').empty().html(value);
+//    });
+//
+//    $('#step-sign-in-off').click(function(){
+//      $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
+//        $('#sign-in').show();
+//        $('#sign-up').hide();
+//        $('#small-drawer').animate({height: '460px', top: '53px'});
+//      });
+//
+//
+//    });
+//    $('#step-join-off').click(function(){
+//      $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
+//        $('#sign-up').show();
+//        $('#sign-in').hide();
+//        $('#small-drawer').animate({height: '460px', top: '53px'});
+//      });
+//    });
+//
+//    $('#nav-sign-in').click(function(){
+//        if (zz.drawer_open === 0) {
+//            $('#sign-in').show();
+//            $('#sign-up').hide();
+//
+//            $('#small-drawer').animate({height: '460px', top: '53px'});
+//            zz.drawer_open = 1;
+//      }
+//    });
+//
+//    $('.cancel-mini').click(function(){
+//      $('#small-drawer').animate({height: '0px', top: '28px'});
+//      zz.drawer_open = 0;
+//    });
+//
+//    $(zz.validate.sign_in.element).validate(zz.validate.sign_in);
+//    $(zz.validate.join.element).validate(zz.validate.join);
+//
+//
+//  },
 
     album_timeline_view: function(){
         // Bind more button for ALL upload Activities
@@ -443,9 +535,9 @@ zz.init = {
         zz.toolbars.init_like_menu();
         $('#footer #like-button').click( zz.toolbars.show_like_menu );
     },
-    //======================================   ===============================================
+//======================================   ===============================================
     buy_button: function(){
- 
+
     }
 
 }; // end zz.init

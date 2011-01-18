@@ -74,14 +74,9 @@ pages.album_name_tab = {
                         if(id == currentId){
                             selectedIndex = index;
                         }
-                        var src;
-                        if(element.state === 'ready'){
-                            src = element.thumb_url;
-                        }
-                        else{
-                            src = element.source_thumb_url;
-                        }
+                        var src = element.thumb_url;
 
+                        
                         if (agent.isAgentUrl(src)){
                             src = agent.buildAgentUrl(src);
                         }
@@ -128,67 +123,62 @@ pages.album_name_tab = {
 
 pages.edit_album_tab = {
     init: function(callback){
-        var url =  '/albums/' + zz.album_id + '/edit';
+        $.ajax({
+            dataType: 'json',
+            url: '/albums/' + zz.album_id + '/photos.json',
+            success: function(json){
 
-        $('article').load(url, function(){
-
-            var temp = jQuery.parseJSON(json).photos;
-
-            var onStartLoadingImage = function(id, src) {
-                $('#' + id).attr('src', '/images/loading.gif');
-            };
-
-            var onImageLoaded = function(id, src, width, height) {
-                var new_size = 120;
-                //console.log('id: #'+id+', src: '+src+', width: '+width+', height: '+height);
-
-                if (height > width) {
-                    //console.log('tall');
-                    //tall
-                    var ratio = width / height;
-                    $('#' + id).attr('src', src).css({height: new_size+'px', width: (ratio * new_size) + 'px' });
-
-
-                    var guuu = $('#'+id).attr('id').split('photo-')[1];
-                    $('#' + id).parent('li').attr({id: 'photo-'+guuu});
-                    $('li#photo-'+ guuu +'-li figure').css({bottom: '0px', width: (new_size * ratio) + 'px', left: $('#' + id).position()['left'] + 'px' });
-                    $('li#photo-'+ guuu +'-li a.delete img').css({top: '-16px', right: (150 - $('#' + id).outerWidth() - 20) / 2  +'px'} );
-
-                } else {
-                    //wide
-                    //console.log('wide');
-
-                    var ratio = height / width;
-                    $('#' + id).attr('src', src).css({height: (ratio * new_size) + 'px', width: new_size+'px', marginTop: ((new_size - (ratio * new_size)) / 2) + 'px' });
-
-                    var guuu = $('#'+id).attr('id').split('photo-')[1];
-                    //$('li#photo-'+ guuu +'-li a.delete img').css({top: ($('#' + id).position()['top'] - 26), right: '-26px'});
-                    $('li#photo-'+ guuu +'-li figure').css({width: new_size + 'px', bottom:  0, left: (140 - new_size) / 2 +'px'});
-                    //console.log(guuu);
+                for(var i =0;i<json.length;i++){
+                    var photo = json[i];
+                    photo.previewSrc = agent.buildAgentUrl(photo.stamp_url);
+                    photo.src =       agent.buildAgentUrl(photo.thumb_url);
                 }
 
-            };
 
-            var imageloader = new ImageLoader(onStartLoadingImage, onImageLoaded);
+                var gridElement = $("<div class='photogrid-container-vertical'></div>");
 
-            for(var i in temp){
-                var id = 'photo-' + temp[i].id;
-                var url = null
-                if (temp[i].state == 'ready') {
-                    url = temp[i].thumb_url;
-                } else {
-                    url = temp[i].source_thumb_url;
-                }
+                $('#article').html(gridElement);
 
-                if (agent.isAgentUrl(url)) {
-                    url = agent.buildAgentUrl(url);
-                }
+                var grid = gridElement.zz_photogrid({
+                    photos:json,
+                    allowDelete: true,
+                    onDelete: function(index, photo){
+                        $.ajax({
+                            type: "DELETE",
+                            dataType: "json",
+                            url: "/photos/" + photo.id + ".json",
+                            error: function(error){
+                                logger.debug(error);
+//                                $.jGrowl("" + error);
+                            }
+                            
+                        });
+                        return true;                          
+                    },
+                    allowEditCaption: true,
+                    onChangeCaption: function(index, photo, caption){
+                        $.ajax({
+                            type: "PUT",
+                            dataType: "json",
+                            url: "/photos/" + photo.id + ".json",
+                            data: {'photo[caption]':caption},
+                            error: function(error){
+                                logger.debug(error);
+//                                $.jGrowl("" + error);
+                            }
 
-                imageloader.add(id, url);
+                        });
+                        return true;
 
+                    },
+                    allowReorder: true,
+//                    cellHeight: 150,
+//                    cellWidth: 150,
+                    showThumbscroller: true
+                }).data().zz_photogrid;
+
+                $('#article').show();
             }
-
-            imageloader.start(5);
         });
     },
 
@@ -466,14 +456,12 @@ pages.album_contributors_tab = {
                 },
 
                 //todo: submit errors are not being shown properly
-
                 submitHandler: function() {
-
                     $.ajax({ type:     'POST',
                              url:      '/albums/'+zz.album_id+'/contributors.json',
                              data:     $('#new_contributors').serialize(),
                              success:  function(data,status,request){
-                                              $('#tab-content').fadeOut('fast', function(){
+                                              $('#tab-content').fadeOut('fast','swing', function(){
                                                   pages.album_contributors_tab.show_contributor_list( request );
                                               });
                                        },
@@ -589,14 +577,9 @@ pages.account_settings_profile_tab = {
                     if(id == currentId){
                         selectedIndex = index;
                     }
-                    var src;
-                    if(element.state === 'ready'){
-                        src = element.thumb_url;
-                    }
-                    else{
-                        src = element.source_thumb_url;
-                    }
+                    var src = element.thumb_url;
 
+                    
                     if (agent.isAgentUrl(src)){
                         src = agent.buildAgentUrl(src);
                     }
@@ -637,14 +620,9 @@ pages.account_settings_profile_tab = {
                     if(id == currentId){
                         selectedIndex = index;
                     }
-                    var src;
-                    if(element.state === 'ready'){
-                        src = element.thumb_url;
-                    }
-                    else{
-                        src = element.source_thumb_url;
-                    }
+                    var src = element.thumb_url;
 
+                    
                     if (agent.isAgentUrl(src)){
                         src = agent.buildAgentUrl(src);
                     }

@@ -120,8 +120,9 @@ common: &default_settings
     # RPM. Valid values are any float value, or (default) "apdex_f",
     # which will use the threshold for an dissatisfying Apdex
     # controller action - four times the Apdex T value.
-    transaction_threshold: apdex_f
- 
+#    transaction_threshold: apdex_f
+    transaction_threshold: 0.2
+
     # When transaction tracer is on, SQL statements can optionally be
     # recorded. The recorder has three modes, "off" which sends no
     # SQL, "raw" which sends the SQL statement in its original form,

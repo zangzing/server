@@ -27,7 +27,9 @@ var zz = {
         }
 
         // fade out the grid
-        $('article').animate({ opacity: opacity }, time/2 ).html('');
+        $('#article').animate({ opacity: opacity }, time/2 ).html('');
+
+
 
         // pull out the drawer
         $('div#drawer').animate({ height: zz.drawer_height + 'px', top: '52px' }, time );
@@ -57,7 +59,7 @@ var zz = {
     close_drawer_partially: function(time, size ){
         zz.resize_drawer( time, size );
         // fade in the grid
-        $('article').animate({ opacity: 1 }, time * 1.1 );
+        $('#article').animate({ opacity: 1 }, time * 1.1 );
         zz.drawer_state = zz.DRAWER_PARTIAL; // remember position of the drawer in
     },
 
@@ -70,7 +72,7 @@ var zz = {
         $('div#drawer-content').animate({ height: 0, top: '10px' }, time );
 
         // fade in the grid
-        $('article').animate({ opacity: 1 }, time * 1.1 );
+        $('#article').animate({ opacity: 1 }, time * 1.1 );
 
         zz.drawer_state = zz.DRAWER_CLOSED; // remember position of the drawer in
 

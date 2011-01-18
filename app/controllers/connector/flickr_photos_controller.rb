@@ -43,6 +43,6 @@ class Connector::FlickrPhotosController < Connector::FlickrController
     )
     
     ZZ::Async::GeneralImport.enqueue( photo.id, photo_url )
-    render :json => photo.to_json
+    render :json => Photo.to_json_lite(photo)
   end
 end

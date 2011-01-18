@@ -34,6 +34,6 @@ class Connector::ShutterflyFoldersController < Connector::ShutterflyController
       photos << photo
     end
 
-    render :json => photos.to_json
+    render :json => Photo.to_json_lite(photos)
   end
 end

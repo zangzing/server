@@ -27,4 +27,10 @@ Server::Application.configure do
     :user_name => 'ac51517',
     :password => 'sfmvqvm4ehbrgw'
   }
+
+  # set this in the environment you want to allow benchmark testing
+  config.bench_test_allowed = true
+
+
+  ActionController::Base.cache_store = :memory_store
 end

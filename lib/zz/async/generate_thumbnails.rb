@@ -4,6 +4,14 @@ module ZZ
     class GenerateThumbnails < Base
         @queue = :image_processing
 
+        # only add ourselves one time
+        if @retry_criteria_checks.length == 0
+          # plug ourselves into the retry framework
+          retry_criteria_check do |exception, *args|
+            self.should_retry exception, args
+          end
+        end
+
         def self.enqueue( photo_id )
           super( photo_id )
         end

@@ -46,7 +46,7 @@ require 'zz'
 class Photo < ActiveRecord::Base
   usesguid
   has_one :photo_info, :dependent => :destroy
-  belongs_to :album
+  belongs_to :album, :touch => :photos_last_updated_at
   belongs_to :user
   belongs_to :upload_batch
 
@@ -226,20 +226,60 @@ class Photo < ActiveRecord::Base
     self.state == 'ready'
   end
 
+#  def thumb_url
+#    set_s3bucket
+#    image.url(:thumb)
+#  end
+#
+#  def thumb_path
+#    set_s3bucket
+#    image.path(:thumb)
+#  end
+#
+#  def medium_url
+#    set_s3bucket
+#    image.url(:medium)
+#  end
+
+
+
+  def stamp_url
+    if self.ready?
+      set_s3bucket
+      image.url(:stamp)
+    else
+      return self.source_thumb_url
+    end
+  end
+
   def thumb_url
-    set_s3bucket
-    image.url(:thumb)
+    if self.ready?
+      set_s3bucket
+      image.url(:thumb)
+    else
+      return self.source_thumb_url
+    end
   end
 
-  def thumb_path
-    set_s3bucket
-    image.path(:thumb)
+  def screen_url
+    if self.ready?
+      set_s3bucket
+      image.url(:medium)
+    else
+      return self.source_screen_url
+    end
   end
 
-  def medium_url
-    set_s3bucket
-    image.url(:medium)
+  def original_url
+    if self.ready?
+      return self.image.url
+    else
+      return self.source_screen_url
+    end
   end
+
+
+
 
   def set_s3bucket
     image.instance_variable_set '@bucket', self.image_bucket unless self.image_bucket.nil?
@@ -283,6 +323,32 @@ class Photo < ActiveRecord::Base
       #fast_local_params['content_type']
       self.local_image = ZZ::NginxTempfile.new( fast_local_params['filepath'])
     end
+  end
+
+  def self.to_json_lite(photos)
+
+#      todo: manual creation of json may be 2x to 3x faster than to_json
+#      json = '['
+#      photos.each do |photo|
+#       #todo: any more escaping we need to do here to be safe?
+#
+#        caption = photo.caption.gsub(/"/, '\\"')
+#
+#        json << "{\"id\":\"#{photo.id}\",\"state\":\"#{photo.state}\",\"caption\":\"#{caption}\",\"source_thumb_url\":\"#{photo.source_thumb_url}\",\"source_screen_url\":\"#{photo.source_screen_url}\",\"source_guid\":\"#{photo.source_guid}\",\"stamp_url\":\"#{photo.stamp_url}\",\"thumb_url\":\"#{photo.thumb_url}\",\"screen_url\":\"#{photo.screen_url}\"},"
+#      end
+#
+#      if(json[-1] == ',')
+#        json[-1]= ']' #get rid of last comma and close the array
+#      else
+#        json << ']'
+#      end
+
+
+      json= photos.to_json(:only =>[:id, :caption, :state, :source_thumb_url, :source_screen_url, :source_guid], :methods => [:stamp_url, :thumb_url, :screen_url])
+
+
+      return json
+
   end
 
 end

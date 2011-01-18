@@ -37,7 +37,7 @@ class Connector::PhotobucketPhotosController < Connector::PhotobucketController
     )
     
     ZZ::Async::GeneralImport.enqueue( photo.id, photo_info[:originalurl] )
-    render :json => photo.to_json
+    render :json => Photo.to_json_lite(photo)
 
   end
 

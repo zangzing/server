@@ -131,7 +131,9 @@ class AlbumsController < ApplicationController
      if params[:id]
         UploadBatch.close_open_batches( current_user.id, params[:id])
      end
+     render :nothing => true
   end
+  
   private
   def authorized_user
     @album = Album.find(params[:id])

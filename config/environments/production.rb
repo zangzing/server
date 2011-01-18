@@ -25,6 +25,9 @@ Server::Application.configure do
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :sendmail
 
-  # Enable threaded mode
-  config.threadsafe!
+# Keep rails in single threaded mode since we not utilized for our app server configurations
+#  # Enable threaded mode
+#  config.threadsafe!
+  # set this in the environment you want to allow benchmark testing
+  config.bench_test_allowed = false
 end

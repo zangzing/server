@@ -35,7 +35,7 @@ class Connector::SmugmugFoldersController < Connector::SmugmugController
       photos << photo
     end
 
-    render :json => photos.to_json
+    render :json => Photo.to_json_lite(photos)
 
   end
 

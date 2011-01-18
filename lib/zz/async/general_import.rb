@@ -4,6 +4,14 @@ module ZZ
   class GeneralImport < Base
       @queue = :io_bound
       
+      # only add ourselves one time
+      if @retry_criteria_checks.length == 0
+        # plug ourselves into the retry framework
+        retry_criteria_check do |exception, *args|
+          self.should_retry exception, args
+        end
+      end
+
       def self.enqueue( photo_id, source_url )
         super( photo_id, source_url )
       end

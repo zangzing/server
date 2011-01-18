@@ -1,7 +1,7 @@
 class PhotosController < ApplicationController
   before_filter :oauth_required, :only => [:agentindex, :agent_create]
   before_filter :login_required, :only => [:create ]
-  before_filter :require_user, :only => [:show, :new, :edit, :destroy] # , :index] #TODO Sort out album security so facebook can freely dig into album page
+  before_filter :require_user, :only => [:show, :new, :edit, :destroy, :update] # , :index] #TODO Sort out album security so facebook can freely dig into album page
   before_filter :determine_album_user #For friendly_id's scope
 
   def show
@@ -61,7 +61,7 @@ class PhotosController < ApplicationController
       end
     end
 
-    render :json => photos.to_json(:only =>[:id, :agent_id, :state, :source_thumb_url, :source_screen_url, :source_guid], :methods => [:thumb_url, :medium_url])
+    render :json => Photo.to_json_lite(photos)
   end
 
 
@@ -151,33 +151,39 @@ class PhotosController < ApplicationController
 
   def index
     @album = fetch_album
-    @title = CGI.escapeHTML(@album.name)
-
-    if params[:upload_batch] && @upload_batch = UploadBatch.find(params[:upload_batch])
-      @all_photos = @upload_batch.photos
-      @return_to_link = "#{album_activities_path( @album )}##{@upload_batch.id}"
-    elsif params[:contributor] && @contributor = Contributor.find(params[:contributor])
-      @all_photos = @contributor.photos
-      @return_to_link = "#{album_people_path( @album )}##{@contributor.id}"
-    else
-      @all_photos = @album.photos
-      @return_to_link = album_photos_url( @album.id )
-    end
 
     respond_to do |format|
       format.html do
-        if !params[:view].nil? && params[:view] == 'slideshow'
-          @photos = @all_photos.paginate({:page =>params[:page], :per_page => 1})
-          unless  params[:photoid].nil?
-            current_page = 1 if params[:page].nil?
-            until @photos[0][:id] == params[:photoid]
-              current_page += 1
-              @photos = @all_photos.paginate({:page =>current_page, :per_page => 1})
-            end
-            params[:photoid] = nil
-          end
-          render 'slideshow'
-        elsif !params[:view].nil? && params[:view] == 'movie'
+
+
+        @title = CGI.escapeHTML(@album.name)
+
+        if params[:upload_batch] && @upload_batch = UploadBatch.find(params[:upload_batch])
+          @all_photos = @upload_batch.photos
+          @return_to_link = "#{album_activities_path( @album )}##{@upload_batch.id}"
+        elsif params[:contributor] && @contributor = Contributor.find(params[:contributor])
+          @all_photos = @contributor.photos
+          @return_to_link = "#{album_people_path( @album )}##{@contributor.id}"
+        else
+          @all_photos = @album.photos
+          @return_to_link = album_photos_url( @album.id )
+        end
+
+
+
+#        if !params[:view].nil? && params[:view] == 'slideshow'
+#          @photos = @all_photos.paginate({:page =>params[:page], :per_page => 1})
+#          unless  params[:photoid].nil?
+#            current_page = 1 if params[:page].nil?
+#            until @photos[0][:id] == params[:photoid]
+#              current_page += 1
+#              @photos = @all_photos.paginate({:page =>current_page, :per_page => 1})
+#            end
+#            params[:photoid] = nil
+#          end
+#          render 'slideshow'
+
+        if !params[:view].nil? && params[:view] == 'movie'
           @photos = @all_photos
           render 'movie', :layout => false
         else
@@ -187,11 +193,39 @@ class PhotosController < ApplicationController
         end
       end
 
+
       format.json do
-        render :json => @all_photos.to_json(:methods => [:thumb_url, :medium_url])
+
+        if stale?(:last_modified => @album.photos_last_updated_at.utc, :etag => @album)
+
+          cache_key = @album.id + '-' + @album.photos_last_updated_at.to_s + '.json'
+          cache_key = cache_key.gsub(' ', '_')
+
+          logger.debug 'cache key: ' + cache_key
+
+          json = Rails.cache.read(cache_key)
+
+          if(json.nil?)
+            json = Photo.to_json_lite(@album.photos)
+
+            #compress the content once before caching: save memory and save nginx from compressing every response
+            json = ActiveSupport::Gzip.compress(json)
+
+            Rails.cache.write(cache_key, json)
+            logger.debug 'caching photos.json'
+          else
+            logger.debug 'using cached photo.json'
+          end
+
+          response.headers['Content-Encoding'] = "gzip"
+          render :json => json
+        else
+          logger.debug 'etag match, sending 304'
+        end
       end
     end
   end
+
 
   def slideshowbox_source
     @album = fetch_album
@@ -239,7 +273,7 @@ class PhotosController < ApplicationController
       end
 
       format.json do
-        render :json => @album.photos.to_json(:methods => [:thumb_url, :medium_url])
+        render :json => @album.photos.to_json(:methods => [:thumb_url, :screen_url])
       end
     end
   end
@@ -256,6 +290,20 @@ class PhotosController < ApplicationController
       @photo.save
       render :layout =>false
   end
+
+
+  def update
+    @photo = Photo.find(params[:id])
+
+    if @photo && @photo.update_attributes( params[:photo] )
+      flash[:notice] = "Photo Updated!"
+      render :text => 'Success Updating Photo', :status => 200, :layout => false
+    else
+      errors_to_headers( @photo )
+      render :text => 'Photo update did not succeed', :status => 500, :layout => false
+    end
+  end
+
 
 private
 

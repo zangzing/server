@@ -1,4 +1,6 @@
 require "require_all"
+require 'resque/tasks'
+require 'resque_scheduler/tasks'
 
 task "resque:setup" => :environment do
   puts "resque:setup"
