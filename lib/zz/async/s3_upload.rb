@@ -2,7 +2,8 @@ module ZZ
   module Async
 
     class S3Upload < Base
-        @queue = :io_bound
+        # this queue is meant to be processed only by local resque worker hence the appended host name of ourselves
+        @queue = ("io_local_" + Server::Application.config.deploy_environment.this_host_name).to_sym
 
         # only add ourselves one time
         if @retry_criteria_checks.length == 0
