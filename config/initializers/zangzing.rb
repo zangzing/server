@@ -8,7 +8,8 @@ silence_warnings do #To avoid warning of overwriting constant
   zz_deploy_environment = nil
 
   # GET AND SET ENVIRONMENT
-  fname = "/etc/chef/dna.json"
+  fname = "/home/deploy/dna.json"
+
   dna = nil
   if File.exists?( fname )
     dna =  ActiveSupport::JSON.decode( File.read( fname ))
