@@ -5,6 +5,10 @@
 
 # Symlink Resque Files
 
+# remove and symlink resque.yml with proper location of redis server - the shared path
+# file was set up by custom chef script
+run "ln -nfs #{shared_path}/config/resque.yml #{release_path}/config/resque.yml"
+
 # Restart Resque workers
 run "sudo monit restart all -g zangzing_resque"
 
