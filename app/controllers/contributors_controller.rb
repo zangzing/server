@@ -3,8 +3,7 @@ class ContributorsController < ApplicationController
   layout false
 
   def new
-    @album = current_user.albums.find(params[:album_id])    
-    @contributor = Album.new(); #TODO:Contributor model
+    @album = current_user.albums.find(params[:album_id])
   end
 
 

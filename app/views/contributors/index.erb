@@ -27,9 +27,8 @@
   </div>
 </div>
 <script>
-//    zz.wizard.contributor_count = <%= @contributors.length %>;
+    pages.album_contributors_tab.contributor_count= <%= @contributors.length %>;
     <% @contributors.each do |c | %>
-
     //todo: this this should be in pages.album_contributors_tab.init()
     pages.album_contributors_tab.insert_contributor_bubble("<%=( c.name.nil? || c.name.length <= 0 ? c.email : c.name )%>","<%= contributor_path(c.id)%>");
     <% end %>
