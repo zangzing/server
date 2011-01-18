@@ -40,7 +40,6 @@ class Notifier < ActionMailer::Base
       vc.add_email batch.album.short_email
     end
     attachments["#{batch.album.name}.vcf"] = vcard.to_s
-    #attachments["#{batch.album.name}.vcf"] = {:mime_type => 'text/x-vcard',:content =>vcard.to_s}
 
     mail( :to       => batch.user.email,
           :reply_to => batch.album.long_email,
