@@ -39,8 +39,8 @@ silence_warnings do #To avoid warning of overwriting constant
     msg << "      Source Version (from git)   : " + zconfig.zangzing_version
   else
     zz_deploy_environment = ZZDeployEnvironment.new(nil)
-    if ENV['Server::Application.config.application_host']
-      zconfig.application_host=ENV['Server::Application.config.application_host'];
+    if ENV['APPLICATION_HOST']
+      zconfig.application_host=ENV['APPLICATION_HOST']
       zconfig.album_email_host="#{zconfig.application_host.split('.')[0]}-post.zangzing.com"
       msg << "      Deployment information from : Environment Variables"
     else
@@ -54,4 +54,5 @@ silence_warnings do #To avoid warning of overwriting constant
   msg = msg.flatten.compact.join("\n")
   puts msg
   Rails.logger.info msg
+  zconfig.action_mailer.default_url_options = {:host => zconfig.application_host }
 end
