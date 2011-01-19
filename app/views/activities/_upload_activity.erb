@@ -6,7 +6,7 @@
   <div class="timeline-action">
     <p><a href="<%=user_path(activity.user)%>"><%=activity.user.name%></a> added
       <% i = activity.upload_batch.photos.length %>
-      <%=i%> <%=( i > 1 ? "photos" : "photo")%>  to &ldquo;<%=activity.album.name%>&rdquo;</p>
+      <%=i%> <%=( i > 1 ? "photos" : "photo")%>  <!-- to &ldquo;<%=activity.album.name%>&rdquo;--> </p>
     <p class="timeline-when">about <%=time_ago_in_words(activity.upload_batch.created_at) %> ago </p>
 
     <ul class="timeline-grid">

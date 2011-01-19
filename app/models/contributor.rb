@@ -40,6 +40,7 @@ class Contributor < ActiveRecord::Base
          return false
        else
          self.user = user
+         self.save
          return self.user.id
        end
     else

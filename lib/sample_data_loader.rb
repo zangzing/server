@@ -42,7 +42,7 @@ class SampleDataLoader
     puts "      Creating Albums"
     # create albums for first 10 users max 100
     User.all(:limit => 10).each do |user|
-      (rand(12)+3).times do
+      (rand(12)+5).times do
 
         album= nil;
         case rand(2)
@@ -90,8 +90,13 @@ class SampleDataLoader
     GroupAlbum.all(:limit => 50 ).each do |album|
        (rand(5)+1).times do
          i = rand( users.length)
-         album.contributors.create( :name => users[i].name,
-                                    :email =>users[i].email )
+         c = Contributor.new()
+         c.album_id = album.id
+         c.user_id  = users[i].id
+         c.name     = users[i].name
+         c.email     = users[i].email
+         c.last_contribution = Time.now()
+         c.save
          (rand( 3 )+1).times do
             UploadBatch.close_open_batches( users[i].id, album.id )
             (rand( 15 )+1).times do
@@ -99,9 +104,9 @@ class SampleDataLoader
             end
             UploadBatch.get_current( users[i].id, album.id ).save
             puts "          Batch of #{UploadBatch.get_current( users[i].id, album.id ).photos.length} photos added"
-          end
+         end
        end
-       (rand(2)+1).times do
+       (rand(5)+1).times do
           album.contributors.create( :name => Faker::Name.name,
                                      :email => 'email-contributor'+ Faker::Internet.user_name+'@test.zangzing.com' )
        end
@@ -163,7 +168,7 @@ class SampleDataLoader
   def new_photo(album, user)
    i = image_name
    current_batch = UploadBatch.get_current( user.id, album.id )
-   photo = Photo.create(
+   Photo.create(
           :user_id           => user.id,
           :album_id          => album.id,
           :upload_batch_id   => current_batch.id,
@@ -175,7 +180,6 @@ class SampleDataLoader
           :image_bucket      => i[:bucket],
           :state             => 'ready'
    )
-   return photo
   end
 end
 
