@@ -1,15 +1,15 @@
 # this class is a helper for the Deploy Environment setup
 class ZZDeployEnvironment
-  def initialize(dna)
-    if (dna.nil?)
+  def initialize(node)
+    if (node.nil?)
       # build enough of the map to get local defaults
-      dna = {'engineyard' => {'this' => 'local', 'environment' => {'instances' => []}}}
+      node = {'instance_role' => 'solo', 'engineyard' => {'this' => 'local', 'environment' => {'instances' => []}}}
     end
-    @dna = dna
+    @node = node
   end
 
   def ey
-    @ey ||= @dna['engineyard']
+    @ey ||= @node['engineyard']
   end
 
   # determine if this instance should host
@@ -17,7 +17,7 @@ class ZZDeployEnvironment
   # true - yes we should install redis here
   #
   def should_host_redis?
-    @should_host_redis if @should_host_redis != nil
+    return @should_host_redis if @should_host_redis != nil
     if redis_host_name == this_host_name
       @should_host_redis = true
     else
@@ -32,7 +32,7 @@ class ZZDeployEnvironment
   # to be useless db_master since we will
   # use Amazon RDS for db
   def redis_host_name
-    @redis_host_name if @redis_host_name != nil
+    return @redis_host_name if @redis_host_name != nil
 
     instances = ey['environment']['instances']
     # assume solo machine
@@ -53,31 +53,38 @@ class ZZDeployEnvironment
   # the resque cpu job instance
   #
   def should_host_resque_cpu?
-    @should_host_resque_cpu if @should_host_resque_cpu != nil
-    if resque_cpu_host_name == this_host_name
-      @should_host_redis = true
+    return @should_host_resque_cpu if @should_host_resque_cpu != nil
+    if resque_cpu_host_names.include?(this_host_name)
+      @should_host_resque_cpu = true
     else
-      @should_host_redis = false
+      @should_host_resque_cpu = false
     end
   end
 
-  # get the resque cpu bound jobs host
-  def resque_cpu_host_name
-    @resque_cpu_host_name if @resque_cpu_host_name != nil
+  # get the resque cpu bound jobs hosts
+  def resque_cpu_host_names
+    return @resque_cpu_host_names if @resque_cpu_host_names != nil
 
     instances = ey['environment']['instances']
     # assume solo machine
-    @resque_cpu_host_name = this_host_name
+    @resque_cpu_host_names = []
 
-    # not solo so see if we are db_master which
-    # is where we host redis
+    # not solo so see if we are util which
+    # is where we host resquecpujobs
     instances.each do |instance|
-      if instance['role'] == 'util' && instance['name'] == 'resquecpujobs'
-        @resque_cpu_host_name = instance['private_hostname']
-        break
+      if instance['role'] == 'util' && instance['name'] =~ /^resquecpujobs/
+        @resque_cpu_host_names << instance['private_hostname']
       end
     end
-    @resque_cpu_host_name
+    if (@node['instance_role'] != 'solo')
+      if @resque_cpu_host_names.length == 0
+        # no resque cpu hosts found
+      end
+    else
+      # solo machine so run here
+      @resque_cpu_host_names << this_host_name
+    end
+    @resque_cpu_host_names
   end
 
   def this_instance_id
@@ -86,7 +93,7 @@ class ZZDeployEnvironment
 
   # get our own host address
   def this_host_name
-    @this_host_name if @this_host_name != nil
+    return @this_host_name if @this_host_name != nil
 
     instances = ey['environment']['instances']
     # assume localhost if can't find
@@ -101,5 +108,4 @@ class ZZDeployEnvironment
     end
     @this_host_name
   end
-
 end

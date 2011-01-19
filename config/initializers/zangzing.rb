@@ -15,14 +15,14 @@ silence_warnings do #To avoid warning of overwriting constant
     dna =  ActiveSupport::JSON.decode( File.read( fname ))
   end
   zz_deploy_environment = ZZDeployEnvironment.new(dna)
-  zconfig.deploy_environment = zz_deploy_environment # make it availble for use later
+  zconfig.deploy_environment = zz_deploy_environment # make it available for use later
   
   msg = []
   msg << "=> ZangZing Initializer"
   msg << "      Task started at             : " + Time.now.to_s
   msg << "      Tempfile Directory          : " + Dir.tmpdir
   msg << "      Path                        : " + ENV['PATH']
-  msg << "      Resque_CPU_host             : " + zz_deploy_environment.resque_cpu_host_name
+  msg << "      Resque_CPU_hosts            : " + zz_deploy_environment.resque_cpu_host_names.to_s
   msg << "      Redis_host                  : " + zz_deploy_environment.redis_host_name
   if File.exists?( fname )
     zconfig.application_host = dna['engineyard']['environment']['apps'][0]['vhosts'][0]['domain_name']
