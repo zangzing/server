@@ -124,9 +124,15 @@ class User < ActiveRecord::Base
   end
 
   def profile_photo_id=(id)
-      build_profile_album if profile_album.nil?
+    if profile_album.nil?
+      build_profile_album
+    end
+    if id.length <= 0
+      profile_album.profile_photo_id=nil
+    else
       profile_album.profile_photo_id=id
-      profile_album.save
+    end
+    profile_album.save
   end
   
   def profile_photo_id
