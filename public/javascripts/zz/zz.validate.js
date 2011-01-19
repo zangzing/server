@@ -64,49 +64,4 @@ zz.validate = {
         }
     }
 
-//================================= Profile Form - Settings Wizard ================================
-
-//=========================== Social Post Form - Edit/New Album Wizard ============================
-
-
-//============================ Email Share Form - Edit/New Album Wizard ===========================
-
-
-
-
-
-
-//    sample_sign_up: {
-//        element: '#sample-sign-up',
-//        rules: {
-//            first_name: { required: true, minlength: 2 },
-//            last_name: { required: true, minlength: 3 },
-//            email: { required: true, email: true },
-//            password: { required: true, minlength: 6 },
-//            terms: { required: true }
-//        },
-//        messages: {
-//            first_name: {
-//                required: '',
-//                minlength: ''
-//            },
-//            last_name: {
-//                required: '',
-//                minlength: ''
-//            },
-//            email: {
-//                required: '',
-//                email: ''
-//            },
-//            password: {
-//                required: '',
-//                minlength: ''
-//            },
-//            terms: {
-//                required: ''
-//            }
-//        }
-//
-//    } // end zz.validation.sample_sign_up
-
 }; // end zz.validation
