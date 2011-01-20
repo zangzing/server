@@ -825,3 +825,85 @@ pages.account_settings_linked_accounts = {
         });
     }
 };
+
+pages.no_agent = {
+    url: '/static/connect_messages/no_agent.html',
+    init_from_filechooser: function( callback ){             
+        $('#filechooser-title').html($('#downloadzz-title').html());
+        $('#choose-header h4').html($('#downloadzz-tagline').html());
+        $('#downloadzz-title').html('');
+        $('#downloadzz-tagline').html( '');
+        $('#downloadzz-btn').click(function(){
+            alert("Agent should be downloading now (TODO:change this in pages.js)");
+            pages.no_agent.poll_agent_from_filechooser( ); //Download begun , start polling for agent
+        });
+        callback();
+    },
+
+
+    poll_agent_from_filechooser: function( ){
+      agent.isAvailable( function( agentAvailable ){
+          if( agentAvailable ){
+                 pages.no_agent.agent_ready_from_filechooser();
+          }else{
+                setTimeout( 'pages.no_agent.poll_agent_from_filechooser()', 1000);
+          }
+      });  
+    },
+
+    agent_ready_from_filechooser: function( ){
+        $('#downloadzz-btn').attr('disabled', 'disabled');
+        $('#downloadzz-developed').fadeIn(4000, function(){
+                $('#downloadzz-developed').parent().siblings('.downloadzz-text').fadeOut( 'fast')
+                $('#downloadzz-developed').parent().siblings('.downloadzz-headline').fadeOut( 'fast', function(){
+                        $(this).html('ZangZing is Ready!');
+                        $(this).fadeIn( 'fast');
+                        setTimeout( 'filechooser.on_login()', 1000 );
+                });            
+        });
+    },
+
+
+    dialog: function( on_close ){
+         $('<div></div>', { id: 'no-agent-dialog'}).load(pages.no_agent.url, function(){
+                    $( this ).dialog({
+                           title: 'Download ZangZing',
+                           width: 910,
+                           minHeight: 550,
+                           position: [170,65],
+                           modal: true,
+                           close:  function(){
+                               $('#no-agent-dialog').remove();
+                               sharecontacts.call_local_import();
+                           }
+                    });
+                    $('#downloadzz-btn').click(function(){
+                        alert("Agent should be downloading now (TODO:change this in pages.js)");
+                        pages.no_agent.poll_agent_from_dialog( pages.no_agent.agent_ready_from_dialog ); //Download begun , start polling for agent
+                    });
+        });
+    },
+
+    poll_agent_from_dialog: function( ){
+          agent.isAvailable( function( agentAvailable ){
+              if( agentAvailable ){
+                     pages.no_agent.agent_ready_from_dialog();
+              }else{
+                    setTimeout( 'pages.no_agent.poll_agent_from_dialog()', 1000);
+              }
+          });
+    },
+
+    agent_ready_from_dialog: function( ){
+        $('#downloadzz-btn').attr('disabled', 'disabled');
+        $('#downloadzz-developed').fadeIn(4000, function(){
+                $('#downloadzz-developed').parent().siblings('.downloadzz-text').fadeOut( 'fast')
+                $('#downloadzz-developed').parent().siblings('.downloadzz-headline').fadeOut( 'slow', function(){
+                        $(this).html('ZangZing is Ready!');
+                        $(this).fadeIn( 'fast');
+                        setTimeout( function(){  $( '#no-agent-dialog' ).dialog('close'); }, 1000 );
+                });
+        });
+    }
+
+};

@@ -50,7 +50,8 @@ var filechooser = {
 
         var file_system_on_error = function(error){
             if(typeof(error.status) === 'undefined'){
-                $('#filechooser').hide().load('/static/connect_messages/no_agent.html', function(){
+                $('#filechooser').hide().load(pages.no_agent.url, function(){
+                    pages.no_agent.init_from_filechooser(function(){});
                     $('#filechooser').fadeIn('fast');    
                 });
             }
@@ -351,6 +352,7 @@ var filechooser = {
         }
 
         $('#filechooser-title').html(name);
+        $('#filechooser-tagline').html('Choose pictures from folders on your computer or other photo sites');
 
         //update files
         $('#filechooser').fadeOut('fast', function(){

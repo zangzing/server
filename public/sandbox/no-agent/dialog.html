@@ -22,7 +22,7 @@
     <script type="text/javascript" src="/javascripts/lib/jquery.ba-bbq.js"></script>
     <script type="text/javascript" src="/javascripts/lib/jquery.jsonp.js"></script>
     <script type="text/javascript" src="/javascripts/lib/jquery.cookie.js"></script>
-    <script type="text/javascript" src="/javascripts/agent.js"></script>
+    <script type="text/javascript" src="/javascripts/zz/agent.js"></script>
     <script type="text/javascript" src="/javascripts/upload_status.js"></script>
     <script type="text/javascript" src="/javascripts/server.js"></script>
     <script type="text/javascript" src="/javascripts/logging.js"></script>
@@ -43,51 +43,17 @@
 
 
     <script type="text/javascript">
-        //zz={};
-        var user_id = 'cfD7E-Muzn94y3IMRTxWeh';
-        zz.album_id = 'dfgX-yIVHmIQLf-jVZJgDi';
-
-        $(document).ready(function() {
-            filechooser.init();
-            $( "#add-photos-dialog" ).dialog({
-               title: 'Load Profile Pictures',
-               width: 910,
-               minHeight: 550,
-               position: [170,65],
-               modal: true
-            });
-
-        })
-     </script>
-
-
-
-
-
+     var user_id = 'bGV2qU4ZDox4cneWpmwUEP';
+     $(document).ready(function() {
+         pages.no_agent.dialog();
+     })
     </script>
 
 </head>
 
 <body>
-<div id="add-photos-dialog">
-<div id="top-section" class="clearfix">
-    <a id="filechooser-back-button" class="back-button"><span></span></a>
-
-    <div id="choose-header" class="album-header">
-        <h3 id="filechooser-title"></h3>
-        <h4 id="filechooser-tagline">Choose pictures from folders on your computer or other photo sites.</h4>
-    </div>
-    <div id="equalizer">&nbsp;</div>
+<div id="agent-not-found-dialog">
+        Hello World Dialog!
 </div>
-
-<div id="scroll-body">
-    <ul id="filechooser"></ul>
-</div>
-
-<div id="added-pictures-tray" style="position:absolute;top:500px;left:20px;height:20px;width:700px;border:1px solid blue;">
-
-</div>
-</div>
-
 </body>
 </html>
