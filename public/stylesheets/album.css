@@ -193,6 +193,7 @@ ul#contributors li div.timeline-action ul.timeline-grid {
   overflow: hidden;
   height: 160px;
   padding: 0;
+  position:relative;
 }
 
 

@@ -6,18 +6,8 @@
     </div>
 
     <div class="timeline-action">
-      <ul class="timeline-grid">
-        <% contributor.photos.each_index do | i | %>
-          <li id="<%=contributor.photos[i].id%>">
-            <a href="<%=album_photos_path(contributor.album)%>?view=slideshow&contributor=<%=contributor.id%>&photoid=<%=contributor.photos[i].id%>">
-            <%if i>=5 %>
-                <img class="lazy-thumb" src="/images/grey.gif" original="<%=contributor.photos[i].thumb_url%>"/>
-            <%else%>
-                <img src="<%=contributor.photos[i].thumb_url%>"/>
-            <%end%>
-            </a>
-          </li>
-      <% end %>
+      <ul class="timeline-grid" data-user-id="<%=contributor.user_id%>">
+
       </ul>
       <%if contributor.photos.length> 5  %><a href="javascript:void(0);"  class="more-less-btn">more...</a><%end%>
     </div>
