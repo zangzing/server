@@ -15,7 +15,7 @@ describe "Facebook connector" do
     @browser_session.close_session!
   end
 
-  it "should create album with one photo from Facebook's 'Medium Album' and all 3 photos from 'Small Album'" do
+  it "should create album with one photo from Kodak's 'Medium Album' and all 3 photos from 'Small Album'" do
     username = 'user' +Time.now.to_i.to_s
     password = 'share1001photos'
     email = username + "@test.zangzing.com"
@@ -37,8 +37,8 @@ describe "Facebook connector" do
     ui.toolbar.click_create_album
     ui.wizard_album_type_tab.click_group_album
    
-    ui.wizard_add_photos_tab.click_folder "Facebook"
-    ui.oauth_manager.login_to_facebook
+    ui.wizard_add_photos_tab.click_folder "Kodak"
+    ui.oauth_manager.login_to_kodak
 
     ui.wizard_add_photos_tab.click_folder "Medium Album"
     
