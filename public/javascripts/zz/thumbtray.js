@@ -275,7 +275,7 @@
             if(index !== -1){
                 if(this.options.showSelection === true){
                     this.selectionElement.find('img').attr('src', this.PLACEHOLDER_IMAGE);
-                    this.selectionElement.find('img').attr('src', this.options.photos[index][self.options.srcAttribute])
+                    this.selectionElement.find('img').attr('src', this.options.photos[index][this.options.srcAttribute])
                     this.selectionElement.show();
                     this.selectionElement.css({opacity:1});
 
