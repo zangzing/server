@@ -239,9 +239,13 @@ zz.init = {
                     cellWidth: 180,
                     cellHeight: 180,
                     onClickPhoto: function(index, photo){
-                        document.location.href = "/albums/" + album_id +"/photos?view=slideshow#index=" + (index+1);
-                    }
+                        document.location.href = "/albums/" + album_id +"/photos?view=slideshow#" + photo.id;
+                    },
+                    scrollToPhoto: $.param.fragment()
+
                 }).data().zz_photogrid;
+
+
 
             }
             else{
@@ -259,11 +263,13 @@ zz.init = {
                     cellWidth: 1024,
                     cellHeight: 1024,
                     onClickPhoto: function(index, photo){
-                        document.location.href = "/albums/" + album_id +"/photos#index=" + (index+1);
+                        document.location.href = "/albums/" + album_id +"/photos#" + photo.id;
                     },
-                    scrollMode: 'picture'
+                    scrollMode: 'picture',
+                    scrollToPhoto: $.param.fragment()
 
                 }).data().zz_photogrid;
+
 
             }
 
@@ -501,27 +507,92 @@ zz.init = {
 //
 //  },
 
+    album_people_view: function(){
+        zz.init.album_timeline_or_people_view('people');
+    },
+
     album_timeline_view: function(){
-        // Bind more button for ALL upload Activities
-        $('.lazy-thumb').lazyload({
-            placeholder : '/images/grey.gif',
-            event : 'more',
-            effect : 'fadeIn'
-        });
-        $('.timeline-action a.more-less-btn').click(function(){
-            var GRID_HEIGHT = 170;
-            var photoGrid = $(this).siblings('.timeline-grid');
-            if( photoGrid.height() <= GRID_HEIGHT ){
-                photo_count = photoGrid.children('li').length;
-                var rows = Math.ceil(  photo_count / 5 );
-                $(this).siblings('ul.timeline-grid').children('li').children('a').children().trigger('more');
-                photoGrid.animate({ height: (rows * GRID_HEIGHT) }, 500 );
-                $(this).html('less');
-            } else{
-                photoGrid.animate({ height: GRID_HEIGHT }, 500 );
-                $(this).html('more...');
+        zz.init.album_timeline_or_people_view('timeline');  
+
+    },
+
+    album_timeline_or_people_view: function(which){
+        $.ajax({
+            dataType: 'json',
+            url: '/albums/' + zz.album_id + '/photos.json',
+            success: function(json){
+
+                for(var i =0;i<json.length;i++){
+                    var photo = json[i];
+                    photo.previewSrc = agent.buildAgentUrl(photo.stamp_url);
+                    photo.src =       agent.buildAgentUrl(photo.thumb_url);
+                }
+
+                
+                $('.timeline-grid').each(function(index, element){
+
+                    $(element).empty();
+
+                    var filteredPhotos = null;
+
+
+                    if(which === 'timeline'){
+                        var batchId = parseInt($(element).attr('data-upload-batch-id'));
+
+                        filteredPhotos = $(json).filter(function(index){
+                            return (json[index].upload_batch_id === batchId)
+                        });
+                    }
+                    else{
+                        var userId = $(element).attr('data-user-id');
+
+                        filteredPhotos = $(json).filter(function(index){
+                            return (json[index].user_id === userId)
+                        });
+                    }
+
+
+
+
+
+                    var grid = $(element).zz_photogrid({
+                        photos:filteredPhotos,
+                        allowDelete: false,
+                        allowEditCaption: false,
+                        allowReorder: false,
+                        cellWidth: 180,
+                        cellHeight: 180,
+                        onClickPhoto: function(index, photo){
+                            document.location.href = "/albums/" + album_id +"/photos?view=slideshow#" + photo.id;
+                        },
+                        showThumbscroller: false
+                    }).data().zz_photogrid;
+
+
+                    var allShowing = false;
+                    var moreLessbuttonElement = $(element).siblings('.more-less-btn');
+
+                    moreLessbuttonElement.click(function(){
+                        if(allShowing){
+                            $(element).animate({
+                                height:180
+                            }, 500);
+                            moreLessbuttonElement.html("more...");
+                            allShowing = false;
+                        }
+                        else{
+                            $(element).animate({
+                                height: $(element).children().last().position().top + 180
+                            }, 500);
+                            $(element).trigger('scroll');
+                            moreLessbuttonElement.html("less...");
+                            allShowing = true;
+
+                        }
+                    });
+                });
             }
-        })
+        });
     },
 
 //====================================== Account Badge  ===========================================

@@ -9,19 +9,9 @@
       <%=i%> <%=( i > 1 ? "photos" : "photo")%>  <!-- to &ldquo;<%=activity.album.name%>&rdquo;--> </p>
     <p class="timeline-when">about <%=time_ago_in_words(activity.upload_batch.created_at) %> ago </p>
 
-    <ul class="timeline-grid">
-      <% activity.upload_batch.photos.each_index do | i | %>
-            <li id="<%=activity.upload_batch.photos[i].id%>">
-              <a href="<%=album_photos_path(album)%>?view=slideshow&upload_batch=<%=activity.upload_batch.id%>&photoid=<%=activity.upload_batch.photos[i].id%>">
-              <%if i>=5 %>
-                  <img class="lazy-thumb" src="/images/grey.gif" original="<%=activity.upload_batch.photos[i].thumb_url%>"/>
-              <%else%>
-                  <img src="<%=activity.upload_batch.photos[i].thumb_url%>"/>
-              <%end%>
-              </a>
-            </li>
-      <% end %>
+    <ul class="timeline-grid" data-upload-batch-id="<%=activity.upload_batch.id%>">
+
     </ul>
-    <%if i> 5  %><a href="javascript:void(0);"  class="more-less-btn">more...</a><%end%>
+    <%if i> 4  %><a href="javascript:void(0);"  class="more-less-btn">more...</a><%end%>
   </div>
 </li>

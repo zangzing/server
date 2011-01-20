@@ -104,9 +104,14 @@
             zz.init.album();
       <%end%>
 
-      <%if (controller.controller_name == 'activities' ||  controller.controller_name == 'people') && controller.action_name == 'album_index' -%>
+      <%if (controller.controller_name == 'activities')  -%>
             zz.init.album_timeline_view();
       <%end%>
+
+      <%if (controller.controller_name == 'people')  -%>
+            zz.init.album_people_view();
+      <%end%>
+
        });
        $(window).bind("load", function() {
 <%      # Same here... -%>

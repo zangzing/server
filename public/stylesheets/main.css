@@ -663,6 +663,7 @@ div#drawer {
   background-repeat: no-repeat;
   background-position: 100% bottom;
   z-index: 9;
+  display:none;
 }
 
 div#small-drawer {
@@ -677,6 +678,7 @@ div#small-drawer {
   background-position: 100% bottom;
   z-index: 9;
   overflow: hidden;
+  display:none;
 }
 
 div#drawer div.body {
