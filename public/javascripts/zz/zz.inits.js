@@ -239,9 +239,13 @@ zz.init = {
                     cellWidth: 180,
                     cellHeight: 180,
                     onClickPhoto: function(index, photo){
-                        document.location.href = "/albums/" + album_id +"/photos?view=slideshow#photo_id=" + photo.id;
-                    }
+                        document.location.href = "/albums/" + album_id +"/photos?view=slideshow#" + photo.id;
+                    },
+                    scrollToPhoto: $.param.fragment()
+
                 }).data().zz_photogrid;
+
+
 
             }
             else{
@@ -259,11 +263,13 @@ zz.init = {
                     cellWidth: 1024,
                     cellHeight: 1024,
                     onClickPhoto: function(index, photo){
-                        document.location.href = "/albums/" + album_id +"/photos#photo_id=" + photo.id;
+                        document.location.href = "/albums/" + album_id +"/photos#" + photo.id;
                     },
-                    scrollMode: 'picture'
+                    scrollMode: 'picture',
+                    scrollToPhoto: $.param.fragment()
 
                 }).data().zz_photogrid;
+
 
             }
 
@@ -557,7 +563,7 @@ zz.init = {
                         cellWidth: 180,
                         cellHeight: 180,
                         onClickPhoto: function(index, photo){
-                            document.location.href = "/albums/" + album_id +"/photos?view=slideshow#photo_id=" + photo.id;
+                            document.location.href = "/albums/" + album_id +"/photos?view=slideshow#" + photo.id;
                         },
                         showThumbscroller: false
                     }).data().zz_photogrid;

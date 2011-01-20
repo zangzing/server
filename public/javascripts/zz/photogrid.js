@@ -19,9 +19,14 @@
 
             showThumbscroller: true,
 
-            scrollMode: 'smooth'
+            scrollMode: 'smooth',
+
+            scrollToPhoto: null
+
 
         },
+
+        animatedScrollActive: false,
 
 
         _create: function() {
@@ -171,9 +176,11 @@
 
             self.element.show();
 
+
             this.element.children('.photogrid-cell').each(function(index, element){
                 $(element).data().zz_photo.loadIfVisible();
             });
+
 
 
             //handle window resize
@@ -227,7 +234,6 @@
 
             //thumbscroller
             if(self.options.showThumbscroller){
-                var animateScrollActive = false;
                 var nativeScrollActive = false;
 
                 self.thumbscrollerElement = $('<div class="photogrid-thumbscroller-vertical"></div>').appendTo(self.element.parent());
@@ -242,30 +248,13 @@
                     repaintOnResize:true,
                     onSelectPhoto: function(index, photo){
                         if(!nativeScrollActive){
-                            if(photo){
-                                var highlighted = self.cellAtIndex(index).find('.photo-border').addClass('highlighted');
-
-                                setTimeout(function(){
-                                    highlighted.removeClass('highlighted');
-
-                                },1000 + 1500);
-                            }
-
-
-
-                            var y = (Math.floor(index / self.cellsPerRow())  ) * self.options.cellHeight ;
-
-
-                            animateScrollActive = true;
-                            self.element.animate({scrollTop: y}, 500, 'easeOutCubic', function(){
-                                animateScrollActive = false;
-                            });
+                            self.scrollToIndex(index, 500, true);
                         }
                     }
                 }).data().zz_thumbtray;
 
                 self.element.scroll(function(event){
-                    if(! animateScrollActive){
+                    if(! self.animateScrollActive){
                         nativeScrollActive = true;
                         var index = Math.floor(self.element.scrollTop() / self.options.cellHeight * self.cellsPerRow());
                         self.thumbscroller.setSelectedIndex(index);
@@ -288,7 +277,6 @@
                         delta = -1 * event.detail;
                     }
 
-                    logger.debug(delta);
 
                     if(delta < 0){
                         self.nextPicture();
@@ -300,6 +288,13 @@
                     return false;
                 });
             }
+
+                       //scroll to photo
+            if(self.options.scrollToPhoto){
+                self.scrollToPhoto(self.options.scrollToPhoto,0, false);
+            }
+
+
         },
 
 
@@ -332,6 +327,44 @@
 
         },
 
+
+        indexOfPhoto: function(photoId){
+            //todo: this function won't work after a drag-drop reorder
+            var self = this;
+
+
+            for(var i=0; i<self.options.photos.length; i++){
+                if(self.options.photos[i].id === photoId){
+                   return i;
+                }
+            }
+            return -1;
+        },
+
+        scrollToPhoto: function(photoId, duration, highlightCell){
+            var index = this.indexOfPhoto(photoId);
+            this.scrollToIndex(index, duration, highlightCell);
+        },
+
+        scrollToIndex: function(index, duration, highlightCell){
+            var self = this;
+
+            if(highlightCell){
+                var highlighted = self.cellAtIndex(index).find('.photo-border').addClass('highlighted');
+
+                setTimeout(function(){
+                    highlighted.removeClass('highlighted');
+
+                },duration + 1500);
+            }
+
+            var y = (Math.floor(index / self.cellsPerRow())  ) * self.options.cellHeight ;
+
+            self.animateScrollActive = true;
+            self.element.animate({scrollTop: y}, duration, 'easeOutCubic', function(){
+                self.animateScrollActive = false;
+            });
+        },
 
         resetLayout: function(duration, easing){
             var self = this;
