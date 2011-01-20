@@ -344,7 +344,7 @@ class Photo < ActiveRecord::Base
 #      end
 
 
-      json= photos.to_json(:only =>[:id, :caption, :state, :source_thumb_url, :source_screen_url, :source_guid], :methods => [:stamp_url, :thumb_url, :screen_url])
+      json= photos.to_json(:only =>[:id, :caption, :state, :source_guid], :methods => [:stamp_url, :thumb_url, :screen_url])
 
 
       return json

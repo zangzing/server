@@ -7,7 +7,7 @@
       <div id="edit-album-button"><div class='footer-button-label'>Edit</div></div>
   <% end %>
 
-  <% if @allbum && current_user && @album.is_user_contributor?(current_user) %>
+  <% if @album && current_user && @album.is_user_contributor?(current_user) %>
       <div id="add-photos-button"><div class='footer-button-label'>Add</div></div>
   <% end %>
 
@@ -26,10 +26,6 @@
 
   <div id="like-button"><div class="footer-button-label">Like</div></div>
   <div id="buy-button"><div class="footer-button-label">Buy</div></div>
-
-
-
-
 
 
 

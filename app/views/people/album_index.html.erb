@@ -1,10 +1,17 @@
-<h3 class="people first">Contributors</h3>
-
 <ul id="album-timeline">
   <% @contributors.each do | contributor | %>
          <%= render :partial => 'contributor', :locals => {:contributor => contributor } %>
   <%end%>
+  <% if @inactive_names.length > 0 %>
+    <li>
+      <div class="inactive-contributors">
+          <%=@inactive_names %>
+      </div>
+    </li>
+  <%end%>
 </ul>
+
+
 <div class="offset"
 <h3 class="people">People that Like &ldquo;New Zealand&rdquo;</h3>
 

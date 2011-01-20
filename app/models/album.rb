@@ -129,7 +129,7 @@ class Album < ActiveRecord::Base
   end
 
   def is_user_contributor?( user )
-    return is_contributor? user.email
+    self.contributors.find_by_email( user.email )
   end
 
   def long_email
