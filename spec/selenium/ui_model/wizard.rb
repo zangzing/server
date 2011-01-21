@@ -1,13 +1,16 @@
 module UiModel
   module Wizard
 
-
     class Drawer
-      attr_reader :browser
+      attr_reader :add_photos_tab, :album_name_tab, :album_type_tab
 
         def initialize(selenuim_session)
           @session = selenuim_session
           @browser = selenuim_session.browser
+
+          @add_photos_tab = AddPhotosTab.new(selenuim_session)
+          @album_name_tab = AlbumNameTab.new(selenuim_session)
+          @album_type_tab = AlbumTypeTab.new(selenuim_session)
         end
 
         def click_name_tab
@@ -47,11 +50,7 @@ module UiModel
 
     end
 
-
-
     class AddPhotosTab
-      attr_reader :browser
-
         def initialize(selenuim_session)
           @session = selenuim_session
           @browser = selenuim_session.browser
@@ -83,12 +82,9 @@ module UiModel
               for i in 1 .. total do  attr[i]=@browser.get_attribute("xpath=(//figure)["+i.to_s+"]@onclick")  end
               number.times do @browser.click "//figure[@onclick=\"#{attr[rand(total)+1]}\"]" end
         end
-
       end
 
     class AlbumNameTab
-      attr_reader :browser
-
         def initialize(selenuim_session)
           @session = selenuim_session
           @browser = selenuim_session.browser
@@ -101,8 +97,6 @@ module UiModel
     end
 
     class AlbumTypeTab
-      attr_reader :browser
-
       def initialize(selenuim_session)
         @session = selenuim_session
         @browser = selenuim_session.browser

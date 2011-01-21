@@ -1,8 +1,6 @@
 module UiModel
 
   class UserHomepage
-    attr_reader :browser
-
       def initialize(selenuim_session)
         @session = selenuim_session
         @browser = selenuim_session.browser
@@ -16,7 +14,6 @@ module UiModel
         number=@browser.get_xpath_count("//td").to_i
         puts "UserHomepage.get_albums = #{number}"
       end
-
   end
 
 end

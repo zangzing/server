@@ -1,6 +1,6 @@
 require 'spec/selenium/ui_model'
 
-describe "Facebook connector" do
+describe "Kodak connector" do
 
   def ui
     @browser_session
@@ -24,32 +24,32 @@ describe "Facebook connector" do
 
     ui.toolbar.open_sign_in_drawer
 	
-    ui.toolbar.click_join_tab
+    ui.toolbar.signin_drawer.click_join_tab
 
-    ui.signin_drawer_join_tab.type_full_user_name username
-    ui.signin_drawer_join_tab.type_username username
-    ui.signin_drawer_join_tab.type_email email
-    ui.signin_drawer_join_tab.type_password password
-  	ui.signin_drawer_join_tab.click_join_button
+    ui.toolbar.signin_drawer.join_tab.type_full_user_name username
+    ui.toolbar.signin_drawer.join_tab.type_username username
+    ui.toolbar.signin_drawer.join_tab.type_email email
+    ui.toolbar.signin_drawer.join_tab.type_password password
+  	ui.toolbar.signin_drawer.join_tab.click_join_button
 	
     ui.toolbar.verify_signed_in_user username
 
     ui.toolbar.click_create_album
-    ui.wizard_album_type_tab.click_group_album
+    ui.wizard.album_type_tab.click_group_album
    
-    ui.wizard_add_photos_tab.click_folder "Kodak"
+    ui.wizard.add_photos_tab.click_folder "Kodak"
     ui.oauth_manager.login_to_kodak
 
-    ui.wizard_add_photos_tab.click_folder "Medium Album"
+    ui.wizard.add_photos_tab.click_folder "Medium Album"
     
-    ui.wizard_add_photos_tab.add_random_photos
+    ui.wizard.add_photos_tab.add_random_photos
 
-    ui.wizard_drawer.back_level_up
+    ui.wizard.back_level_up
 
     #add the whole 'Small Album'
-    ui.wizard_add_photos_tab.add_all_folder "Small Album"
+    ui.wizard.add_photos_tab.add_all_folder "Small Album"
     #close the wizard
-    ui.wizard_drawer.click_done
+    ui.wizard.click_done
 
     ui.wait_load
     

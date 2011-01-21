@@ -1,8 +1,6 @@
 module UiModel
 
   class OAuthManager
-    attr_reader :browser
-
       def initialize(selenuim_session)
         @session = selenuim_session
         @browser = selenuim_session.browser

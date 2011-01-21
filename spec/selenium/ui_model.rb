@@ -11,11 +11,9 @@ require "spec/selenium/ui_model/oauth_manager"
 module UiModel
 
   class SeleniumSession
-    attr_accessor :browser
+    attr_reader :browser
 
-    attr_reader :toolbar, :user_homepage, :oauth_manager, :signin_drawer_signin_tab,
-                :signin_drawer_join_tab, :wizard_drawer,
-                :wizard_add_photos_tab, :wizard_album_name_tab, :wizard_album_type_tab
+    attr_reader :toolbar, :user_homepage, :oauth_manager, :wizard
 
     def wait_for selector
       @browser.wait_for :wait_for => :element, :element => selector
@@ -51,14 +49,9 @@ module UiModel
 private
     def recreate_item_classes!
       @oauth_manager = OAuthManager.new(self)
-      @signin_drawer_join_tab = SigninDrawer::JoinTab.new(self)
-      @signin_drawer_signin_tab = SigninDrawer::SigninTab.new(self)
       @toolbar = Toolbar.new(self)
       @user_homepage = UserHomepage.new(self)
-      @wizard_drawer = Wizard::Drawer.new(self)
-      @wizard_add_photos_tab = Wizard::AddPhotosTab.new(self)
-      @wizard_album_name_tab = Wizard::AlbumNameTab.new(self)
-      @wizard_album_type_tab = Wizard::AlbumTypeTab.new(self)
+      @wizard = Wizard::Drawer.new(self)
     end
 
   end
