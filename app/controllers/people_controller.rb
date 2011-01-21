@@ -1,6 +1,12 @@
 class PeopleController < ApplicationController
   def album_index
     @album = Album.find(params[:album_id])
+
+
+    #Find all of the album owner/creator photos
+    @album_user_photos = @album.photos.find_all_by_user_id(@album.user_id)
+    
+    #Find all active and inactive contributors
     @contributors = []
     inactive_contributors = []
     @album.contributors.each do |c|
@@ -15,8 +21,8 @@ class PeopleController < ApplicationController
     if inactive_contributors.length > 0
       @inactive_names = 'Other contributors: '      
       inactive_contributors.each_index do | i |
-          @inactive_names += ( i> 0 ? ', ':'')
-          if inactive_contributors[i].name.length > 0
+          @inactive_names += ( i > 0 ? ', ':'')
+          if !inactive_contributors[i].name.nil? && inactive_contributors[i].name.length > 0
                 @inactive_names += inactive_contributors[i].name
           else
                 @inactive_names += inactive_contributors[i].email

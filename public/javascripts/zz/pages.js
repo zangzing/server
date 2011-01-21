@@ -834,9 +834,9 @@ pages.no_agent = {
         $('#downloadzz-title').html('');
         $('#downloadzz-tagline').html( '');
         $('#downloadzz-btn').click(function(){
-            alert("Agent should be downloading now (TODO:change this in pages.js)");
-            pages.no_agent.poll_agent_from_filechooser( ); //Download begun , start polling for agent
+            alert("Agent should be downloading now (TODO: Set URL for download in pages.js)");
         });
+        pages.no_agent.poll_agent_from_filechooser( ); //Download begun , start polling for agent
         callback();
     },
 
@@ -864,7 +864,7 @@ pages.no_agent = {
     },
 
 
-    dialog: function( on_close ){
+    dialog: function( ){
          $('<div></div>', { id: 'no-agent-dialog'}).load(pages.no_agent.url, function(){
                     $( this ).dialog({
                            title: 'Download ZangZing',
@@ -878,9 +878,9 @@ pages.no_agent = {
                            }
                     });
                     $('#downloadzz-btn').click(function(){
-                        alert("Agent should be downloading now (TODO:change this in pages.js)");
-                        pages.no_agent.poll_agent_from_dialog( pages.no_agent.agent_ready_from_dialog ); //Download begun , start polling for agent
+                        alert("Agent should be downloading now (TODO: Set URL for download in pages.js)");
                     });
+                    pages.no_agent.poll_agent_from_dialog( ); //Download begun , start polling for agent
         });
     },
 
@@ -905,5 +905,4 @@ pages.no_agent = {
                 });
         });
     }
-
 };
