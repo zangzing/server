@@ -270,7 +270,7 @@
             }
 
 
-            //mousewheel for single picture
+            //mousewheel and keyboard for single picture
             if(self.options.singlePictureMode){
                 this.element.mousewheel(function(event){
 
@@ -292,6 +292,40 @@
                     }
 
                     return false;
+                });
+
+                $(document.documentElement).keydown(function(event){
+                    if(event.keyCode === 40){
+                        //down
+                        self.nextPicture();
+                        event.preventDefault();
+                    }
+                    else if(event.keyCode === 39){
+                        //right
+                        self.nextPicture();
+                        event.preventDefault();
+                    }
+                    else if(event.keyCode === 34){
+                        //page down
+                        self.nextPicture();
+                        event.preventDefault();
+                    }
+                    else if(event.keyCode === 38){
+                        //up
+                        self.previousPicture();
+                        event.preventDefault();
+                    }
+                    else if(event.keyCode === 37){
+                        //left
+                        self.previousPicture();
+                        event.preventDefault();
+                    }
+                    else if(event.keyCode === 33){
+                        //page up
+                        self.previousPicture();
+                        event.preventDefault();
+                    }
+                    logger.debug(event.keyCode)
                 });
             }
 
