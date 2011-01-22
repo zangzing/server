@@ -232,7 +232,7 @@
                             $(element).data().zz_photo.loadIfVisible(containerDimensions);
                         }
                     });
-                },500);
+                },200);
 
             });
 
