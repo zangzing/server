@@ -296,11 +296,11 @@ zz.drawers = {
 //                url: '/users/$$/identities',
 //                url_type: 'user',
                 init: function(callback){
-                    pages.account_settings_linked_accounts.init(callback);
+                    pages.linked_accounts.init(callback);
                 },
 
                  bounce: function(success, failure){
-                     pages.account_settings_linked_accounts.bounce(success, failure);
+                     pages.linked_accounts.bounce(success, failure);
                  }
               }
 

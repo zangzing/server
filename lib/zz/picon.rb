@@ -31,10 +31,10 @@ module ZZ
       #The stack is a pile of urls with the cover at the end.
       stack = []
       album.photos.each do |p|   # choose a push photos (which are not the cover )into stack
-        stack << p.thumb_url unless p.id == cover.id
+        stack << p.stamp_url unless p.id == cover.id
         break if stack.length >= 2
       end
-      stack<< cover.thumb_url # push the cover onto the stack last
+      stack<< cover.stamp_url # push the cover onto the stack last
       create( stack ) #Build picon and return it
     end
 
