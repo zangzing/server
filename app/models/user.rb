@@ -80,8 +80,13 @@ class User < ActiveRecord::Base
     return user
   end
 
-  def has_identity?( service_name )
-    self.identities.find(:first, :conditions => {:identity_source => service_name.to_s})
+  def has_valid_identity?( service_name )
+    id = self.identities.find_by_identity_source( service_name.to_s )
+    if id && id.credentials_valid?  # Return true if there is an id and its credentials are valid
+      return id
+    else
+      return false
+    end
   end
 
   # automatic users were created by the system from contributors emailing photos or OAuth login i.e. FaceBookConnect

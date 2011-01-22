@@ -19,7 +19,6 @@ pages.album_add_photos_tab = {
     }
 };
 
-
 pages.album_name_tab = {
     original_album_name: '',
     init: function(callback){
@@ -120,7 +119,6 @@ pages.album_name_tab = {
     }
 };
 
-
 pages.edit_album_tab = {
     init: function(callback){
         $.ajax({
@@ -219,8 +217,6 @@ pages.album_privacy_tab = {
         success();
     }
 };
-
-
 
 pages.album_share_tab = {
     init: function(callback){
@@ -513,7 +509,6 @@ pages.album_contributors_tab = {
 
 };
 
-
 pages.account_settings_profile_tab = {
 
     profile_photo_picker: 'undefined',
@@ -752,30 +747,15 @@ pages.account_setings_notifications_tab = {
 
 };
 
-
-
-pages.account_settings_linked_accounts = {
+pages.linked_accounts = {
     init: function(callback){
-        var url ='/users/' + zz.current_user_id + '/identities';
-
-        var self = this;
-
-        $('#tab-content').load(url, function(){
+        var url = '/users/' + zz.current_user_id + '/identities';
+        $('#tab-content').load( url, function(){
             zz.drawers.settings.redirect =  window.location;
-            $('.delete-id-button').click(pages.account_settings_linked_accounts.delete_identity);
-
-            $('.authorize-id-button').click(pages.account_settings_linked_accounts.authorize_identity);
-
-            $('.id-status').each( function(){
-
-                logger.debug("Binding id:"+this.id+" service:"+$(this).attr('service'));
-            });
+            $('.delete-id-button').click(pages.linked_accounts.delete_identity);
+            $('.authorize-id-button').click(pages.linked_accounts.authorize_identity);
             $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height -110) + 'px'});
-
-            $('#ok_id_button').click(function(){
-                zz.wizard.close_settings_drawer();
-            });
-            
+            $('#ok_id_button').click(  zz.wizard.close_settings_drawer );
             callback();
         });
     },
@@ -786,42 +766,36 @@ pages.account_settings_linked_accounts = {
 
     delete_identity: function(){
         logger.debug("Deleting ID with URL =  "+ $(this).attr('value'));
-        $("#"+$(this).attr('service')+"-status").bind( 'identity_deleted' , pages.account_settings_linked_accounts.identity_deleted_handler);
-        $.post($(this).attr('value'), {"_method": "delete"}, function(data){$('.id-status').trigger( 'identity_deleted' );});
+        var service = $(this).attr('service');
+        $.post($(this).attr('value'), {"_method": "delete"},  function(){
+            logger.debug( "identity_deleted event for service "+service);
+            $('#'+service+'-status').fadeOut('slow'); //hide the linked status
+            $('#'+service+'-delete').fadeOut( 'fast', function(){  //remove the unlink button
+                $('#'+service+'-authorize').fadeIn('fast');//display the link button
+            });
+        });  
     },
 
     authorize_identity: function(){
         logger.debug("Authorizing ID with URL =  "+ $(this).attr('value'));
-        $("#"+$(this).attr('service')+"-status").bind( 'identity_linked' , pages.account_settings_linked_accounts.identity_linked_handler);
-        oauthmanager.login( $(this).attr('value') , function(){ $('.id-status').trigger( 'identity_linked' );} );
-    },
-
-    identity_linked_handler: function(){
-        logger.debug( "identity_linked event for service "+$(this).attr('service'));
-        $(this).unbind( 'identity_linked' ); //remove the event handler
-        $(this).fadeIn('slow'); //display the linked status
-        $("#"+$(this).attr('service')+"-authorize").fadeOut( 'fast', function(){  //remove the link button
-            $("#"+$(this).attr('service')+"-delete").fadeIn( 'fast', function(){
-                if( $('#flashes-notice')){
-                    var msg = "Your can now use "+ $(this).attr('service')+" features throughout ZangZing";
-                    $('#flashes-notice').html(msg).fadeIn('fast', function(){
-                        setTimeout(function(){
-                            $('#flashes-notice').fadeOut('fast', function(){
-                                $('#flashes-notice').html('    ');
-                            });
-                        }, 3000);
-                    });
-                }
-            });//display the unlink button
-        });
-    },
-
-    identity_deleted_handler: function(){
-        logger.debug( "identity_deleted event for service "+$(this).attr('service'));
-        $(this).unbind( 'identity_deleted' ); //remove the event handler
-        $(this).fadeOut('slow'); //hide the linked status
-        $("#"+$(this).attr('service')+"-delete").fadeOut( 'fast', function(){  //remove the unlink button
-            $("#"+$(this).attr('service')+"-authorize").fadeIn( 'fast');//display the link button
+        var service = $(this).attr('service');
+        oauthmanager.login( $(this).attr('value') , function(){
+            logger.debug( "identity_linked event for service "+service);
+            $('#'+service+'-status').fadeIn('slow'); //display the linked status
+            $('#'+service+'-authorize').fadeOut( 'fast', function(){  //remove the link button
+                $('#'+service+'-delete').fadeIn( 'fast', function(){
+                    if( $('#flashes-notice')){
+                        var msg = "Your can now use "+ service+" features throughout ZangZing";
+                        $('#flashes-notice').html(msg).fadeIn('fast', function(){
+                            setTimeout(function(){
+                                $('#flashes-notice').fadeOut('fast', function(){
+                                    $('#flashes-notice').html('    ');
+                                });
+                            }, 3000);
+                        });
+                    }
+                });//display the unlink button
+            });
         });
     }
 };
