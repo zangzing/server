@@ -222,7 +222,7 @@ zz.init = {
 
             var gridElement = $("<div class='photogrid-container-vertical'></div>");
             $('#article').html(gridElement);
-
+            $('#article').css('overflow','hidden');
 
             if(view === 'grid'){
                 for(var i =0;i<json.length;i++){

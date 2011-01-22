@@ -138,6 +138,8 @@ pages.edit_album_tab = {
                 var gridElement = $("<div class='photogrid-container-vertical'></div>");
 
                 $('#article').html(gridElement);
+                $('#article').css('overflow','hidden');
+    
 
                 var grid = gridElement.zz_photogrid({
                     photos:json,

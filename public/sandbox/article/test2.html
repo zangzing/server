@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=100" > <!-- IE8 mode -->
+
+    <title></title>
+    <link href="/css/corp.css" type="text/css" rel="stylesheet"/>
+    <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js' type='text/javascript'></script>
+    <style>
+      body, html, #outermost { height: 100%; padding: 0; margin: 0; overflow: hidden; }
+      #overall-content {
+        width: 600px; height: 100%;
+        padding: 0;
+        margin: 0 auto;
+      }
+      #header {
+        width: 100%;
+        background-color: yellow;
+      }
+      #header, #top-thunk { height: 20px; }
+      #footer {
+        width: 100%;
+        background-color: green;
+        overflow: auto;
+      }
+      #footer, #bottom-thunk { height: 20px; }
+      #page-content {
+        width: 100%;
+        height: 100%;
+        background-color: #eee;
+        -ms-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        overflow: auto;
+      }
+      #payload {
+        overflow: auto;
+        background-color: orange;
+        height: 85%;
+      }
+      .hidden { display: none; }
+    </style>
+    <script>
+      $(function() {
+        $('#reset').click(function(e) {
+          $('.more-content').addClass('hidden');
+          return false;
+        });
+        $('#more').click(function(e) {
+          $('.more-content').removeClass('hidden');
+          return false;
+        });
+      });
+    </script>
+  </head>
+  <body id='x'>
+    <div id='outermost'>
+      <div id='overall-content'>
+        <div id='page-content'>
+
+         <div id='header'>
+          header header header
+          <br/>
+          <button id='reset'>less content</button>
+          <button id='more'>more content</button>
+         </div>
+
+         <div id='payload'>
+          This is the meat of the page
+           <ul>
+            <li>Ever eat a pine cone?</li>
+            <li>Some parts are edible.</li>
+            <li>Wheat and barley.</li>
+           </ul>
+           <div class='more-content hidden'>
+             <p>
+               Manfred, prince of Otranto, had one son and one daughter: the latter, a most beautiful virgin, aged eighteen, was called Matilda. Conrad,
+               the son, was three years younger, a homely youth,m sickly, and of no promising disposition; yet he was the darling of his father, who
+               never showed any symptoms of affection to Matilda. Manfred had contracted a marriage for his son with the marquis of Vicenza's daugher,
+               Isabela; and she had already been delivered by her guardians into the hands of Manfred, that he might celebrate the wedding as soon as
+               Conrad's infirm state of health would permit. Manfred's impatience for this ceremonial was remarked by his family and neighbours.
+               The former, indeed, apprehending the severity of their prince's disposition, did not dare to utter their surmises on this precipitation.
+               Hippolita, his wife, an amiable lady, did sometimes venture to represent the danger of marrying their only son so early, considering
+               his great youth, and greater infirmities; but she never received any other answer than reflections on her own sterility, who had given
+               him but one heir. His tenants and subjects were less cautious in their discourses: they attributed this hasty wedding to the prince's
+               dread of seeing accomplished an ancient prophecy, which was said to have pronounced, <i>That the castle and lordship of Otranto should
+               pass from the present family, whenever the real owner should be grown too large to inhabit it.</i> It was difficult
+               to make any sense of this prophecy; and still less easy to conceive what it had to do with the marriage in question.
+               Yet these mysteries, or contradictions, did not make the populace adhere the less to their opinion.
+             </p>
+             <p>
+               Young Conrad's birth-day was fixed for his espousals. The company was assembled in the chapel of the castle, and every thing
+               ready for beginning the divine office, when Conrad himself was missing. Manfred, impatient of the least delay,
+               and who had not observed his son retire, dispatched one of his attendants to summon the young prince. The servant, who had not staid long enough
+               to have crossed the court to Conrad's apartments, came running back breathless, in a frantic manner, his eyes staring, and foaming at the mouth.
+               He said nothing, but pointed to the court. The company were struck with terror and amazement. The princess Hippolita, without knowing what was he matter,
+               but anxious for her son, swooned away. Manfred, less apprehensive than enraged at the procrastination of
+               the nuptials, and at the folly of his domestic, asked imperiously, what was the matter? The fellow made no answer, but continued
+               pointing towards the court-yard; and at last, after repeated questions put to him, cried out, Oh, the helmet! the helmet! In the mean time
+               some of the company had run into the court, from whence was heard a confused noise of shrieks, horror, and surprise.
+               Manfred, who began to be alarmed at not seeing his son, went himself to get information of what had occasioned this strange
+               confusion. Matilda remained endeavouring to assist her mother, and Isabella staid for the same purpose, and to avoid showing
+               any impatience for the bridegroom, for whom, in truth, she had conceived little affection.
+             </p>
+             <p>
+               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus in enim sit amet tortor facilisis pretium vitae non nisi.
+               Suspendisse sit amet diam fermentum eros lacinia congue. Duis vehicula molestie rutrum. Vestibulum lobortis ultricies nisl,
+               sit amet tristique libero volutpat dictum. Quisque suscipit fringilla elit, quis suscipit felis semper et. Donec porttitor,
+               nibh vel vehicula pharetra, urna nibh rhoncus nisi, semper eleifend libero ipsum id magna. Nam nec ornare nunc. Suspendisse
+               eu tellus et est elementum ultricies sed vel urna. Sed laoreet justo in felis cursus auctor. Aliquam congue tincidunt risus,
+               ullamcorper congue quam ornare ullamcorper. Nunc at est felis. Praesent molestie purus ac leo volutpat eget venenatis risus
+               adipiscing. Vivamus et ligula neque. Maecenas volutpat massa non urna laoreet et fermentum nisl rutrum. Quisque sit amet
+               libero libero, vel ornare arcu. Nulla ornare vulputate bibendum. Pellentesque laoreet dapibus vulputate.
+             </p>
+           </div>
+         </div>
+
+         <div id='footer'>
+          footer footer footer
+          <div class='more-content hidden'>
+           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus in enim sit amet tortor facilisis pretium vitae non nisi.
+           Suspendisse sit amet diam fermentum eros lacinia congue. Duis vehicula molestie rutrum. Vestibulum lobortis ultricies nisl,
+           sit amet tristique libero volutpat dictum. Quisque suscipit fringilla elit, quis suscipit felis semper et. Donec porttitor,
+           nibh vel vehicula pharetra, urna nibh rhoncus nisi, semper eleifend libero ipsum id magna. Nam nec ornare nunc. Suspendisse
+           eu tellus et est elementum ultricies sed vel urna. Sed laoreet justo in felis cursus auctor. Aliquam congue tincidunt risus,
+           ullamcorper congue quam ornare ullamcorper. Nunc at est felis. Praesent molestie purus ac leo volutpat eget venenatis risus
+           adipiscing. Vivamus et ligula neque. Maecenas volutpat massa non urna laoreet et fermentum nisl rutrum. Quisque sit amet
+           libero libero, vel ornare arcu. Nulla ornare vulputate bibendum. Pellentesque laoreet dapibus vulputate.
+          </div>
+         </div>
+
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
