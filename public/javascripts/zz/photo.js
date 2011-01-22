@@ -40,10 +40,13 @@
             self.captionElement = self.element.find('.photo-caption');
             self.deleteButtonElement = self.element.find('.photo-delete-button');
 
+            var initialWidth = Math.min(self.options.maxWidth, self.options.maxHeight);
+            var initialHeight = initialWidth;
+
 
             self.imageElement.css({
-                width: self.options.maxWidth,
-                height: self.options.maxHeight
+                width: initialWidth,
+                height: initialHeight
             });
 
 
@@ -69,8 +72,8 @@
 
 
 
-            var wrapperWidth = self.options.maxWidth + 10;
-            var wrapperHeight = self.options.maxHeight + 10;
+            var wrapperWidth = initialWidth + 10;
+            var wrapperHeight = initialWidth + 10;
 
 
 
