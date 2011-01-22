@@ -173,6 +173,9 @@ zz.init = {
             $("form#new_user_session").submit();
         });
 
+        //todo: why are these here
+        $(zz.validate.sign_in.element).validate(zz.validate.sign_in);
+        $(zz.validate.join.element).validate(zz.validate.join);
 
 
         zz.init.acct_badge();
@@ -180,10 +183,7 @@ zz.init = {
         zz.init.buy_button();
         zz.init.preload_rollover_images();
 
-// JH: not sure why these were here, but throwing exceptions, so commenting out
-//        $(zz.validate.sign_in.element).validate(zz.validate.sign_in);
-//        $(zz.validate.join.element).validate(zz.validate.join);
-        
+
     },
 
 
