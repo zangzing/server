@@ -260,12 +260,12 @@ zz.init = {
                     allowDelete: false,
                     allowEditCaption: false,
                     allowReorder: false,
-                    cellWidth: 1024,
-                    cellHeight: 1024,
+                    cellWidth: gridElement.width(),
+                    cellHeight: gridElement.height(),
                     onClickPhoto: function(index, photo){
                         document.location.href = "/albums/" + album_id +"/photos#" + photo.id;
                     },
-                    scrollMode: 'picture',
+                    singlePictureMode: true,
                     scrollToPhoto: $.param.fragment()
 
                 }).data().zz_photogrid;
@@ -574,18 +574,16 @@ zz.init = {
 
                     moreLessbuttonElement.click(function(){
                         if(allShowing){
-                            $(element).animate({
-                                height:180
-                            }, 500);
-                            moreLessbuttonElement.html("more...");
+                            $(element).animate({height:180}, 500, 'swing', function(){
+                                moreLessbuttonElement.html("more...");
+                            });
                             allShowing = false;
                         }
                         else{
-                            $(element).animate({
-                                height: $(element).children().last().position().top + 180
-                            }, 500);
-                            $(element).trigger('scroll');
-                            moreLessbuttonElement.html("less...");
+                            $(element).animate({height: $(element).children().last().position().top + 180}, 500, 'swing', function(){
+                                $(element).trigger('scroll');  //hack: force the photos to load themselves now that they are visible
+                                moreLessbuttonElement.html("less...");
+                            });
                             allShowing = true;
 
                         }

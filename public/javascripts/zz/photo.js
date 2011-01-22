@@ -194,22 +194,9 @@
         _resize: function(percent){
             var self = this;
 
-            var height;
-            var width;
-
-            if(self.imageObject.width >= self.imageObject.height){
-                width = self.options.maxWidth;
-                height = self.imageObject.height * (self.options.maxWidth / self.imageObject.width);
-            }
-            else{
-                width = self.imageObject.width * (self.options.maxHeight / self.imageObject.height);
-                height = self.options.maxHeight;
-
-            }
-
-            height = Math.floor(percent * height);
-            width = Math.floor(percent * width);
-
+            var scale = Math.min(self.options.maxWidth/self.imageObject.width, self.options.maxHeight/self.imageObject.height);
+            var width = Math.floor(self.imageObject.width * scale);
+            var height = Math.floor(self.imageObject.height * scale);
 
             var wrapperWidth = width + 10;
             var wrapperHeight = height + 10;

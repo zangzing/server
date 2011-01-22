@@ -19,7 +19,7 @@
 
             showThumbscroller: true,
 
-            scrollMode: 'smooth',
+            singlePictureMode: false,
 
             scrollToPhoto: null
 
@@ -57,6 +57,11 @@
 
             var cells = [];
 
+            var lazyLoadThreshold = 0;
+            if(self.options.singlePictureMode){
+                lazyLoadThreshold = self.options.maxWidth * 3;
+            }
+
             $.each(self.options.photos, function(index, photo){
                 var cell = template.clone();
                 cells.push(cell);
@@ -88,7 +93,8 @@
                         self.options.onClickPhoto(index, photo);
                     },
 
-                    scrollContainer: self.element
+                    scrollContainer: self.element,
+                    lazyLoadThreshold: lazyLoadThreshold
                     
                 });
 
@@ -265,7 +271,7 @@
 
 
             //mousewheel for single picture
-            if(self.options.scrollMode === 'picture'){
+            if(self.options.singlePictureMode){
                 this.element.mousewheel(function(event){
 
                     var delta;
@@ -373,6 +379,9 @@
                 duration = 0;
             }
 
+
+
+
             this.element.children('.photogrid-cell').each(function(index, element){
                 if(! $(element).data().zz_photo){
                     return;
@@ -392,6 +401,10 @@
                 else{
                     $(element).css(css);
                 }
+
+
+
+
 
             });
         },
