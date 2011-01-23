@@ -133,7 +133,7 @@ pages.edit_album_tab = {
                 }
 
 
-                var gridElement = $("<div class='photogrid-container-vertical'></div>");
+                var gridElement = $('<div class="photogrid-container"></div>');
 
                 $('#article').html(gridElement);
                 $('#article').css('overflow','hidden');

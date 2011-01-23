@@ -1,18 +1,16 @@
-.photogrid-container-vertical{
+.photogrid-container{
     width:100%;
     height:100%;
     overflow-y:scroll;
-    overflow-x:hidden;
-    position:relative;
-    /*background-color:#eeeeee;*/
-}
-
-.photogrid-container-horizontal{
-    width:100%;
-    height:100%;
     overflow-x:scroll;
     position:relative;
+    /*top:0px;*/
+    /*left:0px;*/
+    /*bottom:0px;*/
+    /*right:0px;*/
 }
+
+
 
 
 .photogrid-cell{
@@ -36,6 +34,16 @@
     z-index:1000;
 }
 
+.photogrid-thumbscroller-horizontal{
+    border-left:1px solid #999999;
+    background-color:#cccccc;
+    position:absolute;
+    width: 100%;
+    height:16px;
+    bottom:0px;
+    left:0px;
+    z-index:1000;
+}
 
 
 .photo-droppable{

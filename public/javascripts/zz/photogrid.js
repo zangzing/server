@@ -32,8 +32,25 @@
         _create: function() {
             var self = this;
 
+
+            //scroll direction
+            if(self.options.singlePictureMode){
+                self.element.css({
+                    'overflow-y':'hidden',
+                    'overflow-x':'scroll'
+                });
+            }
+            else{
+                self.element.css({
+                    'overflow-y':'scroll',
+                    'overflow-x':'hidden'
+                });
+            }
+
+
             self.width = parseInt(self.element.css('width'));
             self.height = parseInt(self.element.css('height'));
+
 
 
             //template for cells
@@ -61,6 +78,9 @@
             if(self.options.singlePictureMode){
                 lazyLoadThreshold = self.options.maxWidth * 3;
             }
+
+
+
 
             $.each(self.options.photos, function(index, photo){
                 var cell = template.clone();
@@ -211,6 +231,8 @@
                 },100);
             });
 
+
+
             //handle scroll
             var scrollTimer = null;
             self.element.scroll(function(event){
@@ -237,12 +259,16 @@
             });
 
 
-
             //thumbscroller
             if(self.options.showThumbscroller){
                 var nativeScrollActive = false;
 
-                self.thumbscrollerElement = $('<div class="photogrid-thumbscroller-vertical"></div>').appendTo(self.element.parent());
+                if(self.options.singlePictureMode){
+                    self.thumbscrollerElement = $('<div class="photogrid-thumbscroller-horizontal"></div>').appendTo(self.element.parent());
+                }
+                else{
+                    self.thumbscrollerElement = $('<div class="photogrid-thumbscroller-vertical"></div>').appendTo(self.element.parent());
+                }
 
 
                 self.thumbscroller = self.thumbscrollerElement.zz_thumbtray({
@@ -262,7 +288,12 @@
                 self.element.scroll(function(event){
                     if(! self.animateScrollActive){
                         nativeScrollActive = true;
-                        var index = Math.floor(self.element.scrollTop() / self.options.cellHeight * self.cellsPerRow());
+                        if(self.options.singlePictureMode){
+                            var index = Math.floor(self.element.scrollLeft() / self.options.cellWidth);
+                        }
+                        else{
+                            var index = Math.floor(self.element.scrollTop() / self.options.cellHeight * self.cellsPerRow());
+                        }
                         self.thumbscroller.setSelectedIndex(index);
                         nativeScrollActive = false;
                     }
@@ -350,8 +381,10 @@
 
             if(!self.nextPrevActive){
                 self.nextPrevActive = true;
-                var x =  this.element.scrollTop() + self.options.cellHeight;
-                self.element.animate({scrollTop: x}, 500, 'easeOutCubic', function(){
+                var x =  this.element.scrollLeft() + self.options.cellWidth;
+
+                //todo: shoud use self.scrollToPhoto() here
+                self.element.animate({scrollLeft: x}, 500, 'easeOutCubic', function(){
                     self.nextPrevActive = false;
                 });
             }
@@ -363,8 +396,10 @@
 
             if(!self.nextPrevActive){
                 self.nextPrevActive = true;
-                var x =  this.element.scrollTop() - self.options.cellHeight;
-                self.element.animate({scrollTop: x}, 500, 'easeOutCubic' ,function(){
+                var x =  this.element.scrollLeft() - self.options.cellWidth;
+
+                //todo: shoud use self.scrollToPhoto() here
+                self.element.animate({scrollLeft: x}, 500, 'easeOutCubic' ,function(){
                     self.nextPrevActive = false;
                 });
             }
@@ -402,12 +437,22 @@
                 },duration + 1500);
             }
 
-            var y = (Math.floor(index / self.cellsPerRow())  ) * self.options.cellHeight ;
+            if(self.options.singlePictureMode){
+                var x = index  * self.options.cellWidth;
 
-            self.animateScrollActive = true;
-            self.element.animate({scrollTop: y}, duration, 'easeOutCubic', function(){
-                self.animateScrollActive = false;
-            });
+                self.animateScrollActive = true;
+                self.element.animate({scrollLeft: x}, duration, 'easeOutCubic', function(){
+                    self.animateScrollActive = false;
+                });
+
+            }
+            else{
+                var y = Math.floor(index / self.cellsPerRow()) * self.options.cellHeight ;
+                self.animateScrollActive = true;
+                self.element.animate({scrollTop: y}, duration, 'easeOutCubic', function(){
+                    self.animateScrollActive = false;
+                });
+            }
         },
 
         resetLayout: function(duration, easing){
@@ -453,25 +498,39 @@
 
         cellsPerRow : function(){
             var self = this;
-            return Math.floor(self.width / self.options.cellWidth);
+            if(self.options.singlePictureMode){
+                return self.options.photos.length;                
+            }
+            else{
+                return Math.floor(self.width / self.options.cellWidth);
+            }
         },
 
         positionForIndex: function(index){
             var self = this;
-            var cellsPerRow = self.cellsPerRow();
-            var row = Math.floor(index / cellsPerRow);
-            var col = index % cellsPerRow;
 
-            var paddingLeft = Math.floor((self.width - (cellsPerRow * self.options.cellWidth))/2);
+            if(self.options.singlePictureMode){
+                return {
+                    top:0,
+                    left: (index * self.options.cellWidth)
 
-            var paddingLeft = paddingLeft - (16/2); //account for scroller //todo: use constant or lookup value for scroller width 
+                }
+            }
+            else{
+                var cellsPerRow = self.cellsPerRow();
+                var row = Math.floor(index / cellsPerRow);
+                var col = index % cellsPerRow;
+
+                var paddingLeft = Math.floor((self.width - (cellsPerRow * self.options.cellWidth))/2);
+
+                paddingLeft = paddingLeft - (16/2); //account for scroller //todo: use constant or lookup value for scroller width
 
 
-            return {
-                top: row * self.options.cellHeight,
-                left: paddingLeft + (col * self.options.cellWidth) 
-            };
-
+                return {
+                    top: row * self.options.cellHeight,
+                    left: paddingLeft + (col * self.options.cellWidth)
+                };
+            }
         },
 
 
