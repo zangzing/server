@@ -1,7 +1,0 @@
-<%= form_for @photo, :url => upload_photo_path(@photo.id), :method => 'post', :html => { :multipart => true } do |f| %>
-                <%= f.error_messages %>
-                <div class="field">
-                    <%= f.file_field :local_image %>
-                    <%= f.submit "Add Photo"%>
-                </div>
-<% end %>

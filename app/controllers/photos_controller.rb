@@ -189,7 +189,7 @@ class PhotosController < ApplicationController
         else
           @photo = Photo.new
           @photos = @all_photos
-          render 'grid'
+          render 'photos'
         end
       end
 
