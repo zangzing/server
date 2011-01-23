@@ -4,6 +4,7 @@ source :gemcutter
 # bundler requires these gems in all environments
 gem "bundler", ">=1.0.7"
 gem "rails", "3.0.3"
+gem "unicorn"
 gem "dynamic_form"
 gem "require_all"                 # lets us pull in everything for our resque tasks
 gem "mysql"
