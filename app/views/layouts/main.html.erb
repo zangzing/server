@@ -11,6 +11,9 @@
 <%  if @meta_description -%>
     <meta name="description" content="<%= @meta_description %>" />
 <%  end %>
+    <%= yield :meta_tags %>
+
+
 
     <% if @page_title_override 
        title = @page_title_override
