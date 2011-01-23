@@ -14,9 +14,10 @@ function ZZA(id, useridentifier, isuser)
 	this.last = null;
 	this.maxevts = 10;
 	this.maxtime = 2500;
-	this.zzaurl = 'http://localhost:8000'			// for test mode: 'http://localhost:8000'   http://zza.zangzing.com
-	this.req = null;
+	this.maxpushbytes = 2000;
+	this.zzaurl = 'http://zza.zangzing.com'			// for test mode: 'http://localhost:8000'   http://zza.zangzing.com
 	this.pushed = 0;
+	this.pindex = 0;
 	
 	this.re = /[\x00-\x1f\\"]/;
 	this.stringescape = {
@@ -92,7 +93,7 @@ function ZZA(id, useridentifier, isuser)
 		this._flush(false);
 					
 		var _this = this;
-		window.setTimeout(function() { _this._timer(); }, 5000);
+		window.setTimeout(function() { _this._timer(); }, 2000);
 	}
 	
 	this._flush = function(all)
@@ -122,6 +123,39 @@ function ZZA(id, useridentifier, isuser)
 		}
 	}
 	
+	this._getrandom = function(n)
+	{
+		return Math.floor(Math.random()*(n+1)) + 1;
+	}
+	
+	this._getevts = function()
+	{
+		// from pindex, get n events 
+		
+		if (this.pindex > this.evts.length - 1)
+			return null;
+		
+		var pmax = this.maxpushbytes;
+		var pevts = new Array();
+			
+		while(this.pindex < this.evts.length) {
+			var evt = this.evts[this.pindex];
+			var evtlen = this.toJSONString(evt).length;
+			if (evtlen > pmax)
+				break;
+			
+			pevts.push(evt);
+			pmax -= evtlen;
+			this.pindex += 1;
+		}
+		
+		//console.log('pushing evts: ' + pevts.length);
+		
+		this.pushed += pevts.length;
+		var d = {id: this.id, evts: pevts}
+		return this.toJSONString(d);
+	}
+	
 	this._push = function()
 	{
 		// push to server
@@ -129,19 +163,18 @@ function ZZA(id, useridentifier, isuser)
 		if (this.evts.length == 0)
 			return;
 		
-		if (this.req == null) {
-			if (window.XMLHttpRequest)
-				this.req = new XMLHttpRequest();
-			else
-				this.req = new ActiveXObject("Microsoft.XMLHTTP");
+		this.pindex = 0;
+		
+		while(this.pindex < this.evts.length) {
+			//console.log('getevts');
+			
+			var data = this._getevts();
+			//console.log('pushing bytes: ' + data.length);
+			
+			var r = this._getrandom(10000000);
+			var img = new Image();
+			img.src = this.zzaurl + '/_z.gif?r=' + r + '&e=' + encodeURI(data);
 		}
-		
-		this.pushed += this.evts.length;
-		var d = {id: this.id, evts: this.evts};
-		var body = this.toJSONString(d);
-		
-		this.req.open("POST", this.zzaurl, true);
-		this.req.send(body);
 	}
 	
 	// toJSONString util functions, adapted from Tino Zijdel - crisp@xs4all.nl, 01/10/2006
@@ -205,7 +238,4 @@ function ZZA(id, useridentifier, isuser)
 				return 'null';
 		}
 	}
-
-
-	
 }
