@@ -92,6 +92,7 @@ GEM
       git (>= 1.2.5)
       rake
     json (1.4.6)
+    kgio (2.1.1)
     launchy (0.3.7)
       configuration (>= 0.0.5)
       rake (>= 0.8.1)
@@ -186,6 +187,9 @@ GEM
       mime-types (>= 1.16)
       oauth (>= 0.4.1)
     tzinfo (0.3.23)
+    unicorn (3.3.1)
+      kgio (~> 2.1)
+      rack
     vegas (0.1.8)
       rack (>= 1.0.0)
     vpim (0.695)
@@ -233,6 +237,7 @@ DEPENDENCIES
   selenium
   selenium-client
   twitter_oauth
+  unicorn
   usesguid!
   usesguid_migrations!
   vpim
