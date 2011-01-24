@@ -1,7 +1,8 @@
 
 
 
-function ZZA(id, useridentifier, isuser)
+
+function ZZA(id, useridentifier, isuser, usemixpanel)
 {
 	this.id = id;
 	this.useridentifier = useridentifier;
@@ -10,12 +11,16 @@ function ZZA(id, useridentifier, isuser)
 	else
 		this.usertype = 2;
 	
+	if (usemixpanel == undefined)
+		usemixpanel = false;
+	this.usemixpanel = usemixpanel;
+	
 	this.evts = new Array();
 	this.last = null;
 	this.maxevts = 10;
 	this.maxtime = 2500;
 	this.maxpushbytes = 2000;
-	this.zzaurl = 'http://zza.zangzing.com'			// for test mode: 'http://localhost:8000'   http://zza.zangzing.com
+	this.zzaurl = 'http://localhost:8000'			// for test mode: 'http://localhost:8000'   http://zza.zangzing.com
 	this.pushed = 0;
 	this.pindex = 0;
 	
@@ -144,6 +149,19 @@ function ZZA(id, useridentifier, isuser)
 			if (evtlen > pmax)
 				break;
 			
+			if (this.usemixpanel && typeof(mpmetrics) != 'undefined') {
+				p = {};
+				if (this.usertype == 1)
+					p.Zuser = evt.u;
+				else
+					p.Zvisitor = evt.u;
+				for(var x in evt.x)
+					p[x] = evt.x[x];
+			
+				//console.log('mp: ' + evt.e + "; prop: " + this.toJSONString(p))
+				mpmetrics.track(evt.e, p);
+			}
+				
 			pevts.push(evt);
 			pmax -= evtlen;
 			this.pindex += 1;
