@@ -88,17 +88,17 @@ module UiModel
         @session.wait_for "css=a:contains(#{folder}) + a"
         @browser.click "css=a:contains(#{folder}) + a"
         sleep 1 #wait for animation
-        @browser.wait_for  :wait_for => :ajax
+        @browser.wait_for :wait_for => :ajax
       end
 
       def add_random_photos(amount = 1)
-        @browser.wait_for "css=#filechooser .photo"
-        total = @browser.get_xpath_count("//figure").to_i
+        @session.wait_for "css=#filechooser .photo"
+        total = @browser.get_xpath_count("//figure").to_i #//div[@class='photogrid-cell']
         puts "TOTAL=#{total}"
         attr = Array.new
         1.upto(total) { |i| attr[i]=@browser.get_attribute("xpath=(//figure)[#{i}]@onclick") }
         puts "ATTR=#{attr.inspect}"
-        amount.times { @browser.click "//figure[@onclick='#{attr[rand(total)+1]}']" }
+        amount.times { @browser.click "//figure[@onclick=\"#{attr[rand(total)+1]}\"]" }
       end
     end
 
