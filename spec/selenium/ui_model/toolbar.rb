@@ -15,8 +15,8 @@ module UiModel
       @session.wait_for "css=#step-join-off"
     end
 
-    def verify_signed_in_user user
-      (user).should == @browser.get_text("css=div[id=user-info]")
+    def signed_in_as?(user)
+      @browser.get_text("css=div[id=user-info]").casecmp(user)==0
     end
 
     def click_create_album

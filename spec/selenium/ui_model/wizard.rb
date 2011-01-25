@@ -14,7 +14,7 @@ module UiModel
         end
 
         def click_name_tab
-          @browser.click 'css=#wizard-share'
+          @browser.click 'css=#wizard-name'
           @session.wait_for "css=#album_name"
         end
 
@@ -44,62 +44,87 @@ module UiModel
           @browser.click 'css=#next-step'
         end
 
-        def back_level_up
-          @browser.click 'css=#filechooser-back-button'
-        end
-
     end
 
     class AddPhotosTab
-        def initialize(selenuim_session)
-          @session = selenuim_session
-          @browser = selenuim_session.browser
-        end
+      def initialize(selenuim_session)
+        @session = selenuim_session
+        @browser = selenuim_session.browser
+      end
 
-        def click_folder foldername
-          @session.wait_for "css=a:contains(#{foldername})"
-          @browser.click "css=a:contains(#{foldername})"
-        end
+      def visible?
+        @browser.visible? 'css=#wizard-add'
+      end
 
-        def add_photo
-          @session.wait_for "css=#filechooser .photo"
-          @browser.click 'css=.filechooser.photo figure'
-          sleep 1 #wait for animation
-          @browser.wait_for  :wait_for => :ajax
-        end
+      def back_level_up
+        @browser.click 'css=#filechooser-back-button'
+        @browser.wait_for_ajax
+      end
 
-        def add_all_folder folder
-          @session.wait_for "css=a:contains(#{folder}) + a"
-          @browser.click "css=a:contains(#{folder}) + a"
-          sleep 1 #wait for animation
-          @browser.wait_for  :wait_for => :ajax
-        end
+      def at_home?
+        @browser.get_text('css=#filechooser-title')=='Home'
+      end
 
-        def add_random_photos(number = 1)
-          @session.wait_for "css=#filechooser .photo"
-          total=@browser.get_xpath_count("//figure").to_i
-              attr=Array.new
-              for i in 1 .. total do  attr[i]=@browser.get_attribute("xpath=(//figure)["+i.to_s+"]@onclick")  end
-              number.times do @browser.click "//figure[@onclick=\"#{attr[rand(total)+1]}\"]" end
+      def go_home
+        until at_home? do
+          back_level_up
         end
       end
 
+      def click_folder foldername
+        @session.wait_for "css=a:contains(#{foldername})"
+        @browser.click "css=a:contains(#{foldername})"
+        @browser.wait_for_ajax
+      end
+
+      def add_photo
+        @session.wait_for "css=#filechooser .photo"
+        @browser.click 'css=.filechooser.photo figure'
+        sleep 1 #wait for animation
+        @browser.wait_for  :wait_for => :ajax
+      end
+
+      def add_all_folder folder
+        @session.wait_for "css=a:contains(#{folder}) + a"
+        @browser.click "css=a:contains(#{folder}) + a"
+        sleep 1 #wait for animation
+        @browser.wait_for  :wait_for => :ajax
+      end
+
+      def add_random_photos(amount = 1)
+        @browser.wait_for "css=#filechooser .photo"
+        total = @browser.get_xpath_count("//figure").to_i
+        puts "TOTAL=#{total}"
+        attr = Array.new
+        1.upto(total) { |i| attr[i]=@browser.get_attribute("xpath=(//figure)[#{i}]@onclick") }
+        puts "ATTR=#{attr.inspect}"
+        amount.times { @browser.click "//figure[@onclick='#{attr[rand(total)+1]}']" }
+      end
+    end
+
     class AlbumNameTab
-        def initialize(selenuim_session)
-          @session = selenuim_session
-          @browser = selenuim_session.browser
-        end
+      def initialize(selenuim_session)
+        @session = selenuim_session
+        @browser = selenuim_session.browser
+      end
 
-        def type_album_name album
-          @browser.type "css=#album_name", album
-        end
+      def visible?
+        @browser.visible? 'css=#wizard-name'
+      end
 
+      def type_album_name album
+        @browser.type "css=#album_name", album
+      end
     end
 
     class AlbumTypeTab
       def initialize(selenuim_session)
         @session = selenuim_session
         @browser = selenuim_session.browser
+      end
+
+      def visible?
+        @browser.visible?('css=#tab-content #headline') && @browser.get_text('css=#drawer-tabs').strip.empty?
       end
 
       def click_group_album

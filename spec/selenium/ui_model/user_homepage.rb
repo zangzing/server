@@ -6,6 +6,10 @@ module UiModel
         @browser = selenuim_session.browser
       end
 
+      def visible?
+        @browser.visible? 'css=#albums-index'
+      end
+
       def number_of_albums number
         (@browser.get_xpath_count("//li").to_i==number).should be_true
       end

@@ -9,6 +9,12 @@ require "spec/selenium/ui_model/wizard"
 require "spec/selenium/ui_model/oauth_manager"
 
 module UiModel
+  TEST_USER = {
+    :full_name => 'Selenium AutoTest',
+    :username => 'selenium_user',
+    :password => '123456',
+    :email => 'selenium@test.zangzing.com'
+  }
 
   class SeleniumSession
     attr_reader :browser
@@ -46,7 +52,7 @@ module UiModel
       @browser.open "/"
     end
 
-private
+ private
     def recreate_item_classes!
       @oauth_manager = OAuthManager.new(self)
       @toolbar = Toolbar.new(self)

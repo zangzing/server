@@ -15,9 +15,6 @@ module UiModel
         @browser.type "css=#pass", "share1001photos"
         @browser.click "css=input[name=login]"
         @browser.select_window "null" #select the main window
-        @session.wait_for 'css=a:contains("My Albums")'
-        @browser.click 'css=a:contains("My Albums")'
-        @session.wait_for 'css=a:contains("Medium Album")'
       end
 
       def login_to_shutterfly
@@ -31,7 +28,7 @@ module UiModel
         @browser.type "css=#password", "share1001"
         @browser.click "css=#signInButton"
         @browser.select_window "null" #select the main window
-        @session.wait_for 'css=a:contains("Medium Album")'
+        #@session.wait_for 'css=a:contains("Medium Album")'
       end
 
 
@@ -43,7 +40,7 @@ module UiModel
         @browser.type "password", "ijertyewij"
         @browser.click "commit"
         @browser.select_window "null" #select the main window
-        @session.wait_for 'css=a:contains("Medium Album")'
+        #@session.wait_for 'css=a:contains("Medium Album")'
       end
 
 
@@ -56,7 +53,7 @@ module UiModel
         @browser.type "Password", "share1001photos"
         @browser.click "//input[@value='' and @type='image']"
         @browser.select_window "null" #select the main window
-        @session.wait_for 'css=a:contains("Medium Album")'
+        #@session.wait_for 'css=a:contains("Medium Album")'
       end
 
 
@@ -69,7 +66,7 @@ module UiModel
         @browser.type "css=#passwd", "clev-vid-arch-ab-a"
         @browser.click ".save"
         @browser.select_window "null" #select the main window
-        @session.wait_for 'css=a:contains("Medium Album")'
+        #@session.wait_for 'css=a:contains("Medium Album")'
       end
 
 
@@ -84,7 +81,7 @@ module UiModel
         @session.wait_load
         @browser.click "allow"
         @browser.select_window "null" #select the main window
-        @session.wait_for 'css=a:contains("MediumAlbum")'
+        #@session.wait_for 'css=a:contains("MediumAlbum")'
       end
 
 
@@ -97,7 +94,7 @@ module UiModel
         @browser.type "password", "share1001photos"
         @browser.click "login"
         @browser.select_window "null" #select the main window
-        @session.wait_for 'css=a:contains("Medium Album")'
+        #@session.wait_for 'css=a:contains("Medium Album")'
       end
 
   end

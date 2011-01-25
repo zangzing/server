@@ -18,6 +18,8 @@ module UiModel
       end
 
       def click_signin_tab
+        @browser.click "css=#step-sign-in-on"
+        @session.wait_for "css=#user_session_email"
       end
     end
 
@@ -26,13 +28,33 @@ module UiModel
         @session = selenuim_session
         @browser = selenuim_session.browser
       end
+
+      def visible?
+        @browser.visible? 'css=#small-drawer #sign-in'
+      end
+
+      def type_email email
+        @browser.type "css=#user_session_email", email
+      end
+
+      def type_password password
+        @browser.type "css=#user_session_password", password
+      end
+
+      def click_signin_button
+        @browser.click "css=#signin-form-submit-button"
+        @browser.wait_for_page_to_load "30000"
+      end
     end
 
     class JoinTab
-
       def initialize(selenuim_session)
         @session = selenuim_session
         @browser = selenuim_session.browser
+      end
+
+      def visible?
+        @browser.visible? 'css=#small-drawer #sign-up'
       end
 
       def type_full_user_name first_last_name
