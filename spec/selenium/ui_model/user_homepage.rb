@@ -7,7 +7,7 @@ module UiModel
       end
 
       def visible?
-        @browser.visible? 'css=#albums-index'
+        @browser.visible? 'css=body#albums-index.albums'
       end
 
       def number_of_albums number

@@ -54,18 +54,13 @@ describe "Facebook connector" do
 
 
     ui.wizard.add_photos_tab.click_folder "Medium Album"
-    puts " ma entered "
     ui.wizard.add_photos_tab.add_random_photos(1)
 
     ui.wizard.add_photos_tab.back_level_up
-    #in 'My Albums' now
-    puts " ma end "
   end
   
   it "adds the whole 'Small Album' with 3 photos" do
     ui.wizard.add_photos_tab.at_home?.should_not be_true
-
-    #add the whole 'Small Album'
     ui.wizard.add_photos_tab.add_all_folder "Small Album"
   end
 
@@ -79,12 +74,18 @@ describe "Facebook connector" do
   end
 
   it "closes wizard" do
+    ui.wizard.click_share_tab
     ui.wizard.click_done
     ui.wait_load
+  end
+
+  it "opens album list" do
     ui.toolbar.click_zz_logo
+    ui.wait_load
     # User_home_page.number_of_albums 2
 
-    #TODO Need to check via UserHomepage if the generated album @album_name is present
+    #TODO Need to check via UserHomepage if the generated album @album_name is present in album list
     ui.user_homepage.visible?.should be_true
   end
+
 end
