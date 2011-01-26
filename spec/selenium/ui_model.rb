@@ -1,5 +1,5 @@
 require "rubygems"
-require "test/spec"
+#require "test/spec"
 require "selenium"
 
 require "spec/selenium/ui_model/toolbar"
