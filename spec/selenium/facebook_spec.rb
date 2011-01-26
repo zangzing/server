@@ -41,18 +41,16 @@ describe "Facebook connector" do
     ui.wizard.add_photos_tab.visible?.should be_true
   end
 
-  it "adds one random photo from Facebook's 'Medium Album'" do
+  it "connects to Facebook, opens My Albums" do
     ui.wizard.add_photos_tab.at_home?.should be_true
 
     ui.wizard.add_photos_tab.click_folder "Facebook"
     ui.oauth_manager.login_to_facebook
 
     ui.wizard.add_photos_tab.click_folder "My Albums"
-    #@session.wait_for 'css=a:contains("My Albums")'
-    #@browser.click 'css=a:contains("My Albums")'
-    #@session.wait_for 'css=a:contains("Medium Album")'
+  end
 
-
+  it "adds one random photo from Facebook's 'Medium Album'" do
     ui.wizard.add_photos_tab.click_folder "Medium Album"
     ui.wizard.add_photos_tab.add_random_photos(1)
 
@@ -69,8 +67,8 @@ describe "Facebook connector" do
 
     ui.wizard.album_name_tab.visible?.should be_true
 
-    @album_name = "Facebook #{current_user[:stamp]}"
-    ui.wizard.album_name_tab.type_album_name @album_name
+    @@album_name = "Facebook #{current_user[:stamp]}"
+    ui.wizard.album_name_tab.type_album_name @@album_name
   end
 
   it "closes wizard" do
@@ -79,13 +77,19 @@ describe "Facebook connector" do
     ui.wait_load
   end
 
-  it "opens album list" do
+  it "checks if newly created album contains 4 photos" do
     ui.toolbar.click_zz_logo
     ui.wait_load
-    # User_home_page.number_of_albums 2
+    ui.user_homepage.inside_album_list?.should be_true
+    
+    albums = ui.user_homepage.get_album_list
+    albums.include?(@@album_name).should be_true
+    
+    ui.user_homepage.click_album @@album_name
+    ui.user_homepage.inside_album?.should be_true
 
-    #TODO Need to check via UserHomepage if the generated album @album_name is present in album list
-    ui.user_homepage.visible?.should be_true
+    photos = ui.user_homepage.get_photos_list
+    photos.count.should be_true
   end
 
 end

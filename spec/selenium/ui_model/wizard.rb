@@ -94,7 +94,7 @@ module UiModel
 
       def add_random_photos(amount = 1)
         @session.wait_for "css=#filechooser .photo"
-        total = @browser.get_xpath_count("//figure").to_i #//div[@class='photogrid-cell']
+        total = @browser.get_xpath_count("//figure").to_i
         attr = Array.new
         1.upto(total) { |i| attr[i]=@browser.get_attribute("xpath=(//figure)[#{i}]@onclick") }
         amount.times { @browser.click "//figure[@onclick=\"#{attr[rand(total)+1]}\"]" }
