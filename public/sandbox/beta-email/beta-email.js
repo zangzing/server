@@ -2,45 +2,30 @@ var beta_email = {
 
     register: function(email_address, referral_id, success, failure){
         var self = this;
-        var post_data = {email_address: email_address, referal_id: referral_id};
+        var post_data = {email_address: email_address, referral_id: referral_id};
+        var url = 'register_email.json'
 
-
-//        $.ajax({
-//          type: 'POST',
-//          url: url,
-//          data: post_data,
-//          success: function(json){
-//              self.on_success(json);
-//              success(json);
-//          },
-//          failure: function(){
-//              self.on_failure();
-//              failure();
-//          },
-//          dataType: 'json'
-//        });
-
-
-        //for testing, use timeout rather than ajax call
-        setTimeout(function(){
-           //this is the response from the server
-           var json = {referrer_id: 'asfasdfasdfasdf'}
-
-           self.on_success(json);
-           success();
-        }, 100);
-
-
+        $.ajax({
+          type: 'GET',  //todo: change to POST
+          url: url,
+          data: post_data,
+          success: function(json){
+              self.show_thank_you_dialog(json.referrer_id);
+              if(success !== undefined) success(json);
+          },
+          failure: function(){
+              self.show_error_dialog();
+              if(failure !== undefined) failure();
+          },
+          dataType: 'json'
+        });
     },
 
-    on_success: function(json){
+    show_thank_you_dialog: function(referrer_id){
         //set cookie to remember that use has signed up
         $.cookie('registered_for_beta', 'true');
 
-        //show thank you dialog
         var scrim = $('<div></div>');
-
-        //todo: move to css stylesheet
         scrim.css({
            position: 'absolute',
            top: 0,
@@ -53,11 +38,9 @@ var beta_email = {
         });
 
 
-        var dialog = $('<div>Thank you; referral id:  <span id="referrer_id"></span></div>'); //should load this from template
-
-        dialog.find('#referrer_id').html(json.referrer_id);
-
-        //todo: move to css stylesheet
+        //todo: should load this from template
+        var dialog = $('<div>Thank you; referral id:  <span id="referrer_id"></span><br>(click to close)</div>');
+        dialog.find('#referrer_id').html(referrer_id);
         dialog.css({
             position: 'absolute',
             top:100,
@@ -67,6 +50,9 @@ var beta_email = {
             'background-color': '#ffffff',
             'z-index':1000
         })
+        dialog.click(function(){
+            scrim.remove();
+        })
 
         scrim.append(dialog);
 
@@ -74,8 +60,9 @@ var beta_email = {
 
     },
 
-    on_failure: function(){
-        //show error dialog
+    show_error_dialog: function(){
+        //todo: need nice HTML error dialog
+        alert('there was an error');
     },
 
     already_registered: function(){
