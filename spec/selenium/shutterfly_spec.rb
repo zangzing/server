@@ -88,7 +88,7 @@ describe "Shutterfly connector" do
     ui.user_homepage.inside_album?.should be_true
 
     photos = ui.user_homepage.get_photos_list
-    photos.should == 21
+    photos.count.should == 21
   end
 
 end

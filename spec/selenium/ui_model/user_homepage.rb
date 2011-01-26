@@ -35,10 +35,10 @@ module UiModel
       def get_photos_list
         @session.wait_for "//div[@class='photogrid-container']/div[@class='photogrid-cell']"
         photo_count = @browser.get_xpath_count("//div[@class='photogrid-container']/div[@class='photogrid-cell']").to_i
-        #photos = []
-        #1.upto(photo_count) { |i| photos << @browser.get_text("xpath=(//div[contains(@class, 'photogrid-container')]//div[contains(@class, 'photo-caption')])[#{i}]").strip }
-        #photos
-        photo_count
+        photos = []
+        1.upto(photo_count) { |i| photos << @browser.get_text("xpath=(//div[contains(@class, 'photogrid-container')]//div[contains(@class, 'photo-caption')])[#{i}]").strip }
+        photos
+        #photo_count
       end
   end
 
