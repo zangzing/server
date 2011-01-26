@@ -29,7 +29,7 @@ module UiModel
     def wait_load
       @browser.wait_for_page_to_load "30000"
       #@browser.wait_for "xpath=//body[1]"
-      @browser.wait_for_ajax
+      #@browser.wait_for_ajax
     end
 
     def create_session!

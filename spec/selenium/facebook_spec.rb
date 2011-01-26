@@ -89,7 +89,7 @@ describe "Facebook connector" do
     ui.user_homepage.inside_album?.should be_true
 
     photos = ui.user_homepage.get_photos_list
-    photos.count.should be_true
+    photos.should == 4
   end
 
 end
