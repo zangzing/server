@@ -71,7 +71,7 @@ class PhotobucketConnector
   end
   
   def owner_info
-    @owner
+    @owner || {}
   end
   
   def refresh_owner_info!
