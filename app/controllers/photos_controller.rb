@@ -192,37 +192,39 @@ class PhotosController < ApplicationController
           render 'photos'
         end
       end
+    end
+  end
 
+  def json
+    @album = fetch_album
 
-      format.json do
+    if stale?(:last_modified => @album.photos_last_updated_at.utc, :etag => @album)
 
-        if stale?(:last_modified => @album.photos_last_updated_at.utc, :etag => @album)
+      cache_key = @album.id + '-' + @album.photos_last_updated_at.to_s + '.json'
+      cache_key = cache_key.gsub(' ', '_')
 
-          cache_key = @album.id + '-' + @album.photos_last_updated_at.to_s + '.json'
-          cache_key = cache_key.gsub(' ', '_')
+      logger.debug 'cache key: ' + cache_key
 
-          logger.debug 'cache key: ' + cache_key
+      json = Rails.cache.read(cache_key)
 
-          json = Rails.cache.read(cache_key)
+      if(json.nil?)
+        json = Photo.to_json_lite(@album.photos)
 
-          if(json.nil?)
-            json = Photo.to_json_lite(@album.photos)
+        #compress the content once before caching: save memory and save nginx from compressing every response
+        json = ActiveSupport::Gzip.compress(json)
 
-            #compress the content once before caching: save memory and save nginx from compressing every response
-            json = ActiveSupport::Gzip.compress(json)
-
-            Rails.cache.write(cache_key, json)
-            logger.debug 'caching photos.json'
-          else
-            logger.debug 'using cached photo.json'
-          end
-
-          response.headers['Content-Encoding'] = "gzip"
-          render :json => json
-        else
-          logger.debug 'etag match, sending 304'
-        end
+        Rails.cache.write(cache_key, json)
+        logger.debug 'caching photos/json'
+      else
+        logger.debug 'using cached photos/json'
       end
+
+      expires_in 1.year, :public => false
+      response.headers["Expires"] = CGI.rfc1123_date(Time.now + 1.year)
+      response.headers['Content-Encoding'] = "gzip"
+      render :json => json
+    else
+      logger.debug 'etag match, sending 304'
     end
   end
 
