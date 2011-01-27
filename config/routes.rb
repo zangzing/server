@@ -64,8 +64,8 @@ Server::Application.routes.draw do
   delete '/shares/:id'                   => 'shares#destroy',    :as => :delete_share
 
   #photos
+  get    '/albums/:album_id/photos.json' => 'photos#index_json',                :as => :album_photos_json
   get    '/albums/:album_id/photos'      => 'photos#index',                     :as => :album_photos
-  get    '/albums/:album_id/photos/json' => 'photos#json',                      :as => :album_photos_json
   post   '/albums/:album_id/photos'      => 'photos#create',                    :as => :create_album_photo
   get    '/albums/:album_id/slides_source.:format' => 'photos#slideshowbox_source',    :as => :slideshow_source
   get    '/photos/:id'                   => 'photos#show',                      :as => :photo
