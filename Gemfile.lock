@@ -63,6 +63,7 @@ GEM
       httparty (>= 0.5.2)
       oauth2 (>= 0.1.1)
     builder (2.1.2)
+    closure-compiler (1.0.0)
     configuration (1.2.0)
     crack (0.1.8)
     diff-lcs (1.1.2)
@@ -87,6 +88,9 @@ GEM
     hyper-graph (0.3.1)
       json
     i18n (0.5.0)
+    jammit (0.6.0)
+      closure-compiler (>= 0.1.0)
+      yui-compressor (>= 0.9.1)
     jeweler (1.5.2)
       bundler (~> 1.0.0)
       git (>= 1.2.5)
@@ -199,6 +203,7 @@ GEM
       rack-test (>= 0.5.3)
     will_paginate (3.0.pre2)
     xml-simple (1.0.12)
+    yui-compressor (0.9.3)
     zip (2.0.2)
 
 PLATFORMS
@@ -219,6 +224,7 @@ DEPENDENCIES
   gdata (= 1.1.1)
   hyper-graph (= 0.3.1)
   i18n
+  jammit
   launchy
   mechanize
   memcache-client
@@ -243,4 +249,5 @@ DEPENDENCIES
   vpim
   webrat
   will_paginate (= 3.0.pre2)
+  yui-compressor
   zip

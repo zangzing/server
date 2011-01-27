@@ -1,3 +1,8 @@
+/*!
+ * photo.js
+ *
+ * Copyright 2011, ZangZing LLC. All rights reserved.
+ */
 (function( $, undefined ) {
 
     $.widget( "ui.zz_photo", {

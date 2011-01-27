@@ -1,5 +1,11 @@
-/* Filechooser
- ----------------------------------------------------------------------------- */
+/*!
+ * filechooser.js
+ *
+ * Copyright 2011, ZangZing LLC. All rights reserved.
+ */
+
+
+
 var filechooser = {
 
     imageloader: null,

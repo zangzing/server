@@ -1,5 +1,8 @@
-/* Custom validators
- --------------------------------------------------------------------------- */
+/*!
+ * zz.validate.js
+ *
+ * Copyright 2011, ZangZing LLC. All rights reserved.
+ */
 
 jQuery.validator.addMethod(
         "regex",

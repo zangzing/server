@@ -1,5 +1,8 @@
-/* INITs
- --------------------------------------------------------------------------- */
+/*!
+ * zz.inits.js
+ *
+ * Copyright 2011, ZangZing LLC. All rights reserved.
+ */
 
 zz.init = {
 

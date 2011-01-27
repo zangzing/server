@@ -1,4 +1,9 @@
-//this is used in the main window
+/*!
+ * oauthmanager.js
+ *
+ * Copyright 2011, ZangZing LLC. All rights reserved.
+ */
+
 var oauthmanager = {
     callback : null,
     login: function(url, callback){

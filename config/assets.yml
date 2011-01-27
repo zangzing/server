@@ -1,0 +1,20 @@
+package_assets: on
+compress_assets: on
+embed_assets: off
+
+
+javascripts:
+  common:
+    - public/javascripts/lib/jquery.js
+    - public/javascripts/lib/jquery.ui.core.js
+    - public/javascripts/lib/jquery.ui.widget.js
+    - public/javascripts/lib/jquery.ui.mouse.js
+    - public/javascripts/lib/jquery.ui.position.js
+    - public/javascripts/lib/jquery.effects.core.js
+    - public/javascripts/lib/*.js
+    - public/javascripts/zz/*.js
+    - public/javascripts/zza/*.js
+
+stylesheets:
+  common:
+    - public/stylesheets/*.css

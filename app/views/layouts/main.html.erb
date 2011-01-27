@@ -25,7 +25,7 @@
     end %>
     <title><%=title%></title>
 
-    <%= stylesheet_link_tag :all %>
+    <%= include_stylesheets :common %>
 
     <link href="http://s3.amazonaws.com/getsatisfaction.com/feedback/feedback.css" rel="stylesheet" type="text/css" />
 
@@ -65,7 +65,7 @@
 
 
 
-    <%= javascript_include_tag :all, :recursive => true %>
+    <%= include_javascripts :common %>
 
     <script src='http://s3.amazonaws.com/getsatisfaction.com/feedback/feedback.js' type='text/javascript'></script>
     <script type="text/javascript" charset="utf-8">

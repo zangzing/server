@@ -1,3 +1,9 @@
+/*!
+ * pages.js
+ *
+ * Copyright 2011, ZangZing LLC. All rights reserved.
+ */
+
 var pages = {};
 
 pages.album_add_photos_tab = {

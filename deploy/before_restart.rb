@@ -1,6 +1,10 @@
 # This is an EngineYard deploy hook. 
 # It is executed after the whole deploy process is finished and the application is ready to be restarted
 
+#Use Jammit gem to package css and jacasctipt
+run "bundle exec jammit"
+
+
 # Symlink nginx conf files
 
 # Symlink Resque Files

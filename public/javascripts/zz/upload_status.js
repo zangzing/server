@@ -1,3 +1,9 @@
+/*!
+ * upload_status.js
+ *
+ * Copyright 2011, ZangZing LLC. All rights reserved.
+ */
+
 var upload_stats = {
 
     stats_for_album: function(album_id, photos_in_album, callback){

@@ -1,3 +1,9 @@
+/*!
+ * sharecontacts.js
+ *
+ * Copyright 2011, ZangZing LLC. All rights reserved.
+ */
+
 var sharecontacts = {
     setup : function(hasGoogleId, googleLastImport, hasYahooId, yahooLastImport, hasMsliveId, msliveLastImport, hasLocalId, localLastImport ) {
         logger.debug('in contacts setup')

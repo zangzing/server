@@ -1,3 +1,9 @@
+/*!
+ * zz.core.js
+ *
+ * Copyright 2011, ZangZing LLC. All rights reserved.
+ */
+
 
 var zz = {
 

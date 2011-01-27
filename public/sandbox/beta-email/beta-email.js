@@ -1,5 +1,27 @@
 var beta_email = {
 
+    init: function(){
+
+        var get_param = function( name )
+        {
+          name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+          var regexS = "[\\?&]"+name+"=([^&#]*)";
+          var regex = new RegExp( regexS );
+          var results = regex.exec( window.location.href );
+          if( results == null ){
+              return "";
+          }
+          else{
+            return results[1];
+          }
+        }
+
+        var referred_by = get_param('referred_by');
+        if(referred_by){
+            $.cookie('referred_by', referred_by, { expires: 100000, path: '/' /*,domain: 'zangzing.com'*/});
+        }
+    },
+    
     register: function(email_address, referral_id, success, failure){
         var self = this;
         var post_data = {email_address: email_address, referral_id: referral_id};
@@ -67,6 +89,14 @@ var beta_email = {
 
     already_registered: function(){
         return ($.cookie('registered_for_beta'));
+    },
+
+    current_user_referred_by: function(){
+        return ($.cookie('referred_by'));
     }
+
+
+
+
 
 }

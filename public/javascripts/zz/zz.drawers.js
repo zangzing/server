@@ -1,5 +1,9 @@
-/* Wizard Drawer objects 
- --------------------------------------------------------------------------- */
+/*!
+ * zz.drawers.js
+ *
+ * Copyright 2011, ZangZing LLC. All rights reserved.
+ */
+
 zz.drawers = {
     /* Create ***PERSONAL*** Album
      ------------------------------------------------------------------------- */
