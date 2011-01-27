@@ -31,21 +31,21 @@ zz.init = {
 
 
         $('#header #view-buttons #grid-view-button').click(function(){
-            document.location.href = '/albums/' + album_id + "/photos";
+            document.location.href = '/albums/' + zz.album_id + "/photos";
         });
 
         $('#header #view-buttons #picture-view-button').click(function(){
-            document.location.href = '/albums/' + album_id + "/photos?view=slideshow";
+            document.location.href = '/albums/' + zz.album_id + "/photos?view=slideshow";
 
         });
 
         $('#header #view-buttons #people-view-button').click(function(){
-            document.location.href = '/albums/' + album_id + "/people";
+            document.location.href = '/albums/' + zz.album_id + "/people";
 
         });
 
         $('#header #view-buttons #activities-view-button').click(function(){
-            document.location.href = '/albums/' + album_id + "/activities";
+            document.location.href = '/albums/' + zz.album_id + "/activities";
 
         });
 
@@ -80,7 +80,7 @@ zz.init = {
                 'background-color':'#000000',
                 opacity: 0
             }).appendTo('body').animate({opacity:1},500, function(){
-                document.location.href = '/albums/' + album_id + '/photos?view=movie&js=true'; //global variable set in _bottom_nav
+                document.location.href = '/albums/' + zz.album_id + '/photos?view=movie&js=true'; //global variable set in _bottom_nav
             });
 
 
@@ -244,7 +244,7 @@ zz.init = {
                     cellWidth: 180,
                     cellHeight: 180,
                     onClickPhoto: function(index, photo){
-                        document.location.href = "/albums/" + album_id +"/photos?view=slideshow#" + photo.id;
+                        document.location.href = "/albums/" + zz.album_id +"/photos?view=slideshow#" + photo.id;
                     },
                     scrollToPhoto: $.param.fragment()
 
@@ -268,7 +268,7 @@ zz.init = {
                     cellWidth: gridElement.width(),
                     cellHeight: gridElement.height(),
                     onClickPhoto: function(index, photo){
-                        document.location.href = "/albums/" + album_id +"/photos#" + photo.id;
+                        document.location.href = "/albums/" + zz.album_id +"/photos#" + photo.id;
                     },
                     singlePictureMode: true,
                     scrollToPhoto: $.param.fragment()
@@ -568,7 +568,7 @@ zz.init = {
                         cellWidth: 180,
                         cellHeight: 180,
                         onClickPhoto: function(index, photo){
-                            document.location.href = "/albums/" + album_id +"/photos?view=slideshow#" + photo.id;
+                            document.location.href = "/albums/" + zz.album_id +"/photos?view=slideshow#" + photo.id;
                         },
                         showThumbscroller: false
                     }).data().zz_photogrid;
