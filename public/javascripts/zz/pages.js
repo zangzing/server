@@ -69,7 +69,7 @@ pages.album_name_tab = {
             //setup album cover picker
             $.ajax({
                 dataType: 'json',
-                url: '/albums/' + zz.album_id + '/photos.json?' + zz.album_lastmod,
+                url: '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
                 success: function(json){
                     var selectedIndex=-1;
                     var currentId = $('#album_cover_photo').val();
@@ -129,7 +129,7 @@ pages.edit_album_tab = {
     init: function(callback){
         $.ajax({
             dataType: 'json',
-            url: '/albums/' + zz.album_id + '/photos.json?' + zz.album_lastmod,
+            url: '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
             success: function(json){
 
                 for(var i =0;i<json.length;i++){
@@ -570,7 +570,7 @@ pages.account_settings_profile_tab = {
 
         $.ajax({
             dataType: 'json',
-            url: '/albums/' + zz.album_id + '/photos.json?' + zz.album_lastmod,
+            url: '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
             success: function(json){
                 var selectedIndex=-1;
                 var currentId = $('#profile-photo-id').val();
@@ -613,7 +613,7 @@ pages.account_settings_profile_tab = {
         //refresh album cover picker
         $.ajax({
             dataType: 'json',
-            url: '/albums/' + zz.album_id + '/photos.json?' + zz.album_lastmod,
+            url: '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
             success: function(json){
                 var selectedIndex=-1;
                 var currentId = $('#profile-photo-id').val();

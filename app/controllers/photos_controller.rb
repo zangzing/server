@@ -195,7 +195,7 @@ class PhotosController < ApplicationController
     end
   end
 
-  def index_json
+  def photos_json
     @album = fetch_album
 
     if stale?(:last_modified => @album.photos_last_updated_at.utc, :etag => @album)
@@ -214,9 +214,9 @@ class PhotosController < ApplicationController
         json = ActiveSupport::Gzip.compress(json)
 
         Rails.cache.write(cache_key, json)
-        logger.debug 'caching photos.json'
+        logger.debug 'caching photos_json'
       else
-        logger.debug 'using cached photos.json'
+        logger.debug 'using cached photos_json'
       end
 
       expires_in 1.year, :public => false
