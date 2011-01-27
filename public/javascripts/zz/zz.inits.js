@@ -80,7 +80,7 @@ zz.init = {
                 'background-color':'#000000',
                 opacity: 0
             }).appendTo('body').animate({opacity:1},500, function(){
-                document.location.href = '/albums/' + album_id + '/photos?view=movie'; //global variable set in _bottom_nav
+                document.location.href = '/albums/' + album_id + '/photos?view=movie&js=true'; //global variable set in _bottom_nav
             });
 
 

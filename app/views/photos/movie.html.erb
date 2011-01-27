@@ -83,7 +83,7 @@
                     $.CustomSimpleFade.init({
 
                         appendToID:			'movie',
-                        source:				'slides_source.xml',
+                        source:				'photos.json?<%=@album.photos_last_updated_at.to_i%>',
                         width: $(window).width(),
                         height: $(window).height(),
 
@@ -101,7 +101,9 @@
                         exitButton:			true,
                         exitButtonURL:		'javascript:history.go(-1)',
 
-                        iconsURL:			'http://www.jumpeye.com/flo/customProjects/SimpleFadeCustom/js/icons/',
+                        iconsURL:			'http://www.jumpeye.com/flo/customProjects/SimpleFadeCustom/js/new/icons/',
+
+                        backButtonText:     'Back to Album',
 
                         loadOriginalImages: false,
 
