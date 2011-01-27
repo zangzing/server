@@ -56,7 +56,7 @@ var agent = {
         //fix agent port
         url = url.replace(/http:\/\/localhost:[^\/]*/,"http://localhost:" + agent.port);
 
-        if(url.indexOf('session=') === -1)
+        if(url.indexOf('session=') === -1 && typeof(zz.current_user_id) !== 'undefined')
         {
             if(url.indexOf('?') > -1){
                 url += '&';
@@ -65,7 +65,7 @@ var agent = {
                 url += '?';
             }
 
-            url += 'session=' + $.cookie('user_credentials') + '&user_id=' + user_id + '&callback=?';
+            url += 'session=' + $.cookie('user_credentials') + '&user_id=' + zz.current_user_id + '&callback=?';
         }
 
         return url;
@@ -78,10 +78,10 @@ var agent = {
         var url;
         var user_session = $.cookie("user_credentials");
         if (path.indexOf('?') == -1) {
-            url = "http://localhost:" + this.port + path + "?session=" + user_session + '&user_id=' + user_id +"&callback=?"
+            url = "http://localhost:" + this.port + path + "?session=" + user_session + '&user_id=' + zz.current_user_id +"&callback=?"
         }
         else {
-            url = "http://localhost:" + this.port + path + "&session=" + user_session + '&user_id=' + user_id +"&callback=?"
+            url = "http://localhost:" + this.port + path + "&session=" + user_session + '&user_id=' + zz.current_user_id +"&callback=?"
         }
 
 
