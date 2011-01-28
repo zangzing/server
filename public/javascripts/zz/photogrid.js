@@ -121,7 +121,8 @@
                     },
 
                     scrollContainer: self.element,
-                    lazyLoadThreshold: lazyLoadThreshold
+                    lazyLoadThreshold: lazyLoadThreshold,
+                    isUploading: photo.state !== 'ready'
                     
                 });
 

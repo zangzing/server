@@ -104,11 +104,26 @@
 }
 
 
+.photo-uploading-icon{
+    position: absolute;
+    bottom: -16px;
+    right: -16px;
+    display:none;
+    width:32px;
+    height:32px;
+    background-image: url("/images/photo/icon-uploading.png");
+    z-index:1000;
+}
+
 .photo-delete-button{
     position: absolute;
     top: -16px;
     right: -16px;
     display:none;
+    width:32px;
+    height:32px;
+    background-image: url("/images/photo/btn-delete-photo.png");
+
 }
 
 
@@ -130,7 +145,7 @@
     bottom:5px;
     left:5px;
     right:5px;
-    background-image: url("/images/bg-blk-75.png");
+    background-image: url("/images/photo/bg-blk-75.png");
     display:block;
     padding:5px;
     height:15px;
