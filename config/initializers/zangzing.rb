@@ -8,7 +8,7 @@ silence_warnings do #To avoid warning of overwriting constant
 
   # set rails asset id
   if Rails.env != 'development'
-    ENV["RAILS_ASSET_ID"] = zconfig.zangzing_version
+    ENV["RAILS_ASSET_ID"] = zconfig.zangzing_version.strip
   end
 
 
