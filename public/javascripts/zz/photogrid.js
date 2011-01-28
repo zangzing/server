@@ -104,6 +104,7 @@
                     maxHeight: Math.floor(self.options.cellHeight * .85),
                     allowDelete: self.options.allowDelete,
                     caption: photo.caption,
+                    aspectRatio: photo.aspect_ratio,
 
                     onDelete:function(){
                         return self.options.onDelete(index,photo);

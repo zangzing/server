@@ -19,7 +19,8 @@
             scrollContainer:null,
             lazyLoadThreshold:0,
             onClick:jQuery.noop,
-            photoId:null
+            photoId:null,
+            aspectRatio:0
         },
 
         _create: function() {
@@ -45,8 +46,16 @@
             self.captionElement = self.element.find('.photo-caption');
             self.deleteButtonElement = self.element.find('.photo-delete-button');
 
-            var initialWidth = Math.min(self.options.maxWidth, self.options.maxHeight);
-            var initialHeight = initialWidth;
+            if(self.options.aspectRatio){
+                var initialWidth = (self.options.aspectRatio >= 1) ? self.options.maxWidth : self.options.maxWidth * self.options.aspectRatio;
+                var initialHeight = (self.options.aspectRatio >= 1) ? self.options.maxHeight / self.options.aspectRatio : self.options.maxHeight;
+            }
+            else{
+                var initialWidth = Math.min(self.options.maxWidth, self.options.maxHeight);
+                var initialHeight = initialWidth;
+            }
+
+
 
 
             self.imageElement.css({
@@ -78,7 +87,7 @@
 
 
             var wrapperWidth = initialWidth + 10;
-            var wrapperHeight = initialWidth + 10;
+            var wrapperHeight = initialHeight + 10;
 
 
 
