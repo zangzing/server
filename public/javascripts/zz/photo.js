@@ -46,9 +46,17 @@
             self.captionElement = self.element.find('.photo-caption');
             self.deleteButtonElement = self.element.find('.photo-delete-button');
 
+
+
+
+
             if(self.options.aspectRatio){
-                var initialWidth = (self.options.aspectRatio >= 1) ? self.options.maxWidth : self.options.maxWidth * self.options.aspectRatio;
-                var initialHeight = (self.options.aspectRatio >= 1) ? self.options.maxHeight / self.options.aspectRatio : self.options.maxHeight;
+                var srcWidth =  1 * self.options.aspectRatio;
+                var srcHeight = 1;
+                var scale = Math.min( self.options.maxWidth / srcWidth, self.options.maxHeight / srcHeight)
+
+                var initialWidth = srcWidth * scale;
+                var initialHeight = srcHeight * scale;
             }
             else{
                 var initialWidth = Math.min(self.options.maxWidth, self.options.maxHeight);
