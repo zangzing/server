@@ -58,7 +58,7 @@
         <param name="movie" value="/swf/ZZSlideShow.swf">
         <param name="allowFullScreen" value="true">
         <param name="bgcolor" value="#000000">
-        <param name="flashvars" value="source=photos_json?<%=@album.photos_last_updated_at.to_i%>&autoHideControls=false&autoSlideShow=true&backgroundColor=000000&backgroundImage=&backgroundVisible=true&borderSize=5&borderColor=FFFFFF&controlsHideSpeed=2&exitButton=true&exitButtonURL=javascript:history.go(-1)&loadOriginalImages=false&overrideFullScreenChange=false&scaleBackground=true&scaleMode=scale&shadowColor=0x000000&slideshowDistance=5&slideShowSpeed=6&transitionSpeed=0.7&transitionType=slide&slideShowControls=true&preloadAfter=3&preloadBefore=1"/>
+        <param name="flashvars" value="source=photos_json?<%=@album.photos_last_updated_at.to_i%>&autoHideControls=false&autoSlideShow=true&backgroundColor=000000&backgroundImage=&backgroundVisible=true&borderSize=5&borderColor=FFFFFF&controlsHideSpeed=2&exitButton=true&exitButtonURL=<%=album_path @album%>&loadOriginalImages=false&overrideFullScreenChange=false&scaleBackground=true&scaleMode=scale&shadowColor=0x000000&slideshowDistance=5&slideShowSpeed=6&transitionSpeed=0.7&transitionType=slide&slideShowControls=true&preloadAfter=3&preloadBefore=1"/>
     </object>
     <div id="scrim"></div>
 
@@ -99,7 +99,7 @@
                         controlsHideSpeed:	2,
 
                         exitButton:			true,
-                        exitButtonURL:		'javascript:history.go(-1)',
+                        exitButtonURL:		'<%=album_path @album%>',
 
                         iconsURL:			'http://www.jumpeye.com/flo/customProjects/SimpleFadeCustom/js/new/icons/',
 
