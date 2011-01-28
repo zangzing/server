@@ -1,12 +1,11 @@
 
-
-
-
-function ZZA(id, useridentifier, isuser, usemixpanel)
+function ZZA(id, useridentifier, usemixpanel)
 {
 	this.id = id;
+	this.zzv_id = null;
+	
 	this.useridentifier = useridentifier;
-	if (isuser)
+	if (this.useridentifier)
 		this.usertype = 1;
 	else
 		this.usertype = 2;
@@ -20,7 +19,7 @@ function ZZA(id, useridentifier, isuser, usemixpanel)
 	this.maxevts = 10;
 	this.maxtime = 2500;
 	this.maxpushbytes = 2000;
-	this.zzaurl = 'http://zza.zangzing.com'			// for test mode: 'http://localhost:8000'   http://zza.zangzing.com
+	this.zzaurl = 'http://zza.zangzing.com'			// for test mode: 'http://localhost:8080'   http://zza.zangzing.com
 	this.pushed = 0;
 	this.pindex = 0;
 	
@@ -38,13 +37,32 @@ function ZZA(id, useridentifier, isuser, usemixpanel)
 	// public api
 	this.init = function()
 	{
+		this.zzv_id = this._readCookie('_zzv_id');
+		if (this.zzv_id == null) {
+			
+			var zdomain = 'zangzing.com';
+			var domain = null;
+			var l = location.host.lastIndexOf(zdomain);
+			if ((l != -1) && (l + zdomain.length == location.host.length))
+				domain = zdomain;		// share across all zangzing.com domains
+			
+			this.zzv_id = this.createUUID();
+			this._createCookie('_zzv_id', this.zzv_id, domain, 10950);
+		}
+		
 		var _this = this;
 		window.setTimeout(function() { _this._timer(); }, 5000);
 	}
 	
 	this.track_event = function(evt, xdata)
 	{
-		this._track(evt, this.useridentifier, this.usertype, xdata)
+		var userid;
+		if (this.usertype == 1)
+			userid = this.useridentifier;
+		else if (this.usertype == 2)
+			userid = this.zzv_id;
+			
+		this._track(evt, userid, this.usertype, xdata)
 	}
 	
 	this.track_event_from_user = function(evt, user, xdata)
@@ -255,5 +273,50 @@ function ZZA(id, useridentifier, isuser, usemixpanel)
 			default:
 				return 'null';
 		}
+	}
+	
+	this.createUUID = function() {
+	    // http://www.ietf.org/rfc/rfc4122.txt
+	    var s = [];
+	    var hexDigits = "0123456789ABCDEF";
+	    for (var i = 0; i < 32; i++) {
+	        s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+	    }
+	    s[12] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
+	    s[16] = hexDigits.substr((s[16] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
+
+	    var uuid = s.join("");
+	    return uuid;
+	}
+	
+	this._createCookie = function(name,value,domain,days) 
+	{
+		if (days) {
+			var date = new Date();
+			date.setTime(date.getTime()+(days*24*60*60*1000));
+			var expires = "; expires="+date.toGMTString();
+		}
+		else var expires = "";
+		var c = name+"="+value+expires+"; path=/";
+		if (domain != null)
+			c += '; domain=' + domain;
+		document.cookie = c;
+	}
+
+	this._readCookie = function(name)
+	{
+		var nameEQ = name + "=";
+		var ca = document.cookie.split(';');
+		for(var i=0;i < ca.length;i++) {
+			var c = ca[i];
+			while (c.charAt(0)==' ') c = c.substring(1,c.length);
+			if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+		}
+		return null;
+	}
+
+	this._eraseCookie = function(name)
+	{
+		createCookie(name,"",-1);
 	}
 }
