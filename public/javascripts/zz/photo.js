@@ -21,7 +21,8 @@
             onClick:jQuery.noop,
             photoId:null,
             aspectRatio:0,
-            isUploading:false
+            isUploading:false,
+            isError:false
         },
 
         _create: function() {
@@ -38,6 +39,7 @@
             html += '<img class="photo-image" src="/images/photo_placeholder.png">';
             html += '<div class="photo-delete-button"></div>';
             html += '<div class="photo-uploading-icon"></div>';
+            html += '<div class="photo-error-icon"></div>';
             html += '<div class="photo-caption">' + self.options.caption +'</div>';
             html += '</div>';
 
@@ -48,6 +50,7 @@
             self.captionElement = self.element.find('.photo-caption');
             self.deleteButtonElement = self.element.find('.photo-delete-button');
             self.uploadingElement = self.element.find('.photo-uploading-icon');
+            self.errorElement = self.element.find('.photo-error-icon');
 
 
 
@@ -113,8 +116,14 @@
 
 
             //uploading glyph
-            if(self.options.isUploading){
+            if(self.options.isUploading && !self.options.isError){
                 self.uploadingElement.show();
+            }
+
+
+            //error glyph
+            if(self.options.isError){
+                self.errorElement.show();
             }
 
 

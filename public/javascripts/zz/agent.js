@@ -40,6 +40,9 @@ var agent = {
     buildAgentUrl: function(path){
         var url = '';
 
+        if(! path){
+            return path;
+        }
 
         if(! agent.isAgentUrl(path)){
             if((path.indexOf('http://')!== -1) || (path.indexOf('https://')!== -1)){

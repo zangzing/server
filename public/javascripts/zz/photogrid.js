@@ -122,8 +122,9 @@
 
                     scrollContainer: self.element,
                     lazyLoadThreshold: lazyLoadThreshold,
-                    isUploading: photo.state !== 'ready'
-                    
+                    isUploading: photo.state !== 'ready',
+                    isError: photo.state === 'error'
+
                 });
 
 
