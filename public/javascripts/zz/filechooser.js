@@ -21,7 +21,7 @@ var filechooser = {
             var error_handler = params['error'];
 
             if (agent.isAgentUrl(url)) {
-                url = agent.buildAgentUrl(url);
+                url = agent.checkAddCredentialsToUrl(url);
                 $.jsonp({
                     url: url,
                     success: function(json) {
@@ -486,11 +486,7 @@ var filechooser = {
                 html += children[i].name;
                 html += '</li>';
 
-                if (agent.isAgentUrl(children[i].thumb_url)) {
-                    filechooser.imageloader.add(img_id, agent.buildAgentUrl(children[i].thumb_url));
-                } else {
-                    filechooser.imageloader.add(img_id, children[i].thumb_url);
-                }
+                filechooser.imageloader.add(img_id, agent.checkAddCredentialsToUrl(children[i].thumb_url));
             }
         }
 
@@ -540,9 +536,7 @@ var filechooser = {
 
             var image_url = children[i].screen_url;
 
-            if (agent.isAgentUrl(image_url)) {
-                image_url = agent.buildAgentUrl(image_url);
-            }
+            image_url = agent.checkAddCredentialsToUrl(image_url);
 
             html += '<img class="large-photo" id="' + img_id + '" src="'+ image_url +'" '+ grid_view_handler +'>';
 
@@ -777,10 +771,8 @@ var tray = {
             var id = photo.id;
             var src = photo.thumb_url;
 
-            if(agent.isAgentUrl(src)){
-               src = agent.buildAgentUrl(src); 
-            }
-            
+            src = agent.checkAddCredentialsToUrl(src); 
+
             return {id:id, src:src};
         });
 

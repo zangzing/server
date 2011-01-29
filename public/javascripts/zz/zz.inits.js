@@ -232,8 +232,8 @@ zz.init = {
             if(view === 'grid'){
                 for(var i =0;i<json.length;i++){
                     var photo = json[i];
-                    photo.previewSrc = agent.buildAgentUrl(photo.stamp_url);
-                    photo.src =       agent.buildAgentUrl(photo.thumb_url);
+                    photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
+                    photo.src =       agent.checkAddCredentialsToUrl(photo.thumb_url);
                 }
 
                 var grid = gridElement.zz_photogrid({
@@ -256,8 +256,8 @@ zz.init = {
             else{
                 for(var i =0;i<json.length;i++){
                     var photo = json[i];
-                    photo.previewSrc = agent.buildAgentUrl(photo.stamp_url);
-                    photo.src =       agent.buildAgentUrl(photo.screen_url);
+                    photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
+                    photo.src =       agent.checkAddCredentialsToUrl(photo.screen_url);
                 }
 
                 var grid = gridElement.zz_photogrid({
@@ -529,8 +529,8 @@ zz.init = {
 
                 for(var i =0;i<json.length;i++){
                     var photo = json[i];
-                    photo.previewSrc = agent.buildAgentUrl(photo.stamp_url);
-                    photo.src =       agent.buildAgentUrl(photo.thumb_url);
+                    photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
+                    photo.src =       agent.checkAddCredentialsToUrl(photo.thumb_url);
                 }
 
                 
