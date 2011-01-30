@@ -15,8 +15,6 @@ javascripts:
     - public/javascripts/zz/*.js
   zz_oauthmanager:
     - public/javascripts/zz-oauthmanager/oauthmanager.js
-  zza:
-    - public/javascripts/zza/*.js
   swf:
     - public/javascripts/swf/*.js
 
