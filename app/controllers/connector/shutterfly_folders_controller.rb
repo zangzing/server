@@ -11,8 +11,8 @@ class Connector::ShutterflyFoldersController < Connector::ShutterflyController
         :add_url  => shutterfly_folder_action_path(:sf_album_id => /albumid\/([0-9a-z]+)/.match(f[:id].first)[1], :action => :import)
       }
     }
-
-    render :json => folders.to_json
+    expires_in 10.minutes, :public => false
+    render :json => JSON.fast_generate(folders)
   end
 
   def import
