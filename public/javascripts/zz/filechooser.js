@@ -724,7 +724,7 @@ var tray = {
     reload : function() {
         $.ajax({
             dataType: 'json',
-            url: '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force cache miss
+            url: '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
             success: function(photos){
                 tray.photos = photos;
                 tray.widget.setPhotos(tray.map_photos(tray.photos));
