@@ -2,7 +2,7 @@ require 'spec/selenium/ui_model'
 require 'spec/selenium/uimodel_helper'
 require 'spec/selenium/connector_shared'
 
-describe "Picasa Web connector" do
+describe "Photobucket connector" do
   include UimodelHelper
   include ConnectorShared
 
@@ -17,21 +17,25 @@ describe "Picasa Web connector" do
     create_new_album(:group)
   end
 
-  it "connects to Picasa Web" do
-    connect_to_service(:picasa, 'Picasa Web')
+  it "connects to Photobucket" do
+    connect_to_service(:photobucket, 'Photobucket')
   end
 
-  it "adds one random photo from Picasa's 'MediumAlbum'" do
-    ui.wizard.add_photos_tab.click_folder "MediumAlbum"
+  it "adds 2 random photos from Photobucket's root" do
+    import_random_photos(2, false)
+  end
+
+  it "adds one random photo from Photobucket's 'Medium Album'" do
+    ui.wizard.add_photos_tab.click_folder "Medium Album"
     import_random_photos(1)
   end
   
-  it "adds the whole 'SmallAlbum' with 20 photos" do
-    import_folder "SmallAlbum"
+  it "adds the whole 'Small Album' with 18 photos" do
+    import_folder "Small Album"
   end
 
   it "gives a name to the album" do
-    @@album_name = "PicasaWeb #{current_user[:stamp]}"
+    @@album_name = "Photobucket #{current_user[:stamp]}"
     set_album_name @@album_name
   end
 

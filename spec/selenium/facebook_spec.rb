@@ -1,94 +1,47 @@
 require 'spec/selenium/ui_model'
 require 'spec/selenium/uimodel_helper'
+require 'spec/selenium/connector_shared'
 
 describe "Facebook connector" do
   include UimodelHelper
+  include ConnectorShared
 
-  before(:all) do
-    @browser_session = UiModel::SeleniumSession.new
-    @browser_session.create_session!
-
-    ui.open_site!
-  end
-
-  after(:all) do
-    @browser_session.close_session!
-  end
+  before(:all) { begin_session! }
+  after(:all) { end_session! }
 
   it "joins as new user" do
-    ui.toolbar.open_sign_in_drawer
-
-    ui.toolbar.signin_drawer.click_join_tab
-    
-    ui.toolbar.signin_drawer.join_tab.visible?.should be_true
-
-    ui.toolbar.signin_drawer.join_tab.type_full_user_name current_user[:full_name]
-    ui.toolbar.signin_drawer.join_tab.type_username current_user[:username]
-    ui.toolbar.signin_drawer.join_tab.type_email current_user[:email]
-    ui.toolbar.signin_drawer.join_tab.type_password current_user[:password]
-  	ui.toolbar.signin_drawer.join_tab.click_join_button
-
-    ui.toolbar.signed_in_as?(current_user[:username]).should be_true
+    join_as_new_user
   end
 
   it "creates a new group album" do
-    ui.toolbar.click_create_album
-
-    ui.wizard.album_type_tab.visible?.should be_true
-
-    ui.wizard.album_type_tab.click_group_album
-
-    ui.wizard.add_photos_tab.visible?.should be_true
+    create_new_album(:group)
   end
 
-  it "connects to Facebook, opens My Albums" do
-    ui.wizard.add_photos_tab.at_home?.should be_true
-
-    ui.wizard.add_photos_tab.click_folder "Facebook"
-    ui.oauth_manager.login_to_facebook
-
+  it "connects to Facebook" do
+    connect_to_service(:facebook, 'Facebook')
     ui.wizard.add_photos_tab.click_folder "My Albums"
   end
 
   it "adds one random photo from Facebook's 'Medium Album'" do
     ui.wizard.add_photos_tab.click_folder "Medium Album"
-    ui.wizard.add_photos_tab.add_random_photos(1)
-
-    ui.wizard.add_photos_tab.back_level_up
+    import_random_photos(1)
   end
   
   it "adds the whole 'Small Album' with 3 photos" do
-    ui.wizard.add_photos_tab.at_home?.should_not be_true
-    ui.wizard.add_photos_tab.add_all_folder "Small Album"
+    import_folder "Small Album"
   end
 
   it "gives a name to the album" do
-    ui.wizard.click_name_tab
-
-    ui.wizard.album_name_tab.visible?.should be_true
-
     @@album_name = "Facebook #{current_user[:stamp]}"
-    ui.wizard.album_name_tab.type_album_name @@album_name
+    set_album_name @@album_name
   end
 
   it "closes wizard" do
-    ui.wizard.click_share_tab
-    ui.wizard.click_done
-    ui.wait_load
+    close_wizard
   end
 
   it "checks if newly created album contains 4 photos" do
-    ui.toolbar.click_zz_logo
-    ui.wait_load
-    ui.user_homepage.inside_album_list?.should be_true
-    
-    albums = ui.user_homepage.get_album_list
-    albums.include?(@@album_name).should be_true
-    
-    ui.user_homepage.click_album @@album_name
-    ui.user_homepage.inside_album?.should be_true
-
-    photos = ui.user_homepage.get_photos_list
+    photos = get_photos_from_added_album(@@album_name)
     photos.count.should == 4
   end
 
