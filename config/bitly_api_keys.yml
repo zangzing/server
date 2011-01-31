@@ -1,2 +1,29 @@
-:username: zangzing
-:api_key: R_c4a59a634afe6b4e7320b1b30069daa0
+common: &common
+  :username: zangzing
+  :api_key: R_c4a59a634afe6b4e7320b1b30069daa0
+
+development:
+  <<: *common
+
+perftest:
+  <<: *common
+
+test:
+  <<: *common
+
+eydevelopment:
+  <<: *common
+
+eysandbox:
+  <<: *common
+
+
+eytest:
+  <<: *common
+
+
+
+production:
+  <<: *common
+
+

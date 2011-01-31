@@ -1,0 +1,26 @@
+common: &common
+  :api_key: 4a3e34b26fe61663e87388b2274aa1a6-us2
+
+development:
+  <<: *common
+
+perftest:
+  <<: *common
+
+test:
+  <<: *common
+
+eydevelopment:
+  <<: *common
+
+eysandbox:
+  <<: *common
+
+
+eytest:
+  <<: *common
+
+
+
+production:
+  <<: *common

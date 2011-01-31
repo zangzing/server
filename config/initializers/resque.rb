@@ -25,6 +25,6 @@ if Server::Application.config.http_auth_credentials
   end
 end
 
-msg = "=> Resque options loaded. redis host is: "+  resque_config[Rails.env]
+msg = "=> Resque options loaded."
 Rails.logger.info msg
 puts msg

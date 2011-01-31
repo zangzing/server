@@ -51,6 +51,15 @@ silence_warnings do #To avoid warning of overwriting constant
     msg << "      Album Email Host            : " + zconfig.album_email_host
     msg << "      Source Version (from git)   : " + zconfig.zangzing_version
   end
+
+  #Initialize MailChimp
+  begin
+    ZZ::MailChimp.load_setup()
+    msg << "      MailChimp Status            : " + ZZ::MailChimp.ping()
+  rescue Exception => e
+    msg << "      MailChimp Status            :  ERROR ERROR - " + e.message
+  end
+
   msg = msg.flatten.compact.join("\n")
   puts msg
   Rails.logger.info msg
