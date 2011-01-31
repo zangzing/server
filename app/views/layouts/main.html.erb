@@ -29,7 +29,7 @@
 
     <link href="http://s3.amazonaws.com/getsatisfaction.com/feedback/feedback.css" rel="stylesheet" type="text/css" />
 
-    <link rel="shortcut icon" href="favico.ico"/>
+    <link rel="shortcut icon" href="/favico.ico"/>
 
 
 <%  # Add in template based style tags by defining this in the template -%>
@@ -64,11 +64,10 @@
     </div>
 
 
-    <%= include_javascripts :jquery %>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
     <%= include_javascripts :jquery_lib %>
     <%= include_javascripts :zz %>
     <%= include_javascripts :zz_oauthmanager %>
-    <%= include_javascripts :zza %>
 
     <script src='http://s3.amazonaws.com/getsatisfaction.com/feedback/feedback.js' type='text/javascript'></script>
     <script type="text/javascript" charset="utf-8">

@@ -278,6 +278,13 @@ class Photo < ActiveRecord::Base
     end
   end
 
+  def aspect_ratio
+    if(self.width && self.length && self.width != 0 && self.length != 0)
+      return self.width.to_f / self.length.to_f
+    else
+      return 0
+    end
+  end
 
 
 
@@ -344,7 +351,7 @@ class Photo < ActiveRecord::Base
 #      end
 
 
-      json= photos.to_json(:only =>[:id, :caption, :state, :source_guid, :upload_batch_id, :user_id], :methods => [:stamp_url, :thumb_url, :screen_url])
+      json= photos.to_json(:only =>[:id, :caption, :state, :source_guid, :upload_batch_id, :user_id], :methods => [:aspect_ratio, :stamp_url, :thumb_url, :screen_url])
 
 
       return json

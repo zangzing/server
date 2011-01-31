@@ -69,7 +69,7 @@ pages.album_name_tab = {
             //setup album cover picker
             $.ajax({
                 dataType: 'json',
-                url: '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
+                url: '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
                 success: function(json){
                     var selectedIndex=-1;
                     var currentId = $('#album_cover_photo').val();
@@ -82,9 +82,7 @@ pages.album_name_tab = {
                         var src = element.thumb_url;
 
                         
-                        if (agent.isAgentUrl(src)){
-                            src = agent.buildAgentUrl(src);
-                        }
+                        src = agent.checkAddCredentialsToUrl(src);
 
                         return {id:id, src:src};
                     });
@@ -134,8 +132,8 @@ pages.edit_album_tab = {
 
                 for(var i =0;i<json.length;i++){
                     var photo = json[i];
-                    photo.previewSrc = agent.buildAgentUrl(photo.stamp_url);
-                    photo.src =       agent.buildAgentUrl(photo.thumb_url);
+                    photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
+                    photo.src =       agent.checkAddCredentialsToUrl(photo.thumb_url);
                 }
 
 
@@ -583,9 +581,7 @@ pages.account_settings_profile_tab = {
                     var src = element.thumb_url;
 
                     
-                    if (agent.isAgentUrl(src)){
-                        src = agent.buildAgentUrl(src);
-                    }
+                    src = agent.checkAddCredentialsToUrl(src);
 
                     return {id:id, src:src};
                 });
@@ -626,9 +622,7 @@ pages.account_settings_profile_tab = {
                     var src = element.thumb_url;
 
                     
-                    if (agent.isAgentUrl(src)){
-                        src = agent.buildAgentUrl(src);
-                    }
+                    src = agent.checkAddCredentialsToUrl(src);
 
                     return {id:id, src:src};
                 });

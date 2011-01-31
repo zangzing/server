@@ -229,13 +229,13 @@ class PhotosController < ApplicationController
   end
 
 
-  def slideshowbox_source
-    @album = fetch_album
-    @photos = @album.photos
-    respond_to do |format|
-      format.xml
-    end
-  end
+#  def slideshowbox_source
+#    @album = fetch_album
+#    @photos = @album.photos
+#    respond_to do |format|
+#      format.xml
+#    end
+#  end
 
 
 #

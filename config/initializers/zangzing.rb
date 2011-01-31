@@ -5,6 +5,13 @@ silence_warnings do #To avoid warning of overwriting constant
   zconfig = Server::Application.config
   zconfig.zangzing_version = `#{git_cmd} describe` || 'UNKNOWN'
 
+
+  # set rails asset id
+  if Rails.env != 'development'
+    ENV["RAILS_ASSET_ID"] = zconfig.zangzing_version.strip
+  end
+
+
   zz_deploy_environment = nil
 
   # GET AND SET ENVIRONMENT

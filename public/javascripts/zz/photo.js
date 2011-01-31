@@ -19,7 +19,10 @@
             scrollContainer:null,
             lazyLoadThreshold:0,
             onClick:jQuery.noop,
-            photoId:null
+            photoId:null,
+            aspectRatio:0,
+            isUploading:false,
+            isError:false
         },
 
         _create: function() {
@@ -34,7 +37,9 @@
 
             html += '<div class="photo-border">'
             html += '<img class="photo-image" src="/images/photo_placeholder.png">';
-            html += '<img class="photo-delete-button" src="/images/btn-delete-photo.png">';
+            html += '<div class="photo-delete-button"></div>';
+            html += '<div class="photo-uploading-icon"></div>';
+            html += '<div class="photo-error-icon"></div>';
             html += '<div class="photo-caption">' + self.options.caption +'</div>';
             html += '</div>';
 
@@ -44,9 +49,25 @@
             self.imageElement = self.element.find('.photo-image');
             self.captionElement = self.element.find('.photo-caption');
             self.deleteButtonElement = self.element.find('.photo-delete-button');
+            self.uploadingElement = self.element.find('.photo-uploading-icon');
+            self.errorElement = self.element.find('.photo-error-icon');
 
-            var initialWidth = Math.min(self.options.maxWidth, self.options.maxHeight);
-            var initialHeight = initialWidth;
+
+
+
+
+            if(self.options.aspectRatio){
+                var srcWidth =  1 * self.options.aspectRatio;
+                var srcHeight = 1;
+                var scale = Math.min( self.options.maxWidth / srcWidth, self.options.maxHeight / srcHeight)
+
+                var initialWidth = srcWidth * scale;
+                var initialHeight = srcHeight * scale;
+            }
+            else{
+                var initialWidth = Math.min(self.options.maxWidth, self.options.maxHeight);
+                var initialHeight = initialWidth;
+            }
 
 
             self.imageElement.css({
@@ -78,7 +99,7 @@
 
 
             var wrapperWidth = initialWidth + 10;
-            var wrapperHeight = initialWidth + 10;
+            var wrapperHeight = initialHeight + 10;
 
 
 
@@ -93,29 +114,18 @@
 
 
 
-/*
-            //bind lazy loader to scroll container
-            //todo: may want to have delegate handle the timer so we don't have lots and lots of timers running (and scroll event handlers)
-            self.imageLoaded = false;
-            if(self.options.scrollContainer){
-                var timer = null;
-                $(self.options.scrollContainer).scroll(function(){
-                    if(!self.imageLoaded){
-                        if(timer){
-                            clearTimeout(timer);
-                        }
-                        if(self._inLazyLoadRegion()){
-                            timer = setTimeout(function(){
-                                self._loadImage();
-                            },100);
-                        }
-                    }
-                });
-            }
-
-*/
 
             //uploading glyph
+            if(self.options.isUploading && !self.options.isError){
+                self.uploadingElement.show();
+            }
+
+
+            //error glyph
+            if(self.options.isError){
+                self.errorElement.show();
+            }
+
 
             //delete
             if(self.options.allowDelete){

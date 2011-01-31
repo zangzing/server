@@ -80,7 +80,7 @@ zz.init = {
                 'background-color':'#000000',
                 opacity: 0
             }).appendTo('body').animate({opacity:1},500, function(){
-                document.location.href = '/albums/' + zz.album_id + '/photos?view=movie&js=true'; //global variable set in _bottom_nav
+                document.location.href = '/albums/' + zz.album_id + '/photos?view=movie'; //global variable set in _bottom_nav
             });
 
 
@@ -232,8 +232,8 @@ zz.init = {
             if(view === 'grid'){
                 for(var i =0;i<json.length;i++){
                     var photo = json[i];
-                    photo.previewSrc = agent.buildAgentUrl(photo.stamp_url);
-                    photo.src =       agent.buildAgentUrl(photo.thumb_url);
+                    photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
+                    photo.src =       agent.checkAddCredentialsToUrl(photo.thumb_url);
                 }
 
                 var grid = gridElement.zz_photogrid({
@@ -256,8 +256,8 @@ zz.init = {
             else{
                 for(var i =0;i<json.length;i++){
                     var photo = json[i];
-                    photo.previewSrc = agent.buildAgentUrl(photo.stamp_url);
-                    photo.src =       agent.buildAgentUrl(photo.screen_url);
+                    photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
+                    photo.src =       agent.checkAddCredentialsToUrl(photo.screen_url);
                 }
 
                 var grid = gridElement.zz_photogrid({
@@ -529,8 +529,8 @@ zz.init = {
 
                 for(var i =0;i<json.length;i++){
                     var photo = json[i];
-                    photo.previewSrc = agent.buildAgentUrl(photo.stamp_url);
-                    photo.src =       agent.buildAgentUrl(photo.thumb_url);
+                    photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
+                    photo.src =       agent.checkAddCredentialsToUrl(photo.thumb_url);
                 }
 
                 
