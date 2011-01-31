@@ -9,6 +9,8 @@ require "spec/selenium/ui_model/wizard"
 require "spec/selenium/ui_model/oauth_manager"
 
 module UiModel
+  ZZ_HOST = ENV['ZZ_HOST'] || 'zzadmin:sharezzphotos@share1001photos.zangzing.com'
+
   TEST_USER = {
     :full_name => 'Selenium AutoTest',
     :username => 'selenium_user',
@@ -38,7 +40,7 @@ module UiModel
         :port => 4444,
       #	:browser => "*googlechrome", #in chrome does not work ssl
         :browser => "*firefox",
-        :url => "http://zzadmin:sharezzphotos@share1001photos.zangzing.com/",
+        :url => "http://#{ZZ_HOST}/",
         :timeout_in_second => 60,
         :javascript_framework => :jquery
       )
