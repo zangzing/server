@@ -27,6 +27,7 @@ describe "Photobucket connector" do
 
   it "adds one random photo from Photobucket's 'Medium Album'" do
     ui.wizard.add_photos_tab.click_folder "Medium Album"
+    ui.browser.wait_for_ajax
     import_random_photos(1)
   end
   
