@@ -15,6 +15,7 @@ module UiModel
         @browser.type "css=#pass", "share1001photos"
         @browser.click "css=input[name=login]"
         @browser.select_window "null" #select the main window
+        @browser.wait_for_ajax
       end
 
       def login_to_shutterfly
@@ -30,7 +31,7 @@ module UiModel
         @browser.type "css=#password", "share1001"
         @browser.click "css=#signInButton"
         @browser.select_window "null" #select the main window
-        #@session.wait_for 'css=a:contains("Medium Album")'
+        @browser.wait_for_ajax
       end
 
 
@@ -43,7 +44,7 @@ module UiModel
         @browser.type "password", "ijertyewij"
         @browser.click "commit"
         @browser.select_window "null" #select the main window
-        #@session.wait_for 'css=a:contains("Medium Album")'
+        @browser.wait_for_ajax
       end
 
 
@@ -56,7 +57,7 @@ module UiModel
         @browser.type "Password", "share1001photos"
         @browser.click "//input[@value='' and @type='image']"
         @browser.select_window "null" #select the main window
-        #@session.wait_for 'css=a:contains("Medium Album")'
+        @browser.wait_for_ajax
       end
 
 
@@ -69,7 +70,7 @@ module UiModel
         @browser.type "css=#passwd", "clev-vid-arch-ab-a"
         @browser.click ".save"
         @browser.select_window "null" #select the main window
-        #@session.wait_for 'css=a:contains("Medium Album")'
+        @browser.wait_for_ajax
       end
 
 
@@ -85,7 +86,7 @@ module UiModel
         @session.wait_for 'css=input#allow'
         @browser.click 'css=input#allow'
         @browser.select_window "null" #select the main window
-        #@session.wait_for 'css=a:contains("MediumAlbum")'
+        @browser.wait_for_ajax
       end
 
 
@@ -98,7 +99,7 @@ module UiModel
         @browser.type "password", "share1001photos"
         @browser.click "login"
         @browser.select_window "null" #select the main window
-        #@session.wait_for 'css=a:contains("Medium Album")'
+        @browser.wait_for_ajax
       end
 
   end
