@@ -63,7 +63,7 @@ class KodakConnector
   end
   
   def response_as_file(url)
-    RemoteFile.new(url, Dir::tmpdir, compose_request_header)
+    RemoteFile.new(url, PhotoGenHelper.photo_upload_dir, compose_request_header)
   end
 
   #Static stuff

@@ -89,8 +89,9 @@ class PhotosController < ApplicationController
       begin
         @photo = Photo.find(params[:id])
         @album = @photo.album
-        fast_local_image = {"fast_local_image" => attachments[0]} # extract only the first one
-        if @photo.update_attributes(fast_local_image)
+        fast_local_image = attachments[0] # extract only the first one
+        @photo.file_to_upload = fast_local_image['filepath']
+        if @photo.save
           render :json => @photo.to_json(:only =>[:id, :agent_id, :state]), :status => 200 and return
         else
           render :json => @photo.errors, :status=>400

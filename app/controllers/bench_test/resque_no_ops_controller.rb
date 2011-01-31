@@ -93,8 +93,8 @@ class BenchTest::ResqueNoOpsController < BenchTest::BenchTestsController
     make_noop data, "stop", 0
   end
 
-  def make_noop data, command, iterations
-    ZZ::Async::TestNoop.enqueue data.id, command, iterations
+  def make_noop data, command, iteration
+    ZZ::Async::TestNoop.enqueue data.id, command, iteration
   end
 
 end

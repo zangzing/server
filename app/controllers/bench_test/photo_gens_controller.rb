@@ -35,7 +35,7 @@ class BenchTest::PhotoGensController < BenchTest::BenchTestsController
         last)
       if photo
         utime = photo.image_updated_at
-        if utime
+        if utime && (photo.ready? || photo.error?)
           @bench_test_photo_gen.stop = utime
 
           # since this is last photo gather good/bad stats
@@ -198,7 +198,7 @@ class BenchTest::PhotoGensController < BenchTest::BenchTestsController
       last_photo = nil
       current_batch = UploadBatch.get_current( user.id, album.id )
       attachments.each do |fast_local_image|
-        photo = Photo.create(
+        photo = Photo.new(
                 :user_id => user.id,
                 :album_id => album.id,
                 :upload_batch_id => current_batch.id,
@@ -206,7 +206,7 @@ class BenchTest::PhotoGensController < BenchTest::BenchTestsController
                 #create random uuid for this photo
                 :source_guid => "perftest:"+UUIDTools::UUID.random_create.to_s)
         # use the passed in temp file to attach to the photo
-        photo.fast_local_image = fast_local_image
+        photo.file_to_upload = fast_local_image['filepath']
         photo.save
         last_photo = photo
       end

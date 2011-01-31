@@ -31,10 +31,10 @@ module ZZ
       #The stack is a pile of urls with the cover at the end.
       stack = []
       album.photos.each do |p|   # choose a push photos (which are not the cover )into stack
-        stack << p.thumb_url unless p.id == cover.id
+        stack << p.stamp_url unless p.id == cover.id
         break if stack.length >= 2
       end
-      stack<< cover.thumb_url # push the cover onto the stack last
+      stack<< cover.stamp_url # push the cover onto the stack last
       create( stack ) #Build picon and return it
     end
 
@@ -66,9 +66,9 @@ module ZZ
         parameters << File.expand_path(dst.path)
         parameters = parameters.flatten.compact.join(" ").strip.squeeze(" ")
 
-        Paperclip.run("convert", parameters)
-      rescue Paperclip::PaperclipCommandLineError => e
-        raise Paperclip::PaperclipError, "There was an error building the picon "+ e
+        ZZ::CommandLineRunner.run("convert", parameters)
+      rescue ZZ::CommandLineException => e
+        raise e, "There was an error building the picon: "+ e.message
       end
       dst
     end

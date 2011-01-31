@@ -15,7 +15,12 @@ common: &default_settings
   # account.  This key binds your Agent's data to your account in the
   # New Relic RPM service.
   license_key: 'bf6b706d8509e0525065bd8b3141c697dfc861f1'
-  
+
+  # disabling rpm_contrib hook for new relic
+  # since we want to control it directly ourselves to
+  # support non forking model as well
+  disable_resque: true
+
   # Agent Enabled (Rails Only)
   # Use this setting to force the agent to run or not run.
   # Default is 'auto' which means the agent will install and run only
@@ -262,12 +267,12 @@ production:
 eydevelopment:
   <<: *default_settings
   monitor_mode: true
-  app_name: ZangZing (development)
+  app_name: ZangZing (ey_development)
 
 eysandbox:
   <<: *default_settings
   monitor_mode: true
-  app_name: ZangZing (sandbox)
+  app_name: ZangZing (ey_sandbox)
 
 
 # Many applications have a staging environment which behaves

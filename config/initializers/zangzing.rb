@@ -1,26 +1,48 @@
+## Monkey load a Kernel addition to be able to silence warnings when writing code within a silence_warnings block
+#module Kernel
+#  def silence_warnings
+#    old_verbose, $VERBOSE = $VERBOSE, nil
+#    yield
+#  ensure
+#    $VERBOSE = old_verbose
+#  end
+#end
 
 silence_warnings do #To avoid warning of overwriting constant
-  # SET VERSION
-  git_cmd = File.join(*[ENV['IMAGEMAGICK_PATH'], "git"].compact)
   zconfig = Server::Application.config
-  zconfig.zangzing_version = `#{git_cmd} describe` || 'UNKNOWN'
-
-  zz_deploy_environment = nil
+  msg = []
 
   # GET AND SET ENVIRONMENT
   fname = "/home/deploy/dna.json"
-
   dna = nil
   if File.exists?( fname )
     dna =  ActiveSupport::JSON.decode( File.read( fname ))
   end
   zz_deploy_environment = ZZDeployEnvironment.new(dna)
   zconfig.deploy_environment = zz_deploy_environment # make it available for use later
-  
-  msg = []
+
+  # set up command path
+  cmd_path = ENV['IMAGEMAGICK_PATH']
+  if (cmd_path.nil?)
+    cmd_path = "/usr/bin"
+    msg << " WARNING: IMAGEMAGICK_PATH WAS NOT SET, USING #{cmd_path}, MAKE SURE THIS MATCHES YOUR ENVIRONMENT"
+  end
+  ZZ::CommandLineRunner.command_path = cmd_path
+
+  # SET VERSION
+  zconfig.zangzing_version = ZZ::CommandLineRunner.run('git', 'describe') rescue zconfig.zangzing_version = "UNKNOWN"
+
+
+  # turn off mail logger here since calling from environments is too early
+  # we've wrapped notifications with our own logging so turn off global
+  # mail logging because it is way too verbose
+#  ActionMailer::Base.logger = nil
+
+
   msg << "=> ZangZing Initializer"
   msg << "      Task started at             : " + Time.now.to_s
   msg << "      Tempfile Directory          : " + Dir.tmpdir
+  msg << "      Command Path                : " + ZZ::CommandLineRunner.command_path
   msg << "      Path                        : " + ENV['PATH']
   msg << "      Resque_CPU_hosts            : " + zz_deploy_environment.resque_cpu_host_names.to_s
   msg << "      Redis_host                  : " + zz_deploy_environment.redis_host_name

@@ -6,6 +6,8 @@ Server::Application.configure do
   # since you don't have to restart the webserver when you make code changes.
   config.cache_classes = true
 
+  config.log_level = :info
+
   # Log error messages when you accidentally call methods on nil.
   config.whiny_nils = true
 
@@ -21,8 +23,16 @@ Server::Application.configure do
   # override location of temp directory on EY servers
   ENV['TMPDIR'] = '/mnt/tmp'
 
+  # set up location of file upload directory
+  # this should be on EBS backed storage for production
+  config.photo_upload_dir = '/data/tmp/photo_uploads'
+
   # set this in the environment you want to allow benchmark testing
   config.bench_test_allowed = false
 
   ActionController::Base.cache_store = :memory_store
+
+  # mail logger is too verbose, shut it off
+  config.action_mailer.logger = nil
+
 end

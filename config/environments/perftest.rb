@@ -17,6 +17,23 @@ Server::Application.configure do
 # Keep rails in single threaded mode since we not utilized for our app server configurations
 #    # Enable threaded mode
 #  config.threadsafe!
+
+  # set up direct mail
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    :enable_starttls_auto => true,
+    :address => 'mail.authsmtp.com',
+    :port => 26,
+    :authentication => :plain,
+    :domain => 'zangzing.com',
+    :user_name => 'ac51517',
+    :password => 'sfmvqvm4ehbrgw'
+  }
+
   # set this in the environment you want to allow benchmark testing
   config.bench_test_allowed = true
+
+  # mail logger is too verbose, shut it off
+  config.action_mailer.logger = nil
 end

@@ -36,8 +36,8 @@ module Server
     # ZangZing Server Defaul Configuration Values
     config.application_host =  'localhost:3000'
     #GWS for testing sendgrid handler only - do not check in with this set to greg
-    #config.album_email_host =  'greg-post.zangzing.com'
-    config.album_email_host =  'sendgrid-post.zangzing.com'
+    config.album_email_host =  'greg-post.zangzing.com'
+    #config.album_email_host =  'sendgrid-post.zangzing.com'
     config.zangzing_version = '0.0.2'
     config.http_auth_credentials = YAML.load(File.read("#{Rails.root}/config/http_auth_creds.yml"))
   

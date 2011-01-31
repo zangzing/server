@@ -89,7 +89,7 @@ protected
       last_photo = nil
       current_batch = UploadBatch.get_current( user.id, album.id )
       attachments.each do |fast_local_image|
-        photo = Photo.create(
+        photo = Photo.new(
                 :user_id => user.id,
                 :album_id => album.id,
                 :upload_batch_id => current_batch.id,
@@ -97,7 +97,7 @@ protected
                 #create random uuid for this photo
                 :source_guid => "email:"+UUIDTools::UUID.random_create.to_s)
         # use the passed in temp file to attach to the photo
-        photo.fast_local_image = fast_local_image
+        photo.file_to_upload = fast_local_image['filepath']
         photo.save
         last_photo = photo
       end
