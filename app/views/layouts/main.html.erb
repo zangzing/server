@@ -96,10 +96,7 @@
 
       /* Fire up our inits starting up the entire waxy ball!!
       ----------------------------------------------------------------------- */
-      (function($) {
-
-      $(function() {
-            zz.init.template();
+      zz.init.template();
 
       <%if controller.controller_name == 'photos' -%>
             zz.init.album();
@@ -113,18 +110,14 @@
             zz.init.album_people_view();
       <%end%>
 
-       });
-       $(window).bind("load", function() {
-<%      # Same here... -%>
+      $(window).bind("load", function() {
           setTimeout('zz.init.loaded()', 64);
-        });
+      });
 
-        $(window).bind("resize", function() {
-<%      # And here... -%>
+      $(window).bind("resize", function() {
           zz.init.resized();
-        });
+      });
 
-      })(jQuery);
     </script>
 
 
