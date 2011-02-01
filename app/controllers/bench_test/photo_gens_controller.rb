@@ -34,7 +34,7 @@ class BenchTest::PhotoGensController < BenchTest::BenchTestsController
         @bench_test_photo_gen.album_id,
         last)
       if photo
-        utime = photo.image_updated_at
+        utime = photo.updated_at # yes we really do want updated_at not image_update_at for the end time
         if utime && (photo.ready? || photo.error?)
           @bench_test_photo_gen.stop = utime
 
