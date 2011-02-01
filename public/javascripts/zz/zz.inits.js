@@ -50,7 +50,7 @@ zz.init = {
         });
 
         $('#header #help-button').click(function(){
-            GSFN.show();
+            feedback_widget.show();
         });
 
 
@@ -184,8 +184,11 @@ zz.init = {
         zz.init.acct_badge();
         zz.init.like_menu();
         zz.init.buy_button();
-        zz.init.preload_rollover_images();
 
+        setTimeout(function(){
+            zz.init.preload_rollover_images();
+        }
+        ,500);
 
     },
 
@@ -241,8 +244,8 @@ zz.init = {
                     allowDelete: false,
                     allowEditCaption: false,
                     allowReorder: false,
-                    cellWidth: 180,
-                    cellHeight: 180,
+                    cellWidth: 200,
+                    cellHeight: 200,
                     onClickPhoto: function(index, photo){
                         document.location.href = "/albums/" + zz.album_id +"/photos?view=slideshow#" + photo.id;
                     },
