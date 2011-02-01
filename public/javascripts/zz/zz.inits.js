@@ -50,7 +50,7 @@ zz.init = {
         });
 
         $('#header #help-button').click(function(){
-            GSFN.show();
+            feedback_widget.show();
         });
 
 
