@@ -28,6 +28,7 @@ end
 # pull in resque worker flags - mostly related to photos so it goes here
 res_work_config = YAML::load(ERB.new(File.read("#{Rails.root}/config/resque_workers.yml")).result)[Rails.env].recursively_symbolize_keys!
 Server::Application.config.resque_run_forked = res_work_config[:run_forked]
+
 # resque looks at the environment INTERVAL to determine poll frequency
 ENV['INTERVAL'] = res_work_config[:poll_interval].to_s
 

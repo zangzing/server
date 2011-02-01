@@ -1,3 +1,9 @@
+/*!
+ * pages.js
+ *
+ * Copyright 2011, ZangZing LLC. All rights reserved.
+ */
+
 var pages = {};
 
 pages.album_add_photos_tab = {
@@ -18,7 +24,6 @@ pages.album_add_photos_tab = {
         success();
     }
 };
-
 
 pages.album_name_tab = {
     original_album_name: '',
@@ -64,7 +69,7 @@ pages.album_name_tab = {
             //setup album cover picker
             $.ajax({
                 dataType: 'json',
-                url: '/albums/' + zz.album_id + '/photos.json',
+                url: '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
                 success: function(json){
                     var selectedIndex=-1;
                     var currentId = $('#album_cover_photo').val();
@@ -77,9 +82,7 @@ pages.album_name_tab = {
                         var src = element.thumb_url;
 
                         
-                        if (agent.isAgentUrl(src)){
-                            src = agent.buildAgentUrl(src);
-                        }
+                        src = agent.checkAddCredentialsToUrl(src);
 
                         return {id:id, src:src};
                     });
@@ -120,24 +123,25 @@ pages.album_name_tab = {
     }
 };
 
-
 pages.edit_album_tab = {
     init: function(callback){
         $.ajax({
             dataType: 'json',
-            url: '/albums/' + zz.album_id + '/photos.json',
+            url: '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
             success: function(json){
 
                 for(var i =0;i<json.length;i++){
                     var photo = json[i];
-                    photo.previewSrc = agent.buildAgentUrl(photo.stamp_url);
-                    photo.src =       agent.buildAgentUrl(photo.thumb_url);
+                    photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
+                    photo.src =       agent.checkAddCredentialsToUrl(photo.thumb_url);
                 }
 
 
-                var gridElement = $("<div class='photogrid-container-vertical'></div>");
+                var gridElement = $('<div class="photogrid-container"></div>');
 
                 $('#article').html(gridElement);
+                $('#article').css('overflow','hidden');
+    
 
                 var grid = gridElement.zz_photogrid({
                     photos:json,
@@ -219,8 +223,6 @@ pages.album_privacy_tab = {
         success();
     }
 };
-
-
 
 pages.album_share_tab = {
     init: function(callback){
@@ -513,7 +515,6 @@ pages.album_contributors_tab = {
 
 };
 
-
 pages.account_settings_profile_tab = {
 
     profile_photo_picker: 'undefined',
@@ -567,7 +568,7 @@ pages.account_settings_profile_tab = {
 
         $.ajax({
             dataType: 'json',
-            url: '/albums/' + zz.album_id + '/photos.json',
+            url: '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
             success: function(json){
                 var selectedIndex=-1;
                 var currentId = $('#profile-photo-id').val();
@@ -580,9 +581,7 @@ pages.account_settings_profile_tab = {
                     var src = element.thumb_url;
 
                     
-                    if (agent.isAgentUrl(src)){
-                        src = agent.buildAgentUrl(src);
-                    }
+                    src = agent.checkAddCredentialsToUrl(src);
 
                     return {id:id, src:src};
                 });
@@ -610,7 +609,7 @@ pages.account_settings_profile_tab = {
         //refresh album cover picker
         $.ajax({
             dataType: 'json',
-            url: '/albums/' + zz.album_id + '/photos.json',
+            url: '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
             success: function(json){
                 var selectedIndex=-1;
                 var currentId = $('#profile-photo-id').val();
@@ -623,9 +622,7 @@ pages.account_settings_profile_tab = {
                     var src = element.thumb_url;
 
                     
-                    if (agent.isAgentUrl(src)){
-                        src = agent.buildAgentUrl(src);
-                    }
+                    src = agent.checkAddCredentialsToUrl(src);
 
                     return {id:id, src:src};
                 });
@@ -752,30 +749,15 @@ pages.account_setings_notifications_tab = {
 
 };
 
-
-
-pages.account_settings_linked_accounts = {
+pages.linked_accounts = {
     init: function(callback){
-        var url ='/users/' + zz.current_user_id + '/identities';
-
-        var self = this;
-
-        $('#tab-content').load(url, function(){
+        var url = '/users/' + zz.current_user_id + '/identities';
+        $('#tab-content').load( url, function(){
             zz.drawers.settings.redirect =  window.location;
-            $('.delete-id-button').click(pages.account_settings_linked_accounts.delete_identity);
-
-            $('.authorize-id-button').click(pages.account_settings_linked_accounts.authorize_identity);
-
-            $('.id-status').each( function(){
-
-                logger.debug("Binding id:"+this.id+" service:"+$(this).attr('service'));
-            });
+            $('.delete-id-button').click(pages.linked_accounts.delete_identity);
+            $('.authorize-id-button').click(pages.linked_accounts.authorize_identity);
             $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height -110) + 'px'});
-
-            $('#ok_id_button').click(function(){
-                zz.wizard.close_settings_drawer();
-            });
-            
+            $('#ok_id_button').click(  zz.wizard.close_settings_drawer );
             callback();
         });
     },
@@ -786,42 +768,117 @@ pages.account_settings_linked_accounts = {
 
     delete_identity: function(){
         logger.debug("Deleting ID with URL =  "+ $(this).attr('value'));
-        $("#"+$(this).attr('service')+"-status").bind( 'identity_deleted' , pages.account_settings_linked_accounts.identity_deleted_handler);
-        $.post($(this).attr('value'), {"_method": "delete"}, function(data){$('.id-status').trigger( 'identity_deleted' );});
+        var service = $(this).attr('service');
+        $.post($(this).attr('value'), {"_method": "delete"},  function(){
+            logger.debug( "identity_deleted event for service "+service);
+            $('#'+service+'-status').fadeOut('slow'); //hide the linked status
+            $('#'+service+'-delete').fadeOut( 'fast', function(){  //remove the unlink button
+                $('#'+service+'-authorize').fadeIn('fast');//display the link button
+            });
+        });  
     },
 
     authorize_identity: function(){
         logger.debug("Authorizing ID with URL =  "+ $(this).attr('value'));
-        $("#"+$(this).attr('service')+"-status").bind( 'identity_linked' , pages.account_settings_linked_accounts.identity_linked_handler);
-        oauthmanager.login( $(this).attr('value') , function(){ $('.id-status').trigger( 'identity_linked' );} );
+        var service = $(this).attr('service');
+        oauthmanager.login( $(this).attr('value') , function(){
+            logger.debug( "identity_linked event for service "+service);
+            $('#'+service+'-status').fadeIn('slow'); //display the linked status
+            $('#'+service+'-authorize').fadeOut( 'fast', function(){  //remove the link button
+                $('#'+service+'-delete').fadeIn( 'fast', function(){
+                    if( $('#flashes-notice')){
+                        var msg = "Your can now use "+ service+" features throughout ZangZing";
+                        $('#flashes-notice').html(msg).fadeIn('fast', function(){
+                            setTimeout(function(){
+                                $('#flashes-notice').fadeOut('fast', function(){
+                                    $('#flashes-notice').html('    ');
+                                });
+                            }, 3000);
+                        });
+                    }
+                });//display the unlink button
+            });
+        });
+    }
+};
+
+pages.no_agent = {
+    url: '/static/connect_messages/no_agent.html',
+    init_from_filechooser: function( callback ){             
+        $('#filechooser-title').html($('#downloadzz-title').html());
+        $('#choose-header h4').html($('#downloadzz-tagline').html());
+        $('#downloadzz-title').html('');
+        $('#downloadzz-tagline').html( '');
+        $('#downloadzz-btn').click(function(){
+            alert("Agent should be downloading now (TODO: Set URL for download in pages.js)");
+        });
+        pages.no_agent.poll_agent_from_filechooser( ); //Download begun , start polling for agent
+        callback();
     },
 
-    identity_linked_handler: function(){
-        logger.debug( "identity_linked event for service "+$(this).attr('service'));
-        $(this).unbind( 'identity_linked' ); //remove the event handler
-        $(this).fadeIn('slow'); //display the linked status
-        $("#"+$(this).attr('service')+"-authorize").fadeOut( 'fast', function(){  //remove the link button
-            $("#"+$(this).attr('service')+"-delete").fadeIn( 'fast', function(){
-                if( $('#flashes-notice')){
-                    var msg = "Your can now use "+ $(this).attr('service')+" features throughout ZangZing";
-                    $('#flashes-notice').html(msg).fadeIn('fast', function(){
-                        setTimeout(function(){
-                            $('#flashes-notice').fadeOut('fast', function(){
-                                $('#flashes-notice').html('    ');
-                            });
-                        }, 3000);
-                    });
-                }
-            });//display the unlink button
+
+    poll_agent_from_filechooser: function( ){
+      agent.isAvailable( function( agentAvailable ){
+          if( agentAvailable ){
+                 pages.no_agent.agent_ready_from_filechooser();
+          }else{
+                setTimeout( 'pages.no_agent.poll_agent_from_filechooser()', 1000);
+          }
+      });  
+    },
+
+    agent_ready_from_filechooser: function( ){
+        $('#downloadzz-btn').attr('disabled', 'disabled');
+        $('#downloadzz-developed').fadeIn(4000, function(){
+                $('#downloadzz-developed').parent().siblings('.downloadzz-text').fadeOut( 'fast')
+                $('#downloadzz-developed').parent().siblings('.downloadzz-headline').fadeOut( 'fast', function(){
+                        $(this).html('ZangZing is Ready!');
+                        $(this).fadeIn( 'fast');
+                        setTimeout( 'filechooser.on_login()', 1000 );
+                });            
         });
     },
 
-    identity_deleted_handler: function(){
-        logger.debug( "identity_deleted event for service "+$(this).attr('service'));
-        $(this).unbind( 'identity_deleted' ); //remove the event handler
-        $(this).fadeOut('slow'); //hide the linked status
-        $("#"+$(this).attr('service')+"-delete").fadeOut( 'fast', function(){  //remove the unlink button
-            $("#"+$(this).attr('service')+"-authorize").fadeIn( 'fast');//display the link button
+
+    dialog: function( ){
+         $('<div></div>', { id: 'no-agent-dialog'}).load(pages.no_agent.url, function(){
+                    $( this ).dialog({
+                           title: 'Download ZangZing',
+                           width: 910,
+                           minHeight: 550,
+                           position: [170,65],
+                           modal: true,
+                           close:  function(){
+                               $('#no-agent-dialog').remove();
+                               sharecontacts.call_local_import();
+                           }
+                    });
+                    $('#downloadzz-btn').click(function(){
+                        alert("Agent should be downloading now (TODO: Set URL for download in pages.js)");
+                    });
+                    pages.no_agent.poll_agent_from_dialog( ); //Download begun , start polling for agent
+        });
+    },
+
+    poll_agent_from_dialog: function( ){
+          agent.isAvailable( function( agentAvailable ){
+              if( agentAvailable ){
+                     pages.no_agent.agent_ready_from_dialog();
+              }else{
+                    setTimeout( 'pages.no_agent.poll_agent_from_dialog()', 1000);
+              }
+          });
+    },
+
+    agent_ready_from_dialog: function( ){
+        $('#downloadzz-btn').attr('disabled', 'disabled');
+        $('#downloadzz-developed').fadeIn(4000, function(){
+                $('#downloadzz-developed').parent().siblings('.downloadzz-text').fadeOut( 'fast')
+                $('#downloadzz-developed').parent().siblings('.downloadzz-headline').fadeOut( 'slow', function(){
+                        $(this).html('ZangZing is Ready!');
+                        $(this).fadeIn( 'fast');
+                        setTimeout( function(){  $( '#no-agent-dialog' ).dialog('close'); }, 1000 );
+                });
         });
     }
 };

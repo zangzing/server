@@ -1,3 +1,9 @@
+/*!
+ * photogrid.js
+ *
+ * Copyright 2011, ZangZing LLC. All rights reserved.
+ */
+
 (function( $, undefined ) {
 
     $.widget( "ui.zz_photogrid", {
@@ -19,16 +25,38 @@
 
             showThumbscroller: true,
 
-            scrollMode: 'smooth'
+            singlePictureMode: false,
+
+            scrollToPhoto: null
+
 
         },
+
+        animatedScrollActive: false,
 
 
         _create: function() {
             var self = this;
 
+
+            //scroll direction
+            if(self.options.singlePictureMode){
+                self.element.css({
+                    'overflow-y':'hidden',
+                    'overflow-x':'scroll'
+                });
+            }
+            else{
+                self.element.css({
+                    'overflow-y':'scroll',
+                    'overflow-x':'hidden'
+                });
+            }
+
+
             self.width = parseInt(self.element.css('width'));
             self.height = parseInt(self.element.css('height'));
+
 
 
             //template for cells
@@ -52,6 +80,14 @@
 
             var cells = [];
 
+            var lazyLoadThreshold = 0;
+//            if(self.options.singlePictureMode){
+//                lazyLoadThreshold = self.options.maxWidth * 3;
+//            }
+
+
+
+
             $.each(self.options.photos, function(index, photo){
                 var cell = template.clone();
                 cells.push(cell);
@@ -68,6 +104,7 @@
                     maxHeight: Math.floor(self.options.cellHeight * .85),
                     allowDelete: self.options.allowDelete,
                     caption: photo.caption,
+                    aspectRatio: photo.aspect_ratio,
 
                     onDelete:function(){
                         return self.options.onDelete(index,photo);
@@ -83,8 +120,11 @@
                         self.options.onClickPhoto(index, photo);
                     },
 
-                    scrollContainer: self.element
-                    
+                    scrollContainer: self.element,
+                    lazyLoadThreshold: lazyLoadThreshold,
+                    isUploading: photo.state !== 'ready',
+                    isError: photo.state === 'error'
+
                 });
 
 
@@ -171,9 +211,11 @@
 
             self.element.show();
 
+
             this.element.children('.photogrid-cell').each(function(index, element){
                 $(element).data().zz_photo.loadIfVisible();
             });
+
 
 
             //handle window resize
@@ -198,6 +240,8 @@
                 },100);
             });
 
+
+
             //handle scroll
             var scrollTimer = null;
             self.element.scroll(function(event){
@@ -219,18 +263,21 @@
                             $(element).data().zz_photo.loadIfVisible(containerDimensions);
                         }
                     });
-                },500);
+                },200);
 
             });
 
 
-
             //thumbscroller
             if(self.options.showThumbscroller){
-                var animateScrollActive = false;
                 var nativeScrollActive = false;
 
-                self.thumbscrollerElement = $('<div class="photogrid-thumbscroller-vertical"></div>').appendTo(self.element.parent());
+                if(self.options.singlePictureMode){
+                    self.thumbscrollerElement = $('<div class="photogrid-thumbscroller-horizontal"></div>').appendTo(self.element.parent());
+                }
+                else{
+                    self.thumbscrollerElement = $('<div class="photogrid-thumbscroller-vertical"></div>').appendTo(self.element.parent());
+                }
 
 
                 self.thumbscroller = self.thumbscrollerElement.zz_thumbtray({
@@ -242,32 +289,20 @@
                     repaintOnResize:true,
                     onSelectPhoto: function(index, photo){
                         if(!nativeScrollActive){
-                            if(photo){
-                                var highlighted = self.cellAtIndex(index).find('.photo-border').addClass('highlighted');
-
-                                setTimeout(function(){
-                                    highlighted.removeClass('highlighted');
-
-                                },1000 + 1500);
-                            }
-
-
-
-                            var y = (Math.floor(index / self.cellsPerRow())  ) * self.options.cellHeight ;
-
-
-                            animateScrollActive = true;
-                            self.element.animate({scrollTop: y}, 500, 'easeOutCubic', function(){
-                                animateScrollActive = false;
-                            });
+                            self.scrollToIndex(index, 500, true);
                         }
                     }
                 }).data().zz_thumbtray;
 
                 self.element.scroll(function(event){
-                    if(! animateScrollActive){
+                    if(! self.animateScrollActive){
                         nativeScrollActive = true;
-                        var index = Math.floor(self.element.scrollTop() / self.options.cellHeight * self.cellsPerRow());
+                        if(self.options.singlePictureMode){
+                            var index = Math.floor(self.element.scrollLeft() / self.options.cellWidth);
+                        }
+                        else{
+                            var index = Math.floor(self.element.scrollTop() / self.options.cellHeight * self.cellsPerRow());
+                        }
                         self.thumbscroller.setSelectedIndex(index);
                         nativeScrollActive = false;
                     }
@@ -275,8 +310,8 @@
             }
 
 
-            //mousewheel for single picture
-            if(self.options.scrollMode === 'picture'){
+            //mousewheel and keyboard for single picture
+            if(self.options.singlePictureMode){
                 this.element.mousewheel(function(event){
 
                     var delta;
@@ -288,7 +323,6 @@
                         delta = -1 * event.detail;
                     }
 
-                    logger.debug(delta);
 
                     if(delta < 0){
                         self.nextPicture();
@@ -299,7 +333,52 @@
 
                     return false;
                 });
+
+
+                //capture all events
+                $(document.documentElement).keydown(function(event){
+                    if(event.keyCode === 40){
+                        //down
+                        self.nextPicture();
+                    }
+                    else if(event.keyCode === 39){
+                        //right
+                        self.nextPicture();
+                    }
+                    else if(event.keyCode === 34){
+                        //page down
+                        self.nextPicture();
+                    }
+                    else if(event.keyCode === 38){
+                        //up
+                        self.previousPicture();
+                    }
+                    else if(event.keyCode === 37){
+                        //left
+                        self.previousPicture();
+                    }
+                    else if(event.keyCode === 33){
+                        //page up
+                        self.previousPicture();
+                    }
+                });
+
+                //block events to grid
+                $(this.element).keydown(function(event){
+                    event.preventDefault()
+                });
+
             }
+
+
+            
+
+                       //scroll to photo
+            if(self.options.scrollToPhoto){
+                self.scrollToPhoto(self.options.scrollToPhoto,0, false);
+            }
+
+
         },
 
 
@@ -311,8 +390,10 @@
 
             if(!self.nextPrevActive){
                 self.nextPrevActive = true;
-                var x =  this.element.scrollTop() + self.options.cellHeight;
-                self.element.animate({scrollTop: x}, 500, 'easeOutCubic', function(){
+                var x =  this.element.scrollLeft() + self.options.cellWidth;
+
+                //todo: shoud use self.scrollToPhoto() here
+                self.element.animate({scrollLeft: x}, 500, 'easeOutCubic', function(){
                     self.nextPrevActive = false;
                 });
             }
@@ -324,8 +405,10 @@
 
             if(!self.nextPrevActive){
                 self.nextPrevActive = true;
-                var x =  this.element.scrollTop() - self.options.cellHeight;
-                self.element.animate({scrollTop: x}, 500, 'easeOutCubic' ,function(){
+                var x =  this.element.scrollLeft() - self.options.cellWidth;
+
+                //todo: shoud use self.scrollToPhoto() here
+                self.element.animate({scrollLeft: x}, 500, 'easeOutCubic' ,function(){
                     self.nextPrevActive = false;
                 });
             }
@@ -333,12 +416,63 @@
         },
 
 
+        indexOfPhoto: function(photoId){
+            //todo: this function won't work after a drag-drop reorder
+            var self = this;
+
+
+            for(var i=0; i<self.options.photos.length; i++){
+                if(self.options.photos[i].id === photoId){
+                   return i;
+                }
+            }
+            return -1;
+        },
+
+        scrollToPhoto: function(photoId, duration, highlightCell){
+            var index = this.indexOfPhoto(photoId);
+            this.scrollToIndex(index, duration, highlightCell);
+        },
+
+        scrollToIndex: function(index, duration, highlightCell){
+            var self = this;
+
+            if(highlightCell){
+                var highlighted = self.cellAtIndex(index).find('.photo-border').addClass('highlighted');
+
+                setTimeout(function(){
+                    highlighted.removeClass('highlighted');
+
+                },duration + 1500);
+            }
+
+            if(self.options.singlePictureMode){
+                var x = index  * self.options.cellWidth;
+
+                self.animateScrollActive = true;
+                self.element.animate({scrollLeft: x}, duration, 'easeOutCubic', function(){
+                    self.animateScrollActive = false;
+                });
+
+            }
+            else{
+                var y = Math.floor(index / self.cellsPerRow()) * self.options.cellHeight ;
+                self.animateScrollActive = true;
+                self.element.animate({scrollTop: y}, duration, 'easeOutCubic', function(){
+                    self.animateScrollActive = false;
+                });
+            }
+        },
+
         resetLayout: function(duration, easing){
             var self = this;
 
             if(duration === undefined){
                 duration = 0;
             }
+
+
+
 
             this.element.children('.photogrid-cell').each(function(index, element){
                 if(! $(element).data().zz_photo){
@@ -360,6 +494,10 @@
                     $(element).css(css);
                 }
 
+
+
+
+
             });
         },
 
@@ -369,25 +507,39 @@
 
         cellsPerRow : function(){
             var self = this;
-            return Math.floor(self.width / self.options.cellWidth);
+            if(self.options.singlePictureMode){
+                return self.options.photos.length;                
+            }
+            else{
+                return Math.floor(self.width / self.options.cellWidth);
+            }
         },
 
         positionForIndex: function(index){
             var self = this;
-            var cellsPerRow = self.cellsPerRow();
-            var row = Math.floor(index / cellsPerRow);
-            var col = index % cellsPerRow;
 
-            var paddingLeft = Math.floor((self.width - (cellsPerRow * self.options.cellWidth))/2);
+            if(self.options.singlePictureMode){
+                return {
+                    top:0,
+                    left: (index * self.options.cellWidth)
 
-            var paddingLeft = paddingLeft - (16/2); //account for scroller //todo: use constant or lookup value for scroller width 
+                }
+            }
+            else{
+                var cellsPerRow = self.cellsPerRow();
+                var row = Math.floor(index / cellsPerRow);
+                var col = index % cellsPerRow;
+
+                var paddingLeft = Math.floor((self.width - (cellsPerRow * self.options.cellWidth))/2);
+
+                paddingLeft = paddingLeft - (16/2); //account for scroller //todo: use constant or lookup value for scroller width
 
 
-            return {
-                top: row * self.options.cellHeight,
-                left: paddingLeft + (col * self.options.cellWidth) 
-            };
-
+                return {
+                    top: row * self.options.cellHeight,
+                    left: paddingLeft + (col * self.options.cellWidth)
+                };
+            }
         },
 
 

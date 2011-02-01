@@ -1,3 +1,9 @@
+/*!
+ * zz.core.js
+ *
+ * Copyright 2011, ZangZing LLC. All rights reserved.
+ */
+
 
 var zz = {
 
@@ -32,7 +38,7 @@ var zz = {
 
 
         // pull out the drawer
-        $('div#drawer').animate({ height: zz.drawer_height + 'px', top: '52px' }, time );
+        $('div#drawer').show().animate({ height: zz.drawer_height + 'px', top: '52px' }, time );
         //$('div#drawer').css( { height: zz.drawer_height + 'px', top: '50px' } );
         //$('div#drawer').slideDown( time );
         $('div#drawer-content').animate({ height: (zz.drawer_height - 14) + 'px'}, time );

@@ -11,6 +11,9 @@
 <%  if @meta_description -%>
     <meta name="description" content="<%= @meta_description %>" />
 <%  end %>
+    <%= yield :meta_tags %>
+
+
 
     <% if @page_title_override 
        title = @page_title_override
@@ -22,11 +25,11 @@
     end %>
     <title><%=title%></title>
 
-    <%= stylesheet_link_tag :all %>
+    <%= include_stylesheets :common %>
 
     <link href="http://s3.amazonaws.com/getsatisfaction.com/feedback/feedback.css" rel="stylesheet" type="text/css" />
 
-    <link rel="shortcut icon" href="/images/favico.ico"/>
+    <link rel="shortcut icon" href="/favico.ico"/>
 
 
 <%  # Add in template based style tags by defining this in the template -%>
@@ -61,8 +64,10 @@
     </div>
 
 
-
-    <%= javascript_include_tag :all, :recursive => true %>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+    <%= include_javascripts :jquery_lib %>
+    <%= include_javascripts :zz %>
+    <%= include_javascripts :zz_oauthmanager %>
 
     <script src='http://s3.amazonaws.com/getsatisfaction.com/feedback/feedback.js' type='text/javascript'></script>
     <script type="text/javascript" charset="utf-8">
@@ -86,6 +91,7 @@
 <%  if @album  -%>
       zz.album_id = '<%= @album.id %>';
       zz.album_type = '<%= @album.type %>';
+      zz.album_lastmod = '<%= @album.photos_last_updated_at.to_i %>';
       zz.album_type = zz.album_type.split('Album')[0].toLowerCase();
 <%    end
       # This is where we pass things on to js that we need from ruby.

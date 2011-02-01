@@ -1,12 +1,3 @@
-## Monkey load a Kernel addition to be able to silence warnings when writing code within a silence_warnings block
-#module Kernel
-#  def silence_warnings
-#    old_verbose, $VERBOSE = $VERBOSE, nil
-#    yield
-#  ensure
-#    $VERBOSE = old_verbose
-#  end
-#end
 
 silence_warnings do #To avoid warning of overwriting constant
   zconfig = Server::Application.config
@@ -32,12 +23,10 @@ silence_warnings do #To avoid warning of overwriting constant
   # SET VERSION
   zconfig.zangzing_version = ZZ::CommandLineRunner.run('git', 'describe') rescue zconfig.zangzing_version = "UNKNOWN"
 
-
-  # turn off mail logger here since calling from environments is too early
-  # we've wrapped notifications with our own logging so turn off global
-  # mail logging because it is way too verbose
-#  ActionMailer::Base.logger = nil
-
+  # set rails asset id
+  if Rails.env != 'development'
+    ENV["RAILS_ASSET_ID"] = zconfig.zangzing_version.strip
+  end
 
   msg << "=> ZangZing Initializer"
   msg << "      Task started at             : " + Time.now.to_s
@@ -73,6 +62,15 @@ silence_warnings do #To avoid warning of overwriting constant
     msg << "      Album Email Host            : " + zconfig.album_email_host
     msg << "      Source Version (from git)   : " + zconfig.zangzing_version
   end
+
+  #Initialize MailChimp
+  begin
+    ZZ::MailChimp.load_setup()
+    msg << "      MailChimp Status            : " + ZZ::MailChimp.ping()
+  rescue Exception => e
+    msg << "      MailChimp Status            :  ERROR ERROR - " + e.message
+  end
+
   msg = msg.flatten.compact.join("\n")
   puts msg
   Rails.logger.info msg

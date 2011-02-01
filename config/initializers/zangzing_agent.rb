@@ -9,7 +9,7 @@ if defined?(Rails.root) and File.exists?("#{Rails.root}/config/agent_config.yml"
     silence_warnings do #To avoid warning of overwriting constant
       ZANGZING_AGENT_CONFIG = YAML::load(File.read("#{Rails.root}/config/agent_config.yml"))
     end
-    msg = "=> Agent configuration file loaded."
+    msg = "      Agent configuration file    : Loaded"
     Rails.logger.info msg
     puts msg
 else

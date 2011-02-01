@@ -1,0 +1,60 @@
+
+<style type="text/css">
+
+.chimpscreen{
+ font-size: 1.5em;   
+}
+
+</style>
+
+<div class="chimpscreen">
+<div style="margin-top: 5px; margin-bottom: 10px; font-size: 1em;">
+<% [:info, :error].each do |key| %>
+     <% if flash[key] %>
+        <div style="<%=( key == :error ? 'color:red;' : 'color:green;' )%>" id="flash">
+          <%= flash[key] %>
+        </div>
+        <% content_for :page_javascript do %>
+          <script type="text/javascript">
+            setTimeout( function(){ $('#flash').fadeOut(); }, 4000);
+          </script>
+        <% end %>
+     <% end %>
+<% end %>
+</div>
+
+<h1>Transactional Campaigns</h1>
+
+<table frame="box" width="800px" border="1"  cellspacing="10">
+  <tr>
+        <th> ID </th>
+        <th> Title </th>
+        <th> List </th>
+        <th> Template </th>
+        <th> delete </th>
+  </tr>
+
+<% @campaigns.each do |camp| %>
+  <tr>
+        <td> <a href="<%=edit_chimpcampaign_path( camp['id'])%>"> <%= camp['id'] %></a> </td>
+        <td> <%= camp['title'] %> </td>
+        <td> <%= camp['list_name']  %> </td>
+        <td> <%= camp['template_name'] %> </td>
+        <td>
+          <form method="post" action="<%=delete_chimpcampaign_url( camp['id'] )%>" class="button-to">
+            <div>
+                <input type="hidden" name="_method" value="delete" />
+                <input onclick="return confirm('Are you sure you want to delete the campaign?');"
+                    value="Delete" type="submit" />
+            </div>
+         </form>
+        </td>
+  </tr>
+<%end%>
+
+</table>
+   <a  href="<%=new_chimpcampaign_url%>">Create new transactional campaign</a>
+
+</div>    
+
+

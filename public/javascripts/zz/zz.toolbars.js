@@ -1,3 +1,9 @@
+/*!
+ * zz.toolbars.js
+ *
+ * Copyright 2011, ZangZing LLC. All rights reserved.
+ */
+
 zz.toolbars = {
 
     init_new_album: function(){

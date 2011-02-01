@@ -9,6 +9,8 @@
     <meta name="DC.title" content="ZangZing" />
     <meta name="title" content="ZangZing" />
 
+    <%= render :partial => "photos/facebook_opengraph_tags", :object => @album %>
+    
 
     <style type="text/css">
         html{
@@ -56,13 +58,13 @@
         <param name="movie" value="/swf/ZZSlideShow.swf">
         <param name="allowFullScreen" value="true">
         <param name="bgcolor" value="#000000">
-        <param name="flashvars" value="source=slides_source.xml&autoHideControls=false&autoSlideShow=true&backgroundColor=000000&backgroundImage=&backgroundVisible=true&borderSize=5&borderColor=FFFFFF&controlsHideSpeed=2&exitButton=true&exitButtonURL=javascript:history.go(-1)&loadOriginalImages=false&overrideFullScreenChange=false&scaleBackground=true&scaleMode=scale&shadowColor=0x000000&slideshowDistance=5&slideShowSpeed=6&transitionSpeed=0.7&transitionType=slide&slideShowControls=true"/>
+        <param name="flashvars" value="source=photos_json?<%=@album.photos_last_updated_at.to_i%>&autoHideControls=false&autoSlideShow=true&backgroundColor=000000&backgroundImage=&backgroundVisible=true&borderSize=5&borderColor=FFFFFF&controlsHideSpeed=2&exitButton=true&exitButtonURL=<%=album_path @album%>&loadOriginalImages=false&overrideFullScreenChange=false&scaleBackground=true&scaleMode=scale&shadowColor=0x000000&slideshowDistance=5&slideShowSpeed=6&transitionSpeed=0.7&transitionType=slide&slideShowControls=true&preloadAfter=3&preloadBefore=1"/>
     </object>
     <div id="scrim"></div>
 
 
     <%= javascript_include_tag "/swf/ZZSlideShow.js" %>
-    <%= javascript_include_tag "/swf/swfobject.js" %>
+    <%= include_javascripts :swf %>
 
     <script type="text/javascript">
 
@@ -81,7 +83,7 @@
                     $.CustomSimpleFade.init({
 
                         appendToID:			'movie',
-                        source:				'slides_source.xml',
+                        source:				'photos_json?<%=@album.photos_last_updated_at.to_i%>',
                         width: $(window).width(),
                         height: $(window).height(),
 
@@ -97,9 +99,11 @@
                         controlsHideSpeed:	2,
 
                         exitButton:			true,
-                        exitButtonURL:		'javascript:history.go(-1)',
+                        exitButtonURL:		'<%=album_path @album%>',
 
-                        iconsURL:			'http://www.jumpeye.com/flo/customProjects/SimpleFadeCustom/js/icons/',
+                        iconsURL:			'http://www.jumpeye.com/flo/customProjects/SimpleFadeCustom/js/new/icons/',
+
+                        backButtonText:     'Back to Album',
 
                         loadOriginalImages: false,
 
@@ -112,7 +116,10 @@
                         transitionSpeed:	0.5,
                         transitionType:		'slide',
 
-                        slideShowControls: true
+                        slideShowControls: true,
+
+                        preloadAfter:		3,
+				        preloadBefore:		1,
 
 
                     });

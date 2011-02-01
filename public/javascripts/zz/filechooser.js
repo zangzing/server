@@ -1,5 +1,11 @@
-/* Filechooser
- ----------------------------------------------------------------------------- */
+/*!
+ * filechooser.js
+ *
+ * Copyright 2011, ZangZing LLC. All rights reserved.
+ */
+
+
+
 var filechooser = {
 
     imageloader: null,
@@ -15,7 +21,7 @@ var filechooser = {
             var error_handler = params['error'];
 
             if (agent.isAgentUrl(url)) {
-                url = agent.buildAgentUrl(url);
+                url = agent.checkAddCredentialsToUrl(url);
                 $.jsonp({
                     url: url,
                     success: function(json) {
@@ -50,7 +56,8 @@ var filechooser = {
 
         var file_system_on_error = function(error){
             if(typeof(error.status) === 'undefined'){
-                $('#filechooser').hide().load('/static/connect_messages/no_agent.html', function(){
+                $('#filechooser').hide().load(pages.no_agent.url, function(){
+                    pages.no_agent.init_from_filechooser(function(){});
                     $('#filechooser').fadeIn('fast');    
                 });
             }
@@ -351,6 +358,7 @@ var filechooser = {
         }
 
         $('#filechooser-title').html(name);
+        $('#filechooser-tagline').html('Choose pictures from folders on your computer or other photo sites');
 
         //update files
         $('#filechooser').fadeOut('fast', function(){
@@ -478,11 +486,7 @@ var filechooser = {
                 html += children[i].name;
                 html += '</li>';
 
-                if (agent.isAgentUrl(children[i].thumb_url)) {
-                    filechooser.imageloader.add(img_id, agent.buildAgentUrl(children[i].thumb_url));
-                } else {
-                    filechooser.imageloader.add(img_id, children[i].thumb_url);
-                }
+                filechooser.imageloader.add(img_id, agent.checkAddCredentialsToUrl(children[i].thumb_url));
             }
         }
 
@@ -532,9 +536,7 @@ var filechooser = {
 
             var image_url = children[i].screen_url;
 
-            if (agent.isAgentUrl(image_url)) {
-                image_url = agent.buildAgentUrl(image_url);
-            }
+            image_url = agent.checkAddCredentialsToUrl(image_url);
 
             html += '<img class="large-photo" id="' + img_id + '" src="'+ image_url +'" '+ grid_view_handler +'>';
 
@@ -722,7 +724,7 @@ var tray = {
     reload : function() {
         $.ajax({
             dataType: 'json',
-            url: '/albums/' + zz.album_id + '/photos.json',
+            url: '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
             success: function(photos){
                 tray.photos = photos;
                 tray.widget.setPhotos(tray.map_photos(tray.photos));
@@ -769,10 +771,8 @@ var tray = {
             var id = photo.id;
             var src = photo.thumb_url;
 
-            if(agent.isAgentUrl(src)){
-               src = agent.buildAgentUrl(src); 
-            }
-            
+            src = agent.checkAddCredentialsToUrl(src); 
+
             return {id:id, src:src};
         });
 

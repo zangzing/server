@@ -1,3 +1,10 @@
+/*!
+ * imageloader.js
+ *
+ * Copyright 2011, ZangZing LLC. All rights reserved.
+ */
+
+
 var image_preloader = {
 
     images : [],
@@ -11,7 +18,7 @@ var image_preloader = {
         image_preloader.images.push(image);
     }
 
-}
+};
 
 
 function ImageLoader(onStartLoadingImage, onImageLoadedHandler){
@@ -19,7 +26,7 @@ function ImageLoader(onStartLoadingImage, onImageLoadedHandler){
     this.stopped = false;
     this.onStartLoadingImage = onStartLoadingImage;
     this.onImageLoadedHandler = onImageLoadedHandler;
-};
+}
 
 
 ImageLoader.prototype = {
@@ -91,7 +98,7 @@ ImageLoader.prototype = {
     handleImageLoaded : function(id, src, width, height){
         this.onImageLoadedHandler(id, src, width, height);
     }
-}
+};
 
 
 

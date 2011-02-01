@@ -1,3 +1,9 @@
+/*!
+ * sharecontacts.js
+ *
+ * Copyright 2011, ZangZing LLC. All rights reserved.
+ */
+
 var sharecontacts = {
     setup : function(hasGoogleId, googleLastImport, hasYahooId, yahooLastImport, hasMsliveId, msliveLastImport, hasLocalId, localLastImport ) {
         logger.debug('in contacts setup')
@@ -39,18 +45,16 @@ var sharecontacts = {
     // ------ LOCAL C ---------
     setup_local_button : function( agentPresent ){
         var current_title = $("#local-sync").attr('title');
+        if(current_title == '')
+                $("#local-sync").attr('title', "Click to import your local contacts.");
+        else
+                $("#local-sync").attr('title', current_title+". Click to refresh your contacts.");
         if( agentPresent ){
             $("#local-sync").click(sharecontacts.call_local_import);
-            if(current_title == '')
-                $("#local-sync").attr('title', "Click to import your local contacts.");
-            else
-                $("#local-sync").attr('title', current_title+". Click to refresh your contacts.");
         } else {
-            $("#local-sync").unbind('click');
-            if(current_title == '')
-                $("#local-sync").attr('title', "Local Agent is not present. Unable to import local contacts from this machine");
-            else
-                $("#local-sync").attr('title', current_title+". Local Agent is not present. Unable to refresh local contacts at the moment");
+            $("#local-sync").click( function(){
+                    pages.no_agent.dialog( sharecontacts.call_local_import );
+            });        
         }
     },
 
@@ -61,14 +65,15 @@ var sharecontacts = {
 
     call_agent_local_import :function(agentPresent){
         if( agentPresent ) {
+            $("#local-sync").unbind('click').click(sharecontacts.call_local_import);
             var url = agent.buildAgentUrl('/contacts/import');
             $.jsonp({
                 url: url,
                 success: sharecontacts.import_local_success,
-                error: sharecontacts.import_local_error
+                error: sharecontacts.import_local_failure
             });
         } else {
-            $("#local-sync").attr({disabled: '', src: '/images/btn-'+sharecontacts.otlk_or_addbk()+'-error.png', title: 'Unable to refresh local contacts at the moment because the local agent is not present on this machine. Please try later'});
+            $("#local-sync").attr({disabled: '', src: '/images/btn-'+sharecontacts.otlk_or_addbk()+'-error.png', title: 'Unable to refresh local contacts at the moment. Cannot communicate with local agent please try again.'});
         }
     },
 

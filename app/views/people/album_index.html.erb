@@ -1,4 +1,19 @@
 <ul id="album-timeline">
+  <li class="clearfix">
+    <a name="<%=@album.user_id%>"></a>
+
+    <div class="timeline-badge">
+        <%= render :partial => 'users/stacked_badge', :locals => { :user => @album.user }    %>
+    </div>
+
+    <div class="timeline-action">
+      <ul class="timeline-grid" data-user-id="<%=@album.user_id%>">
+      </ul>
+      <%if  @album_user_photos.length > 4  %><a href="javascript:void(0);"  class="more-less-btn">more...</a><%end%>
+    </div>
+</li>
+
+
   <% @contributors.each do | contributor | %>
          <%= render :partial => 'contributor', :locals => {:contributor => contributor } %>
   <%end%>
@@ -12,7 +27,7 @@
 </ul>
 
 
-<div class="offset"
+<div class="offset">
 <h3 class="people">People that Like &ldquo;New Zealand&rdquo;</h3>
 
 <ul id="liked-it" class="clearfix">

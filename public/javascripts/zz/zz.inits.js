@@ -1,5 +1,8 @@
-/* INITs
- --------------------------------------------------------------------------- */
+/*!
+ * zz.inits.js
+ *
+ * Copyright 2011, ZangZing LLC. All rights reserved.
+ */
 
 zz.init = {
 
@@ -28,21 +31,21 @@ zz.init = {
 
 
         $('#header #view-buttons #grid-view-button').click(function(){
-            document.location.href = '/albums/' + album_id + "/photos";
+            document.location.href = '/albums/' + zz.album_id + "/photos";
         });
 
         $('#header #view-buttons #picture-view-button').click(function(){
-            document.location.href = '/albums/' + album_id + "/photos?view=slideshow";
+            document.location.href = '/albums/' + zz.album_id + "/photos?view=slideshow";
 
         });
 
         $('#header #view-buttons #people-view-button').click(function(){
-            document.location.href = '/albums/' + album_id + "/people";
+            document.location.href = '/albums/' + zz.album_id + "/people";
 
         });
 
         $('#header #view-buttons #activities-view-button').click(function(){
-            document.location.href = '/albums/' + album_id + "/activities";
+            document.location.href = '/albums/' + zz.album_id + "/activities";
 
         });
 
@@ -77,7 +80,7 @@ zz.init = {
                 'background-color':'#000000',
                 opacity: 0
             }).appendTo('body').animate({opacity:1},500, function(){
-                document.location.href = '/albums/' + album_id + '/photos?view=movie'; //global variable set in _bottom_nav
+                document.location.href = '/albums/' + zz.album_id + '/photos?view=movie'; //global variable set in _bottom_nav
             });
 
 
@@ -173,14 +176,16 @@ zz.init = {
             $("form#new_user_session").submit();
         });
 
-
+        //todo: why are these here
         $(zz.validate.sign_in.element).validate(zz.validate.sign_in);
         $(zz.validate.join.element).validate(zz.validate.join);
+
 
         zz.init.acct_badge();
         zz.init.like_menu();
         zz.init.buy_button();
         zz.init.preload_rollover_images();
+
 
     },
 
@@ -216,19 +221,19 @@ zz.init = {
 
         $.ajax({
             dataType: 'json',
-            url: '/albums/' + zz.album_id + '/photos.json',
+            url: '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
             success: function(json){
 
 
-            var gridElement = $("<div class='photogrid-container-vertical'></div>");
+            var gridElement = $('<div class="photogrid-container"></div>');
             $('#article').html(gridElement);
-
+            $('#article').css('overflow','hidden');
 
             if(view === 'grid'){
                 for(var i =0;i<json.length;i++){
                     var photo = json[i];
-                    photo.previewSrc = agent.buildAgentUrl(photo.stamp_url);
-                    photo.src =       agent.buildAgentUrl(photo.thumb_url);
+                    photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
+                    photo.src =       agent.checkAddCredentialsToUrl(photo.thumb_url);
                 }
 
                 var grid = gridElement.zz_photogrid({
@@ -239,16 +244,20 @@ zz.init = {
                     cellWidth: 180,
                     cellHeight: 180,
                     onClickPhoto: function(index, photo){
-                        document.location.href = "/albums/" + album_id +"/photos?view=slideshow#photo_id=" + photo.id;
-                    }
+                        document.location.href = "/albums/" + zz.album_id +"/photos?view=slideshow#" + photo.id;
+                    },
+                    scrollToPhoto: $.param.fragment()
+
                 }).data().zz_photogrid;
+
+
 
             }
             else{
                 for(var i =0;i<json.length;i++){
                     var photo = json[i];
-                    photo.previewSrc = agent.buildAgentUrl(photo.stamp_url);
-                    photo.src =       agent.buildAgentUrl(photo.screen_url);
+                    photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
+                    photo.src =       agent.checkAddCredentialsToUrl(photo.screen_url);
                 }
 
                 var grid = gridElement.zz_photogrid({
@@ -256,14 +265,16 @@ zz.init = {
                     allowDelete: false,
                     allowEditCaption: false,
                     allowReorder: false,
-                    cellWidth: 1024,
-                    cellHeight: 1024,
+                    cellWidth: gridElement.width(),
+                    cellHeight: gridElement.height(),
                     onClickPhoto: function(index, photo){
-                        document.location.href = "/albums/" + album_id +"/photos#photo_id=" + photo.id;
+                        document.location.href = "/albums/" + zz.album_id +"/photos#" + photo.id;
                     },
-                    scrollMode: 'picture'
+                    singlePictureMode: true,
+                    scrollToPhoto: $.param.fragment()
 
                 }).data().zz_photogrid;
+
 
             }
 
@@ -513,13 +524,13 @@ zz.init = {
     album_timeline_or_people_view: function(which){
         $.ajax({
             dataType: 'json',
-            url: '/albums/' + zz.album_id + '/photos.json',
+            url: '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
             success: function(json){
 
                 for(var i =0;i<json.length;i++){
                     var photo = json[i];
-                    photo.previewSrc = agent.buildAgentUrl(photo.stamp_url);
-                    photo.src =       agent.buildAgentUrl(photo.thumb_url);
+                    photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
+                    photo.src =       agent.checkAddCredentialsToUrl(photo.thumb_url);
                 }
 
                 
@@ -557,7 +568,7 @@ zz.init = {
                         cellWidth: 180,
                         cellHeight: 180,
                         onClickPhoto: function(index, photo){
-                            document.location.href = "/albums/" + album_id +"/photos?view=slideshow#photo_id=" + photo.id;
+                            document.location.href = "/albums/" + zz.album_id +"/photos?view=slideshow#" + photo.id;
                         },
                         showThumbscroller: false
                     }).data().zz_photogrid;
@@ -568,18 +579,16 @@ zz.init = {
 
                     moreLessbuttonElement.click(function(){
                         if(allShowing){
-                            $(element).animate({
-                                height:180
-                            }, 500);
-                            moreLessbuttonElement.html("more...");
+                            $(element).animate({height:180}, 500, 'swing', function(){
+                                moreLessbuttonElement.html("more...");
+                            });
                             allShowing = false;
                         }
                         else{
-                            $(element).animate({
-                                height: $(element).children().last().position().top + 180
-                            }, 500);
-                            $(element).trigger('scroll');
-                            moreLessbuttonElement.html("less...");
+                            $(element).animate({height: $(element).children().last().position().top + 180}, 500, 'swing', function(){
+                                $(element).trigger('scroll');  //hack: force the photos to load themselves now that they are visible
+                                moreLessbuttonElement.html("less...");
+                            });
                             allShowing = true;
 
                         }

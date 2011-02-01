@@ -14,8 +14,8 @@ class Connector::ShutterflyPhotosController < Connector::ShutterflyController
 
      }
     }
-
-    render :json => photos.to_json
+    expires_in 10.minutes, :public => false
+    render :json => JSON.fast_generate(photos)
 
   end
 

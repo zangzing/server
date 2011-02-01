@@ -1,8 +1,8 @@
-//
-// agent.js
-//
-// Copyright �2010, ZangZing LLC. All rights reserved.
-//
+/*!
+ * agent.js
+ *
+ * Copyright 2011, ZangZing LLC. All rights reserved.
+ */
 
 
 var agent = {
@@ -35,11 +35,35 @@ var agent = {
         }
     },
 
-    //todo: this needs to be cleaned up
+    //if this is an agent url, add credentials
+    checkAddCredentialsToUrl: function(url){
+        if(this.isAgentUrl(url)){
+            if(url.indexOf('session=') === -1 && typeof(zz.current_user_id) !== 'undefined')
+            {
+                if(url.indexOf('?') > -1){
+                    url += '&';
+                }
+                else{
+                    url += '?';
+                }
+
+                url += 'session=' + $.cookie('user_credentials') + '&user_id=' + zz.current_user_id + '&callback=?';
+            }
+
+            return url;
+        }
+        else{
+            return url;
+        }
+    },
+
     /* path may be full url or just path portion */
     buildAgentUrl: function(path){
         var url = '';
 
+        if(! path){
+            return path;
+        }
 
         if(! agent.isAgentUrl(path)){
             if((path.indexOf('http://')!== -1) || (path.indexOf('https://')!== -1)){
@@ -56,19 +80,8 @@ var agent = {
         //fix agent port
         url = url.replace(/http:\/\/localhost:[^\/]*/,"http://localhost:" + agent.port);
 
-        if(url.indexOf('session=') === -1)
-        {
-            if(url.indexOf('?') > -1){
-                url += '&';
-            }
-            else{
-                url += '?';
-            }
 
-            url += 'session=' + $.cookie('user_credentials') + '&user_id=' + user_id + '&callback=?';
-        }
-
-        return url;
+        return this.checkAddCredentialsToUrl(url);
     },
 
 
@@ -78,10 +91,10 @@ var agent = {
         var url;
         var user_session = $.cookie("user_credentials");
         if (path.indexOf('?') == -1) {
-            url = "http://localhost:" + this.port + path + "?session=" + user_session + '&user_id=' + user_id +"&callback=?"
+            url = "http://localhost:" + this.port + path + "?session=" + user_session + '&user_id=' + zz.current_user_id +"&callback=?"
         }
         else {
-            url = "http://localhost:" + this.port + path + "&session=" + user_session + '&user_id=' + user_id +"&callback=?"
+            url = "http://localhost:" + this.port + path + "&session=" + user_session + '&user_id=' + zz.current_user_id +"&callback=?"
         }
 
 

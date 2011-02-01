@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=100" > <!-- IE8 mode -->
+
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
+
+    <!--todo: this sould be hosted in project-->
+    <script type="text/javascript" src="https://github.com/carhartl/jquery-cookie/raw/master/jquery.cookie.js"></script>
+    <script type="text/javascript" src="beta-email.js"></script>
+
+
+</head>
+
+
+
+<body>
+    <a href="#" onclick="beta_email.register('test@test.zangzing.com','asdfasfasdf');">test good email address</a>
+    <br>
+    <a href="#" onclick="alert(beta_email.already_registered());">check registration</a>
+    <br>
+    <a href="#" onclick="alert(beta_email.current_user_referred_by());">check referred by</a>
+
+</body>
+
+</html>

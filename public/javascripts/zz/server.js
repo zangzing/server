@@ -1,8 +1,8 @@
-//
-// agent.js
-//
-// Copyright ©2010, ZangZing LLC. All rights reserved.
-//
+/*!
+ * server.js
+ *
+ * Copyright 2011, ZangZing LLC. All rights reserved.
+ */
 
 
 var server = {

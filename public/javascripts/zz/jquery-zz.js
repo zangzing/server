@@ -1,3 +1,10 @@
+/*!
+ * jquery-zz.js
+ *
+ * Copyright 2011, ZangZing LLC. All rights reserved.
+ */
+
+
 (function( $ ){
   $.fn.rowLeft = function() {
       var top = this.position().top;

@@ -64,6 +64,7 @@ Server::Application.routes.draw do
   delete '/shares/:id'                   => 'shares#destroy',    :as => :delete_share
 
   #photos
+  get    '/albums/:album_id/photos_json' => 'photos#photos_json',                :as => :album_photos_json
   get    '/albums/:album_id/photos'      => 'photos#index',                     :as => :album_photos
   post   '/albums/:album_id/photos'      => 'photos#create',                    :as => :create_album_photo
   get    '/albums/:album_id/slides_source.:format' => 'photos#slideshowbox_source',    :as => :slideshow_source
@@ -217,6 +218,8 @@ Server::Application.routes.draw do
     match '/yahoo/sessions/destroy' => 'yahoo_sessions#destroy', :as => :destroy_yahoo_session
     match '/yahoo/contacts/:action' => 'yahoo_contacts#index', :as => :yahoo_contacts
 
+
+
     #Hotmail / MS Windows Live
     match '/mslive/sessions/new' => 'mslive_sessions#new', :as => :new_mslive_session
     match '/mslive/sessions/create' => 'mslive_sessions#delauth',:as => :create_mslive_session
@@ -244,8 +247,21 @@ Server::Application.routes.draw do
     match '/logs' => 'logs#index', :as => :logs
     match '/logs/:logname' => 'logs#retrieve', :as => :log_retrieve
   end
-  
+
+  # ====================================================================================================
+  # =============================================== ADMIN ==============================================
+  # ====================================================================================================
+  scope :module => "admin" do
+      get    'admin/status'                          =>  'status#show',                :as => :show_status
+      # MailChimp Transactional Campaign manager
+      get    '/admin/chimpcampaigns'                  => 'chimpcampaigns#index',       :as => :chimpcampaigns
+      get    '/admin/chimpcampaigns/new'              => 'chimpcampaigns#new',         :as => :new_chimpcampaign
+      post   '/admin/chimpcampaigns'                  => 'chimpcampaigns#create',      :as => :create_chimpcampaign
+      get    '/admin/chimpcampaigns/:id'              => 'chimpcampaigns#edit',        :as => :edit_chimpcampaign
+      put    '/admin/chimpcampaigns/:id'              => 'chimpcampaigns#update',      :as => :update_chimpcampaing
+      delete '/admin/chimpcampaigns/:id'              => 'chimpcampaigns#delete',      :as => :delete_chimpcampaign
+  end
   #Resque: mount the resque server 
-  mount Resque::Server.new, :at => "/resque"
+  mount Resque::Server.new, :at => "/admin/resque"
   
 end
