@@ -10,8 +10,8 @@
         options: {
             photos: [],
             srcAttribute: 'src',
-            previewSize: 80,
-            selectionSize: 115,
+            previewSize: 120,
+            selectionSize: 140,
             allowDelete: false,
             showSelection: false,
             selectedIndex:-1,

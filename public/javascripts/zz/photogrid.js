@@ -9,8 +9,8 @@
     $.widget( "ui.zz_photogrid", {
         options: {
             photos: [],
-            cellWidth: 180,
-            cellHeight: 180,
+            cellWidth: 200,
+            cellHeight: 200,
 
             allowDelete: false,
             onDelete:jQuery.noop,
@@ -284,7 +284,7 @@
                     photos:self.options.photos,
                     srcAttribute: 'previewSrc',
                     showSelection:false,
-                    thumbnailSize:16,
+                    thumbnailSize:20,
                     showSelectedIndexIndicator:true,
                     repaintOnResize:true,
                     onSelectPhoto: function(index, photo){
@@ -532,7 +532,7 @@
 
                 var paddingLeft = Math.floor((self.width - (cellsPerRow * self.options.cellWidth))/2);
 
-                paddingLeft = paddingLeft - (16/2); //account for scroller //todo: use constant or lookup value for scroller width
+                paddingLeft = paddingLeft - (20/2); //account for scroller //todo: use constant or lookup value for scroller width
 
 
                 return {

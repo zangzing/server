@@ -241,8 +241,8 @@ zz.init = {
                     allowDelete: false,
                     allowEditCaption: false,
                     allowReorder: false,
-                    cellWidth: 180,
-                    cellHeight: 180,
+                    cellWidth: 200,
+                    cellHeight: 200,
                     onClickPhoto: function(index, photo){
                         document.location.href = "/albums/" + zz.album_id +"/photos?view=slideshow#" + photo.id;
                     },
