@@ -24,11 +24,15 @@
 # class for an example.
 #
 class AttachedImage
+  include NewRelic::Agent::Instrumentation::ControllerInstrumentation
+
   # photo suffixes for naming
   ORIGINAL =  'o'
   MEDIUM =    'm'
   THUMB =     't'
   STAMP =     's'
+
+  TRACE_CATEGORY = :task
 
   # return the array of s3 buckets we can use
   def self.buckets
@@ -143,36 +147,40 @@ class AttachedImage
   # command, executing it and then return an array of maps containing the local path and
   # s3 keys - throws an exception if command failed
   def generate_resized_files(source_path, image_id)
-    resize_dir = PhotoGenHelper.photo_resize_dir + '/'
+    perform_action_with_newrelic_trace( :name => 'generate_resized_files',
+                                        :category => TRACE_CATEGORY,
+                                        :params => { :image_id => image_id }) do
+      resize_dir = PhotoGenHelper.photo_resize_dir + '/'
 
-    # build the command using the photo_sizes
-    out_paths = []
-    last = self.sizes.count - 1
-    current = 0
-    the_cmd = 'convert'
-    args = '"' + source_path + '"' + " \\\n "
-    custom = self.custom_commands
-    args << custom + " " unless custom.nil?
-    self.sizes.each do |map|
-      # it is expected that the map only contain 1 key/value pair for each
-      # array entry
-      map.each do |suffix, option|
-        local_path = resize_dir + image_id + '-' + suffix + ".jpg"
-        s3_key = AttachedImage.build_s3_key(prefix, image_id, suffix)
-        path_map = {:local_path => local_path, :s3_key => s3_key}
-        if current < last
-          # not the last one so gets normal treatment
-          args << option + " -write " + '"' + local_path + '"' + " \\\n "
-        else
-          # special case on the last one due to strange ImageMagick command form
-          args << option + ' "' + local_path + '"'
+      # build the command using the photo_sizes
+      out_paths = []
+      last = self.sizes.count - 1
+      current = 0
+      the_cmd = 'convert'
+      args = '"' + source_path + '"' + " \\\n "
+      custom = self.custom_commands
+      args << custom + " " unless custom.nil?
+      self.sizes.each do |map|
+        # it is expected that the map only contain 1 key/value pair for each
+        # array entry
+        map.each do |suffix, option|
+          local_path = resize_dir + image_id + '-' + suffix + ".jpg"
+          s3_key = AttachedImage.build_s3_key(prefix, image_id, suffix)
+          path_map = {:local_path => local_path, :s3_key => s3_key}
+          if current < last
+            # not the last one so gets normal treatment
+            args << option + " -write " + '"' + local_path + '"' + " \\\n "
+          else
+            # special case on the last one due to strange ImageMagick command form
+            args << option + ' "' + local_path + '"'
+          end
+          out_paths << path_map
+          current += 1
         end
-        out_paths << path_map
-        current += 1
       end
-    end
-    ZZ::CommandLineRunner.run(the_cmd, args)
-    return out_paths
+      ZZ::CommandLineRunner.run(the_cmd, args)
+      return out_paths
+    end    
   end
 
 

@@ -36,9 +36,7 @@ msg = "=> Resque options loaded. redis host is: "+  resque_config[Rails.env]
 Rails.logger.info msg
 puts msg
 
-
-#
-## add instrumentation to track resque jobs in NewRelic - this is needed since the 
+# add instrumentation to track resque jobs in NewRelic - this is needed since the
 # standard tracking expects resque jobs to be running out of forked instances
 # and deosn't track the parent.  In our case we would like to run the workers
 # directly from the parent due to the significantly lower overhead and the
@@ -49,9 +47,6 @@ module ZZInstrument
   module Instrumentation
     # == Resque Instrumentation
     #
-    # Installs a hook to ensure the agent starts manually when the worker
-    # starts and also adds the tracer to the process method which executes
-    # in the forked task.
     module ResqueInstrumentation
       ::Resque::Job.class_eval do
         include NewRelic::Agent::Instrumentation::ControllerInstrumentation
@@ -60,7 +55,7 @@ module ZZInstrument
 
         define_method(:perform) do
           class_name = (payload_class ||self.class).name
-          NewRelic::Agent.reset_stats if NewRelic::Agent.respond_to? :reset_stats
+          NewRelic::Agent.reset_stats if Server::Application.config.resque_run_forked && (NewRelic::Agent.respond_to? :reset_stats)
           perform_action_with_newrelic_trace(:name => 'perform', :class_name => class_name,
                                              :category => 'OtherTransaction/ResqueJob') do
             old_perform_method.bind(self).call
@@ -80,3 +75,4 @@ module ZZInstrument
     end
   end
 end if defined?(::Resque::Job)
+

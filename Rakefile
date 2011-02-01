@@ -4,6 +4,8 @@
 require File.expand_path('../config/application', __FILE__)
 require 'rake'
 
+ENV["NEWRELIC_DISPATCHER"] = "Resque"
+
 begin
   require 'resque/tasks'
 rescue LoadError

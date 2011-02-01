@@ -7,6 +7,7 @@ task "resque:setup" => :environment do
   # we might want to monkey patch to use another flag but this will do for now
   Server::Application.config.resque_run_forked ? $TESTING = false : $TESTING = true
   puts "resque:setup"
+
   if Rails.env == "development"
     puts "Not preloading in development environment"
   else
