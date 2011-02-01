@@ -105,8 +105,9 @@
     position:absolute;
     left:0px;
     top:0px;
-    opacity:.5;
-    filter:alpha(opacity=50);
-    background-color:#ffffff
+    /*opacity:.5;*/
+    /*filter:alpha(opacity=50);*/
+    /*background-color:#ffffff*/
+    background-color:transparent
 
 }
