@@ -219,7 +219,7 @@ class PhotosController < ApplicationController
         logger.debug 'using cached photos_json'
       end
 
-      expires_in 1.year, :public => false
+      expires_in 1.year, :public => true  #todo: make private for password protected albums
       response.headers["Expires"] = CGI.rfc1123_date(Time.now + 1.year)
       response.headers['Content-Encoding'] = "gzip"
       render :json => json
