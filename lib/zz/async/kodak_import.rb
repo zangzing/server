@@ -20,7 +20,10 @@ module ZZ
         photo = Photo.find(photo_id)
         if photo.assigned?
           kodak_connector = KodakConnector.new(auth_token)
-          photo.local_image = kodak_connector.response_as_file(source_url)
+          file = kodak_connector.response_as_file(source_url)
+          file_path = file.path
+          file.close()
+          photo.file_to_upload = file_path
           photo.save
         end
       end

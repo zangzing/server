@@ -6,6 +6,10 @@ class Notifier < ActionMailer::Base
     default :from => '"ZangZing '+Rails.env.capitalize+' Environment" <do-not-reply@zangzing.com>'
   end
 
+  def logger
+    Rails.logger
+  end
+  
   def contributors_added(contributor_id)
      contributor = Contributor.find( contributor_id )
      @user = contributor.album.user
@@ -21,6 +25,7 @@ class Notifier < ActionMailer::Base
      attachments['album.vcf'] = vcard.to_s
      #attachments['album.vcf'] = {:mime_type => 'text/x-vcard',:content =>vcard.to_s}
 
+     logger.info "Mailed contributors_added: #{contributor.email}, #{contributor.album.long_email}"
      mail( :to        => contributor.email,
            :reply_to  => contributor.album.long_email,
            :subject   => "You have been invited to contribute photos to '#{contributor.album.name}'!" )
@@ -40,7 +45,7 @@ class Notifier < ActionMailer::Base
       vc.add_email batch.album.short_email
     end
     attachments["#{batch.album.name}.vcf"] = vcard.to_s
-
+    logger.info "Mailed upload_batch_finished: #{batch.user.email}, #{batch.album.long_email}"
     mail( :to       => batch.user.email,
           :reply_to => batch.album.long_email,
           :subject  => "Your album "+batch.album.name+" is ready!")
@@ -50,6 +55,7 @@ class Notifier < ActionMailer::Base
     @from_user = User.find(from_user_id)
     @album = Album.find(album_id)
     @message = message
+    logger.info "Mailed album_shared_with_you: #{to_address}, #{@album.name}"
     mail( :to      => to_address,
           :subject => "#{@from_user.name} has shared ZangZing album: #{@album.name} with you.")
   end
@@ -57,6 +63,7 @@ class Notifier < ActionMailer::Base
   def you_are_being_followed( follower_id, followed_id)
     @follower = User.find( follower_id )
     @followed = User.find( followed_id )
+    logger.info "Mailed you_are_being_followed: #{@followed.email}, #{@follower.name}"
     mail( :to      => @followed.email,
           :subject => "#{@follower.name} thinks the world of you")
   end
@@ -64,6 +71,7 @@ class Notifier < ActionMailer::Base
   def activation_instructions(user_id)
     user = User.find(user_id)
     @account_activation_url = activate_url(user.perishable_token)
+    logger.info "Mailed activation_instructions: #{user.email}"
     mail( :to      => user.email,
           :subject => "Account Activation Instructions for your ZangZing Account" )
   end
@@ -71,6 +79,7 @@ class Notifier < ActionMailer::Base
   def password_reset_instructions(user_id)
     user = User.find(user_id)
     @edit_password_reset_url = edit_password_reset_url(user.perishable_token)
+    logger.info "Mailed password_reset_instructions: #{user.email}"
     mail(  :to      =>    user.email,
            :subject =>    "ZangZing Password Reset Instructions")
   end
@@ -78,11 +87,13 @@ class Notifier < ActionMailer::Base
   def welcome(user_id)
     user = User.find(user_id)
     @root_url = root_url
+    logger.info "Mailed welcome: #{user.email}"
     mail( :to       => user.email,
           :subject  => "Welcome to ZangZing!" )
   end
 
   def test_email( to )
+    logger.info "Mailed test_email: #{to}"
     mail( :to      => to,
           :subject => "Test from ZangZing #{Rails.env.capitalize} Environment") do |format|
         format.text { render :text => "This is the message body of the test" }

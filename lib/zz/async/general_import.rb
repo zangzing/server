@@ -19,7 +19,10 @@ module ZZ
       def self.perform( photo_id, source_url )
         photo = Photo.find(photo_id)
         if photo.assigned?
-          photo.local_image = RemoteFile.new(source_url)
+          file = RemoteFile.new(source_url, PhotoGenHelper.photo_upload_dir)
+          file_path = file.path
+          file.close()
+          photo.file_to_upload = file_path
           photo.save
         end
       end

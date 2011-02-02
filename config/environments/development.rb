@@ -33,4 +33,7 @@ Server::Application.configure do
 
 
   ActionController::Base.cache_store = :memory_store
+
+  # mail logger is too verbose, shut it off
+  config.action_mailer.logger = nil
 end

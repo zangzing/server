@@ -38,8 +38,7 @@ class Connector::ZangzingPhotosController < Connector::ConnectorController
               :source_screen_url => source_photo.source_screen_url
     )
 
-    source_photo.set_s3bucket
-    ZZ::Async::GeneralImport.enqueue( photo.id, source_photo.image.url )
+    ZZ::Async::GeneralImport.enqueue( photo.id, source_photo.original_url )
     render :json => Photo.to_json_lite(photo)
   end
 

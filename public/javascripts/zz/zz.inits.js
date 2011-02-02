@@ -184,8 +184,11 @@ zz.init = {
         zz.init.acct_badge();
         zz.init.like_menu();
         zz.init.buy_button();
-        zz.init.preload_rollover_images();
 
+        setTimeout(function(){
+            zz.init.preload_rollover_images();
+        }
+        ,500);
 
     },
 

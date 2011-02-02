@@ -1,24 +1,3 @@
-# == Schema Information
-# Schema version: 60
-#
-# Table name: albums
-#
-#  id              :integer         not null, primary key
-#  user_id         :integer
-#  privacy         :integer
-#  type            :string(255)
-#  style           :integer         default(0)
-#  open            :boolean
-#  event_date      :datetime
-#  location        :string(255)
-#  stream_share_id :integer
-#  reminders       :boolean
-#  name            :string(255)
-#  suspended       :boolean
-#  created_at      :datetime
-#  updated_at      :datetime
-#
-
 #
 #   Copyright 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
@@ -36,9 +15,8 @@ class Album < ActiveRecord::Base
   
   has_friendly_id :name, :use_slug => true, :scope => :user, :reserved_words => ["photos", "shares", 'activities', 'slides_source', 'people'], :approximate_ascii => true
 
-
-  has_attached_file :picon, Paperclip.options[:picon_options]
-  before_picon_post_process    :set_picon_metadata
+  # Set up an async call for managing the deleted photo from s3
+  after_commit  :queue_delete_from_s3, :on => :destroy
 
   validates_presence_of  :user_id
   validates_presence_of  :name
@@ -100,10 +78,24 @@ class Album < ActiveRecord::Base
     self.save
   end
 
+  # get an instance of the attached image helper class
+  def attached_picon
+    @attached_picon ||= PiconAttachedImage.new(self, "picon")
+  end
 
+
+  # make and update the picon
   def update_picon
-      self.picon.clear unless self.picon.nil?
-      self.picon = ZZ::Picon.make( self )
+      # make the picon in the local file system
+      file = ZZ::Picon.make( self )
+
+      self.picon_content_type = "image/png"
+      self.picon_file_size = File.size(file.path)
+      attached_picon.upload(file)
+
+      # delete the file right now rather than waiting for GC
+      file.delete() rescue nil
+
       self.save
   end
   
@@ -111,14 +103,34 @@ class Album < ActiveRecord::Base
      ZZ::Async::UpdatePicon.enqueue( self.id )
   end
 
-  def picon_url
-    picon.instance_variable_set '@bucket', self.picon_bucket unless self.picon_bucket.nil?
-    picon.url
+  #
+  # Delete the s3 related objects in a deferred fashion
+  #
+  def queue_delete_from_s3
+    # if we have already uploaded to s3 go ahead and delete it since
+    # we are going away.
+    # in the unlikely event that the delete gets processed before the
+    # upload then the object itself will no longer exist which
+    # will keep the upload from ever taking place
+    # also, we can't rely on the album object itself since it won't
+    # exist by the time it gets processed.
+    if self.image_bucket
+      # get all of the keys to remove
+      keys = attached_picon.all_keys
+      ZZ::Async::S3Cleanup.enqueue(self.image_bucket, keys)
+      logger.debug("picon queued for s3 cleanup")
+    end
   end
 
-  def set_picon_metadata
-    self.picon_path   = picon.path.gsub(picon.original_filename,'')
-    self.picon_bucket = picon.instance_variable_get("@bucket")
+
+  def picon_url
+    if self.picon_path != nil
+      # file comes from s3
+      self.picon_path
+    else
+      # use local file
+      "/images/folders/blank.jpg"
+    end
   end
 
   def is_contributor?( email )
@@ -163,4 +175,18 @@ private
     self.connection.execute "UPDATE `albums` SET `email`='#{mail_address}' WHERE `id`='#{self.id}'" if self.id
     self.name_had_changed = false
   end
+
 end
+
+
+
+# this class simplifies the association of a named image
+# in the database by managing the seperate fields needed and
+# also interfaces to S3 for upload/download/delete
+class PiconAttachedImage < AttachedImage
+  # return the s3 key prefix
+  def prefix
+    @@prefix ||= "/p/"
+  end
+end
+

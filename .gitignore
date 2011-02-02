@@ -9,6 +9,7 @@ db/*.sqlite3
 /.idea
 .idea*/*
 public/system/*
+public/assets
 nbproject
 log/*
 *.swp

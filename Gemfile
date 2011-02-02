@@ -16,14 +16,13 @@ gem 'oauth',         "0.4.5.pre2", :git => 'git://github.com/zangzing/oauth-ruby
 gem "oauth-plugin", ">=0.4.0.pre1"
 
 gem 'i18n'
-gem 'paperclip',     '2.3.6'
 gem 'aws-s3',        '>= 0.6.2', :require => 'aws/s3' # S3
 gem 'resque'                                          # Queuing
 gem 'resque-retry'
 gem 'SystemTimer'                                     # For Random numbers (resque uuid)
 gem 'actionmailer'
 gem 'will_paginate',        '3.0.pre2'                        # Pagination
-gem "friendly_id", "~> 3.1"                           #User-friendly links to albums and users' pages
+gem "friendly_id",   "3.1.8"                           #User-friendly links to albums and users' pages
 
 gem 'gdata',         '1.1.1'  						  # Google Data 
 gem 'twitter_oauth'   		                          # Twitter 

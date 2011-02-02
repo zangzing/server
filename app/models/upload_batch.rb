@@ -1,5 +1,5 @@
 class UploadBatch < ActiveRecord::Base
-  attr_accessible :album_id
+  attr_accessible :album_id, :custom_order
   
   belongs_to :user
   belongs_to :album
@@ -95,7 +95,10 @@ class UploadBatch < ActiveRecord::Base
     raise Exception.new( "User and Album Params must not be null for the UploadBatch factory") if( user_id.nil? or album_id.nil? )
     user = User.find( user_id )
     album = Album.find( album_id)
-    nb = user.upload_batches.create({:album_id => album.id})
+    nb = user.upload_batches.create({:album_id => album.id })
+    if album.custom_order
+      nb.custom_order_offset = album.photos.last.pos
+    end
     album.upload_batches << nb
     #schedule the closing of the batch 30 minutes from now
     # TODO: If needed use resque-scheduler to close batches 30 minutes after they were open

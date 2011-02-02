@@ -16,8 +16,9 @@ module ActiveRecord::ConnectionAdapters
     def execute(*args)
       execute_without_retry(*args)
     rescue => e
-      if e.message == "MySQL server has gone away"
-        warn "Server timed out, retrying"
+      msg = e.message
+      if msg && msg.index("MySQL server has gone away")
+        Rails.logger.error("MySQL Server connection timed out, retrying in connection_fix")
         reconnect!
         retry
       else

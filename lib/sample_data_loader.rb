@@ -135,8 +135,8 @@ class SampleDataLoader
              :access_key_id => @s3creds[:access_key_id],
             :secret_access_key =>@s3creds[:secret_access_key]
      )
-     @s3buckets = Paperclip.options[:image_options][:s3buckets]
-     @s3options = {:access => :public_read }.merge( Paperclip.options[:image_options][:s3_headers] )
+#     @s3buckets = Paperclip.options[:image_options][:s3buckets]
+#     @s3options = {:access => :public_read }.merge( Paperclip.options[:image_options][:s3_headers] )
      puts "      S3 connection up"
   end
 

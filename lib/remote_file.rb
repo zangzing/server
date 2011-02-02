@@ -1,7 +1,11 @@
 require 'net/http'
 require 'digest/sha1'
 
-class RemoteFile < ::Tempfile
+# Note: this cannot inherit from the Tempfile base class
+# because we do not want the files deleting themselves since
+# we use this to create files that are given to the Photo processing
+# workflow and it needs to control the file lifetime
+class RemoteFile < ::File
   CONTENT_DISPOSITION_FILENAME_REGEX = /filename=([A-Z,a-z,0-9_#-]+\.*[A-Z,a-z,0-9]*)/
   CHUNK_SIZE = 4096
 
@@ -10,8 +14,8 @@ class RemoteFile < ::Tempfile
     @remote_path        = path
     @content_type       = 'application/x-octet-stream'
     @options            = options
-
-    super Digest::SHA1.hexdigest(path), tmpdir
+    digest = Digest::SHA1.hexdigest(path)
+    super tmpdir + "/" + digest, "w+b"
     fetch
   end
 
@@ -37,10 +41,6 @@ class RemoteFile < ::Tempfile
       end
     end
 
-    unless @original_filename.include?('.') && (@content_type == 'x-octet-stream')
-      extension = @content_type.split('/').last
-      @original_filename += ".#{extension}"
-    end
     self.rewind
     self
   end

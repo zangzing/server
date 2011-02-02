@@ -53,6 +53,8 @@ module ZZ
         ArgumentError.name                            => /.*/,
         NoMethodError.name                            => /.*/,
         SyntaxError.name                              => /.*/,
+        NameError.name                                => /.*/,
+        TypeError.name                                => /.*/,
         ActiveRecord::RecordNotFound.name             => /.*/,
         RuntimeError.name                             => /.*/
       }
@@ -89,7 +91,7 @@ module ZZ
           # if we have something to match on try it with a regular expression
           if match && (ex_message =~ match) != nil
             # when found exit with false since we don't want retry if we matched
-            Rails.logger.error "Will not retry job for due to matching filter exception of #{ex_name} : #{ex_message} for #{self.name}"
+            Rails.logger.error "Will not retry job due to matching filter exception of #{ex_name} : #{ex_message} for #{self.name}"
             return false
           end
         end
@@ -110,16 +112,16 @@ module ZZ
       # the zz is to go last since these are
       # called in alphabetical order
       def self.after_perform_zz_gc(*args)
-        #TODO:Remove the GC after Photo Rework since causes significant performance issues
-        GC.start # force gc to cleanup before we leave
+        #No longer needed since our photo generation flow cleans up explicitly now
+        #GC.start # force gc to cleanup before we leave
       end
 
       # resque hook to perform GC after job
       # the zz is to go last since these are
       # called in alphabetical order
       def self.on_failure_zz_gc(*args)
-        #TODO:Remove the GC after Photo Rework since causes significant performance issues
-        GC.start # force gc to cleanup before we leave
+        #No longer needed since our photo generation flow cleans up explicitly now
+        #GC.start # force gc to cleanup before we leave
       end
 
     end

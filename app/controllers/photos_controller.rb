@@ -45,13 +45,14 @@ class PhotosController < ApplicationController
     photos = []
     current_batch = UploadBatch.get_current( current_user.id, album.id )
     (0...params[:source_guid].length).each do |index|
-      photo = album.photos.build(   :user_id =>           current_user.id,
-                                    :upload_batch_id =>   current_batch.id,
-                                    :agent_id =>          params[:agent_id],
-                                    :source_guid =>       params[:source_guid][index.to_s],
-                                    :caption =>           params[:caption][index.to_s],
-                                    :image_file_size =>   params[:size][index.to_s],
-                                    :source_thumb_url =>  "http://localhost:30777/albums/#{album.id}/photos/:photo_id.thumb",
+      photo = album.photos.build(   :user_id           =>   current_user.id,
+                                    :upload_batch_id   =>   current_batch.id,
+                                    :agent_id          =>   params[:agent_id],
+                                    :source_guid       =>   params[:source_guid][index.to_s],
+                                    :caption           =>   params[:caption][index.to_s],
+                                    :image_file_size   =>   params[:size][index.to_s],
+                                    :capture_date      =>   Time.at( params[:capture_date][index.to_s].to_i ),
+                                    :source_thumb_url  =>  "http://localhost:30777/albums/#{album.id}/photos/:photo_id.thumb",
                                     :source_screen_url => "http://localhost:30777/albums/#{album.id}/photos/:photo_id.screen")
                                     #todo: need to handle agent port and url templates in central place for source thumb_url and screen_url
       if photo.save
@@ -89,8 +90,9 @@ class PhotosController < ApplicationController
       begin
         @photo = Photo.find(params[:id])
         @album = @photo.album
-        fast_local_image = {"fast_local_image" => attachments[0]} # extract only the first one
-        if @photo.update_attributes(fast_local_image)
+        fast_local_image = attachments[0] # extract only the first one
+        @photo.file_to_upload = fast_local_image['filepath']
+        if @photo.save
           render :json => @photo.to_json(:only =>[:id, :agent_id, :state]), :status => 200 and return
         else
           render :json => @photo.errors, :status=>400
@@ -200,7 +202,7 @@ class PhotosController < ApplicationController
 
     if stale?(:last_modified => @album.photos_last_updated_at.utc, :etag => @album)
 
-      cache_key = @album.id + '-' + @album.photos_last_updated_at.to_s + '.json'
+      cache_key = "Album.Photos." + @album.id + '-' + @album.photos_last_updated_at.to_i.to_s + '.json'
       cache_key = cache_key.gsub(' ', '_')
 
       logger.debug 'cache key: ' + cache_key
@@ -306,7 +308,19 @@ class PhotosController < ApplicationController
     end
   end
 
+  #used by the photogrid to notify changes in the album order when a photo is dragged and dropped
+  # expects :before_id and :after_id
+  def position
+    #begin
+      photo = Photo.find( params[:id] )
+      photo.position_between( params[:before_id], params[:after_id])
+    #rescue Exception => e
+    #  render :json => e.message, :status => 500 and return
+    #end
+    render :text => "Position Done!", :status => 200
+  end
 
+  
 private
 
   def fetch_album
