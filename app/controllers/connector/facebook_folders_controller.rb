@@ -49,7 +49,7 @@ class Connector::FacebookFoldersController < Connector::FacebookController
       end
     end
 
-    render :json => @folders.to_json
+    render :json => JSON.fast_generate(@folders)
   end
 
   def import

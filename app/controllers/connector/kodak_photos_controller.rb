@@ -19,7 +19,7 @@ class Connector::KodakPhotosController < Connector::KodakController
       }
     }
 
-    render :json => @photos.to_json
+    render :json => JSON.fast_generate(@photos)
     
   end
 

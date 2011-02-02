@@ -16,7 +16,7 @@ class Connector::PicasaPhotosController < Connector::PicasaController
      }
     end
 
-    render :json => photos.to_json
+    render :json => JSON.fast_generate(photos)
   end
 
   def import

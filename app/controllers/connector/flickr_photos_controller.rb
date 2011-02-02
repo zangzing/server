@@ -18,7 +18,7 @@ class Connector::FlickrPhotosController < Connector::FlickrController
       }
     }
 
-    render :json => @photos.to_json
+    render :json => JSON.fast_generate(@photos)
   end
 
 #  def show

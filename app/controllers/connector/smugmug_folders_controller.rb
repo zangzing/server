@@ -12,7 +12,7 @@ class Connector::SmugmugFoldersController < Connector::SmugmugController
       }
     }
 
-    render :json => @folders.to_json
+    render :json => JSON.fast_generate(@folders)
   end
 
   def import

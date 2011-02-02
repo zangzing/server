@@ -14,7 +14,7 @@ class Connector::PicasaFoldersController < Connector::PicasaController
       }
     end
     
-    render :json => folders.to_json
+    render :json => JSON.fast_generate(folders)
   end
 
   def import
