@@ -16,8 +16,8 @@ eydevelopment:
   :api_key: cbcd54aeabffef35d77cb02e321c01bf
 
 eysandbox:
-  :shared_secret: f8940e84726a5e17
-  :api_key: cbcd54aeabffef35d77cb02e321c01bf
+  :shared_secret: aa0d9d1e8e9805b5
+  :api_key: 91f808165763e6e9dff7a77568593337
 
 
 eytest:
