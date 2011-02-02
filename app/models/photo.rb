@@ -40,7 +40,7 @@ require 'zz'
 class Photo < ActiveRecord::Base
   usesguid
 
-  attr_accessible :user_id, :upload_batch_id, :agent_id, :source_guid, :caption,
+  attr_accessible :user_id, :album_id, :upload_batch_id, :agent_id, :source_guid, :caption,
                   :image_file_size, :capture_date, :source_thumb_url, :source_screen_url
 
   has_one :photo_info, :dependent => :destroy
