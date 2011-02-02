@@ -39,16 +39,21 @@ require 'zz'
 
 class Photo < ActiveRecord::Base
   usesguid
+
+  attr_accessible :user_id, :upload_batch_id, :agent_id, :source_guid, :caption,
+                  :image_file_size, :capture_date, :source_thumb_url, :source_screen_url
+
   has_one :photo_info, :dependent => :destroy
   belongs_to :album, :touch => :photos_last_updated_at
   belongs_to :user
   belongs_to :upload_batch
 
   # when retrieving a search from the DB it will always be ordered by created date descending a.k.a Latest first
-  default_scope :order => 'capture_date DESC, created_at DESC'
+  default_scope :order => 'pos ASC, created_at ASC'
 
 
   before_create :substitute_source_urls
+  before_create :set_default_position
 
 
   # make sure the to be uploaded file arguments are valid
@@ -425,6 +430,48 @@ class Photo < ActiveRecord::Base
 
   end
 
+  
+  def set_default_position
+    if capture_date.nil?
+      self.pos = 5000000000.0  #If capture date is not known, assign Fri Jun 11 00:53:20 -0800 2128 so it goes at the end
+    else
+      self.pos = capture_date.to_f
+    end
+
+    # batch will be custom order if album was custom order when batch was created
+    # this prevents some photos in the batch to end up in the middle of the album and some at the end
+    if upload_batch.custom_order_offset > 0
+      #shift entire batch to the end of the album in captured_date order.
+      self.pos += upload_batch.custom_order_offset
+    end
+  end
+
+  # Used when the user reorders photos
+  def position_between( before_photo_id, after_photo_id )
+    if before_photo_id.nil? && after_photo_id.nil? 
+            raise Exception, "Before & After Ids cannot both be null"
+    end
+    photos = album.photos
+    return if photos.length <= 1     #cannot / no need to change position in one photo album
+
+    if before_photo_id.nil? # insert at beginning
+       after = photos.find(after_photo_id)
+       self.pos = after.pos - 100;
+    elsif after_photo_id.nil? #insert at end
+       before = photos.find( before_photo_id )
+       self.pos = before.pos + 100
+    else  #insert in the middle
+      after = photos.find(after_photo_id)
+      before = photos.find( before_photo_id )
+      self.pos =  ( before.pos + after.pos )/2
+    end
+    if album.custom_order == false
+        album.custom_order = true
+        album.save
+    end
+    save
+  end
+  
 end
 
 

@@ -133,6 +133,7 @@ class AlbumsController < ApplicationController
      end
      render :nothing => true
   end
+
   
   private
   def authorized_user
