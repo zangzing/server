@@ -220,12 +220,15 @@ zz.init = {
             view = 'picture';
         }
 
-
-
+var start = (new Date().getTime());
+logger.debug("0 before ajax call");
         $.ajax({
             dataType: 'json',
             url: '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
             success: function(json){
+
+
+logger.debug(((new Date()).getTime() - start)  +" after ajax call");
 
 
             var gridElement = $('<div class="photogrid-container"></div>');
@@ -281,6 +284,7 @@ zz.init = {
 
             }
 
+logger.debug(((new Date()).getTime() - start) +" after create grid");
 
 
                 //setup upload progress smeter
