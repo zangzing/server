@@ -34,14 +34,14 @@
         <th> delete </th>
   </tr>
 
-<% @campaigns.each do |camp| %>
+<% @campaigns.each do |campaign| %>
   <tr>
-        <td> <a href="<%=edit_chimpcampaign_path( camp['id'])%>"> <%= camp['id'] %></a> </td>
-        <td> <%= camp['title'] %> </td>
-        <td> <%= camp['list_name']  %> </td>
-        <td> <%= camp['template_name'] %> </td>
+        <td> <a href="<%=edit_chimpcampaign_path( campaign['id'])%>"> <%= campaign['id'] %></a> </td>
+        <td> <%= campaign['title'] %> </td>
+        <td> <%= campaign['list_name']  %> </td>
+        <td> <%= campaign['template_name'] %> </td>
         <td>
-          <form method="post" action="<%=delete_chimpcampaign_url( camp['id'] )%>" class="button-to">
+          <form method="post" action="<%=delete_chimpcampaign_url( campaign['id'] )%>" class="button-to">
             <div>
                 <input type="hidden" name="_method" value="delete" />
                 <input onclick="return confirm('Are you sure you want to delete the campaign?');"

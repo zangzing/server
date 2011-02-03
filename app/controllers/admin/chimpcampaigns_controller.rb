@@ -71,12 +71,11 @@ class Admin::ChimpcampaignsController < Admin::AdminController
     @templates = ZZ::MailChimp.get_templates
     @campaigns = ZZ::MailChimp.get_transactional_campaigns
 
-    @campaigns.each do |c|
-          t = @templates.find{
-              |t| t['id'].to_f == c['template_id'].to_f}
-          c['template_name'] = t['name'] unless t.nil?
-          l = @lists.find{ |l| l['id'].to_f == c['list_id'].to_f}
-          c['list_name']=l['name'] unless l.nil?
+    @campaigns.each do |campaign|
+          template = @templates.find{ |t| t['id'].to_s == campaign['template_id'].to_s }
+          campaign['template_name'] = template['name'] unless template.nil?
+          list = @lists.find{ |l| l['id'].to_s == campaign['list_id'].to_s}
+          campaign['list_name']=list['name'] unless list.nil?
     end
 
 

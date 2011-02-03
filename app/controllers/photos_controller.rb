@@ -156,8 +156,6 @@ class PhotosController < ApplicationController
 
     respond_to do |format|
       format.html do
-
-
         @title = CGI.escapeHTML(@album.name)
 
         if params[:upload_batch] && @upload_batch = UploadBatch.find(params[:upload_batch])
@@ -324,7 +322,7 @@ class PhotosController < ApplicationController
 private
 
   def fetch_album
-    params[:friendly] ? Album.find(params[:album_id], :scope => params[:user_id]) : Album.first(:conditions => {:id => params[:album_id]})
+    params[:friendly] ? Album.find(params[:album_id], :scope => params[:user_id]) : Album.find( params[:album_id] )
   end
 
   def determine_album_user
