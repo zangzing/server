@@ -1,6 +1,6 @@
 class AddPosToPhotos < ActiveRecord::Migration
   def self.up
-    add_column :photos, :pos, :float, :default => 0.0
+    add_column :photos, :pos, :double
   end
 
   def self.down

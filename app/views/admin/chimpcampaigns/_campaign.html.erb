@@ -19,13 +19,20 @@
     <td><label for="camp_list_id">List</label></td>
     <td>
         <select id="camp_list_id" name="camp[list_id]">
-          <option value="">-BLANK-</option>
+
+            <% selected = false %>
             <% lists.each do |l| %>
                 <option value="<%= l['id'] %>"
-                    <%=(l['id'].to_f == campaign['list_id'].to_f ? 'selected=\"selected\"' :'' )%>>
-                    <%=l['name']%>
+                    <%if l['id'].to_s == campaign['list_id'].to_s %>
+                        selected="selected"
+                      <% selected = true %>
+                    <% end %>
+                    ><%=l['name']%>
                 </option>
             <%end%>
+            <% if !selected  %>
+                <option value="" selected="selected">-BLANK-</option>
+            <% end  %>  
         </select>
     </td>
   </tr>
@@ -33,13 +40,19 @@
     <td><label for="camp_template_id">Template</label></td>
     <td>
         <select id="camp_template_id" name="camp[template_id]">
-            <option value="">-BLANK-</option>
-            <% templates.each do |t| %>
+           <% selected = false %> 
+           <% templates.each do |t| %>
                 <option value="<%= t['id'] %>"
-                    <%=(t['id'].to_f == campaign['template_id'].to_f ? 'selected=\"selected\"' :'' )%>>
-                    <%=t['name']%>
+                    <%if t['id'].to_s == campaign['template_id'].to_s %>
+                        selected="selected"
+                        <% selected = true %>
+                    <%end%>
+                    ><%=t['name']%>
                 </option>
             <%end%>
+           <% if !selected  %>
+                <option value="" selected="selected">-BLANK-</option>
+            <% end  %>
         </select>
     </td>
   </tr>
