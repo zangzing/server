@@ -28,6 +28,7 @@ describe "contributors test" do
   end
   
   it "verify contacts are imported" do
+    ui.wizard.album_contributors_tab.imported_mslive?.should be_false
     ui.wizard.album_contributors_tab.imported_yahoo?.should be_false
     ui.wizard.album_contributors_tab.imported_gmail?.should be_true
   end
