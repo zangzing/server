@@ -69,14 +69,14 @@
 
 
 .photo-border{
-    box-shadow: 0px 0px 2px #767676;
-    -webkit-box-shadow: 0px 0px 2px #767676;
-    -moz-box-shadow: 0px 0px 2px #767676;
+    box-shadow: 0px 0px 3px #e6e6e6;
+    -webkit-box-shadow: 0px 0px 3px #e6e6e6;
+    -moz-box-shadow: 0px 0px 3px #e6e6e6;
     -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=135, Color='#767676')";
     position:absolute;
     cursor: pointer;
     padding:0px;
-    border:1px solid #aaaaaa
+    border:1px solid #d6d6d6
 }
 
 
