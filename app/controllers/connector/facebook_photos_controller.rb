@@ -22,7 +22,7 @@ class Connector::FacebookPhotosController < Connector::FacebookController
       @photos = []
     end
 
-    render :json => @photos.to_json
+    render :json => JSON.fast_generate(@photos)
   end
 
 #  def show

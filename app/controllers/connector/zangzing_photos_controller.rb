@@ -14,7 +14,7 @@ class Connector::ZangzingPhotosController < Connector::ConnectorController
       }
     end
 
-    render :json => @photos.to_json
+    render :json => JSON.fast_generate(@photos)
   end
 
 #  def show

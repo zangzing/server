@@ -14,7 +14,7 @@ class Connector::FlickrFoldersController < Connector::FlickrController
         :add_url => flickr_folder_action_url({:set_id =>f.id, :action => 'import'})
       }
     }
-    render :json => @folders.to_json
+    render :json => JSON.fast_generate(@folders)
 
   end
   

@@ -26,7 +26,7 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
       }
     end
 
-    render :json => folders
+    render :json => JSON.fast_generate(folders)
   end
 
   def import

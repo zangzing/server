@@ -17,7 +17,7 @@ class Connector::PhotobucketPhotosController < Connector::PhotobucketController
     }
 
 
-    render :json => @photos.to_json
+    render :json => JSON.fast_generate(@photos)
   end
 
   def import

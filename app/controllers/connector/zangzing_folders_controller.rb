@@ -12,7 +12,7 @@ class Connector::ZangzingFoldersController < Connector::ConnectorController
     }
 
 
-    render :json => @folders.to_json
+    render :json => JSON.fast_generate(@folders)
   end
 
   def import
