@@ -69,10 +69,10 @@
 
 
 .photo-border{
-    /*box-shadow: 0px 0px 5px #767676;*/
-    /*-webkit-box-shadow: 0px 0px 5px #767676;*/
-    /*-moz-box-shadow: 0px 0px 5px #767676;*/
-    /*-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=135, Color='#767676')";*/
+    box-shadow: 0px 0px 2px #767676;
+    -webkit-box-shadow: 0px 0px 2px #767676;
+    -moz-box-shadow: 0px 0px 2px #767676;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=135, Color='#767676')";
     position:absolute;
     cursor: pointer;
     padding:0px;
@@ -82,10 +82,10 @@
 
 
 .photogrid-cell.dragging .photo-border, .photo-border:hover, .photo-border.highlighted{
-    /*box-shadow: 0px 0px 5px #FDD042;*/
-    /*-webkit-box-shadow: 0px 0px 5px #FDD042;*/
-    /*-moz-box-shadow: 0px 0px 5px #FDD042;*/
-    /*-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=135, Color='#FDD042')";*/
+    box-shadow: 0px 0px 2px #FDD042;
+    -webkit-box-shadow: 0px 0px 2px #FDD042;
+    -moz-box-shadow: 0px 0px 2px #FDD042;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=135, Color='#FDD042')";
     border:1px solid #FDD042;
 
 }
