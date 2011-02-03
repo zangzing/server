@@ -2,7 +2,7 @@ module UiModel
   module Wizard
 
     class Drawer
-      attr_reader :add_photos_tab, :album_name_tab, :album_type_tab
+      attr_reader :add_photos_tab, :album_name_tab, :album_type_tab, :album_contributors_tab
 
         def initialize(selenuim_session)
           @session = selenuim_session
@@ -11,6 +11,7 @@ module UiModel
           @add_photos_tab = AddPhotosTab.new(selenuim_session)
           @album_name_tab = AlbumNameTab.new(selenuim_session)
           @album_type_tab = AlbumTypeTab.new(selenuim_session)
+          @album_contributors_tab = AlbumContributorsTab.new(selenuim_session)
         end
 
         def click_name_tab
@@ -28,7 +29,7 @@ module UiModel
 
         def click_contributors_tab
           @browser.click 'css=#wizard-contributors'
-          @session.wait_for "css=#add-contributors-btn"
+          @session.wait_for "css=a#submit-new-contributors.green-button"
         end
 
         def click_share_tab
@@ -136,6 +137,68 @@ module UiModel
         @session.wait_for 'css=a:contains("Facebook")'
       end
 
+    end
+    
+    class AlbumContributorsTab
+      def initialize(selenuim_session)
+        @session = selenuim_session
+        @browser = selenuim_session.browser
+      end
+      
+      def import_gmail_contacts
+        @browser.click "css=img#gmail-sync.link"
+        @browser.select_window "oauthlogin" #select the oauth sign in window
+        @session.wait_for 'css=input#Email.gaia.le.val'
+        @browser.type "Email", "dev.zangzing@gmail.com"
+        @browser.type "Passwd", "share1001photos"
+        @browser.click "signIn"
+        #@session.wait_load
+        @session.wait_for 'css=input#allow'
+        @browser.click 'css=input#allow'
+        @browser.select_window "null"
+        sleep 5
+      end
+      
+      def import_yahoo_contacts
+        @browser.click "css=img#yahoo-sync.link"
+        @browser.select_window "name=oauthlogin"
+        @session.wait_load
+        @browser.type "username", "zangzing_dev"
+        @browser.type "passwd", "clev-vid-arch-ab-a"
+        @browser.click ".save"
+        @session.wait_load
+        @browser.click "agree"
+        @browser.select_window "null"
+        sleep 5
+      end
+      
+      def import_mslive_contacts
+        @browser.click "css=img#mslive-sync.link"
+        @browser.select_window "name=oauthlogin"
+        @session.wait_load
+        @browser.click "i0116"
+        sleep 1
+        @browser.type "i0116", "dev_zangzing@hotmail.com"
+        @browser.type "i0118", "QaVH6kP6XdMPzLTz"
+        @browser.click "css=input#idSIButton9"
+        @browser.choose_ok_on_next_confirmation
+        #@session.wait_load
+        #@browser.click "ctl00_MainContent_ConsentBtn"
+        @browser.select_window "null"
+      end
+
+      def imported_gmail?
+        @browser.is_element_present("//img[@src='/images/btn-gmail-on.png']")
+      end
+      
+      def imported_yahoo?
+        @browser.is_element_present("//img[@src='/images/btn-yahoo-on.png']")
+      end
+      
+      def imported_mslive?
+        @browser.is_element_present("//img[@src='/images/btn-mslive-on.png']")
+      end
+      
     end
 
   end
