@@ -343,6 +343,10 @@
 
         },
 
+        getPhotoId: function(){
+           return this.options.photoId;  
+        },
+
         dragStart: function(){
             this.element.addClass('dragging');
         },

@@ -433,9 +433,10 @@ class Photo < ActiveRecord::Base
   
   def set_default_position
     if capture_date.nil?
-      self.pos = 5000000000.0  #If capture date is not known, assign Fri Jun 11 00:53:20 -0800 2128 so it goes at the end
+      self.pos = "%10.6f" % (Time.now + 100.years) #If capture date is not known, add 100 years to today and it will go at the end
     else
-      self.pos = capture_date.to_f
+      self.pos = capture_date.to_i   # "%10.6f" % capture_date.to_f
+
     end
 
     # batch will be custom order if album was custom order when batch was created

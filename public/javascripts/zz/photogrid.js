@@ -200,6 +200,16 @@
 
 
                             self.resetLayout(800, 'easeInOutCubic');
+
+
+                            var photo_id = draggedCell.data().zz_photo.getPhotoId();
+                            var before_id = null;
+                            if($(draggedCell).prev().length !==0){
+                                before_id = $(draggedCell).prev().data().zz_photo.getPhotoId();
+                            }
+                            var after_id = droppedOnCell.data().zz_photo.getPhotoId();
+                            self.options.onChangeOrder(photo_id, before_id, after_id);
+
                         }
 
                     });

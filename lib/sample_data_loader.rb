@@ -135,7 +135,7 @@ class SampleDataLoader
              :access_key_id => @s3creds[:access_key_id],
             :secret_access_key =>@s3creds[:secret_access_key]
      )
-#     @s3buckets = Paperclip.options[:image_options][:s3buckets]
+      @s3buckets = ['1.zz', '2.zz', '3.zz', '4.zz']
 #     @s3options = {:access => :public_read }.merge( Paperclip.options[:image_options][:s3_headers] )
      puts "      S3 connection up"
   end
@@ -149,9 +149,9 @@ class SampleDataLoader
      @s3buckets.each do | bucket_name |
         @s3bucket = AWS::S3::Bucket.find( bucket_name )
         @s3bucket.objects.each do | o |
-          matches = o.key.match(/^(.*)\/original\/(.*\.(jpeg|jpg))$/i)
+          matches = o.key.match(/^i\/(.*-o)$/i)
           if !matches.nil?
-            @image_names.insert( rand( @image_names.length ), { :key =>matches[0], :bucket => bucket_name, :path=>matches[1], :name=>matches[2] })
+            @image_names.insert( rand( @image_names.length ), { :key =>matches[0], :bucket => bucket_name, :path=>'i/', :name=>matches[1] })
           end
         end
       @image_name_counter = 0

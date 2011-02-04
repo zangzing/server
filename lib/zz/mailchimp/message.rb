@@ -14,34 +14,41 @@ module ZZ
       def deliver
         raise Error, "Message.delivery error: Campaigns not loaded, did load_setup fail. Unable to deliver #{@name} message" if $campaigns.nil?
 
-        @subscribed = false
-        @sent = false
-        @unsubscribed = false
-
+        subscribed = false
+        sent = false
+        unsubscribed = false
         begin
-          @subscribed = Chimp.list_subscribe(  $campaigns[@name]['list_id'],
-                                               @to_email,    #to_email
-                                               @merge_vars,  #merge_vars
-                                               'html',       #email type
-                                               false)        #double opt_in
 
-          if @subscribed
-            @sent = Chimp.campaign_send_now( $campaigns[@name]['id'] )
+          begin
+            puts "In Deliver Subscribe"
+            # subscribe( list_id, to_email, merge_bars, email_type(html or text), use_double_optin,update_existing,replace_interests,send_welcome  )
+            subscribed = Chimp.list_subscribe(  $campaigns[@name]['list_id'], @to_email, @merge_vars, 'html', false, true, false, false)
+          rescue Hominid::APIError => e
+            if e.message.match( /^\<214\>.*/) #<214> XXXX@zangzing.com is already subscribed to list XXXX
+              #subscribe failed, try unsubscribe with delete?=true and subscribe again
+              Chimp.list_unsubscribe(  $campaigns[@name]['list_id'], @to_email, 'false','false','false')
+              subscribed = Chimp.list_subscribe(  $campaigns[@name]['list_id'], @to_email, @merge_vars, 'html', false, false, false,false)
+            else
+              raise e
+            end
           end
 
+          if subscribed
+            puts "In Deliver Sending campaign"
+            sent = Chimp.campaign_send_now( $campaigns[@name]['id'] )
+          end
 
-          if @subscribed
-            @unsubscribed = Chimp.list_unsubscribe(  $campaigns[@name]['list_id'], #list id
-                                                     @to_email, #email to delete
-                                                     'true',                  #delete?
-                                                     'false',                 #send goodbye?
-                                                     'false')                 #notify admin
+          if subscribed && sent
+            puts "In Deliver Unsubscribed"
+            # unsubscribe( list_id, email_to_unsubscribe, delete?, send_goodbye?, notify_admin? )
+            unsubscribed = Chimp.list_unsubscribe(  $campaigns[@name]['list_id'], @to_email, 'false','false','false')
           end
         rescue Hominid::APIError => e
           raise Error, "Message.delivery error: "+e.message
         end
 
-        @subscribed && @sent #&& @unsubscribed # return true if all succeeded
+        puts "In Deliver Done"
+        subscribed && sent && unsubscribed # return true if all succeeded
       end
     end
 
