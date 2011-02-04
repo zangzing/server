@@ -16,7 +16,7 @@ zz.init = {
         $('#header #back-button').click(function(){ document.location.href = '/' });
 
 
-        if(document.location.href.indexOf("/photos?view=slideshow") !== -1){
+        if(document.location.href.indexOf("/photos/") !== -1){
             $('#header #view-buttons #picture-view-button').addClass('selected');
         }
         else if(document.location.href.indexOf("/photos") !== -1){
@@ -35,7 +35,7 @@ zz.init = {
         });
 
         $('#header #view-buttons #picture-view-button').click(function(){
-            document.location.href = '/albums/' + zz.album_id + "/photos?view=slideshow";
+            document.location.href = '/albums/' + zz.album_id + "/photos/";
 
         });
 
@@ -80,7 +80,7 @@ zz.init = {
                 'background-color':'#000000',
                 opacity: 0
             }).appendTo('body').animate({opacity:1},500, function(){
-                document.location.href = '/albums/' + zz.album_id + '/photos?view=movie'; //global variable set in _bottom_nav
+                document.location.href = '/albums/' + zz.album_id + '/movie'; 
             });
 
 
@@ -216,7 +216,7 @@ zz.init = {
 
         var view = 'grid';
 
-        if(document.location.href.indexOf('view=slideshow') !== -1){
+        if(document.location.href.indexOf('/photos/') !== -1){
             view = 'picture';
         }
 
@@ -250,9 +250,9 @@ logger.debug(((new Date()).getTime() - start)  +" after ajax call");
                     cellWidth: 200,
                     cellHeight: 200,
                     onClickPhoto: function(index, photo){
-                        document.location.href = "/albums/" + zz.album_id +"/photos?view=slideshow#" + photo.id;
+                        document.location.href = "/albums/" + zz.album_id +"/photos/#!" + photo.id;
                     },
-                    scrollToPhoto: $.param.fragment()
+                    currentPhotoId: $.param.fragment()
 
                 }).data().zz_photogrid;
 
@@ -266,6 +266,19 @@ logger.debug(((new Date()).getTime() - start)  +" after ajax call");
                     photo.src =       agent.checkAddCredentialsToUrl(photo.screen_url);
                 }
 
+                var currentPhotoId = null;
+                var hash = jQuery.param.fragment();
+
+                logger.debug(hash);
+
+
+                if(hash !== ''){
+                    currentPhotoId = hash.slice(1); //remove the '!'
+                }
+
+                logger.debug(currentPhotoId);
+
+
                 var grid = gridElement.zz_photogrid({
                     photos:json,
                     allowDelete: false,
@@ -274,10 +287,14 @@ logger.debug(((new Date()).getTime() - start)  +" after ajax call");
                     cellWidth: gridElement.width(),
                     cellHeight: gridElement.height(),
                     onClickPhoto: function(index, photo){
-                        document.location.href = "/albums/" + zz.album_id +"/photos#" + photo.id;
+                        document.location.href = "/albums/" + zz.album_id +"/photos/#!" + photo.id;
                     },
                     singlePictureMode: true,
-                    scrollToPhoto: $.param.fragment()
+                    currentPhotoId: currentPhotoId,
+                    onScrollToPhoto: function(photoId){
+                        window.location.hash = '#!' + photoId
+                    }
+
 
                 }).data().zz_photogrid;
 
@@ -575,7 +592,7 @@ logger.debug(((new Date()).getTime() - start) +" after create grid");
                         cellWidth: 180,
                         cellHeight: 180,
                         onClickPhoto: function(index, photo){
-                            document.location.href = "/albums/" + zz.album_id +"/photos?view=slideshow#" + photo.id;
+                            document.location.href = "/albums/" + zz.album_id +"/photos/#!" + photo.id;
                         },
                         showThumbscroller: false
                     }).data().zz_photogrid;

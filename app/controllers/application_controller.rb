@@ -139,9 +139,12 @@ class ApplicationController < ActionController::Base
                      'agents#index']
       
       }
-      unless allowed[:actions].include?("#{params[:controller]}##{params[:action]}")
-        authenticate_or_request_with_http_basic('ZangZing') do |username, password|
-          username == Server::Application.config.http_auth_credentials[:login] && password == Server::Application.config.http_auth_credentials[:password]
+
+      unless request.remote_addr.starts_with?('69.63.180') #allow facebook crawler
+        unless allowed[:actions].include?("#{params[:controller]}##{params[:action]}")
+          authenticate_or_request_with_http_basic('ZangZing') do |username, password|
+            username == Server::Application.config.http_auth_credentials[:login] && password == Server::Application.config.http_auth_credentials[:password]
+          end
         end
       end
     end

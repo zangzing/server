@@ -1,3 +1,8 @@
+<% content_for :meta_tags do %>
+    <%= render :partial => "facebook/album_opengraph_tags" %>
+<% end %>
+
+
 <ul id="album-timeline">
   <li class="clearfix">
     <a name="<%=@album.user_id%>"></a>

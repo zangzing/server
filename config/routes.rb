@@ -66,11 +66,12 @@ Server::Application.routes.draw do
   #photos
   get    '/albums/:album_id/photos_json' => 'photos#photos_json',                :as => :album_photos_json
   get    '/albums/:album_id/photos'      => 'photos#index',                     :as => :album_photos
-  post   '/albums/:album_id/photos'      => 'photos#create',                    :as => :create_album_photo
-  get    '/albums/:album_id/slides_source.:format' => 'photos#slideshowbox_source',    :as => :slideshow_source
-  get    '/photos/:id'                   => 'photos#show',                      :as => :photo
-  get    '/photos/:id/edit'              => 'photos#edit',                      :as => :edit_photo
-  put    '/photos/:id/edit'              => 'photos#update',                    :as => :update_photo
+  get    '/albums/:album_id/movie'        => 'photos#movie',                     :as => :album_movie
+#  post   '/albums/:album_id/photos'      => 'photos#create',                    :as => :create_album_photo
+#  get    '/albums/:album_id/slides_source.:format' => 'photos#slideshowbox_source',    :as => :slideshow_source
+#  get    '/photos/:id'                   => 'photos#show',                      :as => :photo
+#  get    '/photos/:id/edit'              => 'photos#edit',                      :as => :edit_photo
+#  put    '/photos/:id/edit'              => 'photos#update',                    :as => :update_photo
   delete '/photos/:id'                   => 'photos#destroy',                   :as => :destroy_photo
   put    '/photos/:id/upload_fast'       => 'photos#upload_fast',               :as => :upload_photo_fast
   get    '/agents/:agent_id/photos'      => 'photos#agentindex',                :as => :agent_photos
