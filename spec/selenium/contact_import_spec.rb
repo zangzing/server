@@ -23,16 +23,31 @@ describe "contributors test" do
     ui.wizard.click_contributors_tab
   end
   
-  it "import mslive contacts" do
+  it "import gmail contacts" do
     ui.wizard.album_contributors_tab.import_gmail_contacts
   end
   
-  it "verify contacts are imported" do
-    ui.wizard.album_contributors_tab.imported_mslive?.should be_false
-    ui.wizard.album_contributors_tab.imported_yahoo?.should be_false
+  it "import yahoo contacts" do
+    ui.wizard.album_contributors_tab.import_yahoo_contacts
+  end
+  
+  it "import mslive contacts" do
+    ui.wizard.album_contributors_tab.import_mslive_contacts
+  end
+  
+  
+  it "verify contacts from yahoo are imported" do
+    ui.wizard.album_contributors_tab.imported_yahoo?.should be_true
+  end
+
+
+  it "verify contacts from gmail are imported" do
     ui.wizard.album_contributors_tab.imported_gmail?.should be_true
   end
   
+  it "verify contacts from mslive are imported" do
+    ui.wizard.album_contributors_tab.imported_mslive?.should be_true
+  end    
   
 
 end

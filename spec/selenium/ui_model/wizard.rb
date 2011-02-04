@@ -185,8 +185,7 @@ module UiModel
         @browser.type "i0116", "dev_zangzing@hotmail.com"
         @browser.type "i0118", "QaVH6kP6XdMPzLTz"
         @browser.click "css=input#idSIButton9"
-        sleep 10
-        puts @browser.get_all_window_ids
+        sleep 5
         #@session.wait_load
         #@browser.click "ctl00_MainContent_ConsentBtn"
         @browser.select_window "null"
@@ -237,9 +236,8 @@ module UiModel
         @browser.type "css=#email", "jeremy@zangzing.com"
         @browser.type "css=#pass", "share1001photos"
         @browser.click "css=input[name=login]"
+        sleep 5
         @browser.select_window "null" #select the main window
-        @session.wait_for "css=input#facebook_box"
-        @browser.click "css=input#facebook_box"
       end
       
       def click_twitter
@@ -253,7 +251,11 @@ module UiModel
       end
         
       def send_email(email)
+        @browser.click "css=input#you-complete-me.ac_input"
         @browser.type "css=input#you-complete-me.ac_input", email
+        @browser.click "css=input#you-complete-me.ac_input"
+        @browser.key_press("css=input#you-complete-me.ac_input", '\32')
+        sleep 5
         @browser.type "css=textarea#email_share_message", "Hi, see my new album!!!!"
         @browser.click "css=a#mail-submit.green-button"
         @session.wait_for "css=li.email-share.link"
