@@ -96,14 +96,20 @@ Server::Application.routes.draw do
   put    '/follows/:id/unblock'           => 'follows#unblock',    :as => :unblock_follow
 
   #contributors
-  get    '/albums/:album_id/contributors'          => 'contributors#index',      :as => :album_contributors
-  get    '/albums/:album_id/contributors/new'      => 'contributors#new',        :as => :new_album_contributor
-  post   '/albums/:album_id/contributors'         => 'contributors#create',     :as => :create_album_contributor
-  get    '/contributors/:id'                      => 'contributors#show',       :as => :contributor
-  get    '/contributors/:id/edit'                  => 'contributors#edit',       :as => :edit_contributor
-  put    '/contributors/:id'                      => 'contributors#update',     :as => :update_contributor
-  delete '/contributors/:id'                      => 'contributors#destroy',    :as => :delete_contributor 
+  get    '/albums/:album_id/contributors'      => 'contributors#index',      :as => :album_contributors
+  get    '/albums/:album_id/contributors/new'  => 'contributors#new',        :as => :new_album_contributor
+  post   '/albums/:album_id/contributors'      => 'contributors#create',     :as => :create_album_contributor
+  get    '/contributors/:id'                   => 'contributors#show',       :as => :contributor
+  get    '/contributors/:id/edit'              => 'contributors#edit',       :as => :edit_contributor
+  put    '/contributors/:id'                   => 'contributors#update',     :as => :update_contributor
+  delete '/contributors/:id'                   => 'contributors#destroy',    :as => :delete_contributor
     
+  #like
+  match  '/users/:user_id/like'                 => 'likes#toggle',            :as => :like_user
+  match  '/albums/:album_id/like'               => 'likes#toggle',            :as => :like_album
+  match  '/photos/:photo_id/like'               => 'likes#toggle',            :as => :like_photo
+  match   '/likes'                               => 'likes#index',             :as => :likes
+
 
   # oauth
   match '/users/:id/agents'     => 'agents#index',                 :as => :agents
