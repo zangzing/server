@@ -2,7 +2,7 @@ module UiModel
   module Wizard
 
     class Drawer
-      attr_reader :add_photos_tab, :album_name_tab, :album_type_tab
+      attr_reader :add_photos_tab, :album_name_tab, :album_type_tab, :album_contributors_tab, :album_share_tab
 
         def initialize(selenuim_session)
           @session = selenuim_session
@@ -11,6 +11,8 @@ module UiModel
           @add_photos_tab = AddPhotosTab.new(selenuim_session)
           @album_name_tab = AlbumNameTab.new(selenuim_session)
           @album_type_tab = AlbumTypeTab.new(selenuim_session)
+          @album_contributors_tab = AlbumContributorsTab.new(selenuim_session)
+          @album_share_tab = AlbumShareTab.new(selenuim_session)
         end
 
         def click_name_tab
@@ -28,7 +30,7 @@ module UiModel
 
         def click_contributors_tab
           @browser.click 'css=#wizard-contributors'
-          @session.wait_for "css=#add-contributors-btn"
+          @session.wait_for "css=a#submit-new-contributors.green-button"
         end
 
         def click_share_tab
@@ -136,6 +138,138 @@ module UiModel
         @session.wait_for 'css=a:contains("Facebook")'
       end
 
+    end
+    
+    
+    
+    
+    class AlbumContributorsTab
+      def initialize(selenuim_session)
+        @session = selenuim_session
+        @browser = selenuim_session.browser
+      end
+      
+      def import_gmail_contacts
+        @browser.click "css=img#gmail-sync.link"
+        @browser.select_window "oauthlogin" #select the oauth sign in window
+        @session.wait_for 'css=input#Email.gaia.le.val'
+        @browser.type "Email", "dev.zangzing@gmail.com"
+        @browser.type "Passwd", "share1001photos"
+        @browser.click "signIn"
+        #@session.wait_load
+        @session.wait_for 'css=input#allow'
+        @browser.click 'css=input#allow'
+        @browser.select_window "null"
+        sleep 5
+      end
+      
+      def import_yahoo_contacts
+        @browser.click "css=img#yahoo-sync.link"
+        @browser.select_window "name=oauthlogin"
+        @session.wait_load
+        @browser.type "username", "zangzing_dev"
+        @browser.type "passwd", "clev-vid-arch-ab-a"
+        @browser.click ".save"
+        @session.wait_load
+        @browser.click "agree"
+        @browser.select_window "null"
+        sleep 5
+      end
+      
+      def import_mslive_contacts
+        @browser.click "css=img#mslive-sync.link"
+        @browser.select_window "name=oauthlogin"
+        @session.wait_load
+        @browser.click "i0116"
+        sleep 1
+        @browser.type "i0116", "dev_zangzing@hotmail.com"
+        @browser.type "i0118", "QaVH6kP6XdMPzLTz"
+        @browser.click "css=input#idSIButton9"
+        sleep 5
+        #@session.wait_load
+        #@browser.click "ctl00_MainContent_ConsentBtn"
+        @browser.select_window "null"
+      end
+
+      def imported_gmail?
+        @browser.is_element_present("//img[@src='/images/btn-gmail-on.png']")
+      end
+      
+      def imported_yahoo?
+        @browser.is_element_present("//img[@src='/images/btn-yahoo-on.png']")
+      end
+      
+      def imported_mslive?
+        @browser.is_element_present("//img[@src='/images/btn-mslive-on.png']")
+      end
+      
+      def add_contributors(email)
+        @browser.type "css=input#you-complete-me.ac_input", email
+        @browser.type "css=textarea#email_share_message", "Hi, now you contributor of my album!"
+        @browser.click "css=a#submit-new-contributors.green-button"
+        @session.wait_for "css=a#add-contributors-btn.green-add-button"
+      end
+      
+    end
+
+    class AlbumShareTab
+      def initialize(selenuim_session)
+        @session = selenuim_session
+        @browser = selenuim_session.browser
+      end
+      
+      def click_share_by_email
+        @browser.click "css=li.email-share.link"
+        @session.wait_for "css=input#you-complete-me.ac_input"
+      end
+      
+      
+      def click_share_by_social
+        @browser.click "css=li.social-share.link"
+        @session.wait_for "css=textarea#post_share_message"
+      end
+      
+      def click_facebook
+        @browser.click "css=input#facebook_box"
+        @browser.select_window "oauthlogin" #select the oauth sign in window
+        @session.wait_for "css=#email"
+        @browser.type "css=#email", "jeremy@zangzing.com"
+        @browser.type "css=#pass", "share1001photos"
+        @browser.click "css=input[name=login]"
+        sleep 5
+        @browser.select_window "null" #select the main window
+      end
+      
+      def click_twitter
+        @browser.click "css=input#twitter_box"
+        @browser.select_window "name=oauthlogin"
+        @session.wait_load
+        @browser.type "username_or_email", "jeremy@zangzing.com"
+        @browser.type "password", "share1001photos"
+        @browser.click "allow"
+        @browser.select_window "null"
+      end
+        
+      def send_email(email)
+        @browser.click "css=input#you-complete-me.ac_input"
+        @browser.type "css=input#you-complete-me.ac_input", email
+        @browser.click "css=input#you-complete-me.ac_input"
+        @browser.key_press("css=input#you-complete-me.ac_input", '\32')
+        sleep 5
+        @browser.type "css=textarea#email_share_message", "Hi, see my new album!!!!"
+        @browser.click "css=a#mail-submit.green-button"
+        @session.wait_for "css=li.email-share.link"
+      end  
+      
+      def send_message
+        @session.wait_for "css=textarea#post_share_message"
+        @browser.type "css=textarea#post_share_message", "Hi, see my new album!"
+        sleep 5
+        @browser.click "css=a#post_share_button.green-button"
+        @session.wait_for "css=li.social-share.link"
+      end
+      
+      
     end
 
   end

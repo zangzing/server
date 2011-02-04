@@ -8,6 +8,7 @@ require "spec/selenium/ui_model/user_homepage"
 require "spec/selenium/ui_model/wizard"
 require "spec/selenium/ui_model/oauth_manager"
 
+
 module UiModel
   ZZ_HOST = ENV['ZZ_HOST'] || 'zzadmin:sharezzphotos@share1001photos.zangzing.com'
 
