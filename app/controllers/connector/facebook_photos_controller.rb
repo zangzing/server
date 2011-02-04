@@ -21,7 +21,7 @@ class Connector::FacebookPhotosController < Connector::FacebookController
     else
       @photos = []
     end
-
+    expires_in 10.minutes, :public => false
     render :json => JSON.fast_generate(@photos)
   end
 
@@ -40,6 +40,7 @@ class Connector::FacebookPhotosController < Connector::FacebookController
             :album_id => params[:album_id],
             :upload_batch_id => current_batch.id,
             :caption => info[:name] || '',
+            :capture_date => info[:created_time],
             :source_guid => make_source_guid(info),
             :source_thumb_url => get_photo_url(info, :thumb),
             :source_screen_url => get_photo_url(info, :screen)

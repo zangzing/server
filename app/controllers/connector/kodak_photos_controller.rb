@@ -18,7 +18,7 @@ class Connector::KodakPhotosController < Connector::KodakController
 
       }
     }
-
+    expires_in 10.minutes, :public => false
     render :json => JSON.fast_generate(@photos)
     
   end

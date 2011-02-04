@@ -15,7 +15,7 @@ class Connector::PicasaPhotosController < Connector::PicasaController
         :source_guid => make_source_guid(entry.elements['media:group'])
      }
     end
-
+    expires_in 10.minutes, :public => false
     render :json => JSON.fast_generate(photos)
   end
 

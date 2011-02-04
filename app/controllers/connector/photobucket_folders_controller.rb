@@ -25,7 +25,7 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
         :source_guid => make_source_guid(media[:url].first)
       }
     end
-
+    expires_in 10.minutes, :public => false
     render :json => JSON.fast_generate(folders)
   end
 

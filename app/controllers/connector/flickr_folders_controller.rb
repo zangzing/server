@@ -14,8 +14,8 @@ class Connector::FlickrFoldersController < Connector::FlickrController
         :add_url => flickr_folder_action_url({:set_id =>f.id, :action => 'import'})
       }
     }
+    expires_in 10.minutes, :public => false
     render :json => JSON.fast_generate(@folders)
-
   end
   
   def import
