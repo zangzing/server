@@ -140,6 +140,8 @@ class ApplicationController < ActionController::Base
       
       }
 
+      logger.debug('request.remote_addr: ' + request.remote_addr)
+
       unless request.remote_addr.starts_with?('69.63.180') #allow facebook crawler
         unless allowed[:actions].include?("#{params[:controller]}##{params[:action]}")
           authenticate_or_request_with_http_basic('ZangZing') do |username, password|
