@@ -141,6 +141,7 @@ class ApplicationController < ActionController::Base
       }
 
       logger.info('request.remote_addr: ' + request.remote_addr)
+      logger.info('request.env[REMOTE_ADDR]: ' + request.env['REMOTE_ADDR'])
 
       unless request.remote_addr.starts_with?('69.63.180') #allow facebook crawler
         unless allowed[:actions].include?("#{params[:controller]}##{params[:action]}")
