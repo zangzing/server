@@ -15,8 +15,7 @@ class Connector::SmugmugPhotosController < Connector::SmugmugController
         
       }
     }
-
-
+    expires_in 10.minutes, :public => false
     render :json => JSON.fast_generate(@photos)
   end
 

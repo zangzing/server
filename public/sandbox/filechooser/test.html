@@ -1,0 +1,53 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=100" > <!-- IE8 mode -->
+
+    <link href="../../stylesheets/lib.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="../../stylesheets/photo.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="../../stylesheets/thumbscroller.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="../../stylesheets/thumbtray.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="../../stylesheets/main.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="../../stylesheets/album.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="../../stylesheets/add-photos.css" media="screen" rel="stylesheet" type="text/css" />
+
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery.ui/1.8.5/jquery-ui.js"></script>
+    <script type="text/javascript" src="../../javascripts/jquery-lib/jquery.easing.js"></script>
+    <script type="text/javascript" src="../../javascripts/zz/agent.js"></script>
+    <script type="text/javascript" src="../../javascripts/zz/photo.js"></script>
+    <script type="text/javascript" src="../../javascripts/zz/photogrid.js"></script>
+    <script type="text/javascript" src="../../javascripts/zz/jquery-zz.js"></script>
+    <script type="text/javascript" src="../../javascripts/zz/thumbtray.js"></script>
+    <script type="text/javascript" src="../../javascripts/zz/filechooser.js"></script>
+    <script type="text/javascript" src="../../javascripts/zz/zz.core.js"></script>
+    <script type="text/javascript" src="../../javascripts/zz/zz.inits.js"></script>
+    <script type="text/javascript" src="../../javascripts/zz/imageloader.js"></script>
+    <script type="text/javascript" src="../../javascripts/zz/logger.js"></script>
+</head>
+<body>
+    <div id="top-section" class="clearfix">
+      <a id="filechooser-back-button" class="back-button"><span></span></a>
+      <div id="choose-header" class="album-header">
+        <h3 id="filechooser-title"></h3>
+        <h4 id="filechooser-tagline">Choose pictures from folders on your computer or other photo sites.</h4>
+      </div>
+    </div>
+
+    <div id="scroll-body">
+      <ul id="filechooser"></ul>
+    </div>
+
+    <div id="added-pictures-tray-container">
+        <div id="added-pictures-tray"></div>
+    </div>
+
+    <script type="text/javascript">
+        filechooser.init();
+    </script>
+</body>
+
+</html>
+

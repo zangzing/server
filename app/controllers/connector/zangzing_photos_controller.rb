@@ -13,7 +13,7 @@ class Connector::ZangzingPhotosController < Connector::ConnectorController
         :source_guid => p.source_guid
       }
     end
-
+    expires_in 10.minutes, :public => false
     render :json => JSON.fast_generate(@photos)
   end
 

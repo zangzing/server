@@ -48,7 +48,7 @@ class Connector::FacebookFoldersController < Connector::FacebookController
         @folders = []
       end
     end
-
+    expires_in 10.minutes, :public => false
     render :json => JSON.fast_generate(@folders)
   end
 
@@ -62,6 +62,7 @@ class Connector::FacebookFoldersController < Connector::FacebookController
                 :album_id => params[:album_id],
                 :upload_batch_id => current_batch.id,
                 :caption => p[:name] || '',
+                :capture_date => p[:created_time],
                 :source_guid => make_source_guid(p),
                 :source_thumb_url => get_photo_url(p, :thumb),
                 :source_screen_url => get_photo_url(p, :screen)

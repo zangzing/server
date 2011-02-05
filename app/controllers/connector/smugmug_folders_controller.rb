@@ -11,7 +11,7 @@ class Connector::SmugmugFoldersController < Connector::SmugmugController
         :add_url =>  smugmug_folder_action_path({:sm_album_id =>"#{f[:id]}_#{f[:key]}", :action => 'import'})
       }
     }
-
+    expires_in 10.minutes, :public => false
     render :json => JSON.fast_generate(@folders)
   end
 

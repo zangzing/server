@@ -27,7 +27,8 @@
 
             singlePictureMode: false,
 
-            scrollToPhoto: null
+            currentPhotoId: null,
+            onScrollToPhoto: jQuery.noop
 
 
         },
@@ -200,6 +201,16 @@
 
 
                             self.resetLayout(800, 'easeInOutCubic');
+
+
+                            var photo_id = draggedCell.data().zz_photo.getPhotoId();
+                            var before_id = null;
+                            if($(draggedCell).prev().length !==0){
+                                before_id = $(draggedCell).prev().data().zz_photo.getPhotoId();
+                            }
+                            var after_id = droppedOnCell.data().zz_photo.getPhotoId();
+                            self.options.onChangeOrder(photo_id, before_id, after_id);
+
                         }
 
                     });
@@ -288,8 +299,10 @@
                     showSelectedIndexIndicator:true,
                     repaintOnResize:true,
                     onSelectPhoto: function(index, photo){
-                        if(!nativeScrollActive){
-                            self.scrollToIndex(index, 500, true);
+                        if(typeof photo != 'undefined'){
+                            if(!nativeScrollActive){
+                                self.scrollToPhoto(photo.id, 500, true);
+                            }
                         }
                     }
                 }).data().zz_thumbtray;
@@ -374,8 +387,8 @@
             
 
                        //scroll to photo
-            if(self.options.scrollToPhoto){
-                self.scrollToPhoto(self.options.scrollToPhoto,0, false);
+            if(self.options.currentPhotoId){
+                self.scrollToPhoto(self.options.currentPhotoId,0, false);
             }
 
 
@@ -389,14 +402,20 @@
             var self = this;
 
             if(!self.nextPrevActive){
-                self.nextPrevActive = true;
-                var x =  this.element.scrollLeft() + self.options.cellWidth;
+                var index = self.indexOfPhoto(self.currentPhotoId());
+                index ++;
 
-                //todo: shoud use self.scrollToPhoto() here
-                self.element.animate({scrollLeft: x}, 500, 'easeOutCubic', function(){
+                if(index > self.options.photos.length-1){
+                    return;
+                }
+
+                var id = self.options.photos[index].id;
+
+                self.nextPrevActive = true;
+                self.scrollToPhoto(id, 500, true, function(){
                     self.nextPrevActive = false;
                 });
-            }
+           }
 
         },
 
@@ -404,17 +423,33 @@
             var self = this;
 
             if(!self.nextPrevActive){
-                self.nextPrevActive = true;
-                var x =  this.element.scrollLeft() - self.options.cellWidth;
+                var index = self.indexOfPhoto(self.currentPhotoId());
+                index --;
 
-                //todo: shoud use self.scrollToPhoto() here
-                self.element.animate({scrollLeft: x}, 500, 'easeOutCubic' ,function(){
+                if(index < 0){
+                    return;
+                }
+
+                var id = self.options.photos[index].id;
+
+                self.nextPrevActive = true;
+                self.scrollToPhoto(id, 500, true, function(){
                     self.nextPrevActive = false;
                 });
-            }
+           }
 
         },
 
+        currentPhotoId: function(){
+            var self = this;
+            if(self.options.currentPhotoId){
+                return self.options.currentPhotoId;
+            }
+            else{
+                return self.options.photos[0].id;
+            }
+
+        },
 
         indexOfPhoto: function(photoId){
             //todo: this function won't work after a drag-drop reorder
@@ -429,13 +464,10 @@
             return -1;
         },
 
-        scrollToPhoto: function(photoId, duration, highlightCell){
-            var index = this.indexOfPhoto(photoId);
-            this.scrollToIndex(index, duration, highlightCell);
-        },
-
-        scrollToIndex: function(index, duration, highlightCell){
+        scrollToPhoto: function(photoId, duration, highlightCell, callback){
             var self = this;
+
+            var index = self.indexOfPhoto(photoId);
 
             if(highlightCell){
                 var highlighted = self.cellAtIndex(index).find('.photo-border').addClass('highlighted');
@@ -446,12 +478,22 @@
                 },duration + 1500);
             }
 
+            var onFinishAnimate = function(){
+                self.options.currentPhotoId = photoId
+                self.options.onScrollToPhoto(photoId);
+                if(typeof callback !== 'undefined'){
+                    callback();
+                }
+            }
+
+
             if(self.options.singlePictureMode){
                 var x = index  * self.options.cellWidth;
 
                 self.animateScrollActive = true;
                 self.element.animate({scrollLeft: x}, duration, 'easeOutCubic', function(){
                     self.animateScrollActive = false;
+                    onFinishAnimate();
                 });
 
             }
@@ -460,6 +502,7 @@
                 self.animateScrollActive = true;
                 self.element.animate({scrollTop: y}, duration, 'easeOutCubic', function(){
                     self.animateScrollActive = false;
+                    onFinishAnimate();
                 });
             }
         },

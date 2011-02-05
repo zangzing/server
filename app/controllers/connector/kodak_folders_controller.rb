@@ -14,7 +14,7 @@ class Connector::KodakFoldersController < Connector::KodakController
         :add_url => kodak_folder_action_path({:kodak_album_id =>f['id'].first, :action => 'import'})
       }
     }
-
+    expires_in 10.minutes, :public => false
     render :json => JSON.fast_generate(@folders)
   end
 

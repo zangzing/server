@@ -13,7 +13,7 @@ class Connector::PicasaFoldersController < Connector::PicasaController
         :add_url  => picasa_folder_action_path(:picasa_album_id => albumid, :action => :import)
       }
     end
-    
+    expires_in 10.minutes, :public => false
     render :json => JSON.fast_generate(folders)
   end
 

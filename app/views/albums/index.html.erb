@@ -1,3 +1,7 @@
+<% content_for :meta_tags do %>
+    <%= render :partial => "facebook/user_opengraph_tags" %>
+<% end %>
+
 <% if @albums.empty? %>
   <!-- %= h @user.name %> Has No Albums</h2> -->
 <% else %>

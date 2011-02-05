@@ -176,8 +176,31 @@ pages.edit_album_tab = {
 
                     },
                     allowReorder: true,
-//                    cellHeight: 150,
-//                    cellWidth: 150,
+                    onChangeOrder: function(photo_id, before_id, after_id){
+                        var data;
+
+                        if(before_id){
+                            data= {before_id: before_id, after_id: after_id};
+                        }
+                        else{
+                            data= {after_id: after_id};
+                        }
+
+
+                        $.ajax({
+                            type: "PUT",
+                            data: data,
+                            dataType: "json",
+                            url: "/photos/" + photo_id + "/position",
+                            error: function(error){
+                                logger.debug(error);
+//                                $.jGrowl("" + error);
+                            }
+
+                        });
+                        return true;
+
+                    },
                     showThumbscroller: true
                 }).data().zz_photogrid;
 
@@ -626,7 +649,8 @@ pages.account_settings_profile_tab = {
 
                     return {id:id, src:src};
                 });
-                pages.account_settings_profile_tab.profile_photo_picker.addPhotos( photos );
+                pages.account_settings_profile_tab.profile_photo_picker.setPhotos( photos );
+                pages.account_settings_profile_tab.profile_photo_picker.setSelectedIndex( selectedIndex );
             }
         });
     },  
@@ -636,10 +660,17 @@ pages.account_settings_profile_tab = {
         $('<div id="add-photos-dialog"></div>').load( '/albums/lkj789074XsSXkd/add_photos' )
                                                .dialog({ title: 'Load Profile Pictures',
                                                          width: 920,
-                                                         minHeight: 350,
-                                                         position: [130,40],
+                                                         height: $(document).height() - 200,
+                                                         position: ['center',90],
                                                          modal: true,
+                                                         draggable:false,
                                                          autoOpen: false,
+                                                         buttons: [
+                                                                {
+                                                                    text: "Done",
+                                                                    click: function() { $(this).dialog("close"); }
+                                                                }
+                                                         ],
                                                          open:   function(event, ui){ filechooser.init(); },
                                                          close:  function(event, ui){
                                                              $.get( '/albums/' +zz.album_id + '/close_batch', function(){
