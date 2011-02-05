@@ -1,12 +1,30 @@
 class LikesController < ApplicationController
-  respond_to :json
-  before_filter :require_user, :only => :index
+  before_filter :require_user, :only => :toggle
 
   def index
-    likes  = Like.find_all_by_user_id( current_user.id )
-    likes_hash = Hash.new()
-    likes.each{ |l|  likes_hash[l.subject_id] = 'liked'}
-    respond_with( likes_hash )
+    wanted_subjects = params['wanted_subjects']
+    render :nothing => true, :status =>400 and return if wanted_subjects.nil?
+
+    subjects =  Hash.new()
+    wanted_subjects.keys.each do |wanted_id|
+      type = case wanted_subjects[wanted_id].downcase
+               when 'photo' then  Like::PHOTO
+               when 'album' then Like::ALBUM
+               when 'user'  then Like::USER
+             end
+      subjects[wanted_id] = { :count => 0, :user => false, :type => type }
+    end
+
+    LikeCounter.find_all_by_subject_id( wanted_subjects.keys ).each do |counter|
+      subjects[ counter.subject_id ][:count]= counter.counter
+    end
+
+    if current_user
+      Like.find_all_by_user_id_and_subject_id( current_user.id, wanted_subjects.keys).each  do | like |
+        subjects[ like.subject_id ][:user]=true
+      end
+    end
+    render :json =>subjects
   end
 
   def toggle
