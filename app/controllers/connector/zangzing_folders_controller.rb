@@ -25,6 +25,7 @@ class Connector::ZangzingFoldersController < Connector::ConnectorController
                 :album_id => params[:album_id],
                 :user_id => p.user_id,
                 :upload_batch_id => current_batch.id,                
+                :capture_date => p.capture_date,
                 :source_guid => p.source_guid,
                 :source_thumb_url => p.source_thumb_url,
                 :source_screen_url => p.source_screen_url

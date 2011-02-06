@@ -37,6 +37,7 @@ class Connector::SmugmugPhotosController < Connector::SmugmugController
             :album_id => params[:album_id],
             :user_id=>current_user.id,
             :upload_batch_id => current_batch.id,
+            :capture_date => (DateTime.parse(photo_info[:lastupdated]) rescue nil),
             :source_guid => make_source_guid(photo_info),
             :source_thumb_url => '/proxy?url=' + photo_info[:smallurl],
             :source_screen_url => '/proxy?url=' + photo_info[:x3largeurl]
