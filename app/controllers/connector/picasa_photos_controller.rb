@@ -32,6 +32,7 @@ class Connector::PicasaPhotosController < Connector::PicasaController
                 :album_id => params[:album_id],
                 :user_id=>current_user.id,
                 :upload_batch_id => current_batch.id,
+                :capture_date => (Time.at(entry.elements['gphoto:timestamp'].text.to_i/1000) rescue nil),
                 :source_guid => make_source_guid(entry.elements['media:group']),
                 :source_thumb_url => get_photo_url(entry.elements['media:group'], :thumb),
                 :source_screen_url => get_photo_url(entry.elements['media:group'], :screen)

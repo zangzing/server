@@ -38,7 +38,7 @@ Server::Application.routes.draw do
   delete '/identities/:id'          => 'identities#destroy',     :as => :delete_identity
 
   #albums
-  get    '/users/:user_id/albums'          => 'albums#index',               :as => :user_albums
+  get    '/users/:user_id/albums'          => 'albums#index'             #, :as => :user_albums  user albums defined below
   get    '/users/:user_id/albums/new'      => 'albums#new',                 :as => :new_user_album
   post   '/users/:user_id/albums'          => 'albums#create',              :as => :create_user_album
   get    '/albums/:id/name_album'          => 'albums#name_album',          :as => :name_album
@@ -271,5 +271,10 @@ Server::Application.routes.draw do
   end
   #Resque: mount the resque server 
   mount Resque::Server.new, :at => "/admin/resque"
-  
+
+
+
+  get    '/:user_id'          => 'albums#index',               :as => :user_albums
+
+
 end

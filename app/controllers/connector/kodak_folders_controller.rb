@@ -29,6 +29,7 @@ class Connector::KodakFoldersController < Connector::KodakController
               :user_id=>current_user.id,
               :album_id => params[:album_id],
               :upload_batch_id => current_batch.id,
+              :capture_date => DateTime.now, #Absolutely no timestamps in data o_O
               :caption => p['caption'].first,
               :source_guid => make_source_guid(p),
               :source_thumb_url => p[PHOTO_SIZES[:thumb]].first,

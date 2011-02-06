@@ -33,6 +33,7 @@ class Connector::ZangzingPhotosController < Connector::ConnectorController
               :album_id => params[:album_id],
               :user_id => source_photo.user_id,
               :upload_batch_id => current_batch.id,
+              :capture_date => source_photo.capture_date,
               :source_guid => source_photo.source_guid,
               :source_thumb_url => source_photo.source_thumb_url,
               :source_screen_url => source_photo.source_screen_url

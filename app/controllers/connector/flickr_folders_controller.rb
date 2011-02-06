@@ -19,7 +19,7 @@ class Connector::FlickrFoldersController < Connector::FlickrController
   end
   
   def import
-    photo_set = flickr_api.photosets.getPhotos :photoset_id => params[:set_id], :extras => 'original_format'
+    photo_set = flickr_api.photosets.getPhotos :photoset_id => params[:set_id], :extras => 'original_format,date_taken'
     photos = []
     current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
     photo_set.photo.each do |p|
@@ -29,6 +29,7 @@ class Connector::FlickrFoldersController < Connector::FlickrController
                 :user_id=>current_user.id,
                 :album_id => params[:album_id],
                 :upload_batch_id => current_batch.id,
+                :capture_date => (DateTime.parse(p.datetaken) rescue nil),
                 :caption => p.title,
                 :source_guid => make_source_guid(p),
                 :source_thumb_url => get_photo_url(p, :thumb),

@@ -36,6 +36,7 @@ class Connector::FlickrPhotosController < Connector::FlickrController
               :user_id=>current_user.id,
               :album_id => params[:album_id],
               :upload_batch_id => current_batch.id,
+              :capture_date => (DateTime.parse(info.dates.taken) rescue nil),
               :caption => info.title,
               :source_guid => make_source_guid(info),
               :source_thumb_url => get_photo_url(info, :thumb),

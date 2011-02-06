@@ -39,6 +39,7 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
               :album_id => params[:album_id],
               :user_id => current_user.id,
               :upload_batch_id => current_batch.id,              
+              :capture_date => (Time.at(photo_data[:uploaddate].to_i) rescue nil),
               :source_guid => make_source_guid(photo_data[:url].first),
               :source_thumb_url => photo_data[:thumb].first,
               :source_screen_url => photo_data[:thumb].first
@@ -58,6 +59,7 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
             :album_id => params[:album_id],
             :user_id => current_user.id,
             :upload_batch_id => current_batch.id,            
+            :capture_date => (Time.at(photo_data[:uploaddate].to_i) rescue nil),
             :source_guid => make_source_guid(photo_data[:url].first),
             :source_thumb_url => photo_data[:thumb].first,
             :source_screen_url => photo_data[:thumb].first
