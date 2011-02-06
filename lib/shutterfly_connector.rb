@@ -42,7 +42,7 @@ class ShutterflyConnector
     request['User-Agent'] = 'ZZ Server (dev)'
     response = http.request(request)
     raise ShutterflyError.new(response.code, response.body) if (400..501).include?(response.code.to_i)
-    result = XmlSimple.xml_in(response.body)
+    result = Hash.from_xml(response.body)
     normalize_response(extract_data(result))
   end
 

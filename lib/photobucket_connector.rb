@@ -77,12 +77,12 @@ class PhotobucketConnector
   def refresh_owner_info!
     data = call_method('/user/-/url')
     @owner = {
-      :username => data[:username].first,
-      :album_subdomain => data[:subdomain].first[:album].first,
-      :image_subdomain => data[:subdomain].first[:image].first,
-      :api_subdomain => data[:subdomain].first[:api].first,
-      :feed_subdomain => data[:subdomain].first[:feed].first,
-      :user_path => data[:path].first
+      :username => data[:username],
+      :album_subdomain => data[:subdomain][:album],
+      :image_subdomain => data[:subdomain][:image],
+      :api_subdomain => data[:subdomain][:api],
+      :feed_subdomain => data[:subdomain][:feed],
+      :user_path => data[:path]
     }
   end
 
@@ -101,8 +101,8 @@ class PhotobucketConnector
      http.read_timeout = http.open_timeout = PhotobucketConnector.http_timeout
      response = http.get("#{uri.path}?#{uri.query}")
     end
-    result = XmlSimple.xml_in(response.body) #JSON.parse(response.body)
-    stat = result['status'].first.downcase
+    result = Hash.from_xml(response.body).values.first #JSON.parse(response.body)
+    stat = result['status'].downcase
     raise PhotobucketError.new(result['code'], result['message']) if stat == 'exception'
     normalize_response(extract_data(result['content']))
   end
