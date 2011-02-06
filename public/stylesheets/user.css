@@ -25,7 +25,7 @@ ul.albums-grid-view li td {
 #like-popup{
     background: url("/images/bg-like-popup.png") no-repeat scroll 0 0 transparent;
     width:92px;
-    height: 107px;
+/*     height: 107px; */
     z-index:1000;
 }
 
@@ -36,10 +36,10 @@ ul.albums-grid-view li td {
     padding: 11px 12px 9px 34px;
     cursor:pointer;
 }
-#like-person{  background-position: 0 0; }
+#like-user{  background-position: 0 0; }
 #like-album {  background-position: 0 -30px; }
 #like-photo {  background-position: 0 -60px; }
-#like-person:hover{  background-position: 0 -98px; }
+#like-user:hover{  background-position: 0 -98px; }
 #like-album:hover {  background-position: 0 -128px; }
 #like-photo:hover {   background-position: 0 -158px; }
 

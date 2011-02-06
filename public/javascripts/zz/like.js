@@ -26,10 +26,18 @@ var like = {
     },
 
     toggle_in_server: function( url, subject_id ){
-        $.post( url, {}, function(){
-             like.toggle_in_hash( subject_id );
-             like.refresh_tag( subject_id );
-        })
+        like.toggle_in_hash( subject_id );
+        like.refresh_tag( subject_id );
+        $.ajax({ type:       'POST',
+                 url:        url,
+                 success:    function(){
+
+                             },
+                 error:      function( xhr, textStatus, errorThrown){
+                     like.toggle_in_hash( subject_id );
+                     like.refresh_tag( subject_id );
+                     if( xhr.status == 401 ) alert('Must Be Logged In'); }
+        });
     },
 
     toggle_in_hash: function(subject_id){
@@ -57,13 +65,14 @@ var like = {
         });
 
         // get the wanted subjects. Use a POST because of GET query string size limitations
-        $.post( '/likes.json',
-                {'wanted_subjects' : wanted_subjects },
-                function( data ){
-                    like.hash = data;
-                    like.loaded = true;
-                    callback()},
-                'json');
+        $.ajax({ type:       'POST',
+                 url:        '/likes.json',
+                 data:       {'wanted_subjects' : wanted_subjects },
+                 success:    function( data ){
+                                like.hash = data;
+                                like.loaded = true;
+                                callback()},
+                 dataType: 'json'});
 
     },
 
@@ -71,18 +80,40 @@ var like = {
         $('zzlike').each( function(index, zzliketag){
             var id = $(zzliketag).attr('subj_id');
             $(zzliketag).attr('subj_type', like.hash[id]['type']);
-            link = $('<a href=\"javascript:void(0)\"><H4>'+like.hash[id]['count']+'</h4></a>')
-            switch(like.hash[id]['type']){
-                case 'P': link.click(function(){ like.photo(id)}); break;
-                case 'A': link.click(function(){ like.album(id)}); break;
-                case 'U': link.click(function(){ like.user(id)}); break;
+            counter = $('<span >'+like.hash[id]['count']+'</span>');
+            if( like.hash[id]['user'] ){
+                img = $( '<img   src="/images/icon-like-on.png">');
+            } else {
+                img = $('<img  src="/images/icon-like-off.png">');
             }
-            $(zzliketag).html(link)
+           div = $('<div ></div>').append( img ).append( counter );
+           switch(like.hash[id]['type']){
+                case 'P': div.click(function(){ like.photo(id)}); break;
+                case 'A': div.click(function(){ like.album(id)}); break;
+                case 'U': div.click(function(){ like.user(id)}); break;
+            }
+
+            $(zzliketag).html(div);
         });
     },
 
-    refresh_tag: function(id) {
-        console.log ('refresh_tag id= '+id+' count='+like.hash[id]['count']);
-        $('zzlike[subj_id="'+id+'"] a').html('<H2>'+like.hash[id]['count']+'</h2>')
+    refresh_tag: function(id){
+        if( like.hash[id]){
+            if( like.hash[id]['user'] ){
+                $('zzlike[subj_id="'+id+'"] div img').attr('src','/images/icon-like-on.png' );
+            } else {
+                $('zzlike[subj_id="'+id+'"] div img').attr('src','/images/icon-like-off.png' );
+            }
+            $('zzlike[subj_id="'+id+'"] div span').html(like.hash[id]['count']);
+        }
+    },
+
+    display_login: function(){
+
+    },
+
+    is_it_liked: function( subject_id ){
+        if( like.loaded ) return like.hash[subject_id]['user'];
+        return false;
     }
 };

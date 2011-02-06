@@ -4,10 +4,6 @@
       <a id="back-button" class="back-button"><span>All Albums</span></a>
   <% end %>
 
-
-
-
-
   <div id="album-info" style="display:<%= @album ? 'inline-block' : 'none' %>">
     <h2 id="album-header-title"><%= truncate((@album ? @album.name : ''), :length => 30) %></h2>
     <h3><%= @album ? 'by ' + @album.user.username : '' %></h3>

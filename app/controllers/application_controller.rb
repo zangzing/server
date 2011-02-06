@@ -77,6 +77,14 @@ class ApplicationController < ActionController::Base
       end
     end
 
+    def require_user_json
+      unless current_user
+        store_location
+        render :json => "You must be logged in to call this url", :status => 401
+        return false
+      end
+    end
+
     # for act_as_authenticated compatibility with oauth plugin
     def login_required
       require_user
@@ -96,7 +104,7 @@ class ApplicationController < ActionController::Base
     #
     #  Stores the intended destination of a rerquest to take the user there after log in
     def store_location
-      session[:return_to] = request.request_uri
+      session[:return_to] = request.fullpath
     end
 
     #

@@ -301,8 +301,10 @@ logger.debug(((new Date()).getTime() - start)  +" after ajax call");
 
             }
 
-logger.debug(((new Date()).getTime() - start) +" after create grid");
 
+
+logger.debug(((new Date()).getTime() - start) +" after create grid");
+         like.init();
 
                 //setup upload progress smeter
                 $('#progress-meter').hide();

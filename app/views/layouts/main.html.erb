@@ -84,11 +84,16 @@
       zz.current_user_name = '<%= current_user.username %>';
 <%    end -%>
 
+<%  if @user   %>
+      zz.displayed_user_id = '<%= @user.id %>';
+<%  end -%>
+
 <%  if @album  -%>
       zz.album_id = '<%= @album.id %>';
       zz.album_type = '<%= @album.type %>';
       zz.album_lastmod = '<%= @album.photos_last_updated_at.to_i %>';
       zz.album_type = zz.album_type.split('Album')[0].toLowerCase();
+      zz.displayed_user_id = '<%= @album.user.id %>';
 <%    end
       # This is where we pass things on to js that we need from ruby.
       # Remember to use the zz.zang namespace.

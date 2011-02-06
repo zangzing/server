@@ -435,14 +435,16 @@ class Photo < ActiveRecord::Base
     if capture_date.nil?
       self.pos = "%10.6f" % (Time.now + 100.years) #If capture date is not known, add 100 years to today and it will go at the end
     else
-      self.pos = capture_date.to_i   # "%10.6f" % capture_date.to_f
+      self.pos = capture_date.to_i   # "%10.6f" % capture_date.to_f no need to use miliseconds
 
     end
 
-    # batch will be custom order if album was custom order when batch was created
-    # this prevents some photos in the batch to end up in the middle of the album and some at the end
+    # The current batch will be custom ordered if the album was custom ordered when batch was created.
+    # This prevents having some photos in the batch in the middle  and some at the end of the album
+    # if user starts custom ordering during upload.
     if upload_batch.custom_order_offset > 0
-      #shift entire batch to the end of the album in captured_date order.
+      # Shift entire batch to the end of the album in captured_date order.
+      # each batch uses the pos of the last photo in the album at the time the batch is created 
       self.pos += upload_batch.custom_order_offset
     end
   end

@@ -1,11 +1,14 @@
 class LikesController < ApplicationController
-  before_filter :require_user, :only => :toggle
+  before_filter :require_user_json, :only => :toggle
 
   def index
     wanted_subjects = params['wanted_subjects']
     render :nothing => true, :status =>400 and return if wanted_subjects.nil?
 
     subjects =  Hash.new()
+    render :json =>subjects, :status => :ok and return if wanted_subjects.length <=0
+
+
     wanted_subjects.keys.each do |wanted_id|
       type = case wanted_subjects[wanted_id].downcase
                when 'photo' then  Like::PHOTO

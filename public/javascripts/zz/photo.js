@@ -41,6 +41,7 @@
             html += '<div class="photo-uploading-icon"></div>';
             html += '<div class="photo-error-icon"></div>';
             html += '<div class="photo-caption">' + self.options.caption +'</div>';
+            html += '<zzlike class="photo-like-icon" subj_type="Photo" subj_id="'+self.options.photoId+'"></zzlike>';
             html += '</div>';
 
             $(html).appendTo(this.element);
@@ -51,7 +52,6 @@
             self.deleteButtonElement = self.element.find('.photo-delete-button');
             self.uploadingElement = self.element.find('.photo-uploading-icon');
             self.errorElement = self.element.find('.photo-error-icon');
-
 
 
 
@@ -192,7 +192,6 @@
 
                 //show the full version
                 self.imageElement.attr("src", self.options.src);
-
 
 //                self.element.mouseover(function(){
 //                    self._resize(1.15);
