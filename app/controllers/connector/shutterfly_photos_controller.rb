@@ -37,7 +37,7 @@ class Connector::ShutterflyPhotosController < Connector::ShutterflyController
             :album_id => params[:album_id],
             :user_id=>current_user.id,
             :upload_batch_id => current_batch.id,
-            :capture_date => DateTime.now, #TODO Decode somehow [:capturetime] = '1233966011000'
+            :capture_date => (Time.at(photo_info[:capturetime].first.to_i/1000) rescue nil),
             :source_guid => make_source_guid(photo_info),
             :source_thumb_url => get_photo_url(params[:photo_id],  :thumb),
             :source_screen_url => get_photo_url(params[:photo_id],  :screen)
