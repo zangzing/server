@@ -27,6 +27,14 @@ class ReservedUserNames
         'seitz',
         'gseitz',
         'gregseitz',
+        'sarahseitz',
+        'danielseitz',
+        'dnseitz',
+        'smseitz',
+        'linda',
+        'lindayogi',
+        'lyogi',
+        'yogi',
         'phil',
         'beisel',
         'pbeisel',
@@ -234,13 +242,16 @@ class ReservedUserNames
         "picassa",
         "free",
         "smugmug",
-        "shutterfly"
+        "shutterfly",
         "p",
         "elizabethbeisel",
         "pwb",
         "pjb",
         "svb",
-        "spb"
+        "spb",
+        "zz",
+        "billg",
+        "billgates",
     ].freeze
   end
 
