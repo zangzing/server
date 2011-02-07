@@ -235,7 +235,12 @@ class ReservedUserNames
         "free",
         "smugmug",
         "shutterfly"
-        "p"
+        "p",
+        "elizabethbeisel",
+        "pwb",
+        "pjb",
+        "svb",
+        "spb"
     ].freeze
   end
 
