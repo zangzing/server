@@ -230,7 +230,12 @@ class ReservedUserNames
         "mryc",
         "kathy",
         "kathybeisel",
-        "paulbeisel"
+        "paulbeisel",
+        "picassa",
+        "free",
+        "smugmug",
+        "shutterfly"
+        "p"
     ].freeze
   end
 
