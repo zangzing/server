@@ -223,7 +223,14 @@ class ReservedUserNames
         "google",
         "scsc",
         "usaswimming",
-        "java"
+        "java",
+        "iphone",
+        "silvercreek",
+        "scvcc",
+        "mryc",
+        "kathy",
+        "kathybeisel",
+        "paulbeisel"
     ].freeze
   end
 
