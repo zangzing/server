@@ -1,10 +1,4 @@
 class Connector::PicasaController < Connector::GoogleController
-  NS = {
-      "a" => "http://www.w3.org/2005/Atom",
-      "gp" => "http://schemas.google.com/photos/2007",
-      "m" => "http://search.yahoo.com/mrss/",
-      "os" => "http://a9.com/-/spec/opensearchrss/1.0/"
-    }
 
 protected
 
