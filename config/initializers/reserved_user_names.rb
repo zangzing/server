@@ -207,6 +207,23 @@ class ReservedUserNames
         "linda",
         "sarah",
         "hope",
+        "steffi",
+        "sophie",
+        "steffibeisel",
+        "sophiebeisel",
+        "philipp",
+        "alli",
+        "allibeisel",
+        "paul",
+        "cheryl",
+        "sbeisel",
+        "goddard",
+        "bmw",
+        "apple",
+        "google",
+        "scsc",
+        "usaswimming",
+        "java"
     ].freeze
   end
 
