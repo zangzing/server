@@ -252,6 +252,10 @@ class ReservedUserNames
         "zz",
         "billg",
         "billgates",
+        "david",
+        "gerardo",
+        "michael",
+        "alex",
     ].freeze
   end
 
