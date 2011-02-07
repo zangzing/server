@@ -23,19 +23,19 @@ class Connector::KodakFoldersController < Connector::KodakController
     photos_data = photos_list['pictures']
     photos = []
     current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
-    photos_data.each do |p|
+    album_timestamp = (DateTime.parse(photos_list['userEditedDate']) rescue 1.month.ago)
+    photos_data.each_with_index do |p, idx|
       photo_url = p[PHOTO_SIZES[:full]]
       photo = Photo.create(
               :user_id=>current_user.id,
               :album_id => params[:album_id],
               :upload_batch_id => current_batch.id,
-              :capture_date => DateTime.now, #Absolutely no timestamps in data o_O
+              :capture_date => idx.seconds.since(album_timestamp),
               :caption => p['caption'],
               :source_guid => make_source_guid(p),
               :source_thumb_url => p[PHOTO_SIZES[:thumb]],
               :source_screen_url => p[PHOTO_SIZES[:screen]]
       )
-      
     
       ZZ::Async::KodakImport.enqueue( photo.id, photo_url, connector.auth_token )
       photos << photo
