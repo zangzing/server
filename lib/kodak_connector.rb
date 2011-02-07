@@ -54,7 +54,7 @@ class KodakConnector
     rescue => exception
       raise HttpCallFail
     end
-    XmlSimple.xml_in(response.body)
+    Hash.from_xml(response.body).values.first
   end
 
   def proxy_response(url)

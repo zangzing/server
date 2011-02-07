@@ -1,7 +1,14 @@
 class Connector::GoogleController < Connector::ConnectorController
   require 'gdata'
-
   before_filter :service_login_required
+
+  NS = {
+      "a"  => "http://www.w3.org/2005/Atom",
+      "gp" => "http://schemas.google.com/photos/2007",
+      "m"  => "http://search.yahoo.com/mrss/",
+      "os" => "http://a9.com/-/spec/opensearchrss/1.0/",
+      "gd" => "http://schemas.google.com/g/2005"
+    }
 
 protected
 
