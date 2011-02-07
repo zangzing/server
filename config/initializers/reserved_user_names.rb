@@ -243,12 +243,16 @@ class ReservedUserNames
     return reserved_users.include?(l_user)
   end
 
-  def self.print_sorted
+  def self.print_sorted(as_code=false)
     sorted = self.reserved_users.sort
     sorted.each do |v|
-      puts v + "\n"
+      if as_code
+        puts "\"#{v}\",\n"
+      else
+        puts v + "\n"
+      end
     end
   end
 
-  self.print_sorted
+#  self.print_sorted true
 end
