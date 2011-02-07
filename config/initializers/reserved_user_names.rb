@@ -21,21 +21,27 @@ class ReservedUserNames
         'team',
         'joseph',
         'ansanelli',
+        'josephansanelli',
         'jansanelli',
         'greg',
         'seitz',
         'gseitz',
+        'gregseitz',
         'phil',
         'beisel',
         'pbeisel',
+        'philbeisel',
         'mauricio',
         'alvarez',
+        'mauricioalvarez',
         'malvarez',
         'kathryn',
         'corro',
+        'kathryncorro',
         'kcorro',
         'jeremy',
         'hermann',
+        'jeremyhermann',
         'jhermann',
         'daniel',
         'whitehouse',
@@ -172,7 +178,36 @@ class ReservedUserNames
         'report',
         'report abuse',
         'reportabuse',
-    ]
+        "barackobama",
+        "obama",
+        "bobama",
+        "jk",
+        "j",
+        "k",
+        "lisa",
+        "maria",
+        "lawrence",
+        "lisaandlawrence",
+        "robert",
+        "john",
+        "kim",
+        "christina",
+        "brian",
+        "bowie",
+        "kevin",
+        "oleg",
+        "corrofamily",
+        "ansanellifamily",
+        "lewisfamily",
+        "justkuz",
+        "seitzfamily",
+        "beiselfamily",
+        "alvarezfamily",
+        "hermannfamily",
+        "linda",
+        "sarah",
+        "hope",
+    ].freeze
   end
 
   def self.is_reserved?(user)
@@ -181,5 +216,8 @@ class ReservedUserNames
   end
 
 #  x = self.reserved_users
-#  puts x
+#  y = x.sort
+#  y.each do |v|
+#    puts v + "\n"
+#  end
 end
