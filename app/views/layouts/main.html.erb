@@ -14,7 +14,7 @@
 <%  end %>
     <%= yield :meta_tags %>
 
-
+    <link rel="shortcut icon" href="/images/favicon.ico"/>
 
     <% if @page_title_override 
        title = @page_title_override
@@ -28,7 +28,6 @@
 
     <%= include_stylesheets :common %>
 
-    <link rel="shortcut icon" href="/images/favicon.ico"/>
 
 
 <%  # Add in template based style tags by defining this in the template -%>
