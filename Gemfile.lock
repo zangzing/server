@@ -229,6 +229,7 @@ DEPENDENCIES
   mechanize
   memcache-client
   mysql
+  nokogiri
   oauth (= 0.4.5.pre2)!
   oauth-plugin (>= 0.4.0.pre1)
   rails (= 3.0.3)

@@ -12,8 +12,8 @@ module ZZ
       end
 
       def deliver
-        raise Error, "Message.delivery error: Campaigns not loaded, did load_setup fail. Unable to deliver #{@name} message" if $campaigns.nil?
-
+        ZZ::MailChimp.load_setup() if $campaigns.nil?
+   
         subscribed = false
         sent = false
         unsubscribed = false

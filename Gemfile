@@ -36,9 +36,9 @@ gem 'rpm_contrib'                                     # For New Relic Performanc
 gem 'faker'                                           # To load sample data
 gem 'memcache-client'
 
-
 gem "jammit"
 gem "yui-compressor"
+gem "nokogiri"
 
 group :development do
   # bundler requires these gems in development

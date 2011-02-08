@@ -3,6 +3,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=100" > <!-- IE8 mode -->
     
+    <meta http-equiv="Content-Language" Content="en">
 
     <meta charset="utf-8">
     <meta name="copyright" content="Copyright 2010, ZangZing, Inc. All Rights Reserved." />
@@ -13,7 +14,7 @@
 <%  end %>
     <%= yield :meta_tags %>
 
-
+    <link rel="shortcut icon" href="/images/favicon.ico"/>
 
     <% if @page_title_override 
        title = @page_title_override
@@ -27,7 +28,6 @@
 
     <%= include_stylesheets :common %>
 
-    <link rel="shortcut icon" href="/images/favicon.ico"/>
 
 
 <%  # Add in template based style tags by defining this in the template -%>
