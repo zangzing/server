@@ -19,7 +19,7 @@ class Connector::GoogleContactsController < Connector::GoogleController
         entry_count += 1
         props = {
           :name => entry.at_xpath('a:title', NS).text,
-          :address => (entry.at_xpath('gd:email[@primary="true"]/@address', NS) || entry.xpath('gd:email/@address', NS).first).text,
+          :address => ( (entry.at_xpath('gd:email[@primary="true"]/@address', NS) || entry.xpath('gd:email/@address', NS)).text rescue ''),
           :type => 'email'
         }
         next if props[:address].blank?
