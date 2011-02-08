@@ -268,7 +268,7 @@ Server::Application.routes.draw do
 
 
 
-  get    '/:user_id'          => 'albums#index',               :as => :user_albums
+  get    '/users/:user_id'          => 'albums#index',               :as => :user_albums
 
 
 end
