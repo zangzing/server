@@ -235,18 +235,25 @@ class ReservedUserNames
       "zing",
       "zingy",
       "zz",
-      "David",
-      "Kristin",
-      "Judith",
-      "Bud",
-      "Van",
-      "Merrill",
-      "Hillary",
+      "david",
+      "kristin",
+      "judith",
+      "bud",
+      "van",
+      "merrill",
+      "hillary",
+      "site",
+      "potd",
     ].freeze
   end
 
   def self.is_reserved?(user)
     l_user = user.downcase
+
+    # special filter for wp-* site paths
+    return true if luser =~ /wp-.*/
+
+    # now see if in our map
     return reserved_users.include?(l_user)
   end
 
