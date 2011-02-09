@@ -44,7 +44,7 @@ class Identity < ActiveRecord::Base
 
   UI_INFO = {
     :google => {:name => 'Google', :icon => ''},
-    :picasa => {:name => 'Picasa Web Albums', :icon => ''},
+    #:picasa => {:name => 'Picasa Web Albums', :icon => ''},
     :flickr => {:name => 'Flickr', :icon => ''},
     :yahoo => {:name => 'Yahoo!', :icon => ''},
     :facebook => {:name => 'Facebook', :icon => ''},
