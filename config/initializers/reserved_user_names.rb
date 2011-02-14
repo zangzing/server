@@ -244,6 +244,8 @@ class ReservedUserNames
       "hillary",
       "site",
       "potd",
+      "larryco",
+      "siteremap",
     ].freeze
   end
 
