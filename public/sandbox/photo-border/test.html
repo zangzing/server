@@ -1,0 +1,84 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=100" > <!-- IE8 mode -->
+
+    <script language="javascript">
+        /*
+        CSS Browser Selector v0.4.0 (Nov 02, 2010)
+        Rafael Lima (http://rafael.adm.br)
+        http://rafael.adm.br/css_browser_selector
+        License: http://creativecommons.org/licenses/by/2.5/
+        Contributors: http://rafael.adm.br/css_browser_selector#contributors
+        */
+        function css_browser_selector(u){var ua=u.toLowerCase(),is=function(t){return ua.indexOf(t)>-1},g='gecko',w='webkit',s='safari',o='opera',m='mobile',h=document.documentElement,b=[(!(/opera|webtv/i.test(ua))&&/msie\s(\d)/.test(ua))?('ie ie'+RegExp.$1):is('firefox/2')?g+' ff2':is('firefox/3.5')?g+' ff3 ff3_5':is('firefox/3.6')?g+' ff3 ff3_6':is('firefox/3')?g+' ff3':is('gecko/')?g:is('opera')?o+(/version\/(\d+)/.test(ua)?' '+o+RegExp.$1:(/opera(\s|\/)(\d+)/.test(ua)?' '+o+RegExp.$2:'')):is('konqueror')?'konqueror':is('blackberry')?m+' blackberry':is('android')?m+' android':is('chrome')?w+' chrome':is('iron')?w+' iron':is('applewebkit/')?w+' '+s+(/version\/(\d+)/.test(ua)?' '+s+RegExp.$1:''):is('mozilla/')?g:'',is('j2me')?m+' j2me':is('iphone')?m+' iphone':is('ipod')?m+' ipod':is('ipad')?m+' ipad':is('mac')?'mac':is('darwin')?'mac':is('webtv')?'webtv':is('win')?'win'+(is('windows nt 6.0')?' vista':''):is('freebsd')?'freebsd':(is('x11')||is('linux'))?'linux':'','js']; c = b.join(' '); h.className += ' '+c; return c;}; css_browser_selector(navigator.userAgent);
+    </script>
+
+    <style type="text/css" id="page-css">
+        html {
+            height: 100%;
+        }
+        body {
+            margin: 10px;
+            padding: 10px;
+            height: 100%;
+        }
+
+        .photo{
+            width:200px;
+            height:131px;
+            border: 5px solid #fff;
+            margin:0px;
+        }
+
+        .image-border{
+            position:relative;
+            /*padding: 1px;*/
+            /*background-color: #e6e6e6;*/
+            /*border: 1px #e6e6e6 solid;*/
+            box-shadow: 0px 0px 2px #ccc;
+            -webkit-box-shadow: 0px 0px 2px #ccc;
+            -moz-box-shadow: 0px 0px 2px #ccc;
+
+            border-bottom:0px;
+            padding-bottom:0px;
+            display:inline-block;
+            margin:0px;
+        }
+
+        .win .image-border{
+            padding: 1px;
+            background-color: #e6e6e6;
+            border: 1px #f4f4f4 solid;
+        }
+
+
+        .image-border .bottom{
+            position:absolute;
+            left:0px;
+            bottom:-9px;
+            height:9px;
+            width:100%;
+        }
+
+
+    </style>
+
+</head>
+
+<body>
+    <div class="image-border" style="height:141px"><img class="photo" style="width:200px; height:131px" src="DSC_0008.JPG"><img class="bottom" src="bottom-full.jpg"></div>
+
+    <br>
+    <br>
+
+    <div class="image-border" style="height:272px"><img class="photo" style="width:400px; height:262px" src="DSC_0008.JPG"><img class="bottom" src="bottom-full.jpg"></div>
+
+    <br>
+    <br>
+    
+
+    <div class="image-border" style="height:535px"><img class="photo" style="width:800px; height:524px" src="DSC_0008.JPG"><img class="bottom" src="bottom-full.jpg"></div>
+</body>
+</html>
