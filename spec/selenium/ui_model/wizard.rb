@@ -116,6 +116,13 @@ module UiModel
       def type_album_name album
         @browser.type "css=#album_name", album
       end
+
+      def get_album_email
+        @browser.key_press("css=#album_name", "\32")
+        sleep 4
+        @browser.wait_for :wait_for => :ajax
+        @browser.get_value('css=#album_email').strip
+      end
     end
 
     class AlbumTypeTab
@@ -147,6 +154,10 @@ module UiModel
       def initialize(selenuim_session)
         @session = selenuim_session
         @browser = selenuim_session.browser
+      end
+
+      def visible?
+        (@browser.element?('css=#contributor-index') && @browser.visible?('css=#contributor-index')) || (@browser.element?('css=#new_contributors-index') && @browser.visible?('css=#new_contributors-index'))
       end
       
       def import_gmail_contacts
@@ -203,11 +214,15 @@ module UiModel
         @browser.is_element_present("//img[@src='/images/btn-mslive-on.png']")
       end
       
-      def add_contributors(email)
-        @browser.type "css=input#you-complete-me.ac_input", email
+      def add_contributors(emails)
+        [emails].flatten.each do |email|
+            @browser.type("css=input#you-complete-me.ac_input", email)
+            @browser.key_down("css=input#you-complete-me.ac_input", '\13')
+            @browser.key_up("css=input#you-complete-me.ac_input", '\13')
+        end
         @browser.type "css=textarea#email_share_message", "Hi, now you contributor of my album!"
         @browser.click "css=a#submit-new-contributors.green-button"
-        @session.wait_for "css=a#add-contributors-btn.green-add-button"
+        #@session.wait_for "css=a#add-contributors-btn.green-add-button"
       end
       
     end
@@ -250,12 +265,13 @@ module UiModel
         @browser.select_window "null"
       end
         
-      def send_email(email)
+      def type_emails(emails)
         @browser.click "css=input#you-complete-me.ac_input"
-        @browser.type "css=input#you-complete-me.ac_input", email
-        @browser.click "css=input#you-complete-me.ac_input"
-        @browser.key_press("css=input#you-complete-me.ac_input", '\32')
-        sleep 5
+        [emails].flatten.each do |email|
+            @browser.type("css=input#you-complete-me.ac_input", email)
+            @browser.key_down("css=input#you-complete-me.ac_input", '\13')
+            @browser.key_up("css=input#you-complete-me.ac_input", '\13')
+        end
         @browser.type "css=textarea#email_share_message", "Hi, see my new album!!!!"
         @browser.click "css=a#mail-submit.green-button"
         @session.wait_for "css=li.email-share.link"
