@@ -29,7 +29,7 @@ protected
   end
 
   def scope
-    'http://www.google.com/m8/feeds/'
+    'http://www.google.com/m8/feeds/ https://picasaweb.google.com/data/feed/'
   end
 
   def upgrade_access_token!(request_token)

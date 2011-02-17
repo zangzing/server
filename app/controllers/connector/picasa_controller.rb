@@ -2,16 +2,8 @@ class Connector::PicasaController < Connector::GoogleController
 
 protected
 
-  def service_identity
-    @service_identity ||= current_user.identity_for_picasa
-  end
-
   def client
     @picasa_client ||= GData::Client::Photos.new
-  end
-
-  def scope
-    'https://picasaweb.google.com/data/feed/'
   end
 
 protected
