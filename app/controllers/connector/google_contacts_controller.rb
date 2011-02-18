@@ -12,14 +12,14 @@ class Connector::GoogleContactsController < Connector::GoogleController
     start_index = 1
     imported_contacts = []
     begin
-      doc = client.get("http://www.google.com/m8/feeds/contacts/default/full?max-results=#{BATCH_SIZE}&start-index=#{start_index}").to_xml
+      doc = Nokogiri::XML(client.get("http://www.google.com/m8/feeds/contacts/default/full?max-results=#{BATCH_SIZE}&start-index=#{start_index}").body)
 
       entry_count = 0
-      doc.elements.each('entry') do |entry|
+      doc.xpath('//a:entry', NS).each do |entry|
         entry_count += 1
         props = {
-          :name => entry.elements['title'].text,
-          :address => entry.elements['gd:email[@primary="true"]/@address'].to_s,
+          :name => entry.at_xpath('a:title', NS).text,
+          :address => ( (entry.at_xpath('gd:email[@primary="true"]/@address', NS) || entry.xpath('gd:email/@address', NS)).text rescue ''),
           :type => 'email'
         }
         next if props[:address].blank?

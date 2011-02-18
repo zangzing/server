@@ -4,12 +4,12 @@ class Connector::ShutterflyPhotosController < Connector::ShutterflyController
     photos_list = sf_api.get_images(params[:sf_album_id])
     photos = photos_list.map { |p|
      {
-        :name => p[:title].first,
-        :id => p[:id].first,
+        :name => p[:title],
+        :id => p[:id],
         :type => 'photo',
-        :thumb_url => get_photo_url(p[:id].first, :thumb),
-        :screen_url => get_photo_url(p[:id].first, :screen),
-        :add_url => shutterfly_photo_action_path({:sf_album_id =>params[:sf_album_id], :photo_id => p[:id].first, :action => 'import'}),
+        :thumb_url => get_photo_url(p[:id], :thumb),
+        :screen_url => get_photo_url(p[:id], :screen),
+        :add_url => shutterfly_photo_action_path({:sf_album_id =>params[:sf_album_id], :photo_id => p[:id], :action => 'import'}),
         :source_guid => make_source_guid(p)
 
      }
@@ -27,8 +27,8 @@ class Connector::ShutterflyPhotosController < Connector::ShutterflyController
 
   def import
     photos_list = sf_api.get_images(params[:sf_album_id])
-    photo_info = photos_list.select { |p| p[:id].first==params[:photo_id] }.first
-    photo_title = photo_info[:title].first
+    photo_info = photos_list.select { |p| p[:id]==params[:photo_id] }.first
+    photo_title = photo_info[:title]
     
     photo_url = get_photo_url(params[:photo_id],  :full)
     current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
@@ -37,7 +37,7 @@ class Connector::ShutterflyPhotosController < Connector::ShutterflyController
             :album_id => params[:album_id],
             :user_id=>current_user.id,
             :upload_batch_id => current_batch.id,
-            :capture_date => (Time.at(photo_info[:capturetime].first.to_i/1000) rescue nil),
+            :capture_date => (Time.at(photo_info[:capturetime].to_i/1000) rescue nil),
             :source_guid => make_source_guid(photo_info),
             :source_thumb_url => get_photo_url(params[:photo_id],  :thumb),
             :source_screen_url => get_photo_url(params[:photo_id],  :screen)

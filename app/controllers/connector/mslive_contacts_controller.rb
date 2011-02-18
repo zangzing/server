@@ -6,19 +6,18 @@ class Connector::MsliveContactsController < Connector::MsliveController
 
   def index
     render :json => service_identity.contacts
-
   end
 
   def import
-    all_contacts = request_contacts_service('/LiveContacts/Contacts?Filter=LiveContacts(Contact(ID,CID,Profiles,Email))')
+    all_contacts = Nokogiri::XML(request_contacts_service('/LiveContacts/Contacts?Filter=LiveContacts(Contact(ID,CID,Profiles,Email))'))
     imported_contacts = []
-    all_contacts['Contact'].each do |contact|
-      profile = contact['Profiles'].first.values.first.first
-      name = [ profile['FirstName'], profile['LastName'] ].compact.join(' ')
-      (contact['Emails'] || []).each do |email|
+    
+    all_contacts.xpath('/Contacts/Contact').each do |contact|
+      name = [contact.at_xpath('Profiles/Personal/FirstName'), contact.at_xpath('Profiles/Personal/LastName')].compact.map(&:text).join(' ')
+      (contact.xpath('Emails/Email') || []).each do |email|
         props = {
           :name => name,
-          :address => email['Email'].first['Address'].first,
+          :address => email.at_xpath('Address').text,
           :type => 'email'
         }
         next if props[:address].blank?

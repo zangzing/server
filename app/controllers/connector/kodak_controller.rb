@@ -1,7 +1,6 @@
 class Connector::KodakController < Connector::ConnectorController
   require "net/http"
   require "uri"
-  require 'xmlsimple'
 
   before_filter :service_login_required
 
@@ -46,7 +45,7 @@ protected
   end
 
   def make_source_guid(photo_info)
-    "kodak_"+Photo.generate_source_guid(photo_info[PHOTO_SIZES[:full]].first)
+    "kodak_"+Photo.generate_source_guid(photo_info[PHOTO_SIZES[:full]])
   end
   
 end
