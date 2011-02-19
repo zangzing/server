@@ -40,8 +40,9 @@
             html += '<div class="photo-delete-button"></div>';
             html += '<div class="photo-uploading-icon"></div>';
             html += '<div class="photo-error-icon"></div>';
-            html += '<div class="photo-caption">' + self.options.caption +'</div>';
+            html += '<img class="bottom-shadow" src="/images/photo/bottom-full.jpg">';
             html += '</div>';
+            html += '<div class="photo-caption">' + self.options.caption +'</div>';
 
             $(html).appendTo(this.element);
 
@@ -51,7 +52,7 @@
             self.deleteButtonElement = self.element.find('.photo-delete-button');
             self.uploadingElement = self.element.find('.photo-uploading-icon');
             self.errorElement = self.element.find('.photo-error-icon');
-
+            self.bottomShadow = self.element.find('.bottom-shadow');
 
 
 
@@ -73,6 +74,10 @@
             self.imageElement.css({
                 width: initialWidth,
                 height: initialHeight
+            });
+
+            self.bottomShadow.css({
+                width: initialWidth + 10
             });
 
 
@@ -106,7 +111,7 @@
             self.borderElement.css({
                 position: "relative",
                 top: (self.height - wrapperHeight) / 2,
-                left: (self.width - wrapperWidth) / 2,
+//                left: (self.width - wrapperWidth) / 2,
                 width: wrapperWidth,
                 height: wrapperHeight
             });
@@ -222,7 +227,7 @@
 
             self.borderElement.css({
                 top: (self.height - wrapperHeight) / 2,
-                left: (self.width - wrapperWidth) / 2,
+//                left: (self.width - wrapperWidth) / 2,
                 width: wrapperWidth,
                 height: wrapperHeight
             });

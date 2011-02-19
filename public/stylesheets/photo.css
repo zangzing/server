@@ -4,10 +4,7 @@
     overflow-y:scroll;
     overflow-x:scroll;
     position:relative;
-    /*top:0px;*/
-    /*left:0px;*/
-    /*bottom:0px;*/
-    /*right:0px;*/
+
 }
 
 
@@ -15,11 +12,11 @@
 
 .photogrid-cell{
     position: absolute;
+    /*border:1px solid black;*/
 }
 
 .photogrid-droppable{
     position: absolute;
-    /*border:2px solid black;*/
     z-index:-1;
 }
 
@@ -48,12 +45,8 @@
 
 .photo-droppable{
     position:absolute;
-    /*left:-50px;*/
-    /*height:100px;*/
-    /*width:100px;*/
     background-color: transparent;
     z-index:-1;
-    /*border:1px solid black;*/
 }
 
 
@@ -69,25 +62,55 @@
 
 
 .photo-border{
-    box-shadow: 0px 0px 3px #e6e6e6;
-    -webkit-box-shadow: 0px 0px 3px #e6e6e6;
-    -moz-box-shadow: 0px 0px 3px #e6e6e6;
-    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=135, Color='#767676')";
+    /*box-shadow: 0px 0px 3px #e6e6e6;*/
+    /*-webkit-box-shadow: 0px 0px 3px #e6e6e6;*/
+    /*-moz-box-shadow: 0px 0px 3px #e6e6e6;*/
+    /*-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=135, Color='#767676')";*/
+    /*position:absolute;*/
+    /*cursor: pointer;*/
+    /*padding:0px;*/
+    /*border:1px solid #d6d6d6*/
+
+    box-shadow: 0px 0px 3px #ccc;
+    -webkit-box-shadow: 0px 0px 3px #ccc;
+    -moz-box-shadow: 0px 0px 3px #ccc;
+    border-bottom:0px;
+    padding-bottom:0px;
+    display:inline-block;
+    margin:0px;
+    /*margin-left:auto;*/
+    /*margin-right:auto;*/
+
+}
+
+.ua-ie .photo-border{
+    padding: 1px;
+    background-color: #e6e6e6;
+    border: 1px #f4f4f4 solid;
+}
+
+.photo-border .bottom-shadow{
     position:absolute;
-    cursor: pointer;
-    padding:0px;
-    border:1px solid #d6d6d6
+    left:0px;
+    bottom:-9px;
+    height:9px;
+    width:100%;
 }
 
 
 
-.photogrid-cell.dragging .photo-border, .photo-border:hover, .photo-border.highlighted{
-    box-shadow: 0px 0px 2px #FDD042;
-    -webkit-box-shadow: 0px 0px 2px #FDD042;
-    -moz-box-shadow: 0px 0px 2px #FDD042;
-    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=135, Color='#FDD042')";
-    border:1px solid #FDD042;
 
+.photogrid-cell.dragging .photo-border, .photo-border:hover, .photo-border.highlighted{
+    box-shadow: 0px 0px 3px #FDD042;
+    -webkit-box-shadow: 0px 0px 3px #FDD042;
+    -moz-box-shadow: 0px 0px 3px #FDD042;
+    /*border:1px solid #FDD042;*/
+}
+
+.ua-ie .photogrid-cell.dragging .photo-border, .photo-border:hover, .photo-border.highlighted{
+    /*padding: 1px;*/
+    /*background-color: #FDD042;*/
+    /*border: 1px #FDD042 solid;*/
 }
 
 
@@ -149,21 +172,20 @@
 }
 
 .photo-caption{
-    font-family: Arial;
-    color: #7a7a7a;
     text-align: center;
     position:absolute;
     bottom:5px;
     left:5px;
     right:5px;
-    background-image: url("/images/photo/bg-blk-75.png");
+    /*background-image: url("/images/photo/bg-blk-75.png");*/
     display:block;
     padding:5px;
     height:15px;
-    font-size:.8em;
+    font-size:1.3em;
+    color: #0A0A0A;
     overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    /*white-space: nowrap;*/
+    /*text-overflow: ellipsis;*/
 }
 
 /*.photo-border:hover .photo-caption{*/
