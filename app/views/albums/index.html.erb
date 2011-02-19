@@ -2,14 +2,16 @@
     <%= render :partial => "facebook/user_opengraph_tags" %>
 <% end %>
 
-<% if @albums.empty? %>
-  <!-- %= h @user.name %> Has No Albums</h2> -->
-<% else %>
-  <!-- <%= h @user.name %>'s Albums -->
-  <ul class="albums-grid-view clearfix">	 
-    <%= render :partial => 'album', :collection => @albums %>
-  </ul>
+<% @albums.each do |album|  %>
+    <div class="album-cell">
+        <a href="<%=url_for(album)%>">
+            <div class="picon">
+                <div class="mask">
+                    <img class="wide" src="<%= album.cover ? album.cover.thumb_url : '' %>">
+                </div>
+            </div>
+        </a>
+        <div class="album-name"><%= truncate(h(album.name), :length => 100) %></div>
+    </div>
 <% end %>
-<%if current_user?(@user)%>
-  <%#= button_to "Create New Album", new_user_album_path( current_user ), :method => :get %>
-<%end%>
+
