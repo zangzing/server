@@ -13,7 +13,7 @@ body {
   margin: 0 auto;
   background-color: #ffffff;
   /*font-family: "Lucida Grande", "Lucida Sans Unicode", "Trebuchet MS", Tahoma, Helvetica, Arial, sans-serif;*/
-  font-family: Arial;
+  font-family:  Arial;
   font-size: 62.5%;
   color: #0a0a0a;
   /* the following fixes that annoying tell-tale js animation flicker */

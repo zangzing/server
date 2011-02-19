@@ -2,12 +2,13 @@
     <%= render :partial => "facebook/user_opengraph_tags" %>
 <% end %>
 
+
 <% @albums.each do |album|  %>
     <div class="album-cell">
         <a href="<%=url_for(album)%>">
-            <div class="picon">
+            <div class="picon style_<%=1+rand(3)%>">
                 <div class="mask">
-                    <img class="wide" src="<%= album.cover ? album.cover.thumb_url : '' %>">
+                    <img class="wide" src="<%= album.cover ? album.cover.thumb_url : '/images/album-no-cover.png' %>">
                 </div>
             </div>
         </a>
