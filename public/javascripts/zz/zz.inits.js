@@ -285,7 +285,7 @@ logger.debug(((new Date()).getTime() - start)  +" after ajax call");
                     allowEditCaption: false,
                     allowReorder: false,
                     cellWidth: gridElement.width(),
-                    cellHeight: gridElement.height(),
+                    cellHeight: gridElement.height()-20,
                     onClickPhoto: function(index, photo){
                         document.location.href = "/albums/" + zz.album_id +"/photos/#!" + photo.id;
                     },
