@@ -21,4 +21,6 @@ javascripts:
 
 stylesheets:
   common:
+    - public/stylesheets/reset.css
+    - public/stylesheets/main.css
     - public/stylesheets/*.css

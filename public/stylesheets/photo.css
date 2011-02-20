@@ -71,13 +71,15 @@
     /*padding:0px;*/
     /*border:1px solid #d6d6d6*/
 
-    box-shadow: 0px 0px 3px #ccc;
-    -webkit-box-shadow: 0px 0px 3px #ccc;
-    -moz-box-shadow: 0px 0px 3px #ccc;
-    border-bottom:0px;
+    box-shadow: 0px 0px 3px #aaa;
+    -webkit-box-shadow: 0px 0px 3px #aaa;
+    -moz-box-shadow: 0px 0px 3px #aaa;
+    /*border-bottom:0px;*/
     padding-bottom:0px;
     display:inline-block;
     margin:0px;
+    /*border: 1px #ccc solid;*/
+
     /*margin-left:auto;*/
     /*margin-right:auto;*/
 
@@ -190,9 +192,9 @@
     /*white-space: nowrap;*/
     /*text-overflow: ellipsis;*/
     /*font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
-    font-family:Verdana;
-    font-size:12px;
-    color: #0A0A0A;
+    /*font-family:Verdana;*/
+    font-size:1.3em;
+    color: #636363;
 
 
 }
