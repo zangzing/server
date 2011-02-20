@@ -13,6 +13,7 @@
 .photogrid-cell{
     position: absolute;
     /*border:1px solid black;*/
+    text-align:left; /*use absolute position to center */
 }
 
 .photogrid-droppable{
@@ -182,7 +183,7 @@
     /*background-image: url("/images/photo/bg-blk-75.png");*/
     display:block;
     padding:5px;
-    height:15px;
+    height:25px;
     /*font-size:1.3em;*/
     /*font-size:14px;*/
     /*font-size:12px;*/
@@ -195,6 +196,8 @@
     /*font-family:Verdana;*/
     font-size:1.3em;
     color: #636363;
+    padding-left:10px;
+    padding-right:10px;
 
 
 }

@@ -54,13 +54,13 @@
             self.errorElement = self.element.find('.photo-error-icon');
             self.bottomShadow = self.element.find('.bottom-shadow');
 
-
+            self.captionHeight = 30;
 
 
             if(self.options.aspectRatio){
                 var srcWidth =  1 * self.options.aspectRatio;
                 var srcHeight = 1;
-                var scale = Math.min( self.options.maxWidth / srcWidth, self.options.maxHeight / srcHeight)
+                var scale = Math.min( self.options.maxWidth / srcWidth, (self.options.maxHeight - self.captionHeight) / srcHeight)
 
                 var initialWidth = srcWidth * scale;
                 var initialHeight = srcHeight * scale;
@@ -100,18 +100,18 @@
 
 
 
+            var borderWidth = initialWidth + 10 ;
+            var borderHeight = initialHeight + 10;
 
-            var wrapperWidth = initialWidth + 10;
-            var wrapperHeight = initialHeight + 10;
 
 
 
             self.borderElement.css({
                 position: "relative",
-                top: (self.height - wrapperHeight) / 2,
-//                left: (self.width - wrapperWidth) / 2,
-                width: wrapperWidth,
-                height: wrapperHeight
+                top: (self.height - borderHeight - self.captionHeight) / 2,
+                left: (self.width - borderWidth) / 2,
+                width: borderWidth,
+                height: borderHeight 
             });
 
 
@@ -215,19 +215,19 @@
         _resize: function(percent){
             var self = this;
 
-            var scale = Math.min(self.options.maxWidth/self.imageObject.width, self.options.maxHeight/self.imageObject.height);
+            var scale = Math.min(self.options.maxWidth/self.imageObject.width, (self.options.maxHeight - self.captionHeight) / self.imageObject.height);
             var width = Math.floor(self.imageObject.width * scale);
             var height = Math.floor(self.imageObject.height * scale);
 
-            var wrapperWidth = width + 10;
-            var wrapperHeight = height + 10;
+            var borderWidth = width + 10;
+            var borderHeight = height + 10;
 
 
             self.borderElement.css({
-                top: (self.height - wrapperHeight) / 2,
-//                left: (self.width - wrapperWidth) / 2,
-                width: wrapperWidth,
-                height: wrapperHeight
+                top: (self.height - borderHeight - self.captionHeight) / 2,
+                left: (self.width - borderWidth) / 2,
+                width: borderWidth,
+                height: borderHeight
             });
 
             self.imageElement.css({
