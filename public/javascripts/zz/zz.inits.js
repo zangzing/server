@@ -13,7 +13,10 @@ zz.init = {
         //top bar
         $('#header #home-button').click(function(){ document.location.href = '/' });
 
-        $('#header #back-button').click(function(){ document.location.href = '/' });
+        $('#header #back-button').click(function(){
+            $('#article').animate({left: $('#article').width()},1000,'easeOutCubic');
+            document.location.href='/';
+        });
 
 
         if(document.location.href.indexOf("/photos/") !== -1){

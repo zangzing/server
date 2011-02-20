@@ -215,6 +215,7 @@ DEPENDENCIES
   aws-s3 (>= 0.6.2)
   bitly
   bundler (>= 1.0.7)
+  closure-compiler
   dynamic_form
   factory_girl
   faker
