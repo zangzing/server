@@ -76,10 +76,8 @@
                 height: initialHeight
             });
 
-            self.bottomShadow.css({
-                width: initialWidth + 10
-            });
-
+            self.bottomShadow.attr('width', initialWidth + 10)
+  
 
             //element is probably invisible at this point, so we need to check the css attributes
             self.width = parseInt(self.element.css('width'));
