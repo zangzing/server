@@ -5,7 +5,7 @@
 
 <% @albums.each do |album|  %>
     <div class="album-cell">
-        <a href="#" onclick="$('#article').animate({left:-1300},1000,'linear'); document.location.href='<%=url_for(album)%>';">
+        <a href="<%=url_for(album)%>">
             <div class="picon style_<%=1+rand(3)%>">
                 <div class="mask">
                     <img class="wide" src="<%= album.cover ? album.cover.thumb_url : '/images/album-no-cover.png' %>">
