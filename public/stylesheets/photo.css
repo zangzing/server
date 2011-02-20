@@ -194,7 +194,7 @@
     /*text-overflow: ellipsis;*/
     /*font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
     /*font-family:Verdana;*/
-    font-size:1.3em;
+    font-size:13px;
     color: #636363;
     padding-left:10px;
     padding-right:10px;
@@ -210,6 +210,13 @@
     position:absolute;
     left:0px;
     right:0px;
+    top:2px;
+    font-size:13px;
+    padding-top:2px;
+    padding-bottom:2px;
+    padding-left:10px;
+    padding-right:10px;
+    /*height:25px;*/
     /*top:2px;*/
 
 }
