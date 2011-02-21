@@ -40,6 +40,10 @@ h3 {
   font-weight: 400;
 }
 
+.relative {
+    position:relative;
+}
+
 /* Fixed Header and Footer
 ----------------------------------------------------------------------------- */
 
