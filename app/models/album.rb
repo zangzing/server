@@ -98,28 +98,31 @@ class Album < ActiveRecord::Base
 
       self.save
   end
+
+  #TODO: Make a pass later and clean up all related code to the generation of picons
+  # for now just turn off the queueing
   
   def queue_update_picon
-     ZZ::Async::UpdatePicon.enqueue( self.id )
+  #   ZZ::Async::UpdatePicon.enqueue( self.id )
   end
 
   #
   # Delete the s3 related objects in a deferred fashion
   #
   def queue_delete_from_s3
-    # if we have already uploaded to s3 go ahead and delete it since
-    # we are going away.
-    # in the unlikely event that the delete gets processed before the
-    # upload then the object itself will no longer exist which
-    # will keep the upload from ever taking place
-    # also, we can't rely on the album object itself since it won't
-    # exist by the time it gets processed.
-    if self.image_bucket
-      # get all of the keys to remove
-      keys = attached_picon.all_keys
-      ZZ::Async::S3Cleanup.enqueue(self.image_bucket, keys)
-      logger.debug("picon queued for s3 cleanup")
-    end
+#    # if we have already uploaded to s3 go ahead and delete it since
+#    # we are going away.
+#    # in the unlikely event that the delete gets processed before the
+#    # upload then the object itself will no longer exist which
+#    # will keep the upload from ever taking place
+#    # also, we can't rely on the album object itself since it won't
+#    # exist by the time it gets processed.
+#    if self.image_bucket
+#      # get all of the keys to remove
+#      keys = attached_picon.all_keys
+#      ZZ::Async::S3Cleanup.enqueue(self.image_bucket, keys)
+#      logger.debug("picon queued for s3 cleanup")
+#    end
   end
 
 
