@@ -34,7 +34,10 @@ describe "contributors test" do
   it "import mslive contacts" do
     ui.wizard.album_contributors_tab.import_mslive_contacts
   end
-  
+
+  it "import outlook contacts" do
+    ui.wizard.album_contributors_tab.import_outlook_contacts    # uncomment in wizard.rb
+  end
   
   it "verify contacts from yahoo are imported" do
     ui.wizard.album_contributors_tab.imported_yahoo?.should be_true
@@ -48,6 +51,9 @@ describe "contributors test" do
   it "verify contacts from mslive are imported" do
     ui.wizard.album_contributors_tab.imported_mslive?.should be_true
   end    
-  
+
+  it "verify contacts from outlook are imported" do
+    ui.wizard.album_contributors_tab.imported_outlook?.should be_true
+  end
 
 end
