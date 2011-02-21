@@ -616,12 +616,15 @@ logger.debug(((new Date()).getTime() - start) +" after create grid");
                     }).data().zz_photogrid;
 
 
+                    //force this back because grid turns on scrolling
+                    $(element).css({overflow:'hidden'});
+
                     var allShowing = false;
                     var moreLessbuttonElement = $(element).siblings('.more-less-btn');
 
                     moreLessbuttonElement.click(function(){
                         if(allShowing){
-                            $(element).animate({height:180}, 500, 'swing', function(){
+                            $(element).animate({height:230}, 500, 'swing', function(){
                                 moreLessbuttonElement.html("more...");
                             });
                             allShowing = false;
