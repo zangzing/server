@@ -14,7 +14,7 @@ zz.init = {
         $('#header #home-button').click(function(){ document.location.href = '/' });
 
         $('#header #back-button').click(function(){
-            $('#article').animate({left: $('#article').width()},500,'easeInQuart');
+            $('#article').animate({left: $('#article').width()},500,'easeOutQuart');
             document.location.href='/';
         });
 
@@ -34,22 +34,37 @@ zz.init = {
 
 
         $('#header #view-buttons #grid-view-button').click(function(){
+            $('#header #view-buttons').children().removeClass('selected');
+            $('#header #view-buttons #grid-view-button').addClass('selected');
+
+            $('#article').fadeOut(200);
             document.location.href = '/albums/' + zz.album_id + "/photos";
         });
 
         $('#header #view-buttons #picture-view-button').click(function(){
-            document.location.href = '/albums/' + zz.album_id + "/photos/";
+            $('#header #view-buttons').children().removeClass('selected');
+            $('#header #view-buttons #picture-view-button').addClass('selected');
 
+            $('#article').fadeOut(200);
+            document.location.href = '/albums/' + zz.album_id + "/photos/";
         });
 
         $('#header #view-buttons #people-view-button').click(function(){
-            document.location.href = '/albums/' + zz.album_id + "/people";
+            $('#header #view-buttons').children().removeClass('selected');
+            $('#header #view-buttons #people-view-button').addClass('selected');
 
+
+            $('#article').fadeOut(200);
+            document.location.href = '/albums/' + zz.album_id + "/people";
         });
 
         $('#header #view-buttons #activities-view-button').click(function(){
-            document.location.href = '/albums/' + zz.album_id + "/activities";
+            $('#header #view-buttons').children().removeClass('selected');
+            $('#header #view-buttons #activities-view-button').addClass('selected');
 
+
+            $('#article').fadeOut(200);
+            document.location.href = '/albums/' + zz.album_id + "/activities";
         });
 
         $('#header #help-button').click(function(){
