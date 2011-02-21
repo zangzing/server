@@ -14,7 +14,7 @@ zz.init = {
         $('#header #home-button').click(function(){ document.location.href = '/' });
 
         $('#header #back-button').click(function(){
-            $('#article').animate({left: $('#article').width()},500,'easeInOutCubic');
+            $('#article').animate({left: $('#article').width()},500,'easeInQuart');
             document.location.href='/';
         });
 
