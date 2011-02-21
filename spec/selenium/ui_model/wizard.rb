@@ -197,9 +197,9 @@ module UiModel
         @browser.type "i0118", "QaVH6kP6XdMPzLTz"
         @browser.click "css=input#idSIButton9"
         sleep 5
-        @browser.select_pop_up('')
+        #@browser.select_pop_up('')
         #@session.wait_load
-        @browser.click "Continue"
+        #@browser.click "Continue"
         #@browser.click "ctl00_MainContent_ConsentBtn"
         @browser.select_window "null"
       end
