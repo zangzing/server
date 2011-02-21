@@ -40,8 +40,9 @@
             html += '<div class="photo-delete-button"></div>';
             html += '<div class="photo-uploading-icon"></div>';
             html += '<div class="photo-error-icon"></div>';
-            html += '<div class="photo-caption">' + self.options.caption +'</div>';
+            html += '<img class="bottom-shadow" src="/images/photo/bottom-full.jpg">';
             html += '</div>';
+            html += '<div class="photo-caption">' + self.options.caption +'</div>';
 
             $(html).appendTo(this.element);
 
@@ -51,15 +52,15 @@
             self.deleteButtonElement = self.element.find('.photo-delete-button');
             self.uploadingElement = self.element.find('.photo-uploading-icon');
             self.errorElement = self.element.find('.photo-error-icon');
+            self.bottomShadow = self.element.find('.bottom-shadow');
 
-
-
+            self.captionHeight = 30;
 
 
             if(self.options.aspectRatio){
                 var srcWidth =  1 * self.options.aspectRatio;
                 var srcHeight = 1;
-                var scale = Math.min( self.options.maxWidth / srcWidth, self.options.maxHeight / srcHeight)
+                var scale = Math.min( self.options.maxWidth / srcWidth, (self.options.maxHeight - self.captionHeight) / srcHeight)
 
                 var initialWidth = srcWidth * scale;
                 var initialHeight = srcHeight * scale;
@@ -75,6 +76,8 @@
                 height: initialHeight
             });
 
+            self.bottomShadow.attr('width', initialWidth + 10)
+  
 
             //element is probably invisible at this point, so we need to check the css attributes
             self.width = parseInt(self.element.css('width'));
@@ -97,18 +100,18 @@
 
 
 
+            var borderWidth = initialWidth + 10 ;
+            var borderHeight = initialHeight + 10;
 
-            var wrapperWidth = initialWidth + 10;
-            var wrapperHeight = initialHeight + 10;
 
 
 
             self.borderElement.css({
                 position: "relative",
-                top: (self.height - wrapperHeight) / 2,
-                left: (self.width - wrapperWidth) / 2,
-                width: wrapperWidth,
-                height: wrapperHeight
+                top: (self.height - borderHeight - self.captionHeight) / 2,
+                left: (self.width - borderWidth) / 2,
+                width: borderWidth,
+                height: borderHeight 
             });
 
 
@@ -212,19 +215,19 @@
         _resize: function(percent){
             var self = this;
 
-            var scale = Math.min(self.options.maxWidth/self.imageObject.width, self.options.maxHeight/self.imageObject.height);
+            var scale = Math.min(self.options.maxWidth/self.imageObject.width, (self.options.maxHeight - self.captionHeight) / self.imageObject.height);
             var width = Math.floor(self.imageObject.width * scale);
             var height = Math.floor(self.imageObject.height * scale);
 
-            var wrapperWidth = width + 10;
-            var wrapperHeight = height + 10;
+            var borderWidth = width + 10;
+            var borderHeight = height + 10;
 
 
             self.borderElement.css({
-                top: (self.height - wrapperHeight) / 2,
-                left: (self.width - wrapperWidth) / 2,
-                width: wrapperWidth,
-                height: wrapperHeight
+                top: (self.height - borderHeight - self.captionHeight) / 2,
+                left: (self.width - borderWidth) / 2,
+                width: borderWidth,
+                height: borderHeight
             });
 
             self.imageElement.css({

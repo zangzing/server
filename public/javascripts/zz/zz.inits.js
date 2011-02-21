@@ -13,7 +13,10 @@ zz.init = {
         //top bar
         $('#header #home-button').click(function(){ document.location.href = '/' });
 
-        $('#header #back-button').click(function(){ document.location.href = '/' });
+        $('#header #back-button').click(function(){
+            $('#article').animate({left: $('#article').width()},500,'easeOutQuart');
+            document.location.href='/';
+        });
 
 
         if(document.location.href.indexOf("/photos/") !== -1){
@@ -31,22 +34,37 @@ zz.init = {
 
 
         $('#header #view-buttons #grid-view-button').click(function(){
+            $('#header #view-buttons').children().removeClass('selected');
+            $('#header #view-buttons #grid-view-button').addClass('selected');
+
+            $('#article').fadeOut(200);
             document.location.href = '/albums/' + zz.album_id + "/photos";
         });
 
         $('#header #view-buttons #picture-view-button').click(function(){
-            document.location.href = '/albums/' + zz.album_id + "/photos/";
+            $('#header #view-buttons').children().removeClass('selected');
+            $('#header #view-buttons #picture-view-button').addClass('selected');
 
+            $('#article').fadeOut(200);
+            document.location.href = '/albums/' + zz.album_id + "/photos/";
         });
 
         $('#header #view-buttons #people-view-button').click(function(){
-            document.location.href = '/albums/' + zz.album_id + "/people";
+            $('#header #view-buttons').children().removeClass('selected');
+            $('#header #view-buttons #people-view-button').addClass('selected');
 
+
+            $('#article').fadeOut(200);
+            document.location.href = '/albums/' + zz.album_id + "/people";
         });
 
         $('#header #view-buttons #activities-view-button').click(function(){
-            document.location.href = '/albums/' + zz.album_id + "/activities";
+            $('#header #view-buttons').children().removeClass('selected');
+            $('#header #view-buttons #activities-view-button').addClass('selected');
 
+
+            $('#article').fadeOut(200);
+            document.location.href = '/albums/' + zz.album_id + "/activities";
         });
 
         $('#header #help-button').click(function(){
@@ -247,8 +265,8 @@ logger.debug(((new Date()).getTime() - start)  +" after ajax call");
                     allowDelete: false,
                     allowEditCaption: false,
                     allowReorder: false,
-                    cellWidth: 200,
-                    cellHeight: 200,
+                    cellWidth: 230,
+                    cellHeight: 230,
                     onClickPhoto: function(index, photo){
                         document.location.href = "/albums/" + zz.album_id +"/photos/#!" + photo.id;
                     },
@@ -285,7 +303,7 @@ logger.debug(((new Date()).getTime() - start)  +" after ajax call");
                     allowEditCaption: false,
                     allowReorder: false,
                     cellWidth: gridElement.width(),
-                    cellHeight: gridElement.height(),
+                    cellHeight: gridElement.height()-20,
                     onClickPhoto: function(index, photo){
                         document.location.href = "/albums/" + zz.album_id +"/photos/#!" + photo.id;
                     },
@@ -589,21 +607,24 @@ logger.debug(((new Date()).getTime() - start) +" after create grid");
                         allowDelete: false,
                         allowEditCaption: false,
                         allowReorder: false,
-                        cellWidth: 180,
-                        cellHeight: 180,
-                        onClickPhoto: function(index, photo){
+                        cellWidth: 230,
+                        cellHeight: 230,
+                         onClickPhoto: function(index, photo){
                             document.location.href = "/albums/" + zz.album_id +"/photos/#!" + photo.id;
                         },
                         showThumbscroller: false
                     }).data().zz_photogrid;
 
 
+                    //force this back because grid turns on scrolling
+                    $(element).css({overflow:'hidden'});
+
                     var allShowing = false;
                     var moreLessbuttonElement = $(element).siblings('.more-less-btn');
 
                     moreLessbuttonElement.click(function(){
                         if(allShowing){
-                            $(element).animate({height:180}, 500, 'swing', function(){
+                            $(element).animate({height:230}, 500, 'swing', function(){
                                 moreLessbuttonElement.html("more...");
                             });
                             allShowing = false;

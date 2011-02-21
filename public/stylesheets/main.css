@@ -13,7 +13,9 @@ body {
   margin: 0 auto;
   background-color: #ffffff;
   /*font-family: "Lucida Grande", "Lucida Sans Unicode", "Trebuchet MS", Tahoma, Helvetica, Arial, sans-serif;*/
-  font-family: Arial;
+  /*font-family:  Arial;*/
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
   font-size: 62.5%;
   color: #0a0a0a;
   /* the following fixes that annoying tell-tale js animation flicker */
@@ -28,14 +30,18 @@ body {
 }
 
 h2 {
-  margin-bottom: 6px;
+  /*margin-bottom: 6px;*/
   font-size: 2.0em;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 h3 {
   font-size: 1.3em;
-  font-weight: 500;
+  font-weight: 400;
+}
+
+.relative {
+    position:relative;
 }
 
 /* Fixed Header and Footer
@@ -640,7 +646,8 @@ div#headline {
   position: absolute;
   top:60px;
   left:0px;
-  right:0px;
+  /*right:0px;*/
+  width:100%;
   bottom:60px;
 }
 

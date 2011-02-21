@@ -173,11 +173,6 @@ zz.wizard = {
                 obj.steps[id].bounce(function(){
                     temp_id = obj.steps[id].next;
 
-//                    if (obj.steps[obj.steps[id].next].url_type == 'album') {
-//                        temp_url = 'http://' + zz.base + obj.steps[obj.steps[id].next].url.split('$$')[0] + zz.album_id + obj.steps[obj.steps[id].next].url.split('$$')[1];
-//                    } else if (obj.steps[obj.steps[id].next].url_type == 'user') {
-//                        temp_url = 'http://' + zz.base + obj.steps[obj.steps[id].next].url.split('$$')[0] + zz.current_user_id + obj.steps[obj.steps[id].next].url.split('$$')[1];
-//                    }
 
                     zz.wizard.change_step(temp_id, obj);
                 });
