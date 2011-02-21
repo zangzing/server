@@ -197,10 +197,19 @@ module UiModel
         @browser.type "i0118", "QaVH6kP6XdMPzLTz"
         @browser.click "css=input#idSIButton9"
         sleep 5
+        @browser.select_pop_up('')
         #@session.wait_load
+        @browser.click "Continue"
         #@browser.click "ctl00_MainContent_ConsentBtn"
         @browser.select_window "null"
       end
+
+      # Only on Windows and OSX #########################################################################################
+      #def import_outlook_contacts
+      #  @browser.click "css=img#local-sync.link"
+      #  sleep 5
+      #end
+
 
       def imported_gmail?
         @browser.is_element_present("//img[@src='/images/btn-gmail-on.png']")
@@ -212,6 +221,10 @@ module UiModel
       
       def imported_mslive?
         @browser.is_element_present("//img[@src='/images/btn-mslive-on.png']")
+      end
+
+      def imported_outlook?
+        @browser.is_element_present("//img[@src='/images/btn-outlook-on.png']")
       end
       
       def add_contributors(emails)
