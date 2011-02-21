@@ -265,8 +265,8 @@ logger.debug(((new Date()).getTime() - start)  +" after ajax call");
                     allowDelete: false,
                     allowEditCaption: false,
                     allowReorder: false,
-                    cellWidth: 200,
-                    cellHeight: 200,
+                    cellWidth: 230,
+                    cellHeight: 230,
                     onClickPhoto: function(index, photo){
                         document.location.href = "/albums/" + zz.album_id +"/photos/#!" + photo.id;
                     },
@@ -607,9 +607,9 @@ logger.debug(((new Date()).getTime() - start) +" after create grid");
                         allowDelete: false,
                         allowEditCaption: false,
                         allowReorder: false,
-                        cellWidth: 180,
-                        cellHeight: 180,
-                        onClickPhoto: function(index, photo){
+                        cellWidth: 230,
+                        cellHeight: 230,
+                         onClickPhoto: function(index, photo){
                             document.location.href = "/albums/" + zz.album_id +"/photos/#!" + photo.id;
                         },
                         showThumbscroller: false
