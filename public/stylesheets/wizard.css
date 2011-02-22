@@ -746,6 +746,13 @@ ul#the-recipients li img.link {
   vertical-align: -30%;
 }
 
+.rounded {
+  border-radius: 8px;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+}
+
+
 ul#the-recipients li.rounded {
   display: none;
 }

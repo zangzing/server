@@ -38,6 +38,7 @@ gem 'memcache-client'
 
 gem "jammit"
 gem "yui-compressor"
+gem "closure-compiler"
 gem "nokogiri"
 
 group :development do

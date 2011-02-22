@@ -1,6 +1,11 @@
 package_assets: on
-compress_assets: off
+compress_assets: on
 embed_assets: off
+
+javascript_compressor: closure
+compressor_options:
+  compilation_level: "SIMPLE_OPTIMIZATIONS"
+
 
 
 javascripts:
@@ -11,6 +16,7 @@ javascripts:
     - public/javascripts/jquery-lib/jquery.ui.position.js
     - public/javascripts/jquery-lib/jquery.effects.core.js
     - public/javascripts/jquery-lib/*.js
+    - public/javascripts/lib/*.js
   zz:
     - public/javascripts/zz/*.js
   zz_oauthmanager:
@@ -20,4 +26,6 @@ javascripts:
 
 stylesheets:
   common:
+    - public/stylesheets/reset.css
+    - public/stylesheets/main.css
     - public/stylesheets/*.css
