@@ -98,28 +98,44 @@ ul.albums-grid-view li td {
 
 
 
-/*======================================LIKE - CONTEXT MENU =====================================*/
-#like-popup{
-    background: url("/images/bg-like-popup.png") no-repeat scroll 0 0 transparent;
-    width:92px;
-/*     height: 107px; */
-    z-index:1000;
+/*======================================LIKE  MENU =====================================*/
+.like-menu{
+    position:absolute;
+    width: 120px;
+    z-index: 99999;
+    background: url("/images/bg-like-popup.png") no-repeat scroll;
+    padding: 0;
+    margin: 0;
+    font-size: 12px;
+    font-weight: 700;
+    color: #FAFAFA;
+    text-shadow: 0 1px black;
+    text-align: left;
 }
 
-#like-popup li{
-    background-image: url("/images/btn-like.png");
-    background-repeat: no-repeat;
-    background-attachment: scroll;
-    padding: 11px 12px 9px 34px;
+.like-menu span.like-count{
+    font-size: 11px;
+    font-weight: 300;
+}
+
+.like-menu.one-item{    height: 56px;  background-position: left -61; }
+.like-menu.two-items{   height: 85px;  background-position: -123px -31px; }
+.like-menu.three-items{ height: 117px; background-position: -247px 0; }
+
+.like-menu li{
+    width: 100%;
+    background: url("/images/btn-like.png") no-repeat scroll;
+    margin-left: 0;
+    padding: 10px 0 5px 38px;
     cursor:pointer;
 }
-#like-user{  background-position: 0 0; }
-#like-album {  background-position: 0 -30px; }
-#like-photo {  background-position: 0 -60px; }
-#like-user:hover{  background-position: 0 -98px; }
-#like-album:hover {  background-position: 0 -128px; }
-#like-photo:hover {   background-position: 0 -158px; }
-
+.like-menu li:hover{ color: #FFFFFF; background-color: rgba(255, 255, 255, 0.1);}
+.like-menu li.like-user{  background-position: 7px 10px; }
+.like-menu li.like-album {  background-position: 7px -20px; }
+.like-menu li.like-photo {  background-position: 7px -50px; }
+.like-menu li.like-user:hover{  background-position: 7px -77px; }
+.like-menu li.like-album:hover {  background-position: 7px -107px; }
+.like-menu li.like-photo:hover {   background-position: 7px -137px; }
 
 
 /*========================================= CONTEXT MENU ========================================*/
@@ -128,17 +144,16 @@ ul.context_menu {
     clear:both;
     position:absolute;
     display: none;
-    z-index:0;
+    z-index:1000;
     font-size: 1.2em;
     text-align: left;
+    padding: 0;
 }
 ul.context_menu  li {
-    width: 100%;
+    position: relative;
     clear:both;
     float: none;
     display:block;
-    margin: 0;
-    padding:6px 15px;
     color: #BABABA;
 }
 ul.context_menu li:hover{

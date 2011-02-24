@@ -75,17 +75,12 @@ zz.toolbars = {
     },
 
     show_like_menu: function(event){
-        //toggle visibility
-        if( $('#like-popup').is( ":visible" ) ){
-               $('#like-popup').slideUp( 'fast' );// Hide - slide up
-        }else{
           //get the position of the clicked element and display popup above center of it  
           var pos =  $(this).offset();
           var width =  $(this).width();
-          var height=  $(this).width();
+          var height=  $(this).height();
           $("#like-popup").css( { "left":  pos.left - (width/2)+"px", "bottom": height+ "px" } );  
-          $('#like-popup').slideDown( 'fast' );// Show - slide down
-        }
+          $('#like-popup').slideToggle( 'fast' );// Show = slide down
     },
 
     like_menu_clicked: function(){

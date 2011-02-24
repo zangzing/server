@@ -12,6 +12,7 @@ namespace :nginx do
        sh 'mkdir /tmp/fast_uploads/7' unless File.directory? '/tmp/fast_uploads/7'
        sh 'mkdir /tmp/fast_uploads/8' unless File.directory? '/tmp/fast_uploads/8'
        sh 'mkdir /tmp/fast_uploads/9' unless File.directory? '/tmp/fast_uploads/9'
+       sh 'mkdir -p /tmp/nginx/cache' unless File.directory? '/tmp/nginx/cache'
        sh 'script/nginx'
     end
 end
