@@ -193,9 +193,9 @@
 .photo-caption .edit-caption-border{
     position:absolute;
     top:0px;
-    left:-10px;
+    left:0px;
     height:30px;
-    width:180px;
+    width:190px;
     background-image:url(/images/edit-caption-border.png);
     background-repeat:no-repeat;
 
@@ -203,11 +203,11 @@
 
 .photo-caption input{
     position:absolute;
-    top:3px;
+    top:5px;
     left:3px;
     border:none;
     outline:none;
-    height:13px;
+    height:12px;
     width:170px;
     padding-left:5px;
     padding-right:5px;
