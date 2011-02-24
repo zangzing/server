@@ -268,7 +268,7 @@ logger.debug(((new Date()).getTime() - start)  +" after ajax call");
                     cellWidth: 230,
                     cellHeight: 230,
                     onClickPhoto: function(index, photo){
-                        document.location.href = "/albums/" + zz.album_id +"/photos/#!" + photo.id;
+                        document.location.href = zz.album_base_url +"/photos/#!" + photo.id;
                     },
                     currentPhotoId: $.param.fragment()
 
@@ -305,7 +305,7 @@ logger.debug(((new Date()).getTime() - start)  +" after ajax call");
                     cellWidth: gridElement.width(),
                     cellHeight: gridElement.height()-20,
                     onClickPhoto: function(index, photo){
-                        document.location.href = "/albums/" + zz.album_id +"/photos/#!" + photo.id;
+                        document.location.href = zz.album_base_url +"/photos/#!" + photo.id;
                     },
                     singlePictureMode: true,
                     currentPhotoId: currentPhotoId,
@@ -610,7 +610,7 @@ logger.debug(((new Date()).getTime() - start) +" after create grid");
                         cellWidth: 230,
                         cellHeight: 230,
                          onClickPhoto: function(index, photo){
-                            document.location.href = "/albums/" + zz.album_id +"/photos/#!" + photo.id;
+                            document.location.href = zz.album_base_url +"/photos/#!" + photo.id;
                         },
                         showThumbscroller: false
                     }).data().zz_photogrid;
