@@ -83,7 +83,7 @@
    left:30px;
    right:30px;
    /*font-family:Helvetica, Arial;*/
-   font-size:1.3em;
+   font-size:13px;
    color: #636363;
 }
 
@@ -110,7 +110,7 @@ ul.albums-grid-view li {
     float: left;
     width: 180px;
     height: 180px;
-    font-size: 1.3em;
+    font-size: 13px;
     font-weight: 400;
     overflow: hidden;
 
@@ -156,7 +156,7 @@ ul.context_menu {
     position:absolute;
     display: none;
     z-index:0;
-    font-size: 1.2em;
+    font-size: 12px;
     text-align: left;
 }
 ul.context_menu  li {

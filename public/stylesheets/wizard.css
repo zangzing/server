@@ -178,7 +178,7 @@ ul#indicator-4 li.tab {
   float: left;
   padding: 13px 19px 0 0;
   width: 179px;
-  font-size: 1.1em;
+  font-size: 11px;
   font-weight: 400;
   color: #646464;
   text-align: center;
@@ -193,7 +193,7 @@ ul#indicator-5 li.tab {
   float: left;
   padding: 8px 19px 0 0;
   width: 139px;
-  font-size: 1.1em;
+  font-size: 11px;
   font-weight: 400;
   color: #646464;
   text-align: center;
@@ -209,7 +209,7 @@ ul#indicator-6 li.tab {
   float: left;
   padding: 8px 18px 0 0;
   width: 115px;
-  font-size: 1.1em;
+  font-size: 11px;
   font-weight: 400;
   color: #646464;
   text-align: center;
@@ -331,7 +331,7 @@ ul#choose-album-type li img {
 
 ul#choose-album-type li p {
   margin-bottom: 15px;
-  line-height: 1.1em;
+  line-height: 11px;
 }
 
 ul#choose-album-type li div {
@@ -372,7 +372,8 @@ ul#privacy-menu li div {
 
 ul#privacy-menu li p {
   margin-bottom: 20px;
-  line-height: 1.3em;
+  line-height: 13px;
+  font-size:10px;
 }
 
 ul#privacy-menu li#privacy-public {
@@ -407,30 +408,30 @@ ul#privacy-menu li#privacy-password:hover {
 
 
 div#drawer-content h3 {
-  font-size: 1.7em;
+  font-size: 17px;
   font-weight: 500;
   color: #0a0a0a;
 }
 
 div#drawer-content h4 {
-  font-size: 1.4em;
+  font-size: 14px;
   font-weight: 500;
   margin-bottom: 15px;
   color: #0a0a0a;
 }
 
 span.h4 {
-  font-size: 1.4em;
+  font-size: 14px;
   font-weight: 500;
   color: #0a0a0a;
-  line-height: 2.2em;
+  line-height: 22px;
 }
 
 div#drawer-content .album-header {
   margin: 10px auto 45px;
   width: 600px;
   min-height: 60px;
-  line-height: 1.4em;
+  line-height: 14px;
   background-image: url('/images/faux-hr.png');
   background-position: bottom center;
   background-repeat: no-repeat;
@@ -450,7 +451,7 @@ div#drawer-content .album-header-off {
   margin: 25px auto 25px;
   width: 600px;
   min-height: 50px;
-  line-height: 1.4em;
+  line-height: 14px;
   background-image: none;
 }
 
@@ -461,7 +462,7 @@ div#drawer-content dl.form {
 
 div#drawer-content dl.form dt {
   float: left;
-  font-size: 1.8em;
+  font-size: 18px;
   color: #0a0a0a;
   text-align: right;
   width: 180px;
@@ -524,7 +525,7 @@ ul#share-pick li {
   width: 50%;
   height: 260px;
   text-align: center;
-  font-size: 1.4em;
+  font-size: 14px;
 }
 
 ul#share-pick li.social-share {
@@ -564,7 +565,7 @@ div#form-container {
 }
 
 dl#email-share-form{
-  font-size: 1.4em;
+  font-size: 14px;
 }
 
 div#form-container-2 {
@@ -573,7 +574,7 @@ div#form-container-2 {
 }
 
 dl#social-form{
-  font-size: 1.4em;
+  font-size: 14px;
 }
 
 dl#social-form dt {
@@ -648,7 +649,7 @@ dl#social-form dd#post-text textarea {
 ul#email-sync {
   margin: 0 0 10px 78px;
   float: left;
-  font-size:1.4em;
+  font-size:14px;
 }
 
 ul#email-sync li {
@@ -704,7 +705,7 @@ dl#email-share-form dd#the-list {
 }
 
 dl#contributor-index{
-    font-size:1.4em;
+    font-size:14px;
 }
 
 dl#contributor-index dd#the-list {
@@ -796,7 +797,7 @@ select.album_privacy {
   background: -moz-linear-gradient(top, #fbfbfb, #dcdcdc);
   background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#dcdcdc));
   border: 1px #dcdcdc solid;
-  font-size: 1.2em;
+  font-size: 12px;
   font-weight: 400;
   color: #646464;
   padding: 4px;

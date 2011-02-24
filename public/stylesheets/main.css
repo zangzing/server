@@ -16,7 +16,8 @@ body {
   /*font-family:  Arial;*/
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 
-  font-size: 62.5%;
+  /*font-size: 62.5%;*/
+  font-size: 12px;
   color: #0a0a0a;
   /* the following fixes that annoying tell-tale js animation flicker */
   /*opacity: 0.99999; */
@@ -31,12 +32,12 @@ body {
 
 h2 {
   /*margin-bottom: 6px;*/
-  font-size: 2.0em;
+  font-size: 20px;
   font-weight: 400;
 }
 
 h3 {
-  font-size: 1.3em;
+  font-size: 13px;
   font-weight: 400;
 }
 
@@ -113,7 +114,7 @@ div#container {
     position:absolute;
     bottom: 5px;
     width:100%;
-    font-size: 1.2em;
+    font-size: 12px;
     text-align:center;
     
 }
@@ -376,7 +377,7 @@ div#container {
     position:relative;
     top: 38px;
     width:100%;
-    font-size: 1.2em;
+    font-size: 12px;
     
 }
 
@@ -533,7 +534,7 @@ div#container {
 
 label,
 .form_label{
- font-size: 120%;
+ /*font-size: 120%;*/
  line-height: 1;
  font-weight: bold;
  text-align: left;   
@@ -541,14 +542,14 @@ label,
 
 .form_label_small{
  text-align: left;
- font-size:  110%;
+ /*font-size:  110%;*/
  line-height: 1;
  font-weight: 400;
  font-style: italic;
 }
 
 .cancel-button{
- font-size:  120%;
+ /*font-size:  120%;*/
  font-weight: 700;   
  color: #646464;
  text-decoration: underline;
@@ -559,7 +560,7 @@ label,
 
 input[type=text], input[type=password], input[type=checkbox] , textarea{
   text-align: left;
-  font-size: 1.8em;
+  font-size: 18px;
   background-color: #fff;
   border: solid 1px #afafaf;
   padding: 5px;
@@ -586,7 +587,7 @@ textarea{
   font-family:Arial;
 
   font-weight: 100;
-  font-size: 1.2em;
+  font-size: 12px;
 }
 
 
@@ -698,8 +699,8 @@ div#cancel-drawer-btn{
     bottom: 9px;
     right: 12px;
     font-weight: 700;
-    line-height: 1.4em;
-    font-size: 1em;
+    line-height: 14px;
+    font-size: 10px;
     width: 137px;
     background-image:url("/images/btn-delete-mini.png");
     background-repeat: no-repeat;
@@ -775,13 +776,13 @@ div#small-top {
 
 
 div#small-drawer h2 {
-  font-size: 1.9em;
+  font-size: 19px;
   font-weight: 500;
   color: #0a0a0a;
 }
 
 div#small-drawer h3 {
-  font-size: 1.4em;
+  font-size: 14px;
   font-weight: 500;
   color: #0a0a0a;
 }
@@ -793,7 +794,7 @@ div#small-drawer h3 {
     margin-bottom: 5px;
 }
 .flash-notice{
-    font-size: 1.3em;
+    font-size: 13px;
     text-align: center;
     color: green;
     font-weight: 700;
@@ -802,7 +803,7 @@ div#small-drawer h3 {
 
 div#small-drawer p.error-notice, .error-notice {
   display: none;
-  font-size: 1.3em;
+  font-size: 13px;
   text-align: center;
   color: #ff0000;
   font-weight: 700;
@@ -829,7 +830,7 @@ div#small-drawer dl dd {
 }
 
 div#small-drawer dl dt {
-  font-size: 1.2em;
+  font-size: 12px;
   font-weight: 700;
   margin-bottom: 5px;
 }
@@ -849,7 +850,7 @@ div#small-drawer dl input[type=text], div#small-drawer dl input[type=password] {
 
 div#small-drawer dl dd label.error {
   color: pink;
-  font-size: 1.2em;
+  font-size: 12px;
   font-weight: 700;
   text-align: right;
   position: absolute;
@@ -897,7 +898,7 @@ div#small-drawer dl dd.full-t {
 
 a.hyperlink-button{
     text-decoration:underline;
-    font-size:1.1em;
+    font-size:11px;
     font-weight:200;
     cursor:pointer;
     color: #000000
@@ -918,7 +919,7 @@ a.back-button{
     color:#ffffff;
     display: block;
     float: left;
-    font-size: 1.2em;
+    font-size: 12px;
     height: 30px;
     margin-right: 6px;
     padding-right: 8px; /* sliding doors padding */
@@ -960,7 +961,7 @@ a.next-button{
     color:#ffffff;
     display: block;
     float: left;
-    font-size: 1.2em;
+    font-size: 12px;
     height: 30px;
     margin-right: 6px;
     padding-right: 15px; /* sliding doors padding */
@@ -1006,7 +1007,7 @@ a.green-button{
     padding-right: 8px; /* sliding doors padding */
     cursor: pointer;
     color:#ffffff;
-    font-size: 1.2em;
+    font-size: 12px;
     text-decoration: none;
 }
 
@@ -1043,7 +1044,7 @@ a.black-button{
     color:#ffffff;
     display: block;
     float: left;
-    font-size: 1.2em;
+    font-size: 12px;
     height: 30px;
     margin-right: 6px;
     padding-right: 8px; /* sliding doors padding */
@@ -1085,7 +1086,7 @@ a.green-add-button{
     color:#ffffff;
     display: block;
     /*float: left;*/
-    font-size: 1.2em;
+    font-size: 12px;
     height: 30px;
     margin-right: 6px;
     padding-right: 8px; /* sliding doors padding */
