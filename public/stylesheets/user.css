@@ -20,31 +20,58 @@
     margin-right:auto;
 }
 
-.album-cell .picon.style_1{
-    background-image:url(/images/album_picon_175x133_1.jpg);
+.album-cell .picon.landscape_1{
+    background-image:url(/images/album_picon_landscape_1.png);
 }
 
-.album-cell .picon.style_2{
-    background-image:url(/images/album_picon_175x133_2.jpg);
+.album-cell .picon.landscape_2{
+    background-image:url(/images/album_picon_landscape_2.png);
 }
 
-.album-cell .picon.style_3{
-    background-image:url(/images/album_picon_175x133_3.jpg);
+.album-cell .picon.landscape_3{
+    background-image:url(/images/album_picon_landscape_3.png);
 }
 
-.album-cell .picon .mask{
+.album-cell .picon.portrait_1{
+    background-image:url(/images/album_picon_portrait_1.png);
+}
+
+.album-cell .picon.portrait_2{
+    background-image:url(/images/album_picon_portrait_2.png);
+}
+
+.album-cell .picon.portrait_3{
+    background-image:url(/images/album_picon_portrait_3.png);
+}
+
+.album-cell .picon .landscape_mask{
     position:relative;
     overflow:hidden;
-    top:22px;
+    top:24px;
     left:18px;
     width:175px;
     height:133px;
 }
 
+.album-cell .picon .portrait_mask{
+    position:relative;
+    overflow:hidden;
+    top:24px;
+    left:56px;
+    width:97px;
+    height:133px;
+}
+
+
+.album-cell .picon .mask img{
+    border: none;
+    position:relative;
+}
+
+
 .album-cell .picon .mask img.wide{
     width:175px;
     height:133px;
-    border: none;
 }
 
 
