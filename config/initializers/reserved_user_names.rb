@@ -252,6 +252,7 @@ class ReservedUserNames
       "randyhermann",
       "amyhermann",
       "hopemeng",
+      "hopemenghermann",
       "bowiemenghermann",
       "bowie",
       "hope",
@@ -261,7 +262,7 @@ class ReservedUserNames
       "wendymeng",
       "meng",
       "edmeng",
-      "gerryschroeder"
+      "gerryschroeder",
     ].freeze
   end
 
