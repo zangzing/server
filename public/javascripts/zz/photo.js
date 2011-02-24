@@ -40,7 +40,7 @@
             html += '<div class="photo-delete-button"></div>';
             html += '<div class="photo-uploading-icon"></div>';
             html += '<div class="photo-error-icon"></div>';
-            html += '<img class="bottom-shadow" src="/images/photo/bottom-full.jpg">';
+            html += '<img class="bottom-shadow" src="/images/photo/bottom-full.png">';
             html += '</div>';
             html += '<div class="photo-caption">' + self.options.caption +'</div>';
 

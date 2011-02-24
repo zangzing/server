@@ -11,7 +11,7 @@ body {
   width: 100%;
   height:100%;
   margin: 0 auto;
-  background-color: #ffffff;
+  background-color: #f9f9fa;
   /*font-family: "Lucida Grande", "Lucida Sans Unicode", "Trebuchet MS", Tahoma, Helvetica, Arial, sans-serif;*/
   /*font-family:  Arial;*/
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -116,7 +116,7 @@ div#container {
     width:100%;
     font-size: 12px;
     text-align:center;
-    
+    text-shadow: #EEE 1px 1px 0px;
 }
 
 
@@ -378,7 +378,7 @@ div#container {
     top: 38px;
     width:100%;
     font-size: 12px;
-    
+    text-shadow: #EEE 1px 1px 0px;
 }
 
 #footer #new-album-button{
