@@ -74,8 +74,8 @@ div#container {
   /*width: 950px;*/
   height: 60px;
   top: -2px;
-  left:30px;
-  right:30px;
+  left:10px;
+  right:10px;
   /*background-image: url("/images/bg-top-bar.png");*/
   /*background-repeat: no-repeat;*/
   z-index: 10;
@@ -335,8 +335,8 @@ div#container {
   height: 59px;
   bottom: -2px;
   z-index: 10;
-  left:30px;
-  right:30px;
+  left:10px;
+  right:10px;
 }
 
 
