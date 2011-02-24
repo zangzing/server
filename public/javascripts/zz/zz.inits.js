@@ -38,7 +38,7 @@ zz.init = {
             $('#header #view-buttons #grid-view-button').addClass('selected');
 
             $('#article').fadeOut(200);
-            document.location.href = '/albums/' + zz.album_id + "/photos";
+            document.location.href = zz.album_base_url + "/photos";
         });
 
         $('#header #view-buttons #picture-view-button').click(function(){
@@ -46,7 +46,7 @@ zz.init = {
             $('#header #view-buttons #picture-view-button').addClass('selected');
 
             $('#article').fadeOut(200);
-            document.location.href = '/albums/' + zz.album_id + "/photos/";
+            document.location.href = zz.album_base_url + "/photos/";
         });
 
         $('#header #view-buttons #people-view-button').click(function(){
@@ -55,7 +55,7 @@ zz.init = {
 
 
             $('#article').fadeOut(200);
-            document.location.href = '/albums/' + zz.album_id + "/people";
+            document.location.href = zz.album_base_url +  "/people";
         });
 
         $('#header #view-buttons #activities-view-button').click(function(){
@@ -64,7 +64,7 @@ zz.init = {
 
 
             $('#article').fadeOut(200);
-            document.location.href = '/albums/' + zz.album_id + "/activities";
+            document.location.href = zz.album_base_url +  "/activities";
         });
 
         $('#header #help-button').click(function(){
@@ -98,7 +98,7 @@ zz.init = {
                 'background-color':'#000000',
                 opacity: 0
             }).appendTo('body').animate({opacity:1},500, function(){
-                document.location.href = '/albums/' + zz.album_id + '/movie'; 
+                document.location.href = zz.album_base_url + '/movie';
             });
 
 

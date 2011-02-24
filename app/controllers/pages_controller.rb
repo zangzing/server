@@ -5,7 +5,7 @@ class PagesController < ApplicationController
   def home
      @title = "Home"
      if current_user
-       redirect_to user_albums_url( current_user.id )
+       redirect_to user_albums_url( current_user.username )
      end
    end
   

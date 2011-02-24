@@ -1,6 +1,7 @@
 class PeopleController < ApplicationController
+
   def album_index
-    @album = Album.find(params[:album_id])
+    @album = fetch_album
 
 
     #Find all of the album owner/creator photos
@@ -34,6 +35,14 @@ class PeopleController < ApplicationController
   def user_index
     @user = User.find(params[:user_id])
   end
+
+
+private
+
+  def fetch_album
+    params[:user_id] ? Album.find(params[:album_id], :scope => params[:user_id]) : Album.find( params[:album_id] )
+  end
+  
 
 end
 
