@@ -57,6 +57,7 @@ group :test do
   gem 'selenium'
   gem 'selenium-client'
   gem 'zip'
+  gem 'pony'
 end
 
 group :production do
