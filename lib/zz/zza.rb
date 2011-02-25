@@ -387,7 +387,7 @@ module ZZ
       if !thread_state
         # thread is not running kick start a new one
         initialize(@@default_zza_id)
-        @@sender ||= ZZASender.new
+        @@sender = ZZASender.new
       end
     end
 
