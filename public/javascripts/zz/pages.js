@@ -213,7 +213,7 @@ pages.edit_album_tab = {
     },
 
     bounce: function(success, failure){
-        zz.open_drawer(); //todo: is this needed?
+//        zz.open_drawer(); //todo: is this needed?
         success();
     }
 
