@@ -63,27 +63,13 @@
 
 
 .photo-border{
-    /*box-shadow: 0px 0px 3px #e6e6e6;*/
-    /*-webkit-box-shadow: 0px 0px 3px #e6e6e6;*/
-    /*-moz-box-shadow: 0px 0px 3px #e6e6e6;*/
-    /*-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=135, Color='#767676')";*/
-    /*position:absolute;*/
-    /*cursor: pointer;*/
-    /*padding:0px;*/
-    /*border:1px solid #d6d6d6*/
-
+    cursor: pointer;
     box-shadow: 0px 0px 3px #aaa;
     -webkit-box-shadow: 0px 0px 3px #aaa;
     -moz-box-shadow: 0px 0px 3px #aaa;
-    /*border-bottom:0px;*/
     padding-bottom:0px;
     display:inline-block;
     margin:0px;
-    /*border: 1px #ccc solid;*/
-
-    /*margin-left:auto;*/
-    /*margin-right:auto;*/
-
 }
 
 .ua-ie .photo-border{
