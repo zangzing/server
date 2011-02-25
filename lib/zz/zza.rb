@@ -96,6 +96,10 @@ module ZZ
       Thread.current.status == "aborting"
     end
 
+    def thread
+      @send_thread
+    end
+
     # let someone outside wake us up
     # now - useful for testing
     # returns true if the last batch
