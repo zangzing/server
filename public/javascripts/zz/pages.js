@@ -127,7 +127,7 @@ pages.edit_album_tab = {
     init: function(callback){
         $.ajax({
             dataType: 'json',
-            url: '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
+            url: '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss,
             success: function(json){
 
                 for(var i =0;i<json.length;i++){
