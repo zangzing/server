@@ -305,7 +305,7 @@ logger.debug(((new Date()).getTime() - start)  +" after ajax call");
                     cellWidth: gridElement.width(),
                     cellHeight: gridElement.height()-20,
                     onClickPhoto: function(index, photo){
-                        document.location.href = zz.album_base_url +"/photos/#!" + photo.id;
+                        grid.nextPicture();
                     },
                     singlePictureMode: true,
                     currentPhotoId: currentPhotoId,
