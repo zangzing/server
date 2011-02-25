@@ -200,24 +200,30 @@ div#container {
 
 
 #header #user-info{
-    position:relative;
-    top:10px;
-    width:300px;
+    position: relative;
+    top: 10px;
+    width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    height: 40px;
+    display: block;
+    text-align: center;
 }
 
 
 
-#header #user-info div#user-info-picture{
-    float: left;
+#header #user-info #user-info-picture{
     height: 40px;
     width: 40px;
-    vertical-align:bottom;
-    margin-right:15px;
+    vertical-align: bottom;
+    display: inline-block;
 }
 
-#header div#user-info h2{
-    float: left;
-    padding: 8px 0 0 0;
+#header #user-info h2{
+    left: 8px;
+    top: -10px;
+    display: inline-block;
+    position: relative;
 }
 
 
