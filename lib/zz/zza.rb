@@ -382,6 +382,15 @@ module ZZ
       @@sender ||= ZZASender.new
     end
 
+    def self.after_fork_check
+      thread_state = sender.thread.status
+      if !thread_state
+        # thread is not running kick start a new one
+        initialize(@@default_zza_id)
+        @@sender ||= ZZASender.new
+      end
+    end
+
     # you can set up a default to use for all instances
     # unless they individually supply it - this has
     # a side effect of doing an initialize if not
@@ -431,6 +440,7 @@ module ZZ
     # in this case pick up the user and user_type you set on the object
     #
     def track_event(event, xdata = nil, user_type = nil, user = nil, referrer_uri = nil, page_uri = nil)
+      ZZA.after_fork_check
       xdata = self.xdata if xdata.nil?
       user_type = self.user_type if user_type.nil?
       user = self.user if user.nil?

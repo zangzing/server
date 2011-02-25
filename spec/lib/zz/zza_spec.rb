@@ -35,7 +35,7 @@ describe "ZZA Test" do
     z = ZZ::ZZA.new
     Benchmark.bm(20) do |x|
       x.report('track_event') do
-        100.times do |i|
+        10000.times do |i|
           z.track_event("ruby.test", i, 1, "speedy", "http://speedref.com", "http://speedpage.com")
         end
       end
