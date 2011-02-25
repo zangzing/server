@@ -220,10 +220,15 @@ div#container {
 }
 
 #header #user-info h2{
-    left: 8px;
-    top: -10px;
+    left: 6px;
+    top: -12px;
     display: inline-block;
     position: relative;
+
+    font-size: 16px;
+    font-weight: bold;
+    color: #2C2C2C;
+
 }
 
 
