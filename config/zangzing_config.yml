@@ -10,7 +10,6 @@ common: &common
 
 development:
   <<: *common
-  reserved_names: true
 
 perftest:
   <<: *common
