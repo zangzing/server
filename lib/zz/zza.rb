@@ -20,12 +20,14 @@ module ZZ
 
   # this is the worker thread responsible for delivering the events to
   # the ZZA server.  This should be created as a singleton
-  # and there should only be one of these per
+  # since there should only be one of these per
   # process.  This is created by initialization code in this class.
-  # You can also initialize it with ZZ::ZZA.initialize which will create it
-  # if not already created and always set the new zza_id.  This way, we
-  # always have just one copy running. If a sender has already been created
-  # the existing one will be used.
+  # You can also initialize it with ZZ::ZZA.initialize which will create it.
+  #
+  # You can also call the ZZA.default_zza_id= method which will ensure
+  # you get a default zza_id set and will initialize if not already done
+  # If a sender has already been created the existing one will be used.
+  # This way, we always keep just one copy running.
   #
   # This class also provides the thread safe primitives for batching the
   # requests created by the ZZA class so that multiple ZZA instances can
@@ -35,13 +37,36 @@ module ZZ
   class ZZASender
     attr_reader :zza_unreachable_count
 
+    # how often our worker thread wakes up to process events
     SEND_SWEEP_TIME = 5
+
+    # the maximum time we are willing to let a file that says
+    # it is in use remain so.  If it exceeds this time it is
+    # presumably because it's process died.
     IN_USE_MAX_TIME = 5 * 60
+
+    # after how many messages we issue a flush - there is little
+    # performance cost to doing this on each line so we do so because
+    # it decreases the chances of losing any data on a crash
     FLUSH_AFTER_COUNT = 1
+
+    # the maximum number of events we will push into a single file
+    # this puts a cap on how big of a request we end up pushing up
+    # to the ZZA server
     MAX_EVENTS_PER_FILE = 2500
+
+    # our working directory
     ZZA_TEMP_DIR = "/tmp/zza"
+
+    # file suffix to indicate it is currently in use
+    # and should not have its contents sent yet
     IN_USE = "inuse"
+
+    # the address of the ZZA server
     ZZA_URI = URI.parse("http://zza.zangzing.com/")
+
+    # the maximum time we are willing to wait before
+    # completing our request
     ZZA_MAX_TIME = 30
 
     def initialize
@@ -66,11 +91,28 @@ module ZZ
       puts msg
     end
 
+    # true if this thread is aborting
+    def thread_aborting?
+      Thread.current.status == "aborting"
+    end
+
+    # let someone outside wake us up
+    # now - useful for testing
+    # returns true if the last batch
+    # actually had work
+    def run
+      @send_thread.run
+    end
+
+    def has_work?
+      @file.nil? == false || has_files
+    end
+
     def run_send_loop
       # prep the connection to zza
       @http = Net::HTTP.new(ZZA_URI.host, ZZA_URI.port)
 
-      while true do
+      while thread_aborting? == false do
         begin
           #puts Time.now.to_s + ": ZZA Sender checking files up: " + Process.pid.to_s
           # first close out the current file so we can send it
@@ -85,25 +127,82 @@ module ZZ
 
         rescue Exception => ex
           puts "Error in ZZA sender: " + ex.message
+        ensure
+          if thread_aborting?
+            # make an attempt to clean up
+            close_current_file rescue nil
+          end
         end
       end
     end
 
-    # scan the work directory and pick up all files that are not
-    # inuse.  As a special case we will process any .inuse files
-    # that are older than IN_USE_MAX_TIME minutes
-    def send_files_data
+    # for testing just check to see if we have pending files
+    # just stop if we have at least one
+    # THIS IS A TEST HOOK ONLY
+    def has_files
       # first gather all the file is this directory
-      too_old = Time.now().to_i - IN_USE_MAX_TIME
       files = Dir.entries(ZZA_TEMP_DIR)
+
       files.each do |file_path|
+
         full_path = ZZA_TEMP_DIR + "/" + file_path
+
         if File.directory?(full_path) == false
+
           parts = file_path.split('-')
-          if parts.count < 3 and parts.count > 4
-            continue  # move on, not valid
-          end
+
+          # if file structure not valid skip this one
+          next if parts.count < 3 and parts.count > 4
+
           created_at = parts[0].to_i
+
+          if (parts.last() != IN_USE || (created_at <= too_old))
+            return true
+          end
+        end
+      end
+      return false
+    end
+
+
+    # Scan the work directory and pick up all files that are not
+    # in use.  As a special case we will process any -inuse files
+    # that are older than IN_USE_MAX_TIME
+    #
+    # if we spend too long in here we will close the current file
+    # to avoid having it show in use for too long
+    def send_files_data
+      sends_attempted = 0
+      # close the current file if we've been here beyond the time limit
+      close_current_at = Time.now().to_i + SEND_SWEEP_TIME
+
+      # anything in use older than this is fair game to claim
+      too_old = Time.now().to_i - IN_USE_MAX_TIME
+
+      # first gather all the file is this directory
+      files = Dir.entries(ZZA_TEMP_DIR)
+
+      files.each do |file_path|
+
+        # cap our max time here to avoid keeping current inuse file active too long
+        # so return true which will claim the latest file and continue
+        if Time.now().to_i >= close_current_at
+          close_current_file
+          # next point we should close
+          close_current_at = Time.now().to_i + SEND_SWEEP_TIME
+        end
+
+        full_path = ZZA_TEMP_DIR + "/" + file_path
+
+        if File.directory?(full_path) == false
+
+          parts = file_path.split('-')
+
+          # if file structure not valid skip this one
+          next if parts.count < 3 and parts.count > 4
+
+          created_at = parts[0].to_i
+
           if (parts.last() != IN_USE || (created_at <= too_old))
             begin
               # ok, we have a file to work with
@@ -114,7 +213,8 @@ module ZZ
               got_lock = file.flock(File::LOCK_EX|File::LOCK_NB)
               if (got_lock)
                 # we got the lock so now extract and send
-                json_array = build_json_array(file)
+                sends_attempted += 1
+                json_array = build_json_request(file)
                 send_zza_data(json_array)
                 file.close rescue nil
                 File.delete(file.path) rescue nil
@@ -129,13 +229,14 @@ module ZZ
           end
         end
       end
+      sends_attempted
     end
 
     # extract the data and send up to the zza server
     # we have all individual entries in the file so
     # an efficient cheat is to simply add , between them
     # and enclose in [] rather than re parsing
-    def build_json_array file
+    def build_json_request file
       # manually build array by adding [] and commas
       start = true
       str_array = '{"evts":['
@@ -153,6 +254,7 @@ module ZZ
     # send the data up to the zza server
     def send_zza_data json_str
       SystemTimer.timeout_after(ZZA_MAX_TIME) do
+
         # send the data
         req = Net::HTTP::Post.new(ZZA_URI.path)
         req.content_type = 'application/json'
@@ -196,7 +298,7 @@ module ZZ
     end
 
     # create what should be a unique file name for our purposes
-    #
+    # and encode the create time within the name
     def make_file_name create_time
       file_name = "#{create_time}-#{rand(9999999999)}-#{Process.pid}"
     end
@@ -293,12 +395,17 @@ module ZZ
       @@sender
     end
 
+    # returns true if ZZA cannot currently be reached
+    # this is used by health_check
     def self.unreachable?
       return sender.zza_unreachable_count != 0
     end
 
     # now the instance based methods
     # these let you send individual events
+
+    # create the object and take an optional
+    # zza_id that overrides the default
     def initialize(zza_id = nil)
       zza_id = @@default_zza_id if zza_id.nil?
       @zza_id = zza_id
@@ -332,4 +439,6 @@ module ZZ
 end
 
 # initialize in case no one else does
+# you can set the proper zza_id by calling
+# the default_zza_id= method
 ZZ::ZZA.initialize("ruby/svr")
