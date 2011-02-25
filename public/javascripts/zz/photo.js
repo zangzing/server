@@ -40,7 +40,7 @@
             html += '<div class="photo-delete-button"></div>';
             html += '<div class="photo-uploading-icon"></div>';
             html += '<div class="photo-error-icon"></div>';
-            html += '<img class="bottom-shadow" src="/images/photo/bottom-full.jpg">';
+            html += '<img class="bottom-shadow" src="/images/photo/bottom-full.png">';
             html += '</div>';
             html += '<div class="photo-caption">' + self.options.caption +'</div>';
 
@@ -293,14 +293,12 @@
             if(!self.isEditingCaption){
                 self.isEditingCaption = true;
 
-                var textBoxElement = $('<input type="text">');
-                self.captionElement.html(textBoxElement);
+                var captionEditor = $('<div class="edit-caption-border"><input type="text"><div class="caption-ok-button"></div></div>');
+                self.captionElement.html(captionEditor);
 
-                textBoxElement.val(self.options.caption);
-                textBoxElement.focus();
-                textBoxElement.select();
-
-                textBoxElement.blur(function(){
+                var textBoxElement = captionEditor.find('input');
+ 
+                var commitChanges = function(){
                     var newCaption = textBoxElement.val()
                     if(newCaption !== self.options.caption){
                         self.options.caption = newCaption
@@ -308,14 +306,20 @@
                     }
                     self.captionElement.html(newCaption);
                     self.isEditingCaption = false;
+                }
 
+
+                textBoxElement.val(self.options.caption);
+                textBoxElement.focus();
+                textBoxElement.select();
+                textBoxElement.blur(function(){
+                    commitChanges();
                 });
 
                 textBoxElement.keydown(function(event){
 
-
                     if (event.which == 13) {  //enter key
-                        textBoxElement.blur();
+                        commitChanges();
                         return false;
                     }
                     else if(event.which == 9){ //tab key
@@ -342,6 +346,16 @@
                         return false;
                     }
                 });
+
+
+                var okButton = captionEditor.find('.caption-ok-button');
+                okButton.click(function(event){
+                    commitChanges();
+                    event.stopPropagation();
+                    return false;
+                });
+
+                
             }
 
         },

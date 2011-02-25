@@ -146,6 +146,9 @@ pages.edit_album_tab = {
                 var grid = gridElement.zz_photogrid({
                     photos:json,
                     allowDelete: true,
+                    cellWidth: 230,
+                    cellHeight: 230,
+
                     onDelete: function(index, photo){
                         $.ajax({
                             type: "DELETE",

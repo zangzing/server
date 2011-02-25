@@ -21,7 +21,7 @@ ul#filechooser li {
   width: 128px;
   padding: 0px 20px 15px;
   cursor: pointer;
-  font-size: 1.3em;
+  font-size: 13px;
   font-weight: 400;
   overflow: hidden;
   height: 135px;
@@ -222,7 +222,7 @@ ul#filechooser li:hover figure {
   padding: 2px 0 7px;
   overflow: hidden;
   text-align: center;
-  line-height: 1.5em;
+  line-height: 15px;
 }
 
 ul#filechooser li .checkmark {
@@ -266,7 +266,7 @@ ul#filechooser li.photo:hover figure {
   padding: 2px 0 7px;
   overflow: hidden;
   text-align: center;
-  line-height: 1.5em;
+  line-height: 15px;
   z-index: 5;
 }
 

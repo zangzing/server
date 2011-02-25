@@ -269,7 +269,12 @@ Server::Application.routes.draw do
 
 
 
-  get    '/:user_id'          => 'albums#index',               :as => :user_albums
+  get    '/:user_id'                           =>   'albums#index',               :as => :user_albums
+  get    '/:user_id/:album_id'                 =>   'photos#index'
+  get    '/:user_id/:album_id/photos'          =>   'photos#index'
+  get    '/:user_id/:album_id/people'          =>   'people#album_index'
+  get    '/:user_id/:album_id/activities'          =>   'activities#album_index'
+  get    '/:user_id/:album_id/movie'          =>   'photos#movie'
 
 
 end

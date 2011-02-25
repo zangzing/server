@@ -248,6 +248,21 @@ class ReservedUserNames
       "potd",
       "larryco",
       "siteremap",
+      "lauriehermann",
+      "randyhermann",
+      "amyhermann",
+      "hopemeng",
+      "hopemenghermann",
+      "bowiemenghermann",
+      "bowie",
+      "hope",
+      "hermann",
+      "menghermann",
+      "jackmeng",
+      "wendymeng",
+      "meng",
+      "edmeng",
+      "gerryschroeder",
     ].freeze
   end
 
