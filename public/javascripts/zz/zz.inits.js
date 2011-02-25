@@ -15,7 +15,7 @@ zz.init = {
 
         $('#header #back-button').click(function(){
             $('#article').animate({left: $('#article').width()},500,'easeOutQuart');
-            document.location.href='/';
+            document.location.href=zz.user_base_url;
         });
 
 

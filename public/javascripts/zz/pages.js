@@ -127,7 +127,7 @@ pages.edit_album_tab = {
     init: function(callback){
         $.ajax({
             dataType: 'json',
-            url: '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
+            url: '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss,
             success: function(json){
 
                 for(var i =0;i<json.length;i++){
@@ -150,17 +150,22 @@ pages.edit_album_tab = {
                     cellHeight: 230,
 
                     onDelete: function(index, photo){
-                        $.ajax({
-                            type: "DELETE",
-                            dataType: "json",
-                            url: "/photos/" + photo.id + ".json",
-                            error: function(error){
-                                logger.debug(error);
-//                                $.jGrowl("" + error);
-                            }
-                            
-                        });
-                        return true;                          
+                        if(confirm('Are you sure you want to delete this photo?')){
+                            $.ajax({
+                                type: "DELETE",
+                                dataType: "json",
+                                url: "/photos/" + photo.id + ".json",
+                                error: function(error){
+                                    logger.debug(error);
+    //                                $.jGrowl("" + error);
+                                }
+
+                            });
+                            return true;
+                        }
+                        else{
+                            return false;
+                        }
                     },
                     allowEditCaption: true,
                     onChangeCaption: function(index, photo, caption){
@@ -213,7 +218,7 @@ pages.edit_album_tab = {
     },
 
     bounce: function(success, failure){
-        zz.open_drawer(); //todo: is this needed?
+//        zz.open_drawer(); //todo: is this needed?
         success();
     }
 
