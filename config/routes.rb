@@ -14,6 +14,7 @@ Server::Application.routes.draw do
   end
 
   root :to => 'pages#home'
+  get    '/health_check'            => 'pages#health_check',      :as => :health_check
 
   #users
   get    '/users'                   => 'users#index',             :as => :users

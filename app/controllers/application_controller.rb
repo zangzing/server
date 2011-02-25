@@ -134,6 +134,7 @@ class ApplicationController < ActionController::Base
                      'oauth#test_session',
                      'connector/local_contacts#import',
                      'sendgrid#import_fast',
+                     'pages#health_check',
                      'agents#check',
                      'agents#info',
                      'agents#index']
