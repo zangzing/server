@@ -90,6 +90,7 @@
       zz.album_lastmod = '<%= @album.photos_last_updated_at.to_i %>';
       zz.album_type = zz.album_type.split('Album')[0].toLowerCase();
       zz.album_base_url = '/<%=@album.user.username%>/<%=@album.friendly_id%>';
+      zz.user_base_url = '/<%=@album.user.username%>';
 
 <%    end
       # This is where we pass things on to js that we need from ruby.
