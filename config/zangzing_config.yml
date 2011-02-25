@@ -1,0 +1,36 @@
+#
+# This is the dumping ground for generic zz environment related stuff
+# I got tired of creating new .yml files for every little switch so
+# we can put the bulk of them here from now on.
+#
+
+
+common: &common
+  reserved_names: false
+
+development:
+  <<: *common
+  reserved_names: true
+
+perftest:
+  <<: *common
+
+test:
+  <<: *common
+
+eydevelopment:
+  <<: *common
+  reserved_names: true
+
+eysandbox:
+  <<: *common
+  reserved_names: true
+
+
+eytest:
+  <<: *common
+
+
+
+production:
+  <<: *common
