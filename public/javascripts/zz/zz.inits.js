@@ -116,7 +116,7 @@ zz.init = {
                 $('#sign-in').show();
                 $('#sign-up').hide();
 
-                $('#small-drawer').show().animate({height: '460px', top: '56px'},500, 'linear', function(){
+                $('#small-drawer').show().animate({height: '500px', top: '56px'},500, 'linear', function(){
                     $('#user_session_email').focus();
                 });
                 zz.drawer_state = zz.DRAWER_OPEN;
@@ -215,7 +215,7 @@ zz.init = {
             $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
                 $('#sign-in').show();
                 $('#sign-up').hide();
-                $('#small-drawer').animate({height: '460px', top: '56px'}, 500, 'linear', function(){
+                $('#small-drawer').animate({height: '480px', top: '56px'}, 500, 'linear', function(){
                     $('#user_session_email').focus();
                 });
             });
@@ -226,7 +226,7 @@ zz.init = {
             $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
                 $('#sign-up').show();
                 $('#sign-in').hide();
-                $('#small-drawer').animate({height: '460px', top: '56px'}, 500, 'linear', function(){
+                $('#small-drawer').animate({height: '480px', top: '56px'}, 500, 'linear', function(){
                     $('#user_name').focus();
 
                 });
