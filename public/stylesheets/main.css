@@ -390,7 +390,20 @@ div#container {
   width:58px;
   height:55px;
   cursor: pointer;
+  background: url("/images/btn-header-account-settings.png") no-repeat scroll 0px 0px transparent;
 }
+
+
+#header #account-badge:hover {
+    background: url("/images/btn-header-account-settings.png") no-repeat scroll 0px -55px transparent;
+
+}
+
+#header #account-badge.selected{
+    background: url("/images/btn-header-account-settings.png") no-repeat scroll 0px -110px transparent;
+}
+
+
 
 #header #account-badge div#account-image {
     position:absolute;
@@ -403,6 +416,8 @@ div#container {
 #header #account-badge.disabled {
     cursor:default;
     opacity:0.5;
+    background: url("/images/btn-header-account-settings.png") no-repeat scroll 0px 0px transparent;
+
 }
 
 

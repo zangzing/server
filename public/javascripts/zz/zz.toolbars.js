@@ -31,7 +31,7 @@ zz.toolbars = {
        //Bind Each Menu Item
        $('#acct-settings-btn').click(function(){
            zz.init.disable_buttons();
-           $('#footer #account-badge').removeClass('disabled').addClass('selected');
+           $('#header #account-badge').removeClass('disabled').addClass('selected');
        
            zz.wizard.open_settings_drawer('profile')
 

@@ -27,7 +27,7 @@ zz.init = {
         $('#header #home-button').click(function(){ document.location.href = '/' });
 
         $('#header #back-button').click(function(){
-            if($(this).hasClass('disabled')){
+            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
                 return;
             }
 
@@ -51,7 +51,7 @@ zz.init = {
 
 
         $('#header #view-buttons #grid-view-button').click(function(){
-            if($(this).hasClass('disabled')){
+            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
                 return;
             }
 
@@ -65,7 +65,7 @@ zz.init = {
         });
 
         $('#header #view-buttons #picture-view-button').click(function(){
-            if($(this).hasClass('disabled')){
+            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
                 return;
             }
 
@@ -78,7 +78,7 @@ zz.init = {
         });
 
         $('#header #view-buttons #people-view-button').click(function(){
-            if($(this).hasClass('disabled')){
+            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
                 return;
             }
 
@@ -92,7 +92,7 @@ zz.init = {
         });
 
         $('#header #view-buttons #activities-view-button').click(function(){
-            if($(this).hasClass('disabled')){
+            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
                 return;
             }
 
@@ -126,7 +126,7 @@ zz.init = {
 
 
         $('#footer #play-button').click(function(){
-            if($(this).hasClass('disabled')){
+            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
                 return;
             }
 
@@ -149,7 +149,7 @@ zz.init = {
         });
 
         $('#footer #new-album-button').click(function(){
-            if($(this).hasClass('disabled')){
+            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
                 return;
             }
 
@@ -168,7 +168,7 @@ zz.init = {
 
         //only album contributers can do this
         $('#footer #add-photo-button').click(function(){
-            if($(this).hasClass('disabled')){
+            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
                 return;
             }
 
@@ -179,7 +179,7 @@ zz.init = {
 
         //any signed in user can do this
         $('#footer #share-button').click(function(){
-            if($(this).hasClass('disabled')){
+            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
                 return;
             }
 
@@ -190,7 +190,7 @@ zz.init = {
 
         //only album owner can do this
         $('#footer #edit-album-button').click(function(){
-            if($(this).hasClass('disabled')){
+            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
                 return;
             }
 
@@ -703,7 +703,7 @@ zz.init = {
     acct_badge: function(){
         zz.toolbars.init_acct_badge_menu();
         $('#account-badge').click( function(){
-            if($(this).hasClass('disabled')){
+            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
                 return;
             }
 
@@ -715,7 +715,7 @@ zz.init = {
     like_menu: function(){
         zz.toolbars.init_like_menu();
         $('#footer #like-button').click(function(){
-            if($(this).hasClass('disabled')){
+            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
                 return;
             }
 
