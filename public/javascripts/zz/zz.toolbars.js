@@ -29,12 +29,18 @@ zz.toolbars = {
        $('ul.dropdown li a').click(function(){  $(this).parent().parent().slideUp('fast');  });
         
        //Bind Each Menu Item
-       $('#acct-settings-btn').click(function(){ zz.wizard.open_settings_drawer('profile') });
+       $('#acct-settings-btn').click(function(){
+           zz.init.disable_buttons();
+           $('#footer #account-badge').removeClass('disabled').addClass('selected');
+       
+           zz.wizard.open_settings_drawer('profile')
+
+       });
        $('#acct-signout-btn').click(function(){ window.location = '/signout' }); 
     },
 
     show_acct_badge_menu : function(event){
-        event.preventDefault();
+//        event.preventDefault();
         // Toggle the slide based on the menu's current visibility.
         if( $('#acct-dropdown').is( ":visible" ) ){
                $('#acct-dropdown').slideUp( 'fast' );// Hide - slide up
@@ -51,15 +57,16 @@ zz.toolbars = {
         $('ul.popup li a').click(function(){  $(this).parent().parent().slideUp('fast');  });
 
     },
-    show_like_menu: function(event){
+
+    show_like_menu: function(){
         //toggle visibility
         if( $('#like-popup').is( ":visible" ) ){
                $('#like-popup').slideUp( 'fast' );// Hide - slide up
         }else{
           //get the position of the clicked element and display popup above center of it  
-          var pos =  $(this).offset();
-          var width =  $(this).width();
-          var height=  $(this).width();
+          var pos =  $('#footer #like-button').offset();
+          var width =  $('#footer #like-button').width();
+          var height=  $('#footer #like-button').width();
           $("#like-popup").css( { "left":  pos.left - (width/2)+"px", "bottom": height+ "px" } );  
           $('#like-popup').slideDown( 'fast' );// Show - slide down
         }

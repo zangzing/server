@@ -129,13 +129,16 @@ div#container {
     cursor: pointer;
 }
 
+
+
+
 #header #back-button{
     position: absolute;
     left: 140px;
     top: 14px;
-
-
 }
+
+
 
 #header #album-info{
     position:relative;
@@ -160,9 +163,6 @@ div#container {
 #header #album-info #album-cover-border img.album-cover{
     border: #fff solid 2px;
     margin: 0px;
-    /*position:relative;*/
-    /*top:0px;*/
-    /*left:0px;*/
 }
 
 #header #album-info #album-cover-border img.bottom-shadow{
@@ -234,7 +234,8 @@ div#container {
 
 
 
-
+/*   View Buttons
+ ******************************************/
 #header #view-buttons{
     position:absolute;
     right:150px;
@@ -257,6 +258,13 @@ div#container {
     background: url("/images/btn-header-grid-view.png") no-repeat scroll 0px -64px transparent;
 }
 
+#header #view-buttons #grid-view-button.disabled{
+    background: url("/images/btn-header-grid-view.png") no-repeat scroll 0px 0px transparent;
+    cursor:default;
+    opacity:0.5;
+}
+
+
 
 #header #view-buttons #picture-view-button{
     float:left;
@@ -274,6 +282,14 @@ div#container {
     background: url("/images/btn-header-picture-view.png") no-repeat scroll 0px -64px transparent;
 }
 
+#header #view-buttons #picture-view-button.disabled{
+    background: url("/images/btn-header-picture-view.png") no-repeat scroll 0px 0px transparent;
+    cursor:default;
+    opacity:0.5;
+}
+
+
+
 
 #header #view-buttons #people-view-button{
     float:left;
@@ -289,6 +305,12 @@ div#container {
 
 #header #view-buttons #people-view-button.selected{
     background: url("/images/btn-header-people-view.png") no-repeat scroll 0px -64px transparent;
+}
+
+#header #view-buttons #people-view-button.disabled{
+    background: url("/images/btn-header-people-view.png") no-repeat scroll 0px 0px transparent;
+    cursor:default;
+    opacity:0.5;
 }
 
 
@@ -308,6 +330,13 @@ div#container {
 #header #view-buttons #activities-view-button.selected{
     background: url("/images/btn-header-activitites-view.png") no-repeat scroll 0px -64px transparent;
 }
+
+#header #view-buttons #activities-view-button.disabled{
+    background: url("/images/btn-header-activitites-view.png") no-repeat scroll 0px 0px transparent;
+    cursor:default;
+    opacity:0.5;
+}
+
 
 
 #header #help-button{
@@ -331,6 +360,8 @@ div#container {
 }
 
 
+
+
 #header #sign-in-button{
     position: absolute;
     top: 1px;
@@ -351,6 +382,7 @@ div#container {
 }
 
 
+
 #header #account-badge {
   position:absolute;
   right:0px;
@@ -368,13 +400,17 @@ div#container {
     width: 25px;
 }
 
+#header #account-badge.disabled {
+    cursor:default;
+    opacity:0.5;
+}
+
+
 #header #account-badge img#arrow-image {
     position:absolute;
     top:8px;
     right:4px;
 }
-
-
 
 #acct-dropdown{
     width:110px;
@@ -441,6 +477,9 @@ div#container {
     text-shadow: #EEE 1px 1px 0px;
 }
 
+
+/*           New Album Button
+ ***************************************************/
 #footer #new-album-button{
     position:relative;
     float:left;
@@ -459,7 +498,15 @@ div#container {
     background: url("/images/btn-footer-new-album.png") no-repeat scroll 0px -110px transparent;
 }
 
+#footer #new-album-button.disabled{
+    background: url("/images/btn-footer-new-album.png") no-repeat scroll 0px 0px transparent;
+    opacity:0.5;
+    cursor: default;
+}
 
+
+/*           Edit Album Button
+ ***************************************************/
 #footer #edit-album-button{
     position:relative;
     width: 58px;
@@ -470,14 +517,25 @@ div#container {
     cursor: pointer;
 }
 
-#footer #edit-album-button:hover{
+#footer #edit-album-button.enabled:hover{
     background: url("/images/btn-footer-edit-album.png") no-repeat scroll 0px -55px transparent;
 }
 
 #footer #edit-album-button.selected{
     background: url("/images/btn-footer-edit-album.png") no-repeat scroll 0px -110px transparent;
+    cursor: default;
 }
 
+#footer #edit-album-button.disabled{
+    opacity:0.5;
+    cursor: default;
+    background: url("/images/btn-footer-edit-album.png") no-repeat scroll 0px 0px transparent;
+}
+
+
+
+/*           Add Photos Button
+ ***************************************************/
 
 #footer #add-photos-button{
     position:relative;
@@ -497,6 +555,15 @@ div#container {
     background: url("/images/btn-footer-add-photos.png") no-repeat scroll 0px -110px transparent;
 }
 
+#footer #add-photos-button.disabled{
+    opacity:0.5;
+    cursor: default;
+    background: url("/images/btn-footer-add-photos.png") no-repeat scroll 0px 0px transparent;
+}
+
+
+/*           Upload Progress Meter
+ ***************************************************/
 
 #footer #progress-meter{
     display:none;
@@ -510,6 +577,10 @@ div#container {
 }
 
 
+/*           Play Button
+ ***************************************************/
+
+
 #footer #play-button{
     position: relative;
     top: 6px;
@@ -521,11 +592,20 @@ div#container {
     margin-right:auto;
 }
 
-#footer #play-button:hover{
+#footer #play-button.enabled:hover{
     background: url("/images/btn-footer-play.png") no-repeat scroll 0px -44px transparent;
 }
 
+#footer #play-button.disabled{
+    opacity:0.5;
+    cursor: default;
+    background: url("/images/btn-footer-play.png") no-repeat scroll 0px 0px transparent;
+}
 
+
+
+/*           Share Button
+ ***************************************************/
 
 #footer #share-button{
     position: absolute;
@@ -545,9 +625,15 @@ div#container {
     background: url("/images/btn-footer-share.png") no-repeat scroll 0px -110px transparent;
 }
 
+#footer #share-button.disabled{
+    opacity:0.5;
+    cursor: default;
+    background: url("/images/btn-footer-share.png") no-repeat scroll 0px 0px transparent;
+}
 
 
-
+/*           Like Button
+ ***************************************************/
 #footer #like-button{
     position: absolute;
     top: 1px;
@@ -566,6 +652,15 @@ div#container {
     background: url("/images/btn-footer-like.png") no-repeat scroll 0px -110px transparent;
 }
 
+#footer #like-button.disabled{
+    opacity:0.5;
+    cursor: default;
+    background: url("/images/btn-footer-like.png") no-repeat scroll 0px 0px transparent;
+}
+
+
+/*           Like Button
+ ***************************************************/
 
 #footer #buy-button{
     position: absolute;
@@ -585,6 +680,11 @@ div#container {
     background: url("/images/btn-footer-buy.png") no-repeat scroll 0px -110px transparent;
 }
 
+#footer #buy-button.disabled{
+    opacity:0.5;
+    cursor: default;
+    background: url("/images/btn-footer-buy.png") no-repeat scroll 0px 0px transparent;
+}
 
 
 
@@ -1012,6 +1112,18 @@ a.back-button:hover span{
 a.back-button:active span{
     background: transparent url('/images/btn-back.png') no-repeat 0 -60px; /* todo: need rollover image*/
 }
+
+a.back-button.disabled{
+    cursor: default;
+    opacity:0.5;
+    background: url("/images/btn-back-endcap.png") no-repeat scroll top right;
+}
+
+a.back-button.disabled span{
+    background: transparent url('/images/btn-back.png') no-repeat 0 -30px;
+    cursor: default;
+}
+
 
 
 /*  next button
