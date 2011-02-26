@@ -382,6 +382,14 @@ module ZZ
       @@sender ||= ZZASender.new
     end
 
+    # this should really be called explicitly in
+    # cases where we have been forked such as
+    # running on Unicorn.  EngineYard controls
+    # that file and while we could take it over
+    # we can wait till we move to Amazon since
+    # our work around is to make this check
+    # on each track_event call
+    # TODO: take control of Unicorn config files later...
     def self.after_fork_check
       thread_state = sender.thread.status
       if !thread_state
