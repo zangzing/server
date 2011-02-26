@@ -82,9 +82,9 @@
             var cells = [];
 
             var lazyLoadThreshold = 0;
-//            if(self.options.singlePictureMode){
-//                lazyLoadThreshold = self.options.maxWidth * 3;
-//            }
+            if(self.options.singlePictureMode){
+                lazyLoadThreshold = self.options.cellWidth * 3;
+            }
 
 
 

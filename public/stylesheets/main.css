@@ -390,7 +390,20 @@ div#container {
   width:58px;
   height:55px;
   cursor: pointer;
+  background: url("/images/btn-header-account-settings.png") no-repeat scroll 0px 0px transparent;
 }
+
+
+#header #account-badge:hover {
+    background: url("/images/btn-header-account-settings.png") no-repeat scroll 0px -55px transparent;
+
+}
+
+#header #account-badge.selected{
+    background: url("/images/btn-header-account-settings.png") no-repeat scroll 0px -110px transparent;
+}
+
+
 
 #header #account-badge div#account-image {
     position:absolute;
@@ -403,6 +416,8 @@ div#container {
 #header #account-badge.disabled {
     cursor:default;
     opacity:0.5;
+    background: url("/images/btn-header-account-settings.png") no-repeat scroll 0px 0px transparent;
+
 }
 
 
@@ -831,7 +846,7 @@ div#small-drawer div.body {
   background-image: url("/images/bg-small-bottom-repeat.png");
   background-repeat: repeat-y;
   width: 453px;
-  height: 446px;
+  height: 486px;
   overflow: hidden;
 }
 
@@ -949,8 +964,8 @@ div#small-drawer h3 {
 
 .flash-box{
     display: block;
-    height: 20px;
-    margin-top: 5px;
+    height: 30px;
+    margin-top: 10px;
     margin-bottom: 5px;
 }
 .flash-notice{
@@ -967,12 +982,11 @@ div#small-drawer p.error-notice, .error-notice {
   text-align: center;
   color: #ff0000;
   font-weight: 700;
-  text-transform: capitalize;
 }
 
-div#sign-up p.error-notice, .error-notice {
-  margin-top: 10px;
-}
+/*div#sign-up p.error-notice, .error-notice {*/
+  /*margin-top: 10px;*/
+/*}*/
 
 div#small-drawer dl {
   width: 380px;

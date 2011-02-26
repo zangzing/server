@@ -141,7 +141,8 @@ pages.edit_album_tab = {
 
                 $('#article').html(gridElement);
                 $('#article').css('overflow','hidden');
-    
+                $('#article').css('top','120px'); //make room for wizard tabs
+
 
                 var grid = gridElement.zz_photogrid({
                     photos:json,
