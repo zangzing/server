@@ -19,26 +19,36 @@ describe "Picasa local connector" do
 
   it "connects to Picasa local" do
     ui.wizard.add_photos_tab.click_folder "Picasa"
+    @@no_agent = ui.wizard.add_photos_tab.agent_not_installed?
+    throw 'ZangZing agent is not installed!' if @@no_agent
     ui.wizard.add_photos_tab.click_folder "Folders"
     ui.wizard.add_photos_tab.click_folder "Pictures"
   end
 
   it "adds 5 random photos from 'Picasa local" do
-    import_random_photos(5)
+    unless @@no_agent
+      import_random_photos(5)
+    end
   end
 
   it "gives a name to the album" do
-    @@album_name = "Picasa local #{current_user[:stamp]}"
-    set_album_name @@album_name
+    unless @@no_agent
+      @@album_name = "Picasa local #{current_user[:stamp]}"
+      set_album_name @@album_name
+    end
   end
 
   it "closes wizard" do
-    close_wizard
+    unless @@no_agent
+      close_wizard
+    end
   end
 
   it "checks if newly created album contains 5 photos" do
-    photos = get_photos_from_added_album(@@album_name)
-    photos.count.should == 5
+    unless @@no_agent
+      photos = get_photos_from_added_album(@@album_name)
+      photos.count.should == 5
+    end
   end
 
 end
