@@ -45,16 +45,17 @@
 
           <div id='album-name-and-owner'>
                 <h2 id="album-header-title"><%= truncate((@album.name), :length => 30) %></h2>
-                <h3><%='by ' + @album.user.username%></h3>
+                <h3><%="by #{@album.user.first_name} #{@album.user.last_name}"%></h3>
           </div>
       </div>
   <% end %>
 
+<% if @user %>
   <div id="user-info" style="display:<%= @user && !@user.changed? ? 'inline-block' : 'none' %>">
         <div class="profile-picture" id="user-info-picture" style="background-image:   url('<%=( @user ? @user.profile_photo_url : '' )%>');"></div>
-    <h2><%= @user ? @user.username : '' %></h2>
+        <h2><%="#{@user.first_name} #{@user.last_name}"%></h2>
   </div>
-
+<% end %>
 
   <% if @album %>
       <ul id="view-buttons">

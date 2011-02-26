@@ -6,6 +6,19 @@
 
 zz.init = {
 
+    disable_buttons: function(){
+        $('#header #back-button').addClass('disabled');
+        $('#header #view-buttons').children().addClass('disabled');
+        $('#header #account-badge').addClass('disabled');
+        $('#footer #play-button').addClass('disabled');
+        $('#footer #new-album-button').addClass('disabled');
+        $('#footer #add-photo-button').addClass('disabled');
+        $('#footer #share-button').addClass('disabled');
+        $('#footer #edit-album-button').addClass('disabled');
+        $('#footer #buy-button').addClass('disabled');
+        $('#footer #like-button').addClass('disabled');
+    },
+
     template: function(){
         /* Click Handlers
          ----------------------------------------------------------------------- */
@@ -14,6 +27,10 @@ zz.init = {
         $('#header #home-button').click(function(){ document.location.href = '/' });
 
         $('#header #back-button').click(function(){
+            if($(this).hasClass('disabled')){
+                return;
+            }
+
             $('#article').animate({left: $('#article').width()},500,'easeOutQuart');
             document.location.href=zz.user_base_url;
         });
@@ -34,6 +51,12 @@ zz.init = {
 
 
         $('#header #view-buttons #grid-view-button').click(function(){
+            if($(this).hasClass('disabled')){
+                return;
+            }
+
+
+
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #grid-view-button').addClass('selected');
 
@@ -42,6 +65,11 @@ zz.init = {
         });
 
         $('#header #view-buttons #picture-view-button').click(function(){
+            if($(this).hasClass('disabled')){
+                return;
+            }
+
+
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #picture-view-button').addClass('selected');
 
@@ -50,6 +78,11 @@ zz.init = {
         });
 
         $('#header #view-buttons #people-view-button').click(function(){
+            if($(this).hasClass('disabled')){
+                return;
+            }
+
+
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #people-view-button').addClass('selected');
 
@@ -59,6 +92,11 @@ zz.init = {
         });
 
         $('#header #view-buttons #activities-view-button').click(function(){
+            if($(this).hasClass('disabled')){
+                return;
+            }
+
+
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #activities-view-button').addClass('selected');
 
@@ -88,6 +126,11 @@ zz.init = {
 
 
         $('#footer #play-button').click(function(){
+            if($(this).hasClass('disabled')){
+                return;
+            }
+
+
             $('<div></div>').css({
                 position: 'absolute',
                 top:0,
@@ -106,7 +149,12 @@ zz.init = {
         });
 
         $('#footer #new-album-button').click(function(){
-            $('#footer #new-album-button').addClass('selected');
+            if($(this).hasClass('disabled')){
+                return;
+            }
+
+            zz.init.disable_buttons();
+            $('#footer #new-album-button').removeClass('disabled').addClass('selected');
 
 
             zz.toolbars.init_new_album();
@@ -120,19 +168,34 @@ zz.init = {
 
         //only album contributers can do this
         $('#footer #add-photo-button').click(function(){
-            $('#footer #add-photo-button').addClass('selected');
+            if($(this).hasClass('disabled')){
+                return;
+            }
+
+            zz.init.disable_buttons();
+            $('#footer #add-photo-button').removeClass('disabled').addClass('selected');
             zz.wizard.open_edit_album_wizard('add')
         });
 
         //any signed in user can do this
         $('#footer #share-button').click(function(){
-            $('#footer #share-button').addClass('selected');
+            if($(this).hasClass('disabled')){
+                return;
+            }
+
+            zz.init.disable_buttons();
+            $('#footer #share-button').removeClass('disabled').addClass('selected');
             zz.wizard.open_edit_album_wizard('share')
         });
 
         //only album owner can do this
         $('#footer #edit-album-button').click(function(){
-            $('#footer #edit-album-button').addClass('selected');
+            if($(this).hasClass('disabled')){
+                return;
+            }
+
+            zz.init.disable_buttons();
+            $('#footer #edit-album-button').removeClass('disabled').addClass('selected');
             zz.wizard.open_edit_album_wizard('add')
         });
 
@@ -201,7 +264,9 @@ zz.init = {
 
         zz.init.acct_badge();
         zz.init.like_menu();
-        zz.init.buy_button();
+
+
+
 
         setTimeout(function(){
             zz.init.preload_rollover_images();
@@ -238,15 +303,11 @@ zz.init = {
             view = 'picture';
         }
 
-var start = (new Date().getTime());
-logger.debug("0 before ajax call");
         $.ajax({
             dataType: 'json',
             url: '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
             success: function(json){
 
-
-logger.debug(((new Date()).getTime() - start)  +" after ajax call");
 
 
             var gridElement = $('<div class="photogrid-container"></div>');
@@ -287,14 +348,12 @@ logger.debug(((new Date()).getTime() - start)  +" after ajax call");
                 var currentPhotoId = null;
                 var hash = jQuery.param.fragment();
 
-                logger.debug(hash);
 
 
                 if(hash !== ''){
                     currentPhotoId = hash.slice(1); //remove the '!'
                 }
 
-                logger.debug(currentPhotoId);
 
 
                 var grid = gridElement.zz_photogrid({
@@ -319,7 +378,6 @@ logger.debug(((new Date()).getTime() - start)  +" after ajax call");
 
             }
 
-logger.debug(((new Date()).getTime() - start) +" after create grid");
 
 
                 //setup upload progress smeter
@@ -376,9 +434,7 @@ logger.debug(((new Date()).getTime() - start) +" after create grid");
     },
 
 
-//    tray: function(){
-//
-//    },
+
 
     preload_rollover_images : function(){
         //todo: is there a way to query CSS to get all these?
@@ -646,17 +702,25 @@ logger.debug(((new Date()).getTime() - start) +" after create grid");
 //====================================== Account Badge  ===========================================
     acct_badge: function(){
         zz.toolbars.init_acct_badge_menu();
-        $('#account-badge').click( zz.toolbars.show_acct_badge_menu );
+        $('#account-badge').click( function(){
+            if($(this).hasClass('disabled')){
+                return;
+            }
+
+            zz.toolbars.show_acct_badge_menu()
+        });
     },
 
 //======================================= Like Menu  ==============================================
     like_menu: function(){
         zz.toolbars.init_like_menu();
-        $('#footer #like-button').click( zz.toolbars.show_like_menu );
-    },
-//======================================   ===============================================
-    buy_button: function(){
+        $('#footer #like-button').click(function(){
+            if($(this).hasClass('disabled')){
+                return;
+            }
 
+            zz.toolbars.show_like_menu();
+        } );
     }
 
-}; // end zz.init
+};
