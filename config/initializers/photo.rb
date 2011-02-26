@@ -17,6 +17,7 @@ class PhotoGenHelper
     s3config = YAML::load(ERB.new(File.read("#{Rails.root}/config/s3.yml")).result)[Rails.env].recursively_symbolize_keys!
     zconfig.s3_access_key_id = s3config[:access_key_id]
     zconfig.s3_secret_access_key = s3config[:secret_access_key]
+    zconfig.s3_buckets = s3config[:buckets]
 
     AWS::S3::Base.establish_connection!(
             :access_key_id => zconfig.s3_access_key_id,
@@ -48,6 +49,9 @@ class PhotoGenHelper
     zconfig.s3_secret_access_key
   end
 
+  def self.s3_buckets
+    zconfig.s3_buckets
+  end
 end
 
 # set up helper globally once

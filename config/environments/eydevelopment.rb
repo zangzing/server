@@ -1,6 +1,8 @@
 Server::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
 
+  ZZ::ZZA.default_zza_id = "photos/svr"
+
   # In the development environment your application's code is reloaded on
   # every request.  This slows down response time but is perfect for development
   # since you don't have to restart the webserver when you make code changes.

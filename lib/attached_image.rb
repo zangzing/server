@@ -36,7 +36,7 @@ class AttachedImage
 
   # return the array of s3 buckets we can use
   def self.buckets
-    @@buckets ||= ['1.zz', '2.zz', '3.zz', '4.zz']
+    @@buckets ||= PhotoGenHelper.s3_buckets
   end
 
   # grab a bucket to use at random amongst our set

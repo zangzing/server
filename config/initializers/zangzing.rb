@@ -76,3 +76,4 @@ silence_warnings do #To avoid warning of overwriting constant
   Rails.logger.info msg
   zconfig.action_mailer.default_url_options = {:host => zconfig.application_host }
 end
+
