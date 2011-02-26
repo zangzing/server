@@ -1119,3 +1119,62 @@ a.green-add-button:active span{
     background: transparent url('/images/btn-green-add.png') no-repeat 0 -60px; /* todo: need rollover image*/
 }
 
+/*  GREEN BUTTON WELL DONE */
+a.newgreen-button{
+    border:     0;
+    margin:     0;
+    padding:    0;
+    cursor:     pointer;
+    text-align: center;
+    font-size:  14px;
+    text-shadow: 0 1px 3px #000000;
+    text-decoration: none;
+    height:     30px;
+    padding:    0 5px 0 0;
+    background: url("/images/btn-green-endcap.png") no-repeat right top;
+}
+
+a.newgreen-button span{
+    position:    relative;
+    display:     block;
+    white-space: nowrap;
+    padding:     0 0 0 5px;
+    height: 30px;
+    line-height: 28px;
+    background:  url('/images/btn-green.png') no-repeat left top;
+    color:       #ffffff;
+}
+a.newgreen-button:hover { background: url("/images/btn-green-endcap.png") no-repeat right -30px; }
+a.newgreen-button:active{ background: url("/images/btn-green-endcap.png") no-repeat right -60px; }
+a.newgreen-button:hover span { background: url('/images/btn-green.png') no-repeat left -30px; }
+a.newgreen-button:active span{ background: url('/images/btn-green.png') no-repeat left -60px; }
+
+/* BLACK BUTTON WELL DONE */
+a.newblack-button{
+    border:     0;
+    margin:     0;
+    padding:    0;
+    cursor:     pointer;
+    text-align: center;
+    font-size:  14px;
+    text-shadow: 0 1px 3px #000000;
+    text-decoration: none;
+    height:     30px;
+    padding:    0 5px 0 0;
+    background: url("/images/btn-black-endcap.png") no-repeat right top;
+}
+
+a.newblack-button span{
+    position:    relative;
+    display:     block;
+    white-space: nowrap;
+    padding:     0 0 0 5px;
+    height:      30px;
+    line-height: 28px;
+    background:  url('/images/btn-black.png') no-repeat left top;
+    color:       #ffffff;
+}
+a.newblack-button:hover {  background: url("/images/btn-black-endcap.png") no-repeat right -30px; }
+a.newblack-button:active{  background: url("/images/btn-black-endcap.png") no-repeat right -60px; }
+a.newblack-button:hover  span{ background: url('/images/btn-black.png') no-repeat left -30px; }
+a.newblack-button:active span{ background: url('/images/btn-black.png') no-repeat left -60px; }
