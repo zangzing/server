@@ -218,10 +218,14 @@ module ZZ
               if (got_lock)
                 # we got the lock so now extract and send
                 sends_attempted += 1
-                json_array = build_json_request(file)
-                send_zza_data(json_array)
-                file.close rescue nil
+                send_zza_data(file)
+
+                # delete before the close to ensure no one
+                # else tries to pick up this file since
+                # closing releases the lock
                 File.delete(file.path) rescue nil
+
+                file.close rescue nil
               end
             rescue Errno::ENOENT => ex
               # this is an expected condition
@@ -236,33 +240,15 @@ module ZZ
       sends_attempted
     end
 
-    # extract the data and send up to the zza server
-    # we have all individual entries in the file so
-    # an efficient cheat is to simply add , between them
-    # and enclose in [] rather than re parsing
-    def build_json_request file
-      # manually build array by adding [] and commas
-      start = true
-      str_array = '{"evts":['
-      while line = file.gets
-        if start == false
-          str_array << ","
-        else
-          start = false
-        end
-        str_array << line
-      end
-      str_array << "]}"
-    end
-
-    # send the data up to the zza server
-    def send_zza_data json_str
+    # send the data up to the zza server as a stream
+    def send_zza_data file
       SystemTimer.timeout_after(ZZA_MAX_TIME) do
 
         # send the data
         req = Net::HTTP::Post.new(ZZA_URI.path)
         req.content_type = 'application/json'
-        req.body = json_str
+        req['Content-Length'] = file.stat.size
+        req.body_stream = file
         resp = @http.request(req)
 
         # make sure valid
@@ -288,11 +274,18 @@ module ZZ
     def close_current_file
       @file_lock.synchronize do
         if @file.nil? == false
+
+          # close out the data with final json array and map closure
+          # if we have data - technically we should always have at least
+          # one line so the count check is not strictly needed
+          @file.puts("]}") if @entry_count > 0
+
           # rename to path without inuse flag
           new_path = ZZA_TEMP_DIR + "/" + @file_name
           old_path = @file.path
           @file.close
           @file = nil
+
           # rename happens after the close to ensure
           # we are done with it before it is fair game
           # to be read and deleted by a sender thread
@@ -337,7 +330,18 @@ module ZZ
     def post_to_file(json_str)
       @file_lock.synchronize do
         file = ensure_current_file
-        file.puts(json_str)
+        if @entry_count == 0
+          # For efficiency begin building the final form of the json
+          # string directly in the file.  This means we don't have to
+          # do anything with the data when we are ready to send other
+          # than use the string directly.
+          mod_str = '{"evts":[' + json_str
+        else
+          # not the first line so prepend a comma to seperate the
+          # array we are building
+          mod_str = ',' + json_str
+        end
+        file.puts(mod_str)
         @entry_count += 1
         # after every FLUSH_AFTER_COUNT entry go ahead and flush
         # helps keep file in consistent state and minimize loss
@@ -394,7 +398,6 @@ module ZZ
       thread_state = sender.thread.status
       if !thread_state
         # thread is not running kick start a new one
-        initialize(@@default_zza_id)
         @@sender = ZZASender.new
       end
     end
