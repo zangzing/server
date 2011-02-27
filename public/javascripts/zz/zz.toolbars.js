@@ -90,6 +90,7 @@ zz.toolbars = {
           var height=  $('#footer #like-button').width();
           $("#like-popup").css( { "left":  pos.left - (width/2)+"px", "bottom": height+ "px" } );
           $('#like-popup').slideToggle( 'fast' );// Show = slide down
+        }
     },
 
     like_menu_clicked: function(){
