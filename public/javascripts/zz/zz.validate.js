@@ -46,7 +46,7 @@ zz.validate = {
             'user[username]': { required: true,
                                 minlength: 1,
                                 maxlength:25,
-                                regex: "^[a-z0-9]+$",
+                                regex: "(^[a-z0-9]+$|^[a-z0-9]+:.{8}$)",
                                 remote: '/users/validate_username' },
             'user[email]':    { required: true,
                                 email: true,

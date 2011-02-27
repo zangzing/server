@@ -1,11 +1,8 @@
-
-
 .album-cell{
     float:left;
     height:220px;
     width:250px;
     position:relative;
-
 }
 
 .album-cell a{
@@ -20,31 +17,58 @@
     margin-right:auto;
 }
 
-.album-cell .picon.style_1{
-    background-image:url(/images/album_picon_175x133_1.jpg);
+.album-cell .picon.landscape_1{
+    background-image:url(/images/album_picon_landscape_1.png);
 }
 
-.album-cell .picon.style_2{
-    background-image:url(/images/album_picon_175x133_2.jpg);
+.album-cell .picon.landscape_2{
+    background-image:url(/images/album_picon_landscape_2.png);
 }
 
-.album-cell .picon.style_3{
-    background-image:url(/images/album_picon_175x133_3.jpg);
+.album-cell .picon.landscape_3{
+    background-image:url(/images/album_picon_landscape_3.png);
 }
 
-.album-cell .picon .mask{
+.album-cell .picon.portrait_1{
+    background-image:url(/images/album_picon_portrait_1.png);
+}
+
+.album-cell .picon.portrait_2{
+    background-image:url(/images/album_picon_portrait_2.png);
+}
+
+.album-cell .picon.portrait_3{
+    background-image:url(/images/album_picon_portrait_3.png);
+}
+
+.album-cell .picon .landscape_mask{
     position:relative;
     overflow:hidden;
-    top:22px;
+    top:24px;
     left:18px;
     width:175px;
     height:133px;
 }
 
+.album-cell .picon .portrait_mask{
+    position:relative;
+    overflow:hidden;
+    top:24px;
+    left:56px;
+    width:97px;
+    height:133px;
+}
+
+
+.album-cell .picon .mask img{
+    border: none;
+    position:relative;
+}
+
+
 .album-cell .picon .mask img.wide{
     width:175px;
     height:133px;
-    border: none;
 }
 
 
@@ -56,24 +80,10 @@
    left:30px;
    right:30px;
    /*font-family:Helvetica, Arial;*/
-   font-size:1.3em;
+   font-size:13px;
    color: #636363;
+   text-shadow: white 1px 1px 0px;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ul.albums-grid-view {
     /*margin: 60px 0 45px;*/
@@ -83,7 +93,7 @@ ul.albums-grid-view li {
     float: left;
     width: 180px;
     height: 180px;
-    font-size: 1.3em;
+    font-size: 13px;
     font-weight: 400;
     overflow: hidden;
 
@@ -102,8 +112,8 @@ ul.context_menu {
     clear:both;
     position:absolute;
     display: none;
-    z-index:1000;
-    font-size: 1.2em;
+    z-index:0;
+    font-size: 12px;
     text-align: left;
     padding: 0;
 }
@@ -147,21 +157,3 @@ ul.popup ul li:first-child {
 }
 
 /* EOF ACCOUNT BADGE =================*/
-
-
-/*ul#albums li img {*/
-/*border:none;*/
-/*box-shadow: 0px 0px 0px #767676;*/
-/*-webkit-box-shadow: 0px 0px 0px #767676;*/
-/*-moz-box-shadow: 0px 0px 0px #767676;*/
-/*}*/
-
-
-/*ul#albums li:hover img {*/
-/*border:none;*/
-/*box-shadow: 0px 0px 0px #767676;*/
-/*-webkit-box-shadow: 0px 0px 0px #767676;*/
-/*-moz-box-shadow: 0px 0px 0px #767676;*/
-/*}*/
-
-

@@ -6,6 +6,19 @@
 
 zz.init = {
 
+    disable_buttons: function(){
+        $('#header #back-button').addClass('disabled');
+        $('#header #view-buttons').children().addClass('disabled');
+        $('#header #account-badge').addClass('disabled');
+        $('#footer #play-button').addClass('disabled');
+        $('#footer #new-album-button').addClass('disabled');
+        $('#footer #add-photo-button').addClass('disabled');
+        $('#footer #share-button').addClass('disabled');
+        $('#footer #edit-album-button').addClass('disabled');
+        $('#footer #buy-button').addClass('disabled');
+        $('#footer #like-button').addClass('disabled');
+    },
+
     template: function(){
         /* Click Handlers
          ----------------------------------------------------------------------- */
@@ -14,8 +27,12 @@ zz.init = {
         $('#header #home-button').click(function(){ document.location.href = '/' });
 
         $('#header #back-button').click(function(){
+            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
+                return;
+            }
+
             $('#article').animate({left: $('#article').width()},500,'easeOutQuart');
-            document.location.href='/';
+            document.location.href=zz.user_base_url;
         });
 
 
@@ -34,37 +51,58 @@ zz.init = {
 
 
         $('#header #view-buttons #grid-view-button').click(function(){
+            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
+                return;
+            }
+
+
+
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #grid-view-button').addClass('selected');
 
             $('#article').fadeOut(200);
-            document.location.href = '/albums/' + zz.album_id + "/photos";
+            document.location.href = zz.album_base_url + "/photos";
         });
 
         $('#header #view-buttons #picture-view-button').click(function(){
+            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
+                return;
+            }
+
+
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #picture-view-button').addClass('selected');
 
             $('#article').fadeOut(200);
-            document.location.href = '/albums/' + zz.album_id + "/photos/";
+            document.location.href = zz.album_base_url + "/photos/";
         });
 
         $('#header #view-buttons #people-view-button').click(function(){
+            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
+                return;
+            }
+
+
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #people-view-button').addClass('selected');
 
 
             $('#article').fadeOut(200);
-            document.location.href = '/albums/' + zz.album_id + "/people";
+            document.location.href = zz.album_base_url +  "/people";
         });
 
         $('#header #view-buttons #activities-view-button').click(function(){
+            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
+                return;
+            }
+
+
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #activities-view-button').addClass('selected');
 
 
             $('#article').fadeOut(200);
-            document.location.href = '/albums/' + zz.album_id + "/activities";
+            document.location.href = zz.album_base_url +  "/activities";
         });
 
         $('#header #help-button').click(function(){
@@ -78,7 +116,7 @@ zz.init = {
                 $('#sign-in').show();
                 $('#sign-up').hide();
 
-                $('#small-drawer').show().animate({height: '460px', top: '56px'},500, 'linear', function(){
+                $('#small-drawer').show().animate({height: '500px', top: '56px'},500, 'linear', function(){
                     $('#user_session_email').focus();
                 });
                 zz.drawer_state = zz.DRAWER_OPEN;
@@ -88,6 +126,11 @@ zz.init = {
 
 
         $('#footer #play-button').click(function(){
+            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
+                return;
+            }
+
+
             $('<div></div>').css({
                 position: 'absolute',
                 top:0,
@@ -98,7 +141,7 @@ zz.init = {
                 'background-color':'#000000',
                 opacity: 0
             }).appendTo('body').animate({opacity:1},500, function(){
-                document.location.href = '/albums/' + zz.album_id + '/movie'; 
+                document.location.href = zz.album_base_url + '/movie';
             });
 
 
@@ -106,7 +149,12 @@ zz.init = {
         });
 
         $('#footer #new-album-button').click(function(){
-            $('#footer #new-album-button').addClass('selected');
+            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
+                return;
+            }
+
+            zz.init.disable_buttons();
+            $('#footer #new-album-button').removeClass('disabled').addClass('selected');
 
 
             zz.toolbars.init_new_album();
@@ -120,19 +168,34 @@ zz.init = {
 
         //only album contributers can do this
         $('#footer #add-photo-button').click(function(){
-            $('#footer #add-photo-button').addClass('selected');
+            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
+                return;
+            }
+
+            zz.init.disable_buttons();
+            $('#footer #add-photo-button').removeClass('disabled').addClass('selected');
             zz.wizard.open_edit_album_wizard('add')
         });
 
         //any signed in user can do this
         $('#footer #share-button').click(function(){
-            $('#footer #share-button').addClass('selected');
+            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
+                return;
+            }
+
+            zz.init.disable_buttons();
+            $('#footer #share-button').removeClass('disabled').addClass('selected');
             zz.wizard.open_edit_album_wizard('share')
         });
 
         //only album owner can do this
         $('#footer #edit-album-button').click(function(){
-            $('#footer #edit-album-button').addClass('selected');
+            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
+                return;
+            }
+
+            zz.init.disable_buttons();
+            $('#footer #edit-album-button').removeClass('disabled').addClass('selected');
             zz.wizard.open_edit_album_wizard('add')
         });
 
@@ -152,7 +215,7 @@ zz.init = {
             $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
                 $('#sign-in').show();
                 $('#sign-up').hide();
-                $('#small-drawer').animate({height: '460px', top: '56px'}, 500, 'linear', function(){
+                $('#small-drawer').animate({height: '480px', top: '56px'}, 500, 'linear', function(){
                     $('#user_session_email').focus();
                 });
             });
@@ -163,7 +226,7 @@ zz.init = {
             $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
                 $('#sign-up').show();
                 $('#sign-in').hide();
-                $('#small-drawer').animate({height: '460px', top: '56px'}, 500, 'linear', function(){
+                $('#small-drawer').animate({height: '480px', top: '56px'}, 500, 'linear', function(){
                     $('#user_name').focus();
 
                 });
@@ -201,7 +264,9 @@ zz.init = {
 
         zz.init.acct_badge();
         zz.init.like_menu();
-        zz.init.buy_button();
+
+
+
 
         setTimeout(function(){
             zz.init.preload_rollover_images();
@@ -238,15 +303,11 @@ zz.init = {
             view = 'picture';
         }
 
-var start = (new Date().getTime());
-logger.debug("0 before ajax call");
         $.ajax({
             dataType: 'json',
             url: '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
             success: function(json){
 
-
-logger.debug(((new Date()).getTime() - start)  +" after ajax call");
 
 
             var gridElement = $('<div class="photogrid-container"></div>');
@@ -268,7 +329,7 @@ logger.debug(((new Date()).getTime() - start)  +" after ajax call");
                     cellWidth: 230,
                     cellHeight: 230,
                     onClickPhoto: function(index, photo){
-                        document.location.href = "/albums/" + zz.album_id +"/photos/#!" + photo.id;
+                        document.location.href = zz.album_base_url +"/photos/#!" + photo.id;
                     },
                     currentPhotoId: $.param.fragment()
 
@@ -287,14 +348,12 @@ logger.debug(((new Date()).getTime() - start)  +" after ajax call");
                 var currentPhotoId = null;
                 var hash = jQuery.param.fragment();
 
-                logger.debug(hash);
 
 
                 if(hash !== ''){
                     currentPhotoId = hash.slice(1); //remove the '!'
                 }
 
-                logger.debug(currentPhotoId);
 
 
                 var grid = gridElement.zz_photogrid({
@@ -305,7 +364,7 @@ logger.debug(((new Date()).getTime() - start)  +" after ajax call");
                     cellWidth: gridElement.width(),
                     cellHeight: gridElement.height()-20,
                     onClickPhoto: function(index, photo){
-                        document.location.href = "/albums/" + zz.album_id +"/photos/#!" + photo.id;
+                        grid.nextPicture();
                     },
                     singlePictureMode: true,
                     currentPhotoId: currentPhotoId,
@@ -378,9 +437,7 @@ logger.debug(((new Date()).getTime() - start) +" after create grid");
     },
 
 
-//    tray: function(){
-//
-//    },
+
 
     preload_rollover_images : function(){
         //todo: is there a way to query CSS to get all these?
@@ -612,7 +669,7 @@ logger.debug(((new Date()).getTime() - start) +" after create grid");
                         cellWidth: 230,
                         cellHeight: 230,
                          onClickPhoto: function(index, photo){
-                            document.location.href = "/albums/" + zz.album_id +"/photos/#!" + photo.id;
+                            document.location.href = zz.album_base_url +"/photos/#!" + photo.id;
                         },
                         showThumbscroller: false
                     }).data().zz_photogrid;
@@ -648,17 +705,25 @@ logger.debug(((new Date()).getTime() - start) +" after create grid");
 //====================================== Account Badge  ===========================================
     acct_badge: function(){
         zz.toolbars.init_acct_badge_menu();
-        $('#account-badge').click( zz.toolbars.show_acct_badge_menu );
+        $('#account-badge').click( function(){
+            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
+                return;
+            }
+
+            zz.toolbars.show_acct_badge_menu()
+        });
     },
 
 //======================================= Like Menu  ==============================================
     like_menu: function(){
         zz.toolbars.init_like_menu();
-        $('#footer #like-button').click( zz.toolbars.show_like_menu );
-    },
-//======================================   ===============================================
-    buy_button: function(){
+        $('#footer #like-button').click(function(){
+            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
+                return;
+            }
 
+            zz.toolbars.show_like_menu();
+        } );
     }
 
-}; // end zz.init
+};

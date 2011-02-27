@@ -2,15 +2,95 @@
     <%= render :partial => "facebook/user_opengraph_tags" %>
 <% end %>
 
+<%
+    landscape_width = 175
+    landscape_height = 133
+
+    portrait_width = 97
+    portrait_height = 133
+%>
+
 
 <% @albums.each do |album|  %>
     <div class="album-cell">
-        <a href="#" onclick="$('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()},500,'easeOutQuart'); document.location.href='<%=url_for(album)%>';">
-            <div class="picon style_<%=1+rand(3)%>">
-                <div class="mask">
-                    <img class="wide" src="<%= album.cover ? album.cover.thumb_url : '/images/album-no-cover.png' %>">
-                </div>
-            </div>
+        <a href="#" onclick="$('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()},500,'easeOutQuart'); document.location.href='/<%=album.user.username%>/<%=album.friendly_id%>/photos';">
+
+<%
+    if(!album.cover)  #no cover photo
+%>
+          <div class="picon landscape_<%=1+rand(3)%>">
+              <div class="landscape_mask">
+                  <img style="width:<%=landscape_width%>px; height:<%=landscape_height%>px" src="/images/album-no-cover.png">
+              </div>
+          </div>
+<%
+    elsif (album.cover.state != 'ready') #not finished uploading/processing -- just stretch to fit
+%>
+          <div class="picon landscape_<%=1+rand(3)%>">
+              <div class="landscape_mask">
+                  <img style="width:<%=landscape_width%>px; height:<%=landscape_height%>px"  src="<%= album.cover.thumb_url%>">
+              </div>
+          </div>
+<%
+    else
+        picon_aspect = (landscape_width.to_f / landscape_height.to_f)
+        cover_aspect = (album.cover.width.to_f / album.cover.height.to_f)
+
+        if(album.cover.width >= album.cover.height) #landscape
+
+            if(cover_aspect >= picon_aspect) #cover is wider aspect than picon; scale to fit height
+                height = landscape_height
+                width = (height * cover_aspect).to_i
+                top = 0
+                left = ((landscape_width - width) / 2).to_i
+
+            else #cover is narrower apect than picon; scale to fit width
+                width = landscape_width
+                height = (width / cover_aspect).to_i
+                left = 0
+                top = ((landscape_height - height)/ 2).to_i
+            end
+
+
+%>
+          <div class="picon landscape_<%=1+rand(3)%>">
+              <div class="landscape_mask">
+                  <img style="position:relative;width:<%=width%>px; height:<%=height%>px;top:<%=top%>px;left:<%=left%>px;" src="<%= album.cover.thumb_url%>">
+              </div>
+          </div>
+
+
+<%
+        else #portrait
+            if(cover_aspect <= picon_aspect) #cover is narrower aspect than picon; scale to fit height
+                height = landscape_height
+                width = (height * cover_aspect).to_i
+                top = 0
+                left = ((portrait_width - width) / 2).to_i
+
+            else #cover is narrower apect than picon; scale to fit width
+                width = landscape_width
+                height = (width / cover_aspect).to_i
+                left = 0
+                top = ((portrait_height - height)/ 2).to_i
+            end
+
+
+%>
+
+          <div class="picon portrait_<%=1+rand(3)%>">
+              <div class="portrait_mask">
+                  <img style="position:relative;width:<%=width%>px; height:<%=height%>px;top:<%=top%>px;left:<%=left%>px;" src="<%= album.cover.thumb_url%>">
+              </div>
+          </div>
+
+<%
+        end 
+   end
+%>
+
+
+
         </a>
         <div class="album-name"><%= truncate(h(album.name), :length => 100) %></div>
     </div>

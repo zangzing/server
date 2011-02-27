@@ -138,14 +138,22 @@ class PhotosController < ApplicationController
 
   def index
     @album = fetch_album
-    @title = CGI.escapeHTML(@album.name)
-    @photos = @album.photos
 
-    if params['_escaped_fragment_']
-      @photo = Photo.find(params['_escaped_fragment_'])
+    if(!params[:user_id])
+       #hack: need to do this better
+       #force redirect back to /username/albumname/photos
+      redirect_to "/#{@album.user.username}/#{@album.friendly_id}/photos"
+
+    else
+      @title = CGI.escapeHTML(@album.name)
+      @photos = @album.photos
+
+      if params['_escaped_fragment_']
+        @photo = Photo.find(params['_escaped_fragment_'])
+      end
+
+      render 'photos'
     end
-
-    render 'photos'
   end
 
   def show
@@ -236,7 +244,7 @@ class PhotosController < ApplicationController
 private
 
   def fetch_album
-    params[:friendly] ? Album.find(params[:album_id], :scope => params[:user_id]) : Album.find( params[:album_id] )
+    params[:user_id] ? Album.find(params[:album_id], :scope => params[:user_id]) : Album.find( params[:album_id] )
   end
 
   def determine_album_user

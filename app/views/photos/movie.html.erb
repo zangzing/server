@@ -85,7 +85,7 @@
                     $.CustomSimpleFade.init({
 
                         appendToID:			'movie',
-                        source:				'photos_json?<%=@album.photos_last_updated_at.to_i%>',
+                        source:				'<%=album_photos_json_url(@album)%>?<%=@album.photos_last_updated_at.to_i%>',
                         width: $(window).width(),
                         height: $(window).height(),
 

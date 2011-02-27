@@ -10,7 +10,16 @@ class UsersController < ApplicationController
       @user = User.new
   end
 
-  def create    
+  def create
+      # check username if in magic format
+      user_info = params[:user]
+      user_name = user_info[:username]
+      checked_user_name = ReservedUserNames.verify_unlock_name(user_name)
+      # if we get a nil checked_user_name it is because the name was reserved
+      # and the unlock code was wrong.  We will pass the nil on to force an
+      # error.
+      user_info[:username] = checked_user_name
+
       @user = User.new(params[:user])
 
       # Saving without session maintenance to skip
@@ -28,6 +37,11 @@ class UsersController < ApplicationController
             @user.deliver_welcome!
             redirect_back_or_default @user
       else
+         if checked_user_name.nil?
+           # A reserved name that didn't have the right key
+           msg = "You attempted to use a reserved user name without the proper key."
+           @user.set_single_error(:username, msg)
+         end
          render :action => :new
       end
   end

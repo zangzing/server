@@ -101,7 +101,6 @@ class Album < ActiveRecord::Base
 
   #TODO: Make a pass later and clean up all related code to the generation of picons
   # for now just turn off the queueing
-  
   def queue_update_picon
   #   ZZ::Async::UpdatePicon.enqueue( self.id )
   end
@@ -109,6 +108,8 @@ class Album < ActiveRecord::Base
   #
   # Delete the s3 related objects in a deferred fashion
   #
+  #TODO: Make a pass later and clean up all related code to the generation of picons
+  # for now just turn off the queueing
   def queue_delete_from_s3
 #    # if we have already uploaded to s3 go ahead and delete it since
 #    # we are going away.

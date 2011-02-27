@@ -1,5 +1,5 @@
 input.ac_input{
-    font-size: 1.2em;
+    font-size: 12px;
 }
 
 
@@ -38,7 +38,7 @@ input.ac_input{
 	cursor: pointer;
 	display: block;
 	overflow: hidden;
-	font-size: 1.3em;
+	font-size: 13px;
 	text-align: left;
   border: 1px #8c8c8c solid;
   height: 15px;

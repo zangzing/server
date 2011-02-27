@@ -14,6 +14,7 @@ Server::Application.routes.draw do
   end
 
   root :to => 'pages#home'
+  get    '/health_check'            => 'pages#health_check',      :as => :health_check
 
   #users
   get    '/users'                   => 'users#index',             :as => :users
@@ -274,7 +275,12 @@ Server::Application.routes.draw do
 
 
 
-  get    '/:user_id'          => 'albums#index',               :as => :user_albums
+  get    '/:user_id'                           =>   'albums#index',               :as => :user_albums
+  get    '/:user_id/:album_id'                 =>   'photos#index'
+  get    '/:user_id/:album_id/photos'          =>   'photos#index'
+  get    '/:user_id/:album_id/people'          =>   'people#album_index'
+  get    '/:user_id/:album_id/activities'          =>   'activities#album_index'
+  get    '/:user_id/:album_id/movie'          =>   'photos#movie'
 
 
 end

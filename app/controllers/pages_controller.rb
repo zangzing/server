@@ -5,7 +5,7 @@ class PagesController < ApplicationController
   def home
      @title = "Home"
      if current_user
-       redirect_to user_albums_url( current_user.id )
+       redirect_to user_albums_url( current_user.username )
      end
    end
   
@@ -51,5 +51,43 @@ class PagesController < ApplicationController
     @title = "Help"
   end
 
+  # method used by pingdom to check the health of the server
+  def health_check
+    max_total_time = 25.seconds
+    max_time_per_check = 15.seconds
+    z = ZZ::ZZA.new
+
+    curr_check = ""  # need this here since used in rescue
+    status_msg = ""
+
+    # wrap the calls with a timeout check so we don't
+    # end up potentially hanging here - we wrap the entire
+    # set and then each individual test
+    SystemTimer.timeout_after(max_total_time) do
+
+      curr_check = 'Database connectivity check'
+      SystemTimer.timeout_after(max_time_per_check) do
+        # build a query that hits the database but does not return any actual data
+        # to minimize performance impact
+        @photo = Photo.first(:conditions => ["TRUE = FALSE"])
+      end
+
+      curr_check = 'ZZA Server check'
+      if ZZ::ZZA.unreachable? then
+        raise "ZZA server is not reachable."
+      end
+    end
+
+    status_msg << "ZZA Thread state: " +  ZZ::ZZA.sender.thread.status.to_s
+
+    z.track_event("health_check.ok", status_msg)
+    render :status => 200, :text => "OK -- " + status_msg
+
+  rescue Exception => ex
+    msg = "HEALTH_CHECK ERROR during #{curr_check} : " + ex.message
+    z.track_event("health_check.fail", msg)
+    Rails.logger.error msg
+    render :status => 503, :text => msg
+  end
 
 end

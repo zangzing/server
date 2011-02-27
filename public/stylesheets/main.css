@@ -11,12 +11,13 @@ body {
   width: 100%;
   height:100%;
   margin: 0 auto;
-  background-color: #ffffff;
+  background-color: #f9f9fa;
   /*font-family: "Lucida Grande", "Lucida Sans Unicode", "Trebuchet MS", Tahoma, Helvetica, Arial, sans-serif;*/
   /*font-family:  Arial;*/
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 
-  font-size: 62.5%;
+  /*font-size: 62.5%;*/
+  font-size: 12px;
   color: #0a0a0a;
   /* the following fixes that annoying tell-tale js animation flicker */
   /*opacity: 0.99999; */
@@ -31,12 +32,12 @@ body {
 
 h2 {
   /*margin-bottom: 6px;*/
-  font-size: 2.0em;
+  font-size: 20px;
   font-weight: 400;
 }
 
 h3 {
-  font-size: 1.3em;
+  font-size: 13px;
   font-weight: 400;
 }
 
@@ -73,8 +74,8 @@ div#container {
   /*width: 950px;*/
   height: 60px;
   top: -2px;
-  left:30px;
-  right:30px;
+  left:10px;
+  right:10px;
   /*background-image: url("/images/bg-top-bar.png");*/
   /*background-repeat: no-repeat;*/
   z-index: 10;
@@ -113,9 +114,9 @@ div#container {
     position:absolute;
     bottom: 5px;
     width:100%;
-    font-size: 1.2em;
+    font-size: 12px;
     text-align:center;
-    
+    text-shadow: #EEE 1px 1px 0px;
 }
 
 
@@ -128,52 +129,113 @@ div#container {
     cursor: pointer;
 }
 
+
+
+
 #header #back-button{
     position: absolute;
     left: 140px;
     top: 14px;
-
-
 }
+
+
 
 #header #album-info{
     position:relative;
-    top:10px;
+    top:6px;
     width:300px;
+    margin-left:auto;
+    margin-right:auto;
+
 }
 
-#header #album-info h3{
+#header #album-info #album-cover-border{
+    box-shadow: 0px 0px 3px #aaa;
+    -webkit-box-shadow: 0px 0px 3px #aaa;
+    -moz-box-shadow: 0px 0px 3px #aaa;
+    padding-bottom:0px;
+    display:inline-block;
+    margin:0px;
+    position:relative;
+    height:44px;
+}
+
+#header #album-info #album-cover-border img.album-cover{
+    border: #fff solid 2px;
+    margin: 0px;
+}
+
+#header #album-info #album-cover-border img.bottom-shadow{
+    height:5px;
+    position:absolute;
+    left:0px;
+    bottom:-5px;
+}
+
+#header #album-info #album-name-and-owner {
+    display: inline-block;
+    text-align: left;
+    position: relative;
+    top: -6px;
+    padding-left: 5px;
+}
+
+
+#header #album-info #album-name-and-owner h2{
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 24px;
+    color:#2c2c2c
+
+}
+
+
+#header #album-info #album-name-and-owner h3{
     color:#7a7a7a
 }
 
 
 
 
+
+
 #header #user-info{
-    position:relative;
-    top:10px;
-    width:300px;
+    position: relative;
+    top: 10px;
+    width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    height: 40px;
+    display: block;
+    text-align: center;
 }
 
 
 
-#header #user-info div#user-info-picture{
-    float: left;
+#header #user-info #user-info-picture{
     height: 40px;
     width: 40px;
-    vertical-align:bottom;
-    margin-right:15px;
+    vertical-align: bottom;
+    display: inline-block;
 }
 
-#header div#user-info h2{
-    float: left;
-    padding: 8px 0 0 0;
+#header #user-info h2{
+    left: 6px;
+    top: -12px;
+    display: inline-block;
+    position: relative;
+
+    font-size: 16px;
+    font-weight: bold;
+    color: #2C2C2C;
+
 }
 
 
 
 
-
+/*   View Buttons
+ ******************************************/
 #header #view-buttons{
     position:absolute;
     right:150px;
@@ -196,6 +258,13 @@ div#container {
     background: url("/images/btn-header-grid-view.png") no-repeat scroll 0px -64px transparent;
 }
 
+#header #view-buttons #grid-view-button.disabled{
+    background: url("/images/btn-header-grid-view.png") no-repeat scroll 0px 0px transparent;
+    cursor:default;
+    opacity:0.5;
+}
+
+
 
 #header #view-buttons #picture-view-button{
     float:left;
@@ -213,6 +282,14 @@ div#container {
     background: url("/images/btn-header-picture-view.png") no-repeat scroll 0px -64px transparent;
 }
 
+#header #view-buttons #picture-view-button.disabled{
+    background: url("/images/btn-header-picture-view.png") no-repeat scroll 0px 0px transparent;
+    cursor:default;
+    opacity:0.5;
+}
+
+
+
 
 #header #view-buttons #people-view-button{
     float:left;
@@ -228,6 +305,12 @@ div#container {
 
 #header #view-buttons #people-view-button.selected{
     background: url("/images/btn-header-people-view.png") no-repeat scroll 0px -64px transparent;
+}
+
+#header #view-buttons #people-view-button.disabled{
+    background: url("/images/btn-header-people-view.png") no-repeat scroll 0px 0px transparent;
+    cursor:default;
+    opacity:0.5;
 }
 
 
@@ -247,6 +330,13 @@ div#container {
 #header #view-buttons #activities-view-button.selected{
     background: url("/images/btn-header-activitites-view.png") no-repeat scroll 0px -64px transparent;
 }
+
+#header #view-buttons #activities-view-button.disabled{
+    background: url("/images/btn-header-activitites-view.png") no-repeat scroll 0px 0px transparent;
+    cursor:default;
+    opacity:0.5;
+}
+
 
 
 #header #help-button{
@@ -270,6 +360,8 @@ div#container {
 }
 
 
+
+
 #header #sign-in-button{
     position: absolute;
     top: 1px;
@@ -290,6 +382,7 @@ div#container {
 }
 
 
+
 #header #account-badge {
   position:absolute;
   right:0px;
@@ -297,7 +390,20 @@ div#container {
   width:58px;
   height:55px;
   cursor: pointer;
+  background: url("/images/btn-header-account-settings.png") no-repeat scroll 0px 0px transparent;
 }
+
+
+#header #account-badge:hover {
+    background: url("/images/btn-header-account-settings.png") no-repeat scroll 0px -55px transparent;
+
+}
+
+#header #account-badge.selected{
+    background: url("/images/btn-header-account-settings.png") no-repeat scroll 0px -110px transparent;
+}
+
+
 
 #header #account-badge div#account-image {
     position:absolute;
@@ -307,13 +413,19 @@ div#container {
     width: 25px;
 }
 
+#header #account-badge.disabled {
+    cursor:default;
+    opacity:0.5;
+    background: url("/images/btn-header-account-settings.png") no-repeat scroll 0px 0px transparent;
+
+}
+
+
 #header #account-badge img#arrow-image {
     position:absolute;
     top:8px;
     right:4px;
 }
-
-
 
 #acct-dropdown{
     width:110px;
@@ -334,8 +446,8 @@ div#container {
   height: 59px;
   bottom: -2px;
   z-index: 10;
-  left:30px;
-  right:30px;
+  left:10px;
+  right:10px;
 }
 
 
@@ -376,10 +488,13 @@ div#container {
     position:relative;
     top: 38px;
     width:100%;
-    font-size: 1.2em;
-    
+    font-size: 12px;
+    text-shadow: #EEE 1px 1px 0px;
 }
 
+
+/*           New Album Button
+ ***************************************************/
 #footer #new-album-button{
     position:relative;
     float:left;
@@ -398,7 +513,15 @@ div#container {
     background: url("/images/btn-footer-new-album.png") no-repeat scroll 0px -110px transparent;
 }
 
+#footer #new-album-button.disabled{
+    background: url("/images/btn-footer-new-album.png") no-repeat scroll 0px 0px transparent;
+    opacity:0.5;
+    cursor: default;
+}
 
+
+/*           Edit Album Button
+ ***************************************************/
 #footer #edit-album-button{
     position:relative;
     width: 58px;
@@ -409,14 +532,25 @@ div#container {
     cursor: pointer;
 }
 
-#footer #edit-album-button:hover{
+#footer #edit-album-button.enabled:hover{
     background: url("/images/btn-footer-edit-album.png") no-repeat scroll 0px -55px transparent;
 }
 
 #footer #edit-album-button.selected{
     background: url("/images/btn-footer-edit-album.png") no-repeat scroll 0px -110px transparent;
+    cursor: default;
 }
 
+#footer #edit-album-button.disabled{
+    opacity:0.5;
+    cursor: default;
+    background: url("/images/btn-footer-edit-album.png") no-repeat scroll 0px 0px transparent;
+}
+
+
+
+/*           Add Photos Button
+ ***************************************************/
 
 #footer #add-photos-button{
     position:relative;
@@ -436,6 +570,15 @@ div#container {
     background: url("/images/btn-footer-add-photos.png") no-repeat scroll 0px -110px transparent;
 }
 
+#footer #add-photos-button.disabled{
+    opacity:0.5;
+    cursor: default;
+    background: url("/images/btn-footer-add-photos.png") no-repeat scroll 0px 0px transparent;
+}
+
+
+/*           Upload Progress Meter
+ ***************************************************/
 
 #footer #progress-meter{
     display:none;
@@ -449,6 +592,10 @@ div#container {
 }
 
 
+/*           Play Button
+ ***************************************************/
+
+
 #footer #play-button{
     position: relative;
     top: 6px;
@@ -460,11 +607,20 @@ div#container {
     margin-right:auto;
 }
 
-#footer #play-button:hover{
+#footer #play-button.enabled:hover{
     background: url("/images/btn-footer-play.png") no-repeat scroll 0px -44px transparent;
 }
 
+#footer #play-button.disabled{
+    opacity:0.5;
+    cursor: default;
+    background: url("/images/btn-footer-play.png") no-repeat scroll 0px 0px transparent;
+}
 
+
+
+/*           Share Button
+ ***************************************************/
 
 #footer #share-button{
     position: absolute;
@@ -484,9 +640,15 @@ div#container {
     background: url("/images/btn-footer-share.png") no-repeat scroll 0px -110px transparent;
 }
 
+#footer #share-button.disabled{
+    opacity:0.5;
+    cursor: default;
+    background: url("/images/btn-footer-share.png") no-repeat scroll 0px 0px transparent;
+}
 
 
-
+/*           Like Button
+ ***************************************************/
 #footer #like-button{
     position: absolute;
     top: 1px;
@@ -505,6 +667,15 @@ div#container {
     background: url("/images/btn-footer-like.png") no-repeat scroll 0px -110px transparent;
 }
 
+#footer #like-button.disabled{
+    opacity:0.5;
+    cursor: default;
+    background: url("/images/btn-footer-like.png") no-repeat scroll 0px 0px transparent;
+}
+
+
+/*           Like Button
+ ***************************************************/
 
 #footer #buy-button{
     position: absolute;
@@ -524,6 +695,11 @@ div#container {
     background: url("/images/btn-footer-buy.png") no-repeat scroll 0px -110px transparent;
 }
 
+#footer #buy-button.disabled{
+    opacity:0.5;
+    cursor: default;
+    background: url("/images/btn-footer-buy.png") no-repeat scroll 0px 0px transparent;
+}
 
 
 
@@ -533,7 +709,7 @@ div#container {
 
 label,
 .form_label{
- font-size: 120%;
+ /*font-size: 120%;*/
  line-height: 1;
  font-weight: bold;
  text-align: left;   
@@ -541,14 +717,14 @@ label,
 
 .form_label_small{
  text-align: left;
- font-size:  110%;
+ /*font-size:  110%;*/
  line-height: 1;
  font-weight: 400;
  font-style: italic;
 }
 
 .cancel-button{
- font-size:  120%;
+ /*font-size:  120%;*/
  font-weight: 700;   
  color: #646464;
  text-decoration: underline;
@@ -559,7 +735,7 @@ label,
 
 input[type=text], input[type=password], input[type=checkbox] , textarea{
   text-align: left;
-  font-size: 1.8em;
+  font-size: 18px;
   background-color: #fff;
   border: solid 1px #afafaf;
   padding: 5px;
@@ -586,7 +762,7 @@ textarea{
   font-family:Arial;
 
   font-weight: 100;
-  font-size: 1.2em;
+  font-size: 12px;
 }
 
 
@@ -670,7 +846,7 @@ div#small-drawer div.body {
   background-image: url("/images/bg-small-bottom-repeat.png");
   background-repeat: repeat-y;
   width: 453px;
-  height: 446px;
+  height: 486px;
   overflow: hidden;
 }
 
@@ -698,8 +874,8 @@ div#cancel-drawer-btn{
     bottom: 9px;
     right: 12px;
     font-weight: 700;
-    line-height: 1.4em;
-    font-size: 1em;
+    line-height: 14px;
+    font-size: 10px;
     width: 137px;
     background-image:url("/images/btn-delete-mini.png");
     background-repeat: no-repeat;
@@ -775,25 +951,25 @@ div#small-top {
 
 
 div#small-drawer h2 {
-  font-size: 1.9em;
+  font-size: 19px;
   font-weight: 500;
   color: #0a0a0a;
 }
 
 div#small-drawer h3 {
-  font-size: 1.4em;
+  font-size: 14px;
   font-weight: 500;
   color: #0a0a0a;
 }
 
 .flash-box{
     display: block;
-    height: 20px;
-    margin-top: 5px;
+    height: 30px;
+    margin-top: 10px;
     margin-bottom: 5px;
 }
 .flash-notice{
-    font-size: 1.3em;
+    font-size: 13px;
     text-align: center;
     color: green;
     font-weight: 700;
@@ -802,16 +978,15 @@ div#small-drawer h3 {
 
 div#small-drawer p.error-notice, .error-notice {
   display: none;
-  font-size: 1.3em;
+  font-size: 13px;
   text-align: center;
   color: #ff0000;
   font-weight: 700;
-  text-transform: capitalize;
 }
 
-div#sign-up p.error-notice, .error-notice {
-  margin-top: 10px;
-}
+/*div#sign-up p.error-notice, .error-notice {*/
+  /*margin-top: 10px;*/
+/*}*/
 
 div#small-drawer dl {
   width: 380px;
@@ -829,7 +1004,7 @@ div#small-drawer dl dd {
 }
 
 div#small-drawer dl dt {
-  font-size: 1.2em;
+  font-size: 12px;
   font-weight: 700;
   margin-bottom: 5px;
 }
@@ -849,7 +1024,7 @@ div#small-drawer dl input[type=text], div#small-drawer dl input[type=password] {
 
 div#small-drawer dl dd label.error {
   color: pink;
-  font-size: 1.2em;
+  font-size: 12px;
   font-weight: 700;
   text-align: right;
   position: absolute;
@@ -897,7 +1072,7 @@ div#small-drawer dl dd.full-t {
 
 a.hyperlink-button{
     text-decoration:underline;
-    font-size:1.1em;
+    font-size:11px;
     font-weight:200;
     cursor:pointer;
     color: #000000
@@ -918,7 +1093,7 @@ a.back-button{
     color:#ffffff;
     display: block;
     float: left;
-    font-size: 1.2em;
+    font-size: 12px;
     height: 30px;
     margin-right: 6px;
     padding-right: 8px; /* sliding doors padding */
@@ -952,6 +1127,18 @@ a.back-button:active span{
     background: transparent url('/images/btn-back.png') no-repeat 0 -60px; /* todo: need rollover image*/
 }
 
+a.back-button.disabled{
+    cursor: default;
+    opacity:0.5;
+    background: url("/images/btn-back-endcap.png") no-repeat scroll top right;
+}
+
+a.back-button.disabled span{
+    background: transparent url('/images/btn-back.png') no-repeat 0 -30px;
+    cursor: default;
+}
+
+
 
 /*  next button
  *************************************************************/
@@ -960,7 +1147,7 @@ a.next-button{
     color:#ffffff;
     display: block;
     float: left;
-    font-size: 1.2em;
+    font-size: 12px;
     height: 30px;
     margin-right: 6px;
     padding-right: 15px; /* sliding doors padding */
@@ -1006,7 +1193,7 @@ a.green-button{
     padding-right: 8px; /* sliding doors padding */
     cursor: pointer;
     color:#ffffff;
-    font-size: 1.2em;
+    font-size: 12px;
     text-decoration: none;
 }
 
@@ -1043,7 +1230,7 @@ a.black-button{
     color:#ffffff;
     display: block;
     float: left;
-    font-size: 1.2em;
+    font-size: 12px;
     height: 30px;
     margin-right: 6px;
     padding-right: 8px; /* sliding doors padding */
@@ -1085,7 +1272,7 @@ a.green-add-button{
     color:#ffffff;
     display: block;
     /*float: left;*/
-    font-size: 1.2em;
+    font-size: 12px;
     height: 30px;
     margin-right: 6px;
     padding-right: 8px; /* sliding doors padding */

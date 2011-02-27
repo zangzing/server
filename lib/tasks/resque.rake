@@ -1,6 +1,8 @@
 require "require_all"
 require 'resque/tasks'
 require 'resque_scheduler/tasks'
+require 'zz/zza'
+require 'config/initializers/zangzing_config'
 
 task "resque:setup" => :environment do
   # determine if should run forked or not - resque using the global $TESTING to indicate non forked
@@ -18,4 +20,8 @@ task "resque:setup" => :environment do
     puts "Done pulling in dependencies"
   end
    #put all resque worker configuration parameters here
+
+  # init ZZA with resque specific ids
+  ZZ::ZZA.default_zza_id = ZangZingConfig.zze_config[:resque_zza_id]
+
 end

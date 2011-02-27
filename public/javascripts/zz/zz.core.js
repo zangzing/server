@@ -33,16 +33,16 @@ var zz = {
         }
 
         // fade out the grid
-        $('#article').animate({ opacity: opacity }, time/2 ).html('');
+        $('#article').empty();
 
-
+        
 
         // pull out the drawer
         $('div#drawer').show().animate({ height: zz.drawer_height + 'px', top: '52px' }, time );
-        //$('div#drawer').css( { height: zz.drawer_height + 'px', top: '50px' } );
-        //$('div#drawer').slideDown( time );
         $('div#drawer-content').animate({ height: (zz.drawer_height - 14) + 'px'}, time );
+
         zz.wizard.resize_scroll_body();
+
 
         zz.drawer_state = zz.DRAWER_OPEN; // remember position of the drawer in
 
@@ -57,8 +57,8 @@ var zz = {
         if(typeof(size) != 'undefined' && size < zz.drawer_height )  zz.drawer_height = size;
         
         $('div#drawer').animate({ height: zz.drawer_height + 'px', top: '52px' }, time );
-        $('div#drawer-content').animate({ height: (zz.drawer_height - 14) + 'px'}, time );
-        zz.wizard.resize_scroll_body()
+        $('div#drawer-content').animate({ height: (zz.drawer_height - 0) + 'px'}, time );
+//        zz.wizard.resize_scroll_body()
 
     },
 

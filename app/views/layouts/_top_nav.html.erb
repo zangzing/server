@@ -9,25 +9,83 @@
       <a id="back-button" class="back-button"><span>All Albums</span></a>
   <% end %>
 
+<<<<<<< HEAD
   <div id="album-info" style="display:<%= @album ? 'inline-block' : 'none' %>">
     <h2 id="album-header-title"><%= truncate((@album ? @album.name : ''), :length => 30) %></h2>
     <h3><%= @album ? 'by ' + @album.user.username : '' %></h3>
   </div>
 
-  <div id="user-info" style="display:<%= @user && !@user.changed? ? 'inline-block' : 'none' %>">
+=======
 
-        <div class="profile-picture" id="user-info-picture" style="background-image:   url('<%=( @user ? @user.profile_photo_url : '' )%>');"></div>
-    <h2><%= @user ? @user.username : '' %></h2>
-  </div>
 
 
   <% if @album %>
-  <ul id="view-buttons">
-      <li id="grid-view-button"></li>
-      <li id="picture-view-button"></li>
-      <li id="people-view-button"></li>
-      <li id="activities-view-button"></li>
-  </ul>
+      <div id="album-info">
+<%
+    if(!@album.cover)  #no cover photo
+%>
+        <div id="album-cover-border">
+              <img class="album-cover" style="width:60px; height:40px" src="/images/album-no-cover.png"/>
+              <img class="bottom-shadow" style="width:64px;" src="/images/photo/bottom-full.png"/>
+        </div>
+<%
+    elsif (@album.cover.state != 'ready') #not finished uploading/processing -- just stretch to fit
+%>
+        <div id="album-cover-border">
+              <img class="album-cover" style="width:60px; height:40px" src="<%= @album.cover.thumb_url%>"/>
+              <img class="bottom-shadow" style="width:64px;"  src="/images/photo/bottom-full.png"/>
+        </div>
+
+<%
+    else #scale to 40px tall
+        height = 40
+        width = @album.cover.width * (height.to_f / @album.cover.height.to_f)
+%>
+        <div id="album-cover-border">
+              <img class="album-cover" style="width:<%=width%>px; height:<%=height%>px" src="<%= @album.cover.thumb_url%>"/>
+              <img class="bottom-shadow" style="width:<%=width+4%>px;" class="bottom-shadow" src="/images/photo/bottom-full.png"/>
+        </div>
+
+<%
+    end
+%>
+
+          <div id='album-name-and-owner'>
+                <h2 id="album-header-title"><%= truncate((@album.name), :length => 30) %></h2>
+                <h3><%="by #{@album.user.first_name} #{@album.user.last_name}"%></h3>
+          </div>
+      </div>
+
+<% else #this is for when you create an album from the user's home page %>
+
+     <div id="album-info" style="display:none">
+       <div id="album-cover-border">
+             <img class="album-cover" style="width:60px; height:40px" src="/images/album-no-cover.png"/>
+             <img class="bottom-shadow" style="width:64px;" src="/images/photo/bottom-full.png"/>
+       </div>
+
+        <div id='album-name-and-owner'>
+              <h2 id="album-header-title"></h2>
+              <h3></h3>
+        </div>
+    </div>
+<% end %>
+
+<% if @user %>
+>>>>>>> d20ff9e03218eae02e7ab724c08fa27eadd6843e
+  <div id="user-info" style="display:<%= @user && !@user.changed? ? 'inline-block' : 'none' %>">
+        <div class="profile-picture" id="user-info-picture" style="background-image:   url('<%=( @user ? @user.profile_photo_url : '' )%>');"></div>
+        <h2><%="#{@user.first_name} #{@user.last_name}"%></h2>
+  </div>
+<% end %>
+
+  <% if @album %>
+      <ul id="view-buttons">
+          <li id="grid-view-button"></li>
+          <li id="picture-view-button"></li>
+          <li id="people-view-button"></li>
+          <li id="activities-view-button"></li>
+      </ul>
   <% end %>
 
   <div id="help-button"><div class="header-button-label">Help</div></div>

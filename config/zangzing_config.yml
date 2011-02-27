@@ -1,0 +1,41 @@
+#
+# This is the dumping ground for generic zz environment related stuff
+# I got tired of creating new .yml files for every little switch so
+# we can put the bulk of them here from now on.
+#
+
+
+common: &common
+  reserved_names: false
+  resque_zza_id: "dev.photos/svr"
+
+development:
+  <<: *common
+  resque_zza_id: "dev.photos/svr"
+
+perftest:
+  <<: *common
+  resque_zza_id: "perftest.photos/svr"
+
+test:
+  <<: *common
+  resque_zza_id: "dev.photos/svr"
+
+eydevelopment:
+  <<: *common
+  reserved_names: true
+  resque_zza_id: "photos/svr"
+
+eysandbox:
+  <<: *common
+  reserved_names: true
+  resque_zza_id: "staging.photos/svr"
+
+
+eytest:
+  <<: *common
+
+
+
+production:
+  <<: *common

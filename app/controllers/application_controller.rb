@@ -7,6 +7,12 @@
 
 class ApplicationController < ActionController::Base
 
+  # give the zza worker a chance to restart if we are running
+  # as a forked process because it will have been killed in that
+  # case.  Later when we move to Amazon we can control the Unicorn
+  # config file directly and do it only once from within there
+  ZZ::ZZA.after_fork_check
+
   # Filters added to this controller apply to all controllers in the application.
   # Public Methods added will be available for all controllers.
   # helper_method methods will also be available in all views
@@ -142,6 +148,7 @@ class ApplicationController < ActionController::Base
                      'oauth#test_session',
                      'connector/local_contacts#import',
                      'sendgrid#import_fast',
+                     'pages#health_check',
                      'agents#check',
                      'agents#info',
                      'agents#index']

@@ -63,27 +63,13 @@
 
 
 .photo-border{
-    /*box-shadow: 0px 0px 3px #e6e6e6;*/
-    /*-webkit-box-shadow: 0px 0px 3px #e6e6e6;*/
-    /*-moz-box-shadow: 0px 0px 3px #e6e6e6;*/
-    /*-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=135, Color='#767676')";*/
-    /*position:absolute;*/
-    /*cursor: pointer;*/
-    /*padding:0px;*/
-    /*border:1px solid #d6d6d6*/
-
+    cursor: pointer;
     box-shadow: 0px 0px 3px #aaa;
     -webkit-box-shadow: 0px 0px 3px #aaa;
     -moz-box-shadow: 0px 0px 3px #aaa;
-    /*border-bottom:0px;*/
     padding-bottom:0px;
     display:inline-block;
     margin:0px;
-    /*border: 1px #ccc solid;*/
-
-    /*margin-left:auto;*/
-    /*margin-right:auto;*/
-
 }
 
 .ua-ie .photo-border{
@@ -191,43 +177,73 @@
     bottom:5px;
     left:5px;
     right:5px;
-    /*background-image: url("/images/photo/bg-blk-75.png");*/
     display:block;
     padding:5px;
     height:25px;
-    /*font-size:1.3em;*/
-    /*font-size:14px;*/
-    /*font-size:12px;*/
-    /*color: #0A0A0A;*/
-    /*color: #7A7A7A;*/
-    overflow: hidden;
-    /*white-space: nowrap;*/
-    /*text-overflow: ellipsis;*/
-    /*font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
-    /*font-family:Verdana;*/
     font-size:13px;
     color: #636363;
     padding-left:10px;
     padding-right:10px;
-
-
+    text-shadow: white 1px 1px 0px;
 }
 
-/*.photo-border:hover .photo-caption{*/
-    /*display:block;*/
-/*}*/
+.photo-caption .edit-caption-border{
+    position:absolute;
+    top:0px;
+    left:0px;
+    height:30px;
+    width:190px;
+    background-image:url(/images/edit-caption-border.png);
+    background-repeat:no-repeat;
+
+}
 
 .photo-caption input{
     position:absolute;
-    left:0px;
-    right:0px;
-    top:2px;
-    font-size:13px;
-    padding-top:2px;
-    padding-bottom:2px;
-    padding-left:10px;
-    padding-right:10px;
-    /*height:25px;*/
-    /*top:2px;*/
+    top:5px;
+    left:3px;
+    border:none;
+    outline:none;
+    height:12px;
+    width:170px;
+    padding-left:5px;
+    padding-right:5px;
+    padding-top:4px;
+    font-size:12px;
+    color: #636363;
 
 }
+
+.ua-ie .photo-caption input{
+    padding-top:4px;
+    padding-right:10px;
+
+}
+
+.photo-caption input:focus{
+    border:none;
+    outline:none;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    filter: none;
+
+
+}
+
+.photo-caption .caption-ok-button{
+    background-image:url(/images/edit-caption-ok-button.png);
+    background-repeat:no-repeat;
+    background-position:right top;
+    width:30px;
+    height:28px;
+    display:inline-block;
+    margin: 0;
+    position:absolute;
+    right:-29px;
+    top:0px;
+    cursor:pointer;
+}
+
+
+

@@ -50,12 +50,15 @@ zz.wizard = {
                 zz.wizard.resize_scroll_body();
             });
 
-        } else if (obj.steps[id].type == 'full' && zz.drawer_state != zz.DRAWER_OPEN) {
+        } else if (obj.steps[id].type == 'full' && zz.drawer_state == zz.DRAWER_PARTIAL) {
             zz.wizard.build_nav(obj, id);
 
             obj.steps[id].init(function(){
                 zz.wizard.resize_scroll_body();
                 zz.open_drawer(obj.time);
+                setTimeout(function(){ //hack: should use callback
+                    $('#tab-content').fadeIn('fast');
+                }, obj.time);
             });
 
         } else if (obj.steps[id].type == 'full' && zz.drawer_state == zz.DRAWER_OPEN) {

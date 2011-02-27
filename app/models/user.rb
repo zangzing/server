@@ -40,7 +40,7 @@ class User < ActiveRecord::Base
 
   validates_presence_of :name, :unless => :automatic?
   validates_presence_of :username, :unless => :automatic?
-  validates_format_of :username, :with => /^[a-z0-9]+$/, :on => :create, :message => 'Should contaion only lowercase alphanumeric characters'
+  validates_format_of :username, :with => /^[a-z0-9]+$/, :on => :create, :message => 'Should contain only lowercase alphanumeric characters'
   validates_uniqueness_of :username, :message => "Has already been taken", :unless => :automatic?
   validates_presence_of :email
   validates_length_of  :password, :within => 6..40, :if => :require_password?, :message => "must be between 6 and 40 characters long"
@@ -78,6 +78,13 @@ class User < ActiveRecord::Base
                            :password => UUIDTools::UUID.random_create.to_s);
     end
     return user
+  end
+
+  # overrides any existing error messages with the
+  # one passed.
+  def set_single_error(field, msg)
+    @errors = ActiveModel::Errors.new(self)
+    self.errors.add(field, msg)
   end
 
   def has_valid_identity?( service_name )
