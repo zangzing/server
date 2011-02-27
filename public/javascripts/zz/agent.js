@@ -13,15 +13,15 @@ var agent = {
     isAvailable: function(callback) {
 
         var onSuccess = function() {
-            callback(true)
+            callback(true);
         }
 
         var onError = function() {
-            callback(false)
+            callback(false);
         }
 
 
-        this.callAgent("/ping", onSuccess, onError)
+        this.callAgent("/ping", onSuccess, onError);
 
     },
 
@@ -91,21 +91,21 @@ var agent = {
         var url;
         var user_session = $.cookie("user_credentials");
         if (path.indexOf('?') == -1) {
-            url = "http://localhost:" + this.port + path + "?session=" + user_session + '&user_id=' + zz.current_user_id +"&callback=?"
+            url = "http://localhost:" + this.port + path + "?session=" + user_session + '&user_id=' + zz.current_user_id +"&callback=?";
         }
         else {
-            url = "http://localhost:" + this.port + path + "&session=" + user_session + '&user_id=' + zz.current_user_id +"&callback=?"
+            url = "http://localhost:" + this.port + path + "&session=" + user_session + '&user_id=' + zz.current_user_id +"&callback=?";
         }
 
 
         //this is called when the http call succeeds
         var successHandler = function(response){
             if(response.headers.status == 200){
-                onSuccess(response.body)
+                onSuccess(response.body);
             }
             else{
                 //this is an error wrapped in JSON
-                errorHandler(response)
+                errorHandler(response);
             }
 
         }
@@ -114,14 +114,14 @@ var agent = {
         var errorHandler = function(response){
             if(response.headers){
                 //this error is wrapped in JSON
-                logger.debug("error calling agent: " + response.headers.status + ":" + response.headers.error_message + " url:  " + url )
+                logger.debug("error calling agent: " + response.headers.status + ":" + response.headers.error_message + " url:  " + url );
             }
             else{
-                logger.debug("no response or invalid response from agent. url: " + url )
+                logger.debug("no response or invalid response from agent. url: " + url );
             }
 
             if(typeof(onError) != 'undefined'){
-                onError()
+                onError();
             }
         }
 
@@ -131,4 +131,4 @@ var agent = {
             error: errorHandler
         });
     }
-}
+};
