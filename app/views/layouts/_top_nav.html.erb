@@ -9,13 +9,6 @@
       <a id="back-button" class="back-button"><span>All Albums</span></a>
   <% end %>
 
-<<<<<<< HEAD
-  <div id="album-info" style="display:<%= @album ? 'inline-block' : 'none' %>">
-    <h2 id="album-header-title"><%= truncate((@album ? @album.name : ''), :length => 30) %></h2>
-    <h3><%= @album ? 'by ' + @album.user.username : '' %></h3>
-  </div>
-
-=======
 
 
 
@@ -72,7 +65,6 @@
 <% end %>
 
 <% if @user %>
->>>>>>> d20ff9e03218eae02e7ab724c08fa27eadd6843e
   <div id="user-info" style="display:<%= @user && !@user.changed? ? 'inline-block' : 'none' %>">
         <div class="profile-picture" id="user-info-picture" style="background-image:   url('<%=( @user ? @user.profile_photo_url : '' )%>');"></div>
         <h2><%="#{@user.first_name} #{@user.last_name}"%></h2>

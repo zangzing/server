@@ -79,14 +79,6 @@ zz.toolbars = {
             });
         }
     },
-
-<<<<<<< HEAD
-    show_like_menu: function(event){
-          //get the position of the clicked element and display popup above center of it  
-          var pos =  $(this).offset();
-          var width =  $(this).width();
-          var height=  $(this).height();
-=======
     show_like_menu: function(){
         //toggle visibility
         if( $('#like-popup').is( ":visible" ) ){
@@ -96,8 +88,7 @@ zz.toolbars = {
           var pos =  $('#footer #like-button').offset();
           var width =  $('#footer #like-button').width();
           var height=  $('#footer #like-button').width();
->>>>>>> d20ff9e03218eae02e7ab724c08fa27eadd6843e
-          $("#like-popup").css( { "left":  pos.left - (width/2)+"px", "bottom": height+ "px" } );  
+          $("#like-popup").css( { "left":  pos.left - (width/2)+"px", "bottom": height+ "px" } );
           $('#like-popup').slideToggle( 'fast' );// Show = slide down
     },
 
