@@ -380,7 +380,6 @@ zz.init = {
 
 
 
-logger.debug(((new Date()).getTime() - start) +" after create grid");
          like.init();
 
                 //setup upload progress smeter
