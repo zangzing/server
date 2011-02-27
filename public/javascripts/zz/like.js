@@ -38,7 +38,7 @@ var like = {
     },
 
     photo: function(photo_id){
-         like.toggle_in_server( '/photos/'+photo_id+'/like', photo_id)
+         like.toggle_in_server( '/photos/'+photo_id+'/like', photo_id);
     },
 
     toggle_in_server: function( url, subject_id ){
@@ -56,11 +56,11 @@ var like = {
         if( like.loaded && subject_id  in like.hash){  //If the hash is loaded and  subject is in our hash
             if( like.hash[subject_id]['user'] == true ){
                 // The user likes the subject, toggle it off and decrease counter
-                like.hash[subject_id]['user'] = false
+                like.hash[subject_id]['user'] = false;
                 like.hash[subject_id]['count'] -= 1;
             }else{
                 // The user does not like the subject, toggle it on and increase counter
-                like.hash[subject_id]['user'] = true
+                like.hash[subject_id]['user'] = true;
                 like.hash[subject_id]['count'] += 1;
             }
             like.refresh_tag( subject_id );
@@ -70,7 +70,7 @@ var like = {
 
     draw_tags: function(){
         $('.zzlike').each( function(index, zzliketag){
-            var tag = $(zzliketag)
+            var tag = $(zzliketag);
             var id = tag.attr('data-zzid');
 
             if( tag.attr('data-zzstyle') =="menu" ){
