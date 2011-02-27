@@ -1123,7 +1123,6 @@ a.green-add-button:active span{
 a.newgreen-button{
     border:     0;
     margin:     0;
-    padding:    0;
     cursor:     pointer;
     text-align: center;
     font-size:  14px;
@@ -1153,7 +1152,6 @@ a.newgreen-button:active span{ background: url('/images/btn-green.png') no-repea
 a.newblack-button{
     border:     0;
     margin:     0;
-    padding:    0;
     cursor:     pointer;
     text-align: center;
     font-size:  14px;

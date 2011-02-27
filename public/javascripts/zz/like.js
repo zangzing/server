@@ -10,11 +10,11 @@ var like = {
     loaded: false, // True when the hash is loaded for the logged in user
 
     init: function(){
-        //obtain the array of wanted subjects from the zzlike tags with subj_id attributes
+        //obtain the array of wanted subjects from the divs of class zzlike  with data-zzid attributes
         var wanted_subjects={};
-        $('zzlike').each( function(index, zzliketag){
-            id = $(zzliketag).attr('subj_id');
-            type = $(zzliketag).attr('subj_type');
+        $('.zzlike').each( function(index, zzliketag){
+            id = $(zzliketag).attr('data-zzid');
+            type = $(zzliketag).attr('data-zztype');
             wanted_subjects[id]=type;
         });
 
@@ -66,24 +66,26 @@ var like = {
             like.refresh_tag( subject_id );
         }
     },
-    draw_tags: function(){
-        $('zzlike').each( function(index, zzliketag){
-            var tag = $(zzliketag)
-            var id = tag.attr('subj_id');
 
-            if( tag.attr('like_style') =="menu" ){
+
+    draw_tags: function(){
+        $('.zzlike').each( function(index, zzliketag){
+            var tag = $(zzliketag)
+            var id = tag.attr('data-zzid');
+
+            if( tag.attr('data-zzstyle') =="menu" ){
                 tag.find("span.like-count").html( '('+like.hash[id]['count'].toString()+')' );
             }else{
-                counter = $('<span >'+like.hash[id]['count']+'</span>');
-                div = $('<div ></div>');
-
+                button  = $( ' <div class="zzlike-button">Like</div>');
+                icon    = $( '<span></span>' )
+                counter = $( '<div class="zzlike-count">'+like.hash[id]['count']+'</div>');
                 if( like.hash[id]['user'] ){
-                    img = $( '<img   src="/images/icon-like-on.png">');
+                    $(icon).addClass( 'zzlike-thumbup' );
                 } else {
-                    img = $('<img  src="/images/icon-like-off.png">');
+                    $(icon).addClass( 'zzlike-vader' );
                 }
-                div = $('<div ></div>').append( img ).append( counter );
-                tag.html(div);
+                $(button).prepend( icon );
+                tag.append( button ).append( counter );
             }
 
             switch(like.hash[id]['type']){
@@ -96,16 +98,16 @@ var like = {
 
     refresh_tag: function(id){
         if( like.hash[id]){
-            $('zzlike[subj_id="'+id+'"]').each( function(){
-                if( $(this).attr('like_style') =="menu" ){
+            $('.zzlike[data-zzid="'+id+'"]').each( function(){
+                if( $(this).attr('data-zzstyle') =="menu" ){
                     $(this).find('span.like-count').html( '('+like.hash[id]['count'].toString()+')' );
                 } else {
                     if( like.hash[id]['user'] ){
-                        $(this).find('div img').attr('src','/images/icon-like-on.png' );
+                        $(this).find('span.zzlike-vader').addClass('zzlike-thumbup').removeClass( 'zzlike-vader' );
                     } else {
-                        $(this).find('div img').attr('src','/images/icon-like-off.png' );
+                        $(this).find('span.zzlike-thumbup').addClass('zzlike-vader').removeClass( 'zzlike-thumbup' );
                     }
-                    $(this).find('div span').html(like.hash[id]['count']);
+                    $(this).find('div.zzlike-count').html(like.hash[id]['count']);
                 }
             });
 
@@ -139,8 +141,8 @@ $.widget("ui.zz_like_menu", {
             //set classes to hide it make it s like-menu
             menu.addClass( 'like-menu');
             menu.css('display','none');
-            var items = $(menu).find('zzlike');
-            items.attr('like_style', 'menu');
+            var items = $(menu).find('.zzlike');
+            items.attr('data-zzstyle', 'menu');
 
             //Choose the class for the right size background
             switch (items.length ){
@@ -150,10 +152,10 @@ $.widget("ui.zz_like_menu", {
             }
             //Add the right title and space for the counter
             $.each(items, function(){
-                switch( $(this).attr('subj_type') ){
-                    case 'user':    $(this).append( '<li class="like-user">Person <span class="like-count"></span></li>'); break;
-                    case 'album':   $(this).append( '<li class="like-album">Album <span class="like-count"></span></li>'); break;
-                    case 'photo':   $(this).append( '<li class="like-photo">Photo <span class="like-count"></span></li>'); break;
+                switch( $(this).attr('data-zztype') ){
+                    case 'user':    $(this).addClass( 'like-user').html('Person <span class="like-count"></span>'); break;
+                    case 'album':   $(this).addClass( 'like-album').html('Album <span class="like-count"></span>'); break;
+                    case 'photo':   $(this).addClass( 'like-photo').html('Photo <span class="like-count"></span>'); break;
                 }
                 //When an item is clicked, close the menu
                 $(this).click( function(){ $(menu).slideUp('fast'); } );
