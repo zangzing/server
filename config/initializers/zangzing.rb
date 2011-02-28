@@ -1,3 +1,4 @@
+require 'lib/zz/mailchimp'
 
 silence_warnings do #To avoid warning of overwriting constant
   zconfig = Server::Application.config
