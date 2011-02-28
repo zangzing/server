@@ -21,13 +21,24 @@
               <img class="album-cover" style="width:60px; height:40px" src="/images/album-no-cover.png"/>
               <img class="bottom-shadow" style="width:64px;" src="/images/photo/bottom-full.png"/>
         </div>
+
+
 <%
     elsif (@album.cover.state != 'ready') #not finished uploading/processing -- just stretch to fit
 %>
         <div id="album-cover-border">
-              <img class="album-cover" style="width:60px; height:40px" src="<%= @album.cover.thumb_url%>"/>
+              <img class="album-cover" style="width:60px; height:40px" src="/images/album-no-cover.png"/>
               <img class="bottom-shadow" style="width:64px;"  src="/images/photo/bottom-full.png"/>
         </div>
+
+        <% content_for :page_javascript do %>
+            <script type="text/javascript">
+                $(document).ready(function(){
+                    $('img.album-cover').attr('src', agent.checkAddCredentialsToUrl('<%=@album.cover.thumb_url%>'));
+                })
+            </script>
+        <% end %>
+
 
 <%
     else #scale to 40px tall
