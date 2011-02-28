@@ -1,19 +1,21 @@
 module ZZ
   module MailChimp
     class Template
-      @@templates
 
       def initialize( template_name )
-        if @@templates.nil? 
-          tmp_temps = ZZ::MailChimp.get_templates
-            raise Error, "No user templates found"  if tmp_temps.nil? || tmp_temps.length <= 0
-          tmp_temps.each do | temp |
-            @@templates[temp['title']]=temp
-          end
-        end
-        
+        @@templates ||= load_templates
         @template = @@templates[template_name]
         raise Error, "No user template named #{template_name} found" if @template.nil?
+      end
+
+      def load_templates
+        templates = {}
+        tmp_temps = ZZ::MailChimp.get_templates
+          raise Error, "No user templates found"  if tmp_temps.nil? || tmp_temps.length <= 0
+        tmp_temps.each do | temp |
+          templates[temp['title']]=temp
+        end
+        templates
       end
 
       def mail_merge( merge_vars )
