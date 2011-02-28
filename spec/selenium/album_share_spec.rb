@@ -2,7 +2,7 @@ require 'spec/selenium/ui_model'
 require 'spec/selenium/uimodel_helper'
 require 'spec/selenium/connector_shared'
 
-describe "contributors test" do
+describe "Album share test" do
   include UimodelHelper
 
   include ConnectorShared
@@ -39,12 +39,16 @@ describe "contributors test" do
     ui.wizard.album_share_tab.send_message
   end
   
+# Sharing by email is covered by email_spec.rb
+
+=begin
   it "click share by email" do
 	ui.wizard.album_share_tab.click_share_by_email
   end
   
   it "Send email to igor@test.zangzing.com" do
-	ui.wizard.album_share_tab.type_emails("igor@test.zangzing.com")
+    ui.wizard.album_share_tab.type_emails("igor@test.zangzing.com")
   end
+=end
 
 end

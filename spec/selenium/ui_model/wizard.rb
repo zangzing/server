@@ -80,6 +80,10 @@ module UiModel
         @browser.wait_for_ajax
       end
 
+      def agent_not_installed?
+        @browser.element?('css=#downloadzz-btn')
+      end
+
       def add_photo
         @session.wait_for "css=#filechooser .photo"
         @browser.click 'css=.filechooser.photo figure'
@@ -205,10 +209,10 @@ module UiModel
       end
 
       # Only on Windows and OSX #########################################################################################
-      #def import_outlook_contacts
-      #  @browser.click "css=img#local-sync.link"
-      #  sleep 5
-      #end
+      def import_outlook_contacts
+        @browser.click "css=img#local-sync.link"
+        sleep 5
+      end
 
 
       def imported_gmail?
