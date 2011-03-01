@@ -4,8 +4,12 @@
  * Copyright 2011, ZangZing LLC. All rights reserved.
  */
 
-<script type="text/javascript" src="http://zza.zangzing.com/zza.js"></script>
 
+var zzajs = document.createElement('script');
+zzajs.setAttribute("type","text/javascript");
+zzajs.setAttribute("src", "http://zza.zangzing.com/zza.js");
+if (typeof zzajs != "undefined")
+  document.getElementsByTagName("head")[0].appendChild(zzajs);
 
 // google analytics
 var _gaq = _gaq || [];
