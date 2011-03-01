@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Language" Content="en">
 
     <meta charset="utf-8">
-    <meta name="copyright" content="Copyright 2010, ZangZing, Inc. All Rights Reserved." />
+    <meta name="copyright" content="Copyright 2011, ZangZing, LLC. All Rights Reserved." />
     <meta name="DC.title" content="ZangZing" />
     <meta name="title" content="ZangZing" />
 <%  if @meta_description -%>
@@ -34,6 +34,13 @@
     <% yield :page_stylesheet %>
 <%   # Add in template based scripts that need to be in the head by defining this in the template -%>
     <%= yield :page_head %>
+
+	<script>
+		var zza_config_GOOGLE_ANALYTICS_TOKEN = '<%=ZZA_CONFIG[:GOOGLE_ANALYTICS_TOKEN]%>';
+		var zza_config_MIXPANEL_TOKEN = '<%=ZZA_CONFIG[:MIXPANEL_TOKEN]%>';
+		var zza_config_ZZA_ID = '<%=ZZA_CONFIG[:ZZA_ID]%>';
+	</script>
+
   </head>
   <body id="<%= controller.controller_name + '-' + controller.action_name %>" class="<%= controller.controller_name %>">
     
