@@ -54,7 +54,7 @@ var ZZA = {
 
 			// google
             _gaq.push(['_trackPageview', '/event/' + event]);
-            _gaq.push(['_trackEvent', 'potd', event,])
+            _gaq.push(['_trackEvent', 'potd', event])
 
             if(typeof(console) != 'undefined'){
                 console.log('ZZA event: ' + event)
@@ -71,7 +71,7 @@ var ZZA = {
             query_string = query_string.substring(0,query_string.length-1); //remove trailing '&'
 
             _gaq.push(['_trackPageview', '/event/' + event + query_string]);
-            _gaq.push(['_trackEvent', 'potd', event,])
+            _gaq.push(['_trackEvent', 'potd', event])
 
             if(typeof(console) != 'undefined'){
                 console.log('ZZA event: ' + event)
