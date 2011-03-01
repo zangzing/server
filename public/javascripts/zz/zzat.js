@@ -5,11 +5,13 @@
  */
 
 
+/*
 var zjs = document.createElement('script');
 zjs.setAttribute("type","text/javascript");
 zjs.setAttribute("src", "http://zza.zangzing.com/zza.js");
 if (typeof zjs != "undefined")
   document.getElementsByTagName("head")[0].appendChild(zjs);
+*/
 
 // google analytics
 var _gaq = _gaq || [];
@@ -46,7 +48,7 @@ $(window).bind('beforeunload', function() {
 });
 
 // ZZA wrapper
-var ZZAT = {
+var ZZAt = {
     track : function(event, properties){
 
         if(typeof(properties) == 'undefined'){
@@ -80,7 +82,7 @@ var ZZAT = {
         }
     }
 }
-ZZAT.track('page.visit',{ua: navigator.userAgent});
+ZZAt.track('page.visit',{ua: navigator.userAgent});
 
 /*
 $("#facebook_b").click(function(){
