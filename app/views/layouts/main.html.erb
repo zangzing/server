@@ -68,6 +68,13 @@
       </ul>
     </div>
 
+	<script type="text/javascript">
+	<%    if signed_in?  -%>
+	      	zuserid = '<%= current_user.id %>';
+	<%	  else %>
+    		zuserid = null;
+	<%    end -%>	
+	</script>
 
     <!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>-->
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js"></script>

@@ -5,14 +5,6 @@
  */
 
 
-/*
-var zjs = document.createElement('script');
-zjs.setAttribute("type","text/javascript");
-zjs.setAttribute("src", "http://zza.zangzing.com/zza.js");
-if (typeof zjs != "undefined")
-  document.getElementsByTagName("head")[0].appendChild(zjs);
-*/
-
 // google analytics
 var _gaq = _gaq || [];
 _gaq.push(['_setAccount', zza_config_GOOGLE_ANALYTICS_TOKEN]);
@@ -40,7 +32,7 @@ try {
 mpmetrics.register({'referrer': document.referrer});
 
 // ZZA
-_zza = new ZZA(zza_config_ZZA_ID, null, true);
+_zza = new ZZA(zza_config_ZZA_ID, zuserid, true);
 _zza.init();
 
 $(window).bind('beforeunload', function() {
