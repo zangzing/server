@@ -10,6 +10,7 @@
     <link href="../../stylesheets/album.css" media="screen" rel="stylesheet" type="text/css" />
     <link href="../../stylesheets/add-photos.css" media="screen" rel="stylesheet" type="text/css" />
     <link href="../../stylesheets/wizard.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="../../stylesheets/photochooser.css" media="screen" rel="stylesheet" type="text/css" />
 
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
@@ -29,25 +30,32 @@
     <script type="text/javascript" src="../../javascripts/zz/logging.js"></script>
     <script type="text/javascript" src="../../javascripts/zz/pages.js"></script>
     <script type="text/javascript" src="../../javascripts/zz-oauthmanager/oauthmanager.js"></script>
+    <script type="text/javascript" src="../../javascripts/zz/photochooser.js"></script>
+
+    <style type="text/css" id="page-css">
+        html, body{
+            background-color:#fff;
+        }
+
+        #foo{
+            border:1px solid black;
+            position:relative;
+            width:800px;
+            height:500px;
+            left:100px;
+            top:50px;
+        }
+
+    </style>    
+
 </head>
 <body>
-    <div id="drawer-content">
-        <div id="top-section" class="clearfix">
-          <a id="filechooser-back-button" class="back-button"><span></span></a>
-          <div id="choose-header" class="album-header">
-            <h3 id="filechooser-title"></h3>
-            <h4 id="filechooser-tagline">Choose pictures from folders on your computer or other photo sites.</h4>
-          </div>
-        </div>
+    <div id="foo">
 
-        <div id="scroll-body" style="height:500px">
-          <ul id="filechooser" style="height:100%;width:100%"></ul>
-        </div>
 
-        <div id="added-pictures-tray-container">
-            <div id="added-pictures-tray"></div>
-        </div>
     </div>
+
+
     <script type="text/javascript">
         var zz = {};
         zz.current_user_id = 'adlGUQvSTcvz0kFX_vmjMW'
@@ -55,7 +63,9 @@
 
 
         $(document).ready(function() {
-            filechooser.init();
+            $('#foo').zz_photochooser({
+                
+            });
         })
     </script>
 </body>

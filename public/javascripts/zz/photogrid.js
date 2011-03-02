@@ -101,6 +101,7 @@
                     photoId: photo.id,
                     previewSrc: photo.previewSrc,
                     src: photo.src,
+                    rolloverSrc: photo.rolloverSrc,
                     maxWidth: Math.floor(self.options.cellWidth - 50),
                     maxHeight: Math.floor(self.options.cellHeight - 50),
                     allowDelete: self.options.allowDelete,
@@ -124,7 +125,9 @@
                     scrollContainer: self.element,
                     lazyLoadThreshold: lazyLoadThreshold,
                     isUploading: photo.state !== 'ready',
-                    isError: photo.state === 'error'
+                    isError: photo.state === 'error',
+                    noShadow: photo.type === 'folder',
+                    lazyLoad: photo.type !== 'folder'
 
                 });
 

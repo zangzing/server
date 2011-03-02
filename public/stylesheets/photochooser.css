@@ -1,0 +1,39 @@
+.photochooser{
+    position: absolute;
+    top:0px;
+    left:0px;
+    right:0px;
+    bottom:0px;
+    border:1px solid red;
+}
+
+.photochooser .header{
+    position:absolute;
+    top:0px;
+    height:50px;
+    left:0px;
+    right:0px;
+    border:1px solid yellow;
+
+}
+
+.photochooser .body{
+    position: absolute;
+    top:50px;
+    left:0px;
+    right:0px;
+    bottom:30px;
+    border:1px solid blue;
+}
+
+.photochooser .footer{
+    position:absolute;
+    height:30px;
+    bottom:0px;
+    right:0px;
+    left:0px;
+    border:1px solid green;
+
+
+}
+

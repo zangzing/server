@@ -16,13 +16,16 @@
             onChangeCaption:jQuery.noop,
             src:null,
             previewSrc:null,
+            rolloverSrc:null,
             scrollContainer:null,
             lazyLoadThreshold:0,
             onClick:jQuery.noop,
             photoId:null,
             aspectRatio:0,
             isUploading:false,
-            isError:false
+            isError:false,
+            noShadow:false,
+            lazyLoad:true
         },
 
         _create: function() {
@@ -55,6 +58,12 @@
             self.bottomShadow = self.element.find('.bottom-shadow');
 
             self.captionHeight = 30;
+
+
+            if(self.options.noShadow){
+                self.borderElement.addClass('no-shadow');    
+            }
+
 
             if(self.options.aspectRatio){
                 var srcWidth =  1 * self.options.aspectRatio;
@@ -160,6 +169,29 @@
                     self.editCaption();
                 });
             }
+
+
+            if(!self.options.lazyLoad){
+                self._loadImage()
+            }
+
+
+            //rollover
+            if(self.options.rolloverSrc){
+
+                //preload rollover
+                var img = new Image();
+                img.src = self.options.rolloverSrc;
+
+                self.element.mouseover(function(){
+                    self.imageElement.attr('src', self.options.rolloverSrc);
+                });
+
+                self.element.mouseout(function(){
+                    self.imageElement.attr('src', self.options.src);
+                });
+            }
+
         },
 
         loadIfVisible: function(containerDimensions){
@@ -195,15 +227,7 @@
                 //show the full version
                 self.imageElement.attr("src", self.options.src);
 
-//                self.element.mouseover(function(){
-//                    self._resize(1.15);
-//                    self.element.css({'z-index':1000});
-//                });
-//
-//                self.element.mouseout(function(){
-//                    self._resize(1);
-//                    self.element.css({'z-index':-1});
-//                })
+
            };
 
 
