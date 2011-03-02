@@ -138,6 +138,8 @@
 
 
             //translate photos and folders from connector format to photo/photogrid format
+            var hasPhotos = false;
+
             children = $.map(children, function(child, index){
                 if(child.type === 'folder'){
 
@@ -150,12 +152,26 @@
                 else{
                     child.src = agent.checkAddCredentialsToUrl(child.thumb_url);
                     child.id = child.source_guid;
+                    hasPhotos = true;
                 }
 
                 child.caption = child.name;
 
                 return child;
             });
+
+
+            if(hasPhotos){
+                var addAllButton = {
+                    id: 'add-all-photos',
+                    src: '/images/folders/add_all_photos.png',
+                    caption: '',
+                    type: 'folder' //todo: need new type for button..
+                };
+
+                children.unshift(addAllButton);
+
+            }
 
 
             var gridElement = $('<div class="photogrid"></div>');
@@ -168,9 +184,17 @@
                 cellHeight: 190,
                 onClickPhoto: function(index, photo){
                     if(photo.type === 'folder'){
-                        self.openFolder(photo);
+                        if(photo.id === 'add-all-photos'){
+                            alert('add all photos');
+                        }
+                        else{
+                            self.openFolder(photo);
+                        }
                     }
                     else{
+                        if(hasPhotos){
+                            children.shift(); //remove the add photos button
+                        }
                         self.singlePictureView(children, photo.id);
                     }
                 }
