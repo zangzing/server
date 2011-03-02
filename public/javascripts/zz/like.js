@@ -26,7 +26,7 @@ var like = {
                  dataType: 'json'});
     },
 
-    add: function( wanted_subjects ){
+    add_id_array: function( wanted_subjects ){
         if( typeof( wanted_subjects ) != 'undefined' ){
             // get the wanted subjects. Use a POST because of GET query string size limitations
             $.ajax({ type:       'POST',
@@ -35,24 +35,38 @@ var like = {
                  success:    function( data ){
                                 // merge new data with existing hash
                                 $.extend( like.hash,  data);
-                                like.draw_tags();},
+                                for( key in data )
+                                    like.refresh_tag( key );
+                             },
                  dataType: 'json'});
         }
     },
 
+    add_id: function( subject_id, subject_type ){
+        if( typeof( subject_id ) != 'undefined' && typeof( like.hash[subject_id]) == 'undefined' ){
+             var wanted_subjects = {};
+             wanted_subjects[ subject_id ] = subject_type;
+             like.add_id_array( wanted_subjects );
+        } else {
+             like.refresh_tag( subject_id );
+        }
+    },
 
     toggle: function(){
         var subject_id   = $(this).attr('data-zzid');
         var subject_type = $(this).attr('data-zztype');
-        var url = '/likes/'+subject_id+'/toggle';
-        var user_likes_it = like.hash[subject_id]['user'];
+        var url = '/likes/'+subject_id;
+       
+        //Decide the action before the value is toggled in the hash
+        var type='POST';
+        if( like.hash[subject_id]['user'] == true ){
+            type='DELETE';
+        }
 
-        like.toggle_in_hash( subject_id );
-
-        $.ajax({ type:       'POST',
+         like.toggle_in_hash( subject_id );
+        $.ajax({ type:       type,
                  url:        url,
-                 data:       {  subject_type : subject_type,
-                                user_likes_it : user_likes_it },
+                 data:       {  subject_type : subject_type },
                  success:    function(html){
                      $('body').append(html);
                  },
@@ -172,30 +186,36 @@ $.widget("ui.zzlike_menu", {
             }
         },
 
-        open: function(anchor){
-                var self = this;
-                var menu = self.element;
-            
-                if(self._trigger('beforeopen') === false) return; //If any listeners return false, then do not open
+    open: function(anchor){
+        var self = this;
+        var menu = self.element;
 
-                //get the position of the clicked element and display popup above center of it
-                var offset = $(anchor).offset();
-                var x = ( $(anchor).outerWidth()/2 ) + offset.left - (menu.width()/2);
-                var y = $(document).height() - offset.top;
-                menu.css({ left: x, bottom: y }).slideToggle( 'fast' );// Show = slide down
+        if(menu.is(':hidden')){
+            if(self._trigger('beforeopen') === false) return; //If any listeners return false, then do not open
 
-                //Close menu when mouse hovers out of the menu or clicks
-                $(menu).hover(  function(){}, function(){ $(this).slideUp('fast'); });
-                setTimeout( function() { // Delay for Mozilla otherwise menu opens and closes rightaway
-								$(document).one( 'click', function() {
-									                        $(menu).slideUp('fast');
-								});
-							}, 0);
+            //get the position of the clicked element and display popup above center of it
+            var offset = $(anchor).offset();
+            var x = ( $(anchor).outerWidth()/2 ) + offset.left - (menu.width()/2);
+            var y = $(document).height() - offset.top;
+            menu.css({ left: x, bottom: y }).slideDown( 'fast' );// Show = slide down
 
-                //If the window resizes close menu (its bottom positioned so it will look out of place if not removed)
-                $(window).one('resize',function() {  $(menu).css('display','none');  });
-                self._trigger('open');
-        },
+            //Close menu when mouse hovers out of the menu or clicks
+            $(menu).hover(  function(){}, function(){ $(this).slideUp('fast'); });
+            setTimeout( function() { // Delay for Mozilla
+                $(document).click( function() {
+                    if(menu.is(':visible')){
+                        $(document).unbind('click')
+                        $(menu).slideUp('fast');
+                    }
+                    return false;
+                });
+            }, 0);
+
+            //If the window resizes close menu (its bottom positioned so it will look out of place if not removed)
+            $(window).one('resize',function() {  $(menu).css('display','none');  });
+            self._trigger('open');
+        }
+    },
 
         destroy: function() {
             $.Widget.prototype.destroy.apply( this, arguments );

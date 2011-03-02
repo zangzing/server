@@ -45,8 +45,8 @@
             
             //Set size and create a resize handler to be used when the dialog is shown
             self._setSize();
-            self.resizeHandler = function(){ self._setPosition(); };
-
+            self.resize_handler   = function(){ self._setPosition(); };
+            self.keypress_handler = function(event){ event.stopPropagation(); };
 
             //create scrim for modal insert it the end of the body
             if(self.options.modal){
@@ -73,8 +73,11 @@
             self._setPosition();
 
             // set window resize handler
-            $(window).resize(  self.resizeHandler );
-            if(self.options.modal) $(self.scrim).show();
+            $(window).resize(  self.resize_handler );
+            if(self.options.modal){
+                $(self.scrim).show();
+                $(window).keypress(self.keypress_handler );
+            }
             self.dialogDiv.fadeIn('fast');
             self._trigger('open');
         },
@@ -84,7 +87,8 @@
             if(this._trigger('beforeclose') === false) return; //If any listeners return false, then do not close
             this.dialogDiv.fadeOut('fast');
             if(this.options.modal) $(this.scrim).hide();
-            $(window).unbind( 'resize', this.resizeHandler );
+            $(window).unbind( 'resize', this.resize_handler );
+            $(document).unbind('keypress', this.keypress_handler );
             this._trigger('close');
         },
 

@@ -1,19 +1,9 @@
 class LikeCounter < ActiveRecord::Base
   attr_accessible :subject_id, :count
 
-
   def self.increase( subject_id )
-    begin
-      counter = LikeCounter.find_by_subject_id( subject_id )
-      if counter.nil?
-        LikeCounter.create( :subject_id => subject_id )
-      else
-        counter.increase unless counter.nil?
-      end
-    rescue ActiveRecord::RecordNotFound
-      #the default value for a LikeCount is 1 so no need to increment it upon creation
-      LikeCounter.create( :subject_id => subject_id)
-    end
+      counter = LikeCounter.find_or_create_by_subject_id( subject_id )
+      counter.increase unless counter.nil?
   end
 
   def self.decrease( subject_id)

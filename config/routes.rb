@@ -107,9 +107,11 @@ Server::Application.routes.draw do
   delete '/contributors/:id'                   => 'contributors#destroy',    :as => :delete_contributor
     
   #like
-  post   '/likes/:subject_id/toggle'           => 'likes#toggle',            :as => :toggle_like
-  post   '/likes/:subject_id/post'             => 'likes#post',             :as => :post_like
   match  '/likes'                              => 'likes#index',             :as => :likes
+  post   '/likes/:subject_id'                  => 'likes#create',            :as => :create_like
+  delete '/likes/:subject_id'                  => 'likes#destroy',           :as => :delete_like
+  post   '/likes/:subject_id/post'             => 'likes#post',              :as => :post_like
+
 
 
   # oauth

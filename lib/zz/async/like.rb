@@ -1,7 +1,7 @@
 module ZZ
   module Async
 
-    class LikeClick < Base
+    class Like < Base
         @queue = :like
 
         # only add ourselves one time
@@ -12,14 +12,14 @@ module ZZ
           end
         end
 
-        def self.enqueue( current_user_id, subject_id, subject_type )
-          super( current_user_id, subject_id, subject_type )
+        def self.enqueue( method, *args)
+          super( method, *args)
         end
 
-        def self.perform( current_user_id, subject_id, subject_type )
-          Like.toggle( current_user_id, subject_id, subject_type )
+        def self.perform( method, *args )
+           # Call the Like class from the empty name space :: otherwise it calls ZZ::Async::Like
+           ::Like.send( method, *args)
         end
-
     end
   end
 end

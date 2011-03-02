@@ -28,12 +28,12 @@ class LikesController < ApplicationController
     render :json =>subjects
   end
 
-  def toggle
-    if current_user && params[:subject_id] && params[:subject_type] && params[:user_likes_it]
+  def create
+    if current_user && params[:subject_id] && params[:subject_type] 
 
-        Like.toggle( current_user.id, params[:subject_id] , params[:subject_type] )
-        #ZZ::Async::LikeClick.enqueue( current_user.id, params[:subject_id] , params[:subject_type] )
-        if params[:user_likes_it]=='false' && current_user.preferences.asktopost_likes
+        #Like.add( current_user.id, params[:subject_id] , params[:subject_type] )
+        ZZ::Async::Like.enqueue( 'add', current_user.id, params[:subject_id] , params[:subject_type] )
+        if current_user.preferences.asktopost_likes
             @subj_id   = params[:subject_id]
             @subj_type = params[:subject_type]
             @url, @message = Like.default_like_post_message(current_user, @subj_id, @subj_type )
@@ -45,10 +45,18 @@ class LikesController < ApplicationController
     render :nothing => true
   end
 
+  def destroy
+      if current_user && params[:subject_id]
+          #Like.remove( current_user.id, params[:subject_id])
+          ZZ::Async::Like.enqueue( 'remove', current_user.id, params[:subject_id])
+      end
+      render :nothing => true
+  end
+
   def post
     if current_user && params[:subject_id] && (params[:tweet] || params[:facebook] || params[:dothis])
-      Like.post_with_preferences( current_user.id, params[:subject_id], params[:message], params[:tweet], params[:facebook], params[:dothis])
-      #ZZ::Async::PostLike.enqueue( current_user.id, params['subject_id'], params['messge'], params['tweet'], params['facebook'], params['dothis'])
+      #Like.post_with_preferences( current_user.id, params[:subject_id], params[:message], params[:tweet], params[:facebook], params[:dothis])
+      ZZ::Async::Like.enqueue( 'post_with_preferences',current_user.id, params[:subject_id], params[:message], params[:tweet], params[:facebook], params[:dothis])
     end
     render :nothing => true
   end

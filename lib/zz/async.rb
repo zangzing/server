@@ -9,8 +9,7 @@ require 'zz/async/album_share'
 require 'zz/async/update_picon'
 require 'zz/async/generate_thumbnails'
 require 'zz/async/test_noop'
-require 'zz/async/like_click'
-require 'zz/async/post_like'
+require 'zz/async/like'
 
 module ZZ
   module Async

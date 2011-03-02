@@ -14,37 +14,21 @@ class Like < ActiveRecord::Base
 
     include Rails.application.routes.url_helpers
 
-    def toggle( user_id, subject_id, subject_type )
-      # Verify that the subject exists, (COMMENTED OUT FOR PERFORMANCE)
-      #begin
-      #  case subject_type
-      #    when USER then  subject = User.find( subject_id )
-      #    when ALBUM then subject = Album.find( subject_id )
-      #    when PHOTO then subject = Photo.find( subject_id )
-      #  end
-      #rescue ActiveRecord::RecordNotFound
-      #  # the subject does not exist, nothing to do.
-      #  return false
-      #end
-
-
-      #if the user was not logged in when she liked the subject, there is nothing else to do
-      if user_id.nil?
-        #only increase the subject's like counter, no user logged in. Can't decrease 'Can't create Like Record
-        LikeCounter.increase( subject_id)
-
-      else
-        begin
-          Like.create( :user_id => user_id, :subject_id => subject_id, :subject_type => subject_type)
-          #User Like Record created, increase the subject's like counter
-          LikeCounter.increase( subject_id )
-        rescue  ActiveRecord::RecordNotUnique
-          #User Like Record exists, so lets turn it off and decrease the counter
-          Like.find_by_user_id_and_subject_id( user_id, subject_id).destroy
-          LikeCounter.decrease( subject_id )
-        end
+    def add( user_id, subject_id, subject_type )
+      begin
+        #Create Like record, increase the subject_ids like counter
+        Like.create( :user_id => user_id, :subject_id => subject_id, :subject_type => subject_type)
+        LikeCounter.increase( subject_id )
+      rescue  ActiveRecord::RecordNotUnique
+        #Like Record already exists, nothing to do
       end
-      return
+    end
+
+    def remove( user_id, subject_id )
+      #Find and remove like record, decrease the subject_id like counter
+      like = Like.find_by_user_id_and_subject_id( user_id, subject_id)
+      like.destroy unless like.nil?
+      LikeCounter.decrease( subject_id )
     end
 
     def post_with_preferences( user_id, subj_id, message=nil, tweet=false, facebook=false, dothis=false )

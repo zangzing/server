@@ -12,7 +12,7 @@ class CreateLikes < ActiveRecord::Migration
 
     create_table :like_counters,:guid => false,:force => true do |t|
       t.references_with_guid :subject, :null => true
-      t.integer :counter, :default => 1 
+      t.integer :counter, :default => 0 
     end
     add_index :like_counters, :subject_id, :unique => true
   end

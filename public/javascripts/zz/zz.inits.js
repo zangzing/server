@@ -380,7 +380,7 @@ zz.init = {
 
 
 
-         like.init();
+
 
                 //setup upload progress smeter
                 $('#progress-meter').hide();
@@ -716,13 +716,15 @@ zz.init = {
 //======================================= Like Menu  ==============================================
     like_menu: function(){
         var menu = $( zz.toolbars.build_like_menu() ).zzlike_menu();
-        $('#footer #like-button').click(function(){
+        like.init();
+        $('#footer #like-button').click(function(event){
             if($(this).hasClass('disabled') || $(this).hasClass('selected')){
                 return;
             }
             $(menu).zzlike_menu('open',this);
+            event.stopPropagation();
         } );
-        like.init();
+
     }
 
 };
