@@ -1,7 +1,7 @@
 class GlobalIdChange < ActiveRecord::Migration
   def self.up
 
-    create_table "activities", :guid => false, :force => true do |t|
+    create_table "activities", :force => true do |t|
       t.string   "type"
       t.column   :user_id, :bigint, :null => false
       t.column   :album_id, :bigint
@@ -14,7 +14,7 @@ class GlobalIdChange < ActiveRecord::Migration
     add_index "activities", ["album_id"], :name => "index_activities_on_album_id"
     add_index "activities", ["user_id"], :name => "index_activities_on_user_id"
 
-    create_table "albums", :guid => false, :force => true do |t|
+    create_table "albums", :force => true do |t|
       t.column   :user_id, :bigint, :null => false
       t.column   :cover_photo_id, :bigint
       t.string   "privacy",                              :default => "public"
@@ -42,7 +42,7 @@ class GlobalIdChange < ActiveRecord::Migration
 
     add_index "albums", ["user_id"], :name => "index_albums_on_user_id"
 
-    create_table "bench_test_photo_gens", :guid => false, :force => true do |t|
+    create_table "bench_test_photo_gens", :force => true do |t|
       t.string   "result_message"
       t.datetime "start"
       t.datetime "stop"
@@ -57,7 +57,7 @@ class GlobalIdChange < ActiveRecord::Migration
     end
 
 
-    create_table "bench_test_resque_no_ops", :guid => false, :force => true do |t|
+    create_table "bench_test_resque_no_ops", :force => true do |t|
       t.string   "result_message"
       t.datetime "start"
       t.datetime "stop"
@@ -67,7 +67,7 @@ class GlobalIdChange < ActiveRecord::Migration
     end
 
 
-    create_table "bench_test_s3s", :guid => false, :force => true do |t|
+    create_table "bench_test_s3s", :force => true do |t|
       t.string   "result_message"
       t.datetime "start"
       t.datetime "stop"
@@ -79,7 +79,7 @@ class GlobalIdChange < ActiveRecord::Migration
     end
 
 
-    create_table "client_applications", :guid => false, :force => true do |t|
+    create_table "client_applications", :force => true do |t|
       t.string   "name"
       t.string   "url"
       t.string   "support_url"
@@ -94,7 +94,7 @@ class GlobalIdChange < ActiveRecord::Migration
 
     add_index "client_applications", ["key"], :name => "index_client_applications_on_key", :unique => true
 
-    create_table "contacts", :guid => false, :force => true do |t|
+    create_table "contacts", :force => true do |t|
       t.column   :identity_id, :bigint
       t.string   "type"
       t.string   "name"
@@ -106,7 +106,7 @@ class GlobalIdChange < ActiveRecord::Migration
 
     add_index "contacts", ["identity_id"], :name => "index_contacts_on_identity_id"
 
-    create_table "contributors", :guid => false, :force => true do |t|
+    create_table "contributors", :force => true do |t|
       t.column   :album_id, :bigint, :null => false
       t.column   :user_id, :bigint
       t.string   "name"
@@ -122,7 +122,7 @@ class GlobalIdChange < ActiveRecord::Migration
     add_index "contributors", ["email"], :name => "index_contributors_on_email"
 
 
-    create_table "follows", :guid => false, :force => true do |t|
+    create_table "follows", :force => true do |t|
       t.column   :follower_id, :bigint, :null => false
       t.column   :followed_id, :bigint, :null => false
       t.boolean  "blocked",                   :default => false
@@ -134,7 +134,7 @@ class GlobalIdChange < ActiveRecord::Migration
     add_index "follows", ["followed_id"], :name => "index_follows_on_followed_id"
     add_index "follows", ["follower_id"], :name => "index_follows_on_follower_id"
 
-    create_table "identities", :guid => false, :force => true do |t|
+    create_table "identities", :force => true do |t|
       t.column   :user_id, :bigint, :null => false
       t.string   "type"
       t.string   "name"
@@ -149,7 +149,7 @@ class GlobalIdChange < ActiveRecord::Migration
     add_index "identities", ["user_id"], :name => "index_identities_on_user_id"
 
 
-    create_table "like_counters", :guid => false, :force => true do |t|
+    create_table "like_counters", :force => true do |t|
       t.column   :subject_id, :bigint
       t.integer "counter"
     end
@@ -157,7 +157,7 @@ class GlobalIdChange < ActiveRecord::Migration
 
     add_index "like_counters", ["subject_id"], :name => "index_like_counters_on_subject_id", :unique => true
 
-    create_table "likes", :guid => false, :force => true do |t|
+    create_table "likes", :force => true do |t|
       t.column   :user_id, :bigint, :null => false
       t.column   :subject_id, :bigint, :null => false
       t.string "subject_type",               :null => false
@@ -168,7 +168,7 @@ class GlobalIdChange < ActiveRecord::Migration
     add_index "likes", ["user_id", "subject_id"], :name => "userid_subjectid_index", :unique => true
     add_index "likes", ["user_id"], :name => "index_likes_on_user_id"
 
-    create_table "oauth_nonces", :guid => false, :force => true do |t|
+    create_table "oauth_nonces", :force => true do |t|
       t.string   "nonce"
       t.integer  "timestamp"
       t.datetime "created_at"
@@ -178,7 +178,7 @@ class GlobalIdChange < ActiveRecord::Migration
 
     add_index "oauth_nonces", ["nonce", "timestamp"], :name => "index_oauth_nonces_on_nonce_and_timestamp", :unique => true
 
-    create_table "oauth_tokens", :guid => false, :force => true do |t|
+    create_table "oauth_tokens", :force => true do |t|
       t.column   :user_id, :bigint
       t.string   "agent_id",              :limit => 64
       t.string   "type",                  :limit => 20
@@ -196,7 +196,7 @@ class GlobalIdChange < ActiveRecord::Migration
 
     add_index "oauth_tokens", ["token"], :name => "index_oauth_tokens_on_token", :unique => true
 
-    create_table "photo_infos", :guid => false, :force => true do |t|
+    create_table "photo_infos", :force => true do |t|
       t.column   :photo_id, :bigint, :null => false
       t.binary "metadata"
     end
@@ -204,7 +204,7 @@ class GlobalIdChange < ActiveRecord::Migration
 
     add_index "photo_infos", ["photo_id"], :name => "index_photo_infos_on_photo_id"
 
-    create_table "photos", :guid => false, :force => true do |t|
+    create_table "photos", :force => true do |t|
       t.column   :album_id, :bigint, :null => false
       t.column   :user_id, :bigint, :null => false
       t.column   :upload_batch_id, :bigint
@@ -243,7 +243,7 @@ class GlobalIdChange < ActiveRecord::Migration
     add_index "photos", ["upload_batch_id"], :name => "index_photos_on_upload_batch_id"
     add_index "photos", ["user_id"], :name => "index_photos_on_user_id"
 
-    create_table "recipients", :guid => false, :force => true do |t|
+    create_table "recipients", :force => true do |t|
       t.column   :share_id, :bigint
       t.string   "service"
       t.string   "name"
@@ -255,7 +255,7 @@ class GlobalIdChange < ActiveRecord::Migration
 
     add_index "recipients", ["share_id"], :name => "index_recipients_on_share_id"
 
-    create_table "sessions", :guid => false, :force => true do |t|
+    create_table "sessions", :force => true do |t|
       t.column   :session_id, :bigint, :null => false
       t.text     "data"
       t.datetime "created_at"
@@ -266,7 +266,7 @@ class GlobalIdChange < ActiveRecord::Migration
     add_index "sessions", ["session_id"], :name => "index_sessions_on_session_id"
     add_index "sessions", ["updated_at"], :name => "index_sessions_on_updated_at"
 
-    create_table "shares", :guid => false, :force => true do |t|
+    create_table "shares", :force => true do |t|
       t.column   :album_id, :bigint, :null => false
       t.column   :user_id, :bigint, :null => false
       t.string   "type"
@@ -284,7 +284,7 @@ class GlobalIdChange < ActiveRecord::Migration
     add_index "shares", ["user_id", "album_id"], :name => "userid_albumid_index"
     add_index "shares", ["user_id"], :name => "index_shares_on_user_id"
 
-    create_table "slugs", :guid => false, :force => true do |t|
+    create_table "slugs", :force => true do |t|
       t.string   "name"
       t.column   :sluggable_id, :bigint, :null => false
       t.integer  "sequence",                     :default => 1, :null => false
@@ -297,7 +297,7 @@ class GlobalIdChange < ActiveRecord::Migration
     add_index "slugs", ["name", "sluggable_type", "sequence", "scope"], :name => "index_slugs_on_n_s_s_and_s", :unique => true
     add_index "slugs", ["sluggable_id"], :name => "index_slugs_on_sluggable_id"
 
-    create_table "upload_batches", :guid => false, :force => true do |t|
+    create_table "upload_batches", :force => true do |t|
       t.column   :album_id, :bigint, :null => false
       t.column   :user_id, :bigint, :null => false
       t.string   "state",                             :default => "open"
@@ -310,7 +310,7 @@ class GlobalIdChange < ActiveRecord::Migration
     add_index "upload_batches", ["album_id"], :name => "index_upload_batches_on_album_id"
     add_index "upload_batches", ["user_id"], :name => "index_upload_batches_on_user_id"
 
-    create_table "users", :guid => false, :force => true do |t|
+    create_table "users", :force => true do |t|
       t.string   "email",                                                  :null => false
       t.string   "role",                              :default => "user",  :null => false
       t.string   "username"
