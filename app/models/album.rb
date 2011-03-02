@@ -161,10 +161,8 @@ class Album < ActiveRecord::Base
 private
   def cover_photo_id_valid?
     begin
-      if cover_photo_id.length == 22 && cover_photo = photos.find(cover_photo_id)
-        queue_update_picon if cover_photo.ready?
-        return true
-      end
+      photos.find(cover_photo_id)
+      return true
     rescue ActiveRecord::RecordNotFound => e
        errors.add(:cover_photo_id,"Could not find photo with ID:"+cover_photo_id+" in this album")
     end
