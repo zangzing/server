@@ -9,7 +9,6 @@ class GlobalIdChange < ActiveRecord::Migration
       t.datetime "created_at"
       t.datetime "updated_at"
     end
-    execute('ALTER TABLE activities AUTO_INCREMENT = 19900073723;')
 
 
     add_index "activities", ["album_id"], :name => "index_activities_on_album_id"
@@ -39,7 +38,6 @@ class GlobalIdChange < ActiveRecord::Migration
       t.datetime "photos_last_updated_at",               :default => '2011-02-28 20:49:28', :null => false
       t.boolean  "custom_order",                         :default => false
     end
-    execute('ALTER TABLE albums AUTO_INCREMENT = 29900073723;')
 
 
     add_index "albums", ["user_id"], :name => "index_albums_on_user_id"
@@ -57,7 +55,6 @@ class GlobalIdChange < ActiveRecord::Migration
       t.datetime "created_at"
       t.datetime "updated_at"
     end
-    execute('ALTER TABLE bench_test_photo_gens AUTO_INCREMENT = 39900073723;')
 
 
     create_table "bench_test_resque_no_ops", :guid => false, :force => true do |t|
@@ -68,7 +65,6 @@ class GlobalIdChange < ActiveRecord::Migration
       t.datetime "created_at"
       t.datetime "updated_at"
     end
-    execute('ALTER TABLE bench_test_resque_no_ops AUTO_INCREMENT = 49900073723;')
 
 
     create_table "bench_test_s3s", :guid => false, :force => true do |t|
@@ -81,7 +77,6 @@ class GlobalIdChange < ActiveRecord::Migration
       t.datetime "created_at"
       t.datetime "updated_at"
     end
-    execute('ALTER TABLE bench_test_s3s AUTO_INCREMENT = 59900073723;')
 
 
     create_table "client_applications", :guid => false, :force => true do |t|
@@ -95,7 +90,6 @@ class GlobalIdChange < ActiveRecord::Migration
       t.datetime "created_at"
       t.datetime "updated_at"
     end
-    execute('ALTER TABLE client_applications AUTO_INCREMENT = 69900073723;')
 
 
     add_index "client_applications", ["key"], :name => "index_client_applications_on_key", :unique => true
@@ -108,7 +102,6 @@ class GlobalIdChange < ActiveRecord::Migration
       t.datetime "created_at"
       t.datetime "updated_at"
     end
-    execute('ALTER TABLE contacts AUTO_INCREMENT = 79900073723;')
 
 
     add_index "contacts", ["identity_id"], :name => "index_contacts_on_identity_id"
@@ -122,25 +115,11 @@ class GlobalIdChange < ActiveRecord::Migration
       t.datetime "created_at"
       t.datetime "updated_at"
     end
-    execute('ALTER TABLE contributors AUTO_INCREMENT = 89900073723;')
 
 
     add_index "contributors", ["album_id"], :name => "index_contributors_on_album_id"
     add_index "contributors", ["email", "album_id"], :name => "email_album_unique_index", :unique => true
     add_index "contributors", ["email"], :name => "index_contributors_on_email"
-
-#    create_table "cpu_bound_jobs", :guid => false, :force => true do |t|
-#      t.integer  "priority",   :default => 0
-#      t.integer  "attempts",   :default => 0
-#      t.text     "handler"
-#      t.text     "last_error"
-#      t.datetime "run_at"
-#      t.datetime "locked_at"
-#      t.datetime "failed_at"
-#      t.text     "locked_by"
-#      t.datetime "created_at"
-#      t.datetime "updated_at"
-#    end
 
 
     create_table "follows", :guid => false, :force => true do |t|
@@ -150,7 +129,6 @@ class GlobalIdChange < ActiveRecord::Migration
       t.datetime "created_at"
       t.datetime "updated_at"
     end
-    execute('ALTER TABLE follows AUTO_INCREMENT = 99900073723;')
 
 
     add_index "follows", ["followed_id"], :name => "index_follows_on_followed_id"
@@ -166,30 +144,15 @@ class GlobalIdChange < ActiveRecord::Migration
       t.datetime "created_at"
       t.datetime "updated_at"
     end
-    execute('ALTER TABLE identities AUTO_INCREMENT = 109900073723;')
 
 
     add_index "identities", ["user_id"], :name => "index_identities_on_user_id"
-
-#    create_table "io_bound_jobs", :guid => false, :force => true do |t|
-#      t.integer  "priority",   :default => 0
-#      t.integer  "attempts",   :default => 0
-#      t.text     "handler"
-#      t.text     "last_error"
-#      t.datetime "run_at"
-#      t.datetime "locked_at"
-#      t.datetime "failed_at"
-#      t.text     "locked_by"
-#      t.datetime "created_at"
-#      t.datetime "updated_at"
-#    end
 
 
     create_table "like_counters", :guid => false, :force => true do |t|
       t.column   :subject_id, :bigint
       t.integer "counter",                  :default => 1
     end
-    execute('ALTER TABLE like_counters AUTO_INCREMENT = 119900073723;')
 
 
     add_index "like_counters", ["subject_id"], :name => "index_like_counters_on_subject_id", :unique => true
@@ -199,7 +162,6 @@ class GlobalIdChange < ActiveRecord::Migration
       t.column   :subject_id, :bigint, :null => false
       t.string "subject_type",               :null => false
     end
-    execute('ALTER TABLE likes AUTO_INCREMENT = 129900073723;')
 
 
     add_index "likes", ["subject_id"], :name => "index_likes_on_subject_id"
@@ -212,7 +174,6 @@ class GlobalIdChange < ActiveRecord::Migration
       t.datetime "created_at"
       t.datetime "updated_at"
     end
-    execute('ALTER TABLE oauth_nonces AUTO_INCREMENT = 139900073723;')
 
 
     add_index "oauth_nonces", ["nonce", "timestamp"], :name => "index_oauth_nonces_on_nonce_and_timestamp", :unique => true
@@ -231,7 +192,6 @@ class GlobalIdChange < ActiveRecord::Migration
       t.datetime "created_at"
       t.datetime "updated_at"
     end
-    execute('ALTER TABLE oauth_tokens AUTO_INCREMENT = 149900073723;')
 
 
     add_index "oauth_tokens", ["token"], :name => "index_oauth_tokens_on_token", :unique => true
@@ -240,7 +200,6 @@ class GlobalIdChange < ActiveRecord::Migration
       t.column   :photo_id, :bigint, :null => false
       t.binary "metadata"
     end
-    execute('ALTER TABLE photo_infos AUTO_INCREMENT = 159900073723;')
 
 
     add_index "photo_infos", ["photo_id"], :name => "index_photo_infos_on_photo_id"
@@ -277,7 +236,6 @@ class GlobalIdChange < ActiveRecord::Migration
       t.datetime "generate_queued_at",               :default => '1970-01-01 00:00:00', :null => false
       t.float    "pos"
     end
-    execute('ALTER TABLE photos AUTO_INCREMENT = 169900073723;')
 
 
     add_index "photos", ["agent_id"], :name => "index_photos_on_agent_id"
@@ -293,7 +251,6 @@ class GlobalIdChange < ActiveRecord::Migration
       t.datetime "created_at"
       t.datetime "updated_at"
     end
-    execute('ALTER TABLE recipients AUTO_INCREMENT = 179900073723;')
 
 
     add_index "recipients", ["share_id"], :name => "index_recipients_on_share_id"
@@ -304,7 +261,6 @@ class GlobalIdChange < ActiveRecord::Migration
       t.datetime "created_at"
       t.datetime "updated_at"
     end
-    execute('ALTER TABLE sessions AUTO_INCREMENT = 229900073723;')
 
 
     add_index "sessions", ["session_id"], :name => "index_sessions_on_session_id"
@@ -322,7 +278,6 @@ class GlobalIdChange < ActiveRecord::Migration
       t.string   "album_url"
       t.string   "bitly"
     end
-    execute('ALTER TABLE shares AUTO_INCREMENT = 189900073723;')
 
 
     add_index "shares", ["album_id"], :name => "index_shares_on_album_id"
@@ -337,7 +292,6 @@ class GlobalIdChange < ActiveRecord::Migration
       t.string   "scope"
       t.datetime "created_at"
     end
-    execute('ALTER TABLE slugs AUTO_INCREMENT = 199900073723;')
 
 
     add_index "slugs", ["name", "sluggable_type", "sequence", "scope"], :name => "index_slugs_on_n_s_s_and_s", :unique => true
@@ -351,7 +305,6 @@ class GlobalIdChange < ActiveRecord::Migration
       t.datetime "updated_at"
       t.float    "custom_order_offset",               :default => 0.0
     end
-    execute('ALTER TABLE upload_batches AUTO_INCREMENT = 209900073723;')
 
 
     add_index "upload_batches", ["album_id"], :name => "index_upload_batches_on_album_id"
@@ -380,7 +333,6 @@ class GlobalIdChange < ActiveRecord::Migration
       t.boolean  "approved",                          :default => true,    :null => false
       t.boolean  "automatic",                         :default => false
     end
-    execute('ALTER TABLE users AUTO_INCREMENT = 249900073723;')
 
 
     add_index "users", ["email"], :name => "index_users_on_email", :unique => true
