@@ -13,11 +13,8 @@ var like = {
         //obtain the array of wanted subjects from the divs of class zzlike  with data-zzid attributes
         var wanted_subjects={};
         $('.zzlike').each( function(index, zzliketag){
-            id = $(zzliketag).attr('data-zzid');
-            type = $(zzliketag).attr('data-zztype');
-            wanted_subjects[id]=type;
+            wanted_subjects[ $(zzliketag).attr('data-zzid') ]= $(zzliketag).attr('data-zztype');
         });
-
         // get the wanted subjects. Use a POST because of GET query string size limitations
         $.ajax({ type:       'POST',
                  url:        '/likes.json',
@@ -29,26 +26,41 @@ var like = {
                  dataType: 'json'});
     },
 
-    user: function(user_id){
-        like.toggle_in_server( '/users/'+user_id+'/like', user_id);
+    add: function( wanted_subjects ){
+        if( typeof( wanted_subjects ) != 'undefined' ){
+            // get the wanted subjects. Use a POST because of GET query string size limitations
+            $.ajax({ type:       'POST',
+                 url:        '/likes.json',
+                 data:       {'wanted_subjects' : wanted_subjects },
+                 success:    function( data ){
+                                // merge new data with existing hash
+                                $.extend( like.hash,  data);
+                                like.draw_tags();},
+                 dataType: 'json'});
+        }
     },
 
-    album: function(album_id){
-         like.toggle_in_server( '/albums/'+album_id+'/like', album_id);
-    },
 
-    photo: function(photo_id){
-         like.toggle_in_server( '/photos/'+photo_id+'/like', photo_id)
-    },
+    toggle: function(){
+        var subject_id   = $(this).attr('data-zzid');
+        var subject_type = $(this).attr('data-zztype');
+        var url = '/likes/'+subject_id+'/toggle';
+        var user_likes_it = like.hash[subject_id]['user'];
 
-    toggle_in_server: function( url, subject_id ){
         like.toggle_in_hash( subject_id );
+
         $.ajax({ type:       'POST',
                  url:        url,
-                 success:    function(){},
+                 data:       {  subject_type : subject_type,
+                                user_likes_it : user_likes_it },
+                 success:    function(html){
+                     $('body').append(html);
+                 },
                  error:      function( xhr, textStatus, errorThrown){
-                     like.toggle_in_hash( subject_id );
-                     if( xhr.status == 401 ) alert('Must Be Logged In'); }
+                                // toggle in server failed, return hash and screen to previous state
+                                like.toggle_in_hash( subject_id );
+                                if( xhr.status == 401 ) alert('Must Be Logged In');
+                             }
         });
     },
 
@@ -85,14 +97,10 @@ var like = {
                     $(icon).addClass( 'zzlike-vader' );
                 }
                 $(button).prepend( icon );
+                tag.empty();
                 tag.append( button ).append( counter );
             }
-
-            switch(like.hash[id]['type']){
-                case 'P': tag.click(function(){ like.photo(id)}); break;
-                case 'A': tag.click(function(){ like.album(id)}); break;
-                case 'U': tag.click(function(){ like.user(id)}); break;
-            }
+            tag.click( like.toggle );
         });
     },
 
@@ -112,15 +120,6 @@ var like = {
             });
 
         }
-    },
-
-    display_login: function(){
-
-    },
-
-    is_it_liked: function( subject_id ){
-        if( like.loaded ) return like.hash[subject_id]['user'];
-        return false;
     }
 };
 
@@ -128,21 +127,21 @@ var like = {
 
 (function( $, undefined ) {
 
-$.widget("ui.zz_like_menu", {
+$.widget("ui.zzlike_menu", {
         options: {
-            anchor_id: 'red',
-            open: 'false'
+            anchor: false
         },
         _create: function() {
             var self   = this;
-            var menu   = $('#'+this.options.menu);
-            var anchor =this.element;
+            var menu   = this.element;
+
+            // make sure element is not visible
+
+
 
             //set classes to hide it make it s like-menu
-            menu.addClass( 'like-menu');
-            menu.css('display','none');
-            var items = $(menu).find('.zzlike');
-            items.attr('data-zzstyle', 'menu');
+            menu.css('display','none').addClass( 'like-menu');
+            var items = $(menu).find('.zzlike').attr('data-zzstyle', 'menu');
 
             //Choose the class for the right size background
             switch (items.length ){
@@ -157,28 +156,45 @@ $.widget("ui.zz_like_menu", {
                     case 'album':   $(this).addClass( 'like-album').html('Album <span class="like-count"></span>'); break;
                     case 'photo':   $(this).addClass( 'like-photo').html('Photo <span class="like-count"></span>'); break;
                 }
-                //When an item is clicked, close the menu
-                $(this).click( function(){ $(menu).slideUp('fast'); } );
             });
 
-            //Close menu when mouse hovers out of menu
-            $(menu).hover(function() {}, function(){
-                $(this).slideUp('fast'); //When the mouse hovers out of the menu, roll it back up
-            });
+            //Check if element is already in DOM, if not, insert it at end of body.
+            if( menu.parent().size() <= 0 ){
+               $('body').append(menu);
+            }
 
-            //When anchor is clicked, display menu
-            $(anchor).click(  function(e){
+            // if there is an optional anchor. link it to it.               
+            if( self.options.anchor ){
+                //When anchor is clicked, display menu
+                $(self.options.anchor).click(  function(){
+                    self.open( this );
+                });
+            }
+        },
+
+        open: function(anchor){
+                var self = this;
+                var menu = self.element;
+            
+                if(self._trigger('beforeopen') === false) return; //If any listeners return false, then do not open
+
                 //get the position of the clicked element and display popup above center of it
                 var offset = $(anchor).offset();
-                var x = ( $(anchor).outerWidth()/2 ) + offset.left - ($(menu).width()/2);
+                var x = ( $(anchor).outerWidth()/2 ) + offset.left - (menu.width()/2);
                 var y = $(document).height() - offset.top;
-                $(menu).css({ bottom: y, left: x }).slideToggle( 'fast' );// Show = slide down
-            });
+                menu.css({ left: x, bottom: y }).slideToggle( 'fast' );// Show = slide down
 
-            //If the window resizes close menu (its bottom positioned so it will look out of place if not removed)
-            $(window).resize(function() {
-                $(menu).css('display','none');
-            });
+                //Close menu when mouse hovers out of the menu or clicks
+                $(menu).hover(  function(){}, function(){ $(this).slideUp('fast'); });
+                setTimeout( function() { // Delay for Mozilla otherwise menu opens and closes rightaway
+								$(document).one( 'click', function() {
+									                        $(menu).slideUp('fast');
+								});
+							}, 0);
+
+                //If the window resizes close menu (its bottom positioned so it will look out of place if not removed)
+                $(window).one('resize',function() {  $(menu).css('display','none');  });
+                self._trigger('open');
         },
 
         destroy: function() {

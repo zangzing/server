@@ -1,5 +1,5 @@
 class LikesController < ApplicationController
-  before_filter :require_user_json, :only => :toggle
+  before_filter :require_user_json, :only => [:toggle, :post]
 
   def index
     wanted_subjects = params['wanted_subjects']
@@ -7,8 +7,6 @@ class LikesController < ApplicationController
 
     subjects =  Hash.new()
     render :json =>subjects, :status => :ok and return if wanted_subjects.length <=0
-
-
     wanted_subjects.keys.each do |wanted_id|
       type = case wanted_subjects[wanted_id].downcase
                when 'photo' then  Like::PHOTO
@@ -31,28 +29,27 @@ class LikesController < ApplicationController
   end
 
   def toggle
+    if current_user && params[:subject_id] && params[:subject_type] && params[:user_likes_it]
 
-    if current_user
-      current_user_id = current_user.id
-    else
-      current_user_id = nil
+        Like.toggle( current_user.id, params[:subject_id] , params[:subject_type] )
+        #ZZ::Async::LikeClick.enqueue( current_user.id, params[:subject_id] , params[:subject_type] )
+        if params[:user_likes_it]=='false' && current_user.preferences.asktopost_likes
+            @subj_id   = params[:subject_id]
+            @subj_type = params[:subject_type]
+            @url, @message = Like.default_like_post_message(current_user, @subj_id, @subj_type )
+            @is_facebook_linked = current_user.identity_for_facebook.credentials_valid?
+            @is_twitter_linked  = current_user.identity_for_twitter.credentials_valid?
+            render '_social_dialog.html.erb', :layout => false and return
+        end
     end
-    
-    if params['user_id']
-      #Like.toggle( current_user_id, params['user_id'], Like::USER )
-      ZZ::Async::LikeClick.enqueue( current_user_id, params['user_id'], Like::USER )
-      render :nothing => true and return
-    elsif params['album_id']
-      #Like.toggle( current_user_id, params['album_id'], Like::ALBUM )
-      ZZ::Async::LikeClick.enqueue( current_user_id, params['album_id'], Like::ALBUM )
-      render :nothing => true and return
-    elsif params['photo_id']
-      #Like.toggle( current_user_id, params['photo_id'], Like::PHOTO )
-      ZZ::Async::LikeClick.enqueue( current_user_id, params['photo_id'], Like::PHOTO )
-      render :nothing => true and return
-    end
-
-    render :nothing => true, status=> 400 and return
+    render :nothing => true
   end
-  
+
+  def post
+    if current_user && params[:subject_id] && (params[:tweet] || params[:facebook] || params[:dothis])
+      Like.post_with_preferences( current_user.id, params[:subject_id], params[:message], params[:tweet], params[:facebook], params[:dothis])
+      #ZZ::Async::PostLike.enqueue( current_user.id, params['subject_id'], params['messge'], params['tweet'], params['facebook'], params['dothis'])
+    end
+    render :nothing => true
+  end
 end

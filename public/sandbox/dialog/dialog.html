@@ -42,7 +42,7 @@
                     <input type='checkbox'/>  <span style='color:#3fc0fd; font-weight: 700;'>Twitter</span> ?
                 </div>
                 <div id="ld-middle">
-                    <input type='textarea'/>
+                    <textarea>Joseph likes New Zealand 2010 on ZangZing - Group Photo Sharing</textarea>
                 </div>
                 <div id="ld-dothis">
                     <input type='checkbox'/> Do this everytime I like something
@@ -72,7 +72,13 @@
    $('#modal-button').click( function(){   $('#social-like-dialog').zz_dialog('toggle'); });
 
   $('#content2').zz_dialog({ autoOpen: false, modal: false, left: '50px', top: '50px' });
-  $('#nonmodal-button').click( function(){   $('#content2').zz_dialog('toggle'); });
+ // $('#nonmodal-button').click( function(){   $('#content2').zz_dialog('toggle'); });
+
+   var dynamic =  $('<div id="dynamic">This is dynamic content not inserted anywhere</div>');
+   dynamic.width('200px');
+   dynamic.height('200px');
+   dynamic.zz_dialog({ autoOpen: false, modal: false });
+   $('#nonmodal-button').click( function(){   dynamic.zz_dialog('toggle'); });
 
 
 </script>

@@ -380,7 +380,6 @@ zz.init = {
 
 
 
-logger.debug(((new Date()).getTime() - start) +" after create grid");
          like.init();
 
                 //setup upload progress smeter
@@ -716,14 +715,14 @@ logger.debug(((new Date()).getTime() - start) +" after create grid");
 
 //======================================= Like Menu  ==============================================
     like_menu: function(){
-        zz.toolbars.init_like_menu();
+        var menu = $( zz.toolbars.build_like_menu() ).zzlike_menu();
         $('#footer #like-button').click(function(){
             if($(this).hasClass('disabled') || $(this).hasClass('selected')){
                 return;
             }
-
-            zz.toolbars.show_like_menu();
+            $(menu).zzlike_menu('open',this);
         } );
+        like.init();
     }
 
 };

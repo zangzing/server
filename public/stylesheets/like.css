@@ -56,7 +56,7 @@ div.zzlike div.zzlike-count{
 .like-menu{
     position:absolute;
     width: 120px;
-    z-index: 99999;
+    z-index: 99990;
     background: url("/images/bg-like-popup.png") no-repeat scroll;
     padding: 0;
     margin: 0;
@@ -72,12 +72,11 @@ div.zzlike div.zzlike-count{
     font-weight: 300;
 }
 
-.like-menu.one-item{    height: 56px;  background-position: left -61; }
-.like-menu.two-items{   height: 85px;  background-position: -123px -31px; }
-.like-menu.three-items{ height: 117px; background-position: -247px 0; }
+.like-menu.one-item{    height:  56px;  background-position:    0   -61px; }
+.like-menu.two-items{   height:  85px;  background-position: -123px -31px; }
+.like-menu.three-items{ height: 117px;  background-position: -247px   0;   }
 
 .like-menu li{
-    width: 100%;
     background: url("/images/btn-like.png") no-repeat scroll;
     margin-left: 0;
     padding: 10px 0 5px 38px;
@@ -124,16 +123,18 @@ div.zzlike div.zzlike-count{
    height:65px;
 }
 
-#ld-middle input{
-    height: 100%;
-    width: 100%;
+#ld-middle textarea{
+    width: 440px;
+    height: 55px;
     border: 1px solid #c8c8c9;
+    font-size: 14px;
+    padding: 8px;
+    vertical-align:text-top;
     -moz-box-shadow: 0px 0px 1px 1px  #fed33a;
     -webkit-box-shadow: 0px 0px 1px 1px  #fed33a;
     box-shadow: 0px 0px 1px 1px  #fed33a;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
-    behavior: url('/javascripts/lib/ie-css3.htc'); /* rounded corners and shadows for ie*/
 }
 
 #ld-dothis{
@@ -145,7 +146,7 @@ div.zzlike div.zzlike-count{
    width: 90px;
    position: absolute;
    bottom: 0;
-   right: 100px;
+   right: 95px;
 
 }
 
@@ -153,5 +154,5 @@ div.zzlike div.zzlike-count{
    width: 80px;
    position: absolute;
    bottom: 0;
-   right: 8px;
+   right: 0px;
 }

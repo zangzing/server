@@ -13,6 +13,7 @@ class User < ActiveRecord::Base
 
   has_many :albums,              :dependent => :destroy
   has_one  :profile_album,       :dependent => :destroy, :autosave => true
+  has_one  :preferences,         :dependent => :destroy, :class_name => "UserPreferences", :autosave => true
   has_many :identities,          :dependent => :destroy
   has_many :shares
   has_many :activities,          :dependent => :destroy
@@ -37,6 +38,7 @@ class User < ActiveRecord::Base
 
   before_save    :split_name
   before_create  :build_profile_album
+  before_create  :build_preferences
 
   validates_presence_of :name, :unless => :automatic?
   validates_presence_of :username, :unless => :automatic?

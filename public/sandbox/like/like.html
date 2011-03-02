@@ -2,11 +2,14 @@
 <head>
     <link href="/stylesheets/main.css" media="screen" rel="stylesheet" type="text/css" />
     <link href="/stylesheets/like.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/stylesheets/dialog.css" media="screen" rel="stylesheet" type="text/css" />
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js"></script>
     <script type="text/javascript" src="../../javascripts/jquery-lib/jquery.ui.widget.js"></script>
-	<script type="text/javascript" src="/javascripts/zz/like.js"></script>
     <script type="text/javascript" src="/javascripts/zz/zz.core.js"></script>
     <script type="text/javascript" src="/javascripts/zz/zz.toolbars.js"></script>
+	<script type="text/javascript" src="/javascripts/zz-oauthmanager/oauthmanager.js"></script>
+    <script type="text/javascript" src="/javascripts/zz/dialog.js"></script>
+    <script type="text/javascript" src="/javascripts/zz/like.js"></script>
     <title>ZangZing Like Tag Test</title>
 </head>
 <body>
@@ -25,29 +28,29 @@
 <H2> Like tags with count and image</H2>
 
 <div style="position: relative; left: 45%; width:100px;">
-    <div class="zzlike" data-zzid="aawtlx4dDcnyIJRKOsBfXg" data-zztype="user"></div></br>
-    <div class="zzlike" data-zzid="bawtladfdfd34JRKOsBfXg" data-zztype="album"></div></br>
-    <div class="zzlike" data-zzid="cawtladfdfd34JRKOsBfXg" data-zztype="photo"></div></br>
+    <div class="zzlike" data-zzid="cvUhxGEETi3AG4FyuxrM4M" data-zztype="user"></div></br>
+    <div class="zzlike" data-zzid="bKY1if8ZvhqlqA5JPY4pYW" data-zztype="album"></div></br>
+    <div class="zzlike" data-zzid="dC-7W5u5vp_zO8n-4crHei" data-zztype="photo"></div></br>
 </div>
 
 <h2> Two tags to the same object on same page</h2>
 
 <div style="position: relative; left: 45%; width:100px;">
-    <div class="zzlike" data-zzid="ad-q8q7KbcqiooH9tvYFiu" data-zztype="photo"></div></br>
-    <div class="zzlike" data-zzid="ad-q8q7KbcqiooH9tvYFiu" data-zztype="photo"></div></br>
+    <div class="zzlike" data-zzid="dC-7W5u5vp_zO8n-4crHei" data-zztype="photo"></div></br>
+    <div class="zzlike" data-zzid="dC-7W5u5vp_zO8n-4crHei" data-zztype="photo"></div></br>
 </div>
 
 <ul id="3item-menu">
-   <li class="zzlike" data-zzid="aawtlx4dDcnyIJRKOsBfXg" data-zztype="user"></li>
-   <li class="zzlike" data-zzid="bawtladfdfd34JRKOsBfXg" data-zztype="album"></li>
-   <li class="zzlike" data-zzid="cawtladfdfd34JRKOsBfXg" data-zztype="photo"></li>
+   <li class="zzlike" data-zzid="cvUhxGEETi3AG4FyuxrM4M" data-zztype="user"></li>
+   <li class="zzlike" data-zzid="bKY1if8ZvhqlqA5JPY4pYW" data-zztype="album"></li>
+   <li class="zzlike" data-zzid="dC-7W5u5vp_zO8n-4crHei" data-zztype="photo"></li>
 </ul>
 <ul id="2item-menu">
-   <li class="zzlike" data-zzid="aawtlx4dDcnyIJRKOsBfXg" data-zztype="user"></li>
-   <li class="zzlike" data-zzid="bawtladfdfd34JRKOsBfXg" data-zztype="album"></li>
+   <li class="zzlike" data-zzid="cvUhxGEETi3AG4FyuxrM4M" data-zztype="user"></li>
+   <li class="zzlike" data-zzid="bKY1if8ZvhqlqA5JPY4pYW" data-zztype="album"></li>
 </ul>
 <ul id="1item-menu">
-   <li class="zzlike" data-zzid="bawtladfdfd34JRKOsBfXg" data-zztype="album"></li>
+   <li class="zzlike" data-zzid="bKY1if8ZvhqlqA5JPY4pYW" data-zztype="album"></li>
 </ul>
 
 
@@ -57,10 +60,10 @@
 
 <script type="text/javascript">
     like.init();
-    zz.toolbars.init_like_menu();
-    $('#1item-button').zz_like_menu({ menu: '1item-menu'});
-    $('#2item-button').zz_like_menu({ menu: '2item-menu'});
-    $('#3item-button').zz_like_menu({ menu: '3item-menu'});
+    $('#1item-menu').zzlike_menu({ anchor: '#1item-button'});
+    $('#2item-menu').zzlike_menu({ anchor: '#2item-button'});
+    $('#3item-menu').zzlike_menu();
+    $('#3item-button').click( function(){ $('#3item-menu').zzlike_menu( 'open', this)});
 </script>
 </body>
 </html>
