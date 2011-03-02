@@ -2,7 +2,7 @@ require 'spec/selenium/ui_model'
 require 'spec/selenium/uimodel_helper'
 require 'spec/selenium/connector_shared'
 
-describe "contributors test" do
+describe "Contact import test" do
   include UimodelHelper
 
   include ConnectorShared
@@ -36,7 +36,13 @@ describe "contributors test" do
   end
 
   it "import outlook contacts" do
-    ui.wizard.album_contributors_tab.import_outlook_contacts    # uncomment in wizard.rb
+    ui.wizard.album_contributors_tab.import_outlook_contacts
+    if ui.wizard.add_photos_tab.agent_not_installed?
+      @@no_agent = true 
+      ui.browser.key_down('css=#no-agent-dialog', '\27')
+      ui.browser.key_up('css=#no-agent-dialog', '\27')
+      throw "ZangZing Agent not installed!"
+    end
   end
   
   it "verify contacts from yahoo are imported" do
@@ -53,7 +59,7 @@ describe "contributors test" do
   end    
 
   it "verify contacts from outlook are imported" do
-    ui.wizard.album_contributors_tab.imported_outlook?.should be_true
+    ui.wizard.album_contributors_tab.imported_outlook?.should be_true unless @@no_agent
   end
 
 end

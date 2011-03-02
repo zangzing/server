@@ -50,9 +50,9 @@ describe "Email test" do
 
   it "adds 3 contributors" do
     @@contributors = [
-      "contrib-#{current_user[:stamp].downcase}-a@test.zangzing.com",
-      "contrib-#{current_user[:stamp].downcase}-b@test.zangzing.com",
-      "contrib-#{current_user[:stamp].downcase}-c@test.zangzing.com"
+      "contrib-#{current_user[:stamp].downcase}-a@bucket.zangzing.com",
+      "contrib-#{current_user[:stamp].downcase}-b@bucket.zangzing.com",
+      "contrib-#{current_user[:stamp].downcase}-c@bucket.zangzing.com"
     ]
     ui.wizard.click_contributors_tab
     #ui.wizard.album_contributors_tab.visible?.should be_true
@@ -84,8 +84,8 @@ describe "Email test" do
 
   it "shares album by email with 2 peeps" do
     @@coauthors = [
-      "coauth-#{current_user[:stamp].downcase}-first@test.zangzing.com",
-      "coauth-#{current_user[:stamp].downcase}-second@test.zangzing.com",
+      "coauth-#{current_user[:stamp].downcase}-first@bucket.zangzing.com",
+      "coauth-#{current_user[:stamp].downcase}-second@bucket.zangzing.com",
     ]
     ui.wizard.click_share_tab
     ui.wizard.album_share_tab.click_share_by_email

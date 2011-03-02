@@ -11,9 +11,9 @@ module UiModel
       end
 
       def get_album_list
-        album_count = @browser.get_xpath_count("//ul[contains(@class, 'albums-grid-view')]/li").to_i
+        album_count = @browser.get_xpath_count("//div[contains(@class, 'album-cell')]").to_i
         albums = []
-        1.upto(album_count) { |i| albums << @browser.get_text("//ul[contains(@class, 'albums-grid-view')]/li[#{i}]").strip }
+        1.upto(album_count) { |i| albums << @browser.get_text("xpath=(//div[contains(@class, 'album-cell')]/div[contains(@class, 'album-name')])[#{i}]").strip }
         albums
       end
 
@@ -26,14 +26,14 @@ module UiModel
       end
 
       def click_album(album_name)
-        xpath = "xpath=//ul[contains(@class, 'albums-grid-view')]/li/text()[normalize-space(.)='#{album_name}']/..//a"
+        xpath = "xpath=//div[contains(@class, 'album-name') and contains(text(),'#{album_name}')]/../a"
         @session.wait_for xpath
         @browser.click xpath
         @browser.wait_for_page
       end
 
       def get_photos_list
-        @session.wait_for "//div[@class='photogrid-container']/div[@class='photogrid-cell']"
+        @session.wait_for "css=.photogrid-thumbscroller-vertical"
         photo_count = @browser.get_xpath_count("//div[@class='photogrid-container']/div[@class='photogrid-cell']").to_i
         photos = []
         1.upto(photo_count) { |i| photos << @browser.get_text("xpath=(//div[contains(@class, 'photogrid-container')]//div[contains(@class, 'photo-caption')])[#{i}]").strip }
