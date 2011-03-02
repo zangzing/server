@@ -1,7 +1,7 @@
 class CreateUserPreferences < ActiveRecord::Migration
   def self.up
-    create_table :user_preferences, :guid => false, :force => true do |t|
-           t.references_with_guid   :user,    :null => false
+    create_table :user_preferences, :force => true do |t|
+           t.column                 :user_id, :bigint, :null => false
            t.boolean                :tweet_likes,      :default => false
            t.boolean                :facebook_likes,   :default => false
            t.boolean                :asktopost_likes,  :default => true
