@@ -185,10 +185,10 @@
                 showThumbscroller:false,
                 cellWidth: 190,
                 cellHeight: 190,
-                onClickPhoto: function(index, photo){
+                onClickPhoto: function(index, photo, element){
                     if(photo.type === 'folder'){
                         if(photo.id === 'add-all-photos'){
-                            self.add_photos_to_album(photo.add_url);
+                            self.add_folder_to_album(photo.add_url, element);
                         }
                         else{
                              self.openFolder(photo);
@@ -199,7 +199,7 @@
 //                            children.shift(); //remove the add photos button
 //                        }
 //                        self.singlePictureView(children, photo.id);
-                        self.add_photos_to_album(photo.add_url);
+                        self.add_photo_to_album(photo.add_url, element);
                     }
                 }
 
@@ -608,7 +608,59 @@
             });
         },
 
-        add_photos_to_album: function(add_url){
+        add_photo_to_album: function(add_url, element){
+            var self = this;
+            self.animate_to_tray(element, function(){
+                self.add_to_album(add_url);
+            });
+        },
+
+        add_folder_to_album: function(add_url, element){
+            var self = this;
+            self.animate_to_tray(element, function(){
+                self.add_to_album(add_url);
+            });
+        },
+
+        animate_to_tray: function(element, callback){
+            var self = this;
+
+            element = element.find('.photo-image');
+
+
+            var start_top = element.offset().top;
+            var start_left = element.offset().left;
+
+            var end_top = self.tray_element.offset().top;
+            var end_left = self.tray_next_thumb_offset_x();
+
+
+            var on_finish_animation = function(){
+                callback();
+                $(this).remove();
+            }
+
+            element.clone()
+                    .css({position: 'absolute', zIndex: 2000, left: start_left, top: start_top,border:'1px solid #ffffff'})
+                    .appendTo('body')
+                    .addClass('animate-photo-to-tray')
+                    .animate({
+                        width: '20px',
+                        height: '20px',
+                        top: (end_top) +'px',
+                        left: (end_left) +'px'
+                    }, 1000, 'easeInOutCubic', on_finish_animation);
+
+
+//            element.parents('li').addClass('in-tray');
+
+
+
+
+
+        },
+
+        add_to_album: function(add_url){
             var self = this;
 
             add_url += (add_url.indexOf('?') == -1) ? '?' : '&'
@@ -667,7 +719,7 @@
             });
         },
 
-        next_thumb_offset_x: function(){
+        tray_next_thumb_offset_x: function(){
             return this.tray_widget.nextThumbOffsetX();
         },
 

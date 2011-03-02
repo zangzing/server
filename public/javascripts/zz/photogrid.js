@@ -119,7 +119,7 @@
                     },
 
                     onClick: function(){
-                        self.options.onClickPhoto(index, photo);
+                        self.options.onClickPhoto(index, photo, cell);
                     },
 
                     scrollContainer: self.element,
