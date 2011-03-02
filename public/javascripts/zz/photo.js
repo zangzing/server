@@ -39,23 +39,25 @@
             var html = '';
 
             html += '<div class="photo-border">'
-            html += '<img class="photo-image" src="/images/photo_placeholder.png">';
-            html += '<div class="photo-delete-button"></div>';
-            html += '<div class="photo-uploading-icon"></div>';
-            html += '<div class="photo-error-icon"></div>';
-            html += '<img class="bottom-shadow" src="/images/photo/bottom-full.png">';
+            html += '   <img class="photo-image">';
+            html += '   <div class="photo-delete-button"></div>';
+            html += '   <div class="photo-uploading-icon"></div>';
+            html += '   <div class="photo-error-icon"></div>';
+            html += '   <img class="bottom-shadow" src="/images/photo/bottom-full.png">';
             html += '</div>';
             html += '<div class="photo-caption">' + self.options.caption +'</div>';
 
-            $(html).appendTo(this.element);
+            var template = $(html);
+            template.appendTo(this.element);
 
-            self.borderElement = self.element.find('.photo-border');
-            self.imageElement = self.element.find('.photo-image');
-            self.captionElement = self.element.find('.photo-caption');
-            self.deleteButtonElement = self.element.find('.photo-delete-button');
-            self.uploadingElement = self.element.find('.photo-uploading-icon');
-            self.errorElement = self.element.find('.photo-error-icon');
-            self.bottomShadow = self.element.find('.bottom-shadow');
+
+            self.borderElement = this.element.find('.photo-border');
+            self.imageElement = this.element.find('.photo-image');
+            self.captionElement = this.element.find('.photo-caption');
+            self.deleteButtonElement = this.element.find('.photo-delete-button');
+            self.uploadingElement = this.element.find('.photo-uploading-icon');
+            self.errorElement = this.element.find('.photo-error-icon');
+            self.bottomShadow = this.element.find('.bottom-shadow');
 
             self.captionHeight = 30;
 
@@ -63,6 +65,7 @@
             if(self.options.noShadow){
                 self.borderElement.addClass('no-shadow');    
             }
+
 
 
             if(self.options.aspectRatio){
@@ -173,6 +176,9 @@
 
             if(!self.options.lazyLoad){
                 self._loadImage()
+            }
+            else{
+                self.imageElement.attr('src', '/images/photo_placeholder.png');
             }
 
 
