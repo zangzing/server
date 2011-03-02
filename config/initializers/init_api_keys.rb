@@ -1,6 +1,6 @@
 api_creds = {}
 [:flickr, :facebook, :smugmug, :shutterfly, :twitter, :yahoo, :photobucket, :ms_live,
-:bitly, :mailchimp].each do |service|
+:bitly, :mailchimp, :zza].each do |service|
   all_env_keys = YAML.load(File.read("#{Rails.root}/config/#{service}_api_keys.yml"))
   api_creds[service] = all_env_keys[Rails.env]
 end
@@ -15,6 +15,7 @@ TWITTER_API_KEYS      = api_creds[:twitter]
 WINDOWS_LIVE_API_KEYS = api_creds[:ms_live]
 BITLY_API_KEYS        = api_creds[:bitly]  #YAML.load(File.read("#{Rails.root}/config/bitly_api_keys.yml"))
 MAILCHIMP_API_KEYS    = api_creds[:mailchimp]
+ZZA_CONFIG            = api_creds[:zza]
 
 msg = "=> Connector API keys loaded."
 Rails.logger.info msg

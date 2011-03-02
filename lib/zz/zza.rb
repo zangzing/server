@@ -278,18 +278,18 @@ module ZZ
           # close out the data with final json array and map closure
           # if we have data - technically we should always have at least
           # one line so the count check is not strictly needed
-          @file.puts("]}") if @entry_count > 0
+          (@file.puts("]}") if @entry_count > 0) rescue nil
 
           # rename to path without inuse flag
           new_path = ZZA_TEMP_DIR + "/" + @file_name
           old_path = @file.path
-          @file.close
+          @file.close rescue nil
           @file = nil
 
           # rename happens after the close to ensure
           # we are done with it before it is fair game
           # to be read and deleted by a sender thread
-          File.rename(old_path, new_path)
+          File.rename(old_path, new_path) rescue nil
         end
       end
     end
@@ -341,13 +341,13 @@ module ZZ
           # array we are building
           mod_str = ',' + json_str
         end
-        file.puts(mod_str)
+        file.puts(mod_str) rescue nil
         @entry_count += 1
         # after every FLUSH_AFTER_COUNT entry go ahead and flush
         # helps keep file in consistent state and minimize loss
         # if we have a hard crash in this process
         if @entry_count % FLUSH_AFTER_COUNT == 0
-          file.flush
+          file.flush rescue nil
         end
         if @entry_count >= MAX_EVENTS_PER_FILE
           # we've reached the upper bounds so close

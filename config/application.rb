@@ -7,12 +7,17 @@ require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
 
+require 'active_record/connection_adapters/mysql2_adapter'
+
 # If you have a Gemfile, require the gems listed there, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(:default, Rails.env) if defined?(Bundler)
 
 module Server
   class Application < Rails::Application
+
+    # set the default primary key type to be a big int
+    ActiveRecord::ConnectionAdapters::Mysql2Adapter::NATIVE_DATABASE_TYPES[:primary_key] = "BIGINT UNSIGNED DEFAULT NULL auto_increment PRIMARY KEY"
 
     # pull in all files within lib
     #GWS - pulling this out for now since it has conflicts in deployment EY
@@ -30,8 +35,7 @@ module Server
     
     # This allows for GUID use in primary keys 
     config.active_record.schema_format = :sql 
-    ActiveRecord::Base.guid_generator = :mysql
-  
+
   
     # ZangZing Server Defaul Configuration Values
     #config.application_host =  'duhast.homeip.net'
@@ -50,8 +54,6 @@ module Server
     config.action_mailer.sendmail_settings = {:arguments => '-i'} # workaround for sSMTP bug not accepting -t option
 
     config.active_support.deprecation = :log
-
-    ActiveRecord::Base.guid_generator = :random
 
     # in rails 3 the default is to include the type of object as a
     # key in the output json.  we want the rails 2 behavior where

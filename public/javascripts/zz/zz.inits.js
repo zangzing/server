@@ -378,10 +378,6 @@ zz.init = {
 
             }
 
-
-
-
-
                 //setup upload progress smeter
                 $('#progress-meter').hide();
 

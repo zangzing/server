@@ -38,7 +38,6 @@
 require 'zz'
 
 class Photo < ActiveRecord::Base
-  usesguid
 
   attr_accessible :user_id, :album_id, :upload_batch_id, :agent_id, :source_guid, :caption,
                   :image_file_size, :capture_date, :source_thumb_url, :source_screen_url
@@ -51,8 +50,7 @@ class Photo < ActiveRecord::Base
   # when retrieving a search from the DB it will always be ordered by created date descending a.k.a Latest first
   default_scope :order => 'pos ASC, created_at ASC'
 
-
-  before_create :substitute_source_urls
+  before_create :set_guid_for_path
   before_create :set_default_position
 
 
@@ -68,6 +66,11 @@ class Photo < ActiveRecord::Base
 
   validates_presence_of             :album_id, :user_id, :upload_batch_id
 
+
+  # generate a guid and attach to this object
+  def set_guid_for_path
+    self.guid_part = UUIDTools::UUID.random_create.to_s
+  end
 
   # get an instance of the attached image helper class
   def attached_image
@@ -269,6 +272,24 @@ class Photo < ActiveRecord::Base
     self.state == 'error'
   end
 
+  # we now have to build the agent case after the photo object
+  # itself has been created and saved because we switched to auto generated ids
+  # and don't know what the id is until after we save
+  def make_agent_source(type)
+    self.agent_id ? "http://localhost:30777/albums/#{self.album.id}/photos/#{self.id}.#{type}" : nil
+  end
+
+  def make_source_thumb_url
+    url = self.source_thumb_url
+    url.nil? ? @temp_screen ||= make_agent_source("thumb") : url
+  end
+
+  def make_source_screen_url
+    url = self.source_screen_url
+    url.nil? ? @temp_screen ||= make_agent_source("screen") : url
+  end
+
+
   # safe version of source thumb
   # if nil which it can be if
   # processing photo from source such as email
@@ -281,7 +302,7 @@ class Photo < ActiveRecord::Base
     if self.ready?
       attached_image.url(PhotoAttachedImage::STAMP)
     else
-      return safe_url(self.source_thumb_url)
+      return safe_url(make_source_thumb_url)
     end
   end
 
@@ -289,7 +310,7 @@ class Photo < ActiveRecord::Base
     if self.ready?
       attached_image.url(PhotoAttachedImage::THUMB)
     else
-      return safe_url(self.source_thumb_url)
+      return safe_url(make_source_thumb_url)
     end
   end
 
@@ -297,7 +318,7 @@ class Photo < ActiveRecord::Base
     if self.ready?
       attached_image.url(PhotoAttachedImage::MEDIUM)
     else
-      return safe_url(self.source_screen_url)
+      return safe_url(make_source_screen_url)
     end
   end
 
@@ -305,7 +326,7 @@ class Photo < ActiveRecord::Base
     if self.ready?
       attached_image.url(PhotoAttachedImage::ORIGINAL)
     else
-      return safe_url(self.source_screen_url)
+      return safe_url(make_source_screen_url)
     end
   end
 
@@ -319,11 +340,6 @@ class Photo < ActiveRecord::Base
 
   def self.generate_source_guid(url)
      Digest::MD5.hexdigest(url)
-  end
-
-  def substitute_source_urls
-    self.source_thumb_url = self.source_thumb_url.gsub(':photo_id', self.id) if self.source_thumb_url
-    self.source_screen_url =  self.source_screen_url.gsub(':photo_id', self.id) if self.source_screen_url
   end
 
   def metadata
@@ -430,7 +446,7 @@ class Photo < ActiveRecord::Base
 
   end
 
-  
+
   def set_default_position
     if capture_date.nil?
       self.pos = "%10.6f" % (Time.now + 100.years) #If capture date is not known, add 100 years to today and it will go at the end

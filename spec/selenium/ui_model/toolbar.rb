@@ -16,7 +16,7 @@ module UiModel
     end
 
     def signed_in_as?(user)
-      @browser.get_text("css=div[id=user-info]").casecmp(user)==0
+      @browser.get_text("css=#user-info > h2").casecmp(user)==0
     end
 
     def click_create_album

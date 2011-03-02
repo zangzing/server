@@ -25,7 +25,7 @@ module ConnectorShared
     ui.toolbar.signin_drawer.join_tab.type_password current_user[:password]
     ui.toolbar.signin_drawer.join_tab.click_join_button
 
-    ui.toolbar.signed_in_as?(current_user[:username]).should be_true
+    ui.toolbar.signed_in_as?(current_user[:full_name]).should be_true
   end
 
   def create_new_album(type)
@@ -68,7 +68,6 @@ module ConnectorShared
     ui.toolbar.click_zz_logo
     ui.wait_load
     ui.user_homepage.inside_album_list?.should be_true
-
     albums = ui.user_homepage.get_album_list
     albums.include?(album_name).should be_true
 
