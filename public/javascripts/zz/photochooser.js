@@ -149,6 +149,7 @@
                 }
                 else{
                     child.src = agent.checkAddCredentialsToUrl(child.thumb_url);
+                    child.id = child.source_guid;
                 }
 
                 child.caption = child.name;
@@ -170,16 +171,46 @@
                         self.openFolder(photo);
                     }
                     else{
-                        //add photo to album
-                        alert('add photo');
+                        self.singlePictureView(children, photo.id);
                     }
- 
                 }
-                
+
             }).data().zz_photogrid;
 
         },
 
+        singlePictureView:function(children, photoId){
+            var self = this;
+
+            children = $.map(children, function(child, index){
+                child.previewSrc = agent.checkAddCredentialsToUrl(child.thumb_url);
+                child.src = agent.checkAddCredentialsToUrl(child.screen_url);
+                return child;
+            });
+
+
+            var gridElement = $('<div class="photogrid"></div>');
+            self.bodyElement.html(gridElement);
+
+            var grid = gridElement.zz_photogrid({
+                photos:children,
+                showThumbscroller:false,
+                cellWidth: 800,
+                cellHeight: 400,
+                singlePictureMode: true,
+                currentPhotoId: photoId,
+                onClickPhoto: function(index, photo){
+                    if(photo.type === 'folder'){
+                        self.openFolder(photo);
+                    }
+                    else{
+                        //add photo to album
+                        alert('add photo');
+                    }
+                }
+
+            }).data().zz_photogrid;
+        },
 
 
         open_login_window : function(folder, login_url) {
