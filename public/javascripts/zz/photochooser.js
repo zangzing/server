@@ -23,7 +23,9 @@
                              '       <h2>Folder Name</h2>' +
                              '   </div>' +
                              '   <div class="body"></div>' +
-                             '   <div class="footer"></div>' +
+                             '   <div class="footer">' +
+                             '     <div class="added-pictures-tray"></div>' +
+                             '   </div>' +
                              '</div>');
 
 
@@ -41,8 +43,9 @@
                 self.goBack();
             });
 
-
             self.showRoots();
+
+            self.init_tray();
 
         },
 
@@ -111,17 +114,17 @@
 
 
             if(!_.isUndefined(folder.children)){
-                self.showFolder(folder.name, folder.children);
+                self.showFolder(folder, folder.children);
             }
             else{
                 self.callAgentOrServer({
                    url: folder.open_url,
                    success:function(json){
-                       self.showFolder(folder.name, json);
+                       self.showFolder(folder, json);
                    },
                    error: function(error){
                        if(!_.isUndefined(folder.on_error)){
-                           folder.on_error();
+                           folder.on_error(error);
                        }
                        else{
                             alert('error');
@@ -132,7 +135,7 @@
         },
 
 
-        showFolder: function(name, children){
+        showFolder: function(folder, children){
             var self = this;
 
 
@@ -166,11 +169,11 @@
                     id: 'add-all-photos',
                     src: '/images/folders/add_all_photos.png',
                     caption: '',
-                    type: 'folder' //todo: need new type for button..
+                    type: 'folder', //todo: need new type for button..
+                    add_url: folder.add_url
                 };
 
                 children.unshift(addAllButton);
-
             }
 
 
@@ -185,17 +188,18 @@
                 onClickPhoto: function(index, photo){
                     if(photo.type === 'folder'){
                         if(photo.id === 'add-all-photos'){
-                            alert('add all photos');
+                            self.add_photos_to_album(photo.add_url);
                         }
                         else{
-                            self.openFolder(photo);
+                             self.openFolder(photo);
                         }
                     }
                     else{
-                        if(hasPhotos){
-                            children.shift(); //remove the add photos button
-                        }
-                        self.singlePictureView(children, photo.id);
+//                        if(hasPhotos){
+//                            children.shift(); //remove the add photos button
+//                        }
+//                        self.singlePictureView(children, photo.id);
+                        self.add_photos_to_album(photo.add_url);
                     }
                 }
 
@@ -567,8 +571,115 @@
 
             return roots;
 
+        },
+
+
+        tray_widget: null,
+        tray_photos: [],
+        tray_element: null,
+
+        init_tray: function(){
+            var self = this;
+            self.tray_element = self.element.find(".added-pictures-tray")
+            self.tray_widget =  self.tray_element.zz_thumbtray({
+                    photos:[],
+                    allowDelete:true,
+                    allowSelect:false,
+                    onDeletePhoto:function(index, photo){
+                        self.tray_photos = self.tray_photos.splice(index,1);
+                        //filechooser.update_checkmarks();
+                        self.delete_photo_from_tray(photo);
+                    }
+                 }).data().zz_thumbtray;
+
+            self.reload_tray();
+        },
+
+        reload_tray : function() {
+            var self = this;
+            $.ajax({
+                dataType: 'json',
+                url: '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
+                success: function(photos){
+                    self.tray_photos = photos;
+                    self.tray_widget.setPhotos(self.map_photos(self.tray_photos));
+                }
+
+            });
+        },
+
+        add_photos_to_album: function(add_url){
+            var self = this;
+
+            add_url += (add_url.indexOf('?') == -1) ? '?' : '&'
+            add_url += 'album_id=' + zz.album_id;
+
+            self.show_loading_indicator();
+            self.callAgentOrServer({
+                url: add_url,
+                success: function(photos) {
+                    self.tray_photos = self.tray_photos.concat(photos);
+                    self.tray_widget.setPhotos(self.map_photos(self.tray_photos));
+                    self.hide_loading_indicator();
+                    //filechooser.update_checkmarks();
+
+                },
+                error: function(error){
+                    logger.debug(error);
+    //                $.jGrowl("" + error);
+                }
+            });
+
+        },
+
+
+
+        get_photos: function(){
+            return self.tray_photos;
+        },
+
+        map_photos:function(photos){
+            if(! $.isArray(photos)){
+                var photos = [photos];
+            }
+
+            photos = $.map(photos, function(photo, index){
+                var id = photo.id;
+                var src = photo.thumb_url;
+
+                src = agent.checkAddCredentialsToUrl(src);
+
+                return {id:id, src:src};
+            });
+
+            return photos;
+        },
+
+        delete_photo_from_tray: function(photo){
+            $.ajax({
+                type: "DELETE",
+                dataType: "json",
+                url: "/photos/" + photo.id + ".json",
+                error: function(error){
+                    logger.debug(error);
+    //                $.jGrowl("" + error);
+                }
+            });
+        },
+
+        next_thumb_offset_x: function(){
+            return this.tray_widget.nextThumbOffsetX();
+        },
+
+        show_loading_indicator: function(){
+            this.tray_widget.showLoadingIndicator();
+        },
+
+        hide_loading_indicator: function(){
+            this.tray_widget.hideLoadingIndicator();
         }
-        
+
+
 
     });
 })( jQuery );
