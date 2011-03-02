@@ -13,30 +13,31 @@ var like = {
         $('.zzlike').each( function(index, zzliketag){
             wanted_subjects[ $(zzliketag).attr('data-zzid') ]= $(zzliketag).attr('data-zztype');
         });
-        // get the wanted subjects. Use a POST because of GET query string size limitations
-        $.ajax({ type:       'POST',
-                 url:        '/likes.json',
-                 data:       {'wanted_subjects' : wanted_subjects },
-                 success:    function( data ){
-                                like.hash = data;
-                                like.loaded = true;
-                                like.draw_tags();},
-                 dataType: 'json'});
+
+        if( !$.isEmptyObject( wanted_subjects ) ){
+            like.add_id_array( wanted_subjects );
+        } else {
+            like.loaded = true;
+        }
     },
 
     add_id_array: function( wanted_subjects ){
-        if( typeof( wanted_subjects ) != 'undefined' ){
-            // get the wanted subjects. Use a POST because of GET query string size limitations
+        if( !$.isEmptyObject( wanted_subjects ) ){
+             // get the wanted subjects. Use a POST because of GET query string size limitations
             $.ajax({ type:       'POST',
-                 url:        '/likes.json',
-                 data:       {'wanted_subjects' : wanted_subjects },
-                 success:    function( data ){
-                                // merge new data with existing hash
-                                $.extend( like.hash,  data);
-                                for( key in data )
-                                    like.refresh_tag( key );
-                             },
-                 dataType: 'json'});
+                url:        '/likes.json',
+                data:       {'wanted_subjects' : wanted_subjects },
+                success:    function( data ){
+                    if( like.loaded ){
+                        $.extend( like.hash,  data); // merge new data with existing hash
+                        for( key in data )
+                                like.refresh_tag( key );
+                    } else {
+                        like.hash = data;
+                        like.draw_tags();
+                        like.loaded = true;
+                    }},
+                dataType: 'json'});
         }
     },
 

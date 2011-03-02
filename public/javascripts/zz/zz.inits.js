@@ -264,10 +264,7 @@ zz.init = {
 
         zz.init.acct_badge();
         zz.init.like_menu();
-
-
-
-
+    
         setTimeout(function(){
             zz.init.preload_rollover_images();
         }
@@ -309,7 +306,7 @@ zz.init = {
             success: function(json){
 
 
-
+                
             var gridElement = $('<div class="photogrid-container"></div>');
             $('#article').html(gridElement);
             $('#article').css('overflow','hidden');
@@ -374,9 +371,9 @@ zz.init = {
 
 
                 }).data().zz_photogrid;
-
-
             }
+
+
 
                 //setup upload progress smeter
                 $('#progress-meter').hide();
@@ -425,7 +422,15 @@ zz.init = {
                 //update album upload status every 10 seconds
                 setInterval( updateProgressMeter ,10000);
 
-
+                // Update the like array if it exists.
+                if( typeof( like ) != 'undefined'){
+                    var wanted_subjects={};
+                    for( key in json){
+                        id = json[key].id;
+                        wanted_subjects[id]='photo';
+                    }
+                    like.add_id_array( wanted_subjects );
+                }    
             }
         });
 
@@ -713,6 +718,7 @@ zz.init = {
     like_menu: function(){
         var menu = $( zz.toolbars.build_like_menu() ).zzlike_menu();
         like.init();
+
         $('#footer #like-button').click(function(event){
             if($(this).hasClass('disabled') || $(this).hasClass('selected')){
                 return;
@@ -720,7 +726,6 @@ zz.init = {
             $(menu).zzlike_menu('open',this);
             event.stopPropagation();
         } );
-
     }
 
 };

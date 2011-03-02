@@ -63,11 +63,10 @@ zz.toolbars = {
         }
         if (location.hash && location.hash.length > 2) {
             //We are displaying a full size photo, add the photo menu element
-            logger.debug('hash changed to: location.hash ='+location.hash.substr(2));
             photo = $('<li id="like-menu-photo" class="zzlike" data-zzid="'+location.hash.substr(2)+'" data-zztype="photo"></li>');
             //set a listener to keep the subject_id current with the selected photo. Selecting a photo sets its id as the hash
             $(window).bind( 'hashchange', function( event ) {
-              logger.debug('hash changed to: location.hash ='+location.hash.substr(2));
+              //logger.debug('hash changed to: location.hash ='+location.hash.substr(2));
               var id = location.hash.substr(2);
               $('#like-menu-photo').attr('data-zzid', id );
               like.add_id( id, 'photo' );
