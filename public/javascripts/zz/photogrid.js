@@ -124,10 +124,10 @@
 
                     scrollContainer: self.element,
                     lazyLoadThreshold: lazyLoadThreshold,
-                    isUploading: photo.state !== 'ready',
+                    isUploading: ! _.isUndefined(photo.state) ? photo.state !== 'ready': false, //todo: move into photochooser.js
                     isError: photo.state === 'error',
-                    noShadow: photo.type === 'folder',
-                    lazyLoad: photo.type !== 'folder'
+                    noShadow: photo.type === 'folder',                                          //todo: move into photochooser.js
+                    lazyLoad: photo.type !== 'folder'                                           //todo: move into photochooser.js
 
                 });
 

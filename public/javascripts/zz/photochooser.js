@@ -9,12 +9,11 @@
         options: {
         },
 
-        roots:null,
-
+        stack:[],
+        
         _create: function() {
             var self = this;
 
-            self.roots = self._getRoots();
 
 
 
@@ -29,6 +28,7 @@
 
 
 
+            self.backButtonCaptionElement = template.find('.back-button span');
             self.backButtonElement = template.find('.back-button');
             self.folderNameElement = template.find('h2');
             self.bodyElement = template.find('.body');
@@ -36,25 +36,119 @@
 
             self.element.html(template);
 
+
+            self.backButtonElement.click(function(){
+                self.goBack();
+            });
+
+
             self.showRoots();
 
         },
 
-        showRoots: function(){
-            this.showFolder(this.roots);
+
+        callAgentOrServer : function(params){
+            var url = params['url'];
+            var success_handler = params['success'];
+            var error_handler = params['error'];
+
+            if (agent.isAgentUrl(url)) {
+                url = agent.checkAddCredentialsToUrl(url);
+                $.jsonp({
+                    url: url,
+                    success: function(json) {
+                        if(json.headers.status == 200){
+                            success_handler(json.body);
+                        }
+                        else{
+                            error_handler(json);
+                        }
+                    },
+                    error: error_handler
+                });
+            }
+            else {
+                $.ajax({
+                    url: url,
+                    success: success_handler,
+                    error: error_handler
+                });
+            }
         },
 
-        showFolder: function(children){
+        goBack: function(){
             var self = this;
+            self.stack.pop(); //throw away current
+            var current = self.stack.pop(); //pop previous -- this will get added back to stack in showFolder
+            self.showFolder(current.name, current.children);
+        },
+
+        showRoots: function(){
+            this.showFolder('Home', this._getRoots());
+        },
+
+        showFolder: function(name, children){
+            console.log('show folder ' + name);
+            var self = this;
+
+            self.folderNameElement.html(name);
+            if(self.stack.length > 0){
+                self.backButtonCaptionElement.html(_.last(self.stack).name);
+                self.backButtonElement.show();
+            }
+            else{
+                self.backButtonElement.hide();
+            }
+
+            self.stack.push({
+                name: name,
+                children: children
+            });
+
 
             var gridElement = $('<div class="photogrid"></div>');
             self.bodyElement.html(gridElement);
+
+            children = $.map(children, function(child, index){
+                if(child.type === 'folder'){
+                    if(typeof child.src === 'undefined'){
+                        child.src = '/images/folders/blank_off.jpg';
+                        child.rolloverSrc = '/images/folders/blank_on.jpg';
+                    }
+                }
+                else{
+                    child.src = agent.checkAddCredentialsToUrl(child.thumb_url);
+                }
+
+                child.caption = child.name;
+
+                return child;
+            });
 
             var grid = gridElement.zz_photogrid({
                 photos:children,
                 showThumbscroller:false,
                 cellWidth: 190,
-                cellHeight: 190
+                cellHeight: 190,
+                onClickPhoto: function(index, photo){
+                    if(photo.type === 'folder'){
+                        self.callAgentOrServer({
+                           url: photo.open_url,
+                           success:function(json){
+                               self.showFolder(photo.caption, json);
+                           },
+                           error: function(){
+                                alert('error');
+                           }
+                        });
+                    }
+                    else{
+                        //add photo to album
+                        alert('add photo');
+                    }
+ 
+                }
+                
             }).data().zz_photogrid;
 
         },
@@ -97,7 +191,7 @@
                 {
                     open_url: agent.buildAgentUrl('/filesystem/folders/fi9QaWN0dXJlcw=='),
                     type: 'folder',
-                    caption: 'My Pictures',
+                    name: 'My Pictures',
                     classy: 'filechooser folder f_pictures',
                     on_error: file_system_on_error,
                     src: '/images/folders/mypictures_off.jpg',
@@ -110,7 +204,7 @@
                 {
                     open_url: agent.buildAgentUrl('/iphoto/folders'),
                     type: 'folder',
-                    caption: 'iPhoto',
+                    name: 'iPhoto',
                     classy: 'filechooser folder f_iphoto',
                     on_error: iphoto_on_error,
                     src: '/images/folders/iphoto_off.jpg',
@@ -124,7 +218,7 @@
                 {
                     open_url: agent.buildAgentUrl('/picasa/folders'),
                     type: 'folder',
-                    caption: 'Picasa',
+                    name: 'Picasa',
                     classy: 'filechooser folder f_picasa',
                     on_error: picasa_on_error,
                     src: '/images/folders/picasa_off.jpg',
@@ -138,7 +232,7 @@
                 {
                     open_url: agent.buildAgentUrl('/filesystem/folders/fg=='),
                     type: 'folder',
-                    caption: 'My Home',
+                    name: 'My Home',
                     classy: 'filechooser folder f_home',
                     on_error: file_system_on_error,
                     src: '/images/folders/myhome_off.jpg',
@@ -151,7 +245,7 @@
                 {
                     open_url: agent.buildAgentUrl('/filesystem/folders/L1ZvbHVtZXM='),
                     type: 'folder',
-                    caption: 'My Computer',
+                    name: 'My Computer',
                     classy: 'filechooser folder f_mycomputer',
                     on_error: file_system_on_error,
                     src: '/images/folders/mycomputer_off.jpg',
@@ -173,7 +267,7 @@
                 {
                     open_url: agent.buildAgentUrl('/filesystem/folders/flxNeSBEb2N1bWVudHNcTXkgUGljdHVyZXM='),
                     type: 'folder',
-                    caption: 'My Pictures',
+                    name: 'My Pictures',
                     classy: 'filechooser folder f_pictures',
                     on_error: file_system_on_error,
                     src: '/images/folders/mypictures_off.jpg',
@@ -187,7 +281,7 @@
                 {
                     open_url: agent.buildAgentUrl('/picasa/folders'),
                     type: 'folder',
-                    caption: 'Picasa',
+                    name: 'Picasa',
                     classy: 'filechooser folder f_picasa',
                     on_error: picasa_on_error,
                     src: '/images/folders/picasa_off.jpg',
@@ -200,7 +294,7 @@
                 {
                     open_url: agent.buildAgentUrl('/filesystem/folders/fg=='),
                     type: 'folder',
-                    caption: 'My Home',
+                    name: 'My Home',
                     classy: 'filechooser folder f_home',
                     on_error: file_system_on_error,
                     src: '/images/folders/myhome_off.jpg',
@@ -213,7 +307,7 @@
                 {
                     open_url: agent.buildAgentUrl('/filesystem/folders'),
                     type: 'folder',
-                    caption: 'My Computer',
+                    name: 'My Computer',
                     classy: 'filechooser folder f_mycomputer',
                     on_error: file_system_on_error,
                     src: '/images/folders/mycomputer_off.jpg',
@@ -229,7 +323,7 @@
             {
                 open_url: '/shutterfly/folders.json',
                 type: 'folder',
-                caption: 'Shutterfly',
+                name: 'Shutterfly',
                 login_url: '/shutterfly/sessions/new',
                 classy: 'filechooser folder f_shutterfly',
                 connect_message_url: '/static/connect_messages/connect_to_shutterfly.html',
@@ -249,7 +343,7 @@
             {
                 open_url: '/kodak/folders.json',
                 type: 'folder',
-                caption: 'Kodak',
+                name: 'Kodak',
                 login_url:'/kodak/sessions/new',
                 classy: 'filechooser folder f_kodak',
                 connect_message_url: '/static/connect_messages/connect_to_kodak.html',
@@ -270,7 +364,7 @@
             {
                 open_url: '/smugmug/folders.json',
                 type: 'folder',
-                caption: 'SmugMug',
+                name: 'SmugMug',
                 login_url: '/smugmug/sessions/new',
                 classy: 'filechooser folder f_smugmug',
                 connect_message_url: '/static/connect_messages/connect_to_smugmug.html',
@@ -291,7 +385,7 @@
             {
                 open_url: '/facebook/folders.json',
                 type: 'folder',
-                caption: 'Facebook',
+                name: 'Facebook',
                 login_url: '/facebook/sessions/new',
                 classy: 'filechooser folder f_facebook',
                 connect_message_url: '/static/connect_messages/connect_to_facebook.html',
@@ -313,7 +407,7 @@
             {
                 open_url: '/flickr/folders.json',
                 type: 'folder',
-                caption: 'Flickr',
+                name: 'Flickr',
                 login_url: '/flickr/sessions/new',
                 classy: 'filechooser folder f_flickr',
                 connect_message_url: '/static/connect_messages/connect_to_flickr.html',
@@ -334,7 +428,7 @@
             {
                 open_url: '/picasa/folders.json',
                 type: 'folder',
-                caption: 'Picasa Web',
+                name: 'Picasa Web',
                 login_url: '/picasa/sessions/new',
                 classy: 'filechooser folder f_picasa',
                 connect_message_url: '/static/connect_messages/connect_to_picasa_web.html',
@@ -356,7 +450,7 @@
             {
                 open_url: '/photobucket/folders', //No need for .json cause this connector has unusual structure
                 type: 'folder',
-                caption: 'Photobucket',
+                name: 'Photobucket',
                 login_url: '/photobucket/sessions/new',
                 classy: 'filechooser folder f_photobucket',
                 connect_message_url: '/static/connect_messages/connect_to_photobucket.html',
@@ -378,7 +472,7 @@
             {
                 open_url: '/zangzing/folders.json',
                 type: 'folder',
-                caption: 'ZangZing',
+                name: 'ZangZing',
                 classy: 'filechooser folder f_zangzing',
                 connect_message_url: '',
                 src: '/images/folders/zangzing_off.jpg',
