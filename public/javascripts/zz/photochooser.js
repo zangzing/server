@@ -127,7 +127,7 @@
                            folder.on_error(error);
                        }
                        else{
-                            alert('error');
+                            alert('error opening folder');
                        }
                    }
                 });
@@ -677,6 +677,7 @@
 
                 },
                 error: function(error){
+                    alert('error adding photo(s) to album');
                     logger.debug(error);
     //                $.jGrowl("" + error);
                 }
