@@ -219,7 +219,7 @@ class AttachedImage
   def resize_photos()
     begin
       bucket = self.bucket
-      image_id = model.id
+      image_id = model.guid_part
       # download the original file
       original_file = AttachedImage.download_s3_photo(bucket, prefix, image_id, ORIGINAL)
       original_file_path = original_file.path
@@ -300,7 +300,7 @@ class AttachedImage
   #
   def upload file
     path = self.path
-    image_id = model.id
+    image_id = model.guid_part
     key = AttachedImage.build_s3_key(prefix, image_id, ORIGINAL)
     if (path.nil?)
       # first time in pick a bucket to store into
@@ -321,14 +321,14 @@ class AttachedImage
 
   # build the url from this model and field
   def url suffix
-    AttachedImage.build_s3_url(self.bucket, prefix, model.id, suffix, self.updated_at)
+    AttachedImage.build_s3_url(self.bucket, prefix, model.guid_part, suffix, self.updated_at)
   end
 
   # return all keys tied to this image
   # handy helper useful for the cleanup operation where
   # we no longer have the original object
   def all_keys
-    image_id = model.id
+    image_id = model.guid_part
     key = AttachedImage.build_s3_key(prefix, image_id, ORIGINAL)
     keys = [key]
     # now see if any resized photos to go with

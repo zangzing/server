@@ -6,7 +6,6 @@
 # an accoung
 
 class User < ActiveRecord::Base
-  usesguid
   attr_writer      :name
   attr_accessor    :old_password, :reset_password
   attr_accessible  :email, :name, :first_name, :last_name, :username,  :password, :old_password, :automatic, :profile_photo_id

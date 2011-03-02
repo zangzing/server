@@ -21,7 +21,6 @@ class Contributor < ActiveRecord::Base
                         :message    => 'must be a valid email address'
   validates_uniqueness_of :email, :scope => :album_id, :message => "is already registered as a contributor for this album."
 
-  before_create :set_user_id
   after_create :deliver_notification
 
   def self.factory( album, addresses = [] )
@@ -35,14 +34,9 @@ class Contributor < ActiveRecord::Base
 
   def is_a_user?
     if self.user.nil?
-       user = User.find_by_email( self.email )
-       if user.nil?
-         return false
-       else
-         self.user = user
-         self.save
-         return self.user.id
-       end
+      user_id = set_user_via_email
+      self.save if user_id
+      return user_id
     else
       return self.user_id
     end
@@ -57,11 +51,21 @@ class Contributor < ActiveRecord::Base
     ZZ::Async::Email.enqueue( :contributors_added, self.id )
   end
 
+  # does not save
+  # finds the user for the given email
+  # and attaches it
+  def set_user_via_email
+    user = User.find_by_email( self.email )
+    if user.nil?
+      return false
+    else
+      self.user = user
+      return self.user.id
+    end
+  end
+
+
   private
-  def set_user_id
-     self.is_a_user?
-     true #its a before save filter, always return true to avoid stopping the save
-  end  
 
   def self.singleton_factory( album, address )
     c = nil
@@ -71,6 +75,10 @@ class Contributor < ActiveRecord::Base
     else
       c = album.contributors.build( :email => address )
     end
+
+    # explicitly attach the user
+    c.set_user_via_email
+
     if !c.valid?
          if msg = c.errors.on(:email)
             c.errors.clear
