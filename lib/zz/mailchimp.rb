@@ -15,7 +15,7 @@ module ZZ
     # trans campaigns are stored in a hash by name for easy retrieval
     def self.load_setup()
         #check that mailchimp is up
-        ping
+#        ping
         #Make sure all lists and campaigns exist in MailChimp and cache their IDs
         tmp_camps = get_transactional_campaigns
         raise Error, "MailChimp Setup Error: No Transactional campaigns found (type 'trans')"  if tmp_camps.nil? || tmp_camps.length <= 0

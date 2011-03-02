@@ -1,22 +1,8 @@
 GIT
-  remote: git://github.com/fidel/usesguid_migrations.git
-  revision: 24eac9bd8e4fc9b790ac381e9dcb8677ebc37cfa
-  specs:
-    usesguid_migrations (1.0.4)
-      activerecord (>= 2.3)
-      usesguid
-
-GIT
   remote: git://github.com/zangzing/oauth-ruby.git
   revision: f892521f5073eed43a75bb4c3d80bc74dcf2d019
   specs:
     oauth (0.4.5.pre2)
-
-GIT
-  remote: git://github.com/zangzing/usesguid.git
-  revision: 9f688f1fb3ff56d021a2d1fca852a467e7dd2857
-  specs:
-    usesguid (1.0.0)
 
 GEM
   remote: http://rubygems.org/
@@ -113,7 +99,7 @@ GEM
     mime-types (1.16)
     multi_json (0.0.5)
     multipart-post (1.1.0)
-    mysql (2.8.1)
+    mysql2 (0.2.6)
     newrelic_rpm (2.13.4)
     nokogiri (1.4.4)
     oauth-plugin (0.4.0.pre4)
@@ -195,6 +181,7 @@ GEM
     unicorn (3.3.1)
       kgio (~> 2.1)
       rack
+    uuidtools (2.1.2)
     vegas (0.1.8)
       rack (>= 1.0.0)
     vpim (0.695)
@@ -231,7 +218,7 @@ DEPENDENCIES
   launchy
   mechanize
   memcache-client
-  mysql
+  mysql2
   nokogiri
   oauth (= 0.4.5.pre2)!
   oauth-plugin (>= 0.4.0.pre1)
@@ -248,8 +235,7 @@ DEPENDENCIES
   selenium-client
   twitter_oauth
   unicorn
-  usesguid!
-  usesguid_migrations!
+  uuidtools
   vpim
   webrat
   will_paginate (= 3.0.pre2)

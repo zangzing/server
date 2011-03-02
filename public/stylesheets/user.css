@@ -119,6 +119,8 @@ ul.context_menu {
 }
 ul.context_menu  li {
     position: relative;
+    line-height: 30px;
+    padding: 0 0 0 15px;
     clear:both;
     float: none;
     display:block;
@@ -141,6 +143,7 @@ ul.dropdown ul li:last-child {
 -moz-border-radius-bottomleft:5px;
 -moz-border-radius-bottomright:5px;
 }
+
 
 ul.popup{
     -moz-border-radius-topleft:5px;

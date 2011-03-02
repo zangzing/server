@@ -10,7 +10,7 @@
 #   http://coderrr.wordpress.com/2009/01/08/activerecord-threading-issues-and-resolutions/
 
 module ActiveRecord::ConnectionAdapters
-  class MysqlAdapter
+  class Mysql2Adapter
     alias_method :execute_without_retry, :execute
 
     def execute(*args)

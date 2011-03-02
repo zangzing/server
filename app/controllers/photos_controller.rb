@@ -51,9 +51,7 @@ class PhotosController < ApplicationController
                                     :source_guid       =>   params[:source_guid][index.to_s],
                                     :caption           =>   params[:caption][index.to_s],
                                     :image_file_size   =>   params[:size][index.to_s],
-                                    :capture_date      =>   Time.at( params[:capture_date][index.to_s].to_i ),
-                                    :source_thumb_url  =>  "http://localhost:30777/albums/#{album.id}/photos/:photo_id.thumb",
-                                    :source_screen_url => "http://localhost:30777/albums/#{album.id}/photos/:photo_id.screen")
+                                    :capture_date      =>   Time.at( params[:capture_date][index.to_s].to_i ))
                                     #todo: need to handle agent port and url templates in central place for source thumb_url and screen_url
       if photo.save
          photos << photo
@@ -173,8 +171,7 @@ class PhotosController < ApplicationController
 
     if stale?(:last_modified => @album.photos_last_updated_at.utc, :etag => @album)
 
-      cache_key = "Album.Photos." + @album.id + '-' + @album.photos_last_updated_at.to_i.to_s + '.json'
-      cache_key = cache_key.gsub(' ', '_')
+      cache_key = "Album.Photos." + @album.id.to_s + '-' + @album.photos_last_updated_at.to_i.to_s + '.json'
 
       logger.debug 'cache key: ' + cache_key
 

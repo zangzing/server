@@ -3,7 +3,6 @@
 #
 
 class Album < ActiveRecord::Base
-  usesguid
   attr_accessible :name, :privacy, :cover_photo_id
 
   belongs_to :user
@@ -21,7 +20,6 @@ class Album < ActiveRecord::Base
   validates_presence_of  :user_id
   validates_presence_of  :name
   validates_length_of    :name, :maximum => 50
-  validates_length_of    :cover_photo_id, :is => 22, :message => "Invalid ID for cover photo must be GUID(22)", :if => :cover_photo_id_changed?
 
 
   #before_create :set_email

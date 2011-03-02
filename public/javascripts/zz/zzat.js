@@ -5,15 +5,9 @@
  */
 
 
-var zzajs = document.createElement('script');
-zzajs.setAttribute("type","text/javascript");
-zzajs.setAttribute("src", "http://zza.zangzing.com/zza.js");
-if (typeof zzajs != "undefined")
-  document.getElementsByTagName("head")[0].appendChild(zzajs);
-
 // google analytics
 var _gaq = _gaq || [];
-_gaq.push(['_setAccount', '<%=ZZA_CONFIG[:GOOGLE_ANALYTICS_TOKEN]%>']);
+_gaq.push(['_setAccount', zza_config_GOOGLE_ANALYTICS_TOKEN]);
 _gaq.push(['_trackPageview']);
 
 (function() {
@@ -28,7 +22,7 @@ document.write(unescape("%3Cscript src='" + mp_protocol + "api.mixpanel.com/site
 
 
 try {
-    var mpmetrics = new MixpanelLib('<%=ZZA_CONFIG[:MIXPANEL_TOKEN]%>');
+    var mpmetrics = new MixpanelLib(zza_config_MIXPANEL_TOKEN);
 } catch(err) {
     null_fn = function () {};
     var mpmetrics = {  track: null_fn,  track_funnel: null_fn,  register: null_fn,  register_once: null_fn, register_funnel: null_fn };
@@ -38,7 +32,7 @@ try {
 mpmetrics.register({'referrer': document.referrer});
 
 // ZZA
-_zza = new ZZA('<%=ZZA_CONFIG[:ZZA_ID]%>', null, true);
+_zza = new ZZA(zza_config_ZZA_ID, zuserid, true);
 _zza.init();
 
 $(window).bind('beforeunload', function() {
@@ -46,7 +40,7 @@ $(window).bind('beforeunload', function() {
 });
 
 // ZZA wrapper
-var ZZA = {
+var ZZAt = {
     track : function(event, properties){
 
         if(typeof(properties) == 'undefined'){
@@ -80,7 +74,7 @@ var ZZA = {
         }
     }
 }
-ZZA.track('page.visit',{ua: navigator.userAgent});
+ZZAt.track('page.visit',{ua: navigator.userAgent});
 
 /*
 $("#facebook_b").click(function(){

@@ -50,56 +50,33 @@ zz.toolbars = {
     },
 
     //==================================== LIKE MENU ==============================================
-    init_like_menu: function(){
-        $('ul.popup').hover(function() {}, function(){
-                $(this).slideUp('fast'); //When the mouse hovers out of the menu, roll it back up
-              });
-        $('ul.popup li').click( zz.toolbars.like_menu_clicked );
-
+    build_like_menu: function(){
+        var menu='',user='',album='',photo='';
         //decide which menu items to show and set their subject_ids
         if( typeof zz.album_id != 'undefined' ){
-            //we are displaying an album photos
-            $('#like-album').attr('subject_id', zz.album_id);
-            $('#like-album').css('display', 'block');
+              //we are displaying an album's photo grid.
+            album = $('<li class="zzlike" data-zzid="'+zz.album_id+'" data-zztype="album"></li>');
         }
         if( typeof zz.displayed_user_id != 'undefined' && zz.displayed_user_id != zz.current_user_id){
             //we are displaying an content from a user different than the logged in user
-            $('#like-user').attr('subject_id', zz.displayed_user_id );
-            $('#like-user').css('display', 'block');
+            user = $('<li class="zzlike" data-zzid="'+zz.displayed_user_id+'" data-zztype="user"></li>');
         }
         if (location.hash && location.hash.length > 2) {
             //We are displaying a full size photo, add the photo menu element
-             logger.debug('hash set to: location.hash ='+location.hash.substr(2));
-            $('#like-photo').attr('subject_id', location.hash.substr(2) );
-            $('#like-photo').css('display', 'block');
+            logger.debug('hash changed to: location.hash ='+location.hash.substr(2));
+            photo = $('<li id="like-menu-photo" class="zzlike" data-zzid="'+location.hash.substr(2)+'" data-zztype="photo"></li>');
             //set a listener to keep the subject_id current with the selected photo. Selecting a photo sets its id as the hash
             $(window).bind( 'hashchange', function( event ) {
-                logger.debug('hash changed to: location.hash ='+location.hash.substr(2));
-              $('#like-photo').attr('subject_id', location.hash.substr(2) );
+              logger.debug('hash changed to: location.hash ='+location.hash.substr(2));
+              var id = location.hash.substr(2);
+              $('#like-menu-photo').attr('data-zzid', id );
+              like.add_id( id, 'photo' );
             });
         }
-    },
-    show_like_menu: function(){
-        //toggle visibility
-        if( $('#like-popup').is( ":visible" ) ){
-               $('#like-popup').slideUp( 'fast' );// Hide - slide up
-        }else{
-          //get the position of the clicked element and display popup above center of it  
-          var pos =  $('#footer #like-button').offset();
-          var width =  $('#footer #like-button').width();
-          var height=  $('#footer #like-button').width();
-          $("#like-popup").css( { "left":  pos.left - (width/2)+"px", "bottom": height+ "px" } );
-          $('#like-popup').slideToggle( 'fast' );// Show = slide down
-        }
-    },
-
-    like_menu_clicked: function(){
-            $(this).parent().slideUp('fast');
-            console.log(this.id);
-            switch(this.id){
-               case 'like-photo': like.photo($(this).attr('subject_id')); break;
-               case 'like-album': like.album($(this).attr('subject_id')); break;
-               case 'like-user' : like.user($(this).attr('subject_id'));  break;
-            }
+        menu=$('<ul id="like-menu"></ul>');
+        menu.append( album );
+        menu.append(user);
+        menu.append(photo);
+        return menu;
     }
 };
