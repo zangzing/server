@@ -10,8 +10,6 @@ gem "require_all"                 # lets us pull in everything for our resque ta
 gem "mysql2"
 gem 'authlogic',     '2.1.6'
 gem 'uuidtools'
-#gem 'usesguid',      :git => 'git://github.com/zangzing/usesguid.git'
-#gem 'usesguid_migrations',  :git => 'git://github.com/fidel/usesguid_migrations.git'
 
 gem 'oauth',         "0.4.5.pre2", :git => 'git://github.com/zangzing/oauth-ruby.git'
 gem "oauth-plugin", ">=0.4.0.pre1"
