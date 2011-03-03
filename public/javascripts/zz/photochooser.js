@@ -21,6 +21,7 @@
                              '   <div class="header">' +
                              '       <a class="back-button"><span>Back</span></a>' +
                              '       <h2>Folder Name</h2>' +
+                             '       <h3>Choose pictures from folders on your computer or other photo sites</h3>' +
                              '   </div>' +
                              '   <div class="body"></div>' +
                              '   <div class="footer">' +
@@ -110,7 +111,7 @@
 
 
 
-            self.bodyElement.html("loading...");
+            self.bodyElement.html('<img class="progress-indicator" src="/images/loading.gif">');
 
 
             if(!_.isUndefined(folder.children)){

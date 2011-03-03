@@ -14,8 +14,31 @@
     left:0px;
     right:0px;
     border:1px solid yellow;
+}
+
+.photochooser .header .back-button{
+    position: absolute;
+    top:8px;
+}
+
+.photochooser .header h2{
+    font-size: 17px;
+    font-weight: 500;
+    color: #0A0A0A;
+    margin-top:0px;
+    margin-bottom:5px;
 
 }
+
+.photochooser .header h3{
+    font-size: 14px;
+    font-weight: 500;
+    color: #0A0A0A;
+    margin-top:0px;
+    margin-bottom:0px;
+}
+
+
 
 .photochooser .body{
     position: absolute;
@@ -24,6 +47,11 @@
     right:0px;
     bottom:30px;
     border:1px solid blue;
+}
+
+.photochooser .body .progress-indicator{
+    position: relative;
+    top: 100px;
 }
 
 .photochooser .footer{
