@@ -8,7 +8,7 @@ class ACLManager
   # one and set it to connect to the redis server specified
   # in the config file
   def self.get_redis
-    Thread.current['ACLManager.redis'] || make_redis
+    Thread.current['ACLManager.redis'] ||= make_redis
   end
 
   def self.make_redis
