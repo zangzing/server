@@ -47,6 +47,9 @@ class Photo < ActiveRecord::Base
   belongs_to :user
   belongs_to :upload_batch
 
+  has_many :like_mees,      :foreign_key => :subject_id, :class_name => "Like"
+  has_many :likers,         :through => :like_mees, :class_name => "User",  :source => :user
+
   # when retrieving a search from the DB it will always be ordered by created date descending a.k.a Latest first
   default_scope :order => 'pos ASC, created_at ASC'
 

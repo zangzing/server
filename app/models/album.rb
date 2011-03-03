@@ -11,7 +11,11 @@ class Album < ActiveRecord::Base
   has_many :activities,       :dependent => :destroy
   has_many :upload_batches
   has_many :contributors
-  
+
+  has_many :like_mees,      :foreign_key => :subject_id, :class_name => "Like"
+  has_many :likers,         :through => :like_mees, :class_name => "User",  :source => :user
+
+
   has_friendly_id :name, :use_slug => true, :scope => :user, :reserved_words => ["photos", "shares", 'activities', 'slides_source', 'people'], :approximate_ascii => true
 
   # Set up an async call for managing the deleted photo from s3
