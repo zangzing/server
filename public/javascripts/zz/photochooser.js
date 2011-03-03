@@ -185,7 +185,8 @@
                 showThumbscroller:false,
                 cellWidth: 190,
                 cellHeight: 190,
-                onClickPhoto: function(index, photo, element){
+                context: 'chooser-grid',
+                onClickPhoto: function(index, photo, element, action){
                     if(photo.type === 'folder'){
                         if(photo.id === 'add-all-photos'){
                             self.add_folder_to_album(photo.add_url, element);
@@ -195,11 +196,15 @@
                         }
                     }
                     else{
-//                        if(hasPhotos){
-//                            children.shift(); //remove the add photos button
-//                        }
-//                        self.singlePictureView(children, photo.id);
-                        self.add_photo_to_album(photo.add_url, element);
+                        if(action === 'main'){
+                            self.add_photo_to_album(photo.add_url, element);
+                        }
+                        else if(action === 'magnify'){
+                            if(hasPhotos){
+                                children.shift(); //remove the 'add all photos' button
+                            }
+                            self.singlePictureView(children, photo.id);
+                        }
                     }
                 }
 
@@ -227,13 +232,20 @@
                 cellHeight: 400,
                 singlePictureMode: true,
                 currentPhotoId: photoId,
-                onClickPhoto: function(index, photo){
+                context: 'chooser-picture',
+                onClickPhoto: function(index, photo, element, action){
                     if(photo.type === 'folder'){
-                        self.openFolder(photo);
+                        if(photo.id === 'add-all-photos'){
+                            self.add_folder_to_album(photo.add_url, element);
+                        }
+                        else{
+                             self.openFolder(photo);
+                        }
                     }
                     else{
-                        //add photo to album
-                        alert('add photo');
+                        if(action === 'main'){
+                            self.add_photo_to_album(photo.add_url, element);
+                        }
                     }
                 }
 

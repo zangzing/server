@@ -7,25 +7,28 @@
 
     $.widget( "ui.zz_photo", {
         options: {
-            allowDelete: false,
-            onDelete:jQuery.noop,
-            maxHeight:120,
-            maxWidth:120,
-            caption:null,
-            allowEditCaption:false,
-            onChangeCaption:jQuery.noop,
-            src:null,
-            previewSrc:null,
-            rolloverSrc:null,
+            allowDelete: false,          //context
+            onDelete:jQuery.noop,        //model
+            maxHeight:120,               //context
+            maxWidth:120,                //context
+            caption:null,                //model
+            allowEditCaption:false,      //context
+            onChangeCaption:jQuery.noop, //model
+            src:null,                    //model
+            previewSrc:null,             //model
+            rolloverSrc:null,            //model
             scrollContainer:null,
             lazyLoadThreshold:0,
-            onClick:jQuery.noop,
-            photoId:null,
-            aspectRatio:0,
-            isUploading:false,
-            isError:false,
-            noShadow:false,
-            lazyLoad:true
+            onClick:jQuery.noop,         //model
+            onMagnify:jQuery.noop,       //model
+            photoId:null,                //model
+            aspectRatio:0,               //model
+            isUploading:false,           //model
+            isError:false,               //model
+//            noShadow:false,              //context / type
+//            lazyLoad:true ,              //context / type
+            context:null,                 //context -- album-edit, album-grid, album-picture, album-timeline, album-people, chooser-grid, chooser-picture
+            type: 'photo'
         },
 
         _create: function() {
@@ -44,6 +47,13 @@
             html += '   <div class="photo-uploading-icon"></div>';
             html += '   <div class="photo-error-icon"></div>';
             html += '   <img class="bottom-shadow" src="/images/photo/bottom-full.png">';
+
+            if(self.options.context.indexOf('chooser')===0 && self.options.type === 'photo'){
+                html += '   <div class="photo-add-button"></div>';
+                html += '   <div class="magnify-button"></div>';
+            }
+
+
             html += '</div>';
             html += '<div class="photo-caption">' + self.options.caption +'</div>';
 
@@ -59,12 +69,53 @@
             self.errorElement = this.element.find('.photo-error-icon');
             self.bottomShadow = this.element.find('.bottom-shadow');
 
+
+
+
+
+
+            if(self.options.context.indexOf('chooser')===0){
+                //magnify
+                this.element.find('.magnify-button').click(function(event){
+                    self.options.onClick('magnify')
+                });
+
+
+                //add photo action
+                self.element.find('.photo-add-button').click(function(event){
+                    self.options.onClick('main')
+                });
+
+
+                //hide drop shadow for folders and 'add all' butons
+                if(self.options.type !== 'photo'){
+                    self.borderElement.addClass('no-shadow');
+                }
+
+                if(self.options.context === 'chooser-picture'){
+                    self.element.find('.magnify-button').hide();
+                }
+            }
+
+
+
+
+
+
+
+
+
+            //click
+            self.imageElement.click(function(event){
+                self.options.onClick('main')
+            });
+
+
+
+
             self.captionHeight = 30;
 
 
-            if(self.options.noShadow){
-                self.borderElement.addClass('no-shadow');    
-            }
 
 
 
@@ -97,16 +148,16 @@
 
 
             //click
-            self.imageElement.mousedown(function(mouseDownEvent){
-                var mouseUpHandler = function(mouseUpEvent){
-                    if(mouseDownEvent.pageX === mouseUpEvent.pageX && mouseDownEvent.pageY === mouseUpEvent.pageY){
-                        self.options.onClick(mouseUpEvent);
-                    }
-                    self.imageElement.unbind('mouseup', mouseUpHandler);
-                };
-                self.imageElement.mouseup(mouseUpHandler);
-
-            });
+//            self.borderElement.mousedown(function(mouseDownEvent){
+//                var mouseUpHandler = function(mouseUpEvent){
+//                    if(mouseDownEvent.pageX === mouseUpEvent.pageX && mouseDownEvent.pageY === mouseUpEvent.pageY){
+//                        self.options.onClick(mouseUpEvent);
+//                    }
+//                    self.borderElement.unbind('mouseup', mouseUpHandler);
+//                };
+//                self.borderElement.mouseup(mouseUpHandler);
+//
+//            });
 
 
 
@@ -173,8 +224,8 @@
                 });
             }
 
-
-            if(!self.options.lazyLoad){
+            //lazy loading
+            if(self.options.type !== 'photo'){
                 self._loadImage()
             }
             else{

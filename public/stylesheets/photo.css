@@ -198,6 +198,44 @@
 
 }
 
+.photo-border .photo-add-button{
+    position:absolute;
+    top:0px;
+    left:0px;
+    right:0px;
+    bottom:0px;
+}
+
+.photo-border:hover .photo-add-button{
+    background-image:url('/images/photo/btn-add-photo-small.png');
+    background-repeat:no-repeat;
+    background-position:center center;
+}
+
+.photo-border .magnify-button{
+    position:absolute;
+    right:0px;
+    bottom:0px;
+    width:27px;
+    height:27px;
+    background-image:url('/images/photo/btn-magnify.png');
+    display:none;
+
+}
+
+.photo-border:hover .magnify-button{
+    display:block;
+}
+
+
+
+.photo-border .photo-add-button.checked{
+    background-image:url('/images/photo/photo-added-small.png');
+    background-repeat:no-repeat;
+    background-position:center center;
+}
+
+
 
 
 .photo-border:hover .photo-delete-button{

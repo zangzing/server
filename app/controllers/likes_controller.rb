@@ -16,13 +16,19 @@ class LikesController < ApplicationController
       subjects[wanted_id] = { :count => 0, :user => false, :type => type }
     end
 
-    LikeCounter.find_all_by_subject_id( wanted_subjects.keys ).each do |counter|
-      subjects[ counter.subject_id ][:count]= counter.counter
+    counters = LikeCounter.find_all_by_subject_id( wanted_subjects.keys )
+    if( counters && counters.length > 0)
+      counters.each do |counter|
+        subjects[ counter.subject_id.to_s ][:count]= counter.counter
+      end
     end
 
     if current_user
-      Like.find_all_by_user_id_and_subject_id( current_user.id, wanted_subjects.keys).each  do | like |
-        subjects[ like.subject_id ][:user]=true
+      likes = Like.find_all_by_user_id_and_subject_id( current_user.id, wanted_subjects.keys)
+      if( likes && likes.length > 0)
+        likes.each  do | like |
+          subjects[ like.subject_id.to_s ][:user]=true
+        end
       end
     end
     render :json =>subjects
@@ -34,12 +40,16 @@ class LikesController < ApplicationController
         #Like.add( current_user.id, params[:subject_id] , params[:subject_type] )
         ZZ::Async::Like.enqueue( 'add', current_user.id, params[:subject_id] , params[:subject_type] )
         if current_user.preferences.asktopost_likes
+          begin
             @subj_id   = params[:subject_id]
             @subj_type = params[:subject_type]
             @url, @message = Like.default_like_post_message(current_user, @subj_id, @subj_type )
             @is_facebook_linked = current_user.identity_for_facebook.credentials_valid?
             @is_twitter_linked  = current_user.identity_for_twitter.credentials_valid?
             render '_social_dialog.html.erb', :layout => false and return
+          rescue ActiveRecord::RecordNotFound
+            #If the record was not found, lets not tweet about it
+          end
         end
     end
     render :nothing => true
