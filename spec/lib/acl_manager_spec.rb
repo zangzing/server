@@ -1,5 +1,4 @@
 require "rspec"
-require "lib/acl_manager"
 require "lib/album_acl"
 require "redis"
 require 'benchmark'
@@ -10,19 +9,29 @@ class TestAlbumACL < BaseACL
   ADMIN_ROLE = ACLRole.new('Admin', 1)
   CONTRIBUTOR_ROLE = ACLRole.new('Contrib', 2)
 
-  def initialize(album_id)
-    self.acl_id = album_id
-    TestAlbumACL.roles ||= make_roles
-    TestAlbumACL.type ||= 'TestAlbum'
+  def self.initialize
+    if TestAlbumACL.initialized.nil?
+      TestAlbumACL.base_init 'TestAlbum', make_roles
+    end
   end
 
-  def make_roles
+  def self.make_roles
     roles = [
         ADMIN_ROLE,
         CONTRIBUTOR_ROLE
     ]
   end
+
+  def initialize(album_id)
+    TestAlbumACL.initialize
+    self.acl_id = album_id
+  end
+
 end
+
+# let the class initialize and register
+TestAlbumACL.initialize
+
 
 describe "ACL Test" do
 
@@ -64,4 +73,52 @@ describe "ACL Test" do
     a.type.should_not == t.type
 
   end
+
+  it "should remove an acl" do
+    a = AlbumACL.new(999)
+
+    a.add_user_to_acl 1000, AlbumACL::ADMIN_ROLE
+    a.add_user_to_acl 1001, AlbumACL::VIEWER_ROLE
+    a.add_user_to_acl 3000, AlbumACL::CONTRIBUTOR_ROLE
+
+
+    removed = a.remove_acl
+
+    removed.should == true
+  end
+
+  it "should rename a user key" do
+    user_id = "myuser@myemail.com"
+    new_user_id = 7777
+
+    (2000..2003).each do |album_id|
+      a = AlbumACL.new(album_id)
+      ta = TestAlbumACL.new(album_id + 10000)
+      a.add_user_to_acl user_id, AlbumACL::ADMIN_ROLE
+      ta.add_user_to_acl user_id, AlbumACL::ADMIN_ROLE
+    end
+
+    # see if user is found with correct role using existing id
+    a = AlbumACL.new(2000)
+    ta = AlbumACL.new(4000)
+
+    role = a.get_user_role(user_id)
+    role.should == AlbumACL::ADMIN_ROLE
+
+    role = ta.get_user_role(user_id)
+    role.should == AlbumACL::ADMIN_ROLE
+
+    # now globally rename this user id
+    ACLManager.replace_user_key user_id, new_user_id
+
+    # see if user is found with correct role using existing id
+    role = a.get_user_role(new_user_id)
+    role.should == AlbumACL::ADMIN_ROLE
+
+    role = ta.get_user_role(new_user_id)
+    role.should == AlbumACL::ADMIN_ROLE
+
+
+  end
 end
+

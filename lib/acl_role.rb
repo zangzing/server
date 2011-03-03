@@ -18,6 +18,7 @@ class ACLRole
 
   def initialize(name, priority)
     self.name = name
+    self.name.freeze
     self.priority = priority
   end
 
