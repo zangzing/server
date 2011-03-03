@@ -24,7 +24,10 @@ zz.init = {
          ----------------------------------------------------------------------- */
 
         //top bar
-        $('#header #home-button').click(function(){ document.location.href = '/' });
+        $('#header #home-button').click(function(){ 
+			document.location.href = '/';
+			ZZAt.track('button.home.click'); 
+		});
 
         $('#header #back-button').click(function(){
             if($(this).hasClass('disabled') || $(this).hasClass('selected')){
@@ -55,7 +58,7 @@ zz.init = {
                 return;
             }
 
-
+			ZZAt.track('button.gridview.click');
 
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #grid-view-button').addClass('selected');
@@ -69,6 +72,7 @@ zz.init = {
                 return;
             }
 
+			ZZAt.track('button.pictureview.click');
 
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #picture-view-button').addClass('selected');
@@ -82,10 +86,10 @@ zz.init = {
                 return;
             }
 
+			ZZAt.track('button.peopleview.click');
 
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #people-view-button').addClass('selected');
-
 
             $('#article').fadeOut(200);
             document.location.href = zz.album_base_url +  "/people";
@@ -96,6 +100,7 @@ zz.init = {
                 return;
             }
 
+			ZZAt.track('button.activitiesview.click');
 
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #activities-view-button').addClass('selected');
@@ -106,12 +111,17 @@ zz.init = {
         });
 
         $('#header #help-button').click(function(){
+	
+			ZZAt.track('button.help.click');
+			
             feedback_widget.show();
         });
 
 
         $('#header #sign-in-button').click(function(){
             if (zz.drawer_state === zz.DRAWER_CLOSED) {
+				ZZAt.track('button.signin.click');
+	
                 $('#header #sign-in-button').addClass('selected');
                 $('#sign-in').show();
                 $('#sign-up').hide();
@@ -130,6 +140,7 @@ zz.init = {
                 return;
             }
 
+			ZZAt.track('button.play.click');
 
             $('<div></div>').css({
                 position: 'absolute',
@@ -152,6 +163,7 @@ zz.init = {
             if($(this).hasClass('disabled') || $(this).hasClass('selected')){
                 return;
             }
+			ZZAt.track('button.createalbum.click');
 
             zz.init.disable_buttons();
             $('#footer #new-album-button').removeClass('disabled').addClass('selected');
@@ -182,6 +194,8 @@ zz.init = {
             if($(this).hasClass('disabled') || $(this).hasClass('selected')){
                 return;
             }
+
+			ZZAt.track('button.share.click');
 
             zz.init.disable_buttons();
             $('#footer #share-button').removeClass('disabled').addClass('selected');
@@ -724,6 +738,9 @@ zz.init = {
             if($(this).hasClass('disabled') || $(this).hasClass('selected')){
                 return;
             }
+			
+			ZZAt.track('button.like.click');
+
             $(menu).zzlike_menu('open',this);
             event.stopPropagation();
         } );
