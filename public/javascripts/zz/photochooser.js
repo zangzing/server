@@ -33,7 +33,7 @@
 
             self.backButtonCaptionElement = template.find('.back-button span');
             self.backButtonElement = template.find('.back-button');
-            self.folderNameElement = template.find('h2');
+            self.folderNameElement = template.find('h3');
             self.bodyElement = template.find('.body');
 
 
@@ -304,7 +304,6 @@
                     open_url: agent.buildAgentUrl('/filesystem/folders/fi9QaWN0dXJlcw=='),
                     type: 'folder',
                     name: 'My Pictures',
-                    classy: 'filechooser folder f_pictures',
                     on_error: file_system_on_error,
                     src: '/images/folders/mypictures_off.jpg',
                     rolloverSrc: '/images/folders/mypictures_on.jpg',
@@ -317,7 +316,6 @@
                     open_url: agent.buildAgentUrl('/iphoto/folders'),
                     type: 'folder',
                     name: 'iPhoto',
-                    classy: 'filechooser folder f_iphoto',
                     on_error: iphoto_on_error,
                     src: '/images/folders/iphoto_off.jpg',
                     rolloverSrc: '/images/folders/iphoto_on.jpg',
@@ -331,7 +329,6 @@
                     open_url: agent.buildAgentUrl('/picasa/folders'),
                     type: 'folder',
                     name: 'Picasa',
-                    classy: 'filechooser folder f_picasa',
                     on_error: picasa_on_error,
                     src: '/images/folders/picasa_off.jpg',
                     rolloverSrc: '/images/folders/picasa_on.jpg',
@@ -345,7 +342,6 @@
                     open_url: agent.buildAgentUrl('/filesystem/folders/fg=='),
                     type: 'folder',
                     name: 'My Home',
-                    classy: 'filechooser folder f_home',
                     on_error: file_system_on_error,
                     src: '/images/folders/myhome_off.jpg',
                     rolloverSrc: '/images/folders/myhome_on.jpg',
@@ -358,7 +354,6 @@
                     open_url: agent.buildAgentUrl('/filesystem/folders/L1ZvbHVtZXM='),
                     type: 'folder',
                     name: 'My Computer',
-                    classy: 'filechooser folder f_mycomputer',
                     on_error: file_system_on_error,
                     src: '/images/folders/mycomputer_off.jpg',
                     rolloverSrc: '/images/folders/mycomputer_on.jpg',
@@ -380,7 +375,6 @@
                     open_url: agent.buildAgentUrl('/filesystem/folders/flxNeSBEb2N1bWVudHNcTXkgUGljdHVyZXM='),
                     type: 'folder',
                     name: 'My Pictures',
-                    classy: 'filechooser folder f_pictures',
                     on_error: file_system_on_error,
                     src: '/images/folders/mypictures_off.jpg',
                     rolloverSrc: '/images/folders/mypictures_on.jpg',
@@ -394,7 +388,6 @@
                     open_url: agent.buildAgentUrl('/picasa/folders'),
                     type: 'folder',
                     name: 'Picasa',
-                    classy: 'filechooser folder f_picasa',
                     on_error: picasa_on_error,
                     src: '/images/folders/picasa_off.jpg',
                     rolloverSrc: '/images/folders/picasa_on.jpg',
@@ -407,7 +400,6 @@
                     open_url: agent.buildAgentUrl('/filesystem/folders/fg=='),
                     type: 'folder',
                     name: 'My Home',
-                    classy: 'filechooser folder f_home',
                     on_error: file_system_on_error,
                     src: '/images/folders/myhome_off.jpg',
                     rolloverSrc: '/images/folders/myhome_on.jpg',
@@ -420,7 +412,6 @@
                     open_url: agent.buildAgentUrl('/filesystem/folders'),
                     type: 'folder',
                     name: 'My Computer',
-                    classy: 'filechooser folder f_mycomputer',
                     on_error: file_system_on_error,
                     src: '/images/folders/mycomputer_off.jpg',
                     rolloverSrc: '/images/folders/mycomputer_on.jpg',

@@ -582,6 +582,8 @@ pages.account_settings_profile_tab = {
     //            });
     //        });
 
+
+
             self.init_profile_photo_picker();
             self.refresh_profile_photo_picker();
             self.init_add_photos_dialog();
@@ -607,7 +609,7 @@ pages.account_settings_profile_tab = {
 
         $.ajax({
             dataType: 'json',
-            url: '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
+            url: '/albums/' + zz.album_id + '/photos_json?' + + (new Date()).getTime(),  //force browser cache miss
             success: function(json){
                 var selectedIndex=-1;
                 var currentId = $('#profile-photo-id').val();
@@ -675,7 +677,7 @@ pages.account_settings_profile_tab = {
         //for the add_photos call, the id is irrelevant, it just delivers the filechooser DOM
 
         var template = $('<div class="photochooser-container"></div>');
-        $('#tab-content').html(template);
+//        $('#tab-content').html(template);
 
 
         $('<div id="add-photos-dialog"></div>').html( template )
@@ -857,10 +859,12 @@ pages.linked_accounts = {
 pages.no_agent = {
     url: '/static/connect_messages/no_agent.html',
     init_from_filechooser: function( callback ){             
-        $('#filechooser-title').html($('#downloadzz-title').html());
-        $('#choose-header h4').html($('#downloadzz-tagline').html());
-        $('#downloadzz-title').html('');
-        $('#downloadzz-tagline').html( '');
+
+//todo: need different way to change photochooser tile. if we just clear or set to something else, it never gets set back
+//        $('.photochooser .header h3').html('');
+//        $('.photochooser .header h4').html('');
+//        $('#downloadzz-title').html('');
+//        $('#downloadzz-tagline').html( '');
         $('#downloadzz-btn').click(function(){
             alert("Agent should be downloading now (TODO: Set URL for download in pages.js)");
         });
