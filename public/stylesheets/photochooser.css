@@ -1,10 +1,19 @@
+.photochooser-container{
+    position:absolute;
+    top:0px;
+    left:0px;
+    right:0px;
+    bottom:0px;
+}
+
 .photochooser{
     position: absolute;
     top:0px;
     left:0px;
     right:0px;
     bottom:0px;
-    border:1px solid red;
+    /*border:1px solid red;*/
+    width:898px;
 }
 
 .photochooser .header{
@@ -13,7 +22,7 @@
     height:50px;
     left:0px;
     right:0px;
-    border:1px solid yellow;
+    /*border:1px solid yellow;*/
 }
 
 .photochooser .header .back-button{
@@ -21,22 +30,22 @@
     top:8px;
 }
 
-.photochooser .header h2{
-    font-size: 17px;
-    font-weight: 500;
-    color: #0A0A0A;
-    margin-top:0px;
-    margin-bottom:5px;
+/*.photochooser .header h3{*/
+    /*font-size: 17px;*/
+    /*font-weight: 500;*/
+    /*color: #0A0A0A;*/
+    /*margin-top:0px;*/
+    /*margin-bottom:5px;*/
 
-}
+/*}*/
 
-.photochooser .header h3{
-    font-size: 14px;
-    font-weight: 500;
-    color: #0A0A0A;
-    margin-top:0px;
-    margin-bottom:0px;
-}
+/*.photochooser .header h4{*/
+    /*font-size: 14px;*/
+    /*font-weight: 500;*/
+    /*color: #0A0A0A;*/
+    /*margin-top:0px;*/
+    /*margin-bottom:0px;*/
+/*}*/
 
 
 
@@ -45,8 +54,8 @@
     top:50px;
     left:0px;
     right:0px;
-    bottom:30px;
-    border:1px solid blue;
+    bottom:45px;
+    /*border:1px solid blue;*/
 }
 
 .photochooser .body .progress-indicator{
@@ -56,17 +65,18 @@
 
 .photochooser .footer{
     position:absolute;
-    height:30px;
     bottom:0px;
     right:0px;
     left:0px;
-    border:1px solid green;
+    /*border:1px solid green;*/
+    background-image:url(/images/bg-picture-tray.png);
+    height:60px;
 }
 
 
 .photochooser .footer .added-pictures-tray{
     position: absolute;
-    top:5px;
+    top:25px;
     display: block;
     height: 20px;
     left:5px;

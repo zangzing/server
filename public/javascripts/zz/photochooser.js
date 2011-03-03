@@ -20,8 +20,8 @@
             var template = $('<div class="photochooser">' +
                              '   <div class="header">' +
                              '       <a class="back-button"><span>Back</span></a>' +
-                             '       <h2>Folder Name</h2>' +
-                             '       <h3>Choose pictures from folders on your computer or other photo sites</h3>' +
+                             '       <h3>Folder Name</h3>' +
+                             '       <h4>Choose pictures from folders on your computer or other photo sites</h4>' +
                              '   </div>' +
                              '   <div class="body"></div>' +
                              '   <div class="footer">' +
@@ -229,8 +229,8 @@
             var grid = gridElement.zz_photogrid({
                 photos:children,
                 showThumbscroller:false,
-                cellWidth: 800,
-                cellHeight: 400,
+                cellWidth: 898,
+                cellHeight: 500,
                 singlePictureMode: true,
                 currentPhotoId: photoId,
                 context: 'chooser-picture',
