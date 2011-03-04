@@ -3,9 +3,9 @@ class PeopleController < ApplicationController
   def album_index
     @album = fetch_album
 
-    #An Array of Contributors starting with the album's owner(who is not in the contributors list)
+    #An Array of Contributors starting with
+    #The album's owner is not in the contributors list
     @contributors = []
-    @contributors << @album.user
     inactive_contributors = []
     @album.contributors.each do |c|
       if c.is_a_user?
@@ -18,7 +18,7 @@ class PeopleController < ApplicationController
     # A list of the contributors whoe are not users.
     @inactive_names = ''
     if inactive_contributors.length > 0
-      @inactive_names = 'Other contributors: '      
+      @inactive_names = 'Other inactive contributors:  '
       inactive_contributors.each_index do | i |
           @inactive_names += ( i > 0 ? ', ':'')
           if !inactive_contributors[i].name.nil? && inactive_contributors[i].name.length > 0

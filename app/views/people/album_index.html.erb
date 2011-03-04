@@ -6,21 +6,28 @@
 <div class="viewlist">
 
   <ul>
+
+    <%if (photo_count = @album.photos.find_all_by_user_id(@album.user.id).length ) > 0 %>
+      <li class="header">
+      Album Creator
+      </li>
+      <%= render :partial => 'contributor', :locals => {  :user => @album.user, :photo_count => photo_count } %>
+    <% end %>
+
     <li class="header">
       Contributors
     </li>
     <%@contributors.each do | contributor | %>
-        <%=if (photo_count = @album.photos.find_all_by_user_id(contributor.id).length) > 0
-               render :partial => 'contributor', :locals => { :album => @album, :contributor => contributor, :photo_count => photo_count }
+        <%=if (photo_count = @album.photos.find_all_by_user_id(contributor.user_id).length) > 0
+               render :partial => 'contributor', :locals => { :user => contributor.user, :photo_count => photo_count }
            end %>
     <%end%>
 
     <% if @inactive_names.length > 0 %>
         <li class="item">
-          <div  class="header bar">
-            <div class="title">
-              <%=@inactive_names %>
-            </div>
+           <div  class="header bar"></div>
+            <div class="content"><%=@inactive_names %></div>
+           <div  class="header bar"></div>
         </li>
     <%end%>
 
