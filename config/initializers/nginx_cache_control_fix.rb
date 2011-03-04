@@ -15,7 +15,7 @@ module ActionController
     def expires_in(seconds, options = {}) #:doc:
 
       if ! options[:public]
-        response.headers['X-Accel-Expires'] = '0';
+        response.headers['X-Accel-Expires'] = '0'
       end
 
       response.cache_control.merge!(:max_age => seconds, :public => options.delete(:public))
