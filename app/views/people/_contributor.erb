@@ -1,14 +1,18 @@
-<li class="clearfix">
-    <a name="<%=contributor.id%>"></a>
-
-    <div class="timeline-badge">
-        <%= render :partial => 'users/stacked_badge', :locals => { :user => contributor.user }    %>
-    </div>
-
-    <div class="timeline-action">
-      <ul class="timeline-grid" data-user-id="<%=contributor.user_id%>">
-
-      </ul>
-      <%if contributor.photos.length> 4  %><a href="javascript:void(0);"  class="more-less-btn">more...</a><%end%>
+<li class="item">
+    <div class="header bar"></div>
+    <div class="title">
+            <%= render :partial => 'users/stacked_badge', :locals => { :user => contributor }    %>
     </div>
 </li>
+
+
+
+<li class="item tab add">
+      <div class="content">
+       <%if photo_count > 4 %>
+            <div class="more  higher"><a href="javascript:void(0);" class="more-less-btn blue" data-user-id="<%=contributor.id%>">Show more photos</a> </div>
+       <%end%>
+       <div class="timeline-grid" data-user-id="<%=contributor.id%>"></div>
+      </div>
+</li>
+

@@ -3,12 +3,9 @@ class PeopleController < ApplicationController
   def album_index
     @album = fetch_album
 
-
-    #Find all of the album owner/creator photos
-    @album_user_photos = @album.photos.find_all_by_user_id(@album.user_id)
-    
-    #Find all active and inactive contributors
+    #An Array of Contributors starting with the album's owner(who is not in the contributors list)
     @contributors = []
+    @contributors << @album.user
     inactive_contributors = []
     @album.contributors.each do |c|
       if c.is_a_user?
@@ -18,6 +15,7 @@ class PeopleController < ApplicationController
       end
     end
 
+    # A list of the contributors whoe are not users.
     @inactive_names = ''
     if inactive_contributors.length > 0
       @inactive_names = 'Other contributors: '      
@@ -30,6 +28,9 @@ class PeopleController < ApplicationController
           end
       end
     end
+
+    # An array of the users who like this album
+    @likers = @album.likers
   end
 
   def user_index

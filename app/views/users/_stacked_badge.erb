@@ -1,5 +1,13 @@
 <div class="stacked-badge">
-      <div class="profile-picture" style="background-image:   url('<%=user.profile_photo_url%>');"></div>
-      <%=user.name%>
-      <p><img src="/images/icon-star-12px.png" />  Following  <img src="/images/icon-down-arrow-10px.png" /></p>
+      <div style="position: relative;">
+      <a href="<%=user_path(user)%>">
+        <div class="sb-photo">
+            <%= render :partial => 'users/profile_photo', :locals => { :user => user }    %>
+        </div>
+        <div class="sb-name"><%=user.name%></div>
+      </a>
+      <div class="sb-like">
+        <span>Like</span> <input type="checkbox" />
+      </div>
+      </div>
 </div>

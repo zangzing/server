@@ -60,13 +60,71 @@ div#container {
 
 /*  Top Tool Bar
 *********************************************************************/
+
 .profile-picture {
+ height: 100%;
+ width: 100%;
+ -moz-border-radius: 10%;
+ -webkit-border-radius: 10%;
+ background-color: white;
+ border: 1px solid #cccccc;
+}
+
+
+.pp-photo {
+  margin: 10%;
+  width: 80%;
+  height: 80%;
  -moz-border-radius: 10%;
  -webkit-border-radius: 10%;
   background-size: cover;
  -moz-background-size: cover;
  -webkit-background-size: cover;
 }
+
+
+.stacked-badge{
+  text-align: left;
+}
+
+.stacked-badge .sb-photo{
+    float: left;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height:40px;
+    width: 40px;
+
+}
+
+.stacked-badge .sb-name{
+  position: absolute;
+  top:   4px;
+  left: 55px;
+  color: #466faa;
+  font-size: 15px;
+  overflow: hidden;
+  white-space:nowrap;
+}
+
+.stacked-badge .sb-like{
+  position: absolute;
+  top:   21px;
+  left:  55px;
+  color: #bbbbbb;
+  font-weight:  450;
+}
+
+.stacked-badge .sb-like span{
+    font-size: 12px;
+}
+
+
+
+
+
+
+
 
 
 #header {
@@ -411,6 +469,12 @@ div#container {
     left:4px;
     height: 25px;
     width: 25px;
+}
+
+div#account-image .pp-photo{
+    height: 100%;
+    width: 100%;
+    margin: 0%
 }
 
 #header #account-badge.disabled {

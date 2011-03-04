@@ -648,13 +648,15 @@ zz.init = {
                         filteredPhotos = $(json).filter(function(index){
                             return (json[index].upload_batch_id === batchId)
                         });
+                        var moreLessbuttonElement = $('.viewlist .more-less-btn[data-upload-batch-id="'+batchId.toString()+'"]');
                     }
                     else{
-                        var userId = $(element).attr('data-user-id');
+                        var userId = parseInt($(element).attr('data-user-id'));
 
                         filteredPhotos = $(json).filter(function(index){
-                            return (json[index].user_id === userId)
+                            return (json[index].user_id === userId )
                         });
+                        var moreLessbuttonElement = $('.viewlist .more-less-btn[data-user-id="'+userId.toString()+'"]');
                     }
 
 
@@ -679,19 +681,21 @@ zz.init = {
                     $(element).css({overflow:'hidden'});
 
                     var allShowing = false;
-                    var moreLessbuttonElement = $(element).siblings('.more-less-btn');
 
+                    //var moreLessbuttonElement = $(element).siblings('.more-less-btn');
                     moreLessbuttonElement.click(function(){
                         if(allShowing){
                             $(element).animate({height:230}, 500, 'swing', function(){
-                                moreLessbuttonElement.html("more...");
+                                moreLessbuttonElement.html("Show more photos");
+                                moreLessbuttonElement.removeClass('open');
                             });
                             allShowing = false;
                         }
                         else{
                             $(element).animate({height: $(element).children().last().position().top + 180}, 500, 'swing', function(){
                                 $(element).trigger('scroll');  //hack: force the photos to load themselves now that they are visible
-                                moreLessbuttonElement.html("less...");
+                                moreLessbuttonElement.html("Show less photos");
+                                moreLessbuttonElement.addClass('open');
                             });
                             allShowing = true;
 

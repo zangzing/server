@@ -77,7 +77,9 @@
 
 <% if @user %>
   <div id="user-info" style="display:<%= @user && !@user.changed? ? 'inline-block' : 'none' %>">
-        <div class="profile-picture" id="user-info-picture" style="background-image:   url('<%=( @user ? @user.profile_photo_url : '' )%>');"></div>
+        <div id="user-info-picture" >
+         <%= render :partial => 'users/profile_photo', :locals => { :user => @user }    %>
+        </div>
         <h2><%="#{@user.first_name} #{@user.last_name}"%></h2>
   </div>
 <% end %>
@@ -96,7 +98,9 @@
 
   <% if current_user %>
     <div id="account-badge">
-      <div class="profile-picture" id="account-image" style="background-image:   url('<%= current_user.profile_photo_url %>');"></div>
+       <div id="account-image" >
+         <%= render :partial => 'users/profile_photo', :locals => { :user => current_user}    %>
+       </div>
       <img id="arrow-image" src="/images/icon-down-arrow-22px.png" />
       <div class="header-button-label">Account</div>
       <ul class="context_menu dropdown" id="acct-dropdown">
