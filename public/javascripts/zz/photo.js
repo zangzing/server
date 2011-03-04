@@ -92,9 +92,6 @@
                     self.borderElement.addClass('no-shadow');
                 }
 
-                if(self.options.context === 'chooser-picture'){
-                    self.element.find('.magnify-button').hide();
-                }
             }
 
 

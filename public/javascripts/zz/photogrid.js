@@ -465,7 +465,7 @@
 
 
             for(var i=0; i<self.options.photos.length; i++){
-                if(self.options.photos[i].id === photoId){
+                if(self.options.photos[i].id == photoId){
                    return i;
                 }
             }
