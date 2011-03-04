@@ -32,6 +32,16 @@ end
 # let the class initialize and register
 TestAlbumACL.initialize
 
+def clean_up_album_range(start_album_id, end_album_id)
+  (start_album_id..end_album_id).each do |album_id|
+    a = AlbumACL.new(album_id)
+    ta = TestAlbumACL.new(album_id + 10000)
+    a.remove_acl
+    ta.remove_acl
+  end
+end
+
+
 
 describe "ACL Test" do
 
@@ -90,8 +100,10 @@ describe "ACL Test" do
   it "should rename a user key" do
     user_id = "myuser@myemail.com"
     new_user_id = 7777
+    start_album_id = 2000
+    end_album_id = 2003
 
-    (2000..2003).each do |album_id|
+    (start_album_id..end_album_id).each do |album_id|
       a = AlbumACL.new(album_id)
       ta = TestAlbumACL.new(album_id + 10000)
       a.add_user_to_acl user_id, AlbumACL::ADMIN_ROLE
@@ -99,8 +111,8 @@ describe "ACL Test" do
     end
 
     # see if user is found with correct role using existing id
-    a = AlbumACL.new(2000)
-    ta = TestAlbumACL.new(12000)
+    a = AlbumACL.new(start_album_id)
+    ta = TestAlbumACL.new(start_album_id + 10000)
 
     role = a.get_user_role(user_id)
     role.should == AlbumACL::ADMIN_ROLE
@@ -120,14 +132,15 @@ describe "ACL Test" do
 
     # clean up
     ACLManager.delete_user new_user_id
-
-
+    clean_up_album_range(start_album_id, end_album_id)
   end
 
   it "should delete a user" do
     user_id = 8888
+    start_album_id = 2000
+    end_album_id = 2003
 
-    (2000..2003).each do |album_id|
+    (start_album_id..end_album_id).each do |album_id|
       a = AlbumACL.new(album_id)
       ta = TestAlbumACL.new(album_id + 10000)
       a.add_user_to_acl user_id, AlbumACL::ADMIN_ROLE
@@ -135,8 +148,8 @@ describe "ACL Test" do
     end
 
     # see if user is found with correct role using existing id
-    a = AlbumACL.new(2000)
-    ta = TestAlbumACL.new(12000)
+    a = AlbumACL.new(start_album_id)
+    ta = TestAlbumACL.new(start_album_id + 10000)
 
     role = a.get_user_role(user_id)
     role.should == AlbumACL::ADMIN_ROLE
@@ -154,6 +167,37 @@ describe "ACL Test" do
     role = ta.get_user_role(user_id)
     role.should == nil
 
+    clean_up_album_range(start_album_id, end_album_id)
+
+  end
+
+  it "should be fast" do
+    user_id = 8888
+    start_album_id = 2000
+    end_album_id = 7000
+
+    Benchmark.bm(20) do |x|
+      x.report('create and add') do
+        1.times do |i|
+          (start_album_id..end_album_id).each do |album_id|
+            a = AlbumACL.new(album_id)
+            a.add_user_to_acl user_id, AlbumACL::ADMIN_ROLE
+          end
+        end
+      end
+    end
+
+
+    a = AlbumACL.new(start_album_id)
+    Benchmark.bm(20) do |x|
+      x.report('access check') do
+        10000.times do |i|
+          a.get_user_role(user_id)
+        end
+      end
+    end
+
+    clean_up_album_range(start_album_id, end_album_id)
 
   end
 
