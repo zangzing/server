@@ -8,7 +8,10 @@ class Connector::FacebookSessionsController < Connector::FacebookController
   end
 
   def create
-    token = HyperGraph.get_access_token(FACEBOOK_API_KEYS[:app_id], FACEBOOK_API_KEYS[:app_secret], create_facebook_session_url(:host => Server::Application.config.application_host), params[:code])
+    token = nil
+    SystemTimer.timeout_after(http_timeout) do
+      token = HyperGraph.get_access_token(FACEBOOK_API_KEYS[:app_id], FACEBOOK_API_KEYS[:app_secret], create_facebook_session_url(:host => Server::Application.config.application_host), params[:code])
+    end
     raise InvalidCredentials unless token
     service_identity.update_attribute(:credentials, token)
     render :layout => false

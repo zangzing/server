@@ -1,11 +1,11 @@
 class Connector::FlickrPhotosController < Connector::FlickrController
 
-  
-
   def index
-    photos_response = flickr_api.photosets.getPhotos :photoset_id => params[:set_id]
+    photos_response = []
+    SystemTimer.timeout_after(http_timeout) do
+      photos_response = flickr_api.photosets.getPhotos :photoset_id => params[:set_id]
+    end
 #    @photos = photos_response.photo.map { |p| {:name => p.title, :id => p.id} }
-
     @photos = photos_response.photo.map { |p|
       {
         :name => p.title,
@@ -29,7 +29,10 @@ class Connector::FlickrPhotosController < Connector::FlickrController
 #  end
 
   def import
-    info = flickr_api.photos.getInfo :photo_id => params[:photo_id], :extras => 'original_format'
+    info = nil
+    SystemTimer.timeout_after(http_timeout) do
+      info = flickr_api.photos.getInfo :photo_id => params[:photo_id], :extras => 'original_format'
+    end
     photo_url = get_photo_url(info, :full)
     current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
     photo = Photo.create(

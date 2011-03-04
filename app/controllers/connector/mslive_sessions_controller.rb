@@ -10,7 +10,10 @@ class Connector::MsliveSessionsController < Connector::MsliveController
   end
 
   def delauth
-    consent = live_api.processConsent(params)
+    consent = nil
+    SystemTimer.timeout_after(http_timeout) do
+      consent = live_api.processConsent(params)
+    end
     if (consent and consent.isValid?)
       service_identity.update_attribute(:credentials, consent.token)
     end

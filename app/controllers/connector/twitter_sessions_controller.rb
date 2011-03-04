@@ -10,7 +10,9 @@ class Connector::TwitterSessionsController < Connector::TwitterController
 
   def create
     begin
-      twitter_api.create_access_token!(params[:oauth_token], session[:twitter_request_token_secret], params[:oauth_verifier])
+      SystemTimer.timeout_after(http_timeout) do
+        twitter_api.create_access_token!(params[:oauth_token], session[:twitter_request_token_secret], params[:oauth_verifier])
+      end
     rescue TwitterError => e
       raise InvalidToken
     end

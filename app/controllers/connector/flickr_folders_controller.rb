@@ -3,8 +3,10 @@ class Connector::FlickrFoldersController < Connector::FlickrController
 
 
   def index
-    folders_response = flickr_api.photosets.getList
-
+    folders_response = []
+    SystemTimer.timeout_after(http_timeout) do
+      folders_response = flickr_api.photosets.getList
+    end
     @folders = folders_response.map { |f|
       {
         :name => f.title,
@@ -19,7 +21,10 @@ class Connector::FlickrFoldersController < Connector::FlickrController
   end
   
   def import
-    photo_set = flickr_api.photosets.getPhotos :photoset_id => params[:set_id], :extras => 'original_format,date_taken'
+    photo_set = []
+    SystemTimer.timeout_after(http_timeout) do
+      photo_set = flickr_api.photosets.getPhotos :photoset_id => params[:set_id], :extras => 'original_format,date_taken'
+    end
     photos = []
     current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
     photo_set.photo.each do |p|

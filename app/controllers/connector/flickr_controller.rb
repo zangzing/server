@@ -11,11 +11,18 @@ class Connector::FlickrController < Connector::ConnectorController
 
 protected
 
+  def http_timeout
+    SERVICE_CALL_TIMEOUT[:flickr]
+  end
+
+
   def service_login_required
     unless flickr_auth_token
       begin
         @flickr_token = service_identity.credentials
-        @flickr_auth = flickr.auth.checkToken :auth_token => flickr_auth_token
+        SystemTimer.timeout_after(http_timeout) do
+          @flickr_auth = flickr.auth.checkToken :auth_token => flickr_auth_token
+        end
       rescue => exception
         raise InvalidToken if exception.kind_of?(FlickRaw::FailedResponse)
         raise HttpCallFail if exception.kind_of?(SocketError)

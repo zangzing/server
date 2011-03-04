@@ -12,6 +12,10 @@ class Connector::GoogleController < Connector::ConnectorController
 
 protected
 
+  def http_timeout
+    SERVICE_CALL_TIMEOUT[:google]
+  end
+
   def service_login_required
     unless permanent_token
       @permanent_token = service_identity.credentials
@@ -34,7 +38,9 @@ protected
 
   def upgrade_access_token!(request_token)
     client.authsub_token = request_token
-    @permanent_token = client.auth_handler.upgrade()
+    SystemTimer.timeout_after(http_timeout) do
+      @permanent_token = client.auth_handler.upgrade()
+    end
     client.authsub_token = @permanent_token
   end
   

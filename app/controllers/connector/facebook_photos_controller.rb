@@ -1,7 +1,10 @@
 class Connector::FacebookPhotosController < Connector::FacebookController
 
   def index
-    photos_response = facebook_graph.get("#{params[:fb_album_id]}/photos")
+    photos_response = []
+    SystemTimer.timeout_after(http_timeout) do
+      photos_response = facebook_graph.get("#{params[:fb_album_id]}/photos")
+    end
     unless photos_response.empty?
       if photos_response.first[:updated_time]
         photos_response.sort!{|a, b| b[:updated_time] <=> a[:updated_time] }

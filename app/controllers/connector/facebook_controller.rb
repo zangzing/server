@@ -8,7 +8,7 @@ class Connector::FacebookController < Connector::ConnectorController
 protected
 
   def service_login_required
-        @graph ||= service_identity.facebook_graph
+    @graph ||= service_identity.facebook_graph
   end
 
   def service_identity
@@ -17,6 +17,10 @@ protected
 
   def facebook_graph
     @graph ||= service_identity.facebook_graph
+  end
+
+  def http_timeout
+    SERVICE_CALL_TIMEOUT[:facebook]
   end
 
 

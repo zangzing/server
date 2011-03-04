@@ -13,6 +13,7 @@ class SmugmugConnector
   API_ENDPOINT = '/services/api/json/1.2.2/'
 
   cattr_accessor :http_timeout
+  @@http_timeout = 10.seconds
 
   def initialize(token = nil)
     self.access_token = token
@@ -46,16 +47,17 @@ class SmugmugConnector
                                    :authorize_path => "/services/oauth/authorize.mg",
                                    :access_token_path => "/services/oauth/getAccessToken.mg",
                                    :http_method => :get,
-                                   :scheme => :query_string,
-                                   :http_timeout => SmugmugConnector.http_timeout
+                                   :scheme => :query_string
                                  )
   end
 
   def create_access_token!(oauth_token, oauth_token_secret, first_time = false)
     if first_time
-      req_token = OAuth::RequestToken.from_hash(consumer, {:oauth_token => oauth_token, :oauth_token_secret => oauth_token_secret, :http_timeout => SmugmugConnector.http_timeout})
+      req_token = OAuth::RequestToken.from_hash(consumer, {:oauth_token => oauth_token, :oauth_token_secret => oauth_token_secret})
       begin
-        @access_token = req_token.get_access_token
+        SystemTimer.timeout_after(@@http_timeout) do
+          @access_token = req_token.get_access_token
+        end
       rescue => e
         if e.kind_of?(OAuth::Unauthorized)
           code, msg = e.message.split(' ')
@@ -63,7 +65,7 @@ class SmugmugConnector
         end
       end
     elsif
-      @access_token = OAuth::AccessToken.from_hash(consumer, {:oauth_token => oauth_token, :oauth_token_secret => oauth_token_secret, :http_timeout => SmugmugConnector.http_timeout})
+      @access_token = OAuth::AccessToken.from_hash(consumer, {:oauth_token => oauth_token, :oauth_token_secret => oauth_token_secret})
     end
   end
 
@@ -79,7 +81,10 @@ class SmugmugConnector
   def call_method(method_name, method_params = {})
     api_query = method_params.merge(:method => method_name)
     raise SmugmugError.new(36, "An access token in needed") unless @access_token
-    response = @access_token.get "#{API_ENDPOINT}?#{api_query.to_url_params}"
+    response = nil
+    SystemTimer.timeout_after(@@http_timeout) do
+      response = @access_token.get "#{API_ENDPOINT}?#{api_query.to_url_params}"
+    end
     result = JSON.parse(response.body)
     #{"stat":"ok","method":"smugmug.albums.get","Albums":[{"id":5298215,"Key":"9VoYf","Category":{"id":33,"Name":"Vacation"},"Title":"Fabulous me!"}]}
     #{"stat":"fail","method":"smugmug.albums.get","code":36,"message":"invalid/expired token"}

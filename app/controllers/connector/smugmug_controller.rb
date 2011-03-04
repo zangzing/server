@@ -6,6 +6,7 @@ class Connector::SmugmugController < Connector::ConnectorController
 
   def initialize(*args)
     super(*args)
+    SmugmugConnector.http_timeout = SERVICE_CALL_TIMEOUT[:smugmug]
     SmugmugConnector.api_key = SMUGMUG_API_KEYS[:api_key]
     SmugmugConnector.shared_secret = SMUGMUG_API_KEYS[:shared_secret]
   end
