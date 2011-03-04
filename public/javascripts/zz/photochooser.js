@@ -18,13 +18,13 @@
 
 
             var template = $('<div class="photochooser">' +
-                             '   <div class="header">' +
+                             '   <div class="photochooser-header">' +
                              '       <a class="back-button"><span>Back</span></a>' +
                              '       <h3>Folder Name</h3>' +
                              '       <h4>Choose pictures from folders on your computer or other photo sites</h4>' +
                              '   </div>' +
-                             '   <div class="body"></div>' +
-                             '   <div class="footer">' +
+                             '   <div class="photochooser-body"></div>' +
+                             '   <div class="photochooser-footer">' +
                              '     <div class="added-pictures-tray"></div>' +
                              '   </div>' +
                              '</div>');
@@ -34,7 +34,7 @@
             self.backButtonCaptionElement = template.find('.back-button span');
             self.backButtonElement = template.find('.back-button');
             self.folderNameElement = template.find('h3');
-            self.bodyElement = template.find('.body');
+            self.bodyElement = template.find('.photochooser-body');
 
 
             self.element.html(template);
