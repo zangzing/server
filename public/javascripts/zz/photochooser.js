@@ -204,7 +204,7 @@
                             if(hasPhotos){
                                 children.shift(); //remove the 'add all photos' button
                             }
-                            self.singlePictureView(children, photo.id);
+                            self.singlePictureView(folder, children, photo.id);
                         }
                     }
                 }
@@ -213,7 +213,7 @@
 
         },
 
-        singlePictureView:function(children, photoId){
+        singlePictureView:function(folder, children, photoId){
             var self = this;
 
             children = $.map(children, function(child, index){
@@ -246,6 +246,10 @@
                     else{
                         if(action === 'main'){
                             self.add_photo_to_album(photo.add_url, element);
+                        }
+                        else if(action === 'magnify'){
+                            //reload current view to get back to grid
+                            self.showFolder(folder, children);
                         }
                     }
                 }
