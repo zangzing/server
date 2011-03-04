@@ -223,13 +223,19 @@
             });
 
 
-            var gridElement = $('<div class="photogrid"></div>');
-            self.bodyElement.html(gridElement);
+            var template = $('<div class="prev-button"></div>' +
+                             '<div class="singlepicture-wrapper">' +
+                             '    <div class="photogrid"></div>' +
+                             '</div>' +
+                             '<div class="next-button"></div>');
+            
+            var gridElement = template.find('.photogrid');
+            self.bodyElement.html(template);
 
             var grid = gridElement.zz_photogrid({
                 photos:children,
                 showThumbscroller:false,
-                cellWidth: 898,
+                cellWidth: 720,
                 cellHeight: 500,
                 singlePictureMode: true,
                 currentPhotoId: photoId,
@@ -255,6 +261,16 @@
                 }
 
             }).data().zz_photogrid;
+
+            template.filter('.prev-button').click(function(){
+                grid.previousPicture();
+            });
+
+            template.filter('.next-button').click(function(){
+                grid.nextPicture();
+            });
+
+
         },
 
 
