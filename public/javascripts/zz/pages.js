@@ -585,7 +585,6 @@ pages.account_settings_profile_tab = {
 
 
             self.init_profile_photo_picker();
-            self.refresh_profile_photo_picker();
             self.init_add_photos_dialog();
 
             $('#profile-photo-button').click( pages.account_settings_profile_tab.show_add_photos_dialog );
@@ -640,7 +639,11 @@ pages.account_settings_profile_tab = {
                         $('#profile-photo-id').val(photo_id);
                         $('div#profile-photo-picker div.thumbtray-wrapper div.thumbtray-selection').css('top', 0);
                     }
-                }).data().zz_thumbtray;    
+                }).data().zz_thumbtray;
+
+
+                self.refresh_profile_photo_picker();
+
             }
         });
 
@@ -650,7 +653,7 @@ pages.account_settings_profile_tab = {
         //refresh album cover picker
         $.ajax({
             dataType: 'json',
-            url: '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
+            url: '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
             success: function(json){
                 var selectedIndex=-1;
                 var currentId = $('#profile-photo-id').val();

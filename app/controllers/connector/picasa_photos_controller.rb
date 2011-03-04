@@ -1,7 +1,10 @@
 class Connector::PicasaPhotosController < Connector::PicasaController
 
   def index
-    doc = Nokogiri::XML(client.get("https://picasaweb.google.com/data/feed/api/user/default/albumid/#{params[:picasa_album_id]}").body)
+    doc = nil
+    SystemTimer.timeout_after(http_timeout) do
+      doc = Nokogiri::XML(client.get("https://picasaweb.google.com/data/feed/api/user/default/albumid/#{params[:picasa_album_id]}").body)
+    end
     photos = []
     doc.xpath('//a:entry', NS).each do |entry|
       photoid = /photoid\/([0-9a-z]+)/.match(entry.at_xpath('a:id', NS).text)[1]
@@ -20,7 +23,10 @@ class Connector::PicasaPhotosController < Connector::PicasaController
   end
 
   def import
-    doc = Nokogiri::XML(client.get("https://picasaweb.google.com/data/feed/api/user/default/albumid/#{params[:picasa_album_id]}").body)
+    doc = nil
+    SystemTimer.timeout_after(http_timeout) do
+      doc = Nokogiri::XML(client.get("https://picasaweb.google.com/data/feed/api/user/default/albumid/#{params[:picasa_album_id]}").body)
+    end
     photo = nil
     current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
     doc.xpath('//a:entry', NS).each do |entry|

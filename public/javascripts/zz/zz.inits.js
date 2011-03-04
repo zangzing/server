@@ -6,11 +6,13 @@
 
 zz.init = {
 
-    disable_buttons: function(){
+    disable_buttons: function() {
         $('#header #back-button').addClass('disabled');
         $('#header #view-buttons').children().addClass('disabled');
         $('#header #account-badge').addClass('disabled');
         $('#footer #play-button').addClass('disabled');
+        $('#footer #next-button').addClass('disabled');
+        $('#footer #prev-button').addClass('disabled');
         $('#footer #new-album-button').addClass('disabled');
         $('#footer #add-photo-button').addClass('disabled');
         $('#footer #share-button').addClass('disabled');
@@ -19,46 +21,46 @@ zz.init = {
         $('#footer #like-button').addClass('disabled');
     },
 
-    template: function(){
+    template: function() {
         /* Click Handlers
          ----------------------------------------------------------------------- */
 
         //top bar
-        $('#header #home-button').click(function(){ 
-			document.location.href = '/';
-			ZZAt.track('button.home.click'); 
-		});
+        $('#header #home-button').click(function() {
+            document.location.href = '/';
+            ZZAt.track('button.home.click');
+        });
 
-        $('#header #back-button').click(function(){
-            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
+        $('#header #back-button').click(function() {
+            if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
             }
 
-            $('#article').animate({left: $('#article').width()},500,'easeOutQuart');
-            document.location.href=zz.user_base_url;
+            $('#article').animate({left: $('#article').width()}, 500, 'easeOutQuart');
+            document.location.href = zz.user_base_url;
         });
 
 
-        if(document.location.href.indexOf("/photos/") !== -1){
+        if (document.location.href.indexOf("/photos/#!") !== -1) {
             $('#header #view-buttons #picture-view-button').addClass('selected');
         }
-        else if(document.location.href.indexOf("/photos") !== -1){
+        else if (document.location.href.indexOf("/photos") !== -1) {
             $('#header #view-buttons #grid-view-button').addClass('selected');
         }
-        else if(document.location.href.indexOf("/people") !== -1){
+        else if (document.location.href.indexOf("/people") !== -1) {
             $('#header #view-buttons #people-view-button').addClass('selected');
         }
-        else if(document.location.href.indexOf("/activities") !== -1){
+        else if (document.location.href.indexOf("/activities") !== -1) {
             $('#header #view-buttons #activities-view-button').addClass('selected');
         }
 
 
-        $('#header #view-buttons #grid-view-button').click(function(){
-            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
+        $('#header #view-buttons #grid-view-button').click(function() {
+            if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
             }
 
-			ZZAt.track('button.gridview.click');
+            ZZAt.track('button.gridview.click');
 
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #grid-view-button').addClass('selected');
@@ -67,66 +69,66 @@ zz.init = {
             document.location.href = zz.album_base_url + "/photos";
         });
 
-        $('#header #view-buttons #picture-view-button').click(function(){
-            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
+        $('#header #view-buttons #picture-view-button').click(function() {
+            if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
             }
 
-			ZZAt.track('button.pictureview.click');
+            ZZAt.track('button.pictureview.click');
 
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #picture-view-button').addClass('selected');
 
             $('#article').fadeOut(200);
-            document.location.href = zz.album_base_url + "/photos/";
+            document.location.href = zz.album_base_url + "/photos/#!";
         });
 
-        $('#header #view-buttons #people-view-button').click(function(){
-            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
+        $('#header #view-buttons #people-view-button').click(function() {
+            if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
             }
 
-			ZZAt.track('button.peopleview.click');
+            ZZAt.track('button.peopleview.click');
 
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #people-view-button').addClass('selected');
 
             $('#article').fadeOut(200);
-            document.location.href = zz.album_base_url +  "/people";
+            document.location.href = zz.album_base_url + "/people";
         });
 
-        $('#header #view-buttons #activities-view-button').click(function(){
-            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
+        $('#header #view-buttons #activities-view-button').click(function() {
+            if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
             }
 
-			ZZAt.track('button.activitiesview.click');
+            ZZAt.track('button.activitiesview.click');
 
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #activities-view-button').addClass('selected');
 
 
             $('#article').fadeOut(200);
-            document.location.href = zz.album_base_url +  "/activities";
+            document.location.href = zz.album_base_url + "/activities";
         });
 
-        $('#header #help-button').click(function(){
-	
-			ZZAt.track('button.help.click');
-			
+        $('#header #help-button').click(function() {
+
+            ZZAt.track('button.help.click');
+
             feedback_widget.show();
         });
 
 
-        $('#header #sign-in-button').click(function(){
+        $('#header #sign-in-button').click(function() {
             if (zz.drawer_state === zz.DRAWER_CLOSED) {
-				ZZAt.track('button.signin.click');
-	
+                ZZAt.track('button.signin.click');
+
                 $('#header #sign-in-button').addClass('selected');
                 $('#sign-in').show();
                 $('#sign-up').hide();
 
-                $('#small-drawer').show().animate({height: '500px', top: '56px'},500, 'linear', function(){
+                $('#small-drawer').show().animate({height: '500px', top: '56px'}, 500, 'linear', function() {
                     $('#user_session_email').focus();
                 });
                 zz.drawer_state = zz.DRAWER_OPEN;
@@ -134,13 +136,12 @@ zz.init = {
         });
 
 
-
-        $('#footer #play-button').click(function(){
-            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
+        $('#footer #play-button').click(function() {
+            if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
             }
 
-			ZZAt.track('button.play.click');
+            ZZAt.track('button.play.click');
 
             $('<div></div>').css({
                 position: 'absolute',
@@ -151,42 +152,39 @@ zz.init = {
                 'z-index':3000,
                 'background-color':'#000000',
                 opacity: 0
-            }).appendTo('body').animate({opacity:1},500, function(){
+            }).appendTo('body').animate({opacity:1}, 500, function() {
                 document.location.href = zz.album_base_url + '/movie';
             });
-
-
-
         });
 
-        $('#footer #new-album-button').click(function(){
-            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
+
+        $('#footer #new-album-button').click(function() {
+            if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
             }
-			ZZAt.track('button.createalbum.click');
+            ZZAt.track('button.createalbum.click');
 
             zz.init.disable_buttons();
             $('#footer #new-album-button').removeClass('disabled').addClass('selected');
 
             zz.toolbars.init_new_album();
-            zz.easy_drawer(600, 0.0, '/users/'+zz.current_user_id+'/albums/new', function(){
-                $('#personal_album_link').click(function(){
-					zz.wizard.create_personal_album();
-					ZZAt.track('button.createpersonalalbum.click');
-				});
+            zz.easy_drawer(600, 0.0, '/users/' + zz.current_user_id + '/albums/new', function() {
+                $('#personal_album_link').click(function() {
+                    zz.wizard.create_personal_album();
+                    ZZAt.track('button.createpersonalalbum.click');
+                });
 
-                $('#group_album_link').click(function(){
-					zz.wizard.create_group_album();
-					ZZAt.track('button.creategroupalbum.click'); 
-				});
+                $('#group_album_link').click(function() {
+                    zz.wizard.create_group_album();
+                    ZZAt.track('button.creategroupalbum.click');
+                });
             });
         });
 
 
-
         //only album contributers can do this
-        $('#footer #add-photo-button').click(function(){
-            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
+        $('#footer #add-photo-button').click(function() {
+            if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
             }
 
@@ -196,12 +194,12 @@ zz.init = {
         });
 
         //any signed in user can do this
-        $('#footer #share-button').click(function(){
-            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
+        $('#footer #share-button').click(function() {
+            if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
             }
 
-			ZZAt.track('button.share.click');
+            ZZAt.track('button.share.click');
 
             zz.init.disable_buttons();
             $('#footer #share-button').removeClass('disabled').addClass('selected');
@@ -209,8 +207,8 @@ zz.init = {
         });
 
         //only album owner can do this
-        $('#footer #edit-album-button').click(function(){
-            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
+        $('#footer #edit-album-button').click(function() {
+            if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
             }
 
@@ -220,60 +218,55 @@ zz.init = {
         });
 
 
-
-
-
         /* new user stuff   */
         /* ---------------------------------*/
 
-        $('#user_username').keyup(function(event){
+        $('#user_username').keyup(function(event) {
             var value = $('#user_username').val();
             $('#update-username').empty().html(value);
         });
 
-        $('#step-sign-in-off').click(function(){
-            $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
+        $('#step-sign-in-off').click(function() {
+            $('#small-drawer').animate({height: '0px', top: '28px'}, function() {
                 $('#sign-in').show();
                 $('#sign-up').hide();
-                $('#small-drawer').animate({height: '480px', top: '56px'}, 500, 'linear', function(){
+                $('#small-drawer').animate({height: '480px', top: '56px'}, 500, 'linear', function() {
                     $('#user_session_email').focus();
                 });
             });
 
 
         });
-        $('#step-join-off').click(function(){
-            $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
+        $('#step-join-off').click(function() {
+            $('#small-drawer').animate({height: '0px', top: '28px'}, function() {
                 $('#sign-up').show();
                 $('#sign-in').hide();
-                $('#small-drawer').animate({height: '480px', top: '56px'}, 500, 'linear', function(){
+                $('#small-drawer').animate({height: '480px', top: '56px'}, 500, 'linear', function() {
                     $('#user_name').focus();
 
                 });
             });
         });
 
-        $('#join_form_submit_button').click(function(){
+        $('#join_form_submit_button').click(function() {
             $('form#join-form').submit();
         });
 
-        $('#join_form_cancel_button').click(function(){
+        $('#join_form_cancel_button').click(function() {
             $('#small-drawer').animate({height: '0px', top: '28px'});
             zz.drawer_state = zz.DRAWER_CLOSED;
         });
-
-
 
 
         /* sign in   */
         /* ---------------------------------*/
-        $('#signin-form-cancel-button').click(function(){
+        $('#signin-form-cancel-button').click(function() {
             $('#small-drawer').animate({height: '0px', top: '28px'});
             zz.drawer_state = zz.DRAWER_CLOSED;
         });
 
 
-        $('#signin-form-submit-button').click(function(){
+        $('#signin-form-submit-button').click(function() {
             $("form#new_user_session").submit();
         });
 
@@ -284,18 +277,18 @@ zz.init = {
 
         zz.init.acct_badge();
         zz.init.like_menu();
-    
-        setTimeout(function(){
+
+        setTimeout(function() {
             zz.init.preload_rollover_images();
         }
-        ,500);
+                , 500);
 
     },
 
 
-    loaded: function(){
+    loaded: function() {
         $('#drawer-content').ajaxError(function(event, request) {
-            zz.wizard.display_errors( request, 50);
+            zz.wizard.display_errors(request, 50);
             zz.wizard.display_flashes(request, 50);
         });
         $('#drawer-content').ajaxSuccess(function(event, request) {
@@ -303,7 +296,7 @@ zz.init = {
         });
     },
 
-    resized: function(){
+    resized: function() {
         if (zz.drawer_state == zz.DRAWER_OPEN) {
             zz.resize_drawer(50);
             //gow scroll body
@@ -311,119 +304,128 @@ zz.init = {
         // TODO: check for selected photo - move caption position
     },
 
-    album: function(){
+    album: function() {
         //setup grid view
 
         var view = 'grid';
 
-        if(document.location.href.indexOf('/photos/') !== -1){
+        if (document.location.href.indexOf('/photos/#!') !== -1) {
             view = 'picture';
         }
 
         $.ajax({
             dataType: 'json',
             url: '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
-            success: function(json){
+            success: function(json) {
 
 
+                var gridElement = $('<div class="photogrid"></div>');
 
-            var gridElement = $('<div class="photogrid"></div>');
+                $('#article').html(gridElement);
+                $('#article').css('overflow', 'hidden');
 
-            $('#article').html(gridElement);
-            $('#article').css('overflow','hidden');
+                if (view === 'grid') {   //grid view
+                    for (var i = 0; i < json.length; i++) {
+                        var photo = json[i];
+                        photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
+                        photo.src = agent.checkAddCredentialsToUrl(photo.thumb_url);
+                    }
 
-            if(view === 'grid'){
-                for(var i =0;i<json.length;i++){
-                    var photo = json[i];
-                    photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
-                    photo.src =       agent.checkAddCredentialsToUrl(photo.thumb_url);
+                    var grid = gridElement.zz_photogrid({
+                        photos:json,
+                        allowDelete: false,
+                        allowEditCaption: false,
+                        allowReorder: false,
+                        cellWidth: 230,
+                        cellHeight: 230,
+                        onClickPhoto: function(index, photo) {
+                            document.location.href = zz.album_base_url + "/photos/#!" + photo.id;
+                        },
+                        currentPhotoId: $.param.fragment()
+
+                    }).data().zz_photogrid;
+
+
                 }
+                else {    //single picture view
+                    for (var i = 0; i < json.length; i++) {
+                        var photo = json[i];
+                        photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
+                        photo.src = agent.checkAddCredentialsToUrl(photo.screen_url);
+                    }
 
-                var grid = gridElement.zz_photogrid({
-                    photos:json,
-                    allowDelete: false,
-                    allowEditCaption: false,
-                    allowReorder: false,
-                    cellWidth: 230,
-                    cellHeight: 230,
-                    onClickPhoto: function(index, photo){
-                        document.location.href = zz.album_base_url +"/photos/#!" + photo.id;
-                    },
-                    currentPhotoId: $.param.fragment()
-
-                }).data().zz_photogrid;
+                    var currentPhotoId = null;
+                    var hash = jQuery.param.fragment();
 
 
-
-            }
-            else{
-                for(var i =0;i<json.length;i++){
-                    var photo = json[i];
-                    photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
-                    photo.src =       agent.checkAddCredentialsToUrl(photo.screen_url);
-                }
-
-                var currentPhotoId = null;
-                var hash = jQuery.param.fragment();
-
-
-
-                if(hash !== ''){
-                    currentPhotoId = hash.slice(1); //remove the '!'
-                }
-
-
-
-                var grid = gridElement.zz_photogrid({
-                    photos:json,
-                    allowDelete: false,
-                    allowEditCaption: false,
-                    allowReorder: false,
-                    cellWidth: gridElement.width(),
-                    cellHeight: gridElement.height()-20,
-                    onClickPhoto: function(index, photo){
-                        grid.nextPicture();
-                    },
-                    singlePictureMode: true,
-                    currentPhotoId: currentPhotoId,
-                    onScrollToPhoto: function(photoId){
-                        window.location.hash = '#!' + photoId
+                    if (hash !== '') {
+                        currentPhotoId = hash.slice(1); //remove the '!'
                     }
 
 
-                }).data().zz_photogrid;
-            }
+                    var grid = gridElement.zz_photogrid({
+                        photos:json,
+                        allowDelete: false,
+                        allowEditCaption: false,
+                        allowReorder: false,
+                        cellWidth: gridElement.width(),
+                        cellHeight: gridElement.height() - 20,
+                        onClickPhoto: function(index, photo) {
+                            grid.nextPicture();
+                            ZZAt.track('button.next.click');//todo: phil, is this right?
+                        },
+                        singlePictureMode: true,
+                        currentPhotoId: currentPhotoId,
+                        onScrollToPhoto: function(photoId) {
+                            window.location.hash = '#!' + photoId
+                        }
 
+
+                    }).data().zz_photogrid;
+
+
+                    $('#footer #next-button').show().click(function() {
+                        grid.nextPicture();
+                        ZZAt.track('button.next.click');
+                    });
+
+                    $('#footer #prev-button').show().click(function() {
+                        grid.previousPicture();
+                        ZZAt.track('button.previous.click');
+                    });
+
+
+                }
 
 
                 //setup upload progress smeter
                 $('#progress-meter').hide();
 
-                var updateProgressMeter = function(){
+                var updateProgressMeter = function() {
 
                     var photo_count = json.length; //todo: photos shouln't be a global variable
 
-                    upload_stats.stats_for_album(zz.album_id,photo_count, function(time_remaining, percent_complete){
+                    upload_stats.stats_for_album(zz.album_id, photo_count, function(time_remaining, percent_complete) {
                         percent_complete = Math.round(percent_complete);
 
-                        if(percent_complete < 100 ){
+                        if (percent_complete < 100) {
                             var minutes = Math.round(time_remaining / 60);
                             var step = 0;
 
-                            if(percent_complete > 0){
+                            if (percent_complete > 0) {
                                 step = Math.round(percent_complete / 6.25);
                             }
 
 
-                            $('#progress-meter').css('background-image', 'url(/images/upload-'+ step +'.png)');
+                            $('#progress-meter').css('background-image', 'url(/images/upload-' + step + '.png)');
 
 
-                            if(minutes === Infinity){
+                            if (minutes === Infinity) {
                                 $('#nav-status').html("Calculating...");
                             }
-                            else{
+                            else {
                                 var minutes_text = "Minutes";
-                                if(minutes === 1){
+                                if (minutes === 1) {
                                     minutes_text = "Minute"
                                 }
                                 $('#progress-meter-label').html(minutes + ' ' + minutes_text);
@@ -431,7 +433,7 @@ zz.init = {
 
                             $('#progress-meter').show();
                         }
-                        else{
+                        else {
                             $('#progress-meter').hide();
                         }
                     });
@@ -441,17 +443,17 @@ zz.init = {
 
                 //todo: need to shut this down if we leave album page ajax-ly
                 //update album upload status every 10 seconds
-                setInterval( updateProgressMeter ,10000);
+                setInterval(updateProgressMeter, 10000);
 
                 // Update the like array if it exists.
-                if( typeof( like ) != 'undefined'){
-                    var wanted_subjects={};
-                    for( key in json){
+                if (typeof( like ) != 'undefined') {
+                    var wanted_subjects = {};
+                    for (key in json) {
                         id = json[key].id;
-                        wanted_subjects[id]='photo';
+                        wanted_subjects[id] = 'photo';
                     }
-                    like.add_id_array( wanted_subjects );
-                }    
+                    like.add_id_array(wanted_subjects);
+                }
             }
         });
 
@@ -460,7 +462,7 @@ zz.init = {
 
 
 
-    preload_rollover_images : function(){
+    preload_rollover_images : function() {
         //todo: is there a way to query CSS to get all these?
         //wizard buttons/tabs
 //        for(var i=1;i<=4; i++){
@@ -489,15 +491,13 @@ zz.init = {
 //        }
 //
 //
-        for(var i=1;i<=6; i++){
+        for (var i = 1; i <= 6; i++) {
             var src = "/images/wiz-num-" + i + "-on.png"
             image_preloader.load_image(src)
 
             var src = "/images/wiz-num-" + i + ".png"
             image_preloader.load_image(src)
         }
-
-
 
 
         //toolbar buttons
@@ -542,7 +542,6 @@ zz.init = {
         image_preloader.load_image("/images/folders/photobucket_off.jpg");
 
 
-
         //album privacy
         image_preloader.load_image("/images/bg-privacy-public-off.png");
         image_preloader.load_image("/images/bg-privacy-private-off.png");
@@ -550,7 +549,6 @@ zz.init = {
         image_preloader.load_image("/images/bg-privacy-public-on.png");
         image_preloader.load_image("/images/bg-privacy-private-on.png");
         image_preloader.load_image("/images/bg-privacy-password-on.png");
-
 
 
         //share album
@@ -634,44 +632,43 @@ zz.init = {
 //
 //  },
 
-    album_people_view: function(){
+    album_people_view: function() {
         zz.init.album_timeline_or_people_view('people');
     },
 
-    album_timeline_view: function(){
-        zz.init.album_timeline_or_people_view('timeline');  
+    album_timeline_view: function() {
+        zz.init.album_timeline_or_people_view('timeline');
 
     },
 
-    album_timeline_or_people_view: function(which){
+    album_timeline_or_people_view: function(which) {
         $.ajax({
             dataType: 'json',
             url: '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
-            success: function(json){
+            success: function(json) {
 
-                for(var i =0;i<json.length;i++){
+                for (var i = 0; i < json.length; i++) {
                     var photo = json[i];
                     photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
-                    photo.src =       agent.checkAddCredentialsToUrl(photo.thumb_url);
+                    photo.src = agent.checkAddCredentialsToUrl(photo.thumb_url);
                 }
 
-                
-                $('.timeline-grid').each(function(index, element){
+
+                $('.timeline-grid').each(function(index, element) {
 
                     $(element).empty();
 
                     var filteredPhotos = null;
 
 
-                    if(which === 'timeline'){
+                    if (which === 'timeline') {
                         var batchId = parseInt($(element).attr('data-upload-batch-id'));
 
-                        filteredPhotos = $(json).filter(function(index){
+                        filteredPhotos = $(json).filter(function(index) {
                             return (json[index].upload_batch_id === batchId)
                         });
                         var moreLessbuttonElement = $('.viewlist .more-less-btn[data-upload-batch-id="'+batchId.toString()+'"]');
-                    }
-                    else{
+                    }else{
                         var userId = parseInt($(element).attr('data-user-id'));
 
                         filteredPhotos = $(json).filter(function(index){
@@ -681,9 +678,6 @@ zz.init = {
                     }
 
 
-
-
-
                     var grid = $(element).zz_photogrid({
                         photos:filteredPhotos,
                         allowDelete: false,
@@ -691,8 +685,8 @@ zz.init = {
                         allowReorder: false,
                         cellWidth: 230,
                         cellHeight: 230,
-                         onClickPhoto: function(index, photo){
-                            document.location.href = zz.album_base_url +"/photos/#!" + photo.id;
+                        onClickPhoto: function(index, photo) {
+                            document.location.href = zz.album_base_url + "/photos/#!" + photo.id;
                         },
                         showThumbscroller: false
                     }).data().zz_photogrid;
@@ -703,6 +697,7 @@ zz.init = {
 
                     var allShowing = false;
 
+
                     //var moreLessbuttonElement = $(element).siblings('.more-less-btn');
                     moreLessbuttonElement.click(function(){
                         if(allShowing){
@@ -712,8 +707,8 @@ zz.init = {
                             });
                             allShowing = false;
                         }
-                        else{
-                            $(element).animate({height: $(element).children().last().position().top + 180}, 500, 'swing', function(){
+                        else {
+                            $(element).animate({height: $(element).children().last().position().top + 180}, 500, 'swing', function() {
                                 $(element).trigger('scroll');  //hack: force the photos to load themselves now that they are visible
                                 moreLessbuttonElement.html("Show less photos");
                                 moreLessbuttonElement.addClass('open');
@@ -728,10 +723,10 @@ zz.init = {
     },
 
 //====================================== Account Badge  ===========================================
-    acct_badge: function(){
+    acct_badge: function() {
         zz.toolbars.init_acct_badge_menu();
-        $('#account-badge').click( function(){
-            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
+        $('#account-badge').click(function() {
+            if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
             }
 
@@ -740,20 +735,20 @@ zz.init = {
     },
 
 //======================================= Like Menu  ==============================================
-    like_menu: function(){
-        var menu = $( zz.toolbars.build_like_menu() ).zzlike_menu();
+    like_menu: function() {
+        var menu = $(zz.toolbars.build_like_menu()).zzlike_menu();
         like.init();
 
-        $('#footer #like-button').click(function(event){
-            if($(this).hasClass('disabled') || $(this).hasClass('selected')){
+        $('#footer #like-button').click(function(event) {
+            if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
             }
-			
-			ZZAt.track('button.like.click');
 
-            $(menu).zzlike_menu('open',this);
+            ZZAt.track('button.like.click');
+
+            $(menu).zzlike_menu('open', this);
             event.stopPropagation();
-        } );
+        });
     }
 
 };

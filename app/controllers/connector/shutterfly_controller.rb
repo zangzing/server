@@ -7,6 +7,7 @@ class Connector::ShutterflyController < Connector::ConnectorController
 
   def initialize(*args)
     super(*args)
+    ShutterflyConnector.http_timeout = SERVICE_CALL_TIMEOUT[:shutterfly]
     ShutterflyConnector.app_id = SHUTTERFLY_API_KEYS[:app_id]
     ShutterflyConnector.shared_secret = SHUTTERFLY_API_KEYS[:shared_secret]
   end

@@ -593,7 +593,7 @@ div#account-image .pp-photo{
     cursor: pointer;
 }
 
-#footer #edit-album-button.enabled:hover{
+#footer #edit-album-button:hover{
     background: url("/images/btn-footer-edit-album.png") no-repeat scroll 0px -55px transparent;
 }
 
@@ -653,22 +653,68 @@ div#account-image .pp-photo{
 }
 
 
-/*           Play Button
+
+/*           Control Buttons
+ ***************************************************/
+
+#footer #control-buttons{
+    position:relative;
+    top: 6px;
+    height:44px;
+    width:160px;
+    margin-left:auto;
+    margin-right:auto;
+    /*background-color:white;*/
+}
+
+
+
+/*           Prev Button
  ***************************************************/
 
 
-#footer #play-button{
-    position: relative;
-    top: 6px;
+#footer #prev-button{
+    position: absolute;
     width: 44px;
     height: 44px;
+    left:0px;
+    top:0px;
+    background: url("/images/btn-footer-prev.png") no-repeat scroll 0px 0px transparent;
+    cursor: pointer;
+    display:none;
+
+}
+
+#footer #prev-button:hover{
+    background: url("/images/btn-footer-prev.png") no-repeat scroll 0px -44px transparent;
+}
+
+#footer #prev-button.disabled{
+    opacity:0.5;
+    cursor: default;
+    background: url("/images/btn-footer-prev.png") no-repeat scroll 0px 0px transparent;
+}
+
+
+
+
+
+/*           Play Button
+ ***************************************************/
+
+#footer #play-button{
+    position: relative;
+    width: 44px;
+    height: 44px;
+    top:0px;
     background: url("/images/btn-footer-play.png") no-repeat scroll 0px 0px transparent;
     cursor: pointer;
     margin-left:auto;
-    margin-right:auto;
+    margin-right:auto
+    
 }
 
-#footer #play-button.enabled:hover{
+#footer #play-button:hover{
     background: url("/images/btn-footer-play.png") no-repeat scroll 0px -44px transparent;
 }
 
@@ -676,6 +722,32 @@ div#account-image .pp-photo{
     opacity:0.5;
     cursor: default;
     background: url("/images/btn-footer-play.png") no-repeat scroll 0px 0px transparent;
+}
+
+/*           Next Button
+ ***************************************************/
+
+
+#footer #next-button{
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    right:0px;
+    top:0px;
+    background: url("/images/btn-footer-next.png") no-repeat scroll 0px 0px transparent;
+    cursor: pointer;
+    display:none;
+
+}
+
+#footer #next-button:hover{
+    background: url("/images/btn-footer-next.png") no-repeat scroll 0px -44px transparent;
+}
+
+#footer #next-button.disabled{
+    opacity:0.5;
+    cursor: default;
+    background: url("/images/btn-footer-next.png") no-repeat scroll 0px 0px transparent;
 }
 
 
@@ -872,7 +944,7 @@ div#drawer {
   width: 906px;
   height: 0px;
   margin: 0 24px 0 20px;
-  padding: 0 0 26px 4px;
+  padding: 0 0 43px 4px;
   top: 10px;
   background-image: url("/images/bg-drawer-bottom-cap.png");
   background-repeat: no-repeat;

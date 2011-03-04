@@ -83,7 +83,7 @@
 
                 //add photo action
                 self.element.find('.photo-add-button').click(function(event){
-                    self.options.onClick('main')
+                    self.options.onClick('main');
                 });
 
 

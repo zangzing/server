@@ -6,6 +6,7 @@ class Connector::PhotobucketController < Connector::ConnectorController
 
   def initialize(*args)
     super(*args)
+    PhotobucketConnector.http_timeout = SERVICE_CALL_TIMEOUT[:photobucket]
     PhotobucketConnector.consumer_key = PHOTOBUCKET_API_KEYS[:consumer_key]
     PhotobucketConnector.consumer_secret = PHOTOBUCKET_API_KEYS[:consumer_secret]
   end

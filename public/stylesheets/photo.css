@@ -44,6 +44,21 @@
 }
 
 
+.photogrid-hide-native-scroller-horizontal{
+    background-color:#fff;
+    position:absolute;
+    width: 100%;
+    height:20px;
+    bottom:0px;
+    left:0px;
+}
+
+.photogrid-hide-native-scroller-vertical{
+    /*todo: need style here*/
+}
+
+
+
 .photo-droppable{
     position:absolute;
     background-color: transparent;
