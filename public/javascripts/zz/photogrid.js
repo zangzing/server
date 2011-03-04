@@ -31,7 +31,9 @@
             currentPhotoId: null,
             onScrollToPhoto: jQuery.noop,
 
-            context: 'album-grid'
+            context: 'album-grid',
+
+//            spaceBarTriggersClick: true
 
 
         },
@@ -101,6 +103,7 @@
                 cell.appendTo(self.element)
 
                 cell.zz_photo({
+                    photo: photo,
                     photoId: photo.id,
                     previewSrc: photo.previewSrc,
                     src: photo.src,
@@ -394,7 +397,17 @@
                         //page up
                         self.previousPicture();
                     }
-                });
+//                    else if(event.keyCode === 32){
+//                        if(self.options.spaceBarTriggersClick){
+//                            var index = self.indexOfPhoto(self.currentPhotoId());
+//                            var cell = self.cellAtIndex(index);
+//                            var photo = cell.data().zz_photo.options.photo;
+//                            self.options.onClickPhoto(index, photo, cell, 'main');
+//
+//
+//                        }
+//                     }
+                 });
 
                 //block events to grid
                 $(this.element).keydown(function(event){

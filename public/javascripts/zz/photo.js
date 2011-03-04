@@ -83,7 +83,7 @@
 
                 //add photo action
                 self.element.find('.photo-add-button').click(function(event){
-                    self.options.onClick('main')
+                    self.options.onClick('main');
                 });
 
 
@@ -92,6 +92,9 @@
                     self.borderElement.addClass('no-shadow');
                 }
 
+                if(self.options.context === 'chooser-picture'){
+                    self.element.find('.magnify-button').hide();
+                }
             }
 
 
