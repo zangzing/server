@@ -257,7 +257,6 @@
         open_login_window : function(folder, login_url) {
             var self = this;
             oauthmanager.login(login_url, function(){
-                console.log('after login');
                 self.openFolder(folder);
             });
         },
