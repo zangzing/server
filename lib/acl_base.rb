@@ -28,7 +28,7 @@ end
 # be added in the future through class inheritance.  Today we only
 # have a child class type of AlbumACL.
 #
-# Having to synchronized lists allows us to efficiently ask questions
+# Having two synchronized lists allows us to efficiently ask questions
 # like:
 #
 # 1) What is the specific role of this user on a particular album.
@@ -80,7 +80,7 @@ class BaseACL
   # build the key used to store the acl to user set
   #
   def build_acl_key()
-    @@acl_key ||= ACLManager.build_acl_key(type, acl_id)
+    @acl_key ||= ACLManager.build_acl_key(type, acl_id)
   end
 
   # build the key to store the type:user to acl objects
@@ -171,11 +171,10 @@ class BaseACL
   # return the user role if we have one for the
   # given user_id.  If no role we return nil
   def get_user_role(user_id)
-    r = redis.zrangebyscore(build_acl_key, self.role_value_first, self.role_value_last, :with_scores => true)
+    r = redis.zscore(build_acl_key, user_id)
     if !r.nil?
-      score = r[1]
       # now we have the score, transform into a role object
-      return get_role(score)
+      return get_role(r)
     else
       return nil
     end

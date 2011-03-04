@@ -58,31 +58,95 @@ class ACLManager
   # of objects that we know about
   def self.replace_user_key old_user_id, new_user_id
     redis = get_redis
-#TODO: run this in a transaction with multi
-    # iterate across the various types of ACLs that we track
+
+   # iterate across the various types of ACLs that we track
     type_tracker.each do |type|
       old_user_key = build_user_key(type, old_user_id)
-      # now fetch its references
-      object_ids = redis.zrange(old_user_key, 0, -1, :with_scores => true)
-      if (object_ids)
-        i = 0
-        last = object_ids.length
-        while i < last do
-          # array has pairs, id, score, id2, score2, ...
-          acl_id = object_ids[i]
-          i += 1
-          score = object_ids[i]
-          i += 1
 
-          # one by one remove and readd as the new user id
-          acl_key = build_acl_key(type, acl_id)
-          redis.zrem(acl_key, old_user_id)
-          redis.zadd(acl_key, new_user_id, score)
+      # utilize optimistic locking to ensure
+      # we have a consistent set removal
+      completed = false
+      while completed == false
+        # this is the optimistic lock key that
+        # we are monitoring if it changes our exec will fail
+        # and we will need to try again
+        redis.watch old_user_key
+
+        # now fetch its references
+        object_ids = redis.zrange(old_user_key, 0, -1, :with_scores => true)
+
+        result = redis.multi do
+          redis.pipelined do
+            if (object_ids)
+              i = 0
+              last = object_ids.length
+              while i < last do
+                # array has pairs, id, score, id2, score2, ...
+                acl_id = object_ids[i]
+                i += 1
+                score = object_ids[i]
+                i += 1
+
+                # one by one remove and readd as the new user id
+                acl_key = build_acl_key(type, acl_id)
+                redis.zrem(acl_key, old_user_id)
+                redis.zadd(acl_key, score, new_user_id)
+              end
+            end
+            # and now rename our user id for this type of object acl
+            new_user_key = build_user_key(type, new_user_id)
+            redis.rename(old_user_key, new_user_key)
+          end
         end
+        completed = result.nil? ? false : true
       end
-      # and now rename our user id for this type of object acl
-      new_user_key = build_user_key(type, new_user_id)
-      redis.rename(old_user_key, new_user_key)
+    end
+  end
+
+  # Given a user id, delete all references to that
+  # user.
+  def self.delete_user user_id
+    redis = get_redis
+
+   # iterate across the various types of ACLs that we track
+    type_tracker.each do |type|
+      user_key = build_user_key(type, user_id)
+
+      # utilize optimistic locking to ensure
+      # we have a consistent set removal
+      completed = false
+      while completed == false
+        # this is the optimistic lock key that
+        # we are monitoring if it changes our exec will fail
+        # and we will need to try again
+        redis.watch user_key
+
+        # now fetch its references
+        object_ids = redis.zrange(user_key, 0, -1, :with_scores => true)
+
+        result = redis.multi do
+          redis.pipelined do
+            if (object_ids)
+              i = 0
+              last = object_ids.length
+              while i < last do
+                # array has pairs, id, score, id2, score2, ...
+                acl_id = object_ids[i]
+                i += 1
+                score = object_ids[i]
+                i += 1
+
+                # one by one remove and readd as the new user id
+                acl_key = build_acl_key(type, acl_id)
+                redis.zrem(acl_key, user_id)
+              end
+            end
+            # and now delete the user tracker for this type of acl object
+            redis.del(user_key)
+          end
+        end
+        completed = result.nil? ? false : true
+      end
     end
   end
 
