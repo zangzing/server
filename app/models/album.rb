@@ -164,7 +164,7 @@ private
       photos.find(cover_photo_id)
       return true
     rescue ActiveRecord::RecordNotFound => e
-       errors.add(:cover_photo_id,"Could not find photo with ID:"+cover_photo_id+" in this album")
+       errors.add(:cover_photo_id,"Could not find photo with ID:"+cover_photo_id.to_s+" in this album")
     end
     return false
   end
