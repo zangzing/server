@@ -235,6 +235,7 @@
             var grid = gridElement.zz_photogrid({
                 photos:children,
                 showThumbscroller:false,
+                hideNativeScroller: true,
                 cellWidth: 720,
                 cellHeight: 500,
                 singlePictureMode: true,

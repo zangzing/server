@@ -24,6 +24,7 @@
             onClickPhoto: jQuery.noop,    //move to photo-model
 
             showThumbscroller: true,      //context
+            hideNativeScroller: false,    //context
 
             singlePictureMode: false,
 
@@ -286,6 +287,17 @@
 
             });
 
+
+            //hideNativeScroller
+            if(self.options.hideNativeScroller){
+
+                if(self.options.singlePictureMode){
+                    self.thumbscrollerElement = $('<div class="photogrid-hide-native-scroller-horizontal"></div>').appendTo(self.element.parent());
+                }
+                else{
+                    self.thumbscrollerElement = $('<div class="photogrid-hide-native-scroller-vertical"></div>').appendTo(self.element.parent());
+                }
+            }
 
             //thumbscroller
             if(self.options.showThumbscroller){
