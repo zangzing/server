@@ -8,16 +8,23 @@ var pages = {};
 
 pages.album_add_photos_tab = {
     init: function(callback, drawer_style){
-        var url = '/albums/' + zz.album_id + '/add_photos';
-        $('#tab-content').load(url, function(){
-            if( drawer_style == 'edit'){
-                $('#added-pictures-tray-container').css('bottom','5px')
-            } else {
-                $('#added-pictures-tray-container').css('bottom','24px')
-            }
-            filechooser.init();
-            callback();
-        });
+//        var url = '/albums/' + zz.album_id + '/add_photos';
+//        $('#tab-content').load(url, function(){
+//            if( drawer_style == 'edit'){
+//                $('#added-pictures-tray-container').css('bottom','5px')
+//            } else {
+//                $('#added-pictures-tray-container').css('bottom','24px')
+//            }
+//            filechooser.init();
+//            callback();
+//        });
+        
+        var template = $('<div class="photochooser-container"></div>');
+        $('#tab-content').html(template);
+        template.zz_photochooser({});
+
+
+        callback();
     },
 
     bounce: function(success, failure){
@@ -137,7 +144,7 @@ pages.edit_album_tab = {
                 }
 
 
-                var gridElement = $('<div class="photogrid-container"></div>');
+                var gridElement = $('<div class="photogrid"></div>');
 
                 $('#article').html(gridElement);
                 $('#article').css('overflow','hidden');
@@ -575,6 +582,8 @@ pages.account_settings_profile_tab = {
     //            });
     //        });
 
+
+
             self.init_profile_photo_picker();
             self.refresh_profile_photo_picker();
             self.init_add_photos_dialog();
@@ -600,7 +609,7 @@ pages.account_settings_profile_tab = {
 
         $.ajax({
             dataType: 'json',
-            url: '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
+            url: '/albums/' + zz.album_id + '/photos_json?' + + (new Date()).getTime(),  //force browser cache miss
             success: function(json){
                 var selectedIndex=-1;
                 var currentId = $('#profile-photo-id').val();
@@ -666,7 +675,12 @@ pages.account_settings_profile_tab = {
 
     init_add_photos_dialog: function(){
         //for the add_photos call, the id is irrelevant, it just delivers the filechooser DOM
-        $('<div id="add-photos-dialog"></div>').load( '/albums/lkj789074XsSXkd/add_photos' )
+
+        var template = $('<div class="photochooser-container"></div>');
+//        $('#tab-content').html(template);
+
+
+        $('<div id="add-photos-dialog"></div>').html( template )
                                                .dialog({ title: 'Load Profile Pictures',
                                                          width: 920,
                                                          height: $(document).height() - 200,
@@ -680,7 +694,7 @@ pages.account_settings_profile_tab = {
                                                                     click: function() { $(this).dialog("close"); }
                                                                 }
                                                          ],
-                                                         open:   function(event, ui){ filechooser.init(); },
+                                                         open:   function(event, ui){ template.zz_photochooser({}) },
                                                          close:  function(event, ui){
                                                              $.get( '/albums/' +zz.album_id + '/close_batch', function(){
                                                                 pages.account_settings_profile_tab.refresh_profile_photo_picker()
@@ -845,10 +859,12 @@ pages.linked_accounts = {
 pages.no_agent = {
     url: '/static/connect_messages/no_agent.html',
     init_from_filechooser: function( callback ){             
-        $('#filechooser-title').html($('#downloadzz-title').html());
-        $('#choose-header h4').html($('#downloadzz-tagline').html());
-        $('#downloadzz-title').html('');
-        $('#downloadzz-tagline').html( '');
+
+//todo: need different way to change photochooser tile. if we just clear or set to something else, it never gets set back
+//        $('.photochooser .header h3').html('');
+//        $('.photochooser .header h4').html('');
+//        $('#downloadzz-title').html('');
+//        $('#downloadzz-tagline').html( '');
         $('#downloadzz-btn').click(function(){
             alert("Agent should be downloading now (TODO: Set URL for download in pages.js)");
         });

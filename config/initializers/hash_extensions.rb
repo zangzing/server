@@ -1,3 +1,5 @@
+require "active_support"
+require "active_support/core_ext/hash"
 ActiveSupport::XmlMini.backend = 'Nokogiri' #Switch backend for Hash.from_xml()
 
 class Hash

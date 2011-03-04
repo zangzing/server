@@ -74,11 +74,7 @@ var ZZAt = {
         }
     }
 }
+
 ZZAt.track('page.visit',{ua: navigator.userAgent});
 
-/*
-$("#facebook_b").click(function(){
-ZZA.track('button.facebook.click');
-});
-*/
 

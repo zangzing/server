@@ -928,6 +928,8 @@ div#drawer div#drawer-tabs{
 div#drawer div#tab-content {
     margin: 0 auto;
     width: 898px;
+    position:relative;
+    height:100%;
 }
 
 div#cancel-drawer-btn{
