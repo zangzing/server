@@ -554,13 +554,13 @@ pages.album_contributors_tab = {
 
 };
 
-pages.account_settings_profile_tab = {
+pages.acct_profile = {
 
     profile_photo_picker: 'undefined',
 
     init: function(callback){
         var url = '/users/' + zz.current_user_id +'/edit';
-        var self = pages.account_settings_profile_tab;
+        var self = pages.acct_profile;
 
         $('#tab-content').load(url, function(){
 
@@ -573,21 +573,10 @@ pages.account_settings_profile_tab = {
                 }, 10);
             });
 
-              // unbind next tab button
-    //        var handler = $('#wizard-account').data('events')['click'][0];
-    //        $('#wizard-account').unbind('click');
-    //        $('#wizard-account').click( function(){
-    //            self.update_profile(function(){
-    //                zz.wizard.open_settings_drawer('account')
-    //            });
-    //        });
-
-
-
             self.init_profile_photo_picker();
             self.init_add_photos_dialog();
 
-            $('#profile-photo-button').click( pages.account_settings_profile_tab.show_add_photos_dialog );
+            $('#profile-photo-button').click( pages.acct_profile.show_add_photos_dialog );
             $('#ok-profile-button').click(function(){
                     self.update_profile( function(){
                         zz.wizard.close_settings_drawer();
@@ -603,86 +592,72 @@ pages.account_settings_profile_tab = {
         this.update_profile( success );
     },
 
-    init_profile_photo_picker: function(){
-        var self = this;
-
-        $.ajax({
-            dataType: 'json',
-            url: '/albums/' + zz.album_id + '/photos_json?' + + (new Date()).getTime(),  //force browser cache miss
-            success: function(json){
-                var selectedIndex=-1;
-                var currentId = $('#profile-photo-id').val();
-                var photos = $.map(json, function(element, index){
-                    var id = element.id;
-
-                    if(id == currentId){
-                        selectedIndex = index;
-                    }
-                    var src = element.thumb_url;
-
-                    
-                    src = agent.checkAddCredentialsToUrl(src);
-
-                    return {id:id, src:src};
-                });
-
-
-                self.profile_photo_picker = $("#profile-photo-picker").zz_thumbtray({
-                    photos:photos,
-                    showSelection:true,
-                    selectedIndex:selectedIndex,
-                    onSelectPhoto: function(index, photo){
-                        var photo_id = '';
-                        if(index!==-1){
-                            photo_id = photo.id
+    load_profile_photos: function( success_callback ){
+            $.ajax({
+                dataType: 'json',
+                url: '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
+                success: function(json){
+                    var selectedIndex=-1;
+                    var currentId = $('#profile-photo-id').val();
+                    var photos = $.map(json, function(element, index){
+                        var id = element.id;
+                        if(id == currentId){
+                            selectedIndex = index;
                         }
-                        $('#profile-photo-id').val(photo_id);
-                        $('div#profile-photo-picker div.thumbtray-wrapper div.thumbtray-selection').css('top', 0);
+                        var src = element.thumb_url;
+                        src = agent.checkAddCredentialsToUrl(src);
+                        return {id:id, src:src};
+                    });
+                    success_callback(photos,selectedIndex);
+                }
+            });
+    },
+
+    init_profile_photo_picker: function(){
+        pages.acct_profile.load_profile_photos( function( photos, selectedIndex ){
+            pages.acct_profile.profile_photo_picker = $("#profile-photo-picker").zz_thumbtray({
+                photos:photos,
+                showSelection:true,
+                selectedIndex:selectedIndex,
+                onSelectPhoto: function(index, photo){
+                    var photo_id = '';
+                    if(index!==-1){
+                        photo_id = photo.id
                     }
-                }).data().zz_thumbtray;
-
-
-                self.refresh_profile_photo_picker();
-
-            }
+                    $('#profile-photo-id').val(photo_id);
+                    $('div#profile-photo-picker div.thumbtray-wrapper div.thumbtray-selection').css('top', 0);
+                }
+            }).data().zz_thumbtray;
+            pages.acct_profile.profile_photo_picker.setPhotos( photos );
+            pages.acct_profile.profile_photo_picker.setSelectedIndex( selectedIndex );
         });
-
     },
 
     refresh_profile_photo_picker: function(){
-        //refresh album cover picker
-        $.ajax({
-            dataType: 'json',
-            url: '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
-            success: function(json){
-                var selectedIndex=-1;
-                var currentId = $('#profile-photo-id').val();
-                var photos = $.map(json, function(element, index){
-                    var id = element.id;
-
-                    if(id == currentId){
-                        selectedIndex = index;
-                    }
-                    var src = element.thumb_url;
-
-                    
-                    src = agent.checkAddCredentialsToUrl(src);
-
-                    return {id:id, src:src};
-                });
-                pages.account_settings_profile_tab.profile_photo_picker.setPhotos( photos );
-                pages.account_settings_profile_tab.profile_photo_picker.setSelectedIndex( selectedIndex );
-            }
+        pages.acct_profile.load_profile_photos( function( photos, selectedIndex ){
+            pages.acct_profile.profile_photo_picker.setPhotos( photos );
+            pages.acct_profile.profile_photo_picker.setSelectedIndex( selectedIndex );
         });
-    },  
+    },
 
     init_add_photos_dialog: function(){
         //for the add_photos call, the id is irrelevant, it just delivers the filechooser DOM
-
         var template = $('<div class="photochooser-container"></div>');
-//        $('#tab-content').html(template);
-
-
+        $('<div id="add-photos-dialog"></div>').html( template )
+                                               .zz_dialog({
+                                                         height: $(document).height() - 200,
+                                                         width: 895,
+                                                         modal: true,
+                                                         autoOpen: false,
+                                                         open : function(event, ui){ template.zz_photochooser({}) },
+                                                         close: function(event, ui){
+                                                             $.get( '/albums/' +zz.album_id + '/close_batch', function(){
+                                                                pages.acct_profile.refresh_profile_photo_picker()
+                                                             });
+                                                         }
+        });
+        template.height( $(document).height() - 192 );
+        /*
         $('<div id="add-photos-dialog"></div>').html( template )
                                                .dialog({ title: 'Load Profile Pictures',
                                                          width: 920,
@@ -700,14 +675,15 @@ pages.account_settings_profile_tab = {
                                                          open:   function(event, ui){ template.zz_photochooser({}) },
                                                          close:  function(event, ui){
                                                              $.get( '/albums/' +zz.album_id + '/close_batch', function(){
-                                                                pages.account_settings_profile_tab.refresh_profile_photo_picker()
+                                                                pages.acct_profile.refresh_profile_photo_picker()
                                                              });
                                                          }
                  });
+                 */
     },
 
     show_add_photos_dialog: function(event){
-        $('#add-photos-dialog').dialog('open');
+        $('#add-photos-dialog').zz_dialog('open');
     },
 
 
@@ -771,7 +747,7 @@ pages.account_settings_profile_tab = {
 
         //todo: i don't think this ever gets called
         submitHandler: function(form){
-            pages.account_settings_profile_tab.update_profile(function(){
+            pages.acct_profile.update_profile(function(){
                 zz.wizard.close_settings_drawer();
             })
         }

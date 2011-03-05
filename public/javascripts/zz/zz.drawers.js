@@ -257,10 +257,10 @@ zz.drawers = {
 //                 url: '/users/$$/edit',         // url of the drawer template
 //                 url_type: 'user',              // replace $$ w/the id of the album or user
                  init:   function(callback){
-                    pages.account_settings_profile_tab.init(callback);    
+                    pages.acct_profile.init(callback);
                  },
                  bounce: function(success, failure){
-                     pages.account_settings_profile_tab.bounce(success, failure);
+                     pages.acct_profile.bounce(success, failure);
                  }
 
              },
