@@ -9,26 +9,28 @@
     $.widget( "ui.zz_photogrid", {
         options: {
             photos: [],
-            cellWidth: 200,
-            cellHeight: 200,
+            cellWidth: 200,               //context
+            cellHeight: 200,              //context
 
-            allowDelete: false,
-            onDelete:jQuery.noop,
+            allowDelete: false,           //context
+            onDelete:jQuery.noop,         //move to photo-model
 
-            allowEditCaption:false,
-            onChangeCaption:jQuery.noop,
+            allowEditCaption:false,       //context
+            onChangeCaption:jQuery.noop,  //move to photo-model
 
-            allowReorder: false,
-            onChangeOrder: jQuery.noop,
+            allowReorder: false,          //context
+            onChangeOrder: jQuery.noop,   //move to photo-model
 
-            onClickPhoto: jQuery.noop,
+            onClickPhoto: jQuery.noop,    //move to photo-model
 
-            showThumbscroller: true,
+            showThumbscroller: true,      //context
 
             singlePictureMode: false,
 
             currentPhotoId: null,
-            onScrollToPhoto: jQuery.noop
+            onScrollToPhoto: jQuery.noop,
+
+            context: 'album-grid'
 
 
         },
@@ -101,6 +103,7 @@
                     photoId: photo.id,
                     previewSrc: photo.previewSrc,
                     src: photo.src,
+                    rolloverSrc: photo.rolloverSrc,
                     maxWidth: Math.floor(self.options.cellWidth - 50),
                     maxHeight: Math.floor(self.options.cellHeight - 50),
                     allowDelete: self.options.allowDelete,
@@ -117,14 +120,19 @@
                         return self.options.onChangeCaption(index, photo, caption);
                     },
 
-                    onClick: function(){
-                        self.options.onClickPhoto(index, photo);
+                    onClick: function(action){
+                        self.options.onClickPhoto(index, photo, cell, action);
                     },
 
                     scrollContainer: self.element,
                     lazyLoadThreshold: lazyLoadThreshold,
-                    isUploading: photo.state !== 'ready',
-                    isError: photo.state === 'error'
+                    isUploading: ! _.isUndefined(photo.state) ? photo.state !== 'ready': false, //todo: move into photochooser.js
+                    isError: photo.state === 'error',
+//                    noShadow: photo.type === 'folder',                                          //todo: move into photochooser.js
+//                    lazyLoad: photo.type !== 'folder',                                           //todo: move into photochooser.js
+
+                    context: self.options.context,
+                    type: _.isUndefined(photo.type) ? 'photo': photo.type
 
                 });
 

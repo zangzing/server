@@ -7,22 +7,28 @@
 
     $.widget( "ui.zz_photo", {
         options: {
-            allowDelete: false,
-            onDelete:jQuery.noop,
-            maxHeight:120,
-            maxWidth:120,
-            caption:null,
-            allowEditCaption:false,
-            onChangeCaption:jQuery.noop,
-            src:null,
-            previewSrc:null,
+            allowDelete: false,          //context
+            onDelete:jQuery.noop,        //model
+            maxHeight:120,               //context
+            maxWidth:120,                //context
+            caption:null,                //model
+            allowEditCaption:false,      //context
+            onChangeCaption:jQuery.noop, //model
+            src:null,                    //model
+            previewSrc:null,             //model
+            rolloverSrc:null,            //model
             scrollContainer:null,
             lazyLoadThreshold:0,
-            onClick:jQuery.noop,
-            photoId:null,
-            aspectRatio:0,
-            isUploading:false,
-            isError:false
+            onClick:jQuery.noop,         //model
+            onMagnify:jQuery.noop,       //model
+            photoId:null,                //model
+            aspectRatio:0,               //model
+            isUploading:false,           //model
+            isError:false,               //model
+//            noShadow:false,              //context / type
+//            lazyLoad:true ,              //context / type
+            context:null,                 //context -- album-edit, album-grid, album-picture, album-timeline, album-people, chooser-grid, chooser-picture
+            type: 'photo'
         },
 
         _create: function() {
@@ -36,25 +42,82 @@
             var html = '';
 
             html += '<div class="photo-border">'
-            html += '<img class="photo-image" src="/images/photo_placeholder.png">';
-            html += '<div class="photo-delete-button"></div>';
-            html += '<div class="photo-uploading-icon"></div>';
-            html += '<div class="photo-error-icon"></div>';
-            html += '<img class="bottom-shadow" src="/images/photo/bottom-full.png">';
+            html += '   <img class="photo-image">';
+            html += '   <div class="photo-delete-button"></div>';
+            html += '   <div class="photo-uploading-icon"></div>';
+            html += '   <div class="photo-error-icon"></div>';
+            html += '   <img class="bottom-shadow" src="/images/photo/bottom-full.png">';
+
+            if(self.options.context.indexOf('chooser')===0 && self.options.type === 'photo'){
+                html += '   <div class="photo-add-button"></div>';
+                html += '   <div class="magnify-button"></div>';
+            }
+
+
             html += '</div>';
             html += '<div class="photo-caption">' + self.options.caption +'</div>';
 
-            $(html).appendTo(this.element);
+            var template = $(html);
+            template.appendTo(this.element);
 
-            self.borderElement = self.element.find('.photo-border');
-            self.imageElement = self.element.find('.photo-image');
-            self.captionElement = self.element.find('.photo-caption');
-            self.deleteButtonElement = self.element.find('.photo-delete-button');
-            self.uploadingElement = self.element.find('.photo-uploading-icon');
-            self.errorElement = self.element.find('.photo-error-icon');
-            self.bottomShadow = self.element.find('.bottom-shadow');
+
+            self.borderElement = this.element.find('.photo-border');
+            self.imageElement = this.element.find('.photo-image');
+            self.captionElement = this.element.find('.photo-caption');
+            self.deleteButtonElement = this.element.find('.photo-delete-button');
+            self.uploadingElement = this.element.find('.photo-uploading-icon');
+            self.errorElement = this.element.find('.photo-error-icon');
+            self.bottomShadow = this.element.find('.bottom-shadow');
+
+
+
+
+
+
+            if(self.options.context.indexOf('chooser')===0){
+                //magnify
+                this.element.find('.magnify-button').click(function(event){
+                    self.options.onClick('magnify')
+                });
+
+
+                //add photo action
+                self.element.find('.photo-add-button').click(function(event){
+                    self.options.onClick('main')
+                });
+
+
+                //hide drop shadow for folders and 'add all' butons
+                if(self.options.type !== 'photo'){
+                    self.borderElement.addClass('no-shadow');
+                }
+
+                if(self.options.context === 'chooser-picture'){
+                    self.element.find('.magnify-button').hide();
+                }
+            }
+
+
+
+
+
+
+
+
+
+            //click
+            self.imageElement.click(function(event){
+                self.options.onClick('main')
+            });
+
+
+
 
             self.captionHeight = 30;
+
+
+
+
 
             if(self.options.aspectRatio){
                 var srcWidth =  1 * self.options.aspectRatio;
@@ -85,16 +148,16 @@
 
 
             //click
-            self.imageElement.mousedown(function(mouseDownEvent){
-                var mouseUpHandler = function(mouseUpEvent){
-                    if(mouseDownEvent.pageX === mouseUpEvent.pageX && mouseDownEvent.pageY === mouseUpEvent.pageY){
-                        self.options.onClick(mouseUpEvent);
-                    }
-                    self.imageElement.unbind('mouseup', mouseUpHandler);
-                };
-                self.imageElement.mouseup(mouseUpHandler);
-
-            });
+//            self.borderElement.mousedown(function(mouseDownEvent){
+//                var mouseUpHandler = function(mouseUpEvent){
+//                    if(mouseDownEvent.pageX === mouseUpEvent.pageX && mouseDownEvent.pageY === mouseUpEvent.pageY){
+//                        self.options.onClick(mouseUpEvent);
+//                    }
+//                    self.borderElement.unbind('mouseup', mouseUpHandler);
+//                };
+//                self.borderElement.mouseup(mouseUpHandler);
+//
+//            });
 
 
 
@@ -160,6 +223,32 @@
                     self.editCaption();
                 });
             }
+
+            //lazy loading
+            if(self.options.type !== 'photo'){
+                self._loadImage()
+            }
+            else{
+                self.imageElement.attr('src', '/images/photo_placeholder.png');
+            }
+
+
+            //rollover
+            if(self.options.rolloverSrc){
+
+                //preload rollover
+                var img = new Image();
+                img.src = self.options.rolloverSrc;
+
+                self.element.mouseover(function(){
+                    self.imageElement.attr('src', self.options.rolloverSrc);
+                });
+
+                self.element.mouseout(function(){
+                    self.imageElement.attr('src', self.options.src);
+                });
+            }
+
         },
 
         loadIfVisible: function(containerDimensions){
@@ -195,15 +284,7 @@
                 //show the full version
                 self.imageElement.attr("src", self.options.src);
 
-//                self.element.mouseover(function(){
-//                    self._resize(1.15);
-//                    self.element.css({'z-index':1000});
-//                });
-//
-//                self.element.mouseout(function(){
-//                    self._resize(1);
-//                    self.element.css({'z-index':-1});
-//                })
+
            };
 
 

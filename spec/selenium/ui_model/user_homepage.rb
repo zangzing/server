@@ -34,9 +34,9 @@ module UiModel
 
       def get_photos_list
         @session.wait_for "css=.photogrid-thumbscroller-vertical"
-        photo_count = @browser.get_xpath_count("//div[@class='photogrid-container']/div[@class='photogrid-cell']").to_i
+        photo_count = @browser.get_xpath_count("//div[@class='photogrid']/div[@class='photogrid-cell']").to_i
         photos = []
-        1.upto(photo_count) { |i| photos << @browser.get_text("xpath=(//div[contains(@class, 'photogrid-container')]//div[contains(@class, 'photo-caption')])[#{i}]").strip }
+        1.upto(photo_count) { |i| photos << @browser.get_text("xpath=(//div[contains(@class, 'photogrid')]//div[contains(@class, 'photo-caption')])[#{i}]").strip }
         photos
         #photo_count
       end
