@@ -73,7 +73,6 @@
 
 
 
-
             if(self.options.context.indexOf('chooser')===0){
                 //magnify
                 this.element.find('.magnify-button').click(function(event){
@@ -92,9 +91,6 @@
                     self.borderElement.addClass('no-shadow');
                 }
 
-                if(self.options.context === 'chooser-picture'){
-                    self.element.find('.magnify-button').hide();
-                }
             }
 
 
@@ -249,6 +245,20 @@
                 });
             }
 
+        },
+
+
+        setChecked: function(checked){
+            var self = this;
+            if(self.options.context.indexOf('chooser')===0){
+                if(checked){
+                    self.element.find('.photo-add-button').addClass('checked');
+                }
+                else{
+                    self.element.find('.photo-add-button').removeClass('checked');
+                }
+
+            }
         },
 
         loadIfVisible: function(containerDimensions){
