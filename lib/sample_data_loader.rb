@@ -66,8 +66,9 @@ class SampleDataLoader
         (rand( 20 )+1).times do
             new_photo(album, album.user)
         end
-        UploadBatch.get_current( album.user.id, album.id ).save
-        puts "          Batch of #{UploadBatch.get_current( album.user.id, album.id ).photos.length} photos added"
+        ub = UploadBatch.get_current( album.user.id, album.id )
+        puts "          Batch of #{ub.photos.length} photos added"
+        ub.close
       end
     end
     puts "      Done Creating Photos...."
@@ -125,7 +126,7 @@ class SampleDataLoader
   end
 
   def event
-    %w(Roompah Rave Concert Tournament Wedding Party Baptism Reunion Marriage Bar-Mitzvah Christmas Hannukah Labor-day Memorial-day Camp Graduation Surgery Jury-Duty Driving-Test Confirmation Commencement Premiere Vacation Road-Trip Recital).rand
+    %w(Roompah Rave Concert Tournament Wedding Party Baptism Reunion Marriage Bar-Mitzvah Bhat-Mitzvah Christmas Hannukah Labor-day Memorial-day Camp Graduation Surgery Trial Driving-Test Confirmation Commencement Premiere Vacation Road-Trip Recital Roadshow).rand
   end
 
   def initializeS3
@@ -136,7 +137,6 @@ class SampleDataLoader
             :secret_access_key =>@s3creds[:secret_access_key]
      )
       @s3buckets = ['1.zz', '2.zz', '3.zz', '4.zz']
-#     @s3options = {:access => :public_read }.merge( Paperclip.options[:image_options][:s3_headers] )
      puts "      S3 connection up"
   end
 
@@ -166,20 +166,21 @@ class SampleDataLoader
   end
 
   def new_photo(album, user)
-   i = image_name
-   current_batch = UploadBatch.get_current( user.id, album.id )
-   Photo.create(
+    i = image_name
+    current_batch = UploadBatch.get_current( user.id, album.id )
+    p = Photo.new(
           :user_id           => user.id,
           :album_id          => album.id,
           :upload_batch_id   => current_batch.id,
           :agent_id          => Faker::PhoneNumber.phone_number,
           :caption           => Faker::Lorem.sentence( rand(10) ),
-          :capture_date      => Time.now - rand( 1000 ).days,
-          :image_file_name   => i[:name],
-          :image_path        => i[:path],
-          :image_bucket      => i[:bucket],
-          :state             => 'ready'
-   )
+          :capture_date      => Time.now - rand( 1000 ).days )
+    p.width        = 640
+    p.height       = 480
+    p.image_path   = i[:path]
+    p.image_bucket = i[:bucket]
+    p.state        = 'ready'
+    p.save!
   end
 end
 

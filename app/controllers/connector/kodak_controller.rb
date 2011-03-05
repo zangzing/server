@@ -8,6 +8,7 @@ class Connector::KodakController < Connector::ConnectorController
   
   def initialize(*args)
     super(*args)
+    KodakConnector.http_timeout = SERVICE_CALL_TIMEOUT[:kodak]
     @kodak_connector = KodakConnector.new
   end
   

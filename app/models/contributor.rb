@@ -44,7 +44,7 @@ class Contributor < ActiveRecord::Base
 
   def photos
     return [] unless self.is_a_user?
-    @photos ||= Photo.find_all_by_user_id_and_album_id(self.user_id, self.album_id )
+    @photos ||= album.photos.find_all_by_user_id(self.user_id)
   end
 
   def deliver_notification

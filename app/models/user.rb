@@ -11,6 +11,18 @@ class User < ActiveRecord::Base
   attr_accessible  :email, :name, :first_name, :last_name, :username,  :password, :old_password, :automatic, :profile_photo_id
 
   has_many :albums,              :dependent => :destroy
+
+  #things I like, join with likes table
+  has_many :likes
+  has_many :liked_albums,         :through => :likes, :class_name => "Album", :source => :subject,  :conditions => { 'likes.subject_type' => 'A'}
+  has_many :liked_users,          :through => :likes, :class_name => "User",  :source => :subject,  :conditions => { 'likes.subject_type' => 'U'}
+  has_many :liked_photos,         :through => :likes, :class_name => "Photo", :source => :subject,  :conditions => { 'likes.subject_type' => 'P'}
+
+  #Reverse lookup join likers ar those who like me
+  has_many :like_mees,            :foreign_key => :subject_id, :class_name => "Like"
+  has_many :likers,               :through => :like_mees, :class_name => "User",  :source => :user
+
+
   has_one  :profile_album,       :dependent => :destroy, :autosave => true
   has_one  :preferences,         :dependent => :destroy, :class_name => "UserPreferences", :autosave => true
   has_many :identities,          :dependent => :destroy
@@ -33,18 +45,19 @@ class User < ActiveRecord::Base
     c.require_password_confirmation = false
     c.login_field = :email
     c.validate_login_field = false
+    c.disable_perishable_token_maintenance=true;
   end
 
   before_save    :split_name
   before_create  :build_profile_album
   before_create  :build_preferences
 
-  validates_presence_of :name, :unless => :automatic?
-  validates_presence_of :username, :unless => :automatic?
-  validates_format_of :username, :with => /^[a-z0-9]+$/, :on => :create, :message => 'Should contain only lowercase alphanumeric characters'
-  validates_uniqueness_of :username, :message => "Has already been taken", :unless => :automatic?
-  validates_presence_of :email
-  validates_length_of  :password, :within => 6..40, :if => :require_password?, :message => "must be between 6 and 40 characters long"
+  validates_presence_of   :name,      :unless => :automatic?
+  validates_presence_of   :username,  :unless => :automatic?
+  validates_format_of     :username,  :with => /^[a-z0-9]+$/, :on => :create, :message => 'Should contain only lowercase alphanumeric characters'
+  validates_uniqueness_of :username,  :message => "Has already been taken", :unless => :automatic?
+  validates_presence_of   :email
+  validates_length_of     :password, :within => 6..40, :if => :require_password?, :message => "must be between 6 and 40 characters long"
   validate :old_password_valid?, :on => :update, :unless => :reset_password
 
   has_friendly_id :username

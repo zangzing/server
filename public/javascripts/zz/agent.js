@@ -11,18 +11,7 @@ var agent = {
     agentId: null,
 
     isAvailable: function(callback) {
-
-        var onSuccess = function() {
-            callback(true);
-        }
-
-        var onError = function() {
-            callback(false);
-        }
-
-
-        this.callAgent("/ping", onSuccess, onError);
-
+        this.callAgent("/ping", callback(true),  callback(false));
     },
 
     //todo: this needs to be cleaned up

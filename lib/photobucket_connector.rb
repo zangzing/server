@@ -11,6 +11,7 @@ class PhotobucketConnector
   require 'oauth/consumer'
   cattr_accessor :consumer_key, :consumer_secret
   cattr_accessor :http_timeout
+  @@http_timeout = 10.seconds
 
   API_SITE = 'http://api.photobucket.com'
   TOKEN_DIVIDER = '<//>'
@@ -44,16 +45,17 @@ class PhotobucketConnector
         :access_token_url => "http://api.photobucket.com/login/access",
         :authorize_url => "http://photobucket.com/apilogin/login",
         :http_method => :post,
-        :scheme => :query_string,
-        :http_timeout => PhotobucketConnector.http_timeout
+        :scheme => :query_string
       })
   end
 
   def create_access_token!(oauth_token, oauth_token_secret, first_time = false)
     if first_time
-      req_token = OAuth::RequestToken.from_hash(consumer, {:oauth_token => oauth_token, :oauth_token_secret => oauth_token_secret, :http_timeout => PhotobucketConnector.http_timeout})
+      req_token = OAuth::RequestToken.from_hash(consumer, {:oauth_token => oauth_token, :oauth_token_secret => oauth_token_secret})
       begin
-        @access_token = req_token.get_access_token
+        SystemTimer.timeout_after(@@http_timeout) do
+          @access_token = req_token.get_access_token
+        end
       rescue => e
         if e.kind_of?(OAuth::Unauthorized)
           code, msg = e.message.split(' ')
@@ -61,7 +63,7 @@ class PhotobucketConnector
         end
       end
     elsif
-      @access_token = OAuth::AccessToken.from_hash(consumer, {:oauth_token => oauth_token, :oauth_token_secret => oauth_token_secret, :http_timeout => PhotobucketConnector.http_timeout})
+      @access_token = OAuth::AccessToken.from_hash(consumer, {:oauth_token => oauth_token, :oauth_token_secret => oauth_token_secret,})
       refresh_owner_info!
     end
   end
@@ -94,12 +96,16 @@ class PhotobucketConnector
  def call_method(method_name, method_params = {})
     query_params = method_params.merge('format' => 'xml')
     raise PhotobucketError.new(36, "An access token is needed") unless @access_token
-    response = @access_token.get "#{method_name}?#{query_params.to_url_params}", query_params
+    response = nil
+    SystemTimer.timeout_after(@@http_timeout) do
+      response = @access_token.get "#{method_name}?#{query_params.to_url_params}", query_params
+    end
     if response.code=='301' && response['location'] #PB API redirect
      uri = URI.parse(response['location'])
      http = Net::HTTP.new(uri.host, uri.port)
-     http.read_timeout = http.open_timeout = PhotobucketConnector.http_timeout
-     response = http.get("#{uri.path}?#{uri.query}")
+     SystemTimer.timeout_after(@@http_timeout) do
+      response = http.get("#{uri.path}?#{uri.query}")
+     end
     end
     result = Hash.from_xml(response.body).values.first #JSON.parse(response.body)
     stat = result['status'].downcase

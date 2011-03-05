@@ -1,6 +1,9 @@
 class Like < ActiveRecord::Base
   attr_accessible :user_id, :subject_id, :subject_type
 
+  belongs_to :user
+  belongs_to :subject
+
 
   before_create :set_type
   after_create  :post

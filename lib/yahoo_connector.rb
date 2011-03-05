@@ -12,6 +12,7 @@ class YahooConnector
 
   cattr_accessor :api_key, :shared_secret
   cattr_accessor :http_timeout
+  @@http_timeout = 10.seconds
 
   TOKEN_SPLITTER = '<K1ND@SPL1773R>'
 
@@ -76,7 +77,9 @@ class YahooConnector
     if first_time
       req_token = OAuth::RequestToken.from_hash(consumer, {:oauth_token => oauth_token, :oauth_token_secret => oauth_token_secret})
       begin
-        @access_token = req_token.get_access_token(:oauth_verifier => oauth_verifier)
+        SystemTimer.timeout_after(@@http_timeout) do
+          @access_token = req_token.get_access_token(:oauth_verifier => oauth_verifier)
+        end
       rescue => e
         if e.kind_of?(OAuth::Unauthorized)
           code, msg = e.message.split(' ')
@@ -104,8 +107,11 @@ protected
 
   def call_method(url, method_params = {})
     raise YahooError.new(36, "An access token in needed") unless @access_token
+    response = nil
     begin
-      response = @access_token.get "#{url}?#{method_params.merge(:format => :json).to_url_params}"
+      SystemTimer.timeout_after(@@http_timeout) do
+        response = @access_token.get "#{url}?#{method_params.merge(:format => :json).to_url_params}"
+      end
     rescue => e
       raise YahooError.new(403, e.message) if e.kind_of?(OAuth::Problem)
     end

@@ -189,8 +189,7 @@ class PhotosController < ApplicationController
         logger.debug 'using cached photos_json'
       end
 
-      response.headers["Cache-Control"] = 'max-age=31536000' #todo: make private for password protected albums
-      response.headers["Expires"] = CGI.rfc1123_date(Time.now + 1.year)
+      expires_in 1.year, :public => true  #todo: make private for password protected albums
       response.headers['Content-Encoding'] = "gzip"
       render :json => json
     else

@@ -10,7 +10,10 @@ class Connector::FlickrSessionsController < Connector::FlickrController
 
   def create
     begin
-      auth = flickr_api.auth.getToken :frob => params[:frob]
+      auth = nil
+      SystemTimer.timeout_after(http_timeout) do
+        auth = flickr_api.auth.getToken :frob => params[:frob]
+      end
       service_identity.update_attribute(:credentials, auth.token)
     rescue => e
       raise InvalidCredentials if e.kind_of?(FlickRaw::FailedResponse)

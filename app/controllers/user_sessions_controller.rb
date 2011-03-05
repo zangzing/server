@@ -10,6 +10,7 @@ class UserSessionsController < ApplicationController
     reset_session #Prevent Session Fixation Attack
     @user_session = UserSession.new(params[:user_session])
     if @user_session.save
+      @user_session.user.reset_perishable_token! #reset the perishable token so it does not allow another login.
       redirect_back_or_default user_url( @user_session.record )
     else
       render :action => :new

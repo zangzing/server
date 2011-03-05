@@ -21,12 +21,14 @@ class UsersController < ApplicationController
       user_info[:username] = checked_user_name
 
       @user = User.new(params[:user])
+      @user.reset_perishable_token
+  	  @user.reset_single_access_token
 
+
+      # USER ACTIVATION DISABLED Do Not Erase        
       # Saving without session maintenance to skip
       # auto-login which can't happen here because
       # the User has not yet been activated
-      
-      # User activation was disabled  
       #if @user.save_without_session_maintenance
       #   @user.deliver_activation_instructions!
       #   flash[:notice] = "Your account has been created. Please check your e-mail for your account activation instructions!"

@@ -18,13 +18,13 @@
 
 
             var template = $('<div class="photochooser">' +
-                             '   <div class="header">' +
+                             '   <div class="photochooser-header">' +
                              '       <a class="back-button"><span>Back</span></a>' +
                              '       <h3>Folder Name</h3>' +
                              '       <h4>Choose pictures from folders on your computer or other photo sites</h4>' +
                              '   </div>' +
-                             '   <div class="body"></div>' +
-                             '   <div class="footer">' +
+                             '   <div class="photochooser-body"></div>' +
+                             '   <div class="photochooser-footer">' +
                              '     <div class="added-pictures-tray"></div>' +
                              '   </div>' +
                              '</div>');
@@ -34,7 +34,7 @@
             self.backButtonCaptionElement = template.find('.back-button span');
             self.backButtonElement = template.find('.back-button');
             self.folderNameElement = template.find('h3');
-            self.bodyElement = template.find('.body');
+            self.bodyElement = template.find('.photochooser-body');
 
 
             self.element.html(template);
@@ -204,7 +204,7 @@
                             if(hasPhotos){
                                 children.shift(); //remove the 'add all photos' button
                             }
-                            self.singlePictureView(children, photo.id);
+                            self.singlePictureView(folder, children, photo.id);
                         }
                     }
                 }
@@ -213,7 +213,7 @@
 
         },
 
-        singlePictureView:function(children, photoId){
+        singlePictureView:function(folder, children, photoId){
             var self = this;
 
             children = $.map(children, function(child, index){
@@ -223,13 +223,20 @@
             });
 
 
-            var gridElement = $('<div class="photogrid"></div>');
-            self.bodyElement.html(gridElement);
+            var template = $('<div class="prev-button"></div>' +
+                             '<div class="singlepicture-wrapper">' +
+                             '    <div class="photogrid"></div>' +
+                             '</div>' +
+                             '<div class="next-button"></div>');
+            
+            var gridElement = template.find('.photogrid');
+            self.bodyElement.html(template);
 
             var grid = gridElement.zz_photogrid({
                 photos:children,
                 showThumbscroller:false,
-                cellWidth: 898,
+                hideNativeScroller: true,
+                cellWidth: 720,
                 cellHeight: 500,
                 singlePictureMode: true,
                 currentPhotoId: photoId,
@@ -247,17 +254,30 @@
                         if(action === 'main'){
                             self.add_photo_to_album(photo.add_url, element);
                         }
+                        else if(action === 'magnify'){
+                            //reload current view to get back to grid
+                            self.showFolder(folder, children);
+                        }
                     }
                 }
 
             }).data().zz_photogrid;
+
+            template.filter('.prev-button').click(function(){
+                grid.previousPicture();
+            });
+
+            template.filter('.next-button').click(function(){
+                grid.nextPicture();
+            });
+
+
         },
 
 
         open_login_window : function(folder, login_url) {
             var self = this;
             oauthmanager.login(login_url, function(){
-                console.log('after login');
                 self.openFolder(folder);
             });
         },

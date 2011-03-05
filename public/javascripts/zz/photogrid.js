@@ -24,6 +24,7 @@
             onClickPhoto: jQuery.noop,    //move to photo-model
 
             showThumbscroller: true,      //context
+            hideNativeScroller: false,    //context
 
             singlePictureMode: false,
 
@@ -31,6 +32,8 @@
             onScrollToPhoto: jQuery.noop,
 
             context: 'album-grid'
+
+//            spaceBarTriggersClick: true
 
 
         },
@@ -100,6 +103,7 @@
                 cell.appendTo(self.element)
 
                 cell.zz_photo({
+                    photo: photo,
                     photoId: photo.id,
                     previewSrc: photo.previewSrc,
                     src: photo.src,
@@ -287,6 +291,17 @@
             });
 
 
+            //hideNativeScroller
+            if(self.options.hideNativeScroller){
+
+                if(self.options.singlePictureMode){
+                    self.thumbscrollerElement = $('<div class="photogrid-hide-native-scroller-horizontal"></div>').appendTo(self.element.parent());
+                }
+                else{
+                    self.thumbscrollerElement = $('<div class="photogrid-hide-native-scroller-vertical"></div>').appendTo(self.element.parent());
+                }
+            }
+
             //thumbscroller
             if(self.options.showThumbscroller){
                 var nativeScrollActive = false;
@@ -382,7 +397,17 @@
                         //page up
                         self.previousPicture();
                     }
-                });
+//                    else if(event.keyCode === 32){
+//                        if(self.options.spaceBarTriggersClick){
+//                            var index = self.indexOfPhoto(self.currentPhotoId());
+//                            var cell = self.cellAtIndex(index);
+//                            var photo = cell.data().zz_photo.options.photo;
+//                            self.options.onClickPhoto(index, photo, cell, 'main');
+//
+//
+//                        }
+//                     }
+                 });
 
                 //block events to grid
                 $(this.element).keydown(function(event){
@@ -465,7 +490,7 @@
 
 
             for(var i=0; i<self.options.photos.length; i++){
-                if(self.options.photos[i].id === photoId){
+                if(self.options.photos[i].id == photoId){
                    return i;
                 }
             }
@@ -552,8 +577,24 @@
             });
         },
 
+        cellForId: function(id){
+            var index = this.indexOfPhoto(id);
+            return this.cellAtIndex(index);
+        },
+
         cellAtIndex : function(index){
-            return this.element.children(':nth-child(' + (index + 1 ) + ')');
+            var cell = this.element.children(':nth-child(' + (index + 1 ) + ')');
+            if (cell.length === 0){
+                return null;
+            }
+            else{
+                return cell;
+            }
+        },
+
+
+        cells: function(){
+            return this.element.children();
         },
 
         cellsPerRow : function(){

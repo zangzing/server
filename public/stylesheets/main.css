@@ -60,13 +60,71 @@ div#container {
 
 /*  Top Tool Bar
 *********************************************************************/
+
 .profile-picture {
+ height: 100%;
+ width: 100%;
+ -moz-border-radius: 10%;
+ -webkit-border-radius: 10%;
+ background-color: white;
+ border: 1px solid #cccccc;
+}
+
+
+.pp-photo {
+  margin: 10%;
+  width: 80%;
+  height: 80%;
  -moz-border-radius: 10%;
  -webkit-border-radius: 10%;
   background-size: cover;
  -moz-background-size: cover;
  -webkit-background-size: cover;
 }
+
+
+.stacked-badge{
+  text-align: left;
+}
+
+.stacked-badge .sb-photo{
+    float: left;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height:40px;
+    width: 40px;
+
+}
+
+.stacked-badge .sb-name{
+  position: absolute;
+  top:   4px;
+  left: 55px;
+  color: #466faa;
+  font-size: 15px;
+  overflow: hidden;
+  white-space:nowrap;
+}
+
+.stacked-badge .sb-like{
+  position: absolute;
+  top:   21px;
+  left:  55px;
+  color: #bbbbbb;
+  font-weight:  450;
+}
+
+.stacked-badge .sb-like span{
+    font-size: 12px;
+}
+
+
+
+
+
+
+
 
 
 #header {
@@ -413,6 +471,12 @@ div#container {
     width: 25px;
 }
 
+div#account-image .pp-photo{
+    height: 100%;
+    width: 100%;
+    margin: 0%
+}
+
 #header #account-badge.disabled {
     cursor:default;
     opacity:0.5;
@@ -529,7 +593,7 @@ div#container {
     cursor: pointer;
 }
 
-#footer #edit-album-button.enabled:hover{
+#footer #edit-album-button:hover{
     background: url("/images/btn-footer-edit-album.png") no-repeat scroll 0px -55px transparent;
 }
 
@@ -589,22 +653,68 @@ div#container {
 }
 
 
-/*           Play Button
+
+/*           Control Buttons
+ ***************************************************/
+
+#footer #control-buttons{
+    position:relative;
+    top: 6px;
+    height:44px;
+    width:160px;
+    margin-left:auto;
+    margin-right:auto;
+    /*background-color:white;*/
+}
+
+
+
+/*           Prev Button
  ***************************************************/
 
 
-#footer #play-button{
-    position: relative;
-    top: 6px;
+#footer #prev-button{
+    position: absolute;
     width: 44px;
     height: 44px;
+    left:0px;
+    top:0px;
+    background: url("/images/btn-footer-prev.png") no-repeat scroll 0px 0px transparent;
+    cursor: pointer;
+    display:none;
+
+}
+
+#footer #prev-button:hover{
+    background: url("/images/btn-footer-prev.png") no-repeat scroll 0px -44px transparent;
+}
+
+#footer #prev-button.disabled{
+    opacity:0.5;
+    cursor: default;
+    background: url("/images/btn-footer-prev.png") no-repeat scroll 0px 0px transparent;
+}
+
+
+
+
+
+/*           Play Button
+ ***************************************************/
+
+#footer #play-button{
+    position: relative;
+    width: 44px;
+    height: 44px;
+    top:0px;
     background: url("/images/btn-footer-play.png") no-repeat scroll 0px 0px transparent;
     cursor: pointer;
     margin-left:auto;
-    margin-right:auto;
+    margin-right:auto
+    
 }
 
-#footer #play-button.enabled:hover{
+#footer #play-button:hover{
     background: url("/images/btn-footer-play.png") no-repeat scroll 0px -44px transparent;
 }
 
@@ -612,6 +722,32 @@ div#container {
     opacity:0.5;
     cursor: default;
     background: url("/images/btn-footer-play.png") no-repeat scroll 0px 0px transparent;
+}
+
+/*           Next Button
+ ***************************************************/
+
+
+#footer #next-button{
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    right:0px;
+    top:0px;
+    background: url("/images/btn-footer-next.png") no-repeat scroll 0px 0px transparent;
+    cursor: pointer;
+    display:none;
+
+}
+
+#footer #next-button:hover{
+    background: url("/images/btn-footer-next.png") no-repeat scroll 0px -44px transparent;
+}
+
+#footer #next-button.disabled{
+    opacity:0.5;
+    cursor: default;
+    background: url("/images/btn-footer-next.png") no-repeat scroll 0px 0px transparent;
 }
 
 
@@ -808,7 +944,7 @@ div#drawer {
   width: 906px;
   height: 0px;
   margin: 0 24px 0 20px;
-  padding: 0 0 26px 4px;
+  padding: 0 0 43px 4px;
   top: 10px;
   background-image: url("/images/bg-drawer-bottom-cap.png");
   background-repeat: no-repeat;

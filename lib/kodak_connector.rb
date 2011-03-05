@@ -4,6 +4,7 @@ class KodakConnector
   REST_API_URL = 'http://www.kodakgallery.com/site/rest/v1.0'
 
   cattr_accessor :http_timeout
+  @@http_timeout = 10.seconds
 
   def initialize(token = nil)
     @auth_cookies = token
@@ -21,8 +22,10 @@ class KodakConnector
     uri = URI.parse("http://www.kodakgallery.com/gallery/welcome.jsp")
     #First, retrieve a bunch of cookies for the session
     http = Net::HTTP.new(uri.host, uri.port)
-    http.read_timeout = http.open_timeout = KodakConnector.http_timeout
-    response = http.get(uri.path)
+    response = nil
+    SystemTimer.timeout_after(@@http_timeout) do
+      response = http.get(uri.path)
+    end
     incomplete_cookies = response['set-cookie']
     login_data = CGI::escape("{\"email\":\"#{email}\",\"password\":\"#{password}\"}")
     incomplete_cookies += ", ssoCookies=#{login_data}; Path=/"
@@ -34,7 +37,10 @@ class KodakConnector
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
     request = Net::HTTP::Get.new(login_uri.request_uri)
     request['cookie'] = incomplete_cookies
-    response = http.request(request)
+    response = nil
+    SystemTimer.timeout_after(@@http_timeout) do
+      response = http.request(request)
+    end
 
     complete_cookies = response.header['set-cookie']
     result = KodakConnector.verify_cookie_as_authenticated(complete_cookies)
@@ -49,8 +55,11 @@ class KodakConnector
     http = Net::HTTP.new(service_uri.host, service_uri.port)
     http.read_timeout = http.open_timeout = KodakConnector.http_timeout
     request = Net::HTTP::Get.new(service_uri.request_uri, {'cookie' => @auth_cookies})
+    response = nil
     begin
-      response = http.request(request)
+      SystemTimer.timeout_after(@@http_timeout) do
+        response = http.request(request)
+      end
     rescue => exception
       raise HttpCallFail
     end
@@ -58,8 +67,10 @@ class KodakConnector
   end
 
   def proxy_response(url)
-    bin_io = OpenURI.send(:open, url, compose_request_header)
-    bin_io.read
+    SystemTimer.timeout_after(@@http_timeout) do
+      bin_io = OpenURI.send(:open, url, compose_request_header)
+      bin_io.read
+    end
   end
   
   def response_as_file(url)

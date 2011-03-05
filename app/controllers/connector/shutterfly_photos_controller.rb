@@ -2,6 +2,7 @@ class Connector::ShutterflyPhotosController < Connector::ShutterflyController
 
   def index
     photos_list = sf_api.get_images(params[:sf_album_id])
+    File.open("#{Rails.root}/#{params[:sf_album_id]}.yml", 'w'){|f| f.write(YAML.dump(photos_list))}
     photos = photos_list.map { |p|
      {
         :name => p[:title],

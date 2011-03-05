@@ -106,15 +106,15 @@ class AlbumsController < ApplicationController
   end
 
   def index
-    UploadBatch.close_open_batches(current_user.id) if signed_in?
     @user = User.find(params[:user_id])
     if(current_user? @user)
-      @albums = @user.albums  #show all albums
+      @albums = @user.albums | @user.liked_albums #show all of current_user's albums
     else
       @albums = @user.albums #:TODO show only public albums unless the current user is the one asking for the index, then show all
     end
     #Setup badge vars
     @badge_name = @user.name
+     UploadBatch.close_open_batches(current_user.id) if signed_in? #Make sure no stale batches are left behind.
   end                                                           
 
   def show

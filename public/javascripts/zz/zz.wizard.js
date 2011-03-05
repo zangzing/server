@@ -193,11 +193,11 @@ zz.wizard = {
       if( style == 'edit'){
             $('div#drawer').css('background-image','url(/images/bg-drawer-bottom-cap.png)');
             $('div#cancel-drawer-btn').hide();
-            zz.screen_gap =  150;
+            zz.screen_gap =  160;
         } else {
             $('div#drawer').css('background-image','url(/images/bg-drawer-bottom-cap-with-cancel.png)');
             $('div#cancel-drawer-btn').show();
-            zz.screen_gap = 130;
+            zz.screen_gap = 160;
         }
     },
 

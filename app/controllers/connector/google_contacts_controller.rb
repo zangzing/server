@@ -12,8 +12,10 @@ class Connector::GoogleContactsController < Connector::GoogleController
     start_index = 1
     imported_contacts = []
     begin
-      doc = Nokogiri::XML(client.get("http://www.google.com/m8/feeds/contacts/default/full?max-results=#{BATCH_SIZE}&start-index=#{start_index}").body)
-
+      doc = nil
+      SystemTimer.timeout_after(http_timeout) do
+        doc = Nokogiri::XML(client.get("http://www.google.com/m8/feeds/contacts/default/full?max-results=#{BATCH_SIZE}&start-index=#{start_index}").body)
+      end
       entry_count = 0
       doc.xpath('//a:entry', NS).each do |entry|
         entry_count += 1

@@ -4,16 +4,23 @@
 
 
 
-
-<ul id="album-timeline">
+<div class="viewlist">
+<ul>
+  <li class="item">
+   <div class="header bar">
+        Activities
+   </div>
+  </li>
 
   <% @activities.each do |activity| %>
                     <%case activity %>
                         <% when UploadActivity then%>
-                            <%= render :partial => 'upload_activity', :locals => {:activity => activity, :album => @album } %>
+                            <%= render :partial => 'upload_activity', :locals => {:activity => activity, :view => 'activity' } %>
                         <% when ShareActivity then%>
-                            <%= render :partial => 'share_activity', :locals => {:activity => activity, :album => @album } %>
+                            <%= render :partial => 'share_activity', :locals => {:activity => activity, :view => 'activity' } %>
                     <%end%>
   <%end%>
 
 </ul>
+
+</div>    
