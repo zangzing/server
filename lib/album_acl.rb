@@ -1,5 +1,8 @@
 require "acl_base"
 
+class AlbumACLTuple < BaseACLTuple
+end
+
 # implements the ACL control for Albums
 class AlbumACL < BaseACL
   ADMIN_ROLE = ACLRole.new('Admin', 10)
@@ -20,9 +23,10 @@ class AlbumACL < BaseACL
     ]
   end
 
-  def initialize(album_id)
-    AlbumACL.initialize
-    self.acl_id = album_id
+  # make a tuple of our specific type
+  # that holds the acl_id and role
+  def self.new_tuple
+    AlbumACLTuple.new
   end
 
 end

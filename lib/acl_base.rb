@@ -9,6 +9,15 @@ require "redis"
 class BaseACLInvalidArguments < Exception
 end
 
+# this is a base container class that holds a single id and role value
+# for a given ACL Type
+# it is used when we want to get a list of objects that are associated
+# with a particular user such as all my Albums and my role
+class BaseACLTuple
+  attr_accessor :acl_id, :role
+end
+
+
 # this is the base ACL management class - it provides the low level
 # interfaces to redis to perform ACL operations.  You should inherit
 # this to create a specific type of ACL.  For instance you might have
@@ -49,7 +58,7 @@ end
 # 
 class BaseACL
   class_inheritable_accessor :initialized, :roles, :type, :role_value_first, :role_value_last, :priority_to_role
-  attr_accessor :acl_id
+  attr_accessor :acl_id, :redis
 
   def self.base_init type, roles
     self.type = type
@@ -66,15 +75,15 @@ class BaseACL
     self.initialized = true
   end
 
-  # given the priority, return the role
-  def get_role(priority)
-    self.priority_to_role[priority.to_i]
+  # the instance initialization
+  def initialize(acl_id, redis_override = nil)
+    @redis = redis_override.nil? ? ACLManager.get_global_redis : redis_override
+    self.acl_id = acl_id
   end
 
-  # call the manager to get the single instance
-  # of redis per thread 
-  def redis
-    @redis ||= ACLManager.get_redis
+  # given the priority, return the role
+  def self.get_role(role_value)
+    self.priority_to_role[role_value.to_i]
   end
 
   # build the key used to store the acl to user set
@@ -85,13 +94,19 @@ class BaseACL
 
   # build the key to store the type:user to acl objects
   #
-  def build_user_key(user_id)
-    ACLManager.build_user_key(type, user_id)
+  def self.build_user_key(user_id)
+    ACLManager.build_user_key(self.type, user_id)
   end
 
-  # Add a user to an acl - The user_id can actually be
+
+  # Add a user to an acl or modify an existing users role.
+  #
+  # You also must specify a role which indicates the level
+  # of access that this user has against this objects acl
+  #
+  # The user_id can actually be
   # an email or the numerical id.  If you use an email
-  # you should call replace_user_key once you have
+  # you should call global_replace_user_key once you have
   # the actual id so that the access code can be consistent
   #
   # For example, for cases where we have no user id, always
@@ -100,11 +115,17 @@ class BaseACL
   # have both email and user id.  This way the transition point
   # becomes as soon as we have a user id we always use that.
   #
-  # you also must specify a role which indicates the level
-  # of access that this user has against this objects acl
-  def add_user_to_acl(user_id, role)
+  # To change a users key you must use:
+  # ACLManager.global_replace_user_key
+  # You call the manager rather than an ACL instance because
+  # changing the user key can affect more than one ACL Type
+  #
+  # Note: This call will modify an existing users role
+  # if you add and the user already exists.
+  #
+  def add_user(user_id, role)
     acl_key = build_acl_key
-    user_key = build_user_key(user_id)
+    user_key = self.class.build_user_key(user_id)
     priority = role.priority
 
     # now store the information in redis as a transaction
@@ -119,9 +140,9 @@ class BaseACL
     
   # Remove the user from the acl
   #
-  def remove_user_from_acl(user_id)
+  def remove_user(user_id)
     acl_key = build_acl_key
-    user_key = build_user_key(user_id)
+    user_key = self.class.build_user_key(user_id)
 
     # now remove from both sets as a transaction
     #
@@ -138,8 +159,8 @@ class BaseACL
   #
   def remove_acl
     acl_key = build_acl_key
-    first = self.role_value_first
-    last = self.role_value_last
+    first_value = self.role_value_first
+    last_value = self.role_value_last
 
     # utilize optimistic locking to ensure
     # we have a consistent set removal
@@ -151,33 +172,142 @@ class BaseACL
       redis.watch acl_key
 
       # get the user ids so we can remove our reference
-      user_ids = redis.zrangebyscore acl_key, first, last
-      result = redis.multi do
-        redis.pipelined do
-          user_ids.each do |user_id|
-            user_key = build_user_key(user_id)
-            redis.zrem user_key, acl_id
-          end
+      user_ids = redis.zrangebyscore acl_key, first_value, last_value
+      curr = 0
+      count = user_ids.nil? ? 0 : user_ids.length
 
-          # now remove all the values for this key
-          redis.zremrangebyscore acl_key, first, last
+      single_pipeline = count <= ACLManager::PIPE_LINE_MAX
+
+      result = redis.multi do
+        while curr < count do
+          redis.pipelined do
+            while curr < count do
+              user_id = user_ids[curr]
+              user_key = self.class.build_user_key(user_id)
+              redis.zrem user_key, acl_id
+              curr = curr + 1
+              break if (curr % ACLManager::PIPE_LINE_MAX) == 0
+            end
+            redis.zremrangebyscore acl_key, first_value, last_value if single_pipeline
+          end
         end
+        # now remove all the values for this key
+        redis.zremrangebyscore acl_key, first_value, last_value if single_pipeline == false
       end
       completed = result.nil? ? false : true
     end
-    true
+    return true
   end
 
   # return the user role if we have one for the
   # given user_id.  If no role we return nil
   def get_user_role(user_id)
-    r = redis.zscore(build_acl_key, user_id)
-    if !r.nil?
+    priority = redis.zscore(build_acl_key, user_id)
+    if !priority.nil?
       # now we have the score, transform into a role object
-      return get_role(r)
+      return self.class.get_role(priority)
     else
       return nil
     end
   end
+
+  # see if has rights at least as high as
+  # role passed
+  #
+  # if exact is set to true then only the same
+  # role will be a match
+  #
+  def has_permission?(user_id, role, exact = false)
+    priority = redis.zscore(build_acl_key, user_id)
+    if !priority.nil?
+      # now we have the score, transform into a role object
+      user_role = self.class.get_role(priority)
+      return exact ? user_role.priority == role.priority : user_role.priority <= role.priority
+    else
+      return false
+    end
+  end
+
+  # returns a list of user_ids that match a specific role
+  #
+  # as in has_permission? the matching is done based on priority
+  # so a user that is an admin would match that of viewer but
+  # not the other way around.
+  #
+  # if the exact flag is set then we only return matches for that
+  # specific role
+  #
+  def get_users_with_role(role, exact = false)
+    acl_key = build_acl_key
+
+    # get the priority range
+    last = role.priority
+    first = exact ? last : self.role_value_first
+
+    user_ids = redis.zrangebyscore acl_key, first, last
+  end
+
+  # the follow section of methods are related to this ACL type but are class methods
+  # because they are not for a particular acl but a group of them
+
+
+  # build the tuple that contains the acl_id to role pairing
+  # used when returning the list of owned acls for a specific
+  # user
+  def self.build_tuple acl_id, role_value
+    t = self.new_tuple
+    role = get_role(role_value)
+    t.acl_id = acl_id
+    t.role = role
+    return t
+  end
+
+
+
+  # Find all the acls for a given user with rights at least as high as
+  # the role passed.  If exact is specified we match only the specific
+  # role specified.
+  #
+  # We return the results as an array of ACLTuples of our specific type
+  #
+  # If none we return nil
+  #
+  def self.get_acls_for_user(user_id, role, exact = false, redis_override = nil)
+    redis = redis_override.nil? ? ACLManager.get_global_redis : redis_override
+    user_key = build_user_key(user_id)
+
+    # get the priority range
+    last = role.priority
+    first = exact ? last : self.role_value_first
+
+    object_ids = redis.zrangebyscore user_key, first, last, :with_scores => true
+
+    # now walk the ids and turn them into tuples
+    tuples = nil
+    if (object_ids)
+      tuples = []
+      i = 0
+      last = object_ids.length
+      while i < last do
+        # array has pairs, id, score, id2, score2, ...
+        acl_id = object_ids[i]
+        i += 1
+        role_value = object_ids[i]
+        i += 1
+
+        tuple = build_tuple(acl_id, role_value)
+
+        tuples << tuple
+      end
+    end
+    return tuples
+  end
+
+  # convenience method to fetch all the acls for a given user
+  def self.get_all_acls_for_user(user_id, redis_override = nil)
+    return get_acls_for_user(user_id, roles.last.priority, false)
+  end
 end
+
+
 
