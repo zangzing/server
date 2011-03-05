@@ -40,7 +40,7 @@ run "ln -nfs #{shared_path}/config/resque.yml #{release_path}/config/resque.yml"
 run "sudo monit restart all -g zangzing_resque"
 
 # clear out the nginx cache
-run "find /tmp/nginx/cache/ -type f -exec rm {} \\;"
+run "find /tmp/nginx/cache -type f -exec rm {} \\;"
 
 # put custom assets in place based on environment
 move_assets
