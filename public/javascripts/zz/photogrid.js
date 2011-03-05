@@ -31,7 +31,7 @@
             currentPhotoId: null,
             onScrollToPhoto: jQuery.noop,
 
-            context: 'album-grid',
+            context: 'album-grid'
 
 //            spaceBarTriggersClick: true
 
@@ -577,8 +577,24 @@
             });
         },
 
+        cellForId: function(id){
+            var index = this.indexOfPhoto(id);
+            return this.cellAtIndex(index);
+        },
+
         cellAtIndex : function(index){
-            return this.element.children(':nth-child(' + (index + 1 ) + ')');
+            var cell = this.element.children(':nth-child(' + (index + 1 ) + ')');
+            if (cell.length === 0){
+                return null;
+            }
+            else{
+                return cell;
+            }
+        },
+
+
+        cells: function(){
+            return this.element.children();
         },
 
         cellsPerRow : function(){
