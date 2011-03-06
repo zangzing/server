@@ -62,6 +62,7 @@
          searchingText: "Searching...",
          searchingErrorText: "Error!",
          searchDelay: 300,
+         allowNewValues: false,
          minChars: 1,
          tokenLimit: null,
          tokenLimitText: "Values limit reached!",
@@ -153,6 +154,7 @@
             }
          })
          .blur(function(){
+            if(settings.allowNewValues) create_new_token();
             hide_dropdown();
          })
          .keydown(function(event){
@@ -225,9 +227,11 @@
                   if(selected_dropdown_item){
                      add_token($(selected_dropdown_item));
                      return false;
+                  }else if(settings.allowNewValues) {
+                    create_new_token();
+                    return false;
                   }
                   break;
-
                case KEY.ESC:
                   hide_dropdown();
                   return true;
@@ -329,9 +333,10 @@
                      return false;
                   });
 
+               var token_text =  ( data[i].token_text ?data[i].token_text :data[i].name );
                $.data(this_token.get(0), "tokeninput", {
                   "id": data[i].id,
-                  "name": data[i].name
+                  "name": token_text
                });
 
                // Clear input box and make sure it keeps focus
@@ -428,7 +433,7 @@
                delete_token($(this).parent());
                return false;
             });
-
+         
          $.data(this_token.get(0), "tokeninput", {
             "id": id,
             "name": value
@@ -465,6 +470,12 @@
             hide_dropdown();
          }
       }
+
+       function create_new_token () {
+            var string = input_box.val().toLowerCase();
+            if(string.length > 0) insert_token( string,  string);
+       }
+
 
       // Select a token in the token list
       function select_token (token){
@@ -620,9 +631,10 @@
                      select_dropdown_item(this_li);
                   }
 
+                  var token_text =  ( results[i].token_text ? results[i].token_text : results[i].name );
                   $.data(this_li.get(0), "tokeninput", {
                      "id": results[i].id,
-                     "name": results[i].name
+                     "name": token_text
                   });
                }
             }
@@ -680,33 +692,41 @@
          }
       }
 
-      // Do the actual search
-      function run_search(query){
-         var cached_results = cache.get(query);
-         if(cached_results){
-            populate_dropdown(query, cached_results);
-         } else {
-            var callback = function(results){
-               if($.isFunction(settings.onResult)){
-                  results = settings.onResult.call(this, results);
+       // Do the actual search
+       function run_search(query){
+           var cached_results = cache.get(query);
+           if(cached_results){
+               populate_dropdown(query, cached_results);
+           } else {
+               var callback = function(results){
+                   if($.isFunction(settings.onResult)){
+                       results = settings.onResult.call(this, results);
+                   }
+                   cache.add(query, settings.jsonContainer ? results[settings.jsonContainer] : results);
+                   populate_dropdown(query, settings.jsonContainer ? results[settings.jsonContainer] : results);
+               };
+               var callbackError = function(){
+                   show_dropdown_error();
+               };
+               if( $.isFunction(settings.url) ){
+                    var query_results = settings.url(query);
+                    if( query_results != null ){
+                        callback( query_results );
+                    }else{
+                        callbackError();
+                    }
+               }else{
+                   $.ajax({
+                       url: settings.url,
+                       dataType: settings.dataType,
+                       type: settings.method,
+                       data: settings.queryParam + "=" + query,
+                       success: callback,
+                       error: callbackError
+                   });
                }
-               cache.add(query, settings.jsonContainer ? results[settings.jsonContainer] : results);
-               populate_dropdown(query, settings.jsonContainer ? results[settings.jsonContainer] : results);
-            };
-            var callbackError = function(){
-               show_dropdown_error();
-            }
-
-            $.ajax({
-               url: settings.url,
-               dataType: settings.dataType,
-               type: settings.method,
-               data: settings.queryParam + "=" + query,
-               success: callback,
-               error: callbackError
-            });
-         }
-      }
+           }
+       }
 
    };
 

@@ -3,10 +3,66 @@
 
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js"></script>
         <link href="token-input.css" rel="stylesheet" type="text/css" />
+        <link href="token-input-facebook.css" rel="stylesheet" type="text/css" />
         <script type="text/javascript" src="jquery.tokeninput.js"></script>
+        <script type="text/javascript" src="contacts.js"></script>
+
 </head>
 <body>
-<H1>Autocomplete Testing</H1>
+<H1>ZZ Autocomplete Tokenizer Testing</H1>
+
+  <script type="text/javascript">
+  zzcontacts.init( '249900073749', {} );
+
+$(function(){
+      $("#tokenize").tokenInput( zzcontacts.find, {
+         hintText: "Type in a search term",
+         noResultsText: "No results",
+         searchingText: "Searching...",
+         searchingErrorText: "Error!",
+         searchDelay: 300,
+         allowNewValues: true,
+         minChars: 1,
+         tokenLimit: null,
+         tokenLimitText: "Values limit reached!",
+         tokenLimitDisplayTime: 1500,
+         jsonContainer: null,
+         method: "get",
+         dataType: "json",
+         queryParam: "q",
+         onResult: null,
+         hideEntered: true,
+         prePopulate: {
+            data: [{id:1,name:"First"},{id:2,name:"Second"}],
+            forceDataFill: false,
+            url: "url/to/autocomplete",
+            errorText: "Error!",
+            method: "post",
+            dataType: "json",
+            queryParam: "ids",
+            onResult: null
+         },
+         classes: {
+            tokenList: "token-input-list-facebook",
+            token: "token-input-token-facebook",
+            tokenDelete: "token-input-delete-token-facebook",
+            selectedToken: "token-input-selected-token-facebook",
+            highlightedToken: "token-input-highlighted-token-facebook",
+            dropdown: "token-input-dropdown-facebook",
+            dropdownItem: "token-input-dropdown-item-facebook",
+            dropdownItem2: "token-input-dropdown-item2-facebook",
+            selectedDropdownItem: "token-input-selected-dropdown-item-facebook",
+            inputToken: "token-input-input-token-facebook"
+         }
+      });
+   });
+  </script>
+
+    <div>
+        <h2>List style</h2>
+        <input type="text" id="tokenize" name="blah" />
+    </div>
+
 </body>
 </html>
 
