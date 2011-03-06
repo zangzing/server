@@ -67,12 +67,12 @@ class PagesController < ApplicationController
     # set and then each individual test
     SystemTimer.timeout_after(max_total_time) do
 
-      curr_check = "Redis ACL connectivity check\n"
+      curr_check = "Redis ACL connectivity check for: #{RedisConfig.config[:redis_acl_server]} - "
+      status_msg << curr_check
       SystemTimer.timeout_after(max_time_per_check) do
         full_check = true
         if full_check
-          curr_check = "Redis ACL full check\n"
-          status_msg << curr_check
+          status_msg << "Full check\n"
           # a more thorough check than just ping
           # make a dummy Album and add a user to check redis for ACL
           a = AlbumACL.new("health_check_album")
@@ -80,8 +80,7 @@ class PagesController < ApplicationController
           a.remove_acl
         else
           # just your basic ping check
-          curr_check = "Redis ACL ping check\n"
-          status_msg << curr_check
+          status_msg << "Ping check\n"
           redis = ACLManager.get_global_redis
           redis.ping
         end
@@ -110,7 +109,7 @@ class PagesController < ApplicationController
     render :status => 200, :text => ok_msg
 
   rescue Exception => ex
-    msg = "HEALTH_CHECK ERROR during #{curr_check}Error: " + ex.message
+    msg = "ERROR\nHEALTH_CHECK ERROR during #{curr_check}Error: " + ex.message + "\n" + status_msg
     z.track_event("health_check.fail", msg)
     Rails.logger.error msg
     render :status => 503, :text => msg
