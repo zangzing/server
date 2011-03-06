@@ -1,14 +1,11 @@
-#set up in api_consumer_timeout_patches.rb
-
-:google: 5
-#:picasa: 3 #google used
-:flickr: 5
-:yahoo: 5
-:facebook: 5
-:twitter: 5
-:smugmug: 5
-:photobucket: 5
-:shutterfly: 5
-:kodak: 5
-:mslive: 5
-:mslive: 5
+#Google's one is used also for picasa
+:google: <%= 5.seconds %>
+:flickr: <%= 5.seconds %>
+:yahoo: <%= 5.seconds %>
+:facebook: <%= 5.seconds %>
+:twitter: <%= 5.seconds %>
+:smugmug: <%= 5.seconds %>
+:photobucket: <%= 5.seconds %>
+:shutterfly: <%= 5.seconds %>
+:kodak: <%= 5.seconds %>
+:mslive: <%= 5.seconds %>

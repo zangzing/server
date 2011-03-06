@@ -57,6 +57,8 @@ class PagesController < ApplicationController
     max_time_per_check = 15.seconds
     z = ZZ::ZZA.new
 
+    response.headers["Content-Type"] = 'text/plain'
+
     curr_check = ""  # need this here since used in rescue
     status_msg = ""
 
@@ -65,26 +67,50 @@ class PagesController < ApplicationController
     # set and then each individual test
     SystemTimer.timeout_after(max_total_time) do
 
-      curr_check = 'Database connectivity check'
+      curr_check = "Redis ACL connectivity check\n"
+      SystemTimer.timeout_after(max_time_per_check) do
+        full_check = true
+        if full_check
+          curr_check = "Redis ACL full check\n"
+          status_msg << curr_check
+          # a more thorough check than just ping
+          # make a dummy Album and add a user to check redis for ACL
+          a = AlbumACL.new("health_check_album")
+          a.add_user "health_check_user", AlbumACL::ADMIN_ROLE
+          a.remove_acl
+        else
+          # just your basic ping check
+          curr_check = "Redis ACL ping check\n"
+          status_msg << curr_check
+          redis = ACLManager.get_global_redis
+          redis.ping
+        end
+      end
+
+      curr_check = "Database connectivity check\n"
       SystemTimer.timeout_after(max_time_per_check) do
         # build a query that hits the database but does not return any actual data
         # to minimize performance impact
+        status_msg << curr_check
         @photo = Photo.first(:conditions => ["TRUE = FALSE"])
       end
 
-      curr_check = 'ZZA Server check'
+      curr_check = "ZZA Server check\n"
+      status_msg << curr_check
       if ZZ::ZZA.unreachable? then
         raise "ZZA server is not reachable."
       end
     end
 
-    status_msg << "ZZA Thread state: " +  ZZ::ZZA.sender.thread.status.to_s
+    #status_msg << "ZZA Thread state: " +  ZZ::ZZA.sender.thread.status.to_s
 
     z.track_event("health_check.ok", status_msg)
-    render :status => 200, :text => "OK -- " + status_msg
+    ok_msg = "OK\n" + status_msg
+
+    render :status => 200, :text => ok_msg
 
   rescue Exception => ex
-    msg = "HEALTH_CHECK ERROR during #{curr_check} : " + ex.message
+    msg = "HEALTH_CHECK ERROR during #{curr_check}Error: " + ex.message
     z.track_event("health_check.fail", msg)
     Rails.logger.error msg
     render :status => 503, :text => msg

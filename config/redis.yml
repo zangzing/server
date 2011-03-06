@@ -5,7 +5,7 @@
 
 
 common: &common
-  redis_server: localhost:6379
+  redis_acl_server: localhost:6379:1
 
 development:
   <<: *common

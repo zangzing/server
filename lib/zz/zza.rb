@@ -61,6 +61,7 @@ module ZZ
     # file suffix to indicate it is currently in use
     # and should not have its contents sent yet
     IN_USE = "inuse"
+    IN_USE_STRIPPER = /(.*)-inuse$/
 
     # the address of the ZZA server
     ZZA_URI = URI.parse("http://zza.zangzing.com/")
@@ -168,6 +169,23 @@ module ZZ
       return false
     end
 
+    # clean up an in use file that has been orphaned
+    # by adding the closing json and renaming the file
+    # so it is not recovered again
+    def recover_in_use_file(file, full_path)
+      file.seek(0, IO::SEEK_END)
+      append_json_close_data(file)
+      file.flush
+      # and rename to indicate we have appended json data
+      full_path =~ IN_USE_STRIPPER
+      new_path = $1
+      File.rename(full_path, new_path) rescue nil
+      # position back to start
+      file.seek(0, IO::SEEK_SET)
+
+      return new_path
+    end
+
 
     # Scan the work directory and pick up all files that are not
     # in use.  As a special case we will process any -inuse files
@@ -206,16 +224,22 @@ module ZZ
           next if parts.count < 3 and parts.count > 4
 
           created_at = parts[0].to_i
-
-          if (parts.last() != IN_USE || (created_at <= too_old))
+          in_use = parts.last() == IN_USE
+          if (in_use == false || (created_at <= too_old))
             begin
               # ok, we have a file to work with
               # see if we can get a lock on it, if not just
               # ignore and pick it up next time
-              file = File.open(full_path, "r")
+              file = File.open(full_path, "r+")
               # non blocking attempt to get lock
               got_lock = file.flock(File::LOCK_EX|File::LOCK_NB)
               if (got_lock)
+                # see if this was a file not closed properly
+                if in_use
+                  # file was never properly closed so write
+                  # closure data to end, rename, and rewind
+                  full_path = recover_in_use_file(file, full_path)
+                end
                 # we got the lock so now extract and send
                 sends_attempted += 1
                 send_zza_data(file)
@@ -223,7 +247,7 @@ module ZZ
                 # delete before the close to ensure no one
                 # else tries to pick up this file since
                 # closing releases the lock
-                File.delete(file.path) rescue nil
+                File.delete(full_path) rescue nil
 
                 file.close rescue nil
               end
@@ -266,6 +290,12 @@ module ZZ
       raise ex
     end
 
+    # append the closing json data
+    def append_json_close_data file
+        # close out the data with final json array and map closure
+        file.puts("]}") rescue nil
+    end
+
     # close out the current file and clear out the file reference
     # the caller outside of this thread will detect the nil file
     # handle and make a new file.  This way we only create new files
@@ -278,7 +308,7 @@ module ZZ
           # close out the data with final json array and map closure
           # if we have data - technically we should always have at least
           # one line so the count check is not strictly needed
-          (@file.puts("]}") if @entry_count > 0) rescue nil
+          append_json_close_data(@file) if @entry_count > 0
 
           # rename to path without inuse flag
           new_path = ZZA_TEMP_DIR + "/" + @file_name

@@ -3,8 +3,8 @@ namespace :services do
 
     task :run  do
         sh 'script/nginx &'
-        sh 'redis-server &'
+        sh 'redis-server /etc/redis/redis.conf &'
         sh 'QUEUE=* rake resque:work &'
-        sh 'rake resque:schedule &'
+        sh 'rake resque:scheduler &'
     end
 end
