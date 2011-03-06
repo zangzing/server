@@ -26,6 +26,8 @@ class User < ActiveRecord::Base
   has_one  :profile_album,       :dependent => :destroy, :autosave => true
   has_one  :preferences,         :dependent => :destroy, :class_name => "UserPreferences", :autosave => true
   has_many :identities,          :dependent => :destroy
+  has_many :contacts,            :through => :identities, :class_name => "Contact"
+
   has_many :shares
   has_many :activities,          :dependent => :destroy
   has_many :photos
