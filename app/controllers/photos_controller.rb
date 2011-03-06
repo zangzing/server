@@ -191,7 +191,7 @@ class PhotosController < ApplicationController
 
       expires_in 1.year, :public => true  #todo: make private for password protected albums
       response.headers['Content-Encoding'] = "gzip"
-      response.headers['Set-Cookie'] = "test=test; path=/;"
+#      response.headers['Set-Cookie'] = "test=test; path=/;"
       render :json => json
     else
       logger.debug 'etag match, sending 304'
