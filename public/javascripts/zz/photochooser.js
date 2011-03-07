@@ -260,7 +260,12 @@
                     }
                     else{
                         if(action === 'main'){
-                            self.add_photo_to_album(photo.add_url, element);
+                            if($(element).data().zz_photo.isChecked()){
+                                self.remove_photo_by_guid(photo.id); //chooser photos have source_guid as their id
+                            }
+                            else{
+                                self.add_photo_to_album(photo.add_url, element);
+                            }
                         }
                         else if(action === 'magnify'){
                             //reload current view to get back to grid
