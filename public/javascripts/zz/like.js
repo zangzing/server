@@ -56,12 +56,16 @@ var like = {
         var subject_type = $(this).attr('data-zztype');
         var url = '/likes/'+subject_id;
        
+		var zzae = 'like.' + subject_type + '.'
         //Decide the action before the value is toggled in the hash
         var type='POST';
         if( like.hash[subject_id]['user'] == true ){
             type='DELETE';
-        }
-
+			zzae += 'unlike';
+        } else {
+			zzae += 'like';
+		}
+		
         like.toggle_in_hash( subject_id );
         $.ajax({ type:       type,
                  url:        url,
@@ -75,6 +79,8 @@ var like = {
                                 if( xhr.status == 401 ) alert('Must Be Logged In');
                              }
         });
+
+		ZZAt.track(zzae);
     },
 
     toggle_in_hash: function(subject_id){
