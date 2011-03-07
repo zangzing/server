@@ -455,8 +455,9 @@ pages.album_share_tab = {
 pages.album_contributors_tab = {
     contributor_count:0,
     
-    init: function(){
+    init: function(callback){
         pages.album_contributors_tab.show_contributor_list();
+        callback();
     },
 
     bounce: function(success, failure){
@@ -464,10 +465,11 @@ pages.album_contributors_tab = {
     },
 
     show_contributor_list: function( request ){
-        $('#tab-content').load( '/albums/' + zz.album_id + '/contributors' , function(){
+        $('#tab-content').hide().load( '/albums/' + zz.album_id + '/contributors' , function(){
                 if( pages.album_contributors_tab.contributor_count <= 0){
-                    pages.album_contributors_tab.show_new_contributors();
+                    pages.album_contributors_tab.show_new_contributors(); //tab content gets shown inside here
                 } else {
+                    $('#tab-content').show();
                     zz.wizard.resize_scroll_body();
                     $('#add-contributors-btn').click(function(){
                          $('#tab-content').fadeOut('fast', pages.album_contributors_tab.show_new_contributors );
