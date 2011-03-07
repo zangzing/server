@@ -16,17 +16,13 @@ perftest:
 test:
   <<: *common
 
-eydevelopment:
+photos_production:
   <<: *common
 
-eysandbox:
+photos_staging:
   <<: *common
 
 
 eytest:
   <<: *common
 
-
-
-production:
-  <<: *common

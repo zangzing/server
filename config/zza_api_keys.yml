@@ -14,12 +14,12 @@ test:
   :MIXPANEL_TOKEN: 17540e499e4c7032071b48abcbfeb742
   :GOOGLE_ANALYTICS_TOKEN: UA-18597985-4
 
-eydevelopment:
-  :ZZA_ID: staging.photos/web
+photos_production:
+  :ZZA_ID: photos/web
   :MIXPANEL_TOKEN: 17540e499e4c7032071b48abcbfeb742
   :GOOGLE_ANALYTICS_TOKEN: UA-18597985-4
 
-eysandbox:
+photos_staging:
   :ZZA_ID: staging.photos/web
   :MIXPANEL_TOKEN: 17540e499e4c7032071b48abcbfeb742
   :GOOGLE_ANALYTICS_TOKEN: UA-18597985-4
@@ -28,8 +28,3 @@ eytest:
   :ZZA_ID: staging.photos/web
   :MIXPANEL_TOKEN: 17540e499e4c7032071b48abcbfeb742
   :GOOGLE_ANALYTICS_TOKEN: UA-18597985-4
-
-production:
-  :ZZA_ID: photos/web
-  :MIXPANEL_TOKEN: c4d7b3457d0051550aad9a7a76ace17e
-  :GOOGLE_ANALYTICS_TOKEN: UA-18597985-5

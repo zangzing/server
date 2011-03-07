@@ -11,11 +11,11 @@ test:
   :shared_secret: b05c82999aa78f38
   :api_key: 2e7e51d6b8fa04fb33ac856484a33535
 
-eydevelopment:
+photos_production:
   :shared_secret: f8940e84726a5e17
   :api_key: cbcd54aeabffef35d77cb02e321c01bf
 
-eysandbox:
+photos_staging:
   :shared_secret: aa0d9d1e8e9805b5
   :api_key: 91f808165763e6e9dff7a77568593337
 
@@ -24,8 +24,3 @@ eytest:
   :shared_secret: f8940e84726a5e17
   :api_key: cbcd54aeabffef35d77cb02e321c01bf
 
-
-
-production:
-  :shared_secret:
-  :api_key:

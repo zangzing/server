@@ -11,12 +11,15 @@
 require 'user'
 require 'identity'
 
-user = User.create(  {:name                   => 'ZangZing Paying User V1.0',
+user = User.new(  {:name                   => 'ZangZing Paying User V1.0',
                       :username               => 'zangzing',    
                       :email                  => 'user@zangzing.com',
                       :password               => 'password',
                       :password_confirmation  => 'password'})
+user.reset_perishable_token
+user.reset_single_access_token
 user.update_attribute(:role, 'admin')
+user.save
 print "ZangZing User Created!\n"
 
 # ZANGZING  AGENT CLIENT APPLICATION TOKEN
