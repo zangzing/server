@@ -357,6 +357,12 @@ zz.init = {
                         cellWidth: 230,
                         cellHeight: 230,
                         onClickPhoto: function(index, photo) {
+
+                            //get rid of scrollbars before animate transition
+                            grid.hideThumbScroller();   
+                            gridElement.css({overflow:'hidden'});
+
+                            $('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()},500,'easeOutQuart');
                             document.location.href = zz.album_base_url + "/photos/#!" + photo.id;
                         },
                         currentPhotoId: $.param.fragment()

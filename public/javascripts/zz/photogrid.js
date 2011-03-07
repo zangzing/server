@@ -428,6 +428,10 @@
         },
 
 
+        hideThumbScroller: function(){
+            this.thumbscrollerElement.hide();
+        },
+
         nextPrevActive : false,
         
 
