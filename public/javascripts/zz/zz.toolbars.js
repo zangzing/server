@@ -12,6 +12,9 @@ zz.toolbars = {
         $('#album-info h2').html("New Album");
         $('#album-info h3').html("by " + zz.current_user_name);
 
+        $('#header .album-cover').attr('src', '/images/album-no-cover.png');
+        $('#header .album-cover').css({width: '60px'});
+
         $('#album-info').css('display', 'inline-block');
         zz.wizard.set_wizard_style( 'create');
         $('div#cancel-drawer-btn').unbind('click').click( function(){
