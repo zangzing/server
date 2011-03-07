@@ -1006,7 +1006,7 @@ div#drawer div#tab-content {
 
 div#cancel-drawer-btn{
     position: absolute;
-    bottom: 9px;
+    bottom: 5px;
     right: 12px;
     font-weight: 700;
     line-height: 14px;
