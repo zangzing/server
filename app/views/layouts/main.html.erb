@@ -107,6 +107,7 @@
       zz.displayed_user_id = '<%= @album.user.id %>';
       zz.album_base_url = '/<%=@album.user.username%>/<%=@album.friendly_id%>';
       zz.user_base_url = '/<%=@album.user.username%>';
+      zz.album_name = '<%=@album.name%>';
 <%    end
       # This is where we pass things on to js that we need from ruby.
       # Remember to use the zz.zang namespace.
