@@ -689,6 +689,10 @@ div#account-image .pp-photo{
     background: url("/images/btn-footer-prev.png") no-repeat scroll 0px -44px transparent;
 }
 
+#footer #prev-button:active{
+    background: url("/images/btn-footer-prev.png") no-repeat scroll 0px -88px transparent;
+}
+
 #footer #prev-button.disabled{
     opacity:0.5;
     cursor: default;
@@ -710,13 +714,19 @@ div#account-image .pp-photo{
     background: url("/images/btn-footer-play.png") no-repeat scroll 0px 0px transparent;
     cursor: pointer;
     margin-left:auto;
-    margin-right:auto
+    margin-right:auto;
+    display:block;
     
 }
 
 #footer #play-button:hover{
     background: url("/images/btn-footer-play.png") no-repeat scroll 0px -44px transparent;
 }
+
+#footer #play-button:active{
+    background: url("/images/btn-footer-play.png") no-repeat scroll 0px -88px transparent;
+}
+
 
 #footer #play-button.disabled{
     opacity:0.5;
@@ -743,6 +753,11 @@ div#account-image .pp-photo{
 #footer #next-button:hover{
     background: url("/images/btn-footer-next.png") no-repeat scroll 0px -44px transparent;
 }
+
+#footer #next-button:active{
+    background: url("/images/btn-footer-next.png") no-repeat scroll 0px -88px transparent;
+}
+
 
 #footer #next-button.disabled{
     opacity:0.5;

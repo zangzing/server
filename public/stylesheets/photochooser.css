@@ -90,6 +90,10 @@
     background: url("/images/btn-footer-next.png") no-repeat scroll 0px -44px transparent;
 }
 
+.photochooser .photochooser-body .next-button:active{
+    background: url("/images/btn-footer-next.png") no-repeat scroll 0px -88px transparent;
+}
+
 
 
 .photochooser .photochooser-body .prev-button{
@@ -106,6 +110,10 @@
 
 .photochooser .photochooser-body .prev-button:hover{
     background: url("/images/btn-footer-prev.png") no-repeat scroll 0px -44px transparent;
+}
+
+.photochooser .photochooser-body .prev-button:active{
+    background: url("/images/btn-footer-prev.png") no-repeat scroll 0px -88px transparent;
 }
 
 

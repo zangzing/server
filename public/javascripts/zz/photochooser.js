@@ -231,11 +231,11 @@
             });
 
 
-            var template = $('<div class="prev-button"></div>' +
+            var template = $('<a class="prev-button"></a>' +
                              '<div class="singlepicture-wrapper">' +
                              '<div class="photogrid"></div>' +
                              '</div>' +
-                             '<div class="next-button"></div>');
+                             '<a class="next-button"></a>');
             
             var gridElement = template.find('.photogrid');
             self.bodyElement.html(template);
