@@ -23,7 +23,7 @@ class Connector::FacebookFoldersController < Connector::FacebookController
       SystemTimer.timeout_after(http_timeout) do
         album_list = facebook_graph.get(target)
       end
-      album_list.reject! { |a| a[:type] == 'profile' } #Remove 'Profile Pictures'
+#      album_list.reject! { |a| a[:type] == 'profile' } #Remove 'Profile Pictures'
       unless album_list.empty?
         if album_list.first[:updated_time]
           album_list.sort!{|a, b| b[:updated_time] <=> a[:updated_time] }
