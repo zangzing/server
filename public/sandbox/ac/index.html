@@ -4,6 +4,13 @@
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js"></script>
         <link href="token-input.css" rel="stylesheet" type="text/css" />
         <link href="token-input-facebook.css" rel="stylesheet" type="text/css" />
+        <link href="/stylesheets/main.css" rel="stylesheet" type="text/css" />
+        <link href="/stylesheets/contacts.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="/javascripts/jquery-lib/jquery.cookie.js"></script>
+        <script type="text/javascript" src="/javascripts/jquery-lib/jquery.jsonp.js"></script>
+        <script type="text/javascript" src="/javascripts/zz/logging.js"></script>
+        <script type="text/javascript" src="/javascripts/zz-oauthmanager/oauthmanager.js"></script>
+        <script type="text/javascript" src="/javascripts/zz/agent.js"></script>
         <script type="text/javascript" src="jquery.tokeninput.js"></script>
         <script type="text/javascript" src="contacts.js"></script>
 
@@ -12,7 +19,9 @@
 <H1>ZZ Autocomplete Tokenizer Testing</H1>
 
   <script type="text/javascript">
-  zzcontacts.init( '249900073749', {} );
+  zz={};
+  zz.current_user_id ='249900073725';
+
 
 $(function(){
       $("#tokenize").tokenInput( zzcontacts.find, {
@@ -34,7 +43,7 @@ $(function(){
          hideEntered: true,
          prePopulate: {
             data: [{id:1,name:"First"},{id:2,name:"Second"}],
-            forceDataFill: false,
+            forceDataFill: true,
             url: "url/to/autocomplete",
             errorText: "Error!",
             method: "post",
@@ -58,10 +67,46 @@ $(function(){
    });
   </script>
 
-    <div>
-        <h2>List style</h2>
+<div  align="left" style="margin: 30px;">
+<a data-service="google" class="gray-button contacts-btn" href="javascript:void(0);return false;"><span><div class="off"></div>Google</span></a>
+<a data-service="local"  class="gray-button contacts-btn" href="javascript:void(0);return false;"><span><div class="off"></div>Local</span></a>
+<a data-service="yahoo"  class="gray-button contacts-btn" href="javascript:void(0);return false;"><span><div class="off"></div>Yahoo</span></a>
+<a data-service="mslive" class="gray-button contacts-btn" href="javascript:void(0);return false;"><span><div class="off"></div>MSLive</span></a>
+</div>
+
+
+    <div id="tokenizer">
         <input type="text" id="tokenize" name="blah" />
     </div>
+
+<script type="text/javascript">
+    zzcontacts.init( zz.current_user_id, {}, function(){
+
+    $(".contacts-btn").each( function( index, button ){
+        var service = $(button).attr('data-service');
+        if( zzcontacts.is_service_linked(service)){
+            $(button).find('div').removeClass('off sync error').addClass('on');
+            $(button).attr( 'title', 'Last import on:'+zzcontacts.data[service].last_import);
+        }
+        $(button).click( function(e){
+            e.preventDefault();
+            $(button).attr('disabled', 'disabled');
+            $(button).find('div').removeClass('off on error').addClass('sync');
+            var onSuccess = function(){
+                $(button).find('div').removeClass('off sync error').addClass('on');
+                $(button).attr( 'title', 'Last imported a moment ago.');
+                $(button).removeAttr('disabled');
+            };
+            var onError = function(error_src,error_msg){
+                $(button).find('div').removeClass('off sync on').addClass('error');
+                $(button).attr( 'title', 'There was an error: '+error_msg+'. Please try again later.');
+                $(button).removeAttr('disabled');
+            };
+            zzcontacts.import_contacts(service, onSuccess, onError);
+        });
+    });
+    }, function(){} );
+</script>
 
 </body>
 </html>

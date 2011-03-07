@@ -4,106 +4,48 @@
 
 zzcontacts ={
     ready: false,
-    raw_data : [],
+    data : [],
     search_tree: [],
     settings: {},
 
-    init: function(userId, options){
+    init: function(userId, options, onSuccess, onError){
         var self = this;
         self.settings = $.extend({
             url: '/users/userId/contacts.json',
             minChars: 1
         }, options);
-        self.load_contacts();
-    },
 
-    load_contacts: function(){
+        //load contacts
         $.ajax({
                type: 'GET',
                url: zzcontacts.settings.url,
                dataType: 'json',
                success: function(json){
-                  zzcontacts.raw_data = json;
+                  zzcontacts.data = json;
                   zzcontacts.ready = true;
+                  onSuccess();
                },
-               error: function(){}
+               error: function(){
+                  onError();
+               }
         });
     },
-
-    /*
-    create_search_tree: function( contact_array ){
-        zzcontacts.search_tree = [];
-        for( var i in contact_array ){
-            var contact = contact_array[i];
-            // The fields for the rows in the contact array  are [ id, name, email ]
-            // Use the first minChars of the name and the email as the index for the search tree
-            name_idx  = contact[1].substring(0, zzcontacts.settings.minChars).toLowerCase();
-            email_idx = contact[2].substring(0, zzcontacts.settings.minChars).toLowerCase();
-
-             // if the results array for this index does not exist, create it now
-            if( name_idx.length > 0 ){
-                if( !zzcontacts.search_tree[name_idx] ){  zzcontacts.search_tree[name_idx] = [];}
-                zzcontacts.search_tree[name_idx].push(contact);
-            }
-
-            // If the name_idx and email_idx are the same, add the contact to the
-            // results array for this index once (done above), otherwise add it once by name_idx and
-            // once by email_idx (below). This allows searches by name or email
-            if( email_idx.length > 0 && name_idx != email_idx ){
-                if( !zzcontacts.search_tree[email_idx] ){  zzcontacts.search_tree[email_idx] = [];}
-                zzcontacts.search_tree[email_idx].push(contact);
-            }
-        }
-    },
-
-
-    find: function( q ){
-		if (!q) return null;
-		if (zzcontacts.search_tree[q]) return zzcontacts.format_results( zzcontacts.search_tree[q]);
-        
-        //If there was not a direct match, try to match subsets of q
-	    for (var i = q.length - 1; i >= zzcontacts.settings.minChars; i--) {
-			var qs = q.substr(0, i);
-			var results = zzcontacts.search_tree[qs];
-			if (results) {
-				var csub = [];
-				for (var j = 0; j < results.length; j++) {
-                    // The fields for the arrays in the results  are [ id, name, email ]
-					var x = results[j];
-					var name = x[1];
-                    var email = x[2];
-					if( zzcontacts.match_subset(name, q) || zzcontacts.match_subset( email, q) ){
-						csub[csub.length] = x;
-					}
-				}
-				return zzcontacts.format_results( csub );
-			}
-		}
-		return null;
-    },
-
-
-    match_subset: function(s, sub) {
-		s = s.toLowerCase();
-		var i = s.indexOf(sub);
-		if (i == -1) return false;
-		return i == 0;
-	},
-
-*/
 
     find: function( q ){
 		if (!zzcontacts.ready || !q) return null;
         var regex = new RegExp(q,"gi");
-        var results = jQuery.grep( zzcontacts.raw_data, function(element){
-            //     ( name.match(regex)       || email.match( regex ) )
-            return ( element[1].match(regex) || element[2].match( regex ) );
-        });
-	    return zzcontacts.format_results( results );
+        var results = [];
+        for(var service in zzcontacts.data ){
+            var service_results = jQuery.grep( zzcontacts.data[service].contacts, function(element){
+                //     ( name.match(regex)       || email.match( regex ) )
+                return ( element[1].match(regex) || element[2].match( regex ) );
+            });
+            results = results.concat( service_results );
+        }
+	    return zzcontacts._format_results( results );
     },
 
-
-    format_results: function( results ){
+    _format_results: function( results ){
         var formatted_results = [];
         for( var i in results ){
             // The fields for the arrays in the results  are [ id, name, email ]
@@ -122,6 +64,73 @@ zzcontacts ={
             formatted_results[i] = { id: id, name: display_name, token_text: token};
         }
         return formatted_results;
+    },
+
+    import_contacts: function( service, success, failure ){
+        if( !service ) return null;
+
+        if( service == 'local'){
+            zzcontacts._import_local_contacts( success, failure );
+            return;
+        }
+
+        var oauth_succeeded = false;
+        var import_service = function(){
+            oauth_succeeded = true;
+            $.ajax({
+                dataType: 'json',
+                url: '/'+service+'/contacts/import',
+                success: function(json){
+                    zzcontacts.data[service]= {};
+                    zzcontacts.data[service].contacts    = json;
+                    zzcontacts.data[service].last_import = 'A moment ago'; //+new Date();
+                    success();
+                },
+                error: function(jqXHR, textStatus){
+                    failure( 'import', textStatus);
+                }
+            });
+        };
+
+        //if not already authorized, authorize
+        if( !zzcontacts.data[service] ){
+            oauthmanager.login('/'+service+'/sessions/new',  import_service );
+            setTimeout( function(){
+                if( !oauth_succeeded ){
+                    // 30 seconds went by and no oauthsuccess, call error and forget it
+                    failure('oauth', "OAuth authorization not possible");
+                }
+            },20000);
+        } else {
+            import_service();
+        }
+    },
+
+    _import_local_contacts: function( import_success, import_failure ){
+       var get_local_contacts = function( agent_present ){
+           if( agent_present ){
+            var url = agent.buildAgentUrl('/contacts/import');
+            $.jsonp({
+                url: url,
+                success: function( response ){
+                    zzcontacts.data['local'] = {};
+                    zzcontacts.data['local'].contacts    = response.body;
+                    zzcontacts.data['local'].last_import = 'A moment ago.'; //+new Date();
+                    import_success();
+                },
+                error: function( options, textStatus ){
+                    import_failure('agent-yes', textStatus)
+                }
+            });
+           } else {
+                  import_failure('agent-NOT', 'Agent is not present!');
+           }
+       };
+       agent.isAvailable(  get_local_contacts );
+    },
+
+    is_service_linked: function( service ){
+        return zzcontacts.ready && typeof( zzcontacts.data[service] ) != 'undefined';
     }
 };
 

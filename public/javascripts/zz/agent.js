@@ -11,8 +11,22 @@ var agent = {
     agentId: null,
 
     isAvailable: function(callback) {
-        this.callAgent("/ping", callback(true),  callback(false));
+
+        var onSuccess = function() {
+            callback(true)
+        }
+
+        var onError = function() {
+            callback(false)
+        }
+
+
+        this.callAgent("/ping", onSuccess, onError)
+
     },
+
+    
+
 
     //todo: this needs to be cleaned up
     isAgentUrl: function(url){

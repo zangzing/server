@@ -445,7 +445,11 @@
       // Add a token to the token list based on user input
       function add_token (item){
          var li_data = $.data(item.get(0), "tokeninput");
-         var this_token = insert_token(li_data.id, li_data.name);
+          add_token_from_strings(li_data.id, li_data.name)
+      }
+
+      function add_token_from_strings( id, name ){
+         var this_token = insert_token(id, name);
 
          // Clear input box and make sure it keeps focus
          input_box
@@ -456,7 +460,7 @@
          hide_dropdown();
 
          // Save this token id
-         var id_string = li_data.id;
+         var id_string = id;
          if(hidden_input.val()){
             id_string = "," + id_string;
          }
@@ -473,7 +477,7 @@
 
        function create_new_token () {
             var string = input_box.val().toLowerCase();
-            if(string.length > 0) insert_token( string,  string);
+            if(string.length > 0) add_token_from_strings( string,  string);
        }
 
 
@@ -552,6 +556,7 @@
       }
 
       function show_dropdown_searching(){
+         selected_dropdown_item = null;
          dropdown
             .html("<p>"+settings.searchingText+"</p>")
             .show();
@@ -643,6 +648,7 @@
             dropdown_ul.slideDown("fast");
 
          } else {
+            selected_dropdown_item = null;
             dropdown
                .html("<p>"+settings.noResultsText+"</p>")
                .show();
