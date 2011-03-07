@@ -714,6 +714,7 @@ zz.init = {
                         cellWidth: 230,
                         cellHeight: 230,
                         onClickPhoto: function(index, photo) {
+                            $('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()},500,'easeOutQuart');
                             document.location.href = zz.album_base_url + "/photos/#!" + photo.id;
                         },
                         showThumbscroller: false
