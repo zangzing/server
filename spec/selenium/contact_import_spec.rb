@@ -31,9 +31,9 @@ describe "Contact import test" do
     ui.wizard.album_contributors_tab.import_yahoo_contacts
   end
   
-  it "import mslive contacts" do
-    ui.wizard.album_contributors_tab.import_mslive_contacts
-  end
+  #it "import mslive contacts" do
+  #  ui.wizard.album_contributors_tab.import_mslive_contacts
+  #end
 
   it "import outlook contacts" do
     ui.wizard.album_contributors_tab.import_outlook_contacts
@@ -54,9 +54,9 @@ describe "Contact import test" do
     ui.wizard.album_contributors_tab.imported_gmail?.should be_true
   end
   
-  it "verify contacts from mslive are imported" do
-    ui.wizard.album_contributors_tab.imported_mslive?.should be_true
-  end    
+ # it "verify contacts from mslive are imported" do
+ #   ui.wizard.album_contributors_tab.imported_mslive?.should be_true
+ # end
 
   it "verify contacts from outlook are imported" do
     ui.wizard.album_contributors_tab.imported_outlook?.should be_true unless @@no_agent
