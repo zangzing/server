@@ -199,7 +199,12 @@
                     }
                     else{
                         if(action === 'main'){
-                            self.add_photo_to_album(photo.add_url, element);
+                            if($(element).data().zz_photo.isChecked()){
+                                self.remove_photo_by_guid(photo.id); //chooser photos have source_guid as their id
+                            }
+                            else{
+                                self.add_photo_to_album(photo.add_url, element);
+                            }
                         }
                         else if(action === 'magnify'){
                             if(hasPhotos){
@@ -634,27 +639,43 @@
                     photos:[],
                     allowDelete:true,
                     allowSelect:false,
+
                     onDeletePhoto:function(index, photo){
-                        self.tray_photos = self.tray_photos.splice(index,1);
-//                        self.updateCheckmarks();
-
-                        $.ajax({
-                            type: "DELETE",
-                            dataType: "json",
-                            url: "/photos/" + photo.id + ".json",
-                            success:function(){
-                                self.reload_tray();
-                            },
-
-                            error: function(error){
-                                logger.debug(error);
-                            }
-                        });
-
+                        self.remove_photo(photo.id);
                     }
             }).data().zz_thumbtray;
 
             self.reload_tray();
+
+        },
+
+        remove_photo_by_guid: function(photo_guid){
+            var self = this;
+
+            var photo = _.detect(self.tray_photos, function(photo){
+                return photo.source_guid == photo_guid;
+            });
+
+            if(photo){
+                self.remove_photo(photo.id);
+            }
+        },
+
+        remove_photo:function(photo_id){
+            var self = this;
+
+            $.ajax({
+                type: "DELETE",
+                dataType: "json",
+                url: "/photos/" + photo_id + ".json",
+                success:function(){
+                    self.reload_tray();
+                },
+
+                error: function(error){
+                    logger.debug(error);
+                }
+            });
 
         },
 

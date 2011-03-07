@@ -247,9 +247,15 @@
 
         },
 
+        checked:false,
+
+        isChecked:function(){
+            return this.checked;
+        },
 
         setChecked: function(checked){
             var self = this;
+            self.checked = checked;
             if(self.options.context.indexOf('chooser')===0){
                 if(checked){
                     self.element.find('.photo-add-button').addClass('checked');
@@ -257,7 +263,6 @@
                 else{
                     self.element.find('.photo-add-button').removeClass('checked');
                 }
-
             }
         },
 
