@@ -35,6 +35,7 @@ run "rm -rf #{release_path}/public/stylesheets"
 # remove and symlink resque.yml with proper location of redis server - the shared path
 # file was set up by custom chef script
 run "ln -nfs #{shared_path}/config/resque.yml #{release_path}/config/resque.yml"
+run "ln -nfs #{shared_path}/config/redis.yml #{release_path}/config/redis.yml"
 
 # Restart Resque workers
 run "sudo monit restart all -g zangzing_resque"
