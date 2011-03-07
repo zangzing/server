@@ -168,17 +168,19 @@ zz.init = {
             $('#footer #new-album-button').removeClass('disabled').addClass('selected');
 
             zz.toolbars.init_new_album();
-            zz.easy_drawer(600, 0.0, '/users/' + zz.current_user_id + '/albums/new', function() {
-                $('#personal_album_link').click(function() {
-                    zz.wizard.create_personal_album();
-                    ZZAt.track('button.createpersonalalbum.click');
-                });
+            zz.wizard.create_group_album();
 
-                $('#group_album_link').click(function() {
-                    zz.wizard.create_group_album();
-                    ZZAt.track('button.creategroupalbum.click');
-                });
-            });
+//            zz.easy_drawer(600, 0.0, '/users/' + zz.current_user_id + '/albums/new', function() {
+//                $('#personal_album_link').click(function() {
+//                    zz.wizard.create_personal_album();
+//                    ZZAt.track('button.createpersonalalbum.click');
+//                });
+//
+//                $('#group_album_link').click(function() {
+//                    zz.wizard.create_group_album();
+//                    ZZAt.track('button.creategroupalbum.click');
+//                });
+//            });
         });
 
 

@@ -206,12 +206,12 @@ zz.wizard = {
 
     
 
-    create_personal_album: function(){
-        $.post('/users/'+zz.current_user_id+'/albums', { album_type: "PersonalAlbum" }, function(data){
-            zz.album_id = data;
-            zz.wizard.make_drawer(zz.drawers.personal_album, 'add');
-        });
-    },
+//    create_personal_album: function(){
+//        $.post('/users/'+zz.current_user_id+'/albums', { album_type: "PersonalAlbum" }, function(data){
+//            zz.album_id = data;
+//            zz.wizard.make_drawer(zz.drawers.personal_album, 'add');
+//        });
+//    },
 
     create_group_album: function(){
         $.post('/users/'+zz.current_user_id+'/albums', { album_type: "GroupAlbum" }, function(data){
@@ -223,13 +223,13 @@ zz.wizard = {
     open_edit_album_wizard: function( step ){
         switch(  zz.album_type ){
             case 'profile':
-            case 'personal':
-                if( typeof(zz.drawers.edit_personal_album) == "undefined" ){
-                    zz.drawers.edit_personal_album = zz.drawers.personal_album;
-                    zz.drawers.edit_personal_album.style='edit'
-                }
-                zz.wizard.make_drawer(zz.drawers.edit_personal_album, step);
-                break;
+//            case 'personal':
+//                if( typeof(zz.drawers.edit_personal_album) == "undefined" ){
+//                    zz.drawers.edit_personal_album = zz.drawers.personal_album;
+//                    zz.drawers.edit_personal_album.style='edit'
+//                }
+//                zz.wizard.make_drawer(zz.drawers.edit_personal_album, step);
+//                break;
             case 'group':
                 if( typeof(zz.drawers.edit_group_album) == "undefined" ){
                     zz.drawers.edit_group_album = zz.drawers.group_album;
