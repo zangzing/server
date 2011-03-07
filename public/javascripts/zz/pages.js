@@ -143,6 +143,14 @@ pages.edit_album_tab = {
                     photo.src =       agent.checkAddCredentialsToUrl(photo.thumb_url);
                 }
 
+                //add empty cell a the end so that we have a place
+                //to drop after the last photo
+                json.push({
+                    id:null,
+                    type:'blank',
+                    caption:''
+                });
+
 
                 var gridElement = $('<div class="photogrid"></div>');
 
@@ -193,14 +201,18 @@ pages.edit_album_tab = {
                     },
                     allowReorder: true,
                     onChangeOrder: function(photo_id, before_id, after_id){
-                        var data;
+                        var data = {};
+
 
                         if(before_id){
-                            data= {before_id: before_id, after_id: after_id};
+                            data.before_id = before_id;
                         }
-                        else{
-                            data= {after_id: after_id};
+
+                        if(after_id){
+                            data.after_id = after_id;
                         }
+
+                        logger.debug(data);
 
 
                         $.ajax({
