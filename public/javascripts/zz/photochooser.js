@@ -685,7 +685,11 @@
                 dataType: 'json',
                 url: '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
                 success: function(photos){
-                    self.tray_photos = photos;
+                    
+                    self.tray_photos = _.filter(photos, function(photo){
+                        return zz.current_user_id == photo.user_id; //only show photos uploaded by this user
+                    });
+                    
                     self.tray_widget.setPhotos(self.map_photos(self.tray_photos));
                     self.updateCheckmarks();
                 }
