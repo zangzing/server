@@ -11,11 +11,11 @@ test:
   :shared_secret: ea7d8b584d1bf5b9
   :app_id: 8f51abb9a4885b7cb357db545f52d92e
 
-eydevelopment:
+photos_production:
   :shared_secret: 5e647e74659c12be
   :app_id: 7899c6236a2ca7a08a3a982ae7d58e2b
 
-eysandbox:
+photos_staging:
   :shared_secret: 5e647e74659c12be
   :app_id: 7899c6236a2ca7a08a3a982ae7d58e2b
 
@@ -25,8 +25,3 @@ eytest:
   :shared_secret: 5e647e74659c12be
   :app_id: 7899c6236a2ca7a08a3a982ae7d58e2b
 
-
-
-production:
-  :shared_secret:
-  :app_id:

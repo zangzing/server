@@ -21,12 +21,12 @@ test:
   <<: *common
   resque_zza_id: "dev.photos/svr"
 
-eydevelopment:
+photos_production:
   <<: *common
   reserved_names: true
   resque_zza_id: "photos/svr"
 
-eysandbox:
+photos_staging:
   <<: *common
   reserved_names: true
   resque_zza_id: "staging.photos/svr"
@@ -35,7 +35,3 @@ eysandbox:
 eytest:
   <<: *common
 
-
-
-production:
-  <<: *common

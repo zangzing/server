@@ -11,18 +11,21 @@ perftest:
  encoding: utf8
  pool: 5
 
-eydevelopment:
- adapter: mysql2
- database: server_development
- encoding: utf8
- pool: 5
-
-eysandbox:
- adapter: mysql2
- database: server_development
- encoding: utf8
- pool: 5
-
+# the following are actually set up by chef scripts in production
+# so not used on our dev machines
+#
+#photos_production:
+# adapter: mysql2
+# database: server_development
+# encoding: utf8
+# pool: 5
+#
+#photos_staging:
+# adapter: mysql2
+# database: server_development
+# encoding: utf8
+# pool: 5
+#
 
 eytest:
   adapter: mysql2
@@ -39,10 +42,3 @@ test:
   encoding: utf8
   pool: 5
 
-
-production:
-  adapter: mysql2
-  database: server_production
-  encoding: utf8
-  pool: 5
-    

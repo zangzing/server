@@ -12,11 +12,11 @@ test:
   :api_key: l2bd6h6GW1FcoJDGy6h31pxKMsAWjSjH
 
 
-eydevelopment:
+photos_production:
   :shared_secret: 19a4c10a346ef517cc880411e2fbc8b4
   :api_key: bzyJIL3paLs5MbNDrOJNmQjikMOwa5sN
 
-eysandbox:
+photos_staging:
   :shared_secret: 8871a1440c8e5b1ea258975a1a4d0692
   :api_key: TN3xJ0kaR6q7kAivWf63aiqX42XN86A0
 
@@ -25,7 +25,3 @@ eytest:
   :shared_secret: 19a4c10a346ef517cc880411e2fbc8b4
   :api_key: bzyJIL3paLs5MbNDrOJNmQjikMOwa5sN
 
-
-production:
-  :shared_secret:
-  :api_key:

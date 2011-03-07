@@ -11,11 +11,11 @@ test:
   :consumer_secret: LVwYEbWO9XUMMuqVcIBlAEASOWLdoW7ufYujiYbzI
   :app_key: IzGoUFOmtnSFoebjtFWJCQ
 
-eydevelopment:
+photos_production:
   :consumer_secret: LVwYEbWO9XUMMuqVcIBlAEASOWLdoW7ufYujiYbzI
   :app_key: IzGoUFOmtnSFoebjtFWJCQ
 
-eysandbox:
+photos_staging:
   :consumer_secret: LVwYEbWO9XUMMuqVcIBlAEASOWLdoW7ufYujiYbzI
   :app_key: IzGoUFOmtnSFoebjtFWJCQ
 
@@ -24,7 +24,3 @@ eytest:
   :consumer_secret: LVwYEbWO9XUMMuqVcIBlAEASOWLdoW7ufYujiYbzI
   :app_key: IzGoUFOmtnSFoebjtFWJCQ
 
-
-production:
-  :consumer_secret:
-  :app_key: 
