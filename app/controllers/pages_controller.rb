@@ -70,7 +70,7 @@ class PagesController < ApplicationController
       curr_check = "Redis ACL connectivity check for: #{RedisConfig.config[:redis_acl_server]} - "
       status_msg << curr_check
       SystemTimer.timeout_after(max_time_per_check) do
-        full_check = true
+        full_check = false
         if full_check
           status_msg << "Full check\n"
           # a more thorough check than just ping
