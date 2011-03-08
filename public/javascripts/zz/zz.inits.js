@@ -373,6 +373,11 @@ zz.init = {
 
                 }
                 else {    //single picture view
+                    //hide view selectors
+
+                    $('#view-buttons').hide();
+
+
                     for (var i = 0; i < json.length; i++) {
                         var photo = json[i];
                         photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
