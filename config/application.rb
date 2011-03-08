@@ -8,6 +8,7 @@ require File.expand_path('../boot', __FILE__)
 require 'rails/all'
 
 require 'active_record/connection_adapters/mysql2_adapter'
+require 'config/initializers/zangzing_config'
 
 # If you have a Gemfile, require the gems listed there, including any gems
 # you've limited to :test, :development, or :production.
@@ -40,10 +41,9 @@ module Server
     # ZangZing Server Defaul Configuration Values
     #config.application_host =  'duhast.homeip.net'
     config.application_host =  'localhost:3000'
-    #GWS for testing sendgrid handler only - do not check in with this set to greg or duhast
-    #config.album_email_host =  'duhast-post.zangzing.com'
-    #config.album_email_host =  'greg-post.zangzing.com'
-    config.album_email_host =  'sendgrid-post.zangzing.com'
+
+    # sendgrid email to album address
+    config.album_email_host =  ZangZingConfig.config[:album_email_host]
     config.zangzing_version = '0.0.2'
     config.http_auth_credentials = YAML.load(File.read("#{Rails.root}/config/http_auth_creds.yml"))
   

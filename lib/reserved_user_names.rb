@@ -325,7 +325,7 @@ class ReservedUserNames
   # all is ok, otherwise nil
   #
   def self.verify_unlock_name(user, force = false)
-    if force == false && ZangZingConfig.zze_config[:reserved_names] == false
+    if force == false && ZangZingConfig.config[:reserved_names] == false
       # feature is turned off
       return user
     end
