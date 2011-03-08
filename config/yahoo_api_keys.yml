@@ -21,6 +21,6 @@ photos_production:
 
 photos_staging:
   :consumer_secret: 9457892b4ce290db9435aee94ed6b61b0e2fa21e
-  :app_key: dj0yJmk9b1IzNFNsaHkxNmROJmQ9WVdrOU5tc3dUMUIwTnpBbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD04ZA
+  :app_key: dj0yJmk9b1IzNFNsaHkxNmROJmQ9WVdrOU5tc3dUMUIwTnpBbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD04ZA--
   :app_id: 6k0OPt70
 
