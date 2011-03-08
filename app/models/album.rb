@@ -10,7 +10,6 @@ class Album < ActiveRecord::Base
   has_many :shares,           :dependent => :destroy
   has_many :activities,       :dependent => :destroy
   has_many :upload_batches
-  has_many :contributors
 
   has_many :like_mees,      :foreign_key => :subject_id, :class_name => "Like"
   has_many :likers,         :through => :like_mees, :class_name => "User",  :source => :user
@@ -139,15 +138,33 @@ class Album < ActiveRecord::Base
     end
   end
 
-  def is_contributor?( email )
-    c = self.contributors.find_by_email( email );
-    if c
-      return User.find_by_email_or_create_automatic( c.email, c.name )
-    end
+  def acl
+    @acl ||= AlbumACL.new( self.id )
+  end
+
+  def add_contributor( email )
+     user = User.find_by_email( email )
+     if user
+          #is user does not have contributor role, add it
+          unless acl.has_permission?( user.id, AlbumACL::CONTRIBUTOR_ROLE)
+            acl.add_user user.id, AlbumACL::CONTRIBUTOR_ROLE
+          end
+     else
+          # if the email does not have contributor role add it.
+          unless acl.has_permission?( email, AlbumACL::CONTRIBUTOR_ROLE)
+              acl.add_user email, AlbumACL::CONTRIBUTOR_ROLE
+          end
+     end
+     #send notification to  contributor via email
+     ZZ::Async::Email.enqueue( :contributors_added, self.id, email, (user ? user.id : nil ) )
+  end
+
+  def is_contributor?( id )
+    acl.get_user_role( id ) == AlbumACL::CONTRIBUTOR_ROLE
   end
 
   def is_user_contributor?( user )
-    self.contributors.find_by_email( user.email )
+    acl.get_user_role( user.id ) == AlbumACL::CONTRIBUTOR_ROLE
   end
 
   def long_email
