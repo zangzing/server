@@ -139,6 +139,7 @@ class Photo < ActiveRecord::Base
       if h != nil
         self.height = h
         self.width = w
+        break  # and we are done
       end
     end
   end
