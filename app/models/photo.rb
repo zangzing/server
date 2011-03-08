@@ -102,7 +102,7 @@ class Photo < ActiveRecord::Base
     end
     return true
   end
-  
+
 
   # given the local image, determine all the exif info for the file
   # this is only called when we set up a local file to be uploaded
@@ -110,7 +110,7 @@ class Photo < ActiveRecord::Base
   def set_image_metadata
     data = PhotoInfo.get_image_metadata(self.source_path)
     self.photo_info = PhotoInfo.factory(data)
-    if exif = data[:EXIF]
+    if exif = data['EXIF']
       val = exif['DateTimeOriginal']
       self.capture_date = DateTime.parse(val) unless val.nil?
       val = exif['Orientation']
@@ -122,17 +122,24 @@ class Photo < ActiveRecord::Base
       val_ref = exif['GPSLongitudeRef']
       self.longitude = PhotoInfo.decode_gps_coord(val, val_ref) unless val.nil? || val_ref.nil?
     end
-    if iptc = data[:IPTC]
+    if iptc = data['IPTC']
       self.headline = (iptc['Headline'] || '') if self.headline.blank?
       self.caption = (iptc['Caption'] || '') if self.caption.blank?
     end
-    if file = data[:File]
+    if file = data['File']
       val = file['MIMEType']
       self.image_content_type = val
-      val = file['ImageHeight']
-      self.height = val.to_i unless val.nil?
-      val = file['ImageWidth']
-      self.width = val.to_i unless val.nil?
+    end
+
+    # now special case for extracting width and height since it can be an any one of the
+    # tags
+    data.each_value do |map|
+      h = map['ImageHeight']
+      w = map['ImageWidth']
+      if h != nil
+        self.height = h
+        self.width = w
+      end
     end
   end
 
