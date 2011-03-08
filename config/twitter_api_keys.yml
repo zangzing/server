@@ -12,12 +12,12 @@ test:
   :app_key: IzGoUFOmtnSFoebjtFWJCQ
 
 photos_production:
-  :consumer_secret: LVwYEbWO9XUMMuqVcIBlAEASOWLdoW7ufYujiYbzI
-  :app_key: IzGoUFOmtnSFoebjtFWJCQ
+  :consumer_secret: gOfBcs6bVMreTY6Ttyn9uivs5liE6iiJinYdXI99m8
+  :app_key: z3lktZ1NLfwT1DYcWCVvhQ
 
 photos_staging:
-  :consumer_secret: LVwYEbWO9XUMMuqVcIBlAEASOWLdoW7ufYujiYbzI
-  :app_key: IzGoUFOmtnSFoebjtFWJCQ
+  :consumer_secret: gOfBcs6bVMreTY6Ttyn9uivs5liE6iiJinYdXI99m8
+  :app_key: z3lktZ1NLfwT1DYcWCVvhQ
 
 
 eytest:
