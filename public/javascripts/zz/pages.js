@@ -166,22 +166,17 @@ pages.edit_album_tab = {
                     cellHeight: 230,
 
                     onDelete: function(index, photo){
-                        if(confirm('Are you sure you want to delete this photo?')){
-                            $.ajax({
-                                type: "DELETE",
-                                dataType: "json",
-                                url: "/photos/" + photo.id + ".json",
-                                error: function(error){
-                                    logger.debug(error);
-    //                                $.jGrowl("" + error);
-                                }
+                        $.ajax({
+                            type: "DELETE",
+                            dataType: "json",
+                            url: "/photos/" + photo.id + ".json",
+                            error: function(error){
+                                logger.debug(error);
+//                                $.jGrowl("" + error);
+                            }
 
-                            });
-                            return true;
-                        }
-                        else{
-                            return false;
-                        }
+                        });
+                        return true;
                     },
                     allowEditCaption: true,
                     onChangeCaption: function(index, photo, caption){
