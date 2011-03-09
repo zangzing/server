@@ -76,7 +76,7 @@ pages.album_name_tab = {
             //setup album cover picker
             $.ajax({
                 dataType: 'json',
-                url: '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
+                url: zz.path_prefix + '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
                 success: function(json){
                     var selectedIndex=-1;
                     var currentId = $('#album_cover_photo').val();
@@ -134,7 +134,7 @@ pages.edit_album_tab = {
     init: function(callback){
         $.ajax({
             dataType: 'json',
-            url: '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss,
+            url: zz.path_prefix + '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss,
             success: function(json){
 
                 for(var i =0;i<json.length;i++){
@@ -568,7 +568,7 @@ pages.acct_profile = {
     profile_photo_picker: 'undefined',
 
     init: function(callback){
-        var url = '/users/' + zz.current_user_id +'/edit';
+        var url = zz.path_prefix + '/users/' + zz.current_user_id +'/edit';
         var self = pages.acct_profile;
 
         $('#tab-content').load(url, function(){
@@ -604,7 +604,7 @@ pages.acct_profile = {
     load_profile_photos: function( success_callback ){
             $.ajax({
                 dataType: 'json',
-                url: '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
+                url: zz.path_prefix + '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
                 success: function(json){
                     var selectedIndex=-1;
                     var currentId = $('#profile-photo-id').val();
@@ -701,7 +701,7 @@ pages.acct_profile = {
             var serialized = $(this.validator.element).serialize();
             $.ajax({
                 type: 'POST',
-                url: '/users/'+zz.current_user_id+'.json',
+                url: zz.path_prefix + '/users/'+zz.current_user_id+'.json',
                 data: serialized,
                 success: function(){
                     $('#user_old_password').val('');
@@ -729,10 +729,12 @@ pages.acct_profile = {
                 minlength: 1,
                 maxlength: 25,
                 regex: "^[a-z0-9]+$",
-                remote: '/users/validate_username' },
+//                remote: zz.path_prefix + '/users/validate_username' },
+                remote: '/service/users/validate_username' },
             'user[email]':    { required: true,
                 email: true,
-                remote: '/users/validate_email' },
+//                remote: zz.path_prefix + '/users/validate_email' },
+                remote: '/service/users/validate_email' },
             'user[old_password]':{ minlength: 5,
                 required:{ depends: function(element) {
                     logger.debug( "length is "+ $("#user_password").val().length);
@@ -793,7 +795,7 @@ pages.account_setings_notifications_tab = {
 
 pages.linked_accounts = {
     init: function(callback){
-        var url = '/users/' + zz.current_user_id + '/identities';
+        var url = zz.path_prefix + '/users/' + zz.current_user_id + '/identities';
         $('#tab-content').load( url, function(){
             zz.drawers.settings.redirect =  window.location;
             $('.delete-id-button').click(pages.linked_accounts.delete_identity);

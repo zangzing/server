@@ -334,7 +334,7 @@ zz.init = {
 
         $.ajax({
             dataType: 'json',
-            url: '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
+            url: zz.path_prefix + '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
             success: function(json) {
 
 
@@ -678,7 +678,7 @@ zz.init = {
 
         $.ajax({
             dataType: 'json',
-            url: '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
+            url: zz.path_prefix + '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
             success: function(json) {
 
                 for (var i = 0; i < json.length; i++) {

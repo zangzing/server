@@ -20,6 +20,9 @@ var zz = {
     drawer_state: 0,
     screen_gap: 150,
 
+    // the global path prefix for the photo service
+    path_prefix: "/service",
+
     open_drawer: function(time, percent){
 
         zz.screen_height = $(window).height(); // measure the screen height

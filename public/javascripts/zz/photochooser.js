@@ -688,7 +688,7 @@
             var self = this;
             $.ajax({
                 dataType: 'json',
-                url: '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
+                url: zz.path_prefix + '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
                 success: function(photos){
                     
                     self.tray_photos = _.filter(photos, function(photo){
