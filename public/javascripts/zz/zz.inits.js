@@ -107,11 +107,12 @@ zz.init = {
             document.location.href = zz.album_base_url + "/activities";
         });
 
-        $('#header #help-button').click(function() {
+        $('#header #help-button').click(function(event) {
 
             ZZAt.track('button.help.click');
 
-            feedback_widget.show();
+//            feedback_widget.show();
+            Zenbox.show(event);
         });
 
 
@@ -372,6 +373,11 @@ zz.init = {
 
                 }
                 else {    //single picture view
+                    //hide view selectors
+
+                    $('#view-buttons').hide();
+
+
                     for (var i = 0; i < json.length; i++) {
                         var photo = json[i];
                         photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
