@@ -598,6 +598,26 @@
 
             });
 
+            //Instagram
+            roots.push(
+            {
+                open_url: zz.path_prefix + '/instagram/folders/root/photos.json', //Seems like Instagram has no albums, just images feed
+                type: 'folder',
+                name: 'Instagram',
+                src: '/images/folders/instagram_off.jpg',
+                rolloverSrc: '/images/folders/instagram_on.jpg',
+
+                on_error: function(){
+                    var folder = this;
+                    self.bodyElement.hide().load('/static/connect_messages/connect_to_instagram.html', function(){
+                        self.bodyElement.find('#connect-button').click(function(){
+                            self.open_login_window(folder, zz.path_prefix + '/instagram/sessions/new');
+                        });
+                        self.bodyElement.fadeIn('fast');
+                    });
+                }
+
+            });
 
             //ZangZing
             roots.push(

@@ -30,6 +30,7 @@ gem 'hyper-graph',   '0.3.1', :require=>'hyper_graph' # Facebook
 gem 'flickraw',      '0.8.2'                          # Flickr
 gem 'bitly'                                           # Bitly duh?
 gem 'hominid',       '3.0.2'                          # MailChimp API
+gem 'instagram'                                       # Instagram
 
 gem 'vpim'                                            # VCard creator
 gem 'rpm_contrib'                                     # For New Relic Performance Instrumentation
