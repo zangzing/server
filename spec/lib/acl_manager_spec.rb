@@ -1,4 +1,5 @@
 require "rspec"
+require "config/application"
 require "lib/album_acl"
 require "redis"
 require 'benchmark'
