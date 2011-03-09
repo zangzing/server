@@ -10,11 +10,10 @@ class Notifier < ActionMailer::Base
     Rails.logger
   end
   
-  def contributors_added(album_id, email, contributor_user_id = nil)
+  def contributors_added(album_id, email )
      @album = Album.find( album_id)
      @user = @album.user
      @album_mail = @album.short_email
-     @contributor_user = User.find( contributor_user_id ) unless contributor_user_id.nil?
 
      vcard = Vpim::Vcard::Maker.make2 do |vc|
        vc.add_name do |name|

@@ -6,18 +6,21 @@ class ContributorsController < ApplicationController
     @album = current_user.albums.find(params[:album_id])
   end
 
-  # Creates contributor records for the album.
-  # It expects a comma separated list of ids and email addresses
-  # id:: Ids in the list are  *Contact* ids
-  # email:: Are emails typed by the user and :TODO should be added to the ZangZing contacts
+  # Creates contributors for the album.
+  # Expects a comma separated list of email and contact
+  # ids (not user ids)
   #
-  # Contributors are stored in the Albums contributor acl. The values in the acl
-  # maybe the user_id of the contributor or the email address of the contributor if the
-  # contributor is not a user.
-  # NOTE:: _This method expects Contact ids or emails_
-
+  # Contributors are stored in the Album''s contributor acl.
+  # The values in the acl maybe the user_id of the contributor
+  # or the email address of the contributor if the contributor
+  #is not yet a user.
+  # NOTE:: _This method expects emails or Contact ids (not user ids)_
   def acl_create
     fetch_album
+
+    #if !@album.admin?( current_user.id )
+    #   raise Exception.new( "Only Album Admins can add contributors")
+    #end
 
     if params[:contact_list].nil?
       flash[:error] = "contact_list parameter not present. Unable to add contributors"
@@ -54,13 +57,30 @@ class ContributorsController < ApplicationController
 
   def acl_index
     fetch_album
-    @acl AlbumACL.new( @album.id )
-    #get list of acls for this album
-    #iterate the list and get the user name for those tuples wher the id is a user_id
+    contributor_ids = @album.contributors
     
+    results = []
 
+    contributor_ids.each do |id|
+      user = User.find_by_id( id )
+      if user
+        results << { :id => id, :name => user.name }
+      else
+        results << { :id => id, :name => id }
+      end
+    end
+
+    render :json => results
   end
 
+  def acl_destroy
+      fetch_album
+      #if !@album.admin?( current_user.id )
+      #   raise Exception.new( "Only Album Admins can add contributors")
+      #end
+      @album.remove_contributor( params[:id] )
+      render :nothing => true
+  end
 
   def create
     @album = current_user.albums.find(params[:album_id])

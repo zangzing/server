@@ -99,13 +99,9 @@ Server::Application.routes.draw do
   put    '/follows/:id/unblock'           => 'follows#unblock',    :as => :unblock_follow
 
   #contributors
-  get    '/albums/:album_id/contributors'      => 'contributors#index',      :as => :album_contributors
-  get    '/albums/:album_id/contributors/new'  => 'contributors#new',        :as => :new_album_contributor
-  post   '/albums/:album_id/contributors'      => 'contributors#create',     :as => :create_album_contributor
-  get    '/contributors/:id'                   => 'contributors#show',       :as => :contributor
-  get    '/contributors/:id/edit'              => 'contributors#edit',       :as => :edit_contributor
-  put    '/contributors/:id'                   => 'contributors#update',     :as => :update_contributor
-  delete '/contributors/:id'                   => 'contributors#destroy',    :as => :delete_contributor
+  get    '/albums/:album_id/contributors'      => 'contributors#acl_index',  :as => :album_contributors
+  post   '/albums/:album_id/contributors'      => 'contributors#acl_create', :as => :create_album_contributors
+  delete '/albums/:album_id/contributors'      => 'contributors#acl_destroy',:as => :delete_contributor
     
   #like
   match  '/likes'                              => 'likes#index',             :as => :likes

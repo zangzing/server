@@ -56,7 +56,7 @@ class UploadBatch < ActiveRecord::Base
        Share.send_album_shares( self.user_id, self.album_id )
 
        if photos.length > 0
-          #Notify contributor that upload batch is finished
+          #Notify uploader that upload batch is finished
           ZZ::Async::Email.enqueue( :upload_batch_finished, self.id )
       
           #Update album picon

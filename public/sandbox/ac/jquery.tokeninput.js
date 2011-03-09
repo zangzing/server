@@ -63,6 +63,7 @@
          searchingErrorText: "Error!",
          searchDelay: 300,
          allowNewValues: false,
+         displayOnly: false,
          minChars: 1,
          tokenLimit: null,
          tokenLimitText: "Values limit reached!",
@@ -99,8 +100,10 @@
          inputToken: "token-input-input-token"
       }, options.classes);
 
+ 
       return this.each(function(){
          var list = new $.TokenList(this, settings);
+         $.data(this, 'tokeninput', { list: list } );
       });
    };
 
@@ -246,6 +249,9 @@
                   break;
             }
          });
+
+       //Hide the input box if the list is for displayOnly
+       if( settings.displayOnly ) input_box.hide();
 
       // Keep a reference to the original input box
       var hidden_input = $(input)
@@ -448,6 +454,20 @@
           add_token_from_strings(li_data.id, li_data.name)
       }
 
+      this.add_token = function( id, name ){
+        add_token_from_strings(id,name);
+      };
+
+       this.empty = function(){
+         token_list.find('li').each( function(index,element){
+             hidden_input.val('');
+             token_count = 0;
+             if( $(element).find('input').length <=0 ){
+                $(element).remove();
+             }
+         });
+       };
+
       function add_token_from_strings( id, name ){
          var this_token = insert_token(id, name);
 
@@ -532,7 +552,7 @@
          selected_token = null;
 
          // Show the input box and give it focus again
-         input_box.focus();
+         if( !settings.displayOnly )  input_box.focus();
 
          // Delete this token's id from hidden input
          var id_array = hidden_input.val().split(",");
@@ -541,12 +561,13 @@
 
          token_count--;
 
-         if(settings.tokenLimit != null){
+         if( settings.tokenLimit != null && !settings.displayOnly ){
             input_box
                .show()
                .val("")
                .focus();
          }
+         hidden_input.trigger('tokenDeleted',[token_data.id, token_data.name]);
       }
 
       // Hide and clear the results dropdown

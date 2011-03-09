@@ -19,38 +19,41 @@
 <H1>ZZ Autocomplete Tokenizer Testing</H1>
 
   <script type="text/javascript">
-  zz={};
-  zz.current_user_id ='249900073725';
+
+  </script>
+
+<div >
+<div  align="left" style="margin: 30px;">
+<a data-service="google" class="gray-button contacts-btn" href="javascript:void(0);return false;"><span><div class="off"></div>Google</span></a>
+<a data-service="local"  class="gray-button contacts-btn" href="javascript:void(0);return false;"><span><div class="off"></div>Local</span></a>
+<a data-service="yahoo"  class="gray-button contacts-btn" href="javascript:void(0);return false;"><span><div class="off"></div>Yahoo</span></a>
+<a data-service="mslive" class="gray-button contacts-btn" href="javascript:void(0);return false;"><span><div class="off"></div>MSLive</span></a>
+</div>
+
+<form id="contacts_form" action="/albums/29900073855/contributors" method="post">
+    <div class="tokenizer">
+        <input type="text" id="contacts" name="contact_list" />
+    </div>
+    <input id="contacts_submit" type="submit" name="mysubmit" value="Click To Add Contributors!" />
+</form>
+ </div>
+
+<div>
+    <div class="tokenizer">
+        <input type="text" id="users" name="contact_list" />
+    </div>
+</div>
 
 
+
+<script type="text/javascript">
 $(function(){
-      $("#tokenize").tokenInput( zzcontacts.find, {
-         hintText: "Type in a search term",
-         noResultsText: "No results",
-         searchingText: "Searching...",
-         searchingErrorText: "Error!",
-         searchDelay: 300,
+    zz={};
+    zz.current_user_id ='249900073725';
+    var url = '/albums/29900073855/contributors';
+
+      $("#contacts").tokenInput( zzcontacts.find, {
          allowNewValues: true,
-         minChars: 1,
-         tokenLimit: null,
-         tokenLimitText: "Values limit reached!",
-         tokenLimitDisplayTime: 1500,
-         jsonContainer: null,
-         method: "get",
-         dataType: "json",
-         queryParam: "q",
-         onResult: null,
-         hideEntered: true,
-         prePopulate: {
-            data: [{id:1,name:"First"},{id:2,name:"Second"}],
-            forceDataFill: true,
-            url: "url/to/autocomplete",
-            errorText: "Error!",
-            method: "post",
-            dataType: "json",
-            queryParam: "ids",
-            onResult: null
-         },
          classes: {
             tokenList: "token-input-list-facebook",
             token: "token-input-token-facebook",
@@ -64,24 +67,28 @@ $(function(){
             inputToken: "token-input-input-token-facebook"
          }
       });
-   });
-  </script>
 
-<div  align="left" style="margin: 30px;">
-<a data-service="google" class="gray-button contacts-btn" href="javascript:void(0);return false;"><span><div class="off"></div>Google</span></a>
-<a data-service="local"  class="gray-button contacts-btn" href="javascript:void(0);return false;"><span><div class="off"></div>Local</span></a>
-<a data-service="yahoo"  class="gray-button contacts-btn" href="javascript:void(0);return false;"><span><div class="off"></div>Yahoo</span></a>
-<a data-service="mslive" class="gray-button contacts-btn" href="javascript:void(0);return false;"><span><div class="off"></div>MSLive</span></a>
-</div>
-
-
-    <div id="tokenizer">
-        <input type="text" id="tokenize" name="blah" />
-    </div>
-
-<script type="text/javascript">
+    $("#users").tokenInput( zzcontacts.find, {
+                            allowNewValues: false,
+                            displayOnly : true,
+                            classes: {
+                                tokenList: "token-input-list-facebook",
+                                token: "token-input-token-facebook",
+                                tokenDelete: "token-input-delete-token-facebook",
+                                selectedToken: "token-input-selected-token-facebook",
+                                highlightedToken: "token-input-highlighted-token-facebook",
+                                dropdown: "token-input-dropdown-facebook",
+                                dropdownItem: "token-input-dropdown-item-facebook",
+                                dropdownItem2: "token-input-dropdown-item2-facebook",
+                                selectedDropdownItem: "token-input-selected-dropdown-item-facebook",
+                                inputToken: "token-input-input-token-facebook"
+                            }
+                        });
+     $('#users').bind('tokenDeleted',function(e, id, name){
+                            $.post(url, { _method: 'delete', id: id});
+     });
+    
     zzcontacts.init( zz.current_user_id, {}, function(){
-
     $(".contacts-btn").each( function( index, button ){
         var service = $(button).attr('data-service');
         if( zzcontacts.is_service_linked(service)){
@@ -106,6 +113,34 @@ $(function(){
         });
     });
     }, function(){} );
+
+
+    $('#contacts_submit').click( function(e){
+        e.preventDefault();
+
+        $.ajax({ type: 'POST',
+            url:  url,
+            data: $('#contacts_form').serialize(),
+            error: function(){ alert("post failed"); },
+            success: function (){
+                $.ajax({ type: 'GET',
+                    url: url,
+                    dataType: 'json',
+                    error: function(){ alert("get failed"); },
+                    success: function ( json ){
+                        var list = $('#users').data( 'tokeninput').list;
+                        list.empty();
+                        for ( var i=0, len=json.length; i<len; ++i ){
+                            list.add_token( json[i].id, json[i].name );
+                        }
+                    }
+                });
+            }
+        });
+    })
+
+
+});
 </script>
 
 </body>

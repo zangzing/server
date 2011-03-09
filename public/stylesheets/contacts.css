@@ -23,13 +23,13 @@
     background: url('/images/icon-contact-btn.png') scroll no-repeat 0 -79px;
 }
 
-#tokenizer{
+.tokenizer{
     font-size:14px;
     text-align: left;
     margin: 30px;
 }
 
-#tokenizer input{
+.tokenizer input{
     border: 0;
     -moz-box-shadow: none;
 }

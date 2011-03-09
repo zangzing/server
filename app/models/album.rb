@@ -17,20 +17,20 @@ class Album < ActiveRecord::Base
 
   has_friendly_id :name, :use_slug => true, :scope => :user, :reserved_words => ["photos", "shares", 'activities', 'slides_source', 'people'], :approximate_ascii => true
 
-  # Set up an async call for managing the deleted photo from s3
-  after_commit  :queue_delete_from_s3, :on => :destroy
 
   validates_presence_of  :user_id
   validates_presence_of  :name
   validates_length_of    :name, :maximum => 50
 
 
-  #before_create :set_email
+  
   attr_accessor :name_had_changed
-  before_save  Proc.new { |model| model.name_had_changed = true }, :if => :name_changed?
-  before_save  :cover_photo_id_valid?, :if => :cover_photo_id_changed?
-  after_save   :set_email, :if => :name_had_changed
-  #before_save   :set_email, :if => :new_slug_needed? #:name_changed?
+  before_save   Proc.new { |model| model.name_had_changed = true }, :if => :name_changed?
+  before_save   :cover_photo_id_valid?, :if => :cover_photo_id_changed?
+  after_save    :set_email, :if => :name_had_changed
+
+  after_create  :add_creator_as_admin
+
 
   default_scope :order => "`albums`.updated_at DESC"
 
@@ -106,27 +106,6 @@ class Album < ActiveRecord::Base
   #   ZZ::Async::UpdatePicon.enqueue( self.id )
   end
 
-  #
-  # Delete the s3 related objects in a deferred fashion
-  #
-  #TODO: Make a pass later and clean up all related code to the generation of picons
-  # for now just turn off the queueing
-  def queue_delete_from_s3
-#    # if we have already uploaded to s3 go ahead and delete it since
-#    # we are going away.
-#    # in the unlikely event that the delete gets processed before the
-#    # upload then the object itself will no longer exist which
-#    # will keep the upload from ever taking place
-#    # also, we can't rely on the album object itself since it won't
-#    # exist by the time it gets processed.
-#    if self.image_bucket
-#      # get all of the keys to remove
-#      keys = attached_picon.all_keys
-#      ZZ::Async::S3Cleanup.enqueue(self.image_bucket, keys)
-#      logger.debug("picon queued for s3 cleanup")
-#    end
-  end
-
 
   def picon_url
     if self.picon_path != nil
@@ -143,6 +122,7 @@ class Album < ActiveRecord::Base
   end
 
   def add_contributor( email )
+
      user = User.find_by_email( email )
      if user
           #is user does not have contributor role, add it
@@ -159,12 +139,48 @@ class Album < ActiveRecord::Base
      ZZ::Async::Email.enqueue( :contributors_added, self.id, email, (user ? user.id : nil ) )
   end
 
-  def is_contributor?( id )
-    acl.get_user_role( id ) == AlbumACL::CONTRIBUTOR_ROLE
+  def remove_contributor( id )
+     acl.remove_user( id ) if contributor? id
   end
 
-  def is_user_contributor?( user )
-    acl.get_user_role( user.id ) == AlbumACL::CONTRIBUTOR_ROLE
+
+  # Returns true if id has contributor role or equivalent
+  def contributor?( id )
+    acl.has_permission?( id, AlbumACL::CONTRIBUTOR_ROLE)
+  end
+
+  # Returns true if id has admin role or equivalent
+  def admin?( id )
+    acl.has_permission?( id, AlbumACL::ADMIN_ROLE)
+  end
+
+
+  # Checks of email is that of a contributor and retirns user
+  # If the email is that of a contributor, it will return the
+  # user object for the contributor.
+  # It will return nil if the email is not that of a contributor.
+  # If the email is that of a contributor and create_automatic_user
+  # is true, it will create an automatic user for that email.
+  def get_contributor_user_by_email( email, create_automatic_user = false )
+    user = nil
+    if contributor?( email )
+      if create_automatic_user
+        user = User.find_by_email_or_create_automatic( email, "Contributor by Email" )
+      else
+        user = User.find_by_email( email )
+      end
+      if user
+        # The email is a contributor and a user exists for this email.
+        # update the ACL to refer to this user by id and no longer by email
+        ACLManager.global_replace_user_key( email, user.id )
+      end
+    end
+    user
+  end
+
+  #Returns album contributors if exact = true, only the ones with CONTRIBUTOR_ROLE not equivalent ROLES are returned
+  def contributors( exact = false)
+    acl.get_users_with_role( AlbumACL::CONTRIBUTOR_ROLE, exact )
   end
 
   def long_email
@@ -195,6 +211,10 @@ private
     mail_address = "#{self.friendly_id}.#{self.user.friendly_id}"
     self.connection.execute "UPDATE `albums` SET `email`='#{mail_address}' WHERE `id`='#{self.id}'" if self.id
     self.name_had_changed = false
+  end
+
+  def add_creator_as_admin
+    acl.add_user( user.id, AlbumACL::ADMIN_ROLE )
   end
 
 end
