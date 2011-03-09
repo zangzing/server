@@ -106,7 +106,7 @@ Server::Application.routes.draw do
     get    '/albums/:album_id/contributors/new'  => 'contributors#new',        :as => :new_album_contributor
     get    '/albums/:album_id/contributors'      => 'contributors#index',      :as => :album_contributors
     post   '/albums/:album_id/contributors'      => 'contributors#create',     :as => :create_album_contributor
-    delete '/albums/:album_id//contributors/:id' => 'contributors#destroy',    :as => :delete_contributor
+    delete '/albums/:album_id/contributors'      => 'contributors#destroy',    :as => :delete_contributor
 
     #like
     match  '/likes'                              => 'likes#index',             :as => :likes

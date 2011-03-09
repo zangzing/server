@@ -11,7 +11,7 @@ zzcontacts ={
     init: function(userId, options, onSuccess, onError){
         var self = this;
         self.settings = $.extend({
-            url: '/users/userId/contacts.json',
+            url: zz.path_prefix + '/users/'+userId+'/contacts.json',
             minChars: 1
         }, options);
 
@@ -81,7 +81,7 @@ zzcontacts ={
             oauth_succeeded = true;
             $.ajax({
                 dataType: 'json',
-                url: '/'+service+'/contacts/import',
+                url: zz.path_prefix + '/'+service+'/contacts/import',
                 success: function(json){
                     zzcontacts.data[service]= {};
                     zzcontacts.data[service].contacts    = json;
@@ -96,7 +96,7 @@ zzcontacts ={
 
         //if not already authorized, authorize
         if( !zzcontacts.data[service] ){
-            oauthmanager.login('/'+service+'/sessions/new',  import_service );
+            oauthmanager.login(zz.path_prefix + '/'+service+'/sessions/new',  import_service );
             setTimeout( function(){
                 if( !oauth_succeeded ){
                     // 30 seconds went by and no oauthsuccess, call error and forget it
