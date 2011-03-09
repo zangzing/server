@@ -876,9 +876,7 @@ pages.no_agent = {
     url: '/static/connect_messages/no_agent.html',
 
     filechooser: function( when_ready ){
-       $('#downloadzz-btn').click(function(){
-            alert("Agent should be downloading now (TODO: Set URL for download in pages.js)");
-        });
+       $('#downloadzz-btn').click( pages.no_agent.download );
         pages.no_agent.keep_polling = true;
         pages.no_agent.poll_agent( function(){
             if( $.isFunction(  when_ready )) when_ready();
@@ -887,9 +885,7 @@ pages.no_agent = {
 
     dialog: function( onClose ){
          $('<div></div>', { id: 'no-agent-dialog'}).load(pages.no_agent.url, function(){
-             $('#downloadzz-btn').click(function(){
-                        alert("Agent should be downloading now (TODO: Set URL for download in pages.js)");
-                    });
+             $('#downloadzz-btn').click( pages.no_agent.download );
              $( this ).zz_dialog({
                     modal: true,
                     width: 910,
@@ -925,5 +921,9 @@ pages.no_agent = {
                   }
               }
           });
+    },
+
+    download: function(){
+        alert("Agent should be downloading now (TODO: Set URL for download in pages.js)");
     }
 };
