@@ -8,6 +8,7 @@
 common: &common
   reserved_names: false
   resque_zza_id: "dev.photos/svr"
+  album_email_host: "greg-post.zangzing.com"
 
 development:
   <<: *common
@@ -21,21 +22,19 @@ test:
   <<: *common
   resque_zza_id: "dev.photos/svr"
 
-eydevelopment:
+photos_production:
   <<: *common
   reserved_names: true
   resque_zza_id: "photos/svr"
+  album_email_host: "photos-post.zangzing.com"
 
-eysandbox:
+photos_staging:
   <<: *common
   reserved_names: true
   resque_zza_id: "staging.photos/svr"
+  album_email_host: "staging.photos-post.zangzing.com"
 
 
 eytest:
   <<: *common
 
-
-
-production:
-  <<: *common

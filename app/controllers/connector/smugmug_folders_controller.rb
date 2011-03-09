@@ -28,8 +28,8 @@ class Connector::SmugmugFoldersController < Connector::SmugmugController
               :upload_batch_id => current_batch.id,
               :capture_date => (DateTime.parse(p[:lastupdated]) rescue nil),
               :source_guid => make_source_guid(p),
-              :source_thumb_url => '/proxy?url=' + p[:smallurl],
-              :source_screen_url => '/proxy?url=' + p[:x3largeurl]
+              :source_thumb_url => '/service/proxy?url=' + p[:smallurl],
+              :source_screen_url => '/service/proxy?url=' + p[:x3largeurl]
       )
       
       ZZ::Async::GeneralImport.enqueue( photo.id,  p[:originalurl] )

@@ -19,7 +19,7 @@
 .photochooser .photochooser-header{
     position:absolute;
     top:0px;
-    height:50px;
+    height:70px;
     left:0px;
     right:0px;
     /*border:1px solid yellow;*/
@@ -27,7 +27,8 @@
 
 .photochooser .photochooser-header .back-button{
     position: absolute;
-    top:8px;
+    top:20px;
+    left:20px;
 }
 
 /*.photochooser .header h3{*/
@@ -51,7 +52,7 @@
 
 .photochooser .photochooser-body{
     position: absolute;
-    top:50px;
+    top:70px;
     left:0px;
     right:0px;
     bottom:50px;
@@ -90,6 +91,10 @@
     background: url("/images/btn-footer-next.png") no-repeat scroll 0px -44px transparent;
 }
 
+.photochooser .photochooser-body .next-button:active{
+    background: url("/images/btn-footer-next.png") no-repeat scroll 0px -88px transparent;
+}
+
 
 
 .photochooser .photochooser-body .prev-button{
@@ -106,6 +111,10 @@
 
 .photochooser .photochooser-body .prev-button:hover{
     background: url("/images/btn-footer-prev.png") no-repeat scroll 0px -44px transparent;
+}
+
+.photochooser .photochooser-body .prev-button:active{
+    background: url("/images/btn-footer-prev.png") no-repeat scroll 0px -88px transparent;
 }
 
 

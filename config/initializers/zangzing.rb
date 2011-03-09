@@ -38,7 +38,6 @@ silence_warnings do #To avoid warning of overwriting constant
   msg << "      Redis_host                  : " + zz_deploy_environment.redis_host_name
   if File.exists?( fname )
     zconfig.application_host = dna['engineyard']['environment']['apps'][0]['vhosts'][0]['domain_name']
-    zconfig.album_email_host="#{zconfig.application_host.split('.')[0]}-post.zangzing.com"
     msg << "      Deployment information from : "+fname
     msg << "      ZangZing Server deployed at : EngineYard"
     msg << "      EngineYard environment      : "+dna['engineyard']['environment']['name']

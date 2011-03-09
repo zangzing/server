@@ -1,3 +1,3 @@
-ey deploy -e dev -v -m 'rake build:db'
+ey deploy -e photos_prod -v
 ey recipes apply -e dev
 echo "Deployed"

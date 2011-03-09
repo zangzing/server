@@ -14,18 +14,13 @@ test:
   :app_key: dj0yJmk9TVFrMnFCZnlSeDBNJmQ9WVdrOU1rOUdiRTFtTkhNbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD1iMg--
   :app_id: 2OFlMf4s
 
-eydevelopment:
-  :consumer_secret: cadf03d22409326e868386f93d011bdaafe0f20d
-  :app_key: dj0yJmk9a3pOY0tydUFQRmFmJmQ9WVdrOWFFNXpha28yTkhFbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD0xNQ--
-  :app_id: hNsjJ64q
+photos_production:
+  :consumer_secret: 1dfd9a76919afa5aae7488d271f7e62e1442e4c0
+  :app_key: dj0yJmk9VXl0RWRFVGpyT1h6JmQ9WVdrOWJHVklia2xrTm5NbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD0yNw--
+  :app_id: leHnId6s
 
-eysandbox:
-  :consumer_secret: cadf03d22409326e868386f93d011bdaafe0f20d
-  :app_key: dj0yJmk9a3pOY0tydUFQRmFmJmQ9WVdrOWFFNXpha28yTkhFbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD0xNQ--
-  :app_id: hNsjJ64q
+photos_staging:
+  :consumer_secret: a4212632824246ed31db1852bb43489f75ebc07a
+  :app_key: dj0yJmk9Qk1mM1Z5aVFtdVhLJmQ9WVdrOU5tc3dUMUIwTnpBbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD0zMw--
+  :app_id: 6k0OPt70
 
-
-production:
-  :consumer_secret:
-  :app_key: 
-  :app_id: 

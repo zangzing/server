@@ -87,11 +87,13 @@ class User < ActiveRecord::Base
         i += 1
       end while User.find_by_username(username)
       #user not fount create an automatic user with a random password
-      user = User.create!(  :automatic => true,
+      user = User.new(  :automatic => true,
                            :email => email,
                            :name => name,
                            :username => username,  #username is in DB index, so '' won't work
                            :password => UUIDTools::UUID.random_create.to_s);
+      user.reset_perishable_token
+      user.save!
     end
     return user
   end

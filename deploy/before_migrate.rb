@@ -10,10 +10,10 @@
 # If there were any jobs and they have not finished, raise exception and the
 # user should try to deploy again
 
-run "sudo monit stop all -g zangzing_resque"
-if %x[ps axo command|grep resque[-]|grep -c Forked].to_i > 0 
-  raise "Resque Workers Working!!. I have asked them to stop when finished. Please retry deploy"
-end
+run "sudo monit stop all -g resque_photos"
+#if %x[ps axo command|grep resque[-]|grep -c Forked].to_i > 0
+#  raise "Resque Workers Working!!. I have asked them to stop when finished. Please retry deploy"
+#end
 
 #FOR WORKERS WHO WILL BE STOPPED WITH TERM TO
 #if %x[ps axo command|grep resque[-]|grep -c Forked].to_i > 0 

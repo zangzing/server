@@ -19,18 +19,14 @@ perftest:
 test:
   <<: *common
 
-eydevelopment:
+photos_production:
   <<: *common
   buckets: [1.zz, 2.zz, 3.zz, 4.zz]
 
-eysandbox:
+photos_staging:
   <<: *common
 
 
 eytest:
   <<: *common
 
-
-
-production:
-  <<: *common

@@ -22,6 +22,6 @@ task "resque:setup" => :environment do
    #put all resque worker configuration parameters here
 
   # init ZZA with resque specific ids
-  ZZ::ZZA.default_zza_id = ZangZingConfig.zze_config[:resque_zza_id]
+  ZZ::ZZA.default_zza_id = ZangZingConfig.config[:resque_zza_id]
 
 end

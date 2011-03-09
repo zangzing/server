@@ -27,7 +27,9 @@
     <title><%=title%></title>
 
     <%= include_stylesheets :common %>
-
+    <style type="text/css" media="screen, projection">
+      @import url(http://asset0.zendesk.com/external/zenbox/v2.1/zenbox.css);
+    </style>
 
 
 <%  # Add in template based style tags by defining this in the template -%>
@@ -107,6 +109,7 @@
       zz.displayed_user_id = '<%= @album.user.id %>';
       zz.album_base_url = '/<%=@album.user.username%>/<%=@album.friendly_id%>';
       zz.user_base_url = '/<%=@album.user.username%>';
+      zz.album_name = '<%=@album.name%>';
 <%    end
       # This is where we pass things on to js that we need from ruby.
       # Remember to use the zz.zang namespace.
@@ -136,23 +139,16 @@
           zz.init.resized();
       });
 
-    </script>
+      $(document).ready(function(){
+          Zenbox.init({
+            dropboxID:   "14512",
+            url:         "https://zangzing.zendesk.com",
+            tabID:       "support",
+            tabColor:    "black",
+            tabPosition: "Left"
+          });
+      });
 
-
-    <script type="text/javascript" charset="utf-8">
-      var is_ssl = ("https:" == document.location.protocol);
-      var asset_host = is_ssl ? "https://s3.amazonaws.com/getsatisfaction.com/" : "http://s3.amazonaws.com/getsatisfaction.com/";
-      document.write(unescape("%3Cscript src='" + asset_host + "javascripts/feedback-v2.js' type='text/javascript'%3E%3C/script%3E"));
-    </script>
-
-    <script type="text/javascript" charset="utf-8">
-      var feedback_widget_options = {};
-      feedback_widget_options.display = "overlay";
-      feedback_widget_options.company = "zangzing";
-      feedback_widget_options.placement = "hidden";
-      feedback_widget_options.color = "#222";
-      feedback_widget_options.style = "question";
-      var feedback_widget = new GSFN.feedback_widget(feedback_widget_options);
     </script>
 
 

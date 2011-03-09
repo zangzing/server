@@ -7,101 +7,101 @@
 zz.drawers = {
     /* Create ***PERSONAL*** Album
      ------------------------------------------------------------------------- */
-    personal_album: {
-
-        // set up the album variables
-        first: 'add', // first item in the object
-        last: 'share', // last item in the object
-        show_next_button: true,
-        numbers: 1, // 1 = show the number images, 0 = don't
-        percent: 0.0, // how far to fade the page contents when opening the drawer
-        style: 'create', // create or edit
-        time: 600, // how fast to open the drawer
-
-        init: function(){
-            zz.album_type = 'personal';
-        },
-
-        on_close: function(){
-            $.get( '/albums/' +zz.album_id + '/close_batch' );
-            var url = '/albums/' +zz.album_id + '/photos';
-            setTimeout('window.location = "' + url + '"', 1);
-        },
-
-        // set up the wizard steps
-        steps: {
-
-            add: {
-                next: 'name', // next in line
-                title: 'Add Photos', // link text
-                type: 'full', // drawer position - full(y open) or partial(ly open)
-
-
-                init: function(callback){ // run when loading the drawer up
-                    pages.album_add_photos_tab.init(callback, zz.drawers.personal_album.style);
-                },
-
-                bounce: function(success, failure){ // run before you leave
-                    pages.album_add_photos_tab.bounce(success, failure);
-                }
-
-            },
-
-            name: {
-                next: 'edit',
-                title: 'Name',
-                type: 'full',
-                init:   function(callback){
-                    pages.album_name_tab.init(callback);
-                },
-                bounce: function(success, failure){
-                    pages.album_name_tab.bounce(success, failure);
-                }
-            },
-
-            edit: {
-                next: 'privacy',
-                title: 'Edit',
-                type: 'partial',
-                init:   function(callback){
-                    pages.edit_album_tab.init(callback);
-                },
-                bounce: function(success, failure){
-                    pages.edit_album_tab.bounce(success, failure);
-                }
-            },
-
-            privacy: {
-                next: 'share',
-                title: 'Album Privacy',
-                type: 'full',
-
-                init: function(callback){
-                    pages.album_privacy_tab.init(callback);
-                },
-
-                bounce: function(success, failure){
-                    pages.album_privacy_tab.bounce(success, failure);
-                }
-            },
-
-            share: {
-                next: 0,
-                title: 'Share',
-                type: 'full',
-
-                init: function(callback){
-                    pages.album_share_tab.init(callback);
-                },
-
-                bounce: function(success, failure){
-                    pages.album_share_tab.bounce(success, failure);
-                }
-            }
-
-        }
-
-    },
+//    personal_album: {
+//
+//        // set up the album variables
+//        first: 'add', // first item in the object
+//        last: 'share', // last item in the object
+//        show_next_button: true,
+//        numbers: 1, // 1 = show the number images, 0 = don't
+//        percent: 0.0, // how far to fade the page contents when opening the drawer
+//        style: 'create', // create or edit
+//        time: 600, // how fast to open the drawer
+//
+//        init: function(){
+//            zz.album_type = 'personal';
+//        },
+//
+//        on_close: function(){
+//            $.get( '/albums/' +zz.album_id + '/close_batch' );
+//            var url = '/albums/' +zz.album_id + '/photos';
+//            setTimeout('window.location = "' + url + '"', 1);
+//        },
+//
+//        // set up the wizard steps
+//        steps: {
+//
+//            add: {
+//                next: 'name', // next in line
+//                title: 'Add Photos', // link text
+//                type: 'full', // drawer position - full(y open) or partial(ly open)
+//
+//
+//                init: function(callback){ // run when loading the drawer up
+//                    pages.album_add_photos_tab.init(callback, zz.drawers.personal_album.style);
+//                },
+//
+//                bounce: function(success, failure){ // run before you leave
+//                    pages.album_add_photos_tab.bounce(success, failure);
+//                }
+//
+//            },
+//
+//            name: {
+//                next: 'edit',
+//                title: 'Name',
+//                type: 'full',
+//                init:   function(callback){
+//                    pages.album_name_tab.init(callback);
+//                },
+//                bounce: function(success, failure){
+//                    pages.album_name_tab.bounce(success, failure);
+//                }
+//            },
+//
+//            edit: {
+//                next: 'privacy',
+//                title: 'Edit',
+//                type: 'partial',
+//                init:   function(callback){
+//                    pages.edit_album_tab.init(callback);
+//                },
+//                bounce: function(success, failure){
+//                    pages.edit_album_tab.bounce(success, failure);
+//                }
+//            },
+//
+//            privacy: {
+//                next: 'share',
+//                title: 'Album Privacy',
+//                type: 'full',
+//
+//                init: function(callback){
+//                    pages.album_privacy_tab.init(callback);
+//                },
+//
+//                bounce: function(success, failure){
+//                    pages.album_privacy_tab.bounce(success, failure);
+//                }
+//            },
+//
+//            share: {
+//                next: 0,
+//                title: 'Share',
+//                type: 'full',
+//
+//                init: function(callback){
+//                    pages.album_share_tab.init(callback);
+//                },
+//
+//                bounce: function(success, failure){
+//                    pages.album_share_tab.bounce(success, failure);
+//                }
+//            }
+//
+//        }
+//
+//    },
 
 
     /* Create ***GROUP*** Album
@@ -122,8 +122,8 @@ zz.drawers = {
         },
 
         on_close: function(){
-            $.get( '/albums/' +zz.album_id + '/close_batch' );
-            var url = '/albums/' +zz.album_id + '/photos';
+            $.get( zz.path_prefix + '/albums/' +zz.album_id + '/close_batch' );
+            var url = zz.path_prefix + '/albums/' +zz.album_id + '/photos';
             setTimeout('window.location = "' + url + '"', 1);
         },
 
@@ -135,7 +135,7 @@ zz.drawers = {
                 next: 'name',
                 title: 'Add Photos',
                 type: 'full',
-                url: '/albums/$$/add_photos',
+                url: zz.path_prefix + '/albums/$$/add_photos',
                 url_type: 'album',
 
                 init: function(callback){ // run when loading the drawer up
@@ -243,7 +243,7 @@ zz.drawers = {
 
         //todo: for some reason this isn't being called
         on_close: function(){
-            var url = '/users/' +zz.current_user_id + '/albums';
+            var url = zz.path_prefix + '/users/' +zz.current_user_id + '/albums';
             setTimeout('window.location = "' + url + '"', 1);
         },
 

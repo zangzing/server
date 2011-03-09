@@ -12,6 +12,9 @@ zz.toolbars = {
         $('#album-info h2').html("New Album");
         $('#album-info h3').html("by " + zz.current_user_name);
 
+        $('#header .album-cover').attr('src', '/images/album-no-cover.png');
+        $('#header .album-cover').css({width: '60px'});
+
         $('#album-info').css('display', 'inline-block');
         zz.wizard.set_wizard_style( 'create');
         $('div#cancel-drawer-btn').unbind('click').click( function(){
@@ -36,7 +39,7 @@ zz.toolbars = {
            zz.wizard.open_settings_drawer('profile')
 
        });
-       $('#acct-signout-btn').click(function(){ window.location = '/signout' }); 
+       $('#acct-signout-btn').click(function(){ window.location = zz.path_prefix + '/signout' });
     },
 
     show_acct_badge_menu : function(event){

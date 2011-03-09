@@ -10,6 +10,7 @@
         },
 
         stack:[],
+        grid:null,
         
         _create: function() {
             var self = this;
@@ -128,7 +129,7 @@
                            folder.on_error(error);
                        }
                        else{
-                            alert('error opening folder');
+                           alert('Sorry, there was a problem opening this folder. Please try again later.');
                        }
                    }
                 });
@@ -181,7 +182,7 @@
             var gridElement = $('<div class="photogrid"></div>');
             self.bodyElement.html(gridElement);
 
-            var grid = gridElement.zz_photogrid({
+            self.grid = gridElement.zz_photogrid({
                 photos:children,
                 showThumbscroller:false,
                 cellWidth: 190,
@@ -198,7 +199,12 @@
                     }
                     else{
                         if(action === 'main'){
-                            self.add_photo_to_album(photo.add_url, element);
+                            if($(element).data().zz_photo.isChecked()){
+                                self.remove_photo_by_guid(photo.id); //chooser photos have source_guid as their id
+                            }
+                            else{
+                                self.add_photo_to_album(photo.add_url, element);
+                            }
                         }
                         else if(action === 'magnify'){
                             if(hasPhotos){
@@ -210,6 +216,8 @@
                 }
 
             }).data().zz_photogrid;
+
+            self.updateCheckmarks();
 
         },
 
@@ -223,16 +231,16 @@
             });
 
 
-            var template = $('<div class="prev-button"></div>' +
+            var template = $('<a class="prev-button"></a>' +
                              '<div class="singlepicture-wrapper">' +
-                             '    <div class="photogrid"></div>' +
+                             '<div class="photogrid"></div>' +
                              '</div>' +
-                             '<div class="next-button"></div>');
+                             '<a class="next-button"></a>');
             
             var gridElement = template.find('.photogrid');
             self.bodyElement.html(template);
 
-            var grid = gridElement.zz_photogrid({
+            self.grid = gridElement.zz_photogrid({
                 photos:children,
                 showThumbscroller:false,
                 hideNativeScroller: true,
@@ -252,7 +260,12 @@
                     }
                     else{
                         if(action === 'main'){
-                            self.add_photo_to_album(photo.add_url, element);
+                            if($(element).data().zz_photo.isChecked()){
+                                self.remove_photo_by_guid(photo.id); //chooser photos have source_guid as their id
+                            }
+                            else{
+                                self.add_photo_to_album(photo.add_url, element);
+                            }
                         }
                         else if(action === 'magnify'){
                             //reload current view to get back to grid
@@ -263,12 +276,15 @@
 
             }).data().zz_photogrid;
 
+            self.updateCheckmarks();
+            
+
             template.filter('.prev-button').click(function(){
-                grid.previousPicture();
+                self.grid.previousPicture();
             });
 
             template.filter('.next-button').click(function(){
-                grid.nextPicture();
+                self.grid.nextPicture();
             });
 
 
@@ -444,7 +460,7 @@
             //Shutterfly
             roots.push(
             {
-                open_url: '/shutterfly/folders.json',
+                open_url: zz.path_prefix + '/shutterfly/folders.json',
                 type: 'folder',
                 name: 'Shutterfly',
                 src: '/images/folders/shutterfly_off.jpg',
@@ -454,7 +470,7 @@
                     var folder = this;
                     self.bodyElement.hide().load('/static/connect_messages/connect_to_shutterfly.html', function(){
                         self.bodyElement.find('#connect-button').click(function(){
-                            self.open_login_window(folder, '/shutterfly/sessions/new');
+                            self.open_login_window(folder, zz.path_prefix + '/shutterfly/sessions/new');
                         });
                         self.bodyElement.fadeIn('fast');
                     });
@@ -464,7 +480,7 @@
             //Kodak
             roots.push(
             {
-                open_url: '/kodak/folders.json',
+                open_url: zz.path_prefix + '/kodak/folders.json',
                 type: 'folder',
                 name: 'Kodak',
                 src: '/images/folders/kodak_off.jpg',
@@ -473,7 +489,7 @@
                     var folder = this;
                     self.bodyElement.hide().load('/static/connect_messages/connect_to_kodak.html', function(){
                         self.bodyElement.find('#connect-button').click(function(){
-                            self.open_login_window(folder, '/kodak/sessions/new');
+                            self.open_login_window(folder, zz.path_prefix + '/kodak/sessions/new');
                         });
                         self.bodyElement.fadeIn('fast');
                     });
@@ -484,7 +500,7 @@
             //SmugMug
             roots.push(
             {
-                open_url: '/smugmug/folders.json',
+                open_url: zz.path_prefix + '/smugmug/folders.json',
                 type: 'folder',
                 name: 'SmugMug',
                 src: '/images/folders/smugmug_off.jpg',
@@ -493,7 +509,7 @@
                     var folder = this;
                     self.bodyElement.hide().load('/static/connect_messages/connect_to_smugmug.html', function(){
                         self.bodyElement.find('#connect-button').click(function(){
-                            self.open_login_window(folder, '/smugmug/sessions/new');
+                            self.open_login_window(folder, zz.path_prefix + '/smugmug/sessions/new');
                         });
                         self.bodyElement.fadeIn('fast');
                     });
@@ -504,7 +520,7 @@
             //Facebook
             roots.push(
             {
-                open_url: '/facebook/folders.json',
+                open_url: zz.path_prefix + '/facebook/folders.json',
                 type: 'folder',
                 name: 'Facebook',
                 src: '/images/folders/facebook_off.jpg',
@@ -513,7 +529,7 @@
                     var folder = this;
                     self.bodyElement.hide().load('/static/connect_messages/connect_to_facebook.html', function(){
                         self.bodyElement.find('#connect-button').click(function(){
-                            self.open_login_window(folder, '/facebook/sessions/new');
+                            self.open_login_window(folder, zz.path_prefix + '/facebook/sessions/new');
                         });
                         self.bodyElement.fadeIn('fast');
                     });
@@ -523,7 +539,7 @@
             //Flickr
             roots.push(
             {
-                open_url: '/flickr/folders.json',
+                open_url: zz.path_prefix + '/flickr/folders.json',
                 type: 'folder',
                 name: 'Flickr',
                 src: '/images/folders/flickr_off.jpg',
@@ -532,7 +548,7 @@
                     var folder = this;
                     self.bodyElement.hide().load('/static/connect_messages/connect_to_flickr.html', function(){
                         self.bodyElement.find('#connect-button').click(function(){
-                            self.open_login_window(folder, '/flickr/sessions/new');
+                            self.open_login_window(folder, zz.path_prefix + '/flickr/sessions/new');
                         });
                         self.bodyElement.fadeIn('fast');
                     });
@@ -544,7 +560,7 @@
             //Picasa Web
             roots.push(
             {
-                open_url: '/picasa/folders.json',
+                open_url: zz.path_prefix + '/picasa/folders.json',
                 type: 'folder',
                 name: 'Picasa Web',
                 src: '/images/folders/picasa_off.jpg',
@@ -553,7 +569,7 @@
                     var folder = this;
                     self.bodyElement.hide().load('/static/connect_messages/connect_to_picasa_web.html', function(){
                         self.bodyElement.find('#connect-button').click(function(){
-                            self.open_login_window(folder, '/picasa/sessions/new');
+                            self.open_login_window(folder, zz.path_prefix + '/picasa/sessions/new');
                         });
                         self.bodyElement.fadeIn('fast');
                     });
@@ -564,7 +580,7 @@
             //Photobucket
             roots.push(
             {
-                open_url: '/photobucket/folders', //No need for .json cause this connector has unusual structure
+                open_url: zz.path_prefix + '/photobucket/folders', //No need for .json cause this connector has unusual structure
                 type: 'folder',
                 name: 'Photobucket',
                 src: '/images/folders/photobucket_off.jpg',
@@ -574,7 +590,7 @@
                     var folder = this;
                     self.bodyElement.hide().load('/static/connect_messages/connect_to_photobucket.html', function(){
                         self.bodyElement.find('#connect-button').click(function(){
-                            self.open_login_window(folder, '/photobucket/sessions/new');
+                            self.open_login_window(folder, zz.path_prefix + '/photobucket/sessions/new');
                         });
                         self.bodyElement.fadeIn('fast');
                     });
@@ -586,7 +602,7 @@
             //ZangZing
             roots.push(
             {
-                open_url: '/zangzing/folders.json',
+                open_url: zz.path_prefix + '/zangzing/folders.json',
                 type: 'folder',
                 name: 'ZangZing',
                 src: '/images/folders/zangzing_off.jpg',
@@ -595,6 +611,25 @@
 
             return roots;
 
+        },
+
+        updateCheckmarks: function(){
+            var self = this;
+            //remove all checkmarks
+            $.each(self.grid.cells(),function(index, cell){
+                $(cell).data().zz_photo.setChecked(false);
+            });
+            
+
+            //add back the ones we need
+            $.each(self.tray_photos, function(index, photo){
+                logger.debug(photo.source_guid);
+                var cell = self.grid.cellForId(photo.source_guid);
+                if(cell){
+                    cell.data().zz_photo.setChecked(true);
+
+                }
+            });
         },
 
 
@@ -609,24 +644,59 @@
                     photos:[],
                     allowDelete:true,
                     allowSelect:false,
+
                     onDeletePhoto:function(index, photo){
-                        self.tray_photos = self.tray_photos.splice(index,1);
-                        //filechooser.update_checkmarks();
-                        self.delete_photo_from_tray(photo);
+                        self.remove_photo(photo.id);
                     }
-                 }).data().zz_thumbtray;
+            }).data().zz_thumbtray;
 
             self.reload_tray();
+
+        },
+
+        remove_photo_by_guid: function(photo_guid){
+            var self = this;
+
+            var photo = _.detect(self.tray_photos, function(photo){
+                return photo.source_guid == photo_guid;
+            });
+
+            if(photo){
+                self.remove_photo(photo.id);
+            }
+        },
+
+        remove_photo:function(photo_id){
+            var self = this;
+
+            $.ajax({
+                type: "DELETE",
+                dataType: "json",
+                url: zz.path_prefix + "/photos/" + photo_id + ".json",
+                success:function(){
+                    self.reload_tray();
+                },
+
+                error: function(error){
+                    logger.debug(error);
+                }
+            });
+
         },
 
         reload_tray : function() {
             var self = this;
             $.ajax({
                 dataType: 'json',
-                url: '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
+                url: zz.path_prefix + '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
                 success: function(photos){
-                    self.tray_photos = photos;
+                    
+                    self.tray_photos = _.filter(photos, function(photo){
+                        return zz.current_user_id == photo.user_id; //only show photos uploaded by this user
+                    });
+                    
                     self.tray_widget.setPhotos(self.map_photos(self.tray_photos));
+                    self.updateCheckmarks();
                 }
 
             });
@@ -637,6 +707,8 @@
             self.animate_to_tray(element, function(){
                 self.add_to_album(add_url);
             });
+            element.data().zz_photo.setChecked(true);
+
         },
 
         add_folder_to_album: function(add_url, element){
@@ -644,16 +716,21 @@
             self.animate_to_tray(element, function(){
                 self.add_to_album(add_url);
             });
+
+            $.each(self.grid.cells(), function(index, element){
+                $(element).data().zz_photo.setChecked(true);
+            });
+            
         },
 
         animate_to_tray: function(element, callback){
             var self = this;
 
-            element = element.find('.photo-image');
+            var imageElement = element.find('.photo-image');
 
 
-            var start_top = element.offset().top;
-            var start_left = element.offset().left;
+            var start_top = imageElement.offset().top;
+            var start_left = imageElement.offset().left;
 
             var end_top = self.tray_element.offset().top;
             var end_left = self.tray_next_thumb_offset_x();
@@ -664,7 +741,7 @@
                 $(this).remove();
             }
 
-            element.clone()
+            imageElement.clone()
                     .css({position: 'absolute', zIndex: 2000, left: start_left, top: start_top,border:'1px solid #ffffff'})
                     .appendTo('body')
                     .addClass('animate-photo-to-tray')
@@ -676,11 +753,6 @@
                     }, 1000, 'easeInOutCubic', on_finish_animation);
 
 
-//            element.parents('li').addClass('in-tray');
-
-
-
-
 
         },
 
@@ -690,19 +762,19 @@
             add_url += (add_url.indexOf('?') == -1) ? '?' : '&'
             add_url += 'album_id=' + zz.album_id;
 
-            self.show_loading_indicator();
+            self.tray_widget.showLoadingIndicator();
             self.callAgentOrServer({
                 url: add_url,
                 success: function(photos) {
                     self.tray_photos = self.tray_photos.concat(photos);
                     self.tray_widget.setPhotos(self.map_photos(self.tray_photos));
-                    self.hide_loading_indicator();
-                    //filechooser.update_checkmarks();
-
+                    self.tray_widget.hideLoadingIndicator();
                 },
                 error: function(error){
-                    alert('error adding photo(s) to album');
+                    self.tray_widget.hideLoadingIndicator();
+                    alert('Sorry, there was a problem adding photos to your album. Please try again.');
                     logger.debug(error);
+
     //                $.jGrowl("" + error);
                 }
             });
@@ -732,30 +804,9 @@
             return photos;
         },
 
-        delete_photo_from_tray: function(photo){
-            $.ajax({
-                type: "DELETE",
-                dataType: "json",
-                url: "/photos/" + photo.id + ".json",
-                error: function(error){
-                    logger.debug(error);
-    //                $.jGrowl("" + error);
-                }
-            });
-        },
-
         tray_next_thumb_offset_x: function(){
             return this.tray_widget.nextThumbOffsetX();
-        },
-
-        show_loading_indicator: function(){
-            this.tray_widget.showLoadingIndicator();
-        },
-
-        hide_loading_indicator: function(){
-            this.tray_widget.hideLoadingIndicator();
         }
-
 
 
     });

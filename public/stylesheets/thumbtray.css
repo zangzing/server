@@ -96,9 +96,13 @@
     position:absolute;
     left:0px;
     top:0px;
-    /*opacity:.5;*/
-    /*filter:alpha(opacity=50);*/
-    background-color:transparent
+    background-color:transparent;
+}
+
+.ua-ie .thumbtray-scrim{
+    /*for some reason, ie doesn't register events on transparent layers*/
+    filter:alpha(opacity=0);
+    background-color:white;
 }
 
 .thumbtray-mask{

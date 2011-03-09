@@ -28,7 +28,7 @@
 //            noShadow:false,              //context / type
 //            lazyLoad:true ,              //context / type
             context:null,                 //context -- album-edit, album-grid, album-picture, album-timeline, album-people, chooser-grid, chooser-picture
-            type: 'photo'
+            type: 'photo'                 //photo \ folder \ blank
         },
 
         _create: function() {
@@ -69,6 +69,11 @@
             self.errorElement = this.element.find('.photo-error-icon');
             self.bottomShadow = this.element.find('.bottom-shadow');
 
+
+            if(self.options.type === 'blank'){
+                self.borderElement.hide();
+                self.captionElement.hide();
+            }
 
 
 
@@ -247,9 +252,15 @@
 
         },
 
+        checked:false,
+
+        isChecked:function(){
+            return this.checked;
+        },
 
         setChecked: function(checked){
             var self = this;
+            self.checked = checked;
             if(self.options.context.indexOf('chooser')===0){
                 if(checked){
                     self.element.find('.photo-add-button').addClass('checked');
@@ -257,7 +268,6 @@
                 else{
                     self.element.find('.photo-add-button').removeClass('checked');
                 }
-
             }
         },
 

@@ -47,10 +47,10 @@ zz.validate = {
                                 minlength: 1,
                                 maxlength:25,
                                 regex: "(^[a-z0-9]+$|^[a-z0-9]+:.{8}$)",
-                                remote: '/users/validate_username' },
+                                remote: zz.path_prefix + '/users/validate_username' },
             'user[email]':    { required: true,
                                 email: true,
-                                remote: '/users/validate_email' },
+                                remote: zz.path_prefix + '/users/validate_email' },
             'user[password]': { required: true,
                                 minlength: 5 }
         },

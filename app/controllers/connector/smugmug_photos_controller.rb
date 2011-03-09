@@ -8,8 +8,8 @@ class Connector::SmugmugPhotosController < Connector::SmugmugController
         :name => (p[:caption].blank? ? p[:filename] : p[:caption]),
         :id   => "#{p[:id]}_#{p[:key]}",
         :type => 'photo',
-        :thumb_url => '/proxy?url=' + p[:smallurl],
-        :screen_url => '/proxy?url=' + p[:x3largeurl],
+        :thumb_url => '/service/proxy?url=' + p[:smallurl],
+        :screen_url => '/service/proxy?url=' + p[:x3largeurl],
         :add_url => smugmug_photo_action_url({:sm_album_id =>album_id, :photo_id => "#{p[:id]}_#{p[:key]}", :action => 'import'}),
         :source_guid => make_source_guid(p)
         
@@ -39,8 +39,8 @@ class Connector::SmugmugPhotosController < Connector::SmugmugController
             :upload_batch_id => current_batch.id,
             :capture_date => (DateTime.parse(photo_info[:lastupdated]) rescue nil),
             :source_guid => make_source_guid(photo_info),
-            :source_thumb_url => '/proxy?url=' + photo_info[:smallurl],
-            :source_screen_url => '/proxy?url=' + photo_info[:x3largeurl]
+            :source_thumb_url => '/service/proxy?url=' + photo_info[:smallurl],
+            :source_screen_url => '/service/proxy?url=' + photo_info[:x3largeurl]
 
     )
     

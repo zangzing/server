@@ -31,20 +31,15 @@ zz.init = {
             ZZAt.track('button.home.click');
         });
 
-        $('#header #back-button').click(function() {
-            if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
-                return;
-            }
-
-            $('#article').animate({left: $('#article').width()}, 500, 'easeOutQuart');
-            document.location.href = zz.user_base_url;
-        });
 
 
-        if (document.location.href.indexOf("/photos/#!") !== -1) {
-            $('#header #view-buttons #picture-view-button').addClass('selected');
-        }
-        else if (document.location.href.indexOf("/photos") !== -1) {
+
+
+
+//        if (document.location.href.indexOf("/photos/#!") !== -1) {
+//            $('#header #view-buttons #picture-view-button').addClass('selected');
+//        }
+        if (document.location.href.indexOf("/photos") !== -1) {
             $('#header #view-buttons #grid-view-button').addClass('selected');
         }
         else if (document.location.href.indexOf("/people") !== -1) {
@@ -112,11 +107,12 @@ zz.init = {
             document.location.href = zz.album_base_url + "/activities";
         });
 
-        $('#header #help-button').click(function() {
+        $('#header #help-button').click(function(event) {
 
             ZZAt.track('button.help.click');
 
-            feedback_widget.show();
+//            feedback_widget.show();
+            Zenbox.show(event);
         });
 
 
@@ -168,17 +164,19 @@ zz.init = {
             $('#footer #new-album-button').removeClass('disabled').addClass('selected');
 
             zz.toolbars.init_new_album();
-            zz.easy_drawer(600, 0.0, '/users/' + zz.current_user_id + '/albums/new', function() {
-                $('#personal_album_link').click(function() {
-                    zz.wizard.create_personal_album();
-                    ZZAt.track('button.createpersonalalbum.click');
-                });
+            zz.wizard.create_group_album();
 
-                $('#group_album_link').click(function() {
-                    zz.wizard.create_group_album();
-                    ZZAt.track('button.creategroupalbum.click');
-                });
-            });
+//            zz.easy_drawer(600, 0.0, '/users/' + zz.current_user_id + '/albums/new', function() {
+//                $('#personal_album_link').click(function() {
+//                    zz.wizard.create_personal_album();
+//                    ZZAt.track('button.createpersonalalbum.click');
+//                });
+//
+//                $('#group_album_link').click(function() {
+//                    zz.wizard.create_group_album();
+//                    ZZAt.track('button.creategroupalbum.click');
+//                });
+//            });
         });
 
 
@@ -304,6 +302,19 @@ zz.init = {
         // TODO: check for selected photo - move caption position
     },
 
+    init_back_button: function(caption, url){
+        $('#header #back-button span').html(caption);
+
+        $('#header #back-button').click(function() {
+            if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
+                return;
+            }
+
+            $('#article').animate({left: $('#article').width()}, 500, 'easeOutQuart');
+            document.location.href = url;
+        });
+    },
+
     album: function() {
         //setup grid view
 
@@ -313,9 +324,17 @@ zz.init = {
             view = 'picture';
         }
 
+        if(view === 'grid'){
+            this.init_back_button('All Albums', zz.user_base_url);
+        }
+        else{
+            this.init_back_button(zz.album_name, zz.album_base_url + '/photos');
+        }
+
+
         $.ajax({
             dataType: 'json',
-            url: '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
+            url: zz.path_prefix + '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
             success: function(json) {
 
 
@@ -339,6 +358,12 @@ zz.init = {
                         cellWidth: 230,
                         cellHeight: 230,
                         onClickPhoto: function(index, photo) {
+
+                            //get rid of scrollbars before animate transition
+                            grid.hideThumbScroller();   
+                            gridElement.css({overflow:'hidden'});
+
+                            $('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()},500,'easeOutQuart');
                             document.location.href = zz.album_base_url + "/photos/#!" + photo.id;
                         },
                         currentPhotoId: $.param.fragment()
@@ -348,6 +373,11 @@ zz.init = {
 
                 }
                 else {    //single picture view
+                    //hide view selectors
+
+                    $('#view-buttons').hide();
+
+
                     for (var i = 0; i < json.length; i++) {
                         var photo = json[i];
                         photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
@@ -642,9 +672,13 @@ zz.init = {
     },
 
     album_timeline_or_people_view: function(which) {
+
+        this.init_back_button('All Albums', zz.user_base_url);
+
+
         $.ajax({
             dataType: 'json',
-            url: '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
+            url: zz.path_prefix + '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
             success: function(json) {
 
                 for (var i = 0; i < json.length; i++) {
@@ -686,6 +720,7 @@ zz.init = {
                         cellWidth: 230,
                         cellHeight: 230,
                         onClickPhoto: function(index, photo) {
+                            $('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()},500,'easeOutQuart');
                             document.location.href = zz.album_base_url + "/photos/#!" + photo.id;
                         },
                         showThumbscroller: false

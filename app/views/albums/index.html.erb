@@ -33,10 +33,11 @@
           </div>
 <%
     else
-        picon_aspect = (landscape_width.to_f / landscape_height.to_f)
         cover_aspect = (album.cover.width.to_f / album.cover.height.to_f)
 
         if(album.cover.width >= album.cover.height) #landscape
+
+            picon_aspect = (landscape_width.to_f / landscape_height.to_f)
 
             if(cover_aspect >= picon_aspect) #cover is wider aspect than picon; scale to fit height
                 height = landscape_height
@@ -62,14 +63,17 @@
 
 <%
         else #portrait
-            if(cover_aspect <= picon_aspect) #cover is narrower aspect than picon; scale to fit height
-                height = landscape_height
+
+            picon_aspect = (portrait_width.to_f / portrait_height.to_f)
+
+
+            if(cover_aspect >= picon_aspect) #cover is narrower aspect than picon; scale to fit height
+                height = portrait_height
                 width = (height * cover_aspect).to_i
                 top = 0
                 left = ((portrait_width - width) / 2).to_i
-
             else #cover is narrower apect than picon; scale to fit width
-                width = landscape_width
+                width = portrait_width
                 height = (width / cover_aspect).to_i
                 left = 0
                 top = ((portrait_height - height)/ 2).to_i

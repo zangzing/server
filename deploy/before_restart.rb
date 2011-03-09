@@ -38,7 +38,7 @@ run "ln -nfs #{shared_path}/config/resque.yml #{release_path}/config/resque.yml"
 run "ln -nfs #{shared_path}/config/redis.yml #{release_path}/config/redis.yml"
 
 # Restart Resque workers
-run "sudo monit restart all -g zangzing_resque"
+run "sudo monit restart all -g resque_photos"
 
 # clear out the nginx cache
 run "find /tmp/nginx/cache -type f -exec rm {} \\;"
