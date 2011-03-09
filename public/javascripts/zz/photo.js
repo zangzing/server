@@ -72,6 +72,7 @@
 
             if(self.options.type === 'blank'){
                 self.borderElement.hide();
+                self.captionElement.hide();
             }
 
 
