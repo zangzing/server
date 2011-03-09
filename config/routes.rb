@@ -249,8 +249,6 @@ Server::Application.routes.draw do
       match '/twitter/posts.:format' => 'twitter_posts#index', :as => :twitter_posts
       match '/twitter/posts/create' => 'twitter_posts#create', :as => :create_twitter_post
 
-      #proxy
-      match '/proxy' => 'proxy#proxy', :as => :proxy
 
     end # end of the namespace segment
 
@@ -286,6 +284,8 @@ Server::Application.routes.draw do
   end
 
 
+  # this stuff stays at the root
+
   #jammit routes -- needs to be before catch all user routes below (copied from jammit/rails/routes.rb
   match "/#{Jammit.package_path}/:package.:extension",
     :to => 'jammit#package', :as => :jammit, :constraints => {
@@ -293,9 +293,10 @@ Server::Application.routes.draw do
       :extension => /.+/
   }
   
+  #proxy
+  match '/proxy' => 'proxy#proxy', :as => :proxy
 
 
-  # this stuff stays at the root
   get    '/:user_id'                           =>   'albums#index',               :as => :user_albums
   get    '/:user_id/:album_id'                 =>   'photos#index'
   get    '/:user_id/:album_id/photos'          =>   'photos#index'
