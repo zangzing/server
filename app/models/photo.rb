@@ -333,6 +333,15 @@ class Photo < ActiveRecord::Base
     end
   end
 
+  def full_screen_url
+    if self.ready?
+      attached_image.url(PhotoAttachedImage::LARGE)
+    else
+      return safe_url(make_source_screen_url)
+    end
+  end
+
+
   def original_url
     if self.ready?
       attached_image.url(PhotoAttachedImage::ORIGINAL)
@@ -450,7 +459,7 @@ class Photo < ActiveRecord::Base
 #      end
 
 
-      json= photos.to_json(:only =>[:id, :caption, :state, :source_guid, :upload_batch_id, :user_id], :methods => [:aspect_ratio, :stamp_url, :thumb_url, :screen_url])
+      json= photos.to_json(:only =>[:id, :caption, :state, :source_guid, :upload_batch_id, :user_id], :methods => [:aspect_ratio, :stamp_url, :thumb_url, :screen_url, :full_screen_url])
 
 
       return json
@@ -520,8 +529,9 @@ class PhotoAttachedImage < AttachedImage
   # these must be defined in order from largest to smallest size
   def sizes
     @@sizes ||= [
+        {LARGE    => "-resize '2560x1440>' -strip -quality 80"},  # large
         {MEDIUM   => "-resize '1024x768>' -strip -quality 80"},  # medium
-        {THUMB    => "-resize '200x200>' -strip -quality 80"},   # thumb
+        {THUMB    => "-resize '180x180>' -strip -quality 80"},   # thumb
         {STAMP    => "-resize '100x100>' -strip -quality 80"}    # stamp
     ]
   end

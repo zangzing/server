@@ -28,6 +28,7 @@ class AttachedImage
 
   # photo suffixes for naming
   ORIGINAL =  'o'
+  LARGE =     'l'
   MEDIUM =    'm'
   THUMB =     't'
   STAMP =     's'
