@@ -118,14 +118,22 @@ zzcontacts ={
                     zzcontacts.data['local'] = {};
                     zzcontacts.data['local'].contacts    = response.body;
                     zzcontacts.data['local'].last_import = 'A moment ago.'; //+new Date();
-                    import_success();
+                    if( $.isFunction( import_success) )  import_success();
                 },
                 error: function( options, textStatus ){
-                    import_failure('agent-yes', textStatus)
+                    if( $.isFunction( import_failure) ) import_failure('agent', textStatus);
                 }
             });
            } else {
-                  import_failure('agent-NOT', 'Agent is not present!');
+               pages.no_agent.dialog( function(){
+                   agent.isAvailable( function( agent_present ){
+                       if( agent_present ){
+                            zzcontacts.import_contacts( 'local', import_success, import_failure );
+                       } else {
+                            if( $.isFunction( import_failure) ) import_failure('agent', "Please install agent.");
+                       }
+                   });
+               });
            }
        };
        agent.isAvailable(  get_local_contacts );
@@ -159,7 +167,7 @@ zzcontacts ={
                 };
                 var onError = function(error_src,error_msg){
                     b.find('div').removeClass('off sync on').addClass('error');
-                    b.attr( 'title', 'There was an error: '+error_msg+'. Please try again later.');
+                    b.attr( 'title', 'There was an error: '+error_msg+'.');
                     b.removeAttr('disabled');
                 };
                 zzcontacts.import_contacts(service, onSuccess, onError);

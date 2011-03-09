@@ -270,29 +270,28 @@ pages.album_privacy_tab = {
     }
 };
 
-pages.album_share_tab = {
+pages.share = {
     init: function(callback){
         var url = zz.path_prefix +'/albums/' + zz.album_id + '/shares/new';
         var self = this;
 
         $('#tab-content').load(url, function(){
            zz.wizard.resize_scroll_body();
-
            $('.social-share').click(function(){
                 if(zz.album_type === 'personal'){
-                    self.show_social_share(zz.drawers.personal_album, 'share');
+                    self.show_social(zz.drawers.personal_album, 'share');
                 }
                 else{
-                    self.show_social_share(zz.drawers.group_album, 'share');
+                    self.show_social(zz.drawers.group_album, 'share');
                 }
             });
 
             $('.email-share').click(function(){
                 if(zz.album_type === 'personal'){
-                    self.show_email_share(zz.drawers.personal_album, 'share');
+                    self.show_email(zz.drawers.personal_album, 'share');
                 }
                 else{
-                    self.show_email_share(zz.drawers.group_album, 'share');
+                    self.show_email(zz.drawers.group_album, 'share');
 
                 }
             });
@@ -306,7 +305,7 @@ pages.album_share_tab = {
     },
 
     // loads the status message post form in place of the type switcher on the share step
-    show_social_share: function(obj, id){
+    show_social: function(obj, id){
         var self = this;
 
         $('div#share-body').fadeOut('fast', function(){
@@ -352,7 +351,7 @@ pages.album_share_tab = {
                     submitHandler: function() {
                         var serialized = $('#new_post_share').serialize();
                         $.post(zz.path_prefix + '/albums/'+zz.album_id+'/shares.json', serialized, function(data,status,request){
-                            pages.album_share_tab.reload_share(zz.drawers[zz.album_type+'_album'], 'share', function(){
+                            pages.share.reload_share(zz.drawers[zz.album_type+'_album'], 'share', function(){
                                 zz.wizard.display_flashes(  request,200 )
                             });
                         });
@@ -387,16 +386,32 @@ pages.album_share_tab = {
 
 
     // loads the email post form in place of the type switcher on the share step
-    show_email_share: function(obj, id ){
+    show_email: function(obj, id ){
         var self = this;
         $('div#share-body').fadeOut('fast', function(){
             $('div#share-body').load(zz.path_prefix + '/albums/'+zz.album_id+'/shares/newemail', function(){
+
+                $("#contact-list").tokenInput( zzcontacts.find, {
+                    allowNewValues: true,
+                    classes: {
+                        tokenList: "token-input-list-facebook",
+                        token: "token-input-token-facebook",
+                        tokenDelete: "token-input-delete-token-facebook",
+                        selectedToken: "token-input-selected-token-facebook",
+                        highlightedToken: "token-input-highlighted-token-facebook",
+                        dropdown: "token-input-dropdown-facebook",
+                        dropdownItem: "token-input-dropdown-item-facebook",
+                        dropdownItem2: "token-input-dropdown-item2-facebook",
+                        selectedDropdownItem: "token-input-selected-dropdown-item-facebook",
+                        inputToken: "token-input-input-token-facebook"
+                    }
+                });
+                zzcontacts.init( zz.current_user_id );
                 zz.wizard.resize_scroll_body();
-                zz.wizard.init_email_autocompleter();
 
                 $('#new_email_share').validate({
                     rules: {
-                        'email_share[to]': { required: true, minlength: 0 },
+                        'email_share[to]':      { required: true, minlength: 0 },
                         'email_share[message]': { required: true, minlength: 0 }
                     },
                     messages: {
@@ -420,21 +435,9 @@ pages.album_share_tab = {
                 });
 
                 $('#mail-submit').click(function(){
-                   $('form#new_email_share').submit(); 
+                    $('form#new_email_share').submit();
                 });
-
-                $('#the-list').click(function(){
-                    $('#you-complete-me').focus();
-                });
-
-                //todo: move these into auto-complete widget
-                $('#you-complete-me').focus(function(){
-                    $('#the-list').addClass("focus");
-                });
-                $('#you-complete-me').blur(function(){
-                    $('#the-list').removeClass("focus");
-                });
-                $('div#share-body').fadeIn('fast', function(){ $('#you-complete-me').focus();});
+                $('div#share-body').fadeIn('fast');
             });
         });
     },
@@ -871,83 +874,56 @@ pages.linked_accounts = {
 
 pages.no_agent = {
     url: '/static/connect_messages/no_agent.html',
-    init_from_filechooser: function( callback ){             
 
-//todo: need different way to change photochooser tile. if we just clear or set to something else, it never gets set back
-//        $('.photochooser .header h3').html('');
-//        $('.photochooser .header h4').html('');
-//        $('#downloadzz-title').html('');
-//        $('#downloadzz-tagline').html( '');
-        $('#downloadzz-btn').click(function(){
+    filechooser: function( when_ready ){
+       $('#downloadzz-btn').click(function(){
             alert("Agent should be downloading now (TODO: Set URL for download in pages.js)");
         });
-        pages.no_agent.poll_agent_from_filechooser( ); //Download begun , start polling for agent
-        callback();
-    },
-
-
-    poll_agent_from_filechooser: function( ){
-      agent.isAvailable( function( agentAvailable ){
-          if( agentAvailable ){
-                 pages.no_agent.agent_ready_from_filechooser();
-          }else{
-                setTimeout( 'pages.no_agent.poll_agent_from_filechooser()', 1000);
-          }
-      });  
-    },
-
-    agent_ready_from_filechooser: function( ){
-        $('#downloadzz-btn').attr('disabled', 'disabled');
-        $('#downloadzz-developed').fadeIn(4000, function(){
-                $('#downloadzz-developed').parent().siblings('.downloadzz-text').fadeOut( 'fast')
-                $('#downloadzz-developed').parent().siblings('.downloadzz-headline').fadeOut( 'fast', function(){
-                        $(this).html('ZangZing is Ready!');
-                        $(this).fadeIn( 'fast');
-                        setTimeout( 'filechooser.on_login()', 1000 );
-                });            
+        pages.no_agent.keep_polling = true;
+        pages.no_agent.poll_agent( function(){
+            if( $.isFunction(  when_ready )) when_ready();
         });
     },
 
-
-    dialog: function( ){
+    dialog: function( onClose ){
          $('<div></div>', { id: 'no-agent-dialog'}).load(pages.no_agent.url, function(){
-                    $( this ).dialog({
-                           title: 'Download ZangZing',
-                           width: 910,
-                           minHeight: 550,
-                           position: [170,65],
-                           modal: true,
-                           close:  function(){
-                               $('#no-agent-dialog').remove();
-                               sharecontacts.call_local_import();
-                           }
-                    });
-                    $('#downloadzz-btn').click(function(){
+             $('#downloadzz-btn').click(function(){
                         alert("Agent should be downloading now (TODO: Set URL for download in pages.js)");
                     });
-                    pages.no_agent.poll_agent_from_dialog( ); //Download begun , start polling for agent
+             $( this ).zz_dialog({
+                    modal: true,
+                    width: 910,
+                    height: 510,
+                    close:  function(){
+                               if( $.isFunction( onClose )) onClose();
+                               pages.no_agent.keep_polling = false;
+                    }
+             });
+             pages.no_agent.keep_polling = true;
+             pages.no_agent.poll_agent( function(){
+                 $( '#no-agent-dialog' ).zz_dialog('close');
+             });
         });
     },
 
-    poll_agent_from_dialog: function( ){
+    poll_agent: function( when_ready ){
           agent.isAvailable( function( agentAvailable ){
               if( agentAvailable ){
-                     pages.no_agent.agent_ready_from_dialog();
+                    // Develop zang walker and callback
+                    $('#downloadzz-btn').attr('disabled', 'disabled');
+                    $('#downloadzz-developed').fadeIn(4000, function(){
+                        $('#downloadzz-developed').parent().siblings('.downloadzz-text').fadeOut( 'fast')
+                        $('#downloadzz-developed').parent().siblings('.downloadzz-headline').fadeOut( 'slow', function(){
+                            $(this).html('ZangZing is Ready!');
+                            $(this).fadeIn( 'fast');
+                                if( $.isFunction( when_ready ) ) setTimeout( when_ready, 1000 );
+                        });
+                    });
               }else{
-                    setTimeout( 'pages.no_agent.poll_agent_from_dialog()', 1000);
+                  if( pages.no_agent.keep_polling ){
+                    setTimeout( function(){ pages.no_agent.poll_agent( when_ready )}, 1000);
+                  }
               }
           });
-    },
-
-    agent_ready_from_dialog: function( ){
-        $('#downloadzz-btn').attr('disabled', 'disabled');
-        $('#downloadzz-developed').fadeIn(4000, function(){
-                $('#downloadzz-developed').parent().siblings('.downloadzz-text').fadeOut( 'fast')
-                $('#downloadzz-developed').parent().siblings('.downloadzz-headline').fadeOut( 'slow', function(){
-                        $(this).html('ZangZing is Ready!');
-                        $(this).fadeIn( 'fast');
-                        setTimeout( function(){  $( '#no-agent-dialog' ).dialog('close'); }, 1000 );
-                });
-        });
     }
 };
