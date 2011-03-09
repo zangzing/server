@@ -1,6 +1,6 @@
 <div id="social-like-dialog">
   <div id="ld-inner">
-    <form action="/likes/<%=@subj_id%>/post" id ="social_like_form_<%=@subj_id%>">
+    <form action="/service/likes/<%=@subj_id%>/post" id ="social_like_form_<%=@subj_id%>">
      <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
     <input name="subj_type" value="<%=@subj_type%>" type="hidden">
     <div id="ld-top">
@@ -52,7 +52,7 @@
     $('#ld-ok').click( function(){
         var data =
         $.ajax({ type: 'POST',
-                 url:  '/likes/<%=@subj_id%>/post',
+                 url:  zz.path_prefix + '/likes/<%=@subj_id%>/post',
                  data:  $('#social_like_form_<%=@subj_id%>').serialize()
         });
         $('#social-like-dialog').zz_dialog('close');
