@@ -11,7 +11,7 @@ class ZangZingConfig
     # NOTE: Do not change the ENV['RAILS_ENV'] below to be Rails.env since this code is used from an rspec test
     # case and Rails.env is not set up when running those tests
     config_file_path = File.dirname(__FILE__) + "/../zangzing_config.yml"
-    @@config ||= YAML::load(ERB.new(File.read(config_file_path)).result)[ENV['RAILS_ENV']].recursively_symbolize_keys!
+    @@config ||= YAML::load(ERB.new(File.read(config_file_path)).result)[Rails.env].recursively_symbolize_keys!
   end
 
   def self.config
@@ -27,7 +27,7 @@ class RedisConfig
     # NOTE: Do not change the ENV['RAILS_ENV'] below to be Rails.env since this code is used from an rspec test
     # case and Rails.env is not set up when running those tests
     config_file_path = File.dirname(__FILE__) + "/../redis.yml"
-    @@config ||= YAML::load(ERB.new(File.read(config_file_path)).result)[ENV['RAILS_ENV']].recursively_symbolize_keys!
+    @@config ||= YAML::load(ERB.new(File.read(config_file_path)).result)[Rails.env].recursively_symbolize_keys!
   end
 
   def self.config
