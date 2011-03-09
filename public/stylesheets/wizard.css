@@ -411,6 +411,8 @@ div#drawer-content h3 {
   font-size: 17px;
   font-weight: 500;
   color: #0a0a0a;
+  margin-top:20px;
+  margin-bottom:5px;
 }
 
 div#drawer-content h4 {
@@ -427,25 +429,25 @@ span.h4 {
   line-height: 22px;
 }
 
-div#drawer-content .album-header {
-  margin: 10px auto 45px;
-  width: 600px;
-  min-height: 60px;
-  line-height: 14px;
-  background-image: url('/images/faux-hr.png');
-  background-position: bottom center;
-  background-repeat: no-repeat;
-}
+/*div#drawer-content .album-header {*/
+  /*margin: 10px auto 45px;*/
+  /*width: 600px;*/
+  /*min-height: 60px;*/
+  /*line-height: 14px;*/
+  /*background-image: url('/images/faux-hr.png');*/
+  /*background-position: bottom center;*/
+  /*background-repeat: no-repeat;*/
+/*}*/
 
 div#drawer-content #top-section .album-header,
 div#drawer-content #top-section .album-header-off {
   margin: 0 auto 0;
 }
 
-div#drawer-content .album-header-off h3, div#drawer-content .album-header-off h4,
-div#drawer-content .album-header h3, div#drawer-content .album-header h4 {
-  margin-bottom: 10px;
-}
+/*div#drawer-content .album-header-off h3, div#drawer-content .album-header-off h4,*/
+/*div#drawer-content .album-header h3, div#drawer-content .album-header h4 {*/
+  /*margin-bottom: 10px;*/
+/*}*/
 
 div#drawer-content .album-header-off {
   margin: 25px auto 25px;
