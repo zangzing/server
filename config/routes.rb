@@ -249,6 +249,11 @@ Server::Application.routes.draw do
       match '/twitter/posts.:format' => 'twitter_posts#index', :as => :twitter_posts
       match '/twitter/posts/create' => 'twitter_posts#create', :as => :create_twitter_post
 
+      #proxy
+      match '/proxy' => 'proxy#proxy', :as => :proxy
+
+
+
 
     end # end of the namespace segment
 
@@ -293,9 +298,6 @@ Server::Application.routes.draw do
       :extension => /.+/
   }
   
-  #proxy
-  match '/proxy' => 'proxy#proxy', :as => :proxy
-
 
   get    '/:user_id'                           =>   'albums#index',               :as => :user_albums
   get    '/:user_id/:album_id'                 =>   'photos#index'
