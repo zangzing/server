@@ -72,13 +72,11 @@
                 width = (height * cover_aspect).to_i
                 top = 0
                 left = ((portrait_width - width) / 2).to_i
-                puts 'zzzzzzzzzzzzzzzz'
             else #cover is narrower apect than picon; scale to fit width
                 width = portrait_width
                 height = (width / cover_aspect).to_i
                 left = 0
                 top = ((portrait_height - height)/ 2).to_i
-                puts 'aaaaaaaaaaaaaaaa'
             end
 
 
