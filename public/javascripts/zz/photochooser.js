@@ -173,7 +173,7 @@
                     id: 'add-all-photos',
                     src: '',
                     caption: '',
-                    type: 'blank', 
+                    type: 'blank'
                 };
 
                 children.unshift(addAllButton);
