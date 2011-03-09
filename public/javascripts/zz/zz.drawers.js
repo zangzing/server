@@ -243,7 +243,7 @@ zz.drawers = {
 
         //todo: for some reason this isn't being called
         on_close: function(){
-            var url = '/users/' +zz.current_user_id + '/albums';
+            var url = zz.path_prefix + '/users/' +zz.current_user_id + '/albums';
             setTimeout('window.location = "' + url + '"', 1);
         },
 

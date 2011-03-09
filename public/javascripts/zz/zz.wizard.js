@@ -213,7 +213,7 @@ zz.wizard = {
 //    },
 
     create_group_album: function(){
-        $.post('/users/'+zz.current_user_id+'/albums', { album_type: "GroupAlbum" }, function(data){
+        $.post(zz.path_prefix + '/users/'+zz.current_user_id+'/albums', { album_type: "GroupAlbum" }, function(data){
             zz.album_id = data;
             zz.wizard.make_drawer(zz.drawers.group_album, 'add');
         });

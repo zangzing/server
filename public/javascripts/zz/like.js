@@ -25,7 +25,7 @@ var like = {
         if( !$.isEmptyObject( wanted_subjects ) ){
              // get the wanted subjects. Use a POST because of GET query string size limitations
             $.ajax({ type:       'POST',
-                url:        '/likes.json',
+                url:        zz.path_prefix + '/likes.json',
                 data:       {'wanted_subjects' : wanted_subjects },
                 success:    function( data ){
                     if( like.loaded ){

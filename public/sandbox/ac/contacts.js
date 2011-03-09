@@ -11,7 +11,7 @@ zzcontacts ={
     init: function(userId, options){
         var self = this;
         self.settings = $.extend({
-            url: '/users/userId/contacts.json',
+            url: 'service/users/userId/contacts.json',
             minChars: 1
         }, options);
         self.load_contacts();
