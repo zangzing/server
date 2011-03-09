@@ -98,7 +98,7 @@ var sharecontacts = {
     call_new_google_session : function() {
         //console.log("in call new google session");
         $("#gmail-sync").attr('disabled', 'disabled');
-        oauthmanager.login('/google/sessions/new', sharecontacts.google_login_success);
+        oauthmanager.login(zz.path_prefix + '/google/sessions/new', sharecontacts.google_login_success);
     },
 
     google_login_success : function() {
@@ -138,7 +138,7 @@ var sharecontacts = {
     // ------ mslive CONTACTS ---------
     call_new_mslive_session : function() {
         $("#mslive-sync").attr('disabled', 'disabled');
-        oauthmanager.login('/mslive/sessions/new', sharecontacts.mslive_login_success);
+        oauthmanager.login(zz.path_prefix + '/mslive/sessions/new', sharecontacts.mslive_login_success);
     },
     mslive_login_success : function() {
         $("#mslive-sync").unbind("click");
@@ -174,7 +174,7 @@ var sharecontacts = {
     // ------ YAHOO CONTACTS ---------
     call_new_yahoo_session : function() {
         $("#yahoo-sync").attr('disabled', 'disabled');
-        oauthmanager.login('/yahoo/sessions/new', sharecontacts.yahoo_login_success);
+        oauthmanager.login(zz.path_prefix + '/yahoo/sessions/new', sharecontacts.yahoo_login_success);
     },
     yahoo_login_success : function() {
         $("#yahoo-sync").unbind("click");
