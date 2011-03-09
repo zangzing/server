@@ -1,0 +1,25 @@
+<div id="contributors-body">
+  <div class="album-header" style="margin-bottom: 25px;">
+    <h3>Contributors</h3>
+    <h4>These are the people you have authorized to contribute photos to your album</h4>
+  </div>
+
+   <div class="flash-box"><div class="flash-notice" id="flashes-notice">  </div></div>
+
+  <div id="scroll-body">
+    <div id="form-container-2" class="clearfix">
+      <div class="clear-fix"></div>
+      <div class="tokenizer">
+                <input type="text" id="contributors-list" name="contributors_list"/>
+      </div>
+      <div class="clear-fix"></div>
+      <div id="form-actions">
+          <a id="add-contributors-btn" class="green-add-button"><span>Add Contributors</span></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  var tmp_contact_list = <%= raw @results.to_json%>;
+</script>

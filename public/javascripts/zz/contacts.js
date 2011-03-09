@@ -23,10 +23,11 @@ zzcontacts ={
                success: function(json){
                   zzcontacts.data = json;
                   zzcontacts.ready = true;
-                  onSuccess();
+                  zzcontacts.init_buttons();
+                  if( $.isFunction(onSuccess)) onSuccess();
                },
                error: function(){
-                  onError();
+                  if( $.isFunction( onError) ) onError();
                }
         });
     },
@@ -50,18 +51,19 @@ zzcontacts ={
         for( var i in results ){
             // The fields for the arrays in the results  are [ id, name, email ]
             var x = results[i];
-            var id = x[0];
+            //var id = x[0];
             var name  = x[1];
             var email = x[2];
-            var token = name;
-            var display_name = name;
-            if( display_name.length >0 ){
-                display_name += ' &lt;'+email+'&gt;';
+            
+            var token_text = name;
+            var searched_text = name;
+            if( searched_text.length >0 ){
+                searched_text += ' &lt;'+email+'&gt;';
             } else {
-                token = email;
-                display_name = email;
+                token_text = email;
+                searched_text = email;
             }
-            formatted_results[i] = { id: id, name: display_name, token_text: token};
+            formatted_results[i] = { id: email, name: searched_text, token_text: token_text};
         }
         return formatted_results;
     },
@@ -131,6 +133,38 @@ zzcontacts ={
 
     is_service_linked: function( service ){
         return zzcontacts.ready && typeof( zzcontacts.data[service] ) != 'undefined';
+    },
+
+    init_buttons :function(){
+        $(".contacts-btn").each( function( index, button ){
+            var b = $(button);
+            var service = b.attr('data-service');
+            if( service === 'local' && $.client.os === 'Mac' ){
+                b.find('span').html( '<div class="off"></div>AddBook');
+            }
+            if( zzcontacts.is_service_linked(service)){
+                b.find('div').removeClass('off sync error').addClass('on');
+                b.attr( 'title', 'Last import on:'+zzcontacts.data[service].last_import);
+            }else{
+                b.attr( 'title', 'Click to import your contacts from this service');
+            }
+            b.click( function(e){
+                e.preventDefault();
+                b.attr('disabled', 'disabled');
+                b.find('div').removeClass('off on error').addClass('sync');
+                var onSuccess = function(){
+                    b.find('div').removeClass('off sync error').addClass('on');
+                    b.attr( 'title', 'Last imported a moment ago.');
+                    b.removeAttr('disabled');
+                };
+                var onError = function(error_src,error_msg){
+                    b.find('div').removeClass('off sync on').addClass('error');
+                    b.attr( 'title', 'There was an error: '+error_msg+'. Please try again later.');
+                    b.removeAttr('disabled');
+                };
+                zzcontacts.import_contacts(service, onSuccess, onError);
+            });
+        });
     }
 };
 

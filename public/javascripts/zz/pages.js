@@ -452,74 +452,122 @@ pages.album_share_tab = {
 
 };
 
-pages.album_contributors_tab = {
-    contributor_count:0,
-    
+pages.contributors = {
+
+    present : false,
+    url :'',
+
     init: function(){
-        pages.album_contributors_tab.show_contributor_list();
+        this.url = '/albums/'+zz.album_id+'/contributors';
+        pages.contributors.show_list();
     },
 
     bounce: function(success, failure){
         success();
     },
 
-    show_contributor_list: function( request ){
-        $('#tab-content').load( '/albums/' + zz.album_id + '/contributors' , function(){
-                if( pages.album_contributors_tab.contributor_count <= 0){
-                    pages.album_contributors_tab.show_new_contributors();
+    show_list: function( request ){
+        $('#tab-content').load( pages.contributors.url , function(){
+                //The contributors arrived in tmp_contact_list and declared when screen loaded
+                if( tmp_contact_list.length <= 0 ){
+                    pages.contributors.present = false;
+                    pages.contributors.show_new();
                 } else {
-                    zz.wizard.resize_scroll_body();
-                    $('#add-contributors-btn').click(function(){
-                         $('#tab-content').fadeOut('fast', pages.album_contributors_tab.show_new_contributors );
-                     });
-                    $('#tab-content').fadeIn('fast', function( ){
-                        if( typeof( request )!= 'undefined'){
-                            zz.wizard.display_flashes(  request,200 );
+                     pages.contributors.present = true;
+                     // initialize the tokenized contact list widget
+                     $('#contributors-list').tokenInput(  '' , {
+                                allowNewValues: false,
+                                displayOnly : true,
+                                prePopulate: {
+                                    data: tmp_contact_list,
+                                    forceDataFill: true
+                                },
+                                classes: {
+                                    tokenList: "token-input-list-facebook",
+                                    token: "token-input-token-facebook",
+                                    tokenDelete: "token-input-delete-token-facebook",
+                                    selectedToken: "token-input-selected-token-facebook",
+                                    highlightedToken: "token-input-highlighted-token-facebook",
+                                    dropdown: "token-input-dropdown-facebook",
+                                    dropdownItem: "token-input-dropdown-item-facebook",
+                                    dropdownItem2: "token-input-dropdown-item2-facebook",
+                                    selectedDropdownItem: "token-input-selected-dropdown-item-facebook",
+                                    inputToken: "token-input-input-token-facebook"
+                                }
+                        });
+                        //bind to the widget's object deleted event
+                        $('#contributors-list').bind('tokenDeleted',function(e, id, name, count  ){
+                                $.post(pages.contributors.url, { _method: 'delete', id: id}, function(data, status, request){
+                                    zz.wizard.display_flashes(  request, 200 );
+                                    if( count <= 0){ //the contributor list is empty
+                                        pages.contributors.present = false;
+                                        $('#tab-content').fadeOut('fast', pages.contributors.show_new );
+                                    }
+                                });
+                        });
+                        zz.wizard.resize_scroll_body();
+                        $('#add-contributors-btn').click(function(){
+                            $('#tab-content').fadeOut('fast', pages.contributors.show_new );
+                        });
+                        $('#tab-content').fadeIn('fast', function( ){
+                            if( typeof( request )!= 'undefined'){
+                                zz.wizard.display_flashes(  request,200 );
                         }
                     });
                 }
         });
     },
 
-    show_new_contributors: function(){
+    show_new: function(){
         $('#tab-content').load('/albums/'+zz.album_id+'/contributors/new', function(){
-            zz.wizard.resize_scroll_body()
-            zz.wizard.init_email_autocompleter();
+
+            $("#contact-list").tokenInput( zzcontacts.find, {
+                allowNewValues: true,
+                classes: {
+                    tokenList: "token-input-list-facebook",
+                    token: "token-input-token-facebook",
+                    tokenDelete: "token-input-delete-token-facebook",
+                    selectedToken: "token-input-selected-token-facebook",
+                    highlightedToken: "token-input-highlighted-token-facebook",
+                    dropdown: "token-input-dropdown-facebook",
+                    dropdownItem: "token-input-dropdown-item-facebook",
+                    dropdownItem2: "token-input-dropdown-item2-facebook",
+                    selectedDropdownItem: "token-input-selected-dropdown-item-facebook",
+                    inputToken: "token-input-input-token-facebook"
+                }
+            });
+            zzcontacts.init( zz.current_user_id );
+            zz.wizard.resize_scroll_body();
 
             $('#new_contributors').validate({
                 rules: {
-                    'email_share[to]': { email:true, required: true, minlength: 1},
-                    'email_share[message]': { required: true}
+                    'contact_list':    { required: true},
+                    'contact_message': { required: true}
                 },
                 messages: {
-                    'email_share[to]': 'Empty',
-                    'email_share[message]': ''
+                    'contact_list': 'Empty',
+                    'contact_message': ''
                 },
 
                 //todo: submit errors are not being shown properly
                 submitHandler: function() {
                     $.ajax({ type:     'POST',
-                             url:      '/albums/'+zz.album_id+'/contributors.json',
-                             data:     $('#new_contributors').serialize(),
-                             success:  function(data,status,request){
-                                              $('#tab-content').fadeOut('fast','swing', function(){
-                                                  pages.album_contributors_tab.show_contributor_list( request );
-                                              });
-                                       },
-                             error:    function(){}
+                        url:      '/albums/'+zz.album_id+'/contributors.json',
+                        data:     $('#new_contributors').serialize(),
+                        success:  function(data,status,request){
+                            $('#tab-content').fadeOut('fast','swing', function(){
+                                pages.contributors.show_list( request );
+                            });
+                        }
                     });
-                } //submit handler
-            }); //new_contributors,validate
-
-            $('#the-list').click(function(){
-                $('#you-complete-me').focus();
+                }
             });
 
-            if( pages.album_contributors_tab.contributor_count > 0){
+            if( pages.contributors.present){
                 $('#cancel-new-contributors').click(function(){
-                    $('#tab-content').fadeOut('fast', pages.album_contributors_tab.show_contributor_list );
+                    $('#tab-content').fadeOut('fast', pages.contributors.show_list );
                 });
-            } else {
+            }else{
                 $('#cancel-new-contributors').hide();
             }
 
@@ -527,31 +575,9 @@ pages.album_contributors_tab = {
                 $('form#new_contributors').submit();
             });
 
-            //todo: move these into auto-complete widget
-            $('#you-complete-me').focus(function(){
-                $('#the-list').addClass("focus");
-            });
-            $('#you-complete-me').blur(function(){
-                $('#the-list').removeClass("focus");
-            });
-            $('#tab-content').fadeIn('fast', function(){$('#you-complete-me').focus();});
-        });
-    },
-
-
-    insert_contributor_bubble: function(label,value){
-        var bubble = $('#m-clone-added').clone().insertAfter('#the-recipients li.rounded:last');
-        bubble.find('span').empty().html(label);
-        bubble.fadeIn('fast');
-        bubble.find('input').attr({name: 'delete-url', checked: 'checked'}).val(value);
-        bubble.find('img').click(function(){
-            $.post($(this).siblings('input').val(), {"_method": "delete"}, function(data){ });
-            $(this).parent('li').fadeOut('fast', function(){
-                $(this).parent('li').remove();
-            });
+            $('#tab-content').fadeIn('fast');
         });
     }
-
 };
 
 pages.acct_profile = {

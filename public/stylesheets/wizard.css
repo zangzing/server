@@ -700,8 +700,9 @@ dl#email-share-form dd input {
 dl#email-share-form dd#the-list {
   border: 1px #afafaf solid;
   min-height: 42px;
-  padding: 0 5px;
+  padding: 0;
   width: 690px;
+  text-align: left;
 }
 
 dl#contributor-index{
@@ -710,7 +711,7 @@ dl#contributor-index{
 
 dl#contributor-index dd#the-list {
   border: 1px #afafaf solid;
-  min-height: 126px;
+  min-height: 326px;
   padding: 0 5px;
   width: 720px;
   margin-left: 43px;

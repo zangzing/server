@@ -567,7 +567,7 @@
                .val("")
                .focus();
          }
-         hidden_input.trigger('tokenDeleted',[token_data.id, token_data.name]);
+         hidden_input.trigger('tokenDeleted',[token_data.id, token_data.name, token_count]);
       }
 
       // Hide and clear the results dropdown
