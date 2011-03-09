@@ -171,6 +171,7 @@ class Photo < ActiveRecord::Base
   def queue_upload_to_s3
     # If state marked as uploading, pass it on
     if !self.destroyed? && self.uploading? && @do_upload
+      ZZ::ZZA.new.track_event("photo.upload.s3.start", {:id => self.id})
       ZZ::Async::S3Upload.enqueue( self.id )
       logger.debug("queued for upload")
     end
@@ -190,6 +191,7 @@ class Photo < ActiveRecord::Base
     if self.image_bucket
       # get all of the keys to remove
       keys = attached_image.all_keys
+      ZZ::ZZA.new.track_event("photo.upload.s3.delete", {:id => self.id})
       ZZ::Async::S3Cleanup.enqueue(self.image_bucket, keys)
       logger.debug("Photo queued for s3 cleanup")
     end
@@ -202,7 +204,11 @@ class Photo < ActiveRecord::Base
   # since it is a long running operation and we would not want
   # to block the app server dispatch on it
   def resize_and_upload
+    z = ZZ::ZZA.new
+    z.track_event("photo.upload.resize.start", {:id => self.id})
     attached_image.resize_and_upload_photos
+    z.track_event("photo.upload.resize.done", {:id => self.id})
+    z.track_event("photo.upload.done", {:id => self.id})
     # tell the photo object it is good to go
     mark_ready
     save!
@@ -230,6 +236,7 @@ class Photo < ActiveRecord::Base
 
         # update state to loaded
         mark_loaded
+        ZZ::ZZA.new.track_event("photo.upload.s3.done", {:id => self.id})
         save!
         # clean up temp file since it has been uploaded with no errors
         remove_source
@@ -333,6 +340,15 @@ class Photo < ActiveRecord::Base
     end
   end
 
+  def full_screen_url
+    if self.ready?
+      attached_image.url(PhotoAttachedImage::LARGE)
+    else
+      return safe_url(make_source_screen_url)
+    end
+  end
+
+
   def original_url
     if self.ready?
       attached_image.url(PhotoAttachedImage::ORIGINAL)
@@ -383,6 +399,8 @@ class Photo < ActiveRecord::Base
           # also only allow upload if in assigned state currently
           @duplicate_upload = true
         else
+          ZZ::ZZA.new.track_event("photo.upload.start", {:id => self.id})
+
           self.mark_uploading
           @do_upload = true
           self.source_path = file_path
@@ -450,7 +468,7 @@ class Photo < ActiveRecord::Base
 #      end
 
 
-      json= photos.to_json(:only =>[:id, :caption, :state, :source_guid, :upload_batch_id, :user_id], :methods => [:aspect_ratio, :stamp_url, :thumb_url, :screen_url])
+      json= photos.to_json(:only =>[:id, :caption, :state, :source_guid, :upload_batch_id, :user_id], :methods => [:aspect_ratio, :stamp_url, :thumb_url, :screen_url, :full_screen_url])
 
 
       return json
@@ -520,8 +538,9 @@ class PhotoAttachedImage < AttachedImage
   # these must be defined in order from largest to smallest size
   def sizes
     @@sizes ||= [
+        {LARGE    => "-resize '2560x1440>' -strip -quality 80"},  # large
         {MEDIUM   => "-resize '1024x768>' -strip -quality 80"},  # medium
-        {THUMB    => "-resize '200x200>' -strip -quality 80"},   # thumb
+        {THUMB    => "-resize '180x180>' -strip -quality 80"},   # thumb
         {STAMP    => "-resize '100x100>' -strip -quality 80"}    # stamp
     ]
   end

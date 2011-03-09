@@ -166,13 +166,14 @@
             });
 
 
+
+            //create a blank cell so we can float the 'add all photos' button over it
             if(hasPhotos){
                 var addAllButton = {
                     id: 'add-all-photos',
-                    src: '/images/folders/add_all_photos.png',
+                    src: '',
                     caption: '',
-                    type: 'folder', //todo: need new type for button..
-                    add_url: folder.add_url
+                    type: 'blank'
                 };
 
                 children.unshift(addAllButton);
@@ -190,12 +191,7 @@
                 context: 'chooser-grid',
                 onClickPhoto: function(index, photo, element, action){
                     if(photo.type === 'folder'){
-                        if(photo.id === 'add-all-photos'){
-                            self.add_folder_to_album(photo.add_url, element);
-                        }
-                        else{
-                             self.openFolder(photo);
-                        }
+                         self.openFolder(photo);
                     }
                     else{
                         if(action === 'main'){
@@ -217,6 +213,15 @@
 
             }).data().zz_photogrid;
 
+            if(hasPhotos){
+                var addAllButton = $('<img class="add-all-button" src="/images/folders/add_all_photos.png">');
+                addAllButton.click(function(){
+                    self.add_folder_to_album(folder.add_url, addAllButton);
+                });
+
+                $('.photochooser .photochooser-body .photogrid').append(addAllButton);
+            }
+            
             self.updateCheckmarks();
 
         },
@@ -251,12 +256,7 @@
                 context: 'chooser-picture',
                 onClickPhoto: function(index, photo, element, action){
                     if(photo.type === 'folder'){
-                        if(photo.id === 'add-all-photos'){
-                            self.add_folder_to_album(photo.add_url, element);
-                        }
-                        else{
-                             self.openFolder(photo);
-                        }
+                         self.openFolder(photo);
                     }
                     else{
                         if(action === 'main'){
@@ -732,8 +732,14 @@
 
         animate_to_tray: function(element, callback){
             var self = this;
+            var imageElement;
 
-            var imageElement = element.find('.photo-image');
+            if(element.hasClass('add-all-button')){
+                imageElement = element;
+            }
+            else{
+                imageElement = element.find('.photo-image');
+            }
 
 
             var start_top = imageElement.offset().top;

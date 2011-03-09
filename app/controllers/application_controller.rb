@@ -157,7 +157,7 @@ class ApplicationController < ActionController::Base
 
       unless request.remote_ip.starts_with?('69.63.180') || request.remote_ip.starts_with?('66.220.149') #allow facebook crawler
         unless allowed[:actions].include?("#{params[:controller]}##{params[:action]}")
-          authenticate_or_request_with_http_basic('ZangZing') do |username, password|
+          authenticate_or_request_with_http_basic('ZangZing Photos') do |username, password|
             username == Server::Application.config.http_auth_credentials[:login] && password == Server::Application.config.http_auth_credentials[:password]
           end
         end
