@@ -66,7 +66,7 @@ var sharecontacts = {
     call_agent_local_import :function(agentPresent){
         if( agentPresent ) {
             $("#local-sync").unbind('click').click(sharecontacts.call_local_import);
-            var url = agent.buildAgentUrl('/contacts/import');
+            var url = agent.buildAgentUrl(zz.path_prefix + '/contacts/import');
             $.jsonp({
                 url: url,
                 success: sharecontacts.import_local_success,
@@ -112,7 +112,7 @@ var sharecontacts = {
         $("#gmail-sync").attr({disabled: 'disabled', src: '/images/btn-gmail-sync.png', title: 'Refreshing...'});
         $.ajax({
             dataType: 'json',
-            url: '/google/contacts/import',
+            url: zz.path_prefix + '/google/contacts/import',
             success: sharecontacts.import_google_success,
             error: sharecontacts.import_google_failure
         });
@@ -149,7 +149,7 @@ var sharecontacts = {
         $("#mslive-sync").attr({disabled: 'disabled', src: '/images/btn-mslive-sync.png', title: 'Refreshing...'});
         $.ajax({
             dataType: 'json',
-            url: '/mslive/contacts/import',
+            url: zz.path_prefix + '/mslive/contacts/import',
             success: sharecontacts.import_mslive_success,
             error: sharecontacts.import_mslive_failure
         });
@@ -185,7 +185,7 @@ var sharecontacts = {
         $("#yahoo-sync").attr({disabled: 'disabled', src: '/images/btn-yahoo-sync.png', title: 'Refreshing...'});
         $.ajax({
             dataType: 'json',
-            url: '/yahoo/contacts/import',
+            url: zz.path_prefix + '/yahoo/contacts/import',
             success: sharecontacts.import_yahoo_success,
             error: sharecontacts.import_yahoo_failure
         });
