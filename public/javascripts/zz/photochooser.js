@@ -457,6 +457,25 @@
             }
 
 
+            //Facebook
+            roots.push(
+            {
+                open_url: zz.path_prefix + '/facebook/folders.json',
+                type: 'folder',
+                name: 'Facebook',
+                src: '/images/folders/facebook_off.jpg',
+                rolloverSrc: '/images/folders/facebook_on.jpg',
+                on_error: function(){
+                    var folder = this;
+                    self.bodyElement.hide().load('/static/connect_messages/connect_to_facebook.html', function(){
+                        self.bodyElement.find('#connect-button').click(function(){
+                            self.open_login_window(folder, zz.path_prefix + '/facebook/sessions/new');
+                        });
+                        self.bodyElement.fadeIn('fast');
+                    });
+                }
+            });
+
             //Shutterfly
             roots.push(
             {
@@ -517,24 +536,6 @@
             });
 
 
-            //Facebook
-            roots.push(
-            {
-                open_url: zz.path_prefix + '/facebook/folders.json',
-                type: 'folder',
-                name: 'Facebook',
-                src: '/images/folders/facebook_off.jpg',
-                rolloverSrc: '/images/folders/facebook_on.jpg',
-                on_error: function(){
-                    var folder = this;
-                    self.bodyElement.hide().load('/static/connect_messages/connect_to_facebook.html', function(){
-                        self.bodyElement.find('#connect-button').click(function(){
-                            self.open_login_window(folder, zz.path_prefix + '/facebook/sessions/new');
-                        });
-                        self.bodyElement.fadeIn('fast');
-                    });
-                }
-            });
 
             //Flickr
             roots.push(
