@@ -35,7 +35,7 @@ pages.album_add_photos_tab = {
 pages.album_name_tab = {
     original_album_name: '',
     init: function(callback){
-        var url = '/albums/' + zz.album_id + '/name_album';
+        var url = '/service/albums/' + zz.album_id + '/name_album';
 
         $('#tab-content').load(url, function(){
             //save album name and set header album name
@@ -60,7 +60,7 @@ pages.album_name_tab = {
                     album_email_call_lock--;
                     if(album_email_call_lock==0){
                         $.ajax({
-                            url: '/albums/' + zz.album_id + '/preview_album_email?' + $.param({album_name: $('#album_name').val()}),
+                            url: '/service/albums/' + zz.album_id + '/preview_album_email?' + $.param({album_name: $('#album_name').val()}),
                             success: function(new_mail){
                                 $('#album_email').val(new_mail);
                             },
