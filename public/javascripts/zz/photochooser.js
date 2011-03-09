@@ -256,12 +256,7 @@
                 context: 'chooser-picture',
                 onClickPhoto: function(index, photo, element, action){
                     if(photo.type === 'folder'){
-                        if(photo.id === 'add-all-photos'){
-                            self.add_folder_to_album(photo.add_url, $(element).find('.photo-image'));
-                        }
-                        else{
-                             self.openFolder(photo);
-                        }
+                         self.openFolder(photo);
                     }
                     else{
                         if(action === 'main'){
@@ -269,7 +264,7 @@
                                 self.remove_photo_by_guid(photo.id); //chooser photos have source_guid as their id
                             }
                             else{
-                                self.add_photo_to_album(photo.add_url, $(element).find('.photo-image'));
+                                self.add_photo_to_album(photo.add_url, element);
                             }
                         }
                         else if(action === 'magnify'){
@@ -729,10 +724,16 @@
             
         },
 
-        animate_to_tray: function(imageElement, callback){
+        animate_to_tray: function(element, callback){
             var self = this;
+            var imageElement;
 
-//            var imageElement = element.find('.photo-image');
+            if(element.hasClass('add-all-button')){
+                imageElement = element;
+            }
+            else{
+                imageElement = element.find('.photo-image');
+            }
 
 
             var start_top = imageElement.offset().top;
