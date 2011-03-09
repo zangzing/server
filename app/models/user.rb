@@ -3,7 +3,7 @@
 #
 
 # "automatic" users are created when a contributor adds photos by email but does not have
-# an accoung
+# an account
 
 class User < ActiveRecord::Base
   attr_writer      :name

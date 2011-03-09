@@ -1,4 +1,5 @@
 #
+
 #   Copyright 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 
@@ -72,11 +73,11 @@ Server::Application.routes.draw do
     get    '/albums/:album_id/photos_json' => 'photos#photos_json',                :as => :album_photos_json
     get    '/albums/:album_id/photos'      => 'photos#index',                     :as => :album_photos
     get    '/albums/:album_id/movie'        => 'photos#movie',                     :as => :album_movie
-  #  post   '/albums/:album_id/photos'      => 'photos#create',                    :as => :create_album_photo
-  #  get    '/albums/:album_id/slides_source.:format' => 'photos#slideshowbox_source',    :as => :slideshow_source
-  #  get    '/photos/:id'                   => 'photos#show',                      :as => :photo
-  #  get    '/photos/:id/edit'              => 'photos#edit',                      :as => :edit_photo
-  #  put    '/photos/:id/edit'              => 'photos#update',                    :as => :update_photo
+    #  post   '/albums/:album_id/photos'      => 'photos#create',                    :as => :create_album_photo
+    #  get    '/albums/:album_id/slides_source.:format' => 'photos#slideshowbox_source',    :as => :slideshow_source
+    #  get    '/photos/:id'                   => 'photos#show',                      :as => :photo
+    #  get    '/photos/:id/edit'              => 'photos#edit',                      :as => :edit_photo
+    #  put    '/photos/:id/edit'              => 'photos#update',                    :as => :update_photo
     delete '/photos/:id'                   => 'photos#destroy',                   :as => :destroy_photo
     put    '/photos/:id/upload_fast'       => 'photos#upload_fast',               :as => :upload_photo_fast
     get    '/agents/:agent_id/photos'      => 'photos#agentindex',                :as => :agent_photos
@@ -102,13 +103,10 @@ Server::Application.routes.draw do
     put    '/follows/:id/unblock'           => 'follows#unblock',    :as => :unblock_follow
 
     #contributors
-    get    '/albums/:album_id/contributors'      => 'contributors#index',      :as => :album_contributors
     get    '/albums/:album_id/contributors/new'  => 'contributors#new',        :as => :new_album_contributor
+    get    '/albums/:album_id/contributors'      => 'contributors#index',      :as => :album_contributors
     post   '/albums/:album_id/contributors'      => 'contributors#create',     :as => :create_album_contributor
-    get    '/contributors/:id'                   => 'contributors#show',       :as => :contributor
-    get    '/contributors/:id/edit'              => 'contributors#edit',       :as => :edit_contributor
-    put    '/contributors/:id'                   => 'contributors#update',     :as => :update_contributor
-    delete '/contributors/:id'                   => 'contributors#destroy',    :as => :delete_contributor
+    delete '/albums/:album_id//contributors/:id' => 'contributors#destroy',    :as => :delete_contributor
 
     #like
     match  '/likes'                              => 'likes#index',             :as => :likes
@@ -139,7 +137,6 @@ Server::Application.routes.draw do
     match '/activate/:activation_code' => 'activations#create',           :as => :activate
     match '/resend_activation'        => 'activations#resend_activation', :as => :resend_activation
     resources :password_resets, :only => [:new, :edit, :create, :update]
-  \
 
     #static pages
     get '/contact'  => 'pages#contact', :as => :contact
@@ -251,10 +248,6 @@ Server::Application.routes.draw do
 
       #proxy
       match '/proxy' => 'proxy#proxy', :as => :proxy
-
-
-
-
     end # end of the namespace segment
 
     #sendgrid
@@ -282,9 +275,6 @@ Server::Application.routes.draw do
     end
     #Resque: mount the resque server
     mount Resque::Server.new, :at => "/admin/resque"
-
-
-
 
   end
 

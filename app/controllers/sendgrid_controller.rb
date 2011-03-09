@@ -30,11 +30,10 @@ each album has an email address in the form <album_id>@sendgrid-post.zangzing.co
         album = Album.find(album_slug, :scope => user_slug)
         sender_mail = params[:from].match(/\b([A-Z0-9._%+-]+)@[A-Z0-9.-]+\.[A-Z]{2,4}\b/i)[0] rescue ''
         if attachments.count > 0 && album
-          if sender_mail==album.user.email # && album.kind_of?(PersonalAlbum)
+          if sender_mail == album.user.email 
             add_photos(album, album.user, attachments)
-          elsif album.kind_of?(GroupAlbum) && (contributor = album.is_contributor?(sender_mail))
-            add_photos(album, contributor, attachments)
-            album.contributors.find_by_email(sender_mail).last_contribution = DateTime.now
+          elsif album.kind_of?(GroupAlbum) && ( user = album.get_contributor_user_by_email( sender_mail, true )) #create_automatic_user)
+            add_photos(album, user, attachments)
           end
         end
         render :nothing => true, :status => :ok

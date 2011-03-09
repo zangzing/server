@@ -196,11 +196,11 @@ zz.drawers = {
 
 
                 init: function(callback){
-                    pages.album_contributors_tab.init(callback);
+                    pages.contributors.init(callback);
                 },
 
                 bounce: function(success, failure){
-                    pages.album_contributors_tab.bounce(success, failure);
+                    pages.contributors.bounce(success, failure);
                 }
             },
 
