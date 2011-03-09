@@ -122,8 +122,8 @@ zz.drawers = {
         },
 
         on_close: function(){
-            $.get( '/albums/' +zz.album_id + '/close_batch' );
-            var url = '/albums/' +zz.album_id + '/photos';
+            $.get( zz.path_prefix + '/albums/' +zz.album_id + '/close_batch' );
+            var url = zz.path_prefix + '/albums/' +zz.album_id + '/photos';
             setTimeout('window.location = "' + url + '"', 1);
         },
 
@@ -135,7 +135,7 @@ zz.drawers = {
                 next: 'name',
                 title: 'Add Photos',
                 type: 'full',
-                url: '/albums/$$/add_photos',
+                url: zz.path_prefix + '/albums/$$/add_photos',
                 url_type: 'album',
 
                 init: function(callback){ // run when loading the drawer up

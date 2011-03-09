@@ -281,15 +281,19 @@ Server::Application.routes.draw do
     mount Resque::Server.new, :at => "/admin/resque"
 
 
-    #jammit routes -- needs to be before catch all user routes below (copied from jammit/rails/routes.rb
-    match "/#{Jammit.package_path}/:package.:extension",
-      :to => 'jammit#package', :as => :jammit, :constraints => {
-        # A hack to allow extension to include "."
-        :extension => /.+/
-    }
 
 
   end
+
+
+  #jammit routes -- needs to be before catch all user routes below (copied from jammit/rails/routes.rb
+  match "/#{Jammit.package_path}/:package.:extension",
+    :to => 'jammit#package', :as => :jammit, :constraints => {
+      # A hack to allow extension to include "."
+      :extension => /.+/
+  }
+  
+
 
   # this stuff stays at the root
   get    '/:user_id'                           =>   'albums#index',               :as => :user_albums

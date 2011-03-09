@@ -35,7 +35,7 @@ pages.album_add_photos_tab = {
 pages.album_name_tab = {
     original_album_name: '',
     init: function(callback){
-        var url = '/service/albums/' + zz.album_id + '/name_album';
+        var url = zz.path_prefix + '/albums/' + zz.album_id + '/name_album';
 
         $('#tab-content').load(url, function(){
             //save album name and set header album name
@@ -60,7 +60,7 @@ pages.album_name_tab = {
                     album_email_call_lock--;
                     if(album_email_call_lock==0){
                         $.ajax({
-                            url: '/service/albums/' + zz.album_id + '/preview_album_email?' + $.param({album_name: $('#album_name').val()}),
+                            url: zz.path_prefix + '/albums/' + zz.album_id + '/preview_album_email?' + $.param({album_name: $('#album_name').val()}),
                             success: function(new_mail){
                                 $('#album_email').val(new_mail);
                             },
@@ -117,7 +117,7 @@ pages.album_name_tab = {
 
     bounce: function(success, failure){
             $.ajax({ type: 'POST',
-                     url:'/albums/'+zz.album_id,
+                     url: zz.path_prefix + '/albums/'+zz.album_id,
                      data:$(".edit_album").serialize(),
                      success: success ,
                      error:  function(){
@@ -169,7 +169,7 @@ pages.edit_album_tab = {
                         $.ajax({
                             type: "DELETE",
                             dataType: "json",
-                            url: "/photos/" + photo.id + ".json",
+                            url: zz.path_prefix + "/photos/" + photo.id + ".json",
                             error: function(error){
                                 logger.debug(error);
 //                                $.jGrowl("" + error);
@@ -183,7 +183,7 @@ pages.edit_album_tab = {
                         $.ajax({
                             type: "PUT",
                             dataType: "json",
-                            url: "/photos/" + photo.id + ".json",
+                            url: zz.path_prefix + "/photos/" + photo.id + ".json",
                             data: {'photo[caption]':caption},
                             error: function(error){
                                 logger.debug(error);
@@ -214,7 +214,7 @@ pages.edit_album_tab = {
                             type: "PUT",
                             data: data,
                             dataType: "json",
-                            url: "/photos/" + photo_id + "/position",
+                            url: zz.path_prefix + "/photos/" + photo_id + "/position",
                             error: function(error){
                                 logger.debug(error);
 //                                $.jGrowl("" + error);
@@ -241,22 +241,22 @@ pages.edit_album_tab = {
 
 pages.album_privacy_tab = {
     init: function(callback){
-        var url = '/albums/' + zz.album_id + '/privacy';
+        var url = zz.path_prefix + '/albums/' + zz.album_id + '/privacy';
         $('#tab-content').load(url, function(){
 
             $('#privacy-public').click(function(){
-                $.post('/albums/'+zz.album_id, '_method=put&album%5Bprivacy%5D=public', function(){
+                $.post(zz.path_prefix + '/albums/'+zz.album_id, '_method=put&album%5Bprivacy%5D=public', function(){
                     $('img.select-button').attr('src', '/images/btn-round-selected-off.png');
                     $('#privacy-public img.select-button').attr('src', '/images/btn-round-selected-on.png');
                 });
             });
             $('#privacy-hidden').click(function(){
-                $.post('/albums/'+zz.album_id, '_method=put&album%5Bprivacy%5D=hidden');
+                $.post(zz.path_prefix + '/albums/'+zz.album_id, '_method=put&album%5Bprivacy%5D=hidden');
                 $('img.select-button').attr('src', '/images/btn-round-selected-off.png');
                 $('#privacy-hidden img.select-button').attr('src', '/images/btn-round-selected-on.png');
             });
             $('#privacy-password').click(function(){
-                $.post('/albums/'+zz.album_id, '_method=put&album%5Bprivacy%5D=password');
+                $.post(zz.path_prefix + '/albums/'+zz.album_id, '_method=put&album%5Bprivacy%5D=password');
                 $('img.select-button').attr('src', '/images/btn-round-selected-off.png');
                 $('#privacy-password img.select-button').attr('src', '/images/btn-round-selected-on.png');
             });
@@ -272,7 +272,7 @@ pages.album_privacy_tab = {
 
 pages.album_share_tab = {
     init: function(callback){
-        var url = '/albums/' + zz.album_id + '/shares/new';
+        var url = zz.path_prefix +'/albums/' + zz.album_id + '/shares/new';
         var self = this;
 
         $('#tab-content').load(url, function(){
@@ -310,7 +310,7 @@ pages.album_share_tab = {
         var self = this;
 
         $('div#share-body').fadeOut('fast', function(){
-            $('div#share-body').load('/albums/'+zz.album_id+'/shares/newpost', function(){
+            $('div#share-body').load(zz.path_prefix +'/albums/'+zz.album_id+'/shares/newpost', function(){
                 zz.wizard.resize_scroll_body();
 
 
@@ -318,7 +318,7 @@ pages.album_share_tab = {
                 $("#facebook_box").click( function(){
                     if( $(this).is(':checked')  && !$("#facebook_box").attr('authorized')){
                         $(this).attr('checked', false);
-                        oauthmanager.login( '/facebook/sessions/new', function(){
+                        oauthmanager.login(zz.path_prefix + '/facebook/sessions/new', function(){
                             $("#facebook_box").attr('checked', true);
                             $("#facebook_box").attr('authorized', 'yes');
 //                            $("#post_share_button").attr('src','/images/btn-post-on.png');
@@ -329,7 +329,7 @@ pages.album_share_tab = {
                 $("#twitter_box").click( function(){
                     if($(this).is(':checked') && !$("#twitter_box").attr('authorized')){
                         $(this).attr('checked', false);
-                        oauthmanager.login( '/twitter/sessions/new', function(){
+                        oauthmanager.login(zz.path_prefix + '/twitter/sessions/new', function(){
                             $("#twitter_box").attr('checked', true);
                             $("#twitter_box").attr('authorized', 'yes');
 //                            $("#post_share_button").attr('src','/images/btn-post-on.png')
@@ -351,7 +351,7 @@ pages.album_share_tab = {
                     },
                     submitHandler: function() {
                         var serialized = $('#new_post_share').serialize();
-                        $.post('/albums/'+zz.album_id+'/shares.json', serialized, function(data,status,request){
+                        $.post(zz.path_prefix + '/albums/'+zz.album_id+'/shares.json', serialized, function(data,status,request){
                             pages.album_share_tab.reload_share(zz.drawers[zz.album_type+'_album'], 'share', function(){
                                 zz.wizard.display_flashes(  request,200 )
                             });
@@ -390,7 +390,7 @@ pages.album_share_tab = {
     show_email_share: function(obj, id ){
         var self = this;
         $('div#share-body').fadeOut('fast', function(){
-            $('div#share-body').load('/albums/'+zz.album_id+'/shares/newemail', function(){
+            $('div#share-body').load(zz.path_prefix + '/albums/'+zz.album_id+'/shares/newemail', function(){
                 zz.wizard.resize_scroll_body();
                 zz.wizard.init_email_autocompleter();
 
@@ -406,7 +406,7 @@ pages.album_share_tab = {
 
                     submitHandler: function() {
                         var serialized = $('#new_email_share').serialize();
-                        $.post('/albums/'+zz.album_id+'/shares.json', serialized, function(data,status,request ){
+                        $.post(zz.path_prefix + '/albums/'+zz.album_id+'/shares.json', serialized, function(data,status,request ){
                             self.reload_share(zz.drawers[zz.album_type+'_album'], 'share', function(){
                                 zz.wizard.display_flashes(  request,200 )
                             });
@@ -472,7 +472,7 @@ pages.album_contributors_tab = {
     },
 
     show_contributor_list: function( request ){
-        $('#tab-content').hide().load( '/albums/' + zz.album_id + '/contributors' , function(){
+        $('#tab-content').hide().load( zz.path_prefix + '/albums/' + zz.album_id + '/contributors' , function(){
                 if( pages.album_contributors_tab.contributor_count <= 0){
                     pages.album_contributors_tab.show_new_contributors(); //tab content gets shown inside here
                 } else {
@@ -491,7 +491,7 @@ pages.album_contributors_tab = {
     },
 
     show_new_contributors: function(){
-        $('#tab-content').load('/albums/'+zz.album_id+'/contributors/new', function(){
+        $('#tab-content').load(zz.path_prefix + '/albums/'+zz.album_id+'/contributors/new', function(){
             zz.wizard.resize_scroll_body()
             zz.wizard.init_email_autocompleter();
 
@@ -508,7 +508,7 @@ pages.album_contributors_tab = {
                 //todo: submit errors are not being shown properly
                 submitHandler: function() {
                     $.ajax({ type:     'POST',
-                             url:      '/albums/'+zz.album_id+'/contributors.json',
+                             url:      zz.path_prefix + '/albums/'+zz.album_id+'/contributors.json',
                              data:     $('#new_contributors').serialize(),
                              success:  function(data,status,request){
                                               $('#tab-content').fadeOut('fast','swing', function(){
@@ -660,7 +660,7 @@ pages.acct_profile = {
                                                          autoOpen: false,
                                                          open : function(event, ui){ template.zz_photochooser({}) },
                                                          close: function(event, ui){
-                                                             $.get( '/albums/' +zz.album_id + '/close_batch', function(){
+                                                             $.get( zz.path_prefix + '/albums/' +zz.album_id + '/close_batch', function(){
                                                                 pages.acct_profile.refresh_profile_photo_picker()
                                                              });
                                                          }

@@ -460,7 +460,7 @@
             //Shutterfly
             roots.push(
             {
-                open_url: '/shutterfly/folders.json',
+                open_url: zz.path_prefix + '/shutterfly/folders.json',
                 type: 'folder',
                 name: 'Shutterfly',
                 src: '/images/folders/shutterfly_off.jpg',
@@ -470,7 +470,7 @@
                     var folder = this;
                     self.bodyElement.hide().load('/static/connect_messages/connect_to_shutterfly.html', function(){
                         self.bodyElement.find('#connect-button').click(function(){
-                            self.open_login_window(folder, '/shutterfly/sessions/new');
+                            self.open_login_window(folder, zz.path_prefix + '/shutterfly/sessions/new');
                         });
                         self.bodyElement.fadeIn('fast');
                     });
@@ -480,7 +480,7 @@
             //Kodak
             roots.push(
             {
-                open_url: '/kodak/folders.json',
+                open_url: zz.path_prefix + '/kodak/folders.json',
                 type: 'folder',
                 name: 'Kodak',
                 src: '/images/folders/kodak_off.jpg',
@@ -489,7 +489,7 @@
                     var folder = this;
                     self.bodyElement.hide().load('/static/connect_messages/connect_to_kodak.html', function(){
                         self.bodyElement.find('#connect-button').click(function(){
-                            self.open_login_window(folder, '/kodak/sessions/new');
+                            self.open_login_window(folder, zz.path_prefix + '/kodak/sessions/new');
                         });
                         self.bodyElement.fadeIn('fast');
                     });
@@ -500,7 +500,7 @@
             //SmugMug
             roots.push(
             {
-                open_url: '/smugmug/folders.json',
+                open_url: zz.path_prefix + '/smugmug/folders.json',
                 type: 'folder',
                 name: 'SmugMug',
                 src: '/images/folders/smugmug_off.jpg',
@@ -509,7 +509,7 @@
                     var folder = this;
                     self.bodyElement.hide().load('/static/connect_messages/connect_to_smugmug.html', function(){
                         self.bodyElement.find('#connect-button').click(function(){
-                            self.open_login_window(folder, '/smugmug/sessions/new');
+                            self.open_login_window(folder, zz.path_prefix + '/smugmug/sessions/new');
                         });
                         self.bodyElement.fadeIn('fast');
                     });
@@ -520,7 +520,7 @@
             //Facebook
             roots.push(
             {
-                open_url: '/facebook/folders.json',
+                open_url: zz.path_prefix + '/facebook/folders.json',
                 type: 'folder',
                 name: 'Facebook',
                 src: '/images/folders/facebook_off.jpg',
@@ -529,7 +529,7 @@
                     var folder = this;
                     self.bodyElement.hide().load('/static/connect_messages/connect_to_facebook.html', function(){
                         self.bodyElement.find('#connect-button').click(function(){
-                            self.open_login_window(folder, '/facebook/sessions/new');
+                            self.open_login_window(folder, zz.path_prefix + '/facebook/sessions/new');
                         });
                         self.bodyElement.fadeIn('fast');
                     });
@@ -539,7 +539,7 @@
             //Flickr
             roots.push(
             {
-                open_url: '/flickr/folders.json',
+                open_url: zz.path_prefix + '/flickr/folders.json',
                 type: 'folder',
                 name: 'Flickr',
                 src: '/images/folders/flickr_off.jpg',
@@ -548,7 +548,7 @@
                     var folder = this;
                     self.bodyElement.hide().load('/static/connect_messages/connect_to_flickr.html', function(){
                         self.bodyElement.find('#connect-button').click(function(){
-                            self.open_login_window(folder, '/flickr/sessions/new');
+                            self.open_login_window(folder, zz.path_prefix + '/flickr/sessions/new');
                         });
                         self.bodyElement.fadeIn('fast');
                     });
@@ -560,7 +560,7 @@
             //Picasa Web
             roots.push(
             {
-                open_url: '/picasa/folders.json',
+                open_url: zz.path_prefix + '/picasa/folders.json',
                 type: 'folder',
                 name: 'Picasa Web',
                 src: '/images/folders/picasa_off.jpg',
@@ -569,7 +569,7 @@
                     var folder = this;
                     self.bodyElement.hide().load('/static/connect_messages/connect_to_picasa_web.html', function(){
                         self.bodyElement.find('#connect-button').click(function(){
-                            self.open_login_window(folder, '/picasa/sessions/new');
+                            self.open_login_window(folder, zz.path_prefix + '/picasa/sessions/new');
                         });
                         self.bodyElement.fadeIn('fast');
                     });
@@ -580,7 +580,7 @@
             //Photobucket
             roots.push(
             {
-                open_url: '/photobucket/folders', //No need for .json cause this connector has unusual structure
+                open_url: zz.path_prefix + '/photobucket/folders', //No need for .json cause this connector has unusual structure
                 type: 'folder',
                 name: 'Photobucket',
                 src: '/images/folders/photobucket_off.jpg',
@@ -590,7 +590,7 @@
                     var folder = this;
                     self.bodyElement.hide().load('/static/connect_messages/connect_to_photobucket.html', function(){
                         self.bodyElement.find('#connect-button').click(function(){
-                            self.open_login_window(folder, '/photobucket/sessions/new');
+                            self.open_login_window(folder, zz.path_prefix + '/photobucket/sessions/new');
                         });
                         self.bodyElement.fadeIn('fast');
                     });
@@ -602,7 +602,7 @@
             //ZangZing
             roots.push(
             {
-                open_url: '/zangzing/folders.json',
+                open_url: zz.path_prefix + '/zangzing/folders.json',
                 type: 'folder',
                 name: 'ZangZing',
                 src: '/images/folders/zangzing_off.jpg',
@@ -672,7 +672,7 @@
             $.ajax({
                 type: "DELETE",
                 dataType: "json",
-                url: "/photos/" + photo_id + ".json",
+                url: zz.path_prefix + "/photos/" + photo_id + ".json",
                 success:function(){
                     self.reload_tray();
                 },

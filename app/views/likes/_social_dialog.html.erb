@@ -27,7 +27,7 @@
     $("#facebook_box").click( function(){
         if( $(this).is(':checked')  && !$("#facebook_box").attr('authorized')){
             $(this).attr('checked', false);
-            oauthmanager.login( '/facebook/sessions/new', function(){
+            oauthmanager.login( zz.path_prefix + '/facebook/sessions/new', function(){
                 $("#facebook_box").attr('checked', true);
                 $("#facebook_box").attr('authorized', 'yes');
             });
@@ -37,7 +37,7 @@
     $("#twitter_box").click( function(){
         if($(this).is(':checked') && !$("#twitter_box").attr('authorized')){
             $(this).attr('checked', false);
-            oauthmanager.login( '/twitter/sessions/new', function(){
+            oauthmanager.login( zz.path_prefix + /twitter/sessions/new', function(){
                 $("#twitter_box").attr('checked', true);
                 $("#twitter_box").attr('authorized', 'yes');
             });
