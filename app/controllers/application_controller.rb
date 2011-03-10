@@ -85,7 +85,7 @@ class ApplicationController < ActionController::Base
 
     def require_user_json
       unless current_user
-        store_location
+        session[:return_to] = request.referer
         render :json => "You must be logged in to call this url", :status => 401
         return false
       end

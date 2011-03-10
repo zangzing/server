@@ -65,28 +65,23 @@ Server::Application.routes.draw do
     get '/albums/:album_id/shares/new'      => 'shares#new',        :as => :new_album_share
     get '/albums/:album_id/shares/newpost'  => 'shares#newpost',    :as => :new_album_postshare
     get '/albums/:album_id/shares/newemail' => 'shares#newemail',   :as => :new_album_emailshare
-    post '/albums/:album_id/shares'        => 'shares#create',     :as => :create_album_share
-    get '/shares/:id'                      => 'shares#show',       :as => :share
+    post '/albums/:album_id/shares'         => 'shares#create',     :as => :create_album_share
+    get '/shares/:id'                       => 'shares#show',       :as => :share
     get '/shares/:id/edit'                  => 'shares#edit',       :as => :edit_share
-    put '/shares/:id'                      => 'shares#update',     :as => :update_share
-    delete '/shares/:id'                   => 'shares#destroy',    :as => :delete_share
+    put '/shares/:id'                       => 'shares#update',     :as => :update_share
+    delete '/shares/:id'                    => 'shares#destroy',    :as => :delete_share
 
     #photos
-    get    '/albums/:album_id/photos_json' => 'photos#photos_json',                :as => :album_photos_json
-    get    '/albums/:album_id/photos'      => 'photos#index',                     :as => :album_photos
-    get    '/albums/:album_id/movie'        => 'photos#movie',                     :as => :album_movie
-    #  post   '/albums/:album_id/photos'      => 'photos#create',                    :as => :create_album_photo
-    #  get    '/albums/:album_id/slides_source.:format' => 'photos#slideshowbox_source',    :as => :slideshow_source
-    #  get    '/photos/:id'                   => 'photos#show',                      :as => :photo
-    #  get    '/photos/:id/edit'              => 'photos#edit',                      :as => :edit_photo
-    #  put    '/photos/:id/edit'              => 'photos#update',                    :as => :update_photo
-    delete '/photos/:id'                   => 'photos#destroy',                   :as => :destroy_photo
-    put    '/photos/:id/upload_fast'       => 'photos#upload_fast',               :as => :upload_photo_fast
-    get    '/agents/:agent_id/photos'      => 'photos#agentindex',                :as => :agent_photos
-    post   '/albums/:album_id/photos/agent_create.:format' => 'photos#agent_create',      :as => :agent_create
-    get    '/albums/:album_id/profile'      => 'photos#profile',                  :as => :profile
-    put    '/photos/:id'                    => 'photos#update',                   :as => :update_photo
-    put    '/photos/:id/position'           => 'photos#position',                 :as => :photo_position
+    get    '/albums/:album_id/photos_json'  => 'photos#photos_json',                :as => :album_photos_json
+    get    '/albums/:album_id/photos'       => 'photos#index',                      :as => :album_photos
+    get    '/albums/:album_id/movie'        => 'photos#movie',                      :as => :album_movie
+    delete '/photos/:id'                    => 'photos#destroy',                    :as => :destroy_photo
+    put    '/photos/:id/upload_fast'        => 'photos#upload_fast',                :as => :upload_photo_fast
+    get    '/agents/:agent_id/photos'       => 'photos#agentindex',                 :as => :agent_photos
+    post   '/albums/:album_id/photos/agent_create.:format' => 'photos#agent_create',:as => :agent_create
+    get    '/albums/:album_id/profile'      => 'photos#profile',                    :as => :profile
+    put    '/photos/:id'                    => 'photos#update',                     :as => :update_photo
+    put    '/photos/:id/position'           => 'photos#position',                   :as => :photo_position
 
     #activities
     get '/albums/:album_id/activities' => 'activities#album_index', :as => :album_activities

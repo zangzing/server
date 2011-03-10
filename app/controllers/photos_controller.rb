@@ -1,14 +1,8 @@
 class PhotosController < ApplicationController
   before_filter :oauth_required, :only => [:agentindex, :agent_create]
-  before_filter :login_required, :only => [:create ]
-  before_filter :require_user, :only => [:show, :new, :edit, :destroy, :update] # , :index] #TODO Sort out album security so facebook can freely dig into album page
-  before_filter :determine_album_user #For friendly_id's scope
+  before_filter :require_user, :only => [:create, :update, :destroy ] #TODO Sort out album security so facebook can freely dig into album page
 
-  def show
-    @photo = Photo.find(params[:id])
-    @album = @photo.album
-    @title = CGI.escapeHTML(@album.name)
-  end
+  #before_filter :determine_album_user #For friendly_id's scope
 
   def create
     @album = fetch_album
@@ -34,9 +28,7 @@ class PhotosController < ApplicationController
     end
   end
 
-
   def agent_create
-
     if params[:source_guid].nil?
       render :json => "source_guid parameter required. Unable to create photos", :status=>400 and return
     end
@@ -114,8 +106,12 @@ class PhotosController < ApplicationController
   end
 
   def destroy
-    logger.debug "The params hash in PhotosController destroy is #{params.inspect}"
     @photo = Photo.find(params[:id])
+
+    unless current_user?( @photo.user )
+      render :json => 'Only photo owner can delete photos', :status => 401 and return
+    end
+    
     @album = @photo.album
     respond_to do |format|
       format.html do
@@ -135,27 +131,33 @@ class PhotosController < ApplicationController
 
 
   def index
-    @album = fetch_album
+    fetch_album
 
+    #Verify if user has viewer permissions otherwise ask them to sign in
+    if @album.private?
+        unless current_user
+          store_location
+          flash[:notice] = "You have asked to see a password protected album. Please login so we know who you are."
+          redirect_to new_user_session_url and return
+        end
+        unless @album.viewer?( current_user.id )
+          flash[:notice] = "You have asked to browse a password protected album. You must be invited by the creator to see it"
+          redirect_to :back, status=> 401 and return
+        end
+    end
+    
     if(!params[:user_id])
        #hack: need to do this better
        #force redirect back to /username/albumname/photos
       redirect_to "/#{@album.user.username}/#{@album.friendly_id}/photos"
-
     else
       @title = CGI.escapeHTML(@album.name)
       @photos = @album.photos
-
       if params['_escaped_fragment_']
         @photo = Photo.find(params['_escaped_fragment_'])
       end
-
       render 'photos'
     end
-  end
-
-  def show
-    logger.debug 'show'
   end
 
   def movie
@@ -163,8 +165,6 @@ class PhotosController < ApplicationController
     @photos = @album.photos
     render 'movie', :layout => false
   end
-
-
 
   def photos_json
     @album = fetch_album
@@ -197,7 +197,6 @@ class PhotosController < ApplicationController
     end
   end
 
-
   def profile
      @album = Album.find( params[:album_id])
      current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
@@ -210,7 +209,6 @@ class PhotosController < ApplicationController
       @photo.save
       render :layout =>false
   end
-
 
   def update
     @photo = Photo.find(params[:id])
@@ -240,11 +238,15 @@ class PhotosController < ApplicationController
 private
 
   def fetch_album
-    params[:user_id] ? Album.find(params[:album_id], :scope => params[:user_id]) : Album.find( params[:album_id] )
+    if params[:user_id]
+      @album = Album.find(params[:album_id], :scope => params[:user_id])
+    else
+      @album = Album.find( params[:album_id] )
+    end
   end
 
-  def determine_album_user
-    @album_user_id = params[:user_id] #|| current_user.to_param
-  end
+  #def determine_album_user
+  #  @album_user_id = params[:user_id] #|| current_user.to_param
+  #end
 
 end

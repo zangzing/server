@@ -917,9 +917,16 @@ pages.no_agent = {
 
 pages.signin = {
 
-    show: function(){
+    show: function( message ){
         if (zz.drawer_state === zz.DRAWER_CLOSED) {
-                ZZAt.track('button.signin.click');
+                if( typeof( message ) != 'undefined' && typeof(message) == 'string'){
+                   var msg = $('<p>'+message+'</p>');
+                   msg.addClass("flash-notice");
+                   $('#signin-flashbox').append( msg );
+                   msg.show();
+                   $('#signin-form-cancel-button').click( function(){msg.remove();});
+                }
+
                 $('#header #sign-in-button').addClass('selected');
                 $('#sign-in').show();
                 $('#sign-up').hide();

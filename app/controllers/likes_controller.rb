@@ -1,5 +1,5 @@
 class LikesController < ApplicationController
-  before_filter :require_user_json, :only => [:toggle, :post]
+  before_filter :require_user_json, :only => [:create, :post]
 
   def index
     wanted_subjects = params['wanted_subjects']

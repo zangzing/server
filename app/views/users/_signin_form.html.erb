@@ -1,4 +1,4 @@
-<div class="flash-box">
+<div id="signin-flashbox" class="flash-box">
   <%if @user_session && @user_session.errors%>
       <%@user_session.errors.each do | key, value| %>
           <p class="error-notice"><%=key %> <%=value %></p>
