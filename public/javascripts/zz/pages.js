@@ -920,21 +920,12 @@ pages.no_agent = {
     download: function(){
 	    ZZAt.track('agentdownload.get');
         
-		var curl = "http://downloads.zangzing.com/agent/"
 		if($.client.os =="Mac"){
-			curl += 'darwin';
+			alert("TODO: download url for mac");
 		} else {
-			curl += 'win32';
+			alert("TODO: download url for windows");
 		}
-		curl += '/check.json';
-
-		$.ajax({
-		  url: curl,
-		  dataType: 'json',
-		  success: function(data) {
-			alert(data);
-		  }
-		});
+		
     }
 };
 
