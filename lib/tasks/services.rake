@@ -3,7 +3,7 @@ namespace :services do
 
     task :run  do
         sh 'script/nginx &'
-        sh 'redis-server /etc/redis/redis.conf &'
+        sh 'sudo redis-server /etc/redis/redis.conf &'
         sh 'QUEUE=* rake resque:work &'
         sh 'rake resque:scheduler &'
     end
