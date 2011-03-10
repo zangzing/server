@@ -863,14 +863,17 @@ pages.no_agent = {
     url: '/static/connect_messages/no_agent.html',
 
     filechooser: function( when_ready ){
-       $('#downloadzz-btn').click( pages.no_agent.download );
+	   $('#downloadzz-btn').click( pages.no_agent.download );
         pages.no_agent.keep_polling = true;
         pages.no_agent.poll_agent( function(){
             if( $.isFunction(  when_ready )) when_ready();
         });
+
+	   ZZAt.track('agentdownload.present');
     },
 
     dialog: function( onClose ){
+
          $('<div></div>', { id: 'no-agent-dialog'}).load(pages.no_agent.url, function(){
              $('#downloadzz-btn').click( pages.no_agent.download );
              $( this ).zz_dialog({
@@ -887,6 +890,8 @@ pages.no_agent = {
                  $( '#no-agent-dialog' ).zz_dialog('close');
              });
         });
+
+	    ZZAt.track('agentdownload.present'); 
     },
 
     poll_agent: function( when_ready ){
@@ -902,6 +907,8 @@ pages.no_agent = {
                                 if( $.isFunction( when_ready ) ) setTimeout( when_ready, 1000 );
                         });
                     });
+					
+					ZZAt.track('agentdownload.ready');
               }else{
                   if( pages.no_agent.keep_polling ){
                     setTimeout( function(){ pages.no_agent.poll_agent( when_ready )}, 1000);
@@ -911,15 +918,38 @@ pages.no_agent = {
     },
 
     download: function(){
-        alert("Agent should be downloading now (TODO: Set URL for download in pages.js)");
+	    ZZAt.track('agentdownload.get');
+        
+		var curl = "http://downloads.zangzing.com/agent/"
+		if($.client.os =="Mac"){
+			curl += 'darwin';
+		} else {
+			curl += 'win32';
+		}
+		curl += '/check.json';
+
+		$.ajax({
+		  url: curl,
+		  dataType: 'json',
+		  success: function(data) {
+			alert(data);
+		  }
+		});
     }
 };
 
 pages.signin = {
 
-    show: function(){
+    show: function( message ){
         if (zz.drawer_state === zz.DRAWER_CLOSED) {
-                ZZAt.track('button.signin.click');
+                if( typeof( message ) != 'undefined' && typeof(message) == 'string'){
+                   var msg = $('<p>'+message+'</p>');
+                   msg.addClass("flash-notice");
+                   $('#signin-flashbox').append( msg );
+                   msg.show();
+                   $('#signin-form-cancel-button').click( function(){msg.remove();});
+                }
+
                 $('#header #sign-in-button').addClass('selected');
                 $('#sign-in').show();
                 $('#sign-up').hide();

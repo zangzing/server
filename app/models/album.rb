@@ -163,6 +163,13 @@ class Album < ActiveRecord::Base
      acl.remove_user( id ) if contributor? id
   end
 
+  def viewer?(id)
+    if private?
+      acl.has_permission?( id, AlbumACL::VIEWER_ROLE)
+    else
+      true
+    end
+  end
 
   # Returns true if id has contributor role or equivalent
   def contributor?( id )
@@ -173,6 +180,7 @@ class Album < ActiveRecord::Base
   def admin?( id )
     acl.has_permission?( id, AlbumACL::ADMIN_ROLE)
   end
+
 
 
   # Checks of email is that of a contributor and retirns user
@@ -215,6 +223,21 @@ class Album < ActiveRecord::Base
     (id = self.id) ? id.to_s : nil
   end
 
+  # Return true if album is private
+  def private?
+    self.privacy == 'password'
+  end
+
+  # Return true if album is public
+  def public?
+    self.privacy == 'public'
+  end
+
+  # Return true if album is hidden
+  def hidden?
+    self.privacy == 'hidden'
+  end
+
 private
   def cover_photo_id_valid?
     begin
@@ -238,6 +261,8 @@ private
   end
 
 end
+
+
 
 
 
