@@ -54,7 +54,7 @@ var like = {
     toggle: function(){
         var subject_id   = $(this).attr('data-zzid');
         var subject_type = $(this).attr('data-zztype');
-        var url = '/likes/'+subject_id;
+        var url = zz.path_prefix + '/likes/'+subject_id;
        
 		var zzae = 'like.' + subject_type + '.'
         //Decide the action before the value is toggled in the hash

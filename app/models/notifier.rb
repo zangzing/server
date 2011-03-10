@@ -10,25 +10,23 @@ class Notifier < ActionMailer::Base
     Rails.logger
   end
   
-  def contributors_added(contributor_id)
-     contributor = Contributor.find( contributor_id )
-     @user = contributor.album.user
-     @album = contributor.album
-     @album_mail = contributor.album.short_email
+  def contributors_added(album_id, email )
+     @album = Album.find( album_id)
+     @user = @album.user
+     @album_mail = @album.short_email
 
      vcard = Vpim::Vcard::Maker.make2 do |vc|
        vc.add_name do |name|
-         name.given = contributor.album.name
+         name.given = @album.name
        end
-       vc.add_email contributor.album.short_email
+       vc.add_email @album.short_email
      end
      attachments['album.vcf'] = vcard.to_s
-     #attachments['album.vcf'] = {:mime_type => 'text/x-vcard',:content =>vcard.to_s}
 
-     logger.info "Mailed contributors_added: #{contributor.email}, #{contributor.album.long_email}"
-     mail( :to        => contributor.email,
-           :reply_to  => contributor.album.long_email,
-           :subject   => "You have been invited to contribute photos to '#{contributor.album.name}'!" )
+     logger.info "Mailed contributors_added: #{contributor.email}, #{@album.long_email}"
+     mail( :to        => email,
+           :reply_to  => @album.long_email,
+           :subject   => "You have been invited to contribute photos to '#{@album.name}'!" )
    end
 
 

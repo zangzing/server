@@ -598,7 +598,7 @@
 
 
         cells: function(){
-            return this.element.children();
+            return this.element.children('.photogrid-cell');
         },
 
         cellsPerRow : function(){

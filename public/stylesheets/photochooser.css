@@ -31,6 +31,9 @@
     left:20px;
 }
 
+
+
+
 /*.photochooser .header h3{*/
     /*font-size: 17px;*/
     /*font-weight: 500;*/
@@ -57,6 +60,19 @@
     right:0px;
     bottom:50px;
     /*border:1px solid blue;*/
+}
+
+
+.photochooser .photochooser-body .photogrid img.add-all-button{
+    /*background: url("/images/folders/add_all_photos.png");*/
+    width: 129px;
+    height: 153px;
+    left:90px;
+    top:8px;
+    position:absolute;
+    cursor: pointer;
+
+    
 }
 
 .photochooser .photochooser-body .progress-indicator{

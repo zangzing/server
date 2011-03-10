@@ -270,29 +270,28 @@ pages.album_privacy_tab = {
     }
 };
 
-pages.album_share_tab = {
+pages.share = {
     init: function(callback){
         var url = zz.path_prefix +'/albums/' + zz.album_id + '/shares/new';
         var self = this;
 
         $('#tab-content').load(url, function(){
            zz.wizard.resize_scroll_body();
-
            $('.social-share').click(function(){
                 if(zz.album_type === 'personal'){
-                    self.show_social_share(zz.drawers.personal_album, 'share');
+                    self.show_social(zz.drawers.personal_album, 'share');
                 }
                 else{
-                    self.show_social_share(zz.drawers.group_album, 'share');
+                    self.show_social(zz.drawers.group_album, 'share');
                 }
             });
 
             $('.email-share').click(function(){
                 if(zz.album_type === 'personal'){
-                    self.show_email_share(zz.drawers.personal_album, 'share');
+                    self.show_email(zz.drawers.personal_album, 'share');
                 }
                 else{
-                    self.show_email_share(zz.drawers.group_album, 'share');
+                    self.show_email(zz.drawers.group_album, 'share');
 
                 }
             });
@@ -306,7 +305,7 @@ pages.album_share_tab = {
     },
 
     // loads the status message post form in place of the type switcher on the share step
-    show_social_share: function(obj, id){
+    show_social: function(obj, id){
         var self = this;
 
         $('div#share-body').fadeOut('fast', function(){
@@ -352,7 +351,7 @@ pages.album_share_tab = {
                     submitHandler: function() {
                         var serialized = $('#new_post_share').serialize();
                         $.post(zz.path_prefix + '/albums/'+zz.album_id+'/shares.json', serialized, function(data,status,request){
-                            pages.album_share_tab.reload_share(zz.drawers[zz.album_type+'_album'], 'share', function(){
+                            pages.share.reload_share(zz.drawers[zz.album_type+'_album'], 'share', function(){
                                 zz.wizard.display_flashes(  request,200 )
                             });
                         });
@@ -387,16 +386,32 @@ pages.album_share_tab = {
 
 
     // loads the email post form in place of the type switcher on the share step
-    show_email_share: function(obj, id ){
+    show_email: function(obj, id ){
         var self = this;
         $('div#share-body').fadeOut('fast', function(){
             $('div#share-body').load(zz.path_prefix + '/albums/'+zz.album_id+'/shares/newemail', function(){
+
+                $("#contact-list").tokenInput( zzcontacts.find, {
+                    allowNewValues: true,
+                    classes: {
+                        tokenList: "token-input-list-facebook",
+                        token: "token-input-token-facebook",
+                        tokenDelete: "token-input-delete-token-facebook",
+                        selectedToken: "token-input-selected-token-facebook",
+                        highlightedToken: "token-input-highlighted-token-facebook",
+                        dropdown: "token-input-dropdown-facebook",
+                        dropdownItem: "token-input-dropdown-item-facebook",
+                        dropdownItem2: "token-input-dropdown-item2-facebook",
+                        selectedDropdownItem: "token-input-selected-dropdown-item-facebook",
+                        inputToken: "token-input-input-token-facebook"
+                    }
+                });
+                zzcontacts.init( zz.current_user_id );
                 zz.wizard.resize_scroll_body();
-                zz.wizard.init_email_autocompleter();
 
                 $('#new_email_share').validate({
                     rules: {
-                        'email_share[to]': { required: true, minlength: 0 },
+                        'email_share[to]':      { required: true, minlength: 0 },
                         'email_share[message]': { required: true, minlength: 0 }
                     },
                     messages: {
@@ -420,21 +435,9 @@ pages.album_share_tab = {
                 });
 
                 $('#mail-submit').click(function(){
-                   $('form#new_email_share').submit(); 
+                    $('form#new_email_share').submit();
                 });
-
-                $('#the-list').click(function(){
-                    $('#you-complete-me').focus();
-                });
-
-                //todo: move these into auto-complete widget
-                $('#you-complete-me').focus(function(){
-                    $('#the-list').addClass("focus");
-                });
-                $('#you-complete-me').blur(function(){
-                    $('#the-list').removeClass("focus");
-                });
-                $('div#share-body').fadeIn('fast', function(){ $('#you-complete-me').focus();});
+                $('div#share-body').fadeIn('fast');
             });
         });
     },
@@ -459,76 +462,121 @@ pages.album_share_tab = {
 
 };
 
-pages.album_contributors_tab = {
-    contributor_count:0,
-    
-    init: function(callback){
-        pages.album_contributors_tab.show_contributor_list();
-        callback();
+pages.contributors = {
+
+    present : false,
+    url :'',
+
+    init: function(){
+        this.url = zz.path_prefix + '/albums/'+zz.album_id+'/contributors';
+        pages.contributors.show_list();
     },
 
     bounce: function(success, failure){
         success();
     },
 
-    show_contributor_list: function( request ){
-        $('#tab-content').hide().load( zz.path_prefix + '/albums/' + zz.album_id + '/contributors' , function(){
-                if( pages.album_contributors_tab.contributor_count <= 0){
-                    pages.album_contributors_tab.show_new_contributors(); //tab content gets shown inside here
+    show_list: function( request ){
+        $('#tab-content').load( pages.contributors.url , function(){
+                //The contributors arrived in tmp_contact_list and declared when screen loaded
+                if( tmp_contact_list.length <= 0 ){
+                    pages.contributors.present = false;
+                    pages.contributors.show_new();
                 } else {
-                    $('#tab-content').show();
-                    zz.wizard.resize_scroll_body();
-                    $('#add-contributors-btn').click(function(){
-                         $('#tab-content').fadeOut('fast', pages.album_contributors_tab.show_new_contributors );
-                     });
-                    $('#tab-content').fadeIn('fast', function( ){
-                        if( typeof( request )!= 'undefined'){
-                            zz.wizard.display_flashes(  request,200 );
+                     pages.contributors.present = true;
+                     // initialize the tokenized contact list widget
+                     $('#contributors-list').tokenInput(  '' , {
+                                allowNewValues: false,
+                                displayOnly : true,
+                                prePopulate: {
+                                    data: tmp_contact_list,
+                                    forceDataFill: true
+                                },
+                                classes: {
+                                    tokenList: "token-input-list-facebook",
+                                    token: "token-input-token-facebook",
+                                    tokenDelete: "token-input-delete-token-facebook",
+                                    selectedToken: "token-input-selected-token-facebook",
+                                    highlightedToken: "token-input-highlighted-token-facebook",
+                                    dropdown: "token-input-dropdown-facebook",
+                                    dropdownItem: "token-input-dropdown-item-facebook",
+                                    dropdownItem2: "token-input-dropdown-item2-facebook",
+                                    selectedDropdownItem: "token-input-selected-dropdown-item-facebook",
+                                    inputToken: "token-input-input-token-facebook"
+                                }
+                        });
+                        //bind to the widget's object deleted event
+                        $('#contributors-list').bind('tokenDeleted',function(e, id, name, count  ){
+                                $.post(pages.contributors.url, { _method: 'delete', id: id}, function(data, status, request){
+                                    zz.wizard.display_flashes(  request, 200 );
+                                    if( count <= 0){ //the contributor list is empty
+                                        pages.contributors.present = false;
+                                        $('#tab-content').fadeOut('fast', pages.contributors.show_new );
+                                    }
+                                });
+                        });
+                        zz.wizard.resize_scroll_body();
+                        $('#add-contributors-btn').click(function(){
+                            $('#tab-content').fadeOut('fast', pages.contributors.show_new );
+                        });
+                        $('#tab-content').fadeIn('fast', function( ){
+                            if( typeof( request )!= 'undefined'){
+                                zz.wizard.display_flashes(  request,200 );
                         }
                     });
                 }
         });
     },
 
-    show_new_contributors: function(){
+    show_new: function(){
         $('#tab-content').load(zz.path_prefix + '/albums/'+zz.album_id+'/contributors/new', function(){
-            zz.wizard.resize_scroll_body()
-            zz.wizard.init_email_autocompleter();
 
+            $("#contact-list").tokenInput( zzcontacts.find, {
+                allowNewValues: true,
+                classes: {
+                    tokenList: "token-input-list-facebook",
+                    token: "token-input-token-facebook",
+                    tokenDelete: "token-input-delete-token-facebook",
+                    selectedToken: "token-input-selected-token-facebook",
+                    highlightedToken: "token-input-highlighted-token-facebook",
+                    dropdown: "token-input-dropdown-facebook",
+                    dropdownItem: "token-input-dropdown-item-facebook",
+                    dropdownItem2: "token-input-dropdown-item2-facebook",
+                    selectedDropdownItem: "token-input-selected-dropdown-item-facebook",
+                    inputToken: "token-input-input-token-facebook"
+                }
+            });
+            zzcontacts.init( zz.current_user_id );
+            zz.wizard.resize_scroll_body();
             $('#new_contributors').validate({
                 rules: {
-                    'email_share[to]': { email:true, required: true, minlength: 1},
-                    'email_share[message]': { required: true}
+                    'contact_list':    { required: true},
+                    'contact_message': { required: true}
                 },
                 messages: {
-                    'email_share[to]': 'Empty',
-                    'email_share[message]': ''
+                    'contact_list': 'Empty',
+                    'contact_message': ''
                 },
 
                 //todo: submit errors are not being shown properly
                 submitHandler: function() {
                     $.ajax({ type:     'POST',
-                             url:      zz.path_prefix + '/albums/'+zz.album_id+'/contributors.json',
-                             data:     $('#new_contributors').serialize(),
-                             success:  function(data,status,request){
-                                              $('#tab-content').fadeOut('fast','swing', function(){
-                                                  pages.album_contributors_tab.show_contributor_list( request );
-                                              });
-                                       },
-                             error:    function(){}
+                        url:      zz.path_prefix + '/albums/'+zz.album_id+'/contributors.json',
+                        data:     $('#new_contributors').serialize(),
+                        success:  function(data,status,request){
+                            $('#tab-content').fadeOut('fast','swing', function(){
+                                pages.contributors.show_list( request );
+                            });
+                        }
                     });
-                } //submit handler
-            }); //new_contributors,validate
-
-            $('#the-list').click(function(){
-                $('#you-complete-me').focus();
+                }
             });
 
-            if( pages.album_contributors_tab.contributor_count > 0){
+            if( pages.contributors.present){
                 $('#cancel-new-contributors').click(function(){
-                    $('#tab-content').fadeOut('fast', pages.album_contributors_tab.show_contributor_list );
+                    $('#tab-content').fadeOut('fast', pages.contributors.show_list );
                 });
-            } else {
+            }else{
                 $('#cancel-new-contributors').hide();
             }
 
@@ -536,31 +584,9 @@ pages.album_contributors_tab = {
                 $('form#new_contributors').submit();
             });
 
-            //todo: move these into auto-complete widget
-            $('#you-complete-me').focus(function(){
-                $('#the-list').addClass("focus");
-            });
-            $('#you-complete-me').blur(function(){
-                $('#the-list').removeClass("focus");
-            });
-            $('#tab-content').fadeIn('fast', function(){$('#you-complete-me').focus();});
-        });
-    },
-
-
-    insert_contributor_bubble: function(label,value){
-        var bubble = $('#m-clone-added').clone().insertAfter('#the-recipients li.rounded:last');
-        bubble.find('span').empty().html(label);
-        bubble.fadeIn('fast');
-        bubble.find('input').attr({name: 'delete-url', checked: 'checked'}).val(value);
-        bubble.find('img').click(function(){
-            $.post($(this).siblings('input').val(), {"_method": "delete"}, function(data){ });
-            $(this).parent('li').fadeOut('fast', function(){
-                $(this).parent('li').remove();
-            });
+            $('#tab-content').fadeIn('fast');
         });
     }
-
 };
 
 pages.acct_profile = {
@@ -848,83 +874,56 @@ pages.linked_accounts = {
 
 pages.no_agent = {
     url: '/static/connect_messages/no_agent.html',
-    init_from_filechooser: function( callback ){             
 
-//todo: need different way to change photochooser tile. if we just clear or set to something else, it never gets set back
-//        $('.photochooser .header h3').html('');
-//        $('.photochooser .header h4').html('');
-//        $('#downloadzz-title').html('');
-//        $('#downloadzz-tagline').html( '');
-        $('#downloadzz-btn').click(function(){
-            alert("Agent should be downloading now (TODO: Set URL for download in pages.js)");
-        });
-        pages.no_agent.poll_agent_from_filechooser( ); //Download begun , start polling for agent
-        callback();
-    },
-
-
-    poll_agent_from_filechooser: function( ){
-      agent.isAvailable( function( agentAvailable ){
-          if( agentAvailable ){
-                 pages.no_agent.agent_ready_from_filechooser();
-          }else{
-                setTimeout( 'pages.no_agent.poll_agent_from_filechooser()', 1000);
-          }
-      });  
-    },
-
-    agent_ready_from_filechooser: function( ){
-        $('#downloadzz-btn').attr('disabled', 'disabled');
-        $('#downloadzz-developed').fadeIn(4000, function(){
-                $('#downloadzz-developed').parent().siblings('.downloadzz-text').fadeOut( 'fast')
-                $('#downloadzz-developed').parent().siblings('.downloadzz-headline').fadeOut( 'fast', function(){
-                        $(this).html('ZangZing is Ready!');
-                        $(this).fadeIn( 'fast');
-                        setTimeout( 'filechooser.on_login()', 1000 );
-                });            
+    filechooser: function( when_ready ){
+       $('#downloadzz-btn').click( pages.no_agent.download );
+        pages.no_agent.keep_polling = true;
+        pages.no_agent.poll_agent( function(){
+            if( $.isFunction(  when_ready )) when_ready();
         });
     },
 
-
-    dialog: function( ){
+    dialog: function( onClose ){
          $('<div></div>', { id: 'no-agent-dialog'}).load(pages.no_agent.url, function(){
-                    $( this ).dialog({
-                           title: 'Download ZangZing',
-                           width: 910,
-                           minHeight: 550,
-                           position: [170,65],
-                           modal: true,
-                           close:  function(){
-                               $('#no-agent-dialog').remove();
-                               sharecontacts.call_local_import();
-                           }
-                    });
-                    $('#downloadzz-btn').click(function(){
-                        alert("Agent should be downloading now (TODO: Set URL for download in pages.js)");
-                    });
-                    pages.no_agent.poll_agent_from_dialog( ); //Download begun , start polling for agent
+             $('#downloadzz-btn').click( pages.no_agent.download );
+             $( this ).zz_dialog({
+                    modal: true,
+                    width: 910,
+                    height: 510,
+                    close:  function(){
+                               if( $.isFunction( onClose )) onClose();
+                               pages.no_agent.keep_polling = false;
+                    }
+             });
+             pages.no_agent.keep_polling = true;
+             pages.no_agent.poll_agent( function(){
+                 $( '#no-agent-dialog' ).zz_dialog('close');
+             });
         });
     },
 
-    poll_agent_from_dialog: function( ){
+    poll_agent: function( when_ready ){
           agent.isAvailable( function( agentAvailable ){
               if( agentAvailable ){
-                     pages.no_agent.agent_ready_from_dialog();
+                    // Develop zang walker and callback
+                    $('#downloadzz-btn').attr('disabled', 'disabled');
+                    $('#downloadzz-developed').fadeIn(4000, function(){
+                        $('#downloadzz-developed').parent().siblings('.downloadzz-text').fadeOut( 'fast')
+                        $('#downloadzz-developed').parent().siblings('.downloadzz-headline').fadeOut( 'slow', function(){
+                            $(this).html('ZangZing is Ready!');
+                            $(this).fadeIn( 'fast');
+                                if( $.isFunction( when_ready ) ) setTimeout( when_ready, 1000 );
+                        });
+                    });
               }else{
-                    setTimeout( 'pages.no_agent.poll_agent_from_dialog()', 1000);
+                  if( pages.no_agent.keep_polling ){
+                    setTimeout( function(){ pages.no_agent.poll_agent( when_ready )}, 1000);
+                  }
               }
           });
     },
 
-    agent_ready_from_dialog: function( ){
-        $('#downloadzz-btn').attr('disabled', 'disabled');
-        $('#downloadzz-developed').fadeIn(4000, function(){
-                $('#downloadzz-developed').parent().siblings('.downloadzz-text').fadeOut( 'fast')
-                $('#downloadzz-developed').parent().siblings('.downloadzz-headline').fadeOut( 'slow', function(){
-                        $(this).html('ZangZing is Ready!');
-                        $(this).fadeIn( 'fast');
-                        setTimeout( function(){  $( '#no-agent-dialog' ).dialog('close'); }, 1000 );
-                });
-        });
+    download: function(){
+        alert("Agent should be downloading now (TODO: Set URL for download in pages.js)");
     }
 };

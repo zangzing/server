@@ -166,13 +166,14 @@
             });
 
 
+
+            //create a blank cell so we can float the 'add all photos' button over it
             if(hasPhotos){
                 var addAllButton = {
                     id: 'add-all-photos',
-                    src: '/images/folders/add_all_photos.png',
+                    src: '',
                     caption: '',
-                    type: 'folder', //todo: need new type for button..
-                    add_url: folder.add_url
+                    type: 'blank'
                 };
 
                 children.unshift(addAllButton);
@@ -190,12 +191,7 @@
                 context: 'chooser-grid',
                 onClickPhoto: function(index, photo, element, action){
                     if(photo.type === 'folder'){
-                        if(photo.id === 'add-all-photos'){
-                            self.add_folder_to_album(photo.add_url, element);
-                        }
-                        else{
-                             self.openFolder(photo);
-                        }
+                         self.openFolder(photo);
                     }
                     else{
                         if(action === 'main'){
@@ -217,6 +213,15 @@
 
             }).data().zz_photogrid;
 
+            if(hasPhotos){
+                var addAllButton = $('<img class="add-all-button" src="/images/folders/add_all_photos.png">');
+                addAllButton.click(function(){
+                    self.add_folder_to_album(folder.add_url, addAllButton);
+                });
+
+                $('.photochooser .photochooser-body .photogrid').append(addAllButton);
+            }
+            
             self.updateCheckmarks();
 
         },
@@ -251,12 +256,7 @@
                 context: 'chooser-picture',
                 onClickPhoto: function(index, photo, element, action){
                     if(photo.type === 'folder'){
-                        if(photo.id === 'add-all-photos'){
-                            self.add_folder_to_album(photo.add_url, element);
-                        }
-                        else{
-                             self.openFolder(photo);
-                        }
+                         self.openFolder(photo);
                     }
                     else{
                         if(action === 'main'){
@@ -309,7 +309,13 @@
             var file_system_on_error = function(error){
                 if(typeof(error.status) === 'undefined'){
                     self.bodyElement.hide().load(pages.no_agent.url, function(){
-                        pages.no_agent.init_from_filechooser(function(){});
+                        pages.no_agent.filechooser(function(){
+                            self.openFolder(self.stack.pop());
+                            self.bodyElement.css('top', '70px');
+                             $('.photochooser-header').show();
+                        });
+                        $('.photochooser-header').css('display','none');
+                        self.bodyElement.css( 'top', '0px');
                         self.bodyElement.fadeIn('fast');
                     });
                 }
@@ -457,6 +463,25 @@
             }
 
 
+            //Facebook
+            roots.push(
+            {
+                open_url: zz.path_prefix + '/facebook/folders.json',
+                type: 'folder',
+                name: 'Facebook',
+                src: '/images/folders/facebook_off.jpg',
+                rolloverSrc: '/images/folders/facebook_on.jpg',
+                on_error: function(){
+                    var folder = this;
+                    self.bodyElement.hide().load('/static/connect_messages/connect_to_facebook.html', function(){
+                        self.bodyElement.find('#connect-button').click(function(){
+                            self.open_login_window(folder, zz.path_prefix + '/facebook/sessions/new');
+                        });
+                        self.bodyElement.fadeIn('fast');
+                    });
+                }
+            });
+
             //Shutterfly
             roots.push(
             {
@@ -517,24 +542,6 @@
             });
 
 
-            //Facebook
-            roots.push(
-            {
-                open_url: zz.path_prefix + '/facebook/folders.json',
-                type: 'folder',
-                name: 'Facebook',
-                src: '/images/folders/facebook_off.jpg',
-                rolloverSrc: '/images/folders/facebook_on.jpg',
-                on_error: function(){
-                    var folder = this;
-                    self.bodyElement.hide().load('/static/connect_messages/connect_to_facebook.html', function(){
-                        self.bodyElement.find('#connect-button').click(function(){
-                            self.open_login_window(folder, zz.path_prefix + '/facebook/sessions/new');
-                        });
-                        self.bodyElement.fadeIn('fast');
-                    });
-                }
-            });
 
             //Flickr
             roots.push(
@@ -745,8 +752,14 @@
 
         animate_to_tray: function(element, callback){
             var self = this;
+            var imageElement;
 
-            var imageElement = element.find('.photo-image');
+            if(element.hasClass('add-all-button')){
+                imageElement = element;
+            }
+            else{
+                imageElement = element.find('.photo-image');
+            }
 
 
             var start_top = imageElement.offset().top;

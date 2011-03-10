@@ -12,40 +12,32 @@
   <div id="form-container-2" class="clearfix">
     <ul id="email-sync" class="clearfix">
       <li class="title">Import contacts from</li>
-      <li><img src="/images/btn-gmail-off.png" id="gmail-sync" class="link" /></li>
-      <li><img src="/images/btn-outlook-off.png" id="local-sync" class="link" /></li>
-      <li><img src="/images/btn-yahoo-off.png" id="yahoo-sync" class="link" /></li>
-      <li><img src="/images/btn-mslive-off.png" id="mslive-sync" class="link" /></li>
+      <li><a data-service="google" class="gray-button contacts-btn" href="javascript:void(0);return false;"><span><div class="off"></div>Google</span></a></li>
+      <li><a data-service="local"  class="gray-button contacts-btn" href="javascript:void(0);return false;"><span><div class="off"></div>Outlook</span></a></li
+      <li><a data-service="yahoo"  class="gray-button contacts-btn" href="javascript:void(0);return false;"><span><div class="off"></div>Yahoo</span></a></li>
+      <li><a data-service="mslive" class="gray-button contacts-btn" href="javascript:void(0);return false;"><span><div class="off"></div>MSLive</span></a></li>
     </ul>
     <div class="clear-fix"></div>
     
-    <%= form_for [@share], :url => create_album_share_path(@album)  do |f| %>
-      <%= f.error_messages %>  
+    <%= form_for @share, :url => create_album_share_path(@album)  do |f| %>
+      <input type="hidden" name="service" value="email">
       <dl id="email-share-form">
         <dt>To</dt>
-        <dd id="the-list">         
-          <ul id="the-recipients" class="clearfix">
-            <li id="m-clone-added"class="rounded"><span>Text</span> <img src="/images/btn-delete-small.png" id="img-clone-added" class="link" /> <input type="checkbox" value="" /></li>
-            <li id="autocomplete"><input type="text" id="you-complete-me" /></li>
-            <div class="clear-fix"></div>
-          </ul>
+        <dd id="the-list">
+
+           <input type="text" id="contact-list" name="recipients" />
+
        </dd>
-    
         <div class="clear-fix"></div>
         <dt>Message</dt>
-        <dd class="textarea"><textarea rows="4" name="email_share[message]" id="email_share_message"></textarea></dd>
+        <dd class="textarea"><textarea rows="4" name="message" id="email_share_message"></textarea></dd>
       </dl>
       <div class="clear-fix"></div>
       
       <div id="form-actions">
           <a id="cancel-share" class="black-button"><span>Cancel</span></a>
           <a id="mail-submit" class="green-button"><span>Send</span></a>
-
-        <!--<a href="javascript:void(0);" id="cancel-share">Cancel</a> <input type="image" src="/images/btn-send.png" name="submit" id="mail-submit" />-->
       </div>
     <% end %>
   </div>
 </div>
-
-
-<%= render(:partial => 'contacts') %>
