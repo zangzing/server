@@ -160,7 +160,7 @@ class Photo < ActiveRecord::Base
     end
   end
 
-  # calculation of height that takes into account any rotation
+  # calculation of width that takes into account any rotation
   def rotated_width
     case self.orientation
       when 6, 8 then self.height
