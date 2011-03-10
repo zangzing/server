@@ -72,6 +72,40 @@ var like = {
                  data:       {  subject_type : subject_type },
                  success:    function(html){
                      $('body').append(html);
+                     $("#facebook_box").click( function(){
+                         if( $(this).is(':checked')  && !$("#facebook_box").attr('authorized')){
+                             $(this).attr('checked', false);
+                             oauthmanager.login( zz.path_prefix + '/facebook/sessions/new', function(){
+                                 $("#facebook_box").attr('checked', true);
+                                 $("#facebook_box").attr('authorized', 'yes');
+                             });
+                         }
+                     });
+
+                     $("#twitter_box").click( function(){
+                         if($(this).is(':checked') && !$("#twitter_box").attr('authorized')){
+                             $(this).attr('checked', false);
+                             oauthmanager.login( zz.path_prefix + '/twitter/sessions/new', function(){
+                                 $("#twitter_box").attr('checked', true);
+                                 $("#twitter_box").attr('authorized', 'yes');
+                             });
+                         }
+                     });
+
+                     $('#social-like-dialog').zz_dialog({ autoOpen: false });
+                     $('#ld-cancel').click( function(){
+                         $('#social-like-dialog').zz_dialog('close');
+                         $('#social-like-dialog').zz_dialog().empty().remove();
+                     });
+                     $('#ld-ok').click( function(){
+                         $.ajax({ type: 'POST',
+                                  url:  zz.path_prefix + '/likes/'+subject_id+'/post',
+                                  data:  $('#social_like_form_'+subject_id).serialize()
+                         });
+                         $('#social-like-dialog').zz_dialog('close');
+                         $('#social-like-dialog').zz_dialog().empty().remove();
+                     });
+                     $('#social-like-dialog').zz_dialog('open');
                  },
                  error:      function( xhr, textStatus, errorThrown){
                                 // toggle in server failed, return hash and screen to previous state

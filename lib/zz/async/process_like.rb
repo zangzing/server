@@ -1,7 +1,7 @@
 module ZZ
   module Async
 
-    class Like < Base
+    class ProcessLike < Base
         @queue = :like
 
         # only add ourselves one time
@@ -17,8 +17,8 @@ module ZZ
         end
 
         def self.perform( method, *args )
-           # Call the Like class from the empty name space :: otherwise it calls ZZ::Async::Like
-           ::Like.send( method, *args)
+           # Call the Like class from the empty name space :: otherwise it calls ZZ::Async::ProcessLike
+           Like.send( method, *args)
         end
     end
   end

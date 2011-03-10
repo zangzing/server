@@ -35,39 +35,39 @@ class LikesController < ApplicationController
   end
 
   def create
-    if current_user && params[:subject_id] && params[:subject_type] 
+    if current_user && params[:subject_id] && params[:subject_type]
+      if current_user.preferences.asktopost_likes
+        # The user has not set a preference about being asket to post his/her likes, then ask him
+        # show the likes social dialog, create the like when the dialog returns( post action)
+        @subj_id   = params[:subject_id]
+        @subj_type = params[:subject_type]
+        @message = Like.default_like_post_message(@subj_id, @subj_type )
+        @is_facebook_linked = current_user.identity_for_facebook.credentials_valid?
+        @is_twitter_linked  = current_user.identity_for_twitter.credentials_valid?
+        render '_social_dialog.html.erb', :layout => false and return
+      else
+        # The user does not want to be asked about posting likes,
+        # just enqueue the creation of the like, it will be posted according to preferences
+        ZZ::Async::ProcessLike.enqueue( 'add', current_user.id, params[:subject_id] , params[:subject_type] )
+      end
+    end
+    render :nothing => true
+  end
 
-        #Like.add( current_user.id, params[:subject_id] , params[:subject_type] )
-        ZZ::Async::Like.enqueue( 'add', current_user.id, params[:subject_id] , params[:subject_type] )
-        if current_user.preferences.asktopost_likes
-          begin
-            @subj_id   = params[:subject_id]
-            @subj_type = params[:subject_type]
-            @url, @message = Like.default_like_post_message(current_user, @subj_id, @subj_type )
-            @is_facebook_linked = current_user.identity_for_facebook.credentials_valid?
-            @is_twitter_linked  = current_user.identity_for_twitter.credentials_valid?
-            render '_social_dialog.html.erb', :layout => false and return
-          rescue ActiveRecord::RecordNotFound
-            #If the record was not found, lets not tweet about it
-          end
-        end
+  def post
+    if current_user && params[:subject_id] && params[:subject_type] && (params[:tweet] || params[:facebook] || params[:dothis])
+      #Like.add_and_post( current_user.id, params[:subject_id], params[:message], params[:tweet], params[:facebook], params[:dothis])
+      ZZ::Async::ProcessLike.enqueue( 'add',current_user.id, params[:subject_id], params[:subject_type],params[:message], params[:tweet], params[:facebook], params[:dothis])
     end
     render :nothing => true
   end
 
   def destroy
-      if current_user && params[:subject_id]
-          #Like.remove( current_user.id, params[:subject_id])
-          ZZ::Async::Like.enqueue( 'remove', current_user.id, params[:subject_id])
-      end
-      render :nothing => true
-  end
-
-  def post
-    if current_user && params[:subject_id] && (params[:tweet] || params[:facebook] || params[:dothis])
-      #Like.post_with_preferences( current_user.id, params[:subject_id], params[:message], params[:tweet], params[:facebook], params[:dothis])
-      ZZ::Async::Like.enqueue( 'post_with_preferences',current_user.id, params[:subject_id], params[:message], params[:tweet], params[:facebook], params[:dothis])
+    if current_user && params[:subject_id]
+      #Like.remove( current_user.id, params[:subject_id])
+      ZZ::Async::ProcessLike.enqueue( 'remove', current_user.id, params[:subject_id])
     end
     render :nothing => true
   end
+
 end

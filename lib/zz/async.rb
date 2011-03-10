@@ -9,7 +9,7 @@ require 'zz/async/deliver_share'
 require 'zz/async/update_picon'
 require 'zz/async/generate_thumbnails'
 require 'zz/async/test_noop'
-require 'zz/async/like'
+require 'zz/async/process_like'
 require 'zz/async/social'
 module ZZ
   module Async

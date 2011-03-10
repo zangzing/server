@@ -2,7 +2,7 @@
   <div id="ld-inner">
     <form action="/service/likes/<%=@subj_id%>/post" id ="social_like_form_<%=@subj_id%>">
      <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
-    <input name="subj_type" value="<%=@subj_type%>" type="hidden">
+    <input name="subject_type" value="<%=@subj_type%>" type="hidden">
     <div id="ld-top">
       Post your like on
       <input id="facebook_box" name="facebook" value="true" type='checkbox'   <%=( @is_facebook_linked  ? "authorized='yes' checked='checked'" : "" )%>/>
@@ -21,42 +21,3 @@
     </form>
   </div>
 </div>
-
-<script type="text/javascript">
-
-    $("#facebook_box").click( function(){
-        if( $(this).is(':checked')  && !$("#facebook_box").attr('authorized')){
-            $(this).attr('checked', false);
-            oauthmanager.login( zz.path_prefix + '/facebook/sessions/new', function(){
-                $("#facebook_box").attr('checked', true);
-                $("#facebook_box").attr('authorized', 'yes');
-            });
-        }
-    });
-
-    $("#twitter_box").click( function(){
-        if($(this).is(':checked') && !$("#twitter_box").attr('authorized')){
-            $(this).attr('checked', false);
-            oauthmanager.login( zz.path_prefix + /twitter/sessions/new', function(){
-                $("#twitter_box").attr('checked', true);
-                $("#twitter_box").attr('authorized', 'yes');
-            });
-        }
-    });
-
-    $('#social-like-dialog').zz_dialog({ autoOpen: false });
-    $('#ld-cancel').click( function(){
-        $('#social-like-dialog').zz_dialog('close');
-        $('#social-like-dialog').zz_dialog().empty().remove();
-    });
-    $('#ld-ok').click( function(){
-        var data =
-        $.ajax({ type: 'POST',
-                 url:  zz.path_prefix + '/likes/<%=@subj_id%>/post',
-                 data:  $('#social_like_form_<%=@subj_id%>').serialize()
-        });
-        $('#social-like-dialog').zz_dialog('close');
-        $('#social-like-dialog').zz_dialog().empty().remove();
-    });
-    $('#social-like-dialog').zz_dialog('open');
-</script>

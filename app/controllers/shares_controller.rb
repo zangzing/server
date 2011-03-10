@@ -24,6 +24,8 @@ class SharesController < ApplicationController
   end
 
   def create
+    # Based on the route used to get here (and thus the params) we know what kind of subject does
+    # the user wants to quack! about.
     if  params[:user_id]
         @subject = User.find(params[:user_id])
         @subject_url = user_url(@subject)
@@ -37,7 +39,9 @@ class SharesController < ApplicationController
         render :json => "subject_type not specified via params", :status => 400 and return
     end
 
-    #make sure recipients its an array (emailshare submits a comma separated list of emails)
+    # make sure recipients its an array
+    # emailshare submits a comma separated list of emails
+    # postshare submits an array of social services
     rcp = (  params[:recipients].is_a?(Array) ? params[:recipients] : params[:recipients].split(',') )
     @share = Share.new( :user =>        current_user,
                         :subject =>     @subject,
@@ -51,9 +55,7 @@ class SharesController < ApplicationController
       render :json => "", :status => 400 and return
     end
 
-    if @subject.is_a?(Album)
-      #get the current batch (make sure a batch is open since shares will be sent only when the current batch is finished)
-      UploadBatch.get_current( current_user.id, @subject.id )
+    if @share.album?
       flash[:notice] = "Your album will be shared as soon as its ready."
     end
     

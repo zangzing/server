@@ -139,6 +139,26 @@ class Album < ActiveRecord::Base
      end
   end
 
+  # Adds the AlbumACL::VIEWER_ROLE to the user associated to this email
+  # or to the email itself if there is no user yet.
+  # If the email/user already has view permissions (through VIEWER or other
+  # ROLES) nothing happens
+  def add_viewer( email )
+     user = User.find_by_email( email )
+     if user
+          #is user does not have vie permissions, add them
+          unless acl.has_permission?( user.id, AlbumACL::VIEWER_ROLE)
+            acl.add_user user.id, AlbumACL::VIEWER_ROLE
+          end
+     else
+          # if the email does not have view permissions add  them
+          unless acl.has_permission?( email, AlbumACL::VIEWER_ROLE)
+              acl.add_user email, AlbumACL::VIEWER_ROLE
+          end
+     end
+  end
+
+
   def remove_contributor( id )
      acl.remove_user( id ) if contributor? id
   end
