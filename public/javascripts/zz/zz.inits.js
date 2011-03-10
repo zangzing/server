@@ -22,8 +22,7 @@ zz.init = {
     },
 
     template: function() {
-        /* Click Handlers
-         ----------------------------------------------------------------------- */
+        /* Click Handlers    ----------------------------------------------------------------------- */
 
         //top bar
         $('#header #home-button').click(function() {
@@ -31,14 +30,6 @@ zz.init = {
             ZZAt.track('button.home.click');
         });
 
-
-
-
-
-
-//        if (document.location.href.indexOf("/photos/#!") !== -1) {
-//            $('#header #view-buttons #picture-view-button').addClass('selected');
-//        }
         if (document.location.href.indexOf("/photos") !== -1) {
             $('#header #view-buttons #grid-view-button').addClass('selected');
         }
@@ -49,17 +40,13 @@ zz.init = {
             $('#header #view-buttons #activities-view-button').addClass('selected');
         }
 
-
         $('#header #view-buttons #grid-view-button').click(function() {
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
             }
-
             ZZAt.track('button.gridview.click');
-
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #grid-view-button').addClass('selected');
-
             $('#article').fadeOut(200);
             document.location.href = zz.album_base_url + "/photos";
         });
@@ -68,12 +55,9 @@ zz.init = {
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
             }
-
             ZZAt.track('button.pictureview.click');
-
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #picture-view-button').addClass('selected');
-
             $('#article').fadeOut(200);
             document.location.href = zz.album_base_url + "/photos/#!";
         });
@@ -82,12 +66,9 @@ zz.init = {
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
             }
-
             ZZAt.track('button.peopleview.click');
-
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #people-view-button').addClass('selected');
-
             $('#article').fadeOut(200);
             document.location.href = zz.album_base_url + "/people";
         });
@@ -96,41 +77,22 @@ zz.init = {
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
             }
-
             ZZAt.track('button.activitiesview.click');
-
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #activities-view-button').addClass('selected');
-
-
             $('#article').fadeOut(200);
             document.location.href = zz.album_base_url + "/activities";
         });
 
         $('#header #help-button').click(function(event) {
-
             ZZAt.track('button.help.click');
-
-//            feedback_widget.show();
+            //feedback_widget.show();
             Zenbox.show(event);
         });
 
-
         $('#header #sign-in-button').click(function() {
-            if (zz.drawer_state === zz.DRAWER_CLOSED) {
-                ZZAt.track('button.signin.click');
-
-                $('#header #sign-in-button').addClass('selected');
-                $('#sign-in').show();
-                $('#sign-up').hide();
-
-                $('#small-drawer').show().animate({height: '500px', top: '56px'}, 500, 'linear', function() {
-                    $('#user_session_email').focus();
-                });
-                zz.drawer_state = zz.DRAWER_OPEN;
-            }
+            pages.signin.show();
         });
-
 
         $('#footer #play-button').click(function() {
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
@@ -495,32 +457,6 @@ zz.init = {
     preload_rollover_images : function() {
         //todo: is there a way to query CSS to get all these?
         //wizard buttons/tabs
-//        for(var i=1;i<=4; i++){
-//            var src = "/images/bg-4step-strip-" + i + ".png"
-//            image_preloader.load_image(src)
-//
-//            var src = "/images/bg-4step-edit-" + i + ".png"
-//            image_preloader.load_image(src)
-//        }
-//
-//        //wizard buttons/tabs
-//        for(var i=1;i<=5; i++){
-//            var src = "/images/bg-5step-strip-" + i + ".png"
-//            image_preloader.load_image(src)
-//
-//            var src = "/images/bg-5step-edit-" + i + ".png"
-//            image_preloader.load_image(src)
-//        }
-//
-//        for(var i=1;i<=6; i++){
-//            var src = "/images/bg-6step-strip-" + i + ".png"
-//            image_preloader.load_image(src)
-//
-//            var src = "/images/bg-6step-edit-" + i + ".png"
-//            image_preloader.load_image(src)
-//        }
-//
-//
         for (var i = 1; i <= 6; i++) {
             var src = "/images/wiz-num-" + i + "-on.png"
             image_preloader.load_image(src)
@@ -531,7 +467,7 @@ zz.init = {
 
 
         //toolbar buttons
-//        image_preloader.load_image("/images/btn-sign-in-on.png");
+        //image_preloader.load_image("/images/btn-sign-in-on.png");
 
         //new album type rollover
         image_preloader.load_image("/images/bg-album-type-selected.png");
@@ -603,64 +539,6 @@ zz.init = {
         image_preloader.load_image("/images/btn-type-streaming.png");
 
     },
-
-//  new_user: function(){
-//
-//    $('#nav-new-album').click(function(){
-//      if (zz.drawer_open === 0) {
-//        $('#sign-in').show();
-//        $('#sign-up').hide();
-//
-//        $('#small-drawer').animate({height: '460px', top: '53px'});
-//        zz.drawer_open = 1;
-//
-//      } else {
-//        //zz.slam_drawer(880);
-//      }
-//    });
-//
-//    $('#user_username').keyup(function(event){
-//      value = $('#user_username').val();
-//      $('#update-username').empty().html(value);
-//    });
-//
-//    $('#step-sign-in-off').click(function(){
-//      $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
-//        $('#sign-in').show();
-//        $('#sign-up').hide();
-//        $('#small-drawer').animate({height: '460px', top: '53px'});
-//      });
-//
-//
-//    });
-//    $('#step-join-off').click(function(){
-//      $('#small-drawer').animate({height: '0px', top: '28px'}, function(){
-//        $('#sign-up').show();
-//        $('#sign-in').hide();
-//        $('#small-drawer').animate({height: '460px', top: '53px'});
-//      });
-//    });
-//
-//    $('#nav-sign-in').click(function(){
-//        if (zz.drawer_open === 0) {
-//            $('#sign-in').show();
-//            $('#sign-up').hide();
-//
-//            $('#small-drawer').animate({height: '460px', top: '53px'});
-//            zz.drawer_open = 1;
-//      }
-//    });
-//
-//    $('.cancel-mini').click(function(){
-//      $('#small-drawer').animate({height: '0px', top: '28px'});
-//      zz.drawer_open = 0;
-//    });
-//
-//    $(zz.validate.sign_in.element).validate(zz.validate.sign_in);
-//    $(zz.validate.join.element).validate(zz.validate.join);
-//
-//
-//  },
 
     album_people_view: function() {
         zz.init.album_timeline_or_people_view('people');

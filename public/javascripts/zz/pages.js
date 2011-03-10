@@ -8,22 +8,9 @@ var pages = {};
 
 pages.album_add_photos_tab = {
     init: function(callback, drawer_style){
-//        var url = '/albums/' + zz.album_id + '/add_photos';
-//        $('#tab-content').load(url, function(){
-//            if( drawer_style == 'edit'){
-//                $('#added-pictures-tray-container').css('bottom','5px')
-//            } else {
-//                $('#added-pictures-tray-container').css('bottom','24px')
-//            }
-//            filechooser.init();
-//            callback();
-//        });
-        
         var template = $('<div class="photochooser-container"></div>');
         $('#tab-content').html(template);
         template.zz_photochooser({});
-
-
         callback();
     },
 
@@ -926,4 +913,21 @@ pages.no_agent = {
     download: function(){
         alert("Agent should be downloading now (TODO: Set URL for download in pages.js)");
     }
+};
+
+pages.signin = {
+
+    show: function(){
+        if (zz.drawer_state === zz.DRAWER_CLOSED) {
+                ZZAt.track('button.signin.click');
+                $('#header #sign-in-button').addClass('selected');
+                $('#sign-in').show();
+                $('#sign-up').hide();
+                $('#small-drawer').show().animate({height: '500px', top: '56px'}, 500, 'linear', function() {
+                    $('#user_session_email').focus();
+                });
+                zz.drawer_state = zz.DRAWER_OPEN;
+            }
+    }
+
 };

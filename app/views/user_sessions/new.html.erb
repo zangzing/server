@@ -9,10 +9,7 @@
 <%    if @user_session && @user_session.errors -%>
       $('#sign-in p.error-notice').show();
 <%    end -%>
-      $('#sign-up').hide();
-      $('#sign-in').show();  
-      $('#small-drawer').animate({height: '480px', top: '56px'});
-      zz.drawer_state = zz.DRAWER_OPEN ;
+      pages.signin.show();
    })(jQuery);
 </script>
 <% end %>
