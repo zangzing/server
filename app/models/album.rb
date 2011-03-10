@@ -7,7 +7,7 @@ class Album < ActiveRecord::Base
 
   belongs_to :user
   has_many :photos,           :dependent => :destroy
-  has_many :shares,           :dependent => :destroy
+  has_many :shares,           :as => :subject, :dependent => :destroy
   has_many :activities,       :dependent => :destroy
   has_many :upload_batches
 
@@ -121,22 +121,22 @@ class Album < ActiveRecord::Base
     @acl ||= AlbumACL.new( self.id )
   end
 
-  def add_contributor( email )
+  def add_contributor( email, msg='' )
 
      user = User.find_by_email( email )
      if user
           #is user does not have contributor role, add it
           unless acl.has_permission?( user.id, AlbumACL::CONTRIBUTOR_ROLE)
             acl.add_user user.id, AlbumACL::CONTRIBUTOR_ROLE
+            ZZ::Async::Email.enqueue( :contributors_added, self.id, email, user.id, msg )
           end
      else
           # if the email does not have contributor role add it.
           unless acl.has_permission?( email, AlbumACL::CONTRIBUTOR_ROLE)
               acl.add_user email, AlbumACL::CONTRIBUTOR_ROLE
+              ZZ::Async::Email.enqueue( :contributors_added, self.id, email, nil, msg )
           end
      end
-     #send notification to  contributor via email
-     ZZ::Async::Email.enqueue( :contributors_added, self.id, email, (user ? user.id : nil ) )
   end
 
   def remove_contributor( id )

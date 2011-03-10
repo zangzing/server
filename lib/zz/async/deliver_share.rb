@@ -1,7 +1,7 @@
 module ZZ
   module Async
     
-    class AlbumShare < Base
+    class DeliverShare < Base
       @queue = :io_bound
       
       # only add ourselves one time

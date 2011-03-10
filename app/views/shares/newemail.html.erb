@@ -19,18 +19,18 @@
     </ul>
     <div class="clear-fix"></div>
     
-    <%= form_for [@share], :url => create_album_share_path(@album)  do |f| %>
-      <%= f.error_messages %>  
+    <%= form_for @share, :url => create_album_share_path(@album)  do |f| %>
+      <input type="hidden" name="service" value="email">
       <dl id="email-share-form">
         <dt>To</dt>
         <dd id="the-list">
 
-           <input type="text" id="contact-list" name="email_share[to]" />
+           <input type="text" id="contact-list" name="recipients" />
 
        </dd>
         <div class="clear-fix"></div>
         <dt>Message</dt>
-        <dd class="textarea"><textarea rows="4" name="email_share[message]" id="email_share_message"></textarea></dd>
+        <dd class="textarea"><textarea rows="4" name="message" id="email_share_message"></textarea></dd>
       </dl>
       <div class="clear-fix"></div>
       

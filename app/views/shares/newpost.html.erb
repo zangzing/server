@@ -4,29 +4,29 @@
 </div>
 
 <div id="scroll-body">
-<form method="post" id="new_post_share" action="">
+ <%= form_for [@share], :url => create_album_share_path(@album) , :html =>{ :id => "new_post_share" } do |f| %>
 
+<!--form method="post" id="new_post_share" action=""-->
+    <input type="hidden" name="service" value="social">
     <div id="form-container" class="clearfix">
       <dl id="social-form" class="clearfix">
-        <dt id="network"><input type="checkbox" name="post_share[facebook]" id="facebook_box"  value="1" <%=( @share.facebook == '1' ? "authorized='yes' checked='checked'" : "" )%> /> <img src="/images/icon-facebook-16.png" /></dt>
+        <dt id="network"><input type="checkbox" name="recipients[]" id="facebook_box"  value="facebook" <%=( @facebook == '1' ? "authorized='yes' checked='checked'" : "" )%> /> <img src="/images/icon-facebook-16.png" /></dt>
         <dd>Facebook</dd>
-        <dt><input type="checkbox" name="post_share[twitter]" id="twitter_box"  value="1" <%=( @share.twitter == '1' ? "authorized='yes' checked='checked'" : "" )%>  /> <img src="/images/icon-twitter-16.png" /></dt>
+        <dt><input type="checkbox" name="recipients[]" id="twitter_box"  value="twitter" <%=( @twitter == '1' ? "authorized='yes' checked='checked'" : "" )%>  /> <img src="/images/icon-twitter-16.png" /></dt>
         <dd>Twitter</dd>
         <dt></dt><dd id="character-count">0 characters</dd>        
         <div class="clear-fix"></div>
         
         <dt>Post</dt>
-        <dd id="post-text"><textarea rows="3" name="post_share[message]" id="post_share_message"></textarea></dd>    
+        <dd id="post-text"><textarea rows="3" name="message" id="post_share_message"></textarea></dd>
       </dl>  
       
       <div id="form-actions">
         <a id="cancel-share" class="black-button"><span>Cancel</span></a>
         <a id="post_share_button" class="green-button"><span>Post</span></a>
-
-        <!--<a href="javascript:void(0);" id="cancel-share">Cancel</a> <input type="image" id="post_share_button" src="/images/btn-post-<%=( @share.twitter == '1' || @share.facebook == '1' ? "on" : "off" )%>.png" name="submit" id="social-submit" />-->
       </div>
       
     </div>
-  </form>
+  <%end%>
 </div>
 
