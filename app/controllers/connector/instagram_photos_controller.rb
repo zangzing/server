@@ -1,27 +1,27 @@
 class Connector::InstagramPhotosController < Connector::InstagramController
 
   def index
-    folder_list = client.user_media_feed(nil)
-    folder_list.reject! { |item| item[:type] != 'image' }
-    folders = folder_list.map { |p|
+    photo_list = client.user_media_feed(feed_owner)
+    photo_list.reject! { |item| item[:type] != 'image' }
+    photos = photo_list.map { |p|
       {
         :name => p[:caption] || '',
         :id   => p[:id],
         :type => 'photo',
         :thumb_url => p[:images][:thumbnail][:url],
         :screen_url =>p[:images][:low_resolution][:url],
-        :add_url => instagram_photo_action_path(:photo_id => p['id'], :action => 'import'),
+        :add_url => instagram_photo_action_path(:photo_id => p[:id], :action => 'import'),
         :source_guid => make_source_guid(p)
       }
     }
 
-    #expires_in 10.minutes, :public => false
-    render :json => JSON.fast_generate(folders)
+    expires_in 10.minutes, :public => false
+    render :json => JSON.fast_generate(photos)
   end
 
   def import
     photo_data = client.media_item(params[:photo_id])
-    current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
+    current_batch = UploadBatch.get_current(current_user.id, params[:album_id])
     photo = Photo.create(
             :caption => photo_data[:caption] || '',
             :album_id => params[:album_id],

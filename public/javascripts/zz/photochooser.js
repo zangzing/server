@@ -608,7 +608,7 @@
             //Instagram
             roots.push(
             {
-                open_url: zz.path_prefix + '/instagram/folders/root/photos.json', //Seems like Instagram has no albums, just images feed
+                open_url: zz.path_prefix + '/instagram/folders.json',
                 type: 'folder',
                 name: 'Instagram',
                 src: '/images/folders/instagram_off.jpg',

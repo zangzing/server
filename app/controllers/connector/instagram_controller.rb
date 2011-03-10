@@ -38,5 +38,16 @@ protected
     "instagram_"+Photo.generate_source_guid(photo_info[:images][:standard_resolution][:url])
   end
 
+  def http_timeout
+    SERVICE_CALL_TIMEOUT[:instagram]
+  end
+
+  def feed_owner
+    case params[:target]
+      when 'my-photos' then 'self'
+      else nil
+    end
+  end
+
 
 end
