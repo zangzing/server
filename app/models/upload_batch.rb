@@ -53,7 +53,7 @@ class UploadBatch < ActiveRecord::Base
     if self.state == 'closed' && self.ready?
 
        #send album shares even if there were no photos uploaded
-       Share.send_album_shares( self.user_id, self.album_id )
+       Share.deliver_shares( self.user_id, self.album_id )
 
        if photos.length > 0
           #Notify uploader that upload batch is finished

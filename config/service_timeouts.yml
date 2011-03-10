@@ -9,3 +9,4 @@
 :shutterfly: <%= 5.seconds %>
 :kodak: <%= 5.seconds %>
 :mslive: <%= 5.seconds %>
+:instagram: <%= 5.seconds %>

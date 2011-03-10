@@ -195,6 +195,16 @@ Server::Application.routes.draw do
       match '/shutterfly/folders.:format' => 'shutterfly_folders#index', :as => :shutterfly_folders
       match '/shutterfly/folders/:sf_album_id/:action.:format' => 'shutterfly_folders#index', :as => :shutterfly_folder_action
 
+      #instagram
+      match '/instagram/sessions/new' => 'instagram_sessions#new', :as => :new_instagram_session
+      match '/instagram/sessions/create' => 'instagram_sessions#create', :as => :create_instagram_session
+      match '/instagram/sessions/destroy' => 'instagram_sessions#destroy', :as => :destroy_instagram_session
+      match '/instagram/folders/:target/photos.:format' => 'instagram_photos#index', :as => :instagram_photos
+      match '/instagram/folders/:target/photos/:photo_id/:action' => 'instagram_photos#index', :as => :instagram_photo_action
+      match '/instagram/folders.:format' => 'instagram_folders#index', :as => :instagram_folders
+      match '/instagram/folders/:target/:action.:format' => 'instagram_folders#index', :as => :instagram_folder_action
+
+
       #photobucket
       match '/photobucket/sessions/new' => 'photobucket_sessions#new', :as => :new_photobucket_session
       match '/photobucket/sessions/create' => 'photobucket_sessions#create', :as => :create_photobucket_session

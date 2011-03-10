@@ -309,7 +309,13 @@
             var file_system_on_error = function(error){
                 if(typeof(error.status) === 'undefined'){
                     self.bodyElement.hide().load(pages.no_agent.url, function(){
-                        pages.no_agent.init_from_filechooser(function(){});
+                        pages.no_agent.filechooser(function(){
+                            self.openFolder(self.stack.pop());
+                            self.bodyElement.css('top', '70px');
+                             $('.photochooser-header').show();
+                        });
+                        $('.photochooser-header').css('display','none');
+                        self.bodyElement.css( 'top', '0px');
                         self.bodyElement.fadeIn('fast');
                     });
                 }
@@ -599,6 +605,26 @@
 
             });
 
+            //Instagram
+            roots.push(
+            {
+                open_url: zz.path_prefix + '/instagram/folders.json',
+                type: 'folder',
+                name: 'Instagram',
+                src: '/images/folders/instagram_off.jpg',
+                rolloverSrc: '/images/folders/instagram_on.jpg',
+
+                on_error: function(){
+                    var folder = this;
+                    self.bodyElement.hide().load('/static/connect_messages/connect_to_instagram.html', function(){
+                        self.bodyElement.find('#connect-button').click(function(){
+                            self.open_login_window(folder, zz.path_prefix + '/instagram/sessions/new');
+                        });
+                        self.bodyElement.fadeIn('fast');
+                    });
+                }
+
+            });
 
             //ZangZing
             roots.push(

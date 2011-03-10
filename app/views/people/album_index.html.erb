@@ -9,16 +9,31 @@
       Contributors
     </li>
     <%@contributors.each do | user | %>
-        <%=if (photo_count = @album.photos.find_all_by_user_id(user.id).length) > 0
-               render :partial => 'contributor', :locals => { :user => user, :photo_count => photo_count }
-           end %>
+        <%if (photo_count = @album.photos.find_all_by_user_id(user.id).length) > 0%>
+               <%=render :partial => 'contributor', :locals => { :user => user, :photo_count => photo_count }%>
+           <%else
+               @inactive_contributors << user.name
+        end%>
     <%end%>
 
-    <% if @inactive_names.length > 0 %>
+    <% if @inactive_contributors.length > 0 || @nonuser_contributors > 0%>
         <li class="item">
            <div  class="header bar"></div>
-            <div class="content"><%=@inactive_names %></div>
-           <div  class="header bar"></div>
+            <div class="content">
+            <%if @inactive_contributors.length > 0%>
+                 <%=@inactive_contributors.join(',')%>
+                 <%=(@nonuser_contributors > 0 ? 'and' : '')%>
+            <%end%>
+            <%if @nonuser_contributors > 0%>
+                <%=@nonuser_contributors%>
+                <%if  @inactive_contributors.length > 0%>
+                  other
+                <%end%>
+            <%end%>
+            less active contributors  
+            </div>
+           <div  class="header"> </div>
+            <div  class="header"> </div>
         </li>
     <%end%>
 

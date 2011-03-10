@@ -1,0 +1,26 @@
+---
+development:
+  :client_secret: 7a5fe9f97a074305b16e49a2432a6613
+  :client_id: ff4b0f9eff7a437485c77be2c4b528e9
+
+perftest:
+  :client_secret: 7a5fe9f97a074305b16e49a2432a6613
+  :client_id: ff4b0f9eff7a437485c77be2c4b528e9
+
+test:
+  :client_secret: 7a5fe9f97a074305b16e49a2432a6613
+  :client_id: ff4b0f9eff7a437485c77be2c4b528e9
+
+photos_production:
+  :client_secret: 7a5fe9f97a074305b16e49a2432a6613
+  :client_id: ff4b0f9eff7a437485c77be2c4b528e9
+
+photos_staging:
+  :client_secret: 7a5fe9f97a074305b16e49a2432a6613
+  :client_id: ff4b0f9eff7a437485c77be2c4b528e9
+
+
+eytest:
+  :client_secret: 7a5fe9f97a074305b16e49a2432a6613
+  :client_id: ff4b0f9eff7a437485c77be2c4b528e9
+

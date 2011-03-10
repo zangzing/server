@@ -91,11 +91,11 @@ zz.drawers = {
 //                type: 'full',
 //
 //                init: function(callback){
-//                    pages.album_share_tab.init(callback);
+//                    pages.share.init(callback);
 //                },
 //
 //                bounce: function(success, failure){
-//                    pages.album_share_tab.bounce(success, failure);
+//                    pages.share.bounce(success, failure);
 //                }
 //            }
 //
@@ -211,11 +211,11 @@ zz.drawers = {
 
 
                 init: function(callback){
-                    pages.album_share_tab.init(callback);
+                    pages.share.init(callback);
                 },
 
                 bounce: function(success, failure){
-                    pages.album_share_tab.bounce(success, failure);
+                    pages.share.bounce(success, failure);
                 }
             }
 

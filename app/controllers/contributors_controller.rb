@@ -39,7 +39,7 @@ class ContributorsController < ApplicationController
           error_emails << email
           next  #its neither a contact id nor a valid email. add to errors and go to next itreration
         end
-        @album.add_contributor( email )
+        @album.add_contributor( email, params[:contact_message] )
     end
 
     if error_emails.length > 0;
@@ -55,7 +55,7 @@ class ContributorsController < ApplicationController
   def index
     fetch_album
 
-    contributor_ids = @album.contributors
+    contributor_ids = @album.contributors( true ) #exact, only contributors we do not want album admins here
 
     @results = []
     contributor_ids.each do |id|
