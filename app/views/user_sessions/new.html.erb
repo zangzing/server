@@ -1,15 +1,10 @@
-<div class="offset" >
-  <% @user_session.errors.each do | key, value| %>
-    <%= key %>:  <%=value %>
-  <%end %>
-</div>
 <% content_for :page_javascript do  # this places our page-specific js with the rest of the js at the bottom of the html -%>
 <script>
   (function($) {
-<%    if @user_session && @user_session.errors -%>
+      pages.signin.show();
+<%    if (@user_session && @user_session.errors) || flash.length > 0 -%>
       $('#sign-in p.error-notice').show();
 <%    end -%>
-      pages.signin.show();
    })(jQuery);
 </script>
 <% end %>

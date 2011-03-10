@@ -1,15 +1,18 @@
 <div class="flash-box">
   <%if @user_session && @user_session.errors%>
       <%@user_session.errors.each do | key, value| %>
-          <%if key == 'email' || key == 'password' %>
-              <p class="error-notice"><%=key %> <%=value %></p>
-          <%else %>
-              <p class="error-notice"><%=value %></p>
-          <% end %>
+          <p class="error-notice"><%=key %> <%=value %></p>
       <%end%>
   <%else %>
       <p class="error-notice">Please check the highlighted field(s) below...</p>
   <%end %>
+  <% [:notice, :error].each do |key| %>
+     <% if flash[key] %>
+        <div class="<%= key %>" id="flash">
+          <%= flash[key] %>
+        </div>
+     <% end %>
+  <% end %>
 </div>
 
 <form method="post" id="new_user_session" class="new_user_session" action=<%=user_sessions_path%>>

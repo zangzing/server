@@ -123,7 +123,7 @@ Server::Application.routes.draw do
     # oauth
     match '/users/:id/agents'     => 'agents#index',                 :as => :agents
     match '/agent/info'           => 'agents#info',                  :as => :agent_info
-    match '/agents/check'         => 'agents#check',              :as => :check
+    match '/agents/check'         => 'agents#check',                 :as => :check
     match '/oauth/authorize'      => 'oauth#authorize',              :as => :authorize
     match '/oauth/agentauthorize' => 'oauth#agentauthorize',         :as => :agentauthorize
     match '/oauth/revoke'         => 'oauth#revoke',                 :as => :revoke
