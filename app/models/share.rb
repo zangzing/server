@@ -1,63 +1,58 @@
-# == Schema Information
-# Schema version: 60
-#
-# Table name: shares
-#
-#  id         :integer         not null, primary key
-#  album_id   :integer
-#  user_id    :integer
-#  type       :string(255)
-#  subject    :string(255)
-#  message    :text
-#  created_at :datetime
-#  updated_at :datetime
-#
-
 #
 #   Copyright 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
-
 class Share < ActiveRecord::Base
+  attr_accessible :user, :subject, :subject_url, :service, :recipients, :message
+  serialize :recipients
+
   belongs_to :user
-  belongs_to :album
+  belongs_to :subject, :polymorphic => true
 
-  has_many :recipients, :dependent => :destroy
-  validates_presence_of :album_id, :user_id
+  validates_presence_of :user_id, :subject_id, :subject_type, :recipients
+
+  validates  :service, :presence => true, :inclusion => { :in => %w{email social} }
   
-  def self.factory(user, album, album_url, params)
-    share = EmailShare.factory(user, params[:email_share]) if params[:email_share]
-    share = PostShare.factory(user, params[:post_share]) if params[:post_share]
-    share.album_url = album_url
-    user.shares  << share
-    album.shares << share
-    return share
-  end
+  validates_each  :recipients, :if => 'service == "email"' do |record, attr, value|
+      value.each do |email|
+          record.errors.add attr, "Email address not valid: "+email unless ZZ::EmailValidator.validate( email )
+      end
+   end
 
-  def self.send_album_shares( user_id, album_id )
-    if album_id.nil? || user_id.nil?
-      raise Exception.new("Album Id and User Id must be valid Ids (not nil)")
+  validates_each  :recipients, :if => 'service == "social"' do |record, attr, value|
+     value.each do |recipient|
+        record.errors.add attr, recipient+" Social service not supported" unless  %w{ twitter facebook}.include?( recipient )
+      end
+   end
+ 
+  
+  def self.deliver_shares( user_id, subject_id )
+    if subject_id.nil? || user_id.nil?
+      raise Exception.new("Subject Id and User Id cannot be nil")
     end
 
-    shares = Share.find_all_by_user_id_and_album_id(user_id, album_id)
-    shares.each { |share|  ZZ::Async::AlbumShare.enqueue( share.id ) } unless shares.nil?
+    shares = Share.find_all_by_user_id_and_subject_id(user_id, subject_id)
+    shares.each { |share|  ZZ::Async::DeliverShare.enqueue( share.id ) }
   end
 
-  protected
   def deliver
-      if self.sent_at.nil?
-        self.sent_at = Time.now
-        bitly = Bitly.new(BITLY_API_KEYS[:username], BITLY_API_KEYS[:api_key])
-        url = bitly.shorten( self.album_url )
-        self.bitly = url.short_url
-        if self.save
-          #Create ShareActivity
-          sa = ShareActivity.create( :user => self.user, :album => self.album, :share => self )
-          self.album.activities << sa
-          return true
-        end
-      end
-      return false  
-  end
+    #prevent shares from being delivered twice
+     return false unless self.sent_at.nil?
 
+     case service
+       when 'email'
+            self.recipients.each do |recipient |
+                ZZ::Async::Email.enqueue( :album_shared_with_you, self.user_id, recipient, self.subject_id, self.message )
+            end
+        when 'social'
+            self.recipients.each do | service |
+                ZZ::Async::Social.enqueue( service, self.user_id, self.subject_url, self.message )
+            end
+     end
+     self.sent_at = Time.now
+     sa = ShareActivity.create( :user => self.user, :album => self.subject, :share => self )
+     self.subject.activities << sa
+     self.save
+     return true
+  end
 
 end

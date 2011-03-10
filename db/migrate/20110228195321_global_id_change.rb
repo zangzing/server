@@ -243,18 +243,7 @@ class GlobalIdChange < ActiveRecord::Migration
     add_index "photos", ["upload_batch_id"], :name => "index_photos_on_upload_batch_id"
     add_index "photos", ["user_id"], :name => "index_photos_on_user_id"
 
-    create_table "recipients", :force => true do |t|
-      t.column   :share_id, :bigint
-      t.string   "service"
-      t.string   "name"
-      t.string   "address"
-      t.datetime "created_at"
-      t.datetime "updated_at"
-    end
-
-
-    add_index "recipients", ["share_id"], :name => "index_recipients_on_share_id"
-
+    
     create_table "sessions", :force => true do |t|
       t.column   :session_id, :bigint, :null => false
       t.text     "data"
@@ -266,24 +255,7 @@ class GlobalIdChange < ActiveRecord::Migration
     add_index "sessions", ["session_id"], :name => "index_sessions_on_session_id"
     add_index "sessions", ["updated_at"], :name => "index_sessions_on_updated_at"
 
-    create_table "shares", :force => true do |t|
-      t.column   :album_id, :bigint, :null => false
-      t.column   :user_id, :bigint, :null => false
-      t.string   "type"
-      t.string   "subject"
-      t.text     "message"
-      t.datetime "sent_at"
-      t.datetime "created_at"
-      t.datetime "updated_at"
-      t.string   "album_url"
-      t.string   "bitly"
-    end
-
-
-    add_index "shares", ["album_id"], :name => "index_shares_on_album_id"
-    add_index "shares", ["user_id", "album_id"], :name => "userid_albumid_index"
-    add_index "shares", ["user_id"], :name => "index_shares_on_user_id"
-
+   
     create_table "slugs", :force => true do |t|
       t.string   "name"
       t.column   :sluggable_id, :bigint, :null => false
