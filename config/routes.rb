@@ -6,6 +6,7 @@
 Server::Application.routes.draw do
 
   root :to => 'pages#home'
+  get    '/service'            => 'pages#home'
 
   # the whole site has /service in front of it except for users
   scope '/service' do
