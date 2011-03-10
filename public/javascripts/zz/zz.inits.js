@@ -346,7 +346,7 @@ zz.init = {
                 if (view === 'grid') {   //grid view
                     for (var i = 0; i < json.length; i++) {
                         var photo = json[i];
-                        photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
+                        photo.previewSrc = agent.checkAddCredentialsToUrl(photo.thumb_url);
                         photo.src = agent.checkAddCredentialsToUrl(photo.thumb_url);
                     }
 
@@ -380,7 +380,7 @@ zz.init = {
 
                     for (var i = 0; i < json.length; i++) {
                         var photo = json[i];
-                        photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
+                        photo.previewSrc = agent.checkAddCredentialsToUrl(photo.thumb_url);
                         photo.src = agent.checkAddCredentialsToUrl(photo.screen_url);
                     }
 
