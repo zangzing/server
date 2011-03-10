@@ -129,18 +129,42 @@ class Photo < ActiveRecord::Base
     if file = data['File']
       val = file['MIMEType']
       self.image_content_type = val
+      # give preference to File width and height because it takes into account any saved rotation done to the file already
+      val = file['ImageHeight']
+      self.height = val unless val.nil?
+      val = file['ImageWidth']
+      self.width = val unless val.nil?
     end
 
-    # now special case for extracting width and height since it can be an any one of the
-    # tags
-    data.each_value do |map|
-      h = map['ImageHeight']
-      w = map['ImageWidth']
-      if h != nil
-        self.height = h
-        self.width = w
-        break  # and we are done
+
+    if self.height.nil?
+      # now special case for extracting width and height since it can be an any one of the
+      # tags
+      data.each_value do |map|
+        h = map['ImageHeight']
+        w = map['ImageWidth']
+        if h != nil
+          self.height = h
+          self.width = w
+          break  # and we are done
+        end
       end
+    end
+  end
+
+  # calculation of height that takes into account any rotation
+  def rotated_height
+    case self.orientation
+      when 6, 8 then self.width
+      else self.height
+    end
+  end
+
+  # calculation of width that takes into account any rotation
+  def rotated_width
+    case self.orientation
+      when 6, 8 then self.height
+      else self.width
     end
   end
 
@@ -171,7 +195,7 @@ class Photo < ActiveRecord::Base
   def queue_upload_to_s3
     # If state marked as uploading, pass it on
     if !self.destroyed? && self.uploading? && @do_upload
-      ZZ::ZZA.new.track_event("photo.upload.s3.start", {:id => self.id})
+      ZZ::ZZA.new.track_transaction("photo.upload.s3.start", self.id)
       ZZ::Async::S3Upload.enqueue( self.id )
       logger.debug("queued for upload")
     end
@@ -191,7 +215,7 @@ class Photo < ActiveRecord::Base
     if self.image_bucket
       # get all of the keys to remove
       keys = attached_image.all_keys
-      ZZ::ZZA.new.track_event("photo.upload.s3.delete", {:id => self.id})
+      ZZ::ZZA.new.track_transaction("photo.upload.s3.delete", self.id)
       ZZ::Async::S3Cleanup.enqueue(self.image_bucket, keys)
       logger.debug("Photo queued for s3 cleanup")
     end
@@ -205,10 +229,10 @@ class Photo < ActiveRecord::Base
   # to block the app server dispatch on it
   def resize_and_upload
     z = ZZ::ZZA.new
-    z.track_event("photo.upload.resize.start", {:id => self.id})
+    z.track_transaction("photo.upload.resize.start", self.id)
     attached_image.resize_and_upload_photos
-    z.track_event("photo.upload.resize.done", {:id => self.id})
-    z.track_event("photo.upload.done", {:id => self.id})
+    z.track_transaction("photo.upload.resize.done", self.id)
+    z.track_transaction("photo.upload.done", self.id)
     # tell the photo object it is good to go
     mark_ready
     save!
@@ -236,7 +260,7 @@ class Photo < ActiveRecord::Base
 
         # update state to loaded
         mark_loaded
-        ZZ::ZZA.new.track_event("photo.upload.s3.done", {:id => self.id})
+        ZZ::ZZA.new.track_transaction("photo.upload.s3.done", self.id)
         save!
         # clean up temp file since it has been uploaded with no errors
         remove_source
@@ -359,7 +383,7 @@ class Photo < ActiveRecord::Base
 
   def aspect_ratio
     if(self.width && self.height && self.width != 0 && self.height != 0)
-      return self.width.to_f / self.height.to_f
+      return rotated_width.to_f / rotated_height.to_f
     else
       return 0
     end
@@ -399,7 +423,7 @@ class Photo < ActiveRecord::Base
           # also only allow upload if in assigned state currently
           @duplicate_upload = true
         else
-          ZZ::ZZA.new.track_event("photo.upload.start", {:id => self.id})
+          ZZ::ZZA.new.track_transaction("photo.upload.start", self.id)
 
           self.mark_uploading
           @do_upload = true

@@ -51,6 +51,7 @@ class Identity < ActiveRecord::Base
     :twitter => {:name => 'Twitter', :icon => ''},
     :smugmug => {:name => 'SmugMug', :icon => ''},
     :photobucket => {:name => 'Photobucket', :icon => ''},
+    :instagram => {:name => 'Instagram', :icon => ''},
     :shutterfly => {:name => 'Shutterfly', :icon => ''},
     :kodak => {:name => 'Kodak Gallery', :icon => ''},
     :local => {:name => 'ZangZing Local Contacts', :icon => ''},

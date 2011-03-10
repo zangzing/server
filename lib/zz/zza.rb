@@ -389,10 +389,11 @@ module ZZ
     end
 
     # package up the event as a json string and add to output file
-    def track_event(zza_id, event, xdata, user_type, user, referrer_uri, page_uri)
+    def track_event(zza_id, event, xdata, transaction_id, user_type, user, referrer_uri, page_uri)
       evt = {
           :s => zza_id,
           :e => event,
+          :i => transaction_id,
           :t => (Time.now.to_f * 1000).round,
           :u => user,
           :v => user_type,
@@ -407,7 +408,7 @@ module ZZ
 
   # this class manages the creation and queueing of events.
   class ZZA
-    attr_accessor :referrer_uri, :page_uri, :user_type, :user, :xdata
+    attr_accessor :transaction_id, :referrer_uri, :page_uri, :user_type, :user, :xdata
     attr_reader :zza_id
 
     # create the initial infrastructure
@@ -487,8 +488,21 @@ module ZZ
       user = self.user if user.nil?
       referrer_uri = self.referrer_uri if referrer_uri.nil?
       page_uri = self.page_uri if page_uri.nil?
-      ZZA.sender.track_event(zza_id, event, xdata, user_type, user, referrer_uri, page_uri)
+      ZZA.sender.track_event(zza_id, event, xdata, nil, user_type, user, referrer_uri, page_uri)
     end
+
+    # same as above but tracks a transaction - a set of related operations
+    def track_transaction(event, transaction_id, xdata = nil, user_type = nil, user = nil, referrer_uri = nil, page_uri = nil)
+      ZZA.after_fork_check
+      xdata = self.xdata if xdata.nil?
+      transaction_id = self.transaction_id if transaction_id.nil?
+      user_type = self.user_type if user_type.nil?
+      user = self.user if user.nil?
+      referrer_uri = self.referrer_uri if referrer_uri.nil?
+      page_uri = self.page_uri if page_uri.nil?
+      ZZA.sender.track_event(zza_id, event, xdata, transaction_id, user_type, user, referrer_uri, page_uri)
+    end
+
 
   end
 end

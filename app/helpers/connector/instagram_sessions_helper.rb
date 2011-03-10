@@ -1,0 +1,2 @@
+module Connector::InstagramSessionsHelper
+end

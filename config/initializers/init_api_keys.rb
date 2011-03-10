@@ -4,7 +4,7 @@ SERVICE_CALL_TIMEOUT = YAML.load(ERB.new(File.read("#{Rails.root}/config/service
 
 api_creds = {}
 [:flickr, :facebook, :smugmug, :shutterfly, :twitter, :yahoo, :photobucket, :ms_live,
-:bitly, :mailchimp, :zza].each do |service|
+:bitly, :mailchimp, :zza, :instagram].each do |service|
   all_env_keys = YAML.load(File.read("#{Rails.root}/config/#{service}_api_keys.yml"))
   api_creds[service] = all_env_keys[Rails.env]
 end
@@ -14,6 +14,7 @@ FACEBOOK_API_KEYS     = api_creds[:facebook]
 SMUGMUG_API_KEYS      = api_creds[:smugmug]
 SHUTTERFLY_API_KEYS   = api_creds[:shutterfly]
 PHOTOBUCKET_API_KEYS  = api_creds[:photobucket]
+INSTAGRAM_API_KEYS    = api_creds[:instagram]
 YAHOO_API_KEYS        = api_creds[:yahoo]
 TWITTER_API_KEYS      = api_creds[:twitter]
 WINDOWS_LIVE_API_KEYS = api_creds[:ms_live]
