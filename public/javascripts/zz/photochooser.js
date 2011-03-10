@@ -309,7 +309,13 @@
             var file_system_on_error = function(error){
                 if(typeof(error.status) === 'undefined'){
                     self.bodyElement.hide().load(pages.no_agent.url, function(){
-                        pages.no_agent.init_from_filechooser(function(){});
+                        pages.no_agent.filechooser(function(){
+                            self.openFolder(self.stack.pop());
+                            self.bodyElement.css('top', '70px');
+                             $('.photochooser-header').show();
+                        });
+                        $('.photochooser-header').css('display','none');
+                        self.bodyElement.css( 'top', '0px');
                         self.bodyElement.fadeIn('fast');
                     });
                 }

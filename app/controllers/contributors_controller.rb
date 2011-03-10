@@ -55,7 +55,7 @@ class ContributorsController < ApplicationController
   def index
     fetch_album
 
-    contributor_ids = @album.contributors
+    contributor_ids = @album.contributors( true ) #exact, only contributors we do not want album admins here
 
     @results = []
     contributor_ids.each do |id|
