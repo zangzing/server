@@ -83,6 +83,11 @@ class ApplicationController < ActionController::Base
       end
     end
 
+
+    # This is the json version of require user. Saves the request referer instead of the
+    # resquest fullpath so that the user returns to the page from where the xhr call originated
+    # instead of then json-location. Instead of redirecting, it just returns 401 with an informative
+    # json message that may or may not be used.
     def require_user_json
       unless current_user
         session[:return_to] = request.referer
