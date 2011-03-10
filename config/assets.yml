@@ -1,11 +1,8 @@
 package_assets: on
-compress_assets: on
+compress_assets: off
 embed_assets: off
 
 
-javascript_compressor: closure
-compressor_options:
-  compilation_level: "SIMPLE_OPTIMIZATIONS"
 
 
 
