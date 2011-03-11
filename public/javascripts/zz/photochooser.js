@@ -594,8 +594,8 @@
                 open_url: zz.path_prefix + '/picasa/folders.json',
                 type: 'folder',
                 name: 'Picasa Web',
-                src: '/images/folders/picasa_off.jpg',
-                rolloverSrc: '/images/folders/picasa_on.jpg',
+                src: '/images/folders/picasa_web_off.jpg',
+                rolloverSrc: '/images/folders/picasa_web_on.jpg',
                 on_error: function(){
                     var folder = this;
                     self.bodyElement.hide().load('/static/connect_messages/connect_to_picasa_web.html', function(){
