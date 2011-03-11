@@ -10,7 +10,7 @@ class Notifier < ActionMailer::Base
     Rails.logger
   end
   
-  def contributors_added(album_id, email )
+  def contributors_added(album_id, email, user_id, message )
      @album = Album.find( album_id)
      @user = @album.user
      @album_mail = @album.short_email
