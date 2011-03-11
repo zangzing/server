@@ -26,7 +26,7 @@ zz.init = {
 
         //top bar
         $('#header #home-button').click(function() {
-            document.location.href = '/';
+            document.location.href = zz.path_prefix + '/';
             ZZAt.track('button.home.click');
         });
 
