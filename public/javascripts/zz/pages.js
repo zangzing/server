@@ -921,9 +921,9 @@ pages.no_agent = {
 	    ZZAt.track('agentdownload.get');
         
 		if($.client.os =="Mac"){
-			document.location.href = 'http://downloads.zangzing.com/agent/darwin/zangzing.pkg'
+			document.location.href = 'http://downloads.zangzing.com/agent/darwin/ZangZing-Setup.pkg'
 		} else {
-			document.location.href = 'http://downloads.zangzing.com/agent/win32/zangzing.exe'
+			document.location.href = 'http://downloads.zangzing.com/agent/win32/ZangZing-Setup.exe'
 		}
 		
     }
