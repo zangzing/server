@@ -12,12 +12,12 @@ test:
   :client_id: ff4b0f9eff7a437485c77be2c4b528e9
 
 photos_production:
-  :client_secret: 7a5fe9f97a074305b16e49a2432a6613
-  :client_id: ff4b0f9eff7a437485c77be2c4b528e9
+  :client_secret: 7e76394436054b91a336b9f7564651a4
+  :client_id: 0f2a0c366f3041cf9bc9ecc9a2c3c19d
 
 photos_staging:
-  :client_secret: 7a5fe9f97a074305b16e49a2432a6613
-  :client_id: ff4b0f9eff7a437485c77be2c4b528e9
+  :client_secret: cc8743409433488bbc36963e30bc6512
+  :client_id: 660a93136d5c498a9851f654d319ce21
 
 
 eytest:
