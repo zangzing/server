@@ -72,7 +72,7 @@ var like = {
             data:    {  subject_type : subject_type },
             success: function(html){
                 $('body').append(html);
-                like.display_social_dialog();
+                like.display_social_dialog( subject_id );
             },
             error: function( xhr ){
                 // toggle in server failed, return hash and screen to previous state
@@ -144,7 +144,7 @@ var like = {
         }
     },
 
-    display_social_dialog: function(){
+    display_social_dialog: function( subject_id ){
           $("#facebook_box").click( function(){
                          if( $(this).is(':checked')  && !$("#facebook_box").attr('authorized')){
                              $(this).attr('checked', false);
