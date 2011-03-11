@@ -33,9 +33,9 @@
           </div>
 <%
     else
-        cover_aspect = (album.cover.width.to_f / album.cover.height.to_f)
+        cover_aspect = (album.cover.rotated_width.to_f / album.cover.rotated_height.to_f)
 
-        if(album.cover.width >= album.cover.height) #landscape
+        if(album.cover.rotated_width >= album.cover.rotated_height) #landscape
 
             picon_aspect = (landscape_width.to_f / landscape_height.to_f)
 
