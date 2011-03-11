@@ -179,10 +179,6 @@ var like = {
                          $('#social-like-dialog').zz_dialog().empty().remove();
                      });
                      $('#social-like-dialog').zz_dialog('open');
-    },
-
-    display_login: function( subject_type ){
-
     }
 };
 

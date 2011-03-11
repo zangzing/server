@@ -147,6 +147,11 @@
             tabColor:    "black",
             tabPosition: "Left"
           });
+
+          <%if session[:client_dialog] %>
+          pages.alert_dialog.show( '<%=raw session[:client_dialog] %>' );
+          <% session[:client_dialog] = nil %>
+          <%end%>
       });
 
     </script>

@@ -141,8 +141,8 @@ class PhotosController < ApplicationController
           redirect_to new_user_session_url and return
         end
         unless @album.viewer?( current_user.id )
-          flash[:notice] = "You have asked to browse a password protected album. You must be invited by the creator to see it"
-          redirect_to :back, status=> 401 and return
+          session[:client_dialog] = album_pwd_dialog_url( @album )
+          redirect_to user_url( @album.user ) and return
         end
     end
     

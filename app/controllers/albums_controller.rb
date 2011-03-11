@@ -134,6 +134,14 @@ class AlbumsController < ApplicationController
      render :nothing => true
   end
 
+  def pwd_dialog
+    @album = Album.find(params[:id])
+    render :layout => false
+  end
+
+  def request_access
+    @album = Album.find(params[:id])
+  end
   
   private
   def authorized_user
