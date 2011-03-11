@@ -16,7 +16,8 @@ class Like < ActiveRecord::Base
   include Rails.application.routes.url_helpers
   default_url_options[:host] = Server::Application.config.application_host
 
-  def self.add( user_id, subj_id, subj_type, message=nil, tweet=false, facebook=false, dothis=false )
+  def self.add( user_id, subject_id, subject_type, message=nil, tweet=false, facebook=false, dothis=false )
+    # Save user preferences if needed
     if dothis
       user = User.find(  user_id )
       user.preferences.tweet_likes     = tweet
@@ -25,6 +26,7 @@ class Like < ActiveRecord::Base
       user.preferences.save
     end
 
+    # add the like
     begin
       #Create Like record, increase the subject_ids like counter
       like = Like.create( :user_id => user_id, :subject_id => subject_id, :subject_type => subject_type)
