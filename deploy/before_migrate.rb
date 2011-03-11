@@ -10,6 +10,9 @@
 # If there were any jobs and they have not finished, raise exception and the
 # user should try to deploy again
 
+# need valid redis for migrate
+run "ln -nfs #{shared_path}/config/redis.yml #{release_path}/config/redis.yml"
+
 run "sudo monit stop all -g resque_photos"
 #if %x[ps axo command|grep resque[-]|grep -c Forked].to_i > 0
 #  raise "Resque Workers Working!!. I have asked them to stop when finished. Please retry deploy"
