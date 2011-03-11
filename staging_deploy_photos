@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+
+# use this option if you want to wipe the db
+# "-m 'rake build:db'"
+#
+
+require 'readline'
+
+def confirm_continue
+  print "Do you want to continue? (Yes/n): "
+  r = Readline.readline()
+  if r != "Yes"
+    puts "Not deploying. Bye."
+    exit
+  end
+end
+
+puts "WARNING: you are about to deploy to PHOTOS STAGING."
+#confirm_continue
+
+options = ARGV[0] ? ARGV[0] : ""
+
+cmd = "ey deploy -e photos_staging -v " + options
+puts
+puts "About to deploy to PHOTOS STAGING with the following command: "
+puts "\n" + cmd + "\n\n"
+
+confirm_continue
+
+# ok, finally run the command
+# this is purposefully difficult to avoid accidental deploys
+# to production
+Kernel.exec(cmd)

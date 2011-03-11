@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+
+require 'readline'
+
+def confirm_continue
+  print "Do you want to continue? (Yes/n): "
+  r = Readline.readline()
+  if r != "Yes"
+    puts "Not deploying. Bye."
+    exit
+  end
+end
+
+puts "WARNING: you are about to deploy to PHOTOS PRODUCTION."
+confirm_continue
+
+puts
+print "Enter the tag for the deploy: "
+tag = Readline.readline()
+puts
+print "Enter the tag for the deploy again to verify: "
+confirm_tag = Readline.readline()
+if (confirm_tag != tag)
+  puts "The tags did not match, not deploying."
+  exit
+end
+
+cmd = "ey deploy -e photos_production -a photos -v --ref #{tag}"
+puts
+puts "About to deploy to PHOTOS PRODUCTION with the following command: "
+puts "\n" + cmd + "\n\n"
+
+confirm_continue
+
+# ok, finally run the command
+# this is purposefully difficult to avoid accidental deploys
+# to production
+Kernel.exec(cmd)
