@@ -869,7 +869,7 @@ pages.no_agent = {
             if( $.isFunction(  when_ready )) when_ready();
         });
 
-	   ZZAt.track('agentdownload.present');
+	   ZZAt.track('agentdownload.requested');
     },
 
     dialog: function( onClose ){
@@ -891,7 +891,7 @@ pages.no_agent = {
              });
         });
 
-	    ZZAt.track('agentdownload.present'); 
+	    ZZAt.track('agentdownload.requested'); 
     },
 
     poll_agent: function( when_ready ){
@@ -920,21 +920,12 @@ pages.no_agent = {
     download: function(){
 	    ZZAt.track('agentdownload.get');
         
-		var curl = "http://downloads.zangzing.com/agent/"
 		if($.client.os =="Mac"){
-			curl += 'darwin';
+			document.location.href = 'http://downloads.zangzing.com/agent/darwin/ZangZing-Setup.pkg'
 		} else {
-			curl += 'win32';
+			document.location.href = 'http://downloads.zangzing.com/agent/win32/ZangZing-Setup.exe'
 		}
-		curl += '/check.json';
-
-		$.ajax({
-		  url: curl,
-		  dataType: 'json',
-		  success: function(data) {
-			alert(data);
-		  }
-		});
+		
     }
 };
 
@@ -960,4 +951,18 @@ pages.signin = {
             }
     }
 
+};
+
+pages.alert_dialog = {
+    show: function(alert_dialog_url){
+        if( typeof(alert_dialog_url) != 'undefined'){
+            $.ajax({ type:    'GET',
+                url:     alert_dialog_url,
+                success: function(html){
+                    $('body').append(html);
+                }
+            });
+
+        }
+    }
 };
