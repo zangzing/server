@@ -34,7 +34,7 @@ class Connector::InstagramPhotosController < Connector::InstagramController
     )
 
     ZZ::Async::GeneralImport.enqueue( photo.id, photo_data[:images][:standard_resolution][:url] )
-    render :json => Photo.to_json_lite(photo_data)
+    render :json => Photo.to_json_lite(photo)
   end
 
 end
