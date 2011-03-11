@@ -869,7 +869,7 @@ pages.no_agent = {
             if( $.isFunction(  when_ready )) when_ready();
         });
 
-	   ZZAt.track('agentdownload.present');
+	   ZZAt.track('agentdownload.requested');
     },
 
     dialog: function( onClose ){
@@ -891,7 +891,7 @@ pages.no_agent = {
              });
         });
 
-	    ZZAt.track('agentdownload.present'); 
+	    ZZAt.track('agentdownload.requested'); 
     },
 
     poll_agent: function( when_ready ){
@@ -921,9 +921,9 @@ pages.no_agent = {
 	    ZZAt.track('agentdownload.get');
         
 		if($.client.os =="Mac"){
-			alert("TODO: download url for mac");
+			document.location.href = 'http://downloads.zangzing.com/agent/darwin/zangzing.pkg'
 		} else {
-			alert("TODO: download url for windows");
+			document.location.href = 'http://downloads.zangzing.com/agent/win32/zangzing.exe'
 		}
 		
     }
