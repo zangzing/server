@@ -125,7 +125,7 @@ class Album < ActiveRecord::Base
 
      user = User.find_by_email( email )
      if user
-          #is user does not have contributor role, add it
+          #if user does not have contributor role, add it
           unless acl.has_permission?( user.id, AlbumACL::CONTRIBUTOR_ROLE)
             acl.add_user user.id, AlbumACL::CONTRIBUTOR_ROLE
             ZZ::Async::Email.enqueue( :contributors_added, self.id, email, user.id, msg )
@@ -197,11 +197,9 @@ class Album < ActiveRecord::Base
       else
         user = User.find_by_email( email )
       end
-      if user
-        # The email is a contributor and a user exists for this email.
-        # update the ACL to refer to this user by id and no longer by email
-        ACLManager.global_replace_user_key( email, user.id )
-      end
+      # The email is a contributor and a user exists for this email.
+      # update all the ACLs to refer to this user by id and no longer by email
+      user.update_acls_with_id if user
     end
     user
   end
