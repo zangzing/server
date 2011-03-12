@@ -67,7 +67,7 @@
 
             //template for cells
             //todo: when allowReorder is 'false' don't add the drop target elements
-            var template = $('<div class="photogrid-cell"><div class="photogrid-droppable" style="background-color:blue"></div></div>');
+            var template = $('<div class="photogrid-cell"><div class="photogrid-droppable"></div></div>');
             template.css({
                 width: self.options.cellWidth,
                 height: self.options.cellHeight
