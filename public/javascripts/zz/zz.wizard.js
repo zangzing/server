@@ -19,6 +19,8 @@ zz.wizard = {
 
         zz.wizard.build_nav(obj, step);
 
+        var container = $('#tab-content');
+
         obj.steps[step].init(container, function(){
             zz.wizard.resize_scroll_body()
         });

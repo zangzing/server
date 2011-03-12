@@ -468,7 +468,7 @@ pages.contributors = {
                 //The contributors arrived in tmp_contact_list and declared when screen loaded
                 if( tmp_contact_list.length <= 0 ){
                     pages.contributors.present = false;
-                    pages.contributors.show_new();
+                    pages.contributors.show_new(container);
                 } else {
                      pages.contributors.present = true;
                      // initialize the tokenized contact list widget
