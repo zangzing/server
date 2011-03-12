@@ -242,7 +242,7 @@ zz.wizard = {
                 break;
             default:
                 logger.debug('zz.wizard.open_edit_album_wizard: Albums of type: '+zz.album_type+' are not supported yet.')    
-                alert('Albums of type: '+zz.album_type+' are not supported yet.')
+                //alert('Albums of type: '+zz.album_type+' are not supported yet.')
                 break
         }
     },

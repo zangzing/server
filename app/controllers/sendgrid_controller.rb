@@ -98,9 +98,8 @@ protected
         # use the passed in temp file to attach to the photo
         photo.file_to_upload = fast_local_image['filepath']
         photo.save
-        last_photo = photo
       end
-      last_photo.upload_batch.close
+      current_batch.close
     end
   end
 
