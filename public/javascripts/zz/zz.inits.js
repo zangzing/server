@@ -161,7 +161,7 @@ zz.init = {
                                                              open : function(event, ui){ template.zz_photochooser({}) },
                                                              close: function(event, ui){
                                                                  $.get( zz.path_prefix + '/albums/' +zz.album_id + '/close_batch', function(){
-                                                                      document.location.reload();
+                                                                      history.go(0);
                                                                  });
                                                              }
             });
@@ -192,7 +192,7 @@ zz.init = {
                                                                 pages.share.init(template, function(){});
                                                              },
                                                              close: function(event, ui){
-                                                                  document.location.reload();
+                                                                  history.go(0);
                                                              }
             });
 //            template.css({
