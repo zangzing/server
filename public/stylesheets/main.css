@@ -644,8 +644,8 @@ div#account-image .pp-photo{
 #footer #progress-meter{
     display:none;
     position:absolute;
-    left:300px;
-    top:4px;
+    left:170px;
+    top:1px;
     background: url("/images/upload-0.png") no-repeat scroll 37px 10px transparent;
     height:55px;
     width:100px;
