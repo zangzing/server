@@ -307,7 +307,6 @@ pages.share = {
                         oauthmanager.login(zz.path_prefix + '/facebook/sessions/new', function(){
                             $("#facebook_box").attr('checked', true);
                             $("#facebook_box").attr('authorized', 'yes');
-//                            $("#post_share_button").attr('src','/images/btn-post-on.png');
                         });
                     }
                 });
@@ -318,7 +317,6 @@ pages.share = {
                         oauthmanager.login(zz.path_prefix + '/twitter/sessions/new', function(){
                             $("#twitter_box").attr('checked', true);
                             $("#twitter_box").attr('authorized', 'yes');
-//                            $("#post_share_button").attr('src','/images/btn-post-on.png')
                         });
                     }
                 });
