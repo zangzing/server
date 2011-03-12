@@ -1,8 +1,8 @@
 <div id="social-like-dialog">
   <div id="ld-inner">
-    <form action="/service/likes/<%=@subj_id%>/post" id ="social_like_form_<%=@subj_id%>">
+    <form action="/service/likes/<%=@subject_id%>/post" id ="social_like_form_<%=@subject_id%>">
      <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
-    <input name="subject_type" value="<%=@subj_type%>" type="hidden">
+    <input name="subject_type" value="<%=@subject_type%>" type="hidden">
     <div id="ld-top">
       Post your like on
       <input id="facebook_box" name="facebook" value="true" type='checkbox'   <%=( @is_facebook_linked  ? "authorized='yes' checked='checked'" : "" )%>/>

@@ -23,7 +23,7 @@ class Notifier < ActionMailer::Base
      end
      attachments['album.vcf'] = vcard.to_s
 
-     logger.info "Mailed contributors_added: #{contributor.email}, #{@album.long_email}"
+     logger.info "Mailed contributors_added: #{email}, #{@album.long_email}"
      mail( :to        => email,
            :reply_to  => @album.long_email,
            :subject   => "You have been invited to contribute photos to '#{@album.name}'!" )

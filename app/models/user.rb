@@ -158,7 +158,8 @@ class User < ActiveRecord::Base
     if profile_album.nil?
       build_profile_album
     end
-    if id.length <= 0
+
+    if id && id.is_a?(String) && id.length <= 0
       profile_album.profile_photo_id=nil
     else
       profile_album.profile_photo_id=id

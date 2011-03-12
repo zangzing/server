@@ -16,7 +16,22 @@ class Like < ActiveRecord::Base
   include Rails.application.routes.url_helpers
   default_url_options[:host] = Server::Application.config.application_host
 
-  def self.add( user_id, subject_id, subject_type, message=nil, tweet=false, facebook=false, dothis=false )
+  def self.add( user_id, subject_id, subject_type )
+    begin
+      #Create Like record, increase the subject_ids like counter
+      like = Like.create( :user_id => user_id,
+                          :subject_id => subject_id,
+                          :subject_type => subject_type )
+      LikeCounter.increase( subject_id )
+      return like
+    rescue  ActiveRecord::RecordNotUnique
+      #Like Record already exists, nothing to do
+    end
+    nil
+  end
+
+  def self.post( user_id, subject_id, subject_type, message=nil, tweet=false, facebook=false, dothis=false )
+
     # Save user preferences if needed
     if dothis
       user = User.find(  user_id )
@@ -26,23 +41,19 @@ class Like < ActiveRecord::Base
       user.preferences.save
     end
 
-    # add the like
-    begin
-      #Create Like record, increase the subject_ids like counter
-      like = Like.create( :user_id => user_id, :subject_id => subject_id, :subject_type => subject_type)
-      LikeCounter.increase( subject_id )
-      return like
-    rescue  ActiveRecord::RecordNotUnique
-      #Like Record already exists, nothing to do
-    end
-    nil
+    # Instead of searching and failing to find a like, just create a new Like shell (not saved to DB, no ARcallbacks)
+    # and use it to create a post then discard. Its faster since we have all the info we need.
+    like = Like.new( :user_id => user_id, :subject_id => subject_id)
+    like.post( message, tweet, facebook) if like
   end
 
   def self.remove( user_id, subject_id )
     #Find and remove like record, decrease the subject_id like counter
     like = Like.find_by_user_id_and_subject_id( user_id, subject_id)
-    like.destroy unless like.nil?
-    LikeCounter.decrease( subject_id )
+    if like
+      like.destroy
+      LikeCounter.decrease( subject_id )
+    end
   end
 
   # Given a subject id an type it produces a default like message
