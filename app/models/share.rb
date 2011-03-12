@@ -86,7 +86,7 @@ class Share < ActiveRecord::Base
 
     # Add VIEWER permsission to the recipients of this email share
     if email?
-      receipients.each { |email| subject.add_viewer( email ) } if email?
+      recipients.each { |email| subject.add_viewer( email ) } if email?
     end
   end
 
