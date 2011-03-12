@@ -138,8 +138,8 @@ zz.drawers = {
                 url: zz.path_prefix + '/albums/$$/add_photos',
                 url_type: 'album',
 
-                init: function(callback){ // run when loading the drawer up
-                    pages.album_add_photos_tab.init(callback, zz.drawers.group_album.style);
+                init: function(container, callback){ // run when loading the drawer up
+                    pages.album_add_photos_tab.init(container,  callback, zz.drawers.group_album.style);
                 },
 
                 bounce: function(success, failure){ // run before you leave
@@ -153,8 +153,8 @@ zz.drawers = {
                 title: 'Name',
                 type: 'full',
 
-                init:   function(callback){
-                    pages.album_name_tab.init(callback);
+                init:   function(container, callback){
+                    pages.album_name_tab.init(container,  callback);
                 },
                 bounce: function(success, failure){
                     pages.album_name_tab.bounce(success, failure);
@@ -166,8 +166,8 @@ zz.drawers = {
                 title: 'Edit',
                 type: 'partial',
 
-                init:   function(callback){
-                    pages.edit_album_tab.init(callback);
+                init:   function(container, callback){
+                    pages.edit_album_tab.init(container, callback);
                 },
                 bounce: function(success, failure){
                     pages.edit_album_tab.bounce(success, failure);
@@ -180,8 +180,8 @@ zz.drawers = {
                 type: 'full',
 
 
-                init: function(callback){
-                    pages.album_privacy_tab.init(callback);
+                init: function(container, callback){
+                    pages.album_privacy_tab.init(container, callback);
                 },
 
                 bounce: function(success, failure){
@@ -195,8 +195,8 @@ zz.drawers = {
                 type: 'full',
 
 
-                init: function(callback){
-                    pages.contributors.init(callback);
+                init: function(container, callback){
+                    pages.contributors.init(container, callback);
                 },
 
                 bounce: function(success, failure){
@@ -210,8 +210,8 @@ zz.drawers = {
                 type: 'full',
 
 
-                init: function(callback){
-                    pages.share.init(callback);
+                init: function(container, callback){
+                    pages.share.init(container, callback);
                 },
 
                 bounce: function(success, failure){
@@ -256,8 +256,8 @@ zz.drawers = {
                  type: 'full',                  // drawer position - full(y open) or partial(ly open)
 //                 url: '/users/$$/edit',         // url of the drawer template
 //                 url_type: 'user',              // replace $$ w/the id of the album or user
-                 init:   function(callback){
-                    pages.acct_profile.init(callback);
+                 init:   function(container, callback){
+                    pages.acct_profile.init(container, callback);
                  },
                  bounce: function(success, failure){
                      pages.acct_profile.bounce(success, failure);
@@ -271,8 +271,8 @@ zz.drawers = {
                  type: 'full',
 //                 url: '/users/$$/account',
 //                 url_type: 'user',
-                 init: function(callback){
-                    pages.account_setings_account_tab.init(callback);
+                 init: function(container, callback){
+                    pages.account_setings_account_tab.init(container, callback);
                  },
                  bounce: function(success, failure){
                      pages.account_setings_account_tab.bounce(success, failure);
@@ -285,8 +285,8 @@ zz.drawers = {
                  type: 'full',
 //                 url: '/users/$$/notifications',
 //                 url_type: 'user',
-                 init: function(callback){
-                    pages.account_setings_notifications_tab.init(callback);
+                 init: function(container, callback){
+                    pages.account_setings_notifications_tab.init(container, callback);
                  },
                  bounce: function(success, failure){
                      pages.account_setings_notifications_tab.bounce(success, failure);
@@ -299,8 +299,8 @@ zz.drawers = {
                 type: 'full',
 //                url: '/users/$$/identities',
 //                url_type: 'user',
-                init: function(callback){
-                    pages.linked_accounts.init(callback);
+                init: function(container, callback){
+                    pages.linked_accounts.init(container, callback);
                 },
 
                  bounce: function(success, failure){
