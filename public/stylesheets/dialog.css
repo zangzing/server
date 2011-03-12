@@ -9,8 +9,13 @@
 }
 
 .zz_dialog div#zz_dialog_inner{
+    position:absolute;
+    top:0px;
+    left:0px;
+    right:0px;
+    bottom:0px;
     border: 1px solid #c8c8c9;
-    overflow: hidden;
+    /*overflow: hidden;*/
     z-index: 99996;
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
