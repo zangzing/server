@@ -7,9 +7,9 @@
 var pages = {};
 
 pages.album_add_photos_tab = {
-    init: function(callback, drawer_style){
+    init: function(container, callback, drawer_style){
         var template = $('<div class="photochooser-container"></div>');
-        $('#tab-content').html(template);
+        container.html(template);
         template.zz_photochooser({});
         callback();
     },
@@ -21,10 +21,10 @@ pages.album_add_photos_tab = {
 
 pages.album_name_tab = {
     original_album_name: '',
-    init: function(callback){
+    init: function(container, callback){
         var url = zz.path_prefix + '/albums/' + zz.album_id + '/name_album';
 
-        $('#tab-content').load(url, function(){
+        container.load(url, function(){
             //save album name and set header album name
             pages.album_name_tab.original_album_name = $('#album_name').val();
             $('h2#album-header-title').html(pages.album_name_tab.original_album_name);
@@ -118,7 +118,7 @@ pages.album_name_tab = {
 };
 
 pages.edit_album_tab = {
-    init: function(callback){
+    init: function(container, callback){
         $.ajax({
             dataType: 'json',
             url: zz.path_prefix + '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss,
@@ -227,9 +227,9 @@ pages.edit_album_tab = {
 };
 
 pages.album_privacy_tab = {
-    init: function(callback){
+    init: function(container,callback){
         var url = zz.path_prefix + '/albums/' + zz.album_id + '/privacy';
-        $('#tab-content').load(url, function(){
+        container.load(url, function(){
 
             $('#privacy-public').click(function(){
                 $.post(zz.path_prefix + '/albums/'+zz.album_id, '_method=put&album%5Bprivacy%5D=public', function(){
@@ -258,27 +258,27 @@ pages.album_privacy_tab = {
 };
 
 pages.share = {
-    init: function(callback){
+    init: function(container,callback){
         var url = zz.path_prefix +'/albums/' + zz.album_id + '/shares/new';
         var self = this;
 
-        $('#tab-content').load(url, function(){
+        container.load(url, function(){
            zz.wizard.resize_scroll_body();
            $('.social-share').click(function(){
                 if(zz.album_type === 'personal'){
-                    self.show_social(zz.drawers.personal_album, 'share');
+                    self.show_social(container, zz.drawers.personal_album, 'share');
                 }
                 else{
-                    self.show_social(zz.drawers.group_album, 'share');
+                    self.show_social(container, zz.drawers.group_album, 'share');
                 }
             });
 
             $('.email-share').click(function(){
                 if(zz.album_type === 'personal'){
-                    self.show_email(zz.drawers.personal_album, 'share');
+                    self.show_email(container, zz.drawers.personal_album, 'share');
                 }
                 else{
-                    self.show_email(zz.drawers.group_album, 'share');
+                    self.show_email(container, zz.drawers.group_album, 'share');
 
                 }
             });
@@ -292,7 +292,7 @@ pages.share = {
     },
 
     // loads the status message post form in place of the type switcher on the share step
-    show_social: function(obj, id){
+    show_social: function(container, obj, id){
         var self = this;
 
         $('div#share-body').fadeOut('fast', function(){
@@ -336,7 +336,7 @@ pages.share = {
                     submitHandler: function() {
                         var serialized = $('#new_post_share').serialize();
                         $.post(zz.path_prefix + '/albums/'+zz.album_id+'/shares.json', serialized, function(data,status,request){
-                            pages.share.reload_share(zz.drawers[zz.album_type+'_album'], 'share', function(){
+                            pages.share.reload_share(container, zz.drawers[zz.album_type+'_album'], 'share', function(){
                                 zz.wizard.display_flashes(  request,200 )
                             });
                         });
@@ -344,7 +344,7 @@ pages.share = {
                 });
 
                 $('#cancel-share').click(function(){
-                    self.reload_share(obj, id);
+                    self.reload_share(container, obj, id);
                 });
 
                 $('#post_share_button').click(function(){
@@ -371,7 +371,7 @@ pages.share = {
 
 
     // loads the email post form in place of the type switcher on the share step
-    show_email: function(obj, id ){
+    show_email: function(container, obj, id ){
         var self = this;
         $('div#share-body').fadeOut('fast', function(){
             $('div#share-body').load(zz.path_prefix + '/albums/'+zz.album_id+'/shares/newemail', function(){
@@ -407,7 +407,7 @@ pages.share = {
                     submitHandler: function() {
                         var serialized = $('#new_email_share').serialize();
                         $.post(zz.path_prefix + '/albums/'+zz.album_id+'/shares.json', serialized, function(data,status,request ){
-                            self.reload_share(zz.drawers[zz.album_type+'_album'], 'share', function(){
+                            self.reload_share(container, zz.drawers[zz.album_type+'_album'], 'share', function(){
                                 zz.wizard.display_flashes(  request,200 )
                             });
                         },"json");
@@ -416,7 +416,7 @@ pages.share = {
                 });
 
                 $('#cancel-share').click(function(){
-                    self.reload_share(obj, id);
+                    self.reload_share(container, obj, id);
                 });
 
                 $('#mail-submit').click(function(){
@@ -431,11 +431,11 @@ pages.share = {
 
 
     // reloads the main share part in place of the type switcher on the share step
-    reload_share: function(obj, id, callback){
+    reload_share: function(container, obj, id, callback){
         var self = this;
-        $('#tab-content').fadeOut('fast', function(){
-            self.init(function(){
-                $('#tab-content').fadeIn('fast');
+        container.fadeOut('fast', function(){
+            self.init(container, function(){
+                container.fadeIn('fast');
                 if( typeof(callback) != "undefined" ){
                     callback();
                 }
@@ -452,17 +452,17 @@ pages.contributors = {
     present : false,
     url :'',
 
-    init: function(){
+    init: function(container){
         this.url = zz.path_prefix + '/albums/'+zz.album_id+'/contributors';
-        pages.contributors.show_list();
+        pages.contributors.show_list(container);
     },
 
     bounce: function(success, failure){
         success();
     },
 
-    show_list: function( request ){
-        $('#tab-content').load( pages.contributors.url , function(){
+    show_list: function( container, request ){
+        container.load( pages.contributors.url , function(){
                 //The contributors arrived in tmp_contact_list and declared when screen loaded
                 if( tmp_contact_list.length <= 0 ){
                     pages.contributors.present = false;
@@ -496,15 +496,19 @@ pages.contributors = {
                                     zz.wizard.display_flashes(  request, 200 );
                                     if( count <= 0){ //the contributor list is empty
                                         pages.contributors.present = false;
-                                        $('#tab-content').fadeOut('fast', pages.contributors.show_new );
+                                        container.fadeOut('fast', function(){
+                                            pages.contributors.show_new(container);
+                                        } );
                                     }
                                 });
                         });
                         zz.wizard.resize_scroll_body();
                         $('#add-contributors-btn').click(function(){
-                            $('#tab-content').fadeOut('fast', pages.contributors.show_new );
+                            container.fadeOut('fast', function(){
+                                pages.contributors.show_new(container);
+                            });
                         });
-                        $('#tab-content').fadeIn('fast', function( ){
+                        container.fadeIn('fast', function( ){
                             if( typeof( request )!= 'undefined'){
                                 zz.wizard.display_flashes(  request,200 );
                         }
@@ -513,8 +517,8 @@ pages.contributors = {
         });
     },
 
-    show_new: function(){
-        $('#tab-content').load(zz.path_prefix + '/albums/'+zz.album_id+'/contributors/new', function(){
+    show_new: function(container){
+        container.load(zz.path_prefix + '/albums/'+zz.album_id+'/contributors/new', function(){
 
             $("#contact-list").tokenInput( zzcontacts.find, {
                 allowNewValues: true,
@@ -549,8 +553,8 @@ pages.contributors = {
                         url:      zz.path_prefix + '/albums/'+zz.album_id+'/contributors.json',
                         data:     $('#new_contributors').serialize(),
                         success:  function(data,status,request){
-                            $('#tab-content').fadeOut('fast','swing', function(){
-                                pages.contributors.show_list( request );
+                            container.fadeOut('fast','swing', function(){
+                                pages.contributors.show_list( container,  request );
                             });
                         }
                     });
@@ -559,7 +563,7 @@ pages.contributors = {
 
             if( pages.contributors.present){
                 $('#cancel-new-contributors').click(function(){
-                    $('#tab-content').fadeOut('fast', pages.contributors.show_list );
+                    container.fadeOut('fast', pages.contributors.show_list );
                 });
             }else{
                 $('#cancel-new-contributors').hide();
@@ -569,7 +573,7 @@ pages.contributors = {
                 $('form#new_contributors').submit();
             });
 
-            $('#tab-content').fadeIn('fast');
+            container.fadeIn('fast');
         });
     }
 };
@@ -578,11 +582,11 @@ pages.acct_profile = {
 
     profile_photo_picker: 'undefined',
 
-    init: function(callback){
+    init: function(container, callback){
         var url = zz.path_prefix + '/users/' + zz.current_user_id +'/edit';
         var self = pages.acct_profile;
 
-        $('#tab-content').load(url, function(){
+        container.load(url, function(){
 
             zz.drawers.settings.redirect =  window.location;
             $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height -140) + 'px'});
@@ -781,8 +785,8 @@ pages.acct_profile = {
 };
 
 pages.account_setings_account_tab = {
-    init: function(callback){
-        $('#tab-content').empty();
+    init: function(container, callback){
+        container.empty();
         callback();
     },
 
@@ -793,8 +797,8 @@ pages.account_setings_account_tab = {
 };
 
 pages.account_setings_notifications_tab = {
-    init: function(callback){
-        $('#tab-content').empty();
+    init: function(container, callback){
+        container.empty();
         callback();
     },
 
@@ -805,9 +809,9 @@ pages.account_setings_notifications_tab = {
 };
 
 pages.linked_accounts = {
-    init: function(callback){
+    init: function(container, callback){
         var url = zz.path_prefix + '/users/' + zz.current_user_id + '/identities';
-        $('#tab-content').load( url, function(){
+        container.load( url, function(){
             zz.drawers.settings.redirect =  window.location;
             $('.delete-id-button').click(pages.linked_accounts.delete_identity);
             $('.authorize-id-button').click(pages.linked_accounts.authorize_identity);

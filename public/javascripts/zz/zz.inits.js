@@ -14,7 +14,7 @@ zz.init = {
         $('#footer #next-button').addClass('disabled');
         $('#footer #prev-button').addClass('disabled');
         $('#footer #new-album-button').addClass('disabled');
-        $('#footer #add-photo-button').addClass('disabled');
+        $('#footer #add-photos-button').addClass('disabled');
         $('#footer #share-button').addClass('disabled');
         $('#footer #edit-album-button').addClass('disabled');
         $('#footer #buy-button').addClass('disabled');
@@ -144,14 +144,29 @@ zz.init = {
 
 
         //only album contributers can do this
-        $('#footer #add-photo-button').click(function() {
+        $('#footer #add-photos-button').click(function() {
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
             }
 
             zz.init.disable_buttons();
-            $('#footer #add-photo-button').removeClass('disabled').addClass('selected');
-            zz.wizard.open_edit_album_wizard('add')
+            $('#footer #add-photos-button').removeClass('disabled').addClass('selected');
+            var template = $('<div class="photochooser-container"></div>');
+            $('<div id="add-photos-dialog"></div>').html( template )
+                                                   .zz_dialog({
+                                                             height: $(document).height() - 200,
+                                                             width: 895,
+                                                             modal: true,
+                                                             autoOpen: true,
+                                                             open : function(event, ui){ template.zz_photochooser({}) },
+                                                             close: function(event, ui){
+                                                                 $.get( zz.path_prefix + '/albums/' +zz.album_id + '/close_batch', function(){
+                                                                      document.location.reload();
+                                                                 });
+                                                             }
+            });
+            template.height( $(document).height() - 192 );
+
         });
 
         //any signed in user can do this
@@ -164,7 +179,27 @@ zz.init = {
 
             zz.init.disable_buttons();
             $('#footer #share-button').removeClass('disabled').addClass('selected');
-            zz.wizard.open_edit_album_wizard('share')
+
+
+            var template = $('<div id="share-dialog-content"></div>');
+            $('<div id="share-dialog"></div>').html( template )
+                                                   .zz_dialog({
+                                                             height: 580,
+                                                             width: 895,
+                                                             modal: true,
+                                                             autoOpen: true,
+                                                             open : function(event, ui){
+                                                                pages.share.init(template, function(){});
+                                                             },
+                                                             close: function(event, ui){
+                                                                  document.location.reload();
+                                                             }
+            });
+//            template.css({
+//                position: 'relative',
+//                bottom:0
+//            });
+
         });
 
         //only album owner can do this

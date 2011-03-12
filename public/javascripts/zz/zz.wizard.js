@@ -19,7 +19,7 @@ zz.wizard = {
 
         zz.wizard.build_nav(obj, step);
 
-        obj.steps[step].init(function(){
+        obj.steps[step].init(container, function(){
             zz.wizard.resize_scroll_body()
         });
 
@@ -31,6 +31,8 @@ zz.wizard = {
 
         logger.debug(obj.steps[id].type + "    " + zz.drawer_state);
 
+        var container = $('#tab-content');
+
         if (obj.steps[id].type == 'partial' && zz.drawer_state == zz.DRAWER_OPEN) {
             $('#tab-content').fadeOut('fast');
             if( obj.style == 'edit' ){
@@ -39,14 +41,14 @@ zz.wizard = {
                 zz.close_drawer_partially(obj.time, 40);
             }
             zz.wizard.build_nav(obj, id);
-            obj.steps[id].init(function(){
+            obj.steps[id].init(container, function(){
                 zz.wizard.resize_scroll_body();
             });
 
 
         } else if (obj.steps[id].type == 'partial' && zz.drawer_state == zz.DRAWER_PARTIAL) {
             zz.wizard.build_nav(obj, id);
-            obj.steps[id].init(function(){
+            obj.steps[id].init(container, function(){
                 zz.wizard.resize_scroll_body();
             });
 
@@ -55,7 +57,7 @@ zz.wizard = {
 
             $('#tab-content').empty().show();
 
-            obj.steps[id].init(function(){
+            obj.steps[id].init(container, function(){
                 zz.wizard.resize_scroll_body();
                 zz.open_drawer(obj.time);
             });
@@ -66,7 +68,7 @@ zz.wizard = {
                 $('#tab-content').empty();
                 $('#tab-content').show();
 //                $('#tab-content').css({opacity:0});
-                obj.steps[id].init(function(){
+                obj.steps[id].init(container, function(){
                     zz.wizard.resize_scroll_body();
 //                    $('#tab-content').fadeIn('fast');
                 });
@@ -77,7 +79,7 @@ zz.wizard = {
             zz.close_drawer_partially(obj.time);
             zz.wizard.build_nav(obj, id);
 
-            obj.steps[id].init(function(){
+            obj.steps[id].init(container, function(){
                 zz.wizard.resize_scroll_body();
             });
 
