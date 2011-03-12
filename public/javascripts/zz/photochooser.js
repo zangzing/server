@@ -616,6 +616,7 @@
                 name: 'Photobucket',
                 src: '/images/folders/photobucket_off.jpg',
                 rolloverSrc: '/images/folders/photobucket_on.jpg',
+                add_url: zz.path_prefix + "/photobucket/folders/import?album_path=/", //unlike other connectors, photobucket may have photos at the root level
 
                 on_error: function(){
                     var folder = this;
