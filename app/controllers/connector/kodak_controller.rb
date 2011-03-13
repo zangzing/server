@@ -8,12 +8,15 @@ class Connector::KodakController < Connector::ConnectorController
   
   def initialize(*args)
     super(*args)
-    KodakConnector.http_timeout = SERVICE_CALL_TIMEOUT[:kodak]
     @kodak_connector = KodakConnector.new
   end
   
 
 protected
+
+  def http_timeout
+    SERVICE_CALL_TIMEOUT[:kodak]
+  end
 
   def login(email, password)
     raise InvalidCredentials unless connector.sign_in(email, password)

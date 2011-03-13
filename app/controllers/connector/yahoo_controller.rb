@@ -3,7 +3,6 @@ class Connector::YahooController < Connector::ConnectorController
 
   def initialize(*args)
     super(*args)
-    YahooConnector.http_timeout = SERVICE_CALL_TIMEOUT[:yahoo]
     YahooConnector.api_key = YAHOO_API_KEYS[:app_key]
     YahooConnector.shared_secret = YAHOO_API_KEYS[:consumer_secret]
   end
@@ -21,6 +20,10 @@ protected
         raise HttpCallFail if exception.kind_of?(SocketError)
       end
     end
+  end
+
+  def http_timeout
+    SERVICE_CALL_TIMEOUT[:yahoo]
   end
 
   def service_identity
