@@ -4,10 +4,11 @@ ul.token-input-list-facebook {
     height: auto !important;
     /*height: 1%;*/
     width: 100%;
-    border: 1px solid #8496ba;
+    /*border: 1px solid #8496ba;*/
+    border: 1px solid #afafaf;
     cursor: text;
     font-size: 12px;
-    font-family: Verdana;
+    /*font-family: Verdana;*/
     min-height: 1px;
     z-index: 999;
     margin: 0;

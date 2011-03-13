@@ -615,22 +615,32 @@ div#form-container-2 {
 
 #social-form #character-count {
   float:right;
-  margin-right: 40px;
+  font-size:14px;
+}
+
+#social-form .share-on-facebook-and-twitter{
+    font-size:18px;
+}
+
+#social-form .share-on-facebook-and-twitter .facebook{
+    color:#365896;
+    font-weight: 700;
+}
+
+#social-form .share-on-facebook-and-twitter .twitter{
+    color:#3fc0fd;
+    font-weight: 700;
 }
 
 
-/*#social-form dd#post-text {*/
-  /*width: 690px;*/
-/*}*/
 
 #social-form textarea#post_share_message {
   width: 690px;
-  /*padding: 5px;*/
-  /*color: #646464;*/
 }
 
 #social-form #post_share_button{
     float:right;
+    margin-right:5px;
 }
 
 #social-form #cancel-share{
@@ -725,7 +735,7 @@ table#email-share-form textarea#email_share_message{
 }
 
 table#email-share-form .token-input-list-facebook{
-    height:65px;
+    min-height:29px;
 }
 
 
@@ -755,7 +765,7 @@ table#email-share-form #submit-new-contributors{
 table#email-share-form input{
     border:none;
     outline:none;
-    font-size:11px;
+    font-size:13px;
 }
 
 table#email-share-form input:focus{

@@ -907,10 +907,10 @@ input[type=text].error, input[type=password].error, input[type=checkbox].error ,
 
 textarea{
   /*font-family: "Lucida Grande", "Lucida Sans Unicode", "Trebuchet MS", Tahoma, Helvetica, Arial, sans-serif;*/
-  font-family:Arial;
+  /*font-family:Arial;*/
 
-  font-weight: 100;
-  font-size: 12px;
+  font-weight: 400;
+  font-size: 14px;
 }
 
 
@@ -1208,6 +1208,27 @@ div#small-drawer dl dd.full-t {
   width: 10%;
 }
 
+div#small-drawer #signin-form-cancel-button{
+    float:right;
+}
+
+div#small-drawer #signin-form-submit-button{
+    float:right;
+    margin-right:5px;
+}
+
+div#small-drawer #join_form_cancel_button{
+    float:right;
+}
+
+div#small-drawer #join_form_submit_button{
+    float:right;
+    margin-right:5px;
+}
+
+
+
+
 .autocomplete-match{
  color: green;
  font-weight: 900;
@@ -1243,7 +1264,7 @@ a.back-button{
     color:#ffffff;
     display: block;
     /*float: left;*/
-    font-size: 12px;
+    font-size: 13px;
     height: 30px;
     margin-right: 6px;
     padding-right: 8px; /* sliding doors padding */
@@ -1297,7 +1318,7 @@ a.next-button{
     color:#ffffff;
     display: block;
     /*float: left;*/
-    font-size: 12px;
+    font-size: 13px;
     height: 30px;
     margin-right: 6px;
     padding-right: 15px; /* sliding doors padding */
@@ -1343,7 +1364,7 @@ a.green-button{
     padding-right: 8px; /* sliding doors padding */
     cursor: pointer;
     color:#ffffff;
-    font-size: 12px;
+    font-size: 13px;
     text-decoration: none;
 }
 
@@ -1380,7 +1401,7 @@ a.black-button{
     color:#ffffff;
     display: block;
     float: left;
-    font-size: 12px;
+    font-size: 13px;
     height: 30px;
     /*margin-right: 6px;*/
     padding-right: 8px; /* sliding doors padding */
@@ -1422,7 +1443,7 @@ a.green-add-button{
     color:#ffffff;
     display: block;
     /*float: left;*/
-    font-size: 12px;
+    font-size: 13px;
     height: 30px;
     /*margin-right: 6px;*/
     padding-right: 8px; /* sliding doors padding */
