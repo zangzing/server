@@ -6,6 +6,7 @@
 
 zz.init = {
 
+    //todo move to zz.toolbars
     disable_buttons: function() {
         $('#header #back-button').addClass('disabled');
         $('#header #view-buttons').children().addClass('disabled');
@@ -19,6 +20,22 @@ zz.init = {
         $('#footer #edit-album-button').addClass('disabled');
         $('#footer #buy-button').addClass('disabled');
         $('#footer #like-button').addClass('disabled');
+    },
+
+    //todo move to zz.toolbars
+    enable_buttons:function(){
+        $('#header #back-button').removeClass('disabled');
+        $('#header #view-buttons').children().removeClass('disabled');
+        $('#header #account-badge').removeClass('disabled');
+        $('#footer #play-button').removeClass('disabled');
+        $('#footer #next-button').removeClass('disabled');
+        $('#footer #prev-button').removeClass('disabled');
+        $('#footer #new-album-button').removeClass('disabled');
+        $('#footer #add-photos-button').removeClass('disabled');
+        $('#footer #share-button').removeClass('disabled');
+        $('#footer #edit-album-button').removeClass('disabled');
+        $('#footer #buy-button').removeClass('disabled');
+        $('#footer #like-button').removeClass('disabled');
     },
 
     template: function() {
@@ -192,7 +209,9 @@ zz.init = {
                                                                 pages.share.init(template, function(){});
                                                              },
                                                              close: function(event, ui){
-                                                                  history.go(0);
+                                                                zz.init.enable_buttons();
+                                                                 $('#footer #share-button').removeClass('selected');  //todo: centralize this somewhere -- zz.toolbars
+
                                                              }
             });
 //            template.css({

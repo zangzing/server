@@ -1,8 +1,8 @@
 /* Example tokeninput style #2: Facebook style */
 ul.token-input-list-facebook {
     overflow: hidden; 
-    height: auto !important; 
-    height: 1%;
+    height: auto !important;
+    /*height: 1%;*/
     width: 100%;
     border: 1px solid #8496ba;
     cursor: text;
@@ -27,16 +27,32 @@ ul.token-input-list-facebook li input {
     margin: 2px 0;
 }
 
+/*li.token-input-token-facebook {*/
+    /*overflow: hidden; */
+    /*height: auto !important; */
+    /*height: 1%;*/
+    /*margin: 3px;*/
+    /*padding: 1px 3px;*/
+    /*background-color: #eff2f7;*/
+    /*color: #000;*/
+    /*cursor: default;*/
+    /*border: 1px solid #ccd5e4;*/
+    /*font-size: 11px;*/
+    /*border-radius: 5px;*/
+    /*-moz-border-radius: 5px;*/
+    /*-webkit-border-radius: 5px;*/
+    /*float: left;*/
+/*}*/
 li.token-input-token-facebook {
-    overflow: hidden; 
-    height: auto !important; 
+    overflow: hidden;
+    height: auto!important;
     height: 1%;
     margin: 3px;
-    padding: 1px 3px;
-    background-color: #eff2f7;
-    color: #000;
+    padding: 3px 5px 5px 5px;
+    background-color: #EFF2F7;
+    color: black;
     cursor: default;
-    border: 1px solid #ccd5e4;
+    border: 1px solid #CCD5E4;
     font-size: 11px;
     border-radius: 5px;
     -moz-border-radius: 5px;

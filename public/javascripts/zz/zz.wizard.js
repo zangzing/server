@@ -250,34 +250,34 @@ zz.wizard = {
 
 
 
-    //set up email autocomplete
-    init_email_autocompleter: function(){
+//    //set up email autocomplete
+//    init_email_autocompleter: function(){
+//
+//        logger.debug('start email_autocomplete');
+//
+//        $('#you-complete-me').autocompleteArray(
+//                google_contacts.concat( yahoo_contacts.concat( mslive_contacts.concat(local_contacts )) ),
+//            {
+//                width: 700,
+//                position_element: 'dd#the-list',
+//                append: '#drawer div.body'
+//            }
+//        );
+//        //zz.address_list = '';
+//        logger.debug('end email_autocomplete');
+//
+//    },
 
-        logger.debug('start email_autocomplete');
-
-        $('#you-complete-me').autocompleteArray(
-                google_contacts.concat( yahoo_contacts.concat( mslive_contacts.concat(local_contacts )) ),
-            {
-                width: 700,
-                position_element: 'dd#the-list',
-                append: '#drawer div.body'
-            }
-        );
-        //zz.address_list = '';
-        logger.debug('end email_autocomplete');
-
-    },
-
-    // reloads the autocompletetion data
-    reload_email_autocompleter: function(){
-        logger.debug('start email_autocompleter_reload');
-
-        //todo: is there a better way to get a handle to the plugin?
-        $('#you-complete-me')[0].autocompleter.setData(google_contacts.concat( yahoo_contacts.concat( mslive_contacts.concat(local_contacts )) ));
-
-        logger.debug('end email_autocompleter_reload');
-
-    },
+//    // reloads the autocompletetion data
+//    reload_email_autocompleter: function(){
+//        logger.debug('start email_autocompleter_reload');
+//
+//        //todo: is there a better way to get a handle to the plugin?
+//        $('#you-complete-me')[0].autocompleter.setData(google_contacts.concat( yahoo_contacts.concat( mslive_contacts.concat(local_contacts )) ));
+//
+//        logger.debug('end email_autocompleter_reload');
+//
+//    },
 
 //=========================================== SETTINGS DRAWER =====================================    
 

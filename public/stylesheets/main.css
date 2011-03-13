@@ -888,7 +888,7 @@ input[type=text], input[type=password], input[type=checkbox] , textarea{
   border: solid 1px #afafaf;
   padding: 5px;
   /*font-family: "Lucida Grande", "Lucida Sans Unicode", "Trebuchet MS", Tahoma, Helvetica, Arial, sans-serif;*/
-  font-family:Arial;
+  /*font-family:Arial;*/
 }
 
 input[type=text]:focus, input[type=password]:focus, input[type=checkbox]:focus , textarea:focus{
@@ -1242,7 +1242,7 @@ a.back-button{
     background: url("/images/btn-back-endcap.png") no-repeat scroll top right;
     color:#ffffff;
     display: block;
-    float: left;
+    /*float: left;*/
     font-size: 12px;
     height: 30px;
     margin-right: 6px;
@@ -1296,7 +1296,7 @@ a.next-button{
     background: url("/images/btn-next-endcap.png") no-repeat scroll top right;
     color:#ffffff;
     display: block;
-    float: left;
+    /*float: left;*/
     font-size: 12px;
     height: 30px;
     margin-right: 6px;
@@ -1337,7 +1337,7 @@ a.next-button:active span{
 a.green-button{
     background: url("/images/btn-green-endcap.png") no-repeat scroll top right;
     display: block;
-    float: left;
+    /*float: left;*/
     height: 30px;
     /*margin-right: 6px;*/
     padding-right: 8px; /* sliding doors padding */
@@ -1382,7 +1382,7 @@ a.black-button{
     float: left;
     font-size: 12px;
     height: 30px;
-    margin-right: 6px;
+    /*margin-right: 6px;*/
     padding-right: 8px; /* sliding doors padding */
     text-decoration: none;
     cursor: pointer;
@@ -1424,7 +1424,7 @@ a.green-add-button{
     /*float: left;*/
     font-size: 12px;
     height: 30px;
-    margin-right: 6px;
+    /*margin-right: 6px;*/
     padding-right: 8px; /* sliding doors padding */
     text-decoration: none;
     cursor: pointer;

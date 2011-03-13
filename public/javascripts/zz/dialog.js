@@ -90,6 +90,7 @@
             $(window).unbind( 'resize', this.resize_handler );
             $(document).unbind('keypress', this.keypress_handler );
             this._trigger('close');
+            this.destroy();
         },
 
         toggle: function(){

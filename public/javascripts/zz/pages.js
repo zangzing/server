@@ -563,7 +563,9 @@ pages.contributors = {
 
             if( pages.contributors.present){
                 $('#cancel-new-contributors').click(function(){
-                    container.fadeOut('fast', pages.contributors.show_list );
+                    container.fadeOut('fast', function(){
+                        pages.contributors.show_list(container);
+                    } );
                 });
             }else{
                 $('#cancel-new-contributors').hide();
