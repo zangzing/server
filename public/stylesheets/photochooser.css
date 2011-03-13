@@ -106,7 +106,8 @@
     position: absolute;
     width: 44px;
     height: 44px;
-    right:40px;
+    right:20px;
+    /*right:40px;*/
     top:215px;
     background: url("/images/btn-footer-next.png") no-repeat scroll 0px 0px transparent;
     cursor: pointer;
