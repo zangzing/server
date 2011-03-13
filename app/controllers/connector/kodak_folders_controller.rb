@@ -1,7 +1,10 @@
 class Connector::KodakFoldersController < Connector::KodakController
 
   def index
-    album_list = connector.send_request('/albumList')
+    album_list = nil
+    SystemTimer.timeout_after(http_timeout) do
+      album_list = connector.send_request('/albumList')
+    end
     albums = album_list['Album'].select { |a| a['type']=='0' } #Real albums have type attribute = 0
 #    @folders = albums.map { |f| {:name => f['name'], :id => f['id']} }
 
@@ -19,7 +22,10 @@ class Connector::KodakFoldersController < Connector::KodakController
   end
 
   def import
-    photos_list = connector.send_request("/album/#{params[:kodak_album_id]}")
+    photos_list = nil
+    SystemTimer.timeout_after(http_timeout) do
+      photos_list = connector.send_request("/album/#{params[:kodak_album_id]}")
+    end
     photos_data = photos_list['pictures']
     photos = []
     current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )

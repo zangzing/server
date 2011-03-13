@@ -10,7 +10,9 @@ class Connector::PhotobucketSessionsController < Connector::PhotobucketControlle
 
   def create
     begin
-      photobucket_api.create_access_token!(params[:oauth_token], params[:extra], true) #oauth_token_secret is in 'extra' parameter
+      SystemTimer.timeout_after(http_timeout) do
+        photobucket_api.create_access_token!(params[:oauth_token], params[:extra], true) #oauth_token_secret is in 'extra' parameter
+      end
     rescue => e
       raise InvalidToken if e.kind_of?(PhotobucketError)
     end

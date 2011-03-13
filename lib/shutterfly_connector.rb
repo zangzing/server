@@ -11,8 +11,6 @@ class ShutterflyConnector
   require 'digest'
 
   cattr_accessor :app_id, :shared_secret
-  cattr_accessor :http_timeout
-  @@http_timeout = 10.seconds
 
   API_ENDPOINT = 'ws.shutterfly.com'
   HASH_METHOD = 'MD5'
@@ -40,11 +38,8 @@ class ShutterflyConnector
     request = Net::HTTP::Get.new(request_url)
     request = sign_request(request, call_path, method_params) if should_be_signed
     http = init_http_connection
-    request['User-Agent'] = 'ZZ Server (dev)'
-    response = nil
-    SystemTimer.timeout_after(@@http_timeout) do
-      response = http.request(request)
-    end
+    request['User-Agent'] = 'ZangZing Server'
+    response = http.request(request)
     raise ShutterflyError.new(response.code, response.body) if (400..501).include?(response.code.to_i)
     result = Hash.from_xml(response.body)
     normalize_response(extract_data(result))

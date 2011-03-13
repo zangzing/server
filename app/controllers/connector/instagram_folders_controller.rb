@@ -23,7 +23,7 @@ class Connector::InstagramFoldersController < Connector::InstagramController
     current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
     photos_list.each do |p|
       photo = Photo.create(
-            :caption => p[:caption] || '',
+            :caption => (p[:caption][:text] rescue ''),
             :album_id => params[:album_id],
             :user_id => current_user.id,
             :upload_batch_id => current_batch.id,

@@ -2,7 +2,10 @@ class Connector::SmugmugPhotosController < Connector::SmugmugController
 
   def index
     album_id, album_key = params[:sm_album_id].split('_')
-    photos_response = smugmug_api.call_method('smugmug.images.get', {:AlbumID => album_id, :AlbumKey => album_key, :Heavy => 1})
+    photos_response = nil
+    SystemTimer.timeout_after(http_timeout) do
+      photos_response = smugmug_api.call_method('smugmug.images.get', {:AlbumID => album_id, :AlbumKey => album_key, :Heavy => 1})
+  end
     @photos = photos_response[:images].map { |p|
       {
         :name => (p[:caption].blank? ? p[:filename] : p[:caption]),
@@ -19,18 +22,12 @@ class Connector::SmugmugPhotosController < Connector::SmugmugController
     render :json => JSON.fast_generate(@photos)
   end
 
-#  def show
-#    photo_id, photo_key = params[:photo_id].split('_')
-#    photo_info = smugmug_api.call_method('smugmug.images.getURLs', {:ImageID => photo_id, :ImageKey => photo_key})
-#    size_wanted = (params[:size] || :screen).to_sym
-#    photo_url = photo_info[PHOTO_SIZES[size_wanted]]
-#    bin_io = OpenURI.send(:open, photo_url)
-#    send_data bin_io.read, :type => bin_io.meta['content-type'], :disposition => 'inline'
-#  end
-
   def import
     photo_id, photo_key = params[:photo_id].split('_')
-    photo_info = smugmug_api.call_method('smugmug.images.getInfo', {:ImageID => photo_id, :ImageKey => photo_key})
+    photo_info = nil
+    SystemTimer.timeout_after(http_timeout) do
+      photo_info = smugmug_api.call_method('smugmug.images.getInfo', {:ImageID => photo_id, :ImageKey => photo_key})
+    end
     current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
     photo = Photo.create(
             :caption => (photo_info[:caption].blank? ? photo_info[:filename] : photo_info[:caption]),

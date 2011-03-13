@@ -5,7 +5,9 @@ class Connector::KodakSessionsController < Connector::KodakController
   def new; end
 
   def create
-    login(params[:email], params[:password])
+    SystemTimer.timeout_after(http_timeout) do
+      login(params[:email], params[:password])
+    end
   end
 
   def destroy
