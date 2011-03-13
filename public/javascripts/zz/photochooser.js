@@ -250,7 +250,7 @@
                 showThumbscroller:false,
                 hideNativeScroller: true,
                 cellWidth: 720,
-                cellHeight: 500,
+                cellHeight: $('#tab-content').height() - 130,
                 singlePictureMode: true,
                 currentPhotoId: photoId,
                 context: 'chooser-picture',
@@ -688,6 +688,15 @@
 
         remove_photo_by_guid: function(photo_guid){
             var self = this;
+
+
+            //since there is no animation to tell user that something is
+            //happening, its important to remove check right away
+            //var cell = self.grid.cellForId(photo_guid);
+            //if(cell){
+            //    cell.data().zz_photo.setChecked(false);
+            //}
+
 
             var photo = _.detect(self.tray_photos, function(photo){
                 return photo.source_guid == photo_guid;
