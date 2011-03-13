@@ -94,10 +94,12 @@ class PhotosController < ApplicationController
       rescue ActiveRecord::StatementInvalid => ex
         #this seems to mean connection issue with database
         render :json => ex.to_s, :status=>500
+        logger.info ex.backtrace
 
       rescue Exception => ex
         #todo: make sure none of these should be 4xx errors
         render :json => ex.to_s, :status=>500
+        logger.info ex.backtrace
       end
     else
       # call did not come through remapped upload via nginx so reject it
