@@ -10,15 +10,33 @@ class UsersController < ApplicationController
       @user = User.new
   end
 
+  # see if this is a reserved username and if proper key has been passed
+  # updates the user_info with the outcome, nil for bad, updated name otherwise
+  def check_reserved_username user_info
+    user_name = user_info[:username]
+    checked_user_name = ReservedUserNames.verify_unlock_name(user_name)
+
+    # if we get a nil checked_user_name it is because the name was reserved
+    # and the unlock code was wrong.  We will pass the nil on to force an
+    # error.
+    user_info[:username] = checked_user_name
+
+    return checked_user_name
+  end
+
+  # check the name are add an error if nil
+  def check_for_name_error(checked_user_name, user)
+    if checked_user_name.nil?
+      # A reserved name that didn't have the right key
+      msg = "You attempted to use a reserved user name without the proper key."
+      user.set_single_error(:username, msg)
+    end
+  end
+
   def create
       # check username if in magic format
       user_info = params[:user]
-      user_name = user_info[:username]
-      checked_user_name = ReservedUserNames.verify_unlock_name(user_name)
-      # if we get a nil checked_user_name it is because the name was reserved
-      # and the unlock code was wrong.  We will pass the nil on to force an
-      # error.
-      user_info[:username] = checked_user_name
+      checked_user_name = check_reserved_username(user_info)
 
       @user = User.new(params[:user])
       @user.reset_perishable_token
@@ -39,12 +57,8 @@ class UsersController < ApplicationController
             @user.deliver_welcome!
             redirect_back_or_default @user
       else
-         if checked_user_name.nil?
-           # A reserved name that didn't have the right key
-           msg = "You attempted to use a reserved user name without the proper key."
-           @user.set_single_error(:username, msg)
-         end
-         render :action => :new
+        check_for_name_error(checked_user_name, @user)
+        render :action => :new
       end
   end
   
@@ -70,13 +84,20 @@ class UsersController < ApplicationController
   
   def update
     @user = current_user
-    if @user.update_attributes( params[:user])
+    # check username if in magic format
+    user_info = params[:user]
+    new_user_name = user_info[:username]
+    if new_user_name != @user.username
+      checked_user_name = check_reserved_username(user_info)
+    end
+    if @user.update_attributes(user_info)
       flash[:notice] = "Your Profile Has Been Updated."
       respond_to do |format|
           format.html  { redirect_to @user   }
           format.json { render :json => "", :status => 200 and return }
        end
     else
+      check_for_name_error(checked_user_name, @user)
       respond_to do |format|
           format.html  { render :action => :edit   }
           format.json  { errors_to_headers( @user )

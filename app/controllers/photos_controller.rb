@@ -87,17 +87,17 @@ class PhotosController < ApplicationController
         else
           render :json => @photo.errors, :status=>400
         end
-      rescue ActiveRecord::RecordNotFound => ex
-        #photo or album have been deleted
-        render :json => ex.to_s, :status=>400
 
       rescue ActiveRecord::StatementInvalid => ex
         #this seems to mean connection issue with database
+        #give the agent a chance to retry
         render :json => ex.to_s, :status=>500
 
       rescue Exception => ex
-        #todo: make sure none of these should be 4xx errors
-        render :json => ex.to_s, :status=>500
+        # a status in the 400 range tells the agent to stop trying
+        # our default if we don't explicitly expect the error is to not
+        # try again
+        render :json => ex.to_s, :status=>400
       end
     else
       # call did not come through remapped upload via nginx so reject it
