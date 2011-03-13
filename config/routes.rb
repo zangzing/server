@@ -24,7 +24,6 @@ Server::Application.routes.draw do
     get    '/health_check'            => 'pages#health_check',      :as => :health_check
 
     #users
-    get    '/users'                   => 'users#index',             :as => :users
     get    '/users/new'               => 'users#new',               :as => :new_user
     get    '/users/validate_email'    => 'users#validate_email',    :as => :validate_email
     get    '/users/validate_username' => 'users#validate_username', :as => :validate_username
