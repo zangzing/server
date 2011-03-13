@@ -11,8 +11,6 @@ class YahooConnector
   require 'oauth/consumer'
 
   cattr_accessor :api_key, :shared_secret
-  cattr_accessor :http_timeout
-  @@http_timeout = 10.seconds
 
   TOKEN_SPLITTER = '<K1ND@SPL1773R>'
 
@@ -23,8 +21,7 @@ class YahooConnector
       :authorize_path => "/oauth/v2/request_auth",
       :access_token_path => "/oauth/v2/get_token",
       :scheme => :query_string,
-      :http_method => :get,
-      :http_timeout => YahooConnector.http_timeout
+      :http_method => :get
     },
     :social_api => {
       :site                 => 'http://social.yahooapis.com/',
@@ -34,8 +31,7 @@ class YahooConnector
       :http_method          => :get,
       :request_token_path   => '/oauth/v2/get_request_token',
       :access_token_path    => '/oauth/v2/get_token',
-      :authorize_path       => '/oauth/v2/request_auth',
-      :http_timeout => YahooConnector.http_timeout
+      :authorize_path       => '/oauth/v2/request_auth'
     }
   }
 
@@ -77,9 +73,7 @@ class YahooConnector
     if first_time
       req_token = OAuth::RequestToken.from_hash(consumer, {:oauth_token => oauth_token, :oauth_token_secret => oauth_token_secret})
       begin
-        SystemTimer.timeout_after(@@http_timeout) do
-          @access_token = req_token.get_access_token(:oauth_verifier => oauth_verifier)
-        end
+        @access_token = req_token.get_access_token(:oauth_verifier => oauth_verifier)
       rescue => e
         if e.kind_of?(OAuth::Unauthorized)
           code, msg = e.message.split(' ')
@@ -107,11 +101,8 @@ protected
 
   def call_method(url, method_params = {})
     raise YahooError.new(36, "An access token in needed") unless @access_token
-    response = nil
     begin
-      SystemTimer.timeout_after(@@http_timeout) do
-        response = @access_token.get "#{url}?#{method_params.merge(:format => :json).to_url_params}"
-      end
+      response = @access_token.get "#{url}?#{method_params.merge(:format => :json).to_url_params}"
     rescue => e
       raise YahooError.new(403, e.message) if e.kind_of?(OAuth::Problem)
     end

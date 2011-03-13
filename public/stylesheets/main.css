@@ -644,8 +644,8 @@ div#account-image .pp-photo{
 #footer #progress-meter{
     display:none;
     position:absolute;
-    left:300px;
-    top:4px;
+    left:170px;
+    top:1px;
     background: url("/images/upload-0.png") no-repeat scroll 37px 10px transparent;
     height:55px;
     width:100px;
@@ -888,7 +888,7 @@ input[type=text], input[type=password], input[type=checkbox] , textarea{
   border: solid 1px #afafaf;
   padding: 5px;
   /*font-family: "Lucida Grande", "Lucida Sans Unicode", "Trebuchet MS", Tahoma, Helvetica, Arial, sans-serif;*/
-  font-family:Arial;
+  /*font-family:Arial;*/
 }
 
 input[type=text]:focus, input[type=password]:focus, input[type=checkbox]:focus , textarea:focus{
@@ -907,10 +907,10 @@ input[type=text].error, input[type=password].error, input[type=checkbox].error ,
 
 textarea{
   /*font-family: "Lucida Grande", "Lucida Sans Unicode", "Trebuchet MS", Tahoma, Helvetica, Arial, sans-serif;*/
-  font-family:Arial;
+  /*font-family:Arial;*/
 
-  font-weight: 100;
-  font-size: 12px;
+  font-weight: 400;
+  font-size: 14px;
 }
 
 
@@ -1208,6 +1208,27 @@ div#small-drawer dl dd.full-t {
   width: 10%;
 }
 
+div#small-drawer #signin-form-cancel-button{
+    float:right;
+}
+
+div#small-drawer #signin-form-submit-button{
+    float:right;
+    margin-right:5px;
+}
+
+div#small-drawer #join_form_cancel_button{
+    float:right;
+}
+
+div#small-drawer #join_form_submit_button{
+    float:right;
+    margin-right:5px;
+}
+
+
+
+
 .autocomplete-match{
  color: green;
  font-weight: 900;
@@ -1242,8 +1263,8 @@ a.back-button{
     background: url("/images/btn-back-endcap.png") no-repeat scroll top right;
     color:#ffffff;
     display: block;
-    float: left;
-    font-size: 12px;
+    /*float: left;*/
+    font-size: 13px;
     height: 30px;
     margin-right: 6px;
     padding-right: 8px; /* sliding doors padding */
@@ -1296,8 +1317,8 @@ a.next-button{
     background: url("/images/btn-next-endcap.png") no-repeat scroll top right;
     color:#ffffff;
     display: block;
-    float: left;
-    font-size: 12px;
+    /*float: left;*/
+    font-size: 13px;
     height: 30px;
     margin-right: 6px;
     padding-right: 15px; /* sliding doors padding */
@@ -1337,13 +1358,13 @@ a.next-button:active span{
 a.green-button{
     background: url("/images/btn-green-endcap.png") no-repeat scroll top right;
     display: block;
-    float: left;
+    /*float: left;*/
     height: 30px;
     /*margin-right: 6px;*/
     padding-right: 8px; /* sliding doors padding */
     cursor: pointer;
     color:#ffffff;
-    font-size: 12px;
+    font-size: 13px;
     text-decoration: none;
 }
 
@@ -1380,9 +1401,9 @@ a.black-button{
     color:#ffffff;
     display: block;
     float: left;
-    font-size: 12px;
+    font-size: 13px;
     height: 30px;
-    margin-right: 6px;
+    /*margin-right: 6px;*/
     padding-right: 8px; /* sliding doors padding */
     text-decoration: none;
     cursor: pointer;
@@ -1422,9 +1443,9 @@ a.green-add-button{
     color:#ffffff;
     display: block;
     /*float: left;*/
-    font-size: 12px;
+    font-size: 13px;
     height: 30px;
-    margin-right: 6px;
+    /*margin-right: 6px;*/
     padding-right: 8px; /* sliding doors padding */
     text-decoration: none;
     cursor: pointer;

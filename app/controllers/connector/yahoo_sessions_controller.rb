@@ -11,7 +11,9 @@ class Connector::YahooSessionsController < Connector::YahooController
 
   def create
     begin
-      yahoo_api.create_access_token!(params[:oauth_token], session[:yahoo_request_token_secret], true, params[:oauth_verifier])
+      SystemTimer.timeout_after(http_timeout) do
+        yahoo_api.create_access_token!(params[:oauth_token], session[:yahoo_request_token_secret], true, params[:oauth_verifier])
+      end
     rescue => e
       raise InvalidToken if e.kind_of?(YahooError)
     end

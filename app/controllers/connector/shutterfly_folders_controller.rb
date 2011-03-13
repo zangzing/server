@@ -1,7 +1,10 @@
 class Connector::ShutterflyFoldersController < Connector::ShutterflyController
 
   def index
-    album_list = sf_api.get_albums
+    album_list = nil
+    SystemTimer.timeout_after(http_timeout) do
+      album_list = sf_api.get_albums
+    end
     folders = album_list.map { |f|
       {
         :name => f[:title],
@@ -16,7 +19,10 @@ class Connector::ShutterflyFoldersController < Connector::ShutterflyController
   end
 
   def import
-    photos_list = sf_api.get_images(params[:sf_album_id])
+    photos_list = nil
+    SystemTimer.timeout_after(http_timeout) do
+      photos_list = sf_api.get_images(params[:sf_album_id])
+    end
     photos = []
     current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
     photos_list.each do |p|

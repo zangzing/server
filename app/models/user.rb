@@ -53,6 +53,7 @@ class User < ActiveRecord::Base
   before_save    :split_name
   before_create  :build_profile_album
   before_create  :build_preferences
+  after_create   :update_acls_with_id
 
   validates_presence_of   :name,      :unless => :automatic?
   validates_presence_of   :username,  :unless => :automatic?
@@ -157,7 +158,8 @@ class User < ActiveRecord::Base
     if profile_album.nil?
       build_profile_album
     end
-    if id.length <= 0
+
+    if id && id.is_a?(String) && id.length <= 0
       profile_album.profile_photo_id=nil
     else
       profile_album.profile_photo_id=id
@@ -198,6 +200,13 @@ class User < ActiveRecord::Base
         self.last_name = names.pop
         self.first_name = names.join(' ')
       end
+  end
+
+  # Replaces any occurrences of the new user's email
+  # in acl keys with the users new id
+  # (runs as an after_create callback)
+  def update_acls_with_id
+    ACLManager.global_replace_user_key( self.email, self.id )
   end
 
 end

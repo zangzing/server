@@ -250,7 +250,7 @@
                 showThumbscroller:false,
                 hideNativeScroller: true,
                 cellWidth: 720,
-                cellHeight: 500,
+                cellHeight: $('#tab-content').height() - 130,
                 singlePictureMode: true,
                 currentPhotoId: photoId,
                 context: 'chooser-picture',
@@ -616,6 +616,7 @@
                 name: 'Photobucket',
                 src: '/images/folders/photobucket_off.jpg',
                 rolloverSrc: '/images/folders/photobucket_on.jpg',
+                add_url: zz.path_prefix + "/photobucket/folders/import?album_path=/", //unlike other connectors, photobucket may have photos at the root level
 
                 on_error: function(){
                     var folder = this;
@@ -687,6 +688,15 @@
 
         remove_photo_by_guid: function(photo_guid){
             var self = this;
+
+
+            //since there is no animation to tell user that something is
+            //happening, its important to remove check right away
+            //var cell = self.grid.cellForId(photo_guid);
+            //if(cell){
+            //    cell.data().zz_photo.setChecked(false);
+            //}
+
 
             var photo = _.detect(self.tray_photos, function(photo){
                 return photo.source_guid == photo_guid;

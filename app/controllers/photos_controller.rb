@@ -1,3 +1,5 @@
+require "zz_env_helpers"
+
 class PhotosController < ApplicationController
   before_filter :oauth_required, :only => [:agentindex, :agent_create]
   before_filter :require_user, :only => [:create, :update, :destroy ] #TODO Sort out album security so facebook can freely dig into album page
@@ -92,12 +94,14 @@ class PhotosController < ApplicationController
         #this seems to mean connection issue with database
         #give the agent a chance to retry
         render :json => ex.to_s, :status=>500
+        logger.info small_back_trace(ex)
 
       rescue Exception => ex
         # a status in the 400 range tells the agent to stop trying
         # our default if we don't explicitly expect the error is to not
         # try again
         render :json => ex.to_s, :status=>400
+        logger.info small_back_trace(ex)
       end
     else
       # call did not come through remapped upload via nginx so reject it

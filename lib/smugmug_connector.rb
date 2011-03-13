@@ -12,9 +12,6 @@ class SmugmugConnector
 
   API_ENDPOINT = '/services/api/json/1.2.2/'
 
-  cattr_accessor :http_timeout
-  @@http_timeout = 10.seconds
-
   def initialize(token = nil)
     self.access_token = token
   end
@@ -55,9 +52,7 @@ class SmugmugConnector
     if first_time
       req_token = OAuth::RequestToken.from_hash(consumer, {:oauth_token => oauth_token, :oauth_token_secret => oauth_token_secret})
       begin
-        SystemTimer.timeout_after(@@http_timeout) do
-          @access_token = req_token.get_access_token
-        end
+        @access_token = req_token.get_access_token
       rescue => e
         if e.kind_of?(OAuth::Unauthorized)
           code, msg = e.message.split(' ')
@@ -81,10 +76,7 @@ class SmugmugConnector
   def call_method(method_name, method_params = {})
     api_query = method_params.merge(:method => method_name)
     raise SmugmugError.new(36, "An access token in needed") unless @access_token
-    response = nil
-    SystemTimer.timeout_after(@@http_timeout) do
-      response = @access_token.get "#{API_ENDPOINT}?#{api_query.to_url_params}"
-    end
+    response = @access_token.get "#{API_ENDPOINT}?#{api_query.to_url_params}"
     result = JSON.parse(response.body)
     #{"stat":"ok","method":"smugmug.albums.get","Albums":[{"id":5298215,"Key":"9VoYf","Category":{"id":33,"Name":"Vacation"},"Title":"Fabulous me!"}]}
     #{"stat":"fail","method":"smugmug.albums.get","code":36,"message":"invalid/expired token"}

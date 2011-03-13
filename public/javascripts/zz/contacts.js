@@ -148,7 +148,7 @@ zzcontacts ={
             var b = $(button);
             var service = b.attr('data-service');
             if( service === 'local' && $.client.os === 'Mac' ){
-                b.find('span').html( '<div class="off"></div>AddBook');
+                b.find('span').html( '<div class="off"></div>Mac Address Book');
             }
             if( zzcontacts.is_service_linked(service)){
                 b.find('div').removeClass('off sync error').addClass('on');
