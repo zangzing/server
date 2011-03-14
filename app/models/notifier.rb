@@ -58,19 +58,16 @@ class Notifier < ActionMailer::Base
 
     # Load interpolate and setup values from template
     @email_template = EmailTemplate.find_by_name!( __method__ )
-    subject = ERB.new( @email_template.subject).result
-    from = "\"#{@email_template.from_name}\" <#{@email_template.from_address}>"
-
+    
     logger.info "Mailed album_shared_with_you: #{to_address}, #{@album.name}"
-    mail( :to      => to_address,
-          :from    => from,
-          :subject => subject ) do |format|
+    mail( :to      => ( @recipient? @recipient.formatted_email : to_address ),
+          :from    => @email_template.formatted_from_address,
+          :subject => ERB.new( @email_template.subject).result
+    ) do |format|
         format.text { render :inline => @email_template.text_content }
         format.html { render :inline => @email_template.html_content }
     end
   end
-
-
 
 
   def you_are_being_followed( follower_id, followed_id)
@@ -110,6 +107,25 @@ class Notifier < ActionMailer::Base
     mail( :to      => to,
           :subject => "Test from ZangZing #{Rails.env.capitalize} Environment") do |format|
         format.text { render :text => "This is the message body of the test" }
+    end
+  end
+
+  def like_album( album_id, liker_id )
+    @album = Album.find( album_id )
+    @user  = @album.user
+    @liker = User.find( liker_id )
+
+    # Load interpolate and setup values from template
+    @email_template = EmailTemplate.find_by_name!( __method__ )
+    subject = ERB.new( @email_template.subject).result
+    from = @email_template.from
+
+    logger.info "Mailed like_album: #{@user.username}, #{@album.name}"
+    mail( :to      => to_address,
+          :from    => from,
+          :subject => subject ) do |format|
+        format.text { render :inline => @email_template.text_content }
+        format.html { render :inline => @email_template.html_content }
     end
   end
 end

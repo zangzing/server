@@ -209,4 +209,8 @@ class User < ActiveRecord::Base
     ACLManager.global_replace_user_key( self.email, self.id )
   end
 
+  def formatted_email
+    "\"#{self.name}\" <#{self.email}>"
+  end
+
 end

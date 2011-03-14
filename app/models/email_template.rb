@@ -50,6 +50,10 @@ class EmailTemplate < ActiveRecord::Base
     self.html_content = html
   end
 
+  def formatted_from_address
+     "\"#{self.from_name}\" <#{self.from_address}>"
+  end
+
   def self.interpolate_album_picons( html )
     # Group 0 is the whole image tag
     # group 1 is the image url
