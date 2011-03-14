@@ -106,10 +106,10 @@ class UsersController < ApplicationController
     end
   end
   
-  def index
-    @title = "All users"
-    @users = User.paginate(:page =>params[:page])
-  end
+#  def index
+#    @title = "All users"
+#    @users = User.paginate(:page =>params[:page])
+#  end
   
   def destroy
     user = User.find(params[:id])

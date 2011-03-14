@@ -945,6 +945,10 @@ table#email-share-form input:focus{
   /*margin-right: 10px;*/
 /*}*/
 
+#add-photos-dialog{
+    height:100%;
+}
+
 /*-------------- Settings Drawer -----------------------------------------*/
 .settings-buttons{
    padding: 10px 80px;
