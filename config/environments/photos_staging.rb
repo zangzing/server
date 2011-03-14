@@ -8,7 +8,7 @@ Server::Application.configure do
   # since you don't have to restart the webserver when you make code changes.
   config.cache_classes = true
 
-  config.log_level = :info
+  config.log_level = :debug
 
   # Log error messages when you accidentally call methods on nil.
   config.whiny_nils = true
@@ -32,7 +32,8 @@ Server::Application.configure do
   # set this in the environment you want to allow benchmark testing
   config.bench_test_allowed = true
 
-  ActionController::Base.cache_store = :memory_store
+  # use memcached
+  config.cache_store = :mem_cache_store, MemcachedConfig.server_list
 
   # mail logger is too verbose, shut it off
   config.action_mailer.logger = nil

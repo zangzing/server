@@ -19,7 +19,9 @@ zz.wizard = {
 
         zz.wizard.build_nav(obj, step);
 
-        obj.steps[step].init(function(){
+        var container = $('#tab-content');
+
+        obj.steps[step].init(container, function(){
             zz.wizard.resize_scroll_body()
         });
 
@@ -31,6 +33,8 @@ zz.wizard = {
 
         logger.debug(obj.steps[id].type + "    " + zz.drawer_state);
 
+        var container = $('#tab-content');
+
         if (obj.steps[id].type == 'partial' && zz.drawer_state == zz.DRAWER_OPEN) {
             $('#tab-content').fadeOut('fast');
             if( obj.style == 'edit' ){
@@ -39,14 +43,14 @@ zz.wizard = {
                 zz.close_drawer_partially(obj.time, 40);
             }
             zz.wizard.build_nav(obj, id);
-            obj.steps[id].init(function(){
+            obj.steps[id].init(container, function(){
                 zz.wizard.resize_scroll_body();
             });
 
 
         } else if (obj.steps[id].type == 'partial' && zz.drawer_state == zz.DRAWER_PARTIAL) {
             zz.wizard.build_nav(obj, id);
-            obj.steps[id].init(function(){
+            obj.steps[id].init(container, function(){
                 zz.wizard.resize_scroll_body();
             });
 
@@ -55,7 +59,7 @@ zz.wizard = {
 
             $('#tab-content').empty().show();
 
-            obj.steps[id].init(function(){
+            obj.steps[id].init(container, function(){
                 zz.wizard.resize_scroll_body();
                 zz.open_drawer(obj.time);
             });
@@ -66,7 +70,7 @@ zz.wizard = {
                 $('#tab-content').empty();
                 $('#tab-content').show();
 //                $('#tab-content').css({opacity:0});
-                obj.steps[id].init(function(){
+                obj.steps[id].init(container, function(){
                     zz.wizard.resize_scroll_body();
 //                    $('#tab-content').fadeIn('fast');
                 });
@@ -77,7 +81,7 @@ zz.wizard = {
             zz.close_drawer_partially(obj.time);
             zz.wizard.build_nav(obj, id);
 
-            obj.steps[id].init(function(){
+            obj.steps[id].init(container, function(){
                 zz.wizard.resize_scroll_body();
             });
 
@@ -238,7 +242,7 @@ zz.wizard = {
                 break;
             default:
                 logger.debug('zz.wizard.open_edit_album_wizard: Albums of type: '+zz.album_type+' are not supported yet.')    
-                alert('Albums of type: '+zz.album_type+' are not supported yet.')
+                //alert('Albums of type: '+zz.album_type+' are not supported yet.')
                 break
         }
     },
@@ -246,34 +250,34 @@ zz.wizard = {
 
 
 
-    //set up email autocomplete
-    init_email_autocompleter: function(){
+//    //set up email autocomplete
+//    init_email_autocompleter: function(){
+//
+//        logger.debug('start email_autocomplete');
+//
+//        $('#you-complete-me').autocompleteArray(
+//                google_contacts.concat( yahoo_contacts.concat( mslive_contacts.concat(local_contacts )) ),
+//            {
+//                width: 700,
+//                position_element: 'dd#the-list',
+//                append: '#drawer div.body'
+//            }
+//        );
+//        //zz.address_list = '';
+//        logger.debug('end email_autocomplete');
+//
+//    },
 
-        logger.debug('start email_autocomplete');
-
-        $('#you-complete-me').autocompleteArray(
-                google_contacts.concat( yahoo_contacts.concat( mslive_contacts.concat(local_contacts )) ),
-            {
-                width: 700,
-                position_element: 'dd#the-list',
-                append: '#drawer div.body'
-            }
-        );
-        //zz.address_list = '';
-        logger.debug('end email_autocomplete');
-
-    },
-
-    // reloads the autocompletetion data
-    reload_email_autocompleter: function(){
-        logger.debug('start email_autocompleter_reload');
-
-        //todo: is there a better way to get a handle to the plugin?
-        $('#you-complete-me')[0].autocompleter.setData(google_contacts.concat( yahoo_contacts.concat( mslive_contacts.concat(local_contacts )) ));
-
-        logger.debug('end email_autocompleter_reload');
-
-    },
+//    // reloads the autocompletetion data
+//    reload_email_autocompleter: function(){
+//        logger.debug('start email_autocompleter_reload');
+//
+//        //todo: is there a better way to get a handle to the plugin?
+//        $('#you-complete-me')[0].autocompleter.setData(google_contacts.concat( yahoo_contacts.concat( mslive_contacts.concat(local_contacts )) ));
+//
+//        logger.debug('end email_autocompleter_reload');
+//
+//    },
 
 //=========================================== SETTINGS DRAWER =====================================    
 

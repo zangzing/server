@@ -13,6 +13,7 @@ protected
     unless access_token
       begin
         @token_string = service_identity.credentials
+        raise Instagram::InvalidSignature unless @token_string
         @client = Instagram.client(:access_token => @token_string)
       rescue => exception
         raise InvalidToken if exception.kind_of?(Instagram::InvalidSignature)

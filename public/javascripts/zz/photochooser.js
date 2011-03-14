@@ -250,7 +250,7 @@
                 showThumbscroller:false,
                 hideNativeScroller: true,
                 cellWidth: 720,
-                cellHeight: 500,
+                cellHeight: self.element.parent().height() - 130,
                 singlePictureMode: true,
                 currentPhotoId: photoId,
                 context: 'chooser-picture',
@@ -482,6 +482,30 @@
                 }
             });
 
+            //Instagram
+            roots.push(
+            {
+                open_url: zz.path_prefix + '/instagram/folders.json',
+                type: 'folder',
+                name: 'Instagram',
+                src: '/images/folders/instagram_off.jpg',
+                rolloverSrc: '/images/folders/instagram_on.jpg',
+
+                on_error: function(){
+                    var folder = this;
+                    self.bodyElement.hide().load('/static/connect_messages/connect_to_instagram.html', function(){
+                        self.bodyElement.find('#connect-button').click(function(){
+                            self.open_login_window(folder, zz.path_prefix + '/instagram/sessions/new');
+                        });
+                        self.bodyElement.fadeIn('fast');
+                    });
+                }
+
+            });
+
+
+
+
             //Shutterfly
             roots.push(
             {
@@ -570,8 +594,8 @@
                 open_url: zz.path_prefix + '/picasa/folders.json',
                 type: 'folder',
                 name: 'Picasa Web',
-                src: '/images/folders/picasa_off.jpg',
-                rolloverSrc: '/images/folders/picasa_on.jpg',
+                src: '/images/folders/picasa_web_off.jpg',
+                rolloverSrc: '/images/folders/picasa_web_on.jpg',
                 on_error: function(){
                     var folder = this;
                     self.bodyElement.hide().load('/static/connect_messages/connect_to_picasa_web.html', function(){
@@ -592,6 +616,7 @@
                 name: 'Photobucket',
                 src: '/images/folders/photobucket_off.jpg',
                 rolloverSrc: '/images/folders/photobucket_on.jpg',
+                add_url: zz.path_prefix + "/photobucket/folders/import?album_path=/", //unlike other connectors, photobucket may have photos at the root level
 
                 on_error: function(){
                     var folder = this;
@@ -605,26 +630,6 @@
 
             });
 
-            //Instagram
-            roots.push(
-            {
-                open_url: zz.path_prefix + '/instagram/folders.json',
-                type: 'folder',
-                name: 'Instagram',
-                src: '/images/folders/instagram_off.jpg',
-                rolloverSrc: '/images/folders/instagram_on.jpg',
-
-                on_error: function(){
-                    var folder = this;
-                    self.bodyElement.hide().load('/static/connect_messages/connect_to_instagram.html', function(){
-                        self.bodyElement.find('#connect-button').click(function(){
-                            self.open_login_window(folder, zz.path_prefix + '/instagram/sessions/new');
-                        });
-                        self.bodyElement.fadeIn('fast');
-                    });
-                }
-
-            });
 
             //ZangZing
             roots.push(
@@ -683,6 +688,15 @@
 
         remove_photo_by_guid: function(photo_guid){
             var self = this;
+
+
+            //since there is no animation to tell user that something is
+            //happening, its important to remove check right away
+            //var cell = self.grid.cellForId(photo_guid);
+            //if(cell){
+            //    cell.data().zz_photo.setChecked(false);
+            //}
+
 
             var photo = _.detect(self.tray_photos, function(photo){
                 return photo.source_guid == photo_guid;

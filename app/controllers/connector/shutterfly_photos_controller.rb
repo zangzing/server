@@ -1,7 +1,10 @@
 class Connector::ShutterflyPhotosController < Connector::ShutterflyController
 
   def index
-    photos_list = sf_api.get_images(params[:sf_album_id])
+    photos_list = nil
+    SystemTimer.timeout_after(http_timeout) do
+      photos_list = sf_api.get_images(params[:sf_album_id])
+    end
     File.open("#{Rails.root}/#{params[:sf_album_id]}.yml", 'w'){|f| f.write(YAML.dump(photos_list))}
     photos = photos_list.map { |p|
      {
@@ -27,7 +30,10 @@ class Connector::ShutterflyPhotosController < Connector::ShutterflyController
 #  end
 
   def import
-    photos_list = sf_api.get_images(params[:sf_album_id])
+    photos_list = nil
+    SystemTimer.timeout_after(http_timeout) do
+      photos_list = sf_api.get_images(params[:sf_album_id])
+    end
     photo_info = photos_list.select { |p| p[:id]==params[:photo_id] }.first
     photo_title = photo_info[:title]
     

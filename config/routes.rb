@@ -38,7 +38,7 @@ Server::Application.routes.draw do
     get    '/health_check'            => 'pages#health_check',      :as => :health_check
 
     #users
-    get    '/users'                   => 'users#index',             :as => :users
+#    get    '/users'                   => 'users#index',             :as => :users
     get    '/users/new'               => 'users#new',               :as => :new_user
     get    '/users/validate_email'    => 'users#validate_email',    :as => :validate_email
     get    '/users/validate_username' => 'users#validate_username', :as => :validate_username
@@ -152,10 +152,10 @@ Server::Application.routes.draw do
     resources :password_resets, :only => [:new, :edit, :create, :update]
 
     #static pages
-    get '/contact'  => 'pages#contact', :as => :contact
-    get '/about'    => 'pages#about',   :as => :about
-    get '/help'     => 'pages#help',    :as => :help
-    get '/signup'   => 'users#new',     :as => :signup
+    #get '/contact'  => 'pages#contact', :as => :contact
+    #get '/about'    => 'pages#about',   :as => :about
+    #get '/help'     => 'pages#help',    :as => :help
+    #get '/signup'   => 'users#new',     :as => :signup
 
 
     # all in this section are in the Connector namespace but don't include it in the path

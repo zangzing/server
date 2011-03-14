@@ -14,7 +14,10 @@ class Connector::YahooContactsController < Connector::YahooController
     imported_contacts = []
     contacts_count = nil
     begin
-      contacts_page = yahoo_api.get_contacts(yahoo_api.current_user_guid, :count => BATCH_SIZE, :start => start_index)
+      contacts_page = nil
+      SystemTimer.timeout_after(http_timeout) do
+        contacts_page = yahoo_api.get_contacts(yahoo_api.current_user_guid, :count => BATCH_SIZE, :start => start_index)
+      end
       contacts_count = contacts_page[:total] unless contacts_count
       entry_count = 0
       (contacts_page[:contact] || []).each do |entry|

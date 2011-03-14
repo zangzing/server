@@ -39,8 +39,7 @@ class PhotoInfo < ActiveRecord::Base
     if match = source_string.match(/(\d+)\/(\d+), (\d+)\/(\d+), (\d+)\/(\d+)/i)
       return ( match[1].to_f/match[2].to_f + match[3].to_f/match[4].to_f/60 + match[5].to_f/match[6].to_f/3600 ) * (['N','E'].include?(coord_ref) ? 1 : -1)
     end
-    #Case 2
-    #.... NMEA maybe...
+    return nil
   end
 
 

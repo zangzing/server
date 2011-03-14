@@ -36,6 +36,7 @@ run "rm -rf #{release_path}/public/stylesheets"
 # file was set up by custom chef script
 run "ln -nfs #{shared_path}/config/resque.yml #{release_path}/config/resque.yml"
 run "ln -nfs #{shared_path}/config/redis.yml #{release_path}/config/redis.yml"
+run "ln -nfs #{shared_path}/config/memcached.yml #{release_path}/config/memcached.yml"
 
 # Restart Resque workers
 run "sudo monit restart all -g resque_photos"

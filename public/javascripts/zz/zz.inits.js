@@ -6,6 +6,7 @@
 
 zz.init = {
 
+    //todo move to zz.toolbars
     disable_buttons: function() {
         $('#header #back-button').addClass('disabled');
         $('#header #view-buttons').children().addClass('disabled');
@@ -14,11 +15,27 @@ zz.init = {
         $('#footer #next-button').addClass('disabled');
         $('#footer #prev-button').addClass('disabled');
         $('#footer #new-album-button').addClass('disabled');
-        $('#footer #add-photo-button').addClass('disabled');
+        $('#footer #add-photos-button').addClass('disabled');
         $('#footer #share-button').addClass('disabled');
         $('#footer #edit-album-button').addClass('disabled');
         $('#footer #buy-button').addClass('disabled');
         $('#footer #like-button').addClass('disabled');
+    },
+
+    //todo move to zz.toolbars
+    enable_buttons:function(){
+        $('#header #back-button').removeClass('disabled');
+        $('#header #view-buttons').children().removeClass('disabled');
+        $('#header #account-badge').removeClass('disabled');
+        $('#footer #play-button').removeClass('disabled');
+        $('#footer #next-button').removeClass('disabled');
+        $('#footer #prev-button').removeClass('disabled');
+        $('#footer #new-album-button').removeClass('disabled');
+        $('#footer #add-photos-button').removeClass('disabled');
+        $('#footer #share-button').removeClass('disabled');
+        $('#footer #edit-album-button').removeClass('disabled');
+        $('#footer #buy-button').removeClass('disabled');
+        $('#footer #like-button').removeClass('disabled');
     },
 
     template: function() {
@@ -26,7 +43,7 @@ zz.init = {
 
         //top bar
         $('#header #home-button').click(function() {
-            document.location.href = '/';
+            document.location.href = zz.path_prefix + '/';
             ZZAt.track('button.home.click');
         });
 
@@ -144,14 +161,29 @@ zz.init = {
 
 
         //only album contributers can do this
-        $('#footer #add-photo-button').click(function() {
+        $('#footer #add-photos-button').click(function() {
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
             }
 
             zz.init.disable_buttons();
-            $('#footer #add-photo-button').removeClass('disabled').addClass('selected');
-            zz.wizard.open_edit_album_wizard('add')
+            $('#footer #add-photos-button').removeClass('disabled').addClass('selected');
+            var template = $('<div class="photochooser-container"></div>');
+            $('<div id="add-photos-dialog"></div>').html( template )
+                                                   .zz_dialog({
+                                                             height: $(document).height() - 200,
+                                                             width: 895,
+                                                             modal: true,
+                                                             autoOpen: true,
+                                                             open : function(event, ui){ template.zz_photochooser({}) },
+                                                             close: function(event, ui){
+                                                                 $.get( zz.path_prefix + '/albums/' +zz.album_id + '/close_batch', function(){
+                                                                      history.go(0);
+                                                                 });
+                                                             }
+            });
+            template.height( $(document).height() - 192 );
+
         });
 
         //any signed in user can do this
@@ -164,7 +196,29 @@ zz.init = {
 
             zz.init.disable_buttons();
             $('#footer #share-button').removeClass('disabled').addClass('selected');
-            zz.wizard.open_edit_album_wizard('share')
+
+
+            var template = $('<div id="share-dialog-content"></div>');
+            $('<div id="share-dialog"></div>').html( template )
+                                                   .zz_dialog({
+                                                             height: 580,
+                                                             width: 895,
+                                                             modal: true,
+                                                             autoOpen: true,
+                                                             open : function(event, ui){
+                                                                pages.share.init(template, function(){});
+                                                             },
+                                                             close: function(event, ui){
+                                                                zz.init.enable_buttons();
+                                                                 $('#footer #share-button').removeClass('selected');  //todo: centralize this somewhere -- zz.toolbars
+
+                                                             }
+            });
+//            template.css({
+//                position: 'relative',
+//                bottom:0
+//            });
+
         });
 
         //only album owner can do this

@@ -6,12 +6,11 @@ class Connector::PhotobucketController < Connector::ConnectorController
 
   def initialize(*args)
     super(*args)
-    PhotobucketConnector.http_timeout = SERVICE_CALL_TIMEOUT[:photobucket]
     PhotobucketConnector.consumer_key = PHOTOBUCKET_API_KEYS[:consumer_key]
     PhotobucketConnector.consumer_secret = PHOTOBUCKET_API_KEYS[:consumer_secret]
   end
 
-  protected
+protected
 
   def service_login_required
     unless auth_token_string
@@ -23,6 +22,10 @@ class Connector::PhotobucketController < Connector::ConnectorController
         raise HttpCallFail if exception.kind_of?(SocketError)
       end
     end
+  end
+
+  def http_timeout
+    SERVICE_CALL_TIMEOUT[:photobucket]
   end
 
   def service_identity

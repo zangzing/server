@@ -3,30 +3,41 @@
   <h4>Share your album with all your friends on Facebook or Twitter!</h4>
 </div>
 
+<div class="flash-box">
+  <div class="flash-notice" id="flashes-notice"></div>
+  <div class="error-notice" id="error-notice"></div>
+</div>
+
 <div id="scroll-body">
  <%= form_for [@share], :url => create_album_share_path(@album) , :html =>{ :id => "new_post_share" } do |f| %>
 
 <!--form method="post" id="new_post_share" action=""-->
     <input type="hidden" name="service" value="social">
-    <div id="form-container" class="clearfix">
-      <dl id="social-form" class="clearfix">
-        <dt id="network"><input type="checkbox" name="recipients[]" id="facebook_box"  value="facebook" <%=( @facebook == '1' ? "authorized='yes' checked='checked'" : "" )%> /> <img src="/images/icon-facebook-16.png" /></dt>
-        <dd>Facebook</dd>
-        <dt><input type="checkbox" name="recipients[]" id="twitter_box"  value="twitter" <%=( @twitter == '1' ? "authorized='yes' checked='checked'" : "" )%>  /> <img src="/images/icon-twitter-16.png" /></dt>
-        <dd>Twitter</dd>
-        <dt></dt><dd id="character-count">0 characters</dd>        
-        <div class="clear-fix"></div>
-        
-        <dt>Post</dt>
-        <dd id="post-text"><textarea rows="3" name="message" id="post_share_message"></textarea></dd>
-      </dl>  
-      
-      <div id="form-actions">
-        <a id="cancel-share" class="black-button"><span>Cancel</span></a>
-        <a id="post_share_button" class="green-button"><span>Post</span></a>
-      </div>
-      
-    </div>
+
+      <table id="social-form">
+        <tr>
+          <td class="share-on-facebook-and-twitter">
+            Share on
+            <input type="checkbox" name="recipients[]" id="facebook_box"  value="facebook" <%=( @facebook == '1' ? "authorized='yes' checked='checked'" : "" )%> />
+            <span class="facebook">Facebook</span> and/or
+            <input type="checkbox" name="recipients[]" id="twitter_box"  value="twitter" <%=( @twitter == '1' ? "authorized='yes' checked='checked'" : "" )%>  />
+            <span class="facebook">Twitter</span> ?
+
+            <span id="character-count">0 characters</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <textarea rows="3" name="message" id="post_share_message"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a id="cancel-share" class="black-button"><span>Cancel</span></a>
+            <a id="post_share_button" class="green-button"><span>Post</span></a>
+          </td>
+        </tr>
+      </table>
   <%end%>
 </div>
 

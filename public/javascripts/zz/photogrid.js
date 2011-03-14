@@ -80,7 +80,7 @@
 
 
             var droppableHeight = Math.floor(self.options.cellHeight * 0.8);
-            var droppableWidth = Math.floor(self.options.cellWidth * 0.6);
+            var droppableWidth = Math.floor(self.options.cellWidth * 1);
             var droppableLeft = -1 * Math.floor(droppableWidth/2);
             var droppableTop = Math.floor((self.options.cellHeight - droppableHeight)/2);
 
@@ -172,7 +172,7 @@
                             return cell.data().zz_photo.dragHelper();
                         },
                         scroll: true,
-                        scrollSensitivity: self.options.cellHeight / 2,
+                        scrollSensitivity: self.options.cellHeight / 8,
                         scrollSpeed:self.options.cellHeight / 3
                     });
 

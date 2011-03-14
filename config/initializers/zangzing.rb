@@ -36,6 +36,7 @@ silence_warnings do #To avoid warning of overwriting constant
   msg << "      Path                        : " + ENV['PATH']
   msg << "      Resque_CPU_hosts            : " + zz_deploy_environment.resque_cpu_host_names.to_s
   msg << "      Redis_host                  : " + zz_deploy_environment.redis_host_name
+  msg << "      Memcached hosts             : " + MemcachedConfig.server_list.to_s
   if File.exists?( fname )
     zconfig.application_host = dna['engineyard']['environment']['apps'][0]['vhosts'][0]['domain_name']
     msg << "      Deployment information from : "+fname

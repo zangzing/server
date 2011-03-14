@@ -265,9 +265,9 @@ ul#indicator-4 li.tab.on, ul#indicator-4 li.tab:hover{
 }
 
 
-/*#next-step {*/
-
-/*}*/
+#next-step {
+    float:left;
+}
 
 
 /*ul#indicator-6 #next-step {*/
@@ -550,6 +550,9 @@ ul#share-pick li.email-share:hover {
     background-color:#ffffff;
 }
 
+
+
+
 /*ul#share-pick li a {*/
   /*color: #646464;*/
   /*background-color:#ffffff*/
@@ -566,57 +569,85 @@ div#form-container {
   /*font-size: 1.4em;*/
 }
 
-dl#email-share-form{
-  font-size: 14px;
-}
+
 
 div#form-container-2 {
   width: 800px;
   margin: 0px auto;
 }
 
-dl#social-form{
+#social-form{
   font-size: 14px;
+  text-align:left;
 }
 
-dl#social-form dt {
-  float: left;
-  width: 50px;
-  text-align: right;
-  margin-right: 10px;
-  margin-bottom: 10px;
+/*dl#social-form dt {*/
+  /*float: left;*/
+  /*width: 50px;*/
+  /*text-align: right;*/
+  /*margin-right: 10px;*/
+  /*margin-bottom: 10px;*/
+/*}*/
+
+/*dl#social-form dt img {*/
+  /*vertical-align: -30%;*/
+/*}*/
+
+/*dl#social-form dt#network {*/
+  /*margin-left: 50px;*/
+/*}*/
+
+#social-form  {
+    margin-left:auto;
+    margin-right:auto;
+
+
+
+
 }
 
-dl#social-form dt img {
-  vertical-align: -30%;
-}
+#social-form td {
+   padding-top:10px;
 
-dl#social-form dt#network {
-  margin-left: 50px;
-}
-
-dl#social-form dd {
-  text-align: left;
-  float: left;
-  margin-bottom: 10px;
 }
 
 
-dl#social-form dd#character-count {
+
+#social-form #character-count {
   float:right;
-  margin-right: 40px;
+  font-size:14px;
+}
+
+#social-form .share-on-facebook-and-twitter{
+    font-size:18px;
+}
+
+#social-form .share-on-facebook-and-twitter .facebook{
+    color:#365896;
+    font-weight: 700;
+}
+
+#social-form .share-on-facebook-and-twitter .twitter{
+    color:#3fc0fd;
+    font-weight: 700;
 }
 
 
-dl#social-form dd#post-text {
+
+#social-form textarea#post_share_message {
   width: 690px;
 }
 
-dl#social-form dd#post-text textarea {
-  width: 690px;
-  /*padding: 5px;*/
-  /*color: #646464;*/
+#social-form #post_share_button{
+    float:right;
+    margin-right:5px;
 }
+
+#social-form #cancel-share{
+    float:right;
+}
+
+
 
 /*dl#social-form dd#post-text textarea.error {*/
   /*border: 1px #ff0000 solid;*/
@@ -648,10 +679,16 @@ dl#social-form dd#post-text textarea {
   /*margin-left: 20px;*/
 /*}*/
 
+
+/*====================== Email Share ===============================*/
+
+
+
 ul#email-sync {
   margin: 0 0 10px 78px;
   float: left;
   font-size:14px;
+  width: 800px;
 }
 
 ul#email-sync li {
@@ -665,130 +702,75 @@ ul#email-sync li.title {
   color: #646464;
 }
 
-dl#email-share-form dt {
-  float: left;
-  text-align: right;
-  margin: 8px;
-  width: 60px;
-  color: #8c8c8c;
+table#email-share-form{
+  font-size: 14px;
+  /*width:100%;*/
+  text-align:left;
 }
 
-dl#email-share-form dd {
-  float: left;
-  text-align: right;
-  margin-bottom: 10px;
+table#email-share-form td{
+    padding-right:20px;
+    padding-top:5px;
+    padding-bottom:10px;
 }
 
-dl#email-share-form dd input, dl#email-share-form dd textarea {
-  width: 690px;
-  /*padding: 5px;*/
-  /*color: #000000;*/
-  /*border: 1px #8c8c8c solid;*/
-  /*font-family: "Lucida Grande", "Lucida Sans Unicode", "Trebuchet MS", Tahoma, Helvetica, Arial, sans-serif;*/
-  /*font-weight: 400;*/
-  /*font-size: 1.05em;*/
+table#email-share-form td.to{
+    vertical-align:bottom;
+    text-align:right;
 }
 
-/*dl#email-share-form dd input.error, dl#email-share-form dd textarea.error {*/
-  /*border: 1px #ff0000 solid;*/
-}
-
-dl#email-share-form dd input {
-  height: 20px;
-  padding: 12px 5px;
+table#email-share-form td.message{
+    vertical-align:top;
+    text-align:right;
 }
 
 
-dl#email-share-form dd#the-list {
-  border: 1px #afafaf solid;
-  min-height: 42px;
-  padding: 0;
-  width: 690px;
-  text-align: left;
+table#email-share-form td.import{
+    text-align:left;
+    color: #943131
 }
 
-dl#contributor-index{
-    font-size:14px;
+table#email-share-form textarea#email_share_message{
+    width:680px;
 }
 
-dl#contributor-index dd#the-list {
-  border: 1px #afafaf solid;
-  min-height: 326px;
-  padding: 0 5px;
-  width: 720px;
-  margin-left: 43px;
+table#email-share-form .token-input-list-facebook{
+    min-height:29px;
 }
 
 
-ul#the-recipients {
-  min-height: 28px;
-  padding: 0 5px;
-  width: 690px;
 
-  color: #000000;
+table#email-share-form #cancel-share{
+    float:right;
+    margin-left:5px;
 }
 
-ul#the-recipients li {
-  float: left;
-  height: 16px;
-  color: #000000;
-  text-align: left;
-  background-color: #fbfbfb;
-  background: -moz-linear-gradient(top, #fbfbfb, #dcdcdc);
-  background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#dcdcdc));
-  border: 2px #dcdcdc solid;
-  padding: 4px 4px 4px 7px;
-  margin: 5px;
-}
-
-ul#the-recipients li.del {
-  border: 2px #ff0000 solid;
-  background: -moz-linear-gradient(top, #fbfbfb, pink);
-  background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(pink));}
-
-ul#the-recipients li img.link {
-  margin: 0 3px 0 5px;
-  vertical-align: -30%;
-}
-
-.rounded {
-  border-radius: 8px;
-  -moz-border-radius: 8px;
-  -webkit-border-radius: 8px;
+table#email-share-form #mail-submit{
+    float:right;
 }
 
 
-ul#the-recipients li.rounded {
-  display: none;
+table#email-share-form #cancel-new-contributors{
+    float:right;
+    margin-left:5px;
 }
 
-ul#the-recipients li.rounded input {
-  display: none;
+table#email-share-form #submit-new-contributors{
+    float:right;
 }
 
-ul#the-recipients li#autocomplete {
-  height: 36px;
-  text-align: left;
-  margin: 0;
-  padding: 0;
-  background: none;
-  border: none;
+
+
+
+table#email-share-form input{
+    border:none;
+    outline:none;
+    font-size:13px;
 }
 
-dl#email-share-form label.error {
-  display: none;
-}
-
-dl#email-share-form dd input#you-complete-me {
-  background-color: #fff;
-  border: 1px #fff solid;
-  width: 300px;
-  height: 24px;
-  padding: 5px 0px;
-}
-
-dl#email-share-form dd input#you-complete-me:focus {
-  outline: none;
+table#email-share-form input:focus{
+    border:none;
+    outline:none;
     box-shadow: none;
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
@@ -796,18 +778,175 @@ dl#email-share-form dd input#you-complete-me:focus {
 
 }
 
-select.album_privacy {
-  background-color: #fbfbfb;
-  background: -moz-linear-gradient(top, #fbfbfb, #dcdcdc);
-  background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#dcdcdc));
-  border: 1px #dcdcdc solid;
-  font-size: 12px;
-  font-weight: 400;
-  color: #646464;
-  padding: 4px;
-  height: 28px;
-  width: 80px;
-  margin-right: 10px;
+#contributors-body ul.token-input-list-facebook{
+    height:100% !important;
+}
+
+
+#contributors-body #add-contributors-btn{
+    float:right;
+}
+
+#contributors-body table{
+    margin-left:auto;
+    margin-right:auto;
+}
+
+#contributors-body table td{
+    padding-top:10px;
+}
+
+
+/*table#email-share-form dt {*/
+  /*float: left;*/
+  /*text-align: right;*/
+  /*margin: 8px;*/
+  /*width: 60px;*/
+  /*color: #8c8c8c;*/
+/*}*/
+
+/*dl#email-share-form dd {*/
+  /*float: left;*/
+  /*text-align: right;*/
+  /*margin-bottom: 10px;*/
+/*}*/
+
+/*dl#email-share-form dd input, dl#email-share-form dd textarea {*/
+  /*width: 690px;*/
+  /*padding: 5px;*/
+  /*color: #000000;*/
+  /*border: 1px #8c8c8c solid;*/
+  /*font-family: "Lucida Grande", "Lucida Sans Unicode", "Trebuchet MS", Tahoma, Helvetica, Arial, sans-serif;*/
+  /*font-weight: 400;*/
+  /*font-size: 1.05em;*/
+/*}*/
+
+/*dl#email-share-form dd input.error, dl#email-share-form dd textarea.error {*/
+  /*border: 1px #ff0000 solid;*/
+/*}*/
+
+/*dl#email-share-form dd input {*/
+  /*height: 20px;*/
+  /*padding: 12px 5px;*/
+/*}*/
+
+
+/*dl#email-share-form dd#the-list {*/
+  /*border: 1px #afafaf solid;*/
+  /*min-height: 42px;*/
+  /*padding: 0;*/
+  /*width: 690px;*/
+  /*text-align: left;*/
+/*}*/
+
+
+/*dl#email-share-form label.error {*/
+  /*display: none;*/
+/*}*/
+
+/*dl#contributor-index{*/
+    /*font-size:14px;*/
+/*}*/
+
+/*dl#contributor-index dd#the-list {*/
+  /*border: 1px #afafaf solid;*/
+  /*min-height: 326px;*/
+  /*padding: 0 5px;*/
+  /*width: 720px;*/
+  /*margin-left: 43px;*/
+/*}*/
+
+
+/*ul#the-recipients {*/
+  /*min-height: 28px;*/
+  /*padding: 0 5px;*/
+  /*width: 690px;*/
+
+  /*color: #000000;*/
+/*}*/
+
+/*ul#the-recipients li {*/
+  /*float: left;*/
+  /*height: 16px;*/
+  /*color: #000000;*/
+  /*text-align: left;*/
+  /*background-color: #fbfbfb;*/
+  /*background: -moz-linear-gradient(top, #fbfbfb, #dcdcdc);*/
+  /*background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#dcdcdc));*/
+  /*border: 2px #dcdcdc solid;*/
+  /*padding: 4px 4px 4px 7px;*/
+  /*margin: 5px;*/
+/*}*/
+
+/*ul#the-recipients li.del {*/
+  /*border: 2px #ff0000 solid;*/
+  /*background: -moz-linear-gradient(top, #fbfbfb, pink);*/
+  /*background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(pink));}*/
+
+/*ul#the-recipients li img.link {*/
+  /*margin: 0 3px 0 5px;*/
+  /*vertical-align: -30%;*/
+/*}*/
+
+/*.rounded {*/
+  /*border-radius: 8px;*/
+  /*-moz-border-radius: 8px;*/
+  /*-webkit-border-radius: 8px;*/
+/*}*/
+
+
+/*ul#the-recipients li.rounded {*/
+  /*display: none;*/
+/*}*/
+
+/*ul#the-recipients li.rounded input {*/
+  /*display: none;*/
+/*}*/
+
+/*ul#the-recipients li#autocomplete {*/
+  /*height: 36px;*/
+  /*text-align: left;*/
+  /*margin: 0;*/
+  /*padding: 0;*/
+  /*background: none;*/
+  /*border: none;*/
+/*}*/
+
+
+
+/*dl#email-share-form dd input#you-complete-me {*/
+  /*background-color: #fff;*/
+  /*border: 1px #fff solid;*/
+  /*width: 300px;*/
+  /*height: 24px;*/
+  /*padding: 5px 0px;*/
+/*}*/
+
+/*dl#email-share-form dd input#you-complete-me:focus {*/
+  /*outline: none;*/
+    /*box-shadow: none;*/
+    /*-webkit-box-shadow: none;*/
+    /*-moz-box-shadow: none;*/
+    /*filter: none;*/
+
+/*}*/
+
+/*select.album_privacy {*/
+  /*background-color: #fbfbfb;*/
+  /*background: -moz-linear-gradient(top, #fbfbfb, #dcdcdc);*/
+  /*background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#dcdcdc));*/
+  /*border: 1px #dcdcdc solid;*/
+  /*font-size: 12px;*/
+  /*font-weight: 400;*/
+  /*color: #646464;*/
+  /*padding: 4px;*/
+  /*height: 28px;*/
+  /*width: 80px;*/
+  /*margin-right: 10px;*/
+/*}*/
+
+#add-photos-dialog{
+    height:100%;
 }
 
 /*-------------- Settings Drawer -----------------------------------------*/

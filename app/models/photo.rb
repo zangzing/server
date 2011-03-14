@@ -37,6 +37,9 @@
 #
 require 'zz'
 
+class PhotoValidationError < StandardError
+end
+
 class Photo < ActiveRecord::Base
 
   attr_accessible :user_id, :album_id, :upload_batch_id, :agent_id, :source_guid, :caption,
@@ -55,10 +58,6 @@ class Photo < ActiveRecord::Base
 
   before_create :set_guid_for_path
   before_create :set_default_position
-
-
-  # make sure the to be uploaded file arguments are valid
-  before_validation :verify_file_upload
 
 
   # Set up an async call for Processing and Upload to S3
@@ -80,27 +79,29 @@ class Photo < ActiveRecord::Base
     @attached_image ||= PhotoAttachedImage.new(self, "image")
   end
 
+  # returns the set of supported image types
+  def supported_image_types
+    @@supported_image_types ||= Set.new [ 'image/jpeg', 'image/png', 'image/gif' ]
+  end
+
   #
   # verify valid parms for the file about to be uploaded
-  # if attributes are invalid we return false to force
-  # failure
+  # if attributes are invalid throw a validation exception
   #
   def verify_file_upload
     if @duplicate_upload
-      errors.add(:image_path, "file_to_upload was called multiple times or a photo upload is already in progress or has taken place")
-      return false
+      msg = "file_to_upload was called multiple times or a photo upload is already in progress or has taken place"
+      errors.add(:image_path, msg)
+      raise PhotoValidationError.new(msg)
     end
     if self.uploading?
-      if self.image_file_size > 10.megabytes
-        errors.add(:image_file_size, "must be under 10 Megs")
-        return false
-      end
-      if [ 'image/jpeg', 'image/png', 'image/gif' ].include?(self.image_content_type) == false
-        errors.add(:image_content_type, "must be a JPEG, PNG, or GIF")
-        return false
+      image_type = self.image_content_type
+      if supported_image_types.include?(image_type) == false
+        msg = "Not a supported image type, you passed: " +  image_type
+        errors.add(:image_content_type, msg)
+        raise PhotoValidationError.new(msg)
       end
     end
-    return true
   end
 
 
@@ -112,7 +113,7 @@ class Photo < ActiveRecord::Base
     self.photo_info = PhotoInfo.factory(data)
     if exif = data['EXIF']
       val = exif['DateTimeOriginal']
-      self.capture_date = DateTime.parse(val) unless val.nil?
+      self.capture_date = (DateTime.parse(val) unless val.nil?) rescue nil
       val = exif['Orientation']
       self.orientation = decode_orientation(val) unless val.nil?
       val = exif['GPSLatitude']
@@ -314,6 +315,11 @@ class Photo < ActiveRecord::Base
     self.state == 'error'
   end
 
+  def mark_error
+    self.state = 'error'
+  end
+
+
   # we now have to build the agent case after the photo object
   # itself has been created and saved because we switched to auto generated ids
   # and don't know what the id is until after we save
@@ -439,10 +445,21 @@ class Photo < ActiveRecord::Base
           self.rotate_to = orientation_as_rotation(self.orientation)
 
         end
+        # verify that file state is ok before moving forward
+        verify_file_upload
       end
-    rescue => ex
+    rescue Exception => ex
+      # don't do the upload if validation failed
+      @do_upload = false
+
       # call failed so get rid of temp file right now
       remove_source
+
+      # save the error state
+      self.mark_error
+      self.save
+
+      # reraise the error
       raise ex
     end
   end

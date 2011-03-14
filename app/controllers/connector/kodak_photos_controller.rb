@@ -2,7 +2,10 @@ class Connector::KodakPhotosController < Connector::KodakController
 
 
   def index
-    photos_list = connector.send_request("/album/#{params[:kodak_album_id]}")
+    photos_list = nil
+    SystemTimer.timeout_after(http_timeout) do
+      photos_list = connector.send_request("/album/#{params[:kodak_album_id]}")
+    end
     photos_data = photos_list['pictures']
 #    @photos = photos_data.map { |p| {:name => p['caption'], :id => p['id']} }
 
@@ -23,17 +26,11 @@ class Connector::KodakPhotosController < Connector::KodakController
     
   end
 
-#  def show
-#    photos_list = connector.send_request("/album/#{params[:kodak_album_id]}")
-#    photos_data = photos_list['pictures']
-#    @photo = photos_data.select { |p| p['id']==params[:photo_id] }
-#    size_wanted = (params[:size] || 'screen').downcase.to_sym
-#    @photo_url = @photo[PHOTO_SIZES[size_wanted]]
-#    send_data connector.proxy_response(@photo_url), :type => 'image/jpeg', :filename => "#{@photo['caption'].gsub('.', '_')}_#{size_wanted}.jpg", :disposition => 'inline'
-#  end
-
   def import
-    photos_list = connector.send_request("/album/#{params[:kodak_album_id]}")
+    photos_list = nil
+    SystemTimer.timeout_after(http_timeout) do
+      photos_list = connector.send_request("/album/#{params[:kodak_album_id]}")
+    end
     photos_data = photos_list['pictures']
     p = photos_data.select { |p| p['id']==params[:photo_id] }.first
     photo_url = p[PHOTO_SIZES[:full]]

@@ -5,7 +5,7 @@ class Connector::InstagramPhotosController < Connector::InstagramController
     photo_list.reject! { |item| item[:type] != 'image' }
     photos = photo_list.map { |p|
       {
-        :name => p[:caption] || '',
+        :name => (p[:caption][:text] rescue ''),
         :id   => p[:id],
         :type => 'photo',
         :thumb_url => p[:images][:thumbnail][:url],
@@ -23,7 +23,7 @@ class Connector::InstagramPhotosController < Connector::InstagramController
     photo_data = client.media_item(params[:photo_id])
     current_batch = UploadBatch.get_current(current_user.id, params[:album_id])
     photo = Photo.create(
-            :caption => photo_data[:caption] || '',
+            :caption => (photo_data[:caption][:text] rescue ''),
             :album_id => params[:album_id],
             :user_id => current_user.id,
             :upload_batch_id => current_batch.id,
@@ -34,7 +34,7 @@ class Connector::InstagramPhotosController < Connector::InstagramController
     )
 
     ZZ::Async::GeneralImport.enqueue( photo.id, photo_data[:images][:standard_resolution][:url] )
-    render :json => Photo.to_json_lite(photo_data)
+    render :json => Photo.to_json_lite(photo)
   end
 
 end
