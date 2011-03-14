@@ -250,7 +250,7 @@
                 showThumbscroller:false,
                 hideNativeScroller: true,
                 cellWidth: 720,
-                cellHeight: $('#tab-content').height() - 130,
+                cellHeight: self.element.parent().height() - 130,
                 singlePictureMode: true,
                 currentPhotoId: photoId,
                 context: 'chooser-picture',
