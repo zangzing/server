@@ -52,7 +52,7 @@ class LikesController < ApplicationController
       #params are not complete
       render :text => "subject_id and/or subject_type not in params, unalbe to process", status => 400 and return
     end
-    ZZ::Async::ProcessLike.enqueue( 'add', current_user.id, params[:subject_id] , params[:subject_type] )
+    ZZ::Async::ProcessLike.enqueue( 'add', current_user.id, @subject_id , @subject_type )
     redirect_to @redirect_url
   end
 
