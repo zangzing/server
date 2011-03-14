@@ -32,7 +32,8 @@ Server::Application.configure do
   # set this in the environment you want to allow benchmark testing
   config.bench_test_allowed = false
 
-  ActionController::Base.cache_store = :memory_store
+  # set up to use memcached
+  config.cache_store = :mem_cache_store, MemcachedConfig.server_list
 
   # mail logger is too verbose, shut it off
   config.action_mailer.logger = nil

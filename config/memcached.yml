@@ -1,0 +1,6 @@
+# because EY does not seem to use a standard format for YML files we will just live with the default
+# section.  They create a new file with the proper servers in their deploy scripts.  All we really care
+# about are the servers, the rest is unused.
+defaults:
+  servers:
+      - localhost:11211
