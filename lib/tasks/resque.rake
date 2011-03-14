@@ -8,6 +8,7 @@ task "resque:setup" => :environment do
   # determine if should run forked or not - resque using the global $TESTING to indicate non forked
   # we might want to monkey patch to use another flag but this will do for now
   Server::Application.config.resque_run_forked ? $TESTING = false : $TESTING = true
+  puts "Resque process for: " + ARGV[0]
   puts "resque:setup"
 
   if Rails.env == "development"
@@ -19,6 +20,12 @@ task "resque:setup" => :environment do
     require_all "lib"
     puts "Done pulling in dependencies"
   end
+
+  if ARGV[0] == "resque:scheduler"
+    # set up schedule for scheduler
+    Resque.schedule = ResqueScheduleConfig.config
+  end
+
    #put all resque worker configuration parameters here
 
   # init ZZA with resque specific ids
