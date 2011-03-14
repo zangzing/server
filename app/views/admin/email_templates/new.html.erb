@@ -1,0 +1,8 @@
+<h1>New Email Template</h1>
+
+<%=form_for @email_template  do | f |%>
+    <%= render :partial => 'fields', :object => f.object, :locals =>{:f => f }%>
+    <div>
+        <%= f.submit%>
+    </div>
+<%end%>

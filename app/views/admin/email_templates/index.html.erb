@@ -1,0 +1,43 @@
+<div style="margin-top: 5px; margin-bottom: 10px; font-size: 1em;">
+<% [:info, :error].each do |key| %>
+     <% if flash[key] %>
+        <div style="<%=( key == :error ? 'color:red;' : 'color:green;' )%>" id="flash">
+          <%= flash[key] %>
+        </div>
+     <% end %>
+<% end %>
+</div>
+
+<h1>Email Templates</h1>
+
+<table frame="box" width="800px" border="0"  cellspacing="10">
+  <tr>
+        <th> Email Name </th>
+        <th> MC Campaign </th>
+        <th> Last Loaded </th>
+        <th> </th>
+  </tr>
+
+<% @email_templates.each do |et| %>
+  <tr>
+        <td> <a href="<%=edit_email_template_path( et )%>"> <%= et.name %></a> </td>
+
+        <td>
+          <%= @campaign_options[@campaign_options.index{ |co|  co[1] == et.mc_campaign_id} ][0] %>
+        </td>
+        <td> <%= et.updated_at.strftime("%B %d#{", %Y" if et.updated_at.year != Date.today.year} %l:%M %p") %> </td>
+        <td>
+          <form method="post" action="<%=reload_email_template_url( et )%>" class="button-to">
+            <div>
+                <input type="hidden" name="_method" value="put" />
+                <input onclick="return confirm('Are you sure you want to reload the template?');"
+                    value="Reload" type="submit" />
+            </div>
+         </form>
+        </td>
+  </tr>
+<%end%>
+
+</table>
+   <a  href="<%=new_email_template_url%>">Create new email template</a>
+</div>    

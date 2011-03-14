@@ -1,0 +1,48 @@
+<h1>Edit Email Template</h1>
+
+<%=form_for @email_template  do | f |%>
+
+
+    <% if @email_template.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@email_template.errors.count, "error") %>
+            prohibited this email template from being saved:</h2>
+          <p>There were problems with the following fields:</p>
+          <ul>
+            <% @email_template.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+    <% end %>
+
+    <div>
+      <%= f.label :name%>
+      <%= f.text_field :name %>
+    </div>
+
+    <div>
+      <%= f.label :mc_campaign_id, "MC Campaign" %>
+      <%= f.select :mc_campaign_id, options_for_select(@campaign_options,f.object.mc_campaign_id), {:prompt => 'Select Campaign', :include_blank => true } %>
+    </div>
+    <div>
+      <%= f.label :from_name%> : <%=@email_template.from_name%>
+    </div>
+    <div>
+      <%= f.label :from_address%> : <%=@email_template.from_address%>
+    </div>
+    <div>
+      <%= f.label :subject%> : <%=@email_template.subject%>
+    </div>
+    <div>
+      <%= f.submit%>
+      <%= button_to "Cancel", :action => :index %>
+      <form method="post" action="<%=email_template_url( @email_template )%>" class="button-to">
+        <div>
+          <input type="hidden" name="_method" value="delete" />
+          <input onclick="return confirm('Are you sure you want to delete the template?');"
+                 value="Delete Template" type="submit" />
+        </div>
+       </form>
+    </div>
+<%end%>

@@ -5,7 +5,7 @@ require 'zz/mailchimp/notifier'
 module ZZ
   module MailChimp
     
-    Chimp=Hominid::API.new(MAILCHIMP_API_KEYS[:api_key])
+    Chimp= Hominid::API.new(MAILCHIMP_API_KEYS[:api_key])
     #names of lists/campaigns that should exist
     #each transactional campaign has an associated list both with the same name
 
@@ -50,6 +50,11 @@ module ZZ
     def self.get_transactional_campaigns
       Chimp.find_campaigns_by_type( 'trans' )
     end
+
+    def self.get_regular_campaigns
+          Chimp.find_campaigns_by_type( 'regular' )
+    end
+
 
     def self.create_transactional_campaign( title, list_id, template_id, subject, from_email, from_name )
       begin
