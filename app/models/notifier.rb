@@ -60,15 +60,13 @@ class Notifier < ActionMailer::Base
     @email_template = EmailTemplate.find_by_name!( __method__ )
     subject = ERB.new( @email_template.subject).result
     from = "\"#{@email_template.from_name}\" <#{@email_template.from_address}>"
-    html = EmailTemplate.interpolate_album_picons( @email_template.html_content, @album )
-    #TODO: album picon stuff
 
     logger.info "Mailed album_shared_with_you: #{to_address}, #{@album.name}"
     mail( :to      => to_address,
           :from    => from,
           :subject => subject ) do |format|
         format.text { render :inline => @email_template.text_content }
-        format.html { render :inline => html }
+        format.html { render :inline => @email_template.html_content }
     end
   end
 

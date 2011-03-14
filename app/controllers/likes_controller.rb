@@ -1,5 +1,6 @@
 class LikesController < ApplicationController
   before_filter :require_user_json, :only => [:create, :post]
+  before_filter :require_user, :only => [:like]
 
   def index
     wanted_subjects = params['wanted_subjects']
@@ -34,8 +35,30 @@ class LikesController < ApplicationController
     render :json =>subjects
   end
 
+  def like
+    if params[:user_id]
+      @subject_id   = params[:user_id]
+      @subject_type = 'user'
+      @redirect_url = user_url( User.find(@subject_id) )
+    elsif params[:album_id]
+      @subject_id   = params[:album_id]
+      @subject_type = 'album'
+      @redirect_url = album_url( Album.find(@subject_id) )
+    elsif params[:photo_id]
+      @subject_id   = params[:photo_id]
+      @subject_type = 'photo'
+      @redirect_url = album_photos_url( Photo.find(@subject_id).album )+'/#!'+@subject_id.to_s
+    else
+      #params are not complete
+      render :text => "subject_id and/or subject_type not in params, unalbe to process", status => 400 and return
+    end
+    ZZ::Async::ProcessLike.enqueue( 'add', current_user.id, params[:subject_id] , params[:subject_type] )
+    redirect_to @redirect_url
+  end
+
+
   def create
-    if current_user && params[:subject_id] && params[:subject_type]
+    if params[:subject_id] && params[:subject_type]
       ZZ::Async::ProcessLike.enqueue( 'add', current_user.id, params[:subject_id] , params[:subject_type] )
       if current_user.preferences.asktopost_likes
         # The user has not set a preference about being asket to post his/her likes,

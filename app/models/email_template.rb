@@ -46,7 +46,7 @@ class EmailTemplate < ActiveRecord::Base
 
     # unescape and interpolate album _ picons and other special elements
     html = CGI::unescapeHTML( content['html'] )
-    html = EmailTemplate.interpolate_album_picons ( html )
+    html = EmailTemplate.interpolate_album_picons( html )
     self.html_content = html
   end
 
@@ -63,7 +63,7 @@ class EmailTemplate < ActiveRecord::Base
           # This is a match, replace it
           img = []
           img << '<img'
-          img << "src=\"@album.cover.thumb_url\""
+          img << "src=\"<%=@album.cover.thumb_url%>\""
           img << 'alt="<%=@album.name%>"'
           img << match[3]  #the style argument
           #img << "height=\"@album.cover.height\""

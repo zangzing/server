@@ -5,21 +5,6 @@
 #
 
 Server::Application.routes.draw do
-
-  get "email_templates/show"
-
-  get "email_templates/index"
-
-  get "email_templates/new"
-
-  get "email_templates/create"
-
-  get "email_templates/edit"
-
-  get "email_templates/update"
-
-  get "email_templates/destroy"
-
   root :to => 'pages#home'
   get    '/service'            => 'pages#home'
 
@@ -124,6 +109,9 @@ Server::Application.routes.draw do
     #like
     match  '/likes'                              => 'likes#index',             :as => :likes
     post   '/likes/:subject_id'                  => 'likes#create',            :as => :like
+    get    '/users/:user_id/like'                => 'likes#like',            :as => :like_user
+    get    '/albums/:album_id/like'              => 'likes#like',            :as => :like_album
+    get    '/photos/:photo_id/like'              => 'likes#like',            :as => :like_photo
     delete '/likes/:subject_id'                  => 'likes#destroy',           :as => :delete_like
     post   '/likes/:subject_id/post'             => 'likes#post',              :as => :post_like
 
