@@ -727,7 +727,7 @@ table#email-share-form td.message{
 
 table#email-share-form td.import{
     text-align:left;
-    color: #943131
+    color: #000000
 }
 
 table#email-share-form textarea#email_share_message{
