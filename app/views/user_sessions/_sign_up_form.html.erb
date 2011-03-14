@@ -7,7 +7,7 @@
           <p class="error-notice">Please check the highlighted field(s) below...</p>
 <% end %> 
           </div>
-          <form id="join-form" method="post" enctype="multipart/form-data" action=<%=users_path%>>
+          <form id="join-form" method="post" enctype="multipart/form-data" action=<%=create_user_path%>>
             <dl class="clearfix">
               <dt><label for="user_name">First and Last Name</label></dt>
               <dd><input type="text" value="<%=(@user ? @user.name : '')%>" size="30" name="user[name]" id="user_name"></dd>
