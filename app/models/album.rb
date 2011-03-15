@@ -14,6 +14,14 @@ class Album < ActiveRecord::Base
   has_many :like_mees,      :foreign_key => :subject_id, :class_name => "Like"
   has_many :likers,         :through => :like_mees, :class_name => "User",  :source => :user
 
+  has_many :users_who_like_albums_photos, :class_name => "User", :finder_sql =>
+          'SELECT u.* ' +
+          'FROM photos p, likes l, users u WHERE '+
+          'l.subject_type = "P" AND l.subject_id = p.id AND p.album_id = #{id} '+
+          'AND l.user_id = u.id ORDER BY u.first_name DESC'
+
+
+
 
   has_friendly_id :name, :use_slug => true, :scope => :user, :reserved_words => ["photos", "shares", 'activities', 'slides_source', 'people'], :approximate_ascii => true
 
@@ -193,7 +201,7 @@ class Album < ActiveRecord::Base
     user = nil
     if contributor?( email )
       if create_automatic_user
-        user = User.find_by_email_or_create_automatic( email, "Contributor by Email" )
+        user = User.find_by_email_or_create_automatic( email, "Anonymous" )
       else
         user = User.find_by_email( email )
       end
