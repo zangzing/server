@@ -242,8 +242,23 @@
                              '</div>' +
                              '<a class="next-button"></a>');
             
+
+
+
             var gridElement = template.find('.photogrid');
             self.bodyElement.html(template);
+
+
+
+            template.filter('.next-button').css({
+                top: (self.bodyElement.height() / 2) - 36
+            });
+
+            template.filter('.prev-button').css({
+                 top: (self.bodyElement.height() / 2) - 36
+             });
+
+
 
             self.grid = gridElement.zz_photogrid({
                 photos:children,
