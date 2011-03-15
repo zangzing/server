@@ -506,14 +506,14 @@
 
             var index = self.indexOfPhoto(photoId);
 
-            if(highlightCell){
-                var highlighted = self.cellAtIndex(index).find('.photo-border').addClass('highlighted');
-
-                setTimeout(function(){
-                    highlighted.removeClass('highlighted');
-
-                },duration + 1500);
-            }
+//            if(highlightCell){
+//                var highlighted = self.cellAtIndex(index).find('.photo-border').addClass('highlighted');
+//
+//                setTimeout(function(){
+//                    highlighted.removeClass('highlighted');
+//
+//                },duration + 1500);
+//            }
 
             var onFinishAnimate = function(){
                 self.options.currentPhotoId = photoId
