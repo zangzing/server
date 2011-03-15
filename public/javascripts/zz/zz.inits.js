@@ -670,7 +670,7 @@ zz.init = {
                     moreLessbuttonElement.click(function(){
                         if(allShowing){
                             $(element).animate({height:230}, 500, 'swing', function(){
-                                moreLessbuttonElement.html("Show more photos");
+                                moreLessbuttonElement.find("span").html("Show more photos");
                                 moreLessbuttonElement.removeClass('open');
                             });
                             allShowing = false;
@@ -678,7 +678,7 @@ zz.init = {
                         else {
                             $(element).animate({height: $(element).children().last().position().top + 180}, 500, 'swing', function() {
                                 $(element).trigger('scroll');  //hack: force the photos to load themselves now that they are visible
-                                moreLessbuttonElement.html("Show less photos");
+                                moreLessbuttonElement.find("span").html("Show less photos");
                                 moreLessbuttonElement.addClass('open');
                             });
                             allShowing = true;

@@ -27,7 +27,7 @@
 
 /* -------------------- elements ----------------*/
 .viewlist{
-  margin: 0 70px;
+  margin: 30px 70px;
   text-align: left;
 }
 
@@ -90,11 +90,21 @@
 
 .viewlist .more {
     position: absolute;
-    left: 764px;
+    /*left: 764px;*/
+    right: 5px;
     top: 20px;
 }
 .viewlist .more.higher {
     top: -15px;
+}
+
+.viewlist .slit-right{
+    width:43px;
+    position: absolute;
+    top: -22px;
+    left: -1px;
+    height: 69px;
+    background: url('/images/tab-slit-right.png')   no-repeat scroll  0 0;
 }
 
 .viewlist .more-less-btn{
