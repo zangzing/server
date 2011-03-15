@@ -99,7 +99,7 @@
 
 .photo-border .bottom-shadow{
     position:absolute;
-    left:0px;
+    left:-2px;
     bottom:-9px;
     height:9px;
     width:100%;
