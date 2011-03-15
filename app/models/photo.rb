@@ -84,26 +84,6 @@ class Photo < ActiveRecord::Base
     @@supported_image_types ||= Set.new [ 'image/jpeg', 'image/png', 'image/gif' ]
   end
 
-  #
-  # verify valid parms for the file about to be uploaded
-  # if attributes are invalid throw a validation exception
-  #
-  def verify_file_upload
-    if @duplicate_upload
-      msg = "file_to_upload was called multiple times or a photo upload is already in progress or has taken place"
-      errors.add(:image_path, msg)
-      raise PhotoValidationError.new(msg)
-    end
-    if self.uploading?
-      image_type = self.image_content_type
-      if supported_image_types.include?(image_type) == false
-        msg = "Not a supported image type, you passed: " +  image_type
-        errors.add(:image_content_type, msg)
-        raise PhotoValidationError.new(msg)
-      end
-    end
-  end
-
 
   # given the local image, determine all the exif info for the file
   # this is only called when we set up a local file to be uploaded
@@ -411,6 +391,22 @@ class Photo < ActiveRecord::Base
   end
 
   #
+  # verify valid parms for the file about to be uploaded
+  # if attributes are invalid throw a validation exception
+  #
+  def verify_file_type
+    image_type = self.image_content_type
+    if supported_image_types.include?(image_type) == false
+      msg = "Not a supported image type, you passed: " +  image_type
+      errors.add(:image_content_type, msg)
+      # save the error state
+      self.mark_error
+      raise PhotoValidationError.new(msg)
+    end
+  end
+
+
+  #
   # handle set up for file upload
   # this call expects a file_path to be passed
   # the file_path is required and represents a local
@@ -427,12 +423,18 @@ class Photo < ActiveRecord::Base
           # fail validation - this would only ever be proper if we allowed for modification
           # in place
           # also only allow upload if in assigned state currently
-          @duplicate_upload = true
+
+          ZZ::ZZA.new.track_transaction("photo.upload.error.duplicate", self.id)
+          msg = "file_to_upload was called multiple times or a photo upload is already in progress or has taken place"
+
+          # note we do not change the database state to error since we don't want to mess up the current one
+          errors.add(:image_path, msg)
+          raise PhotoValidationError.new(msg)
         else
           ZZ::ZZA.new.track_transaction("photo.upload.start", self.id)
 
-          self.mark_uploading
           @do_upload = true
+          self.mark_uploading
           self.source_path = file_path
           self.image_file_size = File.size(file_path)
 
@@ -440,13 +442,14 @@ class Photo < ActiveRecord::Base
           # also sets content_type
           set_image_metadata
 
+          # verify that file state is ok before moving forward
+          verify_file_type
+
           # see if we should add any initial rotation based on the
           # camera orientation info
           self.rotate_to = orientation_as_rotation(self.orientation)
 
         end
-        # verify that file state is ok before moving forward
-        verify_file_upload
       end
     rescue Exception => ex
       # don't do the upload if validation failed
@@ -455,8 +458,6 @@ class Photo < ActiveRecord::Base
       # call failed so get rid of temp file right now
       remove_source
 
-      # save the error state
-      self.mark_error
       self.save
 
       # reraise the error
