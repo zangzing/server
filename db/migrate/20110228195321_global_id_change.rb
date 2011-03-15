@@ -234,7 +234,7 @@ class GlobalIdChange < ActiveRecord::Migration
       t.float    "longitude"
       t.integer  "rotate_to",                        :default => 0
       t.datetime "generate_queued_at",               :default => '1970-01-01 00:00:00', :null => false
-      t.float    "pos"
+      t.column    :pos, :double
     end
 
 
@@ -275,7 +275,7 @@ class GlobalIdChange < ActiveRecord::Migration
       t.string   "state",                             :default => "open"
       t.datetime "created_at"
       t.datetime "updated_at"
-      t.float    "custom_order_offset",               :default => 0.0
+      t.column    :custom_order_offset, :double,      :default => 0.0
     end
 
 

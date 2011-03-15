@@ -612,7 +612,12 @@ class PhotoAttachedImage < AttachedImage
     rotate_to = model.rotate_to
     if rotate_to != 0
       model.rotate_to = 0 # rotation is done and recorded
-      {"x-amz-meta-rotate" => rotate_to.to_s}
+      {
+          "x-amz-meta-rotate" => rotate_to.to_s,
+          "x-amz-meta-photo-id" => model.id.to_s,
+          "x-amz-meta-album-id" => model.album_id.to_s,
+          "x-amz-meta-user-id" => model.user_id.to_s
+      }
     else
       nil
     end

@@ -85,6 +85,9 @@ class ACLManager
         object_ids = redis.zrange(old_user_key, 0, -1, :with_scores => true)
         i = 0
         count = object_ids.nil? ? 0 : object_ids.length
+        if (count == 0)
+          break # nothing to do, move on to next
+        end
 
         single_pipeline = count <= ACLManager::PIPE_LINE_MAX
 
@@ -139,6 +142,9 @@ class ACLManager
         object_ids = redis.zrange(user_key, 0, -1, :with_scores => true)
         i = 0
         count = object_ids.nil? ? 0 : object_ids.length
+        if (count == 0)
+          break # nothing to do, move on to next
+        end
 
         # max is double because we have two array items per actual call
         pipe_line_max = ACLManager::PIPE_LINE_MAX * 2
