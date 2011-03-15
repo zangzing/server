@@ -8,6 +8,8 @@ Server::Application.routes.draw do
 
   root :to => 'pages#home'
   get    '/service'            => 'pages#home'
+  get    '/signin'             => 'user_sessions#new',  :as => :signin
+  get    '/join'               => 'user_sessions#join',  :as => :join
 
   # the whole site has /service in front of it except for users
   scope '/service' do
@@ -131,7 +133,8 @@ Server::Application.routes.draw do
 
     #sessions - login
     resources :user_sessions, :only => [:new, :create, :destroy]
-    match '/signin'                    => 'user_sessions#new',            :as => :signin
+    match '/signin'                    => 'user_sessions#new'
+    match '/join'                      => 'user_sessions#join'
     match '/signout'                   => 'user_sessions#destroy',        :as => :signout
     match '/activate/:activation_code' => 'activations#create',           :as => :activate
     match '/resend_activation'        => 'activations#resend_activation', :as => :resend_activation
