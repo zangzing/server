@@ -25,6 +25,7 @@
             aspectRatio:0,               //model
             isUploading:false,           //model
             isError:false,               //model
+            showButtonBar:false,           //model
 //            noShadow:false,              //context / type
 //            lazyLoad:true ,              //context / type
             context:null,                 //context -- album-edit, album-grid, album-picture, album-timeline, album-people, chooser-grid, chooser-picture
@@ -40,6 +41,7 @@
 
 
             var html = '';
+            html += '<div class="photo-caption">' + self.options.caption +'</div>';
 
             html += '<div class="photo-border">'
             html += '   <img class="photo-image">';
@@ -55,7 +57,6 @@
 
 
             html += '</div>';
-            html += '<div class="photo-caption">' + self.options.caption +'</div>';
 
             var template = $(html);
             template.appendTo(this.element);
@@ -250,6 +251,33 @@
                 });
             }
 
+
+            //todo: can these move to css?
+            if(self.options.showButtonBar){
+                var toolbarTemplate = '<div class="photo-toolbar">' +
+                                          '<div class="buttons">' +
+                                              '<div class="share-button"></div>' +
+                                              '<div class="like-button"></div>' +
+                                              '<div class="info-button"></div>' +
+                                          '</div>' +
+                                       '</div>';
+
+                self.borderElement.mouseenter(function(){
+                    logger.debug('mouse over');
+                    self.toolbarElement = $(toolbarTemplate);
+                    self.borderElement.append(self.toolbarElement);
+                    self.borderElement.css({'padding-bottom': '30px'});
+                    self.imageElement.css({'border-bottom': '35px solid #fff'});
+
+                });
+
+                self.borderElement.mouseleave(function(){
+                    logger.debug('mouse out');
+                    self.borderElement.css({'padding-bottom': '0px'});
+                    self.imageElement.css({'border-bottom': '5px solid #fff'});
+                    self.toolbarElement.remove();
+               });
+            }
         },
 
         checked:false,

@@ -86,6 +86,7 @@
     padding-bottom:0px;
     display:inline-block;
     margin:0px;
+    /*z-index:100;*/
 }
 
 .ua-ie .photo-border{
@@ -335,6 +336,77 @@
     right:-29px;
     top:0px;
     cursor:pointer;
+}
+
+
+
+
+.photo-toolbar{
+    display:block;
+    position:relative;
+    bottom:33px;
+    /*border:1px solid yellow;*/
+    width:100%;
+    text-align:center;
+}
+
+.photo-toolbar .buttons{
+    position:relative;
+    display:inline-block;
+    /*margin-left:auto;*/
+    /*margin-right:auto;*/
+    /*border:1px solid blue;*/
+}
+
+
+.photo-toolbar .share-button{
+    background: url(/images/album_toolbar_share.png) no-repeat scroll 0px 0px transparent;
+    width:20px;
+    height:18px;
+    float:left;
+    cursor:pointer;
+    margin:3px;
+    /*display:inline-block;*/
+}
+
+
+.photo-toolbar .share-button:hover{
+    background: url(/images/album_toolbar_share.png) no-repeat scroll 0px -18px transparent;
+}
+
+
+
+.photo-toolbar .like-button{
+    background: url(/images/album_toolbar_like.png) no-repeat scroll 0px 0px transparent;
+    width:20px;
+    height:18px;
+    float:left;
+    /*display:inline-block;*/
+    cursor:pointer;
+    margin:3px;
+
+}
+
+.photo-toolbar .like-button:hover{
+    background: url(/images/album_toolbar_like.png) no-repeat scroll 0px -18px transparent;
+}
+
+
+
+.photo-toolbar .info-button{
+    position:relative;
+    background: url(/images/album_toolbar_info.png) no-repeat scroll 0px 0px transparent;
+    top:1px;
+    width:20px;
+    height:18px;
+    float:left;
+    /*display:inline-block;*/
+    cursor:pointer;
+    margin:3px;
+}
+
+.photo-toolbar .info-button:hover{
+    background: url(/images/album_toolbar_info.png) no-repeat scroll 0px -18px transparent;
 }
 
 
