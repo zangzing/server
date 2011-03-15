@@ -519,12 +519,10 @@ class Photo < ActiveRecord::Base
 
 
   def set_default_position
-    if capture_date.nil?
-      self.pos = "%10.6f" % (Time.now + 100.years) #If capture date is not known, add 100 years to today and it will go at the end
-    else
-      self.pos = capture_date.to_i   # "%10.6f" % capture_date.to_f no need to use miliseconds
 
-    end
+    #start with position as capture date in seconds
+    self.pos = capture_date.to_i
+
 
     # The current batch will be custom ordered if the album was custom ordered when batch was created.
     # This prevents having some photos in the batch in the middle  and some at the end of the album
@@ -534,6 +532,10 @@ class Photo < ActiveRecord::Base
       # each batch uses the pos of the last photo in the album at the time the batch is created 
       self.pos += upload_batch.custom_order_offset
     end
+
+
+    #in case photos in batch have same capture date, we add a decimal to make them different
+    self.pos +=  ((upload_batch.photos.length + 1) / 10000.to_f)
   end
 
   # Used when the user reorders photos
