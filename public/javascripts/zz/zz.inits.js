@@ -198,26 +198,11 @@ zz.init = {
             $('#footer #share-button').removeClass('disabled').addClass('selected');
 
 
-            var template = $('<div id="share-dialog-content"></div>');
-            $('<div id="share-dialog"></div>').html( template )
-                                                   .zz_dialog({
-                                                             height: 580,
-                                                             width: 895,
-                                                             modal: true,
-                                                             autoOpen: true,
-                                                             open : function(event, ui){
-                                                                pages.share.init(template, function(){});
-                                                             },
-                                                             close: function(event, ui){
-                                                                zz.init.enable_buttons();
-                                                                 $('#footer #share-button').removeClass('selected');  //todo: centralize this somewhere -- zz.toolbars
-
-                                                             }
+            pages.share.share_in_dialog('album', zz.album_id, function(){
+                zz.init.enable_buttons();
+                $('#footer #share-button').removeClass('selected');  //todo: centralize this somewhere -- zz.toolbars
             });
-//            template.css({
-//                position: 'relative',
-//                bottom:0
-//            });
+
 
         });
 
