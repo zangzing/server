@@ -249,7 +249,6 @@ module ZZ
                 # closing releases the lock
                 File.delete(full_path) rescue nil
 
-                file.close rescue nil
               end
             rescue Errno::ENOENT => ex
               # this is an expected condition
@@ -257,6 +256,8 @@ module ZZ
               # the file before we could open or lock it
             rescue Exception => ex
               puts "Error in ZZA send_files_data: " + ex.message
+            ensure
+              file.close rescue nil
             end
           end
         end

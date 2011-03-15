@@ -383,7 +383,8 @@ zz.init = {
                             $('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()},500,'easeOutQuart');
                             document.location.href = zz.album_base_url + "/photos/#!" + photo.id;
                         },
-                        currentPhotoId: $.param.fragment()
+                        currentPhotoId: $.param.fragment(),
+                        showButtonBar:true
 
                     }).data().zz_photogrid;
 
@@ -656,7 +657,9 @@ zz.init = {
                             $('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()},500,'easeOutQuart');
                             document.location.href = zz.album_base_url + "/photos/#!" + photo.id;
                         },
-                        showThumbscroller: false
+                        showThumbscroller: false,
+                        showButtonBar:true
+
                     }).data().zz_photogrid;
 
 
