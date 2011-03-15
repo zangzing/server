@@ -10,7 +10,6 @@ class SharesController < ApplicationController
   respond_to :json, :only => [:create]
 
   def new
-     @album = Album.find(params[:album_id])
   end
 
   def newpost
@@ -25,7 +24,8 @@ class SharesController < ApplicationController
 
   def create
     # Based on the route used to get here (and thus the params) we know what kind of subject does
-    # the user wants to quack! about.
+    # the user wants to quack! a
+    #bout.
     if  params[:user_id]
         @subject = User.find(params[:user_id])
         @subject_url = user_url(@subject)

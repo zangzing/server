@@ -66,9 +66,9 @@ Server::Application.routes.draw do
 
     #shares
     get '/albums/:album_id/shares'          => 'shares#index',      :as => :album_shares
-    get '/albums/:album_id/shares/new'      => 'shares#new',        :as => :new_album_share
-    get '/albums/:album_id/shares/newpost'  => 'shares#newpost',    :as => :new_album_postshare
-    get '/albums/:album_id/shares/newemail' => 'shares#newemail',   :as => :new_album_emailshare
+    get '/shares/new'                       => 'shares#new'   # ,        :as => :new_album_share
+    get '/shares/newpost'                   => 'shares#newpost' #,    :as => :new_album_postshare
+    get '/shares/newemail'                  => 'shares#newemail' #,   :as => :new_album_emailshare
     post '/albums/:album_id/shares'         => 'shares#create',     :as => :create_album_share
     get '/shares/:id'                       => 'shares#show',       :as => :share
     get '/shares/:id/edit'                  => 'shares#edit',       :as => :edit_share

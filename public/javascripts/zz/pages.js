@@ -259,7 +259,7 @@ pages.album_privacy_tab = {
 
 pages.share = {
     init: function(container,callback){
-        var url = zz.path_prefix +'/albums/' + zz.album_id + '/shares/new';
+        var url = zz.path_prefix +'/shares/new';
         var self = this;
 
         container.load(url, function(){
@@ -285,7 +285,7 @@ pages.share = {
         var self = this;
 
         $('div#share-body').fadeOut('fast', function(){
-            $('div#share-body').load(zz.path_prefix +'/albums/'+zz.album_id+'/shares/newpost', function(){
+            $('div#share-body').load(zz.path_prefix +'/shares/newpost', function(){
                 zz.wizard.resize_scroll_body();
 
 
@@ -363,7 +363,7 @@ pages.share = {
     show_email: function(container ){
         var self = this;
         $('div#share-body').fadeOut('fast', function(){
-            $('div#share-body').load(zz.path_prefix + '/albums/'+zz.album_id+'/shares/newemail', function(){
+            $('div#share-body').load(zz.path_prefix + '/shares/newemail', function(){
 
                 $("#contact-list").tokenInput( zzcontacts.find, {
                     allowNewValues: true,
