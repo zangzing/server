@@ -55,7 +55,7 @@ class UploadBatch < ActiveRecord::Base
        #send album shares even if there were no photos uploaded
        Share.deliver_shares( self.user_id, self.album_id )
 
-       if photos.length > 0
+       if self.photos.count > 0
           #Notify uploader that upload batch is finished
           ZZ::Async::Email.enqueue( :upload_batch_finished, self.id )
       
@@ -80,12 +80,9 @@ class UploadBatch < ActiveRecord::Base
       if self.photos.count <= 0
         return true;
       end
-      photos = Photo.find_all_by_upload_batch_id_and_state( self.id, 'ready' )
-      if photos.nil?
-         return true if self.photos.count <= 0
-      else
-         return true if photos.count == self.photos.count
-      end
+      ready_photos = Photo.where(:upload_batch_id => self.id, :state => 'ready' ).count
+#      ready_photos = Photo.find_all_by_upload_batch_id_and_state( self.id, 'ready' ).count
+      return true if ready_photos == self.photos.count
     end
     return false
   end
