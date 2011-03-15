@@ -12,7 +12,7 @@ common: &common
 
 development:
   <<: *common
-  reserved_names: true
+  reserved_names: false
   resque_zza_id: "dev.photos/svr"
 
 perftest:

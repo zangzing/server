@@ -107,10 +107,11 @@ class AlbumsController < ApplicationController
 
   def index
     @user = User.find(params[:user_id])
+    liked_users_public_albums = @user.liked_users_public_albums
     if(current_user? @user)
-      @albums = @user.albums | @user.liked_albums #show all of current_user's albums
+      @albums = @user.albums | @user.liked_albums | liked_users_public_albums #show all of current_user's albums
     else
-      @albums = @user.albums.find_all_by_privacy('public') #:TODO show only public albums unless the current user is the one asking for the index, then show all
+      @albums = @user.albums.find_all_by_privacy('public') | @user.liked_public_albums | liked_users_public_albums
     end
     #Setup badge vars
     @badge_name = @user.name
