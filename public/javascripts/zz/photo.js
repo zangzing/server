@@ -139,7 +139,7 @@
                 height: initialHeight
             });
 
-            self.bottomShadow.attr('width', initialWidth + 10)
+            self.bottomShadow.css({'width': (initialWidth + 14) + "px"});
   
 
             //element is probably invisible at this point, so we need to check the css attributes
@@ -334,7 +334,9 @@
                 height: height
             });
 
+            self.bottomShadow.css({'width': (width + 14) + "px"});
 
+           
 
         },
 
