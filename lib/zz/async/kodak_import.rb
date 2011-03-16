@@ -29,8 +29,12 @@ module ZZ
       end
 
       def self.on_failure_notify_photo(e, photo_id, source_url, auth_token )
-        photo = Photo.find(photo_id)
-        photo.update_attributes(:state => 'error', :error_message => "Failed to load photo from because of network issues #{e}" )
+        begin
+          photo = Photo.find(photo_id)
+          photo.update_attributes(:state => 'error', :error_message => "Failed to load photo from Kodak because of network issues #{e}" )
+        rescue Exception => ex
+          # eat any exception in the error handler
+        end
       end
     end
 

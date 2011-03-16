@@ -65,12 +65,21 @@ Server::Application.routes.draw do
     post   'albums/:id/request_access'       => 'albums#request_access',      :as => :request_album_access
 
     #shares
+
     get '/albums/:album_id/shares'          => 'shares#index',      :as => :album_shares
     get '/shares/new'                       => 'shares#new'   # ,        :as => :new_album_share
     get '/shares/newpost'                   => 'shares#newpost' #,    :as => :new_album_postshare
     get '/shares/newemail'                  => 'shares#newemail' #,   :as => :new_album_emailshare
     post '/albums/:album_id/shares'         => 'shares#create',     :as => :create_album_share
     post '/photos/:photo_id/shares'         => 'shares#create',     :as => :create_photo_share
+#=======
+#    get '/albums/:album_id/shares/new'      => 'shares#new',        :as => :new_album_share
+#    get '/albums/:album_id/shares/newpost'  => 'shares#newpost',    :as => :new_album_postshare
+#    get '/albums/:album_id/shares/newemail' => 'shares#newemail',   :as => :new_album_emailshare
+#    post '/users/:user_id/share'            => 'shares#create',     :as => :create_user_share
+#    post '/albums/:album_id/shares'         => 'shares#create',     :as => :create_album_share
+#    post '/photos/:photo_id/share'          => 'shares#create',     :as => :create_photo_share
+#>>>>>>> a4bab9d8cb7e2679591cb90c41d3a7b63c0c3c5e
     get '/shares/:id'                       => 'shares#show',       :as => :share
     get '/shares/:id/edit'                  => 'shares#edit',       :as => :edit_share
     put '/shares/:id'                       => 'shares#update',     :as => :update_share
