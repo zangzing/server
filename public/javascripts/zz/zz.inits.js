@@ -47,7 +47,7 @@ zz.init = {
             ZZAt.track('button.home.click');
         });
 
-        if (document.location.href.indexOf("/photos") !== -1 && document.location.href.indexOf("/photos") !== 6 /* in case we are deployed on http://photos...*/) {
+        if (document.location.href.indexOf("/photos", 7) !== -1) { //start after http://photos
             $('#header #view-buttons #grid-view-button').addClass('selected');
         }
         else if (document.location.href.indexOf("/people") !== -1) {
