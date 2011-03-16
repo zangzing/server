@@ -33,8 +33,8 @@
 
             context: 'album-grid',
 
-            showButtonBar: false          //model
-
+            showButtonBar: false,          //model
+            onClickShare: jQuery.noop
 //            spaceBarTriggersClick: true
 
 
@@ -139,7 +139,8 @@
 
                     context: self.options.context,
                     type: _.isUndefined(photo.type) ? 'photo': photo.type,
-                    showButtonBar: self.options.showButtonBar
+                    showButtonBar: self.options.showButtonBar,
+                    onClickShare: self.options.onClickShare
 
                 });
 

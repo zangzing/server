@@ -258,45 +258,81 @@ pages.album_privacy_tab = {
 };
 
 pages.share = {
-    init: function(container,callback){
-        var url = zz.path_prefix +'/albums/' + zz.album_id + '/shares/new';
+
+
+
+
+
+
+
+    // optional params subject_tupe and subject_id paras are
+    // used when not in the wizard. an 's' is added to
+    // subject_type when constructing routes
+
+    init: function(container, callback, subject_type, subject_id){
+
+        if(_.isUndefined(subject_type)){
+            subject_type = 'album';
+        }
+
+        if(_.isUndefined(subject_id)){
+            subject_id = zz.album_id;
+        }
+
+        var url = zz.path_prefix +'/shares/new';
         var self = this;
+
+
 
         container.load(url, function(){
            zz.wizard.resize_scroll_body();
            $('.social-share').click(function(){
-                if(zz.album_type === 'personal'){
-                    self.show_social(container, zz.drawers.personal_album, 'share');
-                }
-                else{
-                    self.show_social(container, zz.drawers.group_album, 'share');
-                }
+                self.show_social(container, subject_type, subject_id);
             });
 
             $('.email-share').click(function(){
-                if(zz.album_type === 'personal'){
-                    self.show_email(container, zz.drawers.personal_album, 'share');
-                }
-                else{
-                    self.show_email(container, zz.drawers.group_album, 'share');
-
-                }
+                self.show_email(container, subject_type, subject_id);
             });
 
             callback();
         });
     },
 
+
+    share_in_dialog: function(subject_type, subject_id, on_close){
+        var self = this;
+
+
+        var template = $('<div id="share-dialog-content"></div>');
+        $('<div id="share-dialog"></div>').html( template )
+                                               .zz_dialog({
+                                                         height: 580,
+                                                         width: 895,
+                                                         modal: true,
+                                                         autoOpen: true,
+                                                         open : function(event, ui){
+                                                            self.init(template, function(){}, subject_type, subject_id);
+                                                         },
+                                                         close: function(event, ui){
+                                                            if(!_.isUndefined(on_close)){
+                                                                on_close();
+                                                            }
+                                                         }
+        });
+
+    },
+
+
     bounce: function(success, failure){
         success();
     },
 
     // loads the status message post form in place of the type switcher on the share step
-    show_social: function(container, obj, id){
+    show_social: function(container, subject_type, subject_id){
         var self = this;
 
         $('div#share-body').fadeOut('fast', function(){
-            $('div#share-body').load(zz.path_prefix +'/albums/'+zz.album_id+'/shares/newpost', function(){
+            $('div#share-body').load(zz.path_prefix +'/shares/newpost', function(){
                 zz.wizard.resize_scroll_body();
 
 
@@ -335,8 +371,8 @@ pages.share = {
                     },
                     submitHandler: function() {
                         var serialized = $('#new_post_share').serialize();
-                        $.post(zz.path_prefix + '/albums/'+zz.album_id+'/shares.json', serialized, function(data,status,request){
-                            pages.share.reload_share(container, zz.drawers[zz.album_type+'_album'], 'share', function(){
+                        $.post(zz.path_prefix + '/' + subject_type + 's/'+ subject_id +'/shares.json', serialized, function(data,status,request){
+                            pages.share.reload_share(container, subject_type, subject_id, function(){
                                 zz.wizard.display_flashes(  request,200 )
                             });
                         });
@@ -344,7 +380,7 @@ pages.share = {
                 });
 
                 $('#cancel-share').click(function(){
-                    self.reload_share(container, obj, id);
+                    self.reload_share(container, subject_type, subject_id);
                 });
 
                 $('#post_share_button').click(function(){
@@ -371,10 +407,10 @@ pages.share = {
 
 
     // loads the email post form in place of the type switcher on the share step
-    show_email: function(container, obj, id ){
+    show_email: function(container, subject_type, subject_id ){
         var self = this;
         $('div#share-body').fadeOut('fast', function(){
-            $('div#share-body').load(zz.path_prefix + '/albums/'+zz.album_id+'/shares/newemail', function(){
+            $('div#share-body').load(zz.path_prefix + '/shares/newemail', function(){
 
                 $("#contact-list").tokenInput( zzcontacts.find, {
                     allowNewValues: true,
@@ -406,9 +442,9 @@ pages.share = {
 
                     submitHandler: function() {
                         var serialized = $('#new_email_share').serialize();
-                        $.post(zz.path_prefix + '/albums/'+zz.album_id+'/shares.json', serialized, function(data,status,request ){
-                            self.reload_share(container, zz.drawers[zz.album_type+'_album'], 'share', function(){
-                                zz.wizard.display_flashes(  request,200 )
+                        $.post(zz.path_prefix + '/'+ subject_type + 's/'+ subject_id +'/shares.json', serialized, function(data,status,request ){
+                            self.reload_share(container, subject_type, subject_id, function(){
+                                zz.wizard.display_flashes(  request,200 );
                             });
                         },"json");
                     }
@@ -416,7 +452,7 @@ pages.share = {
                 });
 
                 $('#cancel-share').click(function(){
-                    self.reload_share(container, obj, id);
+                    self.reload_share(container, subject_type, subject_id);
                 });
 
                 $('#mail-submit').click(function(){
@@ -431,7 +467,7 @@ pages.share = {
 
 
     // reloads the main share part in place of the type switcher on the share step
-    reload_share: function(container, obj, id, callback){
+    reload_share: function(container, subject_type, subject_id, callback){
         var self = this;
         container.fadeOut('fast', function(){
             self.init(container, function(){
@@ -439,8 +475,7 @@ pages.share = {
                 if( typeof(callback) != "undefined" ){
                     callback();
                 }
-                
-            });
+            }, subject_type, subject_id);
         });
     }
 

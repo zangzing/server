@@ -12,7 +12,7 @@
 
 
 <% @albums.each do |album|  %>
-    <div class="album-cell" data-album-path="/<%=album.user.username%>/<%=album.friendly_id%>/photos">
+    <div class="album-cell" data-album-id="<%=album.id%>" data-album-path="/<%=album.user.username%>/<%=album.friendly_id%>/photos">
 
 <%
     if(!album.cover)  #no cover photo
@@ -109,10 +109,22 @@
 
 <script>
   $(document).ready(function(){
-      $('.album-cell .picon').click(function(){
-          var album_path = $(this).parent().attr('data-album-path');
-          $('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()},500,'easeOutQuart');
-          document.location.href=album_path;
+
+      $('.album-cell').each(function(index, element){
+
+          //add click handler to picon to navigate to grid view
+          $(element).find('.picon').click(function(){
+              var album_path = $(element).attr('data-album-path');
+              $('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()},500,'easeOutQuart');
+              document.location.href=album_path;
+          });
+
+
+          //add click handler share button
+          $(element).find('.share-button').click(function(){
+              var album_id = $(element).attr('data-album-id');
+              pages.share.share_in_dialog('album', album_id);
+          });
       });
   });
 </script>
