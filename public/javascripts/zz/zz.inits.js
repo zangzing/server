@@ -253,16 +253,22 @@ zz.init = {
         });
 
         $('#join_form_cancel_button').click(function() {
+            //todo: move this to pages.signing
             $('#small-drawer').animate({height: '0px', top: '28px'});
             zz.drawer_state = zz.DRAWER_CLOSED;
+            $('#header #sign-in-button').removeClass('selected');
+
         });
 
 
         /* sign in   */
         /* ---------------------------------*/
         $('#signin-form-cancel-button').click(function() {
+            //todo: move this to pages.signing
             $('#small-drawer').animate({height: '0px', top: '28px'});
             zz.drawer_state = zz.DRAWER_CLOSED;
+            $('#header #sign-in-button').removeClass('selected');
+
         });
 
 
