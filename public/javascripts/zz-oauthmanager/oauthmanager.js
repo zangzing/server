@@ -28,5 +28,3 @@ var oauthmanager_popup = {
     }
 };
 
-//export for google closure compiler
-window['oauthmanager_popup'] = oauthmanager_popup;

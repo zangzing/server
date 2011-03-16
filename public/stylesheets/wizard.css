@@ -533,6 +533,7 @@ ul#share-pick li {
 ul#share-pick li.social-share {
   background: url(/images/btn-share-by-post.png) center center no-repeat;
   background-color:#ffffff;
+  cursor:pointer;
 }
 
 ul#share-pick li.social-share:hover {
@@ -543,6 +544,7 @@ ul#share-pick li.social-share:hover {
 ul#share-pick li.email-share {
   background: url(/images/btn-share-by-email.png) center center no-repeat;
   background-color:#ffffff;
+  cursor:pointer;
 }
 
 ul#share-pick li.email-share:hover {

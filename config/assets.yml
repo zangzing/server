@@ -1,6 +1,6 @@
-package_assets: on
-compress_assets: on
-embed_assets: on
+package_assets: always
+compress_assets: always
+embed_assets: always
 
 
 javascript_compressor: closure
