@@ -27,8 +27,12 @@ module ZZ
         end
 
         def self.on_failure_notify_photo(e, photo_id, queued_at_secs)
-          photo = Photo.find(photo_id)
-          photo.update_attributes(:state => 'error', :error_message => 'Failed to resize photos')
+          begin
+            photo = Photo.find(photo_id)
+            photo.update_attributes(:state => 'error', :error_message => 'Failed to resize photos')
+          rescue Exception => ex
+            # eat any exception in the error handler
+          end
         end
 
     end

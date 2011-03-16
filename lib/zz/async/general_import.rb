@@ -28,8 +28,12 @@ module ZZ
       end
 
       def self.on_failure_notify_photo(e, photo_id, source_url )
-        photo = Photo.find(photo_id)
-        photo.update_attributes(:state => 'error', :error_message => "Failed to load photo from because of network issues #{e}" )
+        begin
+          photo = Photo.find(photo_id)
+          photo.update_attributes(:state => 'error', :error_message => "Failed to load photo from General Import because of network issues #{e}" )
+        rescue Exception => ex
+          # eat any exception in the error handler
+        end
       end
     end
   end
