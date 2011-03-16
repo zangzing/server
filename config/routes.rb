@@ -303,6 +303,7 @@ Server::Application.routes.draw do
         # EmailTemplate Manager
         resources :email_templates
         put   'email_templates/:id/reload'       => 'email_templates#reload',     :as => :reload_email_template
+        get   'email_templates/:id/test'         => 'email_templates#test',       :as => :test_email_template
         get   'emails'                           => 'emails#index',               :as => :emails
         put   'emails/:id'                       => 'emails#update',              :as => :email
     end

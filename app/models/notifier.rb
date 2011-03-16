@@ -11,7 +11,7 @@ class Notifier < ActionMailer::Base
   end
 
 
-  def photos_ready( batch_id )
+  def photos_ready( batch_id, template_id = nil )
     batch = UploadBatch.find( batch_id )
     @user = batch.user
     @album = batch.album
@@ -24,10 +24,12 @@ class Notifier < ActionMailer::Base
       end
       vc.add_email @album.short_email
     end
-    attachments.inline["#{@album.name}.vcf"] = vcard.to_s
+    attachments["#{@album.name}.vcf"] = vcard.to_s
 
-     # Load interpolate and setup values from template
+     #Load interpolate and setup values from template
      @template = Email.find_by_name!( __method__ ).production_template
+     @template  = EmailTemplate.find( template_id ) if template_id
+
      headers @template.sendgrid_category_header
      binding = binding()
 
@@ -36,19 +38,18 @@ class Notifier < ActionMailer::Base
            :reply_to => ERB.new( @template.formatted_reply_to).result(binding), #@album.short_email
            :subject  => ERB.new( @template.subject).result(binding) 
      ) do |format|
-        format.text { render :inline => @template.text_content }
         format.html { render :inline => @template.html_content }
+        format.text { render :inline => @template.text_content }
     end
   end
 
-
-
-  def password_reset(user_id)
+  def password_reset(user_id, template_id = nil)
      @user = User.find(user_id)
      @password_reset_url = edit_password_reset_url(@user.perishable_token)
 
      # Load interpolate and setup values from template
      @template = Email.find_by_name!( __method__ ).production_template
+     @template  = EmailTemplate.find( template_id ) if template_id
      headers @template.sendgrid_category_header
      binding = binding()
      mail(  :to       => @user.formatted_email,
@@ -56,19 +57,21 @@ class Notifier < ActionMailer::Base
             :reply_to => ERB.new( @template.formatted_reply_to).result(binding), #@album.short_email
             :subject  => ERB.new( @template.subject).result(binding)
      ) do |format|
-        format.text { render :inline => @template.text_content }
         format.html { render :inline => @template.html_content }
+        format.text { render :inline => @template.text_content }
     end
    end
 
 
- def album_shared(from_user_id,to_address,album_id, message)
+ def album_shared(from_user_id,to_address,album_id, message, template_id = nil)
     @user = User.find(from_user_id)
     @album = Album.find(album_id)
     @message = message
     @recipient = User.find_by_email( to_address )
 
     @template = Email.find_by_name!( __method__ ).production_template
+    @template  = EmailTemplate.find( template_id ) if template_id
+    
     headers @template.sendgrid_category_header
     binding = binding()
     mail(   :to       => ( @recipient? @recipient.formatted_email : to_address ),
@@ -76,8 +79,8 @@ class Notifier < ActionMailer::Base
             :reply_to => ERB.new( @template.formatted_reply_to).result(binding), #@album.short_email
             :subject  => ERB.new( @template.subject).result(binding)
     ) do |format|
-        format.text { render :inline => @template.text_content }
         format.html { render :inline => @template.html_content }
+        format.text { render :inline => @template.text_content }
     end
   end
 

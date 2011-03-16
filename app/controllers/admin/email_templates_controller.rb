@@ -1,6 +1,6 @@
 class Admin::EmailTemplatesController < Admin::AdminController
 
-  layout false
+  include Admin::EmailTemplatesHelper
 
   def new
     load_info
@@ -56,8 +56,17 @@ class Admin::EmailTemplatesController < Admin::AdminController
     redirect_to :back
   end
 
-
-
+  def test
+    @template = EmailTemplate.find( params[:id] )
+    @message = send( 'test_'+@template.email.name, @template.id )
+    if params[:onscreen]
+      render :layout => false
+    else
+      @message.deliver
+      flash[:notice]="Test #{@template.email.name} message sent."
+      redirect_to :back
+    end
+  end
 
 private
   def load_info

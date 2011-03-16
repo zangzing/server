@@ -1,5 +1,5 @@
 <div style="margin-top: 5px; margin-bottom: 10px; font-size: 1em;">
-<% [:info, :error].each do |key| %>
+<% [:notice, :error].each do |key| %>
      <% if flash[key] %>
         <div style="<%=( key == :error ? 'color:red;' : 'color:green;' )%>" id="flash">
           <%= flash[key] %>
@@ -17,6 +17,7 @@
         <th> email         </th>
         <th> Status        </th>
         <th> Last Loaded   </th>
+        <th></th>
         <th></th>
   </tr>
 
@@ -55,6 +56,21 @@
                 <input type="hidden" name="_method" value="put" />
                 <input onclick="return confirm('Are you sure you want to reload the template?');"
                     value="Reload" type="submit" />
+            </div>
+         </form>
+        </td>
+        <td>
+              <form method="get" action="<%=test_email_template_url( et )%>" class="button-to">
+                <div>
+                    <input value="Send Me A Test" type="submit"/>
+                </div>
+             </form>
+        </td>
+        <td>
+          <form method="get" action="<%=test_email_template_url( et )%>" target="_blank" class="button-to">
+            <input type="hidden" name="onscreen" value="true" />
+            <div>
+                <input value="View" type="submit"/>
             </div>
          </form>
         </td>
