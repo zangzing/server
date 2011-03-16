@@ -346,6 +346,9 @@ zz.init = {
             success: function(json) {
 
 
+                ZZAt.track('album.view',{id:zz.album_id});
+
+
                 var gridElement = $('<div class="photogrid"></div>');
 
                 $('#article').html(gridElement);
@@ -405,6 +408,7 @@ zz.init = {
                     }
 
 
+
                     var grid = gridElement.zz_photogrid({
                         photos:json,
                         allowDelete: false,
@@ -420,6 +424,8 @@ zz.init = {
                         currentPhotoId: currentPhotoId,
                         onScrollToPhoto: function(photoId) {
                             window.location.hash = '#!' + photoId
+                            ZZAt.track('photo.view',{id:photoId});
+
                         }
 
 
