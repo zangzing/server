@@ -26,6 +26,7 @@
             isUploading:false,           //model
             isError:false,               //model
             showButtonBar:false,           //model
+            onClickShare: jQuery.noop,     //model
 //            noShadow:false,              //context / type
 //            lazyLoad:true ,              //context / type
             context:null,                 //context -- album-edit, album-grid, album-picture, album-timeline, album-people, chooser-grid, chooser-picture
@@ -263,16 +264,18 @@
                                        '</div>';
 
                 self.borderElement.mouseenter(function(){
-                    logger.debug('mouse over');
                     self.toolbarElement = $(toolbarTemplate);
                     self.borderElement.append(self.toolbarElement);
                     self.borderElement.css({'padding-bottom': '30px'});
                     self.imageElement.css({'border-bottom': '35px solid #fff'});
 
+                    self.toolbarElement.find('.share-button').click(function(){
+                       logger.debug('click share');
+                        self.options.onClickShare(self.options.photoId);
+                    });
                 });
 
                 self.borderElement.mouseleave(function(){
-                    logger.debug('mouse out');
                     self.borderElement.css({'padding-bottom': '0px'});
                     self.imageElement.css({'border-bottom': '5px solid #fff'});
                     self.toolbarElement.remove();

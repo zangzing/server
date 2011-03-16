@@ -70,6 +70,7 @@ Server::Application.routes.draw do
     get '/shares/newpost'                   => 'shares#newpost' #,    :as => :new_album_postshare
     get '/shares/newemail'                  => 'shares#newemail' #,   :as => :new_album_emailshare
     post '/albums/:album_id/shares'         => 'shares#create',     :as => :create_album_share
+    post '/photos/:photo_id/shares'         => 'shares#create',     :as => :create_photo_share
     get '/shares/:id'                       => 'shares#show',       :as => :share
     get '/shares/:id/edit'                  => 'shares#edit',       :as => :edit_share
     put '/shares/:id'                       => 'shares#update',     :as => :update_share
