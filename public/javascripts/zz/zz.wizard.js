@@ -291,7 +291,9 @@ zz.wizard = {
     close_settings_drawer: function(){
         $('#drawer .body').fadeOut('fast');
         zz.close_drawer(400);
-        setTimeout('window.location = "'+zz.drawers.settings.redirect+'"', 1);
+        setTimeout(function(){
+            window.location.reload( false );
+        },1);
     },
 
 
