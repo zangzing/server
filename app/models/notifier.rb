@@ -9,7 +9,87 @@ class Notifier < ActionMailer::Base
   def logger
     Rails.logger
   end
-  
+
+
+  def photos_ready( batch_id )
+    batch = UploadBatch.find( batch_id )
+    @user = batch.user
+    @album = batch.album
+    @album_url = album_url( @album )
+    @photos = batch.photos
+
+    vcard = Vpim::Vcard::Maker.make2 do |vc|
+      vc.add_name do |name|
+        name.given = @album.name
+      end
+      vc.add_email @album.short_email
+    end
+    attachments.inline["#{@album.name}.vcf"] = vcard.to_s
+
+     # Load interpolate and setup values from template
+     @template = Email.find_by_name!( __method__ ).production_template
+     headers @template.sendgrid_category_header
+     binding = binding()
+
+     mail( :to       => @user.formatted_email,
+           :from     => @template.formatted_from,
+           :reply_to => ERB.new( @template.formatted_reply_to).result(binding), #@album.short_email
+           :subject  => ERB.new( @template.subject).result(binding) 
+     ) do |format|
+        format.text { render :inline => @template.text_content }
+        format.html { render :inline => @template.html_content }
+    end
+  end
+
+
+
+  def password_reset(user_id)
+     @user = User.find(user_id)
+     @password_reset_url = edit_password_reset_url(@user.perishable_token)
+
+     # Load interpolate and setup values from template
+     @template = Email.find_by_name!( __method__ ).production_template
+     headers @template.sendgrid_category_header
+     binding = binding()
+     mail(  :to       => @user.formatted_email,
+            :from     => @template.formatted_from,
+            :reply_to => ERB.new( @template.formatted_reply_to).result(binding), #@album.short_email
+            :subject  => ERB.new( @template.subject).result(binding)
+     ) do |format|
+        format.text { render :inline => @template.text_content }
+        format.html { render :inline => @template.html_content }
+    end
+   end
+
+
+ def album_shared(from_user_id,to_address,album_id, message)
+    @user = User.find(from_user_id)
+    @album = Album.find(album_id)
+    @message = message
+    @recipient = User.find_by_email( to_address )
+
+    @template = Email.find_by_name!( __method__ ).production_template
+    headers @template.sendgrid_category_header
+    binding = binding()
+    mail(   :to       => ( @recipient? @recipient.formatted_email : to_address ),
+            :from     => @template.formatted_from,
+            :reply_to => ERB.new( @template.formatted_reply_to).result(binding), #@album.short_email
+            :subject  => ERB.new( @template.subject).result(binding)
+    ) do |format|
+        format.text { render :inline => @template.text_content }
+        format.html { render :inline => @template.html_content }
+    end
+  end
+
+
+
+
+
+
+
+
+
+
   def contributors_added(album_id, email, user_id, message )
      @album = Album.find( album_id)
      @user = @album.user
@@ -30,44 +110,7 @@ class Notifier < ActionMailer::Base
    end
 
 
-   def upload_batch_finished( batch_id )
-    batch = UploadBatch.find( batch_id )
-    @album = batch.album
-    @album_url = album_url( @album )
-    @photos = batch.photos
 
-    vcard = Vpim::Vcard::Maker.make2 do |vc|
-      vc.add_name do |name|
-        name.given = batch.album.name
-      end
-      vc.add_email batch.album.short_email
-    end
-    attachments["#{batch.album.name}.vcf"] = vcard.to_s
-    logger.info "Mailed upload_batch_finished: #{batch.user.email}, #{batch.album.long_email}"
-    mail( :to       => batch.user.email,
-          :reply_to => batch.album.long_email,
-          :subject  => "Your album "+batch.album.name+" is ready!")
-  end
-
- def album_shared_with_you(from_user_id,to_address,album_id, message)
-    @user = User.find(from_user_id)
-    @album = Album.find(album_id)
-    @message = message
-    @recipient = User.find_by_email( to_address )
-
-
-    # Load interpolate and setup values from template
-    @email_template = EmailTemplate.find_by_name!( __method__ )
-    
-    logger.info "Mailed album_shared_with_you: #{to_address}, #{@album.name}"
-    mail( :to      => ( @recipient? @recipient.formatted_email : to_address ),
-          :from    => @email_template.formatted_from_address,
-          :subject => ERB.new( @email_template.subject).result
-    ) do |format|
-        format.text { render :inline => @email_template.text_content }
-        format.html { render :inline => @email_template.html_content }
-    end
-  end
 
 
   def you_are_being_followed( follower_id, followed_id)
@@ -86,13 +129,6 @@ class Notifier < ActionMailer::Base
           :subject => "Account Activation Instructions for your ZangZing Account" )
   end
 
-  def password_reset_instructions(user_id)
-    user = User.find(user_id)
-    @edit_password_reset_url = edit_password_reset_url(user.perishable_token)
-    logger.info "Mailed password_reset_instructions: #{user.email}"
-    mail(  :to      =>    user.email,
-           :subject =>    "ZangZing Password Reset Instructions")
-  end
 
   def welcome(user_id)
     user = User.find(user_id)

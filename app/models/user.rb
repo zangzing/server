@@ -15,13 +15,21 @@ class User < ActiveRecord::Base
   #things I like, join with likes table
   has_many :likes
   has_many :liked_albums,         :through => :likes, :class_name => "Album", :source => :subject,  :conditions => { 'likes.subject_type' => 'A'}
+  has_many :liked_public_albums,  :through => :likes, :class_name => "Album", :source => :subject,  :conditions => { 'likes.subject_type' => 'A', 'albums.privacy' => 'public'}
   has_many :liked_users,          :through => :likes, :class_name => "User",  :source => :subject,  :conditions => { 'likes.subject_type' => 'U'}
   has_many :liked_photos,         :through => :likes, :class_name => "Photo", :source => :subject,  :conditions => { 'likes.subject_type' => 'P'}
+
+  # pull in all public albums for the users this user likes
+  has_many :liked_users_public_albums,   :class_name => "Album", :finder_sql =>
+      'SELECT a.* ' +
+      'FROM albums a, likes l, users u ' +
+      'WHERE l.user_id = #{id} AND l.subject_id = u.id AND u.id = a.user_id ' +
+      'AND l.subject_type = "U" AND a.privacy = "public" AND a.type <> "ProfileAlbum" ' +
+      'ORDER BY a.updated_at DESC'
 
   #Reverse lookup join likers ar those who like me
   has_many :like_mees,            :foreign_key => :subject_id, :class_name => "Like"
   has_many :likers,               :through => :like_mees, :class_name => "User",  :source => :user
-
 
   has_one  :profile_album,       :dependent => :destroy, :autosave => true
   has_one  :preferences,         :dependent => :destroy, :class_name => "UserPreferences", :autosave => true
@@ -54,6 +62,7 @@ class User < ActiveRecord::Base
   before_create  :build_profile_album
   before_create  :build_preferences
   after_create   :update_acls_with_id
+  after_create   :like_mr_zz
 
   validates_presence_of   :name,      :unless => :automatic?
   validates_presence_of   :username,  :unless => :automatic?
@@ -123,7 +132,7 @@ class User < ActiveRecord::Base
   # Generates a new perishable token for the notifier to use in a password reset request
   def deliver_password_reset_instructions!
       reset_perishable_token!
-      ZZ::Async::Email.enqueue( :password_reset_instructions, self.id )
+      ZZ::Async::Email.enqueue( :password_reset, self.id )
   end
 
   def deliver_activation_instructions!
@@ -177,6 +186,10 @@ class User < ActiveRecord::Base
       @profile_photo_url ||= profile_album.profile_photo_url
   end
 
+  def formatted_email
+      "\"#{self.name}\" <#{self.email}>"
+  end
+
 
   private
   def old_password_valid?
@@ -209,8 +222,28 @@ class User < ActiveRecord::Base
     ACLManager.global_replace_user_key( self.email, self.id )
   end
 
-  def formatted_email
-    "\"#{self.name}\" <#{self.email}>"
+
+
+  # look up mr zz special id
+  def self.mr_zz_id_from_db
+    user = User.find_by_username("zangzing")
+    user.id
   end
 
+  # get the id of the mr zz user - the first time we look it up in the
+  # database, after that we hold onto the id
+  def self.mr_zz_id
+    @@mr_zz_id ||= mr_zz_id_from_db
+  end
+
+  # Make sure everybody likes the zangzing user
+  # (runs as an after_create callback)
+  def like_mr_zz
+
+    # only if not zangzing, sorry mr zz, you can't like yourself
+    if self.username != "zangzing"
+      mr_zz_id = User.mr_zz_id
+      ZZ::Async::ProcessLike.enqueue( 'add', self.id, mr_zz_id , 'user' )
+    end
+  end
 end

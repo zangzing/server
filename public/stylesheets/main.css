@@ -99,7 +99,7 @@ div#container {
 
 .stacked-badge .sb-name{
   position: absolute;
-  top:   4px;
+  top:   10px; /*used to be 4px with the like line */
   left: 55px;
   color: #466faa;
   font-size: 15px;

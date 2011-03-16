@@ -23,6 +23,15 @@ class RedisConfig
   end
 end
 
+# this clsss wraps resque scheduler config - putting it here to avoid having too many
+# init files - we use RAILS_ENV since calling from rspec does not set up the rails environment
+class ResqueScheduleConfig
+  def self.config
+    # don't symbolize keys for this one
+    @@config ||= YAML::load(ERB.new(File.read(File.dirname(__FILE__) + "/../resque_schedule.yml")).result)[Rails.env]
+  end
+end
+
 # this clsss wraps redis config - putting it here to avoid having too many
 # init files - we use RAILS_ENV since calling from rspec does not set up the rails environment
 class MemcachedConfig

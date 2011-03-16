@@ -5,8 +5,14 @@
 #
 
 Server::Application.routes.draw do
+  get "email/index"
+
+  get "email/update"
+
   root :to => 'pages#home'
   get    '/service'            => 'pages#home'
+  get    '/signin'             => 'user_sessions#new',  :as => :signin
+  get    '/join'               => 'user_sessions#join',  :as => :join
 
   # the whole site has /service in front of it except for users
   scope '/service' do
@@ -62,11 +68,12 @@ Server::Application.routes.draw do
     post   'albums/:id/request_access'       => 'albums#request_access',      :as => :request_album_access
 
     #shares
-    get '/albums/:album_id/shares'          => 'shares#index',      :as => :album_shares
     get '/albums/:album_id/shares/new'      => 'shares#new',        :as => :new_album_share
     get '/albums/:album_id/shares/newpost'  => 'shares#newpost',    :as => :new_album_postshare
     get '/albums/:album_id/shares/newemail' => 'shares#newemail',   :as => :new_album_emailshare
+    post '/users/:user_id/share'            => 'shares#create',     :as => :create_user_share
     post '/albums/:album_id/shares'         => 'shares#create',     :as => :create_album_share
+    post '/photos/:photo_id/share'          => 'shares#create',     :as => :create_photo_share
     get '/shares/:id'                       => 'shares#show',       :as => :share
     get '/shares/:id/edit'                  => 'shares#edit',       :as => :edit_share
     put '/shares/:id'                       => 'shares#update',     :as => :update_share
@@ -133,7 +140,8 @@ Server::Application.routes.draw do
 
     #sessions - login
     resources :user_sessions, :only => [:new, :create, :destroy]
-    match '/signin'                    => 'user_sessions#new',            :as => :signin
+    match '/signin'                    => 'user_sessions#new'
+    match '/join'                      => 'user_sessions#join'
     match '/signout'                   => 'user_sessions#destroy',        :as => :signout
     match '/activate/:activation_code' => 'activations#create',           :as => :activate
     match '/resend_activation'        => 'activations#resend_activation', :as => :resend_activation
@@ -285,8 +293,9 @@ Server::Application.routes.draw do
         delete 'chimpcampaigns/:id'              => 'chimpcampaigns#delete',      :as => :delete_chimpcampaign
         # EmailTemplate Manager
         resources :email_templates
-        put   'email_templates/:id/reload'       =>'email_templates#reload',      :as => :reload_email_template
-
+        put   'email_templates/:id/reload'       => 'email_templates#reload',     :as => :reload_email_template
+        get   'emails'                           => 'emails#index',               :as => :emails
+        put   'emails/:id'                       => 'emails#update',              :as => :email
     end
     #Resque: mount the resque server
     mount Resque::Server.new, :at => "/admin/resque"

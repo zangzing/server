@@ -47,7 +47,7 @@ zz.init = {
             ZZAt.track('button.home.click');
         });
 
-        if (document.location.href.indexOf("/photos") !== -1) {
+        if (document.location.href.indexOf("/photos") !== -1 && document.location.href.indexOf("/photos") !== 6 /* in case we are deployed on http://photos...*/) {
             $('#header #view-buttons #grid-view-button').addClass('selected');
         }
         else if (document.location.href.indexOf("/people") !== -1) {
@@ -383,7 +383,8 @@ zz.init = {
                             $('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()},500,'easeOutQuart');
                             document.location.href = zz.album_base_url + "/photos/#!" + photo.id;
                         },
-                        currentPhotoId: $.param.fragment()
+                        currentPhotoId: $.param.fragment(),
+                        showButtonBar:true
 
                     }).data().zz_photogrid;
 
@@ -656,7 +657,9 @@ zz.init = {
                             $('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()},500,'easeOutQuart');
                             document.location.href = zz.album_base_url + "/photos/#!" + photo.id;
                         },
-                        showThumbscroller: false
+                        showThumbscroller: false,
+                        showButtonBar:true
+
                     }).data().zz_photogrid;
 
 
@@ -670,7 +673,7 @@ zz.init = {
                     moreLessbuttonElement.click(function(){
                         if(allShowing){
                             $(element).animate({height:230}, 500, 'swing', function(){
-                                moreLessbuttonElement.html("Show more photos");
+                                moreLessbuttonElement.find("span").html("Show more photos");
                                 moreLessbuttonElement.removeClass('open');
                             });
                             allShowing = false;
@@ -678,7 +681,7 @@ zz.init = {
                         else {
                             $(element).animate({height: $(element).children().last().position().top + 180}, 500, 'swing', function() {
                                 $(element).trigger('scroll');  //hack: force the photos to load themselves now that they are visible
-                                moreLessbuttonElement.html("Show less photos");
+                                moreLessbuttonElement.find("span").html("Show less photos");
                                 moreLessbuttonElement.addClass('open');
                             });
                             allShowing = true;

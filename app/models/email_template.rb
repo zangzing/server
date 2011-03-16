@@ -1,14 +1,20 @@
 class EmailTemplate < ActiveRecord::Base
-  attr_accessible :name, :mc_campaign_id, :from_name, :from_address, :subject
+  attr_accessible :name, :email_id, :mc_campaign_id, :from_name, :from_address, :subject, :reply_to, :category
 
-  validates_presence_of :name, :mc_campaign_id
-  validates_each :mc_campaign_id do |record, attr, value|
+
+  belongs_to :email
+  has_one :production_email, :class_name => "Email",
+          :inverse_of => :production_template,
+          :foreign_key => 'production_template_id'
+
+  validates_presence_of :mc_campaign_id, :email_id
+  validates_each :mc_campaign_id, :on => :create do |record, attr, value|
      unless record.is_campaign_valid?
        record.errors.add attr, 'MailChimp Campaign ID is not valid'
      end
    end
 
-  before_create :reload_mc_content_no_save
+  before_save :reload_mc_content_no_save
  
 
   # Gets the MC campaign by id, retrieves the content from MC
@@ -16,29 +22,25 @@ class EmailTemplate < ActiveRecord::Base
   # stores the text in the DB. reload_no save does not save the record
   # reload does
   def reload_mc_content
-    reload_mc_content_no_save
-    save!
+    #reload_mc_content_no_save
+    save
   end
 
+
   def is_campaign_valid?
-    begin
-      mc = Hominid::API.new(MAILCHIMP_API_KEYS[:api_key])
-      campaigns = mc.find_campaign_by_id( self.mc_campaign_id )
-      @campaign = campaigns[0]
-    rescue Hominid::APIError
-      return nil
-    end
+    @campaign = nil
+    campaigns =gb.campaigns(:filters => { :folder_id => 21177, :campaign_id => self.mc_campaign_id })['data']
+    @campaign = campaigns[0] if campaigns
     @campaign
   end
 
  def reload_mc_content_no_save
     #Get the template info from MC
-    mc = Hominid::API.new(MAILCHIMP_API_KEYS[:api_key])
-    campaigns = mc.find_campaign_by_id( self.mc_campaign_id )
-    campaign = campaigns[0]
-    content = mc.campaign_content( campaign['id'] , false )
+    campaign = is_campaign_valid?
+    content =  gb.campaign_content(  {'cid' => campaign['id'] , 'for_archive' => false} )
 
     # Set instance values from template
+    self.name = campaign['title']
     self.from_name = campaign['from_name']
     self.from_address = campaign['from_email']
     self.subject = campaign['subject']
@@ -48,10 +50,24 @@ class EmailTemplate < ActiveRecord::Base
     html = CGI::unescapeHTML( content['html'] )
     html = EmailTemplate.interpolate_album_picons( html )
     self.html_content = html
+    true
   end
 
-  def formatted_from_address
+  def formatted_from
      "\"#{self.from_name}\" <#{self.from_address}>"
+  end
+
+  def formatted_reply_to
+      if  self.reply_to && self.reply_to.length > 0
+        self.reply_to
+      else
+        self.from_address
+      end
+  end
+
+
+  def sendgrid_category_header
+    {'X-SMTPAPI' => {'category' => self.category }.to_json }
   end
 
   def self.interpolate_album_picons( html )
@@ -79,4 +95,11 @@ class EmailTemplate < ActiveRecord::Base
     end
     @html
   end
+
+  private
+
+  def gb
+    @gb ||= Gibbon::API.new(MAILCHIMP_API_KEYS[:api_key])
+  end
+
 end

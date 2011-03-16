@@ -19,7 +19,7 @@ class PeopleController < ApplicationController
     #an array  of users that have not contributed photos yet
     @inactive_contributors = []
     # An array of the users who like this album
-    @likers = @album.likers
+    @likers = @album.likers | @album.users_who_like_albums_photos
   end
 
   def user_index

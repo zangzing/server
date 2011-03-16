@@ -12,13 +12,12 @@
 
 
 <% @albums.each do |album|  %>
-    <div class="album-cell">
-        <a href="#" onclick="$('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()},500,'easeOutQuart'); document.location.href='/<%=album.user.username%>/<%=album.friendly_id%>/photos';">
+    <div class="album-cell" data-album-path="/<%=album.user.username%>/<%=album.friendly_id%>/photos">
 
 <%
     if(!album.cover)  #no cover photo
 %>
-          <div class="picon landscape_<%=1+rand(3)%>">
+          <div class="picon landscape landscape_<%=1+rand(3)%>">
               <div class="landscape_mask">
                   <img style="width:<%=landscape_width%>px; height:<%=landscape_height%>px" src="/images/album-no-cover.png">
               </div>
@@ -26,7 +25,7 @@
 <%
     elsif (album.cover.state != 'ready') #not finished uploading/processing -- just stretch to fit
 %>
-          <div class="picon landscape_<%=1+rand(3)%>">
+          <div class="picon landscape landscape_<%=1+rand(3)%>">
               <div class="landscape_mask">
                   <img style="width:<%=landscape_width%>px; height:<%=landscape_height%>px"  src="<%= album.cover.thumb_url%>">
               </div>
@@ -54,7 +53,7 @@
 
 
 %>
-          <div class="picon landscape_<%=1+rand(3)%>">
+          <div class="picon landscape landscape_<%=1+rand(3)%>">
               <div class="landscape_mask">
                   <img style="position:relative;width:<%=width%>px; height:<%=height%>px;top:<%=top%>px;left:<%=left%>px;" src="<%= album.cover.thumb_url%>">
               </div>
@@ -82,7 +81,7 @@
 
 %>
 
-          <div class="picon portrait_<%=1+rand(3)%>">
+          <div class="picon portrait portrait_<%=1+rand(3)%>">
               <div class="portrait_mask">
                   <img style="position:relative;width:<%=width%>px; height:<%=height%>px;top:<%=top%>px;left:<%=left%>px;" src="<%= album.cover.thumb_url%>">
               </div>
@@ -95,8 +94,27 @@
 
 
 
-        </a>
         <div class="album-name"><%= truncate(h(album.name), :length => 100) %></div>
+        <div class="album-toolbar">
+            <div class="buttons">
+                <div class="share-button"></div>
+                <div class="like-button"></div>
+                <div class="info-button"></div>
+            </div>
+        </div>
     </div>
 <% end %>
 
+<% content_for :page_javascript do %>
+
+<script>
+  $(document).ready(function(){
+      $('.album-cell .picon').click(function(){
+          var album_path = $(this).parent().attr('data-album-path');
+          $('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()},500,'easeOutQuart');
+          document.location.href=album_path;
+      });
+  });
+</script>
+
+<% end %>

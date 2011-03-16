@@ -55,7 +55,7 @@ class Share < ActiveRecord::Base
     case service
       when 'email'
         self.recipients.each do |recipient |
-          ZZ::Async::Email.enqueue( :album_shared_with_you, self.user_id, recipient, self.subject_id, self.message )
+          ZZ::Async::Email.enqueue( :album_shared, self.user_id, recipient, self.subject_id, self.message )
         end
       when 'social'
         self.recipients.each do | service |
@@ -72,7 +72,7 @@ class Share < ActiveRecord::Base
 
   # after_create callback for users
   def after_share_user
-    #TODO: implement after_create callback for users in Share.rb
+    ZZ::Async::DeliverShare.enqueue( self.id )
   end
 
 
@@ -84,15 +84,15 @@ class Share < ActiveRecord::Base
     # shares will be delivered when the current batch is finished)
     UploadBatch.get_current( self.user_id, self.subject_id )
 
-    # Add VIEWER permsission to the recipients of this email share
+    # Add VIEWER permsission to the recipients of this email share (if this is an email share)
     if email?
-      recipients.each { |email| subject.add_viewer( email ) } if email?
+      recipients.each { |email| subject.add_viewer( email ) } 
     end
   end
 
   # after_create callback for photos
   def after_share_photo
-    #TODO: implement after_create callback for photos in Share.rb
+    ZZ::Async::DeliverShare.enqueue( self.id )
   end
 
   def email?

@@ -5,6 +5,87 @@
     position:relative;
 }
 
+.album-cell .landscape ~ .album-toolbar{
+    position: absolute;
+    left: 28px;
+    width: 193px;
+    height: 40px;
+    background-image: url(/images/album_picon_landscape_toolbar.png);
+    top: 160px;
+    display:none;
+}
+
+.album-cell .portrait ~ .album-toolbar{
+    position: absolute;
+    left: 66px;
+    width: 115px;
+    height: 40px;
+    background-image: url(/images/album_picon_portrait_toolbar.png);
+    top: 160px;
+    display:none;
+}
+
+.album-cell:hover .album-toolbar{
+    display:block;
+}
+
+.album-cell:hover .album-toolbar .buttons{
+    position:relative;
+    display:inline-block;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+
+.album-cell .album-toolbar .share-button{
+    background: url(/images/album_toolbar_share.png) no-repeat scroll 0px 0px transparent;
+    width:20px;
+    height:18px;
+    float:left;
+    cursor:pointer;
+    margin:3px;
+}
+
+
+.album-cell .album-toolbar .share-button:hover{
+    background: url(/images/album_toolbar_share.png) no-repeat scroll 0px -18px transparent;
+}
+
+
+
+.album-cell .album-toolbar .like-button{
+    background: url(/images/album_toolbar_like.png) no-repeat scroll 0px 0px transparent;
+    width:20px;
+    height:18px;
+    float:left;
+    cursor:pointer;
+    margin:3px;
+}
+
+.album-cell .album-toolbar .like-button:hover{
+    background: url(/images/album_toolbar_like.png) no-repeat scroll 0px -18px transparent;
+}
+
+
+
+.album-cell .album-toolbar .info-button{
+    position:relative;
+    background: url(/images/album_toolbar_info.png) no-repeat scroll 0px 0px transparent;
+    top:1px;
+    width:20px;
+    height:18px;
+    float:left;
+    cursor:pointer;
+    margin:3px;
+}
+
+.album-cell .album-toolbar .info-button:hover{
+    background: url(/images/album_toolbar_info.png) no-repeat scroll 0px -18px transparent;
+}
+
+
+
+
 .album-cell a{
     outline:none;
 }
@@ -15,6 +96,7 @@
     width:212px;
     margin-left:auto;
     margin-right:auto;
+    cursor:pointer;
 }
 
 .album-cell .picon.landscape_1{

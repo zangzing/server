@@ -18,16 +18,29 @@
 <% end %>
 
 <div>
+<%= f.label :mc_campaign_id, "MC Campaign" %>
+<%= f.select :mc_campaign_id, options_for_select(@campaign_options,f.object.mc_campaign_id), {:prompt => 'Select Campaign' } %>
+</div>
+
+<div>
+<%= f.label :email_id, "email" %>
+<%= f.select :email_id, options_for_select(@email_options,f.object.email_id), {:prompt => 'Select Email' } %>
+</div>
+
+<div>
+<%= f.label :reply_to%>
+<%= f.text_field :reply_to %>
+</div>
+<div>
+<%= f.label :category%>
+<%= f.text_field :category %>
+</div>
+<!--
+<div>
 <%= f.label :name%>
 <%= f.text_field :name %>
 </div>
 
-<div>
-<%= f.label :mc_campaign_id, "MC Campaign" %>
-<%= f.select :mc_campaign_id, options_for_select(@campaign_options,f.object.mc_campaign_id), {:prompt => 'Select Campaign', :include_blank => true } %>
-</div>
-
-<!--
 <div>
 <%= f.label :from_name%>
 <%= f.text_field :from_name%>

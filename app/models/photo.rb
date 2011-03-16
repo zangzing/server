@@ -84,26 +84,6 @@ class Photo < ActiveRecord::Base
     @@supported_image_types ||= Set.new [ 'image/jpeg', 'image/png', 'image/gif' ]
   end
 
-  #
-  # verify valid parms for the file about to be uploaded
-  # if attributes are invalid throw a validation exception
-  #
-  def verify_file_upload
-    if @duplicate_upload
-      msg = "file_to_upload was called multiple times or a photo upload is already in progress or has taken place"
-      errors.add(:image_path, msg)
-      raise PhotoValidationError.new(msg)
-    end
-    if self.uploading?
-      image_type = self.image_content_type
-      if supported_image_types.include?(image_type) == false
-        msg = "Not a supported image type, you passed: " +  image_type
-        errors.add(:image_content_type, msg)
-        raise PhotoValidationError.new(msg)
-      end
-    end
-  end
-
 
   # given the local image, determine all the exif info for the file
   # this is only called when we set up a local file to be uploaded
@@ -411,6 +391,22 @@ class Photo < ActiveRecord::Base
   end
 
   #
+  # verify valid parms for the file about to be uploaded
+  # if attributes are invalid throw a validation exception
+  #
+  def verify_file_type
+    image_type = self.image_content_type
+    if supported_image_types.include?(image_type) == false
+      msg = "Not a supported image type, you passed: " +  image_type
+      errors.add(:image_content_type, msg)
+      # save the error state
+      self.mark_error
+      raise PhotoValidationError.new(msg)
+    end
+  end
+
+
+  #
   # handle set up for file upload
   # this call expects a file_path to be passed
   # the file_path is required and represents a local
@@ -427,12 +423,18 @@ class Photo < ActiveRecord::Base
           # fail validation - this would only ever be proper if we allowed for modification
           # in place
           # also only allow upload if in assigned state currently
-          @duplicate_upload = true
+
+          ZZ::ZZA.new.track_transaction("photo.upload.error.duplicate", self.id)
+          msg = "file_to_upload was called multiple times or a photo upload is already in progress or has taken place"
+
+          # note we do not change the database state to error since we don't want to mess up the current one
+          errors.add(:image_path, msg)
+          raise PhotoValidationError.new(msg)
         else
           ZZ::ZZA.new.track_transaction("photo.upload.start", self.id)
 
-          self.mark_uploading
           @do_upload = true
+          self.mark_uploading
           self.source_path = file_path
           self.image_file_size = File.size(file_path)
 
@@ -440,13 +442,14 @@ class Photo < ActiveRecord::Base
           # also sets content_type
           set_image_metadata
 
+          # verify that file state is ok before moving forward
+          verify_file_type
+
           # see if we should add any initial rotation based on the
           # camera orientation info
           self.rotate_to = orientation_as_rotation(self.orientation)
 
         end
-        # verify that file state is ok before moving forward
-        verify_file_upload
       end
     rescue Exception => ex
       # don't do the upload if validation failed
@@ -455,8 +458,6 @@ class Photo < ActiveRecord::Base
       # call failed so get rid of temp file right now
       remove_source
 
-      # save the error state
-      self.mark_error
       self.save
 
       # reraise the error
@@ -518,12 +519,10 @@ class Photo < ActiveRecord::Base
 
 
   def set_default_position
-    if capture_date.nil?
-      self.pos = "%10.6f" % (Time.now + 100.years) #If capture date is not known, add 100 years to today and it will go at the end
-    else
-      self.pos = capture_date.to_i   # "%10.6f" % capture_date.to_f no need to use miliseconds
 
-    end
+    #start with position as capture date in seconds
+    self.pos = capture_date.to_i
+
 
     # The current batch will be custom ordered if the album was custom ordered when batch was created.
     # This prevents having some photos in the batch in the middle  and some at the end of the album
@@ -533,6 +532,10 @@ class Photo < ActiveRecord::Base
       # each batch uses the pos of the last photo in the album at the time the batch is created 
       self.pos += upload_batch.custom_order_offset
     end
+
+
+    #in case photos in batch have same capture date, we add a decimal to make them different
+    self.pos +=  ((upload_batch.photos.length + 1) / 10000.to_f)
   end
 
   # Used when the user reorders photos
@@ -609,7 +612,12 @@ class PhotoAttachedImage < AttachedImage
     rotate_to = model.rotate_to
     if rotate_to != 0
       model.rotate_to = 0 # rotation is done and recorded
-      {"x-amz-meta-rotate" => rotate_to.to_s}
+      {
+          "x-amz-meta-rotate" => rotate_to.to_s,
+          "x-amz-meta-photo-id" => model.id.to_s,
+          "x-amz-meta-album-id" => model.album_id.to_s,
+          "x-amz-meta-user-id" => model.user_id.to_s
+      }
     else
       nil
     end

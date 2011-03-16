@@ -31,7 +31,9 @@
             currentPhotoId: null,
             onScrollToPhoto: jQuery.noop,
 
-            context: 'album-grid'
+            context: 'album-grid',
+
+            showButtonBar: false          //model
 
 //            spaceBarTriggersClick: true
 
@@ -136,7 +138,8 @@
 //                    lazyLoad: photo.type !== 'folder',                                           //todo: move into photochooser.js
 
                     context: self.options.context,
-                    type: _.isUndefined(photo.type) ? 'photo': photo.type
+                    type: _.isUndefined(photo.type) ? 'photo': photo.type,
+                    showButtonBar: self.options.showButtonBar
 
                 });
 
@@ -506,14 +509,14 @@
 
             var index = self.indexOfPhoto(photoId);
 
-            if(highlightCell){
-                var highlighted = self.cellAtIndex(index).find('.photo-border').addClass('highlighted');
-
-                setTimeout(function(){
-                    highlighted.removeClass('highlighted');
-
-                },duration + 1500);
-            }
+//            if(highlightCell){
+//                var highlighted = self.cellAtIndex(index).find('.photo-border').addClass('highlighted');
+//
+//                setTimeout(function(){
+//                    highlighted.removeClass('highlighted');
+//
+//                },duration + 1500);
+//            }
 
             var onFinishAnimate = function(){
                 self.options.currentPhotoId = photoId

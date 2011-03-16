@@ -1,4 +1,4 @@
-class Admin::EmailTemplatesController < ApplicationController
+class Admin::EmailTemplatesController < Admin::AdminController
 
   layout false
 
@@ -33,7 +33,7 @@ class Admin::EmailTemplatesController < ApplicationController
   def update
     fetch_email_template
     if @email_template.update_attributes(params[:email_template])
-       redirect_to email_templates_path()
+       redirect_to :back
     else
       load_info
       render :edit
@@ -53,7 +53,7 @@ class Admin::EmailTemplatesController < ApplicationController
   def reload
     fetch_email_template
     @email_template.reload_mc_content
-    redirect_to :action => :index
+    redirect_to :back
   end
 
 
@@ -61,22 +61,18 @@ class Admin::EmailTemplatesController < ApplicationController
 
 private
   def load_info
-    mc = Hominid::API.new(MAILCHIMP_API_KEYS[:api_key])
-    @campaigns = mc.find_campaigns_by_type( 'regular' )
+    gb = Gibbon::API.new(MAILCHIMP_API_KEYS[:api_key])
+
+    @campaigns = gb.campaigns('filters' => {'folder_id' => "21177"})['data']
     @campaign_options = []
     @campaigns.each { |c|   @campaign_options << [ c['title'], "#{c['id']}"] }
+    
+    @emails = Email.find(:all)
+    @email_options = []
+    @emails.each { |e|   @email_options << [ e.name, "#{e.id}"] }
   end
 
   def fetch_email_template
     @email_template = EmailTemplate.find( params[:id])
   end
-
-  def test_album_shared_with_you( destination_email)
-    @user = User.find(:all).first
-    @message = "This is a message to you you you"
-    @album =Album.find(:all).first
-    render :inline => @email_template.html_content and return
-end
-
-
 end

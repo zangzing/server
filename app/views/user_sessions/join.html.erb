@@ -1,0 +1,10 @@
+<% content_for :page_javascript do  # this places our page-specific js with the rest of the js at the bottom of the html -%>
+<script>
+  (function($) {
+      pages.signin.join();
+<%    if (@user_session && @user_session.errors) || flash.length > 0 -%>
+      $('#sign-in p.error-notice').show();
+<%    end -%>
+   })(jQuery);
+</script>
+<% end %>
