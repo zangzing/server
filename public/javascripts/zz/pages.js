@@ -985,7 +985,7 @@ pages.signin = {
                     $('#sign-in').show();
                     $('#sign-up').hide();
                 } else { //for join
-                    $('#header #sign-up-button').addClass('selected');
+                    $('#header #sign-in-button').addClass('selected');
                     $('#sign-in').hide();
                     $('#sign-up').show();
                 }

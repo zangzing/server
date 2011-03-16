@@ -179,6 +179,10 @@ class ApplicationController < ActionController::Base
     return "http://#{request.host_with_port}/#{photo.album.user.username}/#{photo.album.friendly_id}/photos/#!#{photo.id}"
   end
 
+  def photo_url(photo)
+     return album_photos(photo.album) + "/#!{photo.id}"
+  end
+
   def user_pretty_url(user)
     return "http://#{request.host_with_port}/#{user.username}"
   end
