@@ -178,7 +178,7 @@ zz.init = {
                                                              open : function(event, ui){ template.zz_photochooser({}) },
                                                              close: function(event, ui){
                                                                  $.get( zz.path_prefix + '/albums/' +zz.album_id + '/close_batch', function(){
-                                                                      history.go(0);
+                                                                     window.location.reload( false );
                                                                  });
                                                              }
             });
