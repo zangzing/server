@@ -170,4 +170,21 @@ class ApplicationController < ActionController::Base
     end
 
 
+  #todo: move these to helper?
+  def album_pretty_url (album)
+    return "http://#{request.host_with_port}/#{album.user.username}/#{album.friendly_id}/photos"
+  end
+
+  def photo_pretty_url(photo)
+    return "http://#{request.host_with_port}/#{photo.album.user.username}/#{photo.album.friendly_id}/photos/#!#{photo.id}"
+  end
+
+  def photo_url(photo)
+     return album_photos(photo.album) + "/#!{photo.id}"
+  end
+
+  def user_pretty_url(user)
+    return "http://#{request.host_with_port}/#{user.username}"
+  end
+
 end

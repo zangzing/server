@@ -186,6 +186,10 @@ class User < ActiveRecord::Base
       @profile_photo_url ||= profile_album.profile_photo_url
   end
 
+  def formatted_email
+      "\"#{self.name}\" <#{self.email}>"
+  end
+
 
   private
   def old_password_valid?

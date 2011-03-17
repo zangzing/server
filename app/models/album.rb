@@ -143,13 +143,13 @@ class Album < ActiveRecord::Base
           #if user does not have contributor role, add it
           unless acl.has_permission?( user.id, AlbumACL::CONTRIBUTOR_ROLE)
             acl.add_user user.id, AlbumACL::CONTRIBUTOR_ROLE
-            ZZ::Async::Email.enqueue( :contributors_added, self.id, email, user.id, msg )
+            ZZ::Async::Email.enqueue( :contributor_added, self.id, email, msg )
           end
      else
           # if the email does not have contributor role add it.
           unless acl.has_permission?( email, AlbumACL::CONTRIBUTOR_ROLE)
               acl.add_user email, AlbumACL::CONTRIBUTOR_ROLE
-              ZZ::Async::Email.enqueue( :contributors_added, self.id, email, nil, msg )
+              ZZ::Async::Email.enqueue( :contributor_added, self.id, email, msg )
           end
      end
   end

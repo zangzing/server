@@ -75,7 +75,7 @@ class UploadBatch < ActiveRecord::Base
 
        if self.photos.count > 0
           #Notify uploader that upload batch is finished
-          ZZ::Async::Email.enqueue( :upload_batch_finished, self.id )
+          ZZ::Async::Email.enqueue( :photos_ready, self.id )
       
           #Create Activity
           ua = UploadActivity.create( :user => self.user, :album => self.album, :upload_batch => self )

@@ -115,9 +115,17 @@
       # Remember to use the zz.zang namespace.
 -%>
 
-      /* Fire up our inits starting up the entire waxy ball!!
+
+      zz.rails_controller_name = '<%= controller.controller_name %>';
+      zz.rails_action_name = '<%= controller.action_name %>';
+      
+
+      /* init
       ----------------------------------------------------------------------- */
       zz.init.template();
+
+
+
 
       <%if controller.controller_name == 'photos' -%>
             zz.init.album();

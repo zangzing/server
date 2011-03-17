@@ -1,0 +1,83 @@
+<div style="margin-top: 5px; margin-bottom: 10px; font-size: 1em;">
+<% [:notice, :error].each do |key| %>
+     <% if flash[key] %>
+        <div style="<%=( key == :error ? 'color:red;' : 'color:green;' )%>" id="flash">
+          <%= flash[key] %>
+        </div>
+     <% end %>
+<% end %>
+</div>
+
+<h1>Email Templates</h1>
+
+<table frame="box" width="800px" border="0"  cellspacing="10">
+  <tr>
+        <th>   </th>
+        <th> MC Campaign </th>
+        <th> email         </th>
+        <th> Status        </th>
+        <th> Last Loaded   </th>
+        <th></th>
+        <th></th>
+  </tr>
+
+<% @email_templates.each do |et| %>
+  <tr>
+        <td>
+          <a href="<%=edit_email_template_path( et )%>">
+            <%=et.id%>
+          </a>
+        </td>
+        <td>
+          <a href="<%=edit_email_template_path( et )%>">  
+            <%= @campaign_options[@campaign_options.index{ |co|  co[1] == et.mc_campaign_id} ][0] %>
+          </a>
+        </td>
+
+        <td>
+           <%= et.email.name %>
+        </td>
+
+        <td>
+          <%if et.production_email %>
+             <span style="color: red;">production</span>
+          <%else%>
+            <span style="color: green;">testing</span>
+          <%end%>
+        </td>
+
+        <td>
+              <%= et.updated_at.strftime("%B %d#{", %Y" if et.updated_at.year != Date.today.year} %l:%M %p") %>
+        </td>
+
+        <td>
+          <form method="post" action="<%=reload_email_template_url( et )%>" class="button-to">
+            <div>
+                <input type="hidden" name="_method" value="put" />
+                <input onclick="return confirm('Are you sure you want to reload the template?');"
+                    value="Reload" type="submit" />
+            </div>
+         </form>
+        </td>
+        <td>
+              <form method="get" action="<%=test_email_template_url( et )%>" class="button-to">
+                <div>
+                    <input value="Send Me A Test" type="submit"/>
+                </div>
+             </form>
+        </td>
+        <td>
+          <form method="get" action="<%=test_email_template_url( et )%>" target="_blank" class="button-to">
+            <input type="hidden" name="onscreen" value="true" />
+            <div>
+                <input value="View" type="submit"/>
+            </div>
+         </form>
+        </td>
+
+  </tr>
+<%end%>
+
+</table>
+<%=button_to "Back to emails", emails_url, :method => 'get'%>
+<%=button_to "Create new Template", new_email_template_url, :method => 'get'%>

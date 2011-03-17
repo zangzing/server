@@ -5,6 +5,9 @@
 #
 
 Server::Application.routes.draw do
+  get "email/index"
+
+  get "email/update"
 
   root :to => 'pages#home'
   get    '/service'            => 'pages#home'
@@ -65,12 +68,13 @@ Server::Application.routes.draw do
     post   'albums/:id/request_access'       => 'albums#request_access',      :as => :request_album_access
 
     #shares
-    get '/albums/:album_id/shares/new'      => 'shares#new',        :as => :new_album_share
-    get '/albums/:album_id/shares/newpost'  => 'shares#newpost',    :as => :new_album_postshare
-    get '/albums/:album_id/shares/newemail' => 'shares#newemail',   :as => :new_album_emailshare
-    post '/users/:user_id/share'            => 'shares#create',     :as => :create_user_share
+
+    get '/albums/:album_id/shares'          => 'shares#index',      :as => :album_shares
+    get '/shares/new'                       => 'shares#new'   # ,        :as => :new_album_share
+    get '/shares/newpost'                   => 'shares#newpost' #,    :as => :new_album_postshare
+    get '/shares/newemail'                  => 'shares#newemail' #,   :as => :new_album_emailshare
     post '/albums/:album_id/shares'         => 'shares#create',     :as => :create_album_share
-    post '/photos/:photo_id/share'          => 'shares#create',     :as => :create_photo_share
+    post '/photos/:photo_id/shares'         => 'shares#create',     :as => :create_photo_share
     get '/shares/:id'                       => 'shares#show',       :as => :share
     get '/shares/:id/edit'                  => 'shares#edit',       :as => :edit_share
     put '/shares/:id'                       => 'shares#update',     :as => :update_share
@@ -112,7 +116,10 @@ Server::Application.routes.draw do
 
     #like
     match  '/likes'                              => 'likes#index',             :as => :likes
-    post   '/likes/:subject_id'                  => 'likes#create',            :as => :create_like
+    post   '/likes/:subject_id'                  => 'likes#create',            :as => :like
+    get    '/users/:user_id/like'                => 'likes#like',            :as => :like_user
+    get    '/albums/:album_id/like'              => 'likes#like',            :as => :like_album
+    get    '/photos/:photo_id/like'              => 'likes#like',            :as => :like_photo
     delete '/likes/:subject_id'                  => 'likes#destroy',           :as => :delete_like
     post   '/likes/:subject_id/post'             => 'likes#post',              :as => :post_like
 
@@ -276,15 +283,21 @@ Server::Application.routes.draw do
     # ====================================================================================================
     # =============================================== ADMIN ==============================================
     # ====================================================================================================
-    scope :module => "admin" do
-        get    'admin/status'                          =>  'status#show',                :as => :show_status
+    scope  '/admin', :module => "admin" do
+        get    'status'                          =>  'status#show',                :as => :show_status
         # MailChimp Transactional Campaign manager
-        get    '/admin/chimpcampaigns'                  => 'chimpcampaigns#index',       :as => :chimpcampaigns
-        get    '/admin/chimpcampaigns/new'              => 'chimpcampaigns#new',         :as => :new_chimpcampaign
-        post   '/admin/chimpcampaigns'                  => 'chimpcampaigns#create',      :as => :create_chimpcampaign
-        get    '/admin/chimpcampaigns/:id'              => 'chimpcampaigns#edit',        :as => :edit_chimpcampaign
-        put    '/admin/chimpcampaigns/:id'              => 'chimpcampaigns#update',      :as => :update_chimpcampaing
-        delete '/admin/chimpcampaigns/:id'              => 'chimpcampaigns#delete',      :as => :delete_chimpcampaign
+        get    'chimpcampaigns'                  => 'chimpcampaigns#index',       :as => :chimpcampaigns
+        get    'chimpcampaigns/new'              => 'chimpcampaigns#new',         :as => :new_chimpcampaign
+        post   'chimpcampaigns'                  => 'chimpcampaigns#create',      :as => :create_chimpcampaign
+        get    'chimpcampaigns/:id'              => 'chimpcampaigns#edit',        :as => :edit_chimpcampaign
+        put    'chimpcampaigns/:id'              => 'chimpcampaigns#update',      :as => :update_chimpcampaing
+        delete 'chimpcampaigns/:id'              => 'chimpcampaigns#delete',      :as => :delete_chimpcampaign
+        # EmailTemplate Manager
+        resources :email_templates
+        put   'email_templates/:id/reload'       => 'email_templates#reload',     :as => :reload_email_template
+        get   'email_templates/:id/test'         => 'email_templates#test',       :as => :test_email_template
+        get   'emails'                           => 'emails#index',               :as => :emails
+        put   'emails/:id'                       => 'emails#update',              :as => :email
     end
     #Resque: mount the resque server
     mount Resque::Server.new, :at => "/admin/resque"

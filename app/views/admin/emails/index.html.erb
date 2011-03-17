@@ -1,0 +1,58 @@
+<div style="margin-top: 5px; margin-bottom: 10px; font-size: 1em;">
+<% [:notice, :error].each do |key| %>
+     <% if flash[key] %>
+        <div style="<%=( key == :error ? 'color:red;' : 'color:green;' )%>" id="flash">
+          <%= flash[key] %>
+        </div>
+     <% end %>
+<% end %>
+</div>
+
+<h1>Transactional Emails </h1>
+
+<table frame="box" width="800px" border="0"  cellspacing="10" align="left" style="text-align: left;">
+  <tr>
+
+        <th> Email     </th>
+        <th> Production Template  </th>
+        <th> Template Last Loaded   </th>
+        <th></th>
+  </tr>
+
+<% @emails.each do |email|
+email_template_options = []
+email.email_templates.each{ |t| email_template_options << [ "#{t.id} #{t.name}", "#{t.id}"] }
+%>
+  <tr>
+         <td>
+               <%= email.name %>
+         </td>
+
+        <td>
+            </div>
+          <%=form_for email  do | f |%>
+                 <%=f.select :production_template_id,  options_for_select(email_template_options,email.production_template_id),{:prompt => 'Select Email Template' }%>
+                 <input onclick="return confirm('Are you sure you want change this email template (change is immediate)?');"
+                           value="Change" type="submit" />
+          <%end%>
+        </td>
+        <% if email.production_template %>
+        <td>
+            <%= email.production_template.updated_at.strftime("%B %d#{", %Y" if email.production_template.updated_at.year != Date.today.year} %l:%M %p") %>
+        </td>
+        <td>
+          <form method="post" action="<%=reload_email_template_path( email.production_template.id )%>" class="button-to">
+            <div>
+                <input type="hidden" name="_method" value="put" />
+                <input onclick="return confirm('Are you sure you want to reload the template?');"
+                    value="Reload" type="submit" />
+            </div>
+         </form>
+        </td>
+        <%end%>
+  </tr>
+<%end%>
+
+</table>
+   <a  href="<%=email_templates_url%>">Manage email templates</a>
+</div>

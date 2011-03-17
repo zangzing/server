@@ -55,7 +55,7 @@ class Share < ActiveRecord::Base
     case service
       when 'email'
         self.recipients.each do |recipient |
-          ZZ::Async::Email.enqueue( :album_shared_with_you, self.user_id, recipient, self.subject_id, self.message )
+          ZZ::Async::Email.enqueue( :album_shared, self.user_id, recipient, self.subject_id, self.message )
         end
       when 'social'
         self.recipients.each do | service |

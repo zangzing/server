@@ -1,6 +1,5 @@
 
 class Admin::ChimpcampaignsController < Admin::AdminController
-  # To change this template use File | Settings | File Templates.
 
 
   def index

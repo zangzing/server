@@ -45,7 +45,7 @@ module Server
     # sendgrid email to album address
     config.album_email_host =  ZangZingConfig.config[:album_email_host]
     config.zangzing_version = '0.0.2'
-    config.http_auth_credentials = YAML.load(File.read("#{Rails.root}/config/http_auth_creds.yml"))
+    config.http_auth_credentials = YAML.load(File.read("#{Rails.root}/config/http_auth_creds.yml"))[Rails.env]
   
   
     #This is actionmailer default config

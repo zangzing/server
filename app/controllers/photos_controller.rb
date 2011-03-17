@@ -172,13 +172,11 @@ class PhotosController < ApplicationController
     end
     
     if(!params[:user_id])
-       #hack: need to do this better
-       #force redirect back to /username/albumname/photos
-      redirect_to "/#{@album.user.username}/#{@album.friendly_id}/photos"
+      redirect_to album_pretty_url(@album)
     else
       @title = CGI.escapeHTML(@album.name)
       @photos = @album.photos
-      if params['_escaped_fragment_']
+      if params['_escaped_fragment_'] #this is google or facebook
         @photo = Photo.find(params['_escaped_fragment_'])
       end
       render 'photos'

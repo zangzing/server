@@ -11,5 +11,11 @@ module ApplicationHelper
        "#{base_title} | #{h(@title)}"
      end
    end
-  
+
+   def password_reset_mailto
+      email = "help@zangzing.com"
+      subject = "I need help with my password".gsub(' ', '%20')
+      return "mailto:#{email}?subject=#{subject}"
+   end
+
 end

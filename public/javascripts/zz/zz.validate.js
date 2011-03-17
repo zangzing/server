@@ -24,7 +24,7 @@ zz.validate = {
         element: '#new_user_session',
         errorContainer: 'div#sign-in p.error-notice',
         rules: {
-            'user_session[email]': { required: true, minlength: 5 },
+            'user_session[email]': { required: true, minlength: 1 },
             'user_session[password]': { required: true, minlength: 5 }
         },
         messages: {
