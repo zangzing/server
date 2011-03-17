@@ -402,7 +402,7 @@ module ZZ
           :x => xdata,
           :p => page_uri
       }
-      json_str = JSON.generate(evt, :only =>[:s, :e])
+      json_str = JSON.generate(evt)
       post_to_file(json_str)
     end
   end

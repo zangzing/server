@@ -29,6 +29,7 @@ class Connector::ZangzingPhotosController < Connector::ConnectorController
 
     current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
     photo = Photo.create(
+              :id => Photo.get_next_id,
               :caption => source_photo.caption,
               :album_id => params[:album_id],
               :user_id => source_photo.user_id,

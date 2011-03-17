@@ -34,6 +34,7 @@ class Connector::PicasaPhotosController < Connector::PicasaController
       photo_url = get_photo_url(entry.at_xpath('m:group', NS), :full)
       if(photoid==params[:photo_id])
         photo = Photo.create(
+                :id => Photo.get_next_id,
                 :caption => entry.at_xpath('a:title', NS).text,
                 :album_id => params[:album_id],
                 :user_id=>current_user.id,

@@ -118,8 +118,7 @@ class AlbumsController < ApplicationController
     end
     #Setup badge vars
     @badge_name = @user.name
-     UploadBatch.close_open_batches(current_user.id) if signed_in? #Make sure no stale batches are left behind.
-  end                                                           
+  end
 
   def show
     redirect_to album_photos_url( params[:id])

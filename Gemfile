@@ -10,6 +10,7 @@ gem "require_all"                 # lets us pull in everything for our resque ta
 gem "mysql2"
 gem 'authlogic',     '2.1.6'
 gem 'uuidtools'
+gem 'activerecord-import', '~>0.2'  # bulk database inserts
 
 gem 'oauth',         "0.4.5.pre2", :git => 'git://github.com/zangzing/oauth-ruby.git'
 gem "oauth-plugin", ">=0.4.0.pre1"
@@ -23,8 +24,7 @@ gem 'SystemTimer'                                     # For Random numbers (resq
 gem 'actionmailer'
 gem 'will_paginate',        '3.0.pre2'                        # Pagination
 gem "friendly_id",   "3.1.8"                           #User-friendly links to albums and users' pages
-
-gem 'gdata',         '1.1.1'  						  # Google Data 
+gem 'gdata',         '1.1.1'  						  # Google Data
 gem 'twitter_oauth'   		                          # Twitter 
 gem 'hyper-graph',   '0.3.1', :require=>'hyper_graph' # Facebook
 gem 'flickraw',      '0.8.2'                          # Flickr

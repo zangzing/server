@@ -32,7 +32,7 @@ each album has an email address in the form <album_id>@sendgrid-post.zangzing.co
         if attachments.count > 0 && album
           if sender_mail == album.user.email 
             add_photos(album, album.user, attachments)
-          elsif album.kind_of?(GroupAlbum) && ( user = album.get_contributor_user_by_email( sender_mail, true )) #create_automatic_user)
+          elsif album.kind_of?(GroupAlbum) && ( user = album.get_contributor_user_by_email( sender_mail )) #create_automatic_user)
             add_photos(album, user, attachments)
           end
         end
@@ -86,19 +86,25 @@ protected
   def add_photos(album, user, attachments)
     if attachments.count > 0
       last_photo = nil
+      photos = []
       current_batch = UploadBatch.get_current( user.id, album.id )
       attachments.each do |fast_local_image|
-        photo = Photo.new(
+        photo = Photo.new_for_batch(current_batch, {
+                :id => Photo.get_next_id,
                 :user_id => user.id,
                 :album_id => album.id,
                 :upload_batch_id => current_batch.id,
                 :caption => fast_local_image["original_name"],
                 #create random uuid for this photo
-                :source_guid => "email:"+UUIDTools::UUID.random_create.to_s)
+                :source_guid => "email:"+UUIDTools::UUID.random_create.to_s})
         # use the passed in temp file to attach to the photo
         photo.file_to_upload = fast_local_image['filepath']
-        photo.save
+        photos << photo
       end
+
+      # bulk insert
+      Photo.batch_insert(photos)
+
       current_batch.close
     end
   end

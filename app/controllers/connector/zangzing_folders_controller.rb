@@ -20,7 +20,9 @@ class Connector::ZangzingFoldersController < Connector::ConnectorController
     current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
     source_photos.each do |p|
       next unless p.ready?
-      photo = Photo.create(
+      photo_url = p.original_url
+      photo = Photo.new_for_batch(current_batch, {
+                :id => Photo.get_next_id,
                 :caption => p.caption,
                 :album_id => params[:album_id],
                 :user_id => p.user_id,
@@ -29,12 +31,13 @@ class Connector::ZangzingFoldersController < Connector::ConnectorController
                 :source_guid => p.source_guid,
                 :source_thumb_url => p.source_thumb_url,
                 :source_screen_url => p.source_screen_url
-      )
+      })
 
-      ZZ::Async::GeneralImport.enqueue( photo.id,  p.original_url )
+      photo.temp_url = photo_url
       photos << photo
+
     end
 
-    render :json => Photo.to_json_lite(photos)
+    bulk_insert(photos)
   end
 end

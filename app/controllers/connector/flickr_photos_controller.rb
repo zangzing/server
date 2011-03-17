@@ -36,6 +36,7 @@ class Connector::FlickrPhotosController < Connector::FlickrController
     photo_url = get_photo_url(info, :full)
     current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
     photo = Photo.create(
+              :id => Photo.get_next_id,
               :user_id=>current_user.id,
               :album_id => params[:album_id],
               :upload_batch_id => current_batch.id,

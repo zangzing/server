@@ -31,7 +31,8 @@ class Connector::KodakFoldersController < Connector::KodakController
     current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
     photos_data.each_with_index do |p, idx|
       photo_url = p[PHOTO_SIZES[:full]]
-      photo = Photo.create(
+      photo = Photo.new_for_batch(current_batch, {
+              :id => Photo.get_next_id,
               :user_id=>current_user.id,
               :album_id => params[:album_id],
               :upload_batch_id => current_batch.id,
@@ -39,10 +40,19 @@ class Connector::KodakFoldersController < Connector::KodakController
               :source_guid => make_source_guid(p),
               :source_thumb_url => p[PHOTO_SIZES[:thumb]],
               :source_screen_url => p[PHOTO_SIZES[:screen]]
-      )
+      })
     
-      ZZ::Async::KodakImport.enqueue( photo.id, photo_url, connector.auth_token )
+      photo.temp_url = photo_url
       photos << photo
+
+    end
+
+    # bulk insert
+    Photo.batch_insert(photos)
+
+    # must send after all saved
+    photos.each do |photo|
+      ZZ::Async::KodakImport.enqueue( photo.id, photo.temp_url, connector.auth_token )
     end
 
     render :json => Photo.to_json_lite(photos)

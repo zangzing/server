@@ -3,7 +3,7 @@
 #
 
 class Album < ActiveRecord::Base
-  attr_accessible :name, :privacy, :cover_photo_id
+  attr_accessible :name, :privacy, :cover_photo_id, :photos_last_updated_at, :updated_at
 
   belongs_to :user
   has_many :photos,           :dependent => :destroy
@@ -58,6 +58,13 @@ class Album < ActiveRecord::Base
     @@_model_name ||= ActiveModel::Name.new(Album)
   end
 
+
+  # generate a quick touch without having to
+  # instantiate an object
+  def self.touch_photos_last_updated(album_id)
+    now = Time.now
+    Album.update(album_id, :photos_last_updated_at => now, :updated_at => now)
+  end
 
   def cover
     unless self.cover_photo_id.nil?
@@ -191,23 +198,21 @@ class Album < ActiveRecord::Base
 
 
 
-  # Checks of email is that of a contributor and retirns user
-  # If the email is that of a contributor, it will return the
+  # Checks of email is that of a contributor and returns user
+  # If the email is that of a valid contributor, it will return the
   # user object for the contributor.
   # It will return nil if the email is not that of a contributor.
-  # If the email is that of a contributor and create_automatic_user
-  # is true, it will create an automatic user for that email.
-  def get_contributor_user_by_email( email, create_automatic_user = false )
+  def get_contributor_user_by_email( email )
     user = nil
     if contributor?( email )
-      if create_automatic_user
-        user = User.find_by_email_or_create_automatic( email, "Anonymous" )
-      else
-        user = User.find_by_email( email )
+      # was in the ACL via email address so turn into real user, no need to test again as we already passed
+      user = User.find_by_email_or_create_automatic( email, "Anonymous" )
+    else
+      # not a contributor by the email account, could still be one via user id
+      user = User.find_by_email( email )
+      if user && contributor?(user.id) == false
+        user = nil  # clear out the user to indicate not valid
       end
-      # The email is a contributor and a user exists for this email.
-      # update all the ACLs to refer to this user by id and no longer by email
-      user.update_acls_with_id if user
     end
     user
   end
