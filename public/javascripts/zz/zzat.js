@@ -73,7 +73,7 @@ var ZZAt = {
             }
         }
     }
-}
+};
 
 ZZAt.track('page.visit',{ua: navigator.userAgent});
 

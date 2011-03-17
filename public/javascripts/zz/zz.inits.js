@@ -178,7 +178,7 @@ zz.init = {
                                                              open : function(event, ui){ template.zz_photochooser({}) },
                                                              close: function(event, ui){
                                                                  $.get( zz.path_prefix + '/albums/' +zz.album_id + '/close_batch', function(){
-                                                                      history.go(0);
+                                                                     window.location.reload( false );
                                                                  });
                                                              }
             });
@@ -346,6 +346,9 @@ zz.init = {
             success: function(json) {
 
 
+                ZZAt.track('album.view',{id:zz.album_id});
+
+
                 var gridElement = $('<div class="photogrid"></div>');
 
                 $('#article').html(gridElement);
@@ -405,6 +408,7 @@ zz.init = {
                     }
 
 
+
                     var grid = gridElement.zz_photogrid({
                         photos:json,
                         allowDelete: false,
@@ -420,6 +424,8 @@ zz.init = {
                         currentPhotoId: currentPhotoId,
                         onScrollToPhoto: function(photoId) {
                             window.location.hash = '#!' + photoId
+                            ZZAt.track('photo.view',{id:photoId});
+
                         }
 
 
@@ -505,88 +511,99 @@ zz.init = {
 
 
     preload_rollover_images : function() {
-        //todo: is there a way to query CSS to get all these?
-        //wizard buttons/tabs
-        for (var i = 1; i <= 6; i++) {
-            var src = "/images/wiz-num-" + i + "-on.png"
-            image_preloader.load_image(src)
-
-            var src = "/images/wiz-num-" + i + ".png"
-            image_preloader.load_image(src)
-        }
 
 
-        //toolbar buttons
-        //image_preloader.load_image("/images/btn-sign-in-on.png");
+        
 
-        //new album type rollover
-        image_preloader.load_image("/images/bg-album-type-selected.png");
-
-        //file chooser root folders rollover
-
-
-        image_preloader.load_image("/images/folders/blank.png"); //for folder animate to tray
-
-        image_preloader.load_image("/images/folders/blank_on.jpg");
-
-        image_preloader.load_image("/images/folders/apple_on.jpg");
-        image_preloader.load_image("/images/folders/facebook_on.jpg");
-        image_preloader.load_image("/images/folders/flickr_on.jpg");
-        image_preloader.load_image("/images/folders/myhome_on.jpg");
-        image_preloader.load_image("/images/folders/kodak_on.jpg");
-        image_preloader.load_image("/images/folders/mycomputer_on.jpg");
-        image_preloader.load_image("/images/folders/mypictures_on.jpg");
-        image_preloader.load_image("/images/folders/picasa_on.jpg");
-        image_preloader.load_image("/images/folders/shutterfly_on.jpg");
-        image_preloader.load_image("/images/folders/snapfish_on.jpg");
-        image_preloader.load_image("/images/folders/smugmug_on.jpg");
-        image_preloader.load_image("/images/folders/zangzing_on.jpg");
-
-        image_preloader.load_image("/images/folders/blank_off.jpg");
-        image_preloader.load_image("/images/folders/apple_off.jpg");
-        image_preloader.load_image("/images/folders/facebook_off.jpg");
-        image_preloader.load_image("/images/folders/flickr_off.jpg");
-        image_preloader.load_image("/images/folders/myhome_off.jpg");
-        image_preloader.load_image("/images/folders/kodak_off.jpg");
-        image_preloader.load_image("/images/folders/mycomputer_off.jpg");
-        image_preloader.load_image("/images/folders/mypictures_off.jpg");
-        image_preloader.load_image("/images/folders/picasa_off.jpg");
-        image_preloader.load_image("/images/folders/shutterfly_off.jpg");
-        image_preloader.load_image("/images/folders/snapfish_off.jpg");
-        image_preloader.load_image("/images/folders/smugmug_off.jpg");
-        image_preloader.load_image("/images/folders/zangzing_off.jpg");
-        image_preloader.load_image("/images/folders/photobucket_off.jpg");
+//        //small drawer
+//        image_preloader.load_image("/images/bg-join-on.png");
+//        image_preloader.load_image("/images/bg-join-off.png");
+//        image_preloader.load_image("/images/bg-sign-in-on.png");
+//        image_preloader.load_image("/images/bg-sign-in-off-over.png");
+//        image_preloader.load_image("/images/bg-small-bottom-repeat.png");
+//        image_preloader.load_image("/images/bg-join-on.png");
+//        image_preloader.load_image("/images/bg-sign-in-off.png");
+//        image_preloader.load_image("/images/bg-sign-in-off-over.png");
+//        image_preloader.load_image("/images/bg-join-off.png");
+//        image_preloader.load_image("/images/bg-sign-in-on.png");
+//        image_preloader.load_image("/images/bg-join-off-over.png");
+//
+//
+//
+//        //wizard buttons/tabs
+//        for (var i = 1; i <= 6; i++) {
+//            var src = "/images/wiz-num-" + i + "-on.png"
+//            image_preloader.load_image(src)
+//
+//            var src = "/images/wiz-num-" + i + ".png"
+//            image_preloader.load_image(src)
+//        }
 
 
-        //album privacy
-        image_preloader.load_image("/images/bg-privacy-public-off.png");
-        image_preloader.load_image("/images/bg-privacy-private-off.png");
-        image_preloader.load_image("/images/bg-privacy-password-off.png");
-        image_preloader.load_image("/images/bg-privacy-public-on.png");
-        image_preloader.load_image("/images/bg-privacy-private-on.png");
-        image_preloader.load_image("/images/bg-privacy-password-on.png");
 
 
-        //share album
-        image_preloader.load_image("/images/btn-share-by-post.png");
-        image_preloader.load_image("/images/btn-share-by-post-on.png");
-        image_preloader.load_image("/images/btn-share-by-email.png");
-        image_preloader.load_image("/images/btn-share-by-email-on.png");
+        //photo chooser
+//        image_preloader.load_image("/images/folders/blank.png"); //for folder animate to tray
 
-        //drawer images types
-        image_preloader.load_image("/images/bg-drawer-bottom-cap.png");
-        image_preloader.load_image("/images/bg-bottom-repeat.png");
+//        image_preloader.load_image("/images/folders/apple_on.jpg");
+//        image_preloader.load_image("/images/folders/facebook_on.jpg");
+//        image_preloader.load_image("/images/folders/flickr_on.jpg");
+//        image_preloader.load_image("/images/folders/myhome_on.jpg");
+//        image_preloader.load_image("/images/folders/kodak_on.jpg");
+//        image_preloader.load_image("/images/folders/mycomputer_on.jpg");
+//        image_preloader.load_image("/images/folders/mypictures_on.jpg");
+//        image_preloader.load_image("/images/folders/picasa_on.jpg");
+//        image_preloader.load_image("/images/folders/shutterfly_on.jpg");
+//        image_preloader.load_image("/images/folders/snapfish_on.jpg");
+//        image_preloader.load_image("/images/folders/smugmug_on.jpg");
+//        image_preloader.load_image("/images/folders/zangzing_on.jpg");
+//
+//        image_preloader.load_image("/images/folders/blank_off.jpg");
+//        image_preloader.load_image("/images/folders/apple_off.jpg");
+//        image_preloader.load_image("/images/folders/facebook_off.jpg");
+//        image_preloader.load_image("/images/folders/flickr_off.jpg");
+//        image_preloader.load_image("/images/folders/myhome_off.jpg");
+//        image_preloader.load_image("/images/folders/kodak_off.jpg");
+//        image_preloader.load_image("/images/folders/mycomputer_off.jpg");
+//        image_preloader.load_image("/images/folders/mypictures_off.jpg");
+//        image_preloader.load_image("/images/folders/picasa_off.jpg");
+//        image_preloader.load_image("/images/folders/shutterfly_off.jpg");
+//        image_preloader.load_image("/images/folders/snapfish_off.jpg");
+//        image_preloader.load_image("/images/folders/smugmug_off.jpg");
+//        image_preloader.load_image("/images/folders/zangzing_off.jpg");
+//        image_preloader.load_image("/images/folders/photobucket_off.jpg");
 
-        //album types
-        image_preloader.load_image("/images/bg-album-type.png");
-        image_preloader.load_image("/images/stack-group.png");
-        image_preloader.load_image("/images/btn-type-group.png");
-        image_preloader.load_image("/images/stack-personal.png");
-        image_preloader.load_image("/images/btn-type-personal.png");
-        image_preloader.load_image("/images/stack-event.png");
-        image_preloader.load_image("/images/btn-type-event.png");
-        image_preloader.load_image("/images/stack-stream.png");
-        image_preloader.load_image("/images/btn-type-streaming.png");
+
+//        //album privacy
+//        image_preloader.load_image("/images/bg-privacy-public-off.png");
+//        image_preloader.load_image("/images/bg-privacy-private-off.png");
+//        image_preloader.load_image("/images/bg-privacy-password-off.png");
+//        image_preloader.load_image("/images/bg-privacy-public-on.png");
+//        image_preloader.load_image("/images/bg-privacy-private-on.png");
+//        image_preloader.load_image("/images/bg-privacy-password-on.png");
+//
+//
+//        //share album
+//        image_preloader.load_image("/images/btn-share-by-post.png");
+//        image_preloader.load_image("/images/btn-share-by-post-on.png");
+//        image_preloader.load_image("/images/btn-share-by-email.png");
+//        image_preloader.load_image("/images/btn-share-by-email-on.png");
+//
+//        //drawer images types
+//        image_preloader.load_image("/images/bg-drawer-bottom-cap.png");
+//        image_preloader.load_image("/images/bg-bottom-repeat.png");
+//
+//
+//
+//
+//        //buttons
+//        image_preloader.load_image("/images/btn-black-endcap.png");
+//        image_preloader.load_image("/images/btn-black.png");
+//        image_preloader.load_image("/images/btn-green-endcap.png");
+//        image_preloader.load_image("/images/btn-green.png");
+
+
+
 
     },
 
