@@ -47,15 +47,17 @@ zz.init = {
             ZZAt.track('button.home.click');
         });
 
-        if (document.location.href.indexOf("/photos", 7) !== -1) { //start after http://photos
+
+        if(zz.rails_controller_name == 'photos'){
             $('#header #view-buttons #grid-view-button').addClass('selected');
         }
-        else if (document.location.href.indexOf("/people") !== -1) {
+        else if(zz.rails_controller_name == 'people'){
             $('#header #view-buttons #people-view-button').addClass('selected');
         }
-        else if (document.location.href.indexOf("/activities") !== -1) {
+        else if(zz.rails_controller_name == 'activities'){
             $('#header #view-buttons #activities-view-button').addClass('selected');
         }
+
 
         $('#header #view-buttons #grid-view-button').click(function() {
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
