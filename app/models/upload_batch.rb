@@ -40,6 +40,21 @@ class UploadBatch < ActiveRecord::Base
     self.updated_at < 20.minutes.ago
   end
 
+  # Finalize the batches that need to be set to the finished state
+  # essentially this is any batch that hasn't been touched in the last
+  # 20 minutes, even if they still show as open.  The only case that
+  # could cause a problem is if photo processing on a batch is running
+  # behind by more than 20 minutes which would cause us to close a batch
+  # that could still be closed by normal means.  Maybe in the future we
+  # could add support to detect that case but this should catch most
+  # normal conditions
+  def self.finalize_stale_batches
+    expired_batches = UploadBatch.where("state <> 'finished' AND updated_at < ?", 20.minutes.ago)
+    expired_batches.each do |batch|
+      batch.finish(true)  # force it to finish
+    end
+  end
+
   def close
     if self.state == 'open'
       #if there are no photos in batch, destroy it
@@ -49,8 +64,11 @@ class UploadBatch < ActiveRecord::Base
     end
   end
 
-  def finish
-    if self.state == 'closed' && self.ready?
+  # returns true if we are done
+  # set the force flag to true if you want to finalized regardless of the
+  # current state
+  def finish(force = false)
+    if force || (self.state == 'closed' && self.ready?)
 
        #send album shares even if there were no photos uploaded
        Share.deliver_shares( self.user_id, self.album_id )
@@ -59,9 +77,6 @@ class UploadBatch < ActiveRecord::Base
           #Notify uploader that upload batch is finished
           ZZ::Async::Email.enqueue( :upload_batch_finished, self.id )
       
-          #Update album picon
-          self.album.queue_update_picon
-
           #Create Activity
           ua = UploadActivity.create( :user => self.user, :album => self.album, :upload_batch => self )
           self.album.activities << ua
@@ -70,8 +85,14 @@ class UploadBatch < ActiveRecord::Base
           self.save
        else
           self.destroy #the batch has no photos, destroy it
-      end
+       end
+
+       # batch is done
+      return true
     end
+
+    # batch not done
+    return false
   end
 
   protected

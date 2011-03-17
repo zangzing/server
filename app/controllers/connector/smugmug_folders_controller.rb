@@ -27,7 +27,9 @@ class Connector::SmugmugFoldersController < Connector::SmugmugController
     photos = []
     current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
     photos_list[:images].each do |p|
-      photo = Photo.create(
+      photo_url = p[:originalurl]
+      photo = Photo.new_for_batch(current_batch, {
+              :id => Photo.get_next_id,
               :caption => (p[:caption].blank? ? p[:filename] : p[:caption]),
               :album_id => params[:album_id],
               :user_id=>current_user.id,
@@ -36,14 +38,14 @@ class Connector::SmugmugFoldersController < Connector::SmugmugController
               :source_guid => make_source_guid(p),
               :source_thumb_url => '/service/proxy?url=' + p[:smallurl],
               :source_screen_url => '/service/proxy?url=' + p[:x3largeurl]
-      )
+      })
       
-      ZZ::Async::GeneralImport.enqueue( photo.id,  p[:originalurl] )
+      photo.temp_url = photo_url
       photos << photo
+
     end
 
-    render :json => Photo.to_json_lite(photos)
-
+    bulk_insert(photos)
   end
 
 end

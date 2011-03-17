@@ -1,5 +1,5 @@
 require 'zz/async/base'
-require 'zz/async/close_batch'
+require 'zz/async/batch_sweeper'
 require 'zz/async/email'
 require 'zz/async/general_import'
 require 'zz/async/kodak_import'

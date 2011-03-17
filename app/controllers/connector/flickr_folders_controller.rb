@@ -30,7 +30,8 @@ class Connector::FlickrFoldersController < Connector::FlickrController
     photo_set.photo.each do |p|
       #todo: refactor this so that flickr_folders_controller and flickr_photos_controller can share
       photo_url = get_photo_url(p, :full)
-      photo = Photo.create(
+      photo = Photo.new_for_batch(current_batch, {
+                :id => Photo.get_next_id,
                 :user_id=>current_user.id,
                 :album_id => params[:album_id],
                 :upload_batch_id => current_batch.id,
@@ -39,13 +40,13 @@ class Connector::FlickrFoldersController < Connector::FlickrController
                 :source_guid => make_source_guid(p),
                 :source_thumb_url => get_photo_url(p, :thumb),
                 :source_screen_url => get_photo_url(p, :screen)
-      )
+      })
 
-      
-      ZZ::Async::GeneralImport.enqueue( photo.id, photo_url )
+      photo.temp_url = photo_url
       photos << photo
+
     end
 
-    render :json => Photo.to_json_lite(photos)
+    bulk_insert(photos)
   end
 end

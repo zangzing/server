@@ -26,7 +26,9 @@ class Connector::ShutterflyFoldersController < Connector::ShutterflyController
     photos = []
     current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
     photos_list.each do |p|
-      photo = Photo.create(
+      photo_url = get_photo_url(p[:id], :full)
+      photo = Photo.new_for_batch(current_batch, {
+              :id => Photo.get_next_id,
               :caption => p[:title],
               :album_id => params[:album_id],
               :user_id=>current_user.id,
@@ -35,12 +37,13 @@ class Connector::ShutterflyFoldersController < Connector::ShutterflyController
               :source_guid => make_source_guid(p),
               :source_thumb_url => get_photo_url(p[:id],  :thumb),
               :source_screen_url => get_photo_url(p[:id],  :screen)
-      )
+      })
       
-      ZZ::Async::GeneralImport.enqueue( photo.id,  get_photo_url(p[:id], :full) )
+      photo.temp_url = photo_url
       photos << photo
+
     end
 
-    render :json => Photo.to_json_lite(photos)
+    bulk_insert(photos)
   end
 end

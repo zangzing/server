@@ -168,13 +168,14 @@ class SampleDataLoader
   def new_photo(album, user)
     i = image_name
     current_batch = UploadBatch.get_current( user.id, album.id )
-    p = Photo.new(
+    p = Photo.new_for_batch(current_batch, {
+          :id => Photo.get_next_id,
           :user_id           => user.id,
           :album_id          => album.id,
           :upload_batch_id   => current_batch.id,
           :agent_id          => Faker::PhoneNumber.phone_number,
           :caption           => Faker::Lorem.sentence( rand(10) ),
-          :capture_date      => Time.now - rand( 1000 ).days )
+          :capture_date      => Time.now - rand( 1000 ).days })
     p.width        = 640
     p.height       = 480
     p.image_path   = i[:path]

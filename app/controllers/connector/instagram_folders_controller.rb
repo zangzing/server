@@ -22,7 +22,9 @@ class Connector::InstagramFoldersController < Connector::InstagramController
     photos = []
     current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
     photos_list.each do |p|
-      photo = Photo.create(
+      photo_url = p[:images][:standard_resolution][:url]
+      photo = Photo.new_for_batch(current_batch, {
+            :id => Photo.get_next_id,
             :caption => (p[:caption][:text] rescue ''),
             :album_id => params[:album_id],
             :user_id => current_user.id,
@@ -31,15 +33,14 @@ class Connector::InstagramFoldersController < Connector::InstagramController
             :source_guid => make_source_guid(p),
             :source_thumb_url => p[:images][:thumbnail][:url],
             :source_screen_url => p[:images][:low_resolution][:url]
-      )
+      })
 
-      ZZ::Async::GeneralImport.enqueue( photo.id, p[:images][:standard_resolution][:url] )
+      photo.temp_url = photo_url
       photos << photo
+
     end
 
-    render :json => Photo.to_json_lite(photos)
+    bulk_insert(photos)
   end
-
-
 
 end

@@ -196,20 +196,26 @@ class BenchTest::PhotoGensController < BenchTest::BenchTestsController
   def add_photos(album, user, attachments)
     if attachments.count > 0
       last_photo = nil
+      photos = []
       current_batch = UploadBatch.get_current( user.id, album.id )
       attachments.each do |fast_local_image|
-        photo = Photo.new(
+        photo = Photo.new_for_batch(current_batch, {
+                :id => Photo.get_next_id,
                 :user_id => user.id,
                 :album_id => album.id,
                 :upload_batch_id => current_batch.id,
                 :caption => fast_local_image["original_name"],
                 #create random uuid for this photo
-                :source_guid => "perftest:"+UUIDTools::UUID.random_create.to_s)
+                :source_guid => "perftest:"+UUIDTools::UUID.random_create.to_s})
         # use the passed in temp file to attach to the photo
         photo.file_to_upload = fast_local_image['filepath']
-        photo.save
+        photos << photo
         last_photo = photo
       end
+
+      # bulk insert
+      Photo.batch_insert(photos)
+
       last_photo.upload_batch.close
     end
   end

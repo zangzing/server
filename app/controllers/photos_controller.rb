@@ -36,21 +36,42 @@ class PhotosController < ApplicationController
     end
 
     album = fetch_album
+    album_id = album.id
     photos = []
-    current_batch = UploadBatch.get_current( current_user.id, album.id )
-    (0...params[:source_guid].length).each do |index|
-      photo = album.photos.build(   :user_id           =>   current_user.id,
-                                    :upload_batch_id   =>   current_batch.id,
-                                    :agent_id          =>   params[:agent_id],
-                                    :source_guid       =>   params[:source_guid][index.to_s],
-                                    :caption           =>   params[:caption][index.to_s],
-                                    :image_file_size   =>   params[:size][index.to_s],
-                                    :capture_date      =>   Time.at( params[:capture_date][index.to_s].to_i ))
-                                    #todo: need to handle agent port and url templates in central place for source thumb_url and screen_url
-      if photo.save
-         photos << photo
-      else
-        render :json => photo.errors, :status=>500 and return
+    photo_count = params[:source_guid].length
+    # optimize by ensuring we have the number of ids we need up front
+    current_id = Photo.get_next_id(photo_count)
+    agent_id = params[:agent_id]
+    user_id = current_user.id
+    current_batch = UploadBatch.get_current( user_id, album_id )
+    batch_id = current_batch.id
+    (0...photo_count).each do |index|
+      i_s = index.to_s
+      photo = Photo.new_for_batch(current_batch,  {
+                                    :id                =>   current_id,
+                                    :album_id          =>   album_id,
+                                    :user_id           =>   user_id,
+                                    :upload_batch_id   =>   batch_id,
+                                    :agent_id          =>   agent_id,
+                                    :source_thumb_url  =>   Photo.make_agent_source('thumb', current_id, album_id),
+                                    :source_screen_url =>   Photo.make_agent_source('screen', current_id, album_id),
+                                    :source_guid       =>   params[:source_guid][i_s],
+                                    :caption           =>   params[:caption][i_s],
+                                    :image_file_size   =>   params[:size][i_s],
+                                    :capture_date      =>   Time.at( params[:capture_date][i_s].to_i )
+                                    }
+                                    )
+      current_id += 1
+      photos << photo
+    end
+
+    if (photos.count > 0)
+      results = Photo.batch_insert(photos)
+
+      # the results above tells you if validations failed, not if the actual call failed
+      if results.failed_instances.count > 0
+        failed_photo = results.failed_instances[0]
+        render :json => failed_photo.errors, :status=>500 and return
       end
     end
 

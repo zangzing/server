@@ -40,7 +40,9 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
     photos = []
     current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
     (album_contents[:media] || []).each do |photo_data|
-      photo = Photo.create(
+      photo_url = photo_data[:url]
+      photo = Photo.new_for_batch(current_batch, {
+              :id => Photo.get_next_id,
               :caption => photo_data[:title] || photo_data[:name],
               :album_id => params[:album_id],
               :user_id => current_user.id,
@@ -49,12 +51,14 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
               :source_guid => make_source_guid(photo_data[:url]),
               :source_thumb_url => photo_data[:thumb],
               :source_screen_url => photo_data[:thumb]
-      )
+      })
       
-      ZZ::Async::GeneralImport.enqueue( photo.id, photo_data[:url] )
+      photo.temp_url = photo_url
       photos << photo
+
     end
-    render :json => Photo.to_json_lite(photos)
+
+    bulk_insert(photos)
   end
 
   def import_photo
@@ -64,6 +68,7 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
     end
     current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
     photo = Photo.create(
+            :id => Photo.get_next_id,
             :caption => photo_data[:title] || photo_data[:name],
             :album_id => params[:album_id],
             :user_id => current_user.id,
