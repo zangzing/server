@@ -21,9 +21,14 @@ task "resque:setup" => :environment do
     puts "Done pulling in dependencies"
   end
 
-  if ARGV[0] == "resque:scheduler"
-    # set up schedule for scheduler
-    Resque.schedule = ResqueScheduleConfig.config
+  # this is a hack to determine if we were called by the resque:scheduler rake task
+  # since I'm not sure how I can determine my task if I am called by another
+  ARGV.each do |arg|
+    if arg == "resque:scheduler"
+      # set up schedule for scheduler
+      Resque.schedule = ResqueScheduleConfig.config
+      break
+    end
   end
 
    #put all resque worker configuration parameters here
