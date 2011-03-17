@@ -8,8 +8,36 @@ module Admin::EmailTemplatesHelper
       Notifier.password_reset( recipient.id, template_id )
   end
 
+  def test_album_liked(  template_id )
+    Notifier.album_liked( sender.id, album.id, template_id)
+  end
+
+  def test_photo_liked(  template_id )
+    Notifier.photo_liked( sender.id, photo.id, template_id)
+  end
+
+  def test_user_liked(  template_id )
+      Notifier.user_liked( sender.id, recipient.id, template_id)
+  end
+
+  def test_contribution_error(  template_id )
+        Notifier.contribution_error( recipient.email, template_id)
+  end
+
   def test_album_shared( template_id )
      Notifier.album_shared( sender.id, recipient.email, album.id, message, template_id)
+  end
+
+  def test_album_updated( template_id )
+     Notifier.album_updated( recipient.id, album.id, template_id)
+  end
+
+  def test_contributor_added( template_id )
+       Notifier.contributor_added( album.id, recipient.email, message, template_id)
+  end
+
+  def test_welcome( template_id )
+       Notifier.welcome( recipient.id, template_id)
   end
 
   private
@@ -29,6 +57,11 @@ module Admin::EmailTemplatesHelper
     end
     album
   end
+
+  def photo
+    album.photos[ rand( album.photos.count )]
+  end
+
 
   def upload_batch
     current_user.upload_batches[ rand( current_user.upload_batches.count) ]

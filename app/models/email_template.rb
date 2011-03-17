@@ -46,9 +46,9 @@ class EmailTemplate < ActiveRecord::Base
     self.subject = campaign['subject']
     self.text_content = content['text']
 
-    # unescape and interpolate album _ picons and other special elements
+    # unescape and interpolate images and other special elements
     html = CGI::unescapeHTML( content['html'] )
-    html = EmailTemplate.interpolate_album_picons( html )
+    html = EmailTemplate.interpolate_images( html )
     self.html_content = html
     true
   end
@@ -70,7 +70,7 @@ class EmailTemplate < ActiveRecord::Base
     {'X-SMTPAPI' => {'category' => self.category }.to_json }
   end
 
-  def self.interpolate_album_picons( html )
+  def self.interpolate_images( html )
     # Group 0 is the whole image tag
     # group 1 is the image url
     # group 2 is the value in the alt tag in between <%=%>
@@ -79,8 +79,9 @@ class EmailTemplate < ActiveRecord::Base
     @html = html
 
     @html.scan( regex ) do |match|
-       if match[2]=='@album.name'
-          # This is a match, replace it
+      case match[2]
+        when '@album.name'
+          # This is an album picon, replace it
           img = []
           img << '<img'
           img << "src=\"<%=@album.cover.thumb_url%>\""
@@ -91,7 +92,19 @@ class EmailTemplate < ActiveRecord::Base
           img << '>'
           img = img.flatten.compact.join(" ").strip.squeeze(" ")
           @html = @html.gsub( match[0], img )
-        end
+        when  '@photo.caption'
+          # This is a photo, replace it
+          img = []
+          img << '<img'
+          img << "src=\"<%=@photo.thumb_url%>\""
+          img << 'alt="<%=@photo.caption%>"'
+          img << match[3]  #the style argument
+          #img << "height=\"@album.cover.height\""
+          #img << "width=\"@album.cover.width\""
+          img << '>'
+          img = img.flatten.compact.join(" ").strip.squeeze(" ")
+          @html = @html.gsub( match[0], img )
+      end
     end
     @html
   end

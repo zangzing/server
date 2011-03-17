@@ -14,6 +14,7 @@ class Notifier < ActionMailer::Base
   def photos_ready( batch_id, template_id = nil )
     batch = UploadBatch.find( batch_id )
     @user = batch.user
+    @recipient = @user
     @album = batch.album
     @album_url = album_url( @album )
     @photos = batch.photos
@@ -26,44 +27,116 @@ class Notifier < ActionMailer::Base
     end
     attachments["#{@album.name}.vcf"] = vcard.to_s
 
-     #Load interpolate and setup values from template
-     @template = Email.find_by_name!( __method__ ).production_template
-     @template  = EmailTemplate.find( template_id ) if template_id
-
-     headers @template.sendgrid_category_header
-     binding = binding()
-
-     mail( :to       => @user.formatted_email,
-           :from     => @template.formatted_from,
-           :reply_to => ERB.new( @template.formatted_reply_to).result(binding), #@album.short_email
-           :subject  => ERB.new( @template.subject).result(binding) 
-     ) do |format|
-        format.html { render :inline => @template.html_content }
-        format.text { render :inline => @template.text_content }
+    #Load interpolate and setup values from template
+    @template = Email.find_by_name!( __method__ ).production_template
+    @template  = EmailTemplate.find( template_id ) if template_id
+    headers @template.sendgrid_category_header
+    binding = binding()
+    mail( :to       => @recipient.formatted_email,
+          :from     => @template.formatted_from,
+          :reply_to => ERB.new( @template.formatted_reply_to).result(binding), #@album.short_email
+          :subject  => ERB.new( @template.subject).result(binding)
+    ) do |format|
+      format.text { render :inline => @template.text_content }
+      format.html { render :inline => @template.html_content }
     end
   end
 
   def password_reset(user_id, template_id = nil)
-     @user = User.find(user_id)
-     @password_reset_url = edit_password_reset_url(@user.perishable_token)
+    @user = User.find(user_id)
+    @recipient = @user
+    @password_reset_url = edit_password_reset_url(@user.perishable_token)
 
-     # Load interpolate and setup values from template
-     @template = Email.find_by_name!( __method__ ).production_template
-     @template  = EmailTemplate.find( template_id ) if template_id
-     headers @template.sendgrid_category_header
-     binding = binding()
-     mail(  :to       => @user.formatted_email,
-            :from     => @template.formatted_from,
-            :reply_to => ERB.new( @template.formatted_reply_to).result(binding), #@album.short_email
-            :subject  => ERB.new( @template.subject).result(binding)
-     ) do |format|
-        format.html { render :inline => @template.html_content }
-        format.text { render :inline => @template.text_content }
+    # Load interpolate and setup values from template
+    @template = Email.find_by_name!( __method__ ).production_template
+    @template  = EmailTemplate.find( template_id ) if template_id
+    headers @template.sendgrid_category_header
+    binding = binding()
+    mail(  :to       => @recipient.formatted_email,
+           :from     => @template.formatted_from,
+           :reply_to => ERB.new( @template.formatted_reply_to).result(binding), #@album.short_email
+           :subject  => ERB.new( @template.subject).result(binding)
+    ) do |format|
+      format.text { render :inline => @template.text_content }
+      format.html { render :inline => @template.html_content }
     end
-   end
+  end
+
+  def album_liked( user_id, album_id,  template_id = nil )
+    @user      = User.find( user_id )
+    @album     = Album.find( album_id )
+    @recipient = @album.user
+
+    @template = Email.find_by_name!( __method__ ).production_template
+    @template  = EmailTemplate.find( template_id ) if template_id
+    headers @template.sendgrid_category_header
+    binding = binding()
+    mail( :to       => @recipient.formatted_email,
+          :from     => @template.formatted_from,
+          :reply_to => ERB.new( @template.formatted_reply_to).result(binding), #@album.short_email
+          :subject  => ERB.new( @template.subject).result(binding)
+    ) do |format|
+      format.text { render :inline => @template.text_content }
+      format.html { render :inline => @template.html_content }
+    end
+  end
+
+  def photo_liked( user_id, photo_id,  template_id = nil )
+    @user      = User.find( user_id )
+    @photo     = Photo.find( photo_id )
+    @recipient = @photo.user
+
+    @template = Email.find_by_name!( __method__ ).production_template
+    @template  = EmailTemplate.find( template_id ) if template_id
+    headers @template.sendgrid_category_header
+    binding = binding()
+    mail( :to       => @recipient.formatted_email,
+          :from     => @template.formatted_from,
+          :reply_to => ERB.new( @template.formatted_reply_to).result(binding), #@album.short_email
+          :subject  => ERB.new( @template.subject).result(binding)
+    ) do |format|
+      format.text { render :inline => @template.text_content }
+      format.html { render :inline => @template.html_content }
+    end
+  end
+
+  def user_liked( user_id, liked_user_id,  template_id = nil )
+    @user      = User.find( user_id )
+    @recipient = User.find( liked_user_id )
+
+    @template = Email.find_by_name!( __method__ ).production_template
+    @template  = EmailTemplate.find( template_id ) if template_id
+    headers @template.sendgrid_category_header
+    binding = binding()
+    mail( :to       => @recipient.formatted_email,
+          :from     => @template.formatted_from,
+          :reply_to => ERB.new( @template.formatted_reply_to).result(binding), #@album.short_email
+          :subject  => ERB.new( @template.subject).result(binding)
+    ) do |format|
+      format.text { render :inline => @template.text_content }
+      format.html { render :inline => @template.html_content }
+    end
+  end
+
+  def contribution_error( to_address, template_id = nil)
+        @recipient = User.find_by_email( to_address )
+        @template = Email.find_by_name!( __method__ ).production_template
+        @template  = EmailTemplate.find( template_id ) if template_id
+
+        headers @template.sendgrid_category_header
+        binding = binding()
+        mail(   :to       => ( @recipient? @recipient.formatted_email : to_address ),
+                :from     => @template.formatted_from,
+                :reply_to => ERB.new( @template.formatted_reply_to).result(binding), #@album.short_email
+                :subject  => ERB.new( @template.subject).result(binding)
+        ) do |format|
+          format.text { render :inline => @template.text_content }
+          format.html { render :inline => @template.html_content }
+        end
+  end
 
 
- def album_shared(from_user_id,to_address,album_id, message, template_id = nil)
+  def album_shared(from_user_id,to_address,album_id, message, template_id = nil)
     @user = User.find(from_user_id)
     @album = Album.find(album_id)
     @message = message
@@ -71,7 +144,7 @@ class Notifier < ActionMailer::Base
 
     @template = Email.find_by_name!( __method__ ).production_template
     @template  = EmailTemplate.find( template_id ) if template_id
-    
+
     headers @template.sendgrid_category_header
     binding = binding()
     mail(   :to       => ( @recipient? @recipient.formatted_email : to_address ),
@@ -79,40 +152,76 @@ class Notifier < ActionMailer::Base
             :reply_to => ERB.new( @template.formatted_reply_to).result(binding), #@album.short_email
             :subject  => ERB.new( @template.subject).result(binding)
     ) do |format|
-        format.html { render :inline => @template.html_content }
-        format.text { render :inline => @template.text_content }
+      format.text { render :inline => @template.text_content }
+      format.html { render :inline => @template.html_content }
     end
   end
 
+  def album_updated( recipient_id, album_id,  template_id = nil )
+    @album     = Album.find( album_id )
+    @user      = @album.user
+    @recipient = User.find( recipient_id )
 
+    @template = Email.find_by_name!( __method__ ).production_template
+    @template  = EmailTemplate.find( template_id ) if template_id
+    headers @template.sendgrid_category_header
+    binding = binding()
+    mail( :to       => @recipient.formatted_email,
+          :from     => @template.formatted_from,
+          :reply_to => ERB.new( @template.formatted_reply_to).result(binding), #@album.short_email
+          :subject  => ERB.new( @template.subject).result(binding)
+    ) do |format|
+      format.text { render :inline => @template.text_content }
+      format.html { render :inline => @template.html_content }
+    end
+  end
 
+  def contributor_added(album_id, to_address, message, template_id = nil )
+    @album = Album.find(album_id)
+    @user = @album.user
+    @recipient = User.find_by_email( to_address )
+    @message = message
 
+    vcard = Vpim::Vcard::Maker.make2 do |vc|
+      vc.add_name do |name|
+        name.given = @album.name
+      end
+      vc.add_email @album.short_email
+    end
+    attachments["#{@album.name}.vcf"] = vcard.to_s
 
+    #Load interpolate and setup values from template
+    @template = Email.find_by_name!( __method__ ).production_template
+    @template  = EmailTemplate.find( template_id ) if template_id
+    headers @template.sendgrid_category_header
+    binding = binding()
+    mail( :to       => ( @recipient? @recipient.formatted_email : to_address ),
+          :from     => @template.formatted_from,
+          :reply_to => ERB.new( @template.formatted_reply_to).result(binding), #@album.short_email
+          :subject  => ERB.new( @template.subject).result(binding)
+    ) do |format|
+      format.text { render :inline => @template.text_content }
+      format.html { render :inline => @template.html_content }
+    end
+  end
 
+   def welcome(user_id, template_id = nil)
+    @user = User.find(user_id)
+    @recipient = @user
 
-
-
-
-  def contributors_added(album_id, email, user_id, message )
-     @album = Album.find( album_id)
-     @user = @album.user
-     @album_mail = @album.short_email
-
-     vcard = Vpim::Vcard::Maker.make2 do |vc|
-       vc.add_name do |name|
-         name.given = @album.name
-       end
-       vc.add_email @album.short_email
-     end
-     attachments['album.vcf'] = vcard.to_s
-
-     logger.info "Mailed contributors_added: #{email}, #{@album.long_email}"
-     mail( :to        => email,
-           :reply_to  => @album.long_email,
-           :subject   => "You have been invited to contribute photos to '#{@album.name}'!" )
-   end
-
-
+    @template = Email.find_by_name!( __method__ ).production_template
+    @template  = EmailTemplate.find( template_id ) if template_id
+    headers @template.sendgrid_category_header
+    binding = binding()
+    mail( :to       => @recipient.formatted_email,
+          :from     => @template.formatted_from,
+          :reply_to => ERB.new( @template.formatted_reply_to).result(binding), #@album.short_email
+          :subject  => ERB.new( @template.subject).result(binding)
+    ) do |format|
+      format.text { render :inline => @template.text_content }
+      format.html { render :inline => @template.html_content }
+    end
+  end
 
 
 
@@ -133,13 +242,7 @@ class Notifier < ActionMailer::Base
   end
 
 
-  def welcome(user_id)
-    user = User.find(user_id)
-    @root_url = root_url
-    logger.info "Mailed welcome: #{user.email}"
-    mail( :to       => user.email,
-          :subject  => "Welcome to ZangZing!" )
-  end
+
 
   def test_email( to )
     logger.info "Mailed test_email: #{to}"
