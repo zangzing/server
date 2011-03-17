@@ -31,6 +31,7 @@ class Notifier < ActionMailer::Base
     @template = Email.find_by_name!( __method__ ).production_template
     @template  = EmailTemplate.find( template_id ) if template_id
     headers @template.sendgrid_category_header
+    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
     binding = binding()
     mail( :to       => @recipient.formatted_email,
           :from     => @template.formatted_from,
@@ -51,6 +52,7 @@ class Notifier < ActionMailer::Base
     @template = Email.find_by_name!( __method__ ).production_template
     @template  = EmailTemplate.find( template_id ) if template_id
     headers @template.sendgrid_category_header
+    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
     binding = binding()
     mail(  :to       => @recipient.formatted_email,
            :from     => @template.formatted_from,
@@ -70,6 +72,7 @@ class Notifier < ActionMailer::Base
     @template = Email.find_by_name!( __method__ ).production_template
     @template  = EmailTemplate.find( template_id ) if template_id
     headers @template.sendgrid_category_header
+    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
     binding = binding()
     mail( :to       => @recipient.formatted_email,
           :from     => @template.formatted_from,
@@ -89,6 +92,7 @@ class Notifier < ActionMailer::Base
     @template = Email.find_by_name!( __method__ ).production_template
     @template  = EmailTemplate.find( template_id ) if template_id
     headers @template.sendgrid_category_header
+    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
     binding = binding()
     mail( :to       => @recipient.formatted_email,
           :from     => @template.formatted_from,
@@ -107,6 +111,7 @@ class Notifier < ActionMailer::Base
     @template = Email.find_by_name!( __method__ ).production_template
     @template  = EmailTemplate.find( template_id ) if template_id
     headers @template.sendgrid_category_header
+    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
     binding = binding()
     mail( :to       => @recipient.formatted_email,
           :from     => @template.formatted_from,
@@ -124,6 +129,7 @@ class Notifier < ActionMailer::Base
         @template  = EmailTemplate.find( template_id ) if template_id
 
         headers @template.sendgrid_category_header
+        ZZ::ZZA.new.track_event("#{@template.category}.send", to_address)
         binding = binding()
         mail(   :to       => ( @recipient? @recipient.formatted_email : to_address ),
                 :from     => @template.formatted_from,
@@ -146,6 +152,7 @@ class Notifier < ActionMailer::Base
     @template  = EmailTemplate.find( template_id ) if template_id
 
     headers @template.sendgrid_category_header
+    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
     binding = binding()
     mail(   :to       => ( @recipient? @recipient.formatted_email : to_address ),
             :from     => @template.formatted_from,
@@ -165,6 +172,7 @@ class Notifier < ActionMailer::Base
     @template = Email.find_by_name!( __method__ ).production_template
     @template  = EmailTemplate.find( template_id ) if template_id
     headers @template.sendgrid_category_header
+    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
     binding = binding()
     mail( :to       => @recipient.formatted_email,
           :from     => @template.formatted_from,
@@ -194,6 +202,7 @@ class Notifier < ActionMailer::Base
     @template = Email.find_by_name!( __method__ ).production_template
     @template  = EmailTemplate.find( template_id ) if template_id
     headers @template.sendgrid_category_header
+    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
     binding = binding()
     mail( :to       => ( @recipient? @recipient.formatted_email : to_address ),
           :from     => @template.formatted_from,
@@ -212,6 +221,7 @@ class Notifier < ActionMailer::Base
     @template = Email.find_by_name!( __method__ ).production_template
     @template  = EmailTemplate.find( template_id ) if template_id
     headers @template.sendgrid_category_header
+    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
     binding = binding()
     mail( :to       => @recipient.formatted_email,
           :from     => @template.formatted_from,
