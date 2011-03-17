@@ -515,35 +515,35 @@ zz.init = {
 
         
 
-        //small drawer
-        image_preloader.load_image("/images/bg-join-on.png");
-        image_preloader.load_image("/images/bg-join-off.png");
-        image_preloader.load_image("/images/bg-sign-in-on.png");
-        image_preloader.load_image("/images/bg-sign-in-off-over.png");
-        image_preloader.load_image("/images/bg-small-bottom-repeat.png");
-        image_preloader.load_image("/images/bg-join-on.png");
-        image_preloader.load_image("/images/bg-sign-in-off.png");
-        image_preloader.load_image("/images/bg-sign-in-off-over.png");
-        image_preloader.load_image("/images/bg-join-off.png");
-        image_preloader.load_image("/images/bg-sign-in-on.png");
-        image_preloader.load_image("/images/bg-join-off-over.png");
-
-
-
-        //wizard buttons/tabs
-        for (var i = 1; i <= 6; i++) {
-            var src = "/images/wiz-num-" + i + "-on.png"
-            image_preloader.load_image(src)
-
-            var src = "/images/wiz-num-" + i + ".png"
-            image_preloader.load_image(src)
-        }
+//        //small drawer
+//        image_preloader.load_image("/images/bg-join-on.png");
+//        image_preloader.load_image("/images/bg-join-off.png");
+//        image_preloader.load_image("/images/bg-sign-in-on.png");
+//        image_preloader.load_image("/images/bg-sign-in-off-over.png");
+//        image_preloader.load_image("/images/bg-small-bottom-repeat.png");
+//        image_preloader.load_image("/images/bg-join-on.png");
+//        image_preloader.load_image("/images/bg-sign-in-off.png");
+//        image_preloader.load_image("/images/bg-sign-in-off-over.png");
+//        image_preloader.load_image("/images/bg-join-off.png");
+//        image_preloader.load_image("/images/bg-sign-in-on.png");
+//        image_preloader.load_image("/images/bg-join-off-over.png");
+//
+//
+//
+//        //wizard buttons/tabs
+//        for (var i = 1; i <= 6; i++) {
+//            var src = "/images/wiz-num-" + i + "-on.png"
+//            image_preloader.load_image(src)
+//
+//            var src = "/images/wiz-num-" + i + ".png"
+//            image_preloader.load_image(src)
+//        }
 
 
 
 
         //photo chooser
-        image_preloader.load_image("/images/folders/blank.png"); //for folder animate to tray
+//        image_preloader.load_image("/images/folders/blank.png"); //for folder animate to tray
 
 //        image_preloader.load_image("/images/folders/apple_on.jpg");
 //        image_preloader.load_image("/images/folders/facebook_on.jpg");
@@ -574,33 +574,33 @@ zz.init = {
 //        image_preloader.load_image("/images/folders/photobucket_off.jpg");
 
 
-        //album privacy
-        image_preloader.load_image("/images/bg-privacy-public-off.png");
-        image_preloader.load_image("/images/bg-privacy-private-off.png");
-        image_preloader.load_image("/images/bg-privacy-password-off.png");
-        image_preloader.load_image("/images/bg-privacy-public-on.png");
-        image_preloader.load_image("/images/bg-privacy-private-on.png");
-        image_preloader.load_image("/images/bg-privacy-password-on.png");
-
-
-        //share album
-        image_preloader.load_image("/images/btn-share-by-post.png");
-        image_preloader.load_image("/images/btn-share-by-post-on.png");
-        image_preloader.load_image("/images/btn-share-by-email.png");
-        image_preloader.load_image("/images/btn-share-by-email-on.png");
-
-        //drawer images types
-        image_preloader.load_image("/images/bg-drawer-bottom-cap.png");
-        image_preloader.load_image("/images/bg-bottom-repeat.png");
-
-
-
-
-        //buttons
-        image_preloader.load_image("/images/btn-black-endcap.png");
-        image_preloader.load_image("/images/btn-black.png");
-        image_preloader.load_image("/images/btn-green-endcap.png");
-        image_preloader.load_image("/images/btn-green.png");
+//        //album privacy
+//        image_preloader.load_image("/images/bg-privacy-public-off.png");
+//        image_preloader.load_image("/images/bg-privacy-private-off.png");
+//        image_preloader.load_image("/images/bg-privacy-password-off.png");
+//        image_preloader.load_image("/images/bg-privacy-public-on.png");
+//        image_preloader.load_image("/images/bg-privacy-private-on.png");
+//        image_preloader.load_image("/images/bg-privacy-password-on.png");
+//
+//
+//        //share album
+//        image_preloader.load_image("/images/btn-share-by-post.png");
+//        image_preloader.load_image("/images/btn-share-by-post-on.png");
+//        image_preloader.load_image("/images/btn-share-by-email.png");
+//        image_preloader.load_image("/images/btn-share-by-email-on.png");
+//
+//        //drawer images types
+//        image_preloader.load_image("/images/bg-drawer-bottom-cap.png");
+//        image_preloader.load_image("/images/bg-bottom-repeat.png");
+//
+//
+//
+//
+//        //buttons
+//        image_preloader.load_image("/images/btn-black-endcap.png");
+//        image_preloader.load_image("/images/btn-black.png");
+//        image_preloader.load_image("/images/btn-green-endcap.png");
+//        image_preloader.load_image("/images/btn-green.png");
 
 
 
