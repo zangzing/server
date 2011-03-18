@@ -30,6 +30,7 @@ class Connector::SmugmugPhotosController < Connector::SmugmugController
     end
     current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
     photo = Photo.create(
+            :id => Photo.get_next_id,
             :caption => (photo_info[:caption].blank? ? photo_info[:filename] : photo_info[:caption]),
             :album_id => params[:album_id],
             :user_id=>current_user.id,

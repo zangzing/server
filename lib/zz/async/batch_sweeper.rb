@@ -27,9 +27,8 @@ module ZZ
         # run a sweep
         def self.perform()
           if (should_run)
-            puts "Batch Sweeper run at " + Time.now().to_s
-          else
-            puts "Not Run: Batch Sweeper too soon at " + Time.now().to_s
+            #puts "Batch Sweeper run at " + Time.now().to_s
+            UploadBatch.finalize_stale_batches
           end
         end
     end

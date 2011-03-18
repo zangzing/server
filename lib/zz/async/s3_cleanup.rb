@@ -19,7 +19,9 @@ module ZZ
 
         # remove the specified images from s3 - includes resized variations as well
         def self.perform(bucket, keys)
-          AttachedImage.remove_s3_photos(bucket, keys)
+          SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
+            AttachedImage.remove_s3_photos(bucket, keys)
+          end
         end
     end
 

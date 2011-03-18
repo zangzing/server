@@ -128,7 +128,7 @@ class AlbumsController < ApplicationController
 
     #Setup badge vars
     @badge_name = @user.name
-  end                                                           
+  end
 
   def show
     redirect_to album_photos_url( params[:id])

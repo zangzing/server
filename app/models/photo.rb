@@ -36,6 +36,7 @@
 # on the nature of the error.
 #
 require 'zz'
+require 'bulk_id_generator'
 
 class PhotoValidationError < StandardError
 end
@@ -43,7 +44,15 @@ end
 class Photo < ActiveRecord::Base
 
   attr_accessible :user_id, :album_id, :upload_batch_id, :agent_id, :source_guid, :caption,
-                  :image_file_size, :capture_date, :source_thumb_url, :source_screen_url
+                  :image_file_size, :capture_date, :source_thumb_url, :source_screen_url,
+                  :rotate_to, :source_path, :guid_part, :latitude, :created_at, :id,
+                  :updated_at, :image_content_type, :headline, :error_message, :image_bucket,
+                  :orientation, :height, :suspended, :longitude, :pos, :image_path, :image_updated_at,
+                  :generate_queued_at, :width, :state
+
+  # this is just a placeholder used by the connectors to track some extra state
+  # now that we do batch operations
+  attr_accessor :temp_url
 
   has_one :photo_info, :dependent => :destroy
   belongs_to :album, :touch => :photos_last_updated_at
@@ -56,8 +65,7 @@ class Photo < ActiveRecord::Base
   # when retrieving a search from the DB it will always be ordered by created date descending a.k.a Latest first
   default_scope :order => 'pos ASC, created_at ASC'
 
-  before_create :set_guid_for_path
-  before_create :set_default_position
+  before_create :init_for_create
 
 
   # Set up an async call for Processing and Upload to S3
@@ -67,6 +75,56 @@ class Photo < ActiveRecord::Base
   after_commit  :queue_delete_from_s3, :on => :destroy
 
   validates_presence_of             :album_id, :user_id, :upload_batch_id
+
+
+  # since we allow batch operations, we don't get the normal callbacks for things
+  # like before_create.  So, to keep things simple we have this helper method
+  # that is used when you plan to do a batch insert.  This lets us run the proper
+  # initialization
+  def self.new_for_batch(current_batch, parms)
+    photo = self.new(parms)
+    photo.upload_batch = current_batch
+    photo.init_for_create
+    return photo
+  end
+
+  # wrap the import call so we can do some of the things that normally
+  # happen via callbacks
+  def self.batch_insert(photos)
+    # batch insert
+    results = self.import(photos)
+
+    # we assume all share the same album, so extract
+    # the album_id and touch that album without instantiating a
+    # new album
+    if photos.count > 0
+      photo = photos[0]
+      album_id = photo.album_id
+      Album.touch_photos_last_updated(album_id)
+    end
+
+    # now kick off the uploads since bulk does not call after commit (I don't think)
+    photos.each do |photo|
+      photo.queue_upload_to_s3
+    end
+
+    results
+  end
+
+  # group anything you would normally put into a before_create
+  # callback here since this also gets called by new_for_batch
+  def init_for_create
+    set_guid_for_path
+    set_default_position
+  end
+
+
+  # never, never, never call get_next_id inside a transaction since failure of the transaction would rollback the
+  # fetch of the id which could result in duplicates being used.  If you need a set number of ids, set the reserve_count
+  # to the amount that you want and manage them yourself
+  def self.get_next_id(reserved_count = 1)
+    BulkIdManager.next_id_for(Photo.table_name, reserved_count)
+  end
 
 
   # generate a guid and attach to this object
@@ -176,6 +234,7 @@ class Photo < ActiveRecord::Base
   def queue_upload_to_s3
     # If state marked as uploading, pass it on
     if !self.destroyed? && self.uploading? && @do_upload
+      @do_upload = false
       ZZ::ZZA.new.track_transaction("photo.upload.s3.start", self.id)
       ZZ::Async::S3Upload.enqueue( self.id )
       logger.debug("queued for upload")
@@ -217,7 +276,10 @@ class Photo < ActiveRecord::Base
     # tell the photo object it is good to go
     mark_ready
     save!
-    upload_batch.finish
+    complete = upload_batch.finish
+    # update the status of this batch if not complete to show
+    # that we've had activity
+    upload_batch.touch if complete == false
   end
 
   # upload our temp source file to s3 and remove the temp if successful
@@ -300,21 +362,9 @@ class Photo < ActiveRecord::Base
   end
 
 
-  # we now have to build the agent case after the photo object
-  # itself has been created and saved because we switched to auto generated ids
-  # and don't know what the id is until after we save
-  def make_agent_source(type)
-    self.agent_id ? "http://localhost:30777/albums/#{self.album.id}/photos/#{self.id}.#{type}" : nil
-  end
-
-  def make_source_thumb_url
-    url = self.source_thumb_url
-    url.nil? ? @temp_screen ||= make_agent_source("thumb") : url
-  end
-
-  def make_source_screen_url
-    url = self.source_screen_url
-    url.nil? ? @temp_screen ||= make_agent_source("screen") : url
+  # build the agent source url
+  def self.make_agent_source(type, id, album_id)
+    "http://localhost:30777/albums/#{album_id}/photos/#{id}.#{type}"
   end
 
 
@@ -330,7 +380,7 @@ class Photo < ActiveRecord::Base
     if self.ready?
       attached_image.url(PhotoAttachedImage::STAMP)
     else
-      return safe_url(make_source_thumb_url)
+      return safe_url(self.source_thumb_url)
     end
   end
 
@@ -338,7 +388,7 @@ class Photo < ActiveRecord::Base
     if self.ready?
       attached_image.url(PhotoAttachedImage::THUMB)
     else
-      return safe_url(make_source_thumb_url)
+      return safe_url(self.source_thumb_url)
     end
   end
 
@@ -346,7 +396,7 @@ class Photo < ActiveRecord::Base
     if self.ready?
       attached_image.url(PhotoAttachedImage::MEDIUM)
     else
-      return safe_url(make_source_screen_url)
+      return safe_url(self.source_screen_url)
     end
   end
 
@@ -354,7 +404,7 @@ class Photo < ActiveRecord::Base
     if self.ready?
       attached_image.url(PhotoAttachedImage::LARGE)
     else
-      return safe_url(make_source_screen_url)
+      return safe_url(self.source_screen_url)
     end
   end
 
@@ -363,7 +413,7 @@ class Photo < ActiveRecord::Base
     if self.ready?
       attached_image.url(PhotoAttachedImage::ORIGINAL)
     else
-      return safe_url(make_source_screen_url)
+      return safe_url(self.source_screen_url)
     end
   end
 
@@ -490,31 +540,43 @@ class Photo < ActiveRecord::Base
     end
   end
 
-  
+  # this method packages up the fields
+  # we care about for return via json
+  def self.hash_one_photo(photo)
+    hashed_photo = {
+      :id => photo.id,
+      :caption => photo.caption,
+      :state => photo.state,
+      :source_guid => photo.source_guid,
+      :upload_batch_id => photo.upload_batch_id,
+      :user_id => photo.user_id,
+      :aspect_ratio => photo.aspect_ratio,
+      :stamp_url => photo.stamp_url,
+      :thumb_url => photo.thumb_url,
+      :screen_url => photo.screen_url,
+      :full_screen_url => photo.full_screen_url
+    }
+  end
+
   def self.to_json_lite(photos)
+    # since the to_json method of an active record cannot take advantage of the much faster
+    # JSON.fast_generate, we pull the object apart into a hash and generate from there.
+    # In benchmarks I found that the generate method is 10x faster, so for instance the
+    # difference between 10000/sec and 1000/sec
 
-#      todo: manual creation of json may be 2x to 3x faster than to_json
-#      json = '['
-#      photos.each do |photo|
-#       #todo: any more escaping we need to do here to be safe?
-#
-#        caption = photo.caption.gsub(/"/, '\\"')
-#
-#        json << "{\"id\":\"#{photo.id}\",\"state\":\"#{photo.state}\",\"caption\":\"#{caption}\",\"source_thumb_url\":\"#{photo.source_thumb_url}\",\"source_screen_url\":\"#{photo.source_screen_url}\",\"source_guid\":\"#{photo.source_guid}\",\"stamp_url\":\"#{photo.stamp_url}\",\"thumb_url\":\"#{photo.thumb_url}\",\"screen_url\":\"#{photo.screen_url}\"},"
-#      end
-#
-#      if(json[-1] == ',')
-#        json[-1]= ']' #get rid of last comma and close the array
-#      else
-#        json << ']'
-#      end
+    if photos.is_a?(Array) == false
+      hashed_photos = hash_one_photo(photos)
+    else
+      hashed_photos = []
+      photos.each do |photo|
+        hashed_photo = hash_one_photo(photo)
+        hashed_photos << hashed_photo
+      end
+    end
 
+    json = JSON.fast_generate(hashed_photos)
 
-      json= photos.to_json(:only =>[:id, :caption, :state, :source_guid, :upload_batch_id, :user_id], :methods => [:aspect_ratio, :stamp_url, :thumb_url, :screen_url, :full_screen_url])
-
-
-      return json
-
+    return json
   end
 
 
@@ -522,20 +584,23 @@ class Photo < ActiveRecord::Base
 
     #start with position as capture date in seconds
     self.pos = capture_date.to_i
-
+    custom_order_offset = upload_batch.custom_order_offset
 
     # The current batch will be custom ordered if the album was custom ordered when batch was created.
     # This prevents having some photos in the batch in the middle  and some at the end of the album
     # if user starts custom ordering during upload.
-    if upload_batch.custom_order_offset > 0
+    if custom_order_offset > 0
       # Shift entire batch to the end of the album in captured_date order.
       # each batch uses the pos of the last photo in the album at the time the batch is created 
-      self.pos += upload_batch.custom_order_offset
+      self.pos += custom_order_offset
     end
 
 
     #in case photos in batch have same capture date, we add a decimal to make them different
-    self.pos +=  ((upload_batch.photos.length + 1) / 10000.to_f)
+    # our ids for the same batch - by using the id it is possible for photos with the same
+    # date to be handled by two different servers.  In that case the order of the ids is not
+    # guaranteed.
+    self.pos +=  ((self.id % 10000) / 10000.to_f)
   end
 
   # Used when the user reorders photos

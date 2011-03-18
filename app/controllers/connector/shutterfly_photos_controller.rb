@@ -40,6 +40,7 @@ class Connector::ShutterflyPhotosController < Connector::ShutterflyController
     photo_url = get_photo_url(params[:photo_id],  :full)
     current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
     photo = Photo.create(
+            :id => Photo.get_next_id,
             :caption => photo_title,
             :album_id => params[:album_id],
             :user_id=>current_user.id,

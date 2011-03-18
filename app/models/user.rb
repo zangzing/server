@@ -132,7 +132,7 @@ class User < ActiveRecord::Base
   # Generates a new perishable token for the notifier to use in a password reset request
   def deliver_password_reset_instructions!
       reset_perishable_token!
-      ZZ::Async::Email.enqueue( :password_reset, self.id )
+      ZZ::Async::Email.enqueue( :password_reset_instructions, self.id )
   end
 
   def deliver_activation_instructions!
@@ -222,28 +222,43 @@ class User < ActiveRecord::Base
     ACLManager.global_replace_user_key( self.email, self.id )
   end
 
+  # returns an array of auto like ids
+  # this method is only called by auto_like_ids
+  # and gets cached by it
+  def self.fetch_auto_like_ids
+    likeable_users = [
+        'zangzing',
+        'phil',
+        'mauricio',
+        'kathryn',
+        'joseph',
+        'greg',
+        'jeremy'
+    ]
 
-
-  # look up mr zz special id
-  def self.mr_zz_id_from_db
-    user = User.find_by_username("zangzing")
-    user.id
+    # fetch any ids for the above users
+    users = User.select(:id).where(:username => likeable_users)
+    auto_like_ids = []
+    users.each do |user|
+      auto_like_ids << user.id
+    end
+    auto_like_ids
   end
 
-  # get the id of the mr zz user - the first time we look it up in the
-  # database, after that we hold onto the id
-  def self.mr_zz_id
-    @@mr_zz_id ||= mr_zz_id_from_db
+  def self.auto_like_ids
+    @@auto_like_ids ||= fetch_auto_like_ids
   end
 
-  # Make sure everybody likes the zangzing user
+  # Make sure everybody likes the zangzing users
   # (runs as an after_create callback)
   def like_mr_zz
-
-    # only if not zangzing, sorry mr zz, you can't like yourself
-    if self.username != "zangzing"
-      mr_zz_id = User.mr_zz_id
-      ZZ::Async::ProcessLike.enqueue( 'add', self.id, mr_zz_id , 'user' )
+    # add all the auto likes
+    User.auto_like_ids.each do |auto_like_id|
+      if self.id != auto_like_id
+        # no liking yourself
+        ZZ::Async::ProcessLike.enqueue( 'add', self.id, auto_like_id , 'user' )
+      end
     end
   end
+
 end

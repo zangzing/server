@@ -29,7 +29,9 @@ class Connector::PicasaFoldersController < Connector::PicasaController
     current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
     doc.xpath('//a:entry', NS).each do |entry|
       #photoid = /photoid\/([0-9a-z]+)/.match(entry.elements['id'].text)[1]
-      photo = Photo.create(
+      photo_url = get_photo_url(entry.at_xpath('m:group', NS), :full)
+      photo = Photo.new_for_batch(current_batch, {
+              :id => Photo.get_next_id,
               :caption => entry.at_xpath('a:title', NS).text,
               :album_id => params[:album_id],
               :user_id=>current_user.id,
@@ -38,12 +40,14 @@ class Connector::PicasaFoldersController < Connector::PicasaController
               :source_guid => make_source_guid(entry.at_xpath('m:group', NS)),
               :source_thumb_url => get_photo_url(entry.at_xpath('m:group', NS), :thumb),
               :source_screen_url => get_photo_url(entry.at_xpath('m:group', NS), :screen)
-      )
+      })
       
-      ZZ::Async::GeneralImport.enqueue( photo.id, get_photo_url(entry.at_xpath('m:group', NS), :full) )
+      photo.temp_url = photo_url
       photos << photo
+
     end
-    render :json => Photo.to_json_lite(photos)
+
+    bulk_insert(photos)
   end
 
 end
