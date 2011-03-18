@@ -9,6 +9,7 @@ common: &common
   reserved_names: false
   resque_zza_id: "dev.photos/svr"
   album_email_host: "greg-post.zangzing.com"
+  async_job_timeout: 15
 
 development:
   <<: *common

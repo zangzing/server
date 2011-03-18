@@ -33,14 +33,19 @@ module ZZ
         end 
           
         def self.perform( photo_id )
-          photo = Photo.find(photo_id)
-          self.upload_to_s3(photo)
+          SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
+            sleep 20
+            photo = Photo.find(photo_id)
+            self.upload_to_s3(photo)
+          end
         end
 
         def self.on_failure_notify_photo(e, photo_id )
           begin
-            photo = Photo.find(photo_id)
-            photo.update_attributes(:state => 'error', :error_message => 'Failed to upload the image to S3')
+            SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
+              photo = Photo.find(photo_id)
+              photo.update_attributes(:state => 'error', :error_message => 'Failed to upload the image to S3')
+            end
           rescue Exception => ex
             # eat any exception in the error handler
           end
