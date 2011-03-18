@@ -5,9 +5,7 @@ class Connector::KodakFoldersController < Connector::KodakController
     SystemTimer.timeout_after(http_timeout) do
       album_list = connector.send_request('/albumList')
     end
-    albums = album_list['Album'].select { |a| a['type']=='0' } #Real albums have type attribute = 0
-#    @folders = albums.map { |f| {:name => f['name'], :id => f['id']} }
-
+    albums = [album_list['Album']].flatten #.select { |a| a['type']=='0' } #Looks like real albums have type attribute = 0, but who knows...
     @folders = albums.map { |f|
       {
         :name => f['name'],
@@ -17,7 +15,7 @@ class Connector::KodakFoldersController < Connector::KodakController
         :add_url => kodak_folder_action_path({:kodak_album_id =>f['id'], :action => 'import'})
       }
     }
-    #expires_in 10.minutes, :public => false
+    expires_in 10.minutes, :public => false
     render :json => JSON.fast_generate(@folders)
   end
 
