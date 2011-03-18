@@ -3,7 +3,7 @@ class Connector::FlickrPhotosController < Connector::FlickrController
   def index
     photos_response = []
     SystemTimer.timeout_after(http_timeout) do
-      photos_response = flickr_api.photosets.getPhotos :photoset_id => params[:set_id]
+      photos_response = flickr_api.photosets.getPhotos :photoset_id => params[:set_id], :extras => 'original_format'
     end
 #    @photos = photos_response.photo.map { |p| {:name => p.title, :id => p.id} }
     @photos = photos_response.photo.map { |p|

@@ -718,29 +718,6 @@ pages.acct_profile = {
                                                          }
         });
         template.height( $(document).height() - 192 );
-        /*
-        $('<div id="add-photos-dialog"></div>').html( template )
-                                               .dialog({ title: 'Load Profile Pictures',
-                                                         width: 920,
-                                                         height: $(document).height() - 200,
-                                                         position: ['center',90],
-                                                         modal: true,
-                                                         draggable:false,
-                                                         autoOpen: false,
-                                                         buttons: [
-                                                                {
-                                                                    text: "Done",
-                                                                    click: function() { $(this).dialog("close"); }
-                                                                }
-                                                         ],
-                                                         open:   function(event, ui){ template.zz_photochooser({}) },
-                                                         close:  function(event, ui){
-                                                             $.get( '/albums/' +zz.album_id + '/close_batch', function(){
-                                                                pages.acct_profile.refresh_profile_photo_picker()
-                                                             });
-                                                         }
-                 });
-                 */
     },
 
     show_add_photos_dialog: function(event){
