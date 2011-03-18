@@ -60,7 +60,7 @@ protected
   end
 
   def make_source_guid(photo_info)
-    "flickr_"+Photo.generate_source_guid(get_photo_url(photo_info, :full))
+    "flickr_"+Photo.generate_source_guid(get_photo_url(photo_info, :screen))
   end
 
 end
