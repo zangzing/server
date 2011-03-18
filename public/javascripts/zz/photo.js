@@ -270,9 +270,19 @@
                     self.imageElement.css({'border-bottom': '35px solid #fff'});
 
                     self.toolbarElement.find('.share-button').click(function(){
-                       logger.debug('click share');
                         self.options.onClickShare(self.options.photoId);
                     });
+
+                    self.toolbarElement.find('.like-button').click(function(){
+                        alert("This feature is still under construction. This will allow you to like an individual photo.");
+                    });
+
+                    self.toolbarElement.find('.info-button').click(function(){
+                        alert("This feature is still under construction. This will show a menu with options for downloading original photo, etc.");
+                    });
+
+
+
                 });
 
                 self.borderElement.mouseleave(function(){

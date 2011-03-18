@@ -220,6 +220,11 @@ zz.init = {
         });
 
 
+        $('#footer #buy-button').click(function(){
+            alert("This feature is still under construction.")
+        });
+
+
         /* new user stuff   */
         /* ---------------------------------*/
 
