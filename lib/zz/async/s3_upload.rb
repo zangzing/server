@@ -34,7 +34,6 @@ module ZZ
           
         def self.perform( photo_id )
           SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
-            sleep 20
             photo = Photo.find(photo_id)
             self.upload_to_s3(photo)
           end
