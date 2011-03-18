@@ -7,7 +7,11 @@ class UserSessionsController < ApplicationController
   end
 
   def join
-    @user_session = UserSession.new
+    if ! current_user
+      @user_session = UserSession.new
+    else
+      redirect_to user_pretty_url(current_user)
+    end
   end
 
   def create
