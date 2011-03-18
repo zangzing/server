@@ -14,7 +14,7 @@ class Connector::FacebookFoldersController < Connector::FacebookController
         },
         {
           :name => 'Photos of Me', :type => 'folder', :id => 'tagged-with-me',
-          :open_url => facebook_photos_path('me'), :add_url => nil
+          :open_url => facebook_photos_path('me'), :add_url => facebook_folder_action_path(:fb_album_id =>'me', :action => 'import')
         }
       ]
       @folders = fb_root
