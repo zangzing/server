@@ -40,6 +40,7 @@ class CreateEmailTemplates < ActiveRecord::Migration
     print "Creating System Email Templates."
     et = EmailTemplate.create( :email_id => photos_ready.id,
                           :mc_campaign_id =>"ed39f93a53",
+                          :reply_to => "<%=@album.short_email%>",
                           :category => "email.photosready")
     photos_ready.update_attributes( :production_template_id => et.id )
     print "."
@@ -80,6 +81,7 @@ class CreateEmailTemplates < ActiveRecord::Migration
     print "."
     et = EmailTemplate.create( :email_id => contributor_added.id,
                           :mc_campaign_id =>"bcbed116ba",
+                          :reply_to => "<%=@album.short_email%>",
                           :category => "email.contributorinvite")
     contributor_added.update_attributes( :production_template_id => et.id )
     print "."
