@@ -5,7 +5,7 @@ class Connector::KodakFoldersController < Connector::KodakController
     SystemTimer.timeout_after(http_timeout) do
       album_list = connector.send_request('/albumList')
     end
-    albums = [album_list['Album']].flatten #.select { |a| a['type']=='0' } #Looks like real albums have type attribute = 0, but who knows...
+    albums = [album_list['Album']].flatten.select { |a| a['type']=='0' } #Looks like real albums have type attribute = 0, but who knows...
     @folders = albums.map { |f|
       {
         :name => f['name'],
