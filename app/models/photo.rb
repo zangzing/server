@@ -540,39 +540,43 @@ class Photo < ActiveRecord::Base
     end
   end
 
-  
+  # this method packages up the fields
+  # we care about for return via json
+  def self.hash_one_photo(photo)
+    hashed_photo = {
+      :id => photo.id,
+      :caption => photo.caption,
+      :state => photo.state,
+      :source_guid => photo.source_guid,
+      :upload_batch_id => photo.upload_batch_id,
+      :user_id => photo.user_id,
+      :aspect_ratio => photo.aspect_ratio,
+      :stamp_url => photo.stamp_url,
+      :thumb_url => photo.thumb_url,
+      :screen_url => photo.screen_url,
+      :full_screen_url => photo.full_screen_url
+    }
+  end
+
   def self.to_json_lite(photos)
     # since the to_json method of an active record cannot take advantage of the much faster
     # JSON.fast_generate, we pull the object apart into a hash and generate from there.
     # In benchmarks I found that the generate method is 10x faster, so for instance the
     # difference between 10000/sec and 1000/sec
 
-    hashed_photos = []
-    photos.each do |photo|
-      hashed_photo = {
-        :id => photo.id,
-        :caption => photo.caption,
-        :state => photo.state,
-        :source_guid => photo.source_guid,
-        :upload_batch_id => photo.upload_batch_id,
-        :user_id => photo.user_id,
-        :aspect_ratio => photo.aspect_ratio,
-        :stamp_url => photo.stamp_url,
-        :thumb_url => photo.thumb_url,
-        :screen_url => photo.screen_url,
-        :full_screen_url => photo.full_screen_url
-      }
-      hashed_photos << hashed_photo
+    if photos.is_a?(Array) == false
+      hashed_photos = hash_one_photo(photos)
+    else
+      hashed_photos = []
+      photos.each do |photo|
+        hashed_photo = hash_one_photo(photo)
+        hashed_photos << hashed_photo
+      end
     end
 
     json = JSON.fast_generate(hashed_photos)
 
-
-      #json= photos.to_json(:only =>[:id, :caption, :state, :source_guid, :upload_batch_id, :user_id], :methods => [:aspect_ratio, :stamp_url, :thumb_url, :screen_url, :full_screen_url])
-
-
     return json
-
   end
 
 
