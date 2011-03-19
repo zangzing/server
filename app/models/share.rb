@@ -7,6 +7,7 @@ class Share < ActiveRecord::Base
 
   belongs_to :user
   belongs_to :subject, :polymorphic => true  #the subject can be user,album or photo
+  belongs_to :upload_batch
 
   validates_presence_of :user_id, :subject_id, :subject_type, :recipients
 
@@ -27,7 +28,12 @@ class Share < ActiveRecord::Base
   end
 
   after_create :after_share_user,  :if => :user?
-  after_create :after_share_album, :if => :album?
+
+
+  before_create  :attach_to_open_batch, :if => :album?
+  after_create   :after_share_album,    :if => :album?
+
+
   after_create :after_share_photo, :if => :photo?
 
 
@@ -41,7 +47,7 @@ class Share < ActiveRecord::Base
     end
 
     shares = Share.find_all_by_user_id_and_subject_id(user_id, subject_id)
-    shares.each { |share|  ZZ::Async::DeliverShare.enqueue( share.id ) }
+    shares.each { |share|  ZZ::Async::DeliverShare.enqueue( share.id ) if share.sent_at.nil? }
   end
 
 
@@ -76,16 +82,21 @@ class Share < ActiveRecord::Base
   end
 
 
-  # after_create callback for albums.
-  # Ensures there ia an UploadBatch open so that when it closes, the share gets delivered
-  # adds viewer persmissions to recipients of email share
-  def after_share_album
-    # get the current batch (make sure a batch is open, since
-    # shares will be delivered when the current batch is finished)
-    UploadBatch.get_current( self.user_id, self.subject_id )
+  # before_create callback for albums.
+  def attach_to_open_batch
+    # Look for an open current batch if there is one, attach to it
+    open_batch = UploadBatch.find_by_user_id_and_album_id_and_state(user_id, subject_id, 'open')
+    self.upload_batch_id = open_batch.id if open_batch
+  end
 
-    # Add VIEWER permsission to the recipients of this email share (if this is an email share)
-    if email?
+  # after_create callback for albums.
+  def after_share_album
+    #if the share is attached to a batch, it will be delivered by the batch, otherwise deliver now
+    ZZ::Async::DeliverShare.enqueue( self.id ) unless self.upload_batch_id
+
+    # if the owner is sharing the album, add VIEWER permsission
+    # to the recipients of this email share (if this is an email share)
+    if email? && subject.user.id == user_id
       recipients.each { |email| subject.add_viewer( email ) } 
     end
   end
