@@ -122,9 +122,13 @@ zz.drawers = {
         },
 
         on_close: function(){
-            $.get( zz.path_prefix + '/albums/' +zz.album_id + '/close_batch' );
-            var url = zz.path_prefix + '/albums/' +zz.album_id + '/photos';
-            setTimeout('window.location = "' + url + '"', 1);
+            $.ajax({
+              url:      zz.path_prefix + '/albums/' +zz.album_id + '/close_batch',
+              complete: function(request, textStatus){
+                            console.log('Batch closed because drawer was closed. Call to close_batch returned with status= '+textStatus);
+                            window.location = zz.path_prefix + '/albums/' +zz.album_id + '/photos';
+              }
+            });
         },
 
 
