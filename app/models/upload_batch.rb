@@ -3,7 +3,8 @@ class UploadBatch < ActiveRecord::Base
   
   belongs_to :user
   belongs_to :album
-  has_many :photos
+  has_many   :photos
+  has_many   :shares
 
   default_scope :order => 'created_at DESC'
 
@@ -68,15 +69,18 @@ class UploadBatch < ActiveRecord::Base
   # set the force flag to true if you want to finalized regardless of the
   # current state
   def finish(force = false)
+
+    # if the batch has already finished once, dont finish it again even if photos
+    return true if self.state == 'finished'
+
     if force || (self.state == 'closed' && self.ready?)
 
        #send album shares even if there were no photos uploaded
-       Share.deliver_shares( self.user_id, self.album_id )
-
+       shares.each { |share| share.deliver }
+      
        if self.photos.count > 0
           #Notify uploader that upload batch is finished
           ZZ::Async::Email.enqueue( :photos_ready, self.id )
-      
           #Create Activity
           ua = UploadActivity.create( :user => self.user, :album => self.album, :upload_batch => self )
           self.album.activities << ua
@@ -86,7 +90,6 @@ class UploadBatch < ActiveRecord::Base
        else
           self.destroy #the batch has no photos, destroy it
        end
-
        # batch is done
       return true
     end
