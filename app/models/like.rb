@@ -23,6 +23,11 @@ class Like < ActiveRecord::Base
                           :subject_id => subject_id,
                           :subject_type => subject_type )
       LikeCounter.increase( subject_id )
+      case subject_type
+        when USER,  'user'  then ZZ::Async::Email.enqueue( :user_liked,  user_id, subject_id )
+        when ALBUM, 'album' then ZZ::Async::Email.enqueue( :album_liked, user_id, subject_id )
+        when PHOTO, 'photo' then ZZ::Async::Email.enqueue( :photo_liked, user_id, subject_id )
+      end
       return like
     rescue  ActiveRecord::RecordNotUnique
       #Like Record already exists, nothing to do
