@@ -143,7 +143,7 @@ class Photo < ActiveRecord::Base
 
   # returns the set of supported image types
   def self.supported_image_types
-    @@supported_image_types ||= Set.new [ 'image/jpeg', 'image/png', 'image/gif' ]
+    @@supported_image_types ||= Set.new [ 'image/jpeg', 'image/png', 'image/gif', 'image/tiff' ]
   end
 
 
