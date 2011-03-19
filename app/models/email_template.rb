@@ -96,7 +96,7 @@ class EmailTemplate < ActiveRecord::Base
           # This is an album picon, replace it
           img = []
           img << '<img'
-          img << "src=\"<%=@album.cover.thumb_url%>\""
+          img << "src=\"<%=(@album.cover ? @album.cover.thumb_url : '')%>\""
           img << 'alt="<%=@album.name%>"'
           img << match[3]  #the style argument
           #img << "height=\"@album.cover.height\""
