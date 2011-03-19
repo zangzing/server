@@ -401,6 +401,7 @@ zz.init = {
                     //hide view selectors
                     $('#view-buttons').hide();
 
+
                     var renderPictureView = function(){
                         var gridElement = $('<div class="photogrid"></div>');
 
@@ -450,6 +451,18 @@ zz.init = {
 
                         }).data().zz_photogrid;
 
+                        $('#footer #next-button').unbind('click');
+                        $('#footer #next-button').show().click(function() {
+                            grid.nextPicture();
+                            ZZAt.track('button.next.click');
+                        });
+
+                        $('#footer #prev-button').unbind('click');
+                        $('#footer #prev-button').show().click(function() {
+                            grid.previousPicture();
+                            ZZAt.track('button.previous.click');
+                        });
+
                     };
 
                     renderPictureView();
@@ -471,15 +484,6 @@ zz.init = {
 
 
 
-                    $('#footer #next-button').show().click(function() {
-                        grid.nextPicture();
-                        ZZAt.track('button.next.click');
-                    });
-
-                    $('#footer #prev-button').show().click(function() {
-                        grid.previousPicture();
-                        ZZAt.track('button.previous.click');
-                    });
 
 
 
