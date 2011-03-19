@@ -36,8 +36,8 @@ class Connector::ZangzingPhotosController < Connector::ConnectorController
               :upload_batch_id => current_batch.id,
               :capture_date => source_photo.capture_date,
               :source_guid => source_photo.source_guid,
-              :source_thumb_url => source_photo.source_thumb_url,
-              :source_screen_url => source_photo.source_screen_url
+              :source_thumb_url => source_photo.thumb_url,
+              :source_screen_url => source_photo.screen_url
     )
 
     ZZ::Async::GeneralImport.enqueue( photo.id, source_photo.original_url )
