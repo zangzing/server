@@ -171,21 +171,24 @@ zz.init = {
             zz.init.disable_buttons();
             $('#footer #add-photos-button').removeClass('disabled').addClass('selected');
             var template = $('<div class="photochooser-container"></div>');
-            $('<div id="add-photos-dialog"></div>').html( template )
-                                                   .zz_dialog({
-                                                             height: $(document).height() - 200,
-                                                             width: 895,
-                                                             modal: true,
-                                                             autoOpen: true,
-                                                             open : function(event, ui){ template.zz_photochooser({}) },
-                                                             close: function(event, ui){
-                                                                 $.get( zz.path_prefix + '/albums/' +zz.album_id + '/close_batch', function(){
-                                                                     window.location.reload( false );
-                                                                 });
-                                                             }
-            });
+            $('<div id="add-photos-dialog"></div>').html( template ).zz_dialog({
+                                   height: $(document).height() - 200,
+                                   width: 895,
+                                   modal: true,
+                                   autoOpen: true,
+                                   open : function(event, ui){ template.zz_photochooser({}) },
+                                   close: function(event, ui){
+                                       $.ajax({ url:      zz.path_prefix + '/albums/' +zz.album_id + '/close_batch',
+                                           complete: function(request, textStatus){
+                                               console.log('Batch closed because Add photos dialog was closed. Call to close_batch returned with status= '+textStatus);
+                                           },
+                                           success: function(){
+                                               window.location.reload( false );
+                                           }
+                                       });
+                                   }
+                               });
             template.height( $(document).height() - 192 );
-
         });
 
         //any signed in user can do this
