@@ -356,12 +356,15 @@ zz.init = {
                 ZZAt.track('album.view',{id:zz.album_id});
 
 
-                var gridElement = $('<div class="photogrid"></div>');
-
-                $('#article').html(gridElement);
-                $('#article').css('overflow', 'hidden');
 
                 if (view === 'grid') {   //grid view
+
+                    var gridElement = $('<div class="photogrid"></div>');
+
+                    $('#article').html(gridElement);
+                    $('#article').css('overflow', 'hidden');
+
+
                     for (var i = 0; i < json.length; i++) {
                         var photo = json[i];
                         photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
@@ -396,47 +399,76 @@ zz.init = {
                 }
                 else {    //single picture view
                     //hide view selectors
-
                     $('#view-buttons').hide();
 
+                    var renderPictureView = function(){
+                        var gridElement = $('<div class="photogrid"></div>');
 
-                    for (var i = 0; i < json.length; i++) {
-                        var photo = json[i];
-                        photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
-                        photo.src = agent.checkAddCredentialsToUrl(photo.screen_url);
-                    }
-
-                    var currentPhotoId = null;
-                    var hash = jQuery.param.fragment();
-
-
-                    if (hash !== '') {
-                        currentPhotoId = hash.slice(1); //remove the '!'
-                    }
+                        $('#article').html(gridElement);
+                        $('#article').css('overflow', 'hidden');
 
 
 
-                    var grid = gridElement.zz_photogrid({
-                        photos:json,
-                        allowDelete: false,
-                        allowEditCaption: false,
-                        allowReorder: false,
-                        cellWidth: gridElement.width(),
-                        cellHeight: gridElement.height() - 20,
-                        onClickPhoto: function(index, photo) {
-                            grid.nextPicture();
-                            ZZAt.track('button.next.click');//todo: phil, is this right?
-                        },
-                        singlePictureMode: true,
-                        currentPhotoId: currentPhotoId,
-                        onScrollToPhoto: function(photoId) {
-                            window.location.hash = '#!' + photoId
-                            ZZAt.track('photo.view',{id:photoId});
 
+
+
+                        for (var i = 0; i < json.length; i++) {
+                            var photo = json[i];
+                            photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
+                            photo.src = agent.checkAddCredentialsToUrl(photo.screen_url);
+                        }
+
+                        var currentPhotoId = null;
+                        var hash = jQuery.param.fragment();
+
+
+                        if (hash !== '') {
+                            currentPhotoId = hash.slice(1); //remove the '!'
                         }
 
 
-                    }).data().zz_photogrid;
+
+                        var grid = gridElement.zz_photogrid({
+                            photos:json,
+                            allowDelete: false,
+                            allowEditCaption: false,
+                            allowReorder: false,
+                            cellWidth: gridElement.width(),
+                            cellHeight: gridElement.height() - 20,
+                            onClickPhoto: function(index, photo) {
+                                grid.nextPicture();
+                                ZZAt.track('button.next.click');//todo: phil, is this right?
+                            },
+                            singlePictureMode: true,
+                            currentPhotoId: currentPhotoId,
+                            onScrollToPhoto: function(photoId) {
+                                window.location.hash = '#!' + photoId
+                                ZZAt.track('photo.view',{id:photoId});
+
+                            }
+
+
+                        }).data().zz_photogrid;
+
+                    };
+
+                    renderPictureView();
+
+
+                    //handle resize
+                    var resizeTimer = null;
+                    $(window).resize(function(event){
+                        if(resizeTimer){
+                            clearTimeout(resizeTimer);
+                            resizeTimer = null;
+                        }
+
+                        resizeTimer = setTimeout(function(){
+                            renderPictureView();
+                        },100);
+                    });
+                    
+
 
 
                     $('#footer #next-button').show().click(function() {
@@ -448,6 +480,8 @@ zz.init = {
                         grid.previousPicture();
                         ZZAt.track('button.previous.click');
                     });
+
+
 
 
                 }
