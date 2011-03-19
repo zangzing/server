@@ -76,7 +76,7 @@ class ApplicationController < ActionController::Base
     # Filter for methods that require a log in
     def require_user
       unless current_user
-        store_location
+        store_location unless request.xhr?
         flash[:notice] = "You must be logged in to access this page"
         redirect_to new_user_session_url
         return false

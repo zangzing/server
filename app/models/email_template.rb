@@ -47,9 +47,10 @@ class EmailTemplate < ActiveRecord::Base
     self.text_content = content['text']
 
     # unescape and interpolate images and other special elements
-    html = CGI::unescapeHTML( content['html'] )
-    html = EmailTemplate.interpolate_images( html )
-    self.html_content = html
+    self.html_content = EmailTemplate.interpolate_images(  CGI::unescapeHTML( content['html'] )  )
+    remove_double_http
+    unescape_links
+
     true
   end
 
@@ -68,6 +69,17 @@ class EmailTemplate < ActiveRecord::Base
 
   def sendgrid_category_header
     {'X-SMTPAPI' => {'category' => self.category }.to_json }
+  end
+
+  def unescape_links
+    # look for hrefs in links that were <%($1)%> before but were urlencoded
+    # Group 1 is whatever was in between the href"<% %>"
+    self.html_content.gsub!( /href="(mailto:)*%3C%([^"]*)%%3E"/){ "href=\"#{$1}<%#{CGI::unescape($2)}%>\"" }
+  end
+
+  def remove_double_http
+    # look for http://http:// and replace with http://  (a common MC problem)
+    self.html_content.gsub!(/href="http:\/\/<%=/, 'href="<%=')
   end
 
   def self.interpolate_images( html )
