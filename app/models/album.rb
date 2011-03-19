@@ -66,24 +66,20 @@ class Album < ActiveRecord::Base
     Album.update(album_id, :photos_last_updated_at => now, :updated_at => now)
   end
 
+  # lets hold a temp copy of the cover to
+  # avoid running queries multiple times
   def cover
-    unless self.cover_photo_id.nil?
-      if self.photos.empty?
-         self.cover_photo_id = nil
-         self.save
-         return nil
-      else
-         cover_photo = self.photos.find_by_id( self.cover_photo_id )
-         if cover_photo.nil?
-             self.cover_photo_id = nil
-             self.save
-             return nil
-         end
-         return cover_photo
-      end
+    # we have cover set test because not sufficient to
+    # just test for @cover.nil? because nil is a valid
+    # condition for @cover and we don't want to go
+    # back through all the logic again
+    if !@cover_set
+      @cover = cover_fetch
+      @cover_set = true
     end
-    self.photos.order("created_at ASC").first    
+    @cover
   end
+
 
   def cover=( photo )
     if photo.nil?
@@ -269,6 +265,30 @@ private
 
   def add_creator_as_admin
     acl.add_user( user.id, AlbumACL::ADMIN_ROLE )
+  end
+
+  # this pulls the cover from the db
+  # this should be private since internal to
+  # album
+  def cover_fetch
+    unless self.cover_photo_id.nil?
+      if self.photos.empty?
+         self.cover_photo_id = nil
+         self.save
+         return nil
+      else
+         cover_photo = self.photos.find_by_id( self.cover_photo_id )
+         if cover_photo.nil?
+             self.cover_photo_id = nil
+             self.save
+             return nil
+         end
+         return cover_photo
+      end
+    end
+    # no need to custom order as default scope provides proper ordering
+    # pos ASC, created_at ASC
+    self.photos.first
   end
 
 end
