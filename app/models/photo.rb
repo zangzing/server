@@ -684,22 +684,25 @@ class PhotoAttachedImage < AttachedImage
     end
   end
 
+  # tack on any custom data you want to go with the original
+  def custom_metadata_original
+    custom_meta = {
+        "x-amz-meta-photo-id" => model.id.to_s,
+        "x-amz-meta-album-id" => model.album_id.to_s,
+        "x-amz-meta-user-id" => model.user_id.to_s
+    }
+  end
+
   # generate the custom metadata headers to be stored along
   # with the resized objects return the object as a map
   # this call is made after the custom_commands call so this
   # is where you want to change the model state
   def custom_metadata
+    custom_meta = custom_metadata_original
     rotate_to = model.rotate_to
     if rotate_to != 0
-      model.rotate_to = 0 # rotation is done and recorded
-      {
-          "x-amz-meta-rotate" => rotate_to.to_s,
-          "x-amz-meta-photo-id" => model.id.to_s,
-          "x-amz-meta-album-id" => model.album_id.to_s,
-          "x-amz-meta-user-id" => model.user_id.to_s
-      }
-    else
-      nil
+      custom_meta["x-amz-meta-rotate"] = rotate_to.to_s
     end
+    custom_meta
   end
 end
