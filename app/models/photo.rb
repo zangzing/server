@@ -37,6 +37,7 @@
 #
 require 'zz'
 require 'bulk_id_generator'
+require 'zz_env_helpers'
 
 class PhotoValidationError < StandardError
 end
@@ -48,11 +49,11 @@ class Photo < ActiveRecord::Base
                   :rotate_to, :source_path, :guid_part, :latitude, :created_at, :id,
                   :updated_at, :image_content_type, :headline, :error_message, :image_bucket,
                   :orientation, :height, :suspended, :longitude, :pos, :image_path, :image_updated_at,
-                  :generate_queued_at, :width, :state
+                  :generate_queued_at, :width, :state, :source
 
   # this is just a placeholder used by the connectors to track some extra state
   # now that we do batch operations
-  attr_accessor :temp_url
+  attr_accessor :temp_url, :inserting_for_batch
 
   has_one :photo_info, :dependent => :destroy
   belongs_to :album, :touch => :photos_last_updated_at
@@ -83,6 +84,7 @@ class Photo < ActiveRecord::Base
   # initialization
   def self.new_for_batch(current_batch, parms)
     photo = self.new(parms)
+    photo.inserting_for_batch = true  # temporary state so we know internally we are being inserted as part of a batch
     photo.upload_batch = current_batch
     photo.init_for_create
     return photo
@@ -91,6 +93,8 @@ class Photo < ActiveRecord::Base
   # wrap the import call so we can do some of the things that normally
   # happen via callbacks
   def self.batch_insert(photos)
+    return if (photos.count == 0)
+
     # batch insert
     results = self.import(photos)
 
@@ -105,6 +109,7 @@ class Photo < ActiveRecord::Base
 
     # now kick off the uploads since bulk does not call after commit (I don't think)
     photos.each do |photo|
+      photo.inserting_for_batch = false
       photo.queue_upload_to_s3
     end
 
@@ -138,8 +143,8 @@ class Photo < ActiveRecord::Base
   end
 
   # returns the set of supported image types
-  def supported_image_types
-    @@supported_image_types ||= Set.new [ 'image/jpeg', 'image/png', 'image/gif' ]
+  def self.supported_image_types
+    @@supported_image_types ||= Set.new [ 'image/jpeg', 'image/png', 'image/gif', 'image/tiff' ]
   end
 
 
@@ -162,8 +167,10 @@ class Photo < ActiveRecord::Base
       self.longitude = PhotoInfo.decode_gps_coord(val, val_ref) unless val.nil? || val_ref.nil?
     end
     if iptc = data['IPTC']
-      self.headline = (iptc['Headline'] || '') if self.headline.blank?
-      self.caption = (iptc['Caption'] || '') if self.caption.blank?
+      cur_headline = safe_default(self.headline, '')
+      cur_caption = safe_default(self.caption, '')
+      self.headline = (iptc['Headline'] || '') if cur_headline.blank?
+      self.caption = (iptc['Caption'] || '') if cur_caption.blank?
     end
     if file = data['File']
       val = file['MIMEType']
@@ -440,13 +447,17 @@ class Photo < ActiveRecord::Base
     self.photo_info.metadata = value_hash.to_json
   end
 
+  def self.valid_image_type?(image_type)
+    Photo.supported_image_types.include?(image_type)
+  end
+
   #
   # verify valid parms for the file about to be uploaded
   # if attributes are invalid throw a validation exception
   #
   def verify_file_type
     image_type = self.image_content_type
-    if supported_image_types.include?(image_type) == false
+    if Photo.valid_image_type?(image_type) == false
       msg = "Not a supported image type, you passed: " +  image_type
       errors.add(:image_content_type, msg)
       # save the error state
@@ -455,6 +466,12 @@ class Photo < ActiveRecord::Base
     end
   end
 
+  # states where we can upload, we start off
+  # in assinged but may be in error if a failure
+  # happened and we want to retry
+  def can_upload?
+    self.assigned? || self.error?
+  end
 
   #
   # handle set up for file upload
@@ -467,7 +484,7 @@ class Photo < ActiveRecord::Base
   def file_to_upload=(file_path)
     begin
       if file_path
-        if @do_upload || self.assigned? == false
+        if @do_upload || can_upload? == false
           # if we are already uploading then we have bad state since someone may have
           # tried to set a photo twice - in this case set an internal flag so that we
           # fail validation - this would only ever be proper if we allowed for modification
@@ -508,7 +525,8 @@ class Photo < ActiveRecord::Base
       # call failed so get rid of temp file right now
       remove_source
 
-      self.save
+      # only save our state if we are not part of an insert batch operation
+      self.save if self.inserting_for_batch == false
 
       # reraise the error
       raise ex
@@ -669,22 +687,25 @@ class PhotoAttachedImage < AttachedImage
     end
   end
 
+  # tack on any custom data you want to go with the original
+  def custom_metadata_original
+    custom_meta = {
+        "x-amz-meta-photo-id" => model.id.to_s,
+        "x-amz-meta-album-id" => model.album_id.to_s,
+        "x-amz-meta-user-id" => model.user_id.to_s
+    }
+  end
+
   # generate the custom metadata headers to be stored along
   # with the resized objects return the object as a map
   # this call is made after the custom_commands call so this
   # is where you want to change the model state
   def custom_metadata
+    custom_meta = custom_metadata_original
     rotate_to = model.rotate_to
     if rotate_to != 0
-      model.rotate_to = 0 # rotation is done and recorded
-      {
-          "x-amz-meta-rotate" => rotate_to.to_s,
-          "x-amz-meta-photo-id" => model.id.to_s,
-          "x-amz-meta-album-id" => model.album_id.to_s,
-          "x-amz-meta-user-id" => model.user_id.to_s
-      }
-    else
-      nil
+      custom_meta["x-amz-meta-rotate"] = rotate_to.to_s
     end
+    custom_meta
   end
 end

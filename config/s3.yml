@@ -9,6 +9,7 @@ common: &common
   access_key_id: AKIAJZR7WODGPXONMRVA
   secret_access_key: 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
   buckets: [d.1.zz, d.2.zz]
+  reduced_redundancy: true
 
 development:
   <<: *common
@@ -22,6 +23,7 @@ test:
 photos_production:
   <<: *common
   buckets: [1.zz, 2.zz, 3.zz, 4.zz]
+  reduced_redundancy: false
 
 photos_staging:
   <<: *common

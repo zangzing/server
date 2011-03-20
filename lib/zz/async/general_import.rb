@@ -19,7 +19,7 @@ module ZZ
       def self.perform( photo_id, source_url )
         SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
           photo = Photo.find(photo_id)
-          if photo.assigned?
+          if photo.assigned? || photo.error?
             file = RemoteFile.new(source_url, PhotoGenHelper.photo_upload_dir)
             file_path = file.path
             file.close()

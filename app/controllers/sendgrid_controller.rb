@@ -58,6 +58,7 @@ each album has an email address in the form <album_id>@sendgrid-post.zangzing.co
     else
       # call did not come through remapped upload via nginx or we have no attachments so reject it
       logger.error "Incoming email import album invalid arguments or no attachments will not retry."
+      clean_up_temp_files(attachments)
       render :nothing => true, :status=> :ok
     end
   end
@@ -77,35 +78,50 @@ protected
         # do the delete since we no longer need the temp file
         # and nginx is not going to clean up in this case
         path = fast_local_image['filepath']
-        (File.delete(path) unless path.nil?) rescue nil #ignore any error
+        remove_file(path)
       end
     end
+  end
+
+  def remove_file(path)
+    (File.delete(path) unless path.nil?) rescue nil #ignore any error
   end
 
   # take the incoming file attachments and make photos out of them
   def add_photos(album, user, attachments)
     if attachments.count > 0
-      last_photo = nil
       photos = []
       current_batch = UploadBatch.get_current( user.id, album.id )
       attachments.each do |fast_local_image|
-        photo = Photo.new_for_batch(current_batch, {
-                :id => Photo.get_next_id,
-                :user_id => user.id,
-                :album_id => album.id,
-                :upload_batch_id => current_batch.id,
-                :caption => fast_local_image["original_name"],
-                #create random uuid for this photo
-                :source_guid => "email:"+UUIDTools::UUID.random_create.to_s})
-        # use the passed in temp file to attach to the photo
-        photo.file_to_upload = fast_local_image['filepath']
-        photos << photo
+        content_type = fast_local_image['content_type']
+        file_path = fast_local_image['filepath']
+        if Photo.valid_image_type?(content_type) == false
+          # not a valid file type, just ignore and remove file
+          remove_file(file_path)
+        else
+          begin
+            photo = Photo.new_for_batch(current_batch, {
+                    :id => Photo.get_next_id,
+                    :user_id => user.id,
+                    :album_id => album.id,
+                    :upload_batch_id => current_batch.id,
+                    :caption => fast_local_image["original_name"],
+                    #create random uuid for this photo
+                    :source_guid => "email:"+UUIDTools::UUID.random_create.to_s})
+            # use the passed in temp file to attach to the photo
+            photo.file_to_upload = file_path
+            photos << photo
+          rescue PhotoValidationError => ex
+            # if it's a validation error, ignore and continue.  Probably just
+            # a bad type of upload (i.e. not a photo)
+          end
+        end
       end
 
       # bulk insert
       Photo.batch_insert(photos)
 
-      current_batch.close
+      #current_batch.close
     end
   end
 

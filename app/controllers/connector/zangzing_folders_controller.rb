@@ -29,8 +29,8 @@ class Connector::ZangzingFoldersController < Connector::ConnectorController
                 :upload_batch_id => current_batch.id,                
                 :capture_date => p.capture_date,
                 :source_guid => p.source_guid,
-                :source_thumb_url => p.source_thumb_url,
-                :source_screen_url => p.source_screen_url
+                :source_thumb_url => p.thumb_url,
+                :source_screen_url => p.screen_url
       })
 
       photo.temp_url = photo_url

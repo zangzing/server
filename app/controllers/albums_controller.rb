@@ -111,11 +111,21 @@ class AlbumsController < ApplicationController
     # if we are showing the owners albums, so them all as well as any linked albums and any public albums for users that the user likes
     # for a different user than the current logged in user, just show all public albums including any that the users likes and
     # any public ones that get pulled in from users that we like
+    # When the user visits her hompage show
+    #    -All of her albums
+    #    -All he liked albums
+    #    -All of her liked users public albums
+    # When the user visits joe's homepage show
+    #    -All of joe's user public albums
+    #    -All of joe's liked public albums
+    #    -All of joe's lked users' public albums
     if(current_user? @user)
       @albums = @user.albums | @user.liked_albums | liked_users_public_albums #show all of current_user's albums
     else
       @albums = @user.albums.find_all_by_privacy('public') | @user.liked_public_albums | liked_users_public_albums
     end
+    @albums = @albums.sort { |a1, a2| a1.updated_at <=> a2.updated_at }
+
     #Setup badge vars
     @badge_name = @user.name
   end

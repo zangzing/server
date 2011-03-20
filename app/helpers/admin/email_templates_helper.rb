@@ -68,8 +68,12 @@ module Admin::EmailTemplatesHelper
   end
 
   def message
-    "Pellentesque rutrum, mi at porta rutrum, arcu justo ullamcorper lacus, "+
-        "ultrices tincidunt lectus massa vel sem. Quisque bibendum magna non tortor ultrices a commodo quam gravida.  "+
+    if rand(2) == 1
+    "This message is automatically generated for test emails, Its mimics a custom message written by a user. "+
+        "It will be included randomly so you may or may not see it. Do not worry it is not a bug.  "+
         "Proin vestibulum adipiscing neque, ac tincidunt neque pretium a."
+    else
+      ""
+    end
   end
 end

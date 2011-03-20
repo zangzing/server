@@ -66,24 +66,73 @@ class Album < ActiveRecord::Base
     Album.update(album_id, :photos_last_updated_at => now, :updated_at => now)
   end
 
-  def cover
-    unless self.cover_photo_id.nil?
-      if self.photos.empty?
-         self.cover_photo_id = nil
-         self.save
-         return nil
-      else
-         cover_photo = self.photos.find_by_id( self.cover_photo_id )
-         if cover_photo.nil?
-             self.cover_photo_id = nil
-             self.save
-             return nil
-         end
-         return cover_photo
-      end
+  # populate the covers for the given photos
+  # we don't use .includes because the photos passed
+  # into us here may have come from multiple queries
+  # as in the albums_controller index method
+  def self.fetch_bulk_covers(albums)
+    cover_ids = []
+    albums.each do |album|
+      cover_photo_id = album.cover_photo_id
+      cover_ids << cover_photo_id unless cover_photo_id.nil?
     end
-    self.photos.order("created_at ASC").first    
+
+    # now perform the bulk query
+    coverPhotos = Photo.where(:id => cover_ids)
+
+    # ok, now map these by id to cover
+    coverMap = {}
+    coverPhotos.each do |cover|
+      coverMap[cover.id.to_s] = cover
+    end
+
+    # and finally associate them back to each album
+    albums.each do |album|
+      album.set_cached_cover(coverMap[album.cover_photo_id.to_s])
+    end
   end
+
+  def set_cached_cover(cover)
+    return if @cover_set
+
+    if cover.nil?
+      # no cover with this album, previously we
+      # fetched each and every time for this case
+      # I've changed this to lock down the cover
+      # on the first fetch if the cover is nil
+      # This changes the UI behavior because if
+      # new photos are added the cover will remain the
+      # same where previously it could become a different photo.
+      @cover = cover_fetch
+      # if you don't want the new behavior comment out the
+      # following lines - keep in mind, doing so will result
+      # in a less efficient system
+      if @cover
+        self.cover_photo_id = @cover.id
+        self.save
+      end
+    else
+      @cover = cover
+    end
+
+    @cover_set = true
+  end
+
+
+  # lets hold a temp copy of the cover to
+  # avoid running queries multiple times
+  def cover
+    # we have cover set test because not sufficient to
+    # just test for @cover.nil? because nil is a valid
+    # condition for @cover and we don't want to go
+    # back through all the logic again
+    if !@cover_set
+      @cover = cover_fetch
+      @cover_set = true
+    end
+    @cover
+  end
+
 
   def cover=( photo )
     if photo.nil?
@@ -249,6 +298,7 @@ class Album < ActiveRecord::Base
     self.privacy == 'hidden'
   end
 
+
 private
   def cover_photo_id_valid?
     begin
@@ -269,6 +319,30 @@ private
 
   def add_creator_as_admin
     acl.add_user( user.id, AlbumACL::ADMIN_ROLE )
+  end
+
+  # this pulls the cover from the db
+  # this should be private since internal to
+  # album
+  def cover_fetch
+    unless self.cover_photo_id.nil?
+      if self.photos.empty?
+         self.cover_photo_id = nil
+         self.save
+         return nil
+      else
+         cover_photo = self.photos.find_by_id( self.cover_photo_id )
+         if cover_photo.nil?
+             self.cover_photo_id = nil
+             self.save
+             return nil
+         end
+         return cover_photo
+      end
+    end
+    # no need to custom order as default scope provides proper ordering
+    # pos ASC, created_at ASC
+    self.photos.first
   end
 
 end

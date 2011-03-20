@@ -18,6 +18,7 @@ class PhotoGenHelper
     zconfig.s3_access_key_id = s3config[:access_key_id]
     zconfig.s3_secret_access_key = s3config[:secret_access_key]
     zconfig.s3_buckets = s3config[:buckets]
+    zconfig.s3_reduced_redundancy = s3config[:reduced_redundancy]
 
     AWS::S3::Base.establish_connection!(
             :access_key_id => zconfig.s3_access_key_id,
@@ -51,6 +52,10 @@ class PhotoGenHelper
 
   def self.s3_buckets
     zconfig.s3_buckets
+  end
+
+  def self.s3_reduced_redundancy
+    zconfig.s3_reduced_redundancy
   end
 end
 

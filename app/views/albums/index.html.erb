@@ -11,11 +11,34 @@
 %>
 
 
-<% @albums.each do |album|  %>
-    <div class="album-cell" data-album-id="<%=album.id%>" data-album-path="/<%=album.user.username%>/<%=album.friendly_id%>/photos">
+<%
+    # first grab all the cover photos in one query
+    # this populates the albums in place
+    Album.fetch_bulk_covers(@albums)
+
+    # we keep a local map of the user_id to name because in most
+    # cases the albums will have the same user - avoids lots of
+    # Activerecord overhead
+    user_id_to_name_map = {}
+
+    @albums.each do |album|
+        album_cover = album.cover
+        album_id = album.id
+        album_name = album.name
+        album_user_id = album.user_id.to_s
+        album_friendly_id = album.friendly_id
+        album_user_name = user_id_to_name_map[album_user_id]
+        if album_user_name.nil?
+            # don't have it, go to the db and save it
+            album_user_name = album.user.username
+            user_id_to_name_map[album_user_id] = album_user_name
+        end
+
+%>
+    <div class="album-cell" data-album-id="<%=album_id%>" data-album-path="/<%=album_user_name%>/<%=album_friendly_id%>/photos">
 
 <%
-    if(!album.cover)  #no cover photo
+    if(!album_cover)  #no cover photo
 %>
           <div class="picon landscape landscape_<%=1+rand(3)%>">
               <div class="landscape_mask">
@@ -23,18 +46,21 @@
               </div>
           </div>
 <%
-    elsif (album.cover.state != 'ready') #not finished uploading/processing -- just stretch to fit
+    elsif (album_cover.state != 'ready') #not finished uploading/processing -- just stretch to fit
 %>
           <div class="picon landscape landscape_<%=1+rand(3)%>">
               <div class="landscape_mask">
-                  <img style="width:<%=landscape_width%>px; height:<%=landscape_height%>px"  src="<%= album.cover.thumb_url%>">
+                  <img style="width:<%=landscape_width%>px; height:<%=landscape_height%>px"  src="<%= album_cover.thumb_url%>">
               </div>
           </div>
 <%
     else
-        cover_aspect = (album.cover.rotated_width.to_f / album.cover.rotated_height.to_f)
+        cover_rotated_width = album_cover.rotated_width
+        cover_rotated_height = album_cover.rotated_height
 
-        if(album.cover.rotated_width >= album.cover.rotated_height) #landscape
+        cover_aspect = (cover_rotated_width.to_f / cover_rotated_height.to_f)
+
+        if(cover_rotated_width >= cover_rotated_height) #landscape
 
             picon_aspect = (landscape_width.to_f / landscape_height.to_f)
 
@@ -55,7 +81,7 @@
 %>
           <div class="picon landscape landscape_<%=1+rand(3)%>">
               <div class="landscape_mask">
-                  <img style="position:relative;width:<%=width%>px; height:<%=height%>px;top:<%=top%>px;left:<%=left%>px;" src="<%= album.cover.thumb_url%>">
+                  <img style="position:relative;width:<%=width%>px; height:<%=height%>px;top:<%=top%>px;left:<%=left%>px;" src="<%= album_cover.thumb_url%>">
               </div>
           </div>
 
@@ -94,7 +120,7 @@
 
 
 
-        <div class="album-name"><%= truncate(h(album.name), :length => 100) %></div>
+        <div class="album-name"><%= truncate(h(album_name), :length => 100) %></div>
         <div class="album-toolbar">
             <div class="buttons">
                 <div class="share-button"></div>
