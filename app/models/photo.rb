@@ -37,6 +37,7 @@
 #
 require 'zz'
 require 'bulk_id_generator'
+require 'zz_env_helpers'
 
 class PhotoValidationError < StandardError
 end
@@ -48,7 +49,7 @@ class Photo < ActiveRecord::Base
                   :rotate_to, :source_path, :guid_part, :latitude, :created_at, :id,
                   :updated_at, :image_content_type, :headline, :error_message, :image_bucket,
                   :orientation, :height, :suspended, :longitude, :pos, :image_path, :image_updated_at,
-                  :generate_queued_at, :width, :state
+                  :generate_queued_at, :width, :state, :source
 
   # this is just a placeholder used by the connectors to track some extra state
   # now that we do batch operations
@@ -166,8 +167,10 @@ class Photo < ActiveRecord::Base
       self.longitude = PhotoInfo.decode_gps_coord(val, val_ref) unless val.nil? || val_ref.nil?
     end
     if iptc = data['IPTC']
-      self.headline = (iptc['Headline'] || '') if self.headline.blank?
-      self.caption = (iptc['Caption'] || '') if self.caption.blank?
+      cur_headline = safe_default(self.headline, '')
+      cur_caption = safe_default(self.caption, '')
+      self.headline = (iptc['Headline'] || '') if cur_headline.blank?
+      self.caption = (iptc['Caption'] || '') if cur_caption.blank?
     end
     if file = data['File']
       val = file['MIMEType']

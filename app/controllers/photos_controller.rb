@@ -30,28 +30,37 @@ class PhotosController < ApplicationController
     end
   end
 
+
   def agent_create
     if params[:source_guid].nil?
       render :json => "source_guid parameter required. Unable to create photos", :status=>400 and return
     end
 
-    album       = fetch_album
-    album_id    = album.id
-    agent_id    = params[:agent_id]
-    user_id     = current_user.id
-    photos      = []
-    photo_count = params[:source_guid].length
+    album             = fetch_album
+    user_id           = current_user.id
 
     # validate that current_user is a contributor
     # (the agent has a token for a user that here is known as current_user)
+    #todo: generalize with before filter
     render :json => "User does not have permission to add photos to this album",
            :status=> 401 and return unless album.contributor?( user_id )
       
+
+    album_id          = album.id
+    agent_id          = params[:agent_id]
+    photos            = []
+    source_guid_map   = params[:source_guid]
+    photo_count       = source_guid_map.length
+    caption_map       = params[:caption]
+    file_size_map     = params[:size]
+    capture_date_map  = params[:capture_date]
+    source_map        = params[:source]
 
     # optimize by ensuring we have the number of ids we need up front
     current_id = Photo.get_next_id(photo_count)
     current_batch = UploadBatch.get_current( user_id, album_id )
     batch_id = current_batch.id
+
     (0...photo_count).each do |index|
       i_s = index.to_s
       photo = Photo.new_for_batch(current_batch,  {
@@ -62,10 +71,11 @@ class PhotosController < ApplicationController
                                     :agent_id          =>   agent_id,
                                     :source_thumb_url  =>   Photo.make_agent_source('thumb', current_id, album_id),
                                     :source_screen_url =>   Photo.make_agent_source('screen', current_id, album_id),
-                                    :source_guid       =>   params[:source_guid][i_s],
-                                    :caption           =>   params[:caption][i_s],
-                                    :image_file_size   =>   params[:size][i_s],
-                                    :capture_date      =>   Time.at( params[:capture_date][i_s].to_i )
+                                    :source_guid       =>   source_guid_map[i_s],
+                                    :source            =>   safe_hash_default(source_map, i_s, nil),
+                                    :caption           =>   safe_hash_default(caption_map, i_s, ""),
+                                    :image_file_size   =>   file_size_map[i_s],
+                                    :capture_date      =>   Time.at( safe_hash_default(capture_date_map, i_s, 0).to_i )
                                     }
                                     )
       current_id += 1

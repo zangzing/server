@@ -14,3 +14,16 @@ def small_back_trace(ex, lines = 5)
 
   return result
 end
+
+# return a safe default if nil
+def safe_default(item, default)
+  item.nil? ? default : item
+end
+
+# return the default if the map does not exist, or the
+# map[key] element does not exist
+def safe_hash_default(map, key, default)
+  value = map.nil? ? default : map[key]
+  safe_default(value, default)
+end
+

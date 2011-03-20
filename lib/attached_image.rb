@@ -47,10 +47,13 @@ class AttachedImage
   end
 
   def s3_headers
-    {
-      "x-amz-storage-class" => "REDUCED_REDUNDANCY",
+    headers = {
       "Expires" => "#{1.year.from_now.httpdate}"
     }
+    if PhotoGenHelper.s3_reduced_redundancy
+      headers['x-amz-storage-class'] = 'REDUCED_REDUNDANCY'
+    end
+    headers
   end
 
   # customize this in the child class if you want a different s3
