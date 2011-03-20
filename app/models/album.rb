@@ -66,6 +66,59 @@ class Album < ActiveRecord::Base
     Album.update(album_id, :photos_last_updated_at => now, :updated_at => now)
   end
 
+  # populate the covers for the given photos
+  # we don't use .includes because the photos passed
+  # into us here may have come from multiple queries
+  # as in the albums_controller index method
+  def self.fetch_bulk_covers(albums)
+    cover_ids = []
+    albums.each do |album|
+      cover_photo_id = album.cover_photo_id
+      cover_ids << cover_photo_id unless cover_photo_id.nil?
+    end
+
+    # now perform the bulk query
+    coverPhotos = Photo.where(:id => cover_ids)
+
+    # ok, now map these by id to cover
+    coverMap = {}
+    coverPhotos.each do |cover|
+      coverMap[cover.id.to_s] = cover
+    end
+
+    # and finally associate them back to each album
+    albums.each do |album|
+      album.set_cached_cover(coverMap[album.cover_photo_id.to_s])
+    end
+  end
+
+  def set_cached_cover(cover)
+    return if @cover_set
+
+    if cover.nil?
+      # no cover with this album, previously we
+      # fetched each and every time for this case
+      # I've changed this to lock down the cover
+      # on the first fetch if the cover is nil
+      # This changes the UI behavior because if
+      # new photos are added the cover will remain the
+      # same where previously it could become a different photo.
+      @cover = cover_fetch
+      # if you don't want the new behavior comment out the
+      # following lines - keep in mind, doing so will result
+      # in a less efficient system
+      if @cover
+        self.cover_photo_id = @cover.id
+        self.save
+      end
+    else
+      @cover = cover
+    end
+
+    @cover_set = true
+  end
+
+
   # lets hold a temp copy of the cover to
   # avoid running queries multiple times
   def cover
@@ -244,6 +297,7 @@ class Album < ActiveRecord::Base
   def hidden?
     self.privacy == 'hidden'
   end
+
 
 private
   def cover_photo_id_valid?

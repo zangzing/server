@@ -35,14 +35,21 @@ class PhotosController < ApplicationController
       render :json => "source_guid parameter required. Unable to create photos", :status=>400 and return
     end
 
-    album = fetch_album
-    album_id = album.id
-    photos = []
+    album       = fetch_album
+    album_id    = album.id
+    agent_id    = params[:agent_id]
+    user_id     = current_user.id
+    photos      = []
     photo_count = params[:source_guid].length
+
+    # validate that current_user is a contributor
+    # (the agent has a token for a user that here is known as current_user)
+    render :json => "User does not have permission to add photos to this album",
+           :status=> 401 and return unless album.contributor?( user_id )
+      
+
     # optimize by ensuring we have the number of ids we need up front
     current_id = Photo.get_next_id(photo_count)
-    agent_id = params[:agent_id]
-    user_id = current_user.id
     current_batch = UploadBatch.get_current( user_id, album_id )
     batch_id = current_batch.id
     (0...photo_count).each do |index|

@@ -12,6 +12,10 @@
 
 
 <%
+    # first grab all the cover photos in one query
+    # this populates the albums in place
+    Album.fetch_bulk_covers(@albums)
+
     # we keep a local map of the user_id to name because in most
     # cases the albums will have the same user - avoids lots of
     # Activerecord overhead
