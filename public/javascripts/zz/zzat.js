@@ -77,4 +77,8 @@ var ZZAt = {
 
 ZZAt.track('page.visit',{ua: navigator.userAgent});
 
-
+// have zza track all js errors
+window.onerror = function(message, url, line) {
+    ZZAt.track('js.error',{message: message, url:url, line:line});
+    return false;
+};
