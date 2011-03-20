@@ -7,10 +7,25 @@ class Connector::InstagramFoldersController < Connector::InstagramController
         {
           :name => 'My Photos', :type => 'folder', :id => 'my-photos',
           :open_url => instagram_photos_path(:target => 'my-photos'), :add_url => instagram_folder_action_path(:target => 'my-photos', :action => 'import')
+        },
+        {
+          :name => 'People I follow', :type => 'folder', :id => 'i-follow',
+          :open_url => instagram_folders_path(:target => 'i-follow'), :add_url => nil
         }
       ]
+    else
+      followers = []
+      SystemTimer.timeout_after(http_timeout) do
+        followers = client.user_follows(nil)
+      end
+      root = followers.map do |f|
+        {
+          :name => f[:full_name], :type => 'folder', :id => "follower-#{f[:id]}",
+          :open_url => instagram_photos_path(:target => f[:id]), :add_url => instagram_folder_action_path(:target => f[:id], :action => 'import')
+        }
+      end
     end
-    expires_in 10.hours, :public => false
+    expires_in 10.minutes, :public => false
     render :json => JSON.fast_generate(root)
   end
 

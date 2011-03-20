@@ -46,7 +46,7 @@ protected
   def feed_owner
     case params[:target]
       when 'my-photos' then 'self'
-      else nil
+      else params[:target]
     end
   end
 
