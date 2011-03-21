@@ -713,7 +713,7 @@ pages.acct_profile = {
             close: function(event, ui){
                 $.ajax({ url:      zz.path_prefix + '/albums/' +zz.album_id + '/close_batch',
                     complete: function(request, textStatus){
-                        console.log('Batch closed because Add photos dialog was closed. Call to close_batch returned with status= '+textStatus);
+                        logger.debug('Batch closed because Add photos dialog was closed. Call to close_batch returned with status= '+textStatus);
                     },
                     success: function(){
                         pages.acct_profile.refresh_profile_photo_picker()
