@@ -57,14 +57,19 @@ class Admin::EmailTemplatesController < Admin::AdminController
   end
 
   def test
-    @template = EmailTemplate.find( params[:id] )
-    @message = send( 'test_'+@template.email.name, @template.id )
-    if params[:onscreen]
-      render :layout => false
-    else
-      @message.deliver
-      flash[:notice]="Test #{@template.email.name} message sent."
-      redirect_to :back
+    begin
+      @template = EmailTemplate.find( params[:id] )
+      @message = send( 'test_'+@template.email.name, @template.id )
+      if params[:onscreen]
+        render :layout => false
+      else
+        @message.deliver
+        flash[:notice]="Test #{@template.email.name} message sent."
+        redirect_to :back
+      end
+    rescue Exception => e
+        flash[:error]="Unable to test template because of: #{e}."
+        redirect_to :back
     end
   end
 

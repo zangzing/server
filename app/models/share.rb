@@ -61,6 +61,7 @@ class Share < ActiveRecord::Base
     case service
       when 'email'
         self.recipients.each do |recipient |
+          # TODO: Add Album.Photo.User handling See bug #1124
           ZZ::Async::Email.enqueue( :album_shared, self.user_id, recipient, self.subject_id, self.message )
         end
       when 'social'
