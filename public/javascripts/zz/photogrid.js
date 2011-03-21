@@ -260,7 +260,9 @@
                     self.resetLayout();
 
                     self.element.children('.photogrid-cell').each(function(index, element){
-                        $(element).data().zz_photo.loadIfVisible();
+                        if(!_.isUndefined($(element).data().zz_photo)){ //todo: sometimes this is undefined -- not sure why
+                           $(element).data().zz_photo.loadIfVisible();
+                        }
                     });
 
 
