@@ -44,7 +44,9 @@ class Connector::FlickrPhotosController < Connector::FlickrController
               :caption => info.title,
               :source_guid => make_source_guid(info),
               :source_thumb_url => get_photo_url(info, :thumb),
-              :source_screen_url => get_photo_url(info, :screen)
+              :source_screen_url => get_photo_url(info, :screen),
+              :source => 'flickr'
+
     )
     
     ZZ::Async::GeneralImport.enqueue( photo.id, photo_url )

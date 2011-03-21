@@ -39,7 +39,9 @@ class Connector::FlickrFoldersController < Connector::FlickrController
                 :caption => p.title,
                 :source_guid => make_source_guid(p),
                 :source_thumb_url => get_photo_url(p, :thumb),
-                :source_screen_url => get_photo_url(p, :screen)
+                :source_screen_url => get_photo_url(p, :screen),
+                :source => 'flickr'
+
       })
 
       photo.temp_url = photo_url

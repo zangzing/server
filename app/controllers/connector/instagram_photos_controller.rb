@@ -37,7 +37,9 @@ class Connector::InstagramPhotosController < Connector::InstagramController
             :capture_date => (Time.at(photo_data[:created_time].to_i) rescue nil),
             :source_guid => make_source_guid(photo_data),
             :source_thumb_url => photo_data[:images][:thumbnail][:url],
-            :source_screen_url => photo_data[:images][:low_resolution][:url]
+            :source_screen_url => photo_data[:images][:low_resolution][:url],
+            :source => 'instagram'
+
     )
 
     ZZ::Async::GeneralImport.enqueue( photo.id, photo_data[:images][:standard_resolution][:url] )

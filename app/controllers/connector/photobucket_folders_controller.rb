@@ -50,7 +50,8 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
               :capture_date => (Time.at(photo_data[:uploaddate].to_i) rescue nil),
               :source_guid => make_source_guid(photo_data[:url]),
               :source_thumb_url => photo_data[:thumb],
-              :source_screen_url => photo_data[:thumb]
+              :source_screen_url => photo_data[:thumb],
+              :source => 'photobucket'
       })
       
       photo.temp_url = photo_url
@@ -76,7 +77,9 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
             :capture_date => (Time.at(photo_data[:uploaddate].to_i) rescue nil),
             :source_guid => make_source_guid(photo_data[:url]),
             :source_thumb_url => photo_data[:thumb],
-            :source_screen_url => photo_data[:thumb]
+            :source_screen_url => photo_data[:thumb],
+            :source => 'photobucket'
+
     )
     
     ZZ::Async::GeneralImport.enqueue( photo.id, photo_data[:url] )

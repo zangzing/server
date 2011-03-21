@@ -48,7 +48,9 @@ class Connector::ShutterflyPhotosController < Connector::ShutterflyController
             :capture_date => (Time.at(photo_info[:capturetime].to_i/1000) rescue nil),
             :source_guid => make_source_guid(photo_info),
             :source_thumb_url => get_photo_url(params[:photo_id],  :thumb),
-            :source_screen_url => get_photo_url(params[:photo_id],  :screen)
+            :source_screen_url => get_photo_url(params[:photo_id],  :screen),
+            :source => 'shutterfly'
+
     )
     
     ZZ::Async::GeneralImport.enqueue( photo.id,  photo_url )

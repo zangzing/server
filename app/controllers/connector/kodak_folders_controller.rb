@@ -37,7 +37,9 @@ class Connector::KodakFoldersController < Connector::KodakController
               :caption => p['caption'],
               :source_guid => make_source_guid(p),
               :source_thumb_url => p[PHOTO_SIZES[:thumb]],
-              :source_screen_url => p[PHOTO_SIZES[:screen]]
+              :source_screen_url => p[PHOTO_SIZES[:screen]],
+              :source => 'kodak'
+
       })
     
       photo.temp_url = photo_url

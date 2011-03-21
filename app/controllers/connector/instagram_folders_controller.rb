@@ -47,7 +47,9 @@ class Connector::InstagramFoldersController < Connector::InstagramController
             :capture_date => (Time.at(p[:created_time].to_i) rescue nil),
             :source_guid => make_source_guid(p),
             :source_thumb_url => p[:images][:thumbnail][:url],
-            :source_screen_url => p[:images][:low_resolution][:url]
+            :source_screen_url => p[:images][:low_resolution][:url],
+            :source => 'instagram'
+
       })
 
       photo.temp_url = photo_url
