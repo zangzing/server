@@ -670,7 +670,6 @@
 
             //add back the ones we need
             $.each(self.tray_photos, function(index, photo){
-                logger.debug(photo.source_guid);
                 var cell = self.grid.cellForId(photo.source_guid);
                 if(cell){
                     cell.data().zz_photo.setChecked(true);

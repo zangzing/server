@@ -47,10 +47,13 @@ class AttachedImage
   end
 
   def s3_headers
-    {
-      "x-amz-storage-class" => "REDUCED_REDUNDANCY",
+    headers = {
       "Expires" => "#{1.year.from_now.httpdate}"
     }
+    if PhotoGenHelper.s3_reduced_redundancy
+      headers['x-amz-storage-class'] = 'REDUCED_REDUNDANCY'
+    end
+    headers
   end
 
   # customize this in the child class if you want a different s3
@@ -245,7 +248,6 @@ class AttachedImage
         :access => s3_privacy_policy
     }.merge(s3_headers)
     options.merge(metadata) unless metadata.nil?
-    options
   end
   
   # the map specified is an array of file_infos
@@ -317,7 +319,7 @@ class AttachedImage
     content_type = self.content_type
     url = AttachedImage.build_s3_url(bucket, prefix, image_id, ORIGINAL, time_stamp)
     self.path = url
-    AttachedImage.upload_s3_photo(file, bucket, key, s3_options(content_type, nil))
+    AttachedImage.upload_s3_photo(file, bucket, key, s3_options(content_type, custom_metadata_original))
   end
 
   # build the url from this model and field
@@ -366,6 +368,10 @@ class AttachedImage
     return nil
   end
 
+  # tack on any custom data you want to go with the original
+  def custom_metadata_original
+    return nil
+  end
   # generate the custom metadata headers to be stored along
   # with the resized objects return the object as a map
   # this call is made after the custom_commands call so this

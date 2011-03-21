@@ -37,6 +37,7 @@
 #
 require 'zz'
 require 'bulk_id_generator'
+require 'zz_env_helpers'
 
 class PhotoValidationError < StandardError
 end
@@ -48,7 +49,7 @@ class Photo < ActiveRecord::Base
                   :rotate_to, :source_path, :guid_part, :latitude, :created_at, :id,
                   :updated_at, :image_content_type, :headline, :error_message, :image_bucket,
                   :orientation, :height, :suspended, :longitude, :pos, :image_path, :image_updated_at,
-                  :generate_queued_at, :width, :state
+                  :generate_queued_at, :width, :state, :source
 
   # this is just a placeholder used by the connectors to track some extra state
   # now that we do batch operations
@@ -166,8 +167,10 @@ class Photo < ActiveRecord::Base
       self.longitude = PhotoInfo.decode_gps_coord(val, val_ref) unless val.nil? || val_ref.nil?
     end
     if iptc = data['IPTC']
-      self.headline = (iptc['Headline'] || '') if self.headline.blank?
-      self.caption = (iptc['Caption'] || '') if self.caption.blank?
+      cur_headline = safe_default(self.headline, '')
+      cur_caption = safe_default(self.caption, '')
+      self.headline = (iptc['Headline'] || '') if cur_headline.blank?
+      self.caption = (iptc['Caption'] || '') if cur_caption.blank?
     end
     if file = data['File']
       val = file['MIMEType']
@@ -664,7 +667,7 @@ class PhotoAttachedImage < AttachedImage
     @@sizes ||= [
         {LARGE    => "-resize '2560x1440>' -strip -quality 80"},  # large
         {MEDIUM   => "-resize '1024x768>' -strip -quality 80"},  # medium
-        {THUMB    => "-resize '180x180>' -strip -quality 80"},   # thumb
+        {THUMB    => "-resize '180x180>' -strip -quality 93"},   # thumb
         {STAMP    => "-resize '100x100>' -strip -quality 80"}    # stamp
     ]
   end
@@ -684,22 +687,25 @@ class PhotoAttachedImage < AttachedImage
     end
   end
 
+  # tack on any custom data you want to go with the original
+  def custom_metadata_original
+    custom_meta = {
+        "x-amz-meta-photo-id" => model.id.to_s,
+        "x-amz-meta-album-id" => model.album_id.to_s,
+        "x-amz-meta-user-id" => model.user_id.to_s
+    }
+  end
+
   # generate the custom metadata headers to be stored along
   # with the resized objects return the object as a map
   # this call is made after the custom_commands call so this
   # is where you want to change the model state
   def custom_metadata
+    custom_meta = custom_metadata_original
     rotate_to = model.rotate_to
     if rotate_to != 0
-      model.rotate_to = 0 # rotation is done and recorded
-      {
-          "x-amz-meta-rotate" => rotate_to.to_s,
-          "x-amz-meta-photo-id" => model.id.to_s,
-          "x-amz-meta-album-id" => model.album_id.to_s,
-          "x-amz-meta-user-id" => model.user_id.to_s
-      }
-    else
-      nil
+      custom_meta["x-amz-meta-rotate"] = rotate_to.to_s
     end
+    custom_meta
   end
 end

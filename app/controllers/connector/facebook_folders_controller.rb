@@ -74,7 +74,8 @@ class Connector::FacebookFoldersController < Connector::FacebookController
                 :capture_date => p[:created_time],
                 :source_guid => make_source_guid(p),
                 :source_thumb_url => get_photo_url(p, :thumb),
-                :source_screen_url => get_photo_url(p, :screen)
+                :source_screen_url => get_photo_url(p, :screen),
+                :source => 'facebook'
       })
       photo.temp_url = photo_url
       photos << photo

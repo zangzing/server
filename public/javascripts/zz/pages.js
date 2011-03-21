@@ -194,7 +194,6 @@ pages.edit_album_tab = {
                             data.after_id = after_id;
                         }
 
-                        logger.debug(data);
 
 
                         $.ajax({
@@ -713,7 +712,7 @@ pages.acct_profile = {
             close: function(event, ui){
                 $.ajax({ url:      zz.path_prefix + '/albums/' +zz.album_id + '/close_batch',
                     complete: function(request, textStatus){
-                        console.log('Batch closed because Add photos dialog was closed. Call to close_batch returned with status= '+textStatus);
+                        logger.debug('Batch closed because Add photos dialog was closed. Call to close_batch returned with status= '+textStatus);
                     },
                     success: function(){
                         pages.acct_profile.refresh_profile_photo_picker()
@@ -883,7 +882,10 @@ pages.no_agent = {
     url: '/static/connect_messages/no_agent.html',
 
     filechooser: function( when_ready ){
-	   $('#downloadzz-btn').click( pages.no_agent.download );
+        $('.zangzing-downloader #download-btn').click( function(){
+           pages.no_agent.download();
+        });
+
         pages.no_agent.keep_polling = true;
         pages.no_agent.poll_agent( function(){
             if( $.isFunction(  when_ready )) when_ready();
@@ -895,7 +897,9 @@ pages.no_agent = {
     dialog: function( onClose ){
 
          $('<div></div>', { id: 'no-agent-dialog'}).load(pages.no_agent.url, function(){
-             $('#downloadzz-btn').click( pages.no_agent.download );
+             $('.zangzing-downloader #download-btn').click( function(){
+                 pages.no_agent.download();
+             }) ;
              $( this ).zz_dialog({
                     modal: true,
                     width: 910,
@@ -917,21 +921,18 @@ pages.no_agent = {
     poll_agent: function( when_ready ){
           agent.isAvailable( function( agentAvailable ){
               if( agentAvailable ){
-                    // Develop zang walker and callback
-                    $('#downloadzz-btn').attr('disabled', 'disabled');
-                    $('#downloadzz-developed').fadeIn(4000, function(){
-                        $('#downloadzz-developed').parent().siblings('.downloadzz-text').fadeOut( 'fast')
-                        $('#downloadzz-developed').parent().siblings('.downloadzz-headline').fadeOut( 'slow', function(){
-                            $(this).html('ZangZing is Ready!');
-                            $(this).fadeIn( 'fast');
-                                if( $.isFunction( when_ready ) ) setTimeout( when_ready, 1000 );
-                        });
-                    });
-					
-					ZZAt.track('agentdownload.ready');
-              }else{
+                    $('.zangzing-downloader #download-btn').attr('disabled', 'disabled');
+                    $('.zangzing-downloader .step.four .graphic').addClass('ready');
+                    if( $.isFunction( when_ready ) ){
+                        setTimeout( when_ready, 2000 );
+                    }
+				    ZZAt.track('agentdownload.ready');
+              }
+              else{
                   if( pages.no_agent.keep_polling ){
-                    setTimeout( function(){ pages.no_agent.poll_agent( when_ready )}, 1000);
+                    setTimeout( function(){
+                        pages.no_agent.poll_agent( when_ready )
+                    }, 1000);
                   }
               }
           });
@@ -942,8 +943,17 @@ pages.no_agent = {
         
 		if($.client.os =="Mac"){
 			document.location.href = 'http://downloads.zangzing.com/agent/darwin/ZangZing-Setup.pkg'
-		} else {
-			document.location.href = 'http://downloads.zangzing.com/agent/win32/ZangZing-Setup.exe'
+		}
+        else{
+			var win_url = 'http://downloads.zangzing.com/agent/win32/ZangZing-Setup.exe';
+            if($.client.browser == 'Chrome'){
+                //on chrome on windows, using the same browser window to download causes js issues (stops pinging agent)
+                window.open(win_url);
+            }
+            else{
+                document.location.href = win_url;
+            }
+
 		}
 		
     }

@@ -1,7 +1,10 @@
 class Connector::InstagramPhotosController < Connector::InstagramController
-
+  
   def index
-    photo_list = client.user_media_feed(feed_owner)
+    photo_list = nil
+    SystemTimer.timeout_after(http_timeout) do
+      photo_list = client.user_recent_media(feed_owner, :min_timestamp => Time.at(0), :max_timestamp => Time.now)
+    end
     photo_list.reject! { |item| item[:type] != 'image' }
     photos = photo_list.map { |p|
       {
@@ -20,7 +23,10 @@ class Connector::InstagramPhotosController < Connector::InstagramController
   end
 
   def import
-    photo_data = client.media_item(params[:photo_id])
+    photo_data = nil
+    SystemTimer.timeout_after(http_timeout) do
+      photo_data = client.media_item(params[:photo_id])
+    end
     current_batch = UploadBatch.get_current(current_user.id, params[:album_id])
     photo = Photo.create(
             :id => Photo.get_next_id,
@@ -31,7 +37,9 @@ class Connector::InstagramPhotosController < Connector::InstagramController
             :capture_date => (Time.at(photo_data[:created_time].to_i) rescue nil),
             :source_guid => make_source_guid(photo_data),
             :source_thumb_url => photo_data[:images][:thumbnail][:url],
-            :source_screen_url => photo_data[:images][:low_resolution][:url]
+            :source_screen_url => photo_data[:images][:low_resolution][:url],
+            :source => 'instagram'
+
     )
 
     ZZ::Async::GeneralImport.enqueue( photo.id, photo_data[:images][:standard_resolution][:url] )

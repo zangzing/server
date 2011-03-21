@@ -106,6 +106,7 @@ protected
                     :album_id => album.id,
                     :upload_batch_id => current_batch.id,
                     :caption => fast_local_image["original_name"],
+                    :source => 'email',
                     #create random uuid for this photo
                     :source_guid => "email:"+UUIDTools::UUID.random_create.to_s})
             # use the passed in temp file to attach to the photo

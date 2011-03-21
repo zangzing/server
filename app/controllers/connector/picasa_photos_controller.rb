@@ -42,7 +42,8 @@ class Connector::PicasaPhotosController < Connector::PicasaController
                 :capture_date => (Time.at(entry.at_xpath('gp:timestamp', NS).text.to_i/1000) rescue nil),
                 :source_guid => make_source_guid(entry.at_xpath('m:group', NS)),
                 :source_thumb_url => get_photo_url(entry.at_xpath('m:group', NS), :thumb),
-                :source_screen_url => get_photo_url(entry.at_xpath('m:group', NS), :screen)
+                :source_screen_url => get_photo_url(entry.at_xpath('m:group', NS), :screen),
+                :source => 'picasaweb'
         )
 
         ZZ::Async::GeneralImport.enqueue(photo.id,  photo_url)

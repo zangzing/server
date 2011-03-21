@@ -43,7 +43,9 @@ class Connector::KodakPhotosController < Connector::KodakController
             :caption => p['caption'],
             :source_guid => make_source_guid(p),
             :source_thumb_url => p[PHOTO_SIZES[:thumb]],
-            :source_screen_url => p[PHOTO_SIZES[:screen]]
+            :source_screen_url => p[PHOTO_SIZES[:screen]],
+            :source => 'kodak'
+
     )
     
     ZZ::Async::KodakImport.enqueue( photo.id, photo_url, connector.auth_token )

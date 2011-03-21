@@ -30,7 +30,9 @@ class Connector::ZangzingFoldersController < Connector::ConnectorController
                 :capture_date => p.capture_date,
                 :source_guid => p.source_guid,
                 :source_thumb_url => p.thumb_url,
-                :source_screen_url => p.screen_url
+                :source_screen_url => p.screen_url,
+                :source => 'zangzing'
+
       })
 
       photo.temp_url = photo_url

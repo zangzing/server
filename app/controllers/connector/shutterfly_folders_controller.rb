@@ -36,7 +36,9 @@ class Connector::ShutterflyFoldersController < Connector::ShutterflyController
               :capture_date => (Time.at(p[:capturetime].to_i/1000) rescue nil),
               :source_guid => make_source_guid(p),
               :source_thumb_url => get_photo_url(p[:id],  :thumb),
-              :source_screen_url => get_photo_url(p[:id],  :screen)
+              :source_screen_url => get_photo_url(p[:id],  :screen),
+              :source => 'shutterfly'
+
       })
       
       photo.temp_url = photo_url

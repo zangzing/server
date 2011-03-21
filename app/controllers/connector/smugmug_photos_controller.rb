@@ -38,7 +38,9 @@ class Connector::SmugmugPhotosController < Connector::SmugmugController
             :capture_date => (DateTime.parse(photo_info[:lastupdated]) rescue nil),
             :source_guid => make_source_guid(photo_info),
             :source_thumb_url => '/service/proxy?url=' + photo_info[:smallurl],
-            :source_screen_url => '/service/proxy?url=' + photo_info[:x3largeurl]
+            :source_screen_url => '/service/proxy?url=' + photo_info[:x3largeurl],
+            :source => 'smugmug'
+
 
     )
     

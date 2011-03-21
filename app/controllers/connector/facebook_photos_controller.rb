@@ -47,7 +47,8 @@ class Connector::FacebookPhotosController < Connector::FacebookController
             :capture_date => info[:created_time],
             :source_guid => make_source_guid(info),
             :source_thumb_url => get_photo_url(info, :thumb),
-            :source_screen_url => get_photo_url(info, :screen)
+            :source_screen_url => get_photo_url(info, :screen),
+            :source => 'facebook'
     )
   
     ZZ::Async::GeneralImport.enqueue( photo.id, get_photo_url(info, :full) )
