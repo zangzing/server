@@ -76,9 +76,9 @@
 
         $(document).ready(function(){
 
-            swfobject.registerObject("movie", "9.0.115", "", function(e) {
-                if (e.success == false || force_javascript) {
-                    var err;
+//            swfobject.registerObject("movie", "9.0.115", "", function(e) {
+//                if (e.success == false || force_javascript) {
+//                    var err;
 
                     $("#movie").replaceWith('<div id="movie" class="javascript-movie"></div>');
 
@@ -125,11 +125,8 @@
 				        preloadBefore:		1,
 
 
-                    });
-
-//                    $.CustomSimpleFade.showFullScreen();
-
-                }
+//                    });
+//                }
             });
 
 
