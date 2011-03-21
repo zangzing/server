@@ -116,15 +116,15 @@
 }
 
 .photochooser .photochooser-body .next-button:hover{
-    background-position-y: -44px;
+    /*background-position-y: -44px;*/
 
-    /*background: url("/images/btn-footer-next.png") no-repeat scroll 0px -44px transparent;*/
+    background: url("/images/embed/toolbars/btn-footer-next.png") no-repeat scroll 0px -44px transparent;
 }
 
 .photochooser .photochooser-body .next-button:active{
-    background-position-y: -88px;
+    /*background-position-y: -88px;*/
 
-    /*background: url("/images/btn-footer-next.png") no-repeat scroll 0px -88px transparent;*/
+    background: url("/images/embed/toolbars/btn-footer-next.png") no-repeat scroll 0px -88px transparent;
 }
 
 
@@ -142,15 +142,15 @@
 }
 
 .photochooser .photochooser-body .prev-button:hover{
-    background-position-y: -44px;
+    /*background-position-y: -44px;*/
 
-    /*background: url("/images/btn-footer-prev.png") no-repeat scroll 0px -44px transparent;*/
+    background: url("/images/embed/toolbars/btn-footer-prev.png") no-repeat scroll 0px -44px transparent;
 }
 
 .photochooser .photochooser-body .prev-button:active{
-    background-position-y: -88px;
+    /*background-position-y: -88px;*/
 
-    /*background: url("/images/btn-footer-prev.png") no-repeat scroll 0px -88px transparent;*/
+    background: url("/images/embed/toolbars/btn-footer-prev.png") no-repeat scroll 0px -88px transparent;
 }
 
 
