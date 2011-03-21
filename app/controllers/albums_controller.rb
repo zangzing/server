@@ -124,7 +124,7 @@ class AlbumsController < ApplicationController
     else
       @albums = @user.albums.find_all_by_privacy('public') | @user.liked_public_albums | liked_users_public_albums
     end
-    @albums = @albums.sort { |a1, a2| a1.updated_at <=> a2.updated_at }
+    @albums = @albums.sort { |a1, a2| a2.updated_at <=> a1.updated_at }
 
     #Setup badge vars
     @badge_name = @user.name
