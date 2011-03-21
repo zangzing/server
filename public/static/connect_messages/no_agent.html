@@ -1,36 +1,135 @@
 <style type="text/css">
 
-.downloadzz-headline{
-    margin: 10px 0 10px 18px;
-    font-size: 1.5em;
+
+.zangzing-downloader{
+    position: relative;
+}
+
+
+.zangzing-downloader #download-btn{
+    position:relative;
+    top: 15px;
+    width: 180px;
+    margin-left: auto;
+    margin-right: auto;
     font-weight: 600;
 }
 
-.downloadzz-text{
-    margin-left: 18px;
-    font-size: 1.3em;
+.zangzing-downloader .steps{
+   position: relative;
+   top:50px;
 }
 
-.downloadzz{
-    width: 300px;
-    float: left;
-    margin: 5px 0px 5px 130px;
-    text-align: left;
+.zangzing-downloader .step{
+    /*position:absolute;*/
+    top:0px;
+    display: inline-block;
+    width:250px;
+    margin:0px 10px 0px 10px;
+    /*border:1px solid black;*/
+    height:200px;
+    vertical-align:top;
 }
 
-#downloadzz-btn{
-    margin-top: 15px;
+.zangzing-downloader .step .graphic{
+    width:250px;
+    height:129px;
 }
 
-#downloadzz-photo{
-  position: relative;
+.os-mac.ua-chrome .zangzing-downloader .step.two .graphic{
+    background-image:url(/images/downloader/download-osx-chrome.png);
 }
-#downloadzz-developed{
-    display: none;
-    position: absolute;
-    top: 0;
-    left: 0;
+
+.os-mac.ua-firefox .zangzing-downloader .step.two .graphic{
+    background-image:url(/images/downloader/download-osx-firefox.png);
 }
+
+.os-mac.ua-safari .zangzing-downloader .step.two .graphic{
+    background-image:url(/images/downloader/download-osx-safari.png);
+}
+
+
+.os-win.ua-chrome .zangzing-downloader .step.two .graphic{
+    background-image:url(/images/downloader/download-win-chrome.png);
+}
+
+.os-win.ua-firefox .zangzing-downloader .step.two .graphic{
+    background-image:url(/images/downloader/download-win-firefox.png);
+}
+
+.os-win.ua-ie .zangzing-downloader .step.two .graphic{
+    background-image:url(/images/downloader/download-win-ie.png);
+}
+
+.os-win .zangzing-downloader .step.three .graphic{
+    background-image:url(/images/downloader/installer-win.png);
+}
+
+.os-mac .zangzing-downloader .step.three .graphic{
+    background-image:url(/images/downloader/installer-osx.png);
+}
+
+
+
+
+.zangzing-downloader .step.four .graphic{
+    background-image:url(/images/downloader/zangzing.png);
+}
+
+.zangzing-downloader .step.four .graphic.ready{
+    background-image:url(/images/downloader/zangzing_ready.png);
+}
+
+
+
+
+
+
+
+.zangzing-downloader .step .title{
+    margin-top:5px;
+    text-align:left;
+    font-weight:600;
+    font-size:14px;
+
+}
+
+.zangzing-downloader .step .description{
+    margin-top:5px;
+    text-align:left;
+    font-weight:400;
+    font-size:12px;
+    color:#A4A5A6;
+}
+
+.zangzing-downloader .step.two .description{
+    display:none;
+
+}
+.os-win.ua-firefox .zangzing-downloader .step .description.win.firefox{
+    display: block;
+}
+
+.os-win.ua-ie .zangzing-downloader .step .description.win.ie{
+    display: block;
+}
+
+.os-win.ua-chrome .zangzing-downloader .step .description.win.chrome{
+    display: block;
+}
+
+.os-mac.ua-chrome .zangzing-downloader .step .description.mac.chrome{
+    display: block;
+}
+
+.os-mac.ua-firefox .zangzing-downloader .step .description.mac.firefox{
+    display: block;
+}
+
+.os-mac.ua-safari .zangzing-downloader .step .description.mac.safari{
+    display: block;
+}
+
 
 
 
@@ -39,32 +138,31 @@
 <script type="text/javascript">
   </script>
 
-<div>
+<div class="zangzing-downloader">
       <!-- result = Net::HTTP.get(URI.parse('http://downloads.zangzing.com/agent/darwin/check.json')); -->
       <!-- JSON.parse( Net::HTTP.get(URI.parse('http://downloads.zangzing.com/agent/darwin/check.json'))   ); -->
-      <div class="downloadzz-headline" id="downloadzz-title">Download Zangzing!</div>
-      <div class= "downloadzz-text" id="downloadzz-tagline">
-            We've noticed that you have not installed ZangZing yet. To take advantage of all of
-            our features, please download and install ZangZing. It is a fast and painless
-            process that will significantly improve your photo sharing experience
-      </div>
+      <h3>Click to download the photo uploader</h3>
+      <a class='green-button' id="download-btn"><span>1. Download ZangZing</span></a>
 
-    <img id="downloadzz-btn" src="/images/btn-downloadzz.png">
+      <div class="steps">
+          <div class="step two">
+              <div class="graphic"></div>
+              <div class="title">2. Run the ZangZing Installer</div>
+              <div class="description firefox win">Click Save to download and then go to Tools menu, choose Downloads and then double click ZangZing.exe</div>
+              <div class="description ie win">Click Run to start the installer, then Yes to allow ZangZing to make changes.</div>
+              <div class="description chrome win mac">Click the ZangZing.exe file that is in the lower left corner of your window.</div>
+              <div class="description safari firefox mac">In the Downloads window, double click the ZangZing.pkg file.</div>
+          </div>
+          <div class="step three">
+              <div class="graphic"></div>
+              <div class="title">3. Click Continue to install.</div>
+              <div class="description">Follow the instructions.</div>
+          </div>
+          <div class="step four">
+              <div class="graphic"></div>
+              <div class="title">4. It's ready when you see ZangZing</div>
+              <div class="description">When you see the logo, you are ready to go an upload photos!</div>
+          </div>
+     </div>
 
-    <div>
-        <div class="downloadzz">
-            <img src="/images/downloadzz-1.png">
-            <div class="downloadzz-headline" >Run the ZangZing Installer</div>
-            <div class="downloadzz-text"> Click the green button to begin download. When complete, double click the zangzing icon to launch the installation and step through the wizard</div>
-        </div>
-
-        <div class="downloadzz">
-            <div id="downloadzz-photo">
-                <img src="/images/downloadzz-2.png" >
-                <img id="downloadzz-developed" src="/images/downloadzz-3.png">
-            </div>
-            <div class="downloadzz-headline">Is the photo ready?</div>
-            <div class="downloadzz-text">When the photo develops and you can see Zang Walker at the beach, you are ready.</div>
-        </div>
-    </div>
 </div>
