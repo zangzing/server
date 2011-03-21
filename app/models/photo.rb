@@ -283,10 +283,15 @@ class Photo < ActiveRecord::Base
     # tell the photo object it is good to go
     mark_ready
     save!
-    complete = upload_batch.finish
-    # update the status of this batch if not complete to show
-    # that we've had activity
-    upload_batch.touch if complete == false
+    # this is a sanity check to work around a small
+    # race condition we currently have with client side batch closes
+    batch = self.upload_batch
+    if batch
+      complete = batch.finish
+      # update the status of this batch if not complete to show
+      # that we've had activity
+      batch.touch if complete == false
+    end
   end
 
   # upload our temp source file to s3 and remove the temp if successful

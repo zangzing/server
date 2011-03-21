@@ -95,6 +95,7 @@ class UploadBatch < ActiveRecord::Base
           self.state = 'finished'
           self.save
        else
+          Rails.logger.info "Destroying empty batch id: #{self.id}, user_id: #{self.user_id}, album_id: #{self.album_id}"
           self.destroy #the batch has no photos, destroy it
        end
        # batch is done
@@ -108,12 +109,12 @@ class UploadBatch < ActiveRecord::Base
   protected
   def ready?
     if self.state == 'closed'
-      if self.photos.count <= 0
+      batch_photo_count = self.photos.count
+      if batch_photo_count <= 0
         return true;
       end
-      ready_photos = Photo.where(:upload_batch_id => self.id, :state => 'ready' ).count
-#      ready_photos = Photo.find_all_by_upload_batch_id_and_state( self.id, 'ready' ).count
-      return true if ready_photos == self.photos.count
+      ready_photo_count = Photo.where(:upload_batch_id => self.id, :state => 'ready' ).count
+      return true if ready_photo_count == batch_photo_count
     end
     return false
   end
@@ -128,8 +129,7 @@ class UploadBatch < ActiveRecord::Base
       nb.custom_order_offset = album.photos.last.pos
     end
     album.upload_batches << nb
-    #schedule the closing of the batch 30 minutes from now
-    # TODO: If needed use resque-scheduler to close batches 30 minutes after they were open
+
     return nb
   end
 end

@@ -556,7 +556,7 @@
 
          // Delete this token's id from hidden input
          var id_array = hidden_input.val().split(",");
-         id_array.splice(id_array.indexOf(token_data.id.toString()), 1);
+         id_array.splice( $.inArray( token_data.id.toString(), id_array ), 1);
          hidden_input.val(id_array.join(","));
 
          token_count--;

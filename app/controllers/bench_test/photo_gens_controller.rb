@@ -216,6 +216,9 @@ class BenchTest::PhotoGensController < BenchTest::BenchTestsController
       # bulk insert
       Photo.batch_insert(photos)
 
+      # this should remain since only used
+      # for timing test an we want the batch closed
+      # since they are grouped together
       last_photo.upload_batch.close
     end
   end
