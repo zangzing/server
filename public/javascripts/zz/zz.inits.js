@@ -393,7 +393,8 @@ zz.init = {
                         currentPhotoId: $.param.fragment(),
                         showButtonBar:true,
                         onClickShare: function(photo_id){
-                            pages.share.share_in_dialog('photo', photo_id);
+                            alert("This feature is still under construction.")
+                            //pages.share.share_in_dialog('photo', photo_id);
                         }
 
                     }).data().zz_photogrid;
