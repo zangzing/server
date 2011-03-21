@@ -80,7 +80,9 @@ ZZAt.track('page.visit',{ua: navigator.userAgent});
 // have zza track all js errors
 window.onerror = function(message, url, line) {
   try{
-      ZZAt.track('js.error',{message: message, url:url, line:line});
+      if(url.indexOf('http://localhost:30777') == -1){
+        ZZAt.track('js.error',{message: message, url:url, line:line});
+      }
   }
   catch(err){
   }
