@@ -194,7 +194,6 @@ pages.edit_album_tab = {
                             data.after_id = after_id;
                         }
 
-                        logger.debug(data);
 
 
                         $.ajax({
