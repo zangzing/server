@@ -19,9 +19,9 @@
     <% if @page_title_override 
        title = @page_title_override
     else
-       title = "ZangZing" 
+       title = "ZangZing - Group Photo Sharing"
     end
-    if ! Rails.env.production?
+    if ! Rails.env.photos_production?
       title = "#{title} Version: #{Server::Application.config.zangzing_version} Controller: #{controller.controller_name} Action: #{ controller.action_name}"
     end %>
     <title><%=title%></title>
