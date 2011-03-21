@@ -13,7 +13,7 @@ test:
 
 photos_production:
   :login: alpha
-  :password: zzrocks!
+  :password: 1000words
 
 photos_staging:
   :login: zzadmin
