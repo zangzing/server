@@ -667,7 +667,7 @@ class PhotoAttachedImage < AttachedImage
     @@sizes ||= [
         {LARGE    => "-resize '2560x1440>' -strip -quality 80"},  # large
         {MEDIUM   => "-resize '1024x768>' -strip -quality 80"},  # medium
-        {THUMB    => "-resize '180x180>' -strip -quality 80"},   # thumb
+        {THUMB    => "-resize '180x180>' -strip -quality 93"},   # thumb
         {STAMP    => "-resize '100x100>' -strip -quality 80"}    # stamp
     ]
   end
