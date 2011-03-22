@@ -13,7 +13,7 @@
 #
 
 #
-#   © 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
+#   ï¿½ 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 
 class Activity < ActiveRecord::Base
@@ -22,6 +22,8 @@ class Activity < ActiveRecord::Base
   belongs_to :user
   validates_presence_of :user_id
 
+  default_scope :order => "updated_at DESC"
+  
   ##
   ## ATTENTION: If you want helpers and forms treat all subtypes as Activities see
   ## the trick that we use for albums in Album.rb
