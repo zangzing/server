@@ -359,6 +359,7 @@
                 roots.push(
                 {
                     open_url: agent.buildAgentUrl('/filesystem/folders/fi9QaWN0dXJlcw=='),
+                    add_url:  agent.buildAgentUrl('/filesystem/folders/fi9QaWN0dXJlcw==/add_to_album'),
                     type: 'folder',
                     name: 'My Pictures',
                     on_error: file_system_on_error,
@@ -397,6 +398,7 @@
                 roots.push(
                 {
                     open_url: agent.buildAgentUrl('/filesystem/folders/fg=='),
+                    add_url:  agent.buildAgentUrl('/filesystem/folders/fg==/add_to_album'),
                     type: 'folder',
                     name: 'My Home',
                     on_error: file_system_on_error,
@@ -430,6 +432,7 @@
                 roots.push(
                 {
                     open_url: agent.buildAgentUrl('/filesystem/folders/flxNeSBEb2N1bWVudHNcTXkgUGljdHVyZXM='),
+                    add_url:  agent.buildAgentUrl('/filesystem/folders/flxNeSBEb2N1bWVudHNcTXkgUGljdHVyZXM=/add_to_album'),
                     type: 'folder',
                     name: 'My Pictures',
                     on_error: file_system_on_error,
@@ -455,6 +458,7 @@
                 roots.push(
                 {
                     open_url: agent.buildAgentUrl('/filesystem/folders/fg=='),
+                    add_url:  agent.buildAgentUrl('/filesystem/folders/fg==/add_to_album'),
                     type: 'folder',
                     name: 'My Home',
                     on_error: file_system_on_error,
