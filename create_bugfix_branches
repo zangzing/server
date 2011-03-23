@@ -60,9 +60,8 @@ repos.each do |repo|
   do_cmd("git clone #{url}")
 
   Dir.chdir(repo_dir)
-  do_cmd("git checkout -f #{tag}")
-  do_cmd("git pull origin #{tag}")
-  do_cmd("git checkout -b #{branch}")
+  do_cmd("git branch #{branch} #{tag}")
+  do_cmd("git checkout #{branch}")
   do_cmd("git push origin #{branch}")
 end
 
