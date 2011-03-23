@@ -1,12 +1,12 @@
 <div class="offset" >
-  <% @user.errors.each do | key, value| %>
+  <% @new_user.errors.each do | key, value| %>
     <%= key %>:  <%=value %>
   <%end %>
 </div>
 <% content_for :page_javascript do  # this places our page-specific js with the rest of the js at the bottom of the html -%>
 <script>
   (function($) {
-<%    if @user && @user.errors -%>
+<%    if @new_user && @new_user.errors -%>
       $('#sign-up p.error-notice').show();
 <%    end -%>
       $('#sign-up').show();
