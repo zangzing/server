@@ -17,13 +17,7 @@ else
 end
 
 
-# HTTP Auth For Resque Console
-#if Server::Application.config.http_auth_credentials
-#  Resque::Server.use Rack::Auth::Basic do |username, password|
-#   username == Server::Application.config.http_auth_credentials[:login] &&
-#   password == Server::Application.config.http_auth_credentials[:password]
-#  end
-#end
+#  Auth For Resque Console
 class Authentication
   def initialize(app)
     @app = app
