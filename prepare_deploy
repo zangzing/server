@@ -1,8 +1,9 @@
 #!/usr/bin/env ruby
 
-# this script prepares for a deploy by puting down
+# this script prepares for a deploy by putting down
 # a label across all repositories and optionally
 # will create a branch for production fixes off of the master branch
+#
 #
 require 'readline'
 
@@ -21,8 +22,6 @@ def do_cmd(cmd)
 end
 
 
-
-
 puts "Create a tag for production releases."
 confirm_continue
 
@@ -31,9 +30,13 @@ print "Enter the tag would you like to create: "
 tag = Readline.readline()
 
 puts
-print "Enter a comment for the tag (optional: "
+print "Enter a comment for the tag (optional): "
 tag_comment = Readline.readline()
-tag_comment = "-m '#{tag_comment}'" if tag_comment.empty? == false
+if tag_comment.empty?
+  tag_comment = "-m 'No comment.'"
+else
+  tag_comment = "-m '#{tag_comment}'"
+end
 
 puts
 print "Type the branch/tag name to use for the basis of the tag you want to create (optional): "
