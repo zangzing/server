@@ -36,7 +36,7 @@ tag_comment = Readline.readline()
 tag_comment = "-m '#{tag_comment}'" if tag_comment.empty? == false
 
 puts
-print "Type the branch name to use (optional): "
+print "Type the branch/tag name to use for the basis of the tag you want to create (optional): "
 branch = Readline.readline()
 branch = "master" if branch.empty?
 
