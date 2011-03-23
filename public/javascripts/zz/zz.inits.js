@@ -111,7 +111,7 @@ zz.init = {
 
         $('#header #sign-in-button').click(function() {
             ZZAt.track('button.signin.click');
-            pages.signin.show();
+            pages.signin.signin('');
         });
 
         $('#footer #play-button').click(function() {

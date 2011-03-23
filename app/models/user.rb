@@ -96,6 +96,7 @@ class User < ActiveRecord::Base
         username = "#{mail_name}#{i}"
         i += 1
       end while User.find_by_username(username)
+      name = ( name == '' ? email : name )
       #user not fount create an automatic user with a random password
       user = User.new(  :automatic => true,
                            :email => email,

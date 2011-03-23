@@ -38,7 +38,15 @@ class UsersController < ApplicationController
       user_info = params[:user]
       checked_user_name = check_reserved_username(user_info)
 
-      @user = User.new(params[:user])
+      @user = User.find_by_email( params[:user][:email])
+      if @user && @user.automatic?
+        @user.automatic = false
+        @user.name      = params[:user][:name]
+        @user.username  = params[:user][:username]
+        @user.password  = params[:user][:password]
+      else
+        @user = User.new(params[:user])
+      end
       @user.reset_perishable_token
   	  @user.reset_single_access_token
 
@@ -127,6 +135,9 @@ class UsersController < ApplicationController
       @user = User.find_by_email(params[:user][:email])
       if @user == current_user #if the email returns the current user this means its a profile edit
         @user = nil
+      end
+      if @user && @user.automatic?
+        render :json => true and return  #The user is an automatic user so the email is still technically available.
       end
       render :json => !@user and return
     end
