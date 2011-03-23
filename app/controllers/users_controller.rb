@@ -7,7 +7,7 @@ class UsersController < ApplicationController
 
   def new
       @title = "Sign up"
-      @user = User.new
+      @new_user = User.new
   end
 
   # see if this is a reserved username and if proper key has been passed
@@ -38,26 +38,34 @@ class UsersController < ApplicationController
       user_info = params[:user]
       checked_user_name = check_reserved_username(user_info)
 
-      @user = User.new(params[:user])
-      @user.reset_perishable_token
-  	  @user.reset_single_access_token
+      @new_user = User.find_by_email( params[:user][:email])
+      if @new_user && @new_user.automatic?
+        @new_user.automatic = false
+        @new_user.name      = params[:user][:name]
+        @new_user.username  = params[:user][:username]
+        @new_user.password  = params[:user][:password]
+      else
+        @new_user = User.new(params[:user])
+      end
+      @new_user.reset_perishable_token
+  	  @new_user.reset_single_access_token
 
 
       # USER ACTIVATION DISABLED Do Not Erase        
       # Saving without session maintenance to skip
       # auto-login which can't happen here because
       # the User has not yet been activated
-      #if @user.save_without_session_maintenance
-      #   @user.deliver_activation_instructions!
+      #if @new_user.save_without_session_maintenance
+      #   @new_user.deliver_activation_instructions!
       #   flash[:notice] = "Your account has been created. Please check your e-mail for your account activation instructions!"
       #   redirect_to root_url
          
-      if @user.save
+      if @new_user.save
             flash[:success] = "Welcome to ZangZing!"
-            @user.deliver_welcome!
-            redirect_back_or_default @user
+            @new_user.deliver_welcome!
+            redirect_back_or_default @new_user
       else
-        check_for_name_error(checked_user_name, @user)
+        check_for_name_error(checked_user_name, @new_user)
         render :action => :new
       end
   end
@@ -127,6 +135,9 @@ class UsersController < ApplicationController
       @user = User.find_by_email(params[:user][:email])
       if @user == current_user #if the email returns the current user this means its a profile edit
         @user = nil
+      end
+      if @user && @user.automatic?
+        render :json => true and return  #The user is an automatic user so the email is still technically available.
       end
       render :json => !@user and return
     end

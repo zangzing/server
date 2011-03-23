@@ -110,7 +110,8 @@ class PagesController < ApplicationController
     msg = "ERROR\nHEALTH_CHECK ERROR during #{curr_check}Error: " + ex.message + "\n" + status_msg
     z.track_event("health_check.fail", msg)
     Rails.logger.error msg
-    render :status => 503, :text => msg
+    # we use 509 as internal error so it doesn't get remapped by nginx
+    render :status => 509, :text => msg
   end
 
 end

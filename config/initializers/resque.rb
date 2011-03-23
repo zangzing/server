@@ -17,13 +17,27 @@ else
 end
 
 
-# HTTP Auth For Resque Console
-if Server::Application.config.http_auth_credentials
-  Resque::Server.use Rack::Auth::Basic do |username, password|
-   username == Server::Application.config.http_auth_credentials[:login] && 
-   password == Server::Application.config.http_auth_credentials[:password]
+#  Auth For Resque Console
+class Authentication
+  def initialize(app)
+    @app = app
+  end
+
+  def call(env)
+    request = Rack::Request.new(env)
+    session = request.session
+    user_id = session['user_credentials_id']
+    user = User.find_by_id( user_id )
+    if user && user.admin?
+      @app.call(env)
+    else
+      [401, {"Content-Type" => "text/html", "Location" => "/service"}, ["Not Authorized: Insufficient Privileges"]]
+    end
   end
 end
+Resque::Server.use Authentication
+
+
 
 # pull in resque worker flags - mostly related to photos so it goes here
 res_work_config = YAML::load(ERB.new(File.read("#{Rails.root}/config/resque_workers.yml")).result)[Rails.env].recursively_symbolize_keys!

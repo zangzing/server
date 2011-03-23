@@ -961,7 +961,7 @@ pages.no_agent = {
 
 pages.signin = {
 
-    show: function( message, signin ){
+    _show: function( message, signin ){
         if (zz.drawer_state === zz.DRAWER_CLOSED) {
                 if( typeof( message ) != 'undefined' && typeof(message) == 'string'){
                    var msg = $('<p>'+message+'</p>');
@@ -988,11 +988,11 @@ pages.signin = {
     },
 
     join: function( message ){
-        pages.signin.show(message, false);
+        pages.signin._show(message, false);
     },
 
     signin: function(message){
-        pages.signin.show(message, true);
+        pages.signin._show(message, true);
     }
 };
 
