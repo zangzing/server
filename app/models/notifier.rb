@@ -23,6 +23,7 @@ class Notifier < ActionMailer::Base
       vc.add_name do |name|
         name.given = @album.name
       end
+      vc.org = "ZangZing"
       vc.add_email @album.short_email
     end
     attachments["#{@album.name}.vcf"] = vcard.to_s
@@ -194,6 +195,7 @@ class Notifier < ActionMailer::Base
       vc.add_name do |name|
         name.given = @album.name
       end
+      vc.org = "ZangZing"
       vc.add_email @album.short_email
     end
     attachments["#{@album.name}.vcf"] = vcard.to_s
