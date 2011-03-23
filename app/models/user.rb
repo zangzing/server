@@ -66,7 +66,7 @@ class User < ActiveRecord::Base
 
   validates_presence_of   :name,      :unless => :automatic?
   validates_presence_of   :username,  :unless => :automatic?
-  validates_format_of     :username,  :with => /^[a-z0-9]+$/, :on => :create, :message => 'Should contain only lowercase alphanumeric characters'
+  validates_format_of     :username,  :with => /^[a-z0-9]+$/, :on => :create, :message => 'Should contain only lowercase alphanumeric characters', :unless => :automatic?
   validates_uniqueness_of :username,  :message => "Has already been taken", :unless => :automatic?
   validates_presence_of   :email
   validates_length_of     :password, :within => 6..40, :if => :require_password?, :message => "must be between 6 and 40 characters long"
@@ -96,7 +96,7 @@ class User < ActiveRecord::Base
         username = "#{mail_name}#{i}"
         i += 1
       end while User.find_by_username(username)
-      name = ( name == '' ? email : name )
+      name = ( name == '' ? email.split('@')[0] : name )
       #user not fount create an automatic user with a random password
       user = User.new(  :automatic => true,
                            :email => email,
