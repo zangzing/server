@@ -3,7 +3,7 @@
 # use this option if you want to wipe the db
 # "-m 'rake build:db'"
 #
-# t
+#
 
 require 'readline'
 

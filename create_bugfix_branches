@@ -1,0 +1,67 @@
+#!/usr/bin/env ruby
+
+# This script will create a bugfix branch
+# off of the specified tag in all repositories
+#
+# Use this if you need to make fixes to the
+# production release between major releases.
+#
+#
+require 'readline'
+
+def confirm_continue
+  print "Do you want to continue? (Yes/n): "
+  r = Readline.readline()
+  if r != "Yes"
+    puts "Exiting. Bye."
+    exit
+  end
+end
+
+def do_cmd(cmd)
+  puts cmd
+  Kernel.system(cmd)
+end
+
+
+
+puts "Create a branch for production releases."
+confirm_continue
+
+puts
+print "Enter the tag your branch will be based on: "
+tag = Readline.readline()
+if tag.empty?
+  puts
+  puts "Tag cannot be empty. Bye."
+  exit
+end
+
+branch = tag + "-bugfix"
+
+puts
+puts "About to create the branch: #{branch} from tag: #{tag}."
+confirm_continue
+
+cur_dir = Dir.pwd
+Dir.chdir("../")
+base_dir = Dir.pwd
+auto_deploy_dir = base_dir + "/auto_deploy"
+Dir.mkdir(auto_deploy_dir) rescue nil
+Dir.chdir(auto_deploy_dir)
+
+repos = ["server", "homepage", "agent", "ey-cloud-recipes"]
+
+repos.each do |repo|
+  Dir.chdir(auto_deploy_dir)
+  repo_dir = auto_deploy_dir + "/" + repo
+  url = "git@github.com:zangzing/" + repo + ".git"
+
+  do_cmd("git clone #{url}")
+
+  Dir.chdir(repo_dir)
+  do_cmd("git branch #{branch} #{tag}")
+  do_cmd("git checkout #{branch}")
+  do_cmd("git push origin #{branch}")
+end
+
