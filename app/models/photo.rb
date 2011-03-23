@@ -531,7 +531,8 @@ class Photo < ActiveRecord::Base
       remove_source
 
       # only save our state if we are not part of an insert batch operation
-      self.save if self.inserting_for_batch == false
+      self.error_message = ex.message
+      self.save unless self.inserting_for_batch
 
       # reraise the error
       raise ex

@@ -61,7 +61,7 @@ repos.each do |repo|
 
   Dir.chdir(repo_dir)
   do_cmd("git branch #{branch} #{tag}")
-  do_cmd("git checkout #{branch}")
+  do_cmd("git checkout -f #{branch}")
   do_cmd("git push origin #{branch}")
 end
 
