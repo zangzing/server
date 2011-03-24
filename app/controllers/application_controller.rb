@@ -59,7 +59,7 @@ class ApplicationController < ActionController::Base
       compatible = true
     elsif browser.ie? && browser.full_version.to_f >= 8
       compatible = true
-    elsif browser.chrome? && browser.full_version.to_f >= 11
+    elsif browser.chrome? && browser.full_version.to_f >= 9
       compatible = true
     elsif browser.ipad? || browser.ipod? || browser.iphone?
       compatible = true
