@@ -137,13 +137,16 @@
 <% content_for :page_javascript do %>
 
 <script>
+  //todo:move to js file
   $(document).ready(function(){
 
       $('.album-cell').each(function(index, element){
 
+          var album_id = $(element).attr('data-album-id');
+          var album_path = $(element).attr('data-album-path');
+
           //add click handler to picon to navigate to grid view
           $(element).find('.picon').click(function(){
-              var album_path = $(element).attr('data-album-path');
               $('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()},500,'easeOutQuart');
               document.location.href=album_path;
           });
@@ -151,7 +154,6 @@
 
           //add click handler share button
           $(element).find('.share-button').click(function(){
-              var album_id = $(element).attr('data-album-id');
               pages.share.share_in_dialog('album', album_id);
           });
 
@@ -160,9 +162,13 @@
           });
 
           $(element).find('.delete-button').click(function(){
-                alert('This feature is still under construction. This will allow you to delete the album.')
+              if(confirm("Are you sure you want to delete this album?")){
+                  $(element).hide("scale", {}, 300, function(){
+                      $(element).remove();
+                  });
+                  deleteAlbum(album_id);
+              };
           });
-
 
       });
   });
