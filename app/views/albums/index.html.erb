@@ -125,7 +125,7 @@
             <div class="buttons">
                 <div class="share-button"></div>
                 <div class="like-button"></div>
-<% if album.user == current_user %>
+<% if album.user == current_user && album.type != 'ProfileAlbum' %>
                 <div class="delete-button"></div>
 <% end %>
 
