@@ -125,7 +125,10 @@
             <div class="buttons">
                 <div class="share-button"></div>
                 <div class="like-button"></div>
-                <div class="info-button"></div>
+<% if album.user == current_user %>
+                <div class="delete-button"></div>
+<% end %>
+
             </div>
         </div>
     </div>
@@ -156,8 +159,8 @@
                 alert('This feature is still under construction. It will allow you to like an album.')
           });
 
-          $(element).find('.info-button').click(function(){
-                alert('This feature is still under construction. This will show a menu with options for deleting the album, etc.')
+          $(element).find('.delete-button').click(function(){
+                alert('This feature is still under construction. This will allow you to delete the album.')
           });
 
 
