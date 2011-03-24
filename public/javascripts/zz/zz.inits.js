@@ -333,6 +333,19 @@ zz.init = {
         });
     },
 
+    //todo: move this somewhere else
+    filterPhotosForUser: function(photos){
+        //filter photos that haven't finished uploading
+        return $.map(photos, function(element, index){
+            if (element['state'] !== 'ready'){
+               if(_.isUndefined(zz.current_user_id) || element['user_id']!=zz.current_user_id){
+                   return null;
+               }
+           }
+           return element;
+        });
+   },
+
     album: function() {
         //setup grid view
 
@@ -358,6 +371,7 @@ zz.init = {
 
                 ZZAt.track('album.view',{id:zz.album_id});
 
+                json = zz.init.filterPhotosForUser(json);
 
 
                 if (view === 'grid') {   //grid view
@@ -373,6 +387,11 @@ zz.init = {
                         photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
                         photo.src = agent.checkAddCredentialsToUrl(photo.thumb_url);
                     }
+
+
+
+
+                    
 
                     var grid = gridElement.zz_photogrid({
                         photos:json,
@@ -674,6 +693,9 @@ zz.init = {
             dataType: 'json',
             url: zz.path_prefix + '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
             success: function(json) {
+
+                json = zz.init.filterPhotosForUser(json);
+
 
                 for (var i = 0; i < json.length; i++) {
                     var photo = json[i];
