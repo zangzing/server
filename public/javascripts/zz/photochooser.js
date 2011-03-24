@@ -99,9 +99,9 @@
         openFolder: function(folder){
             var self = this;
 
-            self.folderNameElement.html(folder.name);
+            self.folderNameElement.text(folder.name);
             if(self.stack.length > 0){
-                self.backButtonCaptionElement.html(_.last(self.stack).name);
+                self.backButtonCaptionElement.text(_.last(self.stack).name);
                 self.backButtonElement.show();
             }
             else{

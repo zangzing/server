@@ -27,12 +27,12 @@ pages.album_name_tab = {
         container.load(url, function(){
             //save album name and set header album name
             pages.album_name_tab.original_album_name = $('#album_name').val();
-            $('h2#album-header-title').html(pages.album_name_tab.original_album_name);
+            $('h2#album-header-title').text(pages.album_name_tab.original_album_name);
 
             //change header album name as you type new album name
             $('#album_name').keypress( function(){
                 setTimeout(function(){
-                    $('#album-header-title').html( $('#album_name').val() );
+                    $('#album-header-title').text( $('#album_name').val() );
                 }, 10);
             });
 
@@ -53,7 +53,7 @@ pages.album_name_tab = {
                             },
                             error: function(){
                                 $('#album_name').val(pages.album_name_tab.original_album_name);
-                                $('h2#album-header-title').html(pages.album_name_tab.original_album_name);
+                                $('h2#album-header-title').text(pages.album_name_tab.original_album_name);
                             }
                         });
                     }
@@ -110,7 +110,7 @@ pages.album_name_tab = {
                      error:  function(){
                                  //restore name and header to valid value
                                  $('#album_name').val(pages.album_name_tab.original_album_name);
-                                 $('h2#album-header-title').html(pages.album_name_tab.original_album_name);
+                                 $('h2#album-header-title').text(pages.album_name_tab.original_album_name);
                                  $('#album_name').keypress();
                      }
             });
@@ -397,7 +397,7 @@ pages.share = {
                         if(count === 1){
                             text = 'character';
                         }
-                        $('#character-count').html(count + ' ' + text);
+                        $('#character-count').text(count + ' ' + text);
                     }, 10);
                 });
 
@@ -631,7 +631,7 @@ pages.acct_profile = {
             $(self.validator.element).validate(self.validator);
             $('#user_username').keypress( function(){
                 setTimeout(function(){
-                    $('#username-path').html( $('#user_username').val() );
+                    $('#username-path').text( $('#user_username').val() );
                 }, 10);
             });
 
@@ -866,10 +866,10 @@ pages.linked_accounts = {
                 $('#'+service+'-delete').fadeIn( 'fast', function(){
                     if( $('#flashes-notice')){
                         var msg = "Your can now use "+ service+" features throughout ZangZing";
-                        $('#flashes-notice').html(msg).fadeIn('fast', function(){
+                        $('#flashes-notice').text(msg).fadeIn('fast', function(){
                             setTimeout(function(){
                                 $('#flashes-notice').fadeOut('fast', function(){
-                                    $('#flashes-notice').html('    ');
+                                    $('#flashes-notice').text('    ');
                                 });
                             }, 3000);
                         });
