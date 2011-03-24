@@ -39,7 +39,14 @@ zz.init = {
     },
 
     template: function() {
+        $(document).ajaxSend(function(event, request, settings) {
+              settings.data = settings.data || "";
+              settings.data += (settings.data ? "&" : "") + "authenticity_token=" + encodeURIComponent(zz.rails_authenticity_token);
+        });
+
+
         /* Click Handlers    ----------------------------------------------------------------------- */
+
 
         //top bar
         $('#header #home-button').click(function() {

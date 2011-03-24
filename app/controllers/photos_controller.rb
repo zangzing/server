@@ -1,8 +1,14 @@
 require "zz_env_helpers"
 
 class PhotosController < ApplicationController
-  before_filter :oauth_required, :only => [:agentindex, :agent_create]
+  # filters for agent actions
+  before_filter :oauth_required,                 :only => [:agentindex, :agent_create]
+  skip_before_filter :verify_authenticity_token, :only => [:agentindex, :agent_create, :upload_fast]
+
+
   before_filter :require_user, :only => [:create, :update, :destroy ] #TODO Sort out album security so facebook can freely dig into album page
+
+
 
   #before_filter :determine_album_user #For friendly_id's scope
 
