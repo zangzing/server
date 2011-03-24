@@ -733,6 +733,7 @@
                 dataType: "json",
                 url: zz.path_prefix + "/photos/" + photo_id + ".json",
                 success:function(){
+                    agent.callAgent('/albums/' +  zz.album_id + '/photos/' + photo_id + '/cancel_upload');
                     self.reload_tray();
                 },
 

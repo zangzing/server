@@ -10,6 +10,7 @@ function deleteAlbum(album_id, success, error){
             }
         },
         success:function(){
+            agent.callAgent('/albums/' +  album_id + '/photos/*/cancel_upload');
             if(!_.isUndefined(success)){
                 success();
             }

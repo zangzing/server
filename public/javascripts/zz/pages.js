@@ -159,7 +159,9 @@ pages.edit_album_tab = {
                             url: zz.path_prefix + "/photos/" + photo.id + ".json",
                             error: function(error){
                                 logger.debug(error);
-//                                $.jGrowl("" + error);
+                            },
+                            success: function(){
+                                agent.callAgent('/albums/' +  zz.album_id + '/photos/' + photo.id + '/cancel_upload');
                             }
 
                         });
