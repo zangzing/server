@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
   # this basic filter uses a hardcoded username/password - we must turn off the
   # AuthLogic  support with allow_http_basic_auth false on the UserSession since
   # it can't seem to cope with a seperate scheme in rails 3
-  before_filter :protect_with_http_auth, :require_compatible_browser
+  before_filter :protect_with_http_auth #, :require_compatible_browser
 
   after_filter :flash_to_headers
 
