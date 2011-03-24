@@ -121,6 +121,7 @@ class AlbumsController < ApplicationController
     #    -All of joe's lked users' public albums
     if(current_user? @user)
       @albums = @user.albums | @user.liked_albums | liked_users_public_albums #show all of current_user's albums
+    else
       @albums = @user.albums.find_all_by_privacy('public') | @user.liked_public_albums | liked_users_public_albums
     end
     #@albums = @albums.sort { |a1, a2| a2.updated_at <=> a1.updated_at }
