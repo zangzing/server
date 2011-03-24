@@ -434,12 +434,17 @@ zz.init = {
 
 
 
-
+                        var bigScreen = ($(window).width() > 1200 && $(window).height() > 1000);
 
                         for (var i = 0; i < json.length; i++) {
                             var photo = json[i];
                             photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
-                            photo.src = agent.checkAddCredentialsToUrl(photo.screen_url);
+                            if(bigScreen){
+                                photo.src = agent.checkAddCredentialsToUrl(photo.full_screen_url);
+                            }
+                            else{
+                                photo.src = agent.checkAddCredentialsToUrl(photo.screen_url);
+                            }
                         }
 
                         var currentPhotoId = null;
