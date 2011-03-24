@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
   # this basic filter uses a hardcoded username/password - we must turn off the
   # AuthLogic  support with allow_http_basic_auth false on the UserSession since
   # it can't seem to cope with a seperate scheme in rails 3
-  before_filter :protect_with_http_auth #, :require_compatible_browser
+  before_filter :protect_with_http_auth
 
   after_filter :flash_to_headers
 
@@ -50,27 +50,7 @@ class ApplicationController < ActionController::Base
   end
 
 
-  def require_compatible_browser
-    compatible = false
 
-    if browser.safari? && browser.full_version.to_f >= 4
-      compatible = true
-    elsif browser.firefox? && browser.full_version.to_f >= 3.6
-      compatible = true
-    elsif browser.ie? && browser.full_version.to_f >= 8
-      compatible = true
-    elsif browser.chrome? && browser.full_version.to_f >= 9
-      compatible = true
-    elsif browser.ipad? || browser.ipod? || browser.iphone?
-      compatible = true
-    end
-
-    if ! compatible
-      redirect_to "/upgrade.html"
-      return false
-    end
-
-  end
 
 
     # Authentication based on authlogic

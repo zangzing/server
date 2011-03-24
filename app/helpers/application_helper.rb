@@ -18,4 +18,24 @@ module ApplicationHelper
       return "mailto:#{email}?subject=#{subject}"
    end
 
+
+
+   def compatible_browser?
+
+    if browser.safari? && browser.full_version.to_f >= 4
+      return true
+    elsif browser.firefox? && browser.full_version.to_f >= 3.6
+      return true
+    elsif browser.ie? && browser.full_version.to_f >= 8
+      return true
+    elsif browser.chrome? && browser.full_version.to_f >= 9
+      return true
+    elsif browser.ipad? || browser.ipod? || browser.iphone?
+      return true
+    end
+
+    return false
+
+  end
+
 end
