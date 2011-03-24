@@ -278,11 +278,12 @@ class ReservedUserNames
 
   def self.print_sorted(as_code=false)
     sorted = self.reserved_users.sort
-    sorted.each do |v|
+    sorted.each do |user_name|
+      unlock_name = make_unlock_name user_name
       if as_code
-        puts "\"#{v}\",\n"
+        puts "\"#{unlock_name}\",\n"
       else
-        puts v + "\n"
+        puts unlock_name + "\n"
       end
     end
   end
