@@ -8,3 +8,5 @@ require 'zz/zza'
 # Initialize the rails application
 Server::Application.initialize!
 
+
+

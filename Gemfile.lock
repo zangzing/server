@@ -50,6 +50,7 @@ GEM
       crack (>= 0.1.4)
       httparty (>= 0.5.2)
       oauth2 (>= 0.1.1)
+    browser (0.1.2)
     builder (2.1.2)
     closure-compiler (1.0.0)
     configuration (1.2.0)
@@ -219,6 +220,7 @@ DEPENDENCIES
   authlogic (= 2.1.6)
   aws-s3 (>= 0.6.2)
   bitly
+  browser
   bundler (>= 1.0.7)
   closure-compiler
   dynamic_form

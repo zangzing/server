@@ -42,6 +42,7 @@ gem "jammit"
 gem "yui-compressor"
 gem "closure-compiler"
 gem "nokogiri"
+gem "browser" 
 
 group :development do
   # bundler requires these gems in development
