@@ -50,7 +50,7 @@
 %>
           <div class="picon landscape landscape_<%=1+rand(3)%>">
               <div class="landscape_mask">
-                  <img style="width:<%=landscape_width%>px; height:<%=landscape_height%>px"  src="<%= album_cover.thumb_url%>">
+                  <img style="width:<%=landscape_width%>px; height:<%=landscape_height%>px"  src="<%= add_credentials_to_agent_url(album_cover.thumb_url)%>">
               </div>
           </div>
 <%
