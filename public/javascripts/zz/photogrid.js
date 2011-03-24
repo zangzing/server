@@ -320,8 +320,18 @@
                 }
 
 
+                //remove any 'special' photos (eg blank one used for drag and drop on edit screen
+                var photos = $.map(self.options.photos, function(photo, index){
+                    if(photo.type == 'blank'){
+                        return null;
+                    }
+                    else{
+                        return photo;
+                    }
+                });
+
                 self.thumbscroller = self.thumbscrollerElement.zz_thumbtray({
-                    photos:self.options.photos,
+                    photos:photos,
                     srcAttribute: 'previewSrc',
                     showSelection:false,
                     thumbnailSize:20,

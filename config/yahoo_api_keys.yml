@@ -15,9 +15,9 @@ test:
   :app_id: 2OFlMf4s
 
 photos_production:
-  :consumer_secret: 1dfd9a76919afa5aae7488d271f7e62e1442e4c0
-  :app_key: dj0yJmk9VXl0RWRFVGpyT1h6JmQ9WVdrOWJHVklia2xrTm5NbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD0yNw--
-  :app_id: leHnId6s
+  :consumer_secret: c8b0462fdede10aa34b75892545febd7ccbbd655
+  :app_key: dj0yJmk9ZFl6dWRLdzRSeWdGJmQ9WVdrOVRXbHhhV2xGTnpRbWNHbzlOalF4TWpNd01qWXkmcz1jb25zdW1lcnNlY3JldCZ4PThh
+  :app_id: MiqiiE74
 
 photos_staging:
   :consumer_secret: a4212632824246ed31db1852bb43489f75ebc07a

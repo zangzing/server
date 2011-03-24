@@ -25,6 +25,17 @@ each album has an email address in the form <album_id>@sendgrid-post.zangzing.co
     #
     if params[:fast_upload_secret] == "this-is-a-key-from-nginx" && (attachments=params[:fast_local_image])
       begin
+        # report data to zza
+        zza_xtra = {
+            :SPF => params[:SPF],
+            :dkim => params[:dkim],
+            :from => params[:from],
+            :to => params[:to],
+            :spam_report => params[:spam_report],
+            :spam_score => params[:spam_score],
+        }
+        ZZ::ZZA.new.track_event("email.contributor.received", zza_xtra)
+
         album_mail = params[:to].match(/\b([A-Z0-9._%+-]+)@[A-Z0-9.-]+\.[A-Z]{2,4}\b/i)[1] rescue ''
         album_slug, user_slug = album_mail.split('.')
         album = Album.find(album_slug, :scope => user_slug)

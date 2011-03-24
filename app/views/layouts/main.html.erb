@@ -26,10 +26,20 @@
     end %>
     <title><%=title%></title>
 
+
+    <% if ! compatible_browser? %>
+    <script>
+        document.location.href = "/upgrade.html";
+    </script>
+    <% end %>
+
     <%= include_stylesheets :common %>
     <style type="text/css" media="screen, projection">
       @import url(http://asset0.zendesk.com/external/zenbox/v2.1/zenbox.css);
     </style>
+
+
+
 
 
 <%  # Add in template based style tags by defining this in the template -%>
@@ -78,8 +88,7 @@
 	<%    end -%>	
 	</script>
 
-    <!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>-->
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
 	<script type="text/javascript" src="http://zza.zangzing.com/zza.js"></script>
     <%= include_javascripts :jquery_lib %>
     <%= include_javascripts :zz %>

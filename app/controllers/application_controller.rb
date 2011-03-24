@@ -51,6 +51,8 @@ class ApplicationController < ActionController::Base
 
 
 
+
+
     # Authentication based on authlogic
     # returns false or the current user session
     def current_user_session
