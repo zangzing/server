@@ -55,7 +55,7 @@ class EmailTemplate < ActiveRecord::Base
   end
 
   def formatted_from
-     "\"#{self.from_name}\" <#{self.from_address}>"
+     "#{self.from_name}<#{self.from_address}>"
   end
 
   def formatted_reply_to

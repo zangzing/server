@@ -188,7 +188,7 @@ class User < ActiveRecord::Base
   end
 
   def formatted_email
-      "\"#{self.name}\" <#{self.email}>"
+      "#{self.name}<#{self.email}>"
   end
 
 
