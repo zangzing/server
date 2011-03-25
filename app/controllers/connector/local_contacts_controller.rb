@@ -1,6 +1,9 @@
 class Connector::LocalContactsController < ApplicationController
   before_filter :oauth_required, :only => [:import]
 
+  skip_before_filter :verify_authenticity_token, :only => [:import]
+
+
   def index
     @contacts = current_user.identity_for_local.contacts
   end
