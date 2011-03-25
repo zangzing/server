@@ -13,7 +13,7 @@
     <dt><label for="album_name">Album Name</label></dt>
     <dd><input type="text" name="album[name]" id="album_name" value="<%=@album.name%>" /></dd>
     <dt><label for="album_email">Album Email</label></dt>
-    <dd><input id="album_email" type="text" name="album[email]" readonly="readonly" value="<%= @album.short_email %>"/></dd>
+    <dd><input id="album_email" type="text" readonly="readonly" value="<%= @album.short_email %>"/></dd>
     <script>
       var album_email_call_lock = 0;
     </script>

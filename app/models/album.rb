@@ -312,9 +312,8 @@ private
   end
 
   def set_email
-    # Remove spaces and @
     mail_address = "#{self.friendly_id}.#{self.user.friendly_id}"
-    self.connection.execute "UPDATE `albums` SET `email`='#{mail_address}' WHERE `id`='#{self.id}'" if self.id
+    self.connection.execute "UPDATE albums SET email=#{ActiveRecord::Base.sanitize(mail_address)} WHERE id=#{self.id}" if self.id
     self.name_had_changed = false
   end
 
