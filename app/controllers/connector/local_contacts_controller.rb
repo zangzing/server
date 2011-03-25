@@ -24,7 +24,11 @@ class Connector::LocalContactsController < ApplicationController
       Contact.transaction do
         identity.destroy_contacts
         success = identity.import_contacts(imported_contacts) > 0
-        identity.update_attribute(:last_contact_refresh, Time.now) if success
+        if success
+          identity.update_attribute(:last_contact_refresh, Time.now)
+        else
+          raise ActiveRecord::Rollback
+        end
       end
       unless success
         render :json => ['Something went wrong'], :status => 401
