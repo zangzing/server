@@ -371,10 +371,11 @@ ul#privacy-menu li div {
 }
 
 ul#privacy-menu li p {
-  margin-bottom: 20px;
-  line-height: 13px;
-  font-size:10px;
+    margin-bottom: 20px;
+    line-height: 15px;
+    font-size: 12px;
 }
+
 
 ul#privacy-menu li#privacy-public {
   background: url(/images/bg-privacy-public-off.png) no-repeat;
