@@ -39,7 +39,14 @@ zz.init = {
     },
 
     template: function() {
+        $(document).ajaxSend(function(event, request, settings) {
+              settings.data = settings.data || "";
+              settings.data += (settings.data ? "&" : "") + "authenticity_token=" + encodeURIComponent(zz.rails_authenticity_token);
+        });
+
+
         /* Click Handlers    ----------------------------------------------------------------------- */
+
 
         //top bar
         $('#header #home-button').click(function() {
@@ -233,7 +240,7 @@ zz.init = {
 
         $('#user_username').keyup(function(event) {
             var value = $('#user_username').val();
-            $('#update-username').empty().html(value);
+            $('#update-username').empty().text(value);
         });
 
         $('#step-sign-in-off').click(function() {
@@ -321,7 +328,7 @@ zz.init = {
     },
 
     init_back_button: function(caption, url){
-        $('#header #back-button span').html(caption);
+        $('#header #back-button span').text(caption);
 
         $('#header #back-button').click(function() {
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
@@ -542,14 +549,14 @@ zz.init = {
 
 
                             if (minutes === Infinity) {
-                                $('#nav-status').html("Calculating...");
+                                $('#nav-status').text("Calculating...");
                             }
                             else {
                                 var minutes_text = "Minutes";
                                 if (minutes === 1) {
                                     minutes_text = "Minute"
                                 }
-                                $('#progress-meter-label').html(minutes + ' ' + minutes_text);
+                                $('#progress-meter-label').text(minutes + ' ' + minutes_text);
                             }
 
                             $('#progress-meter').show();

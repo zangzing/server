@@ -83,6 +83,12 @@ window.onerror = function(message, url, line) {
       if(url.indexOf('http://localhost:30777') == -1){
         ZZAt.track('js.error',{message: message, url:url, line:line});
       }
+
+      if(typeof(console) != 'undefined'){
+          console.log({message: message, url:url, line:line});
+      }
+
+
   }
   catch(err){
   }

@@ -36,6 +36,19 @@ module ApplicationHelper
 
     return false
 
-  end
+   end
 
+   #note: this is duplicated in agent.js
+   def add_credentials_to_agent_url(url)
+      if url.starts_with? 'http://localhost:30777'
+        if ! url.include? '?'
+          url += '?'
+        end
+
+        url += "session=#{cookies[:user_credentials]}&user_id=#{current_user.id}"
+
+      end
+
+      return url;
+  end
 end

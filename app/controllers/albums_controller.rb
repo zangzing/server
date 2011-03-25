@@ -136,8 +136,11 @@ class AlbumsController < ApplicationController
 
   def destroy
     # Album is found when the before filter calls authorized user
-    @album.destroy
-    redirect_back_or_default root_path
+    if !@album.destroy
+      render :json => @album.errors, :status=>500
+    end
+    render :json => "Album deleted".to_json
+
   end
 
   def close_batch

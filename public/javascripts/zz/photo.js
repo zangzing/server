@@ -42,7 +42,7 @@
 
 
             var html = '';
-            html += '<div class="photo-caption">' + self.options.caption +'</div>';
+            html += '<div class="photo-caption"></div>';
 
             html += '<div class="photo-border">'
             html += '   <img class="photo-image">';
@@ -70,6 +70,8 @@
             self.uploadingElement = this.element.find('.photo-uploading-icon');
             self.errorElement = this.element.find('.photo-error-icon');
             self.bottomShadow = this.element.find('.bottom-shadow');
+
+            self.captionElement.text(self.options.caption);
 
 
             if(self.options.type === 'blank'){
@@ -446,7 +448,7 @@
                         self.options.caption = newCaption
                         self.options.onChangeCaption(newCaption);
                     }
-                    self.captionElement.html(newCaption);
+                    self.captionElement.text(newCaption);
                     self.isEditingCaption = false;
                 }
 

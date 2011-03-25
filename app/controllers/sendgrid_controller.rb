@@ -1,5 +1,7 @@
 class SendgridController < ApplicationController
 
+  skip_before_filter :verify_authenticity_token
+
 =begin
 each album has an email address in the form <album_id>@sendgrid-post.zangzing.com
     *      text - Text body of email. If not set, email did not have a text body.
