@@ -213,8 +213,13 @@ zz.init = {
             //todo: need better generic way to determine current view and get photo id -- this is duplicated elsewhere
             if (document.location.href.indexOf('/photos/#!') !== -1 || document.location.href.indexOf('/photos#!') !== -1) {
                 //picture view -- share photo
-                var photo_id = $.param.fragment();
-                pages.share.share_in_dialog('photo', photo_id, function(){
+                var currentPhotoId = null;
+                var hash = jQuery.param.fragment();
+
+                if (hash !== '') {
+                    currentPhotoId = hash.slice(1); //remove the '!'
+                }
+                pages.share.share_in_dialog('photo', currentPhotoId, function(){
                     zz.init.enable_buttons();
                     $('#footer #share-button').removeClass('selected');  //todo: centralize this somewhere -- zz.toolbars
                 });
@@ -470,7 +475,6 @@ zz.init = {
 
                         var currentPhotoId = null;
                         var hash = jQuery.param.fragment();
-
 
                         if (hash !== '') {
                             currentPhotoId = hash.slice(1); //remove the '!'
