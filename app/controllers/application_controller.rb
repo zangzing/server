@@ -145,7 +145,8 @@ class ApplicationController < ActionController::Base
 
     def protect_with_http_auth
       allowed = {
-        :actions => ['photos#agentindex',
+        :actions => ['photos#index',
+                     'photos#agentindex',
                      'photos#agent_create',
                      'photos#upload_fast',
                      'oauth#access_token',
