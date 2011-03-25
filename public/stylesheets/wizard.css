@@ -356,7 +356,7 @@ ul#privacy-menu {
 ul#privacy-menu li {
   float: left;
   width: 170px;
-  height: 180px;
+  height: 168px;
   padding: 110px 20px 10px;
   margin: 0 5px;
   color: #686868;
@@ -378,27 +378,29 @@ ul#privacy-menu li p {
 
 
 ul#privacy-menu li#privacy-public {
-  background: url(/images/bg-privacy-public-off.png) no-repeat;
-}
-
-ul#privacy-menu li#privacy-hidden {
-  background: url(/images/bg-privacy-private-off.png) no-repeat;
-}
-
-ul#privacy-menu li#privacy-password {
-  background: url(/images/bg-privacy-password-off.png) no-repeat;
+  background: url(/images/bg-privacy-public.png) no-repeat scroll 0px 0px;
 }
 
 ul#privacy-menu li#privacy-public:hover {
-  background: url(/images/bg-privacy-public-on.png) no-repeat;
+    background: url(/images/bg-privacy-public.png) no-repeat scroll 0px -288px;
+}
+
+
+ul#privacy-menu li#privacy-hidden {
+  background: url(/images/bg-privacy-private.png) no-repeat  scroll 0px 0px;
 }
 
 ul#privacy-menu li#privacy-hidden:hover {
-  background: url(/images/bg-privacy-private-on.png) no-repeat;
+  background: url(/images/bg-privacy-private.png) no-repeat  scroll 0px -288px;
+}
+
+
+ul#privacy-menu li#privacy-password {
+  background: url(/images/bg-privacy-password.png) no-repeat  scroll 0px 0px;
 }
 
 ul#privacy-menu li#privacy-password:hover {
-  background: url(/images/bg-privacy-password-on.png) no-repeat;
+  background: url(/images/bg-privacy-password.png) no-repeat  scroll 0px -288px;
 }
 
 
