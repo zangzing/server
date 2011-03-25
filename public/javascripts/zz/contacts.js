@@ -39,7 +39,7 @@ zzcontacts ={
         for(var service in zzcontacts.data ){
             var service_results = jQuery.grep( zzcontacts.data[service].contacts, function(element){
                 //     ( name.match(regex)       || email.match( regex ) )
-                return ( element[1].match(regex) || element[2].match( regex ) );
+                return ( element[0].match(regex) || element[1].match( regex ) );
             });
             results = results.concat( service_results );
         }
@@ -49,11 +49,11 @@ zzcontacts ={
     _format_results: function( results ){
         var formatted_results = [];
         for( var i in results ){
-            // The fields for the arrays in the results  are [ id, name, email ]
+            // The fields for the arrays in the results  are [ name, email ]
             var x = results[i];
             //var id = x[0];
-            var name  = x[1];
-            var email = x[2];
+            var name  = x[0];
+            var email = x[1];
             
             var token_text = name;
             var searched_text = name;
