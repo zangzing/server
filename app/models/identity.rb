@@ -38,8 +38,9 @@ class Identity < ActiveRecord::Base
   end
 
   def credentials_valid?
+
     # we may want to validate with a call to the specific service
-    self.credentials
+    self.identity_source.to_sym == :local || self.credentials
   end
 
   UI_INFO = {
