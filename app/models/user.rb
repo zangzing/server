@@ -59,7 +59,7 @@ class User < ActiveRecord::Base
   end
 
   before_save    :split_name
-  before_create  :build_profile_album
+  before_create  :make_profile_album
   before_create  :build_preferences
   after_create   :update_acls_with_id
   after_create   :like_mr_zz
@@ -86,6 +86,12 @@ class User < ActiveRecord::Base
   end
 
 
+  # make the profile album
+  def make_profile_album
+    p = ProfileAlbum.new()
+    p.make_private
+    self.profile_album = p
+  end
 
   def self.find_by_email_or_create_automatic( email, name='' )
     user = User.find_by_email( email );
@@ -169,7 +175,7 @@ class User < ActiveRecord::Base
 
   def profile_photo_id=(id)
     if profile_album.nil?
-      build_profile_album
+      make_profile_album
     end
 
     if id && id.is_a?(String) && id.length <= 0

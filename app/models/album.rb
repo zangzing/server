@@ -288,14 +288,26 @@ class Album < ActiveRecord::Base
     self.privacy == 'password'
   end
 
+  def make_private
+    self.privacy = 'password'
+  end
+
   # Return true if album is public
   def public?
     self.privacy == 'public'
   end
 
+  def make_public
+    self.privacy = 'public'
+  end
+
   # Return true if album is hidden
   def hidden?
     self.privacy == 'hidden'
+  end
+
+  def make_hidden
+    self.privacy = 'hidden'
   end
 
 
