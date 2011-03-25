@@ -9,7 +9,7 @@ class Connector::InstagramFoldersController < Connector::InstagramController
           :open_url => instagram_photos_path(:target => 'my-photos'), :add_url => instagram_folder_action_path(:target => 'my-photos', :action => 'import')
         },
         {
-          :name => 'People I follow', :type => 'folder', :id => 'i-follow',
+          :name => 'People I Follow', :type => 'folder', :id => 'i-follow',
           :open_url => instagram_folders_path(:target => 'i-follow'), :add_url => nil
         }
       ]
