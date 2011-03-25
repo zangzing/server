@@ -34,7 +34,6 @@ user = User.new(  {:name                   => 'ZangZing Admin',
 user.reset_perishable_token
 user.reset_single_access_token
 user.save
-user.update_attribute(:role, 'admin')
 SystemRightsACL.singleton.add_user(user.id, SystemRightsACL::ADMIN_ROLE)
 print user.name + " User Created!\n"
 
