@@ -32,7 +32,7 @@ class Connector::InstagramFoldersController < Connector::InstagramController
   def import
     photos_list = []
     SystemTimer.timeout_after(http_timeout) do
-      photos_list = client.user_media_feed(feed_owner)
+      photos_list = client.user_recent_media(feed_owner, :min_timestamp => Time.at(0), :max_timestamp => Time.now)
     end
     photos = []
     current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
