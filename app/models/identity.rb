@@ -61,5 +61,38 @@ class Identity < ActiveRecord::Base
   def name
     UI_INFO[self.identity_source.to_sym][:name]
   end
+
+  def destroy_contacts
+    Contact.connection.execute "DELETE FROM #{Contact.quoted_table_name} WHERE `identity_id` = #{self.id}"
+  end
+  
+  def import_contacts(contacts_array)
+    page_size = 100 #Decrease this if u're getting errors like 'SQL Statement too big'
+    columns_to_update = ['name', 'address', 'identity_id']
+    
+    page_start = 0
+    imported_count = 0
+    columns = columns_to_update.map { |name| Contact.columns_hash[name] }
+    while page_start <= contacts_array.size
+      page = contacts_array[page_start, page_size]
+      page.each{|c| c.identity_id = self.id} #To fit validation
+      value_blocks = page.select(&:valid?).map do |contact|
+        columns.map do |col|
+          Contact.connection.quote(col.type_cast(contact.attributes[col.name]), col)
+        end
+      end
+      next if value_blocks.empty?
+      sql = "INSERT INTO #{Contact.quoted_table_name}(#{columns_to_update.join(',')},created_at,updated_at) VALUES"
+      sql += value_blocks.map {|v| "(#{v.join(',')},NOW(),NOW())" }.join(',')
+      begin
+        Contact.connection.execute sql
+      ensure
+        imported_count += value_blocks.size
+      end
+      page_start += page_size
+    end
+    imported_count
+  end
+
   
 end

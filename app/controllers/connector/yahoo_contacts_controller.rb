@@ -39,17 +39,18 @@ class Connector::YahooContactsController < Connector::YahooController
     end while start_index < contacts_count
 
     unless imported_contacts.empty?
-      identity.contacts.destroy_all
-      imported_contacts.each {|c| identity.contacts << c  }
-      identity.last_contact_refresh = Time.now
-      if identity.save
-        render :json => imported_contacts.to_json( :only => [ :name, :address ])
-      else
-        render :json => identity.errors.full_messages.to_json, :status => 401
+      success = false
+      Contact.transaction do
+        identity.destroy_contacts
+        success = identity.import_contacts(imported_contacts) > 0
+        identity.update_attribute(:last_contact_refresh, Time.now) if success
       end
-    else
-      render :json => imported_contacts.to_json(:only => [ :name, :address ])
+      unless success
+        render :json => ['Something went wrong'], :status => 401
+        return
+      end
     end
+    render :json => imported_contacts.to_json
   end
 
 end
