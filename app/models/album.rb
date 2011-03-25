@@ -302,6 +302,7 @@ class Album < ActiveRecord::Base
 private
   def cover_photo_id_valid?
     begin
+      return true if cover_photo_id.nil?
       photos.find(cover_photo_id)
       return true
     rescue ActiveRecord::RecordNotFound => e
