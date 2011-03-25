@@ -263,6 +263,7 @@ class ReservedUserNames
       "meng",
       "edmeng",
       "gerryschroeder",
+      "jess",
     ].freeze
   end
 

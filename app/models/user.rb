@@ -148,7 +148,10 @@ class User < ActiveRecord::Base
   end
 
   def admin?
-     self.role == 'admin'
+    @is_admin ||= lambda {
+      acl = SystemRightsACL.singleton
+      acl.has_permission?(self.id, SystemRightsACL::ADMIN_ROLE)
+    }.call
   end
 
   def name
@@ -221,6 +224,9 @@ class User < ActiveRecord::Base
   # (runs as an after_create callback)
   def update_acls_with_id
     ACLManager.global_replace_user_key( self.email, self.id )
+
+    # set proper acl rights - new users default to regular user rights
+    SystemRightsACL.singleton.add_user(self.id, SystemRightsACL::USER_ROLE)
   end
 
   # returns an array of auto like ids

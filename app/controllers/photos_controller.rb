@@ -161,6 +161,11 @@ class PhotosController < ApplicationController
     end
     
     @album = @photo.album
+    cover_id = @album.cover_photo_id
+    if cover_id == @photo.id
+      @album.cover_photo_id = nil
+      @album.save
+    end
     respond_to do |format|
       format.html do
         if !@photo.destroy

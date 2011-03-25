@@ -20,7 +20,6 @@ user = User.new(  {:name                   => 'ZangZing',
                       :password_confirmation  => 'dud7/adds'})
 user.reset_perishable_token
 user.reset_single_access_token
-#user.update_attribute(:role, 'admin')
 user.save
 print user.name + " User Created!\n"
 
@@ -34,8 +33,8 @@ user = User.new(  {:name                   => 'ZangZing Admin',
                       :password_confirmation  => 'cal6:cars'})
 user.reset_perishable_token
 user.reset_single_access_token
-user.update_attribute(:role, 'admin')
 user.save
+SystemRightsACL.singleton.add_user(user.id, SystemRightsACL::ADMIN_ROLE)
 print user.name + " User Created!\n"
 
 # ZANGZING  AGENT CLIENT APPLICATION TOKEN
