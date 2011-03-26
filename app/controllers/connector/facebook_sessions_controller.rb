@@ -9,7 +9,9 @@ class Connector::FacebookSessionsController < Connector::FacebookController
 
   def create
     token = nil
-    unless params[:error]=='access_denied'
+    if params[:error]
+       @error = params[:error]
+    else  
       SystemTimer.timeout_after(http_timeout) do
         token = HyperGraph.get_access_token(FACEBOOK_API_KEYS[:app_id], FACEBOOK_API_KEYS[:app_secret], create_facebook_session_url(:host => Server::Application.config.application_host), params[:code])
       end
