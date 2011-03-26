@@ -1,12 +1,18 @@
 class Admin::AdminController < ApplicationController
-  before_filter :admin_login_required
+  before_filter :require_user, :require_admin
 
-  def admin_login_required
-    unless current_user && current_user.admin?
-        store_location
-        flash[:notice] = "You must be logged in as an administrator to access this page"
-        redirect_to new_user_session_url
-        return false
+  # To be run as a before_filter
+  # Will render a 401 page if the currently logged in user is not an admin
+  def require_admin
+    unless current_user.admin?
+      flash[:error] = "Administrator privileges required for this operation"
+      response.headers['x_error'] = flash[:error]
+      if request.xhr?
+        render :status => 401
+      else
+        render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
+      end
+      return false
     end
   end
 end

@@ -1,52 +1,28 @@
 require "zz_env_helpers"
 
 class PhotosController < ApplicationController
-  before_filter :oauth_required, :only => [:agentindex, :agent_create]
-  before_filter :require_user, :only => [:create, :update, :destroy ] #TODO Sort out album security so facebook can freely dig into album page
+                                              
+  before_filter :require_user,                    :only =>   [ :destroy, :update, :position ]  #for interactive users
+  before_filter :oauth_required,                  :only =>   [ :agent_create, :agent_index ]   #for agent
 
-  #before_filter :determine_album_user #For friendly_id's scope
+  before_filter :require_album,                   :only =>   [ :agent_create, :index, :movie, :photos_json ]
+  before_filter :require_photo,                   :only =>   [ :destroy, :update, :position ]
 
-  def create
-    @album = fetch_album
-    @photo = @album.photos.build(params[:photo])
-    @photo.user = current_user
-
-    respond_to do |format|
-      format.html do
-        if @photo.save
-          flash[:success] = "Photo Created!"
-          render :action => :show
-        else
-          render :action => :new
-        end
-      end
-      format.json do
-        if @photo.save
-          render :json => @photo.to_json(:only =>[:id, :agent_id, :state])
-        else
-          render :json => @photo.errors, :status=>500
-        end
-      end
-    end
-  end
+  before_filter :require_album_admin_role,        :only =>   [ :destroy, :update, :position ]
+  before_filter :require_album_contributor_role,  :only =>   [ :agent_create ]
+  before_filter :require_album_viewer_role,       :only =>   [ :index, :movie, :photos_json  ]
 
 
+  # Used by the agent to create photos duh?
+  # logged in via oauth
+  # @album set by require_album
   def agent_create
     if params[:source_guid].nil?
       render :json => "source_guid parameter required. Unable to create photos", :status=>400 and return
     end
 
-    album             = fetch_album
     user_id           = current_user.id
-
-    # validate that current_user is a contributor
-    # (the agent has a token for a user that here is known as current_user)
-    #todo: generalize with before filter
-    render :json => "User does not have permission to add photos to this album",
-           :status=> 401 and return unless album.contributor?( user_id )
-      
-
-    album_id          = album.id
+    album_id          = @album.id
     agent_id          = params[:agent_id]
     photos            = []
     source_guid_map   = params[:source_guid]
@@ -96,7 +72,7 @@ class PhotosController < ApplicationController
   end
 
 
-  def agentindex
+  def agent_index
     begin
       @photos = Photo.all(:conditions => ["agent_id = ? AND state = ?", params[:agent_id], 'assigned'])
       render :json => @photos.to_json(:only =>[:id, :agent_id, :state, :album_id])
@@ -113,9 +89,10 @@ class PhotosController < ApplicationController
 
 
   def upload_fast
-    #nginx add params so it breaks oauth. use this validation to ensure it is coming from nginx
+     #nginx add params so it breaks oauth. use this validation to ensure it is coming from nginx
     #currently we only handle one photo attachment but the input is structured to send multiple
     #as is done with the sendgrid#import_fast
+    render :status => 401 unless request.local?   #this request can only come from nginx running on same machine
     if params[:fast_upload_secret] == "this-is-a-key-from-nginx" && (attachments = params[:fast_local_image]) && attachments.count == 1
       begin
         @photo = Photo.find(params[:id])
@@ -147,14 +124,9 @@ class PhotosController < ApplicationController
     end
   end
 
+  #deletes a photo
+  #@photo & @album are set by require_photo beofre filter
   def destroy
-    @photo = Photo.find(params[:id])
-
-    unless current_user?( @photo.user )
-      render :json => 'Only photo owner can delete photos', :status => 401 and return
-    end
-    
-    @album = @photo.album
     respond_to do |format|
       format.html do
         if !@photo.destroy
@@ -171,23 +143,11 @@ class PhotosController < ApplicationController
     end
   end
 
-
+  # used by facebook and google crawlers but not by interactive users
+  # displays all the photos in an album
+  # @album is set by require_album before_filter
   def index
-    fetch_album
 
-    #Verify if user has viewer permissions otherwise ask them to sign in
-    if @album.private?
-        unless current_user
-          store_location
-          flash[:notice] = "You have asked to see a password protected album. Please login so we know who you are."
-          redirect_to new_user_session_url and return
-        end
-        unless @album.viewer?( current_user.id )
-          session[:client_dialog] = album_pwd_dialog_url( @album )
-          redirect_to user_url( @album.user ) and return
-        end
-    end
-    
     if(!params[:user_id])
       redirect_to album_pretty_url(@album)
     else
@@ -200,16 +160,17 @@ class PhotosController < ApplicationController
     end
   end
 
+  # returns the  movie view
+  # @album is set by before_filter require_album
   def movie
-    @album = fetch_album
     @photos = @album.photos
     render 'movie', :layout => false
   end
 
+  # returns a json string of the album photos
+  # @album is set by before_filter require_album
   def photos_json
-    @album = fetch_album
-
-    if stale?(:last_modified => @album.photos_last_updated_at.utc, :etag => @album)
+     if stale?(:last_modified => @album.photos_last_updated_at.utc, :etag => @album)
 
       cache_key = "Album.Photos." + @album.id.to_s + '-' + @album.photos_last_updated_at.to_i.to_s + '.json'
 
@@ -237,22 +198,9 @@ class PhotosController < ApplicationController
     end
   end
 
-  def profile
-     @album = Album.find( params[:album_id])
-     current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
-     @photo = @album.photos.build(:agent_id => "PROFILE_PHOTO",
-                                  :source_guid => "PROFILE_FORM",
-                                  :caption => "LUCKY ME",
-                                  :upload_batch_id => current_batch.id,
-                                  :image_file_size => 128)
-      @photo.user = current_user
-      @photo.save
-      render :layout =>false
-  end
-
+  # updates photo attributes
+  # @photo from require_photo before filter
   def update
-    @photo = Photo.find(params[:id])
-
     if @photo && @photo.update_attributes( params[:photo] )
       flash[:notice] = "Photo Updated!"
       render :text => 'Success Updating Photo', :status => 200, :layout => false
@@ -262,31 +210,59 @@ class PhotosController < ApplicationController
     end
   end
 
-  #used by the photogrid to notify changes in the album order when a photo is dragged and dropped
-  # expects :before_id and :after_id
+  # Used by the photogrid to notify changes in the album order when a photo is dragged and dropped
+  # expects params[ :before_id ] and params[ :after_id ]
+  # @photo is set by require_photo before_filter
   def position
-    #begin
-      photo = Photo.find( params[:id] )
-      photo.position_between( params[:before_id], params[:after_id])
-    #rescue Exception => e
-    #  render :json => e.message, :status => 500 and return
-    #end
-    render :text => "Position Done!", :status => 200
+    @photo.position_between( params[:before_id], params[:after_id])
+    render :nothing => true
   end
 
-  
-private
-
-  def fetch_album
-    if params[:user_id]
-      @album = Album.find(params[:album_id], :scope => params[:user_id])
-    else
-      @album = Album.find( params[:album_id] )
+  private
+  #
+  # To be run as a before_filter
+  # sets @photo to be Photo.find( params[:id ])
+  # set @album ot @photo.album
+  # params[:id] required, must be present and be a valid photo_id.
+  def require_photo
+    begin
+      @photo = Photo.find( params[:id ])  #will trhow exception if params[:id] is not defined or photo not found
+      @album = @photo.album
+    rescue ActiveRecord::RecordNotFound => e
+      flash[:error] = "This operation requires a photo, we could not find one because: "+e.message
+      response.headers['X-Error'] = flash[:error]
+      if request.xhr?
+        render :status => 404
+      else
+        render :file => "#{Rails.root}/public/404.html", :layout => false, :status => 404
+      end
+      return false
     end
   end
 
-  #def determine_album_user
-  #  @album_user_id = params[:user_id] #|| current_user.to_param
-  #end
-
+  #
+  # To be run as a before_filter
+  # sets @album
+  # params[:album_id] required, it must be present and be a valid album_id.
+  # params[:user_id]  optional, if present it will be used as a :scope for the finder
+  # Throws ActiveRecord:RecordNotFound exception if params[:id] is not present or the album is not found
+  def require_album
+    begin
+      #will trhow exception if params[:album_id] is not defined or album not found
+      if params[:user_id]
+        @album = Album.find(params[:album_id], :scope => params[:user_id])
+      else
+        @album = Album.find( params[:album_id] )
+      end
+    rescue ActiveRecord::RecordNotFound => e
+      flash[:error] = "This operation requires an album, we could not find one because: "+e.message
+      response.headers['X-Error'] = flash[:error]
+      if request.xhr?
+        render :status => 404
+      else
+        render :file => "#{Rails.root}/public/404.html", :layout => false, :status => 404
+      end
+      return false
+    end
+  end
 end

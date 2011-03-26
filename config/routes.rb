@@ -57,8 +57,6 @@ Server::Application.routes.draw do
     get    '/albums/:id/name_album'          => 'albums#name_album',          :as => :name_album
     get    '/albums/:id/preview_album_email' => "albums#preview_album_email", :as => :preview_album_email
     get    '/albums/:id/privacy'             => 'albums#privacy',             :as => :privacy
-    get    '/albums/:id/add_photos'          => 'albums#add_photos',          :as => :add_photos
-    get    '/albums/:id/upload_stat'         => 'albums#upload_stat',         :as => :album_upload_stat
     get    '/albums/:id'                     => 'albums#show',                :as => :album
     get    '/albums/:id/edit'                => 'albums#edit',                :as => :edit_album
     get    '/albums/:id/close_batch'         => 'albums#close_batch',         :as => :close_batch
@@ -86,9 +84,8 @@ Server::Application.routes.draw do
     get    '/albums/:album_id/movie'        => 'photos#movie',                      :as => :album_movie
     delete '/photos/:id'                    => 'photos#destroy',                    :as => :destroy_photo
     put    '/photos/:id/upload_fast'        => 'photos#upload_fast',                :as => :upload_photo_fast
-    get    '/agents/:agent_id/photos'       => 'photos#agentindex',                 :as => :agent_photos
+    get    '/agents/:agent_id/photos'       => 'photos#agent_index',                 :as => :agent_photos
     post   '/albums/:album_id/photos/agent_create.:format' => 'photos#agent_create',:as => :agent_create
-    get    '/albums/:album_id/profile'      => 'photos#profile',                    :as => :profile
     put    '/photos/:id'                    => 'photos#update',                     :as => :update_photo
     put    '/photos/:id/position'           => 'photos#position',                   :as => :photo_position
 
@@ -274,17 +271,14 @@ Server::Application.routes.draw do
     match '/sendgrid/import_fast' => 'sendgrid#import_fast', :as => :sendgrid_import_fast
 
 
-    #logs
-    unless Rails.env.production?
-      match '/logs' => 'logs#index', :as => :logs
-      match '/logs/:logname' => 'logs#retrieve', :as => :log_retrieve
-    end
 
     # ====================================================================================================
     # =============================================== ADMIN ==============================================
     # ====================================================================================================
     scope  '/admin', :module => "admin" do
-        get    'status'                          =>  'status#show',                :as => :show_status
+        get   'logs'                            => 'logs#index',                  :as => :logs
+        get   'logs/:logname'                   => 'logs#retrieve',               :as => :log_retrieve
+        get   'status'                          =>  'status#show',                :as => :show_status
         # MailChimp Transactional Campaign manager
         get    'chimpcampaigns'                  => 'chimpcampaigns#index',       :as => :chimpcampaigns
         get    'chimpcampaigns/new'              => 'chimpcampaigns#new',         :as => :new_chimpcampaign
