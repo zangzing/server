@@ -28,6 +28,7 @@ module ZZ
         def self.perform()
           if (should_run)
             #puts "Batch Sweeper run at " + Time.now().to_s
+            UploadBatch.close_pending_batches
             UploadBatch.finalize_stale_batches
           end
         end

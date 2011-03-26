@@ -27,7 +27,7 @@ class Connector::InstagramPhotosController < Connector::InstagramController
     SystemTimer.timeout_after(http_timeout) do
       photo_data = client.media_item(params[:photo_id])
     end
-    current_batch = UploadBatch.get_current(current_user.id, params[:album_id])
+    current_batch = UploadBatch.get_current_and_touch(current_user.id, params[:album_id])
     photo = Photo.create(
             :id => Photo.get_next_id,
             :caption => (photo_data[:caption][:text] rescue ''),

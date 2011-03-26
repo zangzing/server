@@ -104,7 +104,7 @@ protected
   def add_photos(album, user, attachments)
     if attachments.count > 0
       photos = []
-      current_batch = UploadBatch.get_current( user.id, album.id )
+      current_batch = UploadBatch.get_current_and_touch( user.id, album.id )
       attachments.each do |fast_local_image|
         content_type = fast_local_image['content_type']
         file_path = fast_local_image['filepath']
@@ -135,7 +135,6 @@ protected
       # bulk insert
       Photo.batch_insert(photos)
 
-      #current_batch.close
     end
   end
 

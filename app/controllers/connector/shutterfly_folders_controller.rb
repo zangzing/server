@@ -24,7 +24,7 @@ class Connector::ShutterflyFoldersController < Connector::ShutterflyController
       photos_list = sf_api.get_images(params[:sf_album_id])
     end
     photos = []
-    current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
+    current_batch = UploadBatch.get_current_and_touch( current_user.id, params[:album_id] )
     photos_list.each do |p|
       photo_url = get_photo_url(p[:id], :full)
       photo = Photo.new_for_batch(current_batch, {
