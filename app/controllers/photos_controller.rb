@@ -64,7 +64,7 @@ class PhotosController < ApplicationController
 
     # optimize by ensuring we have the number of ids we need up front
     current_id = Photo.get_next_id(photo_count)
-    current_batch = UploadBatch.get_current( user_id, album_id )
+    current_batch = UploadBatch.get_current_and_touch( user_id, album_id )
     batch_id = current_batch.id
 
     (0...photo_count).each do |index|
@@ -250,7 +250,7 @@ class PhotosController < ApplicationController
 
   def profile
      @album = Album.find( params[:album_id])
-     current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
+     current_batch = UploadBatch.get_current_and_touch( current_user.id, params[:album_id] )
      @photo = @album.photos.build(:agent_id => "PROFILE_PHOTO",
                                   :source_guid => "PROFILE_FORM",
                                   :caption => "LUCKY ME",

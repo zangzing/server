@@ -25,7 +25,7 @@ class Connector::SmugmugFoldersController < Connector::SmugmugController
       photos_list = smugmug_api.call_method('smugmug.images.get', {:AlbumID => album_id, :AlbumKey => album_key, :Heavy => 1})
     end
     photos = []
-    current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
+    current_batch = UploadBatch.get_current_and_touch( current_user.id, params[:album_id] )
     photos_list[:images].each do |p|
       photo_url = p[:originalurl]
       photo = Photo.new_for_batch(current_batch, {

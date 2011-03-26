@@ -34,7 +34,7 @@ class Connector::KodakPhotosController < Connector::KodakController
     photos_data = photos_list['pictures']
     p = photos_data.select { |p| p['id']==params[:photo_id] }.first
     photo_url = p[PHOTO_SIZES[:full]]
-    current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
+    current_batch = UploadBatch.get_current_and_touch( current_user.id, params[:album_id] )
     photo = Photo.create(
             :id => Photo.get_next_id,
             :user_id=>current_user.id,

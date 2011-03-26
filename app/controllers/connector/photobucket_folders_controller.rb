@@ -38,7 +38,7 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
       album_contents = photobucket_api.open_album(params[:album_path])
     end
     photos = []
-    current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
+    current_batch = UploadBatch.get_current_and_touch( current_user.id, params[:album_id] )
     (album_contents[:media] || []).each do |photo_data|
       photo_url = photo_data[:url]
       photo = Photo.new_for_batch(current_batch, {
@@ -67,7 +67,7 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
     SystemTimer.timeout_after(http_timeout) do
       photo_data = photobucket_api.call_method("/media/#{params[:photo_path]}")
     end
-    current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
+    current_batch = UploadBatch.get_current_and_touch( current_user.id, params[:album_id] )
     photo = Photo.create(
             :id => Photo.get_next_id,
             :caption => photo_data[:title] || photo_data[:name],

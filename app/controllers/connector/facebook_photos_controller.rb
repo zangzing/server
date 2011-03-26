@@ -37,7 +37,7 @@ class Connector::FacebookPhotosController < Connector::FacebookController
 
   def import
     info = facebook_graph.get(params[:photo_id])
-    current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
+    current_batch = UploadBatch.get_current_and_touch( current_user.id, params[:album_id] )
     photo = Photo.create(
             :id => Photo.get_next_id,
             :user_id=>current_user.id,

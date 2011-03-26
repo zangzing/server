@@ -17,7 +17,7 @@ class Connector::ZangzingFoldersController < Connector::ConnectorController
   def import
     photos = []
     source_photos = current_user.albums.find(params[:zz_album_id]).photos
-    current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
+    current_batch = UploadBatch.get_current_and_touch( current_user.id, params[:album_id] )
     source_photos.each do |p|
       next unless p.ready?
       photo_url = p.original_url

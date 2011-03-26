@@ -26,7 +26,7 @@ class Connector::PicasaFoldersController < Connector::PicasaController
       doc = Nokogiri::XML(client.get("https://picasaweb.google.com/data/feed/api/user/default/albumid/#{params[:picasa_album_id]}").body)
     end
     photos = []
-    current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
+    current_batch = UploadBatch.get_current_and_touch( current_user.id, params[:album_id] )
     doc.xpath('//a:entry', NS).each do |entry|
       #photoid = /photoid\/([0-9a-z]+)/.match(entry.elements['id'].text)[1]
       photo_url = get_photo_url(entry.at_xpath('m:group', NS), :full)

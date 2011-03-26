@@ -144,9 +144,15 @@ class AlbumsController < ApplicationController
   end
 
   def close_batch
-     if params[:id]
-        UploadBatch.close_open_batches( current_user.id, params[:id])
-     end
+    # no longer directly supported
+    # we now leave all batches open for a 5 minute window
+    # from the last open related activity such as adding
+    # photos
+    # a batch sweeper is now responsible for detecting batches
+    # that need to be closed
+#     if params[:id]
+#        UploadBatch.close_open_batches( current_user.id, params[:id])
+#     end
      render :nothing => true
   end
 

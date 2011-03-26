@@ -66,7 +66,7 @@ class SampleDataLoader
         (rand( 20 )+1).times do
             new_photo(album, album.user)
         end
-        ub = UploadBatch.get_current( album.user.id, album.id )
+        ub = UploadBatch.get_current_and_touch( album.user.id, album.id )
         puts "          Batch of #{ub.photos.length} photos added"
         ub.close
       end
@@ -103,8 +103,8 @@ class SampleDataLoader
             (rand( 15 )+1).times do
               new_photo(album, users[i])
             end
-            UploadBatch.get_current( users[i].id, album.id ).save
-            puts "          Batch of #{UploadBatch.get_current( users[i].id, album.id ).photos.length} photos added"
+            UploadBatch.get_current_and_touch( users[i].id, album.id ).save
+            puts "          Batch of #{UploadBatch.get_current_and_touch( users[i].id, album.id ).photos.length} photos added"
          end
        end
        (rand(5)+1).times do
@@ -167,7 +167,7 @@ class SampleDataLoader
 
   def new_photo(album, user)
     i = image_name
-    current_batch = UploadBatch.get_current( user.id, album.id )
+    current_batch = UploadBatch.get_current_and_touch( user.id, album.id )
     p = Photo.new_for_batch(current_batch, {
           :id => Photo.get_next_id,
           :user_id           => user.id,

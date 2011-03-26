@@ -26,7 +26,7 @@ class Connector::FlickrFoldersController < Connector::FlickrController
       photo_set = flickr_api.photosets.getPhotos :photoset_id => params[:set_id], :extras => 'original_format,date_taken'
     end
     photos = []
-    current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
+    current_batch = UploadBatch.get_current_and_touch( current_user.id, params[:album_id] )
     photo_set.photo.each do |p|
       #todo: refactor this so that flickr_folders_controller and flickr_photos_controller can share
       photo_url = get_photo_url(p, :full)
