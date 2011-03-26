@@ -56,29 +56,57 @@
 </head>
 
 <body>
-    <object id="movie" type="application/x-shockwave-flash" data="/swf/ZZSlideShow.swf">
+    <object id="movie" type="application/x-shockwave-flash" data="/swf/movie.swf">
         <param name="movie" value="/swf/ZZSlideShow.swf">
         <param name="allowFullScreen" value="true">
         <param name="bgcolor" value="#000000">
-        <param name="flashvars" value="source=<%=album_path @album%>/photos_json?<%=@album.photos_last_updated_at.to_i%>&autoHideControls=false&autoSlideShow=true&backgroundColor=000000&backgroundImage=&backgroundVisible=true&borderSize=5&borderColor=FFFFFF&controlsHideSpeed=2&exitButton=true&exitButtonURL=<%=album_path @album%>&loadOriginalImages=false&overrideFullScreenChange=false&scaleBackground=true&scaleMode=scale&shadowColor=0x000000&slideshowDistance=5&slideShowSpeed=6&transitionSpeed=0.7&transitionType=slide&slideShowControls=true&preloadAfter=3&preloadBefore=1"/>
+
+        <%
+        flash_params =  "autoHideControls=false&" +
+                        "autoSlideShow=true&" +
+                        "backgroundColor=000000&" +
+                        "backgroundImage=&" +
+                        "backgroundVisible=true&" +
+                        "borderSize=5&" +
+                        "borderColor=FFFFFF&" +
+                        "controlsHideSpeed=2&" +
+                        "backButton=true&" +
+                        "backButtonURL=#{album_path @album}&" +
+                        "loadOriginalImages=false&" +
+                        "overrideFullScreenChange=false&" +
+                        "scaleBackground=true&" +
+                        "scaleMode=scale&" +
+                        "shadowColor=0x000000&" +
+                        "slideshowDistance=5&" +
+                        "slideShowSpeed=6&" +
+                        "transitionSpeed=0.7&" +
+                        "transitionType=slide&" +
+                        "slideShowControls=true&" +
+                        "preloadAfter=3&" +
+                        "preloadBefore=1"
+
+        %>
+
+      
+        <param name="flashvars" value="source=<%=album_path @album%>/photos_json?<%=@album.photos_last_updated_at.to_i%>&<%=flash_params%>"/>
     </object>
     <div id="scrim"></div>
 
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+	<script type="text/javascript" src="http://zza.zangzing.com/zza.js"></script>
+    <%= include_javascripts :movie %>
 
-    <%= javascript_include_tag "/swf/ZZSlideShow.js" %>
-    <%= include_javascripts :swf %>
 
     <script type="text/javascript">
 
-        var force_javascript = true;
-//        var force_javascript = (document.location.search.indexOf('js=true') !== -1)
+        var force_javascript = (document.location.search.indexOf('js=true') !== -1)
 
 
         $(document).ready(function(){
 
-//            swfobject.registerObject("movie", "9.0.115", "", function(e) {
-//                if (e.success == false || force_javascript) {
-//                    var err;
+            swfobject.registerObject("movie", "9.0.115", "", function(e) {
+                if (e.success == false || force_javascript) {
+                    var err;
 
                     $("#movie").replaceWith('<div id="movie" class="javascript-movie"></div>');
 
@@ -101,10 +129,10 @@
 
                         controlsHideSpeed:	2,
 
-                        exitButton:			true,
-                        exitButtonURL:		'<%=album_path @album%>',
+                        backButton:			true,
+                        backButtonURL:		'<%=album_path @album%>',
 
-                        iconsURL:			'http://www.jumpeye.com/flo/customProjects/SimpleFadeCustom/js/new/icons/',
+                        iconsURL:			'/images/movie/',
 
                         backButtonText:     'Back to Album',
 
@@ -125,8 +153,8 @@
 				        preloadBefore:		1,
 
 
-//                    });
-//                }
+                    });
+                }
             });
 
 
@@ -152,14 +180,6 @@
 
 
     </script>
-
-
-
-
-
-
-
 </body>
- 
 </html>
 

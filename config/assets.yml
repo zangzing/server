@@ -24,6 +24,8 @@ javascripts:
     - public/javascripts/zz-oauthmanager/oauthmanager.js
   swf:
     - public/javascripts/swf/*.js
+  movie:
+    - public/javascripts/movie/*.js
 
 stylesheets:
   common:
