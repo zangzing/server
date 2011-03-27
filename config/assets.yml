@@ -3,6 +3,7 @@ compress_assets: on
 embed_assets: off
 
 
+#javascript_compressor: yui
 javascript_compressor: closure
 compressor_options:
   compilation_level: "SIMPLE_OPTIMIZATIONS"
@@ -22,8 +23,6 @@ javascripts:
     - public/javascripts/zz/*.js
   zz_oauthmanager:
     - public/javascripts/zz-oauthmanager/oauthmanager.js
-  swf:
-    - public/javascripts/swf/*.js
   movie:
     - public/javascripts/movie/*.js
 
