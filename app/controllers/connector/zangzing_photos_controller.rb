@@ -27,7 +27,7 @@ class Connector::ZangzingPhotosController < Connector::ConnectorController
   def import
     source_photo = current_user.albums.find(params[:zz_album_id]).photos.find(params[:photo_id])
 
-    current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
+    current_batch = UploadBatch.get_current_and_touch( current_user.id, params[:album_id] )
     photo = Photo.create(
               :id => Photo.get_next_id,
               :caption => source_photo.caption,

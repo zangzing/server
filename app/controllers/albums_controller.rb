@@ -94,7 +94,7 @@ class AlbumsController < ApplicationController
     #    -All of joe's user public albums
     #    -All of joe's liked public albums
     #    -All of joe's lked users' public albums
-    if(current_user? @user)
+    if( current_user? @user || current_user.support_hero? )
       @albums = @user.albums | @user.liked_albums | liked_users_public_albums #show all of current_user's albums
     else
       @albums = @user.albums.find_all_by_privacy('public') | @user.liked_public_albums | liked_users_public_albums
@@ -114,15 +114,24 @@ class AlbumsController < ApplicationController
   #@album is set by require_album before_filter
   def destroy
     # Album is found when the before filter calls authorized user
-    @album.destroy
-    redirect_back_or_default root_path
+    if !@album.destroy
+      render :json => @album.errors, :status=>500
+    end
+    render :json => "Album deleted".to_json
+
   end
 
   #closes the current batch
   def close_batch
-     if params[:id]
-        UploadBatch.close_open_batches( current_user.id, params[:id])
-     end
+    # no longer directly supported
+    # we now leave all batches open for a 5 minute window
+    # from the last open related activity such as adding
+    # photos
+    # a batch sweeper is now responsible for detecting batches
+    # that need to be closed
+#     if params[:id]
+#        UploadBatch.close_open_batches( current_user.id, params[:id])
+#     end
      render :nothing => true
   end
 

@@ -1,7 +1,8 @@
 require "zz_env_helpers"
 
 class PhotosController < ApplicationController
-                                              
+  skip_before_filter :verify_authenticity_token,  :only =>   [ :agent_index, :agent_create, :upload_fast]
+
   before_filter :require_user,                    :only =>   [ :destroy, :update, :position ]  #for interactive users
   before_filter :oauth_required,                  :only =>   [ :agent_create, :agent_index ]   #for agent
 
@@ -34,7 +35,7 @@ class PhotosController < ApplicationController
 
     # optimize by ensuring we have the number of ids we need up front
     current_id = Photo.get_next_id(photo_count)
-    current_batch = UploadBatch.get_current( user_id, album_id )
+    current_batch = UploadBatch.get_current_and_touch( user_id, album_id )
     batch_id = current_batch.id
 
     (0...photo_count).each do |index|
@@ -127,6 +128,11 @@ class PhotosController < ApplicationController
   #deletes a photo
   #@photo & @album are set by require_photo beofre filter
   def destroy
+    cover_id = @album.cover_photo_id
+    if cover_id == @photo.id
+      @album.cover_photo_id = nil
+      @album.save
+    end
     respond_to do |format|
       format.html do
         if !@photo.destroy
@@ -199,7 +205,7 @@ class PhotosController < ApplicationController
   end
 
   # updates photo attributes
-  # @photo from require_photo before filter
+  # @photo is set in require_photo before filter
   def update
     if @photo && @photo.update_attributes( params[:photo] )
       flash[:notice] = "Photo Updated!"

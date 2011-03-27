@@ -39,7 +39,14 @@ zz.init = {
     },
 
     template: function() {
+        $(document).ajaxSend(function(event, request, settings) {
+              settings.data = settings.data || "";
+              settings.data += (settings.data ? "&" : "") + "authenticity_token=" + encodeURIComponent(zz.rails_authenticity_token);
+        });
+
+
         /* Click Handlers    ----------------------------------------------------------------------- */
+
 
         //top bar
         $('#header #home-button').click(function() {
@@ -203,10 +210,29 @@ zz.init = {
             $('#footer #share-button').removeClass('disabled').addClass('selected');
 
 
-            pages.share.share_in_dialog('album', zz.album_id, function(){
-                zz.init.enable_buttons();
-                $('#footer #share-button').removeClass('selected');  //todo: centralize this somewhere -- zz.toolbars
-            });
+            //todo: need better generic way to determine current view and get photo id -- this is duplicated elsewhere
+            if (document.location.href.indexOf('/photos/#!') !== -1 || document.location.href.indexOf('/photos#!') !== -1) {
+                //picture view -- share photo
+                var currentPhotoId = null;
+                var hash = jQuery.param.fragment();
+
+                if (hash !== '') {
+                    currentPhotoId = hash.slice(1); //remove the '!'
+                }
+                pages.share.share_in_dialog('photo', currentPhotoId, function(){
+                    zz.init.enable_buttons();
+                    $('#footer #share-button').removeClass('selected');  //todo: centralize this somewhere -- zz.toolbars
+                });
+            }
+            else{
+                //album view -- share album
+                pages.share.share_in_dialog('album', zz.album_id, function(){
+                    zz.init.enable_buttons();
+                    $('#footer #share-button').removeClass('selected');  //todo: centralize this somewhere -- zz.toolbars
+                });
+
+            }
+
 
 
         });
@@ -233,7 +259,7 @@ zz.init = {
 
         $('#user_username').keyup(function(event) {
             var value = $('#user_username').val();
-            $('#update-username').empty().html(value);
+            $('#update-username').empty().text(value);
         });
 
         $('#step-sign-in-off').click(function() {
@@ -321,7 +347,7 @@ zz.init = {
     },
 
     init_back_button: function(caption, url){
-        $('#header #back-button span').html(caption);
+        $('#header #back-button span').text(caption);
 
         $('#header #back-button').click(function() {
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
@@ -412,8 +438,8 @@ zz.init = {
                         currentPhotoId: $.param.fragment(),
                         showButtonBar:true,
                         onClickShare: function(photo_id){
-                            alert("This feature is still under construction. It will allow you to share an individual photo.");
-                            //pages.share.share_in_dialog('photo', photo_id);
+//                            alert("This feature is still under construction. It will allow you to share an individual photo.");
+                            pages.share.share_in_dialog('photo', photo_id);
                         }
 
                     }).data().zz_photogrid;
@@ -449,7 +475,6 @@ zz.init = {
 
                         var currentPhotoId = null;
                         var hash = jQuery.param.fragment();
-
 
                         if (hash !== '') {
                             currentPhotoId = hash.slice(1); //remove the '!'
@@ -542,14 +567,14 @@ zz.init = {
 
 
                             if (minutes === Infinity) {
-                                $('#nav-status').html("Calculating...");
+                                $('#nav-status').text("Calculating...");
                             }
                             else {
                                 var minutes_text = "Minutes";
                                 if (minutes === 1) {
                                     minutes_text = "Minute"
                                 }
-                                $('#progress-meter-label').html(minutes + ' ' + minutes_text);
+                                $('#progress-meter-label').text(minutes + ' ' + minutes_text);
                             }
 
                             $('#progress-meter').show();

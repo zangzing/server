@@ -1,67 +1,113 @@
 class UploadBatch < ActiveRecord::Base
-  attr_accessible :album_id, :custom_order
+  attr_accessible :album_id, :custom_order, :open_activity_at
   
   belongs_to :user
   belongs_to :album
   has_many   :photos
   has_many   :shares
 
-  default_scope :order => 'created_at DESC'
+  # efficient update of open activity and updated_at
+  # does immediate update
+  def self.touch_open_activity(batch_id)
+    now = Time.now
+    UploadBatch.update(batch_id, :open_activity_at => now, :updated_at => now)
+  end
 
-  def self.get_current( user_id, album_id )
-    current_batch = UploadBatch.find_by_user_id_and_album_id_and_state(user_id, album_id, 'open')
-    if current_batch.nil?
-      return UploadBatch.factory( user_id, album_id )
-    end
-
-    if current_batch.stale?
-      current_batch.close
-      return UploadBatch.factory( user_id, album_id )
+  def self.get_current_and_touch( user_id, album_id )
+    # since this is an optimistic lock it is possible that someone
+    # else sneaks in.  If so we get an exception telling us the update
+    # was stale so we will keep trying till no longer stale
+    #
+    # we use the optimistic locking model to make sure that in the very
+    # small window where we've found a batch in the open state that
+    # no one else sneaks in and changes the state on us to closed.
+    # If that happens, we try again and would return a new batch if
+    # a close occurred, or the same batch if it was caused by some other
+    # process fetching it.
+    #
+    # Once we get the object it will be safe for at least 5 more minutes (our batch close interval)
+    # because as part of obtaining the object we update the open_activity_at time.
+    #
+    current_batch = nil
+    try_again = true
+    while try_again do
+      begin
+        try_again = false # assume we will get it
+        current_batch = UploadBatch.find_by_user_id_and_album_id_and_state(user_id, album_id, 'open')
+        if current_batch.nil?
+          return UploadBatch.factory( user_id, album_id )
+        end
+        current_batch.open_activity_at = Time.now
+        current_batch.save
+      rescue ActiveRecord::StaleObjectError => ex
+        # need to try again
+        try_again = true
+      rescue Exception => ex
+        # any other type of exception means we did not get
+        # our range so invalidate it and reraise the exception
+        raise ex
+      end
     end
 
     return current_batch
   end
 
 
-  def self.close_open_batches( user_id, album_id=nil )
-    if album_id.nil?
-      existing_batches = UploadBatch.find_all_by_user_id_and_state(user_id, 'open')
-    else
-      existing_batches = UploadBatch.find_all_by_user_id_and_album_id_and_state(user_id, album_id, 'open')
-    end
-    existing_batches.each { |batch|  batch.close } unless existing_batches.nil?
-  end
-
-  def self.close_stale_batches
-    existing_batches = UploadBatch.find_all_by_state('open')
-    existing_batches.each { |batch|  batch.close if batch.stale? } unless existing_batches.nil?
-  end
-
-  def stale?
-    self.updated_at < 20.minutes.ago
-  end
-
   # Finalize the batches that need to be set to the finished state
   # essentially this is any batch that hasn't been touched in the last
-  # 20 minutes, even if they still show as open.  The only case that
+  # 24 hours, even if they still show as open.  The only case that
   # could cause a problem is if photo processing on a batch is running
-  # behind by more than 20 minutes which would cause us to close a batch
-  # that could still be closed by normal means.  Maybe in the future we
-  # could add support to detect that case but this should catch most
-  # normal conditions
+  # behind by more than 24 hours which would cause us to close a batch
+  # that could still be closed by normal means.  The consequences in this
+  # rare case are that emails may go out on an incomplete album
   def self.finalize_stale_batches
-    expired_batches = UploadBatch.where("state <> 'finished' AND updated_at < ?", 20.minutes.ago)
+    expired_batches = UploadBatch.unscoped.where("state <> 'finished' AND updated_at < ?", 24.hours.ago)
     expired_batches.each do |batch|
       batch.finish(true)  # force it to finish
     end
   end
 
+  # Close any batches that have been sitting without any open activity for 5 minutes.  This gives the
+  # user the chance to add to the batch for a period of time before we close it.  Each time something
+  # is added the timer is reset and the window extends again.  Once in the
+  # closed state if there was any remaining photo activity to be done the last ready photo
+  # will finalize the batch.  If for some reason the photos are not ready within 24 hours
+  # we clean up everything in the finalize_stale_batches method.
+  def self.close_pending_batches
+    expired_batches = UploadBatch.unscoped.where("state = 'open' AND open_activity_at < ?", 5.minutes.ago)
+    expired_batches.each do |batch|
+      batch.close   # close the batch
+    end
+  end
+
+
+  # consumes the stale error and returns true
+  # only if we can change state
+  def safe_state_change(state)
+    begin
+      # immediately mark new state
+      # if somebody else snuck in and grabbed it
+      # as an open object then the update will fail
+      # as stale.  In that case just ignore this one
+      self.state = state
+      self.save
+    rescue ActiveRecord::StaleObjectError => ex
+      # eat exception but indicate state did not change
+      return false
+    rescue Exception => ex
+      # any other type of exception means we did not get
+      # our range so invalidate it and reraise the exception
+      raise ex
+    end
+
+    return true
+  end
+
   def close
     if self.state == 'open'
-      #if there are no photos in batch, destroy it
-        self.state = 'closed'
-        self.save 
+      if safe_state_change('closed')
         self.finish
+      end
     end
   end
 
@@ -75,31 +121,31 @@ class UploadBatch < ActiveRecord::Base
 
     if force || (self.state == 'closed' && self.ready?)
 
-       #send album shares even if there were no photos uploaded
-       shares.each { |share| share.deliver }
-      
-       if self.photos.count > 0
-          #Create Activity
-          ua = UploadActivity.create( :user => self.user, :album => self.album, :upload_batch => self )
-          self.album.activities << ua
+       if safe_state_change('finished')
+         #send album shares even if there were no photos uploaded
+         shares.each { |share| share.deliver }
 
-          #Notify uploader that upload batch is finished
-          ZZ::Async::Email.enqueue( :photos_ready, self.id )
+         if self.photos.count > 0
+            #Create Activity
+            ua = UploadActivity.create( :user => self.user, :album => self.album, :upload_batch => self )
+            self.album.activities << ua
 
-          #Notify likers that there is new activity in this album
-          album_id = self.album.id
-          self.album.likers.each do |liker|
-            ZZ::Async::Email.enqueue( :album_updated, liker.id, album_id )
-          end
+            #Notify uploader that upload batch is finished
+            ZZ::Async::Email.enqueue( :photos_ready, self.id )
 
-          self.state = 'finished'
-          self.save
-       else
-          Rails.logger.info "Destroying empty batch id: #{self.id}, user_id: #{self.user_id}, album_id: #{self.album_id}"
-          self.destroy #the batch has no photos, destroy it
-       end
-       # batch is done
-      return true
+            #Notify likers that there is new activity in this album
+            album_id = self.album.id
+            self.album.likers.each do |liker|
+              ZZ::Async::Email.enqueue( :album_updated, liker.id, album_id )
+            end
+         else
+            Rails.logger.info "Destroying empty batch id: #{self.id}, user_id: #{self.user_id}, album_id: #{self.album_id}"
+            self.destroy #the batch has no photos, destroy it
+         end
+
+         # batch is done
+         return true
+      end
     end
 
     # batch not done
@@ -122,13 +168,16 @@ class UploadBatch < ActiveRecord::Base
 
   def self.factory( user_id, album_id )
     raise Exception.new( "User and Album Params must not be null for the UploadBatch factory") if( user_id.nil? or album_id.nil? )
+
     user = User.find( user_id )
     album = Album.find( album_id)
-    nb = user.upload_batches.create({:album_id => album.id })
+    now = Time.now
+    nb = user.upload_batches.build({:album_id => album.id, :open_activity_at => now })
     if album.custom_order
       nb.custom_order_offset = album.photos.last.pos
     end
     album.upload_batches << nb
+    nb.save
 
     return nb
   end

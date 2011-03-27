@@ -288,9 +288,17 @@ class Album < ActiveRecord::Base
     self.privacy == 'password'
   end
 
+  def make_private
+    self.privacy = 'password'
+  end
+
   # Return true if album is public
   def public?
     self.privacy == 'public'
+  end
+
+  def make_public
+    self.privacy = 'public'
   end
 
   # Return true if album is hidden
@@ -298,10 +306,15 @@ class Album < ActiveRecord::Base
     self.privacy == 'hidden'
   end
 
+  def make_hidden
+    self.privacy = 'hidden'
+  end
+
 
 private
   def cover_photo_id_valid?
     begin
+      return true if cover_photo_id.nil?
       photos.find(cover_photo_id)
       return true
     rescue ActiveRecord::RecordNotFound => e
@@ -311,9 +324,8 @@ private
   end
 
   def set_email
-    # Remove spaces and @
     mail_address = "#{self.friendly_id}.#{self.user.friendly_id}"
-    self.connection.execute "UPDATE `albums` SET `email`='#{mail_address}' WHERE `id`='#{self.id}'" if self.id
+    self.connection.execute "UPDATE albums SET email=#{ActiveRecord::Base.sanitize(mail_address)} WHERE id=#{self.id}" if self.id
     self.name_had_changed = false
   end
 

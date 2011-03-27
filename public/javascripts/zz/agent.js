@@ -50,6 +50,7 @@ var agent = {
                     url += '?';
                 }
 
+                //note: this is duplicated in application_helper.rb
                 url += 'session=' + $.cookie('user_credentials') + '&user_id=' + zz.current_user_id + '&callback=?';
             }
 

@@ -32,7 +32,7 @@ zz.validate = {
             'user_session[password]': 'Please enter your password.'
         },
         errorPlacement: function(message) {
-            $('div#sign-in p.error-notice').html('Please check the highlighted field(s) below...');
+            $('div#sign-in p.error-notice').text('Please check the highlighted field(s) below...');
         }
 
     },

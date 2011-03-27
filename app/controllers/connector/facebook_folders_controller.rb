@@ -61,7 +61,7 @@ class Connector::FacebookFoldersController < Connector::FacebookController
       photos_list = facebook_graph.get("#{params[:fb_album_id]}/photos")
     end
     photos = []
-    current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
+    current_batch = UploadBatch.get_current_and_touch( current_user.id, params[:album_id] )
 
     photos_list.each do |p|
       photo_url = get_photo_url(p, :full)

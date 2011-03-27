@@ -16,6 +16,7 @@
 </div>
 
 <form method="post" id="new_user_session" class="new_user_session" action=<%=user_sessions_path%>>
+  <input style="visibility:hidden" type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>"></input>
   <dl class="clearfix">
     <dt><label for="user_session_email">Username or Email Address</label></dt>
     <dd><input type="text" size="30" name="user_session[email]" id="user_session_email"></dd>

@@ -26,7 +26,7 @@ class Connector::KodakFoldersController < Connector::KodakController
     end
     photos_data = photos_list['pictures']
     photos = []
-    current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
+    current_batch = UploadBatch.get_current_and_touch( current_user.id, params[:album_id] )
     photos_data.each_with_index do |p, idx|
       photo_url = p[PHOTO_SIZES[:full]]
       photo = Photo.new_for_batch(current_batch, {

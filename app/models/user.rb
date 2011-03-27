@@ -59,7 +59,7 @@ class User < ActiveRecord::Base
   end
 
   before_save    :split_name
-  before_create  :build_profile_album
+  before_create  :make_profile_album
   before_create  :build_preferences
   after_create   :update_acls_with_id
   after_create   :like_mr_zz
@@ -86,6 +86,12 @@ class User < ActiveRecord::Base
   end
 
 
+  # make the profile album
+  def make_profile_album
+    p = ProfileAlbum.new()
+    p.make_private
+    self.profile_album = p
+  end
 
   def self.find_by_email_or_create_automatic( email, name='' )
     user = User.find_by_email( email );
@@ -148,8 +154,27 @@ class User < ActiveRecord::Base
   end
 
   def admin?
-     self.role == 'admin'
+    @is_admin ||= lambda {
+      acl = SystemRightsACL.singleton
+      acl.has_permission?(self.id, SystemRightsACL::ADMIN_ROLE)
+    }.call
   end
+
+  def support_hero?
+      @is_admin ||= lambda {
+        acl = SystemRightsACL.singleton
+        acl.has_permission?(self.id, SystemRightsACL::SUPPORT_HERO_ROLE)
+      }.call
+  end
+
+  def moderator?
+       @is_admin ||= lambda {
+         acl = SystemRightsACL.singleton
+         acl.has_permission?(self.id, SystemRightsACL::MODERATOR_ROLE)
+       }.call
+  end
+
+
 
   def name
     @name ||= [first_name, last_name].compact.join(' ')
@@ -166,7 +191,7 @@ class User < ActiveRecord::Base
 
   def profile_photo_id=(id)
     if profile_album.nil?
-      build_profile_album
+      make_profile_album
     end
 
     if id && id.is_a?(String) && id.length <= 0
@@ -221,6 +246,9 @@ class User < ActiveRecord::Base
   # (runs as an after_create callback)
   def update_acls_with_id
     ACLManager.global_replace_user_key( self.email, self.id )
+
+    # set proper acl rights - new users default to regular user rights
+    SystemRightsACL.singleton.add_user(self.id, SystemRightsACL::USER_ROLE)
   end
 
   # returns an array of auto like ids

@@ -197,7 +197,7 @@ class BenchTest::PhotoGensController < BenchTest::BenchTestsController
     if attachments.count > 0
       last_photo = nil
       photos = []
-      current_batch = UploadBatch.get_current( user.id, album.id )
+      current_batch = UploadBatch.get_current_and_touch( user.id, album.id )
       attachments.each do |fast_local_image|
         photo = Photo.new_for_batch(current_batch, {
                 :id => Photo.get_next_id,

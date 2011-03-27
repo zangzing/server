@@ -9,6 +9,8 @@
 <% end %>
           </div>
           <form id="join-form" method="post" enctype="multipart/form-data" action=<%=create_user_path%>>
+            <input style="visibility:hidden" type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>"></input>
+
             <dl class="clearfix">
               <dt><label for="user_name">First and Last Name</label></dt>
               <dd><input type="text" value="<%=(@new_user ? @new_user.name : '')%>" size="30" name="user[name]" id="user_name"></dd>

@@ -27,7 +27,7 @@ class ApplicationController < ActionController::Base
 
   after_filter :flash_to_headers
 
-  #protect_from_forgery # See ActionController::RequestForgeryProtection XSScripting protection
+  protect_from_forgery # See ActionController::RequestForgeryProtection XSScripting protection
 
   layout  proc{ |c| c.request.xhr? ? false : 'main' }
 
@@ -181,7 +181,7 @@ class ApplicationController < ActionController::Base
   # To be run as a before_filter
   # Assumes @album is the album in question and current_user is the user we are evaluating
   def require_album_admin_role
-    unless  @album.admin?( current_user.id )
+    unless  @album.admin?( current_user.id ) || current_user.support_hero?
       flash[:error] = "Only Album admins can perform this operation"
       response.headers['x_error'] = flash[:error]
       if request.xhr?
@@ -209,7 +209,7 @@ class ApplicationController < ActionController::Base
           redirect_to new_user_session_url and return
         end
       end
-      unless @album.viewer?( current_user.id )
+      unless @album.viewer?( current_user.id ) || current_user.moderator?
         if request.xhr?
           flash[:notice] = "You have asked to see a password protected album. You do not have enough privileges to see it"
           render :status => 401
@@ -226,7 +226,7 @@ class ApplicationController < ActionController::Base
   # To be run as a before_filter
   # Assumes @album is the album in question and current_user is the user we are evaluating
   def require_album_contributor_role
-    unless  @album.contributor?( current_user.id )
+    unless  @album.contributor?( current_user.id ) || current_user.support_hero?
       flash[:error] = "Only Contributors admins can perform this operation"
       response.headers['x_error'] = flash[:error]
       if request.xhr?

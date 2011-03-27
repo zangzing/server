@@ -302,19 +302,19 @@ zz.wizard = {
         if( data && data.length>0 && $('#flashes-notice')){
             var flash = $.parseJSON(data);
             if( flash.notice ){
-                $('#flashes-notice').html(flash.notice).fadeIn('fast', function(){
+                $('#flashes-notice').text(flash.notice).fadeIn('fast', function(){
                     setTimeout(function(){
                         $('#flashes-notice').fadeOut('fast', function(){
-                            $('#flashes-notice').html('    ');
+                            $('#flashes-notice').text('    ');
                         })
                     }, delay+3000);
                 });
             }
             if( flash.error ){
-                $('#error-notice').html(flash.error).fadeIn('fast', function(){
+                $('#error-notice').text(flash.error).fadeIn('fast', function(){
                     setTimeout(function(){
                         $('#error-notice').fadeOut('fast', function(){
-                            $('#error-notice').html('    ');
+                            $('#error-notice').text('    ');
                         })
                     }, delay+3000);
                 });
@@ -336,11 +336,11 @@ zz.wizard = {
                     }
                 }
 
-                $('#error-notice').html(message).fadeIn('fast', function(){
+                $('#error-notice').text(message).fadeIn('fast', function(){
                     if( delay >0 ){
                         setTimeout(function(){
                             $('#error-notice').fadeOut('fast', function(){
-                                $('#error-notice').html('    ');
+                                $('#error-notice').text('    ');
                             })
                         }, delay+3000);
 

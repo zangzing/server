@@ -3,30 +3,36 @@ development:
   :api_key: 2c9277b993a2c7f0c601d63363dcfda0
   :app_secret: 164f6a82a15b5aec5a86ec0bf72baf61
   :app_id: 111042492291584
+  :og_site_name: ZZTEST
 
 perftest:
   :api_key: 2c9277b993a2c7f0c601d63363dcfda0
   :app_secret: 164f6a82a15b5aec5a86ec0bf72baf61
   :app_id: 111042492291584
+  :og_site_name: ZZTEST
 
 test:
   :api_key: 4e315634b2e3a915d550965bd2f9dcf8
   :app_secret: a44c3242d69b70b32a6c6842e19f8f82
   :app_id: 143394669017276
+  :og_site_name: ZZTEST
 
 photos_production:
   :api_key: 2d0dfe60cbc63a2b3f46f72d77f6c097
   :app_secret: fd1792f7b4b4a576a7180f86f1cd846a
   :app_id: 120430504678745
+  :og_site_name: ZangZing
 
 photos_staging:
-  :api_key: 2d0dfe60cbc63a2b3f46f72d77f6c097
-  :app_secret: fd1792f7b4b4a576a7180f86f1cd846a
-  :app_id: 120430504678745
+  :api_key: e036bf7fd30b549d820dc2f9b3db8d28
+  :app_secret: 2c1b2b2dfa22045de91e5e946b5e03be
+  :app_id: 130253193685746
+  :og_site_name: ZZTEST
 
 
 eytest:
   :api_key: e036bf7fd30b549d820dc2f9b3db8d28
   :app_secret: 2c1b2b2dfa22045de91e5e946b5e03be
   :app_id: 130253193685746
+  :og_site_name: ZZTEST
 

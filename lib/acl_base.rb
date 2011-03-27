@@ -98,6 +98,20 @@ class BaseACL
     ACLManager.build_user_key(self.type, user_id)
   end
 
+  # helper to convert a role name to a role
+  # case insensitive
+  def self.role_name_to_role(role_name)
+    roles = self.roles
+    l_match = role_name.downcase
+    roles.each do |role|
+      l_roll_name = role.name.downcase
+      if l_roll_name == l_match
+        return role
+      end
+    end
+    return nil
+  end
+
 
   # Add a user to an acl or modify an existing users role.
   #
