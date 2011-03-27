@@ -28,3 +28,7 @@ var oauthmanager_popup = {
     }
 };
 
+
+//export for google closure
+window['oauthmanager'] = oauthmanager;
+window['oauthmanager_popup'] = oauthmanager_popup;

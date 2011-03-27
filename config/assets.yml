@@ -1,30 +1,33 @@
-package_assets: on
-compress_assets: on
+package_assets: always
+compress_assets: always
 embed_assets: off
 
 
 javascript_compressor: closure
 compressor_options:
-  compilation_level: "SIMPLE_OPTIMIZATIONS"
+  compilation_level: "ADVANCED_OPTIMIZATIONS"
+#  compilation_level: "SIMPLE_OPTIMIZATIONS"
+#  code_url:
+  #js_externs:
+  #  - public/externs/externs.js
+   
+  externs: public/javascripts/externs/externs.js
+#	- http\://zza.zangzing.com/zza.js
+
 
 
 
 javascripts:
-  jquery_lib:
-    - public/javascripts/jquery-lib/jquery.ui.core.js
-    - public/javascripts/jquery-lib/jquery.ui.widget.js
-    - public/javascripts/jquery-lib/jquery.ui.mouse.js
-    - public/javascripts/jquery-lib/jquery.ui.position.js
-    - public/javascripts/jquery-lib/jquery.effects.core.js
+  all:
+#    - public/javascripts/jquery-lib/jquery.ui.core.js
+#    - public/javascripts/jquery-lib/jquery.ui.widget.js
+#    - public/javascripts/jquery-lib/jquery.ui.mouse.js
+#    - public/javascripts/jquery-lib/jquery.ui.position.js
+#    - public/javascripts/jquery-lib/jquery.effects.core.js
     - public/javascripts/jquery-lib/*.js
     - public/javascripts/lib/*.js
-  zz:
     - public/javascripts/zz/*.js
-  zz_oauthmanager:
     - public/javascripts/zz-oauthmanager/oauthmanager.js
-  swf:
-    - public/javascripts/swf/*.js
-  movie:
     - public/javascripts/movie/*.js
 
 stylesheets:

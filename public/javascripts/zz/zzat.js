@@ -92,5 +92,5 @@ window.onerror = function(message, url, line) {
   }
   catch(err){
   }
-  return false;
+  return true;
 };

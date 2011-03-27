@@ -823,7 +823,7 @@ zz.init = {
 
 //======================================= Like Menu  ==============================================
     like_menu: function() {
-        var menu = $(zz.toolbars.build_like_menu()).zzlike_menu();
+        var menu = $(zz.toolbars.build_like_menu())['zzlike_menu']();
         like.init();
 
         $('#footer #like-button').click(function(event) {
@@ -839,3 +839,31 @@ zz.init = {
     }
 
 };
+
+
+//exports for closure
+window['zz'] = zz;
+
+window['zz']['current_user_id'] = zz.current_user_id;
+window['zz']['current_user_name'] = zz.current_user_name ;
+window['zz']['displayed_user_id'] = zz.displayed_user_id;
+window['zz']['album_id'] = zz.album_id;
+window['zz']['album_type'] = zz.album_type;
+window['zz']['album_lastmod'] = zz.album_lastmod;
+window['zz']['album_type'] = zz.album_type;
+window['zz']['album_base_url'] = zz.album_base_url;
+window['zz']['album_name'] = zz.album_name;
+window['zz']['rails_controller_name'] = zz.rails_controller_name;
+window['zz']['rails_action_name'] = zz.rails_action_name;
+window['zz']['rails_authenticity_token'] = zz.rails_authenticity_token;
+
+
+
+window['zz']['init'] = zz.init;
+window['zz']['init']['template'] = zz.init.template;
+window['zz']['init']['album'] = zz.init.album;
+window['zz']['init']['album_timeline_view'] = zz.init.album_timeline_view;
+window['zz']['init']['album_people_view'] = zz.init.album_people_view;
+window['zz']['init']['loaded'] = zz.init.loaded;
+window['zz']['init']['resized'] = zz.init.resized;
+
