@@ -12,6 +12,6 @@ end
 
 class InvalidCredentials < StandardError
   def message
-    'Credentials provided are invalid'
+    'Invalid username or password. Please try again.'
   end
 end
