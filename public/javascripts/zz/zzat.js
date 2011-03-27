@@ -84,13 +84,8 @@ window.onerror = function(message, url, line) {
         ZZAt.track('js.error',{message: message, url:url, line:line});
       }
 
-      if(typeof(console) != 'undefined'){
-          console.log({message: message, url:url, line:line});
-      }
-
-
   }
   catch(err){
   }
-  return false;
+  return true;
 };
