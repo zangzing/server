@@ -62,6 +62,12 @@ module Server
 
     # Bitly API Setup
     Bitly.use_api_version_3
+
+    #urls for downloading the agent
+    config.agent_download_url = YAML.load(File.read("#{Rails.root}/config/agent_download_urls.yml"))[Rails.env]
+
+
+
   end
 end
 

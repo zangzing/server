@@ -1,0 +1,16 @@
+---
+development:
+  :mac: http://staging.downloads.zangzing.com/agent/darwin/ZangZing-Setup.pkg
+  :win: http://staging.downloads.zangzing.com/agent/win32/ZangZing-Setup.exe
+
+photos_production:
+  :mac: http://downloads.zangzing.com/agent/darwin/ZangZing-Setup.pkg
+  :win: http://downloads.zangzing.com/agent/win32/ZangZing-Setup.exe
+
+photos_staging:
+  :mac: http://staging.downloads.zangzing.com/agent/darwin/ZangZing-Setup.pkg
+  :win: http://staging.downloads.zangzing.com/agent/win32/ZangZing-Setup.exe
+
+
+
+

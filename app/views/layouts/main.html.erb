@@ -118,7 +118,7 @@
       zz.displayed_user_id = '<%= @album.user.id %>';
       zz.album_base_url = '/<%=escape_javascript @album.user.username%>/<%=escape_javascript @album.friendly_id%>';
       zz.user_base_url = '/<%=escape_javascript @album.user.username%>';
-      zz.album_name = '<%= escape_javascript @album.name%>';
+      zz.album_name = zz.win_download_url;
 <%    end
       # This is where we pass things on to js that we need from ruby.
       # Remember to use the zz.zang namespace.
@@ -128,6 +128,9 @@
       zz.rails_controller_name = '<%= controller.controller_name %>';
       zz.rails_action_name = '<%= controller.action_name %>';
       zz.rails_authenticity_token = '<%= form_authenticity_token %>';
+
+      zz.win_download_url = '<%= Server::Application.config.agent_download_url[:win] %>';
+      zz.mac_download_url = '<%= Server::Application.config.agent_download_url[:mac] %>';
 
       /* init
       ----------------------------------------------------------------------- */

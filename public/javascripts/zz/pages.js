@@ -944,16 +944,15 @@ pages.no_agent = {
 	    ZZAt.track('agentdownload.get');
         
 		if($.client.os =="Mac"){
-			document.location.href = 'http://downloads.zangzing.com/agent/darwin/ZangZing-Setup.pkg'
+			document.location.href = zz.mac_download_url; //'http://downloads.zangzing.com/agent/darwin/ZangZing-Setup.pkg'
 		}
         else{
-			var win_url = 'http://downloads.zangzing.com/agent/win32/ZangZing-Setup.exe';
             if($.client.browser == 'Chrome'){
                 //on chrome on windows, using the same browser window to download causes js issues (stops pinging agent)
-                window.open(win_url);
+                window.open(zz.win_download_url);
             }
             else{
-                document.location.href = win_url;
+                document.location.href = zz.win_download_url;
             }
 
 		}
