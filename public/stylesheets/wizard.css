@@ -494,9 +494,10 @@ div#drawer-content dl.form dd input#album_name{
     border: 1px solid #8C8C8C;
     height: 20px;
     position: absolute;
-    top: 400px;
+    /*top: 400px;*/
     width: 760px;
     left:75px;
+    bottom: 80px;
 }
 
 
