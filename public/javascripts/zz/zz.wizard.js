@@ -31,7 +31,7 @@ zz.wizard = {
 
     change_step: function(id, obj){
 
-        logger.debug(obj.steps[id].type + "    " + zz.drawer_state);
+//        logger.debug(obj.steps[id].type + "    " + zz.drawer_state);
 
         var container = $('#tab-content');
 
@@ -59,10 +59,15 @@ zz.wizard = {
 
             $('#tab-content').empty().show();
 
-            obj.steps[id].init(container, function(){
-                zz.wizard.resize_scroll_body();
-                zz.open_drawer(obj.time);
-            });
+            zz.open_drawer(obj.time);
+
+            //todo: should pass this as callback to zz.open_drawer
+            setTimeout(function(){
+                obj.steps[id].init(container, function(){
+                    zz.wizard.resize_scroll_body();
+                });
+            }, obj.time);
+
 
         } else if (obj.steps[id].type == 'full' && zz.drawer_state == zz.DRAWER_OPEN) {
             zz.wizard.build_nav(obj, id);
