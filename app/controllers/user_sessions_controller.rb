@@ -3,7 +3,11 @@ class UserSessionsController < ApplicationController
   before_filter :require_user, :only => :destroy
 
   def new
-    @user_session = UserSession.new
+    if ! current_user
+      @user_session = UserSession.new
+    else
+      redirect_to user_pretty_url(current_user)
+    end
   end
 
   def join
