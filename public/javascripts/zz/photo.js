@@ -45,7 +45,7 @@
             html += '<div class="photo-caption"></div>';
 
             html += '<div class="photo-border">'
-            html += '   <img class="photo-image">';
+            html += '   <img class="photo-image" src="/images/blank.png">';
             html += '   <div class="photo-delete-button"></div>';
             html += '   <div class="photo-uploading-icon"></div>';
             html += '   <div class="photo-error-icon"></div>';

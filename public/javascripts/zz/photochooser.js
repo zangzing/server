@@ -171,7 +171,7 @@
             if(hasPhotos){
                 var addAllButton = {
                     id: 'add-all-photos',
-                    src: '',
+                    src: '/images/blank.png',
                     caption: '',
                     type: 'blank'
                 };
