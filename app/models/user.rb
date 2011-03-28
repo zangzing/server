@@ -14,8 +14,8 @@ class User < ActiveRecord::Base
 
   #things I like, join with likes table
   has_many :likes
-  has_many :liked_albums,         :through => :likes, :class_name => "Album", :source => :subject,  :conditions => { 'likes.subject_type' => 'A'}
-  has_many :liked_public_albums,  :through => :likes, :class_name => "Album", :source => :subject,  :conditions => { 'likes.subject_type' => 'A', 'albums.privacy' => 'public'}
+  has_many :liked_albums,         :through => :likes, :class_name => "Album", :source => :subject,  :conditions => "likes.subject_type = 'A' AND albums.completed_batch_count > 0"
+  has_many :liked_public_albums,  :through => :likes, :class_name => "Album", :source => :subject,  :conditions => "likes.subject_type = 'A' AND albums.completed_batch_count > 0 AND albums.privacy = 'public'"
   has_many :liked_users,          :through => :likes, :class_name => "User",  :source => :subject,  :conditions => { 'likes.subject_type' => 'U'}
   has_many :liked_photos,         :through => :likes, :class_name => "Photo", :source => :subject,  :conditions => { 'likes.subject_type' => 'P'}
 
@@ -24,7 +24,7 @@ class User < ActiveRecord::Base
       'SELECT a.* ' +
       'FROM albums a, likes l, users u ' +
       'WHERE l.user_id = #{id} AND l.subject_id = u.id AND u.id = a.user_id ' +
-      'AND l.subject_type = "U" AND a.privacy = "public" AND a.type <> "ProfileAlbum" ' +
+      'AND l.subject_type = "U" AND a.privacy = "public" AND a.completed_batch_count > 0 AND a.type <> "ProfileAlbum" ' +
       'ORDER BY a.updated_at DESC'
 
   #Reverse lookup join likers ar those who like me
