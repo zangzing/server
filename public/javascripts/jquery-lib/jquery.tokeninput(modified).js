@@ -225,6 +225,13 @@
                   break;
 
                case KEY.TAB:
+                   if(selected_dropdown_item){
+                      add_token($(selected_dropdown_item));
+                      return false;
+                   }
+                    else{
+                       return true;
+                   }
                case KEY.RETURN:
                case KEY.COMMA:
                   if(selected_dropdown_item){

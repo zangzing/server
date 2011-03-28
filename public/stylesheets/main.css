@@ -252,6 +252,9 @@ div#container {
     color:#7a7a7a
 }
 
+#header #album-info #album-name-and-owner h3 a{
+    text-decoration:none;
+}
 
 
 
