@@ -17,9 +17,16 @@ zz.toolbars = {
 
         $('#album-info').css('display', 'inline-block');
         zz.wizard.set_wizard_style( 'create');
+
+
+        //tod: this should be in the wizard code
         $('div#cancel-drawer-btn').unbind('click').click( function(){
-                $('#drawer .body').fadeOut('fast', function(){window.location.reload()});
-                zz.close_drawer(400);
+                if(confirm("Are you sure you want to cancel creating this album?")){
+                    deleteAlbum(zz.album_id);
+                    $('#drawer .body').fadeOut('fast', function(){window.location.reload()});
+                      zz.close_drawer(400);
+                     
+                }
         });
     },
 
