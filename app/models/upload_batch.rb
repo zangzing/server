@@ -1,6 +1,10 @@
 class UploadBatch < ActiveRecord::Base
   attr_accessible :album_id, :custom_order, :open_activity_at
-  
+
+  CLOSE_BATCH_INACTIVITY = 5.minutes
+  CLOSE_CALL_DEFER_TIME = 45.seconds
+  FINALIZE_STALE_INACTIVITY = 24.hours
+
   belongs_to :user
   belongs_to :album
   has_many   :photos
@@ -13,7 +17,7 @@ class UploadBatch < ActiveRecord::Base
     UploadBatch.update(batch_id, :open_activity_at => now, :updated_at => now)
   end
 
-  def self.get_current_and_touch( user_id, album_id )
+  def self.get_current_and_touch( user_id, album_id, new_if_not_found = true, back_date_offset = 0 )
     # since this is an optimistic lock it is possible that someone
     # else sneaks in.  If so we get an exception telling us the update
     # was stale so we will keep trying till no longer stale
@@ -28,16 +32,28 @@ class UploadBatch < ActiveRecord::Base
     # Once we get the object it will be safe for at least 5 more minutes (our batch close interval)
     # because as part of obtaining the object we update the open_activity_at time.
     #
+    #
+    # if new_if_not_found is set we will create a new one if not found otherwise we return nil
+    #
+    # back_date_offset tells us how much if any offset to subtract from now to show activity in the
+    # past.  This is useful for cases like close not really closing but setting up the sweeper to
+    # time out and close in the near future.
+    #
     current_batch = nil
     try_again = true
     while try_again do
       begin
         try_again = false # assume we will get it
         current_batch = UploadBatch.find_by_user_id_and_album_id_and_state(user_id, album_id, 'open')
+
         if current_batch.nil?
-          return UploadBatch.factory( user_id, album_id )
+          if new_if_not_found
+            return UploadBatch.factory( user_id, album_id )
+          end
+          return nil
         end
-        current_batch.open_activity_at = Time.now
+
+        current_batch.open_activity_at = Time.now - back_date_offset
         current_batch.save
       rescue ActiveRecord::StaleObjectError => ex
         # need to try again
@@ -52,7 +68,6 @@ class UploadBatch < ActiveRecord::Base
     return current_batch
   end
 
-
   # Finalize the batches that need to be set to the finished state
   # essentially this is any batch that hasn't been touched in the last
   # 24 hours, even if they still show as open.  The only case that
@@ -61,7 +76,7 @@ class UploadBatch < ActiveRecord::Base
   # that could still be closed by normal means.  The consequences in this
   # rare case are that emails may go out on an incomplete album
   def self.finalize_stale_batches
-    expired_batches = UploadBatch.unscoped.where("state <> 'finished' AND updated_at < ?", 24.hours.ago)
+    expired_batches = UploadBatch.unscoped.where("state <> 'finished' AND updated_at < ?", FINALIZE_STALE_INACTIVITY.ago)
     expired_batches.each do |batch|
       batch.finish(true)  # force it to finish
     end
@@ -74,10 +89,18 @@ class UploadBatch < ActiveRecord::Base
   # will finalize the batch.  If for some reason the photos are not ready within 24 hours
   # we clean up everything in the finalize_stale_batches method.
   def self.close_pending_batches
-    expired_batches = UploadBatch.unscoped.where("state = 'open' AND open_activity_at < ?", 5.minutes.ago)
+    expired_batches = UploadBatch.unscoped.where("state = 'open' AND open_activity_at < ?", CLOSE_BATCH_INACTIVITY.ago)
     expired_batches.each do |batch|
       batch.close   # close the batch
     end
+  end
+
+  # to avoid the chance of having this close complete a batch before the agent has
+  # had a chance to add any photos we don't close immediately but instead give ourselves
+  # a CLOSE_CALL_DEFER_TIME window before the close can happen.  We do this by setting the last open
+  # activity back in time so it only has 1 minute left before it times out
+  def self.close_open_batches( user_id, album_id )
+    batch = get_current_and_touch(user_id, album_id, false, CLOSE_BATCH_INACTIVITY - CLOSE_CALL_DEFER_TIME)
   end
 
 

@@ -122,17 +122,14 @@ class AlbumsController < ApplicationController
   end
 
   #closes the current batch
+  # we also have a watchdog sweeper that will
+  # close batches with no new add activity after a 5 minute window
   def close_batch
-    # no longer directly supported
-    # we now leave all batches open for a 5 minute window
-    # from the last open related activity such as adding
-    # photos
-    # a batch sweeper is now responsible for detecting batches
-    # that need to be closed
-#     if params[:id]
-#        UploadBatch.close_open_batches( current_user.id, params[:id])
-#     end
-     render :nothing => true
+    album_id = params[:id]
+    if album_id
+      UploadBatch.close_open_batches( current_user.id, album_id)
+    end
+    render :nothing => true
   end
 
   #displays the "You have reached a password protected album, request access" dialog

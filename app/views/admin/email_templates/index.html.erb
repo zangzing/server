@@ -54,28 +54,19 @@
         </td>
 
         <td>
-          <form method="post" action="<%=reload_email_template_url( et )%>" class="button-to">
-            <div>
-                <input type="hidden" name="_method" value="put" />
-                <input onclick="return confirm('Are you sure you want to reload the template?');"
+           <%=form_for et, :url => reload_email_template_path( et ) do  | f |%>
+               <input onclick="return confirm('Are you sure you want to reload the template?');"
                     value="Reload" type="submit" />
-            </div>
-         </form>
+          <%end%>
         </td>
         <td>
-              <form method="get" action="<%=test_email_template_url( et )%>" class="button-to">
-                <div>
-                    <input value="Send Me A Test" type="submit"/>
-                </div>
-             </form>
+          <%=button_to "Send Me A Test",   {:action => :test, :id=> et.id}, {:method => :get}  %>
         </td>
         <td>
-          <form method="get" action="<%=test_email_template_url( et )%>" target="_blank" class="button-to">
+         <%= form_for et, :url => test_email_template_url( et ), :html => { :method => :get, :class=>"button-to", :target=> "_blank" } do | f | %>
             <input type="hidden" name="onscreen" value="true" />
-            <div>
-                <input value="View" type="submit"/>
-            </div>
-         </form>
+            <input value="View" type="submit"/>
+         <%end%>
         </td>
 
   </tr>
