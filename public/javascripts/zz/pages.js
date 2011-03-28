@@ -488,21 +488,21 @@ pages.contributors = {
     present : false,
     url :'',
 
-    init: function(container){
+    init: function(container, callback){
         this.url = zz.path_prefix + '/albums/'+zz.album_id+'/contributors';
-        pages.contributors.show_list(container);
+        pages.contributors.show_list(container, callback);
     },
 
     bounce: function(success, failure){
         success();
     },
 
-    show_list: function( container, request ){
+    show_list: function( container, callback, request ){
         container.load( pages.contributors.url , function(){
                 //The contributors arrived in tmp_contact_list and declared when screen loaded
                 if( tmp_contact_list.length <= 0 ){
                     pages.contributors.present = false;
-                    pages.contributors.show_new(container);
+                    pages.contributors.show_new(container, callback);
                 } else {
                      pages.contributors.present = true;
                      // initialize the tokenized contact list widget
@@ -549,11 +549,16 @@ pages.contributors = {
                                 zz.wizard.display_flashes(  request,200 );
                         }
                     });
+
+                    if(! _.isUndefined(callback)){
+                        callback();
+                    }
+
                 }
         });
     },
 
-    show_new: function(container){
+    show_new: function(container, callback){
         container.load(zz.path_prefix + '/albums/'+zz.album_id+'/contributors/new', function(){
 
             $("#contact-list").tokenInput( zzcontacts.find, {
@@ -590,7 +595,7 @@ pages.contributors = {
                         data:     $('#new_contributors').serialize(),
                         success:  function(data,status,request){
                             container.fadeOut('fast','swing', function(){
-                                pages.contributors.show_list( container,  request );
+                                pages.contributors.show_list( container, callback,  request );
                             });
                         }
                     });
@@ -600,7 +605,7 @@ pages.contributors = {
             if( pages.contributors.present){
                 $('#cancel-new-contributors').click(function(){
                     container.fadeOut('fast', function(){
-                        pages.contributors.show_list(container);
+                        pages.contributors.show_list(container, callback);
                     } );
                 });
             }else{
@@ -612,6 +617,11 @@ pages.contributors = {
             });
 
             container.fadeIn('fast');
+
+            if(! _.isUndefined(callback)){
+                callback();
+            }
+            
         });
     }
 };
