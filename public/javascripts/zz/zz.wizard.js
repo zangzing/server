@@ -31,7 +31,7 @@ zz.wizard = {
 
     change_step: function(id, obj){
 
-        logger.debug(obj.steps[id].type + "    " + zz.drawer_state);
+//        logger.debug(obj.steps[id].type + "    " + zz.drawer_state);
 
         var container = $('#tab-content');
 
