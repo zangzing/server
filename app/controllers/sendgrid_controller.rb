@@ -168,6 +168,7 @@ protected
 
       # bulk insert
       Photo.batch_insert(photos)
+      current_batch.close()
     end
   end
 
