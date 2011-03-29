@@ -1,4 +1,4 @@
-require 'Mail'
+require 'mail'
 class SendgridController < ApplicationController
 
   skip_before_filter :verify_authenticity_token
