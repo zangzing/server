@@ -3,7 +3,7 @@
 #
 
 class AlbumsController < ApplicationController
-  before_filter :require_user,              :except => [ :index , :show ]
+  before_filter :require_user,              :except => [ :index , :show, :back_to_index ]
   before_filter :require_album,             :except => [ :index, :create, :new, :show  ]
   before_filter :require_album_admin_role,  :only =>   [ :destroy, :edit, :update ]
 
@@ -82,6 +82,9 @@ class AlbumsController < ApplicationController
   # This is effectively the users homepage
   def index
     @user = User.find(params[:user_id])
+
+    store_last_home_page @user.id
+
     liked_users_public_albums = @user.liked_users_public_albums
     # if we are showing the owners albums, show them all as well as any linked albums and any public albums for users that the user likes
     # for a different user than the current logged in user, just show all public albums including any that the users likes and
@@ -141,6 +144,17 @@ class AlbumsController < ApplicationController
   # Receives and processes a user's request for access into a password protected album
   def request_access
     #TODO: Receive and process current_users request for access into the current album
+  end
+
+  # user clicks the 'all albums' button
+  def back_to_index
+    user_id = last_home_page
+    if user_id
+      redirect_to user_pretty_url User.find(user_id)
+    else
+      album = Album.find(params[:id])
+      redirect_to user_pretty_url album.user
+    end
   end
 
   private

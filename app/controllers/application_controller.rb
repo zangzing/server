@@ -26,6 +26,7 @@ class ApplicationController < ActionController::Base
   # AuthLogic  support with allow_http_basic_auth false on the UserSession since
   # it can't seem to cope with a seperate scheme in rails 3
   before_filter :protect_with_http_auth
+  before_filter :check_referrer_and_reset_last_home_page
 
   after_filter :flash_to_headers
 
@@ -127,6 +128,29 @@ class ApplicationController < ActionController::Base
     def store_location
       session[:return_to] = request.fullpath
     end
+
+    #
+    #  these helpers and filters are used to manage the 'all albums' back button
+    def store_last_home_page(user_id)
+      session[:last_home_page] = user_id
+    end
+
+    def last_home_page
+      session[:last_home_page]
+    end
+
+    def check_referrer_and_reset_last_home_page
+      unless request.referer.include? "http://#{request.host_with_port}"
+        session[:last_home_page] = nil
+      end
+    end
+
+
+
+
+
+
+
 
     #
     # Redirects the user to the desired location after log in. If no stored location then to the default location
