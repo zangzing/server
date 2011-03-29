@@ -8,7 +8,7 @@
 common: &common
   reserved_names: false
   resque_zza_id: "dev.photos/svr"
-  album_email_host: "greg-post.zangzing.com"
+  album_email_host: "mauricio-post.zangzing.com"
   async_job_timeout: 20
 
 development:
@@ -30,13 +30,13 @@ photos_production:
   <<: *common
   reserved_names: true
   resque_zza_id: "photos/svr"
-  album_email_host: "photos-post.zangzing.com"
+  album_email_host: "zangzing.com"
 
 photos_staging:
   <<: *common
   reserved_names: true
   resque_zza_id: "staging.photos/svr"
-  album_email_host: "staging.photos-post.zangzing.com"
+  album_email_host: "staging.zangzing.com"
 
 
 eytest:

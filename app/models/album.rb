@@ -20,25 +20,14 @@ class Album < ActiveRecord::Base
           'l.subject_type = "P" AND l.subject_id = p.id AND p.album_id = #{id} '+
           'AND l.user_id = u.id ORDER BY u.first_name DESC'
 
-
-
-
   has_friendly_id :name, :use_slug => true, :scope => :user, :reserved_words => ["photos", "shares", 'activities', 'slides_source', 'people'], :approximate_ascii => true
-
 
   validates_presence_of  :user_id
   validates_presence_of  :name
   validates_length_of    :name, :maximum => 50
 
-
-  
-  attr_accessor :name_had_changed
-  before_save   Proc.new { |model| model.name_had_changed = true }, :if => :name_changed?
   before_save   :cover_photo_id_valid?, :if => :cover_photo_id_changed?
-  after_save    :set_email, :if => :name_had_changed
-
   after_create  :add_creator_as_admin
-
 
   default_scope :order => "`albums`.updated_at DESC"
 
@@ -57,7 +46,6 @@ class Album < ActiveRecord::Base
   def self.model_name
     @@_model_name ||= ActiveModel::Name.new(Album)
   end
-
 
   # generate a quick touch without having to
   # instantiate an object
@@ -245,8 +233,6 @@ class Album < ActiveRecord::Base
     acl.has_permission?( id, AlbumACL::ADMIN_ROLE)
   end
 
-
-
   # Checks of email is that of a contributor and returns user
   # If the email is that of a valid contributor, it will return the
   # user object for the contributor.
@@ -257,7 +243,7 @@ class Album < ActiveRecord::Base
       # was in the ACL via email address so turn into real user, no need to test again as we already passed
       user = User.find_by_email_or_create_automatic( email, "Anonymous" )
     else
-      # not a contributor by the email account, could still be one via user id
+      # not a contributor by  email account, could still be one via user id
       user = User.find_by_email( email )
       if user && contributor?(user.id) == false
         user = nil  # clear out the user to indicate not valid
@@ -276,8 +262,9 @@ class Album < ActiveRecord::Base
   end
 
   def short_email
-      "#{self.friendly_id}.#{self.user.friendly_id}@#{Server::Application.config.album_email_host}"
+      "#{self.friendly_id}@#{self.user.friendly_id}.#{Server::Application.config.album_email_host}"
   end
+  alias :email :short_email
 
   def to_param #overide friendly_id's
     (id = self.id) ? id.to_s : nil
@@ -323,12 +310,6 @@ private
     return false
   end
 
-  def set_email
-    mail_address = "#{self.friendly_id}.#{self.user.friendly_id}"
-    self.connection.execute "UPDATE albums SET email=#{ActiveRecord::Base.sanitize(mail_address)} WHERE id=#{self.id}" if self.id
-    self.name_had_changed = false
-  end
-
   def add_creator_as_admin
     acl.add_user( user.id, AlbumACL::ADMIN_ROLE )
   end
@@ -358,10 +339,6 @@ private
   end
 
 end
-
-
-
-
 
 # this class simplifies the association of a named image
 # in the database by managing the seperate fields needed and

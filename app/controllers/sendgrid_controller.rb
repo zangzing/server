@@ -1,9 +1,10 @@
+require 'Mail'
 class SendgridController < ApplicationController
 
   skip_before_filter :verify_authenticity_token
 
 =begin
-each album has an email address in the form <album_id>@sendgrid-post.zangzing.com
+each album has an email address in the form <album_name>@<username>.zangzing.com
     *      text - Text body of email. If not set, email did not have a text body.
     *      html - HTML body of email. If not set, email did not have an HTML body.
     *      to - Email recipient.
@@ -38,24 +39,59 @@ each album has an email address in the form <album_id>@sendgrid-post.zangzing.co
         }
         ZZ::ZZA.new.track_event("email.contributor.received", zza_xtra)
 
-        album_mail = params[:to].match(/\b([A-Z0-9._%+-]+)@[A-Z0-9.-]+\.[A-Z]{2,4}\b/i)[1] rescue ''
-        album_slug, user_slug = album_mail.split('.')
-        album = Album.find(album_slug, :scope => user_slug)
-        sender_mail = params[:from].match(/\b([A-Z0-9._%+-]+)@[A-Z0-9.-]+\.[A-Z]{2,4}\b/i)[0] rescue ''
-        if attachments.count > 0 && album
-          if sender_mail == album.user.email 
-            add_photos(album, album.user, attachments)
-          elsif album.kind_of?(GroupAlbum) && ( user = album.get_contributor_user_by_email( sender_mail )) #create_automatic_user)
-            add_photos(album, user, attachments)
+        
+        # An albums email address is of the form  <album_name>@<user_username>.zangzing.com
+        # we use Mail::Address to parse the addresses and the domain
+        # If the to or from addresses are invalid emails, an exception will be raised
+        to             = Mail::Address.new( params[:to] )
+        from           = Mail::Address.new( params[:from] )
+        album_name     = to.local
+        user_username  = to.domain.split('.')[0]
+
+        @album = nil
+        begin
+          @album = Album.find(album_name, :scope => user_username )
+        rescue ActiveRecord::RecordNotFound
+          @album = nil
+        end
+
+        # NEW ALBUM BY EMAIL
+        # if album_name is 'new' and the account owner is emailing photos, create a new
+        # album with the name set from the subject and all addresses in cc: as contributors
+        if @album.nil? && album_name == 'new'
+          user = User.find_by_username!( user_username )
+          # If the account owner is the one emailing
+          if user.email == from.address
+            @album  = GroupAlbum.new()
+            user.albums << @album
+            @album.name = ( params[:subject] && params[:subject].length > 0 ? params[:subject] : "New Album By Email")
+            @album.save!
           end
         end
+
+        if attachments.count > 0 && @album
+          user = @album.get_contributor_user_by_email( from.address )
+          if user
+            add_photos(@album, user, attachments)
+          end
+        end
+
+        # Add contributors from cc: if this email created a new album
+        if album_name == 'new' && @album
+           if params[:cc] && params[:cc].length > 0
+              ccs = Mail::AddressList.new( params[:cc] )
+              ccs.addresses.each do | contributor|
+                @album.add_contributor( contributor.address )
+              end
+           end
+        end
+
         render :nothing => true, :status => :ok
 
       rescue ActiveRecord::RecordNotFound => ex
         # for not found just log it and return ok so the mailer stops hitting us with this bad email
         # other errors will be logged but retries will continue
         logger.error "Incoming email import album not found will not retry: " + ex.message
-
         # since we are returning status 200 to nginx it will not delete the temp files for us
         # and in this case we are done with them. We return 200 to make sendgrid stop sending
         # since we can't do anything more with this message in the future and that is the
@@ -66,7 +102,6 @@ each album has an email address in the form <album_id>@sendgrid-post.zangzing.co
       rescue => ex
         logger.warn "Incoming email import failed - will retry later: " + ex.message
         render :nothing => true, :status => 400 # non 200 will cause the mailer to retry
-
       end
     else
       # call did not come through remapped upload via nginx or we have no attachments so reject it
@@ -75,7 +110,6 @@ each album has an email address in the form <album_id>@sendgrid-post.zangzing.co
       render :nothing => true, :status=> :ok
     end
   end
-
 
 protected
 
@@ -134,7 +168,6 @@ protected
 
       # bulk insert
       Photo.batch_insert(photos)
-
     end
   end
 
