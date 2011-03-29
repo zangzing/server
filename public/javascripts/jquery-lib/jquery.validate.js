@@ -1,4 +1,6 @@
 /*
+ * @preserve
+ * ----------
  * jQuery validation plug-in 1.7
  *
  * http://bassistance.de/jquery-plugins/jquery-plugin-validation/

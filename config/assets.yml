@@ -2,8 +2,6 @@ package_assets: on
 compress_assets: on
 embed_assets: off
 
-
-#javascript_compressor: yui
 javascript_compressor: closure
 compressor_options:
   compilation_level: "SIMPLE_OPTIMIZATIONS"
@@ -11,7 +9,7 @@ compressor_options:
 
 
 javascripts:
-  jquery_lib:
+  lib:
     - public/javascripts/jquery-lib/jquery.ui.core.js
     - public/javascripts/jquery-lib/jquery.ui.widget.js
     - public/javascripts/jquery-lib/jquery.ui.mouse.js

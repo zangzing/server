@@ -324,7 +324,7 @@
             }
 
 
-            self.imageObject = image_utils.pre_load_image(initialSrc, function(src, image){
+            self.imageObject = image_utils.pre_load_image(initialSrc, function(image){
                 self.imageLoaded = true;
                 self._resize(1);
 
@@ -335,23 +335,6 @@
                 self.imageElement.attr("src", self.options.src);
 
             });
-
-//            self.imageObject = new Image();
-//
-//            self.imageObject.onload = function(){
-//
-//                self.imageLoaded = true;
-//                self._resize(1);
-//
-//                //show the small version
-//                self.imageElement.attr("src", initialSrc);
-//
-//                //show the full version
-//                self.imageElement.attr("src", self.options.src);
-//
-//
-//           };
-//            self.imageObject.src = initialSrc;
         },
 
         _resize: function(percent){

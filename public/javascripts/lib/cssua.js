@@ -1,12 +1,14 @@
 /**
-	cssua.js
-	User-agent specific CSS support
-
-	Created: 2006-06-10-1635
-	Modified: 2011-01-10-1101
-
-	Copyright (c)2006-2011 Stephen M. McKamey
-	Distributed under The MIT License.
+ * @license
+ * ---------------------------------------------------------------
+ *	cssua.js
+ *	User-agent specific CSS support
+ *
+ *	Created: 2006-06-10-1635
+ *	Modified: 2011-01-10-1101
+ *
+ *	Copyright (c)2006-2011 Stephen M. McKamey
+ *	Distributed under The MIT License.
 */
 
 var cssua = (function(html, userAgent) {

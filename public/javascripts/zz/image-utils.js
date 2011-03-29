@@ -14,7 +14,7 @@ var image_utils = {
 
 
     // returns object with 'top', 'left', 'height', width'
-    scale_and_crop: function(image_dimensions, target_dimensions){
+    scale_center_and_crop: function(image_dimensions, target_dimensions){
 
     },
 
@@ -27,13 +27,13 @@ var image_utils = {
 
         image.onload = function(){
             if(_.isFunction(success)){
-                success(src, image);
+                success(image);
             }
         };
 
         image.onerror = function(){
             if(_.isFunction(error))
-            error(src, image);
+            error(image);
         };
 
 
