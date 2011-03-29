@@ -1,5 +1,6 @@
 /**
- * @license
+ * @preserve
+ * ----------
  * jQuery Tools @VERSION Tooltip - UI essentials
  *
  * NO COPYRIGHTS OR LICENSES. DO WHAT YOU LIKE.

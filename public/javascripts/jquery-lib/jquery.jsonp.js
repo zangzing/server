@@ -1,4 +1,6 @@
-/*
+/**
+ * @preserve
+ * ----------
  * jQuery JSONP Core Plugin 2.1.4 (2010-11-17)
  * 
  * http://code.google.com/p/jquery-jsonp/
