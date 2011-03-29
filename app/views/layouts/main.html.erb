@@ -119,6 +119,8 @@
       zz.album_base_url = '/<%=escape_javascript @album.user.username%>/<%=escape_javascript @album.friendly_id%>';
       zz.user_base_url = '/<%=escape_javascript @album.user.username%>';
       zz.album_name = zz.win_download_url;
+      zz.back_to_album_index_url = '<%= back_to_album_index_url @album %>';
+
 <%    end
       # This is where we pass things on to js that we need from ruby.
       # Remember to use the zz.zang namespace.

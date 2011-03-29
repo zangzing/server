@@ -382,7 +382,7 @@ zz.init = {
         }
 
         if(view === 'grid'){
-            this.init_back_button('All Albums', zz.user_base_url);
+            this.init_back_button('All Albums', zz.back_to_album_index_url);
         }
         else{
             this.init_back_button(zz.album_name, zz.album_base_url + '/photos');
@@ -716,7 +716,7 @@ zz.init = {
 
     album_timeline_or_people_view: function(which) {
 
-        this.init_back_button('All Albums', zz.user_base_url);
+        this.init_back_button('All Albums', zz.back_to_album_index_url);
 
 
         $.ajax({
