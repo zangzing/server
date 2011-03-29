@@ -33,6 +33,8 @@
 
             context: 'album-grid',
 
+            lazyLoadThreshold:null,
+
             showButtonBar: false,          //model
             onClickShare: jQuery.noop
 //            spaceBarTriggersClick: true
@@ -88,9 +90,9 @@
 
             var cells = [];
 
-            var lazyLoadThreshold = 0;
-            if(self.options.singlePictureMode){
-                lazyLoadThreshold = self.options.cellWidth * 3;
+
+            if(!self.options.lazyLoadThreshold && self.options.singlePictureMode){
+                self.options.lazyLoadThreshold = self.options.cellWidth * 3;
             }
 
 
@@ -131,7 +133,7 @@
                     },
 
                     scrollContainer: self.element,
-                    lazyLoadThreshold: lazyLoadThreshold,
+                    lazyLoadThreshold: self.options.lazyLoadThreshold,
                     isUploading: ! _.isUndefined(photo.state) ? photo.state !== 'ready': false, //todo: move into photochooser.js
                     isError: photo.state === 'error',
 //                    noShadow: photo.type === 'folder',                                          //todo: move into photochooser.js

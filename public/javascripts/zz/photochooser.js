@@ -269,6 +269,7 @@
                 singlePictureMode: true,
                 currentPhotoId: photoId,
                 context: 'chooser-picture',
+                lazyLoadThreshold: 0,
                 onClickPhoto: function(index, photo, element, action){
                     if(photo.type === 'folder'){
                          self.openFolder(photo);

@@ -24,6 +24,7 @@
             photoId:null,                //model
             aspectRatio:0,               //model
             isUploading:false,           //model
+            isUploading:false,           //model
             isError:false,               //model
             showButtonBar:false,           //model
             onClickShare: jQuery.noop,     //model
@@ -122,19 +123,24 @@
 
 
 
+            var initialHeight;
+            var initialWidth;
 
 
             if(self.options.aspectRatio){
                 var srcWidth =  1 * self.options.aspectRatio;
                 var srcHeight = 1;
-                var scale = Math.min( self.options.maxWidth / srcWidth, (self.options.maxHeight - self.captionHeight) / srcHeight)
 
-                var initialWidth = srcWidth * scale;
-                var initialHeight = srcHeight * scale;
+                var scaled = image_utils.scale({width:srcWidth, height:srcHeight}, {width:self.options.maxWidth, height:self.options.maxHeight - self.captionHeight});
+
+                initialHeight = scaled.height;
+                initialWidth = scaled.width;
+
             }
             else{
-                var initialWidth = Math.min(self.options.maxWidth, self.options.maxHeight);
-                var initialHeight = initialWidth;
+                var min = Math.min(self.options.maxWidth, self.options.maxHeight);
+                initialWidth = min;
+                initialHeight = min;
             }
 
 
@@ -149,21 +155,6 @@
             //element is probably invisible at this point, so we need to check the css attributes
             self.width = parseInt(self.element.css('width'));
             self.height = parseInt(self.element.css('height'));
-
-
-
-            //click
-//            self.borderElement.mousedown(function(mouseDownEvent){
-//                var mouseUpHandler = function(mouseUpEvent){
-//                    if(mouseDownEvent.pageX === mouseUpEvent.pageX && mouseDownEvent.pageY === mouseUpEvent.pageY){
-//                        self.options.onClick(mouseUpEvent);
-//                    }
-//                    self.borderElement.unbind('mouseup', mouseUpHandler);
-//                };
-//                self.borderElement.mouseup(mouseUpHandler);
-//
-//            });
-
 
 
 
@@ -242,8 +233,7 @@
             if(self.options.rolloverSrc){
 
                 //preload rollover
-                var img = new Image();
-                img.src = self.options.rolloverSrc;
+                image_utils.pre_load_image(self.options.rolloverSrc);
 
                 self.element.mouseover(function(){
                     self.imageElement.attr('src', self.options.rolloverSrc);
@@ -334,10 +324,7 @@
             }
 
 
-            self.imageObject = new Image();
-
-            self.imageObject.onload = function(){
-
+            self.imageObject = image_utils.pre_load_image(initialSrc, function(src, image){
                 self.imageLoaded = true;
                 self._resize(1);
 
@@ -347,22 +334,35 @@
                 //show the full version
                 self.imageElement.attr("src", self.options.src);
 
+            });
 
-           };
-
-
-            self.imageObject.src = initialSrc;
+//            self.imageObject = new Image();
+//
+//            self.imageObject.onload = function(){
+//
+//                self.imageLoaded = true;
+//                self._resize(1);
+//
+//                //show the small version
+//                self.imageElement.attr("src", initialSrc);
+//
+//                //show the full version
+//                self.imageElement.attr("src", self.options.src);
+//
+//
+//           };
+//            self.imageObject.src = initialSrc;
         },
 
         _resize: function(percent){
             var self = this;
 
-            var scale = Math.min(self.options.maxWidth/self.imageObject.width, (self.options.maxHeight - self.captionHeight) / self.imageObject.height);
-            var width = Math.floor(self.imageObject.width * scale);
-            var height = Math.floor(self.imageObject.height * scale);
+            var scaled = image_utils.scale({width:self.imageObject.width, height:self.imageObject.height}, {width:self.options.maxWidth, height:self.options.maxHeight - self.captionHeight});
 
-            var borderWidth = width + 10;
-            var borderHeight = height + 10;
+
+
+            var borderWidth = scaled.width + 10;
+            var borderHeight = scaled.height + 10;
 
 
             self.borderElement.css({
@@ -373,13 +373,12 @@
             });
 
             self.imageElement.css({
-                width: width,
-                height: height
+                width: scaled.width,
+                height: scaled.height
             });
 
-            self.bottomShadow.css({'width': (width + 14) + "px"});
+            self.bottomShadow.css({'width': (scaled.width + 14) + "px"});
 
-           
 
         },
 
