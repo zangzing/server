@@ -86,7 +86,7 @@ class AlbumsController < ApplicationController
     store_last_home_page @user.id
 
     liked_users_public_albums = @user.liked_users_public_albums
-    # if we are showing the owners albums, so them all as well as any linked albums and any public albums for users that the user likes
+    # if we are showing the owners albums, show them all as well as any linked albums and any public albums for users that the user likes
     # for a different user than the current logged in user, just show all public albums including any that the users likes and
     # any public ones that get pulled in from users that we like
     # When the user visits her hompage show
@@ -100,7 +100,8 @@ class AlbumsController < ApplicationController
     if( current_user? @user || current_user.support_hero? )
       @albums = @user.albums | @user.liked_albums | liked_users_public_albums #show all of current_user's albums
     else
-      @albums = @user.albums.find_all_by_privacy('public') | @user.liked_public_albums | liked_users_public_albums
+      @albums = @user.albums.where("privacy = 'public' AND completed_batch_count > 0") |
+                @user.liked_public_albums | liked_users_public_albums
     end
     #@albums = @albums.sort { |a1, a2| a2.updated_at <=> a1.updated_at }
 

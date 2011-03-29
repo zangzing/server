@@ -148,16 +148,21 @@ class UploadBatch < ActiveRecord::Base
          #send album shares even if there were no photos uploaded
          shares.each { |share| share.deliver }
 
+         # now mark the albums as ok to display since it has completed at least one batch
+         album = self.album
+         album.completed_batch_count += 1
+         album.save
+
          if self.photos.count > 0
             #Create Activity
-            ua = UploadActivity.create( :user => self.user, :album => self.album, :upload_batch => self )
-            self.album.activities << ua
+            ua = UploadActivity.create( :user => self.user, :album => album, :upload_batch => self )
+            album.activities << ua
 
             #Notify uploader that upload batch is finished
             ZZ::Async::Email.enqueue( :photos_ready, self.id )
 
             #Notify likers that there is new activity in this album
-            album_id = self.album.id
+            album_id = album.id
             self.album.likers.each do |liker|
               ZZ::Async::Email.enqueue( :album_updated, liker.id, album_id )
             end
