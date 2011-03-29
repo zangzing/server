@@ -146,16 +146,6 @@ class AlbumsController < ApplicationController
     #TODO: Receive and process current_users request for access into the current album
   end
 
-  # user clicks the 'all albums' button
-  def back_to_index
-    user_id = last_home_page
-    if user_id
-      redirect_to user_pretty_url User.find(user_id)
-    else
-      album = Album.find(params[:id])
-      redirect_to user_pretty_url album.user
-    end
-  end
 
   private
     #

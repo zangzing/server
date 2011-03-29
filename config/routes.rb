@@ -64,7 +64,6 @@ Server::Application.routes.draw do
     delete '/albums/:id'                     => 'albums#destroy',             :as => :delete_album
     get    'albums/:id/pwd_dialog'           => 'albums#pwd_dialog',          :as => :album_pwd_dialog
     post   'albums/:id/request_access'       => 'albums#request_access',      :as => :request_album_access
-    get    'albums/:id/back_to_index'        => 'albums#back_to_index',       :as => :back_to_album_index
 
     #shares
 
