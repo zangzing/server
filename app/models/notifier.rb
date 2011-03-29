@@ -36,7 +36,7 @@ class Notifier < ActionMailer::Base
     binding = binding()
     mail( :to       => @recipient.formatted_email,
           :from     => @template.formatted_from,
-          :reply_to => ERB.new( @template.formatted_reply_to).result(binding), #@album.short_email
+          :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
           :subject  => ERB.new( @template.subject).result(binding)
     ) do |format|
       format.text { render :inline => @template.text_content }
@@ -57,7 +57,7 @@ class Notifier < ActionMailer::Base
     binding = binding()
     mail(  :to       => @recipient.formatted_email,
            :from     => @template.formatted_from,
-           :reply_to => ERB.new( @template.formatted_reply_to).result(binding), #@album.short_email
+           :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
            :subject  => ERB.new( @template.subject).result(binding)
     ) do |format|
       format.text { render :inline => @template.text_content }
@@ -77,7 +77,7 @@ class Notifier < ActionMailer::Base
     binding = binding()
     mail( :to       => @recipient.formatted_email,
           :from     => @template.formatted_from,
-          :reply_to => ERB.new( @template.formatted_reply_to).result(binding), #@album.short_email
+          :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
           :subject  => ERB.new( @template.subject).result(binding)
     ) do |format|
       format.text { render :inline => @template.text_content }
@@ -97,7 +97,7 @@ class Notifier < ActionMailer::Base
     binding = binding()
     mail( :to       => @recipient.formatted_email,
           :from     => @template.formatted_from,
-          :reply_to => ERB.new( @template.formatted_reply_to).result(binding), #@album.short_email
+          :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
           :subject  => ERB.new( @template.subject).result(binding)
     ) do |format|
       format.text { render :inline => @template.text_content }
@@ -116,7 +116,7 @@ class Notifier < ActionMailer::Base
     binding = binding()
     mail( :to       => @recipient.formatted_email,
           :from     => @template.formatted_from,
-          :reply_to => ERB.new( @template.formatted_reply_to).result(binding), #@album.short_email
+          :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
           :subject  => ERB.new( @template.subject).result(binding)
     ) do |format|
       format.text { render :inline => @template.text_content }
@@ -134,7 +134,7 @@ class Notifier < ActionMailer::Base
         binding = binding()
         mail(   :to       => ( @recipient? @recipient.formatted_email : to_address ),
                 :from     => @template.formatted_from,
-                :reply_to => ERB.new( @template.formatted_reply_to).result(binding), #@album.short_email
+                :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
                 :subject  => ERB.new( @template.subject).result(binding)
         ) do |format|
           format.text { render :inline => @template.text_content }
@@ -157,7 +157,7 @@ class Notifier < ActionMailer::Base
     binding = binding()
     mail(   :to       => ( @recipient? @recipient.formatted_email : to_address ),
             :from     => @template.formatted_from,
-            :reply_to => ERB.new( @template.formatted_reply_to).result(binding), #@album.short_email
+            :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
             :subject  => ERB.new( @template.subject).result(binding)
     ) do |format|
       format.text { render :inline => @template.text_content }
@@ -177,7 +177,7 @@ class Notifier < ActionMailer::Base
     binding = binding()
     mail( :to       => @recipient.formatted_email,
           :from     => @template.formatted_from,
-          :reply_to => ERB.new( @template.formatted_reply_to).result(binding), #@album.short_email
+          :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
           :subject  => ERB.new( @template.subject).result(binding)
     ) do |format|
       format.text { render :inline => @template.text_content }
@@ -208,7 +208,7 @@ class Notifier < ActionMailer::Base
     binding = binding()
     mail( :to       => ( @recipient? @recipient.formatted_email : to_address ),
           :from     => @template.formatted_from,
-          :reply_to => ERB.new( @template.formatted_reply_to).result(binding), #@album.short_email
+          :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
           :subject  => ERB.new( @template.subject).result(binding)
     ) do |format|
       format.text { render :inline => @template.text_content }
@@ -227,7 +227,7 @@ class Notifier < ActionMailer::Base
     binding = binding()
     mail( :to       => @recipient.formatted_email,
           :from     => @template.formatted_from,
-          :reply_to => ERB.new( @template.formatted_reply_to).result(binding), #@album.short_email
+          :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
           :subject  => ERB.new( @template.subject).result(binding)
     ) do |format|
       format.text { render :inline => @template.text_content }
