@@ -3,7 +3,7 @@
 #
 
 class AlbumsController < ApplicationController
-  before_filter :require_user,              :except => [ :index , :show ]
+  before_filter :require_user,              :except => [ :index , :show, :back_to_index ]
   before_filter :require_album,             :except => [ :index, :create, :new, :show  ]
   before_filter :require_album_admin_role,  :only =>   [ :destroy, :edit, :update ]
 
@@ -82,8 +82,11 @@ class AlbumsController < ApplicationController
   # This is effectively the users homepage
   def index
     @user = User.find(params[:user_id])
+
+    store_last_home_page @user.id
+
     liked_users_public_albums = @user.liked_users_public_albums
-    # if we are showing the owners albums, so them all as well as any linked albums and any public albums for users that the user likes
+    # if we are showing the owners albums, show them all as well as any linked albums and any public albums for users that the user likes
     # for a different user than the current logged in user, just show all public albums including any that the users likes and
     # any public ones that get pulled in from users that we like
     # When the user visits her hompage show
@@ -97,7 +100,8 @@ class AlbumsController < ApplicationController
     if( current_user? @user || current_user.support_hero? )
       @albums = @user.albums | @user.liked_albums | liked_users_public_albums #show all of current_user's albums
     else
-      @albums = @user.albums.find_all_by_privacy('public') | @user.liked_public_albums | liked_users_public_albums
+      @albums = @user.albums.where("privacy = 'public' AND completed_batch_count > 0") |
+                @user.liked_public_albums | liked_users_public_albums
     end
     #@albums = @albums.sort { |a1, a2| a2.updated_at <=> a1.updated_at }
 
@@ -122,17 +126,14 @@ class AlbumsController < ApplicationController
   end
 
   #closes the current batch
+  # we also have a watchdog sweeper that will
+  # close batches with no new add activity after a 5 minute window
   def close_batch
-    # no longer directly supported
-    # we now leave all batches open for a 5 minute window
-    # from the last open related activity such as adding
-    # photos
-    # a batch sweeper is now responsible for detecting batches
-    # that need to be closed
-#     if params[:id]
-#        UploadBatch.close_open_batches( current_user.id, params[:id])
-#     end
-     render :nothing => true
+    album_id = params[:id]
+    if album_id
+      UploadBatch.close_open_batches( current_user.id, album_id)
+    end
+    render :nothing => true
   end
 
   #displays the "You have reached a password protected album, request access" dialog
@@ -144,6 +145,7 @@ class AlbumsController < ApplicationController
   def request_access
     #TODO: Receive and process current_users request for access into the current album
   end
+
 
   private
     #
