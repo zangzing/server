@@ -62,7 +62,7 @@ class SampleDataLoader
     Album.all(:limit => 50).each do |album|
       puts "      Adding photos to album #{album.name}"
       (rand( 3 )+1).times do
-        UploadBatch.close_open_batches( album.user.id, album.id )
+        UploadBatch.close_open_batch( album.user.id, album.id )
         (rand( 20 )+1).times do
             new_photo(album, album.user)
         end
@@ -99,7 +99,7 @@ class SampleDataLoader
          c.last_contribution = Time.now()
          c.save
          (rand( 3 )+1).times do
-            UploadBatch.close_open_batches( users[i].id, album.id )
+            UploadBatch.close_open_batch( users[i].id, album.id )
             (rand( 15 )+1).times do
               new_photo(album, users[i])
             end

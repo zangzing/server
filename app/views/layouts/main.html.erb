@@ -131,8 +131,8 @@
       zz.rails_action_name = '<%= controller.action_name %>';
       zz.rails_authenticity_token = '<%= form_authenticity_token %>';
 
-      zz.win_download_url = '<%= Server::Application.config.agent_download_url[:win] %>';
-      zz.mac_download_url = '<%= Server::Application.config.agent_download_url[:mac] %>';
+      zz.win_download_url = '<%= ZangZingConfig.config[:agent_download_url_win] %>';
+      zz.mac_download_url = '<%= ZangZingConfig.config[:agent_download_url_mac] %>';
 
       /* init
       ----------------------------------------------------------------------- */
