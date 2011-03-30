@@ -2,7 +2,7 @@ class UploadBatch < ActiveRecord::Base
   attr_accessible :album_id, :custom_order, :open_activity_at
 
   CLOSE_BATCH_INACTIVITY = 5.minutes
-  CLOSE_CALL_DEFER_TIME = 45.seconds
+  CLOSE_CALL_DEFER_TIME = 30.seconds
   FINALIZE_STALE_INACTIVITY = 24.hours
 
   belongs_to :user
@@ -91,7 +91,7 @@ class UploadBatch < ActiveRecord::Base
   def self.close_pending_batches
     expired_batches = UploadBatch.unscoped.where("state = 'open' AND open_activity_at < ?", CLOSE_BATCH_INACTIVITY.ago)
     expired_batches.each do |batch|
-      batch.close   # close the batch
+      batch.close_internal   # close the batch
     end
   end
 
@@ -99,7 +99,7 @@ class UploadBatch < ActiveRecord::Base
   # had a chance to add any photos we don't close immediately but instead give ourselves
   # a CLOSE_CALL_DEFER_TIME window before the close can happen.  We do this by setting the last open
   # activity back in time so it only has 1 minute left before it times out
-  def self.close_open_batches( user_id, album_id )
+  def self.close_open_batch( user_id, album_id )
     batch = get_current_and_touch(user_id, album_id, false, CLOSE_BATCH_INACTIVITY - CLOSE_CALL_DEFER_TIME)
   end
 
@@ -126,10 +126,12 @@ class UploadBatch < ActiveRecord::Base
     return true
   end
 
-  def close
+  # NOTE: this is for internal use, a proper close is done by calling close_open_batch since it
+  # does it in a deferred fashion.
+  def close_internal
     if self.state == 'open'
       if safe_state_change('closed')
-        self.finish
+        self.finish_internal
       end
     end
   end
@@ -137,7 +139,7 @@ class UploadBatch < ActiveRecord::Base
   # returns true if we are done
   # set the force flag to true if you want to finalized regardless of the
   # current state
-  def finish(force = false)
+  def finish_internal(force = false)
 
     # if the batch has already finished once, dont finish it again even if photos
     return true if self.state == 'finished'

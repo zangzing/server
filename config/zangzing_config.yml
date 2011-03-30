@@ -8,8 +8,10 @@
 common: &common
   reserved_names: false
   resque_zza_id: "dev.photos/svr"
-  album_email_host: "mauricio-post.zangzing.com"
+  album_email_host: "greg-post.zangzing.com"
   async_job_timeout: 20
+  agent_download_url_mac: "http://staging.downloads.zangzing.com/agent/darwin/ZangZing-Setup(STAGED).pkg"
+  agent_download_url_win: "http://staging.downloads.zangzing.com/agent/win32/ZangZing-Setup(STAGED).exe"
 
 development:
   <<: *common
@@ -31,6 +33,8 @@ photos_production:
   reserved_names: true
   resque_zza_id: "photos/svr"
   album_email_host: "zangzing.com"
+  agent_download_url_mac: "http://downloads.zangzing.com/agent/darwin/ZangZing-Setup.pkg"
+  agent_download_url_win: "http://downloads.zangzing.com/agent/win32/ZangZing-Setup.exe"
 
 photos_staging:
   <<: *common

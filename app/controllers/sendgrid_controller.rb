@@ -1,4 +1,4 @@
-require 'Mail'
+require 'mail'
 class SendgridController < ApplicationController
 
   skip_before_filter :verify_authenticity_token
@@ -168,7 +168,7 @@ protected
 
       # bulk insert
       Photo.batch_insert(photos)
-      current_batch.close()
+      current_batch.close_open_batch()
     end
   end
 
