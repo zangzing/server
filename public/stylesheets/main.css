@@ -253,24 +253,27 @@ div#container {
 }
 
 #header #album-info #album-name-and-owner h3 a{
+    color: #466FAA;
     text-decoration:none;
-    color: #466FAA;
-}
-
-#header #album-info #album-name-and-owner h3 a:hover{
-    text-decoration:underline;
-    color: #466FAA;
-}
-
-#header #album-info #album-name-and-owner h3 a:active{
-    text-decoration:underline;
-    color: #466FAA;
 }
 
 #header #album-info #album-name-and-owner h3 a:visited{
-    text-decoration:none;
     color: #466FAA;
+    text-decoration:none;
 }
+
+
+#header #album-info #album-name-and-owner h3 a:hover{
+    color: #333333;
+    text-decoration:underline;
+}
+
+
+#header #album-info #album-name-and-owner h3 a:active{
+    color: #333333;
+    text-decoration:underline;
+}
+
 
 
 
