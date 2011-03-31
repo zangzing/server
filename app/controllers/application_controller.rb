@@ -218,7 +218,7 @@ class ApplicationController < ActionController::Base
   def require_album_admin_role
     unless  @album.admin?( current_user.id ) || current_user.support_hero?
       flash[:error] = "Only Album admins can perform this operation"
-      response.headers['x_error'] = flash[:error]
+      response.headers['X-Errors'] = flash[:error]
       if request.xhr?
         render :status => 401
       else
@@ -263,7 +263,7 @@ class ApplicationController < ActionController::Base
   def require_album_contributor_role
     unless  @album.contributor?( current_user.id ) || current_user.support_hero?
       flash[:error] = "Only Contributors admins can perform this operation"
-      response.headers['x_error'] = flash[:error]
+      response.headers['X-Error'] = flash[:error]
       if request.xhr?
         render :status => 401
       else
