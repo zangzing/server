@@ -23,6 +23,7 @@ class Like < ActiveRecord::Base
                           :subject_id => subject_id,
                           :subject_type => subject_type )
       LikeCounter.increase( subject_id )
+      AlbumCacheManager.shared.like_added(user_id, like)
       case subject_type
         when USER,  'user'  then ZZ::Async::Email.enqueue( :user_liked,  user_id, subject_id )
         when ALBUM, 'album' then ZZ::Async::Email.enqueue( :album_liked, user_id, subject_id )
@@ -58,6 +59,7 @@ class Like < ActiveRecord::Base
     if like
       like.destroy
       LikeCounter.decrease( subject_id )
+      AlbumCacheManager.shared.like_removed(user_id, like)
     end
   end
 

@@ -63,8 +63,6 @@ module Server
     # Bitly API Setup
     Bitly.use_api_version_3
 
-
-
   end
 end
 

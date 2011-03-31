@@ -27,6 +27,7 @@ class Album < ActiveRecord::Base
   validates_length_of    :name, :maximum => 50
 
   before_save   :cover_photo_id_valid?, :if => :cover_photo_id_changed?
+  after_save    :notify_cache_manager
   after_create  :add_creator_as_admin
 
   default_scope :order => "`albums`.updated_at DESC"
@@ -45,6 +46,13 @@ class Album < ActiveRecord::Base
   # albums table
   def self.model_name
     @@_model_name ||= ActiveModel::Name.new(Album)
+  end
+
+  # We have been saved so call the album cache manager
+  # to let it invalidate caches if needed
+  def notify_cache_manager
+    AlbumCacheManager.shared.album_modified(self)
+    true
   end
 
   # generate a quick touch without having to
