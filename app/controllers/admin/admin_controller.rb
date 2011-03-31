@@ -6,7 +6,7 @@ class Admin::AdminController < ApplicationController
   def require_admin
     unless current_user.admin?
       flash[:error] = "Administrator privileges required for this operation"
-      response.headers['x_error'] = flash[:error]
+      response.headers['X-Error'] = flash[:error]
       if request.xhr?
         render :status => 401
       else

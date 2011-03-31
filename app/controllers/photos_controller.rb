@@ -5,13 +5,15 @@ class PhotosController < ApplicationController
 
   before_filter :require_user,                    :only =>   [ :destroy, :update, :position ]  #for interactive users
   before_filter :oauth_required,                  :only =>   [ :agent_create, :agent_index ]   #for agent
+  # oauthenticate :strategies => :two_legged, :interactive => false, :only =>   [ :upload_fast ]
 
   before_filter :require_album,                   :only =>   [ :agent_create, :index, :movie, :photos_json ]
   before_filter :require_photo,                   :only =>   [ :destroy, :update, :position ]
 
-  before_filter :require_album_admin_role,        :only =>   [ :destroy, :update, :position ]
-  before_filter :require_album_contributor_role,  :only =>   [ :agent_create ]
-  before_filter :require_album_viewer_role,       :only =>   [ :index, :movie, :photos_json  ]
+  before_filter :require_album_admin_role,                :only =>   [ :update, :position ]
+  before_filter :require_photo_owner_or_album_admin_role, :only =>   [ :destroy ]
+  before_filter :require_album_contributor_role,          :only =>   [ :agent_create ]
+  before_filter :require_album_viewer_role,               :only =>   [ :index, :movie, :photos_json  ]
 
 
   # Used by the agent to create photos duh?
@@ -90,43 +92,40 @@ class PhotosController < ApplicationController
 
 
   def upload_fast
-     #nginx add params so it breaks oauth. use this validation to ensure it is coming from nginx
+    #nginx add params so it breaks oauth. use this validation to ensure it is coming from nginx
     #currently we only handle one photo attachment but the input is structured to send multiple
     #as is done with the sendgrid#import_fast
 
-    unless request.local?   #this request can only come from nginx running on same machine
-      render :json => "only accepts local connections", :status => 401
-    else
-      if params[:fast_upload_secret] == "this-is-a-key-from-nginx" && (attachments = params[:fast_local_image]) && attachments.count == 1
-        begin
-          @photo = Photo.find(params[:id])
-          @album = @photo.album
-          fast_local_image = attachments[0] # extract only the first one
-          @photo.file_to_upload = fast_local_image['filepath']
-          if @photo.save
-            render :json => @photo.to_json(:only =>[:id, :agent_id, :state]), :status => 200 and return
-          else
-            render :json => @photo.errors, :status=>400
-          end
-
-        rescue ActiveRecord::StatementInvalid => ex
-          #this seems to mean connection issue with database
-          #give the agent a chance to retry
-          render :json => ex.to_s, :status=>500
-          logger.info small_back_trace(ex)
-
-        rescue Exception => ex
-          # a status in the 400 range tells the agent to stop trying
-          # our default if we don't explicitly expect the error is to not
-          # try again
-          render :json => ex.to_s, :status=>400
-          logger.info small_back_trace(ex)
+    if params[:fast_upload_secret] == "this-is-a-key-from-nginx" && (attachments = params[:fast_local_image]) && attachments.count == 1
+      begin
+        @photo = Photo.find(params[:id])
+        @album = @photo.album
+        fast_local_image = attachments[0] # extract only the first one
+        @photo.file_to_upload = fast_local_image['filepath']
+        if @photo.save
+          render :json => @photo.to_json(:only =>[:id, :agent_id, :state]), :status => 200 and return
+        else
+          render :json => @photo.errors, :status=>400
         end
-      else
-        # call did not come through remapped upload via nginx so reject it
-        render :json => "Invalid upload_fast arguments.", :status=>400
+
+      rescue ActiveRecord::StatementInvalid => ex
+        #this seems to mean connection issue with database
+        #give the agent a chance to retry
+        render :json => ex.to_s, :status=>500
+        logger.info small_back_trace(ex)
+
+      rescue Exception => ex
+        # a status in the 400 range tells the agent to stop trying
+        # our default if we don't explicitly expect the error is to not
+        # try again
+        render :json => ex.to_s, :status=>400
+        logger.info small_back_trace(ex)
       end
+    else
+      # call did not come through remapped upload via nginx so reject it
+      render :json => "Invalid upload_fast arguments.", :status=>400
     end
+
   end
 
   #deletes a photo
@@ -275,4 +274,24 @@ class PhotosController < ApplicationController
       return false
     end
   end
+
+  #
+  # To be run as a before_filter
+  # Requires
+  # @photo is the photo to be acted upon
+  # current_user is the user we are evaluating
+  def require_photo_owner_or_album_admin_role
+    unless  @photo.user.id == current_user.id || @photo.album.admin?( current_user.id ) || current_user.support_hero?
+      flash[:error] = "Only Photo Owners or Album Admins can perform this operation"
+      response.headers['X-Errors'] = flash[:error]
+      if request.xhr?
+        render :status => 401
+      else
+        render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
+      end
+      return false
+    end
+  end
+
+
 end
