@@ -6,70 +6,60 @@ class SharesController < ApplicationController
 
   layout false
 
-  def index   
-  end
+  respond_to :html, :only => [:new, :newpost, :newemail]
+  respond_to :json, :only => [:create]
 
   def new
-     @album = Album.find(params[:album_id])
   end
 
   def newpost
-      @album = Album.find(params[:album_id])
-      @share = PostShare.new
-      @share.twitter  = ( current_user.identity_for_twitter.credentials_valid? ? "1" :"0" )
-      @share.facebook = ( current_user.identity_for_facebook.credentials_valid? ? "1" :"0" )    
+      @share = Share.new()
+      @twitter  = ( current_user.identity_for_twitter.credentials_valid? ? "1" :"0" )
+      @facebook = ( current_user.identity_for_facebook.credentials_valid? ? "1" :"0" )
   end
 
   def newemail
-    @album = Album.find(params[:album_id])
-    @share = EmailShare.new    
-    @google_id = current_user.identity_for_google
-    @yahoo_id  = current_user.identity_for_yahoo
-    @local_id  = current_user.identity_for_local
+    @share = Share.new()
   end
-  
+
   def create
-    @album = Album.find(params[:album_id])
-    @share = Share.factory( current_user, @album, album_photos_url(@album), params)
-    
+    # Based on the route used to get here (and thus the params) we know what kind of subject does
+    # the user wants to quack! a
+    #bout.
+    if  params[:user_id]
+        @subject = User.find(params[:user_id])
+        @subject_url = user_pretty_url(@subject)
+    elsif params[:album_id]
+        @subject = Album.find(params[:album_id])
+        @subject_url = album_pretty_url(@subject)
+    elsif params[:photo_id]
+        @subject = Photo.find(params[:photo_id])
+        @subject_url = photo_pretty_url(@subject)
+    else
+        render :json => "subject_type not specified via params", :status => 400 and return
+    end
+
+    # make sure recipients its an array
+    # emailshare submits a comma separated list of emails
+    # postshare submits an array of social services
+    rcp = (  params[:recipients].is_a?(Array) ? params[:recipients] : params[:recipients].split(',') )
+    @share = Share.new( :user =>        current_user,
+                        :subject =>     @subject,
+                        :subject_url => @subject_url,
+                        :service =>     params[:service],
+                        :recipients =>  rcp,
+                        :message    =>  params[:message])
+
     unless @share.save
-      respond_to do |format |
-          format.html { render 'newemail' and return  if params[:mail_share]
-                        render 'newpost' and return  if params[:post_share]  }
-          format.json  { errors_to_headers( @share )
-                         render :json => "", :status => 400 and return}
-      end
+      errors_to_headers( @share )
+      render :json => "", :status => 400 and return
     end
 
-    #get the current batch (make sure a batch is open since shares will be sent only when the current batch is finished)
-    UploadBatch.get_current( current_user.id, @album.id )
-    case @share.type
-      when 'PostShare'
-        flash[:notice] = "Your message will be tweeted and/or posted on your wall as soon as the album is ready."
-      when 'EmailShare'
-        flash[:notice] = "Instructions to access the album will be emailed  to your friends as soon as the album is ready."
+    if @share.album?
+      flash[:notice] = "Your album will be shared as soon as its ready."
     end
-    respond_to do |format |
-          format.html   
-          format.json {  render :json =>"", :status => 200 and return }
-    end    
-  end
-
-  def edit
-    @share = Share.find(params[:id])
-    @album = @share.album
-
-    case @share
-      when EmailShare then
-        @google_id = current_user.identity_for_google
-        @yahoo_id  = current_user.identity_for_yahoo
-        @contacts = []
-        @contacts.concat @google_id.contacts unless @google_id.nil?
-        @contacts.concat @yahoo_id.contacts unless @yahoo_id.nil?
-        render 'newemail'
-      when PostShare then
-        render 'newpost'
-    end
+    
+    render :json =>"", :status => 200
   end
 
 end

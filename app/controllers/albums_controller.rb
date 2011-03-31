@@ -3,17 +3,16 @@
 #
 
 class AlbumsController < ApplicationController
-  before_filter :require_user,     :except => [ :index, :show ]
-  before_filter :authorized_user,  :only =>   [ :edit, :update, :destroy]
+  before_filter :require_user,              :except => [ :index , :show, :back_to_index ]
+  before_filter :require_album,             :except => [ :index, :create, :new, :show  ]
+  before_filter :require_album_admin_role,  :only =>   [ :destroy, :edit, :update ]
 
+  # displays the "Select album type screen" used in the wizard
   def new
     render :layout => false
   end
-  
-  def timeline
-  end
 
-  def create
+ def create
     if params[:album_type].nil?
       render :text => "Error No Album Type Supplied. Please Choose Album Type.", :status=>500 and return
     end
@@ -26,40 +25,16 @@ class AlbumsController < ApplicationController
     render :text => @album.id, :status => 200, :layout => false and return
   end
 
-  def upload_stat
-    batch = Photo.find_all_by_user_id_and_album_id( current_user.id,  params[:id])
-
-    if batch
-#      photos_pending = batch.select{|p| ['assigned', 'loaded', 'processing'].include?(p.state)}
-      photos_pending = batch.select{|p| ['assigned', 'loaded', 'processing'].include?(p.state)}
-      photos_completed = batch.select{|p| ['ready'].include?(p.state) }
-      unless photos_completed.empty? || photos_pending.empty?
-        #est_time = (photos_completed.map{ |p| (p.image_updated_at.to_time - p.created_at.to_time)/60 }.sum / photos_completed.count) * photos_pending.count
-        est_time = ((photos_completed.map(&:image_updated_at).compact.max - photos_completed.map(&:created_at).min)/photos_completed.size)/60 * photos_pending.size
-      else
-        est_time = 0
-      end
-      render :json => {
-        'percent-complete' => (photos_completed.count.to_f/(photos_completed.count+photos_pending.count).to_f)*100,
-        'time-remaining' => est_time,
-        'photos-complete' => photos_completed.count,
-        'photos-pending' => photos_pending.count
-      }
-    else
-      #No active upload batches
-      render :json => {'percent-complete' => 0, 'time-remaining' => nil, 'photos-complete' => 0, 'photos-pending' => nil}
-    end
-  end
-
+  # Used in the name tab of the wizard. It displays a preview
+  # of what the album email will be as the album name changes
+  # @album is set in the require_album before filter
   def preview_album_email
-    @album = Album.find(params[:id])
-    #base = @album.send(@album.friendly_id_config.method)
     if base = params[:album_name]
       begin
         text = @album.normalize_friendly_id(FriendlyId::SlugString.new(base))
         slug_text = FriendlyId::SlugString.new(text.to_s).validate_for!(@album.friendly_id_config).to_s
         current_slug = @album.slugs.new(:name => slug_text.to_s, :scope => @album.friendly_id_config.scope_for(@album), :sluggable => @album)
-        render :text => "#{current_slug.to_friendly_id}.#{@album.user.friendly_id}@#{Server::Application.config.album_email_host}", :layout => false
+        render :text => "#{current_slug.to_friendly_id}@#{@album.user.friendly_id}.#{Server::Application.config.album_email_host}", :layout => false
       rescue FriendlyId::ReservedError
         flash[:error]="Sorry, \"#{base}\" is a reserved album name please try a different one"
         render :nothing => true, :layout => false, :status=>401
@@ -69,29 +44,28 @@ class AlbumsController < ApplicationController
     end
   end
 
-
-  def add_photos
-    render :layout => false
-  end
-
+  # displays the name album page for the wizard
+  # @album is set by the require album before filter
   def name_album
-    @album = Album.find(params[:id])
-    render :layout => false
+       render :layout => false
   end
 
+  # displays the album privacy page for the wizard
+  # @album is set by the require album before filter
   def privacy
-    @album = current_user.albums.find( params[:id] )
     render :layout => false
   end
 
+  # displays the edit page for the wizard
+  # @album is set by the require album before filter
   def edit
-    @album = Album.find(params[:id])
     @photos = @album.photos
     render :layout => false 
   end
 
+  # updates @album attributes
+  # @album is set by the require_album before_filter
   def update
-    @album = Album.find(params[:id])
     # The AlbumCoverPicker sends an empty string when no cover has been selected. Delete param if that is the case
     # TODO: Fix AlbumCoverPicker to omit cover_photo_id parameter if not set by user
     params[:album].delete(:cover_photo_id) if params[:album][:cover_photo_id] && params[:album][:cover_photo_id].length <= 0  
@@ -105,38 +79,93 @@ class AlbumsController < ApplicationController
     end
   end
 
+  # This is effectively the users homepage
   def index
-    UploadBatch.close_open_batches(current_user.id) if signed_in?
     @user = User.find(params[:user_id])
-    if(current_user? @user)
-      @albums = @user.albums  #show all albums
+
+    store_last_home_page @user.id
+
+    liked_users_public_albums = @user.liked_users_public_albums
+    # if we are showing the owners albums, show them all as well as any linked albums and any public albums for users that the user likes
+    # for a different user than the current logged in user, just show all public albums including any that the users likes and
+    # any public ones that get pulled in from users that we like
+    # When the user visits her hompage show
+    #    -All of her albums
+    #    -All he liked albums
+    #    -All of her liked users public albums
+    # When the user visits joe's homepage show
+    #    -All of joe's user public albums
+    #    -All of joe's liked public albums
+    #    -All of joe's lked users' public albums
+    if( current_user? @user || current_user.support_hero? )
+      @albums = @user.albums | @user.liked_albums | liked_users_public_albums #show all of current_user's albums
     else
-      @albums = @user.albums #:TODO show only public albums unless the current user is the one asking for the index, then show all
+      @albums = @user.albums.where("privacy = 'public' AND completed_batch_count > 0") |
+                @user.liked_public_albums | liked_users_public_albums
     end
+    #@albums = @albums.sort { |a1, a2| a2.updated_at <=> a1.updated_at }
+
     #Setup badge vars
     @badge_name = @user.name
-  end                                                           
-
-  def show
-    redirect_to album_photos_url( params[:id])
   end
 
+  # displays all of an albums photos
+  def show
+    redirect_to album_photos_url(params[:id])
+  end
+
+  #deletes an album
+  #@album is set by require_album before_filter
   def destroy
     # Album is found when the before filter calls authorized user
-    @album.destroy
-    redirect_back_or_default root_path
+    if !@album.destroy
+      render :json => @album.errors, :status=>500
+    end
+    render :json => "Album deleted".to_json
+
   end
 
+  #closes the current batch
+  # we also have a watchdog sweeper that will
+  # close batches with no new add activity after a 5 minute window
   def close_batch
-     if params[:id]
-        UploadBatch.close_open_batches( current_user.id, params[:id])
-     end
-     render :nothing => true
+    album_id = params[:id]
+    if album_id
+      UploadBatch.close_batch( current_user.id, album_id)
+    end
+    render :nothing => true
   end
-  
+
+  #displays the "You have reached a password protected album, request access" dialog
+  def pwd_dialog
+    render :layout => false
+  end
+
+  # Receives and processes a user's request for access into a password protected album
+  def request_access
+    #TODO: Receive and process current_users request for access into the current album
+  end
+
+
   private
-  def authorized_user
-    @album = Album.find(params[:id])
-    redirect_to root_path unless current_user?(@album.user)
-  end
+    #
+    # To be run as a before_filter
+    # Requires params[:id] to be present and be a valid album_id.
+    # sets @album to be Album.find( params[:id ])
+    # Throws ActiveRecord:RecordNotFound exception if params[:id] is not present or the album is not found
+    def require_album
+      begin
+        @album = Album.find( params[:id ])  #will trhow exception if params[:id] is not defined or album not found
+      rescue ActiveRecord::RecordNotFound => e
+        flash[:error] = "This operation requires an album, we could not find one because: "+e.message
+        response.headers['X-Error'] = flash[:error]
+        if request.xhr?
+          render :status => 404
+        else
+          render :file => "#{Rails.root}/public/404.html", :layout => false, :status => 404
+        end
+        return false
+      end
+    end
+
 end

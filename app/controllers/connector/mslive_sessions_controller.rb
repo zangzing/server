@@ -2,6 +2,8 @@ class Connector::MsliveSessionsController < Connector::MsliveController
   skip_before_filter :service_login_required, :only => [:new, :delauth]
   skip_before_filter :require_user, :only => [:new, :delauth]
 
+  skip_before_filter :verify_authenticity_token, :only => [:delauth]
+
 
   def new
     live_api.returnurl = create_mslive_session_url
@@ -10,7 +12,10 @@ class Connector::MsliveSessionsController < Connector::MsliveController
   end
 
   def delauth
-    consent = live_api.processConsent(params)
+    consent = nil
+    SystemTimer.timeout_after(http_timeout) do
+      consent = live_api.processConsent(params)
+    end
     if (consent and consent.isValid?)
       service_identity.update_attribute(:credentials, consent.token)
     end

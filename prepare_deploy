@@ -1,0 +1,72 @@
+#!/usr/bin/env ruby
+
+# this script prepares for a deploy by putting down
+# a label across all repositories and optionally
+# will create a branch for production fixes off of the master branch
+#
+#
+require 'readline'
+
+def confirm_continue
+  print "Do you want to continue? (Yes/n): "
+  r = Readline.readline()
+  if r != "Yes"
+    puts "Exiting. Bye."
+    exit
+  end
+end
+
+def do_cmd(cmd)
+  puts cmd
+  Kernel.system(cmd)
+end
+
+
+puts "Create a tag for production releases."
+confirm_continue
+
+puts
+print "Enter the tag would you like to create: "
+tag = Readline.readline()
+
+puts
+print "Enter a comment for the tag (optional): "
+tag_comment = Readline.readline()
+if tag_comment.empty?
+  tag_comment = "-m 'No comment.'"
+else
+  tag_comment = "-m '#{tag_comment}'"
+end
+
+puts
+print "Type the branch/tag name to use for the basis of the tag you want to create (optional): "
+branch = Readline.readline()
+branch = "master" if branch.empty?
+
+puts
+puts "About to create the deploy tag: #{tag} on the branch: #{branch}."
+confirm_continue
+
+
+cur_dir = Dir.pwd
+Dir.chdir("../")
+base_dir = Dir.pwd
+auto_deploy_dir = base_dir + "/auto_deploy"
+Dir.mkdir(auto_deploy_dir) rescue nil
+Dir.chdir(auto_deploy_dir)
+
+repos = ["server", "homepage", "agent", "ey-cloud-recipes", "site"]
+
+repos.each do |repo|
+  Dir.chdir(auto_deploy_dir)
+  repo_dir = auto_deploy_dir + "/" + repo
+  url = "git@github.com:zangzing/" + repo + ".git"
+
+  do_cmd("git clone #{url}")
+
+  Dir.chdir(repo_dir)
+  do_cmd("git checkout -f #{branch}")
+  do_cmd("git pull origin #{branch}")
+  do_cmd("git tag -a #{tag} #{tag_comment}")
+  do_cmd("git push origin #{tag}")
+end

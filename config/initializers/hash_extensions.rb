@@ -1,3 +1,7 @@
+require "active_support"
+require "active_support/core_ext/hash"
+ActiveSupport::XmlMini.backend = 'Nokogiri' #Switch backend for Hash.from_xml()
+
 class Hash
   def to_url_params
     self.map { |k,v| "#{k.to_s}=#{CGI.escape(v.to_s)}"}.join("&")

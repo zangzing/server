@@ -1,0 +1,11 @@
+---
+#these are currently not used. need to configure gmail api to use 'secure connection' -- i think
+photos_production:
+  :shared_secret: www.zangzing.com
+  :api_key: dhjtvbq1n961HJRHlHBMgybe
+
+photos_staging:
+  :shared_secret: staging.photos.zangzing.com
+  :api_key: p0U801vB9h48JLJ9pVqZLPq9
+
+

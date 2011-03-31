@@ -22,6 +22,10 @@ protected
     end
   end
 
+  def http_timeout
+    SERVICE_CALL_TIMEOUT[:yahoo]
+  end
+
   def service_identity
     @service_identity ||= current_user.identity_for_yahoo
   end

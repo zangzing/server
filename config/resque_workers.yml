@@ -1,0 +1,35 @@
+#
+# config for workers in various environments
+#
+common: &common
+  # normally we do NOT want to run forked since the overhead of doing so
+  # from a performance point of view is the difference betweeen 3 calls
+  # per second vs 100.  Also from a memory footprint we use less since
+  # we don't have both a parent and worker process
+  # From a reliability point of view we are being monitored by monit anyways
+  # which can kill us if we configure it to check for memory leaks and other
+  # factors
+  run_forked: false
+
+  # how often resque wakes up to check for incoming messages in seconds
+  poll_interval: 1
+
+development:
+  <<: *common
+
+perftest:
+  <<: *common
+
+test:
+  <<: *common
+
+photos_production:
+  <<: *common
+
+photos_staging:
+  <<: *common
+
+
+eytest:
+  <<: *common
+

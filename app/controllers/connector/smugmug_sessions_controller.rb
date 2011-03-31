@@ -10,7 +10,9 @@ class Connector::SmugmugSessionsController < Connector::SmugmugController
 
   def create
     begin
-      smugmug_api.create_access_token!(params[:oauth_token], params[:oauth_token_secret], true)
+      SystemTimer.timeout_after(http_timeout) do
+        smugmug_api.create_access_token!(params[:oauth_token], params[:oauth_token_secret], true)
+      end
     rescue => e
       raise InvalidToken if e.kind_of?(SmugmugError)
     end

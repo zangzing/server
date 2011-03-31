@@ -2,24 +2,31 @@ package_assets: on
 compress_assets: on
 embed_assets: off
 
+javascript_compressor: closure
+compressor_options:
+  compilation_level: "SIMPLE_OPTIMIZATIONS"
+
+
 
 javascripts:
-  jquery_lib:
+  lib:
     - public/javascripts/jquery-lib/jquery.ui.core.js
     - public/javascripts/jquery-lib/jquery.ui.widget.js
     - public/javascripts/jquery-lib/jquery.ui.mouse.js
     - public/javascripts/jquery-lib/jquery.ui.position.js
     - public/javascripts/jquery-lib/jquery.effects.core.js
     - public/javascripts/jquery-lib/*.js
+    - public/javascripts/lib/*.js
   zz:
+    - public/javascripts/zz/license.js
     - public/javascripts/zz/*.js
   zz_oauthmanager:
     - public/javascripts/zz-oauthmanager/oauthmanager.js
-  zza:
-    - public/javascripts/zza/*.js
-  swf:
-    - public/javascripts/swf/*.js
+  movie:
+    - public/javascripts/movie/*.js
 
 stylesheets:
   common:
+    - public/stylesheets/reset.css
+    - public/stylesheets/main.css
     - public/stylesheets/*.css

@@ -1,9 +1,162 @@
-<%= form_tag create_kodak_session_path do %>
-  <%= label_tag :email, 'User email:' %>
-  <%= text_field_tag :email %>
-  <br/>
-  <%= label_tag :password, 'Password:' %>
-  <%= text_field_tag :password %>
-  <br/>
-  <%= submit_tag 'Log in' %>
-<% end %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml">
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=100" > <!-- IE8 mode -->
+
+  <meta http-equiv="Content-Language" Content="en">
+
+  <title>Kodak Gallery - Sign In</title>
+
+  <%= include_stylesheets :common %>
+
+
+  <style type="text/css">
+      html{
+          background-color: #F9F9FA;
+      }
+
+      .signIn{
+          margin:250px auto;
+          width:469px;
+          height:238px;
+          background:#fff;
+          border:1px solid #d5d5d5;
+          -webkit-border-radius:8px;
+          -moz-border-radius:8px;
+          border-radius:8px;
+          font-family:arial;
+          font-size:14px;
+
+      }
+      .signIn .top{
+          position:relative;
+          width:449px;
+          /*float:right;*/
+          border-bottom:1px solid #d5d5d5;
+          /*clear:both;*/
+      }
+      .signIn h1{
+          text-align: left;
+          color:#242424;
+          font-family:arial;
+          font-size:19px;
+          margin:0;
+          padding:0;
+          font-weight:normal;
+          margin:15px 0 5px 5px;
+      }
+
+      .logoKodak {
+          position:absolute;
+          right:0px;
+          top:0px;
+          /*margin:19px 19px 0 0;*/
+
+      }
+      .signIn h2{
+          text-align:left;
+          color:#848484;
+          font-family:arial;
+          font-size:14px;
+          margin:0;
+          padding:0;
+          /*clear:both;*/
+          margin:0 0 15px 5px;
+      }
+
+      .signIn label{
+          color:#2c2c2c;
+          font-family:arial;
+          font-size:14px;
+          font-weight:bold;
+          display:block;
+          float:left;
+          width:135px;
+          text-align:right;
+          padding:7px 15px 0 0;
+          letter-spacing: -0.7px;
+
+      }
+      
+      @media screen and (-webkit-min-device-pixel-ratio:0) {
+      /* Safari and Google Chrome only - fix margins */
+          .signIn label{
+              padding-top:10px;
+          }
+      }
+
+      /*#formSingIn{*/
+          /*clear:both;*/
+      /*}*/
+
+      .signIn .userName{
+          padding:10px 0 0 25px;
+      }
+      *:first-child+html .signIn .userName{
+          padding:0px 0 0 25px;
+      }
+      .signIn .password{
+          padding:10px 0 0 25px;
+      }
+      .signIn .userName input, .signIn .password input{
+          width:226px;
+          border:1px solid #b9c2ca;
+          -webkit-border-radius:6px;
+          -moz-border-radius:6px;
+          border-radius:6px;
+          padding:7px;
+          background:  url("/images/kadak_login/bgInput.png") repeat-x 0 0px;
+          color:#56585c;
+      }
+
+      #cancel_button{
+          float:right;
+          margin:10px 0px 0px 0px;
+
+      }
+
+      #submit_button{
+          float:right;
+          margin:10px 24px 0px 10px;
+      }
+
+      .errors {
+          text-align:right;
+          margin-top:5px;
+          margin-right:25px;
+          color:#ea141d;
+
+          
+      }
+  </style>
+</head>
+<body>
+<div class="signIn">
+  <div class="top">
+    <h1>Add photos from Kodak Gallery</h1>
+    <img src="/images/kadak_login/kodak.png" class="logoKodak" alt="logo"/>
+    <h2>Sign in add photos from your Kodak Gallery</h2>
+  </div>
+  <p  class="errors">
+      <%= flash[:error] %>
+  </p>
+
+  <%= form_tag create_kodak_session_path do %>
+
+      <div class="userName">
+        <%= label_tag :email, 'User email:' %>
+        <%= text_field_tag :email %>
+      </div>
+      <div class="password">
+        <%= label_tag :password, 'Password:' %>
+        <%= password_field_tag :password %>
+      </div>
+      <div class="buttons">
+        <a id="submit_button" class="green-button" onclick="document.forms[0].submit();return false;"><span>Sign In</span></a>
+        <a id="cancel_button" class="black-button" onclick="window.close();return false;"><span>Cancel</span></a>
+      </div>
+  <% end %>
+</div>
+</body>
+</html>
+

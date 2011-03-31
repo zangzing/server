@@ -11,21 +11,16 @@ test:
   :shared_secret: b05c82999aa78f38
   :api_key: 2e7e51d6b8fa04fb33ac856484a33535
 
-eydevelopment:
-  :shared_secret: f8940e84726a5e17
-  :api_key: cbcd54aeabffef35d77cb02e321c01bf
+photos_production:
+  :shared_secret: 6ead44cd92302fdb
+  :api_key: fb38d46df3b3f63e3b8a6df8418f73c6
 
-eysandbox:
-  :shared_secret: f8940e84726a5e17
-  :api_key: cbcd54aeabffef35d77cb02e321c01bf
+photos_staging:
+  :shared_secret: e5c01822c875d93e
+  :api_key: 39967588fecbf3c2e361c2ab667af767
 
 
 eytest:
   :shared_secret: f8940e84726a5e17
   :api_key: cbcd54aeabffef35d77cb02e321c01bf
 
-
-
-production:
-  :shared_secret:
-  :api_key:

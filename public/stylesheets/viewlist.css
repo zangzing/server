@@ -1,0 +1,119 @@
+/*
+    Viewlist styles are used for peopleview and timeline view based on Kevin's designs of 2/23/2011
+*/
+
+/* ---------- fonts --------------*/
+.viewlist{
+  color: #cccccc;
+}
+.viewlist .header{
+  font-size: 20px;
+  font-weight: 300;
+}
+
+.viewlist .title{
+  color: #aaaaaa;
+  font-size: 14px;
+}
+
+.viewlist .blue{
+  color: #466faa;
+}
+
+.viewlist .tagline{
+   font-size: 12px;
+   font-weight:  500;
+}
+
+/* -------------------- elements ----------------*/
+.viewlist{
+  margin: 30px 70px;
+  text-align: left;
+}
+
+.viewlist ul{}
+.viewlist a{ text-decoration:none;}
+
+/* the size of the user profile-picture-name badge mostly the peopleview*/
+.viewlist .badge{
+    display: inline-block;
+    height: 55px;
+    width: 25%;
+}
+/* the size of the user profile-picture in timeline view activities */
+.viewlist .profile-photo{
+    display: inline-block;
+    height: 45px;
+    width:  45px;
+    vertical-align: middle;
+}
+/* the size and position of user name and time in timeline view activities */
+.viewlist .profile-name{
+    margin-left: 10px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Each of the activity items */
+.viewlist .item{
+    margin-bottom: 10px;
+}
+/*each item has a title div and a content div */
+.viewlist .item .title{
+    height:  45px;
+    margin-top: 10px;
+}
+/* The items with a hanging tab, add this class plus add like,share,add to choose which icon to display */
+.viewlist .item.tab{
+ position: relative;
+ left: -45px;
+ width: 100%;
+ padding: 7px 0 0 45px;
+}
+.viewlist .item.tab.add{   background: url('/images/tab-activity-add.png')   no-repeat scroll  0 0; }
+.viewlist .item.tab.like{  background: url('/images/tab-activity-like.png')  no-repeat scroll  0 0; }
+.viewlist .item.tab.share{ background: url('/images/tab-activity-share.png') no-repeat scroll  0 0; }
+
+/*add this to any item and it will get a bottom bar */
+.viewlist .bar{
+    padding-bottom: 5px;
+    border-bottom: 1px solid #cccccc;
+}
+
+.viewlist .timeline-grid { /* this positions the photo grid for upload activities in both views */
+  position: relative;
+  left: -20px;
+  width: 100%;
+  overflow: hidden;
+  height: 230px;
+}
+
+.viewlist .more {
+    position: absolute;
+    /*left: 764px;*/
+    right: 5px;
+    top: 20px;
+}
+.viewlist .more.higher {
+    top: -15px;
+}
+
+.viewlist .slit-right{
+    width:43px;
+    position: absolute;
+    top: -22px;
+    left: -1px;
+    height: 69px;
+    background: url('/images/tab-slit-right.png')   no-repeat scroll  0 0;
+}
+
+.viewlist .more-less-btn{
+    display: inline-block;
+    padding-left: 22px;
+    line-height: 25px;
+    height: 25px;
+    width: 118px;
+    margin: 0 0 0 auto;
+    background: #cccccc url('/images/bg-right-down-arrow.png')   no-repeat scroll  8px 6px;
+}
+.viewlist .more-less-btn.open{  background: #cccccc url('/images/bg-right-down-arrow.png')   no-repeat scroll  6px -30px;}

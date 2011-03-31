@@ -7,22 +7,31 @@
 
     $.widget( "ui.zz_photo", {
         options: {
-            allowDelete: false,
-            onDelete:jQuery.noop,
-            maxHeight:120,
-            maxWidth:120,
-            caption:null,
-            allowEditCaption:false,
-            onChangeCaption:jQuery.noop,
-            src:null,
-            previewSrc:null,
+            allowDelete: false,          //context
+            onDelete:jQuery.noop,        //model
+            maxHeight:120,               //context
+            maxWidth:120,                //context
+            caption:null,                //model
+            allowEditCaption:false,      //context
+            onChangeCaption:jQuery.noop, //model
+            src:null,                    //model
+            previewSrc:null,             //model
+            rolloverSrc:null,            //model
             scrollContainer:null,
             lazyLoadThreshold:0,
-            onClick:jQuery.noop,
-            photoId:null,
-            aspectRatio:0,
-            isUploading:false,
-            isError:false
+            onClick:jQuery.noop,         //model
+            onMagnify:jQuery.noop,       //model
+            photoId:null,                //model
+            aspectRatio:0,               //model
+            isUploading:false,           //model
+            isUploading:false,           //model
+            isError:false,               //model
+            showButtonBar:false,           //model
+            onClickShare: jQuery.noop,     //model
+//            noShadow:false,              //context / type
+//            lazyLoad:true ,              //context / type
+            context:null,                 //context -- album-edit, album-grid, album-picture, album-timeline, album-people, chooser-grid, chooser-picture
+            type: 'photo'                 //photo \ folder \ blank
         },
 
         _create: function() {
@@ -34,39 +43,104 @@
 
 
             var html = '';
+            html += '<div class="photo-caption"></div>';
 
             html += '<div class="photo-border">'
-            html += '<img class="photo-image" src="/images/photo_placeholder.png">';
-            html += '<div class="photo-delete-button"></div>';
-            html += '<div class="photo-uploading-icon"></div>';
-            html += '<div class="photo-error-icon"></div>';
-            html += '<div class="photo-caption">' + self.options.caption +'</div>';
+            html += '   <img class="photo-image" src="/images/blank.png">';
+            html += '   <div class="photo-delete-button"></div>';
+            html += '   <div class="photo-uploading-icon"></div>';
+            html += '   <div class="photo-error-icon"></div>';
+            html += '   <img class="bottom-shadow" src="/images/photo/bottom-full.png">';
+
+            if(self.options.context.indexOf('chooser')===0 && self.options.type === 'photo'){
+                html += '   <div class="photo-add-button"></div>';
+                html += '   <div class="magnify-button"></div>';
+            }
+
+
             html += '</div>';
 
-            $(html).appendTo(this.element);
-
-            self.borderElement = self.element.find('.photo-border');
-            self.imageElement = self.element.find('.photo-image');
-            self.captionElement = self.element.find('.photo-caption');
-            self.deleteButtonElement = self.element.find('.photo-delete-button');
-            self.uploadingElement = self.element.find('.photo-uploading-icon');
-            self.errorElement = self.element.find('.photo-error-icon');
+            var template = $(html);
+            template.appendTo(this.element);
 
 
+            self.borderElement = this.element.find('.photo-border');
+            self.imageElement = this.element.find('.photo-image');
+            self.captionElement = this.element.find('.photo-caption');
+            self.deleteButtonElement = this.element.find('.photo-delete-button');
+            self.uploadingElement = this.element.find('.photo-uploading-icon');
+            self.errorElement = this.element.find('.photo-error-icon');
+            self.bottomShadow = this.element.find('.bottom-shadow');
 
+            self.captionElement.text(self.options.caption);
+
+
+            if(self.options.type === 'blank'){
+                self.borderElement.hide();
+                self.captionElement.hide();
+            }
+
+
+
+
+            if(self.options.context.indexOf('chooser')===0){
+                //magnify
+                this.element.find('.magnify-button').click(function(event){
+                    self.options.onClick('magnify')
+                });
+
+
+                //add photo action
+                self.element.find('.photo-add-button').click(function(event){
+                    self.options.onClick('main');
+                });
+
+
+                //hide drop shadow for folders and 'add all' butons
+                if(self.options.type !== 'photo'){
+                    self.borderElement.addClass('no-shadow');
+                }
+
+            }
+
+
+
+
+
+
+
+
+
+            //click
+            self.imageElement.click(function(event){
+                self.options.onClick('main')
+            });
+
+
+
+
+            self.captionHeight = 30;
+
+
+
+            var initialHeight;
+            var initialWidth;
 
 
             if(self.options.aspectRatio){
                 var srcWidth =  1 * self.options.aspectRatio;
                 var srcHeight = 1;
-                var scale = Math.min( self.options.maxWidth / srcWidth, self.options.maxHeight / srcHeight)
 
-                var initialWidth = srcWidth * scale;
-                var initialHeight = srcHeight * scale;
+                var scaled = image_utils.scale({width:srcWidth, height:srcHeight}, {width:self.options.maxWidth, height:self.options.maxHeight - self.captionHeight});
+
+                initialHeight = scaled.height;
+                initialWidth = scaled.width;
+
             }
             else{
-                var initialWidth = Math.min(self.options.maxWidth, self.options.maxHeight);
-                var initialHeight = initialWidth;
+                var min = Math.min(self.options.maxWidth, self.options.maxHeight);
+                initialWidth = min;
+                initialHeight = min;
             }
 
 
@@ -75,6 +149,8 @@
                 height: initialHeight
             });
 
+            self.bottomShadow.css({'width': (initialWidth + 14) + "px"});
+  
 
             //element is probably invisible at this point, so we need to check the css attributes
             self.width = parseInt(self.element.css('width'));
@@ -82,33 +158,18 @@
 
 
 
-            //click
-            self.imageElement.mousedown(function(mouseDownEvent){
-                var mouseUpHandler = function(mouseUpEvent){
-                    if(mouseDownEvent.pageX === mouseUpEvent.pageX && mouseDownEvent.pageY === mouseUpEvent.pageY){
-                        self.options.onClick(mouseUpEvent);
-                    }
-                    self.imageElement.unbind('mouseup', mouseUpHandler);
-                };
-                self.imageElement.mouseup(mouseUpHandler);
+            var borderWidth = initialWidth + 10 ;
+            var borderHeight = initialHeight + 10;
 
-            });
-
-
-
-
-
-            var wrapperWidth = initialWidth + 10;
-            var wrapperHeight = initialHeight + 10;
 
 
 
             self.borderElement.css({
                 position: "relative",
-                top: (self.height - wrapperHeight) / 2,
-                left: (self.width - wrapperWidth) / 2,
-                width: wrapperWidth,
-                height: wrapperHeight
+                top: (self.height - borderHeight - self.captionHeight) / 2,
+                left: (self.width - borderWidth) / 2,
+                width: borderWidth,
+                height: borderHeight 
             });
 
 
@@ -158,6 +219,89 @@
                     self.editCaption();
                 });
             }
+
+            //lazy loading
+            if(self.options.type !== 'photo'){
+                self._loadImage()
+            }
+            else{
+                self.imageElement.attr('src', '/images/photo_placeholder.png');
+            }
+
+
+            //rollover
+            if(self.options.rolloverSrc){
+
+                //preload rollover
+                image_utils.pre_load_image(self.options.rolloverSrc);
+
+                self.element.mouseover(function(){
+                    self.imageElement.attr('src', self.options.rolloverSrc);
+                });
+
+                self.element.mouseout(function(){
+                    self.imageElement.attr('src', self.options.src);
+                });
+            }
+
+
+            //todo: can these move to css?
+            if(self.options.showButtonBar){
+                var toolbarTemplate = '<div class="photo-toolbar">' +
+                                          '<div class="buttons">' +
+                                              '<div class="share-button"></div>' +
+                                              '<div class="like-button"></div>' +
+                                              '<div class="info-button"></div>' +
+                                          '</div>' +
+                                       '</div>';
+
+                self.borderElement.mouseenter(function(){
+                    self.toolbarElement = $(toolbarTemplate);
+                    self.borderElement.append(self.toolbarElement);
+                    self.borderElement.css({'padding-bottom': '30px'});
+                    self.imageElement.css({'border-bottom': '35px solid #fff'});
+
+                    self.toolbarElement.find('.share-button').click(function(){
+                        self.options.onClickShare(self.options.photoId);
+                    });
+
+                    self.toolbarElement.find('.like-button').click(function(){
+                        alert("This feature is still under construction. This will allow you to like an individual photo.");
+                    });
+
+                    self.toolbarElement.find('.info-button').click(function(){
+                        alert("This feature is still under construction. This will show a menu with options for downloading original photo, etc.");
+                    });
+
+
+
+                });
+
+                self.borderElement.mouseleave(function(){
+                    self.borderElement.css({'padding-bottom': '0px'});
+                    self.imageElement.css({'border-bottom': '5px solid #fff'});
+                    self.toolbarElement.remove();
+               });
+            }
+        },
+
+        checked:false,
+
+        isChecked:function(){
+            return this.checked;
+        },
+
+        setChecked: function(checked){
+            var self = this;
+            self.checked = checked;
+            if(self.options.context.indexOf('chooser')===0){
+                if(checked){
+                    self.element.find('.photo-add-button').addClass('checked');
+                }
+                else{
+                    self.element.find('.photo-add-button').removeClass('checked');
+                }
+            }
         },
 
         loadIfVisible: function(containerDimensions){
@@ -180,10 +324,7 @@
             }
 
 
-            self.imageObject = new Image();
-
-            self.imageObject.onload = function(){
-
+            self.imageObject = image_utils.pre_load_image(initialSrc, function(image){
                 self.imageLoaded = true;
                 self._resize(1);
 
@@ -193,45 +334,33 @@
                 //show the full version
                 self.imageElement.attr("src", self.options.src);
 
-
-//                self.element.mouseover(function(){
-//                    self._resize(1.15);
-//                    self.element.css({'z-index':1000});
-//                });
-//
-//                self.element.mouseout(function(){
-//                    self._resize(1);
-//                    self.element.css({'z-index':-1});
-//                })
-           };
-
-
-            self.imageObject.src = initialSrc;
+            });
         },
 
         _resize: function(percent){
             var self = this;
 
-            var scale = Math.min(self.options.maxWidth/self.imageObject.width, self.options.maxHeight/self.imageObject.height);
-            var width = Math.floor(self.imageObject.width * scale);
-            var height = Math.floor(self.imageObject.height * scale);
+            var scaled = image_utils.scale({width:self.imageObject.width, height:self.imageObject.height}, {width:self.options.maxWidth, height:self.options.maxHeight - self.captionHeight});
 
-            var wrapperWidth = width + 10;
-            var wrapperHeight = height + 10;
+
+
+            var borderWidth = scaled.width + 10;
+            var borderHeight = scaled.height + 10;
 
 
             self.borderElement.css({
-                top: (self.height - wrapperHeight) / 2,
-                left: (self.width - wrapperWidth) / 2,
-                width: wrapperWidth,
-                height: wrapperHeight
+                top: (self.height - borderHeight - self.captionHeight) / 2,
+                left: (self.width - borderWidth) / 2,
+                width: borderWidth,
+                height: borderHeight
             });
 
             self.imageElement.css({
-                width: width,
-                height: height
+                width: scaled.width,
+                height: scaled.height
             });
 
+            self.bottomShadow.css({'width': (scaled.width + 14) + "px"});
 
 
         },
@@ -290,29 +419,33 @@
             if(!self.isEditingCaption){
                 self.isEditingCaption = true;
 
-                var textBoxElement = $('<input type="text">');
-                self.captionElement.html(textBoxElement);
+                var captionEditor = $('<div class="edit-caption-border"><input type="text"><div class="caption-ok-button"></div></div>');
+                self.captionElement.html(captionEditor);
 
-                textBoxElement.val(self.options.caption);
-                textBoxElement.focus();
-                textBoxElement.select();
-
-                textBoxElement.blur(function(){
+                var textBoxElement = captionEditor.find('input');
+ 
+                var commitChanges = function(){
                     var newCaption = textBoxElement.val()
                     if(newCaption !== self.options.caption){
                         self.options.caption = newCaption
                         self.options.onChangeCaption(newCaption);
                     }
-                    self.captionElement.html(newCaption);
+                    self.captionElement.text(newCaption);
                     self.isEditingCaption = false;
+                }
 
+
+                textBoxElement.val(self.options.caption);
+                textBoxElement.focus();
+                textBoxElement.select();
+                textBoxElement.blur(function(){
+                    commitChanges();
                 });
 
                 textBoxElement.keydown(function(event){
 
-
                     if (event.which == 13) {  //enter key
-                        textBoxElement.blur();
+                        commitChanges();
                         return false;
                     }
                     else if(event.which == 9){ //tab key
@@ -339,8 +472,22 @@
                         return false;
                     }
                 });
+
+
+                var okButton = captionEditor.find('.caption-ok-button');
+                okButton.click(function(event){
+                    commitChanges();
+                    event.stopPropagation();
+                    return false;
+                });
+
+                
             }
 
+        },
+
+        getPhotoId: function(){
+           return this.options.photoId;  
         },
 
         dragStart: function(){

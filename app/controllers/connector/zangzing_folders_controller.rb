@@ -10,32 +10,36 @@ class Connector::ZangzingFoldersController < Connector::ConnectorController
         :add_url => zangzing_folder_action_path({:zz_album_id =>f.id, :action => 'import'})
       }
     }
-
-
-    render :json => @folders.to_json
+    expires_in 10.minutes, :public => false
+    render :json => JSON.fast_generate(@folders)
   end
 
   def import
     photos = []
     source_photos = current_user.albums.find(params[:zz_album_id]).photos
-    current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
+    current_batch = UploadBatch.get_current_and_touch( current_user.id, params[:album_id] )
     source_photos.each do |p|
       next unless p.ready?
-      photo = Photo.create(
+      photo_url = p.original_url
+      photo = Photo.new_for_batch(current_batch, {
+                :id => Photo.get_next_id,
                 :caption => p.caption,
                 :album_id => params[:album_id],
                 :user_id => p.user_id,
                 :upload_batch_id => current_batch.id,                
+                :capture_date => p.capture_date,
                 :source_guid => p.source_guid,
-                :source_thumb_url => p.source_thumb_url,
-                :source_screen_url => p.source_screen_url
-      )
+                :source_thumb_url => p.thumb_url,
+                :source_screen_url => p.screen_url,
+                :source => 'zangzing'
 
-      p.set_s3bucket
-      ZZ::Async::GeneralImport.enqueue( photo.id,  p.image.url )
+      })
+
+      photo.temp_url = photo_url
       photos << photo
+
     end
 
-    render :json => Photo.to_json_lite(photos)
+    bulk_insert(photos)
   end
 end

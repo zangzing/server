@@ -10,7 +10,6 @@ end
 class PhotobucketConnector
   require 'oauth/consumer'
   cattr_accessor :consumer_key, :consumer_secret
-  cattr_accessor :http_timeout
 
   API_SITE = 'http://api.photobucket.com'
   TOKEN_DIVIDER = '<//>'
@@ -44,14 +43,13 @@ class PhotobucketConnector
         :access_token_url => "http://api.photobucket.com/login/access",
         :authorize_url => "http://photobucket.com/apilogin/login",
         :http_method => :post,
-        :scheme => :query_string,
-        :http_timeout => PhotobucketConnector.http_timeout
+        :scheme => :query_string
       })
   end
 
   def create_access_token!(oauth_token, oauth_token_secret, first_time = false)
     if first_time
-      req_token = OAuth::RequestToken.from_hash(consumer, {:oauth_token => oauth_token, :oauth_token_secret => oauth_token_secret, :http_timeout => PhotobucketConnector.http_timeout})
+      req_token = OAuth::RequestToken.from_hash(consumer, {:oauth_token => oauth_token, :oauth_token_secret => oauth_token_secret})
       begin
         @access_token = req_token.get_access_token
       rescue => e
@@ -61,7 +59,7 @@ class PhotobucketConnector
         end
       end
     elsif
-      @access_token = OAuth::AccessToken.from_hash(consumer, {:oauth_token => oauth_token, :oauth_token_secret => oauth_token_secret, :http_timeout => PhotobucketConnector.http_timeout})
+      @access_token = OAuth::AccessToken.from_hash(consumer, {:oauth_token => oauth_token, :oauth_token_secret => oauth_token_secret,})
       refresh_owner_info!
     end
   end
@@ -77,12 +75,12 @@ class PhotobucketConnector
   def refresh_owner_info!
     data = call_method('/user/-/url')
     @owner = {
-      :username => data[:username].first,
-      :album_subdomain => data[:subdomain].first[:album].first,
-      :image_subdomain => data[:subdomain].first[:image].first,
-      :api_subdomain => data[:subdomain].first[:api].first,
-      :feed_subdomain => data[:subdomain].first[:feed].first,
-      :user_path => data[:path].first
+      :username => data[:username],
+      :album_subdomain => data[:subdomain][:album],
+      :image_subdomain => data[:subdomain][:image],
+      :api_subdomain => data[:subdomain][:api],
+      :feed_subdomain => data[:subdomain][:feed],
+      :user_path => data[:path]
     }
   end
 
@@ -96,13 +94,12 @@ class PhotobucketConnector
     raise PhotobucketError.new(36, "An access token is needed") unless @access_token
     response = @access_token.get "#{method_name}?#{query_params.to_url_params}", query_params
     if response.code=='301' && response['location'] #PB API redirect
-     uri = URI.parse(response['location'])
-     http = Net::HTTP.new(uri.host, uri.port)
-     http.read_timeout = http.open_timeout = PhotobucketConnector.http_timeout
-     response = http.get("#{uri.path}?#{uri.query}")
+      uri = URI.parse(response['location'])
+      http = Net::HTTP.new(uri.host, uri.port)
+      response = http.get("#{uri.path}?#{uri.query}")
     end
-    result = XmlSimple.xml_in(response.body) #JSON.parse(response.body)
-    stat = result['status'].first.downcase
+    result = Hash.from_xml(response.body).values.first #JSON.parse(response.body)
+    stat = result['status'].downcase
     raise PhotobucketError.new(result['code'], result['message']) if stat == 'exception'
     normalize_response(extract_data(result['content']))
   end

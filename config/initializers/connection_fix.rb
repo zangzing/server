@@ -10,14 +10,15 @@
 #   http://coderrr.wordpress.com/2009/01/08/activerecord-threading-issues-and-resolutions/
 
 module ActiveRecord::ConnectionAdapters
-  class MysqlAdapter
+  class Mysql2Adapter
     alias_method :execute_without_retry, :execute
 
     def execute(*args)
       execute_without_retry(*args)
     rescue => e
-      if e.message == "MySQL server has gone away"
-        warn "Server timed out, retrying"
+      msg = e.message
+      if msg && msg.index("MySQL server has gone away")
+        Rails.logger.error("MySQL Server connection timed out, retrying in connection_fix")
         reconnect!
         retry
       else

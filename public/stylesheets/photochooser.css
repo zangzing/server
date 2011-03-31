@@ -1,0 +1,178 @@
+.photochooser-container{
+    position:absolute;
+    top:0px;
+    left:0px;
+    right:0px;
+    bottom:0px;
+}
+
+.photochooser{
+    position: absolute;
+    top:0px;
+    left:0px;
+    right:0px;
+    bottom:0px;
+    /*border:1px solid red;*/
+    width:897px;
+}
+
+.photochooser .photochooser-header{
+    position:absolute;
+    top:0px;
+    height:70px;
+    left:0px;
+    right:0px;
+    /*border:1px solid yellow;*/
+}
+
+.photochooser .photochooser-header .back-button{
+    position: absolute;
+    top:20px;
+    left:20px;
+}
+
+
+.animate-photo-to-tray {
+    position:absolute;
+    border: #fff solid 5px;
+    box-shadow: 0px 0px 5px #767676;
+    -webkit-box-shadow: 0px 0px 5px #767676;
+    -moz-box-shadow: 0px 0px 5px #767676;
+    filter: progid:DXImageTransform.Microsoft.dropShadow(color=#767676, offX=2, offY=2, positive=true);
+    z-index:9999999;
+}
+
+
+
+
+/*.photochooser .header h3{*/
+    /*font-size: 17px;*/
+    /*font-weight: 500;*/
+    /*color: #0A0A0A;*/
+    /*margin-top:0px;*/
+    /*margin-bottom:5px;*/
+
+/*}*/
+
+/*.photochooser .header h4{*/
+    /*font-size: 14px;*/
+    /*font-weight: 500;*/
+    /*color: #0A0A0A;*/
+    /*margin-top:0px;*/
+    /*margin-bottom:0px;*/
+/*}*/
+
+
+
+.photochooser .photochooser-body{
+    position: absolute;
+    top:70px;
+    left:0px;
+    right:0px;
+    bottom:50px;
+    /*border:1px solid blue;*/
+}
+
+
+.photochooser .photochooser-body .photogrid img.add-all-button{
+    /*background: url("/images/folders/add_all_photos.png");*/
+    width: 128px;
+    height: 152px;
+    left:90px;
+    top:8px;
+    position:absolute;
+    cursor: pointer;
+
+    
+}
+
+.photochooser .photochooser-body .progress-indicator{
+    position: relative;
+    top: 100px;
+}
+
+
+.photochooser .photochooser-body .singlepicture-wrapper{
+    position:relative;
+    width:720px;
+    height:100%;
+    margin-left:auto;
+    margin-right:auto;
+    top:0px;
+}
+
+
+.photochooser .photochooser-body .next-button{
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    right:20px;
+    /*right:40px;*/
+    /*top:215px;*/
+    background: url("/images/embed/toolbars/btn-footer-next.png") no-repeat scroll 0px 0px transparent;
+    cursor: pointer;
+    z-index:1000;
+
+}
+
+.photochooser .photochooser-body .next-button:hover{
+    /*background-position-y: -44px;*/
+
+    background: url("/images/embed/toolbars/btn-footer-next.png") no-repeat scroll 0px -44px transparent;
+}
+
+.photochooser .photochooser-body .next-button:active{
+    /*background-position-y: -88px;*/
+
+    background: url("/images/embed/toolbars/btn-footer-next.png") no-repeat scroll 0px -88px transparent;
+}
+
+
+
+.photochooser .photochooser-body .prev-button{
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    left:40px;
+    /*top:215px;*/
+    background: url("/images/embed/toolbars/btn-footer-prev.png") no-repeat scroll 0px 0px transparent;
+    cursor: pointer;
+    z-index:1000;
+
+}
+
+.photochooser .photochooser-body .prev-button:hover{
+    /*background-position-y: -44px;*/
+
+    background: url("/images/embed/toolbars/btn-footer-prev.png") no-repeat scroll 0px -44px transparent;
+}
+
+.photochooser .photochooser-body .prev-button:active{
+    /*background-position-y: -88px;*/
+
+    background: url("/images/embed/toolbars/btn-footer-prev.png") no-repeat scroll 0px -88px transparent;
+}
+
+
+
+.photochooser .photochooser-footer{
+    position:absolute;
+    bottom:5px;
+    right:0px;
+    left:0px;
+    /*border:1px solid green;*/
+    background-image:url(/images/bg-picture-tray.png);
+    height:60px;
+}
+
+
+.photochooser .photochooser-footer .added-pictures-tray{
+    position: absolute;
+    top:25px;
+    display: block;
+    height: 20px;
+    left:5px;
+    right:5px;
+
+}
+

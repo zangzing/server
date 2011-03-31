@@ -62,12 +62,13 @@ class SampleDataLoader
     Album.all(:limit => 50).each do |album|
       puts "      Adding photos to album #{album.name}"
       (rand( 3 )+1).times do
-        UploadBatch.close_open_batches( album.user.id, album.id )
+        UploadBatch.close_batch( album.user.id, album.id )
         (rand( 20 )+1).times do
             new_photo(album, album.user)
         end
-        UploadBatch.get_current( album.user.id, album.id ).save
-        puts "          Batch of #{UploadBatch.get_current( album.user.id, album.id ).photos.length} photos added"
+        ub = UploadBatch.get_current_and_touch( album.user.id, album.id )
+        puts "          Batch of #{ub.photos.length} photos added"
+        ub.close
       end
     end
     puts "      Done Creating Photos...."
@@ -98,12 +99,12 @@ class SampleDataLoader
          c.last_contribution = Time.now()
          c.save
          (rand( 3 )+1).times do
-            UploadBatch.close_open_batches( users[i].id, album.id )
+            UploadBatch.close_batch( users[i].id, album.id )
             (rand( 15 )+1).times do
               new_photo(album, users[i])
             end
-            UploadBatch.get_current( users[i].id, album.id ).save
-            puts "          Batch of #{UploadBatch.get_current( users[i].id, album.id ).photos.length} photos added"
+            UploadBatch.get_current_and_touch( users[i].id, album.id ).save
+            puts "          Batch of #{UploadBatch.get_current_and_touch( users[i].id, album.id ).photos.length} photos added"
          end
        end
        (rand(5)+1).times do
@@ -125,7 +126,7 @@ class SampleDataLoader
   end
 
   def event
-    %w(Roompah Rave Concert Tournament Wedding Party Baptism Reunion Marriage Bar-Mitzvah Christmas Hannukah Labor-day Memorial-day Camp Graduation Surgery Jury-Duty Driving-Test Confirmation Commencement Premiere Vacation Road-Trip Recital).rand
+    %w(Roompah Rave Concert Tournament Wedding Party Baptism Reunion Marriage Bar-Mitzvah Bhat-Mitzvah Christmas Hannukah Labor-day Memorial-day Camp Graduation Surgery Trial Driving-Test Confirmation Commencement Premiere Vacation Road-Trip Recital Roadshow).rand
   end
 
   def initializeS3
@@ -135,8 +136,7 @@ class SampleDataLoader
              :access_key_id => @s3creds[:access_key_id],
             :secret_access_key =>@s3creds[:secret_access_key]
      )
-     @s3buckets = Paperclip.options[:image_options][:s3buckets]
-     @s3options = {:access => :public_read }.merge( Paperclip.options[:image_options][:s3_headers] )
+      @s3buckets = ['1.zz', '2.zz', '3.zz', '4.zz']
      puts "      S3 connection up"
   end
 
@@ -149,9 +149,9 @@ class SampleDataLoader
      @s3buckets.each do | bucket_name |
         @s3bucket = AWS::S3::Bucket.find( bucket_name )
         @s3bucket.objects.each do | o |
-          matches = o.key.match(/^(.*)\/original\/(.*\.(jpeg|jpg))$/i)
+          matches = o.key.match(/^i\/(.*-o)$/i)
           if !matches.nil?
-            @image_names.insert( rand( @image_names.length ), { :key =>matches[0], :bucket => bucket_name, :path=>matches[1], :name=>matches[2] })
+            @image_names.insert( rand( @image_names.length ), { :key =>matches[0], :bucket => bucket_name, :path=>'i/', :name=>matches[1] })
           end
         end
       @image_name_counter = 0
@@ -166,20 +166,22 @@ class SampleDataLoader
   end
 
   def new_photo(album, user)
-   i = image_name
-   current_batch = UploadBatch.get_current( user.id, album.id )
-   Photo.create(
+    i = image_name
+    current_batch = UploadBatch.get_current_and_touch( user.id, album.id )
+    p = Photo.new_for_batch(current_batch, {
+          :id => Photo.get_next_id,
           :user_id           => user.id,
           :album_id          => album.id,
           :upload_batch_id   => current_batch.id,
           :agent_id          => Faker::PhoneNumber.phone_number,
           :caption           => Faker::Lorem.sentence( rand(10) ),
-          :capture_date      => Time.now - rand( 1000 ).days,
-          :image_file_name   => i[:name],
-          :image_path        => i[:path],
-          :image_bucket      => i[:bucket],
-          :state             => 'ready'
-   )
+          :capture_date      => Time.now - rand( 1000 ).days })
+    p.width        = 640
+    p.height       = 480
+    p.image_path   = i[:path]
+    p.image_bucket = i[:bucket]
+    p.state        = 'ready'
+    p.save!
   end
 end
 

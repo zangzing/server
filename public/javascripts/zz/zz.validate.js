@@ -24,7 +24,7 @@ zz.validate = {
         element: '#new_user_session',
         errorContainer: 'div#sign-in p.error-notice',
         rules: {
-            'user_session[email]': { required: true, minlength: 5 },
+            'user_session[email]': { required: true, minlength: 1 },
             'user_session[password]': { required: true, minlength: 5 }
         },
         messages: {
@@ -32,7 +32,7 @@ zz.validate = {
             'user_session[password]': 'Please enter your password.'
         },
         errorPlacement: function(message) {
-            $('div#sign-in p.error-notice').html('Please check the highlighted field(s) below...');
+            $('div#sign-in p.error-notice').text('Please check the highlighted field(s) below...');
         }
 
     },
@@ -46,11 +46,11 @@ zz.validate = {
             'user[username]': { required: true,
                                 minlength: 1,
                                 maxlength:25,
-                                regex: "^[a-z0-9]+$",
-                                remote: '/users/validate_username' },
+                                regex: "(^[a-z0-9]+$|^[a-z0-9]+:.{8}$)",
+                                remote: zz.path_prefix + '/users/validate_username' },
             'user[email]':    { required: true,
                                 email: true,
-                                remote: '/users/validate_email' },
+                                remote: zz.path_prefix + '/users/validate_email' },
             'user[password]': { required: true,
                                 minlength: 5 }
         },

@@ -19,6 +19,18 @@ class Connector::ConnectorController < ApplicationController
     end
   end
 
+  def bulk_insert(photos)
+    # bulk insert
+    Photo.batch_insert(photos)
+
+    # must send after all saved
+    photos.each do |photo|
+      ZZ::Async::GeneralImport.enqueue( photo.id, photo.temp_url )
+    end
+
+    render :json => Photo.to_json_lite(photos)
+  end
+
   #def current_user
   #  USER_STUB.new(77)
   #end

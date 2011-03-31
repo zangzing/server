@@ -1,4 +1,10 @@
 <div id="footer">
+  <div id="footer-left"></div>
+  <div id="footer-middle"></div>
+  <div id="footer-right"></div>
+
+
+
   <% if current_user %>
       <div id="new-album-button"><div class='footer-button-label'>Create</div></div>
   <% end %>
@@ -7,14 +13,18 @@
       <div id="edit-album-button"><div class='footer-button-label'>Edit</div></div>
   <% end %>
 
-  <% if @album && current_user && @album.is_user_contributor?(current_user) %>
+  <% if @album && current_user && @album.contributor?(current_user.id) %>
       <div id="add-photos-button"><div class='footer-button-label'>Add</div></div>
   <% end %>
 
 
   <% if @album %>
       <div id="progress-meter"><div id="progress-meter-label" class='footer-button-label'>Calculating...</div></div>
-      <div id="play-button"></div>
+      <div id="control-buttons">
+          <a id="prev-button"></a>
+          <a id="play-button"></a>
+          <a id="next-button"></a>
+      </div>
   <% end %>
 
 
@@ -33,7 +43,7 @@
 
 
 <ul class="context_menu popup" id="like-popup">
-  <li id="like-person">PERSON</li>
-  <li id="like-album">ALBUM</li>
-  <li id="like-photo">PHOTO</li>
+   <li id="like-user"   style="display: none;">PERSON</li>
+   <li id="like-album"  style="display: none;">ALBUM</li>
+   <li id="like-photo"  style="display: none;">PHOTO</li>
 </ul>

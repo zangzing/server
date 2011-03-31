@@ -34,8 +34,8 @@ class BenchTest::PhotoGensController < BenchTest::BenchTestsController
         @bench_test_photo_gen.album_id,
         last)
       if photo
-        utime = photo.image_updated_at
-        if utime
+        utime = photo.updated_at # yes we really do want updated_at not image_update_at for the end time
+        if utime && (photo.ready? || photo.error?)
           @bench_test_photo_gen.stop = utime
 
           # since this is last photo gather good/bad stats
@@ -196,21 +196,30 @@ class BenchTest::PhotoGensController < BenchTest::BenchTestsController
   def add_photos(album, user, attachments)
     if attachments.count > 0
       last_photo = nil
-      current_batch = UploadBatch.get_current( user.id, album.id )
+      photos = []
+      current_batch = UploadBatch.get_current_and_touch( user.id, album.id )
       attachments.each do |fast_local_image|
-        photo = Photo.create(
+        photo = Photo.new_for_batch(current_batch, {
+                :id => Photo.get_next_id,
                 :user_id => user.id,
                 :album_id => album.id,
                 :upload_batch_id => current_batch.id,
                 :caption => fast_local_image["original_name"],
                 #create random uuid for this photo
-                :source_guid => "perftest:"+UUIDTools::UUID.random_create.to_s)
+                :source_guid => "perftest:"+UUIDTools::UUID.random_create.to_s})
         # use the passed in temp file to attach to the photo
-        photo.fast_local_image = fast_local_image
-        photo.save
+        photo.file_to_upload = fast_local_image['filepath']
+        photos << photo
         last_photo = photo
       end
-      last_photo.upload_batch.close
+
+      # bulk insert
+      Photo.batch_insert(photos)
+
+      # this should remain since only used
+      # for timing test an we want the batch closed
+      # since they are grouped together
+      last_photo.upload_batch.close_internal
     end
   end
 

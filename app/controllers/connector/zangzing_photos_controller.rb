@@ -13,8 +13,8 @@ class Connector::ZangzingPhotosController < Connector::ConnectorController
         :source_guid => p.source_guid
       }
     end
-
-    render :json => @photos.to_json
+    expires_in 10.minutes, :public => false
+    render :json => JSON.fast_generate(@photos)
   end
 
 #  def show
@@ -27,19 +27,21 @@ class Connector::ZangzingPhotosController < Connector::ConnectorController
   def import
     source_photo = current_user.albums.find(params[:zz_album_id]).photos.find(params[:photo_id])
 
-    current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
+    current_batch = UploadBatch.get_current_and_touch( current_user.id, params[:album_id] )
     photo = Photo.create(
+              :id => Photo.get_next_id,
               :caption => source_photo.caption,
               :album_id => params[:album_id],
               :user_id => source_photo.user_id,
               :upload_batch_id => current_batch.id,
+              :capture_date => source_photo.capture_date,
               :source_guid => source_photo.source_guid,
-              :source_thumb_url => source_photo.source_thumb_url,
-              :source_screen_url => source_photo.source_screen_url
+              :source_thumb_url => source_photo.thumb_url,
+              :source_screen_url => source_photo.screen_url,
+              :source => 'zangzing'
     )
 
-    source_photo.set_s3bucket
-    ZZ::Async::GeneralImport.enqueue( photo.id, source_photo.image.url )
+    ZZ::Async::GeneralImport.enqueue( photo.id, source_photo.original_url )
     render :json => Photo.to_json_lite(photo)
   end
 

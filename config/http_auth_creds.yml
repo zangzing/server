@@ -1,3 +1,26 @@
 --- 
-:login: zzadmin
-:password: sharezzphotos
+development:
+  :login: zzadmin
+  :password: sharezzphotos
+
+perftest:
+  :login: zzadmin
+  :password: sharezzphotos
+
+test:
+  :login: zzadmin
+  :password: sharezzphotos
+
+photos_production:
+  :login: alpha
+  :password: 1000words
+
+photos_staging:
+  :login: zzadmin
+  :password: sharezzphotos
+
+
+eytest:
+  :login: zzadmin
+  :password: sharezzphotos
+

@@ -74,7 +74,7 @@ div#profile-photo div#profile-photo-picker div.thumbtray-wrapper div.thumbtray-p
      }
 
 </style>
-<script type="text/javascript"> <%= (@user.profile_album ? 'zz.album_id=\''+@user.profile_album.id+'\';' : '')%></script>
+<script type="text/javascript"> <%= (@user.profile_album ? 'zz.album_id=\''+@user.profile_album.id.to_s+'\';' : '')%></script>
 <div class="flash-box profile-message-box"><div class="error-notice" id="error-notice"></div><div class="flash-notice" id="flashes-notice"></div></div>
 <div id="scroll-body">
   <div id="profile-form">
@@ -97,7 +97,7 @@ div#profile-photo div#profile-photo-picker div.thumbtray-wrapper div.thumbtray-p
 </div>
     <div class="settings-buttons">
               <a     id="cancel-profile-button" href="javascript:void(0);" class="cancel-button">Cancel</a>
-              <input id="ok-profile-button" type="image" name="submit" src="/images/btn-wizard-done.png">
+              <input id="ok-profile-button" type="image" name="submit" src=<%=image_path("btn-wizard-done.png")%>>
     </div>
 
 

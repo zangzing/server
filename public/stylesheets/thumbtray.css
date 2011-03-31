@@ -85,8 +85,8 @@
 .thumbtray-current-index-indicator{
     display:none;
     position:absolute;
-    width:10px;
-    height:10px;
+    width:14px;
+    height:14px;
     border:3px solid #000000;
     /*border:3px solid #FDD042;*/
 }
@@ -96,17 +96,22 @@
     position:absolute;
     left:0px;
     top:0px;
-    /*opacity:.5;*/
-    /*filter:alpha(opacity=50);*/
-    background-color:transparent
+    background-color:transparent;
+}
+
+.ua-ie .thumbtray-scrim{
+    /*for some reason, ie doesn't register events on transparent layers*/
+    filter:alpha(opacity=0);
+    background-color:white;
 }
 
 .thumbtray-mask{
     position:absolute;
     left:0px;
     top:0px;
-    opacity:.5;
-    filter:alpha(opacity=50);
-    background-color:#ffffff
+    /*opacity:.5;*/
+    /*filter:alpha(opacity=50);*/
+    /*background-color:#ffffff*/
+    background-color:transparent
 
 }

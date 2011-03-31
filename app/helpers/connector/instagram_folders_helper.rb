@@ -1,0 +1,2 @@
+module Connector::InstagramFoldersHelper
+end

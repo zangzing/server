@@ -1,0 +1,18 @@
+<% if body.multipart?%>
+    <%body.parts.each do |part|%>
+        <%= render :partial => "email_body", :locals => { :body => part.body, :sub_type => part.sub_type } %>
+    <%end%>
+<%else%>
+    <% if sub_type == 'plain' %>
+        <div style="background: white;">
+        <pre >
+            <%=body%>
+        </pre>
+        </div>
+    <%else%>
+        <div>
+        <%=body%>
+        </div>
+    <%end%>
+    <hr>
+<%end%>

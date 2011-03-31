@@ -1,39 +1,38 @@
 class PeopleController < ApplicationController
+
   def album_index
-    @album = Album.find(params[:album_id])
+    @album = fetch_album
 
-
-    #Find all of the album owner/creator photos
-    @album_user_photos = @album.photos.find_all_by_user_id(@album.user_id)
-    
-    #Find all active and inactive contributors
+    #An Array of users that are contributors including the album creator
     @contributors = []
-    inactive_contributors = []
-    @album.contributors.each do |c|
-      if c.is_a_user?
-       @contributors << c
-      else
-       inactive_contributors << c
-      end
-    end
+    #List of email contributors that have not contributed yet
 
-    @inactive_names = ''
-    if inactive_contributors.length > 0
-      @inactive_names = 'Other contributors: '      
-      inactive_contributors.each_index do | i |
-          @inactive_names += ( i > 0 ? ', ':'')
-          if !inactive_contributors[i].name.nil? && inactive_contributors[i].name.length > 0
-                @inactive_names += inactive_contributors[i].name
-          else
-                @inactive_names += inactive_contributors[i].email
-          end
+    @nonuser_contributors = 0
+    @album.contributors.each do | id |
+      user = User.find_by_id( id )
+      if user
+       @contributors << user
+      else
+       @nonuser_contributors +=1
       end
     end
+    #an array  of users that have not contributed photos yet
+    @inactive_contributors = []
+    # An array of the users who like this album
+    @likers = @album.likers | @album.users_who_like_albums_photos
   end
 
   def user_index
     @user = User.find(params[:user_id])
   end
+
+
+private
+
+  def fetch_album
+    params[:user_id] ? Album.find(params[:album_id], :scope => params[:user_id]) : Album.find( params[:album_id] )
+  end
+  
 
 end
 

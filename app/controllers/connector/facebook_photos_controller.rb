@@ -1,7 +1,10 @@
 class Connector::FacebookPhotosController < Connector::FacebookController
 
   def index
-    photos_response = facebook_graph.get("#{params[:fb_album_id]}/photos")
+    photos_response = []
+    SystemTimer.timeout_after(http_timeout) do
+      photos_response = facebook_graph.get("#{params[:fb_album_id]}/photos")
+    end
     unless photos_response.empty?
       if photos_response.first[:updated_time]
         photos_response.sort!{|a, b| b[:updated_time] <=> a[:updated_time] }
@@ -21,8 +24,8 @@ class Connector::FacebookPhotosController < Connector::FacebookController
     else
       @photos = []
     end
-
-    render :json => @photos.to_json
+    expires_in 10.minutes, :public => false
+    render :json => JSON.fast_generate(@photos)
   end
 
 #  def show
@@ -34,15 +37,18 @@ class Connector::FacebookPhotosController < Connector::FacebookController
 
   def import
     info = facebook_graph.get(params[:photo_id])
-    current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
+    current_batch = UploadBatch.get_current_and_touch( current_user.id, params[:album_id] )
     photo = Photo.create(
+            :id => Photo.get_next_id,
             :user_id=>current_user.id,
             :album_id => params[:album_id],
             :upload_batch_id => current_batch.id,
             :caption => info[:name] || '',
+            :capture_date => info[:created_time],
             :source_guid => make_source_guid(info),
             :source_thumb_url => get_photo_url(info, :thumb),
-            :source_screen_url => get_photo_url(info, :screen)
+            :source_screen_url => get_photo_url(info, :screen),
+            :source => 'facebook'
     )
   
     ZZ::Async::GeneralImport.enqueue( photo.id, get_photo_url(info, :full) )

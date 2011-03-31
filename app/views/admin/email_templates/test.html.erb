@@ -1,0 +1,14 @@
+
+
+<H4>Headers</H4>
+<table>
+    <%@message.header.fields.each do |field|%>
+        <tr>
+          <td><%=field.name%></td>
+          <td><%=field.value%></td>
+        </tr>
+    <%end%>
+</table>
+<hr>
+
+<%=render :partial => "email_body", :locals => { :body => @message.body, :sub_type => @message.sub_type } %>

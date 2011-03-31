@@ -15,7 +15,12 @@ common: &default_settings
   # account.  This key binds your Agent's data to your account in the
   # New Relic RPM service.
   license_key: 'bf6b706d8509e0525065bd8b3141c697dfc861f1'
-  
+
+  # disabling rpm_contrib hook for new relic
+  # since we want to control it directly ourselves to
+  # support non forking model as well
+  disable_resque: true
+
   # Agent Enabled (Rails Only)
   # Use this setting to force the agent to run or not run.
   # Default is 'auto' which means the agent will install and run only
@@ -138,11 +143,11 @@ common: &default_settings
     # Determines whether the agent will capture query plans for slow
     # SQL queries.  Only supported in mysql and postgres.  Should be
     # set to false when using other adapters.
-    # explain_enabled: true
+    explain_enabled: true
 
     # Threshold for query execution time below which query plans will not 
     # not be captured.  Relevant only when `explain_enabled` is true.
-    # explain_threshold: 0.5
+    explain_threshold: 0.6
   
   # Error collector captures information about uncaught exceptions and
   # sends them to RPM for viewing
@@ -254,26 +259,14 @@ test:
 # testing shows an average performance impact of < 5 ms per
 # transaction, you you can leave this on all the time without
 # incurring any user-visible performance degradation.
-production:
+
+photos_production:
   <<: *default_settings
   monitor_mode: true
+  app_name: ZangZing (photos_production)
 
-
-eydevelopment:
+photos_staging:
   <<: *default_settings
   monitor_mode: true
-  app_name: ZangZing (development)
+  app_name: ZangZing (photos_staging)
 
-eysandbox:
-  <<: *default_settings
-  monitor_mode: true
-  app_name: ZangZing (sandbox)
-
-
-# Many applications have a staging environment which behaves
-# identically to production.  Support for that environment is provided
-# here.  By default, the staging environment has the agent turned on.
-staging:
-  <<: *default_settings
-  monitor_mode: true
-  app_name: My Application (Staging)

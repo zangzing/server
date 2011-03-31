@@ -1,6 +1,10 @@
 
 <% content_for :meta_tags do %>
-    <%= render :partial => "photos/facebook_opengraph_tags", :object => @album %>
+    <% if @photo %>
+        <%= render :partial => "facebook/photo_opengraph_tags" %>
+    <% else %>
+        <%= render :partial => "facebook/album_opengraph_tags" %>
+    <% end %>    
 <% end %>
 
 

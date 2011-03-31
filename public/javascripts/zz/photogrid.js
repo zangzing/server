@@ -9,25 +9,35 @@
     $.widget( "ui.zz_photogrid", {
         options: {
             photos: [],
-            cellWidth: 180,
-            cellHeight: 180,
+            cellWidth: 200,               //context
+            cellHeight: 200,              //context
 
-            allowDelete: false,
-            onDelete:jQuery.noop,
+            allowDelete: false,           //context
+            onDelete:jQuery.noop,         //move to photo-model
 
-            allowEditCaption:false,
-            onChangeCaption:jQuery.noop,
+            allowEditCaption:false,       //context
+            onChangeCaption:jQuery.noop,  //move to photo-model
 
-            allowReorder: false,
-            onChangeOrder: jQuery.noop,
+            allowReorder: false,          //context
+            onChangeOrder: jQuery.noop,   //move to photo-model
 
-            onClickPhoto: jQuery.noop,
+            onClickPhoto: jQuery.noop,    //move to photo-model
 
-            showThumbscroller: true,
+            showThumbscroller: true,      //context
+            hideNativeScroller: false,    //context
 
             singlePictureMode: false,
 
-            scrollToPhoto: null
+            currentPhotoId: null,
+            onScrollToPhoto: jQuery.noop,
+
+            context: 'album-grid',
+
+            lazyLoadThreshold:null,
+
+            showButtonBar: false,          //model
+            onClickShare: jQuery.noop
+//            spaceBarTriggersClick: true
 
 
         },
@@ -74,16 +84,16 @@
 
 
             var droppableHeight = Math.floor(self.options.cellHeight * 0.8);
-            var droppableWidth = Math.floor(self.options.cellWidth * 0.6);
+            var droppableWidth = Math.floor(self.options.cellWidth * 1);
             var droppableLeft = -1 * Math.floor(droppableWidth/2);
             var droppableTop = Math.floor((self.options.cellHeight - droppableHeight)/2);
 
             var cells = [];
 
-            var lazyLoadThreshold = 0;
-//            if(self.options.singlePictureMode){
-//                lazyLoadThreshold = self.options.maxWidth * 3;
-//            }
+
+            if(!self.options.lazyLoadThreshold && self.options.singlePictureMode){
+                self.options.lazyLoadThreshold = self.options.cellWidth * 3;
+            }
 
 
 
@@ -97,11 +107,13 @@
                 cell.appendTo(self.element)
 
                 cell.zz_photo({
+                    photo: photo,
                     photoId: photo.id,
                     previewSrc: photo.previewSrc,
                     src: photo.src,
-                    maxWidth: Math.floor(self.options.cellWidth * .85),
-                    maxHeight: Math.floor(self.options.cellHeight * .85),
+                    rolloverSrc: photo.rolloverSrc,
+                    maxWidth: Math.floor(self.options.cellWidth - 50),
+                    maxHeight: Math.floor(self.options.cellHeight - 50),
                     allowDelete: self.options.allowDelete,
                     caption: photo.caption,
                     aspectRatio: photo.aspect_ratio,
@@ -116,14 +128,21 @@
                         return self.options.onChangeCaption(index, photo, caption);
                     },
 
-                    onClick: function(){
-                        self.options.onClickPhoto(index, photo);
+                    onClick: function(action){
+                        self.options.onClickPhoto(index, photo, cell, action);
                     },
 
                     scrollContainer: self.element,
-                    lazyLoadThreshold: lazyLoadThreshold,
-                    isUploading: photo.state !== 'ready',
-                    isError: photo.state === 'error'
+                    lazyLoadThreshold: self.options.lazyLoadThreshold,
+                    isUploading: ! _.isUndefined(photo.state) ? photo.state !== 'ready': false, //todo: move into photochooser.js
+                    isError: photo.state === 'error',
+//                    noShadow: photo.type === 'folder',                                          //todo: move into photochooser.js
+//                    lazyLoad: photo.type !== 'folder',                                           //todo: move into photochooser.js
+
+                    context: self.options.context,
+                    type: _.isUndefined(photo.type) ? 'photo': photo.type,
+                    showButtonBar: self.options.showButtonBar,
+                    onClickShare: self.options.onClickShare
 
                 });
 
@@ -159,7 +178,7 @@
                             return cell.data().zz_photo.dragHelper();
                         },
                         scroll: true,
-                        scrollSensitivity: self.options.cellHeight / 2,
+                        scrollSensitivity: self.options.cellHeight / 8,
                         scrollSpeed:self.options.cellHeight / 3
                     });
 
@@ -200,6 +219,16 @@
 
 
                             self.resetLayout(800, 'easeInOutCubic');
+
+
+                            var photo_id = draggedCell.data().zz_photo.getPhotoId();
+                            var before_id = null;
+                            if($(draggedCell).prev().length !==0){
+                                before_id = $(draggedCell).prev().data().zz_photo.getPhotoId();
+                            }
+                            var after_id = droppedOnCell.data().zz_photo.getPhotoId();
+                            self.options.onChangeOrder(photo_id, before_id, after_id);
+
                         }
 
                     });
@@ -233,7 +262,9 @@
                     self.resetLayout();
 
                     self.element.children('.photogrid-cell').each(function(index, element){
-                        $(element).data().zz_photo.loadIfVisible();
+                        if(!_.isUndefined($(element).data().zz_photo)){ //todo: sometimes this is undefined -- not sure why
+                           $(element).data().zz_photo.loadIfVisible();
+                        }
                     });
 
 
@@ -268,6 +299,17 @@
             });
 
 
+            //hideNativeScroller
+            if(self.options.hideNativeScroller){
+
+                if(self.options.singlePictureMode){
+                    self.thumbscrollerElement = $('<div class="photogrid-hide-native-scroller-horizontal"></div>').appendTo(self.element.parent());
+                }
+                else{
+                    self.thumbscrollerElement = $('<div class="photogrid-hide-native-scroller-vertical"></div>').appendTo(self.element.parent());
+                }
+            }
+
             //thumbscroller
             if(self.options.showThumbscroller){
                 var nativeScrollActive = false;
@@ -280,16 +322,28 @@
                 }
 
 
+                //remove any 'special' photos (eg blank one used for drag and drop on edit screen
+                var photos = $.map(self.options.photos, function(photo, index){
+                    if(photo.type == 'blank'){
+                        return null;
+                    }
+                    else{
+                        return photo;
+                    }
+                });
+
                 self.thumbscroller = self.thumbscrollerElement.zz_thumbtray({
-                    photos:self.options.photos,
+                    photos:photos,
                     srcAttribute: 'previewSrc',
                     showSelection:false,
-                    thumbnailSize:16,
+                    thumbnailSize:20,
                     showSelectedIndexIndicator:true,
                     repaintOnResize:true,
                     onSelectPhoto: function(index, photo){
-                        if(!nativeScrollActive){
-                            self.scrollToIndex(index, 500, true);
+                        if(typeof photo != 'undefined'){
+                            if(!nativeScrollActive){
+                                self.scrollToPhoto(photo.id, 500, true);
+                            }
                         }
                     }
                 }).data().zz_thumbtray;
@@ -361,7 +415,17 @@
                         //page up
                         self.previousPicture();
                     }
-                });
+//                    else if(event.keyCode === 32){
+//                        if(self.options.spaceBarTriggersClick){
+//                            var index = self.indexOfPhoto(self.currentPhotoId());
+//                            var cell = self.cellAtIndex(index);
+//                            var photo = cell.data().zz_photo.options.photo;
+//                            self.options.onClickPhoto(index, photo, cell, 'main');
+//
+//
+//                        }
+//                     }
+                 });
 
                 //block events to grid
                 $(this.element).keydown(function(event){
@@ -374,13 +438,17 @@
             
 
                        //scroll to photo
-            if(self.options.scrollToPhoto){
-                self.scrollToPhoto(self.options.scrollToPhoto,0, false);
+            if(self.options.currentPhotoId){
+                self.scrollToPhoto(self.options.currentPhotoId,0, false);
             }
 
 
         },
 
+
+        hideThumbScroller: function(){
+            this.thumbscrollerElement.hide();
+        },
 
         nextPrevActive : false,
         
@@ -389,14 +457,20 @@
             var self = this;
 
             if(!self.nextPrevActive){
-                self.nextPrevActive = true;
-                var x =  this.element.scrollLeft() + self.options.cellWidth;
+                var index = self.indexOfPhoto(self.currentPhotoId());
+                index ++;
 
-                //todo: shoud use self.scrollToPhoto() here
-                self.element.animate({scrollLeft: x}, 500, 'easeOutCubic', function(){
+                if(index > self.options.photos.length-1){
+                    return;
+                }
+
+                var id = self.options.photos[index].id;
+
+                self.nextPrevActive = true;
+                self.scrollToPhoto(id, 500, true, function(){
                     self.nextPrevActive = false;
                 });
-            }
+           }
 
         },
 
@@ -404,17 +478,33 @@
             var self = this;
 
             if(!self.nextPrevActive){
-                self.nextPrevActive = true;
-                var x =  this.element.scrollLeft() - self.options.cellWidth;
+                var index = self.indexOfPhoto(self.currentPhotoId());
+                index --;
 
-                //todo: shoud use self.scrollToPhoto() here
-                self.element.animate({scrollLeft: x}, 500, 'easeOutCubic' ,function(){
+                if(index < 0){
+                    return;
+                }
+
+                var id = self.options.photos[index].id;
+
+                self.nextPrevActive = true;
+                self.scrollToPhoto(id, 500, true, function(){
                     self.nextPrevActive = false;
                 });
-            }
+           }
 
         },
 
+        currentPhotoId: function(){
+            var self = this;
+            if(self.options.currentPhotoId){
+                return self.options.currentPhotoId;
+            }
+            else{
+                return self.options.photos[0].id;
+            }
+
+        },
 
         indexOfPhoto: function(photoId){
             //todo: this function won't work after a drag-drop reorder
@@ -422,29 +512,35 @@
 
 
             for(var i=0; i<self.options.photos.length; i++){
-                if(self.options.photos[i].id === photoId){
+                if(self.options.photos[i].id == photoId){
                    return i;
                 }
             }
             return -1;
         },
 
-        scrollToPhoto: function(photoId, duration, highlightCell){
-            var index = this.indexOfPhoto(photoId);
-            this.scrollToIndex(index, duration, highlightCell);
-        },
-
-        scrollToIndex: function(index, duration, highlightCell){
+        scrollToPhoto: function(photoId, duration, highlightCell, callback){
             var self = this;
 
-            if(highlightCell){
-                var highlighted = self.cellAtIndex(index).find('.photo-border').addClass('highlighted');
+            var index = self.indexOfPhoto(photoId);
 
-                setTimeout(function(){
-                    highlighted.removeClass('highlighted');
+//            if(highlightCell){
+//                var highlighted = self.cellAtIndex(index).find('.photo-border').addClass('highlighted');
+//
+//                setTimeout(function(){
+//                    highlighted.removeClass('highlighted');
+//
+//                },duration + 1500);
+//            }
 
-                },duration + 1500);
+            var onFinishAnimate = function(){
+                self.options.currentPhotoId = photoId
+                self.options.onScrollToPhoto(photoId);
+                if(typeof callback !== 'undefined'){
+                    callback();
+                }
             }
+
 
             if(self.options.singlePictureMode){
                 var x = index  * self.options.cellWidth;
@@ -452,6 +548,7 @@
                 self.animateScrollActive = true;
                 self.element.animate({scrollLeft: x}, duration, 'easeOutCubic', function(){
                     self.animateScrollActive = false;
+                    onFinishAnimate();
                 });
 
             }
@@ -460,6 +557,7 @@
                 self.animateScrollActive = true;
                 self.element.animate({scrollTop: y}, duration, 'easeOutCubic', function(){
                     self.animateScrollActive = false;
+                    onFinishAnimate();
                 });
             }
         },
@@ -501,8 +599,24 @@
             });
         },
 
+        cellForId: function(id){
+            var index = this.indexOfPhoto(id);
+            return this.cellAtIndex(index);
+        },
+
         cellAtIndex : function(index){
-            return this.element.children(':nth-child(' + (index + 1 ) + ')');
+            var cell = this.element.children(':nth-child(' + (index + 1 ) + ')');
+            if (cell.length === 0){
+                return null;
+            }
+            else{
+                return cell;
+            }
+        },
+
+
+        cells: function(){
+            return this.element.children('.photogrid-cell');
         },
 
         cellsPerRow : function(){
@@ -532,7 +646,7 @@
 
                 var paddingLeft = Math.floor((self.width - (cellsPerRow * self.options.cellWidth))/2);
 
-                paddingLeft = paddingLeft - (16/2); //account for scroller //todo: use constant or lookup value for scroller width
+                paddingLeft = paddingLeft - (20/2); //account for scroller //todo: use constant or lookup value for scroller width
 
 
                 return {

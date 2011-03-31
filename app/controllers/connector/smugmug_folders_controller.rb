@@ -1,7 +1,10 @@
 class Connector::SmugmugFoldersController < Connector::SmugmugController
 
   def index
-    album_list = smugmug_api.call_method('smugmug.albums.get', :Extras => 'Passworded,PasswordHint,Password')
+    album_list = nil
+    SystemTimer.timeout_after(http_timeout) do
+      album_list = smugmug_api.call_method('smugmug.albums.get', :Extras => 'Passworded,PasswordHint,Password')
+    end
     @folders = album_list.map { |f|
       {
         :name => f[:title],
@@ -11,32 +14,40 @@ class Connector::SmugmugFoldersController < Connector::SmugmugController
         :add_url =>  smugmug_folder_action_path({:sm_album_id =>"#{f[:id]}_#{f[:key]}", :action => 'import'})
       }
     }
-
-    render :json => @folders.to_json
+    expires_in 10.minutes, :public => false
+    render :json => JSON.fast_generate(@folders)
   end
 
   def import
     album_id, album_key = params[:sm_album_id].split('_')
-    photos_list = smugmug_api.call_method('smugmug.images.get', {:AlbumID => album_id, :AlbumKey => album_key, :Heavy => 1})
+    photos_list = nil
+    SystemTimer.timeout_after(http_timeout) do
+      photos_list = smugmug_api.call_method('smugmug.images.get', {:AlbumID => album_id, :AlbumKey => album_key, :Heavy => 1})
+    end
     photos = []
-    current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
+    current_batch = UploadBatch.get_current_and_touch( current_user.id, params[:album_id] )
     photos_list[:images].each do |p|
-      photo = Photo.create(
+      photo_url = p[:originalurl]
+      photo = Photo.new_for_batch(current_batch, {
+              :id => Photo.get_next_id,
               :caption => (p[:caption].blank? ? p[:filename] : p[:caption]),
               :album_id => params[:album_id],
               :user_id=>current_user.id,
               :upload_batch_id => current_batch.id,
+              :capture_date => (DateTime.parse(p[:lastupdated]) rescue nil),
               :source_guid => make_source_guid(p),
-              :source_thumb_url => '/proxy?url=' + p[:smallurl],
-              :source_screen_url => '/proxy?url=' + p[:x3largeurl]
-      )
+              :source_thumb_url => '/service/proxy?url=' + p[:smallurl],
+              :source_screen_url => '/service/proxy?url=' + p[:x3largeurl],
+              :source => 'smugmug'
+
+      })
       
-      ZZ::Async::GeneralImport.enqueue( photo.id,  p[:originalurl] )
+      photo.temp_url = photo_url
       photos << photo
+
     end
 
-    render :json => Photo.to_json_lite(photos)
-
+    bulk_insert(photos)
   end
 
 end

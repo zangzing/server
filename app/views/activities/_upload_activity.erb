@@ -1,17 +1,26 @@
-<li class="clearfix">
+<li class="item tab add">
   <a name="<%=activity.upload_batch.id%>"></a>
-  <div class="timeline-badge">
-    <%= render :partial => 'users/stacked_badge', :locals => { :user => activity.user }    %>
+  <div class="title">
+    <a href="<%=user_path(activity.user)%>">
+      <div class="profile-photo">
+        <%= render :partial => 'users/profile_photo', :locals => { :user => activity.user }    %>
+      </div>
+    </a>
+    <div class="profile-name">
+    <a href="<%=user_path(activity.user)%>">
+        <span class="blue"><%=activity.user.name%></span>
+    </a>
+    added <%=( (i = activity.upload_batch.photos.length) > 1 ? "#{i} photos" : "1 photo")%>
+    to album &ldquo;<a href="<%=album_path(activity.album)%>" class="blue"><%=activity.album.name%></a>&rdquo;
+    <div class="tagline"><%=time_ago_in_words(activity.upload_batch.created_at) %> ago</div>
+    </div>
   </div>
-  <div class="timeline-action">
-    <p><a href="<%=user_path(activity.user)%>"><%=activity.user.name%></a> added
-      <% i = activity.upload_batch.photos.length %>
-      <%=i%> <%=( i > 1 ? "photos" : "photo")%>  <!-- to &ldquo;<%=activity.album.name%>&rdquo;--> </p>
-    <p class="timeline-when">about <%=time_ago_in_words(activity.upload_batch.created_at) %> ago </p>
-
-    <ul class="timeline-grid" data-upload-batch-id="<%=activity.upload_batch.id%>">
-
-    </ul>
-    <%if i> 4  %><a href="javascript:void(0);"  class="more-less-btn">more...</a><%end%>
+  <div class="content">
+      <%if i > 4 %>
+            <div class="more"><a href="javascript:void(0);" class="more-less-btn blue" data-upload-batch-id="<%=activity.upload_batch.id%>"><div class="slit-right"></div><span>Show more photos</span></a> </div>
+       <%end%>
+    <div class="timeline-grid" data-upload-batch-id="<%=activity.upload_batch.id%>"></div>
   </div>
 </li>
+
+

@@ -12,18 +12,31 @@ module ZZ
           end
         end
 
-        def self.enqueue( photo_id )
-          super( photo_id )
+        def self.enqueue( photo_id, queued_at_secs )
+          super( photo_id, queued_at_secs )
         end
 
-        def self.perform( photo_id )
-          photo = Photo.find(photo_id)
-          photo.generate_thumbnails
+        def self.perform( photo_id, queued_at_secs )
+          SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
+            photo = Photo.find(photo_id)
+            if (photo.generate_queued_at.to_i == queued_at_secs)
+              # we are the latest so go ahead and do it
+              photo.resize_and_upload
+            else
+              Rails.logger.log.warn("Photo generate request skipped due to later request pending in queue.")
+            end
+          end
         end
 
-        def self.on_failure_notify_photo(e, photo_id )
-          photo = Photo.find(photo_id)
-          photo.update_attributes(:state => 'error', :error_message => 'Failed to Generate Thumbnails')
+        def self.on_failure_notify_photo(e, photo_id, queued_at_secs)
+          begin
+            SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
+              photo = Photo.find(photo_id)
+              photo.update_attributes(:state => 'error', :error_message => 'Failed resize photos: ' + e.message)
+            end
+          rescue Exception => ex
+            # eat any exception in the error handler
+          end
         end
 
     end

@@ -19,7 +19,9 @@ zz.wizard = {
 
         zz.wizard.build_nav(obj, step);
 
-        obj.steps[step].init(function(){
+        var container = $('#tab-content');
+
+        obj.steps[step].init(container, function(){
             zz.wizard.resize_scroll_body()
         });
 
@@ -29,7 +31,9 @@ zz.wizard = {
 
     change_step: function(id, obj){
 
-        logger.debug(obj.steps[id].type + "    " + zz.drawer_state);
+//        logger.debug(obj.steps[id].type + "    " + zz.drawer_state);
+
+        var container = $('#tab-content');
 
         if (obj.steps[id].type == 'partial' && zz.drawer_state == zz.DRAWER_OPEN) {
             $('#tab-content').fadeOut('fast');
@@ -39,24 +43,31 @@ zz.wizard = {
                 zz.close_drawer_partially(obj.time, 40);
             }
             zz.wizard.build_nav(obj, id);
-            obj.steps[id].init(function(){
+            obj.steps[id].init(container, function(){
                 zz.wizard.resize_scroll_body();
             });
 
 
         } else if (obj.steps[id].type == 'partial' && zz.drawer_state == zz.DRAWER_PARTIAL) {
             zz.wizard.build_nav(obj, id);
-            obj.steps[id].init(function(){
+            obj.steps[id].init(container, function(){
                 zz.wizard.resize_scroll_body();
             });
 
-        } else if (obj.steps[id].type == 'full' && zz.drawer_state != zz.DRAWER_OPEN) {
+        } else if (obj.steps[id].type == 'full' && zz.drawer_state == zz.DRAWER_PARTIAL) {
             zz.wizard.build_nav(obj, id);
 
-            obj.steps[id].init(function(){
-                zz.wizard.resize_scroll_body();
-                zz.open_drawer(obj.time);
-            });
+            $('#tab-content').empty().show();
+
+            zz.open_drawer(obj.time);
+
+            //todo: should pass this as callback to zz.open_drawer
+            setTimeout(function(){
+                obj.steps[id].init(container, function(){
+                    zz.wizard.resize_scroll_body();
+                });
+            }, obj.time);
+
 
         } else if (obj.steps[id].type == 'full' && zz.drawer_state == zz.DRAWER_OPEN) {
             zz.wizard.build_nav(obj, id);
@@ -64,7 +75,7 @@ zz.wizard = {
                 $('#tab-content').empty();
                 $('#tab-content').show();
 //                $('#tab-content').css({opacity:0});
-                obj.steps[id].init(function(){
+                obj.steps[id].init(container, function(){
                     zz.wizard.resize_scroll_body();
 //                    $('#tab-content').fadeIn('fast');
                 });
@@ -75,7 +86,7 @@ zz.wizard = {
             zz.close_drawer_partially(obj.time);
             zz.wizard.build_nav(obj, id);
 
-            obj.steps[id].init(function(){
+            obj.steps[id].init(container, function(){
                 zz.wizard.resize_scroll_body();
             });
 
@@ -173,11 +184,6 @@ zz.wizard = {
                 obj.steps[id].bounce(function(){
                     temp_id = obj.steps[id].next;
 
-//                    if (obj.steps[obj.steps[id].next].url_type == 'album') {
-//                        temp_url = 'http://' + zz.base + obj.steps[obj.steps[id].next].url.split('$$')[0] + zz.album_id + obj.steps[obj.steps[id].next].url.split('$$')[1];
-//                    } else if (obj.steps[obj.steps[id].next].url_type == 'user') {
-//                        temp_url = 'http://' + zz.base + obj.steps[obj.steps[id].next].url.split('$$')[0] + zz.current_user_id + obj.steps[obj.steps[id].next].url.split('$$')[1];
-//                    }
 
                     zz.wizard.change_step(temp_id, obj);
                 });
@@ -195,11 +201,11 @@ zz.wizard = {
       if( style == 'edit'){
             $('div#drawer').css('background-image','url(/images/bg-drawer-bottom-cap.png)');
             $('div#cancel-drawer-btn').hide();
-            zz.screen_gap =  150;
+            zz.screen_gap =  160;
         } else {
             $('div#drawer').css('background-image','url(/images/bg-drawer-bottom-cap-with-cancel.png)');
             $('div#cancel-drawer-btn').show();
-            zz.screen_gap = 130;
+            zz.screen_gap = 160;
         }
     },
 
@@ -208,15 +214,15 @@ zz.wizard = {
 
     
 
-    create_personal_album: function(){
-        $.post('/users/'+zz.current_user_id+'/albums', { album_type: "PersonalAlbum" }, function(data){
-            zz.album_id = data;
-            zz.wizard.make_drawer(zz.drawers.personal_album, 'add');
-        });
-    },
+//    create_personal_album: function(){
+//        $.post('/users/'+zz.current_user_id+'/albums', { album_type: "PersonalAlbum" }, function(data){
+//            zz.album_id = data;
+//            zz.wizard.make_drawer(zz.drawers.personal_album, 'add');
+//        });
+//    },
 
     create_group_album: function(){
-        $.post('/users/'+zz.current_user_id+'/albums', { album_type: "GroupAlbum" }, function(data){
+        $.post(zz.path_prefix + '/users/'+zz.current_user_id+'/albums', { album_type: "GroupAlbum" }, function(data){
             zz.album_id = data;
             zz.wizard.make_drawer(zz.drawers.group_album, 'add');
         });
@@ -225,13 +231,13 @@ zz.wizard = {
     open_edit_album_wizard: function( step ){
         switch(  zz.album_type ){
             case 'profile':
-            case 'personal':
-                if( typeof(zz.drawers.edit_personal_album) == "undefined" ){
-                    zz.drawers.edit_personal_album = zz.drawers.personal_album;
-                    zz.drawers.edit_personal_album.style='edit'
-                }
-                zz.wizard.make_drawer(zz.drawers.edit_personal_album, step);
-                break;
+//            case 'personal':
+//                if( typeof(zz.drawers.edit_personal_album) == "undefined" ){
+//                    zz.drawers.edit_personal_album = zz.drawers.personal_album;
+//                    zz.drawers.edit_personal_album.style='edit'
+//                }
+//                zz.wizard.make_drawer(zz.drawers.edit_personal_album, step);
+//                break;
             case 'group':
                 if( typeof(zz.drawers.edit_group_album) == "undefined" ){
                     zz.drawers.edit_group_album = zz.drawers.group_album;
@@ -241,7 +247,7 @@ zz.wizard = {
                 break;
             default:
                 logger.debug('zz.wizard.open_edit_album_wizard: Albums of type: '+zz.album_type+' are not supported yet.')    
-                alert('Albums of type: '+zz.album_type+' are not supported yet.')
+                //alert('Albums of type: '+zz.album_type+' are not supported yet.')
                 break
         }
     },
@@ -249,34 +255,34 @@ zz.wizard = {
 
 
 
-    //set up email autocomplete
-    init_email_autocompleter: function(){
+//    //set up email autocomplete
+//    init_email_autocompleter: function(){
+//
+//        logger.debug('start email_autocomplete');
+//
+//        $('#you-complete-me').autocompleteArray(
+//                google_contacts.concat( yahoo_contacts.concat( mslive_contacts.concat(local_contacts )) ),
+//            {
+//                width: 700,
+//                position_element: 'dd#the-list',
+//                append: '#drawer div.body'
+//            }
+//        );
+//        //zz.address_list = '';
+//        logger.debug('end email_autocomplete');
+//
+//    },
 
-        logger.debug('start email_autocomplete');
-
-        $('#you-complete-me').autocompleteArray(
-                google_contacts.concat( yahoo_contacts.concat( mslive_contacts.concat(local_contacts )) ),
-            {
-                width: 700,
-                position_element: 'dd#the-list',
-                append: '#drawer div.body'
-            }
-        );
-        //zz.address_list = '';
-        logger.debug('end email_autocomplete');
-
-    },
-
-    // reloads the autocompletetion data
-    reload_email_autocompleter: function(){
-        logger.debug('start email_autocompleter_reload');
-
-        //todo: is there a better way to get a handle to the plugin?
-        $('#you-complete-me')[0].autocompleter.setData(google_contacts.concat( yahoo_contacts.concat( mslive_contacts.concat(local_contacts )) ));
-
-        logger.debug('end email_autocompleter_reload');
-
-    },
+//    // reloads the autocompletetion data
+//    reload_email_autocompleter: function(){
+//        logger.debug('start email_autocompleter_reload');
+//
+//        //todo: is there a better way to get a handle to the plugin?
+//        $('#you-complete-me')[0].autocompleter.setData(google_contacts.concat( yahoo_contacts.concat( mslive_contacts.concat(local_contacts )) ));
+//
+//        logger.debug('end email_autocompleter_reload');
+//
+//    },
 
 //=========================================== SETTINGS DRAWER =====================================    
 
@@ -290,7 +296,9 @@ zz.wizard = {
     close_settings_drawer: function(){
         $('#drawer .body').fadeOut('fast');
         zz.close_drawer(400);
-        setTimeout('window.location = "'+zz.drawers.settings.redirect+'"', 1);
+        setTimeout(function(){
+            window.location.reload( false );
+        },1);
     },
 
 
@@ -299,19 +307,19 @@ zz.wizard = {
         if( data && data.length>0 && $('#flashes-notice')){
             var flash = $.parseJSON(data);
             if( flash.notice ){
-                $('#flashes-notice').html(flash.notice).fadeIn('fast', function(){
+                $('#flashes-notice').text(flash.notice).fadeIn('fast', function(){
                     setTimeout(function(){
                         $('#flashes-notice').fadeOut('fast', function(){
-                            $('#flashes-notice').html('    ');
+                            $('#flashes-notice').text('    ');
                         })
                     }, delay+3000);
                 });
             }
             if( flash.error ){
-                $('#error-notice').html(flash.error).fadeIn('fast', function(){
+                $('#error-notice').text(flash.error).fadeIn('fast', function(){
                     setTimeout(function(){
                         $('#error-notice').fadeOut('fast', function(){
-                            $('#error-notice').html('    ');
+                            $('#error-notice').text('    ');
                         })
                     }, delay+3000);
                 });
@@ -333,11 +341,11 @@ zz.wizard = {
                     }
                 }
 
-                $('#error-notice').html(message).fadeIn('fast', function(){
+                $('#error-notice').text(message).fadeIn('fast', function(){
                     if( delay >0 ){
                         setTimeout(function(){
                             $('#error-notice').fadeOut('fast', function(){
-                                $('#error-notice').html('    ');
+                                $('#error-notice').text('    ');
                             })
                         }, delay+3000);
 

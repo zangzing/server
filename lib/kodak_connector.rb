@@ -3,8 +3,6 @@ class KodakConnector
 
   REST_API_URL = 'http://www.kodakgallery.com/site/rest/v1.0'
 
-  cattr_accessor :http_timeout
-
   def initialize(token = nil)
     @auth_cookies = token
   end
@@ -21,7 +19,6 @@ class KodakConnector
     uri = URI.parse("http://www.kodakgallery.com/gallery/welcome.jsp")
     #First, retrieve a bunch of cookies for the session
     http = Net::HTTP.new(uri.host, uri.port)
-    http.read_timeout = http.open_timeout = KodakConnector.http_timeout
     response = http.get(uri.path)
     incomplete_cookies = response['set-cookie']
     login_data = CGI::escape("{\"email\":\"#{email}\",\"password\":\"#{password}\"}")
@@ -47,14 +44,13 @@ class KodakConnector
   def send_request(url)
     service_uri = URI.parse("#{REST_API_URL}#{url}")
     http = Net::HTTP.new(service_uri.host, service_uri.port)
-    http.read_timeout = http.open_timeout = KodakConnector.http_timeout
     request = Net::HTTP::Get.new(service_uri.request_uri, {'cookie' => @auth_cookies})
     begin
       response = http.request(request)
     rescue => exception
       raise HttpCallFail
     end
-    XmlSimple.xml_in(response.body)
+    Hash.from_xml(response.body).values.first
   end
 
   def proxy_response(url)
@@ -63,7 +59,7 @@ class KodakConnector
   end
   
   def response_as_file(url)
-    RemoteFile.new(url, Dir::tmpdir, compose_request_header)
+    RemoteFile.new(url, PhotoGenHelper.photo_upload_dir, compose_request_header)
   end
 
   #Static stuff

@@ -1,0 +1,87 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+
+ <link href="/stylesheets/main.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/stylesheets/like.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/stylesheets/user.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/stylesheets/dialog.css" media="screen" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js"></script>
+    <script type="text/javascript" src="../../javascripts/jquery-lib/jquery.ui.widget.js"></script>
+	<script type="text/javascript" src="/javascripts/zz/dialog.js"></script>
+
+
+    <title>ZangZing Dialog Test</title>
+
+</head>
+
+<style type="text/css">
+   
+.lorem{
+    width:  400px;
+    height: 200px;
+	display: block;
+    border: 5px solid black;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+}
+
+</style>
+
+<body>
+<button id="nonmodal-button" type="button">Click for Dialog</button>
+
+<button id="modal-button" type="button">Click for Modal Dialog</button>
+
+
+		<div id="social-like-dialog">
+            <div id="ld-inner">
+                <div id="ld-top">
+	                Post your like on
+                    <input type='checkbox'/> <span style='color:#365896; font-weight: 700;'>Facebok</span> and/or
+                    <input type='checkbox'/>  <span style='color:#3fc0fd; font-weight: 700;'>Twitter</span> ?
+                </div>
+                <div id="ld-middle">
+                    <textarea>Joseph likes New Zealand 2010 on ZangZing - Group Photo Sharing</textarea>
+                </div>
+                <div id="ld-dothis">
+                    <input type='checkbox'/> Do this everytime I like something
+                </div>
+                 <a id="ld-cancel" class="newblack-button"  href="javascript:void(0)"><span>No thanks</span></a>
+                 <a id="ld-ok"     class="newgreen-button"  href="javascript:void(0)"><span>Post</span></a>
+            </div>
+		</div>
+
+        <div id="content2" class="lorem">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer adipiscing, est vitae faucibus euismod,
+                odio ligula faucibus ipsum, eget vulputate ante nisi quis leo. In hendrerit ligula eu lorem dignissim eget
+                ultrices massa tincidunt. Praesent nec augue ligula, eu laoreet erat. In hac habitasse platea dictumst.
+                Vivamus ante libero, volutpat vitae adipiscing placerat, consectetur non lorem. Donec in eleifend nunc.
+                Vivamus sed purus ut quam imperdiet porta ut nec mauris. Aliquam aliquet, lacus a molestie lacinia, mi diam
+                hendrerit turpis, sit amet scelerisque risus risus lacinia mi. Nunc venenatis rhoncus nibh tincidunt
+                pharetra. Integer tellus massa, rhoncus malesuada adipiscing a, pretium a felis. Curabitur aliquet, ante a
+                gravida venenatis, justo nibh rutrum mi, mollis scelerisque nibh ipsum ac purus. Aenean accumsan arcu nec
+                nisi commodo congue. Praesent pulvinar, urna ut iaculis euismod, mauris justo commodo magna, at ullamcorper
+               massa ante vel dui.
+        </div>
+
+
+<script type="text/javascript">
+   //$('#social-like-dialog').zz_dialog();
+   $('#social-like-dialog').zz_dialog({ autoOpen: false });
+   $('#modal-button').click( function(){   $('#social-like-dialog').zz_dialog('toggle'); });
+
+  $('#content2').zz_dialog({ autoOpen: false, modal: false, left: '50px', top: '50px' });
+ // $('#nonmodal-button').click( function(){   $('#content2').zz_dialog('toggle'); });
+
+   var dynamic =  $('<div id="dynamic">This is dynamic content not inserted anywhere</div>');
+   dynamic.width('200px');
+   dynamic.height('200px');
+   dynamic.zz_dialog({ autoOpen: false, modal: false });
+   $('#nonmodal-button').click( function(){   dynamic.zz_dialog('toggle'); });
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,23 @@
+common: &common
+  :api_key: 4a3e34b26fe61663e87388b2274aa1a6-us2
+  :zangzing_users_list: zangzing_users_test
+
+development:
+  <<: *common
+
+perftest:
+  <<: *common
+
+test:
+  <<: *common
+
+photos_production:
+  <<: *common
+
+photos_staging:
+  <<: *common
+
+
+eytest:
+  <<: *common
+

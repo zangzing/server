@@ -1,0 +1,94 @@
+<style type="text/css">
+
+/* ============================ Social Like Dialog (Post your like in Facebook and/or Twitter? ) ======*/
+#social-like-dialog{
+    width:  500px;
+    height: 220px;
+	display: none;
+    border: 0;
+}
+
+#social-like-dialog div{
+    position: absolute;
+}
+
+#social-like-dialog #ld-inner{
+    top: 20px;
+    left: 20px;
+    width:  460px;
+    height: 190px;
+    text-align: left;
+}
+#ld-top{
+    height:20px;
+    font-size: 14px;
+}
+#ld-middle{
+   top: 65px;
+   width: 460px;
+   height:65px;
+}
+
+#ld-middle textarea{
+    width: 440px;
+    height: 55px;
+    border: 1px solid #c8c8c9;
+    font-size: 14px;
+    padding: 8px;
+    vertical-align:text-top;
+    -moz-box-shadow: 0px 0px 1px 1px  #fed33a;
+    -webkit-box-shadow: 0px 0px 1px 1px  #fed33a;
+    box-shadow: 0px 0px 1px 1px  #fed33a;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+}
+
+#ld-dothis{
+   bottom: 6px;
+   font-size: 13px;
+}
+
+#ld-cancel{
+   width: 90px;
+   position: absolute;
+   bottom: 0;
+   right: 125px;
+}
+
+#ld-ok{
+   width: 110px;
+   position: absolute;
+   bottom: 0;
+   right: 0px;
+}
+</style>
+
+<div id="social-like-dialog">
+  <div id="ld-inner">
+    <%= form_for @album, :url => request_album_access_url(@album), :html => { :id => "social_like_form_#{@album.id}" } do |f | %>
+    <div id="ld-top">
+      You have not yet been invited to see this password protected
+      Album. Enter a brief message for the owner if you would like to request access.
+    </div>
+    <div id="ld-middle">
+      <textarea name="message"></textarea>
+    </div>
+    <a id="ld-cancel" class="newblack-button" href="javascript:void(0)"><span>No thanks</span></a>
+    <a id="ld-ok" class="newgreen-button" href="javascript:void(0)"><span>RequestAccess</span></a>
+    <%end%>
+  </div>
+</div>
+
+<script type="text/javascript">
+                     $('#social-like-dialog').zz_dialog({ autoOpen: false });
+                     $('#ld-cancel').click( function(){
+                         $('#social-like-dialog').zz_dialog('close');
+                         $('#social-like-dialog').zz_dialog().empty().remove();
+                     });
+
+                     $('#ld-ok').click( function(){
+                         $('#social-like-dialog').zz_dialog('close');
+                         $('#social-like-dialog').zz_dialog().empty().remove();
+                     });
+                     $('#social-like-dialog').zz_dialog('open');
+</script>

@@ -1,0 +1,69 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link href="/stylesheets/main.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/stylesheets/like.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/stylesheets/dialog.css" media="screen" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js"></script>
+    <script type="text/javascript" src="../../javascripts/jquery-lib/jquery.ui.widget.js"></script>
+    <script type="text/javascript" src="/javascripts/zz/zz.core.js"></script>
+    <script type="text/javascript" src="/javascripts/zz/zz.toolbars.js"></script>
+	<script type="text/javascript" src="/javascripts/zz-oauthmanager/oauthmanager.js"></script>
+    <script type="text/javascript" src="/javascripts/zz/dialog.js"></script>
+    <script type="text/javascript" src="/javascripts/zz/like.js"></script>
+    <title>ZangZing Like Tag Test</title>
+</head>
+<body>
+<!--
+<H2> This tag is built to test css styling</H2>
+<center>
+<div class="zzlike" data-zzid="aawtlx4dDcnyIJRKOsBfXg" data-zztype="user">
+    <div class="zzlike-button">
+        <span class="zzlike-thumbup"></span>
+        Like
+    </div>
+    <div class="zzlike-count">9</div>
+</div>
+</center>
+-->
+<H2> Like tags with count and image</H2>
+
+<div style="position: relative; left: 45%; width:100px;">
+    <div class="zzlike" data-zzid="249900073724" data-zztype="user"></div></br>
+    <div class="zzlike" data-zzid="123456789000" data-zztype="album"></div></br>
+    <div class="zzlike" data-zzid="445245902850" data-zztype="photo"></div></br>
+</div>
+
+<h2> Two tags to the same object on same page</h2>
+
+<div style="position: relative; left: 45%; width:100px;">
+    <div class="zzlike" data-zzid="445245902850" data-zztype="photo"></div></br>
+    <div class="zzlike" data-zzid="445245902850" data-zztype="photo"></div></br>
+</div>
+
+<ul id="3item-menu">
+   <li class="zzlike" data-zzid="249900073724" data-zztype="user"></li>
+   <li class="zzlike" data-zzid="123456789000" data-zztype="album"></li>
+   <li class="zzlike" data-zzid="445245902850" data-zztype="photo"></li>
+</ul>
+<ul id="2item-menu">
+   <li class="zzlike" data-zzid="249900073724" data-zztype="user"></li>
+   <li class="zzlike" data-zzid="123456789000" data-zztype="album"></li>
+</ul>
+<ul id="1item-menu">
+   <li class="zzlike" data-zzid="123456789000" data-zztype="album"></li>
+</ul>
+
+
+<a style="margin: 150px 20px; font-size:1.5em;" href="javascript:void(0)" id="1item-button">Click for 1 Item Menu</a>
+<a style="margin: 150px 20px; font-size:1.5em;" href="javascript:void(0)" id="2item-button">Click for 2 Item Menu</a>
+<a style="margin: 150px 20px; font-size:1.5em;" href="javascript:void(0)" id="3item-button">Click for 3 Item Menu</a>
+
+<script type="text/javascript">
+    like.init();
+    $('#1item-menu').zzlike_menu({ anchor: '#1item-button'});
+    $('#2item-menu').zzlike_menu({ anchor: '#2item-button'});
+    $('#3item-menu').zzlike_menu();
+    $('#3item-button').click( function(){ $('#3item-menu').zzlike_menu( 'open', this)});
+</script>
+</body>
+</html>

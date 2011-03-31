@@ -11,20 +11,16 @@ test:
   :consumer_secret: LVwYEbWO9XUMMuqVcIBlAEASOWLdoW7ufYujiYbzI
   :app_key: IzGoUFOmtnSFoebjtFWJCQ
 
-eydevelopment:
-  :consumer_secret: LVwYEbWO9XUMMuqVcIBlAEASOWLdoW7ufYujiYbzI
-  :app_key: IzGoUFOmtnSFoebjtFWJCQ
+photos_production:
+  :consumer_secret: gOfBcs6bVMreTY6Ttyn9uivs5liE6iiJinYdXI99m8
+  :app_key: z3lktZ1NLfwT1DYcWCVvhQ
 
-eysandbox:
-  :consumer_secret: LVwYEbWO9XUMMuqVcIBlAEASOWLdoW7ufYujiYbzI
-  :app_key: IzGoUFOmtnSFoebjtFWJCQ
+photos_staging:
+  :consumer_secret: gOfBcs6bVMreTY6Ttyn9uivs5liE6iiJinYdXI99m8
+  :app_key: z3lktZ1NLfwT1DYcWCVvhQ
 
 
 eytest:
   :consumer_secret: LVwYEbWO9XUMMuqVcIBlAEASOWLdoW7ufYujiYbzI
   :app_key: IzGoUFOmtnSFoebjtFWJCQ
 
-
-production:
-  :consumer_secret:
-  :app_key: 

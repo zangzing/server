@@ -66,9 +66,9 @@ module ZZ
         parameters << File.expand_path(dst.path)
         parameters = parameters.flatten.compact.join(" ").strip.squeeze(" ")
 
-        Paperclip.run("convert", parameters)
-      rescue Paperclip::PaperclipCommandLineError => e
-        raise Paperclip::PaperclipError, "There was an error building the picon "+ e
+        ZZ::CommandLineRunner.run("convert", parameters)
+      rescue ZZ::CommandLineException => e
+        raise e, "There was an error building the picon: "+ e.message
       end
       dst
     end

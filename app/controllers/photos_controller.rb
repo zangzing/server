@@ -1,63 +1,71 @@
+require "zz_env_helpers"
+
 class PhotosController < ApplicationController
-  before_filter :oauth_required, :only => [:agentindex, :agent_create]
-  before_filter :login_required, :only => [:create ]
-  before_filter :require_user, :only => [:show, :new, :edit, :destroy, :update] # , :index] #TODO Sort out album security so facebook can freely dig into album page
-  before_filter :determine_album_user #For friendly_id's scope
+  skip_before_filter :verify_authenticity_token,  :only =>   [ :agent_index, :agent_create, :upload_fast]
 
-  def show
-    @photo = Photo.find(params[:id])
-    @album = @photo.album
-    @title = CGI.escapeHTML(@album.name)
-  end
+  before_filter :require_user,                    :only =>   [ :destroy, :update, :position ]  #for interactive users
+  before_filter :oauth_required,                  :only =>   [ :agent_create, :agent_index ]   #for agent
 
-  def create
-    @album = fetch_album
-    @photo = @album.photos.build(params[:photo])
-    @photo.user = current_user
+  before_filter :require_album,                   :only =>   [ :agent_create, :index, :movie, :photos_json ]
+  before_filter :require_photo,                   :only =>   [ :destroy, :update, :position ]
 
-    respond_to do |format|
-      format.html do
-        if @photo.save
-          flash[:success] = "Photo Created!"
-          render :action => :show
-        else
-          render :action => :new
-        end
-      end
-      format.json do
-        if @photo.save
-          render :json => @photo.to_json(:only =>[:id, :agent_id, :state])
-        else
-          render :json => @photo.errors, :status=>500
-        end
-      end
-    end
-  end
+  before_filter :require_album_admin_role,        :only =>   [ :destroy, :update, :position ]
+  before_filter :require_album_contributor_role,  :only =>   [ :agent_create ]
+  before_filter :require_album_viewer_role,       :only =>   [ :index, :movie, :photos_json  ]
 
 
+  # Used by the agent to create photos duh?
+  # logged in via oauth
+  # @album set by require_album
   def agent_create
-
     if params[:source_guid].nil?
       render :json => "source_guid parameter required. Unable to create photos", :status=>400 and return
     end
 
-    album = fetch_album
-    photos = []
-    current_batch = UploadBatch.get_current( current_user.id, album.id )
-    (0...params[:source_guid].length).each do |index|
-      photo = album.photos.build(   :user_id =>           current_user.id,
-                                    :upload_batch_id =>   current_batch.id,
-                                    :agent_id =>          params[:agent_id],
-                                    :source_guid =>       params[:source_guid][index.to_s],
-                                    :caption =>           params[:caption][index.to_s],
-                                    :image_file_size =>   params[:size][index.to_s],
-                                    :source_thumb_url =>  "http://localhost:30777/albums/#{album.id}/photos/:photo_id.thumb",
-                                    :source_screen_url => "http://localhost:30777/albums/#{album.id}/photos/:photo_id.screen")
-                                    #todo: need to handle agent port and url templates in central place for source thumb_url and screen_url
-      if photo.save
-         photos << photo
-      else
-        render :json => photo.errors, :status=>500 and return
+    user_id           = current_user.id
+    album_id          = @album.id
+    agent_id          = params[:agent_id]
+    photos            = []
+    source_guid_map   = params[:source_guid]
+    photo_count       = source_guid_map.length
+    caption_map       = params[:caption]
+    file_size_map     = params[:size]
+    capture_date_map  = params[:capture_date]
+    source_map        = params[:source]
+
+    # optimize by ensuring we have the number of ids we need up front
+    current_id = Photo.get_next_id(photo_count)
+    current_batch = UploadBatch.get_current_and_touch( user_id, album_id )
+    batch_id = current_batch.id
+
+    (0...photo_count).each do |index|
+      i_s = index.to_s
+      photo = Photo.new_for_batch(current_batch,  {
+                                    :id                =>   current_id,
+                                    :album_id          =>   album_id,
+                                    :user_id           =>   user_id,
+                                    :upload_batch_id   =>   batch_id,
+                                    :agent_id          =>   agent_id,
+                                    :source_thumb_url  =>   Photo.make_agent_source('thumb', current_id, album_id),
+                                    :source_screen_url =>   Photo.make_agent_source('screen', current_id, album_id),
+                                    :source_guid       =>   source_guid_map[i_s],
+                                    :source            =>   safe_hash_default(source_map, i_s, nil),
+                                    :caption           =>   safe_hash_default(caption_map, i_s, ""),
+                                    :image_file_size   =>   file_size_map[i_s],
+                                    :capture_date      =>   Time.at( safe_hash_default(capture_date_map, i_s, 0).to_i )
+                                    }
+                                    )
+      current_id += 1
+      photos << photo
+    end
+
+    if (photos.count > 0)
+      results = Photo.batch_insert(photos)
+
+      # the results above tells you if validations failed, not if the actual call failed
+      if results.failed_instances.count > 0
+        failed_photo = results.failed_instances[0]
+        render :json => failed_photo.errors, :status=>500 and return
       end
     end
 
@@ -65,7 +73,7 @@ class PhotosController < ApplicationController
   end
 
 
-  def agentindex
+  def agent_index
     begin
       @photos = Photo.all(:conditions => ["agent_id = ? AND state = ?", params[:agent_id], 'assigned'])
       render :json => @photos.to_json(:only =>[:id, :agent_id, :state, :album_id])
@@ -82,41 +90,53 @@ class PhotosController < ApplicationController
 
 
   def upload_fast
-    #nginx add params so it breaks oauth. use this validation to ensure it is coming from nginx
+     #nginx add params so it breaks oauth. use this validation to ensure it is coming from nginx
     #currently we only handle one photo attachment but the input is structured to send multiple
     #as is done with the sendgrid#import_fast
-    if params[:fast_upload_secret] == "this-is-a-key-from-nginx" && (attachments = params[:fast_local_image]) && attachments.count == 1
-      begin
-        @photo = Photo.find(params[:id])
-        @album = @photo.album
-        fast_local_image = {"fast_local_image" => attachments[0]} # extract only the first one
-        if @photo.update_attributes(fast_local_image)
-          render :json => @photo.to_json(:only =>[:id, :agent_id, :state]), :status => 200 and return
-        else
-          render :json => @photo.errors, :status=>400
-        end
-      rescue ActiveRecord::RecordNotFound => ex
-        #photo or album have been deleted
-        render :json => ex.to_s, :status=>400
 
-      rescue ActiveRecord::StatementInvalid => ex
-        #this seems to mean connection issue with database
-        render :json => ex.to_s, :status=>500
-
-      rescue Exception => ex
-        #todo: make sure none of these should be 4xx errors
-        render :json => ex.to_s, :status=>500
-      end
+    unless request.local?   #this request can only come from nginx running on same machine
+      render :json => "only accepts local connections", :status => 401
     else
-      # call did not come through remapped upload via nginx so reject it
-      render :json => "Invalid upload_fast arguments.", :status=>400
+      if params[:fast_upload_secret] == "this-is-a-key-from-nginx" && (attachments = params[:fast_local_image]) && attachments.count == 1
+        begin
+          @photo = Photo.find(params[:id])
+          @album = @photo.album
+          fast_local_image = attachments[0] # extract only the first one
+          @photo.file_to_upload = fast_local_image['filepath']
+          if @photo.save
+            render :json => @photo.to_json(:only =>[:id, :agent_id, :state]), :status => 200 and return
+          else
+            render :json => @photo.errors, :status=>400
+          end
+
+        rescue ActiveRecord::StatementInvalid => ex
+          #this seems to mean connection issue with database
+          #give the agent a chance to retry
+          render :json => ex.to_s, :status=>500
+          logger.info small_back_trace(ex)
+
+        rescue Exception => ex
+          # a status in the 400 range tells the agent to stop trying
+          # our default if we don't explicitly expect the error is to not
+          # try again
+          render :json => ex.to_s, :status=>400
+          logger.info small_back_trace(ex)
+        end
+      else
+        # call did not come through remapped upload via nginx so reject it
+        render :json => "Invalid upload_fast arguments.", :status=>400
+      end
     end
   end
 
+  #deletes a photo
+  #@photo & @album are set by require_photo beofre filter
   def destroy
-    logger.debug "The params hash in PhotosController destroy is #{params.inspect}"
-    @photo = Photo.find(params[:id])
-    @album = @photo.album
+    cover_id = @album.cover_photo_id
+    if cover_id == @photo.id
+      @album.cover_photo_id = nil
+      @album.save
+    end
     respond_to do |format|
       format.html do
         if !@photo.destroy
@@ -133,75 +153,36 @@ class PhotosController < ApplicationController
     end
   end
 
-  #
-  # Shows all photos for a given album
-  #
-  # Photos can be shown in a slideshow or a grid based on the query arguments
-  #
-  # size         thumb|screeenres  Show all thumbnails or 1 screenres.
-  #              Default: show all thumbs
-  # photoid      Id of photo that should be displayed when in screenres
-  #              Default: Show first pic in album
-  # page         Page desired when in screenres                         
-  #              Default: First
-  # upload_batch Display only album photos in given upload_batch
-  #              upload_batch must belong to album
-  # contributor  Display only photos contributed by certain contributor.
-  #              contributor must be in albums contributor list
-
+  # used by facebook and google crawlers but not by interactive users
+  # displays all the photos in an album
+  # @album is set by require_album before_filter
   def index
-    @album = fetch_album
 
-    respond_to do |format|
-      format.html do
-
-
-        @title = CGI.escapeHTML(@album.name)
-
-        if params[:upload_batch] && @upload_batch = UploadBatch.find(params[:upload_batch])
-          @all_photos = @upload_batch.photos
-          @return_to_link = "#{album_activities_path( @album )}##{@upload_batch.id}"
-        elsif params[:contributor] && @contributor = Contributor.find(params[:contributor])
-          @all_photos = @contributor.photos
-          @return_to_link = "#{album_people_path( @album )}##{@contributor.id}"
-        else
-          @all_photos = @album.photos
-          @return_to_link = album_photos_url( @album.id )
-        end
-
-
-
-#        if !params[:view].nil? && params[:view] == 'slideshow'
-#          @photos = @all_photos.paginate({:page =>params[:page], :per_page => 1})
-#          unless  params[:photoid].nil?
-#            current_page = 1 if params[:page].nil?
-#            until @photos[0][:id] == params[:photoid]
-#              current_page += 1
-#              @photos = @all_photos.paginate({:page =>current_page, :per_page => 1})
-#            end
-#            params[:photoid] = nil
-#          end
-#          render 'slideshow'
-
-        if !params[:view].nil? && params[:view] == 'movie'
-          @photos = @all_photos
-          render 'movie', :layout => false
-        else
-          @photo = Photo.new
-          @photos = @all_photos
-          render 'photos'
-        end
+    if(!params[:user_id])
+      redirect_to album_pretty_url(@album)
+    else
+      @title = CGI.escapeHTML(@album.name)
+      @photos = @album.photos
+      if params['_escaped_fragment_'] #this is google or facebook
+        @photo = Photo.find(params['_escaped_fragment_'])
       end
+      render 'photos'
     end
   end
 
+  # returns the  movie view
+  # @album is set by before_filter require_album
+  def movie
+    @photos = @album.photos
+    render 'movie', :layout => false
+  end
+
+  # returns a json string of the album photos
+  # @album is set by before_filter require_album
   def photos_json
-    @album = fetch_album
+     if stale?(:last_modified => @album.photos_last_updated_at.utc, :etag => @album)
 
-    if stale?(:last_modified => @album.photos_last_updated_at.utc, :etag => @album)
-
-      cache_key = @album.id + '-' + @album.photos_last_updated_at.to_s + '.json'
-      cache_key = cache_key.gsub(' ', '_')
+      cache_key = "Album.Photos." + @album.id.to_s + '-' + @album.photos_last_updated_at.to_i.to_s + '.json'
 
       logger.debug 'cache key: ' + cache_key
 
@@ -219,8 +200,7 @@ class PhotosController < ApplicationController
         logger.debug 'using cached photos_json'
       end
 
-      expires_in 1.year, :public => false
-      response.headers["Expires"] = CGI.rfc1123_date(Time.now + 1.year)
+      expires_in 1.year, :public => true  #todo: make private for password protected albums
       response.headers['Content-Encoding'] = "gzip"
       render :json => json
     else
@@ -228,75 +208,9 @@ class PhotosController < ApplicationController
     end
   end
 
-
-#  def slideshowbox_source
-#    @album = fetch_album
-#    @photos = @album.photos
-#    respond_to do |format|
-#      format.xml
-#    end
-#  end
-
-
-#
-  # Shows all photos for a given album
-  #
-  # Photos can be shown in a slideshow or a grid based on the query arguments
-  #
-  # size         thumb|screeenres  Show all thumbnails or 1 screenres.
-  #              Default: show all thumbs
-  # photoid      Id of photo that should be displayed when in screenres
-  #              Default: Show first pic in album
-  # page         Page desired when in screenres
-  #              Default: First
-  #
-  def edit
-    @album = fetch_album
-    @title = CGI.escapeHTML(@album.name)
-
-    respond_to do |format|
-      format.html do
-        if !params[:view].nil? && params[:view] == 'slideshow'
-          @photos = @album.photos.paginate({:page =>params[:page], :per_page => 1})
-          unless  params[:photoid].nil?
-            current_page = 1 if params[:page].nil?
-            until @photos[0][:id] == params[:photoid]
-              current_page += 1
-              @photos = @album.photos.paginate({:page =>current_page, :per_page => 1})
-            end
-            params[:photoid] = nil
-          end
-          render 'slideshow'
-        else
-          @photo = Photo.new
-          @photos = @album.photos
-          render 'grid'
-        end
-      end
-
-      format.json do
-        render :json => @album.photos.to_json(:methods => [:thumb_url, :screen_url])
-      end
-    end
-  end
-
-  def profile
-     @album = Album.find( params[:album_id])
-     current_batch = UploadBatch.get_current( current_user.id, params[:album_id] )
-     @photo = @album.photos.build(:agent_id => "PROFILE_PHOTO",
-                                  :source_guid => "PROFILE_FORM",
-                                  :caption => "LUCKY ME",
-                                  :upload_batch_id => current_batch.id,
-                                  :image_file_size => 128)
-      @photo.user = current_user
-      @photo.save
-      render :layout =>false
-  end
-
-
+  # updates photo attributes
+  # @photo is set in require_photo before filter
   def update
-    @photo = Photo.find(params[:id])
-
     if @photo && @photo.update_attributes( params[:photo] )
       flash[:notice] = "Photo Updated!"
       render :text => 'Success Updating Photo', :status => 200, :layout => false
@@ -306,15 +220,59 @@ class PhotosController < ApplicationController
     end
   end
 
-
-private
-
-  def fetch_album
-    params[:friendly] ? Album.find(params[:album_id], :scope => params[:user_id]) : Album.first(:conditions => {:id => params[:album_id]})
+  # Used by the photogrid to notify changes in the album order when a photo is dragged and dropped
+  # expects params[ :before_id ] and params[ :after_id ]
+  # @photo is set by require_photo before_filter
+  def position
+    @photo.position_between( params[:before_id], params[:after_id])
+    render :nothing => true
   end
 
-  def determine_album_user
-    @album_user_id = params[:user_id] #|| current_user.to_param
+  private
+  #
+  # To be run as a before_filter
+  # sets @photo to be Photo.find( params[:id ])
+  # set @album ot @photo.album
+  # params[:id] required, must be present and be a valid photo_id.
+  def require_photo
+    begin
+      @photo = Photo.find( params[:id ])  #will trhow exception if params[:id] is not defined or photo not found
+      @album = @photo.album
+    rescue ActiveRecord::RecordNotFound => e
+      flash[:error] = "This operation requires a photo, we could not find one because: "+e.message
+      response.headers['X-Error'] = flash[:error]
+      if request.xhr?
+        render :status => 404
+      else
+        render :file => "#{Rails.root}/public/404.html", :layout => false, :status => 404
+      end
+      return false
+    end
   end
 
+  #
+  # To be run as a before_filter
+  # sets @album
+  # params[:album_id] required, it must be present and be a valid album_id.
+  # params[:user_id]  optional, if present it will be used as a :scope for the finder
+  # Throws ActiveRecord:RecordNotFound exception if params[:id] is not present or the album is not found
+  def require_album
+    begin
+      #will trhow exception if params[:album_id] is not defined or album not found
+      if params[:user_id]
+        @album = Album.find(params[:album_id], :scope => params[:user_id])
+      else
+        @album = Album.find( params[:album_id] )
+      end
+    rescue ActiveRecord::RecordNotFound => e
+      flash[:error] = "This operation requires an album, we could not find one because: "+e.message
+      response.headers['X-Error'] = flash[:error]
+      if request.xhr?
+        render :status => 404
+      else
+        render :file => "#{Rails.root}/public/404.html", :layout => false, :status => 404
+      end
+      return false
+    end
+  end
 end

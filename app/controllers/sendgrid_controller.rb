@@ -1,7 +1,10 @@
+require 'mail'
 class SendgridController < ApplicationController
 
+  skip_before_filter :verify_authenticity_token
+
 =begin
-each album has an email address in the form <album_id>@sendgrid-post.zangzing.com
+each album has an email address in the form <album_name>@<username>.zangzing.com
     *      text - Text body of email. If not set, email did not have a text body.
     *      html - HTML body of email. If not set, email did not have an HTML body.
     *      to - Email recipient.
@@ -25,25 +28,70 @@ each album has an email address in the form <album_id>@sendgrid-post.zangzing.co
     #
     if params[:fast_upload_secret] == "this-is-a-key-from-nginx" && (attachments=params[:fast_local_image])
       begin
-        album_mail = params[:to].match(/\b([A-Z0-9._%+-]+)@[A-Z0-9.-]+\.[A-Z]{2,4}\b/i)[1] rescue ''
-        album_slug, user_slug = album_mail.split('.')
-        album = Album.find(album_slug, :scope => user_slug)
-        sender_mail = params[:from].match(/\b([A-Z0-9._%+-]+)@[A-Z0-9.-]+\.[A-Z]{2,4}\b/i)[0] rescue ''
-        if attachments.count > 0 && album
-          if sender_mail==album.user.email # && album.kind_of?(PersonalAlbum)
-            add_photos(album, album.user, attachments)
-          elsif album.kind_of?(GroupAlbum) && (contributor = album.is_contributor?(sender_mail))
-            add_photos(album, contributor, attachments)
-            album.contributors.find_by_email(sender_mail).last_contribution = DateTime.now
+        # report data to zza
+        zza_xtra = {
+            :SPF => params[:SPF],
+            :dkim => params[:dkim],
+            :from => params[:from],
+            :to => params[:to],
+            :spam_report => params[:spam_report],
+            :spam_score => params[:spam_score],
+        }
+        ZZ::ZZA.new.track_event("email.contributor.received", zza_xtra)
+
+        
+        # An albums email address is of the form  <album_name>@<user_username>.zangzing.com
+        # we use Mail::Address to parse the addresses and the domain
+        # If the to or from addresses are invalid emails, an exception will be raised
+        to             = Mail::Address.new( params[:to] )
+        from           = Mail::Address.new( params[:from] )
+        album_name     = to.local
+        user_username  = to.domain.split('.')[0]
+
+        @album = nil
+        begin
+          @album = Album.find(album_name, :scope => user_username )
+        rescue ActiveRecord::RecordNotFound
+          @album = nil
+        end
+
+        # NEW ALBUM BY EMAIL
+        # if album_name is 'new' and the account owner is emailing photos, create a new
+        # album with the name set from the subject and all addresses in cc: as contributors
+        if @album.nil? && album_name == 'new'
+          user = User.find_by_username!( user_username )
+          # If the account owner is the one emailing
+          if user.email == from.address
+            @album  = GroupAlbum.new()
+            user.albums << @album
+            @album.name = ( params[:subject] && params[:subject].length > 0 ? params[:subject] : "New Album By Email")
+            @album.save!
           end
         end
+
+        if attachments.count > 0 && @album
+          user = @album.get_contributor_user_by_email( from.address )
+          if user
+            add_photos(@album, user, attachments)
+          end
+        end
+
+        # Add contributors from cc: if this email created a new album
+        if album_name == 'new' && @album
+           if params[:cc] && params[:cc].length > 0
+              ccs = Mail::AddressList.new( params[:cc] )
+              ccs.addresses.each do | contributor|
+                @album.add_contributor( contributor.address )
+              end
+           end
+        end
+
         render :nothing => true, :status => :ok
 
       rescue ActiveRecord::RecordNotFound => ex
         # for not found just log it and return ok so the mailer stops hitting us with this bad email
         # other errors will be logged but retries will continue
         logger.error "Incoming email import album not found will not retry: " + ex.message
-
         # since we are returning status 200 to nginx it will not delete the temp files for us
         # and in this case we are done with them. We return 200 to make sendgrid stop sending
         # since we can't do anything more with this message in the future and that is the
@@ -54,15 +102,14 @@ each album has an email address in the form <album_id>@sendgrid-post.zangzing.co
       rescue => ex
         logger.warn "Incoming email import failed - will retry later: " + ex.message
         render :nothing => true, :status => 400 # non 200 will cause the mailer to retry
-
       end
     else
       # call did not come through remapped upload via nginx or we have no attachments so reject it
       logger.error "Incoming email import album invalid arguments or no attachments will not retry."
+      clean_up_temp_files(attachments)
       render :nothing => true, :status=> :ok
     end
   end
-
 
 protected
 
@@ -78,30 +125,50 @@ protected
         # do the delete since we no longer need the temp file
         # and nginx is not going to clean up in this case
         path = fast_local_image['filepath']
-        (File.delete(path) unless path.nil?) rescue nil #ignore any error
+        remove_file(path)
       end
     end
+  end
+
+  def remove_file(path)
+    (File.delete(path) unless path.nil?) rescue nil #ignore any error
   end
 
   # take the incoming file attachments and make photos out of them
   def add_photos(album, user, attachments)
     if attachments.count > 0
-      last_photo = nil
-      current_batch = UploadBatch.get_current( user.id, album.id )
+      photos = []
+      current_batch = UploadBatch.get_current_and_touch( user.id, album.id )
       attachments.each do |fast_local_image|
-        photo = Photo.create(
-                :user_id => user.id,
-                :album_id => album.id,
-                :upload_batch_id => current_batch.id,
-                :caption => fast_local_image["original_name"],
-                #create random uuid for this photo
-                :source_guid => "email:"+UUIDTools::UUID.random_create.to_s)
-        # use the passed in temp file to attach to the photo
-        photo.fast_local_image = fast_local_image
-        photo.save
-        last_photo = photo
+        content_type = fast_local_image['content_type']
+        file_path = fast_local_image['filepath']
+        if Photo.valid_image_type?(content_type) == false
+          # not a valid file type, just ignore and remove file
+          remove_file(file_path)
+        else
+          begin
+            photo = Photo.new_for_batch(current_batch, {
+                    :id => Photo.get_next_id,
+                    :user_id => user.id,
+                    :album_id => album.id,
+                    :upload_batch_id => current_batch.id,
+                    :caption => fast_local_image["original_name"],
+                    :source => 'email',
+                    #create random uuid for this photo
+                    :source_guid => "email:"+UUIDTools::UUID.random_create.to_s})
+            # use the passed in temp file to attach to the photo
+            photo.file_to_upload = file_path
+            photos << photo
+          rescue PhotoValidationError => ex
+            # if it's a validation error, ignore and continue.  Probably just
+            # a bad type of upload (i.e. not a photo)
+          end
+        end
       end
-      last_photo.upload_batch.close
+
+      # bulk insert
+      Photo.batch_insert(photos)
+      current_batch.close()
     end
   end
 

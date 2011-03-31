@@ -6,15 +6,23 @@ class Connector::MsliveController < Connector::ConnectorController
   
 protected
 
+  def http_timeout
+    SERVICE_CALL_TIMEOUT[:mslive]
+  end
+
   def service_login_required
     unless consent_token
       @token_string = service_identity.credentials
-      @consent_token = live_api.processConsentToken(@token_string)
+      SystemTimer.timeout_after(http_timeout) do
+        @consent_token = live_api.processConsentToken(@token_string)
+      end
       if consent_token
         if not consent_token.isValid?
-          if (consent_token.refresh and consent_token.isValid?)
-            @token_string = consent_token.token
-            service_identity.update_attribute(:credentials, @token_string)
+          SystemTimer.timeout_after(http_timeout) do
+            if (consent_token.refresh and consent_token.isValid?)
+              @token_string = consent_token.token
+              service_identity.update_attribute(:credentials, @token_string)
+            end
           end
         end
       end
@@ -54,7 +62,10 @@ protected
     end
     request = Net::HTTP::Get.new(service_uri.request_uri, 'Authorization' => "DelegatedToken dt=\"#{consent_token.delegationtoken}\"")
     begin
-      response = http.request(request)
+      response = nil
+      SystemTimer.timeout_after(http_timeout) do
+        response = http.request(request)
+      end
     rescue => e
       if e.kind_of?(SocketError)
         raise HttpCallFail
@@ -62,13 +73,12 @@ protected
         raise e
       end
     end
-    XmlSimple.xml_in(response.body)
+    response.body
   end
 
   CONTACTS_API_URL = 'https://livecontacts.services.live.com/users/@L@%s/REST'
   def request_contacts_service(relative_url)
     make_signed_request("#{CONTACTS_API_URL % consent_token.locationid.upcase}#{relative_url}")
-    #XmlSimple.xml_in("#{Rails.root}/live_contacts.xml")
   end
 
 end

@@ -1,24 +1,28 @@
-<div class="flash-box">
+<div id="signin-flashbox" class="flash-box">
   <%if @user_session && @user_session.errors%>
       <%@user_session.errors.each do | key, value| %>
-          <%if key == 'email' || key == 'password' %>
-              <p class="error-notice"><%=key %> <%=value %></p>
-          <%else %>
-              <p class="error-notice"><%=value %></p>
-          <% end %>
+          <p class="error-notice"><%=key %> <%=value %></p>
       <%end%>
   <%else %>
       <p class="error-notice">Please check the highlighted field(s) below...</p>
   <%end %>
+  <% [:notice, :error].each do |key| %>
+     <% if flash[key] %>
+        <div class="<%= key %>" id="flash">
+          <%= flash[key] %>
+        </div>
+     <% end %>
+  <% end %>
 </div>
 
-<form method="post" id="new_user_session" class="new_user_session" action="/user_sessions">
+<form method="post" id="new_user_session" class="new_user_session" action=<%=user_sessions_path%>>
+  <input style="visibility:hidden" type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>"></input>
   <dl class="clearfix">
     <dt><label for="user_session_email">Username or Email Address</label></dt>
     <dd><input type="text" size="30" name="user_session[email]" id="user_session_email"></dd>
     <dt><label for="user_session_password">Password</label></dt>
     <dd><input type="password" size="30" name="user_session[password]" id="user_session_password"></dd>
-    <dt class="dialog-buttons"><a class="hyperlink-button" href="/password_resets/new">Forgot your password?</a></dt>
+    <dt class="dialog-buttons"><a class="hyperlink-button" href=<%=password_reset_mailto%>>Forgot your password?</a></dt>
     <dd class="dialog-buttons">
       <div style="float:right;"><a id="signin-form-cancel-button" class="black-button"><span>Cancel</span></a> <a id="signin-form-submit-button" class="green-button"><span>Sign In</span></a></div>
       <input type="submit" style="visibility:hidden"/>

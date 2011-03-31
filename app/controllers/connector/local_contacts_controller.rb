@@ -1,6 +1,9 @@
 class Connector::LocalContactsController < ApplicationController
   before_filter :oauth_required, :only => [:import]
 
+  skip_before_filter :verify_authenticity_token, :only => [:import]
+
+
   def index
     @contacts = current_user.identity_for_local.contacts
   end
@@ -15,22 +18,27 @@ class Connector::LocalContactsController < ApplicationController
         :address => entry['Email']
       }
       next if props[:address].blank?
-      props[:name] = props[:address].split('@').first unless props[:name]
+      props[:name] = props[:address].split('@').first if props[:name].blank?
       imported_contacts << Contact.new(props)
     end
 
     unless imported_contacts.empty?
-      identity.contacts.destroy_all
-      imported_contacts.each {|c| identity.contacts << c  }
-      identity.contacts_refreshed
-      if identity.save
-        render :json => imported_contacts.to_json( :only => [ :name, :address ])
-      else
-        render :status => 500, :text => identity.errors.full_messages.join(', ')
+      success = false
+      Contact.transaction do
+        identity.destroy_contacts
+        success = identity.import_contacts(imported_contacts) > 0
+        if success
+          identity.update_attribute(:last_contact_refresh, Time.now)
+        else
+          raise ActiveRecord::Rollback
+        end
       end
-    else
-      render :json => imported_contacts.to_json( :only => [ :name, :address ])
+      unless success
+        render :json => ['Something went wrong'], :status => 401
+        return
+      end
     end
+    render :json => imported_contacts.to_json
   end
 
 

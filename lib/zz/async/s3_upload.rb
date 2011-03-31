@@ -33,21 +33,45 @@ module ZZ
         end 
           
         def self.perform( photo_id )
-
-# used to force failures for testing
-#          raise Exception.new("testing")
-
-          photo = Photo.find(photo_id)
-          photo.upload_to_s3
-          photo = nil
+          SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
+            photo = Photo.find(photo_id)
+            self.upload_to_s3(photo)
+          end
         end
 
         def self.on_failure_notify_photo(e, photo_id )
-          photo = Photo.find(photo_id)
-          photo.update_attributes(:state => 'error', :error_message => 'Failed to upload the image to S3')
-          photo = nil
+          begin
+            SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
+              photo = Photo.find(photo_id)
+              photo.update_attributes(:state => 'error', :error_message => 'Upload S3: ' + e.message)
+            end
+          rescue Exception => ex
+            # eat any exception in the error handler
+          end
         end
-        
+
+
+        #
+        # Upload the original image to S3 from our local temp file
+        # Must be prepared to deal with retries if some operation on this
+        # call happens to fail since the resque worker will potential attempt
+        # retires on certain failures.  Because it has the criteria for those
+        # failures that will retry, it retains ownership of the temp file
+        # until it determines the outcome at which point it will either hold onto
+        # it for a retry or remove it if we will not be retrying.
+        #
+        def self.upload_to_s3(photo)
+          begin
+            photo.upload_source
+          rescue => ex
+            Rails.logger.debug("Upload to S3 Failed: " + ex)
+            if self.should_retry(ex) == false
+               # not going to be retrying, so safe to remove temp file
+               photo.remove_source
+            end
+            raise ex
+          end
+        end
     end
   end
 end

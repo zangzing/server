@@ -1,18 +1,26 @@
-<li class="clearfix">
+<li class="item tab share">
   <a name="<%=activity.share.id%>"></a>
-  <div class="timeline-badge">
-    <%= render :partial => 'users/stacked_badge', :locals => { :user => activity.user }    %>
-  </div>
-  <div class="timeline-action">
-    <p><a href="<%=user_path(activity.user)%>"><%=activity.user.name%></a> shared  "<%=activity.album.name%>"
-    <%case activity.share%>
-        <% when EmailShare then%>
+  <div class="title">
+    <a href="<%=user_path(activity.user)%>">
+      <div class="profile-photo">
+        <%= render :partial => 'users/profile_photo', :locals => { :user => activity.user }    %>
+      </div>
+    </a>
+    <div class="profile-name">
+    <a href="<%=user_path(activity.user)%>">
+        <span class="blue"><%=activity.user.name%></span>
+    </a>
+    shared  "<%=activity.share.subject.name%>"
+    <%case activity.share.service%>
+        <% when 'email' then%>
           by Email
-        <% when PostShare  then%>
-          on <%= activity.share.recipients.first.service.capitalize%>
-         <%= ( activity.share.recipients.count >1 ? ' and '+activity.share.recipients.last.service.capitalize : '' )  %>
+        <% when 'social'  then%>
+          on <%= activity.share.recipients.first.capitalize%>
+         <%= ( activity.share.recipients.count >1 ? ' and '+activity.share.recipients.last.capitalize : '' )  %>
     <%end%>
-    </p>
-    <p class="timeline-when"><%=time_ago_in_words(activity.share.created_at) %> ago </p>
+     <div class="tagline"><%=time_ago_in_words(activity.share.created_at) %> ago</div>
+    </div>
+  </div>
+  <div class="content">
   </div>
 </li>

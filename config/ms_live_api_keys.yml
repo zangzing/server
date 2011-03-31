@@ -10,11 +10,11 @@ perftest:   #these won't work on localhost
   :secret_key: wNKEtVYRfY7Yy1wpq2JdKZExE1ZTRIIw
 
 
-eysandbox: 
+photos_staging:
   :client_id: 000000004804221F
   :secret_key: wNKEtVYRfY7Yy1wpq2JdKZExE1ZTRIIw
 
 
-eydevelopment: 
+photos_production:
   :client_id: 0000000048042120
   :secret_key: l7wGkpBrRQQ5D1uBuFl1G2iBB1NyPdun

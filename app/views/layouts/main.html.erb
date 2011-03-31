@@ -3,9 +3,10 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=100" > <!-- IE8 mode -->
     
+    <meta http-equiv="Content-Language" Content="en">
 
     <meta charset="utf-8">
-    <meta name="copyright" content="Copyright 2010, ZangZing, Inc. All Rights Reserved." />
+    <meta name="copyright" content="Copyright 2011, ZangZing, LLC. All Rights Reserved." />
     <meta name="DC.title" content="ZangZing" />
     <meta name="title" content="ZangZing" />
 <%  if @meta_description -%>
@@ -13,29 +14,45 @@
 <%  end %>
     <%= yield :meta_tags %>
 
-
+    <link rel="shortcut icon" href="/favicon.ico"/>
 
     <% if @page_title_override 
        title = @page_title_override
     else
-       title = "ZangZing" 
+       title = "ZangZing - Group Photo Sharing"
     end
-    if ! Rails.env.production?
+    if ! Rails.env.photos_production?
       title = "#{title} Version: #{Server::Application.config.zangzing_version} Controller: #{controller.controller_name} Action: #{ controller.action_name}"
     end %>
     <title><%=title%></title>
 
+
+    <% if ! compatible_browser? %>
+    <script>
+        document.location.href = "/upgrade.html";
+    </script>
+    <% end %>
+
     <%= include_stylesheets :common %>
+    <style type="text/css" media="screen, projection">
+      @import url(http://asset0.zendesk.com/external/zenbox/v2.1/zenbox.css);
+    </style>
 
-    <link href="http://s3.amazonaws.com/getsatisfaction.com/feedback/feedback.css" rel="stylesheet" type="text/css" />
 
-    <link rel="shortcut icon" href="/favico.ico"/>
+
 
 
 <%  # Add in template based style tags by defining this in the template -%>
     <% yield :page_stylesheet %>
 <%   # Add in template based scripts that need to be in the head by defining this in the template -%>
     <%= yield :page_head %>
+
+	<script>
+		var zza_config_GOOGLE_ANALYTICS_TOKEN = '<%=ZZA_CONFIG[:GOOGLE_ANALYTICS_TOKEN]%>';
+		var zza_config_MIXPANEL_TOKEN = '<%=ZZA_CONFIG[:MIXPANEL_TOKEN]%>';
+		var zza_config_ZZA_ID = '<%=ZZA_CONFIG[:ZZA_ID]%>';
+	</script>
+
   </head>
   <body id="<%= controller.controller_name + '-' + controller.action_name %>" class="<%= controller.controller_name %>">
     
@@ -63,20 +80,20 @@
       </ul>
     </div>
 
+	<script type="text/javascript">
+	<%    if signed_in?  -%>
+	      	zuserid = '<%= current_user.id %>';
+	<%	  else %>
+    		zuserid = null;
+	<%    end -%>	
+	</script>
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-    <%= include_javascripts :jquery_lib %>
+	<script type="text/javascript" src="http://zza.zangzing.com/zza.js"></script>
+    <%= include_javascripts :lib %>
     <%= include_javascripts :zz %>
     <%= include_javascripts :zz_oauthmanager %>
-    <%= include_javascripts :zza %>
 
-    <script src='http://s3.amazonaws.com/getsatisfaction.com/feedback/feedback.js' type='text/javascript'></script>
-    <script type="text/javascript" charset="utf-8">
-        var tab_options = {}
-        tab_options.placement = "hidden";  // left, right, bottom, hidden
-        tab_options.color = "#222"; // hex (#FF0000) or color (red)
-        GSFN.feedback('http://getsatisfaction.com/zangzing/feedback/topics/new?display=overlay&style=idea', tab_options);
-    </script>
 
 
     <%   # Pull in generated javascript for the page -%>
@@ -86,26 +103,43 @@
       ----------------------------------------------------------------------- */
 <%    if signed_in?  -%>
       zz.current_user_id = '<%= current_user.id %>';
-      zz.current_user_name = '<%= current_user.username %>';
+      zz.current_user_name = '<%= escape_javascript current_user.username %>';
 <%    end -%>
+
+<%  if @user   %>
+      zz.displayed_user_id = '<%=  @user.id %>';
+<%  end -%>
 
 <%  if @album  -%>
       zz.album_id = '<%= @album.id %>';
-      zz.album_type = '<%= @album.type %>';
+      zz.album_type = '<%=escape_javascript @album.type %>';
       zz.album_lastmod = '<%= @album.photos_last_updated_at.to_i %>';
       zz.album_type = zz.album_type.split('Album')[0].toLowerCase();
+      zz.displayed_user_id = '<%= @album.user.id %>';
+      zz.album_base_url = '/<%=escape_javascript @album.user.username%>/<%=escape_javascript @album.friendly_id%>';
+      zz.user_base_url = '/<%=escape_javascript @album.user.username%>';
+      zz.album_name = zz.win_download_url;
+      zz.back_to_home_page_url = '<%= back_to_home_page_url @album %>';
+
 <%    end
       # This is where we pass things on to js that we need from ruby.
       # Remember to use the zz.zang namespace.
 -%>
-      zz.base = '<%= request.env['HTTP_HOST'] %>';
 
-      /* Fire up our inits starting up the entire waxy ball!!
+
+      zz.rails_controller_name = '<%= controller.controller_name %>';
+      zz.rails_action_name = '<%= controller.action_name %>';
+      zz.rails_authenticity_token = '<%= form_authenticity_token %>';
+
+      zz.win_download_url = '<%= ZangZingConfig.config[:agent_download_url_win] %>';
+      zz.mac_download_url = '<%= ZangZingConfig.config[:agent_download_url_mac] %>';
+
+      /* init
       ----------------------------------------------------------------------- */
-      (function($) {
+      zz.init.template();
 
-      $(function() {
-            zz.init.template();
+
+
 
       <%if controller.controller_name == 'photos' -%>
             zz.init.album();
@@ -119,21 +153,30 @@
             zz.init.album_people_view();
       <%end%>
 
-       });
-       $(window).bind("load", function() {
-<%      # Same here... -%>
+      $(window).bind("load", function() {
           setTimeout('zz.init.loaded()', 64);
-        });
+      });
 
-        $(window).bind("resize", function() {
-<%      # And here... -%>
+      $(window).bind("resize", function() {
           zz.init.resized();
-        });
+      });
 
-      })(jQuery);
+      $(document).ready(function(){
+          Zenbox.init({
+            dropboxID:   "14620",
+            url:         "https://zangzing.zendesk.com",
+            tabID:       "help",
+            tabColor:    "black",
+            tabPosition: "Left"
+          });
+
+          <%if session[:client_dialog] %>
+          pages.alert_dialog.show( '<%=raw session[:client_dialog] %>' );
+          <% session[:client_dialog] = nil %>
+          <%end%>
+      });
+
     </script>
-
-
 
 
   </body>
