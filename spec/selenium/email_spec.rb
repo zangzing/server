@@ -4,6 +4,8 @@ require 'spec/selenium/connector_shared'
 require 'spec/selenium/gmail_tool'
 require 'pony'
 
+MAIL_TEST_DOMAIN = 'test.zangzing.com'
+
 SMTP_OPTIONS = {
         :address        => 'smtp.gmail.com',
         :port           => 587,
@@ -50,9 +52,9 @@ describe "Email test" do
 
   it "adds 3 contributors" do
     @@contributors = [
-      "contrib-#{current_user[:stamp].downcase}-a@bucket.zangzing.com",
-      "contrib-#{current_user[:stamp].downcase}-b@bucket.zangzing.com",
-      "contrib-#{current_user[:stamp].downcase}-c@bucket.zangzing.com"
+      "contrib-#{current_user[:stamp].downcase}-a@#{MAIL_TEST_DOMAIN}",
+      "contrib-#{current_user[:stamp].downcase}-b@#{MAIL_TEST_DOMAIN}",
+      "contrib-#{current_user[:stamp].downcase}-c@#{MAIL_TEST_DOMAIN}"
     ]
     ui.wizard.click_contributors_tab
     #ui.wizard.album_contributors_tab.visible?.should be_true
@@ -84,8 +86,8 @@ describe "Email test" do
 
   it "shares album by email with 2 peeps" do
     @@coauthors = [
-      "coauth-#{current_user[:stamp].downcase}-first@bucket.zangzing.com",
-      "coauth-#{current_user[:stamp].downcase}-second@bucket.zangzing.com",
+      "coauth-#{current_user[:stamp].downcase}-first@#{MAIL_TEST_DOMAIN}",
+      "coauth-#{current_user[:stamp].downcase}-second@#{MAIL_TEST_DOMAIN}",
     ]
     ui.wizard.click_share_tab
     ui.wizard.album_share_tab.click_share_by_email

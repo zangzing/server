@@ -10,7 +10,7 @@ module UimodelHelper
       :full_name => "AutoTest #{stamp}",
       :username => "user#{stamp.downcase}",
       :password => '123456',
-      :email => "selenium_#{stamp}@bucket.zangzing.com",
+      :email => "selenium_#{stamp}@test.zangzing.com",
       :stamp => stamp
     }
   end

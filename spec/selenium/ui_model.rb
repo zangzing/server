@@ -36,13 +36,14 @@ module UiModel
     end
 
     def create_session!
+      @timeout = 15
       @browser = Selenium::Client::Driver.new(
         :host => "localhost",
         :port => 4444,
       #	:browser => "*googlechrome", #in chrome does not work ssl
         :browser => "*firefox",
         :url => "http://#{ZZ_HOST}/",
-        :timeout_in_second => 60,
+        :timeout_in_seconds => @timeout,
         :javascript_framework => :jquery
       )
       @browser.start_new_browser_session('commandLineFlags' => '--disable-web-security')
@@ -56,6 +57,16 @@ module UiModel
     def open_site!
       @browser.open "/"
     end
+    
+    def timeout
+      @timeout
+    end
+    
+    def timeout=(seconds_amount)
+      @timeout = seconds_amount
+      @browser.remote_control_timeout_in_seconds = seconds_amount
+    end
+    
 
  private
     def recreate_item_classes!
