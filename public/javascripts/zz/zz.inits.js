@@ -788,17 +788,17 @@ zz.init = {
                     //var moreLessbuttonElement = $(element).siblings('.more-less-btn');
                     moreLessbuttonElement.click(function(){
                         if(allShowing){
+                            moreLessbuttonElement.find("span").html("Show more photos");
+                            moreLessbuttonElement.removeClass('open');
                             $(element).animate({height:230}, 500, 'swing', function(){
-                                moreLessbuttonElement.find("span").html("Show more photos");
-                                moreLessbuttonElement.removeClass('open');
                             });
                             allShowing = false;
                         }
                         else {
+                            moreLessbuttonElement.find("span").html("Show fewer photos");
+                            moreLessbuttonElement.addClass('open');
                             $(element).animate({height: $(element).children().last().position().top + 180}, 500, 'swing', function() {
                                 $(element).trigger('scroll');  //hack: force the photos to load themselves now that they are visible
-                                moreLessbuttonElement.find("span").html("Show less photos");
-                                moreLessbuttonElement.addClass('open');
                             });
                             allShowing = true;
 

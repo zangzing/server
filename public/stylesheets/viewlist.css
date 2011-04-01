@@ -61,7 +61,7 @@
 /*each item has a title div and a content div */
 .viewlist .item .title{
     height:  45px;
-    margin-top: 10px;
+    margin-top: 6px;
 }
 /* The items with a hanging tab, add this class plus add like,share,add to choose which icon to display */
 .viewlist .item.tab{
