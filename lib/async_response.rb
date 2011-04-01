@@ -1,4 +1,4 @@
-class AsynchResponse
+class AsyncResponse
   class << self
 
     def new_response_id

@@ -45,7 +45,8 @@ class Connector::ShutterflyPhotosController < Connector::ShutterflyController
     )
 
     ZZ::Async::GeneralImport.enqueue( photo.id, photo_url )
-    render :json => Photo.to_json_lite(photo)
+    json = Photo.to_json_lite(photo)
+    return json
   end
 
   def index

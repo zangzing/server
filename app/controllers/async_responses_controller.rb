@@ -1,13 +1,12 @@
 class AsyncResponsesController < ApplicationController
   def show
-    response = AsynchResponse.get_response(params[:response_id])
-=begin
-    if response.nil?
-      response.headers["X-Poll-for-response"] = asynch_response_url(params[:response_id])
-      render :nothing => true
-      return
+    body = AsyncResponse.get_response(params[:response_id])
+
+    if body.nil?
+      response.headers["x-poll-for-response"] = async_response_url(params[:response_id])
+      render :json => {:message => "poll-for-response"}
+    else
+      render :json => body
     end
-=end
-    render :json => response
   end
 end

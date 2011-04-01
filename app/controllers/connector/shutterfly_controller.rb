@@ -12,10 +12,10 @@ class Connector::ShutterflyController < Connector::ConnectorController
   end
 
   def fire_async_response
-    response_id = AsynchResponse.new_response_id
+    response_id = AsyncResponse.new_response_id
     ZZ::Async::Connectors::ShutterflyResponse.enqueue(response_id, service_identity.id, transform_params(params))
-    response.headers["X-Poll-for-response"] = asynch_response_url(response_id)
-    render :nothing => true
+    response.headers["x-poll-for-response"] = async_response_url(response_id)
+    render :json => {:message => "poll-for-response"}
   end
 
   def self.api_from_identity(identity)

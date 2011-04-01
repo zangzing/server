@@ -154,7 +154,7 @@ Server::Application.routes.draw do
     # all in this section are in the Connector namespace but don't include it in the path
     scope :module => "connector" do
       #Asynch responses
-      get 'asynch_responses/:response_id' => 'async_responses#show', :as => :asynch_response
+      get 'async_responses/:response_id' => 'async_responses#show', :as => :async_response
 
       #flickr
       match '/flickr/sessions/new' => 'flickr_sessions#new', :as => :new_flickr_session
