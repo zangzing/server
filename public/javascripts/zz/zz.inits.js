@@ -544,52 +544,52 @@ zz.init = {
                 }
 
 
-                //setup upload progress smeter
-                $('#progress-meter').hide();
-
-                var updateProgressMeter = function() {
-
-                    var photo_count = json.length; //todo: photos shouln't be a global variable
-
-                    upload_stats.stats_for_album(zz.album_id, photo_count, function(time_remaining, percent_complete) {
-                        percent_complete = Math.round(percent_complete);
-
-                        if (percent_complete < 100) {
-                            var minutes = Math.round(time_remaining / 60);
-                            var step = 0;
-
-                            if (percent_complete > 0) {
-                                step = Math.round(percent_complete / 6.25);
-                            }
-
-
-                            $('#progress-meter').css('background-image', 'url(/images/upload-' + step + '.png)');
-
-
-                            if (minutes === Infinity) {
-                                $('#nav-status').text("Calculating...");
-                            }
-                            else {
-                                var minutes_text = "Minutes";
-                                if (minutes === 1) {
-                                    minutes_text = "Minute"
-                                }
-                                $('#progress-meter-label').text(minutes + ' ' + minutes_text);
-                            }
-
-                            $('#progress-meter').show();
-                        }
-                        else {
-                            $('#progress-meter').hide();
-                        }
-                    });
-                }
-
-                updateProgressMeter();
-
-                //todo: need to shut this down if we leave album page ajax-ly
-                //update album upload status every 10 seconds
-                setInterval(updateProgressMeter, 10000);
+//                //setup upload progress smeter
+//                $('#progress-meter').hide();
+//
+//                var updateProgressMeter = function() {
+//
+//                    var photo_count = json.length; //todo: photos shouln't be a global variable
+//
+//                    upload_stats.stats_for_album(zz.album_id, photo_count, function(time_remaining, percent_complete) {
+//                        percent_complete = Math.round(percent_complete);
+//
+//                        if (percent_complete < 100) {
+//                            var minutes = Math.round(time_remaining / 60);
+//                            var step = 0;
+//
+//                            if (percent_complete > 0) {
+//                                step = Math.round(percent_complete / 6.25);
+//                            }
+//
+//
+//                            $('#progress-meter').css('background-image', 'url(/images/upload-' + step + '.png)');
+//
+//
+//                            if (minutes === Infinity) {
+//                                $('#nav-status').text("Calculating...");
+//                            }
+//                            else {
+//                                var minutes_text = "Minutes";
+//                                if (minutes === 1) {
+//                                    minutes_text = "Minute"
+//                                }
+//                                $('#progress-meter-label').text(minutes + ' ' + minutes_text);
+//                            }
+//
+//                            $('#progress-meter').show();
+//                        }
+//                        else {
+//                            $('#progress-meter').hide();
+//                        }
+//                    });
+//                }
+//
+//                updateProgressMeter();
+//
+//                //todo: need to shut this down if we leave album page ajax-ly
+//                //update album upload status every 10 seconds
+//                setInterval(updateProgressMeter, 10000);
 
                 // Update the like array if it exists.
                 if (typeof( like ) != 'undefined') {

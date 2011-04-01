@@ -694,19 +694,19 @@ div#account-image .pp-photo{
 }
 
 
-/*           Upload Progress Meter
- ***************************************************/
+/*           Upload Progress Meter*/
+ /****************************************************/
 
-#footer #progress-meter{
-    display:none;
-    position:absolute;
-    left:170px;
-    top:1px;
-    background: url("/images/upload-0.png") no-repeat scroll 37px 10px transparent;
-    height:55px;
-    width:100px;
+/*#footer #progress-meter{*/
+    /*display:none;*/
+    /*position:absolute;*/
+    /*left:170px;*/
+    /*top:1px;*/
+    /*background: url("/images/upload-0.png") no-repeat scroll 37px 10px transparent;*/
+    /*height:55px;*/
+    /*width:100px;*/
 
-}
+/*}*/
 
 
 
