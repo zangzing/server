@@ -78,7 +78,7 @@ class UploadBatch < ActiveRecord::Base
   def self.finalize_stale_batches
     expired_batches = UploadBatch.unscoped.where("state <> 'finished' AND updated_at < ?", FINALIZE_STALE_INACTIVITY.ago)
     expired_batches.each do |batch|
-      batch.finish_internal(true)  # force it to finish
+      batch.finish(true)  # force it to finish
     end
   end
 
