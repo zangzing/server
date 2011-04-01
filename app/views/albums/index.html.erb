@@ -69,7 +69,7 @@
                 },
                 onDelete: function(){
                     if(confirm("Are you sure you want to delete this album?")){
-                        clone.hide("scale", {}, 300, function(){
+                        clone.find('.picon').hide("scale", {}, 300, function(){
                             clone.remove();
                         });
                         deleteAlbum(<%= album.id %>);
