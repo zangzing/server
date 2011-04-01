@@ -62,25 +62,50 @@ div#container {
 *********************************************************************/
 
 .profile-picture {
- height: 100%;
- width: 100%;
- -moz-border-radius: 10%;
- -webkit-border-radius: 10%;
- background-color: white;
- border: 1px solid #cccccc;
+     position:relative;
+     height: 100%;
+     width: 100%;
+     -moz-border-radius: 4px;
+     -webkit-border-radius: 4px;
+     /*background-color: white;*/
+     border: 1px solid #cccccc;
+     overflow:hidden;
+     padding:1px;
 }
 
 
-.pp-photo {
-  margin: 10%;
-  width: 80%;
-  height: 80%;
- -moz-border-radius: 10%;
- -webkit-border-radius: 10%;
-  background-size: cover;
- -moz-background-size: cover;
- -webkit-background-size: cover;
+.profile-picture .mask{
+    position:absolute;
+    top:0px;
+    left:0px;
+    right:0px;
+    bottom:0px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border: 2px white solid;
+    overflow:hidden;
 }
+
+.profile-picture img{
+    /*-moz-border-radius: 3px;*/
+    /*-webkit-border-radius: 3px;*/
+    position:absolute;
+    width:38px;
+    /*height:40px;*/
+    /*width:40px;*/
+
+}
+
+/*.pp-photo {*/
+  /*margin: 10%;*/
+  /*width: 80%;*/
+  /*height: 80%;*/
+ /*-moz-border-radius: 10%;*/
+ /*-webkit-border-radius: 10%;*/
+  /*background-size: cover;*/
+ /*-moz-background-size: cover;*/
+ /*-webkit-background-size: cover;*/
+/*}*/
 
 
 .stacked-badge{
@@ -515,11 +540,11 @@ div#container {
     width: 25px;
 }
 
-div#account-image .pp-photo{
-    height: 100%;
-    width: 100%;
-    margin: 0%
-}
+/*div#account-image .pp-photo{*/
+    /*height: 100%;*/
+    /*width: 100%;*/
+    /*margin: 0%*/
+/*}*/
 
 #header #account-badge.disabled {
     cursor:default;

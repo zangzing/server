@@ -322,8 +322,11 @@ zz.init = {
 
         setTimeout(function() {
             zz.init.preload_rollover_images();
-        }
-                , 500);
+        }, 500);
+
+
+        profile_pictures.init_profile_pictures();
+
 
     },
 
