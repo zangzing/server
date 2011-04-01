@@ -1,4 +1,3 @@
-require 'lib/zz/mailchimp'
 require 'lib/album_cache_manager'
 
 silence_warnings do #To avoid warning of overwriting constant
