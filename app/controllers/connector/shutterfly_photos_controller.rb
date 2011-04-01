@@ -1,11 +1,10 @@
 class Connector::ShutterflyPhotosController < Connector::ShutterflyController
 
-  def index
-    photos_list = nil
-    SystemTimer.timeout_after(http_timeout) do
-      photos_list = sf_api.get_images(params[:sf_album_id])
-    end
-    File.open("#{Rails.root}/#{params[:sf_album_id]}.yml", 'w'){|f| f.write(YAML.dump(photos_list))}
+  def self.photos_list(api_client, params)
+    #photos_list = nil
+    #SystemTimer.timeout_after(http_timeout) do
+      photos_list = api_client.get_images(params[:sf_album_id])
+    #end
     photos = photos_list.map { |p|
      {
         :name => p[:title],
@@ -13,37 +12,29 @@ class Connector::ShutterflyPhotosController < Connector::ShutterflyController
         :type => 'photo',
         :thumb_url => get_photo_url(p[:id], :thumb),
         :screen_url => get_photo_url(p[:id], :screen),
-        :add_url => shutterfly_photo_action_path({:sf_album_id =>params[:sf_album_id], :photo_id => p[:id], :action => 'import'}),
+        :add_url => shutterfly_photo_action_path(:sf_album_id =>params[:sf_album_id], :photo_id => p[:id], :action => 'import', :format => 'json'),
         :source_guid => make_source_guid(p)
 
      }
     }
-    expires_in 10.minutes, :public => false
-    render :json => JSON.fast_generate(photos)
-
+    JSON.fast_generate(photos)
   end
 
-#  def show
-#    photo_url = get_photo_url(params[:photo_id], (params[:size] || :screen).to_sym)
-#    bin_io = OpenURI.send(:open, photo_url)
-#    send_data bin_io.read, :type => bin_io.meta['content-type'], :disposition => 'inline'
-#  end
-
-  def import
-    photos_list = nil
-    SystemTimer.timeout_after(http_timeout) do
-      photos_list = sf_api.get_images(params[:sf_album_id])
-    end
+  def self.import_photo(api_client, params, identity)
+    #photos_list = nil
+    #SystemTimer.timeout_after(http_timeout) do
+      photos_list = api_client.get_images(params[:sf_album_id])
+    #end
     photo_info = photos_list.select { |p| p[:id]==params[:photo_id] }.first
     photo_title = photo_info[:title]
-    
+
     photo_url = get_photo_url(params[:photo_id],  :full)
-    current_batch = UploadBatch.get_current_and_touch( current_user.id, params[:album_id] )
+    current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     photo = Photo.create(
             :id => Photo.get_next_id,
             :caption => photo_title,
             :album_id => params[:album_id],
-            :user_id=>current_user.id,
+            :user_id=>identity.user.id,
             :upload_batch_id => current_batch.id,
             :capture_date => (Time.at(photo_info[:capturetime].to_i/1000) rescue nil),
             :source_guid => make_source_guid(photo_info),
@@ -52,10 +43,17 @@ class Connector::ShutterflyPhotosController < Connector::ShutterflyController
             :source => 'shutterfly'
 
     )
-    
-    ZZ::Async::GeneralImport.enqueue( photo.id,  photo_url )
-    render :json => Photo.to_json_lite(photo)
 
+    ZZ::Async::GeneralImport.enqueue( photo.id, photo_url )
+    render :json => Photo.to_json_lite(photo)
+  end
+
+  def index
+    fire_async_response
+  end
+
+  def import
+    fire_async_response
   end
 
 end

@@ -29,14 +29,14 @@ describe "My pictures connector" do
     end
   end
 
-  it "adds one random photo from Picasa's 'miniMediumAlbum'" do
+  it "adds 5 random photos from My Pictures' 'miniMediumAlbum'" do
     unless @@no_agent
       ui.wizard.add_photos_tab.click_folder "miniMediumAlbum"
       import_random_photos(5)
     end
   end
 
-  it "adds one random photo from Picasa's 'miniLargeAlbum'" do
+  it "adds 5 random photos from My Pictures' 'miniLargeAlbum'" do
     unless @@no_agent
       ui.wizard.add_photos_tab.click_folder "miniLargeAlbum"
       import_random_photos(5)

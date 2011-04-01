@@ -1,7 +1,8 @@
 class Connector::ConnectorController < ApplicationController
   require 'connector_exceptions'
-
-  #USER_STUB = Struct.new(:id)
+  class << self
+    include Server::Application.routes.url_helpers
+  end
 
   layout false
   
@@ -20,6 +21,10 @@ class Connector::ConnectorController < ApplicationController
   end
 
   def bulk_insert(photos)
+    render :json => Connector::ConnectorController.bulk_insert(photos)
+  end
+  
+  def self.bulk_insert(photos)
     # bulk insert
     Photo.batch_insert(photos)
 
@@ -28,12 +33,20 @@ class Connector::ConnectorController < ApplicationController
       ZZ::Async::GeneralImport.enqueue( photo.id, photo.temp_url )
     end
 
-    render :json => Photo.to_json_lite(photos)
+    Photo.to_json_lite(photos)
   end
 
-  #def current_user
-  #  USER_STUB.new(77)
-  #end
+
+protected
+  def transform_params(source_params)
+    out_params = source_params.dup
+    action = out_params.delete(:action)
+    controller = out_params.delete(:controller)
+    out_params.delete(:format)
+    out_params[:method] = "#{controller.split('/').last}##{action}"
+    out_params
+  end
+  
 private
 
   def check_params_for_import
