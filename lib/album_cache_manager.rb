@@ -29,12 +29,12 @@ class AlbumCacheManager
 
   # todo: make this work with more than one
   def make_redis
-    server = RedisConfig.config[:redis_cache_servers]
-    parts = server.split(':')
-    host = parts[0]
-    port = parts[1]
-    db = parts[2].nil? ? 0 : parts[2]
-    Redis.new(:host => host, :port => port, :db => db)
+#    server = RedisConfig.config[:redis_cache_servers]
+#    parts = server.split(':')
+#    host = parts[0]
+#    port = parts[1]
+#    db = parts[2].nil? ? 0 : parts[2]
+#    Redis.new(:host => host, :port => port, :db => db)
   end
 
   # albums that should be shown to the current users (not a guest)
