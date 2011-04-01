@@ -40,8 +40,9 @@ var image_utils = {
         };
 
         image.onerror = function(){
-            if(_.isFunction(error))
-            error(image);
+            if(_.isFunction(error)){
+                error(image);
+            }
         };
 
 
