@@ -331,9 +331,11 @@
                 //show the small version
                 self.imageElement.attr("src", initialSrc);
 
-                //show the full version
-                self.imageElement.attr("src", self.options.src);
 
+                //show the full version
+                image_utils.pre_load_image(self.options.src, function(image){
+                    self.imageElement.attr("src", self.options.src);
+                });
             });
         },
 
