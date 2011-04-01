@@ -2,16 +2,14 @@
     <%= render :partial => "facebook/user_opengraph_tags" %>
 <% end %>
 
-<%
-    landscape_width = 175
-    landscape_height = 133
 
-    portrait_width = 97
-    portrait_height = 133
-%>
+<% content_for :page_javascript do %>
+<script>
 
+  $(document).ready(function(){
+      var cell = $('<div class="album-cell"></div>');
 
-<%
+      <%
     # first grab all the cover photos in one query
     # this populates the albums in place
     Album.fetch_bulk_covers(@albums)
@@ -35,143 +33,40 @@
         end
 
 %>
-    <div class="album-cell" data-album-id="<%=album_id%>" data-album-path="/<%=album_user_name%>/<%=album_friendly_id%>/photos">
+      (function(clone){
 
-<%
-    if(!album_cover)  #no cover photo
-%>
-          <div class="picon landscape landscape_<%=1+rand(3)%>">
-              <div class="landscape_mask">
-                  <img style="width:<%=landscape_width%>px; height:<%=landscape_height%>px" src="/images/album-no-cover.png">
-              </div>
-          </div>
-<%
-    elsif (album_cover.state != 'ready') #not finished uploading/processing -- just stretch to fit
-%>
-          <div class="picon landscape landscape_<%=1+rand(3)%>">
-              <div class="landscape_mask">
-                  <img style="width:<%=landscape_width%>px; height:<%=landscape_height%>px"  src="<%= add_credentials_to_agent_url(album_cover.thumb_url)%>">
-              </div>
-          </div>
-<%
-    else
-        cover_rotated_width = album_cover.rotated_width
-        cover_rotated_height = album_cover.rotated_height
+          $('#article').append(clone);
 
-        cover_aspect = (cover_rotated_width.to_f / cover_rotated_height.to_f)
+          clone.zz_picon({
+                caption: '<%= album.name %>',
+                coverUrl: '<%= album.cover ? album.cover.thumb_url : "" %>',
+                onClick: function(){
+                  $('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()},500,'easeOutQuart');
+                  document.location.href='<%= album_pretty_url album %>';
+                },
+                onShare: function(){
+                    pages.share.share_in_dialog('album', <%= album.id%>);
+                },
+                onLike: function(){
+                    alert('This feature is still under construction. It will allow you to like an album.')
+                },
+                onDelete: function(){
+                    if(confirm("Are you sure you want to delete this album?")){
+                        clone.hide("scale", {}, 300, function(){
+                            clone.remove();
+                        });
+                        deleteAlbum(<%= album.id %>);
+                    };
 
-        if(cover_rotated_width >= cover_rotated_height) #landscape
-
-            picon_aspect = (landscape_width.to_f / landscape_height.to_f)
-
-            if(cover_aspect >= picon_aspect) #cover is wider aspect than picon; scale to fit height
-                height = landscape_height
-                width = (height * cover_aspect).to_i
-                top = 0
-                left = ((landscape_width - width) / 2).to_i
-
-            else #cover is narrower apect than picon; scale to fit width
-                width = landscape_width
-                height = (width / cover_aspect).to_i
-                left = 0
-                top = ((landscape_height - height)/ 2).to_i
-            end
+                }
+          });
+      })(cell.clone());
+          
 
 
-%>
-          <div class="picon landscape landscape_<%=1+rand(3)%>">
-              <div class="landscape_mask">
-                  <img style="position:relative;width:<%=width%>px; height:<%=height%>px;top:<%=top%>px;left:<%=left%>px;" src="<%= album_cover.thumb_url%>">
-              </div>
-          </div>
-
-
-<%
-        else #portrait
-
-            picon_aspect = (portrait_width.to_f / portrait_height.to_f)
-
-
-            if(cover_aspect >= picon_aspect) #cover is narrower aspect than picon; scale to fit height
-                height = portrait_height
-                width = (height * cover_aspect).to_i
-                top = 0
-                left = ((portrait_width - width) / 2).to_i
-            else #cover is narrower apect than picon; scale to fit width
-                width = portrait_width
-                height = (width / cover_aspect).to_i
-                left = 0
-                top = ((portrait_height - height)/ 2).to_i
-            end
-
-
-%>
-
-          <div class="picon portrait portrait_<%=1+rand(3)%>">
-              <div class="portrait_mask">
-                  <img style="position:relative;width:<%=width%>px; height:<%=height%>px;top:<%=top%>px;left:<%=left%>px;" src="<%= album.cover.thumb_url%>">
-              </div>
-          </div>
-
-<%
-        end 
-   end
-%>
-
-
-
-        <div class="album-name"><%= truncate(h(album_name), :length => 100) %></div>
-        <div class="album-toolbar">
-            <div class="buttons">
-                <div class="share-button"></div>
-                <div class="like-button"></div>
-<% if album.user == current_user && album.type != 'ProfileAlbum' %>
-                <div class="delete-button"></div>
 <% end %>
 
-            </div>
-        </div>
-    </div>
-<% end %>
-
-<% content_for :page_javascript do %>
-
-<script>
-  //todo:move to js file
-  $(document).ready(function(){
-
-      $('.album-cell').each(function(index, element){
-
-          var album_id = $(element).attr('data-album-id');
-          var album_path = $(element).attr('data-album-path');
-
-          //add click handler to picon to navigate to grid view
-          $(element).find('.picon').click(function(){
-              $('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()},500,'easeOutQuart');
-              document.location.href=album_path;
-          });
-
-
-          //add click handler share button
-          $(element).find('.share-button').click(function(){
-              pages.share.share_in_dialog('album', album_id);
-          });
-
-          $(element).find('.like-button').click(function(){
-                alert('This feature is still under construction. It will allow you to like an album.')
-          });
-
-          $(element).find('.delete-button').click(function(){
-              if(confirm("Are you sure you want to delete this album?")){
-                  $(element).hide("scale", {}, 300, function(){
-                      $(element).remove();
-                  });
-                  deleteAlbum(album_id);
-              };
-          });
-
-      });
   });
-</script>
 
+</script>
 <% end %>

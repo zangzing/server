@@ -4,11 +4,14 @@ var image_utils = {
     scale: function(image_dimensions, target_dimensions){
         var scale = Math.min( target_dimensions.width / image_dimensions.width, target_dimensions.height / image_dimensions.height);
 
+
         return {
             width:  Math.floor(image_dimensions.width * scale),
             height: Math.floor(image_dimensions.height * scale)
         }
     },
+
+    
 
 
 
@@ -18,10 +21,15 @@ var image_utils = {
 
     },
 
+    /**
+     *
+     * @param src
+     * @param success (optional)
+     * @param error (optional)
+     */
 
-    //loads image from src and calls callback wth params: 'src', 'image'
-    //returns image object
     pre_load_image: function(src, success, error){
+
 
         var image = new Image();
 
