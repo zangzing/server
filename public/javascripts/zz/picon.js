@@ -12,11 +12,13 @@
             onLike: function(){},
             onShare: function(){},
             onDelete: function(){},
+            allowDelete: false,
             stackAngles: [
                 [-6,-3],
                 [-3,3],
                 [6,3]
             ],
+
             maxCoverWidth: 180,
             maxCoverHeight: 150
 
@@ -71,9 +73,15 @@
                 self.options.onLike();
             });
 
-            self.template.find('.delete-button').click(function(){
-                self.options.onDelete();
-            });
+
+            if(!self.options.allowDelete){
+                self.template.find('.delete-button').hide();
+            }
+            else{
+                self.template.find('.delete-button').click(function(){
+                    self.options.onDelete();
+                });
+            }
 
             self.topOfStack = self.template.find('.stacked-image:last');
 

@@ -58,7 +58,8 @@
                         deleteAlbum(<%= album.id %>);
                     };
 
-                }
+                },
+                allowDelete: <%= album.user == current_user && album.type != 'ProfileAlbum' %>
           });
       })(cell.clone());
           
