@@ -100,31 +100,30 @@
 //            self.options.maxCoverWidth = self.element.width() - 60;
 //            self.options.maxCoverHeight = self.element.height() - self.captionHeight
 
+            self._resize(self.options.maxCoverWidth, self.options.maxCoverHeight);
+
+
             //load cover photo
             if(self.options.coverUrl){
                 image_utils.pre_load_image(self.options.coverUrl, function(image){
+
 
                     var scaledSize = image_utils.scale(image, {width:self.options.maxCoverWidth, height:self.options.maxCoverHeight});
 
                     self._resize(scaledSize.width, scaledSize.height);
                     self.template.find('.cover-photo').attr('src', image.src);
 
-                }, null);
+                });
             }
-
-
-
-
-            self._resize(self.options.maxCoverWidth, self.options.maxCoverHeight);
-
-
 
         },
 
-        
+
+
         _resize: function(coverWidth, coverHeight){
             var self = this;
 
+      
             self.template.find('.cover-photo').css({
                 height:coverHeight,
                 width:coverWidth
@@ -148,6 +147,8 @@
         destroy: function() {
             $.Widget.prototype.destroy.apply( this, arguments );
         }
+        
+
     });
 
 
