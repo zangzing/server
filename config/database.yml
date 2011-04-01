@@ -4,6 +4,7 @@ common: &common
  encoding: utf8
  pool: 5
  cache_database: cache_dev
+ username: root
 
 development:
   <<: *common
