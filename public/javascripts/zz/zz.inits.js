@@ -312,6 +312,13 @@ zz.init = {
             $("form#new_user_session").submit();
         });
 
+
+         $('form#new_user_session').bind('keypress', function(e){
+               if ( e.keyCode == 13 ) {
+                   $("form#new_user_session").submit();
+               }
+         });
+
         //todo: why are these here
         $(zz.validate.sign_in.element).validate(zz.validate.sign_in);
         $(zz.validate.join.element).validate(zz.validate.join);
