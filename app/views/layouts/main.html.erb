@@ -29,7 +29,7 @@
 
     <% if ! compatible_browser? %>
     <script>
-        document.location.href = "/upgrade.html";
+        document.location.href = "/upgrade.html?upgrade_url="<%=upgrade_site_for_browser%>;
     </script>
     <% end %>
 
