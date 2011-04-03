@@ -3,7 +3,8 @@ class AsyncResponse
 
     def new_response_id
       #returns secure guid
-      UUIDTools::UUID.random_create.to_s #.tap{|id| File.open("#{Rails.root}/last_id.txt", 'w'){|f| f.write(id) } }
+#      UUIDTools::UUID.random_create.to_s #.tap{|id| File.open("#{Rails.root}/last_id.txt", 'w'){|f| f.write(id) } }
+      SecureRandom.base64(16).to_s
     end
 
     def store_response(response_id, response)

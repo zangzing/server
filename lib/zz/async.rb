@@ -11,7 +11,7 @@ require 'zz/async/generate_thumbnails'
 require 'zz/async/test_noop'
 require 'zz/async/process_like'
 require 'zz/async/social'
-require 'zz/async/connector_response'
+require 'zz/async/connector_worker'
 
 module ZZ
   module Async

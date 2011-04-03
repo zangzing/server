@@ -1,7 +1,7 @@
 module ZZ
   module Async
       
-    class ConnectorResponse < Base
+    class ConnectorWorker < Base
       @queue = :io_bound
 
       # only add ourselves one time
