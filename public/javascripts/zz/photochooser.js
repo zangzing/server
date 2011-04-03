@@ -774,8 +774,18 @@
 
         add_folder_to_album: function(add_url, element){
             var self = this;
+
+
+
+
+            var callback = function(){
+
+            };
+
+
+
             self.animate_to_tray(element, function(){
-                self.add_to_album(add_url);
+                self.add_to_album(add_url, callback);
             });
 
             $.each(self.grid.cells(), function(index, element){
@@ -823,7 +833,7 @@
 
         },
 
-        add_to_album: function(add_url){
+        add_to_album: function(add_url, success, failure){
             var self = this;
 
             add_url += (add_url.indexOf('?') == -1) ? '?' : '&'
@@ -836,13 +846,16 @@
                     self.tray_photos = self.tray_photos.concat(photos);
                     self.tray_widget.setPhotos(self.map_photos(self.tray_photos));
                     self.tray_widget.hideLoadingIndicator();
+                    if(success){
+                        success();
+                    }
                 },
                 error: function(error){
                     self.tray_widget.hideLoadingIndicator();
                     alert('Sorry, there was a problem adding photos to your album. Please try again.');
-                    logger.debug(error);
-
-    //                $.jGrowl("" + error);
+                    if(failure){
+                        failure();
+                    }
                 }
             });
 
