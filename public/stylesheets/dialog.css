@@ -1,11 +1,12 @@
 .zz_dialog{
     display: none;
 	position: absolute;
-    border: 7px solid #d8d8d9;
-    background: white;
+    border: 7px solid #333;
+    background-color: #333 ;
+    opacity:0.95;
     z-index: 99995;
-    -webkit-border-radius: 12px;
-    -moz-border-radius: 12px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
 }
 
 .zz_dialog div#zz_dialog_inner{
@@ -14,11 +15,13 @@
     left:0px;
     right:0px;
     bottom:0px;
-    border: 1px solid #c8c8c9;
-    /*overflow: hidden;*/
-    z-index: 99996;
-    -webkit-border-radius: 6px;
-    -moz-border-radius: 6px;
+    /*border: 3px solid #333;*/
+    overflow: hidden;
+    background-color:#fff;
+    opacity:1.0;
+    /*z-index: 99996;*/
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
 }
 .zz_dialog_scrim{
     position: absolute;
@@ -45,18 +48,27 @@
 
 
 .zz_dialog h3{
-    font-size: 17px;
+    /*font-size: 17px;*/
+    /*font-weight: 500;*/
+    /*color: #0a0a0a;*/
+    /*margin-top:20px;*/
+    /*margin-bottom:5px;*/
+    font-size: 20px;
     font-weight: 500;
-    color: #0a0a0a;
-    margin-top:20px;
-    margin-bottom:5px;
+    color: #2C2C2C;
+    margin-top: 20px;
+    margin-bottom: 5px;
 
 }
 
 .zz_dialog h4{
+    /*font-size: 14px;*/
+    /*font-weight: 500;*/
+    /*margin-bottom: 15px;*/
+    /*color: #0a0a0a;*/
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 400;
     margin-bottom: 15px;
-    color: #0a0a0a;
+    color: #2C2C2C;
 
 }

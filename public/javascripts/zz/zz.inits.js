@@ -638,14 +638,14 @@ zz.init = {
 //
 //
 //
-//        //wizard buttons/tabs
-//        for (var i = 1; i <= 6; i++) {
-//            var src = "/images/wiz-num-" + i + "-on.png"
-//            image_preloader.load_image(src)
-//
-//            var src = "/images/wiz-num-" + i + ".png"
-//            image_preloader.load_image(src)
-//        }
+        //wizard buttons/tabs
+        for (var i = 1; i <= 6; i++) {
+            var src = "/images/wiz-num-" + i + "-on.png"
+            image_preloader.load_image(src)
+
+            var src = "/images/wiz-num-" + i + ".png"
+            image_preloader.load_image(src)
+        }
 
 
 

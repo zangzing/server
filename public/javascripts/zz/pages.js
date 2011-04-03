@@ -24,6 +24,8 @@ pages.album_name_tab = {
     init: function(container, callback){
         var url = zz.path_prefix + '/albums/' + zz.album_id + '/name_album';
 
+        var album_email_call_lock = 0;
+
         container.load(url, function(){
             //save album name and set header album name
             pages.album_name_tab.original_album_name = $('#album_name').val();
@@ -48,8 +50,10 @@ pages.album_name_tab = {
                     if(album_email_call_lock==0){
                         $.ajax({
                             url: zz.path_prefix + '/albums/' + zz.album_id + '/preview_album_email?' + $.param({album_name: $('#album_name').val()}),
-                            success: function(new_mail){
-                                $('#album_email').val(new_mail);
+                            success: function(json){
+                                logger.debug(json);
+                                $('#album_email').text(json.email);
+                                $('#album_url').text(json.url);
                             },
                             error: function(){
                                 $('#album_name').val(pages.album_name_tab.original_album_name);
@@ -83,14 +87,30 @@ pages.album_name_tab = {
 
                     $("#album-cover-picker").zz_thumbtray({
                         photos:photos,
-                        showSelection:true,
+//                        showSelection:true,
                         selectedIndex:selectedIndex,
                         onSelectPhoto: function(index, photo){
                             var photo_id = '';
+                            var photo_src='/images/album-no-cover.png';
                             if(index!==-1){
-                                photo_id = photo.id
+                                photo_id = photo.id;
+                                photo_src = photo.src;
+
+                                $('#album_cover_img').css({
+                                    height:100,
+                                    width:null
+                                });
                             }
+                            else{
+                                $('#album_cover_img').css({
+                                    height:100,
+                                    width:150
+                                });
+                            }
+
                             $('#album_cover_photo').val(photo_id);
+                            $('#album_cover_img').attr('src', photo_src);
+
                         }
                     });
                 }
@@ -307,7 +327,7 @@ pages.share = {
         var template = $('<div id="share-dialog-content"></div>');
         $('<div id="share-dialog"></div>').html( template )
                                                .zz_dialog({
-                                                         height: 580,
+                                                         height: 450,
                                                          width: 895,
                                                          modal: true,
                                                          autoOpen: true,

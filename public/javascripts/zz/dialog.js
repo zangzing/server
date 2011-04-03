@@ -25,7 +25,7 @@
             }
 
             //wrap element with 2 divs for inner and outer borders
-            element.wrap('<div class="zz_dialog"><div id="zz_dialog_inner"></div></div>');
+            element.wrap('<div class="zz_dialog"><div id="zz_dialog_inner"></div><a href="javascript:void(0)" class="zz_dialog_closer"></a></div>');
 
             // set element to visible to be able to control visibility
             element.css('display','block');
@@ -35,7 +35,7 @@
 
             //Insert and activate the dialog closer
             if( self.options.cancelButton ){
-                element.before('<a href="javascript:void(0)" class="zz_dialog_closer"></a>');
+//                element.before('<a href="javascript:void(0)" class="zz_dialog_closer"></a>');
                 $('.zz_dialog_closer').click( function(){ self.close()} );
             }
 

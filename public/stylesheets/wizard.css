@@ -280,7 +280,7 @@ ul#indicator-4 li.tab.on, ul#indicator-4 li.tab:hover{
 ----------------------------------------------------------------------------- */
 div#drawer-content div#top-section {
   padding: 0px 10px;
-  width: 840px;
+  /*width: 840px;*/
   margin: 15px 0 5px;
   height: 50px;
 }
@@ -411,18 +411,29 @@ ul#privacy-menu li#privacy-password:hover {
 
 
 div#drawer-content h3 {
-  font-size: 17px;
-  font-weight: 500;
-  color: #0a0a0a;
-  margin-top:20px;
-  margin-bottom:5px;
+  /*font-size: 17px;*/
+  /*font-weight: 500;*/
+  /*color: #0a0a0a;*/
+  /*margin-top:20px;*/
+  /*margin-bottom:5px;*/
+    font-size: 20px;
+    font-weight: 500;
+    color: #2C2C2C;
+    margin-top: 20px;
+    margin-bottom: 5px;
+
 }
 
 div#drawer-content h4 {
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 15px;
-  color: #0a0a0a;
+  /*font-size: 14px;*/
+  /*font-weight: 500;*/
+  /*margin-bottom: 15px;*/
+  /*color: #0a0a0a;*/
+    font-size: 14px;
+    font-weight: 400;
+    font-weight: 400;
+    margin-bottom: 15px;
+    color: #2C2C2C;
 }
 
 span.h4 {
@@ -467,8 +478,9 @@ div#drawer-content dl.form {
 
 div#drawer-content dl.form dt {
   float: left;
-  font-size: 18px;
+  font-size: 14px;
   color: #0a0a0a;
+  font-weight:normal;
   text-align: right;
   width: 180px;
   margin-right: 20px;
@@ -481,23 +493,56 @@ div#drawer-content dl.form dd {
   text-align: left;
 }
 
-div#drawer-content dl.form dd input#album_name{
-  width: 500px;
+/*div#drawer-content dl.form dd input#album_name{*/
+  /*width: 500px;*/
   /*padding: 5px;*/
   /*text-align: left;*/
   /*font-size: 1.8em;*/
   /*background-color: #fff;*/
   /*border: 1px #8c8c8c solid;*/
+/*}*/
+
+/*
+ ******* Name Album **************/
+
+table#name_album_form{
+
+  font-size: 14px;
+  color:#000;
+  text-align:left;
+  width:600px;
+  margin-top:20px;
+  margin-left:auto;
+  margin-right:auto;
+  overflow: visible;
 }
+
+table#name_album_form td{
+    padding-right:20px;
+    padding-top:5px;
+    padding-bottom:10px;
+}
+
+table#name_album_form #album_name{
+    width:390px;
+}
+
+table#name_album_form td.label{
+    text-align:right
+}
+
+
 
 #album-cover-picker {
     border: 1px solid #8C8C8C;
     height: 20px;
-    position: absolute;
+    /*position: absolute;*/
     /*top: 400px;*/
-    width: 760px;
-    left:75px;
-    bottom: 80px;
+    width: 400px;
+    /*left:75px;*/
+    /*bottom: 80px;*/
+    /*display:inline-block;*/
+    margin-bottom:10px;
 }
 
 
@@ -710,7 +755,6 @@ ul#email-sync li.title {
 
 table#email-share-form{
   font-size: 14px;
-  /*width:100%;*/
   text-align:left;
 }
 
@@ -952,7 +996,11 @@ table#email-share-form input:focus{
 /*}*/
 
 #add-photos-dialog{
-    height:100%;
+    position: absolute;
+    top: 0px;
+    left: -1px;
+    right: -1px;
+    bottom: 0px;
 }
 
 /*-------------- Settings Drawer -----------------------------------------*/

@@ -809,7 +809,7 @@
             }
 
             imageElement.clone()
-                    .css({position: 'absolute', zIndex: 2000, left: start_left, top: start_top,border:'1px solid #ffffff'})
+                    .css({position: 'absolute', left: start_left, top: start_top,border:'1px solid #ffffff'})
                     .appendTo('body')
                     .addClass('animate-photo-to-tray')
                     .animate({
