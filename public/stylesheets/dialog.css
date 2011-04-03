@@ -3,7 +3,7 @@
 	position: absolute;
     border: 7px solid #333;
     background-color: #333 ;
-    opacity:0.95;
+    /*opacity:0.95;*/
     z-index: 99995;
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
