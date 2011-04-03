@@ -18,7 +18,7 @@
 
     <% if @likers.length > 0 %>
         <li class="header bar">
-            People who like <a href="<%=album_path(@album)%>" class="blue"><%=@album.name%></a>
+            People who like this album <!--<a href="<%=album_path(@album)%>" class="blue"><%=@album.name%></a>-->
         </li>
         <li class="item tab like">
             <%@likers.each do | user | %>
