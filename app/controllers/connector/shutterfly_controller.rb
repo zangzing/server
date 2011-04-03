@@ -11,15 +11,37 @@ class Connector::ShutterflyController < Connector::ConnectorController
     ShutterflyConnector.shared_secret = SHUTTERFLY_API_KEYS[:shared_secret]
   end
 
-  protected
+  def self.api_from_identity(identity)
+    unless identity.credentials.nil?
+      authtoken, usertoken = identity.credentials.split('_')
+      ShutterflyConnector.new(usertoken, authtoken)
+    else
+      ShutterflyConnector.new
+    end
+  end
+
+  def self.http_timeout
+    SERVICE_CALL_TIMEOUT[:shutterfly]
+  end
+
+  def self.get_photo_url(photo_id, size_wanted)
+    img_id = photo_id.dup
+    img_id[35] = PHOTO_SIZES[size_wanted]
+    "http://im1.shutterfly.com/proctaserv/#{img_id}"
+  end
+
+  def self.make_source_guid(photo_info)
+    "shutterfly_"+Photo.generate_source_guid(get_photo_url(photo_info[:id], :full))
+  end
+
+
+protected
 
   def service_login_required
     unless sf_user_token
       begin
         @sf_user_token = service_identity.credentials
-        authtoken, usertoken = @sf_user_token.split('_')
-        @api = ShutterflyConnector.new(usertoken, authtoken)
-        Shutterfly_api.call_method('Shutterfly.auth.checkAccessToken')
+        @api = self.class.api_from_identity(service_identity)
       rescue => exception
         raise InvalidToken if exception.kind_of?(ShutterflyError)
         raise HttpCallFail if exception.kind_of?(SocketError)
@@ -28,30 +50,16 @@ class Connector::ShutterflyController < Connector::ConnectorController
     end
   end
 
-  def http_timeout
-    SERVICE_CALL_TIMEOUT[:shutterfly]
-  end
-
   def service_identity
     @service_identity ||= current_user.identity_for_shutterfly
   end
 
   def sf_api
-    @api ||= ShutterflyConnector.new
+    @api ||= self.class.api_from_identity(service_identity)
   end
 
   def sf_api=(api)
     @api = api
-  end
-
-  def get_photo_url(photo_id, size_wanted)
-    img_id = photo_id.dup
-    img_id[35] = PHOTO_SIZES[size_wanted]
-    "http://im1.shutterfly.com/proctaserv/#{img_id}"
-  end
-
-  def make_source_guid(photo_info)
-    "shutterfly_"+Photo.generate_source_guid(get_photo_url(photo_info[:id], :full))
   end
 
   
