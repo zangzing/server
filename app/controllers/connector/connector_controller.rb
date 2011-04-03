@@ -1,8 +1,5 @@
 class Connector::ConnectorController < ApplicationController
   require 'connector_exceptions'
-  class << self
-    include Server::Application.routes.url_helpers
-  end
 
   layout false
   
@@ -23,17 +20,33 @@ class Connector::ConnectorController < ApplicationController
   def bulk_insert(photos)
     render :json => Connector::ConnectorController.bulk_insert(photos)
   end
-  
-  def self.bulk_insert(photos)
-    # bulk insert
-    Photo.batch_insert(photos)
 
-    # must send after all saved
-    photos.each do |photo|
-      ZZ::Async::GeneralImport.enqueue( photo.id, photo.temp_url )
+  def fire_async_response(class_method)
+    response_id = AsyncResponse.new_response_id
+    ZZ::Async::ConnectorResponse.enqueue(response_id, service_identity.id, self.class.name, class_method, params)
+    response.headers["x-poll-for-response"] = async_response_url(response_id)
+    render :json => {:message => "poll-for-response"}
+  end
+  
+
+  class << self
+    include Server::Application.routes.url_helpers
+
+    def api_from_identity
+      raise "api_from_identity for #{self.to_s} is not implemented!"
     end
 
-    Photo.to_json_lite(photos)
+    def bulk_insert(photos)
+      # bulk insert
+      Photo.batch_insert(photos)
+
+      # must send after all saved
+      photos.each do |photo|
+        ZZ::Async::GeneralImport.enqueue( photo.id, photo.temp_url )
+      end
+
+      Photo.to_json_lite(photos)
+    end
   end
 
 

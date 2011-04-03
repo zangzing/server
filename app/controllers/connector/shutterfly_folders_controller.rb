@@ -1,6 +1,6 @@
 class Connector::ShutterflyFoldersController < Connector::ShutterflyController
 
-  def self.folder_list(api_client)
+  def self.folder_list(api_client, params)
     #album_list = nil
     #SystemTimer.timeout_after(http_timeout) do
       album_list = api_client.get_albums
@@ -17,7 +17,8 @@ class Connector::ShutterflyFoldersController < Connector::ShutterflyController
     JSON.fast_generate(folders)
   end
 
-  def self.import_folder(api_client, params, identity)
+  def self.import_folder(api_client, params)
+    identity = params[:identity]
     #photos_list = nil
     #SystemTimer.timeout_after(http_timeout) do
       photos_list = api_client.get_images(params[:sf_album_id])
@@ -46,11 +47,11 @@ class Connector::ShutterflyFoldersController < Connector::ShutterflyController
   end
 
   def index
-    fire_async_response
+    fire_async_response('folder_list')
   end
 
   def import
-    fire_async_response
+    fire_async_response('import_folder')
   end
 
 

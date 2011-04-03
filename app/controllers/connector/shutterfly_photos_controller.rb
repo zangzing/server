@@ -20,7 +20,8 @@ class Connector::ShutterflyPhotosController < Connector::ShutterflyController
     JSON.fast_generate(photos)
   end
 
-  def self.import_photo(api_client, params, identity)
+  def self.import_photo(api_client, params)
+    identity = params[:identity]
     #photos_list = nil
     #SystemTimer.timeout_after(http_timeout) do
       photos_list = api_client.get_images(params[:sf_album_id])
@@ -50,11 +51,11 @@ class Connector::ShutterflyPhotosController < Connector::ShutterflyController
   end
 
   def index
-    fire_async_response
+    fire_async_response('photos_list')
   end
 
   def import
-    fire_async_response
+    fire_async_response('import_photo')
   end
 
 end

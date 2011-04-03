@@ -11,13 +11,6 @@ class Connector::ShutterflyController < Connector::ConnectorController
     ShutterflyConnector.shared_secret = SHUTTERFLY_API_KEYS[:shared_secret]
   end
 
-  def fire_async_response
-    response_id = AsyncResponse.new_response_id
-    ZZ::Async::Connectors::ShutterflyResponse.enqueue(response_id, service_identity.id, transform_params(params))
-    response.headers["x-poll-for-response"] = async_response_url(response_id)
-    render :json => {:message => "poll-for-response"}
-  end
-
   def self.api_from_identity(identity)
     unless identity.credentials.nil?
       authtoken, usertoken = identity.credentials.split('_')

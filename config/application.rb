@@ -33,15 +33,14 @@ module Server
     
     # Custom directories with classes and modules you want to be autoloadable.
     config.autoload_paths += %W(#{config.root}/lib)
-    config.autoload_paths += %W(#{config.root}/lib/zz/async/connectors)
     
     # This allows for GUID use in primary keys 
     config.active_record.schema_format = :sql 
 
   
     # ZangZing Server Defaul Configuration Values
-    config.application_host =  'porch.rubyriders.com:3000'
-    #config.application_host =  'localhost:3000'
+    #config.application_host =  'porch.rubyriders.com:3001'
+    config.application_host =  'localhost:3000'
 
     # sendgrid email to album address
     config.album_email_host =  ZangZingConfig.config[:album_email_host]
