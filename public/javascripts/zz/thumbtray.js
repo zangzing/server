@@ -37,18 +37,18 @@
 
             var html = '';
             html += '<div class="thumbtray-wrapper">';
-            html += '    <div class="thumbtray-thumbnails"></div>'
-            html += '    <div class="thumbtray-selection">';
-            html += '        <img src="/images/photo_placeholder.png">';
-            html += '    </div>';
-            html += '    <div class="thumbtray-preview">';
-            html += '        <img src="/images/photo_placeholder.png">';
-            html += '        <div class="thumbtray-delete-button"></div>';
-            html += '    </div>';
-            html += '    <img class="thumbtray-loading-indicator" src="/images/loading_small.gif"/>'
-            html += '    <div class="thumbtray-mask"></div>'
-            html += '    <div class="thumbtray-current-index-indicator"></div>'
-            html += '    <div class="thumbtray-scrim"></div>'
+            html +=     '<div class="thumbtray-thumbnails"></div>'
+            html +=     '<div class="thumbtray-selection">';
+            html +=         '<img src="/images/photo_placeholder.png">';
+            html +=     '</div>';
+            html +=     '<div class="thumbtray-preview">';
+            html +=         '<img src="/images/photo_placeholder.png">';
+            html +=         '<div class="thumbtray-delete-button"></div>';
+            html +=     '</div>';
+            html +=     '<img class="thumbtray-loading-indicator" src="/images/loading_small.gif"/>'
+            html +=     '<div class="thumbtray-mask"></div>'
+            html +=     '<div class="thumbtray-current-index-indicator"></div>'
+            html +=     '<div class="thumbtray-scrim"></div>'
             html += '</div>';
 
             this.element.html(html);
@@ -257,10 +257,10 @@
                     this.previewElement.find('img').attr('src', this.options.photos[index][this.options.srcAttribute]);
 
                     if(this.orientation === this.ORIENTATION_X){
-                        this.previewElement.css('left', this._getPositionForIndex(index) - this.previewElement.width() / 2);
+                        this.previewElement.css('left', Math.round(this._getPositionForIndex(index) - this.previewElement.width() / 2));
                     }
                     else{
-                        this.previewElement.css('top', this._getPositionForIndex(index) - this.previewElement.height() / 2);
+                        this.previewElement.css('top', Math.round(this._getPositionForIndex(index) - this.previewElement.height() / 2));
                     }
 
 

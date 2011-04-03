@@ -19,7 +19,7 @@
 .thumbtray-selection{
     display:none;
     position:absolute;
-    border:solid 1px #FDD042
+    /*border:solid 1px #FDD042*/
 }
 
 .thumbtray-selection.x{
@@ -32,13 +32,13 @@
 
 
 .thumbtray-selection img{
-    border:3px solid #fff
+    border:3px solid #fff;
 }
 
 .thumbtray-preview{
     display:none;
     position:absolute;
-    border:solid 1px #FDD042
+    border:solid 2px #333
 }
 
 .thumbtray-preview.x{
