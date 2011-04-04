@@ -12,6 +12,14 @@ class AsyncResponse
       Rails.cache.write(response_id, response)
     end
 
+    def store_error(response_id, error_code, error_message)
+      error = { :error => {
+          :code => error_code,
+          :message => error_message
+      }}
+      Rails.cache.write(response_id, JSON.generate(error))
+    end
+
     def get_response(response_id)
       #fetches response from memcache (or null)
       Rails.cache.read(response_id)

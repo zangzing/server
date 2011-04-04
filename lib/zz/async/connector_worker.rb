@@ -18,13 +18,20 @@ module ZZ
 
       def self.perform(response_id, identity_id, klass_name, method_name, params )
         SystemTimer.timeout_after(ZangZingConfig.config[:async_connector_timeout]) do
-          params.symbolize_keys!
-          user_identity = Identity.find(identity_id)
-          klass = klass_name.constantize
-          api = klass.api_from_identity(user_identity)
-          params[:identity] = user_identity
-          json = klass.send(method_name.to_sym, api, params)
-          AsyncResponse.store_response(response_id, json)
+          begin
+            params.symbolize_keys!
+            user_identity = Identity.find(identity_id)
+            klass = klass_name.constantize
+            api = klass.api_from_identity(user_identity)
+            params[:identity] = user_identity
+            json = klass.send(method_name.to_sym, api, params)
+            AsyncResponse.store_response(response_id, json)
+          rescue Exception => e
+            #todo: need to figure out the underlying error and
+            #      and set appripriate code and message
+            AsyncResponse.store_error(response_id, 500, e.to_s)
+          end
+
         end
       end
 
