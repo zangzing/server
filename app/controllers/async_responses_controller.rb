@@ -1,4 +1,5 @@
 class AsyncResponsesController < ApplicationController
+
   def show
     body = AsyncResponse.get_response(params[:response_id])
 
