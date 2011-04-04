@@ -161,6 +161,13 @@
           zz.init.resized();
       });
 
+
+      <% if session[:show_welcome_dialog] %>
+          zz.init.show_welcome_dialog();
+          <% session[:show_welcome_dialog] = nil %>
+      <% end %>
+
+
       $(document).ready(function(){
           Zenbox.init({
             dropboxID:   "14620",

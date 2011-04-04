@@ -45,6 +45,8 @@ zz.init = {
         });
 
 
+
+
         /* Click Handlers    ----------------------------------------------------------------------- */
 
 
@@ -335,6 +337,15 @@ zz.init = {
         profile_pictures.init_profile_pictures();
 
 
+    },
+
+    show_welcome_dialog: function(){
+        $('<iframe height="450" width="800" src="/static/welcome_dialog/index.html"></iframe>').zz_dialog({
+            height: 450,
+            width: 800,
+            modal: true,
+            autoOpen: true
+        });
     },
 
 

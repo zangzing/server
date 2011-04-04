@@ -1,5 +1,5 @@
 body {
-	background:#f9f9fa;
+    background-color:#fff;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     text-shadow: #EEE 1px 1px 0px;
 
@@ -8,60 +8,24 @@ img {
 	border:0;
 }
 
-/*.top{*/
-	/*background: url(../img/top.jpg) no-repeat;*/
-	/*width:1020px;*/
-	/*height:58px;*/
-	/*margin:0 auto;*/
-/*}*/
 
-#content {
-	margin:0 auto;
-	width:1020px;
-	text-align:center;
-	clear:both;
-	overflow:hidden;
-}
-#content a {
-	margin:10px 10px 40px 10px;
+.in-basic a {
+	/*margin:10px 10px 40px 10px;*/
 	display:block;
 	float:left;
 }
 
-/*.footer{*/
-	/*background: url(../img/footer.jpg) no-repeat;*/
-	/*width:1020px;*/
-	/*height:58px;*/
-	/*margin:0 auto;*/
-/*}*/
-
-/*-------Popup----------*/
-#basic-modal-content {
-	display:block;
-}
-.border-basic {
-	height:430px; 
-	width:780px; 
-	background-color:#e0e0e1; 
-	opacity:0.6;
-	position:absolute;
-	-moz-border-radius: 17px; 
-	-webkit-border-radius: 17px; 
-	border-radius:17px;
-	border:1px solid #e0e0e1;
-}
-.in-basic{
+.welcome{
 	height:414px; 
 	width:764px; 
 	color:#6a6a6c;
-	background-color:#fff; 
     position: relative;
     top: 8px;
     left:8px;
-	-moz-border-radius: 7px; 
-	-webkit-border-radius: 7px; 
-	border-radius:7px;
-	border:1px solid #fff;
+	/*-moz-border-radius: 7px; */
+	/*-webkit-border-radius: 7px; */
+	/*border-radius:7px;*/
+	/*border:1px solid #fff;*/
 	/*font-family:Myriad Pro;*/
 	font-size:18px;
 }
@@ -74,107 +38,154 @@ img {
 	overflow:hidden;
 	width:760px;
 }
-#simplemodal-container h2{
+.welcome h2{
 	color:#6a6a6c;
 	/*font-family:Myriad Pro;*/
-	font-weight: normal;
+	font-weight: 300;
 	font-size:36px;
 	margin:30px 0 25px 0;
 }
-#simplemodal-container p{
+.welcome p{
 	width:410px;
 	margin:25px 0;
+    font-weight:200;
 }
-#simplemodal-container #step5 p{
+.welcome #step5 p{
 	width:405px;
 	margin:25px 0;
 }
-#simplemodal-container .left_side {
+.welcome .left_side {
     float: left;
     width: 280px;
 	text-align:center;
 }
-#simplemodal-container #step1 .left_side img{
+.welcome #step1 .left_side img{
 	margin-top:155px;
 }
-#simplemodal-container #step2 .left_side img{
+.welcome #step2 .left_side img{
 	margin-top:140px;
 }
-#simplemodal-container #step3 .left_side img{
+.welcome #step3 .left_side img{
 	margin-top:135px;
 }
-#simplemodal-container #step4 .left_side img{
+.welcome #step4 .left_side img{
 	margin-top:125px;
 }
-#simplemodal-container #step5 .left_side img{
+.welcome #step5 .left_side img{
 	margin-top:120px;
 }
-#simplemodal-container #step6 .left_side img{
+.welcome #step6 .left_side img{
 	margin-top:140px;
 }
-#simplemodal-container .right_side {
+.welcome .right_side {
 	float:left;
 	width:470px;
 	height:330px;
 }
-#simplemodal-container input{
-	color:#fff;
-	font-size:14px;
-	/*font-family:arial;*/
-	font-weight:bold;
-	margin:38px 13px 0 0;
-	width:75px;
-	height:29px;
-	border:none;
-	float:right;
-	cursor:pointer;
+
+
+.buttons{
+    position:absolute;
+    height:30px;
+    width:145px;
+    right:20px;
+    bottom:20px;
+
 }
-#simplemodal-container input#back1,
-#simplemodal-container input#back2,
-#simplemodal-container input#back3,
-#simplemodal-container input#back4,
-#simplemodal-container input#back5,
-#simplemodal-container input#back6{
-	background: url(../img/back.png) no-repeat;
+
+.next-button{
+    width:60px;
+    float:right;
 }
-#simplemodal-container input#back6{
-	margin:38px 101px 0 0;
+
+.back-button{
+    width:60px;
+    float:left;
 }
-#simplemodal-container input#back1:hover,
-#simplemodal-container input#back2:hover,
-#simplemodal-container input#back3:hover,
-#simplemodal-container input#back4:hover,
-#simplemodal-container input#back5:hover,
-#simplemodal-container input#back6:hover {
-	background: url(../img/back-hover.png) no-repeat;
+
+
+/*  green button
+ *************************************************************/
+a.green-button{
+    background: url("/images/btn-green-endcap.png") no-repeat scroll top right;
+    display: block;
+    /*float: left;*/
+    height: 30px;
+    /*margin-right: 6px;*/
+    padding-right: 8px; /* sliding doors padding */
+    cursor: pointer;
+    color:#ffffff;
+    font-size: 13px;
+    text-decoration: none;
 }
-#simplemodal-container input#next1,
-#simplemodal-container input#next2,
-#simplemodal-container input#next3,
-#simplemodal-container input#next4,
-#simplemodal-container input#next5,
-#simplemodal-container input#next6{
-	background: url(../img/next.png) no-repeat;
+
+a.green-button:hover{
+    background: url("/images/btn-green-endcap.png") no-repeat scroll right -30px; /* todo: need rollover image*/
 }
-#simplemodal-container input#next1:hover,
-#simplemodal-container input#next2:hover,
-#simplemodal-container input#next3:hover,
-#simplemodal-container input#next4:hover,
-#simplemodal-container input#next5:hover,
-#simplemodal-container input#next6:hover {
-	background: url(../img/next-hover.png) no-repeat;
+
+a.green-button:active{
+    background: url("/images/btn-green-endcap.png") no-repeat scroll right -60px; /* todo: need rollover image*/
 }
-#simplemodal-container a.modalCloseImg {
-	background:url(../img/x.png) no-repeat; 
-	width:31px; 
-	height:30px; 
-	display:inline; 
-	z-index:3200; 
-	position:absolute; 
-	top:-5px; 
-	right:-28px; 
-	cursor:pointer;
+
+
+a.green-button span{
+    background: transparent url('/images/btn-green.png') no-repeat;
+    display: block;
+    line-height: 20px;
+    height: 20px;
+    padding: 5px 0 5px 8px;
+    cursor: pointer;
+    text-shadow:none;
+    text-align:center;
 }
-.x{
-	display:none;
+
+a.green-button:hover span{
+    background: transparent url('/images/btn-green.png') no-repeat 0 -30px; /* todo: need rollover image*/
+}
+
+a.green-button:active span{
+    background: transparent url('/images/btn-green.png') no-repeat 0 -60px; /* todo: need rollover image*/
+}
+
+/*  black button
+ *************************************************************/
+a.black-button{
+    background: url("/images/btn-black-endcap.png") no-repeat scroll top right;
+    color:#ffffff;
+    display: block;
+    float: left;
+    font-size: 13px;
+    height: 30px;
+    /*margin-right: 6px;*/
+    padding-right: 8px; /* sliding doors padding */
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a.black-button:hover{
+    background: url("/images/btn-black-endcap.png") no-repeat scroll right -30px; /* todo: need rollover image*/
+}
+
+a.black-button:active{
+    background: url("/images/btn-black-endcap.png") no-repeat scroll right -60px; /* todo: need rollover image*/
+}
+
+
+a.black-button span{
+    background: transparent url('/images/btn-black.png') no-repeat;
+    display: block;
+    line-height: 20px;
+    height: 20px;
+    padding: 5px 0 5px 8px;
+    cursor: pointer;
+    text-shadow:none;
+    text-align:center;
+}
+
+a.black-button:hover span{
+    background: transparent url('/images/btn-black.png') no-repeat 0 -30px; /* todo: need rollover image*/
+}
+
+a.black-button:active span{
+    background: transparent url('/images/btn-black.png') no-repeat 0 -60px; /* todo: need rollover image*/
 }
