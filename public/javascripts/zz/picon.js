@@ -53,7 +53,6 @@
 
             //rotate stack
             var stackOption = Math.floor(Math.random() * self.options.stackAngles.length );
-            console.log(stackOption);
             self.template.find('.stacked-image:eq(0)').rotate(self.options.stackAngles[stackOption][0]);
             self.template.find('.stacked-image:eq(1)').rotate(self.options.stackAngles[stackOption][1]);
 
