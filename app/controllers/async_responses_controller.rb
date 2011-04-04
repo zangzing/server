@@ -15,6 +15,7 @@ class AsyncResponsesController < ApplicationController
         response.headers["x-asyng-error-message"] = error["error"]["message"].to_s
         render :json => body, :status => 500
       else
+        expires_in 3.minutes, :public => false
         render :json => body
       end
     end
