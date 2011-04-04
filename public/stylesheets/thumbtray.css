@@ -38,7 +38,9 @@
 .thumbtray-preview{
     display:none;
     position:absolute;
-    border:solid 2px #333
+    border:solid 2px #333;
+    z-index:1000;
+
 }
 
 .thumbtray-preview.x{

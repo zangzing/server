@@ -45,7 +45,7 @@
             html +=         '<img src="/images/photo_placeholder.png">';
             html +=         '<div class="thumbtray-delete-button"></div>';
             html +=     '</div>';
-            html +=     '<img class="thumbtray-loading-indicator" src="/images/loading_small.gif"/>'
+            html +=     '<img class="thumbtray-loading-indicator" src="/images/loading.gif"/>'
             html +=     '<div class="thumbtray-mask"></div>'
             html +=     '<div class="thumbtray-current-index-indicator"></div>'
             html +=     '<div class="thumbtray-scrim"></div>'

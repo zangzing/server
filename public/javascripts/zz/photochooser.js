@@ -27,6 +27,7 @@
                              '   <div class="photochooser-body"></div>' +
                              '   <div class="photochooser-footer">' +
                              '     <div class="added-pictures-tray"></div>' +
+                             '     <div class="added-pictures-tab"></div>' +
                              '   </div>' +
                              '</div>');
 
