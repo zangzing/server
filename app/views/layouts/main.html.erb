@@ -89,7 +89,7 @@
 	</script>
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-	<script type="text/javascript" src="http://zza.zangzing.com/zza.js"></script>
+    <script type="text/javascript" src="http://zza.zangzing.com/zza.js"></script>
     <%= include_javascripts :lib %>
     <%= include_javascripts :zz %>
     <%= include_javascripts :zz_oauthmanager %>
@@ -134,41 +134,44 @@
       zz.win_download_url = '<%= ZangZingConfig.config[:agent_download_url_win] %>';
       zz.mac_download_url = '<%= ZangZingConfig.config[:agent_download_url_mac] %>';
 
-      /* init
-      ----------------------------------------------------------------------- */
-      zz.init.template();
-
-
-
-
-      <%if controller.controller_name == 'photos' -%>
-            zz.init.album();
-      <%end%>
-
-      <%if (controller.controller_name == 'activities')  -%>
-            zz.init.album_timeline_view();
-      <%end%>
-
-      <%if (controller.controller_name == 'people')  -%>
-            zz.init.album_people_view();
-      <%end%>
-
-      $(window).bind("load", function() {
-          setTimeout('zz.init.loaded()', 64);
-      });
-
-      $(window).bind("resize", function() {
-          zz.init.resized();
-      });
-
-
-      <% if session[:show_welcome_dialog] %>
-          zz.init.show_welcome_dialog();
-          <% session[:show_welcome_dialog] = nil %>
-      <% end %>
-
 
       $(document).ready(function(){
+
+          /* init
+          ----------------------------------------------------------------------- */
+          zz.init.template();
+
+
+
+
+          <%if controller.controller_name == 'photos' -%>
+                zz.init.album();
+          <%end%>
+
+          <%if (controller.controller_name == 'activities')  -%>
+                zz.init.album_timeline_view();
+          <%end%>
+
+          <%if (controller.controller_name == 'people')  -%>
+                zz.init.album_people_view();
+          <%end%>
+
+          $(window).bind("load", function() {
+              setTimeout('zz.init.loaded()', 64);
+          });
+
+          $(window).bind("resize", function() {
+              zz.init.resized();
+          });
+
+
+          <% if session[:show_welcome_dialog] %>
+              zz.init.show_welcome_dialog();
+              <% session[:show_welcome_dialog] = nil %>
+          <% end %>
+
+
+          
           Zenbox.init({
             dropboxID:   "14620",
             url:         "https://zangzing.zendesk.com",
