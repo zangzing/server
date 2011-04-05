@@ -1,4 +1,4 @@
-var path_helpers = {
+var assets = {
     url_for: function(path){
         if(zz.rails_asset_host){
             var host_num = path.length % 4;
