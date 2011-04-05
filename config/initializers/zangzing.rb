@@ -74,6 +74,13 @@ silence_warnings do #To avoid warning of overwriting constant
   # make a single instance of the the album cache manager
   AlbumCacheManager.make_shared
 
+  #initizlie the rails session store
+  if zconfig.application_host.starts_with? 'localhost'
+    Server::Application.config.session_store :active_record_store, :key => '_zangzing_session'
+  else
+    Server::Application.config.session_store :active_record_store, :key => '_zangzing_session', :domain => zconfig.application_host
+  end
+
 
 end
 
