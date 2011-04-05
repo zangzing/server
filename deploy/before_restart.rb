@@ -24,8 +24,7 @@ end
 
 
 #Use Jammit gem to package css and javascript
-Jammit::CommandLine.initialize
-#run "bundle exec jammit"
+run "bundle exec jammit"
 run "rm -rf #{release_path}/public/javascripts"
 run "rm -rf #{release_path}/public/stylesheets"
 
