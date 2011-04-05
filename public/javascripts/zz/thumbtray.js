@@ -39,13 +39,13 @@
             html += '<div class="thumbtray-wrapper">';
             html +=     '<div class="thumbtray-thumbnails"></div>'
             html +=     '<div class="thumbtray-selection">';
-            html +=         '<img src="' + assets.url_for('/images/photo_placeholder.png') + '">';
+            html +=         '<img src="' + path_helpers.image_url('/images/photo_placeholder.png') + '">';
             html +=     '</div>';
             html +=     '<div class="thumbtray-preview">';
-            html +=         '<img src="' + assets.url_for('/images/photo_placeholder.png') + '">';
+            html +=         '<img src="' + path_helpers.image_url('/images/photo_placeholder.png') + '">';
             html +=         '<div class="thumbtray-delete-button"></div>';
             html +=     '</div>';
-            html +=     '<img class="thumbtray-loading-indicator" src="' + assets.url_for('/images/loading.gif') +'"/>';
+            html +=     '<img class="thumbtray-loading-indicator" src="' + path_helpers.image_url('/images/loading.gif') +'"/>';
             html +=     '<div class="thumbtray-mask"></div>';
             html +=     '<div class="thumbtray-current-index-indicator"></div>';
             html +=     '<div class="thumbtray-scrim"></div>';

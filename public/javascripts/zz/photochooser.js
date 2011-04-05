@@ -159,7 +159,7 @@
 
 
 
-            self.bodyElement.html('<img class="progress-indicator" src="' + assets.url_for('/images/loading.gif') +'">');
+            self.bodyElement.html('<img class="progress-indicator" src="' + path_helpers.image_url('/images/loading.gif') +'">');
 
 
             if(!_.isUndefined(folder.children)){
@@ -197,8 +197,8 @@
 
                     //root level folders already have source set
                     if(typeof child.src === 'undefined'){
-                        child.src = assets.url_for('/images/folders/blank_off.jpg');
-                        child.rolloverSrc = assets.url_for('/images/folders/blank_on.jpg');
+                        child.src = path_helpers.image_url('/images/folders/blank_off.jpg');
+                        child.rolloverSrc = path_helpers.image_url('/images/folders/blank_on.jpg');
                     }
                 }
                 else{
@@ -218,7 +218,7 @@
             if(hasPhotos){
                 var addAllButton = {
                     id: 'add-all-photos',
-                    src: assets.url_for('/images/blank.png'),
+                    src: path_helpers.image_url('/images/blank.png'),
                     caption: '',
                     type: 'blank'
                 };
@@ -261,7 +261,7 @@
             }).data().zz_photogrid;
 
             if(hasPhotos){
-                var addAllButton = $('<img class="add-all-button" src="' + assets.url_for('/images/folders/add_all_photos.png') + '">');
+                var addAllButton = $('<img class="add-all-button" src="' + path_helpers.image_url('/images/folders/add_all_photos.png') + '">');
                 addAllButton.click(function(){
                     self.add_folder_to_album(folder.add_url, addAllButton);
                 });
@@ -411,8 +411,8 @@
                     type: 'folder',
                     name: 'My Pictures',
                     on_error: file_system_on_error,
-                    src: assets.url_for('/images/folders/mypictures_off.jpg'),
-                    rolloverSrc: assets.url_for('/images/folders/mypictures_on.jpg'),
+                    src: path_helpers.image_url('/images/folders/mypictures_off.jpg'),
+                    rolloverSrc: path_helpers.image_url('/images/folders/mypictures_on.jpg'),
                     state: 'ready'
                 });
 
@@ -423,8 +423,8 @@
                     type: 'folder',
                     name: 'iPhoto',
                     on_error: iphoto_on_error,
-                    src: assets.url_for('/images/folders/iphoto_off.jpg'),
-                    rolloverSrc: assets.url_for('/images/folders/iphoto_on.jpg'),
+                    src: path_helpers.image_url('/images/folders/iphoto_off.jpg'),
+                    rolloverSrc: path_helpers.image_url('/images/folders/iphoto_on.jpg'),
                     state: 'ready'
                 });
 
@@ -436,8 +436,8 @@
                     type: 'folder',
                     name: 'Picasa',
                     on_error: picasa_on_error,
-                    src: assets.url_for('/images/folders/picasa_off.jpg'),
-                    rolloverSrc: assets.url_for('/images/folders/picasa_on.jpg'),
+                    src: path_helpers.image_url('/images/folders/picasa_off.jpg'),
+                    rolloverSrc: path_helpers.image_url('/images/folders/picasa_on.jpg'),
                     state: 'ready'
                 });
 
@@ -450,8 +450,8 @@
                     type: 'folder',
                     name: 'My Home',
                     on_error: file_system_on_error,
-                    src: assets.url_for('/images/folders/myhome_off.jpg'),
-                    rolloverSrc: assets.url_for('/images/folders/myhome_on.jpg'),
+                    src: path_helpers.image_url('/images/folders/myhome_off.jpg'),
+                    rolloverSrc: path_helpers.image_url('/images/folders/myhome_on.jpg'),
                     state: 'ready'
                 });
 
@@ -462,8 +462,8 @@
                     type: 'folder',
                     name: 'My Computer',
                     on_error: file_system_on_error,
-                    src: assets.url_for('/images/folders/mycomputer_off.jpg'),
-                    rolloverSrc: assets.url_for('/images/folders/mycomputer_on.jpg'),
+                    src: path_helpers.image_url('/images/folders/mycomputer_off.jpg'),
+                    rolloverSrc: path_helpers.image_url('/images/folders/mycomputer_on.jpg'),
                     state: 'ready'
                 });
             }
@@ -484,8 +484,8 @@
                     type: 'folder',
                     name: 'My Pictures',
                     on_error: file_system_on_error,
-                    src: assets.url_for('/images/folders/mypictures_off.jpg'),
-                    rolloverSrc: assets.url_for('/images/folders/mypictures_on.jpg'),
+                    src: path_helpers.image_url('/images/folders/mypictures_off.jpg'),
+                    rolloverSrc: path_helpers.image_url('/images/folders/mypictures_on.jpg'),
                     state: 'ready'
                 });
 
@@ -497,8 +497,8 @@
                     type: 'folder',
                     name: 'Picasa',
                     on_error: picasa_on_error,
-                    src: assets.url_for('/images/folders/picasa_off.jpg'),
-                    rolloverSrc: assets.url_for('/images/folders/picasa_on.jpg'),
+                    src: path_helpers.image_url('/images/folders/picasa_off.jpg'),
+                    rolloverSrc: path_helpers.image_url('/images/folders/picasa_on.jpg'),
                     state: 'ready'
                 });
 
@@ -510,8 +510,8 @@
                     type: 'folder',
                     name: 'My Home',
                     on_error: file_system_on_error,
-                    src: assets.url_for('/images/folders/myhome_off.jpg'),
-                    rolloverSrc: assets.url_for('/images/folders/myhome_on.jpg'),
+                    src: path_helpers.image_url('/images/folders/myhome_off.jpg'),
+                    rolloverSrc: path_helpers.image_url('/images/folders/myhome_on.jpg'),
                     state: 'ready'
                 });
 
@@ -522,8 +522,8 @@
                     type: 'folder',
                     name: 'My Computer',
                     on_error: file_system_on_error,
-                    src: assets.url_for('/images/folders/mycomputer_off.jpg'),
-                    rolloverSrc: assets.url_for('/images/folders/mycomputer_on.jpg'),
+                    src: path_helpers.image_url('/images/folders/mycomputer_off.jpg'),
+                    rolloverSrc: path_helpers.image_url('/images/folders/mycomputer_on.jpg'),
                     state: 'ready'
 
                 });
@@ -536,8 +536,8 @@
                 open_url: zz.path_prefix + '/facebook/folders.json',
                 type: 'folder',
                 name: 'Facebook',
-                src: assets.url_for('/images/folders/facebook_off.jpg'),
-                rolloverSrc: assets.url_for('/images/folders/facebook_on.jpg'),
+                src: path_helpers.image_url('/images/folders/facebook_off.jpg'),
+                rolloverSrc: path_helpers.image_url('/images/folders/facebook_on.jpg'),
                 on_error: function(){
                     var folder = this;
                     self.bodyElement.hide().load('/static/connect_messages/connect_to_facebook.html', function(){
@@ -555,8 +555,8 @@
                 open_url: zz.path_prefix + '/instagram/folders.json',
                 type: 'folder',
                 name: 'Instagram',
-                src: assets.url_for('/images/folders/instagram_off.jpg'),
-                rolloverSrc: assets.url_for('/images/folders/instagram_on.jpg'),
+                src: path_helpers.image_url('/images/folders/instagram_off.jpg'),
+                rolloverSrc: path_helpers.image_url('/images/folders/instagram_on.jpg'),
 
                 on_error: function(){
                     var folder = this;
@@ -579,8 +579,8 @@
                 open_url: zz.path_prefix + '/shutterfly/folders.json',
                 type: 'folder',
                 name: 'Shutterfly',
-                src: assets.url_for('/images/folders/shutterfly_off.jpg'),
-                rolloverSrc: assets.url_for('/images/folders/shutterfly_on.jpg'),
+                src: path_helpers.image_url('/images/folders/shutterfly_off.jpg'),
+                rolloverSrc: path_helpers.image_url('/images/folders/shutterfly_on.jpg'),
 
                 on_error: function(){
                     var folder = this;
@@ -599,8 +599,8 @@
                 open_url: zz.path_prefix + '/kodak/folders.json',
                 type: 'folder',
                 name: 'Kodak',
-                src: assets.url_for('/images/folders/kodak_off.jpg'),
-                rolloverSrc: assets.url_for('/images/folders/kodak_on.jpg'),
+                src: path_helpers.image_url('/images/folders/kodak_off.jpg'),
+                rolloverSrc: path_helpers.image_url('/images/folders/kodak_on.jpg'),
                 on_error: function(){
                     var folder = this;
                     self.bodyElement.hide().load('/static/connect_messages/connect_to_kodak.html', function(){
@@ -619,8 +619,8 @@
                 open_url: zz.path_prefix + '/smugmug/folders.json',
                 type: 'folder',
                 name: 'SmugMug',
-                src: assets.url_for('/images/folders/smugmug_off.jpg'),
-                rolloverSrc: assets.url_for('/images/folders/smugmug_on.jpg'),
+                src: path_helpers.image_url('/images/folders/smugmug_off.jpg'),
+                rolloverSrc: path_helpers.image_url('/images/folders/smugmug_on.jpg'),
                 on_error: function(){
                     var folder = this;
                     self.bodyElement.hide().load('/static/connect_messages/connect_to_smugmug.html', function(){
@@ -640,8 +640,8 @@
                 open_url: zz.path_prefix + '/flickr/folders.json',
                 type: 'folder',
                 name: 'Flickr',
-                src: assets.url_for('/images/folders/flickr_off.jpg'),
-                rolloverSrc: assets.url_for('/images/folders/flickr_on.jpg'),
+                src: path_helpers.image_url('/images/folders/flickr_off.jpg'),
+                rolloverSrc: path_helpers.image_url('/images/folders/flickr_on.jpg'),
                 on_error: function(){
                     var folder = this;
                     self.bodyElement.hide().load('/static/connect_messages/connect_to_flickr.html', function(){
@@ -661,8 +661,8 @@
                 open_url: zz.path_prefix + '/picasa/folders.json',
                 type: 'folder',
                 name: 'Picasa Web',
-                src: assets.url_for('/images/folders/picasa_web_off.jpg'),
-                rolloverSrc: assets.url_for('/images/folders/picasa_web_on.jpg'),
+                src: path_helpers.image_url('/images/folders/picasa_web_off.jpg'),
+                rolloverSrc: path_helpers.image_url('/images/folders/picasa_web_on.jpg'),
                 on_error: function(){
                     var folder = this;
                     self.bodyElement.hide().load('/static/connect_messages/connect_to_picasa_web.html', function(){
@@ -681,8 +681,8 @@
                 open_url: zz.path_prefix + '/photobucket/folders', //No need for .json cause this connector has unusual structure
                 type: 'folder',
                 name: 'Photobucket',
-                src: assets.url_for('/images/folders/photobucket_off.jpg'),
-                rolloverSrc: assets.url_for('/images/folders/photobucket_on.jpg'),
+                src: path_helpers.image_url('/images/folders/photobucket_off.jpg'),
+                rolloverSrc: path_helpers.image_url('/images/folders/photobucket_on.jpg'),
                 add_url: zz.path_prefix + "/photobucket/folders/import?album_path=/", //unlike other connectors, photobucket may have photos at the root level
 
                 on_error: function(){
@@ -704,8 +704,8 @@
                 open_url: zz.path_prefix + '/zangzing/folders.json',
                 type: 'folder',
                 name: 'ZangZing',
-                src: assets.url_for('/images/folders/zangzing_off.jpg'),
-                rolloverSrc: assets.url_for('/images/folders/zangzing_on.jpg')
+                src: path_helpers.image_url('/images/folders/zangzing_off.jpg'),
+                rolloverSrc: path_helpers.image_url('/images/folders/zangzing_on.jpg')
             });
 
             return roots;

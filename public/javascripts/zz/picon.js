@@ -34,7 +34,7 @@
                                 '<div class="stacked-image"></div>' +
                                 '<div class="stacked-image"></div>' +
                                 '<div class="stacked-image">' +
-                                    '<img class="cover-photo" src="' + assets.url_for('/images/photo_placeholder.png')+ '">' +
+                                    '<img class="cover-photo" src="' + path_helpers.image_url('/images/photo_placeholder.png')+ '">' +
                                     '<div class="button-bar">' +
                                         '<div class="buttons">' +
                                             '<div class="share-button"></div>' +

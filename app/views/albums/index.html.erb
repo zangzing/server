@@ -72,7 +72,7 @@
                         clone.find('.picon').hide("scale", {}, 300, function(){
                             clone.remove();
                         });
-                        deleteAlbum(<%= album.id %>);
+                        albums.deleteAlbum(<%= album.id %>);
                     };
 
                 },

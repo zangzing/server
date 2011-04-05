@@ -635,10 +635,10 @@ zz.init = {
         //wizard buttons/tabs
         for (var i = 1; i <= 6; i++) {
             var src = "/images/wiz-num-" + i + "-on.png"
-            image_utils.pre_load_image(assets.url_for(src))
+            image_utils.pre_load_image(path_helpers.image_url(src))
 
             var src = "/images/wiz-num-" + i + ".png"
-            image_utils.pre_load_image(assets.url_for(src))
+            image_utils.pre_load_image(path_helpers.image_url(src))
         }
     },
 

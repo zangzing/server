@@ -254,19 +254,19 @@ pages.album_privacy_tab = {
 
             $('#privacy-public').click(function(){
                 $.post(zz.path_prefix + '/albums/'+zz.album_id, '_method=put&album%5Bprivacy%5D=public', function(){
-                    $('img.select-button').attr('src', assets.url_for('/images/btn-round-selected-off.png'));
-                    $('#privacy-public img.select-button').attr('src', assets.url_for('/images/btn-round-selected-on.png'));
+                    $('img.select-button').attr('src', path_helpers.image_url('/images/btn-round-selected-off.png'));
+                    $('#privacy-public img.select-button').attr('src', path_helpers.image_url('/images/btn-round-selected-on.png'));
                 });
             });
             $('#privacy-hidden').click(function(){
                 $.post(zz.path_prefix + '/albums/'+zz.album_id, '_method=put&album%5Bprivacy%5D=hidden');
-                $('img.select-button').attr('src', assets.url_for('/images/btn-round-selected-off.png'));
-                $('#privacy-hidden img.select-button').attr('src', assets.url_for('/images/btn-round-selected-on.png'));
+                $('img.select-button').attr('src', path_helpers.image_url('/images/btn-round-selected-off.png'));
+                $('#privacy-hidden img.select-button').attr('src', path_helpers.image_url('/images/btn-round-selected-on.png'));
             });
             $('#privacy-password').click(function(){
                 $.post(zz.path_prefix + '/albums/'+zz.album_id, '_method=put&album%5Bprivacy%5D=password');
-                $('img.select-button').attr('src', assets.url_for('/images/btn-round-selected-off.png'));
-                $('#privacy-password img.select-button').attr('src', assets.url_for('/images/btn-round-selected-on.png'));
+                $('img.select-button').attr('src', path_helpers.image_url('/images/btn-round-selected-off.png'));
+                $('#privacy-password img.select-button').attr('src', path_helpers.image_url('/images/btn-round-selected-on.png'));
             });
 
             callback();
