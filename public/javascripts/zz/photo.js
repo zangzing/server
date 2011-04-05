@@ -46,11 +46,11 @@
             html += '<div class="photo-caption"></div>';
 
             html += '<div class="photo-border">'
-            html += '   <img class="photo-image" src="/images/blank.png">';
+            html += '   <img class="photo-image" src="' + assets.url_for('/images/blank.png') + '">';
             html += '   <div class="photo-delete-button"></div>';
             html += '   <div class="photo-uploading-icon"></div>';
             html += '   <div class="photo-error-icon"></div>';
-            html += '   <img class="bottom-shadow" src="/images/photo/bottom-full.png">';
+            html += '   <img class="bottom-shadow" src="' + assets.url_for('/images/photo/bottom-full.png') + '">';
 
             if(self.options.context.indexOf('chooser')===0 && self.options.type === 'photo'){
                 html += '   <div class="photo-add-button"></div>';
@@ -225,7 +225,7 @@
                 self._loadImage()
             }
             else{
-                self.imageElement.attr('src', '/images/photo_placeholder.png');
+                self.imageElement.attr('src', assets.url_for('/images/photo_placeholder.png'));
             }
 
 
