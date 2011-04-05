@@ -77,6 +77,8 @@ start_time = Time.now
 end_time = Time.now
 puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
 
+    logger.debug json_str
+
     render :json => json_str
   end
 
