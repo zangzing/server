@@ -159,7 +159,7 @@
 
 
 
-            self.bodyElement.html('<img class="progress-indicator" src="/images/loading.gif">');
+            self.bodyElement.html('<img class="progress-indicator" src="' + assets.url_for('/images/loading.gif') +'">');
 
 
             if(!_.isUndefined(folder.children)){

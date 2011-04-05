@@ -12,7 +12,7 @@ zz.toolbars = {
         $('#album-info h2').text("New Album");
         $('#album-info h3').text("by " + zz.current_user_name);
 
-        $('#header .album-cover').attr('src', '/images/album-no-cover.png');
+        $('#header .album-cover').attr('src', assets.url_for('/images/album-no-cover.png'));
         $('#header .album-cover').css({width: '60px'});
 
         $('#album-info').css('display', 'inline-block');

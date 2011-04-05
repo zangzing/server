@@ -632,98 +632,14 @@ zz.init = {
     preload_rollover_images : function() {
 
 
-        
-
-//        //small drawer
-//        image_preloader.load_image("/images/bg-join-on.png");
-//        image_preloader.load_image("/images/bg-join-off.png");
-//        image_preloader.load_image("/images/bg-sign-in-on.png");
-//        image_preloader.load_image("/images/bg-sign-in-off-over.png");
-//        image_preloader.load_image("/images/bg-small-bottom-repeat.png");
-//        image_preloader.load_image("/images/bg-join-on.png");
-//        image_preloader.load_image("/images/bg-sign-in-off.png");
-//        image_preloader.load_image("/images/bg-sign-in-off-over.png");
-//        image_preloader.load_image("/images/bg-join-off.png");
-//        image_preloader.load_image("/images/bg-sign-in-on.png");
-//        image_preloader.load_image("/images/bg-join-off-over.png");
-//
-//
-//
         //wizard buttons/tabs
         for (var i = 1; i <= 6; i++) {
             var src = "/images/wiz-num-" + i + "-on.png"
-            image_preloader.load_image(src)
+            image_utils.pre_load_image(assets.url_for(src))
 
             var src = "/images/wiz-num-" + i + ".png"
-            image_preloader.load_image(src)
+            image_utils.pre_load_image(assets.url_for(src))
         }
-
-
-
-
-        //photo chooser
-//        image_preloader.load_image("/images/folders/blank.png"); //for folder animate to tray
-
-//        image_preloader.load_image("/images/folders/apple_on.jpg");
-//        image_preloader.load_image("/images/folders/facebook_on.jpg");
-//        image_preloader.load_image("/images/folders/flickr_on.jpg");
-//        image_preloader.load_image("/images/folders/myhome_on.jpg");
-//        image_preloader.load_image("/images/folders/kodak_on.jpg");
-//        image_preloader.load_image("/images/folders/mycomputer_on.jpg");
-//        image_preloader.load_image("/images/folders/mypictures_on.jpg");
-//        image_preloader.load_image("/images/folders/picasa_on.jpg");
-//        image_preloader.load_image("/images/folders/shutterfly_on.jpg");
-//        image_preloader.load_image("/images/folders/snapfish_on.jpg");
-//        image_preloader.load_image("/images/folders/smugmug_on.jpg");
-//        image_preloader.load_image("/images/folders/zangzing_on.jpg");
-//
-//        image_preloader.load_image("/images/folders/blank_off.jpg");
-//        image_preloader.load_image("/images/folders/apple_off.jpg");
-//        image_preloader.load_image("/images/folders/facebook_off.jpg");
-//        image_preloader.load_image("/images/folders/flickr_off.jpg");
-//        image_preloader.load_image("/images/folders/myhome_off.jpg");
-//        image_preloader.load_image("/images/folders/kodak_off.jpg");
-//        image_preloader.load_image("/images/folders/mycomputer_off.jpg");
-//        image_preloader.load_image("/images/folders/mypictures_off.jpg");
-//        image_preloader.load_image("/images/folders/picasa_off.jpg");
-//        image_preloader.load_image("/images/folders/shutterfly_off.jpg");
-//        image_preloader.load_image("/images/folders/snapfish_off.jpg");
-//        image_preloader.load_image("/images/folders/smugmug_off.jpg");
-//        image_preloader.load_image("/images/folders/zangzing_off.jpg");
-//        image_preloader.load_image("/images/folders/photobucket_off.jpg");
-
-
-//        //album privacy
-//        image_preloader.load_image("/images/bg-privacy-public-off.png");
-//        image_preloader.load_image("/images/bg-privacy-private-off.png");
-//        image_preloader.load_image("/images/bg-privacy-password-off.png");
-//        image_preloader.load_image("/images/bg-privacy-public-on.png");
-//        image_preloader.load_image("/images/bg-privacy-private-on.png");
-//        image_preloader.load_image("/images/bg-privacy-password-on.png");
-//
-//
-//        //share album
-//        image_preloader.load_image("/images/btn-share-by-post.png");
-//        image_preloader.load_image("/images/btn-share-by-post-on.png");
-//        image_preloader.load_image("/images/btn-share-by-email.png");
-//        image_preloader.load_image("/images/btn-share-by-email-on.png");
-//
-//        //drawer images types
-//        image_preloader.load_image("/images/bg-drawer-bottom-cap.png");
-//        image_preloader.load_image("/images/bg-bottom-repeat.png");
-//
-//
-//
-//
-//        //buttons
-//        image_preloader.load_image("/images/btn-black-endcap.png");
-//        image_preloader.load_image("/images/btn-black.png");
-//        image_preloader.load_image("/images/btn-green-endcap.png");
-//        image_preloader.load_image("/images/btn-green.png");
-
-
-
-
     },
 
     album_people_view: function() {
