@@ -1,8 +1,8 @@
 .zz_dialog{
     display: none;
 	position: absolute;
-    border: 7px solid #333;
-    background-color: #333 ;
+    border: 7px solid #d8d8d9;
+    background-color: #d8d8d9 ;
     /*opacity:0.95;*/
     z-index: 99995;
     -webkit-border-radius: 6px;
