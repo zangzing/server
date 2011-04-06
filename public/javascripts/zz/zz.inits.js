@@ -45,6 +45,8 @@ zz.init = {
         });
 
 
+
+
         /* Click Handlers    ----------------------------------------------------------------------- */
 
 
@@ -140,6 +142,7 @@ zz.init = {
             }).appendTo('body').animate({opacity:1}, 500, function() {
                 document.location.href = zz.album_base_url + '/movie';
             });
+
         });
 
 
@@ -312,6 +315,13 @@ zz.init = {
             $("form#new_user_session").submit();
         });
 
+
+         $('form#new_user_session').bind('keypress', function(e){
+               if ( e.keyCode == 13 ) {
+                   $("form#new_user_session").submit();
+               }
+         });
+
         //todo: why are these here
         $(zz.validate.sign_in.element).validate(zz.validate.sign_in);
         $(zz.validate.join.element).validate(zz.validate.join);
@@ -322,9 +332,21 @@ zz.init = {
 
         setTimeout(function() {
             zz.init.preload_rollover_images();
-        }
-                , 500);
+        }, 500);
 
+
+        profile_pictures.init_profile_pictures();
+
+
+    },
+
+    show_welcome_dialog: function(){
+        $('<iframe height="450" width="780" src="/static/welcome_dialog/index.html"></iframe>').zz_dialog({
+            height: 420,
+            width: 750,
+            modal: true,
+            autoOpen: true
+        });
     },
 
 
@@ -544,52 +566,52 @@ zz.init = {
                 }
 
 
-                //setup upload progress smeter
-                $('#progress-meter').hide();
-
-                var updateProgressMeter = function() {
-
-                    var photo_count = json.length; //todo: photos shouln't be a global variable
-
-                    upload_stats.stats_for_album(zz.album_id, photo_count, function(time_remaining, percent_complete) {
-                        percent_complete = Math.round(percent_complete);
-
-                        if (percent_complete < 100) {
-                            var minutes = Math.round(time_remaining / 60);
-                            var step = 0;
-
-                            if (percent_complete > 0) {
-                                step = Math.round(percent_complete / 6.25);
-                            }
-
-
-                            $('#progress-meter').css('background-image', 'url(/images/upload-' + step + '.png)');
-
-
-                            if (minutes === Infinity) {
-                                $('#nav-status').text("Calculating...");
-                            }
-                            else {
-                                var minutes_text = "Minutes";
-                                if (minutes === 1) {
-                                    minutes_text = "Minute"
-                                }
-                                $('#progress-meter-label').text(minutes + ' ' + minutes_text);
-                            }
-
-                            $('#progress-meter').show();
-                        }
-                        else {
-                            $('#progress-meter').hide();
-                        }
-                    });
-                }
-
-                updateProgressMeter();
-
-                //todo: need to shut this down if we leave album page ajax-ly
-                //update album upload status every 10 seconds
-                setInterval(updateProgressMeter, 10000);
+//                //setup upload progress smeter
+//                $('#progress-meter').hide();
+//
+//                var updateProgressMeter = function() {
+//
+//                    var photo_count = json.length; //todo: photos shouln't be a global variable
+//
+//                    upload_stats.stats_for_album(zz.album_id, photo_count, function(time_remaining, percent_complete) {
+//                        percent_complete = Math.round(percent_complete);
+//
+//                        if (percent_complete < 100) {
+//                            var minutes = Math.round(time_remaining / 60);
+//                            var step = 0;
+//
+//                            if (percent_complete > 0) {
+//                                step = Math.round(percent_complete / 6.25);
+//                            }
+//
+//
+//                            $('#progress-meter').css('background-image', 'url(/images/upload-' + step + '.png)');
+//
+//
+//                            if (minutes === Infinity) {
+//                                $('#nav-status').text("Calculating...");
+//                            }
+//                            else {
+//                                var minutes_text = "Minutes";
+//                                if (minutes === 1) {
+//                                    minutes_text = "Minute"
+//                                }
+//                                $('#progress-meter-label').text(minutes + ' ' + minutes_text);
+//                            }
+//
+//                            $('#progress-meter').show();
+//                        }
+//                        else {
+//                            $('#progress-meter').hide();
+//                        }
+//                    });
+//                }
+//
+//                updateProgressMeter();
+//
+//                //todo: need to shut this down if we leave album page ajax-ly
+//                //update album upload status every 10 seconds
+//                setInterval(updateProgressMeter, 10000);
 
                 // Update the like array if it exists.
                 if (typeof( like ) != 'undefined') {
@@ -611,98 +633,14 @@ zz.init = {
     preload_rollover_images : function() {
 
 
-        
+        //wizard buttons/tabs
+        for (var i = 1; i <= 6; i++) {
+            var src = "/images/wiz-num-" + i + "-on.png"
+            image_utils.pre_load_image(path_helpers.image_url(src))
 
-//        //small drawer
-//        image_preloader.load_image("/images/bg-join-on.png");
-//        image_preloader.load_image("/images/bg-join-off.png");
-//        image_preloader.load_image("/images/bg-sign-in-on.png");
-//        image_preloader.load_image("/images/bg-sign-in-off-over.png");
-//        image_preloader.load_image("/images/bg-small-bottom-repeat.png");
-//        image_preloader.load_image("/images/bg-join-on.png");
-//        image_preloader.load_image("/images/bg-sign-in-off.png");
-//        image_preloader.load_image("/images/bg-sign-in-off-over.png");
-//        image_preloader.load_image("/images/bg-join-off.png");
-//        image_preloader.load_image("/images/bg-sign-in-on.png");
-//        image_preloader.load_image("/images/bg-join-off-over.png");
-//
-//
-//
-//        //wizard buttons/tabs
-//        for (var i = 1; i <= 6; i++) {
-//            var src = "/images/wiz-num-" + i + "-on.png"
-//            image_preloader.load_image(src)
-//
-//            var src = "/images/wiz-num-" + i + ".png"
-//            image_preloader.load_image(src)
-//        }
-
-
-
-
-        //photo chooser
-//        image_preloader.load_image("/images/folders/blank.png"); //for folder animate to tray
-
-//        image_preloader.load_image("/images/folders/apple_on.jpg");
-//        image_preloader.load_image("/images/folders/facebook_on.jpg");
-//        image_preloader.load_image("/images/folders/flickr_on.jpg");
-//        image_preloader.load_image("/images/folders/myhome_on.jpg");
-//        image_preloader.load_image("/images/folders/kodak_on.jpg");
-//        image_preloader.load_image("/images/folders/mycomputer_on.jpg");
-//        image_preloader.load_image("/images/folders/mypictures_on.jpg");
-//        image_preloader.load_image("/images/folders/picasa_on.jpg");
-//        image_preloader.load_image("/images/folders/shutterfly_on.jpg");
-//        image_preloader.load_image("/images/folders/snapfish_on.jpg");
-//        image_preloader.load_image("/images/folders/smugmug_on.jpg");
-//        image_preloader.load_image("/images/folders/zangzing_on.jpg");
-//
-//        image_preloader.load_image("/images/folders/blank_off.jpg");
-//        image_preloader.load_image("/images/folders/apple_off.jpg");
-//        image_preloader.load_image("/images/folders/facebook_off.jpg");
-//        image_preloader.load_image("/images/folders/flickr_off.jpg");
-//        image_preloader.load_image("/images/folders/myhome_off.jpg");
-//        image_preloader.load_image("/images/folders/kodak_off.jpg");
-//        image_preloader.load_image("/images/folders/mycomputer_off.jpg");
-//        image_preloader.load_image("/images/folders/mypictures_off.jpg");
-//        image_preloader.load_image("/images/folders/picasa_off.jpg");
-//        image_preloader.load_image("/images/folders/shutterfly_off.jpg");
-//        image_preloader.load_image("/images/folders/snapfish_off.jpg");
-//        image_preloader.load_image("/images/folders/smugmug_off.jpg");
-//        image_preloader.load_image("/images/folders/zangzing_off.jpg");
-//        image_preloader.load_image("/images/folders/photobucket_off.jpg");
-
-
-//        //album privacy
-//        image_preloader.load_image("/images/bg-privacy-public-off.png");
-//        image_preloader.load_image("/images/bg-privacy-private-off.png");
-//        image_preloader.load_image("/images/bg-privacy-password-off.png");
-//        image_preloader.load_image("/images/bg-privacy-public-on.png");
-//        image_preloader.load_image("/images/bg-privacy-private-on.png");
-//        image_preloader.load_image("/images/bg-privacy-password-on.png");
-//
-//
-//        //share album
-//        image_preloader.load_image("/images/btn-share-by-post.png");
-//        image_preloader.load_image("/images/btn-share-by-post-on.png");
-//        image_preloader.load_image("/images/btn-share-by-email.png");
-//        image_preloader.load_image("/images/btn-share-by-email-on.png");
-//
-//        //drawer images types
-//        image_preloader.load_image("/images/bg-drawer-bottom-cap.png");
-//        image_preloader.load_image("/images/bg-bottom-repeat.png");
-//
-//
-//
-//
-//        //buttons
-//        image_preloader.load_image("/images/btn-black-endcap.png");
-//        image_preloader.load_image("/images/btn-black.png");
-//        image_preloader.load_image("/images/btn-green-endcap.png");
-//        image_preloader.load_image("/images/btn-green.png");
-
-
-
-
+            var src = "/images/wiz-num-" + i + ".png"
+            image_utils.pre_load_image(path_helpers.image_url(src))
+        }
     },
 
     album_people_view: function() {
@@ -788,17 +726,17 @@ zz.init = {
                     //var moreLessbuttonElement = $(element).siblings('.more-less-btn');
                     moreLessbuttonElement.click(function(){
                         if(allShowing){
+                            moreLessbuttonElement.find("span").html("Show more photos");
+                            moreLessbuttonElement.removeClass('open');
                             $(element).animate({height:230}, 500, 'swing', function(){
-                                moreLessbuttonElement.find("span").html("Show more photos");
-                                moreLessbuttonElement.removeClass('open');
                             });
                             allShowing = false;
                         }
                         else {
+                            moreLessbuttonElement.find("span").html("Show fewer photos");
+                            moreLessbuttonElement.addClass('open');
                             $(element).animate({height: $(element).children().last().position().top + 180}, 500, 'swing', function() {
                                 $(element).trigger('scroll');  //hack: force the photos to load themselves now that they are visible
-                                moreLessbuttonElement.find("span").html("Show less photos");
-                                moreLessbuttonElement.addClass('open');
                             });
                             allShowing = true;
 

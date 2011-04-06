@@ -1,15 +1,16 @@
+common: &common
+ adapter: mysql2
+ database: server_development
+ encoding: utf8
+ pool: 5
+ cache_database: cache_dev
+ username: root
 
 development:
- adapter: mysql2
- database: server_development
- encoding: utf8
- pool: 5
+  <<: *common
 
 perftest:
- adapter: mysql2
- database: server_development
- encoding: utf8
- pool: 5
+  <<: *common
 
 # the following are actually set up by chef scripts in production
 # so not used on our dev machines
@@ -28,17 +29,13 @@ perftest:
 #
 
 eytest:
-  adapter: mysql2
+  <<: *common
   database: server_test
-  encoding: utf8
-  pool: 5
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
-  adapter: mysql2
+  <<: *common
   database: server_test
-  encoding: utf8
-  pool: 5
 

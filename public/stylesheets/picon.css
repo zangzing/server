@@ -1,0 +1,127 @@
+.picon{
+    position:absolute;
+    top:0px;
+    bottom:0px;
+    left:0px;
+    right:0px;
+    /*border:1px solid black;*/
+}
+
+.picon .stacked-image{
+    position:absolute;
+    box-shadow: 0px 0px 3px #aaa;
+    -webkit-box-shadow: 0px 0px 3px #aaa;
+    -moz-box-shadow: 0px 0px 3px #aaa;
+    background-color:#fff;
+    text-align:center;
+}
+
+
+.ua-ie .picon  .stacked-image{
+    border: 1px solid #ccc;
+}
+.picon .stacked-image .cover-photo{
+    border:5px solid #fff;
+    cursor:pointer;
+}
+
+.picon .stacked-image .button-bar{
+    position:absolute;
+    left:0px;
+    right:0px;
+    bottom:15px;
+    height:15px;
+    display:none;
+    /*border:1px solid red;*/
+
+}
+
+.picon .stacked-image .button-bar .buttons{
+    margin-left:auto;
+    margin-right:auto;
+    position:relative;
+    /*border:1px solid blue;*/
+    height:20px;
+    display:inline-block;
+}
+
+.picon .caption{
+    position: absolute;
+    bottom:15px;
+    left:5px;
+    right:5px;
+    text-align:center;
+
+   /*font-family:Helvetica, Arial;*/
+   font-size:13px;
+   color: #636363;
+   text-shadow: white 1px 1px 0px;
+
+
+}
+
+
+
+.picon .stacked-image .button-bar .buttons .share-button{
+    background: url(/images/album_toolbar_share.png) no-repeat scroll 0px 0px transparent;
+    width:20px;
+    height:18px;
+    float:left;
+    cursor:pointer;
+    margin:3px;
+}
+
+
+.picon .stacked-image .button-bar .buttons .share-button:hover{
+    background: url(/images/album_toolbar_share.png) no-repeat scroll 0px -18px transparent;
+}
+
+
+
+.picon .stacked-image .button-bar .buttons .like-button{
+    background: url(/images/album_toolbar_like.png) no-repeat scroll 0px 0px transparent;
+    width:20px;
+    height:18px;
+    float:left;
+    cursor:pointer;
+    margin:3px;
+}
+
+.picon .stacked-image .button-bar .buttons .like-button:hover{
+    background: url(/images/album_toolbar_like.png) no-repeat scroll 0px -18px transparent;
+}
+
+
+
+.picon .stacked-image .button-bar .buttons .info-button{
+    position:relative;
+    background: url(/images/album_toolbar_info.png) no-repeat scroll 0px 0px transparent;
+    top:1px;
+    width:20px;
+    height:18px;
+    float:left;
+    cursor:pointer;
+    margin:3px;
+}
+
+.picon .stacked-image .button-bar .buttons .info-button:hover{
+    background: url(/images/album_toolbar_info.png) no-repeat scroll 0px -18px transparent;
+}
+
+
+.picon .stacked-image .button-bar .buttons .delete-button{
+    position:relative;
+    background: url(/images/album_toolbar_delete.png) no-repeat scroll 0px 0px transparent;
+    top:1px;
+    width:20px;
+    height:18px;
+    float:left;
+    cursor:pointer;
+    margin:3px;
+}
+
+.picon .stacked-image .button-bar .buttons .delete-button:hover{
+    background: url(/images/album_toolbar_delete.png) no-repeat scroll 0px -19px transparent;
+}
+
+

@@ -1,0 +1,199 @@
+body {
+    background-color:#fff;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    text-shadow: #EEE 1px 1px 0px;
+
+}
+img {
+	border:0;
+}
+
+a {
+  color: #466faa;
+}
+
+a:hover {
+  color: #466faa;
+}
+
+
+.in-basic a {
+	/*margin:10px 10px 40px 10px;*/
+	display:block;
+	float:left;
+}
+
+.welcome{
+    height: 380px;
+	width:700px;
+	color:#6a6a6c;
+    position: relative;
+    top: 8px;
+    left:8px;
+	/*-moz-border-radius: 7px; */
+	/*-webkit-border-radius: 7px; */
+	/*border-radius:7px;*/
+	/*border:1px solid #fff;*/
+	/*font-family:Myriad Pro;*/
+	font-size:18px;
+}
+#step1{
+	overflow:hidden;
+	width:760px;
+}
+#step2, #step3, #step4, #step5, #step6{
+	display:none;
+	overflow:hidden;
+	width:760px;
+}
+.welcome h2{
+	color:#6a6a6c;
+	/*font-family:Myriad Pro;*/
+	font-weight: 300;
+	font-size:36px;
+	margin:30px 0 25px 0;
+}
+.welcome p{
+	width:410px;
+	margin:25px 0;
+    font-weight:200;
+}
+.welcome #step5 p{
+	width:405px;
+	margin:25px 0;
+}
+.welcome .left_side {
+    float: left;
+    width: 280px;
+	text-align:center;
+}
+.welcome #step1 .left_side img{
+	margin-top:155px;
+}
+.welcome #step2 .left_side img{
+	margin-top:140px;
+}
+.welcome #step3 .left_side img{
+	margin-top:135px;
+}
+.welcome #step4 .left_side img{
+	margin-top:125px;
+}
+.welcome #step5 .left_side img{
+	margin-top:120px;
+}
+.welcome #step6 .left_side img{
+	margin-top:140px;
+}
+.welcome .right_side {
+	float:left;
+	width:470px;
+	height:330px;
+}
+
+
+.buttons{
+    position:absolute;
+    height:30px;
+    width:145px;
+    right:0px;
+    bottom:0px;
+
+}
+
+.next-button{
+    width:60px;
+    float:right;
+}
+
+.back-button{
+    width:60px;
+    float:left;
+}
+
+
+/*  green button
+ *************************************************************/
+a.green-button{
+    background: url("/images/btn-green-endcap.png") no-repeat scroll top right;
+    display: block;
+    /*float: left;*/
+    height: 30px;
+    /*margin-right: 6px;*/
+    padding-right: 8px; /* sliding doors padding */
+    cursor: pointer;
+    color:#ffffff;
+    font-size: 13px;
+    text-decoration: none;
+}
+
+a.green-button:hover{
+    background: url("/images/btn-green-endcap.png") no-repeat scroll right -30px; /* todo: need rollover image*/
+}
+
+a.green-button:active{
+    background: url("/images/btn-green-endcap.png") no-repeat scroll right -60px; /* todo: need rollover image*/
+}
+
+
+a.green-button span{
+    background: transparent url('/images/btn-green.png') no-repeat;
+    display: block;
+    line-height: 20px;
+    height: 20px;
+    padding: 5px 0 5px 8px;
+    cursor: pointer;
+    text-shadow:none;
+    text-align:center;
+}
+
+a.green-button:hover span{
+    background: transparent url('/images/btn-green.png') no-repeat 0 -30px; /* todo: need rollover image*/
+}
+
+a.green-button:active span{
+    background: transparent url('/images/btn-green.png') no-repeat 0 -60px; /* todo: need rollover image*/
+}
+
+/*  black button
+ *************************************************************/
+a.black-button{
+    background: url("/images/btn-black-endcap.png") no-repeat scroll top right;
+    color:#ffffff;
+    display: block;
+    float: left;
+    font-size: 13px;
+    height: 30px;
+    /*margin-right: 6px;*/
+    padding-right: 8px; /* sliding doors padding */
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a.black-button:hover{
+    background: url("/images/btn-black-endcap.png") no-repeat scroll right -30px; /* todo: need rollover image*/
+}
+
+a.black-button:active{
+    background: url("/images/btn-black-endcap.png") no-repeat scroll right -60px; /* todo: need rollover image*/
+}
+
+
+a.black-button span{
+    background: transparent url('/images/btn-black.png') no-repeat;
+    display: block;
+    line-height: 20px;
+    height: 20px;
+    padding: 5px 0 5px 8px;
+    cursor: pointer;
+    text-shadow:none;
+    text-align:center;
+}
+
+a.black-button:hover span{
+    background: transparent url('/images/btn-black.png') no-repeat 0 -30px; /* todo: need rollover image*/
+}
+
+a.black-button:active span{
+    background: transparent url('/images/btn-black.png') no-repeat 0 -60px; /* todo: need rollover image*/
+}

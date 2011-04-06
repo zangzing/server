@@ -2,30 +2,36 @@
   <h3>Name Album</h3>
   <h4>Name the album and choose an album cover photo</h4>
 </div>
-<div class="flash-box">
-        <div class="flash-notice" id="flashes-notice"></div>
-        <div class="error-notice" id="error-notice"></div>
-  </div>
+    <!--<div class="flash-box">-->
+            <!--<div class="flash-notice" id="flashes-notice"></div>-->
+            <!--<div class="error-notice" id="error-notice"></div>-->
+      <!--</div>-->
 <div id="scroll-body">
 <%= form_for @album do | f|  %>
-  <%= f.error_messages %>
-  <dl class="form clearfix">
-    <dt><label for="album_name">Album Name</label></dt>
-    <dd><input type="text" name="album[name]" id="album_name" value="<%=@album.name%>" /></dd>
-    <dt><label for="album_email">Album Email</label></dt>
-    <dd><input id="album_email" type="text" readonly="readonly" value="<%= @album.short_email %>"/></dd>
-    <script>
-      var album_email_call_lock = 0;
-    </script>
+  <!--<%= f.error_messages %>-->
+  <table id="name_album_form">
+    <tr>
+      <td class="label">Name</td>
+      <td><input type="text" name="album[name]" id="album_name" value="<%=@album.name%>" /></td>
+    </tr>
+    <tr>
+        <td class="label">Album Email</td>
+        <td><span id="album_email"><%="#{@album.short_email}"%></span></td>
+    </tr>
+    <tr>
+      <td class="label">Album URL</td>
+      <td><span id="album_url"><%= album_pretty_url @album%></span></td>
+    </tr>
+    <tr>
+      <td class="label">Cover Photo</td>
+      <td>
+        <input type="hidden" id="album_cover_photo" name="album[cover_photo_id]" value="<%=@album.cover_photo_id%>">
+        <div id="album-cover-picker"></div>
+        <img id="album_cover_img" src="/images/album-no-cover.png">
+      </td>
+    </tr>
+  </table>
 
-    <dt><label>Album Cover</label></dt>
-    <dd>
-      <input type="hidden" id="album_cover_photo" name="album[cover_photo_id]" value="<%=@album.cover_photo_id%>">
-    </dd>
-
-  </dl>
-
-  <div id="album-cover-picker"></div>
 
 <% end %>
 </div>

@@ -21,8 +21,9 @@
 }
 
 .viewlist .tagline{
+   margin-top:2px;
    font-size: 12px;
-   font-weight:  500;
+   font-weight:  normal;
 }
 
 /* -------------------- elements ----------------*/
@@ -61,7 +62,7 @@
 /*each item has a title div and a content div */
 .viewlist .item .title{
     height:  45px;
-    margin-top: 10px;
+    margin-top: 6px;
 }
 /* The items with a hanging tab, add this class plus add like,share,add to choose which icon to display */
 .viewlist .item.tab{
@@ -114,6 +115,6 @@
     height: 25px;
     width: 118px;
     margin: 0 0 0 auto;
-    background: #cccccc url('/images/bg-right-down-arrow.png')   no-repeat scroll  8px 6px;
+    background: #dddee3 url('/images/bg-right-down-arrow.png')   no-repeat scroll  8px 6px;
 }
-.viewlist .more-less-btn.open{  background: #cccccc url('/images/bg-right-down-arrow.png')   no-repeat scroll  6px -30px;}
+.viewlist .more-less-btn.open{  background: #dddee3 url('/images/bg-right-down-arrow.png')   no-repeat scroll  6px -30px;}

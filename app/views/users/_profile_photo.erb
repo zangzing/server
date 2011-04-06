@@ -1,3 +1,5 @@
 <div class="profile-picture">
-            <div class="pp-photo" style="background-image:   url('<%=user.profile_photo_url%>');"></div>
+    <div class="mask">
+      <img data-src="<%=user.profile_photo_url%>" src="<%= image_path('/images/blank.png')%>">
+    </div>
 </div>

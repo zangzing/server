@@ -91,7 +91,7 @@
             var cells = [];
 
 
-            if(!self.options.lazyLoadThreshold && self.options.singlePictureMode){
+            if(self.options.lazyLoadThreshold!=0 && !self.options.lazyLoadThreshold && self.options.singlePictureMode){
                 self.options.lazyLoadThreshold = self.options.cellWidth * 3;
             }
 

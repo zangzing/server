@@ -1,3 +1,5 @@
+require 'lib/album_cache_manager'
+
 silence_warnings do #To avoid warning of overwriting constant
   zconfig = Server::Application.config
   msg = []
@@ -67,5 +69,13 @@ silence_warnings do #To avoid warning of overwriting constant
   puts msg
   Rails.logger.info msg
   zconfig.action_mailer.default_url_options = {:host => zconfig.application_host }
+
+  # initialize album cache manager
+  # make a single instance of the the album cache manager
+  AlbumCacheManager.make_shared
+
+
+
+
 end
 

@@ -10,16 +10,29 @@
     <meta name="title" content="ZangZing" />
     <title>Group Photo Sharing - ZangZing</title>
     <link type="text/css" rel="stylesheet" href="/error/css/error.css" />
+    <script type="text/javascript">
+        function get_param( name ) {
+            name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+            var	results = new RegExp("[\\?&]"+name+"=([^&#]*)").exec( window.location.href );
+
+            return results ? results[1] : '';
+        }
+
+        function upgrade(){
+            document.location.href = get_param("upgrade_url") || "http://chrome.google.com";
+        }
+    </script>
+
 </head>
 <body>
 <div class="error">
-	<img src="/error/img/background_err5.jpg" class="bg" />
+	<img src="/error/img/background_upgrade.jpg" class="bg" />
 	<div class="content">
 		<a class="logo" href="http://www.zangzing.com"><img src="/error/img/logo.png" alt="logo" /></a>
 		<div class="content-r">
-			<h1>Sorry we don't support this browser</h1>
+			<h1>Time to upgrade</h1>
 			<p>
-				At the moment, we support Internet Explorer 8 and above, and recent versions of Chrome, Firefox, and Safari. For best results, we recommend Chrome!
+                Hi. It looks like you are using an out of date web browser. You can upgrade your browser <a href="#" onclick="upgrade();">here</a> but we also like Google's new browser and you can download it <a href="http://chrome.google.com">here</a>. And you can always click to ask for <a href="http://help.zangzing.com">help</a>.
 			</p>
 		</div>
 	</div>

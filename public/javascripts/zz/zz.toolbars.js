@@ -12,7 +12,7 @@ zz.toolbars = {
         $('#album-info h2').text("New Album");
         $('#album-info h3').text("by " + zz.current_user_name);
 
-        $('#header .album-cover').attr('src', '/images/album-no-cover.png');
+        $('#header .album-cover').attr('src', path_helpers.image_url('/images/album-no-cover.png'));
         $('#header .album-cover').css({width: '60px'});
 
         $('#album-info').css('display', 'inline-block');
@@ -22,7 +22,7 @@ zz.toolbars = {
         //tod: this should be in the wizard code
         $('div#cancel-drawer-btn').unbind('click').click( function(){
                 if(confirm("Are you sure you want to cancel creating this album?")){
-                    deleteAlbum(zz.album_id);
+                    albums.deleteAlbum(zz.album_id);
                     $('#drawer .body').fadeOut('fast', function(){window.location.reload()});
                       zz.close_drawer(400);
                      

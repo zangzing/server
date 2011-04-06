@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>ZangZing</title>
+    <link type='text/css' href='css/popup.css' rel='stylesheet' media='screen' />
+</head>
+<body>
+<div class="welcome">
+    <div id="step1">
+        <div class="left_side">
+            <img src='img/step1-logo.png' alt='' />
+        </div>
+        <div class="right_side">
+            <h2>Welcome to ZangZing</h2>
+            <p>Thanks for joining ZangZing, a new way for groups to share photos simply and beautifully.</p>
+            <p>
+                We're still in Beta. This means that there are likely to be some minor issues. If you find some,
+                please let us know by using the Help button in the top right corner.
+            </p>
+            <p>Click Next and we will walk you through 5 key steps about how to use ZangZing.</p>
+        </div>
+        <div class="buttons">
+            <a class="green-button next-button" id="next1"><span>Next</span></a>
+        </div>
+    </div>
+    <div id="step2">
+        <div class="left_side">
+            <img src='img/step2-logo.png' alt='' />
+        </div>
+        <div class="right_side">
+            <h2>Your Home Page</h2>
+            <p>
+                Your home page includes the albums you create and the albums you <strong>Like</strong>.
+                We've added a few of our albums to get you started.
+            </p>
+            <p>To get back to your homepage, just click the <strong>ZangZing logo</strong> in the top left corner.</p>
+            <p>Click to learn more about <a target="_blank" href="http://help.zangzing.com/entries/513362-what-does-like-do">Like</a> or click Next to continue your tour.</p>
+        </div>
+        <div class="buttons">
+            <a class="black-button back-button" id="back2"><span>Back</span></a>
+            <a class="green-button next-button" id="next2"><span>Next</span></a>
+        </div>
+    </div>
+    <div id="step3">
+        <div class="left_side">
+            <img src='img/step3-logo.png' alt='' />
+        </div>
+        <div class="right_side">
+            <h2>Create Your First Album</h2>
+            <p>Click the <strong>Create</strong> button on the left side of the bottom tool bar.</p>
+            <p>Then follow the steps.  You can skip steps or go to previous steps too.</p>
+            <p>Click to learn more about <a target="_blank" href="http://help.zangzing.com/entries/508083-how-do-i-create-a-group-album">creating an album</a> or click Next to continue the tour. </p>
+        </div>
+        <div class="buttons">
+            <a class="black-button back-button" id="back3"><span>Back</span></a>
+            <a class="green-button next-button" id="next3"><span>Next</span></a>
+        </div>
+    </div>
+    <div id="step4">
+        <div class="left_side">
+            <img src='img/step4-logo.png' alt='' />
+        </div>
+        <div class="right_side">
+            <h2>Privacy Matters</h2>
+            <p>The best part of creating an album is with the right people.</p>
+            <p>Each album can be Public, Hidden, or Password Protected.</p>
+            <p>Click to learn more about <a target="_blank" href="http://help.zangzing.com/entries/20002803-privacy-settings">privacy settings</a> or click Next to continue the tour.</p>
+        </div>
+        <div class="buttons">
+            <a class="black-button back-button" id="back4"><span>Back</span></a>
+            <a class="green-button next-button" id="next4"><span>Next</span></a>
+        </div>
+    </div>
+    <div id="step5">
+        <div class="left_side">
+            <img src='img/step5-logo.png' alt='' />
+        </div>
+        <div class="right_side">
+            <h2>Invite Contributors</h2>
+            <p>Every ZangZing album is a group album.<br /> One or many people can add photos.</p>
+            <p>
+                In the Contributors step of creating your album, invite friends to
+                add photos through email, their computer, or various photo sites.
+            </p>
+            <p>Click to learn more about <a target="_blank" href="http://help.zangzing.com/entries/508106-how-do-i-add-contributors-to-an-album">Contributors</a> or click next to continue the tour.</p>
+        </div>
+        <div class="buttons">
+            <a class="black-button back-button" id="back5"><span>Back</span></a>
+            <a class="green-button next-button" id="next5"><span>Next</span></a>
+        </div>
+    </div>
+    <div id="step6">
+        <div class="left_side">
+            <img src='img/step6-logo.png' alt='' />
+        </div>
+        <div class="right_side">
+            <h2>We're here to help</h2>
+            <p>If you get lost or confused, click Help in the top right toolbar to ask us a question.</p>
+            <p>Or email us at <a href="mailto:help@zangzing.com">help@zangzing.com</a>.</p>
+            <p>Have fun sharing lots of photos!</p>
+        </div>
+        <div class="buttons">
+            <a class="black-button back-button" id="back6"><span>Back</span></a>
+            <a class="green-button next-button" id="done"><span>Done</span></a>
+        </div>
+    </div>
+
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+    <script type='text/javascript'>
+        jQuery(document).ready(function(){
+            var next = new Array();
+            var back = new Array();
+            for (var i=1; i<7; i++){
+                next[i] = '#next'+i;
+                back[i] = '#back'+i;
+                $(next[i]).click(function(){
+                    var id = this.id;
+                    var numb = id.split('t');
+                    numb=parseInt(numb[1]);
+                    var step ="step"+numb;
+                    var stepnext ="step"+(numb+1);
+                    $('#'+step).css('display','none');
+                    $('#'+stepnext).css('display','block');
+                });
+                $(back[i]).click(function(){
+                    var id = this.id;
+                    var numb = id.split('k');
+                    numb=parseInt(numb[1]);
+                    var step ="step"+numb;
+                    var stepnext ="step"+(numb-1);
+                    $('#'+step).css('display','none');
+                    $('#'+stepnext).css('display','block');
+                });
+            }
+
+            $('#done').click(function(){
+                window.parent.location.reload( false );
+            });
+        });
+    </script>
+</body>
+</html>

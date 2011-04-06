@@ -63,6 +63,10 @@ class UsersController < ApplicationController
       if @new_user.save
             flash[:success] = "Welcome to ZangZing!"
             @new_user.deliver_welcome!
+            UserSession.create(@new_user, true)
+
+            session[:show_welcome_dialog] = true
+            
             redirect_back_or_default @new_user
       else
         check_for_name_error(checked_user_name, @new_user)

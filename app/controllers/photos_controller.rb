@@ -20,6 +20,7 @@ class PhotosController < ApplicationController
   # logged in via oauth
   # @album set by require_album
   def agent_create
+start_time = Time.now
     if params[:source_guid].nil?
       render :json => "source_guid parameter required. Unable to create photos", :status=>400 and return
     end
@@ -71,7 +72,14 @@ class PhotosController < ApplicationController
       end
     end
 
-    render :json => Photo.to_json_lite(photos)
+    json_str = Photo.to_json_lite(photos)
+
+end_time = Time.now
+puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
+
+    logger.debug json_str
+
+    render :json => json_str
   end
 
 

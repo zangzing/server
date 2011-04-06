@@ -7,7 +7,7 @@ require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
 
-require 'active_record/connection_adapters/mysql2_adapter'
+#require 'active_record/connection_adapters/mysql2_adapter'
 require 'config/initializers/zangzing_config'
 
 # If you have a Gemfile, require the gems listed there, including any gems
@@ -18,7 +18,7 @@ module Server
   class Application < Rails::Application
 
     # set the default primary key type to be a big int
-    ActiveRecord::ConnectionAdapters::Mysql2Adapter::NATIVE_DATABASE_TYPES[:primary_key] = "BIGINT UNSIGNED DEFAULT NULL auto_increment PRIMARY KEY"
+    #ActiveRecord::ConnectionAdapters::MysqlAdapter::NATIVE_DATABASE_TYPES[:primary_key] = "BIGINT UNSIGNED DEFAULT NULL auto_increment PRIMARY KEY"
 
     # pull in all files within lib
     #GWS - pulling this out for now since it has conflicts in deployment EY
@@ -39,7 +39,7 @@ module Server
 
   
     # ZangZing Server Defaul Configuration Values
-    #config.application_host =  'duhast.homeip.net'
+    #config.application_host =  'porch.rubyriders.com:3001'
     config.application_host =  'localhost:3000'
 
     # sendgrid email to album address
@@ -62,8 +62,6 @@ module Server
 
     # Bitly API Setup
     Bitly.use_api_version_3
-
-
 
   end
 end

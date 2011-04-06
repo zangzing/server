@@ -5,7 +5,7 @@
 
 <div class="viewlist">
   <ul>
-    <li class="header">
+    <li class="header bar">
       Contributors
     </li>
     <%@contributors.each do | user | %>
@@ -18,7 +18,7 @@
 
     <% if @likers.length > 0 %>
         <li class="header bar">
-            People who like "<span class="blue"><%=@album.name%></span>"
+            People Who Like This Album <!--<a href="<%=album_path(@album)%>" class="blue"><%=@album.name%></a>-->
         </li>
         <li class="item tab like">
             <%@likers.each do | user | %>
