@@ -8,6 +8,14 @@ img {
 	border:0;
 }
 
+a {
+  color: #466faa;
+}
+
+a:hover {
+  color: #466faa;
+}
+
 
 .in-basic a {
 	/*margin:10px 10px 40px 10px;*/
@@ -16,8 +24,8 @@ img {
 }
 
 .welcome{
-	height:414px; 
-	width:764px; 
+    height: 380px;
+	width:700px;
 	color:#6a6a6c;
     position: relative;
     top: 8px;
@@ -88,8 +96,8 @@ img {
     position:absolute;
     height:30px;
     width:145px;
-    right:20px;
-    bottom:20px;
+    right:0px;
+    bottom:0px;
 
 }
 

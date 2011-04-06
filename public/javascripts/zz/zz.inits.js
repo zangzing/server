@@ -142,6 +142,7 @@ zz.init = {
             }).appendTo('body').animate({opacity:1}, 500, function() {
                 document.location.href = zz.album_base_url + '/movie';
             });
+
         });
 
 
@@ -340,9 +341,9 @@ zz.init = {
     },
 
     show_welcome_dialog: function(){
-        $('<iframe height="450" width="800" src="/static/welcome_dialog/index.html"></iframe>').zz_dialog({
-            height: 450,
-            width: 800,
+        $('<iframe height="450" width="780" src="/static/welcome_dialog/index.html"></iframe>').zz_dialog({
+            height: 420,
+            width: 750,
             modal: true,
             autoOpen: true
         });
