@@ -821,8 +821,24 @@
 
         add_folder_to_album: function(add_url, element){
             var self = this;
+
+
+            var dialog;
+
+            var show_dialog = function(){
+                var template = '<span class="processing-photos-dialog-content"><img src="{{src}}">Processing photos...</span>'.replace('{{src}}', path_helpers.image_url('/images/loading.gif'));
+
+                dialog = zz_dialog.show_dialog(template, { width:300, height: 100, modal: true, autoOpen: true, cancelButton: false });
+            };
+
+            var callback = function(){
+                dialog.close();
+            };
+
             self.animate_to_tray(element, function(){
-                self.add_to_album(add_url);
+                show_dialog();
+
+                self.add_to_album(add_url, callback, callback);
             });
 
             $.each(self.grid.cells(), function(index, element){
@@ -870,7 +886,7 @@
 
         },
 
-        add_to_album: function(add_url){
+        add_to_album: function(add_url, on_success, on_failure){
             var self = this;
 
             add_url += (add_url.indexOf('?') == -1) ? '?' : '&'
@@ -883,16 +899,18 @@
                     self.tray_photos = self.tray_photos.concat(photos);
                     self.tray_widget.setPhotos(self.map_photos(self.tray_photos));
                     self.tray_widget.hideLoadingIndicator();
+                    if(on_success){
+                        on_success();
+                    }
                 },
                 error: function(error){
                     self.tray_widget.hideLoadingIndicator();
                     alert('Sorry, there was a problem adding photos to your album. Please try again.');
-                    logger.debug(error);
-
-    //                $.jGrowl("" + error);
+                    if(on_failure){
+                        on_failure(error);
+                    }
                 }
             });
-
         },
 
 

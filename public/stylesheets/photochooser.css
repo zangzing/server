@@ -193,3 +193,14 @@
 
 }
 
+.processing-photos-dialog-content{
+    position:relative;
+    top:15px;
+    font-size:16px;
+
+}
+
+.processing-photos-dialog-content img{
+    position: relative;
+    top: 10px;
+}
