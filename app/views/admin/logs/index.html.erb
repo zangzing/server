@@ -1,0 +1,15 @@
+<%= render :partial =>  'admin/admin_screens/adminmenu' %>
+<div id="main-container">
+  <div class="viewlist">
+    <div class="header bar">
+      System Logs
+    </div>
+    <div class="content">
+      <table frame="box" width="800px" border="0"  cellspacing="10" align="left" style="text-align: left;">
+        <% @logs.each do |logname|  %>
+            <tr><td><%= link_to logname.gsub('.log', ''),  log_retrieve_path(Base64.encode64(logname)),  :target=> "_blank"  %></td></tr>
+        <%end%>
+      </table>
+    </div>
+  </div>
+</div>

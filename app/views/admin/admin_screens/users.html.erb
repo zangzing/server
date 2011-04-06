@@ -1,0 +1,27 @@
+<%= render :partial => 'adminmenu' %>
+<div id="main-container">
+  <div class="viewlist">
+    <div class='header bar'>
+      All users
+    </div>
+    <div class="title">
+      <%= will_paginate @users%>
+    </div>
+    <div class="content">
+      <table frame="box" width="800px" border="0"  cellspacing="10" align="left" style="text-align: left;">
+         <tr>
+          <th> User         </th>
+          <th> Member Since </th>
+          <th> # of Albums  </th>
+          <th> # of Photos  </th>
+          <th> # of Shares  </th>
+          <th></th>
+        </tr>
+        <%= render :partial => 'user', :collection => @users %>
+      </table>
+      <div class="title">
+        <%= will_paginate @users%>
+      </div>
+    </div>
+  </div>
+</div>

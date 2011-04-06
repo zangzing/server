@@ -280,22 +280,15 @@ Server::Application.routes.draw do
     # =============================================== ADMIN ==============================================
     # ====================================================================================================
     scope  '/admin', :module => "admin" do
+        get   '/'                               => 'admin_screens#index',         :as => :admin
         get   'logs'                            => 'logs#index',                  :as => :logs
         get   'logs/:logname'                   => 'logs#retrieve',               :as => :log_retrieve
-        get   'status'                          =>  'status#show',                :as => :show_status
-        # MailChimp Transactional Campaign manager
-        get    'chimpcampaigns'                  => 'chimpcampaigns#index',       :as => :chimpcampaigns
-        get    'chimpcampaigns/new'              => 'chimpcampaigns#new',         :as => :new_chimpcampaign
-        post   'chimpcampaigns'                  => 'chimpcampaigns#create',      :as => :create_chimpcampaign
-        get    'chimpcampaigns/:id'              => 'chimpcampaigns#edit',        :as => :edit_chimpcampaign
-        put    'chimpcampaigns/:id'              => 'chimpcampaigns#update',      :as => :update_chimpcampaing
-        delete 'chimpcampaigns/:id'              => 'chimpcampaigns#delete',      :as => :delete_chimpcampaign
-        # EmailTemplate Manager
         resources :email_templates
         put   'email_templates/:id/reload'       => 'email_templates#reload',     :as => :reload_email_template
         get   'email_templates/:id/test'         => 'email_templates#test',       :as => :test_email_template
         get   'emails'                           => 'emails#index',               :as => :emails
         put   'emails/:id'                       => 'emails#update',              :as => :email
+        get   'users'                            => 'admin_screens#users',        :as => :users
     end
     #Resque: mount the resque server
     mount Resque::Server.new, :at => "/admin/resque"
