@@ -1,6 +1,7 @@
 class Admin::EmailsController < Admin::AdminController
   def index
     @emails = Email.find(:all)
+    @page = 'email'
   end
 
   def update
