@@ -168,8 +168,9 @@
             else{
                 self.callAgentOrServer({
                    url: folder.open_url,
-                   success:function(json){
-                       self.showFolder(folder, json);
+                   success:function(children){
+                       folder.children = children; //store children for going 'back'
+                       self.showFolder(folder, children);
                    },
                    error: function(error){
                        if(!_.isUndefined(folder.on_error)){
