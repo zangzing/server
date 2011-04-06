@@ -6,6 +6,9 @@ class AsyncResponsesController < ApplicationController
     if body.nil?
       response.headers["x-poll-for-response"] = async_response_url(params[:response_id])
       render :json => {:message => "poll-for-response"}
+    elsif /"exception"\s*:\s*true/ =~ body
+      exception_info = JSON.parse(body)
+      render :json => {:message => exception_info['message']}, :status => exception_info['code']
     else
       render :json => body
     end

@@ -1,6 +1,13 @@
-class Connector::ConnectorController < ApplicationController
-  require 'connector_exceptions'
+require 'connector_exceptions'
 
+require 'shutterfly_connector'
+require 'kodak_connector'
+require 'photobucket_connector'
+require 'smugmug_connector'
+require 'twitter_connector'
+require 'yahoo_connector'
+
+class Connector::ConnectorController < ApplicationController
   layout false
   
   before_filter :require_user
@@ -47,19 +54,61 @@ class Connector::ConnectorController < ApplicationController
 
       Photo.to_json_lite(photos)
     end
+    
+    def classify_exception(exception)
+      return exception if [InvalidToken, InvalidCredentials, HttpCallFail].include?(exception)
+      
+      case exception
+        when
+          #Shutterfly
+          ShutterflyError,
+          #Facebook
+          FacebookError,
+          #Flickr
+          FlickRaw::FailedResponse,
+          #Google
+          GData::Client::AuthorizationError,
+          GData::Client::Error,
+          GData::Client::CaptchaError,
+          #Instagram
+          Instagram::Error,
+          Instagram::InvalidSignature,
+          #Photobucket
+          PhotobucketError,
+          #SmugMug
+          SmugmugError,
+          #Kodak
+          KodakError,
+          #Twitter
+          TwitterError,
+          #Yahoo
+          YahooError
+            then InvalidToken
+
+        #when 6 then InvalidCredentials    #dunno what to put here
+
+        when
+          #Common
+          SocketError,
+          #Google
+          GData::Client::ServerError,
+          GData::Client::UnknownError,
+          GData::Client::VersionConflictError,
+          GData::Client::RequestError,
+          GData::Client::BadRequestError,
+          #Instagram
+          Instagram::BadRequest,
+          Instagram::NotFound,
+          Instagram::InternalServerError,
+          Instagram::ServiceUnavailable
+            then HttpCallFail
+
+        else nil
+      end
+    end
+
   end
 
-
-protected
-  def transform_params(source_params)
-    out_params = source_params.dup
-    action = out_params.delete(:action)
-    controller = out_params.delete(:controller)
-    out_params.delete(:format)
-    out_params[:method] = "#{controller.split('/').last}##{action}"
-    out_params
-  end
-  
 private
 
   def check_params_for_import
