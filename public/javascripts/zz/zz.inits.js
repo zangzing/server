@@ -46,6 +46,24 @@ zz.init = {
 
 
 
+        //tooltips
+        $('<span class="tooltip">&nbsp;</span>').appendTo('body');
+        $(".has-tooltip").each(function(index){
+
+
+            $(this).tooltip({
+                tip: '.tooltip',
+                effect: 'fade',
+                fadeOutSpeed: 100,
+                predelay: 200,
+//                position: "right",
+                offset: [$(this).height() * .5, $(this).width() * .75]
+            });
+
+
+        });
+
+
 
         /* Click Handlers    ----------------------------------------------------------------------- */
 
