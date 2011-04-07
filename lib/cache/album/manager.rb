@@ -92,21 +92,10 @@ module Cache
         # we only have to invalidate once
         invalidator = Invalidator.new(self, user_id)
 
-        # a change to public visibility happened if we are public and
-        # at least one batch has completed
-        album_is_public_visible = album.privacy == "public" && album.completed_batch_count > 0
-
-        # if we are publicly visible or we just became private
-        # we must invalidate
-        public_visibility_changed = album_is_public_visible ||
-              (album.privacy_changed? && (album.changed_attributes['privacy'] == "public"))
-
-        # invalidate proper trackers if a change to public visibility
-        if public_visibility_changed || album.is_safe_deleted?
-          invalidate_my_public_albums(invalidator, user_id)
-          invalidate_public_album(invalidator, album_id)
-          invalidate_liked_user(invalidator, user_id)
-        end
+        # invalidate public related trackers
+        invalidate_my_public_albums(invalidator, user_id)
+        invalidate_public_album(invalidator, album_id)
+        invalidate_liked_user(invalidator, user_id)
 
         # now invalidate anything dependent on this users albums (except for public which is handled above)
         invalidate_my_albums(invalidator, user_id)

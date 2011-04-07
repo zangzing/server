@@ -217,14 +217,22 @@ module Cache
         track_type = get_liked_albums_type
         if (self.liked_albums_json = cache_fetch(track_type, current_versions.liked_albums)) == nil
           # not found in the cache, need to call the database to fetch them
-          if (public)
-            albums = user.liked_public_albums
-          else
-            albums = user.liked_albums
+          # we need to track all of them regardless of their current state because we
+          # have to know of their existence so that when they do change to a visible
+          # state we will know.  This means we fetch all and track all but only put
+          # the visible ones into the cache
+          albums = user.liked_albums
+
+          # now build the list of ones we should put in the cache
+          visible_albums = []
+          albums.each do |album|
+            next unless album.completed_batch_count > 0
+            visible_albums << album if public == false || (album.privacy == 'public')
           end
 
-          # add the albums we like to the tracker set
-          # user_id, tracked_id, track_type
+          # add all the albums to the tracker even
+          # if we can't see it currently so we have
+          # a chance to see it change
           user_id = user.id
           albums.each do |album|
             add_tracked_album(album.id, track_type)
@@ -234,7 +242,7 @@ module Cache
 
           # and update the cache with the albums
           current_versions.liked_albums = updated_cache_version if current_versions.liked_albums == 0
-          self.liked_albums = albums_to_hash(albums)
+          self.liked_albums = albums_to_hash(visible_albums)
           version_tracker.add([track_type, self.liked_albums, current_versions.liked_albums])
         end
       end
