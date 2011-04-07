@@ -375,8 +375,6 @@ module Cache
               :album_path => ApplicationController.album_pretty_path(album_user_name, album_friendly_id),
               :profile_album => album.type == 'ProfileAlbum',
               :c_url => album_cover.nil? ? nil : album_cover.thumb_url,
-              :c_width => album_cover.nil? ? nil : album_cover.rotated_width,
-              :c_height => album_cover.nil? ? nil : album_cover.rotated_height,
               :updated_at => album_updated_at
           }
           fast_albums << hash_album
