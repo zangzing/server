@@ -7,7 +7,9 @@ module Cache
     # this class manages the album cache for users - it tracks
     # what is needed for the album index page
     class Manager < Cache::Base
-      KEY_PREFIX = "Users.Albums.".freeze
+      KEY_PREFIX = "Cache.Album.".freeze
+
+      CACHE_MAX_INACTIVITY = 72.hours
 
       # make a shared instance
       def self.make_shared
@@ -167,8 +169,8 @@ module Cache
 
       # trim out old entries, called by
       # a sweeper resque job
-      def trim_tracker(older_than)
-        Invalidator.trim(self, older_than)
+      def trim_tracker
+        Invalidator.trim(self, CACHE_MAX_INACTIVITY.ago.to_i)
       end
 
     end

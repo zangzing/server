@@ -1,3 +1,5 @@
+require 'cache/album/manager'
+
 module ZZ
   module Async
 
@@ -30,6 +32,8 @@ module ZZ
             #puts "Batch Sweeper run at " + Time.now().to_s
             UploadBatch.close_pending_batches
             UploadBatch.finalize_stale_batches
+            # trim the album cache
+            Cache::Album::Manager.shared.trim_tracker
           end
         end
     end
