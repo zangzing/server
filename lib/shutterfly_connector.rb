@@ -83,10 +83,10 @@ private
       'oflyHashMeth' => HASH_METHOD
     }
     sign_params.merge!('oflyUserid' => userid_token) if userid_token
-    sign_params.merge!('X-OPENFLY-Authorization' => "SFLY user-auth=#{auth_token}") if auth_token
     if request.kind_of?(String)
       "#{request}#{request.include?('?') ? '&' : '?'}#{sign_params.to_url_params}"
     elsif request.kind_of?(Net::HTTPRequest)
+      sign_params.merge!('X-OPENFLY-Authorization' => "SFLY user-auth=#{auth_token}") if auth_token
       sign_params.each { |header, value| request[header] = value  }
       request
     end
