@@ -87,7 +87,7 @@ describe "Low level DB performance Test" do
           rows << row
           album_id += 1
         end
-        base_cmd = "INSERT INTO tracks(user_id, tracked_id, track_type, user_last_touch_at) VALUES "
+        base_cmd = "INSERT INTO c_tracks(user_id, tracked_id, track_type, user_last_touch_at) VALUES "
         end_cmd = " ON DUPLICATE KEY UPDATE user_last_touch_at = VALUES(user_last_touch_at)"
         CacheDB.fast_insert(base_cmd, end_cmd, rows)
       end
@@ -97,7 +97,7 @@ describe "Low level DB performance Test" do
     Benchmark.bm(25) do |x|
       x.report('select') do
         1.times do |i|
-          cmd = "SELECT user_id, tracked_id, track_type FROM tracks "
+          cmd = "SELECT user_id, tracked_id, track_type FROM c_tracks "
                  #"WHERE user_id IS NOT NULL"
           results = db.execute(cmd)
           results.each do |result|

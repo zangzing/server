@@ -11,6 +11,13 @@
     border:1px solid black;
 }
 
+#account-settings label{
+    color:#0a0a0a
+}
+
+
+
+
 #account-settings .field_with_errors{
     display: inline-block;
 }
@@ -74,6 +81,7 @@
 
 #account-settings #linked-accounts-table td{
     padding-right:30px;
+    color:#0a0a0a;
 }
 
 

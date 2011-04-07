@@ -102,12 +102,12 @@ module Cache
           json = JSON.fast_generate(albums)
 
           # compress the content once before caching: save memory and save nginx from compressing every response
-          #json = ActiveSupport::Gzip.compress(json)
+          json = ActiveSupport::Gzip.compress(json)
 
           cache_man.log.info "Caching #{key}"
           cache.write(key, json)
 
-          ver_values << [user_id, track_type, ver]
+          ver_values << [user_id, track_type, ver, user_last_touch_at]
 
           # now store the json for this cache for later retrieval
           case track_type
@@ -122,8 +122,8 @@ module Cache
         version_tracker.clear
 
         # ok, now that the caches have been stored, save the versions
-        base_cmd = "INSERT INTO c_versions(user_id, track_type, ver) VALUES "
-        end_cmd = " ON DUPLICATE KEY UPDATE ver = VALUES(ver)"
+        base_cmd = "INSERT INTO c_versions(user_id, track_type, ver, user_last_touch_at) VALUES "
+        end_cmd = " ON DUPLICATE KEY UPDATE ver = VALUES(ver), user_last_touch_at = VALUES(user_last_touch_at)"
         cache_man.fast_insert(ver_values, base_cmd, end_cmd)
       end
 
