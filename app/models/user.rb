@@ -8,7 +8,7 @@
 class User < ActiveRecord::Base
   attr_writer      :name
   attr_accessor    :old_password, :reset_password
-  attr_accessible  :email, :name, :first_name, :last_name,  :password, :old_password, :automatic, :profile_photo_id
+  attr_accessible  :email, :name, :username, :first_name, :last_name,  :password, :old_password, :automatic, :profile_photo_id
 
   has_many :albums,              :dependent => :destroy
 
