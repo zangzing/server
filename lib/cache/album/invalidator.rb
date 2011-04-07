@@ -103,13 +103,12 @@ module Cache
           db = cache_man.db
           db.begin_db_transaction
 
-          # first remove any versions related to old tracks
-          cmd =   "DELETE c_versions v INNER JOIN c_tracks t ON v.user_id = t.user_id AND v.track_type = t.track_type "
-          cmd <<  "WHERE t.user_last_touch < #{older_than}"
+          # remove old versions
+          cmd =   "DELETE FROM c_versions WHERE user_last_touch_at < #{older_than}"
           results = cache_man.execute(cmd)
 
-          # now delete the tracked items
-          cmd =   "DELETE FROM c_tracks WHERE t.user_last_touch < #{older_than}"
+          # remove old tracked items
+          cmd =   "DELETE FROM c_tracks WHERE user_last_touch_at < #{older_than}"
           results = cache_man.execute(cmd)
 
           db.commit_db_transaction

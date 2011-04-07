@@ -174,7 +174,7 @@ class AlbumsController < ApplicationController
     else
       expires_in 1.year, :public => public
     end
-    #response.headers['Content-Encoding'] = "gzip"
+    response.headers['Content-Encoding'] = "gzip"
     render :json => json
   end
 

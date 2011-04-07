@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110331213234) do
+ActiveRecord::Schema.define(:version => 20110407145731) do
 
   create_table "c_tracks", :id => false, :force => true do |t|
     t.integer "user_id",            :limit => 8, :null => false
@@ -25,12 +25,14 @@ ActiveRecord::Schema.define(:version => 20110331213234) do
   add_index "c_tracks", ["user_last_touch_at"], :name => "index_c_tracks_on_user_last_touch_at"
 
   create_table "c_versions", :id => false, :force => true do |t|
-    t.integer "user_id",    :limit => 8, :null => false
-    t.integer "track_type", :limit => 1, :null => false
+    t.integer "user_id",            :limit => 8, :null => false
+    t.integer "track_type",         :limit => 1, :null => false
     t.integer "ver"
+    t.integer "user_last_touch_at"
   end
 
   add_index "c_versions", ["user_id", "track_type"], :name => "index_c_versions_on_user_id_and_track_type", :unique => true
+  add_index "c_versions", ["user_last_touch_at"], :name => "index_c_versions_on_user_last_touch_at"
 
   create_table "c_working_track_set", :id => false, :force => true do |t|
     t.integer "user_id",    :limit => 8, :null => false
