@@ -220,7 +220,7 @@ class ApplicationController < ActionController::Base
       flash[:error] = "Only Album admins can perform this operation"
       response.headers['X-Errors'] = flash[:error]
       if request.xhr?
-        render :status => 401
+        render :json => '', :status => 401
       else
         render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
       end

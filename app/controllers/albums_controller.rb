@@ -246,9 +246,9 @@ class AlbumsController < ApplicationController
     # Album is found when the before filter calls authorized user
     if !@album.destroy
       render :json => @album.errors, :status=>500
+    else
+      render :json => "Album deleted".to_json
     end
-    render :json => "Album deleted".to_json
-
   end
 
   #closes the current batch

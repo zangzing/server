@@ -67,23 +67,55 @@
       }
 
 
+      //render 'my albums'
       $.get(my_albums_path, {}, function(my_albums){
           render_albums($('#my-albums'), my_albums);
       });
 
-      //todo: make these calls in parallel
-      $.get(liked_albums_path, {}, function(liked_albums){
-          $.get(liked_users_albums_path, {}, function(liked_users_albums){
-             var merged = liked_albums.concat(liked_users_albums);
-             merged = _.sortBy(merged, function(album){
-                 return -1 * album.updated_at;
-             });
 
-             render_albums($('#liked-albums'), merged);
+
+
+      //load and render 'albums i like'
+      var liked_albums = null;
+      var liked_users_albums = null;
+
+      var merge_results_and_render = function(){
+          var merged = liked_albums.concat(liked_users_albums);
+
+
+          //remove duplicates
+          var unique = [];
+          _.each(merged, function(album){
+                if(! _.detect(unique, function(test){ return album.id == test.id})){
+                    unique.push(album);
+                }
           });
+          
+          //sort
+          var sorted = _.sortBy(unique, function(album){
+              return -1 * album.updated_at;
+          });
+
+
+           //render
+          render_albums($('#liked-albums'), sorted);
+
+      }
+
+      //load the 2 sets in parallel
+      $.get(liked_albums_path, {}, function(albums){
+          liked_albums = albums;
+          if(liked_users_albums != null){
+              merge_results_and_render();
+          }
       });
 
-
+      $.get(liked_users_albums_path, {}, function(albums){
+          liked_users_albums = albums;
+          if(liked_albums != null){
+              merge_results_and_render();
+          }
+      });
   });
 
 
