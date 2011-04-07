@@ -19,72 +19,71 @@
 <% content_for :page_javascript do %>
 <script>
 
+  var my_albums_path = '<%= @my_albums_path %>';
+  var liked_albums_path ='<%= @liked_albums_path %>';
+  var liked_users_albums_path = '<%= @liked_users_albums_path %>';
+
+
   $(document).ready(function(){
       var cell = $('<div class="album-cell"></div>');
 
-      <%
-    # first grab all the cover photos in one query
-    # this populates the albums in place
-    Album.fetch_bulk_covers(@albums)
 
-    # we keep a local map of the user_id to name because in most
-    # cases the albums will have the same user - avoids lots of
-    # Activerecord overhead
-    user_id_to_name_map = {}
+      var render_albums = function(container, json){
 
-    @albums.each do |album|
-        album_cover = album.cover
-        album_id = album.id
-        album_name = album.name
-        album_user_id = album.user_id.to_s
-        album_friendly_id = album.friendly_id
-        album_user_name = user_id_to_name_map[album_user_id]
-        if album_user_name.nil?
-            # don't have it, go to the db and save it
-            album_user_name = album.user.username
-            user_id_to_name_map[album_user_id] = album_user_name
-        end
+            _.each(json, function(album){
 
-%>
-      (function(clone){
+                var clone = cell.clone();
+                container.append(clone);
 
-<% if album.user == @user %>
-          $('#my-albums').append(clone);
-<% else %>
-          $('#liked-albums').append(clone);
-<% end %>
+                clone.zz_picon({
+                    caption: album.name,
+                    coverUrl: album.c_url,
+                    onClick: function(){
+                      $('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()},500,'easeOutQuart');
+                      document.location.href='/albums/' + album.id;
+                    },
+                    onShare: function(){
+                        pages.share.share_in_dialog('album', album.id);
+                    },
+                    onLike: function(){
+                        alert('This feature is still under construction. It will allow you to like an album.')
+                    },
+                    onDelete: function(){
+                        if(confirm("Are you sure you want to delete this album?")){
+                            clone.find('.picon').hide("scale", {}, 300, function(){
+                                clone.remove();
+                            });
+                            albums.deleteAlbum(album.id);
+                        };
 
-          clone.zz_picon({
-                caption: '<%= album.name %>',
-                coverUrl: '<%= album.cover ? album.cover.thumb_url : "" %>',
-                onClick: function(){
-                  $('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()},500,'easeOutQuart');
-                  document.location.href='<%= album_pretty_url album %>';
-                },
-                onShare: function(){
-                    pages.share.share_in_dialog('album', <%= album.id%>);
-                },
-                onLike: function(){
-                    alert('This feature is still under construction. It will allow you to like an album.')
-                },
-                onDelete: function(){
-                    if(confirm("Are you sure you want to delete this album?")){
-                        clone.find('.picon').hide("scale", {}, 300, function(){
-                            clone.remove();
-                        });
-                        albums.deleteAlbum(<%= album.id %>);
-                    };
+                    },
+                    //allowDelete: < %= album.user == current_user && album.type != 'ProfileAlbum' %>
+                });
 
-                },
-                allowDelete: <%= album.user == current_user && album.type != 'ProfileAlbum' %>
+
+
+            });
+
+      }
+
+
+      $.get(my_albums_path, {}, function(my_albums){
+          render_albums($('#my-albums'), my_albums);
+      });
+
+      //todo: make these calls in parallel
+      $.get(liked_albums_path, {}, function(liked_albums){
+          $.get(liked_users_albums_path, {}, function(liked_users_albums){
+             var merged = liked_albums.concat(liked_users_albums);
+             merged = _.sortBy(merged, function(album){
+                 return -1 * album.updated_at;
+             })
           });
-      })(cell.clone());
-          
+      });
 
-
-<% end %>
 
   });
+
 
 </script>
 <% end %>
