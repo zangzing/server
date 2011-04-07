@@ -324,7 +324,8 @@
             }
 
 
-            self.imageObject = image_utils.pre_load_image(initialSrc, function(image){
+            image_utils.pre_load_image(initialSrc, function(image){
+                self.imageObject = image;
                 self.imageLoaded = true;
                 self._resize(1);
 
