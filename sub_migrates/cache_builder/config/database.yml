@@ -11,16 +11,21 @@ perftest:
   <<: *common
 
 # make sure these are kept in sync with the EY servers
+# NOTE: since the deploy user only has access to photos
+# we need to use that database rather than the preferred
+# approach of giving it a standalone database.  This is
+# ok for production because the main database is an AmazonRDS instance
+#
 photos_staging:
   <<: *common
-  database: cache_stag
+  database: photos
   host: ec2-174-129-145-82.compute-1.amazonaws.com
   username: deploy
   password: lLwB8AsSjC
 
 photos_production:
   <<: *common
-  database: cache_prod
+  database: photos
   host: ec2-174-129-162-71.compute-1.amazonaws.com
   username: deploy
   password: pQZPjnwN5C

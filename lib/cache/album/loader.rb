@@ -122,7 +122,7 @@ module Cache
         version_tracker.clear
 
         # ok, now that the caches have been stored, save the versions
-        base_cmd = "INSERT INTO versions(user_id, track_type, ver) VALUES "
+        base_cmd = "INSERT INTO c_versions(user_id, track_type, ver) VALUES "
         end_cmd = " ON DUPLICATE KEY UPDATE ver = VALUES(ver)"
         cache_man.fast_insert(ver_values, base_cmd, end_cmd)
       end
@@ -137,7 +137,7 @@ module Cache
         # and update the tracker state
         # convert to array for insert
         track_values = tracker.to_a
-        base_cmd = "INSERT INTO tracks(user_id, tracked_id, tracked_id_type, track_type) VALUES "
+        base_cmd = "INSERT INTO c_tracks(user_id, tracked_id, tracked_id_type, track_type) VALUES "
         end_cmd = " ON DUPLICATE KEY UPDATE track_type = VALUES(track_type)"
         cache_man.fast_insert(track_values, base_cmd, end_cmd)
 
@@ -148,7 +148,7 @@ module Cache
         # inefficient but we expect the typical user will have fewer than 100 tracked
         # things so the update should be extremely fast and this keeps the model simple.
         if (force_touch || track_values.length > 0)
-          cmd = "UPDATE tracks SET user_last_touch_at = #{user_last_touch_at} WHERE user_id = #{user.id}"
+          cmd = "UPDATE c_tracks SET user_last_touch_at = #{user_last_touch_at} WHERE user_id = #{user.id}"
           cache_man.execute(cmd)
         end
         tracker.clear
@@ -158,7 +158,7 @@ module Cache
       def load_current_versions
         begin
           user_id = user.id
-          cmd = "SELECT track_type, ver FROM versions WHERE user_id = #{user_id}"
+          cmd = "SELECT track_type, ver FROM c_versions WHERE user_id = #{user_id}"
           results = cache_man.execute(cmd)
           # take the results and put them in a hash so we can pull what we need
           ver_map = {}

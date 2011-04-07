@@ -51,8 +51,8 @@ module Cache
           # Fetch the set of unique user_ids and track_types that the current trackers affect
           # we put the result into a working set table so we can update our versions to 0 and
           # delete any related tracking rows
-          cmd =   "INSERT INTO working_track_set(user_id, track_type, tx_id) "
-          cmd <<  "(SELECT distinct t.user_id, t.track_type, #{tx_id} FROM tracks t INNER JOIN versions v ON v.user_id = t.user_id AND v.track_type = t.track_type WHERE "
+          cmd =   "INSERT INTO c_working_track_set(user_id, track_type, tx_id) "
+          cmd <<  "(SELECT distinct t.user_id, t.track_type, #{tx_id} FROM c_tracks t INNER JOIN c_versions v ON v.user_id = t.user_id AND v.track_type = t.track_type WHERE "
           first = true
           tracker.each do |t|
             tracked_id = t[0]
@@ -67,7 +67,7 @@ module Cache
 
 
           # invalidate versions related to album or user changes
-          cmd =   "UPDATE versions v INNER JOIN working_track_set w ON v.user_id = w.user_id AND v.track_type = w.track_type "
+          cmd =   "UPDATE c_versions v INNER JOIN c_working_track_set w ON v.user_id = w.user_id AND v.track_type = w.track_type "
           cmd <<  "SET v.ver = 0 WHERE w.tx_id = #{tx_id}"
           results = cache_man.execute(cmd)
 
@@ -77,9 +77,9 @@ module Cache
           # are dropped because until the cache is rebuilt it doesn't matter what happens to those other albums
           #
           # The following DELETE actually deletes both the items from the tracks table and the working_track_set together
-          cmd =   "DELETE working_track_set, tracks FROM tracks INNER JOIN working_track_set "
-          cmd <<  "ON tracks.user_id = working_track_set.user_id AND tracks.track_type = working_track_set.track_type "
-          cmd <<  "WHERE working_track_set.tx_id = #{tx_id}"
+          cmd =   "DELETE c_working_track_set, c_tracks FROM c_tracks INNER JOIN c_working_track_set "
+          cmd <<  "ON c_tracks.user_id = c_working_track_set.user_id AND c_tracks.track_type = c_working_track_set.track_type "
+          cmd <<  "WHERE c_working_track_set.tx_id = #{tx_id}"
           results = cache_man.execute(cmd)
 
           db.commit_db_transaction
@@ -104,12 +104,12 @@ module Cache
           db.begin_db_transaction
 
           # first remove any versions related to old tracks
-          cmd =   "DELETE versions v INNER JOIN tracks t ON v.user_id = t.user_id AND v.track_type = t.track_type "
+          cmd =   "DELETE c_versions v INNER JOIN c_tracks t ON v.user_id = t.user_id AND v.track_type = t.track_type "
           cmd <<  "WHERE t.user_last_touch < #{older_than}"
           results = cache_man.execute(cmd)
 
           # now delete the tracked items
-          cmd =   "DELETE FROM tracks WHERE t.user_last_touch < #{older_than}"
+          cmd =   "DELETE FROM c_tracks WHERE t.user_last_touch < #{older_than}"
           results = cache_man.execute(cmd)
 
           db.commit_db_transaction

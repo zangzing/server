@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema.define(:version => 20110331213234) do
 
-  create_table "tracks", :id => false, :force => true do |t|
+  create_table "c_tracks", :id => false, :force => true do |t|
     t.integer "user_id",            :limit => 8, :null => false
     t.integer "tracked_id",         :limit => 8, :null => false
     t.integer "tracked_id_type",    :limit => 1, :null => false
@@ -20,25 +20,25 @@ ActiveRecord::Schema.define(:version => 20110331213234) do
     t.integer "user_last_touch_at"
   end
 
-  add_index "tracks", ["tracked_id"], :name => "index_tracks_on_tracked_id"
-  add_index "tracks", ["user_id", "track_type", "tracked_id", "tracked_id_type"], :name => "track_info_index", :unique => true
-  add_index "tracks", ["user_last_touch_at"], :name => "index_tracks_on_user_last_touch_at"
+  add_index "c_tracks", ["tracked_id"], :name => "index_c_tracks_on_tracked_id"
+  add_index "c_tracks", ["user_id", "track_type", "tracked_id", "tracked_id_type"], :name => "track_info_index", :unique => true
+  add_index "c_tracks", ["user_last_touch_at"], :name => "index_c_tracks_on_user_last_touch_at"
 
-  create_table "versions", :id => false, :force => true do |t|
+  create_table "c_versions", :id => false, :force => true do |t|
     t.integer "user_id",    :limit => 8, :null => false
     t.integer "track_type", :limit => 1, :null => false
     t.integer "ver"
   end
 
-  add_index "versions", ["user_id", "track_type"], :name => "index_versions_on_user_id_and_track_type", :unique => true
+  add_index "c_versions", ["user_id", "track_type"], :name => "index_c_versions_on_user_id_and_track_type", :unique => true
 
-  create_table "working_track_set", :id => false, :force => true do |t|
+  create_table "c_working_track_set", :id => false, :force => true do |t|
     t.integer "user_id",    :limit => 8, :null => false
     t.integer "track_type", :limit => 1, :null => false
     t.integer "tx_id",      :limit => 8, :null => false
   end
 
-  add_index "working_track_set", ["tx_id"], :name => "index_working_track_set_on_tx_id"
-  add_index "working_track_set", ["user_id", "track_type", "tx_id"], :name => "working_track_set_index", :unique => true
+  add_index "c_working_track_set", ["tx_id"], :name => "index_c_working_track_set_on_tx_id"
+  add_index "c_working_track_set", ["user_id", "track_type", "tx_id"], :name => "working_track_set_index", :unique => true
 
 end
