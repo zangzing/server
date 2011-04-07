@@ -355,6 +355,7 @@ module Cache
           album_id = album.id
           album_name = album.name
           album_updated_at = album.updated_at.to_i
+          album_friendly_id = album.friendly_id
 
           # minimize the trips to the database since many
           # of the users will be the same for the the different albums
@@ -370,7 +371,8 @@ module Cache
               :id => album_id,
               :name => album_name,
               :user_name => album_user_name,
-              :friendly_id => album.friendly_id,
+              :album_path => ApplicationController.album_pretty_path(album_user_name, album_friendly_id),
+              :friendly_id => album_friendly_id,
               :allow_delete => album.user_id == user.id && album.type != 'ProfileAlbum',
               :c_url => album_cover.nil? ? nil : album_cover.thumb_url,
               :c_width => album_cover.nil? ? nil : album_cover.rotated_width,
