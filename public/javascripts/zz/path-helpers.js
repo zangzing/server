@@ -7,9 +7,21 @@ var path_helpers = {
         else{
             return path + '?' + zz.rails_asset_id;
         }
+    },
+
+
+    rails_route: function(name, id){
+        if(name == 'edit_user'){
+            return '/service/users/' + id + '/edit';
+        }
+        else if(name == 'delete_identity'){
+            return '/service/' + id + '/sessions/destroy'
+        }
+        else if(name == 'new_identity'){
+            return '/service/' + id + '/sessions/new'
+        }
+        return null;
     }
-
-
 
 
 };

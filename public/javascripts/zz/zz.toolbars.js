@@ -42,8 +42,11 @@ zz.toolbars = {
        $('#acct-settings-btn').click(function(){
            zz.init.disable_buttons();
            $('#header #account-badge').removeClass('disabled').addClass('selected');
-       
-           zz.wizard.open_settings_drawer('profile')
+
+              document.location.href = path_helpers.rails_route('edit_user', zz.current_user_id);
+
+
+//           zz.wizard.open_settings_drawer('profile')
 
        });
        $('#acct-signout-btn').click(function(){ window.location = zz.path_prefix + '/signout' });

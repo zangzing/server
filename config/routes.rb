@@ -41,6 +41,10 @@ Server::Application.routes.draw do
     get    '/users/:id/account'    => 'users#account',    :as => :account
     get    '/users/:id/notifications'    => 'users#notifications',    :as => :notifications
 
+    #account settings
+    get    '/users/:id/account_settings'  => 'account_settings#edit', :as => :edit_account_settings
+
+
     #identities
     get    '/users/:id/identities'     => 'identities#index',       :as => :user_identities
     get    '/users/:id/identities/new' => 'identities#new',         :as => :new_user_identity

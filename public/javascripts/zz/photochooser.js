@@ -1,12 +1,40 @@
-/*!
- * photochooser.js
- *
- * Copyright 2011, ZangZing LLC. All rights reserved.
- */
+
+
+var photochooser = {
+    open_in_dialog: function(album_id, on_close){
+        
+        var template = $('<div class="photochooser-container"></div>');
+        $('<div id="add-photos-dialog"></div>').html( template ).zz_dialog({
+                               height: $(document).height() - 200,
+                               width: 895,
+                               modal: true,
+                               autoOpen: true,
+                               open : function(event, ui){ template.zz_photochooser({album_id: album_id}) },
+                               close: function(event, ui){
+                                   $.ajax({
+                                       url:      zz.path_prefix + '/albums/' + album_id + '/close_batch',
+                                       complete: function(request, textStatus){
+                                           logger.debug('Batch closed because Add photos dialog was closed. Call to close_batch returned with status= '+textStatus);
+                                       },
+                                       success: function(){
+                                           if(on_close){
+                                               on_close();
+                                           }
+                                       }
+                                   });
+                               }
+                           });
+        template.height( $(document).height() - 192 );
+    }
+};
+
+
+
 (function( $, undefined ) {
 
     $.widget( "ui.zz_photochooser", {
         options: {
+            album_id:null
         },
 
         stack:[],
@@ -782,7 +810,7 @@
                 dataType: "json",
                 url: zz.path_prefix + "/photos/" + photo_id + ".json",
                 success:function(){
-                    agent.callAgent('/albums/' +  zz.album_id + '/photos/' + photo_id + '/cancel_upload');
+                    agent.callAgent('/albums/' +  self.options.album_id + '/photos/' + photo_id + '/cancel_upload');
                     self.reload_tray();
                 },
 
@@ -797,7 +825,7 @@
             var self = this;
             $.ajax({
                 dataType: 'json',
-                url: zz.path_prefix + '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
+                url: zz.path_prefix + '/albums/' + self.options.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
                 success: function(photos){
                     
                     self.tray_photos = _.filter(photos, function(photo){
@@ -891,7 +919,7 @@
             var self = this;
 
             add_url += (add_url.indexOf('?') == -1) ? '?' : '&'
-            add_url += 'album_id=' + zz.album_id;
+            add_url += 'album_id=' + self.options.album_id;
 
             self.tray_widget.showLoadingIndicator();
             self.callAgentOrServer({

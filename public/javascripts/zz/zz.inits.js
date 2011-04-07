@@ -198,25 +198,33 @@ zz.init = {
 
             zz.init.disable_buttons();
             $('#footer #add-photos-button').removeClass('disabled').addClass('selected');
-            var template = $('<div class="photochooser-container"></div>');
-            $('<div id="add-photos-dialog"></div>').html( template ).zz_dialog({
-                                   height: $(document).height() - 200,
-                                   width: 895,
-                                   modal: true,
-                                   autoOpen: true,
-                                   open : function(event, ui){ template.zz_photochooser({}) },
-                                   close: function(event, ui){
-                                       $.ajax({ url:      zz.path_prefix + '/albums/' +zz.album_id + '/close_batch',
-                                           complete: function(request, textStatus){
-                                               logger.debug('Batch closed because Add photos dialog was closed. Call to close_batch returned with status= '+textStatus);
-                                           },
-                                           success: function(){
-                                               window.location.reload( false );
-                                           }
-                                       });
-                                   }
-                               });
-            template.height( $(document).height() - 192 );
+
+            photochooser.open_in_dialog(zz.album_id, function(){
+                 window.location.reload( false );
+            });
+
+
+//            var template = $('<div class="photochooser-container"></div>');
+//            $('<div id="add-photos-dialog"></div>').html( template ).zz_dialog({
+//                                   height: $(document).height() - 200,
+//                                   width: 895,
+//                                   modal: true,
+//                                   autoOpen: true,
+//                                   open : function(event, ui){ template.zz_photochooser({}) },
+//                                   close: function(event, ui){
+//                                       $.ajax({ url:      zz.path_prefix + '/albums/' +zz.album_id + '/close_batch',
+//                                           complete: function(request, textStatus){
+//                                               logger.debug('Batch closed because Add photos dialog was closed. Call to close_batch returned with status= '+textStatus);
+//                                           },
+//                                           success: function(){
+//                                               window.location.reload( false );
+//                                           }
+//                                       });
+//                                   }
+//                               });
+//            template.height( $(document).height() - 192 );
+
+
         });
 
         //any signed in user can do this

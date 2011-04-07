@@ -11,7 +11,6 @@ var profile_pictures = {
                 img_element.css(css);
                 img_element.attr('src', profile_pic_url);
 
-                logger.debug(css);
             });
         });
     }
