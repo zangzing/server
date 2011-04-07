@@ -107,9 +107,10 @@ class AlbumsController < ApplicationController
     loader.pre_fetch_albums
     versions = loader.current_versions
 
-    # call the following methods to get the json url paths for my_albums, my_liked_albums, etc
+    # call the following methods to get the json paths for my_albums, my_liked_albums, etc
     # The url paths returned are based on whether we are viewing ourselves or somebody else (based on the public flag)
     #
+    # The paths are relative to the host so start with /service/...
     my_albums_path = my_albums_path(versions)
     liked_albums_path = liked_albums_path(versions)
     liked_users_albums_path = liked_users_albums_path(versions)
@@ -143,18 +144,21 @@ class AlbumsController < ApplicationController
 
   # Some helpers to return the json paths, would be cleaner if these lived in Versions class but we need
   # the route helpers accessible to controller
-  def my_albums_path(versions)
+  def my_albums_path(versions, force_zero_ver = false)
+    ver = force_zero_ver ? 0 : versions.my_albums
     url = versions.public ? my_albums_public_json_path(versions.user_id) : my_albums_json_path(versions.user_id)
-    url << "?ver=#{versions.my_albums}"
+    url << "?ver=#{ver}"
   end
 
-  def liked_albums_path(versions)
+  def liked_albums_path(versions, force_zero_ver = false)
+    ver = force_zero_ver ? 0 : versions.liked_albums
     url = versions.public ? liked_albums_public_json_path(versions.user_id) : liked_albums_json_path(versions.user_id)
-    url << "?ver=#{versions.liked_albums}"
+    url << "?ver=#{ver}"
   end
 
-  def liked_users_albums_path(versions)
-    liked_users_public_albums_json_path(versions.user_id) + "?ver=#{versions.liked_users_albums}"
+  def liked_users_albums_path(versions, force_zero_ver = false)
+    ver = force_zero_ver ? 0 : versions.liked_users_albums
+    liked_users_public_albums_json_path(versions.user_id) + "?ver=#{ver}"
   end
 
   def albums_cache_setup(public)
