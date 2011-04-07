@@ -13,27 +13,27 @@ require 'identity'
 
 
 # Mr ZZ must go first since he is such a popular guy that everybody likes him!
-user = User.new(  {:name                   => 'ZangZing',
-                      :username               => 'zangzing',
-                      :email                  => 'marketing@zangzing.com',
-                      :password               => 'dud7/adds',
-                      :password_confirmation  => 'dud7/adds'})
+user = User.new(  {:email  => 'marketing@zangzing.com'})
+user.name = 'ZangZing'
+user.username = 'zangzing'
+user.password = 'dud7/adds'
+user.automatic = false
 user.reset_perishable_token
 user.reset_single_access_token
-user.save
+user.save!
 print user.name + " User Created!\n"
 
 
 
 
-user = User.new(  {:name                   => 'ZangZing Admin',
-                      :username               => 'zzadmin',
-                      :email                  => 'admin@zangzing.com',
-                      :password               => 'cal6:cars',
-                      :password_confirmation  => 'cal6:cars'})
+user = User.new(  {:email   => 'admin@zangzing.com' })
+user.name = 'ZangZing Admin'
+user.username = 'zzadmin'
+user.password = 'cal6:cars'
+user.automatic = false
 user.reset_perishable_token
 user.reset_single_access_token
-user.save
+user.save!
 SystemRightsACL.singleton.add_user(user.id, SystemRightsACL::ADMIN_ROLE)
 print user.name + " User Created!\n"
 

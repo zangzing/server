@@ -1,5 +1,6 @@
 require 'active_record'
 require 'active_record/connection_adapters/mysql2_adapter'
+require 'app/models/bulk_id_generator'
 
 module Cache
 
