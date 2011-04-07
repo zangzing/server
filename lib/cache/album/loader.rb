@@ -78,10 +78,13 @@ module Cache
         key = Loader.make_cache_key(self.user.id, track_type, ver)
         cache_man.log.info("Fetching albums cache key: #{key}")
         json = cache.read(key)
+        z = ZZ::ZZA.new
         if(json.nil?)
           cache_man.log.info("Cache miss key: #{key}")
+          z.track_event("cache.miss.album", key)
         else
           cache_man.log.info("Cache hit key: #{key}")
+          z.track_event("cache.hit.album", key)
           return json
         end
 
