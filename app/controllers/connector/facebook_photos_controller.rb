@@ -3,7 +3,7 @@ class Connector::FacebookPhotosController < Connector::FacebookController
   def index
     photos_response = []
     SystemTimer.timeout_after(http_timeout) do
-      photos_response = facebook_graph.get("#{params[:fb_album_id]}/photos")
+      photos_response = facebook_graph.get("#{params[:fb_album_id]}/photos", :limit => 1000)
     end
     unless photos_response.empty?
       if photos_response.first[:updated_time]
