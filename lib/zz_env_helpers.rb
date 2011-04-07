@@ -27,3 +27,12 @@ def safe_hash_default(map, key, default)
   safe_default(value, default)
 end
 
+# limit the max number for a valid date of a photo
+# technically it looks like rails has a bug on 32 bit systems
+# where it is not dealing with Time values passed into it that
+# hold times beyond the max unix epoch even though the
+# field type is datetime in the database that should
+# support up to year 9999
+def max_safe_epoch_time epoch_time
+  epoch_time > 2147483647 ? 2147483647 : epoch_time
+end

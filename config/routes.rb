@@ -51,6 +51,13 @@ Server::Application.routes.draw do
     delete '/identities/:id'          => 'identities#destroy',     :as => :delete_identity
 
     #albums
+    get    '/users/:user_id/my_albums_json'                 => 'albums#my_albums_json',                 :as => :my_albums_json
+    get    '/users/:user_id/my_albums_public_json'          => 'albums#my_albums_public_json',          :as => :my_albums_public_json
+    get    '/users/:user_id/liked_albums_json'              => 'albums#liked_albums_json',              :as => :liked_albums_json
+    get    '/users/:user_id/liked_albums_public_json'       => 'albums#liked_albums_public_json',       :as => :liked_albums_public_json
+    get    '/users/:user_id/liked_users_public_albums_json' => 'albums#liked_users_public_albums_json', :as => :liked_users_public_albums_json
+
+
     get    '/users/:user_id/albums'          => 'albums#index'             #, :as => :user_albums  user albums defined below
     get    '/users/:user_id/albums/new'      => 'albums#new',                 :as => :new_user_album
     post   '/users/:user_id/albums'          => 'albums#create',              :as => :create_user_album

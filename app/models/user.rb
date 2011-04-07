@@ -61,8 +61,8 @@ class User < ActiveRecord::Base
   before_save    :split_name
   before_create  :make_profile_album
   before_create  :build_preferences
-  after_create   :update_acls_with_id
-  after_create   :like_mr_zz
+  after_commit   :update_acls_with_id
+  after_commit   :like_mr_zz
 
   validates_presence_of   :name,      :unless => :automatic?
   validates_presence_of   :username,  :unless => :automatic?

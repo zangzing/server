@@ -1,4 +1,4 @@
-require 'lib/album_cache_manager'
+require 'lib/cache/album/manager'
 
 silence_warnings do #To avoid warning of overwriting constant
   zconfig = Server::Application.config
@@ -72,7 +72,7 @@ silence_warnings do #To avoid warning of overwriting constant
 
   # initialize album cache manager
   # make a single instance of the the album cache manager
-  AlbumCacheManager.make_shared
+  Cache::Album::Manager.make_shared
 
 
 end

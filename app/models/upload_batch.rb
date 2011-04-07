@@ -151,13 +151,19 @@ class UploadBatch < ActiveRecord::Base
     if force || (self.state == 'closed' && self.ready?)
 
        if safe_state_change('finished')
-         #send album shares even if there were no photos uploaded
-         shares.each { |share| share.deliver }
+         album = self.album
+         if album.nil?
+           Rails.logger.info "Album for batch was missing, deleting batch: batch id: #{self.id}, user_id: #{self.user_id}, album_id: #{self.album_id}"
+           self.destroy
+           return true
+         end
 
          # now mark the albums as ok to display since it has completed at least one batch
-         album = self.album
          album.completed_batch_count += 1
          album.save
+
+         #send album shares even if there were no photos uploaded
+         shares.each { |share| share.deliver }
 
          if self.photos.count > 0
             #Create Activity

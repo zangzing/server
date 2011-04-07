@@ -1,0 +1,35 @@
+common: &common
+ adapter: mysql2
+ database: cache_dev
+ encoding: utf8
+ username: root
+
+development:
+  <<: *common
+
+perftest:
+  <<: *common
+
+# make sure these are kept in sync with the EY servers
+photos_staging:
+  <<: *common
+  database: cache_stag
+  host: ec2-174-129-145-82.compute-1.amazonaws.com
+  username: deploy
+  password: lLwB8AsSjC
+
+photos_production:
+  <<: *common
+  database: cache_prod
+  host: ec2-174-129-162-71.compute-1.amazonaws.com
+  username: deploy
+  password: pQZPjnwN5C
+
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+test:
+  <<: *common
+  database: cache_test
+

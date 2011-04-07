@@ -6,34 +6,44 @@ require "config/initializers/hash_extensions"
 # use it for generic stuff that you'd like to control on a per environment basis
 #
 
+# determine the rails env in a manner that works
+# with rspec tests and directly from rails
+def safe_rails_env
+  if defined?(Rails)
+    return Rails.env
+  else
+    return ENV['RAILS_ENV']
+  end
+end
+
 class ZangZingConfig
   def self.config
-    @@config ||= YAML::load(ERB.new(File.read(File.dirname(__FILE__) + "/../zangzing_config.yml")).result)[Rails.env].recursively_symbolize_keys!
+    @@config ||= YAML::load(ERB.new(File.read(File.dirname(__FILE__) + "/../zangzing_config.yml")).result)[safe_rails_env].recursively_symbolize_keys!
   end
 end
 
-# this clsss wraps redis config - putting it here to avoid having too many
-# init files - we use RAILS_ENV since calling from rspec does not set up the rails environment
+# this class wraps redis config - putting it here to avoid having too many
+# init files
 class RedisConfig
   def self.config
-    @@config ||= YAML::load(ERB.new(File.read(File.dirname(__FILE__) + "/../redis.yml")).result)[Rails.env].recursively_symbolize_keys!
+    @@config ||= YAML::load(ERB.new(File.read(File.dirname(__FILE__) + "/../redis.yml")).result)[safe_rails_env].recursively_symbolize_keys!
   end
 end
 
-# this clsss wraps resque scheduler config - putting it here to avoid having too many
-# init files - we use RAILS_ENV since calling from rspec does not set up the rails environment
+# this class wraps resque scheduler config - putting it here to avoid having too many
+# init files
 class ResqueScheduleConfig
   def self.config
     # don't symbolize keys for this one
-    @@config ||= YAML::load(ERB.new(File.read(File.dirname(__FILE__) + "/../resque_schedule.yml")).result)[Rails.env]
+    @@config ||= YAML::load(ERB.new(File.read(File.dirname(__FILE__) + "/../resque_schedule.yml")).result)[safe_rails_env]
   end
 end
 
-# this clsss wraps redis config - putting it here to avoid having too many
-# init files - we use RAILS_ENV since calling from rspec does not set up the rails environment
+# this class wraps redis config - putting it here to avoid having too many
+# init files
 class MemcachedConfig
   def self.config
-    # this is not configred like a typical yml file.  We currently use the engineyard format which the only relevant info is in defaults
+    # this is not configured like a typical yml file.  We currently use the engineyard format which the only relevant info is in defaults
     # later we should deploy our own version with proper style
     @@config ||= YAML::load(ERB.new(File.read(File.dirname(__FILE__) + "/../memcached.yml")).result)["defaults"].recursively_symbolize_keys!
   end
@@ -44,18 +54,22 @@ class MemcachedConfig
   end
 end
 
-# this clsss wraps resque scheduler config - putting it here to avoid having too many
-# init files - we use RAILS_ENV since calling from rspec does not set up the rails environment
+# this class wraps database config - putting it here to avoid having too many
+# init files
 class DatabaseConfig
   def self.config
-    #
-    # NOTE NOTE NOTE
-    #
-    # we user RAILS_ENV here because we need this from a rspec test and don't want to pull everything in...
-    #
-    # DO NOT CHANGE
-    #
-    @@config ||= YAML::load(ERB.new(File.read(File.dirname(__FILE__) + "/../database.yml")).result)[ENV['RAILS_ENV']].recursively_symbolize_keys!
+    @@config ||= YAML::load(ERB.new(File.read(File.dirname(__FILE__) + "/../database.yml")).result)[safe_rails_env].recursively_symbolize_keys!
   end
 end
 
+# this class wraps the cache database config - putting it here to avoid having too many
+# init files
+class CacheDatabaseConfig
+  def self.config
+    #
+    # this config comes from the sub_migrates/cache_builder - this allows us to have a seperate
+    # sub project that gets its own config to point to a different database than the main app
+    # and also provides us with the ability to run the migrations from that sub project
+    @@config ||= YAML::load(ERB.new(File.read(File.dirname(__FILE__) + "/../../sub_migrates/cache_builder/config/database.yml")).result)[safe_rails_env].recursively_symbolize_keys!
+  end
+end
