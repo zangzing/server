@@ -74,10 +74,10 @@ class UsersController < ApplicationController
       end
   end
   
-#  def show
-#      @user = User.find(params[:id])
-#      redirect_to  user_albums_path(@user )
-#  end
+  def show
+      @user = User.find(params[:id])
+      redirect_to user_pretty_url (@user )
+  end
 #
 #  def edit
 #    @user = @current_user
