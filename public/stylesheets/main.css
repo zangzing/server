@@ -17,6 +17,9 @@ body {
   color: #0a0a0a;
   text-align: center;
 }
+a{
+    color: #466faa;
+}
 
 h2 {
   font-size: 20px;

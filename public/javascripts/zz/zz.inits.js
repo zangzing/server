@@ -241,17 +241,20 @@ zz.init = {
 
             //todo: need better generic way to determine current view and get photo id -- this is duplicated elsewhere
             if (document.location.href.indexOf('/photos/#!') !== -1 || document.location.href.indexOf('/photos#!') !== -1) {
-                //picture view -- share photo
-                var currentPhotoId = null;
-                var hash = jQuery.param.fragment();
-
-                if (hash !== '') {
-                    currentPhotoId = hash.slice(1); //remove the '!'
-                }
-                pages.share.share_in_dialog('photo', currentPhotoId, function(){
-                    zz.init.enable_buttons();
-                    $('#footer #share-button').removeClass('selected');  //todo: centralize this somewhere -- zz.toolbars
-                });
+                $('#footer #share-button').removeClass('selected');  
+                zz.init.enable_buttons();
+                alert("This feature is still under construction.");
+//                //picture view -- share photo
+//                var currentPhotoId = null;
+//                var hash = jQuery.param.fragment();
+//
+//                if (hash !== '') {
+//                    currentPhotoId = hash.slice(1); //remove the '!'
+//                }
+//                pages.share.share_in_dialog('photo', currentPhotoId, function(){
+//                    zz.init.enable_buttons();
+//                    $('#footer #share-button').removeClass('selected');  //todo: centralize this somewhere -- zz.toolbars
+//                });
             }
             else{
                 //album view -- share album
@@ -486,8 +489,8 @@ zz.init = {
                         currentPhotoId: $.param.fragment(),
                         showButtonBar:true,
                         onClickShare: function(photo_id){
-//                            alert("This feature is still under construction. It will allow you to share an individual photo.");
-                            pages.share.share_in_dialog('photo', photo_id);
+                            alert("This feature is still under construction.");
+//                            pages.share.share_in_dialog('photo', photo_id);
                         }
 
                     }).data().zz_photogrid;
