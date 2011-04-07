@@ -5,10 +5,6 @@
 #
 
 Server::Application.routes.draw do
-  get "email/index"
-
-  get "email/update"
-
   root :to => 'pages#home'
   get    '/service'            => 'pages#home'
   get    '/signin'             => 'user_sessions#new',  :as => :signin
@@ -29,7 +25,6 @@ Server::Application.routes.draw do
     get    '/health_check'            => 'pages#health_check',      :as => :health_check
 
     #users
-#    get    '/users'                   => 'users#index',             :as => :users
     get    '/users/new'               => 'users#new',               :as => :new_user
     get    '/users/validate_email'    => 'users#validate_email',    :as => :validate_email
     get    '/users/validate_username' => 'users#validate_username', :as => :validate_username
@@ -289,6 +284,11 @@ Server::Application.routes.draw do
         get   'emails'                           => 'emails#index',               :as => :emails
         put   'emails/:id'                       => 'emails#update',              :as => :email
         get   'users'                            => 'admin_screens#users',        :as => :users
+        get   'settings'                         => 'system_settings#show',       :as => :system_settings
+        put   'settings'                         => 'system_settings#update'
+        get   'guests'                           => 'guests#index',               :as => :guests
+        post  'guests'                           => 'guests#create'
+        put   'guests/id'                        => 'guests#update',              :as => :update_guest
     end
     #Resque: mount the resque server
     mount Resque::Server.new, :at => "/admin/resque"

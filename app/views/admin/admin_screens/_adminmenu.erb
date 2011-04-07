@@ -1,8 +1,16 @@
+<style type="text/css">
+td{
+   padding: 4px 3px;
+ }
+</style>
 <div id="sidemenu-container">
   <h1 id="sidemenu-title">Admin Pages</h1>
   <ul>
     <li id="status-topic" class="sidemenu-item <%=(@page=='status' ? 'sidemenu-item-selected' : '')%>">
         <a href="<%=admin_path() %>"> Status </a>
+    </li>
+    <li id="settings-topic"  class="sidemenu-item <%=(@page=='settings' ? 'sidemenu-item-selected' : '')%>">
+        <a href="<%=system_settings_path() %>">System Settings</a>
     </li>
     <li id="email-topic" class="sidemenu-item  <%=(@page=='email' ? 'sidemenu-item-selected' : '')%>">
         <a href="<%=emails_path() %>"> Email </a>
@@ -12,6 +20,9 @@
     </li>
     <li id="users-topic"   class="sidemenu-item <%=(@page=='users' ? 'sidemenu-item-selected' : '')%>">
         <a href="<%=users_path() %>">Users</a>
+    </li>
+    <li id="guests-topic"  class="sidemenu-item <%=(@page=='guests' ? 'sidemenu-item-selected' : '')%>">
+        <a href="<%=guests_path() %>">Guest List</a>
     </li>
   </ul>
 </div>

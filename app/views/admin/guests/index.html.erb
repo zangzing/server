@@ -1,0 +1,38 @@
+<%= render :partial =>  'admin/admin_screens/adminmenu' %>
+<div id="main-container">
+  <% flash.each do |key, value| %>
+	    <%= content_tag(:div, value, :class => "flash #{key}") %>
+  <% end %>
+  <div class="viewlist">
+    <div class='header bar'>
+      Guest List
+    </div>
+    <div class="title">
+      <%= form_for @new_guest do |f | %>
+      <%=f.label :email,'Add Email to Beta List' %>
+      <%=f.text_field   :email %>
+      <%=f.submit 'Add' %>
+      <%end%>
+    </div>
+    <div class="title">
+      <%= will_paginate @guests%>
+    </div>
+    <div class="content">
+      <table frame="box" width="800px" border="0"  cellspacing="10" align="left" style="text-align: left;">
+         <tr>
+          <th> Email </th>
+          <th> Source  </th>
+          <th> Status  </th>
+          <th> Signed up on</th>
+          <th> Active </th>
+          <th> Homepage </th>
+          <th></th>
+        </tr>
+        <%= render  @guests %>
+      </table>
+      <div class="title">
+        <%= will_paginate @guests%>
+      </div>
+    </div>
+  </div>
+</div>
