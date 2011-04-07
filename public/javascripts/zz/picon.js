@@ -34,7 +34,7 @@
                                 '<div class="stacked-image"></div>' +
                                 '<div class="stacked-image"></div>' +
                                 '<div class="stacked-image">' +
-                                    '<img class="cover-photo" src="/images/photo_placeholder.png">' +
+                                    '<img class="cover-photo" src="' + path_helpers.image_url('/images/photo_placeholder.png')+ '">' +
                                     '<div class="button-bar">' +
                                         '<div class="buttons">' +
                                             '<div class="share-button"></div>' +
@@ -53,7 +53,6 @@
 
             //rotate stack
             var stackOption = Math.floor(Math.random() * self.options.stackAngles.length );
-            console.log(stackOption);
             self.template.find('.stacked-image:eq(0)').rotate(self.options.stackAngles[stackOption][0]);
             self.template.find('.stacked-image:eq(1)').rotate(self.options.stackAngles[stackOption][1]);
 
@@ -83,22 +82,25 @@
                 });
             }
 
-            self.topOfStack = self.template.find('.stacked-image:last');
 
-            self.topOfStack.mouseover(function(){
-                self.topOfStack.css({height: self.topOfStack.height() + 30});
-                self.topOfStack.find('.button-bar').show();
+            var initMouseOver = function(){
+                self.topOfStack = self.template.find('.stacked-image:last');
 
-            });
+                var height = self.topOfStack.height();
 
-            self.topOfStack.mouseout(function(){
-                self.topOfStack.css({height: self.topOfStack.height() - 30});
-                self.topOfStack.find('.button-bar').hide();
-            });
+                self.topOfStack.mouseover(function(){
+                    self.topOfStack.css({height: height + 30});
+                    self.topOfStack.find('.button-bar').show();
 
+                });
 
-//            self.options.maxCoverWidth = self.element.width() - 60;
-//            self.options.maxCoverHeight = self.element.height() - self.captionHeight
+                self.topOfStack.mouseout(function(){
+                    self.topOfStack.css({height: height});
+                    self.topOfStack.find('.button-bar').hide();
+                });
+            };
+                
+
 
             self._resize(self.options.maxCoverWidth, self.options.maxCoverHeight);
 
@@ -112,6 +114,8 @@
 
                     self._resize(scaledSize.width, scaledSize.height);
                     self.template.find('.cover-photo').attr('src', image.src);
+
+                    initMouseOver();
 
                 });
             }

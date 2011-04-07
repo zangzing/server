@@ -25,8 +25,7 @@ class Connector::YahooContactsController < Connector::YahooController
 
           props = {
             :name => (entry_fields[:name].values.reject(&:blank?).join(' ') rescue ''),
-            :address => entry_fields[:email],
-            :type => 'email'
+            :address => entry_fields[:email]
           }
           next if props[:address].blank?
           props[:name] = props[:address].split('@').first if props[:name].blank?

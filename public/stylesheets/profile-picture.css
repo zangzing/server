@@ -1,0 +1,34 @@
+.profile-picture {
+     position:relative;
+     height: 100%;
+     width: 100%;
+     -moz-border-radius: 4px;
+     -webkit-border-radius: 4px;
+     /*background-color: white;*/
+     border: 1px solid #cccccc;
+     overflow:hidden;
+     padding:1px;
+}
+
+
+.profile-picture .mask{
+    position:absolute;
+    top:0px;
+    left:0px;
+    right:0px;
+    bottom:0px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border: 2px white solid;
+    overflow:hidden;
+}
+
+.profile-picture img{
+    /*-moz-border-radius: 3px;*/
+    /*-webkit-border-radius: 3px;*/
+    position:absolute;
+    width:38px;
+    /*height:40px;*/
+    /*width:40px;*/
+
+}

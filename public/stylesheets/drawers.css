@@ -1,0 +1,261 @@
+/* Drawer
+----------------------------------------------------------------------------- */
+
+div#drawer {
+  position: fixed;
+  width: 906px;
+  height: 0px;
+  margin: 0 24px 0 20px;
+  padding: 0 0 43px 4px;
+  top: 10px;
+  background-image: url("/images/bg-drawer-bottom-cap.png");
+  background-repeat: no-repeat;
+  background-position: 100% bottom;
+  z-index: 9;
+  display:none;
+}
+
+div#small-drawer {
+  position: fixed;
+  width: 453px;
+  height: 0px;
+  margin: 0 250px;
+  padding: 0 0 26px;
+  top: 28px;
+  background-image: url("/images/bg-small-drawer-bottom-cap.png");
+  background-repeat: no-repeat;
+  background-position: 100% bottom;
+  z-index: 9;
+  overflow: hidden;
+  display:none;
+}
+
+div#drawer div.body {
+  background-image: url("/images/bg-bottom-repeat.png");
+  background-repeat: repeat-y;
+  width: 906px;
+  padding: 0 0 1px 0;
+}
+
+div#small-drawer div.body {
+  background-image: url("/images/bg-small-bottom-repeat.png");
+  background-repeat: repeat-y;
+  width: 453px;
+  height: 486px;
+  overflow: hidden;
+}
+
+div#drawer div#drawer-content {
+  margin: 0 auto;
+  height: 0px;
+  width: 898px;
+}
+
+
+
+div#drawer div#drawer-tabs{
+    margin: 0 auto;
+    width: 898px;
+    height: 36px;
+}
+
+div#drawer div#tab-content {
+    margin: 0 auto;
+    width: 898px;
+    position:relative;
+    height:100%;
+}
+
+div#cancel-drawer-btn{
+    position: absolute;
+    bottom: 5px;
+    right: 12px;
+    font-weight: 700;
+    line-height: 14px;
+    font-size: 10px;
+    width: 137px;
+    background-image:url("/images/btn-delete-mini.png");
+    background-repeat: no-repeat;
+    background-position: 121px;
+    cursor: pointer;
+    display:inherit;
+}
+
+
+
+
+
+/*  Small Drawer
+---------------------------------------------------------------------------*/
+
+
+ul#small-indicator {
+  margin-left: 3px;
+  width: 448px;
+  overflow: hidden;
+  height: 37px;
+  z-index: 15;
+  border-left: solid 1px gray;
+}
+
+ul#small-indicator li {
+  float: left;
+  width: 221px;
+  height: 36px;
+  border: none;
+  border-right: solid 1px gray;
+  border-left: solid 1px silver;
+  border-bottom: solid 1px gray;
+}
+
+ul#small-indicator li#step-sign-in-on {
+  background-image: url("/images/bg-sign-in-on.png");
+}
+
+ul#small-indicator li#step-sign-in-off {
+  background-image: url("/images/bg-sign-in-off.png");
+  cursor: pointer;
+}
+
+ul#small-indicator li#step-sign-in-off:hover {
+  background-image: url("/images/bg-sign-in-off-over.png");
+  cursor: pointer;
+}
+
+ul#small-indicator li#step-join-on {
+  background-image: url("/images/bg-join-on.png");
+}
+
+ul#small-indicator li#step-join-off {
+  background-image: url("/images/bg-join-off.png");
+  cursor: pointer;
+}
+
+ul#small-indicator li#step-join-off:hover {
+  background-image: url("/images/bg-join-off-over.png");
+  cursor: pointer;
+}
+
+
+
+div#small-top {
+  margin: 15px auto 15px;
+  width: 350px;
+  text-align: center;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #ccc;
+}
+
+
+div#small-drawer h2 {
+  font-size: 19px;
+  font-weight: 500;
+  color: #0a0a0a;
+}
+
+div#small-drawer h3 {
+  font-size: 14px;
+  font-weight: 500;
+  color: #0a0a0a;
+}
+
+.flash-box{
+    display: block;
+    height: 30px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+.flash-notice{
+    font-size: 13px;
+    text-align: center;
+    color: green;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+div#small-drawer p.error-notice, .error-notice {
+  display: none;
+  font-size: 13px;
+  text-align: center;
+  color: #ff0000;
+  font-weight: 700;
+}
+
+div#small-drawer dl {
+  width: 380px;
+  margin: 10px auto;
+}
+
+div#small-drawer dl dt, div#small-drawer dl dd {
+  width: 100%;
+  text-align: left;
+  margin-bottom: 15px;
+}
+
+div#small-drawer dl dd {
+  position: relative;
+}
+
+div#small-drawer dl dt {
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+div#small-drawer dl input[type=text], div#small-drawer dl input[type=password] {
+  width: 370px;
+}
+
+
+
+div#small-drawer dl dd label.error {
+  color: pink;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: right;
+  position: absolute;
+  bottom: 5px;
+  right:5px;
+  width: 400px;
+}
+
+div#small-drawer dl dt.dialog-buttons {
+  float: left;
+  width: 50%;
+  padding-top: 8px;
+}
+
+
+div#small-drawer dl dd.dialog-buttons {
+  float: right;
+  width: 50%
+}
+
+div#small-drawer dl dt.full-t {
+  width: 90%;
+  color: #646464;
+  margin-bottom: 25px;
+}
+
+div#small-drawer dl dd.full-t {
+  width: 10%;
+}
+
+div#small-drawer #signin-form-cancel-button{
+    float:right;
+}
+
+div#small-drawer #signin-form-submit-button{
+    float:right;
+    margin-right:5px;
+}
+
+div#small-drawer #join_form_cancel_button{
+    float:right;
+}
+
+div#small-drawer #join_form_submit_button{
+    float:right;
+    margin-right:5px;
+}
+

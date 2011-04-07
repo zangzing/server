@@ -1,3 +1,22 @@
+var zz_dialog = {
+    show_dialog: function(element, options){
+        return $(element).zz_dialog(options).data().zz_dialog;
+    },
+
+    BASE_Z_INDEX : 99990,
+    open_dialog_count: 0,
+    scrim_z_index: function(){
+        return this.BASE_Z_INDEX + this.open_dialog_count * 10;
+    },
+
+    dialog_z_index: function(){
+        return this.scrim_z_index() + 1;
+    }
+
+};
+
+
+
 //
 // Copyright 2011 ZangZing LLC
 //
@@ -20,12 +39,12 @@
 
             //Check if element is already in DOM, if not, insert it at end of body.
             if( element.parent().parent().size() <= 0 ){
-               element.css('display','none');
-               $('body').append(element);
+                element.css('display','none');
+                $('body').append(element);
             }
 
             //wrap element with 2 divs for inner and outer borders
-            element.wrap('<div class="zz_dialog"><div id="zz_dialog_inner"></div><a href="javascript:void(0)" class="zz_dialog_closer"></a></div>');
+            element.wrap('<div class="zz_dialog"><div class="zz_dialog_inner"></div><a href="javascript:void(0)" class="zz_dialog_closer"></a></div>');
 
             // set element to visible to be able to control visibility
             element.css('display','block');
@@ -33,16 +52,21 @@
             element.css('border', 0);
             element.css('margin',0);
 
-            //Insert and activate the dialog closer
-            if( self.options.cancelButton ){
-//                element.before('<a href="javascript:void(0)" class="zz_dialog_closer"></a>');
-                $('.zz_dialog_closer').click( function(){ self.close()} );
-            }
+
 
             //Set the element to the top dialog div and save it in the instance
             self.dialogDiv = element.parent().parent();
             self.dialogDiv.data( 'originalelement', self.element );
-            
+
+
+            //Insert and activate the dialog closer
+            if( self.options.cancelButton ){
+                self.dialogDiv.find('.zz_dialog_closer').show().click( function(){
+                    self.close()
+                });
+            }
+
+
             //Set size and create a resize handler to be used when the dialog is shown
             self._setSize();
             self.resize_handler   = function(){ self._setPosition(); };
@@ -50,9 +74,8 @@
 
             //create scrim for modal insert it the end of the body
             if(self.options.modal){
-                self.dialogDiv.css('z-index', 99999);
-                $('body').append( '<div class="zz_dialog_scrim"></div>' );
-                self.scrim = $('body').find(".zz_dialog_scrim");
+                self.scrim = $('<div class="zz_dialog_scrim"></div>');
+                self.scrim.insertBefore(self.dialogDiv);
             }
         },
 
@@ -62,12 +85,16 @@
 
         open: function() {
             var self = this;
+
+            zz_dialog.open_dialog_count ++;
+
+
             if(self._trigger('beforeopen') === false) return; //If any listeners return false, then do not open
 
-            //close all other open dialogs
-            $("div.zz_dialog").not(self.dialogDiv).each(function(){
-                $(this).data("originalelement").zz_dialog("close");
-            });
+//            //close all other open dialogs
+//            $("div.zz_dialog").not(self.dialogDiv).each(function(){
+//                $(this).data("originalelement").zz_dialog("close");
+//            });
 
             //calculate dialog position
             self._setPosition();
@@ -75,9 +102,12 @@
             // set window resize handler
             $(window).resize(  self.resize_handler );
             if(self.options.modal){
-                $(self.scrim).show();
+                self.scrim.css({'z-index': zz_dialog.scrim_z_index()});
+                self.scrim.show();
                 $(window).keypress(self.keypress_handler );
             }
+
+            self.dialogDiv.css({'z-index': zz_dialog.dialog_z_index()});
             self.dialogDiv.fadeIn('fast');
             self._trigger('open');
         },
@@ -91,6 +121,7 @@
             $(document).unbind('keypress', this.keypress_handler );
             this._trigger('close');
             this.destroy();
+            zz_dialog.open_dialog_count --;
         },
 
         toggle: function(){
@@ -103,11 +134,11 @@
         },
 
         destroy: function() {
-          $.Widget.prototype.destroy.apply(this, arguments);
-          if(this.options.modal){
+            $.Widget.prototype.destroy.apply(this, arguments);
+            if(this.options.modal){
                 this.scrim.remove();
-          }
-          this.dialogDiv.empty().remove();
+            }
+            this.dialogDiv.empty().remove();
         },
 
         _setSize: function() {
@@ -147,4 +178,5 @@
 
     });
 
-})( jQuery );
+})( jQuery )
+

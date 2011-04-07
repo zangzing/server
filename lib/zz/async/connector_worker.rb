@@ -2,7 +2,6 @@ module ZZ
   module Async
       
     class ConnectorWorker < Base
-
       @queue = :io_bound
 
       # only add ourselves one time
@@ -28,11 +27,7 @@ module ZZ
             json = klass.send(method_name.to_sym, api, params)
             AsyncResponse.store_response(response_id, json)
           rescue => e
-            if Connector::ConnectorController.classify_exception(e)
-              AsyncResponse.store_error(response_id, e)
-            else
-              raise e
-            end
+            AsyncResponse.store_error(response_id, e)
           end
         end
       end

@@ -32,6 +32,8 @@ class Connector::ConnectorController < ApplicationController
     response_id = AsyncResponse.new_response_id
     ZZ::Async::ConnectorWorker.enqueue(response_id, service_identity.id, self.class.name, class_method, params)
     response.headers["x-poll-for-response"] = async_response_url(response_id)
+
+    expires_in 3.minutes, :public => false
     render :json => {:message => "poll-for-response"}
   end
   
@@ -103,7 +105,7 @@ class Connector::ConnectorController < ApplicationController
           Instagram::ServiceUnavailable
             then HttpCallFail
 
-        else nil
+        else StandardError
       end
     end
 

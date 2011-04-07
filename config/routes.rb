@@ -41,6 +41,10 @@ Server::Application.routes.draw do
     get    '/users/:id/account'    => 'users#account',    :as => :account
     get    '/users/:id/notifications'    => 'users#notifications',    :as => :notifications
 
+    #account settings
+    get    '/users/:id/account_settings'  => 'account_settings#edit', :as => :edit_account_settings
+
+
     #identities
     get    '/users/:id/identities'     => 'identities#index',       :as => :user_identities
     get    '/users/:id/identities/new' => 'identities#new',         :as => :new_user_identity
@@ -51,6 +55,13 @@ Server::Application.routes.draw do
     delete '/identities/:id'          => 'identities#destroy',     :as => :delete_identity
 
     #albums
+    get    '/users/:user_id/my_albums_json'                 => 'albums#my_albums_json',                 :as => :my_albums_json
+    get    '/users/:user_id/my_albums_public_json'          => 'albums#my_albums_public_json',          :as => :my_albums_public_json
+    get    '/users/:user_id/liked_albums_json'              => 'albums#liked_albums_json',              :as => :liked_albums_json
+    get    '/users/:user_id/liked_albums_public_json'       => 'albums#liked_albums_public_json',       :as => :liked_albums_public_json
+    get    '/users/:user_id/liked_users_public_albums_json' => 'albums#liked_users_public_albums_json', :as => :liked_users_public_albums_json
+
+
     get    '/users/:user_id/albums'          => 'albums#index'             #, :as => :user_albums  user albums defined below
     get    '/users/:user_id/albums/new'      => 'albums#new',                 :as => :new_user_album
     post   '/users/:user_id/albums'          => 'albums#create',              :as => :create_user_album
@@ -280,22 +291,15 @@ Server::Application.routes.draw do
     # =============================================== ADMIN ==============================================
     # ====================================================================================================
     scope  '/admin', :module => "admin" do
+        get   '/'                               => 'admin_screens#index',         :as => :admin
         get   'logs'                            => 'logs#index',                  :as => :logs
         get   'logs/:logname'                   => 'logs#retrieve',               :as => :log_retrieve
-        get   'status'                          =>  'status#show',                :as => :show_status
-        # MailChimp Transactional Campaign manager
-        get    'chimpcampaigns'                  => 'chimpcampaigns#index',       :as => :chimpcampaigns
-        get    'chimpcampaigns/new'              => 'chimpcampaigns#new',         :as => :new_chimpcampaign
-        post   'chimpcampaigns'                  => 'chimpcampaigns#create',      :as => :create_chimpcampaign
-        get    'chimpcampaigns/:id'              => 'chimpcampaigns#edit',        :as => :edit_chimpcampaign
-        put    'chimpcampaigns/:id'              => 'chimpcampaigns#update',      :as => :update_chimpcampaing
-        delete 'chimpcampaigns/:id'              => 'chimpcampaigns#delete',      :as => :delete_chimpcampaign
-        # EmailTemplate Manager
         resources :email_templates
         put   'email_templates/:id/reload'       => 'email_templates#reload',     :as => :reload_email_template
         get   'email_templates/:id/test'         => 'email_templates#test',       :as => :test_email_template
         get   'emails'                           => 'emails#index',               :as => :emails
         put   'emails/:id'                       => 'emails#update',              :as => :email
+        get   'users'                            => 'admin_screens#users',        :as => :users
     end
     #Resque: mount the resque server
     mount Resque::Server.new, :at => "/admin/resque"

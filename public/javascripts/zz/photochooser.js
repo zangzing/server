@@ -1,12 +1,40 @@
-/*!
- * photochooser.js
- *
- * Copyright 2011, ZangZing LLC. All rights reserved.
- */
+
+
+var photochooser = {
+    open_in_dialog: function(album_id, on_close){
+        
+        var template = $('<div class="photochooser-container"></div>');
+        $('<div id="add-photos-dialog"></div>').html( template ).zz_dialog({
+                               height: $(document).height() - 200,
+                               width: 895,
+                               modal: true,
+                               autoOpen: true,
+                               open : function(event, ui){ template.zz_photochooser({album_id: album_id}) },
+                               close: function(event, ui){
+                                   $.ajax({
+                                       url:      zz.path_prefix + '/albums/' + album_id + '/close_batch',
+                                       complete: function(request, textStatus){
+                                           logger.debug('Batch closed because Add photos dialog was closed. Call to close_batch returned with status= '+textStatus);
+                                       },
+                                       success: function(){
+                                           if(on_close){
+                                               on_close();
+                                           }
+                                       }
+                                   });
+                               }
+                           });
+        template.height( $(document).height() - 192 );
+    }
+};
+
+
+
 (function( $, undefined ) {
 
     $.widget( "ui.zz_photochooser", {
         options: {
+            album_id:null
         },
 
         stack:[],
@@ -27,6 +55,7 @@
                              '   <div class="photochooser-body"></div>' +
                              '   <div class="photochooser-footer">' +
                              '     <div class="added-pictures-tray"></div>' +
+                             '     <div class="added-pictures-tab"></div>' +
                              '   </div>' +
                              '</div>');
 
@@ -158,7 +187,7 @@
 
 
 
-            self.bodyElement.html('<img class="progress-indicator" src="/images/loading.gif">');
+            self.bodyElement.html('<img class="progress-indicator" src="' + path_helpers.image_url('/images/loading.gif') +'">');
 
 
             if(!_.isUndefined(folder.children)){
@@ -167,8 +196,9 @@
             else{
                 self.callAgentOrServer({
                    url: folder.open_url,
-                   success:function(json){
-                       self.showFolder(folder, json);
+                   success:function(children){
+                       folder.children = children; //store children for going 'back'
+                       self.showFolder(folder, children);
                    },
                    error: function(error){
                        if(!_.isUndefined(folder.on_error)){
@@ -196,8 +226,8 @@
 
                     //root level folders already have source set
                     if(typeof child.src === 'undefined'){
-                        child.src = '/images/folders/blank_off.jpg';
-                        child.rolloverSrc = '/images/folders/blank_on.jpg';
+                        child.src = path_helpers.image_url('/images/folders/blank_off.jpg');
+                        child.rolloverSrc = path_helpers.image_url('/images/folders/blank_on.jpg');
                     }
                 }
                 else{
@@ -217,7 +247,7 @@
             if(hasPhotos){
                 var addAllButton = {
                     id: 'add-all-photos',
-                    src: '/images/blank.png',
+                    src: path_helpers.image_url('/images/blank.png'),
                     caption: '',
                     type: 'blank'
                 };
@@ -260,7 +290,7 @@
             }).data().zz_photogrid;
 
             if(hasPhotos){
-                var addAllButton = $('<img class="add-all-button" src="/images/folders/add_all_photos.png">');
+                var addAllButton = $('<img class="add-all-button" src="' + path_helpers.image_url('/images/folders/add_all_photos.png') + '">');
                 addAllButton.click(function(){
                     self.add_folder_to_album(folder.add_url, addAllButton);
                 });
@@ -410,8 +440,8 @@
                     type: 'folder',
                     name: 'My Pictures',
                     on_error: file_system_on_error,
-                    src: '/images/folders/mypictures_off.jpg',
-                    rolloverSrc: '/images/folders/mypictures_on.jpg',
+                    src: path_helpers.image_url('/images/folders/mypictures_off.jpg'),
+                    rolloverSrc: path_helpers.image_url('/images/folders/mypictures_on.jpg'),
                     state: 'ready'
                 });
 
@@ -422,8 +452,8 @@
                     type: 'folder',
                     name: 'iPhoto',
                     on_error: iphoto_on_error,
-                    src: '/images/folders/iphoto_off.jpg',
-                    rolloverSrc: '/images/folders/iphoto_on.jpg',
+                    src: path_helpers.image_url('/images/folders/iphoto_off.jpg'),
+                    rolloverSrc: path_helpers.image_url('/images/folders/iphoto_on.jpg'),
                     state: 'ready'
                 });
 
@@ -435,8 +465,8 @@
                     type: 'folder',
                     name: 'Picasa',
                     on_error: picasa_on_error,
-                    src: '/images/folders/picasa_off.jpg',
-                    rolloverSrc: '/images/folders/picasa_on.jpg',
+                    src: path_helpers.image_url('/images/folders/picasa_off.jpg'),
+                    rolloverSrc: path_helpers.image_url('/images/folders/picasa_on.jpg'),
                     state: 'ready'
                 });
 
@@ -449,8 +479,8 @@
                     type: 'folder',
                     name: 'My Home',
                     on_error: file_system_on_error,
-                    src: '/images/folders/myhome_off.jpg',
-                    rolloverSrc: '/images/folders/myhome_on.jpg',
+                    src: path_helpers.image_url('/images/folders/myhome_off.jpg'),
+                    rolloverSrc: path_helpers.image_url('/images/folders/myhome_on.jpg'),
                     state: 'ready'
                 });
 
@@ -461,8 +491,8 @@
                     type: 'folder',
                     name: 'My Computer',
                     on_error: file_system_on_error,
-                    src: '/images/folders/mycomputer_off.jpg',
-                    rolloverSrc: '/images/folders/mycomputer_on.jpg',
+                    src: path_helpers.image_url('/images/folders/mycomputer_off.jpg'),
+                    rolloverSrc: path_helpers.image_url('/images/folders/mycomputer_on.jpg'),
                     state: 'ready'
                 });
             }
@@ -483,8 +513,8 @@
                     type: 'folder',
                     name: 'My Pictures',
                     on_error: file_system_on_error,
-                    src: '/images/folders/mypictures_off.jpg',
-                    rolloverSrc: '/images/folders/mypictures_on.jpg',
+                    src: path_helpers.image_url('/images/folders/mypictures_off.jpg'),
+                    rolloverSrc: path_helpers.image_url('/images/folders/mypictures_on.jpg'),
                     state: 'ready'
                 });
 
@@ -496,8 +526,8 @@
                     type: 'folder',
                     name: 'Picasa',
                     on_error: picasa_on_error,
-                    src: '/images/folders/picasa_off.jpg',
-                    rolloverSrc: '/images/folders/picasa_on.jpg',
+                    src: path_helpers.image_url('/images/folders/picasa_off.jpg'),
+                    rolloverSrc: path_helpers.image_url('/images/folders/picasa_on.jpg'),
                     state: 'ready'
                 });
 
@@ -509,8 +539,8 @@
                     type: 'folder',
                     name: 'My Home',
                     on_error: file_system_on_error,
-                    src: '/images/folders/myhome_off.jpg',
-                    rolloverSrc: '/images/folders/myhome_on.jpg',
+                    src: path_helpers.image_url('/images/folders/myhome_off.jpg'),
+                    rolloverSrc: path_helpers.image_url('/images/folders/myhome_on.jpg'),
                     state: 'ready'
                 });
 
@@ -521,8 +551,8 @@
                     type: 'folder',
                     name: 'My Computer',
                     on_error: file_system_on_error,
-                    src: '/images/folders/mycomputer_off.jpg',
-                    rolloverSrc: '/images/folders/mycomputer_on.jpg',
+                    src: path_helpers.image_url('/images/folders/mycomputer_off.jpg'),
+                    rolloverSrc: path_helpers.image_url('/images/folders/mycomputer_on.jpg'),
                     state: 'ready'
 
                 });
@@ -535,8 +565,8 @@
                 open_url: zz.path_prefix + '/facebook/folders.json',
                 type: 'folder',
                 name: 'Facebook',
-                src: '/images/folders/facebook_off.jpg',
-                rolloverSrc: '/images/folders/facebook_on.jpg',
+                src: path_helpers.image_url('/images/folders/facebook_off.jpg'),
+                rolloverSrc: path_helpers.image_url('/images/folders/facebook_on.jpg'),
                 on_error: function(){
                     var folder = this;
                     self.bodyElement.hide().load('/static/connect_messages/connect_to_facebook.html', function(){
@@ -554,8 +584,8 @@
                 open_url: zz.path_prefix + '/instagram/folders.json',
                 type: 'folder',
                 name: 'Instagram',
-                src: '/images/folders/instagram_off.jpg',
-                rolloverSrc: '/images/folders/instagram_on.jpg',
+                src: path_helpers.image_url('/images/folders/instagram_off.jpg'),
+                rolloverSrc: path_helpers.image_url('/images/folders/instagram_on.jpg'),
 
                 on_error: function(){
                     var folder = this;
@@ -578,8 +608,8 @@
                 open_url: zz.path_prefix + '/shutterfly/folders.json',
                 type: 'folder',
                 name: 'Shutterfly',
-                src: '/images/folders/shutterfly_off.jpg',
-                rolloverSrc: '/images/folders/shutterfly_on.jpg',
+                src: path_helpers.image_url('/images/folders/shutterfly_off.jpg'),
+                rolloverSrc: path_helpers.image_url('/images/folders/shutterfly_on.jpg'),
 
                 on_error: function(){
                     var folder = this;
@@ -598,8 +628,8 @@
                 open_url: zz.path_prefix + '/kodak/folders.json',
                 type: 'folder',
                 name: 'Kodak',
-                src: '/images/folders/kodak_off.jpg',
-                rolloverSrc: '/images/folders/kodak_on.jpg',
+                src: path_helpers.image_url('/images/folders/kodak_off.jpg'),
+                rolloverSrc: path_helpers.image_url('/images/folders/kodak_on.jpg'),
                 on_error: function(){
                     var folder = this;
                     self.bodyElement.hide().load('/static/connect_messages/connect_to_kodak.html', function(){
@@ -618,8 +648,8 @@
                 open_url: zz.path_prefix + '/smugmug/folders.json',
                 type: 'folder',
                 name: 'SmugMug',
-                src: '/images/folders/smugmug_off.jpg',
-                rolloverSrc: '/images/folders/smugmug_on.jpg',
+                src: path_helpers.image_url('/images/folders/smugmug_off.jpg'),
+                rolloverSrc: path_helpers.image_url('/images/folders/smugmug_on.jpg'),
                 on_error: function(){
                     var folder = this;
                     self.bodyElement.hide().load('/static/connect_messages/connect_to_smugmug.html', function(){
@@ -639,8 +669,8 @@
                 open_url: zz.path_prefix + '/flickr/folders.json',
                 type: 'folder',
                 name: 'Flickr',
-                src: '/images/folders/flickr_off.jpg',
-                rolloverSrc: '/images/folders/flickr_on.jpg',
+                src: path_helpers.image_url('/images/folders/flickr_off.jpg'),
+                rolloverSrc: path_helpers.image_url('/images/folders/flickr_on.jpg'),
                 on_error: function(){
                     var folder = this;
                     self.bodyElement.hide().load('/static/connect_messages/connect_to_flickr.html', function(){
@@ -660,8 +690,8 @@
                 open_url: zz.path_prefix + '/picasa/folders.json',
                 type: 'folder',
                 name: 'Picasa Web',
-                src: '/images/folders/picasa_web_off.jpg',
-                rolloverSrc: '/images/folders/picasa_web_on.jpg',
+                src: path_helpers.image_url('/images/folders/picasa_web_off.jpg'),
+                rolloverSrc: path_helpers.image_url('/images/folders/picasa_web_on.jpg'),
                 on_error: function(){
                     var folder = this;
                     self.bodyElement.hide().load('/static/connect_messages/connect_to_picasa_web.html', function(){
@@ -680,8 +710,8 @@
                 open_url: zz.path_prefix + '/photobucket/folders', //No need for .json cause this connector has unusual structure
                 type: 'folder',
                 name: 'Photobucket',
-                src: '/images/folders/photobucket_off.jpg',
-                rolloverSrc: '/images/folders/photobucket_on.jpg',
+                src: path_helpers.image_url('/images/folders/photobucket_off.jpg'),
+                rolloverSrc: path_helpers.image_url('/images/folders/photobucket_on.jpg'),
                 add_url: zz.path_prefix + "/photobucket/folders/import?album_path=/", //unlike other connectors, photobucket may have photos at the root level
 
                 on_error: function(){
@@ -703,8 +733,8 @@
                 open_url: zz.path_prefix + '/zangzing/folders.json',
                 type: 'folder',
                 name: 'ZangZing',
-                src: '/images/folders/zangzing_off.jpg',
-                rolloverSrc: '/images/folders/zangzing_on.jpg'
+                src: path_helpers.image_url('/images/folders/zangzing_off.jpg'),
+                rolloverSrc: path_helpers.image_url('/images/folders/zangzing_on.jpg')
             });
 
             return roots;
@@ -780,7 +810,7 @@
                 dataType: "json",
                 url: zz.path_prefix + "/photos/" + photo_id + ".json",
                 success:function(){
-                    agent.callAgent('/albums/' +  zz.album_id + '/photos/' + photo_id + '/cancel_upload');
+                    agent.callAgent('/albums/' +  self.options.album_id + '/photos/' + photo_id + '/cancel_upload');
                     self.reload_tray();
                 },
 
@@ -795,7 +825,7 @@
             var self = this;
             $.ajax({
                 dataType: 'json',
-                url: zz.path_prefix + '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
+                url: zz.path_prefix + '/albums/' + self.options.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
                 success: function(photos){
                     
                     self.tray_photos = _.filter(photos, function(photo){
@@ -820,8 +850,24 @@
 
         add_folder_to_album: function(add_url, element){
             var self = this;
+
+
+            var dialog;
+
+            var show_dialog = function(){
+                var template = '<span class="processing-photos-dialog-content"><img src="{{src}}">Processing photos...</span>'.replace('{{src}}', path_helpers.image_url('/images/loading.gif'));
+
+                dialog = zz_dialog.show_dialog(template, { width:300, height: 100, modal: true, autoOpen: true, cancelButton: false });
+            };
+
+            var callback = function(){
+                dialog.close();
+            };
+
             self.animate_to_tray(element, function(){
-                self.add_to_album(add_url);
+                show_dialog();
+
+                self.add_to_album(add_url, callback, callback);
             });
 
             $.each(self.grid.cells(), function(index, element){
@@ -869,11 +915,11 @@
 
         },
 
-        add_to_album: function(add_url){
+        add_to_album: function(add_url, on_success, on_failure){
             var self = this;
 
             add_url += (add_url.indexOf('?') == -1) ? '?' : '&'
-            add_url += 'album_id=' + zz.album_id;
+            add_url += 'album_id=' + self.options.album_id;
 
             self.tray_widget.showLoadingIndicator();
             self.callAgentOrServer({
@@ -882,16 +928,18 @@
                     self.tray_photos = self.tray_photos.concat(photos);
                     self.tray_widget.setPhotos(self.map_photos(self.tray_photos));
                     self.tray_widget.hideLoadingIndicator();
+                    if(on_success){
+                        on_success();
+                    }
                 },
                 error: function(error){
                     self.tray_widget.hideLoadingIndicator();
                     alert('Sorry, there was a problem adding photos to your album. Please try again.');
-                    logger.debug(error);
-
-    //                $.jGrowl("" + error);
+                    if(on_failure){
+                        on_failure(error);
+                    }
                 }
             });
-
         },
 
 

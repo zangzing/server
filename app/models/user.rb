@@ -8,7 +8,7 @@
 class User < ActiveRecord::Base
   attr_writer      :name
   attr_accessor    :old_password, :reset_password
-  attr_accessible  :email, :name, :first_name, :last_name, :username,  :password, :old_password, :automatic, :profile_photo_id
+  attr_accessible  :email, :name, :first_name, :last_name,  :password, :old_password, :automatic, :profile_photo_id
 
   has_many :albums,              :dependent => :destroy
 
@@ -61,8 +61,8 @@ class User < ActiveRecord::Base
   before_save    :split_name
   before_create  :make_profile_album
   before_create  :build_preferences
-  after_create   :update_acls_with_id
-  after_create   :like_mr_zz
+  after_commit   :update_acls_with_id
+  after_commit   :like_mr_zz
 
   validates_presence_of   :name,      :unless => :automatic?
   validates_presence_of   :username,  :unless => :automatic?

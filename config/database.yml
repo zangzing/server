@@ -3,7 +3,6 @@ common: &common
  database: server_development
  encoding: utf8
  pool: 5
- cache_database: cache_dev
  username: root
 
 development:

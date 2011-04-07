@@ -86,7 +86,3 @@ var css_transform = {
     }
 };
 
-jQuery.fn.rotate = function(angle){
-    css_transform.rotate(this, angle);
-    return this;
-};

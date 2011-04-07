@@ -3,8 +3,9 @@
 #
 
 class AlbumsController < ApplicationController
-  before_filter :require_user,              :except => [ :index , :show, :back_to_index ]
-  before_filter :require_album,             :except => [ :index, :create, :new, :show  ]
+  before_filter :require_user,              :except => [ :index, :show, :back_to_index, :my_albums_json, :liked_albums_json, :my_albums_public_json, :liked_albums_public_json, :liked_users_public_albums_json ]
+  before_filter :require_user_json,         :only =>   [ :my_albums_json, :liked_albums_json ]
+  before_filter :require_album,             :except => [ :index, :create, :new, :show, :my_albums_json, :liked_albums_json, :my_albums_public_json, :liked_albums_public_json, :liked_users_public_albums_json  ]
   before_filter :require_album_admin_role,  :only =>   [ :destroy, :edit, :update ]
 
   # displays the "Select album type screen" used in the wizard
@@ -92,6 +93,31 @@ class AlbumsController < ApplicationController
 
     store_last_home_page @user.id
 
+##############
+##############
+    # Note For Jeremy:
+    # This section would be used when you build the index page and set up the json links for the 3 types
+    # of album data
+
+    # determine if we should be fetching the view based on public or private data
+    public = (current_user?(@user) || (!current_user.nil? && current_user.support_hero?)) == false
+
+    # preload the expected cache data
+    loader = Cache::Album::Manager.shared.make_loader(@user, public)
+    loader.pre_fetch_albums
+    versions = loader.current_versions
+
+    # call the following methods to get the json paths for my_albums, my_liked_albums, etc
+    # The url paths returned are based on whether we are viewing ourselves or somebody else (based on the public flag)
+    #
+    # The paths are relative to the host so start with /service/...
+    my_albums_path = my_albums_path(versions)
+    liked_albums_path = liked_albums_path(versions)
+    liked_users_albums_path = liked_users_albums_path(versions)
+##############
+##############
+
+
     liked_users_public_albums = @user.liked_users_public_albums
     # if we are showing the owners albums, show them all as well as any linked albums and any public albums for users that the user likes
     # for a different user than the current logged in user, just show all public albums including any that the users likes and
@@ -104,7 +130,7 @@ class AlbumsController < ApplicationController
     #    -All of joe's user public albums
     #    -All of joe's liked public albums
     #    -All of joe's lked users' public albums
-    if( current_user? @user || current_user.support_hero? )
+    if public == false
       @albums = @user.albums | @user.liked_albums | liked_users_public_albums #show all of current_user's albums
     else
       @albums = @user.albums.where("privacy = 'public' AND completed_batch_count > 0") |
@@ -115,6 +141,103 @@ class AlbumsController < ApplicationController
     #Setup badge vars
     @badge_name = @user.name
   end
+
+  # Some helpers to return the json paths, would be cleaner if these lived in Versions class but we need
+  # the route helpers accessible to controller
+  def my_albums_path(versions, force_zero_ver = false)
+    ver = force_zero_ver ? 0 : versions.my_albums
+    url = versions.public ? my_albums_public_json_path(versions.user_id) : my_albums_json_path(versions.user_id)
+    url << "?ver=#{ver}"
+  end
+
+  def liked_albums_path(versions, force_zero_ver = false)
+    ver = force_zero_ver ? 0 : versions.liked_albums
+    url = versions.public ? liked_albums_public_json_path(versions.user_id) : liked_albums_json_path(versions.user_id)
+    url << "?ver=#{ver}"
+  end
+
+  def liked_users_albums_path(versions, force_zero_ver = false)
+    ver = force_zero_ver ? 0 : versions.liked_users_albums
+    liked_users_public_albums_json_path(versions.user_id) + "?ver=#{ver}"
+  end
+
+  def albums_cache_setup(public)
+    @user = User.find(params[:user_id])
+    loader = Cache::Album::Manager.shared.make_loader(@user, public)
+  end
+
+  def render_cached_json(json, public)
+    ver = params[:ver]
+    if ver.nil? || ver == 0
+      # no cache
+      expires_now
+    else
+      expires_in 1.year, :public => public
+    end
+    response.headers['Content-Encoding'] = "gzip"
+    render :json => json
+  end
+
+  # the calls to fetch json for various album parts
+
+  def my_albums_json_common(public)
+    loader = albums_cache_setup(public)
+    versions = loader.current_versions
+    ver_time = Time.at(versions.my_albums).utc
+    etag = versions.my_albums_etag
+
+    if stale?(:last_modified => ver_time, :etag => etag)
+      json = loader.fetch_my_albums_json
+      render_cached_json(json, public)
+    end
+  end
+
+  # fetch my own albums
+  def my_albums_json
+    my_albums_json_common(false)
+  end
+
+  # fetch public albums for a given user
+  def my_albums_public_json
+    my_albums_json_common(true)
+  end
+
+  def liked_albums_json_common(public)
+    loader = albums_cache_setup(public)
+    versions = loader.current_versions
+    ver_time = Time.at(versions.liked_albums).utc
+    etag = versions.liked_albums_etag
+
+    if stale?(:last_modified => ver_time, :etag => etag)
+      json = loader.fetch_liked_albums_json
+      render_cached_json(json, public)
+    end
+  end
+
+  # fetch the albums I like
+  def liked_albums_json
+    liked_albums_json_common(false)
+  end
+
+  # fetch the albums that a given user likes
+  def liked_albums_public_json
+    liked_albums_json_common(true)
+  end
+
+  # fetch the public albums of a user we like
+  def liked_users_public_albums_json
+    public = true
+    loader = albums_cache_setup(public)
+    versions = loader.current_versions
+    ver_time = Time.at(versions.liked_users_albums).utc
+    etag = versions.liked_users_albums_etag
+
+    if stale?(:last_modified => ver_time, :etag => etag)
+      json = loader.fetch_liked_users_albums_json
+      render_cached_json(json, public)
+    end
+  end
+
 
   # displays all of an albums photos
   def show

@@ -1,0 +1,61 @@
+<style type="text/css">
+td{
+   padding: 5px 2px;
+ }
+</style>
+<%= render :partial => 'adminmenu' %>
+<div id="main-container" >
+  <ul class="viewlist" style="width: 800px;">
+    <li class="item">
+      <div class="header bar">
+        System Status
+      </div>
+      <div class="content">
+      <%= raw(@health_check) %>
+      </div>
+    </li>
+    <li class="item">
+      <div class="header bar">
+        Vital Signs
+      </div>
+      <div class="content">
+        <table  width="300px" >
+          <tr><td><%=User.count() %> Users</td></tr>
+          <tr> <td></td><td><%=@today_usercount%> Today</td></tr>
+          <tr> <td></td><td><%=@yesterday_usercount%> Yesterday</td></tr>
+          <tr> <td></td><td><%=@this_week_usercount%> This Week</td></tr>
+          <tr> <td></td><td><%=@last_week_usercount%> Last Week</td></tr>
+          <tr> <td></td><td><%=@this_month_usercount%> This Month</td></tr>
+          <tr> <td></td><td><%=@last_month_usercount%> Last Month</td></tr>
+
+          <tr> <td><%= Album.count()%> Albums</td></tr>
+          <tr> <td></td><td><%=@today_albumcount%>Today</td></tr>
+          <tr> <td></td><td><%=@this_week_albumcount%>This Week</td></tr>
+
+          <tr> <td><%= Photo.count()%> Photos</td></tr>
+          <tr> <td></td><td><%=@today_photocount%>Today</td></tr>
+          <tr> <td></td><td><%=@this_week_photocount%>This Week</td></tr>
+
+        </table>
+      </div>
+    </li>
+
+    <li class="item">
+      <div class="header bar">
+        Third Party Service Status
+      </div>
+      <div class="content">
+      <table border="0">
+
+          <% @status.keys.each do | service | %>
+              <tr>
+                <td><%=service.capitalize %></td>
+                <td><span style="color:<%=( @status[service] ? 'green' : 'red' ) %>;"><%=( @status[service] ? 'UP' : 'DOWN' ) %></span></td>
+              </tr>
+          <%end%>
+
+      </table>
+      </div>
+    </li>
+  </ul>
+</div>

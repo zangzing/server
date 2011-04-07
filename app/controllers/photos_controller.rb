@@ -55,7 +55,7 @@ start_time = Time.now
                                     :source            =>   safe_hash_default(source_map, i_s, nil),
                                     :caption           =>   safe_hash_default(caption_map, i_s, ""),
                                     :image_file_size   =>   file_size_map[i_s],
-                                    :capture_date      =>   Time.at( safe_hash_default(capture_date_map, i_s, 0).to_i )
+                                    :capture_date      =>   Time.at( max_safe_epoch_time(safe_hash_default(capture_date_map, i_s, 0).to_i) )
                                     }
                                     )
       current_id += 1
@@ -76,6 +76,8 @@ start_time = Time.now
 
 end_time = Time.now
 puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
+
+    logger.debug json_str
 
     render :json => json_str
   end
@@ -205,7 +207,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
         logger.debug 'using cached photos_json'
       end
 
-      expires_in 1.year, :public => true  #todo: make private for password protected albums
+      expires_in 1.year, :public => @album.public?
       response.headers['Content-Encoding'] = "gzip"
       render :json => json
     else

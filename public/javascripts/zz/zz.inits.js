@@ -45,6 +45,26 @@ zz.init = {
         });
 
 
+
+        //tooltips
+        $('<span class="tooltip">&nbsp;</span>').appendTo('body');
+        $(".has-tooltip").each(function(index){
+
+
+            $(this).tooltip({
+                tip: '.tooltip',
+                effect: 'fade',
+                fadeOutSpeed: 100,
+                predelay: 200,
+//                position: "right",
+                offset: [$(this).height() * .5, $(this).width() * .75]
+            });
+
+
+        });
+
+
+
         /* Click Handlers    ----------------------------------------------------------------------- */
 
 
@@ -140,6 +160,7 @@ zz.init = {
             }).appendTo('body').animate({opacity:1}, 500, function() {
                 document.location.href = zz.album_base_url + '/movie';
             });
+
         });
 
 
@@ -177,25 +198,33 @@ zz.init = {
 
             zz.init.disable_buttons();
             $('#footer #add-photos-button').removeClass('disabled').addClass('selected');
-            var template = $('<div class="photochooser-container"></div>');
-            $('<div id="add-photos-dialog"></div>').html( template ).zz_dialog({
-                                   height: $(document).height() - 200,
-                                   width: 895,
-                                   modal: true,
-                                   autoOpen: true,
-                                   open : function(event, ui){ template.zz_photochooser({}) },
-                                   close: function(event, ui){
-                                       $.ajax({ url:      zz.path_prefix + '/albums/' +zz.album_id + '/close_batch',
-                                           complete: function(request, textStatus){
-                                               logger.debug('Batch closed because Add photos dialog was closed. Call to close_batch returned with status= '+textStatus);
-                                           },
-                                           success: function(){
-                                               window.location.reload( false );
-                                           }
-                                       });
-                                   }
-                               });
-            template.height( $(document).height() - 192 );
+
+            photochooser.open_in_dialog(zz.album_id, function(){
+                 window.location.reload( false );
+            });
+
+
+//            var template = $('<div class="photochooser-container"></div>');
+//            $('<div id="add-photos-dialog"></div>').html( template ).zz_dialog({
+//                                   height: $(document).height() - 200,
+//                                   width: 895,
+//                                   modal: true,
+//                                   autoOpen: true,
+//                                   open : function(event, ui){ template.zz_photochooser({}) },
+//                                   close: function(event, ui){
+//                                       $.ajax({ url:      zz.path_prefix + '/albums/' +zz.album_id + '/close_batch',
+//                                           complete: function(request, textStatus){
+//                                               logger.debug('Batch closed because Add photos dialog was closed. Call to close_batch returned with status= '+textStatus);
+//                                           },
+//                                           success: function(){
+//                                               window.location.reload( false );
+//                                           }
+//                                       });
+//                                   }
+//                               });
+//            template.height( $(document).height() - 192 );
+
+
         });
 
         //any signed in user can do this
@@ -212,17 +241,20 @@ zz.init = {
 
             //todo: need better generic way to determine current view and get photo id -- this is duplicated elsewhere
             if (document.location.href.indexOf('/photos/#!') !== -1 || document.location.href.indexOf('/photos#!') !== -1) {
-                //picture view -- share photo
-                var currentPhotoId = null;
-                var hash = jQuery.param.fragment();
-
-                if (hash !== '') {
-                    currentPhotoId = hash.slice(1); //remove the '!'
-                }
-                pages.share.share_in_dialog('photo', currentPhotoId, function(){
-                    zz.init.enable_buttons();
-                    $('#footer #share-button').removeClass('selected');  //todo: centralize this somewhere -- zz.toolbars
-                });
+                $('#footer #share-button').removeClass('selected');  
+                zz.init.enable_buttons();
+                alert("This feature is still under construction.");
+//                //picture view -- share photo
+//                var currentPhotoId = null;
+//                var hash = jQuery.param.fragment();
+//
+//                if (hash !== '') {
+//                    currentPhotoId = hash.slice(1); //remove the '!'
+//                }
+//                pages.share.share_in_dialog('photo', currentPhotoId, function(){
+//                    zz.init.enable_buttons();
+//                    $('#footer #share-button').removeClass('selected');  //todo: centralize this somewhere -- zz.toolbars
+//                });
             }
             else{
                 //album view -- share album
@@ -337,6 +369,15 @@ zz.init = {
 
     },
 
+    show_welcome_dialog: function(){
+        $('<iframe frameborder="0" height="450" width="780" border="0" src="/static/welcome_dialog/index.html"></iframe>').zz_dialog({
+            height: 420,
+            width: 750,
+            modal: true,
+            autoOpen: true
+        });
+    },
+
 
     loaded: function() {
         $('#drawer-content').ajaxError(function(event, request) {
@@ -448,8 +489,8 @@ zz.init = {
                         currentPhotoId: $.param.fragment(),
                         showButtonBar:true,
                         onClickShare: function(photo_id){
-//                            alert("This feature is still under construction. It will allow you to share an individual photo.");
-                            pages.share.share_in_dialog('photo', photo_id);
+                            alert("This feature is still under construction.");
+//                            pages.share.share_in_dialog('photo', photo_id);
                         }
 
                     }).data().zz_photogrid;
@@ -621,98 +662,14 @@ zz.init = {
     preload_rollover_images : function() {
 
 
-        
-
-//        //small drawer
-//        image_preloader.load_image("/images/bg-join-on.png");
-//        image_preloader.load_image("/images/bg-join-off.png");
-//        image_preloader.load_image("/images/bg-sign-in-on.png");
-//        image_preloader.load_image("/images/bg-sign-in-off-over.png");
-//        image_preloader.load_image("/images/bg-small-bottom-repeat.png");
-//        image_preloader.load_image("/images/bg-join-on.png");
-//        image_preloader.load_image("/images/bg-sign-in-off.png");
-//        image_preloader.load_image("/images/bg-sign-in-off-over.png");
-//        image_preloader.load_image("/images/bg-join-off.png");
-//        image_preloader.load_image("/images/bg-sign-in-on.png");
-//        image_preloader.load_image("/images/bg-join-off-over.png");
-//
-//
-//
         //wizard buttons/tabs
         for (var i = 1; i <= 6; i++) {
             var src = "/images/wiz-num-" + i + "-on.png"
-            image_preloader.load_image(src)
+            image_utils.pre_load_image(path_helpers.image_url(src))
 
             var src = "/images/wiz-num-" + i + ".png"
-            image_preloader.load_image(src)
+            image_utils.pre_load_image(path_helpers.image_url(src))
         }
-
-
-
-
-        //photo chooser
-//        image_preloader.load_image("/images/folders/blank.png"); //for folder animate to tray
-
-//        image_preloader.load_image("/images/folders/apple_on.jpg");
-//        image_preloader.load_image("/images/folders/facebook_on.jpg");
-//        image_preloader.load_image("/images/folders/flickr_on.jpg");
-//        image_preloader.load_image("/images/folders/myhome_on.jpg");
-//        image_preloader.load_image("/images/folders/kodak_on.jpg");
-//        image_preloader.load_image("/images/folders/mycomputer_on.jpg");
-//        image_preloader.load_image("/images/folders/mypictures_on.jpg");
-//        image_preloader.load_image("/images/folders/picasa_on.jpg");
-//        image_preloader.load_image("/images/folders/shutterfly_on.jpg");
-//        image_preloader.load_image("/images/folders/snapfish_on.jpg");
-//        image_preloader.load_image("/images/folders/smugmug_on.jpg");
-//        image_preloader.load_image("/images/folders/zangzing_on.jpg");
-//
-//        image_preloader.load_image("/images/folders/blank_off.jpg");
-//        image_preloader.load_image("/images/folders/apple_off.jpg");
-//        image_preloader.load_image("/images/folders/facebook_off.jpg");
-//        image_preloader.load_image("/images/folders/flickr_off.jpg");
-//        image_preloader.load_image("/images/folders/myhome_off.jpg");
-//        image_preloader.load_image("/images/folders/kodak_off.jpg");
-//        image_preloader.load_image("/images/folders/mycomputer_off.jpg");
-//        image_preloader.load_image("/images/folders/mypictures_off.jpg");
-//        image_preloader.load_image("/images/folders/picasa_off.jpg");
-//        image_preloader.load_image("/images/folders/shutterfly_off.jpg");
-//        image_preloader.load_image("/images/folders/snapfish_off.jpg");
-//        image_preloader.load_image("/images/folders/smugmug_off.jpg");
-//        image_preloader.load_image("/images/folders/zangzing_off.jpg");
-//        image_preloader.load_image("/images/folders/photobucket_off.jpg");
-
-
-//        //album privacy
-//        image_preloader.load_image("/images/bg-privacy-public-off.png");
-//        image_preloader.load_image("/images/bg-privacy-private-off.png");
-//        image_preloader.load_image("/images/bg-privacy-password-off.png");
-//        image_preloader.load_image("/images/bg-privacy-public-on.png");
-//        image_preloader.load_image("/images/bg-privacy-private-on.png");
-//        image_preloader.load_image("/images/bg-privacy-password-on.png");
-//
-//
-//        //share album
-//        image_preloader.load_image("/images/btn-share-by-post.png");
-//        image_preloader.load_image("/images/btn-share-by-post-on.png");
-//        image_preloader.load_image("/images/btn-share-by-email.png");
-//        image_preloader.load_image("/images/btn-share-by-email-on.png");
-//
-//        //drawer images types
-//        image_preloader.load_image("/images/bg-drawer-bottom-cap.png");
-//        image_preloader.load_image("/images/bg-bottom-repeat.png");
-//
-//
-//
-//
-//        //buttons
-//        image_preloader.load_image("/images/btn-black-endcap.png");
-//        image_preloader.load_image("/images/btn-black.png");
-//        image_preloader.load_image("/images/btn-green-endcap.png");
-//        image_preloader.load_image("/images/btn-green.png");
-
-
-
-
     },
 
     album_people_view: function() {
