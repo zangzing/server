@@ -1,0 +1,17 @@
+<div id="sidemenu-container">
+  <h1 id="sidemenu-title">Admin Pages</h1>
+  <ul>
+    <li id="status-topic" class="sidemenu-item <%=(@page=='status' ? 'sidemenu-item-selected' : '')%>">
+        <a href="<%=admin_path() %>"> Status </a>
+    </li>
+    <li id="email-topic" class="sidemenu-item  <%=(@page=='email' ? 'sidemenu-item-selected' : '')%>">
+        <a href="<%=emails_path() %>"> Email </a>
+    </li>
+    <li id="logs-topic"   class="sidemenu-item <%=(@page=='logs' ? 'sidemenu-item-selected' : '')%>">
+        <a href="<%=logs_path() %>">Logs</a>
+    </li>
+    <li id="users-topic"   class="sidemenu-item <%=(@page=='users' ? 'sidemenu-item-selected' : '')%>">
+        <a href="<%=users_path() %>">Users</a>
+    </li>
+  </ul>
+</div>

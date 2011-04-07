@@ -1,0 +1,15 @@
+<tr>
+    <td>  <%= link_to h(user.name), user %> </td>
+    <td>  <%= user.created_at.strftime( '%m/%d/%y' ) %> </td>
+    <td>  <%= user.albums.count %>          </td>
+    <td>  <%= user.photos.count %>          </td>
+    <td>  <%= user.shares.count %>          </td>
+    <!--
+	<td>
+      <% if current_user.admin? %>
+		<%= link_to "suspend", user,
+			:method => :suspend, :confirm => "Are you sure?" %>
+	<%end %>
+    </td>
+    -->
+</tr>

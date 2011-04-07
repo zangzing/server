@@ -38,6 +38,23 @@ module ApplicationHelper
 
    end
 
+   def upgrade_site_for_browser
+     if browser.safari?
+       return "http://www.apple.com/safari/"
+     elsif browser.firefox?
+       return "http://www.mozilla.com/"
+     elsif browser.ie?
+       return "http://www.microsoft.com/ie"
+     elsif browser.chrome?
+       return "http://chrome.google.com"
+     else
+       return "http://chrome.google.com"       
+     end
+   end
+
+
+
+
    #note: this is duplicated in agent.js
    def add_credentials_to_agent_url(url)
       if url.starts_with? 'http://localhost:30777'

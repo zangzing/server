@@ -75,5 +75,7 @@ silence_warnings do #To avoid warning of overwriting constant
   Cache::Album::Manager.make_shared
 
 
+
+
 end
 

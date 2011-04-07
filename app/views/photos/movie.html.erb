@@ -53,11 +53,23 @@
     </style>
 
 
+    <script>
+        var zza_config_GOOGLE_ANALYTICS_TOKEN = '<%=ZZA_CONFIG[:GOOGLE_ANALYTICS_TOKEN]%>';
+        var zza_config_MIXPANEL_TOKEN = '<%=ZZA_CONFIG[:MIXPANEL_TOKEN]%>';
+        var zza_config_ZZA_ID = '<%=ZZA_CONFIG[:ZZA_ID]%>';
+<%    if signed_in?  -%>
+        zuserid = '<%= current_user.id %>';
+<%	  else %>
+        zuserid = null;
+<%    end -%>
+
+    </script>
+
 </head>
 
 <body>
-    <object id="movie" type="application/x-shockwave-flash" data="/swf/movie.swf">
-        <param name="movie" value="/swf/movie.swf">
+    <object id="movie" type="application/x-shockwave-flash" data="/static/swf/movie.swf">
+        <param name="movie" value="/static/swf/movie.swf">
         <param name="allowFullScreen" value="true">
         <param name="bgcolor" value="#000000">
 
@@ -93,7 +105,10 @@
     <div id="scrim"></div>
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-	<script type="text/javascript" src="http://zza.zangzing.com/zza.js"></script>
+
+
+    <%= include_javascripts :lib %>
+    <%= include_javascripts :zz %>
     <%= include_javascripts :movie %>
 
 

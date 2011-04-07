@@ -41,6 +41,10 @@ Server::Application.routes.draw do
     get    '/users/:id/account'    => 'users#account',    :as => :account
     get    '/users/:id/notifications'    => 'users#notifications',    :as => :notifications
 
+    #account settings
+    get    '/users/:id/account_settings'  => 'account_settings#edit', :as => :edit_account_settings
+
+
     #identities
     get    '/users/:id/identities'     => 'identities#index',       :as => :user_identities
     get    '/users/:id/identities/new' => 'identities#new',         :as => :new_user_identity
@@ -158,9 +162,13 @@ Server::Application.routes.draw do
     #get '/help'     => 'pages#help',    :as => :help
     #get '/signup'   => 'users#new',     :as => :signup
 
+    #Asynch responses
+    match '/async_responses/:response_id' => 'async_responses#show', :as => :async_response
+
 
     # all in this section are in the Connector namespace but don't include it in the path
     scope :module => "connector" do
+
       #flickr
       match '/flickr/sessions/new' => 'flickr_sessions#new', :as => :new_flickr_session
       match '/flickr/sessions/create' => 'flickr_sessions#create', :as => :create_flickr_session
@@ -283,22 +291,15 @@ Server::Application.routes.draw do
     # =============================================== ADMIN ==============================================
     # ====================================================================================================
     scope  '/admin', :module => "admin" do
+        get   '/'                               => 'admin_screens#index',         :as => :admin
         get   'logs'                            => 'logs#index',                  :as => :logs
         get   'logs/:logname'                   => 'logs#retrieve',               :as => :log_retrieve
-        get   'status'                          =>  'status#show',                :as => :show_status
-        # MailChimp Transactional Campaign manager
-        get    'chimpcampaigns'                  => 'chimpcampaigns#index',       :as => :chimpcampaigns
-        get    'chimpcampaigns/new'              => 'chimpcampaigns#new',         :as => :new_chimpcampaign
-        post   'chimpcampaigns'                  => 'chimpcampaigns#create',      :as => :create_chimpcampaign
-        get    'chimpcampaigns/:id'              => 'chimpcampaigns#edit',        :as => :edit_chimpcampaign
-        put    'chimpcampaigns/:id'              => 'chimpcampaigns#update',      :as => :update_chimpcampaing
-        delete 'chimpcampaigns/:id'              => 'chimpcampaigns#delete',      :as => :delete_chimpcampaign
-        # EmailTemplate Manager
         resources :email_templates
         put   'email_templates/:id/reload'       => 'email_templates#reload',     :as => :reload_email_template
         get   'email_templates/:id/test'         => 'email_templates#test',       :as => :test_email_template
         get   'emails'                           => 'emails#index',               :as => :emails
         put   'emails/:id'                       => 'emails#update',              :as => :email
+        get   'users'                            => 'admin_screens#users',        :as => :users
     end
     #Resque: mount the resque server
     mount Resque::Server.new, :at => "/admin/resque"

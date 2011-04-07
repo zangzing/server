@@ -142,36 +142,6 @@ ul.edit-6-6 {
 
 
 
-/*ul.edit-1-6 {*/
-  /*background-image: url("/images/bg-6step-edit-1.png");*/
-  /*background-repeat: no-repeat;*/
-/*}*/
-
-/*ul.edit-2-6 {*/
-  /*background-image: url("/images/bg-6step-edit-2.png");*/
-  /*background-repeat: no-repeat;*/
-/*}*/
-
-/*ul.edit-3-6 {*/
-  /*background-image: url("/images/bg-6step-edit-3.png");*/
-  /*background-repeat: no-repeat;*/
-/*}*/
-
-/*ul.edit-4-6 {*/
-  /*background-image: url("/images/bg-6step-edit-4.png");*/
-  /*background-repeat: no-repeat;*/
-/*}*/
-
-/*ul.edit-5-6 {*/
-  /*background-image: url("/images/bg-6step-edit-5.png");*/
-  /*background-repeat: no-repeat;*/
-/*}*/
-
-/*ul.edit-6-6 {*/
-  /*background-image: url("/images/bg-6step-edit-6.png");*/
-  /*background-repeat: no-repeat;*/
-/*}*/
-
 
 
 ul#indicator-4 li.tab {
@@ -270,17 +240,13 @@ ul#indicator-4 li.tab.on, ul#indicator-4 li.tab:hover{
 }
 
 
-/*ul#indicator-6 #next-step {*/
-  /*padding: 0;*/
-/*}*/
-
 
 
 /* Create Album
 ----------------------------------------------------------------------------- */
 div#drawer-content div#top-section {
   padding: 0px 10px;
-  width: 840px;
+  /*width: 840px;*/
   margin: 15px 0 5px;
   height: 50px;
 }
@@ -411,18 +377,29 @@ ul#privacy-menu li#privacy-password:hover {
 
 
 div#drawer-content h3 {
-  font-size: 17px;
-  font-weight: 500;
-  color: #0a0a0a;
-  margin-top:20px;
-  margin-bottom:5px;
+  /*font-size: 17px;*/
+  /*font-weight: 500;*/
+  /*color: #0a0a0a;*/
+  /*margin-top:20px;*/
+  /*margin-bottom:5px;*/
+    font-size: 20px;
+    font-weight: 500;
+    color: #2C2C2C;
+    margin-top: 20px;
+    margin-bottom: 5px;
+
 }
 
 div#drawer-content h4 {
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 15px;
-  color: #0a0a0a;
+  /*font-size: 14px;*/
+  /*font-weight: 500;*/
+  /*margin-bottom: 15px;*/
+  /*color: #0a0a0a;*/
+    font-size: 14px;
+    font-weight: 400;
+    font-weight: 400;
+    margin-bottom: 15px;
+    color: #2C2C2C;
 }
 
 span.h4 {
@@ -432,25 +409,14 @@ span.h4 {
   line-height: 22px;
 }
 
-/*div#drawer-content .album-header {*/
-  /*margin: 10px auto 45px;*/
-  /*width: 600px;*/
-  /*min-height: 60px;*/
-  /*line-height: 14px;*/
-  /*background-image: url('/images/faux-hr.png');*/
-  /*background-position: bottom center;*/
-  /*background-repeat: no-repeat;*/
-/*}*/
+
 
 div#drawer-content #top-section .album-header,
 div#drawer-content #top-section .album-header-off {
   margin: 0 auto 0;
 }
 
-/*div#drawer-content .album-header-off h3, div#drawer-content .album-header-off h4,*/
-/*div#drawer-content .album-header h3, div#drawer-content .album-header h4 {*/
-  /*margin-bottom: 10px;*/
-/*}*/
+
 
 div#drawer-content .album-header-off {
   margin: 25px auto 25px;
@@ -467,8 +433,9 @@ div#drawer-content dl.form {
 
 div#drawer-content dl.form dt {
   float: left;
-  font-size: 18px;
+  font-size: 14px;
   color: #0a0a0a;
+  font-weight:normal;
   text-align: right;
   width: 180px;
   margin-right: 20px;
@@ -481,23 +448,48 @@ div#drawer-content dl.form dd {
   text-align: left;
 }
 
-div#drawer-content dl.form dd input#album_name{
-  width: 500px;
-  /*padding: 5px;*/
-  /*text-align: left;*/
-  /*font-size: 1.8em;*/
-  /*background-color: #fff;*/
-  /*border: 1px #8c8c8c solid;*/
+
+/*
+ ******* Name Album **************/
+
+table#name_album_form{
+
+  font-size: 14px;
+  color:#000;
+  text-align:left;
+  width:600px;
+  margin-top:20px;
+  margin-left:auto;
+  margin-right:auto;
+  overflow: visible;
 }
+
+table#name_album_form td{
+    padding-right:20px;
+    padding-top:5px;
+    padding-bottom:10px;
+}
+
+table#name_album_form #album_name{
+    width:390px;
+}
+
+table#name_album_form td.label{
+    text-align:right
+}
+
+
 
 #album-cover-picker {
     border: 1px solid #8C8C8C;
     height: 20px;
-    position: absolute;
+    /*position: absolute;*/
     /*top: 400px;*/
-    width: 760px;
-    left:75px;
-    bottom: 80px;
+    width: 400px;
+    /*left:75px;*/
+    /*bottom: 80px;*/
+    /*display:inline-block;*/
+    margin-bottom:10px;
 }
 
 
@@ -514,12 +506,7 @@ div#drawer-content input#album_email {
   border: none;
 }
 
-/*div#drawer-content :focus {*/
-  /*box-shadow: 0px 0px 10px #FDD042;*/
-  /*-webkit-box-shadow: 0px 0px 10px #FDD042;*/
-  /*-moz-box-shadow: 0px 0px 10px #FDD042;*/
-  /*filter: progid:DXImageTransform.Microsoft.dropShadow(color=#FDD042, offX=2, offY=2, positive=true);*/
-/*}*/
+
 
 ul#share-pick {
   width: 410px;
@@ -559,15 +546,6 @@ ul#share-pick li.email-share:hover {
 
 
 
-/*ul#share-pick li a {*/
-  /*color: #646464;*/
-  /*background-color:#ffffff*/
-
-/*}*/
-
-/*ul#share-pick li img {*/
-  /*margin-bottom: 10px;*/
-/*}*/
 
 div#form-container {
   width: 800px;
@@ -587,21 +565,6 @@ div#form-container-2 {
   text-align:left;
 }
 
-/*dl#social-form dt {*/
-  /*float: left;*/
-  /*width: 50px;*/
-  /*text-align: right;*/
-  /*margin-right: 10px;*/
-  /*margin-bottom: 10px;*/
-/*}*/
-
-/*dl#social-form dt img {*/
-  /*vertical-align: -30%;*/
-/*}*/
-
-/*dl#social-form dt#network {*/
-  /*margin-left: 50px;*/
-/*}*/
 
 #social-form  {
     margin-left:auto;
@@ -655,20 +618,6 @@ div#form-container-2 {
 
 
 
-/*dl#social-form dd#post-text textarea.error {*/
-  /*border: 1px #ff0000 solid;*/
-
-/*}*/
-
-/*dd.button {*/
-  /*font-size: 1.3em;*/
-/*}*/
-
-/*dd.button a {*/
-  /*margin-right: 10px;*/
-  /*color: #646464;*/
-  /*text-decoration: underline;*/
-/*}*/
 
 #form-actions {
   float: right;
@@ -676,14 +625,6 @@ div#form-container-2 {
   /*color: #646464;*/
 }
 
-/*#form-actions a, dd.button a {*/
-  /*color: #646464;*/
-  /*text-decoration: underline;*/
-/*}*/
-
-/*#social-submit, #mail-submit {*/
-  /*margin-left: 20px;*/
-/*}*/
 
 
 /*====================== Email Share ===============================*/
@@ -710,7 +651,6 @@ ul#email-sync li.title {
 
 table#email-share-form{
   font-size: 14px;
-  /*width:100%;*/
   text-align:left;
 }
 
@@ -803,156 +743,13 @@ table#email-share-form input:focus{
 }
 
 
-/*table#email-share-form dt {*/
-  /*float: left;*/
-  /*text-align: right;*/
-  /*margin: 8px;*/
-  /*width: 60px;*/
-  /*color: #8c8c8c;*/
-/*}*/
-
-/*dl#email-share-form dd {*/
-  /*float: left;*/
-  /*text-align: right;*/
-  /*margin-bottom: 10px;*/
-/*}*/
-
-/*dl#email-share-form dd input, dl#email-share-form dd textarea {*/
-  /*width: 690px;*/
-  /*padding: 5px;*/
-  /*color: #000000;*/
-  /*border: 1px #8c8c8c solid;*/
-  /*font-family: "Lucida Grande", "Lucida Sans Unicode", "Trebuchet MS", Tahoma, Helvetica, Arial, sans-serif;*/
-  /*font-weight: 400;*/
-  /*font-size: 1.05em;*/
-/*}*/
-
-/*dl#email-share-form dd input.error, dl#email-share-form dd textarea.error {*/
-  /*border: 1px #ff0000 solid;*/
-/*}*/
-
-/*dl#email-share-form dd input {*/
-  /*height: 20px;*/
-  /*padding: 12px 5px;*/
-/*}*/
-
-
-/*dl#email-share-form dd#the-list {*/
-  /*border: 1px #afafaf solid;*/
-  /*min-height: 42px;*/
-  /*padding: 0;*/
-  /*width: 690px;*/
-  /*text-align: left;*/
-/*}*/
-
-
-/*dl#email-share-form label.error {*/
-  /*display: none;*/
-/*}*/
-
-/*dl#contributor-index{*/
-    /*font-size:14px;*/
-/*}*/
-
-/*dl#contributor-index dd#the-list {*/
-  /*border: 1px #afafaf solid;*/
-  /*min-height: 326px;*/
-  /*padding: 0 5px;*/
-  /*width: 720px;*/
-  /*margin-left: 43px;*/
-/*}*/
-
-
-/*ul#the-recipients {*/
-  /*min-height: 28px;*/
-  /*padding: 0 5px;*/
-  /*width: 690px;*/
-
-  /*color: #000000;*/
-/*}*/
-
-/*ul#the-recipients li {*/
-  /*float: left;*/
-  /*height: 16px;*/
-  /*color: #000000;*/
-  /*text-align: left;*/
-  /*background-color: #fbfbfb;*/
-  /*background: -moz-linear-gradient(top, #fbfbfb, #dcdcdc);*/
-  /*background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#dcdcdc));*/
-  /*border: 2px #dcdcdc solid;*/
-  /*padding: 4px 4px 4px 7px;*/
-  /*margin: 5px;*/
-/*}*/
-
-/*ul#the-recipients li.del {*/
-  /*border: 2px #ff0000 solid;*/
-  /*background: -moz-linear-gradient(top, #fbfbfb, pink);*/
-  /*background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(pink));}*/
-
-/*ul#the-recipients li img.link {*/
-  /*margin: 0 3px 0 5px;*/
-  /*vertical-align: -30%;*/
-/*}*/
-
-/*.rounded {*/
-  /*border-radius: 8px;*/
-  /*-moz-border-radius: 8px;*/
-  /*-webkit-border-radius: 8px;*/
-/*}*/
-
-
-/*ul#the-recipients li.rounded {*/
-  /*display: none;*/
-/*}*/
-
-/*ul#the-recipients li.rounded input {*/
-  /*display: none;*/
-/*}*/
-
-/*ul#the-recipients li#autocomplete {*/
-  /*height: 36px;*/
-  /*text-align: left;*/
-  /*margin: 0;*/
-  /*padding: 0;*/
-  /*background: none;*/
-  /*border: none;*/
-/*}*/
-
-
-
-/*dl#email-share-form dd input#you-complete-me {*/
-  /*background-color: #fff;*/
-  /*border: 1px #fff solid;*/
-  /*width: 300px;*/
-  /*height: 24px;*/
-  /*padding: 5px 0px;*/
-/*}*/
-
-/*dl#email-share-form dd input#you-complete-me:focus {*/
-  /*outline: none;*/
-    /*box-shadow: none;*/
-    /*-webkit-box-shadow: none;*/
-    /*-moz-box-shadow: none;*/
-    /*filter: none;*/
-
-/*}*/
-
-/*select.album_privacy {*/
-  /*background-color: #fbfbfb;*/
-  /*background: -moz-linear-gradient(top, #fbfbfb, #dcdcdc);*/
-  /*background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#dcdcdc));*/
-  /*border: 1px #dcdcdc solid;*/
-  /*font-size: 12px;*/
-  /*font-weight: 400;*/
-  /*color: #646464;*/
-  /*padding: 4px;*/
-  /*height: 28px;*/
-  /*width: 80px;*/
-  /*margin-right: 10px;*/
-/*}*/
 
 #add-photos-dialog{
-    height:100%;
+    position: absolute;
+    top: 0px;
+    left: -1px;
+    right: -1px;
+    bottom: 0px;
 }
 
 /*-------------- Settings Drawer -----------------------------------------*/

@@ -17,8 +17,7 @@ class Connector::MsliveContactsController < Connector::MsliveController
       (contact.xpath('Emails/Email') || []).each do |email|
         props = {
           :name => name,
-          :address => email.at_xpath('Address').text,
-          :type => 'email'
+          :address => email.at_xpath('Address').text
         }
         next if props[:address].blank?
         props[:name] = props[:address].split('@').first if props[:name].blank?

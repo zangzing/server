@@ -35,7 +35,14 @@ class AlbumsController < ApplicationController
         text = @album.normalize_friendly_id(FriendlyId::SlugString.new(base))
         slug_text = FriendlyId::SlugString.new(text.to_s).validate_for!(@album.friendly_id_config).to_s
         current_slug = @album.slugs.new(:name => slug_text.to_s, :scope => @album.friendly_id_config.scope_for(@album), :sluggable => @album)
-        render :text => "#{current_slug.to_friendly_id}@#{@album.user.friendly_id}.#{Server::Application.config.album_email_host}", :layout => false
+
+        json = {
+            :email => "#{current_slug.to_friendly_id}@#{@album.user.friendly_id}.#{Server::Application.config.album_email_host}",
+            :url => album_pretty_url(@album, current_slug.to_friendly_id)
+        }
+
+
+        render :json => json
       rescue FriendlyId::ReservedError
         flash[:error]="Sorry, \"#{base}\" is a reserved album name please try a different one"
         render :nothing => true, :layout => false, :status=>401

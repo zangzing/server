@@ -106,13 +106,13 @@ zz.wizard = {
             if (i == id && obj.numbers == 1) {
                 value = temp_id;
                 temp += '<li id="wizard-'+ i + '" class="tab on">';
-                temp += '<img src="/images/wiz-num-'+temp_id+'-on.png" class="num"> '+ item.title +'</li>';
+                temp += '<img src="' + path_helpers.image_url('/images/wiz-num-'+temp_id+'-on.png') +'" class="num"> '+ item.title +'</li>';
             } else if (i == id) {
                 value = temp_id;
                 temp += '<li id="wizard-'+ i + '" class="tab on">'+ item.title +'</li>';
             } else if (obj.numbers == 1) {
                 temp += '<li id="wizard-'+ i + '" class="tab">';
-                temp += '<img src="/images/wiz-num-'+temp_id+'.png" class="num"> '+ item.title +'</li>';
+                temp += '<img src="' + path_helpers.image_url('/images/wiz-num-'+temp_id+'.png') +'" class="num"> '+ item.title +'</li>';
             } else {
                 temp += '<li id="wizard-'+ i + '" class="tab">'+ item.title +'</li>';
             }
@@ -199,11 +199,11 @@ zz.wizard = {
 
     set_wizard_style: function(style){
       if( style == 'edit'){
-            $('div#drawer').css('background-image','url(/images/bg-drawer-bottom-cap.png)');
+            $('div#drawer').css('background-image','url(' + path_helpers.image_url('/images/bg-drawer-bottom-cap.png') + ')');
             $('div#cancel-drawer-btn').hide();
             zz.screen_gap =  160;
         } else {
-            $('div#drawer').css('background-image','url(/images/bg-drawer-bottom-cap-with-cancel.png)');
+            $('div#drawer').css('background-image','url(' + path_helpers.image_url('/images/bg-drawer-bottom-cap-with-cancel.png') + ')');
             $('div#cancel-drawer-btn').show();
             zz.screen_gap = 160;
         }

@@ -40,4 +40,7 @@ Server::Application.configure do
   # mail logger is too verbose, shut it off
   config.action_mailer.logger = nil
 
+  ActionController::Base.asset_host = "%d.assets.photos.zangzing.com"
+
+
 end

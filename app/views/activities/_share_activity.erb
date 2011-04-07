@@ -10,10 +10,10 @@
     <a href="<%=user_path(activity.user)%>">
         <span class="blue"><%=activity.user.name%></span>
     </a>
-    shared  "<%=activity.share.subject.name%>"
+    shared this album <!--<%=activity.share.subject.name%>-->
     <%case activity.share.service%>
         <% when 'email' then%>
-          by Email
+          by email
         <% when 'social'  then%>
           on <%= activity.share.recipients.first.capitalize%>
          <%= ( activity.share.recipients.count >1 ? ' and '+activity.share.recipients.last.capitalize : '' )  %>

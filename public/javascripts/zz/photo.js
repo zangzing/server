@@ -46,11 +46,11 @@
             html += '<div class="photo-caption"></div>';
 
             html += '<div class="photo-border">'
-            html += '   <img class="photo-image" src="/images/blank.png">';
+            html += '   <img class="photo-image" src="' + path_helpers.image_url('/images/blank.png') + '">';
             html += '   <div class="photo-delete-button"></div>';
             html += '   <div class="photo-uploading-icon"></div>';
             html += '   <div class="photo-error-icon"></div>';
-            html += '   <img class="bottom-shadow" src="/images/photo/bottom-full.png">';
+            html += '   <img class="bottom-shadow" src="' + path_helpers.image_url('/images/photo/bottom-full.png') + '">';
 
             if(self.options.context.indexOf('chooser')===0 && self.options.type === 'photo'){
                 html += '   <div class="photo-add-button"></div>';
@@ -225,7 +225,7 @@
                 self._loadImage()
             }
             else{
-                self.imageElement.attr('src', '/images/photo_placeholder.png');
+                self.imageElement.attr('src', path_helpers.image_url('/images/photo_placeholder.png'));
             }
 
 
@@ -331,9 +331,11 @@
                 //show the small version
                 self.imageElement.attr("src", initialSrc);
 
-                //show the full version
-                self.imageElement.attr("src", self.options.src);
 
+                //show the full version
+                image_utils.pre_load_image(self.options.src, function(image){
+                    self.imageElement.attr("src", self.options.src);
+                });
             });
         },
 
