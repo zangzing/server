@@ -12,17 +12,23 @@ class AsyncResponse
       Rails.cache.write(response_id, response)
     end
 
-    def store_error(response_id, error_code, error_message)
-      error = { :error => {
-          :code => error_code,
-          :message => error_message
-      }}
-      Rails.cache.write(response_id, JSON.generate(error))
-    end
-
     def get_response(response_id)
       #fetches response from memcache (or null)
       Rails.cache.read(response_id)
+    end
+    
+    def store_error(response_id, exception)
+      classified_exception = Connector::ConnectorController.classify_exception(exception)
+      info = {
+        :exception => true,
+        :code => case classified_exception.name
+          when 'InvalidToken', 'InvalidCredentials' then 401
+          when 'HttpCallFail' then 503
+          else 500
+        end,
+        :message => exception.message
+      }
+      Rails.cache.write(response_id, info.to_json)
     end
 
   end

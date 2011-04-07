@@ -26,23 +26,12 @@ module ZZ
             params[:identity] = user_identity
             json = klass.send(method_name.to_sym, api, params)
             AsyncResponse.store_response(response_id, json)
-          rescue Exception => e
-            #todo: need to figure out the underlying error and
-            #      and set appripriate code and message
-            AsyncResponse.store_error(response_id, 500, e.to_s)
+          rescue => e
+            AsyncResponse.store_error(response_id, e)
           end
-
         end
       end
 
-      def self.on_failure_notify_photo(e, response_id, identity_id, klass_name, method_name, params )
-        begin
-          SystemTimer.timeout_after(ZangZingConfig.config[:async_connector_timeout]) do
-          end
-        rescue Exception => ex
-          # eat any exception in the error handler
-        end
-      end
     end
 
   end
