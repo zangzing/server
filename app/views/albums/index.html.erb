@@ -40,7 +40,7 @@
                     coverUrl: album.c_url,
                     onClick: function(){
                       $('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()},500,'easeOutQuart');
-                      document.location.href='/albums/' + album.id;
+                      document.location.href = album.album_path;
                     },
                     onShare: function(){
                         pages.share.share_in_dialog('album', album.id);
@@ -57,7 +57,7 @@
                         };
 
                     },
-                    //allowDelete: < %= album.user == current_user && album.type != 'ProfileAlbum' %>
+                    allowDelete: !album.profile_album && album.user_id == zz.current_user_id
                 });
 
 
@@ -77,7 +77,9 @@
              var merged = liked_albums.concat(liked_users_albums);
              merged = _.sortBy(merged, function(album){
                  return -1 * album.updated_at;
-             })
+             });
+
+             render_albums($('#liked-albums'), merged);
           });
       });
 
