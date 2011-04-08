@@ -29,6 +29,7 @@ class Album < ActiveRecord::Base
   before_save   :cover_photo_id_valid?, :if => :cover_photo_id_changed?
   after_save    :notify_cache_manager
   after_create  :add_creator_as_admin
+  after_destroy :notify_cache_manager_delete
 
   default_scope :order => "`albums`.updated_at DESC"
 
@@ -48,10 +49,17 @@ class Album < ActiveRecord::Base
     @@_model_name ||= ActiveModel::Name.new(Album)
   end
 
-  # We have been committed so call the album cache manager
-  # to let it invalidate caches if needed
+  # We have been saved so call the album cache manager
+  # to let it invalidate caches if needed.  Need to do this
+  # before the commit since we have to know what changed.
   def notify_cache_manager
     Cache::Album::Manager.shared.album_modified(self)
+    true
+  end
+
+  # We have been deleted, let the cache know.
+  def notify_cache_manager_delete
+    Cache::Album::Manager.shared.album_deleted(self)
     true
   end
 
