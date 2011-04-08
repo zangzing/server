@@ -451,6 +451,12 @@ zz.init = {
                 json = zz.init.filterPhotosForUser(json);
 
 
+                //no movie mode if no photos
+                if(json.length == 0){
+                    $('#footer #play-button').addClass('disabled');
+                }
+
+
                 if (view === 'grid') {   //grid view
 
                     var gridElement = $('<div class="photogrid"></div>');
@@ -693,6 +699,11 @@ zz.init = {
 
                 json = zz.init.filterPhotosForUser(json);
 
+
+                //no movie mode if no photos
+                if(json.length == 0){
+                    $('#footer #play-button').addClass('disabled');
+                }
 
                 for (var i = 0; i < json.length; i++) {
                     var photo = json[i];
