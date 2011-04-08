@@ -2,18 +2,14 @@ class Connector::GoogleContactsController < Connector::GoogleController
   skip_before_filter :service_login_required, :only => [:index]
 
   BATCH_SIZE = 100
-
-  def index
-    @contacts = current_user.identity_for_google.contacts
-  end
-
-  def import
-    identity = current_user.identity_for_google
+  
+  def self.import_contacts(api_client, params)
+    identity = params.delete(:identity)
     start_index = 1
     imported_contacts = []
-    SystemTimer.timeout_after(http_timeout) do
+    #SystemTimer.timeout_after(http_timeout) do
       begin
-        doc = Nokogiri::XML(client.get("http://www.google.com/m8/feeds/contacts/default/full?max-results=#{BATCH_SIZE}&start-index=#{start_index}").body)
+        doc = Nokogiri::XML(api_client.get("http://www.google.com/m8/feeds/contacts/default/full?max-results=#{BATCH_SIZE}&start-index=#{start_index}").body)
         entry_count = 0
         doc.xpath('//a:entry', NS).each do |entry|
           entry_count += 1
@@ -27,7 +23,7 @@ class Connector::GoogleContactsController < Connector::GoogleController
         end
         start_index += BATCH_SIZE
       end while entry_count != 0
-    end
+    #end
 
     unless imported_contacts.empty?
       success = false
@@ -40,12 +36,18 @@ class Connector::GoogleContactsController < Connector::GoogleController
           raise ActiveRecord::Rollback
         end
       end
-      unless success
-        render :json => ['Something went wrong'], :status => 401
-        return
-      end
+      raise 'Error! No contacts has been imported' unless success
     end
-    render :json => imported_contacts.to_json
+    imported_contacts.to_json
   end
+
+  def index
+    @contacts = current_user.identity_for_google.contacts
+  end
+
+  def import
+    fire_async_response('import_contacts')
+  end
+  
 end
 
