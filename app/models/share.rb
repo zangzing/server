@@ -61,8 +61,10 @@ class Share < ActiveRecord::Base
     case service
       when 'email'
         self.recipients.each do |recipient |
-          # TODO: Add Album.Photo.User handling See bug #1124
-          ZZ::Async::Email.enqueue( :album_shared, self.user_id, recipient, self.subject_id, self.message )
+          #TODO: Add Album.Photo.User handling See bug #1124
+          Guest.create( :email => recipient, :source => 'share' ) #add recipient to guest list for beta period
+          ZZ::Async::Email.enqueue( :album_shared, self.user_id, recipient, self.subject_id, self.message ) if album?
+          ZZ::Async::Email.enqueue( :photo_shared, self.user_id, recipient, self.subject_id, self.message ) if photo?
         end
       when 'social'
         self.recipients.each do | service |

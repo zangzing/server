@@ -194,6 +194,7 @@ class Album < ActiveRecord::Base
           # if the email does not have contributor role add it.
           unless acl.has_permission?( email, AlbumACL::CONTRIBUTOR_ROLE)
               acl.add_user email, AlbumACL::CONTRIBUTOR_ROLE
+              Guest.create( :email => email, :source => 'contributor' )
               ZZ::Async::Email.enqueue( :contributor_added, self.id, email, msg )
           end
      end

@@ -9,11 +9,11 @@ class Guest < ActiveRecord::Base
   belongs_to :user
 
   def beta_lister?
-    self.source != 'share'
+    self.source != 'beta' || self.source == 'admin'
   end
 
   def share?
-    self.source == 'share'
+    self.source == 'share' || self.source == 'contributor'
   end
 
 end

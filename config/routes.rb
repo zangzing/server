@@ -287,8 +287,9 @@ Server::Application.routes.draw do
         get   'settings'                         => 'system_settings#show',       :as => :system_settings
         put   'settings'                         => 'system_settings#update'
         get   'guests'                           => 'guests#index',               :as => :guests
-        post  'guests'                           => 'guests#create'
-        put   'guests/id'                        => 'guests#update',              :as => :update_guest
+        post  'guests(.:format)'                 => 'guests#create'
+        get   'guests/:id'                       => 'guests#show',                :as => :guest
+        put   'guests/:id'                       => 'guests#update'
     end
     #Resque: mount the resque server
     mount Resque::Server.new, :at => "/admin/resque"
@@ -310,8 +311,8 @@ Server::Application.routes.draw do
   get    '/:user_id/:album_id'                 =>   'photos#index'
   get    '/:user_id/:album_id/photos'          =>   'photos#index'
   get    '/:user_id/:album_id/people'          =>   'people#album_index'
-  get    '/:user_id/:album_id/activities'          =>   'activities#album_index'
-  get    '/:user_id/:album_id/movie'          =>   'photos#movie'
+  get    '/:user_id/:album_id/activities'      =>   'activities#album_index'
+  get    '/:user_id/:album_id/movie'           =>   'photos#movie'
 
 
 

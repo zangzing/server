@@ -168,12 +168,19 @@ class ApplicationController < ActionController::Base
       session[:return_to] = nil
     end
 
-    #
     # True if a user is signed in. Left in place for backwards compatibility
     # better to use if current_user ......
     def signed_in?
        current_user
     end
+
+    # True if a user is signed in. Left in place for backwards compatibility
+    # better to use if current_user ......
+    def logged_in?
+       current_user
+    end
+
+
 
     #
     # An additional way to control access to certain actions like the ones that are only available to the owner
@@ -199,7 +206,8 @@ class ApplicationController < ActionController::Base
                      'pages#health_check',
                      'agents#check',
                      'agents#info',
-                     'agents#index']
+                     'agents#index',
+                     'admin/guests#create']
       
       }
 

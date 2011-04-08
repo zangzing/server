@@ -1,0 +1,23 @@
+<%= render :partial =>  'admin/admin_screens/adminmenu' %>
+<div id="main-container">
+  <% flash.each do |key, value| %>
+	    <%= content_tag(:div, value, :class => "flash #{key}") %>
+  <% end %>
+  <div class="viewlist">
+    <div class='header bar'>
+      <%= @guest.email %>
+    </div>
+    <div class="content">
+      <table frame="box" width="800px" border="0"  cellspacing="10" align="left" style="text-align: left;">
+          <tr><td> Source  </td><td><%=@guest.source%></td></tr>
+          <tr><td> Status  </td><td><%=@guest.status%></td></tr>
+          <% if @guest.user %>
+          <tr><td> Signed up on</td><td><%=@guest.user.created_at%></td></tr>
+          <tr><td> Active </td><td><%=( @guest.user.active? ? "active" : "inactive" )%></td></tr>
+          <tr><td> Homepage </td><td><%=link_to @guest.user.name, user_url(@guest.user)%></td></tr>
+          <%end%>
+      </table>
+    </div>
+    <H4> <%= link_to "Return to Guest Index", guests_path() %></H4>
+  </div>
+</div>
