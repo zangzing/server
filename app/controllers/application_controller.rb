@@ -283,22 +283,22 @@ class ApplicationController < ActionController::Base
 
   def album_pretty_url (album, friendly_id = nil)
     if friendly_id
-      return "http://#{request.host_with_port}/#{album.user.username}/#{friendly_id}"
+      "#{user_url( album.user )}/#{friendly_id}"
     else
-      return "http://#{request.host_with_port}/#{album.user.username}/#{album.friendly_id}"
+      "#{user_url( album.user )}/#{album.friendly_id}"
     end
   end
 
   def photo_pretty_url(photo)
-    return "http://#{request.host_with_port}/#{photo.album.user.username}/#{photo.album.friendly_id}/photos/#!#{photo.id}"
+    "#{user_url( photo.album.user)}/#{photo.album.friendly_id}/photos/#!#{photo.id}"
   end
 
   def photo_url(photo)
-     return album_photos(photo.album) + "/#!{photo.id}"
+     album_photos(photo.album) + "/#!{photo.id}"
   end
 
   def user_pretty_url(user)
-    return "http://#{request.host_with_port}/#{user.username}"
+    user_url( user )
   end
 
 end

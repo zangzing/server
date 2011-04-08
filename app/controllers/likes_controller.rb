@@ -55,7 +55,7 @@ class LikesController < ApplicationController
     elsif params[:photo_id]
       @subject_id   = params[:photo_id]
       @subject_type = 'photo'
-      @redirect_url = album_photos_url( Photo.find(@subject_id).album )+'/#!'+@subject_id.to_s
+      @redirect_url = photo_pretty_url( Photo.find(@subject_id) )
     else
       #params are not complete
       render :text => "subject_id and/or subject_type not in params, unalbe to process", status => 400 and return

@@ -111,7 +111,7 @@ class Like < ActiveRecord::Base
         album_url( subject_id )
       when PHOTO, 'photo'
         liked_photo = Photo.find( subject_id )
-        album_photos_url( liked_photo.album )+'/#!'+subject_id.to_s
+        album_url( liked_photo.album )+'/#!'+subject_id.to_s
       else
         'http://www.zangzing.com'
     end

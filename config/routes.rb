@@ -51,7 +51,7 @@ Server::Application.routes.draw do
     get    '/albums/:id/name_album'          => 'albums#name_album',          :as => :name_album
     get    '/albums/:id/preview_album_email' => "albums#preview_album_email", :as => :preview_album_email
     get    '/albums/:id/privacy'             => 'albums#privacy',             :as => :privacy
-    get    '/albums/:id'                     => 'albums#show',                :as => :album
+    #get    '/albums/:id'                     => 'albums#show',                :as => :album
     get    '/albums/:id/edit'                => 'albums#edit',                :as => :edit_album
     get    '/albums/:id/close_batch'         => 'albums#close_batch',         :as => :close_batch
     put    '/albums/:id'                     => 'albums#update',              :as => :update_album
@@ -60,7 +60,6 @@ Server::Application.routes.draw do
     post   'albums/:id/request_access'       => 'albums#request_access',      :as => :request_album_access
 
     #shares
-
     get '/albums/:album_id/shares'          => 'shares#index',      :as => :album_shares
     get '/shares/new'                       => 'shares#new'   # ,        :as => :new_album_share
     get '/shares/newpost'                   => 'shares#newpost' #,    :as => :new_album_postshare
@@ -74,7 +73,7 @@ Server::Application.routes.draw do
 
     #photos
     get    '/albums/:album_id/photos_json'  => 'photos#photos_json',                :as => :album_photos_json
-    get    '/albums/:album_id/photos'       => 'photos#index',                      :as => :album_photos
+    get    '/albums/:album_id/photos'       => 'photos#index',                      :as => :album
     get    '/albums/:album_id/movie'        => 'photos#movie',                      :as => :album_movie
     delete '/photos/:id'                    => 'photos#destroy',                    :as => :destroy_photo
     put    '/photos/:id/upload_fast'        => 'photos#upload_fast',                :as => :upload_photo_fast
