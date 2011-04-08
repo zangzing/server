@@ -36,14 +36,14 @@ class UsersController < ApplicationController
       # new users are active by default
       unless SystemSetting[:allow_everyone]
         @new_user.active = false
-        guest = Guest.find_by_email( params[:user][:email] )
-        if guest
-           if SystemSetting[:always_allow_beta_listers] && guest.beta_lister?
-              @new_user.active = true #no more users but always allow beta lister is set and user is beta_lister
+        @guest = Guest.find_by_email( params[:user][:email] )
+        if @guest
+           if SystemSetting[:always_allow_beta_listers] && @guest.beta_lister?
+              @new_user.active = true #always allow when beta-lister is set and user is beta_lister
            else
               if SystemSetting[:new_users_allowed] > 0
                 # user allotment available
-                if guest.share?
+                if @guest.share?
                   if SystemSetting[:allow_shares]
                     @new_user.active= true
                     SystemSetting[:new_users_allowed] -= 1;
@@ -60,6 +60,11 @@ class UsersController < ApplicationController
       if @new_user.active
         #Save active user
         if @new_user.save
+            if @guest
+               @guest.user_id = @new_user.id
+               @guest.status = 'Active Account'
+               @guest.save
+            end
             flash[:success] = "Welcome to ZangZing!"
             @new_user.deliver_welcome!
             UserSession.create(@new_user, true)
@@ -72,7 +77,13 @@ class UsersController < ApplicationController
         # auto-login which can't happen here because
         # the User has not yet been activated
         if @new_user.save_without_session_maintenance
-           flash[:notice] = "Beta Signup is open to guests only. We will evaluate your signup request and email you when your account is ready"
+           if @guest
+              @guest.user_id = @new_user.id
+              @guest.status = 'Inactive'
+              @guest.save
+           end
+           session[:client_dialog]=root_url+'static/inactive_dialog.html'
+
            redirect_to root_url and return
         end  
       end

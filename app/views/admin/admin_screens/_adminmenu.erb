@@ -24,5 +24,8 @@ td{
     <li id="guests-topic"  class="sidemenu-item <%=(@page=='guests' ? 'sidemenu-item-selected' : '')%>">
         <a href="<%=guests_path() %>">Guest List</a>
     </li>
+    <li id="resque-topic"  class="sidemenu-item <%=(@page=='resque' ? 'sidemenu-item-selected' : '')%>">
+        <a href="<%=root_url()+'service/admin/resque' %>" target="_blank">Resque</a>
+    </li>
   </ul>
 </div>

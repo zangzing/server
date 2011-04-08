@@ -9,6 +9,11 @@ class PagesController < ApplicationController
      end
    end
 
+  def inactive_acct
+
+    
+  end
+
   #
   # sample code for dynamic generation of a vcard
   #

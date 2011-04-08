@@ -1,0 +1,58 @@
+<style type="text/css">
+#inactive-acct-dialog{
+    width:  750px;
+    height: 360px;
+	display: none;
+    border: 0;
+}
+#logo{
+    position:absolute;
+    top: 100px;
+    left: 30px;
+}
+#blurb{
+    text-align: left;
+    color: #6A6A6C;
+    font-weight: 200;
+}
+#ourapologies{
+   position: absolute;
+   top:  30px;
+   left: 290px;
+   font-size: 30pt;
+}
+#weareinbeta{
+   position: absolute;
+   top:  100px;
+   left: 290px;
+   font-size: 14pt;
+   padding-right: 30px;
+}
+#ok{
+  position: absolute;
+  bottom:  30px;
+  right:   40px;
+  width:   80px;
+}
+</style>
+
+<div id="inactive-acct-dialog">
+    <div id="ld-inner">
+            <div id="logo"><img alt="zz-logo" src="/images/zz-logo.png"/></div>
+            <div id="blurb">
+            <div id="ourapologies"><h1>Our Apologies</h1></div>
+            <div id="weareinbeta">
+                <p>Your account has been created but we are experiencing unprecedented demand during our Beta Test period and we
+                 are managing the rollout of new accounts.</p><br>
+                <p>We will send you an email once your account is active and ready so you can start using ZangZing.</p><br>
+                <p>Thanks for understanding.</p><br>
+            </div>
+            </div>  
+            <a id="ok" class="newgreen-button"><span>Ok </span></a>
+    </div>
+</div>
+<script type="text/javascript">
+                     $('#inactive-acct-dialog').zz_dialog({ autoOpen: false });
+                      $('#ok').click( function(){ $('#inactive-acct-dialog').zz_dialog('close').empty().remove(); });
+                     $('#inactive-acct-dialog').zz_dialog('open');
+</script>

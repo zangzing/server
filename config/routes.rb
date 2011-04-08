@@ -133,6 +133,7 @@ Server::Application.routes.draw do
     resources :user_sessions, :only => [:new, :create, :destroy]
     match '/signin'                    => 'user_sessions#new'
     match '/join'                      => 'user_sessions#join'
+    match '/inactive'                  => 'pages#inactive_acct',          :as => :inactive
     match '/signout'                   => 'user_sessions#destroy',        :as => :signout
     match '/activate/:activation_code' => 'activations#create',           :as => :activate
     match '/resend_activation'        => 'activations#resend_activation', :as => :resend_activation
@@ -287,7 +288,7 @@ Server::Application.routes.draw do
         get   'guests'                           => 'guests#index',               :as => :guests
         post  'guests(.:format)'                 => 'guests#create'
         get   'guests/:id'                       => 'guests#show',                :as => :guest
-        put   'guests/:id'                       => 'guests#update'
+        put   'guests/:id/activate'              => 'guests#activate',            :as => :activate_guest
     end
     #Resque: mount the resque server
     mount Resque::Server.new, :at => "/admin/resque"

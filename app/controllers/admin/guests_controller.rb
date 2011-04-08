@@ -20,6 +20,7 @@ class Admin::GuestsController < Admin::AdminController
                 :source => ( params[:guest][:source] ? params[:guest][:source] : 'admin' ) )
     if @new_guest.save
       flash[:notice] = "Guest was added successfully."
+      ZZ::Async::Email.enqueue( :beta_invite, @new_guest.email ) #Send Beta Email
       respond_to do | format |
         format.html{ redirect_to guests_url and return }
         format.json{ render :json => @new_guest, :status => :ok and return }
@@ -33,7 +34,13 @@ class Admin::GuestsController < Admin::AdminController
     end
   end
 
-  def update
+  def activate
+    @guest = Guest.find(params[:id])
+    @guest.user.activate!
+    @guest.user.deliver_welcome!
+    @guest.status = 'Active Account'
+    @guest.save
+    redirect_to guests_url and return
   end
 
 end
