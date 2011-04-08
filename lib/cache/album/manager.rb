@@ -78,13 +78,8 @@ module Cache
         return (!album.deleted_at.nil? && album.deleted_at_changed? == false) ? true : false
       end
 
-      # from a given album determine which caches and state tracking needs to be invalidated
-      def album_modified(album)
-        # first check to make sure the change is something we care about
-        return unless album_change_matters?(album)
-
-        return if previously_deleted?(album)
-
+      # invalidate the tracks for this album
+      def album_invalidate(album)
         user_id = album.user_id
         album_id = album.id
 
@@ -105,6 +100,22 @@ module Cache
 
         # and now invalidate the caches and tracked items
         invalidator.invalidate
+      end
+
+      # from a given album determine which caches and state tracking needs to be invalidated
+      def album_modified(album)
+        # first check to make sure the change is something we care about
+        return unless album_change_matters?(album)
+
+        return if previously_deleted?(album)
+
+        album_invalidate(album)
+      end
+
+      # called when we have been deleted - this will
+      # change when we add safe delete
+      def album_deleted(album)
+        album_invalidate(album)
       end
 
       # a user like has been modified for the given user
