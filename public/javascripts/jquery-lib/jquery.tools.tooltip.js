@@ -239,7 +239,7 @@ $(document).ready(function(){
 
 
 				// set position
-				tip.css({position:'absolute', top: tooltip_hack.mousePageY+15, left: tooltip_hack.mousePageX+15});
+				tip.css({position:'absolute', top: tooltip_hack.mousePageY, left: tooltip_hack.mousePageX+15});
 //				tip.css({position:'absolute', top: pos.top, left: pos.left});
 
 				shown = true;
