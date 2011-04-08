@@ -10,34 +10,17 @@ class UsersController < ApplicationController
       @new_user = User.new
   end
 
-  # see if this is a reserved username and if proper key has been passed
-  # updates the user_info with the outcome, nil for bad, updated name otherwise
-  def check_reserved_username user_info
-    user_name = user_info[:username]
-    checked_user_name = ReservedUserNames.verify_unlock_name(user_name)
-
-    # if we get a nil checked_user_name it is because the name was reserved
-    # and the unlock code was wrong.  We will pass the nil on to force an
-    # error.
-    user_info[:username] = checked_user_name
-
-    return checked_user_name
-  end
-
-  # check the name are add an error if nil
-  def check_for_name_error(checked_user_name, user)
-    if checked_user_name.nil?
-      # A reserved name that didn't have the right key
-      msg = "You attempted to use a reserved user name without the proper key."
-      user.set_single_error(:username, msg)
-    end
-  end
-
   def create
       # check username if in magic format
       user_info = params[:user]
       checked_user_name = check_reserved_username(user_info)
+      if checked_user_name.nil?
+        @new_user = User.new()
+        @new_user.set_single_error(:username, "You attempted to use a reserved user name without the proper key." )
+        render :action => :new and return
+      end
 
+      #Check if user is an automatic user ( a contributor that has never logged in but has sent photos )
       @new_user = User.find_by_email( params[:user][:email])
       if @new_user && @new_user.automatic?
         @new_user.automatic = false
@@ -50,28 +33,61 @@ class UsersController < ApplicationController
       @new_user.reset_perishable_token
   	  @new_user.reset_single_access_token
 
+      # new users are active by default
+      unless SystemSetting[:allow_everyone]
+        @new_user.active = false
+        @guest = Guest.find_by_email( params[:user][:email] )
+        if @guest
+           if SystemSetting[:always_allow_beta_listers] && @guest.beta_lister?
+              @new_user.active = true #always allow when beta-lister is set and user is beta_lister
+           else
+              if SystemSetting[:new_users_allowed] > 0
+                # user allotment available
+                if @guest.share?
+                  if SystemSetting[:allow_shares]
+                    @new_user.active= true
+                    SystemSetting[:new_users_allowed] -= 1;
+                  end
+                else
+                  @new_user.active= true
+                  SystemSetting[:new_users_allowed] -= 1;
+                end
+              end
+           end
+        end
+      end
 
-      # USER ACTIVATION DISABLED Do Not Erase        
-      # Saving without session maintenance to skip
-      # auto-login which can't happen here because
-      # the User has not yet been activated
-      #if @new_user.save_without_session_maintenance
-      #   @new_user.deliver_activation_instructions!
-      #   flash[:notice] = "Your account has been created. Please check your e-mail for your account activation instructions!"
-      #   redirect_to root_url
-         
-      if @new_user.save
+      if @new_user.active
+        #Save active user
+        if @new_user.save
+            if @guest
+               @guest.user_id = @new_user.id
+               @guest.status = 'Active Account'
+               @guest.save
+            end
             flash[:success] = "Welcome to ZangZing!"
             @new_user.deliver_welcome!
             UserSession.create(@new_user, true)
-
             session[:show_welcome_dialog] = true
-            
             redirect_back_or_default @new_user
+            return
+        end
       else
-        check_for_name_error(checked_user_name, @new_user)
-        render :action => :new
+        # Saving without session maintenance to skip
+        # auto-login which can't happen here because
+        # the User has not yet been activated
+        if @new_user.save_without_session_maintenance
+           if @guest
+              @guest.user_id = @new_user.id
+              @guest.status = 'Inactive'
+              @guest.save
+           end
+           session[:client_dialog]=root_url+'static/inactive_dialog.html'
+
+           redirect_to root_url and return
+        end  
       end
+      render :action => :new 
   end
   
   def show
@@ -132,7 +148,7 @@ class UsersController < ApplicationController
     end
   end
 
-
+  
   def update
     @user = current_user
     if @user.update_attributes(params[:user])
@@ -186,5 +202,20 @@ class UsersController < ApplicationController
       redirect_to( root_path ) unless current_user?(@user)
     end
 
-    
+
+
+  # see if this is a reserved username and if proper key has been passed
+  # updates the user_info with the outcome, nil for bad, updated name otherwise
+  def check_reserved_username user_info
+    user_name = user_info[:username]
+    checked_user_name = ReservedUserNames.verify_unlock_name(user_name)
+
+    # if we get a nil checked_user_name it is because the name was reserved
+    # and the unlock code was wrong.  We will pass the nil on to force an
+    # error.
+    user_info[:username] = checked_user_name
+
+    return checked_user_name
+  end
+
 end

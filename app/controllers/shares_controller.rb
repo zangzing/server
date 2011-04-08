@@ -24,8 +24,7 @@ class SharesController < ApplicationController
 
   def create
     # Based on the route used to get here (and thus the params) we know what kind of subject does
-    # the user wants to quack! a
-    #bout.
+    # the user wants to quack! about.
     if  params[:user_id]
         @subject = User.find(params[:user_id])
         @subject_url = user_pretty_url(@subject)
@@ -45,6 +44,7 @@ class SharesController < ApplicationController
     rcp = (  params[:recipients].is_a?(Array) ? params[:recipients] : params[:recipients].split(',') )
     @share = Share.new( :user =>        current_user,
                         :subject =>     @subject,
+                        :subject_type=> @subject_type,
                         :subject_url => @subject_url,
                         :service =>     params[:service],
                         :recipients =>  rcp,

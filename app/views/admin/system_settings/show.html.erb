@@ -1,0 +1,36 @@
+<%= render :partial =>  'admin/admin_screens/adminmenu' %>
+<div id="main-container" >
+  <ul class="viewlist" style="width: 800px;">
+    <li class="item">
+      <div class="header bar">
+        Beta List Settings
+      </div>
+      <div class="content">
+        <table>
+       <%= form_tag( system_settings_path, :method => :put) do -%>
+  <%- @settings.each do |setting| -%>
+      <tr>
+      <td><%= label_tag  setting.name, setting.label %></td>
+      <td>
+      <%- if setting.data_type == 'boolean' %>
+        <%= hidden_field_tag setting.name, "0" %>
+        <%= check_box_tag setting.name, "1", SystemSetting[setting.name] %>
+      <%- elsif setting.type == 'password' -%>
+        <%= password_field_tag setting.name, SystemSetting[setting.name] %>
+      <%- elsif setting.type == 'text' -%>
+        <%= text_area_tag setting.name, SystemSetting[setting.name] %>
+      <%- elsif setting.type == 'list' -%>
+        <%= text_area_tag setting.name, SystemSetting[setting.name].collect{ |a| a.join(",")}.join("\n") %>
+      <%- else -%>
+        <%= text_field_tag setting.name, SystemSetting[setting.name] %>
+      <%- end -%>
+      </td>
+      </tr>  
+  <%- end -%>
+    </table>
+  <%= submit_tag 'Save' %>
+<%- end -%>
+      </div>
+    </li>
+  </ul>
+</div>    

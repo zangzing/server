@@ -47,4 +47,11 @@ agent.update_attribute(:key, 'duGvzn35vc14QvspWUPk')
 agent.update_attribute(:secret, 'coNkUA3exUpNA8OBGhK2hDKBur3OQnAvDZyZfcbd')
 print "ZangZing Agent Client Application token created!\n"
 
+potd = user.client_applications.create( { :name =>         'POTD V1.0 Beta List',
+                                          :url  =>         'http://www.zangzing.com/potd',
+                                          :support_url =>  'http://www.zangzing.com/potd',
+                                          :callback_url => 'http://www.zangzing.com/potd' })
+potd.update_attribute(:key, 'usNJuvEb4eDML5XzCCP1')
+potd.update_attribute(:secret, 'PcHdlhsMKkJ0765rMQ8zsv3Nr8kcqIzR7YQWLjdp')
+print "POTD Client Application token created!\n"
 

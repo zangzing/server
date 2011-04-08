@@ -5,10 +5,6 @@
 #
 
 Server::Application.routes.draw do
-  get "email/index"
-
-  get "email/update"
-
   root :to => 'pages#home'
   get    '/service'            => 'pages#home'
   get    '/signin'             => 'user_sessions#new',  :as => :signin
@@ -29,12 +25,10 @@ Server::Application.routes.draw do
     get    '/health_check'            => 'pages#health_check',      :as => :health_check
 
     #users
-#    get    '/users'                   => 'users#index',             :as => :users
     get    '/users/new'               => 'users#new',               :as => :new_user
     get    '/users/validate_email'    => 'users#validate_email',    :as => :validate_email
     get    '/users/validate_username' => 'users#validate_username', :as => :validate_username
     post   '/users'                   => 'users#create',            :as => :create_user
-    get    '/users/:id'              => 'users#show',              :as => :user
     get    '/users/:id/edit'          => 'users#edit',              :as => :edit_user
     put    '/users/:id'              => 'users#update',            :as => :update_user
     delete '/users/:id'              => 'users#destroy',           :as => :delete_user
@@ -72,7 +66,7 @@ Server::Application.routes.draw do
     get    '/albums/:id/name_album'          => 'albums#name_album',          :as => :name_album
     get    '/albums/:id/preview_album_email' => "albums#preview_album_email", :as => :preview_album_email
     get    '/albums/:id/privacy'             => 'albums#privacy',             :as => :privacy
-    get    '/albums/:id'                     => 'albums#show',                :as => :album
+    #get    '/albums/:id'                     => 'albums#show',                :as => :album
     get    '/albums/:id/edit'                => 'albums#edit',                :as => :edit_album
     get    '/albums/:id/close_batch'         => 'albums#close_batch',         :as => :close_batch
     put    '/albums/:id'                     => 'albums#update',              :as => :update_album
@@ -81,7 +75,6 @@ Server::Application.routes.draw do
     post   'albums/:id/request_access'       => 'albums#request_access',      :as => :request_album_access
 
     #shares
-
     get '/albums/:album_id/shares'          => 'shares#index',      :as => :album_shares
     get '/shares/new'                       => 'shares#new'   # ,        :as => :new_album_share
     get '/shares/newpost'                   => 'shares#newpost' #,    :as => :new_album_postshare
@@ -95,7 +88,7 @@ Server::Application.routes.draw do
 
     #photos
     get    '/albums/:album_id/photos_json'  => 'photos#photos_json',                :as => :album_photos_json
-    get    '/albums/:album_id/photos'       => 'photos#index',                      :as => :album_photos
+    get    '/albums/:album_id/photos'       => 'photos#index',                      :as => :album
     get    '/albums/:album_id/movie'        => 'photos#movie',                      :as => :album_movie
     delete '/photos/:id'                    => 'photos#destroy',                    :as => :destroy_photo
     put    '/photos/:id/upload_fast'        => 'photos#upload_fast',                :as => :upload_photo_fast
@@ -155,6 +148,7 @@ Server::Application.routes.draw do
     resources :user_sessions, :only => [:new, :create, :destroy]
     match '/signin'                    => 'user_sessions#new'
     match '/join'                      => 'user_sessions#join'
+    match '/inactive'                  => 'pages#inactive_acct',          :as => :inactive
     match '/signout'                   => 'user_sessions#destroy',        :as => :signout
     match '/activate/:activation_code' => 'activations#create',           :as => :activate
     match '/resend_activation'        => 'activations#resend_activation', :as => :resend_activation
@@ -304,6 +298,12 @@ Server::Application.routes.draw do
         get   'emails'                           => 'emails#index',               :as => :emails
         put   'emails/:id'                       => 'emails#update',              :as => :email
         get   'users'                            => 'admin_screens#users',        :as => :users
+        get   'settings'                         => 'system_settings#show',       :as => :system_settings
+        put   'settings'                         => 'system_settings#update'
+        get   'guests'                           => 'guests#index',               :as => :guests
+        post  'guests(.:format)'                 => 'guests#create'
+        get   'guests/:id'                       => 'guests#show',                :as => :guest
+        put   'guests/:id/activate'              => 'guests#activate',            :as => :activate_guest
     end
     #Resque: mount the resque server
     mount Resque::Server.new, :at => "/admin/resque"
@@ -321,12 +321,12 @@ Server::Application.routes.draw do
   }
   
 
-  get    '/:user_id'                           =>   'albums#index',               :as => :user_albums
+  get    '/:user_id'                           =>   'albums#index',               :as => :user
   get    '/:user_id/:album_id'                 =>   'photos#index'
   get    '/:user_id/:album_id/photos'          =>   'photos#index'
   get    '/:user_id/:album_id/people'          =>   'people#album_index'
-  get    '/:user_id/:album_id/activities'          =>   'activities#album_index'
-  get    '/:user_id/:album_id/movie'          =>   'photos#movie'
+  get    '/:user_id/:album_id/activities'      =>   'activities#album_index'
+  get    '/:user_id/:album_id/movie'           =>   'photos#movie'
 
 
 

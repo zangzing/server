@@ -149,7 +149,6 @@ class User < ActiveRecord::Base
   end
 
   def deliver_welcome!
-     reset_perishable_token!
      ZZ::Async::Email.enqueue( :welcome, self.id )
   end
 

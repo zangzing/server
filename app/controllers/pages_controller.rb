@@ -5,9 +5,14 @@ class PagesController < ApplicationController
   def home
      @title = "Home"
      if current_user
-       redirect_to user_albums_url( current_user.username )
+       redirect_to user_url( current_user.username )
      end
    end
+
+  def inactive_acct
+
+    
+  end
 
   #
   # sample code for dynamic generation of a vcard

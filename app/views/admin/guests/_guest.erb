@@ -1,0 +1,14 @@
+<tr>
+    <td>  <%= guest.email %> </td>
+    <td>  <%= guest.source %>          </td>
+    <td>  <%if guest.status == 'Inactive'%>
+          <%= button_to "Activate", {:action => 'activate',  :id => guest.id}, :method => :put %>
+          <%else%>
+           <%= guest.status %>
+          <%end%>
+    </td>
+    <% if guest.user_id %>
+        <td>  <%= guest.user.created_at.strftime( '%m/%d/%y' ) %>
+        <td>  <%= link_to h(guest.user.username), guest.user %> </td>
+    <%end%>
+</tr>

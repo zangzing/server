@@ -4,12 +4,5 @@
     <td>  <%= user.albums.count %>          </td>
     <td>  <%= user.photos.count %>          </td>
     <td>  <%= user.shares.count %>          </td>
-    <!--
-	<td>
-      <% if current_user.admin? %>
-		<%= link_to "suspend", user,
-			:method => :suspend, :confirm => "Are you sure?" %>
-	<%end %>
-    </td>
-    -->
+    <td>  <%=( user.active ? "Active" : "Inactive" )%> </td>
 </tr>

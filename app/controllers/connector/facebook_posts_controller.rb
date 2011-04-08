@@ -12,7 +12,7 @@ class Connector::FacebookPostsController < Connector::FacebookController
     response = nil
     SystemTimer.timeout_after(http_timeout) do
       response = facebook_graph.post("me/feed", :message => params[:message],
-          :link => album_photos_url(params[:album_id]) #,
+          :link => album_url(params[:album_id]) #,
           #:picture => 'http://duhast.homeip.net/images/logo-zangzing.png',
           #:name => 'NAme here',
           #:caption => "Smith hails 'unique' Wable legacy",

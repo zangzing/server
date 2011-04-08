@@ -56,7 +56,7 @@ module IntegrationHelper
       if response.body.include?('<div class="fieldWithErrors"><label for="user_session_email">') #Unsuccessful login
         visit users_path, :post, :user => {:name => 'TestUser', :email => TEST_USER_CREDENTIALS[:email], :password => TEST_USER_CREDENTIALS[:password], :password_confirmation => TEST_USER_CREDENTIALS[:password] }
         @@logged_in = response.body.include?('You are being') #redirected to user#show
-        visit user_albums_path(:user_id => 1), :post, :album => {:user_id => 1, :name => 'Test Album'}
+        visit user_path(:user_id => 1), :post, :album => {:user_id => 1, :name => 'Test Album'}
       end
     end
   end
