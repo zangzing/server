@@ -8,20 +8,20 @@ class SystemSettings < ActiveRecord::Migration
       t.timestamps
      end
      add_index :system_settings, :name
-     SystemSetting.create( :name  => :new_users_allowed,
-                           :label => "Allow this many new users (-1 for unlimited)",
-                           :data_type  => 'integer',
-                           :value => -1)
-     SystemSetting.create( :name  => :always_allow_beta_listers,
-                           :label => "Always allow beta-listers to sign up",
+     SystemSetting.create( :name  => :allow_everyone,
+                           :label => 'Allow anyone to sign up (turn off signup control)',
                            :data_type  => 'boolean',
                            :value => 1)
-     SystemSetting.create( :name  => :allow_sharers,
-                           :label => 'Allow "shared" users to sign up',
+     SystemSetting.create( :name  => :new_users_allowed,
+                           :label => "Allow this many new users (when signup control is on)",
+                           :data_type  => 'integer',
+                           :value => 0)
+     SystemSetting.create( :name  => :always_allow_beta_listers,
+                           :label => "Always allow beta-listers to sign up (even if the allowed number of users is 0)",
                            :data_type  => 'boolean',
                            :value => 0)
-     SystemSetting.create( :name  => :allow_everyone,
-                           :label => 'Allow anyone to sign up',
+     SystemSetting.create( :name  => :allow_sharers,
+                           :label => 'Allow "shared" users to sign up. (Only allow potd-beta and admin added users)',
                            :data_type  => 'boolean',
                            :value => 0)
   end

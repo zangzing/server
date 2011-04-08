@@ -147,21 +147,13 @@ class UsersController < ApplicationController
       end
     end
   end
-<<<<<<< HEAD
+
   
-  def destroy
-    user = User.find(params[:id])
-    if user == current_user && user.admin? then
-      flash[:notice] ="Unable to self destroy. Ask other admin to do it"
-=======
-
-
   def update
     @user = current_user
     if @user.update_attributes(params[:user])
       flash[:notice] = "Your Profile Has Been Updated."
       redirect_to user_albums_path(@user)
->>>>>>> 1841ab62f2d8e8bb6d9c725484d6c0298f305401
     else
 #      flash[:error] = @user.errors
       render :action => :edit
