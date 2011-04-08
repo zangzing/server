@@ -29,7 +29,6 @@ Server::Application.routes.draw do
     get    '/users/validate_email'    => 'users#validate_email',    :as => :validate_email
     get    '/users/validate_username' => 'users#validate_username', :as => :validate_username
     post   '/users'                   => 'users#create',            :as => :create_user
-    get    '/users/:id'              => 'users#show',              :as => :user
     get    '/users/:id/edit'          => 'users#edit',              :as => :edit_user
     put    '/users/:id'              => 'users#update',            :as => :update_user
     delete '/users/:id'              => 'users#destroy',           :as => :delete_user
@@ -46,7 +45,7 @@ Server::Application.routes.draw do
     delete '/identities/:id'          => 'identities#destroy',     :as => :delete_identity
 
     #albums
-    get    '/users/:user_id/albums'          => 'albums#index'             #, :as => :user_albums  user albums defined below
+    get    '/users/:user_id/albums'          => 'albums#index'             
     get    '/users/:user_id/albums/new'      => 'albums#new',                 :as => :new_user_album
     post   '/users/:user_id/albums'          => 'albums#create',              :as => :create_user_album
     get    '/albums/:id/name_album'          => 'albums#name_album',          :as => :name_album
@@ -307,7 +306,7 @@ Server::Application.routes.draw do
   }
   
 
-  get    '/:user_id'                           =>   'albums#index',               :as => :user_albums
+  get    '/:user_id'                           =>   'albums#index',               :as => :user
   get    '/:user_id/:album_id'                 =>   'photos#index'
   get    '/:user_id/:album_id/photos'          =>   'photos#index'
   get    '/:user_id/:album_id/people'          =>   'people#album_index'

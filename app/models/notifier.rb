@@ -165,6 +165,24 @@ class Notifier < ActionMailer::Base
     #end
   end
 
+   def beta_invite(to_address,  template_id = nil)
+    
+    @template = Email.find_by_name!( __method__ ).production_template
+    @template = EmailTemplate.find( template_id ) if template_id
+
+    headers @template.sendgrid_category_header
+    ZZ::ZZA.new.track_event("#{@template.category}.send", to_address)
+    binding = binding()
+    mail(   :to       => ( @recipient? @recipient.formatted_email : to_address ),
+            :from     => @template.formatted_from,
+            :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
+            :subject  => ERB.new( @template.subject).result(binding)
+    ) do |format|
+      format.text { render :inline => @template.text_content }
+      format.html { render :inline => @template.html_content }
+    end
+  end
+
   def album_shared(from_user_id,to_address,album_id, message, template_id = nil)
     @user = User.find(from_user_id)
     @album = Album.find(album_id)

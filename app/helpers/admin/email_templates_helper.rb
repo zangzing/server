@@ -40,6 +40,19 @@ module Admin::EmailTemplatesHelper
        Notifier.welcome( recipient.id, template_id)
   end
 
+  def test_photo_shared( template_id )
+      Notifier.photo_shared( sender.id, recipient.email, photo.id, message, template_id)
+  end
+
+  def test_beta_invite( template_id )
+       Notifier.beta_invite( recipient.email, template_id)
+  end
+
+
+  def
+    
+  end
+  end
   private
 
   def recipient
@@ -61,7 +74,6 @@ module Admin::EmailTemplatesHelper
   def photo
     album.photos[ rand( album.photos.count )]
   end
-
 
   def upload_batch
     current_user.upload_batches[ rand( current_user.upload_batches.count) ]

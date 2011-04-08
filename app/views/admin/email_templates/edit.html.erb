@@ -1,54 +1,58 @@
-<h1>Edit Email Template</h1>
+<%= render :partial =>  'admin/admin_screens/adminmenu' %>
+<div id="main-container">
 
-<%=form_for @email_template  do | f |%>
+  <ul class="viewlist">
+    <li class="header bar">Edit Email Template</li>
+    <li class="item">
+      <%=form_for @email_template  do | f |%>
 
 
-    <% if @email_template.errors.any? %>
-        <div id="error_explanation">
-          <h2><%= pluralize(@email_template.errors.count, "error") %>
-            prohibited this email template from being saved:</h2>
-          <p>There were problems with the following fields:</p>
-          <ul>
-            <% @email_template.errors.full_messages.each do |msg| %>
-                <li><%= msg %></li>
-            <% end %>
-          </ul>
-        </div>
-    <% end %>
+          <% if @email_template.errors.any? %>
+              <div id="error_explanation">
+                <h2><%= pluralize(@email_template.errors.count, "error") %>
+                  prohibited this email template from being saved:</h2>
+                <p>There were problems with the following fields:</p>
+                <ul>
+                  <% @email_template.errors.full_messages.each do |msg| %>
+                      <li><%= msg %></li>
+                  <% end %>
+                </ul>
+              </div>
+          <% end %>
 
-    <div>
-      <%= f.label :id%> :<%=@email_template.id%>
-    </div>
+          <div>
+            <%= f.label :id%> :<%=@email_template.id%>
+          </div>
 
-    <div>
-      <%= f.label :mc_campaign_id, "MC Campaign" %>
-      <%= f.select :mc_campaign_id, options_for_select(@campaign_options,f.object.mc_campaign_id), {:prompt => 'Select Campaign' } %>
-    </div>
-    <div>
-      <%= f.label :email_id, "email" %>
-      <%= f.select :email_id, options_for_select(@email_options,f.object.email_id), {:prompt => 'Select Email' } %>
-    </div>
-    <div>
-        <%= f.label :from_name%> : <%=@email_template.from_name%>
-    </div>
-    <div>
-        <%= f.label :from_address%> : <%=@email_template.from_address%>
-    </div>
-    <div>
-        <%= f.label :subject%> : <%=@email_template.subject%>
-    </div>
-    <div>
-        <%= f.label :reply_to%> <%= f.text_field :reply_to %>
-    </div>
-    <div>
-        <%= f.label :category%> <%= f.text_field :category %>
-    </div>
-
-    <div>
-      <div style="float:left;">
-        <%= f.submit "Update"%>
-      </div>
-<%end%>
+          <div>
+            <%= f.label :mc_campaign_id, "MC Campaign" %>
+            <%= f.select :mc_campaign_id, options_for_select(@campaign_options,f.object.mc_campaign_id), {:prompt => 'Select Campaign' } %>
+          </div>
+          <div>
+            <%= f.label :email_id, "email" %>
+            <%= f.select :email_id, options_for_select(@email_options,f.object.email_id), {:prompt => 'Select Email' } %>
+          </div>
+          <div>
+            <%= f.label :from_name%> : <%=@email_template.from_name%>
+          </div>
+          <div>
+            <%= f.label :from_address%> : <%=@email_template.from_address%>
+          </div>
+          <div>
+            <%= f.label :subject%> : <%=@email_template.subject%>
+          </div>
+          <div>
+            <%= f.label :reply_to%> <%= f.text_field :reply_to %>
+          </div>
+          <div>
+            <%= f.label :category%> <%= f.text_field :category %>
+          </div>
+          <div style="float:left;">
+            <%= f.submit "Update"%>
+          </div>
+      <%end%>
+    </li>
+    <li class="item">
       <div style="float:left;">
         <form method="post" action="<%=email_template_url( @email_template )%>" class="button-to">
           <input type="hidden" name="_method" value="delete" />
@@ -58,5 +62,6 @@
       <div style="float:left;">
         <%= button_to "Cancel", email_templates_url, :method => 'get' %>
       </div>
-    </div>
-
+    </li>
+  </ul>
+</div>
