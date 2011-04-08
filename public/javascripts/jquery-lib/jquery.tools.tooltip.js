@@ -10,6 +10,22 @@
  * Since: November 2008
  * Date: @DATE
  */
+
+
+var tooltip_hack = {
+    mousePageX:0,
+    mousePageY:0
+}
+
+$(document).ready(function(){
+    $(window).mousemove(function(e){
+       tooltip_hack.mousePageX = e.pageX;
+       tooltip_hack.mousePageY = e.pageY;
+    });
+});
+
+
+
 (function($) {
 	// static constructs
 	$.tools = $.tools || {version: '1.2.5'};
@@ -220,8 +236,11 @@
 				// onBeforeShow may have altered the configuration
 				pos = getPosition(trigger, tip, conf);
 
+
+
 				// set position
-				tip.css({position:'absolute', top: pos.top, left: pos.left});
+				tip.css({position:'absolute', top: tooltip_hack.mousePageY+15, left: tooltip_hack.mousePageX+15});
+//				tip.css({position:'absolute', top: pos.top, left: pos.left});
 
 				shown = true;
 
