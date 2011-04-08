@@ -64,24 +64,31 @@ module Cache
           results = cache_man.execute(cmd)
 
 
+          # Delete the tracked items - they will be recreated the next time a user tries to
+          # fetch from their cache.  This query deletes all the entries for a given user of the given type that
+          # was affected.  So, if you like 5 albums but only one changes, all the tracks for like albums for you
+          # are dropped because until the cache is rebuilt it doesn't matter what happens to those other albums
+          #
+          # Delete the tracks before the versions are updated.  If done in the opposite order, you could potentially
+          # lose tracks that came in after the version change and miss changes to those tracks.  We do this since
+          # we don't want to have to run this as a transaction due to potentially blocking many callers on a lock.
+          #
+          cmd =   "DELETE c_tracks FROM c_tracks INNER JOIN c_working_track_set "
+          cmd <<  "ON c_tracks.user_id = c_working_track_set.user_id AND c_tracks.track_type = c_working_track_set.track_type "
+          cmd <<  "WHERE c_working_track_set.tx_id = #{tx_id}"
+          results = cache_man.execute(cmd)
+
           # invalidate versions related to album or user changes
           cmd =   "UPDATE c_versions v INNER JOIN c_working_track_set w ON v.user_id = w.user_id AND v.track_type = w.track_type "
           cmd <<  "SET v.ver = 0 WHERE w.tx_id = #{tx_id}"
           results = cache_man.execute(cmd)
 
-          # now delete the tracked items - they will be recreated the next time a user tries to
-          # fetch from their cache.  This query deletes all the entries for a given user of the given type that
-          # was affected.  So, if you like 5 albums but only one changes, all the tracks for like albums for you
-          # are dropped because until the cache is rebuilt it doesn't matter what happens to those other albums
-          #
-          # The following DELETE actually deletes both the items from the tracks table and the working_track_set together
-          cmd =   "DELETE c_working_track_set, c_tracks FROM c_tracks INNER JOIN c_working_track_set "
-          cmd <<  "ON c_tracks.user_id = c_working_track_set.user_id AND c_tracks.track_type = c_working_track_set.track_type "
-          cmd <<  "WHERE c_working_track_set.tx_id = #{tx_id}"
+          # delete the working set
+          cmd =   "DELETE FROM c_working_track_set WHERE tx_id = #{tx_id}"
           results = cache_man.execute(cmd)
 
         rescue Exception => ex
-          cache_man.log.info("Error while invalidating cache: #{ex.message}")
+          cache_man.logger.info("Error while invalidating cache: #{ex.message}")
         ensure
           tracker.clear
         end
@@ -97,16 +104,20 @@ module Cache
       def self.trim(cache_man, older_than)
         begin
           db = cache_man.db
+
+          # remove old tracked items
+          # Remove tracked and then versions in that order since the versions affect
+          # the tracks.  We want to make sure that new changes to the tracks
+          # are not lost.
+          cmd =   "DELETE FROM c_tracks WHERE user_last_touch_at < #{older_than}"
+          results = cache_man.execute(cmd)
+
           # remove old versions
           cmd =   "DELETE FROM c_versions WHERE user_last_touch_at < #{older_than}"
           results = cache_man.execute(cmd)
 
-          # remove old tracked items
-          cmd =   "DELETE FROM c_tracks WHERE user_last_touch_at < #{older_than}"
-          results = cache_man.execute(cmd)
-
         rescue Exception => ex
-          cache_man.log.info("Error while trimming cache: #{ex.message}")
+          cache_man.logger.info("Error while trimming cache: #{ex.message}")
         end
       end
 

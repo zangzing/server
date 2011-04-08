@@ -76,14 +76,14 @@ module Cache
       # back to an object
       def cache_fetch(track_type, ver)
         key = Loader.make_cache_key(self.user.id, track_type, ver)
-        cache_man.log.info("Fetching albums cache key: #{key}")
+        cache_man.logger.info("Fetching albums cache key: #{key}")
         json = cache.read(key)
         z = ZZ::ZZA.new
         if(json.nil?)
-          cache_man.log.info("Cache miss key: #{key}")
+          cache_man.logger.info("Cache miss key: #{key}")
           z.track_event("cache.miss.album", key)
         else
-          cache_man.log.info("Cache hit key: #{key}")
+          cache_man.logger.info("Cache hit key: #{key}")
           z.track_event("cache.hit.album", key)
           return json
         end
@@ -107,7 +107,7 @@ module Cache
           # compress the content once before caching: save memory and save nginx from compressing every response
           json = ActiveSupport::Gzip.compress(json)
 
-          cache_man.log.info "Caching #{key}"
+          cache_man.logger.info "Caching #{key}"
           cache.write(key, json)
 
           ver_values << [user_id, track_type, ver, user_last_touch_at]

@@ -6,31 +6,52 @@ module Cache
 
     # Base class for caching
     class Base
-      attr_accessor :db
+      attr_accessor
 
       # initialize the cache manager, optionally takes the
       # database config options
+      # we don't actually connect at this point
+      # it is done the first time we fetch the db object
+      # or explicitly via new_connection
+      #
       def initialize(config = nil)
         if config.nil?
-          db_config = CacheDatabaseConfig.config.dup
+          @db_config = CacheDatabaseConfig.config.dup
         else
-          db_config = config
+          @db_config = config.dup
         end
-
-        self.db = ActiveRecord::Base.mysql2_connection(db_config)
-
-        result = db.execute("show variables like 'max_allowed_packet'")
-        @safe_max_size = result.first[1].to_i - (32 * 1024)
-
+        @db = nil
       end
 
-      def log
+      def logger
         Rails.logger
       end
 
       # next transaction id within the cache db
       def self.next_tx_id
         BulkIdManager.next_id_for('cache_tx_generator')
+      end
+
+      # get a new database connection with the
+      # options passed in at init time
+      # this is mainly used internally and
+      # after forking to ensure we get new connections
+      #
+      def new_connection
+        @db.disconnect! unless @db.nil?
+
+        @db = ActiveRecord::Base.mysql2_connection(@db_config)
+
+        result = @db.execute("show variables like 'max_allowed_packet'")
+        @safe_max_size = result.first[1].to_i - (32 * 1024)
+
+        return @db
+      end
+
+      # fetch the current or an on demand new instance
+      # of the database connection
+      def db
+        @db ||= new_connection
       end
 
       # wrap the db execute method
