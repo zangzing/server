@@ -41,8 +41,12 @@ Server::Application.routes.draw do
     get    '/users/:id/account'    => 'users#account',    :as => :account
     get    '/users/:id/notifications'    => 'users#notifications',    :as => :notifications
 
+    get    '/users/:id/edit_password'         => 'users#edit_password',              :as => :edit_user_password
+    match    '/users/:id/update_password'       => 'users#update_password',            :as => :update_user_password
+
+
     #account settings
-    get    '/users/:id/account_settings'  => 'account_settings#edit', :as => :edit_account_settings
+#    get    '/users/:id/account_settings'  => 'account_settings#edit', :as => :edit_account_settings
 
 
     #identities
