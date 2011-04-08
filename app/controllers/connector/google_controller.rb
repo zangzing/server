@@ -12,6 +12,18 @@ class Connector::GoogleController < Connector::ConnectorController
 
 protected
 
+  def self.api_from_identity(identity)
+    api = self.create_client
+    unless identity.credentials.blank?
+      api.authsub_token = identity.credentials
+    end
+    api
+  end
+
+  def self.create_client
+    GData::Client::Contacts.new
+  end
+
   def http_timeout
     SERVICE_CALL_TIMEOUT[:google]
   end
@@ -29,7 +41,7 @@ protected
   end
 
   def client
-    @client ||= GData::Client::Contacts.new
+    @client ||= self.class.create_client
   end
 
   def scope

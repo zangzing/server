@@ -7,8 +7,10 @@ class Connector::GoogleSessionsController < Connector::GoogleController
   end
 
   def create
-    upgrade_access_token!(params[:token])
-    service_identity.update_attribute(:credentials, permanent_token)
+    if params[:token]
+      upgrade_access_token!(params[:token])
+      service_identity.update_attribute(:credentials, permanent_token)
+    end
   end
 
   def destroy
