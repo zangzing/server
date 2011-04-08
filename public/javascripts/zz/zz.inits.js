@@ -55,7 +55,7 @@ zz.init = {
                 tip: '.tooltip',
                 effect: 'fade',
                 fadeOutSpeed: 100,
-                predelay: 200,
+                predelay: 100,
 //                position: "right",
                 offset: [$(this).height() * .5, $(this).width() * .75]
             });
