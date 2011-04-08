@@ -134,6 +134,11 @@ zz.init = {
             ZZAt.track('button.help.click');
             //feedback_widget.show();
             Zenbox.show(event);
+
+            //hack: force zendesk dialog to show scrollbars if screen too small
+            $('#zenbox_body').css({height:jQuery(window).height()-100})
+
+
         });
 
         $('#header #sign-in-button').click(function() {

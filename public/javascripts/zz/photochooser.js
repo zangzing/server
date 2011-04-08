@@ -102,58 +102,12 @@ var photochooser = {
                 });
             }
             else {
-                this.asynchGet(url, success_handler, error_handler);
-
+                async_ajax.get(url, success_handler, error_handler);
             }
         },
 
 
-        asynchGet: function(url, success_callback, failure_callback){
-            var makeCall;
 
-            var MAX_CALLS = 3000;
-            var DELAY = 1000;
-            var calls = 0;
-
-
-
-            var success = function(data, status, request){
-                var pollUrl = request.getResponseHeader('x-poll-for-response');
-
-                logger.debug(pollUrl);
-
-                if(pollUrl){
-                    setTimeout(function(){
-                        makeCall(pollUrl);
-                    }, DELAY);
-                }
-                else{
-                    success_callback(data);
-                }
-            };
-
-
-            makeCall = function(callUrl){
-                calls ++;
-
-                logger.debug('making call ' + calls);
-                if(calls > MAX_CALLS){
-                    failure_callback("timeout");
-                }
-                else{
-                    $.ajax({
-                        url: callUrl,
-                        success: success,
-                        error: function(request, error, errorThrown){
-                            logger.debug(error);
-                            failure_callback(request, error, errorThrown);
-                        }
-                    });
-                }
-            };
-
-            makeCall(url);
-        },
 
 
         goBack: function(){

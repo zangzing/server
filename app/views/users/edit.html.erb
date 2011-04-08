@@ -44,7 +44,7 @@
 
           <%= f.label :password %>
           <span id="user_password" class="no-edit-field">
-                <a id="change-password-button" href="#">Click here to change password</a>
+                <a id="change-password-button" href="<%= edit_user_password_url @user%>">Click here to change password</a>
               </span><br/>
 
           <%= f.label :profile_picture %>
@@ -101,18 +101,15 @@
         $(document).ready(function(){
 
 
+            //hide buttons on bottom toolbar
+            $('#footer #new-album-button').hide();
+            $('#footer #like-button').hide();
+            $('#footer #buy-button').hide();
+
             //done button
             $('#done-button').click(function(){
                 $('form.edit_user').submit();
             });
-
-
-
-            //change password
-            $('#change-password-button').click(function(){
-
-                
-            })
 
 
             //profile photo picker
