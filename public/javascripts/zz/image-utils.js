@@ -62,13 +62,13 @@ var image_utils = {
         var image = new Image();
 
         image.onload = function(){
-            if(_.isFunction(success)){
+            if(success){
                 success(image);
             }
         };
 
         image.onerror = function(){
-            if(_.isFunction(error)){
+            if(error){
                 error(image);
             }
         };
