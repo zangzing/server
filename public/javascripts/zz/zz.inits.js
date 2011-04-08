@@ -139,6 +139,7 @@ zz.init = {
             $('#zenbox_body').css({height:jQuery(window).height()-100})
 
 
+
         });
 
         $('#header #sign-in-button').click(function() {
@@ -331,6 +332,10 @@ zz.init = {
             zz.drawer_state = zz.DRAWER_CLOSED;
             $('#header #sign-in-button').removeClass('selected');
 
+        });
+
+        $('form#join-form').submit(function(){
+            ZZAt.track('button.join.click');
         });
 
 
