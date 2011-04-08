@@ -38,9 +38,13 @@ module Cache
       # after forking to ensure we get new connections
       #
       def new_connection
+        old_db_id = @db.nil? ? 0 : @db.object_id
         @db.disconnect! unless @db.nil?
 
         @db = ActiveRecord::Base.mysql2_connection(@db_config)
+
+        new_db_id = @db.object_id
+        logger.info("New cache db connection - old db id was: #{old_db_id} -- new db id is: #{new_db_id}")
 
         result = @db.execute("show variables like 'max_allowed_packet'")
         @safe_max_size = result.first[1].to_i - (32 * 1024)
