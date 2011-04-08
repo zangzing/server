@@ -21,7 +21,6 @@ module Cache
           @db_config = config.dup
         end
         @db = nil
-new_connection
       end
 
       def logger
