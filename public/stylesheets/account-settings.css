@@ -27,9 +27,11 @@
 }
 
 #account-settings .field_with_errors input{
-    border: 1px solid red;
+    border: 2px solid red;
+}
 
-
+#account-settings .field-error-message{
+    color: red;
 }
 
 #account-settings #done-button{
