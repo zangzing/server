@@ -74,69 +74,20 @@ class UsersController < ApplicationController
       end
   end
   
-#  def show
-#      @user = User.find(params[:id])
-#      redirect_to  user_albums_path(@user )
-#  end
-#
-#  def edit
-#    @user = @current_user
-#    render :layout => false
-#  end
-#
-#  def account
-#    @user = @current_user
-#    render :layout => false
-#  end
-#
-#  def notifications
-#    @user = @current_user
-#    render :layout => false
-#  end
-#
-
-  
-#  def index
-#    @title = "All users"
-#    @users = User.paginate(:page =>params[:page])
-#  end
-  
-#  def destroy
-#    user = User.find(params[:id])
-#    if user == current_user && user.admin? then
-#      flash[:notice] ="Unable to self destroy. Ask other admin to do it"
-#    else
-#      user.destroy
-#      flash[:success] ="User Deleted"
-#    end
-#    redirect_to users_path
-#  end
-#
-#  def update
-#    @user = current_user
-#    # check username if in magic format
-#    user_info = params[:user]
-##    new_user_name = user_info[:username]
-##    if new_user_name != @user.username
-##      checked_user_name = check_reserved_username(user_info)
-##    end
-#    if @user.update_attributes(user_info)
-#      flash[:notice] = "Your Profile Has Been Updated."
-#      redirect_to user_albums_path(@user)
-#    else
-##      check_for_name_error(checked_user_name, @user)
-#
-#      redirect_to edit_account_settings_path(@user)
-#    end
-#  end
-
-
+  def show
+      @user = User.find(params[:id])
+      redirect_to user_pretty_url(@user )
+  end
 
 
   def edit
     @user = current_user
   end
 
+
+  def edit_password
+    @user = current_user
+  end
 
 
   def update

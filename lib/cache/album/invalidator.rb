@@ -46,8 +46,6 @@ module Cache
         tx_id = Manager.next_tx_id
         begin
           db = cache_man.db
-          db.begin_db_transaction
-
           # Fetch the set of unique user_ids and track_types that the current trackers affect
           # we put the result into a working set table so we can update our versions to 0 and
           # delete any related tracking rows
@@ -82,9 +80,7 @@ module Cache
           cmd <<  "WHERE c_working_track_set.tx_id = #{tx_id}"
           results = cache_man.execute(cmd)
 
-          db.commit_db_transaction
         rescue Exception => ex
-          db.rollback_db_transaction
           cache_man.log.info("Error while invalidating cache: #{ex.message}")
         ensure
           tracker.clear
@@ -101,8 +97,6 @@ module Cache
       def self.trim(cache_man, older_than)
         begin
           db = cache_man.db
-          db.begin_db_transaction
-
           # remove old versions
           cmd =   "DELETE FROM c_versions WHERE user_last_touch_at < #{older_than}"
           results = cache_man.execute(cmd)
@@ -111,9 +105,7 @@ module Cache
           cmd =   "DELETE FROM c_tracks WHERE user_last_touch_at < #{older_than}"
           results = cache_man.execute(cmd)
 
-          db.commit_db_transaction
         rescue Exception => ex
-          db.rollback_db_transaction
           cache_man.log.info("Error while trimming cache: #{ex.message}")
         end
       end

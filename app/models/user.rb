@@ -8,14 +8,14 @@
 class User < ActiveRecord::Base
   attr_writer      :name
   attr_accessor    :old_password, :reset_password
-  attr_accessible  :email, :name, :first_name, :last_name,  :password, :old_password, :automatic, :profile_photo_id
+  attr_accessible  :email, :name, :first_name, :last_name, :username,  :password, :old_password, :automatic, :profile_photo_id
 
   has_many :albums,              :dependent => :destroy
 
   #things I like, join with likes table
   has_many :likes
-  has_many :liked_albums,         :through => :likes, :class_name => "Album", :source => :subject,  :conditions => "likes.subject_type = 'A' AND albums.completed_batch_count > 0"
-  has_many :liked_public_albums,  :through => :likes, :class_name => "Album", :source => :subject,  :conditions => "likes.subject_type = 'A' AND albums.completed_batch_count > 0 AND albums.privacy = 'public'"
+  has_many :liked_albums,         :through => :likes, :class_name => "Album", :source => :subject,  :conditions => "likes.subject_type = 'A'"
+#  has_many :liked_public_albums,  :through => :likes, :class_name => "Album", :source => :subject,  :conditions => "likes.subject_type = 'A' AND albums.completed_batch_count > 0 AND albums.privacy = 'public'"
   has_many :liked_users,          :through => :likes, :class_name => "User",  :source => :subject,  :conditions => { 'likes.subject_type' => 'U'}
   has_many :liked_photos,         :through => :likes, :class_name => "Photo", :source => :subject,  :conditions => { 'likes.subject_type' => 'P'}
 

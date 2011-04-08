@@ -119,6 +119,9 @@
 
                 });
             }
+            else{
+                initMouseOver();
+            }
 
         },
 

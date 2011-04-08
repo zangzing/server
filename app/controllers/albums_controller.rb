@@ -93,8 +93,6 @@ class AlbumsController < ApplicationController
 
     store_last_home_page @user.id
 
-##############
-##############
     # Note For Jeremy:
     # This section would be used when you build the index page and set up the json links for the 3 types
     # of album data
@@ -111,14 +109,12 @@ class AlbumsController < ApplicationController
     # The url paths returned are based on whether we are viewing ourselves or somebody else (based on the public flag)
     #
     # The paths are relative to the host so start with /service/...
-    my_albums_path = my_albums_path(versions)
-    liked_albums_path = liked_albums_path(versions)
-    liked_users_albums_path = liked_users_albums_path(versions)
-##############
-##############
+    @my_albums_path = my_albums_path(versions)
+    @liked_albums_path = liked_albums_path(versions)
+    @liked_users_albums_path = liked_users_albums_path(versions)
 
 
-    liked_users_public_albums = @user.liked_users_public_albums
+#    liked_users_public_albums = @user.liked_users_public_albums
     # if we are showing the owners albums, show them all as well as any linked albums and any public albums for users that the user likes
     # for a different user than the current logged in user, just show all public albums including any that the users likes and
     # any public ones that get pulled in from users that we like
@@ -130,12 +126,12 @@ class AlbumsController < ApplicationController
     #    -All of joe's user public albums
     #    -All of joe's liked public albums
     #    -All of joe's lked users' public albums
-    if public == false
-      @albums = @user.albums | @user.liked_albums | liked_users_public_albums #show all of current_user's albums
-    else
-      @albums = @user.albums.where("privacy = 'public' AND completed_batch_count > 0") |
-                @user.liked_public_albums | liked_users_public_albums
-    end
+#    if public == false
+#      @albums = @user.albums | @user.liked_albums | liked_users_public_albums #show all of current_user's albums
+#    else
+#      @albums = @user.albums.where("privacy = 'public' AND completed_batch_count > 0") |
+#                @user.liked_public_albums | liked_users_public_albums
+#    end
     #@albums = @albums.sort { |a1, a2| a2.updated_at <=> a1.updated_at }
 
     #Setup badge vars
@@ -250,9 +246,9 @@ class AlbumsController < ApplicationController
     # Album is found when the before filter calls authorized user
     if !@album.destroy
       render :json => @album.errors, :status=>500
+    else
+      render :json => "Album deleted".to_json
     end
-    render :json => "Album deleted".to_json
-
   end
 
   #closes the current batch

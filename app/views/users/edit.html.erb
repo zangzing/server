@@ -18,25 +18,33 @@
 
           <%= f.label :first_name %>
           <%= f.text_field :first_name %>
+          <span class="field-error-message"><%= @user.errors.on(:first_name) unless @user.errors.on(:first_name).nil? %></span>
           <br/>
 
           <%= f.label :last_name %>
           <%= f.text_field :last_name %>
+          <span class="field-error-message"><%= @user.errors.on(:last_name) unless @user.errors.on(:last_name).nil? %></span>
           <br/>
 
           <%= f.label :email %>
           <%= f.text_field :email %>
-
+          <span class="field-error-message"><%= @user.errors.on(:email) unless @user.errors.on(:email).nil? %></span>
           <br/>
 
           <%= f.label :user_name %>
           <span id="user_username" class="no-edit-field">
+                  <span class="blue"><%= @user.username %></span>
+          </span><br/>
+
+
+          <%= f.label :home_page %>
+          <span id="home_page" class="no-edit-field">
                   http://www.zangzing.com/<span class="blue"><%= @user.username %></span>
-              </span><br/>
+          </span><br/>
 
           <%= f.label :password %>
           <span id="user_password" class="no-edit-field">
-                <a href="#">Click here to change password</a>
+                <a id="change-password-button" href="#">Click here to change password</a>
               </span><br/>
 
           <%= f.label :profile_picture %>
@@ -98,6 +106,13 @@
                 $('form.edit_user').submit();
             });
 
+
+
+            //change password
+            $('#change-password-button').click(function(){
+
+                
+            })
 
 
             //profile photo picker
