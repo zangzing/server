@@ -14,8 +14,8 @@ class User < ActiveRecord::Base
 
   #things I like, join with likes table
   has_many :likes
-  has_many :liked_albums,         :through => :likes, :class_name => "Album", :source => :subject,  :conditions => "likes.subject_type = 'A' AND albums.completed_batch_count > 0"
-  has_many :liked_public_albums,  :through => :likes, :class_name => "Album", :source => :subject,  :conditions => "likes.subject_type = 'A' AND albums.completed_batch_count > 0 AND albums.privacy = 'public'"
+  has_many :liked_albums,         :through => :likes, :class_name => "Album", :source => :subject,  :conditions => "likes.subject_type = 'A'"
+#  has_many :liked_public_albums,  :through => :likes, :class_name => "Album", :source => :subject,  :conditions => "likes.subject_type = 'A' AND albums.completed_batch_count > 0 AND albums.privacy = 'public'"
   has_many :liked_users,          :through => :likes, :class_name => "User",  :source => :subject,  :conditions => { 'likes.subject_type' => 'U'}
   has_many :liked_photos,         :through => :likes, :class_name => "Photo", :source => :subject,  :conditions => { 'likes.subject_type' => 'P'}
 
@@ -61,8 +61,8 @@ class User < ActiveRecord::Base
   before_save    :split_name
   before_create  :make_profile_album
   before_create  :build_preferences
-  after_create   :update_acls_with_id
-  after_create   :like_mr_zz
+  after_commit   :update_acls_with_id
+  after_commit   :like_mr_zz
 
   validates_presence_of   :name,      :unless => :automatic?
   validates_presence_of   :username,  :unless => :automatic?

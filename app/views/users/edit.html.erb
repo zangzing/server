@@ -1,104 +1,228 @@
-<style type="text/css">
-
-    #profile-form {
-        float: left;
-        width: 45%;
-        padding: 15px 40px 0 20px;
-
-    }
-
-    #profile-form dl dt{
-        width: 100%;
-        text-align: left;
-        margin-bottom: 5px;
-    }
-
-    #profile-form input[type=text],
-    #profile-form input[type=password]{
-        width: 100%;
-        float: left;
-        margin-bottom: 15px;
-    }
-
-    #firstname{
-        width: 48%;
-        float: left;
-    }
-    #lastname{
-        width: 48%;
-        float:right;
-    }
-    #username-full{
-        padding-left: 10px;
-    }
-    #username-path{
-        color: green;
-    }
-
-    #profile-photo{
-        float: right;
-        padding: 15px 150px 0 0;
-    }
-
-    #profile-photo-label{
-        padding: 0 0 10px 38px;
-    }
-    #profile-photo-button{
-        float: left;
-        padding: 0 55px 5px 0;
-    }
-
-    #profile-photo div{
-        width: 100%;
-        margin-bottom: 15px;
-    }
-    #profile-photo div#profile-photo-picker {
-        float: right;    
-        height: 220px;
-        width:  20px;
-        border: 1px solid #8C8C8C;
-    }
-
-div#profile-photo-picker div.thumbtray-wrapper div.thumbtray-selection{
-    right:  160px;
-    top: 50px;
-}
-
-div#profile-photo div#profile-photo-picker div.thumbtray-wrapper div.thumbtray-preview{    
-    left:  30px;
-}
-
-    .profile-message-box{
-         margin: 0;
-         padding: 10px 0 0 0;
-     }
-
-</style>
-<script type="text/javascript"> <%= (@user.profile_album ? 'zz.album_id=\''+@user.profile_album.id.to_s+'\';' : '')%></script>
-<div class="flash-box profile-message-box"><div class="error-notice" id="error-notice"></div><div class="flash-notice" id="flashes-notice"></div></div>
-<div id="scroll-body">
-  <div id="profile-form">
-    <%= form_for @user, {:id=>"actual_profile_form"} do | f|  %>
-      <dl class="clearfix" >
-        <%= render :partial => 'fields', :locals =>{:f => f, :user => @user }%>
-        <input name="submit" alt="" type="image" style="visibility:hidden;" />        
-      </dl>
-    <% end %>
-  </div>
+<div class="viewlist" id="account-settings">
+  <ul>
+    <li class="item">
+      <div class="header bar">
+        Settings
+        <a class="green-button" id="done-button"><span>Done</span></a>
+      </div>
+    </li>
+  </ul>
+  <ul>
+    <li class="item tab add">
+      <div class="title">
+        <div class='section-title'>Account</div>
+      </div>
+      <% form_for @user do |f| %>
+          <input type="hidden" id="profile-photo-id" name="user[profile_photo_id]" value="<%= @user.profile_photo_id %>">
 
 
-    <div id="profile-photo">
-        <span><div class="form_label" id="profile-photo-label">Profile Photo</div></span>
-            <!--<div id><img src="/images/bg-profile-photo.png"></div>-->
-            <div id="profile-photo-picker"></div>
-        <div id="profile-photo-button"><img src="/images/btn-upload-photo.png"></div>
-    </div>
+          <%= f.label :first_name %>
+          <%= f.text_field :first_name %>
+          <span class="field-error-message"><%= @user.errors.on(:first_name) unless @user.errors.on(:first_name).nil? %></span>
+          <br/>
 
+          <%= f.label :last_name %>
+          <%= f.text_field :last_name %>
+          <span class="field-error-message"><%= @user.errors.on(:last_name) unless @user.errors.on(:last_name).nil? %></span>
+          <br/>
+
+          <%= f.label :email %>
+          <%= f.text_field :email %>
+          <span class="field-error-message"><%= @user.errors.on(:email) unless @user.errors.on(:email).nil? %></span>
+          <br/>
+
+          <%= f.label :user_name %>
+          <span id="user_username" class="no-edit-field">
+                  <span class="blue"><%= @user.username %></span>
+          </span><br/>
+
+
+          <%= f.label :home_page %>
+          <span id="home_page" class="no-edit-field">
+                  http://www.zangzing.com/<span class="blue"><%= @user.username %></span>
+          </span><br/>
+
+          <%= f.label :password %>
+          <span id="user_password" class="no-edit-field">
+                <a id="change-password-button" href="<%= edit_user_password_url @user%>">Click here to change password</a>
+              </span><br/>
+
+          <%= f.label :profile_picture %>
+          <span id="user_profile_picture" class="no-edit-field">
+                <%= render :partial => 'users/profile_photo', :locals => { :user => @user }    %>
+            </span>
+          <span id="profile-photo-picker"></span>
+          <a class="black-button" id="upload-button"><span>Upload</span></a>
+      <% end %>
+
+
+    </li>
+
+    <li class="item tab add">
+      <div class="title">
+        <div class='section-title'>Linked Accounts</div>
+      </div>
+
+      <table id="linked-accounts-table">
+        <%
+           Identity::UI_INFO.keys.each_index do |i|
+               service_key = Identity::UI_INFO.keys[i]
+               account_is_linked = @user.has_valid_identity?(service_key)
+
+               if service_key != :local
+        %>
+                <tr data-service-key="<%= service_key %>">
+                  <td><img class='service-icon' src="<%= image_path("/images/logos/#{service_key}-sq.png") %>">
+                    <span><%= Identity::UI_INFO[service_key][:name] %></span>
+                  </td>
+                  <td>
+                  <span class='account-linked' style="display: <%=account_is_linked ? 'inline-block':'none' %>" >
+                    <img class='account-linked-icon' src="<%= image_path('/images/btn-check-on.png') %>">Linked
+                  </span>
+                  </td>
+                  <td>
+                    <a href="#" class="link-button"   style="display: <%=account_is_linked ? 'none':'inline-block'%>">Link</a>
+                    <a href="#" class="unlink-button" style="display: <%=account_is_linked ? 'inline-block':'none'%>">Unlink</a>
+                  </td>
+                </tr>
+            <% end %>
+        <% end %>
+      </table>
+    </li>
+  </ul>
 </div>
-    <div class="settings-buttons">
-              <a     id="cancel-profile-button" href="javascript:void(0);" class="cancel-button">Cancel</a>
-              <input id="ok-profile-button" type="image" name="submit" src=<%=image_path("btn-wizard-done.png")%>>
-    </div>
+
+<% content_for :page_javascript do %>
+
+    <script>
+
+
+
+        $(document).ready(function(){
+
+
+            //hide buttons on bottom toolbar
+            $('#footer #new-album-button').hide();
+            $('#footer #like-button').hide();
+            $('#footer #buy-button').hide();
+
+            //done button
+            $('#done-button').click(function(){
+                $('form.edit_user').submit();
+            });
+
+
+            //profile photo picker
+            var profile_album_id = '<%= @user.profile_album.id.to_s %>';
+            profile_pictures.init_profile_pictures();
+
+
+            var load_profile_photos = function(callback){
+                $.ajax({
+                    dataType: 'json',
+                    url: zz.path_prefix + '/albums/' + profile_album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
+                    success: function(json){
+                        var selectedIndex=-1;
+                        var currentId = $('#profile-photo-id').val();
+                        var photos = $.map(json, function(element, index){
+                            var id = element.id;
+                            if(id == currentId){
+                                selectedIndex = index;
+                            }
+                            var src = element.thumb_url;
+                            src = agent.checkAddCredentialsToUrl(src);
+                            return {id:id, src:src};
+                        });
+                        callback(photos,selectedIndex);
+                    }
+                });
+            };
+
+            var profile_photo_picker;
+
+            var init_profile_photo_picker = function(){
+                load_profile_photos(function( photos, selectedIndex ){
+                    profile_photo_picker = $("#profile-photo-picker").zz_thumbtray({
+                        photos:photos,
+                        showSelection:false,
+                        selectedIndex:selectedIndex,
+                        onSelectPhoto: function(index, photo){
+                            if(index!==-1){
+                                $('#user_profile_picture img').attr('data-src', photo.src)
+                                $('#profile-photo-id').val(photo.id);
+                            }
+                            profile_pictures.init_profile_pictures();
+
+
+
+                        }
+                    }).data().zz_thumbtray;
+                });
+            };
+
+            var reload_profile_photo_picker = function(){
+                load_profile_photos( function( photos, selectedIndex ){
+                    profile_photo_picker.setPhotos( photos );
+                    profile_photo_picker.setSelectedIndex( selectedIndex );
+                });
+            };
+
+
+            var upload_photos = function(){
+                photochooser.open_in_dialog(profile_album_id, function(){
+                    reload_profile_photo_picker();
+                });
+            };
+
+            init_profile_photo_picker();
+
+            $('#upload-button').click(function(){
+                upload_photos();
+            });
+
+
+
+
+
+            //linked accounts
+            $('#linked-accounts-table tr').each(function(){
+                var service_key = $(this).attr('data-service-key');
+                var link_button = $(this).find('.link-button');
+                var unlink_button = $(this).find('.unlink-button');
+                var account_linked = $(this).find('.account-linked');
+
+                link_button.click(function(){
+                    var url = path_helpers.rails_route('new_identity', service_key);
+
+                    oauthmanager.login( url , function(){
+                        link_button.hide();
+                        unlink_button.show();
+                        account_linked.show();
+                    });
+
+                });
+
+                unlink_button.click(function(){
+                    var url = path_helpers.rails_route('delete_identity', service_key);
+
+                    //todo: should have failure handler here too
+                    $.post(url, function(){
+                        link_button.show();
+                        unlink_button.hide();
+                        account_linked.hide();
+                    });
+                });
+            });
+        });
+
+
+
+
+
+    </script>
+
+<% end %>
+
 
 
 

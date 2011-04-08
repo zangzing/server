@@ -34,6 +34,7 @@ a.back-button{
     padding-right: 8px; /* sliding doors padding */
     text-decoration: none;
     cursor: pointer;
+    text-align:center;
 }
 
 a.back-button:hover{
@@ -88,6 +89,8 @@ a.next-button{
     padding-right: 15px; /* sliding doors padding */
     text-decoration: none;
     cursor: pointer;
+    text-align:center;
+
 }
 
 a.next-button:hover{
@@ -130,6 +133,8 @@ a.green-button{
     color:#ffffff;
     font-size: 13px;
     text-decoration: none;
+    text-align:center;
+
 }
 
 a.green-button:hover{
@@ -171,6 +176,8 @@ a.black-button{
     padding-right: 8px; /* sliding doors padding */
     text-decoration: none;
     cursor: pointer;
+    text-align:center;
+
 }
 
 a.black-button:hover{
@@ -213,6 +220,8 @@ a.green-add-button{
     padding-right: 8px; /* sliding doors padding */
     text-decoration: none;
     cursor: pointer;
+    text-align:center;
+    
 }
 
 a.green-add-button:hover{

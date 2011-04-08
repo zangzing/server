@@ -134,6 +134,12 @@ zz.init = {
             ZZAt.track('button.help.click');
             //feedback_widget.show();
             Zenbox.show(event);
+
+            //hack: force zendesk dialog to show scrollbars if screen too small
+            $('#zenbox_body').css({height:jQuery(window).height()-100})
+
+
+
         });
 
         $('#header #sign-in-button').click(function() {
@@ -198,25 +204,33 @@ zz.init = {
 
             zz.init.disable_buttons();
             $('#footer #add-photos-button').removeClass('disabled').addClass('selected');
-            var template = $('<div class="photochooser-container"></div>');
-            $('<div id="add-photos-dialog"></div>').html( template ).zz_dialog({
-                                   height: $(document).height() - 200,
-                                   width: 895,
-                                   modal: true,
-                                   autoOpen: true,
-                                   open : function(event, ui){ template.zz_photochooser({}) },
-                                   close: function(event, ui){
-                                       $.ajax({ url:      zz.path_prefix + '/albums/' +zz.album_id + '/close_batch',
-                                           complete: function(request, textStatus){
-                                               logger.debug('Batch closed because Add photos dialog was closed. Call to close_batch returned with status= '+textStatus);
-                                           },
-                                           success: function(){
-                                               window.location.reload( false );
-                                           }
-                                       });
-                                   }
-                               });
-            template.height( $(document).height() - 192 );
+
+            photochooser.open_in_dialog(zz.album_id, function(){
+                 window.location.reload( false );
+            });
+
+
+//            var template = $('<div class="photochooser-container"></div>');
+//            $('<div id="add-photos-dialog"></div>').html( template ).zz_dialog({
+//                                   height: $(document).height() - 200,
+//                                   width: 895,
+//                                   modal: true,
+//                                   autoOpen: true,
+//                                   open : function(event, ui){ template.zz_photochooser({}) },
+//                                   close: function(event, ui){
+//                                       $.ajax({ url:      zz.path_prefix + '/albums/' +zz.album_id + '/close_batch',
+//                                           complete: function(request, textStatus){
+//                                               logger.debug('Batch closed because Add photos dialog was closed. Call to close_batch returned with status= '+textStatus);
+//                                           },
+//                                           success: function(){
+//                                               window.location.reload( false );
+//                                           }
+//                                       });
+//                                   }
+//                               });
+//            template.height( $(document).height() - 192 );
+
+
         });
 
         //any signed in user can do this
@@ -233,17 +247,20 @@ zz.init = {
 
             //todo: need better generic way to determine current view and get photo id -- this is duplicated elsewhere
             if (document.location.href.indexOf('/photos/#!') !== -1 || document.location.href.indexOf('/photos#!') !== -1) {
-                //picture view -- share photo
-                var currentPhotoId = null;
-                var hash = jQuery.param.fragment();
-
-                if (hash !== '') {
-                    currentPhotoId = hash.slice(1); //remove the '!'
-                }
-                pages.share.share_in_dialog('photo', currentPhotoId, function(){
-                    zz.init.enable_buttons();
-                    $('#footer #share-button').removeClass('selected');  //todo: centralize this somewhere -- zz.toolbars
-                });
+                $('#footer #share-button').removeClass('selected');  
+                zz.init.enable_buttons();
+                alert("This feature is still under construction.");
+//                //picture view -- share photo
+//                var currentPhotoId = null;
+//                var hash = jQuery.param.fragment();
+//
+//                if (hash !== '') {
+//                    currentPhotoId = hash.slice(1); //remove the '!'
+//                }
+//                pages.share.share_in_dialog('photo', currentPhotoId, function(){
+//                    zz.init.enable_buttons();
+//                    $('#footer #share-button').removeClass('selected');  //todo: centralize this somewhere -- zz.toolbars
+//                });
             }
             else{
                 //album view -- share album
@@ -315,6 +332,10 @@ zz.init = {
             zz.drawer_state = zz.DRAWER_CLOSED;
             $('#header #sign-in-button').removeClass('selected');
 
+        });
+
+        $('form#join-form').submit(function(){
+            ZZAt.track('button.join.click');
         });
 
 
@@ -440,6 +461,12 @@ zz.init = {
                 json = zz.init.filterPhotosForUser(json);
 
 
+                //no movie mode if no photos
+                if(json.length == 0){
+                    $('#footer #play-button').addClass('disabled');
+                }
+
+
                 if (view === 'grid') {   //grid view
 
                     var gridElement = $('<div class="photogrid"></div>');
@@ -478,8 +505,8 @@ zz.init = {
                         currentPhotoId: $.param.fragment(),
                         showButtonBar:true,
                         onClickShare: function(photo_id){
-//                            alert("This feature is still under construction. It will allow you to share an individual photo.");
-                            pages.share.share_in_dialog('photo', photo_id);
+                            alert("This feature is still under construction.");
+//                            pages.share.share_in_dialog('photo', photo_id);
                         }
 
                     }).data().zz_photogrid;
@@ -682,6 +709,11 @@ zz.init = {
 
                 json = zz.init.filterPhotosForUser(json);
 
+
+                //no movie mode if no photos
+                if(json.length == 0){
+                    $('#footer #play-button').addClass('disabled');
+                }
 
                 for (var i = 0; i < json.length; i++) {
                     var photo = json[i];

@@ -35,6 +35,14 @@ Server::Application.routes.draw do
     get    '/users/:id/account'    => 'users#account',    :as => :account
     get    '/users/:id/notifications'    => 'users#notifications',    :as => :notifications
 
+    get    '/users/:id/edit_password'         => 'users#edit_password',              :as => :edit_user_password
+    match    '/users/:id/update_password'       => 'users#update_password',            :as => :update_user_password
+
+
+    #account settings
+#    get    '/users/:id/account_settings'  => 'account_settings#edit', :as => :edit_account_settings
+
+
     #identities
     get    '/users/:id/identities'     => 'identities#index',       :as => :user_identities
     get    '/users/:id/identities/new' => 'identities#new',         :as => :new_user_identity
@@ -45,7 +53,14 @@ Server::Application.routes.draw do
     delete '/identities/:id'          => 'identities#destroy',     :as => :delete_identity
 
     #albums
-    get    '/users/:user_id/albums'          => 'albums#index'             
+    get    '/users/:user_id/my_albums_json'                 => 'albums#my_albums_json',                 :as => :my_albums_json
+    get    '/users/:user_id/my_albums_public_json'          => 'albums#my_albums_public_json',          :as => :my_albums_public_json
+    get    '/users/:user_id/liked_albums_json'              => 'albums#liked_albums_json',              :as => :liked_albums_json
+    get    '/users/:user_id/liked_albums_public_json'       => 'albums#liked_albums_public_json',       :as => :liked_albums_public_json
+    get    '/users/:user_id/liked_users_public_albums_json' => 'albums#liked_users_public_albums_json', :as => :liked_users_public_albums_json
+
+
+    get    '/users/:user_id/albums'          => 'albums#index'             #, :as => :user_albums  user albums defined below
     get    '/users/:user_id/albums/new'      => 'albums#new',                 :as => :new_user_album
     post   '/users/:user_id/albums'          => 'albums#create',              :as => :create_user_album
     get    '/albums/:id/name_album'          => 'albums#name_album',          :as => :name_album

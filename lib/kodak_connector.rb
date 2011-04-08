@@ -1,3 +1,12 @@
+class KodakError < StandardError
+  attr_accessor :code, :reason
+  def initialize(error_code, error_reason)
+    @code = error_code
+    @reason = error_reason
+    super("#{error_code} - #{error_reason}")
+  end
+end
+
 class KodakConnector
   require 'open-uri'
 
@@ -50,6 +59,7 @@ class KodakConnector
     rescue => exception
       raise HttpCallFail
     end
+    raise KodakError.new(response.code, response.message) if response.code != 200
     Hash.from_xml(response.body).values.first
   end
 

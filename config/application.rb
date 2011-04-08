@@ -7,7 +7,7 @@ require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
 
-#require 'active_record/connection_adapters/mysql2_adapter'
+require 'active_record/connection_adapters/mysql2_adapter'
 require 'config/initializers/zangzing_config'
 
 # If you have a Gemfile, require the gems listed there, including any gems
@@ -18,7 +18,7 @@ module Server
   class Application < Rails::Application
 
     # set the default primary key type to be a big int
-    #ActiveRecord::ConnectionAdapters::MysqlAdapter::NATIVE_DATABASE_TYPES[:primary_key] = "BIGINT UNSIGNED DEFAULT NULL auto_increment PRIMARY KEY"
+    ActiveRecord::ConnectionAdapters::Mysql2Adapter::NATIVE_DATABASE_TYPES[:primary_key] = "BIGINT UNSIGNED DEFAULT NULL auto_increment PRIMARY KEY"
 
     # pull in all files within lib
     #GWS - pulling this out for now since it has conflicts in deployment EY
@@ -30,7 +30,7 @@ module Server
     
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters << :password << :password_confirmation
-    
+     
     # Custom directories with classes and modules you want to be autoloadable.
     config.autoload_paths += %W(#{config.root}/lib)
     

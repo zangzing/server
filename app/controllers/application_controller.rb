@@ -228,7 +228,7 @@ class ApplicationController < ActionController::Base
       flash[:error] = "Only Album admins can perform this operation"
       response.headers['X-Errors'] = flash[:error]
       if request.xhr?
-        render :status => 401
+        render :json => '', :status => 401
       else
         render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
       end
@@ -281,12 +281,14 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def self.album_pretty_path (username, friendly_id)
+    return "/#{username}/#{friendly_id}"
+  end
+
+
   def album_pretty_url (album, friendly_id = nil)
-    if friendly_id
-      "#{user_url( album.user )}/#{friendly_id}"
-    else
-      "#{user_url( album.user )}/#{album.friendly_id}"
-    end
+    friendly_id = friendly_id.nil? ? album.friendly_id : friendly_id
+    return "http://#{request.host_with_port}#{ApplicationController.album_pretty_path(album.user.username, friendly_id)}"
   end
 
   def photo_pretty_url(photo)

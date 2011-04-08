@@ -21,7 +21,7 @@ class Connector::FacebookFoldersController < Connector::FacebookController
     else
       album_list = []
       SystemTimer.timeout_after(http_timeout) do
-        album_list = facebook_graph.get(target)
+        album_list = facebook_graph.get(target, :limit => 1000)
       end
       album_list.reject! { |a| a[:type] == 'profile' } #Remove 'Profile Pictures'
       unless album_list.empty?
@@ -58,7 +58,7 @@ class Connector::FacebookFoldersController < Connector::FacebookController
   def import
     photos_list = []
     SystemTimer.timeout_after(http_timeout) do
-      photos_list = facebook_graph.get("#{params[:fb_album_id]}/photos")
+      photos_list = facebook_graph.get("#{params[:fb_album_id]}/photos", :limit => 1000)
     end
     photos = []
     current_batch = UploadBatch.get_current_and_touch( current_user.id, params[:album_id] )

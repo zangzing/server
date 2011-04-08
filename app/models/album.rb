@@ -48,10 +48,10 @@ class Album < ActiveRecord::Base
     @@_model_name ||= ActiveModel::Name.new(Album)
   end
 
-  # We have been saved so call the album cache manager
+  # We have been committed so call the album cache manager
   # to let it invalidate caches if needed
   def notify_cache_manager
-    AlbumCacheManager.shared.album_modified(self)
+    Cache::Album::Manager.shared.album_modified(self)
     true
   end
 
@@ -61,6 +61,14 @@ class Album < ActiveRecord::Base
     now = Time.now
     Album.update(album_id, :photos_last_updated_at => now, :updated_at => now)
   end
+
+  # detect the state of the safe delete
+  # if the deleted_at time has been set
+  # we've been safe deleted
+  def is_safe_deleted?
+    return !self.deleted_at.nil?
+  end
+
 
   # populate the covers for the given photos
   # we don't use .includes because the photos passed
@@ -73,18 +81,20 @@ class Album < ActiveRecord::Base
       cover_ids << cover_photo_id unless cover_photo_id.nil?
     end
 
-    # now perform the bulk query
-    coverPhotos = Photo.where(:id => cover_ids)
+    if cover_ids.empty? == false
+      # now perform the bulk query
+      coverPhotos = Photo.where(:id => cover_ids)
 
-    # ok, now map these by id to cover
-    coverMap = {}
-    coverPhotos.each do |cover|
-      coverMap[cover.id.to_s] = cover
-    end
+      # ok, now map these by id to cover
+      coverMap = {}
+      coverPhotos.each do |cover|
+        coverMap[cover.id.to_s] = cover
+      end
 
-    # and finally associate them back to each album
-    albums.each do |album|
-      album.set_cached_cover(coverMap[album.cover_photo_id.to_s])
+      # and finally associate them back to each album
+      albums.each do |album|
+        album.set_cached_cover(coverMap[album.cover_photo_id.to_s])
+      end
     end
   end
 

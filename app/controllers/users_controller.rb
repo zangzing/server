@@ -90,56 +90,86 @@ class UsersController < ApplicationController
       render :action => :new 
   end
   
-  
-  def edit 
-    @user = @current_user    
-    render :layout => false
+  def show
+      @user = User.find(params[:id])
+      redirect_to user_pretty_url(@user )
   end
 
-  def account
-    @user = @current_user
-    render :layout => false
-  end
 
-  def notifications
-    @user = @current_user
-    render :layout => false
-  end
-  
-  def update
+  def edit
     @user = current_user
-    # check username if in magic format
-    user_info = params[:user]
-    new_user_name = user_info[:username]
-    if new_user_name != @user.username
-      checked_user_name = check_reserved_username(user_info)
+  end
+
+
+  # table-less model class so that we can use form helpers
+  class ChangePassword < ActiveRecord::Base
+    class_inheritable_accessor :columns
+
+    def self.columns()
+      @columns ||= [];
     end
-    if @user.update_attributes(user_info)
-      flash[:notice] = "Your Profile Has Been Updated."
-      respond_to do |format|
-          format.html  { redirect_to @user   }
-          format.json { render :json => "", :status => 200 and return }
-       end
+
+    def self.column(name, sql_type = nil, default = nil, null = true)
+      columns << ActiveRecord::ConnectionAdapters::Column.new(name.to_s, default, sql_type.to_s, null)
+    end
+
+    column :old_password, :string
+    column :password, :string
+    column :confirm_password, :string
+  end
+
+
+
+  def edit_password
+    @user = current_user
+    @change_password = ChangePassword.new
+  end
+
+  def update_password
+    @user = current_user
+
+    @change_password = ChangePassword.new
+
+    if params[:users_controller_change_password][:password] != params[:users_controller_change_password][:confirm_password]
+
+      @change_password.errors[:password] = "Passwords don't match"
+      @change_password.errors[:confirm_password] = "Passwords don't match"
+
+      render :action => :edit_password
     else
-      check_for_name_error(checked_user_name, @user)
-      respond_to do |format|
-          format.html  { render :action => :edit   }
-          format.json  { errors_to_headers( @user )
-                         render :json => "", :status => 400 and return}
-       end
+      @user.old_password = params[:users_controller_change_password][:old_password]
+      @user.password = params[:users_controller_change_password][:password]
+      if !@user.save
+        @change_password.errors.replace(@user.errors)
+        render :action => :edit_password
+      else
+        redirect_to user_pretty_url(@user)
+      end
     end
   end
+<<<<<<< HEAD
   
   def destroy
     user = User.find(params[:id])
     if user == current_user && user.admin? then
       flash[:notice] ="Unable to self destroy. Ask other admin to do it"
+=======
+
+
+  def update
+    @user = current_user
+    if @user.update_attributes(params[:user])
+      flash[:notice] = "Your Profile Has Been Updated."
+      redirect_to user_albums_path(@user)
+>>>>>>> 1841ab62f2d8e8bb6d9c725484d6c0298f305401
     else
-      user.destroy
-      flash[:success] ="User Deleted"
+#      flash[:error] = @user.errors
+      render :action => :edit
     end
-    redirect_to users_path
   end
+
+
+
 
   def validate_email
     if params[:user] && params[:user][:email]

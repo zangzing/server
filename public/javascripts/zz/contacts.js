@@ -77,21 +77,28 @@ zzcontacts ={
         }
 
         var oauth_succeeded = false;
+
         var import_service = function(){
+
             oauth_succeeded = true;
-            $.ajax({
-                dataType: 'json',
-                url: zz.path_prefix + '/'+service+'/contacts/import',
-                success: function(json){
-                    zzcontacts.data[service]= {};
-                    zzcontacts.data[service].contacts    = json;
-                    zzcontacts.data[service].last_import = 'A moment ago'; //+new Date();
-                    success();
-                },
-                error: function(jqXHR, textStatus){
+
+            var url = zz.path_prefix + '/'+service+'/contacts/import';
+            var on_success = function(json){
+                zzcontacts.data[service]= {};
+                zzcontacts.data[service].contacts = json;
+                zzcontacts.data[service].last_import = 'A moment ago';
+                success();
+            };
+
+            var on_failure = function(jqXHR, textStatus){
                     failure( 'import', textStatus);
-                }
-            });
+
+            };
+
+
+            async_ajax.get(url, on_success, on_failure);
+
+
         };
 
         //if not already authorized, authorize

@@ -6,20 +6,17 @@ require 'benchmark'
 require 'system_timer'
 
 class CacheDB
-  ALBUMS_I_LIKE = 1
+  attr_accessor :db_conn
 
   def self.initialize
     db_config = DatabaseConfig.config.dup
-    db_config[:database]= "server_development"
     ActiveRecord::Base.establish_connection(db_config)
 
-    db_config[:database] = db_config[:cache_database]
+    cache_db_config = CacheDatabaseConfig.config.dup
+    @@db = ActiveRecord::Base.mysql2_connection(cache_db_config)
 
-    @@db = Mysql2::Client.new(db_config)
-    @@db.query_options.merge!(:symbolize_keys => true)
-
-    result = db.query("show variables like 'max_allowed_packet'")
-    @@safe_max_size = result.first[:Value].to_i - (16 * 1024)
+    result = db.execute("show variables like 'max_allowed_packet'")
+    @@safe_max_size = result.first[1].to_i - (16 * 1024)
   end
 
   def self.db
@@ -29,6 +26,35 @@ class CacheDB
   def self.safe_max_size
     @@safe_max_size
   end
+
+  def self.fast_insert(base_cmd, end_cmd, rows)
+    cmd = base_cmd.dup
+    cur_rows = 0
+    rows.each do |values|
+      cmd << "," if cur_rows > 0
+      cur_rows += 1
+      vcmd = '('
+      first = true
+      values.each do |v|
+        vcmd << ',' unless first
+        first = false
+        vcmd << v.to_s
+      end
+      vcmd << ')'
+      cmd << vcmd
+      if cmd.length > CacheDB.safe_max_size
+        # getting close to the limit so execute this one now
+        cmd << end_cmd
+        result = db.execute(cmd)
+        cmd = base_cmd.dup
+        cur_rows = 0
+      end
+    end
+    if cur_rows > 0
+      cmd << end_cmd
+      result = db.execute(cmd)
+    end
+  end
 end
 
 CacheDB.initialize
@@ -36,7 +62,7 @@ CacheDB.initialize
 class Track < ActiveRecord::Base
 end
 
-describe "Cache manager Test" do
+describe "Low level DB performance Test" do
 
   db = CacheDB.db
 
@@ -53,30 +79,17 @@ describe "Cache manager Test" do
     Benchmark.bm(25) do |x|
       x.report('inserts') do
         album_id = 1
-        type = CacheDB::ALBUMS_I_LIKE
+        type = 1
         user_last_touch_at = Time.now.to_i
-        base_cmd = "INSERT INTO tracks(user_id, tracked_id, track_type, user_last_touch_at) VALUES "
-        end_cmd = " ON DUPLICATE KEY UPDATE user_last_touch_at = VALUES(user_last_touch_at)"
-        cmd = base_cmd.dup
-        rows = 5000
-        cur_rows = 0
-        (1..rows).each do |i|
-          cmd << "," if cur_rows > 0
-          cur_rows += 1
-          cmd << "(#{user_id}, #{album_id}, #{type}, #{user_last_touch_at})"
-          if cmd.length > CacheDB.safe_max_size
-            # getting close to the limit so execute this one now
-            cmd << end_cmd
-            result = db.query(cmd)
-            cmd = base_cmd.dup
-            cur_rows = 0
-          end
+        rows = []
+        (1..20000).each do |i|
+          row = [user_id, album_id, type, user_last_touch_at]
+          rows << row
           album_id += 1
         end
-        if cur_rows > 0
-          cmd << end_cmd
-          result = db.query(cmd)
-        end
+        base_cmd = "INSERT INTO c_tracks(user_id, tracked_id, track_type, user_last_touch_at) VALUES "
+        end_cmd = " ON DUPLICATE KEY UPDATE user_last_touch_at = VALUES(user_last_touch_at)"
+        CacheDB.fast_insert(base_cmd, end_cmd, rows)
       end
     end
 
@@ -84,13 +97,16 @@ describe "Cache manager Test" do
     Benchmark.bm(25) do |x|
       x.report('select') do
         1.times do |i|
-          cmd = "SELECT user_id, tracked_id, track_type FROM tracks " +
-                 "WHERE user_id IS NOT NULL"
-          results = db.query(cmd)
+          cmd = "SELECT user_id, tracked_id, track_type FROM c_tracks "
+                 #"WHERE user_id IS NOT NULL"
+          results = db.execute(cmd)
           results.each do |result|
-            u = result[:user_id]
-            a = result[:tracked_id]
-            t = result[:track_type]
+            u = result[0]
+            a = result[1]
+            t = result[2]
+#           u = result[:user_id]
+#            a = result[:tracked_id]
+#            t = result[:track_type]
             cnt += 1
           end
         end
@@ -112,7 +128,7 @@ describe "Cache manager Test" do
     Benchmark.bm(25) do |x|
       x.report('AR inserts') do
         album_id = 1
-        type = CacheDB::ALBUMS_I_LIKE
+        type = 1
         user_last_touch_at = Time.now.to_i
         1000.times do |i|
           album_id += 1

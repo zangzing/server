@@ -16,7 +16,13 @@ namespace :build do
        Rake::Task['db:drop'].invoke
        Rake::Task['db:create'].invoke
        Rake::Task['db:migrate'].invoke
-       Rake::Task['db:seed'].invoke
+       # for some reason chaining these together ends up
+       # causing the db:seed to fail (maybe something is not
+       # being committed in the migrate until you exit
+       # anyways... running the seed as a separate instance
+       # after the above seems to fix the problem.
+       system("rake db:seed")
+       #Rake::Task['db:seed'].invoke
   end  
 
   desc "Works only in EY CruiseControl Build machine. Builds custom database.yml for testing"

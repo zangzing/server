@@ -24,5 +24,12 @@ module ActionController
       response.cache_control[:extras] = options.map {|k,v| "#{k}=#{v}"}
     end
 
+    # Sets a HTTP 1.1 Cache-Control header of "no-cache" so no caching should occur by the browser or
+    # intermediate caches (like caching proxy servers).
+    def expires_now #:doc:
+      response.headers['X-Accel-Expires'] = '0'
+      response.cache_control.replace(:no_cache => true)
+    end
+
   end
 end

@@ -32,8 +32,9 @@ run "rm -rf #{release_path}/public/stylesheets"
 
 # Symlink Resque Files
 
-# remove and symlink resque.yml with proper location of redis server - the shared path
+# remove and symlink the various shared config files - the shared path
 # file was set up by custom chef script
+run "ln -nfs #{shared_path}/config/unicorn.rb #{release_path}/config/unicorn.rb"
 run "ln -nfs #{shared_path}/config/resque.yml #{release_path}/config/resque.yml"
 run "ln -nfs #{shared_path}/config/redis.yml #{release_path}/config/redis.yml"
 run "ln -nfs #{shared_path}/config/memcached.yml #{release_path}/config/memcached.yml"
