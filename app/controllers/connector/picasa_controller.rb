@@ -1,9 +1,8 @@
 class Connector::PicasaController < Connector::GoogleController
 
-protected
 
-  def client
-    @picasa_client ||= GData::Client::Photos.new
+  def self.create_client
+    GData::Client::Photos.new
   end
 
 protected
