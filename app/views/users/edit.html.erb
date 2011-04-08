@@ -101,6 +101,11 @@
         $(document).ready(function(){
 
 
+            //hide buttons on bottom toolbar
+            $('#footer #new-album-button').hide();
+            $('#footer #like-button').hide();
+            $('#footer #buy-button').hide();
+
             //done button
             $('#done-button').click(function(){
                 $('form.edit_user').submit();
