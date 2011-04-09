@@ -1,5 +1,5 @@
 var async_ajax = {
-      MAX_CALLS: 350,
+      MAX_CALLS: 35,
       DELAY: 1000,
 
       get: function(url, success_callback, failure_callback){
@@ -25,10 +25,10 @@ var async_ajax = {
                     success_callback(data);
                 }
             };
-
+calls
 
             makeCall = function(callUrl){
-                calls ++;
+                 ++;
 
                 logger.debug('making call ' + calls);
                 if(calls > self.MAX_CALLS){
