@@ -1,6 +1,5 @@
 class Connector::ShutterflySessionsController < Connector::ShutterflyController
   skip_before_filter :service_login_required, :only => [:new, :create]
-  skip_before_filter :require_user, :only => [:new, :create]
 
   def new
     url = sf_api.generate_authorization_url(:callback_url => create_shutterfly_session_url)

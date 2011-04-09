@@ -1,7 +1,6 @@
 class Connector::InstagramSessionsController < Connector::InstagramController
 
   skip_before_filter :service_login_required, :only => [:new, :create]
-  #skip_before_filter :require_user, :only => [:new, :create]
 
   def new
     url = Instagram.authorize_url(:redirect_uri => create_instagram_session_url)

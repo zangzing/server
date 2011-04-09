@@ -1,6 +1,5 @@
 class Connector::PhotobucketSessionsController < Connector::PhotobucketController
   skip_before_filter :service_login_required, :only => [:new, :create]
-  skip_before_filter :require_user, :only => [:new, :create]
 
   def new
     request_token = photobucket_api.consumer.get_request_token(:oauth_callback => create_photobucket_session_url)

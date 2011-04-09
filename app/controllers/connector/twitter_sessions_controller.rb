@@ -1,5 +1,4 @@
 class Connector::TwitterSessionsController < Connector::TwitterController
-  skip_before_filter :require_user, :only => [:new, :create]
 
   def new
     request_token = twitter_api.consumer.request_token(:oauth_callback => create_twitter_session_url)
