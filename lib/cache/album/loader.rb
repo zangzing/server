@@ -288,12 +288,13 @@ module Cache
         update_caches
       end
 
-      # pre load all the albums for the current state (public/private) from db into
-      # cache if needed
+      # Pre load all the albums for the current state (public/private) from db into
+      # cache only if we have no version info for that item.  When the caller returns to
+      # get the actual data if it's not in the cache we fetch it for them at that time.
       def pre_fetch_albums
-        load_my_albums()
-        load_liked_albums()
-        load_liked_users_albums()
+        load_my_albums() if current_versions.my_albums == 0
+        load_liked_albums() if current_versions.liked_albums == 0
+        load_liked_users_albums() if current_versions.liked_users_albums == 0
 
         # now update the cache state in the cache db
         update_cache_state(true)
