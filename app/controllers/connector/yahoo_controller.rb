@@ -1,5 +1,5 @@
 class Connector::YahooController < Connector::ConnectorController
-  before_filter :service_login_required,:except => [:destroy]
+  before_filter :service_login_required
 
   def initialize(*args)
     super(*args)
