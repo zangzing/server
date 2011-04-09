@@ -24,8 +24,9 @@ zz.toolbars = {
                 if(confirm("Are you sure you want to cancel creating this album?")){
                     albums.deleteAlbum(zz.album_id);
                     $('#drawer .body').fadeOut('fast', function(){window.location.reload()});
-                      zz.close_drawer(400);
-                     
+                    zz.close_drawer(400);
+                    ZZAt.track('album.cancel.click');
+
                 }
         });
     },

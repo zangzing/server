@@ -11,6 +11,10 @@ pages.album_add_photos_tab = {
         var template = $('<div class="photochooser-container"></div>');
         container.html(template);
         template.zz_photochooser({album_id: zz.album_id});
+
+        ZZAt.track('album.add_photos_tab.view');
+        
+
         callback();
     },
 
@@ -23,6 +27,9 @@ pages.album_name_tab = {
     original_album_name: '',
     init: function(container, callback){
         var url = zz.path_prefix + '/albums/' + zz.album_id + '/name_album';
+
+        ZZAt.track('album.name_tab.view');
+
 
         var album_email_call_lock = 0;
 
@@ -138,6 +145,8 @@ pages.album_name_tab = {
 
 pages.edit_album_tab = {
     init: function(container, callback){
+        ZZAt.track('album.edit_tab.view');
+
         $.ajax({
             dataType: 'json',
             url: zz.path_prefix + '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss,
@@ -243,6 +252,10 @@ pages.edit_album_tab = {
 
 pages.album_privacy_tab = {
     init: function(container,callback){
+
+        ZZAt.track('album.privacy_tab.view');
+
+
         var url = zz.path_prefix + '/albums/' + zz.album_id + '/privacy';
         container.load(url, function(){
 
@@ -285,6 +298,9 @@ pages.share = {
     // subject_type when constructing routes
 
     init: function(container, callback, subject_type, subject_id){
+
+        ZZAt.track('album.share_tab.view');
+
 
         if(_.isUndefined(subject_type)){
             subject_type = 'album';
@@ -503,6 +519,9 @@ pages.contributors = {
     url :'',
 
     init: function(container, callback){
+
+        ZZAt.track('album.contributors_tab.view');
+
         this.url = zz.path_prefix + '/albums/'+zz.album_id+'/contributors';
         pages.contributors.show_list(container, callback);
     },
@@ -906,24 +925,51 @@ pages.contributors = {
 //};
 
 pages.no_agent = {
-    url: '/static/connect_messages/no_agent.html',
+    NO_AGENT_URL: '/static/connect_messages/no_agent.html',
+    OSX_10_5_URL: '/static/connect_messages/no_agent_unsupported_os.html',
 
-    filechooser: function( when_ready ){
-        $('.zangzing-downloader #download-btn').click( function(){
-           pages.no_agent.download();
+    get_message_url: function(){
+        if(navigator.appVersion.indexOf('Mac OS X 10_5') != -1){
+            ZZAt.track('agentdownload.requested.osx10_5');
+            return this.OSX_10_5_URL;
+        }
+        else{
+            ZZAt.track('agentdownload.requested');
+            return this.NO_AGENT_URL;
+        }
+    },
+
+    keep_polling: function(){
+        return $('.zangzing-downloader').length > 0;
+    },
+
+    filechooser: function(container, when_ready ){
+
+        container.load(pages.no_agent.get_message_url(), function(){
+
+            //hack: download screen is in the body, but we want
+            //it to show up at the top of the chooser, under the hdeader
+            //so, move it up 70px, the height of the header
+
+            $('.zangzing-downloader').css({top:'-70px'});
+
+
+
+            $('.zangzing-downloader #download-btn').click( function(){
+               pages.no_agent.download();
+            });
+
+            pages.no_agent.keep_polling();
+            pages.no_agent.poll_agent( function(){
+                if( $.isFunction(  when_ready )) when_ready();
+            });
+
         });
-
-        pages.no_agent.keep_polling = true;
-        pages.no_agent.poll_agent( function(){
-            if( $.isFunction(  when_ready )) when_ready();
-        });
-
-	   ZZAt.track('agentdownload.requested');
     },
 
     dialog: function( onClose ){
 
-         $('<div></div>', { id: 'no-agent-dialog'}).load(pages.no_agent.url, function(){
+         $('<div></div>', { id: 'no-agent-dialog'}).load(pages.no_agent.get_message_url(), function(){
              $('.zangzing-downloader #download-btn').click( function(){
                  pages.no_agent.download();
              }) ;
@@ -932,17 +978,16 @@ pages.no_agent = {
                     width: 910,
                     height: 510,
                     close:  function(){
-                               if( $.isFunction( onClose )) onClose();
-                               pages.no_agent.keep_polling = false;
+                        if(onClose){
+                            onClose();
+                        }
                     }
              });
-             pages.no_agent.keep_polling = true;
              pages.no_agent.poll_agent( function(){
                  $( '#no-agent-dialog' ).zz_dialog('close');
              });
         });
 
-	    ZZAt.track('agentdownload.requested'); 
     },
 
     poll_agent: function( when_ready ){
@@ -950,13 +995,13 @@ pages.no_agent = {
               if( agentAvailable ){
                     $('.zangzing-downloader #download-btn').attr('disabled', 'disabled');
                     $('.zangzing-downloader .step.four .graphic').addClass('ready');
-                    if( $.isFunction( when_ready ) ){
+                    if(  when_ready ){
                         setTimeout( when_ready, 2000 );
                     }
 				    ZZAt.track('agentdownload.ready');
               }
               else{
-                  if( pages.no_agent.keep_polling ){
+                  if( pages.no_agent.keep_polling() ){
                     setTimeout( function(){
                         pages.no_agent.poll_agent( when_ready )
                     }, 1000);

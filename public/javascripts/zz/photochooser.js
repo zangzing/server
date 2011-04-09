@@ -47,12 +47,12 @@ var photochooser = {
 
 
             var template = $('<div class="photochooser">' +
+                             '   <div class="photochooser-body"></div>' +
                              '   <div class="photochooser-header">' +
                              '       <a class="back-button"><span>Back</span></a>' +
                              '       <h3>Folder Name</h3>' +
                              '       <h4>Choose pictures from folders on your computer or other photo sites</h4>' +
                              '   </div>' +
-                             '   <div class="photochooser-body"></div>' +
                              '   <div class="photochooser-footer">' +
                              '     <div class="added-pictures-tray"></div>' +
                              '     <div class="added-pictures-tab"></div>' +
@@ -71,6 +71,10 @@ var photochooser = {
 
 
             self.backButtonElement.click(function(){
+                //hack: in case these were hidden by the download agent dialog...
+                $('.photochooser-header h3').show();
+                $('.photochooser-header h4').show();
+
                 self.goBack();
             });
 
@@ -354,16 +358,17 @@ var photochooser = {
 
             var file_system_on_error = function(error){
                 if(typeof(error.status) === 'undefined'){
-                    self.bodyElement.hide().load(pages.no_agent.url, function(){
-                        pages.no_agent.filechooser(function(){
-                            self.openFolder(self.stack.pop());
-                            self.bodyElement.css('top', '70px');
-                             $('.photochooser-header').show();
-                        });
-                        $('.photochooser-header').css('display','none');
-                        self.bodyElement.css( 'top', '0px');
-                        self.bodyElement.fadeIn('fast');
+
+                    $('.photochooser-header h3').hide();
+                    $('.photochooser-header h4').hide();
+
+                    pages.no_agent.filechooser(self.bodyElement, function(){
+                        self.openFolder(self.stack.pop());
+                        $('.photochooser-header h3').show();
+                        $('.photochooser-header h4').show();
                     });
+
+                    self.bodyElement.fadeIn('fast');
                 }
                 else if(error.status === 401){
                     self.bodyElement.hide().load('/static/connect_messages/wrong_agent_account.html', function(){
