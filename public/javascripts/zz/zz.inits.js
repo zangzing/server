@@ -279,7 +279,10 @@ zz.init = {
         $('#footer #edit-album-button').click(function() {
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
+
             }
+            ZZAt.track('button.editalbum.click');
+
 
             zz.init.disable_buttons();
             $('#footer #edit-album-button').removeClass('disabled').addClass('selected');

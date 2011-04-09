@@ -11,6 +11,10 @@ pages.album_add_photos_tab = {
         var template = $('<div class="photochooser-container"></div>');
         container.html(template);
         template.zz_photochooser({album_id: zz.album_id});
+
+        ZZAt.track('album.add_photos_tab.view');
+        
+
         callback();
     },
 
@@ -23,6 +27,9 @@ pages.album_name_tab = {
     original_album_name: '',
     init: function(container, callback){
         var url = zz.path_prefix + '/albums/' + zz.album_id + '/name_album';
+
+        ZZAt.track('album.name_tab.view');
+
 
         var album_email_call_lock = 0;
 
@@ -138,6 +145,8 @@ pages.album_name_tab = {
 
 pages.edit_album_tab = {
     init: function(container, callback){
+        ZZAt.track('album.edit_tab.view');
+
         $.ajax({
             dataType: 'json',
             url: zz.path_prefix + '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss,
@@ -243,6 +252,10 @@ pages.edit_album_tab = {
 
 pages.album_privacy_tab = {
     init: function(container,callback){
+
+        ZZAt.track('album.privacy_tab.view');
+
+
         var url = zz.path_prefix + '/albums/' + zz.album_id + '/privacy';
         container.load(url, function(){
 
@@ -285,6 +298,9 @@ pages.share = {
     // subject_type when constructing routes
 
     init: function(container, callback, subject_type, subject_id){
+
+        ZZAt.track('album.share_tab.view');
+
 
         if(_.isUndefined(subject_type)){
             subject_type = 'album';
@@ -503,6 +519,9 @@ pages.contributors = {
     url :'',
 
     init: function(container, callback){
+
+        ZZAt.track('album.contributors_tab.view');
+
         this.url = zz.path_prefix + '/albums/'+zz.album_id+'/contributors';
         pages.contributors.show_list(container, callback);
     },
