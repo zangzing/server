@@ -1,6 +1,6 @@
 class Connector::GoogleController < Connector::ConnectorController
   require 'gdata'
-  before_filter :service_login_required, :except => [:destroy]
+  before_filter :service_login_required, :except => [:destroy, :new, :create]
 
   NS = {
       "a"  => "http://www.w3.org/2005/Atom",
