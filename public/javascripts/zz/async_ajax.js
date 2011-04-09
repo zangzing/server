@@ -25,10 +25,10 @@ var async_ajax = {
                     success_callback(data);
                 }
             };
-calls
+
 
             makeCall = function(callUrl){
-                 ++;
+                calls ++;
 
                 logger.debug('making call ' + calls);
                 if(calls > self.MAX_CALLS){
