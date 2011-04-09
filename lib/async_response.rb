@@ -1,4 +1,6 @@
 class AsyncResponse
+  RESPONSE_EXPIRES_IN = 5.minutes
+
   class << self
 
     def new_response_id
@@ -9,7 +11,7 @@ class AsyncResponse
 
     def store_response(response_id, response)
       #stores response in memcache
-      Rails.cache.write(response_id, response)
+      Rails.cache.write(response_id, response, :expires_in => RESPONSE_EXPIRES_IN)
     end
 
     def get_response(response_id)
@@ -28,7 +30,7 @@ class AsyncResponse
         end,
         :message => exception.message
       }
-      Rails.cache.write(response_id, info.to_json)
+      Rails.cache.write(response_id, info.to_json, :expires_in => RESPONSE_EXPIRES_IN)
     end
 
   end

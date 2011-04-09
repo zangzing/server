@@ -108,7 +108,7 @@ module Cache
           json = ActiveSupport::Gzip.compress(json)
 
           cache_man.logger.info "Caching #{key}"
-          cache.write(key, json)
+          cache.write(key, json, :expires_in => Manager::CACHE_MAX_INACTIVITY)
 
           ver_values << [user_id, track_type, ver, user_last_touch_at]
 
