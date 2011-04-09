@@ -66,8 +66,8 @@ Server::Application.routes.draw do
     get    '/albums/:id/name_album'          => 'albums#name_album',          :as => :name_album
     get    '/albums/:id/preview_album_email' => "albums#preview_album_email", :as => :preview_album_email
     get    '/albums/:id/privacy'             => 'albums#privacy',             :as => :privacy
-    #get    '/albums/:id'                     => 'albums#show',                :as => :album
-    get    '/albums/:id/edit'                => 'albums#edit',                :as => :edit_album
+    get    '/albums/:id'                     => 'albums#show',                :as => :album
+#    get    '/albums/:id/edit'                => 'albums#edit',                :as => :edit_album
     get    '/albums/:id/close_batch'         => 'albums#close_batch',         :as => :close_batch
     put    '/albums/:id'                     => 'albums#update',              :as => :update_album
     delete '/albums/:id'                     => 'albums#destroy',             :as => :delete_album
