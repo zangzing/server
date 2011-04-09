@@ -1,5 +1,6 @@
 class Connector::PicasaSessionsController < Connector::PicasaController
   skip_before_filter :service_login_required, :only => [:new, :create]
+  skip_before_filter :require_user, :only => [:new, :create]
 
   def new
     redirect_to GData::Auth::AuthSub.get_url(create_picasa_session_url, scope)
