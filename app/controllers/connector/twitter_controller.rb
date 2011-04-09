@@ -1,7 +1,7 @@
 class Connector::TwitterController < Connector::ConnectorController
   require 'twitter_connector'
 
-  before_filter :service_login_required
+  before_filter :service_login_required, :except=>[:destroy]
 
   def initialize(*args)
     super(*args)
