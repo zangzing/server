@@ -70,7 +70,7 @@ module Cache
       # " ON DUPLICATE KEY UPDATE user_last_touch_at = VALUES(user_last_touch_at)"
       # This call will build a batch insert from your rows which is expected to
       # be an array of arrays with the innermost array holding a row of data.  The
-      # order of the values msut match the order specified in the base command
+      # order of the values must match the order specified in the base command
       # string passed in.  In the example above the order would be 0: user_id,
       # 1: tracked_id, 2: track_type
       #
@@ -95,7 +95,7 @@ module Cache
           if cmd.length > self.safe_max_db_size
             # over the safe limit so execute this one now
             cmd << end_cmd
-            result = db.execute(cmd)
+            result = execute(cmd)
             cmd = base_cmd.dup
             cur_rows = 0
           end
