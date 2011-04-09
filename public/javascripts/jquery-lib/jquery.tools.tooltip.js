@@ -18,9 +18,9 @@ var tooltip_hack = {
 }
 
 $(document).ready(function(){
-    $(window).mousemove(function(e){
-       tooltip_hack.mousePageX = e.pageX;
-       tooltip_hack.mousePageY = e.pageY;
+    $(document).mousemove(function(e){
+      tooltip_hack.mousePageX= e.pageX;
+      tooltip_hack.mousePageY= e.pageY;
     });
 });
 
