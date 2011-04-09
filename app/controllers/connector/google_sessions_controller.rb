@@ -1,5 +1,4 @@
 class Connector::GoogleSessionsController < Connector::GoogleController
-  skip_before_filter :service_login_required, :only => [:new, :create]
   skip_before_filter :require_user, :only => [:new, :create]
 
   def new
@@ -14,7 +13,6 @@ class Connector::GoogleSessionsController < Connector::GoogleController
   end
 
   def destroy
-    contacts_client.auth_handler.revoke
     service_identity.update_attribute(:credentials, nil)
   end
 
