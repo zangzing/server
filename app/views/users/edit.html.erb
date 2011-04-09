@@ -12,7 +12,7 @@
       <div class="title">
         <div class='section-title'>Account</div>
       </div>
-      <% form_for @user do |f| %>
+       <% form_for @user, :url => update_user_path(@user), :html => { :method => :put} do |f| %>
           <input type="hidden" id="profile-photo-id" name="user[profile_photo_id]" value="<%= @user.profile_photo_id %>">
 
 

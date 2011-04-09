@@ -25,23 +25,17 @@ Server::Application.routes.draw do
     get    '/health_check'            => 'pages#health_check',      :as => :health_check
 
     #users
-    get    '/users/new'               => 'users#new',               :as => :new_user
-    get    '/users/validate_email'    => 'users#validate_email',    :as => :validate_email
-    get    '/users/validate_username' => 'users#validate_username', :as => :validate_username
-    post   '/users'                   => 'users#create',            :as => :create_user
-    get    '/users/:id/edit'          => 'users#edit',              :as => :edit_user
-    put    '/users/:id'              => 'users#update',            :as => :update_user
-    delete '/users/:id'              => 'users#destroy',           :as => :delete_user
-    get    '/users/:id/account'    => 'users#account',    :as => :account
-    get    '/users/:id/notifications'    => 'users#notifications',    :as => :notifications
-
-    get    '/users/:id/edit_password'         => 'users#edit_password',              :as => :edit_user_password
-    match    '/users/:id/update_password'       => 'users#update_password',            :as => :update_user_password
-
-
-    #account settings
-#    get    '/users/:id/account_settings'  => 'account_settings#edit', :as => :edit_account_settings
-
+    get    '/users/new'                 => 'users#new',               :as => :new_user
+    get    '/users/validate_email'      => 'users#validate_email',    :as => :validate_email
+    get    '/users/validate_username'   => 'users#validate_username', :as => :validate_username
+    post   '/users'                     => 'users#create',            :as => :create_user
+    get    '/users/:id/edit'            => 'users#edit',              :as => :edit_user
+    put    '/users/:id'                 => 'users#update',            :as => :update_user
+    delete '/users/:id'                 => 'users#destroy',           :as => :delete_user
+    get    '/users/:id/account'         => 'users#account',           :as => :account
+    get    '/users/:id/notifications'   => 'users#notifications',     :as => :notifications
+    get    '/users/:id/edit_password'   => 'users#edit_password',     :as => :edit_user_password
+    match  '/users/:id/update_password' => 'users#update_password',   :as => :update_user_password
 
     #identities
     get    '/users/:id/identities'     => 'identities#index',       :as => :user_identities

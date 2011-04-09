@@ -153,7 +153,7 @@ class UsersController < ApplicationController
     @user = current_user
     if @user.update_attributes(params[:user])
       flash[:notice] = "Your Profile Has Been Updated."
-      redirect_to user_albums_path(@user)
+      redirect_to user_path(@user)
     else
 #      flash[:error] = @user.errors
       render :action => :edit

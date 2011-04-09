@@ -84,7 +84,7 @@ class SystemRightsACL < BaseACL
     end
     role = role_name_to_role(role_name)
     if role.nil?
-      puts "Roll named #{role_name} does not exist."
+      puts "Role named #{role_name} does not exist."
       return
     end
     acl.add_user(user.id, role)
