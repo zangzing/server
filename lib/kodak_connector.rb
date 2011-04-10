@@ -59,7 +59,7 @@ class KodakConnector
     rescue => exception
       raise HttpCallFail
     end
-    raise KodakError.new(response.code, response.message) if response.code != 200
+    raise KodakError.new(response.code, response.message) if response.code != '200'
     Hash.from_xml(response.body).values.first
   end
 
