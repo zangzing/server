@@ -35,6 +35,9 @@
 
     <%= include_stylesheets :common %>
 
+<% if Rails.env.development? && browser.ie? %>
+    <script type="text/javascript" src="https://getfirebug.com/firebug-lite.js"></script>
+<% end %>
 
 
 
