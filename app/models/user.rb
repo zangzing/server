@@ -221,7 +221,7 @@ class User < ActiveRecord::Base
 
   private
   def old_password_valid?
-    if (require_password? || old_password.length > 0) && !new_record? && !valid_password?(old_password)
+    if (require_password? || (old_password && old_password.length > 0) ) && !new_record? && !valid_password?(old_password)
       errors.add(:old_password, "You old password does not match our records")
       false
     else

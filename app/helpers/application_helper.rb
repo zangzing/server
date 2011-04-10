@@ -18,8 +18,6 @@ module ApplicationHelper
       return "mailto:#{email}?subject=#{subject}"
    end
 
-
-
    def compatible_browser?
 
     if browser.safari? && browser.full_version.to_f >= 4
@@ -52,9 +50,6 @@ module ApplicationHelper
      end
    end
 
-
-
-
    #note: this is duplicated in agent.js
    def add_credentials_to_agent_url(url)
       if url.starts_with? 'http://localhost:30777'
@@ -67,5 +62,28 @@ module ApplicationHelper
       end
 
       return url;
-  end
+   end
+
+   def self.album_pretty_path (username, friendly_id)
+     return "/#{username}/#{friendly_id}"
+   end
+
+
+   def album_pretty_url (album, friendly_id = nil)
+     friendly_id = friendly_id.nil? ? album.friendly_id : friendly_id
+     return "http://#{request.host_with_port}#{ApplicationController.album_pretty_path(album.user.username, friendly_id)}"
+   end
+
+   def photo_pretty_url(photo)
+     "#{user_url( photo.album.user)}/#{photo.album.friendly_id}/photos/#!#{photo.id}"
+   end
+
+   def photo_url(photo)
+      album_photos(photo.album) + "/#!{photo.id}"
+   end
+
+   def user_pretty_url(user)
+     user_url( user )
+   end
+
 end
