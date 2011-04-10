@@ -226,19 +226,23 @@ module Cache
           # the visible ones into the cache
           albums = user.liked_albums
 
+          user_id = user.id
           # now build the list of ones we should put in the cache
+          # don't put in ones that haven't been completed or belong to us
+          # if someone is fetching our public view, only show public albums
           visible_albums = []
           albums.each do |album|
-            next unless album.completed_batch_count > 0
+            next if (album.completed_batch_count == 0) || (user_id == album.user_id)
             visible_albums << album if public == false || (album.privacy == 'public')
           end
 
           # add all the albums to the tracker even
           # if we can't see it currently so we have
           # a chance to see it change
-          user_id = user.id
+          # don't track our own albums that we like
+          # since they should not show up
           albums.each do |album|
-            add_tracked_album(album.id, track_type)
+            add_tracked_album(album.id, track_type) unless album.user_id == user_id
           end
           # and add a user_id tracker for ourselves so we know if we like or unlike an album
           add_tracked_album_like_membership(user_id, track_type)
