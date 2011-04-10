@@ -36,6 +36,8 @@ class ApplicationController < ActionController::Base
   layout  proc{ |c| c.request.xhr? ? false : 'main' }
 
   private
+  include PrettyUrlHelper
+
 
   # If its an AJAX request, move the flashes to a custom header for JS handling on the client
   # removes the flash from the session because it was a json cal so we do not want it there
@@ -222,6 +224,7 @@ class ApplicationController < ActionController::Base
 
   #
   # To be run as a before_filter
+
   # Assumes @album is the album in question and current_user is the user we are evaluating
   def require_album_admin_role
     unless  @album.admin?( current_user.id ) || current_user.support_hero?

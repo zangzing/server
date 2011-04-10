@@ -1,4 +1,5 @@
 class Notifier < ActionMailer::Base
+  add_template_helper(PrettyUrlHelper)
 
   if Rails.env == 'production'
     default :from => '"ZangZing Communications" <do-not-reply@zangzing.com>'

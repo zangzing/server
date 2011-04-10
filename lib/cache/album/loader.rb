@@ -341,6 +341,7 @@ module Cache
         TrackTypes::LIKED_USERS_ALBUMS_PUBLIC
       end
 
+      include PrettyUrlHelper
       # this method returns the album as a map which allows us to perform
       # very fast json conversion on it
       def albums_to_hash(albums)
@@ -384,7 +385,7 @@ module Cache
               :name => album_name,
               :user_name => album_user_name,
               :user_id => album_user_id,
-              :album_path => ApplicationController.album_pretty_path(album_user_name, album_friendly_id),
+              :album_path => album_pretty_path(album_user_name, album_friendly_id),
               :profile_album => album.type == 'ProfileAlbum',
               :c_url => album_cover.nil? ? nil : album_cover.thumb_url,
               :updated_at => album_updated_at
