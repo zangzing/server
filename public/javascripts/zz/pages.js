@@ -70,6 +70,11 @@ pages.album_name_tab = {
                 }, 1000);
             });
 
+            //dont submut form on <enter>
+            $('form.edit_album').submit(function(){
+                return false;
+            });
+
             //setup album cover picker
             $.ajax({
                 dataType: 'json',
