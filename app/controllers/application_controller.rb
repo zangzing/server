@@ -36,6 +36,8 @@ class ApplicationController < ActionController::Base
   layout  proc{ |c| c.request.xhr? ? false : 'main' }
 
   private
+  include PrettyUrlHelper
+
 
   # If its an AJAX request, move the flashes to a custom header for JS handling on the client
   # removes the flash from the session because it was a json cal so we do not want it there
@@ -222,6 +224,7 @@ class ApplicationController < ActionController::Base
 
   #
   # To be run as a before_filter
+
   # Assumes @album is the album in question and current_user is the user we are evaluating
   def require_album_admin_role
     unless  @album.admin?( current_user.id ) || current_user.support_hero?
@@ -279,28 +282,6 @@ class ApplicationController < ActionController::Base
       end
       return false
     end
-  end
-
-  def self.album_pretty_path (username, friendly_id)
-    return "/#{username}/#{friendly_id}"
-  end
-
-
-  def album_pretty_url (album, friendly_id = nil)
-    friendly_id = friendly_id.nil? ? album.friendly_id : friendly_id
-    return "http://#{request.host_with_port}#{ApplicationController.album_pretty_path(album.user.username, friendly_id)}"
-  end
-
-  def photo_pretty_url(photo)
-    "#{user_url( photo.album.user)}/#{photo.album.friendly_id}/photos/#!#{photo.id}"
-  end
-
-  def photo_url(photo)
-     album_photos(photo.album) + "/#!{photo.id}"
-  end
-
-  def user_pretty_url(user)
-    user_url( user )
   end
 
 end

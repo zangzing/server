@@ -1,4 +1,5 @@
 class Notifier < ActionMailer::Base
+  add_template_helper(PrettyUrlHelper)
 
   if Rails.env == 'production'
     default :from => '"ZangZing Communications" <do-not-reply@zangzing.com>'
@@ -153,16 +154,16 @@ class Notifier < ActionMailer::Base
 
     headers @template.sendgrid_category_header
     ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
-    # TODO: photo_shared email
-    #binding = binding()
-    #mail(   :to       => ( @recipient? @recipient.formatted_email : to_address ),
-    #        :from     => @template.formatted_from,
-    #        :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
-    #        :subject  => ERB.new( @template.subject).result(binding)
-    #) do |format|
-    #  format.text { render :inline => @template.text_content }
-    #  format.html { render :inline => @template.html_content }
-    #end
+
+    binding = binding()
+    mail(   :to       => ( @recipient? @recipient.formatted_email : to_address ),
+            :from     => @template.formatted_from,
+            :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
+            :subject  => ERB.new( @template.subject).result(binding)
+    ) do |format|
+      format.text { render :inline => @template.text_content }
+      format.html { render :inline => @template.html_content }
+    end
   end
 
    def beta_invite(to_address,  template_id = nil)

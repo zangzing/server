@@ -100,51 +100,17 @@ class UsersController < ApplicationController
     @user = current_user
   end
 
-
-  # table-less model class so that we can use form helpers
-  class ChangePassword < ActiveRecord::Base
-    class_inheritable_accessor :columns
-
-    def self.columns()
-      @columns ||= [];
-    end
-
-    def self.column(name, sql_type = nil, default = nil, null = true)
-      columns << ActiveRecord::ConnectionAdapters::Column.new(name.to_s, default, sql_type.to_s, null)
-    end
-
-    column :old_password, :string
-    column :password, :string
-    column :confirm_password, :string
-  end
-
-
-
   def edit_password
     @user = current_user
-    @change_password = ChangePassword.new
   end
 
   def update_password
     @user = current_user
-
-    @change_password = ChangePassword.new
-
-    if params[:users_controller_change_password][:password] != params[:users_controller_change_password][:confirm_password]
-
-      @change_password.errors[:password] = "Passwords don't match"
-      @change_password.errors[:confirm_password] = "Passwords don't match"
-
-      render :action => :edit_password
+    if @user.update_attributes(params[:user])
+      flash[:notice] = "Your Password Has Been Changed."
+       redirect_to user_pretty_url(@user)
     else
-      @user.old_password = params[:users_controller_change_password][:old_password]
-      @user.password = params[:users_controller_change_password][:password]
-      if !@user.save
-        @change_password.errors.replace(@user.errors)
-        render :action => :edit_password
-      else
-        redirect_to user_pretty_url(@user)
-      end
+       render :action => :edit_password
     end
   end
 

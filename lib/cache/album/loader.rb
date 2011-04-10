@@ -108,7 +108,7 @@ module Cache
           json = ActiveSupport::Gzip.compress(json)
 
           cache_man.logger.info "Caching #{key}"
-          cache.write(key, json)
+          cache.write(key, json, :expires_in => Manager::CACHE_MAX_INACTIVITY)
 
           ver_values << [user_id, track_type, ver, user_last_touch_at]
 
@@ -288,12 +288,13 @@ module Cache
         update_caches
       end
 
-      # pre load all the albums for the current state (public/private) from db into
-      # cache if needed
+      # Pre load all the albums for the current state (public/private) from db into
+      # cache only if we have no version info for that item.  When the caller returns to
+      # get the actual data if it's not in the cache we fetch it for them at that time.
       def pre_fetch_albums
-        load_my_albums()
-        load_liked_albums()
-        load_liked_users_albums()
+        load_my_albums() if current_versions.my_albums == 0
+        load_liked_albums() if current_versions.liked_albums == 0
+        load_liked_users_albums() if current_versions.liked_users_albums == 0
 
         # now update the cache state in the cache db
         update_cache_state(true)
@@ -340,6 +341,7 @@ module Cache
         TrackTypes::LIKED_USERS_ALBUMS_PUBLIC
       end
 
+      include PrettyUrlHelper
       # this method returns the album as a map which allows us to perform
       # very fast json conversion on it
       def albums_to_hash(albums)
@@ -383,7 +385,7 @@ module Cache
               :name => album_name,
               :user_name => album_user_name,
               :user_id => album_user_id,
-              :album_path => ApplicationController.album_pretty_path(album_user_name, album_friendly_id),
+              :album_path => album_pretty_path(album_user_name, album_friendly_id),
               :profile_album => album.type == 'ProfileAlbum',
               :c_url => album_cover.nil? ? nil : album_cover.thumb_url,
               :updated_at => album_updated_at

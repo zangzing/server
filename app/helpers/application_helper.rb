@@ -18,8 +18,6 @@ module ApplicationHelper
       return "mailto:#{email}?subject=#{subject}"
    end
 
-
-
    def compatible_browser?
 
     if browser.safari? && browser.full_version.to_f >= 4
@@ -52,9 +50,6 @@ module ApplicationHelper
      end
    end
 
-
-
-
    #note: this is duplicated in agent.js
    def add_credentials_to_agent_url(url)
       if url.starts_with? 'http://localhost:30777'
@@ -67,5 +62,7 @@ module ApplicationHelper
       end
 
       return url;
-  end
+   end
+
+
 end

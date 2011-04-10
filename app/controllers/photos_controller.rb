@@ -201,7 +201,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
         #compress the content once before caching: save memory and save nginx from compressing every response
         json = ActiveSupport::Gzip.compress(json)
 
-        Rails.cache.write(cache_key, json)
+        Rails.cache.write(cache_key, json, :expires_in => 72.hours)
         logger.debug 'caching photos_json'
       else
         logger.debug 'using cached photos_json'
