@@ -8,7 +8,8 @@
 class User < ActiveRecord::Base
   attr_writer      :name
   attr_accessor    :old_password, :reset_password
-  attr_accessible  :email, :name, :first_name, :last_name, :username,  :password, :old_password, :automatic, :profile_photo_id
+  attr_accessible  :email, :name, :first_name, :last_name, :username,  :password, :password_confirmation,
+                   :old_password, :automatic, :profile_photo_id
 
   has_many :albums,              :dependent => :destroy
 
@@ -52,7 +53,8 @@ class User < ActiveRecord::Base
     
   # This delegates all authentication details to authlogic
   acts_as_authentic do |c|
-    c.require_password_confirmation = false
+    c.validates_confirmation_of_password_field_options = {:if => :require_password?, :on => :update }
+    c.validates_length_of_password_confirmation_field_options = {:minimum => 0, :if => :require_password?, :on => :update}
     c.login_field = :email
     c.validate_login_field = false
     c.disable_perishable_token_maintenance=true;
@@ -62,7 +64,7 @@ class User < ActiveRecord::Base
   before_create  :make_profile_album
   before_create  :build_preferences
   after_commit   :update_acls_with_id, :on => :create
-  after_commit   :like_mr_zz,          :on => :create
+  after_commit   :like_mr_zz, :on => :create
 
   validates_presence_of   :name,      :unless => :automatic?
   validates_presence_of   :username,  :unless => :automatic?
@@ -71,6 +73,7 @@ class User < ActiveRecord::Base
   validates_presence_of   :email
   validates_length_of     :password, :within => 6..40, :if => :require_password?, :message => "must be between 6 and 40 characters long"
   validate :old_password_valid?, :on => :update, :unless => :reset_password
+
 
   has_friendly_id :username
 
@@ -200,14 +203,14 @@ class User < ActiveRecord::Base
     end
     profile_album.save
   end
-  
+
   def profile_photo_id
-      create_profile_album if profile_album.nil?  
+      create_profile_album if profile_album.nil?
       @profile_photo_id ||= profile_album.profile_photo_id
   end
 
   def profile_photo_url
-      create_profile_album if profile_album.nil?    
+      create_profile_album if profile_album.nil?
       @profile_photo_url ||= profile_album.profile_photo_url
   end
 
@@ -225,6 +228,7 @@ class User < ActiveRecord::Base
       true
     end
   end
+
 
   def require_password?
     # only require password if password field changed in an update or if resseting your password
