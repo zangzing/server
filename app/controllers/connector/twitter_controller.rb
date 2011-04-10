@@ -1,8 +1,6 @@
 class Connector::TwitterController < Connector::ConnectorController
   require 'twitter_connector'
 
-  before_filter :service_login_required
-
   def initialize(*args)
     super(*args)
     TwitterConnector.api_key = TWITTER_API_KEYS[:app_key]

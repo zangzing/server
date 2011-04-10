@@ -108,7 +108,7 @@ module Cache
           json = ActiveSupport::Gzip.compress(json)
 
           cache_man.logger.info "Caching #{key}"
-          cache.write(key, json)
+          cache.write(key, json, :expires_in => Manager::CACHE_MAX_INACTIVITY)
 
           ver_values << [user_id, track_type, ver, user_last_touch_at]
 
@@ -288,12 +288,13 @@ module Cache
         update_caches
       end
 
-      # pre load all the albums for the current state (public/private) from db into
-      # cache if needed
+      # Pre load all the albums for the current state (public/private) from db into
+      # cache only if we have no version info for that item.  When the caller returns to
+      # get the actual data if it's not in the cache we fetch it for them at that time.
       def pre_fetch_albums
-        load_my_albums()
-        load_liked_albums()
-        load_liked_users_albums()
+        load_my_albums() if current_versions.my_albums == 0
+        load_liked_albums() if current_versions.liked_albums == 0
+        load_liked_users_albums() if current_versions.liked_users_albums == 0
 
         # now update the cache state in the cache db
         update_cache_state(true)

@@ -17,8 +17,23 @@ def safe_rails_env
 end
 
 class ZangZingConfig
+  def self.initialize
+    @@running_as_resque = false
+  end
+
   def self.config
     @@config ||= YAML::load(ERB.new(File.read(File.dirname(__FILE__) + "/../zangzing_config.yml")).result)[safe_rails_env].recursively_symbolize_keys!
+  end
+
+  def self.new_relic_category_type
+    @@running_as_resque ||= false # initialize if not done yet
+    @@running_as_resque ? :task : :controller
+  end
+
+  # set to true if running under resque
+  # this lets us know how to categorize NewRelic instrumentation
+  def self.running_as_resque=(flag)
+    @@running_as_resque = flag
   end
 end
 
