@@ -291,7 +291,8 @@ Server::Application.routes.draw do
         get   'email_templates/:id/test'         => 'email_templates#test',       :as => :test_email_template
         get   'emails'                           => 'emails#index',               :as => :emails
         put   'emails/:id'                       => 'emails#update',              :as => :email
-        get   'users'                            => 'admin_screens#users',        :as => :users
+        get   'users'                            => 'users#index',                :as => :users
+        put   'users/:id/activate'               => 'users#activate',             :as => :activate_user
         get   'settings'                         => 'system_settings#show',       :as => :system_settings
         put   'settings'                         => 'system_settings#update'
         get   'guests'                           => 'guests#index',               :as => :guests

@@ -4,5 +4,5 @@
     <td>  <%= user.albums.count %>          </td>
     <td>  <%= user.photos.count %>          </td>
     <td>  <%= user.shares.count %>          </td>
-    <td>  <%=( user.active ? "Active" : "Inactive" )%> </td>
+    <td>  <%= button_to ( user.active ? "Deactivate" :  "Activate"), {:action => 'activate',  :id => user.id}, :method => :put %>    </td>
 </tr>

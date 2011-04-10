@@ -1,9 +1,8 @@
 class UsersController < ApplicationController
   before_filter :require_no_user, :only => [:new, :create]
-  before_filter :require_user, :only => [:index, :edit, :update, :destroy]
-  before_filter :admin_user, :only => :destroy
-  before_filter :correct_user, :only => [:edit, :update]
-
+  before_filter :require_user,    :only => [:index, :activate,:edit, :update]
+  before_filter :require_admin,   :only => [:index,:activate]
+  before_filter :correct_user,    :only => [:edit, :update]
 
   def new
       @title = "Sign up"
@@ -34,7 +33,7 @@ class UsersController < ApplicationController
   	  @new_user.reset_single_access_token
 
       # new users are active by default
-      unless SystemSetting[:allow_everyone]
+      if SystemSetting[:signup_control]
         @new_user.active = false
         @guest = Guest.find_by_email( params[:user][:email] )
         if @guest
@@ -126,9 +125,6 @@ class UsersController < ApplicationController
     end
   end
 
-
-
-
   def validate_email
     if params[:user] && params[:user][:email]
       @user = User.find_by_email(params[:user][:email])
@@ -156,8 +152,26 @@ class UsersController < ApplicationController
     end
     render :json => true #Invalid call return not valid
   end
-  
 
+  # Used by The Admin Interface to display a list of users
+  def index
+    @page = "users"
+    @users = User.paginate(:page =>params[:page])
+  end
+
+  # Used by The Admin Interface to activate de-activate users
+  def activate
+    @user = User.find(params[:id])
+    if @user.active
+      @user.deactivate!
+    else
+      @user.activate!
+      @user.deliver_welcome!
+    end
+    redirect_to :action => :index
+  end
+
+  
   private
     def admin_user
           redirect_to( root_path ) unless current_user.admin?
