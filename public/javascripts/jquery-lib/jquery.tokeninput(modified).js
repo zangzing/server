@@ -88,7 +88,9 @@
          UP: 38,
          RIGHT: 39,
          DOWN: 40,
-         COMMA: 188
+         COMMA: 188,
+         SEMICOLON: 186,
+         SEMICOLON_FIREFOX: 59 //firefox has different code
       };
 
       // Save the tokens
@@ -201,6 +203,24 @@
                     return false;
                   }
                   break;
+                case KEY.SEMICOLON:
+                   if(selected_dropdown_item){
+                      add_token($(selected_dropdown_item));
+                      return false;
+                   }else if(settings.allowNewValues) {
+                     create_new_token();
+                     return false;
+                   }
+                   break;
+                case KEY.SEMICOLON_FIREFOX:
+                   if(selected_dropdown_item){
+                      add_token($(selected_dropdown_item));
+                      return false;
+                   }else if(settings.allowNewValues) {
+                     create_new_token();
+                     return false;
+                   }
+                   break;
                case KEY.ESC:
                   hide_dropdown();
                   return true;
