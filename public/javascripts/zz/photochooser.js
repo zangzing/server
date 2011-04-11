@@ -3,14 +3,18 @@
 var photochooser = {
     open_in_dialog: function(album_id, on_close){
         
+        var widget = null;
+
         var template = $('<div class="photochooser-container"></div>');
         $('<div id="add-photos-dialog"></div>').html( template ).zz_dialog({
                                height: $(document).height() - 200,
                                width: 895,
                                modal: true,
                                autoOpen: true,
-                               open : function(event, ui){ template.zz_photochooser({album_id: album_id}) },
+                               open : function(event, ui){ widget = template.zz_photochooser({album_id: album_id}).data().zz_photochooser },
                                close: function(event, ui){
+                                   widget.destroy();
+
                                    $.ajax({
                                        url:      zz.path_prefix + '/albums/' + album_id + '/close_batch',
                                        complete: function(request, textStatus){
@@ -39,7 +43,8 @@ var photochooser = {
 
         stack:[],
         grid:null,
-        
+        destroyed:false,
+
         _create: function() {
             var self = this;
 
@@ -85,6 +90,12 @@ var photochooser = {
         },
 
 
+        destroy: function() {
+            this.destroyed = true;
+            $.Widget.prototype.destroy.apply( this, arguments );
+        },
+
+        
         callAgentOrServer : function(params){
             var url = params['url'];
             var success_handler = params['success'];
@@ -892,10 +903,15 @@ var photochooser = {
                     }
                 },
                 error: function(error){
-                    self.tray_widget.hideLoadingIndicator();
-                    alert('Sorry, there was a problem adding photos to your album. Please try again.');
-                    if(on_failure){
-                        on_failure(error);
+                    if(!self.destroyed){
+                        self.tray_widget.hideLoadingIndicator();
+                        alert('Sorry, there was a problem adding photos to your album. Please try again.');
+                        if(on_failure){
+                            on_failure(error);
+                        }
+                    }
+                    else{
+                        //this means that the user closed the chooser -- this is the likely cause of the error
                     }
                 }
             });

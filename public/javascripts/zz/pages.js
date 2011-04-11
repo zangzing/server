@@ -7,10 +7,12 @@
 var pages = {};
 
 pages.album_add_photos_tab = {
+    chooserWidget: null,
+
     init: function(container, callback, drawer_style){
         var template = $('<div class="photochooser-container"></div>');
         container.html(template);
-        template.zz_photochooser({album_id: zz.album_id});
+        this.chooserWidget = template.zz_photochooser({album_id: zz.album_id}).data().zz_photochooser;
 
         ZZAt.track('album.add_photos_tab.view');
         
@@ -19,6 +21,7 @@ pages.album_add_photos_tab = {
     },
 
     bounce: function(success, failure){
+        this.chooserWidget.destroy();
         success();
     }
 };
