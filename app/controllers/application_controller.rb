@@ -284,4 +284,19 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # To be run as a before_filter
+  # Will render a 401 page if the currently logged in user is not an admin
+  def require_admin
+    unless current_user.admin?
+      flash[:error] = "Administrator privileges required for this operation"
+      response.headers['X-Error'] = flash[:error]
+      if request.xhr?
+        render :status => 401
+      else
+        render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
+      end
+      return false
+    end
+  end
+  
 end

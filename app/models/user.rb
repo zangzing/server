@@ -187,6 +187,11 @@ class User < ActiveRecord::Base
       save
   end
 
+  def deactivate!
+    self.active = false
+    save
+  end
+
   def self.find_by_email_or_username(login)
     find_by_email(login) || find_by_username(login)
   end

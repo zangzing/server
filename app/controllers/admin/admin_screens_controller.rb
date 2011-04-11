@@ -28,10 +28,7 @@ class Admin::AdminScreensController < Admin::AdminController
     @health_check = health_check;
   end
 
-  def users
-    @page = "users"
-    @users = User.paginate(:page =>params[:page])
-  end
+
 
 private
   def mailchimp_status
