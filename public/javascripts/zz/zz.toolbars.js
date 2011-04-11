@@ -44,7 +44,7 @@ zz.toolbars = {
            zz.init.disable_buttons();
            $('#header #account-badge').removeClass('disabled').addClass('selected');
 
-              document.location.href = path_helpers.rails_route('edit_user', zz.current_user_id);
+              document.location.href = path_helpers.rails_route('edit_user', zz.current_user_name);
 
 
 //           zz.wizard.open_settings_drawer('profile')

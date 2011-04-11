@@ -36,7 +36,7 @@ pages.album_name_tab = {
         container.load(url, function(){
             //save album name and set header album name
             pages.album_name_tab.original_album_name = $('#album_name').val();
-            $('h2#album-header-title').text(pages.album_name_tab.original_album_name);
+            $('#album-header-title').text(pages.album_name_tab.original_album_name);
 
             //change header album name as you type new album name
             $('#album_name').keypress( function(){
@@ -68,11 +68,6 @@ pages.album_name_tab = {
                         });
                     }
                 }, 1000);
-            });
-
-            //dont submut form on <enter>
-            $('form.edit_album').submit(function(){
-                return false;
             });
 
             //setup album cover picker
