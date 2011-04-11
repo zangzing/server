@@ -29,12 +29,10 @@ Server::Application.routes.draw do
     get    '/users/validate_email'      => 'users#validate_email',    :as => :validate_email
     get    '/users/validate_username'   => 'users#validate_username', :as => :validate_username
     post   '/users'                     => 'users#create',            :as => :create_user
-    get    '/users/:id/edit'            => 'users#edit',              :as => :edit_user
     put    '/users/:id'                 => 'users#update',            :as => :update_user
     delete '/users/:id'                 => 'users#destroy',           :as => :delete_user
-    get    '/users/:id/account'         => 'users#account',           :as => :account
-    get    '/users/:id/notifications'   => 'users#notifications',     :as => :notifications
-    get    '/users/:id/edit_password'   => 'users#edit_password',     :as => :edit_user_password
+#    get    '/users/:id/account'         => 'users#account',           :as => :account
+#    get    '/users/:id/notifications'   => 'users#notifications',     :as => :notifications
     match  '/users/:id/update_password' => 'users#update_password',   :as => :update_user_password
 
     #identities
@@ -317,12 +315,17 @@ Server::Application.routes.draw do
   }
   
 
+  get    '/:username/settings'                 => 'users#edit',              :as => :edit_user
+  get    '/:username/change_password'          => 'users#edit_password',     :as => :edit_user_password
+
+
   get    '/:user_id'                           =>   'albums#index',               :as => :user
   get    '/:user_id/:album_id'                 =>   'photos#index'
   get    '/:user_id/:album_id/photos'          =>   'photos#index'
   get    '/:user_id/:album_id/people'          =>   'people#album_index'
   get    '/:user_id/:album_id/activities'      =>   'activities#album_index'
   get    '/:user_id/:album_id/movie'           =>   'photos#movie'
+
 
 
 

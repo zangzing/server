@@ -178,7 +178,12 @@ class UsersController < ApplicationController
     end
 
     def correct_user
-      @user = User.find(params[:id])
+      if params[:id]
+        @user = User.find(params[:id])
+      elsif params[:username]
+        @user = User.find_by_username(params[:username])
+      end
+
       redirect_to( root_path ) unless current_user?(@user)
     end
 

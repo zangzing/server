@@ -12,7 +12,7 @@ var path_helpers = {
 
     rails_route: function(name, id){
         if(name == 'edit_user'){
-            return '/service/users/' + id + '/edit';
+            return '/' + id + '/settings';
         }
         else if(name == 'delete_identity'){
             return '/service/' + id + '/sessions/destroy'
