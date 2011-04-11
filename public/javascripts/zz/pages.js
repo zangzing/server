@@ -7,10 +7,12 @@
 var pages = {};
 
 pages.album_add_photos_tab = {
+    chooserWidget: null,
+
     init: function(container, callback, drawer_style){
         var template = $('<div class="photochooser-container"></div>');
         container.html(template);
-        template.zz_photochooser({album_id: zz.album_id});
+        this.chooserWidget = template.zz_photochooser({album_id: zz.album_id}).data().zz_photochooser;
 
         ZZAt.track('album.add_photos_tab.view');
         
@@ -19,6 +21,7 @@ pages.album_add_photos_tab = {
     },
 
     bounce: function(success, failure){
+        this.chooserWidget.destroy();
         success();
     }
 };
@@ -34,6 +37,10 @@ pages.album_name_tab = {
         var album_email_call_lock = 0;
 
         container.load(url, function(){
+            //don't let <enter> submit the form
+            $('form.edit_album input').disableEnterKey();
+
+
             //save album name and set header album name
             pages.album_name_tab.original_album_name = $('#album_name').val();
             $('#album-header-title').text(pages.album_name_tab.original_album_name);
@@ -983,6 +990,12 @@ pages.no_agent = {
                         }
                     }
              });
+
+            $('.zangzing-downloader #download-btn').click( function(){
+               pages.no_agent.download();
+            });
+
+
              pages.no_agent.poll_agent( function(){
                  $( '#no-agent-dialog' ).zz_dialog('close');
              });

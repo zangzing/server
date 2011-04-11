@@ -68,12 +68,11 @@
 </head>
 
 <%
-#    if params[:back]
-#        back_url = CGI::unescape(params[:back])
-#    else
-#        back_url = "#{album_path @album}"
-#    end
-    back_url = "javascript:window.history.back()";
+    if request.referrer.starts_with? "http://#{request.host}"
+        back_url = "javascript:window.history.back()";
+    else
+        back_url = "#{album_path @album}"
+    end
 
 %>
 

@@ -61,7 +61,7 @@
 %>
 
           <div id='album-name-and-owner'>
-                <h2 id="album-header-title"><%= truncate((@album.name), :length => 30) %></h2>
+                <h2 id="album-header-title"><%= truncate((@album.name), :length => 50) %></h2>
                 <h3>by <a href="<%= user_pretty_url @album.user %>"><%="#{@album.user.first_name} #{@album.user.last_name}"%></a></h3>
           </div>
       </div>
