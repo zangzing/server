@@ -351,11 +351,13 @@
                 self.element.scroll(function(event){
                     if(! self.animateScrollActive){
                         nativeScrollActive = true;
+
+                        var index;
                         if(self.options.singlePictureMode){
-                            var index = Math.floor(self.element.scrollLeft() / self.options.cellWidth);
+                            index = Math.floor(self.element.scrollLeft() / self.options.cellWidth);
                         }
                         else{
-                            var index = Math.floor(self.element.scrollTop() / self.options.cellHeight * self.cellsPerRow());
+                            index = Math.floor(self.element.scrollTop() / self.options.cellHeight * self.cellsPerRow());
                         }
                         self.thumbscroller.setSelectedIndex(index);
                         nativeScrollActive = false;
