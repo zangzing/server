@@ -983,6 +983,12 @@ pages.no_agent = {
                         }
                     }
              });
+
+            $('.zangzing-downloader #download-btn').click( function(){
+               pages.no_agent.download();
+            });
+
+
              pages.no_agent.poll_agent( function(){
                  $( '#no-agent-dialog' ).zz_dialog('close');
              });
