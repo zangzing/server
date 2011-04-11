@@ -67,6 +67,17 @@
 
 </head>
 
+<%
+#    if params[:back]
+#        back_url = CGI::unescape(params[:back])
+#    else
+#        back_url = "#{album_path @album}"
+#    end
+    back_url = "javascript:window.history.back()";
+
+%>
+
+
 <body>
     <object id="movie" type="application/x-shockwave-flash" data="/static/swf/movie.swf">
         <param name="movie" value="/static/swf/movie.swf">
@@ -83,7 +94,7 @@
                         "borderColor=FFFFFF&" +
                         "controlsHideSpeed=2&" +
                         "backButton=true&" +
-                        "backButtonURL=#{album_path @album}&" +
+                        "backButtonURL=#{back_url}&" +
                         "loadOriginalImages=false&" +
                         "overrideFullScreenChange=false&" +
                         "scaleBackground=true&" +
@@ -145,7 +156,7 @@
                         controlsHideSpeed:	2,
 
                         backButton:			true,
-                        backButtonURL:		'<%=album_path @album%>',
+                        backButtonURL:		'<%=back_url%>',
 
                         iconsURL:			'/images/movie/',
 
