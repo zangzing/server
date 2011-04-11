@@ -1,0 +1,120 @@
+.signin a img{
+border:none;
+}
+.signin{
+	width:100%;
+	height:100%;
+}
+.signin .bg{
+	position:absolute;
+	left:0;
+	top:0;
+	width:100%;
+	z-index:1;
+}
+.signin .content{
+    align: left;
+    text-align: left;
+	position:relative;
+	z-index:2;
+	margin:150px auto;
+	width:779px;
+	height:228px;
+	background:url("/error/img/desk.png") no-repeat;
+	color:#6a6a6c;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+
+.signin .content h1{
+	font-size:28px;
+	font-weight:200;
+	margin:20px 0 10px 0;
+	display:block;
+	width:450px;
+}
+.signin .content hr{
+    margin-right: 35px;
+}
+
+.signin .content-r #top-button{
+	position: absolute;
+    right: 50px;
+    top:   22px;
+    color: #777777;
+    width: 135px;
+}
+.signin .content-r #submit-button{
+	position: absolute;
+    right:  50px;
+    bottom: 22px;
+    width: 140px;
+}
+
+.signin .logo {
+	display:block;
+	float:left;
+	margin:50px 50px;
+}
+.signin .content-r {
+	float:left;
+	width:470px;
+}
+.signin .content form#password_reset_form{
+    position: absolute;
+    top: 115px;
+    left: 295px;
+	font-size:17px;
+    font-weight:200;
+	margin-left: 10px;
+}
+.signin .content form div#flash-error{
+    position: absolute;
+    top: -30px;
+    left: 40px;
+    width: 350px;
+    color: red;
+    font-size:14px;
+}
+
+.signin .content div#flash-notice{
+    margin: 10px 15px;
+    width: 360px;
+    font-size:14px;
+}
+.signin .content form input#email{
+    position: absolute;
+    left: 143px;
+    width: 270px;
+}
+
+.signin .content form#password_edit_form{
+    position: absolute;
+    top: 70px;
+    left: 295px;
+    width: 500px;
+    height: 100px;
+	font-size:17px;
+    font-weight:200;
+	margin-left: 5px;
+}
+
+.signin .content form#password_edit_form input{
+    width: 280px;
+}
+.signin .content form#password_edit_form table{
+    width: 100%;
+    height : 100%;
+}
+.signin .content form#password_edit_form #flash-error{
+    color: red;
+}
+
+
+
+
+
+.signin .content a{
+	color:#336699;
+	font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+	text-decoration:none;
+}

@@ -142,7 +142,7 @@ class User < ActiveRecord::Base
   # Generates a new perishable token for the notifier to use in a password reset request
   def deliver_password_reset_instructions!
       reset_perishable_token!
-      ZZ::Async::Email.enqueue( :password_reset_instructions, self.id )
+      ZZ::Async::Email.enqueue( :password_reset, self.id )
   end
 
   def deliver_activation_instructions!
@@ -227,7 +227,7 @@ class User < ActiveRecord::Base
   private
   def old_password_valid?
     if (require_password? || (old_password && old_password.length > 0) ) && !new_record? && !valid_password?(old_password)
-      errors.add(:old_password, "You old password does not match our records")
+      errors.add(:old_password, "Your old password does not match our records")
       false
     else
       true

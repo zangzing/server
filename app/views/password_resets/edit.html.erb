@@ -1,9 +1,49 @@
-<h2>Reset My Password</h2>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 
-<%= form_for @user, :url => password_reset_path, :method => :put do |f| %>
-  <%= f.label :password %><br />
-  <%= f.password_field :password %><br />
-  <br />
-  <%= f.submit "Update my password and log me in" %>
-<% end %>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=100" > <!-- IE8 mode -->
+    <meta http-equiv="Content-Language" Content="en">
+    <meta charset="utf-8">
+    <meta name="copyright" content="Copyright 2011, ZangZing, LLC. All Rights Reserved." />
+    <meta name="DC.title" content="ZangZing" />
+    <meta name="title" content="ZangZing" />
+    <title>Group Photo Sharing - ZangZing</title>
+    <%= include_stylesheets :common %>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+
+</head>
+<body>
+<div class="signin">
+  <img src="/images/background_signin.jpg" class="bg" />
+  <div class="content">
+    <a class="logo" href="http://www.zangzing.com"><img src="/error/img/logo.png" alt="logo" /></a>
+    <div class="content-r">
+      <h1>Password Reset</h1>
+      <%unless flash[:notice] %>
+            <a id= "top-button" href="/signin" class="gray-button"><span>Sign In</span></a>
+      <%end%>
+      <hr>
+      <%if flash[:notice] %>
+      <div id="flash-notice"><%= raw flash[:notice]%></div>
+      <a id="submit-button" href="<%=root_url()%>" class="newgreen-button"><span>Go Back</span></a>
+      <% else %>
+      <%= form_for @user, :url => password_reset_path, :method => :put, :html => {:id =>"password_edit_form"} do |f| %>
+            <table>
+              <tr><td></td><td id="flash-error"><%=@user.errors.full_messages if @user.errors%></td></tr>
+              <tr><td>New Password </td><td><%= f.password_field :password %></td></tr>
+              <tr><td>Confirmation </td><td><%= f.password_field :password_confirmation %></td></tr>
+            </table>
+          <% end %>
+       <a id="submit-button" href="javascript: void(0);" onclick="$('#password_edit_form').submit(); return false;" class="newgreen-button"><span>Reset my password</span></a>
+      <%end%>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+
+
+
+
 

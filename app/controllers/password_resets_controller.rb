@@ -20,29 +20,33 @@ class PasswordResetsController < ApplicationController
   # Use the load.... method for edit and update
   before_filter :load_user_using_perishable_token, :only => [:edit, :update]
 
-  def new
-    render :layout => false
-  end
+  layout false
 
-  def edit
-    render :layout => false
+  def new
   end
 
   def create
       @user = User.find_by_email(params[:email])
       if @user
          @user.deliver_password_reset_instructions!
-         flash[:notice] = "Instructions to reset your password have been emailed to you. " +
-                          "Please check your email."
-         redirect_to root_url
+         flash.now[:notice] = "<p>An email to reset your password is on it’s way!</p><br>"+
+                          "<p>If it doesn't show up, check your Junk Mail folder.<p/><br>"+
+                          "<p>If it's not there then please <a href='mailto:support@zangzing.com'>contact support.</a></p>"
       else
-         flash[:notice] = "No user was found with that email address"
-         render :action => :new
+         flash.now[:error] = "Could not find that email address in our records"
       end
+      render :action => :new
+  end
+
+
+  def edit
+
   end
 
   def update
+    @user.reset_password = true;
     @user.password = params[:user][:password]
+    @user.password_confirmation = params[:user][:password_confirmation]
     if @user.save
       flash[:notice] = "Password successfully updated"
       UserSession.create(@user, false) # Log user in manually
@@ -58,14 +62,13 @@ private
   #
   #Retrieve the user from the DB using the perishable token if still valid
   def load_user_using_perishable_token
-
     @user = User.find_using_perishable_token(params[:id])
     unless @user
-      flash[:notice] = "We're sorry, but we could not locate your account. " +
+      flash.now[:notice] = "We're sorry, but we could not locate your account.<br> " +
                        "If you are having issues try copying and pasting the URL " +
                        "from your email into your browser or restarting the " +
-                       "reset password process."
-      redirect_to root_url
+                       "reset password process <a href='#{new_password_reset_url}'>here</a>."
+      render :action => :new and return
     end
   end
 end

@@ -293,6 +293,7 @@ Server::Application.routes.draw do
         put   'emails/:id'                       => 'emails#update',              :as => :email
         get   'users'                            => 'users#index',                :as => :users
         put   'users/:id/activate'               => 'users#activate',             :as => :activate_user
+
         get   'settings'                         => 'system_settings#show',       :as => :system_settings
         put   'settings'                         => 'system_settings#update'
         get   'guests'                           => 'guests#index',               :as => :guests
