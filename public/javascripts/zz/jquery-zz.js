@@ -117,4 +117,15 @@
     };
 
 
+    $.fn.disableEnterKey = function(elements){
+        _.each(this, function(el){
+             $(el).bind("keypress", function(e) {
+                 if (e.keyCode == 13) {
+                     return false;
+                 }
+             });
+        });
+    };
+
+
 })(jQuery);

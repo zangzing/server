@@ -34,6 +34,10 @@ pages.album_name_tab = {
         var album_email_call_lock = 0;
 
         container.load(url, function(){
+            //don't let <enter> submit the form
+            $('form.edit_album input').disableEnterKey();
+
+
             //save album name and set header album name
             pages.album_name_tab.original_album_name = $('#album_name').val();
             $('#album-header-title').text(pages.album_name_tab.original_album_name);
