@@ -107,17 +107,18 @@
 
             //load cover photo
             if(self.options.coverUrl){
-                image_utils.pre_load_image(self.options.coverUrl, function(image){
-
-
+                var onload = function(image){
                     var scaledSize = image_utils.scale(image, {width:self.options.maxCoverWidth, height:self.options.maxCoverHeight});
-
                     self._resize(scaledSize.width, scaledSize.height);
                     self.template.find('.cover-photo').attr('src', image.src);
-
                     initMouseOver();
+                };
 
-                });
+                var onerror = function(image){
+                    initMouseOver();
+                }
+
+                image_utils.pre_load_image(self.options.coverUrl, onload, onerror);
             }
             else{
                 initMouseOver();
