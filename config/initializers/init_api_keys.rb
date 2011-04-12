@@ -22,6 +22,14 @@ BITLY_API_KEYS        = api_creds[:bitly]  #YAML.load(File.read("#{Rails.root}/c
 MAILCHIMP_API_KEYS    = api_creds[:mailchimp]
 ZZA_CONFIG            = api_creds[:zza]
 
+
+FlickRaw.api_key = FLICKR_API_KEYS[:api_key]
+FlickRaw.shared_secret = FLICKR_API_KEYS[:shared_secret]
+
+ShutterflyConnector.app_id = SHUTTERFLY_API_KEYS[:app_id]
+ShutterflyConnector.shared_secret = SHUTTERFLY_API_KEYS[:shared_secret]
+
+
 msg = "=> Connector API keys loaded."
 Rails.logger.info msg
 puts msg

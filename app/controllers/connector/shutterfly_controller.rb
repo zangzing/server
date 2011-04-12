@@ -5,12 +5,6 @@ class Connector::ShutterflyController < Connector::ConnectorController
 
   attr_accessor :sf_user_token
 
-  def initialize(*args)
-    super(*args)
-    ShutterflyConnector.app_id = SHUTTERFLY_API_KEYS[:app_id]
-    ShutterflyConnector.shared_secret = SHUTTERFLY_API_KEYS[:shared_secret]
-  end
-
   def self.api_from_identity(identity)
     unless identity.credentials.nil?
       authtoken, usertoken = identity.credentials.split('_')
