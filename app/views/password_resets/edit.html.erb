@@ -26,7 +26,7 @@
       <hr>
       <%if flash[:notice] %>
       <div id="flash-notice"><%= raw flash[:notice]%></div>
-      <a id="submit-button" href="<%=root_url()%>" class="newgreen-button"><span>Go Back</span></a>
+      <a id="submit-button" href="<%=service_url()%>" class="newgreen-button"><span>Go Back</span></a>
       <% else %>
       <%= form_for @user, :url => password_reset_path, :method => :put, :html => {:id =>"password_edit_form"} do |f| %>
             <table>

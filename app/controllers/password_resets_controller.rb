@@ -51,11 +51,14 @@ class PasswordResetsController < ApplicationController
       flash[:notice] = "Password successfully updated"
       UserSession.create(@user, false) # Log user in manually
       @user.reset_perishable_token!
-      redirect_to root_url
+      session[:flash_dialog] = true
+      redirect_to user_pretty_url( @user )
     else
       render :action => :edit
     end
   end
+
+
 
 private
 
