@@ -1,9 +1,9 @@
 class Admin::GuestsController < Admin::AdminController
   skip_before_filter :require_user, :only =>[:create]
-  skip_before_filter :require_admin, :only =>[:create]
+  skip_before_filter :require_admin
   oauthenticate :strategies => :two_legged, :interactive => true, :only =>   [ :create ]
-  before_filter :require_admin, :only =>[:create]
-  
+  before_filter :require_admin
+
   def index
     @page = 'guests'
     @new_guest = Guest.new()
