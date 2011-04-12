@@ -100,7 +100,7 @@
       var token_count = 0;
 
       // Basic cache to save on db hits
-      var cache = new $.TokenList.Cache();
+//      var cache = new $.TokenList.Cache();
 
       // Keep track of the timeout
       var timeout;
@@ -707,15 +707,15 @@
 
        // Do the actual search
        function run_search(query){
-           var cached_results = cache.get(query);
-           if(cached_results){
-               populate_dropdown(query, cached_results);
-           } else {
+//           var cached_results = cache.get(query);
+//           if(cached_results){
+//               populate_dropdown(query, cached_results);
+//           } else {
                var callback = function(results){
                    if($.isFunction(settings.onResult)){
                        results = settings.onResult.call(this, results);
                    }
-                   cache.add(query, settings.jsonContainer ? results[settings.jsonContainer] : results);
+//                   cache.add(query, settings.jsonContainer ? results[settings.jsonContainer] : results);
                    populate_dropdown(query, settings.jsonContainer ? results[settings.jsonContainer] : results);
                };
                var callbackError = function(){
@@ -738,43 +738,43 @@
                        error: callbackError
                    });
                }
-           }
+//           }
        }
 
    };
 
-   // Basic cache for the results
-   $.TokenList.Cache = function(options){
-      var settings = $.extend({
-         max_size: 50
-      }, options);
-
-      var data = {};
-      var size = 0;
-
-      // Creating our own shift function because associative keys in js sucks
-      var shift = function(obj){
-         for(i in obj){
-            value = data[i];
-            delete data[i];
-            return value;
-         }
-      }
-
-      this.add = function(query, results){
-         // If cache is full, remove first value
-         if(size >= settings.max_size){
-            shift(data);
-         } else if(!data[query]){
-            size++;
-         }
-         // Add the value at the end of array
-         data[query] = results;
-      };
-
-      this.get = function(query){
-         return data[query];
-      };
-   };
+//   // Basic cache for the results
+//   $.TokenList.Cache = function(options){
+//      var settings = $.extend({
+//         max_size: 50
+//      }, options);
+//
+//      var data = {};
+//      var size = 0;
+//
+//      // Creating our own shift function because associative keys in js sucks
+//      var shift = function(obj){
+//         for(i in obj){
+//            value = data[i];
+//            delete data[i];
+//            return value;
+//         }
+//      }
+//
+//      this.add = function(query, results){
+//         // If cache is full, remove first value
+//         if(size >= settings.max_size){
+//            shift(data);
+//         } else if(!data[query]){
+//            size++;
+//         }
+//         // Add the value at the end of array
+//         data[query] = results;
+//      };
+//
+//      this.get = function(query){
+//         return data[query];
+//      };
+//   };
 
 })(jQuery);
