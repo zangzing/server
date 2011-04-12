@@ -47,11 +47,15 @@ class LikesController < ApplicationController
     if params[:user_id]
       @subject_id   = params[:user_id]
       @subject_type = 'user'
-      @redirect_url = user_url( User.find(@subject_id) )
+      @user = User.find( @subject_id )
+      @redirect_url = user_pretty_url( @user  )
+      @subject_id = @user.id
     elsif params[:album_id]
       @subject_id   = params[:album_id]
       @subject_type = 'album'
-      @redirect_url = album_url( Album.find(@subject_id) )
+      @album = Album.find(@subject_id)
+      @redirect_url = album_pretty_url( @album )
+      @subject_id = @album.id
     elsif params[:photo_id]
       @subject_id   = params[:photo_id]
       @subject_type = 'photo'
@@ -60,7 +64,8 @@ class LikesController < ApplicationController
       #params are not complete
       render :text => "subject_id and/or subject_type not in params, unalbe to process", status => 400 and return
     end
-    ZZ::Async::ProcessLike.enqueue( 'add', current_user.id, @subject_id , @subject_type )
+    #ZZ::Async::ProcessLike.enqueue( 'add', current_user.id, @subject_id , @subject_type )
+    Like.add( current_user.id, @subject_id, @subject_type )
     redirect_to @redirect_url
   end
 
