@@ -11,8 +11,7 @@ zzcontacts ={
     init: function(userId, options, onSuccess, onError){
         var self = this;
         self.settings = $.extend({
-            url: zz.path_prefix + '/users/'+userId+'/contacts.json',
-            minChars: 1
+            url: zz.path_prefix + '/users/'+userId+'/contacts.json'
         }, options);
 
         //load contacts
@@ -38,7 +37,6 @@ zzcontacts ={
         var results = [];
         for(var service in zzcontacts.data ){
             var service_results = jQuery.grep( zzcontacts.data[service].contacts, function(element){
-                //     ( name.match(regex)       || email.match( regex ) )
                 return ( element[0].match(regex) || element[1].match( regex ) );
             });
             results = results.concat( service_results );
