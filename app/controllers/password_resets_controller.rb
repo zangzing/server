@@ -31,7 +31,7 @@ class PasswordResetsController < ApplicationController
          @user.deliver_password_reset_instructions!
          flash.now[:notice] = "<p>An email to reset your password is on it’s way!</p><br>"+
                           "<p>If it doesn't show up, check your Junk Mail folder.<p/><br>"+
-                          "<p>If it's not there then please <a href='mailto:support@zangzing.com'>contact support.</a></p>"
+                          "<p>If it's not there then please <a href='mailto:help@zangzing.com'>contact support.</a></p>"
       else
          flash.now[:error] = "Could not find that email address in our records"
       end
