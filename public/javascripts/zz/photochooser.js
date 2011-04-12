@@ -185,89 +185,96 @@ var photochooser = {
         showFolder: function(folder, children){
             var self = this;
 
+            if(! children.length){
+
+                self.bodyElement.html('<div class="no-photos">There are no photos in this folder</div>');
 
 
-            //translate photos and folders from connector format to photo/photogrid format
-            var hasPhotos = false;
-
-            children = $.map(children, function(child, index){
-                if(child.type === 'folder'){
-
-                    //root level folders already have source set
-                    if(typeof child.src === 'undefined'){
-                        child.src = path_helpers.image_url('/images/folders/blank_off.jpg');
-                        child.rolloverSrc = path_helpers.image_url('/images/folders/blank_on.jpg');
-                    }
-                }
-                else{
-                    child.src = agent.checkAddCredentialsToUrl(child.thumb_url);
-                    child.id = child.source_guid;
-                    hasPhotos = true;
-                }
-
-                child.caption = child.name;
-
-                return child;
-            });
-
-
-
-            //create a blank cell so we can float the 'add all photos' button over it
-            if(hasPhotos){
-                var addAllButton = {
-                    id: 'add-all-photos',
-                    src: path_helpers.image_url('/images/blank.png'),
-                    caption: '',
-                    type: 'blank'
-                };
-
-                children.unshift(addAllButton);
             }
+            else{
 
+                //translate photos and folders from connector format to photo/photogrid format
+                var hasPhotos = false;
 
-            var gridElement = $('<div class="photogrid"></div>');
-            self.bodyElement.html(gridElement);
+                children = $.map(children, function(child, index){
+                    if(child.type === 'folder'){
 
-            self.grid = gridElement.zz_photogrid({
-                photos:children,
-                showThumbscroller:false,
-                cellWidth: 190,
-                cellHeight: 190,
-                context: 'chooser-grid',
-                onClickPhoto: function(index, photo, element, action){
-                    if(photo.type === 'folder'){
-                         self.openFolder(photo);
+                        //root level folders already have source set
+                        if(typeof child.src === 'undefined'){
+                            child.src = path_helpers.image_url('/images/folders/blank_off.jpg');
+                            child.rolloverSrc = path_helpers.image_url('/images/folders/blank_on.jpg');
+                        }
                     }
                     else{
-                        if(action === 'main'){
-                            if($(element).data().zz_photo.isChecked()){
-                                self.remove_photo_by_guid(photo.id); //chooser photos have source_guid as their id
-                            }
-                            else{
-                                self.add_photo_to_album(photo.add_url, element);
-                            }
-                        }
-                        else if(action === 'magnify'){
-                            if(hasPhotos){
-                                children.shift(); //remove the 'add all photos' button
-                            }
-                            self.singlePictureView(folder, children, photo.id);
-                        }
+                        child.src = agent.checkAddCredentialsToUrl(child.thumb_url);
+                        child.id = child.source_guid;
+                        hasPhotos = true;
                     }
-                }
 
-            }).data().zz_photogrid;
+                    child.caption = child.name;
 
-            if(hasPhotos){
-                var addAllButton = $('<img class="add-all-button" src="' + path_helpers.image_url('/images/folders/add_all_photos.png') + '">');
-                addAllButton.click(function(){
-                    self.add_folder_to_album(folder.add_url, addAllButton);
+                    return child;
                 });
 
-                $('.photochooser .photochooser-body .photogrid').append(addAllButton);
-            }
-            
-            self.updateCheckmarks();
+
+
+                //create a blank cell so we can float the 'add all photos' button over it
+                if(hasPhotos){
+                    var addAllButton = {
+                        id: 'add-all-photos',
+                        src: path_helpers.image_url('/images/blank.png'),
+                        caption: '',
+                        type: 'blank'
+                    };
+
+                    children.unshift(addAllButton);
+                }
+
+
+                var gridElement = $('<div class="photogrid"></div>');
+                self.bodyElement.html(gridElement);
+
+                self.grid = gridElement.zz_photogrid({
+                    photos:children,
+                    showThumbscroller:false,
+                    cellWidth: 190,
+                    cellHeight: 190,
+                    context: 'chooser-grid',
+                    onClickPhoto: function(index, photo, element, action){
+                        if(photo.type === 'folder'){
+                             self.openFolder(photo);
+                        }
+                        else{
+                            if(action === 'main'){
+                                if($(element).data().zz_photo.isChecked()){
+                                    self.remove_photo_by_guid(photo.id); //chooser photos have source_guid as their id
+                                }
+                                else{
+                                    self.add_photo_to_album(photo.add_url, element);
+                                }
+                            }
+                            else if(action === 'magnify'){
+                                if(hasPhotos){
+                                    children.shift(); //remove the 'add all photos' button
+                                }
+                                self.singlePictureView(folder, children, photo.id);
+                            }
+                        }
+                    }
+
+                }).data().zz_photogrid;
+
+                if(hasPhotos){
+                    var addAllButton = $('<img class="add-all-button" src="' + path_helpers.image_url('/images/folders/add_all_photos.png') + '">');
+                    addAllButton.click(function(){
+                        self.add_folder_to_album(folder.add_url, addAllButton);
+                    });
+
+                    $('.photochooser .photochooser-body .photogrid').append(addAllButton);
+                }
+
+                self.updateCheckmarks();
+                }
 
         },
 
