@@ -778,7 +778,7 @@ zz.init = {
 
 
                     //force this back because grid turns on scrolling
-                    $(element).css({overflow:'hidden'});
+                    $(element).css({'overflow-x':'hidden', 'overflow-y':'hidden'});
 
                     var allShowing = false;
 
