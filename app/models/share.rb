@@ -67,7 +67,7 @@ class Share < ActiveRecord::Base
         end
       when 'social'
         self.recipients.each do | service |
-          ZZ::Async::Social.enqueue( service, self.user_id, self.subject_url, self.message )
+          user.send("identity_for_#{service}").post_share( self )
         end
     end
     self.sent_at = Time.now
