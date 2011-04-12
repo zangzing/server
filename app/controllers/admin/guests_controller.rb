@@ -24,12 +24,12 @@ class Admin::GuestsController < Admin::AdminController
       flash[:notice] = "Guest was added successfully."
       if @existing_user
         @new_guest.user_id = @existing_user.id
+        @new_guest.status = 'Active Account'
+        @new_guest.save
         unless @existing_user.active?
           @existing_user.activate!
           @existing_user.deliver_welcome!
         end
-        @new_guest.status = 'Active Account'
-        @new_guest.save
       else
         ZZ::Async::Email.enqueue( :beta_invite, @new_guest.email ) #Send Beta Email
       end

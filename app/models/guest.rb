@@ -16,4 +16,19 @@ class Guest < ActiveRecord::Base
     self.source == 'share' || self.source == 'contributor'
   end
 
+  def self.register( email, source )
+    guest = Guest.find_or_create_by_email( :email => email)
+    user = User.find_by_email( email )
+    if user
+      guest.user_id = user.id
+      unless user.active?
+        user.activate!
+        user.deliver_welcome!
+      end
+      guest.status = "Active Account"
+    end
+    guest.source = source
+    guest.save
+    guest
+  end
 end

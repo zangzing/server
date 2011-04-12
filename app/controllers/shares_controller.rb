@@ -27,12 +27,15 @@ class SharesController < ApplicationController
     # the user wants to quack! about.
     if  params[:user_id]
         @subject = User.find(params[:user_id])
+        @subject_type = Like::USER
         @subject_url = user_pretty_url(@subject)
     elsif params[:album_id]
         @subject = Album.find(params[:album_id])
+        @subject_type = Like::ALBUM
         @subject_url = album_pretty_url(@subject)
     elsif params[:photo_id]
         @subject = Photo.find(params[:photo_id])
+        @subject_type = Like::PHOTO
         @subject_url = photo_pretty_url(@subject)
     else
         render :json => "subject_type not specified via params", :status => 400 and return

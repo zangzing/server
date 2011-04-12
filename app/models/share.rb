@@ -27,14 +27,13 @@ class Share < ActiveRecord::Base
     end
   end
 
-  after_create :after_share_user,  :if => :user?
+
 
 
   before_create  :attach_to_open_batch, :if => :album?
-  after_create   :after_share_album,    :if => :album?
-
-
-  after_create :after_share_photo, :if => :photo?
+  after_commit :after_share_user,  :if => :user?,  :on => :create
+  after_commit :after_share_album, :if => :album?, :on => :create
+  after_commit :after_share_photo, :if => :photo?, :on => :create
 
 
 
@@ -62,13 +61,13 @@ class Share < ActiveRecord::Base
       when 'email'
         self.recipients.each do |recipient |
           #TODO: Add Album.Photo.User handling See bug #1124
-          Guest.create( :email => recipient, :source => 'share' ) #add recipient to guest list for beta period
+          Guest.register( recipient, 'share' ) #add recipient to guest list for beta period
           ZZ::Async::Email.enqueue( :album_shared, self.user_id, recipient, self.subject_id, self.message ) if album?
           ZZ::Async::Email.enqueue( :photo_shared, self.user_id, recipient, self.subject_id, self.message ) if photo?
         end
       when 'social'
         self.recipients.each do | service |
-          ZZ::Async::Social.enqueue( service, self.user_id, self.subject_url, self.message )
+          user.send("identity_for_#{service}").post_share( self )
         end
     end
     self.sent_at = Time.now
