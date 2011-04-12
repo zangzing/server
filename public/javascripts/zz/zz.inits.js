@@ -503,6 +503,7 @@ zz.init = {
                         allowReorder: false,
                         cellWidth: 230,
                         cellHeight: 230,
+                        showThumbscroller: false,
                         onClickPhoto: function(index, photo) {
 
                             //get rid of scrollbars before animate transition

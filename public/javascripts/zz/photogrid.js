@@ -449,7 +449,9 @@
 
 
         hideThumbScroller: function(){
-            this.thumbscrollerElement.hide();
+            if(this.thumbscrollerElement){
+                this.thumbscrollerElement.hide();
+            }
         },
 
         nextPrevActive : false,
