@@ -341,6 +341,14 @@ zz.init = {
         });
 
 
+        $('form#join-form').bind('keypress', function(e){
+              if ( e.keyCode == 13 ) {
+                  $("form#join-form").submit();
+              }
+        });
+
+
+
         /* sign in   */
         /* ---------------------------------*/
         $('#signin-form-cancel-button').click(function() {
