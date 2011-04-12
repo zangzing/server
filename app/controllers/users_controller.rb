@@ -83,7 +83,7 @@ class UsersController < ApplicationController
            end
            session[:client_dialog]=root_url+'static/inactive_dialog.html'
 
-           redirect_to root_url and return
+           redirect_to service_url and return
         end  
       end
       render :action => :new 

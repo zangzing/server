@@ -98,6 +98,13 @@
 
     <%   # Pull in generated javascript for the page -%>
     <%= yield :page_javascript %>
+
+    <%if session[:flash_dialog] %>
+          <%= render :partial => 'pages/flash_dialog'%>
+      <% session[:flash_dialog] = nil %>
+    <%end%>
+
+
     <script type="text/javascript">
       /* Vars our js fns need from ruby (calls/conditionals) - NO SECURE DATA
       ----------------------------------------------------------------------- */

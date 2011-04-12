@@ -6,8 +6,8 @@
 
 Server::Application.routes.draw do
   root :to => 'pages#home'
-  get    '/service'            => 'pages#home'
-  get    '/signin'             => 'user_sessions#new',  :as => :signin
+  get    '/service'            => 'pages#home',          :as => :service
+  get    '/signin'             => 'user_sessions#new',   :as => :signin
   get    '/join'               => 'user_sessions#join',  :as => :join
 
   # the whole site has /service in front of it except for users
