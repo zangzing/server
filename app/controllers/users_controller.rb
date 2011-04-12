@@ -22,10 +22,14 @@ class UsersController < ApplicationController
       #Check if user is an automatic user ( a contributor that has never logged in but has sent photos )
       @new_user = User.find_by_email( params[:user][:email])
       if @new_user && @new_user.automatic?
+        # The user is an automatic user because she had contributed photos after being invited by email
+        # she has now decided to join, remove automatic flag and reset password.
         @new_user.automatic = false
         @new_user.name      = params[:user][:name]
         @new_user.username  = params[:user][:username]
-        @new_user.password  = params[:user][:password]
+        @new_user.reset_password = true
+        @new_user.password = params[:user][:password]
+        @new_user.password_confirmation  = @new_user.password
       else
         @new_user = User.new(params[:user])
       end
@@ -142,13 +146,14 @@ class UsersController < ApplicationController
   def validate_username
 
     if params[:user] && params[:user][:username]
-
       @user = User.find_by_username(params[:user][:username])
       if @user == current_user #if the username returns the current user this means its a profile edit
         @user = nil
       end
+      if @user && @user.automatic?
+        render :json => true and return  #The user is an automatic user so the username is still technically available.
+      end
       render :json => !@user and return
-
     end
     render :json => true #Invalid call return not valid
   end
