@@ -43,7 +43,7 @@ class UsersController < ApplicationController
               if SystemSetting[:new_users_allowed] > 0
                 # user allotment available
                 if @guest.share?
-                  if SystemSetting[:allow_shares]
+                  if SystemSetting[:allow_sharers]
                     @new_user.active= true
                     SystemSetting[:new_users_allowed] -= 1;
                   end
