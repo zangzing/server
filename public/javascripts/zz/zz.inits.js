@@ -503,6 +503,7 @@ zz.init = {
                         allowReorder: false,
                         cellWidth: 230,
                         cellHeight: 230,
+                        showThumbscroller: false,
                         onClickPhoto: function(index, photo) {
 
                             //get rid of scrollbars before animate transition
@@ -778,7 +779,7 @@ zz.init = {
 
 
                     //force this back because grid turns on scrolling
-                    $(element).css({overflow:'hidden'});
+                    $(element).css({'overflow-x':'hidden', 'overflow-y':'hidden'});
 
                     var allShowing = false;
 

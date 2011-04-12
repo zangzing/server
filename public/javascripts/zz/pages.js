@@ -242,7 +242,7 @@ pages.edit_album_tab = {
                         return true;
 
                     },
-                    showThumbscroller: true
+                    showThumbscroller: false
                 }).data().zz_photogrid;
 
                 $('#article').show();

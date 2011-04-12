@@ -194,6 +194,9 @@ class ApplicationController < ActionController::Base
     end
 
     def protect_with_http_auth
+      # see if we have http_auth turned on
+      return unless ZangZingConfig.config[:requires_http_auth]
+
       allowed = {
         :actions => ['photos#agent_index',
                      'photos#agent_create',

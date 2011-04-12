@@ -55,11 +55,11 @@ class PhotobucketConnector
       rescue => e
         if e.kind_of?(OAuth::Unauthorized)
           code, msg = e.message.split(' ')
-          raise SmugmugError.new(code, "#{msg} (invalid/expired oauth request token)")
+          raise PhotobucketError.new(code, "#{msg} (invalid/expired oauth request token)")
         end
       end
     elsif
-      @access_token = OAuth::AccessToken.from_hash(consumer, {:oauth_token => oauth_token, :oauth_token_secret => oauth_token_secret,})
+      @access_token = OAuth::AccessToken.from_hash(consumer, {:oauth_token => oauth_token, :oauth_token_secret => oauth_token_secret})
       refresh_owner_info!
     end
   end
