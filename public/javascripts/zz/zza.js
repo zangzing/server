@@ -116,6 +116,25 @@ function ZZA(id, useridentifier, usemixpanel)
 			e.p = pageuri;
 		this.evts.push(e);
 		this.last = new Date().getTime();
+
+
+        if (this.usemixpanel && typeof(mpmetrics) != 'undefined') {
+            p = {};
+            if (this.usertype == 1)
+                p.Zuser = e.u;
+            else
+                p.Zvisitor = e.u;
+
+            if (e.p)
+                p.Zpageuri = e.p;
+
+            p.Zsource = this.id;
+
+            for(var x in e.x)
+                p[x] = e.x[x];
+
+            mpmetrics.track(e.e, p);
+        }
 	};
 
 	this._getuserid = function()
@@ -184,27 +203,6 @@ function ZZA(id, useridentifier, usemixpanel)
 			if (evtlen > pmax)
 				break;
 
-			if (this.usemixpanel && typeof(mpmetrics) != 'undefined') {
-				p = {};
-				if (this.usertype == 1)
-					p.Zuser = evt.u;
-				else
-					p.Zvisitor = evt.u;
-
-				if (evt.p)
-					p.Zpageuri = evt.p;
-
-				//if (evt.r)
-				//	p.Zreferrer = evt.r;
-
-				p.Zsource = this.id;
-
-				for(var x in evt.x)
-					p[x] = evt.x[x];
-
-				//console.log('mp: ' + evt.e + "; prop: " + this.toJSONString(p))
-				mpmetrics.track(evt.e, p);
-			}
 
 			pevts.push(evt);
 			pmax -= evtlen;
