@@ -122,7 +122,7 @@ class AlbumsController < ApplicationController
     # if any of the albums the current user likes belong to the viewed user
     # we do this by returning the url to fetch liked_albums for the session
     # user
-    if current_user.nil? == false && user_is_me == false
+    if public && !current_user.nil?
       # ok, we have a valid session user and we are viewing somebody else so pull in our liked_albums
       sess_loader = Cache::Album::Manager.shared.make_loader(current_user, false)
       sess_loader.pre_fetch_albums
