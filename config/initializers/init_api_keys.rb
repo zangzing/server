@@ -23,6 +23,15 @@ MAILCHIMP_API_KEYS    = api_creds[:mailchimp]
 ZZA_CONFIG            = api_creds[:zza]
 
 
+require 'connector_exceptions'
+
+require 'shutterfly_connector'
+require 'kodak_connector'
+require 'photobucket_connector'
+require 'smugmug_connector'
+require 'twitter_connector'
+require 'yahoo_connector'
+
 FlickRaw.api_key = FLICKR_API_KEYS[:api_key]
 FlickRaw.shared_secret = FLICKR_API_KEYS[:shared_secret]
 
@@ -33,6 +42,9 @@ Instagram.configure do |config|
   config.client_id = INSTAGRAM_API_KEYS[:client_id]
   config.client_secret = INSTAGRAM_API_KEYS[:client_secret]
 end
+
+PhotobucketConnector.consumer_key = PHOTOBUCKET_API_KEYS[:consumer_key]
+PhotobucketConnector.consumer_secret = PHOTOBUCKET_API_KEYS[:consumer_secret]
 
 
 msg = "=> Connector API keys loaded."
