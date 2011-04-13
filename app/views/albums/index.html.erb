@@ -142,6 +142,11 @@
 
 
             call_and_merge([my_albums_path, session_user_liked_albums_path], function(albums){
+                //show only albums for the current homepage
+                albums = _.filter(albums, function(album){
+                    return album.user_id == zz.displayed_user_id;
+                });
+
                 render_albums($('#my-albums'), albums);
             });
 
