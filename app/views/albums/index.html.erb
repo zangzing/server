@@ -22,6 +22,10 @@
   var my_albums_path = '<%= @my_albums_path %>';
   var liked_albums_path ='<%= @liked_albums_path %>';
   var liked_users_albums_path = '<%= @liked_users_albums_path %>';
+  // this is null unless you are looking at another users albums
+  // from this you can determine which of the albums you like should
+  // show in the other users view from your perspective
+  var session_user_liked_albums_path = '<%= @session_user_liked_albums_path %>';
 
 
   $(document).ready(function(){
