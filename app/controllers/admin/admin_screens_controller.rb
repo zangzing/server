@@ -4,7 +4,7 @@ class Admin::AdminScreensController < Admin::AdminController
     #3rd Party Service Status
     @status = Hash.new()
     @page = 'status'
-    [ 'flickr', 'facebook', 'mailchimp','bitly', 'twitter'].each do | service |
+    [ 'flickr', 'facebook','bitly', 'twitter'].each do | service |
       @status[service] = self.send( service+'_status')
     end
 
@@ -31,15 +31,6 @@ class Admin::AdminScreensController < Admin::AdminController
 
 
 private
-  def mailchimp_status
-    begin
-      ZZ::MailChimp.ping
-    rescue ZZ::MailChimp::Error => e
-      logger.warn "MailChimp Service Error: "+ e
-      return false
-    end
-    true
-  end
 
   def bitly_status
     begin
