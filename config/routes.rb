@@ -97,14 +97,6 @@ Server::Application.routes.draw do
     get '/albums/:album_id/people' => 'people#album_index',         :as => :album_people
     get '/users/:user_id/people'   => 'people#user_index',          :as => :user_people
 
-    #follows
-    get    '/users/:user_id/follows'       => 'follows#index',      :as => :user_follows
-    post   '/users/:user_id/follows/create' => 'follows#create',     :as => :create_user_follow
-    get    '/users/:user_id/follows/new'   => 'follows#new',        :as => :new_user_follow
-    delete '/follows/:id/unfollow'          => 'follows#unfollow',   :as => :unfollow
-    put    '/follows/:id/block'             => 'follows#block',      :as => :block_follow
-    put    '/follows/:id/unblock'           => 'follows#unblock',    :as => :unblock_follow
-
     #contributors
     get    '/albums/:album_id/contributors/new'  => 'contributors#new',        :as => :new_album_contributor
     get    '/albums/:album_id/contributors'      => 'contributors#index',      :as => :album_contributors

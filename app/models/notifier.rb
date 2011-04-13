@@ -276,16 +276,6 @@ class Notifier < ActionMailer::Base
     end
   end
 
-
-
-  def you_are_being_followed( follower_id, followed_id)
-    @follower = User.find( follower_id )
-    @followed = User.find( followed_id )
-    logger.info "Mailed you_are_being_followed: #{@followed.email}, #{@follower.name}"
-    mail( :to      => @followed.email,
-          :subject => "#{@follower.name} thinks the world of you")
-  end
-
   def activation_instructions(user_id)
     user = User.find(user_id)
     @account_activation_url = activate_url(user.perishable_token)
