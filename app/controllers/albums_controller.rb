@@ -98,7 +98,8 @@ class AlbumsController < ApplicationController
     # of album data
 
     # determine if we should be fetching the view based on public or private data
-    public = (current_user?(@user) || (!current_user.nil? && current_user.support_hero?)) == false
+    user_is_me = current_user?(@user)
+    public = (user_is_me || (!current_user.nil? && current_user.support_hero?)) == false
 
     # preload the expected cache data
     loader = Cache::Album::Manager.shared.make_loader(@user, public)
@@ -112,6 +113,22 @@ class AlbumsController < ApplicationController
     @my_albums_path = my_albums_path(versions)
     @liked_albums_path = liked_albums_path(versions)
     @liked_users_albums_path = liked_users_albums_path(versions)
+    @session_user_liked_albums_path = nil
+
+    # When showing the view for a user who is not the current user we
+    # fetch the public information.  However, if we have a current user
+    # and that user likes and can see one or more of the other users
+    # albums we must merge the view on the client by checking to see
+    # if any of the albums the current user likes belong to the viewed user
+    # we do this by returning the url to fetch liked_albums for the session
+    # user
+    if public && !current_user.nil?
+      # ok, we have a valid session user and we are viewing somebody else so pull in our liked_albums
+      sess_loader = Cache::Album::Manager.shared.make_loader(current_user, false)
+      sess_loader.pre_fetch_albums
+      sess_versions = sess_loader.current_versions
+      @session_user_liked_albums_path = liked_albums_path(sess_versions)
+    end
 
 
 #    liked_users_public_albums = @user.liked_users_public_albums
