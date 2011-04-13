@@ -1,0 +1,22 @@
+<% setting = @settings.find{ |s| s.name == setting_name} if setting.nil?%>
+<tr>
+      <td><h3><%= label_tag  setting.name, setting.label, :title => setting.description, :style =>"font-size:16px; color: #888888;"%></h3></td>
+      <td>
+      <%- if setting.data_type == 'boolean' %>
+        <%= hidden_field_tag setting.name, "0" %>
+        <%= check_box_tag setting.name, "1", SystemSetting[setting.name], :title => setting.description%>
+      <%- elsif setting.type == 'password' -%>
+        <%= password_field_tag setting.name, SystemSetting[setting.name], :title => setting.description %>
+      <%- elsif setting.type == 'text' -%>
+        <%= text_area_tag setting.name, SystemSetting[setting.name], :title => setting.description %>
+      <%- elsif setting.type == 'list' -%>
+        <%= text_area_tag setting.name, SystemSetting[setting.name].collect{ |a| a.join(",")}.join("\n"), :title => setting.description %>
+      <%- else -%>
+        <%= text_field_tag setting.name, SystemSetting[setting.name], :title => setting.description, :style => "width: 100%;" %>
+      <%- end -%>
+      </td>
+</tr>
+<tr>
+  <td></td>
+  <td><%=setting.description%></td>
+</tr>

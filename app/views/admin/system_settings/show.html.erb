@@ -3,33 +3,34 @@
   <ul class="viewlist" style="width: 800px;">
     <li class="item">
       <div class="header bar">
-        Guest List Settings
+        Signup Control
       </div>
       <div class="content">
         <table>
-       <%= form_tag( system_settings_path, :method => :put) do -%>
-  <%- @settings.each do |setting| -%>
-      <tr>
-      <td><%= label_tag  setting.name, setting.label %></td>
-      <td>
-      <%- if setting.data_type == 'boolean' %>
-        <%= hidden_field_tag setting.name, "0" %>
-        <%= check_box_tag setting.name, "1", SystemSetting[setting.name] %>
-      <%- elsif setting.type == 'password' -%>
-        <%= password_field_tag setting.name, SystemSetting[setting.name] %>
-      <%- elsif setting.type == 'text' -%>
-        <%= text_area_tag setting.name, SystemSetting[setting.name] %>
-      <%- elsif setting.type == 'list' -%>
-        <%= text_area_tag setting.name, SystemSetting[setting.name].collect{ |a| a.join(",")}.join("\n") %>
-      <%- else -%>
-        <%= text_field_tag setting.name, SystemSetting[setting.name] %>
-      <%- end -%>
-      </td>
-      </tr>  
-  <%- end -%>
-    </table>
-  <%= submit_tag 'Save' %>
-<%- end -%>
+        <%= form_tag( system_settings_path, :method => :put) do -%>
+               <%=render :partial=>'setting', :locals => { :setting_name => 'signup_control' } %>
+               <%=render :partial=>'setting', :locals => { :setting_name => 'new_users_allowed' } %>
+               <%=render :partial=>'setting', :locals => { :setting_name => 'allow_sharers' } %>
+               <%=render :partial=>'setting', :locals => { :setting_name => 'always_allow_beta_listers' } %>
+        </table>
+       <%= submit_tag 'Save Signup Control',  :style => "float: right;"%>
+        <%- end -%>
+      </div>
+    </li>
+    <li class="item">
+      <div class="header bar">
+        Facebook Post
+      </div>
+      <div class="content">
+        <table>
+          <tr><td style="width: 15%;"></td><td ></td></tr>
+        <%= form_tag( system_settings_path, :method => :put) do %>
+             <%=render :partial=>'setting', :locals => { :setting_name => 'facebook_post_caption' } %>
+             <%=render :partial=>'setting', :locals => { :setting_name => 'facebook_post_description' } %>
+             <%=render :partial=>'setting', :locals => { :setting_name => 'facebook_post_actions' } %>
+        </table>
+       <%= submit_tag 'Save Facebook Post', :style => "float: right;"%>
+        <% end %>
       </div>
     </li>
   </ul>
