@@ -51,24 +51,26 @@ each album has an email address in the form <album_name>@<username>.zangzing.com
         @album = nil
         begin
           @album = Album.find(album_name, :scope => user_username )
-        rescue ActiveRecord::RecordNotFound
-          @album = nil
+        rescue ActiveRecord::RecordNotFound => e
+          if album_name == 'new'
+            user = User.find_by_username!( user_username )
+            # If the account owner is the one emailing
+            if user.email == from.address
+              @album  = GroupAlbum.new()
+              user.albums << @album
+              @album.name = ( params[:subject] && params[:subject].length > 0 ? params[:subject] : "New Album By Email")
+              @album.save!
+            else
+              raise e
+            end
+          else
+            raise e 
+          end
         end
 
         # NEW ALBUM BY EMAIL
         # if album_name is 'new' and the account owner is emailing photos, create a new
         # album with the name set from the subject and all addresses in cc: as contributors
-        if @album.nil? && album_name == 'new'
-          user = User.find_by_username!( user_username )
-          # If the account owner is the one emailing
-          if user.email == from.address
-            @album  = GroupAlbum.new()
-            user.albums << @album
-            @album.name = ( params[:subject] && params[:subject].length > 0 ? params[:subject] : "New Album By Email")
-            @album.save!
-          end
-        end
-
         if attachments.count > 0 && @album
           user = @album.get_contributor_user_by_email( from.address )
           if user
@@ -96,9 +98,9 @@ each album has an email address in the form <album_name>@<username>.zangzing.com
         # and in this case we are done with them. We return 200 to make sendgrid stop sending
         # since we can't do anything more with this message in the future and that is the
         # only status code they will stop sending on
+        ZZ::Async::Email.enqueue(:contribution_error, from.address )
         clean_up_temp_files(attachments)
         render :nothing => true, :status => :ok
-
       rescue => ex
         logger.warn "Incoming email import failed - will retry later: " + ex.message
         render :nothing => true, :status => 400 # non 200 will cause the mailer to retry
