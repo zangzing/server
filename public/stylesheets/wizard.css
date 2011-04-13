@@ -522,24 +522,24 @@ ul#share-pick li {
 }
 
 ul#share-pick li.social-share {
-  background: url(/images/btn-share-by-post.png) center center no-repeat;
+  background: url(/images/btn-share-by-post.png) 0px 0px no-repeat;
   background-color:#ffffff;
   cursor:pointer;
 }
 
 ul#share-pick li.social-share:hover {
-  background: url(/images/btn-share-by-post-on.png) center center no-repeat;
+  background: url(/images/btn-share-by-post.png) 0px -254px no-repeat;
     background-color:#ffffff;
 }
 
 ul#share-pick li.email-share {
-  background: url(/images/btn-share-by-email.png) center center no-repeat;
+  background: url(/images/btn-share-by-email.png) 0px 0px no-repeat;
   background-color:#ffffff;
   cursor:pointer;
 }
 
 ul#share-pick li.email-share:hover {
-  background: url(/images/btn-share-by-email-on.png) center center no-repeat;
+  background: url(/images/btn-share-by-email.png) 0px -254px no-repeat;
     background-color:#ffffff;
 }
 
