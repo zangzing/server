@@ -5,6 +5,7 @@
 class FacebookIdentity < Identity
 
   DEFAULT_CAPTION = "www.zangzing.com  -  Group Photo Sharing"
+  DEFAULT_ACTIONS = {"name" => "Join ZangZing", "link" => "http://www.zangzing.com/join"}.to_json
 
   def facebook_graph
     unless @graph
@@ -29,7 +30,30 @@ class FacebookIdentity < Identity
   end
 
   def post_like(like, message)
-    post( like.url, message)
+    case like.subject_type
+      when Like::ALBUM, 'album'
+        album       = Album.find( like.subject_id )
+        action      = "#{user.username} likes a ZangZing Photo Album"
+        name        = "#{album.name} by #{album.user.username}"
+        picture     = album.cover.thumb_url
+      when Like::PHOTO, 'photo'
+        photo       = Photo.find( like.subject_id )
+        action      = "#{user.username} likes a ZangZing Photo"
+        name        = "#{photo.caption} by #{photo.user.username}"
+        picture     = photo.thumb_url
+      else
+        post( like.url, message)  #generic post
+        return
+    end
+
+    self.facebook_graph.post( "me/feed",                       #Where to post
+                              :message     => action,          #Displayed right under the user's name
+                              :picture     => picture,         #Displayed in the body of the post
+                              :name        => name,            #Displayed as a link to link
+                              :link        => like.url,        #The URL to where the name-link points to
+                              :caption     => DEFAULT_CAPTION, #Displayed under the name
+                              :description => message,         #Displayed under the name/link/caption combo can be multiline
+                              :actions     => DEFAULT_ACTIONS  )
   end
 
   # Formats share data into a facebook post
@@ -58,6 +82,6 @@ class FacebookIdentity < Identity
                               :link        => link,            #The URL to where the name-link points to
                               :caption     => DEFAULT_CAPTION, #Displayed under the name
                               :description => description,     #Displayed under the name/link/caption combo can be multiline
-                              :actions => {"name" => "Join ZangZing", "link" => "http://www.zangzing.com/join"}.to_json )
+                              :actions     => DEFAULT_ACTIONS )
   end
 end
