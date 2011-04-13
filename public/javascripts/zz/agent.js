@@ -10,6 +10,42 @@ var agent = {
     port : 30777,
     agentId: null,
 
+    STATUS: {
+        READY: true,
+        NOT_RUNNING: false,
+        BAD_SESSION: "bad session"
+    },
+
+
+    getStatus:function(callback){
+        var pingUrl = this.buildAgentUrl("/ping");
+
+
+        $.jsonp({
+            url: pingUrl,
+            success: function(response){
+                if(response.headers.status == 200){
+                    callback(agent.STATUS.READY);
+                }
+                else{
+                    ZZAt.track('agent.ping.invalid', response);
+                    callback(agent.STATUS.BAD_SESSION);
+                }
+            },
+            error: function(){
+                callback(agent.STATUS.NOT_RUNNING)
+            }
+        });
+    },
+
+
+
+
+    /**
+     *
+     * @param callback is passed true|false|"error" (if bad session)
+     */
+    //todo: get rid of this call and use getStatus instead
     isAvailable: function(callback) {
 
         var onSuccess = function() {
