@@ -1004,14 +1004,18 @@ pages.no_agent = {
     },
 
     poll_agent: function( when_ready ){
-          agent.isAvailable( function( agentAvailable ){
-              if( agentAvailable ){
+          agent.getStatus( function( status ){
+              if( status == agent.STATUS.READY ){
                     $('.zangzing-downloader #download-btn').attr('disabled', 'disabled');
                     $('.zangzing-downloader .step.four .graphic').addClass('ready');
                     if(  when_ready ){
                         setTimeout( when_ready, 2000 );
                     }
 				    ZZAt.track('agentdownload.ready');
+              }
+              else if( status == agent.STATUS.BAD_SESSION ){
+                  alert("Sorry, you session has expired. Please sign in again.");
+                  document.location.href = path_helpers.rails_route('signin');
               }
               else{
                   if( pages.no_agent.keep_polling() ){

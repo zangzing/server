@@ -20,6 +20,9 @@ var path_helpers = {
         else if(name == 'new_identity'){
             return '/service/' + id + '/sessions/new'
         }
+        else if(name == 'signin'){
+            return '/signin';
+        }
         return null;
     }
 

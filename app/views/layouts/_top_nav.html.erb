@@ -5,11 +5,6 @@
 
 
   <div id="home-button" class="has-tooltip" title="Goto Your Homepage"></div>
-  <% if @album %>
-      <a id="back-button" class="back-button"><span>All Albums</span></a>
-  <% end %>
-
-
 
 
   <% if @album %>
@@ -80,6 +75,12 @@
         </div>
     </div>
 <% end %>
+
+<% if @album #this needs to be after album and user info so that it floats on top%>
+  <a id="back-button" class="back-button"><span>All Albums</span></a>
+<% end %>
+
+
 
 <% if @user %>
   <div id="user-info" style="display:<%= @user && !@user.changed? ? 'inline-block' : 'none' %>">

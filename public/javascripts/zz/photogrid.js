@@ -58,7 +58,7 @@
             }
             else{
                 self.element.css({
-                    'overflow-y':'scroll',
+                    'overflow-y':'auto',
                     'overflow-x':'hidden'
                 });
             }

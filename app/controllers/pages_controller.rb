@@ -6,6 +6,8 @@ class PagesController < ApplicationController
      @title = "Home"
      if current_user
        redirect_to user_url( current_user.username )
+     else
+       redirect_to join_url
      end
    end
 
