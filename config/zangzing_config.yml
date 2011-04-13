@@ -43,7 +43,7 @@ photos_production:
   reserved_names: true
   resque_zza_id: "photos/svr"
   album_email_host: "zangzing.com"
-#  requires_http_auth: false
+  requires_http_auth: false
   agent_download_url_mac: "http://downloads.zangzing.com/agent/darwin/ZangZing-Setup.pkg"
   agent_download_url_win: "http://downloads.zangzing.com/agent/win32/ZangZing-Setup.exe"
 
