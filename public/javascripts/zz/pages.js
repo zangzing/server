@@ -1014,7 +1014,7 @@ pages.no_agent = {
 				    ZZAt.track('agentdownload.ready');
               }
               else if( status == agent.STATUS.BAD_SESSION ){
-                  alert("Sorry, you session has expired. Please sign in again.");
+                  alert("Sorry, your session has expired. Please sign in again.");
                   document.location.href = path_helpers.rails_route('signin');
               }
               else{

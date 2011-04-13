@@ -448,7 +448,7 @@ zz.init = {
 
         var view = 'grid';
 
-        if (document.location.href.indexOf('/photos/#!') !== -1 || document.location.href.indexOf('/photos#!') !== -1) {
+        if (document.location.href.indexOf('#!')!== -1) { 
             view = 'picture';
         }
 
