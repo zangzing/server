@@ -29,6 +29,11 @@ FlickRaw.shared_secret = FLICKR_API_KEYS[:shared_secret]
 ShutterflyConnector.app_id = SHUTTERFLY_API_KEYS[:app_id]
 ShutterflyConnector.shared_secret = SHUTTERFLY_API_KEYS[:shared_secret]
 
+Instagram.configure do |config|
+  config.client_id = INSTAGRAM_API_KEYS[:client_id]
+  config.client_secret = INSTAGRAM_API_KEYS[:client_secret]
+end
+
 
 msg = "=> Connector API keys loaded."
 Rails.logger.info msg
