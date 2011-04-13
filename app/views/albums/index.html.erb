@@ -69,18 +69,20 @@
                     //remove duplicates
                     var previous_album = null;
                     var unique_results = _.select(sorted_results, function(album){
+                        var keep;
                         if(previous_album){
                             if(album.id == previous_album.id){
-                                return false;
+                                keep = false;
                             }
                             else{
-                                return true;
+                                keep = true;
                             }
                         }
                         else{
-                            return true;
+                            keep = true;
                         }
                         previous_album = album;
+                        return keep;
                     });
 
 
