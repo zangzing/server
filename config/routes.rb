@@ -6,7 +6,7 @@
 
 Server::Application.routes.draw do
   root :to => 'pages#home'
-  get    '/beta'            => 'pages#home',          :as => :service
+  get    '/beta'               => 'pages#home'
   get    '/service'            => 'pages#home',          :as => :service
   get    '/signin'             => 'user_sessions#new',   :as => :signin
   get    '/join'               => 'user_sessions#join',  :as => :join
