@@ -28,16 +28,20 @@ class FacebookIdentity < Identity
     self.facebook_graph.post("me/feed", :message => message, :link => link)
   end
 
+  def post_like(like, message)
+    post( like.url, message)
+  end
+
   # Formats share data into a facebook post
   def post_share( share )
     if share.album?
       album       = Album.find( share.subject_id )
-      message     = "#{share.user.username} shared a ZangZing Photo Album"
+      message     = "#{user.username} shared a ZangZing Photo Album"
       name        = "#{album.name} by #{album.user.username}"
       picture     = album.cover.thumb_url
     elsif share.photo?
       photo       = Photo.find( share.subject_id )
-      message     = "#{share.user.username} shared a ZangZing Photo"
+      message     = "#{user.username} shared a ZangZing Photo"
       name        = "#{photo.caption} by #{photo.user.username}"
       picture     = photo.thumb_url
     else

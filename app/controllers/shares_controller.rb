@@ -47,7 +47,6 @@ class SharesController < ApplicationController
     rcp = (  params[:recipients].is_a?(Array) ? params[:recipients] : params[:recipients].split(',') )
     @share = Share.new( :user =>        current_user,
                         :subject =>     @subject,
-                        :subject_type=> @subject_type,
                         :subject_url => @subject_url,
                         :service =>     params[:service],
                         :recipients =>  rcp,

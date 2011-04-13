@@ -1,6 +1,8 @@
 require 'cache/album/manager'
 
 class Like < ActiveRecord::Base
+  include PrettyUrlHelper
+
   attr_accessible :user_id, :subject_id, :subject_type
 
   belongs_to :user
@@ -8,7 +10,7 @@ class Like < ActiveRecord::Base
 
 
   before_create :set_type
-  after_create  :post
+  after_commit  :post, :on => :create
 
   #Like Subject Types
   USER = 'U'
@@ -21,8 +23,8 @@ class Like < ActiveRecord::Base
   def self.add( user_id, subject_id, subject_type )
     begin
       #Create Like record, increase the subject_ids like counter
-      like = Like.create( :user_id => user_id,
-                          :subject_id => subject_id,
+      like = Like.create( :user_id      => user_id,
+                          :subject_id   => subject_id,
                           :subject_type => subject_type )
       LikeCounter.increase( subject_id )
       Cache::Album::Manager.shared.like_added(user_id, like)
@@ -51,8 +53,7 @@ class Like < ActiveRecord::Base
 
     # Instead of searching and failing to find a like, just create a new Like shell (not saved to DB, no ARcallbacks)
     # and use it to create a post then discard. Its faster since we have all the info we need.
-    like = Like.new( :user_id => user_id, :subject_id => subject_id)
-    like.post( message, tweet, facebook) if like
+    Like.new( :user_id=>user_id, :subject_id=>subject_id, :subject_type=>subject_type ).post( message, tweet, facebook)
   end
 
   def self.remove( user_id, subject_id )
@@ -93,10 +94,10 @@ class Like < ActiveRecord::Base
       message = Like.default_like_post_message( self.subject_id, self.subject_type ) unless message
 
       if ( tweet || ( !user.preferences.asktopost_likes && user.preferences.tweet_likes ) ) && user.identity_for_twitter.credentials_valid?
-          ZZ::Async::Social.enqueue( 'twitter', user.id, self.url, message )
+          user.identity_for_twitter.post_like( self, message )
       end
       if  (facebook || ( !user.preferences.asktopost_likes && user.preferences.facebook_likes )) && user.identity_for_facebook.credentials_valid?
-          ZZ::Async::Social.enqueue( 'facebook', user.id, self.url, message )
+         user.identity_for_facebook.post_like( self, message)
       end
     rescue ActiveRecord::RecordNotFound
       #user was not found, nothing to post
@@ -108,12 +109,11 @@ class Like < ActiveRecord::Base
   def url
     case subject_type
       when USER, 'user'
-        user_url(  subject_id )
+        user_pretty_url(  User.find( subject_id ))
       when ALBUM, 'album'
-        album_url( subject_id )
+        album_pretty_url( Album.find( subject_id ))
       when PHOTO, 'photo'
-        liked_photo = Photo.find( subject_id )
-        album_url( liked_photo.album )+'/#!'+subject_id.to_s
+        photo_pretty_url( Photo.find( subject_id ))
       else
         'http://www.zangzing.com'
     end
