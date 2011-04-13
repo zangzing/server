@@ -72,7 +72,7 @@ class UsersController < ApplicationController
             @new_user.deliver_welcome!
             UserSession.create(@new_user, true)
             session[:show_welcome_dialog] = true
-            redirect_back_or_default @new_user
+            redirect_to user_pretty_url( @new_user )
             return
         end
       else
