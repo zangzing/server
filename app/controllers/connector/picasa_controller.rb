@@ -6,7 +6,7 @@ class Connector::PicasaController < Connector::GoogleController
   end
 
 protected
-  def get_photo_url(media_group, size)
+  def self.get_photo_url(media_group, size)
     if size == :full || size == :screen
       make_plain_http(media_group.at_xpath('m:content', NS)['url'])
     elsif size == :thumb
@@ -19,12 +19,12 @@ protected
     end
   end
 
-  def make_source_guid(media_element)
+  def self.make_source_guid(media_element)
     "picasa_"+Photo.generate_source_guid(get_photo_url(media_element, :full))
   end
 
   # take a potentially https url and make it http
-  def make_plain_http(url)
+  def self.make_plain_http(url)
     converted = url.gsub(/^https:\/\//, 'http://')
     if converted.nil?
       return url
