@@ -63,7 +63,7 @@ module ZZ
         def self.upload_to_s3(photo)
           begin
             photo.upload_source
-          rescue => ex
+          rescue Exception => ex
             Rails.logger.debug("Upload to S3 Failed: " + ex)
             if self.should_retry(ex) == false
                # not going to be retrying, so safe to remove temp file

@@ -30,6 +30,7 @@ class AsyncResponse
         end,
         :message => exception.message
       }
+      Rails.logger.info("AsyncResponse Exception: #{exception.class.name} - #{exception.message}")
       Rails.cache.write(response_id, info.to_json, :expires_in => RESPONSE_EXPIRES_IN)
     end
 
