@@ -264,17 +264,127 @@ class ReservedUserNames
       "edmeng",
       "gerryschroeder",
       "jess",
+      "flickr",
+      "shutterfly",
+      "photobucket",
+      "dropbox",
+      "instagram",
+      "facebook",
+      "twitter",
+      "kodak gallery",
+      "smugmug",
+      "picasa",
+      "picasaweb",
+      "iphoto",
+      "photobooks",
+      "photobook",
+      "photocard",
+      "photocards",
+      "canon",
+      "nikon",
+      "leica",
+      "olympus",
+      "kodak",
+      "minolta",
+      "panasonic",
+      "sony",
+      "polaroid",
+      "wedding",
+      "zangzingwedding",
+      "zzwedding",
+      "zzweddings",
+      "bride",
+      "brides",
+      "zangzingbride",
+      "zangzingbrides",
+      "zzbride",
+      "zzbrides",
+      "concert",
+      "concerts",
+      "zangzingconcert",
+      "zangzingconcerts",
+      "zzconcert",
+      "zzconcerts",
+      "school",
+      "schools",
+      "zangzingschool",
+      "zangzingschools",
+      "zzschool",
+      "zzschools",
+      "prom",
+      "promx",
+      "zangzingprom",
+      "zangzingproms",
+      "zzprom",
+      "zzproms",
+      "fundraising",
+      "fundraisings",
+      "zangzingfundraising",
+      "zangzingfundraisings",
+      "zzfundraising",
+      "zzfundraisings",
+      "nonprofit",
+      "nonprofits",
+      "zangzingnonprofit",
+      "zangzingnonprofits",
+      "zznonprofit",
+      "zznonprofits",
+      "soccer",
+      "basketball",
+      "lacrosse",
+      "football",
+      "tennis",
+      "cycling",
+      "hockey",
+      "field hockey",
+      "swimming",
+      "trackandfield",
+      "diving",
+      "triathlon",
+      "marathon",
+      "biathlon",
+      "ncaa",
+      "golf",
+      "volleyball",
+      "surfing",
+      "kiteboarding",
+      "windsurfing",
+      "diving",
+      "boating",
+      "sailing",
+      "flying",
+      "parachuting",
+      "kickball",
+      "wrestling",
+      "ballet",
+      "dance",
+      "symphony",
+      "opera",
+      "mlb",
+      "nba",
+      "nhl",
+      "wwf",
+      "nfl",
+
     ].freeze
   end
 
   def self.is_reserved?(user)
     l_user = user.downcase
 
-    # special filter for wp-* site paths
-    return true if l_user =~ /wp-.*/
+    return true if reserved_users.include?(l_user)
 
-    # now see if in our map
-    return reserved_users.include?(l_user)
+    # special filter for wp-* site paths
+    return true if l_user =~ /^wp-.*/
+
+    # special filter for zz*
+    return true if l_user =~ /^zz.*/
+
+    # special filter for zz*
+    return true if l_user =~ /^zangzing.*/
+
+    # not reserved
+    return false
   end
 
   def self.print_sorted(as_code=false)
