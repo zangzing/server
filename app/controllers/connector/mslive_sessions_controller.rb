@@ -1,5 +1,5 @@
 class Connector::MsliveSessionsController < Connector::MsliveController
-  skip_before_filter :service_login_required, :only => [:new, :delauth]
+  skip_before_filter :service_login_required, :only => [:new, :delauth, :destroy]
   skip_before_filter :require_user, :only => [:new, :delauth]
 
   skip_before_filter :verify_authenticity_token, :only => [:delauth]
