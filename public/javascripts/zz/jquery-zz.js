@@ -69,6 +69,10 @@
      */
     $.fn.center = function(container, center_x, center_y) {
 
+        if(! container){
+            container = $(this).parent();
+        }
+
         if (! $.isPlainObject(container)) {
             //assume its an element
             var container_element = $(container);
