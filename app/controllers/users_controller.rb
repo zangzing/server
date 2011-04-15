@@ -4,98 +4,114 @@ class UsersController < ApplicationController
   before_filter :require_admin,   :only => [:index,:activate]
   before_filter :correct_user,    :only => [:edit, :update]
 
-  def new
-      @title = "Sign up"
+  layout false, :only=>:join
+
+
+  def join
+    if ! current_user
       @new_user = User.new
+      @user_session = UserSession.new
+    else
+      redirect_to user_pretty_url(current_user)
+    end
   end
+
+
+
+
 
   def create
-      # check username if in magic format
-      user_info = params[:user]
-      checked_user_name = check_reserved_username(user_info)
-      if checked_user_name.nil?
-        @new_user = User.new()
-        @new_user.set_single_error(:username, "You attempted to use a reserved user name without the proper key." )
-        render :action => :new and return
-      end
+    @user_session = UserSession.new
 
-      #Check if user is an automatic user ( a contributor that has never logged in but has sent photos )
-      @new_user = User.find_by_email( params[:user][:email])
-      if @new_user && @new_user.automatic?
-        # The user is an automatic user because she had contributed photos after being invited by email
-        # she has now decided to join, remove automatic flag and reset password.
-        @new_user.automatic = false
-        @new_user.name      = params[:user][:name]
-        @new_user.username  = params[:user][:username]
-        @new_user.reset_password = true
-        @new_user.password = params[:user][:password]
-        @new_user.password_confirmation  = @new_user.password
-      else
-        @new_user = User.new(params[:user])
-      end
-      @new_user.reset_perishable_token
-  	  @new_user.reset_single_access_token
 
-      # new users are active by default
-      if SystemSetting[:signup_control]
-        @new_user.active = false
-        @guest = Guest.find_by_email( params[:user][:email] )
-        if @guest
-           if SystemSetting[:always_allow_beta_listers] && @guest.beta_lister?
-              @new_user.active = true #always allow when beta-lister is set and user is beta_lister
-           else
-              if SystemSetting[:new_users_allowed] > 0
-                # user allotment available
-                if @guest.share?
-                  if SystemSetting[:allow_sharers]
-                    @new_user.active= true
-                    SystemSetting[:new_users_allowed] -= 1;
-                  end
-                else
-                  @new_user.active= true
-                  SystemSetting[:new_users_allowed] -= 1;
-                end
+    # check username if in magic format
+    user_info = params[:user]
+    checked_user_name = check_reserved_username(user_info)
+    if checked_user_name.nil?
+      @new_user = User.new()
+      @new_user.set_single_error(:username, "You attempted to use a reserved user name without the proper key." )
+      render :action => :join and return
+    end
+
+    #Check if user is an automatic user ( a contributor that has never logged in but has sent photos )
+    @new_user = User.find_by_email( params[:user][:email])
+    if @new_user && @new_user.automatic?
+      # The user is an automatic user because she had contributed photos after being invited by email
+      # she has now decided to join, remove automatic flag and reset password.
+      @new_user.automatic = false
+      @new_user.name      = params[:user][:name]
+      @new_user.username  = params[:user][:username]
+      @new_user.reset_password = true
+      @new_user.password = params[:user][:password]
+      @new_user.password_confirmation  = @new_user.password
+    else
+      @new_user = User.new(params[:user])
+    end
+    @new_user.reset_perishable_token
+    @new_user.reset_single_access_token
+
+    # new users are active by default
+    if SystemSetting[:signup_control]
+      @new_user.active = false
+      @guest = Guest.find_by_email( params[:user][:email] )
+      if @guest
+        if SystemSetting[:always_allow_beta_listers] && @guest.beta_lister?
+          @new_user.active = true #always allow when beta-lister is set and user is beta_lister
+        else
+          if SystemSetting[:new_users_allowed] > 0
+            # user allotment available
+            if @guest.share?
+              if SystemSetting[:allow_sharers]
+                @new_user.active= true
+                SystemSetting[:new_users_allowed] -= 1;
               end
-           end
-        end
-      end
-
-      if @new_user.active
-        #Save active user
-        if @new_user.save
-            if @guest
-               @guest.user_id = @new_user.id
-               @guest.status = 'Active Account'
-               @guest.save
+            else
+              @new_user.active= true
+              SystemSetting[:new_users_allowed] -= 1;
             end
-            flash[:success] = "Welcome to ZangZing!"
-            @new_user.deliver_welcome!
-            UserSession.create(@new_user, true)
-            session[:show_welcome_dialog] = true
-            redirect_to user_pretty_url( @new_user )
-            return
+          end
         end
-      else
-        # Saving without session maintenance to skip
-        # auto-login which can't happen here because
-        # the User has not yet been activated
-        if @new_user.save_without_session_maintenance
-           if @guest
-              @guest.user_id = @new_user.id
-              @guest.status = 'Inactive'
-              @guest.save
-           end
-           session[:client_dialog]=root_url+'static/inactive_dialog.html'
-
-           redirect_to service_url and return
-        end  
       end
-      render :action => :new 
+    end
+
+    if @new_user.active
+      #Save active user
+      if @new_user.save
+        if @guest
+          @guest.user_id = @new_user.id
+          @guest.status = 'Active Account'
+          @guest.save
+        end
+        flash[:success] = "Welcome to ZangZing!"
+        @new_user.deliver_welcome!
+        UserSession.create(@new_user, true)
+        session[:show_welcome_dialog] = true
+        redirect_to user_pretty_url( @new_user )
+        return
+      end
+    else
+      # Saving without session maintenance to skip
+      # auto-login which can't happen here because
+      # the User has not yet been activated
+      if @new_user.save_without_session_maintenance
+        if @guest
+          @guest.user_id = @new_user.id
+          @guest.status = 'Inactive'
+          @guest.save
+        end
+#           session[:client_dialog]=root_url+'static/inactive_dialog.html'
+
+        redirect_to inactive_url and return
+      end
+    end
+
+    render :action=>:join
+
   end
-  
+
   def show
-      @user = User.find(params[:id])
-      redirect_to user_pretty_url(@user )
+    @user = User.find(params[:id])
+    redirect_to user_pretty_url(@user )
   end
 
 
@@ -111,13 +127,13 @@ class UsersController < ApplicationController
     @user = current_user
     if @user.update_attributes(params[:user])
       flash[:notice] = "Your Password Has Been Changed."
-       redirect_to user_pretty_url(@user)
+      redirect_to user_pretty_url(@user)
     else
-       render :action => :edit_password
+      render :action => :edit_password
     end
   end
 
-  
+
   def update
     @user = current_user
     if @user.update_attributes(params[:user])
@@ -176,21 +192,21 @@ class UsersController < ApplicationController
     redirect_to :action => :index
   end
 
-  
+
   private
-    def admin_user
-          redirect_to( root_path ) unless current_user.admin?
+  def admin_user
+    redirect_to( root_path ) unless current_user.admin?
+  end
+
+  def correct_user
+    if params[:id]
+      @user = User.find(params[:id])
+    elsif params[:username]
+      @user = User.find_by_username(params[:username])
     end
 
-    def correct_user
-      if params[:id]
-        @user = User.find(params[:id])
-      elsif params[:username]
-        @user = User.find_by_username(params[:username])
-      end
-
-      redirect_to( root_path ) unless current_user?(@user)
-    end
+    redirect_to( root_path ) unless current_user?(@user)
+  end
 
 
 

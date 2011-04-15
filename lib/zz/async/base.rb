@@ -1,3 +1,5 @@
+require 'photo.rb'
+
 module ZZ
   module Async
 
