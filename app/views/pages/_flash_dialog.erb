@@ -24,7 +24,7 @@
 </style>
 
 <script type="text/javascript">
-$("<div id='flash-dialog'><div><div id='flash'></div><a id='ok' class='newgreen-button'><span>Ok</span></a></div></div>").zz_dialog({ autoOpen: false });
+$("<div id='flash-dialog'><div><div id='flash'></div><a id='ok' class='newgreen-button'><span>OK</span></a></div></div>").zz_dialog({ autoOpen: false });
                      $('#flash-dialog #flash').text('<%=flash[:notice]%>');
                      $('#ok').click( function(){ $('#flash-dialog').zz_dialog('close').empty().remove(); });
                      $('#flash-dialog').zz_dialog('open');
