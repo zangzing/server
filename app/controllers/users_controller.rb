@@ -4,13 +4,13 @@ class UsersController < ApplicationController
   before_filter :require_admin,   :only => [:index,:activate]
   before_filter :correct_user,    :only => [:edit, :update]
 
-  layout false, :only=>:join
 
 
   def join
     if ! current_user
       @new_user = User.new
       @user_session = UserSession.new
+      render :layout=>false
     else
       redirect_to user_pretty_url(current_user)
     end
