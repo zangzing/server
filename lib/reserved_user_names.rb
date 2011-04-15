@@ -97,6 +97,7 @@ class ReservedUserNames
       "investor relations",
       "investorrelations",
       "iphone",
+      "ipad",
       "j",
       "jansanelli",
       "java",
