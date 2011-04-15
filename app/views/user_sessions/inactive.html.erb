@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=100" > <!-- IE8 mode -->
+    <meta http-equiv="Content-Language" Content="en">
+    <meta charset="utf-8">
+    <meta name="copyright" content="Copyright 2011, ZangZing, LLC. All Rights Reserved." />
+    <meta name="DC.title" content="ZangZing" />
+    <meta name="title" content="ZangZing" />
+    <title>Group Photo Sharing - ZangZing</title>
+    <%= include_stylesheets :common %>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+  <%= include_javascripts :lib %>
+  <%= include_javascripts :zz %>
+
+</head>
+<body class="signin">
+  <img src="/images/background_signin.jpg" class="bg" />
+
+
+    <div class="new-dialog user-session-dialog">
+      <div class="background"></div>
+      <div class="frame"></div>
+      <div class="body">
+
+      <a class="logo" href="/service"><img src="/error/img/logo.png" alt="logo" /></a>
+
+      <div class="content">
+        <h1>Our Apologies</h1>
+        <div id="header-hairline"></div>
+
+        <p>Unfortunately, we are in our Early Access period and are managing the rollout of new accounts.</p>
+        <p>We will send you an email as soon as possible so that you can start using ZangZing.</p>
+        <p>Thanks for understanding. To try out ZangZing, click OK to go to our Photo of the Day.</p>
+
+        <a id="submit-button" href="/zangzing/zangzing-photo-of-the-day" class="newgreen-button"><span>OK</span></a>
+
+
+      </div>
+    </div>
+   </div>
+</body>
+</html>

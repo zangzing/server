@@ -9,6 +9,8 @@ class UsersController < ApplicationController
       @new_user = User.new
   end
 
+
+
   def create
       # check username if in magic format
       user_info = params[:user]
@@ -85,9 +87,9 @@ class UsersController < ApplicationController
               @guest.status = 'Inactive'
               @guest.save
            end
-           session[:client_dialog]=root_url+'static/inactive_dialog.html'
+#           session[:client_dialog]=root_url+'static/inactive_dialog.html'
 
-           redirect_to service_url and return
+           redirect_to inactive_url and return
         end  
       end
       render :action => :new 

@@ -1,127 +1,124 @@
-.signin a img{
-border:none;
-}
-.signin{
-	width:100%;
-	height:100%;
-}
+
 .signin .bg{
 	position:absolute;
 	left:0;
 	top:0;
 	width:100%;
-	z-index:1;
-}
-.signin .content{
-    text-align: left;
-    text-align: left;
-	position:relative;
-	z-index:2;
-	margin:150px auto;
-	width:779px;
-	height:228px;
-	background:url("/error/img/desk.png") no-repeat;
-	color:#6a6a6c;
-    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
 }
 
-.signin .content h1{
-	font-size:28px;
-	font-weight:200;
-	margin:20px 0 10px 0;
-	display:block;
-	width:450px;
-}
-.signin .content hr{
-    margin-right: 35px;
+
+
+.user-session-dialog{
+    top: 200px;
+    width: 600px;
+    height: 250px;
+    color: #6A6A6C;
+    text-shadow: 1px 1px white;
 }
 
-.signin .content-r #top-button{
-	position: absolute;
-    right: 50px;
-    top:   22px;
-    color: #777777;
-    width: 55px;
-}
-.signin .content-r #ok-button{
-	position: absolute;
-    right:  50px;
-    bottom: 22px;
-    width:  60px;
+#join-dialog{
+    height: 320px;
 }
 
-.signin .content-r #submit-button{
-	position: absolute;
-    right:  50px;
-    bottom: 22px;
-    width: 60px;
-}
-.signin .logo {
-	display:block;
-	float:left;
-	margin:50px 50px;
-}
-.signin .content-r {
-	float:left;
-	width:470px;
-}
-.signin .content form#password_reset_form{
+.user-session-dialog .logo{
     position: absolute;
-    top: 115px;
-    left: 295px;
-    width: 450px;
-	font-size:17px;
-    font-weight:200;
-	margin-left: 10px;
+    top:30px;
+    left:0px;
 }
-.signin .content form div#flash-error{
-    position: absolute;
-    top: -30px;
-    left: 40px;
-    width: 350px;
-    color: red;
+
+.user-session-dialog .content{
+    position:absolute;
+    top:0px;
+    left:220px;
+    right:0px;
+    bottom:0px;
+}
+
+.user-session-dialog .content table{
+    width:100%
+}
+
+.user-session-dialog .content table td{
+    padding:3px;
+    padding-left:0px;
+}
+
+.user-session-dialog .content table td.label{
+    text-align:left;
+    white-space:nowrap;
+}
+
+.user-session-dialog .content table td.field{
+    text-align:right;
+}
+
+
+
+.user-session-dialog .content #flash-error{
+    text-align:left;
+    color:red;
+    min-height:20px;
+    margin-bottom:5px
+}
+
+.user-session-dialog form{
+    text-align:right;
     font-size:14px;
 }
 
-.signin .content div#flash-notice{
-    margin: 10px 0;
-    width: 360px;
+.user-session-dialog input{
+    width:180px;
+    margin-left:10px;
+}
+
+.user-session-dialog #back-to-signin-button{
+    position:absolute;
+    right:0px;
+    top:0px;
+    width:100px;
+}
+
+.user-session-dialog #submit-button{
+    position:absolute;
+    right:0px;
+    bottom:0px;
+    width:80px;
+}
+
+.user-session-dialog #ok-button{
+    position:absolute;
+    right:0px;
+    bottom:0px;
+    width:80px;
+}
+
+.user-session-dialog #header-hairline{
+    margin-top:12px;
+    margin-bottom:12px;
+    left:0px;
+    right:0px;
+    border-bottom:1px solid #e2e3e8;
+}
+
+.user-session-dialog h1{
+    font-size: 19px;
+    text-align: left;
+    position:relative;
+    top:4px;
+}
+
+.user-session-dialog p{
     font-size:14px;
-}
-.signin .content form input#email{
-    position: absolute;
-    left: 143px;
-    width: 270px;
+    text-align:left;
+    position:relative;
+    margin-top:10px;
+
 }
 
-.signin .content form#password_edit_form{
-    position: absolute;
-    top: 70px;
-    left: 295px;
-    width: 500px;
-    height: 100px;
-	font-size:17px;
-    font-weight:200;
-	margin-left: 5px;
-}
-
-.signin .content form#password_edit_form input{
-    width: 280px;
-}
-.signin .content form#password_edit_form table{
-    width: 100%;
-    height : 100%;
-}
-.signin .content form#password_edit_form #flash-error{
-    color: red;
+.user-session-dialog #tos{
+    font-size: 12px;
+    text-align:left;
+    margin-top:5px;
 }
 
 
-
-
-
-.signin .content a{
-	color:#336699;
-	font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-	text-decoration:none;
-}

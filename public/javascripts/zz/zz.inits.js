@@ -143,7 +143,7 @@ zz.init = {
 
         $('#header #sign-in-button').click(function() {
             ZZAt.track('button.signin.click');
-            pages.signin.signin('');
+            document.location.href = "/signin";
         });
 
         $('#footer #play-button').click(function() {
@@ -297,83 +297,83 @@ zz.init = {
         /* new user stuff   */
         /* ---------------------------------*/
 
-        $('#user_username').keyup(function(event) {
-            var value = $('#user_username').val();
-            $('#update-username').empty().text(value);
-        });
-
-        $('#step-sign-in-off').click(function() {
-            $('#small-drawer').animate({height: '0px', top: '28px'}, function() {
-                $('#sign-in').show();
-                $('#sign-up').hide();
-                $('#small-drawer').animate({height: '480px', top: '56px'}, 500, 'linear', function() {
-                    $('#user_session_email').focus();
-                });
-            });
-
-
-        });
-        $('#step-join-off').click(function() {
-            $('#small-drawer').animate({height: '0px', top: '28px'}, function() {
-                $('#sign-up').show();
-                $('#sign-in').hide();
-                $('#small-drawer').animate({height: '480px', top: '56px'}, 500, 'linear', function() {
-                    $('#user_name').focus();
-
-                });
-            });
-        });
-
-        $('#join_form_submit_button').click(function() {
-            $('form#join-form').submit();
-        });
-
-        $('#join_form_cancel_button').click(function() {
-            //todo: move this to pages.signing
-            $('#small-drawer').animate({height: '0px', top: '28px'});
-            zz.drawer_state = zz.DRAWER_CLOSED;
-            $('#header #sign-in-button').removeClass('selected');
-
-        });
-
-        $('form#join-form').submit(function(){
-            ZZAt.track('button.join.click');
-        });
-
-
-        $('form#join-form').bind('keypress', function(e){
-              if ( e.keyCode == 13 ) {
-                  $("form#join-form").submit();
-              }
-        });
+//        $('#user_username').keyup(function(event) {
+//            var value = $('#user_username').val();
+//            $('#update-username').empty().text(value);
+//        });
+//
+//        $('#step-sign-in-off').click(function() {
+//            $('#small-drawer').animate({height: '0px', top: '28px'}, function() {
+//                $('#sign-in').show();
+//                $('#sign-up').hide();
+//                $('#small-drawer').animate({height: '480px', top: '56px'}, 500, 'linear', function() {
+//                    $('#user_session_email').focus();
+//                });
+//            });
+//
+//
+//        });
+//        $('#step-join-off').click(function() {
+//            $('#small-drawer').animate({height: '0px', top: '28px'}, function() {
+//                $('#sign-up').show();
+//                $('#sign-in').hide();
+//                $('#small-drawer').animate({height: '480px', top: '56px'}, 500, 'linear', function() {
+//                    $('#user_name').focus();
+//
+//                });
+//            });
+//        });
+//
+//        $('#join_form_submit_button').click(function() {
+//            $('form#join-form').submit();
+//        });
+//
+//        $('#join_form_cancel_button').click(function() {
+//            //todo: move this to pages.signing
+//            $('#small-drawer').animate({height: '0px', top: '28px'});
+//            zz.drawer_state = zz.DRAWER_CLOSED;
+//            $('#header #sign-in-button').removeClass('selected');
+//
+//        });
+//
+//        $('form#join-form').submit(function(){
+//            ZZAt.track('button.join.click');
+//        });
+//
+//
+//        $('form#join-form').bind('keypress', function(e){
+//              if ( e.keyCode == 13 ) {
+//                  $("form#join-form").submit();
+//              }
+//        });
 
 
 
         /* sign in   */
         /* ---------------------------------*/
-        $('#signin-form-cancel-button').click(function() {
-            //todo: move this to pages.signing
-            $('#small-drawer').animate({height: '0px', top: '28px'});
-            zz.drawer_state = zz.DRAWER_CLOSED;
-            $('#header #sign-in-button').removeClass('selected');
-
-        });
-
-
-        $('#signin-form-submit-button').click(function() {
-            $("form#new_user_session").submit();
-        });
-
-
-         $('form#new_user_session').bind('keypress', function(e){
-               if ( e.keyCode == 13 ) {
-                   $("form#new_user_session").submit();
-               }
-         });
-
-        //todo: why are these here
-        $(zz.validate.sign_in.element).validate(zz.validate.sign_in);
-        $(zz.validate.join.element).validate(zz.validate.join);
+//        $('#signin-form-cancel-button').click(function() {
+//            //todo: move this to pages.signing
+//            $('#small-drawer').animate({height: '0px', top: '28px'});
+//            zz.drawer_state = zz.DRAWER_CLOSED;
+//            $('#header #sign-in-button').removeClass('selected');
+//
+//        });
+//
+//
+//        $('#signin-form-submit-button').click(function() {
+//            $("form#new_user_session").submit();
+//        });
+//
+//
+//         $('form#new_user_session').bind('keypress', function(e){
+//               if ( e.keyCode == 13 ) {
+//                   $("form#new_user_session").submit();
+//               }
+//         });
+//
+//        //todo: why are these here
+//        $(zz.validate.sign_in.element).validate(zz.validate.sign_in);
+//        $(zz.validate.join.element).validate(zz.validate.join);
 
 
         zz.init.acct_badge();

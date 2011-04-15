@@ -29,11 +29,9 @@ class PasswordResetsController < ApplicationController
       @user = User.find_by_email(params[:email])
       if @user
          @user.deliver_password_reset_instructions!
-         flash.now[:notice] = "<p>An email to reset your password is on it’s way!</p><br>"+
-                          "<p>If it doesn't show up, check your Junk Mail folder.<p/><br>"+
-                          "<p>If it's not there then please <a href='mailto:help@zangzing.com'>contact support.</a></p>"
+         @reset_success = true
       else
-         flash.now[:error] = "Could not find that email address in our records"
+         flash.now[:error] = "Sorry, we could not find that email address in our records"
       end
       render :action => :new
   end
@@ -67,10 +65,8 @@ private
   def load_user_using_perishable_token
     @user = User.find_using_perishable_token(params[:id])
     unless @user
-      flash.now[:notice] = "We're sorry, but we could not locate your account.<br> " +
-                       "If you are having issues try copying and pasting the URL " +
-                       "from your email into your browser or restarting the " +
-                       "reset password process <a href='#{new_password_reset_url}'>here</a>."
+      @bad_perishable_token = true
+
       render :action => :new and return
     end
   end

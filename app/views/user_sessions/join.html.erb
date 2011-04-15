@@ -1,10 +1,82 @@
-<% content_for :page_javascript do  # this places our page-specific js with the rest of the js at the bottom of the html -%>
-<script>
-  (function($) {
-      pages.signin.join();
-<%    if (@user_session && @user_session.errors) || flash.length > 0 -%>
-      $('#sign-in p.error-notice').show();
-<%    end -%>
-   })(jQuery);
-</script>
-<% end %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=100" > <!-- IE8 mode -->
+    <meta http-equiv="Content-Language" Content="en">
+    <meta charset="utf-8">
+    <meta name="copyright" content="Copyright 2011, ZangZing, LLC. All Rights Reserved." />
+    <meta name="DC.title" content="ZangZing" />
+    <meta name="title" content="ZangZing" />
+    <title>Group Photo Sharing - ZangZing</title>
+    <%= include_stylesheets :common %>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+    <%= include_javascripts :lib %>
+    <%= include_javascripts :zz %>
+
+</head>
+<body class="signin">
+  <img src="/images/background_signin.jpg" class="bg" />
+
+
+    <div id="join-dialog" class="new-dialog user-session-dialog">
+      <div class="background"></div>
+      <div class="frame"></div>
+      <div class="body">
+
+      <a class="logo" href="/service"><img src="/error/img/logo.png" alt="logo" /></a>
+
+      <div class="content">
+        <h1>Join</h1>
+        <a id= "back-to-signin-button" href="/signin" class="gray-button"><span>Sign In</span></a>
+        <div id="header-hairline"></div>
+
+        <form id="join-form" method="post" enctype="multipart/form-data" action=<%=create_user_path%>>
+          <input style="visibility:hidden" type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>"></input>
+              <div id="flash-error">
+        <% if @user_session.errors %>
+            <%= @user_session.errors %>
+        <% end %>
+              </div>
+
+              <table>
+                <tr>
+                  <td class="label">First and Last Name</td>
+                  <td class="field"><input type="text" value="<%=(@new_user ? @new_user.name : '')%>" size="30" name="user[name]" id="user_name"></td>
+                </tr>
+
+                <tr>
+                  <td class="label">User Name</td>
+                  <td class="field"><input type="text" value="<%=(@new_user ? @new_user.username: '')%>" size="30" name="user[username]" id="user_username"></td>
+                </tr>
+
+                <tr>
+                  <td class="label">Email</td>
+                  <td class="field"><input type="text" value="<%=(@new_user ? @new_user.email: '')%>" size="30" name="user[email]" id="user_email"></td>
+                </tr>
+
+                <tr>
+                  <td class="label">Password</td>
+                  <td class="field"><input type="password" size="30" name="user[password]" id="user_password"></td>
+                </tr>
+
+                <tr>
+                  <td colspan="2" class="label">
+                     <div id="tos">By joining you accept and agree to <a class="hyperlink-button" target="_blank" href="http://www.zangzing.com/about/terms/">the terms of service</a>.</div>
+                  </td>
+
+                </tr>
+
+
+              </table>
+        </form>
+         <a id="submit-button" href="javascript: void(0);" onclick="$('form').submit(); return false;" class="newgreen-button"><span>Submit</span></a>
+
+
+
+
+      </div>
+    </div>
+   </div>
+</body>
+</html>

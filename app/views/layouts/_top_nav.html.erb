@@ -135,24 +135,3 @@
   <div id="cancel-drawer-btn" style="display:none;">Cancel New Album</div>
 </div>
 
-<div id="small-drawer">
-  <div id="sign-up" class="body" style="display:none;">
-    <ul id="small-indicator" class="clearfix">
-      <li id="step-join-on"></li>
-      <li id="step-sign-in-off"></li>
-    </ul>
-    <%= render :partial => 'user_sessions/sign_up_form' %>
-  </div>
-
-  <div id="sign-in" class="body">
-    <ul id="small-indicator" class="clearfix">
-      <li id="step-join-off"></li>
-      <li id="step-sign-in-on"></li>
-    </ul>
-    <div id="small-top">
-      <h2>Sign in</h2>
-      <h3>Welcome Back!</h3>
-    </div>
-    <%= render :partial => 'users/signin_form' %>
-  </div>
-</div>

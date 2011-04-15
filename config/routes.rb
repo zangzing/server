@@ -130,10 +130,10 @@ Server::Application.routes.draw do
     match '/oauth/test_session'   => 'oauth#test_session',           :as => :test_session
 
     #sessions - login
-    resources :user_sessions, :only => [:new, :create, :destroy]
+    resources :user_sessions, :only => [:new, :create, :destroy, :inactive]
     match '/signin'                    => 'user_sessions#new'
     match '/join'                      => 'user_sessions#join'
-    match '/inactive'                  => 'pages#inactive_acct',          :as => :inactive
+    match '/inactive'                  => 'user_sessions#inactive',       :as => :inactive
     match '/signout'                   => 'user_sessions#destroy',        :as => :signout
     match '/activate/:activation_code' => 'activations#create',           :as => :activate
     match '/resend_activation'        => 'activations#resend_activation', :as => :resend_activation
