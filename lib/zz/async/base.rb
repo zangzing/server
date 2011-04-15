@@ -56,6 +56,7 @@ module ZZ
         NameError.name                                => /.*/,
         TypeError.name                                => /.*/,
         ActiveRecord::RecordNotFound.name             => /.*/,
+        PhotoValidationError.name                     => /.*/,
         RuntimeError.name                             => /.*/
       }
 
