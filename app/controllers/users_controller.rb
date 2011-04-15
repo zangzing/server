@@ -21,9 +21,6 @@ class UsersController < ApplicationController
 
 
   def create
-    @user_session = UserSession.new
-
-
     # check username if in magic format
     user_info = params[:user]
     checked_user_name = check_reserved_username(user_info)
