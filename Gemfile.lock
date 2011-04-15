@@ -113,7 +113,7 @@ GEM
     mime-types (1.16)
     multi_json (0.0.5)
     multipart-post (1.1.0)
-    mysql2 (0.2.6)
+    mysql2 (0.2.7)
     newrelic_rpm (2.13.4)
     nokogiri (1.4.4)
     oauth-plugin (0.4.0.pre4)
@@ -236,7 +236,7 @@ DEPENDENCIES
   launchy
   mechanize
   memcache-client
-  mysql2
+  mysql2 (= 0.2.7)
   nokogiri
   oauth (= 0.4.5.pre2)!
   oauth-plugin (>= 0.4.0.pre1)
