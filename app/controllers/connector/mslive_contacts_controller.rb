@@ -1,17 +1,14 @@
 class Connector::MsliveContactsController < Connector::MsliveController
   skip_before_filter :service_login_required, :only => [:index]
-
-  def index
-    render :json => service_identity.contacts
-  end
-
-  def import
-    all_contacts = nil
-    SystemTimer.timeout_after(http_timeout) do
-      all_contacts = Nokogiri::XML(request_contacts_service('/LiveContacts/Contacts?Filter=LiveContacts(Contact(ID,CID,Profiles,Email))'))
-    end
+  
+  def self.import_contacts(api, params)
+    service_identity = params[:identity]
+    #all_contacts = nil
+    #SystemTimer.timeout_after(http_timeout) do
+      all_contacts = Nokogiri::XML(api.request_contacts_service('/LiveContacts/Contacts?Filter=LiveContacts(Contact(ID,CID,Profiles,Email))'))
+    #end
     imported_contacts = []
-    
+
     all_contacts.xpath('/Contacts/Contact').each do |contact|
       name = [contact.at_xpath('Profiles/Personal/FirstName'), contact.at_xpath('Profiles/Personal/LastName')].compact.map(&:text).join(' ')
       (contact.xpath('Emails/Email') || []).each do |email|
@@ -24,7 +21,7 @@ class Connector::MsliveContactsController < Connector::MsliveController
         imported_contacts << Contact.new(props)
       end
     end
-    
+
     unless imported_contacts.empty?
       success = false
       Contact.transaction do
@@ -37,12 +34,18 @@ class Connector::MsliveContactsController < Connector::MsliveController
           raise ActiveRecord::Rollback
         end
       end
-      unless success
-        render :json => ['Something went wrong'], :status => 401
-        return
-      end
+      raise 'Error! No contacts has been imported' unless success
     end
-    render :json => imported_contacts.to_json
+
+    imported_contacts.to_json
+  end
+
+  def index
+    render :json => service_identity.contacts
+  end
+
+  def import
+    fire_async_response('import_contacts')
   end
 
 end

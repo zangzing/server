@@ -42,10 +42,7 @@ class Connector::YahooContactsController < Connector::YahooController
           raise ActiveRecord::Rollback
         end
       end
-      unless success
-        raise 'Error! No contacts has been imported' unless success
-        return
-      end
+      raise 'Error! No contacts has been imported' unless success
     end
 
     imported_contacts.to_json

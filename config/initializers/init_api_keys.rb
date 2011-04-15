@@ -31,6 +31,7 @@ require 'photobucket_connector'
 require 'smugmug_connector'
 require 'twitter_connector'
 require 'yahoo_connector'
+require 'mslive_connector'
 
 FlickRaw.api_key = FLICKR_API_KEYS[:api_key]
 FlickRaw.shared_secret = FLICKR_API_KEYS[:shared_secret]
@@ -51,6 +52,10 @@ SmugmugConnector.shared_secret = SMUGMUG_API_KEYS[:shared_secret]
 
 YahooConnector.api_key = YAHOO_API_KEYS[:app_key]
 YahooConnector.shared_secret = YAHOO_API_KEYS[:consumer_secret]
+
+MsliveConnector.client_id = WINDOWS_LIVE_API_KEYS[:client_id]
+MsliveConnector.secret_key = WINDOWS_LIVE_API_KEYS[:secret_key]
+MsliveConnector.tos_url = "http://#{Server::Application.config.application_host}/tos.html"
 
 
 msg = "=> Connector API keys loaded."
