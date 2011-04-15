@@ -1,10 +1,92 @@
-<% content_for :page_javascript do  # this places our page-specific js with the rest of the js at the bottom of the html -%>
-<script>
-  (function($) {
-      pages.signin.signin();
-<%    if (@user_session && @user_session.errors) || flash.length > 0 -%>
-      $('#sign-in p.error-notice').show();
-<%    end -%>
-   })(jQuery);
-</script>
-<% end %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=100" > <!-- IE8 mode -->
+    <meta http-equiv="Content-Language" Content="en">
+    <meta charset="utf-8">
+    <meta name="copyright" content="Copyright 2011, ZangZing, LLC. All Rights Reserved." />
+    <meta name="DC.title" content="ZangZing" />
+    <meta name="title" content="ZangZing" />
+    <title>Group Photo Sharing - ZangZing</title>
+    <%= include_stylesheets :common %>
+
+
+</head>
+<body class="signin">
+  <img src="/images/background_signin.jpg" class="bg" />
+
+
+    <div class="user-session-dialog new-dialog">
+      <div class="background"></div>
+      <div class="frame"></div>
+      <div class="body">
+
+      <a class="logo" href="/service"><img src="/error/img/logo.png" alt="logo" /></a>
+
+      <div class="content">
+        <h1>Sign In</h1>
+        <a id= "back-to-signin-button" href="/join" class="gray-button"><span>Join</span></a>
+        <div id="header-hairline"></div>
+
+        <%= form_tag user_sessions_path do %>
+              <div id="flash-error">
+        <% if @user_session.errors.length > 0 %>
+               Invalid user or password
+        <% end %>
+        <%= flash[:error] %>
+              </div>
+
+              <table>
+                <tr>
+                  <td class="label">Username or Email</td>
+                  <td class="field"><%= text_field_tag :email %></td>
+                </tr>
+
+                <tr>
+                  <td class="label">Password</td>
+                  <td class="field"><%= password_field_tag :password %></td>
+                </tr>
+
+                <tr>
+                  <td class="label"></td>
+                  <td class="field"><a id="forgot-password-link" class="hyperlink-button" href="<%=new_password_reset_url%>">Forgot your password?</a></td>
+                </tr>
+              </table>
+
+         <% end %>
+         <a id="submit-button" class="newgreen-button"><span>Submit</span></a>
+
+
+
+      </div>
+    </div>
+   </div>
+
+  <%= render :partial => 'layouts/zza'  %>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+  <%= include_javascripts :lib %>
+  <%= include_javascripts :zz %>
+
+
+  <script>
+    $(document).ready(function(){
+        $('#submit-button').click(function(){
+            $('form').submit();
+        });
+
+
+       $('form').bind('keypress', function(e){
+             if ( e.keyCode == 13 ) {
+                 $("form").submit();
+             }
+       });
+
+
+    });
+
+  </script>
+
+
+</body>
+</html>
