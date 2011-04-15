@@ -17,7 +17,7 @@ module ActiveRecord::ConnectionAdapters
     def zz_should_retry(connect_attempts, msg)
       return false if connect_attempts >= 4
 
-      return true if msg.nil?
+      return false if msg.nil?
       return true if msg.index("MySQL server has gone away")
       return true if msg.index("This connection is still waiting for a result, try again")
 
