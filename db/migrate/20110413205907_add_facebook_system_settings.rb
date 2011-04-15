@@ -2,6 +2,10 @@ class AddFacebookSystemSettings < ActiveRecord::Migration
   def self.up
      add_column :system_settings, :description, :string
 
+     # since a field was added, we need to let rails know so
+     # it can refresh its view of this model
+     SystemSetting.reset_column_information
+
      SystemSetting.create( :name  => :facebook_post_caption,
                            :label => 'Caption',
                            :description => 'Text displayed under the asset name by user line (Not Clickable)',
