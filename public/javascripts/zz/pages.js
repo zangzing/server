@@ -1047,42 +1047,42 @@ pages.no_agent = {
     }
 };
 
-pages.signin = {
-
-    _show: function( message, signin ){
-        if (zz.drawer_state === zz.DRAWER_CLOSED) {
-                if( typeof( message ) != 'undefined' && typeof(message) == 'string'){
-                   var msg = $('<p>'+message+'</p>');
-                   msg.addClass("flash-notice");
-                   $('#signin-flashbox').append( msg );
-                   msg.show();
-                   $('#signin-form-cancel-button').click( function(){msg.remove();});
-                }
-
-                if( signin ){ //for signun
-                    $('#header #sign-in-button').addClass('selected');
-                    $('#sign-in').show();
-                    $('#sign-up').hide();
-                } else { //for join
-                    $('#header #sign-in-button').addClass('selected');
-                    $('#sign-in').hide();
-                    $('#sign-up').show();
-                }
-                $('#small-drawer').show().animate({height: '500px', top: '56px'}, 500, 'linear', function() {
-                    $('#user_session_email').focus();
-                });
-                zz.drawer_state = zz.DRAWER_OPEN;
-            }
-    },
-
-    join: function( message ){
-        pages.signin._show(message, false);
-    },
-
-    signin: function(message){
-        pages.signin._show(message, true);
-    }
-};
+//pages.signin = {
+//
+//    _show: function( message, signin ){
+//        if (zz.drawer_state === zz.DRAWER_CLOSED) {
+//                if( typeof( message ) != 'undefined' && typeof(message) == 'string'){
+//                   var msg = $('<p>'+message+'</p>');
+//                   msg.addClass("flash-notice");
+//                   $('#signin-flashbox').append( msg );
+//                   msg.show();
+//                   $('#signin-form-cancel-button').click( function(){msg.remove();});
+//                }
+//
+//                if( signin ){ //for signun
+//                    $('#header #sign-in-button').addClass('selected');
+//                    $('#sign-in').show();
+//                    $('#sign-up').hide();
+//                } else { //for join
+//                    $('#header #sign-in-button').addClass('selected');
+//                    $('#sign-in').hide();
+//                    $('#sign-up').show();
+//                }
+//                $('#small-drawer').show().animate({height: '500px', top: '56px'}, 500, 'linear', function() {
+//                    $('#user_session_email').focus();
+//                });
+//                zz.drawer_state = zz.DRAWER_OPEN;
+//            }
+//    },
+//
+//    join: function( message ){
+//        pages.signin._show(message, false);
+//    },
+//
+//    signin: function(message){
+//        pages.signin._show(message, true);
+//    }
+//};
 
 pages.alert_dialog = {
     show: function(alert_dialog_url){
