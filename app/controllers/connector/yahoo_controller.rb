@@ -1,10 +1,8 @@
 class Connector::YahooController < Connector::ConnectorController
   before_filter :service_login_required
 
-  def initialize(*args)
-    super(*args)
-    YahooConnector.api_key = YAHOO_API_KEYS[:app_key]
-    YahooConnector.shared_secret = YAHOO_API_KEYS[:consumer_secret]
+  def self.api_from_identity(identity)
+    YahooConnector.new(identity.credentials)
   end
 
 protected

@@ -49,6 +49,9 @@ PhotobucketConnector.consumer_secret = PHOTOBUCKET_API_KEYS[:consumer_secret]
 SmugmugConnector.api_key = SMUGMUG_API_KEYS[:api_key]
 SmugmugConnector.shared_secret = SMUGMUG_API_KEYS[:shared_secret]
 
+YahooConnector.api_key = YAHOO_API_KEYS[:app_key]
+YahooConnector.shared_secret = YAHOO_API_KEYS[:consumer_secret]
+
 
 msg = "=> Connector API keys loaded."
 Rails.logger.info msg
