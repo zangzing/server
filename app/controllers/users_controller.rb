@@ -27,7 +27,7 @@ class UsersController < ApplicationController
     if checked_user_name.nil?
       @new_user = User.new()
       @new_user.set_single_error(:username, "You attempted to use a reserved user name without the proper key." )
-      render :action => :join and return
+      render (:action => :join, :layout=> false) and return
     end
 
     #Check if user is an automatic user ( a contributor that has never logged in but has sent photos )
@@ -102,7 +102,7 @@ class UsersController < ApplicationController
       end
     end
 
-    render :action=>:join
+    render (:action => :join, :layout=> false)
 
   end
 
