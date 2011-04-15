@@ -1,5 +1,7 @@
 class AddFacebookSystemSettingsPart2 < ActiveRecord::Migration
   def self.up
+    SystemSetting.reset_column_information
+
     SystemSetting.create( :name  => :facebook_post_caption,
                           :label => 'Caption',
                           :description => 'Text displayed under the asset name by user line (Not Clickable)',
