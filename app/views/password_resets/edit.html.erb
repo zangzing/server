@@ -10,10 +10,6 @@
     <meta name="title" content="ZangZing" />
     <title>Group Photo Sharing - ZangZing</title>
     <%= include_stylesheets :common %>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-    <%= include_javascripts :lib %>
-    <%= include_javascripts :zz %>
-
 </head>
 <body class="signin">
   <img src="/images/background_signin.jpg" class="bg" />
@@ -42,7 +38,7 @@
                 <tr><td class="label">Confirm Password </td><td class="field"><%= f.password_field :password_confirmation %></td></tr>
               </table>
             <% end %>
-         <a id="submit-button" href="javascript: void(0);" onclick="$('#password_edit_form').submit(); return false;" class="newgreen-button"><span>Submit</span></a>
+         <a id="submit-button" class="newgreen-button"><span>Submit</span></a>
 <%end%>
 
 
@@ -50,6 +46,29 @@
       </div>
     </div>
    </div>
+
+  <%= render :partial => 'layouts/zza'  %>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+  <%= include_javascripts :lib %>
+  <%= include_javascripts :zz %>
+
+  <script>
+    $(document).ready(function(){
+        $('#submit-button').click(function(){
+            $('form').submit();
+        });
+
+
+       $('form').bind('keypress', function(e){
+             if ( e.keyCode == 13 ) {
+                 $("form").submit();
+             }
+       });
+
+    });
+
+  </script>
+
 </body>
 </html>
 

@@ -9,7 +9,7 @@ Server::Application.routes.draw do
   get    '/beta'               => 'pages#home'
   get    '/service'            => 'pages#home',          :as => :service
   get    '/signin'             => 'user_sessions#new',   :as => :signin
-  get    '/join'               => 'user_sessions#join',  :as => :join
+  get    '/join'               => 'users#join',           :as => :join
 
   # the whole site has /service in front of it except for users
   scope '/service' do

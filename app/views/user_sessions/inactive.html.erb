@@ -10,9 +10,9 @@
     <meta name="title" content="ZangZing" />
     <title>Group Photo Sharing - ZangZing</title>
     <%= include_stylesheets :common %>
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-  <%= include_javascripts :lib %>
-  <%= include_javascripts :zz %>
+
+
+
 
 </head>
 <body class="signin">
@@ -40,5 +40,12 @@
       </div>
     </div>
    </div>
+
+  <%= render :partial => 'layouts/zza'  %>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+  <%= include_javascripts :lib %>
+  <%= include_javascripts :zz %>
+
+
 </body>
 </html>

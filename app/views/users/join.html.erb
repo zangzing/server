@@ -10,9 +10,7 @@
     <meta name="title" content="ZangZing" />
     <title>Group Photo Sharing - ZangZing</title>
     <%= include_stylesheets :common %>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-    <%= include_javascripts :lib %>
-    <%= include_javascripts :zz %>
+
 
 </head>
 <body class="signin">
@@ -34,9 +32,11 @@
         <form id="join-form" method="post" enctype="multipart/form-data" action=<%=create_user_path%>>
           <input style="visibility:hidden" type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>"></input>
               <div id="flash-error">
-        <% if @user_session.errors %>
-            <%= @user_session.errors %>
+        <% @new_user.errors.map do |field, error| %>
+            <%= "#{field.to_s.capitalize} #{error}" %><br>
         <% end %>
+                <%= flash[:errors] %>
+
               </div>
 
               <table>
@@ -70,7 +70,7 @@
 
               </table>
         </form>
-         <a id="submit-button" href="javascript: void(0);" onclick="$('form').submit(); return false;" class="newgreen-button"><span>Submit</span></a>
+         <a id="submit-button" class="newgreen-button"><span>Submit</span></a>
 
 
 
@@ -78,5 +78,30 @@
       </div>
     </div>
    </div>
+
+  <%= render :partial => 'layouts/zza'  %>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+  <%= include_javascripts :lib %>
+  <%= include_javascripts :zz %>
+
+
+<script>
+  $(document).ready(function(){
+      $('#submit-button').click(function(){
+          ZZAt.track('button.join.click');
+          $('form').submit();
+      });
+
+
+     $('form').bind('keypress', function(e){
+           if ( e.keyCode == 13 ) {
+               $("form").submit();
+           }
+     });
+
+  });
+
+</script>
+
 </body>
 </html>

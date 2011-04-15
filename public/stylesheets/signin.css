@@ -50,6 +50,7 @@
 
 .user-session-dialog .content table td.field{
     text-align:right;
+    height: 25px;
 }
 
 
@@ -118,6 +119,10 @@
 .user-session-dialog #tos{
     font-size: 12px;
     text-align:left;
+    margin-top:5px;
+}
+
+.user-session-dialog #forgot-password-link{
     margin-top:5px;
 }
 

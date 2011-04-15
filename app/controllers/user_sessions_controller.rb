@@ -13,14 +13,6 @@ class UserSessionsController < ApplicationController
     end
   end
 
-  def join
-    if ! current_user
-      @user_session = UserSession.new
-    else
-      redirect_to user_pretty_url(current_user)
-    end
-  end
-
   def create
     return_to = session[:return_to] #save the intended destination of the user if any
     reset_session # destroy the session to prevent Session Fixation Attack
