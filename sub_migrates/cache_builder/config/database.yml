@@ -19,9 +19,9 @@ perftest:
 photos_staging:
   <<: *common
   database: photos
-  host: ec2-174-129-145-82.compute-1.amazonaws.com
+  host: localhost
   username: deploy
-  password: lLwB8AsSjC
+  password: IhVBvdKNic
 
 photos_production:
   <<: *common
