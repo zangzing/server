@@ -29,7 +29,7 @@ class ShutterflyConnector
     params_hash.merge!('oflyRemoteUser' => opts[:remote_user]) if opts[:remote_user]
     params_hash.merge!('oflyCallbackUrl' => opts[:callback_url]) if opts[:callback_url]
     url = "http://www.shutterfly.com/oflyuser/createToken.sfly?#{params_hash.merge('oflyAppId' => ShutterflyConnector.app_id).to_url_params}"
-    sign_request(url, 'oflyuser/createToken.sfly', params_hash)
+    sign_request(url, 'oflyuser/createToken.sfly', params_hash, true)
   end
 
   def call_api(call_path, method_params = {})
@@ -74,7 +74,7 @@ private
   end
 
   #http://www.shutterfly.com/documentation/OflyCallSignature.sfly
-  def sign_request(request, call_path, params_hash)
+  def sign_request(request, call_path, params_hash, anonymous = false)
     ofly_timestamp = get_ofly_timestamp
     api_sig = calc_call_signature(call_path, params_hash, ofly_timestamp)
     sign_params = {
@@ -82,11 +82,11 @@ private
       'oflyApiSig' => api_sig,
       'oflyHashMeth' => HASH_METHOD
     }
-    sign_params.merge!('oflyUserid' => userid_token) if userid_token
+    sign_params.merge!('oflyUserid' => userid_token) if userid_token and !anonymous
     if request.kind_of?(String)
       "#{request}#{request.include?('?') ? '&' : '?'}#{sign_params.to_url_params}"
     elsif request.kind_of?(Net::HTTPRequest)
-      sign_params.merge!('X-OPENFLY-Authorization' => "SFLY user-auth=#{auth_token}") if auth_token
+      sign_params.merge!('X-OPENFLY-Authorization' => "SFLY user-auth=#{auth_token}") if auth_token and !anonymous
       sign_params.each { |header, value| request[header] = value  }
       request
     end
