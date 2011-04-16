@@ -10,13 +10,22 @@ class RemoteFile < ::File
   CHUNK_SIZE = 4096
 
   def initialize(path, tmpdir = Dir::tmpdir, options = {})
-    @original_filename  = File.basename(path)
-    @remote_path        = path
-    @content_type       = 'application/x-octet-stream'
-    @options            = options
-    digest = Digest::SHA1.hexdigest(path)
-    super tmpdir + "/" + digest, "w+b"
-    fetch
+    begin
+      @original_filename  = File.basename(path)
+      @remote_path        = path
+      @content_type       = 'application/x-octet-stream'
+      @options            = options
+      # generate a unique name
+      digest = Digest::SHA1.hexdigest(path + Time.now.to_i.to_s + rand(99999999).to_s)
+      file_path = tmpdir + "/" + digest
+      super file_path, "w+b"
+      fetch
+    rescue Exception => ex
+      # clean up if something went wrong
+      self.close rescue nil
+      File.delete(file_path) rescue nil
+      raise ex
+    end
   end
 
   def options
