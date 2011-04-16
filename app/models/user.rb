@@ -50,7 +50,7 @@ class User < ActiveRecord::Base
     c.validates_length_of_password_confirmation_field_options = {:minimum => 0, :if => :require_password?, :on => :update}
     c.login_field = :email
     c.validate_login_field = false
-    c.disable_perishable_token_maintenance=true;
+    c.disable_perishable_token_maintenance=true
   end
 
   before_save    :split_name

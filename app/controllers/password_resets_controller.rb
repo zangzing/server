@@ -38,25 +38,23 @@ class PasswordResetsController < ApplicationController
 
 
   def edit
-
+    #render view
   end
 
   def update
-    @user.reset_password = true;
+    @user.reset_password = true
     @user.password = params[:user][:password]
     @user.password_confirmation = params[:user][:password_confirmation]
+    #Saving the user while changing the password automatically updates the session and user gets logged in.
     if @user.save
-      flash[:notice] = "Password successfully updated"
-      UserSession.create(@user, false) # Log user in manually
       @user.reset_perishable_token!
+      flash[:notice] = "Password successfully updated"
       session[:flash_dialog] = true
       redirect_to user_pretty_url( @user )
     else
       render :action => :edit
     end
   end
-
-
 
 private
 
@@ -66,7 +64,6 @@ private
     @user = User.find_using_perishable_token(params[:id])
     unless @user
       @bad_perishable_token = true
-
       render :action => :new and return
     end
   end
