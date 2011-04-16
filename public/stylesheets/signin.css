@@ -25,7 +25,7 @@
 
 .user-session-dialog .logo{
     position: absolute;
-    top:30px;
+    top:-1000px; /*hide it to start*/
     left:15px;
 }
 
@@ -54,6 +54,7 @@
 .user-session-dialog .content table td.field{
     text-align:right;
     height: 25px;
+    position:relative;
 }
 
 
@@ -76,6 +77,11 @@
     -moz-border-radius: 3px;
     border-radius: 3px;
 }
+
+/*.user-session-dialog input.error{*/
+    /*border: 2px solid red;*/
+/*}*/
+
 
 .user-session-dialog #back-to-signin-button{
     position:absolute;
@@ -129,6 +135,27 @@
 
 .user-session-dialog #forgot-password-link{
     margin-top:5px;
+}
+
+.user-session-dialog label.error{
+    position: absolute;
+    background-color: #000;
+    opacity: .5;
+    filter: alpha(opacity = 60);
+
+    text-shadow: none;
+    color: white;
+    width: 190px;
+    height: 19px;
+    border: 2px solid white;
+    text-align: left;
+    padding: 4px 4px 4px 10px;
+    right: -210px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+	-moz-box-shadow:0 0 10px #000;
+	-webkit-box-shadow:0 0 10px #000;
+    margin-top:-2px;
 }
 
 

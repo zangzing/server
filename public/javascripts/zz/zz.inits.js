@@ -56,7 +56,6 @@ zz.init = {
                 effect: 'fade',
                 fadeOutSpeed: 100,
                 predelay: 100,
-//                position: "right",
                 offset: [$(this).height() * .5, $(this).width() * .75]
             });
 
