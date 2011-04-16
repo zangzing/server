@@ -1,5 +1,3 @@
-require 'photo.rb'
-
 module ZZ
   module Async
 
@@ -58,7 +56,7 @@ module ZZ
         NameError.name                                => /.*/,
         TypeError.name                                => /.*/,
         ActiveRecord::RecordNotFound.name             => /.*/,
-        PhotoValidationError.name                     => /.*/,
+        "PhotoValidationError"                        => /.*/,
         RuntimeError.name                             => /.*/
       }
 
