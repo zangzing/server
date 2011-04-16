@@ -142,20 +142,20 @@
     background-color: #000;
     opacity: .5;
     filter: alpha(opacity = 60);
-
     text-shadow: none;
     color: white;
     width: 190px;
     height: 19px;
-    border: 2px solid white;
+    border: 1px solid white;
     text-align: left;
     padding: 4px 4px 4px 10px;
     right: -210px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
-	-moz-box-shadow:0 0 10px #000;
-	-webkit-box-shadow:0 0 10px #000;
-    margin-top:-2px;
+    /*-moz-border-radius: 3px;*/
+    /*border-radius: 3px;*/
+    -moz-box-shadow: 0 0 10px black;
+    -webkit-box-shadow: 0 0 10px black;
+    margin-top: -2px;
+    font-weight: 200;
 }
 
 
