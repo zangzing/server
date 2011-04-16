@@ -36,6 +36,10 @@ class FacebookIdentity < Identity
         photo       = Photo.find( like.subject_id )
         name        = "#{photo.caption} by #{photo.user.username}"
         picture     = photo.thumb_url
+       when Like::USER, 'user'
+        user        = User.find( like.subject_id )
+        name        = user.username
+        picture     = user.profile_album.cover.thumb_url
       else
         post( like.url, message)  #generic post
         return

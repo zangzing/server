@@ -135,8 +135,6 @@ Server::Application.routes.draw do
     match '/join'                      => 'user_sessions#join'
     match '/inactive'                  => 'user_sessions#inactive',       :as => :inactive
     match '/signout'                   => 'user_sessions#destroy',        :as => :signout
-    match '/activate/:activation_code' => 'activations#create',           :as => :activate
-    match '/resend_activation'        => 'activations#resend_activation', :as => :resend_activation
     resources :password_resets, :only => [:new, :edit, :create, :update]
 
     #static pages

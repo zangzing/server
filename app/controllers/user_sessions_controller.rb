@@ -19,8 +19,7 @@ class UserSessionsController < ApplicationController
     session[:return_to] = return_to  #restore the intended user destination
     @user_session = UserSession.new(:email => params[:email], :password => params[:password], :remember_me => true)
     if @user_session.save
-      @user_session.user.reset_perishable_token! #reset the perishable token so it does not allow another login.
-
+      @user_session.user.reset_perishable_token! #reset the perishable token
       redirect_back_or_default user_url( @user_session.record )
     else
       render :action => :new

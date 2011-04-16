@@ -117,9 +117,14 @@ class OauthController < ApplicationController
   # requires a valid oauth call with a session hash
   # validates that the token owner and the session hash match
   def test_session
+    # The user got here by authenticating via OAuth not session cookie, but the cookie was also sent to make
+    # sure that the interactive call from the browser comes from the owner of the token.
+    # current_user in this call is set by the OAuth library
+    # curent_user_session is set by authlogic from the cookie
+    # if current_user matches the user owner of the cooke then we return 200
     if( current_token )
       @user = current_token.user
-      if( @user and  @user.persistence_token+"::"+@user.id.to_s() == request.cookies['user_credentials'] )
+      if current_user_session && current_user_session.valid? && current_user?(current_user_session.user)
         render :text => "Valid Session", :status => 200
       else
         render :text => "Session/Token Missmatched. The signed-in user cannot use this agent", :status => 412
