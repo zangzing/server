@@ -70,7 +70,7 @@ zz.init = {
             $('#join-banner').fadeOut(200, function(){
                 $('#page-wrapper').animate({top:0},200);
                 $('body').removeClass('show-join-banner');
-                jQuery.cookie('hide_join_banner', 'true', { expires:100000, path: '/' } );
+                jQuery.cookie('hide_join_banner', 'true');
             });
         });
 

@@ -86,16 +86,16 @@ div#container {
 #join-banner #join-button{
     position:absolute;
     top:4px;
-    right:150px;
-    width:80px;
+    right:120px;
+    width:60px;
 }
 
 
 #join-banner #signin-button{
     position:absolute;
     top:4px;
-    right:50px;
-    width:80px;
+    right:40px;
+    width:60px;
 }
 
 
