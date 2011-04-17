@@ -73,7 +73,7 @@
             container = $(this).parent();
         }
 
-        if (! $.isPlainObject(container)) {
+        if (! $.isArray(container)) {
             //assume its an element
             var container_element = $(container);
             container = {
