@@ -56,7 +56,7 @@
 
   <%
       show_join_banner_class = 'show-join-banner'
-      if (current_user || cookies['registered_for_beta'])
+      if (current_user || cookies['registered_for_beta'] || cookies['hide_join_banner"])
         show_join_banner_class = ''
       end
 
