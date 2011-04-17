@@ -5,7 +5,18 @@
   <% end %>
   <div class="viewlist">
     <div class='header bar'>
-      Guest List
+      <table>
+      <tr>
+      <td width="50%">Guest List</td>
+      <td>
+      <%= form_tag guests_path, :method => 'get', :id=>'guest-search' do %>
+          <%= search_field_tag :search, params[:search], :id=>'search-field'  %>
+          <%= submit_tag "Search", :name => nil%>
+          <%= submit_tag "Clear", :name => nil, :onclick=>"$('#search-field').val('')" %>
+        <% end %>
+      </td>  
+      </tr>
+      </table>
     </div>
     <div class="title">
       <%= form_for @new_guest do |f | %>

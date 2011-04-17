@@ -31,4 +31,12 @@ class Guest < ActiveRecord::Base
     guest.save
     guest
   end
+
+  def self.search(search)
+    if search
+      find(:all, :conditions => ['email LIKE ?', "%#{search}%"])
+    else
+      find(:all)
+    end
+  end
 end

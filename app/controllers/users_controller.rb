@@ -167,7 +167,12 @@ class UsersController < ApplicationController
   # Used by The Admin Interface to display a list of users
   def index
     @page = "users"
-    @users = User.paginate(:page =>params[:page])
+    if params[:search]
+      @users = User.where('email LIKE ? OR first_name LIKE ? OR last_name LIKE ? OR username LIKE ?',
+                          "%#{params[:search]}%", "%#{params[:search]}%","%#{params[:search]}%","%#{params[:search]}%").paginate(:page =>params[:page])
+    else
+      @users = User.paginate(:page =>params[:page])
+    end
   end
 
   # Used by The Admin Interface to activate de-activate users

@@ -7,7 +7,7 @@ class Admin::GuestsController < Admin::AdminController
   def index
     @page = 'guests'
     @new_guest = Guest.new()
-    @guests = Guest.paginate(:page =>params[:page])
+    @guests = Guest.search(params[:search]).paginate(:page =>params[:page])
   end
 
   def show
