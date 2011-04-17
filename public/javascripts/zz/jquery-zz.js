@@ -73,7 +73,7 @@
             container = $(this).parent();
         }
 
-        if (! $.isArray(container)) {
+        if ( $.isFunction(container.parent)) {
             //assume its an element
             var container_element = $(container);
             container = {
