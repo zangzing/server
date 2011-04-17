@@ -32,41 +32,54 @@
       <form id="join-form" method="post" enctype="multipart/form-data" action=<%=create_user_path%>>
         <input style="visibility:hidden" type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>"/>
         <!--<div id="flash-error">-->
-          <!--<% @new_user.errors.map do |field, error| %>-->
-              <%= "#{field.to_s.capitalize} #{error}" %><br>
-          <!--<% end %>-->
-          <!--<%= flash[:errors] %>-->
+        <!--<% @new_user.errors.map do |field, error| %>-->
+            <%= "#{field.to_s.capitalize} #{error}" %><br>
+            <!--<% end %>-->
+        <!--<%= flash[:errors] %>-->
 
         <!--</div>-->
 
         <table>
           <tr>
             <td class="label">First and Last Name</td>
-            <td class="field"><input type="text" value="<%=(@new_user ? @new_user.name : '')%>" size="30" name="user[name]" id="user_name"></td>
+            <td class="field">
+              <div class="field-wrapper">
+                <input type="text" value="<%=(@new_user ? @new_user.name : '')%>" size="30" name="user[name]" id="user_name">
+              </div>
+            </td>
           </tr>
 
           <tr>
             <td class="label">User Name</td>
             <td class="field">
-              <input type="text" value="<%=(@new_user ? @new_user.username: '')%>" size="30" name="user[username]" id="user_username">
+              <div class="field-wrapper">
+                <input type="text" value="<%=(@new_user ? @new_user.username: '')%>" size="30" maxlength="25" name="user[username]" id="user_username">
+              </div>
             </td>
           </tr>
 
           <tr>
-            <td class="label"></td>
-            <td class="field">
+            <td colspan="2" class="field">
               zangzing.com/<span id="username">your_user_name</span>
             </td>
           </tr>
 
           <tr>
             <td class="label">Email</td>
-            <td class="field"><input type="text" value="<%=(@new_user ? @new_user.email: '')%>" size="30" name="user[email]" id="user_email"></td>
+            <td class="field">
+              <div class="field-wrapper">
+                <input type="text" value="<%=(@new_user ? @new_user.email: '')%>" size="30" name="user[email]" id="user_email">
+              </div>
+            </td>
           </tr>
 
           <tr>
             <td class="label">Password</td>
-            <td class="field"><input type="password" size="30" name="user[password]" id="user_password"></td>
+            <td class="field">
+              <div class="field-wrapper">
+                <input type="password" size="30" name="user[password]" id="user_password">
+              </div>
+            </td>
           </tr>
 
           <tr>
@@ -110,8 +123,13 @@
 
         $('.logo').center_y();
 
-        $('#user_username').keyup(function(){
-            $('#username').text($('#user_username').val());
+        $('#user_username').keyup(function(event){
+            var username = $('#user_username').val();
+            //set the value in the homepage url
+            $('#username').text(username);
+
+
+
         });
 
 

@@ -54,8 +54,12 @@
 .user-session-dialog .content table td.field{
     text-align:right;
     height: 25px;
+}
+
+.user-session-dialog .content table td.field .field-wrapper{
     position:relative;
 }
+
 
 
 
@@ -144,17 +148,17 @@
     filter: alpha(opacity = 60);
     text-shadow: none;
     color: white;
-    width: 190px;
+    width: 230px;
     height: 19px;
     border: 1px solid white;
     text-align: left;
     padding: 4px 4px 4px 10px;
-    right: -210px;
+    right: -250px;
     /*-moz-border-radius: 3px;*/
     /*border-radius: 3px;*/
     -moz-box-shadow: 0 0 10px black;
     -webkit-box-shadow: 0 0 10px black;
-    margin-top: -2px;
+    top: -1px;
     font-weight: 200;
 }
 
