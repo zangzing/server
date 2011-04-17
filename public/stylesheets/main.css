@@ -45,6 +45,79 @@ div#container {
 }
 
 
+.show-join-banner #join-banner{
+    position: relative;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    height: 38px;
+    background-color: #333;
+    display:block;
+}
+
+#join-banner{
+    display:none;
+}
+
+
+#join-banner #banner-text{
+    position:relative;
+    top:10px;
+    font-size:14px;
+    color:#fff;
+    font-weight:500;
+}
+
+
+#join-banner #close-button{
+    position:absolute;
+    right:10px;
+    top:7px;
+    height:21px;
+    width:21px;
+    background: url("/images/btn-close-join-banner.png") no-repeat scroll top right;
+    cursor:pointer;
+}
+
+#join-banner #close-button:hover{
+    background: url("/images/btn-close-join-banner.png") no-repeat scroll right -21px;
+}
+
+#join-banner #join-button{
+    position:absolute;
+    top:4px;
+    right:150px;
+    width:80px;
+}
+
+
+#join-banner #signin-button{
+    position:absolute;
+    top:4px;
+    right:50px;
+    width:80px;
+}
+
+
+
+#page-wrapper{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+}
+
+
+
+.show-join-banner #page-wrapper{
+    top:40px;
+}
+
+
+
+
+
 
 /* Forms
 ----------------------------------------------------------------------------- */

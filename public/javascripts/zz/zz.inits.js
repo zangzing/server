@@ -65,6 +65,22 @@ zz.init = {
 
         /* Click Handlers    ----------------------------------------------------------------------- */
 
+        //join banner
+        $('#join-banner #close-button').click(function(){
+            $('#join-banner').fadeOut(200, function(){
+                $('#page-wrapper').animate({top:0},200);
+                $('body').removeClass('show-join-banner');
+                jQuery.cookie('registered_for_beta', 'true', { expires:100000, path: '/' } );
+            });
+        });
+
+        $('#join-banner #join-button').click(function(){
+            document.location.href = '/join';
+        });
+
+        $('#join-banner #signin-button').click(function(){
+            document.location.href = '/signin';
+        });
 
         //top bar
         $('#header #home-button').click(function() {

@@ -53,23 +53,46 @@
 
 
   </head>
-  <body id="<%= controller.controller_name + '-' + controller.action_name %>" class="<%= controller.controller_name %>">
-    
 
-    <div id='article'>
+  <%
+      show_join_banner_class = 'show-join-banner'
+      if (current_user || cookies['registered_for_beta'])
+        show_join_banner_class = ''
+      end
 
-      <%= yield :layout %>
 
+  %>
+
+
+  <body id="<%= controller.controller_name + '-' + controller.action_name %>" class="<%= controller.controller_name %> <%= show_join_banner_class %>">
+
+
+
+    <div id='join-banner'>
+        <span id="banner-text">ZangZing is a new group photo sharing service. Click Join to get on the early access list. It's free!</span>
+        <a  class="green-button" id="join-button"><span>Join</span></a>
+        <a  class="gray-button" id="signin-button"><span>Sign In</span></a>
+        <div id="close-button"></div>
     </div>
 
-    <div id="container">
-      <div id="dialog-modal" title="Basic modal dialog"></div>
-      
-      <%= render :partial => 'layouts/top_nav'  %>
-      
-      <%= render :partial => 'layouts/bottom_nav' %>
+    <div id='page-wrapper'>
 
-    </div>
+        <div id='article'>
+
+          <%= yield :layout %>
+
+        </div>
+
+        <div id="container">
+          <div id="dialog-modal" title="Basic modal dialog"></div>
+
+          <%= render :partial => 'layouts/top_nav'  %>
+
+          <%= render :partial => 'layouts/bottom_nav' %>
+
+        </div>
+
+   </div>
 
 
     <!--todo:get rid of this. move to wizard.js -->
