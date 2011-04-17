@@ -3,6 +3,16 @@ var zz_dialog = {
         return $(element).zz_dialog(options).data().zz_dialog;
     },
 
+    show_confirmation_dialog: function(message, on_ok, on_cancel){
+
+    },
+
+    show_alert_dialog: function(message, on_ok){
+
+    },
+
+    CONFIRMATION_TEMPLATE : '<div class="message">{{message}}</div>',
+    ALERT_TEMPLATE : '<div class="message">{{message}}</div>',
     BASE_Z_INDEX : 99990,
     open_dialog_count: 0,
     scrim_z_index: function(){

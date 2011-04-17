@@ -78,7 +78,10 @@ var like = {
                 // toggle in server failed, return hash and screen to previous state
                 like.toggle_in_hash( subject_id );
                 if( xhr.status == 401 ){
-                    pages.signin.signin('You must be logged in to like the '+ subject_type +'!');
+                    if(confirm('You must be logged in to like this '+ subject_type + '. Would you like to sign in or join now?')){
+                        var returnUrl = zz.path_prefix + '/' + subject_type + 's/' + subject_id + '/like';
+                        document.location.href = path_helpers.rails_route('signin') + '?return_to=' + returnUrl;
+                    }
                 }
             }
         });

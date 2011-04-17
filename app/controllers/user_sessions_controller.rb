@@ -6,6 +6,13 @@ class UserSessionsController < ApplicationController
 
 
   def new
+    if params[:return_to]
+      session[:return_to] = params[:return_to]
+      redirect_to signin_url
+      return
+    end
+
+
     if ! current_user
       @user_session = UserSession.new
     else
