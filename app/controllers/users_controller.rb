@@ -8,10 +8,10 @@ class UsersController < ApplicationController
     if ! current_user
       @new_user = User.new
       @user_session = UserSession.new
+      render :layout => false
     else
       redirect_to user_pretty_url(current_user)
     end
-    render :layout => false
   end
 
   def create
