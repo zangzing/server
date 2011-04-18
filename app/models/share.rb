@@ -128,4 +128,8 @@ class Share < ActiveRecord::Base
     self.subject_type == 'Photo'
   end
 
+  def instant?
+    self.upload_batch_id.nil?
+  end
+
 end
