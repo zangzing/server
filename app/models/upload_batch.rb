@@ -214,7 +214,8 @@ class UploadBatch < ActiveRecord::Base
     now = Time.now
     nb = user.upload_batches.build({:album_id => album.id, :open_activity_at => now })
     if album.custom_order
-      nb.custom_order_offset = album.photos.last.pos
+      last_photo = album.photos.last
+      nb.custom_order_offset = last_photo.pos unless last_photo.nil?
     end
     album.upload_batches << nb
     nb.save
