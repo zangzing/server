@@ -57,10 +57,15 @@ class SharesController < ApplicationController
       render :json => "", :status => 400 and return
     end
 
-    if @share.album?
-      flash[:notice] = "Your album will be shared as soon as its ready."
-    end
-    
+    flash[:notice] = "The user homepage " if @share.user?
+    flash[:notice] = "The album " if @share.album?
+    flash[:notice] = "The photo " if @share.photo?
+
+    if @share.instant?
+      flash[:notice] += "has been shared."
+    else
+      flash[:notice] += "will be shared as soon as it is ready."
+    end   
     render :json =>"", :status => 200
   end
 
