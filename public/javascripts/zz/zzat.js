@@ -51,12 +51,12 @@ function initMixpanel(){
         try {
             window.mpmetrics = new MixpanelLib(zza_config_MIXPANEL_TOKEN);
             mpmetrics.register({'referrer': document.referrer});
+            _zza.mixpanel_ready();
         } catch(err) {
             var null_fn = function () {};
             window.mpmetrics = {  track: null_fn,  track_funnel: null_fn,  register: null_fn,  register_once: null_fn, register_funnel: null_fn };
         }
     });
-
 }
 
 

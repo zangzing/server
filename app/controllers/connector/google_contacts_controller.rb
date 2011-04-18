@@ -1,7 +1,7 @@
 class Connector::GoogleContactsController < Connector::GoogleController
   skip_before_filter :service_login_required, :only => [:index]
 
-  BATCH_SIZE = 100
+  BATCH_SIZE = 2000
   
   def self.import_contacts(api_client, params)
     identity = params.delete(:identity)

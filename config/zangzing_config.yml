@@ -13,7 +13,7 @@ common: &common
   # time in seconds before we timeout certain resque jobs
   async_job_timeout: 20
 
-  async_connector_timeout: 30
+  async_connector_timeout: 60
 
   # turns on/off http basic auth for the whole site
   requires_http_auth: true
