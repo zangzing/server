@@ -300,8 +300,7 @@ class AlbumsController < ApplicationController
       begin
         @album = Album.find( params[:id ])  #will trhow exception if params[:id] is not defined or album not found
       rescue ActiveRecord::RecordNotFound => e
-        flash[:error] = "This operation requires an album, we could not find one because: "+e.message
-        response.headers['X-Error'] = flash[:error]
+        flash.now[:error] = "This operation requires an album, we could not find one because: "+e.message
         if request.xhr?
           render :status => 404
         else

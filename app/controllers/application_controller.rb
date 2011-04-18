@@ -86,10 +86,11 @@ class ApplicationController < ActionController::Base
     # Filter for methods that require a log in
     def require_user
       unless current_user
-        flash[:error] = "You must be logged in to access this page"
         if request.xhr?
+          flash.now[:error] = "You must be logged in to access this page"
           render :nothing => true, :status => 401
         else
+          flash[:error] = "You must be logged in to access this page"
           store_location
           redirect_to new_user_session_url
         end
@@ -233,7 +234,7 @@ class ApplicationController < ActionController::Base
   # Assumes @album is the album in question and current_user is the user we are evaluating
   def require_album_admin_role
     unless  @album.admin?( current_user.id ) || current_user.support_hero?
-      flash[:error] = "Only Album admins can perform this operation"
+      flash.now[:error] = "Only Album admins can perform this operation"
       response.headers['X-Errors'] = flash[:error]
       if request.xhr?
         render :json => '', :status => 401
@@ -252,10 +253,11 @@ class ApplicationController < ActionController::Base
   def require_album_viewer_role
     if @album.private?
       unless current_user
-        flash[:notice] = "You have asked to see a password protected album. Please login so we know who you are."
         if request.xhr?
+          flash.now[:notice] = "You have asked to see a password protected album. Please login so we know who you are."
           render :status => 401
         else
+          flash[:notice] = "You have asked to see a password protected album. Please login so we know who you are."
           store_location
           redirect_to new_user_session_url and return
         end
@@ -278,8 +280,7 @@ class ApplicationController < ActionController::Base
   # Assumes @album is the album in question and current_user is the user we are evaluating
   def require_album_contributor_role
     unless  @album.contributor?( current_user.id ) || current_user.support_hero?
-      flash[:error] = "Only Contributors admins can perform this operation"
-      response.headers['X-Error'] = flash[:error]
+      flash.now[:error] = "Only Contributors admins can perform this operation"
       if request.xhr?
         render :status => 401
       else
@@ -293,8 +294,7 @@ class ApplicationController < ActionController::Base
   # Will render a 401 page if the currently logged in user is not an admin
   def require_admin
     unless current_user.admin?
-      flash[:error] = "Administrator privileges required for this operation"
-      response.headers['X-Error'] = flash[:error]
+      flash.now[:error] = "Administrator privileges required for this operation"
       if request.xhr?
         render :status => 401
       else

@@ -246,8 +246,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
       @photo = Photo.find( params[:id ])  #will trhow exception if params[:id] is not defined or photo not found
       @album = @photo.album
     rescue ActiveRecord::RecordNotFound => e
-      flash[:error] = "This operation requires a photo, we could not find one because: "+e.message
-      response.headers['X-Error'] = flash[:error]
+      flash.now[:error] = "This operation requires a photo, we could not find one because: "+e.message
       if request.xhr?
         render :status => 404
       else
@@ -272,8 +271,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
         @album = Album.find( params[:album_id] )
       end
     rescue ActiveRecord::RecordNotFound => e
-      flash[:error] = "This operation requires an album, we could not find one because: "+e.message
-      response.headers['X-Error'] = flash[:error]
+      flash.now[:error] = "This operation requires an album, we could not find one because: "+e.message
       if request.xhr?
         render :status => 404
       else
@@ -290,7 +288,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
   # current_user is the user we are evaluating
   def require_photo_owner_or_album_admin_role
     unless  @photo.user.id == current_user.id || @photo.album.admin?( current_user.id ) || current_user.support_hero?
-      flash[:error] = "Only Photo Owners or Album Admins can perform this operation"
+      flash.now[:error] = "Only Photo Owners or Album Admins can perform this operation"
       response.headers['X-Errors'] = flash[:error]
       if request.xhr?
         render :status => 401
