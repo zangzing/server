@@ -7,15 +7,11 @@ class Connector::MsliveController < Connector::ConnectorController
   
 protected
 
-
-
   def service_login_required
     unless live_api.consent_token
       SystemTimer.timeout_after(http_timeout) do
         live_api.token_string = service_identity.credentials
-      end
-      if not live_api.token_is_valid?
-        SystemTimer.timeout_after(http_timeout) do
+        if not live_api.token_is_valid?
           if (live_api.consent_token.refresh and live_api.token_is_valid?)
             service_identity.update_attribute(:credentials, live_api.token_string)
           end

@@ -19,22 +19,9 @@ class Connector::MsliveContactsController < Connector::MsliveController
       end
     end
 
-    unless imported_contacts.empty?
-      success = false
-      Contact.transaction do
-        service_identity.destroy_contacts
-        success = service_identity.import_contacts(imported_contacts) > 0
-        service_identity.update_attribute(:last_contact_refresh, Time.now)
-        if success
-          service_identity.update_attribute(:last_contact_refresh, Time.now)
-        else
-          raise ActiveRecord::Rollback
-        end
-      end
-      raise 'Error! No contacts has been imported' unless success
-    end
+    save_contacts(service_identity, imported_contacts)
+    contacts_as_fast_json(imported_contacts)
 
-    imported_contacts.to_json
   end
 
   def index

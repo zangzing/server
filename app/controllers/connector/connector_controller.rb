@@ -25,6 +25,11 @@ class Connector::ConnectorController < ApplicationController
     render :json => {:message => "poll-for-response"}
   end
 
+  def http_timeout
+    return 30.seconds
+  end
+
+
 
   # take the contact objects passed and save them in bulk to the database
   def self.save_contacts(identity, imported_contacts)

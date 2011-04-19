@@ -57,7 +57,6 @@ class Connector::InstagramFoldersController < Connector::InstagramController
       fire_async_response('list_albums')
       return
     end
-    #expires_in 10.minutes, :public => false
     render :json => JSON.fast_generate(root)
   end
 

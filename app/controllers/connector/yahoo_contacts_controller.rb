@@ -29,21 +29,9 @@ class Connector::YahooContactsController < Connector::YahooController
       start_index += BATCH_SIZE
     end while start_index < contacts_count
 
-    unless imported_contacts.empty?
-      success = false
-      Contact.transaction do
-        identity.destroy_contacts
-        success = identity.import_contacts(imported_contacts) > 0
-        if success
-          identity.update_attribute(:last_contact_refresh, Time.now)
-        else
-          raise ActiveRecord::Rollback
-        end
-      end
-      raise 'Error! No contacts has been imported' unless success
-    end
+    save_contacts(identity, imported_contacts)
+    contacts_as_fast_json(imported_contacts)
 
-    imported_contacts.to_json
   end
 
   def index
