@@ -36,7 +36,22 @@ class Connector::ConnectorController < ApplicationController
 #    expires_in 3.minutes, :public => false
     render :json => {:message => "poll-for-response"}
   end
-  
+
+  # take the contact objects passed and save them in bulk to the database
+  def self.save_contacts(identity, imported_contacts)
+    unless imported_contacts.empty?
+      Contact.transaction do
+        identity.destroy_contacts
+        identity.import_contacts(imported_contacts) > 0
+        identity.update_attribute(:last_contact_refresh, Time.now)
+      end
+    end
+  end
+
+  def self.contacts_as_fast_json(imported_contacts)
+    # TODO: use fast_generate but need to know which fields we care about
+    imported_contacts.to_json
+  end
 
   class << self
     include Server::Application.routes.url_helpers
