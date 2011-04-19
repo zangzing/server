@@ -67,32 +67,28 @@ class Identity < ActiveRecord::Base
     Contact.connection.execute "DELETE FROM #{Contact.quoted_table_name} WHERE `identity_id` = #{self.id}"
   end
   
+  # determine the max insert size to build
+  def max_insert_size
+    @@safe_max_size ||= RawDB.safe_max_size(Contact.connection)
+  end
+
   def import_contacts(contacts_array)
-    page_size = 100 #Decrease this if u're getting errors like 'SQL Statement too big'
-    columns_to_update = ['name', 'address', 'identity_id']
-    
-    page_start = 0
-    imported_count = 0
-    columns = columns_to_update.map { |name| Contact.columns_hash[name] }
-    while page_start <= contacts_array.size
-      page = contacts_array[page_start, page_size]
-      page.each{|c| c.identity_id = self.id} #To fit validation
-      value_blocks = page.select(&:valid?).map do |contact|
-        columns.map do |col|
-          Contact.connection.quote(col.type_cast(contact.attributes[col.name]), col)
-        end
-      end
-      next if value_blocks.empty?
-      sql = "INSERT INTO #{Contact.quoted_table_name}(#{columns_to_update.join(',')},created_at,updated_at) VALUES"
-      sql += value_blocks.map {|v| "(#{v.join(',')},NOW(),NOW())" }.join(',')
-      begin
-        Contact.connection.execute sql
-      ensure
-        imported_count += value_blocks.size
-      end
-      page_start += page_size
+    db = Contact.connection
+    max_insert_size = self.max_insert_size
+    cmd = "INSERT INTO #{Contact.quoted_table_name} (identity_id, name, address, created_at, updated_at) VALUES "
+
+    # build an array of arrays that contain the data to insert
+    identity_id = self.id
+    now = db.quote(DateTime.now.to_formatted_s(:db))
+    rows = []
+    contacts_array.each do |contact|
+      row = [ identity_id, db.quote(contact.name), db.quote(contact.address), now, now ]
+      rows << row
     end
-    imported_count
+
+    RawDB.fast_insert(db, max_insert_size, rows, cmd)
+
+    return contacts_array.count
   end
 
   
