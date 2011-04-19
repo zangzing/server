@@ -6,7 +6,6 @@ module Cache
 
     # Base class for caching
     class Base
-      attr_accessor
 
       # initialize the cache manager, optionally takes the
       # database config options
@@ -46,8 +45,7 @@ module Cache
         new_db_id = @db.object_id
         logger.info("New cache db connection - old db id was: #{old_db_id} -- new db id is: #{new_db_id}")
 
-        result = @db.execute("show variables like 'max_allowed_packet'")
-        @safe_max_size = result.first[1].to_i - (32 * 1024)
+        @safe_max_size = RawDB.safe_max_size(@db, 32 * 1024)
 
         return @db
       end
@@ -60,7 +58,7 @@ module Cache
 
       # wrap the db execute method
       def execute(cmd)
-        db.execute(cmd)
+        RawDB.execute(db, cmd)
       end
 
       # a fast batch insert
@@ -75,38 +73,7 @@ module Cache
       # 1: tracked_id, 2: track_type
       #
       def fast_insert(rows, base_cmd, end_cmd = '')
-        result = nil
-        cmd = base_cmd.dup
-        cur_rows = 0
-        rows.each do |row|
-          cmd << "," if cur_rows > 0
-          cur_rows += 1
-
-          vcmd = '('
-          first = true
-          row.each do |value|
-            vcmd << ',' unless first
-            first = false
-            vcmd << value.to_s
-          end
-          vcmd << ')'
-          cmd << vcmd
-
-          if cmd.length > self.safe_max_db_size
-            # over the safe limit so execute this one now
-            cmd << end_cmd
-            result = execute(cmd)
-            cmd = base_cmd.dup
-            cur_rows = 0
-          end
-        end
-        # and do last batch if needed
-        if cur_rows > 0
-          cmd << end_cmd
-          result = execute(cmd)
-        end
-
-        result
+        RawDB.fast_insert(db, safe_max_db_size, rows, base_cmd, end_cmd)
       end
 
     protected

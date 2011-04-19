@@ -1,6 +1,12 @@
 module ActionController
   module ConditionalGet
 
+      #todo: For now we don't let nginx cache anything since it stores cookies
+      # with the cached entries which is very bad since it could allow the wrong
+      # user to pick up the wrong session
+      # once nginx is updated to a version later than 0.8.44 we will no longer need
+      # this patch and can revert to normal behavior
+
 
     # Sets a HTTP 1.1 Cache-Control header. Defaults to issuing a "private" instruction, so that
     # intermediate caches shouldn't cache the response.
@@ -13,6 +19,9 @@ module ActionController
     # This method will overwrite an existing Cache-Control header.
     # See http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html for more possibilities.
     def expires_in(seconds, options = {}) #:doc:
+
+      # force to private always for now until we upgrade nginx
+      options[:public] = false
 
       if ! options[:public]
         response.headers['X-Accel-Expires'] = '0'
