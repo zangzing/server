@@ -41,7 +41,7 @@ class Connector::ZangzingFoldersController < Connector::ConnectorController
 
     Connector::ConnectorController.bulk_insert(photos)
 
-    Photo.to_json_lite(photos)
+    render :json => Photo.to_json_lite(photos)
 
   end
 end
