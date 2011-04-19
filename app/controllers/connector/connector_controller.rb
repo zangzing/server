@@ -49,8 +49,11 @@ class Connector::ConnectorController < ApplicationController
   end
 
   def self.contacts_as_fast_json(imported_contacts)
-    # TODO: use fast_generate but need to know which fields we care about
-    imported_contacts.to_json
+    rows = []
+    imported_contacts.each do |contact|
+      rows << contact.as_json
+    end
+    JSON.fast_generate(rows)
   end
 
   class << self
