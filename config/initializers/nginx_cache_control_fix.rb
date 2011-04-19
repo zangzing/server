@@ -20,9 +20,12 @@ module ActionController
     # See http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html for more possibilities.
     def expires_in(seconds, options = {}) #:doc:
 
-#      if ! options[:public]
+      # force to private always for now until we upgrade nginx
+      options[:public] = false
+
+      if ! options[:public]
         response.headers['X-Accel-Expires'] = '0'
-#      end
+      end
 
       response.cache_control.merge!(:max_age => seconds, :public => options.delete(:public))
       options.delete(:private)
