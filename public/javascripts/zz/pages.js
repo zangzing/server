@@ -189,8 +189,9 @@ pages.edit_album_tab = {
 
                     onDelete: function(index, photo){
                         $.ajax({
-                            type: "DELETE",
+                            type: "POST",
                             dataType: "json",
+                            data:{_method:'delete'},
                             url: zz.path_prefix + "/photos/" + photo.id + ".json",
                             error: function(error){
                             },

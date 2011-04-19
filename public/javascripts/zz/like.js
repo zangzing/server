@@ -58,18 +58,18 @@ var like = {
 
         var zzae = 'like.' + subject_type + '.'
         //Decide the action before the value is toggled in the hash
-        var type='POST';
+        var type='post';
         if( like.hash[subject_id]['user'] == true ){
-            type='DELETE';
+            type='delete';
             zzae += 'unlike';
         } else {
             zzae += 'like';
         }
 
         like.toggle_in_hash( subject_id );
-        $.ajax({ type:    type,
+        $.ajax({ type: 'POST',
             url:     url,
-            data:    {  subject_type : subject_type },
+            data:    {  subject_type : subject_type, _method: type },
             success: function(html){
                 $('body').append(html);
                 like.display_social_dialog( subject_id );

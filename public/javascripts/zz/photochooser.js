@@ -783,8 +783,9 @@ var photochooser = {
             var self = this;
 
             $.ajax({
-                type: "DELETE",
+                type: "POST",
                 dataType: "json",
+                data:{_method:'delete'},
                 url: zz.path_prefix + "/photos/" + photo_id + ".json",
                 success:function(){
                     agent.callAgent('/albums/' +  self.options.album_id + '/photos/' + photo_id + '/cancel_upload');
