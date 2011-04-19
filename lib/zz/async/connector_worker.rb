@@ -37,7 +37,7 @@ module ZZ
             json = klass.send(method_name.to_sym, api, paramz)
             AsyncResponse.store_response(response_id, json)
           rescue Exception => e   # this needs to be Exception if we want to also catch Timeouts
-            logger.info exception.backtrace
+            Rails.logger.log.info exception.backtrace
             AsyncResponse.store_error(response_id, e)
           end
         end
