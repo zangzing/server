@@ -2,19 +2,15 @@ class Connector::YahooContactsController < Connector::YahooController
   skip_before_filter :service_login_required, :only => [:index]
 
   BATCH_SIZE = 1000
-
-  def index
-    @contacts = service_identity.contacts
-  end
-
-  def import
-    identity = current_user.identity_for_yahoo
+  
+  def self.import_contacts(api, params)
+    identity = params[:identity]
     start_index = 1
     imported_contacts = []
     contacts_count = nil
-    SystemTimer.timeout_after(http_timeout) do
+    #SystemTimer.timeout_after(http_timeout) do
       begin
-        contacts_page = yahoo_api.get_contacts(yahoo_api.current_user_guid, :count => BATCH_SIZE, :start => start_index)
+        contacts_page = api.get_contacts(api.current_user_guid, :count => BATCH_SIZE, :start => start_index)
         contacts_count = contacts_page[:total] unless contacts_count
         entry_count = 0
         (contacts_page[:contact] || []).each do |entry|
@@ -33,7 +29,7 @@ class Connector::YahooContactsController < Connector::YahooController
         end
         start_index += BATCH_SIZE
       end while start_index < contacts_count
-    end
+    #end
 
     unless imported_contacts.empty?
       success = false
@@ -46,12 +42,18 @@ class Connector::YahooContactsController < Connector::YahooController
           raise ActiveRecord::Rollback
         end
       end
-      unless success
-        render :json => ['Something went wrong'], :status => 401
-        return
-      end
+      raise 'Error! No contacts has been imported' unless success
     end
-    render :json => imported_contacts.to_json
+
+    imported_contacts.to_json
+  end
+
+  def index
+    @contacts = service_identity.contacts
+  end
+
+  def import
+    fire_async_response('import_contacts')
   end
 
 end

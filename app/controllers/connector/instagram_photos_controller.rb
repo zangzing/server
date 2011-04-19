@@ -1,10 +1,10 @@
 class Connector::InstagramPhotosController < Connector::InstagramController
   
-  def index
-    photo_list = nil
-    SystemTimer.timeout_after(http_timeout) do
-      photo_list = client.user_recent_media(feed_owner, :min_timestamp => Time.at(0), :max_timestamp => Time.now)
-    end
+  def self.list_photos(api, params)
+    #photo_list = nil
+    #SystemTimer.timeout_after(http_timeout) do
+      photo_list = api.user_recent_media(feed_owner(params), :min_timestamp => Time.at(0), :max_timestamp => Time.now)
+    #end
     photo_list.reject! { |item| item[:type] != 'image' }
     photos = photo_list.map { |p|
       {
@@ -13,26 +13,26 @@ class Connector::InstagramPhotosController < Connector::InstagramController
         :type => 'photo',
         :thumb_url => p[:images][:thumbnail][:url],
         :screen_url =>p[:images][:low_resolution][:url],
-        :add_url => instagram_photo_action_path(:photo_id => p[:id], :action => 'import'),
+        :add_url => instagram_photo_action_path(params.merge(:photo_id => p[:id], :action => 'import')),
         :source_guid => make_source_guid(p)
       }
     }
 
-    expires_in 10.minutes, :public => false
-    render :json => JSON.fast_generate(photos)
+    JSON.fast_generate(photos)
   end
-
-  def import
-    photo_data = nil
-    SystemTimer.timeout_after(http_timeout) do
-      photo_data = client.media_item(params[:photo_id])
-    end
-    current_batch = UploadBatch.get_current_and_touch(current_user.id, params[:album_id])
+  
+  def self.import_photo(api, params)
+    identity = params[:identity]
+    #photo_data = nil
+    #SystemTimer.timeout_after(http_timeout) do
+      photo_data = api.media_item(params[:photo_id])
+    #end
+    current_batch = UploadBatch.get_current_and_touch(identity.user.id, params[:album_id])
     photo = Photo.create(
             :id => Photo.get_next_id,
             :caption => (photo_data[:caption][:text] rescue ''),
             :album_id => params[:album_id],
-            :user_id => current_user.id,
+            :user_id => identity.user.id,
             :upload_batch_id => current_batch.id,
             :capture_date => (Time.at(photo_data[:created_time].to_i) rescue nil),
             :source_guid => make_source_guid(photo_data),
@@ -43,7 +43,15 @@ class Connector::InstagramPhotosController < Connector::InstagramController
     )
 
     ZZ::Async::GeneralImport.enqueue( photo.id, photo_data[:images][:standard_resolution][:url] )
-    render :json => Photo.to_json_lite(photo)
+    Photo.to_json_lite(photo)
+  end
+  
+  def index
+    fire_async_response('list_photos')
+  end
+
+  def import
+    fire_async_response('import_photo')
   end
 
 end

@@ -1,12 +1,3 @@
-require 'connector_exceptions'
-
-require 'shutterfly_connector'
-require 'kodak_connector'
-require 'photobucket_connector'
-require 'smugmug_connector'
-require 'twitter_connector'
-require 'yahoo_connector'
-
 class Connector::ConnectorController < ApplicationController
   layout false
   

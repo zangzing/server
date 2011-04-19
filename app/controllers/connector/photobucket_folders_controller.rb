@@ -1,10 +1,10 @@
 class Connector::PhotobucketFoldersController < Connector::PhotobucketController
-
-  def index
-    album_contents = nil
-    SystemTimer.timeout_after(http_timeout) do
-      album_contents = photobucket_api.open_album(params[:album_path])
-    end
+  
+  def self.list_dir(api, params)
+    #album_contents = nil
+    #SystemTimer.timeout_after(http_timeout) do
+      album_contents = api.open_album(params[:album_path])
+    #end
     folders = []
     (album_contents[:album] || []).each do |album|
       album_path = params[:album_path].nil? ? CGI::escape(album[:name]) : "#{params[:album_path]}#{CGI::escape('/'+album[:name])}"
@@ -28,32 +28,33 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
         :source_guid => make_source_guid(media[:url])
       }
     end
-    expires_in 10.minutes, :public => false
-    render :json => JSON.fast_generate(folders)
+
+    JSON.fast_generate(folders)
   end
 
-  def import
-    album_contents = nil
-    SystemTimer.timeout_after(http_timeout) do
-      album_contents = photobucket_api.open_album(params[:album_path])
-    end
+  def self.import_dir_photos(api, params)
+    identity = params[:identity]
+    #album_contents = nil
+    #SystemTimer.timeout_after(http_timeout) do
+      album_contents = api.open_album(params[:album_path])
+    #end
     photos = []
-    current_batch = UploadBatch.get_current_and_touch( current_user.id, params[:album_id] )
+    current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     (album_contents[:media] || []).each do |photo_data|
       photo_url = photo_data[:url]
       photo = Photo.new_for_batch(current_batch, {
               :id => Photo.get_next_id,
               :caption => photo_data[:title] || photo_data[:name],
               :album_id => params[:album_id],
-              :user_id => current_user.id,
-              :upload_batch_id => current_batch.id,              
+              :user_id => identity.user.id,
+              :upload_batch_id => current_batch.id,
               :capture_date => (Time.at(photo_data[:uploaddate].to_i) rescue nil),
               :source_guid => make_source_guid(photo_data[:url]),
               :source_thumb_url => photo_data[:thumb],
               :source_screen_url => photo_data[:thumb],
               :source => 'photobucket'
       })
-      
+
       photo.temp_url = photo_url
       photos << photo
 
@@ -62,18 +63,19 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
     bulk_insert(photos)
   end
 
-  def import_photo
-    photo_data = nil
-    SystemTimer.timeout_after(http_timeout) do
-      photo_data = photobucket_api.call_method("/media/#{params[:photo_path]}")
-    end
-    current_batch = UploadBatch.get_current_and_touch( current_user.id, params[:album_id] )
+  def self.import_certain_photo(api, params)
+    identity = params[:identity]
+    #photo_data = nil
+    #SystemTimer.timeout_after(http_timeout) do
+      photo_data = api.call_method("/media/#{params[:photo_path]}")
+    #end
+    current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     photo = Photo.create(
             :id => Photo.get_next_id,
             :caption => photo_data[:title] || photo_data[:name],
             :album_id => params[:album_id],
-            :user_id => current_user.id,
-            :upload_batch_id => current_batch.id,            
+            :user_id => identity.user.id,
+            :upload_batch_id => current_batch.id,
             :capture_date => (Time.at(photo_data[:uploaddate].to_i) rescue nil),
             :source_guid => make_source_guid(photo_data[:url]),
             :source_thumb_url => photo_data[:thumb],
@@ -81,9 +83,22 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
             :source => 'photobucket'
 
     )
-    
     ZZ::Async::GeneralImport.enqueue( photo.id, photo_data[:url] )
-    render :json => Photo.to_json_lite(photo)
+    
+    Photo.to_json_lite(photo)
+  end
+  
+  
+  def index
+    fire_async_response('list_dir')
+  end
+
+  def import
+    fire_async_response('import_dir_photos')
+  end
+
+  def import_photo
+    fire_async_response('import_certain_photo')
   end
 
 end

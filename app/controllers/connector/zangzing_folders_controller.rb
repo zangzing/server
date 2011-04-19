@@ -10,7 +10,7 @@ class Connector::ZangzingFoldersController < Connector::ConnectorController
         :add_url => zangzing_folder_action_path({:zz_album_id =>f.id, :action => 'import'})
       }
     }
-    expires_in 10.minutes, :public => false
+#    expires_in 10.minutes, :public => false
     render :json => JSON.fast_generate(@folders)
   end
 

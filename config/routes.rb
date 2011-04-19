@@ -227,13 +227,11 @@ Server::Application.routes.draw do
       match '/google/contacts/:action' => 'google_contacts#index', :as => :google_contacts
 
       #picasa
-      match '/picasa/sessions/new' => 'picasa_sessions#new', :as => :new_picasa_session
-      match '/picasa/sessions/create' => 'picasa_sessions#create', :as => :create_picasa_session
-      match '/picasa/sessions/destroy' => 'picasa_sessions#destroy', :as => :destroy_picasa_session
-      match '/picasa/folders/:picasa_album_id/photos.:format' => 'picasa_photos#index', :as => :picasa_photos
-      match '/picasa/folders/:picasa_album_id/photos/:photo_id/:action' => 'picasa_photos#index', :as => :picasa_photo_action
-      match '/picasa/folders.:format' => 'picasa_folders#index', :as => :picasa_folders
-      match '/picasa/folders/:picasa_album_id/:action.:format' => 'picasa_folders#index', :as => :picasa_folder_action
+      #google session controller used
+      match '/picasa_web/folders/:picasa_album_id/photos.:format' => 'picasa_photos#index', :as => :picasa_photos
+      match '/picasa_web/folders/:picasa_album_id/photos/:photo_id/:action' => 'picasa_photos#index', :as => :picasa_photo_action
+      match '/picasa_web/folders.:format' => 'picasa_folders#index', :as => :picasa_folders
+      match '/picasa_web/folders/:picasa_album_id/:action.:format' => 'picasa_folders#index', :as => :picasa_folder_action
 
       #local contacts
       match '/local/contacts/:action' => 'local_contacts#index', :as => :local_contacts
