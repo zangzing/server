@@ -1,10 +1,7 @@
 class Connector::FlickrFoldersController < Connector::FlickrController
 
   def self.list_albums(api_client, params)
-    #folders_response = []
-    #SystemTimer.timeout_after(http_timeout) do
-      folders_response = api_client.photosets.getList
-    #end
+    folders_response = api_client.photosets.getList
     @folders = folders_response.map { |f|
       {
         :name => f.title,
@@ -20,10 +17,7 @@ class Connector::FlickrFoldersController < Connector::FlickrController
   
   def self.import_album(api_client, params)
     identity = params[:identity]
-    #photo_set = []
-    #SystemTimer.timeout_after(http_timeout) do
-      photo_set = api_client.photosets.getPhotos :photoset_id => params[:set_id], :extras => 'original_format,date_taken'
-    #end
+    photo_set = api_client.photosets.getPhotos :photoset_id => params[:set_id], :extras => 'original_format,date_taken'
     photos = []
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     photo_set.photo.each do |p|
@@ -53,7 +47,6 @@ class Connector::FlickrFoldersController < Connector::FlickrController
 
   def index
     fire_async_response('list_albums')
-    #render :json => self.class.list_albums(flickr_api, params)
   end
   
   def import

@@ -22,9 +22,7 @@ protected
     end
   end
 
-  def http_timeout
-    SERVICE_CALL_TIMEOUT[:photobucket]
-  end
+
 
   def service_identity
     @service_identity ||= current_user.identity_for_photobucket

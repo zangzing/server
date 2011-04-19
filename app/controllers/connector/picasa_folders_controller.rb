@@ -1,10 +1,8 @@
 class Connector::PicasaFoldersController < Connector::PicasaController
   
   def self.list_albums(api, params)
-    #doc = nil
-    #SystemTimer.timeout_after(http_timeout) do
-      doc = Nokogiri::XML(api.get("https://picasaweb.google.com/data/feed/api/user/default").body)
-    #end
+    doc = Nokogiri::XML(api.get("https://picasaweb.google.com/data/feed/api/user/default").body)
+
     folders = []
     doc.xpath('//a:entry', NS).each do |entry|
       albumid = /albumid\/([0-9a-z]+)/.match(entry.at_xpath('a:id', NS).text)[1]
@@ -22,10 +20,8 @@ class Connector::PicasaFoldersController < Connector::PicasaController
 
   def self.import_album(api, params)
     identity = params[:identity]
-    #doc = nil
-    #SystemTimer.timeout_after(http_timeout) do
-      doc = Nokogiri::XML(api.get("https://picasaweb.google.com/data/feed/api/user/default/albumid/#{params[:picasa_album_id]}").body)
-    #end
+    doc = Nokogiri::XML(api.get("https://picasaweb.google.com/data/feed/api/user/default/albumid/#{params[:picasa_album_id]}").body)
+
     photos = []
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     doc.xpath('//a:entry', NS).each do |entry|

@@ -2,10 +2,8 @@ class Connector::FacebookFoldersController < Connector::FacebookController
   
   def self.list_folders(api_client, params)
     target = params[:target]
-    #album_list = []
-    #SystemTimer.timeout_after(http_timeout) do
-      album_list = api_client.get(target, :limit => 1000)
-    #end
+    album_list = api_client.get(target, :limit => 1000)
+
     album_list.reject! { |a| a[:type] == 'profile' } #Remove 'Profile Pictures'
     unless album_list.empty?
       if album_list.first[:updated_time]
@@ -38,10 +36,8 @@ class Connector::FacebookFoldersController < Connector::FacebookController
   
   def self.import_folder(api_client, params)
     identity = params[:identity]
-    #photos_list = []
-    #SystemTimer.timeout_after(http_timeout) do
-      photos_list = api_client.get("#{params[:fb_album_id]}/photos", :limit => 1000)
-    #end
+    photos_list = api_client.get("#{params[:fb_album_id]}/photos", :limit => 1000)
+
     photos = []
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
 

@@ -1,10 +1,7 @@
 class Connector::KodakPhotosController < Connector::KodakController
   
   def self.list_photos(api, params)
-    #photos_list = nil
-    #SystemTimer.timeout_after(http_timeout) do
-      photos_list = api.send_request("/album/#{params[:kodak_album_id]}")
-    #end
+    photos_list = api.send_request("/album/#{params[:kodak_album_id]}")
     photos_data = photos_list['pictures']
 
     photos = photos_data.map { |p|
@@ -24,10 +21,9 @@ class Connector::KodakPhotosController < Connector::KodakController
 
   def self.import_photo(api, params)
     identity = params[:identity]
-    #photos_list = nil
-    #SystemTimer.timeout_after(http_timeout) do
-      photos_list = api.send_request("/album/#{params[:kodak_album_id]}")
-    #end
+
+    photos_list = api.send_request("/album/#{params[:kodak_album_id]}")
+
     photos_data = photos_list['pictures']
     p = photos_data.select { |p| p['id']==params[:photo_id] }.first
     photo_url = p[PHOTO_SIZES[:full]]

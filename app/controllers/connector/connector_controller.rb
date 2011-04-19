@@ -15,9 +15,6 @@ class Connector::ConnectorController < ApplicationController
     end
   end
 
-  def bulk_insert(photos)
-    render :json => Connector::ConnectorController.bulk_insert(photos)
-  end
 
   def fire_async_response(class_method)
     response_id = AsyncResponse.new_response_id
@@ -27,7 +24,10 @@ class Connector::ConnectorController < ApplicationController
 #    expires_in 3.minutes, :public => false
     render :json => {:message => "poll-for-response"}
   end
-  
+
+  def http_timeout
+    return 15.seconds
+  end
 
   class << self
     include Server::Application.routes.url_helpers

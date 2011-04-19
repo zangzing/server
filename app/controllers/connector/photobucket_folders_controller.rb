@@ -1,10 +1,9 @@
 class Connector::PhotobucketFoldersController < Connector::PhotobucketController
   
   def self.list_dir(api, params)
-    #album_contents = nil
-    #SystemTimer.timeout_after(http_timeout) do
-      album_contents = api.open_album(params[:album_path])
-    #end
+
+    album_contents = api.open_album(params[:album_path])
+
     folders = []
     (album_contents[:album] || []).each do |album|
       album_path = params[:album_path].nil? ? CGI::escape(album[:name]) : "#{params[:album_path]}#{CGI::escape('/'+album[:name])}"
@@ -34,10 +33,8 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
 
   def self.import_dir_photos(api, params)
     identity = params[:identity]
-    #album_contents = nil
-    #SystemTimer.timeout_after(http_timeout) do
-      album_contents = api.open_album(params[:album_path])
-    #end
+    album_contents = api.open_album(params[:album_path])
+
     photos = []
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     (album_contents[:media] || []).each do |photo_data|
@@ -65,10 +62,8 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
 
   def self.import_certain_photo(api, params)
     identity = params[:identity]
-    #photo_data = nil
-    #SystemTimer.timeout_after(http_timeout) do
-      photo_data = api.call_method("/media/#{params[:photo_path]}")
-    #end
+    photo_data = api.call_method("/media/#{params[:photo_path]}")
+
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     photo = Photo.create(
             :id => Photo.get_next_id,

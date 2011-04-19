@@ -1,6 +1,3 @@
-#Loading timeouts
-SERVICE_CALL_TIMEOUT = YAML.load(ERB.new(File.read("#{Rails.root}/config/service_timeouts.yml")).result)
-
 
 api_creds = {}
 [:flickr, :facebook, :smugmug, :shutterfly, :twitter, :yahoo, :photobucket, :ms_live,

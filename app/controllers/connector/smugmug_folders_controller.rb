@@ -1,10 +1,8 @@
 class Connector::SmugmugFoldersController < Connector::SmugmugController
   
   def self.list_albums(api, params)
-    #album_list = nil
-    #SystemTimer.timeout_after(http_timeout) do
-      album_list = api.call_method('smugmug.albums.get', :Extras => 'Passworded,PasswordHint,Password')
-    #end
+    album_list = api.call_method('smugmug.albums.get', :Extras => 'Passworded,PasswordHint,Password')
+
     folders = album_list.map { |f|
       {
         :name => f[:title],
@@ -21,10 +19,8 @@ class Connector::SmugmugFoldersController < Connector::SmugmugController
   def self.import_album(api, params)
     identity = params[:identity]
     album_id, album_key = params[:sm_album_id].split('_')
-    #photos_list = nil
-    #SystemTimer.timeout_after(http_timeout) do
-      photos_list = api.call_method('smugmug.images.get', {:AlbumID => album_id, :AlbumKey => album_key, :Heavy => 1})
-    #end
+    photos_list = api.call_method('smugmug.images.get', {:AlbumID => album_id, :AlbumKey => album_key, :Heavy => 1})
+
     photos = []
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     photos_list[:images].each do |p|

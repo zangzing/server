@@ -13,16 +13,10 @@ class Connector::ZangzingPhotosController < Connector::ConnectorController
         :source_guid => p.source_guid
       }
     end
-#    expires_in 10.minutes, :public => false
     render :json => JSON.fast_generate(@photos)
   end
 
-#  def show
-#    size_wanted = (params[:size] || 'screen').downcase.to_sym
-#    photo_url = get_photo_url(params[:photo_id], PHOTO_SIZES[size_wanted])
-#    bin_io = OpenURI.send(:open, photo_url)
-#    send_data bin_io.read, :type => bin_io.meta['content-type'], :disposition => 'inline'
-#  end
+
 
   def import
     source_photo = current_user.albums.find(params[:zz_album_id]).photos.find(params[:photo_id])

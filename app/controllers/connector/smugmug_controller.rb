@@ -25,9 +25,7 @@ class Connector::SmugmugController < Connector::ConnectorController
     end
   end
 
-  def http_timeout
-    SERVICE_CALL_TIMEOUT[:smugmug]
-  end
+
 
   def service_identity
     @service_identity ||= current_user.identity_for_smugmug

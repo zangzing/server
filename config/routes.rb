@@ -176,8 +176,8 @@ Server::Application.routes.draw do
       match '/facebook/folders/:fb_album_id/photos/:photo_id/:action' => 'facebook_photos#index', :as => :facebook_photo_action
       match '/facebook/folders.:format' => 'facebook_folders#index', :as => :facebook_folders
       match '/facebook/folders/:fb_album_id/:action.:format' => 'facebook_folders#index', :as => :facebook_folder_action
-      match '/facebook/posts.:format' => 'facebook_posts#index', :as => :facebook_posts
-      match '/facebook/posts/create' => 'facebook_posts#create', :as => :create_facebook_post
+#      match '/facebook/posts.:format' => 'facebook_posts#index', :as => :facebook_posts
+#      match '/facebook/posts/create' => 'facebook_posts#create', :as => :create_facebook_post
 
       #smugmug
       match '/smugmug/sessions/new' => 'smugmug_sessions#new', :as => :new_smugmug_session
@@ -254,8 +254,8 @@ Server::Application.routes.draw do
       match '/twitter/sessions/new' => 'twitter_sessions#new', :as => :new_twitter_session
       match '/twitter/sessions/create'=> 'twitter_sessions#create', :as => :create_twitter_session
       match '/twitter/sessions/destroy' => 'twitter_sessions#destroy', :as => :destroy_twitter_session
-      match '/twitter/posts.:format' => 'twitter_posts#index', :as => :twitter_posts
-      match '/twitter/posts/create' => 'twitter_posts#create', :as => :create_twitter_post
+#      match '/twitter/posts.:format' => 'twitter_posts#index', :as => :twitter_posts
+#      match '/twitter/posts/create' => 'twitter_posts#create', :as => :create_twitter_post
 
       #proxy
       match '/proxy' => 'proxy#proxy', :as => :proxy

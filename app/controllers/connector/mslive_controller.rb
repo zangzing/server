@@ -7,9 +7,7 @@ class Connector::MsliveController < Connector::ConnectorController
   
 protected
 
-  def http_timeout
-    SERVICE_CALL_TIMEOUT[:mslive]
-  end
+
 
   def service_login_required
     unless live_api.consent_token

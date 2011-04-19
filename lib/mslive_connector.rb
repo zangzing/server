@@ -50,10 +50,8 @@ class MsliveConnector
     end
     request = Net::HTTP::Get.new(service_uri.request_uri, 'Authorization' => "DelegatedToken dt=\"#{consent_token.delegationtoken}\"")
     begin
-      #response = nil
-      #SystemTimer.timeout_after(http_timeout) do
-        response = http.request(request)
-      #end
+      response = http.request(request)
+
     rescue => e
       if e.kind_of?(SocketError)
         raise HttpCallFail

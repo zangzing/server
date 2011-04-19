@@ -11,9 +11,6 @@ class Connector::FlickrController < Connector::ConnectorController
 
 protected
 
-  def http_timeout
-    SERVICE_CALL_TIMEOUT[:flickr]
-  end
 
 
   def service_login_required

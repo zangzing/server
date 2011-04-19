@@ -38,9 +38,7 @@ protected
     "instagram_"+Photo.generate_source_guid(photo_info[:images][:standard_resolution][:url])
   end
 
-  def http_timeout
-    SERVICE_CALL_TIMEOUT[:instagram]
-  end
+
 
   def self.feed_owner(params)
     case params[:target]

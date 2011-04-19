@@ -10,7 +10,6 @@ class Connector::ZangzingFoldersController < Connector::ConnectorController
         :add_url => zangzing_folder_action_path({:zz_album_id =>f.id, :action => 'import'})
       }
     }
-#    expires_in 10.minutes, :public => false
     render :json => JSON.fast_generate(@folders)
   end
 
@@ -40,6 +39,9 @@ class Connector::ZangzingFoldersController < Connector::ConnectorController
 
     end
 
-    bulk_insert(photos)
+    Connector::ConnectorController.bulk_insert(photos)
+
+    Photo.to_json_lite(photos)
+
   end
 end

@@ -28,10 +28,6 @@ protected
     @graph ||= service_identity.facebook_graph
   end
 
-  def http_timeout
-    SERVICE_CALL_TIMEOUT[:facebook]
-  end
-
 
   def self.get_photo_url(photo_info, size)
     images = photo_info[:images]

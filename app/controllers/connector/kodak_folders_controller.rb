@@ -23,10 +23,7 @@ class Connector::KodakFoldersController < Connector::KodakController
   
   def self.import_album(api, params)
     identity = params[:identity]
-    #photos_list = nil
-    #SystemTimer.timeout_after(http_timeout) do
-      photos_list = api.send_request("/album/#{params[:kodak_album_id]}")
-    #end
+    photos_list = api.send_request("/album/#{params[:kodak_album_id]}")
     photos_data = photos_list['pictures']
     photos = []
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
