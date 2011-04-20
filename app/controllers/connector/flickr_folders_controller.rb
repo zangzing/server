@@ -17,7 +17,7 @@ class Connector::FlickrFoldersController < Connector::FlickrController
   
   def self.import_album(api_client, params)
     identity = params[:identity]
-    photo_set = api_client.photosets.getPhotos :photoset_id => params[:set_id], :extras => 'original_format,date_taken'
+    photo_set = api_client.photosets.getPhotos :photoset_id => params[:set_id], :extras => 'original_format,url_m,url_z,url_l,url_o', :media => 'photos'
     photos = []
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     photo_set.photo.each do |p|

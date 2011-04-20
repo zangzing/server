@@ -1,7 +1,7 @@
 class Connector::FlickrController < Connector::ConnectorController
   before_filter :service_login_required
 
-  PHOTO_SIZES = {:thumb => 'Medium', :screen => 'Big', :full => 'Big'}
+  PHOTO_SIZES = {:thumb => 'Medium', :screen => 'zBig', :full => 'Big'}
   
   def self.api_from_identity(identity)
     flickr_token = identity.credentials
@@ -45,15 +45,37 @@ protected
   end
 
   def self.get_photo_url(photo_info, size_wanted = :screen)
-    extension = 'jpg'
-    size_letter = PHOTO_SIZES[size_wanted][0,1].downcase
-    secret = photo_info.secret
-    if size_wanted == :full && photo_info.respond_to?(:originalsecret) #If we've working with a Pro account
-      extension = photo_info.originalformat
-      size_letter = 'o'
-      secret = photo_info.originalsecret
+    sz = {}
+    if photo_info.flickr_type == 'sizes' then
+      photo_info.size.each{|item| sz[item['label'].downcase.to_sym] = item['source'] if item['label'] =~ /^\w+$/  }
+    else
+      sz[:small] = photo_info.url_m if photo_info.respond_to?(:url_m)
+      sz[:medium] = photo_info.url_z if photo_info.respond_to?(:url_z)
+      sz[:large] = photo_info.url_l if photo_info.respond_to?(:url_l)
+      sz[:original] = photo_info.url_o if photo_info.respond_to?(:url_o)
     end
-    'http://farm%s.static.flickr.com/%s/%s_%s_%s.%s' % [photo_info.farm, photo_info.server, photo_info.id, secret, size_letter, extension]
+
+    url = case size_wanted
+      when :thumb then sz[:small] || sz[:medium]
+      when :screen then sz[:small] || sz[:large]
+      when :full then sz[:original] || sz[:large]
+      else nil
+    end
+
+=begin
+    unless url #Old way we was getting the url
+      extension = 'jpg'
+      size_letter = PHOTO_SIZES[size_wanted][0,1].downcase
+      secret = photo_info.secret
+      if size_wanted == :full && photo_info.respond_to?(:originalsecret) #If we've working with a Pro account
+        extension = photo_info.originalformat
+        size_letter = 'o'
+        secret = photo_info.originalsecret
+      end
+      url = 'http://farm%s.static.flickr.com/%s/%s_%s_%s.%s' % [photo_info.farm, photo_info.server, photo_info.id, secret, size_letter, extension]
+    end
+=end
+    url || ''
   end
 
   def self.make_source_guid(photo_info)

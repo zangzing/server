@@ -2,7 +2,7 @@ class Connector::GoogleSessionsController < Connector::GoogleController
   skip_before_filter :require_user, :only => [:new, :create]
 
   def new
-    redirect_to GData::Auth::AuthSub.get_url(create_google_session_url, scope)
+    redirect_to GData::Auth::AuthSub.get_url(create_google_session_url, scope, true, true)
   end
 
   def create
