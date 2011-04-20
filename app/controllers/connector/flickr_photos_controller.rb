@@ -1,7 +1,7 @@
 class Connector::FlickrPhotosController < Connector::FlickrController
   
   def self.list_photos(api_client, params)
-     photos_response = api_client.photosets.getPhotos :photoset_id => params[:set_id], :extras => 'original_format'
+    photos_response = api_client.photosets.getPhotos :photoset_id => params[:set_id], :extras => 'original_format,url_m,url_z,url_l,url_o', :media => 'photos'
     @photos = photos_response.photo.map { |p|
       {
         :name => p.title,
@@ -18,8 +18,9 @@ class Connector::FlickrPhotosController < Connector::FlickrController
   
   def self.import_photo(api_client, params)
     identity = params[:identity]
-    info = api_client.photos.getInfo :photo_id => params[:photo_id], :extras => 'original_format'
-    photo_url = get_photo_url(info, :full)
+    info = api_client.photos.getInfo :photo_id => params[:photo_id], :extras => 'url_m,url_z,url_l,url_o', :media => 'photos'
+    sizes = api_client.photos.getSizes :photo_id => params[:photo_id]
+    photo_url = get_photo_url(sizes, :full)
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     photo = Photo.create(
               :id => Photo.get_next_id,
@@ -28,9 +29,9 @@ class Connector::FlickrPhotosController < Connector::FlickrController
               :upload_batch_id => current_batch.id,
               :capture_date => (DateTime.parse(info.dates.taken) rescue nil),
               :caption => info.title,
-              :source_guid => make_source_guid(info),
-              :source_thumb_url => get_photo_url(info, :thumb),
-              :source_screen_url => get_photo_url(info, :screen),
+              :source_guid => make_source_guid(sizes),
+              :source_thumb_url => get_photo_url(sizes, :thumb),
+              :source_screen_url => get_photo_url(sizes, :screen),
               :source => 'flickr'
 
     )
