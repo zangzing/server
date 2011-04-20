@@ -16,7 +16,7 @@ protected
     api = self.create_client
     unless identity.credentials.blank?
       api.authsub_token = identity.credentials
-      api.authsub_private_key = "#{Rails.root}/config/cert/private_key.pem"
+      api.authsub_private_key = "#{Rails.root}/config/certs/gmail/private_key.pem"
     end
     api
   end
@@ -30,7 +30,7 @@ protected
       @permanent_token = service_identity.credentials
       raise InvalidToken unless @permanent_token
       client.authsub_token = @permanent_token
-      client.authsub_private_key = "#{Rails.root}/config/cert/private_key.pem"
+      client.authsub_private_key = "#{Rails.root}/config/certs/gmail/private_key.pem"
     end
   end
 
@@ -49,7 +49,7 @@ protected
   def upgrade_access_token!(request_token)
     client.authsub_token = request_token
     SystemTimer.timeout_after(http_timeout) do
-      client.auth_handler.private_key = "#{Rails.root}/config/cert/private_key.pem"
+      client.auth_handler.private_key = "#{Rails.root}/config/certs/gmail/private_key.pem"
       @permanent_token = client.auth_handler.upgrade()
     end
     client.authsub_token = @permanent_token
