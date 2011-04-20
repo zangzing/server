@@ -150,16 +150,20 @@ class UsersController < ApplicationController
   end
 
   def validate_username
-
     if params[:user] && params[:user][:username]
-      @user = User.find_by_username(params[:user][:username])
-      if @user == current_user #if the username returns the current user this means its a profile edit
-        @user = nil
+      if ReservedUserNames.is_reserved? params[:user][:username]
+        render :json => false and return
+      elsif
+        @user = User.find_by_username(params[:user][:username])
+        if @user == current_user #if the username returns the current user this means its a profile edit
+          @user = nil
+        end
+        if @user && @user.automatic?
+          render :json => true and return  #The user is an automatic user so the username is still technically available.
+        end
+        render :json => !@user and return
       end
-      if @user && @user.automatic?
-        render :json => true and return  #The user is an automatic user so the username is still technically available.
-      end
-      render :json => !@user and return
+
     end
     render :json => true #Invalid call return not valid
   end
