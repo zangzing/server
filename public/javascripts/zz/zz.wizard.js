@@ -223,7 +223,8 @@ zz.wizard = {
 
     create_group_album: function(){
         $.post(zz.path_prefix + '/users/'+zz.current_user_id+'/albums', { album_type: "GroupAlbum" }, function(data){
-            zz.album_id = data;
+            zz.album_id = data.id;
+            $('#album-info h2').text(data.name);
             zz.wizard.make_drawer(zz.drawers.group_album, 'add');
         });
     },
@@ -321,7 +322,7 @@ zz.wizard = {
                         $('#error-notice').fadeOut('fast', function(){
                             $('#error-notice').text('    ');
                         })
-                    }, delay+3000);
+                    }, delay+4000);
                 });
             }
         }

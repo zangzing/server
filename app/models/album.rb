@@ -25,26 +25,44 @@ class Album < ActiveRecord::Base
   validates_presence_of  :user_id
   validates_presence_of  :name
   validates_length_of    :name, :maximum => 50
+  validates_uniqueness_of :name, :scope => :user_id, :message => "You already have an album named \"%{value}\" please try a different name"
+
+  before_validation   :uniquify_name, :on => :create
 
   before_save   :cover_photo_id_valid?, :if => :cover_photo_id_changed?
   after_save    :notify_cache_manager
+
+
   after_create  :add_creator_as_admin
+
   after_commit  :notify_cache_manager_delete, :on => :destroy
 
   default_scope :order => "`albums`.updated_at DESC"
 
   PRIVACIES = {'Public' =>'public','Hidden' => 'hidden','Password' => 'password'};
 
-  # build our base model name for this class and
-  # hold onto it as a class variable since we only
-  # need to generate it once.  The name built up
-  # has all the support needed by ActiveModel to properly
-  # fetch the singular and pluralized versions of the name
-  # we do this rather than the default since we want
-  # our child classes to use this classes table name
-  # in other words we don't want PersonalAlbum to use the
-  # personal_albums table we want it to use the 
-  # albums table
+  def uniquify_name
+    @uname = name
+    @i = 0
+    @album = user.albums.find_by_name( @uname )
+    until @album.nil?
+      @i+=1
+      @uname = "#{name} #{@i}"
+      @album = user.albums.find_by_name(@uname)
+    end
+    self.name = @uname
+  end
+
+  def name_unique?( try_name )
+    return true if try_name == name
+    user.albums.find_by_name( try_name ).nil?
+  end
+
+  # build our base model name for this class and hold onto it as a class variable since we only
+  # need to generate it once.  The name built up  has all the support needed by ActiveModel to properly
+  # fetch the singular and pluralized versions of the name  we do this rather than the default since we want
+  # our child classes to use this classes table name in other words we don't want PersonalAlbum to use the
+  # personal_albums table we want it to use the albums table
   def self.model_name
     @@_model_name ||= ActiveModel::Name.new(Album)
   end
@@ -79,7 +97,6 @@ class Album < ActiveRecord::Base
   def is_safe_deleted?
     return !self.deleted_at.nil?
   end
-
 
   # populate the covers for the given photos
   # we don't use .includes because the photos passed
@@ -211,7 +228,7 @@ class Album < ActiveRecord::Base
             acl.add_user user.id, AlbumACL::CONTRIBUTOR_ROLE
             ZZ::Async::Email.enqueue( :contributor_added, self.id, email, msg )
           end
-     else
+     else 
           # if the email does not have contributor role add it.
           unless acl.has_permission?( email, AlbumACL::CONTRIBUTOR_ROLE)
               acl.add_user email, AlbumACL::CONTRIBUTOR_ROLE

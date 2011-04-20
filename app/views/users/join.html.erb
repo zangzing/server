@@ -130,16 +130,10 @@
             var username = $('#user_username').val();
             //set the value in the homepage url
             $('#username').text(username);
-
-
-
         });
 
 
         $('#join-form').validate({
-//            errorPlacement: function(error, element){
-//                logger.debug(element);
-//            },
             rules: {
                 'user[name]': {
                     required: true,
@@ -162,7 +156,6 @@
                     minlength: 5
                 }
             },
-
             messages: {
                 'user[name]': {
                     required: 'please enter your name',

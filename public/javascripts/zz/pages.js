@@ -57,24 +57,26 @@ pages.album_name_tab = {
             },100);
 
             //Get album email when 1.2 sec elapsed after user finishes typing
-            $('#album_name').keypress(function(){
+            $('#album_name').keyup(function(){
                 album_email_call_lock++;
                 setTimeout(function(){
                     album_email_call_lock--;
                     if(album_email_call_lock==0){
                         $.ajax({
-                            url: zz.path_prefix + '/albums/' + zz.album_id + '/preview_album_email?' + $.param({album_name: $('#album_name').val()}),
+                            url: zz.path_prefix + '/albums/' + zz.album_id + '/preview_album_email?' + $.param({'album[name]': $('#album_name').val()}),
                             success: function(json){
+                                //$('#album_name').removeClass('error');
                                 $('#album_email').text(json.email);
                                 $('#album_url').text(json.url);
                             },
                             error: function(){
+                                //$('#album_name').addClass('error');
                                 $('#album_name').val(pages.album_name_tab.original_album_name);
                                 $('h2#album-header-title').text(pages.album_name_tab.original_album_name);
                             }
                         });
                     }
-                }, 1000);
+                }, 800);
             });
 
             //setup album cover picker
