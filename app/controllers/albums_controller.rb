@@ -47,10 +47,10 @@ class AlbumsController < ApplicationController
         render :nothing => true , :layout => false, :status => 409
       rescue FriendlyId::ReservedError
         flash[:error]="Sorry, \"#{base}\" is a reserved album name please try a different one"
-        render :nothing => true, :layout => false, :status => 401
+        render :nothing => true, :layout => false, :status => 409
       rescue FriendlyId::BlankError
         flash[:error]="Your album must have a name"
-        render :nothing => true, :layout => false, :status => 401
+        render :nothing => true, :layout => false, :status => 409
       end
     else
       render :nothing => true, :layout => false, :status => 400
