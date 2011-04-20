@@ -17,38 +17,43 @@ class AlbumsController < ApplicationController
     if params[:album_type].nil?
       render :text => "Error No Album Type Supplied. Please Choose Album Type.", :status=>500 and return
     end
-    @album  = params[:album_type].constantize.new()
-    current_user.albums << @album
-    @album.name = "New Album"
+    @album  = params[:album_type].constantize.new(:name => "New Album")
+    @album.user = current_user
     unless @album.save
+      current_user.albums << @album
       render :text => "Error in album create."+@album.errors.to_xml(), :status=>500 and return
     end
-    render :text => @album.id, :status => 200, :layout => false and return
+    render :json => {:id => @album.id, :name => @album.name}, :status => 200, :layout => false and return
   end
 
   # Used in the name tab of the wizard. It displays a preview
   # of what the album email will be as the album name changes
   # @album is set in the require_album before filter
   def preview_album_email
-    if base = params[:album_name]
+    if base = params[:album][:name]
       begin
-        text = @album.normalize_friendly_id(FriendlyId::SlugString.new(base))
-        slug_text = FriendlyId::SlugString.new(text.to_s).validate_for!(@album.friendly_id_config).to_s
-        current_slug = @album.slugs.new(:name => slug_text.to_s, :scope => @album.friendly_id_config.scope_for(@album), :sluggable => @album)
-
-        json = {
+        if @album.name_unique?( base )
+          text = @album.normalize_friendly_id(FriendlyId::SlugString.new(base))
+          slug_text = FriendlyId::SlugString.new(text.to_s).validate_for!(@album.friendly_id_config).to_s
+          current_slug = @album.slugs.new(:name => slug_text.to_s, :scope => @album.friendly_id_config.scope_for(@album), :sluggable => @album)
+          json = {
+            :name  => base,
             :email => "#{current_slug.to_friendly_id}@#{@album.user.friendly_id}.#{Server::Application.config.album_email_host}",
-            :url => album_pretty_url(@album, current_slug.to_friendly_id)
-        }
-
-
-        render :json => json
+            :url   => album_pretty_url(@album, current_slug.to_friendly_id)
+          }
+          render :json =>  json and return
+        end 
+        flash[:error]="You already have an album named \"#{base}\" please try a different name"
+        render :nothing => true , :layout => false, :status => 409
       rescue FriendlyId::ReservedError
         flash[:error]="Sorry, \"#{base}\" is a reserved album name please try a different one"
-        render :nothing => true, :layout => false, :status=>401
+        render :nothing => true, :layout => false, :status => 409
+      rescue FriendlyId::BlankError
+        flash[:error]="Your album must have a name"
+        render :nothing => true, :layout => false, :status => 409
       end
     else
-      render :nothing => true, :layout => false
+      render :nothing => true, :layout => false, :status => 400
     end
   end
 
@@ -78,7 +83,7 @@ class AlbumsController < ApplicationController
     # TODO: Fix AlbumCoverPicker to omit cover_photo_id parameter if not set by user
     params[:album].delete(:cover_photo_id) if params[:album][:cover_photo_id] && params[:album][:cover_photo_id].length <= 0  
     if @album && @album.update_attributes( params[:album] )
-      flash[:notice] = "Album Updated!"
+      flash.now[:notice] = "Album Updated!"
       render :text => 'Success Updating Album', :status => 200, :layout => false
     else
       #flash[:notice]="Your album update did not succeed please check X-Errors header for details"
