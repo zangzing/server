@@ -93,7 +93,7 @@ class User < ActiveRecord::Base
     user = User.find_by_email( email )
     if user.nil?
       # Get the username part of the email and remove special characters (a.k.a parameterize)
-      mail_name = username = email.split('@').first.parameterize('')
+      mail_name = username = email.parameterize('')
       
       # Make sure the username is unique by adding a number until there are no matches
       i = 1
