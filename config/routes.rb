@@ -176,8 +176,8 @@ Server::Application.routes.draw do
       match '/facebook/folders/:fb_album_id/photos/:photo_id/:action' => 'facebook_photos#index', :as => :facebook_photo_action
       match '/facebook/folders.:format' => 'facebook_folders#index', :as => :facebook_folders
       match '/facebook/folders/:fb_album_id/:action.:format' => 'facebook_folders#index', :as => :facebook_folder_action
-      match '/facebook/posts.:format' => 'facebook_posts#index', :as => :facebook_posts
-      match '/facebook/posts/create' => 'facebook_posts#create', :as => :create_facebook_post
+#      match '/facebook/posts.:format' => 'facebook_posts#index', :as => :facebook_posts
+#      match '/facebook/posts/create' => 'facebook_posts#create', :as => :create_facebook_post
 
       #smugmug
       match '/smugmug/sessions/new' => 'smugmug_sessions#new', :as => :new_smugmug_session
@@ -224,25 +224,23 @@ Server::Application.routes.draw do
       match '/google/sessions/new' => 'google_sessions#new', :as => :new_google_session
       match '/google/sessions/create' => 'google_sessions#create', :as => :create_google_session
       match '/google/sessions/destroy' => 'google_sessions#destroy', :as => :destroy_google_session
-      match '/google/contacts/:action' => 'google_contacts#index', :as => :google_contacts
-
+      match '/google/contacts/import' => 'google_contacts#import'
+      
       #picasa
-      match '/picasa/sessions/new' => 'picasa_sessions#new', :as => :new_picasa_session
-      match '/picasa/sessions/create' => 'picasa_sessions#create', :as => :create_picasa_session
-      match '/picasa/sessions/destroy' => 'picasa_sessions#destroy', :as => :destroy_picasa_session
-      match '/picasa/folders/:picasa_album_id/photos.:format' => 'picasa_photos#index', :as => :picasa_photos
-      match '/picasa/folders/:picasa_album_id/photos/:photo_id/:action' => 'picasa_photos#index', :as => :picasa_photo_action
-      match '/picasa/folders.:format' => 'picasa_folders#index', :as => :picasa_folders
-      match '/picasa/folders/:picasa_album_id/:action.:format' => 'picasa_folders#index', :as => :picasa_folder_action
+      #google session controller used
+      match '/picasa_web/folders/:picasa_album_id/photos.:format' => 'picasa_photos#index', :as => :picasa_photos
+      match '/picasa_web/folders/:picasa_album_id/photos/:photo_id/:action' => 'picasa_photos#index', :as => :picasa_photo_action
+      match '/picasa_web/folders.:format' => 'picasa_folders#index', :as => :picasa_folders
+      match '/picasa_web/folders/:picasa_album_id/:action.:format' => 'picasa_folders#index', :as => :picasa_folder_action
 
       #local contacts
-      match '/local/contacts/:action' => 'local_contacts#index', :as => :local_contacts
+      match '/local/contacts/import' => 'local_contacts#import', :as => :local_contacts
 
       #yahoo
       match '/yahoo/sessions/new' => 'yahoo_sessions#new', :as => :new_yahoo_session
       match '/yahoo/sessions/create' => 'yahoo_sessions#create',:as => :create_yahoo_session
       match '/yahoo/sessions/destroy' => 'yahoo_sessions#destroy', :as => :destroy_yahoo_session
-      match '/yahoo/contacts/:action' => 'yahoo_contacts#index', :as => :yahoo_contacts
+      match '/yahoo/contacts/import' => 'yahoo_contacts#import'
 
 
 
@@ -250,14 +248,14 @@ Server::Application.routes.draw do
       match '/mslive/sessions/new' => 'mslive_sessions#new', :as => :new_mslive_session
       match '/mslive/sessions/create' => 'mslive_sessions#delauth',:as => :create_mslive_session
       match '/mslive/sessions/destroy' => 'mslive_sessions#destroy', :as => :destroy_mslive_session
-      match '/mslive/contacts/:action' => 'mslive_contacts#index', :as => :mslive_contacts
+      match '/mslive/contacts/import' => 'mslive_contacts#import', :as => :mslive_contacts
 
       #twitter
       match '/twitter/sessions/new' => 'twitter_sessions#new', :as => :new_twitter_session
       match '/twitter/sessions/create'=> 'twitter_sessions#create', :as => :create_twitter_session
       match '/twitter/sessions/destroy' => 'twitter_sessions#destroy', :as => :destroy_twitter_session
-      match '/twitter/posts.:format' => 'twitter_posts#index', :as => :twitter_posts
-      match '/twitter/posts/create' => 'twitter_posts#create', :as => :create_twitter_post
+#      match '/twitter/posts.:format' => 'twitter_posts#index', :as => :twitter_posts
+#      match '/twitter/posts/create' => 'twitter_posts#create', :as => :create_twitter_post
 
       #proxy
       match '/proxy' => 'proxy#proxy', :as => :proxy

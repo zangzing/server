@@ -4,10 +4,8 @@ class Connector::PhotobucketController < Connector::ConnectorController
 
   before_filter :service_login_required
 
-  def initialize(*args)
-    super(*args)
-    PhotobucketConnector.consumer_key = PHOTOBUCKET_API_KEYS[:consumer_key]
-    PhotobucketConnector.consumer_secret = PHOTOBUCKET_API_KEYS[:consumer_secret]
+  def self.api_from_identity(identity)
+    PhotobucketConnector.new(identity.credentials)
   end
 
 protected
@@ -24,9 +22,7 @@ protected
     end
   end
 
-  def http_timeout
-    SERVICE_CALL_TIMEOUT[:photobucket]
-  end
+
 
   def service_identity
     @service_identity ||= current_user.identity_for_photobucket
@@ -44,7 +40,7 @@ protected
     @token_string
   end
 
-  def make_source_guid(url)
+  def self.make_source_guid(url)
     "photobucket_"+Photo.generate_source_guid(url)
   end
 

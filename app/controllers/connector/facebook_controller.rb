@@ -4,6 +4,15 @@ class Connector::FacebookController < Connector::ConnectorController
   PHOTO_SIZES = {:thumb => 'a', :screen => 'n', :full => ['o', 'n']}
 
   before_filter :service_login_required
+  
+  
+  def self.api_from_identity(identity)
+    if identity.is_a?(FacebookIdentity)
+      identity.facebook_graph
+    else
+      nil
+    end
+  end  
 
 protected
 
@@ -19,12 +28,8 @@ protected
     @graph ||= service_identity.facebook_graph
   end
 
-  def http_timeout
-    SERVICE_CALL_TIMEOUT[:facebook]
-  end
 
-
-  def get_photo_url(photo_info, size)
+  def self.get_photo_url(photo_info, size)
     images = photo_info[:images]
     sz_letter = PHOTO_SIZES[size].is_a?(Array) ? "(#{PHOTO_SIZES[size].join('|')})" : PHOTO_SIZES[size]
     result = images.select{|img| img[:source] =~ /_#{sz_letter}\.\w+$/ }.first
@@ -39,7 +44,7 @@ protected
     result[:source]
   end
   
-  def make_source_guid(photo_info)
+  def self.make_source_guid(photo_info)
     "facebook_"+Photo.generate_source_guid(photo_info[:source])
   end
 

@@ -1,12 +1,12 @@
-class Connector::LocalContactsController < ApplicationController
-  before_filter :oauth_required, :only => [:import]
-
+class Connector::LocalContactsController < Connector::ConnectorController
   skip_before_filter :verify_authenticity_token, :only => [:import]
+  skip_before_filter :require_user, :only => [:import]
+  before_filter :oauth_required   , :only => [:import]
 
 
-  def index
-    @contacts = current_user.identity_for_local.contacts
-  end
+#  def index
+#    @contacts = current_user.identity_for_local.contacts
+#  end
 
   def import
     identity = current_user.identity_for_local
@@ -22,23 +22,10 @@ class Connector::LocalContactsController < ApplicationController
       imported_contacts << Contact.new(props)
     end
 
-    unless imported_contacts.empty?
-      success = false
-      Contact.transaction do
-        identity.destroy_contacts
-        success = identity.import_contacts(imported_contacts) > 0
-        if success
-          identity.update_attribute(:last_contact_refresh, Time.now)
-        else
-          raise ActiveRecord::Rollback
-        end
-      end
-      unless success
-        render :json => ['Something went wrong'], :status => 401
-        return
-      end
-    end
-    render :json => imported_contacts.to_json
+    Connector::ConnectorController.save_contacts(identity, imported_contacts)
+    render :json => Connector::ConnectorController.contacts_as_fast_json(imported_contacts)
+
+    
   end
 
 

@@ -9,9 +9,7 @@ class Connector::TwitterController < Connector::ConnectorController
 
   protected
 
-  def http_timeout
-    SERVICE_CALL_TIMEOUT[:twitter]
-  end
+
 
   def service_login_required
     @api = service_identity.twitter.api

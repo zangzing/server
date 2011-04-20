@@ -664,7 +664,7 @@ var photochooser = {
             //Picasa Web
             roots.push(
             {
-                open_url: zz.path_prefix + '/picasa/folders.json',
+                open_url: zz.path_prefix + '/picasa_web/folders.json',
                 type: 'folder',
                 name: 'Picasa Web',
                 src: path_helpers.image_url('/images/folders/picasa_web_off.jpg'),
@@ -673,7 +673,7 @@ var photochooser = {
                     var folder = this;
                     self.bodyElement.hide().load('/static/connect_messages/connect_to_picasa_web.html', function(){
                         self.bodyElement.find('#connect-button').click(function(){
-                            self.open_login_window(folder, zz.path_prefix + '/picasa/sessions/new');
+                            self.open_login_window(folder, zz.path_prefix + '/google/sessions/new');
                         });
                         self.bodyElement.fadeIn('fast');
                     });
@@ -783,8 +783,9 @@ var photochooser = {
             var self = this;
 
             $.ajax({
-                type: "DELETE",
+                type: "POST",
                 dataType: "json",
+                data:{_method:'delete'},
                 url: zz.path_prefix + "/photos/" + photo_id + ".json",
                 success:function(){
                     agent.callAgent('/albums/' +  self.options.album_id + '/photos/' + photo_id + '/cancel_upload');

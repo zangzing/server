@@ -1,12 +1,3 @@
-require 'connector_exceptions'
-
-require 'shutterfly_connector'
-require 'kodak_connector'
-require 'photobucket_connector'
-require 'smugmug_connector'
-require 'twitter_connector'
-require 'yahoo_connector'
-
 class Connector::ConnectorController < ApplicationController
   layout false
   
@@ -24,9 +15,6 @@ class Connector::ConnectorController < ApplicationController
     end
   end
 
-  def bulk_insert(photos)
-    render :json => Connector::ConnectorController.bulk_insert(photos)
-  end
 
   def fire_async_response(class_method)
     response_id = AsyncResponse.new_response_id
@@ -36,7 +24,31 @@ class Connector::ConnectorController < ApplicationController
 #    expires_in 3.minutes, :public => false
     render :json => {:message => "poll-for-response"}
   end
-  
+
+  def http_timeout
+    return 30.seconds
+  end
+
+
+
+  # take the contact objects passed and save them in bulk to the database
+  def self.save_contacts(identity, imported_contacts)
+    unless imported_contacts.empty?
+      Contact.transaction do
+        identity.destroy_contacts
+        identity.import_contacts(imported_contacts) > 0
+        identity.update_attribute(:last_contact_refresh, Time.now)
+      end
+    end
+  end
+
+  def self.contacts_as_fast_json(imported_contacts)
+    rows = []
+    imported_contacts.each do |contact|
+      rows << contact.as_json
+    end
+    JSON.fast_generate(rows)
+  end
 
   class << self
     include Server::Application.routes.url_helpers

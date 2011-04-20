@@ -1,46 +1,37 @@
 class Connector::FacebookPhotosController < Connector::FacebookController
 
-  def index
-    photos_response = []
-    SystemTimer.timeout_after(http_timeout) do
-      photos_response = facebook_graph.get("#{params[:fb_album_id]}/photos", :limit => 1000)
-    end
+  def self.list_photos(api_client, params)
+     photos_response = api_client.get("#{params[:fb_album_id]}/photos", :limit => 1000)
+
     unless photos_response.empty?
       if photos_response.first[:updated_time]
         photos_response.sort!{|a, b| b[:updated_time] <=> a[:updated_time] }
       end
-      @photos = photos_response.map { |p|
+      @photos = photos_response.map do |p|
         {
           :name => p[:name] || '',
           :id   => p[:id],
           :type => 'photo',
           :thumb_url =>get_photo_url(p, :thumb),
           :screen_url =>get_photo_url(p, :screen),
-          :add_url => facebook_photo_action_path({:photo_id =>p[:id], :action => 'import'}),
+          :add_url => facebook_photo_action_path(params.merge(:photo_id => p[:id], :action => 'import', :format => 'json')),
           :source_guid => make_source_guid(p)
 
         }
-      }
+      end
     else
       @photos = []
     end
-    expires_in 10.minutes, :public => false
-    render :json => JSON.fast_generate(@photos)
+    JSON.fast_generate(@photos)
   end
 
-#  def show
-#    size_wanted = (params[:size] || 'screen').downcase.to_sym
-#    photo_url = get_photo_url(params[:photo_id], PHOTO_SIZES[size_wanted])
-#    bin_io = OpenURI.send(:open, photo_url)
-#    send_data bin_io.read, :type => bin_io.meta['content-type'], :disposition => 'inline'
-#  end
-
-  def import
-    info = facebook_graph.get(params[:photo_id])
-    current_batch = UploadBatch.get_current_and_touch( current_user.id, params[:album_id] )
+  def self.import_photo(api_client, params)
+    identity = params[:identity]
+    info = api_client.get(params[:photo_id])
+    current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     photo = Photo.create(
             :id => Photo.get_next_id,
-            :user_id=>current_user.id,
+            :user_id=>identity.user.id,
             :album_id => params[:album_id],
             :upload_batch_id => current_batch.id,
             :caption => info[:name] || '',
@@ -50,9 +41,17 @@ class Connector::FacebookPhotosController < Connector::FacebookController
             :source_screen_url => get_photo_url(info, :screen),
             :source => 'facebook'
     )
-  
+
     ZZ::Async::GeneralImport.enqueue( photo.id, get_photo_url(info, :full) )
-    render :json => Photo.to_json_lite(photo)
+    Photo.to_json_lite(photo)
+  end
+
+  def index
+    fire_async_response('list_photos')
+  end
+
+  def import
+    fire_async_response('import_photo')
   end
 
 end

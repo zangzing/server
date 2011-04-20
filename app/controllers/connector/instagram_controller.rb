@@ -2,9 +2,8 @@ class Connector::InstagramController < Connector::ConnectorController
 
   before_filter :service_login_required
 
-  Instagram.configure do |config|
-    config.client_id = INSTAGRAM_API_KEYS[:client_id]
-    config.client_secret = INSTAGRAM_API_KEYS[:client_secret]
+  def self.api_from_identity(identity)
+    Instagram.client(:access_token => identity.credentials)
   end
 
 protected
@@ -35,15 +34,13 @@ protected
     @client ||= Instagram.client(:access_token => access_token)
   end
 
-  def make_source_guid(photo_info)
+  def self.make_source_guid(photo_info)
     "instagram_"+Photo.generate_source_guid(photo_info[:images][:standard_resolution][:url])
   end
 
-  def http_timeout
-    SERVICE_CALL_TIMEOUT[:instagram]
-  end
 
-  def feed_owner
+
+  def self.feed_owner(params)
     case params[:target]
       when 'my-photos' then 'self'
       else params[:target]

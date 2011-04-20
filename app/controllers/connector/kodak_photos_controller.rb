@@ -1,43 +1,36 @@
 class Connector::KodakPhotosController < Connector::KodakController
-
-
-  def index
-    photos_list = nil
-    SystemTimer.timeout_after(http_timeout) do
-      photos_list = connector.send_request("/album/#{params[:kodak_album_id]}")
-    end
+  
+  def self.list_photos(api, params)
+    photos_list = api.send_request("/album/#{params[:kodak_album_id]}")
     photos_data = photos_list['pictures']
-#    @photos = photos_data.map { |p| {:name => p['caption'], :id => p['id']} }
 
-    @photos = photos_data.map { |p|
+    photos = photos_data.map { |p|
       {
         :name => p['caption'],
         :id   => p['id'],
         :type => 'photo',
         :thumb_url =>p[PHOTO_SIZES[:thumb]],
         :screen_url =>p[PHOTO_SIZES[:screen]],
-        :add_url => kodak_photo_action_path({:kodak_album_id => params[:kodak_album_id], :photo_id => p['id'], :action => 'import'}),
+        :add_url => kodak_photo_action_path(:kodak_album_id => params[:kodak_album_id], :photo_id => p['id'], :action => 'import'),
         :source_guid => make_source_guid(p)
-
       }
     }
-    #expires_in 10.minutes, :public => false
-    render :json => JSON.fast_generate(@photos)
-    
+
+    JSON.fast_generate(photos)
   end
 
-  def import
-    photos_list = nil
-    SystemTimer.timeout_after(http_timeout) do
-      photos_list = connector.send_request("/album/#{params[:kodak_album_id]}")
-    end
+  def self.import_photo(api, params)
+    identity = params[:identity]
+
+    photos_list = api.send_request("/album/#{params[:kodak_album_id]}")
+
     photos_data = photos_list['pictures']
     p = photos_data.select { |p| p['id']==params[:photo_id] }.first
     photo_url = p[PHOTO_SIZES[:full]]
-    current_batch = UploadBatch.get_current_and_touch( current_user.id, params[:album_id] )
+    current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     photo = Photo.create(
             :id => Photo.get_next_id,
-            :user_id=>current_user.id,
+            :user_id => identity.user.id,
             :album_id => params[:album_id],
             :upload_batch_id => current_batch.id,
             :caption => p['caption'],
@@ -48,7 +41,16 @@ class Connector::KodakPhotosController < Connector::KodakController
 
     )
     
-    ZZ::Async::KodakImport.enqueue( photo.id, photo_url, connector.auth_token )
-    render :json => Photo.to_json_lite(photo)
+    ZZ::Async::KodakImport.enqueue( photo.id, photo_url, api.auth_token )
+    Photo.to_json_lite(photo)
+  end
+
+
+  def index
+    fire_async_response('list_photos')
+  end
+
+  def import
+    fire_async_response('import_photo')
   end
 end

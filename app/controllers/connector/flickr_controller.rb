@@ -3,17 +3,14 @@ class Connector::FlickrController < Connector::ConnectorController
 
   PHOTO_SIZES = {:thumb => 'Medium', :screen => 'Big', :full => 'Big'}
   
-  def initialize(*args)
-    super(*args)
-    FlickRaw.api_key = FLICKR_API_KEYS[:api_key]
-    FlickRaw.shared_secret = FLICKR_API_KEYS[:shared_secret]
+  def self.api_from_identity(identity)
+    flickr_token = identity.credentials
+    #flickr.auth.checkToken :auth_token => flickr_token
+    FlickRaw::Flickr.new(flickr_token)
   end
 
 protected
 
-  def http_timeout
-    SERVICE_CALL_TIMEOUT[:flickr]
-  end
 
 
   def service_login_required
@@ -47,7 +44,7 @@ protected
     @flickr_token
   end
 
-  def get_photo_url(photo_info, size_wanted = :screen)
+  def self.get_photo_url(photo_info, size_wanted = :screen)
     extension = 'jpg'
     size_letter = PHOTO_SIZES[size_wanted][0,1].downcase
     secret = photo_info.secret
@@ -59,7 +56,7 @@ protected
     'http://farm%s.static.flickr.com/%s/%s_%s_%s.%s' % [photo_info.farm, photo_info.server, photo_info.id, secret, size_letter, extension]
   end
 
-  def make_source_guid(photo_info)
+  def self.make_source_guid(photo_info)
     "flickr_"+Photo.generate_source_guid(get_photo_url(photo_info, :full))
   end
 

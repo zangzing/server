@@ -24,9 +24,6 @@ protected
     GData::Client::Contacts.new
   end
 
-  def http_timeout
-    SERVICE_CALL_TIMEOUT[:google]
-  end
 
   def service_login_required
     unless permanent_token

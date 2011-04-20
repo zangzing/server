@@ -3,11 +3,11 @@ class Connector::SmugmugController < Connector::ConnectorController
   PHOTO_SIZES = {:thumb => :tinyurl, :screen => :largeurl, :full => :originalurl}
 
   before_filter :service_login_required
-
-  def initialize(*args)
-    super(*args)
-    SmugmugConnector.api_key = SMUGMUG_API_KEYS[:api_key]
-    SmugmugConnector.shared_secret = SMUGMUG_API_KEYS[:shared_secret]
+  
+  def self.api_from_identity(identity)
+    api = SmugmugConnector.new(identity.credentials)
+    #api.call_method('smugmug.auth.checkAccessToken')
+    api
   end
 
   protected
@@ -25,9 +25,7 @@ class Connector::SmugmugController < Connector::ConnectorController
     end
   end
 
-  def http_timeout
-    SERVICE_CALL_TIMEOUT[:smugmug]
-  end
+
 
   def service_identity
     @service_identity ||= current_user.identity_for_smugmug
@@ -49,7 +47,7 @@ class Connector::SmugmugController < Connector::ConnectorController
     @token_string
   end
 
-  def make_source_guid(photo_info)
+  def self.make_source_guid(photo_info)
     "smugmug_"+Photo.generate_source_guid(photo_info[:originalurl])
   end
 

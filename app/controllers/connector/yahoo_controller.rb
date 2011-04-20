@@ -1,10 +1,8 @@
 class Connector::YahooController < Connector::ConnectorController
   before_filter :service_login_required
 
-  def initialize(*args)
-    super(*args)
-    YahooConnector.api_key = YAHOO_API_KEYS[:app_key]
-    YahooConnector.shared_secret = YAHOO_API_KEYS[:consumer_secret]
+  def self.api_from_identity(identity)
+    YahooConnector.new(identity.credentials)
   end
 
 protected
@@ -22,9 +20,7 @@ protected
     end
   end
 
-  def http_timeout
-    SERVICE_CALL_TIMEOUT[:yahoo]
-  end
+
 
   def service_identity
     @service_identity ||= current_user.identity_for_yahoo

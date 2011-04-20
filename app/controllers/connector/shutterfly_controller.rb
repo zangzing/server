@@ -5,12 +5,6 @@ class Connector::ShutterflyController < Connector::ConnectorController
 
   attr_accessor :sf_user_token
 
-  def initialize(*args)
-    super(*args)
-    ShutterflyConnector.app_id = SHUTTERFLY_API_KEYS[:app_id]
-    ShutterflyConnector.shared_secret = SHUTTERFLY_API_KEYS[:shared_secret]
-  end
-
   def self.api_from_identity(identity)
     unless identity.credentials.nil?
       authtoken, usertoken = identity.credentials.split('_')
@@ -20,9 +14,6 @@ class Connector::ShutterflyController < Connector::ConnectorController
     end
   end
 
-  def self.http_timeout
-    SERVICE_CALL_TIMEOUT[:shutterfly]
-  end
 
   def self.get_photo_url(photo_id, size_wanted)
     img_id = photo_id.dup
