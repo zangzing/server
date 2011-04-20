@@ -1,5 +1,5 @@
 class Connector::MsliveContactsController < Connector::MsliveController
-  skip_before_filter :service_login_required, :only => [:index]
+#  skip_before_filter :service_login_required, :only => [:index]
   
   def self.import_contacts(api, params)
     service_identity = params[:identity]
@@ -24,9 +24,9 @@ class Connector::MsliveContactsController < Connector::MsliveController
 
   end
 
-  def index
-    render :json => service_identity.contacts
-  end
+#  def index
+#    render :json => service_identity.contacts
+#  end
 
   def import
     fire_async_response('import_contacts')

@@ -1,5 +1,5 @@
 class Connector::YahooContactsController < Connector::YahooController
-  skip_before_filter :service_login_required, :only => [:index]
+#  skip_before_filter :service_login_required, :only => [:index]
 
   BATCH_SIZE = 1000
 
@@ -34,9 +34,9 @@ class Connector::YahooContactsController < Connector::YahooController
 
   end
 
-  def index
-    @contacts = service_identity.contacts
-  end
+#  def index
+#    @contacts = service_identity.contacts
+#  end
 
   def import
     fire_async_response('import_contacts')

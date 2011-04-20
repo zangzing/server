@@ -1,5 +1,5 @@
 class Connector::GoogleContactsController < Connector::GoogleController
-  skip_before_filter :service_login_required, :only => [:index]
+#  skip_before_filter :service_login_required, :only => [:index]
 
   BATCH_SIZE = 2000
 
@@ -29,9 +29,9 @@ class Connector::GoogleContactsController < Connector::GoogleController
     contacts_as_fast_json(imported_contacts)
   end
 
-  def index
-    @contacts = current_user.identity_for_google.contacts
-  end
+#  def index
+#    @contacts = current_user.identity_for_google.contacts
+#  end
 
   def import
     fire_async_response('import_contacts')

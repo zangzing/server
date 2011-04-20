@@ -224,8 +224,8 @@ Server::Application.routes.draw do
       match '/google/sessions/new' => 'google_sessions#new', :as => :new_google_session
       match '/google/sessions/create' => 'google_sessions#create', :as => :create_google_session
       match '/google/sessions/destroy' => 'google_sessions#destroy', :as => :destroy_google_session
-      match '/google/contacts/:action' => 'google_contacts#index', :as => :google_contacts
-
+      match '/google/contacts/import' => 'google_contacts#import'
+      
       #picasa
       #google session controller used
       match '/picasa_web/folders/:picasa_album_id/photos.:format' => 'picasa_photos#index', :as => :picasa_photos
@@ -234,13 +234,13 @@ Server::Application.routes.draw do
       match '/picasa_web/folders/:picasa_album_id/:action.:format' => 'picasa_folders#index', :as => :picasa_folder_action
 
       #local contacts
-      match '/local/contacts/:action' => 'local_contacts#index', :as => :local_contacts
+      match '/local/contacts/import' => 'local_contacts#import', :as => :local_contacts
 
       #yahoo
       match '/yahoo/sessions/new' => 'yahoo_sessions#new', :as => :new_yahoo_session
       match '/yahoo/sessions/create' => 'yahoo_sessions#create',:as => :create_yahoo_session
       match '/yahoo/sessions/destroy' => 'yahoo_sessions#destroy', :as => :destroy_yahoo_session
-      match '/yahoo/contacts/:action' => 'yahoo_contacts#index', :as => :yahoo_contacts
+      match '/yahoo/contacts/import' => 'yahoo_contacts#import'
 
 
 
@@ -248,7 +248,7 @@ Server::Application.routes.draw do
       match '/mslive/sessions/new' => 'mslive_sessions#new', :as => :new_mslive_session
       match '/mslive/sessions/create' => 'mslive_sessions#delauth',:as => :create_mslive_session
       match '/mslive/sessions/destroy' => 'mslive_sessions#destroy', :as => :destroy_mslive_session
-      match '/mslive/contacts/:action' => 'mslive_contacts#index', :as => :mslive_contacts
+      match '/mslive/contacts/import' => 'mslive_contacts#import', :as => :mslive_contacts
 
       #twitter
       match '/twitter/sessions/new' => 'twitter_sessions#new', :as => :new_twitter_session
