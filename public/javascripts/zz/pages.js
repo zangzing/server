@@ -65,12 +65,12 @@ pages.album_name_tab = {
                         $.ajax({
                             url: zz.path_prefix + '/albums/' + zz.album_id + '/preview_album_email?' + $.param({'album[name]': $('#album_name').val()}),
                             success: function(json){
-                                //$('#album_name').removeClass('error');
+                                $('#album_name').removeClass('error');
                                 $('#album_email').text(json.email);
                                 $('#album_url').text(json.url);
                             },
                             error: function(){
-                                //$('#album_name').addClass('error');
+                                $('#album_name').addClass('error');
                                 $('#album_name').val(pages.album_name_tab.original_album_name);
                                 $('h2#album-header-title').text(pages.album_name_tab.original_album_name);
                             }
