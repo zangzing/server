@@ -180,6 +180,15 @@ class User < ActiveRecord::Base
     @name ||= [first_name, last_name].compact.join(' ')
   end
 
+  def posessive_name
+    @posessive_name ||= self.name + ('s' == self.name[-1,1] ? "'" : "'s")
+  end
+
+  def posessive_first_name
+    posessive_first_name ||= self.first_name + ('s' == self.first_name[-1,1] ? "'" : "'s")
+  end
+
+
   def activate!
       self.active = true
       save
