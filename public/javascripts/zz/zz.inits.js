@@ -178,7 +178,7 @@ zz.init = {
                 'background-color':'#000000',
                 opacity: 0
             }).appendTo('body').animate({opacity:1}, 500, function() {
-                document.location.href = zz.album_base_url + '/movie';
+                document.location.href = zz.album_base_url + '/movie?return_to=' + encodeURIComponent(document.location.href);
             });
 
         });

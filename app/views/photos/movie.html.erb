@@ -68,8 +68,8 @@
 </head>
 
 <%
-    if request.referrer.starts_with? "http://#{request.host}"
-        back_url = "javascript:window.history.back()";
+    if params[:return_to]
+        back_url = CGI::unescape(params[:return_to])
     else
         back_url = "#{album_path @album}"
     end
@@ -93,7 +93,7 @@
                         "borderColor=FFFFFF&" +
                         "controlsHideSpeed=2&" +
                         "backButton=true&" +
-                        "backButtonURL=#{back_url}&" +
+                        "backButtonURL=#{CGI::escape back_url}&" +
                         "loadOriginalImages=false&" +
                         "overrideFullScreenChange=false&" +
                         "scaleBackground=true&" +
