@@ -38,7 +38,7 @@ function loadScript(src, sslSrc, callback){
 function initGoogle(){
     // google analytics
     loadScript('http://www.google-analytics.com/ga.js','https://ssl.google-analytics.com/ga.js', function(){
-        window._gaq = window._gaq_gaq || [];
+        window._gaq = window._gaq || [];
         window._gaq.push(['_setAccount', zza_config_GOOGLE_ANALYTICS_TOKEN]);
         window._gaq.push(['_trackPageview']);
     });
