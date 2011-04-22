@@ -4,6 +4,10 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
 
     album_contents = api.open_album(params[:album_path])
 
+Rails.logger.info "--response from photobucket--"
+Rails.logger.info album_contents.inspect
+
+
     folders = []
     (album_contents[:album] || []).each do |album|
       album_path = params[:album_path].nil? ? CGI::escape(album[:name]) : "#{params[:album_path]}#{CGI::escape('/'+album[:name])}"
