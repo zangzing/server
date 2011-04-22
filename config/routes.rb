@@ -284,9 +284,10 @@ Server::Application.routes.draw do
         post  'guests(.:format)'                 => 'guests#create'
         get   'guests/:id'                       => 'guests#show',                :as => :guest
         put   'guests/:id/activate'              => 'guests#activate',            :as => :activate_guest
+        get   'users'                            => 'users#index',                :as => :users
+        get   'users/:id'                        => 'users#show',                 :as =>  :admin_user_show
+        put   'users/:id/activate'               => 'users#activate',             :as => :activate_user
     end
-    get   'admin/users'                            => 'users#index',                :as => :users
-    put   'admin/users/:id/activate'               => 'users#activate',             :as => :activate_user
 
     #Resque: mount the resque server
     mount Resque::Server.new, :at => "/admin/resque"

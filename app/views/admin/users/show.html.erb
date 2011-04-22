@@ -1,0 +1,40 @@
+<%= render :partial => 'admin/admin_screens/adminmenu' %>
+<div id="main-container">
+  <div class="viewlist">
+    <div class='header bar'>
+      <%="#{@user.name} #{(@user.automatic? ? '(Automatic User)': '')}"%>
+    </div>
+    <div class="content">
+      <table frame="box" width="800px" border="0"  cellspacing="10" align="left" style="text-align: left;">
+          <tr><td> Username     </td><td><%= link_to h(@user.username), @user %></td></tr>
+          <tr><td> First Name   </td><td><%=@user.first_name %></td></tr>
+          <tr><td> Last Name   </td><td><%=@user.last_name%></td></tr>
+          <tr><td> Email        </td><td><%=@user.email %></td></tr>
+          <tr><td> Member Since </td><td><%=@user.created_at.strftime( '%m/%d/%y' ) %></td></tr>
+          <tr><td> Status       </td><td><%=(@user.automatic? ? 'Automatic': (@user.active? ? 'Active' : 'Inactive' ) )%></td></tr>
+          <tr><td> Current Login At </td><td><%=@user.current_login_at.strftime( '%m/%d/%y' ) if @user.current_login_at  %></td></tr>
+          <tr><td> Current Login IP </td><td><%=@user.current_login_ip %></td></tr>
+          <tr><td> Last Login At </td><td><%= ( @user.last_login_at ? @user.last_login_at.strftime( '%m/%d/%y' ) : 'Has Never Logged In' )   %></td></tr>
+          <tr><td> Last Login IP </td><td><%=@user.last_login_ip %></td></tr>
+          <tr><td> Failed Login Count </td><td><%=@user.failed_login_count %></td></tr>
+          <tr><td> Record Last Updated At </td><td><%=@user.updated_at.strftime( '%m/%d/%y' ) if @user.updated_at %></td></tr>
+          <tr></tr>
+          <tr><td> # of Albums    </td><td><%=@user.albums.count %></td></tr>
+          <tr><td> # of Photos    </td><td><%=@user.photos.count %></td></tr>
+          <tr><td> # of Upload Batches </td><td><%=@user.upload_batches.count %></td></tr>
+          <tr></tr>
+          <tr><td> # of Shares    </td><td><%=@user.shares.count %></td></tr>
+          <tr><td> # of Followers </td><td><%=@user.likers.count %></td></tr>
+          <tr><td> # of Users He/She Follows </td><td><%=@user.liked_users.count %></td></tr>
+          <tr><td> # of Albums He/She Likes </td><td><%=@user.liked_albums.count %></td></tr>
+          <tr><td> # of Photos He/She Likes </td><td><%=@user.liked_photos.count %></td></tr>
+          <tr></tr>
+          <tr><td> # of Contacts </td><td><%=@user.contacts.count %></td></tr>
+          <tr><td><%= @user.identities.count %> Linked Accounts</td><td>Service</td><td>Updated At</td></tr>
+          <% @user.identities.each do |id| %>
+          <tr><td></td><td><%= id.identity_source %></td><td><%= id.updated_at.strftime( '%m/%d/%y' ) if id.updated_at%></td></tr>
+          <% end %>
+      </table>
+    </div>
+  </div>
+</div>
