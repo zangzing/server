@@ -22,10 +22,19 @@ zz.toolbars = {
         //tod: this should be in the wizard code
         $('div#cancel-drawer-btn').unbind('click').click( function(){
                 if(confirm("Are you sure you want to cancel creating this album?")){
-                    albums.deleteAlbum(zz.album_id);
-                    $('#drawer .body').fadeOut('fast', function(){window.location.reload()});
+
+                    //reload after album is deleted to prevent race
+                    //condition in cache manager on server
+                    var afterdelete = function(){
+                        window.location.reload();
+                    };
+
+                    albums.deleteAlbum(zz.album_id, afterdelete, afterdelete);
+
+                    $('#drawer .body').fadeOut('fast');
                     zz.close_drawer(400);
                     ZZAt.track('album.cancel.click');
+
 
                 }
         });
