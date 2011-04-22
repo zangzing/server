@@ -4,10 +4,6 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
 
     album_contents = api.open_album(params[:album_path])
 
-Rails.logger.info "--response from photobucket--"
-Rails.logger.info album_contents.inspect
-
-
     folders = []
     (album_contents[:album] || []).each do |album|
       album_path = params[:album_path].nil? ? CGI::escape(album[:name]) : "#{params[:album_path]}#{CGI::escape('/'+album[:name])}"
@@ -39,9 +35,6 @@ Rails.logger.info album_contents.inspect
     identity = params[:identity]
     album_contents = api.open_album(params[:album_path])
 
-Rails.logger.info "--response from photobucket--"
-Rails.logger.info album_contents.inspect
-
 
     photos = []
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
@@ -72,12 +65,7 @@ Rails.logger.info album_contents.inspect
     identity = params[:identity]
     photo_data = api.call_method("/media/#{params[:photo_path]}")
 
-Rails.logger.info "--response from photobucket--"
-Rails.logger.info photo_data.inspect
 
-
-
-    
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     photo = Photo.create(
             :id => Photo.get_next_id,
