@@ -8,7 +8,7 @@ class MsliveConnector
 
   def initialize(token_str = nil)
     throw "API credentials are not set!" unless [self.class.client_id, self.class.secret_key, self.class.tos_url].all?
-    token_string = token_str if token_str
+    self.token_string = token_str if token_str
   end
 
   def get_auth_url(callback_url)
