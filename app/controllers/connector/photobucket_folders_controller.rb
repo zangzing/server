@@ -39,6 +39,10 @@ Rails.logger.info album_contents.inspect
     identity = params[:identity]
     album_contents = api.open_album(params[:album_path])
 
+Rails.logger.info "--response from photobucket--"
+Rails.logger.info album_contents.inspect
+
+
     photos = []
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     (album_contents[:media] || []).each do |photo_data|
@@ -68,6 +72,12 @@ Rails.logger.info album_contents.inspect
     identity = params[:identity]
     photo_data = api.call_method("/media/#{params[:photo_path]}")
 
+Rails.logger.info "--response from photobucket--"
+Rails.logger.info photo_data.inspect
+
+
+
+    
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     photo = Photo.create(
             :id => Photo.get_next_id,
