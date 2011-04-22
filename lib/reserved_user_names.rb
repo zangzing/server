@@ -366,6 +366,9 @@ class ReservedUserNames
       "nhl",
       "wwf",
       "nfl",
+      "admin",
+      "support",
+      "supporthero",
 
     ].freeze
   end
