@@ -18,10 +18,14 @@ end
 
 puts "WARNING: you are about to deploy to PHOTOS STAGING."
 #confirm_continue
+puts
+print "Enter the tag or branch we should be based on for the deploy (optional): "
+tag = Readline.readline()
+tag = "master" if tag.empty?
 
 options = ARGV[0] ? ARGV[0] : ""
 
-cmd = "ey deploy -e photos_staging -v " + options
+cmd = "ey deploy -e photos_staging --ref #{tag} -v " + options
 puts
 puts "About to deploy to PHOTOS STAGING with the following command: "
 puts "\n" + cmd + "\n\n"
