@@ -43,8 +43,14 @@ print "Type the branch/tag name to use for the basis of the tag you want to crea
 branch = Readline.readline()
 branch = "master" if branch.empty?
 
+print "Do you want a bugfix branch created? (Yes/n)?"
+r = Readline.readline()
+want_bugfix = r == "Yes"
+
 puts
+bugfix_branch = "#{tag}-bugfix"
 puts "About to create the deploy tag: #{tag} on the branch: #{branch}."
+puts "Also creating a bugfix branch: #{bugfix_branch} to be used for any bug fixes related to this deploy." if want_bugfix
 confirm_continue
 
 
@@ -69,4 +75,12 @@ repos.each do |repo|
   do_cmd("git pull origin #{branch}")
   do_cmd("git tag -a #{tag} #{tag_comment}")
   do_cmd("git push origin #{tag}")
+
+  if want_bugfix
+    # now create a new bugfix branch
+    do_cmd("git branch #{bugfix_branch} #{tag}")
+    do_cmd("git checkout -f #{bugfix_branch}")
+    do_cmd("git push origin #{bugfix_branch}")
+  end
 end
+
