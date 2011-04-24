@@ -60,6 +60,10 @@ module Server
     # the key is not included 
     ActiveRecord::Base.include_root_in_json = false
 
+    # turn off ip spoofing check so we work with proxies that are misconfigured such
+    # as Southwest Airlines in flight internet
+    config.action_controller.ip_spoofing_check = false
+
     # Bitly API Setup
     Bitly.use_api_version_3
 
