@@ -98,6 +98,9 @@ class PhotobucketConnector
       http = Net::HTTP.new(uri.host, uri.port)
       response = http.get("#{uri.path}?#{uri.query}")
     end
+
+    Rails.logger.info "response from photobucket: " + response.body.to_s
+
     result = Hash.from_xml(response.body).values.first #JSON.parse(response.body)
     stat = result['status'].downcase
     raise PhotobucketError.new(result['code'], result['message']) if stat == 'exception'

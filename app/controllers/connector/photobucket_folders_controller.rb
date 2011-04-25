@@ -35,6 +35,7 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
     identity = params[:identity]
     album_contents = api.open_album(params[:album_path])
 
+
     photos = []
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     (album_contents[:media] || []).each do |photo_data|
@@ -63,6 +64,7 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
   def self.import_certain_photo(api, params)
     identity = params[:identity]
     photo_data = api.call_method("/media/#{params[:photo_path]}")
+
 
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     photo = Photo.create(
