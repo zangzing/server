@@ -57,6 +57,7 @@ class Admin::UsersController < Admin::AdminController
 
   # Displays the detailed view for one user.
   def show
+    @page = "users"
     @user = User.find(params[:id])
   end
 end
