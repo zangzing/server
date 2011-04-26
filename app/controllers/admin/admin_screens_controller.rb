@@ -68,6 +68,13 @@ private
   end
 
   protected
+
+  def append_time(start_time)
+    end_time = Time.now
+    format(" - took %.3f </p>", end_time.to_f - start_time.to_f)
+  end
+
+
   def health_check
       max_total_time = 25.seconds
       max_time_per_check = 15.seconds
@@ -82,38 +89,44 @@ private
       # set and then each individual test
       SystemTimer.timeout_after(max_total_time) do
 
-        curr_check = "<p>Redis ACL connectivity check for: #{RedisConfig.config[:redis_acl_server]} - </p>"
+        curr_check = "<p>Redis ACL connectivity check for: #{RedisConfig.config[:redis_acl_server]} - "
         status_msg << curr_check
+        start_time = Time.now
         SystemTimer.timeout_after(max_time_per_check) do
           full_check = false
           if full_check
-            status_msg << "<p>Full check</p>"
+            status_msg << "Full check"
             # a more thorough check than just ping
             # make a dummy Album and add a user to check redis for ACL
-            a = AlbumACL.new("<p>health_check_album</p>")
+            a = AlbumACL.new("health_check_album")
             a.add_user "health_check_user", AlbumACL::ADMIN_ROLE
             a.remove_acl
           else
             # just your basic ping check
-            status_msg << "<p>Ping check</p>"
+            status_msg << "Ping check"
             redis = ACLManager.get_global_redis
             redis.ping
           end
         end
+        status_msg << append_time(start_time)
 
-        curr_check = "<p>Database connectivity check</p>"
+        curr_check = "<p>Database connectivity check"
+        start_time = Time.now
         SystemTimer.timeout_after(max_time_per_check) do
           # build a query that hits the database but does not return any actual data
           # to minimize performance impact
           status_msg << curr_check
           @photo = Photo.first(:conditions => ["TRUE = FALSE"])
         end
+        status_msg << append_time(start_time)
 
-        curr_check = "<p>ZZA Server check</p>"
+        curr_check = "<p>ZZA Server check"
         status_msg << curr_check
+        start_time = Time.now
         if ZZ::ZZA.unreachable? then
-          return "ZZA server is not reachable."
+          raise "ZZA server is not reachable."
         end
+        status_msg << append_time(start_time)
       end
 
       #status_msg << "ZZA Thread state: " +  ZZ::ZZA.sender.thread.status.to_s
