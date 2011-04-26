@@ -38,6 +38,7 @@ class Admin::UsersController < Admin::AdminController
     redirect_to :back
   end
 
+
   # Used by The Admin Interface to send password reset emails
   def reset_password
    @user = User.find(params[:id])
