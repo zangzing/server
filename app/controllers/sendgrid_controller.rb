@@ -191,10 +191,6 @@ protected
                     :source_guid => "email:"+UUIDTools::UUID.random_create.to_s})
             # use the passed in temp file to attach to the photo
             photo.file_to_upload = file_path
-            # in this case because we just fetched the capture time of the photo
-            # directly set the default position.  Normally it is passed in when the
-            # photo object is created because it is known ahead of time
-            photo.set_default_position
             photos << photo
           rescue PhotoValidationError => ex
             # if it's a validation error, ignore and continue.  Probably just
