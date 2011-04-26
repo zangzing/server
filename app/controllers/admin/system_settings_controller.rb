@@ -11,6 +11,7 @@ class Admin::SystemSettingsController < Admin::AdminController
         setting.update_attribute(:value, params[setting.name])
       end
     end
+    flash[:notice]="System Settings Saved!"
     redirect_to system_settings_path
   end
 end

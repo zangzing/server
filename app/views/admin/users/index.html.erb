@@ -2,18 +2,14 @@
 <div id="main-container">
   <div class="viewlist">
     <div class='header bar'>
-       <table>
-      <tr>
-      <td width="50%">All users</td>
-      <td>
-      <%= form_tag users_path, :method => 'get' do %>
-          <%= search_field_tag :search, params[:search], :id=>'search-field'  %>
-          <%= submit_tag "Search", :name => nil%>
-          <%= submit_tag "Clear", :name => nil, :onclick=>"$('#search-field').val('')" %>
+      All users
+      <div style="float:right; text-align: right; font-size: 80%;">
+      <%= form_tag users_path, :method => 'get', :id => "user-search-form" do %>
+          <%= search_field_tag :search, params[:search], :id=>'search-field', :results=>"5", :autosave=>"user-search-field", :placeholder => "Search Users...", :onsearch=>"on_search(this);"  %>
+          <%= submit_tag "Search", :name => nil, :class=>"user-search-btn"%>
+          <%= submit_tag "Clear", :name => nil, :onclick=>"$('#search-field').val('')", :class=>"user-search-btn" %>
         <% end %>
-      </td>
-      </tr>
-      </table>
+      </div>
     </div>
     <div class="title">
       <%= will_paginate @users%>
@@ -22,13 +18,10 @@
       <table frame="box" width="800px" border="0"  cellspacing="10" align="left" style="text-align: left;">
          <tr>
           <th> User         </th>
-          <th> Email        </th>
-          <th> Member Since </th>
           <th> # of Albums  </th>
           <th> # of Photos  </th>
           <th> # of Shares  </th>
           <th> Status       </th>
-          <th></th>
         </tr>
         <%= render :partial => 'user', :collection => @users %>
       </table>
@@ -38,3 +31,28 @@
     </div>
   </div>
 </div>
+
+<% content_for :page_stylesheet do %>
+<style type="text/css">
+.user-search-btn{
+  display: none;  
+}
+.ua-gecko .user-search-btn{
+  display: inline;
+}
+
+.ua-ie .user-search-btn{
+  display: inline;
+}
+
+</style>
+<%end%>
+<% content_for :page_javascript do %>
+ <script type="text/javascript">
+              function on_search (input) {
+                 if( input.value.length <= 0 ){
+                    $('#user-search-form').submit();
+                 }
+              }
+</script>
+<%end%>
