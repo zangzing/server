@@ -39,10 +39,12 @@
           <tr>
             <td class="field-label"> Current Login </td><td><%=@user.current_login_at.strftime( '%m/%d/%y' ) if @user.current_login_at  %></td>
             <td class="field-label"> From IP </td><td><%=@user.current_login_ip %></td>
+            <% if @current_login_ip_info %> <td><%="#{@current_login_ip_info[:city]}, #{@current_login_ip_info[:region_name]}, #{@current_login_ip_info[:country_name]}" %></td><%end%>
           </tr>
           <tr>
             <td class="field-label"> Last Login </td><td><%= ( @user.last_login_at ? @user.last_login_at.strftime( '%m/%d/%y' ) : 'Has Never Logged In' )   %></td>
             <td class="field-label"> From IP </td><td><%=@user.last_login_ip %></td>
+            <% if @last_login_ip_info %> <td><%="#{@last_login_ip_info[:city]}, #{@last_login_ip_info[:region_name]}, #{@last_login_ip_info[:country_name]}" %></td><%end%>
           </tr>
         </table>
       </div >
