@@ -510,12 +510,19 @@ class Photo < ActiveRecord::Base
           self.source_path = file_path
           self.image_file_size = File.size(file_path)
 
+          no_previous_capture_date = capture_date.nil?
+
           # gather and set the image metadata based on this file
           # also sets content_type
           set_image_metadata
 
           # verify that file state is ok before moving forward
           verify_file_type
+
+          # if non ordered and did not previously have a capture date, set position now
+          if upload_batch.nil? == false && upload_batch.custom_order_offset == 0 && no_previous_capture_date
+            set_default_position
+          end
 
           # see if we should add any initial rotation based on the
           # camera orientation info
