@@ -36,26 +36,21 @@ function loadScript(src, sslSrc, callback){
 
 
 function initGoogle(){
-    // google analytics
-    loadScript('http://www.google-analytics.com/ga.js','https://ssl.google-analytics.com/ga.js', function(){
-        window._gaq = window._gaq || [];
-        window._gaq.push(['_setAccount', zza_config_GOOGLE_ANALYTICS_TOKEN]);
-        window._gaq.push(['_trackPageview']);
+    window._gaq = window._gaq || [];
+    window._gaq.push(['_setAccount', zza_config_GOOGLE_ANALYTICS_TOKEN]);
+    window._gaq.push(['_trackPageview']);
+    $(document).ready(function(){
+        loadScript('http://www.google-analytics.com/ga.js','https://ssl.google-analytics.com/ga.js', function(){});
     });
-
 }
 
 
 function initMixpanel(){
-    loadScript('http://api.mixpanel.com/site_media/js/api/mixpanel.js','https://api.mixpanel.com/site_media/js/api/mixpanel.js', function(){
-        try {
-            window.mpmetrics = new MixpanelLib(zza_config_MIXPANEL_TOKEN);
-            mpmetrics.register({'referrer': document.referrer});
-            _zza.mixpanel_ready();
-        } catch(err) {
-            var null_fn = function () {};
-            window.mpmetrics = {  track: null_fn,  track_funnel: null_fn,  register: null_fn,  register_once: null_fn, register_funnel: null_fn };
-        }
+    window.mpq = window.mpq || [];
+    window.mpq.push(["init", zza_config_MIXPANEL_TOKEN]);
+    window.mpq.push(["register", "referrer", document.referrer]);
+    $(document).ready(function(){
+        loadScript('http://api.mixpanel.com/site_media/js/api/mixpanel.js','https://api.mixpanel.com/site_media/js/api/mixpanel.js', function(){});
     });
 }
 
@@ -127,16 +122,9 @@ function initZZA(){
     };
 }
 
-//init zza inline
 initZZA();
-
-//load the rest after all document ready handlers
-$(document).ready(function(){
-    setTimeout(function(){
-        initGoogle();
-        initMixpanel();
-    },1);
-});
+initGoogle();
+initMixpanel();
 
 
 

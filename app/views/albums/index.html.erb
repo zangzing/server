@@ -4,13 +4,21 @@
 
 <div id="my-albums" class="albums-list">
   <div class="album-section-header">
-    <%= @user.posessive_first_name%> Albums
+    <% if current_user == @user %>
+        My Albums
+    <% else %>
+        <%= @user.posessive_first_name%> Albums
+    <% end %>
   </div>
 </div>
 
 <div id="liked-albums" class="albums-list">
   <div class="album-section-header">
+<% if current_user == @user %>
+    Albums I Like
+<% else %>
     Albums <%= @user.first_name%> Likes
+<% end %>
   </div>
 </div>
 

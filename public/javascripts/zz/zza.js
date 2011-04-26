@@ -96,21 +96,6 @@ function ZZA(id, useridentifier, usemixpanel)
 	};
 
 
-    // this is called by zzat when mixpanel js loads
-    // todo: we should revisit this. this is to handle case
-    //      where events are sent to zza before mixpanel script has loaded
-    //      need to queue them and then flush when mixpanl js loads; otherwise, we lose mixpanel events
-    this.mixpanel_ready = function(){
-        if (typeof(mpmetrics) != 'undefined'){
-            for(var i=0;i<this._mixpanel_queue.length; i++){
-                mpmetrics.track(this._mixpanel_queue[i].e, this._mixpanel_queue[i].p);
-            }
-            this._mixpanel_queue = [];
-        }
-    };
-
-    this._mixpanel_queue = [];
-
 	// internal
 	this._track = function(evt, user, usertype, pageuri, xdata)
 	{
@@ -148,13 +133,9 @@ function ZZA(id, useridentifier, usemixpanel)
             for(var x in e.x)
                 p[x] = e.x[x];
 
-            if (typeof(mpmetrics) != 'undefined'){
-                mpmetrics.track(e.e, p);
+            if (typeof(mpq) != 'undefined'){
+                mpq.push(['track',e.e, p]);
             }
-            else{
-                this._mixpanel_queue.push({e:e.e, p:p});
-            }
-
         }
 	};
 
