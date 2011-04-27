@@ -114,7 +114,6 @@ each album has an email address in the form <album_name>@<username>.zangzing.com
   end
 
   def events
-    zza      = ZZ::ZZA.new('sendgrid/rack')
     event    =  params['event']
     email    =  params['email']
     category =  params['category']
@@ -145,6 +144,10 @@ each album has an email address in the form <album_name>@<username>.zangzing.com
   end
   
 protected
+
+  def zza
+    @zza ||= ZZ::ZZA.new
+  end
 
   # due to the fact that we need to return status 200 to sendgrid to get them to stop
   # sending to us we need to clean up here rather than back in nginx because it does not
