@@ -1,11 +1,11 @@
 <%= include_javascripts :zz_oauthmanager %>
 
-<% if @error %>
-    <script>
+<script>
+
+<% unless @error.blank? %>
+	window.alert("<%= @error %>");
         window.close();
-    </script>
 <% else  %>
-    <script>
         oauthmanager_popup.close();
-    </script>
 <% end %>
+</script>

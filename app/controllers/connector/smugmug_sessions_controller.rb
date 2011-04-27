@@ -13,15 +13,16 @@ class Connector::SmugmugSessionsController < Connector::SmugmugController
       SystemTimer.timeout_after(http_timeout) do
         smugmug_api.create_access_token!(params[:oauth_token], params[:oauth_token_secret], true)
       end
-    rescue => e
-      raise InvalidToken if e.kind_of?(SmugmugError)
+      service_identity.update_attribute(:credentials, smugmug_api.access_token(true))
+    rescue SmugmugError => e
+      @error = e.reason
     end
-    raise InvalidToken unless smugmug_api.access_token
-    service_identity.update_attribute(:credentials, smugmug_api.access_token(true))
+    render 'connector/sessions/create'
   end
 
   def destroy
     service_identity.update_attribute(:credentials, nil)
     smugmug_api = nil
+    render 'connector/sessions/destroy'
   end
 end

@@ -9,11 +9,15 @@ class Connector::GoogleSessionsController < Connector::GoogleController
     if params[:token]
       upgrade_access_token!(params[:token])
       service_identity.update_attribute(:credentials, permanent_token)
+    else
+      @error = 'You must grant access to import your photos'
     end
+    render 'connector/sessions/create'
   end
 
   def destroy
     service_identity.update_attribute(:credentials, nil)
+    render 'connector/sessions/destroy'
   end
 
 end

@@ -14,10 +14,14 @@ protected
     unless auth_token_string
       begin
         @token_string = service_identity.credentials
+        raise InvalidToken if @token_string.blank?
         @api = PhotobucketConnector.new(@token_string)
-      rescue => exception
-        raise InvalidToken if exception.kind_of?(PhotobucketError)
-        raise HttpCallFail if exception.kind_of?(SocketError)
+      rescue Exception => e
+        raise case e
+          when PhotobucketError then InvalidToken.new(e.message)
+          when SocketError then HttpCallFail
+          else e
+        end
       end
     end
   end

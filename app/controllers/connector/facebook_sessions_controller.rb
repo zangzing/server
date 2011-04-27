@@ -9,21 +9,22 @@ class Connector::FacebookSessionsController < Connector::FacebookController
 
   def create
     token = nil
-    if params[:error]
-       @error = params[:error]
+    if params[:error] #If user denied access or another crap happened
+       @error = params[:error_description]
     else  
       SystemTimer.timeout_after(http_timeout) do
         token = HyperGraph.get_access_token(FACEBOOK_API_KEYS[:app_id], FACEBOOK_API_KEYS[:app_secret], create_facebook_session_url(:host => Server::Application.config.application_host), params[:code])
       end
-      raise InvalidToken unless token
+      @error = 'Access token is not supplied from Facebook' unless token
       service_identity.update_attribute(:credentials, token)
     end
-    render :layout => false
+    render 'connector/sessions/create'
   end
 
   def destroy
     service_identity.credentials = nil
     service_identity.update_attribute(:credentials, nil)
+    render 'connector/sessions/destroy'
   end
 
 end

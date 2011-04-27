@@ -15,7 +15,7 @@ protected
 
 
   def login(email, password)
-    raise InvalidToken unless connector.sign_in(email, password)
+    raise InvalidToken.new('Credentials entered are invalid') unless connector.sign_in(email, password)
     service_identity.update_attribute(:credentials, connector.auth_token)
   end
 
