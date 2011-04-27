@@ -1,0 +1,99 @@
+<%= render :partial => 'admin/admin_screens/adminmenu' %>
+<div id="main-container">
+  <ul class="viewlist">
+    <li class type="item">
+      <div class='header bar' style="width: 800px;">
+        <%="#{@user.name} #{(@user.automatic? ? '(Automatic User)': '')}"%>
+        <div style="float:right; text-align: right; font-size: 80%;"><%=link_to "Back to Users", :back %></div>
+      </div>
+      <div class="content">
+        <br>
+        <table style="width: 600px;">
+          <tr>
+            <td class="field-label"> Username:     </td><td><%= link_to h(@user.username), @user %></td>
+            <td class="field-label"> Email</td><td><%=@user.email %></td>
+          </tr>
+          <tr>
+            <td class="field-label"> First Name   </td><td><%=@user.first_name %></td>
+            <td class="field-label"> Last Name   </td><td><%=@user.last_name%></td>
+          </tr>
+          <tr>
+            <td class="field-label"> Member Since </td><td><%=@user.created_at.strftime( '%m/%d/%y' ) %></td>
+            <td class="field-label"> Status       </td><td><%=(@user.automatic? ? 'Automatic': (@user.active? ? 'Active' : 'Inactive' ) )%></td>
+          </tr>
+          <tr>
+            <td class="field-label"> Last Update</td><td><%=@user.updated_at.strftime( '%m/%d/%y %H:%M:%S' ) if @user.updated_at %></td>
+          </tr>
+        </table>
+        <div >
+            <%=button_to( "Send Password Reset Email", admin_reset_password_path( :id => @user.id), :method => :put, :style =>'display: inline; float: right; margin: 0 5px;' )%>
+            <%=button_to( ( @user.active ? "Deactivate" :  "Activate"), admin_activate_user_path( :id => @user.id), :method => :put, :style =>'display: inline; float: right;'  )%>
+        </div>
+      </div>
+    </li>
+    <li class type="item">
+      <div class='header bar'><br></div>
+      <div class='content'>
+        <br>
+        <table  style="width: 800px;">
+          <tr>
+            <td class="field-label"> Current Login </td><td><%=@user.current_login_at.strftime( '%m/%d/%y %H:%M:%S' ) if @user.current_login_at  %></td>
+            <td class="field-label"> From IP </td><td><%=@user.current_login_ip %></td>
+            <% if @current_login_ip_info %> <td><%="#{@current_login_ip_info[:city]}, #{@current_login_ip_info[:region_name]}, #{@current_login_ip_info[:country_code]}" %></td><%end%>
+          </tr>
+          <tr>
+            <td class="field-label"> Last Login </td><td><%= ( @user.last_login_at ? @user.last_login_at.strftime( '%m/%d/%y %H:%M:%S' ) : 'Has Never Logged In' )   %></td>
+            <td class="field-label"> From IP </td><td><%=@user.last_login_ip %></td>
+            <% if @last_login_ip_info %> <td><%="#{@last_login_ip_info[:city]}, #{@last_login_ip_info[:region_name]}, #{@last_login_ip_info[:country_code]}" %></td><%end%>
+          </tr>
+        </table>
+      </div >
+    </li>
+    <li class type="item">
+      <div class='header bar'><br></div>
+      <div class='content'>
+        <br>
+        <table style="width: 500px;">
+          <tr>
+            <td class="field-label"> # of Albums    </td><td><%=@user.albums.count %></td>
+            <td><span style="margin: 0 30px;"></span></td>
+            <td class="field-label"> # of Followers </td><td><%=@user.likers.count %></td>
+          </tr>
+          <tr>
+            <td class="field-label"> # of Photos    </td><td><%=@user.photos.count %></td>
+            <td></td>
+            <td class="field-label"> # of Users He/She Follows </td><td><%=@user.liked_users.count %></td>
+          </tr>
+          <tr>
+            <td class="field-label"> # of Upload Batches </td><td><%=@user.upload_batches.count %></td>
+            <td></td>
+            <td class="field-label"> # of Albums He/She Likes </td><td><%=@user.liked_albums.count %></td>
+          </tr>
+          <tr>
+            <td class="field-label"> # of Shares    </td><td><%=@user.shares.count %></td>
+            <td></td>
+            <td class="field-label"> # of Photos He/She Likes </td><td><%=@user.liked_photos.count %></td>
+          </tr>
+        </table>
+      </div>
+    </li>
+    <li class type="item">
+      <div class='header bar'><br></div>
+      <div class="content">
+        <br>
+        <table style="width: 400px;">
+          <tr></tr>
+          <tr><td class="field-label"> # of Contacts </td><td><%=@user.contacts.count %></td></tr>
+          <tr><td class="field-label"><%= @user.identities.count %> Linked Accounts</td><td class="field-label">Service</td><td class="field-label">Updated At</td></tr>
+          <% @user.identities.each do |id| %>
+              <tr><td></td><td><%= id.identity_source %></td><td><%= id.updated_at.strftime( '%m/%d/%y %H:%M:%S' ) if id.updated_at%></td></tr>
+          <% end %>
+        </table>
+      </div>
+    </li>
+     <li class type="item">
+      <div class='header'>
+        <div style="float:right; text-align: right; font-size: 80%;"><%=link_to "Back to Users", :back %></div>
+      </div>
+  </ul>
+</div>

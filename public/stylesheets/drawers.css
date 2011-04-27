@@ -173,6 +173,13 @@ div#small-drawer h3 {
     text-transform: capitalize;
 }
 
+.flash-error{
+    font-size: 13px;
+    text-align: center;
+    color: red;
+    font-weight: 700;
+}
+
 div#small-drawer p.error-notice, .error-notice {
   display: none;
   font-size: 13px;

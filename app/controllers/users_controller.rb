@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   before_filter :require_no_user, :only => [:create]
-  before_filter :require_user,    :only => [:index, :activate,:edit, :update]
-  before_filter :require_admin,   :only => [:index,:activate]
+  before_filter :require_user,    :only => [ :activate,:edit, :update]
+  before_filter :require_admin,   :only => [ :activate]
   before_filter :correct_user,    :only => [:edit, :update]
 
   def join
@@ -168,29 +168,6 @@ class UsersController < ApplicationController
     render :json => true #Invalid call return not valid
   end
 
-  # Used by The Admin Interface to display a list of users
-  def index
-    @page = "users"
-    if params[:search]
-      @users = User.where('email LIKE ? OR first_name LIKE ? OR last_name LIKE ? OR username LIKE ?',
-                          "%#{params[:search]}%", "%#{params[:search]}%","%#{params[:search]}%","%#{params[:search]}%").paginate(:page =>params[:page])
-    else
-      @users = User.paginate(:page =>params[:page])
-    end
-  end
-
-  # Used by The Admin Interface to activate de-activate users
-  def activate
-    @user = User.find(params[:id])
-    if @user.active
-      @user.deactivate!
-    else
-      @user.activate!
-      @user.deliver_welcome!
-      SystemSetting[:new_users_allowed] -= 1 if SystemSetting[:new_users_allowed]
-    end
-    redirect_to :action => :index
-  end
 
   private
   def admin_user

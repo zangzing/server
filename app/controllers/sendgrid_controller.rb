@@ -113,7 +113,41 @@ each album has an email address in the form <album_name>@<username>.zangzing.com
     end
   end
 
+  def events
+    event    =  params['event']
+    email    =  params['email']
+    category =  params['category']
+    case event
+      when 'processed'
+        zza.track_event("#{category}.#{event}", {:email => email })
+      when 'dropped'
+        zza.track_event("#{category}.#{event}", {:email => email, :reason => params['reason']})
+      when 'deferred'
+        zza.track_event("#{category}.#{event}", {:email => email, :response => params['response'], :attempt => params['attempt']})
+      when 'delivered'
+        zza.track_event("#{category}.#{event}", {:email => email, :response => params['response']})
+      when 'bounce'
+        zza.track_event("#{category}.#{event}", {:email => email, :status=> params['status'], :reason => params['reason'], :type => params['type']})
+        #TODO: Process Bounce
+      when 'spamreport'
+        zza.track_event("#{category}.#{event}", {:email => email })
+        #TODO: Process SpamReport
+      when 'click'
+        zza.track_event("#{category}.#{event}", {:email => email }, nil, nil, nil, params['url'])
+      when 'unsubscribe'
+        zza.track_event("#{category}.#{event}", {:email => email })
+        #TODO Process unsubscribe
+      else
+        zza.track_event("#{category}.#{event}", {:email => email })
+    end
+    render :nothing => true, :status => 200
+  end
+  
 protected
+
+  def zza
+    @zza ||= ZZ::ZZA.new
+  end
 
   # due to the fact that we need to return status 200 to sendgrid to get them to stop
   # sending to us we need to clean up here rather than back in nginx because it does not
@@ -174,4 +208,16 @@ protected
     end
   end
 
+  def spam_report
+
+  end
+
+  def bounce
+
+  end
+
+  def unsubscribe
+
+  end
+   
 end

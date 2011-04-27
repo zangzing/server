@@ -262,7 +262,8 @@ Server::Application.routes.draw do
     end # end of the namespace segment
 
     #sendgrid
-    match '/sendgrid/import_fast' => 'sendgrid#import_fast', :as => :sendgrid_import_fast
+    match  '/sendgrid/import_fast'   => 'sendgrid#import_fast', :as => :sendgrid_import_fast
+    post   '/sendgrid/events'        => 'sendgrid#events',      :as => :sendgrid_events
 
 
 
@@ -284,13 +285,14 @@ Server::Application.routes.draw do
         post  'guests(.:format)'                 => 'guests#create'
         get   'guests/:id'                       => 'guests#show',                :as => :guest
         put   'guests/:id/activate'              => 'guests#activate',            :as => :activate_guest
+        get   'users'                            => 'users#index',                :as => :users
+        get   'users/:id'                        => 'users#show',                 :as => :admin_user_show
+        put   'users/:id/activate'               => 'users#activate',             :as => :admin_activate_user
+        put   'users/:id/reset_password'         => 'users#reset_password',       :as => :admin_reset_password
     end
-    get   'admin/users'                            => 'users#index',                :as => :users
-    put   'admin/users/:id/activate'               => 'users#activate',             :as => :activate_user
 
     #Resque: mount the resque server
-    mount Resque::Server.new, :at => "/admin/resque"
-
+    mount Resque::Server.new,   :at => '/admin/resque'
   end
 
 

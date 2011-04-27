@@ -6,6 +6,7 @@
         Signup Control
       </div>
       <div class="content">
+        <br>
         <table>
         <%= form_tag( system_settings_path, :method => :put) do -%>
                <%=render :partial=>'setting', :locals => { :setting_name => 'signup_control' } %>
@@ -22,6 +23,7 @@
         Facebook Post
       </div>
       <div class="content">
+        <br>
         <table>
           <tr><td style="width: 15%;"></td><td ></td></tr>
         <%= form_tag( system_settings_path, :method => :put) do %>

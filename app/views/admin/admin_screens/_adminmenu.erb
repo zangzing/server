@@ -1,8 +1,27 @@
+<%content_for :page_stylesheet do%>
 <style type="text/css">
-td{
-   padding: 4px 3px;
- }
+    td{
+        padding: 2px 0;
+    }
+    .viewlist{
+        color: #555555;
+    }
+    .viewlist .content{
+       font-size: 14px;
+    }
+    .field-label{
+        color:  #999999;
+    }
 </style>
+<%end%>
+
+<% [:notice, :error].each do |key| %>
+  <% if flash[key] %>
+    <div class="flash-<%=key%>" style="position:absolute;top: 3%; left:55%; width: 500px; margin-left: -250px; text-align: center;">
+        <%= flash[key] %>
+    </div>
+  <% end %>
+<% end %>
 <div id="sidemenu-container">
   <h1 id="sidemenu-title">Admin Pages</h1>
   <ul>
@@ -29,3 +48,4 @@ td{
     </li>
   </ul>
 </div>
+

@@ -1,48 +1,68 @@
 <%= render :partial =>  'admin/admin_screens/adminmenu' %>
 <div id="main-container">
-  <% flash.each do |key, value| %>
-	    <%= content_tag(:div, value, :class => "flash #{key}") %>
-  <% end %>
-  <div class="viewlist">
-    <div class='header bar'>
-      <table>
-      <tr>
-      <td width="50%">Guest List</td>
-      <td>
-      <%= form_tag guests_path, :method => 'get', :id=>'guest-search' do %>
-          <%= search_field_tag :search, params[:search], :id=>'search-field'  %>
-          <%= submit_tag "Search", :name => nil%>
-          <%= submit_tag "Clear", :name => nil, :onclick=>"$('#search-field').val('')" %>
-        <% end %>
-      </td>  
-      </tr>
-      </table>
-    </div>
-    <div class="title">
-      <%= form_for @new_guest do |f | %>
-      <%=f.label :email,'Add Email to Beta List' %>
-      <%=f.text_field   :email %>
-      <%=f.submit 'Add' %>
-      <%end%>
-    </div>
+  <ul class="viewlist">
+    <li class="item">
+      <div class='header bar'>
+        Guest List
+        <div style="float:right; text-align: right; font-size: 80%;">
+          <%= form_tag guests_path, :method => 'get', :id=>'guest-search-form' do %>
+                 <%= search_field_tag :search, params[:search], :id=>'search-field', :results=>"5", :autosave=>"guest-search-field", :placeholder => "Search Guests...", :onsearch=>"on_search(this);"  %>
+              <%= submit_tag "Search", :name => nil,:class=>"guest-search-btn"%>
+              <%= submit_tag "Clear", :name => nil, :onclick=>"$('#search-field').val('')", :class=>"guest-search-btn" %>
+          <% end %>
+        </div>
+      </div>
+      <div class="title">
+        <%= form_for @new_guest do |f | %>
+            <%=f.label :email,'Add Email to Guest List' %>
+            <%=f.text_field   :email %>
+            <%=f.submit 'Add' %>
+        <%end%>
+      </div>
+    </li>
     <div class="title">
       <%= will_paginate @guests%>
     </div>
     <div class="content">
       <table frame="box" width="800px" border="0"  cellspacing="10" align="left" style="text-align: left;">
-         <tr>
+         <tr class="header">
           <th> Email </th>
           <th> Source  </th>
           <th> Status  </th>
           <th> Signed up on</th>
           <th> Homepage </th>
-          <th></th>
         </tr>
+        <tr><td><br></td></tr>
         <%= render  @guests %>
       </table>
       <div class="title">
         <%= will_paginate @guests%>
       </div>
     </div>
-  </div>
+  </ul>
 </div>
+
+<% content_for :page_stylesheet do %>
+<style type="text/css">
+.guest-search-btn{
+  display: none;
+}
+.ua-gecko .guest-search-btn{
+  display: inline;
+}
+
+.ua-ie .guest-search-btn{
+  display: inline;
+}
+
+</style>
+<%end%>
+<% content_for :page_javascript do %>
+ <script type="text/javascript">
+              function on_search (input) {
+                 if( input.value.length <= 0 ){
+                    $('#guest-search-form').submit();
+                 }
+              }
+</script>
+<%end%>
