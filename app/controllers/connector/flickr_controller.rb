@@ -48,6 +48,10 @@ protected
     sz = {}
     if photo_info.flickr_type == 'sizes' then
       photo_info.size.each{|item| sz[item['label'].downcase.to_sym] = item['source'] if item['label'] =~ /^\w+$/  }
+      unless sz[:large]
+        biggest = photo_info.size.sort_by{ |p| p['width'].to_i * p['height'].to_i }.last
+        sz[:large] = biggest['source']
+      end
     else
       sz[:small] = photo_info.url_m if photo_info.respond_to?(:url_m)
       sz[:medium] = photo_info.url_z if photo_info.respond_to?(:url_z)
