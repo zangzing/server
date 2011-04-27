@@ -1,7 +1,20 @@
 class Connector::PicasaFoldersController < Connector::PicasaController
   
   def self.list_albums(api, params)
-    doc = Nokogiri::XML(api.get("https://picasaweb.google.com/data/feed/api/user/default").body)
+    begin
+      feed = api.get("https://picasaweb.google.com/data/feed/api/user/default").body
+    rescue GData::Client::UnknownError => e
+      if e.message.include?('Unknown user')
+        feed = <<-XML
+          <?xml version='1.0' encoding='UTF-8'?>
+          <feed xmlns='http://www.w3.org/2005/Atom' xmlns:gphoto='http://schemas.google.com/photos/2007' xmlns:media='http://search.yahoo.com/mrss/' xmlns:openSearch='http://a9.com/-/spec/opensearchrss/1.0/'>
+          </feed>
+        XML
+      else
+        raise e
+      end
+    end
+    doc = Nokogiri::XML(feed)
 
     folders = []
     doc.xpath('//a:entry', NS).each do |entry|
