@@ -20,11 +20,10 @@ class AsyncResponse
     end
     
     def store_error(response_id, exception)
-      classified_exception = Connector::ConnectorController.classify_exception(exception)
       info = {
         :exception => true,
-        :code => case classified_exception.name
-          when 'InvalidToken', 'InvalidCredentials' then 401
+        :code => case exception.name
+          when 'InvalidToken' then 401
           when 'HttpCallFail' then 503
           else 500
         end,

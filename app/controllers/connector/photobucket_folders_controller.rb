@@ -17,7 +17,7 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
     end
     (album_contents[:media] || []).each do |media|
       photo_path = params[:album_path].nil? ? CGI::escape(media[:name]) : "#{params[:album_path]}#{CGI::escape('/'+media[:name])}"
-      folders <<       {
+      folders << {
         :name => media[:title] || media[:name],
         :id   => photo_path,
         :type => 'photo',

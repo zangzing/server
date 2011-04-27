@@ -16,7 +16,7 @@ class Connector::SmugmugSessionsController < Connector::SmugmugController
     rescue => e
       raise InvalidToken if e.kind_of?(SmugmugError)
     end
-    raise InvalidCredentials unless smugmug_api.access_token
+    raise InvalidToken unless smugmug_api.access_token
     service_identity.update_attribute(:credentials, smugmug_api.access_token(true))
   end
 

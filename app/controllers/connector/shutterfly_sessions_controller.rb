@@ -9,7 +9,7 @@ class Connector::ShutterflySessionsController < Connector::ShutterflyController
 
   def create
     sf_user_token = "#{params[:oflyUserAuthToken]}_#{params[:oflyUserid]}"
-    raise InvalidCredentials unless sf_user_token
+    raise InvalidToken unless sf_user_token
     service_identity.update_attribute(:credentials, sf_user_token)
   end
 

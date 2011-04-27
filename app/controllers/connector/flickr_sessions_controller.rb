@@ -16,7 +16,7 @@ class Connector::FlickrSessionsController < Connector::FlickrController
       end
       service_identity.update_attribute(:credentials, auth.token)
     rescue => e
-      raise InvalidCredentials if e.kind_of?(FlickRaw::FailedResponse)
+      raise InvalidToken if e.kind_of?(FlickRaw::FailedResponse)
     end
   end
 

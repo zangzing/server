@@ -10,7 +10,7 @@ class Connector::InstagramSessionsController < Connector::InstagramController
 
   def create
     response = Instagram.get_access_token(params[:code], :redirect_uri => create_instagram_session_url)
-    raise InvalidCredentials unless response
+    raise InvalidToken unless response
     service_identity.update_attribute(:credentials, response.access_token)
   end
 

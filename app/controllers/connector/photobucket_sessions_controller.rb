@@ -16,7 +16,7 @@ class Connector::PhotobucketSessionsController < Connector::PhotobucketControlle
     rescue => e
       raise InvalidToken if e.kind_of?(PhotobucketError)
     end
-    raise InvalidCredentials unless photobucket_api.access_token
+    raise InvalidToken unless photobucket_api.access_token
     service_identity.update_attribute(:credentials, photobucket_api.access_token(true))
   end
 

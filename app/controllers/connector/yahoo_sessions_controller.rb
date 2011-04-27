@@ -17,7 +17,7 @@ class Connector::YahooSessionsController < Connector::YahooController
     rescue => e
       raise InvalidToken if e.kind_of?(YahooError)
     end
-    raise InvalidCredentials unless yahoo_api.access_token
+    raise InvalidToken unless yahoo_api.access_token
     service_identity.update_attribute(:credentials, yahoo_api.access_token(true))
   end
 

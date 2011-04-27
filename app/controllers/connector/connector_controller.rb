@@ -5,7 +5,6 @@ class Connector::ConnectorController < ApplicationController
   before_filter :check_params_for_import, :only => :import
 
   rescue_from(InvalidToken) { |e| error_occured(401, e) }
-  rescue_from(InvalidCredentials) { |e| error_occured(401, e) }
   rescue_from(HttpCallFail) { |e| error_occured(503, e) }
 
   def error_occured(status, exception)
@@ -54,7 +53,7 @@ class Connector::ConnectorController < ApplicationController
     include Server::Application.routes.url_helpers
 
     def api_from_identity
-      raise "api_from_identity for #{self.to_s} is not implemented!"
+      raise "api_from_identity for #{self.name.to_s} is not implemented!"
     end
 
     def bulk_insert(photos)
