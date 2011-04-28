@@ -1,0 +1,98 @@
+<%=form_for up, :url => update_preferences_path(up), :html=> { :id => "edit-preferences" } do |f| %>
+    <table>
+      <tr class="on_off">
+        <th>
+          <%=f.label :want_invites_email, 'Invitations'%><br>
+          <div class="sub-th">e.g.  when someone shares an album with you or invites you to contribute photos into an album</div>
+        </th>
+        <td>
+          <%=f.check_box :want_invites_email%>
+        </td>
+      </tr>
+
+      <% if up.user == current_user %>
+          <tr class="on_off">
+            <th>
+              <%=f.label :want_social_email, 'Social'%><br>
+              <div class="sub-th">e.g. when new photos have been added or when someone "likes you," "likes your album," or "likes your photos</div>
+            </th>
+            <td>
+              <%=f.check_box :want_social_email%>
+            </td>
+          </tr>
+
+          <tr class="on_off">
+            <th>
+              <%=f.label :want_status_email, 'Confirmations'%><br>
+              <div class="sub-th">e.g. when your photos have been successfully uploaded to an album</div>
+            </th>
+            <td >
+              <%=f.check_box :want_status_email,{ :class=>"switch" }%>
+            </td>
+          </tr>
+      <%end%>
+      <tr class="on_off">
+        <th>
+          <%=f.label :want_news_email, 'ZangZing News' %><br>
+          <div class="sub-th">e.g. new feature announcements or updates on ZangZing</div>
+        </th>
+        <td>
+          <%=f.check_box :want_news_email%>
+        </td>
+      </tr>
+      <tr class="on_off">
+        <th>
+          <%=f.label :want_marketing_email, 'Marketing Messages'  %> <br>
+          <div class="sub-th">e.g. seasonal sales or offers from partners</div>
+        </th>
+        <td >
+          <%=f.check_box :want_marketing_email%>
+        </td>
+      </tr>
+
+
+      <tr> <td>  <div class="flash-notice" id="flashes-notice"><%=flash[:notice] if flash[:notice] %></div></td>
+        <td></td>
+        <td>
+          <a class="green-button" id="save-button" onclick="$('#edit-preferences').submit();"><span>Save Preferences</span></a>
+        </td>
+      </tr>
+    </table>
+    <% content_for :page_stylesheet  do %>
+        <style type="text/css">
+            th {
+                width: 400px;
+                font-size: 14px;
+                color: #888888;
+                text-align: left;
+                padding: 10px 0px;
+                vertical-align: top; }
+            .sub-th{
+                font-size: 12px;
+                color: #cccccc;
+                margin-left: 10px;
+            }
+            #save-button{
+                margin: 10px 0;
+                width: 100%;
+            }
+            label.iPhoneCheckLabelOn, label.iPhoneCheckLabelOff{
+                color:;
+            }
+        </style>
+    <%end%>
+
+    <% content_for :page_javascript do %>
+        <script type="text/javascript" charset="utf-8">
+            $(document).ready(function() {
+                $('.on_off :checkbox').addClass( 'switch').iphoneStyle();
+
+                var onchange_checkbox = $('.onchange :checkbox').iphoneStyle();
+                setInterval(function toggleCheckbox() {
+                    onchange_checkbox.attr('checked', !onchange_checkbox.is(':checked')).change();
+                    $('span#status').html(onchange_checkbox.is(':checked').toString());
+                }, 2500);
+            });
+        </script>
+    <%end%>
+<%end%>

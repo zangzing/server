@@ -29,118 +29,127 @@ class Notifier < ActionMailer::Base
     end
     attachments["#{@album.name}.vcf"] = vcard.to_s
 
-    #Load interpolate and setup values from template
-    @template = Email.find_by_name!( __method__ ).production_template
-    @template  = EmailTemplate.find( template_id ) if template_id
-    headers @template.sendgrid_category_header
-    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
-    binding = binding()
-    mail( :to       => @recipient.formatted_email,
-          :from     => @template.formatted_from,
-          :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
-          :subject  => ERB.new( @template.subject).result(binding)
-    ) do |format|
-      format.text { render :inline => @template.text_content }
-      format.html { render :inline => @template.html_content }
-    end
+    create_message( binding(), __method__, template_id, @recipient,  { :user_id => @user.id })
+
+#    #Load interpolate and setup values from template
+#    @template = Email.find_by_name!( __method__ ).production_template
+#    @template  = EmailTemplate.find( template_id ) if template_id
+#    headers @template.sendgrid_category_header
+#    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
+#    binding = binding()
+#    mail( :to       => @recipient.formatted_email,
+#          :from     => @template.formatted_from,
+#          :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
+#          :subject  => ERB.new( @template.subject).result(binding)
+#    ) do |format|
+#      format.text { render :inline => @template.text_content }
+#      format.html { render :inline => @template.html_content }
+#    end
   end
 
   def password_reset(user_id, template_id = nil)
     @user = User.find(user_id)
     @recipient = @user
     @password_reset_url = edit_password_reset_url(@user.perishable_token)
-
-    # Load interpolate and setup values from template
-    @template = Email.find_by_name!( __method__ ).production_template
-    @template  = EmailTemplate.find( template_id ) if template_id
-    headers @template.sendgrid_category_header
-    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
-    binding = binding()
-    mail(  :to       => @recipient.formatted_email,
-           :from     => @template.formatted_from,
-           :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
-           :subject  => ERB.new( @template.subject).result(binding)
-    ) do |format|
-      format.text { render :inline => @template.text_content }
-      format.html { render :inline => @template.html_content }
-    end
+    create_message( binding(), __method__, template_id, @recipient, { :user_id => @user.id } )
+    
+#    Load interpolate and setup values from template
+#    @template = Email.find_by_name!( __method__ ).production_template
+#    @template  = EmailTemplate.find( template_id ) if template_id
+#    headers @template.sendgrid_category_header
+#    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
+#    binding = binding()
+#    mail(  :to       => @recipient.formatted_email,
+#           :from     => @template.formatted_from,
+#           :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
+#           :subject  => ERB.new( @template.subject).result(binding)
+#    ) do |format|
+#      format.text { render :inline => @template.text_content }
+#      format.html { render :inline => @template.html_content }
+#    end
   end
 
   def album_liked( user_id, album_id,  template_id = nil )
     @user      = User.find( user_id )
     @album     = Album.find( album_id )
     @recipient = @album.user
-
-    @template = Email.find_by_name!( __method__ ).production_template
-    @template  = EmailTemplate.find( template_id ) if template_id
-    headers @template.sendgrid_category_header
-    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
-    binding = binding()
-    mail( :to       => @recipient.formatted_email,
-          :from     => @template.formatted_from,
-          :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
-          :subject  => ERB.new( @template.subject).result(binding)
-    ) do |format|
-      format.text { render :inline => @template.text_content }
-      format.html { render :inline => @template.html_content }
-    end
+    create_message( binding(), __method__, template_id, @recipient, { :user_id => @user.id } )
+#   Load interpolate and setup values from template
+#    @template = Email.find_by_name!( __method__ ).production_template
+#    @template  = EmailTemplate.find( template_id ) if template_id
+#    headers @template.sendgrid_category_header
+#    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
+#    binding = binding()
+#    mail( :to       => @recipient.formatted_email,
+#          :from     => @template.formatted_from,
+#          :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
+#          :subject  => ERB.new( @template.subject).result(binding)
+#    ) do |format|
+#      format.text { render :inline => @template.text_content }
+#      format.html { render :inline => @template.html_content }
+#    end
   end
 
   def photo_liked( user_id, photo_id,  template_id = nil )
     @user      = User.find( user_id )
     @photo     = Photo.find( photo_id )
     @recipient = @photo.user
-
-    @template = Email.find_by_name!( __method__ ).production_template
-    @template  = EmailTemplate.find( template_id ) if template_id
-    headers @template.sendgrid_category_header
-    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
-    binding = binding()
-    mail( :to       => @recipient.formatted_email,
-          :from     => @template.formatted_from,
-          :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
-          :subject  => ERB.new( @template.subject).result(binding)
-    ) do |format|
-      format.text { render :inline => @template.text_content }
-      format.html { render :inline => @template.html_content }
-    end
+    create_message( binding(), __method__, template_id, @recipient, { :user_id => @user.id } )
+    # Load interpolate and setup values from template
+#    @template = Email.find_by_name!( __method__ ).production_template
+#    @template  = EmailTemplate.find( template_id ) if template_id
+#    headers @template.sendgrid_category_header
+#    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
+#    binding = binding()
+#    mail( :to       => @recipient.formatted_email,
+#          :from     => @template.formatted_from,
+#          :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
+#          :subject  => ERB.new( @template.subject).result(binding)
+#    ) do |format|
+#      format.text { render :inline => @template.text_content }
+#      format.html { render :inline => @template.html_content }
+#    end
   end
 
   def user_liked( user_id, liked_user_id,  template_id = nil )
     @user      = User.find( user_id )
     @recipient = User.find( liked_user_id )
+    create_message( binding(), __method__, template_id, @recipient, { :user_id => @user.id } )
 
-    @template = Email.find_by_name!( __method__ ).production_template
-    @template  = EmailTemplate.find( template_id ) if template_id
-    headers @template.sendgrid_category_header
-    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
-    binding = binding()
-    mail( :to       => @recipient.formatted_email,
-          :from     => @template.formatted_from,
-          :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
-          :subject  => ERB.new( @template.subject).result(binding)
-    ) do |format|
-      format.text { render :inline => @template.text_content }
-      format.html { render :inline => @template.html_content }
-    end
+    # Load interpolate and setup values from template
+#    @template = Email.find_by_name!( __method__ ).production_template
+#    @template  = EmailTemplate.find( template_id ) if template_id
+#    headers @template.sendgrid_category_header
+#    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
+#    binding = binding()
+#    mail( :to       => @recipient.formatted_email,
+#          :from     => @template.formatted_from,
+#          :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
+#          :subject  => ERB.new( @template.subject).result(binding)
+#    ) do |format|
+#      format.text { render :inline => @template.text_content }
+#      format.html { render :inline => @template.html_content }
+#    end
   end
 
   def contribution_error( to_address, template_id = nil)
         @recipient = User.find_by_email( to_address )
         @template = Email.find_by_name!( __method__ ).production_template
         @template  = EmailTemplate.find( template_id ) if template_id
+        create_message( binding(), __method__, template_id, ( @recipient? @recipient : to_address ), { :to => to_address })
 
-        headers @template.sendgrid_category_header
-        ZZ::ZZA.new.track_event("#{@template.category}.send", to_address)
-        binding = binding()
-        mail(   :to       => ( @recipient? @recipient.formatted_email : to_address ),
-                :from     => @template.formatted_from,
-                :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
-                :subject  => ERB.new( @template.subject).result(binding)
-        ) do |format|
-          format.text { render :inline => @template.text_content }
-          format.html { render :inline => @template.html_content }
-        end
+        # Load interpolate and setup values from template
+#        headers @template.sendgrid_category_header
+#        ZZ::ZZA.new.track_event("#{@template.category}.send", to_address)
+#        binding = binding()
+#        mail(   :to       => ( @recipient? @recipient.formatted_email : to_address ),
+#                :from     => @template.formatted_from,
+#                :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
+#                :subject  => ERB.new( @template.subject).result(binding)
+#        ) do |format|
+#          format.text { render :inline => @template.text_content }
+#          format.html { render :inline => @template.html_content }
+#        end
   end
 
   def photo_shared(from_user_id,to_address,photo_id, message, template_id = nil)
@@ -148,40 +157,43 @@ class Notifier < ActionMailer::Base
     @photo = Photo.find(photo_id)
     @message = message
     @recipient = User.find_by_email( to_address )
+    create_message( binding(), __method__, template_id, ( @recipient? @recipient : to_address ), { :to => to_address })
 
-    @template = Email.find_by_name!( __method__ ).production_template
-    @template = EmailTemplate.find( template_id ) if template_id
-
-    headers @template.sendgrid_category_header
-    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
-
-    binding = binding()
-    mail(   :to       => ( @recipient? @recipient.formatted_email : to_address ),
-            :from     => @template.formatted_from,
-            :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
-            :subject  => ERB.new( @template.subject).result(binding)
-    ) do |format|
-      format.text { render :inline => @template.text_content }
-      format.html { render :inline => @template.html_content }
-    end
+    # Load interpolate and setup values from template
+#    @template = Email.find_by_name!( __method__ ).production_template
+#    @template = EmailTemplate.find( template_id ) if template_id
+#
+#    headers @template.sendgrid_category_header
+#    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
+#
+#    binding = binding()
+#    mail(   :to       => ( @recipient? @recipient.formatted_email : to_address ),
+#            :from     => @template.formatted_from,
+#            :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
+#            :subject  => ERB.new( @template.subject).result(binding)
+#    ) do |format|
+#      format.text { render :inline => @template.text_content }
+#      format.html { render :inline => @template.html_content }
+#    end
   end
 
    def beta_invite(to_address,  template_id = nil)
-    
-    @template = Email.find_by_name!( __method__ ).production_template
-    @template = EmailTemplate.find( template_id ) if template_id
+    create_message( binding(), __method__, template_id,  to_address, { :to => to_address })
 
-    headers @template.sendgrid_category_header
-    ZZ::ZZA.new.track_event("#{@template.category}.send", to_address)
-    binding = binding()
-    mail(   :to       => ( @recipient? @recipient.formatted_email : to_address ),
-            :from     => @template.formatted_from,
-            :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
-            :subject  => ERB.new( @template.subject).result(binding)
-    ) do |format|
-      format.text { render :inline => @template.text_content }
-      format.html { render :inline => @template.html_content }
-    end
+   # Load interpolate and setup values from template
+#     @template = Email.find_by_name!( __method__ ).production_template
+#     @template = EmailTemplate.find( template_id ) if template_id
+#    headers @template.sendgrid_category_header
+#    ZZ::ZZA.new.track_event("#{@template.category}.send", to_address)
+#    binding = binding()
+#    mail(   :to       => to_address,
+#            :from     => @template.formatted_from,
+#            :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
+#            :subject  => ERB.new( @template.subject).result(binding)
+#    ) do |format|
+#      format.text { render :inline => @template.text_content }
+#      format.html { render :inline => @template.html_content }
+#    end
   end
 
   def album_shared(from_user_id,to_address,album_id, message, template_id = nil)
@@ -189,41 +201,45 @@ class Notifier < ActionMailer::Base
     @album = Album.find(album_id)
     @message = message
     @recipient = User.find_by_email( to_address )
+    create_message( binding(), __method__, template_id, ( @recipient? @recipient : to_address ), { :user_id => @user.id } )
 
-    @template = Email.find_by_name!( __method__ ).production_template
-    @template  = EmailTemplate.find( template_id ) if template_id
-
-    headers @template.sendgrid_category_header
-    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
-    binding = binding()
-    mail(   :to       => ( @recipient? @recipient.formatted_email : to_address ),
-            :from     => @template.formatted_from,
-            :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
-            :subject  => ERB.new( @template.subject).result(binding)
-    ) do |format|
-      format.text { render :inline => @template.text_content }
-      format.html { render :inline => @template.html_content }
-    end
+    # Load interpolate and setup values from template
+#    @template = Email.find_by_name!( __method__ ).production_template
+#    @template  = EmailTemplate.find( template_id ) if template_id
+#
+#    headers @template.sendgrid_category_header
+#    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
+#    binding = binding()
+#    mail(   :to       => ( @recipient? @recipient.formatted_email : to_address ),
+#            :from     => @template.formatted_from,
+#            :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
+#            :subject  => ERB.new( @template.subject).result(binding)
+#    ) do |format|
+#      format.text { render :inline => @template.text_content }
+#      format.html { render :inline => @template.html_content }
+#    end
   end
 
   def album_updated( recipient_id, album_id,  template_id = nil )
     @album     = Album.find( album_id )
     @user      = @album.user
     @recipient = User.find( recipient_id )
+    create_message( binding(), __method__, template_id, @recipient,   { :user_id => @user.id }  )
 
-    @template = Email.find_by_name!( __method__ ).production_template
-    @template  = EmailTemplate.find( template_id ) if template_id
-    headers @template.sendgrid_category_header
-    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
-    binding = binding()
-    mail( :to       => @recipient.formatted_email,
-          :from     => @template.formatted_from,
-          :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
-          :subject  => ERB.new( @template.subject).result(binding)
-    ) do |format|
-      format.text { render :inline => @template.text_content }
-      format.html { render :inline => @template.html_content }
-    end
+    # Load interpolate and setup values from template
+#    @template = Email.find_by_name!( __method__ ).production_template
+#    @template  = EmailTemplate.find( template_id ) if template_id
+#    headers @template.sendgrid_category_header
+#    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
+#    binding = binding()
+#    mail( :to       => @recipient.formatted_email,
+#          :from     => @template.formatted_from,
+#          :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
+#          :subject  => ERB.new( @template.subject).result(binding)
+#    ) do |format|
+#      format.text { render :inline => @template.text_content }
+#      format.html { render :inline => @template.html_content }
+#    end
   end
 
   def contributor_added(album_id, to_address, message, template_id = nil )
@@ -240,40 +256,43 @@ class Notifier < ActionMailer::Base
       vc.add_email @album.short_email
     end
     attachments["#{@album.name}.vcf"] = vcard.to_s
+    create_message( binding(), __method__, template_id, ( @recipient? @recipient : to_address ), { :user_id => @user.id })
 
-    #Load interpolate and setup values from template
-    @template = Email.find_by_name!( __method__ ).production_template
-    @template  = EmailTemplate.find( template_id ) if template_id
-    headers @template.sendgrid_category_header
-    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
-    binding = binding()
-    mail( :to       => ( @recipient? @recipient.formatted_email : to_address ),
-          :from     => @template.formatted_from,
-          :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
-          :subject  => ERB.new( @template.subject).result(binding)
-    ) do |format|
-      format.text { render :inline => @template.text_content }
-      format.html { render :inline => @template.html_content }
-    end
+    # Load interpolate and setup values from template
+#    @template = Email.find_by_name!( __method__ ).production_template
+#    @template  = EmailTemplate.find( template_id ) if template_id
+#    headers @template.sendgrid_category_header
+#    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
+#    binding = binding()
+#    mail( :to       => ( @recipient? @recipient.formatted_email : to_address ),
+#          :from     => @template.formatted_from,
+#          :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
+#          :subject  => ERB.new( @template.subject).result(binding)
+#    ) do |format|
+#      format.text { render :inline => @template.text_content }
+#      format.html { render :inline => @template.html_content }
+#    end
   end
 
    def welcome(user_id, template_id = nil)
     @user = User.find(user_id)
     @recipient = @user
+    create_message( binding(), __method__, template_id, @recipient,   { :user_id => @user.id })
 
-    @template = Email.find_by_name!( __method__ ).production_template
-    @template  = EmailTemplate.find( template_id ) if template_id
-    headers @template.sendgrid_category_header
-    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
-    binding = binding()
-    mail( :to       => @recipient.formatted_email,
-          :from     => @template.formatted_from,
-          :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
-          :subject  => ERB.new( @template.subject).result(binding)
-    ) do |format|
-      format.text { render :inline => @template.text_content }
-      format.html { render :inline => @template.html_content }
-    end
+    # Load interpolate and setup values from template
+#    @template = Email.find_by_name!( __method__ ).production_template
+#    @template  = EmailTemplate.find( template_id ) if template_id
+#    headers @template.sendgrid_category_header
+#    ZZ::ZZA.new.track_event("#{@template.category}.send", @user.id)
+#    binding = binding()
+#    mail( :to       => @recipient.formatted_email,
+#          :from     => @template.formatted_from,
+#          :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
+#          :subject  => ERB.new( @template.subject).result(binding)
+#    ) do |format|
+#      format.text { render :inline => @template.text_content }
+#      format.html { render :inline => @template.html_content }
+#    end
   end
 
   def activation_instructions(user_id)
@@ -284,9 +303,6 @@ class Notifier < ActionMailer::Base
           :subject => "Account Activation Instructions for your ZangZing Account" )
   end
 
-
-
-
   def test_email( to )
     logger.info "Mailed test_email: #{to}"
     mail( :to      => to,
@@ -295,22 +311,53 @@ class Notifier < ActionMailer::Base
     end
   end
 
-  def like_album( album_id, liker_id )
-    @album = Album.find( album_id )
-    @user  = @album.user
-    @liker = User.find( liker_id )
+  private
 
-    # Load interpolate and setup values from template
-    @email_template = EmailTemplate.find_by_name!( __method__ )
-    subject = ERB.new( @email_template.subject).result
-    from = @email_template.from
+  # This the the method that puts together the message using the class vars set in
+  # the message environment
+  #
+  #
+  # * <tt>binding</tt> - The binding for all vars set for the message (usually just binding() )
+  # * <tt>template_name</tt> - The name of the production template you want to use. It
+  #   will not be used if template_id is present
+  # * <tt>template_id </tt> - The id of the specific template you want to use. Used for testing templates that are not
+  #   in production yet.
+  # * <tt>recipient</tt> - The recipient for the message, it maybe a User in which case we call
+  #   recipient.formatted_email or a string with the email address
+  # * <tt>event_data_hash</tt> - A hash of information that will be sent with to ZZA as xdata
 
-    logger.info "Mailed like_album: #{@user.username}, #{@album.name}"
-    mail( :to      => to_address,
-          :from    => from,
-          :subject => subject ) do |format|
-        format.text { render :inline => @email_template.text_content }
-        format.html { render :inline => @email_template.html_content }
+
+  def create_message( binding, template_name, template_id=nil, recipient=nil, zza_xdata=nil )
+    #Process recipient
+    if recipient.is_a?(User)
+      #validate user notification preferences
+      @to_address = Mail::Address.new( recipient.formatted_email )
+    else
+      #validate address' notification preferences
+      @to_address = Mail::Address.new( recipient )
+    end  
+
+    # Load the appropriate template
+    if template_id
+      @template  = EmailTemplate.find( template_id )
+    else
+      @template = Email.find_by_name!( template_name ).production_template
+    end
+
+    #set sendgrid category header
+    headers @template.sendgrid_category_header
+
+    #send zza event
+    ZZ::ZZA.new.track_event("#{template.category}.send", zza_xdata )
+    mail( :to       => @to_address.format,
+          :from     => @template.formatted_from,
+          :reply_to => ERB.new( @template.formatted_reply_to).result(binding),
+          :subject  => ERB.new( @template.subject).result(binding)
+    ) do |format|
+      format.text { render :inline => @template.text_content }
+      format.html { render :inline => @template.html_content }
     end
   end
+
+
 end

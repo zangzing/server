@@ -4,6 +4,7 @@
 
 # "automatic" users are created when a contributor adds photos by email but does not have
 # an account
+require 'mail'
 
 class User < ActiveRecord::Base
   attr_writer      :name
@@ -227,7 +228,7 @@ class User < ActiveRecord::Base
   end
 
   def formatted_email
-      "#{self.name}<#{self.email}>"
+      Mail::Address.new( "#{self.name}<#{self.email}>").format
   end
 
 

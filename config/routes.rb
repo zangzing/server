@@ -32,9 +32,11 @@ Server::Application.routes.draw do
     post   '/users'                     => 'users#create',            :as => :create_user
     put    '/users/:id'                 => 'users#update',            :as => :update_user
     delete '/users/:id'                 => 'users#destroy',           :as => :delete_user
-#    get    '/users/:id/account'         => 'users#account',           :as => :account
-#    get    '/users/:id/notifications'   => 'users#notifications',     :as => :notifications
     match  '/users/:id/update_password' => 'users#update_password',   :as => :update_user_password
+
+    #user_preferences
+    get '/unsubscribe/:id'          => 'preferences#unsubscribe', :as => :unsubscribe
+    put '/preferences/:id'          => 'preferences#update',      :as => :update_preferences
 
     #identities
     get    '/users/:id/identities'     => 'identities#index',       :as => :user_identities
@@ -136,12 +138,6 @@ Server::Application.routes.draw do
     match '/inactive'                  => 'user_sessions#inactive',       :as => :inactive
     match '/signout'                   => 'user_sessions#destroy',        :as => :signout
     resources :password_resets, :only => [:new, :edit, :create, :update]
-
-    #static pages
-    #get '/contact'  => 'pages#contact', :as => :contact
-    #get '/about'    => 'pages#about',   :as => :about
-    #get '/help'     => 'pages#help',    :as => :help
-    #get '/signup'   => 'users#new',     :as => :signup
 
     #Asynch responses
     match '/async_responses/:response_id' => 'async_responses#show', :as => :async_response
