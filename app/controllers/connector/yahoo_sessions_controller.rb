@@ -14,16 +14,17 @@ class Connector::YahooSessionsController < Connector::YahooController
       SystemTimer.timeout_after(http_timeout) do
         yahoo_api.create_access_token!(params[:oauth_token], session[:yahoo_request_token_secret], true, params[:oauth_verifier])
       end
-    rescue => e
-      raise InvalidToken if e.kind_of?(YahooError)
+      service_identity.update_attribute(:credentials, yahoo_api.access_token(true))
+    rescue YahooError => e
+      @error = e.reason
     end
-    raise InvalidCredentials unless yahoo_api.access_token
-    service_identity.update_attribute(:credentials, yahoo_api.access_token(true))
+    render 'connector/sessions/create'
   end
 
   def destroy
     service_identity.update_attribute(:credentials, nil)
     yahoo_api = nil
+    render 'connector/sessions/destroy'
   end
 
 
