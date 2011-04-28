@@ -1,5 +1,6 @@
 require 'net/http'
 require 'digest/sha1'
+require 'uri'
 
 # Note: this cannot inherit from the Tempfile base class
 # because we do not want the files deleting themselves since
@@ -33,7 +34,7 @@ class RemoteFile < ::File
   end
 
   def fetch
-    uri = URI::parse(@remote_path)
+    uri = URI::parse(URI.escape(@remote_path))
     self.binmode if is_windows?
     http = Net::HTTP.new(uri.host, uri.port)
     if uri.scheme == 'https'
