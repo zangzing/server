@@ -61,7 +61,8 @@ auto_deploy_dir = base_dir + "/auto_deploy"
 Dir.mkdir(auto_deploy_dir) rescue nil
 Dir.chdir(auto_deploy_dir)
 
-repos = ["server", "homepage", "agent", "ey-cloud-recipes", "site"]
+repos = ["agent", "site"]
+#repos = ["server", "homepage", "agent", "ey-cloud-recipes", "site"]
 
 repos.each do |repo|
   Dir.chdir(auto_deploy_dir)
@@ -71,6 +72,8 @@ repos.each do |repo|
   do_cmd("git clone #{url}")
 
   Dir.chdir(repo_dir)
+  do_cmd("git remote show origin")
+  do_cmd("git fetch")
   do_cmd("git checkout -f #{branch}")
   do_cmd("git pull origin #{branch}")
   do_cmd("git tag -a #{tag} #{tag_comment}")
