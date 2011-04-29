@@ -1,8 +1,9 @@
 class Connector::ShutterflyPhotosController < Connector::ShutterflyController
 
   def self.photos_list(api_client, params)
-    photos_list = api_client.get_images(params[:sf_album_id])
-
+    photos_list = call_with_error_adapter do
+      api_client.get_images(params[:sf_album_id])
+    end
     photos = photos_list.map { |p|
      {
         :name => p[:title],
@@ -20,9 +21,9 @@ class Connector::ShutterflyPhotosController < Connector::ShutterflyController
 
   def self.import_photo(api_client, params)
     identity = params[:identity]
-
-    photos_list = api_client.get_images(params[:sf_album_id])
-
+    photos_list = call_with_error_adapter do
+      api_client.get_images(params[:sf_album_id])
+    end
     photo_info = photos_list.select { |p| p[:id]==params[:photo_id] }.first
     photo_title = photo_info[:title]
 

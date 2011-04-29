@@ -21,6 +21,25 @@ protected
     api
   end
 
+  def self.moderate_exception(exception)
+    case exception
+      when
+        GData::Client::AuthorizationError,
+        GData::Client::Error,
+        GData::Client::CaptchaError
+          then InvalidToken.new(exception.message)
+      when
+        GData::Client::ServerError,
+        GData::Client::UnknownError,
+        GData::Client::VersionConflictError,
+        GData::Client::RequestError,
+        GData::Client::BadRequestError
+          then HttpCallFail
+      else nil
+    end
+  end
+
+
   def self.create_client
     GData::Client::Contacts.new
   end

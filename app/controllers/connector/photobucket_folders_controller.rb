@@ -1,9 +1,9 @@
 class Connector::PhotobucketFoldersController < Connector::PhotobucketController
   
   def self.list_dir(api, params)
-
-    album_contents = api.open_album(params[:album_path])
-
+    album_contents = call_with_error_adapter do
+      api.open_album(params[:album_path])
+    end
     folders = []
     (album_contents[:album] || []).each do |album|
       album_path = params[:album_path].nil? ? CGI::escape(album[:name]) : "#{params[:album_path]}#{CGI::escape('/'+album[:name])}"
@@ -33,9 +33,9 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
 
   def self.import_dir_photos(api, params)
     identity = params[:identity]
-    album_contents = api.open_album(params[:album_path])
-
-
+    album_contents = call_with_error_adapter do
+      api.open_album(params[:album_path])
+    end
     photos = []
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     (album_contents[:media] || []).each do |photo_data|
@@ -63,9 +63,9 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
 
   def self.import_certain_photo(api, params)
     identity = params[:identity]
-    photo_data = api.call_method("/media/#{params[:photo_path]}")
-
-
+    photo_data = call_with_error_adapter do
+      api.call_method("/media/#{params[:photo_path]}")
+    end
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     photo = Photo.create(
             :id => Photo.get_next_id,

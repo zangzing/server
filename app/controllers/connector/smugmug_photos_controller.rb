@@ -2,8 +2,9 @@ class Connector::SmugmugPhotosController < Connector::SmugmugController
   
   def self.list_photos(api, params)
     album_id, album_key = params[:sm_album_id].split('_')
-    photos_response = api.call_method('smugmug.images.get', {:AlbumID => album_id, :AlbumKey => album_key, :Heavy => 1})
-
+    photos_response = call_with_error_adapter do
+      api.call_method('smugmug.images.get', {:AlbumID => album_id, :AlbumKey => album_key, :Heavy => 1})
+    end
     photos = photos_response[:images].map { |p|
       {
         :name => (p[:caption].blank? ? p[:filename] : p[:caption]),
@@ -23,8 +24,9 @@ class Connector::SmugmugPhotosController < Connector::SmugmugController
   def self.import_photo(api, params)
     identity = params[:identity]
     photo_id, photo_key = params[:photo_id].split('_')
-    photo_info = api.call_method('smugmug.images.getInfo', {:ImageID => photo_id, :ImageKey => photo_key})
-
+    photo_info = call_with_error_adapter do
+      api.call_method('smugmug.images.getInfo', {:ImageID => photo_id, :ImageKey => photo_key})
+    end
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     photo = Photo.create(
             :id => Photo.get_next_id,

@@ -10,17 +10,21 @@ class Connector::SmugmugController < Connector::ConnectorController
     api
   end
 
+  def self.moderate_exception(exception)
+    if exception.kind_of?(SmugmugError) && [35, 36].include?(exception.code)
+      InvalidToken.new(exception.reason)
+    end
+  end
+
+
   protected
 
   def service_login_required
     unless smugmug_auth_token_string
-      begin
+      self.class.call_with_error_adapter do
         @token_string = service_identity.credentials
         @api = SmugmugConnector.new(@token_string)
         @owner = smugmug_api.call_method('smugmug.auth.checkAccessToken')
-      rescue => exception
-        raise InvalidToken if exception.kind_of?(SmugmugError)
-        raise HttpCallFail if exception.kind_of?(SocketError)
       end
     end
   end

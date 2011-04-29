@@ -1,7 +1,9 @@
 class Connector::KodakFoldersController < Connector::KodakController
 
   def self.list_albums(api, params)
-    album_list = api.send_request('/albumList')
+    album_list = call_with_error_adapter do
+      api.send_request('/albumList')
+    end
     if album_list['Album']
 
       albums = [album_list['Album']].flatten.select { |a| a['type']=='0' } #Looks like real albums have type attribute = 0, but who knows...
@@ -23,7 +25,9 @@ class Connector::KodakFoldersController < Connector::KodakController
   
   def self.import_album(api, params)
     identity = params[:identity]
-    photos_list = api.send_request("/album/#{params[:kodak_album_id]}")
+    photos_list = call_with_error_adapter do
+      api.send_request("/album/#{params[:kodak_album_id]}")
+    end
     photos_data = photos_list['pictures']
     photos = []
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )

@@ -1,8 +1,9 @@
 class Connector::InstagramPhotosController < Connector::InstagramController
   
   def self.list_photos(api, params)
-    photo_list = api.user_recent_media(feed_owner(params), :min_timestamp => Time.at(0), :max_timestamp => Time.now)
-
+    photo_list = call_with_error_adapter do
+      api.user_recent_media(feed_owner(params), :min_timestamp => Time.at(0), :max_timestamp => Time.now)
+    end
     photo_list.reject! { |item| item[:type] != 'image' }
     photos = photo_list.map { |p|
       {
@@ -21,8 +22,9 @@ class Connector::InstagramPhotosController < Connector::InstagramController
   
   def self.import_photo(api, params)
     identity = params[:identity]
-    photo_data = api.media_item(params[:photo_id])
-
+    photo_data = call_with_error_adapter do
+      api.media_item(params[:photo_id])
+    end
     current_batch = UploadBatch.get_current_and_touch(identity.user.id, params[:album_id])
     photo = Photo.create(
             :id => Photo.get_next_id,

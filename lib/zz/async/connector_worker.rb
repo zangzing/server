@@ -38,7 +38,6 @@ module ZZ
             AsyncResponse.store_response(response_id, json)
           rescue Exception => e   # this needs to be Exception if we want to also catch Timeouts
             user_identity.update_attribute(:credentials, nil) if e.kind_of?(InvalidToken) #Wipe token to force re-authentication
-            Rails.logger.info e.backtrace
             AsyncResponse.store_error(response_id, e)
           end
         end

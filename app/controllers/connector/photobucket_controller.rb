@@ -8,20 +8,21 @@ class Connector::PhotobucketController < Connector::ConnectorController
     PhotobucketConnector.new(identity.credentials)
   end
 
+  def self.moderate_exception(exception)
+    if exception.kind_of?(PhotobucketError) && exception.code == '7'
+      InvalidToken.new(exception.reason)
+    end
+  end
+
+
 protected
 
   def service_login_required
     unless auth_token_string
-      begin
+      self.class.call_with_error_adapter do
         @token_string = service_identity.credentials
-        raise InvalidToken if @token_string.blank?
+        raise InvalidToken.new('OAuth tokem is missing') if @token_string.blank?
         @api = PhotobucketConnector.new(@token_string)
-      rescue Exception => e
-        raise case e
-          when PhotobucketError then InvalidToken.new(e.message)
-          when SocketError then HttpCallFail
-          else e
-        end
       end
     end
   end
