@@ -16,13 +16,9 @@ module ZZ
           super( method, *args)
         end
         
-        def self.perform( method, *args ) 
-          if defined?(Rails.version) && Rails.version.to_i >= 3
-            Notifier.send( method, *args).deliver
-            #ZZ::MailChimp::Notifier.send( method, *args).deliver
-          else
-            Notifier.send('deliver_'+method, *args)
-          end
+        def self.perform( method, *args )
+            msg = Notifier.send( method, *args)
+            msg.deliver unless msg.nil?
         end
         
     end

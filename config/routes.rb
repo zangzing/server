@@ -10,6 +10,7 @@ Server::Application.routes.draw do
   get    '/service'            => 'pages#home',          :as => :service
   get    '/signin'             => 'user_sessions#new',   :as => :signin
   get    '/join'               => 'users#join',           :as => :join
+  get    '/unsubscribe/:id'    => 'subscriptions#unsubscribe', :as => :unsubscribe
 
   # the whole site has /service in front of it except for users
   scope '/service' do
@@ -34,9 +35,9 @@ Server::Application.routes.draw do
     delete '/users/:id'                 => 'users#destroy',           :as => :delete_user
     match  '/users/:id/update_password' => 'users#update_password',   :as => :update_user_password
 
-    #user_preferences
-    get '/unsubscribe/:id'          => 'preferences#unsubscribe', :as => :unsubscribe
-    put '/preferences/:id'          => 'preferences#update',      :as => :update_preferences
+    #email_subscirptions
+    get '/subscriptions/:id'         => 'subscriptions#unsubscribe'   #see unsubscribe above
+    put '/subscriptions/:id'         => 'subscriptions#update',       :as => :update_subscriptions
 
     #identities
     get    '/users/:id/identities'     => 'identities#index',       :as => :user_identities

@@ -26,12 +26,9 @@
     color: red;
 }
 
-#account-settings #done-button{
-    position: absolute;
-    right: 0px;
-    bottom: 5px;
+#account-settings .done-button{
     width: 80px;
-
+    float: right;
 }
 
 #account-settings input{

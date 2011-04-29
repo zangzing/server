@@ -10,7 +10,7 @@ class User < ActiveRecord::Base
   attr_writer      :name
   attr_accessor    :old_password, :reset_password
   attr_accessible  :email, :name, :first_name, :last_name, :username,  :password, :password_confirmation,
-                   :old_password, :automatic, :profile_photo_id
+                   :old_password, :automatic, :profile_photo_id, :subscriptions_attributes
 
   has_many :albums,              :dependent => :destroy
 
@@ -35,6 +35,9 @@ class User < ActiveRecord::Base
 
   has_one  :profile_album,       :dependent => :destroy, :autosave => true
   has_one  :preferences,         :dependent => :destroy, :class_name => "UserPreferences", :autosave => true
+  has_one  :subscriptions,       :autosave => true
+  accepts_nested_attributes_for  :subscriptions
+
   has_many :identities,          :dependent => :destroy
   has_many :contacts,            :through => :identities, :class_name => "Contact"
 
@@ -175,7 +178,12 @@ class User < ActiveRecord::Base
        }.call
   end
 
-
+  def email=(email)
+    write_attribute( :email, email)
+    if email_changed?
+      self.subscriptions.email=email unless self.email_subscriptions.nil?
+    end
+  end
 
   def name
     @name ||= [first_name, last_name].compact.join(' ')

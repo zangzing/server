@@ -57,9 +57,13 @@ class Admin::EmailTemplatesController < Admin::AdminController
   end
 
   def test
-    begin
+   # begin
       @template = EmailTemplate.find( params[:id] )
       @message = send( 'test_'+@template.email.name, @template.id )
+      if @message.nil?
+        flash[:error]="Unable to test because Your Notification Preferences are NOT to receive this kind of emails"
+        redirect_to :back and return
+      end
       if params[:onscreen]
         render :layout => false
       else
@@ -67,10 +71,10 @@ class Admin::EmailTemplatesController < Admin::AdminController
         flash[:notice]="Test #{@template.email.name} message sent."
         redirect_to :back
       end
-    rescue Exception => e
-        flash[:error]="Unable to test template because of: #{(e.message && e.message.length >0 ? e.message : e )}."
-        redirect_to :back
-    end
+    #rescue Exception => e
+    #    flash[:error]="Unable to test template because of: #{(e.message && e.message.length >0 ? e.message : e )}."
+    #    redirect_to :back
+    #end
   end
 
 private
@@ -165,7 +169,7 @@ private
   end
 
   def upload_batch
-    current_user.upload_batches[ rand( current_user.upload_batches.count) ]
+    album.upload_batches[ rand( album.upload_batches.count) ]
   end
 
   def message

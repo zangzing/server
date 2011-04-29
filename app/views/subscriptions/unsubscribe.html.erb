@@ -1,0 +1,27 @@
+<ul class="viewlist" id="unsubscribe">
+  <li class="item">
+    <div class="header bar" style="margin-top: 5px;">
+      Email Preferences
+      <div class="tagline" style="margin-top: 0;"> Control which emails we send you to: <b style="color: #888888;"><%=@subs.email%></b></div>
+
+    </div>
+
+  </li>
+  <li class="item">
+
+    <div class="indented content">
+      <%=form_for @subs, :url => update_subscriptions_path(@subs), :html=> { :id => "edit-preferences" } do |f| %>
+          <table>
+            <%=render :partial=> 'subscriptions_fields', :locals=> { :f => f, :subs => @subs } %>
+            <tr> <td>  <div class="flash-notice" id="flashes-notice"><%=flash[:notice] if flash[:notice] %></div></td>
+              <td></td>
+              <td>
+                <a class="green-button" id="save-button" onclick="$('#edit-preferences').submit();"><span>Save Preferences</span></a>
+              </td>
+            </tr>
+          </table>
+      <%end%>
+    </div>
+  </li>
+</ul>
+

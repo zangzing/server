@@ -3,58 +3,59 @@
     <li class="item">
       <div class="header bar">
         Settings
-        <a class="green-button" id="done-button"><span>Done</span></a>
+        <a class="green-button done-button"><span>Done</span></a>
       </div>
     </li>
   </ul>
+ <% form_for @user, :url => update_user_path(@user), :html => { :method => :put} do |user_form| %>
   <ul>
     <li class="item tab add">
       <div class="header tab-centered">
         Profile
       </div>
       <div class="indented content">
-        <% form_for @user, :url => update_user_path(@user), :html => { :method => :put} do |f| %>
+
             <input type="hidden" id="profile-photo-id" name="user[profile_photo_id]" value="<%= @user.profile_photo_id %>">
             <table>
               <tr>
-                <td> <%= f.label :first_name %> </td>
+                <td> <%= user_form.label :first_name %> </td>
                 <td>
-                  <%= f.text_field :first_name %>
+                  <%= user_form.text_field :first_name %>
                   <span class="field-error-message"><%= @user.errors.on(:first_name) unless @user.errors.on(:first_name).nil? %></span>
                 </td>
               </tr>
               <tr>
-                <td> <%= f.label :last_name %> </td>
+                <td> <%= user_form.label :last_name %> </td>
                 <td>
-                  <%= f.text_field :last_name %>
+                  <%= user_form.text_field :last_name %>
                   <span class="field-error-message"><%= @user.errors.on(:last_name) unless @user.errors.on(:last_name).nil? %></span>
                 </td>
               </tr>
 
               <tr>
-                <td> <%= f.label :email %> </td>
+                <td> <%= user_form.label :email %> </td>
                 <td>
-                  <%= f.text_field :email %>
+                  <%= user_form.text_field :email %>
                   <span class="field-error-message"><%= @user.errors.on(:email) unless @user.errors.on(:email).nil? %></span>
                 </td>
               </tr>
 
               <tr>
-                <td> <%= f.label :user_name %> </td>
+                <td> <%= user_form.label :user_name %> </td>
                 <td>
                   <span id="user_username" class="no-edit-field"> <span class="blue"><%= @user.username %></span> </span>
                 </td>
               </tr>
 
               <tr>
-                <td> <%= f.label :home_page %> </td>
+                <td> <%= user_form.label :home_page %> </td>
                 <td>
                   <span id="home_page" class="no-edit-field"> http://www.zangzing.com/<span class="blue"><%= @user.username %></span></span>
                 </td>
               </tr>
 
               <tr>
-                <td> <%= f.label :password %> </td>
+                <td> <%= user_form.label :password %> </td>
                 <td>
                     <span id="user_password" class="no-edit-field">
                         <a id="change-password-button" href="<%= edit_user_password_url @user%>">Click here to change password</a>
@@ -62,7 +63,7 @@
                 </td>
               </tr>
               <tr>
-                <td> <%= f.label :profile_picture %> </td>
+                <td> <%= user_form.label :profile_picture %> </td>
                 <td>
                     <span id="user_profile_picture" class="no-edit-field">
                         <%= render :partial => 'users/profile_photo', :locals => { :user => @user }    %>
@@ -72,7 +73,6 @@
                 </td>
               </tr>
             </table>
-        <% end %>
       </div>
     </li>
 
@@ -114,10 +114,20 @@
         Email Preferences
       </div>
       <div class="indented content">
-        <%=render :partial=> 'preferences/email_preferences_form', :locals=> { :up => @user.preferences } %>
+        <%=user_form.fields_for :subscriptions do |subscriptions_form| %>
+        <table>
+            <%=render :partial=> 'subscriptions/subscriptions_fields', :locals=> { :f => subscriptions_form, :subs => @user.subscriptions } %>
+       </table>
+       <%end%>
       </div>
     </li>
-
+  </ul>
+<% end #user form%>
+<ul>
+    <li class="item">
+      <div class="header bar"></div>
+    </li>
+    <a class="green-button done-button"><span>Done</span></a>
   </ul>
 </div>
 
@@ -136,7 +146,7 @@
             $('#footer #buy-button').hide();
 
             //done button
-            $('#done-button').click(function(){
+            $('.done-button').click(function(){
                 $('form.edit_user').submit();
             });
 
