@@ -106,7 +106,6 @@ function initZZA(){
         }
     };
 
-    ZZAt.track('page.visit',{ua: navigator.userAgent});
 
     // have zza track all js errors
     window.onerror = function(message, url, line) {
@@ -125,6 +124,8 @@ function initZZA(){
 initZZA();
 initGoogle();
 initMixpanel();
+
+ZZAt.track('page.visit',{ua: navigator.userAgent});
 
 
 
