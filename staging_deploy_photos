@@ -23,9 +23,18 @@ print "Enter the tag or branch we should be based on for the deploy (optional): 
 tag = Readline.readline()
 tag = "master" if tag.empty?
 
+puts
+print "Do you want to skip migration (zero-downtime)? (Yes/n): "
+skip_migrate = Readline.readline()
+if (skip_migrate == "Yes")
+  migrate = "--no-migrate"
+else
+  migrate = ""
+end
+
 options = ARGV[0] ? ARGV[0] : ""
 
-cmd = "ey deploy -e photos_staging --ref #{tag} -v " + options
+cmd = "ey deploy -e photos_staging --ref #{tag} #{migrate} -v " + options
 puts
 puts "About to deploy to PHOTOS STAGING with the following command: "
 puts "\n" + cmd + "\n\n"
