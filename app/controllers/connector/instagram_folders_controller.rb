@@ -1,7 +1,9 @@
 class Connector::InstagramFoldersController < Connector::InstagramController
   
   def self.list_albums(api, params)
-    followers = api.user_follows(nil)
+    followers = call_with_error_adapter do
+      api.user_follows(nil)
+    end
     root = followers.map do |f|
       {
         :name => f[:full_name], :type => 'folder', :id => "follower-#{f[:id]}",
@@ -13,7 +15,9 @@ class Connector::InstagramFoldersController < Connector::InstagramController
   
   def self.import_album(api, params)
     identity = params[:identity]
-    photos_list = api.user_recent_media(feed_owner(params), :min_timestamp => Time.at(0), :max_timestamp => Time.now)
+    photos_list = call_with_error_adapter do
+      api.user_recent_media(feed_owner(params), :min_timestamp => Time.at(0), :max_timestamp => Time.now)
+    end
     photos = []
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     photos_list.each do |p|

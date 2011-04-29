@@ -10,7 +10,9 @@ class Connector::GoogleContactsController < Connector::GoogleController
     entry_count = BATCH_SIZE  # use as a flag to tell us if we have more to do
     begin
       break if entry_count < BATCH_SIZE # no more to do since last fetch had less than we asked for
-      doc = Nokogiri::XML(api_client.get("http://www.google.com/m8/feeds/contacts/default/full?max-results=#{BATCH_SIZE}&start-index=#{start_index}").body)
+      doc = call_with_error_adapter do
+        Nokogiri::XML(api_client.get("http://www.google.com/m8/feeds/contacts/default/full?max-results=#{BATCH_SIZE}&start-index=#{start_index}").body)
+      end
       entry_count = 0
       doc.xpath('//a:entry', NS).each do |entry|
         entry_count += 1

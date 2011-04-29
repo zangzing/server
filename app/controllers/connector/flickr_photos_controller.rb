@@ -1,7 +1,9 @@
 class Connector::FlickrPhotosController < Connector::FlickrController
   
   def self.list_photos(api_client, params)
-    photos_response = api_client.photosets.getPhotos :photoset_id => params[:set_id], :extras => 'original_format,url_m,url_z,url_l,url_o', :media => 'photos'
+    photos_response = call_with_error_adapter do
+      api_client.photosets.getPhotos :photoset_id => params[:set_id], :extras => 'original_format,url_m,url_z,url_l,url_o', :media => 'photos'
+    end
     @photos = photos_response.photo.map { |p|
       {
         :name => p.title,
@@ -18,8 +20,11 @@ class Connector::FlickrPhotosController < Connector::FlickrController
   
   def self.import_photo(api_client, params)
     identity = params[:identity]
-    info = api_client.photos.getInfo :photo_id => params[:photo_id], :extras => 'url_m,url_z,url_l,url_o', :media => 'photos'
-    sizes = api_client.photos.getSizes :photo_id => params[:photo_id]
+    info = nil; sizes = nil
+    call_with_error_adapter do
+      info = api_client.photos.getInfo :photo_id => params[:photo_id], :extras => 'url_m,url_z,url_l,url_o', :media => 'photos'
+      sizes = api_client.photos.getSizes :photo_id => params[:photo_id]
+    end
     photo_url = get_photo_url(sizes, :full)
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     photo = Photo.create(

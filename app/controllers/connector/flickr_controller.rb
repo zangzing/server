@@ -9,20 +9,24 @@ class Connector::FlickrController < Connector::ConnectorController
     FlickRaw::Flickr.new(flickr_token)
   end
 
+  def self.moderate_exception(exception)
+    if exception.kind_of?(FlickRaw::FailedResponse) && exception.message =~ /invalid[\w\s]+token/i
+      InvalidToken.new('OAuth token invalid')
+    end
+  end
+
+
 protected
 
 
 
   def service_login_required
     unless flickr_auth_token
-      begin
+      self.class.call_with_error_adapter do
         @flickr_token = service_identity.credentials
         SystemTimer.timeout_after(http_timeout) do
           @flickr_auth = flickr.auth.checkToken :auth_token => flickr_auth_token
         end
-      rescue => exception
-        raise InvalidToken if exception.kind_of?(FlickRaw::FailedResponse)
-        raise HttpCallFail if exception.kind_of?(SocketError)
       end
     end
   end

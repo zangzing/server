@@ -1,12 +1,3 @@
-class TwitterError < StandardError
-  attr_accessor :code, :reason
-  def initialize(error_code, error_reason)
-    @code = error_code
-    @reason = error_reason
-    super("#{error_code} - #{error_reason}")
-  end
-end
-
 class TwitterConnector
   require 'twitter_oauth'
 

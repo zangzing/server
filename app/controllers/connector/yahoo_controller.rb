@@ -5,17 +5,20 @@ class Connector::YahooController < Connector::ConnectorController
     YahooConnector.new(identity.credentials)
   end
 
+  def self.moderate_exception(exception)
+    if exception.kind_of?(YahooError) && (exception.code/100 == 4) #401, 403, 4xx
+      InvalidToken.new(exception.reason.humanize)
+    end
+  end
+
 protected
 
   def service_login_required
     unless yahoo_auth_token_string
-      begin
+      self.class.call_with_error_adapter do
         @token_string = service_identity.credentials
         @api = YahooConnector.new(@token_string)
         @api.current_user_guid #Aimed to check if token is not expired
-      rescue => exception
-        raise InvalidToken if exception.kind_of?(YahooError)
-        raise HttpCallFail if exception.kind_of?(SocketError)
       end
     end
   end

@@ -10,7 +10,9 @@ class Connector::TwitterPostsController < Connector::TwitterController
   def create
     response = nil
     SystemTimer.timeout_after(http_timeout) do
-      response = twitter_api.client.update(params[:message])
+      response = call_with_error_adapter do
+        twitter_api.client.update(params[:message])
+      end
     end
     render :json => response
   end
