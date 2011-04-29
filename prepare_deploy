@@ -61,8 +61,7 @@ auto_deploy_dir = base_dir + "/auto_deploy"
 Dir.mkdir(auto_deploy_dir) rescue nil
 Dir.chdir(auto_deploy_dir)
 
-repos = ["agent", "site"]
-#repos = ["server", "homepage", "agent", "ey-cloud-recipes", "site"]
+repos = ["server", "homepage", "agent", "ey-cloud-recipes", "site"]
 
 repos.each do |repo|
   Dir.chdir(auto_deploy_dir)
