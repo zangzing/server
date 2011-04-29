@@ -1014,7 +1014,7 @@ pages.no_agent = {
                     if(  when_ready ){
                         setTimeout( when_ready, 2000 );
                     }
-				    ZZAt.track('agentdownload.ready');
+
               }
               else if( status == agent.STATUS.BAD_SESSION ){
                   alert("Sorry, your session has expired. Please sign in again.");
