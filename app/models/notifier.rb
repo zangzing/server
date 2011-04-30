@@ -19,7 +19,7 @@ class Notifier < ActionMailer::Base
     @album_url = album_url( @album )
     @photos = batch.photos
 
-    return nil unless @recipient.email_subscriptions.wants_email?( Email::STATUS, __method__ )
+    return nil unless @recipient.subscriptions.wants_email?( Email::STATUS, __method__ )
 
     vcard = Vpim::Vcard::Maker.make2 do |vc|
       vc.add_name do |name|
@@ -37,7 +37,7 @@ class Notifier < ActionMailer::Base
     @user = User.find(user_id)
     @recipient = @user
     @password_reset_url = edit_password_reset_url(@user.perishable_token)
-    return nil unless @recipient.email_subscriptions.wants_email?( Email::TRANSACTIONAL, __method__ )
+    return nil unless @recipient.subscriptions.wants_email?( Email::TRANSACTIONAL, __method__ )
     create_message( binding(), __method__, template_id, @recipient, { :user_id => @user.id } )
   end
 
@@ -45,7 +45,7 @@ class Notifier < ActionMailer::Base
     @user      = User.find( user_id )
     @album     = Album.find( album_id )
     @recipient = @album.user
-    return nil unless @recipient.email_subscriptions.wants_email?( Email::SOCIAL, __method__ )
+    return nil unless @recipient.subscriptions.wants_email?( Email::SOCIAL, __method__ )
     create_message( binding(), __method__, template_id, @recipient, { :user_id => @user.id } )
   end
 
@@ -53,14 +53,14 @@ class Notifier < ActionMailer::Base
     @user      = User.find( user_id )
     @photo     = Photo.find( photo_id )
     @recipient = @photo.user
-    return nil unless @recipient.email_subscriptions.wants_email?( Email::SOCIAL, __method__ )
+    return nil unless @recipient.subscriptions.wants_email?( Email::SOCIAL, __method__ )
     create_message( binding(), __method__, template_id, @recipient, { :user_id => @user.id } )
   end
 
   def user_liked( user_id, liked_user_id,  template_id = nil )
     @user      = User.find( user_id )
     @recipient = User.find( liked_user_id )
-    return nil unless @recipient.email_subscriptions.wants_email?( Email::SOCIAL, __method__ )
+    return nil unless @recipient.subscriptions.wants_email?( Email::SOCIAL, __method__ )
     create_message( binding(), __method__, template_id, @recipient, { :user_id => @user.id } )
   end
 
@@ -99,7 +99,7 @@ class Notifier < ActionMailer::Base
     @album     = Album.find( album_id )
     @user      = @album.user
     @recipient = User.find( recipient_id )
-    return nil unless @recipient.email_subscriptions.wants_email?( Email::SOCIAL, __method__ )
+    return nil unless @recipient.subscriptions.wants_email?( Email::SOCIAL, __method__ )
     create_message( binding(), __method__, template_id, @recipient,   { :user_id => @user.id }  )
   end
 
@@ -125,7 +125,7 @@ class Notifier < ActionMailer::Base
   def welcome(user_id, template_id = nil)
     @user = User.find(user_id)
     @recipient = @user
-    return nil unless @recipient.email_subscriptions.wants_email?( Email::TRANSACTIONAL, __method__ )
+    return nil unless @recipient.subscriptions.wants_email?( Email::TRANSACTIONAL, __method__ )
     create_message( binding(), __method__, template_id, @recipient,   { :user_id => @user.id })
   end
 
@@ -161,6 +161,7 @@ class Notifier < ActionMailer::Base
 
 
   def create_message( binding, template_name, template_id=nil, recipient=nil, zza_xdata=nil )
+
     # Load the appropriate template
     if template_id
       @template  = EmailTemplate.find( template_id )
@@ -174,7 +175,9 @@ class Notifier < ActionMailer::Base
     else
       @to_address = Mail::Address.new( recipient )
     end
-    
+    logger.info "MAIL SENT:  #{template_name} to: #{@to_address} triggered by "+
+     "#{( @user? @user.username : 'notifications system')}"
+
     #set sendgrid category header
     headers @template.sendgrid_category_header
 

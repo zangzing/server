@@ -14,7 +14,7 @@ class UserSessionsController < ApplicationController
 
 
     if ! current_user
-      @user_session = UserSession.new
+      @user_session = UserSession.new(:email=> params[:email])
     else
       redirect_to user_pretty_url(current_user)
     end

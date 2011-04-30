@@ -9,8 +9,6 @@
 	width:100%;
 }
 
-
-
 .user-session-dialog{
     top: 200px;
     width: 630px;
@@ -55,6 +53,8 @@
     text-align:right;
     height: 25px;
 }
+
+
 
 .user-session-dialog .content table td.field .field-wrapper{
     position:relative;

@@ -181,7 +181,7 @@ class User < ActiveRecord::Base
   def email=(email)
     write_attribute( :email, email)
     if email_changed?
-      self.subscriptions.email=email unless self.email_subscriptions.nil?
+      self.subscriptions.email=email unless self.subscriptions.nil?
     end
   end
 

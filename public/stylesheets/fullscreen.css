@@ -1,0 +1,72 @@
+.fullscreen{
+   background-color:#000;
+}
+
+.fullscreen .bg{
+	position:absolute;
+	left:0;
+	top:0;
+	width:100%;
+}
+
+.fullscreen .new-dialog{
+    position: absolute;
+    top:  50%;
+    left: 50%;
+
+    width:        850px;
+    margin-left:  -425px;
+    height:       400px;
+    margin-top:   -300px;
+}
+
+.fullscreen .logo{
+    position: absolute;
+    left:20px;
+    top: 100px;
+}
+
+.fullscreen .dialog-content{
+    position:absolute;
+    top: -30px;
+    left:160px;
+    right: -65px;
+}
+
+.fullscreen .viewlist{
+    color: #777777;
+    font-size: 12px;
+}
+
+.fullscreen .viewlist table{
+    height: 260px;
+}
+
+.fullscreen .viewlist .content th{
+    color: #777777;
+    font-size: 18px;
+}
+.fullscreen .viewlist .content .sub-th{
+    color: #999999;
+    font-size: 12px;
+}
+
+.fullscreen .join-button{
+    float: right;
+    width: 110px;
+    margin: 10px 0 0 0;
+}
+
+.fullscreen .save-button{
+    float: right;
+    width: 110px;
+}
+
+
+#unsub-flash{
+    position: absolute;
+    bottom: -40px;
+    left: 20px;
+}
+
+

@@ -6,7 +6,7 @@ class UsersController < ApplicationController
 
   def join
     if ! current_user
-      @new_user = User.new
+      @new_user = User.new(:email => params[:email])
       @user_session = UserSession.new
       render :layout => false
     else

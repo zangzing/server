@@ -30,18 +30,18 @@
         <div id="header-hairline"></div>
 
         <%= form_tag user_sessions_path do %>
-              <div id="flash-error">
+          <div id="flash-error">
         <% if @user_session.errors.length > 0 %>
                Invalid user or password
         <% end %>
         <%= flash[:error] %>
-        <%= flash[:notice] %>
+        <span style="color: green;"><%= flash[:notice] %></span>
               </div>
 
               <table>
                 <tr>
                   <td class="label">Username or Email</td>
-                  <td class="field"><%= text_field_tag :email %></td>
+                  <td class="field"><%= text_field_tag :email, @user_session.email %></td>
                 </tr>
 
                 <tr>
@@ -86,7 +86,7 @@
         $('.logo').center_y();
 
 
-
+        $('#email').focus();
     });
 
   </script>
