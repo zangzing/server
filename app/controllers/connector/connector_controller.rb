@@ -5,7 +5,6 @@ class Connector::ConnectorController < ApplicationController
   before_filter :check_params_for_import, :only => :import
 
   rescue_from(InvalidToken) { |e| error_occured(401, e) }
-  rescue_from(InvalidCredentials) { |e| error_occured(401, e) }
   rescue_from(HttpCallFail) { |e| error_occured(503, e) }
 
   def error_occured(status, exception)
@@ -54,7 +53,7 @@ class Connector::ConnectorController < ApplicationController
     include Server::Application.routes.url_helpers
 
     def api_from_identity
-      raise "api_from_identity for #{self.to_s} is not implemented!"
+      raise "api_from_identity for #{self.name.to_s} is not implemented!"
     end
 
     def bulk_insert(photos)
@@ -68,57 +67,19 @@ class Connector::ConnectorController < ApplicationController
 
       Photo.to_json_lite(photos)
     end
-    
-    def classify_exception(exception)
-      return exception if [InvalidToken, InvalidCredentials, HttpCallFail].include?(exception)
-      
-      case exception
-        when
-          #Shutterfly
-          ShutterflyError,
-          #Facebook
-          FacebookError,
-          #Flickr
-          FlickRaw::FailedResponse,
-          #Google
-          GData::Client::AuthorizationError,
-          GData::Client::Error,
-          GData::Client::CaptchaError,
-          #Instagram
-          Instagram::Error,
-          Instagram::InvalidSignature,
-          #Photobucket
-          PhotobucketError,
-          #SmugMug
-          SmugmugError,
-          #Kodak
-          KodakError,
-          #Twitter
-          TwitterError,
-          #Yahoo
-          YahooError
-            then InvalidToken
 
-        #when 6 then InvalidCredentials    #dunno what to put here
-
-        when
-          #Common
-          SocketError,
-          #Google
-          GData::Client::ServerError,
-          GData::Client::UnknownError,
-          GData::Client::VersionConflictError,
-          GData::Client::RequestError,
-          GData::Client::BadRequestError,
-          #Instagram
-          Instagram::BadRequest,
-          Instagram::NotFound,
-          Instagram::InternalServerError,
-          Instagram::ServiceUnavailable
-            then HttpCallFail
-
-        else StandardError
+    def call_with_error_adapter
+      begin
+        yield
+      rescue SocketError => se
+        raise HttpCallFail
+      rescue Exception => e
+        raise moderate_exception(e) || e
       end
+    end
+    
+    def moderate_exception(exception) #Should be overridden in connectors
+      nil 
     end
 
   end

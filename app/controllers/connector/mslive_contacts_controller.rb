@@ -3,7 +3,9 @@ class Connector::MsliveContactsController < Connector::MsliveController
   
   def self.import_contacts(api, params)
     service_identity = params[:identity]
-    all_contacts = Nokogiri::XML(api.request_contacts_service('/LiveContacts/Contacts?Filter=LiveContacts(Contact(ID,CID,Profiles,Email))'))
+    all_contacts = call_with_error_adapter do
+      Nokogiri::XML(api.request_contacts_service('/LiveContacts/Contacts?Filter=LiveContacts(Contact(ID,CID,Profiles,Email))'))
+    end
     imported_contacts = []
 
     all_contacts.xpath('/Contacts/Contact').each do |contact|

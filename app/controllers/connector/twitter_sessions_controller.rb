@@ -8,19 +8,25 @@ class Connector::TwitterSessionsController < Connector::TwitterController
   end
 
   def create
-    begin
-      SystemTimer.timeout_after(http_timeout) do
-        twitter_api.create_access_token!(params[:oauth_token], session[:twitter_request_token_secret], params[:oauth_verifier])
+    if params[:denied]
+      @error = 'You must grant access to be able to share album'
+    else
+      begin
+        SystemTimer.timeout_after(http_timeout) do
+          twitter_api.create_access_token!(params[:oauth_token], session[:twitter_request_token_secret], params[:oauth_verifier])
+        end
+        service_identity.update_attribute(:credentials, twitter_api.access_token)
+        flash[:notice] = "You are now able to share your ZangZing albums through Twitter"
+      rescue TwitterError => e
+        @error = e.message
       end
-    rescue TwitterError => e
-      raise InvalidToken
     end
-    service_identity.update_attribute(:credentials, twitter_api.access_token)
-    flash[:notice] = "You are now able to share your ZangZing albums through Twitter"
+    render 'connector/sessions/create'
   end
 
   def destroy
     service_identity.update_attribute(:credentials, nil)
     twitter_api = nil
+    render 'connector/sessions/destroy'
   end
 end

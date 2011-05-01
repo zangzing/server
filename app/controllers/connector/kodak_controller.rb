@@ -11,11 +11,20 @@ class Connector::KodakController < Connector::ConnectorController
     KodakConnector.new(cookies)
   end
 
+  def self.moderate_exception(exception)
+    if exception.kind_of?(KodakError)
+      InvalidToken.new(exception.reason)
+    else
+      nil
+    end
+  end
+
+
 protected
 
 
   def login(email, password)
-    raise InvalidCredentials unless connector.sign_in(email, password)
+    raise InvalidToken.new('Credentials entered are invalid') unless connector.sign_in(email, password)
     service_identity.update_attribute(:credentials, connector.auth_token)
   end
 
@@ -27,7 +36,7 @@ protected
   def service_login_required
     unless kodak_cookies
       cookies = service_identity.credentials
-      raise InvalidToken unless KodakConnector.verify_cookie_as_authenticated(cookies)
+      raise InvalidToken.new('Stored credentials are no longer valid') unless KodakConnector.verify_cookie_as_authenticated(cookies)
       connector.auth_token = cookies
     end
   end

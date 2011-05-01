@@ -9,20 +9,24 @@ class Connector::FlickrController < Connector::ConnectorController
     FlickRaw::Flickr.new(flickr_token)
   end
 
+  def self.moderate_exception(exception)
+    if exception.kind_of?(FlickRaw::FailedResponse) && exception.message =~ /invalid[\w\s]+token/i
+      InvalidToken.new('OAuth token invalid')
+    end
+  end
+
+
 protected
 
 
 
   def service_login_required
     unless flickr_auth_token
-      begin
+      self.class.call_with_error_adapter do
         @flickr_token = service_identity.credentials
         SystemTimer.timeout_after(http_timeout) do
           @flickr_auth = flickr.auth.checkToken :auth_token => flickr_auth_token
         end
-      rescue => exception
-        raise InvalidToken if exception.kind_of?(FlickRaw::FailedResponse)
-        raise HttpCallFail if exception.kind_of?(SocketError)
       end
     end
   end
@@ -48,6 +52,10 @@ protected
     sz = {}
     if photo_info.flickr_type == 'sizes' then
       photo_info.size.each{|item| sz[item['label'].downcase.to_sym] = item['source'] if item['label'] =~ /^\w+$/  }
+      unless sz[:large]
+        biggest = photo_info.size.sort_by{ |p| p['width'].to_i * p['height'].to_i }.last
+        sz[:large] = biggest['source']
+      end
     else
       sz[:small] = photo_info.url_m if photo_info.respond_to?(:url_m)
       sz[:medium] = photo_info.url_z if photo_info.respond_to?(:url_z)

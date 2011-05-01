@@ -48,7 +48,7 @@
           <%= form_tag password_resets_path(), :id =>"password_reset_form" do %>
               <div id="flash-error"><%=flash[:error] if flash[:error]%></div>
               <table>
-                <tr><td class="label">Your email address </td><td class="field"><%= text_field_tag :email %></td></tr>
+                <tr><td class="label">Username or Email </td><td class="field"><%= text_field_tag :email %></td></tr>
               </table>
 
 

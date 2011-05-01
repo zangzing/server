@@ -1,7 +1,9 @@
 class Connector::FacebookPhotosController < Connector::FacebookController
 
   def self.list_photos(api_client, params)
-     photos_response = api_client.get("#{params[:fb_album_id]}/photos", :limit => 1000)
+    photos_response = call_with_error_adapter do
+      api_client.get("#{params[:fb_album_id]}/photos", :limit => 1000)
+    end
 
     unless photos_response.empty?
       if photos_response.first[:updated_time]
@@ -27,7 +29,9 @@ class Connector::FacebookPhotosController < Connector::FacebookController
 
   def self.import_photo(api_client, params)
     identity = params[:identity]
-    info = api_client.get(params[:photo_id])
+    info = call_with_error_adapter do
+      api_client.get(params[:photo_id])
+    end
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     photo = Photo.create(
             :id => Photo.get_next_id,

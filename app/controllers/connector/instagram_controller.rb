@@ -6,17 +6,32 @@ class Connector::InstagramController < Connector::ConnectorController
     Instagram.client(:access_token => identity.credentials)
   end
 
+  def self.moderate_exception(exception)
+    return InvalidToken.new('Invalid auth token') if exception.kind_of?(Instagram::BadRequest) && exception.message =~ /"access_token"[\w\s]+invalid/i
+    case exception
+      when
+        Instagram::Error,
+        Instagram::InvalidSignature
+          then InvalidToken.new(exception.message)
+    when
+        Instagram::BadRequest,
+        Instagram::NotFound,
+        Instagram::InternalServerError,
+        Instagram::ServiceUnavailable
+          then HttpCallFail
+      else nil
+    end
+  end
+
+
 protected
 
   def service_login_required
     unless access_token
-      begin
+      self.class.call_with_error_adapter do
         @token_string = service_identity.credentials
         raise Instagram::InvalidSignature unless @token_string
         @client = Instagram.client(:access_token => @token_string)
-      rescue => exception
-        raise InvalidToken if exception.kind_of?(Instagram::InvalidSignature)
-        raise HttpCallFail if exception.kind_of?(SocketError) || exception.kind_of?(Instagram::Error)
       end
     end
   end

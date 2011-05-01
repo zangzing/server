@@ -1,8 +1,9 @@
 class Connector::ShutterflyFoldersController < Connector::ShutterflyController
 
   def self.folder_list(api_client, params)
-    album_list = api_client.get_albums
-
+    album_list = call_with_error_adapter do
+      api_client.get_albums
+    end
     folders = album_list.map do |f|
       {
         :name => f[:title],
@@ -17,8 +18,9 @@ class Connector::ShutterflyFoldersController < Connector::ShutterflyController
 
   def self.import_folder(api_client, params)
     identity = params[:identity]
-    photos_list = api_client.get_images(params[:sf_album_id])
-
+    photos_list = call_with_error_adapter do
+      api_client.get_images(params[:sf_album_id])
+    end
     photos = []
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     photos_list.each do |p|

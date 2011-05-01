@@ -7,6 +7,14 @@ class Connector::TwitterController < Connector::ConnectorController
     TwitterConnector.shared_secret = TWITTER_API_KEYS[:consumer_secret]
   end
 
+  def self.moderate_exception(exception)
+    case exception
+      when Twitter::Unauthorized, Twitter::General, Twitter::RateLimitExceeded then InvalidToken.new(exception.message)
+      when Twitter::NotFound, Twitter::InformTwitter, Twitter::Unavailable then HttpCallFail
+      else nil
+    end
+  end
+
   protected
 
 

@@ -27,11 +27,15 @@ class PasswordResetsController < ApplicationController
 
   def create
       @user = User.find_by_email(params[:email])
+      if ! @user
+        @user = User.find_by_username(params[:email])
+      end
+      
       if @user
          @user.deliver_password_reset_instructions!
          @reset_success = true
       else
-         flash.now[:error] = "Sorry, we could not find that email address in our records"
+         flash.now[:error] = "Sorry, we could not find that username or email address in our records"
       end
       render :action => :new
   end

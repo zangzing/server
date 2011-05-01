@@ -20,17 +20,16 @@ class AsyncResponse
     end
     
     def store_error(response_id, exception)
-      classified_exception = Connector::ConnectorController.classify_exception(exception)
       info = {
         :exception => true,
-        :code => case classified_exception.name
-          when 'InvalidToken', 'InvalidCredentials' then 401
+        :code => case exception.class.name
+          when 'InvalidToken' then 401
           when 'HttpCallFail' then 503
           else 500
         end,
         :message => exception.message
       }
-      Rails.logger.info("AsyncResponse Exception: #{exception.class.name} - #{exception.message}")
+      Rails.logger.info("AsyncResponse Exception: #{exception.class.name} - #{exception.message}\n#{exception.backtrace}")
       Rails.cache.write(response_id, info.to_json, :expires_in => RESPONSE_EXPIRES_IN)
     end
 

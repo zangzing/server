@@ -12,16 +12,22 @@ class Connector::MsliveSessionsController < Connector::MsliveController
 
   def delauth
     consent = nil
-    SystemTimer.timeout_after(http_timeout) do
-      consent = live_api.client.processConsent(params)
+    if params['ResponseCode']=='RequestRejected'
+      @error = 'You must grant access to import contacts'
+    else  
+      SystemTimer.timeout_after(http_timeout) do
+        consent = live_api.client.processConsent(params)
+      end
+      if (consent and consent.isValid?)
+        service_identity.update_attribute(:credentials, consent.token)
+      end
     end
-    if (consent and consent.isValid?)
-      service_identity.update_attribute(:credentials, consent.token)
-    end
+    render 'connector/sessions/create'
   end
 
   def destroy
     service_identity.update_attribute(:credentials, nil)
+    render 'connector/sessions/destroy'
   end
 
 end

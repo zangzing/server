@@ -9,13 +9,18 @@ class Connector::InstagramSessionsController < Connector::InstagramController
   end
 
   def create
-    response = Instagram.get_access_token(params[:code], :redirect_uri => create_instagram_session_url)
-    raise InvalidCredentials unless response
-    service_identity.update_attribute(:credentials, response.access_token)
+    if params[:error]
+      @error = params[:error_description]
+    else  
+      response = Instagram.get_access_token(params[:code], :redirect_uri => create_instagram_session_url)
+      service_identity.update_attribute(:credentials, response.access_token)
+    end
+    render 'connector/sessions/create'
   end
 
   def destroy
     service_identity.update_attribute(:credentials, nil)
+    render 'connector/sessions/destroy'
   end
 
 

@@ -8,14 +8,19 @@ class Connector::ShutterflySessionsController < Connector::ShutterflyController
   end
 
   def create
-    sf_user_token = "#{params[:oflyUserAuthToken]}_#{params[:oflyUserid]}"
-    raise InvalidCredentials unless sf_user_token
-    service_identity.update_attribute(:credentials, sf_user_token)
+    if params[:oflyUserAuthToken] && params[:oflyUserid]
+      sf_user_token = "#{params[:oflyUserAuthToken]}_#{params[:oflyUserid]}"
+      service_identity.update_attribute(:credentials, sf_user_token)
+    else
+      @error = 'Parameters required to authenticate are missing.\nPlease report this issue to ZangZing support.'
+    end
+    render 'connector/sessions/create'
   end
 
   def destroy
     service_identity.update_attribute(:credentials, nil)
     sf_user_token = nil
     sf_api = nil
+    render 'connector/sessions/destroy'
   end
 end

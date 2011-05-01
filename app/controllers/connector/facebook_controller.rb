@@ -12,7 +12,13 @@ class Connector::FacebookController < Connector::ConnectorController
     else
       nil
     end
-  end  
+  end
+
+  def self.moderate_exception(exception)
+    if exception.kind_of?(FacebookError) && exception.message.include?('OAuth') then
+      InvalidToken.new(exception.message)
+    end
+  end
 
 protected
 
