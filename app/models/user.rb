@@ -58,8 +58,7 @@ class User < ActiveRecord::Base
   end
 
   before_save    :split_name
-  before_create  :make_profile_album
-  before_create  :build_preferences
+  before_create  :set_dependents
   after_commit   :update_acls_with_id, :on => :create
   after_commit   :like_mr_zz, :on => :create
 
@@ -86,11 +85,18 @@ class User < ActiveRecord::Base
   end
 
 
-  # make the profile album
-  def make_profile_album
+
+  def set_dependents
+    # build a profile album
     p = ProfileAlbum.new()
     p.make_private
     self.profile_album = p
+
+    # build user preferences
+    self.build_preferences
+
+    #build subscriptions
+    self.subscriptions = Subscriptions.find_or_initialize_by_email( self.email )
   end
 
   def self.find_by_email_or_create_automatic( email, name='' )
