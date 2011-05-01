@@ -63,7 +63,7 @@ class Subscriptions< ActiveRecord::Base
 
   def self.unsubscribe_token( recipient )
     if recipient.is_a?User
-      recipient.preferences.unsubscribe_token
+      recipient.subscriptions.unsubscribe_token
     else
       Subscriptions.find_or_create_by_email( recipient ).unsubscribe_token
     end
