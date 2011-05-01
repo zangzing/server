@@ -260,6 +260,7 @@ Server::Application.routes.draw do
 
     #sendgrid
     match  '/sendgrid/import_fast'   => 'sendgrid#import_fast', :as => :sendgrid_import_fast
+    post   '/sendgrid/unsubscribe'   => 'sendgrid#un_subscribe',:as => :sendgrid_unsubscribe
     post   '/sendgrid/events'        => 'sendgrid#events',      :as => :sendgrid_events
 
 

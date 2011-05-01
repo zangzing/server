@@ -210,6 +210,7 @@ class ApplicationController < ActionController::Base
                      'connector/local_contacts#import',
                      'sendgrid#import_fast',
                      'sendgrid#events',
+                     'sendgrid#un_subscribe',
                      'pages#health_check',
                      'agents#check',
                      'agents#info',
