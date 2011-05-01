@@ -28,6 +28,16 @@ class Subscriptions< ActiveRecord::Base
     write_attribute( :email, user.email )
   end
 
+  def unsubscribe
+     self.want_invites_email   = NEVER
+     self.want_social_email    = NEVER
+     self.want_status_email    = NEVER
+     self.want_news_email      = NEVER
+     self.want_marketing_email = NEVER
+     self.save
+  end
+
+
   def wants_email?( kind, name )
     false if kind.nil?
     allow = case kind
@@ -43,12 +53,37 @@ class Subscriptions< ActiveRecord::Base
     allow
   end
 
+  def wants_email!( kind, name )
+    unless wants_email?( kind, name)
+      raise SubscriptionsException.new( "SUBSCRIPTIONS: #{user.id} #{user.name} does not want to receive message: #{name} kind: #{kind}" )
+    end
+  end
+
+
+
+  def self.unsubscribe_token( recipient )
+    if recipient.is_a?User
+      recipient.preferences.unsubscribe_token
+    else
+      Subscriptions.find_or_create_by_email( recipient ).unsubscribe_token
+    end
+  end
+
+
   def self.wants_email?( recipient,  kind, name )
     if recipient.is_a?User
       recipient.preferences.wants_email?( kind, name  )
     else
       Subscriptions.find_or_create_by_email( recipient ).wants_email?( kind, name )
     end
+  end
+
+  def self.wants_email!( recipient,  kind, name )
+     if recipient.is_a?User
+       recipient.preferences.wants_email!( kind, name  )
+     else
+       Subscriptions.find_or_create_by_email( recipient ).wants_email!( kind, name )
+     end
   end
 
   private

@@ -37,7 +37,7 @@ each album has an email address in the form <album_name>@<username>.zangzing.com
             :spam_report => params[:spam_report],
             :spam_score => params[:spam_score],
         }
-        ZZ::ZZA.new.track_event("email.contributor.received", zza_xtra)
+        zza.track_event("email.contributor.received", zza_xtra)
 
         
         # An albums email address is of the form  <album_name>@<user_username>.zangzing.com
@@ -47,6 +47,18 @@ each album has an email address in the form <album_name>@<username>.zangzing.com
         from           = Mail::Address.new( params[:from] )
         album_name     = to.local
         user_username  = to.domain.split('.')[0]
+
+        # It is also possible that this is an unsubscribe email of the form
+        # <unsubscribe-token>@unsubscribe.zangzing.com
+        if user_username == 'unsubscribe'
+           @subs = Subscriptions.find_by_unsubscribe_token( album_name )
+           if @subs
+             @subs.unsubscribe
+             zza.track_event("email.unsubscribe.received", {:email => @subs.email, :from => params[:from] })
+             Rails.logger.info "MAIL UNSUBSCRIBE: #{@subs.email} unsubscribed by email"
+             render :nothing => true, :status=> :ok and return
+           end
+        end
 
         @album = nil
         begin
@@ -88,7 +100,7 @@ each album has an email address in the form <album_name>@<username>.zangzing.com
            end
         end
 
-        render :nothing => true, :status => :ok
+        render :nothing => true, :status => :ok and return
 
       rescue ActiveRecord::RecordNotFound => ex
         # for not found just log it and return ok so the mailer stops hitting us with this bad email
@@ -100,7 +112,7 @@ each album has an email address in the form <album_name>@<username>.zangzing.com
         # only status code they will stop sending on
         ZZ::Async::Email.enqueue(:contribution_error, from.address )
         clean_up_temp_files(attachments)
-        render :nothing => true, :status => :ok
+        render :nothing => true, :status => :ok and return
       rescue => ex
         logger.warn "Incoming email import failed - will retry later: " + ex.message
         render :nothing => true, :status => 400 # non 200 will cause the mailer to retry
@@ -109,7 +121,7 @@ each album has an email address in the form <album_name>@<username>.zangzing.com
       # call did not come through remapped upload via nginx or we have no attachments so reject it
       logger.error "Incoming email import album invalid arguments or no attachments will not retry."
       clean_up_temp_files(attachments)
-      render :nothing => true, :status=> :ok
+      render :nothing => true, :status=> :ok and return
     end
   end
 

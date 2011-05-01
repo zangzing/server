@@ -17,8 +17,12 @@ module ZZ
         end
         
         def self.perform( method, *args )
+          begin
             msg = Notifier.send( method, *args)
             msg.deliver unless msg.nil?
+          rescue SubcriptionsException => e
+            Rails.logger.info e.message
+          end
         end
         
     end
