@@ -248,7 +248,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
     rescue ActiveRecord::RecordNotFound => e
       flash.now[:error] = "This operation requires a photo, we could not find one because: "+e.message
       if request.xhr?
-        render :status => 404
+        head :not_found
       else
         render :file => "#{Rails.root}/public/404.html", :layout => false, :status => 404
       end
@@ -273,7 +273,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
     rescue ActiveRecord::RecordNotFound => e
       flash.now[:error] = "This operation requires an album, we could not find one because: "+e.message
       if request.xhr?
-        render :status => 404
+        head :not_found
       else
         render :file => "#{Rails.root}/public/404.html", :layout => false, :status => 404
       end
@@ -291,7 +291,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
       flash.now[:error] = "Only Photo Owners or Album Admins can perform this operation"
       response.headers['X-Errors'] = flash[:error]
       if request.xhr?
-        render :status => 401
+        head :not_found
       else
         render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
       end
