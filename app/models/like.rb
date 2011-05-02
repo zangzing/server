@@ -20,13 +20,23 @@ class Like < ActiveRecord::Base
   include Rails.application.routes.url_helpers
   default_url_options[:host] = Server::Application.config.application_host
 
+  def self.clean_type( subject_type )
+    case subject_type
+      when USER,  'user'  then USER
+      when ALBUM, 'album' then ALBUM
+      else
+        PHOTO
+    end
+  end
+
+
   def self.add( user_id, subject_id, subject_type )
     begin
       #Create Like record, increase the subject_ids like counter
       like = Like.create( :user_id      => user_id,
                           :subject_id   => subject_id,
                           :subject_type => subject_type )
-      LikeCounter.increase( subject_id )
+      LikeCounter.increase( like.subject_id, like.subject_type )
       Cache::Album::Manager.shared.like_added(user_id, like)
       case subject_type
         when USER,  'user'  then ZZ::Async::Email.enqueue( :user_liked,  user_id, subject_id )
@@ -56,12 +66,12 @@ class Like < ActiveRecord::Base
     Like.new( :user_id=>user_id, :subject_id=>subject_id, :subject_type=>subject_type ).post( message, tweet, facebook)
   end
 
-  def self.remove( user_id, subject_id )
+  def self.remove( user_id, subject_id, subject_type )
     #Find and remove like record, decrease the subject_id like counter
-    like = Like.find_by_user_id_and_subject_id( user_id, subject_id)
+    like = Like.find_by_user_id_and_subject_id_and_subject_type( user_id, subject_id, subject_type)
     if like
       like.destroy
-      LikeCounter.decrease( subject_id )
+      LikeCounter.decrease( subject_id, subject_type )
       Cache::Album::Manager.shared.like_removed(user_id, like)
     end
   end
@@ -122,10 +132,6 @@ class Like < ActiveRecord::Base
 
   protected
   def set_type
-    self.subject_type = case subject_type
-                          when Like::USER,  'user'  then  Like::USER
-                          when Like::ALBUM, 'album' then  Like::ALBUM
-                          when Like::PHOTO, 'photo' then  Like::PHOTO
-                        end
+    self.subject_type = Like.clean_type( subject_type )       
   end
 end
