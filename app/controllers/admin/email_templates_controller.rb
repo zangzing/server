@@ -172,7 +172,10 @@ private
   end
 
   def upload_batch
-    album.upload_batches[ rand( album.upload_batches.count) ]
+    begin
+      @ub = album.upload_batches[ rand( album.upload_batches.count) ]
+    end while @ub.nil? || @ub.photos.count <=0
+    @ub
   end
 
   def message
