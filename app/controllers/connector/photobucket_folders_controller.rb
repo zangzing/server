@@ -5,7 +5,12 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
       api.open_album(params[:album_path])
     end
     folders = []
-    (album_contents[:album] || []).each do |album|
+    subalbums = case album_contents[:album]
+      when Array then (album_contents[:album] || [])
+      when Hash then [album_contents[:album]].compact
+      else []
+    end
+    subalbums.each do |album|
       album_path = params[:album_path].nil? ? CGI::escape(album[:name]) : "#{params[:album_path]}#{CGI::escape('/'+album[:name])}"
       folders << {
         :name => album[:name],
@@ -15,7 +20,13 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
         :add_url  => photobucket_path(:album_path => album_path, :action => :import)
       }
     end
-    (album_contents[:media] || []).each do |media|
+    
+    photos = case album_contents[:media]
+      when Array then (album_contents[:media] || [])
+      when Hash then [album_contents[:media]].compact
+      else []
+    end
+    photos.each do |media|
       photo_path = params[:album_path].nil? ? CGI::escape(media[:name]) : "#{params[:album_path]}#{CGI::escape('/'+media[:name])}"
       folders << {
         :name => media[:title] || media[:name],
