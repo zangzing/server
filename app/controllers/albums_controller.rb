@@ -266,10 +266,10 @@ class AlbumsController < ApplicationController
   #@album is set by require_album before_filter
   def destroy
     # Album is found when the before filter calls authorized user
-    if !@album.destroy
-      render :json => @album.errors, :status=>500
+    if @album.destroy
+      render :json => "Album deleted" and return
     else
-      render :json => "Album deleted".to_json
+      render :json => @album.errors, :status=>500 and return
     end
   end
 
@@ -307,9 +307,9 @@ class AlbumsController < ApplicationController
       rescue ActiveRecord::RecordNotFound => e
         flash.now[:error] = "This operation requires an album, we could not find one because: "+e.message
         if request.xhr?
-          render :status => 404
+          head   :not_found
         else
-          render :file => "#{Rails.root}/public/404.html", :layout => false, :status => 404
+          render :file => "#{Rails.root}/public/404.html", :status => 404
         end
         return false
       end
