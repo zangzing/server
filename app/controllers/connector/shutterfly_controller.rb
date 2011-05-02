@@ -1,5 +1,4 @@
 class Connector::ShutterflyController < Connector::ConnectorController
-  before_filter :service_login_required
 
   PHOTO_SIZES = {:thumb => '1', :screen => '2', :full => '3'}
 

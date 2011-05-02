@@ -1,5 +1,4 @@
 class Connector::YahooController < Connector::ConnectorController
-  before_filter :service_login_required
 
   def self.api_from_identity(identity)
     YahooConnector.new(identity.credentials)
