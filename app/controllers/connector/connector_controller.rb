@@ -3,6 +3,10 @@ class Connector::ConnectorController < ApplicationController
   
   before_filter :require_user
   before_filter :check_params_for_import, :only => :import
+  
+  #before_filter :service_login_required  #Need to wipe out this method later
+  before_filter :check_token_presence, :except => [:new, :create, :delauth]
+
 
   rescue_from(InvalidToken) { |e| error_occured(401, e) }
   rescue_from(HttpCallFail) { |e| error_occured(503, e) }
@@ -12,6 +16,11 @@ class Connector::ConnectorController < ApplicationController
       format.html { render :text => "Error #{status} - #{exception.message}<br/>#{exception.backtrace.join('<br/>')}", :status => status }
       format.any  { head :status => status } # only return the status code
     end
+  end
+  
+  def check_token_presence
+    throw "service_identity method is not defined" unless defined?(service_identity)
+    raise InvalidToken.new('Auth token is absent') if service_identity.credentials.blank?
   end
 
 

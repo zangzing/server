@@ -3,9 +3,6 @@ class Connector::FacebookController < Connector::ConnectorController
 
   PHOTO_SIZES = {:thumb => 'a', :screen => 'n', :full => ['o', 'n']}
 
-  before_filter :service_login_required
-  
-  
   def self.api_from_identity(identity)
     if identity.is_a?(FacebookIdentity)
       identity.facebook_graph

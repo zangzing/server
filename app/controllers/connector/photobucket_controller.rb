@@ -2,8 +2,6 @@ class Connector::PhotobucketController < Connector::ConnectorController
 
   PHOTO_SIZES = {:thumb => :tinyurl, :screen => :largeurl, :full => :originalurl}
 
-  before_filter :service_login_required
-
   def self.api_from_identity(identity)
     PhotobucketConnector.new(identity.credentials)
   end

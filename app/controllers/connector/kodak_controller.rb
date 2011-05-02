@@ -2,8 +2,6 @@ class Connector::KodakController < Connector::ConnectorController
   require "net/http"
   require "uri"
 
-  before_filter :service_login_required
-
   PHOTO_SIZES = {:thumb => 'photoUriSmallJpeg', :screen => 'photoUriMediumJpeg', :full => 'photoUriFullResJpeg'}
   
   def self.api_from_identity(identity)

@@ -1,6 +1,5 @@
 class Connector::PicasaController < Connector::GoogleController
 
-
   def self.create_client
     GData::Client::Photos.new
   end

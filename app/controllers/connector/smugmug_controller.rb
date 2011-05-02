@@ -2,8 +2,6 @@ class Connector::SmugmugController < Connector::ConnectorController
 
   PHOTO_SIZES = {:thumb => :tinyurl, :screen => :largeurl, :full => :originalurl}
 
-  before_filter :service_login_required
-  
   def self.api_from_identity(identity)
     api = SmugmugConnector.new(identity.credentials)
     #api.call_method('smugmug.auth.checkAccessToken')
