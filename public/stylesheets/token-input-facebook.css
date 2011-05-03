@@ -20,14 +20,15 @@ ul.token-input-list-facebook {
     list-style-type: none;
 }
 
-ul.token-input-list-facebook li input {
+
+/*ul.token-input-list-facebook li input {
     border: 0;
     width: 160px;
     padding: 3px 8px;
     background-color: white;
     margin: 2px 0;
 }
-
+*/
 /*li.token-input-token-facebook {*/
     /*overflow: hidden; */
     /*height: auto !important; */
@@ -82,6 +83,7 @@ li.token-input-selected-token-facebook {
 
 li.token-input-input-token-facebook {
     float: left;
+    width: 50%;
 }
 
 div.token-input-dropdown-facebook {

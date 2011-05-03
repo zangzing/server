@@ -108,7 +108,8 @@
       // Create a new text input an attach keyup events
       var input_box = $("<input type=\"text\">")
          .css({
-            outline: "none"
+            outline: "none",
+            width: "100%"
          })
          .focus(function(){
             if(settings.tokenLimit == null || settings.tokenLimit != token_count){
@@ -298,10 +299,14 @@
          .hide();
 
       // The token holding the input box
-      var input_token = $("<li>")
-         .addClass(settings.classes.inputToken)
-         .appendTo(token_list)
-         .append(input_box);
+
+
+      var input_token = $("<li></li>")
+              .addClass(settings.classes.inputToken)
+              .appendTo(token_list)
+              .append(input_box);
+
+
 
       init_list();
 
