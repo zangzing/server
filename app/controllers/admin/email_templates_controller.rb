@@ -1,3 +1,7 @@
+#
+#  Copyright 2011, ZangZing, LLC www.zangzing.com
+#
+
 class Admin::EmailTemplatesController < Admin::AdminController
 
   helper :all
@@ -57,18 +61,21 @@ class Admin::EmailTemplatesController < Admin::AdminController
   end
 
   def test
-    begin
+   begin
       @template = EmailTemplate.find( params[:id] )
       @message = send( 'test_'+@template.email.name, @template.id )
       if params[:onscreen]
         render :layout => false
       else
         @message.deliver
-        flash[:notice]="Test #{@template.email.name} message sent."
+        flash[:notice]="Test #{@template.email.name} message sent to #{current_user.email}."
         redirect_to :back
       end
+    rescue SubscriptionsException => e
+          flash[:error]= e.message
+          redirect_to :back
     rescue Exception => e
-        flash[:error]="Unable to test template because of: #{(e.message && e.message.length >0 ? e.message : e )}."
+        flash[:error]="Unable to test template because: #{(e.message && e.message.length >0 ? e.message : e )}."
         redirect_to :back
     end
   end
@@ -165,7 +172,10 @@ private
   end
 
   def upload_batch
-    current_user.upload_batches[ rand( current_user.upload_batches.count) ]
+    begin
+      @ub = album.upload_batches[ rand( album.upload_batches.count) ]
+    end while @ub.nil? || @ub.photos.count <=0
+    @ub
   end
 
   def message

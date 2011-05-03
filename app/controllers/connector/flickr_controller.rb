@@ -1,5 +1,4 @@
 class Connector::FlickrController < Connector::ConnectorController
-  before_filter :service_login_required
 
   PHOTO_SIZES = {:thumb => 'Medium', :screen => 'zBig', :full => 'Big'}
   

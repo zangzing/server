@@ -3,92 +3,131 @@
     <li class="item">
       <div class="header bar">
         Settings
-        <a class="green-button" id="done-button"><span>Done</span></a>
+        <a class="green-button done-button"><span>Done</span></a>
       </div>
     </li>
   </ul>
+ <% form_for @user, :url => update_user_path(@user), :html => { :method => :put} do |user_form| %>
   <ul>
     <li class="item tab add">
-      <div class="title">
-        <div class='section-title'>Account</div>
+      <div class="header tab-centered">
+        Profile
       </div>
-       <% form_for @user, :url => update_user_path(@user), :html => { :method => :put} do |f| %>
-          <input type="hidden" id="profile-photo-id" name="user[profile_photo_id]" value="<%= @user.profile_photo_id %>">
+      <div class="indented content">
 
+            <input type="hidden" id="profile-photo-id" name="user[profile_photo_id]" value="<%= @user.profile_photo_id %>">
+            <table>
+              <tr>
+                <td> <%= user_form.label :first_name %> </td>
+                <td>
+                  <%= user_form.text_field :first_name %>
+                  <span class="field-error-message"><%= @user.errors.on(:first_name) unless @user.errors.on(:first_name).nil? %></span>
+                </td>
+              </tr>
+              <tr>
+                <td> <%= user_form.label :last_name %> </td>
+                <td>
+                  <%= user_form.text_field :last_name %>
+                  <span class="field-error-message"><%= @user.errors.on(:last_name) unless @user.errors.on(:last_name).nil? %></span>
+                </td>
+              </tr>
 
-          <%= f.label :first_name %>
-          <%= f.text_field :first_name %>
-          <span class="field-error-message"><%= @user.errors.on(:first_name) unless @user.errors.on(:first_name).nil? %></span>
-          <br/>
+              <tr>
+                <td> <%= user_form.label :email %> </td>
+                <td>
+                  <%= user_form.text_field :email %>
+                  <span class="field-error-message"><%= @user.errors.on(:email) unless @user.errors.on(:email).nil? %></span>
+                </td>
+              </tr>
 
-          <%= f.label :last_name %>
-          <%= f.text_field :last_name %>
-          <span class="field-error-message"><%= @user.errors.on(:last_name) unless @user.errors.on(:last_name).nil? %></span>
-          <br/>
+              <tr>
+                <td> <%= user_form.label :user_name %> </td>
+                <td>
+                  <span id="user_username" class="no-edit-field"> <span class="blue"><%= @user.username %></span> </span>
+                </td>
+              </tr>
 
-          <%= f.label :email %>
-          <%= f.text_field :email %>
-          <span class="field-error-message"><%= @user.errors.on(:email) unless @user.errors.on(:email).nil? %></span>
-          <br/>
+              <tr>
+                <td> <%= user_form.label :home_page %> </td>
+                <td>
+                  <span id="home_page" class="no-edit-field"> http://www.zangzing.com/<span class="blue"><%= @user.username %></span></span>
+                </td>
+              </tr>
 
-          <%= f.label :user_name %>
-          <span id="user_username" class="no-edit-field">
-                  <span class="blue"><%= @user.username %></span>
-          </span><br/>
-
-
-          <%= f.label :home_page %>
-          <span id="home_page" class="no-edit-field">
-                  http://www.zangzing.com/<span class="blue"><%= @user.username %></span>
-          </span><br/>
-
-          <%= f.label :password %>
-          <span id="user_password" class="no-edit-field">
-                <a id="change-password-button" href="<%= edit_user_password_url @user%>">Click here to change password</a>
-              </span><br/>
-
-          <%= f.label :profile_picture %>
-          <span id="user_profile_picture" class="no-edit-field">
-                <%= render :partial => 'users/profile_photo', :locals => { :user => @user }    %>
-            </span>
-          <span id="profile-photo-picker"></span>
-          <a class="black-button" id="upload-button"><span>Upload</span></a>
-      <% end %>
-
-
+              <tr>
+                <td> <%= user_form.label :password %> </td>
+                <td>
+                    <span id="user_password" class="no-edit-field">
+                        <a id="change-password-button" href="<%= edit_user_password_url @user%>">Click here to change password</a>
+                    </span>
+                </td>
+              </tr>
+              <tr>
+                <td> <%= user_form.label :profile_picture %> </td>
+                <td>
+                    <span id="user_profile_picture" class="no-edit-field">
+                        <%= render :partial => 'users/profile_photo', :locals => { :user => @user }    %>
+                    </span>
+                  <span id="profile-photo-picker"></span>
+                  <a class="black-button" id="upload-button"><span>Upload</span></a>
+                </td>
+              </tr>
+            </table>
+      </div>
     </li>
 
     <li class="item tab add">
-      <div class="title">
-        <div class='section-title'>Linked Accounts</div>
+      <div class="header tab-centered">
+        Linked Accounts
       </div>
+      <div class="indented content">
+        <table id="linked-accounts-table">
+          <%
+             Identity::UI_INFO.keys.each_index do |i|
+                 service_key = Identity::UI_INFO.keys[i]
+                 account_is_linked = @user.has_valid_identity?(service_key)
 
-      <table id="linked-accounts-table">
-        <%
-           Identity::UI_INFO.keys.each_index do |i|
-               service_key = Identity::UI_INFO.keys[i]
-               account_is_linked = @user.has_valid_identity?(service_key)
-
-               if service_key != :local
-        %>
-                <tr data-service-key="<%= service_key %>">
-                  <td><img class='service-icon' src="<%= image_path("/images/logos/#{service_key}-sq.png") %>">
-                    <span><%= Identity::UI_INFO[service_key][:name] %></span>
-                  </td>
-                  <td>
-                  <span class='account-linked' style="display: <%=account_is_linked ? 'inline-block':'none' %>" >
-                    <img class='account-linked-icon' src="<%= image_path('/images/btn-check-on.png') %>">Linked
-                  </span>
-                  </td>
-                  <td>
-                    <a href="#" class="link-button"   style="display: <%=account_is_linked ? 'none':'inline-block'%>">Link</a>
-                    <a href="#" class="unlink-button" style="display: <%=account_is_linked ? 'inline-block':'none'%>">Unlink</a>
-                  </td>
-                </tr>
-            <% end %>
-        <% end %>
-      </table>
+                 if service_key != :local
+          %>
+                  <tr data-service-key="<%= service_key %>">
+                    <td>
+                      <img class='service-icon' src="<%= image_path("/images/logos/#{service_key}-sq.png") %>">
+                      <span><%= Identity::UI_INFO[service_key][:name] %></span>
+                    </td>
+                    <td>
+                    <span class='account-linked' style="display: <%=account_is_linked ? 'inline-block':'none' %>" >
+                        <img class='account-linked-icon' src="<%= image_path('/images/btn-check-on.png') %>">Linked
+                    </span>
+                    </td>
+                    <td>
+                      <a href="#" class="link-button"   style="display: <%=account_is_linked ? 'none':'inline-block'%>">Link</a>
+                      <a href="#" class="unlink-button" style="display: <%=account_is_linked ? 'inline-block':'none'%>">Unlink</a>
+                    </td>
+                  </tr>
+              <% end %>
+          <% end %>
+        </table>
+      </div>
     </li>
+    <li class="item tab add">
+      <div class="tab-centered header">
+        Email Preferences
+      </div>
+      <div class="indented content">
+        <%=user_form.fields_for :subscriptions do |subscriptions_form| %>
+        <table>
+            <%=render :partial=> 'subscriptions/subscriptions_fields', :locals=> { :f => subscriptions_form, :subs => @user.subscriptions } %>
+       </table>
+       <%end%>
+      </div>
+    </li>
+  </ul>
+<% end #user form%>
+<ul>
+    <li class="item">
+      <div class="header bar"></div>
+    </li>
+    <a class="green-button done-button"><span>Done</span></a>
   </ul>
 </div>
 
@@ -107,7 +146,7 @@
             $('#footer #buy-button').hide();
 
             //done button
-            $('#done-button').click(function(){
+            $('.done-button').click(function(){
                 $('form.edit_user').submit();
             });
 

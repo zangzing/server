@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=100" > <!-- IE8 mode -->
+    <meta http-equiv="Content-Language" Content="en">
+    <meta charset="utf-8">
+    <meta name="copyright" content="Copyright 2011, ZangZing, LLC. All Rights Reserved." />
+    <meta name="DC.title" content="ZangZing" />
+    <meta name="title" content="ZangZing" />
+    <title>Group Photo Sharing - ZangZing</title>
+    <%= include_stylesheets :common %>
+    <%= yield :page_sytlesheet %>
+</head>
+<body class="fullscreen">
+  <img src="/error/img/background_upgrade.jpg" class="bg" />
+
+
+  <div class="new-dialog">
+    <div class="background"></div>
+    <div class="frame"></div>
+
+    <div class="body">
+      <a class="logo" href="/join"><img src="/error/img/logo.png" alt="logo" /></a>
+
+      <div class="dialog-content">
+        
+        <ul class="viewlist" id="unsubscribe">
+          <li class="item">
+            <div class="header bar" style="margin-top: 5px;">
+              Email Preferences
+              <a class="gray-button save-button" onclick="$('#edit-preferences').submit();"><span>Save Preferences</span></a>
+              <div class="tagline" style="margin-top: 0;"> Control which emails we send you to: <b style="color: #555555;"><%=@subs.email%></b></div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="indented content">
+              <%=form_for @subs, :url => update_subscriptions_path(@subs), :html=> { :id => "edit-preferences" } do |f| %>
+                  <table>
+                    <%=render :partial=> 'subscriptions_fields', :locals=> { :f => f, :subs => @subs } %>
+                    </tr>
+                  </table>
+                  <input name="next" type="hidden" id="next" value="back"/>
+              <%end%>
+            </div>
+            <div class="flash-notice" id="unsub-flash"><%=flash[:notice] if flash[:notice] %></div>
+            <%if @subs.user.nil? %>
+                <a class="green-button join-button" onclick="$('#next').val('join');$('#edit-preferences').submit();"><span>Save & Join</span></a>
+            <%else%>
+                <a class="green-button join-button" onclick="$('#next').val('signin');$('#edit-preferences').submit();"><span>Save & Signin</span></a>
+            <%end%>
+          </li>
+        </ul>
+
+    </div>
+    
+  </div>
+
+
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+  <%= render :partial => 'layouts/zza'  %>
+  <%= include_javascripts :lib %>
+  <%= include_javascripts :zz %>
+  <%= yield :page_javascript %>
+
+  <script>
+    $(document).ready(function(){
+        $('#submit-button').click(function(){
+            $('form').submit();
+        });
+
+
+       $('form').bind('keypress', function(e){
+             if ( e.keyCode == 13 ) {
+                 $("form").submit();
+             }
+       });
+
+
+    });
+
+  </script>
+
+
+</body>
+</html>
+

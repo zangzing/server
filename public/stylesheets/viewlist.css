@@ -12,11 +12,11 @@
 }
 
 .viewlist .title{
-  color: #aaaaaa;
+  color: #999999;
   font-size: 14px;
 }
 
-.viewlist .blue{
+.blue{
   color: #466faa;
 }
 
@@ -65,6 +65,9 @@
     height:  45px;
     margin-top: 6px;
 }
+.viewlist .item .indented{
+    margin-left: 20px;
+}
 /* The items with a hanging tab, add this class plus add like,share,add to choose which icon to display */
 .viewlist .item.tab{
  position: relative;
@@ -75,6 +78,10 @@
 .viewlist .item.tab.add{   background: url('/images/tab-activity-add.png')   no-repeat scroll  0 0; }
 .viewlist .item.tab.like{  background: url('/images/tab-activity-like.png')  no-repeat scroll  0 0; }
 .viewlist .item.tab.share{ background: url('/images/tab-activity-share.png') no-repeat scroll  0 0; }
+
+.viewlist .tab-centered{
+    margin:13px 0;
+}
 
 /*add this to any item and it will get a bottom bar */
 .viewlist .bar{

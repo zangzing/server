@@ -50,7 +50,7 @@ class EmailTemplate < ActiveRecord::Base
     self.html_content = EmailTemplate.interpolate_images(  CGI::unescapeHTML( content['html'] )  )
     remove_double_http
     unescape_links
-
+    replace_unsub
     true
   end
 
@@ -74,12 +74,24 @@ class EmailTemplate < ActiveRecord::Base
   def unescape_links
     # look for hrefs in links that were <%($1)%> before but were urlencoded
     # Group 1 is whatever was in between the href"<% %>"
+    self.html_content_will_change!
     self.html_content.gsub!( /href="(mailto:)*%3C%([^"]*)%%3E"/){ "href=\"#{$1}<%#{CGI::unescape($2)}%>\"" }
   end
 
   def remove_double_http
     # look for http://http:// and replace with http://  (a common MC problem)
+    self.html_content_will_change!
     self.html_content.gsub!(/href="http:\/\/<%=/, 'href="<%=')
+  end
+
+  def replace_unsub
+    # look for *|UNSUB|* and replace with <%= @unsubscribe_url %>
+    regex = /\*\|UNSUB\|\*/
+    repl  = '<%=@unsubscribe_url%>'
+    self.html_content_will_change!
+    self.html_content.gsub!( regex, repl)
+    self.text_content_will_change!
+    self.text_content.gsub!( regex, repl)
   end
 
   def self.interpolate_images( html )

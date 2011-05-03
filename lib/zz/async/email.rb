@@ -16,12 +16,12 @@ module ZZ
           super( method, *args)
         end
         
-        def self.perform( method, *args ) 
-          if defined?(Rails.version) && Rails.version.to_i >= 3
-            Notifier.send( method, *args).deliver
-            #ZZ::MailChimp::Notifier.send( method, *args).deliver
-          else
-            Notifier.send('deliver_'+method, *args)
+        def self.perform( method, *args )
+          begin
+            msg = Notifier.send( method, *args)
+            msg.deliver unless msg.nil?
+          rescue SubcriptionsException => e
+            Rails.logger.info e.message
           end
         end
         

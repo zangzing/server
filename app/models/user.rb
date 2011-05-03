@@ -4,12 +4,13 @@
 
 # "automatic" users are created when a contributor adds photos by email but does not have
 # an account
+require 'mail'
 
 class User < ActiveRecord::Base
   attr_writer      :name
   attr_accessor    :old_password, :reset_password
   attr_accessible  :email, :name, :first_name, :last_name, :username,  :password, :password_confirmation,
-                   :old_password, :automatic, :profile_photo_id
+                   :old_password, :automatic, :profile_photo_id, :subscriptions_attributes
 
   has_many :albums,              :dependent => :destroy
 
@@ -34,6 +35,9 @@ class User < ActiveRecord::Base
 
   has_one  :profile_album,       :dependent => :destroy, :autosave => true
   has_one  :preferences,         :dependent => :destroy, :class_name => "UserPreferences", :autosave => true
+  has_one  :subscriptions,       :autosave => true
+  accepts_nested_attributes_for  :subscriptions
+
   has_many :identities,          :dependent => :destroy
   has_many :contacts,            :through => :identities, :class_name => "Contact"
 
@@ -54,8 +58,7 @@ class User < ActiveRecord::Base
   end
 
   before_save    :split_name
-  before_create  :make_profile_album
-  before_create  :build_preferences
+  before_create  :set_dependents
   after_commit   :update_acls_with_id, :on => :create
   after_commit   :like_mr_zz, :on => :create
 
@@ -82,11 +85,18 @@ class User < ActiveRecord::Base
   end
 
 
-  # make the profile album
-  def make_profile_album
+
+  def set_dependents
+    # build a profile album
     p = ProfileAlbum.new()
     p.make_private
     self.profile_album = p
+
+    # build user preferences
+    self.build_preferences
+
+    #build subscriptions
+    self.subscriptions = Subscriptions.find_or_initialize_by_email( self.email )
   end
 
   def self.find_by_email_or_create_automatic( email, name='' )
@@ -174,7 +184,12 @@ class User < ActiveRecord::Base
        }.call
   end
 
-
+  def email=(email)
+    write_attribute( :email, email)
+    if email_changed?
+      self.subscriptions.email=email unless self.subscriptions.nil?
+    end
+  end
 
   def name
     @name ||= [first_name, last_name].compact.join(' ')
@@ -227,7 +242,7 @@ class User < ActiveRecord::Base
   end
 
   def formatted_email
-      "#{self.name}<#{self.email}>"
+      Mail::Address.new( "#{self.name}<#{self.email}>").format
   end
 
 

@@ -3,19 +3,54 @@ class SendgridController < ApplicationController
 
   skip_before_filter :verify_authenticity_token
 
-=begin
-each album has an email address in the form <album_name>@<username>.zangzing.com
-    *      text - Text body of email. If not set, email did not have a text body.
-    *      html - HTML body of email. If not set, email did not have an HTML body.
-    *      to - Email recipient.
-    *      from - Email sender.
-    *      subject - Email Subject.
-    *      dkim - A JSON string containing the verification results of any dkim and domain keys signatures in the message.
-    *      spam_score - Spam Assassin's rating for whether or not this is spam.
-    *      spam_report - Spam Assassin's spam report.
-    *      attachments - Number of attachments included in email.
-    *      attachment1, attachment2, …, attachmentN - File upload names. The numbers are sequence numbers starting from 1 and ending on the number specified by the attachments parameter. If attachments is 0, there will be no attachment files. If attachments is 3, parameters attachment1, attachment2, and attachment3 will have file uploads.
-=end
+
+  # This method should be called unsubscribe but it is a reserved ruby word so dont try it
+  # catches emails sent to unsubscribe.zangzing.com
+  # As part of the subscriptions system, each subscription (i.e. email address) has an unsubscribe token
+  # that may be used to unsubscribe by email. The email is of the form  <unsubscribe-token>@unsubscribe.zangzing.com
+  # Using the unsubscribe token we try to find the subscription and turn all buckets off
+  #
+  # A user may also email unsubscribe@unsubscribe.zangzing.com in which case we will unsubscribe the to address
+  #
+  def un_subscribe  #unsubscribe is a reserved ruby word do not change
+
+    # An unsubscribe email address is of the form  <unsubscribe_token>@unsubscribe.zangzing.com
+    # we use Mail::Address to parse the addresses and the domain
+    # If the to or from addresses are invalid emails, an exception will be raised
+    to          = Mail::Address.new( params[:to] )
+    from        = Mail::Address.new( params[:from] )
+    unsub_token = to.local
+
+    if unsub_token == 'unsubscribe'
+      #unsubscribe from address
+      @subs = Subscriptions.find_by_email( from.address )
+    else
+      #unsubscribe using token
+      @subs = Subscriptions.find_by_unsubscribe_token( unsub_token )
+    end
+
+    if @subs
+      @subs.unsubscribe
+      zza.track_event("email.unsubscribe.received", {:email => @subs.email, :to => params[:to], :from => params[:from] })
+      Rails.logger.info "MAIL UNSUBSCRIBE: #{@subs.email} unsubscribed by email"
+    end
+    render :nothing => true, :status=> :ok
+  end
+
+  #  These are the fields that get posted from SendGrid
+  #   text - Text body of email. If not set, email did not have a text body.
+  #   html - HTML body of email. If not set, email did not have an HTML body.
+  #   to - Email recipient.
+  #   from - Email sender.
+  #   subject - Email Subject.
+  #   dkim - A JSON string containing the verification results of any dkim and domain keys signatures in the message.
+  #   spam_score - Spam Assassin's rating for whether or not this is spam.
+  #   spam_report - Spam Assassin's spam report.
+  #   attachments - Number of attachments included in email.
+  #   attachment1, attachment2, …, attachmentN - File upload names. The numbers are sequence numbers starting from 1
+  #     and ending on the number specified by the attachments parameter. If attachments is 0, there will be no
+  #     attachment files. If attachments is 3, parameters attachment1, attachment2, and attachment3 will have file
+  #     uploads.
   def import_fast
     # make sure the call came from nginx
     # currently we only allow through to, from, attachments, and the attachments in the form:
@@ -37,9 +72,9 @@ each album has an email address in the form <album_name>@<username>.zangzing.com
             :spam_report => params[:spam_report],
             :spam_score => params[:spam_score],
         }
-        ZZ::ZZA.new.track_event("email.contributor.received", zza_xtra)
+        zza.track_event("email.contributor.received", zza_xtra)
 
-        
+
         # An albums email address is of the form  <album_name>@<user_username>.zangzing.com
         # we use Mail::Address to parse the addresses and the domain
         # If the to or from addresses are invalid emails, an exception will be raised
@@ -48,10 +83,15 @@ each album has an email address in the form <album_name>@<username>.zangzing.com
         album_name     = to.local
         user_username  = to.domain.split('.')[0]
 
+        # FIND ALBUM
+        # using the info in the to address, find an album
         @album = nil
         begin
           @album = Album.find(album_name, :scope => user_username )
         rescue ActiveRecord::RecordNotFound => e
+          # NEW ALBUM BY EMAIL
+          # if album_name is 'new' and the account owner is emailing photos, create a new
+          # album with the name set from the subject and all addresses in cc: as contributors
           if album_name == 'new'
             user = User.find_by_username!( user_username )
             # If the account owner is the one emailing
@@ -64,13 +104,11 @@ each album has an email address in the form <album_name>@<username>.zangzing.com
               raise e
             end
           else
-            raise e 
+            raise e
           end
         end
 
-        # NEW ALBUM BY EMAIL
-        # if album_name is 'new' and the account owner is emailing photos, create a new
-        # album with the name set from the subject and all addresses in cc: as contributors
+
         if attachments.count > 0 && @album
           user = @album.get_contributor_user_by_email( from.address )
           if user
@@ -80,12 +118,12 @@ each album has an email address in the form <album_name>@<username>.zangzing.com
 
         # Add contributors from cc: if this email created a new album
         if album_name == 'new' && @album
-           if params[:cc] && params[:cc].length > 0
-              ccs = Mail::AddressList.new( params[:cc] )
-              ccs.addresses.each do | contributor|
-                @album.add_contributor( contributor.address )
-              end
-           end
+          if params[:cc] && params[:cc].length > 0
+            ccs = Mail::AddressList.new( params[:cc] )
+            ccs.addresses.each do | contributor|
+              @album.add_contributor( contributor.address )
+            end
+          end
         end
 
         render :nothing => true, :status => :ok
@@ -108,7 +146,7 @@ each album has an email address in the form <album_name>@<username>.zangzing.com
     else
       # call did not come through remapped upload via nginx or we have no attachments so reject it
       logger.error "Incoming email import album invalid arguments or no attachments will not retry."
-      clean_up_temp_files(attachments)
+      ZZ::Async::Email.enqueue(:contribution_error, params[:from] )
       render :nothing => true, :status=> :ok
     end
   end
@@ -128,22 +166,22 @@ each album has an email address in the form <album_name>@<username>.zangzing.com
         zza.track_event("#{category}.#{event}", {:email => email, :response => params['response']})
       when 'bounce'
         zza.track_event("#{category}.#{event}", {:email => email, :status=> params['status'], :reason => params['reason'], :type => params['type']})
-        #TODO: Process Bounce
+      #TODO: Process Bounce
       when 'spamreport'
         zza.track_event("#{category}.#{event}", {:email => email })
-        #TODO: Process SpamReport
+      #TODO: Process SpamReport
       when 'click'
         zza.track_event("#{category}.#{event}", {:email => email }, nil, nil, nil, params['url'])
       when 'unsubscribe'
         zza.track_event("#{category}.#{event}", {:email => email })
-        #TODO Process unsubscribe
+      #TODO Process unsubscribe
       else
         zza.track_event("#{category}.#{event}", {:email => email })
     end
     render :nothing => true, :status => 200
   end
-  
-protected
+
+  protected
 
   def zza
     @zza ||= ZZ::ZZA.new
@@ -184,14 +222,14 @@ protected
         else
           begin
             photo = Photo.new_for_batch(current_batch, {
-                    :id => Photo.get_next_id,
-                    :user_id => user.id,
-                    :album_id => album.id,
-                    :upload_batch_id => current_batch.id,
-                    :caption => fast_local_image["original_name"],
-                    :source => 'email',
-                    #create random uuid for this photo
-                    :source_guid => "email:"+UUIDTools::UUID.random_create.to_s})
+                :id => Photo.get_next_id,
+                :user_id => user.id,
+                :album_id => album.id,
+                :upload_batch_id => current_batch.id,
+                :caption => fast_local_image["original_name"],
+                :source => 'email',
+                #create random uuid for this photo
+                :source_guid => "email:"+UUIDTools::UUID.random_create.to_s})
             # use the passed in temp file to attach to the photo
             photo.file_to_upload = file_path
             photos << photo
@@ -219,5 +257,5 @@ protected
   def unsubscribe
 
   end
-   
+
 end

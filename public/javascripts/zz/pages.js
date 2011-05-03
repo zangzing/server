@@ -457,6 +457,7 @@ pages.share = {
 
                 $("#contact-list").tokenInput( zzcontacts.find, {
                     allowNewValues: true,
+                    hintText: '',
                     classes: {
                         tokenList: "token-input-list-facebook",
                         token: "token-input-token-facebook",
@@ -608,6 +609,7 @@ pages.contributors = {
 
             $("#contact-list").tokenInput( zzcontacts.find, {
                 allowNewValues: true,
+                hintText: '',
                 classes: {
                     tokenList: "token-input-list-facebook",
                     token: "token-input-token-facebook",

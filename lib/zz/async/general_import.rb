@@ -23,6 +23,7 @@ module ZZ
             file = RemoteFile.new(source_url, PhotoGenHelper.photo_upload_dir)
             file_path = file.path
             file.close()
+            file.validate_size
             photo.file_to_upload = file_path
             photo.save
           end

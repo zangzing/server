@@ -1,0 +1,3 @@
+class SubscriptionsException < Exception
+
+end

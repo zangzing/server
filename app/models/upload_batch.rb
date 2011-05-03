@@ -173,10 +173,17 @@ class UploadBatch < ActiveRecord::Base
             #Notify uploader that upload batch is finished
             ZZ::Async::Email.enqueue( :photos_ready, self.id )
 
-            #Notify likers that there is new activity in this album
+            #If the uploader is a contributor, send album owner an album_updated email.
+            if album.user.id != self.user.id
+                ZZ::Async::Email.enqueue( :album_updated, album.user.id, album.id )
+            end
+
+            # Notify likers that there is new activity in this album
+            # if the liker is the owner or the current contributor, do not send album_updated email
+            # because they already got an email above.
             album_id = album.id
             self.album.likers.each do |liker|
-              ZZ::Async::Email.enqueue( :album_updated, liker.id, album_id )
+              ZZ::Async::Email.enqueue( :album_updated, liker.id, album_id ) unless ( liker.id == album.user.id ) || (liker.id == user.id )
             end
          else
             Rails.logger.info "Destroying empty batch id: #{self.id}, user_id: #{self.user_id}, album_id: #{self.album_id}"

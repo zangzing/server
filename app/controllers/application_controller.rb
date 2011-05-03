@@ -88,7 +88,7 @@ class ApplicationController < ActionController::Base
       unless current_user
         if request.xhr?
           flash.now[:error] = "You must be logged in to access this page"
-          render :nothing => true, :status => 401
+          head :status => 401
         else
           flash[:error] = "You must be logged in to access this page"
           store_location
@@ -210,6 +210,7 @@ class ApplicationController < ActionController::Base
                      'connector/local_contacts#import',
                      'sendgrid#import_fast',
                      'sendgrid#events',
+                     'sendgrid#un_subscribe',
                      'pages#health_check',
                      'agents#check',
                      'agents#info',
@@ -238,7 +239,7 @@ class ApplicationController < ActionController::Base
       flash.now[:error] = "Only Album admins can perform this operation"
       response.headers['X-Errors'] = flash[:error]
       if request.xhr?
-        render :json => '', :status => 401
+        head :status => 401
       else
         render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
       end
@@ -256,7 +257,7 @@ class ApplicationController < ActionController::Base
       unless current_user
         if request.xhr?
           flash.now[:notice] = "You have asked to see a password protected album. Please login so we know who you are."
-          render :status => 401
+          head :status => 401
         else
           flash[:notice] = "You have asked to see a password protected album. Please login so we know who you are."
           store_location
@@ -266,7 +267,7 @@ class ApplicationController < ActionController::Base
       unless @album.viewer?( current_user.id ) || current_user.moderator?
         if request.xhr?
           flash[:notice] = "You have asked to see a password protected album. You do not have enough privileges to see it"
-          render :status => 401
+          head :status => 401
         else
           session[:client_dialog] = album_pwd_dialog_url( @album )
           redirect_to user_url( @album.user ) and return
@@ -283,7 +284,7 @@ class ApplicationController < ActionController::Base
     unless  @album.contributor?( current_user.id ) || current_user.support_hero?
       flash.now[:error] = "Only Contributors admins can perform this operation"
       if request.xhr?
-        render :status => 401
+        head :status => 401
       else
         render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
       end
@@ -297,7 +298,7 @@ class ApplicationController < ActionController::Base
     unless current_user.admin?
       flash.now[:error] = "Administrator privileges required for this operation"
       if request.xhr?
-        render :status => 401
+        head :status => 401
       else
         render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
       end

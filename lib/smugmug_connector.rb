@@ -11,6 +11,7 @@ class SmugmugConnector
   require 'oauth/consumer'
 
   API_ENDPOINT = '/services/api/json/1.2.2/'
+  TOKEN_SPLITTER = '<//>'
 
   def initialize(token = nil)
     self.access_token = token
@@ -20,14 +21,16 @@ class SmugmugConnector
     unless as_string
       @access_token
     else
-      [@access_token.token, @access_token.secret].join('_')
+      [@access_token.token, @access_token.secret].join(TOKEN_SPLITTER)
     end
   end
 
   def access_token=(token)
-    if token.kind_of?(String) && token.include?('_')
-      parts = token.split('_')
-      create_access_token!(parts[0], parts[1])
+    if token.kind_of?(String) 
+      if token.include?(TOKEN_SPLITTER)
+        parts = token.split(TOKEN_SPLITTER)
+        create_access_token!(parts[0], parts[1])
+      end
     elsif
       @access_token = token
     end

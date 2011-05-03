@@ -10,6 +10,7 @@ Server::Application.routes.draw do
   get    '/service'            => 'pages#home',          :as => :service
   get    '/signin'             => 'user_sessions#new',   :as => :signin
   get    '/join'               => 'users#join',           :as => :join
+  get    '/unsubscribe/:id'    => 'subscriptions#unsubscribe', :as => :unsubscribe
 
   # the whole site has /service in front of it except for users
   scope '/service' do
@@ -32,9 +33,11 @@ Server::Application.routes.draw do
     post   '/users'                     => 'users#create',            :as => :create_user
     put    '/users/:id'                 => 'users#update',            :as => :update_user
     delete '/users/:id'                 => 'users#destroy',           :as => :delete_user
-#    get    '/users/:id/account'         => 'users#account',           :as => :account
-#    get    '/users/:id/notifications'   => 'users#notifications',     :as => :notifications
     match  '/users/:id/update_password' => 'users#update_password',   :as => :update_user_password
+
+    #email_subscirptions
+    get '/subscriptions/:id'         => 'subscriptions#unsubscribe'   #see unsubscribe above
+    put '/subscriptions/:id'         => 'subscriptions#update',       :as => :update_subscriptions
 
     #identities
     get    '/users/:id/identities'     => 'identities#index',       :as => :user_identities
@@ -136,12 +139,6 @@ Server::Application.routes.draw do
     match '/inactive'                  => 'user_sessions#inactive',       :as => :inactive
     match '/signout'                   => 'user_sessions#destroy',        :as => :signout
     resources :password_resets, :only => [:new, :edit, :create, :update]
-
-    #static pages
-    #get '/contact'  => 'pages#contact', :as => :contact
-    #get '/about'    => 'pages#about',   :as => :about
-    #get '/help'     => 'pages#help',    :as => :help
-    #get '/signup'   => 'users#new',     :as => :signup
 
     #Asynch responses
     match '/async_responses/:response_id' => 'async_responses#show', :as => :async_response
@@ -263,6 +260,7 @@ Server::Application.routes.draw do
 
     #sendgrid
     match  '/sendgrid/import_fast'   => 'sendgrid#import_fast', :as => :sendgrid_import_fast
+    post   '/sendgrid/unsubscribe'   => 'sendgrid#un_subscribe',:as => :sendgrid_unsubscribe
     post   '/sendgrid/events'        => 'sendgrid#events',      :as => :sendgrid_events
 
 

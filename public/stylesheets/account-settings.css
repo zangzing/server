@@ -2,8 +2,6 @@
     position:relative;
 }
 
-
-
 #account-settings .scrollable{
     overflow-x:scroll;
     overflow-x:hidden;
@@ -11,19 +9,13 @@
     border:1px solid black;
 }
 
-#account-settings label{
-    color:#0a0a0a
+#account-settings .content{
+    color:#888888;
+    font-size: 14px;
 }
-
-
-
 
 #account-settings .field_with_errors{
     display: inline-block;
-}
-
-#account-settings input{
-    width: 238px;
 }
 
 #account-settings .field_with_errors input{
@@ -34,23 +26,9 @@
     color: red;
 }
 
-#account-settings #done-button{
-    position: absolute;
-    right: 0px;
-    bottom: 5px;
+#account-settings .done-button{
     width: 80px;
-
-}
-
-#account-settings .section-title{
-    position: relative;
-    top: 13px;
-}
-
-#account-settings label{
-    margin-left:20px;
-    width: 100px;
-    display: inline-block;
+    float: right;
 }
 
 #account-settings input{
@@ -68,36 +46,10 @@
     color: #000;
 }
 
+/*  Profile Photo Picker */
 #account-settings #user_profile_picture{
     width:40px;
     height:40px;
-}
-
-#account-settings #linked-accounts-table {
-    margin-left:20px;
-}
-
-#account-settings #linked-accounts-table tr{
-    height: 30px;
-}
-
-#account-settings #linked-accounts-table td{
-    padding-right:30px;
-    color:#0a0a0a;
-}
-
-
-#account-settings #linked-accounts-table .service-icon{
-    vertical-align:middle;
-    position: relative;
-    top: -2px;
-
-}
-
-#account-settings #linked-accounts-table .account-linked-icon{
-    vertical-align:middle;
-    position:relative;
-    top: -2px;
 }
 
 #account-settings #profile-photo-picker{
@@ -118,3 +70,33 @@
     top:3px;
     left:15px;
 }
+
+
+/* Linked Accounts */
+#account-settings #linked-accounts-table {
+    width: 450px;
+}
+
+#account-settings #linked-accounts-table tr{
+    height: 30px;
+}
+
+#account-settings #linked-accounts-table td{
+    padding-right:30px;
+    font-size: 14px;
+    color:#888888;
+}
+
+#account-settings #linked-accounts-table .service-icon{
+    vertical-align:middle;
+    position: relative;
+    top: -2px;
+
+}
+
+#account-settings #linked-accounts-table .account-linked-icon{
+    vertical-align:middle;
+    position:relative;
+    top: -2px;
+}
+
