@@ -111,6 +111,7 @@
                     photoId: photo.id,
                     previewSrc: photo.previewSrc,
                     src: photo.src,
+                    shareUrl: photo.shareUrl,
                     rolloverSrc: photo.rolloverSrc,
                     maxWidth: Math.floor(self.options.cellWidth - 50),
                     maxHeight: Math.floor(self.options.cellHeight - 50),

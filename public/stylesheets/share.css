@@ -1,0 +1,43 @@
+.share-menu{
+    background: url("/images/share/share-menu.png") no-repeat scroll top right;
+    width:120px;
+    height:118px;
+    position: absolute;
+    cursor:pointer;
+    z-index:1000;
+}
+
+.share-menu .menu-item{
+    font-size: 14px;
+    font-weight: 700;
+    color: #FAFAFA;
+    text-shadow: 0 1px black;
+    text-align:left;
+    padding-left:30px;
+    position:relative;
+    margin-top:12px;
+    margin-left:5px;
+    cursor:pointer;
+    height:19px;
+    width:100px;
+}
+
+.share-menu .menu-item:hover{
+    color: #FFF;
+}
+
+
+.share-menu .menu-item.email{
+    background: url("/images/share/email-icon.png") no-repeat scroll 3px 3px;
+}
+
+.share-menu .menu-item.twitter{
+    background: url("/images/share/twitter-icon.png") no-repeat scroll 2px 0px;
+}
+
+.share-menu .menu-item.facebook{
+    background: url("/images/share/facebook-icon.png") no-repeat scroll 3px 0px;
+}
+
+
+

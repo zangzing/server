@@ -245,15 +245,22 @@ $.widget("ui.zzlike_menu", {
             var offset = $(anchor).offset();
             var x = ( $(anchor).outerWidth()/2 ) + offset.left - (menu.width()/2);
             var y = $(document).height() - offset.top;
-            menu.css({ left: x, bottom: y }).slideDown( 'fast' );// Show = slide down
+
+
+            menu.css({display:'block',opacity:0,left:x,bottom:y-10});
+            menu.animate({bottom:y,opacity:1},200);
+
+
+
+//            menu.css({ left: x, bottom: y }).fadeIn( 'fast' );// Show = slide down
 
             //Close menu when mouse hovers out of the menu or clicks
-            $(menu).hover(  function(){}, function(){ $(this).slideUp('fast'); });
+            $(menu).hover(  function(){}, function(){ $(this).fadeOut('fast'); });
             setTimeout( function() { // Delay for Mozilla
                 $(document).click( function() {
                     if(menu.is(':visible')){
                         $(document).unbind('click')
-                        $(menu).slideUp('fast');
+                        $(menu).fadeOut('fast');
                     }
                     return false;
                 });

@@ -27,7 +27,7 @@
             isUploading:false,           //model
             isError:false,               //model
             showButtonBar:false,           //model
-            onClickShare: jQuery.noop,     //model
+//            onClickShare: jQuery.noop,     //model
 //            noShadow:false,              //context / type
 //            lazyLoad:true ,              //context / type
             context:null,                 //context -- album-edit, album-grid, album-picture, album-timeline, album-people, chooser-grid, chooser-picture
@@ -255,35 +255,67 @@
                                           '</div>' +
                                        '</div>';
 
-                self.borderElement.mouseenter(function(){
-                    self.toolbarElement = $(toolbarTemplate);
-                    self.borderElement.append(self.toolbarElement);
-                    self.borderElement.css({'padding-bottom': '30px'});
-                    self.imageElement.css({'border-bottom': '35px solid #fff'});
 
-                    self.toolbarElement.find('.share-button').click(function(){
-                        self.options.onClickShare(self.options.photoId);
-                    });
+                var menuOpen = false;
+                var hover = false;
 
-                    self.toolbarElement.find('.like-button').click(function(){
-                        alert("This feature is still under construction. This will allow you to like an individual photo.");
-                    });
+                var checkCloseToolbar = function(){
+                    if(!menuOpen && !hover){
+                        setTimeout(function(){
+                            if(!hover){
+                                self.borderElement.css({'padding-bottom': '0px'});
+                                self.imageElement.css({'border-bottom': '5px solid #fff'});
+                                self.toolbarElement.remove();
+                            }
+                        },100);
+                    }
+                };
 
-                    self.toolbarElement.find('.info-button').click(function(){
-                        alert("This feature is still under construction. This will show a menu with options for downloading original photo, etc.");
-                    });
+                self.element.mouseenter(function(){
 
+                    hover = true;
 
+                    if(!menuOpen){
+                        self.toolbarElement = $(toolbarTemplate);
+                        self.borderElement.append(self.toolbarElement);
+                        self.borderElement.css({'padding-bottom': '30px'});
+                        self.imageElement.css({'border-bottom': '35px solid #fff'});
+
+                        self.toolbarElement.find('.share-button').mousedown(function(){
+                            menuOpen = true;
+                            share.show_share_menu($(this), 'photo', self.options.shareUrl, self.options.photoId, {x:0,y:0}, function(){
+                                menuOpen = false;
+                                checkCloseToolbar();
+                            });
+                        });
+
+                        self.toolbarElement.find('.like-button').click(function(){
+                            alert("This feature is still under construction. This will allow you to like an individual photo.");
+                        });
+
+                        self.toolbarElement.find('.info-button').click(function(){
+                            alert("This feature is still under construction. This will show a menu with options for downloading original photo, etc.");
+                        });
+                    }
 
                 });
 
-                self.borderElement.mouseleave(function(){
-                    self.borderElement.css({'padding-bottom': '0px'});
-                    self.imageElement.css({'border-bottom': '5px solid #fff'});
-                    self.toolbarElement.remove();
+                self.element.mouseleave(function(){
+                    hover = false;
+                    checkCloseToolbar();
                });
             }
         },
+
+        setMenuOpen: function(open){
+            if(open){
+                self.element.find('.photo-toolbar').addClass('menu-open');
+            }
+            else{
+                self.element.find('.photo-toolbar').removeClass('menu-open');
+            }
+        },
+
 
         checked:false,
 
