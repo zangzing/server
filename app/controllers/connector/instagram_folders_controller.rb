@@ -1,14 +1,31 @@
 class Connector::InstagramFoldersController < Connector::InstagramController
   
   def self.list_albums(api, params)
-    followers = call_with_error_adapter do
-      api.user_follows(nil)
-    end
-    root = followers.map do |f|
-      {
-        :name => f[:full_name], :type => 'folder', :id => "follower-#{f[:id]}",
-        :open_url => instagram_photos_path(params.merge(:target => f[:id])), :add_url => instagram_folder_action_path(params.merge(:target => f[:id], :action => 'import'))
-      }
+    target = params[:target]
+    unless target
+      call_with_error_adapter do #A call with short response just to validate token
+        api.user(nil)
+      end
+      root = [
+        {
+          :name => 'My Photos', :type => 'folder', :id => 'my-photos',
+          :open_url => instagram_photos_path(:target => 'my-photos', :format => 'json'), :add_url => instagram_folder_action_path(:target => 'my-photos', :action => 'import', :format => 'json')
+        },
+        {
+          :name => 'People I Follow', :type => 'folder', :id => 'i-follow',
+          :open_url => instagram_folders_path(:target => 'i-follow', :format => 'json'), :add_url => nil
+        }
+      ]
+    else
+      followers = call_with_error_adapter do
+        api.user_follows(nil)
+      end
+      root = followers.map do |f|
+        {
+          :name => f[:full_name], :type => 'folder', :id => "follower-#{f[:id]}",
+          :open_url => instagram_photos_path(:target => f[:id], :format => 'json'), :add_url => instagram_folder_action_path(:target => f[:id], :action => 'import', :format => 'json')
+        }
+      end
     end
     JSON.fast_generate(root)
   end
@@ -45,23 +62,7 @@ class Connector::InstagramFoldersController < Connector::InstagramController
   end
 
   def index
-    target = params[:target]
-    unless target
-      root = [
-        {
-          :name => 'My Photos', :type => 'folder', :id => 'my-photos',
-          :open_url => instagram_photos_path(:target => 'my-photos'), :add_url => instagram_folder_action_path(:target => 'my-photos', :action => 'import')
-        },
-        {
-          :name => 'People I Follow', :type => 'folder', :id => 'i-follow',
-          :open_url => instagram_folders_path(:target => 'i-follow'), :add_url => nil
-        }
-      ]
-    else
-      fire_async_response('list_albums')
-      return
-    end
-    render :json => JSON.fast_generate(root)
+    fire_async_response('list_albums')
   end
 
   def import
