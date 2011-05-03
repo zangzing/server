@@ -487,8 +487,16 @@
       }
 
        function create_new_token () {
-            var string = input_box.val().toLowerCase();
-            if(string.length > 0) add_token_from_strings( string,  string);
+            var string = input_box.val(); //.toLowerCase();
+            if(string.length > 0){
+                // split the string by tabs,commas,returns or spaces and
+                // make each part a token.
+                var string_parts =  string.split(/\s*,\s*|\s*\t\s*/);
+                for( var i in string_parts){
+                    var str = string_parts[i]; //$('<div/>').text(string_parts[i]).html();
+                    add_token_from_strings( str, str);
+                }
+            }
        }
 
 
@@ -587,9 +595,11 @@
       }
 
       function show_dropdown_hint(){
+         if( ! settings.displayOnly ){
          dropdown
             .html("<p>"+settings.hintText+"</p>")
             .show();
+         }
       }
 
       function show_dropdown_token_limit_warning(){

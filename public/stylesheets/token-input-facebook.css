@@ -62,6 +62,10 @@ li.token-input-token-facebook {
     float: left;
 }
 
+li.token-input-token-facebook.error{
+    background-color: #ff3333;
+}
+
 li.token-input-token-facebook p {
     display: inline;
     padding: 0;
