@@ -481,6 +481,7 @@ zz.init = {
                         var photo = json[i];
                         photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
                         photo.src = agent.checkAddCredentialsToUrl(photo.thumb_url);
+                        photo.shareUrl = 'http://' + document.location.host + zz.album_base_url + "#!" + photo.id;
                     }
 
 

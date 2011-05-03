@@ -283,7 +283,7 @@
 
                         self.toolbarElement.find('.share-button').mousedown(function(){
                             menuOpen = true;
-                            share.show_share_menu($(this), 'photo', 'asdfasdfasdf', self.options.photoId, {x:0,y:0}, function(){
+                            share.show_share_menu($(this), 'photo', self.options.shareUrl, self.options.photoId, {x:0,y:0}, function(){
                                 menuOpen = false;
                                 checkCloseToolbar();
                             });
