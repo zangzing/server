@@ -320,9 +320,9 @@ pages.share = {
             subject_id = zz.album_id;
         }
 
+
         var url = zz.path_prefix +'/shares/new';
         var self = this;
-
 
 
         container.load(url, function(){
@@ -336,6 +336,8 @@ pages.share = {
             });
 
             callback();
+            self.show_email(container, subject_type, subject_id);
+
         });
     },
 

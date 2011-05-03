@@ -255,37 +255,14 @@ zz.init = {
 
             ZZAt.track('button.share.click');
 
-            zz.init.disable_buttons();
-            $('#footer #share-button').removeClass('disabled').addClass('selected');
-
-
             //todo: need better generic way to determine current view and get photo id -- this is duplicated elsewhere
             if (document.location.href.indexOf('/photos/#!') !== -1 || document.location.href.indexOf('/photos#!') !== -1) {
-                $('#footer #share-button').removeClass('selected');  
-                zz.init.enable_buttons();
-                alert("This feature is still under construction.");
-//                //picture view -- share photo
-//                var currentPhotoId = null;
-//                var hash = jQuery.param.fragment();
-//
-//                if (hash !== '') {
-//                    currentPhotoId = hash.slice(1); //remove the '!'
-//                }
-//                pages.share.share_in_dialog('photo', currentPhotoId, function(){
-//                    zz.init.enable_buttons();
-//                    $('#footer #share-button').removeClass('selected');  //todo: centralize this somewhere -- zz.toolbars
-//                });
+                var photoId = jQuery.param.fragment().slice(1);
+                share.show_share_menu($(this), 'photo', document.location.href, photoId, {x:0,y:10});
             }
             else{
-                //album view -- share album
-                pages.share.share_in_dialog('album', zz.album_id, function(){
-                    zz.init.enable_buttons();
-                    $('#footer #share-button').removeClass('selected');  //todo: centralize this somewhere -- zz.toolbars
-                });
-
+                share.show_share_menu($(this), 'album', document.location.href, zz.album_id, {x:0,y:10});
             }
-
-
 
         });
 
@@ -529,11 +506,7 @@ zz.init = {
                             document.location.href = zz.album_base_url + "/photos/#!" + photo.id;
                         },
                         currentPhotoId: $.param.fragment(),
-                        showButtonBar:true,
-                        onClickShare: function(photo_id){
-                            alert("This feature is still under construction.");
-//                            pages.share.share_in_dialog('photo', photo_id);
-                        }
+                        showButtonBar:true
 
                     }).data().zz_photogrid;
 
@@ -591,7 +564,6 @@ zz.init = {
                             onScrollToPhoto: function(photoId) {
                                 window.location.hash = '#!' + photoId
                                 ZZAt.track('photo.view',{id:photoId});
-
                             }
 
 
