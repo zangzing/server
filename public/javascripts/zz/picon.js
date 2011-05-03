@@ -66,40 +66,52 @@
                 self.options.onClick();
             });
 
-            self.template.find('.share-button').click(function(){
-                share.show_share_menu($(this), 'album', self.options.albumUrl, self.options.albumId);
-            });
-
-            self.template.find('.like-button').click(function(){
-                self.options.onLike();
-            });
-
-
-            if(!self.options.allowDelete){
-                self.template.find('.delete-button').hide();
-            }
-            else{
-                self.template.find('.delete-button').click(function(){
-                    self.options.onDelete();
-                });
-            }
-
 
             var initMouseOver = function(){
                 self.topOfStack = self.template.find('.stacked-image:last');
 
                 var height = self.topOfStack.height();
 
-                self.topOfStack.mouseover(function(){
+                var menuOpen = false;
+
+                self.element.mouseover(function(){
                     self.topOfStack.css({height: height + 30});
                     self.topOfStack.find('.button-bar').show();
+                    hover = true;
+
+
+                    self.template.find('.share-button').click(function(){
+                        menuOpen = true;
+                        share.show_share_menu($(this), 'album', self.options.albumUrl, self.options.albumId, {x:0,y:0}, function(){
+                            menuOpen = false;
+                        });
+                    });
+
+                    self.template.find('.like-button').click(function(){
+                        self.options.onLike();
+                    });
+
+
+                    if(!self.options.allowDelete){
+                        self.template.find('.delete-button').hide();
+                    }
+                    else{
+                        self.template.find('.delete-button').click(function(){
+                            self.options.onDelete();
+                        });
+                    }
 
                 });
 
-                self.topOfStack.mouseout(function(){
-                    self.topOfStack.css({height: height});
-                    self.topOfStack.find('.button-bar').hide();
-                });
+                self.element.mouseout(function(){
+                    if(!menuOpen){
+                         self.topOfStack.css({height: height});
+                         self.topOfStack.find('.button-bar').hide();
+                         self.template.find('.share-button').unbind('click');
+                         self.template.find('.like-button').unbind('click');
+                         self.template.find('.delete-button').unbind('click');
+                     }
+                 });
             };
                 
 

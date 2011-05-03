@@ -1,9 +1,9 @@
 var share = {
 
     MENU_TEMPLATE: '<div class="share-menu">' +
-                     '<div class="email menu-item">Email</div>' +
-                     '<div class="twitter menu-item">Twitter</div>' +
                      '<div class="facebook menu-item">Facebook</div>' +
+                     '<div class="twitter menu-item">Twitter</div>' +
+                     '<div class="email menu-item">Email</div>' +
                    '</div>',
 
     EMAIL_SHARE_TEMPLATE:    'mailto:?subject={{subject}}&body={{message}}',
@@ -51,7 +51,6 @@ var share = {
         }
 
         menu.css({opacity:0,left:x,top:y+10});
-
         menu.animate({top:y,opacity:1},200);
 
 
