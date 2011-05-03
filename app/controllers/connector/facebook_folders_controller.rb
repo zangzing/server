@@ -2,36 +2,57 @@ class Connector::FacebookFoldersController < Connector::FacebookController
   
   def self.list_folders(api_client, params)
     target = params[:target]
-    album_list = call_with_error_adapter do
-      api_client.get(target, :limit => 1000)
-    end
-
-    album_list.reject! { |a| a[:type] == 'profile' } #Remove 'Profile Pictures'
-    unless album_list.empty?
-      if album_list.first[:updated_time]
-        album_list.sort!{|a, b| b[:updated_time] <=> a[:updated_time] }
+    unless target
+      call_with_error_adapter do #A call with short response just to validate token
+        api_client.get('', :domain => 'www.facebook.com')
       end
-      if target=='me/friends' #Sort by last names
-        album_list = album_list.sort_by { |friend| friend[:name].split(' ').last }
-      end
-      @folders = album_list.map do |f|
+      fb_root = [
         {
-          :name => f[:name] || "Created #{f[:created_time].strftime('%d %b %Y')}",
-          :type => "folder",
-          :id  =>  f[:id]
+          :name => 'My Albums', :type => 'folder', :id => 'my-albums',
+          :open_url => facebook_folders_path(:target => 'me/albums', :format => 'json'), :add_url => nil
+        },
+        {
+          :name => "My Friends' Albums", :type => 'folder', :id => 'my-friends',
+          :open_url => facebook_folders_path(:target => 'me/friends', :format => 'json'), :add_url => nil
+        },
+        {
+          :name => 'Photos of Me', :type => 'folder', :id => 'tagged-with-me',
+          :open_url => facebook_photos_path('me', :format => 'json'), :add_url => facebook_folder_action_path(:fb_album_id =>'me', :action => 'import', :format => 'json')
         }
-      end
-      @folders.each do |f|
-        f[:add_url] = nil
-        if target=='me/friends'
-          f[:open_url] = facebook_folders_path(:target => "#{f[:id]}/albums", :format => 'json')
-        elsif target.match(/\w+\/albums/)
-          f[:open_url] = facebook_photos_path(f[:id], :format => 'json')
-          f[:add_url] = facebook_folder_action_path(:fb_album_id =>f[:id], :action => 'import', :format => 'json')
-        end
-      end
+      ]
+      @folders = fb_root
     else
-      @folders = []
+      album_list = call_with_error_adapter do
+        api_client.get(target, :limit => 1000)
+      end
+
+      album_list.reject! { |a| a[:type] == 'profile' } #Remove 'Profile Pictures'
+      unless album_list.empty?
+        if album_list.first[:updated_time]
+          album_list.sort!{|a, b| b[:updated_time] <=> a[:updated_time] }
+        end
+        if target=='me/friends' #Sort by last names
+          album_list = album_list.sort_by { |friend| friend[:name].split(' ').last }
+        end
+        @folders = album_list.map do |f|
+          {
+            :name => f[:name] || "Created #{f[:created_time].strftime('%d %b %Y')}",
+            :type => "folder",
+            :id  =>  f[:id]
+          }
+        end
+        @folders.each do |f|
+          f[:add_url] = nil
+          if target=='me/friends'
+            f[:open_url] = facebook_folders_path(:target => "#{f[:id]}/albums", :format => 'json')
+          elsif target.match(/\w+\/albums/)
+            f[:open_url] = facebook_photos_path(f[:id], :format => 'json')
+            f[:add_url] = facebook_folder_action_path(:fb_album_id =>f[:id], :action => 'import', :format => 'json')
+          end
+        end
+      else
+        @folders = []
+      end
     end
     JSON.fast_generate(@folders)
   end
@@ -67,29 +88,7 @@ class Connector::FacebookFoldersController < Connector::FacebookController
   end
 
   def index
-    target = params[:target]
-    unless target
-      fb_root = [
-        {
-          :name => 'My Albums', :type => 'folder', :id => 'my-albums',
-          :open_url => facebook_folders_path(:target => 'me/albums'), :add_url => nil
-        },
-        {
-          :name => 'My Friends Albums', :type => 'folder', :id => 'my-friends',
-          :open_url => facebook_folders_path(:target => 'me/friends'), :add_url => nil
-        },
-        {
-          :name => 'Photos of Me', :type => 'folder', :id => 'tagged-with-me',
-          :open_url => facebook_photos_path('me'), :add_url => facebook_folder_action_path(:fb_album_id =>'me', :action => 'import')
-        }
-      ]
-      @folders = fb_root
-    else
-      #@folders = self.class.list_folders(facebook_graph, params)
-      fire_async_response('list_folders')
-      return
-    end
-    render :json => JSON.fast_generate(@folders)
+    fire_async_response('list_folders')
   end
 
   def import
