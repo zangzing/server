@@ -23,6 +23,7 @@ module ZZ
           file = kodak_connector.response_as_file(source_url)
           file_path = file.path
           file.close()
+          file.validate_size
           photo.file_to_upload = file_path
           photo.save
         end
