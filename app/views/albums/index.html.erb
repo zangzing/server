@@ -121,12 +121,11 @@
                     clone.zz_picon({
                         caption: album.name,
                         coverUrl: album.c_url,
+                        albumId: album.id,
+                        albumUrl: 'http://' + document.location.host + '/' + album.album_path,
                         onClick: function(){
                             $('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()},500,'easeOutQuart');
                             document.location.href = album.album_path;
-                        },
-                        onShare: function(){
-                            pages.share.share_in_dialog('album', album.id);
                         },
                         onLike: function(){
                             alert('This feature is still under construction. It will allow you to like an album.')

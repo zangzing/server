@@ -8,9 +8,10 @@
         options: {
             caption: "",
             coverUrl: "",
+            albumUrl:null,
+            albumId:null,
             onClick: function(){},
             onLike: function(){},
-            onShare: function(){},
             onDelete: function(){},
             allowDelete: false,
             stackAngles: [
@@ -21,6 +22,7 @@
 
             maxCoverWidth: 180,
             maxCoverHeight: 150
+
 
 
         },
@@ -65,7 +67,7 @@
             });
 
             self.template.find('.share-button').click(function(){
-                self.options.onShare();
+                share.show_share_menu($(this), 'album', self.options.albumUrl, self.options.albumId);
             });
 
             self.template.find('.like-button').click(function(){
