@@ -1,3 +1,5 @@
+Dir.glob(File.dirname(__FILE__) + 'connector/*') {|file| require file}
+
 module ZZ
   module Async
       
