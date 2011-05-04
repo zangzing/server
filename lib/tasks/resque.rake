@@ -15,7 +15,6 @@ task "resque:setup" => :environment do
   else
     puts "Pulling in all dependencies"
     require_all "app/models"
-    require_all "app/controllers/connector"
     require_all "app/helpers"
     require_all "lib"
     puts "Done pulling in dependencies"
