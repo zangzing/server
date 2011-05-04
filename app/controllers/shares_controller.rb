@@ -96,6 +96,8 @@ class SharesController < ApplicationController
       message = "Check out #{photo.user.posessive_name} photo on @ZangZing"
     end
 
+    shareable_url = bitly_url(shareable_url)
+
     redirect_to "http://twitter.com/share?text=#{URI.escape message}&url=#{URI.escape shareable_url}"
 
   end
@@ -120,16 +122,22 @@ class SharesController < ApplicationController
     if  params[:user_id]
       user = User.find(params[:user_id])
       shareable_url = user_pretty_url(user)
+      shareable_url = bitly_url(shareable_url)
+
       subject = "Check out a ZangZing homepage"
       message = "Hi, I thought you would like to see this ZangZing homepage.\n\n #{shareable_url}"
     elsif params[:album_id]
       album = Album.find(params[:album_id])
       shareable_url = album_pretty_url(album)
+      shareable_url = bitly_url(shareable_url)
+
       subject = "Check out #{album.name} album on ZangZing"
       message = "Hi, I thought you would like to see #{album.user.posessive_name} #{album.name} album on ZangZing.\n\n #{shareable_url}"
     elsif params[:photo_id]
       photo = Photo.find(params[:photo_id])
       shareable_url = photo_pretty_url(photo)
+      shareable_url = bitly_url(shareable_url)
+
       subject = "Check out this photo on ZangZing"
       message = "Hi, I thought you would like to see #{photo.user.posessive_name} photo on ZangZing.\n\n #{shareable_url}"
     end
@@ -143,6 +151,17 @@ class SharesController < ApplicationController
 
 
   private
+
+  def bitly_url(url)
+    begin
+      bitly = Bitly.new(BITLY_API_KEYS[:username], BITLY_API_KEYS[:api_key]).shorten(url)
+      return bitly.short_url
+    rescue Exception => e
+      logger.error e
+      logger.error e.backtrace
+      return url
+    end
+  end
 
   def validate_email_list( email_list )
     #split the comma seprated list into array removing any spaces before or after commma
