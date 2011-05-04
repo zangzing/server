@@ -44,12 +44,23 @@ class SharesController < ApplicationController
     # make sure recipients its an array
     # emailshare submits a comma separated list of emails
     # postshare submits an array of social services
-    rcp = (  params[:recipients].is_a?(Array) ? params[:recipients] : params[:recipients].split(',') )
+    if params[:recipients].is_a?(Array)
+      @rcp = params[:recipients] #this is post share
+    else
+      # We are in an email, validate emails, if they ALL pass create share otherwise return error info
+      emails,errors = validate_email_list(  params[:recipients] )
+      if errors.length > 0
+        flash[:error] = "Please verify highlighted addresses"
+        render :json => errors, :status => 200 and return
+      end
+      @rcp = emails
+    end
+    
     @share = Share.new( :user =>        current_user,
                         :subject =>     @subject,
                         :subject_url => @subject_url,
                         :service =>     params[:service],
-                        :recipients =>  rcp,
+                        :recipients =>  @rcp,
                         :message    =>  params[:message])
 
     unless @share.save
@@ -67,6 +78,30 @@ class SharesController < ApplicationController
       flash[:notice] += "will be shared as soon as it is ready."
     end   
     render :json =>"", :status => 200
+  end
+
+  private
+
+  def validate_email_list( email_list )
+    #split the comma seprated list into array removing any spaces before or after commma
+    tokens = email_list.split(/\s*,\s*/)
+
+    # Loop through the tokens and add the bad ones to the errors array
+    token_index = 0
+    emails = []
+    errors = []
+    tokens.each do |t|
+      begin
+        e = Mail::Address.new( t )
+        # An address like 'foobar' is a valid local address with no domain so avoid it
+        raise Mail::Field::ParseError.new if e.domain.nil?
+        emails << e.address #TODO: Email validator in share.rb does not handle formatted_emails just the address
+      rescue Mail::Field::ParseError
+        errors << { :index => token_index, :token => t, :error => "Invalid Email Address" }
+      end
+      token_index+= 1
+    end
+    return emails,errors
   end
 
 end

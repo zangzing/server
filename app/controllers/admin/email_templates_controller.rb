@@ -181,8 +181,8 @@ private
   def message
     if rand(2) == 1
     "This message is automatically generated for test emails, Its mimics a custom message written by a user. "+
-        "It will be included randomly so you may or may not see it. Do not worry it is not a bug.  "+
-        "Proin vestibulum adipiscing neque, ac tincidunt neque pretium a."
+        "It will be included randomly so you may or may not see it. The following symbols are part of the test  "+
+        "<This is full & of HTML symbols <which></should> &Be<> escaped> END OF TEST MESSAGE"
     else
       ""
     end

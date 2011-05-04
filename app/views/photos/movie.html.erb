@@ -71,7 +71,7 @@
     if params[:return_to]
         back_url = CGI::unescape(params[:return_to])
     else
-        back_url = "#{album_path @album}"
+        back_url = "#{album_pretty_url( @album )}"
     end
 
 %>

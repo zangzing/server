@@ -3,7 +3,7 @@
 #
 
 class AlbumsController < ApplicationController
-  before_filter :require_user,              :except => [ :index, :show, :back_to_index, :my_albums_json, :liked_albums_json, :my_albums_public_json, :liked_albums_public_json, :liked_users_public_albums_json ]
+  before_filter :require_user,              :except => [ :index, :back_to_index, :my_albums_json, :liked_albums_json, :my_albums_public_json, :liked_albums_public_json, :liked_users_public_albums_json ]
   before_filter :require_user_json,         :only =>   [ :my_albums_json, :liked_albums_json ]
   before_filter :require_album,             :except => [ :index, :create, :new, :my_albums_json, :liked_albums_json, :my_albums_public_json, :liked_albums_public_json, :liked_users_public_albums_json  ]
   before_filter :require_album_admin_role,  :only =>   [ :destroy, :edit, :update ]
@@ -254,12 +254,6 @@ class AlbumsController < ApplicationController
       json = loader.fetch_liked_users_albums_json
       render_cached_json(json, public)
     end
-  end
-
-
-  # displays all of an albums photos
-  def show
-    redirect_to album_pretty_url(@album)
   end
 
   #deletes an album
