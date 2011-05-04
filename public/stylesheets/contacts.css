@@ -27,9 +27,9 @@
 .tokenizer{
     font-size:14px;
     text-align: left;
-    width: 690px;
-    height: 100px;
-    padding: 0%;
+    width: 700px;
+    min-height: 100px;
+    padding: 0;
 }
 
 .tokenizer input{

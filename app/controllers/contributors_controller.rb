@@ -1,3 +1,8 @@
+#
+#   Copyright 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
+#
+
+require 'mail'
 class ContributorsController < ApplicationController
   before_filter :require_user
   layout false
@@ -28,26 +33,41 @@ class ContributorsController < ApplicationController
       render :nothing =>true, :status => 404 and return
     end
 
+
     #split the comma seprated list into array removing any spaces before or after commma
-    emails = params[:contact_list].split(/\s*,\s*/)
+    tokens = params[:contact_list].split(/\s*,\s*/)
 
-    #create a contributor for each email, save error ids in error_ids array
-    error_emails = []
-    emails.each do | email|
 
-        unless ZZ::EmailValidator.validate( email )
-          error_emails << email
-          next  #its neither a contact id nor a valid email. add to errors and go to next itreration
+
+      token_count = 0
+      emails = []
+      errors = []
+      tokens.each do |t|
+        begin
+          e = Mail::Address.new( t )
+          if e.domain   # An address like this 'foobar' is a valid local address with no domain so avoid it
+            emails << e
+          else
+            errors << { :index => token_count, :token => t, :error => "Invalid Email Address" }
+          end
+        rescue Mail::Field::ParseError => e
+          errors << { :index => token_count, :token => t, :error => "Invalid Email Address" }
         end
-        @album.add_contributor( email, params[:message] )
+        token_count+= 1
+      end
+
+      if errors.length > 0
+        flash[:error] = "Please delete and re-enter the highlighted contributor's"
+        render :json => errors, :status => 200 and return
+      end
+
+
+    emails.each do | email|
+        @album.add_contributor( email.address, params[:message] )
     end
 
-    if error_emails.length > 0;
-      flash[:error] = "These emails #{error_emails.join(',')} are not valid for contributors"
-      render :nothing =>true, :status => 400 and return
-    end
 
-      flash[:notice] = "The contributors were added to your album"
+    flash[:notice] = "The contributors were added to your album"
     render :json => "", :status => 200
   end
 
@@ -61,11 +81,11 @@ class ContributorsController < ApplicationController
     contributor_ids.each do |id|
       user = User.find_by_id( id )
       if user
-        @results << { :id => id, :name => user.name }
+        @results << { :id => id, :name => CGI::escapeHTML(user.formatted_email) }
       else
         contact = current_user.contacts.find_by_address( id )
         if contact
-          @results << { :id => id, :name => contact.name }
+          @results << { :id => id, :name => CGI::escapeHTML(contact.formatted_email) }
         else
           @results << { :id => id, :name => id }
         end

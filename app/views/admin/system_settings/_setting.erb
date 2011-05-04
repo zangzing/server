@@ -1,7 +1,7 @@
 <% setting = @settings.find{ |s| s.name == setting_name} if setting.nil?%>
 <tr>
-      <td><h3><%= label_tag  setting.name, setting.label, :title => setting.description, :style =>"font-size:16px; color: #888888;"%></h3></td>
-      <td>
+      <th><h3><%= label_tag  setting.name, setting.label, :title => setting.description, :style =>"font-size:16px; color: #888888;"%></h3></th>
+      <td style="padding-left: 10px;" >
       <%- if setting.data_type == 'boolean' %>
         <%= hidden_field_tag setting.name, "0" %>
         <%= check_box_tag setting.name, "1", SystemSetting[setting.name], :title => setting.description%>
@@ -18,5 +18,5 @@
 </tr>
 <tr>
   <td></td>
-  <td><%=setting.description%></td>
+  <td style="font-size:10px; color: #AAAAAA; padding-left: 10px;"><%=setting.description%></td>
 </tr>

@@ -1,21 +1,21 @@
 <%= render :partial =>  'admin/admin_screens/adminmenu' %>
 <div id="main-container" >
   <ul class="viewlist" style="width: 800px;">
-    <li class="item">
+       <li class="item">
       <div class="header bar">
-        Signup Control
+        System Wide Message
       </div>
       <div class="content">
         <br>
-        <table>
-        <%= form_tag( system_settings_path, :method => :put) do -%>
-               <%=render :partial=>'setting', :locals => { :setting_name => 'signup_control' } %>
-               <%=render :partial=>'setting', :locals => { :setting_name => 'new_users_allowed' } %>
-               <%=render :partial=>'setting', :locals => { :setting_name => 'allow_sharers' } %>
-               <%=render :partial=>'setting', :locals => { :setting_name => 'always_allow_beta_listers' } %>
+        <table style="width: 700px;">
+          <tr><td style="width: 15%;"></td><td ></td></tr>
+        <%= form_tag( system_settings_path, :method => :put) do %>
+             <%=render :partial=>'setting', :locals => { :setting_name => 'system_message_enabled' } %>
+             <%=render :partial=>'setting', :locals => { :setting_name => 'system_message_text' } %>
+             <%=render :partial=>'setting', :locals => { :setting_name => 'system_message_style' } %>
         </table>
-       <%= submit_tag 'Save Signup Control',  :style => "float: right;"%>
-        <%- end -%>
+       <%= submit_tag 'Save System Wide Message', :style => "float: right;"%>
+        <% end %>
       </div>
     </li>
     <li class="item">
@@ -24,7 +24,7 @@
       </div>
       <div class="content">
         <br>
-        <table>
+        <table style="width: 700px;">
           <tr><td style="width: 15%;"></td><td ></td></tr>
         <%= form_tag( system_settings_path, :method => :put) do %>
              <%=render :partial=>'setting', :locals => { :setting_name => 'facebook_post_caption' } %>
@@ -35,5 +35,23 @@
         <% end %>
       </div>
     </li>
+<li class="item">
+      <div class="header bar">
+        Signup Control
+      </div>
+      <div class="content">
+        <br>
+        <table style="width: 700px;">
+        <%= form_tag( system_settings_path, :method => :put) do -%>
+               <%=render :partial=>'setting', :locals => { :setting_name => 'signup_control' } %>
+               <%=render :partial=>'setting', :locals => { :setting_name => 'new_users_allowed' } %>
+               <%=render :partial=>'setting', :locals => { :setting_name => 'allow_sharers' } %>
+               <%=render :partial=>'setting', :locals => { :setting_name => 'always_allow_beta_listers' } %>
+        </table>
+       <%= submit_tag 'Save Signup Control',  :style => "float: right;"%>
+        <%- end -%>
+      </div>
+    </li>
   </ul>
-</div>    
+</div>
+

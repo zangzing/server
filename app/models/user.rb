@@ -242,7 +242,7 @@ class User < ActiveRecord::Base
   end
 
   def formatted_email
-      Mail::Address.new( "#{self.name}<#{self.email}>").format
+      Mail::Address.new( "#{self.name} <#{self.email}>").format
   end
 
 
