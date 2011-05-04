@@ -77,8 +77,6 @@
                 self.element.mouseover(function(){
                     self.topOfStack.css({height: height + 30});
                     self.topOfStack.find('.button-bar').show();
-                    hover = true;
-
 
                     self.template.find('.share-button').click(function(){
                         menuOpen = true;
