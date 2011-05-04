@@ -9,7 +9,7 @@ zz.drawers = {
 
         // set up the album variables
         first: 'add',
-        last: 'contributors',
+        last: 'share',
         show_next_button: true,
         numbers: 1,
         percent: 0.0,
@@ -94,7 +94,7 @@ zz.drawers = {
             },
 
             contributors: {
-                next: 0,
+                next: 'share',
                 title: 'Contributors',
                 type: 'full',
 
@@ -106,23 +106,23 @@ zz.drawers = {
                 bounce: function(success, failure){
                     pages.contributors.bounce(success, failure);
                 }
+            },
+
+            share: {
+                next: 0,
+                title: 'Share',
+                type: 'full',
+
+
+                init: function(container, callback){
+                    pages.share.init(container, callback);
+                },
+
+                bounce: function(success, failure){
+                    pages.share.bounce(success, failure);
+                }
             }
 
-//            share: {
-//                next: 0,
-//                title: 'Share',
-//                type: 'full',
-//
-//
-//                init: function(container, callback){
-//                    pages.share.init(container, callback);
-//                },
-//
-//                bounce: function(success, failure){
-//                    pages.share.bounce(success, failure);
-//                }
-//            }
-//
         }
 
     }

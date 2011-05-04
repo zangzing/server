@@ -82,6 +82,17 @@ Server::Application.routes.draw do
     put '/shares/:id'                       => 'shares#update',     :as => :update_share
     delete '/shares/:id'                    => 'shares#destroy',    :as => :delete_share
 
+    get '/albums/:album_id/new_twitter_share' => 'shares#new_twitter_share'
+    get '/albums/:album_id/new_facebook_share' => 'shares#new_facebook_share'
+    get '/albums/:album_id/new_mailto_share' => 'shares#new_mailto_share'
+
+
+    get '/photos/:photo_id/new_twitter_share' => 'shares#new_twitter_share'
+    get '/photos/:photo_id/new_facebook_share' => 'shares#new_facebook_share'
+    get '/photos/:photo_id/new_mailto_share' => 'shares#new_mailto_share'
+
+
+
     #photos
     get    '/albums/:album_id/photos_json'  => 'photos#photos_json',                :as => :album_photos_json
     get    '/albums/:album_id/photos'       => 'photos#index',                      :as => :album
