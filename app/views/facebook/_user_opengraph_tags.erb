@@ -4,5 +4,5 @@
 <meta property="og:image" content="<%= @user.profile_photo_url %>"/>
 <meta property="og:site_name" content="<%=FACEBOOK_API_KEYS[:og_site_name]%>"/>
 <meta property="fb:app_id" content="<%=FACEBOOK_API_KEYS[:app_id]%>" />
-<meta property="og:description" content=""/>
+<meta property="og:description" content="<%= SystemSetting[:facebook_post_description] %>"/>
 
