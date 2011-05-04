@@ -20,7 +20,7 @@ module ZZ
           begin
             msg = Notifier.send( method, *args)
             msg.deliver unless msg.nil?
-          rescue SubcriptionsException => e
+          rescue SubscriptionsException => e
             Rails.logger.info e.message
           end
         end
