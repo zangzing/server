@@ -11,7 +11,6 @@
         <span class="blue"><%=activity.user.name%></span>
     </a>
     added <%=( (i = activity.upload_batch.photos.length) > 1 ? "#{i} photos" : "1 photo")%>
-    <!--to album <a href="<%=album_path(activity.album)%>" class="blue"><%=activity.album.name%></a>-->
     <div class="tagline"><%=time_ago_in_words(activity.upload_batch.created_at) %> ago</div>
     </div>
   </div>

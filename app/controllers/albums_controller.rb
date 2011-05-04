@@ -256,12 +256,6 @@ class AlbumsController < ApplicationController
     end
   end
 
-
-  # displays all of an albums photos
-  def show
-    redirect_to album_pretty_url(@album)
-  end
-
   #deletes an album
   #@album is set by require_album before_filter
   def destroy
