@@ -207,10 +207,10 @@ pages.edit_album_tab = {
                     allowEditCaption: true,
                     onChangeCaption: function(index, photo, caption){
                         $.ajax({
-                            type: "PUT",
+                            type: "POST",
                             dataType: "json",
                             url: zz.path_prefix + "/photos/" + photo.id + ".json",
-                            data: {'photo[caption]':caption},
+                            data: {'photo[caption]':caption, _method:'put'},
                             error: function(error){
                             }
 
@@ -231,10 +231,10 @@ pages.edit_album_tab = {
                             data.after_id = after_id;
                         }
 
-
+                        data._method = 'put';
 
                         $.ajax({
-                            type: "PUT",
+                            type: "POST",
                             data: data,
                             dataType: "json",
                             url: zz.path_prefix + "/photos/" + photo_id + "/position",
