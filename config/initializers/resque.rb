@@ -50,6 +50,60 @@ msg = "=> Resque options loaded. redis host is: "+  resque_config[Rails.env]
 Rails.logger.info msg
 puts msg
 
+# monkey patch method that calls for to not run a new process if
+# resque_run_forked flag is set.
+#
+# Also temporary fix for EY verbose script bug.
+#
+module Resque
+  # A Resque Worker processes jobs. On platforms that support fork(2),
+  # the worker will fork off a child to process each job. This ensures
+  # a clean slate when beginning the next job and cuts down on gradual
+  # memory growth as well as low level failures.
+  #
+  # It also ensures workers are always listening to signals from you,
+  # their master, and can react accordingly.
+  class Worker
+    def startup
+      # work around bug introduced by EY startup scripts where they turn on Verbose environment vars
+      self.verbose = false
+      self.very_verbose = false
+
+      enable_gc_optimizations
+      register_signal_handlers
+      prune_dead_workers
+      run_hook :before_first_fork
+      register_worker
+
+      # Fix buffering so we can `rake resque:work > resque.log` and
+      # get output from the child in there.
+      $stdout.sync = true
+    end
+
+
+    # Not every platform supports fork. Here we do our magic to
+    # determine if yours does.
+    def fork
+      @cant_fork = true if ::Server::Application.config.resque_run_forked == false
+
+      return if @cant_fork
+
+      begin
+        # IronRuby doesn't support `Kernel.fork` yet
+        if Kernel.respond_to?(:fork)
+          Kernel.fork
+        else
+          raise NotImplementedError
+        end
+      rescue NotImplementedError
+        @cant_fork = true
+        nil
+      end
+    end
+  end
+end
+
+
 # add instrumentation to track resque jobs in NewRelic - this is needed since the
 # standard tracking expects resque jobs to be running out of forked instances
 # and deosn't track the parent.  In our case we would like to run the workers

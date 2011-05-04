@@ -5,9 +5,6 @@ require 'zz/zza'
 require 'config/initializers/zangzing_config'
 
 task "resque:setup" => :environment do
-  # determine if should run forked or not - resque using the global $TESTING to indicate non forked
-  # we might want to monkey patch to use another flag but this will do for now
-  Server::Application.config.resque_run_forked ? $TESTING = false : $TESTING = true
   puts "resque:setup"
 
   if Rails.env == "development"
@@ -23,7 +20,7 @@ task "resque:setup" => :environment do
   # this is a hack to determine if we were called by the resque:scheduler rake task
   # since I'm not sure how I can determine my task if I am called by another
   ARGV.each do |arg|
-    if arg == "resque:scheduler"
+    if arg == "resquesave!:scheduler"
       # set up schedule for scheduler
       puts "Resque process for: " + arg
       Resque.schedule = ResqueScheduleConfig.config
