@@ -258,10 +258,10 @@ zz.init = {
             //todo: need better generic way to determine current view and get photo id -- this is duplicated elsewhere
             if (document.location.href.indexOf('/photos/#!') !== -1 || document.location.href.indexOf('/photos#!') !== -1) {
                 var photoId = jQuery.param.fragment().slice(1);
-                share.show_share_menu($(this), 'photo', document.location.href, photoId, {x:0,y:0});
+                share.show_share_menu($(this), 'photo', photoId, {x:0,y:0});
             }
             else{
-                share.show_share_menu($(this), 'album', document.location.href, zz.album_id, {x:0,y:0});
+                share.show_share_menu($(this), 'album', zz.album_id, {x:0,y:0});
             }
 
         });
@@ -481,13 +481,10 @@ zz.init = {
                         var photo = json[i];
                         photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
                         photo.src = agent.checkAddCredentialsToUrl(photo.thumb_url);
-                        photo.shareUrl = 'http://' + document.location.host + zz.album_base_url + "#!" + photo.id;
                     }
 
 
 
-
-                    
 
                     var grid = gridElement.zz_photogrid({
                         photos:json,
@@ -718,7 +715,6 @@ zz.init = {
                     var photo = json[i];
                     photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
                     photo.src = agent.checkAddCredentialsToUrl(photo.thumb_url);
-                    photo.shareUrl = 'http://' + document.location.host + zz.album_base_url + "#!" + photo.id;
                 }
 
 

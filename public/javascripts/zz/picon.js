@@ -82,7 +82,7 @@
 
                     self.template.find('.share-button').click(function(){
                         menuOpen = true;
-                        share.show_share_menu($(this), 'album', self.options.albumUrl, self.options.albumId, {x:0,y:0}, function(){
+                        share.show_share_menu($(this), 'album', self.options.albumId, {x:0,y:0}, function(){
                             menuOpen = false;
                         });
                     });

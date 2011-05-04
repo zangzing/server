@@ -13,9 +13,9 @@ class SharesController < ApplicationController
   end
 
   def newpost
-      @share = Share.new()
-      @twitter  = ( current_user.identity_for_twitter.credentials_valid? ? "1" :"0" )
-      @facebook = ( current_user.identity_for_facebook.credentials_valid? ? "1" :"0" )
+    @share = Share.new()
+    @twitter  = ( current_user.identity_for_twitter.credentials_valid? ? "1" :"0" )
+    @facebook = ( current_user.identity_for_facebook.credentials_valid? ? "1" :"0" )
   end
 
   def newemail
@@ -26,19 +26,19 @@ class SharesController < ApplicationController
     # Based on the route used to get here (and thus the params) we know what kind of subject does
     # the user wants to quack! about.
     if  params[:user_id]
-        @subject = User.find(params[:user_id])
-        @subject_type = Like::USER
-        @subject_url = user_pretty_url(@subject)
+      @subject = User.find(params[:user_id])
+      @subject_type = Like::USER
+      @subject_url = user_pretty_url(@subject)
     elsif params[:album_id]
-        @subject = Album.find(params[:album_id])
-        @subject_type = Like::ALBUM
-        @subject_url = album_pretty_url(@subject)
+      @subject = Album.find(params[:album_id])
+      @subject_type = Like::ALBUM
+      @subject_url = album_pretty_url(@subject)
     elsif params[:photo_id]
-        @subject = Photo.find(params[:photo_id])
-        @subject_type = Like::PHOTO
-        @subject_url = photo_pretty_url(@subject)
+      @subject = Photo.find(params[:photo_id])
+      @subject_type = Like::PHOTO
+      @subject_url = photo_pretty_url(@subject)
     else
-        render :json => "subject_type not specified via params", :status => 400 and return
+      render :json => "subject_type not specified via params", :status => 400 and return
     end
 
     # make sure recipients its an array
@@ -55,7 +55,7 @@ class SharesController < ApplicationController
       end
       @rcp = emails
     end
-    
+
     @share = Share.new( :user =>        current_user,
                         :subject =>     @subject,
                         :subject_url => @subject_url,
@@ -76,9 +76,71 @@ class SharesController < ApplicationController
       flash[:notice] += "has been shared."
     else
       flash[:notice] += "will be shared as soon as it is ready."
-    end   
+    end
     render :json =>"", :status => 200
   end
+
+
+  def new_twitter_share
+    if  params[:user_id]
+      user = User.find(params[:user_id])
+      shareable_url = user_pretty_url(user)
+      message = "Check out #{user.posessive_name} Albums on @ZangZing"
+    elsif params[:album_id]
+      album = Album.find(params[:album_id])
+      shareable_url = album_pretty_url(album)
+      message = "Check out #{album.user.posessive_name} #{album.name} on @ZangZing"
+    elsif params[:photo_id]
+      photo = Photo.find(params[:photo_id])
+      shareable_url = photo_pretty_url(photo)
+      message = "Check out #{photo.user.posessive_name} photo on @ZangZing"
+    end
+
+    redirect_to "http://twitter.com/share?text=#{URI.escape message}&url=#{URI.escape shareable_url}"
+
+  end
+
+  def new_facebook_share
+    if  params[:user_id]
+      user = User.find(params[:user_id])
+      shareable_url = user_pretty_url(user)
+    elsif params[:album_id]
+      album = Album.find(params[:album_id])
+      shareable_url = album_pretty_url(album)
+    elsif params[:photo_id]
+      photo = Photo.find(params[:photo_id])
+      shareable_url = photo_pretty_url(photo)
+    end
+
+    redirect_to "http://www.facebook.com/share.php?u=#{URI.escape shareable_url}"
+
+  end
+
+  def new_mailto_share
+    if  params[:user_id]
+      user = User.find(params[:user_id])
+      shareable_url = user_pretty_url(user)
+      subject = "Check out a ZangZing homepage"
+      message = "Hi, I thought you would like to see this ZangZing homepage.\n\n #{shareable_url}"
+    elsif params[:album_id]
+      album = Album.find(params[:album_id])
+      shareable_url = album_pretty_url(album)
+      subject = "Check out #{album.name} album on ZangZing"
+      message = "Hi, I thought you would like to see #{album.user.posessive_name} #{album.name} album on ZangZing.\n\n #{shareable_url}"
+    elsif params[:photo_id]
+      photo = Photo.find(params[:photo_id])
+      shareable_url = photo_pretty_url(photo)
+      subject = "Check out this photo on ZangZing"
+      message = "Hi, I thought you would like to see #{photo.user.posessive_name} photo on ZangZing.\n\n #{shareable_url}"
+    end
+
+    render :json=> {:mailto => "mailto:?subject=#{URI.escape subject}&body=#{URI.escape message}"}
+
+  end
+
+
+
+
 
   private
 
