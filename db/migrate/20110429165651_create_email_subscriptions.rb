@@ -22,6 +22,7 @@ class CreateEmailSubscriptions < ActiveRecord::Migration
     add_index :subscriptions, :user_id
 
     say_with_time "Creating Subscriptions Records for all users..." do
+      Subscriptions.reset_column_information
       User.all.each do |u|
         u.create_subscriptions
       end
