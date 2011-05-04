@@ -15,7 +15,7 @@ pages.album_add_photos_tab = {
         this.chooserWidget = template.zz_photochooser({album_id: zz.album_id}).data().zz_photochooser;
 
         ZZAt.track('album.add_photos_tab.view');
-        
+
 
         callback();
     },
@@ -94,7 +94,7 @@ pages.album_name_tab = {
                         }
                         var src = element.thumb_url;
 
-                        
+
                         src = agent.checkAddCredentialsToUrl(src);
 
                         return {id:id, src:src};
@@ -131,24 +131,24 @@ pages.album_name_tab = {
                 }
             });
 
-            callback();  
+            callback();
         });
 
 
     },
 
     bounce: function(success, failure){
-            $.ajax({ type: 'POST',
-                     url: zz.path_prefix + '/albums/'+zz.album_id,
-                     data:$(".edit_album").serialize(),
-                     success: success ,
-                     error:  function(){
-                                 //restore name and header to valid value
-                                 $('#album_name').val(pages.album_name_tab.original_album_name);
-                                 $('h2#album-header-title').text(pages.album_name_tab.original_album_name);
-                                 $('#album_name').keypress();
-                     }
-            });
+        $.ajax({ type: 'POST',
+            url: zz.path_prefix + '/albums/'+zz.album_id,
+            data:$(".edit_album").serialize(),
+            success: success ,
+            error:  function(){
+                //restore name and header to valid value
+                $('#album_name').val(pages.album_name_tab.original_album_name);
+                $('h2#album-header-title').text(pages.album_name_tab.original_album_name);
+                $('#album_name').keypress();
+            }
+        });
     }
 };
 
@@ -295,236 +295,6 @@ pages.album_privacy_tab = {
     }
 };
 
-pages.share = {
-
-
-
-
-
-
-
-    // optional params subject_tupe and subject_id paras are
-    // used when not in the wizard. an 's' is added to
-    // subject_type when constructing routes
-
-    init: function(container, callback, subject_type, subject_id){
-
-        ZZAt.track('album.share_tab.view');
-
-
-        if(_.isUndefined(subject_type)){
-            subject_type = 'album';
-        }
-
-        if(_.isUndefined(subject_id)){
-            subject_id = zz.album_id;
-        }
-
-
-        var url = zz.path_prefix +'/shares/new';
-        var self = this;
-
-
-        container.load(url, function(){
-           zz.wizard.resize_scroll_body();
-           $('.social-share').click(function(){
-                self.show_social(container, subject_type, subject_id);
-            });
-
-            $('.email-share').click(function(){
-                self.show_email(container, subject_type, subject_id);
-            });
-
-            callback();
-            self.show_email(container, subject_type, subject_id);
-
-        });
-    },
-
-
-    share_in_dialog: function(subject_type, subject_id, on_close){
-        var self = this;
-
-
-        var template = $('<div id="share-dialog-content"></div>');
-        $('<div id="share-dialog"></div>').html( template )
-                                               .zz_dialog({
-                                                         height: 450,
-                                                         width: 895,
-                                                         modal: true,
-                                                         autoOpen: true,
-                                                         open : function(event, ui){
-                                                            self.init(template, function(){}, subject_type, subject_id);
-                                                         },
-                                                         close: function(event, ui){
-                                                            if(!_.isUndefined(on_close)){
-                                                                on_close();
-                                                            }
-                                                         }
-        });
-
-    },
-
-
-    bounce: function(success, failure){
-        success();
-    },
-
-    // loads the status message post form in place of the type switcher on the share step
-    show_social: function(container, subject_type, subject_id){
-        var self = this;
-
-        $('div#share-body').fadeOut('fast', function(){
-            $('div#share-body').load(zz.path_prefix +'/shares/newpost', function(){
-                zz.wizard.resize_scroll_body();
-
-
-
-                $("#facebook_box").click( function(){
-                    if( $(this).is(':checked')  && !$("#facebook_box").attr('authorized')){
-                        $(this).attr('checked', false);
-                        oauthmanager.login(zz.path_prefix + '/facebook/sessions/new', function(){
-                            $("#facebook_box").attr('checked', true);
-                            $("#facebook_box").attr('authorized', 'yes');
-                        });
-                    }
-                });
-
-                $("#twitter_box").click( function(){
-                    if($(this).is(':checked') && !$("#twitter_box").attr('authorized')){
-                        $(this).attr('checked', false);
-                        oauthmanager.login(zz.path_prefix + '/twitter/sessions/new', function(){
-                            $("#twitter_box").attr('checked', true);
-                            $("#twitter_box").attr('authorized', 'yes');
-                        });
-                    }
-                });
-
-
-                $('#new_post_share').validate({
-                    rules: {
-                        'post_share[message]':  { required: true, minlength: 0, maxlength: 118 },
-                        'post_share[facebook]': { required: "#twitter_box:unchecked" },
-                        'post_share[twitter]':  { required:  "#facebook_box:unchecked"}
-                    },
-                    messages: {
-                        'post_share[message]': '',
-                        'post_share[facebook]': '',
-                        'post_share[twitter]': ''
-                    },
-                    submitHandler: function() {
-                        var serialized = $('#new_post_share').serialize();
-                        $.post(zz.path_prefix + '/' + subject_type + 's/'+ subject_id +'/shares.json', serialized, function(data,status,request){
-                            pages.share.reload_share(container, subject_type, subject_id, function(){
-                                zz.wizard.display_flashes(  request,200 )
-                            });
-                        });
-                    }
-                });
-
-                $('#cancel-share').click(function(){
-                    self.reload_share(container, subject_type, subject_id);
-                });
-
-                $('#post_share_button').click(function(){
-                    $('form#new_post_share').submit();
-                });
-
-
-
-                $('#post_share_message').keypress( function(){
-                    setTimeout(function(){
-                        var text = 'characters';
-                        var count = $('#post_share_message').val().length
-                        if(count === 1){
-                            text = 'character';
-                        }
-                        $('#character-count').text(count + ' ' + text);
-                    }, 10);
-                });
-
-                $('div#share-body').fadeIn('fast');
-            });
-        });
-    },
-
-
-    // loads the email post form in place of the type switcher on the share step
-    show_email: function(container, subject_type, subject_id ){
-        var self = this;
-        $('div#share-body').fadeOut('fast', function(){
-            $('div#share-body').load(zz.path_prefix + '/shares/newemail', function(){
-
-                $("#contact-list").tokenInput( zzcontacts.find, {
-                    allowNewValues: true,
-                    hintText: '',
-                    classes: {
-                        tokenList: "token-input-list-facebook",
-                        token: "token-input-token-facebook",
-                        tokenDelete: "token-input-delete-token-facebook",
-                        selectedToken: "token-input-selected-token-facebook",
-                        highlightedToken: "token-input-highlighted-token-facebook",
-                        dropdown: "token-input-dropdown-facebook",
-                        dropdownItem: "token-input-dropdown-item-facebook",
-                        dropdownItem2: "token-input-dropdown-item2-facebook",
-                        selectedDropdownItem: "token-input-selected-dropdown-item-facebook",
-                        inputToken: "token-input-input-token-facebook"
-                    }
-                });
-                zzcontacts.init( zz.current_user_id );
-                zz.wizard.resize_scroll_body();
-
-                $('#new_email_share').validate({
-                    rules: {
-                        'email_share[to]':      { required: true, minlength: 0 },
-                        'email_share[message]': { required: true, minlength: 0 }
-                    },
-                    messages: {
-                        'email_share[to]': 'At least one recipient is required',
-                        'email_share[message]': ''
-                    },
-
-                    submitHandler: function() {
-                        var serialized = $('#new_email_share').serialize();
-                        $.post(zz.path_prefix + '/'+ subject_type + 's/'+ subject_id +'/shares.json', serialized, function(data,status,request ){
-                            self.reload_share(container, subject_type, subject_id, function(){
-                                zz.wizard.display_flashes(  request,200 );
-                            });
-                        },"json");
-                    }
-
-                });
-
-                $('#cancel-share').click(function(){
-                    self.reload_share(container, subject_type, subject_id);
-                });
-
-                $('#mail-submit').click(function(){
-                    $('form#new_email_share').submit();
-                });
-                $('div#share-body').fadeIn('fast');
-            });
-        });
-    },
-
-
-
-
-    // reloads the main share part in place of the type switcher on the share step
-    reload_share: function(container, subject_type, subject_id, callback){
-        var self = this;
-        container.fadeOut('fast', function(){
-            self.init(container, function(){
-                container.fadeIn('fast');
-                if( typeof(callback) != "undefined" ){
-                    callback();
-                }
-            }, subject_type, subject_id);
-        });
-    }
-
-
-};
 
 pages.contributors = {
 
@@ -545,62 +315,62 @@ pages.contributors = {
 
     show_list: function( container, callback, request ){
         container.load( pages.contributors.url , function(){
-                //The contributors arrived in tmp_contact_list and declared when screen loaded
-                if( tmp_contact_list.length <= 0 ){
-                    pages.contributors.present = false;
-                    pages.contributors.show_new(container, callback);
-                } else {
-                     pages.contributors.present = true;
-                     // initialize the tokenized contact list widget
-                     $('#contributors-list').tokenInput(  '' , {
-                                allowNewValues: false,
-                                displayOnly : true,
-                                prePopulate: {
-                                    data: tmp_contact_list,
-                                    forceDataFill: true
-                                },
-                                classes: {
-                                    tokenList: "token-input-list-facebook",
-                                    token: "token-input-token-facebook",
-                                    tokenDelete: "token-input-delete-token-facebook",
-                                    selectedToken: "token-input-selected-token-facebook",
-                                    highlightedToken: "token-input-highlighted-token-facebook",
-                                    dropdown: "token-input-dropdown-facebook",
-                                    dropdownItem: "token-input-dropdown-item-facebook",
-                                    dropdownItem2: "token-input-dropdown-item2-facebook",
-                                    selectedDropdownItem: "token-input-selected-dropdown-item-facebook",
-                                    inputToken: "token-input-input-token-facebook"
-                                }
-                        });
-                        //bind to the widget's object deleted event
-                        $('#contributors-list').bind('tokenDeleted',function(e, id, name, count  ){
-                                $.post(pages.contributors.url, { _method: 'delete', id: id}, function(data, status, request){
-                                    zz.wizard.display_flashes(  request, 200 );
-                                    if( count <= 0){ //the contributor list is empty
-                                        pages.contributors.present = false;
-                                        container.fadeOut('fast', function(){
-                                            pages.contributors.show_new(container);
-                                        } );
-                                    }
-                                });
-                        });
-                        zz.wizard.resize_scroll_body();
-                        $('#add-contributors-btn').click(function(){
+            //The contributors arrived in tmp_contact_list and declared when screen loaded
+            if( tmp_contact_list.length <= 0 ){
+                pages.contributors.present = false;
+                pages.contributors.show_new(container, callback);
+            } else {
+                pages.contributors.present = true;
+                // initialize the tokenized contact list widget
+                $('#contributors-list').tokenInput(  '' , {
+                    allowNewValues: false,
+                    displayOnly : true,
+                    prePopulate: {
+                        data: tmp_contact_list,
+                        forceDataFill: true
+                    },
+                    classes: {
+                        tokenList: "token-input-list-facebook",
+                        token: "token-input-token-facebook",
+                        tokenDelete: "token-input-delete-token-facebook",
+                        selectedToken: "token-input-selected-token-facebook",
+                        highlightedToken: "token-input-highlighted-token-facebook",
+                        dropdown: "token-input-dropdown-facebook",
+                        dropdownItem: "token-input-dropdown-item-facebook",
+                        dropdownItem2: "token-input-dropdown-item2-facebook",
+                        selectedDropdownItem: "token-input-selected-dropdown-item-facebook",
+                        inputToken: "token-input-input-token-facebook"
+                    }
+                });
+                //bind to the widget's object deleted event
+                $('#contributors-list').bind('tokenDeleted',function(e, id, name, count  ){
+                    $.post(pages.contributors.url, { _method: 'delete', id: id}, function(data, status, request){
+                        zz.wizard.display_flashes(  request, 200 );
+                        if( count <= 0){ //the contributor list is empty
+                            pages.contributors.present = false;
                             container.fadeOut('fast', function(){
                                 pages.contributors.show_new(container);
-                            });
-                        });
-                        container.fadeIn('fast', function( ){
-                            if( typeof( request )!= 'undefined'){
-                                zz.wizard.display_flashes(  request,200 );
+                            } );
                         }
                     });
-
-                    if(! _.isUndefined(callback)){
-                        callback();
+                });
+                zz.wizard.resize_scroll_body();
+                $('#add-contributors-btn').click(function(){
+                    container.fadeOut('fast', function(){
+                        pages.contributors.show_new(container);
+                    });
+                });
+                container.fadeIn('fast', function( ){
+                    if( typeof( request )!= 'undefined'){
+                        zz.wizard.display_flashes(  request,200 );
                     }
+                });
 
+                if(! _.isUndefined(callback)){
+                    callback();
                 }
+
+            }
         });
     },
 
@@ -668,7 +438,7 @@ pages.contributors = {
             if(! _.isUndefined(callback)){
                 callback();
             }
-            
+
         });
     }
 };
@@ -970,7 +740,7 @@ pages.no_agent = {
 
 
             $('.zangzing-downloader #download-btn').click( function(){
-               pages.no_agent.download();
+                pages.no_agent.download();
             });
 
             pages.no_agent.keep_polling();
@@ -983,63 +753,63 @@ pages.no_agent = {
 
     dialog: function( onClose ){
 
-         $('<div></div>', { id: 'no-agent-dialog'}).load(pages.no_agent.get_message_url(), function(){
-             $('.zangzing-downloader #download-btn').click( function(){
-                 pages.no_agent.download();
-             }) ;
-             $( this ).zz_dialog({
-                    modal: true,
-                    width: 910,
-                    height: 510,
-                    close:  function(){
-                        if(onClose){
-                            onClose();
-                        }
+        $('<div></div>', { id: 'no-agent-dialog'}).load(pages.no_agent.get_message_url(), function(){
+            $('.zangzing-downloader #download-btn').click( function(){
+                pages.no_agent.download();
+            }) ;
+            $( this ).zz_dialog({
+                modal: true,
+                width: 910,
+                height: 510,
+                close:  function(){
+                    if(onClose){
+                        onClose();
                     }
-             });
+                }
+            });
 
             $('.zangzing-downloader #download-btn').click( function(){
-               pages.no_agent.download();
+                pages.no_agent.download();
             });
 
 
-             pages.no_agent.poll_agent( function(){
-                 $( '#no-agent-dialog' ).zz_dialog('close');
-             });
+            pages.no_agent.poll_agent( function(){
+                $( '#no-agent-dialog' ).zz_dialog('close');
+            });
         });
 
     },
 
     poll_agent: function( when_ready ){
-          agent.getStatus( function( status ){
-              if( status == agent.STATUS.READY ){
-                    $('.zangzing-downloader #download-btn').attr('disabled', 'disabled');
-                    $('.zangzing-downloader .step.four .graphic').addClass('ready');
-                    if(  when_ready ){
-                        setTimeout( when_ready, 2000 );
-                    }
+        agent.getStatus( function( status ){
+            if( status == agent.STATUS.READY ){
+                $('.zangzing-downloader #download-btn').attr('disabled', 'disabled');
+                $('.zangzing-downloader .step.four .graphic').addClass('ready');
+                if(  when_ready ){
+                    setTimeout( when_ready, 2000 );
+                }
 
-              }
-              else if( status == agent.STATUS.BAD_SESSION ){
-                  alert("Sorry, your session has expired. Please sign in again.");
-                  document.location.href = path_helpers.rails_route('signin');
-              }
-              else{
-                  if( pages.no_agent.keep_polling() ){
+            }
+            else if( status == agent.STATUS.BAD_SESSION ){
+                alert("Sorry, your session has expired. Please sign in again.");
+                document.location.href = path_helpers.rails_route('signin');
+            }
+            else{
+                if( pages.no_agent.keep_polling() ){
                     setTimeout( function(){
                         pages.no_agent.poll_agent( when_ready )
                     }, 1000);
-                  }
-              }
-          });
+                }
+            }
+        });
     },
 
     download: function(){
-	    ZZAt.track('agentdownload.get');
-        
-		if($.client.os =="Mac"){
-			document.location.href = zz.mac_download_url; //'http://downloads.zangzing.com/agent/darwin/ZangZing-Setup.pkg'
-		}
+        ZZAt.track('agentdownload.get');
+
+        if($.client.os =="Mac"){
+            document.location.href = zz.mac_download_url; //'http://downloads.zangzing.com/agent/darwin/ZangZing-Setup.pkg'
+        }
         else{
             if($.client.browser == 'Chrome'){
                 //on chrome on windows, using the same browser window to download causes js issues (stops pinging agent)
@@ -1049,8 +819,8 @@ pages.no_agent = {
                 document.location.href = zz.win_download_url;
             }
 
-		}
-		
+        }
+
     }
 };
 

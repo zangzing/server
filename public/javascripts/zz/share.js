@@ -20,9 +20,69 @@ var share = {
             document.location.href = url;
         }
         else{
-            pages.share.share_in_dialog(object_type, object_id);
+            var url = zz.path_prefix +'/shares/new';
+
+            var container = $('<div id="share-dialog"></div>');
+
+
+            container.load(zz.path_prefix + '/shares/newemail', function(){
+
+                $("#contact-list").tokenInput( zzcontacts.find, {
+                    allowNewValues: true,
+                    hintText: '',
+                    classes: {
+                        tokenList: "token-input-list-facebook",
+                        token: "token-input-token-facebook",
+                        tokenDelete: "token-input-delete-token-facebook",
+                        selectedToken: "token-input-selected-token-facebook",
+                        highlightedToken: "token-input-highlighted-token-facebook",
+                        dropdown: "token-input-dropdown-facebook",
+                        dropdownItem: "token-input-dropdown-item-facebook",
+                        dropdownItem2: "token-input-dropdown-item2-facebook",
+                        selectedDropdownItem: "token-input-selected-dropdown-item-facebook",
+                        inputToken: "token-input-input-token-facebook"
+                    }
+                });
+                zzcontacts.init( zz.current_user_id );
+                zz.wizard.resize_scroll_body();
+
+                $('#new_email_share').validate({
+                    rules: {
+                        'email_share[to]':      { required: true, minlength: 0 },
+                        'email_share[message]': { required: true, minlength: 0 }
+                    },
+                    messages: {
+                        'email_share[to]': 'At least one recipient is required',
+                        'email_share[message]': ''
+                    },
+
+                    submitHandler: function() {
+                        var serialized = $('#new_email_share').serialize();
+                        $.post(zz.path_prefix + '/'+ object_type + 's/'+ object_id +'/shares.json', serialized, function(data,status,request ){
+                            alert('message sent');
+                        },"json");
+                    }
+
+                });
+
+                $('#mail-submit').click(function(){
+                    $('form#new_email_share').submit();
+                });
+            });
+
+
+            zz_dialog.show_dialog(container, {
+                height: 450,
+                width: 830,
+                modal: true
+            });
         }
+
     },
+
+
+
+
 
     share_to_twitter: function(object_type, object_url, object_id){
         var url = this.TWITTER_SHARE_TEMPLATE;

@@ -1,28 +1,16 @@
-<div class="album-header" style="margin-bottom: 25px;">
-  <h3>Share Your Album</h3>
-  <h4>Email a link to your album to selected friends.</h4>
-</div>
+<div class="share-by-email">
+    <div class="album-header" style="margin-bottom: 25px;">
+      <h3>Email a link to your friends</h3>
+    </div>
 
-<div class="flash-box">
-  <!--<div class="flash-notice" id="flashes-notice"></div>-->
-  <div class="error-notice" id="error-notice"></div>
-</div>
-
-<div id="scroll-body">
-  <div id="form-container-2" class="clearfix">
-    <!--<ul id="email-sync" class="clearfix">-->
-    <!--<li class="title">Import contacts</li>-->
-    <!--<li><a data-service="google" class="gray-button contacts-btn" href="javascript:void(0);return false;"><span><div class="off"></div>Google</span></a></li>-->
-    <!--<li><a data-service="local"  class="gray-button contacts-btn" href="javascript:void(0);return false;"><span><div class="off"></div>Outlook</span></a></li>-->
-    <!--<li><a data-service="yahoo"  class="gray-button contacts-btn" href="javascript:void(0);return false;"><span><div class="off"></div>Yahoo</span></a></li>-->
-    <!--<li><a data-service="mslive" class="gray-button contacts-btn" href="javascript:void(0);return false;"><span><div class="off"></div>MSLive</span></a></li>-->
-    <!--</ul>-->
-    <!--<div class="clear-fix"></div>-->
+    <div class="flash-box">
+      <div class="error-notice" id="error-notice"></div>
+    </div>
 
     <%= form_for @share, :url => "", :html => {:id => "new_email_share"} do |f| %>
         <input type="hidden" name="service" value="email">
         <table id="email-share-form">
-          <tr>
+          <tr height="1%">
             <td></td>
             <td class="import">
               Import contacts
@@ -32,28 +20,28 @@
               <a data-service="mslive" class="gray-button contacts-btn" href="javascript:void(0);return false;"><span><div class="off"></div>MSLive</span></a>
             </td>
           </tr>
-          <tr>
+          <tr height="1%">
             <td class="to">To</td>
             <td>
               <input type="text" id="contact-list" name="recipients"/>
             </td>
           </tr>
-          <tr>
+          <tr height="1%">
             <td class="message">Message</td>
             <td>
               <textarea rows="4" name="message" id="email_share_message"></textarea>
             </td>
           </tr>
-          <tr>
+          <tr height="">
             <td>
             </td>
             <td>
-              <a id="cancel-share" class="black-button"><span>Cancel</span></a>
-              <a id="mail-submit" class="green-button"><span>Send</span></a>
             </td>
           </tr>
         </table>
 
     <% end %>
-  </div>
+
+    <a id="cancel-share" class="black-button"><span>Cancel</span></a>
+    <a id="mail-submit" class="green-button"><span>Send</span></a>
 </div>
