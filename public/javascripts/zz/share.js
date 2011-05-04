@@ -1,9 +1,9 @@
 var share = {
 
     MENU_TEMPLATE: '<div class="share-menu">' +
-                     '<div class="facebook menu-item">Facebook</div>' +
-                     '<div class="twitter menu-item">Twitter</div>' +
                      '<div class="email menu-item">Email</div>' +
+                     '<div class="twitter menu-item">Twitter</div>' +
+                     '<div class="facebook menu-item">Facebook</div>' +
                    '</div>',
 
 
