@@ -11,13 +11,12 @@
 
 .fullscreen .new-dialog{
     position: absolute;
-    top:  50%;
+    top:  240px;
     left: 50%;
 
     width:        850px;
     margin-left:  -425px;
     height:       400px;
-    margin-top:   -200px;
 }
 
 .fullscreen .logo{
