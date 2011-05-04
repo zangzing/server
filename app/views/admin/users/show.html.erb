@@ -19,7 +19,14 @@
           </tr>
           <tr>
             <td class="field-label"> Member Since </td><td><%=@user.created_at.strftime( '%m/%d/%y' ) %></td>
-            <td class="field-label"> Status       </td><td><%=(@user.automatic? ? 'Automatic': (@user.active? ? 'Active' : 'Inactive' ) )%></td>
+            <td class="field-label"> Status       </td>
+            <td>
+              <%if @user.logged_in? %>
+                  <span style="color: green;"> Logged In </span>
+              <% else %>
+                <%=(@user.automatic? ? 'Automatic': (@user.active? ? 'Active' : 'Inactive' ) )%>
+              <%end%>
+            </td>
           </tr>
           <tr>
             <td class="field-label"> Last Update</td><td><%=@user.updated_at.strftime( '%m/%d/%y %H:%M:%S' ) if @user.updated_at %></td>
@@ -41,6 +48,14 @@
             <td class="field-label"> From IP </td><td><%=@user.current_login_ip %></td>
             <% if @current_login_ip_info %> <td><%="#{@current_login_ip_info[:city]}, #{@current_login_ip_info[:region_name]}, #{@current_login_ip_info[:country_code]}" %></td><%end%>
           </tr>
+          <tr>
+            <td class="field-label"> Last Request </td><td><%=@user.last_request_at.strftime( '%m/%d/%y %H:%M:%S' ) if @user.last_request_at  %></td>
+          </tr>
+          <tr>
+            <td class="field-label"> Last Email </td><td><%=@user.subscriptions.last_email_at.strftime( '%m/%d/%y %H:%M:%S' ) if @user.subscriptions && @user.subscriptions.last_email_at   %></td>
+            <td class="field-label"> Email </td><td><%=@user.subscriptions.last_email_name if @user.subscriptions && @user.subscriptions.last_email_name   %></td>
+          </tr>
+          <tr><td><br></td></tr>
           <tr>
             <td class="field-label"> Last Login </td><td><%= ( @user.last_login_at ? @user.last_login_at.strftime( '%m/%d/%y %H:%M:%S' ) : 'Has Never Logged In' )   %></td>
             <td class="field-label"> From IP </td><td><%=@user.last_login_ip %></td>

@@ -4,6 +4,7 @@ class Subscriptions< ActiveRecord::Base
   attr_accessible :email, :user_id,
                   :want_marketing_email, :want_news_email, :want_social_email, :want_status_email, :want_invites_email
 
+
   belongs_to  :user
 
   validates_presence_of :email
@@ -88,9 +89,9 @@ class Subscriptions< ActiveRecord::Base
 
   private
   def update_email_track( kind, name )
-    self.last_email_at   = Time.now
     self.last_email_kind = kind
     self.last_email_name = name
+    self.last_email_at   = Time.now
     self.save
   end
 

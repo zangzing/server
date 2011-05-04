@@ -11,8 +11,8 @@ class CreateEmailSubscriptions < ActiveRecord::Migration
       t.column :want_status_email,         :integer,  :default => 1
       t.column :want_invites_email,        :integer,  :default => 1
       t.column :last_email_at,             :datetime
-      t.column :last_email_kind,           :datetime
-      t.column :last_email_name,           :datetime
+      t.column :last_email_kind,           :string
+      t.column :last_email_name,           :string
       
       t.timestamps
       end
