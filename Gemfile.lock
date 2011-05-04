@@ -5,7 +5,7 @@ GIT
     oauth (0.4.5.pre2)
 
 GEM
-  remote: http://rubygems.org/ 
+  remote: http://rubygems.org/
   specs:
     SystemTimer (1.2.2)
     abstract (1.0.0)
