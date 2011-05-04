@@ -485,14 +485,23 @@ pages.share = {
                     },
 
                     submitHandler: function() {
-                        var serialized = $('#new_email_share').serialize();
-                        $.post(zz.path_prefix + '/'+ subject_type + 's/'+ subject_id +'/shares.json', serialized, function(data,status,request ){
-                            self.reload_share(container, subject_type, subject_id, function(){
-                                zz.wizard.display_flashes(  request,200 );
-                            });
-                        },"json");
+                        $.ajax({ type:     'POST',
+                        url:      zz.path_prefix + '/'+ subject_type + 's/'+ subject_id +'/shares.json',
+                        data:      $('#new_email_share').serialize(),
+                        dataType: 'json',
+                            success: function(errors,status,request ){
+                                if( errors && errors.length > 0 ){
+                                    $.each(errors, function( index, error ){
+                                        $('ul.token-input-list-facebook li:nth-child('+(error.index+1)+')').addClass('error')
+                                    });
+                                }else{
+                                    self.reload_share(container, subject_type, subject_id, function(){
+                                        zz.wizard.display_flashes(  request,200 );
+                                    });
+                                }
+                            }
+                        });
                     }
-
                 });
 
                 $('#cancel-share').click(function(){
