@@ -628,62 +628,32 @@ div#form-container-2 {
 
 
 /*====================== Email Share ===============================*/
+/*====================== Email Share ===============================*/
 
 
 
-/*ul#email-sync {*/
-  /*margin: 0 0 10px 78px;*/
-  /*float: left;*/
-  /*font-size:14px;*/
-  /*width: 800px;*/
-/*}*/
+ul#email-sync {
+  margin: 0 0 10px 78px;
+  float: left;
+  font-size:14px;
+  width: 800px;
+}
 
-/*ul#email-sync li {*/
-  /*float: left;*/
-  /*margin-right: 10px;*/
-  /*background-color:#ffffff;*/
-/*}*/
+ul#email-sync li {
+  float: left;
+  margin-right: 10px;
+  background-color:#ffffff;
+}
 
-/*ul#email-sync li.title {*/
-  /*padding: 10px;*/
-  /*color: #646464;*/
-/*}*/
-
-
-.share-by-email{
-    position:absolute;
-    top:0px;
-    left:0px;
-    right:0px;
-    bottom:0px;
+ul#email-sync li.title {
+  padding: 10px;
+  color: #646464;
 }
 
 table#email-share-form{
   font-size: 14px;
   text-align:left;
-  margin-left:auto;
-  margin-right:auto;
-
-  height:460px;
-
 }
-
-.share-by-email #mail-submit{
-    position:absolute;
-    width:80px;
-    bottom:20px;
-    right:140px;
-
-}
-
-.share-by-email #cancel-share{
-    width:80px;
-    position:absolute;
-    bottom:20px;
-    right:40px;
-}
-
-
 
 table#email-share-form td{
     padding-right:20px;

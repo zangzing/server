@@ -296,6 +296,234 @@ pages.album_privacy_tab = {
 };
 
 
+
+pages.share = {
+
+
+
+
+
+
+
+    // optional params subject_tupe and subject_id paras are
+    // used when not in the wizard. an 's' is added to
+    // subject_type when constructing routes
+
+    init: function(container, callback, subject_type, subject_id){
+
+        ZZAt.track('album.share_tab.view');
+
+
+        if(_.isUndefined(subject_type)){
+            subject_type = 'album';
+        }
+
+        if(_.isUndefined(subject_id)){
+            subject_id = zz.album_id;
+        }
+
+        var url = zz.path_prefix +'/shares/new';
+        var self = this;
+
+
+        container.load(url, function(){
+           zz.wizard.resize_scroll_body();
+           $('.social-share').click(function(){
+                self.show_social(container, subject_type, subject_id);
+            });
+
+            $('.email-share').click(function(){
+                self.show_email(container, subject_type, subject_id);
+            });
+
+            callback();
+        });
+    },
+
+
+    share_in_dialog: function(subject_type, subject_id, on_close){
+        var self = this;
+
+
+        var template = $('<div id="share-dialog-content"></div>');
+        $('<div id="share-dialog"></div>').html( template )
+                                               .zz_dialog({
+                                                         height: 450,
+                                                         width: 895,
+                                                         modal: true,
+                                                         autoOpen: true,
+                                                         open : function(event, ui){
+                                                            self.init(template, function(){}, subject_type, subject_id);
+                                                         },
+                                                         close: function(event, ui){
+                                                            if(!_.isUndefined(on_close)){
+                                                                on_close();
+                                                            }
+                                                         }
+        });
+
+    },
+
+
+    bounce: function(success, failure){
+        success();
+    },
+
+    // loads the status message post form in place of the type switcher on the share step
+    show_social: function(container, subject_type, subject_id){
+        var self = this;
+
+        $('div#share-body').fadeOut('fast', function(){
+            $('div#share-body').load(zz.path_prefix +'/shares/newpost', function(){
+                zz.wizard.resize_scroll_body();
+
+
+
+                $("#facebook_box").click( function(){
+                    if( $(this).is(':checked')  && !$("#facebook_box").attr('authorized')){
+                        $(this).attr('checked', false);
+                        oauthmanager.login(zz.path_prefix + '/facebook/sessions/new', function(){
+                            $("#facebook_box").attr('checked', true);
+                            $("#facebook_box").attr('authorized', 'yes');
+                        });
+                    }
+                });
+
+                $("#twitter_box").click( function(){
+                    if($(this).is(':checked') && !$("#twitter_box").attr('authorized')){
+                        $(this).attr('checked', false);
+                        oauthmanager.login(zz.path_prefix + '/twitter/sessions/new', function(){
+                            $("#twitter_box").attr('checked', true);
+                            $("#twitter_box").attr('authorized', 'yes');
+                        });
+                    }
+                });
+
+
+                $('#new_post_share').validate({
+                    rules: {
+                        'post_share[message]':  { required: true, minlength: 0, maxlength: 118 },
+                        'post_share[facebook]': { required: "#twitter_box:unchecked" },
+                        'post_share[twitter]':  { required:  "#facebook_box:unchecked"}
+                    },
+                    messages: {
+                        'post_share[message]': '',
+                        'post_share[facebook]': '',
+                        'post_share[twitter]': ''
+                    },
+                    submitHandler: function() {
+                        var serialized = $('#new_post_share').serialize();
+                        $.post(zz.path_prefix + '/' + subject_type + 's/'+ subject_id +'/shares.json', serialized, function(data,status,request){
+                            pages.share.reload_share(container, subject_type, subject_id, function(){
+                                zz.wizard.display_flashes(  request,200 )
+                            });
+                        });
+                    }
+                });
+
+                $('#cancel-share').click(function(){
+                    self.reload_share(container, subject_type, subject_id);
+                });
+
+                $('#post_share_button').click(function(){
+                    $('form#new_post_share').submit();
+                });
+
+
+
+                $('#post_share_message').keypress( function(){
+                    setTimeout(function(){
+                        var text = 'characters';
+                        var count = $('#post_share_message').val().length
+                        if(count === 1){
+                            text = 'character';
+                        }
+                        $('#character-count').text(count + ' ' + text);
+                    }, 10);
+                });
+
+                $('div#share-body').fadeIn('fast');
+            });
+        });
+    },
+
+
+    // loads the email post form in place of the type switcher on the share step
+    show_email: function(container, subject_type, subject_id ){
+        var self = this;
+        $('div#share-body').fadeOut('fast', function(){
+            $('div#share-body').load(zz.path_prefix + '/shares/newemail', function(){
+
+                $("#contact-list").tokenInput( zzcontacts.find, {
+                    allowNewValues: true,
+                    classes: {
+                        tokenList: "token-input-list-facebook",
+                        token: "token-input-token-facebook",
+                        tokenDelete: "token-input-delete-token-facebook",
+                        selectedToken: "token-input-selected-token-facebook",
+                        highlightedToken: "token-input-highlighted-token-facebook",
+                        dropdown: "token-input-dropdown-facebook",
+                        dropdownItem: "token-input-dropdown-item-facebook",
+                        dropdownItem2: "token-input-dropdown-item2-facebook",
+                        selectedDropdownItem: "token-input-selected-dropdown-item-facebook",
+                        inputToken: "token-input-input-token-facebook"
+                    }
+                });
+                zzcontacts.init( zz.current_user_id );
+                zz.wizard.resize_scroll_body();
+
+                $('#new_email_share').validate({
+                    rules: {
+                        'email_share[to]':      { required: true, minlength: 0 },
+                        'email_share[message]': { required: true, minlength: 0 }
+                    },
+                    messages: {
+                        'email_share[to]': 'At least one recipient is required',
+                        'email_share[message]': ''
+                    },
+
+                    submitHandler: function() {
+                        var serialized = $('#new_email_share').serialize();
+                        $.post(zz.path_prefix + '/'+ subject_type + 's/'+ subject_id +'/shares.json', serialized, function(data,status,request ){
+                            self.reload_share(container, subject_type, subject_id, function(){
+                                zz.wizard.display_flashes(  request,200 );
+                            });
+                        },"json");
+                    }
+
+                });
+
+                $('#cancel-share').click(function(){
+                    self.reload_share(container, subject_type, subject_id);
+                });
+
+                $('#mail-submit').click(function(){
+                    $('form#new_email_share').submit();
+                });
+                $('div#share-body').fadeIn('fast');
+            });
+        });
+    },
+
+
+
+
+    // reloads the main share part in place of the type switcher on the share step
+    reload_share: function(container, subject_type, subject_id, callback){
+        var self = this;
+        container.fadeOut('fast', function(){
+            self.init(container, function(){
+                container.fadeIn('fast');
+                if( typeof(callback) != "undefined" ){
+                    callback();
+                }
+            }, subject_type, subject_id);
+        });
+    }
+
+
+};
+
 pages.contributors = {
 
     present : false,

@@ -27,6 +27,13 @@ var share = {
 
             container.load(zz.path_prefix + '/shares/newemail', function(){
 
+                var dialog = zz_dialog.show_dialog(container, {
+                    height: 450,
+                    width: 830,
+                    modal: true
+                });
+
+
                 $("#contact-list").tokenInput( zzcontacts.find, {
                     allowNewValues: true,
                     hintText: '',
@@ -59,28 +66,23 @@ var share = {
                     submitHandler: function() {
                         var serialized = $('#new_email_share').serialize();
                         $.post(zz.path_prefix + '/'+ object_type + 's/'+ object_id +'/shares.json', serialized, function(data,status,request ){
-                            alert('message sent');
+                            alert('Your message has been sent.');
+                            dialog.close();
                         },"json");
                     }
-
                 });
 
                 $('#mail-submit').click(function(){
                     $('form#new_email_share').submit();
                 });
-            });
 
+                $('#cancel-share').click(function(){
+                   dialog.close();
+                });
 
-            zz_dialog.show_dialog(container, {
-                height: 450,
-                width: 830,
-                modal: true
             });
         }
-
     },
-
-
 
 
 
