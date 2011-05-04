@@ -1,12 +1,88 @@
 var share = {
 
     MENU_TEMPLATE: '<div class="share-menu">' +
-                     '<div class="facebook menu-item">Facebook</div>' +
-                     '<div class="twitter menu-item">Twitter</div>' +
                      '<div class="email menu-item">Email</div>' +
+                     '<div class="twitter menu-item">Twitter</div>' +
+                     '<div class="facebook menu-item">Facebook</div>' +
                    '</div>',
 
 
+    show_share_menu: function(button, object_type, object_id, offset, zza_context, onclose){
+        var menu = $(this.MENU_TEMPLATE);
+
+        menu.appendTo('body').css({top:-1000, left:0});
+
+        var x = button.offset().left + (button.width() / 2) - (menu.width() / 2);
+        var y = button.offset().top - menu.height();
+
+        if(offset){
+           x = x + offset.x;
+           y = y + offset.y;
+        }
+
+        menu.css({opacity:0,left:x,top:y+10});
+        menu.animate({top:y,opacity:1},200);
+
+
+        var hover = true;
+
+        var mouseOver = function(){
+            hover = true;
+        };
+
+        var mouseOut = function(){
+            hover = false;
+            setTimeout(function(){
+                if(!hover){
+                    menu.fadeOut('fast', function(){
+                        menu.remove();
+                        if(onclose){
+                            onclose();
+                        }
+                    });
+
+                    //cleanup
+                    button.unbind('mouseover',mouseOver);
+                    button.unbind('mouseout', mouseOut);
+                }
+            },100);
+        };
+
+        button.hover(mouseOver, mouseOut);
+        menu.hover(mouseOver, mouseOut);
+
+
+        menu.find('.email').click(function(){
+            mouseOut();
+
+            ZZAt.track(object_type + '.share.' + zza_context + '.email');
+            ZZAt.track(object_type + '.share.email');
+
+            share.share_to_email(object_type, object_id);
+        });
+
+        menu.find('.twitter').click(function(){
+            mouseOut();
+
+            ZZAt.track(object_type + '.share.' + zza_context + '.twitter');
+            ZZAt.track(object_type + '.share.twitter');
+
+            share.share_to_twitter(object_type, object_id);
+        });
+
+        menu.find('.facebook').click(function(){
+            mouseOut();
+
+            ZZAt.track(object_type + '.share.' + zza_context + '.facebook');
+            ZZAt.track(object_type + '.share.facebook');
+
+            share.share_to_facebook(object_type, object_id);
+        });
+
+
+
+
+    },
 
 
     share_to_email: function(object_type, object_id){
@@ -91,70 +167,6 @@ var share = {
     share_to_facebook: function(object_type, object_id){
         var url = '/service/' + object_type + 's/' + object_id + '/new_facebook_share';
         window.open(url, '', 'status=0,toolbar=0,width=700,height=450');
-    },
-
-    show_share_menu: function(button, object_type, object_id, offset, onclose){
-        var menu = $(this.MENU_TEMPLATE);
-
-        menu.appendTo('body').css({top:-1000, left:0});
-
-        var x = button.offset().left + (button.width() / 2) - (menu.width() / 2);
-        var y = button.offset().top - menu.height();
-
-        if(offset){
-           x = x + offset.x;
-           y = y + offset.y;
-        }
-
-        menu.css({opacity:0,left:x,top:y+10});
-        menu.animate({top:y,opacity:1},200);
-
-
-        var hover = true;
-
-        var mouseOver = function(){
-            hover = true;
-        };
-
-        var mouseOut = function(){
-            hover = false;
-            setTimeout(function(){
-                if(!hover){
-                    menu.fadeOut('fast', function(){
-                        menu.remove();
-                        if(onclose){
-                            onclose();
-                        }
-                    });
-
-                    //cleanup
-                    button.unbind('mouseover',mouseOver);
-                    button.unbind('mouseout', mouseOut);
-                }
-            },100);
-        };
-
-        button.hover(mouseOver, mouseOut);
-        menu.hover(mouseOver, mouseOut);
-
-
-        menu.find('.email').click(function(){
-            mouseOut();
-            share.share_to_email(object_type, object_id);
-        });
-
-        menu.find('.twitter').click(function(){
-            mouseOut();
-            share.share_to_twitter(object_type, object_id);
-        });
-
-        menu.find('.facebook').click(function(){
-            mouseOut();
-            share.share_to_facebook(object_type, object_id);
-        });
-
-
-
-
     }
+
 };

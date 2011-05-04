@@ -13,7 +13,7 @@
     color: #FAFAFA;
     text-shadow: 0 1px black;
     text-align:left;
-    padding-left:30px;
+    padding-left:32px;
     position:relative;
     margin-top:2px;
     margin-left:0px;
@@ -26,15 +26,15 @@
 
 
 .share-menu .menu-item.email{
-    background: url("/images/share/email-icon.png") no-repeat scroll 3px 8px;
+    background: url("/images/share/email-icon.png") no-repeat scroll 7px 8px;
 }
 
 .share-menu .menu-item.twitter{
-    background: url("/images/share/twitter-icon.png") no-repeat scroll 2px 6px;
+    background: url("/images/share/twitter-icon.png") no-repeat scroll 6px 5px;
 }
 
 .share-menu .menu-item.facebook{
-    background: url("/images/share/facebook-icon.png") no-repeat scroll 3px 6px;
+    background: url("/images/share/facebook-icon.png") no-repeat scroll 7px 6px;
 }
 
 
