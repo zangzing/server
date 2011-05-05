@@ -1,5 +1,4 @@
 require 'mail'
-require 'babosa'
 class SendgridController < ApplicationController
 
   skip_before_filter :verify_authenticity_token
