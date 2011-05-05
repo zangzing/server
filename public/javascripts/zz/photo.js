@@ -257,17 +257,12 @@
 
 
                 var menuOpen = false;
-                var hover = false;
 
                 var checkCloseToolbar = function(){
-                    if(!menuOpen && !hover){
-                        setTimeout(function(){
-                            if(!hover){
-                                self.borderElement.css({'padding-bottom': '0px'});
-                                self.imageElement.css({'border-bottom': '5px solid #fff'});
-                                self.toolbarElement.remove();
-                            }
-                        },100);
+                    if(!menuOpen ){
+                        self.borderElement.css({'padding-bottom': '0px'});
+                        self.imageElement.css({'border-bottom': '5px solid #fff'});
+                        self.toolbarElement.remove();
                     }
                 };
 
@@ -301,7 +296,6 @@
                 });
 
                 self.element.mouseleave(function(){
-                    hover = false;
                     checkCloseToolbar();
                });
             }
