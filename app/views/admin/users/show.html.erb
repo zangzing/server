@@ -49,11 +49,15 @@
             <% if @current_login_ip_info %> <td><%="#{@current_login_ip_info[:city]}, #{@current_login_ip_info[:region_name]}, #{@current_login_ip_info[:country_code]}" %></td><%end%>
           </tr>
           <tr>
+            <td class="field-label"> Last Email </td><td><%=@user.subscriptions.last_email_at.strftime( '%m/%d/%y %H:%M:%S' ) if @user.subscriptions && @user.subscriptions.last_email_at   %></td>
+            <td class="field-label"> Email </td><td><%=@user.subscriptions.last_email_name if @user.subscriptions && @user.subscriptions.last_email_name   %></td>
+          </tr>
+          <tr>
             <td class="field-label"> Last Request </td><td><%=@user.last_request_at.strftime( '%m/%d/%y %H:%M:%S' ) if @user.last_request_at  %></td>
           </tr>
           <tr>
-            <td class="field-label"> Last Email </td><td><%=@user.subscriptions.last_email_at.strftime( '%m/%d/%y %H:%M:%S' ) if @user.subscriptions && @user.subscriptions.last_email_at   %></td>
-            <td class="field-label"> Email </td><td><%=@user.subscriptions.last_email_name if @user.subscriptions && @user.subscriptions.last_email_name   %></td>
+            <td class="field-label"> Agent Last Authorized At </td><td><%=( @agent ? @agent.authorized_at.strftime( '%m/%d/%y %H:%M:%S' ) : 'Never') %></td>
+            <td class="field-label"><%= ( @user.tokens.find_by_type('Agent') ? image_tag( '/zz-icon.png', :size=>"20x20" ):' ')%></td>
           </tr>
           <tr><td><br></td></tr>
           <tr>

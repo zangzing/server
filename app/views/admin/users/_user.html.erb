@@ -1,6 +1,14 @@
 <tr>
-    <td>  <%= link_to h(user.name), admin_user_show_path( user ) %> </td>
-    <td>  <%= ( (i = user.albums.count-1) > 0 ? i : '') %>        </td>
-    <td>  <%= ( (i = user.photos.count) > 0 ? i : '') %>          </td>
-    <td>  <%= ( (i = user.shares.count) > 0 ? i : '') %>          </td>    <td>  <%= button_to ( user.active ? "Deactivate" :  "Activate"), admin_activate_user_path( :id => user.id), :method => :put %>    </td>
+  <td>  <%= link_to h(user.name), admin_user_show_path( user ) %> </td>
+  <td>  <%= ( user.tokens.find_by_type('Agent') ? image_tag( '/zz-icon.png', :size=>"20x20" ):' ')%></td>
+  <td>  <%= ( (i = user.albums.count-1) > 0 ? i : '') %>        </td>
+  <td>  <%= ( (i = user.photos.count) > 0 ? i : '') %>          </td>
+  <td>  <%= ( (i = user.shares.count) > 0 ? i : '') %>          </td>
+  <td>
+    <%if user.logged_in? %>
+        <span style="color: green;"> Logged In </span>
+    <% else %>
+        <%=(user.automatic? ? 'Automatic': ( user.active ? "Active" :  button_to( "Activate", admin_activate_user_path( :id => user.id), :method => :put) ) )%>
+    <%end%>
+  </td>
 </tr>
