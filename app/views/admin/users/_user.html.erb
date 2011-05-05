@@ -1,6 +1,6 @@
 <tr>
   <td>  <%= link_to h(user.name), admin_user_show_path( user ) %> </td>
-  <td>  <%= ( user.tokens.find_by_type('Agent') ? image_tag( '/zz-icon.png', :size=>"20x20" ):' ')%></td>
+  <td>  <%= ( user.tokens.find_by_type('Agent') ? image_tag( '/zz-icon.png', :size=>"15x15" ):' ')%></td>
   <td>  <%= ( (i = user.albums.count-1) > 0 ? i : '') %>        </td>
   <td>  <%= ( (i = user.photos.count) > 0 ? i : '') %>          </td>
   <td>  <%= ( (i = user.shares.count) > 0 ? i : '') %>          </td>
