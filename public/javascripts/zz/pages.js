@@ -769,10 +769,6 @@ pages.no_agent = {
                 }
 
             }
-            else if( status == agent.STATUS.BAD_SESSION ){
-                alert("Sorry, your session has expired. Please sign in again.");
-                document.location.href = path_helpers.rails_route('signin');
-            }
             else{
                 if( pages.no_agent.keep_polling() ){
                     setTimeout( function(){

@@ -13,7 +13,7 @@ var agent = {
     STATUS: {
         READY: true,
         NOT_RUNNING: false,
-        BAD_SESSION: "bad session"
+        NOT_READY: "not ready"
     },
 
 
@@ -29,7 +29,7 @@ var agent = {
                 }
                 else{
                     ZZAt.track('agent.ping.invalid', response);
-                    callback(agent.STATUS.BAD_SESSION);
+                    callback(agent.STATUS.NOT_READY);
                 }
             },
             error: function(){

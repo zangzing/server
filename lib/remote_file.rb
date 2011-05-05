@@ -89,7 +89,7 @@ class RemoteFile < ::File
   
   def validate_size
     self_size = File.size(self.path)
-    raise IncompleteResponse.new(@content_length, self_size) if !@content_length.nil? && (@content_length != self_size)
+    raise IncompleteResponse.new(@content_length, self_size) if !@content_length.nil? && (@content_length > self_size)
     true
   end
 

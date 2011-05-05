@@ -77,10 +77,8 @@
                 self.element.mouseover(function(){
                     self.topOfStack.css({height: height + 30});
                     self.topOfStack.find('.button-bar').show();
-                    hover = true;
 
-
-                    self.template.find('.share-button').click(function(){
+                    self.template.find('.share-button').mousedown(function(){
                         menuOpen = true;
                         share.show_share_menu($(this), 'album', self.options.albumId, {x:0,y:0}, 'frame', function(){
                             menuOpen = false;
@@ -107,7 +105,7 @@
                     if(!menuOpen){
                          self.topOfStack.css({height: height});
                          self.topOfStack.find('.button-bar').hide();
-                         self.template.find('.share-button').unbind('click');
+                         self.template.find('.share-button').unbind('mousedown');
                          self.template.find('.like-button').unbind('click');
                          self.template.find('.delete-button').unbind('click');
                      }
