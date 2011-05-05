@@ -138,6 +138,7 @@ class BaseACL
   # if you add and the user already exists.
   #
   def add_user(user_id, role)
+    user_id = ACLManager.safe_id(user_id)
     acl_key = build_acl_key
     user_key = self.class.build_user_key(user_id)
     priority = role.priority
@@ -155,6 +156,7 @@ class BaseACL
   # Remove the user from the acl
   #
   def remove_user(user_id)
+    user_id = ACLManager.safe_id(user_id)
     acl_key = build_acl_key
     user_key = self.class.build_user_key(user_id)
 
@@ -216,6 +218,7 @@ class BaseACL
   # return the user role if we have one for the
   # given user_id.  If no role we return nil
   def get_user_role(user_id)
+    user_id = ACLManager.safe_id(user_id)
     priority = redis.zscore(build_acl_key, user_id)
     if !priority.nil?
       # now we have the score, transform into a role object
@@ -232,6 +235,7 @@ class BaseACL
   # role will be a match
   #
   def has_permission?(user_id, role, exact = false)
+    user_id = ACLManager.safe_id(user_id)
     priority = redis.zscore(build_acl_key, user_id)
     if !priority.nil?
       # now we have the score, transform into a role object
@@ -287,6 +291,7 @@ class BaseACL
   # If none we return nil
   #
   def self.get_acls_for_user(user_id, role, exact = false, redis_override = nil)
+    user_id = ACLManager.safe_id(user_id)
     redis = redis_override.nil? ? ACLManager.get_global_redis : redis_override
     user_key = build_user_key(user_id)
 
@@ -319,7 +324,8 @@ class BaseACL
 
   # convenience method to fetch all the acls for a given user
   def self.get_all_acls_for_user(user_id, redis_override = nil)
-    return get_acls_for_user(user_id, roles.last.priority, false)
+    user_id = ACLManager.safe_id(user_id)
+    return get_acls_for_user(user_id, roles.last, false)
   end
 end
 

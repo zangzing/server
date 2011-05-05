@@ -39,6 +39,15 @@ class ACLManager
     type_tracker.add(type)
   end
 
+  # force to lower case if id is a string
+  def self.safe_id(id)
+    if id.is_a?(String)
+      return id.downcase
+    else
+      return id
+    end
+  end
+
   # build a key for an acl object with it's id
   def self.build_acl_key type, acl_id
     ACL_TYPE + ':' + type + ':' + acl_id.to_s
@@ -66,6 +75,9 @@ class ACLManager
   #
   def self.global_replace_user_key old_user_id, new_user_id, redis_override = nil
     redis = redis_override.nil? ? get_global_redis : redis_override
+
+    old_user_id = safe_id(old_user_id)
+    new_user_id = safe_id(new_user_id)
 
    # iterate across the various types of ACLs that we track
     type_tracker.each do |type|
@@ -124,6 +136,8 @@ class ACLManager
   # user.
   def self.global_delete_user user_id, redis_override = nil
     redis = redis_override.nil? ? get_global_redis : redis_override
+
+    user_id = safe_id(user_id)
 
    # iterate across the various types of ACLs that we track
     type_tracker.each do |type|

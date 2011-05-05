@@ -103,6 +103,21 @@ describe "ACL Test" do
     removed.should == true
   end
 
+  it "should ignore case" do
+    user_id = "MyUser@myemail.com"
+    alt_user_id = "myuser@myemail.com"
+    a = AlbumACL.new(999)
+
+    a.add_user user_id, AlbumACL::ADMIN_ROLE
+
+    role = a.get_user_role(alt_user_id)
+    role.should == AlbumACL::ADMIN_ROLE
+
+    removed = a.remove_acl
+
+    removed.should == true
+  end
+
   it "should rename a user key" do
     user_id = "myuser@myemail.com"
     new_user_id = 7777
