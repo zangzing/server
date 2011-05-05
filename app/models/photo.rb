@@ -316,11 +316,13 @@ class Photo < ActiveRecord::Base
         # update state to loaded
         mark_loaded
         ZZ::ZZA.new.track_transaction("photo.upload.s3.done", self.id)
-        save!
-        # clean up temp file since it has been uploaded with no errors
-        remove_source
+        # use base class save since we don't want clean up if upload fails
+        save!(false)  # no auto cleanup on error
+
         Rails.logger.debug("Upload of original file to S3 finished - queueing resize stage.")
         ZZ::Async::GenerateThumbnails.enqueue(self.id, queued_at.to_i)
+        # clean up temp file since it has been uploaded with no errors
+        remove_source
       else
         raise "Photo upload_source did not have a valid source_path to upload from."
       end
@@ -557,10 +559,10 @@ class Photo < ActiveRecord::Base
     end
   end
 
-  def save!
+  def save!(clean_up = true)
     super
-  rescue => ex
-    cleanup_file_to_upload
+  rescue Exception => ex
+    cleanup_file_to_upload if clean_up
     raise ex
   end
 
