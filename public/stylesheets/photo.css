@@ -396,7 +396,7 @@
 .photo-toolbar .info-button{
     position:relative;
     background: url(/images/album_toolbar_info.png) no-repeat scroll 0px -0px transparent;
-    top:1px;
+    top:0px;
     width:20px;
     height:18px;
     float:left;
@@ -406,7 +406,7 @@
 }
 
 .photo-toolbar .info-button:hover{
-    background: url(/images/album_toolbar_info.png) no-repeat scroll 0px 18px transparent;
+    background: url(/images/album_toolbar_info.png) no-repeat scroll 0px -18px transparent;
 }
 
 
