@@ -360,7 +360,7 @@
 
 
 .photo-toolbar .share-button{
-    background: url(/images/album_toolbar_share.png) no-repeat scroll 0px 0px transparent;
+    background: url(/images/album_toolbar_share.png) no-repeat scroll 0px -1px transparent;
     width:20px;
     height:18px;
     float:left;
@@ -371,13 +371,13 @@
 
 
 .photo-toolbar .share-button:hover{
-    background: url(/images/album_toolbar_share.png) no-repeat scroll 0px -18px transparent;
+    background: url(/images/album_toolbar_share.png) no-repeat scroll 0px -19px transparent;
 }
 
 
 
 .photo-toolbar .like-button{
-    background: url(/images/album_toolbar_like.png) no-repeat scroll 0px 0px transparent;
+    background: url(/images/album_toolbar_like.png) no-repeat scroll 0px -1px transparent;
     width:20px;
     height:18px;
     float:left;
@@ -388,14 +388,14 @@
 }
 
 .photo-toolbar .like-button:hover{
-    background: url(/images/album_toolbar_like.png) no-repeat scroll 0px -18px transparent;
+    background: url(/images/album_toolbar_like.png) no-repeat scroll 0px -19px transparent;
 }
 
 
 
 .photo-toolbar .info-button{
     position:relative;
-    background: url(/images/album_toolbar_info.png) no-repeat scroll 0px 0px transparent;
+    background: url(/images/album_toolbar_info.png) no-repeat scroll 0px -0px transparent;
     top:1px;
     width:20px;
     height:18px;
@@ -406,7 +406,7 @@
 }
 
 .photo-toolbar .info-button:hover{
-    background: url(/images/album_toolbar_info.png) no-repeat scroll 0px -18px transparent;
+    background: url(/images/album_toolbar_info.png) no-repeat scroll 0px 18px transparent;
 }
 
 

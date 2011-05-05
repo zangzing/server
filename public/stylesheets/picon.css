@@ -63,7 +63,7 @@
 
 
 .picon .stacked-image .button-bar .buttons .share-button{
-    background: url(/images/album_toolbar_share.png) no-repeat scroll 0px 0px transparent;
+    background: url(/images/album_toolbar_share.png) no-repeat scroll 0px -1px transparent;
     width:20px;
     height:18px;
     float:left;
@@ -73,13 +73,13 @@
 
 
 .picon .stacked-image .button-bar .buttons .share-button:hover{
-    background: url(/images/album_toolbar_share.png) no-repeat scroll 0px -18px transparent;
+    background: url(/images/album_toolbar_share.png) no-repeat scroll 0px -19px transparent;
 }
 
 
 
 .picon .stacked-image .button-bar .buttons .like-button{
-    background: url(/images/album_toolbar_like.png) no-repeat scroll 0px 0px transparent;
+    background: url(/images/album_toolbar_like.png) no-repeat scroll 0px -1px transparent;
     width:20px;
     height:18px;
     float:left;
@@ -88,7 +88,7 @@
 }
 
 .picon .stacked-image .button-bar .buttons .like-button:hover{
-    background: url(/images/album_toolbar_like.png) no-repeat scroll 0px -18px transparent;
+    background: url(/images/album_toolbar_like.png) no-repeat scroll 0px -19px transparent;
 }
 
 
