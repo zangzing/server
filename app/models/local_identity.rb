@@ -8,4 +8,8 @@ class LocalIdentity < Identity
     self.last_contact_refresh = Time.now()
   end
 
+  def credentials
+    "confidential-local-credentials"
+  end
+
 end

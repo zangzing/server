@@ -1,4 +1,4 @@
-class Connector::ZangzingPhotosController < Connector::ConnectorController
+class Connector::ZangzingPhotosController < Connector::ZangzingController
 
   def index
     album = current_user.albums.find(params[:zz_album_id])
@@ -38,5 +38,6 @@ class Connector::ZangzingPhotosController < Connector::ConnectorController
     ZZ::Async::GeneralImport.enqueue( photo.id, source_photo.original_url )
     render :json => Photo.to_json_lite(photo)
   end
+
 
 end

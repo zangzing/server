@@ -1,4 +1,4 @@
-class Connector::ZangzingFoldersController < Connector::ConnectorController
+class Connector::ZangzingFoldersController < Connector::ZangzingController
 
   def index
     @folders = current_user.albums.map { |f|
@@ -44,4 +44,5 @@ class Connector::ZangzingFoldersController < Connector::ConnectorController
     render :json => Photo.to_json_lite(photos)
 
   end
+
 end
