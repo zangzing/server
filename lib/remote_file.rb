@@ -58,7 +58,7 @@ class RemoteFile < ::File
         follow_redirect = remote_side.is_a?(Net::HTTPMovedPermanently) || remote_side.is_a?(Net::HTTPMovedTemporarily)
         unless follow_redirect
           @content_type = remote_side['content-type']
-          unless remote_side['transfer-coding']=='chunked'
+          unless remote_side['transfer-encoding']=='chunked'
             @content_length = remote_side['content-length'].to_i rescue nil
           end
           if remote_side['content-disposition'] =~ CONTENT_DISPOSITION_FILENAME_REGEX
