@@ -58,7 +58,9 @@ class RemoteFile < ::File
         follow_redirect = remote_side.is_a?(Net::HTTPMovedPermanently) || remote_side.is_a?(Net::HTTPMovedTemporarily)
         unless follow_redirect
           @content_type = remote_side['content-type']
-          @content_length = remote_side['content-length'].to_i rescue nil
+          unless remote_side['transfer-coding']=='chunked'
+            @content_length = remote_side['content-length'].to_i rescue nil
+          end
           if remote_side['content-disposition'] =~ CONTENT_DISPOSITION_FILENAME_REGEX
             @original_filename = $1
           end
@@ -80,7 +82,7 @@ class RemoteFile < ::File
   end
   
   def content_length
-    @content_length
+    @content_length || 0
   end
 
   def content_type
@@ -89,7 +91,7 @@ class RemoteFile < ::File
   
   def validate_size
     self_size = File.size(self.path)
-    raise IncompleteResponse.new(@content_length, self_size) if !@content_length.nil? && (@content_length > self_size)
+    raise IncompleteResponse.new(content_length, self_size) if !content_length.zero? && (content_length > self_size)
     true
   end
 
