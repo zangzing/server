@@ -52,7 +52,7 @@ class Connector::KodakFoldersController < Connector::KodakController
     Photo.batch_insert(photos)
     # must send after all saved
     photos.each do |photo|
-      ZZ::Async::KodakImport.enqueue( photo.id, photo.temp_url, api.auth_token )
+      ZZ::Async::GeneralImport.enqueue( photo.id, photo.temp_url, :headers => api.compose_request_header )
     end
 
     Photo.to_json_lite(photos)
