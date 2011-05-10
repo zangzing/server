@@ -7,7 +7,7 @@ class UsersController < ApplicationController
   before_filter :require_admin,   :only => [ :activate]
   before_filter :correct_user,    :only => [:edit, :update]
 
-
+  skip_before_filter :verify_authenticity_token, :only=>[:create]
 
   def join
     if ! current_user
