@@ -72,19 +72,17 @@ class KodakConnector
     RemoteFile.new(url, PhotoGenHelper.photo_upload_dir, compose_request_header)
   end
 
-  #Static stuff
-  def self.verify_cookie_as_authenticated(cookie_string)
-    #EK_S and EK_E (and possibly sourceId) are names of real cookies which indicates we're authenticated
-    cookie_string && cookie_string.include?('EK_S') && cookie_string.include?('EK_E') && cookie_string.include?('sourceId')
-  end
-
-protected
-
   def compose_request_header
     {
       'Host' => 'www.kodakgallery.com',
       'Cookie' => @auth_cookies
     }
+  end
+
+  #Static stuff
+  def self.verify_cookie_as_authenticated(cookie_string)
+    #EK_S and EK_E (and possibly sourceId) are names of real cookies which indicates we're authenticated
+    cookie_string && cookie_string.include?('EK_S') && cookie_string.include?('EK_E') && cookie_string.include?('sourceId')
   end
 
 end

@@ -30,7 +30,7 @@
 <%if @password_changed %>
     You password has been changed.
 <% else %>
-        <%= form_for @user, :url => password_reset_path, :method => :put, :html => {:id =>"password_edit_form"} do |f| %>
+        <%= form_for @user, :url => update_password_reset_url, :method => :put, :html => {:id =>"password_edit_form"} do |f| %>
               <div id="flash-error"><%=@user.errors.full_messages if @user.errors%></div>
 
               <table>
@@ -48,7 +48,7 @@
    </div>
 
   <%= render :partial => 'layouts/zza'  %>
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
   <%= include_javascripts :lib %>
   <%= include_javascripts :zz %>
 

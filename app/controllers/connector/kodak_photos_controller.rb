@@ -45,7 +45,7 @@ class Connector::KodakPhotosController < Connector::KodakController
 
     )
     
-    ZZ::Async::KodakImport.enqueue( photo.id, photo_url, api.auth_token )
+    ZZ::Async::GeneralImport.enqueue( photo.id, photo_url, :headers => api.compose_request_header )
     Photo.to_json_lite(photo)
   end
 

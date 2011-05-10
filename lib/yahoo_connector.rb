@@ -52,7 +52,7 @@ class YahooConnector
     if token.kind_of?(String) && token.include?(TOKEN_SPLITTER)
       parts = token.split(TOKEN_SPLITTER)
       create_access_token!(parts[0], parts[1])
-    elsif
+    elsif token.kind_of?(OAuth::AccessToken)
       @access_token = token
     end
   end

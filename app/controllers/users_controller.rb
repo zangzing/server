@@ -1,8 +1,13 @@
 class UsersController < ApplicationController
+  ssl_required :join, :create, :edit_password, :update_password
+  ssl_allowed :validate_email, :validate_username
+
   before_filter :require_no_user, :only => [:create]
   before_filter :require_user,    :only => [ :activate,:edit, :update]
   before_filter :require_admin,   :only => [ :activate]
   before_filter :correct_user,    :only => [:edit, :update]
+
+  skip_before_filter :verify_authenticity_token, :only=>[:create]
 
   def join
     if ! current_user
