@@ -6,6 +6,8 @@
 #  Base class for all controllers
 
 class ApplicationController < ActionController::Base
+  include SslRequirement
+  
 
   # give the zza worker a chance to restart if we are running
   # as a forked process because it will have been killed in that

@@ -64,5 +64,14 @@ module ApplicationHelper
       return url;
    end
 
+   def proxy_if_needed_for_ssl(url)
+      if(request.protocol == "https://" && !url.starts_with?('https://'))
+        return proxy_path + '?url=' + URI.escape(url)
+      else  
+        return url;
+      end
+   end
+
+
 
 end

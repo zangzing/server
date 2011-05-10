@@ -21,7 +21,7 @@ function ZZA(id, useridentifier, usemixpanel)
 	this.maxevts = 10;
 	this.maxtime = 2500;
 	this.maxpushbytes = 2000;
-	this.zzaurl = 'http://zza.zangzing.com'			// for test mode: 'http://localhost:8080'   http://zza.zangzing.com
+	this.zzaurl = document.location.protocol + '//zza.zangzing.com'
 	this.pushed = 0;
 	this.pindex = 0;
 	this.closing = false;

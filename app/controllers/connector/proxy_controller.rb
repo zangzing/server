@@ -1,5 +1,5 @@
 class Connector::ProxyController < ApplicationController
-#  before_filter :require_user
+  ssl_allowed :proxy
 
   def proxy
     #now that we rely on nginx, all requests are proxied by nginx so we

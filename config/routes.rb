@@ -30,10 +30,10 @@ Server::Application.routes.draw do
     get    '/users/new'                 => 'users#new',               :as => :new_user
     get    '/users/validate_email'      => 'users#validate_email',    :as => :validate_email
     get    '/users/validate_username'   => 'users#validate_username', :as => :validate_username
-    post   '/users'                     => 'users#create',            :as => :create_user
+    post   '/users'                     => 'users#create',            :as => :create_user, :requirements => {:protocol => 'https'}
     put    '/users/:id'                 => 'users#update',            :as => :update_user
     delete '/users/:id'                 => 'users#destroy',           :as => :delete_user
-    match  '/users/:id/update_password' => 'users#update_password',   :as => :update_user_password
+    match  '/users/:id/update_password' => 'users#update_password',   :as => :update_user_password, :requirements => {:protocol => 'https'}
 
     #email_subscirptions
     get '/subscriptions/:id'         => 'subscriptions#unsubscribe'   #see unsubscribe above
@@ -144,12 +144,24 @@ Server::Application.routes.draw do
     match '/oauth/test_session'   => 'oauth#test_session',           :as => :test_session
 
     #sessions - login
-    resources :user_sessions, :only => [:new, :create, :destroy, :inactive]
+    get '/user_sessions/new'           => 'user_sessions#new',             :as => :new_user_session
+    post '/user_sessions/create'       => 'user_sessions#create',          :as => :create_user_session, :requirements => {:protocol => 'https'}
+    
     match '/signin'                    => 'user_sessions#new'
     match '/join'                      => 'user_sessions#join'
     match '/inactive'                  => 'user_sessions#inactive',       :as => :inactive
     match '/signout'                   => 'user_sessions#destroy',        :as => :signout
-    resources :password_resets, :only => [:new, :edit, :create, :update]
+
+
+
+    #password resets
+    match '/password_resets/new'         => 'password_resets#new',        :as => :new_password_reset
+    get '/password_resets/:id/edit'    => 'password_resets#edit',        :as => :edit_password_reset,     :requirements => {:protocol => 'https'}
+    post '/password_resets/create'      => 'password_resets#create',     :as => :create_password_reset,   :requirements => {:protocol => 'https'}
+    put '/password_resets/:id/update'  => 'password_resets#update',     :as => :update_password_reset,   :requirements => {:protocol => 'https'}
+
+
+#    resources :password_resets, :only => [:new, :edit, :create, :update]
 
     #Asynch responses
     match '/async_responses/:response_id' => 'async_responses#show', :as => :async_response
