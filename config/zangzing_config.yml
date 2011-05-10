@@ -21,6 +21,8 @@ common: &common
   agent_download_url_mac: "http://staging.downloads.zangzing.com/agent/darwin/ZangZing-Setup(STAGED).pkg"
   agent_download_url_win: "http://staging.downloads.zangzing.com/agent/win32/ZangZing-Setup(STAGED).exe"
 
+  v3homepage_repo_root: "../v3deploy/v3homepage"
+
 development:
   <<: *common
   reserved_names: false
@@ -46,12 +48,14 @@ photos_production:
   requires_http_auth: false
   agent_download_url_mac: "http://downloads.zangzing.com/agent/darwin/ZangZing-Setup.pkg"
   agent_download_url_win: "http://downloads.zangzing.com/agent/win32/ZangZing-Setup.exe"
+  v3homepage_repo_root: "/data/v3homepage"
 
 photos_staging:
   <<: *common
   reserved_names: true
   resque_zza_id: "staging.photos/svr"
   album_email_host: "staging.zangzing.com"
+  v3homepage_repo_root: "/data/v3homepage"
 
 
 eytest:
