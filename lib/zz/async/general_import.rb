@@ -12,15 +12,16 @@ module ZZ
         end
       end
 
-      def self.enqueue( photo_id, source_url )
-        super( photo_id, source_url )
+      def self.enqueue( photo_id, source_url, options = {} )
+        super( photo_id, source_url, options )
       end
       
-      def self.perform( photo_id, source_url )
+      def self.perform( photo_id, source_url, options = {} )
+        @headers = options['headers'] || {}
         SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
           photo = Photo.find(photo_id)
           if photo.assigned? || photo.error?
-            file = RemoteFile.new(source_url, PhotoGenHelper.photo_upload_dir)
+            file = RemoteFile.new(source_url, PhotoGenHelper.photo_upload_dir, @headers)
             file_path = file.path
             file.close()
             file.validate_size
