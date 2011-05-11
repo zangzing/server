@@ -41,7 +41,7 @@ module UiModel
         :host => "localhost",
         :port => 4444,
       #	:browser => "*googlechrome", #in chrome does not work ssl
-        :browser => "*firefox C:/Program Files (x86)/Mozilla Firefox/firefox.exe",
+        :browser => "*firefox",
         :url => "http://#{ZZ_HOST}/",
         :timeout_in_seconds => @timeout,
         :javascript_framework => :jquery
