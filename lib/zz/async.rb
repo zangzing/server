@@ -10,6 +10,7 @@ require 'zz/async/generate_thumbnails'
 require 'zz/async/test_noop'
 require 'zz/async/process_like'
 require 'zz/async/connector_worker'
+require 'zz/async/remote_job_worker'
 
 module ZZ
   module Async

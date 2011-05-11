@@ -244,7 +244,7 @@ DEPENDENCIES
   rails (= 3.0.3)
   redis (~> 2.1)
   require_all
-  resque (= 1.9.10)
+  resque
   resque-retry
   rpm_contrib
   rspec

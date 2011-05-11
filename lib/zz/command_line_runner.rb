@@ -9,34 +9,45 @@ module ZZ
       @@runner ||= CommandLineRunner.new
     end
 
+
+    def self.raise_not_found(cmd, args)
+      raise ZZ::CommandLineNotFound.new("Command not found for: #{cmd} #{args}")
+    end
+
     # run directly using the command without prepending
     # the command directory - relies on the path being set
     # up properly
     def run_direct(the_cmd, cmd_path, args)
-
       perform_action_with_newrelic_trace( :name => 'external_command_' + the_cmd,
                                           :category => ZangZingConfig.new_relic_category_type,
                                           :params => { :args => args }) do
         begin
-          full_cmd = cmd_path + " " + args
+          args = "" if args.nil?
+          if args.empty?
+            full_cmd = cmd_path
+          else
+            full_cmd = cmd_path + " " + args
+          end
           Rails.logger.info("CommandLine:" + full_cmd)
           output = `#{full_cmd}`
         rescue Errno::ENOENT
-          raise_not_found(cmd_path)
+          ZZ::CommandLineRunner.raise_not_found(cmd_path, args)
         end
-        if $?.exitstatus == 127
-          raise_not_found(cmd_path)
+        status = $?.exitstatus
+        if status == 127
+          ZZ::CommandLineRunner.raise_not_found(cmd_path, args)
         end
-        if $?.exitstatus != 0
-          msg = "Command line call for #{the_cmd} failed with #{$?.exitstatus}"
+        if status != 0
+          msg = "Command line: #{the_cmd} failed with #{status} : #{output}"
           raise ZZ::CommandLineException.new(msg)
         end
         return output
       end
     end
 
-    def self.raise_not_found(cmd)
-      raise ZZ::CommandLineNotFound.new("Command not found for #{cmd}")
+    # low level direct run
+    def self.run_cmd(cmd)
+      get_instance.run_direct(cmd, cmd, nil)
     end
 
     # run a command from the command directory
@@ -51,6 +62,11 @@ module ZZ
 
     def self.command_path=(cmd_path)
       @@command_path = cmd_path
+    end
+
+    # return a full command with the path
+    def self.build_command(cmd)
+      return command_path + "/" + cmd
     end
   end
 end

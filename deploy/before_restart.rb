@@ -47,4 +47,9 @@ run "find /tmp/nginx/cache -type f -exec rm {} \\;"
 
 # put custom assets in place based on environment
 move_assets
+
+# make sure v3homepage is deployed with the current tag
+run "runner -e #{environment()} HomepageManager.deploy_homepage_current_tag"
+
+
 #ALL DONE! Restart the App.
