@@ -27,13 +27,8 @@ module ZZ
         super(queue, response_id, klass_name, method_name, params )
       end
 
-      # Put the job on all the server remote queues, and wait for the results.
-      # Returns an array of async responses.  The async responses can
-      # be returned in a non complete state if we get a timeout while waiting
-      # you can check for valid results by calling the .complete? method
-      # on the individual rpc responses.
-      def self.remote_rpc(servers, klass_name, method_name, params)
-        # first start the async work
+      # kick off the async portion of the rpc
+      def self.remote_rpc_async(servers, klass_name, method_name, params)
         rpc_responses = []
         servers.each do |server|
           response_id = AsyncResponse.new_response_id
@@ -42,7 +37,10 @@ module ZZ
           enqueue_on_queue(queue_name, response_id, klass_name, method_name, params)
           rpc_responses << rpc_response
         end
+        rpc_responses
+      end
 
+      def self.remote_rpc_wait_results(rpc_responses)
         # ok, the work has been kicked off, time to collect the results
         # we poll with a small sleep interval while we wait.
         SystemTimer.timeout_after(ZangZingConfig.config[:remote_job_timeout]) do
@@ -80,12 +78,30 @@ module ZZ
         return rpc_responses
       end
 
+      # Put the job on all the server remote queues, and wait for the results.
+      # Returns an array of async responses.  The async responses can
+      # be returned in a non complete state if we get a timeout while waiting
+      # you can check for valid results by calling the .complete? method
+      # on the individual rpc responses.
+      def self.remote_rpc(servers, klass_name, method_name, params)
+        # first start the async work
+        rpc_responses = remote_rpc_async(servers, klass_name, method_name, params)
+        return remote_rpc_wait_results(rpc_responses)
+      end
+
       # put the job on all the app server remote queues, and wait for the results
       # returns an array of async responses
       def self.remote_rpc_app_servers(klass_name, method_name, params)
         app_servers = Server::Application.config.deploy_environment.all_app_servers
         remote_rpc(app_servers, klass_name, method_name, params)
       end
+
+      # put the job on all the app server remote queues, does not wait for a result
+      def self.remote_rpc_app_servers_async(klass_name, method_name, params)
+        app_servers = Server::Application.config.deploy_environment.all_app_servers
+        remote_rpc_async(app_servers, klass_name, method_name, params)
+      end
+
 
       def self.perform(response_id, klass_name, method_name, params )
         SystemTimer.timeout_after(ZangZingConfig.config[:remote_job_timeout]) do

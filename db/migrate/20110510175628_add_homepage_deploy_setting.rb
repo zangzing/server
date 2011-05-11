@@ -4,7 +4,7 @@ class AddHomepageDeploySetting < ActiveRecord::Migration
                           :label => 'Deploy Tag for V3 Homepage',
                           :description => 'Current deploy tag for v3homepage repository',
                           :data_type  => 'string',
-                          :value => 'master')
+                          :value => 'origin/master')
   end
 
   def self.down

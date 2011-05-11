@@ -49,7 +49,7 @@ run "find /tmp/nginx/cache -type f -exec rm {} \\;"
 move_assets
 
 # make sure v3homepage is deployed with the current tag
-run "runner -e #{environment()} HomepageManager.deploy_homepage_current_tag"
+run "rails runner -e #{environment()} HomepageManager.deploy_homepage_current_tag_async"
 
 
 #ALL DONE! Restart the App.

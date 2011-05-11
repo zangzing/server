@@ -20,7 +20,7 @@ class HomepageManager
   end
 
   def self.test_deploy
-    deploy('third')
+    deploy('origin/master')
   end
 
   # run the deploy for the v3 homepage
@@ -36,9 +36,11 @@ class HomepageManager
     { :stdout => result }
   end
 
-  # do the deploy but get the tag from the system settings first
-  def self.deploy_homepage_current_tag
+  # do the deploy but get the tag from the system settings first, this call
+  # is async because we don't want to wait around on the resque workers which might
+  # not have been started since we are called during the deploy
+  def self.deploy_homepage_current_tag_async
     tag = SystemSetting[:homepage_deploy_tag]
-    deploy_homepage(:tag => tag)
+    rpc_responses = ZZ::Async::RemoteJobWorker.remote_rpc_app_servers(self.name, 'deploy_homepage', :tag => tag)
   end
 end
