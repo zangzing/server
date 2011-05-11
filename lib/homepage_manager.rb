@@ -41,6 +41,6 @@ class HomepageManager
   # not have been started since we are called during the deploy
   def self.deploy_homepage_current_tag_async
     tag = SystemSetting[:homepage_deploy_tag]
-    rpc_responses = ZZ::Async::RemoteJobWorker.remote_rpc_app_servers(self.name, 'deploy_homepage', :tag => tag)
+    rpc_responses = ZZ::Async::RemoteJobWorker.remote_rpc_app_servers_async(self.name, 'deploy_homepage', :tag => tag)
   end
 end
