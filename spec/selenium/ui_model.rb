@@ -2,15 +2,15 @@ require "rubygems"
 #require "test/spec"
 require "selenium"
 
-require "spec/selenium/ui_model/toolbar"
-require "spec/selenium/ui_model/signin_drawer"
-require "spec/selenium/ui_model/user_homepage"
-require "spec/selenium/ui_model/wizard"
-require "spec/selenium/ui_model/oauth_manager"
+require "./spec/selenium/ui_model/toolbar"
+require "./spec/selenium/ui_model/signin_drawer"
+require "./spec/selenium/ui_model/user_homepage"
+require "./spec/selenium/ui_model/wizard"
+require "./spec/selenium/ui_model/oauth_manager"
 
 
 module UiModel
-  ZZ_HOST = ENV['ZZ_HOST'] || 'zzadmin:sharezzphotos@share1001photos.zangzing.com'
+  ZZ_HOST = ENV['ZZ_HOST'] || 'zzadmin:sharezzphotos@staging.photos.zangzing.com'
 
   TEST_USER = {
     :full_name => 'Selenium AutoTest',
@@ -41,7 +41,7 @@ module UiModel
         :host => "localhost",
         :port => 4444,
       #	:browser => "*googlechrome", #in chrome does not work ssl
-        :browser => "*firefox",
+        :browser => "*firefox C:/Program Files (x86)/Mozilla Firefox/firefox.exe",
         :url => "http://#{ZZ_HOST}/",
         :timeout_in_seconds => @timeout,
         :javascript_framework => :jquery
@@ -55,7 +55,7 @@ module UiModel
     end
 
     def open_site!
-      @browser.open "/"
+      @browser.open "/service"
     end
     
     def timeout

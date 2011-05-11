@@ -13,9 +13,6 @@ module ConnectorShared
 
 
   def join_as_new_user
-    ui.toolbar.open_sign_in_drawer
-
-    ui.toolbar.signin_drawer.click_join_tab
 
     ui.toolbar.signin_drawer.join_tab.visible?.should be_true
 
@@ -24,14 +21,15 @@ module ConnectorShared
     ui.toolbar.signin_drawer.join_tab.type_email current_user[:email]
     ui.toolbar.signin_drawer.join_tab.type_password current_user[:password]
     ui.toolbar.signin_drawer.join_tab.click_join_button
+    ui.user_homepage.close_welcome_div
 
     ui.toolbar.signed_in_as?(current_user[:full_name]).should be_true
   end
 
-  def create_new_album(type)
+  def create_new_album    #(type)
     ui.toolbar.click_create_album
     ui.wizard.album_type_tab.visible?.should be_true
-    ui.wizard.album_type_tab.send("click_#{type}_album".to_sym)
+ #   ui.wizard.album_type_tab.send("click_#{type}_album".to_sym)
     ui.wizard.add_photos_tab.visible?.should be_true
   end
 

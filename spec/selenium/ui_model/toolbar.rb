@@ -10,12 +10,13 @@ module UiModel
       @signin_drawer = SigninDrawer::Drawer.new(selenuim_session)
     end
 
-    def open_sign_in_drawer
-      @browser.click "css=#sign-in-button"
-      @session.wait_for "css=#step-join-off"
-    end
+#    def open_sign_in_drawer
+#      @browser.click "css=#sign-in-button"
+#      @session.wait_for "css=#step-join-off"
+#    end
 
     def signed_in_as?(user)
+      puts @browser.get_text("css=#user-info > h2")
       @browser.get_text("css=#user-info > h2").casecmp(user)==0
     end
 

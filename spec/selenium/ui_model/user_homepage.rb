@@ -40,6 +40,10 @@ module UiModel
         photos
         #photo_count
       end
+
+      def close_welcome_div
+         @browser.click "css=a.zz_dialog_closer"
+      end
   end
 
 end

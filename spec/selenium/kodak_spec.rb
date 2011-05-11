@@ -1,6 +1,6 @@
-require 'spec/selenium/ui_model'
-require 'spec/selenium/uimodel_helper'
-require 'spec/selenium/connector_shared'
+require './spec/selenium/ui_model'
+require './spec/selenium/uimodel_helper'
+require './spec/selenium/connector_shared'
 
 describe "Kodak connector" do
   include UimodelHelper
@@ -14,7 +14,7 @@ describe "Kodak connector" do
   end
 
   it "creates a new group album" do
-    create_new_album(:group)
+    create_new_album #(:group)
   end
 
   it "connects to Kodak" do
