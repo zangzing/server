@@ -1,5 +1,5 @@
 <div class="profile-picture">
     <div class="mask">
-      <img data-src="<%=user.profile_photo_url%>" src="<%= image_path('/images/blank.png')%>">
+      <img data-src="<%=proxy_if_needed_for_ssl(user.profile_photo_url)%>" src="<%= image_path('/images/blank.png')%>">
     </div>
 </div>

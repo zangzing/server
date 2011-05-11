@@ -174,7 +174,6 @@ class SendgridController < ApplicationController
         zza.track_event("#{category}.#{event}", {:email => email }, nil, nil, nil, params['url'])
       when 'unsubscribe'
         zza.track_event("#{category}.#{event}", {:email => email })
-      #TODO Process unsubscribe
       else
         zza.track_event("#{category}.#{event}", {:email => email })
     end

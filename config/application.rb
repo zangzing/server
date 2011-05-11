@@ -40,7 +40,7 @@ module Server
   
     # ZangZing Server Defaul Configuration Values
     #config.application_host =  'porch.rubyriders.com:3001'
-    config.application_host =  'localhost:3000'
+    config.application_host =  'localhost'
 
     # sendgrid email to album address
     config.album_email_host =  ZangZingConfig.config[:album_email_host]

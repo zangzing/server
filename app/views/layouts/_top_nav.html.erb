@@ -45,7 +45,7 @@
 
                         $('img.album-cover').attr('src', image.src);
                     };
-                    image.src = agent.checkAddCredentialsToUrl('<%=@album.cover.thumb_url%>');
+                    image.src = agent.checkAddCredentialsToUrl('<%= @album.cover.thumb_url%>');
 
                 })
             </script>

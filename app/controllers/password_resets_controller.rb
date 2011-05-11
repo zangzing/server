@@ -14,6 +14,9 @@
 
 
 class PasswordResetsController < ApplicationController
+  ssl_required :new, :create, :edit, :update
+
+
   # These operations require that no user is logged in
   before_filter :require_no_user
 
