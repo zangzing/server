@@ -110,6 +110,11 @@ module ZZ
         Resque.enqueue( self, *args)
       end
 
+      # lets you enqueue on on a named queue
+      def self.enqueue_on_queue(queue, *args)
+        Resque::Job.create(queue, self, *args)
+      end
+
       # resque hook to perform GC after job
       # the zz is to go last since these are
       # called in alphabetical order

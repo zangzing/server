@@ -49,6 +49,45 @@ class ZZDeployEnvironment
     @redis_host_name
   end
 
+  # return an array of all the app server machines
+  # internal host names
+  def all_app_servers
+    return @all_app_servers if @all_app_servers != nil
+    @app_server_types ||= Set.new [ 'solo', 'app', 'app_master' ].freeze
+
+    instances = ey['environment']['instances']
+
+    # collect all the app server hosts
+    @all_app_servers = []
+    instances.each do |instance|
+      if @app_server_types.include?(instance['role'])
+        @all_app_servers << instance['private_hostname']
+      end
+    end
+    # add ourselves if we have no info, running on dev box
+    @all_app_servers << this_host_name if @all_app_servers.empty?
+
+    @all_app_servers
+  end
+
+  # return an array of all the server machines regardless of type
+  def all_servers
+    return @all_servers if @all_servers != nil
+
+    instances = ey['environment']['instances']
+
+    # collect all the app server hosts
+    @all_servers = []
+    instances.each do |instance|
+      @all_servers << instance['private_hostname']
+    end
+    # add ourselves if we have no info, running on dev box
+    @all_servers << this_host_name if @all_servers.empty?
+
+    @all_servers
+  end
+
+
   # determine if this instance should host
   # the resque cpu job instance
   #

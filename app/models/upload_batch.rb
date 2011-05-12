@@ -3,7 +3,7 @@ class UploadBatch < ActiveRecord::Base
 
   CLOSE_BATCH_INACTIVITY = 5.minutes
   CLOSE_CALL_DEFER_TIME = 30.seconds
-  FINALIZE_STALE_INACTIVITY = 24.hours
+  FINALIZE_STALE_INACTIVITY = 1.hours
 
   belongs_to :user
   belongs_to :album

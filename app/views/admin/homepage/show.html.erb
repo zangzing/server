@@ -1,0 +1,21 @@
+<%= render :partial =>  'admin/admin_screens/adminmenu' %>
+<div id="main-container" >
+  <ul class="viewlist" style="width: 800px;">
+    <li class="item">
+      <div class="header bar">
+        Homepage
+      </div>
+      <div class="content">
+        <br>
+        <table style="width: 700px;">
+          <tr><td style="width: 15%;"></td><td ></td></tr>
+         <%= form_tag( homepage_path, :method => :put) do %>
+             <%=render :partial=>'admin/system_settings/setting', :locals => { :setting_name => 'homepage_deploy_tag' } %>
+        </table>
+         <%= submit_tag 'Deploy Homepage', :style => "float: right;", :onclick =>"return confirm('WARNING- LIVE CHANGES Are you sure you want to change the production homepage. Change is immediate?');"%>
+        <% end %>
+      </div>
+    </li>
+  </ul>
+</div>
+

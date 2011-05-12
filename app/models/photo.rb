@@ -147,6 +147,40 @@ class Photo < ActiveRecord::Base
     @@supported_image_types ||= Set.new [ 'image/jpeg', 'image/png', 'image/gif', 'image/tiff' ]
   end
 
+  # determine the type of the file from its magic header
+  def get_magic_file_type(file_path)
+    @@magic_types ||= [
+        {:type => 'image/jpeg', :magic => [255,216,255,224]},
+        {:type => 'image/jpeg', :magic => [255,216,255,225]},
+        {:type => 'image/jpeg', :magic => [255,216,255,232]},
+        {:type => 'image/png', :magic => [137,80,78,71]},
+        {:type => 'image/gif', :magic => [71,73,70,56]},
+        {:type => 'image/tiff', :magic => [77,77,0,42]},
+        {:type => 'image/tiff', :magic => [73,73,42,0]},
+    ]
+
+    begin
+      io = File.open(file_path,"rb")
+      header = []
+      header << io.getbyte
+      header << io.getbyte
+      header << io.getbyte
+      header << io.getbyte
+
+      # check the header against the magic types
+      @@magic_types.each do |item|
+        mime_type = item[:type]
+        magic = item[:magic]
+        if magic == header
+          return mime_type
+        end
+      end
+    ensure
+      io.close() rescue nil
+    end
+
+    return ""
+  end
 
   # given the local image, determine all the exif info for the file
   # this is only called when we set up a local file to be uploaded
@@ -172,14 +206,24 @@ class Photo < ActiveRecord::Base
       self.headline = (iptc['Headline'] || '') if cur_headline.blank?
       self.caption = (iptc['Caption'] || '') if cur_caption.blank?
     end
+    # determine the files type
+    magic_type = get_magic_file_type(self.source_path)
+
     if file = data['File']
-      val = file['MIMEType']
+      if magic_type.empty?
+        val = file['MIMEType']
+      else
+        val = magic_type
+        file['MIMEType'] = magic_type
+      end
       self.image_content_type = val
       # give preference to File width and height because it takes into account any saved rotation done to the file already
       val = file['ImageHeight']
       self.height = val unless val.nil?
       val = file['ImageWidth']
       self.width = val unless val.nil?
+    else
+      self.image_content_type = magic_type if !magic_type.empty?
     end
 
 

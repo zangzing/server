@@ -14,4 +14,5 @@ class Admin::SystemSettingsController < Admin::AdminController
     flash[:notice]="System Settings Saved!"
     redirect_to system_settings_path
   end
+
 end
