@@ -17,10 +17,18 @@ class LikesController < ApplicationController
     # filter down the set based on the results of the counter lookup - if items
     # were missing from the counter table no reason to pass them on to the likes table
     wanted_subject_ids = []
-    current_user_id = current_user.id
-    if( counters && counters.length > 0)
+
+    if current_user
+      @current_user_id = current_user.id
+    else
+      @current_user_id = nil
+    end
+    
+    if( counters && counters.count > 0)
       counters.each do |counter|
-        wanted_subject_ids << "(#{current_user_id}, #{counter.subject_id},'#{counter.subject_type}')"
+        if @current_user_id
+          wanted_subject_ids << "(#{@current_user_id}, #{counter.subject_id},'#{counter.subject_type}')"
+        end
         subjects[ counter.subject_id.to_s ][:count]= counter.counter
       end
     end
@@ -28,7 +36,7 @@ class LikesController < ApplicationController
     # this filter may be a subset (down to zero possibly) of the initial
     # set since we use the results of the LikeCounter lookup to tell us
     # which subject_ids matched.  For ones that don't no reason to pass them on
-    if !wanted_subject_ids.empty? && current_user
+    if @current_user_id  && !wanted_subject_ids.empty?
       likes = Like.where("(user_id, subject_id, subject_type) IN ( #{wanted_subject_ids.join(',')} )" ).all
       if( likes && likes.length > 0)
         likes.each  do | like |
