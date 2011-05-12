@@ -302,6 +302,9 @@ Server::Application.routes.draw do
         put   'emails/:id'                       => 'emails#update',              :as => :email
         get   'settings'                         => 'system_settings#show',       :as => :system_settings
         put   'settings'                         => 'system_settings#update'
+        get   'homepage'                         => 'homepage#show',              :as => :homepage
+        put   'homepage'                         => 'homepage#update'
+
         get   'guests'                           => 'guests#index',               :as => :guests
         post  'guests(.:format)'                 => 'guests#create'
         get   'guests/:id'                       => 'guests#show',                :as => :guest
