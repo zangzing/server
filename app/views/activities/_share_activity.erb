@@ -10,7 +10,7 @@
     <a href="<%=user_path(activity.user)%>">
         <span class="blue"><%=activity.user.name%></span>
     </a>
-    shared this album <!--<%=activity.share.subject.name%>-->
+    shared this album
     <%case activity.share.service%>
         <% when 'email' then%>
           by email
