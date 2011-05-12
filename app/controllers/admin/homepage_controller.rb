@@ -8,8 +8,8 @@ class Admin::HomepageController < Admin::AdminController
   def update
     begin
       if params[:homepage_deploy_tag]
+        HomepageManager.deploy(params[:homepage_deploy_tag])
         SystemSetting[:homepage_deploy_tag] = params[:homepage_deploy_tag]
-        HomepageManager.deploy(SystemSetting[:homepage_deploy_tag])
       end
       flash[:notice]="Homepage Deployed!"
     rescue Exception => e
