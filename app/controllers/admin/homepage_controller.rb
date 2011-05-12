@@ -6,15 +6,16 @@ class Admin::HomepageController < Admin::AdminController
   end
 
   def update
+    @previous_tag = SystemSetting[:homepage_deploy_tag]
     begin
       if params[:homepage_deploy_tag]
         HomepageManager.deploy(params[:homepage_deploy_tag])
         SystemSetting[:homepage_deploy_tag] = params[:homepage_deploy_tag]
+        flash[:notice]="Homepage Deployed!"
       end
-      flash[:notice]="Homepage Deployed!"
     rescue Exception => e
+      SystemSetting[:homepage_deploy_tag] = @previous_tag
       flash[:error]= e.message
-      redirect_to homepage_url and return
     end
     redirect_to :back
   end
