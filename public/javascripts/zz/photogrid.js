@@ -440,7 +440,7 @@
             
 
                        //scroll to photo
-            if(self.options.currentPhotoId){
+            if(self.options.currentPhotoId !== null){
                 self.scrollToPhoto(self.options.currentPhotoId,0, false);
             }
 
@@ -527,6 +527,11 @@
             var self = this;
 
             var index = self.indexOfPhoto(photoId);
+
+            if(index == -1){
+                index = 0;
+                photoId = self.options.photos[0].id;
+            }
 
 //            if(highlightCell){
 //                var highlighted = self.cellAtIndex(index).find('.photo-border').addClass('highlighted');
