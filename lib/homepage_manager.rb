@@ -30,8 +30,8 @@ class HomepageManager
 
     # set the proper directory to deploy into
     homepage_dir = ZangZingConfig.config[:v3homepage_repo_root]
-    git_cmd = ZZ::CommandLineRunner.build_command("git fetch && git checkout #{tag}")
-    full_cmd = "cd #{homepage_dir} && #{git_cmd} 2>&1"
+    git = ZZ::CommandLineRunner.build_command("git")
+    full_cmd = "cd #{homepage_dir} && #{git} fetch && #{git} checkout #{tag} 2>&1"
     result = ZZ::CommandLineRunner.run_cmd(full_cmd)
     { :stdout => result }
   end
