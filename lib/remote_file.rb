@@ -56,6 +56,11 @@ class RemoteFile < ::File
       end
       http.request_get(uri.path, @options) do |remote_side|
         follow_redirect = remote_side.is_a?(Net::HTTPMovedPermanently) || remote_side.is_a?(Net::HTTPMovedTemporarily)
+        if remote_side.code =~ /4\d\d/i #error 4xx
+          raise Net::HTTPError.new("#{remote_side.code}: #{remote_side.message}", remote_side)
+        elsif remote_side.code =~ /5\d\d/i #error 5xx
+          raise Net::HTTPRetriableError.new("#{remote_side.code}: #{remote_side.message}", remote_side)
+        end
         unless follow_redirect
           @content_type = remote_side['content-type']
           unless remote_side['transfer-encoding']=='chunked'

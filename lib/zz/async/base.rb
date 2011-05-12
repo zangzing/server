@@ -58,6 +58,7 @@ module ZZ
         ActiveRecord::RecordNotFound.name             => /.*/,
         "PhotoValidationError"                        => /.*/,
         "URI::InvalidURIError"                        => /.*/,
+        "Net::HTTPError"                              => /.*/,
         RuntimeError.name                             => /.*/
       }
 
