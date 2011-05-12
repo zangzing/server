@@ -14,6 +14,7 @@ class Admin::HomepageController < Admin::AdminController
       flash[:notice]="Homepage Deployed!"
     rescue Exception => e
       flash[:error]= e.message
+      redirect_to homepage_url and return
     end
     redirect_to :back
   end
