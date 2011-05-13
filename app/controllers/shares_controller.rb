@@ -191,6 +191,9 @@ class SharesController < ApplicationController
     if current_user
       @zza.user = current_user.id
       @zza.user_type = 1
+    else
+      @zza.user = request.cookies['_zzv_id']
+      @zza.user_type = 2
     end
 
     return @zza
