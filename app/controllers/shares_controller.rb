@@ -23,23 +23,43 @@ class SharesController < ApplicationController
   end
 
   def create
+
     # Based on the route used to get here (and thus the params) we know what kind of subject does
     # the user wants to quack! about.
     if  params[:user_id]
       @subject = User.find(params[:user_id])
       @subject_type = Like::USER
       @subject_url = user_pretty_url(@subject)
+      shared_type = 'user'
     elsif params[:album_id]
       @subject = Album.find(params[:album_id])
       @subject_type = Like::ALBUM
       @subject_url = album_pretty_url(@subject)
+      shared_type = 'album'
     elsif params[:photo_id]
       @subject = Photo.find(params[:photo_id])
       @subject_type = Like::PHOTO
       @subject_url = photo_pretty_url(@subject)
+      shared_type = 'photo'
     else
       render :json => "subject_type not specified via params", :status => 400 and return
     end
+
+
+    if params[:service] == 'email'
+      zza.track_event("#{shared_type}.share.email")
+    elsif params[:service] == 'social'
+      if params[:recipients].include?('twitter')
+        zza.track_event("#{shared_type}.share.twitter")
+      end
+
+      if params[:recipients].include?('facebook')
+        zza.track_event("#{shared_type}.share.facebook")
+      end
+
+    end
+
+
 
     # make sure recipients its an array
     # emailshare submits a comma separated list of emails
@@ -86,17 +106,21 @@ class SharesController < ApplicationController
       user = User.find(params[:user_id])
       shareable_url = user_pretty_url(user)
       message = "Check out #{user.posessive_name} Albums on @ZangZing"
+      zza.track_event('user.share.twitter')
     elsif params[:album_id]
       album = Album.find(params[:album_id])
       shareable_url = album_pretty_url(album)
       message = "Check out #{album.user.posessive_name} #{album.name} on @ZangZing"
+      zza.track_event('album.share.twitter')
     elsif params[:photo_id]
       photo = Photo.find(params[:photo_id])
       shareable_url = photo_pretty_url(photo)
       message = "Check out #{photo.user.posessive_name} photo on @ZangZing"
+      zza.track_event('photo.share.twitter')
     end
 
     shareable_url = bitly_url(shareable_url)
+
 
     redirect_to "http://twitter.com/share?text=#{URI.escape message}&url=#{URI.escape shareable_url}"
 
@@ -106,12 +130,15 @@ class SharesController < ApplicationController
     if  params[:user_id]
       user = User.find(params[:user_id])
       shareable_url = user_pretty_url(user)
+      zza.track_event('user.share.facebook')
     elsif params[:album_id]
       album = Album.find(params[:album_id])
       shareable_url = album_pretty_url(album)
+      zza.track_event('album.share.facebook')
     elsif params[:photo_id]
       photo = Photo.find(params[:photo_id])
       shareable_url = photo_pretty_url(photo)
+      zza.track_event('photo.share.facebook')
     end
 
     redirect_to "http://www.facebook.com/share.php?u=#{URI.escape shareable_url}"
@@ -126,6 +153,9 @@ class SharesController < ApplicationController
 
       subject = "Check out a ZangZing homepage"
       message = "Hi, I thought you would like to see this ZangZing homepage.\n\n #{shareable_url}"
+
+      zza.track_event('user.share.email')
+
     elsif params[:album_id]
       album = Album.find(params[:album_id])
       shareable_url = album_pretty_url(album)
@@ -133,6 +163,9 @@ class SharesController < ApplicationController
 
       subject = "Check out #{album.name} album on ZangZing"
       message = "Hi, I thought you would like to see #{album.user.posessive_name} #{album.name} album on ZangZing.\n\n #{shareable_url}"
+
+      zza.track_event('album.share.email')
+
     elsif params[:photo_id]
       photo = Photo.find(params[:photo_id])
       shareable_url = photo_pretty_url(photo)
@@ -140,6 +173,9 @@ class SharesController < ApplicationController
 
       subject = "Check out this photo on ZangZing"
       message = "Hi, I thought you would like to see #{photo.user.posessive_name} photo on ZangZing.\n\n #{shareable_url}"
+
+      zza.track_event('photo.share.email')
+
     end
 
     render :json=> {:mailto => "mailto:?subject=#{URI.escape subject}&body=#{URI.escape message}"}
@@ -147,6 +183,18 @@ class SharesController < ApplicationController
   end
 
 
+  protected
+  #todo: move this to ApplicationController
+  def zza
+    @zza ||= ZZ::ZZA.new
+
+    if current_user
+      @zza.user = current_user.id
+      @zza.user_type = 1
+    end
+
+    return @zza
+  end
 
 
 

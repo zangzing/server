@@ -56,7 +56,7 @@ var share = {
             mouseOut();
 
             ZZAt.track(object_type + '.share.' + zza_context + '.email');
-            ZZAt.track(object_type + '.share.email');
+//            ZZAt.track(object_type + '.share.email');
 
             share.share_to_email(object_type, object_id);
         });
@@ -65,7 +65,7 @@ var share = {
             mouseOut();
 
             ZZAt.track(object_type + '.share.' + zza_context + '.twitter');
-            ZZAt.track(object_type + '.share.twitter');
+//            ZZAt.track(object_type + '.share.twitter');
 
             share.share_to_twitter(object_type, object_id);
         });
@@ -74,7 +74,7 @@ var share = {
             mouseOut();
 
             ZZAt.track(object_type + '.share.' + zza_context + '.facebook');
-            ZZAt.track(object_type + '.share.facebook');
+//            ZZAt.track(object_type + '.share.facebook');
 
             share.share_to_facebook(object_type, object_id);
         });
