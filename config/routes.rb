@@ -226,13 +226,19 @@ Server::Application.routes.draw do
       match '/instagram/folders.:format' => 'instagram_folders#index', :as => :instagram_folders
       match '/instagram/folders/:target/:action.:format' => 'instagram_folders#index', :as => :instagram_folder_action
 
-
       #photobucket
       match '/photobucket/sessions/new' => 'photobucket_sessions#new', :as => :new_photobucket_session
       match '/photobucket/sessions/create' => 'photobucket_sessions#create', :as => :create_photobucket_session
       match '/photobucket/sessions/destroy' => 'photobucket_sessions#destroy', :as => :destroy_photobucket_session
       match '/photobucket/folders' => 'photobucket_folders#index', :as => :photobucket_folders
       match '/photobucket/folders/:action' => 'photobucket_folders', :as => :photobucket
+
+      #dropbox
+      match '/dropbox/sessions/new' => 'dropbox_sessions#new', :as => :new_dropbox_session
+      match '/dropbox/sessions/create' => 'dropbox_sessions#create', :as => :create_dropbox_session
+      match '/dropbox/sessions/destroy' => 'dropbox_sessions#destroy', :as => :destroy_dropbox_session
+      match '/dropbox/folders' => 'dropbox_folders#index', :as => :dropbox_folders
+      match '/dropbox/folders/:action' => 'dropbox_folders', :as => :dropbox
 
       #zangzing
       match '/zangzing/folders/:zz_album_id/photos.:format' => 'zangzing_photos#index', :as => :zangzing_photos
