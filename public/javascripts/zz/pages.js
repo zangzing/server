@@ -689,17 +689,10 @@ pages.contributors = {
 
 pages.no_agent = {
     NO_AGENT_URL: '/static/connect_messages/no_agent.html',
-    OSX_10_5_URL: '/static/connect_messages/no_agent_unsupported_os.html',
 
     get_message_url: function(){
-        if(navigator.appVersion.indexOf('Mac OS X 10_5') != -1){
-            ZZAt.track('agentdownload.requested.osx10_5');
-            return this.OSX_10_5_URL;
-        }
-        else{
-            ZZAt.track('agentdownload.requested');
-            return this.NO_AGENT_URL;
-        }
+        ZZAt.track('agentdownload.requested');
+        return this.NO_AGENT_URL;
     },
 
     keep_polling: function(){
