@@ -82,7 +82,6 @@ class Share < ActiveRecord::Base
 #      sa = ShareActivity.create( :user => self.user, :user => self.subject, :share => self )
     end
 
-
     self.save
     true #return true
   end
