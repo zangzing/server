@@ -196,6 +196,7 @@ a.black-button span{
     height: 20px;
     padding: 5px 0 5px 8px;
     cursor: pointer;
+    font-weight: normal;
 }
 
 a.black-button:hover span{

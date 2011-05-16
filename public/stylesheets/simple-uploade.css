@@ -1,0 +1,126 @@
+.simpleuploader {
+    position:absolute;
+    top:0px;
+    left:0px;
+    right:0px;
+    bottom:0px;
+}
+
+.simpleuploader .title{
+    position:absolute;
+    top:20px;
+    left:20px;
+    text-align:left;
+    font-size:19px;
+    color: #999999;
+}
+
+.simpleuploader .queue {
+    position: absolute;
+    top:50px;
+    left:20px;
+    right:20px;
+    bottom:80px;
+    overflow-y:scroll;
+    border:1px solid #b9c2ca;
+}
+
+
+
+.simpleuploader .queue .queued-file{
+    position:relative;
+    left:0px;
+    right:0px;
+    height:36px;
+    border-bottom:1px solid #b9c2ca;
+}
+
+.simpleuploader .queue .queued-file .name{
+    position:absolute;
+    left:20px;
+    top:10px;
+    text-align:left;
+    font-size:14px
+}
+
+.simpleuploader .queue .queued-file .status{
+    position:absolute;
+    left:0px;
+    top:2px;
+    text-align:left
+}
+
+.simpleuploader .queued-file.uploading .status{
+
+}
+
+.simpleuploader .queued-file.done .status{
+
+}
+
+.simpleuploader .queued-file.error .status{
+
+}
+
+
+.simpleuploader .queue .queued-file .status.done{
+}
+
+.simpleuploader .queue .queued-file .status.error{
+}
+
+
+.simpleuploader .queue .queued-file .progress-container{
+    position:absolute;
+    left:20px;
+    right:40px;
+    height:4px;
+    bottom:10px;
+}
+
+.simpleuploader .queue .queued-file .progress-container .progress-bar{
+    position:absolute;
+    left:0px;
+    top:5px;
+    height:3px;
+    width:0%;
+    background: url("/images/simple-uploader/progress-bar.png") repeat-x scroll top right;
+}
+
+.simpleuploader .queue .queued-file.error .progress-container .progress-bar{
+
+}
+
+
+
+
+.simpleuploader .queue .queued-file .cancel-button{
+    position:absolute;
+    right:2px;
+    top:8px;
+    background: url(/images/simple-uploader/cancel-button.png) no-repeat scroll 0px 0px transparent;
+    width: 20px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.simpleuploader .queue .queued-file .cancel-button:hover{
+    background: url(/images/simple-uploader/cancel-button.png) no-repeat scroll 0px -19px transparent;
+
+}
+
+
+.simpleuploader .add-button-wrapper {
+    position: absolute;
+    left:20px;
+    bottom:20px;
+    width:100px;
+}
+
+.simpleuploader .add-photos-button {
+    position: absolute;
+    left:20px;
+    bottom:20px;
+    width:100px;
+}
+
