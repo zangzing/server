@@ -2,7 +2,6 @@ module ZZ
   module Async
 
     class GeneralImport < Base
-      extend Resque::Plugins::Retry
       @retry_limit = 5
       @retry_delay = 10
 
@@ -39,7 +38,7 @@ module ZZ
         photo_id = args[0]
         photo = Photo.find(photo_id)
         if retry_criteria_valid?(exception, *args)
-          photo.update_attribute(:error_message, "General Import exception: #{exception}")
+          photo.update_attributes(:error_message => "General Import exception: #{exception}")
           try_again(*args)
         else
           photo.update_attributes(:state => 'error', :error_message => "Failed to load photo from General Import because of network issues #{exception}" )
