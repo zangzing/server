@@ -118,7 +118,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
 
       rescue ActiveRecord::StatementInvalid => ex
         #this seems to mean connection issue with database
-        #give the agent a chance to retry
+        #give the agent a chance  to retry
         render :json => ex.to_s, :status=>500
         logger.info small_back_trace(ex)
 

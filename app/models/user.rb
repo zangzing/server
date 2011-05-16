@@ -84,6 +84,32 @@ class User < ActiveRecord::Base
     end
   end
 
+  # cohort related calculations
+
+  # this represents the beginning date of cohort 1
+  def self.cohort_base
+    @@cohort_base ||= DateTime.civil(2011,4)
+  end
+
+  # calculate the cohort number from the given date
+  def self.cohort_from_date(curr)
+    # move forward 1 month to include all of the current month
+    curr = curr.in_time_zone("GMT")
+    forward = curr >> 1
+    f_y = forward.year
+    f_m = forward.month
+    b_y = cohort_base.year
+    b_m = cohort_base.month
+
+    # calculate the cohort number, < 1 is cohort 1
+    cohort = (f_y - b_y) * 12 + (f_m - b_m)
+    return cohort < 1 ? 1 : cohort
+  end
+
+  # return the cohort based on the current date
+  def self.cohort_current
+    return cohort_from_date(DateTime.now())
+  end
 
 
   def set_dependents
@@ -94,6 +120,9 @@ class User < ActiveRecord::Base
 
     # build user preferences
     self.build_preferences
+
+    # set the cohort we belong to
+    self.cohort = User.cohort_current
 
     #build subscriptions
     self.subscriptions = Subscriptions.find_or_initialize_by_email( self.email )

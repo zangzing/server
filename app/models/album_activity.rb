@@ -3,7 +3,7 @@
 #
 
 class AlbumActivity < Activity
-  attr_accessible :album
+  attr_accessible :album, :photo, :user
 
   belongs_to :album
   validates_presence_of :album_id

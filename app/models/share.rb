@@ -71,8 +71,17 @@ class Share < ActiveRecord::Base
         end
     end
     self.sent_at = Time.now
-    sa = ShareActivity.create( :user => self.user, :album => self.subject, :share => self )
-    self.subject.activities << sa
+
+    if album?
+      sa = ShareActivity.create( :user => self.user, :album => self.subject, :share => self )
+      self.subject.activities << sa
+    elsif photo?
+      sa = ShareActivity.create( :user => self.user, :album => self.subject.album, :share => self )
+      self.subject.album.activities << sa
+    elsif user?
+#      sa = ShareActivity.create( :user => self.user, :user => self.subject, :share => self )
+    end
+
     self.save
     true #return true
   end

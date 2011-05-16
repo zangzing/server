@@ -45,6 +45,8 @@ div#container {
 }
 
 
+/* join banner
+ -----------------------------------------------------------------------------*/
 .show-join-banner #join-banner{
     position: relative;
     top: 0px;
@@ -98,6 +100,44 @@ div#container {
     width:60px;
 }
 
+/* system message banner
+ -----------------------------------------------------------------------------*/
+.show-system-message-banner #system-message-banner{
+    position: relative;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    height: 38px;
+    background-color: #333;
+    display:block;
+}
+
+#system-message-banner #banner-text{
+    position:relative;
+    top:10px;
+    font-size:14px;
+    color:#fff;
+}
+
+#system-message-banner{
+    display:none;
+}
+
+#system-message-banner #close-button{
+    position:absolute;
+    right:10px;
+    top:7px;
+    height:21px;
+    width:21px;
+    background: url("/images/btn-close-join-banner.png") no-repeat scroll top right;
+    cursor:pointer;
+}
+
+
+#system-message-banner #close-button:hover{
+    background: url("/images/btn-close-join-banner.png") no-repeat scroll right -21px;
+}
+
 
 
 #page-wrapper{
@@ -114,6 +154,9 @@ div#container {
     top:40px;
 }
 
+.show-system-message-banner #page-wrapper{
+    top:40px;
+}
 
 
 
