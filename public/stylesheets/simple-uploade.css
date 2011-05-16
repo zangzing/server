@@ -37,7 +37,7 @@
 
 .simpleuploader .queue .queued-file .name{
     position:absolute;
-    left:20px;
+    left:30px;
     top:10px;
     text-align:left;
     font-size:14px
@@ -45,34 +45,25 @@
 
 .simpleuploader .queue .queued-file .status{
     position:absolute;
-    left:0px;
-    top:2px;
-    text-align:left
-}
-
-.simpleuploader .queued-file.uploading .status{
-
-}
-
-.simpleuploader .queued-file.done .status{
-
-}
-
-.simpleuploader .queued-file.error .status{
-
+    left:5px;
+    top:10px;
+    width:18px;
+    height:15px;
 }
 
 
 .simpleuploader .queue .queued-file .status.done{
+    background: url("/images/simple-uploader/status-done.png") no-repeat scroll top right;
 }
 
 .simpleuploader .queue .queued-file .status.error{
+    background: url("/images/simple-uploader/status-error.png") no-repeat scroll top right;
 }
 
 
 .simpleuploader .queue .queued-file .progress-container{
     position:absolute;
-    left:20px;
+    left:30px;
     right:40px;
     height:4px;
     bottom:10px;

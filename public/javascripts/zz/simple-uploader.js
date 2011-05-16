@@ -5,29 +5,29 @@ var simple_uploader = {
         var widget;
 
         $('<div id="simpleuploader-dialog"></div>').html( template ).zz_dialog({
-                               height: $(document).height() - 200,
-                               width: 895,
-                               modal: true,
-                               autoOpen: true,
-                               open: function(){
-                                    widget = template.zz_simpleuploader({album_id: album_id}).data().zz_simpleuploader;
-                               },
+            height: $(document).height() - 200,
+            width: 895,
+            modal: true,
+            autoOpen: true,
+            open: function(){
+                widget = template.zz_simpleuploader({album_id: album_id}).data().zz_simpleuploader;
+            },
 
-                               beforeclose: function(){
-                                   if(widget.uploads_in_progress()){
-                                        return confirm('Are you sure you want to cancel the uploads still in progress?');
-                                    }
-                                    else{
-                                         return true;
-                                    }
-                               },
+            beforeclose: function(){
+                if(widget.uploads_in_progress()){
+                    return confirm('Are you sure you want to cancel the uploads still in progress?');
+                }
+                else{
+                    return true;
+                }
+            },
 
-                               close: function(event, ui){
-                                   if(on_close){
-                                       on_close();
-                                   }
-                               }
-                           });
+            close: function(event, ui){
+                if(on_close){
+                    on_close();
+                }
+            }
+        });
         template.height( $(document).height() - 192 );
 
     }
@@ -45,18 +45,18 @@ var simple_uploader = {
             var self = this;
 
             var template = '<div class="simpleuploader">' +
-                                '<div class="title">Upload photos to ZangZing</div>' +
-                                '<div class="queue"></div>' +
-                                '<a class="add-photos-button green-add-button"><span>Add Photos</span></a>' +
-                                '<div class="add-button-wrapper"><div id="simpleuploader-add-button"></div></div>' +
-                           '</div>';
+                    '<div class="title">Upload photos to ZangZing</div>' +
+                    '<div class="queue"></div>' +
+                    '<a class="add-photos-button green-add-button"><span>Add Photos</span></a>' +
+                    '<div class="add-button-wrapper"><div id="simpleuploader-add-button"></div></div>' +
+                    '</div>';
 
             var queued_file_template = '<div class="queued-file">' +
-                                            '<div class="status"></div>' +
-                                            '<div class="name"></div>' +
-                                            '<div class="progress-container"><div class="progress-bar"></div></div>' +
-                                            '<div class="cancel-button"></div>' +
-                                       '</div>';
+                    '<div class="status"></div>' +
+                    '<div class="name"></div>' +
+                    '<div class="progress-container"><div class="progress-bar"></div></div>' +
+                    '<div class="cancel-button"></div>' +
+                    '</div>';
 
 
             self.element.html(template);
@@ -71,7 +71,7 @@ var simple_uploader = {
             }
 
 
-           self.uploader = new SWFUpload({
+            self.uploader = new SWFUpload({
                 // Backend Settings
                 upload_url: "/service/albums/" + self.options.album_id + "/upload",
                 post_params: {"source" : photo_source},
@@ -93,29 +93,42 @@ var simple_uploader = {
                     queued_file.find('.name').text(file.name);
                     queued_file.attr('id', file.id);
                     self.queue_element.append(queued_file);
+
+                    queued_file.find('.cancel-button').click(function(){
+                        self.uploader.cancelUpload(file.id, false)
+                        queued_file.fadeOut('fast');
+                    });
+
                 },
 
                 file_queue_error_handler : function(file, errorCode, message){
-                    
+
                 },
 
                 file_dialog_complete_handler : function(numFilesSelected, numFilesQueued){
                     self.uploader.startUpload();
                 },
+
                 upload_start_handler : function(file){
                 },
+
                 upload_progress_handler : function(file, bytesLoaded, bytesTotal){
                     $('.simpleuploader .queue .queued-file#' + file.id + ' .progress-bar').css('width', Math.floor(100* bytesLoaded / bytesTotal) + "%")
 
                 },
                 upload_error_handler : function(file, errorCode, message){
-                    $('.simpleuploader .queue .queued-file#' + file.id + ' .status').text('error');
+                    $('.simpleuploader .queue .queued-file#' + file.id + ' .status').addClass('error');
+                    $('.simpleuploader .queue .queued-file#' + file.id + ' .progress-bar').hide();
+                    $('.simpleuploader .queue .queued-file#' + file.id + ' .cancel-button').hide();
                 },
                 upload_success_handler : function(file, serverData){
-                    $('.simpleuploader .queue .queued-file#' + file.id + ' .status').text('done');
+                    $('.simpleuploader .queue .queued-file#' + file.id + ' .status').addClass('done');
+                    $('.simpleuploader .queue .queued-file#' + file.id + ' .progress-bar').hide();
+                    $('.simpleuploader .queue .queued-file#' + file.id + ' .cancel-button').hide();
                 },
+
                 upload_complete_handler : function(file){
-                    logger.debug('complete');
+
                 },
 
                 // Button Settings
