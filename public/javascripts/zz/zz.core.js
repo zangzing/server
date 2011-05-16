@@ -25,7 +25,7 @@ var zz = {
 
     open_drawer: function(time, percent){
 
-        zz.screen_height = $(window).height(); // measure the screen height
+        zz.screen_height = $('#page-wrapper').height(); // measure the screen height
         // adjust for out top and bottom bar, the gradient padding and a margin
         zz.drawer_height = zz.screen_height - zz.screen_gap;
 
@@ -53,7 +53,7 @@ var zz = {
 
     resize_drawer: function(time, size){
 
-        zz.screen_height = $(window).height(); // measure the screen height
+        zz.screen_height = $('#page-wrapper').height(); // measure the screen height
         // adjust for out top and bottom bar, the gradient padding and a margin
         zz.drawer_height = zz.screen_height - zz.screen_gap;
 
