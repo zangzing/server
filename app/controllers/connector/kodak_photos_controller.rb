@@ -4,7 +4,7 @@ class Connector::KodakPhotosController < Connector::KodakController
     photos_list = call_with_error_adapter do
       api.send_request("/album/#{params[:kodak_album_id]}")
     end
-    photos_data = photos_list['pictures']
+    photos_data = photos_list.nil? ? [] : (photos_list['pictures'] || [])
 
     photos = photos_data.map { |p|
       {
