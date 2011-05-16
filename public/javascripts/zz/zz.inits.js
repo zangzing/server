@@ -82,11 +82,30 @@ zz.init = {
             document.location.href = '/signin';
         });
 
+
+
+        //system message banner
+        $('#system-message-banner #close-button').click(function(){
+            $('#system-message-banner').fadeOut(200, function(){
+                $('#page-wrapper').animate({top:0},200);
+                $('body').removeClass('show-join-banner');
+                jQuery.cookie('hide_system_message_banner', 'true');
+            });
+        });
+
+
+
+
+
+
         //top bar
         $('#header #home-button').click(function() {
             document.location.href = zz.path_prefix + '/';
             ZZAt.track('button.home.click');
         });
+
+
+
 
 
         if(zz.rails_controller_name == 'photos'){
