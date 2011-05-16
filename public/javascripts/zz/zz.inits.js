@@ -219,14 +219,14 @@ zz.init = {
             zz.init.disable_buttons();
             $('#footer #add-photos-button').removeClass('disabled').addClass('selected');
 
-            simple_uploader.open_in_dialog(zz.album_id, function(){
-                 window.location.reload( false );
-            });
-
-
-//            photochooser.open_in_dialog(zz.album_id, function(){
+//            simple_uploader.open_in_dialog(zz.album_id, function(){
 //                 window.location.reload( false );
 //            });
+
+
+            photochooser.open_in_dialog(zz.album_id, function(){
+                 window.location.reload( false );
+            });
 
 
 

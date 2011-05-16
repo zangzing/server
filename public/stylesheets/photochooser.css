@@ -211,3 +211,28 @@
     position: relative;
     top: 10px;
 }
+
+.photochooser .choose-simple-or-download{
+    position:relative;
+    top:10px;
+    left:10px;
+    right:10px;
+    bottom:10px;
+    border:1px solid blue;
+}
+
+.photochooser .choose-simple-or-download #simple-uploader-button{
+}
+
+.photochooser .choose-simple-or-download #download-zangzing-button{
+}
+
+
+.photochooser .choose-simple-or-download h1{
+    text-align:center;
+    font-size:18px;
+    color:#000;
+    font-weight:600;
+}
+
+

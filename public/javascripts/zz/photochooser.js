@@ -359,6 +359,46 @@ var photochooser = {
             },
 
 
+            show_download_agent_or_simple_upload: function(){
+                var self = this;
+                
+                $('.photochooser-header h3').hide();
+                $('.photochooser-header h4').hide();
+
+                var template = $('<div class="choose-simple-or-download">' +
+                                    '<h1>Use the simple uploader</h1>' +
+                                    '<div><a id="simple-uploader-button" class="black-button"><span>Simple Uploader</span></a></div>' +
+                                    '<div class="or"></div>' +
+                                    '<h1>Tired of waiting while your photos upload?</h1>' +
+                                    '<h1>Download our free desktop uploader.</h1>' +
+                                    '<div><a id="download-zangzing-button" class="black-button"><span>Download ZangZing</span></a></div>' +
+                                    '<div><a id="learn-more-link">Not sure? Learn more about uploading your photos to ZangZing</a></div>' +
+                                '</div>');
+
+                template.find('#simple-uploader-button').click(function(){
+                    simple_uploader.open_in_dialog(self.options.album_id, function(){
+                        self.reload_tray();
+                    });
+                });
+
+                template.find('#download-zangzing-button').click(function(){
+                    pages.download_agent.dialog(function(){
+                        self.openFolder(self.stack.pop());
+                        $('.photochooser-header h3').show();
+                        $('.photochooser-header h4').show();
+                    }, true);
+                });
+
+                template.find('#learn-more-link').click(function(){
+                    window.open("http://help.zangzing.com")
+                });
+
+
+                self.bodyElement.html(template);
+                self.bodyElement.fadeIn('fast');
+
+            },
+
             open_login_window : function(folder, login_url) {
                 var self = this;
                 oauthmanager.login(login_url, function(){
@@ -376,16 +416,7 @@ var photochooser = {
 
                 var file_system_on_error = function(error){
                     if(typeof(error.status) === 'undefined'){
-
-                        $('.photochooser-header h3').hide();
-                        $('.photochooser-header h4').hide();
-
-                        pages.no_agent.filechooser(self.bodyElement, function(){
-                            self.openFolder(self.stack.pop());
-                            $('.photochooser-header h3').show();
-                            $('.photochooser-header h4').show();
-                        });
-
+                        self.show_download_agent_or_simple_upload();
                         self.bodyElement.fadeIn('fast');
                     }
                     else if(error.status === 401){
