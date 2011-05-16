@@ -2,7 +2,7 @@
 ----------------------------------------------------------------------------- */
 
 div#drawer {
-  position: fixed;
+  position: absolute;
   width: 906px;
   height: 0px;
   margin: 0 24px 0 20px;
