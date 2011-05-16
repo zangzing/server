@@ -2,9 +2,6 @@ module ZZ
   module Async
 
     class GeneralImport < Base
-      @retry_limit = 5
-      @retry_delay = 10
-
       @queue = :io_bound
       
       # only add ourselves one time
@@ -45,19 +42,6 @@ module ZZ
           Resque.redis.del(redis_retry_key(*args))
         end
       end
-
-=begin
-      def self.on_failure_notify_photo(e, photo_id, source_url )
-        begin
-          SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
-            photo = Photo.find(photo_id)
-            photo.update_attributes(:state => 'error', :error_message => "Failed to load photo from General Import because of network issues #{e}" )
-          end
-        rescue Exception => ex
-          # eat any exception in the error handler
-        end
-      end
-=end
 
     end
   end
