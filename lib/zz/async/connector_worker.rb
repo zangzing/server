@@ -39,6 +39,7 @@ module ZZ
           rescue Exception => e   # this needs to be Exception if we want to also catch Timeouts
             user_identity.update_attribute(:credentials, nil) if e.kind_of?(InvalidToken) #Wipe token to force re-authentication
             AsyncResponse.store_error(response_id, e)
+            NewRelic::Agent.notice_error e, :custom_params=>{:klass_name => klass_name, :method_name => method_name, :params => params}
           end
         end
       end
