@@ -71,6 +71,9 @@ class Connector::ConnectorController < ApplicationController
 
       # must send after all saved
       photos.each do |photo|
+if photo.temp_url.nil? || photo.temp_url.empty?
+  Rails.logger.error("GENERAL_IMPORT_EMPTY_URL_ERROR")
+end
         ZZ::Async::GeneralImport.enqueue( photo.id, photo.temp_url )
       end
 
