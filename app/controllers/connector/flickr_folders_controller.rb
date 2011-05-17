@@ -28,9 +28,6 @@ class Connector::FlickrFoldersController < Connector::FlickrController
       #todo: refactor this so that flickr_folders_controller and flickr_photos_controller can share
       photo_url = get_photo_url(p, :full)
       photo_id = Photo.get_next_id
-if photo_url.nil? || photo_url.empty?
-  Rails.logger.error("FLICKR_EMPTY_URL_ERROR - #{photo_id}")
-end
       photo = Photo.new_for_batch(current_batch, {
                 :id => photo_id,
                 :user_id => identity.user.id,
