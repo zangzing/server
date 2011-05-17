@@ -2,7 +2,6 @@ class UsersController < ApplicationController
   ssl_required :join, :create, :edit_password, :update_password
   ssl_allowed :validate_email, :validate_username
 
-  before_filter :require_no_user, :only => [:create]
   before_filter :require_user,    :only => [ :activate,:edit, :update]
   before_filter :require_admin,   :only => [ :activate]
   before_filter :correct_user,    :only => [:edit, :update]
@@ -20,6 +19,12 @@ class UsersController < ApplicationController
   end
 
   def create
+    if current_user
+        flash[:notice] = "You are currently logged in as #{current_user.username}. Please log out before creating a new account."
+        session[:flash_dialog] = true
+        redirect_to user_pretty_url(current_user)
+        return
+    end
     @user_session = UserSession.new
 
     # RESERVED NAMES
