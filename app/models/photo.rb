@@ -75,6 +75,8 @@ class Photo < ActiveRecord::Base
   # Set up an async call for managing the deleted photo from s3
   after_commit  :queue_delete_from_s3, :on => :destroy
 
+  after_commit  :change_cache_version
+
   validates_presence_of             :album_id, :user_id, :upload_batch_id
 
 
@@ -123,7 +125,6 @@ class Photo < ActiveRecord::Base
     set_default_position
   end
 
-
   # never, never, never call get_next_id inside a transaction since failure of the transaction would rollback the
   # fetch of the id which could result in duplicates being used.  If you need a set number of ids, set the reserve_count
   # to the amount that you want and manage them yourself
@@ -131,6 +132,12 @@ class Photo < ActiveRecord::Base
     BulkIdManager.next_id_for(Photo.table_name, reserved_count)
   end
 
+  # never call this within a transaction because if a rollback happens
+  # on the id generator you will end up with duplicate ids
+  def change_cache_version
+    album_id = self.album_id
+    Album.change_cache_version(album_id) unless album_id.nil?
+  end
 
   # generate a guid and attach to this object
   def set_guid_for_path

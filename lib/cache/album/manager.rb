@@ -63,6 +63,7 @@ module Cache
             "name",
             "completed_batch_count",
             "photos_last_updated_at",
+            "cache_version",
             "deleted_at"
         ]
         changed = album.changed

@@ -3,7 +3,7 @@
 #
 
 class Album < ActiveRecord::Base
-  attr_accessible :name, :privacy, :cover_photo_id, :photos_last_updated_at, :updated_at
+  attr_accessible :name, :privacy, :cover_photo_id, :photos_last_updated_at, :updated_at, :cache_version
 
   belongs_to :user
   has_many :photos,           :dependent => :destroy
@@ -84,11 +84,28 @@ class Album < ActiveRecord::Base
     true
   end
 
+  # never, never, never call get_next_id inside a transaction since failure of the transaction would rollback the
+  # fetch of the id which could result in duplicates being used.  If you need a set number of ids, set the reserve_count
+  # to the amount that you want and manage them yourself
+  def self.change_cache_version(album_id)
+    version = BulkIdManager.next_id_for('album_cache_version')
+    Album.update(album_id, :cache_version => version)
+  end
+
   # generate a quick touch without having to
   # instantiate an object
   def self.touch_photos_last_updated(album_id)
     now = Time.now
     Album.update(album_id, :photos_last_updated_at => now, :updated_at => now)
+  end
+
+  def cache_key
+    case
+    when !persisted?
+      "#{self.class.model_name.cache_key}/new"
+    else
+      "#{self.class.model_name.cache_key}/#{id}-#{self.cache_version}"
+    end
   end
 
   # detect the state of the safe delete
