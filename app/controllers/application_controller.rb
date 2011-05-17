@@ -61,6 +61,11 @@ class ApplicationController < ActionController::Base
 
 
 
+  def send_zza_event_from_client (event)
+    events = session[:send_zza_events_from_client] || []
+    events << event
+    session[:send_zza_events_from_client] = events
+  end
 
 
     # Authentication based on authlogic

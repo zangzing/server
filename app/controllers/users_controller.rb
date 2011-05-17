@@ -93,6 +93,7 @@ class UsersController < ApplicationController
         flash[:success] = "Welcome to ZangZing!"
         @new_user.deliver_welcome!
         session[:show_welcome_dialog] = true
+        send_zza_event_from_client('user.join')
         redirect_to user_pretty_url( @new_user ) and return
       end
     else
@@ -105,6 +106,7 @@ class UsersController < ApplicationController
           @guest.status = 'Inactive'
           @guest.save
         end
+        send_zza_event_from_client('user.join')
         redirect_to inactive_url and return
       end
     end
