@@ -40,7 +40,9 @@ class BulkIdRange
     range_lock.synchronize do
       if @next == 0 || (@next + reserved_count > @last)
         # time for a new range
-        get_new_range(reserved_count)
+#        BulkIdGenerator.transaction do
+          get_new_range(reserved_count)
+#        end
       end
       the_id = @next
       @next += reserved_count  # for next time around
@@ -51,30 +53,53 @@ class BulkIdRange
 
 private
 
+  def convert_isolation(iso)
+    case iso
+      when 'READ-COMMITTED'
+        return 'READ COMMITTED'
+      when 'READ-UNCOMMITTED'
+        return 'READ UNCOMMITTED'
+      when 'REPEATABLE-READ'
+        return 'REPEATABLE READ'
+      else
+        return iso
+    end
+  end
+
   def get_new_range(reserved_count)
     # since this is an optimistic lock it is possible that someone
     # else snuck in.  If so we get an exception telling us the update
     # was stale so we will keep trying till no longer stale
+    previous_isolation = convert_isolation(BulkIdGenerator.connection.execute("SELECT @@tx_isolation").first[0])
+    BulkIdGenerator.connection.execute("SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED")
+
     try_again = true
-    while try_again do
-      begin
-        try_again = false # assume we will get it
-        get_new_range_optimistically(reserved_count)
-      rescue ActiveRecord::StaleObjectError => ex
-        # need to try again
-        try_again = true
-      rescue Exception => ex
-        # any other type of exception means we did not get
-        # our range so invalidate it and reraise the exception
-        @next = 0
-        raise ex
+    begin
+      while try_again do
+        begin
+          try_again = false # assume we will get it
+          get_new_range_optimistically(reserved_count)
+        rescue ActiveRecord::StaleObjectError => ex
+          # need to try again
+          try_again = true
+        end
       end
+    rescue Exception => ex
+      # any other type of exception means we did not get
+      # our range so invalidate it and reraise the exception
+      @next = 0
+      raise ex
+    ensure
+      BulkIdGenerator.connection.execute("SET SESSION TRANSACTION ISOLATION LEVEL #{previous_isolation}") rescue nil
     end
   end
 
   # get the new range from the database without regard for the lock
   def get_new_range_optimistically(reserved_count)
-    id_gen = BulkIdGenerator.find_by_table_name(@table_name)
+    id_gen = nil
+    BulkIdGenerator.uncached do
+      id_gen = BulkIdGenerator.find_by_table_name(@table_name)
+    end
     @next = id_gen.next_start_id
     # take the db batch size suggestion or if not large enough get reserved_count amount
     batch_size = id_gen.batch_size > reserved_count ? id_gen.batch_size : reserved_count

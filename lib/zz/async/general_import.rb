@@ -33,8 +33,8 @@ module ZZ
         msg = "General Import exception: #{exception}"
         Rails.logger.error(msg)
         NewRelic::Agent.notice_error(exception, :custom_params=>{:klass_name => ZZ::Async::GeneralImport.name, :method_name => 'perform', :params => args})
-        SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
-          begin
+        begin
+          SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
             photo_id = args[0]
             photo = Photo.find(photo_id)
             if will_retry
@@ -42,9 +42,9 @@ module ZZ
             else
               photo.update_attributes(:state => 'error', :error_message => msg ) unless photo.nil?
             end
-          rescue Exception => ex
-            # don't let the exception make it out
           end
+        rescue Exception => ex
+          # don't let the exception make it out
         end
         if will_retry
           try_again(*args)
