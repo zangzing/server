@@ -53,7 +53,9 @@ move_assets
 # make sure v3homepage is deployed with the current tag, technically we really only
 # need this to run when we have newly added machines but there is really no way to know
 # so we run it each time.  The downside is that this is a fairly lengthy operation
-if ['solo', 'app', 'app_master'].include?(node["instance_role"])
+# We only need to run on one instance, so use the app_master or solo - they are mutually
+# exclusive
+if ['solo', 'app_master'].include?(node["instance_role"])
   run "rails runner -e #{environment()} HomepageManager.deploy_homepage_current_tag_async"
 end
 
