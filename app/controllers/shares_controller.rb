@@ -224,7 +224,7 @@ class SharesController < ApplicationController
     errors = []
     tokens.each do |t|
       begin
-        e = Mail::Address.new( t )
+        e = Mail::Address.new( t.to_slug.to_ascii.to_s  )
         # An address like 'foobar' is a valid local address with no domain so avoid it
         raise Mail::Field::ParseError.new if e.domain.nil?
         emails << e.address #TODO: Email validator in share.rb does not handle formatted_emails just the address

@@ -17,8 +17,8 @@ class SendgridController < ApplicationController
     # An unsubscribe email address is of the form  <unsubscribe_token>@unsubscribe.zangzing.com
     # we use Mail::Address to parse the addresses and the domain
     # If the to or from addresses are invalid emails, an exception will be raised
-    to          = Mail::Address.new( params[:to].to_slug.transliterate.to_s  )
-    from        = Mail::Address.new( params[:from].to_slug.transliterate.to_s )
+    to          = Mail::Address.new( params[:to].to_slug.to_ascii.to_s  )
+    from        = Mail::Address.new( params[:from].to_slug.to_ascii.to_s )
     unsub_token = to.local
 
     if unsub_token == 'unsubscribe'
@@ -78,8 +78,8 @@ class SendgridController < ApplicationController
         # An albums email address is of the form  <album_name>@<user_username>.zangzing.com
         # we use Mail::Address to parse the addresses and the domain
         # If the to or from addresses are invalid emails, an exception will be raised
-        to             = Mail::Address.new( params[:to].to_slug.transliterate.to_s  )
-        from           = Mail::Address.new( params[:from].to_slug.transliterate.to_s  )
+        to             = Mail::Address.new( params[:to].to_slug.to_ascii.to_s  )
+        from           = Mail::Address.new( params[:from].to_slug.to_ascii.to_s  )
         album_name     = to.local
         user_username  = to.domain.split('.')[0]
 
@@ -119,7 +119,7 @@ class SendgridController < ApplicationController
         # Add contributors from cc: if this email created a new album
         if album_name == 'new' && @album
           if params[:cc] && params[:cc].length > 0
-            ccs = Mail::AddressList.new( params[:cc] )
+            ccs = Mail::AddressList.new( params[:cc].to_slug.to_ascii.to_s  )
             ccs.addresses.each do | contributor|
               @album.add_contributor( contributor.address )
             end
