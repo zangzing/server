@@ -12,7 +12,7 @@ class LikesController < ApplicationController
       subjects[wanted_id] = { :count => 0, :user => false, :type => Like.clean_type( wanted_subjects[wanted_id].downcase ) }
     end
 
-    wanted_values = subjects.map{ |key, value| "(#{key}, '#{value[:type]}')" }.join(',')
+    wanted_values = subjects.map{ |key, value| "(#{key.to_i}, '#{value[:type]}')" }.join(',')
     counters = LikeCounter.where("(subject_id, subject_type) IN ( #{wanted_values} )").all
     # filter down the set based on the results of the counter lookup - if items
     # were missing from the counter table no reason to pass them on to the likes table
