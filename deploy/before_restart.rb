@@ -21,7 +21,7 @@ def move_assets
     run "cp -f #{from} #{to}"
   end
 
-  puts "node is: " + node.to_s
+  puts "node instance role is: " + node["instance_role"].to_s
 end
 
 
