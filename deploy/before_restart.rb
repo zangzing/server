@@ -20,6 +20,8 @@ def move_assets
     to = asset_dir + "/" + asset
     run "cp -f #{from} #{to}"
   end
+
+  puts "node is: " + node.to_s
 end
 
 
@@ -51,7 +53,9 @@ move_assets
 # make sure v3homepage is deployed with the current tag, technically we really only
 # need this to run when we have newly added machines but there is really no way to know
 # so we run it each time.  The downside is that this is a fairly lengthy operation
-run "rails runner -e #{environment()} HomepageManager.deploy_homepage_current_tag_async"
+if ['solo', 'app', 'app_master'].include?(node["instance_role"])
+  run "rails runner -e #{environment()} HomepageManager.deploy_homepage_current_tag_async"
+end
 
 
 #ALL DONE! Restart the App.
