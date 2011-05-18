@@ -29,10 +29,24 @@ module ZZ
       end
 
       def self.on_failure_retry(exception, *args)
-        photo_id = args[0]
-        photo = Photo.find(photo_id)
-        if retry_criteria_valid?(exception, *args)
-          photo.update_attributes(:error_message => "General Import exception: #{exception}")
+        will_retry = retry_criteria_valid?(exception, *args)
+        msg = "General Import exception: #{exception}"
+        Rails.logger.error(msg)
+        NewRelic::Agent.notice_error(exception, :custom_params=>{:klass_name => ZZ::Async::GeneralImport.name, :method_name => 'perform', :params => args})
+        begin
+          SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
+            photo_id = args[0]
+            photo = Photo.find(photo_id)
+            if will_retry
+              photo.update_attributes(:error_message => msg) unless photo.nil?
+            else
+              photo.update_attributes(:state => 'error', :error_message => msg ) unless photo.nil?
+            end
+          end
+        rescue Exception => ex
+          # don't let the exception make it out
+        end
+        if will_retry
           try_again(*args)
         else
           photo.update_attributes(:state => 'error', :error_message => "Failed to load photo from General Import because of network issues #{exception}" )
