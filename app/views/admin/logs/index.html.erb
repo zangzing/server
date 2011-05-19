@@ -14,10 +14,48 @@
             </table>
           </div>
         </li>
-        
+    <li class="item">
+          <div class="header bar">
+            Jeremy Headers
+          </div>
+          <div class="header">
+            <br>
+          </div>
+          <div class="content">
+
+
+            <table border="1">
+              <tr><td>request.headers['HTTP_X_FORWARDED_FOR'].split(',')[0]</td><td><%=request.headers['HTTP_X_FORWARDED_FOR'].split(',')[0]%></td></tr>
+              <tr><td>request.remote_ip</td><td><%=request.remote_ip%></td></tr>
+            </table>
+          </div>
+        </li>
+
+    <li class="item">
+             <div class="header bar">
+             Request Headers (request.headers)
+             </div>
+             <div class="header">
+               <br>
+             </div>
+             <div class="content">
+
+
+               <table border="1">
+                  <% request.headers.each do |header|%>
+                     <tr>
+                       <td><%=header[0]%></td><td><%=header[1]%></td>
+                     </tr>
+                 <% end %>
+               </table>
+             </div>
+           </li>
+
+
+
     <li class="item">
       <div class="header bar">
-        Request Headers
+        Request Headers (request.env)
        </div>
       <div class="header">
         <br>
@@ -32,6 +70,8 @@
         </table>
       </div>
     </li>
+
+
 
 
   </ul>
