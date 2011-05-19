@@ -61,6 +61,11 @@ class ApplicationController < ActionController::Base
 
 
 
+  def send_zza_event_from_client (event)
+    events = session[:send_zza_events_from_client] || []
+    events << event
+    session[:send_zza_events_from_client] = events
+  end
 
 
     # Authentication based on authlogic
@@ -161,11 +166,6 @@ class ApplicationController < ActionController::Base
     end
 
 
-    #workaround for Rails bug that prevents request.ip
-    #and request.remote_ip from returning what we need
-    def client_ip_address
-      return request.headers['HTTP_X_FORWARDED_FOR'].split(',')[0]
-    end
 
 
 
