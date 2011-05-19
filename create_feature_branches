@@ -76,4 +76,4 @@ end
 
 puts
 puts "To use the new branch for development use this command:"
-puts "git remote show origin && git checkout --track -b #{feature_branch} origin/#{feature_branch}"
+puts "git remote show origin && git fetch && git checkout --track -b #{feature_branch} origin/#{feature_branch}"
