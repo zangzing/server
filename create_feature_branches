@@ -37,6 +37,7 @@ confirm_continue
 
 puts
 feature_branch = get_input("Enter the feature branch you would like to create: ")
+feature_branch = "#{feature_branch}-feature"
 
 puts
 print "Type the branch/tag name to use for the basis of the tag you want to create (optional): "
