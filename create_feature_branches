@@ -36,7 +36,7 @@ puts "Create a branch for feature development."
 confirm_continue
 
 puts
-feature_branch = get_input("Enter the branch you would like to create: ")
+feature_branch = get_input("Enter the feature branch you would like to create: ")
 
 puts
 print "Type the branch/tag name to use for the basis of the tag you want to create (optional): "
@@ -74,3 +74,6 @@ repos.each do |repo|
   do_cmd("git push origin #{feature_branch}")
 end
 
+puts
+puts "To use the new branch for development use this command:"
+puts "git remote show origin && git checkout --track -b #{feature_branch} origin/#{feature_branch}"
