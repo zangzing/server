@@ -3,7 +3,7 @@
 <meta property="og:title" content="<%= "#{@album.name} by #{@album.user.name}" %>"/>
 <meta property="og:type" content="website"/>
 <%if @album.private? %>
-    <meta property="og:image" content="<%= "http://#{Server::Application.config.application_host}/images/private_album.png" %>"/>
+    <meta property="og:image" content="<%= "http://#{Server::Application.config.application_host}/images/private-album.png" %>"/>
 <%else%>
     <meta property="og:image" content="<%= @album.cover ? @album.cover.thumb_url : ''%>"/>
 <%end%>
