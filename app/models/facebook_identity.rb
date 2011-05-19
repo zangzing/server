@@ -60,11 +60,19 @@ class FacebookIdentity < Identity
     if share.album?
       album       = Album.find( share.subject_id )
       name        = "#{album.name} by #{album.user.username}"
-      picture     = album.cover.thumb_url
+      if album.private?
+        picture     = "http://#{Server::Application.config.application_host}/images/private_album.png"
+      else
+        picture     = album.cover.thumb_url
+      end
     elsif share.photo?
       photo       = Photo.find( share.subject_id )
       name        = "#{photo.caption} by #{photo.user.username}"
-      picture     = photo.thumb_url
+      if photo.album.private?
+        picture     = "http://#{Server::Application.config.application_host}/images/private_photo.png"
+      else
+        picture     = photo.thumb_url
+      end
     else
       post( share.subject_url, share.subject_message )  #generic post
       return
