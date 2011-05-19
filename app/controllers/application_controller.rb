@@ -61,6 +61,8 @@ class ApplicationController < ActionController::Base
 
 
 
+
+
     # Authentication based on authlogic
     # returns false or the current user session
     def current_user_session
@@ -160,7 +162,9 @@ class ApplicationController < ActionController::Base
 
 
 
-
+    def client_ip_address
+      return request.headers['HTTP_X_FORWARDED_FOR'].split(',')[0]
+    end
 
 
 

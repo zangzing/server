@@ -95,7 +95,7 @@ class UsersController < ApplicationController
         session[:show_welcome_dialog] = true
 
 
-        zza.track_event('user.join', nil, 1, @new_user.id, request.referer, request.url, request.ip)
+        zza.track_event('user.join', nil, 1, @new_user.id, request.referer, request.url, client_ip_address)
         redirect_to user_pretty_url( @new_user ) and return
       end
     else
@@ -108,7 +108,7 @@ class UsersController < ApplicationController
           @guest.status = 'Inactive'
           @guest.save
         end
-        zza.track_event('user.join', nil, 1, @new_user.id, request.referer, request.url, request.ip)
+        zza.track_event('user.join', nil, 1, @new_user.id, request.referer, request.url, client_ip_address)
         redirect_to inactive_url and return
       end
     end
