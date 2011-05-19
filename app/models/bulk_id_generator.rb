@@ -67,14 +67,15 @@ private
   end
 
   def get_new_range(reserved_count)
-    # since this is an optimistic lock it is possible that someone
-    # else snuck in.  If so we get an exception telling us the update
-    # was stale so we will keep trying till no longer stale
-    previous_isolation = convert_isolation(BulkIdGenerator.connection.execute("SELECT @@tx_isolation").first[0])
-    BulkIdGenerator.connection.execute("SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED")
-
-    try_again = true
     begin
+      # since this is an optimistic lock it is possible that someone
+      # else snuck in.  If so we get an exception telling us the update
+      # was stale so we will keep trying till no longer stale
+      previous_isolation = nil
+      previous_isolation = convert_isolation(BulkIdGenerator.connection.execute("SELECT @@tx_isolation").first[0])
+      BulkIdGenerator.connection.execute("SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED")
+
+      try_again = true
       while try_again do
         begin
           try_again = false # assume we will get it
@@ -90,7 +91,9 @@ private
       @next = 0
       raise ex
     ensure
-      BulkIdGenerator.connection.execute("SET SESSION TRANSACTION ISOLATION LEVEL #{previous_isolation}") rescue nil
+      if previous_isolation.nil? == false
+        BulkIdGenerator.connection.execute("SET SESSION TRANSACTION ISOLATION LEVEL #{previous_isolation}") rescue nil
+      end
     end
   end
 
