@@ -86,13 +86,20 @@ zz.toolbars = {
         }
         if (location.hash && location.hash.length > 2) {
             //We are displaying a full size photo, add the photo menu element
-            photo = $('<li id="like-menu-photo" class="zzlike" data-zzid="'+location.hash.substr(2)+'" data-zztype="photo"></li>');
+            var hash = parseInt( location.hash.substr(2) );
+            if( isNaN( hash ) ){
+                hash = 0;
+            }
+            photo = $('<li id="like-menu-photo" class="zzlike" data-zzid="'+hash.toString()+'" data-zztype="photo"></li>');
+
             //set a listener to keep the subject_id current with the selected photo. Selecting a photo sets its id as the hash
             $(window).bind( 'hashchange', function( event ) {
-              //logger.debug('hash changed to: location.hash ='+location.hash.substr(2));
-              var id = location.hash.substr(2);
-              $('#like-menu-photo').attr('data-zzid', id );
-              like.add_id( id, 'photo' );
+              logger.debug('hash changed to: location.hash ='+location.hash.substr(2));
+              var hash = parseInt( location.hash.substr(2) );
+              if( !isNaN( hash ) ){
+                $('#like-menu-photo').attr('data-zzid', hash.toString() ).attr('data-zztype', 'photo' ).addClass('zzlike');
+                like.add_id( hash.toString(), 'photo' );
+              }
             });
         }
         menu=$('<ul id="like-menu"></ul>');
