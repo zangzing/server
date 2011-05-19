@@ -61,6 +61,8 @@ class ApplicationController < ActionController::Base
 
 
 
+
+
     # Authentication based on authlogic
     # returns false or the current user session
     def current_user_session
@@ -159,8 +161,11 @@ class ApplicationController < ActionController::Base
     end
 
 
-
-
+    #workaround for Rails bug that prevents request.ip
+    #and request.remote_ip from returning what we need
+    def client_ip_address
+      return request.headers['HTTP_X_FORWARDED_FOR'].split(',')[0]
+    end
 
 
 
