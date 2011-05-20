@@ -1,15 +1,50 @@
 <%= render :partial =>  'admin/admin_screens/adminmenu' %>
 <div id="main-container">
-  <div class="viewlist">
-    <div class="header bar">
-      System Logs
-    </div>
-    <div class="content">
-      <table frame="box" width="800px" border="0"  cellspacing="10" align="left" style="text-align: left;">
-        <% @logs.each do |logname|  %>
-            <tr><td><%= link_to logname.gsub('.log', ''),  log_retrieve_path(Base64.encode64(logname)),  :target=> "_blank"  %></td></tr>
-        <%end%>
-      </table>
-    </div>
-  </div>
+  <ul class="viewlist" style="width: 800px;">
+
+    <li class="item">
+          <div class="header bar">
+            System Logs
+          </div>
+          <div class="content">
+            <table frame="box" width="800px" border="0"  cellspacing="10" align="left" style="text-align: left;">
+              <% @logs.each do |logname|  %>
+                  <tr><td><%= link_to logname.gsub('.log', ''),  log_retrieve_path(Base64.encode64(logname)),  :target=> "_blank"  %></td></tr>
+              <%end%>
+            </table>
+          </div>
+        </li>
+
+
+    <li class="item">
+      <div class="header bar">
+        Request Environment and Headers
+       </div>
+      <div class="tagline">
+        ( via request.env.each ) <br>
+      </div>
+      <div class="content">
+        <style type="text/css">
+          td{
+                padding:5px 5px;
+          }
+        </style>
+        <table border="1">
+          <% headers = request.env.sort{ |a,b| a[0] <=> b[0] } %>
+          <% headers.each do |header|%>
+              <tr>
+                <td><%=header[0]%></td><td><%=header[1]%></td>
+              </tr>
+          <% end %>
+        </table>
+      </div>
+    </li>
+
+
+
+
+  </ul>
 </div>
+
+
+

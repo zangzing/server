@@ -230,7 +230,7 @@
                 session[:send_zza_events_from_client].each do |event| %>
 
           ZZAt.track('<%= escape_javascript event.to_s %>');
-          
+
           <%   end
                session[:send_zza_events_from_client] = nil
           end %>

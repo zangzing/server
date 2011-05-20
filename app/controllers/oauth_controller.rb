@@ -1,9 +1,13 @@
 class OauthController < ApplicationController
+  ssl_allowed :request_token, :authorize, :agentauthorize, :access_token, :revoke, :invalidate, :capabilities, :test_request, :test_session
+
+
   before_filter :require_user, :only => [:authorize,:revoke, :agentauthorize]
   before_filter :oauth_required, :only => [:invalidate,:capabilities, :test_request, :test_session]
   before_filter :verify_oauth_consumer_signature_agent, :only => [:request_token]
   before_filter :verify_oauth_request_token, :only => [:access_token]
   skip_before_filter :verify_authenticity_token, :only=>[:request_token, :access_token, :invalidate, :test_request, :test_session]
+
 
 
   def request_token

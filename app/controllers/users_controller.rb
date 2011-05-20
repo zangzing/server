@@ -180,6 +180,11 @@ class UsersController < ApplicationController
     render :json => true #Invalid call return not valid
   end
 
+  protected
+  def zza
+    @zza ||= ZZ::ZZA.new
+  end
+
 
   private
   def admin_user

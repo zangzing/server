@@ -169,8 +169,6 @@ class ApplicationController < ActionController::Base
 
 
 
-
-
     #
     # Redirects the user to the desired location after log in. If no stored location then to the default location
     def redirect_back_or_default(default)

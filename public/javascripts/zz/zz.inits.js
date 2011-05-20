@@ -79,7 +79,7 @@ zz.init = {
         });
 
         $('#join-banner #signin-button').click(function(){
-            document.location.href = '/signin';
+            document.location.href = '/signin?return_to=' + encodeURIComponent(document.location.href);
         });
 
 
@@ -177,7 +177,7 @@ zz.init = {
 
         $('#header #sign-in-button').click(function() {
             ZZAt.track('button.signin.click');
-            document.location.href = "/signin";
+            document.location.href = '/signin?return_to=' + encodeURIComponent(document.location.href);
         });
 
         $('#footer #play-button').click(function() {
