@@ -146,7 +146,7 @@ class SendgridController < ApplicationController
     else
       # call did not come through remapped upload via nginx or we have no attachments so reject it
       logger.error "Incoming email import album invalid arguments or no attachments will not retry."
-      ZZ::Async::Email.enqueue(:contribution_error, params[:from] )
+      ZZ::Async::Email.enqueue(:contribution_error, Mail::Address.new( params[:from].to_slug.to_ascii.to_s ).address )
       render :nothing => true, :status=> :ok
     end
   end
