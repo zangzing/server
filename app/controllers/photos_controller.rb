@@ -1,6 +1,8 @@
 require "zz_env_helpers"
 
 class PhotosController < ApplicationController
+  ssl_allowed :agent_create, :agent_index
+
   skip_before_filter :verify_authenticity_token,  :only =>   [ :agent_index, :agent_create, :upload_fast]
 
   before_filter :require_user,                    :only =>   [ :destroy, :update, :position ]  #for interactive users
