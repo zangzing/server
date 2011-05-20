@@ -18,7 +18,7 @@ describe "Kodak connector" do
   end
 
   it "connects to Kodak" do
-    connect_to_service(:kodak, 'Kodak')
+    connect_to_service(:kodak, 'kodak')
   end
 
   it "adds one random photo from Kodak's 'Medium Album'" do

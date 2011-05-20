@@ -16,13 +16,13 @@ module UiModel
 #    end
 
     def signed_in_as?(user)
-      puts @browser.get_text("css=#user-info > h2")
       @browser.get_text("css=#user-info > h2").casecmp(user)==0
     end
 
     def click_create_album
       @browser.click "css=#new-album-button"
-      @session.wait_for "css=#group_album_link"
+   #   @session.wait_for "css=#group_album_link"    #TODO
+      @session.wait_for "css=div.photogrid"
     end
 
     def click_zz_logo
@@ -33,6 +33,12 @@ module UiModel
       @browser.click "css=#people-view-button"
       @session.wait_for "css=#album-timeline"
     end
+
+    def click_settings
+      @browser.click "css=#acct-settings-btn"
+      @session.wait_load
+    end
+
   end
 
 end

@@ -28,7 +28,7 @@ module ConnectorShared
 
   def create_new_album    #(type)
     ui.toolbar.click_create_album
-    ui.wizard.album_type_tab.visible?.should be_true
+ #   ui.wizard.album_type_tab.visible?.should be_true
  #   ui.wizard.album_type_tab.send("click_#{type}_album".to_sym)
     ui.wizard.add_photos_tab.visible?.should be_true
   end

@@ -75,8 +75,9 @@ module UiModel
       end
 
       def click_join_button
+       # @browser.click "css=#join_form_submit_button"
         @browser.click "css=#submit-button"
-        @browser.wait_for_page_to_load
+        @session.wait_load
       end
     end
 

@@ -56,7 +56,8 @@ module UiModel
       end
 
       def visible?
-        @browser.visible? 'css=#wizard-add'
+    #    @browser.visible? 'css=#wizard-add'  #TODO
+        @browser.visible? 'css=div.photogrid'
       end
 
       def back_level_up
@@ -65,7 +66,8 @@ module UiModel
       end
 
       def at_home?
-        @browser.get_text('css=#filechooser-title')=='Home'
+      #  @browser.get_text('css=#filechooser-title')=='Home'
+        @browser.is_text_present("Home")
       end
 
       def go_home
@@ -75,8 +77,10 @@ module UiModel
       end
 
       def click_folder foldername
-        @session.wait_for "css=a:contains(#{foldername})"
-        @browser.click "css=a:contains(#{foldername})"
+    #    @session.wait_for "css=a:contains(#{foldername})"
+        @session.wait_for "css=img.photo-image"
+    #    @browser.click "css=a:contains(#{foldername})"
+        @browser.click "//img[contains(@src,'http://1.assets.staging.photos.zangzing.com/images/folders/#{foldername}_off.jpg?2011-05-17-52-ge384edd')]"
         @browser.wait_for_ajax
       end
 
