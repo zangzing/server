@@ -100,6 +100,14 @@ class SendgridController < ApplicationController
               user.albums << @album
               @album.name = ( params[:subject] && params[:subject].length > 0 ? params[:subject] : "New Album By Email")
               @album.save!
+              
+              # Add contributors from cc: if this email created a new album (exception thrown above would prevent this)
+              if params[:cc] && params[:cc].length > 0
+                ccs = Mail::AddressList.new( params[:cc].to_slug.to_ascii.to_s  )
+                ccs.addresses.each do | contributor|
+                  @album.add_contributor( contributor.address )
+                end
+              end
             else
               raise e
             end
@@ -108,24 +116,16 @@ class SendgridController < ApplicationController
           end
         end
 
-
         if attachments.count > 0 && @album
           user = @album.get_contributor_user_by_email( from.address )
           if user
             add_photos(@album, user, attachments)
+          else
+            logger.error "Received a contribution email from an address that is not a contributor. Sending error email"
+            ZZ::Async::Email.enqueue(:contribution_error, from.address )
           end
         end
-
-        # Add contributors from cc: if this email created a new album
-        if album_name == 'new' && @album
-          if params[:cc] && params[:cc].length > 0
-            ccs = Mail::AddressList.new( params[:cc].to_slug.to_ascii.to_s  )
-            ccs.addresses.each do | contributor|
-              @album.add_contributor( contributor.address )
-            end
-          end
-        end
-
+        
         render :nothing => true, :status => :ok
 
       rescue ActiveRecord::RecordNotFound => ex
