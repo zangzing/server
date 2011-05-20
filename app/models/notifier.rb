@@ -172,7 +172,7 @@ class Notifier < ActionMailer::Base
       encoded_name = Mail::Encodings::decode_encode( recipient.name, :encode )
       @to_address  = Mail::Address.new("#{encoded_name} <#{recipient.email}>")
     else
-      @to_address = Mail::Address.new( recipient )
+      @to_address = Mail::Address.new( recipient.to_slug.to_ascii.to_s )
     end
 
     @unsubscribe_url   = unsubscribe_url(  @unsubscribe_token = Subscriptions.unsubscribe_token( recipient ) )
