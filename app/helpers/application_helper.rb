@@ -24,7 +24,7 @@ module ApplicationHelper
       return true
     elsif browser.firefox? && browser.full_version.to_f >= 3.6
       return true
-    elsif browser.ie? && browser.full_version.to_f >= 8
+    elsif browser.ie?
       return true
     elsif browser.chrome? && browser.full_version.to_f >= 9
       return true
