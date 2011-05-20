@@ -22,7 +22,7 @@ class Activity < ActiveRecord::Base
   belongs_to :user
   validates_presence_of :user_id
 
-  default_scope  :order => "updated_at DESC"
+  default_scope  :order => "created_at DESC"
   
   ##
   ## ATTENTION: If you want helpers and forms treat all subtypes as Activities see
