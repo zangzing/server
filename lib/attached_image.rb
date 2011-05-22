@@ -161,7 +161,7 @@ class AttachedImage
       last = self.sizes.count - 1
       current = 0
       the_cmd = 'convert'
-      args = '"' + source_path + '"' + " \\\n "
+      args = '"' + source_path + '[0]"' + " \\\n "
       custom = self.custom_commands
       args << custom + " " unless custom.nil?
       self.sizes.each do |map|
