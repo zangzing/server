@@ -74,6 +74,9 @@
 
             self.captionElement.text(self.options.caption);
 
+            //for selenium tests...
+            self.borderElement.attr('id', 'photo-border-' + self.options.caption.replace(/[^a-zA-Z 0-9 _]+/g,'_'));
+
 
             if(self.options.type === 'blank'){
                 self.borderElement.hide();
