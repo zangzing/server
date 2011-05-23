@@ -106,7 +106,7 @@ class Photo < ActiveRecord::Base
     if photos.count > 0
       photo = photos[0]
       album_id = photo.album_id
-      Album.touch_photos_last_updated(album_id)
+      Album.change_cache_version(album_id)
     end
 
     # now kick off the uploads since bulk does not call after commit (I don't think)
