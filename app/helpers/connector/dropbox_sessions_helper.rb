@@ -1,0 +1,2 @@
+module Connector::DropboxSessionsHelper
+end
