@@ -7,7 +7,7 @@
       </div>
 
       <div class="title" style="font-size: 90%;">
-        You MUST Have at least 1 Album with Photos in this account to test email_templates, otherwise you will see errors
+        This account MUST Have at least 1 Album in addition to your profile album and both must have Photos to test email_templates, otherwise you will see errors
       </div>
 
       <div class="content">
@@ -31,7 +31,14 @@
                 </td>
                 <td>
                   <a href="<%=edit_email_template_path( et )%>">
-                    <%= @campaign_options[@campaign_options.index{ |co|  co[1] == et.mc_campaign_id} ][0] %>
+                    <% index = @campaign_options.index{ |co|  co[1] == et.mc_campaign_id} %>
+                    <% if index.nil? %>
+                        <span style="color: red;" title="<%="You've deleted mailchimp campaign <#{et.mc_campaign_id}> <#{et.name}> Please delete Email Template With ID #{et.id}" %>">
+                          <%=et.name%> (MC Campaign Deleted)
+                        </span>
+                    <% else %>
+                       <%= @campaign_options[ index ][0] %>
+                    <%end%>
                   </a>
                 </td>
 
