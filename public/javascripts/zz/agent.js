@@ -7,7 +7,6 @@
 
 var agent = {
 
-    port : 30777,
     agentId: null,
 
     STATUS: {
@@ -67,7 +66,7 @@ var agent = {
     //todo: this needs to be cleaned up
     isAgentUrl: function(url){
         if(url){
-            return url.indexOf('http://localhost:' + agent.port) === 0;
+            return url.indexOf('http://localhost:' + zz.agent_port) === 0;
         }
         else{
             return false;
@@ -110,7 +109,7 @@ var agent = {
                 return path;
             }
             else{
-                url = 'http://localhost:' + agent.port;
+                url = 'http://localhost:' + zz.agent_port;
             }
         }
 
@@ -118,7 +117,7 @@ var agent = {
 
 
         //fix agent port
-        url = url.replace(/http:\/\/localhost:[^\/]*/,"http://localhost:" + agent.port);
+        url = url.replace(/http:\/\/localhost:[^\/]*/,"http://localhost:" + zz.agent_port);
 
 
         return this.checkAddCredentialsToUrl(url);

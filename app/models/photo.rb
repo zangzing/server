@@ -429,7 +429,7 @@ class Photo < ActiveRecord::Base
 
   # build the agent source url
   def self.make_agent_source(type, id, album_id)
-    "http://localhost:30777/albums/#{album_id}/photos/#{id}.#{type}"
+    "http://localhost:#{ZangZingConfig.config[:agent_port]}/albums/#{album_id}/photos/#{id}.#{type}"
   end
 
 
