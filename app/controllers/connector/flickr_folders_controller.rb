@@ -27,8 +27,9 @@ class Connector::FlickrFoldersController < Connector::FlickrController
     photo_set.photo.each do |p|
       #todo: refactor this so that flickr_folders_controller and flickr_photos_controller can share
       photo_url = get_photo_url(p, :full)
+      photo_id = Photo.get_next_id
       photo = Photo.new_for_batch(current_batch, {
-                :id => Photo.get_next_id,
+                :id => photo_id,
                 :user_id => identity.user.id,
                 :album_id => params[:album_id],
                 :upload_batch_id => current_batch.id,

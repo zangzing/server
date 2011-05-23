@@ -20,7 +20,10 @@ class RemoteFile < ::File
   CONTENT_DISPOSITION_FILENAME_REGEX = /filename=([A-Z,a-z,0-9_#-]+\.*[A-Z,a-z,0-9]*)/
   CHUNK_SIZE = 4096
 
-  def initialize(path, tmpdir = Dir::tmpdir, options = {})
+  # do not use this directly, use read_remote_file instead
+  # we always return with the file state closed and on an exception
+  # we remove the file
+  def initialize(path, tmpdir, options)
     begin
       @original_filename  = File.basename(path)
       @remote_path        = path
@@ -31,6 +34,8 @@ class RemoteFile < ::File
       file_path = tmpdir + "/" + digest
       super file_path, "w+b"
       fetch
+      self.close
+      validate_size
     rescue Exception => ex
       # clean up if something went wrong
       self.close rescue nil
@@ -39,16 +44,25 @@ class RemoteFile < ::File
     end
   end
 
+  # this call reads the remote file and returns the local file path
+  # if any exception occurs the file will have been deleted in the exception
+  # handler for the init
+  # in all cases the file has been closed
+  # an exception will be thrown on any error
+  def self.read_remote_file(path, tmpdir = Dir::tmpdir, options = {})
+    file = RemoteFile.new(path, tmpdir, options)
+    return file.path
+  end
+
   def options
     @options
   end
 
   def fetch
-    target_uri = @remote_path
+    target_uri = URI.unescape(@remote_path)
     follow_redirect = false
     begin
       uri = URI::parse(URI.escape(target_uri))
-      self.binmode if is_windows?
       http = Net::HTTP.new(uri.host, uri.port)
       if uri.scheme == 'https'
         http.use_ssl = true
@@ -98,9 +112,5 @@ class RemoteFile < ::File
     self_size = File.size(self.path)
     raise IncompleteResponse.new(content_length, self_size) if !content_length.zero? && (content_length > self_size)
     true
-  end
-
-  def is_windows?
-    RUBY_PLATFORM =~ /(win|w)32$/
   end
 end

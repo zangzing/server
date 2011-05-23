@@ -17,8 +17,8 @@ class SendgridController < ApplicationController
     # An unsubscribe email address is of the form  <unsubscribe_token>@unsubscribe.zangzing.com
     # we use Mail::Address to parse the addresses and the domain
     # If the to or from addresses are invalid emails, an exception will be raised
-    to          = Mail::Address.new( params[:to].to_slug.transliterate.to_s  )
-    from        = Mail::Address.new( params[:from].to_slug.transliterate.to_s )
+    to          = Mail::Address.new( params[:to].to_slug.to_ascii.to_s  )
+    from        = Mail::Address.new( params[:from].to_slug.to_ascii.to_s )
     unsub_token = to.local
 
     if unsub_token == 'unsubscribe'
@@ -78,8 +78,8 @@ class SendgridController < ApplicationController
         # An albums email address is of the form  <album_name>@<user_username>.zangzing.com
         # we use Mail::Address to parse the addresses and the domain
         # If the to or from addresses are invalid emails, an exception will be raised
-        to             = Mail::Address.new( params[:to].to_slug.transliterate.to_s  )
-        from           = Mail::Address.new( params[:from].to_slug.transliterate.to_s  )
+        to             = Mail::Address.new( params[:to].to_slug.to_ascii.to_s  )
+        from           = Mail::Address.new( params[:from].to_slug.to_ascii.to_s  )
         album_name     = to.local
         user_username  = to.domain.split('.')[0]
 
@@ -100,6 +100,14 @@ class SendgridController < ApplicationController
               user.albums << @album
               @album.name = ( params[:subject] && params[:subject].length > 0 ? params[:subject] : "New Album By Email")
               @album.save!
+              
+              # Add contributors from cc: if this email created a new album (exception thrown above would prevent this)
+              if params[:cc] && params[:cc].length > 0
+                ccs = Mail::AddressList.new( params[:cc].to_slug.to_ascii.to_s  )
+                ccs.addresses.each do | contributor|
+                  @album.add_contributor( contributor.address )
+                end
+              end
             else
               raise e
             end
@@ -108,24 +116,16 @@ class SendgridController < ApplicationController
           end
         end
 
-
         if attachments.count > 0 && @album
           user = @album.get_contributor_user_by_email( from.address )
           if user
             add_photos(@album, user, attachments)
+          else
+            logger.error "Received a contribution email from an address that is not a contributor. Sending error email"
+            ZZ::Async::Email.enqueue(:contribution_error, from.address )
           end
         end
-
-        # Add contributors from cc: if this email created a new album
-        if album_name == 'new' && @album
-          if params[:cc] && params[:cc].length > 0
-            ccs = Mail::AddressList.new( params[:cc] )
-            ccs.addresses.each do | contributor|
-              @album.add_contributor( contributor.address )
-            end
-          end
-        end
-
+        
         render :nothing => true, :status => :ok
 
       rescue ActiveRecord::RecordNotFound => ex
@@ -146,7 +146,7 @@ class SendgridController < ApplicationController
     else
       # call did not come through remapped upload via nginx or we have no attachments so reject it
       logger.error "Incoming email import album invalid arguments or no attachments will not retry."
-      ZZ::Async::Email.enqueue(:contribution_error, params[:from] )
+      ZZ::Async::Email.enqueue(:contribution_error, Mail::Address.new( params[:from].to_slug.to_ascii.to_s ).address )
       render :nothing => true, :status=> :ok
     end
   end

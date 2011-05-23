@@ -1,15 +1,15 @@
 class Notifier < ActionMailer::Base
   add_template_helper(PrettyUrlHelper)
 
+  ActionMailer::Base.logger = Rails.logger
+  default :charset => "utf-8"
   if Rails.env == 'production'
     default :from => '"ZangZing Communications" <do-not-reply@zangzing.com>'
   else
     default :from => '"ZangZing '+Rails.env.capitalize+' Environment" <do-not-reply@zangzing.com>'
   end
 
-  def logger
-    Rails.logger
-  end
+
 
   def photos_ready( batch_id, template_id = nil )
     batch = UploadBatch.find( batch_id )
@@ -169,9 +169,10 @@ class Notifier < ActionMailer::Base
 
     #Process recipient 
     if recipient.is_a?(User)
-      @to_address      = Mail::Address.new( recipient.formatted_email )
+      encoded_name = Mail::Encodings::decode_encode( recipient.name, :encode )
+      @to_address  = Mail::Address.new("#{encoded_name} <#{recipient.email}>")
     else
-      @to_address = Mail::Address.new( recipient )
+      @to_address = Mail::Address.new( recipient.to_slug.to_ascii.to_s )
     end
 
     @unsubscribe_url   = unsubscribe_url(  @unsubscribe_token = Subscriptions.unsubscribe_token( recipient ) )

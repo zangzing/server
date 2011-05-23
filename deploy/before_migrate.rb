@@ -24,3 +24,9 @@ run "sudo monit stop all -g resque_photos"
 #else
 #  run "sudo monit stop all -g fractalresque_resque"
 #end
+
+
+#Use Jammit gem to package css and javascript
+run "bundle exec jammit"
+run "rm -rf #{release_path}/public/javascripts"
+run "rm -rf #{release_path}/public/stylesheets"

@@ -1,5 +1,7 @@
 class Admin::LogsController < Admin::AdminController
   require "base64"
+  ssl_allowed :index
+
 
   def index
       @logs = Dir.glob("#{Rails.root}/log/*.log").map { |logfile| File.basename(logfile) }

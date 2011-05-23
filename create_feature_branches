@@ -16,41 +16,36 @@ def confirm_continue
   end
 end
 
+def get_input(prompt)
+  print prompt
+  r = Readline.readline()
+  if r.empty?
+    puts "Input cannot be empty. Exiting. Bye."
+    exit
+  end
+  return r
+end
+
 def do_cmd(cmd)
   puts cmd
   Kernel.system(cmd)
 end
 
 
-puts "Create a tag for production releases."
+puts "Create a branch for feature development."
 confirm_continue
 
 puts
-print "Enter the tag you would like to create: "
-tag = Readline.readline()
-
-puts
-print "Enter a comment for the tag (optional): "
-tag_comment = Readline.readline()
-if tag_comment.empty?
-  tag_comment = "-m 'No comment.'"
-else
-  tag_comment = "-m '#{tag_comment}'"
-end
+feature_branch = get_input("Enter the feature branch you would like to create: ")
+feature_branch = "#{feature_branch}-feature"
 
 puts
 print "Type the branch/tag name to use for the basis of the tag you want to create (optional): "
 branch = Readline.readline()
 branch = "master" if branch.empty?
 
-print "Do you want a bugfix branch created? (Yes/n)?"
-r = Readline.readline()
-want_bugfix = r == "Yes"
-
 puts
-bugfix_branch = "#{tag}-bugfix"
-puts "About to create the deploy tag: #{tag} on the branch: #{branch}."
-puts "Also creating a bugfix branch: #{bugfix_branch} to be used for any bug fixes related to this deploy." if want_bugfix
+puts "About to create the branch: #{feature_branch} based on #{branch}."
 confirm_continue
 
 
@@ -74,15 +69,11 @@ repos.each do |repo|
   do_cmd("git remote show origin")
   do_cmd("git fetch")
   do_cmd("git checkout -f #{branch}")
+  do_cmd("git checkout -b #{feature_branch}")
   do_cmd("git pull origin #{branch}")
-  do_cmd("git tag -a #{tag} #{tag_comment}")
-  do_cmd("git push origin #{tag}")
-
-  if want_bugfix
-    # now create a new bugfix branch
-    do_cmd("git branch #{bugfix_branch} #{tag}")
-    do_cmd("git checkout -f #{bugfix_branch}")
-    do_cmd("git push origin #{bugfix_branch}")
-  end
+  do_cmd("git push origin #{feature_branch}")
 end
 
+puts
+puts "To use the new branch for development use this command:"
+puts "git remote show origin && git fetch && git checkout --track -b #{feature_branch} origin/#{feature_branch}"

@@ -1,15 +1,5 @@
 <%= render :partial =>  'admin/admin_screens/adminmenu' %>
 <div id="main-container">
-  <div style="margin-top: 5px; margin-bottom: 10px; font-size: 1em;">
-    <% [:notice, :error].each do |key| %>
-        <% if flash[key] %>
-            <div style="<%=( key == :error ? 'color:red;' : 'color:green;' )%>" id="flash">
-              <%= flash[key] %>
-            </div>
-        <% end %>
-    <% end %>
-  </div>
-
   <div class="viewlist" style="width:800px;">
     <li class="item">
       <div class="header bar">

@@ -20,13 +20,11 @@ def move_assets
     to = asset_dir + "/" + asset
     run "cp -f #{from} #{to}"
   end
+
+  puts "node instance role is: " + node["instance_role"].to_s
 end
 
 
-#Use Jammit gem to package css and javascript
-run "bundle exec jammit"
-run "rm -rf #{release_path}/public/javascripts"
-run "rm -rf #{release_path}/public/stylesheets"
 
 # Symlink nginx conf files
 
@@ -48,10 +46,20 @@ run "find /tmp/nginx/cache -type f -exec rm {} \\;"
 # put custom assets in place based on environment
 move_assets
 
+# now run the migration - we do this here to avoid downtime
+# only need this to run on one machine
+if ['solo', 'app_master'].include?(node["instance_role"])
+  run "RAILS_ENV=#{environment()} rake db:migrate"
+end
+
 # make sure v3homepage is deployed with the current tag, technically we really only
 # need this to run when we have newly added machines but there is really no way to know
 # so we run it each time.  The downside is that this is a fairly lengthy operation
-run "rails runner -e #{environment()} HomepageManager.deploy_homepage_current_tag_async"
+# We only need to run on one instance, so use the app_master or solo - they are mutually
+# exclusive
+if ['solo', 'app_master'].include?(node["instance_role"])
+  run "rails runner -e #{environment()} HomepageManager.deploy_homepage_current_tag_async"
+end
 
 
 #ALL DONE! Restart the App.

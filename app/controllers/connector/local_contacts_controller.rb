@@ -1,7 +1,10 @@
 class Connector::LocalContactsController < Connector::ConnectorController
+  ssl_allowed :import
+
   skip_before_filter :verify_authenticity_token, :only => [:import]
+  skip_before_filter :check_token_presence, :only => [:import]
   skip_before_filter :require_user, :only => [:import]
-  before_filter :oauth_required   , :only => [:import]
+  before_filter :oauth_required, :only => [:import]
 
 
 #  def index

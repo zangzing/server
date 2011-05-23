@@ -2,7 +2,6 @@ class UsersController < ApplicationController
   ssl_required :join, :create, :edit_password, :update_password
   ssl_allowed :validate_email, :validate_username
 
-  before_filter :require_no_user, :only => [:create]
   before_filter :require_user,    :only => [ :activate,:edit, :update]
   before_filter :require_admin,   :only => [ :activate]
   before_filter :correct_user,    :only => [:edit, :update]
@@ -20,6 +19,12 @@ class UsersController < ApplicationController
   end
 
   def create
+    if current_user
+        flash[:notice] = "You are currently logged in as #{current_user.username}. Please log out before creating a new account."
+        session[:flash_dialog] = true
+        redirect_to user_pretty_url(current_user)
+        return
+    end
     @user_session = UserSession.new
 
     # RESERVED NAMES
@@ -88,6 +93,7 @@ class UsersController < ApplicationController
         flash[:success] = "Welcome to ZangZing!"
         @new_user.deliver_welcome!
         session[:show_welcome_dialog] = true
+        send_zza_event_from_client('user.join')
         redirect_to user_pretty_url( @new_user ) and return
       end
     else
@@ -100,6 +106,7 @@ class UsersController < ApplicationController
           @guest.status = 'Inactive'
           @guest.save
         end
+        send_zza_event_from_client('user.join')
         redirect_to inactive_url and return
       end
     end
@@ -171,6 +178,11 @@ class UsersController < ApplicationController
 
     end
     render :json => true #Invalid call return not valid
+  end
+
+  protected
+  def zza
+    @zza ||= ZZ::ZZA.new
   end
 
 

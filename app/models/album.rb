@@ -3,7 +3,8 @@
 #
 
 class Album < ActiveRecord::Base
-  attr_accessible :name, :privacy, :cover_photo_id, :photos_last_updated_at, :updated_at
+  attr_accessible :name, :privacy, :cover_photo_id, :photos_last_updated_at, :updated_at, :cache_version
+  attr_accessor :change_matters
 
   belongs_to :user
   has_many :photos,           :dependent => :destroy
@@ -30,12 +31,14 @@ class Album < ActiveRecord::Base
   before_validation   :uniquify_name, :on => :create
 
   before_save   :cover_photo_id_valid?, :if => :cover_photo_id_changed?
-  after_save    :notify_cache_manager
+
+  # cache manager stuff
+  after_save    :check_cache_manager_change
+  after_commit  :notify_cache_manager
+  after_commit  :notify_cache_manager_delete, :on => :destroy
 
 
   after_create  :add_creator_as_admin
-
-  after_commit  :notify_cache_manager_delete, :on => :destroy
 
   default_scope :order => "`albums`.updated_at DESC"
 
@@ -67,14 +70,22 @@ class Album < ActiveRecord::Base
     @@_model_name ||= ActiveModel::Name.new(Album)
   end
 
-  # We have been saved so call the album cache manager
-  # to let it invalidate caches if needed.  Need to do this
-  # before the commit since we have to know what changed.
-  # todo: probably should set up for the modify by tracking
-  # what we need and setting a flag to know if we should
-  # do the actual change after the commit.
+
+  # check to see if the change matters - we do this
+  # before the commit because once it is commited we
+  # no longer know what changed
+  #
+  def check_cache_manager_change
+    self.change_matters = Cache::Album::Manager.shared.album_change_matters?(self)
+    true
+  end
+
+  # We have been committed so call the album cache manager
+  # to let it invalidate caches if needed.  We do this separately from
+  # the change check because we must do this after the commit to
+  # make sure we are not in a transaction
   def notify_cache_manager
-    Cache::Album::Manager.shared.album_modified(self)
+    Cache::Album::Manager.shared.album_modified(self) if self.change_matters
     true
   end
 
@@ -84,11 +95,28 @@ class Album < ActiveRecord::Base
     true
   end
 
+  # never, never, never call get_next_id inside a transaction since failure of the transaction would rollback the
+  # fetch of the id which could result in duplicates being used.  If you need a set number of ids, set the reserve_count
+  # to the amount that you want and manage them yourself
+  def self.change_cache_version(album_id)
+    version = BulkIdManager.next_id_for('album_cache_version')
+    Album.update(album_id, :cache_version => version)
+  end
+
   # generate a quick touch without having to
   # instantiate an object
   def self.touch_photos_last_updated(album_id)
     now = Time.now
     Album.update(album_id, :photos_last_updated_at => now, :updated_at => now)
+  end
+
+  def cache_key
+    case
+    when !persisted?
+      "#{self.class.model_name.cache_key}/new"
+    else
+      "#{self.class.model_name.cache_key}/#{id}-#{self.cache_version}"
+    end
   end
 
   # detect the state of the safe delete

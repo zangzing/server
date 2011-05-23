@@ -1,8 +1,11 @@
 require "zz_env_helpers"
 
 class PhotosController < ApplicationController
+  ssl_allowed :agent_create, :agent_index
+
   skip_before_filter :verify_authenticity_token,  :only =>   [ :agent_index, :agent_create, :upload_fast, :simple_upload_fast]
 
+  
   before_filter :require_user,                    :only =>   [ :destroy, :update, :position ]  #for interactive users
   before_filter :oauth_required,                  :only =>   [ :agent_create, :agent_index ]   #for agent
   # oauthenticate :strategies => :two_legged, :interactive => false, :only =>   [ :upload_fast ]
@@ -216,9 +219,12 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
   # returns a json string of the album photos
   # @album is set by before_filter require_album
   def photos_json
-     if stale?(:last_modified => @album.photos_last_updated_at.utc, :etag => @album)
+     if stale?(:etag => @album)
 
-      cache_key = "Album.Photos." + @album.id.to_s + '-' + @album.photos_last_updated_at.to_i.to_s + '.json'
+      cache_version = @album.cache_version
+      cache_version = 0 if cache_version.nil?
+
+      cache_key = "Album.Photos." + @album.id.to_s + '.' + cache_version.to_s + '.json'
 
       logger.debug 'cache key: ' + cache_key
 

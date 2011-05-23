@@ -42,12 +42,14 @@ var like = {
     },
 
     add_id: function( subject_id, subject_type ){
-        if( typeof( subject_id ) != 'undefined' && typeof( like.hash[subject_id]) == 'undefined' ){
-             var wanted_subjects = {};
-             wanted_subjects[ subject_id ] = subject_type;
-             like.add_id_array( wanted_subjects );
-        } else {
-             like.refresh_tag( subject_id );
+        if( typeof( subject_id ) != 'undefined' && subject_id != 0 ){
+            if( like.loaded && typeof( like.hash[subject_id]) == 'undefined' ){
+                var wanted_subjects = {};
+                wanted_subjects[ subject_id ] = subject_type;
+                like.add_id_array( wanted_subjects );
+            } else {
+                like.refresh_tag( subject_id );
+            }
         }
     },
 
@@ -110,22 +112,24 @@ var like = {
             var tag = $(zzliketag);
             var id = tag.attr('data-zzid');
 
-            if( tag.attr('data-zzstyle') =="menu" ){
-                tag.find("span.like-count").html( '('+like.hash[id]['count'].toString()+')' );
-            }else{
-                button  = $( ' <div class="zzlike-button">Like</div>');
-                icon    = $( '<span></span>' )
-                counter = $( '<div class="zzlike-count">'+like.hash[id]['count']+'</div>');
-                if( like.hash[id]['user'] ){
-                    $(icon).addClass( 'zzlike-thumbup' );
-                } else {
-                    $(icon).addClass( 'zzlike-vader' );
+            if( typeof(like.hash[id])!= 'undefined' ){
+                if( tag.attr('data-zzstyle') =="menu" ){
+                    tag.find("span.like-count").html( '('+like.hash[id]['count'].toString()+')' );
+                }else{
+                    button  = $( ' <div class="zzlike-button">Like</div>');
+                    icon    = $( '<span></span>' )
+                    counter = $( '<div class="zzlike-count">'+like.hash[id]['count']+'</div>');
+                    if( like.hash[id]['user'] ){
+                        $(icon).addClass( 'zzlike-thumbup' );
+                    } else {
+                        $(icon).addClass( 'zzlike-vader' );
+                    }
+                    $(button).prepend( icon );
+                    tag.empty();
+                    tag.append( button ).append( counter );
                 }
-                $(button).prepend( icon );
-                tag.empty();
-                tag.append( button ).append( counter );
+                tag.click( like.toggle );
             }
-            tag.click( like.toggle );
         });
     },
 
@@ -142,6 +146,8 @@ var like = {
                     }
                     $(this).find('div.zzlike-count').html(like.hash[id]['count']);
                 }
+                //logger.debug("refreshing and rebinding tags for "+id);
+                $(this).unbind('click', like.toggle ).click( like.toggle );
             });
 
         }

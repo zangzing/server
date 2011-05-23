@@ -2,7 +2,11 @@
 
 <meta property="og:title" content="<%= "#{@album.name} by #{@album.user.name}" %>"/>
 <meta property="og:type" content="website"/>
-<meta property="og:image" content="<%= @album.cover ? @album.cover.thumb_url : ''%>"/>
+<%if @album.private? %>
+    <meta property="og:image" content="<%= "http://#{Server::Application.config.application_host}/images/private-album.png" %>"/>
+<%else%>
+    <meta property="og:image" content="<%= @album.cover ? @album.cover.thumb_url : ''%>"/>
+<%end%>
 <meta property="og:site_name" content="<%=FACEBOOK_API_KEYS[:og_site_name]%>"/>
 <meta property="fb:app_id" content="<%=FACEBOOK_API_KEYS[:app_id]%>" />
 <meta property="og:description" content="<%= SystemSetting[:facebook_post_description] %>"/>

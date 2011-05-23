@@ -110,7 +110,7 @@ function initZZA(){
     // have zza track all js errors
     window.onerror = function(message, url, line) {
         try{
-            if(url.indexOf('http://localhost:30777') == -1){
+            if(url.indexOf('http://localhost:30777') == -1 && url.indexOf('http://localhost:30778') == -1){
                 ZZAt.track('js.error',{message: message, url:url, line:line});
             }
 

@@ -79,14 +79,33 @@ zz.init = {
         });
 
         $('#join-banner #signin-button').click(function(){
-            document.location.href = '/signin';
+            document.location.href = '/signin?return_to=' + encodeURIComponent(document.location.href);
         });
+
+
+
+        //system message banner
+        $('#system-message-banner #close-button').click(function(){
+            $('#system-message-banner').fadeOut(200, function(){
+                $('#page-wrapper').animate({top:0},200);
+                $('body').removeClass('show-join-banner');
+                jQuery.cookie('hide_system_message_banner', 'true');
+            });
+        });
+
+
+
+
+
 
         //top bar
         $('#header #home-button').click(function() {
             document.location.href = zz.path_prefix + '/';
             ZZAt.track('button.home.click');
         });
+
+
+
 
 
         if(zz.rails_controller_name == 'photos'){
@@ -158,7 +177,7 @@ zz.init = {
 
         $('#header #sign-in-button').click(function() {
             ZZAt.track('button.signin.click');
-            document.location.href = "/signin";
+            document.location.href = '/signin?return_to=' + encodeURIComponent(document.location.href);
         });
 
         $('#footer #play-button').click(function() {

@@ -24,8 +24,8 @@ class AsyncResponse
         :exception => true,
         :code => case exception.class.name
           when 'InvalidToken' then 401
-          when 'HttpCallFail' then 503
-          else 500
+          when 'HttpCallFail' then 509
+          else 509
         end,
         :message => exception.message
       }

@@ -47,7 +47,7 @@ silence_warnings do #To avoid warning of overwriting constant
     msg << "      Host                        : " + zconfig.application_host
     msg << "      Album Email Host            : " + zconfig.album_email_host
     msg << "      Source Repo                 : " + dna['engineyard']['environment']['apps'][0]['repository_name']
-    msg << "      Source Repo Branch          : " + dna['engineyard']['environment']['apps'][0]['branch']
+    msg << "      Source Repo Branch          : " + dna['engineyard']['environment']['apps'][0]['branch'].to_s
     msg << "      Source Version (from git)   : " + zconfig.zangzing_version
   else
     zz_deploy_environment = ZZDeployEnvironment.new(nil)

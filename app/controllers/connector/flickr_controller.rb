@@ -63,9 +63,9 @@ protected
     end
 
     url = case size_wanted
-      when :thumb then sz[:small] || sz[:medium]
-      when :screen then sz[:small] || sz[:large]
-      when :full then sz[:original] || sz[:large]
+      when :thumb  then sz[:small]    || sz[:medium]
+      when :screen then sz[:large]    || sz[:medium] || sz[:small]
+      when :full   then sz[:original] || sz[:large]  || sz[:medium] || sz[:small]
       else nil
     end
 
