@@ -59,7 +59,7 @@ class RemoteFile < ::File
   end
 
   def fetch
-    target_uri = @remote_path
+    target_uri = URI.unescape(@remote_path)
     follow_redirect = false
     begin
       uri = URI::parse(URI.escape(target_uri))
