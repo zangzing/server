@@ -25,10 +25,6 @@ def move_assets
 end
 
 
-#Use Jammit gem to package css and javascript
-run "bundle exec jammit"
-run "rm -rf #{release_path}/public/javascripts"
-run "rm -rf #{release_path}/public/stylesheets"
 
 # Symlink nginx conf files
 
