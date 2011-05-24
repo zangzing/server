@@ -9,7 +9,7 @@ class Album < ActiveRecord::Base
   belongs_to :user
   has_many :photos,           :dependent => :destroy
   has_many :shares,           :as => :subject, :dependent => :destroy
-  has_many :activities,       :dependent => :destroy
+  has_many :activities,       :as => :subject, :dependent => :destroy
   has_many :upload_batches
 
   has_many :like_mees,      :foreign_key => :subject_id, :class_name => "Like"
@@ -34,9 +34,9 @@ class Album < ActiveRecord::Base
 
   # cache manager stuff
   after_save    :check_cache_manager_change
+  after_commit  :make_create_album_activity, :on => :create
   after_commit  :notify_cache_manager
   after_commit  :notify_cache_manager_delete, :on => :destroy
-
 
   after_create  :add_creator_as_admin
 
@@ -372,6 +372,12 @@ class Album < ActiveRecord::Base
 
 
 private
+  def make_create_album_activity
+    aca = CreateAlbumActivity.create( :user => self.user, :subject => self)
+    self.activities << aca
+  end
+
+
   def cover_photo_id_valid?
     begin
       return true if cover_photo_id.nil?

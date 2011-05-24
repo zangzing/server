@@ -22,7 +22,7 @@
           on <%= activity.share.recipients.first.capitalize%>
          <%= ( activity.share.recipients.count >1 ? ' and '+activity.share.recipients.last.capitalize : '' )  %>
     <%end%>
-     <div class="tagline"><%=time_ago_in_words(activity.share.created_at) %> ago</div>
+     <div class="tagline"><%=time_ago_in_words(activity.created_at) %> ago</div>
     </div>
   </div>
   <div class="content">

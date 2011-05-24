@@ -687,8 +687,11 @@ pages.contributors = {
     }
 };
 
-pages.no_agent = {
-    NO_AGENT_URL: '/static/connect_messages/no_agent.html',
+
+
+
+pages.download_agent = {
+    NO_AGENT_URL: '/static/templates/download_agent.html',
 
     get_message_url: function(){
         ZZAt.track('agentdownload.requested');
@@ -699,36 +702,34 @@ pages.no_agent = {
         return $('.zangzing-downloader').length > 0;
     },
 
-    filechooser: function(container, when_ready ){
+//    filechooser: function(container, when_ready ){
+//
+//        container.load(pages.download_agent.get_message_url(), function(){
+//
+//            //hack: download screen is in the body, but we want
+//            //it to show up at the top of the chooser, under the hdeader
+//            //so, move it up 70px, the height of the header
+//
+//            $('.zangzing-downloader').css({top:'-70px'});
+//
+//
+//
+//            $('.zangzing-downloader #download-btn').click( function(){
+//                pages.download_agent.download();
+//            });
+//
+//            pages.download_agent.keep_polling();
+//            pages.download_agent.poll_agent( function(){
+//                if( $.isFunction(  when_ready )) when_ready();
+//            });
+//
+//        });
+//    },
 
-        container.load(pages.no_agent.get_message_url(), function(){
+    dialog: function( onClose, startDownload ){
 
-            //hack: download screen is in the body, but we want
-            //it to show up at the top of the chooser, under the hdeader
-            //so, move it up 70px, the height of the header
+        $('<div></div>', { id: 'no-agent-dialog'}).load(pages.download_agent.get_message_url(), function(){
 
-            $('.zangzing-downloader').css({top:'-70px'});
-
-
-
-            $('.zangzing-downloader #download-btn').click( function(){
-                pages.no_agent.download();
-            });
-
-            pages.no_agent.keep_polling();
-            pages.no_agent.poll_agent( function(){
-                if( $.isFunction(  when_ready )) when_ready();
-            });
-
-        });
-    },
-
-    dialog: function( onClose ){
-
-        $('<div></div>', { id: 'no-agent-dialog'}).load(pages.no_agent.get_message_url(), function(){
-            $('.zangzing-downloader #download-btn').click( function(){
-                pages.no_agent.download();
-            }) ;
             $( this ).zz_dialog({
                 modal: true,
                 width: 910,
@@ -741,13 +742,18 @@ pages.no_agent = {
             });
 
             $('.zangzing-downloader #download-btn').click( function(){
-                pages.no_agent.download();
+                pages.download_agent.download();
             });
 
 
-            pages.no_agent.poll_agent( function(){
+            pages.download_agent.poll_agent( function(){
                 $( '#no-agent-dialog' ).zz_dialog('close');
             });
+
+
+            if(startDownload){
+                pages.download_agent.download();
+            }
         });
 
     },
@@ -763,9 +769,9 @@ pages.no_agent = {
 
             }
             else{
-                if( pages.no_agent.keep_polling() ){
+                if( pages.download_agent.keep_polling() ){
                     setTimeout( function(){
-                        pages.no_agent.poll_agent( when_ready )
+                        pages.download_agent.poll_agent( when_ready )
                     }, 1000);
                 }
             }

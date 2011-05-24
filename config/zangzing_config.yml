@@ -32,6 +32,8 @@ development:
   async_connector_timeout: 7200
   async_job_timeout: 7200
   remote_job_timeout: 7200
+  requires_http_auth: false
+
 
 perftest:
   <<: *common

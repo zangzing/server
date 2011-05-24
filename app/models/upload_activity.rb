@@ -2,7 +2,7 @@
 #   Copyright 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 
-class UploadActivity < AlbumActivity
+class UploadActivity < Activity
   attr_accessible :upload_batch
   validates_presence_of :upload_batch
 
@@ -25,4 +25,13 @@ class UploadActivity < AlbumActivity
       raise new Exception("Argument must be UploadBatch");
     end
   end
+
+  def payload_valid?
+    begin
+      return true if upload_batch
+    rescue ActiveRecord::RecordNotFound
+      return false
+    end
+  end
+  
 end

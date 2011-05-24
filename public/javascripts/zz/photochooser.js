@@ -2,32 +2,32 @@
 
 var photochooser = {
     open_in_dialog: function(album_id, on_close){
-        
+
         var widget = null;
 
         var template = $('<div class="photochooser-container"></div>');
         $('<div id="add-photos-dialog"></div>').html( template ).zz_dialog({
-                               height: $(document).height() - 200,
-                               width: 895,
-                               modal: true,
-                               autoOpen: true,
-                               open : function(event, ui){ widget = template.zz_photochooser({album_id: album_id}).data().zz_photochooser },
-                               close: function(event, ui){
-                                   widget.destroy();
+            height: $(document).height() - 200,
+            width: 895,
+            modal: true,
+            autoOpen: true,
+            open : function(event, ui){ widget = template.zz_photochooser({album_id: album_id}).data().zz_photochooser },
+            close: function(event, ui){
+                widget.destroy();
 
-                                   $.ajax({
-                                       url:      zz.path_prefix + '/albums/' + album_id + '/close_batch',
-                                       complete: function(request, textStatus){
-                                           logger.debug('Batch closed because Add photos dialog was closed. Call to close_batch returned with status= '+textStatus);
-                                       },
-                                       success: function(){
-                                           if(on_close){
-                                               on_close();
-                                           }
-                                       }
-                                   });
-                               }
-                           });
+                $.ajax({
+                    url:      zz.path_prefix + '/albums/' + album_id + '/close_batch',
+                    complete: function(request, textStatus){
+                        logger.debug('Batch closed because Add photos dialog was closed. Call to close_batch returned with status= '+textStatus);
+                    },
+                    success: function(){
+                        if(on_close){
+                            on_close();
+                        }
+                    }
+                });
+            }
+        });
         template.height( $(document).height() - 192 );
     }
 };
@@ -52,17 +52,17 @@ var photochooser = {
 
 
             var template = $('<div class="photochooser">' +
-                             '   <div class="photochooser-body"></div>' +
-                             '   <div class="photochooser-header">' +
-                             '       <a class="back-button"><span>Back</span></a>' +
-                             '       <h3>Folder Name</h3>' +
-                             '       <h4>Choose pictures from folders on your computer or other photo sites</h4>' +
-                             '   </div>' +
-                             '   <div class="photochooser-footer">' +
-                             '     <div class="added-pictures-tray"></div>' +
-                             '     <div class="added-pictures-tab"></div>' +
-                             '   </div>' +
-                             '</div>');
+                    '   <div class="photochooser-body"></div>' +
+                    '   <div class="photochooser-header">' +
+                    '       <a class="back-button"><span>Back</span></a>' +
+                    '       <h3>Folder Name</h3>' +
+                    '       <h4>Choose pictures from folders on your computer or other photo sites</h4>' +
+                    '   </div>' +
+                    '   <div class="photochooser-footer">' +
+                    '     <div class="added-pictures-tray"></div>' +
+                    '     <div class="added-pictures-tab"></div>' +
+                    '   </div>' +
+                    '</div>');
 
 
 
@@ -95,7 +95,7 @@ var photochooser = {
             $.Widget.prototype.destroy.apply( this, arguments );
         },
 
-        
+
         callAgentOrServer : function(params){
             var url = params['url'];
             var success_handler = params['success'];
@@ -159,24 +159,29 @@ var photochooser = {
             self.bodyElement.html('<img class="progress-indicator" src="' + path_helpers.image_url('/images/loading.gif') +'">');
 
 
-            if(!_.isUndefined(folder.children)){
+            if(_.isArray(folder.children)){
                 self.showFolder(folder, folder.children);
+            }
+            else if(_.isFunction(folder.children)){
+                folder.children(function(children){
+                    self.showFolder(folder, children);
+                });
             }
             else{
                 self.callAgentOrServer({
-                   url: folder.open_url,
-                   success:function(children){
-                       folder.children = children; //store children for going 'back'
-                       self.showFolder(folder, children);
-                   },
-                   error: function(error){
-                       if(!_.isUndefined(folder.on_error)){
-                           folder.on_error(error);
-                       }
-                       else{
-                           alert('Sorry, there was a problem opening this folder. Please try again later.');
-                       }
-                   }
+                    url: folder.open_url,
+                    success:function(children){
+                        folder.children = children; //store children for going 'back'
+                        self.showFolder(folder, children);
+                    },
+                    error: function(error){
+                        if(!_.isUndefined(folder.on_error)){
+                            folder.on_error(error);
+                        }
+                        else{
+                            alert('Sorry, there was a problem opening this folder. Please try again later.');
+                        }
+                    }
                 });
             }
         },
@@ -242,7 +247,7 @@ var photochooser = {
                     context: 'chooser-grid',
                     onClickPhoto: function(index, photo, element, action){
                         if(photo.type === 'folder'){
-                             self.openFolder(photo);
+                            self.openFolder(photo);
                         }
                         else{
                             if(action === 'main'){
@@ -274,7 +279,7 @@ var photochooser = {
                 }
 
                 self.updateCheckmarks();
-                }
+            }
 
         },
 
@@ -289,11 +294,11 @@ var photochooser = {
 
 
             var template = $('<a class="prev-button"></a>' +
-                             '<div class="singlepicture-wrapper">' +
-                             '<div class="photogrid"></div>' +
-                             '</div>' +
-                             '<a class="next-button"></a>');
-            
+                    '<div class="singlepicture-wrapper">' +
+                    '<div class="photogrid"></div>' +
+                    '</div>' +
+                    '<a class="next-button"></a>');
+
 
 
 
@@ -307,8 +312,8 @@ var photochooser = {
             });
 
             template.filter('.prev-button').css({
-                 top: (self.bodyElement.height() / 2) - 36
-             });
+                top: (self.bodyElement.height() / 2) - 36
+            });
 
 
 
@@ -324,7 +329,7 @@ var photochooser = {
                 lazyLoadThreshold: 0,
                 onClickPhoto: function(index, photo, element, action){
                     if(photo.type === 'folder'){
-                         self.openFolder(photo);
+                        self.openFolder(photo);
                     }
                     else{
                         if(action === 'main'){
@@ -345,7 +350,7 @@ var photochooser = {
             }).data().zz_photogrid;
 
             self.updateCheckmarks();
-            
+
 
             template.filter('.prev-button').click(function(){
                 self.grid.previousPicture();
@@ -358,6 +363,49 @@ var photochooser = {
 
         },
 
+
+        show_download_agent_or_simple_upload: function(){
+            var self = this;
+
+            $('.photochooser-header h3').hide();
+            $('.photochooser-header h4').hide();
+
+            var template = $('<div class="choose-simple-or-download">' +
+                    '<h1>Use the simple uploader</h1>' +
+                    '<div><a id="simple-uploader-button" class="black-button"><span>Simple Uploader</span></a></div>' +
+                    '<div class="or"></div>' +
+                    '<h1>Tired of waiting while your photos upload?</h1>' +
+                    '<h1>Download our free desktop uploader.</h1>' +
+                    '<div><a id="download-zangzing-button" class="green-button"><span>Download ZangZing</span></a></div>' +
+                    '<div class="learn-more"><a id="learn-more-link">Not sure? Learn more about uploading your photos to ZangZing</a></div>' +
+                    '</div>');
+
+            template.find('#simple-uploader-button').click(function(){
+                simple_uploader.open_in_dialog(self.options.album_id, function(){
+                    self.reload_tray();
+                    self.goBack();
+                    $('.photochooser-header h3').show();
+                    $('.photochooser-header h4').show();
+                });
+            });
+
+            template.find('#download-zangzing-button').click(function(){
+                pages.download_agent.dialog(function(){
+                    self.openFolder(self.stack.pop());
+                    $('.photochooser-header h3').show();
+                    $('.photochooser-header h4').show();
+                }, true);
+            });
+
+            template.find('#learn-more-link').click(function(){
+                window.open("http://help.zangzing.com")
+            });
+
+
+            self.bodyElement.html(template);
+            self.bodyElement.fadeIn('fast');
+
+        },
 
         open_login_window : function(folder, login_url) {
             var self = this;
@@ -375,34 +423,173 @@ var photochooser = {
 
 
             var file_system_on_error = function(error){
-                if(typeof(error.status) === 'undefined'){
-
-                    $('.photochooser-header h3').hide();
-                    $('.photochooser-header h4').hide();
-
-                    pages.no_agent.filechooser(self.bodyElement, function(){
-                        self.openFolder(self.stack.pop());
-                        $('.photochooser-header h3').show();
-                        $('.photochooser-header h4').show();
-                    });
-
-                    self.bodyElement.fadeIn('fast');
-                }
-                else if(error.status === 401){
-                    self.bodyElement.hide().load('/static/connect_messages/wrong_agent_account.html', function(){
-                        self.bodyElement.fadeIn('fast');
-                    });
-                }
-                else if(error.status === 500){
-                    self.bodyElement.hide().load('/static/connect_messages/general_agent_error.html', function(){
-                        self.bodyElement.fadeIn('fast');
-                    });
-                }
-            }
+                self.show_download_agent_or_simple_upload();
+                self.bodyElement.fadeIn('fast');
+            };
 
             var picasa_on_error = file_system_on_error;
 
             var iphoto_on_error = file_system_on_error;
+
+
+            //My Computer for Win and Mac
+            if(navigator.appVersion.indexOf("Mac")!=-1 || navigator.appVersion.indexOf("Win")!=-1){
+
+                roots.push(
+                {
+                    type: 'folder',
+                    name: 'My Computer',
+                    on_error: file_system_on_error,
+                    src: path_helpers.image_url('/images/folders/mycomputer_off.jpg'),
+                    rolloverSrc: path_helpers.image_url('/images/folders/mycomputer_on.jpg'),
+                    state: 'ready',
+
+                    children: function(callback){
+
+                        var children=[];
+
+                        if(navigator.appVersion.indexOf("Mac")!=-1){
+
+                            children = [
+                                //My Pictures
+                                {
+                                    open_url: agent.buildAgentUrl('/filesystem/folders/fi9QaWN0dXJlcw=='),
+                                    add_url:  agent.buildAgentUrl('/filesystem/folders/fi9QaWN0dXJlcw==/add_to_album'),
+                                    type: 'folder',
+                                    name: 'My Pictures',
+                                    on_error: file_system_on_error,
+                                    src: path_helpers.image_url('/images/folders/mypictures_off.jpg'),
+                                    rolloverSrc: path_helpers.image_url('/images/folders/mypictures_on.jpg'),
+                                    state: 'ready'
+                                },
+
+                                //My Home
+                                {
+                                    open_url: agent.buildAgentUrl('/filesystem/folders/fg=='),
+                                    add_url:  agent.buildAgentUrl('/filesystem/folders/fg==/add_to_album'),
+                                    type: 'folder',
+                                    name: 'My Home',
+                                    on_error: file_system_on_error,
+                                    src: path_helpers.image_url('/images/folders/myhome_off.jpg'),
+                                    rolloverSrc: path_helpers.image_url('/images/folders/myhome_on.jpg'),
+                                    state: 'ready'
+                                },
+
+                                //My Computer
+                                {
+                                    open_url: agent.buildAgentUrl('/filesystem/folders/L1ZvbHVtZXM='),
+                                    type: 'folder',
+                                    name: 'My Computer',
+                                    on_error: file_system_on_error,
+                                    src: path_helpers.image_url('/images/folders/mycomputer_off.jpg'),
+                                    rolloverSrc: path_helpers.image_url('/images/folders/mycomputer_on.jpg'),
+                                    state: 'ready'
+                                }
+
+                            ];
+                        }
+
+                        else{
+
+                            children = [
+                                //My Pictures
+                                {
+                                    open_url: agent.buildAgentUrl('/filesystem/folders/flxNeSBEb2N1bWVudHNcTXkgUGljdHVyZXM='),
+                                    add_url:  agent.buildAgentUrl('/filesystem/folders/flxNeSBEb2N1bWVudHNcTXkgUGljdHVyZXM=/add_to_album'),
+                                    type: 'folder',
+                                    name: 'My Pictures',
+                                    on_error: file_system_on_error,
+                                    src: path_helpers.image_url('/images/folders/mypictures_off.jpg'),
+                                    rolloverSrc: path_helpers.image_url('/images/folders/mypictures_on.jpg'),
+                                    state: 'ready'
+                                },
+
+                                //My Home
+                                {
+                                    open_url: agent.buildAgentUrl('/filesystem/folders/fg=='),
+                                    add_url:  agent.buildAgentUrl('/filesystem/folders/fg==/add_to_album'),
+                                    type: 'folder',
+                                    name: 'My Home',
+                                    on_error: file_system_on_error,
+                                    src: path_helpers.image_url('/images/folders/myhome_off.jpg'),
+                                    rolloverSrc: path_helpers.image_url('/images/folders/myhome_on.jpg'),
+                                    state: 'ready'
+                                },
+
+                                //My Computer
+                                {
+                                    open_url: agent.buildAgentUrl('/filesystem/folders'),
+                                    type: 'folder',
+                                    name: 'My Computer',
+                                    on_error: file_system_on_error,
+                                    src: path_helpers.image_url('/images/folders/mycomputer_off.jpg'),
+                                    rolloverSrc: path_helpers.image_url('/images/folders/mycomputer_on.jpg'),
+                                    state: 'ready'
+                                }
+                            ];
+
+                        }
+
+                        agent.getStatus(function(status){
+                            if(status == agent.STATUS.READY){
+                                callback(children);
+                            }
+                            else{
+                                file_system_on_error();
+                            }
+                        });
+                    }
+                });
+
+            }
+
+
+
+            //mac
+            if(navigator.appVersion.indexOf("Mac")!=-1){
+
+                //iPhoto
+                roots.push(
+                {
+                    open_url: agent.buildAgentUrl('/iphoto/folders'),
+                    type: 'folder',
+                    name: 'iPhoto',
+                    on_error: iphoto_on_error,
+                    src: path_helpers.image_url('/images/folders/iphoto_off.jpg'),
+                    rolloverSrc: path_helpers.image_url('/images/folders/iphoto_on.jpg'),
+                    state: 'ready'
+                });
+
+
+                //Picasa
+                roots.push(
+                {
+                    open_url: agent.buildAgentUrl('/picasa/folders'),
+                    type: 'folder',
+                    name: 'Picasa',
+                    on_error: picasa_on_error,
+                    src: path_helpers.image_url('/images/folders/picasa_off.jpg'),
+                    rolloverSrc: path_helpers.image_url('/images/folders/picasa_on.jpg'),
+                    state: 'ready'
+                });
+            }
+
+
+            //windows
+            if(navigator.appVersion.indexOf("Win")!=-1){
+
+                //Picassa
+                roots.push(
+                {
+                    open_url: agent.buildAgentUrl('/picasa/folders'),
+                    type: 'folder',
+                    name: 'Picasa',
+                    on_error: picasa_on_error,
+                    src: path_helpers.image_url('/images/folders/picasa_off.jpg'),
+                    rolloverSrc: path_helpers.image_url('/images/folders/picasa_on.jpg'),
+                    state: 'ready'
+                });
+            }
 
 
             //Facebook
@@ -585,155 +772,6 @@ var photochooser = {
             });
 
 
-            //mac
-            if(navigator.appVersion.indexOf("Mac")!=-1){
-
-
-                //My Computer
-                roots.push(
-                {
-                    type: 'folder',
-                    name: 'My Computer',
-                    on_error: file_system_on_error,
-                    src: path_helpers.image_url('/images/folders/mycomputer_off.jpg'),
-                    rolloverSrc: path_helpers.image_url('/images/folders/mycomputer_on.jpg'),
-                    state: 'ready',
-
-                    children: [
-                        //My Pictures
-                        {
-                            open_url: agent.buildAgentUrl('/filesystem/folders/fi9QaWN0dXJlcw=='),
-                            add_url:  agent.buildAgentUrl('/filesystem/folders/fi9QaWN0dXJlcw==/add_to_album'),
-                            type: 'folder',
-                            name: 'My Pictures',
-                            on_error: file_system_on_error,
-                            src: path_helpers.image_url('/images/folders/mypictures_off.jpg'),
-                            rolloverSrc: path_helpers.image_url('/images/folders/mypictures_on.jpg'),
-                            state: 'ready'
-                        },
-
-                        //My Home
-                        {
-                            open_url: agent.buildAgentUrl('/filesystem/folders/fg=='),
-                            add_url:  agent.buildAgentUrl('/filesystem/folders/fg==/add_to_album'),
-                            type: 'folder',
-                            name: 'My Home',
-                            on_error: file_system_on_error,
-                            src: path_helpers.image_url('/images/folders/myhome_off.jpg'),
-                            rolloverSrc: path_helpers.image_url('/images/folders/myhome_on.jpg'),
-                            state: 'ready'
-                        },
-
-                        //My Computer
-                        {
-                            open_url: agent.buildAgentUrl('/filesystem/folders/L1ZvbHVtZXM='),
-                            type: 'folder',
-                            name: 'My Computer',
-                            on_error: file_system_on_error,
-                            src: path_helpers.image_url('/images/folders/mycomputer_off.jpg'),
-                            rolloverSrc: path_helpers.image_url('/images/folders/mycomputer_on.jpg'),
-                            state: 'ready'
-                        }
-
-                    ]
-
-                });
-
-
-                //iPhoto
-                roots.push(
-                {
-                    open_url: agent.buildAgentUrl('/iphoto/folders'),
-                    type: 'folder',
-                    name: 'iPhoto',
-                    on_error: iphoto_on_error,
-                    src: path_helpers.image_url('/images/folders/iphoto_off.jpg'),
-                    rolloverSrc: path_helpers.image_url('/images/folders/iphoto_on.jpg'),
-                    state: 'ready'
-                });
-
-
-                //Picasa
-                roots.push(
-                {
-                    open_url: agent.buildAgentUrl('/picasa/folders'),
-                    type: 'folder',
-                    name: 'Picasa',
-                    on_error: picasa_on_error,
-                    src: path_helpers.image_url('/images/folders/picasa_off.jpg'),
-                    rolloverSrc: path_helpers.image_url('/images/folders/picasa_on.jpg'),
-                    state: 'ready'
-                });
-            }
-
-
-            //windows
-            if(navigator.appVersion.indexOf("Win")!=-1){
-
-
-                //My Computer
-                roots.push(
-                {
-                    type: 'folder',
-                    name: 'My Computer',
-                    on_error: file_system_on_error,
-                    src: path_helpers.image_url('/images/folders/mycomputer_off.jpg'),
-                    rolloverSrc: path_helpers.image_url('/images/folders/mycomputer_on.jpg'),
-                    state: 'ready',
-                    children: [
-                            
-                        //My Pictures
-                        {
-                            open_url: agent.buildAgentUrl('/filesystem/folders/flxNeSBEb2N1bWVudHNcTXkgUGljdHVyZXM='),
-                            add_url:  agent.buildAgentUrl('/filesystem/folders/flxNeSBEb2N1bWVudHNcTXkgUGljdHVyZXM=/add_to_album'),
-                            type: 'folder',
-                            name: 'My Pictures',
-                            on_error: file_system_on_error,
-                            src: path_helpers.image_url('/images/folders/mypictures_off.jpg'),
-                            rolloverSrc: path_helpers.image_url('/images/folders/mypictures_on.jpg'),
-                            state: 'ready'
-                        },
-
-                        //My Home
-                        {
-                            open_url: agent.buildAgentUrl('/filesystem/folders/fg=='),
-                            add_url:  agent.buildAgentUrl('/filesystem/folders/fg==/add_to_album'),
-                            type: 'folder',
-                            name: 'My Home',
-                            on_error: file_system_on_error,
-                            src: path_helpers.image_url('/images/folders/myhome_off.jpg'),
-                            rolloverSrc: path_helpers.image_url('/images/folders/myhome_on.jpg'),
-                            state: 'ready'
-                        },
-
-                        //My Computer
-                        {
-                            open_url: agent.buildAgentUrl('/filesystem/folders'),
-                            type: 'folder',
-                            name: 'My Computer',
-                            on_error: file_system_on_error,
-                            src: path_helpers.image_url('/images/folders/mycomputer_off.jpg'),
-                            rolloverSrc: path_helpers.image_url('/images/folders/mycomputer_on.jpg'),
-                            state: 'ready'
-                        }
-                    ]
-
-                });
-
-
-                //Picassa
-                roots.push(
-                {
-                    open_url: agent.buildAgentUrl('/picasa/folders'),
-                    type: 'folder',
-                    name: 'Picasa',
-                    on_error: picasa_on_error,
-                    src: path_helpers.image_url('/images/folders/picasa_off.jpg'),
-                    rolloverSrc: path_helpers.image_url('/images/folders/picasa_on.jpg'),
-                    state: 'ready'
-                });
-            }
-
 
             return roots;
 
@@ -745,7 +783,7 @@ var photochooser = {
             $.each(self.grid.cells(),function(index, cell){
                 $(cell).data().zz_photo.setChecked(false);
             });
-            
+
 
             //add back the ones we need
             $.each(self.tray_photos, function(index, photo){
@@ -766,13 +804,13 @@ var photochooser = {
             var self = this;
             self.tray_element = self.element.find(".added-pictures-tray")
             self.tray_widget =  self.tray_element.zz_thumbtray({
-                    photos:[],
-                    allowDelete:true,
-                    allowSelect:false,
+                photos:[],
+                allowDelete:true,
+                allowSelect:false,
 
-                    onDeletePhoto:function(index, photo){
-                        self.remove_photo(photo.id);
-                    }
+                onDeletePhoto:function(index, photo){
+                    self.remove_photo(photo.id);
+                }
             }).data().zz_thumbtray;
 
             self.reload_tray();
@@ -826,11 +864,11 @@ var photochooser = {
                 dataType: 'json',
                 url: zz.path_prefix + '/albums/' + self.options.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
                 success: function(photos){
-                    
+
                     self.tray_photos = _.filter(photos, function(photo){
                         return zz.current_user_id == photo.user_id; //only show photos uploaded by this user
                     });
-                    
+
                     self.tray_widget.setPhotos(self.map_photos(self.tray_photos));
                     self.updateCheckmarks();
                 }
@@ -872,7 +910,7 @@ var photochooser = {
             $.each(self.grid.cells(), function(index, element){
                 $(element).data().zz_photo.setChecked(true);
             });
-            
+
         },
 
         animate_to_tray: function(element, callback){
@@ -904,11 +942,11 @@ var photochooser = {
                     .appendTo('body')
                     .addClass('animate-photo-to-tray')
                     .animate({
-                        width: '20px',
-                        height: '20px',
-                        top: (end_top) +'px',
-                        left: (end_left) +'px'
-                    }, 1000, 'easeInOutCubic', on_finish_animation);
+                                 width: '20px',
+                                 height: '20px',
+                                 top: (end_top) +'px',
+                                 left: (end_left) +'px'
+                             }, 1000, 'easeInOutCubic', on_finish_animation);
 
 
 
