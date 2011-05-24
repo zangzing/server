@@ -9,7 +9,7 @@ Server::Application.configure do
   config.cache_classes = true
 
   # use syslogger
-  app_tag = ZangZingConfig.running_as_resque? ? "railsstag-resquephotos" : "railsstag-photos"
+  app_tag = ZangZingConfig.running_as_resque? ? "rails/stag/rqphotos" : "rails/stag/photos"
   config.logger = Syslogger.new(app_tag)
   config.colorize_logging = false
   config.log_level = :debug
