@@ -5,8 +5,8 @@ var simple_uploader = {
         var widget;
 
         $('<div id="simpleuploader-dialog"></div>').html( template ).zz_dialog({
-            height: $(document).height() - 200,
-            width: 895,
+            height: $(document).height() - 350,
+            width: 800,
             modal: true,
             autoOpen: true,
             open: function(){
