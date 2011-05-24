@@ -8,6 +8,10 @@ Server::Application.configure do
   # since you don't have to restart the webserver when you make code changes.
   config.cache_classes = true
 
+  # use syslogger
+  app_tag = ZangZingConfig.running_as_resque? ? "rails/stag/rqphotos" : "rails/stag/photos"
+  config.logger = Syslogger.new(app_tag)
+  config.colorize_logging = false
   config.log_level = :debug
 
   # Log error messages when you accidentally call methods on nil.
