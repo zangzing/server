@@ -23,51 +23,41 @@ class SharesController < ApplicationController
   end
 
   def create
-
     # Based on the route used to get here (and thus the params) we know what kind of subject does
     # the user wants to quack! about.
     if  params[:user_id]
       @subject = User.find(params[:user_id])
       @subject_type = Like::USER
       @subject_url = user_pretty_url(@subject)
-      shared_type = 'user'
+      share_event = 'user'
     elsif params[:album_id]
       @subject = Album.find(params[:album_id])
       @subject_type = Like::ALBUM
       @subject_url = album_pretty_url(@subject)
-      shared_type = 'album'
+      share_event = 'album'
     elsif params[:photo_id]
       @subject = Photo.find(params[:photo_id])
       @subject_type = Like::PHOTO
       @subject_url = photo_pretty_url(@subject)
-      shared_type = 'photo'
+      share_event = 'photo'
     else
       render :json => "subject_type not specified via params", :status => 400 and return
     end
-
-
-    if params[:service] == 'email'
-      zza.track_event("#{shared_type}.share.email")
-    elsif params[:service] == 'social'
-      if params[:recipients].include?('twitter')
-        zza.track_event("#{shared_type}.share.twitter")
-      end
-
-      if params[:recipients].include?('facebook')
-        zza.track_event("#{shared_type}.share.facebook")
-      end
-
-    end
-
-
 
     # make sure recipients its an array
     # emailshare submits a comma separated list of emails
     # postshare submits an array of social services
     if params[:recipients].is_a?(Array)
       @rcp = params[:recipients] #this is post share
+      if params[:recipients].include?('twitter')
+        zza.track_event("#{share_event}.share.twitter")
+      end
+      if params[:recipients].include?('facebook')
+        zza.track_event("#{share_event}.share.facebook")
+      end
     else
       # We are in an email, validate emails, if they ALL pass create share otherwise return error info
+      zza.track_event("#{share_event}.share.email")
       emails,errors = validate_email_list(  params[:recipients] )
       if errors.length > 0
         flash[:error] = "Please verify highlighted addresses"
@@ -120,8 +110,6 @@ class SharesController < ApplicationController
     end
 
     shareable_url = bitly_url(shareable_url)
-
-
     redirect_to "http://twitter.com/share?text=#{URI.escape message}&url=#{URI.escape shareable_url}"
 
   end
@@ -150,30 +138,24 @@ class SharesController < ApplicationController
       user = User.find(params[:user_id])
       shareable_url = user_pretty_url(user)
       shareable_url = bitly_url(shareable_url)
-
       subject = "Check out a ZangZing homepage"
       message = "Hi, I thought you would like to see this ZangZing homepage.\n\n #{shareable_url}"
-
       zza.track_event('user.share.email')
 
     elsif params[:album_id]
       album = Album.find(params[:album_id])
       shareable_url = album_pretty_url(album)
       shareable_url = bitly_url(shareable_url)
-
       subject = "Check out #{album.name} album on ZangZing"
       message = "Hi, I thought you would like to see #{album.user.posessive_name} #{album.name} album on ZangZing.\n\n #{shareable_url}"
-
       zza.track_event('album.share.email')
 
     elsif params[:photo_id]
       photo = Photo.find(params[:photo_id])
       shareable_url = photo_pretty_url(photo)
       shareable_url = bitly_url(shareable_url)
-
       subject = "Check out this photo on ZangZing"
       message = "Hi, I thought you would like to see #{photo.user.posessive_name} photo on ZangZing.\n\n #{shareable_url}"
-
       zza.track_event('photo.share.email')
 
     end
@@ -181,24 +163,6 @@ class SharesController < ApplicationController
     render :json=> {:mailto => "mailto:?subject=#{URI.escape subject}&body=#{URI.escape message}"}
 
   end
-
-
-  protected
-  #todo: move this to ApplicationController
-  def zza
-    @zza ||= ZZ::ZZA.new
-
-    if current_user
-      @zza.user = current_user.id
-      @zza.user_type = 1
-    else
-      @zza.user = request.cookies['_zzv_id']
-      @zza.user_type = 2
-    end
-
-    return @zza
-  end
-
 
 
   private

@@ -5,22 +5,24 @@
 
 
 <div class="viewlist">
-<ul>
-  <li class="item">
-   <div class="header bar">
+  <ul>
+    <li class="item">
+      <div class="header bar">
         Timeline
-   </div>
-  </li>
-
-  <% @activities.each do |activity| %>
-                    <%case activity %>
-                        <% when UploadActivity then%>
-                            <%= render :partial => 'upload_activity', :locals => {:activity => activity, :view => 'activity' } %>
-                        <% when ShareActivity then%>
-                            <%= render :partial => 'share_activity', :locals => {:activity => activity, :view => 'activity' } %>
-                    <%end%>
-  <%end%>
-
-</ul>
+      </div>
+    </li>
+    <% @activities.each do |activity| %>
+        <%case activity %>
+    <% when UploadActivity then%>
+            <%= render :partial => 'upload_activity', :locals => {:activity => activity, :view => 'activity' } %>
+        <% when ShareActivity then%>
+            <%= render :partial => 'share_activity', :locals => {:activity => activity, :view => 'activity' } %>
+        <% when CreateAlbumActivity then%>
+            <%= render :partial => 'create_album_activity', :locals => {:activity => activity, :view => 'activity' } %>
+        <% when LikeActivity then%>
+            <%= render :partial => 'like_activity', :locals => {:activity => activity, :view => 'activity' } %>
+        <%end%>
+    <%end%>
+  </ul>
 
 </div>    

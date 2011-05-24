@@ -11,7 +11,7 @@
         <span class="blue"><%=activity.user.name%></span>
     </a>
     added <%=( (i = activity.upload_batch.photos.length) > 1 ? "#{i} photos" : "1 photo")%>
-    <div class="tagline"><%=time_ago_in_words(activity.upload_batch.created_at) %> ago</div>
+    <div class="tagline"><%=time_ago_in_words(activity.created_at) %> ago</div>
     </div>
   </div>
   <div class="content">
