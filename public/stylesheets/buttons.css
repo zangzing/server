@@ -169,7 +169,7 @@ a.black-button{
     background: url("/images/btn-black-endcap.png") no-repeat scroll top right;
     color:#ffffff;
     display: block;
-    float: left;
+    /*float: left;*/
     font-size: 13px;
     height: 30px;
     /*margin-right: 6px;*/

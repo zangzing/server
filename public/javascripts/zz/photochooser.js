@@ -371,7 +371,7 @@ var photochooser = {
                                     '<div class="or"></div>' +
                                     '<h1>Tired of waiting while your photos upload?</h1>' +
                                     '<h1>Download our free desktop uploader.</h1>' +
-                                    '<div><a id="download-zangzing-button" class="black-button"><span>Download ZangZing</span></a></div>' +
+                                    '<div><a id="download-zangzing-button" class="green-button"><span>Download ZangZing</span></a></div>' +
                                     '<div><a id="learn-more-link">Not sure? Learn more about uploading your photos to ZangZing</a></div>' +
                                 '</div>');
 

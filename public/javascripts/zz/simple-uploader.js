@@ -145,7 +145,7 @@ var simple_uploader = {
 
 
                 // Debug Settings
-                debug: false,
+                debug: true,
                 debug_handler: function(message){
                     logger.debug(message);
                 }

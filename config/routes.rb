@@ -100,7 +100,6 @@ Server::Application.routes.draw do
     delete '/photos/:id'                    => 'photos#destroy',                    :as => :destroy_photo
     put    '/photos/:id/upload_fast'        => 'photos#upload_fast',                :as => :upload_photo_fast
 
-    #todo: this should change to POST
     put   '/albums/:album_id/upload_fast'        => 'photos#simple_upload_fast',          :as => :simple_upload_photo_fast
     get    '/agents/:agent_id/photos'       => 'photos#agent_index',                :as => :agent_photos
     post   '/albums/:album_id/photos/agent_create.:format' => 'photos#agent_create',:as => :agent_create
