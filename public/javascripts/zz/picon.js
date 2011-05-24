@@ -53,6 +53,10 @@
 
             this.element.append(self.template);
 
+            //for selenium tests...
+            self.element.find('.picon').attr('id', 'picon-' + self.options.caption.replace(/[\W]+/g,'-'));
+
+
             //rotate stack
             var stackOption = Math.floor(Math.random() * self.options.stackAngles.length );
             self.template.find('.stacked-image:eq(0)').rotate(self.options.stackAngles[stackOption][0]);
