@@ -425,7 +425,7 @@ var photochooser = {
             var file_system_on_error = function(error){
                 self.show_download_agent_or_simple_upload();
                 self.bodyElement.fadeIn('fast');
-            }
+            };
 
             var picasa_on_error = file_system_on_error;
 
@@ -488,9 +488,10 @@ var photochooser = {
 
                             ];
                         }
+
                         else{
 
-                            chilren = [
+                            children = [
                                 //My Pictures
                                 {
                                     open_url: agent.buildAgentUrl('/filesystem/folders/flxNeSBEb2N1bWVudHNcTXkgUGljdHVyZXM='),
@@ -525,7 +526,7 @@ var photochooser = {
                                     rolloverSrc: path_helpers.image_url('/images/folders/mycomputer_on.jpg'),
                                     state: 'ready'
                                 }
-                            ]
+                            ];
 
                         }
 
