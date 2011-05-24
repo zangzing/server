@@ -26,14 +26,19 @@ class ZangZingConfig
   end
 
   def self.new_relic_category_type
-    @@running_as_resque ||= false # initialize if not done yet
-    @@running_as_resque ? :task : :controller
+    running_as_resque? ? :task : :controller
   end
 
   # set to true if running under resque
   # this lets us know how to categorize NewRelic instrumentation
   def self.running_as_resque=(flag)
     @@running_as_resque = flag
+  end
+
+  # get the resque flag
+  def self.running_as_resque?
+    @@running_as_resque ||= false # initialize if not done yet
+    @@running_as_resque
   end
 end
 

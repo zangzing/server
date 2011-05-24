@@ -4,6 +4,8 @@ require 'resque_scheduler/tasks'
 require 'zz/zza'
 require 'config/initializers/zangzing_config'
 
+ZangZingConfig.running_as_resque = true
+
 task "resque:setup" => :environment do
   puts "resque:setup"
 
@@ -32,7 +34,5 @@ task "resque:setup" => :environment do
 
   # init ZZA with resque specific ids
   ZZ::ZZA.default_zza_id = ZangZingConfig.config[:resque_zza_id]
-
-  ZangZingConfig.running_as_resque = true
 
 end

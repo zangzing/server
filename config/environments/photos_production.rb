@@ -8,6 +8,11 @@ Server::Application.configure do
   # since you don't have to restart the webserver when you make code changes.
   config.cache_classes = true
 
+  # use syslogger
+  app_tag = ZangZingConfig.running_as_resque? ? "railsprod-resquephotos" : "railsprod-photos"
+  config.logger = Syslogger.new(app_tag)
+  config.colorize_logging = false
+
   #config.log_level = :info
   #todo: go back to info this after memcached tested
   config.log_level = :debug
