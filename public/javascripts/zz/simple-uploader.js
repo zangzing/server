@@ -4,13 +4,16 @@ var simple_uploader = {
         var template = $('<div class="simpleuploader-container"></div>');
         var widget;
 
-        $('<div id="simpleuploader-dialog"></div>').html( template ).zz_dialog({
+        var dialog = $('<div id="simpleuploader-dialog"></div>').html( template ).zz_dialog({
             height: $(document).height() - 350,
             width: 800,
             modal: true,
             autoOpen: true,
             open: function(){
-                widget = template.zz_simpleuploader({album_id: album_id}).data().zz_simpleuploader;
+                widget = template.zz_simpleuploader({
+                                                        album_id: album_id
+
+                                                    }).data().zz_simpleuploader;
             },
 
             beforeclose: function(){
@@ -27,9 +30,17 @@ var simple_uploader = {
                     on_close();
                 }
             }
-        });
+        }).data().zz_dialog;
+
         template.height( $(document).height() - 192 );
 
+        //we want to wire up the 'done' button event handlers here
+        //but we can't add it to the dialog until afte the uploader
+        //has inserted itself
+        template.append('<a class="done-button black-button"><span>Done</span></a>');
+        template.find('.done-button').click(function(){
+            dialog.close();
+        });
     }
 
 };
@@ -38,7 +49,8 @@ var simple_uploader = {
 
     $.widget( "ui.zz_simpleuploader", {
         options: {
-            album_id:null
+            album_id:null,
+            on_done:function(){}
         },
 
         _create: function() {

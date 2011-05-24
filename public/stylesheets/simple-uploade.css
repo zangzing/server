@@ -115,3 +115,10 @@
     width:100px;
 }
 
+.simpleuploader-container .done-button {
+    position: absolute;
+    right:20px;
+    bottom:20px;
+    width:100px;
+}
+

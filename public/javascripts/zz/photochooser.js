@@ -372,12 +372,15 @@ var photochooser = {
                                     '<h1>Tired of waiting while your photos upload?</h1>' +
                                     '<h1>Download our free desktop uploader.</h1>' +
                                     '<div><a id="download-zangzing-button" class="green-button"><span>Download ZangZing</span></a></div>' +
-                                    '<div><a id="learn-more-link">Not sure? Learn more about uploading your photos to ZangZing</a></div>' +
+                                    '<div class="learn-more"><a id="learn-more-link">Not sure? Learn more about uploading your photos to ZangZing</a></div>' +
                                 '</div>');
 
                 template.find('#simple-uploader-button').click(function(){
                     simple_uploader.open_in_dialog(self.options.album_id, function(){
                         self.reload_tray();
+                        self.goBack();
+                        $('.photochooser-header h3').show();
+                        $('.photochooser-header h4').show();
                     });
                 });
 
@@ -434,6 +437,155 @@ var photochooser = {
                 var picasa_on_error = file_system_on_error;
 
                 var iphoto_on_error = file_system_on_error;
+
+                //mac
+                if(navigator.appVersion.indexOf("Mac")!=-1){
+
+
+                    //My Computer
+                    roots.push(
+                    {
+                        type: 'folder',
+                        name: 'My Computer',
+                        on_error: file_system_on_error,
+                        src: path_helpers.image_url('/images/folders/mycomputer_off.jpg'),
+                        rolloverSrc: path_helpers.image_url('/images/folders/mycomputer_on.jpg'),
+                        state: 'ready',
+
+                        children: [
+                            //My Pictures
+                            {
+                                open_url: agent.buildAgentUrl('/filesystem/folders/fi9QaWN0dXJlcw=='),
+                                add_url:  agent.buildAgentUrl('/filesystem/folders/fi9QaWN0dXJlcw==/add_to_album'),
+                                type: 'folder',
+                                name: 'My Pictures',
+                                on_error: file_system_on_error,
+                                src: path_helpers.image_url('/images/folders/mypictures_off.jpg'),
+                                rolloverSrc: path_helpers.image_url('/images/folders/mypictures_on.jpg'),
+                                state: 'ready'
+                            },
+
+                            //My Home
+                            {
+                                open_url: agent.buildAgentUrl('/filesystem/folders/fg=='),
+                                add_url:  agent.buildAgentUrl('/filesystem/folders/fg==/add_to_album'),
+                                type: 'folder',
+                                name: 'My Home',
+                                on_error: file_system_on_error,
+                                src: path_helpers.image_url('/images/folders/myhome_off.jpg'),
+                                rolloverSrc: path_helpers.image_url('/images/folders/myhome_on.jpg'),
+                                state: 'ready'
+                            },
+
+                            //My Computer
+                            {
+                                open_url: agent.buildAgentUrl('/filesystem/folders/L1ZvbHVtZXM='),
+                                type: 'folder',
+                                name: 'My Computer',
+                                on_error: file_system_on_error,
+                                src: path_helpers.image_url('/images/folders/mycomputer_off.jpg'),
+                                rolloverSrc: path_helpers.image_url('/images/folders/mycomputer_on.jpg'),
+                                state: 'ready'
+                            }
+
+                        ]
+
+                    });
+
+
+                    //iPhoto
+                    roots.push(
+                    {
+                        open_url: agent.buildAgentUrl('/iphoto/folders'),
+                        type: 'folder',
+                        name: 'iPhoto',
+                        on_error: iphoto_on_error,
+                        src: path_helpers.image_url('/images/folders/iphoto_off.jpg'),
+                        rolloverSrc: path_helpers.image_url('/images/folders/iphoto_on.jpg'),
+                        state: 'ready'
+                    });
+
+
+                    //Picasa
+                    roots.push(
+                    {
+                        open_url: agent.buildAgentUrl('/picasa/folders'),
+                        type: 'folder',
+                        name: 'Picasa',
+                        on_error: picasa_on_error,
+                        src: path_helpers.image_url('/images/folders/picasa_off.jpg'),
+                        rolloverSrc: path_helpers.image_url('/images/folders/picasa_on.jpg'),
+                        state: 'ready'
+                    });
+                }
+
+
+                //windows
+                if(navigator.appVersion.indexOf("Win")!=-1){
+
+
+                    //My Computer
+                    roots.push(
+                    {
+                        type: 'folder',
+                        name: 'My Computer',
+                        on_error: file_system_on_error,
+                        src: path_helpers.image_url('/images/folders/mycomputer_off.jpg'),
+                        rolloverSrc: path_helpers.image_url('/images/folders/mycomputer_on.jpg'),
+                        state: 'ready',
+                        children: [
+
+                            //My Pictures
+                            {
+                                open_url: agent.buildAgentUrl('/filesystem/folders/flxNeSBEb2N1bWVudHNcTXkgUGljdHVyZXM='),
+                                add_url:  agent.buildAgentUrl('/filesystem/folders/flxNeSBEb2N1bWVudHNcTXkgUGljdHVyZXM=/add_to_album'),
+                                type: 'folder',
+                                name: 'My Pictures',
+                                on_error: file_system_on_error,
+                                src: path_helpers.image_url('/images/folders/mypictures_off.jpg'),
+                                rolloverSrc: path_helpers.image_url('/images/folders/mypictures_on.jpg'),
+                                state: 'ready'
+                            },
+
+                            //My Home
+                            {
+                                open_url: agent.buildAgentUrl('/filesystem/folders/fg=='),
+                                add_url:  agent.buildAgentUrl('/filesystem/folders/fg==/add_to_album'),
+                                type: 'folder',
+                                name: 'My Home',
+                                on_error: file_system_on_error,
+                                src: path_helpers.image_url('/images/folders/myhome_off.jpg'),
+                                rolloverSrc: path_helpers.image_url('/images/folders/myhome_on.jpg'),
+                                state: 'ready'
+                            },
+
+                            //My Computer
+                            {
+                                open_url: agent.buildAgentUrl('/filesystem/folders'),
+                                type: 'folder',
+                                name: 'My Computer',
+                                on_error: file_system_on_error,
+                                src: path_helpers.image_url('/images/folders/mycomputer_off.jpg'),
+                                rolloverSrc: path_helpers.image_url('/images/folders/mycomputer_on.jpg'),
+                                state: 'ready'
+                            }
+                        ]
+
+                    });
+
+
+                    //Picassa
+                    roots.push(
+                    {
+                        open_url: agent.buildAgentUrl('/picasa/folders'),
+                        type: 'folder',
+                        name: 'Picasa',
+                        on_error: picasa_on_error,
+                        src: path_helpers.image_url('/images/folders/picasa_off.jpg'),
+                        rolloverSrc: path_helpers.image_url('/images/folders/picasa_on.jpg'),
+                        state: 'ready'
+                    });
+                }
 
 
                 //Facebook
@@ -615,155 +767,6 @@ var photochooser = {
                     rolloverSrc: path_helpers.image_url('/images/folders/zangzing_on.jpg')
                 });
 
-
-                //mac
-                if(navigator.appVersion.indexOf("Mac")!=-1){
-
-
-                    //My Computer
-                    roots.push(
-                    {
-                        type: 'folder',
-                        name: 'My Computer',
-                        on_error: file_system_on_error,
-                        src: path_helpers.image_url('/images/folders/mycomputer_off.jpg'),
-                        rolloverSrc: path_helpers.image_url('/images/folders/mycomputer_on.jpg'),
-                        state: 'ready',
-
-                        children: [
-                            //My Pictures
-                            {
-                                open_url: agent.buildAgentUrl('/filesystem/folders/fi9QaWN0dXJlcw=='),
-                                add_url:  agent.buildAgentUrl('/filesystem/folders/fi9QaWN0dXJlcw==/add_to_album'),
-                                type: 'folder',
-                                name: 'My Pictures',
-                                on_error: file_system_on_error,
-                                src: path_helpers.image_url('/images/folders/mypictures_off.jpg'),
-                                rolloverSrc: path_helpers.image_url('/images/folders/mypictures_on.jpg'),
-                                state: 'ready'
-                            },
-
-                            //My Home
-                            {
-                                open_url: agent.buildAgentUrl('/filesystem/folders/fg=='),
-                                add_url:  agent.buildAgentUrl('/filesystem/folders/fg==/add_to_album'),
-                                type: 'folder',
-                                name: 'My Home',
-                                on_error: file_system_on_error,
-                                src: path_helpers.image_url('/images/folders/myhome_off.jpg'),
-                                rolloverSrc: path_helpers.image_url('/images/folders/myhome_on.jpg'),
-                                state: 'ready'
-                            },
-
-                            //My Computer
-                            {
-                                open_url: agent.buildAgentUrl('/filesystem/folders/L1ZvbHVtZXM='),
-                                type: 'folder',
-                                name: 'My Computer',
-                                on_error: file_system_on_error,
-                                src: path_helpers.image_url('/images/folders/mycomputer_off.jpg'),
-                                rolloverSrc: path_helpers.image_url('/images/folders/mycomputer_on.jpg'),
-                                state: 'ready'
-                            }
-
-                        ]
-
-                    });
-
-
-                    //iPhoto
-                    roots.push(
-                    {
-                        open_url: agent.buildAgentUrl('/iphoto/folders'),
-                        type: 'folder',
-                        name: 'iPhoto',
-                        on_error: iphoto_on_error,
-                        src: path_helpers.image_url('/images/folders/iphoto_off.jpg'),
-                        rolloverSrc: path_helpers.image_url('/images/folders/iphoto_on.jpg'),
-                        state: 'ready'
-                    });
-
-
-                    //Picasa
-                    roots.push(
-                    {
-                        open_url: agent.buildAgentUrl('/picasa/folders'),
-                        type: 'folder',
-                        name: 'Picasa',
-                        on_error: picasa_on_error,
-                        src: path_helpers.image_url('/images/folders/picasa_off.jpg'),
-                        rolloverSrc: path_helpers.image_url('/images/folders/picasa_on.jpg'),
-                        state: 'ready'
-                    });
-                }
-
-
-                //windows
-                if(navigator.appVersion.indexOf("Win")!=-1){
-
-
-                    //My Computer
-                    roots.push(
-                    {
-                        type: 'folder',
-                        name: 'My Computer',
-                        on_error: file_system_on_error,
-                        src: path_helpers.image_url('/images/folders/mycomputer_off.jpg'),
-                        rolloverSrc: path_helpers.image_url('/images/folders/mycomputer_on.jpg'),
-                        state: 'ready',
-                        children: [
-
-                            //My Pictures
-                            {
-                                open_url: agent.buildAgentUrl('/filesystem/folders/flxNeSBEb2N1bWVudHNcTXkgUGljdHVyZXM='),
-                                add_url:  agent.buildAgentUrl('/filesystem/folders/flxNeSBEb2N1bWVudHNcTXkgUGljdHVyZXM=/add_to_album'),
-                                type: 'folder',
-                                name: 'My Pictures',
-                                on_error: file_system_on_error,
-                                src: path_helpers.image_url('/images/folders/mypictures_off.jpg'),
-                                rolloverSrc: path_helpers.image_url('/images/folders/mypictures_on.jpg'),
-                                state: 'ready'
-                            },
-
-                            //My Home
-                            {
-                                open_url: agent.buildAgentUrl('/filesystem/folders/fg=='),
-                                add_url:  agent.buildAgentUrl('/filesystem/folders/fg==/add_to_album'),
-                                type: 'folder',
-                                name: 'My Home',
-                                on_error: file_system_on_error,
-                                src: path_helpers.image_url('/images/folders/myhome_off.jpg'),
-                                rolloverSrc: path_helpers.image_url('/images/folders/myhome_on.jpg'),
-                                state: 'ready'
-                            },
-
-                            //My Computer
-                            {
-                                open_url: agent.buildAgentUrl('/filesystem/folders'),
-                                type: 'folder',
-                                name: 'My Computer',
-                                on_error: file_system_on_error,
-                                src: path_helpers.image_url('/images/folders/mycomputer_off.jpg'),
-                                rolloverSrc: path_helpers.image_url('/images/folders/mycomputer_on.jpg'),
-                                state: 'ready'
-                            }
-                        ]
-
-                    });
-
-
-                    //Picassa
-                    roots.push(
-                    {
-                        open_url: agent.buildAgentUrl('/picasa/folders'),
-                        type: 'folder',
-                        name: 'Picasa',
-                        on_error: picasa_on_error,
-                        src: path_helpers.image_url('/images/folders/picasa_off.jpg'),
-                        rolloverSrc: path_helpers.image_url('/images/folders/picasa_on.jpg'),
-                        state: 'ready'
-                    });
-                }
 
 
                 return roots;

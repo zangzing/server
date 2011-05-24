@@ -224,12 +224,14 @@
     width:130px;
     margin-left:auto;
     margin-right:auto;
+    margin-top:20px;
 }
 
 .photochooser .choose-simple-or-download #download-zangzing-button{
     width:130px;
     margin-left:auto;
     margin-right:auto;
+    margin-top:20px;
 }
 
 
@@ -239,5 +241,23 @@
     color:#000;
     font-weight:600;
 }
+
+.photochooser .choose-simple-or-download .or{
+    width: 259px;
+    height: 33px;
+    background: url("/images/photo-chooser/or.png") no-repeat scroll 0px 0px transparent;
+    margin-left:auto;
+    margin-right:auto;
+    margin-top:40px;
+    margin-bottom:40px;
+
+}
+
+.photochooser .choose-simple-or-download .learn-more{
+    margin-top:40px;
+    font-size: 14px;
+    cursor:pointer;
+}
+
 
 
