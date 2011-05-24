@@ -18,10 +18,12 @@ common: &common
   # turns on/off http basic auth for the whole site
   requires_http_auth: true
 
-  agent_download_url_mac: "http://staging.downloads.zangzing.com/agent/darwin/ZangZing-Setup(STAGED).pkg"
-  agent_download_url_win: "http://staging.downloads.zangzing.com/agent/win32/ZangZing-Setup(STAGED).exe"
+  agent_download_url_mac: "http://staging.downloads.zangzing.com/agent/darwin/ZangZing-Setup-X.pkg"
+  agent_download_url_win: "http://staging.downloads.zangzing.com/agent/win32/ZangZing-Setup-X.exe"
+  agent_port: 30778
 
   v3homepage_repo_root: "../v3deploy/v3homepage"
+
 
 development:
   <<: *common
@@ -30,6 +32,8 @@ development:
   async_connector_timeout: 7200
   async_job_timeout: 7200
   remote_job_timeout: 7200
+  requires_http_auth: false
+
 
 perftest:
   <<: *common
@@ -50,7 +54,11 @@ photos_production:
   requires_http_auth: false
   agent_download_url_mac: "http://downloads.zangzing.com/agent/darwin/ZangZing-Setup.pkg"
   agent_download_url_win: "http://downloads.zangzing.com/agent/win32/ZangZing-Setup.exe"
+  agent_port: 30777
+
   v3homepage_repo_root: "/data/v3homepage"
+
+
 
 photos_staging:
   <<: *common

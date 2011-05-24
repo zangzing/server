@@ -52,7 +52,7 @@ module ApplicationHelper
 
    #note: this is duplicated in agent.js
    def add_credentials_to_agent_url(url)
-      if url.starts_with? 'http://localhost:30777'
+      if url.starts_with? "http://localhost:#{ZangZingConfig.config[:agent_port]}"
         if ! url.include? '?'
           url += '?'
         end

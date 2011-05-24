@@ -207,6 +207,7 @@ class ApplicationController < ActionController::Base
         :actions => ['photos#agent_index',
                      'photos#agent_create',
                      'photos#upload_fast',
+                     'photos#simple_upload_fast',
                      'oauth#access_token',
                      'oauth#request_token',
                      'oauth#agentauthorize',

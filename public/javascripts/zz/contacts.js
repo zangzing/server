@@ -130,7 +130,7 @@ zzcontacts ={
                 }
             });
            } else {
-               pages.no_agent.dialog( function(){
+               pages.download_agent.dialog( function(){
                    agent.isAvailable( function( agent_present ){
                        if( agent_present ){
                             zzcontacts.import_contacts( 'local', import_success, import_failure );

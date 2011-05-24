@@ -96,18 +96,16 @@ class Album < ActiveRecord::Base
   end
 
   # never, never, never call get_next_id inside a transaction since failure of the transaction would rollback the
-  # fetch of the id which could result in duplicates being used.  If you need a set number of ids, set the reserve_count
-  # to the amount that you want and manage them yourself
+  # fetch of the id which could result in duplicates being used.
+  #
+  # This call changes the cache version that we use to invalidate the photo cache for this album.  We
+  # use the id generator to ensure a unique id for each change.  One thing to note is that the id used
+  # does not guarantee any kind of ordering.  It is only guaranteed to be unique.
+  #
   def self.change_cache_version(album_id)
-    version = BulkIdManager.next_id_for('album_cache_version')
-    Album.update(album_id, :cache_version => version)
-  end
-
-  # generate a quick touch without having to
-  # instantiate an object
-  def self.touch_photos_last_updated(album_id)
     now = Time.now
-    Album.update(album_id, :photos_last_updated_at => now, :updated_at => now)
+    version = BulkIdManager.next_id_for('album_cache_version')
+    Album.update(album_id, :cache_version => version, :photos_last_updated_at => now, :updated_at => now)
   end
 
   def cache_key

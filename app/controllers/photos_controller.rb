@@ -3,8 +3,9 @@ require "zz_env_helpers"
 class PhotosController < ApplicationController
   ssl_allowed :agent_create, :agent_index
 
-  skip_before_filter :verify_authenticity_token,  :only =>   [ :agent_index, :agent_create, :upload_fast]
+  skip_before_filter :verify_authenticity_token,  :only =>   [ :agent_index, :agent_create, :upload_fast, :simple_upload_fast]
 
+  
   before_filter :require_user,                    :only =>   [ :destroy, :update, :position ]  #for interactive users
   before_filter :oauth_required,                  :only =>   [ :agent_create, :agent_index ]   #for agent
   # oauthenticate :strategies => :two_legged, :interactive => false, :only =>   [ :upload_fast ]
@@ -98,6 +99,35 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
       render :json => ex.to_s, :status=>500
 
     end
+  end
+
+  def simple_upload_fast
+    persistence_token = params[:user_credentials].split('::')[0]
+    user = User.find_all_by_persistence_token(persistence_token)
+    if user
+      user = user[0]
+    else
+      render :text=>'unauthorized', :status=>401
+      return
+    end
+
+    album = Album.find(params[:album_id])
+
+    current_batch = UploadBatch.get_current_and_touch( user.id, album.id )
+
+    photo = Photo.new_for_batch(current_batch, {
+        :id => Photo.get_next_id,
+        :user_id => user.id,
+        :album_id => album.id,
+        :upload_batch_id => current_batch.id,
+        :caption => params[:fast_local_image][0][:original_name],
+        :source => params[:source],
+        :source_guid => "simpleuploader:"+UUIDTools::UUID.random_create.to_s})
+
+    photo.file_to_upload = params[:fast_local_image][0][:filepath]
+    photo.save()
+    render :text=>'', :status=>200
+
   end
 
 
