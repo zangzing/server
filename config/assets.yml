@@ -16,6 +16,7 @@ javascripts:
     - public/javascripts/jquery-lib/jquery.ui.position.js
     - public/javascripts/jquery-lib/jquery.effects.core.js
     - public/javascripts/jquery-lib/*.js
+    - public/javascripts/lib/swfupload.js
     - public/javascripts/lib/*.js
   zz:
     - public/javascripts/zz/license.js
