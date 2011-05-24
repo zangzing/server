@@ -433,7 +433,7 @@ var photochooser = {
 
 
             //My Computer for Win and Mac
-            if(navigator.appVersion.indexOf("Mac")!=-1 || navigator.appVersion.indexOf("Wil")!=-1){
+            if(navigator.appVersion.indexOf("Mac")!=-1 || navigator.appVersion.indexOf("Win")!=-1){
 
                 roots.push(
                 {
