@@ -11,6 +11,8 @@ class Like < ActiveRecord::Base
 
   before_create :set_type
   after_commit  :post, :on => :create
+  after_commit  :create_like_activity, :on => :create
+
 
   #Like Subject Types
   USER = 'U'
@@ -119,18 +121,42 @@ class Like < ActiveRecord::Base
   def url
     case subject_type
       when USER, 'user'
-        user_pretty_url(  User.find( subject_id ))
+        user_pretty_url(  subject )
       when ALBUM, 'album'
-        album_pretty_url( Album.find( subject_id ))
+        album_pretty_url( subject )
       when PHOTO, 'photo'
-        photo_pretty_url( Photo.find( subject_id ))
+        photo_pretty_url( subject )
       else
         'http://www.zangzing.com'
     end
   end
 
+  def subject
+    return @subject if @subject
+    case subject_type
+      when USER, 'user'
+          @subject = User.find( subject_id )
+      when ALBUM, 'album'
+          @subject = Album.find( subject_id )
+      when PHOTO, 'photo'
+          @subject = Photo.find( subject_id )
+      else
+        raise ActiveRecord::RecordNotFound.new().message = "Like subject_type #{subject_type} unknown"
+    end
+  end
+
 
   protected
+  def create_like_activity
+     if self.subject_type == PHOTO
+        activity_subject = self.subject.album #boil photo activities to album
+      else
+        activity_subject = self.subject
+      end
+      la = LikeActivity.create( :user => self.user, :subject => activity_subject, :like => self )
+      activity_subject.activities << la
+  end
+
   def set_type
     self.subject_type = Like.clean_type( subject_type )       
   end

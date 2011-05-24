@@ -167,7 +167,7 @@ class UploadBatch < ActiveRecord::Base
 
          if self.photos.count > 0
             #Create Activity
-            ua = UploadActivity.create( :user => self.user, :album => album, :upload_batch => self )
+            ua = UploadActivity.create( :user => self.user, :subject => album, :upload_batch => self )
             album.activities << ua
 
             #Notify uploader that upload batch is finished

@@ -182,10 +182,6 @@ class SendgridController < ApplicationController
 
   protected
 
-  def zza
-    @zza ||= ZZ::ZZA.new
-  end
-
   # due to the fact that we need to return status 200 to sendgrid to get them to stop
   # sending to us we need to clean up here rather than back in nginx because it does not
   # clean up on 200 status codes since normally that indicates success and that we will

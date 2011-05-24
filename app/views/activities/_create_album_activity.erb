@@ -1,0 +1,26 @@
+<li class="item tab add">
+  <a name="<%=activity.id%>"></a>
+  <div class="title">
+    <a href="<%=user_path(activity.user)%>">
+      <div class="profile-photo">
+        <%= render :partial => 'users/profile_photo', :locals => { :user => activity.user }    %>
+      </div>
+    </a>
+    <div class="profile-name">
+    <a href="<%=user_path(activity.user)%>">
+        <span class="blue"><%=activity.user.name%></span>
+    </a>
+      <%if view == 'activity' %>
+        created this album
+      <%else%>
+        created album
+        <a href="<%=album_pretty_url(activity.subject)%>">
+            <%=activity.subject.name%>
+        </a>
+      <%end%>
+     <div class="tagline"><%=time_ago_in_words(activity.created_at) %> ago</div>
+    </div>
+  </div>
+  <div class="content">
+  </div>
+</li>

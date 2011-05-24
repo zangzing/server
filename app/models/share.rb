@@ -57,6 +57,7 @@ class Share < ActiveRecord::Base
     #prevent shares from being delivered twice
     return false unless self.sent_at.nil?
 
+    # Create Email or post
     case service
       when 'email'
         self.recipients.each do |recipient |
@@ -72,14 +73,16 @@ class Share < ActiveRecord::Base
     end
     self.sent_at = Time.now
 
+    # Create Share Activity
     if album?
-      sa = ShareActivity.create( :user => self.user, :album => self.subject, :share => self )
+      sa = ShareActivity.create( :user => self.user, :subject => self.subject, :share => self )
       self.subject.activities << sa
     elsif photo?
-      sa = ShareActivity.create( :user => self.user, :album => self.subject.album, :share => self )
-      self.subject.album.activities << sa
+      sa = ShareActivity.create( :user => self.user, :subject => self.subject.album, :share => self )
+      self.subject.album.activities << sa  # Boil activities to the photo album
     elsif user?
-#      sa = ShareActivity.create( :user => self.user, :user => self.subject, :share => self )
+      sa = ShareActivity.create( :user => self.user, :subject => self.subject, :share => self )
+      self.subject.activities << sa
     end
 
     self.save

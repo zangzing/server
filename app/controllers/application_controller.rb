@@ -311,5 +311,19 @@ class ApplicationController < ActionController::Base
       return false
     end
   end
-  
+
+  # Return a correctly initialized reference to zza tracking service
+  def zza
+    return @zza if @zza
+    @zza = ZZ::ZZA.new
+    if current_user
+      @zza.user = current_user.id
+      @zza.user_type = 1
+    else
+      @zza.user = request.cookies['_zzv_id']
+      @zza.user_type = 2
+    end
+    @zza
+  end
+
 end

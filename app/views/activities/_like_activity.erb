@@ -1,0 +1,38 @@
+<li class="item tab add">
+  <a name="<%=activity.id%>"></a>
+  <div class="title">
+    <a href="<%=user_path(activity.user)%>">
+      <div class="profile-photo">
+        <%= render :partial => 'users/profile_photo', :locals => { :user => activity.user }    %>
+      </div>
+    </a>
+    <div class="profile-name">
+    <a href="<%=user_path(activity.user)%>">
+        <span class="blue"><%=activity.user.name%></span>
+    </a>
+      <%if activity.like.subject.is_a?(Photo) %>
+          liked photo
+          <a href="<%=photo_pretty_url(activity.like.subject)%>">
+                <%=activity.like.subject.name%>
+          </a>
+      <%elsif activity.like.subject.is_a?(Album) %>
+          <%if view == 'activity' %>
+              liked this album
+          <%else%>
+              liked album
+              <a href="<%=album_pretty_url(activity.like.subject)%>">
+                <%=activity.like.subject.name%>
+              </a>
+          <%end%>
+      <%elsif activity.like.subject.is_a?(User) %>
+        started following
+        <a href="<%=user_pretty_url(activity.like.subject)%>">
+            <%=activity.like.subject.name%>
+        </a>
+      <%end%>
+      <div class="tagline"><%=time_ago_in_words(activity.created_at) %> ago</div>
+    </div>
+  </div>
+  <div class="content">
+  </div>
+</li>
