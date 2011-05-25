@@ -4,6 +4,7 @@
 }
 
 
+
 .zangzing-downloader h1{
     font-size: 28px;
     color: #A4A5A6;
@@ -37,6 +38,7 @@
     margin-left: auto;
     margin-right: auto;
     font-weight: 600;
+    display:block;
 }
 
 .zangzing-downloader .steps{
