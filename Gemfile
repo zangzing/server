@@ -12,6 +12,8 @@ gem 'authlogic',     '2.1.6'
 gem 'uuidtools'
 gem 'activerecord-import', '~>0.2'  # bulk database inserts
 
+gem 'syslogger',     "1.2.5", :git => 'git://github.com/zangzing/syslogger.git'
+
 gem 'oauth',         "0.4.5.pre2", :git => 'git://github.com/zangzing/oauth-ruby.git'
 gem "oauth-plugin", ">=0.4.0.pre1"
 

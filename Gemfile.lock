@@ -4,6 +4,12 @@ GIT
   specs:
     oauth (0.4.5.pre2)
 
+GIT
+  remote: git://github.com/zangzing/syslogger.git
+  revision: d2157f929f2a38a01424089a68060e050d0f88c8
+  specs:
+    syslogger (1.2.5)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -252,6 +258,7 @@ DEPENDENCIES
   ruby-prof
   selenium
   selenium-client
+  syslogger (= 1.2.5)!
   twitter_oauth
   unicorn
   uuidtools

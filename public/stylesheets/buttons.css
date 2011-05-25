@@ -251,6 +251,57 @@ a.green-add-button:active span{
     background: transparent url('/images/btn-green-add.png') no-repeat 0 -60px; /* todo: need rollover image*/
 }
 
+
+
+
+/* Green download button */
+a.green-download-button{
+    background: url("/images/btn-green-download-endcap.png") no-repeat scroll top right;
+    color:#ffffff;
+    display: block;
+    /*float: left;*/
+    font-size: 13px;
+    height: 30px;
+    /*margin-right: 6px;*/
+    padding-right: 8px; /* sliding doors padding */
+    text-decoration: none;
+    cursor: pointer;
+    text-align:center;
+
+}
+
+a.green-download-button:hover{
+    background: url("/images/btn-green-download-endcap.png") no-repeat scroll right -30px; /* todo: need rollover image*/
+}
+
+a.green-download-button:active{
+    background: url("/images/btn-green-download-endcap.png") no-repeat scroll right -60px; /* todo: need rollover image*/
+}
+
+
+a.green-download-button span{
+    background: transparent url('/images/btn-green-download.png') no-repeat;
+    display: block;
+    line-height: 20px;
+    height: 20px;
+    padding: 5px 0 5px 28px;
+    cursor: pointer;
+}
+
+a.green-download-button:hover span{
+    background: transparent url('/images/btn-green-download.png') no-repeat 0 -30px; /* todo: need rollover image*/
+}
+
+a.green-download-button:active span{
+    background: transparent url('/images/btn-green-download.png') no-repeat 0 -60px; /* todo: need rollover image*/
+}
+
+
+
+
+
+
+
 /*  GREEN BUTTON WELL DONE */
 a.newgreen-button{
     border:     0;
