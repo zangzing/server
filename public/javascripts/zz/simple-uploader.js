@@ -129,6 +129,8 @@ var simple_uploader = {
                     queued_file.find('.cancel-button').click(function(){
                         self.uploader.cancelUpload(file.id, false)
                         queued_file.fadeOut('fast');
+                        ZZAt.track('simpleuploader.photo.cancel');
+
                     });
 
 
@@ -156,6 +158,8 @@ var simple_uploader = {
                     $('.simpleuploader .queue .queued-file#' + file.id + ' .status').addClass('error');
                     $('.simpleuploader .queue .queued-file#' + file.id + ' .progress-bar').hide();
                     $('.simpleuploader .queue .queued-file#' + file.id + ' .cancel-button').hide();
+                    ZZAt.track('simpleuploader.photo.error');
+
                 },
                 upload_success_handler : function(file, serverData){
                     $('.simpleuploader .queue .queued-file#' + file.id + ' .status').addClass('done');
