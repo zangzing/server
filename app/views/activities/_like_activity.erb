@@ -11,9 +11,9 @@
         <span class="blue"><%=activity.user.name%></span>
     </a>
       <%if activity.like.subject.is_a?(Photo) %>
-          liked photo
+          liked
           <a href="<%=photo_pretty_url(activity.like.subject)%>">
-                <%=activity.like.subject.name%>
+                this photo
           </a>
       <%elsif activity.like.subject.is_a?(Album) %>
           <%if view == 'activity' %>
