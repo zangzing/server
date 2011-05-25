@@ -7,7 +7,7 @@ var photochooser = {
 
         var template = $('<div class="photochooser-container"></div>');
         $('<div id="add-photos-dialog"></div>').html( template ).zz_dialog({
-            height: $(document).height() - 200,
+            height: $(document).height() - 70,
             width: 895,
             modal: true,
             autoOpen: true,
@@ -28,7 +28,7 @@ var photochooser = {
                 });
             }
         });
-        template.height( $(document).height() - 192 );
+        template.height( $(document).height() - 62 );
     }
 };
 
@@ -376,7 +376,7 @@ var photochooser = {
                     '<div class="or"></div>' +
                     '<h1>Tired of waiting while your photos upload?</h1>' +
                     '<h1>Download our free desktop uploader.</h1>' +
-                    '<div><a id="download-zangzing-button" class="green-button"><span>Download ZangZing</span></a></div>' +
+                    '<div><a id="download-zangzing-button" class="green-download-button"><span>Download ZangZing</span></a></div>' +
                     '<div class="learn-more"><a id="learn-more-link">Not sure? Learn more about uploading your photos to ZangZing</a></div>' +
                     '</div>');
 

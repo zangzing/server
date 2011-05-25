@@ -1,5 +1,10 @@
 var simple_uploader = {
 
+    instance: function(button_element){
+        
+    },
+
+
     open_in_dialog: function(album_id, on_close){
         var template = $('<div class="simpleuploader-container"></div>');
         var widget;
