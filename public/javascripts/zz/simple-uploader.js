@@ -51,7 +51,13 @@ var simple_uploader = {
 
             var confirm_close = function(){
                 if(self.uploads_in_progress()){
-                    return confirm('Are you sure you want to cancel the uploads still in progress?');
+                    if( confirm('Are you sure you want to cancel the uploads still in progress?')){
+                        ZZAt.track('simpleuploader.cancel_with_pending');
+                        return true;
+                    }
+                    else{
+                        return false;
+                    }
                 }
                 else{
                     return true;
@@ -84,8 +90,7 @@ var simple_uploader = {
 
                 template.height( $(document).height() - 192 );
                 
-
-
+                ZZAt.track('simpleuploader.photos.added');
             };
 
 
@@ -104,6 +109,7 @@ var simple_uploader = {
 
 
                 file_dialog_start_handler : function(){
+                    ZZAt.track('simpleuploader.button.click');
                 },
 
                 file_queued_handler : function(file){
@@ -155,6 +161,8 @@ var simple_uploader = {
                     $('.simpleuploader .queue .queued-file#' + file.id + ' .status').addClass('done');
                     $('.simpleuploader .queue .queued-file#' + file.id + ' .progress-bar').hide();
                     $('.simpleuploader .queue .queued-file#' + file.id + ' .cancel-button').hide();
+                    ZZAt.track('simpleuploader.photo.uploaded');
+
                 },
 
                 upload_complete_handler : function(file){
