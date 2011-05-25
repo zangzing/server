@@ -222,9 +222,20 @@
 
 .photochooser .choose-simple-or-download #simple-uploader-button{
     width:150px;
-    margin-left:auto;
+}
+
+.photochooser .choose-simple-or-download .simple-uploader-button-wrapper{
+    width:150px;
+    height: 30px;
+    margin-left: auto;
     margin-right:auto;
     margin-top:10px;
+}
+
+
+.photochooser .choose-simple-or-download .simple-uploader-button-wrapper #simple-uploader-flash-wrapper{
+    margin-top:-30px;
+    width:150px;
 }
 
 .photochooser .choose-simple-or-download #download-zangzing-button{

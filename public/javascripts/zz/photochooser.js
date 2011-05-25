@@ -372,7 +372,10 @@ var photochooser = {
 
             var template = $('<div class="choose-simple-or-download">' +
                     '<h1>Use the simple uploader</h1>' +
-                    '<div><a id="simple-uploader-button" class="black-button"><span>Simple Uploader</span></a></div>' +
+                    '<div class="simple-uploader-button-wrapper">' +
+                       '<a id="simple-uploader-button" class="black-button"><span>Simple Uploader</span></a>' +
+                       '<div id="simple-uploader-flash-wrapper"></div>' +
+                    '</div>' +
                     '<div class="or"></div>' +
                     '<h1>Tired of waiting while your photos upload?</h1>' +
                     '<h1>Download our free desktop uploader.</h1>' +
@@ -380,14 +383,14 @@ var photochooser = {
                     '<div class="learn-more"><a id="learn-more-link">Not sure? Learn more about uploading your photos to ZangZing</a></div>' +
                     '</div>');
 
-            template.find('#simple-uploader-button').click(function(){
-                simple_uploader.open_in_dialog(self.options.album_id, function(){
-                    self.reload_tray();
-                    self.goBack();
-                    $('.photochooser-header h3').show();
-                    $('.photochooser-header h4').show();
-                });
-            });
+//            template.find('#simple-uploader-button').click(function(){
+//                simple_uploader.instance(self.options.album_id, function(){
+//                    self.reload_tray();
+//                    self.goBack();
+//                    $('.photochooser-header h3').show();
+//                    $('.photochooser-header h4').show();
+//                });
+//            });
 
             template.find('#download-zangzing-button').click(function(){
                 pages.download_agent.dialog(function(){
@@ -404,6 +407,16 @@ var photochooser = {
 
             self.bodyElement.html(template);
             self.bodyElement.fadeIn('fast');
+
+
+            simple_uploader.instance($('#simple-uploader-flash-wrapper'), self.options.album_id, function(){
+                self.reload_tray();
+                self.goBack();
+                $('.photochooser-header h3').show();
+                $('.photochooser-header h4').show();
+            });
+
+
 
         },
 
