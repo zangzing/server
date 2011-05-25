@@ -11,7 +11,7 @@ Server::Application.configure do
   # use syslogger
   app_tag = ZangZingConfig.running_as_resque? ? "rails/stag/rqphotos" : "rails/stag/photos"
   config.logger = Syslogger.new(app_tag)
-#  config.colorize_logging = false
+  config.colorize_logging = false
   config.log_level = :debug
 
   # Log error messages when you accidentally call methods on nil.
