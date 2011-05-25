@@ -57,12 +57,12 @@ module UiModel
 
       def visible?
     #    @browser.visible? 'css=#wizard-add'  #TODO
-        @browser.visible? 'css=div.photogrid'
+        @browser.visible? 'css=img.photo-image'
       end
 
       def back_level_up
-        @browser.click 'css=#filechooser-back-button'
-        @browser.wait_for_ajax
+        @browser.click 'css=a.back-button'
+      #  @browser.wait_for_ajax
       end
 
       def at_home?
@@ -78,11 +78,18 @@ module UiModel
 
       def click_folder foldername
     #    @session.wait_for "css=a:contains(#{foldername})"
-        @session.wait_for "css=img.photo-image"
+        @session.wait_for "css=#photo-border-#{foldername}.photo-border.no-shadow"
     #    @browser.click "css=a:contains(#{foldername})"
-        @browser.click "//img[contains(@src,'http://1.assets.staging.photos.zangzing.com/images/folders/#{foldername}_off.jpg?2011-05-17-52-ge384edd')]"
-        @browser.wait_for_ajax
+    #    @browser.click "css=div#photo-border-#{foldername}.photo-border.no-shadow"
+        @browser.click "css=div#photo-border-#{foldername} img.photo-image"
+        #@browser.wait_for_ajax
       end
+
+      def click_connect
+        @session.wait_for "css=a#connect-button"
+        @browser.click "css=a#connect-button"
+      end
+
 
       def agent_not_installed?
         @browser.element?('css=#downloadzz-btn')
@@ -91,23 +98,28 @@ module UiModel
       def add_photo
         @session.wait_for "css=#filechooser .photo"
         @browser.click 'css=.filechooser.photo figure'
-        sleep 1 #wait for animation
-        @browser.wait_for  :wait_for => :ajax
+        sleep 3 #wait for animation
+      #  @browser.wait_for  :wait_for => :ajax
       end
 
-      def add_all_folder folder
-        @session.wait_for "css=a:contains(#{folder}) + a"
-        @browser.click "css=a:contains(#{folder}) + a"
-        sleep 1 #wait for animation
-        @browser.wait_for :wait_for => :ajax
+      def click_all_photos
+        @session.wait_for "css=img.add-all-button"
+#        @session.wait_for "css=a:contains(#{folder}) + a"
+#        @browser.click "css=a:contains(#{folder}) + a"
+        @browser.click "css=img.add-all-button"
+        sleep 3 #wait for animation
+      #  @browser.wait_for :wait_for => :ajax
       end
 
       def add_random_photos(amount = 1)
-        @session.wait_for "css=#filechooser .photo"
-        total = @browser.get_xpath_count("//figure").to_i
-        attr = Array.new
-        1.upto(total) { |i| attr[i]=@browser.get_attribute("xpath=(//figure)[#{i}]@onclick") }
-        amount.times { @browser.click "//figure[@onclick=\"#{attr[rand(total)+1]}\"]" }
+        #@session.wait_for "css=#filechooser .photo"
+        @session.wait_for "css=img.add-all-button"
+        #total = @browser.get_xpath_count("//figure").to_i
+        total = @browser.get_xpath_count("//img[@class='photo-image']").to_i
+        #attr = Array.new
+        #2.upto(total-1) { |i| attr[i]=@browser.get_attribute("xpath=(//figure)[#{i}]@onclick") }
+        #amount.times { @browser.click "//figure[@onclick=\"#{attr[rand(total)+1]}\"]" }
+        amount.times {|i| @browser.click "//div[#{i+2}]/div[3]/div[3]" }
       end
     end
 

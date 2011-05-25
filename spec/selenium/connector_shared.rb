@@ -36,6 +36,7 @@ module ConnectorShared
   def connect_to_service(service, filechooser_folder_name)
     ui.wizard.add_photos_tab.at_home?.should be_true
     ui.wizard.add_photos_tab.click_folder filechooser_folder_name
+    ui.wizard.add_photos_tab.click_connect
     ui.oauth_manager.send("login_to_#{service}".to_sym);
   end
 
@@ -44,9 +45,9 @@ module ConnectorShared
     ui.wizard.add_photos_tab.back_level_up if go_up_after
   end
 
-  def import_folder(name)
+  def click_import_all_photos
     ui.wizard.add_photos_tab.at_home?.should_not be_true
-    ui.wizard.add_photos_tab.add_all_folder name
+    ui.wizard.add_photos_tab.click_all_photos####################################################
   end
 
   def set_album_name(name)

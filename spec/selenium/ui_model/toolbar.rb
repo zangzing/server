@@ -26,7 +26,7 @@ module UiModel
     end
 
     def click_zz_logo
-      @browser.click "css=#home-button"
+      @browser.click "css=div#home-button.has-tooltip"
     end
 
     def click_contributors
