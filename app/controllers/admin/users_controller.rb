@@ -71,7 +71,7 @@ class Admin::UsersController < Admin::AdminController
     if( @agent )
       @agent_version = @agent.agent_version
     else
-      @agent_version = ''
+      @agent_version = nil
     end
   end
 end
