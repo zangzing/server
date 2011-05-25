@@ -68,5 +68,10 @@ class Admin::UsersController < Admin::AdminController
       @last_login_ip_info = GeoIp.geolocation(@user.last_login_ip)
     end
     @agent = Agent.where(:user_id => @user.id).order('authorized_at DESC').first
+    if( @agent )
+      @agent_version = @agent.agent_version
+    else
+      @agent_version = ''
+    end
   end
 end
