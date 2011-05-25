@@ -37,32 +37,6 @@ var agent = {
         });
     },
 
-
-
-
-    /**
-     *
-     * @param callback is passed true|false|"error" (if bad session)
-     */
-    //todo: get rid of this call and use getStatus instead
-    isAvailable: function(callback) {
-
-        var onSuccess = function() {
-            callback(true)
-        }
-
-        var onError = function() {
-            callback(false)
-        }
-
-
-        this.callAgent("/ping", onSuccess, onError)
-
-    },
-
-    
-
-
     //todo: this needs to be cleaned up
     isAgentUrl: function(url){
         if(url){
