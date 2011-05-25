@@ -691,7 +691,7 @@ pages.contributors = {
 
 
 pages.download_agent = {
-    NO_AGENT_URL: '/static/templates/download_agent.html',
+    NO_AGENT_URL: '/static/templates/download_agent.html?v1',
 
     get_message_url: function(){
         ZZAt.track('agentdownload.requested');
@@ -745,6 +745,11 @@ pages.download_agent = {
                 pages.download_agent.download();
             });
 
+            $('.zangzing-downloader #download-link').click( function(){
+                pages.download_agent.download();
+            });
+
+
 
             pages.download_agent.poll_agent( function(){
                 $( '#no-agent-dialog' ).zz_dialog('close');
@@ -752,7 +757,14 @@ pages.download_agent = {
 
 
             if(startDownload){
-                pages.download_agent.download();
+                $( this ).find('.manual-start').hide();
+
+                setTimeout(function(){
+                    pages.download_agent.download();
+                }, 1000);
+            }
+            else{
+                $( this ).find('.auto-start').hide();
             }
         });
 
@@ -780,6 +792,7 @@ pages.download_agent = {
 
     download: function(){
         ZZAt.track('agentdownload.get');
+
 
         if($.client.os =="Mac"){
             document.location.href = zz.mac_download_url; //'http://downloads.zangzing.com/agent/darwin/ZangZing-Setup.pkg'
