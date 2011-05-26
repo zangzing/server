@@ -401,8 +401,9 @@ var photochooser = {
             });
 
             template.find('#learn-more-link').click(function(){
-                window.open("http://help.zangzing.com")
+                window.open("http://help.zangzing.com/entries/20144013-simple-photo-uploader-and-desktop-photo-uploader")
             });
+
 
 
             self.bodyElement.html(template);
