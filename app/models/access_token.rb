@@ -19,7 +19,7 @@
 #
 
 #
-#   © 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
+#   ï¿½ 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 
 class AccessToken < OauthToken
@@ -32,10 +32,10 @@ class AccessToken < OauthToken
   #   {:invalidate=>"/oauth/invalidate",:capabilities=>"/oauth/capabilities"}
   # end
 
-  def get_agent_token( agent_id )
+  def get_agent_token( agent_id, agent_version )
     return false unless authorized?
     AccessToken.transaction do
-      agent = Agent.create(:user => user, :client_application => client_application, :agent_id => agent_id)
+      agent = Agent.create(:user => user, :client_application => client_application, :agent_id => agent_id, :agent_version => agent_version)
       invalidate!
       agent
     end

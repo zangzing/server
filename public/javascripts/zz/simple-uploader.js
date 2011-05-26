@@ -1,53 +1,16 @@
 var simple_uploader = {
 
-    instance: function(button_element){
-        
-    },
+    //creates simple uploader button by injecting invisible flash
+    //button movie into the 'wrapper_element'. 'on_done' callback
+    //accepts number of photos uploaded
+    instance: function(wrapper_element, album_id, on_done){
 
-
-    open_in_dialog: function(album_id, on_close){
-        var template = $('<div class="simpleuploader-container"></div>');
-        var widget;
-
-        var dialog = $('<div id="simpleuploader-dialog"></div>').html( template ).zz_dialog({
-            height: $(document).height() - 350,
-            width: 800,
-            modal: true,
-            autoOpen: true,
-            open: function(){
-                widget = template.zz_simpleuploader({
-                                                        album_id: album_id
-
-                                                    }).data().zz_simpleuploader;
-            },
-
-            beforeclose: function(){
-                if(widget.uploads_in_progress()){
-                    return confirm('Are you sure you want to cancel the uploads still in progress?');
-                }
-                else{
-                    return true;
-                }
-            },
-
-            close: function(event, ui){
-                if(on_close){
-                    on_close();
-                }
-            }
-        }).data().zz_dialog;
-
-        template.height( $(document).height() - 192 );
-
-        //we want to wire up the 'done' button event handlers here
-        //but we can't add it to the dialog until afte the uploader
-        //has inserted itself
-        template.append('<a class="done-button black-button"><span>Done</span></a>');
-        template.find('.done-button').click(function(){
-            dialog.close();
+        wrapper_element.html('<div id="replace-with-swfupload"></div>').zz_simpleuploader({
+             button_placeholder_id: 'replace-with-swfupload',
+             album_id: album_id,
+             on_done: on_done
         });
     }
-
 };
 
 (function( $, undefined ) {
@@ -55,30 +18,31 @@ var simple_uploader = {
     $.widget( "ui.zz_simpleuploader", {
         options: {
             album_id:null,
-            on_done:function(){}
+            on_done:function(uploads_completed){},
+            button_placeholder_id:null
         },
 
         _create: function() {
             var self = this;
 
-            var template = '<div class="simpleuploader">' +
-                    '<div class="title">Upload photos to ZangZing</div>' +
-                    '<div class="queue"></div>' +
-                    '<a class="add-photos-button green-add-button"><span>Add Photos</span></a>' +
-                    '<div class="add-button-wrapper"><div id="simpleuploader-add-button"></div></div>' +
-                    '</div>';
+            var template = $('<div id="simpleuploader-dialog">' +
+                                '<div class="simpleuploader-container">' +
+                                    '<div class="simpleuploader">' +
+                                        '<div class="title">Uploading photos to ZangZing</div>' +
+                                        '<div class="queue"></div>' +
+                                    '</div>' +
+                                    '<a class="done-button black-button"><span>Done</span></a>' +
+                                '</div>' +
+                             '</div>');
 
-            var queued_file_template = '<div class="queued-file">' +
+            var queued_file_template = $('<div class="queued-file">' +
                     '<div class="status"></div>' +
                     '<div class="name"></div>' +
                     '<div class="progress-container"><div class="progress-bar"></div></div>' +
                     '<div class="cancel-button"></div>' +
-                    '</div>';
+                    '</div>');
 
 
-            self.element.html(template);
-
-            self.queue_element = self.element.find('.queue');
 
             if(navigator.appVersion.indexOf("Mac")!=-1){
                 var photo_source = 'simple.osx'
@@ -88,6 +52,55 @@ var simple_uploader = {
             }
 
 
+            var confirm_close = function(){
+                if(self.uploads_in_progress()){
+                    if( confirm('Are you sure you want to cancel the uploads still in progress?')){
+                        ZZAt.track('simpleuploader.cancel_with_pending');
+                        return true;
+                    }
+                    else{
+                        return false;
+                    }
+                }
+                else{
+                    return true;
+                }
+            };
+
+            var uploads_completed = 0;
+
+            
+            var open_progress_dialog = function(){
+
+
+                self.queue_element = template.find('.queue');
+
+                var dialog = zz_dialog.show_dialog(template, {
+                    height: $(document).height() - 350,
+                    width: 800,
+                    modal: true,
+                    autoOpen: true,
+
+                    beforeclose: confirm_close,
+
+                    close: function(event, ui){
+                        self.options.on_done(uploads_completed);
+                    }
+                });
+
+
+                template.find('.done-button').click(function(){
+                    dialog.close();
+                });
+
+                template.height( $(document).height() - 192 );
+                
+                ZZAt.track('simpleuploader.photos.added');
+            };
+
+
+            var upload_started = false;
+
             self.uploader = new SWFUpload({
                 // Backend Settings
                 upload_url: "/service/albums/" + self.options.album_id + "/upload",
@@ -95,18 +108,28 @@ var simple_uploader = {
 
                 // File Upload Settings
                 file_size_limit : "102400",	// 100MB
-                file_types : "*.jpg;*.jpeg;*.png;*.gif;*.tiff;*.bmp",
+                file_types : "*.jpg;*.jpeg;*.png;*.gif;*.tiff",
                 file_types_description : "Image Files",
                 file_upload_limit : "100",
                 file_queue_limit : "0",
 
-                // Event Handler Settings (all my handlers are in the Handler.js file)
-                file_dialog_start_handler : function(){
 
+                prevent_swf_caching: false,
+
+                file_dialog_start_handler : function(){
+                    ZZAt.track('simpleuploader.button.click');
                 },
 
                 file_queued_handler : function(file){
-                    var queued_file = $(queued_file_template);
+
+                    if(!upload_started){
+                        open_progress_dialog();
+                        self.uploader.startUpload();
+                        upload_started = true;
+                    }
+
+
+                    var queued_file = queued_file_template.clone();
                     queued_file.find('.name').text(file.name);
                     queued_file.attr('id', file.id);
                     self.queue_element.append(queued_file);
@@ -114,7 +137,12 @@ var simple_uploader = {
                     queued_file.find('.cancel-button').click(function(){
                         self.uploader.cancelUpload(file.id, false)
                         queued_file.fadeOut('fast');
+                        ZZAt.track('simpleuploader.photo.cancel');
+
                     });
+
+
+
 
                 },
 
@@ -123,10 +151,11 @@ var simple_uploader = {
                 },
 
                 file_dialog_complete_handler : function(numFilesSelected, numFilesQueued){
-                    self.uploader.startUpload();
+
                 },
 
                 upload_start_handler : function(file){
+
                 },
 
                 upload_progress_handler : function(file, bytesLoaded, bytesTotal){
@@ -137,11 +166,17 @@ var simple_uploader = {
                     $('.simpleuploader .queue .queued-file#' + file.id + ' .status').addClass('error');
                     $('.simpleuploader .queue .queued-file#' + file.id + ' .progress-bar').hide();
                     $('.simpleuploader .queue .queued-file#' + file.id + ' .cancel-button').hide();
+                    ZZAt.track('simpleuploader.photo.error');
+
                 },
                 upload_success_handler : function(file, serverData){
+                    uploads_completed++;
+
                     $('.simpleuploader .queue .queued-file#' + file.id + ' .status').addClass('done');
                     $('.simpleuploader .queue .queued-file#' + file.id + ' .progress-bar').hide();
                     $('.simpleuploader .queue .queued-file#' + file.id + ' .cancel-button').hide();
+                    ZZAt.track('simpleuploader.photo.uploaded');
+
                 },
 
                 upload_complete_handler : function(file){
@@ -153,7 +188,7 @@ var simple_uploader = {
                 button_height: 29,
                 button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,
                 button_cursor: SWFUpload.CURSOR.HAND,
-                button_placeholder_id: "simpleuploader-add-button",
+                button_placeholder_id: self.options.button_placeholder_id,
 
                 // Flash Settings
                 flash_url : "/static/swf/swfupload.swf",
@@ -162,7 +197,7 @@ var simple_uploader = {
 
 
                 // Debug Settings
-                debug: true,
+                debug: false,
                 debug_handler: function(message){
                     logger.debug(message);
                 }

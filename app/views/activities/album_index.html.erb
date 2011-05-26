@@ -12,14 +12,15 @@
       </div>
     </li>
     <% @activities.each do |activity| %>
+        <%next unless activity.payload_valid?%>
         <%case activity %>
-    <% when UploadActivity then%>
+        <%  when UploadActivity then%>
             <%= render :partial => 'upload_activity', :locals => {:activity => activity, :view => 'activity' } %>
-        <% when ShareActivity then%>
+        <%  when ShareActivity then%>
             <%= render :partial => 'share_activity', :locals => {:activity => activity, :view => 'activity' } %>
-        <% when CreateAlbumActivity then%>
+        <%  when CreateAlbumActivity then%>
             <%= render :partial => 'create_album_activity', :locals => {:activity => activity, :view => 'activity' } %>
-        <% when LikeActivity then%>
+        <%  when LikeActivity then%>
             <%= render :partial => 'like_activity', :locals => {:activity => activity, :view => 'activity' } %>
         <%end%>
     <%end%>

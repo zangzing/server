@@ -691,7 +691,7 @@ pages.contributors = {
 
 
 pages.download_agent = {
-    NO_AGENT_URL: '/static/templates/download_agent.html',
+    NO_AGENT_URL: '/static/templates/download_agent.html?v1',
 
     get_message_url: function(){
         ZZAt.track('agentdownload.requested');
@@ -745,14 +745,35 @@ pages.download_agent = {
                 pages.download_agent.download();
             });
 
+            $('.zangzing-downloader #download-link').click( function(){
+                pages.download_agent.download();
+            });
+
+
 
             pages.download_agent.poll_agent( function(){
                 $( '#no-agent-dialog' ).zz_dialog('close');
             });
 
 
+            //if this is IE and WinXp, don't auto-start download
+            //because ie will pop up approval bar which forces
+            //full page refresu
+            if(navigator.appVersion.indexOf("NT 5.1") !=  -1 && $.client.browser=='Explorer'){
+                startDownload = false;
+            }
+
+
+
             if(startDownload){
-                pages.download_agent.download();
+                $( this ).find('.manual-start').hide();
+
+                setTimeout(function(){
+                    pages.download_agent.download();
+                }, 1000);
+            }
+            else{
+                $( this ).find('.auto-start').hide();
             }
         });
 

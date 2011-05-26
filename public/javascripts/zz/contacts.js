@@ -1,5 +1,5 @@
 /*
-    2011 Copyright ZangZing LLC.
+ 2011 Copyright ZangZing LLC.
  */
 
 zzcontacts ={
@@ -16,23 +16,23 @@ zzcontacts ={
 
         //load contacts
         $.ajax({
-               type: 'GET',
-               url: zzcontacts.settings.url,
-               dataType: 'json',
-               success: function(json){
-                  zzcontacts.data = json;
-                  zzcontacts.ready = true;
-                  zzcontacts.init_buttons();
-                  if( $.isFunction(onSuccess)) onSuccess();
-               },
-               error: function(){
-                  if( $.isFunction( onError) ) onError();
-               }
+            type: 'GET',
+            url: zzcontacts.settings.url,
+            dataType: 'json',
+            success: function(json){
+                zzcontacts.data = json;
+                zzcontacts.ready = true;
+                zzcontacts.init_buttons();
+                if( $.isFunction(onSuccess)) onSuccess();
+            },
+            error: function(){
+                if( $.isFunction( onError) ) onError();
+            }
         });
     },
 
     find: function( q ){
-		if (!zzcontacts.ready || !q) return null;
+        if (!zzcontacts.ready || !q) return null;
         var regex = new RegExp(q,"gi");
         var results = [];
         for(var service in zzcontacts.data ){
@@ -41,7 +41,7 @@ zzcontacts ={
             });
             results = results.concat( service_results );
         }
-	    return zzcontacts._format_results( results );
+        return zzcontacts._format_results( results );
     },
 
     _format_results: function( results ){
@@ -52,7 +52,7 @@ zzcontacts ={
             //var id = x[0];
             var name  = x[0];
             var email = x[1];
-            
+
             var token_text = name;
             var searched_text = name;
             if( searched_text.length >0 ){
@@ -89,7 +89,7 @@ zzcontacts ={
             };
 
             var on_failure = function(jqXHR, textStatus){
-                    failure( 'import', textStatus);
+                failure( 'import', textStatus);
 
             };
 
@@ -114,34 +114,38 @@ zzcontacts ={
     },
 
     _import_local_contacts: function( import_success, import_failure ){
-       var get_local_contacts = function( agent_present ){
-           if( agent_present ){
-            var url = agent.buildAgentUrl('/contacts/import');
-            $.jsonp({
-                url: url,
-                success: function( response ){
-                    zzcontacts.data['local'] = {};
-                    zzcontacts.data['local'].contacts    = response.body;
-                    zzcontacts.data['local'].last_import = 'A moment ago.'; //+new Date();
-                    if( $.isFunction( import_success) )  import_success();
-                },
-                error: function( options, textStatus ){
-                    if( $.isFunction( import_failure) ) import_failure('agent', textStatus);
-                }
-            });
-           } else {
-               pages.download_agent.dialog( function(){
-                   agent.isAvailable( function( agent_present ){
-                       if( agent_present ){
+        agent.getStatus(function(status){
+            if( status == agent.STATUS.READY){
+                var url = agent.buildAgentUrl('/contacts/import');
+                $.jsonp({
+                    url: url,
+                    success: function( response ){
+                        zzcontacts.data['local'] = {};
+                        zzcontacts.data['local'].contacts    = response.body;
+                        zzcontacts.data['local'].last_import = 'A moment ago.'; //+new Date();
+                        if( $.isFunction( import_success) )  import_success();
+                    },
+                    error: function( options, textStatus ){
+                        if( $.isFunction( import_failure) ) import_failure('agent', textStatus);
+                    }
+                });
+            }
+            else{
+                pages.download_agent.dialog( function(){
+                    agent.getStatus(function(status){
+                        if(status == agent.STATUS.READY){
                             zzcontacts.import_contacts( 'local', import_success, import_failure );
-                       } else {
-                            if( $.isFunction( import_failure) ) import_failure('agent', "Please install agent.");
-                       }
-                   });
-               });
-           }
-       };
-       agent.isAvailable(  get_local_contacts );
+                        }
+                        else{
+                            if( $.isFunction( import_failure) ){
+                                import_failure('agent', "Please install agent.");
+                            }
+                        }
+                    });
+                });
+            }
+        });
+
     },
 
     is_service_linked: function( service ){

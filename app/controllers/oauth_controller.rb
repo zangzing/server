@@ -78,7 +78,7 @@ class OauthController < ApplicationController
   def access_token
     @token = current_token && current_token.exchange!
     if @token
-      @token = @token.get_agent_token( params['agent_id'] )
+      @token = @token.get_agent_token( params['agent_id'], request.headers['HTTP_X_ZZ_AGENT_VER'] )
       render :text => @token.to_query
     else
       render :nothing => true, :status => 401
@@ -129,6 +129,7 @@ class OauthController < ApplicationController
     if( current_token )
       @user = current_token.user
       if current_user_session && current_user_session.valid? && current_user?(current_user_session.user)
+        current_token.update_attribute( :agent_version,  request.headers['HTTP_X_ZZ_AGENT_VER'] )
         render :text => "Valid Session", :status => 200
       else
         render :text => "Session/Token Missmatched. The signed-in user cannot use this agent", :status => 412
