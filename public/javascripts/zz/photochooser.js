@@ -384,7 +384,7 @@ var photochooser = {
                     '</div>');
 
             template.find('#simple-uploader-button').click(function(){
-                alert('The simple uploader requries the Flash. Please go to the Adobe website to install.');
+                alert('The simple uploader requries the Flash.\n Please download and install from http://get.adobe.com/flashplayer.');
             });
 
             template.find('#download-zangzing-button').click(function(){
