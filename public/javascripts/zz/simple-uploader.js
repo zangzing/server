@@ -1,5 +1,8 @@
 var simple_uploader = {
 
+    //creates simple uploader button by injecting invisible flash
+    //button movie into the 'wrapper_element'. 'on_done' callback
+    //accepts number of photos uploaded
     instance: function(wrapper_element, album_id, on_done){
 
         wrapper_element.html('<div id="replace-with-swfupload"></div>').zz_simpleuploader({
@@ -15,7 +18,7 @@ var simple_uploader = {
     $.widget( "ui.zz_simpleuploader", {
         options: {
             album_id:null,
-            on_done:function(){},
+            on_done:function(uploads_completed){},
             button_placeholder_id:null
         },
 
@@ -64,6 +67,8 @@ var simple_uploader = {
                 }
             };
 
+            var uploads_completed = 0;
+
             
             var open_progress_dialog = function(){
 
@@ -79,7 +84,7 @@ var simple_uploader = {
                     beforeclose: confirm_close,
 
                     close: function(event, ui){
-                        self.options.on_done();
+                        self.options.on_done(uploads_completed);
                     }
                 });
 
@@ -95,6 +100,7 @@ var simple_uploader = {
 
 
             var upload_started = false;
+
             self.uploader = new SWFUpload({
                 // Backend Settings
                 upload_url: "/service/albums/" + self.options.album_id + "/upload",
@@ -107,6 +113,8 @@ var simple_uploader = {
                 file_upload_limit : "100",
                 file_queue_limit : "0",
 
+
+                prevent_swf_caching: $.client.browser=='Explorer',
 
                 file_dialog_start_handler : function(){
                     ZZAt.track('simpleuploader.button.click');
@@ -162,6 +170,8 @@ var simple_uploader = {
 
                 },
                 upload_success_handler : function(file, serverData){
+                    uploads_completed++;
+
                     $('.simpleuploader .queue .queued-file#' + file.id + ' .status').addClass('done');
                     $('.simpleuploader .queue .queued-file#' + file.id + ' .progress-bar').hide();
                     $('.simpleuploader .queue .queued-file#' + file.id + ' .cancel-button').hide();
@@ -174,7 +184,7 @@ var simple_uploader = {
                 },
 
                 // Button Settings
-                button_width: 100,
+                button_width: 158,
                 button_height: 29,
                 button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,
                 button_cursor: SWFUpload.CURSOR.HAND,

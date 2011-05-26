@@ -20,13 +20,7 @@ class Activity < ActiveRecord::Base
   ##
   # All url, path and form helpers treat all subclasses as Activity
   def self.model_name
-    name = "activity/base"
-    name.instance_eval do
-      def plural;   pluralize;   end
-      def singular; singularize; end
-      def human;    singularize; end # only for Rails 3
-    end
-    return name
+    @@_model_name ||= ActiveModel::Name.new(Activity)
   end
 
 

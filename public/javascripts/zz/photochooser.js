@@ -383,14 +383,9 @@ var photochooser = {
                     '<div class="learn-more"><a id="learn-more-link">Not sure? Learn more about uploading your photos to ZangZing</a></div>' +
                     '</div>');
 
-//            template.find('#simple-uploader-button').click(function(){
-//                simple_uploader.instance(self.options.album_id, function(){
-//                    self.reload_tray();
-//                    self.goBack();
-//                    $('.photochooser-header h3').show();
-//                    $('.photochooser-header h4').show();
-//                });
-//            });
+            template.find('#simple-uploader-button').click(function(){
+                alert('The simple uploader requries the Flash.\n Please download and install from http://get.adobe.com/flashplayer.');
+            });
 
             template.find('#download-zangzing-button').click(function(){
                 pages.download_agent.dialog(function(){
@@ -401,19 +396,35 @@ var photochooser = {
             });
 
             template.find('#learn-more-link').click(function(){
-                window.open("http://help.zangzing.com")
+                window.open("http://help.zangzing.com/entries/20144013-simple-photo-uploader-and-desktop-photo-uploader")
             });
+
 
 
             self.bodyElement.html(template);
             self.bodyElement.fadeIn('fast');
 
 
-            simple_uploader.instance($('#simple-uploader-flash-wrapper'), self.options.album_id, function(){
-                self.reload_tray();
-                self.goBack();
-                $('.photochooser-header h3').show();
-                $('.photochooser-header h4').show();
+            simple_uploader.instance($('#simple-uploader-flash-wrapper'), self.options.album_id, function(photos_uploaded){
+                var on_finished = function(){
+                    self.reload_tray();
+                    self.goBack();
+                    $('.photochooser-header h3').show();
+                    $('.photochooser-header h4').show();
+                }
+
+
+                if(photos_uploaded > 0){
+                    var dialog = self.show_processing_photos_dialog();
+                    setTimeout(function(){
+                        on_finished();
+                        dialog.close();
+                    },5000);
+                }
+                else{
+                    on_finished();
+                }
+
             });
 
 
@@ -902,29 +913,34 @@ var photochooser = {
             var self = this;
 
 
-            var dialog;
-
-            var show_dialog = function(){
-                var template = '<span class="processing-photos-dialog-content"><img src="{{src}}">Processing photos...</span>'.replace('{{src}}', path_helpers.image_url('/images/loading.gif'));
-
-                dialog = zz_dialog.show_dialog(template, { width:300, height: 100, modal: true, autoOpen: true, cancelButton: false });
-            };
-
-            var callback = function(){
-                dialog.close();
-            };
-
             self.animate_to_tray(element, function(){
-                show_dialog();
+                var dialog = self.show_processing_photos_dialog()
+
+                var callback = function(){
+                    dialog.close();
+                };
 
                 self.add_to_album(add_url, callback, callback);
             });
+
+
 
             $.each(self.grid.cells(), function(index, element){
                 $(element).data().zz_photo.setChecked(true);
             });
 
         },
+
+
+
+        show_processing_photos_dialog: function(){
+            var template = '<span class="processing-photos-dialog-content"><img src="{{src}}">Processing photos...</span>'.replace('{{src}}', path_helpers.image_url('/images/loading.gif'));
+
+            var dialog = zz_dialog.show_dialog(template, { width:300, height: 100, modal: true, autoOpen: true, cancelButton: false });
+            return dialog;
+
+        },
+
 
         animate_to_tray: function(element, callback){
             var self = this;
