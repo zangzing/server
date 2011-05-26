@@ -184,7 +184,7 @@ var simple_uploader = {
                 },
 
                 // Button Settings
-                button_width: 100,
+                button_width: 158,
                 button_height: 29,
                 button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,
                 button_cursor: SWFUpload.CURSOR.HAND,

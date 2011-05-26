@@ -383,14 +383,9 @@ var photochooser = {
                     '<div class="learn-more"><a id="learn-more-link">Not sure? Learn more about uploading your photos to ZangZing</a></div>' +
                     '</div>');
 
-//            template.find('#simple-uploader-button').click(function(){
-//                simple_uploader.instance(self.options.album_id, function(){
-//                    self.reload_tray();
-//                    self.goBack();
-//                    $('.photochooser-header h3').show();
-//                    $('.photochooser-header h4').show();
-//                });
-//            });
+            template.find('#simple-uploader-button').click(function(){
+                alert('The simple uploader requries the Flash. Please go to the Adobe website to install.');
+            });
 
             template.find('#download-zangzing-button').click(function(){
                 pages.download_agent.dialog(function(){
