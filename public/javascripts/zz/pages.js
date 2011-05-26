@@ -756,6 +756,15 @@ pages.download_agent = {
             });
 
 
+            //if this is IE and WinXp, don't auto-start download
+            //because ie will pop up approval bar which forces
+            //full page refresu
+            if(navigator.appVersion.indexOf("NT 5.1") !=  -1 && $.client.browser=='Explorer'){
+                startDownload = false;
+            }
+
+
+
             if(startDownload){
                 $( this ).find('.manual-start').hide();
 
@@ -792,7 +801,6 @@ pages.download_agent = {
 
     download: function(){
         ZZAt.track('agentdownload.get');
-
 
         if($.client.os =="Mac"){
             document.location.href = zz.mac_download_url; //'http://downloads.zangzing.com/agent/darwin/ZangZing-Setup.pkg'
