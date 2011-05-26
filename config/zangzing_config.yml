@@ -18,8 +18,8 @@ common: &common
   # turns on/off http basic auth for the whole site
   requires_http_auth: true
 
-  agent_download_url_mac: "http://staging.downloads.zangzing.com/agent/darwin/ZangZing-Setup-X.pkg"
-  agent_download_url_win: "http://staging.downloads.zangzing.com/agent/win32/ZangZing-Setup-X.exe"
+  agent_download_url_mac: "http://downloads.zangzing.com/agent/darwin/ZangZing-Setup-X.pkg"
+  agent_download_url_win: "http://downloads.zangzing.com/agent/win32/ZangZing-Setup-X.exe"
   agent_port: 30778
 
   v3homepage_repo_root: "../v3deploy/v3homepage"
