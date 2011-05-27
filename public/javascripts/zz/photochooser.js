@@ -367,6 +367,8 @@ var photochooser = {
         show_download_agent_or_simple_upload: function(){
             var self = this;
 
+            ZZAt.track('simple_or_agent.view');
+
             $('.photochooser-header h3').hide();
             $('.photochooser-header h4').hide();
 
@@ -396,7 +398,7 @@ var photochooser = {
             });
 
             template.find('#learn-more-link').click(function(){
-                ZZAt.track('agentdownload.learn_more.click');
+                ZZAt.track('simple_or_agent.learn_more.click');
                 window.open("http://help.zangzing.com/entries/20144013-simple-photo-uploader-and-desktop-photo-uploader")
             });
 
