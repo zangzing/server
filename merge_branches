@@ -51,14 +51,6 @@ puts
 puts "About to merge the branch: #{feature_branch} into #{branch}.  You will end up in #{branch}."
 confirm_continue
 
-
-cur_dir = Dir.pwd
-Dir.chdir("../")
-base_dir = Dir.pwd
-auto_deploy_dir = base_dir + "/auto_deploy"
-Dir.mkdir(auto_deploy_dir) rescue nil
-Dir.chdir(auto_deploy_dir)
-
 do_cmd("git checkout #{feature_branch}")
 do_cmd("git pull")
 do_cmd("git checkout #{branch}")
