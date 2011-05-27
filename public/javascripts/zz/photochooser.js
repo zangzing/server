@@ -396,6 +396,7 @@ var photochooser = {
             });
 
             template.find('#learn-more-link').click(function(){
+                ZZAt.track('agentdownload.learn_more.click');
                 window.open("http://help.zangzing.com/entries/20144013-simple-photo-uploader-and-desktop-photo-uploader")
             });
 
