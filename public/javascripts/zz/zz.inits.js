@@ -450,7 +450,7 @@ zz.init = {
         }
 
         if(view === 'grid'){
-            this.init_back_button('All Albums', zz.back_to_home_page_url);
+            this.init_back_button(zz.back_to_home_page_caption, zz.back_to_home_page_url);
         }
         else{
             this.init_back_button(zz.album_name, zz.album_base_url + '/photos');
@@ -700,7 +700,7 @@ zz.init = {
 
     album_timeline_or_people_view: function(which) {
 
-        this.init_back_button('All Albums', zz.back_to_home_page_url);
+        this.init_back_button(zz.back_to_home_page_caption, zz.back_to_home_page_url);
 
 
         $.ajax({

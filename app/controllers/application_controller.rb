@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
 
   helper_method :current_user_session, :current_user, :current_user?, :signed_in?,
-      :user_pretty_url, :album_pretty_url, :photo_pretty_url, :back_to_home_page_url
+      :user_pretty_url, :album_pretty_url, :photo_pretty_url, :back_to_home_page_url, :back_to_home_page_caption
 
   # this basic filter uses a hardcoded username/password - we must turn off the
   # AuthLogic  support with allow_http_basic_auth false on the UserSession since
@@ -162,6 +162,17 @@ class ApplicationController < ActionController::Base
          return user_pretty_url User.find(user_id)
        else
          return user_pretty_url album.user
+       end
+    end
+
+    def back_to_home_page_caption(album)
+       user_id = last_home_page
+       if current_user && user_id == current_user.id
+         return "My Albums"
+       elsif user_id
+         return User.find(user_id).posessive_short_name + " Albums"
+       else
+         return album.user.posessive_short_name + " Albums"
        end
     end
 
