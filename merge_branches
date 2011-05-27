@@ -65,3 +65,5 @@ do_cmd("git push origin #{branch}")
 
 puts
 puts "You should now be on branch: #{branch}"
+puts
+do_cmd("git branch")
