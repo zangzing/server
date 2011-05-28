@@ -1,6 +1,6 @@
-require 'spec/selenium/ui_model'
-require 'spec/selenium/uimodel_helper'
-require 'spec/selenium/connector_shared'
+require './spec/selenium/ui_model'
+require './spec/selenium/uimodel_helper'
+require './spec/selenium/connector_shared'
 
 describe "Flickr connector" do
   include UimodelHelper
@@ -14,7 +14,7 @@ describe "Flickr connector" do
   end
 
   it "creates a new group album" do
-    create_new_album(:group)
+    create_new_album #(:group)
   end
 
   it "connects to Flickr" do
@@ -22,12 +22,13 @@ describe "Flickr connector" do
   end
 
   it "adds one random photo from Flickr's 'Medium Album'" do
-    ui.wizard.add_photos_tab.click_folder "Medium Album"
+    ui.wizard.add_photos_tab.click_folder "MediumAlbum"
     import_random_photos(1)
   end
   
   it "adds the whole 'Small Album' with 20 photos" do
-    import_folder "Small Album"
+    ui.wizard.add_photos_tab.click_folder "SmallAlbum"
+    click_import_all_photos
   end
 
   it "gives a name to the album" do
@@ -39,9 +40,9 @@ describe "Flickr connector" do
     close_wizard
   end
 
-  it "checks if newly created album contains 21 photos" do
+  it "checks if newly created album contains 23 photos" do
     photos = get_photos_from_added_album(@@album_name)
-    photos.count.should == 21
+    photos.count.should == 23
   end
 
 end

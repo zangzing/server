@@ -1,6 +1,6 @@
-require 'spec/selenium/ui_model'
-require 'spec/selenium/uimodel_helper'
-require 'spec/selenium/connector_shared'
+require './spec/selenium/ui_model'
+require './spec/selenium/uimodel_helper'
+require './spec/selenium/connector_shared'
 
 describe "Facebook connector" do
   include UimodelHelper
@@ -14,21 +14,22 @@ describe "Facebook connector" do
   end
 
   it "creates a new group album" do
-    create_new_album(:group)
+    create_new_album #(:group)
   end
 
   it "connects to Facebook" do
     connect_to_service(:facebook, 'Facebook')
-    ui.wizard.add_photos_tab.click_folder "My Albums"
+    ui.wizard.add_photos_tab.click_folder "My-Albums"
   end
 
   it "adds one random photo from Facebook's 'Medium Album'" do
-    ui.wizard.add_photos_tab.click_folder "Medium Album"
+    ui.wizard.add_photos_tab.click_folder "MediumAlbum"
     import_random_photos(1)
   end
   
   it "adds the whole 'Small Album' with 3 photos" do
-    import_folder "Small Album"
+    ui.wizard.add_photos_tab.click_folder "SmallAlbum"
+    click_import_all_photos
   end
 
   it "gives a name to the album" do
@@ -40,9 +41,9 @@ describe "Facebook connector" do
     close_wizard
   end
 
-  it "checks if newly created album contains 4 photos" do
+  it "checks if newly created album contains 21 photos" do
     photos = get_photos_from_added_album(@@album_name)
-    photos.count.should == 4
+    photos.count.should == 21
   end
 
 end

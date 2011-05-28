@@ -2,15 +2,17 @@ require "rubygems"
 #require "test/spec"
 require "selenium"
 
-require "spec/selenium/ui_model/toolbar"
-require "spec/selenium/ui_model/signin_drawer"
-require "spec/selenium/ui_model/user_homepage"
-require "spec/selenium/ui_model/wizard"
-require "spec/selenium/ui_model/oauth_manager"
+require "./spec/selenium/ui_model/toolbar"
+require "./spec/selenium/ui_model/signin_drawer"
+require "./spec/selenium/ui_model/user_homepage"
+require "./spec/selenium/ui_model/wizard"
+require "./spec/selenium/ui_model/oauth_manager"
+require "./spec/selenium/ui_model/settings_tab"
+
 
 
 module UiModel
-  ZZ_HOST = ENV['ZZ_HOST'] || 'zzadmin:sharezzphotos@share1001photos.zangzing.com'
+  ZZ_HOST = ENV['ZZ_HOST'] || 'zzadmin:sharezzphotos@staging.photos.zangzing.com'
 
   TEST_USER = {
     :full_name => 'Selenium AutoTest',
@@ -22,7 +24,7 @@ module UiModel
   class SeleniumSession
     attr_reader :browser
 
-    attr_reader :toolbar, :user_homepage, :oauth_manager, :wizard
+    attr_reader :toolbar, :user_homepage, :oauth_manager, :wizard, :settings_tab
 
     def wait_for selector
       @browser.wait_for :wait_for => :element, :element => selector
@@ -36,12 +38,12 @@ module UiModel
     end
 
     def create_session!
-      @timeout = 15
+      @timeout = 45
       @browser = Selenium::Client::Driver.new(
         :host => "localhost",
         :port => 4444,
       #	:browser => "*googlechrome", #in chrome does not work ssl
-        :browser => "*firefox",
+        :browser => "*firefox C:/Program Files (x86)/Mozilla Firefox/firefox.exe",
         :url => "http://#{ZZ_HOST}/",
         :timeout_in_seconds => @timeout,
         :javascript_framework => :jquery
@@ -55,7 +57,7 @@ module UiModel
     end
 
     def open_site!
-      @browser.open "/"
+      @browser.open "/join"
     end
     
     def timeout
@@ -74,6 +76,7 @@ module UiModel
       @toolbar = Toolbar.new(self)
       @user_homepage = UserHomepage.new(self)
       @wizard = Wizard::Drawer.new(self)
+      @settings_tab = SettingsTab::Drawer.new(self)
     end
 
   end

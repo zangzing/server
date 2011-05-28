@@ -1,6 +1,6 @@
-require 'spec/selenium/ui_model'
-require 'spec/selenium/uimodel_helper'
-require 'spec/selenium/connector_shared'
+require './spec/selenium/ui_model'
+require './spec/selenium/uimodel_helper'
+require './spec/selenium/connector_shared'
 
 describe "My pictures connector" do
   include UimodelHelper
@@ -14,19 +14,14 @@ describe "My pictures connector" do
   end
 
   it "creates a new group album" do
-    create_new_album(:group)
+    create_new_album #(:group)
   end
 
   it "opens My Pictures" do
-    ui.wizard.add_photos_tab.click_folder "My Pictures"
+    ui.wizard.add_photos_tab.click_folder "My-Computer"
+    ui.wizard.add_photos_tab.click_folder "My-Pictures"
     @@no_agent = ui.wizard.add_photos_tab.agent_not_installed?
     throw 'ZangZing agent is not installed!' if @@no_agent
-  end
-
-  it "adds the whole 'miniSmallAlbum' with 20 photos" do
-    unless @@no_agent
-      import_folder "miniSmallAlbum"
-    end
   end
 
   it "adds 5 random photos from My Pictures' 'miniMediumAlbum'" do
@@ -43,6 +38,13 @@ describe "My pictures connector" do
     end
   end
 
+  it "adds the whole 'miniSmallAlbum' with 20 photos" do
+    unless @@no_agent
+      ui.wizard.add_photos_tab.click_folder "miniSmallAlbum"
+      click_import_all_photos
+    end
+  end
+
   it "gives a name to the album" do
     unless @@no_agent
       @@album_name = "MyPictures #{current_user[:stamp]}"
@@ -54,10 +56,10 @@ describe "My pictures connector" do
     close_wizard
   end
 
-  it "checks if newly created album contains 30 photos" do
+  it "checks if newly created album contains 15 photos" do
     unless @@no_agent
       photos = get_photos_from_added_album(@@album_name)
-      photos.count.should == 30
+      photos.count.should == 15
     end
   end
 

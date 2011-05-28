@@ -1,5 +1,6 @@
 require 'net/imap'
 require 'net/http'
+require 'net/https'
 
 class GmailTool
   def self.config=(val)
