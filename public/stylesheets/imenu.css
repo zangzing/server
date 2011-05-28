@@ -26,8 +26,8 @@
 
 .iMenu LI {
 	list-style: none;
-	padding: 0px;
-	margin: 0px;
+	padding: 0 0 0 3px;
+	margin: 0;
 }
 
 .iMenu A {
@@ -49,10 +49,6 @@
 	padding-left: 28px;
 }
 
-.iMenu LI.hover A {
-	color: #FFFFFF;
-	background-color: rgba(255, 255, 255, 0.1);;
-}
 
 .iMenu LI.disabled A {
 	color: #AAA;
@@ -74,21 +70,31 @@
 	classes to the respective LI element(s)
 */
 
-.iMenu .menu-top    { 	background-image: url(images/imenu-top.png);    padding-bottom: 15px;}
-.iMenu .menu-bottom {  	background-image: url(images/imenu-bottom.png); padding-top: 5px;}
+.iMenu LI.hover A {
+	color: #FFFFFF;
+	background-color: rgba(255, 255, 255, 0.1);;
+}
 
-.iMenu LI.download A { background-image: url(../../images/icn-report-white.png); background-position: 0 5px;}
+.iMenu .menu-top    { 	background-image: url(/images/imenu-top.png);    padding-bottom: 15px;}
+.iMenu .menu-bottom {  	background-image: url(/images/imenu-bottom.png); padding-top: 5px;}
+
+.iMenu LI.download A { background-image: url(/images/icn-download-white.png); background-position: 0 5px;}
 .iMenu LI.download A:hover { background-position: 0 -20px;}
 
-.iMenu LI.privacy A { background-image: url(../../images/icn-rotatel-white.png); background-position: 0 5px;}
+.iMenu LI.privacy A { background-image: url(/images/icn-rotatel-white.png); background-position: 0 5px;}
 .iMenu LI.privacy A:hover { background-position: 0 -20px;}
 
-.iMenu LI.delete A { background-image: url(../../images/icn-delete-white.png); background-position: 0 5px;}
+.iMenu LI.delete A { background-image: url(/images/icn-delete-white.png); background-position: 0 5px;}
 .iMenu LI.delete A:hover { background-position: 0 -20px;}
 
-.iMenu LI.setcover A { background-image: url(../../images/icn-rotater-white.png); background-position: 0 5px;}
+.iMenu LI.setcover A { background-image: url(/images/icn-setcover-white.png); background-position: 0 5px;}
 .iMenu LI.setcover A:hover { background-position: 0 -20px;}
 .iMenu LI.setcover.disabled A { background-position: 0 -20px;}
 
+.iMenu LI.rotater A { background-image: url(/images/icn-rotater-white.png); background-position: 0 5px;}
+.iMenu LI.rotater A:hover { background-position: 0 -20px;}
+
+.iMenu LI.rotatel A { background-image: url(/images/icn-rotatel-white.png); background-position: 0 5px;}
+.iMenu LI.rotatel A:hover { background-position: 0 -20px;}
 
 
