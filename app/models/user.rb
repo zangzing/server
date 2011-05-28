@@ -224,12 +224,29 @@ class User < ActiveRecord::Base
     @name ||= [first_name, last_name].compact.join(' ')
   end
 
+
+  #returns whichever has a value: first name, last name, username
+  def short_name
+    if self.first_name && self.first_name.strip.length > 0
+      return self.first_name
+    elsif self.last_name && self.last_name.strip.length > 0
+      return self.last_name
+    else
+      return self.username
+    end
+  end
+
+  def posessive_short_name
+    @posessive_shortname ||= self.short_name + ('s' == self.short_name[-1,1] ? "'" : "'s")
+  end
+
+
   def posessive_name
     @posessive_name ||= self.name + ('s' == self.name[-1,1] ? "'" : "'s")
   end
 
   def posessive_first_name
-    posessive_first_name ||= self.first_name + ('s' == self.first_name[-1,1] ? "'" : "'s")
+    @posessive_first_name ||= self.first_name + ('s' == self.first_name[-1,1] ? "'" : "'s")
   end
 
 

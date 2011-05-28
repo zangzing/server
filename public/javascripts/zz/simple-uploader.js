@@ -114,7 +114,7 @@ var simple_uploader = {
                 file_queue_limit : "0",
 
 
-                prevent_swf_caching: false,
+                prevent_swf_caching: $.client.browser=='Explorer',
 
                 file_dialog_start_handler : function(){
                     ZZAt.track('simpleuploader.button.click');
@@ -184,7 +184,7 @@ var simple_uploader = {
                 },
 
                 // Button Settings
-                button_width: 100,
+                button_width: 158,
                 button_height: 29,
                 button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,
                 button_cursor: SWFUpload.CURSOR.HAND,

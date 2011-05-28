@@ -56,13 +56,16 @@
             <td class="field-label"> Last Request </td><td><%=@user.last_request_at.strftime( '%m/%d/%y %H:%M:%S' ) if @user.last_request_at  %></td>
           </tr>
           <tr>
-            <td class="field-label"> Agent Last Authorized At </td><td><%=( @agent ? @agent.authorized_at.strftime( '%m/%d/%y %H:%M:%S' ) : 'Never') %></td>
-            <%if @agent_version.nil? %>
-                <td></td><td><%= ( @agent ? image_tag( '/zz-icon.png', :size=>"20x20" ):' ')%></td>
+            <%if @agent %>
+                <td class="field-label"> Agent Last Authorized At </td><td><%=@agent.authorized_at.strftime( '%m/%d/%y %H:%M:%S' ) %></td>
+                <%if @agent.agent_version.nil? %>
+                     <td></td><td><%=image_tag( '/zz-icon.png', :size=>"20x20" )%></td>
+                <%else%>
+                     <td class="field-label"> Last Known Agent Version </td> <td><%=@agent.agent_version%> <%= image_tag( '/zz-icon.png', :size=>"20x20" )%></td>
+                <%end%>
             <%else%>
-                <td class="field-label"> Last Known Agent Version </td> <td><%=@agent_version%> <%= ( @agent ? image_tag( '/zz-icon.png', :size=>"20x20" ):' ')%></td>
+                <td class="field-label"> Agent Last Authorized At </td><td>Never</td>
             <%end%>
-
           </tr>
           <tr><td><br></td></tr>
           <tr>

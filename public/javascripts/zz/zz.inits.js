@@ -215,17 +215,6 @@ zz.init = {
             zz.toolbars.init_new_album();
             zz.wizard.create_group_album();
 
-//            zz.easy_drawer(600, 0.0, '/users/' + zz.current_user_id + '/albums/new', function() {
-//                $('#personal_album_link').click(function() {
-//                    zz.wizard.create_personal_album();
-//                    ZZAt.track('button.createpersonalalbum.click');
-//                });
-//
-//                $('#group_album_link').click(function() {
-//                    zz.wizard.create_group_album();
-//                    ZZAt.track('button.creategroupalbum.click');
-//                });
-//            });
         });
 
 
@@ -238,9 +227,6 @@ zz.init = {
             zz.init.disable_buttons();
             $('#footer #add-photos-button').removeClass('disabled').addClass('selected');
 
-//            simple_uploader.open_in_dialog(zz.album_id, function(){
-//                 window.location.reload( false );
-//            });
 
 
             photochooser.open_in_dialog(zz.album_id, function(){
@@ -291,86 +277,6 @@ zz.init = {
         });
 
 
-        /* new user stuff   */
-        /* ---------------------------------*/
-
-//        $('#user_username').keyup(function(event) {
-//            var value = $('#user_username').val();
-//            $('#update-username').empty().text(value);
-//        });
-//
-//        $('#step-sign-in-off').click(function() {
-//            $('#small-drawer').animate({height: '0px', top: '28px'}, function() {
-//                $('#sign-in').show();
-//                $('#sign-up').hide();
-//                $('#small-drawer').animate({height: '480px', top: '56px'}, 500, 'linear', function() {
-//                    $('#user_session_email').focus();
-//                });
-//            });
-//
-//
-//        });
-//        $('#step-join-off').click(function() {
-//            $('#small-drawer').animate({height: '0px', top: '28px'}, function() {
-//                $('#sign-up').show();
-//                $('#sign-in').hide();
-//                $('#small-drawer').animate({height: '480px', top: '56px'}, 500, 'linear', function() {
-//                    $('#user_name').focus();
-//
-//                });
-//            });
-//        });
-//
-//        $('#join_form_submit_button').click(function() {
-//            $('form#join-form').submit();
-//        });
-//
-//        $('#join_form_cancel_button').click(function() {
-//            //todo: move this to pages.signing
-//            $('#small-drawer').animate({height: '0px', top: '28px'});
-//            zz.drawer_state = zz.DRAWER_CLOSED;
-//            $('#header #sign-in-button').removeClass('selected');
-//
-//        });
-//
-//        $('form#join-form').submit(function(){
-//            ZZAt.track('button.join.click');
-//        });
-//
-//
-//        $('form#join-form').bind('keypress', function(e){
-//              if ( e.keyCode == 13 ) {
-//                  $("form#join-form").submit();
-//              }
-//        });
-
-
-
-        /* sign in   */
-        /* ---------------------------------*/
-//        $('#signin-form-cancel-button').click(function() {
-//            //todo: move this to pages.signing
-//            $('#small-drawer').animate({height: '0px', top: '28px'});
-//            zz.drawer_state = zz.DRAWER_CLOSED;
-//            $('#header #sign-in-button').removeClass('selected');
-//
-//        });
-//
-//
-//        $('#signin-form-submit-button').click(function() {
-//            $("form#new_user_session").submit();
-//        });
-//
-//
-//         $('form#new_user_session').bind('keypress', function(e){
-//               if ( e.keyCode == 13 ) {
-//                   $("form#new_user_session").submit();
-//               }
-//         });
-//
-//        //todo: why are these here
-//        $(zz.validate.sign_in.element).validate(zz.validate.sign_in);
-//        $(zz.validate.join.element).validate(zz.validate.join);
 
 
         zz.init.acct_badge();
@@ -450,7 +356,7 @@ zz.init = {
         }
 
         if(view === 'grid'){
-            this.init_back_button('All Albums', zz.back_to_home_page_url);
+            this.init_back_button(zz.back_to_home_page_caption, zz.back_to_home_page_url);
         }
         else{
             this.init_back_button(zz.album_name, zz.album_base_url + '/photos');
@@ -612,53 +518,6 @@ zz.init = {
                 }
 
 
-//                //setup upload progress smeter
-//                $('#progress-meter').hide();
-//
-//                var updateProgressMeter = function() {
-//
-//                    var photo_count = json.length; //todo: photos shouln't be a global variable
-//
-//                    upload_stats.stats_for_album(zz.album_id, photo_count, function(time_remaining, percent_complete) {
-//                        percent_complete = Math.round(percent_complete);
-//
-//                        if (percent_complete < 100) {
-//                            var minutes = Math.round(time_remaining / 60);
-//                            var step = 0;
-//
-//                            if (percent_complete > 0) {
-//                                step = Math.round(percent_complete / 6.25);
-//                            }
-//
-//
-//                            $('#progress-meter').css('background-image', 'url(/images/upload-' + step + '.png)');
-//
-//
-//                            if (minutes === Infinity) {
-//                                $('#nav-status').text("Calculating...");
-//                            }
-//                            else {
-//                                var minutes_text = "Minutes";
-//                                if (minutes === 1) {
-//                                    minutes_text = "Minute"
-//                                }
-//                                $('#progress-meter-label').text(minutes + ' ' + minutes_text);
-//                            }
-//
-//                            $('#progress-meter').show();
-//                        }
-//                        else {
-//                            $('#progress-meter').hide();
-//                        }
-//                    });
-//                }
-//
-//                updateProgressMeter();
-//
-//                //todo: need to shut this down if we leave album page ajax-ly
-//                //update album upload status every 10 seconds
-//                setInterval(updateProgressMeter, 10000);
-
                 // Update the like array if it exists.
                 if (typeof( like ) != 'undefined') {
                     var wanted_subjects = {};
@@ -700,7 +559,7 @@ zz.init = {
 
     album_timeline_or_people_view: function(which) {
 
-        this.init_back_button('All Albums', zz.back_to_home_page_url);
+        this.init_back_button(zz.back_to_home_page_caption, zz.back_to_home_page_url);
 
 
         $.ajax({
