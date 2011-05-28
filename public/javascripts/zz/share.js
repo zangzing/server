@@ -21,6 +21,7 @@ var share = {
         }
 
         menu.css({opacity:0,left:x,top:y+10});
+
         menu.animate({top:y,opacity:1},200);
 
 

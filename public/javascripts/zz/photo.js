@@ -293,15 +293,10 @@
                         });
 
                         //imenu
-                        self.toolbarElement.find('.info-button').iMenu(
-                            { menu:         'i-menu',
-                              subject_id:   self.options.photoId,
-                              subject_type: 'photo',
-                              callback:     function(action, subject_id, subject_type) {
-					                           alert(   'Action: ' + action + '\n\n' +
-                                                        'Subject Type: ' + subject_type + '\n\n' +
-						                                'Subject ID: ' + subject_id + '\n\n');
-                                               }
+                        self.toolbarElement.find('.info-button').zz_menu(
+                            { subject_id:   self.options.photoId,
+                              subject_type: 'photo'
+                              //callback:  USE Default callback
                             });
                     }
                 });
