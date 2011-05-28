@@ -214,12 +214,6 @@ class ApplicationController < ActionController::Base
       # see if we have http_auth turned on
       return unless ZangZingConfig.config[:requires_http_auth]
 
-      # only protext http pages so that we can test with selenium
-      return unless request.protocol == "http://"
-
-      # don't block ajax calls
-      return if request.xhr?
-
       allowed = {
         :actions => ['photos#agent_index',
                      'photos#agent_create',
