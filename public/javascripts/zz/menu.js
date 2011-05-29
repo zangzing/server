@@ -24,8 +24,8 @@ if(jQuery)( function() {
             menu_template   : '<ul>'+
                                 '<li class="download"><a href="#download">Download</a></li>'+
 //	                            '<li class="privacy"><a href="#privacy">Privacy</a></li>'+
-                                '<li class="rotater"><a href="#rotater">Right 90º</a></li>'+
-                                '<li class="rotatel"><a href="#rotatel">Left 90º</a></li>'+
+                                '<li class="rotater"><a href="#rotater">Right</a></li>'+
+                                '<li class="rotatel"><a href="#rotatel">Left</a></li>'+
                                 '<li class="setcover"><a href="#setcover">Set as Cover</a></li>'+
                                 '<li class="delete"><a href="#delete">Delete</a></li>'+
                              '</ul>'
@@ -142,10 +142,14 @@ if(jQuery)( function() {
             // When items are selected
             menu.find('A').unbind('click');
             menu.find('LI:not(.disabled) A').click( function() {
-                $(document).unbind('click').unbind('keypress');
                 self.close();
-                // Callback
-                if( o.callback ) o.callback( $(this).attr('href').substr(1), o.subject_type, o.subject_id );
+                var action = $(this).attr('href').substr(1);
+                // Callbacks
+                if( o[action+'_action'] == undefined){
+                    if( o.callback ) o.callback( $(this).attr('href').substr(1), o.subject_type, o.subject_id );
+                } else{
+                    o[action+'_action']( o.subject_type, o.subject_id );
+                }
                 return false;
             });
 

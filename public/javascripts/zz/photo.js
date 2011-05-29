@@ -280,13 +280,24 @@
                         self.borderElement.css({'padding-bottom': '30px'});
                         self.imageElement.css({'border-bottom': '35px solid #fff'});
 
-                        self.toolbarElement.find('.share-button').mousedown(function(){
-                            menuOpen = true;
-                            share.show_share_menu($(this), 'photo', self.options.photoId, {x:0,y:0}, 'frame', function(){
-                                menuOpen = false;
-                                checkCloseToolbar();
+                        //share
+                        self.toolbarElement.find('.share-button').zz_menu(
+                            {   subject_id:      self.options.photoId,
+                                subject_type:    'photo',
+                                menu_template:   share.share_menu_template,
+                                email_action:    share.share_to_email,
+                                facebook_action: share.share_to_facebook,
+                                twitter_action : share.share_to_twitter
                             });
-                        });
+
+                        //share
+                        //self.toolbarElement.find('.share-button').mousedown(function(){
+                        //    menuOpen = true;
+                        //    share.show_share_menu($(this), 'photo', self.options.photoId, {x:0,y:0}, 'frame', function(){
+                        //        menuOpen = false;
+                        //        checkCloseToolbar();
+                        //    });
+                        //});
 
                         self.toolbarElement.find('.like-button').click(function(){
                             alert("This feature is still under construction. This will allow you to like an individual photo.");

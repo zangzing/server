@@ -6,8 +6,24 @@ var share = {
                      '<div class="facebook menu-item">Facebook</div>' +
                    '</div>',
 
+    share_menu_template: '<ul>'+
+                                '<li class="email"><a href="#email">Email</a></li>' +
+                                '<li class="twitter"><a href="#twitter">Twitter</a></li>' +
+                                '<li class="facebook"><a href="#facebook">Facebook</a></li>' +
+                        '</ul>',
+
 
     show_share_menu: function(button, object_type, object_id, offset, zza_context, onclose){
+        //$(button).zz_menu(
+        //{ subject_id   : object_id,
+        //    subject_type : object_type,
+        //    menu_template: this.share_menu_template,
+        //    email_action : this.share_to_email,
+        //    facebook_action : this.share_to_facebook,
+        //    twitter_action : this.share_to_twitter
+        //});
+        //$(button).zz_menu('open');
+
         var menu = $(this.MENU_TEMPLATE);
 
         menu.appendTo('body').css({top:-1000, left:0});
@@ -16,17 +32,14 @@ var share = {
         var y = button.offset().top - menu.height();
 
         if(offset){
-           x = x + offset.x;
-           y = y + offset.y;
+            x = x + offset.x;
+            y = y + offset.y;
         }
 
         menu.css({opacity:0,left:x,top:y+10});
-
         menu.animate({top:y,opacity:1},200);
 
-
         var hover = true;
-
         var mouseOver = function(){
             hover = true;
         };
@@ -79,10 +92,6 @@ var share = {
 
             share.share_to_facebook(object_type, object_id);
         });
-
-
-
-
     },
 
 
