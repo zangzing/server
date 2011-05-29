@@ -1,7 +1,7 @@
-require 'spec/selenium/ui_model'
-require 'spec/selenium/uimodel_helper'
-require 'spec/selenium/connector_shared'
-require 'spec/selenium/gmail_tool'
+require './spec/selenium/ui_model'
+require './spec/selenium/uimodel_helper'
+require './spec/selenium/connector_shared'
+require './spec/selenium/gmail_tool'
 require 'pony'
 
 MAIL_TEST_DOMAIN = 'test.zangzing.com'
@@ -41,7 +41,7 @@ describe "Email test" do
   end
 
   it "create a new group album" do
-    create_new_album(:group)
+    create_new_album #(:group)
   end
 
   it "gives a name to the album" do

@@ -54,7 +54,8 @@ module UiModel
       end
 
       def visible?
-        @browser.visible? 'css=#small-drawer #sign-up'
+#        @browser.visible? 'css=#small-drawer #sign-up'
+        @browser.is_text_present("First and Last Name")
       end
 
       def type_full_user_name first_last_name
@@ -74,8 +75,9 @@ module UiModel
       end
 
       def click_join_button
-        @browser.click "css=#join_form_submit_button"
-        @browser.wait_for_page_to_load "30000"
+       # @browser.click "css=#join_form_submit_button"
+        @browser.click "css=#submit-button"
+        @session.wait_load
       end
     end
 

@@ -1,6 +1,6 @@
-require 'spec/selenium/ui_model'
-require 'spec/selenium/uimodel_helper'
-require 'spec/selenium/connector_shared'
+require './spec/selenium/ui_model'
+require './spec/selenium/uimodel_helper'
+require './spec/selenium/connector_shared'
 
 describe "Kodak connector" do
   include UimodelHelper
@@ -14,7 +14,7 @@ describe "Kodak connector" do
   end
 
   it "creates a new group album" do
-    create_new_album(:group)
+    create_new_album #(:group)
   end
 
   it "connects to Kodak" do
@@ -22,12 +22,13 @@ describe "Kodak connector" do
   end
 
   it "adds one random photo from Kodak's 'Medium Album'" do
-    ui.wizard.add_photos_tab.click_folder "Medium Album"
+    ui.wizard.add_photos_tab.click_folder "MediumAlbum"
     import_random_photos(1)
   end
   
   it "adds the whole 'Small Album' with 20 photos" do
-    import_folder "Small Album"
+    ui.wizard.add_photos_tab.click_folder "SmallAlbum"
+    click_import_all_photos
   end
 
   it "gives a name to the album" do
