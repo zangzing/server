@@ -13,6 +13,8 @@ if(jQuery)( function() {
         options:{
             subject_id      :  '',
             subjet_type     : '',
+            auto_open       : false,  //open upon creation
+            bind_click_open : false,  //bind open to the elements click.
             callback        : function(action, subject_id, subject_type) {
 					                           alert(   'Action: ' + action + '\n\n' +
                                                         'Subject Type: ' + subject_type + '\n\n' +
@@ -61,15 +63,21 @@ if(jQuery)( function() {
                 menu.each(function() { $(this).bind('mousedown.disableTextSelect', function() { return false; }); });
             }
 
-            // When anchor is clicked, show menu
-            el.click( function(e) {
-                logger.debug('click anchor for zz_menu');
-                e.stopPropagation();
-                self.open( this )
-            });
+            // if the anchor option is set, bind to the elements click
+            if( self.options.bind_click_open ){
+                el.click( function(e) {
+                    e.stopPropagation();
+                    self.open();
+                });
+            }
+
+            // If auto open, open.
+            if( o.auto_open){
+                self.open();
+            }
         },
 
-        open: function( anchor ){
+        open: function(){
             logger.debug('open zz_menu');
             var self = this,
                 el   = self.element,
@@ -78,29 +86,23 @@ if(jQuery)( function() {
 
             if( el.hasClass('disabled') ) return false;
 
-            // Hide zz_menus that may be showing
+            // Hide other zz_menus that may be showing
             $(".zz_menu").hide();
-
-            // Show zz_menu below and center of the clicked element
-            // The toolbar is dynamic so the position of the menu relative
-            // to the toolbar is always x:-48 y:23 for a 120px menu
-            var x=-48, y=23;
-            //var pos, x, y;
-            //pos = anchor.position();
-            //x =  pos.left + srcElement.outerWidth() - $(menu).outerWidth();
-            //y =  pos.top + srcElement.outerHeight() + 5;
+            var  x = (menu.width()/2) - (el.width()/2);
+            var  y = el.height()+10;
+            //var x = el.offset().left + (el.width() / 2) - (menu.width() / 2);
+            //var y = el.offset().top - menu.height();
 
             // Show the menu
             $(document).unbind('click');
-
             if( o.direction == 'down' ){
-                menu.css({display:'block',opacity:0,left:x,top:y-o.animation_y });
-                menu.animate({top:y,opacity:1}, o.animation_lenght);
+                // Show zz_menu below and center of the clicked element
+                menu.css({display:'block',opacity:0,left:-x,top:y-o.animation_y });
+                menu.animate({top:y,opacity:1}, o.animation_lenght, self._bind_hover);
             } else {
-                menu.css({display:'block',opacity:0,left:x,bottom:y-o.animation_y});
-                menu.animate({bottom:y,opacity:1},o.animation_lenght);
-                //menu.css({display:'block',opacity:0,left:x,top:y+o.animation_y });
-                //menu.animate({top:y,opacity:1}, o.animation_lenght);
+                // Show zz_menu below and center of the clicked element
+                menu.css({display:'block',opacity:0,left:-x,bottom:y-o.animation_y});
+                menu.animate({bottom:y,opacity:1},o.animation_lenght, self._bind_hover);
             }
 
             // bind hover events
@@ -153,20 +155,30 @@ if(jQuery)( function() {
                 return false;
             });
 
-            // Hide bindings
+            // Close menu if anybody clicks anywhere outside menu
             setTimeout( function() { // Delay for Mozilla
                 $(document).click( function() {
                     self.close();
                     return false;
                 });
             }, 0);
+
+            //Close menu when mouse hovers out of the menu or clicks
+            menu.hover(function(){},function(){ self.close() });
+            
+            //If the window resizes close menu (its bottom positioned so it will look out of place if not removed)
+            $(window).one('resize',function() {  $(menu).css('display','none');  });
         },
 
         close: function(){
             var self=this;
             $(document).unbind('click').unbind('keypress');
-            self.menu.fadeOut(self.options.animation_lenght);
-            $(".zz_menu").hide();
+            self.menu.fadeOut(self.options.animation_length);
+        },
+
+        _bind_hover: function(){
+            //Close menu when mouse hovers out of the menu or clicks
+            $(this).hover(function(){},function(){ self.close() });
         },
 
         // Disable i menu items on the fly
