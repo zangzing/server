@@ -48,52 +48,6 @@ div.zzlike div.zzlike-count{
 }
 
 
-
-
-/*======================================LIKE popup  MENU =====================================*/
-
-
-.like-menu{
-    position:absolute;
-    width: 120px;
-    z-index: 99990;
-    background: url("/images/bg-like-popup.png") no-repeat scroll;
-    padding: 0;
-    margin: 0;
-    font-size: 12px;
-    font-weight: 700;
-    color: #FAFAFA;
-    text-shadow: 0 1px black;
-    text-align: left;
-}
-
-.like-menu span.like-count{
-    font-size: 11px;
-    font-weight: 300;
-}
-
-.like-menu.one-item{    height:  56px;  background-position:    0   -61px; }
-.like-menu.two-items{   height:  85px;  background-position: -123px -31px; }
-.like-menu.three-items{ height: 117px;  background-position: -247px   0;   }
-
-.like-menu li{
-    background: url("/images/btn-like.png") no-repeat scroll;
-    margin-left: 0;
-    padding: 10px 0 5px 38px;
-    cursor:pointer;
-}
-
-.like-menu li:hover{ color: #FFFFFF; background-color: rgba(255, 255, 255, 0.1);}
-.like-menu li.like-user{  background-position: 7px 10px; }
-.like-menu li.like-album {  background-position: 7px -20px; }
-.like-menu li.like-photo {  background-position: 7px -50px; }
-.like-menu li.like-user:hover{  background-position: 7px -77px; }
-.like-menu li.like-album:hover {  background-position: 7px -107px; }
-.like-menu li.like-photo:hover {   background-position: 7px -137px; }
-
-
-
-
 /* ============================ Social Like Dialog (Post your like in Facebook and/or Twitter? ) ======*/
 #social-like-dialog{
     width:  500px;

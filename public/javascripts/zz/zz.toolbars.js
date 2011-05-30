@@ -77,12 +77,14 @@ zz.toolbars = {
         var menu='',user='',album='',photo='';
         //decide which menu items to show and set their subject_ids
         if( typeof zz.album_id != 'undefined' ){
-              //we are displaying an album's photo grid.
-            album = $('<li class="zzlike" data-zzid="'+zz.album_id+'" data-zztype="album"></li>');
+            //we are displaying an album's photo grid.
+            album = $('<li class="like-album">')
+                    .append('<a href="#like_album" class="zzlike" data-zzid="'+zz.album_id+'" data-zztype="album" data-zzstyle="menu">Album <span class="like-count"></span></a>');
         }
         if( typeof zz.displayed_user_id != 'undefined' && zz.displayed_user_id != zz.current_user_id){
             //we are displaying an content from a user different than the logged in user
-            user = $('<li class="zzlike" data-zzid="'+zz.displayed_user_id+'" data-zztype="user"></li>');
+            user = $('<li class="like-user">')
+                    .append('<a href="#like_user" class="zzlike" data-zzid="'+zz.displayed_user_id+'" data-zztype="user" data-zzstyle="menu">Person <span class="like-count"></span></a>');
         }
         if (location.hash && location.hash.length > 2) {
             //We are displaying a full size photo, add the photo menu element
@@ -90,22 +92,19 @@ zz.toolbars = {
             if( isNaN( hash ) ){
                 hash = 0;
             }
-            photo = $('<li id="like-menu-photo" class="zzlike" data-zzid="'+hash.toString()+'" data-zztype="photo"></li>');
+            photo = $('<li class="like-photo" ></li>')
+                    .append('<a href="#like_photo" id="like-menu-photo" class="zzlike" data-zzid="'+hash.toString()+'" data-zztype="photo" data-zzstyle="menu">Photo <span class="like-count"></span></a>');
 
             //set a listener to keep the subject_id current with the selected photo. Selecting a photo sets its id as the hash
             $(window).bind( 'hashchange', function( event ) {
-              logger.debug('hash changed to: location.hash ='+location.hash.substr(2));
-              var hash = parseInt( location.hash.substr(2) );
-              if( !isNaN( hash ) ){
-                $('#like-menu-photo').attr('data-zzid', hash.toString() ).attr('data-zztype', 'photo' ).addClass('zzlike');
-                like.add_id( hash.toString(), 'photo' );
-              }
+                logger.debug('hash changed to: location.hash ='+location.hash.substr(2));
+                var hash = parseInt( location.hash.substr(2) );
+                if( !isNaN( hash ) ){
+                    $('#like-menu-photo').attr('data-zzid', hash.toString() ).attr('data-zztype', 'photo' ).addClass('zzlike');
+                    like.add_id( hash.toString(), 'photo' );
+                }
             });
         }
-        menu=$('<ul id="like-menu"></ul>');
-        menu.append( album );
-        menu.append(user);
-        menu.append(photo);
-        return menu;
+        return $('<ul id="like-menu">').append( album ).append(user).append(photo);
     }
 };
