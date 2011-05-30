@@ -281,7 +281,7 @@
                         self.imageElement.css({'border-bottom': '35px solid #fff'});
 
                         //share
-                        self.toolbarElement.find('.share-button').mousedown(function(){
+                        self.toolbarElement.find('.share-button').click(function(){
                             share.show_share_menu($(this), 'photo', self.options.photoId, {x:0,y:0}, 'frame', function(){});
                         });
 

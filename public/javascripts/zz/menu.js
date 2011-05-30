@@ -11,7 +11,7 @@ if(jQuery)( function() {
 
     $.widget("ui.zz_menu",{
         options:{
-            subject_id      :  '',
+            subject_id      : '',
             subjet_type     : '',
             auto_open       : false,  //open upon creation
             bind_click_open : false,  //bind open to the elements click.
@@ -42,6 +42,7 @@ if(jQuery)( function() {
                     .append('<div id="menu-top">')
                     .append( o.menu_template )
                     .append('<div id="menu-bottom"></div>');
+            //$('body').append(menu);
             el.append( menu );
             self.menu = menu;
 
@@ -88,11 +89,27 @@ if(jQuery)( function() {
 
             // Hide other zz_menus that may be showing
             $(".zz_menu").hide();
-            var  x = (menu.width()/2) - (el.width()/2);
-            var  y = el.height()+10;
+
+            //var x = offset.left+ ( $(el).outerWidth()/2 ) +  - (menu.width()/2);
+            //var y = offset.top - $(el).outerHeight();
+
+            //var  x = el.position().left +(menu.width()/2) - (el.width()/2);
+            //var  y = el.position().top -el.height()+10;
+
             //var x = el.offset().left + (el.width() / 2) - (menu.width() / 2);
             //var y = el.offset().top - menu.height();
 
+            //Use this when appending the element to the end of the document
+            //var offset = $(el).offset();
+            //var y, x = offset.left+ ( $(el).outerWidth()/2 )  - (menu.width()/2);
+            // down       y = offset.top + el.height()+10;
+            //  up        y = $(document).height() - offset.top+10;
+
+            //Use this when appending the element to an anchor element
+            var  x = -( (menu.width()/2) - (el.width()/2));
+            var  y = el.height()+12;
+
+            logger.debug('x:'+x+',y:'+y);
             // Show the menu
             $(document).unbind('click');
             if( o.direction == 'down' ){
@@ -100,8 +117,8 @@ if(jQuery)( function() {
                 menu.css({display:'block',opacity:0,left:-x,top:y-o.animation_y });
                 menu.animate({top:y,opacity:1}, o.animation_lenght, self._bind_hover);
             } else {
-                // Show zz_menu below and center of the clicked element
-                menu.css({display:'block',opacity:0,left:-x,bottom:y-o.animation_y});
+                // Show zz_menu above and center of the clicked element
+                menu.css({display:'block',opacity:0,left:x,bottom:y-o.animation_y});
                 menu.animate({bottom:y,opacity:1},o.animation_lenght, self._bind_hover);
             }
 
