@@ -18,7 +18,7 @@ class Connector::DropboxUrlsController < Connector::DropboxController
     identity = user.identity_for_dropbox
     if identity
       api = api_from_identity(identity)
-      return make_signed_url(api.access_token, source_url, :root => 'file')
+      return make_signed_url(api.access_token, source_url, :root => 'files')
     end
   end
 
