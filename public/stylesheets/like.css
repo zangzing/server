@@ -39,7 +39,7 @@ div.zzlike span.zzlike-thumbup{
 
 div.zzlike div.zzlike-count{
     display: inline-block;
-    position: absolute;
+    /*position: absolute*/;
     top:1px;
     left: 52px;
     height: 20px;
