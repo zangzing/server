@@ -126,61 +126,72 @@
 
         var force_javascript = (document.location.search.indexOf('js=true') !== -1)
 
+        var handle_no_flash = function(){
+            $("#movie").replaceWith('<div id="movie" class="javascript-movie"></div>');
+
+
+            $.CustomSimpleFade.init({
+
+                appendToID:			'movie',
+                source:				'<%=album_photos_json_url @album%>?<%=@album.cache_version%>',
+                width: $(window).width(),
+                height: $(window).height(),
+
+                autoHideControls:	false,
+                autoSlideShow:		true,
+
+                backgroundColor:	'#000000',
+                backgroundImage:	'',
+                backgroundVisible:	true,
+                borderColor:		'#ffffff',
+                borderSize:			5,
+
+                controlsHideSpeed:	2,
+
+                backButton:			true,
+                backButtonURL:		'<%=back_url%>',
+
+                iconsURL:			'/images/movie/',
+
+                backButtonText:     'Back to Album',
+
+                loadOriginalImages: false,
+
+                scaleBackground:	true,
+                scaleMode:			'scale',
+                shadowColor:		'#000000',
+                shadowDistance:		5,
+                slideShowSpeed:		6,
+
+                transitionSpeed:	0.5,
+                transitionType:		'slide',
+
+                slideShowControls: true,
+
+                preloadAfter:		3,
+                preloadBefore:		1,
+
+
+            });
+        }
+
+
 
         $(document).ready(function(){
 
-            swfobject.registerObject("movie", "9.0.115", "", function(e) {
-                if (e.success == false || force_javascript) {
-                    var err;
+            if(swfobject.getFlashPlayerVersion().major == 0){
+                //this handles the case where IE has flash installed,
+                //but it has been 'disabled'
+                handle_no_flash();
+            }
+            else{
+                swfobject.registerObject("movie", "9.0.115", "", function(e) {
+                    if (e.success == false || force_javascript) {
+                        handle_no_flash();
+                    }
+                });
+            }
 
-                    $("#movie").replaceWith('<div id="movie" class="javascript-movie"></div>');
-
-
-                    $.CustomSimpleFade.init({
-
-                        appendToID:			'movie',
-                        source:				'<%=album_photos_json_url @album%>?<%=@album.cache_version%>',
-                        width: $(window).width(),
-                        height: $(window).height(),
-
-                        autoHideControls:	false,
-                        autoSlideShow:		true,
-
-                        backgroundColor:	'#000000',
-                        backgroundImage:	'',
-                        backgroundVisible:	true,
-                        borderColor:		'#ffffff',
-                        borderSize:			5,
-
-                        controlsHideSpeed:	2,
-
-                        backButton:			true,
-                        backButtonURL:		'<%=back_url%>',
-
-                        iconsURL:			'/images/movie/',
-
-                        backButtonText:     'Back to Album',
-
-                        loadOriginalImages: false,
-
-                        scaleBackground:	true,
-                        scaleMode:			'scale',
-                        shadowColor:		'#000000',
-                        shadowDistance:		5,
-                        slideShowSpeed:		6,
-
-                        transitionSpeed:	0.5,
-                        transitionType:		'slide',
-
-                        slideShowControls: true,
-
-                        preloadAfter:		3,
-				        preloadBefore:		1,
-
-
-                    });
-                }
-            });
 
 
             var setSize = function(){
