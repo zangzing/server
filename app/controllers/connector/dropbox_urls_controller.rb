@@ -11,6 +11,16 @@ class Connector::DropboxUrlsController < Connector::DropboxController
     signed_url = self.class.make_signed_url(api.access_token, params[:path], opts)
     redirect_to signed_url
   end
+  
+  #For GeneralImport's custom url maker method
+  def self.get_file_signed_url(photo, source_url)
+    user = User.find(photo.user_id)
+    identity = user.identity_for_dropbox
+    if identity
+      api = api_from_identity(identity)
+      return make_signed_url(api.access_token, source_url, :root => 'file')
+    end
+  end
 
 
 end

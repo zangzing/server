@@ -52,11 +52,17 @@ class Connector::DropboxFoldersController < Connector::DropboxController
               :source_screen_url => dropbox_image_path(:root => 'thumbnails', :path => entry.path, :size => 'l'),
               :source => 'dropbox'
             }).tap do |p|
-              p.temp_url = dropbox_image_url(:root => 'files', :path => entry.path, :host => Server::Application.config.application_host)
+              p.temp_url = entry.path
             end
     end
 
-    bulk_insert(photos)
+    # bulk insert
+    Photo.batch_insert(photos)
+    # must send after all saved
+    photos.each do |photo|
+      ZZ::Async::GeneralImport.enqueue( photo.id, photo.temp_url, :url_making_method => 'Connector::DropboxUrlsController.get_file_signed_url' )
+    end
+    Photo.to_json_lite(photos)
   end
   
   def self.import_certain_photo(api, params)
@@ -65,7 +71,7 @@ class Connector::DropboxFoldersController < Connector::DropboxController
       api.metadata(params[:photo_path])
     end
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
-    photo_url = dropbox_image_path(:root => 'files', :path => photo_data.path, :host => Server::Application.config.application_host)
+    photo_url = dropbox_image_url(:root => 'files', :path => photo_data.path, :host => Server::Application.config.application_host)
     photo = Photo.create(
               :id => Photo.get_next_id,
               :caption => File.split(photo_data.path).last,
@@ -80,7 +86,7 @@ class Connector::DropboxFoldersController < Connector::DropboxController
     ).tap do |p|
       p.temp_url = photo_url
     end
-    ZZ::Async::GeneralImport.enqueue( photo.id, photo_url )
+    ZZ::Async::GeneralImport.enqueue( photo.id, photo_data.path, :url_making_method => 'Connector::DropboxUrlsController.get_file_signed_url' )
 
     Photo.to_json_lite(photo)
   end

@@ -22,10 +22,16 @@ module ZZ
       
       def self.perform( photo_id, source_url, options = {} )
         @headers = options['headers'] || {}
+        target_url = source_url
         SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
           photo = Photo.find(photo_id)
           if photo.assigned? || photo.error?
-            file = RemoteFile.new(source_url, PhotoGenHelper.photo_upload_dir, @headers)
+            if options.has_key?('url_making_method')
+              klass_name, method_name = options['url_making_method'].split('.')
+              klass = klass_name.constantize
+              target_url = klass.send(method_name.to_sym, photo, source_url)
+            end
+            file = RemoteFile.new(target_url, PhotoGenHelper.photo_upload_dir, @headers)
             file_path = file.path
             file.close()
             file.validate_size
