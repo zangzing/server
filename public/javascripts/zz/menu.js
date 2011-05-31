@@ -99,7 +99,7 @@ if(jQuery)( function() {
         },
 
         open: function(){
-            logger.debug('open zz_menu');
+            //logger.debug('open zz_menu');
             var self = this,
                 el   = self.element,
                 menu = self.menu,
@@ -130,7 +130,7 @@ if(jQuery)( function() {
                 var  x = -( (menu.width()/2) - (el.width()/2));
                 var  y = el.height()+12;
 
-                logger.debug('x:'+x+',y:'+y);
+                //logger.debug('x:'+x+',y:'+y);
                 // Show the menu
                 $(document).unbind('click');
                 if( o.direction == 'down' ){

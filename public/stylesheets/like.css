@@ -4,15 +4,16 @@ div.zzlike{
 }
 
 div.zzlike div.zzlike-button{
-     display: inline-block;
+    display: inline-block;
+    color: transparent;
     position: relative;
-    width:   25px;
+    width:   1px;
     height:  20px;
     line-height: 20px;
     border: solid 1px black;
     background: #ffce00;
     text-align: left;
-    padding: 0 5px 0 20px;
+    padding: 0 5px 0 14px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     font-size: 11px;

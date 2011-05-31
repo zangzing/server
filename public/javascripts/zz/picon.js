@@ -40,7 +40,7 @@
                                     '<div class="button-bar">' +
                                         '<div class="buttons">' +
                                             '<div class="share-button"></div>' +
-                                            '<div class="like-button"></div>' +
+                                            '<div class="like-button zzlike" data-zzid="'+self.options.albumId+'" data-zztype="album"></div>'+
                                             '<div class="delete-button"></div>' +
                                         '</div>' +
                                     '</div>'+
@@ -89,9 +89,10 @@
                         });
                     });
 
-                    self.template.find('.like-button').click(function(){
-                        self.options.onLike();
-                    });
+                    like.draw_tag( self.template.find('.like-button') );
+                    //self.template.find('.like-button').click(function(){
+                    //    self.options.onLike();
+                    //});
 
 
                     if(!self.options.allowDelete){
