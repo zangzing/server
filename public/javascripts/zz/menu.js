@@ -25,7 +25,7 @@ if(jQuery)( function() {
 //	                            '<li class="privacy"><a href="#privacy">Privacy</a></li>'+
                                 '<li class="rotater"><a href="#rotater">Right</a></li>'+
                                 '<li class="rotatel"><a href="#rotatel">Left</a></li>'+
-                                '<li class="setcover"><a href="#setcover">Set as Cover</a></li>'+
+                                '<li class="setcover"><a href="#setcover">Make Cover</a></li>'+
                                 '<li class="delete"><a href="#delete">Delete</a></li>'+
                              '</ul>'
         },
