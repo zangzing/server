@@ -110,7 +110,7 @@ var simple_uploader = {
                 file_size_limit : "102400",	// 100MB
                 file_types : "*.jpg;*.jpeg;*.png;*.gif;*.tiff",
                 file_types_description : "Image Files",
-                file_upload_limit : "100",
+                file_upload_limit : "0",
                 file_queue_limit : "0",
 
 
