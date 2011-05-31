@@ -119,7 +119,7 @@ var like = {
             if( $(tag).attr('data-zzstyle') =="menu" ){
                 $(tag).find("span.like-count").html( '('+like.hash[id]['count'].toString()+')' );
             }else{
-                var button  = $( ' <div class="zzlike-button">Like</div>'),
+                var button  = $( ' <div class="zzlike-button">.</div>'),
                     icon    = $( '<span></span>' ),
                     counter = $( '<div class="zzlike-count">'+like.hash[id]['count']+'</div>');
                 if( like.hash[id]['user'] ){
