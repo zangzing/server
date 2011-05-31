@@ -13,6 +13,7 @@ var share = {
               subject_type : object_type,
               zza_context  : zza_context,
               menu_template: this.share_menu_template,
+              append_to_element: zza_context == 'frame',
               email_action : this.share_to_email,
               facebook_action : this.share_to_facebook,
               twitter_action : this.share_to_twitter

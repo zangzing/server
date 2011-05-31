@@ -296,7 +296,8 @@
                             { subject_id:   self.options.photoId,
                               subject_type: 'photo',
                               direction: 'up',
-                              bind_click_open: true
+                              bind_click_open: true,
+                              append_to_element: true
                               //callback:  USE Default callback
                             });
                     }

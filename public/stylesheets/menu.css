@@ -1,7 +1,7 @@
 .zz_menu {
 	position: absolute;
 	width: 120px;
-    z-index: auto;
+    z-index: 9999;
 	padding: 0px;
 	margin: 0px;
 	display: none;

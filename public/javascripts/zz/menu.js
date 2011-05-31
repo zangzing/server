@@ -27,7 +27,8 @@ if(jQuery)( function() {
                                 '<li class="rotatel"><a href="#rotatel">Left</a></li>'+
                                 '<li class="setcover"><a href="#setcover">Make Cover</a></li>'+
                                 '<li class="delete"><a href="#delete">Delete</a></li>'+
-                             '</ul>'
+                             '</ul>',
+            append_to_element: false 
         },
 
         _create: function() {
@@ -39,9 +40,12 @@ if(jQuery)( function() {
                     .append('<div id="menu-top">')
                     .append( o.menu_template )
                     .append('<div id="menu-bottom"></div>');
-            //$('body').append(menu);
-            el.append( menu );
             self.menu = menu;
+            if(o.append_to_element){
+                el.append( menu );
+            }else{
+                $('body').append(menu);
+            }
 
             // Style Menu
             if( o.direction == 'down' ){
@@ -109,7 +113,11 @@ if(jQuery)( function() {
 
                 if(self._trigger('beforeopen') === false) return; //If any listeners return false, then do not open
 
-                // Hide other zz_menus that may be showing
+                // Hide other zz_menus that may be showing,excluding this instance
+                $(":ui-zz_menu").not(el).each(function(){
+                    $(this).zz_menu("close");
+                });
+
                 $(".zz_menu").hide();
                 //var x = offset.left+ ( $(el).outerWidth()/2 ) +  - (menu.width()/2);
                 //var y = offset.top - $(el).outerHeight();
@@ -120,31 +128,37 @@ if(jQuery)( function() {
                 //var x = el.offset().left + (el.width() / 2) - (menu.width() / 2);
                 //var y = el.offset().top - menu.height();
 
-                //Use this when appending the element to the end of the document
-                //var offset = $(el).offset();
-                //var y, x = offset.left+ ( $(el).outerWidth()/2 )  - (menu.width()/2);
-                // down       y = offset.top + el.height()+10;
-                //  up        y = $(document).height() - offset.top+10;
-
-                //Use this when appending the element to an anchor element
-                var  x = -( (menu.width()/2) - (el.width()/2));
-                var  y = el.height()+12;
+                var x,y,offset;
+                if( o.append_to_element){
+                     //Use this when appending the element to an anchor element
+                    x = -( (menu.width()/2) - (el.width()/2));
+                    y = el.height()+12;
+                }else{
+                    //Use this when appending the element to the end of the document
+                    offset = $(el).offset();
+                    y = $(document).height() - offset.top+10;
+                    x = offset.left+ ( $(el).outerWidth()/2 )  - (menu.width()/2);
+                }
 
                 //logger.debug('x:'+x+',y:'+y);
                 // Show the menu
                 $(document).unbind('click');
                 if( o.direction == 'down' ){
+                    if( !o.append_to_element ){
+                        y = offset.top + el.height()+10;
+                    }
                     // Show zz_menu below and center of the clicked element after animation is done bind hoverOut to close
                     menu.css({display:'block',opacity:0,left:-x,top:y-o.animation_y });
-                    menu.animate({top:y,opacity:1}, o.animation_length, function(){ menu.hover(function(){},function(){ self.close()}); });
+                    menu.animate({top:y,opacity:1}, o.animation_length, function(){ menu.hover( $.noop,function(){ self.close();}); });
                 } else {
                     // Show zz_menu above and center of the clicked element after animation is done bind hoverOut to close
                     menu.css({display:'block',opacity:0,left:x,bottom:y-o.animation_y});
-                    menu.animate({bottom:y,opacity:1},o.animation_length, function(){ menu.hover(function(){},function(){ self.close()}); });
+                    menu.animate({bottom:y,opacity:1},o.animation_length, function(){ menu.hover($.noop,function(){ self.close();}); });
                 }
 
                 // Bind Keyboard
-                $(document).keypress( function(e) {
+                $(document).bind('keypress.zz_menu', function(e) {
+                    e.stopPropagation();
                     switch( e.keyCode ) {
                         case 38: // up
                             if( menu.find('LI.hover').size() == 0 ) {
@@ -174,14 +188,15 @@ if(jQuery)( function() {
 
                 // Close menu if anybody clicks anywhere outside menu
                 setTimeout( function() { // Delay for Mozilla
-                    $(document).click( function() {
+                    $(document).click( function(e){
+                        $(document).unbind( e );
                         self.close();
-                        return false;
+                        e.stopPropagation();
                     });
                 }, 0);
 
                 //If the window resizes close menu (its bottom positioned so it will look out of place if not removed)
-                $(window).one('resize',function() {  self.close()  });
+                //$(window).one('resize',function() {  self.close()  });
                 self._trigger('open');
             }else{
              return false;       
@@ -190,8 +205,11 @@ if(jQuery)( function() {
 
         close: function(){
             var self=this;
-            $(document).unbind('click').unbind('keypress');
-            self.menu.fadeOut(self.options.animation_length);
+            if( self.menu.not(':hidden') ){
+                $(document).unbind('click');
+                $(document).unbind('keypress.zz_menu');
+                self.menu.fadeOut(self.options.animation_length);
+            }
         },
 
         // Disable i menu items on the fly
@@ -236,6 +254,7 @@ if(jQuery)( function() {
 		destroy: function(){
 				this.element.unbind('click');
                 this.menu.remove();
+                $.Widget.prototype.destroy.apply( this, arguments );
 		}
     });
 })(jQuery);
