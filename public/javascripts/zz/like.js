@@ -109,28 +109,30 @@ var like = {
 
     draw_tags: function(){
         $('.zzlike').each( function(index, zzliketag){
-            var tag = $(zzliketag);
-            var id = tag.attr('data-zzid');
-
-            if( typeof(like.hash[id])!= 'undefined' ){
-                if( tag.attr('data-zzstyle') =="menu" ){
-                    tag.find("span.like-count").html( '('+like.hash[id]['count'].toString()+')' );
-                }else{
-                    button  = $( ' <div class="zzlike-button">Like</div>');
-                    icon    = $( '<span></span>' )
-                    counter = $( '<div class="zzlike-count">'+like.hash[id]['count']+'</div>');
-                    if( like.hash[id]['user'] ){
-                        $(icon).addClass( 'zzlike-thumbup' );
-                    } else {
-                        $(icon).addClass( 'zzlike-vader' );
-                    }
-                    $(button).prepend( icon );
-                    tag.empty();
-                    tag.append( button ).append( counter );
-                }
-                tag.click( like.toggle );
-            }
+            like.draw_tag( zzliketag );
         });
+    },
+
+    draw_tag: function( tag){
+        var id = $(tag).attr('data-zzid');
+        if( typeof(like.hash[id])!= 'undefined' ){
+            if( $(tag).attr('data-zzstyle') =="menu" ){
+                $(tag).find("span.like-count").html( '('+like.hash[id]['count'].toString()+')' );
+            }else{
+                var button  = $( ' <div class="zzlike-button">Like</div>'),
+                    icon    = $( '<span></span>' ),
+                    counter = $( '<div class="zzlike-count">'+like.hash[id]['count']+'</div>');
+                if( like.hash[id]['user'] ){
+                    $(icon).addClass( 'zzlike-thumbup' );
+                } else {
+                    $(icon).addClass( 'zzlike-vader' );
+                }
+                $(button).prepend( icon );
+                $(tag).empty();
+                $(tag).append( button ).append( counter );
+            }
+            $(tag).click( like.toggle );
+        }
     },
 
     refresh_tag: function(id){

@@ -4,6 +4,7 @@ div.zzlike{
 }
 
 div.zzlike div.zzlike-button{
+     display: inline-block;
     position: relative;
     width:   25px;
     height:  20px;
@@ -37,6 +38,7 @@ div.zzlike span.zzlike-thumbup{
 
 
 div.zzlike div.zzlike-count{
+    display: inline-block;
     position: absolute;
     top:1px;
     left: 52px;

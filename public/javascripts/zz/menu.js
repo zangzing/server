@@ -1,11 +1,8 @@
-// 
-// derived and inspired from jQuery Context Menu Plugin
+//
+//
+// Inspiration drawn from from jQuery Context Menu Plugin
 // Version 1.01 by Cory S.N. LaViska
-// A Beautiful Site (http://abeautifulsite.net/)
-// More info: http://abeautifulsite.net/2008/09/jquery-context-menu-plugin/
-// Terms of Use
-// This plugin is dual-licensed under the GNU General Public License
-// and the MIT License and is copyright A Beautiful Site, LLC.
+//
 //
 if(jQuery)( function() {
 

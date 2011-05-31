@@ -253,7 +253,7 @@
                 var toolbarTemplate = '<div class="photo-toolbar">' +
                                           '<div class="buttons">' +
                                               '<div class="share-button"></div>' +
-                                              '<div class="like-button"></div>' +
+                                              '<div class="like-button zzlike" data-zzid="'+self.options.photoId+'" data-zztype="photo"></div>' +
                                               '<div class="info-button"></div>' +
                                           '</div>' +
                                        '</div>';
@@ -285,9 +285,11 @@
                             share.show_share_menu($(this), 'photo', self.options.photoId, {x:0,y:0}, 'frame', function(){});
                         });
 
-                        self.toolbarElement.find('.like-button').click(function(){
-                            alert("This feature is still under construction. This will allow you to like an individual photo.");
-                        });
+                        like.draw_tag( self.toolbarElement.find('.like-button') );
+
+                        //        .click(function(){
+                        //    alert("This feature is still under construction. This will allow you to like an individual photo.");
+                        //});
 
                         //imenu
                         self.toolbarElement.find('.info-button').zz_menu(
