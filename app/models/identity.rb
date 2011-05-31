@@ -53,6 +53,7 @@ class Identity < ActiveRecord::Base
     :smugmug => {:name => 'SmugMug', :icon => ''},
     :photobucket => {:name => 'Photobucket', :icon => ''},
     :instagram => {:name => 'Instagram', :icon => ''},
+    :dropbox => {:name => 'Dropbox', :icon => ''},
     :shutterfly => {:name => 'Shutterfly', :icon => ''},
     :kodak => {:name => 'Kodak Gallery', :icon => ''},
     :local => {:name => 'ZangZing Local Contacts', :icon => ''},
