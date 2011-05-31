@@ -2,24 +2,7 @@ class Connector::DropboxFoldersController < Connector::DropboxController
 
   LISTABLE_TYPES = %w(image/jpeg image/gif image/bmp)
 
-  def self.make_signed_url(access_token, entry_path, options = {})
-      root = options.delete(:root) || 'thumbnails'
-      path = entry_path.sub(/^\//, '')
-      rest = Dropbox.check_path(path).split('/')
-      rest << { :ssl => false }
-      rest.last.merge! options
-      url = Dropbox.api_url(root, 'dropbox', *rest)
-      request_uri = URI.parse(url)
-
-      http = Net::HTTP.new(request_uri.host, request_uri.port)
-      req = Net::HTTP::Get.new(request_uri.request_uri)   
-      req.oauth!(http, access_token.consumer, access_token, {:scheme => :query_string})
-      "#{request_uri.scheme}://#{request_uri.host}#{req.path}"
-  end
-
-
   def self.list_dir(api, params)
-    api.mode = :metadata_only
     path = params[:path] || '/'
     list = call_with_error_adapter do
       api.list(path)
@@ -40,8 +23,8 @@ class Connector::DropboxFoldersController < Connector::DropboxController
           :name => entry_name,
           :id   => entry_id,
           :type => 'photo',
-          :thumb_url => make_signed_url(api.access_token, entry.path, :size => 'm'),
-          :screen_url => make_signed_url(api.access_token, entry.path, :size => 'l'),
+          :thumb_url => dropbox_image_path(:root => 'thumbnails', :path => entry.path, :size => 'm'),
+          :screen_url => dropbox_image_path(:root => 'thumbnails', :path => entry.path, :size => 'l'),
           :add_url => dropbox_path(:photo_path => entry.path, :action => :import_photo),
           :source_guid => make_source_guid(entry.path)
         }
@@ -65,11 +48,12 @@ class Connector::DropboxFoldersController < Connector::DropboxController
               :upload_batch_id => current_batch.id,
               :capture_date => (Time.parse(entry.modified) rescue nil),
               :source_guid => make_source_guid(entry.path),
-              :source_thumb_url => make_signed_url(api.access_token, entry.path, :size => 'm'),
-              :source_screen_url => make_signed_url(api.access_token, entry.path, :size => 'l'),
-              :source => 'dropbox',
-              :temp_url => make_signed_url(api.access_token, entry.path, :root => 'files')
-      })
+              :source_thumb_url => dropbox_image_path(:root => 'thumbnails', :path => entry.path, :size => 'm'),
+              :source_screen_url => dropbox_image_path(:root => 'thumbnails', :path => entry.path, :size => 'l'),
+              :source => 'dropbox'
+            }).tap do |p|
+              p.temp_url = dropbox_image_url(:root => 'files', :path => entry.path, :host => Server::Application.config.application_host)
+            end
     end
 
     bulk_insert(photos)
@@ -81,6 +65,7 @@ class Connector::DropboxFoldersController < Connector::DropboxController
       api.metadata(params[:photo_path])
     end
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
+    photo_url = dropbox_image_path(:root => 'files', :path => photo_data.path, :host => Server::Application.config.application_host)
     photo = Photo.create(
               :id => Photo.get_next_id,
               :caption => File.split(photo_data.path).last,
@@ -89,27 +74,28 @@ class Connector::DropboxFoldersController < Connector::DropboxController
               :upload_batch_id => current_batch.id,
               :capture_date => (Time.parse(photo_data.modified) rescue nil),
               :source_guid => make_source_guid(photo_data.path),
-              :source_thumb_url => make_signed_url(api.access_token, photo_data.path, :size => 'm'),
-              :source_screen_url => make_signed_url(api.access_token, photo_data.path, :size => 'l'),
-              :source => 'dropbox',
-              :temp_url => make_signed_url(api.access_token, photo_data.path, :root => 'files')
-    )
-    ZZ::Async::GeneralImport.enqueue( photo.id, make_signed_url(api.access_token, photo_data.path, :root => 'files') )
+              :source_thumb_url => dropbox_image_path(:root => 'thumbnails', :path => photo_data.path, :size => 'm'),
+              :source_screen_url => dropbox_image_path(:root => 'thumbnails', :path => photo_data.path, :size => 'l'),
+              :source => 'dropbox'
+    ).tap do |p|
+      p.temp_url = photo_url
+    end
+    ZZ::Async::GeneralImport.enqueue( photo.id, photo_url )
 
     Photo.to_json_lite(photo)
   end
 
 
   def index
-    render :json => self.class.list_dir(dropbox_api, params)
+    fire_async_response('list_dir')
   end
 
   def import_folder
-    render :json => self.class.import_certain_photo(dropbox_api, params)
+    fire_async_response('import_whole_folder')
   end
 
   def import_photo
-    render :json => self.class.import_whole_folder(dropbox_api, params)
+    fire_async_response('import_certain_photo')
   end
   
 end

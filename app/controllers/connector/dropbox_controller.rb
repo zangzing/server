@@ -50,4 +50,19 @@ protected
     "dropbox_"+Photo.generate_source_guid(url)
   end
 
+  def self.make_signed_url(access_token, entry_path, options = {})
+      root = options.delete(:root) || 'files'
+      path = entry_path.sub(/^\//, '')
+      rest = Dropbox.check_path(path).split('/')
+      rest << { :ssl => false }
+      rest.last.merge! options
+      url = Dropbox.api_url(root, 'dropbox', *rest)
+      request_uri = URI.parse(url)
+
+      http = Net::HTTP.new(request_uri.host, request_uri.port)
+      req = Net::HTTP::Get.new(request_uri.request_uri)
+      req.oauth!(http, access_token.consumer, access_token, {:scheme => :query_string})
+      "#{request_uri.scheme}://#{request_uri.host}#{req.path}"
+  end
+
 end
