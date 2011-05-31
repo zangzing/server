@@ -7,16 +7,17 @@ var share = {
                         '</ul>',
 
 
-    show_share_menu: function(button, object_type, object_id, offset, zza_context, onclose){
+    show_share_menu: function(button, object_type, object_id, offset, zza_context, onopen, onclose){
         $(button).zz_menu(
             { subject_id   : object_id,
               subject_type : object_type,
               zza_context  : zza_context,
               menu_template: this.share_menu_template,
-              append_to_element: zza_context == 'frame',
               email_action : this.share_to_email,
               facebook_action : this.share_to_facebook,
-              twitter_action : this.share_to_twitter
+              twitter_action : this.share_to_twitter,
+              open: onopen,
+              close: onclose
         });
         $(button).zz_menu('open');
     },

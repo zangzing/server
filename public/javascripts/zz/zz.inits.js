@@ -249,10 +249,10 @@ zz.init = {
             //todo: need better generic way to determine current view and get photo id -- this is duplicated elsewhere
             if (document.location.href.indexOf('/photos/#!') !== -1 || document.location.href.indexOf('/photos#!') !== -1) {
                 var photoId = jQuery.param.fragment().slice(1);
-                share.show_share_menu($(this), 'photo', photoId, {x:0,y:0}, 'toolbar');
+                share.show_share_menu($(this), 'photo', photoId, {x:0,y:0}, 'toolbar', $.noop, $.noop);
             }
             else{
-                share.show_share_menu($(this), 'album', zz.album_id, {x:0,y:0},'toolbar');
+                share.show_share_menu($(this), 'album', zz.album_id, {x:0,y:0},'toolbar', $.noop, $.noop);
             }
 
         });

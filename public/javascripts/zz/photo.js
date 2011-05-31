@@ -83,9 +83,6 @@
                 self.captionElement.hide();
             }
 
-
-
-
             if(self.options.context.indexOf('chooser')===0){
                 //magnify
                 this.element.find('.magnify-button').click(function(event){
@@ -261,9 +258,10 @@
 
 
                 var menuOpen = false;
+                var hover = false;
 
                 var checkCloseToolbar = function(){
-                    if(!menuOpen ){
+                    if(!menuOpen && !hover ){
                         self.borderElement.css({'padding-bottom': '0px'});
                         self.imageElement.css({'border-bottom': '5px solid #fff'});
                         self.toolbarElement.remove();
@@ -275,35 +273,46 @@
                     hover = true;
 
                     if(!menuOpen){
+                        //create and display toolbar
                         self.toolbarElement = $(toolbarTemplate);
                         self.borderElement.append(self.toolbarElement);
                         self.borderElement.css({'padding-bottom': '30px'});
                         self.imageElement.css({'border-bottom': '35px solid #fff'});
 
-                        //share
-                        self.toolbarElement.find('.share-button').click(function(){
-                            share.show_share_menu($(this), 'photo', self.options.photoId, {x:0,y:0}, 'frame', function(){});
+                        // Share button
+                        self.toolbarElement.find('.share-button').zz_menu(
+                        {   subject_id:      self.options.photoId,
+                            subject_type:    'photo',
+                            zza_context:     'frame',
+                            style:           'dropdown',
+                            bind_click_open: true,
+                            append_to_element: true, //use the element zzindex so the overflow goes under the bottom toolbar
+                            menu_template:   share.share_menu_template,
+                            email_action :   share.share_to_email,
+                            facebook_action: share.share_to_facebook,
+                            twitter_action : share.share_to_twitter,
+                            open:  function(){ menuOpen = true;  },
+                            close: function(){ menuOpen = false; checkCloseToolbar(); }
                         });
 
+                        // Like button
                         like.draw_tag( self.toolbarElement.find('.like-button') );
 
-                        //        .click(function(){
-                        //    alert("This feature is still under construction. This will allow you to like an individual photo.");
-                        //});
-
-                        //imenu
+                        // i button
                         self.toolbarElement.find('.info-button').zz_menu(
-                            { subject_id:   self.options.photoId,
-                              subject_type: 'photo',
-                              direction: 'up',
-                              bind_click_open: true,
-                              append_to_element: true
-                              //callback:  USE Default callback
-                            });
+                        {   subject_id:      self.options.photoId,
+                            subject_type:    'photo',
+                            style:       'dropdown',
+                            bind_click_open: true,
+                            append_to_element: true, //use the element zzindex so the overflow goes under the bottom toolbar
+                            open:  function(){ menuOpen = true; },
+                            close: function(){ menuOpen = false; checkCloseToolbar();}
+                        });
                     }
                 });
 
-                self.element.mouseleave(function(){
+               self.element.mouseleave(function(){
+                    hover = false;
                     checkCloseToolbar();
                });
             }

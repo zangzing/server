@@ -83,10 +83,8 @@
                     self.topOfStack.find('.button-bar').show();
 
                     self.template.find('.share-button').mousedown(function(){
-                        menuOpen = true;
-                        share.show_share_menu($(this), 'album', self.options.albumId, {x:0,y:0}, 'frame', function(){
-                            menuOpen = false;
-                        });
+                        share.show_share_menu($(this), 'album', self.options.albumId, {x:0,y:0}, 'frame',
+                        function(){menuOpen = true;},function(){ menuOpen = false;});
                     });
 
                     like.draw_tag( self.template.find('.like-button') );

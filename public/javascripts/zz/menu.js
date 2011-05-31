@@ -17,7 +17,7 @@ if(jQuery)( function() {
                                                         'Subject Type: ' + subject_type + '\n\n' +
 						                                'Subject ID: ' + subject_id + '\n\n');
                                                },
-            direction       : 'up',
+            style       : 'popup',
             animation_length: 200,
             animation_y     : 10,
             menu_template   : '<ul>'+
@@ -48,7 +48,7 @@ if(jQuery)( function() {
             }
 
             // Style Menu
-            if( o.direction == 'down' ){
+            if( o.style == 'dropdown' ){
                 menu.find('#menu-top').addClass('arrowtop');
                 menu.find('#menu-bottom').addClass('flatbottom');
             }else{
@@ -117,8 +117,6 @@ if(jQuery)( function() {
                 $(":ui-zz_menu").not(el).each(function(){
                     $(this).zz_menu("close");
                 });
-
-                $(".zz_menu").hide();
                 //var x = offset.left+ ( $(el).outerWidth()/2 ) +  - (menu.width()/2);
                 //var y = offset.top - $(el).outerHeight();
 
@@ -132,28 +130,44 @@ if(jQuery)( function() {
                 if( o.append_to_element){
                      //Use this when appending the element to an anchor element
                     x = -( (menu.width()/2) - (el.width()/2));
-                    y = el.height()+12;
+                    y = el.height();
                 }else{
                     //Use this when appending the element to the end of the document
                     offset = $(el).offset();
-                    y = $(document).height() - offset.top+10;
+                    y = $(document).height() - offset.top;
                     x = offset.left+ ( $(el).outerWidth()/2 )  - (menu.width()/2);
                 }
+
+                // These are used to keep toolbar menu open when bound to element
+                // and to close menu when user hovers out
+                var hover = true;
+                var mouse_in = function(){
+                    hover = true;
+                }
+                var mouse_out= function(){
+                    hover = false;
+                    setTimeout( function(){ if(!hover){ self.close();}},200);
+                };
 
                 //logger.debug('x:'+x+',y:'+y);
                 // Show the menu
                 $(document).unbind('click');
-                if( o.direction == 'down' ){
+                if( o.style == 'dropdown' ){
                     if( !o.append_to_element ){
-                        y = offset.top + el.height()+10;
+                        y = offset.top + el.height();
                     }
                     // Show zz_menu below and center of the clicked element after animation is done bind hoverOut to close
-                    menu.css({display:'block',opacity:0,left:-x,top:y-o.animation_y });
-                    menu.animate({top:y,opacity:1}, o.animation_length, function(){ menu.hover( $.noop,function(){ self.close();}); });
+                    menu.css({display:'block',opacity:0,left:x,top:y-o.animation_y });
+                    menu.animate({top:y,opacity:1}, o.animation_length, function(){
+                        el.hover( mouse_in, mouse_out );
+                        menu.hover(mouse_in, mouse_out ); });
                 } else {
                     // Show zz_menu above and center of the clicked element after animation is done bind hoverOut to close
                     menu.css({display:'block',opacity:0,left:x,bottom:y-o.animation_y});
-                    menu.animate({bottom:y,opacity:1},o.animation_length, function(){ menu.hover($.noop,function(){ self.close();}); });
+                    menu.animate({bottom:y,opacity:1},o.animation_length, function(){
+                            el.hover(mouse_in, mouse_out );
+                            menu.hover(mouse_in, mouse_out );
+                    });
                 }
 
                 // Bind Keyboard
@@ -188,7 +202,7 @@ if(jQuery)( function() {
 
                 // Close menu if anybody clicks anywhere outside menu
                 setTimeout( function() { // Delay for Mozilla
-                    $(document).click( function(e){
+                    $(document).bind( 'click.zz_menu', function(e){
                         $(document).unbind( e );
                         self.close();
                         e.stopPropagation();
@@ -206,10 +220,12 @@ if(jQuery)( function() {
         close: function(){
             var self=this;
             if( self.menu.not(':hidden') ){
-                $(document).unbind('click');
+                $(document).unbind('click.zz_menu');
                 $(document).unbind('keypress.zz_menu');
+                self.menu.unbind('hover');
                 self.menu.fadeOut(self.options.animation_length);
             }
+            self._trigger('close');
         },
 
         // Disable i menu items on the fly
@@ -256,5 +272,6 @@ if(jQuery)( function() {
                 this.menu.remove();
                 $.Widget.prototype.destroy.apply( this, arguments );
 		}
+
     });
 })(jQuery);
