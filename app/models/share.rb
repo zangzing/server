@@ -2,14 +2,14 @@
 #   Copyright 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 class Share < ActiveRecord::Base
-  attr_accessible :user, :subject, :subject_url, :service, :recipients, :message
+  attr_accessible :user, :subject, :subject_url, :service, :recipients, :message, :share_type
   serialize :recipients  #the recipients field (an array) will be YAML serialized into the db
 
   belongs_to :user
   belongs_to :subject, :polymorphic => true  #the subject can be user,album or photo
   belongs_to :upload_batch
 
-  validates_presence_of :user_id, :subject_id, :subject_type, :recipients
+  validates_presence_of :user_id, :subject_id, :subject_type, :recipients, :share_type
 
   validates  :service, :presence => true, :inclusion => { :in => %w{email social} }
 
@@ -36,6 +36,13 @@ class Share < ActiveRecord::Base
   after_commit :after_share_photo, :if => :photo?, :on => :create
 
 
+  # constants for Share.share_type
+  TYPE_VIEWER_INVITE = 'viewer'
+  TYPE_CONTRIBUTOR_INVITE = 'contributor'
+
+  SERVICE_EMAIL = 'email'
+  SERVICE_SOCIAL = 'social'
+
 
   # Finds all of a user's shares for a given album and
   # delivers them. If the shares had already been delivered,
@@ -47,6 +54,31 @@ class Share < ActiveRecord::Base
 
     shares = Share.find_all_by_user_id_and_subject_id(user_id, subject_id)
     shares.each { |share|  ZZ::Async::DeliverShare.enqueue( share.id ) if share.sent_at.nil? }
+  end
+
+
+  # parses and cleans list of email addresses.
+  # returns emails and any errors
+  def self.validate_email_list( email_list )
+    #split the comma seprated list into array removing any spaces before or after commma
+    tokens = email_list.split(/\s*,\s*/)
+
+    # Loop through the tokens and add the bad ones to the errors array
+    token_index = 0
+    emails = []
+    errors = []
+    tokens.each do |t|
+      begin
+        e = Mail::Address.new( t.to_slug.to_ascii.to_s  )
+        # An address like 'foobar' is a valid local address with no domain so avoid it
+        raise Mail::Field::ParseError.new if e.domain.nil?
+        emails << e.address.to_s #TODO: Email validator in share.rb does not handle formatted_emails just the address
+      rescue Mail::Field::ParseError
+        errors << { :index => token_index, :token => t, :error => "Invalid Email Address" }
+      end
+      token_index+= 1
+    end
+    return emails,errors
   end
 
 
@@ -111,7 +143,11 @@ class Share < ActiveRecord::Base
     # if the owner is sharing the album, add VIEWER permsission
     # to the recipients of this email share (if this is an email share)
     if email? && subject.user.id == user_id
-      recipients.each { |email| subject.add_viewer( email ) } 
+      if self.viewer_invite?
+        recipients.each { |email| subject.add_viewer( email ) }
+      else
+        recipients.each { |email| subject.add_contributor( email ) }
+      end
     end
   end
 
@@ -121,11 +157,11 @@ class Share < ActiveRecord::Base
   end
 
   def email?
-    self.service == 'email'
+    self.service == SERVICE_EMAIL
   end
 
   def social?
-    self.service == 'social'
+    self.service == SERVICE_SOCIAL
   end
 
   def album?
@@ -143,5 +179,15 @@ class Share < ActiveRecord::Base
   def instant?
     self.upload_batch_id.nil?
   end
+
+  def viewer_invite?
+    self.share_type == TYPE_VIEWER_INVITE
+  end
+
+  def contributor_invite?
+    self.share_type == TYPE_CONTRIBUTOR_INVITE
+  end
+
+
 
 end
