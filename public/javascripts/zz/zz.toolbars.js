@@ -29,7 +29,7 @@ zz.toolbars = {
                         window.location.reload();
                     };
 
-                    zzapi_albums.delete_album(zz.album_id, afterdelete, afterdelete);
+                    zzapi_album.delete_album(zz.album_id, afterdelete, afterdelete);
 
                     $('#drawer .body').fadeOut('fast');
                     zz.close_drawer(400);
@@ -106,5 +106,26 @@ zz.toolbars = {
             });
         }
         return $('<ul id="like-menu">').append( album ).append(user).append(photo);
+    },
+
+    load_album_cover: function( src ){
+        var image = new Image();
+        image.onload = function(){
+            var height = 40;
+            var width = Math.floor(image.width * (height / image.height));
+
+            $('#album-cover-border img.album-cover').css({
+                height: height,
+                width:width
+            });
+
+            $('#album-cover-border .bottom-shadow').css({
+                width:width + 4
+            });
+
+            $('img.album-cover').attr('src', image.src);
+        };
+        image.src = agent.checkAddCredentialsToUrl(src);
     }
+
 };

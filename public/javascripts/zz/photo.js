@@ -104,13 +104,6 @@
             }
 
 
-
-
-
-
-
-
-
             //click
             self.imageElement.click(function(event){
                 self.options.onClick('main')
@@ -188,27 +181,11 @@
             }
 
 
-            //delete
-            var delete_photo = function(){
-                if(self.options.onDelete()){
-                    self.captionElement.hide();
-                    self.deleteButtonElement.hide();
-                    self.borderElement.hide("scale", {}, 300, function(){
-                        self.element.animate({width:0},500, function(){
-                            self.element.remove();
 
-                            if(self.photoGrid){
-                                self.photoGrid.resetLayout();
-                            }
-
-                        })
-                    });
-                }
-            };
 
             if(self.options.allowDelete){
                 self.deleteButtonElement.click(function(){
-                    delete_photo();
+                    self.delete_photo();
                 });
             }else{
                 self.deleteButtonElement.remove();   
@@ -283,16 +260,15 @@
 
                         // Share button
                         self.toolbarElement.find('.share-button').zz_menu(
-                        {   subject_id:      self.options.photoId,
-                            subject_type:    'photo',
-                            zza_context:     'frame',
-                            style:           'dropdown',
-                            bind_click_open: true,
+                        {   zz_photo:          self,
+                            subject_id:        self.options.photoId,
+                            subject_type:      'photo',
+                            zza_context:       'frame',
+                            style:             'dropdown',
+                            bind_click_open:   true,
                             append_to_element: true, //use the element zzindex so the overflow goes under the bottom toolbar
-                            menu_template:   share.share_menu_template,
-                            email_action :   share.share_to_email,
-                            facebook_action: share.share_to_facebook,
-                            twitter_action : share.share_to_twitter,
+                            menu_template:     share.share_menu_template,
+                            click:             self._menu_click_handler,
                             open:  function(){ menuOpen = true;  },
                             close: function(){ menuOpen = false; checkCloseToolbar(); }
                         });
@@ -302,13 +278,13 @@
 
                         // i button
                         self.toolbarElement.find('.info-button').zz_menu(
-                        {   subject_id:      self.options.photoId,
-                            subject_type:    'photo',
-                            style:       'dropdown',
-                            bind_click_open: true,
+                        {   zz_photo:          self,
+                            subject_id:        self.options.photoId,
+                            subject_type:      'photo',
+                            style:             'dropdown',
+                            bind_click_open:   true,
                             append_to_element: true, //use the element zzindex so the overflow goes under the bottom toolbar
-                            setcover: function() { zzapi_albums.set_cover( zz.album_id, self.options.photoId ); },
-                            delete_photo: delete_photo,
+                            click:             self._menu_click_handler,
                             open:  function(){ menuOpen = true; },
                             close: function(){ menuOpen = false; checkCloseToolbar();}
                         });
@@ -331,8 +307,79 @@
             }
         },
 
+        //delete
+        delete_photo:  function(){
+            var self = this;
+            if(self.options.onDelete()){
+                self.captionElement.hide();
+                self.deleteButtonElement.hide();
+                self.borderElement.hide("scale", {}, 300, function(){
+                    self.element.animate({width:0},500, function(){
+                        self.element.remove();
+                        if(self.photoGrid){
+                            self.photoGrid.resetLayout();
+                        }
+                    })
+                });
+            }
+        },
 
+        _menu_click_handler: function(event,data){
+            var action  = data.action,
+                options = data.options,
+                photo   = options.zz_photo,
+                id      = options.subject_id,
+                type    = options.subject_type;
 
+            switch( action ){
+                case 'email':
+                    share.share_to_email( type, id );
+                    break;
+                case 'twitter':
+                    share.share_to_twitter( type, id );
+                    break;
+                case 'facebook':
+                    share.share_to_facebook( type, id );
+                    break;
+                case 'download':
+                    var show_dialog = function( message ){
+                        var template = '<div class="downloading-dialog-content">'+message+'</div>';
+                        zz_dialog.show_dialog(template, { width:300, height: 100, modal: true, autoOpen: true });
+                    };
+                    var success = function( url ){
+                        
+                        if($.client.os =="Mac"){
+                            document.location.href = url;
+                        }else{
+                            if($.client.browser == 'Chrome'){ //on chrome on windows, using the same browser window to download causes js issues (stops pinging agent)
+                                window.open(url);
+                            }else{
+                                document.location.href = url;
+                            }
+                        }
+                        show_dialog( 'Your download should have started, otherwise please click <a href="'+url+'"> here </a>');
+                    };
+                    var error = function( request ){
+                        var flash = $.parseJSON(request.getResponseHeader("X-Flash"))
+                        show_dialog( 'Unable to download because '+flash.error );
+                    };
+
+                    zzapi_photo.download( id, function(url){ success(url)}, function(request){error(request);} );
+                    break;
+                case 'setcover':
+                    zzapi_album.set_cover( zz.album_id, id,
+                            function(){ zz.toolbars.load_album_cover( photo.options.previewSrc); });
+                    break;
+                case 'deletephoto':
+                    photo.delete_photo();
+                    break;
+                default:
+                    alert( 'Action: ' + action + '\n\n' +
+                           'Subject Type: ' + type + '\n\n' +
+                           'Subject ID: ' +  id + '\n\n');
+                    break;
+            }
+        },
 
         checked:false,
 

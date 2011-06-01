@@ -29,24 +29,7 @@
         <% content_for :page_javascript do %>
             <script type="text/javascript">
                 $(document).ready(function(){
-                    var image = new Image();
-                    image.onload = function(){
-                        var height = 40
-                        var width = Math.floor(image.width * (height / image.height));
-
-                        $('#album-cover-border img.album-cover').css({
-                            height: height,
-                            width:width
-                        });
-
-                        $('#album-cover-border .bottom-shadow').css({
-                            width:width + 4
-                        });
-
-                        $('img.album-cover').attr('src', image.src);
-                    };
-                    image.src = agent.checkAddCredentialsToUrl('<%= @album.cover.thumb_url%>');
-
+                    zz.toolbars.load_album_cover( '<%= @album.cover.thumb_url%>');
                 })
             </script>
         <% end %>

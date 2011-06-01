@@ -9,14 +9,14 @@ if(jQuery)( function() {
     $.widget("ui.zz_menu",{
         options:{
             subject_id      : '',
-            subjet_type     : '',
+            subject_type     : '',
             auto_open       : false,  //open upon creation
             bind_click_open : false,  //bind open to the elements click.
-            callback        : function(event, action) {
-                                               var options = $(this).data().zz_menu.options;
-					                           alert(   'Action: ' + action + '\n\n' +
-                                                        'Subject Type: ' + options.subject_type + '\n\n' +
-						                                'Subject ID: ' + options.subject_id + '\n\n');
+            click        : function(event, data) {
+                                               var opts = $(this).data().zz_menu.options;
+					                           alert(   'Action: ' + data.action + '\n\n' +
+                                                        'Subject Type: ' + data.options.subject_type + '\n\n' +
+						                                'Subject ID: ' + data.options.subject_id + '\n\n');
                                                },
             style       : 'popup',
             animation_length: 200,
@@ -27,7 +27,7 @@ if(jQuery)( function() {
 //                                '<li class="rotater"><a href="#rotater">Right</a></li>'+
 //                                '<li class="rotatel"><a href="#rotatel">Left</a></li>'+
                                 '<li class="setcover"><a href="#setcover">Set Cover</a></li>'+
-                                '<li class="delete"><a href="#delete_photo">Delete</a></li>'+
+                                '<li class="delete"><a href="#deletephoto">Delete</a></li>'+
                              '</ul>',
             append_to_element: false 
         },
@@ -80,14 +80,8 @@ if(jQuery)( function() {
             menu.find('LI:not(.disabled) A').click( function() {
                 self.close();
                 var action = $(this).attr('href').substr(1);
-                // Callbacks
-                if( o[action] == undefined){
-                    self._trigger('callback', null, action);
-                } else{
-                    self._trigger(action);
-                    //o[action]( o.subject_type, o.subject_id );
-                }
-                return false;
+                self._trigger('click', null, {'action':action, 'options': o});
+                return false; //Stop the click from bubbling up
             });
 
             // if the anchor option is set, bind to the elements click

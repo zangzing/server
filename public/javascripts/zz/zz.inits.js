@@ -415,7 +415,7 @@ zz.init = {
                             document.location.href = zz.album_base_url + "/photos/#!" + photo.id;
                         },
                         onDelete: function(index, photo){
-                            zzapi_photos.delete_photo( photo.id );
+                            zzapi_photo.delete_photo( photo.id );
                             return true;
                         },
                         currentPhotoId: $.param.fragment(),
