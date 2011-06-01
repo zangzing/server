@@ -250,7 +250,7 @@
                 var toolbarTemplate = '<div class="photo-toolbar">' +
                                           '<div class="buttons">' +
                                               '<div class="share-button"></div>' +
-                                              '<div class="like-button zzlike" data-zzid="'+self.options.photoId+'" data-zztype="photo"></div>' +
+                                              '<div class="like-button zzlike" data-zzid="'+self.options.photoId+'" data-zztype="photo"><div class="zzlike-icon thumbdown"></div></div>' +
                                               '<div class="info-button"></div>' +
                                           '</div>' +
                                        '</div>';
