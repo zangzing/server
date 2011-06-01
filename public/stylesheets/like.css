@@ -39,9 +39,6 @@
     font-weight: 500;
 }
 
-.ua-ie .zzlike-count{
-    font-size: 9px;
-}
 
 .zzlike-count.empty{
     display:none;
