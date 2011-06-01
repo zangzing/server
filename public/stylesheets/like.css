@@ -23,7 +23,7 @@
 .zzlike-icon.thumbup:hover  { background-position: 0 -36px; }
 .zzlike-icon.thumbdown:hover{ background-position: 0 0;     }
 
-.zzlike-count{
+div.zzlike-count{
     position: absolute;
     top: 7px;
     left: 21px;
@@ -40,7 +40,7 @@
 }
 
 
-.zzlike-count.empty{
+div.zzlike-count.empty{
     display:none;
 }
 

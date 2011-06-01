@@ -117,7 +117,7 @@ var like = {
         var id = $(tag).attr('data-zzid');
         if( typeof(like.hash[id])!= 'undefined' ){
             if( $(tag).attr('data-zzstyle') =="menu" ){
-                $(tag).find("span.like-count").html( '('+like._count(id)+')' );
+               $(tag).find("span.like-count").html( '('+like.hash[id]['count'].toString()+')' );
             }else{
                 var button  = $( ' <div class="zzlike-button">'),
                     icon    = $( '<div class="zzlike-icon">' ),
@@ -154,7 +154,7 @@ var like = {
         if( like.hash[id]){
             $('.zzlike[data-zzid="'+id+'"]').each( function(){
                 if( $(this).attr('data-zzstyle') =="menu" ){
-                    $(this).find('div.like-count').html( '('+like._count(id)+')' );
+                       $(this).find('span.like-count').html( '('+like.hash[id]['count'].toString()+')' );
                 } else {
                     if( like.hash[id]['user'] ){
                         $(this).find('.thumbdown').addClass('thumbup').removeClass( 'thumbdown' );
