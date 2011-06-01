@@ -44,6 +44,15 @@ class Album < ActiveRecord::Base
 
   PRIVACIES = {'Public' =>'public','Hidden' => 'hidden','Password' => 'password'};
 
+
+  #constants for Album.who_can_upload and Album.who_can_download
+  WHO_EVERYONE      = 'everyone'
+  WHO_VIEWERS       = 'viewers'
+  WHO_CONTRIBUTORS  = 'contributors'
+  WHO_OWNER         = 'owner'
+
+
+
   def uniquify_name
     @uname = name
     @i = 0

@@ -40,6 +40,7 @@ class Share < ActiveRecord::Base
   TYPE_VIEWER_INVITE = 'viewer'
   TYPE_CONTRIBUTOR_INVITE = 'contributor'
 
+  # constants for Share.service
   SERVICE_EMAIL = 'email'
   SERVICE_SOCIAL = 'social'
 
