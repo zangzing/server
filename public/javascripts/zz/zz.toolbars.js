@@ -29,7 +29,7 @@ zz.toolbars = {
                         window.location.reload();
                     };
 
-                    albums.deleteAlbum(zz.album_id, afterdelete, afterdelete);
+                    zzapi_albums.delete_album(zz.album_id, afterdelete, afterdelete);
 
                     $('#drawer .body').fadeOut('fast');
                     zz.close_drawer(400);

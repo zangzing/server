@@ -40,7 +40,7 @@
                                     '<div class="button-bar">' +
                                         '<div class="buttons">' +
                                             '<div class="share-button"></div>' +
-                                            '<div class="like-button zzlike" data-zzid="'+self.options.albumId+'" data-zztype="album"></div>'+
+                                            '<div class="like-button zzlike" data-zzid="'+self.options.albumId+'" data-zztype="album"><div class="zzlike-icon thumbdown"></div></div>' +
                                             '<div class="delete-button"></div>' +
                                         '</div>' +
                                     '</div>'+
@@ -50,98 +50,101 @@
 
             self.captionHeight = 80;
 
-
+            //create & bind toolbar
             this.element.append(self.template);
+
+
 
             //for selenium tests...
             self.element.find('.picon').attr('id', 'picon-' + self.options.caption.replace(/[\W]+/g,'-'));
-
 
             //rotate stack
             var stackOption = Math.floor(Math.random() * self.options.stackAngles.length );
             self.template.find('.stacked-image:eq(0)').rotate(self.options.stackAngles[stackOption][0]);
             self.template.find('.stacked-image:eq(1)').rotate(self.options.stackAngles[stackOption][1]);
+            self.topOfStack = self.template.find('.stacked-image:last');
 
             //set caption
             self.template.find('.caption').text(self.options.caption);
-
 
             self.template.find('.cover-photo').click(function(){
                 self.options.onClick();
             });
 
-
-            var initMouseOver = function(){
-                self.topOfStack = self.template.find('.stacked-image:last');
-
-                var height = self.topOfStack.height();
-
-                var menuOpen = false;
-
-                self.element.mouseover(function(){
-                    self.topOfStack.css({height: height + 30});
-                    self.topOfStack.find('.button-bar').show();
-
-                    self.template.find('.share-button').mousedown(function(){
-                        share.show_share_menu($(this), 'album', self.options.albumId, {x:0,y:0}, 'frame',
-                        function(){menuOpen = true;},function(){ menuOpen = false;});
-                    });
-
-                    like.draw_tag( self.template.find('.like-button') );
-                    //self.template.find('.like-button').click(function(){
-                    //    self.options.onLike();
-                    //});
-
-
-                    if(!self.options.allowDelete){
-                        self.template.find('.delete-button').hide();
-                    }
-                    else{
-                        self.template.find('.delete-button').click(function(){
-                            self.options.onDelete();
-                        });
-                    }
-
-                });
-
-                self.element.mouseout(function(){
-                    if(!menuOpen){
-                         self.topOfStack.css({height: height});
-                         self.topOfStack.find('.button-bar').hide();
-                         self.template.find('.share-button').unbind('mousedown');
-                         self.template.find('.like-button').unbind('click');
-                         self.template.find('.delete-button').unbind('click');
-                     }
-                 });
-            };
-                
-
-
             self._resize(self.options.maxCoverWidth, self.options.maxCoverHeight);
 
+            var menuOpen = false;
+            var hover    = false;
+            var height;
 
-            //load cover photo
+            var checkCloseToolbar = function(){
+                if( !menuOpen && !hover){
+                    self.topOfStack.css
+                            ({height: height});
+                    self.topOfStack.find('.button-bar').hide();
+                }
+            };
+
+            var mouse_in = function(){
+                hover = true;
+
+                //display toolbar
+                self.topOfStack = self.template.find('.stacked-image:last');
+                height = self.topOfStack.height();
+                self.topOfStack.css({height: height + 30});
+                self.topOfStack.find('.button-bar').show();
+            };
+
+            var mouse_out =function(){
+                hover = false;
+                checkCloseToolbar();
+            };
+
+
+            // Share button
+            self.template.find('.share-button').zz_menu(
+            {   subject_id:      self.options.albumId,
+                subject_type:    'album',
+                zza_context:     'frame',
+                style:           'dropdown',
+                bind_click_open:   true,
+                append_to_element: true, //use the element zzindex so the overflow goes under the bottom toolbar
+                menu_template:   share.share_menu_template,
+                email_action :   share.share_to_email,
+                facebook_action: share.share_to_facebook,
+                twitter_action : share.share_to_twitter,
+                open:  function(){ menuOpen = true;  },
+                close: function(){ menuOpen = false; checkCloseToolbar(); }
+            });
+
+            // Like button
+            like.draw_tag( self.template.find('.like-button') );
+
+            // Delete button
+            if(!self.options.allowDelete){
+                self.template.find('.delete-button').hide();
+            }else{
+                self.template.find('.delete-button').click(function(){
+                    self.options.onDelete();
+                });
+            }
+
+            //load cover photos and display menus
             if(self.options.coverUrl){
                 var onload = function(image){
                     var scaledSize = image_utils.scale(image, {width:self.options.maxCoverWidth, height:self.options.maxCoverHeight});
                     self._resize(scaledSize.width, scaledSize.height);
                     self.template.find('.cover-photo').attr('src', image.src);
-                    initMouseOver();
+                    self.element.hover( mouse_in, mouse_out );
                 };
-
                 var onerror = function(image){
-                    initMouseOver();
-                }
-
+                    self.element.hover( mouse_in, mouse_out );
+                };
                 image_utils.pre_load_image(self.options.coverUrl, onload, onerror);
+            }else{
+                self.element.hover( mouse_in, mouse_out );
             }
-            else{
-                initMouseOver();
-            }
-
         },
-
-
 
         _resize: function(coverWidth, coverHeight){
             var self = this;

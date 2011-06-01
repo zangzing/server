@@ -189,25 +189,28 @@
 
 
             //delete
+            var delete_photo = function(){
+                if(self.options.onDelete()){
+                    self.captionElement.hide();
+                    self.deleteButtonElement.hide();
+                    self.borderElement.hide("scale", {}, 300, function(){
+                        self.element.animate({width:0},500, function(){
+                            self.element.remove();
+
+                            if(self.photoGrid){
+                                self.photoGrid.resetLayout();
+                            }
+
+                        })
+                    });
+                }
+            };
+
             if(self.options.allowDelete){
                 self.deleteButtonElement.click(function(){
-                    if(self.options.onDelete()){
-                        self.captionElement.hide();
-                        self.deleteButtonElement.hide();
-                        self.borderElement.hide("scale", {}, 300, function(){
-                            self.element.animate({width:0},500, function(){
-                                self.element.remove();
-
-                                if(self.photoGrid){
-                                    self.photoGrid.resetLayout();
-                                }
-
-                            })
-                        });
-                    }
+                    delete_photo();
                 });
-            }
-            else{
+            }else{
                 self.deleteButtonElement.remove();   
             }
 
@@ -269,7 +272,6 @@
                 };
 
                 self.element.mouseenter(function(){
-
                     hover = true;
 
                     if(!menuOpen){
@@ -305,6 +307,8 @@
                             style:       'dropdown',
                             bind_click_open: true,
                             append_to_element: true, //use the element zzindex so the overflow goes under the bottom toolbar
+                            setcover: function() { zzapi_albums.set_cover( zz.album_id, self.options.photoId ); },
+                            delete_photo: delete_photo,
                             open:  function(){ menuOpen = true; },
                             close: function(){ menuOpen = false; checkCloseToolbar();}
                         });
@@ -326,6 +330,8 @@
                 self.element.find('.photo-toolbar').removeClass('menu-open');
             }
         },
+
+
 
 
         checked:false,

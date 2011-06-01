@@ -112,7 +112,7 @@
 
 
             var render_albums = function(container, json){
-
+                var wanted_subjects = {};
                 _.each(json, function(album){
 
                     var clone = cell.clone();
@@ -135,18 +135,21 @@
                                 clone.find('.picon').hide("scale", {}, 300, function(){
                                     clone.remove();
                                 });
-                                albums.deleteAlbum(album.id);
+                                zzapi_albums.delete_album(album.id);
                             };
 
                         },
                         allowDelete: !album.profile_album && album.user_id == zz.current_user_id
                     });
-
-
-
+                    wanted_subjects[album.id] = 'album';
                 });
-            };
 
+                // Update the like array if it exists.
+                if (typeof( like ) != 'undefined') {
+                    logger.debug( 'rendering albums '+wanted_subjects)
+                    like.add_id_array(wanted_subjects);
+                }
+            };
 
             call_and_merge([my_albums_path, session_user_liked_albums_path], function(albums){
                 //show only albums for the current homepage

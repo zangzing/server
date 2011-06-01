@@ -135,8 +135,18 @@ var like = {
                 $(tag).empty();
                 $(tag).append( button );
             }
-            $(tag).click( like.toggle );
+        }else{
+            if( $(tag).attr('data-zzstyle') =="menu" ){
+               $(tag).find("span.like-count").html( '(0)' );
+            }else{
+                var b  = $( '<div class="zzlike-button">'),
+                    i  = $( '<div class="zzlike-icon thumbdown">' ),
+                    c  = $( '<div class="zzlike-count empty">');
+                $(b).append(i).append(c);
+                $(tag).empty().append( b );
+            }
         }
+        $(tag).click( like.toggle );
     },
 
     _count: function( id ){
@@ -165,6 +175,7 @@ var like = {
                     if( like.hash[id]['count'] <= 0){
                         $(this).find('.zzlike-count').addClass('empty');
                     }else{
+                        $(this).find('.zzlike-count').removeClass('empty');
                         $(this).find('.zzlike-count').html(like._count(id));
                     }
                 }

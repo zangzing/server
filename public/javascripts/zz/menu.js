@@ -12,21 +12,22 @@ if(jQuery)( function() {
             subjet_type     : '',
             auto_open       : false,  //open upon creation
             bind_click_open : false,  //bind open to the elements click.
-            callback        : function(action, subject_id, subject_type) {
+            callback        : function(event, action) {
+                                               var options = $(this).data().zz_menu.options;
 					                           alert(   'Action: ' + action + '\n\n' +
-                                                        'Subject Type: ' + subject_type + '\n\n' +
-						                                'Subject ID: ' + subject_id + '\n\n');
+                                                        'Subject Type: ' + options.subject_type + '\n\n' +
+						                                'Subject ID: ' + options.subject_id + '\n\n');
                                                },
             style       : 'popup',
             animation_length: 200,
             animation_y     : 10,
             menu_template   : '<ul>'+
                                 '<li class="download"><a href="#download">Download</a></li>'+
-//	                            '<li class="privacy"><a href="#privacy">Privacy</a></li>'+
-                                '<li class="rotater"><a href="#rotater">Right</a></li>'+
-                                '<li class="rotatel"><a href="#rotatel">Left</a></li>'+
-                                '<li class="setcover"><a href="#setcover">Make Cover</a></li>'+
-                                '<li class="delete"><a href="#delete">Delete</a></li>'+
+//                                '<li class="privacy"><a href="#privacy">Privacy</a></li>'+
+//                                '<li class="rotater"><a href="#rotater">Right</a></li>'+
+//                                '<li class="rotatel"><a href="#rotatel">Left</a></li>'+
+                                '<li class="setcover"><a href="#setcover">Set Cover</a></li>'+
+                                '<li class="delete"><a href="#delete_photo">Delete</a></li>'+
                              '</ul>',
             append_to_element: false 
         },
@@ -80,10 +81,11 @@ if(jQuery)( function() {
                 self.close();
                 var action = $(this).attr('href').substr(1);
                 // Callbacks
-                if( o[action+'_action'] == undefined){
-                    if( o.callback ) o.callback( $(this).attr('href').substr(1), o.subject_type, o.subject_id );
+                if( o[action] == undefined){
+                    self._trigger('callback', null, action);
                 } else{
-                    o[action+'_action']( o.subject_type, o.subject_id );
+                    self._trigger(action);
+                    //o[action]( o.subject_type, o.subject_id );
                 }
                 return false;
             });
@@ -95,6 +97,9 @@ if(jQuery)( function() {
                     self.open();
                 });
             }
+
+            //Set a flag if menu has no items
+            self.zero_menu_items =  menu.find('li').length <= 0;
 
             // If auto open, open.
             if( o.auto_open){
@@ -108,8 +113,12 @@ if(jQuery)( function() {
                 el   = self.element,
                 menu = self.menu,
                 o    = self.options;
+            if( self.zero_menu_items ){
+                logger.debug('attempt to display menu with zero elements');
+                return;
+            }
 
-            if(menu.is(':hidden') && el.is(':not(:disabled)') ){
+            if(menu.is(':hidden') && el.not(':disabled') ){
 
                 if(self._trigger('beforeopen') === false) return; //If any listeners return false, then do not open
 

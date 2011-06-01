@@ -339,8 +339,6 @@
 }
 
 
-
-
 .photo-toolbar{
     display:block;
     position:relative;
@@ -360,7 +358,7 @@
 
 
 .photo-toolbar .share-button{
-//  background: url(/images/album_toolbar_share.png) no-repeat scroll 0px -1px transparent;
+/*  background: url(/images/album_toolbar_share.png) no-repeat scroll 0px -1px transparent; */
   background: url(/images/album_toolbar_share.png) no-repeat scroll 0px -19px transparent;
     width:20px;
     height:18px;
@@ -372,33 +370,21 @@
 
 
 .photo-toolbar .share-button:hover{
-//   background: url(/images/album_toolbar_share.png) no-repeat scroll 0px -19px transparent;
+/*   background: url(/images/album_toolbar_share.png) no-repeat scroll 0px -19px transparent; */
      background: url(/images/album_toolbar_share.png) no-repeat scroll 0px -1px transparent;
 }
 
-
-
+/*The like button is styled inside by like.css */
 .photo-toolbar .like-button{
-//    background: url(/images/album_toolbar_like.png) no-repeat scroll 0px -1px transparent;
-//      background: url(/images/album_toolbar_like.png) no-repeat scroll 0px -19px transparent;
-    /*width:20px;*/
     height:18px;
     float:left;
     display:inline-block;
     cursor:pointer;
     margin:3px;
 }
-
-.photo-toolbar .like-button:hover{
-//    background: url(/images/album_toolbar_like.png) no-repeat scroll 0px -19px transparent;
-//    background: url(/images/album_toolbar_like.png) no-repeat scroll 0px -1px transparent;
-}
-
-
-
 .photo-toolbar .info-button{
     position:relative;
-//  background: url(/images/album_toolbar_info.png) no-repeat scroll 0px -1px transparent;
+/*  background: url(/images/album_toolbar_info.png) no-repeat scroll 0px -1px transparent; */
     background: url(/images/album_toolbar_info.png) no-repeat scroll 0px -19px transparent;
     top:1px;
     width:20px;
@@ -410,7 +396,7 @@
 }
 
 .photo-toolbar .info-button:hover{
-//    background: url(/images/album_toolbar_info.png) no-repeat scroll 0px -19px transparent;
+/*    background: url(/images/album_toolbar_info.png) no-repeat scroll 0px -19px transparent; */
       background: url(/images/album_toolbar_info.png) no-repeat scroll 0px -1px transparent;
 }
 
