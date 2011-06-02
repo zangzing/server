@@ -36,9 +36,10 @@
             lazyLoadThreshold:null,
 
             showButtonBar: false,          //model
+            showInfoMenu : false,
+
             onClickShare: jQuery.noop
 //            spaceBarTriggersClick: true
-
 
         },
 
@@ -47,10 +48,11 @@
 
         _create: function() {
             var self = this;
+            var o    = self.options;
 
 
             //scroll direction
-            if(self.options.singlePictureMode){
+            if(o.singlePictureMode){
                 self.element.css({
                     'overflow-y':'hidden',
                     'overflow-x':'scroll'
@@ -73,8 +75,8 @@
             //todo: when allowReorder is 'false' don't add the drop target elements
             var template = $('<div class="photogrid-cell"><div class="photogrid-droppable"></div></div>');
             template.css({
-                width: self.options.cellWidth,
-                height: self.options.cellHeight
+                width: o.cellWidth,
+                height: o.cellHeight
             });
 
 
@@ -83,22 +85,22 @@
             self.element.hide();
 
 
-            var droppableHeight = Math.floor(self.options.cellHeight * 0.8);
-            var droppableWidth = Math.floor(self.options.cellWidth * 1);
+            var droppableHeight = Math.floor(o.cellHeight * 0.8);
+            var droppableWidth = Math.floor(o.cellWidth * 1);
             var droppableLeft = -1 * Math.floor(droppableWidth/2);
-            var droppableTop = Math.floor((self.options.cellHeight - droppableHeight)/2);
+            var droppableTop = Math.floor((o.cellHeight - droppableHeight)/2);
 
             var cells = [];
 
 
-            if(self.options.lazyLoadThreshold!=0 && !self.options.lazyLoadThreshold && self.options.singlePictureMode){
-                self.options.lazyLoadThreshold = self.options.cellWidth * 3;
+            if(o.lazyLoadThreshold!=0 && !o.lazyLoadThreshold && o.singlePictureMode){
+                o.lazyLoadThreshold = o.cellWidth * 3;
             }
 
 
 
 
-            $.each(self.options.photos, function(index, photo){
+            $.each(o.photos, function(index, photo){
                 var cell = template.clone();
                 cells.push(cell);
 
@@ -112,43 +114,42 @@
                     previewSrc: photo.previewSrc,
                     src: photo.src,
                     rolloverSrc: photo.rolloverSrc,
-                    maxWidth: Math.floor(self.options.cellWidth - 50),
-                    maxHeight: Math.floor(self.options.cellHeight - 50),
-                    allowDelete: self.options.allowDelete,
+                    maxWidth: Math.floor(o.cellWidth - 50),
+                    maxHeight: Math.floor(o.cellHeight - 50),
+                    allowDelete: o.allowDelete,
                     caption: photo.caption,
                     aspectRatio: photo.aspect_ratio,
 
                     onDelete:function(){
-                        return self.options.onDelete(index,photo);
+                        return o.onDelete(index,photo);
                     },
 
-                    allowEditCaption:self.options.allowEditCaption,
+                    allowEditCaption:o.allowEditCaption,
 
                     onChangeCaption:function(caption){
-                        return self.options.onChangeCaption(index, photo, caption);
+                        return o.onChangeCaption(index, photo, caption);
                     },
 
                     onClick: function(action){
-                        self.options.onClickPhoto(index, photo, cell, action);
+                        o.onClickPhoto(index, photo, cell, action);
                     },
 
                     scrollContainer: self.element,
-                    lazyLoadThreshold: self.options.lazyLoadThreshold,
+                    lazyLoadThreshold: o.lazyLoadThreshold,
                     isUploading: ! _.isUndefined(photo.state) ? photo.state !== 'ready': false, //todo: move into photochooser.js
                     isError: photo.state === 'error',
 //                    noShadow: photo.type === 'folder',                                          //todo: move into photochooser.js
 //                    lazyLoad: photo.type !== 'folder',                                           //todo: move into photochooser.js
 
-                    context: self.options.context,
+                    context:       o.context,
                     type: _.isUndefined(photo.type) ? 'photo': photo.type,
-                    showButtonBar: self.options.showButtonBar,
-                    onClickShare: self.options.onClickShare
-
+                    showButtonBar: o.showButtonBar,
+                    showInfoMenu:  o.showInfoMenu,
+                    onClickShare:  o.onClickShare
                 });
 
-
                 //setup drag and drop
-                if(self.options.allowReorder){
+                if(o.allowReorder){
                     //todo: consider clone and add these to cloned cell template -- might be faster
                     var droppable = cell.find('.photogrid-droppable');
 
@@ -178,11 +179,11 @@
                             return cell.data().zz_photo.dragHelper();
                         },
                         scroll: true,
-                        scrollSensitivity: self.options.cellHeight / 8,
-                        scrollSpeed:self.options.cellHeight / 3
+                        scrollSensitivity: o.cellHeight / 8,
+                        scrollSpeed:o.cellHeight / 3
                     });
 
-                    var nudgeOnDragOver = Math.floor(self.options.cellWidth / 2)
+                    var nudgeOnDragOver = Math.floor(o.cellWidth / 2)
 
                     droppable.droppable({
                         tolerance: 'pointer',
@@ -214,7 +215,7 @@
                             draggedCell.insertBefore(droppedOnCell);
                             draggedCell.css({
                                 top: parseInt(droppedOnCell.css('top')),
-                                left: parseInt(droppedOnCell.css('left')) - self.options.cellWidth
+                                left: parseInt(droppedOnCell.css('left')) - o.cellWidth
                             });
 
 
@@ -227,7 +228,7 @@
                                 before_id = $(draggedCell).prev().data().zz_photo.getPhotoId();
                             }
                             var after_id = droppedOnCell.data().zz_photo.getPhotoId();
-                            self.options.onChangeOrder(photo_id, before_id, after_id);
+                            o.onChangeOrder(photo_id, before_id, after_id);
 
                         }
 
@@ -300,9 +301,9 @@
 
 
             //hideNativeScroller
-            if(self.options.hideNativeScroller){
+            if(o.hideNativeScroller){
 
-                if(self.options.singlePictureMode){
+                if(o.singlePictureMode){
                     self.thumbscrollerElement = $('<div class="photogrid-hide-native-scroller-horizontal"></div>').appendTo(self.element.parent());
                 }
                 else{
@@ -311,10 +312,10 @@
             }
 
             //thumbscroller
-            if(self.options.showThumbscroller){
+            if(o.showThumbscroller){
                 var nativeScrollActive = false;
 
-                if(self.options.singlePictureMode){
+                if(o.singlePictureMode){
                     self.thumbscrollerElement = $('<div class="photogrid-thumbscroller-horizontal"></div>').appendTo(self.element.parent());
                 }
                 else{
@@ -323,7 +324,7 @@
 
 
                 //remove any 'special' photos (eg blank one used for drag and drop on edit screen
-                var photos = $.map(self.options.photos, function(photo, index){
+                var photos = $.map(o.photos, function(photo, index){
                     if(photo.type == 'blank'){
                         return null;
                     }
@@ -353,11 +354,11 @@
                         nativeScrollActive = true;
 
                         var index;
-                        if(self.options.singlePictureMode){
-                            index = Math.floor(self.element.scrollLeft() / self.options.cellWidth);
+                        if(o.singlePictureMode){
+                            index = Math.floor(self.element.scrollLeft() / o.cellWidth);
                         }
                         else{
-                            index = Math.floor(self.element.scrollTop() / self.options.cellHeight * self.cellsPerRow());
+                            index = Math.floor(self.element.scrollTop() / o.cellHeight * self.cellsPerRow());
                         }
                         self.thumbscroller.setSelectedIndex(index);
                         nativeScrollActive = false;
@@ -367,7 +368,7 @@
 
 
             //mousewheel and keyboard for single picture
-            if(self.options.singlePictureMode){
+            if(o.singlePictureMode){
                 this.element.mousewheel(function(event){
 
                     var delta;
@@ -418,11 +419,11 @@
                         self.previousPicture();
                     }
 //                    else if(event.keyCode === 32){
-//                        if(self.options.spaceBarTriggersClick){
+//                        if(o.spaceBarTriggersClick){
 //                            var index = self.indexOfPhoto(self.currentPhotoId());
 //                            var cell = self.cellAtIndex(index);
 //                            var photo = cell.data().zz_photo.options.photo;
-//                            self.options.onClickPhoto(index, photo, cell, 'main');
+//                            o.onClickPhoto(index, photo, cell, 'main');
 //
 //
 //                        }
@@ -440,8 +441,8 @@
             
 
                        //scroll to photo
-            if(self.options.currentPhotoId !== null){
-                self.scrollToPhoto(self.options.currentPhotoId,0, false);
+            if(o.currentPhotoId !== null){
+                self.scrollToPhoto(o.currentPhotoId,0, false);
             }
 
 

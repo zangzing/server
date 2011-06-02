@@ -99,10 +99,10 @@ Server::Application.routes.draw do
     get    '/albums/:album_id/movie'        => 'photos#movie',                      :as => :album_movie
     delete '/photos/:id'                    => 'photos#destroy',                    :as => :destroy_photo
     put    '/photos/:id/upload_fast'        => 'photos#upload_fast',                :as => :upload_photo_fast
-
-    put   '/albums/:album_id/upload_fast'        => 'photos#simple_upload_fast',          :as => :simple_upload_photo_fast
+    put   '/albums/:album_id/upload_fast'   => 'photos#simple_upload_fast',    :as => :simple_upload_photo_fast
     get    '/agents/:agent_id/photos'       => 'photos#agent_index',                :as => :agent_photos
     post   '/albums/:album_id/photos/agent_create.:format' => 'photos#agent_create',:as => :agent_create
+    get    '/photos/download/:id'           => 'photos#download',                   :as => :download_photo
     put    '/photos/:id'                    => 'photos#update',                     :as => :update_photo
     put    '/photos/:id/position'           => 'photos#position',                   :as => :photo_position
 

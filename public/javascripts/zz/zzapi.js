@@ -1,4 +1,4 @@
-var zzapi_albums = {
+var zzapi_album = {
     delete_album: function(album_id, success, error){
         $.ajax({
             type: "POST",
@@ -38,7 +38,7 @@ var zzapi_albums = {
     }
 };
 
-var zzapi_photos = {
+var zzapi_photo = {
     delete_photo: function(photo_id, success, error){
         $.ajax({
             type: "POST",
@@ -56,6 +56,17 @@ var zzapi_photos = {
                     success();
                 }
             }
+        });
+    },
+
+    download: function( photo_id, success, error ){
+        var url = zz.path_prefix + "/photos/download/" + photo_id;
+        $.ajax({
+            type: "GET",
+            dataType: "text",
+            url: url + ".json",
+            error:   function( request){ error(request); },
+            success: function(data){ success( url ); }
         });
     }
 };

@@ -703,31 +703,16 @@
     right: 58px;
     width: 58px;
     height: 55px;
-    background: url("/images/embed/toolbars/btn-footer-like.png") no-repeat scroll 0px 0px transparent;
     cursor: pointer;
-}
-
-#footer #like-button:hover{
-    /*background-position-y: -55px;*/
-
-    background: url("/images/embed/toolbars/btn-footer-like.png") no-repeat scroll 0px -55px transparent;
-}
-
-#footer #like-button.selected{
-    /*background-position-y: -110px;*/
-
-    background: url("/images/embed/toolbars/btn-footer-like.png") no-repeat scroll 0px -110px transparent;
 }
 
 #footer #like-button.disabled{
     opacity:0.5;
     cursor: default;
-    /*background-position-y: 0px;*/
-    background: url("/images/embed/toolbars/btn-footer-like.png") no-repeat scroll 0px 0px transparent;
 }
 
 
-/*           Like Button
+/*           Buy Button
  ***************************************************/
 
 #footer #buy-button{

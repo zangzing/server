@@ -26,21 +26,22 @@
             isUploading:false,           //model
             isUploading:false,           //model
             isError:false,               //model
-            showButtonBar:false,           //model
+            showButtonBar:false,         //model
+            showInfoMenu: false,         // show InfoMenu or not
 //            onClickShare: jQuery.noop,     //model
 //            noShadow:false,              //context / type
 //            lazyLoad:true ,              //context / type
-            context:null,                 //context -- album-edit, album-grid, album-picture, album-timeline, album-people, chooser-grid, chooser-picture
-            type: 'photo'                 //photo \ folder \ blank
+            context:null,                //context -- album-edit, album-grid, album-picture, album-timeline, album-people, chooser-grid, chooser-picture
+            type: 'photo'               //photo \ folder \ blank
         },
 
         _create: function() {
-            var self = this;
+            var self = this,
+                    o = self.options;
 
-            if(self.options.scrollContainer.data().zz_photogrid){
-                self.photoGrid = self.options.scrollContainer.data().zz_photogrid;
+            if(o.scrollContainer.data().zz_photogrid){
+                self.photoGrid = o.scrollContainer.data().zz_photogrid;
             }
-
 
             var html = '';
             html += '<div class="photo-caption"></div>';
@@ -52,7 +53,7 @@
             html += '   <div class="photo-error-icon"></div>';
             html += '   <img class="bottom-shadow" src="' + path_helpers.image_url('/images/photo/bottom-full.png') + '">';
 
-            if(self.options.context.indexOf('chooser')===0 && self.options.type === 'photo'){
+            if(o.context.indexOf('chooser')===0 && o.type === 'photo'){
                 html += '   <div class="photo-add-button"></div>';
                 html += '   <div class="magnify-button"></div>';
             }
@@ -72,77 +73,55 @@
             self.errorElement = this.element.find('.photo-error-icon');
             self.bottomShadow = this.element.find('.bottom-shadow');
 
-            self.captionElement.text(self.options.caption);
+            self.captionElement.text(o.caption);
 
             //for selenium tests...
-            self.borderElement.attr('id', 'photo-border-' + self.options.caption.replace(/[\W]+/g,'-'));
+            self.borderElement.attr('id', 'photo-border-' + o.caption.replace(/[\W]+/g,'-'));
 
 
-            if(self.options.type === 'blank'){
+            if(o.type === 'blank'){
                 self.borderElement.hide();
                 self.captionElement.hide();
             }
 
-            if(self.options.context.indexOf('chooser')===0){
+            if(o.context.indexOf('chooser')===0){
                 //magnify
                 this.element.find('.magnify-button').click(function(event){
-                    self.options.onClick('magnify')
+                    o.onClick('magnify')
                 });
-
 
                 //add photo action
                 self.element.find('.photo-add-button').click(function(event){
-                    self.options.onClick('main');
+                    o.onClick('main');
                 });
 
-
                 //hide drop shadow for folders and 'add all' butons
-                if(self.options.type !== 'photo'){
+                if(o.type !== 'photo'){
                     self.borderElement.addClass('no-shadow');
                 }
-
             }
-
-
-
-
-
-
-
-
 
             //click
             self.imageElement.click(function(event){
-                self.options.onClick('main')
+                o.onClick('main')
             });
-
-
-
 
             self.captionHeight = 30;
 
-
-
             var initialHeight;
             var initialWidth;
-
-
-            if(self.options.aspectRatio){
-                var srcWidth =  1 * self.options.aspectRatio;
+            if(o.aspectRatio){
+                var srcWidth =  o.aspectRatio;
                 var srcHeight = 1;
 
-                var scaled = image_utils.scale({width:srcWidth, height:srcHeight}, {width:self.options.maxWidth, height:self.options.maxHeight - self.captionHeight});
-
+                var scaled = image_utils.scale({width:srcWidth, height:srcHeight}, {width:o.maxWidth, height:o.maxHeight - self.captionHeight});
                 initialHeight = scaled.height;
                 initialWidth = scaled.width;
-
-            }
-            else{
-                var min = Math.min(self.options.maxWidth, self.options.maxHeight);
+            }else{
+                var min = Math.min(o.maxWidth, o.maxHeight);
                 initialWidth = min;
                 initialHeight = min;
             }
-
 
             self.imageElement.css({
                 width: initialWidth,
@@ -150,19 +129,13 @@
             });
 
             self.bottomShadow.css({'width': (initialWidth + 14) + "px"});
-  
 
             //element is probably invisible at this point, so we need to check the css attributes
             self.width = parseInt(self.element.css('width'));
             self.height = parseInt(self.element.css('height'));
 
-
-
             var borderWidth = initialWidth + 10 ;
             var borderHeight = initialHeight + 10;
-
-
-
 
             self.borderElement.css({
                 position: "relative",
@@ -172,93 +145,66 @@
                 height: borderHeight 
             });
 
-
-
-
-
             //uploading glyph
-            if(self.options.isUploading && !self.options.isError){
+            if(o.isUploading && !o.isError){
                 self.uploadingElement.show();
             }
 
-
             //error glyph
-            if(self.options.isError){
+            if(o.isError){
                 self.errorElement.show();
             }
 
-
-            //delete
-            var delete_photo = function(){
-                if(self.options.onDelete()){
-                    self.captionElement.hide();
-                    self.deleteButtonElement.hide();
-                    self.borderElement.hide("scale", {}, 300, function(){
-                        self.element.animate({width:0},500, function(){
-                            self.element.remove();
-
-                            if(self.photoGrid){
-                                self.photoGrid.resetLayout();
-                            }
-
-                        })
-                    });
-                }
-            };
-
-            if(self.options.allowDelete){
+            if(o.allowDelete){
                 self.deleteButtonElement.click(function(){
-                    delete_photo();
+                    self.delete_photo();
                 });
             }else{
                 self.deleteButtonElement.remove();   
             }
 
-
             //edit caption
-            var isEditingCaption = false;
-            if(self.options.allowEditCaption){
+            self.isEditingCaption = false;
+            if(o.allowEditCaption){
                 self.captionElement.click(function(event){
                     self.editCaption();
                 });
             }
 
             //lazy loading
-            if(self.options.type !== 'photo'){
+            if(o.type !== 'photo'){
                 self._loadImage()
-            }
-            else{
+            }else{
                 self.imageElement.attr('src', path_helpers.image_url('/images/photo_placeholder.png'));
             }
 
-
             //rollover
-            if(self.options.rolloverSrc){
-
+            if(o.rolloverSrc){
                 //preload rollover
-                image_utils.pre_load_image(self.options.rolloverSrc);
+                image_utils.pre_load_image(o.rolloverSrc);
 
                 self.element.mouseover(function(){
-                    self.imageElement.attr('src', self.options.rolloverSrc);
+                    self.imageElement.attr('src', o.rolloverSrc);
                 });
 
                 self.element.mouseout(function(){
-                    self.imageElement.attr('src', self.options.src);
+                    self.imageElement.attr('src', o.src);
                 });
             }
 
 
             //todo: can these move to css?
-            if(self.options.showButtonBar){
+            if(o.showButtonBar){
                 var toolbarTemplate = '<div class="photo-toolbar">' +
                                           '<div class="buttons">' +
                                               '<div class="share-button"></div>' +
-                                              '<div class="like-button zzlike" data-zzid="'+self.options.photoId+'" data-zztype="photo"><div class="zzlike-icon thumbdown"></div></div>' +
-                                              '<div class="info-button"></div>' +
-                                          '</div>' +
+                                              '<div class="like-button zzlike" data-zzid="'+o.photoId+'" data-zztype="photo"><div class="zzlike-icon thumbdown"></div></div>';
+                if( o.showInfoMenu ){
+                    toolbarTemplate +=        '<div class="info-button"></div>';
+                }
+
+                toolbarTemplate +=         '</div>' +
                                        '</div>';
-
-
 
                 var menuOpen = false;
                 var hover = false;
@@ -283,16 +229,15 @@
 
                         // Share button
                         self.toolbarElement.find('.share-button').zz_menu(
-                        {   subject_id:      self.options.photoId,
-                            subject_type:    'photo',
-                            zza_context:     'frame',
-                            style:           'dropdown',
-                            bind_click_open: true,
+                        {   zz_photo:          self,
+                            subject_id:        o.photoId,
+                            subject_type:      'photo',
+                            zza_context:       'frame',
+                            style:             'dropdown',
+                            bind_click_open:   true,
                             append_to_element: true, //use the element zzindex so the overflow goes under the bottom toolbar
-                            menu_template:   share.share_menu_template,
-                            email_action :   share.share_to_email,
-                            facebook_action: share.share_to_facebook,
-                            twitter_action : share.share_to_twitter,
+                            menu_template:     share.share_menu_template,
+                            click:             self._menu_click_handler,
                             open:  function(){ menuOpen = true;  },
                             close: function(){ menuOpen = false; checkCloseToolbar(); }
                         });
@@ -301,17 +246,19 @@
                         like.draw_tag( self.toolbarElement.find('.like-button') );
 
                         // i button
-                        self.toolbarElement.find('.info-button').zz_menu(
-                        {   subject_id:      self.options.photoId,
-                            subject_type:    'photo',
-                            style:       'dropdown',
-                            bind_click_open: true,
-                            append_to_element: true, //use the element zzindex so the overflow goes under the bottom toolbar
-                            setcover: function() { zzapi_albums.set_cover( zz.album_id, self.options.photoId ); },
-                            delete_photo: delete_photo,
-                            open:  function(){ menuOpen = true; },
-                            close: function(){ menuOpen = false; checkCloseToolbar();}
-                        });
+                        if( o.showInfoMenu ){
+                            self.toolbarElement.find('.info-button').zz_menu(
+                            {   zz_photo:          self,
+                                subject_id:        o.photoId,
+                                subject_type:      'photo',
+                                style:             'dropdown',
+                                bind_click_open:   true,
+                                append_to_element: true, //use the element zzindex so the overflow goes under the bottom toolbar
+                                click:             self._menu_click_handler,
+                                open:  function(){ menuOpen = true; },
+                                close: function(){ menuOpen = false; checkCloseToolbar();}
+                            });
+                        }
                     }
                 });
 
@@ -331,8 +278,86 @@
             }
         },
 
+        //delete
+        delete_photo:  function(){
+            var self = this;
+            if(self.options.onDelete()){
+                self.captionElement.hide();
+                self.deleteButtonElement.hide();
+                self.borderElement.hide("scale", {}, 300, function(){
+                    self.element.animate({width:0},500, function(){
+                        self.element.remove();
+                        if(self.photoGrid){
+                            self.photoGrid.resetLayout();
+                        }
+                    })
+                });
+            }
+        },
 
+        _menu_click_handler: function(event,data){
+            var action  = data.action,
+                options = data.options,
+                photo   = options.zz_photo,
+                id      = options.subject_id,
+                type    = options.subject_type;
 
+            switch( action ){
+                case 'email':
+                    share.share_to_email( type, id );
+                    break;
+                case 'twitter':
+                    share.share_to_twitter( type, id );
+                    break;
+                case 'facebook':
+                    share.share_to_facebook( type, id );
+                    break;
+                case 'download':
+                    var show_dialog = function( message ){
+                        var template = '<div class="downloading-dialog-content">'+message+'</div>';
+                        zz_dialog.show_dialog(template, { width:300, height: 100, modal: true, autoOpen: true });
+                    };
+                    var success = function( url ){
+                        if($.client.os =="Mac"){
+                            document.location.href = url;
+                        }else{
+                            if($.client.browser == 'Chrome'){ //on chrome on windows, using the same browser window to download causes js issues (stops pinging agent)
+                                window.open(url);
+                            }else{
+                                document.location.href = url;
+                            }
+                        }
+                    };
+                    var error = function( request ){
+                        var message = "of a strange circumstance";
+                        if( request.status == 401 ){
+                            message = "you are not authorized to download this photo";
+                        } else {
+                            var json = request.getResponseHeader("X-Flash");
+                            var flash;
+                            if( !_.isUndefined( json ) && (flash = $.parseJSON(json)) && flash.error ){
+                                message = flash.error;
+                            }
+                        }
+                        show_dialog( 'Unable to download because '+ message );
+                    };
+
+                    zzapi_photo.download( id, function(url){ success(url)}, function(request){error(request);} );
+                    break;
+                case 'setcover':
+                    zzapi_album.set_cover( zz.album_id, id,
+                            function(){ zz.toolbars.load_album_cover( photo.options.previewSrc); });
+                    break;
+                case 'deletephoto':
+                    photo.delete_photo();
+                    break;
+                default:
+                    alert( 'Action: ' + action + '\n\n' +
+                           'Subject Type: ' + type + '\n\n' +
+                           'Subject ID: ' +  id + '\n\n');
+                    break;
+            }
+        },
 
         checked:false,
 

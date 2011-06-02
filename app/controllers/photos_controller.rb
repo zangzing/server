@@ -6,16 +6,16 @@ class PhotosController < ApplicationController
   skip_before_filter :verify_authenticity_token,  :only =>   [ :agent_index, :agent_create, :upload_fast, :simple_upload_fast]
 
   
-  before_filter :require_user,                    :only =>   [ :destroy, :update, :position ]  #for interactive users
+  before_filter :require_user,                    :only =>   [ :destroy, :update, :position, :download ]  #for interactive users
   before_filter :oauth_required,                  :only =>   [ :agent_create, :agent_index ]   #for agent
   # oauthenticate :strategies => :two_legged, :interactive => false, :only =>   [ :upload_fast ]
 
   before_filter :require_album,                   :only =>   [ :agent_create, :index, :movie, :photos_json ]
-  before_filter :require_photo,                   :only =>   [ :destroy, :update, :position ]
+  before_filter :require_photo,                   :only =>   [ :destroy, :update, :position, :download ]
 
   before_filter :require_album_admin_role,                :only =>   [ :update, :position ]
   before_filter :require_photo_owner_or_album_admin_role, :only =>   [ :destroy ]
-  before_filter :require_album_contributor_role,          :only =>   [ :agent_create ]
+  before_filter :require_album_contributor_role,          :only =>   [ :agent_create, :download ]
   before_filter :require_album_viewer_role,               :only =>   [ :index, :movie, :photos_json  ]
 
 
@@ -269,6 +269,22 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
     @photo.position_between( params[:before_id], params[:after_id])
     render :nothing => true
   end
+
+  # @photo is set by require_photo before_filter
+  def download
+    if @photo
+      if @photo.ready?  #&& CHECK FOR PERMISSIONS HERE
+        respond_to do |format|
+          format.html  { x_accel_redirect( @photo.original_url, :filename => @photo.caption ) and return }
+          format.json  { render :text => "Proceed to download", :status => :ok and return }
+        end
+      else
+        flash[:error]="Photo has not finished Uploading"
+        head :not_found and return
+      end
+    end
+  end
+
 
   private
   #

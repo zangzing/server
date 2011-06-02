@@ -344,7 +344,7 @@ zz.init = {
            }
            return element;
         });
-   },
+    },
 
     album: function() {
         //setup grid view
@@ -415,12 +415,12 @@ zz.init = {
                             document.location.href = zz.album_base_url + "/photos/#!" + photo.id;
                         },
                         onDelete: function(index, photo){
-                            zzapi_photos.delete_photo( photo.id );
+                            zzapi_photo.delete_photo( photo.id );
                             return true;
                         },
                         currentPhotoId: $.param.fragment(),
-                        showButtonBar:true
-
+                        showButtonBar:true,
+                        showInfoMenu: zz.displayed_user_id == zz.current_user_id //The owner of the album being displayed ios zz.displayed_user_id
                     }).data().zz_photogrid;
 
 
@@ -623,6 +623,7 @@ zz.init = {
                         },
                         showThumbscroller: false,
                         showButtonBar:true,
+                        showInfoMenu: zz.displayed_user_id == zz.current_user_id, //The owner of the album being displayed ios zz.displayed_user_id
                         onClickShare: function(photo_id){
                             pages.share.share_in_dialog('photo', photo_id);
                         }
@@ -675,20 +676,9 @@ zz.init = {
 
 //======================================= Like Menu  ==============================================
     like_menu: function() {
-        var menu = $('#footer #like-button').zz_menu({
-            menu_template: zz.toolbars.build_like_menu(),
-            callback: $.noop 
-        });
-
+        zz.toolbars.build_like_button();
         like.init();
-        $('#footer #like-button').click(function(event) {
-            if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
-                return;
-            }
-            ZZAt.track('button.like.click');
-            menu.zz_menu('open');
-            event.stopPropagation();
-        });
+
     }
 
 };
