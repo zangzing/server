@@ -274,8 +274,15 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
   def download
     if @photo
       if @photo.ready?  #&& CHECK FOR PERMISSIONS HERE
+        type = @photo.image_content_type.split('/')[1]
+        extension = case( type )
+                      when 'jpeg' then 'jpg'
+                      when 'tiff' then 'tif'
+                      else type
+                    end
+        filename = "#{@photo.caption}.#{extension}"
         respond_to do |format|
-          format.html  { x_accel_redirect( @photo.original_url, :filename => @photo.caption ) and return }
+          format.html  { x_accel_redirect( @photo.original_url, :filename => filename ) and return }
           format.json  { render :text => "Proceed to download", :status => :ok and return }
         end
       else
