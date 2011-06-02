@@ -344,7 +344,7 @@ zz.init = {
            }
            return element;
         });
-   },
+    },
 
     album: function() {
         //setup grid view
@@ -419,8 +419,8 @@ zz.init = {
                             return true;
                         },
                         currentPhotoId: $.param.fragment(),
-                        showButtonBar:true
-
+                        showButtonBar:true,
+                        showInfoMenu: zz.displayed_user_id == zz.current_user_id, //The owner of the album being displayed ios zz.displayed_user_id
                     }).data().zz_photogrid;
 
 
@@ -623,6 +623,7 @@ zz.init = {
                         },
                         showThumbscroller: false,
                         showButtonBar:true,
+                        showInfoMenu: zz.displayed_user_id == zz.current_user_id, //The owner of the album being displayed ios zz.displayed_user_id
                         onClickShare: function(photo_id){
                             pages.share.share_in_dialog('photo', photo_id);
                         }

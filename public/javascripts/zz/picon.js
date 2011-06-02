@@ -1,4 +1,4 @@
-/**
+/*
  *
  */
 
@@ -19,14 +19,9 @@
                 [-3,3],
                 [6,3]
             ],
-
             maxCoverWidth: 180,
             maxCoverHeight: 150
-
-
-
         },
-
 
         _create: function() {
             var self = this;
@@ -47,13 +42,10 @@
                                 '</div>' +
                               '</div>');
 
-
-            self.captionHeight = 80;
+          self.captionHeight = 80;
 
             //create & bind toolbar
             this.element.append(self.template);
-
-
 
             //for selenium tests...
             self.element.find('.picon').attr('id', 'picon-' + self.options.caption.replace(/[\W]+/g,'-'));
@@ -99,7 +91,6 @@
                 hover = false;
                 checkCloseToolbar();
             };
-
 
             // Share button
             self.template.find('.share-button').zz_menu(
@@ -173,11 +164,7 @@
         destroy: function() {
             $.Widget.prototype.destroy.apply( this, arguments );
         }
-        
-
     });
-
-
 
 })( jQuery );
 

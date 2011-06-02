@@ -275,7 +275,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
     if @photo
       if @photo.ready?  #&& CHECK FOR PERMISSIONS HERE
         respond_to do |format|
-          format.html  { x_accel_redirect( @photo.original_url, :filename => @photo.caption.to_slug ) and return }
+          format.html  { x_accel_redirect( @photo.original_url, :filename => @photo.caption ) and return }
           format.json  { render :text => "Proceed to download", :status => :ok and return }
         end
       else
