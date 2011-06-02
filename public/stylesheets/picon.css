@@ -56,16 +56,18 @@
     height:18px;
     width:20px;
     cursor:pointer;
-    margin:3px;
+    margin: 3px 0px;
+    padding: 0px 6px;
+
 }
 
-.picon .stacked-image .button-bar .buttons .share-button{ background: url(/images/album_toolbar_share.png) no-repeat scroll 0 -19px transparent;}
-.picon .stacked-image .button-bar .buttons .share-button:hover{ background-position: 0 -1px; }
+.picon .stacked-image .button-bar .buttons .share-button{ background: url(/images/album_toolbar_share.png) no-repeat scroll 6px -19px transparent;}
+.picon .stacked-image .button-bar .buttons .share-button:hover{ background-position: 6px -1px; }
 
 .picon .stacked-image .button-bar .buttons .like-button{ width:auto;} /*The like button is styled inside by like.css */
 
 
-.picon .stacked-image .button-bar .buttons .delete-button{ background: url(/images/album_toolbar_delete.png) no-repeat scroll 0 -19px transparent; }
-.picon .stacked-image .button-bar .buttons .delete-button:hover{ background-position: 0 0; }
+.picon .stacked-image .button-bar .buttons .delete-button{ background: url(/images/album_toolbar_delete.png) no-repeat scroll 6px -19px transparent; }
+.picon .stacked-image .button-bar .buttons .delete-button:hover{ background-position: 6px 0px; }
 
 
