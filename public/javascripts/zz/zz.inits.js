@@ -579,11 +579,14 @@ zz.init = {
                     $('#footer #play-button').addClass('disabled');
                 }
 
+                var wanted_subjects = {};
                 for (var i = 0; i < json.length; i++) {
                     var photo = json[i];
                     photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
                     photo.src = agent.checkAddCredentialsToUrl(photo.thumb_url);
+                    wanted_subjects[ photo.id ] ='photo';
                 }
+                like.add_id_array( wanted_subjects );
 
 
                 $('.timeline-grid').each(function(index, element) {
@@ -678,7 +681,6 @@ zz.init = {
     like_menu: function() {
         zz.toolbars.build_like_button();
         like.init();
-
     }
 
 };
