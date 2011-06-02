@@ -197,10 +197,10 @@
             if(o.showButtonBar){
                 var toolbarTemplate = '<div class="photo-toolbar">' +
                                           '<div class="buttons">' +
-                                              '<div class="share-button"></div>' +
-                                              '<div class="like-button zzlike" data-zzid="'+o.photoId+'" data-zztype="photo"><div class="zzlike-icon thumbdown"></div></div>';
+                                              '<div class="button share-button"></div>' +
+                                              '<div class="button like-button zzlike" data-zzid="'+o.photoId+'" data-zztype="photo"><div class="zzlike-icon thumbdown"></div></div>';
                 if( o.showInfoMenu ){
-                    toolbarTemplate +=        '<div class="info-button"></div>';
+                    toolbarTemplate +=        '<div class="button info-button"></div>';
                 }
 
                 toolbarTemplate +=         '</div>' +

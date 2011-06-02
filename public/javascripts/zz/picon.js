@@ -34,9 +34,9 @@
                                     '<img class="cover-photo" src="' + path_helpers.image_url('/images/photo_placeholder.png')+ '">' +
                                     '<div class="button-bar">' +
                                         '<div class="buttons">' +
-                                            '<div class="share-button"></div>' +
-                                            '<div class="like-button zzlike" data-zzid="'+self.options.albumId+'" data-zztype="album"><div class="zzlike-icon thumbdown"></div></div>' +
-                                            '<div class="delete-button"></div>' +
+                                            '<div class="button share-button"></div>' +
+                                            '<div class="button like-button zzlike" data-zzid="'+self.options.albumId+'" data-zztype="album"><div class="zzlike-icon thumbdown"></div></div>' +
+                                            '<div class="button delete-button"></div>' +
                                         '</div>' +
                                     '</div>'+
                                 '</div>' +
