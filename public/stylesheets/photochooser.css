@@ -259,13 +259,13 @@
     background: url("/images/photo-chooser/or.png") no-repeat scroll 0px 0px transparent;
     margin-left:auto;
     margin-right:auto;
-    margin-top:40px;
-    margin-bottom:40px;
+    margin-top:30px;
+    margin-bottom:30px;
 
 }
 
 .photochooser .choose-simple-or-download .learn-more{
-    margin-top:30px;
+    margin-top:40px;
     font-size: 14px;
     cursor:pointer;
 }

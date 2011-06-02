@@ -377,10 +377,9 @@ var photochooser = {
                        '<div id="simple-uploader-flash-wrapper"></div>' +
                     '</div>' +
                     '<div class="or"></div>' +
-                    '<h1>Tired of waiting while your photos upload?</h1>' +
-                    '<h1>Download our free desktop uploader.</h1>' +
-                    '<div><a id="download-zangzing-button" class="green-download-button"><span>Download ZangZing</span></a></div>' +
-                    '<div class="learn-more"><a id="learn-more-link">Not sure? Learn more about uploading your photos to ZangZing</a></div>' +
+                    '<h1>Download our free desktop uploader</h1>' +
+                    '<div><a id="download-zangzing-button" class="green-download-button"><span>Download</span></a></div>' +
+                    '<div class="learn-more"><a id="learn-more-link">Learn more about uploading your photos to ZangZing</a></div>' +
                     '</div>');
 
             template.find('#simple-uploader-button').click(function(){
