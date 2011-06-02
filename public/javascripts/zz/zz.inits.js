@@ -676,20 +676,8 @@ zz.init = {
 
 //======================================= Like Menu  ==============================================
     like_menu: function() {
-        var menu = $('#footer #like-button').zz_menu({
-            menu_template: zz.toolbars.build_like_menu(),
-            callback: $.noop 
-        });
-
+        zz.toolbars.build_like_button();
         like.init();
-        $('#footer #like-button').click(function(event) {
-            if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
-                return;
-            }
-            ZZAt.track('button.like.click');
-            menu.zz_menu('open');
-            event.stopPropagation();
-        });
     }
 
 };

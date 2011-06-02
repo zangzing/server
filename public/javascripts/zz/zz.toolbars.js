@@ -72,40 +72,38 @@ zz.toolbars = {
         }
     },
 
-    //==================================== LIKE MENU ==============================================
-    build_like_menu: function(){
-        var menu='',user='',album='',photo='';
-        //decide which menu items to show and set their subject_ids
-        if( typeof zz.album_id != 'undefined' ){
-            //we are displaying an album's photo grid.
-            album = $('<li class="like-album">')
-                    .append('<a href="#like_album" class="zzlike" data-zzid="'+zz.album_id+'" data-zztype="album" data-zzstyle="menu">Album <span class="like-count"></span></a>');
-        }
-        if( typeof zz.displayed_user_id != 'undefined' && zz.displayed_user_id != zz.current_user_id){
-            //we are displaying an content from a user different than the logged in user
-            user = $('<li class="like-user">')
-                    .append('<a href="#like_user" class="zzlike" data-zzid="'+zz.displayed_user_id+'" data-zztype="user" data-zzstyle="menu">Person <span class="like-count"></span></a>');
-        }
+    //==================================== LIKE BUTTON ==============================================
+    build_like_button: function(){
+         var tag = $('#footer #like-button');
+        
+        //decide what is on the screen to like and set their id and type
         if (location.hash && location.hash.length > 2) {
             //We are displaying a full size photo, add the photo menu element
             var hash = parseInt( location.hash.substr(2) );
             if( isNaN( hash ) ){
                 hash = 0;
             }
-            photo = $('<li class="like-photo" ></li>')
-                    .append('<a href="#like_photo" id="like-menu-photo" class="zzlike" data-zzid="'+hash.toString()+'" data-zztype="photo" data-zzstyle="menu">Photo <span class="like-count"></span></a>');
-
+            tag.attr('data-zzid', hash.toString() ).attr('data-zztype', 'photo');
             //set a listener to keep the subject_id current with the selected photo. Selecting a photo sets its id as the hash
             $(window).bind( 'hashchange', function( event ) {
-                logger.debug('hash changed to: location.hash ='+location.hash.substr(2));
+                logger.debug('toolbar like for photo - hash changed to: location.hash ='+location.hash.substr(2));
                 var hash = parseInt( location.hash.substr(2) );
                 if( !isNaN( hash ) ){
-                    $('#like-menu-photo').attr('data-zzid', hash.toString() ).attr('data-zztype', 'photo' ).addClass('zzlike');
+                    tag.attr('data-zzid', hash.toString() );
                     like.add_id( hash.toString(), 'photo' );
                 }
             });
+            logger.debug('toolbar like is for photo: '+hash.toString())
+        } else if( typeof zz.album_id != 'undefined' ){
+            //we are displaying an album's photo grid/people/activity.
+            tag.attr('data-zzid', zz.album_id ).attr('data-zztype', 'album');
+            logger.debug('toolbar like is for album: '+zz.album_id )
+        } else if( typeof zz.displayed_user_id != 'undefined'){
+            //we are displaying a user homepage
+            tag.attr('data-zzid', zz.displayed_user_id ).attr('data-zztype', 'user');
+            logger.debug('toolbar like is for user: '+zz.displayed_user_id  )
         }
-        return $('<ul id="like-menu">').append( album ).append(user).append(photo);
+        return tag
     },
 
     load_album_cover: function( src ){

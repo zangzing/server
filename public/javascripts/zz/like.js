@@ -118,8 +118,19 @@ var like = {
         if( typeof(like.hash[id])!= 'undefined' ){
             if( $(tag).attr('data-zzstyle') =="menu" ){
                $(tag).find("span.like-count").html( '('+like.hash[id]['count'].toString()+')' );
+            }else if($(tag).attr('data-zzstyle') =="toolbar"){
+                var counter = $( '<div class="zzlike-count">'+like._count(id)+'</div>');
+                if( like.hash[id]['count'] <= 0){
+                    counter.addClass('empty');
+                }
+                if( like.hash[id]['user'] ){
+                    $(tag).addClass('thumbup').removeClass( 'thumbdown' );
+                }else {
+                    $(tag).addClass( 'thumbdown' );
+                }
+                $(tag).append( counter);
             }else{
-                var button  = $( ' <div class="zzlike-button">'),
+                var button  = $( '<div class="zzlike-button">'),
                     icon    = $( '<div class="zzlike-icon">' ),
                     counter = $( '<div class="zzlike-count">'+like._count(id)+'</div>');
 
@@ -132,12 +143,14 @@ var like = {
                     $(icon).addClass( 'thumbdown' );
                 }
                 $(button).append( icon ).append(counter);
-                $(tag).empty();
-                $(tag).append( button );
+                $(tag).empty().append( button );
             }
         }else{
             if( $(tag).attr('data-zzstyle') =="menu" ){
                $(tag).find("span.like-count").html( '(0)' );
+            }else if($(tag).attr('data-zzstyle') =="toolbar"){
+                var ctr = $( '<div class="zzlike-count empty">');
+                $(tag).append( ctr );
             }else{
                 var b  = $( '<div class="zzlike-button">'),
                     i  = $( '<div class="zzlike-icon thumbdown">' ),
@@ -166,12 +179,19 @@ var like = {
                 if( $(this).attr('data-zzstyle') =="menu" ){
                        $(this).find('span.like-count').html( '('+like.hash[id]['count'].toString()+')' );
                 } else {
-                    if( like.hash[id]['user'] ){
-                        $(this).find('.thumbdown').addClass('thumbup').removeClass( 'thumbdown' );
-                    } else {
-                        $(this).find('.thumbup').addClass('thumbdown').removeClass( 'thumbup' );
+                    if( $(this).attr('data-zzstyle') =="toolbar" ){
+                        if( like.hash[id]['user'] ){
+                            $(this).addClass('thumbup').removeClass( 'thumbdown' );
+                        } else {
+                            $(this).addClass('thumbdown').removeClass( 'thumbup' );
+                        }
+                    }else{
+                        if( like.hash[id]['user'] ){
+                            $(this).find('.thumbdown').addClass('thumbup').removeClass( 'thumbdown' );
+                        } else {
+                            $(this).find('.thumbup').addClass('thumbdown').removeClass( 'thumbup' );
+                        }
                     }
-
                     if( like.hash[id]['count'] <= 0){
                         $(this).find('.zzlike-count').addClass('empty');
                     }else{
@@ -182,7 +202,6 @@ var like = {
                 //logger.debug("refreshing and rebinding tags for "+id);
                 $(this).unbind('click', like.toggle ).click( like.toggle );
             });
-
         }
     },
 
