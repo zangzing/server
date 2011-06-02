@@ -44,7 +44,7 @@ class RemoteFile < ::File
   end
 
   def fetch
-    target_uri = @remote_path
+    target_uri = URI.unescape(@remote_path)
     follow_redirect = false
     begin
       uri = URI::parse(URI.escape(target_uri))
@@ -54,7 +54,7 @@ class RemoteFile < ::File
         http.use_ssl = true
         http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       end
-      http.request_get(uri.path, @options) do |remote_side|
+      http.request_get(uri.query.blank? ? uri.path : "#{uri.path}?#{uri.query}", @options) do |remote_side|
         follow_redirect = remote_side.is_a?(Net::HTTPMovedPermanently) || remote_side.is_a?(Net::HTTPMovedTemporarily)
         if remote_side.code =~ /4\d\d/i #error 4xx
           raise Net::HTTPError.new("#{remote_side.code}: #{remote_side.message}", remote_side)
