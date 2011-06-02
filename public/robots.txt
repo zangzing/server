@@ -1,5 +1,19 @@
-# See http://www.robotstxt.org/wc/norobots.html for documentation on how to use the robots.txt file
-#
-# To ban all spiders from the entire site uncomment the next two lines:
-# User-Agent: *
-# Disallow: /
+#Sitemap: http://www.zangzing.com/sitemap.xml.gz
+
+User-agent: *
+Allow: /  
+
+Disallow: /cgi-bin/
+Disallow: /users/
+Disallow: /wp-content/
+Disallow: /wp-admin/
+Disallow: /wp-includes/
+Disallow: /blog/trackback/
+Disallow: /blog/archives/
+Disallow: /blog/category/
+Disallow: /blog/author/
+Disallow: /blog/tag/
+Disallow: /*?
+Disallow: /*.js$
+Disallow: /*.css$
+Disallow: /*.inc$
