@@ -1,7 +1,6 @@
 //
 //
-// Inspiration drawn from from jQuery Context Menu Plugin
-// Version 1.01 by Cory S.N. LaViska
+// Inspiration drawn from jQuery Context Menu Plugin by Cory S.N. LaViska
 //
 //
 if(jQuery)( function() {
@@ -21,14 +20,7 @@ if(jQuery)( function() {
             style       : 'popup',
             animation_length: 200,
             animation_y     : 10,
-            menu_template   : '<ul>'+
-                                '<li class="download"><a href="#download">Download</a></li>'+
-//                                '<li class="privacy"><a href="#privacy">Privacy</a></li>'+
-//                                '<li class="rotater"><a href="#rotater">Right</a></li>'+
-//                                '<li class="rotatel"><a href="#rotatel">Left</a></li>'+
-                                '<li class="setcover"><a href="#setcover">Set Cover</a></li>'+
-                                '<li class="delete"><a href="#deletephoto">Delete</a></li>'+
-                             '</ul>',
+            menu_template   : '',
             append_to_element: false 
         },
 

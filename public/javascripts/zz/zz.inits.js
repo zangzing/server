@@ -249,10 +249,10 @@ zz.init = {
             //todo: need better generic way to determine current view and get photo id -- this is duplicated elsewhere
             if (document.location.href.indexOf('/photos/#!') !== -1 || document.location.href.indexOf('/photos#!') !== -1) {
                 var photoId = jQuery.param.fragment().slice(1);
-                share.show_share_menu($(this), 'photo', photoId, {x:0,y:0}, 'toolbar', $.noop, $.noop);
+                sharemenu.show($(this), 'photo', photoId, {x:0,y:0}, 'toolbar', $.noop, $.noop);
             }
             else{
-                share.show_share_menu($(this), 'album', zz.album_id, {x:0,y:0},'toolbar', $.noop, $.noop);
+                sharemenu.show($(this), 'album', zz.album_id, {x:0,y:0},'toolbar', $.noop, $.noop);
             }
 
         });
@@ -579,11 +579,14 @@ zz.init = {
                     $('#footer #play-button').addClass('disabled');
                 }
 
+                var wanted_subjects = {};
                 for (var i = 0; i < json.length; i++) {
                     var photo = json[i];
                     photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
                     photo.src = agent.checkAddCredentialsToUrl(photo.thumb_url);
+                    wanted_subjects[ photo.id ] ='photo';
                 }
+                like.add_id_array( wanted_subjects );
 
 
                 $('.timeline-grid').each(function(index, element) {
@@ -678,7 +681,6 @@ zz.init = {
     like_menu: function() {
         zz.toolbars.build_like_button();
         like.init();
-
     }
 
 };
