@@ -1,26 +1,26 @@
 ---
 development:
-  :shared_secret: ca9er6wprp0d0zr
-  :api_key: y0njwhjmvonhq0s
+  :shared_secret: 5lzpsf663ud6h0h
+  :api_key: h9a22jmeknik2c5
 
 perftest:
-  :shared_secret: ca9er6wprp0d0zr
-  :api_key: y0njwhjmvonhq0s
+  :shared_secret: 5lzpsf663ud6h0h
+  :api_key: h9a22jmeknik2c5
 
 test:
-  :shared_secret: ca9er6wprp0d0zr
-  :api_key: y0njwhjmvonhq0s
+  :shared_secret: 5lzpsf663ud6h0h
+  :api_key: h9a22jmeknik2c5
 
 photos_production:
-  :shared_secret: ca9er6wprp0d0zr
-  :api_key: y0njwhjmvonhq0s
+  :shared_secret: 5lzpsf663ud6h0h
+  :api_key: h9a22jmeknik2c5
 
 photos_staging:
-  :shared_secret: ca9er6wprp0d0zr
-  :api_key: y0njwhjmvonhq0s
+  :shared_secret: 5lzpsf663ud6h0h
+  :api_key: h9a22jmeknik2c5
 
 
 eytest:
-  :shared_secret: ca9er6wprp0d0zr
-  :api_key: y0njwhjmvonhq0s
+  :shared_secret: 5lzpsf663ud6h0h
+  :api_key: h9a22jmeknik2c5
 
