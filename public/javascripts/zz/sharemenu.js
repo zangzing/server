@@ -1,30 +1,47 @@
-var share = {
+var sharemenu = {
 
-    share_menu_template: '<ul>'+
+    template: '<ul>'+
                                 '<li class="email"><a href="#email">Email</a></li>' +
                                 '<li class="twitter"><a href="#twitter">Twitter</a></li>' +
                                 '<li class="facebook"><a href="#facebook">Facebook</a></li>' +
                         '</ul>',
 
 
-    show_share_menu: function(button, object_type, object_id, offset, zza_context, onopen, onclose){
+    show: function(button, object_type, object_id, offset, zza_context, onopen, onclose){
         $(button).zz_menu(
             { subject_id   : object_id,
               subject_type : object_type,
               zza_context  : zza_context,
-              menu_template: this.share_menu_template,
-              email_action : this.share_to_email,
-              facebook_action : this.share_to_facebook,
-              twitter_action : this.share_to_twitter,
-              open: onopen,
-              close: onclose
+              menu_template: sharemenu.template,
+              click        : sharemenu.click_handler,
+              open         : onopen,
+              close        : onclose
         });
         $(button).zz_menu('open');
     },
 
+    click_handler: function(event,data){
+            var action  = data.action,
+                options = data.options,
+                context = options.zza_context,
+                id      = options.subject_id,
+                type    = options.subject_type;
 
-    share_to_email: function(object_type, object_id){
-        ZZAt.track(object_type + '.share.' + this.zza_context + '.email');
+            switch( action ){
+                case 'email':
+                    sharemenu.share_to_email( type, id, context );
+                    break;
+                case 'twitter':
+                    sharemenu.share_to_twitter( type, id, context );
+                    break;
+                case 'facebook':
+                    sharemenu.share_to_facebook( type, id, context );
+                    break;
+            }
+    },
+
+    share_to_email: function(object_type, object_id, context){
+        ZZAt.track(object_type + '.share.' + context + '.email');
         if(!zz.current_user_id){
             var url = '/service/' + object_type + 's/' + object_id + '/new_mailto_share';
             $.get(url, {}, function(json){
@@ -96,14 +113,14 @@ var share = {
         }
     },
 
-    share_to_twitter: function(object_type, object_id){
-        ZZAt.track(object_type + '.share.' + this.zza_context + '.twitter');
+    share_to_twitter: function(object_type, object_id, context){
+        ZZAt.track(object_type + '.share.' + context + '.twitter');
         var url = '/service/' + object_type + 's/' + object_id + '/new_twitter_share';
         window.open(url, '', 'status=0,toolbar=0,width=700,height=450');
     },
 
-    share_to_facebook: function(object_type, object_id){
-        ZZAt.track(object_type + '.share.' + this.zza_context + '.facebook');
+    share_to_facebook: function(object_type, object_id, context){
+        ZZAt.track(object_type + '.share.' + context + '.facebook');
         var url = '/service/' + object_type + 's/' + object_id + '/new_facebook_share';
         window.open(url, '', 'status=0,toolbar=0,width=700,height=450');
     }

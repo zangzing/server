@@ -100,10 +100,8 @@
                 style:           'dropdown',
                 bind_click_open:   true,
                 append_to_element: true, //use the element zzindex so the overflow goes under the bottom toolbar
-                menu_template:   share.share_menu_template,
-                email_action :   share.share_to_email,
-                facebook_action: share.share_to_facebook,
-                twitter_action : share.share_to_twitter,
+                menu_template:   sharemenu.template,
+                click:           sharemenu.click_handler,
                 open:  function(){ menuOpen = true;  },
                 close: function(){ menuOpen = false; checkCloseToolbar(); }
             });
@@ -136,6 +134,7 @@
                 self.element.hover( mouse_in, mouse_out );
             }
         },
+
 
         _resize: function(coverWidth, coverHeight){
             var self = this;
