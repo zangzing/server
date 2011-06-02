@@ -420,7 +420,7 @@ zz.init = {
                         },
                         currentPhotoId: $.param.fragment(),
                         showButtonBar:true,
-                        showInfoMenu: zz.displayed_user_id == zz.current_user_id, //The owner of the album being displayed ios zz.displayed_user_id
+                        showInfoMenu: zz.displayed_user_id == zz.current_user_id //The owner of the album being displayed ios zz.displayed_user_id
                     }).data().zz_photogrid;
 
 
@@ -678,6 +678,7 @@ zz.init = {
     like_menu: function() {
         zz.toolbars.build_like_button();
         like.init();
+
     }
 
 };
