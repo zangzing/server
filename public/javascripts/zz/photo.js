@@ -347,7 +347,6 @@
                         zz_dialog.show_dialog(template, { width:300, height: 100, modal: true, autoOpen: true });
                     };
                     var success = function( url ){
-                        
                         if($.client.os =="Mac"){
                             document.location.href = url;
                         }else{
@@ -360,8 +359,17 @@
                         show_dialog( 'Your download should have started, otherwise please click <a href="'+url+'"> here </a>');
                     };
                     var error = function( request ){
-                        var flash = $.parseJSON(request.getResponseHeader("X-Flash"))
-                        show_dialog( 'Unable to download because '+flash.error );
+                        var message = "of a strange circumstance";
+                        if( request.status == 401 ){
+                            message = "you are not authorized to download this photo";
+                        } else {
+                            var json = request.getResponseHeader("X-Flash");
+                            var flash;
+                            if( !_.isUndefined( json ) && (flash = $.parseJSON(json)) && flash.error ){
+                                message = flash.error;
+                            }
+                        }
+                        show_dialog( 'Unable to download because '+ message );
                     };
 
                     zzapi_photo.download( id, function(url){ success(url)}, function(request){error(request);} );
