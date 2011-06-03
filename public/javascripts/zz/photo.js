@@ -233,7 +233,7 @@
                             subject_id:        o.photoId,
                             subject_type:      'photo',
                             zza_context:       'frame',
-                            style:             'dropdown',
+                            style:             'auto',
                             bind_click_open:   true,
                             append_to_element: true, //use the element zzindex so the overflow goes under the bottom toolbar
                             menu_template:     sharemenu.template,
@@ -251,7 +251,7 @@
                             {   zz_photo:          self,
                                 subject_id:        o.photoId,
                                 subject_type:      'photo',
-                                style:             'dropdown',
+                                style:             'auto',
                                 bind_click_open:   true,
                                 append_to_element: true, //use the element zzindex so the overflow goes under the bottom toolbar
                                 menu_template:     infomenu.template,
