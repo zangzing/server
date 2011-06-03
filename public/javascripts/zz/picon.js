@@ -97,7 +97,7 @@
             {   subject_id:      self.options.albumId,
                 subject_type:    'album',
                 zza_context:     'frame',
-                style:           'dropdown',
+                style:           'auto',
                 bind_click_open:   true,
                 append_to_element: true, //use the element zzindex so the overflow goes under the bottom toolbar
                 menu_template:   sharemenu.template,

@@ -17,7 +17,7 @@ if(jQuery)( function() {
                                                         'Subject Type: ' + data.options.subject_type + '\n\n' +
 						                                'Subject ID: ' + data.options.subject_id + '\n\n');
                                                },
-            style       : 'popup',
+            style       : 'dropdown',
             animation_length: 200,
             animation_y     : 10,
             menu_template   : '',
@@ -92,22 +92,23 @@ if(jQuery)( function() {
                     el = self.element,
                     menu = self.menu;
 
-
             self.computed_style = o.style;
-            if( o.style = 'auto'  && !_.isUndefined( o.zz_photo) ){
+            if( o.style == 'auto'){
                 // menu_butt is not the bottom property
                 var menu_butt = el.offset().top + el.height() + menu.height();
-                var grid_butt = o.zz_photo.photoGrid.element.offset().top + o.zz_photo.photoGrid.element.height();
-                if( menu_butt > grid_butt ){
-                    self.computed_style= 'popup';
-                    logger.debug('Menu bottom:'+menu_butt+'> Grid Bottom:'+grid_butt+' then style is:'+self.computed_style)
-                } else {
-                    self.computed_style = 'dropdown';
-                    logger.debug('Menu bottom:'+menu_butt+'< Grid Bottom:'+grid_butt+' then style is:'+self.computed_style)
+                var container_butt;
+                if( _.isUndefined( o.zz_photo) ){
+                    container_butt= $('#article').offset().top + $('#article').height();
+                }else{
+                    container_butt= o.zz_photo.photoGrid.element.offset().top + o.zz_photo.photoGrid.element.height();
                 }
-
-            } else {
-                self.computed_style = 'popup';
+                if( menu_butt > container_butt ){
+                    self.computed_style= 'popup';
+                    //logger.debug('Menu bottom:'+menu_butt+'> Container Bottom:'+container_butt+' then style is:'+self.computed_style);
+                }else{
+                    self.computed_style = 'dropdown';
+                    //logger.debug('Menu bottom:'+menu_butt+'< Container Bottom:'+container_butt+' then style is:'+self.computed_style);
+                }
             }
 
             // Style Menu
@@ -239,7 +240,7 @@ if(jQuery)( function() {
                 //$(window).one('resize',function() {  self.close()  });
                 self._trigger('open');
             }else{
-             return false;       
+             return false;
             }
         },
 
