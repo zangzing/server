@@ -1,35 +1,55 @@
 //
-//
-// Inspiration drawn from jQuery Context Menu Plugin by Cory S.N. LaViska
-//
+// 2011 Copyright, ZangZing LLC  All Rights Reserved, http://www.zangzing.com
 //
 if(jQuery)( function() {
 
     $.widget("ui.zz_menu",{
         options:{
-            subject_id      : '',
-            subject_type     : '',
-            auto_open       : false,  //open upon creation
-            bind_click_open : false,  //bind open to the elements click.
-            click        : function(event, data) {
-                                               var opts = $(this).data().zz_menu.options;
-					                           alert(   'Action: ' + data.action + '\n\n' +
-                                                        'Subject Type: ' + data.options.subject_type + '\n\n' +
-						                                'Subject ID: ' + data.options.subject_id + '\n\n');
-                                               },
-            style       : 'dropdown',
-            animation_length: 200,
-            animation_y     : 10,
-            menu_template   : '',
-            append_to_element: false,
-            container       : null
+            subject_id       : '',          // This and other user defined options are passed to the click events
+            subject_type     : '',          // This and other user defined options are passed to the click events
+            auto_open        : false,       // open after creation
+            bind_click_open  : false,       // bind open to the elements click.
+            style            : 'dropdown',  // 'dropdown', 'popup' or 'auto'. 'auto' requires a container to decide
+            animation_length : 200,         // How far long is the animation
+            animation_y      : 10,          // How far is the opening animation
+            menu_template    : '',          // The menu structure, a ul with li's that contain an a
+            append_to_element: false,       // Append the html to the el or to the end of <body> (relevant for zzindex)
+            container        : null,        // A jquery element used to decide if popup or dropdown see _compute_style
+            beforeopen       : $.noop,      // Beforeopen event listener (before starting opening sequence)
+            open             : $.noop,      // Open event listener (after menu is already opened and visible)
+            close            : $.noop,      // Close event listener (after menu is closed, cleaned up and not visible)
+            // the default click listener (an example of how to handle menu clicks
+            click            : function(event, data) {
+                                    alert(   'Action: ' + data.action + '\n\n' +
+                                             'Subject Type: ' + data.options.subject_type + '\n\n' +
+                                             'Subject ID: ' + data.options.subject_id + '\n\n');
+            }
         },
 
         _create: function() {
             var self = this,
-                el   = self.element,
-                o    = self.options;
+                    el   = self.element,
+                    o    = self.options;
+            
+            // if  o.bind_click_open option is set, bind open to the el's click
+            if( self.options.bind_click_open ){
+                el.click( function(e) {
+                    e.stopPropagation();
+                    self.open();
+                });
+            }
 
+            // If auto open, open.
+            if( o.auto_open){
+                self.open();
+            }
+        },
+
+        _build_and_wire_menu: function(){
+            var self = this,
+                    el   = self.element,
+                    o    = self.options;
+            //Create and insert html
             var menu = $('<div class="zz_menu">')
                     .append('<div id="menu-top">')
                     .append( o.menu_template )
@@ -41,17 +61,16 @@ if(jQuery)( function() {
                 $('body').append(menu);
             }
 
-
-            // Disable text selection
+            // Disable text selection for menu items
             if( $.browser.mozilla ) {
                 menu.each( function() { $(this).css({ 'MozUserSelect' : 'none' }); });
             } else if( $.browser.msie ) {
-                menu.each( function() { $(this).bind('selectstart.disableTextSelect', function() { return false; }); });
+                menu.each( function() { $(this).bind('selectstart.disableTextSelect', function(){ return false; }); });
             } else {
-                menu.each(function() { $(this).bind('mousedown.disableTextSelect', function() { return false; }); });
+                menu.each(function() { $(this).bind('mousedown.disableTextSelect', function(){ return false; }); });
             }
 
-            // bind hover events
+            // bind hover events for menu items
             menu.find('A').mouseover( function() {
                 menu.find('LI.hover').removeClass('hover');
                 $(this).parent().addClass('hover');
@@ -59,9 +78,7 @@ if(jQuery)( function() {
                 menu.find('LI.hover').removeClass('hover');
             });
 
-
-             // When items are selected
-            //menu.find('A').unbind('click');
+            // bind click for menu items
             menu.find('LI:not(.disabled) A').click( function() {
                 self.close();
                 var action = $(this).attr('href').substr(1);
@@ -69,21 +86,8 @@ if(jQuery)( function() {
                 return false; //Stop the click from bubbling up
             });
 
-            // if the anchor option is set, bind to the elements click
-            if( self.options.bind_click_open ){
-                el.click( function(e) {
-                    e.stopPropagation();
-                    self.open();
-                });
-            }
-
-            //Set a flag if menu has no items
+            //Set a flag if menu has no items to avoid displaying empty menus
             self.zero_menu_items =  menu.find('li').length <= 0;
-
-            // If auto open, open.
-            if( o.auto_open){
-                self.open();
-            }
         },
 
         _compute_style: function(){
@@ -100,18 +104,18 @@ if(jQuery)( function() {
                             container_butt = o.container.offset().top + o.container.innerHeight()-10;
                     if( menu_butt > container_butt ){
                         self.computed_style= 'popup';
-                        logger.debug('Menu bottom:'+menu_butt+'> Container Bottom:'+container_butt+' then style is:'+self.computed_style);
+                        //logger.debug('Menu bottom:'+menu_butt+'> Container Bottom:'+container_butt+' then style is:'+self.computed_style);
                     }else{
                         self.computed_style = 'dropdown';
-                        logger.debug('Menu bottom:'+menu_butt+'< Container Bottom:'+container_butt+' then style is:'+self.computed_style);
+                        //logger.debug('Menu bottom:'+menu_butt+'< Container Bottom:'+container_butt+' then style is:'+self.computed_style);
                     }
                 }else{
                     self.computed_style = 'dropdown';
-                    logger.debug('Menu: container not defined, defaulting to dropdown' );
+                    //logger.debug('Menu: container not defined, defaulting to dropdown' );
                 }
             }
 
-            // Style Menu
+            // add style components to menu
             if( self.computed_style == 'dropdown' ){
                 menu.find('#menu-top').removeClass('flattop').addClass('arrowtop');
                 menu.find('#menu-bottom').removeClass('arrowbottom').addClass('flatbottom');
@@ -123,13 +127,17 @@ if(jQuery)( function() {
 
 
         open: function(){
-            //logger.debug('open zz_menu');
             var self = this,
-                el   = self.element,
-                menu = self.menu,
-                o    = self.options;
+                    menu = self.menu,
+                    el   = self.element,
+                    o    = self.options;
+
+            if( _.isUndefined( self.menu )){
+                self._build_and_wire_menu();
+                menu = self.menu;
+            }
+
             if( self.zero_menu_items ){
-                logger.debug('attempt to display menu with zero elements');
                 return;
             }
 
@@ -143,64 +151,56 @@ if(jQuery)( function() {
                 $(":ui-zz_menu").not(el).each(function(){
                     $(this).zz_menu("close");
                 });
-                //var x = offset.left+ ( $(el).outerWidth()/2 ) +  - (menu.width()/2);
-                //var y = offset.top - $(el).outerHeight();
 
-                //var  x = el.position().left +(menu.width()/2) - (el.width()/2);
-                //var  y = el.position().top -el.height()+10;
-
-                //var x = el.offset().left + (el.width() / 2) - (menu.width() / 2);
-                //var y = el.offset().top - menu.height();
-
+                // calculate position
                 var x,y,offset;
                 if( o.append_to_element){
-                     //Use this when appending the element to an anchor element
+                    //Use this when appending the element to an anchor element
                     x = -( (menu.width()/2) - (el.outerWidth()/2));
                     y = el.height();
                 }else{
                     //Use this when appending the element to the end of the document
                     offset = $(el).offset();
-                    y = $(document).height() - offset.top;
                     x = offset.left+ ( $(el).outerWidth()/2 )  - (menu.width()/2);
+                    if( self.computed_style == 'dropdown' ){
+                        y = offset.top + el.height();
+                    }else{
+                        y = $(document).height() - offset.top;
+                    }
                 }
 
-                // These are used to keep toolbar menu open when bound to element
-                // and to close menu when user hovers out
-                var hover = true;
+                // Keep the menu open while hovering from element to menu but not back
+                // and to close menu when user hovers out of menu and/or element
+                var hover = false;
                 var mouse_in = function(){
-                    logger.debug( 'menu mousein');
+                    //logger.debug( 'menu mousein');
                     hover = true;
                 }
                 var mouse_out= function(){
-                    logger.debug( 'menu mouseout');
+                    //logger.debug( 'menu mouseout');
                     hover = false;
                     setTimeout( function(){ if(!hover){ self.close();}},200);
                 };
-
-
-                //logger.debug('x:'+x+',y:'+y);
-                // Show the menu
                 $(document).unbind('click');
+                el.bind('mouseleave.zz_menu', mouse_out );
+                menu.bind('mouseenter.zz_menu', mouse_in);
+
+                // Show the menu and bind mouseleave for menu
                 if( self.computed_style == 'dropdown' ){
-                    if( !o.append_to_element ){
-                        y = offset.top + el.height();
-                    }
-                    // Show zz_menu below and center of the clicked element after animation is done bind hoverOut to close
+                    // Show zz_menu below and center of el, after animation is done bind hoverOut to close
                     menu.css({display:'block',opacity:0,left:x,top:y-o.animation_y });
-                    menu.animate({top:y,opacity:1}, o.animation_length, function(){
-                        menu.bind('mouseenter.zz_menu', mouse_in).bind('mouseleave.zz_menu', mouse_out );
-                        el.bind('mouseenter.zz_menu', mouse_in).bind('mouseleave.zz_menu', mouse_out );
-                    });
+                    menu.animate({top:y,opacity:1}, o.animation_length,
+                            function(){menu.bind('mouseleave.zz_menu', mouse_out );});
                 } else {
-                    // Show zz_menu above and center of the clicked element after animation is done bind hoverOut to close
+                    // Show zz_menu above and center of el, after animation is done bind hoverOut to close
+                    el.bind('mouseleave.zz_menu', mouse_out );
                     menu.css({display:'block',opacity:0,left:x,bottom:y-o.animation_y});
-                    menu.animate({bottom:y,opacity:1},o.animation_length, function(){
-                            menu.bind('mouseenter.zz_menu', mouse_in).bind('mouseleave.zz_menu', mouse_out );
-                            el.bind('mouseenter.zz_menu', mouse_in).bind('mouseleave.zz_menu', mouse_out );
-                    });
+                    menu.bind('mouseenter.zz_menu', mouse_in).bind('mouseleave.zz_menu', mouse_out );
+                    menu.animate({bottom:y,opacity:1},o.animation_length,
+                            function(){menu.bind('mouseleave.zz_menu', mouse_out );});
                 }
 
-                // Bind Keyboard
+                // Bind Keyboard clicks
                 $(document).bind('keypress.zz_menu', function(e) {
                     e.stopPropagation();
                     switch( e.keyCode ) {
@@ -240,69 +240,72 @@ if(jQuery)( function() {
                 }, 0);
 
                 //If the window resizes close menu (its bottom positioned so it will look out of place if not removed)
-                //$(window).one('resize',function() {  self.close()  });
+                $(window).one('resize',function() {  self.close()  });
                 self._trigger('open');
             }else{
-             return false;
+                return false;
             }
         },
 
         close: function(){
             var self=this;
-            if( self.menu.not(':hidden') ){
-                $(document).unbind('click.zz_menu');
-                $(document).unbind('keypress.zz_menu');
-                self.menu.unbind('mouseenter.zz_menu').unbind('mouseleave.zz_menu');
-                self.element.unbind('mouseenter.zz_menu').unbind('mouseleave.zz_menu');
-                self.menu.fadeOut(self.options.animation_length);
+            if( !_.isUndefined( self.menu ) ){
+                if( self.menu.not(':hidden') ){
+                    $(document).unbind('click.zz_menu');
+                    $(document).unbind('keypress.zz_menu');
+                    self.menu.unbind('mouseenter.zz_menu').unbind('mouseleave.zz_menu');
+                    self.element.unbind('mouseleave.zz_menu');
+                    self.menu.fadeOut(self.options.animation_length);
+                }
             }
             self._trigger('close');
         },
 
-        // Disable i menu items on the fly
-        disable_menu_items: function(items) {
-            var menu = this.menu;
-            if( items == undefined ) {
-                // Disable all
-                menu.find('LI').addClass('disabled');
-            } else {
-                var d = items.split(',');
-                for( var i = 0; i < d.length; i++ ) {
-                    menu.find('A[href="' + d[i] + '"]').parent().addClass('disabled');
-                }
-            }
-            return( menu );
 
-        },
+//        // Disable i menu items on the fly
+//        disable_menu_items: function(items) {
+//            var menu = this.menu;
+//            if( items == undefined ) {
+//                // Disable all
+//                menu.find('LI').addClass('disabled');
+//            } else {
+//                var d = items.split(',');
+//                for( var i = 0; i < d.length; i++ ) {
+//                    menu.find('A[href="' + d[i] + '"]').parent().addClass('disabled');
+//                }
+//            }
+//            return( menu );
+//
+//        },
+//
+//        // Enable i menu items on the fly
+//        enable_menu_items: function(items) {
+//            var menu = this.menu;
+//            if( items == undefined ) {
+//                // Enable all
+//                menu.find('LI.disabled').removeClass('disabled');
+//            } else {
+//                var d = items.split(',');
+//                for( var i = 0; i < d.length; i++ ) {
+//                    menu.find('A[href="' + d[i] + '"]').parent().removeClass('disabled');
+//                }
+//            }
+//            return( menu );
+//        },
+//
+//        disable: function(){
+//            this.menu.addClass('disabled');
+//        },
+//
+//        enable: function(){
+//            this.menu.removeClass('disabled');
+//        },
 
-        // Enable i menu items on the fly
-        enable_menu_items: function(items) {
-            var menu = this.menu;
-            if( items == undefined ) {
-                // Enable all
-                menu.find('LI.disabled').removeClass('disabled');
-            } else {
-                var d = items.split(',');
-                for( var i = 0; i < d.length; i++ ) {
-                    menu.find('A[href="' + d[i] + '"]').parent().removeClass('disabled');
-                }
-            }
-            return( menu );
-        },
-
-		disable: function(){
-				this.menu.addClass('disabled');
-		},
-
-		enable: function(){
-				this.menu.removeClass('disabled');
-		},
-
-		destroy: function(){
-				this.element.unbind('click');
-                this.menu.remove();
-                $.Widget.prototype.destroy.apply( this, arguments );
-		}
+        destroy: function(){
+            this.element.unbind('click');
+            this.menu.remove();
+            $.Widget.prototype.destroy.apply( this, arguments );
+        }
 
     });
 })(jQuery);

@@ -213,7 +213,7 @@
                     if(!menuOpen && !hover ){
                         self.borderElement.css({'padding-bottom': '0px'});
                         self.imageElement.css({'border-bottom': '5px solid #fff'});
-                        self.toolbarElement.remove();
+                        self.toolbarElement.hide();
                     }
                 };
 
@@ -221,47 +221,53 @@
                     hover = true;
 
                     if(!menuOpen){
-                        //create and display toolbar
-                        self.toolbarElement = $(toolbarTemplate);
-                        self.borderElement.append(self.toolbarElement);
-                        self.borderElement.css({'padding-bottom': '30px'});
-                        self.imageElement.css({'border-bottom': '35px solid #fff'});
 
-                        // Share button
-                        self.toolbarElement.find('.share-button').zz_menu(
-                        {   zz_photo:          self,
-                            container:         $('#article'),
-                            subject_id:        o.photoId,
-                            subject_type:      'photo',
-                            zza_context:       'frame',
-                            style:             'auto',
-                            bind_click_open:   true,
-                            append_to_element: false, //use the element zzindex so the overflow goes under the bottom toolbar
-                            menu_template:     sharemenu.template,
-                            click:             sharemenu.click_handler,
-                            open:  function(){ menuOpen = true;  },
-                            close: function(){ menuOpen = false; checkCloseToolbar(); }
-                        });
+                        //create toolbar if it does not exist
+                        if( _.isUndefined( self.toolbarElement ) ){
+                            self.toolbarElement = $(toolbarTemplate);
+                            self.borderElement.append(self.toolbarElement);
 
-                        // Like button
-                        like.draw_tag( self.toolbarElement.find('.like-button') );
-
-                        // i button
-                        if( o.showInfoMenu ){
-                            self.toolbarElement.find('.info-button').zz_menu(
+                            // share button
+                            self.toolbarElement.find('.share-button').zz_menu(
                             {   zz_photo:          self,
                                 container:         $('#article'),
                                 subject_id:        o.photoId,
                                 subject_type:      'photo',
+                                zza_context:       'frame',
                                 style:             'auto',
                                 bind_click_open:   true,
-                                append_to_element: false, //use the element zzindex so the overflow goes under the bottom toolbar
-                                menu_template:     infomenu.template,
-                                click:             infomenu.click_handler,
-                                open:  function(){ menuOpen = true; },
-                                close: function(){ menuOpen = false; checkCloseToolbar();}
+                                append_to_element: false, //use the el zzindex so the overflow goes under bottom toolbar
+                                menu_template:     sharemenu.template,
+                                click:             sharemenu.click_handler,
+                                open:  function(){ menuOpen = true;  },
+                                close: function(){ menuOpen = false; checkCloseToolbar(); }
                             });
+
+                            // like button
+                            like.draw_tag( self.toolbarElement.find('.like-button') );
+
+                            // info button
+                            if( o.showInfoMenu ){
+                                self.toolbarElement.find('.info-button').zz_menu(
+                                {   zz_photo:          self,
+                                    container:         $('#article'),
+                                    subject_id:        o.photoId,
+                                    subject_type:      'photo',
+                                    style:             'auto',
+                                    bind_click_open:   true,
+                                    append_to_element: false, //use the el zzindex so overflow goes under bottom toolbar
+                                    menu_template:     infomenu.template,
+                                    click:             infomenu.click_handler,
+                                    open:  function(){ menuOpen = true; },
+                                    close: function(){ menuOpen = false; checkCloseToolbar();}
+                                });
+                            }
                         }
+
+                        //show toolbar
+                        self.borderElement.css({'padding-bottom': '30px'});
+                        self.imageElement.css({'border-bottom': '35px solid #fff'});
+                        self.toolbarElement.show();
                     }
                 });
 
