@@ -10,8 +10,8 @@ Disallow: /wp-admin/
 Disallow: /wp-includes/
 Disallow: /blog/trackback/
 Disallow: /blog/archives/
-Disallow: /blog/category/
 Disallow: /blog/author/
+Disallow: /blog/team/
 Disallow: /blog/tag/
 Disallow: /*?
 Disallow: /*.js$
