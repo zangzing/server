@@ -22,7 +22,7 @@ if(jQuery)( function() {
             animation_y     : 10,
             menu_template   : '',
             append_to_element: false,
-            container: null
+            container       : null
         },
 
         _create: function() {
@@ -93,22 +93,20 @@ if(jQuery)( function() {
                     menu = self.menu;
 
             self.computed_style = o.style;
-            if( o.style == 'auto'){
+            if( o.style == 'auto' && o.container != null ){
                 // menu_butt is not the bottom property
-                var menu_butt = el.offset().top + el.height() + menu.height();
-                var container_butt;
-                if( _.isUndefined( o.zz_photo) ){
-                    container_butt= $('#article').offset().top + $('#article').height();
-                }else{
-                    container_butt= o.zz_photo.photoGrid.element.offset().top + o.zz_photo.photoGrid.element.height();
-                }
+                var menu_butt = el.offset().top + el.outerHeight() + menu.height(),
+                    container_butt = o.container.offset().top + o.container.innerHeight()-10;
                 if( menu_butt > container_butt ){
                     self.computed_style= 'popup';
-                    //logger.debug('Menu bottom:'+menu_butt+'> Container Bottom:'+container_butt+' then style is:'+self.computed_style);
+                    logger.debug('Menu bottom:'+menu_butt+'> Container Bottom:'+container_butt+' then style is:'+self.computed_style);
                 }else{
                     self.computed_style = 'dropdown';
-                    //logger.debug('Menu bottom:'+menu_butt+'< Container Bottom:'+container_butt+' then style is:'+self.computed_style);
+                    logger.debug('Menu bottom:'+menu_butt+'< Container Bottom:'+container_butt+' then style is:'+self.computed_style);
                 }
+            }else{
+                    self.computed_style = 'dropdown';
+                    logger.debug('Menu: container not defined, defaulting to dropdown' );
             }
 
             // Style Menu
@@ -168,9 +166,11 @@ if(jQuery)( function() {
                 // and to close menu when user hovers out
                 var hover = true;
                 var mouse_in = function(){
+                    logger.debug( 'menu mousein');
                     hover = true;
                 }
                 var mouse_out= function(){
+                    logger.debug( 'menu mouseout');
                     hover = false;
                     setTimeout( function(){ if(!hover){ self.close();}},200);
                 };
@@ -186,14 +186,15 @@ if(jQuery)( function() {
                     // Show zz_menu below and center of the clicked element after animation is done bind hoverOut to close
                     menu.css({display:'block',opacity:0,left:x,top:y-o.animation_y });
                     menu.animate({top:y,opacity:1}, o.animation_length, function(){
-                        el.hover( mouse_in, mouse_out );
-                        menu.hover(mouse_in, mouse_out ); });
+                        menu.bind('mouseenter.zz_menu', mouse_in).bind('mouseleave.zz_menu', mouse_out );
+                        el.bind('mouseenter.zz_menu', mouse_in).bind('mouseleave.zz_menu', mouse_out );
+                    });
                 } else {
                     // Show zz_menu above and center of the clicked element after animation is done bind hoverOut to close
                     menu.css({display:'block',opacity:0,left:x,bottom:y-o.animation_y});
                     menu.animate({bottom:y,opacity:1},o.animation_length, function(){
-                            el.hover(mouse_in, mouse_out );
-                            menu.hover(mouse_in, mouse_out );
+                            menu.bind('mouseenter.zz_menu', mouse_in).bind('mouseleave.zz_menu', mouse_out );
+                            el.bind('mouseenter.zz_menu', mouse_in).bind('mouseleave.zz_menu', mouse_out );
                     });
                 }
 
@@ -249,7 +250,8 @@ if(jQuery)( function() {
             if( self.menu.not(':hidden') ){
                 $(document).unbind('click.zz_menu');
                 $(document).unbind('keypress.zz_menu');
-                self.menu.unbind('hover');
+                self.menu.unbind('mouseenter.zz_menu').unbind('mouseleave.zz_menu');
+                self.element.unbind('mouseenter.zz_menu').unbind('mouseleave.zz_menu');
                 self.menu.fadeOut(self.options.animation_length);
             }
             self._trigger('close');

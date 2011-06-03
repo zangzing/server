@@ -42,7 +42,7 @@
                                 '</div>' +
                               '</div>');
 
-          self.captionHeight = 80;
+            self.captionHeight = 80;
 
             //create & bind toolbar
             this.element.append(self.template);
@@ -65,26 +65,29 @@
 
             self._resize(self.options.maxCoverWidth, self.options.maxCoverHeight);
 
+            var toolbarOpen = false;
             var menuOpen = false;
             var hover    = false;
             var height;
 
             var checkCloseToolbar = function(){
                 if( !menuOpen && !hover){
-                    self.topOfStack.css
-                            ({height: height});
+                    self.topOfStack.css({height: height});
                     self.topOfStack.find('.button-bar').hide();
+                    toolbarOpen = false;
                 }
             };
 
             var mouse_in = function(){
                 hover = true;
-
                 //display toolbar
-                self.topOfStack = self.template.find('.stacked-image:last');
-                height = self.topOfStack.height();
-                self.topOfStack.css({height: height + 30});
-                self.topOfStack.find('.button-bar').show();
+                if( !toolbarOpen ){
+                    self.topOfStack = self.template.find('.stacked-image:last');
+                    height = self.topOfStack.height();
+                    toolbarOpen = true;
+                    self.topOfStack.css({height: height + 30});
+                    self.topOfStack.find('.button-bar').show();
+                }
             };
 
             var mouse_out =function(){
@@ -96,6 +99,7 @@
             self.template.find('.share-button').zz_menu(
             {   subject_id:      self.options.albumId,
                 subject_type:    'album',
+                container:       $('#article'),
                 zza_context:     'frame',
                 style:           'auto',
                 bind_click_open:   true,
@@ -139,7 +143,7 @@
         _resize: function(coverWidth, coverHeight){
             var self = this;
 
-      
+
             self.template.find('.cover-photo').css({
                 height:coverHeight,
                 width:coverWidth
@@ -150,7 +154,7 @@
                 height:coverHeight + 10,
                 width:coverWidth + 10
             });
-            
+
             self.template.find('.stacked-image').center_xy({
                 top:40,
                 left:0,

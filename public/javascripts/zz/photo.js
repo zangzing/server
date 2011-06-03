@@ -230,12 +230,13 @@
                         // Share button
                         self.toolbarElement.find('.share-button').zz_menu(
                         {   zz_photo:          self,
+                            container:         $('#article'),
                             subject_id:        o.photoId,
                             subject_type:      'photo',
                             zza_context:       'frame',
                             style:             'auto',
                             bind_click_open:   true,
-                            append_to_element: true, //use the element zzindex so the overflow goes under the bottom toolbar
+                            append_to_element: false, //use the element zzindex so the overflow goes under the bottom toolbar
                             menu_template:     sharemenu.template,
                             click:             sharemenu.click_handler,
                             open:  function(){ menuOpen = true;  },
@@ -249,11 +250,12 @@
                         if( o.showInfoMenu ){
                             self.toolbarElement.find('.info-button').zz_menu(
                             {   zz_photo:          self,
+                                container:         $('#article'),
                                 subject_id:        o.photoId,
                                 subject_type:      'photo',
                                 style:             'auto',
                                 bind_click_open:   true,
-                                append_to_element: true, //use the element zzindex so the overflow goes under the bottom toolbar
+                                append_to_element: false, //use the element zzindex so the overflow goes under the bottom toolbar
                                 menu_template:     infomenu.template,
                                 click:             infomenu.click_handler,
                                 open:  function(){ menuOpen = true; },
