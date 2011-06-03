@@ -93,20 +93,22 @@ if(jQuery)( function() {
                     menu = self.menu;
 
             self.computed_style = o.style;
-            if( o.style == 'auto' && o.container != null ){
-                // menu_butt is not the bottom property
-                var menu_butt = el.offset().top + el.outerHeight() + menu.height(),
-                    container_butt = o.container.offset().top + o.container.innerHeight()-10;
-                if( menu_butt > container_butt ){
-                    self.computed_style= 'popup';
-                    logger.debug('Menu bottom:'+menu_butt+'> Container Bottom:'+container_butt+' then style is:'+self.computed_style);
+            if( o.style == 'auto'){
+                if( o.container != null ){
+                    // menu_butt is not the bottom property
+                    var menu_butt = el.offset().top + el.outerHeight() + menu.height(),
+                            container_butt = o.container.offset().top + o.container.innerHeight()-10;
+                    if( menu_butt > container_butt ){
+                        self.computed_style= 'popup';
+                        logger.debug('Menu bottom:'+menu_butt+'> Container Bottom:'+container_butt+' then style is:'+self.computed_style);
+                    }else{
+                        self.computed_style = 'dropdown';
+                        logger.debug('Menu bottom:'+menu_butt+'< Container Bottom:'+container_butt+' then style is:'+self.computed_style);
+                    }
                 }else{
                     self.computed_style = 'dropdown';
-                    logger.debug('Menu bottom:'+menu_butt+'< Container Bottom:'+container_butt+' then style is:'+self.computed_style);
-                }
-            }else{
-                    self.computed_style = 'dropdown';
                     logger.debug('Menu: container not defined, defaulting to dropdown' );
+                }
             }
 
             // Style Menu
