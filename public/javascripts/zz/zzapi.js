@@ -66,7 +66,7 @@ var zzapi_photo = {
             dataType: "text",
             url: url + ".json",
             error:   function( request){ error(request); },
-            success: function(data){ success( url ); }
+            success: function(data){ success( url+ ".html" ); }
         });
     }
 };
