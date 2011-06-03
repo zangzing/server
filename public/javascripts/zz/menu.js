@@ -154,7 +154,7 @@ if(jQuery)( function() {
                 var x,y,offset;
                 if( o.append_to_element){
                      //Use this when appending the element to an anchor element
-                    x = -( (menu.width()/2) - (el.width()/2));
+                    x = -( (menu.width()/2) - (el.outerWidth()/2));
                     y = el.height();
                 }else{
                     //Use this when appending the element to the end of the document

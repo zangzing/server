@@ -95,7 +95,6 @@ var sharemenu = {
                     submitHandler: function() {
                         var serialized = $('#new_email_share').serialize();
                         $.post(zz.path_prefix + '/'+ object_type + 's/'+ object_id +'/shares.json', serialized, function(data,status,request ){
-                            alert('Your message has been sent.');
                             dialog.close();
                         },"json");
                     }

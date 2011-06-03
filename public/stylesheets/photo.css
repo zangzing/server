@@ -357,11 +357,12 @@
     width:20px;
     height:18px;
     cursor:pointer;
-    margin:3px;
+    margin:3px 0px;
+    padding: 0px 6px;
 }
 
-.photo-toolbar .share-button{ background: url(/images/album_toolbar_share.png) no-repeat scroll 0 -19px transparent; }
-.photo-toolbar .share-button:hover{ background-position:  0 -1px; }
+.photo-toolbar .share-button{ background: url(/images/album_toolbar_share.png) no-repeat scroll 6px -19px transparent; }
+.photo-toolbar .share-button:hover{ background-position:  6px -1px; }
 
 .photo-toolbar .like-button{  width: auto; } /*The like button is styled inside by like.css */
 
@@ -369,9 +370,10 @@
     position:relative;
     top:1px;
     height:17px;
-    background: url(/images/album_toolbar_info.png) no-repeat scroll 0px -19px transparent;
+    background: url(/images/album_toolbar_info.png) no-repeat scroll 6px -19px transparent;
+
 }
-.photo-toolbar .info-button:hover{  background-position: 0 -1px; }
+.photo-toolbar .info-button:hover{  background-position: 6px -1px; }
 
 
 
