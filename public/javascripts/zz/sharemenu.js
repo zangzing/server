@@ -14,6 +14,7 @@ var sharemenu = {
               zza_context  : zza_context,
               menu_template: sharemenu.template,
               click        : sharemenu.click_handler,
+              style        : 'popup',
               open         : onopen,
               close        : onclose
         });

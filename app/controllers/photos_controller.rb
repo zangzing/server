@@ -1,5 +1,6 @@
 require "zz_env_helpers"
 
+
 class PhotosController < ApplicationController
   ssl_allowed :agent_create, :agent_index
 
@@ -280,10 +281,24 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
                       when 'tiff' then 'tif'
                       else type
                     end
-        filename = "#{@photo.caption}.#{extension}"
+        name = ( @photo.caption.nil? || @photo.caption.length <= 0 ? Time.now.strftime( '%y-%m-%d-%H-%M-%S' ): @photo.caption )
+        filename = "#{name}.#{extension}"
+        url = @photo.original_url.split('?')[0]
+
         respond_to do |format|
-          format.html  { x_accel_redirect( @photo.original_url, :filename => filename ) and return }
-          format.json  { render :text => "Proceed to download", :status => :ok and return }
+           format.json  {
+            render :text => "Proceed to download", :status => :ok and return
+          }
+          format.html{
+            #if( !!(browser.ua =~ /NT 5.1/)) # NT must open the file because it does not like popups or auto dowloads
+             #             x_accel_redirect( @photo.original_url, :filename => filename, :type => @photo.image_content_type ) and return
+            #else
+             zza.track_event("photos.download.original")
+             Rails.logger.debug("Original download: #{ url}")
+             x_accel_redirect(url, :filename => filename, :type => @photo.image_content_type) and return
+            #end
+          }
+
         end
       else
         flash[:error]="Photo has not finished Uploading"

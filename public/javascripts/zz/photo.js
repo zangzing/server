@@ -233,7 +233,7 @@
                             subject_id:        o.photoId,
                             subject_type:      'photo',
                             zza_context:       'frame',
-                            style:             'dropdown',
+                            style:             'auto',
                             bind_click_open:   true,
                             append_to_element: true, //use the element zzindex so the overflow goes under the bottom toolbar
                             menu_template:     sharemenu.template,
@@ -251,7 +251,7 @@
                             {   zz_photo:          self,
                                 subject_id:        o.photoId,
                                 subject_type:      'photo',
-                                style:             'dropdown',
+                                style:             'auto',
                                 bind_click_open:   true,
                                 append_to_element: true, //use the element zzindex so the overflow goes under the bottom toolbar
                                 menu_template:     infomenu.template,
@@ -282,17 +282,19 @@
         //delete
         delete_photo:  function(){
             var self = this;
-            if(self.options.onDelete()){
-                self.captionElement.hide();
-                self.deleteButtonElement.hide();
-                self.borderElement.hide("scale", {}, 300, function(){
-                    self.element.animate({width:0},500, function(){
-                        self.element.remove();
-                        if(self.photoGrid){
-                            self.photoGrid.resetLayout();
-                        }
-                    })
-                });
+            if(confirm("Are you sure you want to delete this photo?")){
+                if(self.options.onDelete()){
+                    self.captionElement.hide();
+                    self.deleteButtonElement.hide();
+                    self.borderElement.hide("scale", {}, 300, function(){
+                        self.element.animate({width:0},500, function(){
+                            self.element.remove();
+                            if(self.photoGrid){
+                                self.photoGrid.resetLayout();
+                            }
+                        })
+                    });
+                }
             }
         },
 

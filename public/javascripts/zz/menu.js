@@ -17,11 +17,12 @@ if(jQuery)( function() {
                                                         'Subject Type: ' + data.options.subject_type + '\n\n' +
 						                                'Subject ID: ' + data.options.subject_id + '\n\n');
                                                },
-            style       : 'popup',
+            style       : 'dropdown',
             animation_length: 200,
             animation_y     : 10,
             menu_template   : '',
-            append_to_element: false 
+            append_to_element: false,
+            container: null
         },
 
         _create: function() {
@@ -40,14 +41,6 @@ if(jQuery)( function() {
                 $('body').append(menu);
             }
 
-            // Style Menu
-            if( o.style == 'dropdown' ){
-                menu.find('#menu-top').addClass('arrowtop');
-                menu.find('#menu-bottom').addClass('flatbottom');
-            }else{
-                menu.find('#menu-top').addClass('flattop');
-                menu.find('#menu-bottom').addClass('arrowbottom')
-            }
 
             // Disable text selection
             if( $.browser.mozilla ) {
@@ -93,6 +86,42 @@ if(jQuery)( function() {
             }
         },
 
+        _compute_style: function(){
+            var self=this,
+                    o = self.options,
+                    el = self.element,
+                    menu = self.menu;
+
+            self.computed_style = o.style;
+            if( o.style == 'auto'){
+                // menu_butt is not the bottom property
+                var menu_butt = el.offset().top + el.height() + menu.height();
+                var container_butt;
+                if( _.isUndefined( o.zz_photo) ){
+                    container_butt= $('#article').offset().top + $('#article').height();
+                }else{
+                    container_butt= o.zz_photo.photoGrid.element.offset().top + o.zz_photo.photoGrid.element.height();
+                }
+                if( menu_butt > container_butt ){
+                    self.computed_style= 'popup';
+                    //logger.debug('Menu bottom:'+menu_butt+'> Container Bottom:'+container_butt+' then style is:'+self.computed_style);
+                }else{
+                    self.computed_style = 'dropdown';
+                    //logger.debug('Menu bottom:'+menu_butt+'< Container Bottom:'+container_butt+' then style is:'+self.computed_style);
+                }
+            }
+
+            // Style Menu
+            if( self.computed_style == 'dropdown' ){
+                menu.find('#menu-top').removeClass('flattop').addClass('arrowtop');
+                menu.find('#menu-bottom').removeClass('arrowbottom').addClass('flatbottom');
+            }else{
+                menu.find('#menu-top').removeClass('arrowtop').addClass('flattop');
+                menu.find('#menu-bottom').removeClass('flatbottom').addClass('arrowbottom')
+            }
+        },
+
+
         open: function(){
             //logger.debug('open zz_menu');
             var self = this,
@@ -107,6 +136,8 @@ if(jQuery)( function() {
             if(menu.is(':hidden') && el.not(':disabled') ){
 
                 if(self._trigger('beforeopen') === false) return; //If any listeners return false, then do not open
+
+                self._compute_style();
 
                 // Hide other zz_menus that may be showing,excluding this instance
                 $(":ui-zz_menu").not(el).each(function(){
@@ -144,10 +175,11 @@ if(jQuery)( function() {
                     setTimeout( function(){ if(!hover){ self.close();}},200);
                 };
 
+
                 //logger.debug('x:'+x+',y:'+y);
                 // Show the menu
                 $(document).unbind('click');
-                if( o.style == 'dropdown' ){
+                if( self.computed_style == 'dropdown' ){
                     if( !o.append_to_element ){
                         y = offset.top + el.height();
                     }
@@ -208,7 +240,7 @@ if(jQuery)( function() {
                 //$(window).one('resize',function() {  self.close()  });
                 self._trigger('open');
             }else{
-             return false;       
+             return false;
             }
         },
 
