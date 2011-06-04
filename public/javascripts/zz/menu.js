@@ -303,7 +303,9 @@ if(jQuery)( function() {
 
         destroy: function(){
             this.element.unbind('click');
-            this.menu.remove();
+            if( !_.isUndefined( this.menu ) ){
+                this.menu.remove();
+            }
             $.Widget.prototype.destroy.apply( this, arguments );
         }
 

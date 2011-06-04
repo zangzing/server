@@ -32,52 +32,66 @@
 //            noShadow:false,              //context / type
 //            lazyLoad:true ,              //context / type
             context:null,                //context -- album-edit, album-grid, album-picture, album-timeline, album-people, chooser-grid, chooser-picture
-            type: 'photo'               //photo \ folder \ blank
+            type: 'photo',               //photo \ folder \ blank
+            captionHeight:30
         },
 
         _create: function() {
             var self = this,
+                    el = self.element,
                     o = self.options;
 
             if(o.scrollContainer.data().zz_photogrid){
                 self.photoGrid = o.scrollContainer.data().zz_photogrid;
             }
 
-            var html = '';
-            html += '<div class="photo-caption"></div>';
+            //'<div class="photo-caption"></div>';
+            //'<div class="photo-border">'
+            //'   <img class="photo-image" src="' + path_helpers.image_url('/images/blank.png') + '">';
+            //'   <div class="photo-delete-button"></div>';
+            //'   <div class="photo-uploading-icon"></div>';
+            //'   <div class="photo-error-icon"></div>';
+            //'   <img class="bottom-shadow" src="' + path_helpers.image_url('/images/photo/bottom-full.png') + '">';
+            //OPTIONAL'   <div class="photo-add-button"></div>';
+            //OPTIONAL'   <div class="magnify-button"></div>';
+            //'</div>';
 
-            html += '<div class="photo-border">'
-            html += '   <img class="photo-image" src="' + path_helpers.image_url('/images/blank.png') + '">';
-            html += '   <div class="photo-delete-button"></div>';
-            html += '   <div class="photo-uploading-icon"></div>';
-            html += '   <div class="photo-error-icon"></div>';
-            html += '   <img class="bottom-shadow" src="' + path_helpers.image_url('/images/photo/bottom-full.png') + '">';
+            self.captionElement      = $('<div class="photo-caption">');
+            self.borderElement       = $('<div class="photo-border">');
+            self.imageElement        = $('<img class="photo-image" src="' + path_helpers.image_url('/images/blank.png') + '">')
+            self.deleteButtonElement = $('<div class="photo-delete-button">');
+            self.uploadingElement    = $('<div class="photo-uploading-icon">');
+            self.errorElement        = $('<div class="photo-error-icon">');
+            self.photoAddElement     = $('<div class="photo-add-button">');
+            self.photoMagnifyElement = $('<div class="magnify-button">');
+            self.bottomShadow        = $('<img class="bottom-shadow" src="' + path_helpers.image_url('/images/photo/bottom-full.png') + '">');
 
+            self.borderElement.append( self.imageElement )
+                    .append( self.uploadingElement )
+                    .append( self.errorElement );
+
+            // magnify and photo add for chooser
             if(o.context.indexOf('chooser')===0 && o.type === 'photo'){
-                html += '   <div class="photo-add-button"></div>';
-                html += '   <div class="magnify-button"></div>';
+                self.borderElement.append( self.photoAddElement )
+                .append(  self.photoMagnifyElement );
             }
 
+            // delete Button
+            if(o.allowDelete){
+                self.borderElement.append( self.deleteButtonElement )
+                self.deleteButtonElement.click(function(){
+                    self.delete_photo();
+                });
+            }
 
-            html += '</div>';
+            // insert elements into DOM
+            el.append( self.captionElement ).append( self.borderElement );
 
-            var template = $(html);
-            template.appendTo(this.element);
-
-
-            self.borderElement = this.element.find('.photo-border');
-            self.imageElement = this.element.find('.photo-image');
-            self.captionElement = this.element.find('.photo-caption');
-            self.deleteButtonElement = this.element.find('.photo-delete-button');
-            self.uploadingElement = this.element.find('.photo-uploading-icon');
-            self.errorElement = this.element.find('.photo-error-icon');
-            self.bottomShadow = this.element.find('.bottom-shadow');
-
+            //caption
             self.captionElement.text(o.caption);
 
             //for selenium tests...
             self.borderElement.attr('id', 'photo-border-' + o.caption.replace(/[\W]+/g,'-'));
-
 
             if(o.type === 'blank'){
                 self.borderElement.hide();
@@ -86,12 +100,12 @@
 
             if(o.context.indexOf('chooser')===0){
                 //magnify
-                this.element.find('.magnify-button').click(function(event){
+                self.photoMagnifyElement.click(function(event){
                     o.onClick('magnify')
                 });
 
                 //add photo action
-                self.element.find('.photo-add-button').click(function(event){
+                self.photoAddElement.click(function(event){
                     o.onClick('main');
                 });
 
@@ -106,7 +120,7 @@
                 o.onClick('main')
             });
 
-            self.captionHeight = 30;
+
 
             var initialHeight;
             var initialWidth;
@@ -114,7 +128,7 @@
                 var srcWidth =  o.aspectRatio;
                 var srcHeight = 1;
 
-                var scaled = image_utils.scale({width:srcWidth, height:srcHeight}, {width:o.maxWidth, height:o.maxHeight - self.captionHeight});
+                var scaled = image_utils.scale({width:srcWidth, height:srcHeight}, {width:o.maxWidth, height:o.maxHeight - o.captionHeight});
                 initialHeight = scaled.height;
                 initialWidth = scaled.width;
             }else{
@@ -131,15 +145,15 @@
             self.bottomShadow.css({'width': (initialWidth + 14) + "px"});
 
             //element is probably invisible at this point, so we need to check the css attributes
-            self.width = parseInt(self.element.css('width'));
-            self.height = parseInt(self.element.css('height'));
+            self.width = parseInt(el.css('width'));
+            self.height = parseInt(el.css('height'));
 
             var borderWidth = initialWidth + 10 ;
             var borderHeight = initialHeight + 10;
 
             self.borderElement.css({
                 position: "relative",
-                top: (self.height - borderHeight - self.captionHeight) / 2,
+                top: (self.height - borderHeight - o.captionHeight) / 2,
                 left: (self.width - borderWidth) / 2,
                 width: borderWidth,
                 height: borderHeight 
@@ -155,13 +169,7 @@
                 self.errorElement.show();
             }
 
-            if(o.allowDelete){
-                self.deleteButtonElement.click(function(){
-                    self.delete_photo();
-                });
-            }else{
-                self.deleteButtonElement.remove();   
-            }
+
 
             //edit caption
             self.isEditingCaption = false;
@@ -183,11 +191,11 @@
                 //preload rollover
                 image_utils.pre_load_image(o.rolloverSrc);
 
-                self.element.mouseover(function(){
+                el.mouseover(function(){
                     self.imageElement.attr('src', o.rolloverSrc);
                 });
 
-                self.element.mouseout(function(){
+                el.mouseout(function(){
                     self.imageElement.attr('src', o.src);
                 });
             }
@@ -217,7 +225,7 @@
                     }
                 };
 
-                self.element.mouseenter(function(){
+                el.mouseenter(function(){
                     hover = true;
 
                     if(!menuOpen){
@@ -271,7 +279,7 @@
                     }
                 });
 
-               self.element.mouseleave(function(){
+               el.mouseleave(function(){
                     hover = false;
                     checkCloseToolbar();
                });
@@ -362,9 +370,10 @@
         },
 
         _resize: function(percent){
-            var self = this;
+            var self = this,
+                o = self.options;
 
-            var scaled = image_utils.scale({width:self.imageObject.width, height:self.imageObject.height}, {width:self.options.maxWidth, height:self.options.maxHeight - self.captionHeight});
+            var scaled = image_utils.scale({width:self.imageObject.width, height:self.imageObject.height}, {width:self.options.maxWidth, height:self.options.maxHeight - o.captionHeight});
 
 
 
@@ -373,7 +382,7 @@
 
 
             self.borderElement.css({
-                top: (self.height - borderHeight - self.captionHeight) / 2,
+                top: (self.height - borderHeight - o.captionHeight) / 2,
                 left: (self.width - borderWidth) / 2,
                 width: borderWidth,
                 height: borderHeight
