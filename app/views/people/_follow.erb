@@ -1,0 +1,16 @@
+<div  class="follow-info" style="display:inline-block">
+  <a class="follow-piclink" href="<%=user_path(user)%>">
+    <div class="follow-picture" >
+      <%= render :partial => 'users/profile_photo', :locals => { :user => user }    %>
+    </div>
+  </a>
+  <div class="follow-name">
+    <a class="follow-piclink" href="<%=user_path(user)%>">
+      <div class="follow-fname"><%=( user.first_name.blank? ? raw( '&nbsp;' ) : user.first_name)%></div>
+      <div class="follow-lname"><%=( user.last_name.blank?  ? raw( '&nbsp;' )  : user.last_name)%></div>
+    </a>
+    <%if follow_btn %>
+        <div class="follow-button zzlike zzlike-follow" data-zzid="<%=user.id%>" data-zztype="user" data-zzstyle="toolbar" ></div>
+    <%end%>
+  </div>
+</div>

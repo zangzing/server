@@ -174,8 +174,7 @@
 }
 
 
-
-#header #user-info #user-info-picture{
+#user-info #user-info-picture{
     height: 40px;
     width: 40px;
     vertical-align: bottom;

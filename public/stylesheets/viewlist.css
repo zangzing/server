@@ -126,3 +126,48 @@
     background: #dddee3 url('/images/bg-right-down-arrow.png')   no-repeat scroll  8px 6px;
 }
 .viewlist .more-less-btn.open{  background: #dddee3 url('/images/bg-right-down-arrow.png')   no-repeat scroll  6px -30px;}
+
+
+/*--------------------- Follow ------------------*/
+.follow-info{
+    width: 160px;
+    position:relative;
+    vertical-align: top;
+    margin: 10px 5px;
+}
+.follow-info .follow-picture{
+    display: block;
+    margin: 0 auto;
+    width:  40px;
+    height: 40px;
+}
+
+.follow-info .follow-name {
+    display:  block;
+    margin: 0 auto;
+    text-align: center;
+    height: 100%;
+    position: relative;
+    top: 5px;
+    left: 3px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.follow-name .follow-fname,.follow-name .follow-lname{
+    max-height: 16px;
+    overflow: hidden;
+    color: #999999;
+}
+
+.follow-name .follow-lname{
+    position: relative;
+    top: -1px;
+
+}
+
+.follow-name .follow-button{
+    margin: 5px auto;
+}
+
