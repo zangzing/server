@@ -41,6 +41,9 @@
           <div id='album-name-and-owner'>
                 <h2 id="album-header-title"><%= truncate((@album.name), :length => 50) %></h2>
                 <h3>by <a href="<%= user_pretty_url @album.user %>"><%="#{@album.user.first_name} #{@album.user.last_name}"%></a></h3>
+              <%if !current_user || current_user!=@album.user # do not show like for self%>
+                <div id="owner-follow" class="zzlike zzlike-follow" data-zzid="<%=@album.user.id%>" data-zztype="user" data-zzstyle="toolbar" ></div>
+              <%end%>
           </div>
       </div>
 
@@ -70,7 +73,12 @@
         <div id="user-info-picture" >
          <%= render :partial => 'users/profile_photo', :locals => { :user => @user }    %>
         </div>
-        <h2><%="#{@user.first_name} #{@user.last_name}"%></h2>
+        <div id="user-name">
+            <h2 <%=( !current_user || current_user!=@user ? 'class=with-follow' : '' )%> ><%="#{@user.first_name} #{@user.last_name}"%></h2>
+            <%if !current_user || current_user!=@user # do not show like for self%>
+                <div id="owner-follow" class="zzlike zzlike-follow" data-zzid="<%=@user.id%>" data-zztype="user" data-zzstyle="toolbar" ></div>
+            <%end%>
+        </div>
   </div>
 <% end %>
 
