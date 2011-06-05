@@ -88,6 +88,10 @@ class SendgridController < ApplicationController
         begin
           @album = Album.find(album_name, :scope => user_username )
         rescue ActiveRecord::RecordNotFound => e
+          # NEW ALBUM BY EMAIL
+          # if album_name is 'new' and the account owner is emailing photos, create a new
+          # album with the name set from the subject and all addresses in cc: as contributors
+          raise e unless( album_name == 'new' )
           @album = create_new_album( user_username, from.address)
           raise e if( @album.nil? )
         end
@@ -158,15 +162,11 @@ class SendgridController < ApplicationController
   end
 
   protected
-  def create_new_album( username, from_address )
-    # NEW ALBUM BY EMAIL
-    # if album_name is 'new' and the account owner is emailing photos, create a new
-    # album with the name set from the subject and all addresses in cc: as contributors
-    return nil unless( album_name == 'new' )
+  def create_new_album(  username, from_address )
 
     # If the account owner is the one emailing
-    user = User.find_by_username!( username )
-    return nil unless( user.email == from_address )
+    user = User.find_by_username( username )
+    return nil unless( user && user.email == from_address )
 
     # Create new album
     album  = GroupAlbum.new( )
@@ -179,7 +179,7 @@ class SendgridController < ApplicationController
       if params[:cc] && params[:cc].length > 0
         ccs = Mail::AddressList.new( params[:cc].to_slug.to_ascii.to_s  )
         ccs.addresses.each do | contributor|
-          @album.add_contributor( contributor.address )
+          album.add_contributor( contributor.address )
         end
       end
     rescue
