@@ -17,8 +17,15 @@ body {
   color: #0a0a0a;
   text-align: center;
 }
-a{
+a, a:visited{
     color: #466faa;
+    text-decoration:none;
+    cursor:pointer;
+}
+
+a:hover, a:active{
+    color: #333;
+    text-decoration: underline;
 }
 
 h2 {

@@ -4,21 +4,8 @@
  **************************************************************************/
 
 a.hyperlink-button{
-    text-decoration:none;
     font-size:12px;
     font-weight:600;
-    cursor:pointer;
-    color: #466FAA;
-}
-
-a.hyperlink-button:hover{
-    text-decoration:underline;
-    color: #466FAA;
-}
-
-a.hyperlink-button:active{
-    text-decoration:underline;
-    color: #466FAA;
 }
 
 /*  back button

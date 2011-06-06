@@ -16,10 +16,6 @@
   font-size: 14px;
 }
 
-.blue{
-  color: #466faa;
-}
-
 .viewlist .tagline{
    margin-top:2px;
    font-size: 12px;
@@ -33,7 +29,6 @@
 }
 
 .viewlist ul{}
-.viewlist a{ text-decoration:none;}
 
 /* the size of the user profile-picture-name badge mostly the peopleview*/
 .viewlist .badge{
