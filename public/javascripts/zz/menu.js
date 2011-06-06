@@ -189,15 +189,29 @@ if(jQuery)( function() {
                 if( self.computed_style == 'dropdown' ){
                     // Show zz_menu below and center of el, after animation is done bind hoverOut to close
                     menu.css({display:'block',opacity:0,left:x,top:y-o.animation_y });
-                    menu.animate({top:y,opacity:1}, o.animation_length,
-                            function(){menu.bind('mouseleave.zz_menu', mouse_out );});
+                    menu.animate({top:y,opacity:1}, o.animation_length,function(){
+                        if($.browser.mozilla && $.browser.version == "1.9.2.8" ){
+                            //logger.debug('ff3.6 win fix for quick-closing menu in place');
+                            //to avoid closing the menu upon animation in firefox3.6-windows
+                            setTimeout( function(){ menu.bind('mouseleave.zz_menu', mouse_out );},500);
+                        }else{
+                            menu.bind('mouseleave.zz_menu', mouse_out );
+                        }
+                    });
                 } else {
                     // Show zz_menu above and center of el, after animation is done bind hoverOut to close
                     el.bind('mouseleave.zz_menu', mouse_out );
                     menu.css({display:'block',opacity:0,left:x,bottom:y-o.animation_y});
                     menu.bind('mouseenter.zz_menu', mouse_in).bind('mouseleave.zz_menu', mouse_out );
-                    menu.animate({bottom:y,opacity:1},o.animation_length,
-                            function(){menu.bind('mouseleave.zz_menu', mouse_out );});
+                    menu.animate({bottom:y,opacity:1},o.animation_length, function(){
+                        if($.browser.mozilla && $.browser.version == "1.9.2.8" ){
+                            //logger.debug('ff3.6 win fix for quick-closing menu in place');
+                            //to avoid closing the menu upon animation in firefox3.6-windows
+                            setTimeout( function(){ menu.bind('mouseleave.zz_menu', mouse_out );},500);
+                        }else{
+                            menu.bind('mouseleave.zz_menu', mouse_out );
+                        }
+                    });
                 }
 
                 // Bind Keyboard clicks
