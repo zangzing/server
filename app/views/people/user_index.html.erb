@@ -13,7 +13,7 @@
           </div>
           <div class="indented content">
             <%@user.followers.each do | user | %>
-                <%= render :partial => 'follow', :locals => { :user => user, :follow_btn => false }    %>
+                <%= render :partial => 'follow', :locals => { :user => user, :follow_btn => true }    %>
             <%end%>
           </div>
         </li>
