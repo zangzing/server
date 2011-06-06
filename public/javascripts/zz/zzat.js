@@ -73,30 +73,12 @@ function initZZA(){
             if(typeof(properties) == 'undefined'){
                 _zza.track_event2(event, null);
 
-                // google
-                if(typeof(_gaq) != 'undefined'){
-                    _gaq.push(['_trackPageview', '/event/' + event]);
-                    _gaq.push(['_trackEvent', 'potd', event])
-                }
                 if(typeof(console) != 'undefined'){
                     console.log('ZZA event: ' + event)
                 }
             }
             else{
                 _zza.track_event2(event, properties);
-
-                // google
-                if(typeof(_gaq) != 'undefined'){
-                    var query_string = '?'
-                    for (var name in properties){
-                        query_string += name + '=' + properties[name] + '&';
-                    }
-                    query_string = query_string.substring(0,query_string.length-1); //remove trailing '&'
-
-                    _gaq.push(['_trackPageview', '/event/' + event + query_string]);
-                    _gaq.push(['_trackEvent', 'potd', event])
-                }
-
 
                 if(typeof(console) != 'undefined'){
                     console.log('ZZA event: ' + event)

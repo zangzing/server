@@ -74,7 +74,6 @@ class SendgridController < ApplicationController
         }
         zza.track_event("email.contributor.received", zza_xtra)
 
-
         # An albums email address is of the form  <album_name>@<user_username>.zangzing.com
         # we use Mail::Address to parse the addresses and the domain
         # If the to or from addresses are invalid emails, an exception will be raised
@@ -92,28 +91,9 @@ class SendgridController < ApplicationController
           # NEW ALBUM BY EMAIL
           # if album_name is 'new' and the account owner is emailing photos, create a new
           # album with the name set from the subject and all addresses in cc: as contributors
-          if album_name == 'new'
-            user = User.find_by_username!( user_username )
-            # If the account owner is the one emailing
-            if user.email == from.address
-              @album  = GroupAlbum.new()
-              user.albums << @album
-              @album.name = ( params[:subject] && params[:subject].length > 0 ? params[:subject] : "New Album By Email")
-              @album.save!
-              
-              # Add contributors from cc: if this email created a new album (exception thrown above would prevent this)
-              if params[:cc] && params[:cc].length > 0
-                ccs = Mail::AddressList.new( params[:cc].to_slug.to_ascii.to_s  )
-                ccs.addresses.each do | contributor|
-                  @album.add_contributor( contributor.address )
-                end
-              end
-            else
-              raise e
-            end
-          else
-            raise e
-          end
+          raise e unless( album_name == 'new' )
+          @album = create_new_album( user_username, from.address)
+          raise e if( @album.nil? )
         end
 
         if attachments.count > 0 && @album
@@ -136,17 +116,18 @@ class SendgridController < ApplicationController
         # and in this case we are done with them. We return 200 to make sendgrid stop sending
         # since we can't do anything more with this message in the future and that is the
         # only status code they will stop sending on
-        ZZ::Async::Email.enqueue(:contribution_error, from.address )
         clean_up_temp_files(attachments)
+        ZZ::Async::Email.enqueue(:contribution_error, from.address )
         render :nothing => true, :status => :ok
       rescue => ex
-        logger.warn "Incoming email import failed - will retry later: " + ex.message
-        render :nothing => true, :status => 400 # non 200 will cause the mailer to retry
+        logger.error "Incoming email import failed - WILL NOT RETRY later: " + ex.message
+        clean_up_temp_files(attachments)
+        render :nothing => true, :status =>:ok # non 200 will cause the mailer to retry
       end
     else
       # call did not come through remapped upload via nginx or we have no attachments so reject it
       logger.error "Incoming email import album invalid arguments or no attachments will not retry."
-      ZZ::Async::Email.enqueue(:contribution_error, Mail::Address.new( params[:from].to_slug.to_ascii.to_s ).address )
+      ZZ::Async::Email.enqueue(:contribution_error, params[:from] )
       render :nothing => true, :status=> :ok
     end
   end
@@ -181,6 +162,31 @@ class SendgridController < ApplicationController
   end
 
   protected
+  def create_new_album(  username, from_address )
+
+    # If the account owner is the one emailing
+    user = User.find_by_username( username )
+    return nil unless( user && user.email == from_address )
+
+    # Create new album
+    album  = GroupAlbum.new( )
+    album.name = ( params[:subject] && (params[:subject].length > 0) ? params[:subject] : "New Album By Email")
+    album.user_id = user.id
+    return nil unless( album.save )
+
+    begin
+      # Add contributors from cc: if this email created a new album (exception thrown above would prevent this)
+      if params[:cc] && params[:cc].length > 0
+        ccs = Mail::AddressList.new( params[:cc].to_slug.to_ascii.to_s  )
+        ccs.addresses.each do | contributor|
+          album.add_contributor( contributor.address )
+        end
+      end
+    rescue
+      # If any exceptions are thrown while parsing contributors
+    end
+    return album
+  end
 
   # due to the fact that we need to return status 200 to sendgrid to get them to stop
   # sending to us we need to clean up here rather than back in nginx because it does not

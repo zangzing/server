@@ -86,22 +86,22 @@ zz.toolbars = {
             tag.attr('data-zzid', hash.toString() ).attr('data-zztype', 'photo');
             //set a listener to keep the subject_id current with the selected photo. Selecting a photo sets its id as the hash
             $(window).bind( 'hashchange', function( event ) {
-                logger.debug('toolbar like for photo - hash changed to: location.hash ='+location.hash.substr(2));
+                //logger.debug('toolbar like for photo - hash changed to: location.hash ='+location.hash.substr(2));
                 var hash = parseInt( location.hash.substr(2) );
                 if( !isNaN( hash ) ){
                     tag.attr('data-zzid', hash.toString() );
                     like.add_id( hash.toString(), 'photo' );
                 }
             });
-            logger.debug('toolbar like is for photo: '+hash.toString())
+            //logger.debug('toolbar like is for photo: '+hash.toString())
         } else if( typeof zz.album_id != 'undefined' ){
             //we are displaying an album's photo grid/people/activity.
             tag.attr('data-zzid', zz.album_id ).attr('data-zztype', 'album');
-            logger.debug('toolbar like is for album: '+zz.album_id )
+            //logger.debug('toolbar like is for album: '+zz.album_id )
         } else if( typeof zz.displayed_user_id != 'undefined'){
             //we are displaying a user homepage
             tag.attr('data-zzid', zz.displayed_user_id ).attr('data-zztype', 'user');
-            logger.debug('toolbar like is for user: '+zz.displayed_user_id  )
+            //logger.debug('toolbar like is for user: '+zz.displayed_user_id  )
         }
         return tag
     },
