@@ -77,13 +77,12 @@ var like = {
                 like.display_social_dialog( subject_id );
             },
             error: function( xhr ){
-                // toggle in server failed, return hash and screen to previous state
-                like.toggle_in_hash( subject_id );
                 if( xhr.status == 401 ){
-//                    if(confirm('You must be logged in to like this '+ subject_type + '. Would you like to sign in or join now?')){
-                        var returnUrl = 'https://'+document.location.hostname+zz.path_prefix + '/' + subject_type + 's/' + subject_id + '/like';
-                        document.location.href = path_helpers.rails_route('signin') + '?return_to=' + returnUrl;
-//                    }
+                    var returnUrl = 'https://'+document.location.hostname+zz.path_prefix + '/' + subject_type + 's/' + subject_id + '/like';
+                    document.location.href = path_helpers.rails_route('signin') + '?return_to=' + returnUrl;
+                }else{
+                    // toggle in server failed, return hash and screen to previous state
+                    like.toggle_in_hash( subject_id );
                 }
             }
         });
