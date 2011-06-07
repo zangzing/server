@@ -84,7 +84,7 @@ class Like < ActiveRecord::Base
     case subject_type
       when USER, 'user'
         liked_user = User.find( subject_id )
-        return 'I like '+liked_user.name+'\'s Photos on ZangZing - Group Photo Sharing'
+        return 'I am following '+liked_user.name+' on ZangZing - Group Photo Sharing'
       when ALBUM, 'album'
         liked_album = Album.find(subject_id )
         return 'I like '+liked_album.user.name+'\'s '+liked_album.name+' Album on ZangZing - Group Photo Sharing'
