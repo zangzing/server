@@ -64,33 +64,33 @@
 
 
 /* i menu items*/
-.zz_menu LI.download A { background: url(/images/menu/icn-download-white.png) 0 5px;}
+.zz_menu LI.download A { background: url(/images/menu/icn-download-white.png) no-repeat scroll  0 5px;}
 .zz_menu LI.download.hover A { background-position: 0 -20px;}
 
-.zz_menu LI.privacy A { background: url(/images/menu/icn-rotatel-white.png) 0 5px; }
+.zz_menu LI.privacy A { background: url(/images/menu/icn-rotatel-white.png) no-repeat scroll 0 5px; }
 .zz_menu LI.privacy.hover A { background-position: 0 -20px;}
 
-.zz_menu LI.delete A { background: url(/images/menu/icn-delete-white.png) 3px 5px;}
+.zz_menu LI.delete A { background: url(/images/menu/icn-delete-white.png) no-repeat scroll 3px 5px;}
 .zz_menu LI.delete.hover A { background-position: 3px -20px;}
 
-.zz_menu LI.setcover A { background: url(/images/menu/icn-setcover-white.png) 5px 5px;}
+.zz_menu LI.setcover A { background: url(/images/menu/icn-setcover-white.png) no-repeat scroll 5px 5px;}
 .zz_menu LI.setcover.hover A { background-position: 5px -20px;}
 .zz_menu LI.setcover.disabled A { background-position: 5px -20px;}
 
-.zz_menu LI.rotater A { background: url(/images/menu/icn-rotater-white.png) 0 5px;}
+.zz_menu LI.rotater A { background: url(/images/menu/icn-rotater-white.png) no-repeat scroll 0 5px;}
 .zz_menu LI.rotater.hover A { background-position: 0 -20px;}
 
-.zz_menu LI.rotatel A { background: url(/images/menu/icn-rotatel-white.png) 0 5px;}
+.zz_menu LI.rotatel A { background: url(/images/menu/icn-rotatel-white.png) no-repeat scroll 0 5px;}
 .zz_menu LI.rotatel.hover A { background-position: 0 -20px;}
 
 /* share menu items*/
-.zz_menu LI.email A    { background: url(/images/menu/icn-email-white.png) 7px 8px; }
+.zz_menu LI.email A    { background: url(/images/menu/icn-email-white.png) no-repeat scroll 7px 8px; }
 .zz_menu LI.email.hover A    { background-position: 7px -21px; }
 
-.zz_menu LI.twitter A  { background: url(/images/menu/icn-twitter-white.png) 6px 5px; }
+.zz_menu LI.twitter A  { background: url(/images/menu/icn-twitter-white.png) no-repeat scroll 6px 5px; }
 .zz_menu LI.twitter.hover A  { background-position: 6px -19px; }
 
-.zz_menu LI.facebook A { background: url(/images/menu/icn-facebook-white.png) 7px 6px; }
+.zz_menu LI.facebook A { background: url(/images/menu/icn-facebook-white.png) no-repeat scroll 7px 6px; }
 .zz_menu LI.facebook.hover A { background-position: 7px -19px; }
 
 
@@ -99,13 +99,13 @@
     font-size: 11px;
     font-weight: 300;
 }
-.zz_menu LI.like-user  A{  background: url("/images/menu/icns-like-white.png") 7px 10px; }
+.zz_menu LI.like-user  A{  background: url("/images/menu/icns-like-white.png") no-repeat scroll 7px 10px; }
 .zz_menu LI.like-user.hover  A {  background-position: 7px -77px; }
 
-.zz_menu LI.like-album A{  background: url("/images/menu/icns-like-white.png") 7px -20px; }
+.zz_menu LI.like-album A{  background: url("/images/menu/icns-like-white.png") no-repeat scroll 7px -20px; }
 .zz_menu LI.like-album.hover A {  background-position: 7px -107px; }
 
-.zz_menu LI.like-photo A{  background: url("/images/menu/icns-like-white.png") 7px -50px; }
+.zz_menu LI.like-photo A{  background: url("/images/menu/icns-like-white.png") no-repeat scroll 7px -50px; }
 .zz_menu LI.like-photo.hover A {   background-position: 7px -137px; }
 
 .downloading-dialog-content{
