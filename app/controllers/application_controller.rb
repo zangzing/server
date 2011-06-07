@@ -354,7 +354,7 @@ class ApplicationController < ActionController::Base
     response.headers['Content-Disposition'] = "attachment;"
     if opts[:filename]
       response.headers['Content-Disposition'] =
-          ( browser.chrome? ? "attachment; filename= #{opts[:filename]}" : "attachment; filename=  \"#{opts[:filename]}\"" )
+          ( browser.chrome? ? "attachment; filename=#{opts[:filename]}" : "attachment; filename=\"#{opts[:filename]}\"" )
     else
       response.headers['Content-Disposition'] = "inline"
     end

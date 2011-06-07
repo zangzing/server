@@ -290,15 +290,10 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
             render :text => "Proceed to download", :status => :ok and return
           }
           format.html{
-            #if( !!(browser.ua =~ /NT 5.1/)) # NT must open the file because it does not like popups or auto dowloads
-             #             x_accel_redirect( @photo.original_url, :filename => filename, :type => @photo.image_content_type ) and return
-            #else
              zza.track_event("photos.download.original")
              Rails.logger.debug("Original download: #{ url}")
-             x_accel_redirect(url, :filename => filename, :type => @photo.image_content_type) and return
-            #end
+             x_accel_redirect(url, :filename => filename)and return
           }
-
         end
       else
         flash[:error]="Photo has not finished Uploading"
