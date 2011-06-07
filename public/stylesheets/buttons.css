@@ -109,6 +109,7 @@ a.black-button:active{ background-position: right -60px; }
 
 a.black-button span{
     font-weight: normal;
+    padding-left: 8px;
     background: transparent url('/images/btn-black.png') no-repeat;
 }
 a.black-button:hover span { background-position: 0 -30px; }
