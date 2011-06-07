@@ -145,51 +145,78 @@ class UploadBatch < ActiveRecord::Base
   # current state
   def finish(force = false)
 
-    # if the batch has already finished once, dont finish it again even if photos
+    # if the batch has already finished once, dont finish it again even if photos are still pending
     return true if self.state == 'finished'
 
     if force || (self.state == 'closed' && self.ready?)
 
-       if safe_state_change('finished')
-         album = self.album
-         if album.nil?
-           Rails.logger.info "Album for batch was missing, deleting batch: batch id: #{self.id}, user_id: #{self.user_id}, album_id: #{self.album_id}"
-           self.destroy
-           return true
-         end
+      if safe_state_change('finished')
+        album = self.album
+        if album.nil?
+          Rails.logger.info "Album for batch was missing, deleting batch: batch id: #{self.id}, user_id: #{self.user_id}, album_id: #{self.album_id}"
+          self.destroy
+          return true
+        end
 
-         # now mark the albums as ok to display since it has completed at least one batch
-         album.completed_batch_count += 1
-         album.save
+        # if not forced, all photos are ready, then notify
+        # if forced, notify only if there are ready photos
+        @notify = true
+        if force
+          @notify = force_split_of_pending_photos
+        end
+
+        # now mark the albums as ok to display since it has completed at least one batch
+        album.completed_batch_count += 1
+        album.save
 
          #send album shares even if there were no photos uploaded
          shares.each { |share| share.deliver }
 
-         if self.photos.count > 0
+         if @notify
             #Create Activity
             ua = UploadActivity.create( :user => self.user, :subject => album, :upload_batch => self )
             album.activities << ua
 
-            #Notify uploader that upload batch is finished
+            #Notify UPLOADER that upload batch is finished
             ZZ::Async::Email.enqueue( :photos_ready, self.id )
 
-            #If the uploader is a contributor, send album owner an album_updated email.
-            if album.user.id != self.user.id
-                ZZ::Async::Email.enqueue( :album_updated, album.user.id, album.id )
+            # Merge Album-Likers with Contributor-follower and Album-followers
+            album_id = album.id
+            owner_id = album.user.id
+            contributor_id = self.user.id
+            update_notification_list = []
+
+            # add OWNER to list unless contributor is owner,
+            if owner_id != contributor_id
+                #ZZ::Async::Email.enqueue( :album_updated, album_user_id, album_id )
+                update_notification_list << owner_id
             end
 
-            # Notify likers that there is new activity in this album
-            # if the liker is the owner or the current contributor, do not send album_updated email
-            # because they already got an email above.
-            album_id = album.id
+            # add ALBUM LIKERS to list  unless liker is the owner or the current contributor
             self.album.likers.each do |liker|
-              ZZ::Async::Email.enqueue( :album_updated, liker.id, album_id ) unless ( liker.id == album.user.id ) || (liker.id == user.id )
+               update_notification_list << liker.id unless ( liker.id == owner_id ) || (liker.id == contributor_id )
+            end
+
+            # add ALBUM OWNER'S FOLLOWERS to list  unless follower is the owner or the current contributor
+            self.album.user.followers.each do |follower|
+             update_notification_list << follower.id unless ( follower.id == owner_id ) || (follower.id == contributor_id )
+            end
+
+            # add CONTRIBUTOR'S FOLLOWERS  unless contributor is owner
+            if contributor_id != owner_id
+              self.user.followers.each do |follower|
+                update_notification_list << follower.id unless ( follower.id == owner_id ) || (follower.id == contributor_id )
+              end
+            end
+
+            # SEND Remove duplicates from notification list and send emails
+            update_notification_list.uniq.each do | recipient_id |
+              ZZ::Async::Email.enqueue( :album_updated, recipient_id, album_id )
             end
          else
             Rails.logger.info "Destroying empty batch id: #{self.id}, user_id: #{self.user_id}, album_id: #{self.album_id}"
             self.destroy #the batch has no photos, destroy it
          end
-
          # batch is done
          return true
       end
@@ -211,7 +238,28 @@ class UploadBatch < ActiveRecord::Base
     end
     return false
   end
-  
+
+  # When forcing a ub to finish, pending photos are split into a new batch while ready photos remain and
+  # are finished and the user notified and shares sent appropriately
+  def force_split_of_pending_photos
+    ready   = []
+    pending = []
+
+    self.photos.each { | p | ( p.ready? ? ready << p : pending << p ) }
+
+    # all photos are ready or pending
+    return (ready.length > 0) if pending.length <= 0 || ready.length <= 0
+
+    # take the pending photos and assign them to a new batch
+    # the system will take care of dealing with this new batch
+    ub = UploadBatch.factory( self.user.id, self.album.id )
+    pending.each do |p|
+      p.upload_batch = ub
+      p.save
+    end
+  end
+
+
 
   def self.factory( user_id, album_id )
     raise Exception.new( "User and Album Params must not be null for the UploadBatch factory") if( user_id.nil? or album_id.nil? )
