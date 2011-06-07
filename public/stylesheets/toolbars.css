@@ -163,7 +163,6 @@
 /* For all disabled buttons
 ******************************************/
 #header .disabled, #footer .disabled{
-    background-position: 0 0;
     cursor:default;
     opacity:0.5;
 }
