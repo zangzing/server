@@ -33,6 +33,9 @@ class Like < ActiveRecord::Base
 
 
   def self.add( user_id, subject_id, subject_type )
+
+    return if user_id == subject_id # do not allow following self
+
     begin
       #Create Like record, increase the subject_ids like counter
       like = Like.create( :user_id      => user_id,
@@ -45,10 +48,10 @@ class Like < ActiveRecord::Base
         when ALBUM, 'album' then ZZ::Async::Email.enqueue( :album_liked, user_id, subject_id )
         when PHOTO, 'photo' then
           photo = Photo.find_by_id( subject_id )
-          ZZ::Async::Email.enqueue( :photo_liked, user_id, photo.id, photo.user.id )
+          ZZ::Async::Email.enqueue( :photo_liked, user_id, photo.id, photo.user.id ) unless user_id == photo.user.id
           if( photo.user.id != photo.album.user.id )
             # if the contributor is different than the album owner, then also notify the album owner.
-            ZZ::Async::Email.enqueue( :photo_liked, user_id, photo.id, photo.album.user.id  )
+            ZZ::Async::Email.enqueue( :photo_liked, user_id, photo.id, photo.album.user.id  ) unless user_id == photo.album.user.id
           end
       end
       return like
