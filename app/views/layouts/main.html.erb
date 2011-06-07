@@ -157,7 +157,7 @@
       zz.rails_asset_id = '<%= ENV["RAILS_ASSET_ID"] %>';
       zz.rails_asset_host = '<%= ActionController::Base.asset_host %>';
 
-      if( !_.isUndefined( homepage_render ) ){
+      if( typeof( homepage_render )!= 'undefined' ){
                     homepage.render();
       }
 
@@ -165,7 +165,6 @@
 
           /* init
           ----------------------------------------------------------------------- */
-          zz.init.template();
           <%case controller.controller_name%>
           <%   when 'photos':%>
           zz.init.album();
@@ -175,7 +174,7 @@
           zz.init.album_timeline_or_people_view('people');
           <%end%>
 
-
+          zz.init.template();
 
           $(window).bind("load", function() {
               setTimeout('zz.init.loaded()', 64);
