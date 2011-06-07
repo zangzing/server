@@ -52,19 +52,12 @@ zz.toolbars = {
        $('#acct-settings-btn').click(function(){
            zz.init.disable_buttons();
            $('#header #account-badge').removeClass('disabled').addClass('selected');
-
               document.location.href = path_helpers.rails_route('edit_user', zz.current_user_name);
-
-
-//           zz.wizard.open_settings_drawer('profile')
-
        });
        $('#acct-signout-btn').click(function(){ window.location = zz.path_prefix + '/signout' });
     },
 
     show_acct_badge_menu : function(event){
-//        event.preventDefault();
-        // Toggle the slide based on the menu's current visibility.
         if( $('#acct-dropdown').is( ":visible" ) ){
                $('#acct-dropdown').slideUp( 'fast' );// Hide - slide up
         } else {

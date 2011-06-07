@@ -157,23 +157,24 @@
       zz.rails_asset_id = '<%= ENV["RAILS_ASSET_ID"] %>';
       zz.rails_asset_host = '<%= ActionController::Base.asset_host %>';
 
+      if( !_.isUndefined( homepage_render ) ){
+                    homepage.render();
+      }
+
       $(document).ready(function(){
 
           /* init
           ----------------------------------------------------------------------- */
+          <%case controller.controller_name%>
+          <%   when 'photos':%>
+          zz.init.album();
+          <%   when 'activities':%>
+          zz.init.album_timeline_or_people_view('timeline');
+          <%   when 'people':%>
+          zz.init.album_timeline_or_people_view('people');
+          <%end%>
+
           zz.init.template();
-
-          <%if controller.controller_name == 'photos' -%>
-                zz.init.album();
-          <%end%>
-
-          <%if (controller.controller_name == 'activities')  -%>
-                zz.init.album_timeline_view();
-          <%end%>
-
-          <%if (controller.controller_name == 'people')  -%>
-                zz.init.album_people_view();
-          <%end%>
 
           $(window).bind("load", function() {
               setTimeout('zz.init.loaded()', 64);
@@ -204,13 +205,10 @@
 
           <% if session[:send_zza_events_from_client]
                 session[:send_zza_events_from_client].each do |event| %>
-
           ZZAt.track('<%= escape_javascript event.to_s %>');
-
           <%   end
                session[:send_zza_events_from_client] = nil
           end %>
-
       });
 
     </script>
