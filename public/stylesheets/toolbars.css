@@ -103,14 +103,21 @@
 
 #header #album-info #album-name-and-owner {
     display: inline-block;
+    vertical-align: top;
     text-align: left;
-    position: relative;
-    top: -6px;
+    /*position: relative;
+    top: -10px;*/
     padding-left: 5px;
     /*overflow:hidden;*/
     /*max-width:410px;*/
 }
 
+#album-info #owner-follow{
+    position: relative;
+    top: -1px;
+    display: inline-block;
+    margin: 0 0 0 10px;
+}
 
 
 
@@ -122,16 +129,11 @@
     line-height: 24px;
     color:#2c2c2c;
     white-space: nowrap;
-    /*max-width: 410px;*/
-
-    /*note: this does not work on firefox */
-    /*overflow: hidden;*/
-    /*text-overflow: ellipsis;*/
 }
-
-
-
 #header #album-info #album-name-and-owner h3{
+    display: inline-block;
+    vertical-align:top;
+    line-height: 20px;
     color:#7a7a7a
 }
 
@@ -172,25 +174,45 @@
 }
 
 
-
-#header #user-info #user-info-picture{
+#user-info #user-info-picture{
     height: 40px;
     width: 40px;
     vertical-align: bottom;
     display: inline-block;
 }
 
-#header #user-info h2{
-    left: 6px;
-    top: -10px;
+#user-info #user-name {
     display: inline-block;
-    position: relative;
+    vertical-align: top;
+    text-align: left;
+    height: 100%;
+    /*position: relative;
+    top: -10px;*/
+    padding-left: 5px;
+    /*overflow:hidden;*/
+    /*max-width:410px;*/
+}
 
+#user-name h2{
+    vertical-align: top;
+    position: relative;
+    top: 10px;
     font-size: 16px;
     font-weight: bold;
     color: #2C2C2C;
-
 }
+
+#user-name h2.with-follow{
+    top: 0;
+}
+
+
+
+#user-name #owner-follow{
+    position: relative;
+    top: 4px;
+}
+
 
 
 
@@ -703,31 +725,16 @@
     right: 58px;
     width: 58px;
     height: 55px;
-    background: url("/images/embed/toolbars/btn-footer-like.png") no-repeat scroll 0px 0px transparent;
     cursor: pointer;
-}
-
-#footer #like-button:hover{
-    /*background-position-y: -55px;*/
-
-    background: url("/images/embed/toolbars/btn-footer-like.png") no-repeat scroll 0px -55px transparent;
-}
-
-#footer #like-button.selected{
-    /*background-position-y: -110px;*/
-
-    background: url("/images/embed/toolbars/btn-footer-like.png") no-repeat scroll 0px -110px transparent;
 }
 
 #footer #like-button.disabled{
     opacity:0.5;
     cursor: default;
-    /*background-position-y: 0px;*/
-    background: url("/images/embed/toolbars/btn-footer-like.png") no-repeat scroll 0px 0px transparent;
 }
 
 
-/*           Like Button
+/*           Buy Button
  ***************************************************/
 
 #footer #buy-button{

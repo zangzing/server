@@ -7,26 +7,24 @@
     display: inline-block;
     position: relative;
     height:  18px;
-    /*border: solid 1px black;*/
-    padding: 0 11px;
 }
 
-.zzlike .zzlike-icon{
+div.zzlike-button .zzlike-icon{
     left: 0;
     width:  20px;
     height: 18px;
     background: url('/images/album_toolbar_love.png');
 }
 
-.zzlike-icon.thumbup  {  background-position:   0 -54px; }
-.zzlike-icon.thumbdown{  background-position:   0 -18px; }
-.zzlike-icon.thumbup:hover  { background-position: 0 -36px; }
-.zzlike-icon.thumbdown:hover{ background-position: 0 0;     }
+div.zzlike-button .zzlike-icon.thumbup  {  background-position:   1px -54px; }
+div.zzlike-button .zzlike-icon.thumbdown{  background-position:   1px -18px; }
+div.zzlike-button .zzlike-icon.thumbup:hover  { background-position: 1px -36px; }
+div.zzlike-button .zzlike-icon.thumbdown:hover{ background-position: 1px 0px;     }
 
-div.zzlike-count{
+div.zzlike-button div.zzlike-count{
     position: absolute;
     top: 7px;
-    left: 21px;
+    left: 11px;
     border: solid 1px #999999;
     background: #ffffff;
     color:#111111;
@@ -38,11 +36,58 @@ div.zzlike-count{
     font-size: 10px;
     font-weight: 500;
 }
-
-
 div.zzlike-count.empty{
     display:none;
 }
+
+.zzlike-toolbar{
+    background: url("/images/embed/toolbars/btn-footer-love.png");
+}
+
+.zzlike-toolbar.thumbup  {  background-position:      0 -110px; }
+.zzlike-toolbar.thumbdown{  background-position:      0    0; }
+.zzlike-toolbar.thumbup:hover  { background-position: 0 -165px; }
+.zzlike-toolbar.thumbdown:hover{ background-position: 0  -55px;     }
+
+.zzlike-toolbar div.zzlike-count{
+    position: absolute;
+    top: 22px;
+    left: 31px;
+    border: solid 1px #888888;
+    background: #cccccc;
+    color:#111111;
+    text-align: right;
+    text-shadow: 0 .5px 1px #666666;
+    padding: 0 2px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    font-size: 10px;
+    font-weight: 500;
+    /*
+    -moz-box-shadow:inset 0 0 1px #111111;
+    -webkit-box-shadow:inset 0 0 1px #111111;
+    box-shadow:inset 0 0 1px #111111;
+    */
+}
+
+.ua-ie .zzlike-toolbar div.zzlike-count{
+    border: solid 1px #999999;
+}
+
+.zzlike-follow{
+    width:  70px;
+    height: 20px;
+    background-repeat: no-repeat;
+}
+.zzlike-follow.thumbup  {     background: url("/images/embed/toolbars/btn-header-follow.png") 0 0; }
+.zzlike-follow.thumbdown{     background: url("/images/embed/toolbars/btn-header-follow.png") 0  -40px; }
+.zzlike-follow.thumbup:hover{ background: url("/images/embed/toolbars/btn-header-follow.png") 0 -20px;  }
+
+/*.zzlike-follow.thumbdown:hover{ background-position: 0     }*/
+
+
+
+
 
 
 /* ============================ Social Like Dialog (Post your like in Facebook and/or Twitter? ) ======*/

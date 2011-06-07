@@ -2,29 +2,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml">
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
-    
     <meta http-equiv="Content-Language" Content="en">
-
     <meta charset="utf-8">
     <meta name="copyright" content="Copyright 2011, ZangZing, LLC. All Rights Reserved." />
     <meta name="DC.title" content="ZangZing" />
     <meta name="title" content="ZangZing" />
-<%  if @meta_description -%>
-    <meta name="description" content="<%= @meta_description %>" />
-<%  end %>
+    <meta name="description" content="Group Photo Sharing" />
+
     <%= yield :meta_tags %>
 
     <link rel="shortcut icon" href="/favicon.ico"/>
 
-    <% if @page_title_override 
-       title = @page_title_override
-    else
-       title = "ZangZing - Group Photo Sharing"
-    end
-    if ! Rails.env.photos_production?
-      title = "#{title} Version: #{Server::Application.config.zangzing_version} Controller: #{controller.controller_name} Action: #{ controller.action_name}"
-    end %>
-    <title><%=title%></title>
+    <title>ZangZing - Group Photo Sharing</title>
 
 
     <% if ! compatible_browser? %>
@@ -40,18 +29,13 @@
 <% end %>
 
 
-
 <%  # Add in template based style tags by defining this in the template -%>
     <%= yield :page_stylesheet %>
+
 <%   # Add in template based scripts that need to be in the head by defining this in the template -%>
     <%= yield :page_head %>
 
-
-
     <%= render :partial => 'layouts/zza'  %>
-
-
-
   </head>
 
   <%
@@ -75,8 +59,6 @@
 
   <body id="<%= controller.controller_name + '-' + controller.action_name %>" class="<%= controller.controller_name %> <%= show_join_banner_class %> <%= show_system_message_class %>">
 
-
-
     <div id='join-banner'>
         <span id="banner-text">ZangZing is a new group photo sharing service. Join today. It's free!</span>
         <a  class="green-button" id="join-button"><span>Join</span></a>
@@ -88,8 +70,6 @@
         <span id="banner-text"><%=system_message%></span>
         <div id="close-button"></div>
     </div>
-
-
 
     <div id='page-wrapper'>
 
@@ -183,9 +163,6 @@
           ----------------------------------------------------------------------- */
           zz.init.template();
 
-
-
-
           <%if controller.controller_name == 'photos' -%>
                 zz.init.album();
           <%end%>
@@ -206,14 +183,11 @@
               zz.init.resized();
           });
 
-
           <% if session[:show_welcome_dialog] %>
               zz.init.show_welcome_dialog();
               <% session[:show_welcome_dialog] = nil %>
           <% end %>
 
-
-          
           Zenbox.init({
             dropboxID:   "14620",
             url:         "https://zangzing.zendesk.com",
@@ -240,7 +214,5 @@
       });
 
     </script>
-
-
   </body>
 </html>

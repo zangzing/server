@@ -1,21 +1,22 @@
 require "zz_env_helpers"
 
+
 class PhotosController < ApplicationController
   ssl_allowed :agent_create, :agent_index
 
   skip_before_filter :verify_authenticity_token,  :only =>   [ :agent_index, :agent_create, :upload_fast, :simple_upload_fast]
 
   
-  before_filter :require_user,                    :only =>   [ :destroy, :update, :position ]  #for interactive users
+  before_filter :require_user,                    :only =>   [ :destroy, :update, :position, :download ]  #for interactive users
   before_filter :oauth_required,                  :only =>   [ :agent_create, :agent_index ]   #for agent
   # oauthenticate :strategies => :two_legged, :interactive => false, :only =>   [ :upload_fast ]
 
   before_filter :require_album,                   :only =>   [ :agent_create, :index, :movie, :photos_json ]
-  before_filter :require_photo,                   :only =>   [ :destroy, :update, :position ]
+  before_filter :require_photo,                   :only =>   [ :destroy, :update, :position, :download ]
 
   before_filter :require_album_admin_role,                :only =>   [ :update, :position ]
   before_filter :require_photo_owner_or_album_admin_role, :only =>   [ :destroy ]
-  before_filter :require_album_contributor_role,          :only =>   [ :agent_create ]
+  before_filter :require_album_contributor_role,          :only =>   [ :agent_create, :download ]
   before_filter :require_album_viewer_role,               :only =>   [ :index, :movie, :photos_json  ]
 
 
@@ -269,6 +270,43 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
     @photo.position_between( params[:before_id], params[:after_id])
     render :nothing => true
   end
+
+  # @photo is set by require_photo before_filter
+  def download
+    if @photo
+      if @photo.ready?  #&& CHECK FOR PERMISSIONS HERE
+        type = @photo.image_content_type.split('/')[1]
+        extension = case( type )
+                      when 'jpeg' then 'jpg'
+                      when 'tiff' then 'tif'
+                      else type
+                    end
+        name = ( @photo.caption.nil? || @photo.caption.length <= 0 ? Time.now.strftime( '%y-%m-%d-%H-%M-%S' ): @photo.caption )
+        filename = "#{name}.#{extension}"
+        url = @photo.original_url.split('?')[0]
+
+        respond_to do |format|
+           format.json  {
+            render :text => "Proceed to download", :status => :ok and return
+          }
+          format.html{
+            #if( !!(browser.ua =~ /NT 5.1/)) # NT must open the file because it does not like popups or auto dowloads
+             #             x_accel_redirect( @photo.original_url, :filename => filename, :type => @photo.image_content_type ) and return
+            #else
+             zza.track_event("photos.download.original")
+             Rails.logger.debug("Original download: #{ url}")
+             x_accel_redirect(url, :filename => filename, :type => @photo.image_content_type) and return
+            #end
+          }
+
+        end
+      else
+        flash[:error]="Photo has not finished Uploading"
+        head :not_found and return
+      end
+    end
+  end
+
 
   private
   #

@@ -3,7 +3,7 @@ class ActivitiesController < ApplicationController
   before_filter :require_album_viewer_role, :only => [ :album_index ]
 
 
-  # The timeline view for an album
+  # The activities view for an album
   # @album is set by the require_album before_filter
   def album_index
     @activities = @album.activities

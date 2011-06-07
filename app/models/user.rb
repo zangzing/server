@@ -29,9 +29,18 @@ class User < ActiveRecord::Base
       'AND l.subject_type = "U" AND a.privacy = "public" AND a.completed_batch_count > 0 AND a.type <> "ProfileAlbum" ' +
       'ORDER BY a.updated_at DESC'
 
+  # pull in all public albums for the users this user likes
+  has_many :liked_users_activities,   :class_name => "Activity", :finder_sql =>
+      'SELECT a.* ' +
+      'FROM activities a, likes l, users u ' +
+      'WHERE l.user_id = #{id} AND l.subject_id = u.id AND u.id = a.user_id ' +
+      'AND l.subject_type = "U"'+
+      'ORDER BY a.updated_at DESC'
+
+
   #Reverse lookup join likers ar those who like me
-  has_many :like_mees,            :foreign_key => :subject_id, :class_name => "Like"
-  has_many :likers,               :through => :like_mees, :class_name => "User",  :source => :user
+  has_many :follow_mees,         :foreign_key => :subject_id, :class_name => "Like"
+  has_many :followers,           :through => :follow_mees, :class_name => "User",  :source => :user
 
   has_one  :profile_album,       :dependent => :destroy, :autosave => true
   has_one  :preferences,         :dependent => :destroy, :class_name => "UserPreferences", :autosave => true

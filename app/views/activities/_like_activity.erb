@@ -11,18 +11,18 @@
         <span class="blue"><%=activity.user.name%></span>
     </a>
       <%if activity.like.subject.is_a?(Photo) %>
-          liked
-          <a href="<%=photo_pretty_url(activity.like.subject)%>">
-                this photo
-          </a>
+          <%if view== 'activity' %>
+            liked <a href="<%=photo_pretty_url(activity.like.subject)%>"> this photo </a>
+          <%else %>
+              liked <a href="<%=photo_pretty_url(activity.like.subject)%>"> this photo </a>
+              <span class="tagline"> by <a href="<%=user_pretty_url(activity.like.subject.user)%>"> <%=activity.like.subject.user.name%></a></span>
+          <%end %>
       <%elsif activity.like.subject.is_a?(Album) %>
           <%if view == 'activity' %>
               liked this album
           <%else%>
-              liked album
-              <a href="<%=album_pretty_url(activity.like.subject)%>">
-                <%=activity.like.subject.name%>
-              </a>
+              liked album <a href="<%=album_pretty_url(activity.like.subject)%>"> <%=activity.like.subject.name%> </a>
+              <span class="tagline"> by <a href="<%=user_pretty_url(activity.like.subject.user)%>"> <%=activity.like.subject.user.name%></a></span>
           <%end%>
       <%elsif activity.like.subject.is_a?(User) %>
         started following
@@ -33,6 +33,10 @@
       <div class="tagline"><%=time_ago_in_words(activity.created_at) %> ago</div>
     </div>
   </div>
+
   <div class="content">
+    <%if activity.like.subject.is_a?(Photo) %>
+        <div class="timeline-grid" data-photo-id="<%=activity.like.subject.id%>"></div>
+    <%end%>
   </div>
 </li>

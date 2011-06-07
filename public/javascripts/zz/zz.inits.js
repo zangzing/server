@@ -249,10 +249,10 @@ zz.init = {
             //todo: need better generic way to determine current view and get photo id -- this is duplicated elsewhere
             if (document.location.href.indexOf('/photos/#!') !== -1 || document.location.href.indexOf('/photos#!') !== -1) {
                 var photoId = jQuery.param.fragment().slice(1);
-                share.show_share_menu($(this), 'photo', photoId, {x:0,y:0}, 'toolbar', $.noop, $.noop);
+                sharemenu.show($(this), 'photo', photoId, {x:0,y:0}, 'toolbar', $.noop, $.noop);
             }
             else{
-                share.show_share_menu($(this), 'album', zz.album_id, {x:0,y:0},'toolbar', $.noop, $.noop);
+                sharemenu.show($(this), 'album', zz.album_id, {x:0,y:0},'toolbar', $.noop, $.noop);
             }
 
         });
@@ -344,7 +344,7 @@ zz.init = {
            }
            return element;
         });
-   },
+    },
 
     album: function() {
         //setup grid view
@@ -415,12 +415,12 @@ zz.init = {
                             document.location.href = zz.album_base_url + "/photos/#!" + photo.id;
                         },
                         onDelete: function(index, photo){
-                            zzapi_photos.delete_photo( photo.id );
+                            zzapi_photo.delete_photo( photo.id );
                             return true;
                         },
                         currentPhotoId: $.param.fragment(),
-                        showButtonBar:true
-
+                        showButtonBar:true,
+                        showInfoMenu: zz.displayed_user_id == zz.current_user_id //The owner of the album being displayed ios zz.displayed_user_id
                     }).data().zz_photogrid;
 
 
@@ -579,11 +579,14 @@ zz.init = {
                     $('#footer #play-button').addClass('disabled');
                 }
 
+                var wanted_subjects = {};
                 for (var i = 0; i < json.length; i++) {
                     var photo = json[i];
                     photo.previewSrc = agent.checkAddCredentialsToUrl(photo.stamp_url);
                     photo.src = agent.checkAddCredentialsToUrl(photo.thumb_url);
+                    wanted_subjects[ photo.id ] ='photo';
                 }
+                like.add_id_array( wanted_subjects );
 
 
                 $('.timeline-grid').each(function(index, element) {
@@ -592,14 +595,19 @@ zz.init = {
 
                     var filteredPhotos = null;
 
-
                     if (which === 'timeline') {
-                        var batchId = parseInt($(element).attr('data-upload-batch-id'));
-
-                        filteredPhotos = $(json).filter(function(index) {
-                            return (json[index].upload_batch_id === batchId)
-                        });
-                        var moreLessbuttonElement = $('.viewlist .more-less-btn[data-upload-batch-id="'+batchId.toString()+'"]');
+                        if( !_.isUndefined( $(element).attr('data-upload-batch-id') ) ){
+                            var batchId = parseInt($(element).attr('data-upload-batch-id'));
+                            filteredPhotos = $(json).filter(function(index) {
+                                return (json[index].upload_batch_id === batchId)
+                            });
+                            var moreLessbuttonElement = $('.viewlist .more-less-btn[data-upload-batch-id="'+batchId.toString()+'"]');
+                        }else if( !_.isUndefined( $(element).attr('data-photo-id') ) ){
+                            var photoId = parseInt($(element).attr('data-photo-id'));
+                            filteredPhotos = $(json).filter(function(index) {
+                                return (json[index].id === photoId)
+                            });
+                        }
                     }else{
                         var userId = parseInt($(element).attr('data-user-id'));
 
@@ -623,6 +631,7 @@ zz.init = {
                         },
                         showThumbscroller: false,
                         showButtonBar:true,
+                        showInfoMenu: zz.displayed_user_id == zz.current_user_id, //The owner of the album being displayed ios zz.displayed_user_id
                         onClickShare: function(photo_id){
                             pages.share.share_in_dialog('photo', photo_id);
                         }
@@ -638,24 +647,26 @@ zz.init = {
 
 
                     //var moreLessbuttonElement = $(element).siblings('.more-less-btn');
-                    moreLessbuttonElement.click(function(){
-                        if(allShowing){
-                            moreLessbuttonElement.find("span").html("Show more photos");
-                            moreLessbuttonElement.removeClass('open');
-                            $(element).animate({height:230}, 500, 'swing', function(){
-                            });
-                            allShowing = false;
-                        }
-                        else {
-                            moreLessbuttonElement.find("span").html("Show fewer photos");
-                            moreLessbuttonElement.addClass('open');
-                            $(element).animate({height: $(element).children().last().position().top + 180}, 500, 'swing', function() {
-                                $(element).trigger('scroll');  //hack: force the photos to load themselves now that they are visible
-                            });
-                            allShowing = true;
+                    if( !_.isUndefined(moreLessbuttonElement)){
+                        moreLessbuttonElement.click(function(){
+                            if(allShowing){
+                                moreLessbuttonElement.find("span").html("Show more photos");
+                                moreLessbuttonElement.removeClass('open');
+                                $(element).animate({height:230}, 500, 'swing', function(){
+                                });
+                                allShowing = false;
+                            }
+                            else {
+                                moreLessbuttonElement.find("span").html("Show fewer photos");
+                                moreLessbuttonElement.addClass('open');
+                                $(element).animate({height: $(element).children().last().position().top + 180}, 500, 'swing', function() {
+                                    $(element).trigger('scroll');  //hack: force the photos to load themselves now that they are visible
+                                });
+                                allShowing = true;
 
-                        }
-                    });
+                            }
+                        });
+                    }
                 });
             }
         });
@@ -675,20 +686,8 @@ zz.init = {
 
 //======================================= Like Menu  ==============================================
     like_menu: function() {
-        var menu = $('#footer #like-button').zz_menu({
-            menu_template: zz.toolbars.build_like_menu(),
-            callback: $.noop 
-        });
-
+        zz.toolbars.build_like_button();
         like.init();
-        $('#footer #like-button').click(function(event) {
-            if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
-                return;
-            }
-            ZZAt.track('button.like.click');
-            menu.zz_menu('open');
-            event.stopPropagation();
-        });
     }
 
 };
