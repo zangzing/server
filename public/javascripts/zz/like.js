@@ -54,6 +54,9 @@ var like = {
     },
 
     toggle: function(){
+        if( $(this).hasClass('disabled') ){
+            return;
+        }
         var subject_id   = $(this).attr('data-zzid');
         var subject_type = $(this).attr('data-zztype');
         var url = zz.path_prefix + '/likes/'+subject_id;

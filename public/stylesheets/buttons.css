@@ -53,7 +53,7 @@ a.back-button:active{ background-position: right -60px; }
 a.back-button.disabled{
     cursor: default;
     opacity:0.5;
-    background-position: top right;
+    background-position: top right; !important
 }
 
 a.back-button span{

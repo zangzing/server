@@ -185,6 +185,7 @@
 }
 #grid-view-button:hover{    background-position: 0 -32px;  }
 #grid-view-button.selected{ background-position: 0 -64px;  }
+#grid-view-button.disabled{ background-position: 0 0;}
 
 #people-view-button{
     float:left;
@@ -195,6 +196,7 @@
 }
 #people-view-button:hover{     background-position: 0 -32px; }
 #people-view-button.selected{  background-position: 0 -64px; }
+#people-view-button.disabled{  background-position: 0 0;}
 
 #activities-view-button{
     float:left;
@@ -205,6 +207,7 @@
 }
 #activities-view-button:hover{    background-position: 0 -32px;  }
 #activities-view-button.selected{ background-position: 0  -64px; }
+#activities-view-button.disabled{ background-position: 0 0;}
 
 #help-button{
     position: absolute;
@@ -217,6 +220,7 @@
 }
 #help-button:hover{     background-position: 0  -55px;   }
 #help-button.selected{  background-position: 0 -110px;   }
+#help-button.disabled{  background-position: 0 0;}
 
 #header #sign-in-button{
     position: absolute;
@@ -226,10 +230,10 @@
     height: 55px;
     background: url("/images/embed/toolbars/btn-header-sign-in.png") no-repeat scroll 0px 0px transparent;
     cursor: pointer;
-
 }
 #header #sign-in-button:hover{    background-position: 0 -55px;  }
 #header #sign-in-button.selected{ background-position: 0 -110px; }
+#header #sign-in-button.disabled{ background-position: 0  0; }
 
 #header #account-badge {
   position:absolute;
@@ -242,6 +246,7 @@
 }
 #header #account-badge:hover {   background-position: 0 -55px; }
 #header #account-badge.selected{ background-position: 0  -110px; }
+#header #account-badge.disabled{ background-position: 0  0; }
 
 #header #account-badge div#account-image {
     position:absolute;
@@ -320,6 +325,8 @@
 }
 #footer #new-album-button:hover    { background-position: 0 -55px;  }
 #footer #new-album-button.selected { background-position: 0 -110px; }
+#footer #new-album-button.disabled { background-position: 0 0; }
+
 
 /*           Edit Album Button
  ***************************************************/
@@ -334,7 +341,7 @@
 }
 #footer #edit-album-button:hover    { background-position: 0 -55px; }
 #footer #edit-album-button.selected { background-position: 0 -110px; cursor: default; }
-#footer #edit-album-button.disabled { opacity:0.5; cursor: default; }
+#footer #edit-album-button.disabled { background-position: 0 0; }
 
 /*           Add Photos Button
  ***************************************************/
@@ -348,7 +355,8 @@
     cursor: pointer;
 }
 #footer #add-photos-button:hover    { background-position: 0 -55px;  }
-footer #add-photos-button.selected  { background-position: 0 -110px; }
+#footer #add-photos-button.selected { background-position: 0 -110px; }
+#footer #add-photos-button.disabled { background-position: 0 0; }
 
 /*           Control Buttons
  ***************************************************/
@@ -373,8 +381,9 @@ footer #add-photos-button.selected  { background-position: 0 -110px; }
     cursor: pointer;
     display:none;
 }
-#footer #prev-button:hover{    background-position: 0 -44px; }
-#footer #prev-button:active{   background-position: 0 -88px; }
+#footer #prev-button:hover   {    background-position: 0 -44px; }
+#footer #prev-button:active  {   background-position: 0 -88px; }
+#footer #prev-button.disabled{   background-position: 0 0;     }
 
 /*           Play Button
  ***************************************************/
@@ -392,6 +401,7 @@ footer #add-photos-button.selected  { background-position: 0 -110px; }
 
 #footer #play-button:hover    { background-position: 0 -44px; }
 #footer #play-button:active   { background-position: 0 -88px; }
+#footer #play-button.disabled { background-position: 0 0; }
 
 /*           Next Button
  ***************************************************/
@@ -407,6 +417,8 @@ footer #add-photos-button.selected  { background-position: 0 -110px; }
 }
 #footer #next-button:hover   { background-position: 0 -44px; }
 #footer #next-button:active  { background-position: 0 -88px; }
+#footer #next-button.disabled{ background-position: 0 0; }
+
 
 /*           Share Button
  ***************************************************/
@@ -421,6 +433,7 @@ footer #add-photos-button.selected  { background-position: 0 -110px; }
 }
 #footer #share-button:hover   { background-position: 0  -55px; }
 #footer #share-button.selected{ background-position: 0 -110px; }
+#footer #share-button.disabled{ background-position: 0 0; }
 
 /*           Like Button
  ***************************************************/
@@ -432,7 +445,7 @@ footer #add-photos-button.selected  { background-position: 0 -110px; }
     height: 55px;
     cursor: pointer;
 }
-
+#footer #like-button.disabled { background-position: 0 0; }
 /*           Buy Button
  ***************************************************/
 #footer #buy-button{
@@ -446,3 +459,4 @@ footer #add-photos-button.selected  { background-position: 0 -110px; }
 }
 #footer #buy-button:hover    { background-position: 0 -55px;  }
 #footer #buy-button.selected { background-position: 0 -110px; }
+#footer #buy-button.disabled { background-position: 0 0; }
