@@ -171,7 +171,7 @@ class Notifier < ActionMailer::Base
     #Process recipient 
     if recipient.is_a?(User)
       encoded_name = Mail::Encodings::decode_encode( recipient.name, :encode )
-      @to_address  = Mail::Address.new("#{encoded_name} <#{recipient.email}>")
+      @to_address  = Mail::Address.new("\"#{encoded_name}\" <#{recipient.email}>")
     else
       @to_address = Mail::Address.new( recipient.to_slug.to_ascii.to_s )
     end
