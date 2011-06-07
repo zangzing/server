@@ -43,7 +43,13 @@ class Like < ActiveRecord::Base
       case subject_type
         when USER,  'user'  then ZZ::Async::Email.enqueue( :user_liked,  user_id, subject_id )
         when ALBUM, 'album' then ZZ::Async::Email.enqueue( :album_liked, user_id, subject_id )
-        when PHOTO, 'photo' then ZZ::Async::Email.enqueue( :photo_liked, user_id, subject_id )
+        when PHOTO, 'photo' then
+          photo = Photo.find_by_id( subject_id )
+          ZZ::Async::Email.enqueue( :photo_liked, user_id, photo.id, photo.user.id )
+          if( photo.user.id != photo.album.user.id )
+            # if the contributor is different than the album owner, then also notify the album owner.
+            ZZ::Async::Email.enqueue( :photo_liked, user_id, photo.id, photo.album.user.id  )
+          end
       end
       return like
     rescue  ActiveRecord::RecordNotUnique
