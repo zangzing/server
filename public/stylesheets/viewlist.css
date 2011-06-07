@@ -4,7 +4,7 @@
 
 /* ---------- fonts --------------*/
 .viewlist{
-  color: #cccccc;
+  color: #666666;
 }
 .viewlist .header{
   font-size: 20px;
@@ -12,7 +12,7 @@
 }
 
 .viewlist .title{
-  color: #999999;
+  color: #333333;
   font-size: 14px;
 }
 
@@ -81,7 +81,7 @@
 /*add this to any item and it will get a bottom bar */
 .viewlist .bar{
     padding-bottom: 5px;
-    border-bottom: 1px solid #cccccc;
+    border-bottom: 1px solid #666666;
 }
 
 .viewlist .timeline-grid { /* this positions the photo grid for upload activities in both views */
@@ -153,7 +153,6 @@
 .follow-name .follow-fname,.follow-name .follow-lname{
     max-height: 16px;
     overflow: hidden;
-    color: #999999;
 }
 
 .follow-name .follow-lname{
