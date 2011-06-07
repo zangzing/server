@@ -165,6 +165,7 @@
 
           /* init
           ----------------------------------------------------------------------- */
+          zz.init.template();
           <%case controller.controller_name%>
           <%   when 'photos':%>
           zz.init.album();
@@ -174,7 +175,7 @@
           zz.init.album_timeline_or_people_view('people');
           <%end%>
 
-          zz.init.template();
+
 
           $(window).bind("load", function() {
               setTimeout('zz.init.loaded()', 64);
