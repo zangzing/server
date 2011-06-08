@@ -302,9 +302,47 @@ pages.group_tab = {
                  '</div>' +
              '</div>',
 
+    FACEBOOK_DIALOG_TEMPLATE: '<div class="facebook-dialog">' +
+                                '<div class="header"><div class="title">Share to Facebook</div></div>' +
+                                '<textarea class="message">Write something</textarea>' +
+                                '<div class="detail">' +
+                                    '<img class="photo" src="/images/album-no-cover.png">'+
+                                    '<div class="title"></div>'+
+                                    '<div class="url"></div>'+
+                                    '<div class="description"></div>'+
+                                '</div>' +
+                                '<div class="footer">' +
+                                    '<div class="submit-button"></div>' +
+                                    '<div class="cancel-button"></div>' +
+                                '</div>' +
+                              '</div>',
+    
 
     init: function(container, callback){
+        var self = this;
+
         container.html(this.TEMPLATE);
+
+        container.find('.facebook-button').click(function(){
+            var content = $(self.FACEBOOK_DIALOG_TEMPLATE);
+
+            content.find('.detail .title').text('New Album 4 by hermann');
+            content.find('.detail .url').text('http://localhost/jeremyhermann/new-album-7');
+            content.find('.detail .description').text('ZangZing is a new group photo sharing service. Click Join ZangZing to get on the early access list. It’s free.');
+
+            var dialog = zz_dialog.show_dialog(content, {width:650, height:285});
+
+            content.find('.submit-button').click(function(){
+                dialog.close();
+            });
+
+            content.find('.cancel-button').click(function(){
+                dialog.close();
+            });
+
+
+        });
+
         callback();
     }
 

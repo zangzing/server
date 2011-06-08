@@ -1,3 +1,7 @@
+/*
+ *  Main Screen
+ */
+
 .group-editor{
     position:relative;
     margin-left:auto;
@@ -48,7 +52,7 @@
 
 .group-editor .add-people-section{
     position: relative;
-    margin-top:5px;
+    margin-top:6px;
     font-size:14px;
     height:110px;
 }
@@ -175,6 +179,142 @@
 .group-editor .share-section .stream-to-twitter input{
     margin-right: 8px;
 }
+
+
+
+/*
+ * Facebook Dialog
+ */
+
+.facebook-dialog{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    text-align:left;
+}
+
+
+.facebook-dialog .header{
+    height: 30px;
+    text-align: left;
+    background: url('/images/groups/facebook-logo.png') no-repeat 8px 8px;
+    background-color: #6D84B4;
+}
+
+.facebook-dialog .header .title{
+    color: white;
+    font-family: 'lucida grande', tahoma, verdana, arial, sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    padding-top:5px;
+    margin-left: 30px;
+}
+
+.facebook-dialog textarea.message{
+    resize:none;
+    position:absolute;
+    top: 50px;
+    left: 20px;
+    right: 20px;
+    height: 30px;
+    color: black;
+    font-family: 'lucida grande', tahoma, verdana, arial, sans-serif;
+    font-size: 11px;
+}
+
+
+.facebook-dialog .detail .photo {
+    position:absolute;
+    left:20px;
+    top:100px;
+    width:100px;
+}
+
+.facebook-dialog .detail .title {
+    position: absolute;
+    top: 100px;
+    left: 130px;
+    font-family: 'lucida grande', tahoma, verdana, arial, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    width: 275px;
+    overflow: hidden;
+
+}
+
+
+.facebook-dialog .detail .url {
+    position: absolute;
+    top: 120px;
+    left: 130px;
+    color: #666;
+    font-family: 'lucida grande', tahoma, verdana, arial, sans-serif;
+    font-size: 11px;
+    font-weight: normal;
+    width: 275px;
+    overflow: hidden;
+}
+
+.facebook-dialog .detail .description {
+    position: absolute;
+    top: 140px;
+    left: 130px;
+    color: black;
+    font-family: 'lucida grande', tahoma, verdana, arial, sans-serif;
+    font-size: 11px;
+    width: 275px;
+
+}
+
+
+.facebook-dialog .footer {
+    background-color: #f2f2f2;
+    position: absolute;
+    bottom: 0px;
+    left:0px;
+    right:0px;
+    height: 45px;
+    border-top: 1px solid #ccc;
+}
+
+.facebook-dialog .footer .submit-button{
+    position: absolute;
+    top:10px;
+    right:80px;
+    width:52px;
+    height:25px;
+    background: url('/images/groups/facebook-submit-button.png') no-repeat 0px 0px;
+    cursor:pointer;
+}
+
+.facebook-dialog .footer .submit-button:hover{
+    background: url('/images/groups/facebook-submit-button.png') no-repeat 0px -25px;
+}
+
+.facebook-dialog .footer .submit-button:active{
+    background: url('/images/groups/facebook-submit-button.png') no-repeat 0px -50px;
+}
+
+.facebook-dialog .footer .cancel-button{
+    position: absolute;
+    top:10px;
+    right:0px;
+    width:59px;
+    height:25px;
+    background: url('/images/groups/facebook-cancel-button.png') no-repeat 0px 0px;
+    cursor:pointer;
+}
+
+.facebook-dialog .footer .cancel-button:hover{
+    background: url('/images/groups/facebook-cancel-button.png') no-repeat 0px -25px;
+}
+
+.facebook-dialog .footer .cancel-button:active{
+    background: url('/images/groups/facebook-cancel-button.png') no-repeat 0px -50px;
+}
+
 
 
 
