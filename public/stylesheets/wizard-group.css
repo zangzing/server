@@ -315,6 +315,15 @@
     background: url('/images/groups/facebook-cancel-button.png') no-repeat 0px -50px;
 }
 
+.facebook-dialog .footer .stream-to-facebook{
+    position: absolute;
+    left: 20px;
+    top: 15px;
+}
+
+.facebook-dialog .footer .stream-to-facebook input{
+    margin-right:10px;
+}
 
 
 

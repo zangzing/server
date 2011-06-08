@@ -312,6 +312,9 @@ pages.group_tab = {
                                     '<div class="description"></div>'+
                                 '</div>' +
                                 '<div class="footer">' +
+                                    '<div class="stream-to-facebook">' +
+                                        '<input type="checkbox">Automatically post new photos to Facebook' +
+                                    '</div>' +
                                     '<div class="submit-button"></div>' +
                                     '<div class="cancel-button"></div>' +
                                 '</div>' +
