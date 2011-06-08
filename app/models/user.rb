@@ -39,7 +39,7 @@ class User < ActiveRecord::Base
 
 
   #Reverse lookup join likers ar those who like me
-  has_many :follow_mees,         :foreign_key => :subject_id, :class_name => "Like"
+  has_many :follow_mees,         :foreign_key => :subject_id, :class_name => "Like", :conditions => { 'likes.subject_type' => 'U'}
   has_many :followers,           :through => :follow_mees, :class_name => "User",  :source => :user
 
   has_one  :profile_album,       :dependent => :destroy, :autosave => true
