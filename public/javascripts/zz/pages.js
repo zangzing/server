@@ -260,6 +260,65 @@ pages.edit_album_tab = {
 
 };
 
+
+
+
+pages.group_tab = {
+
+    TEMPLATE: '<div class="group-editor">' +
+                 '<div class="who-can-access-header">Who can access this album?</div>' +
+                 '<div class="privacy-buttons"></div>' +
+                 '<div class="divider-line"></div>' +
+                 '<div class="create-group-header">Create a ZangZing Group and Share via email</div>' +
+                 '<div class="people-list"></div>' +
+                 '<div class="add-people-section">' +
+                    '<div class="add-people-button"></div>' +
+                    '<div class="stream-to-email"><input type="checkbox">Automatically email the group about new photos</div>' +
+                    '<div class="who-can-upload">' +
+                        '<select>' +
+                            '<option value="everyone">Everyone</option>' +
+                            '<option value="contributors">Contributors</option>' +
+                            '<option value="owner">Only I</option>' +
+                        '</select>' +
+                        '<span>can upload photos</span>' +
+                    '</div>' +
+                    '<div class="who-can-download">' +
+                        '<select>' +
+                            '<option value="everyone">Everyone</option>' +
+                            '<option value="contributors">Contributors</option>' +
+                            '<option value="owner">Only I</option>' +
+                        '</select>' +
+                        '<span>can download full resolution photos</span>' +
+                    '</div>' +
+
+                 '</div>' +
+                 '<div class="divider-line"></div>' +
+                 '<div class="share-header">Share</div>' +
+                 '<div class="share-section">' +
+                     '<div class="facebook-button"></div>' +
+                     '<div class="stream-to-facebook"><input type="checkbox">Automatically post new photos to Facebook</div>' +
+                     '<div class="twitter-button"></div>' +
+                     '<div class="stream-to-twitter"><input type="checkbox">Automatically tweet new photos</div>' +
+                 '</div>' +
+             '</div>',
+
+
+    init: function(container, callback){
+        container.html(this.TEMPLATE);
+        callback();
+    }
+
+
+};
+
+
+
+
+
+
+
+
+
 pages.album_privacy_tab = {
     init: function(container,callback){
 
@@ -299,12 +358,6 @@ pages.album_privacy_tab = {
 
 pages.share = {
 
-
-
-
-
-
-
     // optional params subject_tupe and subject_id paras are
     // used when not in the wizard. an 's' is added to
     // subject_type when constructing routes
@@ -327,8 +380,8 @@ pages.share = {
 
 
         container.load(url, function(){
-           zz.wizard.resize_scroll_body();
-           $('.social-share').click(function(){
+            zz.wizard.resize_scroll_body();
+            $('.social-share').click(function(){
                 self.show_social(container, subject_type, subject_id);
             });
 
@@ -347,20 +400,20 @@ pages.share = {
 
         var template = $('<div id="share-dialog-content"></div>');
         $('<div id="share-dialog"></div>').html( template )
-                                               .zz_dialog({
-                                                         height: 450,
-                                                         width: 895,
-                                                         modal: true,
-                                                         autoOpen: true,
-                                                         open : function(event, ui){
-                                                            self.init(template, function(){}, subject_type, subject_id);
-                                                         },
-                                                         close: function(event, ui){
-                                                            if(!_.isUndefined(on_close)){
-                                                                on_close();
-                                                            }
-                                                         }
-        });
+                .zz_dialog({
+                               height: 450,
+                               width: 895,
+                               modal: true,
+                               autoOpen: true,
+                               open : function(event, ui){
+                                   self.init(template, function(){}, subject_type, subject_id);
+                               },
+                               close: function(event, ui){
+                                   if(!_.isUndefined(on_close)){
+                                       on_close();
+                                   }
+                               }
+                           });
 
     },
 
@@ -484,9 +537,9 @@ pages.share = {
 
                     submitHandler: function() {
                         $.ajax({ type:     'POST',
-                        url:      zz.path_prefix + '/'+ subject_type + 's/'+ subject_id +'/shares.json',
-                        data:      $('#new_email_share').serialize(),
-                        dataType: 'json',
+                            url:      zz.path_prefix + '/'+ subject_type + 's/'+ subject_id +'/shares.json',
+                            data:      $('#new_email_share').serialize(),
+                            dataType: 'json',
                             success: function(errors,status,request ){
                                 if( errors && errors.length > 0 ){
                                     $.each(errors, function( index, error ){
@@ -688,6 +741,12 @@ pages.contributors = {
 };
 
 
+pages.group = {
+    init: function(container, callback){
+
+    }
+};
+
 
 
 pages.download_agent = {
@@ -702,29 +761,6 @@ pages.download_agent = {
         return $('.zangzing-downloader').length > 0;
     },
 
-//    filechooser: function(container, when_ready ){
-//
-//        container.load(pages.download_agent.get_message_url(), function(){
-//
-//            //hack: download screen is in the body, but we want
-//            //it to show up at the top of the chooser, under the hdeader
-//            //so, move it up 70px, the height of the header
-//
-//            $('.zangzing-downloader').css({top:'-70px'});
-//
-//
-//
-//            $('.zangzing-downloader #download-btn').click( function(){
-//                pages.download_agent.download();
-//            });
-//
-//            pages.download_agent.keep_polling();
-//            pages.download_agent.poll_agent( function(){
-//                if( $.isFunction(  when_ready )) when_ready();
-//            });
-//
-//        });
-//    },
 
     dialog: function( onClose, startDownload ){
 

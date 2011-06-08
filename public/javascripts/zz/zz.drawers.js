@@ -66,7 +66,7 @@ zz.drawers = {
             },
 
             edit: {
-                next: 'privacy',
+                next: 'group',
                 title: 'Edit',
                 type: 'partial',
 
@@ -78,51 +78,20 @@ zz.drawers = {
                 }
             },
 
-            privacy: {
-                next: 'contributors',
-                title: 'Privacy',
-                type: 'full',
-
-
-                init: function(container, callback){
-                    pages.album_privacy_tab.init(container, callback);
-                },
-
-                bounce: function(success, failure){
-                    pages.album_privacy_tab.bounce(success, failure);
-                }
-            },
-
-            contributors: {
-                next: 'share',
-                title: 'Contributors',
-                type: 'full',
-
-
-                init: function(container, callback){
-                    pages.contributors.init(container, callback);
-                },
-
-                bounce: function(success, failure){
-                    pages.contributors.bounce(success, failure);
-                }
-            },
-
-            share: {
+            group: {
                 next: 0,
-                title: 'Share',
+                title: 'Group',
                 type: 'full',
 
 
                 init: function(container, callback){
-                    pages.share.init(container, callback);
+                    pages.group_tab.init(container, callback);
                 },
 
                 bounce: function(success, failure){
-                    pages.share.bounce(success, failure);
+                    pages.group_tab.bounce(success, failure);
                 }
             }
-
         }
 
     }
