@@ -319,7 +319,17 @@ pages.group_tab = {
                                     '<div class="cancel-button"></div>' +
                                 '</div>' +
                               '</div>',
-    
+
+    TWITTER_DIALOG_TEMPLATE : '<div class="twitter-dialog">' +
+                                '<div class="header"></div>' +
+                                '<div class="share-with-followers">Share with your followers</div>' +
+                                '<textarea class="message"></textarea>' +
+                                '<div class="stream-to-twitter">' +
+                                    '<input type="checkbox">Automatically tweet new photos' +
+                                '</div>' +
+                                '<div class="submit-button"></div>' +
+                              '</div>',
+
 
     init: function(container, callback){
         var self = this;
@@ -342,9 +352,24 @@ pages.group_tab = {
             content.find('.cancel-button').click(function(){
                 dialog.close();
             });
+        });
+
+        container.find('.twitter-button').click(function(){
+            var content = $(self.TWITTER_DIALOG_TEMPLATE);
+
+            content.find('.message').text("Check out Hermann's Profile Photos on @ZangZing http://t.co/QIGoxz2");
+
+            var dialog = zz_dialog.show_dialog(content, {width:650, height:250});
+
+            content.find('.submit-button').click(function(){
+                dialog.close();
+            });
 
 
         });
+
+
+
 
         callback();
     }
