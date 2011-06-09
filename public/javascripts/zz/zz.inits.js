@@ -250,7 +250,9 @@ zz.init = {
 
 
         $('#footer #buy-button').click(function(){
-            alert("This feature is still under construction.")
+            if (! $(this).hasClass('disabled')){
+                alert("This feature is still under construction.")
+            }
         });
         zz.init.acct_badge();
         zz.init.like_menu();
