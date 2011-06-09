@@ -1,7 +1,7 @@
 ---
 development:
-  :shared_secret: 5lzpsf663ud6h0h
-  :api_key: h9a22jmeknik2c5
+  :shared_secret: m491fj9g1177z6m
+  :api_key: rim4t172z2eoait
 
 perftest:
   :shared_secret: 5lzpsf663ud6h0h
@@ -12,12 +12,12 @@ test:
   :api_key: h9a22jmeknik2c5
 
 photos_production:
-  :shared_secret: 5lzpsf663ud6h0h
-  :api_key: h9a22jmeknik2c5
+  :shared_secret: m491fj9g1177z6m
+  :api_key: rim4t172z2eoait
 
 photos_staging:
-  :shared_secret: 5lzpsf663ud6h0h
-  :api_key: h9a22jmeknik2c5
+  :shared_secret: 530rnxibx0ryz0x
+  :api_key: 4y1xpb9u8en1isg
 
 
 eytest:
