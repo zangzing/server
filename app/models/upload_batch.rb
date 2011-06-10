@@ -189,7 +189,6 @@ class UploadBatch < ActiveRecord::Base
 
             # add OWNER to list unless contributor is owner,
             if owner_id != contributor_id
-                #ZZ::Async::Email.enqueue( :album_updated, album_user_id, album_id )
                 update_notification_list << owner_id
             end
 
@@ -211,6 +210,10 @@ class UploadBatch < ActiveRecord::Base
             end
 
 
+            #de-dup
+            update_notification_list.uniq!
+
+
             # if hidden or password album, remove all users who are not in ACL
             if album.hidden? || album.private?
               update_notification_list.reject! do |id|
@@ -219,8 +222,8 @@ class UploadBatch < ActiveRecord::Base
             end
 
 
-            # de-dup and SEND
-            update_notification_list.uniq.each do | recipient_id |
+            # SEND
+            update_notification_list.each do | recipient_id |
                 ZZ::Async::Email.enqueue( :album_updated, recipient_id, album_id )
             end
          else
