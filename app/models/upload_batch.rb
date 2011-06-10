@@ -209,9 +209,15 @@ class UploadBatch < ActiveRecord::Base
               end
             end
 
-            # SEND Remove duplicates from notification list and send emails
+
+            # SEND
+            # - Remove duplicates from notification list
+            # - If password album, don't send to people not on ACL
+            private = album.private?
             update_notification_list.uniq.each do | recipient_id |
-              ZZ::Async::Email.enqueue( :album_updated, recipient_id, album_id )
+              if !private || album.viewer?(id)
+                ZZ::Async::Email.enqueue( :album_updated, recipient_id, album_id )
+              end
             end
          else
             Rails.logger.info "Destroying empty batch id: #{self.id}, user_id: #{self.user_id}, album_id: #{self.album_id}"
