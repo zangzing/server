@@ -277,7 +277,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
       if @photo.ready?  #&& CHECK FOR PERMISSIONS HERE
         type = @photo.image_content_type.split('/')[1]
         extension = case( type )
-                      when 'jpeg' then 'jpg'
+                      when 'jpg' then 'jpeg'
                       when 'tiff' then 'tif'
                       else type
                     end
@@ -290,11 +290,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
 
         if (browser.ie? && request.headers['User-Agent'].include?('NT 5.1'))
           # tricks to get IE to handle correctly
-          # from http://stackoverflow.com/questions/1242900/problems-with-header-when-displaying-a-pdf-file-in-ie8
-          request.headers['Cache-Control'] = 'must-revalidate, post-check=0, pre-check=0'
-          request.headers['Pragma'] = 'public'
-#          request.headers['X-Download-Options'] = 'noopen'
-#          request.headers['X-Content-Type-Options'] = 'nosniff'
+#          request.headers['Cache-Control'] = 'must-revalidate, post-check=0, pre-check=0'
            x_accel_redirect(url, :type=>"image/#{type}") and return
 
         else
