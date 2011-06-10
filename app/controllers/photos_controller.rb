@@ -289,25 +289,16 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
         Rails.logger.debug("Original download: #{ url}")
 
         if (browser.ie? && request.headers['User-Agent'].include?('NT 5.1'))
-          # if this is XP/IE, then just open full res in browser window
-          # can't figture out how to reliabley download as attachment
-          x_accel_redirect(url, :type=>"image/#{type}") and return
-        else
-          x_accel_redirect(url, :filename => filename, :type=>"image/#{type}") and return
+          # tricks to get IE to handle correctly
+          # from http://stackoverflow.com/questions/1242900/problems-with-header-when-displaying-a-pdf-file-in-ie8
+          request.headers['Cache-Control'] = 'must-revalidate, post-check=0, pre-check=0'
+          request.headers['Pragma'] = 'public'
+          request.headers['X-Download-Options'] = 'noopen'
+          request.headers['X-Content-Type-Options'] = 'nosniff'
         end
 
+        x_accel_redirect(url, :filename => filename, :type=>"image/#{type}") and return
 
-
-#        respond_to do |format|
-#           format.json  {
-#            render :text => "Proceed to download", :status => :ok and return
-#          }
-#          format.html{
-#             zza.track_event("photos.download.original")
-#             Rails.logger.debug("Original download: #{ url}")
-#             x_accel_redirect(url, :filename => filename, :type=>"image/#{type}")and return
-#          }
-#        end
       else
         flash[:error]="Photo has not finished Uploading"
         head :not_found and return
