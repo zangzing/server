@@ -295,9 +295,12 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
           request.headers['Pragma'] = 'public'
 #          request.headers['X-Download-Options'] = 'noopen'
 #          request.headers['X-Content-Type-Options'] = 'nosniff'
+           x_accel_redirect(url, :type=>"image/#{type}") and return
+
+        else
+          x_accel_redirect(url, :filename => filename, :type=>"image/#{type}") and return
         end
 
-        x_accel_redirect(url, :filename => filename, :type=>"image/#{type}") and return
 
       else
         flash[:error]="Photo has not finished Uploading"
