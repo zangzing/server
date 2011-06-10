@@ -1,9 +1,10 @@
 class UploadBatch < ActiveRecord::Base
-  attr_accessible :album_id, :custom_order, :open_activity_at
+  attr_accessible :album_id, :custom_order, :open_activity_at, :original_batch_created_at
 
   CLOSE_BATCH_INACTIVITY = 5.minutes
   CLOSE_CALL_DEFER_TIME = 30.seconds
   FINALIZE_STALE_INACTIVITY = 1.hours
+  STOP_FINALIZING_TIME = 48.hours
 
   belongs_to :user
   belongs_to :album
@@ -253,27 +254,36 @@ class UploadBatch < ActiveRecord::Base
 
     self.photos.each { | p | ( p.ready? ? ready << p : pending << p ) }
 
-    # all photos are ready or pending
-    return (ready.length > 0) if pending.length <= 0 || ready.length <= 0
-
-    # take the pending photos and assign them to a new batch
-    # the system will take care of dealing with this new batch
-    ub = UploadBatch.factory( self.user.id, self.album.id )
-    pending.each do |p|
-      p.upload_batch = ub
-      p.save
+    # if we have pending photos but the original batch was created too long
+    # ago we finally stop trying
+    if (pending.length > 0 && STOP_FINALIZING_TIME.ago < self.original_batch_created_at)
+      # take the pending photos and assign them to a new batch
+      # the system will take care of dealing with this new batch
+      # propagate the original batch creation time so we can eventually
+      # stop if we never get or process all the photos
+      ub = UploadBatch.factory( self.user.id, self.album.id, self.original_batch_created_at )
+      pending.each do |p|
+        p.upload_batch = ub
+        p.save
+      end
     end
+
+    return (ready.length > 0)
   end
 
 
 
-  def self.factory( user_id, album_id )
+  # we track when the original batch was created so we can eventually stop
+  # making new ones if the photos are not becoming ready after a long period
+  # of time
+  def self.factory( user_id, album_id, original_batch_created_at = nil )
     raise Exception.new( "User and Album Params must not be null for the UploadBatch factory") if( user_id.nil? or album_id.nil? )
 
     user = User.find( user_id )
     album = Album.find( album_id)
     now = Time.now
-    nb = user.upload_batches.build({:album_id => album.id, :open_activity_at => now })
+    original_batch_created_at ||= now
+    nb = user.upload_batches.build({:album_id => album.id, :open_activity_at => now, :original_batch_created_at => original_batch_created_at })
     if album.custom_order
       last_photo = album.photos.last
       nb.custom_order_offset = last_photo.pos unless last_photo.nil?
