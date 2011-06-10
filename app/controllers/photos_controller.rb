@@ -292,7 +292,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
           format.html{
              zza.track_event("photos.download.original")
              Rails.logger.debug("Original download: #{ url}")
-             x_accel_redirect(url, :filename => filename)and return
+             x_accel_redirect(url, :filename => filename, :type=>"image/#{type}")and return
           }
         end
       else
