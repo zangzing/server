@@ -94,7 +94,8 @@ class UsersController < ApplicationController
         @new_user.deliver_welcome!
         session[:show_welcome_dialog] = true
         send_zza_event_from_client('user.join')
-        redirect_to user_pretty_url( @new_user ) and return
+        redirect_back_or_default user_pretty_url( @new_user )
+        return
       end
     else
       # Saving without session maintenance to skip
