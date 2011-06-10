@@ -291,7 +291,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
         if (browser.ie? && request.headers['User-Agent'].include?('NT 5.1'))
           # if this is XP/IE, then just open full res in browser window
           # can't figture out how to reliabley download as attachment
-          x_accel_redirect(url) and return
+          x_accel_redirect(url, :type=>"image/#{type}") and return
         else
           x_accel_redirect(url, :filename => filename, :type=>"image/#{type}") and return
         end
