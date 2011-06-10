@@ -291,10 +291,8 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
         if (browser.ie? && request.headers['User-Agent'].include?('NT 5.1'))
           # tricks to get IE to handle correctly
 #          request.headers['Cache-Control'] = 'must-revalidate, post-check=0, pre-check=0'
-#           x_accel_redirect(url, :type=>"image/#{type}") and return
-          redirect_to url and return
-
-        else
+           x_accel_redirect(url, :type=>"image/#{type}") and return
+         else
           x_accel_redirect(url, :filename => filename, :type=>"image/#{type}") and return
         end
 
