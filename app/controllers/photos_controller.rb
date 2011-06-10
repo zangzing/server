@@ -293,7 +293,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
           # from http://stackoverflow.com/questions/1242900/problems-with-header-when-displaying-a-pdf-file-in-ie8
           request.headers['Cache-Control'] = 'must-revalidate, post-check=0, pre-check=0'
           request.headers['Pragma'] = 'public'
-          request.headers['X-Download-Options'] = 'noopen'
+#          request.headers['X-Download-Options'] = 'noopen'
           request.headers['X-Content-Type-Options'] = 'nosniff'
         end
 
