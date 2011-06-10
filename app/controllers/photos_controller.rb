@@ -299,7 +299,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
 #             Rails.logger.debug("Original download: #{ url}")
 #             x_accel_redirect(url, :filename => filename, :type=>"image/#{type}")and return
 #          }
-        end
+#        end
       else
         flash[:error]="Photo has not finished Uploading"
         head :not_found and return
