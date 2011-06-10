@@ -261,7 +261,7 @@ class UploadBatch < ActiveRecord::Base
       # the system will take care of dealing with this new batch
       # propagate the original batch creation time so we can eventually
       # stop if we never get or process all the photos
-      ub = UploadBatch.factory( self.user.id, self.album.id, self.original_batch_created_at )
+      ub = UploadBatch.factory( self.user.id, self.album.id, self.original_batch_created_at, true )
       pending.each do |p|
         p.upload_batch = ub
         p.save
@@ -276,7 +276,7 @@ class UploadBatch < ActiveRecord::Base
   # we track when the original batch was created so we can eventually stop
   # making new ones if the photos are not becoming ready after a long period
   # of time
-  def self.factory( user_id, album_id, original_batch_created_at = nil )
+  def self.factory( user_id, album_id, original_batch_created_at = nil, state_closed = false )
     raise Exception.new( "User and Album Params must not be null for the UploadBatch factory") if( user_id.nil? or album_id.nil? )
 
     user = User.find( user_id )
@@ -284,6 +284,7 @@ class UploadBatch < ActiveRecord::Base
     now = Time.now
     original_batch_created_at ||= now
     nb = user.upload_batches.build({:album_id => album.id, :open_activity_at => now, :original_batch_created_at => original_batch_created_at })
+    nb.state = 'closed' if state_closed
     if album.custom_order
       last_photo = album.photos.last
       nb.custom_order_offset = last_photo.pos unless last_photo.nil?
