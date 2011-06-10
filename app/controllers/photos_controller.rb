@@ -287,6 +287,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
 
         zza.track_event("photos.download.original")
         Rails.logger.debug("Original download: #{ url}")
+        response.headers['Cache-Control'] = nil
         x_accel_redirect(url, :filename => filename, :type=>"image/#{type}")and return
 
 
