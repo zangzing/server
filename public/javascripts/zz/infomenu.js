@@ -20,7 +20,7 @@ var infomenu = {
 
         switch( action ){
             case 'download':
-                var url = zz.path_prefix + "/photos/download/" + id +".html";
+                var url = zz.path_prefix + "/photos/download/" + id;
                 if($.client.os =="Mac"){
                     document.location.href = url;
                 }else{

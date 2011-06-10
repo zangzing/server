@@ -285,15 +285,20 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
         filename = "#{name}.#{extension}"
         url = @photo.original_url.split('?')[0]
 
-        respond_to do |format|
-           format.json  {
-            render :text => "Proceed to download", :status => :ok and return
-          }
-          format.html{
-             zza.track_event("photos.download.original")
-             Rails.logger.debug("Original download: #{ url}")
-             x_accel_redirect(url, :filename => filename, :type=>"image/#{type}")and return
-          }
+        zza.track_event("photos.download.original")
+        Rails.logger.debug("Original download: #{ url}")
+        x_accel_redirect(url, :filename => filename, :type=>"image/#{type}")and return
+
+
+#        respond_to do |format|
+#           format.json  {
+#            render :text => "Proceed to download", :status => :ok and return
+#          }
+#          format.html{
+#             zza.track_event("photos.download.original")
+#             Rails.logger.debug("Original download: #{ url}")
+#             x_accel_redirect(url, :filename => filename, :type=>"image/#{type}")and return
+#          }
         end
       else
         flash[:error]="Photo has not finished Uploading"
