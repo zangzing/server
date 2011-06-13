@@ -2,6 +2,36 @@
  2011 Copyright ZangZing LLC.
  */
 
+var contact_list = {
+    create: function(list_element, user_id){
+        zzcontacts.init(user_id);
+
+        $(list_element).tokenInput( zzcontacts.find, {
+            allowNewValues: true,
+            hintText: "Enter email address...",
+            classes: {
+                tokenList: "token-input-list-facebook",
+                token: "token-input-token-facebook",
+                tokenDelete: "token-input-delete-token-facebook",
+                selectedToken: "token-input-selected-token-facebook",
+                highlightedToken: "token-input-highlighted-token-facebook",
+                dropdown: "token-input-dropdown-facebook",
+                dropdownItem: "token-input-dropdown-item-facebook",
+                dropdownItem2: "token-input-dropdown-item2-facebook",
+                selectedDropdownItem: "token-input-selected-dropdown-item-facebook",
+                inputToken: "token-input-input-token-facebook"
+            }
+        });
+
+
+
+    }
+
+
+};
+
+
+
 zzcontacts ={
     ready: false,
     data : [],

@@ -341,11 +341,43 @@ pages.group_tab = {
                                 '<div class="submit-button"></div>' +
                               '</div>',
 
+    ADD_PEOPLE_DIALOG_TEMPLATE:   '<div class="add-people-dialog">' +
+                                    '<div class="header">' +
+                                        '<div class="title">Add people to your group</div>' +
+                                    '</div>' +
+                                    '<div class="to"><div class="contact-list"></div></div>' +
+                                    '<textarea class="message"></textarea>' +       
+                                    '<div class="permission">Add them as: <select size="1"><option>Viewer</option><option>Contributor</option></select></div>' +
+                                    '<a class="cancel-button black-button"><span>Cancel</span></a>' +
+                                    '<a class="submit-button green-button"><span>OK</span></a>' +
+                                  '</div>',
+
 
     init: function(container, callback){
         var self = this;
 
         container.html(this.TEMPLATE);
+
+
+        container.find('.add-people-button').click(function(){
+            var content = $(self.ADD_PEOPLE_DIALOG_TEMPLATE);
+
+            var dialog = zz_dialog.show_dialog(content, {width:650, height:320});
+
+
+            contact_list.create(content.find('.contact-list'));
+
+            content.find('.submit-button').click(function(){
+                dialog.close();
+            });
+
+            content.find('.cancel-button').click(function(){
+                dialog.close();
+            });
+
+
+
+        });
 
         container.find('.facebook-button').click(function(){
             var content = $(self.FACEBOOK_DIALOG_TEMPLATE);

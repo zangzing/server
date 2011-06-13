@@ -1,14 +1,12 @@
 /* Example tokeninput style #2: Facebook style */
 ul.token-input-list-facebook {
-    overflow: hidden; 
-    height: auto !important;
-    /*height: 1%;*/
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 100% !important;
     width: 100%;
-    /*border: 1px solid #8496ba;*/
-    border: 1px solid #afafaf;
+    /*border: 1px solid #afafaf;*/
     cursor: text;
-    font-size: 12px;
-    /*font-family: Verdana;*/
+    font-size: 14px;
     min-height: 1px;
     z-index: 999;
     margin: 0;
@@ -49,13 +47,13 @@ li.token-input-token-facebook {
     overflow: hidden;
     height: auto!important;
     height: 1%;
-    margin: 3px;
+    margin: 1px;
     padding: 3px 5px 5px 5px;
     background-color: #EFF2F7;
     color: black;
     cursor: default;
     border: 1px solid #CCD5E4;
-    font-size: 11px;
+    font-size: 12px;
     border-radius: 5px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
@@ -83,11 +81,19 @@ li.token-input-selected-token-facebook {
     background-color: #5670a6;
     border: 1px solid #3b5998;
     color: #fff;
+
 }
 
 li.token-input-input-token-facebook {
     float: left;
-    width: 50%;
+    width: 30%;
+}
+
+li.token-input-input-token-facebook input {
+    border:none;
+    height:20px;
+    padding: 2px;
+    font-size: 13px;
 }
 
 div.token-input-dropdown-facebook {

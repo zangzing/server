@@ -112,6 +112,10 @@
             width: "100%"
          })
          .focus(function(){
+
+            //scroll to bottom of list.
+            $(token_list).scrollTop(1000);
+
             if(settings.tokenLimit == null || settings.tokenLimit != token_count){
                show_dropdown_hint();
             } else {
@@ -125,6 +129,8 @@
          .keydown(function(event){
             var previous_token;
             var next_token;
+
+
 
             switch(event.keyCode){
                case KEY.LEFT:

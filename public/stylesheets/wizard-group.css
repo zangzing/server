@@ -531,3 +531,79 @@
     background: url('/images/groups/twitter-submit-button.png') no-repeat 0px -54px;
 }
 
+/*
+ * Add People Dialog
+ */
+
+
+.add-people-dialog{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    text-align:left;
+    /*background: url('/images/groups/add-people-guide.png') no-repeat;*/
+}
+
+.add-people-dialog .header{
+    position:relative;
+    height:60px;
+    border-bottom: 1px solid #D5D5D5;
+}
+
+.add-people-dialog .header .title{
+    position:absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 19px;
+}
+
+.add-people-dialog .to{
+    position:absolute;
+    left: 20px;
+    right: 20px;
+    top: 80px;
+    height: 55px;
+    border: 2px solid #D5D5D5;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+}
+
+.add-people-dialog .message{
+    position:absolute;
+    left: 20px;
+    right: 20px;
+    top:150px;
+    height:80px;
+    border: 2px solid #D5D5D5;
+    resize:none;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+}
+
+
+
+
+.add-people-dialog .permission{
+    position: absolute;
+    left: 20px;
+    bottom: 23px;
+}
+
+
+
+
+.add-people-dialog .submit-button{
+    position:absolute;
+    right:20px;
+    bottom:20px;
+    width:80px;
+}
+
+.add-people-dialog .cancel-button{
+    position:absolute;
+    right:115px;
+    bottom:20px;
+    width:80px;
+}
