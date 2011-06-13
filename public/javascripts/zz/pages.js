@@ -267,10 +267,21 @@ pages.group_tab = {
 
     TEMPLATE: '<div class="group-editor">' +
                  '<div class="who-can-access-header">Who can access this album?</div>' +
-                 '<div class="privacy-buttons"></div>' +
+                 '<div class="privacy-buttons">' +
+                    '<div class="public-button"></div>' +
+                    '<div class="hidden-button"></div>' +
+                    '<div class="password-button"></div>' +
+                 '</div>' +
                  '<div class="divider-line"></div>' +
                  '<div class="create-group-header">Create a ZangZing Group and Share via email</div>' +
-                 '<div class="people-list"></div>' +
+                 '<div class="people-list">' +
+                    '<div class="person">' +
+                        '<img class="profile" src="/images/default_profile.png">' +
+                        '<div class="name">Jeremy Hermann</div>' +
+                        '<select class="permission" size="1"><option>View</option><option>Contribute</option></select>' +
+                        '<div class="delete-button"></div>' +
+                    '</div>' +
+                 '</div>' +
                  '<div class="add-people-section">' +
                     '<div class="add-people-button"></div>' +
                     '<div class="stream-to-email"><input type="checkbox">Automatically email the group about new photos</div>' +
