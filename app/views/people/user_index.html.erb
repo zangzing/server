@@ -2,39 +2,58 @@
     <%= render :partial => "facebook/user_opengraph_tags" %>
 <% end %>
 
+<% if current_user %>
+<div id= "you" class="viewlist">
+  <ul>
+    <li class="item">
+      <div class="header bar">
+            You!
+      </div>
+    <div class="content">
+      <%= render :partial => 'follow', :locals => { :user => current_user} %>
+    </div>
+    </li>
+</ul>
+</div>
 
-<div class="viewlist">
+<%end%>
+
+<div class="viewlist two-col">
   <ul>
 
     <% if @user.followers.count > 0 %>
         <li class="item">
           <div class="header bar">
-            Followers
+            <%=@user.followers.count%> Followers
           </div>
-          <div class="indented content">
+          <div class="content">
             <%@user.followers.each do | user | %>
-                <%= render :partial => 'follow', :locals => { :user => user, :follow_btn => false }    %>
+                <%= render :partial => 'follow', :locals => { :user => user}    %>
             <%end%>
           </div>
         </li>
     <%end%>
     <li>
+  </ul>
+  </div>
 
+<div class="viewlist two-col">
+  <ul>
     </li>
 
     <% if @user.liked_users.count > 0 %>
         <li class="item">
           <div class="header bar">
-            Following
+            Following <%=@user.liked_users.count%>
           </div>
-          <div class="indented content">
+          <div class="content">
             <%@user.liked_users.each do | user | %>
 
-                <%= render :partial => 'follow', :locals => { :user => user, :follow_btn => true }    %>
+                <%= render :partial => 'follow', :locals => { :user => user }    %>
 
             <%end%>
           </div>
         </li>
     <%end%>
-    <ul>
+    </ul>
 </div>

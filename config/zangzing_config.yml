@@ -8,7 +8,7 @@
 common: &common
   reserved_names: false
   resque_zza_id: "dev.photos/svr"
-  album_email_host: "greg-post.zangzing.com"
+  album_email_host: "mauricio-post.zangzing.com"
 
   # time in seconds before we timeout certain resque jobs
   async_job_timeout: 20

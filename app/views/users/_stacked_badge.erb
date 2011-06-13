@@ -1,15 +1,16 @@
 <div class="stacked-badge">
-      <div style="position: relative;">
-      <a href="<%=user_path(user)%>">
-        <div class="sb-photo">
-            <%= render :partial => 'users/profile_photo', :locals => { :user => user }    %>
-        </div>
-        <div class="sb-name"><%=user.name%></div>
-      </a>
-      <!--
-      <div class="sb-like">
-        <span>Like</span> <input type="checkbox" />
-      </div>
-      -->
-      </div>
+
+    <a class="sb-photo" href="<%=user_path(user)%>">
+        <%= render :partial => 'users/profile_photo', :locals => { :user => user }    %>
+    </a>
+
+
+
+    <% if !current_user || current_user!= user %>
+        <a class="sb-name" href="<%=user_path(user)%>"><%=user.name%></a>
+        <div class="sb-follow zzlike zzlike-follow" data-zzid="<%=user.id%>" data-zztype="user" data-zzstyle="toolbar" ></div>
+    <% else %>
+        <a class="sb-name no-follow" href="<%=user_path(user)%>"><%=user.name%></a>
+    <%end%>
+
 </div>

@@ -68,7 +68,8 @@
 
             self.borderElement.append( self.imageElement )
                     .append( self.uploadingElement )
-                    .append( self.errorElement );
+                    .append( self.errorElement )
+                    .append( self.bottomShadow );
 
             // magnify and photo add for chooser
             if(o.context.indexOf('chooser')===0 && o.type === 'photo'){

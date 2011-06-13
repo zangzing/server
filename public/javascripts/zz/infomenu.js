@@ -9,6 +9,8 @@ var infomenu = {
             '<li class="delete"><a href="#deletephoto">Delete</a></li>'+
             '</ul>',
 
+
+
     click_handler: function(event,data){
         var action  = data.action,
                 options = data.options,
@@ -18,38 +20,18 @@ var infomenu = {
 
         switch( action ){
             case 'download':
-                var show_dialog = function( message ){
-                    var template = '<div class="downloading-dialog-content">'+message+'</div>';
-                    zz_dialog.show_dialog(template, { width:300, height: 100, modal: true, autoOpen: true });
-                };
-                var success = function( url ){
-                    if($.client.os =="Mac"){
-                        document.location.href = url;
+                var url = zz.path_prefix + "/photos/download/" + id;
+                if($.client.os =="Mac"){
+                    document.location.href = url;
+                }else{
+                    if(navigator.appVersion.indexOf("NT 5.1") !=  -1 && $.client.browser=='Explorer'){
+                        window.open(url);
+                    }else if($.client.browser == 'Chrome'){ //on chrome on windows, using the same browser window to download causes js issues (stops pinging agent)
+                        window.open(url);
                     }else{
-                         if(navigator.appVersion.indexOf("NT 5.1") !=  -1 && $.client.browser=='Explorer'){
-                            window.open(url);
-                        }else if($.client.browser == 'Chrome'){ //on chrome on windows, using the same browser window to download causes js issues (stops pinging agent)
-                            window.open(url);
-                        }else{
-                            document.location.href = url;
-                        }
+                        document.location.href = url;
                     }
-                };
-                var error = function( request ){
-                    var message = "of a strange circumstance";
-                    if( request.status == 401 ){
-                        message = "you are not authorized to download this photo";
-                    } else {
-                        var json = request.getResponseHeader("X-Flash");
-                        var flash;
-                        if( !_.isUndefined( json ) && (flash = $.parseJSON(json)) && flash.error ){
-                            message = flash.error;
-                        }
-                    }
-                    show_dialog( 'Unable to download because '+ message );
-                };
-
-                zzapi_photo.download( id, function(url){ success(url)}, function(request){error(request);} );
+                }
                 break;
             case 'setcover':
                 zzapi_album.set_cover( zz.album_id, id,

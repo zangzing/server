@@ -1,394 +1,203 @@
+a.back-button,
+a.next-button,
+a.green-button,
+a.black-button,
+a.green-add-button,
+a.green-download-button,
+a.newgreen-button,
+a.newblack-button,
+a.gray-button{
+    border: 0;
+    margin: 0;
+    display: block;
+    height: 30px;
+    color:#ffffff;
+    font-size: 13px;
+    text-decoration: none;
+    text-align:center;
+    cursor: pointer;
+    padding-right: 8px;
+}
 
+a.back-button span,
+a.next-button span,
+a.green-button span,
+a.black-button span,
+a.green-add-button span,
+a.green-download-button span,
+a.newgreen-button span,
+a.newblack-button span,
+a.gray-button span{
+    display:block;
+    line-height:30px;
+    height:30px;
+    cursor:pointer;
+    white-space: nowrap;
+}
 
 /*  hyperlink button
  **************************************************************************/
-
 a.hyperlink-button{
-    text-decoration:none;
     font-size:12px;
     font-weight:600;
-    cursor:pointer;
-    color: #466FAA;
-}
-
-a.hyperlink-button:hover{
-    text-decoration:underline;
-    color: #466FAA;
-}
-
-a.hyperlink-button:active{
-    text-decoration:underline;
-    color: #466FAA;
 }
 
 /*  back button
  *************************************************************/
 a.back-button{
-    background: url("/images/btn-back-endcap.png") no-repeat scroll top right;
-    color:#ffffff;
-    display: block;
-    /*float: left;*/
-    font-size: 13px;
-    height: 30px;
     margin-right: 6px;
-    padding-right: 8px; /* sliding doors padding */
-    text-decoration: none;
-    cursor: pointer;
-    text-align:center;
+    background: url("/images/btn-back-endcap.png") no-repeat scroll top right;
 }
-
-a.back-button:hover{
-    background: url("/images/btn-back-endcap.png") no-repeat scroll right -30px; /* todo: need rollover image*/
-}
-
-a.back-button:active{
-    background: url("/images/btn-back-endcap.png") no-repeat scroll right -60px; /* todo: need rollover image*/
-}
-
-
-a.back-button span{
-    background: transparent url('/images/btn-back.png') no-repeat;
-    display: block;
-    line-height: 20px;
-    height: 20px;
-    padding: 5px 5px 5px 18px;
-    cursor: pointer;
-}
-
-a.back-button:hover span{
-    background: transparent url('/images/btn-back.png') no-repeat 0 -30px; /* todo: need rollover image*/
-}
-
-a.back-button:active span{
-    background: transparent url('/images/btn-back.png') no-repeat 0 -60px; /* todo: need rollover image*/
-}
-
+a.back-button:hover { background-position: right -30px; }
+a.back-button:active{ background-position: right -60px; }
 a.back-button.disabled{
     cursor: default;
     opacity:0.5;
-    background: url("/images/btn-back-endcap.png") no-repeat scroll top right;
+    background-position: top right; !important
 }
 
+a.back-button span{
+    padding: 0 5px 0 18px;
+    background: transparent url('/images/btn-back.png') no-repeat;
+}
+a.back-button:hover span { background-position: 0 -30px; }
+a.back-button:active span{ background-position: 0 -60px; }
 a.back-button.disabled span{
-    background: transparent url('/images/btn-back.png') no-repeat 0 -30px;
+    background-position:  0 -30px;
     cursor: default;
 }
-
-
 
 /*  next button
  *************************************************************/
 a.next-button{
-    background: url("/images/btn-next-endcap.png") no-repeat scroll top right;
-    color:#ffffff;
-    display: block;
-    /*float: left;*/
-    font-size: 13px;
-    height: 30px;
     margin-right: 6px;
     padding-right: 15px; /* sliding doors padding */
-    text-decoration: none;
-    cursor: pointer;
-    text-align:center;
-
+    background: url("/images/btn-next-endcap.png") no-repeat scroll top right;
 }
-
-a.next-button:hover{
-    background: url("/images/btn-next-endcap.png") no-repeat scroll right -30px; /* todo: need rollover image*/
-}
-
-a.next-button:active{
-    background: url("/images/btn-next-endcap.png") no-repeat scroll right -60px; /* todo: need rollover image*/
-}
-
+a.next-button:hover { background-position: right -30px; }
+a.next-button:active{ background-position: right -60px; }
 
 a.next-button span{
+    padding-left: 8px;
     background: transparent url('/images/btn-next.png') no-repeat;
-    display: block;
-    line-height: 20px;
-    height: 20px;
-    padding: 5px 0 5px 8px;
-    cursor: pointer;
 }
-
-a.next-button:hover span{
-    background: transparent url('/images/btn-next.png') no-repeat 0 -30px; /* todo: need rollover image*/
-}
-
-a.next-button:active span{
-    background: transparent url('/images/btn-next.png') no-repeat 0 -60px; /* todo: need rollover image*/
-}
-
+a.next-button:hover span { background-position:  0 -30px; }
+a.next-button:active span{ background-position:  0 -60px; }
 
 /*  green button
  *************************************************************/
 a.green-button{
     background: url("/images/btn-green-endcap.png") no-repeat scroll top right;
-    display: block;
-    /*float: left;*/
-    height: 30px;
-    /*margin-right: 6px;*/
-    padding-right: 8px; /* sliding doors padding */
-    cursor: pointer;
-    color:#ffffff;
-    font-size: 13px;
-    text-decoration: none;
-    text-align:center;
-
 }
-
-a.green-button:hover{
-    background: url("/images/btn-green-endcap.png") no-repeat scroll right -30px; /* todo: need rollover image*/
-}
-
-a.green-button:active{
-    background: url("/images/btn-green-endcap.png") no-repeat scroll right -60px; /* todo: need rollover image*/
-}
-
+a.green-button:hover{ background-position:  right -30px;  }
+a.green-button:active{ background-position:  right -60px; }
 
 a.green-button span{
+    padding-left: 8px;
     background: transparent url('/images/btn-green.png') no-repeat;
-    display: block;
-    line-height: 20px;
-    height: 20px;
-    padding: 5px 0 5px 8px;
-    cursor: pointer;
 }
-
-a.green-button:hover span{
-    background: transparent url('/images/btn-green.png') no-repeat 0 -30px; /* todo: need rollover image*/
-}
-
-a.green-button:active span{
-    background: transparent url('/images/btn-green.png') no-repeat 0 -60px; /* todo: need rollover image*/
-}
+a.green-button:hover span{  background-position: 0 -30px;  }
+a.green-button:active span{ background-position:  0 -60px; }
 
 /*  black button
  *************************************************************/
 a.black-button{
-    background: url("/images/btn-black-endcap.png") no-repeat scroll top right;
-    color:#ffffff;
-    display: block;
-    /*float: left;*/
-    font-size: 13px;
-    height: 30px;
-    /*margin-right: 6px;*/
-    padding-right: 8px; /* sliding doors padding */
-    text-decoration: none;
-    cursor: pointer;
-    text-align:center;
-
+  background: url("/images/btn-black-endcap.png") no-repeat scroll top right;
 }
-
-a.black-button:hover{
-    background: url("/images/btn-black-endcap.png") no-repeat scroll right -30px; /* todo: need rollover image*/
-}
-
-a.black-button:active{
-    background: url("/images/btn-black-endcap.png") no-repeat scroll right -60px; /* todo: need rollover image*/
-}
-
+a.black-button:hover { background-position: right -30px; }
+a.black-button:active{ background-position: right -60px; }
 
 a.black-button span{
-    background: transparent url('/images/btn-black.png') no-repeat;
-    display: block;
-    line-height: 20px;
-    height: 20px;
-    padding: 5px 0 5px 8px;
-    cursor: pointer;
     font-weight: normal;
+    padding-left: 8px;
+    background: transparent url('/images/btn-black.png') no-repeat;
 }
-
-a.black-button:hover span{
-    background: transparent url('/images/btn-black.png') no-repeat 0 -30px; /* todo: need rollover image*/
-}
-
-a.black-button:active span{
-    background: transparent url('/images/btn-black.png') no-repeat 0 -60px; /* todo: need rollover image*/
-}
-
+a.black-button:hover span { background-position: 0 -30px; }
+a.black-button:active span{ background-position: 0 -60px; }
 
 /*  green add button
  *************************************************************/
 a.green-add-button{
     background: url("/images/btn-green-add-endcap.png") no-repeat scroll top right;
-    color:#ffffff;
-    display: block;
-    /*float: left;*/
-    font-size: 13px;
-    height: 30px;
-    /*margin-right: 6px;*/
-    padding-right: 8px; /* sliding doors padding */
-    text-decoration: none;
-    cursor: pointer;
-    text-align:center;
-    
 }
-
-a.green-add-button:hover{
-    background: url("/images/btn-green-add-endcap.png") no-repeat scroll right -30px; /* todo: need rollover image*/
-}
-
-a.green-add-button:active{
-    background: url("/images/btn-green-add-endcap.png") no-repeat scroll right -60px; /* todo: need rollover image*/
-}
-
+a.green-add-button:hover { background-position: right -30px; }
+a.green-add-button:active{ background-position: right -60px; }
 
 a.green-add-button span{
+    padding-left: 28px;
     background: transparent url('/images/btn-green-add.png') no-repeat;
-    display: block;
-    line-height: 20px;
-    height: 20px;
-    padding: 5px 0 5px 28px;
-    cursor: pointer;
 }
+a.green-add-button:hover span { background-position: 0 -30px; }
+a.green-add-button:active span{ background-position: 0 -60px; }
 
-a.green-add-button:hover span{
-    background: transparent url('/images/btn-green-add.png') no-repeat 0 -30px; /* todo: need rollover image*/
-}
-
-a.green-add-button:active span{
-    background: transparent url('/images/btn-green-add.png') no-repeat 0 -60px; /* todo: need rollover image*/
-}
-
-
-
-
-/* Green download button */
+/*  green download button
+ *************************************************************/
 a.green-download-button{
     background: url("/images/btn-green-download-endcap.png") no-repeat scroll top right;
-    color:#ffffff;
-    display: block;
-    /*float: left;*/
-    font-size: 13px;
-    height: 30px;
-    /*margin-right: 6px;*/
-    padding-right: 8px; /* sliding doors padding */
-    text-decoration: none;
-    cursor: pointer;
-    text-align:center;
-
 }
-
-a.green-download-button:hover{
-    background: url("/images/btn-green-download-endcap.png") no-repeat scroll right -30px; /* todo: need rollover image*/
-}
-
-a.green-download-button:active{
-    background: url("/images/btn-green-download-endcap.png") no-repeat scroll right -60px; /* todo: need rollover image*/
-}
+a.green-download-button:hover { background-position: right -30px; }
+a.green-download-button:active{ background-position: right -60px; }
 
 
 a.green-download-button span{
+    padding-left: 20px;
     background: transparent url('/images/btn-green-download.png') no-repeat;
-    display: block;
-    line-height: 20px;
-    height: 20px;
-    padding: 5px 0 5px 20px;
-    cursor: pointer;
 }
+a.green-download-button:hover span { background-position: 0 -30px; }
+a.green-download-button:active span{ background-position: 0 -60px; }
 
-a.green-download-button:hover span{
-    background: transparent url('/images/btn-green-download.png') no-repeat 0 -30px; /* todo: need rollover image*/
-}
-
-a.green-download-button:active span{
-    background: transparent url('/images/btn-green-download.png') no-repeat 0 -60px; /* todo: need rollover image*/
-}
-
-
-
-
-
-
-
-/*  GREEN BUTTON WELL DONE */
+/*  newgreen-button
+ *************************************************************/
 a.newgreen-button{
-    border:     0;
-    margin:     0;
-    cursor:     pointer;
-    text-align: center;
     font-size:  14px;
     text-shadow: 0 1px 3px #000000;
-    text-decoration: none;
-    height:     30px;
-    padding:    0 5px 0 0;
+    padding-right: 5px;
     background: url("/images/btn-green-endcap.png") no-repeat right top;
 }
+a.newgreen-button:hover { background-position: right -30px; }
+a.newgreen-button:active{ background-position: right -60px; }
 
 a.newgreen-button span{
-    position:    relative;
-    display:     block;
-    white-space: nowrap;
-    padding:     0 0 0 5px;
-    height: 30px;
+    padding-left:5px;
     line-height: 28px;
     background:  url('/images/btn-green.png') no-repeat left top;
-    color:       #ffffff;
 }
-a.newgreen-button:hover { background: url("/images/btn-green-endcap.png") no-repeat right -30px; }
-a.newgreen-button:active{ background: url("/images/btn-green-endcap.png") no-repeat right -60px; }
-a.newgreen-button:hover span { background: url('/images/btn-green.png') no-repeat left -30px; }
-a.newgreen-button:active span{ background: url('/images/btn-green.png') no-repeat left -60px; }
+a.newgreen-button:hover span { background-position: left -30px; }
+a.newgreen-button:active span{ background-position: left -60px; }
 
-/* BLACK BUTTON WELL DONE */
+/* newblack-button
+*************************************************************/
 a.newblack-button{
-    border:     0;
-    margin:     0;
-    cursor:     pointer;
-    text-align: center;
     font-size:  14px;
     text-shadow: 0 1px 3px #000000;
-    text-decoration: none;
-    height:     30px;
-    padding:    0 5px 0 0;
+    padding-right:    5px;
     background: url("/images/btn-black-endcap.png") no-repeat right top;
 }
+a.newblack-button:hover {  background-position: right -30px; }
+a.newblack-button:active{  background-position: right -60px; }
 
 a.newblack-button span{
-    position:    relative;
-    display:     block;
-    white-space: nowrap;
-    padding:     0 0 0 5px;
-    height:      30px;
+    padding-left: 5px;
     line-height: 28px;
     background:  url('/images/btn-black.png') no-repeat left top;
-    color:       #ffffff;
 }
-a.newblack-button:hover {  background: url("/images/btn-black-endcap.png") no-repeat right -30px; }
-a.newblack-button:active{  background: url("/images/btn-black-endcap.png") no-repeat right -60px; }
-a.newblack-button:hover  span{ background: url('/images/btn-black.png') no-repeat left -30px; }
-a.newblack-button:active span{ background: url('/images/btn-black.png') no-repeat left -60px; }
+a.newblack-button:hover  span{ background-position: left -30px; }
+a.newblack-button:active span{ background-position: left -60px; }
 
-
-/* GRAY BUTTON */
+/* gray-button
+*************************************************************/
 a.gray-button{
     display: inline-block;
-    border:     0;
-    margin:     0;
-    cursor:     pointer;
-    text-align: center;
-    font-size:  13px;
-    /*font-weight: 200;*/
     color:       gray;
-    text-decoration: none;
-    height:     30px;
     padding-right:  10px;
     background: url("/images/btn-gray-endcap.png") no-repeat right top;
 }
+a.gray-button:hover {  background-position: right -30px; }
+a.gray-button:active{  background-position: right -60px; }
 
 a.gray-button span{
-    position:    relative;
-    display:     block;
-    white-space: nowrap;
     padding-left:  10px;
-    padding-top: 1px;
-    height:      28px;
-    line-height: 28px;
     background:  transparent url('/images/btn-gray.png') no-repeat left top;
-
 }
-a.gray-button:hover {  background: url("/images/btn-gray-endcap.png") no-repeat right -30px; }
-a.gray-button:active{  background: url("/images/btn-gray-endcap.png") no-repeat right -60px; }
-a.gray-button:hover  span{ background: transparent url('/images/btn-gray.png') no-repeat left -30px; }
-a.gray-button:active span{ background: transparent url('/images/btn-gray.png') no-repeat left -60px; }
+a.gray-button:hover  span{ background-position: left -30px; }
+a.gray-button:active span{ background-position: left -60px; }

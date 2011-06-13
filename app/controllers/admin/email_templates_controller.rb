@@ -111,7 +111,7 @@ private
   end
 
   def test_photo_liked(  template_id )
-    Notifier.photo_liked( sender.id, photo.id, template_id)
+    Notifier.photo_liked( sender.id, photo.id, recipient.id, template_id)
   end
 
   def test_user_liked(  template_id )

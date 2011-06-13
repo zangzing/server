@@ -4,13 +4,16 @@
       <%= render :partial => 'users/profile_photo', :locals => { :user => user }    %>
     </div>
   </a>
-  <div class="follow-name">
-    <a class="follow-piclink" href="<%=user_path(user)%>">
-      <div class="follow-fname"><%=( user.first_name.blank? ? raw( '&nbsp;' ) : user.first_name)%></div>
-      <div class="follow-lname"><%=( user.last_name.blank?  ? raw( '&nbsp;' )  : user.last_name)%></div>
-    </a>
-    <%if follow_btn %>
-        <div class="follow-button zzlike zzlike-follow" data-zzid="<%=user.id%>" data-zztype="user" data-zzstyle="toolbar" ></div>
-    <%end%>
+   <div class="follow-name">
+            <a  href="<%=user_path(user)%>" <%=( !current_user || current_user!=user ? 'class="with-follow"' : 'class="no-follow"' )%>>
+              <span class="user-name"><%=user.username%>: &nbsp;</span>
+              <span class="full-name"><%=user.name%></span>
+            </a>
+
+   </div>
+   <div class="follow-button">
+  <%if !current_user || current_user!=user # do not show like for self%>
+                <div class="zzlike zzlike-follow" data-zzid="<%=user.id%>" data-zztype="user" data-zzstyle="toolbar" ></div>
+  <%end%>
   </div>
 </div>

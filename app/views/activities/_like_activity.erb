@@ -7,9 +7,8 @@
       </div>
     </a>
     <div class="profile-name">
-    <a href="<%=user_path(activity.user)%>">
-        <span class="blue"><%=activity.user.name%></span>
-    </a>
+    <a href="<%=user_path(activity.user)%>"><%=activity.user.name%></a>
+      
       <%if activity.like.subject.is_a?(Photo) %>
           <%if view== 'activity' %>
             liked <a href="<%=photo_pretty_url(activity.like.subject)%>"> this photo </a>

@@ -4,7 +4,7 @@
      <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
     <input name="subject_type" value="<%=@subject_type%>" type="hidden">
     <div id="ld-top">
-      Post your like on
+      Post on
       <input id="facebook_box" name="facebook" value="true" type='checkbox'   <%=( @is_facebook_linked  ? "authorized='yes' checked='checked'" : "" )%>/>
       <span style='color:#365896; font-weight: 700;'>Facebook</span> and/or
       <input id="twitter_box" name="tweet"  value="true"      type='checkbox' <%=( @is_twitter_linked  ? "authorized='yes' checked='checked'" : "" )%>/>
@@ -14,7 +14,7 @@
       <textarea name="message"><%= @message %></textarea>
     </div>
     <div id="ld-dothis">
-      <input name="dothis" type='checkbox'/> Do this every time I like something
+      <input name="dothis" type='checkbox'/> Do this every time I like or follow
     </div>
     <a id="ld-cancel" class="newblack-button" href="javascript:void(0)"><span>No thanks</span></a>
     <a id="ld-ok" class="newgreen-button" href="javascript:void(0)"><span>Post</span></a>

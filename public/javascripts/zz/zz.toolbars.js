@@ -52,19 +52,12 @@ zz.toolbars = {
        $('#acct-settings-btn').click(function(){
            zz.init.disable_buttons();
            $('#header #account-badge').removeClass('disabled').addClass('selected');
-
               document.location.href = path_helpers.rails_route('edit_user', zz.current_user_name);
-
-
-//           zz.wizard.open_settings_drawer('profile')
-
        });
        $('#acct-signout-btn').click(function(){ window.location = zz.path_prefix + '/signout' });
     },
 
     show_acct_badge_menu : function(event){
-//        event.preventDefault();
-        // Toggle the slide based on the menu's current visibility.
         if( $('#acct-dropdown').is( ":visible" ) ){
                $('#acct-dropdown').slideUp( 'fast' );// Hide - slide up
         } else {
@@ -86,22 +79,22 @@ zz.toolbars = {
             tag.attr('data-zzid', hash.toString() ).attr('data-zztype', 'photo');
             //set a listener to keep the subject_id current with the selected photo. Selecting a photo sets its id as the hash
             $(window).bind( 'hashchange', function( event ) {
-                logger.debug('toolbar like for photo - hash changed to: location.hash ='+location.hash.substr(2));
+                //logger.debug('toolbar like for photo - hash changed to: location.hash ='+location.hash.substr(2));
                 var hash = parseInt( location.hash.substr(2) );
                 if( !isNaN( hash ) ){
                     tag.attr('data-zzid', hash.toString() );
                     like.add_id( hash.toString(), 'photo' );
                 }
             });
-            logger.debug('toolbar like is for photo: '+hash.toString())
+            //logger.debug('toolbar like is for photo: '+hash.toString())
         } else if( typeof zz.album_id != 'undefined' ){
             //we are displaying an album's photo grid/people/activity.
             tag.attr('data-zzid', zz.album_id ).attr('data-zztype', 'album');
-            logger.debug('toolbar like is for album: '+zz.album_id )
+            //logger.debug('toolbar like is for album: '+zz.album_id )
         } else if( typeof zz.displayed_user_id != 'undefined'){
             //we are displaying a user homepage
             tag.attr('data-zzid', zz.displayed_user_id ).attr('data-zztype', 'user');
-            logger.debug('toolbar like is for user: '+zz.displayed_user_id  )
+            //logger.debug('toolbar like is for user: '+zz.displayed_user_id  )
         }
         return tag
     },

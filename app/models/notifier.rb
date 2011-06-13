@@ -49,10 +49,11 @@ class Notifier < ActionMailer::Base
     create_message( binding(), __method__, template_id, @recipient, { :user_id => @user.id } )
   end
 
-  def photo_liked( user_id, photo_id,  template_id = nil )
+  def photo_liked( user_id, photo_id, recipient_id, template_id = nil )
     @user      = User.find( user_id )
     @photo     = Photo.find( photo_id )
-    @recipient = @photo.user
+    @recipient = User.find( recipient_id )
+
     @recipient.subscriptions.wants_email!( Email::SOCIAL, __method__ )
     create_message( binding(), __method__, template_id, @recipient, { :user_id => @user.id } )
   end
@@ -170,7 +171,7 @@ class Notifier < ActionMailer::Base
     #Process recipient 
     if recipient.is_a?(User)
       encoded_name = Mail::Encodings::decode_encode( recipient.name, :encode )
-      @to_address  = Mail::Address.new("#{encoded_name} <#{recipient.email}>")
+      @to_address  = Mail::Address.new("\"#{encoded_name}\" <#{recipient.email}>")
     else
       @to_address = Mail::Address.new( recipient.to_slug.to_ascii.to_s )
     end

@@ -49,8 +49,6 @@ zz.init = {
         //tooltips
         $('<span class="tooltip">&nbsp;</span>').appendTo('body');
         $(".has-tooltip").each(function(index){
-
-
             $(this).tooltip({
                 tip: '.tooltip',
                 effect: 'fade',
@@ -58,13 +56,9 @@ zz.init = {
                 predelay: 100,
                 offset: [$(this).height() * .5, $(this).width() * .75]
             });
-
-
         });
 
-
         /* Click Handlers    ----------------------------------------------------------------------- */
-
         //join banner
         $('#join-banner #close-button').click(function(){
             $('#join-banner').fadeOut(200, function(){
@@ -83,7 +77,6 @@ zz.init = {
         });
 
 
-
         //system message banner
         $('#system-message-banner #close-button').click(function(){
             $('#system-message-banner').fadeOut(200, function(){
@@ -92,22 +85,11 @@ zz.init = {
                 jQuery.cookie('hide_system_message_banner', 'true');
             });
         });
-
-
-
-
-
-
         //top bar
         $('#header #home-button').click(function() {
             document.location.href = zz.path_prefix + '/';
             ZZAt.track('button.home.click');
         });
-
-
-
-
-
         if(zz.rails_controller_name == 'photos'){
             $('#header #view-buttons #grid-view-button').addClass('selected');
         }
@@ -117,8 +99,6 @@ zz.init = {
         else if(zz.rails_controller_name == 'activities'){
             $('#header #view-buttons #activities-view-button').addClass('selected');
         }
-
-
         $('#header #view-buttons #grid-view-button').click(function() {
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
@@ -170,9 +150,6 @@ zz.init = {
 
             //hack: force zendesk dialog to show scrollbars if screen too small
             $('#zenbox_body').css({height:jQuery(window).height()-100})
-
-
-
         });
 
         $('#header #sign-in-button').click(function() {
@@ -273,12 +250,10 @@ zz.init = {
 
 
         $('#footer #buy-button').click(function(){
-            alert("This feature is still under construction.")
+            if (! $(this).hasClass('disabled')){
+                alert("This feature is still under construction.")
+            }
         });
-
-
-
-
         zz.init.acct_badge();
         zz.init.like_menu();
 
@@ -286,10 +261,7 @@ zz.init = {
             zz.init.preload_rollover_images();
         }, 500);
 
-
         profile_pictures.init_profile_pictures();
-
-
     },
 
     show_welcome_dialog: function(){
@@ -550,15 +522,6 @@ zz.init = {
             var src = "/images/wiz-num-" + i + ".png"
             image_utils.pre_load_image(path_helpers.image_url(src))
         }
-    },
-
-    album_people_view: function() {
-        zz.init.album_timeline_or_people_view('people');
-    },
-
-    album_timeline_view: function() {
-        zz.init.album_timeline_or_people_view('timeline');
-
     },
 
     album_timeline_or_people_view: function(which) {

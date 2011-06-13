@@ -1,36 +1,33 @@
 .stacked-badge{
-  text-align: left;
+  position: relative;
+  height:40px;
 }
 
 .stacked-badge .sb-photo{
-    float: left;
     position: absolute;
-    top: 0;
-    left: 0;
-    height:40px;
     width: 40px;
-
+    height:40px;
 }
 
 .stacked-badge .sb-name{
   position: absolute;
-  top:   10px; /*used to be 4px with the like line */
-  left: 55px;
-  color: #466faa;
-  font-size: 15px;
+  top: 1px;
+  left: 50px;
+  font-size: 16px;
   overflow: hidden;
   white-space:nowrap;
 }
-
-.stacked-badge .sb-like{
-  position: absolute;
-  top:   21px;
-  left:  55px;
-  color: #bbbbbb;
-  font-weight:  450;
+.stacked-badge .sb-name:active, .stacked-badge .sb-name:hover{
+    text-decoration: underline;
+    color: #333;
 }
 
-.stacked-badge .sb-like span{
-    font-size: 12px;
+.stacked-badge .sb-name.no-follow{
+    top:13px;
+}
+.stacked-badge .sb-follow{
+  position: absolute;
+  bottom: -3px;
+  left: 50px;
 }
 
