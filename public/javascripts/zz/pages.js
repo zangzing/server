@@ -296,6 +296,7 @@ pages.group_tab = {
                     '<div class="who-can-download">' +
                         '<select>' +
                             '<option value="everyone">Everyone</option>' +
+                            '<option value="viewers">Viewers</option>' +
                             '<option value="contributors">Contributors</option>' +
                             '<option value="owner">Only I</option>' +
                         '</select>' +
@@ -379,12 +380,49 @@ pages.group_tab = {
 
                 //bind privacy buttons
                 container.find('.privacy-buttons .' + json['privacy'] + '-button').addClass('selected');
-
                 container.find('.privacy-buttons').children().click(function(){
                     container.find('.privacy-buttons').children().removeClass('selected');
                     $(this).addClass('selected');
                     $.post(zz.path_prefix + '/albums/' + zz.album_id, {_method:'put', 'album[privacy]': $(this).attr('data-privacy')});
                 });
+
+
+                //bind stream-to-email checkbox
+                container.find('.stream-to-email input').attr('checked', json['stream_to_email']);
+                container.find('.stream-to-email input').change(function(){
+                    $.post(zz.path_prefix + '/albums/' + zz.album_id, {_method:'put', 'album[stream_to_email]': $(this).attr('checked')});
+                });
+
+
+                //bind who-can-upload droppdown
+                container.find('.who-can-upload select').val(json['who_can_upload']);
+                container.find('.who-can-upload select').change(function(){
+                    $.post(zz.path_prefix + '/albums/' + zz.album_id, {_method:'put', 'album[who_can_upload]': $(this).val()});
+                });
+
+
+                //bind who-can-download droppdown
+                container.find('.who-can-download select').val(json['who_can_download']);
+                container.find('.who-can-download select').change(function(){
+                    $.post(zz.path_prefix + '/albums/' + zz.album_id, {_method:'put', 'album[who_can_download]': $(this).val()});
+                });
+
+
+                //bind stream-to-facebook checkbox
+                container.find('.stream-to-facebook input').attr('checked', json['stream_to_facebook']);
+                container.find('.stream-to-facebook input').change(function(){
+                    $.post(zz.path_prefix + '/albums/' + zz.album_id, {_method:'put', 'album[stream_to_facebook]': $(this).attr('checked')});
+                });
+
+                //bind stream-to-twitter checkbox
+                container.find('.stream-to-twitter input').attr('checked', json['stream_to_twitter']);
+                container.find('.stream-to-twitter input').change(function(){
+                    $.post(zz.path_prefix + '/albums/' + zz.album_id, {_method:'put', 'album[stream_to_twitter]': $(this).attr('checked')});
+                });
+
+
+
+
 
 
 
