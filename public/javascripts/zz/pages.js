@@ -507,7 +507,7 @@ pages.group_tab = {
                     var set_value = function(value){
                         element.attr('checked', value);
                         $.post(zz.path_prefix + '/albums/' + zz.album_id, {_method:'put', 'album[stream_to_twitter]': value});
-                    }
+                    };
 
                     if(element.attr('checked')){
                         set_value(false);
@@ -583,7 +583,7 @@ pages.group_tab = {
                                 recipients: ['facebook']
                             };
 
-                            $.post(zz.path_prefix + '/albums/'+ zz.album_id +'/shares.json', data)
+                            $.post(zz.path_prefix + '/albums/'+ zz.album_id +'/shares.json', data);
                             dialog.close();
 
 
@@ -593,7 +593,7 @@ pages.group_tab = {
                         content.find('.cancel-button').click(function(){
                             dialog.close();
                         });
-                    }
+                    };
 
 
                     if(has_facebook_token){
@@ -626,7 +626,7 @@ pages.group_tab = {
                             $.post(zz.path_prefix + '/albums/'+ zz.album_id +'/shares.json', data)
                             dialog.close();
                         });
-                    }
+                    };
 
                     if(has_twitter_token){
                        show_twitter_dialog();
@@ -637,20 +637,7 @@ pages.group_tab = {
                             show_twitter_dialog();
                         });
                     }
-
-
                 });
-
-
-
-
-
-
-
-
-
-
-
             }
         });
 

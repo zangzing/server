@@ -220,7 +220,7 @@ zzcontacts ={
             var b = $(button);
             zzcontacts.init_contact_button(b);
         });
-    },
+    }
 
 
 
