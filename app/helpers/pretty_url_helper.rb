@@ -23,4 +23,17 @@ module PrettyUrlHelper
    def user_pretty_url(user)
      user_url( user )
    end
+
+
+    def bitly_url(url)
+      begin
+        bitly = Bitly.new(BITLY_API_KEYS[:username], BITLY_API_KEYS[:api_key]).shorten(url)
+        return bitly.short_url
+      rescue Exception => e
+        logger.error e
+        logger.error e.backtrace
+        return url
+      end
+    end
+
 end

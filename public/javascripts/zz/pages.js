@@ -329,9 +329,9 @@ pages.group_tab = {
                                     '<div class="description"></div>'+
                                 '</div>' +
                                 '<div class="footer">' +
-                                    '<div class="stream-to-facebook">' +
-                                        '<input type="checkbox">Automatically post new photos to Facebook' +
-                                    '</div>' +
+//                                    '<div class="stream-to-facebook">' +
+//                                        '<input type="checkbox">Automatically post new photos to Facebook' +
+//                                    '</div>' +
                                     '<div class="submit-button"></div>' +
                                     '<div class="cancel-button"></div>' +
                                 '</div>' +
@@ -341,9 +341,9 @@ pages.group_tab = {
                                 '<div class="header"></div>' +
                                 '<div class="share-with-followers">Share with your followers</div>' +
                                 '<textarea class="message"></textarea>' +
-                                '<div class="stream-to-twitter">' +
-                                    '<input type="checkbox">Automatically tweet new photos' +
-                                '</div>' +
+//                                '<div class="stream-to-twitter">' +
+//                                    '<input type="checkbox">Automatically tweet new photos' +
+//                                '</div>' +
                                 '<div class="submit-button"></div>' +
                               '</div>',
 
@@ -412,6 +412,17 @@ pages.group_tab = {
 
                 var has_facebook_token = json['user']['has_facebook_token'];
                 var has_twitter_token = json['user']['has_twitter_token'];
+
+
+
+                has_facebook_token = true;
+                has_twitter_token = true;
+
+                
+
+
+
+
 
 
                 container.html(self.GROUP_EDITOR_TEMPLATE);
@@ -555,14 +566,28 @@ pages.group_tab = {
                     var show_facebook_dialog = function(){
                         var content = $(self.FACEBOOK_DIALOG_TEMPLATE);
 
-                        content.find('.detail .title').text('New Album 4 by hermann');
-                        content.find('.detail .url').text('http://localhost/jeremyhermann/new-album-7');
-                        content.find('.detail .description').text('ZangZing is a new group photo sharing service. Click Join ZangZing to get on the early access list. It’s free.');
+                        content.find('.detail .title').text(json['share']['facebook']['title']);
+                        content.find('.detail .url').text(json['share']['facebook']['url']);
+                        content.find('.detail .description').text(json['share']['facebook']['description']);
+
+                        if(json['share']['facebook']['photo']){
+                            content.find('.detail .photo').attr('src', json['share']['facebook']['photo']);
+                        }
+                        
 
                         var dialog = zz_dialog.show_dialog(content, {width:650, height:285});
 
                         content.find('.submit-button').click(function(){
+                            var data = {
+                                message: content.find('textarea.message').val(),
+                                recipients: ['facebook']
+                            };
+
+                            $.post(zz.path_prefix + '/albums/'+ zz.album_id +'/shares.json', data)
                             dialog.close();
+
+
+
                         });
 
                         content.find('.cancel-button').click(function(){
@@ -587,11 +612,18 @@ pages.group_tab = {
                     var show_twitter_dialog = function(){
                         var content = $(self.TWITTER_DIALOG_TEMPLATE);
 
-                        content.find('.message').text("Check out Hermann's Profile Photos on @ZangZing http://t.co/QIGoxz2");
+                        content.find('textarea.message').val(json['share']['twitter']['message']);
 
                         var dialog = zz_dialog.show_dialog(content, {width:650, height:250});
 
                         content.find('.submit-button').click(function(){
+
+                            var data = {
+                                message: content.find('textarea.message').val(),
+                                recipients: ['twitter']
+                            };
+
+                            $.post(zz.path_prefix + '/albums/'+ zz.album_id +'/shares.json', data)
                             dialog.close();
                         });
                     }
@@ -649,7 +681,7 @@ pages.group_tab = {
 //
 //    init: function(container, callback, subject_type, subject_id){
 //
-//        ZZAt.track('album.share_tab.view');
+//        ZZAt.track('album.share_tab.view' );
 //
 //
 //        if(_.isUndefined(subject_type)){

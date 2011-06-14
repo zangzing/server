@@ -102,8 +102,21 @@ class AlbumsController < ApplicationController
           :has_twitter_token => !current_user.identity_for_twitter.credentials_valid?.nil?
         },
         :album => @album.as_json,
-        :group => get_group_members
-    }
+        :group => get_group_members,
+        :share => {
+               :facebook => {
+                  :message => "",
+                  :title => "#{@album.name} by #{@album.user.name}",
+                  :url => album_pretty_url(@album),
+                  :description => SystemSetting[:facebook_post_description],
+                  :photo => @album.cover ? @album.cover.thumb_url : nil
+               },
+               :twitter => {
+                   :message => "Check out #{@album.user.posessive_name} #{@album.name} on @ZangZing #{bitly_url(album_pretty_url(@album))}"
+               }
+            }
+        }
+    
 
     render :json => hash
   end
