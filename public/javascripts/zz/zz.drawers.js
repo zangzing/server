@@ -9,7 +9,7 @@ zz.drawers = {
 
         // set up the album variables
         first: 'add',
-        last: 'share',
+        last: 'group',
         show_next_button: true,
         numbers: 1,
         percent: 0.0,
