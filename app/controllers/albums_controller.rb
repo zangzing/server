@@ -92,6 +92,12 @@ class AlbumsController < ApplicationController
     end
   end
 
+
+  def edit_group
+    render :json => @album
+  end
+
+
   # This is effectively the users homepage
   def index
     @user = User.find(params[:user_id])

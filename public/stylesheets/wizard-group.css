@@ -559,6 +559,14 @@
     font-size: 19px;
 }
 
+.add-people-dialog .header .import{
+    position: absolute;
+    top: 20px;
+    left: 300px;
+    font-size: 14px;
+}
+
+
 .add-people-dialog .to{
     position:absolute;
     left: 20px;

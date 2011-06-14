@@ -268,9 +268,9 @@ pages.group_tab = {
     TEMPLATE: '<div class="group-editor">' +
                  '<div class="who-can-access-header">Who can access this album?</div>' +
                  '<div class="privacy-buttons">' +
-                    '<div class="public-button"></div>' +
-                    '<div class="hidden-button"></div>' +
-                    '<div class="password-button"></div>' +
+                    '<div data-privacy="public" class="public-button"></div>' +
+                    '<div data-privacy="hidden" class="hidden-button"></div>' +
+                    '<div data-privacy="password" class="password-button"></div>' +
                  '</div>' +
                  '<div class="divider-line"></div>' +
                  '<div class="create-group-header">Create a ZangZing Group and Share via email</div>' +
@@ -344,8 +344,14 @@ pages.group_tab = {
     ADD_PEOPLE_DIALOG_TEMPLATE:   '<div class="add-people-dialog">' +
                                     '<div class="header">' +
                                         '<div class="title">Add people to your group</div>' +
+                                        '<div class="import"><span>Import from </span>' +
+                                            '<a data-service="google" class="gray-button contacts-btn"><span><div class="off"></div>Google</span></a>' +
+                                            '<a data-service="local" class="gray-button contacts-btn"><span><div class="off"></div>Local</span></a>' +
+                                            '<a data-service="yahoo" class="gray-button contacts-btn"><span><div class="off"></div>Yahoo</span></a>' +
+                                            '<a data-service="mslive" class="gray-button contacts-btn"><span><div class="off"></div>HotMail</span></a>' +
+                                        '</div>' +
                                     '</div>' +
-                                    '<div class="to"><div class="contact-list"></div></div>' +
+                                    '<div class="to"><input class="contact-list"></div>' +
                                     '<textarea class="message"></textarea>' +       
                                     '<div class="permission">Add them as: <select size="1"><option>Viewer</option><option>Contributor</option></select></div>' +
                                     '<a class="cancel-button black-button"><span>Cancel</span></a>' +
@@ -356,65 +362,105 @@ pages.group_tab = {
     init: function(container, callback){
         var self = this;
 
-        container.html(this.TEMPLATE);
 
-
-        container.find('.add-people-button').click(function(){
-            var content = $(self.ADD_PEOPLE_DIALOG_TEMPLATE);
-
-            var dialog = zz_dialog.show_dialog(content, {width:650, height:320});
-
-
-            contact_list.create(content.find('.contact-list'));
-
-            content.find('.submit-button').click(function(){
-                dialog.close();
-            });
-
-            content.find('.cancel-button').click(function(){
-                dialog.close();
-            });
+        $.ajax({
+            dataType: 'json',
+            url: zz.path_prefix + '/albums/' + zz.album_id + '/edit_group.json',
+            error: function(){
+                alert('error!');  
+            },
+            success: function(json){
 
 
 
+                container.html(self.TEMPLATE);
+
+                
+
+                //bind privacy buttons
+                container.find('.privacy-buttons .' + json['privacy'] + '-button').addClass('selected');
+
+                container.find('.privacy-buttons').children().click(function(){
+                    container.find('.privacy-buttons').children().removeClass('selected');
+                    $(this).addClass('selected');
+                    $.post(zz.path_prefix + '/albums/' + zz.album_id, {_method:'put', 'album[privacy]': $(this).attr('data-privacy')});
+                });
+
+
+
+
+                //set up event handlers
+                container.find('.add-people-button').click(function(){
+                    var content = $(self.ADD_PEOPLE_DIALOG_TEMPLATE);
+
+                    var dialog = zz_dialog.show_dialog(content, {width:650, height:320});
+
+
+                    contact_list.create(zz.current_user_id, content.find('.contact-list'), content.find('.contacts-btn'));
+
+                    content.find('.submit-button').click(function(){
+                        dialog.close();
+                    });
+
+                    content.find('.cancel-button').click(function(){
+                        dialog.close();
+                    });
+
+
+
+                });
+
+                container.find('.facebook-button').click(function(){
+                    var content = $(self.FACEBOOK_DIALOG_TEMPLATE);
+
+                    content.find('.detail .title').text('New Album 4 by hermann');
+                    content.find('.detail .url').text('http://localhost/jeremyhermann/new-album-7');
+                    content.find('.detail .description').text('ZangZing is a new group photo sharing service. Click Join ZangZing to get on the early access list. It’s free.');
+
+                    var dialog = zz_dialog.show_dialog(content, {width:650, height:285});
+
+                    content.find('.submit-button').click(function(){
+                        dialog.close();
+                    });
+
+                    content.find('.cancel-button').click(function(){
+                        dialog.close();
+                    });
+                });
+
+                container.find('.twitter-button').click(function(){
+                    var content = $(self.TWITTER_DIALOG_TEMPLATE);
+
+                    content.find('.message').text("Check out Hermann's Profile Photos on @ZangZing http://t.co/QIGoxz2");
+
+                    var dialog = zz_dialog.show_dialog(content, {width:650, height:250});
+
+                    content.find('.submit-button').click(function(){
+                        dialog.close();
+                    });
+
+
+                });
+
+
+
+
+
+
+
+
+
+
+
+            }
         });
-
-        container.find('.facebook-button').click(function(){
-            var content = $(self.FACEBOOK_DIALOG_TEMPLATE);
-
-            content.find('.detail .title').text('New Album 4 by hermann');
-            content.find('.detail .url').text('http://localhost/jeremyhermann/new-album-7');
-            content.find('.detail .description').text('ZangZing is a new group photo sharing service. Click Join ZangZing to get on the early access list. It’s free.');
-
-            var dialog = zz_dialog.show_dialog(content, {width:650, height:285});
-
-            content.find('.submit-button').click(function(){
-                dialog.close();
-            });
-
-            content.find('.cancel-button').click(function(){
-                dialog.close();
-            });
-        });
-
-        container.find('.twitter-button').click(function(){
-            var content = $(self.TWITTER_DIALOG_TEMPLATE);
-
-            content.find('.message').text("Check out Hermann's Profile Photos on @ZangZing http://t.co/QIGoxz2");
-
-            var dialog = zz_dialog.show_dialog(content, {width:650, height:250});
-
-            content.find('.submit-button').click(function(){
-                dialog.close();
-            });
-
-
-        });
-
-
 
 
         callback();
+    },
+
+    bounce: function(success, failure){
+        success();
     }
 
 

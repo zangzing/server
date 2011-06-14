@@ -666,6 +666,11 @@ table#email-share-form td.to{
     text-align:right;
 }
 
+table#email-share-form .contact-list-wrapper{
+    border: solid 1px #AFAFAF;
+}
+
+
 table#email-share-form td.message{
     vertical-align:top;
     text-align:right;
