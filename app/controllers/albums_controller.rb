@@ -96,8 +96,15 @@ class AlbumsController < ApplicationController
   # returns JSON used to populate
   # the "Group" tab
   def edit_group
-    hash = @album.as_json
-    hash[:group] = get_group_members
+    hash = {
+        :user => {
+          :has_facebook_token => !current_user.identity_for_facebook.credentials_valid?.nil?,
+          :has_twitter_token => !current_user.identity_for_twitter.credentials_valid?.nil?
+        },
+        :album => @album.as_json,
+        :group => get_group_members
+    }
+
     render :json => hash
   end
 

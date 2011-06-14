@@ -410,13 +410,16 @@ pages.group_tab = {
             success: function(json){
 
 
+                var has_facebook_token = json['user']['has_facebook_token'];
+                var has_twitter_token = json['user']['has_twitter_token'];
+
 
                 container.html(self.GROUP_EDITOR_TEMPLATE);
 
                 
 
                 //bind privacy buttons
-                container.find('.privacy-buttons .' + json['privacy'] + '-button').addClass('selected');
+                container.find('.privacy-buttons .' + json['album']['privacy'] + '-button').addClass('selected');
                 container.find('.privacy-buttons').children().click(function(){
                     container.find('.privacy-buttons').children().removeClass('selected');
                     $(this).addClass('selected');
@@ -431,36 +434,86 @@ pages.group_tab = {
 
 
                 //bind stream-to-email checkbox
-                container.find('.stream-to-email input').attr('checked', json['stream_to_email']);
+                container.find('.stream-to-email input').attr('checked', json['album']['stream_to_email']);
                 container.find('.stream-to-email input').change(function(){
                     $.post(zz.path_prefix + '/albums/' + zz.album_id, {_method:'put', 'album[stream_to_email]': $(this).attr('checked')});
                 });
 
 
                 //bind who-can-upload droppdown
-                container.find('.who-can-upload select').val(json['who_can_upload']);
+                container.find('.who-can-upload select').val(json['album']['who_can_upload']);
                 container.find('.who-can-upload select').change(function(){
                     $.post(zz.path_prefix + '/albums/' + zz.album_id, {_method:'put', 'album[who_can_upload]': $(this).val()});
                 });
 
 
                 //bind who-can-download droppdown
-                container.find('.who-can-download select').val(json['who_can_download']);
+                container.find('.who-can-download select').val(json['album']['who_can_download']);
                 container.find('.who-can-download select').change(function(){
                     $.post(zz.path_prefix + '/albums/' + zz.album_id, {_method:'put', 'album[who_can_download]': $(this).val()});
                 });
 
 
                 //bind stream-to-facebook checkbox
-                container.find('.stream-to-facebook input').attr('checked', json['stream_to_facebook']);
-                container.find('.stream-to-facebook input').change(function(){
-                    $.post(zz.path_prefix + '/albums/' + zz.album_id, {_method:'put', 'album[stream_to_facebook]': $(this).attr('checked')});
-                });
+                container.find('.stream-to-facebook input').attr('checked', json['album']['stream_to_facebook']);
+                container.find('.stream-to-facebook input').click(function(){
+                    //todo: same as twitter code below
+                    var element = $(this);
+
+                    //undo the toggle and start over...
+                    element.attr('checked', !element.attr('checked'));
+
+                    var set_value = function(value){
+                        element.attr('checked', value);
+                        $.post(zz.path_prefix + '/albums/' + zz.album_id, {_method:'put', 'album[stream_to_facebook]': value});
+                    }
+
+                    if(element.attr('checked')){
+                        set_value(false);
+                    }
+                    else{
+                        if(has_facebook_token){
+                            set_value(true);
+                        }
+                        else{
+                            oauthmanager.login_facebook(function(){
+                                has_facebook_token = true;
+                                set_value(true);
+                            });
+                        }
+                    }
+               });
 
                 //bind stream-to-twitter checkbox
-                container.find('.stream-to-twitter input').attr('checked', json['stream_to_twitter']);
+                container.find('.stream-to-twitter input').attr('checked', json['album']['stream_to_twitter']);
                 container.find('.stream-to-twitter input').change(function(){
-                    $.post(zz.path_prefix + '/albums/' + zz.album_id, {_method:'put', 'album[stream_to_twitter]': $(this).attr('checked')});
+                    //todo: same as facebook code above
+                    var element = $(this);
+
+                    //undo the toggle and start over...
+                    element.attr('checked', !element.attr('checked'));
+
+                    var set_value = function(value){
+                        element.attr('checked', value);
+                        $.post(zz.path_prefix + '/albums/' + zz.album_id, {_method:'put', 'album[stream_to_twitter]': value});
+                    }
+
+                    if(element.attr('checked')){
+                        set_value(false);
+                    }
+                    else{
+                        if(has_facebook_token){
+                            set_value(true);
+                        }
+                        else{
+                            oauthmanager.login_twitter(function(){
+                                has_facebook_token = true;
+                                set_value(true);
+                            });
+                        }
+                    }
+
+
                 });
 
 
@@ -484,8 +537,6 @@ pages.group_tab = {
                             emails: emails
                         };
 
-
-
                         $.post(zz.path_prefix + '/albums/' + zz.album_id + '/add_group_members.json', data, function(json){
                             refresh_person_list(json);
                             dialog.close();
@@ -497,38 +548,63 @@ pages.group_tab = {
                         dialog.close();
                     });
 
-
-
                 });
 
                 container.find('.facebook-button').click(function(){
-                    var content = $(self.FACEBOOK_DIALOG_TEMPLATE);
 
-                    content.find('.detail .title').text('New Album 4 by hermann');
-                    content.find('.detail .url').text('http://localhost/jeremyhermann/new-album-7');
-                    content.find('.detail .description').text('ZangZing is a new group photo sharing service. Click Join ZangZing to get on the early access list. It’s free.');
+                    var show_facebook_dialog = function(){
+                        var content = $(self.FACEBOOK_DIALOG_TEMPLATE);
 
-                    var dialog = zz_dialog.show_dialog(content, {width:650, height:285});
+                        content.find('.detail .title').text('New Album 4 by hermann');
+                        content.find('.detail .url').text('http://localhost/jeremyhermann/new-album-7');
+                        content.find('.detail .description').text('ZangZing is a new group photo sharing service. Click Join ZangZing to get on the early access list. It’s free.');
 
-                    content.find('.submit-button').click(function(){
-                        dialog.close();
-                    });
+                        var dialog = zz_dialog.show_dialog(content, {width:650, height:285});
 
-                    content.find('.cancel-button').click(function(){
-                        dialog.close();
-                    });
+                        content.find('.submit-button').click(function(){
+                            dialog.close();
+                        });
+
+                        content.find('.cancel-button').click(function(){
+                            dialog.close();
+                        });
+                    }
+
+
+                    if(has_facebook_token){
+                       show_facebook_dialog();
+                    }
+                    else{
+                        oauthmanager.login_facebook(function(){
+                            has_facebook_token = true;
+                            show_facebook_dialog();
+                        });
+                    }
                 });
 
                 container.find('.twitter-button').click(function(){
-                    var content = $(self.TWITTER_DIALOG_TEMPLATE);
 
-                    content.find('.message').text("Check out Hermann's Profile Photos on @ZangZing http://t.co/QIGoxz2");
+                    var show_twitter_dialog = function(){
+                        var content = $(self.TWITTER_DIALOG_TEMPLATE);
 
-                    var dialog = zz_dialog.show_dialog(content, {width:650, height:250});
+                        content.find('.message').text("Check out Hermann's Profile Photos on @ZangZing http://t.co/QIGoxz2");
 
-                    content.find('.submit-button').click(function(){
-                        dialog.close();
-                    });
+                        var dialog = zz_dialog.show_dialog(content, {width:650, height:250});
+
+                        content.find('.submit-button').click(function(){
+                            dialog.close();
+                        });
+                    }
+
+                    if(has_twitter_token){
+                       show_twitter_dialog();
+                    }
+                    else{
+                        oauthmanager.login_twitter(function(){
+                            has_twitter_token = true;
+                            show_twitter_dialog();
+                        });
+                    }
 
 
                 });
