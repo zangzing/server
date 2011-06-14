@@ -295,6 +295,11 @@ class Album < ActiveRecord::Base
      acl.remove_user( id ) if contributor? id
   end
 
+  def remove_viewer( id )
+     acl.remove_user( id ) if viewer? id
+  end
+
+
   def viewer?(id)
     if private?
       acl.has_permission?( id, AlbumACL::VIEWER_ROLE)
@@ -336,6 +341,13 @@ class Album < ActiveRecord::Base
   def contributors( exact = false)
     acl.get_users_with_role( AlbumACL::CONTRIBUTOR_ROLE, exact )
   end
+
+  #Returns album contributors if exact = true, only the ones with CONTRIBUTOR_ROLE not equivalent ROLES are returned
+  def viewers( exact = false)
+    acl.get_users_with_role( AlbumACL::VIEWER_ROLE, exact )
+  end
+
+  
 
   def long_email
       " \"#{self.name}\" <#{short_email}>"

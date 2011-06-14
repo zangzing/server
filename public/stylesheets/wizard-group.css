@@ -133,11 +133,12 @@
 }
 
 .group-editor .people-list .person .name{
-    position:absolute;
-    width:100px;
-    height:20px;
-    top:8px;
-    left:35px;
+    position: absolute;
+    width: 500px;
+    height: 20px;
+    top: 8px;
+    left: 35px;
+    text-align: left;
 }
 
 .group-editor .people-list .person select.permission{

@@ -61,8 +61,13 @@ class Share < ActiveRecord::Base
   # parses and cleans list of email addresses.
   # returns emails and any errors
   def self.validate_email_list( email_list )
-    #split the comma seprated list into array removing any spaces before or after commma
-    tokens = email_list.split(/\s*,\s*/)
+
+    if email_list.kind_of?(Array)
+      tokens = email_list
+    else
+      #split the comma seprated list into array removing any spaces before or after commma
+      tokens = email_list.split(/\s*,\s*/)
+    end
 
     # Loop through the tokens and add the bad ones to the errors array
     token_index = 0

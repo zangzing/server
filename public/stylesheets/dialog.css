@@ -72,3 +72,16 @@
 .zz_dialog .message{
     
 }
+
+
+.progress-dialog-content{
+    position:relative;
+    top:15px;
+    font-size:16px;
+
+}
+
+.progress-dialog-content img{
+    position: relative;
+    top: 10px;
+}

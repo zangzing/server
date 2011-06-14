@@ -101,17 +101,22 @@ zzcontacts ={
 
             oauth_succeeded = true;
 
+            var dialog = zz_dialog.show_progress_dialog("Importing contacts...");
+
+
+
             var url = zz.path_prefix + '/'+service+'/contacts/import';
             var on_success = function(json){
                 zzcontacts.data[service]= {};
                 zzcontacts.data[service].contacts = json;
                 zzcontacts.data[service].last_import = 'A moment ago';
+                dialog.close();
                 success();
             };
 
             var on_failure = function(jqXHR, textStatus){
+                dialog.close();
                 failure( 'import', textStatus);
-
             };
 
 
@@ -217,11 +222,7 @@ zzcontacts ={
         });
     },
 
-    show_importing_contacts_dialog: function(){
-        var template = '<span class="processing-photos-dialog-content"><img src="{{src}}">Importing contacts...</span>'.replace('{{src}}', path_helpers.image_url('/images/loading.gif'));
-        var dialog = zz_dialog.show_dialog(template, { width:300, height: 100, modal: true, autoOpen: true, cancelButton: false });
-        return dialog;
-    }
+
 
 };
 
