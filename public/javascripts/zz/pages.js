@@ -415,9 +415,7 @@ pages.group_tab = {
 
 
 
-                has_facebook_token = true;
-                has_twitter_token = true;
-
+     
                 
 
 
