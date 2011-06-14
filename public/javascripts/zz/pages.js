@@ -511,12 +511,12 @@ pages.group_tab = {
                         set_value(false);
                     }
                     else{
-                        if(has_facebook_token){
+                        if(has_twitter_token){
                             set_value(true);
                         }
                         else{
                             oauthmanager.login_twitter(function(){
-                                has_facebook_token = true;
+                                has_twitter_token = true;
                                 set_value(true);
                             });
                         }
