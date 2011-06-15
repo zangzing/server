@@ -591,9 +591,9 @@
 
 .add-people-dialog .header .import{
     position: absolute;
-    top: 20px;
-    left: 300px;
-    font-size: 14px;
+    top: 18px;
+    right: 20px;
+    font-size: 12px;
 }
 
 
@@ -612,7 +612,7 @@
     position:absolute;
     left: 20px;
     /*right: 20px; doesn't work on IE*/
-    width: 596px;
+    width: 696px;
     top:150px;
     height:80px;
     border: 2px solid #D5D5D5;
@@ -647,3 +647,6 @@
     bottom:20px;
     width:80px;
 }
+
+
+

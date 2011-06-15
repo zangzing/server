@@ -1,6 +1,7 @@
-.contacts-btn{
+a.gray-button.contacts-btn{
     display: inline-block;
-    margin-left:5px;
+    /*margin-left:5px;*/
+    font-size:12px;
 }
 
 .contacts-btn span div{
@@ -8,7 +9,7 @@
     height: 18px;
     vertical-align: middle;
     display: inline-block;
-    margin-right: 10px;
+    margin-right: 5px;
 }
 
 .contacts-btn .off{

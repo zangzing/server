@@ -533,7 +533,7 @@ pages.group_tab = {
                 container.find('.add-people-button').click(function(){
                     var content = $(self.ADD_PEOPLE_DIALOG_TEMPLATE);
 
-                    var dialog = zz_dialog.show_dialog(content, {width:650, height:320});
+                    var dialog = zz_dialog.show_dialog(content, {width:750, height:320});
 
                     content.find('textarea.message').placeholder();
 
