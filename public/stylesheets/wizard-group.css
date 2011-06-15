@@ -6,11 +6,12 @@
     position:relative;
     margin-left:auto;
     margin-right:auto;
-    height:688px;
+    height:95%;
     width:798px;
     /*background-image:url('/images/groups/guide.png');*/
     border: 1px solid #ffffff; 
     color: #56585c;
+    overflow:auto;
 }
 
 .group-editor .who-can-access-header{
@@ -212,6 +213,7 @@
     position: absolute;
     left: 172px;
     top: 15px;
+    display:none;
 }
 
 .group-editor .add-people-section .stream-to-email input{
@@ -276,7 +278,9 @@
 .group-editor .share-section .stream-to-facebook{
     position: absolute;
     left: 172px;
-    top: 15px;
+    top: 10px;
+    display:none;
+
 }
 
 .group-editor .share-section .stream-to-facebook input{
@@ -305,7 +309,9 @@
 .group-editor .share-section .stream-to-twitter{
     position: absolute;
     left: 172px;
-    top: 72px;
+    top: 70px;
+    display:none;
+    
 }
 
 .group-editor .share-section .stream-to-twitter input{

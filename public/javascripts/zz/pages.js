@@ -283,16 +283,14 @@ pages.group_tab = {
                         '<select>' +
                             '<option value="everyone">Everyone</option>' +
                             '<option value="contributors">Contributors</option>' +
-                            '<option value="owner">Only I</option>' +
                         '</select>' +
                         '<span>can upload photos</span>' +
                     '</div>' +
                     '<div class="who-can-download">' +
                         '<select>' +
                             '<option value="everyone">Everyone</option>' +
-                            '<option value="viewers">Viewers</option>' +
-                            '<option value="contributors">Contributors</option>' +
-                            '<option value="owner">Only I</option>' +
+                            '<option value="viewers">Group</option>' +
+                            '<option value="owner">No one</option>' +
                         '</select>' +
                         '<span>can download full resolution photos</span>' +
                     '</div>' +
