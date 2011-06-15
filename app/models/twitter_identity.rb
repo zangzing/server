@@ -23,8 +23,10 @@ class TwitterIdentity < Identity
 
   def post_share( share )
      bitly = Bitly.new(BITLY_API_KEYS[:username], BITLY_API_KEYS[:api_key]).shorten( share.subject_url )
-     post( bitly.short_url,
-           (share.message && share.message.length > 0 ? share.message+" @ZangZing" : DEFAULT_SHARE_MESSAGE) )
+
+     # we decided to have the @ZangZing and the link as part of the message
+     # if user deletes -- that's just the way it goes...
+     post('', share.message )
   end
 
   def post_like( like, message )
