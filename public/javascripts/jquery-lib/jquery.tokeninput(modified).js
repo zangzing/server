@@ -107,6 +107,8 @@
 
       // Create a new text input an attach keyup events
       var input_box = $("<input type=\"text\">")
+         .attr('placeholder', settings.hintText) //can't use the placeholder plugin because it will pick up the value
+         .placeholder()
          .css({
             outline: "none",
             width: "100%"
@@ -494,7 +496,7 @@
 
        function create_new_token () {
             var string = input_box.val(); //.toLowerCase();
-            if(string.length > 0){
+            if(string.length > 0 && string != settings.hintText){
                 // split the string by tabs,commas,returns or spaces and
                 // make each part a token.
                 var string_parts =  string.split(/\s*,\s*|\s*\t\s*/);

@@ -8,7 +8,7 @@ var contact_list = {
 
         $(list_element).tokenInput( zzcontacts.find, {
             allowNewValues: true,
-            hintText: "Enter email address...",
+            hintText: "Enter email address",
             classes: {
                 tokenList: "token-input-list-facebook",
                 token: "token-input-token-facebook",

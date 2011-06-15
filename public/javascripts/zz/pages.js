@@ -319,11 +319,12 @@ pages.group_tab = {
     
     FACEBOOK_DIALOG_TEMPLATE: '<div class="facebook-dialog">' +
                                 '<div class="header"><div class="title">Share to Facebook</div></div>' +
-                                '<textarea class="message">Write something</textarea>' +
+                                '<textarea placeholder="Write something" class="message"></textarea>' +
                                 '<div class="detail">' +
                                     '<img class="photo" src="/images/album-no-cover.png">'+
                                     '<div class="title"></div>'+
                                     '<div class="url"></div>'+
+                                    '<div class="description"></div>'+
                                     '<div class="description"></div>'+
                                 '</div>' +
                                 '<div class="footer">' +
@@ -358,7 +359,7 @@ pages.group_tab = {
                                         '</div>' +
                                     '</div>' +
                                     '<div class="to"><input class="contact-list"></div>' +
-                                    '<textarea class="message"></textarea>' +       
+                                    '<textarea placeholder="Type a personal note" class="message"></textarea>' +
                                     '<div class="permission">Add them as: <select size="1"><option value="viewer">Viewer</option><option value="contributor">Contributor</option></select></div>' +
                                     '<a class="cancel-button black-button"><span>Cancel</span></a>' +
                                     '<a class="submit-button green-button"><span>OK</span></a>' +
@@ -534,8 +535,12 @@ pages.group_tab = {
 
                     var dialog = zz_dialog.show_dialog(content, {width:650, height:320});
 
+                    content.find('textarea.message').placeholder();
+
 
                     contact_list.create(zz.current_user_id, content.find('.contact-list'), content.find('.contacts-btn'));
+
+
 
                     content.find('.submit-button').click(function(){
 
@@ -572,6 +577,7 @@ pages.group_tab = {
                             content.find('.detail .photo').attr('src', json['share']['facebook']['photo']);
                         }
                         
+                        content.find('textarea.message').placeholder();
 
                         var dialog = zz_dialog.show_dialog(content, {width:650, height:285});
 
@@ -622,6 +628,7 @@ pages.group_tab = {
                         content.find('textarea.message').keypress(function(){
                             update_char_left();
                         });
+                        
                         update_char_left();
 
 

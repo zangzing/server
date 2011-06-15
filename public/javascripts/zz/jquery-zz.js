@@ -6,6 +6,11 @@
 
 
 (function($) {
+
+
+
+
+
     $.fn.rowLeft = function() {
         var top = this.position().top;
         var sibling = this.prev();
@@ -123,11 +128,11 @@
 
     $.fn.disableEnterKey = function(elements){
         _.each(this, function(el){
-             $(el).bind("keypress", function(e) {
-                 if (e.keyCode == 13) {
-                     return false;
-                 }
-             });
+            $(el).bind("keypress", function(e) {
+                if (e.keyCode == 13) {
+                    return false;
+                }
+            });
         });
     };
 
