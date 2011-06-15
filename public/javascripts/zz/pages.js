@@ -578,7 +578,8 @@ pages.group_tab = {
                         content.find('.submit-button').click(function(){
                             var data = {
                                 message: content.find('textarea.message').val(),
-                                recipients: ['facebook']
+                                recipients: ['facebook'],
+                                service: 'social'
                             };
 
                             $.post(zz.path_prefix + '/albums/'+ zz.album_id +'/shares.json', data);
@@ -618,7 +619,8 @@ pages.group_tab = {
 
                             var data = {
                                 message: content.find('textarea.message').val(),
-                                recipients: ['twitter']
+                                recipients: ['twitter'],
+                                service: 'social'
                             };
 
                             $.post(zz.path_prefix + '/albums/'+ zz.album_id +'/shares.json', data)
