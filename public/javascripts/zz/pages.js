@@ -325,7 +325,6 @@ pages.group_tab = {
                                     '<div class="title"></div>'+
                                     '<div class="url"></div>'+
                                     '<div class="description"></div>'+
-                                    '<div class="description"></div>'+
                                 '</div>' +
                                 '<div class="footer">' +
 //                                    '<div class="stream-to-facebook">' +
