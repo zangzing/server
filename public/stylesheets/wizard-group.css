@@ -112,9 +112,10 @@
     margin-left:20px;
     margin-right:20px;
     height: 126px;
-    overflow-y:scroll;
+    overflow-y:auto;
     margin-top:10px;
     border: 1px solid #D5D5D5;
+    display:none;
 }
 
 
@@ -191,6 +192,20 @@
 .group-editor .add-people-section .add-people-button:active{
     background: url('/images/groups/add-people-button.png') no-repeat 0px -78px;
 }
+
+.group-editor .add-people-section .add-people-button.create-group{
+    background: url('/images/groups/add-group-button.png') no-repeat 0px 0px;
+}
+
+.group-editor .add-people-section .add-people-button.create-group:hover{
+    background: url('/images/groups/add-group-button.png') no-repeat 0px -39px;
+}
+
+.group-editor .add-people-section .add-people-button.create-group:active{
+    background: url('/images/groups/add-group-button.png') no-repeat 0px -78px;
+}
+
+
 
 
 .group-editor .add-people-section .stream-to-email{
@@ -513,6 +528,12 @@
     margin-right: 8px;
 }
 
+.twitter-dialog .chars-left{
+    position: absolute;
+    top: 205px;
+    right: 90px;
+    font-size: 14px
+}
 
 .twitter-dialog .submit-button{
     position: absolute;

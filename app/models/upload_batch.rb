@@ -210,6 +210,12 @@ class UploadBatch < ActiveRecord::Base
             end
 
 
+            #add album's GROUP to the list if streaming email
+            if album.stream_to_email?
+              update_notification_list << album.viewers(true)
+              update_notification_list << album.contributors(true)
+            end
+
             #de-dup
             update_notification_list.uniq!
 

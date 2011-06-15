@@ -277,7 +277,7 @@ pages.group_tab = {
                  '<div class="people-list">' +
                  '</div>' +
                  '<div class="add-people-section">' +
-                    '<div class="add-people-button"></div>' +
+                    '<div class="add-people-button create-group"></div>' +
                     '<div class="stream-to-email"><input type="checkbox">Automatically email the group about new photos</div>' +
                     '<div class="who-can-upload">' +
                         '<select>' +
@@ -344,6 +344,8 @@ pages.group_tab = {
 //                                '<div class="stream-to-twitter">' +
 //                                    '<input type="checkbox">Automatically tweet new photos' +
 //                                '</div>' +
+
+                                '<div class="chars-left">10</div>' +
                                 '<div class="submit-button"></div>' +
                               '</div>',
 
@@ -369,35 +371,45 @@ pages.group_tab = {
         var self = this;
 
 
+        var check_empty_list = function(){
+            if(container.find('.people-list .person').length == 0){
+                container.find('.add-people-button').addClass('create-group');
+                container.find('.people-list').fadeOut('fast');
+            }
+            else{
+                container.find('.add-people-button').removeClass('create-group');
+                container.find('.people-list').fadeIn('fast');
+            }
+
+        };
 
         var refresh_person_list = function(people){
             container.find('.people-list').empty();
 
-            if(people.length == 0){
-                //todo: hide the list and change the button
-            }
-            else{
-                //todo: show the list
+            // populate the list
+            _.each(people, function(person){
+                var element = $(self.PERSON_TEMPLATE);
+                element.find('.name').text(person['name']);
 
-                //populate the list
-                _.each(people, function(person){
-                    var element = $(self.PERSON_TEMPLATE);
-                    element.find('.name').text(person['name']);
+                element.find('select.permission').val(person['permission']);
+                element.find('select.permission').change(function(){
+                    $.post(zz.path_prefix + '/albums/' + zz.album_id + '/update_group_member', {_method:'put', 'member[id]': person.id, 'member[permission]': $(this).val()});
+                });
 
-                    element.find('select.permission').val(person['permission']);
-                    element.find('select.permission').change(function(){
-                        $.post(zz.path_prefix + '/albums/' + zz.album_id + '/update_group_member', {_method:'put', 'member[id]': person.id, 'member[permission]': $(this).val()});
-                    });
-
-                    element.find('.delete-button').click(function(){
+                element.find('.delete-button').click(function(){
+                    if(confirm('Are you sure you want to remove ' + person.name + '?')){
                         $.post(zz.path_prefix + '/albums/' + zz.album_id + '/delete_group_member', {_method:'delete', 'member[id]': person.id});
                         element.remove();
-                    });
-
-                    container.find('.people-list').append(element);
-
+                        check_empty_list();
+                    }
                 });
-            }
+
+                container.find('.people-list').append(element);
+
+            });
+
+            check_empty_list();
+
         };
 
 
@@ -412,16 +424,6 @@ pages.group_tab = {
 
                 var has_facebook_token = json['user']['has_facebook_token'];
                 var has_twitter_token = json['user']['has_twitter_token'];
-
-
-
-     
-                
-
-
-
-
-
 
                 container.html(self.GROUP_EDITOR_TEMPLATE);
 
@@ -611,12 +613,25 @@ pages.group_tab = {
                     var show_twitter_dialog = function(){
                         var content = $(self.TWITTER_DIALOG_TEMPLATE);
 
+
+                        var update_char_left = function(){
+                            var count = 124 - content.find('textarea.message').val().length;
+                            content.find('.chars-left').text(count);
+                        };
+
+
                         content.find('textarea.message').val(json['share']['twitter']['message']);
+                        content.find('textarea.message').keypress(function(){
+                            update_char_left();
+                        });
+                        update_char_left();
+
 
                         var dialog = zz_dialog.show_dialog(content, {width:650, height:250});
 
-                        content.find('.submit-button').click(function(){
 
+
+                        content.find('.submit-button').click(function(){
                             var data = {
                                 message: content.find('textarea.message').val(),
                                 recipients: ['twitter'],
