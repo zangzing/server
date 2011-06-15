@@ -24,6 +24,10 @@ common: &common
 
   v3homepage_repo_root: "../v3deploy/v3homepage"
 
+  # we seem to have a problem with corrupt gzip/memcached data so turn off for
+  # now and see if problems go away
+  memcached_gzip: false
+
 
 development:
   <<: *common

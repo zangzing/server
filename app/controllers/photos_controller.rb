@@ -220,12 +220,13 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
   # returns a json string of the album photos
   # @album is set by before_filter require_album
   def photos_json
+     gzip_compress = ZangZingConfig.config[:memcached_gzip]
      if stale?(:etag => @album)
 
       cache_version = @album.cache_version
       cache_version = 0 if cache_version.nil?
 
-      cache_key = "Album.Photos." + @album.id.to_s + '.' + cache_version.to_s + '.json'
+      cache_key = "Album.Photos.Rev2." + @album.id.to_s + '.' + cache_version.to_s + '.json'
 
       logger.debug 'cache key: ' + cache_key
 
@@ -235,7 +236,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
         json = Photo.to_json_lite(@album.photos)
 
         #compress the content once before caching: save memory and save nginx from compressing every response
-        json = ActiveSupport::Gzip.compress(json)
+        json = ActiveSupport::Gzip.compress(json) if gzip_compress
 
         Rails.cache.write(cache_key, json, :expires_in => 72.hours)
         logger.debug 'caching photos_json'
@@ -244,7 +245,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
       end
 
       expires_in 1.year, :public => @album.public?
-      response.headers['Content-Encoding'] = "gzip"
+      response.headers['Content-Encoding'] = "gzip" if gzip_compress
       render :json => json
     else
       logger.debug 'etag match, sending 304'

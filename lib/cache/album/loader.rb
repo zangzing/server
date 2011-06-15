@@ -68,7 +68,7 @@ module Cache
       end
 
       def self.make_cache_key(user_id, track_type, ver)
-        Manager::KEY_PREFIX + "#{track_type}.#{user_id}.#{ver}"
+        Manager::KEY_PREFIX + ".Rev2.#{track_type}.#{user_id}.#{ver}"
       end
 
       # attempt to fetch the item from the cache
@@ -105,7 +105,7 @@ module Cache
           json = JSON.fast_generate(albums)
 
           # compress the content once before caching: save memory and save nginx from compressing every response
-          json = ActiveSupport::Gzip.compress(json)
+          json = ActiveSupport::Gzip.compress(json) if ZangZingConfig.config[:memcached_gzip]
 
           cache_man.logger.info "Caching #{key}"
           cache.write(key, json, :expires_in => Manager::CACHE_MAX_INACTIVITY)
