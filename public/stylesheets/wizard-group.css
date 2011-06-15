@@ -611,7 +611,8 @@
 .add-people-dialog .message{
     position:absolute;
     left: 20px;
-    right: 20px;
+    /*right: 20px; doesn't work on IE*/
+    width: 596px;
     top:150px;
     height:80px;
     border: 2px solid #D5D5D5;
