@@ -355,7 +355,8 @@
     position:absolute;
     top: 50px;
     left: 20px;
-    right: 20px;
+    /*right: 20px;  does not work on IE*/
+    width: 598px;
     height: 30px;
     color: black;
     font-family: 'lucida grande', tahoma, verdana, arial, sans-serif;
@@ -507,7 +508,8 @@
     left:25px;
     top:110px;
     height: 65px;
-    right:25px;
+    /*right:25px; doesn't work on IE*/
+    width:600px;
     resize:none;
 
 
