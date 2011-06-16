@@ -332,13 +332,13 @@ class Album < ActiveRecord::Base
     else
       # not a contributor by  email account, could still be one via user id
       user = User.find_by_email( email )
-      if user && contributor?(user.id) == false
-        if everyone_can_contribute?
-          # this is open album, so go ahead and create anonymouse user
-          user = User.find_by_email_or_create_automatic( email, "Anonymous" )
-        else
-          user = nil  # clear out the user to indicate not valid
-        end
+
+      if user.nil? && self.everyone_can_contribute?
+        # this is open album, so go ahead and create anonymouse user
+        user = User.find_by_email_or_create_automatic( email, "Anonymous" )
+      elsif contributor?(user.id) == false
+        # clear out the user to indicate not valid
+        user = nil  
       end
     end
     user
