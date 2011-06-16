@@ -127,7 +127,7 @@ private
   end
 
   def test_album_updated( template_id )
-     Notifier.album_updated( recipient.id, album.id, template_id)
+     Notifier.album_updated( recipient.id, album.id, upload_batch.id, template_id)
   end
 
   def test_contributor_added( template_id )

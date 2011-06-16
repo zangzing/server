@@ -94,11 +94,12 @@ class Notifier < ActionMailer::Base
     create_message( binding(), __method__, template_id, ( @recipient? @recipient : to_address ), { :user_id => @user.id } )
   end
 
-  def album_updated( recipient_id, album_id,  template_id = nil )
+  def album_updated( recipient_id, album_id, batch_id,  template_id = nil )
     @album     = Album.find( album_id )
     @user      = @album.user
     @recipient = User.find( recipient_id )
     @recipient.subscriptions.wants_email!( Email::SOCIAL, __method__ )
+    @photos = UploadBatch.find( batch_id ).photos
     create_message( binding(), __method__, template_id, @recipient,   { :user_id => @user.id }  )
   end
 
