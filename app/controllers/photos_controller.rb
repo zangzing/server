@@ -11,7 +11,7 @@ class PhotosController < ApplicationController
   before_filter :oauth_required,                  :only =>   [ :agent_create, :agent_index ]   #for agent
   # oauthenticate :strategies => :two_legged, :interactive => false, :only =>   [ :upload_fast ]
 
-  before_filter :require_album,                   :only =>   [ :agent_create, :index, :movie, :photos_json ]
+  before_filter :require_album,                   :only =>   [ :agent_create, :index, :movie, :photos_json, :photos_json_invalidate ]
   before_filter :require_photo,                   :only =>   [ :destroy, :update, :position, :download ]
 
   before_filter :require_album_admin_role,                :only =>   [ :update, :position ]
@@ -258,6 +258,15 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
       logger.debug 'etag match, sending 304'
     end
   end
+
+  # invalidate the current cached data for the photos in this album
+  # we need this hack because we have seen corrupt json data being returned
+  # from the cache so either issue with ruby,gzip, or memcached
+  def photos_json_invalidate
+    Album.change_cache_version(@album.id)
+    render :json => ''
+  end
+
 
   # updates photo attributes
   # @photo is set in require_photo before filter

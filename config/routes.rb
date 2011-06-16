@@ -57,6 +57,7 @@ Server::Application.routes.draw do
 
 
     get    '/users/:user_id/albums'          => 'albums#index'             #, :as => :user_albums  user albums defined below
+    put    '/users/:user_id/invalidate_cache' => 'albums#invalidate_cache',    :as => :invalidate_user_album_cache
     get    '/users/:user_id/albums/new'      => 'albums#new',                 :as => :new_user_album
     post   '/users/:user_id/albums'          => 'albums#create',              :as => :create_user_album
     get    '/albums/:id/name_album'          => 'albums#name_album',          :as => :name_album
@@ -102,6 +103,7 @@ Server::Application.routes.draw do
 
     #photos
     get    '/albums/:album_id/photos_json'  => 'photos#photos_json',                :as => :album_photos_json
+    put    '/albums/:album_id/photos_json_invalidate'  => 'photos#photos_json_invalidate',  :as => :album_invalidate_photos_json
     get    '/albums/:album_id/photos'       => 'photos#index',                      :as => :album
     get    '/albums/:album_id/movie'        => 'photos#movie',                      :as => :album_movie
     delete '/photos/:id'                    => 'photos#destroy',                    :as => :destroy_photo

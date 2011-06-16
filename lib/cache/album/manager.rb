@@ -98,6 +98,11 @@ module Cache
         invalidator.invalidate
       end
 
+      # invalidate the tracks for this album
+      def user_invalidate_cache(user_id)
+        Invalidator.flush_versions(self, user_id)
+      end
+
       # from a given album determine which caches and state tracking needs to be invalidated
       # before calling this album_change_matters should have been checked.  We don't do it
       # here because we want this outside of the transaction and no longer know what changed.

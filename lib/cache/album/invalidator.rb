@@ -94,6 +94,21 @@ module Cache
         end
       end
 
+      # Flush the cache for a specific user
+      def self.flush_versions(cache_man, user_id)
+        begin
+          db = cache_man.db
+
+          # remove old versions
+          cmd =   "DELETE FROM c_versions WHERE user_id = #{db.quote(user_id)}"
+          results = cache_man.execute(cmd)
+
+        rescue Exception => ex
+          cache_man.logger.info("Error while flushing cache: #{ex.message}")
+        end
+      end
+
+
       # Invalidate all tracks and related versions
       # based on age earlier than the timestamp
       # given.  This is meant to be called by
