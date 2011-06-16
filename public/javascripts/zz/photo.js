@@ -92,7 +92,7 @@
             self.captionElement.text(o.caption);
 
             //for selenium tests...
-            self.borderElement.attr('id', 'photo-border-' + o.caption.replace(/[\W]+/g,'-'));
+            self.borderElement.attr('id', 'photo-border-' + (o.caption || '').replace(/[\W]+/g,'-'));
 
             if(o.type === 'blank'){
                 self.borderElement.hide();
