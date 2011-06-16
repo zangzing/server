@@ -4,7 +4,7 @@ class AddGroupRelatedColsToAlbum < ActiveRecord::Migration
     add_column    :albums, :stream_to_facebook, :boolean, :default => false
     add_column    :albums, :stream_to_twitter,  :boolean, :default => false
 
-    add_column    :albums, :who_can_download,  :string, :default => Album::WHO_VIEWERS
+    add_column    :albums, :who_can_download,  :string, :default => Album::WHO_OWNER
     add_column    :albums, :who_can_upload,    :string, :default => Album::WHO_CONTRIBUTORS
   end
 
