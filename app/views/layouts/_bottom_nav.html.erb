@@ -13,7 +13,7 @@
       <div id="edit-album-button" class="has-tooltip" title="Edit Album"><div class='footer-button-label'>Edit</div></div>
   <% end %>
 
-  <% if @album && current_user && @album.contributor?(current_user.id) %>
+  <% if @album && current_user && (@album.contributor?(current_user.id) || @album.everyone_can_contribute?) %>
       <div id="add-photos-button" class="has-tooltip" title="Add Photos"><div class='footer-button-label'>Add</div></div>
   <% end %>
 

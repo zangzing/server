@@ -298,7 +298,7 @@ class ApplicationController < ActionController::Base
   # To be run as a before_filter
   # Assumes @album is the album in question and current_user is the user we are evaluating
   def require_album_contributor_role
-    unless  @album.contributor?( current_user.id ) || current_user.support_hero?
+    unless  @album.contributor?( current_user.id ) || current_user.support_hero? || @album.everyone_can_contribute?
       flash.now[:error] = "Only Contributors admins can perform this operation"
       if request.xhr?
         head :status => 401

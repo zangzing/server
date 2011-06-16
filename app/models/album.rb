@@ -322,6 +322,8 @@ class Album < ActiveRecord::Base
   # If the email is that of a valid contributor, it will return the
   # user object for the contributor.
   # It will return nil if the email is not that of a contributor.
+  # If album is set to allow anyone to contribute, it will skip the contributor
+  # check and always create a new user if necessary
   def get_contributor_user_by_email( email )
     user = nil
     if contributor?( email )
@@ -331,7 +333,12 @@ class Album < ActiveRecord::Base
       # not a contributor by  email account, could still be one via user id
       user = User.find_by_email( email )
       if user && contributor?(user.id) == false
-        user = nil  # clear out the user to indicate not valid
+        if everyone_can_contribute?
+          # this is open album, so go ahead and create anonymouse user
+          user = User.find_by_email_or_create_automatic( email, "Anonymous" )
+        else
+          user = nil  # clear out the user to indicate not valid
+        end
       end
     end
     user
@@ -387,6 +394,10 @@ class Album < ActiveRecord::Base
 
   def make_hidden
     self.privacy = 'hidden'
+  end
+
+  def everyone_can_contribute?
+    self.who_can_upload == WHO_EVERYONE
   end
 
 
