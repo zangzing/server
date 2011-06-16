@@ -226,7 +226,8 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
       cache_version = @album.cache_version
       cache_version = 0 if cache_version.nil?
 
-      cache_key = "Album.Photos.Rev2." + @album.id.to_s + '.' + cache_version.to_s + '.json'
+      comp_flag = gzip_compress ? "Z1" : "Z0"
+      cache_key = "Album.Photos.#{comp_flag}.#{@album.id}.#{cache_version}"
 
       logger.debug 'cache key: ' + cache_key
 

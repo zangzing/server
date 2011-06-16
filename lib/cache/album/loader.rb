@@ -68,7 +68,8 @@ module Cache
       end
 
       def self.make_cache_key(user_id, track_type, ver)
-        Manager::KEY_PREFIX + ".Rev2.#{track_type}.#{user_id}.#{ver}"
+        comp_flag = ZangZingConfig.config[:memcached_gzip] ? "Z1" : "Z0"
+        Manager::KEY_PREFIX + ".#{comp_flag}.#{track_type}.#{user_id}.#{ver}"
       end
 
       # attempt to fetch the item from the cache
