@@ -238,10 +238,17 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
         #compress the content once before caching: save memory and save nginx from compressing every response
         json = ActiveSupport::Gzip.compress(json) if gzip_compress
 
-        Rails.cache.write(cache_key, json, :expires_in => 72.hours)
-        logger.debug 'caching photos_json'
+        begin
+          Rails.cache.write(cache_key, json, :expires_in => 72.hours)
+          logger.debug 'caching photos_json: ' + cache_key
+        rescue Exception => ex
+          # log the message but continue
+          logger.error(ex.message)
+          logger.debug "Failed to cache #{cache_key} due to #{ex.message}"
+        end
+
       else
-        logger.debug 'using cached photos_json'
+        logger.debug 'using cached photos_json: ' + cache_key
       end
 
       expires_in 1.year, :public => @album.public?
