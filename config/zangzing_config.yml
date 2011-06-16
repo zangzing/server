@@ -24,9 +24,8 @@ common: &common
 
   v3homepage_repo_root: "../v3deploy/v3homepage"
 
-  # we seem to have a problem with corrupt gzip/memcached data so turn off for
-  # now and see if problems go away
-  memcached_gzip: false
+  # we seem to have a problem with corrupt gzip/memcached data so we have an option that can turn on/off
+  memcached_gzip: true
 
 
 development:

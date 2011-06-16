@@ -3,9 +3,9 @@
 #
 
 class AlbumsController < ApplicationController
-  before_filter :require_user,              :except => [ :index, :back_to_index, :my_albums_json, :liked_albums_json, :my_albums_public_json, :liked_albums_public_json, :liked_users_public_albums_json ]
-  before_filter :require_user_json,         :only =>   [ :my_albums_json, :liked_albums_json ]
-  before_filter :require_album,             :except => [ :index, :create, :new, :my_albums_json, :liked_albums_json, :my_albums_public_json, :liked_albums_public_json, :liked_users_public_albums_json  ]
+  before_filter :require_user,              :except => [ :index, :back_to_index, :my_albums_json, :liked_albums_json, :my_albums_public_json, :liked_albums_public_json, :liked_users_public_albums_json, :invalidate_cache ]
+  before_filter :require_user_json,         :only =>   [ :my_albums_json, :liked_albums_json, :invalidate_cache ]
+  before_filter :require_album,             :except => [ :index, :create, :new, :my_albums_json, :liked_albums_json, :my_albums_public_json, :liked_albums_public_json, :liked_users_public_albums_json, :invalidate_cache  ]
   before_filter :require_album_admin_role,  :only =>   [ :destroy, :edit, :update ]
 
   # displays the "Select album type screen" used in the wizard
@@ -248,6 +248,14 @@ class AlbumsController < ApplicationController
     #Setup badge vars
     @badge_name = @user.name
   end
+
+  # invalidate the current cache for this user - essentially a forced cache flush version change
+  def invalidate_cache
+    user_id = params[:user_id]
+    Cache::Album::Manager.shared.user_invalidate_cache(user_id)
+    render :json => ''
+  end
+
 
 # Some helpers to return the json paths, would be cleaner if these lived in Versions class but we need
 # the route helpers accessible to controller
