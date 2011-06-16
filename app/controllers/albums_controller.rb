@@ -281,7 +281,7 @@ class AlbumsController < ApplicationController
     else
       expires_in 1.year, :public => public
     end
-    response.headers['Content-Encoding'] = "gzip"
+    response.headers['Content-Encoding'] = "gzip" if ZangZingConfig.config[:memcached_gzip]
     render :json => json
   end
 
