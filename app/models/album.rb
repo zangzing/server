@@ -326,17 +326,18 @@ class Album < ActiveRecord::Base
   # check and always create a new user if necessary
   def get_contributor_user_by_email( email )
     user = nil
-    if contributor?( email )
+
+    if self.everyone_can_contribute?
+      # this is open album, so go ahead and create anonymouse user if necessary
+      user = User.find_by_email_or_create_automatic( email, "Anonymous" )
+    elsif contributor?( email )
       # was in the ACL via email address so turn into real user, no need to test again as we already passed
       user = User.find_by_email_or_create_automatic( email, "Anonymous" )
     else
-      # not a contributor by  email account, could still be one via user id
+      # not a contributor by email account, could still be one via user id
       user = User.find_by_email( email )
 
-      if user.nil? && self.everyone_can_contribute?
-        # this is open album, so go ahead and create anonymouse user
-        user = User.find_by_email_or_create_automatic( email, "Anonymous" )
-      elsif contributor?(user.id) == false
+      if contributor?(user.id) == false
         # clear out the user to indicate not valid
         user = nil  
       end
