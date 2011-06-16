@@ -113,8 +113,7 @@ module Cache
             cache_man.logger.info "Caching #{key}"
           rescue Exception => ex
             # log the message but continue
-            cache_man.logger.error(ex.message)
-            cache_man.logger.debug "Failed to cache #{key} due to #{ex.message}"
+            cache_man.logger.error "Failed to cache #{key} due to #{ex.message}"
           end
 
           ver_values << [user_id, track_type, ver, user_last_touch_at]

@@ -243,8 +243,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
           logger.debug 'caching photos_json: ' + cache_key
         rescue Exception => ex
           # log the message but continue
-          logger.error(ex.message)
-          logger.debug "Failed to cache #{cache_key} due to #{ex.message}"
+          logger.error "Failed to cache #{cache_key} due to #{ex.message}"
         end
 
       else
