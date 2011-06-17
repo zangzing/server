@@ -3,12 +3,32 @@
 #
 # From: http://docs.engineyard.com/appcloud/howtos/configure-and-deploy-resque#redis-configuration
 
-# This is for workers who will be stopped with QUIT
-# Tell the resque workers to stop  when they have finished their jobs
-#    give them 60 seconds to finish if not kill them.
+def move_assets(assets)
+  env = environment()
+  puts "Deploy environment is " + env
 
-# If there were any jobs and they have not finished, raise exception and the
-# user should try to deploy again
+  asset_dir = current_path() + "/public"
+  puts "Asset Dir is " + asset_dir
+
+
+  assets.each do |asset|
+    # env-assetname is the form, if the file is not
+    # found we ignore and leave whatever was there in place
+    # so you can have a default file
+    from = "#{asset_dir}/#{asset}-#{env}"
+    to = asset_dir + "/" + asset
+    run "cp -f #{from} #{to}"
+  end
+end
+
+# put custom assets in place based on environment for app servers
+if ['solo', 'app_master', 'app'].include?(node["instance_role"])
+  assets = [
+      'robots.txt'
+  ]
+  move_assets(assets)
+end
+
 
 # need valid redis for migrate
 run "ln -nfs #{shared_path}/config/redis.yml #{release_path}/config/redis.yml"
