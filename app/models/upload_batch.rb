@@ -203,11 +203,14 @@ class UploadBatch < ActiveRecord::Base
             end
 
             # add CONTRIBUTOR'S FOLLOWERS  unless contributor is owner
-            if contributor_id != owner_id
-              self.user.followers.each do |follower|
-                update_notification_list << follower.id unless ( follower.id == owner_id ) || (follower.id == contributor_id )
-              end
-            end
+            # removed per request by Kathryn
+            #if contributor_id != owner_id
+            #  self.user.followers.each do |follower|
+            #    update_notification_list << follower.id unless ( follower.id == owner_id ) || (follower.id == contributor_id )
+            #  end
+            #end
+
+
 
 
 #            # streaming to email
