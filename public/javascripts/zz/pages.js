@@ -267,14 +267,14 @@ pages.group_tab = {
 
     GROUP_EDITOR_TEMPLATE: '<div class="group-editor-container">' +
                             '<div class="group-editor">' +
-                                 '<div class="who-can-access-header">Who can access this album?</div>' +
+                                 '<div class="who-can-access-header">Privacy</div>' +
                                  '<div class="privacy-buttons">' +
                                     '<div data-privacy="public" class="public-button"></div>' +
                                     '<div data-privacy="hidden" class="hidden-button"></div>' +
                                     '<div data-privacy="password" class="password-button"></div>' +
                                  '</div>' +
                                  '<div class="divider-line"></div>' +
-                                 '<div class="create-group-header">Create a ZangZing Group and Share via email</div>' +
+                                 '<div class="create-group-header">Create a group and share via email</div>' +
                                  '<div class="people-list">' +
                                  '</div>' +
                                  '<div class="add-people-section">' +
