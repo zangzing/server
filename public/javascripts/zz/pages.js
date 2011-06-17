@@ -265,46 +265,48 @@ pages.edit_album_tab = {
 
 pages.group_tab = {
 
-    GROUP_EDITOR_TEMPLATE: '<div class="group-editor">' +
-                 '<div class="who-can-access-header">Who can access this album?</div>' +
-                 '<div class="privacy-buttons">' +
-                    '<div data-privacy="public" class="public-button"></div>' +
-                    '<div data-privacy="hidden" class="hidden-button"></div>' +
-                    '<div data-privacy="password" class="password-button"></div>' +
-                 '</div>' +
-                 '<div class="divider-line"></div>' +
-                 '<div class="create-group-header">Create a ZangZing Group and Share via email</div>' +
-                 '<div class="people-list">' +
-                 '</div>' +
-                 '<div class="add-people-section">' +
-                    '<div class="add-people-button create-group"></div>' +
-                    '<div class="stream-to-email"><input type="checkbox">Automatically email the group about new photos</div>' +
-                    '<div class="who-can-upload">' +
-                        '<select>' +
-                            '<option value="everyone">Everyone</option>' +
-                            '<option value="contributors">Contributors</option>' +
-                        '</select>' +
-                        '<span>can upload photos</span>' +
-                    '</div>' +
-                    '<div class="who-can-download">' +
-                        '<select>' +
-                            '<option value="everyone">Everyone</option>' +
-                            '<option value="viewers">Group</option>' +
-                            '<option value="owner">No one</option>' +
-                        '</select>' +
-                        '<span>can download full resolution photos</span>' +
-                    '</div>' +
+    GROUP_EDITOR_TEMPLATE: '<div class="group-editor-container">' +
+                            '<div class="group-editor">' +
+                                 '<div class="who-can-access-header">Who can access this album?</div>' +
+                                 '<div class="privacy-buttons">' +
+                                    '<div data-privacy="public" class="public-button"></div>' +
+                                    '<div data-privacy="hidden" class="hidden-button"></div>' +
+                                    '<div data-privacy="password" class="password-button"></div>' +
+                                 '</div>' +
+                                 '<div class="divider-line"></div>' +
+                                 '<div class="create-group-header">Create a ZangZing Group and Share via email</div>' +
+                                 '<div class="people-list">' +
+                                 '</div>' +
+                                 '<div class="add-people-section">' +
+                                    '<div class="add-people-button create-group"></div>' +
+                                    '<div class="stream-to-email"><input type="checkbox">Automatically email the group about new photos</div>' +
+                                    '<div class="who-can-upload">' +
+                                        '<select>' +
+                                            '<option value="everyone">Everyone</option>' +
+                                            '<option value="contributors">Contributors</option>' +
+                                        '</select>' +
+                                        '<span>can upload photos</span>' +
+                                    '</div>' +
+                                    '<div class="who-can-download">' +
+                                        '<select>' +
+                                            '<option value="everyone">Everyone</option>' +
+                                            '<option value="viewers">Group</option>' +
+                                            '<option value="owner">No one</option>' +
+                                        '</select>' +
+                                        '<span>can download full resolution photos</span>' +
+                                    '</div>' +
 
-                 '</div>' +
-                 '<div class="divider-line"></div>' +
-                 '<div class="share-header">Share</div>' +
-                 '<div class="share-section">' +
-                     '<div class="facebook-button"></div>' +
-                     '<div class="stream-to-facebook"><input type="checkbox">Automatically post new photos to Facebook</div>' +
-                     '<div class="twitter-button"></div>' +
-                     '<div class="stream-to-twitter"><input type="checkbox">Automatically tweet new photos</div>' +
-                 '</div>' +
-             '</div>',
+                                 '</div>' +
+                                 '<div class="divider-line"></div>' +
+                                 '<div class="share-header">Share</div>' +
+                                 '<div class="share-section">' +
+                                     '<div class="facebook-button"></div>' +
+                                     '<div class="stream-to-facebook"><input type="checkbox">Automatically post new photos to Facebook</div>' +
+                                     '<div class="twitter-button"></div>' +
+                                     '<div class="stream-to-twitter"><input type="checkbox">Automatically tweet new photos</div>' +
+                                 '</div>' +
+                              '</div>' +
+                            '</div>',
 
     PERSON_TEMPLATE:  '<div class="person">' +
                                 '<img class="profile" src="/images/default_profile.png">' +

@@ -2,16 +2,24 @@
  *  Main Screen
  */
 
+.group-editor-container{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 1px;
+    bottom: 35px;
+    overflow: auto;
+}
+
+
 .group-editor{
     position:relative;
     margin-left:auto;
     margin-right:auto;
-    height:95%;
     width:798px;
     /*background-image:url('/images/groups/guide.png');*/
     border: 1px solid #ffffff; 
     color: #56585c;
-    overflow:auto;
 }
 
 .group-editor .who-can-access-header{
