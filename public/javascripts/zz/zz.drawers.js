@@ -54,7 +54,7 @@ zz.drawers = {
             name: {  //group album
                 id: 'name',
                 next: 'edit',
-                title: 'Name',
+                title: 'Name Album',
                 type: 'full',
 
                 init:   function(container, callback){
@@ -67,7 +67,7 @@ zz.drawers = {
 
             edit: {
                 next: 'group',
-                title: 'Edit',
+                title: 'Edit Album',
                 type: 'partial',
 
                 init:   function(container, callback){
@@ -80,7 +80,7 @@ zz.drawers = {
 
             group: {
                 next: 0,
-                title: 'Group',
+                title: 'Create Group & Share',
                 type: 'full',
 
 
