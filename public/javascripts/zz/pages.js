@@ -310,8 +310,8 @@ pages.group_tab = {
                                 '<img class="profile" src="/images/default_profile.png">' +
                                 '<div class="name"></div>' +
                                 '<select class="permission" size="1">' +
-                                    '<option value="viewer">View</option>' +
-                                    '<option value="contributor">Contribute</option>' +
+                                    '<option value="viewer">Viewer</option>' +
+                                    '<option value="contributor">Contributor</option>' +
                                 '</select>' +
                                 '<div class="delete-button"></div>' +
                             '</div>',
