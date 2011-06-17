@@ -164,7 +164,7 @@ class Share < ActiveRecord::Base
     if email? && subject.user.id == user_id
       if self.viewer_invite?
         recipients.each { |email| subject.add_viewer( email ) }
-      else
+      elsif self.contributor_invite?
         recipients.each { |email| subject.add_contributor( email ) }
       end
     end
