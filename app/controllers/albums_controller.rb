@@ -281,7 +281,7 @@ class AlbumsController < ApplicationController
     loader = Cache::Album::Manager.shared.make_loader(@user, public)
   end
 
-  def render_cached_json(json, public)
+  def render_cached_json(json, public, compressed)
     ver = params[:ver]
     if ver.nil? || ver == 0
       # no cache
@@ -289,7 +289,7 @@ class AlbumsController < ApplicationController
     else
       expires_in 1.year, :public => public
     end
-    response.headers['Content-Encoding'] = "gzip" if ZangZingConfig.config[:memcached_gzip]
+    response.headers['Content-Encoding'] = "gzip" if compressed
     render :json => json
   end
 
@@ -303,7 +303,7 @@ class AlbumsController < ApplicationController
 
     if stale?(:last_modified => ver_time, :etag => etag)
       json = loader.fetch_my_albums_json
-      render_cached_json(json, public)
+      render_cached_json(json, public, loader.my_albums_json_compressed)
     end
   end
 
@@ -325,7 +325,7 @@ class AlbumsController < ApplicationController
 
     if stale?(:last_modified => ver_time, :etag => etag)
       json = loader.fetch_liked_albums_json
-      render_cached_json(json, public)
+      render_cached_json(json, public, loader.liked_albums_json_compressed)
     end
   end
 
@@ -349,7 +349,7 @@ class AlbumsController < ApplicationController
 
     if stale?(:last_modified => ver_time, :etag => etag)
       json = loader.fetch_liked_users_albums_json
-      render_cached_json(json, public)
+      render_cached_json(json, public, loader.liked_users_albums_json_compressed)
     end
   end
 

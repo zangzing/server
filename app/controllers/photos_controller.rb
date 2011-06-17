@@ -221,6 +221,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
   # @album is set by before_filter require_album
   def photos_json
      gzip_compress = ZangZingConfig.config[:memcached_gzip]
+     compressed = gzip_compress
      if stale?(:etag => @album)
 
       cache_version = @album.cache_version
@@ -230,21 +231,21 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
       cache_key = "Album.Photos.#{comp_flag}.#{@album.id}.#{cache_version}"
 
       logger.debug 'cache key: ' + cache_key
-
       json = Rails.cache.read(cache_key)
 
       if(json.nil?)
         json = Photo.to_json_lite(@album.photos)
 
-        #compress the content once before caching: save memory and save nginx from compressing every response
-        json = ActiveSupport::Gzip.compress(json) if gzip_compress
-
         begin
+          #compress the content once before caching: save memory and save nginx from compressing every response
+          json = checked_gzip_compress(json, 'photos.cache.corruption', "Key: #{cache_key}, AlbumId: #{@album.id}, UserId: #{@album.user_id}") if gzip_compress
           Rails.cache.write(cache_key, json, :expires_in => 72.hours)
+          compressed = gzip_compress
           logger.debug 'caching photos_json: ' + cache_key
         rescue Exception => ex
           # log the message but continue
-          logger.error "Failed to cache #{cache_key} due to #{ex.message}"
+          logger.error "Failed to cache: #{cache_key} due to #{ex.message}"
+          compressed = false
         end
 
       else
@@ -252,7 +253,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
       end
 
       expires_in 1.year, :public => @album.public?
-      response.headers['Content-Encoding'] = "gzip" if gzip_compress
+      response.headers['Content-Encoding'] = "gzip" if compressed
       render :json => json
     else
       logger.debug 'etag match, sending 304'
