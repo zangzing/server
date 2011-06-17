@@ -271,6 +271,14 @@ module Cache
         if (self.liked_users_albums_json = cache_fetch(track_type, current_versions.liked_users_albums)) == nil
           # not found in the cache, need to call the database to fetch them
           albums = user.liked_users_public_albums
+          # now build the list of ones we should put in the cache
+          # don't put in ones that belong to us
+          user_id = user.id
+          visible_albums = []
+          albums.each do |album|
+            next if user_id == album.user_id
+            visible_albums << album if public == false || (album.privacy == 'public')
+          end
 
           # add the users we like to the tracker set
           # because it is a set, duplicates will be filtered
@@ -279,12 +287,11 @@ module Cache
             add_tracked_user(album.user_id, track_type)
           end
           # and add a user_id tracker for ourselves so we know if we like or unlike a user
-          user_id = user.id
           add_tracked_user_like_membership(user_id, track_type)
 
           # and update the cache with the albums
           current_versions.liked_users_albums = updated_cache_version if current_versions.liked_users_albums == 0
-          self.liked_users_albums = albums_to_hash(albums)
+          self.liked_users_albums = albums_to_hash(visible_albums)
           version_tracker.add([track_type, self.liked_users_albums, current_versions.liked_users_albums])
         end
       end
