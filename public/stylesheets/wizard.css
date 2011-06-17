@@ -5,19 +5,13 @@ ul#clone-indicator {
   display: none;
 }
 
-ul#indicator-5, ul#indicator-6 {
-  width: 898px;
-  height: 36px;
-  margin-top: 4px;
-  padding-left: 14px;
-}
 
 ul#indicator-4{
-  width: 898px;
+  width: 884px;
   height: 36px;
   margin-top: 4px;
   margin-left: -1px;
-  padding-left: 55px;
+  padding-left: 14px;
 }
 
 ul#indicator-6 {
@@ -40,103 +34,19 @@ ul.edit-4-4 {
 }
 
 
-ul.step-1-5 {
-    background: url("/images/bg-5step-strip.png") no-repeat scroll 0px 0px;
+ul.step-1-4 {
+  background: url("/images/bg-4step-edit.png") no-repeat scroll 0px 0px;
 }
 
-ul.step-2-5 {
-    background: url("/images/bg-5step-strip.png") no-repeat scroll 0px -37px;
+ul.step-2-4 {
+  background: url("/images/bg-4step-edit.png") no-repeat scroll 0px -37px;
 }
 
-ul.step-3-5 {
-    background: url("/images/bg-5step-strip.png") no-repeat scroll 0px -74px;
-
+ul.step-3-4 {
+  background: url("/images/bg-4step-edit.png") no-repeat scroll 0px -74px;
 }
-
-ul.step-4-5 {
-    background: url("/images/bg-5step-strip.png") no-repeat scroll 0px -111px;
-}
-
-ul.step-5-5 {
-    background: url("/images/bg-5step-strip.png") no-repeat scroll 0px -148px;
-}
-
-
-ul.edit-1-5 {
-    background: url("/images/bg-5step-edit.png") no-repeat scroll 0px 0px;
-}
-
-ul.edit-2-5 {
-    background: url("/images/bg-5step-edit.png") no-repeat scroll 0px -37px;
-}
-
-ul.edit-3-5 {
-    background: url("/images/bg-5step-edit.png") no-repeat scroll 0px -74px;
-
-}
-
-ul.edit-4-5 {
-    background: url("/images/bg-5step-edit.png") no-repeat scroll 0px -111px;
-}
-
-ul.edit-5-5 {
-    background: url("/images/bg-5step-edit.png") no-repeat scroll 0px -148px;
-}
-
-
-
-
-
-ul.step-1-6 {
-    background: url("/images/bg-6step-strip.png") no-repeat scroll 0px 0px;
-}
-
-ul.step-2-6 {
-    background: url("/images/bg-6step-strip.png") no-repeat scroll 0px -37px;
-}
-
-ul.step-3-6 {
-    background: url("/images/bg-6step-strip.png") no-repeat scroll 0px -74px;
-}
-
-ul.step-4-6 {
-    background: url("/images/bg-6step-strip.png") no-repeat scroll 0px -111px;
-}
-
-ul.step-5-6 {
-    background: url("/images/bg-6step-strip.png") no-repeat scroll 0px -148px;
-}
-
-ul.step-6-6 {
-    background: url("/images/bg-6step-strip.png") no-repeat scroll 0px -185px;
-}
-
-
-
-
-
-ul.edit-1-6 {
-    background: url("/images/bg-6step-edit.png") no-repeat scroll 0px 0px;
-}
-
-ul.edit-2-6 {
-    background: url("/images/bg-6step-edit.png") no-repeat scroll 0px -37px;
-}
-
-ul.edit-3-6 {
-    background: url("/images/bg-6step-edit.png") no-repeat scroll 0px -74px;
-}
-
-ul.edit-4-6 {
-    background: url("/images/bg-6step-edit.png") no-repeat scroll 0px -111px;
-}
-
-ul.edit-5-6 {
-    background: url("/images/bg-6step-edit.png") no-repeat scroll 0px -148px;
-}
-
-ul.edit-6-6 {
-    background: url("/images/bg-6step-edit.png") no-repeat scroll 0px -185px;
+ul.step-4-4 {
+  background: url("/images/bg-4step-edit.png") no-repeat scroll 0px -111px;
 }
 
 
@@ -146,7 +56,7 @@ ul.edit-6-6 {
 
 ul#indicator-4 li.tab {
   float: left;
-  padding: 13px 19px 0 0;
+  padding: 8px 19px 0 0;
   width: 179px;
   font-size: 11px;
   font-weight: 400;
@@ -159,53 +69,22 @@ ul#indicator-4 li.tab {
 }
 
 
-ul#indicator-5 li.tab {
-  float: left;
-  padding: 8px 19px 0 0;
-  width: 139px;
-  font-size: 11px;
-  font-weight: 400;
-  color: #646464;
-  text-align: center;
-  text-transform: uppercase;
-  cursor: pointer;
-  overflow: hidden;
-  height: 19px;
-}
 
 
-
-ul#indicator-6 li.tab {
-  float: left;
-  padding: 8px 18px 0 0;
-  width: 115px;
-  font-size: 11px;
-  font-weight: 400;
-  color: #646464;
-  text-align: center;
-  text-transform: uppercase;
-  cursor: pointer;
-  overflow: hidden;
-  height: 19px;
-}
-
-
-
-
-ul#indicator-4 li.tab img.num, ul#indicator-5 li.tab img.num, ul#indicator-6 li.tab img.num {
+ul#indicator-4 li.tab img.num {
   vertical-align: -40%;
 }
 
-ul#indicator-4 li.tab a, ul#indicator-5 li.tab a, ul#indicator-6 li.tab a {
+ul#indicator-4 li.tab a{
   color: #646464;
   text-decoration: none;
 }
 
-ul#indicator-4 li.tab.on a, ul#indicator-5 li.tab.on a, ul#indicator-6 li.tab.on a {
+ul#indicator-4 li.tab.on a {
   color: #fff;
 }
 
-ul#indicator-4 li.next-done, ul#indicator-5 li.next-done, ul#indicator-6 li.next-done {
+ul#indicator-4 li.next-done {
   text-align: center;
   padding-top: 3px;
   padding-left: 2px;
@@ -214,24 +93,22 @@ ul#indicator-4 li.next-done, ul#indicator-5 li.next-done, ul#indicator-6 li.next
 }
 
 
-ul#indicator-4 li.next-done a.green-button, ul#indicator-5 li.next-done a.green-button, ul#indicator-6 li.next-done a.green-button {
+ul#indicator-4 li.next-done a.green-button {
     width:60px;
     margin-left:6px;
 }
 
-ul#indicator-4 li.next-done a.next-button, ul#indicator-5 li.next-done a.next-button, ul#indicator-6 li.next-done a.next-button {
+ul#indicator-4 li.next-done a.next-button {
     width:60px;
     margin-left:2px;
 }
 
 
-ul#indicator-5 li.tab.on, ul#indicator-6 li.tab.on {
-  color: #fff;
-}
 
-ul#indicator-4 li.tab.on, ul#indicator-4 li.tab:hover{
-    color: #000000;
+ul#indicator-4 li.tab.on{
+    color: #ffffff;
     font-weight: 400;
+    cursor:pointer;
 }
 
 
