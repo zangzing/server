@@ -140,6 +140,9 @@ zzcontacts ={
     },
 
     _import_local_contacts: function( import_success, import_failure ){
+        var dialog = zz_dialog.show_progress_dialog("Importing contacts...");
+
+
         agent.getStatus(function(status){
             if( status == agent.STATUS.READY){
                 var url = agent.buildAgentUrl('/contacts/import');
@@ -149,14 +152,18 @@ zzcontacts ={
                         zzcontacts.data['local'] = {};
                         zzcontacts.data['local'].contacts    = response.body;
                         zzcontacts.data['local'].last_import = 'A moment ago.'; //+new Date();
+                        dialog.close();
                         if( $.isFunction( import_success) )  import_success();
                     },
                     error: function( options, textStatus ){
                         if( $.isFunction( import_failure) ) import_failure('agent', textStatus);
+                        dialog.close();
                     }
                 });
             }
             else{
+                dialog.close();
+
                 pages.download_agent.dialog( function(){
                     agent.getStatus(function(status){
                         if(status == agent.STATUS.READY){
