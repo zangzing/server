@@ -7,7 +7,7 @@ def move_assets(assets)
   env = environment()
   puts "Deploy environment is " + env
 
-  asset_dir = current_path() + "/public"
+  asset_dir = release_path() + "/public"
   puts "Asset Dir is " + asset_dir
 
 
