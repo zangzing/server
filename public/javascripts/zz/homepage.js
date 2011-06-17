@@ -68,9 +68,15 @@ homepage = {
             _.each(urls, function(url){
                 if(url){
                     results[url] = null;
-                    $.get(url, {}, function(albums){
-                        results[url] = albums;
-                        check_is_done();
+                    $.ajax({
+                        url: url,
+                        success: function(albums){
+                            results[url] = albums;
+                            check_is_done();
+                        },
+                        error: function(xhr, message, exception){
+                            cache_helper.check_bad_homepage_json(xhr, message, zz.displayed_user_id, this.url);
+                        }
                     });
                 }
             });

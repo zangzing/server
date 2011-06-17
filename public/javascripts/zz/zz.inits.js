@@ -338,6 +338,9 @@ zz.init = {
         $.ajax({
             dataType: 'json',
             url: zz.path_prefix + '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
+            error: function(xhr, message, exception){
+                cache_helper.check_bad_album_json(xhr, message, zz.album_id, this.url);
+            },
             success: function(json) {
 
 
@@ -532,6 +535,9 @@ zz.init = {
         $.ajax({
             dataType: 'json',
             url: zz.path_prefix + '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
+            error: function(xhr, message, exception){
+                cache_helper.check_bad_album_json(xhr, message, zz.album_id, this.url);
+            },
             success: function(json) {
 
                 json = zz.init.filterPhotosForUser(json);

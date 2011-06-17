@@ -1,0 +1,61 @@
+<html>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+    <script type="text/javascript" src="/assets/zz.js"></script>
+    <script type="text/javascript" src="/javascripts/zz/cache-helper.js"></script>
+    
+    <script>
+        var zz = {
+            path_prefix : "/service"
+        };
+
+        var ZZAt = {
+            track: function(){
+
+            }
+        };
+
+        function test_album(){
+            $.ajax({
+                url: '/sandbox/bad_json/badcache_decomp.json',
+                dataType:'json',
+                error: function(xhr, message, exception){
+                    if(cache_helper.check_bad_album_json(xhr, message, $('#album_id').val(), this.url)){
+                        alert('failed to parse: ' + this.url);
+                    }
+                },
+                success: function(json){
+
+                }
+            });
+        }
+
+        function test_homepage(){
+            $.ajax({
+                url: '/sandbox/bad_json/badcache_decomp.json',
+                dataType:'json',
+                error: function(xhr, message, exception){
+                    if(cache_helper.check_bad_homepage_json(xhr, message, $('#user_id').val(), this.url)){
+                        alert('failed to parse: ' + this.url);
+                    };
+                },
+                success: function(json){
+
+                }
+            });
+        }
+
+
+
+
+
+    </script>
+
+    <body>
+        album id: <input id="album_id" type="text"> <a href="#" onclick="test_album(); return false">test album</a>
+        <br>
+        user id:<input id="user_id" type="text"><a href="#" onclick="test_homepage(); return false">test homepage</a>
+    </body>
+
+
+</html>
