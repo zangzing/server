@@ -109,7 +109,7 @@ module Cache
 
           begin
             # compress the content once before caching: save memory and save nginx from compressing every response
-            json = checked_gzip_compress(json, 'albums.cache.corruption', "Key: #{key}, UserId: #{user_id}") if use_compression
+            json = checked_gzip_compress(json, 'homepage.cache.corruption', "Key: #{key}, UserId: #{user_id}") if use_compression
             cache.write(key, json, :expires_in => Manager::CACHE_MAX_INACTIVITY)
             cache_man.logger.info "Caching #{key}"
           rescue Exception => ex
