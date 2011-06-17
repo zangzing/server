@@ -6,9 +6,9 @@ module Cache
     class Loader
       attr_accessor :user, :user_id, :cache_man, :public, :current_versions, :user_id_to_name_map,
                     :tracker, :version_tracker, :user_last_touch_at,
-                    :my_albums, :my_albums_json,
-                    :liked_albums, :liked_albums_json,
-                    :liked_users_albums, :liked_users_albums_json
+                    :my_albums, :my_albums_json, :my_albums_json_compressed,
+                    :liked_albums, :liked_albums_json, :liked_albums_json_compressed,
+                    :liked_users_albums, :liked_users_albums_json, :liked_users_albums_json_compressed
 
 
       def initialize(cache_man, user, public)
@@ -97,7 +97,9 @@ module Cache
       def update_caches
         ver_values = []
         user_id = self.user.id
+        use_compression = ZangZingConfig.config[:memcached_gzip]
         version_tracker.each do |item|
+          did_compress = use_compression
           track_type = item[0]
           albums = item[1]
           ver = item[2]
@@ -105,16 +107,15 @@ module Cache
 
           json = JSON.fast_generate(albums)
 
-          # compress the content once before caching: save memory and save nginx from compressing every response
-          json = ActiveSupport::Gzip.compress(json) if ZangZingConfig.config[:memcached_gzip]
-
-
           begin
+            # compress the content once before caching: save memory and save nginx from compressing every response
+            json = checked_gzip_compress(json, 'albums.cache.corruption', "Key: #{key}, UserId: #{user_id}") if use_compression
             cache.write(key, json, :expires_in => Manager::CACHE_MAX_INACTIVITY)
             cache_man.logger.info "Caching #{key}"
           rescue Exception => ex
             # log the message but continue
-            cache_man.logger.error "Failed to cache #{key} due to #{ex.message}"
+            did_compress = false
+            cache_man.logger.error "Failed to cache: #{key} due to #{ex.message}"
           end
 
           ver_values << [user_id, track_type, ver, user_last_touch_at]
@@ -123,10 +124,13 @@ module Cache
           case track_type
             when TrackTypes::MY_ALBUMS, TrackTypes::MY_ALBUMS_PUBLIC
               self.my_albums_json = json
+              self.my_albums_json_compressed = did_compress
             when TrackTypes::LIKED_ALBUMS, TrackTypes::LIKED_ALBUMS_PUBLIC
               self.liked_albums_json = json
+              self.liked_albums_json_compressed = did_compress
             when TrackTypes::LIKED_USERS_ALBUMS_PUBLIC
               self.liked_users_albums_json = json
+              self.liked_users_albums_json_compressed = did_compress
           end
         end
         version_tracker.clear
@@ -313,6 +317,7 @@ module Cache
 
       # get albums from the cache or load from db if out of date
       def fetch_my_albums_json()
+        self.my_albums_json_compressed = ZangZingConfig.config[:memcached_gzip]
         load_my_albums()
         # now update the cache state in the cache db
         update_cache_state(false)
@@ -322,6 +327,7 @@ module Cache
       end
 
       def fetch_liked_albums_json()
+        self.liked_albums_json_compressed = ZangZingConfig.config[:memcached_gzip]
         load_liked_albums()
         # now update the cache state in the cache db
         update_cache_state(false)
@@ -331,6 +337,7 @@ module Cache
       end
 
       def fetch_liked_users_albums_json()
+        self.liked_users_albums_json_compressed = ZangZingConfig.config[:memcached_gzip]
         load_liked_users_albums()
         # now update the cache state in the cache db
         update_cache_state(false)
