@@ -101,7 +101,7 @@ class SharesController < ApplicationController
     elsif params[:album_id]
       album = Album.find(params[:album_id])
       shareable_url = album_pretty_url(album)
-      message = "Check out #{album.user.posessive_name} #{album.name} on @ZangZing"
+      message = "Check out #{album.user.posessive_name} #{album.name} Album on @ZangZing"
       zza.track_event('album.share.twitter')
     elsif params[:photo_id]
       photo = Photo.find(params[:photo_id])
