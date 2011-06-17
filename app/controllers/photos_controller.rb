@@ -238,7 +238,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
 
         begin
           #compress the content once before caching: save memory and save nginx from compressing every response
-          json = checked_gzip_compress(json, 'photos.cache.corruption', "Key: #{cache_key}, AlbumId: #{@album.id}, UserId: #{@album.user_id}") if gzip_compress
+          json = checked_gzip_compress(json, 'album.cache.corruption', "Key: #{cache_key}, AlbumId: #{@album.id}, UserId: #{@album.user_id}") if gzip_compress
           Rails.cache.write(cache_key, json, :expires_in => 72.hours)
           compressed = gzip_compress
           logger.debug 'caching photos_json: ' + cache_key
