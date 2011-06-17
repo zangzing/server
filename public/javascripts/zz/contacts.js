@@ -187,9 +187,15 @@ zzcontacts ={
 
     init_contact_button: function(b){
         var service = b.attr('data-service');
-        if( service === 'local' && $.client.os === 'Mac' ){
-            b.find('span').html( '<div class="off"></div>Mac Address Book');
+        if( service === 'local'){
+            if($.client.os === 'Mac' ){
+                b.find('span').html( '<div class="off"></div>Mac Address Book');
+            }
+            else{
+                b.find('span').html( '<div class="off"></div>Outlook Address Book');
+            }
         }
+        
         if( zzcontacts.is_service_linked(service)){
             b.find('div').removeClass('off sync error').addClass('on');
             b.attr( 'title', 'Last import on:'+zzcontacts.data[service].last_import);
