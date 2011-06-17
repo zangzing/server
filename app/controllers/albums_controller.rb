@@ -112,7 +112,7 @@ class AlbumsController < ApplicationController
                   :photo => @album.cover ? @album.cover.thumb_url : nil
                },
                :twitter => {
-                   :message => "Check out #{@album.user.posessive_name} #{@album.name} on @ZangZing #{bitly_url(album_pretty_url(@album))}"
+                   :message => "Check out #{@album.user.posessive_name} #{@album.name} Album on @ZangZing #{bitly_url(album_pretty_url(@album))}"
                }
             }
         }

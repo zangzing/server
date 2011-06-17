@@ -140,6 +140,9 @@ zzcontacts ={
     },
 
     _import_local_contacts: function( import_success, import_failure ){
+        var dialog = zz_dialog.show_progress_dialog("Importing contacts...");
+
+
         agent.getStatus(function(status){
             if( status == agent.STATUS.READY){
                 var url = agent.buildAgentUrl('/contacts/import');
@@ -149,14 +152,18 @@ zzcontacts ={
                         zzcontacts.data['local'] = {};
                         zzcontacts.data['local'].contacts    = response.body;
                         zzcontacts.data['local'].last_import = 'A moment ago.'; //+new Date();
+                        dialog.close();
                         if( $.isFunction( import_success) )  import_success();
                     },
                     error: function( options, textStatus ){
                         if( $.isFunction( import_failure) ) import_failure('agent', textStatus);
+                        dialog.close();
                     }
                 });
             }
             else{
+                dialog.close();
+
                 pages.download_agent.dialog( function(){
                     agent.getStatus(function(status){
                         if(status == agent.STATUS.READY){
@@ -180,9 +187,15 @@ zzcontacts ={
 
     init_contact_button: function(b){
         var service = b.attr('data-service');
-        if( service === 'local' && $.client.os === 'Mac' ){
-            b.find('span').html( '<div class="off"></div>Mac Address Book');
+        if( service === 'local'){
+            if($.client.os === 'Mac' ){
+                b.find('span').html( '<div class="off"></div>Mac Address Book');
+            }
+            else{
+                b.find('span').html( '<div class="off"></div>Outlook Address Book');
+            }
         }
+        
         if( zzcontacts.is_service_linked(service)){
             b.find('div').removeClass('off sync error').addClass('on');
             b.attr( 'title', 'Last import on:'+zzcontacts.data[service].last_import);
