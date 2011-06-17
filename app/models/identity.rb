@@ -56,7 +56,7 @@ class Identity < ActiveRecord::Base
     :shutterfly => {:name => 'Shutterfly', :icon => ''},
     :kodak => {:name => 'Kodak Gallery', :icon => ''},
     :local => {:name => 'ZangZing Local Contacts', :icon => ''},
-    :mslive => {:name => 'Windows Live ID', :icon => ''}
+    :mslive => {:name => 'Hotmail', :icon => ''}
   }
 
   def name
