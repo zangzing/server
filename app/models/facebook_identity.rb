@@ -39,7 +39,11 @@ class FacebookIdentity < Identity
        when Like::USER, 'user'
         user        = User.find( like.subject_id )
         name        = user.username
-        picture     = user.profile_album.cover.thumb_url
+        if user.profile_album.cover
+          picture     = user.profile_album.cover.thumb_url
+        else
+          picture     = "http://#{Server::Application.config.application_host}/images/default_profile.png"
+        end
       else
         post( like.url, message)  #generic post
         return
