@@ -118,20 +118,16 @@
             //scroll to bottom of list.
             $(token_list).scrollTop(1000);
 
-            // don't worry about dropdown hint and token limits - jeremy
-
-            //if(settings.tokenLimit == null || settings.tokenLimit != token_count){
-            //   show_dropdown_hint();
-            //} else {
-            //   show_dropdown_token_limit_warning();
-            //}
+            if(settings.tokenLimit == null || settings.tokenLimit != token_count){
+               show_dropdown_hint();
+            } else {
+               show_dropdown_token_limit_warning();
+            }
          })
-         // don't use .blur because it prevents you from using mouse on drop-down menu - jeremuy
-         //
-         //.blur(function(){
-         //   if(settings.allowNewValues) create_new_token();
-         //   hide_dropdown();
-         //})
+         .blur(function(){
+            if(settings.allowNewValues) create_new_token();
+            hide_dropdown();
+         })
          .keydown(function(event){
             var previous_token;
             var next_token;
