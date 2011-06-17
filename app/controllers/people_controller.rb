@@ -5,22 +5,21 @@ class PeopleController < ApplicationController
   # This is the people view for an album
   # @album is set by the require_album before_filter
   def album_index
-    #An Array of users that are contributors including the album creator
-    @contributors = []
 
-    #List of email contributors that have not contributed yet
-    @nonuser_contributors = 0
-    @album.contributors.each do | id |
-      user = User.find_by_id( id )
-      if user
-       @contributors << user
-      else
-       @nonuser_contributors +=1
-      end
+    # collect everone who has contributed
+    # includes the case where non-"contributors" contribute to
+    # open album
+    @contributors = []
+    @album.upload_batches.each do |batch|
+       @contributors << batch.user
     end
-    #an array  of users that have not contributed photos yet
+    @contributors.uniq!
+
+
+    # an array  of users that have not contributed photos yet
     @inactive_contributors = []
-    # An array of the users who like this album
+
+    # an array of the users who like this album
     @likers = @album.likers | @album.users_who_like_albums_photos
   end
 
