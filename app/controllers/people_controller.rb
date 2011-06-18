@@ -6,10 +6,20 @@ class PeopleController < ApplicationController
   # @album is set by the require_album before_filter
   def album_index
 
+
+    @contributors = []
+
+    # collect all invited contributors
+    @album.contributors.each do | id |
+      user = User.find_by_id( id )
+      if user
+       @contributors << user
+      end
+    end
+
     # collect everone who has contributed
     # includes the case where non-"contributors" contribute to
     # open album
-    @contributors = []
     @album.upload_batches.each do |batch|
        @contributors << batch.user
     end
