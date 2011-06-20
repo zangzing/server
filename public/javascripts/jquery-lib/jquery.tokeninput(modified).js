@@ -198,10 +198,10 @@
                case KEY.TAB:
                    if(selected_dropdown_item){
                       add_token($(selected_dropdown_item));
-                      return false;
-                   }
-                    else{
-                       return true;
+                      return true;
+                   }else if(settings.allowNewValues) {
+                      create_new_token();
+                      return true;
                    }
                case KEY.RETURN:
                case KEY.COMMA:

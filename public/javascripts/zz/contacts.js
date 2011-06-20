@@ -26,6 +26,7 @@ var contact_list = {
         $(list_element).tokenInput( zzcontacts.find, {
             allowNewValues: true,
             hintText: "Enter email address",
+            searchDelay: 0,
             validate: function(value){
                 return self.EMAIL_REGEX_SHORT.test(value) || self.EMAIL_REGEX_LONG.test(value);
             },
