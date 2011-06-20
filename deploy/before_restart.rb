@@ -30,7 +30,7 @@ end
 # We only need to run on one instance, so use the app_master or solo - they are mutually
 # exclusive
 if ['solo', 'app_master'].include?(node["instance_role"])
-  run "rails runner -e #{environment()} HomepageManager.deploy_homepage_current_tag_async"
+  run "bundle exec rails runner -e #{environment()} HomepageManager.deploy_homepage_current_tag_async"
 end
 
 
