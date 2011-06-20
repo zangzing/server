@@ -143,7 +143,7 @@ div.token-input-dropdown-facebook {
 div.token-input-dropdown-facebook p {
     margin: 0;
     padding: 5px;
-    font-weight: bold;
+    font-weight: normal;
     color: #777;
 }
 
