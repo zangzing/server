@@ -32,7 +32,8 @@
          dataType: "json",
          queryParam: "q",
          onResult: null,
-         hideEntered: true
+         hideEntered: true,
+         validate: null
       }, options);
 
       settings.prePopulate = $.extend({
@@ -443,6 +444,16 @@
             "id": id,
             "name": value
          });
+
+
+
+         // make sure value is valid
+         if(settings.validate){
+             if(!settings.validate(id)){
+                this_token.addClass('error');
+             }
+         }
+
 
          return this_token;
       }

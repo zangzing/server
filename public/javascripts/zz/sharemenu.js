@@ -64,23 +64,8 @@ var sharemenu = {
                 });
 
 
-                $("#contact-list").tokenInput( zzcontacts.find, {
-                    allowNewValues: true,
-                    hintText: '',
-                    classes: {
-                        tokenList: "token-input-list-facebook",
-                        token: "token-input-token-facebook",
-                        tokenDelete: "token-input-delete-token-facebook",
-                        selectedToken: "token-input-selected-token-facebook",
-                        highlightedToken: "token-input-highlighted-token-facebook",
-                        dropdown: "token-input-dropdown-facebook",
-                        dropdownItem: "token-input-dropdown-item-facebook",
-                        dropdownItem2: "token-input-dropdown-item2-facebook",
-                        selectedDropdownItem: "token-input-selected-dropdown-item-facebook",
-                        inputToken: "token-input-input-token-facebook"
-                    }
-                });
-                zzcontacts.init( zz.current_user_id );
+                contact_list.create(zz.current_user_id, $('#contact-list'), $('.contacts-btn'));
+
                 zz.wizard.resize_scroll_body();
 
                 $('#new_email_share').validate({
@@ -102,6 +87,10 @@ var sharemenu = {
                 });
 
                 $('#mail-submit').click(function(){
+                    if(contact_list.has_errors()){
+                       alert('Please correct the highlighted addresses.');
+                       return;
+                    }
                     $('form#new_email_share').submit();
                 });
 

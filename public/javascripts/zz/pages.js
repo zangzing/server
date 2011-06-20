@@ -545,6 +545,12 @@ pages.group_tab = {
 
                     content.find('.submit-button').click(function(){
 
+                        if(contact_list.has_errors()){
+                           alert('Please correct the highlighted addresses.');
+                           return;
+                        }
+
+
                         var emails = $('.contact-list').val().split(',');
                         var data = {
                             message: content.find('textarea.message').val(),

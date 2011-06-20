@@ -2,13 +2,27 @@
  2011 Copyright ZangZing LLC.
  */
 
+
+// global/singleton 'widget' for managing auto-complete
+// should refactor into a proper widget at some point
 var contact_list = {
+    EMAIL_REGEX: /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/,
+
+
     create: function(user_id, list_element, import_buttons){
+        var self = this;
+        
         zzcontacts.init(user_id);
+
+
+
 
         $(list_element).tokenInput( zzcontacts.find, {
             allowNewValues: true,
             hintText: "Enter email address",
+            validate: function(value){
+                return self.EMAIL_REGEX.test(value);
+            },
             classes: {
                 tokenList: "token-input-list-facebook",
                 token: "token-input-token-facebook",
@@ -22,7 +36,13 @@ var contact_list = {
                 inputToken: "token-input-input-token-facebook"
             }
         });
+    },
+
+    has_errors: function(){
+        return $('li.token-input-token-facebook.error').length > 0
     }
+
+
 };
 
 
