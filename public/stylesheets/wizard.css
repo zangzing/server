@@ -547,6 +547,11 @@ table#email-share-form .contact-list-wrapper{
     border: solid 1px #AFAFAF;
 }
 
+table#email-share-form .contact-list-wrapper div.token-input-dropdown-facebook{
+    width:690px;
+    margin-left:-1px;
+}
+
 
 table#email-share-form td.message{
     vertical-align:top;

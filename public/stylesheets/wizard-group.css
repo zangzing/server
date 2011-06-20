@@ -617,6 +617,14 @@
     -moz-border-radius: 3px;
 }
 
+
+.add-people-dialog div.token-input-dropdown-facebook{
+    width:708px;
+}
+
+
+
+
 .add-people-dialog .message{
     position:absolute;
     left: 20px;
