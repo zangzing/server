@@ -44,20 +44,6 @@ zz.init = {
               settings.data += (settings.data ? "&" : "") + "authenticity_token=" + encodeURIComponent(zz.rails_authenticity_token);
         });
 
-
-
-        //tooltips
-        $('<span class="tooltip">&nbsp;</span>').appendTo('body');
-        $(".has-tooltip").each(function(index){
-            $(this).tooltip({
-                tip: '.tooltip',
-                effect: 'fade',
-                fadeOutSpeed: 100,
-                predelay: 100,
-                offset: [$(this).height() * .5, $(this).width() * .75]
-            });
-        });
-
         /* Click Handlers    ----------------------------------------------------------------------- */
         //join banner
         $('#join-banner #close-button').click(function(){
