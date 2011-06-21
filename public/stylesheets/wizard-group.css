@@ -181,7 +181,7 @@
     position: relative;
     margin-top:6px;
     font-size:14px;
-    height:90px;
+    height:110px;
 }
 
 .group-editor .add-people-section .add-people-button{
@@ -221,7 +221,6 @@
     position: absolute;
     left: 172px;
     top: 15px;
-    display:none;
 }
 
 .group-editor .add-people-section .stream-to-email input{
@@ -244,7 +243,6 @@
     position: absolute;
     top: 81px;
     left: 20px;
-    display:none;
 }
 
 .group-editor .add-people-section .who-can-download select{
@@ -288,8 +286,6 @@
     position: absolute;
     left: 172px;
     top: 10px;
-    display:none;
-
 }
 
 .group-editor .share-section .stream-to-facebook input{
@@ -319,8 +315,6 @@
     position: absolute;
     left: 172px;
     top: 70px;
-    display:none;
-    
 }
 
 .group-editor .share-section .stream-to-twitter input{
