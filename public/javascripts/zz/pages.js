@@ -277,9 +277,17 @@ pages.group_tab = {
                                  '<div class="create-group-header">Create a group and share via email</div>' +
                                  '<div class="people-list">' +
                                  '</div>' +
-                                 '<div class="add-people-section">' +
+                                 '<div class="share-button-section">' +
                                     '<div class="add-people-button create-group"></div>' +
                                     '<div class="stream-to-email"><input type="checkbox">Automatically email the group about new photos</div>' +
+                                     '<div class="facebook-button"></div>' +
+                                     '<div class="stream-to-facebook"><input type="checkbox">Automatically post new photos to Facebook</div>' +
+                                     '<div class="twitter-button"></div>' +
+                                     '<div class="stream-to-twitter"><input type="checkbox">Automatically tweet new photos</div>' +
+                                 '</div>' +
+                                 '<div class="divider-line"></div>' +
+                                 '<div class="settings-header">Settings</div>' +
+                                 '<div class="settings-section">' +
                                     '<div class="who-can-upload">' +
                                         '<select>' +
                                             '<option value="everyone">Everyone</option>' +
@@ -295,15 +303,6 @@ pages.group_tab = {
                                         '</select>' +
                                         '<span>can download full resolution photos</span>' +
                                     '</div>' +
-
-                                 '</div>' +
-                                 '<div class="divider-line"></div>' +
-                                 '<div class="share-header">Share</div>' +
-                                 '<div class="share-section">' +
-                                     '<div class="facebook-button"></div>' +
-                                     '<div class="stream-to-facebook"><input type="checkbox">Automatically post new photos to Facebook</div>' +
-                                     '<div class="twitter-button"></div>' +
-                                     '<div class="stream-to-twitter"><input type="checkbox">Automatically tweet new photos</div>' +
                                  '</div>' +
                               '</div>' +
                             '</div>',

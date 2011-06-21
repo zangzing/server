@@ -177,14 +177,14 @@
 
 
 
-.group-editor .add-people-section{
+.group-editor .share-button-section{
     position: relative;
     margin-top:6px;
     font-size:14px;
-    height:110px;
+    height:150px;
 }
 
-.group-editor .add-people-section .add-people-button{
+.group-editor .share-button-section .add-people-button{
     position:absolute;
     left:20px;
     width: 137px;
@@ -194,132 +194,149 @@
     cursor: pointer;
 }
 
-.group-editor .add-people-section .add-people-button:hover{
+.group-editor .share-button-section .add-people-button:hover{
     background: url('/images/groups/add-people-button.png') no-repeat 0px -39px;
 }
 
-.group-editor .add-people-section .add-people-button:active{
+.group-editor .share-button-section .add-people-button:active{
     background: url('/images/groups/add-people-button.png') no-repeat 0px -78px;
 }
 
-.group-editor .add-people-section .add-people-button.create-group{
+.group-editor .share-button-section .add-people-button.create-group{
     background: url('/images/groups/add-group-button.png') no-repeat 0px 0px;
 }
 
-.group-editor .add-people-section .add-people-button.create-group:hover{
+.group-editor .share-button-section .add-people-button.create-group:hover{
     background: url('/images/groups/add-group-button.png') no-repeat 0px -39px;
 }
 
-.group-editor .add-people-section .add-people-button.create-group:active{
+.group-editor .share-button-section .add-people-button.create-group:active{
     background: url('/images/groups/add-group-button.png') no-repeat 0px -78px;
 }
 
 
 
 
-.group-editor .add-people-section .stream-to-email{
+.group-editor .stream-to-email{
     position: absolute;
     left: 172px;
     top: 15px;
 }
 
-.group-editor .add-people-section .stream-to-email input{
+.group-editor .stream-to-email input{
     margin-right: 8px;
 }
 
-.group-editor .add-people-section .who-can-upload{
+.group-editor .facebook-button{
+    position:absolute;
+    left:20px;
+    width: 137px;
+    height: 39px;
+    top:50px;
+    background: url('/images/groups/facebook-share-button.png') no-repeat 0px 0px;
+    cursor: pointer;
+}
+
+.group-editor .facebook-button:hover{
+    background: url('/images/groups/facebook-share-button.png') no-repeat 0px -39px;
+}
+
+.group-editor .facebook-button:active{
+    background: url('/images/groups/facebook-share-button.png') no-repeat 0px -78px;
+}
+
+.group-editor .stream-to-facebook{
     position: absolute;
-    top: 55px;
-    left: 20px;
+    left: 172px;
+    top: 62px;
 }
 
-.group-editor .add-people-section .who-can-upload select{
-    width: 136px;
-    margin-right: 15px;
+.group-editor .stream-to-facebook input{
+    margin-right: 8px;
 }
 
 
-.group-editor .add-people-section .who-can-download{
+.group-editor .twitter-button{
+    position:absolute;
+    left:20px;
+    width: 137px;
+    height: 39px;
+    top:100px;
+    background: url('/images/groups/twitter-share-button.png') no-repeat 0px 0px;
+    cursor: pointer;
+}
+
+.group-editor .twitter-button:hover{
+    background: url('/images/groups/twitter-share-button.png') no-repeat 0px -39px;
+}
+
+.group-editor .twitter-button:active{
+    background: url('/images/groups/twitter-share-button.png') no-repeat 0px -78px;
+}
+
+.group-editor .stream-to-twitter{
     position: absolute;
-    top: 81px;
-    left: 20px;
+    left: 172px;
+    top: 112px;
 }
 
-.group-editor .add-people-section .who-can-download select{
-    width: 136px;
-    margin-right: 15px;
+.group-editor .stream-to-twitter input{
+    margin-right: 8px;
 }
 
-.group-editor .share-header{
+
+
+
+
+.group-editor .settings-header{
     text-align: left;
     margin-left: 20px;
     margin-top: 15px;
     font-size: 19px;
 }
 
-.group-editor .share-section{
+.group-editor .settings-section{
     position: relative;
     margin-top:10px;
     font-size:14px;
     height:110px;
 }
 
-.group-editor .share-section .facebook-button{
-    position:absolute;
-    left:20px;
-    width: 137px;
-    height: 39px;
-    top:0px;
-    background: url('/images/groups/facebook-share-button.png') no-repeat 0px 0px;
-    cursor: pointer;
-}
 
-.group-editor .share-section .facebook-button:hover{
-    background: url('/images/groups/facebook-share-button.png') no-repeat 0px -39px;
-}
 
-.group-editor .share-section .facebook-button:active{
-    background: url('/images/groups/facebook-share-button.png') no-repeat 0px -78px;
-}
-
-.group-editor .share-section .stream-to-facebook{
+.group-editor .who-can-upload{
     position: absolute;
-    left: 172px;
-    top: 10px;
+    top: 0px;
+    left: 20px;
 }
 
-.group-editor .share-section .stream-to-facebook input{
-    margin-right: 8px;
+.group-editor .who-can-upload select{
+    width: 136px;
+    margin-right: 15px;
 }
 
 
-.group-editor .share-section .twitter-button{
-    position:absolute;
-    left:20px;
-    width: 137px;
-    height: 39px;
-    top:60px;
-    background: url('/images/groups/twitter-share-button.png') no-repeat 0px 0px;
-    cursor: pointer;
-}
-
-.group-editor .share-section .twitter-button:hover{
-    background: url('/images/groups/twitter-share-button.png') no-repeat 0px -39px;
-}
-
-.group-editor .share-section .twitter-button:active{
-    background: url('/images/groups/twitter-share-button.png') no-repeat 0px -78px;
-}
-
-.group-editor .share-section .stream-to-twitter{
+.group-editor .who-can-download{
     position: absolute;
-    left: 172px;
-    top: 70px;
+    top: 31px;
+    left: 20px;
 }
 
-.group-editor .share-section .stream-to-twitter input{
-    margin-right: 8px;
+.group-editor .who-can-download select{
+    width: 136px;
+    margin-right: 15px;
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
