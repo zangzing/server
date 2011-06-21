@@ -81,6 +81,7 @@ div.zzlike-count.empty{
 }
 .zzlike-follow.thumbup  {     background: url("/images/embed/toolbars/btn-header-follow.png") 0 0; }
 .zzlike-follow.thumbdown{     background: url("/images/embed/toolbars/btn-header-follow.png") 0  -40px; }
+.zzlike-follow.thumbdown:hover{     background: url("/images/embed/toolbars/btn-header-follow.png") 0  -60px; }
 .zzlike-follow.thumbup:hover{ background: url("/images/embed/toolbars/btn-header-follow.png") 0 -20px;  }
 
 /*.zzlike-follow.thumbdown:hover{ background-position: 0     }*/
