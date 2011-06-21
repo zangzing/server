@@ -166,7 +166,7 @@ zz.init = {
         });
 
 
-        $('#footer #new-album-button').click(function() {
+        $('#footer #new-album-button, #inline-new-album-button').click(function() {
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
             }

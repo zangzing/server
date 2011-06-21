@@ -6,7 +6,7 @@
 
 
   <% if current_user %>
-      <div id="new-album-button" class="has-tooltip" title="Create New Album"><div class='footer-button-label'>Create</div></div>
+      <div id="new-album-button" class="has-tooltip" title="Create New Album"><div class='footer-button-label'>New</div></div>
   <% end %>
 
   <% if @album && current_user && (@album.user == current_user)%>
