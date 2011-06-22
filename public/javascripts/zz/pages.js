@@ -369,6 +369,9 @@ pages.group_tab = {
     init: function(container, callback){
         var self = this;
 
+        ZZAt.track('album.group_tab.view');
+
+
 
         var check_empty_list = function(){
             if(container.find('.people-list .person').length == 0){

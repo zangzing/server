@@ -27,3 +27,8 @@
 }
 
 
+#inline-new-album-button{
+    position: absolute;
+    top: 26px;
+    left: 140px;
+}
