@@ -153,7 +153,7 @@
 
             //profile photo picker
             var profile_album_id = '<%= @user.profile_album.id.to_s %>';
-            profile_pictures.init_profile_pictures();
+            profile_pictures.init_profile_pictures($('.profile-picture'));
 
 
             var load_profile_photos = function(callback){
@@ -190,7 +190,7 @@
                                 $('#user_profile_picture img').attr('data-src', photo.src)
                                 $('#profile-photo-id').val(photo.id);
                             }
-                            profile_pictures.init_profile_pictures();
+                            profile_pictures.init_profile_pictures($('.profile-picture'));
 
 
 

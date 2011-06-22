@@ -415,7 +415,7 @@ class AlbumsController < ApplicationController
     @album.contributors( true ).each do |id|
       user = User.find_by_id( id )
       if user
-        group << { :id => id, :name => user.formatted_email, :permission => "contributor" }
+        group << { :id => id, :name => user.formatted_email, :permission => "contributor", :profile_photo_url => user.profile_photo_url }
       else
         contact = current_user.contacts.find_by_address( id )
         if contact
@@ -431,7 +431,7 @@ class AlbumsController < ApplicationController
     @album.viewers( true ).each do |id|
       user = User.find_by_id( id )
       if user
-        group << { :id => id, :name => user.formatted_email, :permission => "viewer" }
+        group << { :id => id, :name => user.formatted_email, :permission => "viewer", :profile_photo_url => user.profile_photo_url }
       else
         contact = current_user.contacts.find_by_address( id )
         if contact

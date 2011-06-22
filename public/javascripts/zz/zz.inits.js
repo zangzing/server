@@ -247,7 +247,7 @@ zz.init = {
             zz.init.preload_rollover_images();
         }, 500);
 
-        profile_pictures.init_profile_pictures();
+        profile_pictures.init_profile_pictures($('.profile-picture'));
     },
 
     show_welcome_dialog: function(){
