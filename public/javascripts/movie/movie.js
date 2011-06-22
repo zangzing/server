@@ -1807,14 +1807,18 @@
 			if ( this.loadOriginalImages ){
 				return;
 			}
-			if (this.images[this.currentImage].error == 1) return;
 
+			if (this.images[this.currentImage].error == 1) return;
 			if(this.isIE()){
 				var cH = $(this.images[this.currentImage].cacheImage).height();
 				var cW = $(this.images[this.currentImage].cacheImage).width();
 			}else{
 				var cH = $(this.images[this.currentImage].cacheImage).attr('height');
 				var cW = $(this.images[this.currentImage].cacheImage).attr('width');
+				if(cH == 0 && cW == 0){
+					var cH = $(this.images[this.currentImage].cacheImage).height();
+					var cW = $(this.images[this.currentImage].cacheImage).width();
+				}
 			}
 			if ( cH<=this.imgMaxHeight && cW<=this.imgMaxWidth) return;
 			var canvasProp = this.imgMaxWidth/this.imgMaxHeight;
