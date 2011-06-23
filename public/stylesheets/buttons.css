@@ -6,7 +6,8 @@ a.green-add-button,
 a.green-download-button,
 a.newgreen-button,
 a.newblack-button,
-a.gray-button{
+a.gray-button,
+a.gray-square-button{
     border: 0;
     margin: 0;
     display: block;
@@ -27,7 +28,8 @@ a.green-add-button span,
 a.green-download-button span,
 a.newgreen-button span,
 a.newblack-button span,
-a.gray-button span{
+a.gray-button span,
+a.gray-square-button span{
     display:block;
     line-height:30px;
     height:30px;
@@ -201,3 +203,23 @@ a.gray-button span{
 }
 a.gray-button:hover  span{ background-position: left -30px; }
 a.gray-button:active span{ background-position: left -60px; }
+
+
+
+/* gray-square-button
+*************************************************************/
+a.gray-square-button{
+    display: inline-block;
+    color:       gray;
+    padding-right:  10px;
+    background: url("/images/btn-gray-square-endcap.png") no-repeat right top;
+}
+a.gray-square-button:hover {  background-position: right -30px; }
+a.gray-square-button:active{  background-position: right -60px; }
+
+a.gray-square-button span{
+    padding-left:  10px;
+    background:  transparent url('/images/btn-gray-square.png') no-repeat left top;
+}
+a.gray-square-button:hover  span{ background-position: left -30px; }
+a.gray-square-button:active span{ background-position: left -60px; }

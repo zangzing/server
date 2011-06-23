@@ -354,10 +354,10 @@ pages.group_tab = {
                                     '<div class="header">' +
                                         '<div class="title">Add people to your group</div>' +
                                         '<div class="import"><span>Import from </span>' +
-                                            '<a data-service="google" class="gray-button contacts-btn"><span><div class="off"></div>Google</span></a>' +
-                                            '<a data-service="local" class="gray-button contacts-btn"><span><div class="off"></div>Local</span></a>' +
-                                            '<a data-service="yahoo" class="gray-button contacts-btn"><span><div class="off"></div>Yahoo</span></a>' +
-                                            '<a data-service="mslive" class="gray-button contacts-btn"><span><div class="off"></div>Hotmail</span></a>' +
+                                            '<a data-service="google" class="gray-square-button contacts-btn"><span><div class="off"></div>Google</span></a>' +
+                                            '<a data-service="local" class="gray-square-button contacts-btn"><span><div class="off"></div>Local</span></a>' +
+                                            '<a data-service="yahoo" class="gray-square-button contacts-btn"><span><div class="off"></div>Yahoo</span></a>' +
+                                            '<a data-service="mslive" class="gray-square-button contacts-btn"><span><div class="off"></div>Hotmail</span></a>' +
                                         '</div>' +
                                     '</div>' +
                                     '<div class="to"><input class="contact-list"></div>' +
