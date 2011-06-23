@@ -293,7 +293,7 @@ pages.group_tab = {
                                             '<option value="everyone">Everyone</option>' +
                                             '<option value="contributors">Contributors</option>' +
                                         '</select>' +
-                                        '<span>can upload photos</span>' +
+                                        '<span>can add photos</span>' +
                                     '</div>' +
                                     '<div class="who-can-download">' +
                                         '<select>' +
