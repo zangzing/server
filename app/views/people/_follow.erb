@@ -1,19 +1,19 @@
-<div  class="follow-info" style="display:inline-block">
+<div  class="follow-info">
   <a class="follow-piclink" href="<%=user_path(user)%>">
     <div class="follow-picture" >
       <%= render :partial => 'users/profile_photo', :locals => { :user => user }    %>
     </div>
   </a>
-   <div class="follow-name">
-            <a  href="<%=user_path(user)%>" <%=( !current_user || current_user!=user ? 'class="with-follow"' : 'class="no-follow"' )%>>
-              <span class="user-name"><%=user.username%>: &nbsp;</span>
-              <span class="full-name"><%=user.name%></span>
-            </a>
+  <div class="follow-name">
+    <a  href="<%=user_path(user)%>" <%=( !current_user || current_user!=user ? 'class="with-follow"' : 'class="no-follow"' )%>>
+      <span class="user-name"><%=user.username%></span>
+      <span class="full-name"><%=user.name%></span>
+    </a>
 
-   </div>
-   <div class="follow-button">
-  <%if !current_user || current_user!=user # do not show like for self%>
-                <div class="zzlike zzlike-follow" data-zzid="<%=user.id%>" data-zztype="user" data-zzstyle="toolbar" ></div>
-  <%end%>
+    <div class="follow-button">
+      <%if !current_user || current_user!=user # do not show like for self%>
+          <div class="zzlike zzlike-follow" data-zzid="<%=user.id%>" data-zztype="user" data-zzstyle="toolbar" ></div>
+      <%end%>
+    </div>
   </div>
 </div>
