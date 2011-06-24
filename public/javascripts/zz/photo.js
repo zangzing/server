@@ -41,10 +41,6 @@
                     el = self.element,
                     o = self.options;
 
-            if(o.scrollContainer.data().zz_photogrid){
-                self.photoGrid = o.scrollContainer.data().zz_photogrid;
-            }
-
             //'<div class="photo-caption"></div>';
             //'<div class="photo-border">'
             //'   <img class="photo-image" src="' + path_helpers.image_url('/images/blank.png') + '">';
@@ -56,72 +52,19 @@
             //OPTIONAL'   <div class="magnify-button"></div>';
             //'</div>';
 
-            self.captionElement      = $('<div class="photo-caption">');
-            self.borderElement       = $('<div class="photo-border">');
-            self.imageElement        = $('<img class="photo-image" src="' + path_helpers.image_url('/images/blank.png') + '">')
-            self.deleteButtonElement = $('<div class="photo-delete-button">');
-            self.uploadingElement    = $('<div class="photo-uploading-icon">');
-            self.errorElement        = $('<div class="photo-error-icon">');
-            self.photoAddElement     = $('<div class="photo-add-button">');
-            self.photoMagnifyElement = $('<div class="magnify-button">');
-            self.bottomShadow        = $('<img class="bottom-shadow" src="' + path_helpers.image_url('/images/photo/bottom-full.png') + '">');
-
-            self.borderElement.append( self.imageElement )
-                    .append( self.uploadingElement )
-                    .append( self.errorElement )
-                    .append( self.bottomShadow );
-
-            // magnify and photo add for chooser
-            if(o.context.indexOf('chooser')===0 && o.type === 'photo'){
-                self.borderElement.append( self.photoAddElement )
-                .append(  self.photoMagnifyElement );
+            // Store a finished template on the global namespace and re-use for every photo.
+            if( _.isUndefined( window.photo_template) ){
+                window.caption_template = $( '<div class="photo-caption"></div>' );
+                window.photo_template  = $( '<div class="photo-border">'+
+                        '<img class="photo-image" src="' + path_helpers.image_url('/images/blank.png') + '">'+
+                        '<img class="bottom-shadow" src="' + path_helpers.image_url('/images/photo/bottom-full.png') + '">'+
+                        '</div>');
             }
 
-            // delete Button
-            if(o.allowDelete){
-                self.borderElement.append( self.deleteButtonElement )
-                self.deleteButtonElement.click(function(){
-                    self.delete_photo();
-                });
-            }
-
-            // insert elements into DOM
-            el.append( self.captionElement ).append( self.borderElement );
-
-            //caption
-            self.captionElement.text(o.caption);
-
-            //for selenium tests...
-            self.borderElement.attr('id', 'photo-border-' + (o.caption || '').replace(/[\W]+/g,'-'));
-
-            if(o.type === 'blank'){
-                self.borderElement.hide();
-                self.captionElement.hide();
-            }
-
-            if(o.context.indexOf('chooser')===0){
-                //magnify
-                self.photoMagnifyElement.click(function(event){
-                    o.onClick('magnify')
-                });
-
-                //add photo action
-                self.photoAddElement.click(function(event){
-                    o.onClick('main');
-                });
-
-                //hide drop shadow for folders and 'add all' butons
-                if(o.type !== 'photo'){
-                    self.borderElement.addClass('no-shadow');
-                }
-            }
-
-            //click
-            self.imageElement.click(function(event){
-                o.onClick('main')
-            });
-
-
+            self.captionElement      = window.caption_template.clone();
+            self.borderElement       = window.photo_template.clone();
+            self.imageElement        = self.borderElement.find('.photo-image');
+            self.bottomShadow        = self.borderElement.find('.bottom-shadow');
 
             var initialHeight;
             var initialWidth;
@@ -157,20 +100,65 @@
                 top: (self.height - borderHeight - o.captionHeight) / 2,
                 left: (self.width - borderWidth) / 2,
                 width: borderWidth,
-                height: borderHeight 
+                height: borderHeight
+            });
+
+
+            // delete Button
+            if(o.allowDelete){
+                self.deleteButtonElement = $('<div class="photo-delete-button">')
+                        .click(function(){
+                    self.delete_photo();
+                });
+                self.borderElement.append( self.deleteButtonElement );
+            }
+
+            //caption
+            self.captionElement.text(o.caption);
+
+            //for selenium tests...
+            self.borderElement.attr('id', 'photo-border-' + (o.caption || '').replace(/[\W]+/g,'-'));
+
+            if(o.type === 'blank'){
+                self.borderElement.hide();
+                self.captionElement.hide();
+            }
+
+            if(o.context.indexOf('chooser')===0){
+                //magnify
+                if( o.type === 'photo'){
+                    self.photoAddElement     = $('<div class="photo-add-button">')
+                            .click(function(event){
+                        o.onClick('main');
+                    });
+                    self.photoMagnifyElement = $('<div class="magnify-button">')
+                            .click(function(event){
+                        o.onClick('magnify')
+                    });
+                    self.borderElement.append( self.photoAddElement ) .append(  self.photoMagnifyElement );
+                } else {
+                    self.borderElement.addClass('no-shadow');
+                }
+            }
+
+            //click
+            self.imageElement.click(function(event){
+                o.onClick('main')
             });
 
             //uploading glyph
             if(o.isUploading && !o.isError){
+                self.uploadingElement    = $('<div class="photo-uploading-icon">');
+                self.borderElement.append( self.uploadingElement );
                 self.uploadingElement.show();
             }
 
             //error glyph
             if(o.isError){
+                self.errorElement = $('<div class="photo-error-icon">');
+                self.borderElement.append( self.errorElement );
                 self.errorElement.show();
             }
-
-
 
             //edit caption
             self.isEditingCaption = false;
@@ -204,16 +192,6 @@
 
             //todo: can these move to css?
             if(o.showButtonBar){
-                var toolbarTemplate = '<div class="photo-toolbar">' +
-                                          '<div class="buttons">' +
-                                              '<div class="button share-button"></div>' +
-                                              '<div class="button like-button zzlike" data-zzid="'+o.photoId+'" data-zztype="photo"><div class="zzlike-icon thumbdown"></div></div>';
-                if( o.showInfoMenu ){
-                    toolbarTemplate +=        '<div class="button info-button"></div>';
-                }
-
-                toolbarTemplate +=         '</div>' +
-                                       '</div>';
 
                 var menuOpen = false;
                 var hover = false;
@@ -233,6 +211,17 @@
 
                         //create toolbar if it does not exist
                         if( _.isUndefined( self.toolbarElement ) ){
+                            //Instantiate the toolbartemplare only when the toolbar is fist needed and not during creation
+                            var toolbarTemplate = '<div class="photo-toolbar">' +
+                                    '<div class="buttons">' +
+                                    '<div class="button share-button"></div>' +
+                                    '<div class="button like-button zzlike" data-zzid="'+o.photoId+'" data-zztype="photo"><div class="zzlike-icon thumbdown"></div></div>';
+                            if( o.showInfoMenu ){
+                                toolbarTemplate +=        '<div class="button info-button"></div>';
+                            }
+
+                            toolbarTemplate +=         '</div>' +
+                                    '</div>';
                             self.toolbarElement = $(toolbarTemplate);
                             self.borderElement.append(self.toolbarElement);
 
@@ -280,11 +269,14 @@
                     }
                 });
 
-               el.mouseleave(function(){
+                el.mouseleave(function(){
                     hover = false;
                     checkCloseToolbar();
-               });
+                });
             }
+
+            // insert elements into DOM
+            el.append(  self.captionElement ).append(self.borderElement);
         },
 
         setMenuOpen: function(open){
@@ -299,6 +291,11 @@
         //delete
         delete_photo:  function(){
             var self = this;
+
+            if(self.options.scrollContainer.data().zz_photogrid){
+                self.photoGrid = self.options.scrollContainer.data().zz_photogrid;
+            }
+
             if(confirm("Are you sure you want to delete this photo?")){
                 if(self.options.onDelete()){
                     self.captionElement.hide();
@@ -372,7 +369,7 @@
 
         _resize: function(percent){
             var self = this,
-                o = self.options;
+                    o = self.options;
 
             var scaled = image_utils.scale({width:self.imageObject.width, height:self.imageObject.height}, {width:self.options.maxWidth, height:self.options.maxHeight - o.captionHeight});
 
@@ -421,7 +418,7 @@
 
             var elementOffset = $(this.element).offset(); //todo: expensive call. cache/pass-in if possible; maybe can cache after grid resize
             var elementWidth =  this.options.maxWidth;
-            var elementHeight = this.options.maxHeight; 
+            var elementHeight = this.options.maxHeight;
 
             if (container === undefined || container === window) {
                 var foldBottom = $(window).height() + $(window).scrollTop();
@@ -457,7 +454,7 @@
                 self.captionElement.html(captionEditor);
 
                 var textBoxElement = captionEditor.find('input');
- 
+
                 var commitChanges = function(){
                     var newCaption = textBoxElement.val()
                     if(newCaption !== self.options.caption){
@@ -515,13 +512,13 @@
                     return false;
                 });
 
-                
+
             }
 
         },
 
         getPhotoId: function(){
-           return this.options.photoId;  
+            return this.options.photoId;
         },
 
         dragStart: function(){

@@ -99,14 +99,15 @@
 
 
 
-
-            $.each(o.photos, function(index, photo){
+            // This function is called below, inside a loop that regularly allows the system to
+            // process other events.
+            var create_photo =  function(index, photo){
                 var cell = template.clone();
                 cells.push(cell);
 
 
 
-                cell.appendTo(self.element)
+                cell.appendTo(self.element);
 
                 cell.zz_photo({
                     photo: photo,
@@ -235,189 +236,200 @@
                     });
                 }
 
-            });
+            };
 
-            self.resetLayout();
-
-            self.element.show();
-
-
-            this.element.children('.photogrid-cell').each(function(index, element){
-                $(element).data().zz_photo.loadIfVisible();
-            });
-
-
-
-            //handle window resize
-            var resizeTimer = null;
-            $(window).resize(function(event){
-                if(resizeTimer){
-                    clearTimeout(resizeTimer);
-                    resizeTimer = null;
-                }
-
-                resizeTimer = setTimeout(function(){
-                    self.width = parseInt(self.element.css('width'));
-                    self.height = parseInt(self.element.css('height'));
-
+            // 1.- Use native for instead of $.each for speed
+            // 2.- Add timeout every 100 photos to prevent lockout warnings
+            // 3.- Move all the grid finishing code to the the finishing condition clause so
+            //     that it is executed when all photos have been processed.
+            var create_some_photos= function( i ){
+                if( i < o.photos.length ){
+                    var batch_size = 100;
+                    for( var j =i; j < i+batch_size && j < o.photos.length; j++ ){
+                            create_photo( j, o.photos[j] );
+                    }
+                    var next_batch = function(){ create_some_photos( i+batch_size );};
+                    setTimeout( next_batch , 0 ); //A 0 timeout lets the system process any pending stuff and then this.
+                }else{
                     self.resetLayout();
 
+                    self.element.show();
+
                     self.element.children('.photogrid-cell').each(function(index, element){
-                        if(!_.isUndefined($(element).data().zz_photo)){ //todo: sometimes this is undefined -- not sure why
-                           $(element).data().zz_photo.loadIfVisible();
-                        }
+                        $(element).data().zz_photo.loadIfVisible();
                     });
 
 
-                },100);
-            });
-
-
-
-            //handle scroll
-            var scrollTimer = null;
-            self.element.scroll(function(event){
-                if(scrollTimer){
-                    clearTimeout(scrollTimer);
-                    scrollTimer = null;
-                }
-
-                scrollTimer = setTimeout(function(){
-
-                    var containerDimensions = {
-                        offset: self.element.offset(),
-                        height: self.element.height(),
-                        width: self.element.width()
-                    };
-
-                    self.element.children('.photogrid-cell').each(function(index, element){
-                        if($(element).data().zz_photo){ //not sure why this woultn't be here -- maybe if it is a scroll helper?? in any case was seeing js errors
-                            $(element).data().zz_photo.loadIfVisible(containerDimensions);
+                    //handle window resize
+                    var resizeTimer = null;
+                    $(window).resize(function(event){
+                        if(resizeTimer){
+                            clearTimeout(resizeTimer);
+                            resizeTimer = null;
                         }
+
+                        resizeTimer = setTimeout(function(){
+                            self.width = parseInt(self.element.css('width'));
+                            self.height = parseInt(self.element.css('height'));
+
+                            self.resetLayout();
+
+                            self.element.children('.photogrid-cell').each(function(index, element){
+                                if(!_.isUndefined($(element).data().zz_photo)){ //todo: sometimes this is undefined -- not sure why
+                                    $(element).data().zz_photo.loadIfVisible();
+                                }
+                            });
+
+
+                        },100);
                     });
-                },200);
-
-            });
 
 
-            //hideNativeScroller
-            if(o.hideNativeScroller){
 
-                if(o.singlePictureMode){
-                    self.thumbscrollerElement = $('<div class="photogrid-hide-native-scroller-horizontal"></div>').appendTo(self.element.parent());
-                }
-                else{
-                    self.thumbscrollerElement = $('<div class="photogrid-hide-native-scroller-vertical"></div>').appendTo(self.element.parent());
-                }
-            }
-
-            //thumbscroller
-            if(o.showThumbscroller){
-                var nativeScrollActive = false;
-
-                if(o.singlePictureMode){
-                    self.thumbscrollerElement = $('<div class="photogrid-thumbscroller-horizontal"></div>').appendTo(self.element.parent());
-                }
-                else{
-                    self.thumbscrollerElement = $('<div class="photogrid-thumbscroller-vertical"></div>').appendTo(self.element.parent());
-                }
-
-
-                //remove any 'special' photos (eg blank one used for drag and drop on edit screen
-                var photos = $.map(o.photos, function(photo, index){
-                    if(photo.type == 'blank'){
-                        return null;
-                    }
-                    else{
-                        return photo;
-                    }
-                });
-
-                self.thumbscroller = self.thumbscrollerElement.zz_thumbtray({
-                    photos:photos,
-                    srcAttribute: 'previewSrc',
-                    showSelection:false,
-                    thumbnailSize:20,
-                    showSelectedIndexIndicator:true,
-                    repaintOnResize:true,
-                    onSelectPhoto: function(index, photo){
-                        if(typeof photo != 'undefined'){
-                            if(!nativeScrollActive){
-                                self.scrollToPhoto(photo.id, 500, true);
-                            }
+                    //handle scroll
+                    var scrollTimer = null;
+                    self.element.scroll(function(event){
+                        if(scrollTimer){
+                            clearTimeout(scrollTimer);
+                            scrollTimer = null;
                         }
-                    }
-                }).data().zz_thumbtray;
 
-                self.element.scroll(function(event){
-                    if(! self.animateScrollActive){
-                        nativeScrollActive = true;
+                        scrollTimer = setTimeout(function(){
 
-                        var index;
+                            var containerDimensions = {
+                                offset: self.element.offset(),
+                                height: self.element.height(),
+                                width: self.element.width()
+                            };
+
+                            self.element.children('.photogrid-cell').each(function(index, element){
+                                if($(element).data().zz_photo){ //not sure why this woultn't be here -- maybe if it is a scroll helper?? in any case was seeing js errors
+                                    $(element).data().zz_photo.loadIfVisible(containerDimensions);
+                                }
+                            });
+                        },200);
+
+                    });
+
+
+                    //hideNativeScroller
+                    if(o.hideNativeScroller){
+
                         if(o.singlePictureMode){
-                            index = Math.floor(self.element.scrollLeft() / o.cellWidth);
+                            self.thumbscrollerElement = $('<div class="photogrid-hide-native-scroller-horizontal"></div>').appendTo(self.element.parent());
                         }
                         else{
-                            index = Math.floor(self.element.scrollTop() / o.cellHeight * self.cellsPerRow());
+                            self.thumbscrollerElement = $('<div class="photogrid-hide-native-scroller-vertical"></div>').appendTo(self.element.parent());
                         }
-                        self.thumbscroller.setSelectedIndex(index);
-                        nativeScrollActive = false;
-                    }
-                });
-            }
-
-
-            //mousewheel and keyboard for single picture
-            if(o.singlePictureMode){
-                this.element.mousewheel(function(event){
-
-                    var delta;
-
-                    if(typeof(event.wheelDelta)!== 'undefined'){
-                        delta = event.wheelDelta;
-                    }
-                    else{
-                        delta = -1 * event.detail;
                     }
 
+                    //thumbscroller
+                    if(o.showThumbscroller){
+                        var nativeScrollActive = false;
 
-                    if(delta < 0){
-                        self.nextPicture();
-                    }
-                    else{
-                        self.previousPicture();
-                    }
-
-                    return false;
-                });
+                        if(o.singlePictureMode){
+                            self.thumbscrollerElement = $('<div class="photogrid-thumbscroller-horizontal"></div>').appendTo(self.element.parent());
+                        }
+                        else{
+                            self.thumbscrollerElement = $('<div class="photogrid-thumbscroller-vertical"></div>').appendTo(self.element.parent());
+                        }
 
 
-                //capture all events
-                $(document.documentElement).keydown(function(event){
-                    if(event.keyCode === 40){
-                        //down
-                        self.nextPicture();
+                        //remove any 'special' photos (eg blank one used for drag and drop on edit screen
+                        var photos = $.map(o.photos, function(photo, index){
+                            if(photo.type == 'blank'){
+                                return null;
+                            }
+                            else{
+                                return photo;
+                            }
+                        });
+
+                        self.thumbscroller = self.thumbscrollerElement.zz_thumbtray({
+                            photos:photos,
+                            srcAttribute: 'previewSrc',
+                            showSelection:false,
+                            thumbnailSize:20,
+                            showSelectedIndexIndicator:true,
+                            repaintOnResize:true,
+                            onSelectPhoto: function(index, photo){
+                                if(typeof photo != 'undefined'){
+                                    if(!nativeScrollActive){
+                                        self.scrollToPhoto(photo.id, 500, true);
+                                    }
+                                }
+                            }
+                        }).data().zz_thumbtray;
+
+                        self.element.scroll(function(event){
+                            if(! self.animateScrollActive){
+                                nativeScrollActive = true;
+
+                                var index;
+                                if(o.singlePictureMode){
+                                    index = Math.floor(self.element.scrollLeft() / o.cellWidth);
+                                }
+                                else{
+                                    index = Math.floor(self.element.scrollTop() / o.cellHeight * self.cellsPerRow());
+                                }
+                                self.thumbscroller.setSelectedIndex(index);
+                                nativeScrollActive = false;
+                            }
+                        });
                     }
-                    else if(event.keyCode === 39){
-                        //right
-                        self.nextPicture();
-                    }
-                    else if(event.keyCode === 34){
-                        //page down
-                        self.nextPicture();
-                    }
-                    else if(event.keyCode === 38){
-                        //up
-                        self.previousPicture();
-                    }
-                    else if(event.keyCode === 37){
-                        //left
-                        self.previousPicture();
-                    }
-                    else if(event.keyCode === 33){
-                        //page up
-                        self.previousPicture();
-                    }
+
+
+                    //mousewheel and keyboard for single picture
+                    if(o.singlePictureMode){
+                        self.element.mousewheel(function(event){
+
+                            var delta;
+
+                            if(typeof(event.wheelDelta)!== 'undefined'){
+                                delta = event.wheelDelta;
+                            }
+                            else{
+                                delta = -1 * event.detail;
+                            }
+
+
+                            if(delta < 0){
+                                self.nextPicture();
+                            }
+                            else{
+                                self.previousPicture();
+                            }
+
+                            return false;
+                        });
+
+
+                        //capture all events
+                        $(document.documentElement).keydown(function(event){
+                            if(event.keyCode === 40){
+                                //down
+                                self.nextPicture();
+                            }
+                            else if(event.keyCode === 39){
+                                //right
+                                self.nextPicture();
+                            }
+                            else if(event.keyCode === 34){
+                                //page down
+                                self.nextPicture();
+                            }
+                            else if(event.keyCode === 38){
+                                //up
+                                self.previousPicture();
+                            }
+                            else if(event.keyCode === 37){
+                                //left
+                                self.previousPicture();
+                            }
+                            else if(event.keyCode === 33){
+                                //page up
+                                self.previousPicture();
+                            }
 //                    else if(event.keyCode === 32){
 //                        if(o.spaceBarTriggersClick){
 //                            var index = self.indexOfPhoto(self.currentPhotoId());
@@ -428,22 +440,26 @@
 //
 //                        }
 //                     }
-                 });
+                        });
 
-                //block events to grid
-                $(this.element).keydown(function(event){
-                    event.preventDefault()
-                });
+                        //block events to grid
+                        $(self.element).keydown(function(event){
+                            event.preventDefault()
+                        });
 
-            }
+                    }
 
 
-            
 
-                       //scroll to photo
-            if(o.currentPhotoId !== null){
-                self.scrollToPhoto(o.currentPhotoId,0, false);
-            }
+
+                    //scroll to photo
+                    if(o.currentPhotoId !== null){
+                        self.scrollToPhoto(o.currentPhotoId,0, false);
+                    }
+
+                }
+            };
+            create_some_photos(0);
 
 
         },
