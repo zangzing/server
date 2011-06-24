@@ -293,7 +293,7 @@ pages.group_tab = {
                                             '<option value="everyone">Everyone</option>' +
                                             '<option value="contributors">Contributors</option>' +
                                         '</select>' +
-                                        '<span>can upload photos</span>' +
+                                        '<span>can add photos</span>' +
                                     '</div>' +
                                     '<div class="who-can-download">' +
                                         '<select>' +
@@ -308,7 +308,9 @@ pages.group_tab = {
                             '</div>',
 
     PERSON_TEMPLATE:  '<div class="person">' +
-                                '<img class="profile" src="/images/default_profile.png">' +
+                                '<div class="profile">' +
+                                    '<img data-src="/images/default_profile.png" src="/images/default_profile.png">' +
+                                '</div>' +
                                 '<div class="name"></div>' +
                                 '<select class="permission" size="1">' +
                                     '<option value="viewer">Viewer</option>' +
@@ -352,10 +354,10 @@ pages.group_tab = {
                                     '<div class="header">' +
                                         '<div class="title">Add people to your group</div>' +
                                         '<div class="import"><span>Import from </span>' +
-                                            '<a data-service="google" class="gray-button contacts-btn"><span><div class="off"></div>Google</span></a>' +
-                                            '<a data-service="local" class="gray-button contacts-btn"><span><div class="off"></div>Local</span></a>' +
-                                            '<a data-service="yahoo" class="gray-button contacts-btn"><span><div class="off"></div>Yahoo</span></a>' +
-                                            '<a data-service="mslive" class="gray-button contacts-btn"><span><div class="off"></div>Hotmail</span></a>' +
+                                            '<a data-service="google" class="gray-square-button contacts-btn"><span><div class="off"></div>Google</span></a>' +
+                                            '<a data-service="local" class="gray-square-button contacts-btn"><span><div class="off"></div>Local</span></a>' +
+                                            '<a data-service="yahoo" class="gray-square-button contacts-btn"><span><div class="off"></div>Yahoo</span></a>' +
+                                            '<a data-service="mslive" class="gray-square-button contacts-btn"><span><div class="off"></div>Hotmail</span></a>' +
                                         '</div>' +
                                     '</div>' +
                                     '<div class="to"><input class="contact-list"></div>' +
@@ -406,9 +408,17 @@ pages.group_tab = {
                     }
                 });
 
+                // set the data-src attr which the
+                // profile picture componet will pick up
+                if(person['profile_photo_url']){
+                    element.find('.profile img').attr('data-src', person['profile_photo_url']);
+                }
+
                 container.find('.people-list').append(element);
 
             });
+
+            profile_pictures.init_profile_pictures(container.find('.profile'));
 
             check_empty_list();
 

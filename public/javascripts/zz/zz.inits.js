@@ -166,7 +166,8 @@ zz.init = {
         });
 
 
-        $('#footer #new-album-button, #inline-new-album-button').click(function() {
+        // new album button -- buttom toolbar
+        $('#footer #new-album-button').click(function() {
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
             }
@@ -177,11 +178,28 @@ zz.init = {
 
             zz.toolbars.init_new_album();
             zz.wizard.create_group_album();
+        });
 
+        // new album buttons -- inline
+        $('#inline-new-album-button').click(function() {
+            if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
+                return;
+            }
+            ZZAt.track('button.createalbum-top.click');
+
+            zz.init.disable_buttons();
+            $('#footer #new-album-button').removeClass('disabled').addClass('selected');
+
+            zz.toolbars.init_new_album();
+            zz.wizard.create_group_album();
         });
 
 
-        //only album contributers can do this
+
+
+
+
+        // only album contributers can do this
         $('#footer #add-photos-button').click(function() {
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
@@ -247,7 +265,7 @@ zz.init = {
             zz.init.preload_rollover_images();
         }, 500);
 
-        profile_pictures.init_profile_pictures();
+        profile_pictures.init_profile_pictures($('.profile-picture'));
     },
 
     show_welcome_dialog: function(){

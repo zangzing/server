@@ -134,12 +134,14 @@
     border-bottom: 1px solid #D5D5D5;
 }
 
-.group-editor .people-list .person img.profile{
+.group-editor .people-list .person .profile{
     position:absolute;
     width:20px;
     height:20px;
     top:4px;
     left:11px;
+    border: 1px solid #D5D5D5;
+    overflow:hidden;
 }
 
 .group-editor .people-list .person .name{
