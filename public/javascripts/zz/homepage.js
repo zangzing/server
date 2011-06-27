@@ -136,5 +136,9 @@ homepage = {
         call_and_merge([liked_albums_path, liked_users_albums_path], function(albums){
             render_albums($('#liked-albums'), albums);
         });
+
+
+        $('#article').touchScrollY();
+        
     }
 };

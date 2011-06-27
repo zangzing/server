@@ -21,8 +21,9 @@
     position:absolute;
     background: url("/images/embed/toolbars/bg-header-middle.png") repeat-x;
     height:59px;
-    left:173px;
-    right:174px;
+    left:172px;     /* need overlap here to prevent gaps on iOS */
+    right:173px;    /* need overlap here to prevent gaps on iOS */
+    
 }
 
 #header-right{
