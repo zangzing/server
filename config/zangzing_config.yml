@@ -22,7 +22,7 @@ common: &common
   agent_download_url_win: "http://downloads.zangzing.com/agent/win32/ZangZing-Setup-X.exe"
   agent_port: 30778
 
-  v3homepage_repo_root: "../v3deploy/v3homepage"
+  v3homepage_repo_root: "/data/v3homepage"
 
   # we seem to have a problem with corrupt gzip/memcached data so we have an option that can turn on/off
   memcached_gzip: true
@@ -60,8 +60,6 @@ photos_production:
   agent_download_url_win: "http://downloads.zangzing.com/agent/win32/ZangZing-Setup.exe"
   agent_port: 30777
 
-  v3homepage_repo_root: "/data/v3homepage"
-
 
 
 photos_staging:
@@ -69,7 +67,6 @@ photos_staging:
   reserved_names: true
   resque_zza_id: "staging.photos/svr"
   album_email_host: "staging.zangzing.com"
-  v3homepage_repo_root: "/data/v3homepage"
   requires_http_auth: false
 
 
