@@ -110,8 +110,8 @@ class FacebookIdentity < Identity
     self.facebook_graph.post( "me/feed",                                                #Where to post
                               :message     => 'New photos added to album',              #Displayed right under the user's name
                               :picture     => picture,                                  #Displayed in the body of the post
-                              :name        => album.name,                                     #Displayed as a link to link
-                              :link        => album_pretty_url(album),                  #The URL to where the name-link points to
+                              :name        => album.name,                               #Displayed as a link to link
+                              :link        => album_activities_pretty_url(album),       #The URL to where the name-link points to
                               :caption     => SystemSetting[:facebook_post_caption],    #Displayed under the name
                               :description => SystemSetting[:facebook_post_description],#Displayed under the name/link/caption combo can be multiline
                               :actions     => SystemSetting[:facebook_post_actions] )

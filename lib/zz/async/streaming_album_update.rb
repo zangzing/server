@@ -13,12 +13,14 @@ module ZZ
         end
 
 
+
+
         def self.enqueue_facebook_post( batch_id)
-          super( :facebook, batch_id)
+          self.enqueue( 'facebook', batch_id)
         end
 
         def self.enqueue_twitter_post( batch_id)
-          super( :twitter, batch_id)
+          self.enqueue( 'twitter', batch_id)
         end
 
         def self.perform( service, batch_id )
@@ -27,10 +29,10 @@ module ZZ
           user = album.user
 
           case service
-            when :twitter
+            when 'twitter'
               user.identity_for_twitter.post_streaming_album_update(batch)
 
-            when :facebook
+            when 'facebook'
               user.identity_for_facebook.post_streaming_album_update(batch)
 
           end
