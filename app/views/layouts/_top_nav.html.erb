@@ -79,7 +79,7 @@
   </div>
 <% end %>
 
-  <% if @album %>
+  <% if @album || (@user && /albums|people|activities/.match( @controller.controller_name)) %>
       <ul id="view-buttons">
           <li id="grid-view-button" class="has-tooltip" title="Grid View"></li>
           <li id="people-view-button" class="has-tooltip" title="People View"></li>

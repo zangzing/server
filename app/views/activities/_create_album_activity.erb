@@ -7,15 +7,18 @@
       </div>
     </a>
     <div class="profile-name">
-    <a href="<%=user_path(activity.user)%>"> <%=activity.user.name%> 
-    </a>
-      <%if view == 'activity' %>
-        created this album
+      <% if current_user && current_user.id == activity.user.id %>
+          <a href="<%=user_path(activity.user)%>">You</a>
       <%else%>
-        created album
-        <a href="<%=album_pretty_url(activity.subject)%>"> <%=activity.subject.name%> </a>
+          <a href="<%=user_path(activity.user)%>"> <%=activity.user.name%> </a>
+      <%end %>
+      <%if view == 'album' %>
+          created this album
+      <%else%>
+          created album
+          <a href="<%=album_pretty_url(activity.subject)%>"> <%=activity.subject.name%> </a>
       <%end%>
-     <div class="tagline"><%=time_ago_in_words(activity.created_at) %> ago</div>
+      <div class="tagline"><%=time_ago_in_words(activity.created_at) %> ago</div>
     </div>
   </div>
   <div class="content">

@@ -76,7 +76,7 @@ zz.init = {
             document.location.href = zz.path_prefix + '/';
             ZZAt.track('button.home.click');
         });
-        if(zz.rails_controller_name == 'photos'){
+        if(zz.rails_controller_name == 'photos' || zz.rails_controller_name == 'albums'){
             $('#header #view-buttons #grid-view-button').addClass('selected');
         }
         else if(zz.rails_controller_name == 'people'){
@@ -93,7 +93,12 @@ zz.init = {
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #grid-view-button').addClass('selected');
             $('#article').fadeOut(200);
-            document.location.href = zz.album_base_url + "/photos";
+            if( typeof( zz.album_base_url )!= 'undefined' ){
+                document.location.href = zz.album_base_url + "/photos";
+            } else {
+                 document.location.href = zz.displayed_user_base_url;
+            }
+
         });
 
         $('#header #view-buttons #picture-view-button').click(function() {
@@ -115,7 +120,12 @@ zz.init = {
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #people-view-button').addClass('selected');
             $('#article').fadeOut(200);
-            document.location.href = zz.album_base_url + "/people";
+            if( typeof( zz.album_base_url )!= 'undefined' ){
+                document.location.href = zz.album_base_url + "/people";
+            } else {
+                document.location.href = zz.displayed_user_base_url+ "/people";
+            }
+
         });
 
         $('#header #view-buttons #activities-view-button').click(function() {
@@ -126,7 +136,11 @@ zz.init = {
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #activities-view-button').addClass('selected');
             $('#article').fadeOut(200);
-            document.location.href = zz.album_base_url + "/activities";
+            if( typeof( zz.album_base_url )!= 'undefined' ){
+                document.location.href = zz.album_base_url + "/activities";
+            } else {
+                document.location.href = zz.displayed_user_base_url+ "/activities";
+            }
         });
 
         $('#header #help-button').click(function(event) {
@@ -259,7 +273,7 @@ zz.init = {
             }
         });
         zz.init.acct_badge();
-        zz.init.like_menu();
+        zz.init.like_button();
 
         setTimeout(function() {
             zz.init.preload_rollover_images();
@@ -661,8 +675,8 @@ zz.init = {
         });
     },
 
-//======================================= Like Menu  ==============================================
-    like_menu: function() {
+//======================================= Like Button  ==============================================
+    like_button: function() {
         zz.toolbars.build_like_button();
         like.init();
     }

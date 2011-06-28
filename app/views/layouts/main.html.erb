@@ -126,6 +126,7 @@
 
 <%  if @user   %>
       zz.displayed_user_id = '<%=  @user.id %>';
+      zz.displayed_user_base_url = '<%=escape_javascript user_path( @user )%>';
 <%  end -%>
 
 <%  if @album  -%>

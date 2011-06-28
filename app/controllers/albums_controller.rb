@@ -6,7 +6,7 @@ class AlbumsController < ApplicationController
   before_filter :require_user,              :except => [ :index, :back_to_index, :my_albums_json, :liked_albums_json, :my_albums_public_json, :liked_albums_public_json, :liked_users_public_albums_json, :invalidate_cache ]
   before_filter :require_user_json,         :only =>   [ :my_albums_json, :liked_albums_json, :invalidate_cache ]
   before_filter :require_album,             :except => [ :index, :create, :new, :my_albums_json, :liked_albums_json, :my_albums_public_json, :liked_albums_public_json, :liked_users_public_albums_json, :invalidate_cache  ]
-  before_filter :require_album_admin_role,  :only =>   [ :destroy, :edit, :update ]
+  before_filter :require_album_admin_role,  :only =>   [ :destroy, :edit, :update, :add_group_members ]
 
   # displays the "Select album type screen" used in the wizard
   def new
@@ -92,7 +92,6 @@ class AlbumsController < ApplicationController
     end
   end
 
-
   # returns JSON used to populate
   # the "Group" tab
   def edit_group
@@ -151,15 +150,13 @@ class AlbumsController < ApplicationController
       #todo: just ignore errors. might want to fix this alter
     end
 
-
     if params[:permission] == 'contributor'
       type = Share::TYPE_CONTRIBUTOR_INVITE
     else
       type = Share::TYPE_VIEWER_INVITE
     end
 
-
-    share = Share.new(:user =>         current_user,
+    Share.create!(    :user =>         current_user,
                       :subject =>     @album,
                       :subject_url => album_pretty_url(@album),
                       :service =>     Share::SERVICE_EMAIL,
@@ -167,7 +164,11 @@ class AlbumsController < ApplicationController
                       :share_type =>  type,
                       :message    =>  params[:message])
 
-    share.save!
+    if type == Share::TYPE_CONTRIBUTOR_INVITE
+       emails.each { |email| @album.add_contributor( email )}
+    else
+       emails.each { |email| @album.add_viewer( email )}
+    end
 
     render :json => get_group_members
   end
@@ -175,11 +176,6 @@ class AlbumsController < ApplicationController
   def group_members
     render :json => get_group_members
   end
-
-
-
-
-
 
 # This is effectively the users homepage
   def index

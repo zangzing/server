@@ -8,7 +8,9 @@
     </a>
     <div class="profile-name">
     <a href="<%=user_path(activity.user)%>"><%=activity.user.name%> </a>
-    added <%=( (i = activity.upload_batch.photos.length) > 1 ? "#{i} photos" : "1 photo")%>
+    added <%=pluralize( i = activity.upload_batch.photos.length, "photo" )%>
+    <% if view != 'album' %>
+    <%end %>
     <div class="tagline"><%=time_ago_in_words(activity.created_at) %> ago</div>
     </div>
   </div>

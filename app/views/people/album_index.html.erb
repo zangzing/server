@@ -5,17 +5,23 @@
 
 <div class="viewlist">
   <ul>
-    <li class="header bar">
-      Contributors
-    </li>
+
+
+    <% @header_added = false %>
     <%@contributors.each do | user | %>
         <%if (photo_count = @album.photos.find_all_by_user_id(user.id).length) > 0%>
-               <%=render :partial => 'contributor', :locals => { :user => user, :photo_count => photo_count }%>
-           <%else
+            <%unless @header_added %>
+                <li class="header bar">
+                  Contributors
+                </li>
+                <% @header_added = true %>
+            <%end%>
+            <%=render :partial => 'contributor', :locals => { :user => user, :photo_count => photo_count }%>
+  <%else
                @inactive_contributors << user
         end%>
     <%end%>
-
+    
     <% if @likers.length > 0 %>
         <li class="header bar">
             People Who Like This Album

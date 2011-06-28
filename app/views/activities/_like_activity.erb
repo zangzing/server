@@ -1,41 +1,50 @@
-<li class="item tab add">
-  <a name="<%=activity.id%>"></a>
-  <div class="title">
-    <a href="<%=user_path(activity.user)%>">
-      <div class="profile-photo">
-        <%= render :partial => 'users/profile_photo', :locals => { :user => activity.user }    %>
-      </div>
-    </a>
-    <div class="profile-name">
-    <a href="<%=user_path(activity.user)%>"><%=activity.user.name%></a>
-      
-      <%if activity.like.subject.is_a?(Photo) %>
-          <%if view== 'activity' %>
-            liked <a href="<%=photo_pretty_url(activity.like.subject)%>"> this photo </a>
-          <%else %>
-              liked <a href="<%=photo_pretty_url(activity.like.subject)%>"> this photo </a>
-              <span class="tagline"> by <a href="<%=user_pretty_url(activity.like.subject.user)%>"> <%=activity.like.subject.user.name%></a></span>
-          <%end %>
-      <%elsif activity.like.subject.is_a?(Album) %>
-          <%if view == 'activity' %>
-              liked this album
-          <%else%>
-              liked album <a href="<%=album_pretty_url(activity.like.subject)%>"> <%=activity.like.subject.name%> </a>
-              <span class="tagline"> by <a href="<%=user_pretty_url(activity.like.subject.user)%>"> <%=activity.like.subject.user.name%></a></span>
-          <%end%>
-      <%elsif activity.like.subject.is_a?(User) %>
-        started following
-        <a href="<%=user_pretty_url(activity.like.subject)%>">
-            <%=activity.like.subject.name%>
+   <li class="item tab add">
+      <a name="<%=activity.id%>"></a>
+      <div class="title">
+        <a href="<%=user_path(activity.like.user)%>">
+          <div class="profile-photo">
+            <%= render :partial => 'users/profile_photo', :locals => { :user => activity.like.user }    %>
+          </div>
         </a>
+        <div class="profile-name">
+          <% if current_user && current_user.id == activity.like.user.id %>
+              <a href="<%=user_path(activity.like.user)%>">You</a>
+          <% else %>
+              <a href="<%=user_path(activity.like.user)%>"><%=activity.like.user.name%></a>
+          <% end %>
+          
+          <%if activity.like.subject.is_a?(Photo) %>
+              <%if view== 'album' %>
+                  liked <a href="<%=photo_pretty_url(activity.like.subject)%>"> this photo </a>
+              <%else %>
+                  liked <a href="<%=photo_pretty_url(activity.like.subject)%>"> this photo </a>
+                  <span class="tagline"> by <a href="<%=user_pretty_url(activity.like.subject.user)%>"> <%=activity.like.subject.user.name%></a></span>
+              <%end %>
+          <%elsif activity.like.subject.is_a?(Album)%>
+              <%if view == 'album' %>
+                  liked this album
+              <%else%>
+                  liked album <a href="<%=album_pretty_url(activity.like.subject)%>"> <%=activity.like.subject.name%> </a>
+                  <span class="tagline"> by <a href="<%=user_pretty_url(activity.like.subject.user)%>"> <%=activity.like.subject.user.name%></a></span>
+              <%end%>
+          <%elsif activity.like.subject.is_a?(User) %>
+              started following
+              <a href="<%=user_pretty_url(activity.like.subject)%>">
+                <% if current_user && current_user.id == activity.like.subject.id %>
+                    You
+                <% else %>
+                    <%=activity.like.subject.name%>
+                <% end %>
+              </a>
+          <%end%>
+          <div class="tagline"><%=time_ago_in_words(activity.created_at) %> ago</div>
+        </div>
+      </div>
+      <%if view == 'album' %>
+          <div class="content">
+            <%if activity.like.subject.is_a?(Photo) %>
+                <div class="timeline-grid" data-photo-id="<%=activity.like.subject.id%>"></div>
+            <%end%>
+          </div>
       <%end%>
-      <div class="tagline"><%=time_ago_in_words(activity.created_at) %> ago</div>
-    </div>
-  </div>
-
-  <div class="content">
-    <%if activity.like.subject.is_a?(Photo) %>
-        <div class="timeline-grid" data-photo-id="<%=activity.like.subject.id%>"></div>
-    <%end%>
-  </div>
-</li>
+    </li>

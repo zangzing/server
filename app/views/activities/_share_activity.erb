@@ -7,9 +7,15 @@
       </div>
     </a>
     <div class="profile-name">
-    <a href="<%=user_path(activity.user)%>"> <%=activity.user.name%> </a>
+    <a href="<%=user_path(activity.user)%>">
+       <% if current_user && current_user.id == activity.user.id %>
+        You
+      <%else%>
+       <%=activity.user.name%>
+      <%end%>
+       </a>
       
-      <%if view == 'activity' %>
+      <%if view == 'album' %>
           <% if activity.share.album? %>
               shared this album
           <% elsif activity.share.photo? %>

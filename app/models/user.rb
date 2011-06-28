@@ -17,7 +17,6 @@ class User < ActiveRecord::Base
   #things I like, join with likes table
   has_many :likes
   has_many :liked_albums,         :through => :likes, :class_name => "Album", :source => :subject,  :conditions => "likes.subject_type = 'A'"
-#  has_many :liked_public_albums,  :through => :likes, :class_name => "Album", :source => :subject,  :conditions => "likes.subject_type = 'A' AND albums.completed_batch_count > 0 AND albums.privacy = 'public'"
   has_many :liked_users,          :through => :likes, :class_name => "User",  :source => :subject,  :conditions => { 'likes.subject_type' => 'U'}
   has_many :liked_photos,         :through => :likes, :class_name => "Photo", :source => :subject,  :conditions => { 'likes.subject_type' => 'P'}
 
@@ -29,7 +28,7 @@ class User < ActiveRecord::Base
       'AND l.subject_type = "U" AND a.privacy = "public" AND a.completed_batch_count > 0 AND a.type <> "ProfileAlbum" ' +
       'ORDER BY a.updated_at DESC'
 
-  # pull in all public albums for the users this user likes
+
   has_many :liked_users_activities,   :class_name => "Activity", :finder_sql =>
       'SELECT a.* ' +
       'FROM activities a, likes l, users u ' +
@@ -331,9 +330,35 @@ class User < ActiveRecord::Base
   # (runs as an after_create callback)
   def update_acls_with_id
     ACLManager.global_replace_user_key( self.email, self.id )
-
     # set proper acl rights - new users default to regular user rights
     SystemRightsACL.singleton.add_user(self.id, SystemRightsACL::USER_ROLE)
+
+    # Look for invitation activities that may need to be created and updated
+    #now that we have a user for an email
+    user_album_acls =  AlbumACL.get_all_acls_for_user( self.id )
+    user_album_acls.each do | acl |
+      album = Album.find_by_id( acl.acl_id )
+      if album
+        activities = InviteActivity.where( "subject_id = ? AND subject_type = 'Album' AND payload LIKE ?", album.id, '%'+self.email+'%' )
+        activities.each do |activity|
+          new_activity                    = activity.clone()
+          new_activity.user               = self
+          new_activity.subject            = self
+          new_activity.invited_user_id    = self.id
+          new_activity.invited_user_email = nil
+          new_activity.save
+
+          #update exisitng activity with user_id
+          activity.invited_user_id = self.id
+          activity.invited_user_email = nil
+          activity.save
+
+          #backdate new activity created_at date
+          new_activity.created_at = activity.created_at
+          new_activity.save
+        end
+      end
+    end
   end
 
   # returns an array of auto like ids

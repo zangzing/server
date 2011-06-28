@@ -23,9 +23,11 @@ class Activity < ActiveRecord::Base
     @@_model_name ||= ActiveModel::Name.new(Activity)
   end
 
-
   def payload_valid?
     raise NotImplementedError.new("Activity sub-classes must implement a payload_valid? method to verify that their subject still exists")
   end
 
+  def display_for?( current_user )
+    raise NotImplementedError.new("Activity sub-classes must implement a display_for? method to verify that they can be displayed to the current user")
+  end
 end
