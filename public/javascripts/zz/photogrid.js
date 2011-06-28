@@ -63,6 +63,9 @@
                     'overflow-y':'auto',
                     'overflow-x':'hidden'
                 });
+
+                self.element.touchScrollY();
+
             }
 
 

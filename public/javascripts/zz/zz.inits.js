@@ -266,6 +266,9 @@ zz.init = {
         }, 500);
 
         profile_pictures.init_profile_pictures($('.profile-picture'));
+
+
+        mobile.lock_page_scroll();
     },
 
     show_welcome_dialog: function(){
@@ -535,6 +538,7 @@ zz.init = {
 
         this.init_back_button(zz.back_to_home_page_caption, zz.back_to_home_page_url);
 
+        $('#article').touchScrollY();
 
         $.ajax({
             dataType: 'json',

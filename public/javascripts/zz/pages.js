@@ -420,6 +420,8 @@ pages.group_tab = {
 
             profile_pictures.init_profile_pictures(container.find('.profile'));
 
+            $('.people-list').touchScrollY();
+
             check_empty_list();
 
         };
