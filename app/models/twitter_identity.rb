@@ -43,9 +43,9 @@ class TwitterIdentity < Identity
 
     link = bitly_url(album_activities_pretty_url(album))
 
-    message = "#{user.name} added #{photos.count} #{(photos.count > 1 ? 'photos':'photo')} to #{album.name} @ZangZing"
+    message = "#{user.name} added #{photos.count} #{(photos.count > 1 ? 'photos':'photo')} to #{album.name} #{link} @ZangZing"
 
-    self.post(link, message)
+    self.post('', message)
 
   end
 end
