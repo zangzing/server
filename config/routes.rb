@@ -9,7 +9,7 @@ Server::Application.routes.draw do
   get    '/beta'               => 'pages#home'
   get    '/service'            => 'pages#home',          :as => :service
   get    '/signin'             => 'user_sessions#new',   :as => :signin
-  get    '/join'               => 'users#join',           :as => :join
+  get    '/join'               => 'users#join',          :as => :join
   get    '/unsubscribe/:id'    => 'subscriptions#unsubscribe', :as => :unsubscribe
 
   # the whole site has /service in front of it except for users
@@ -159,7 +159,6 @@ Server::Application.routes.draw do
     post '/user_sessions/create'       => 'user_sessions#create',          :as => :create_user_session, :requirements => {:protocol => 'https'}
     
     match '/signin'                    => 'user_sessions#new'
-    match '/join'                      => 'user_sessions#join'
     match '/inactive'                  => 'user_sessions#inactive',       :as => :inactive
     match '/signout'                   => 'user_sessions#destroy',        :as => :signout
 
