@@ -11,6 +11,7 @@ class ActivitiesController < ApplicationController
 
   def user_index
     @user = User.find(params[:user_id])
+    @activities = @user.activities
   end
 
 private
