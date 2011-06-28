@@ -17,9 +17,14 @@ class Album < ActiveRecord::Base
 
   has_many :users_who_like_albums_photos, :class_name => "User", :finder_sql =>
           'SELECT u.* ' +
-          'FROM photos p, likes l, users u WHERE '+
-          'l.subject_type = "P" AND l.subject_id = p.id AND p.album_id = #{id} '+
-          'AND l.user_id = u.id ORDER BY u.first_name DESC'
+          'FROM photos p, likes l, users u '+
+          'WHERE '+
+          'l.subject_type = "P" AND '+
+          'l.subject_id = p.id AND '+
+          'p.album_id = #{id} AND '+
+          'l.user_id = u.id '+
+          'GROUP BY u.id '+
+          'ORDER BY u.first_name DESC'
 
   has_friendly_id :name, :use_slug => true, :scope => :user, :reserved_words => ["photos", "shares", 'activities', 'slides_source', 'people', 'activity'], :approximate_ascii => true
 

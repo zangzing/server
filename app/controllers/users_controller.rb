@@ -10,6 +10,9 @@ class UsersController < ApplicationController
 
   def join
     if ! current_user
+      if params[:return_to]
+        session[:return_to] = params[:return_to]
+      end
       @new_user = User.new(:email => params[:email])
       @user_session = UserSession.new
       render :layout => false
@@ -92,7 +95,7 @@ class UsersController < ApplicationController
         end
         flash[:success] = "Welcome to ZangZing!"
         @new_user.deliver_welcome!
-        session[:show_welcome_dialog] = true
+        session[:show_welcome_dialog] = true unless( session[:return_to] )
         send_zza_event_from_client('user.join')
         redirect_back_or_default user_pretty_url( @new_user )
         return

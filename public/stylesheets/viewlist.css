@@ -70,9 +70,14 @@
  width: 100%;
  padding: 7px 0 0 45px;
 }
-.viewlist .item.tab.add{   background: url('/images/tab-activity-add.png')   no-repeat scroll  0 0; }
-.viewlist .item.tab.like{  background: url('/images/tab-activity-like.png')  no-repeat scroll  0 0; }
-.viewlist .item.tab.share{ background: url('/images/tab-activity-share.png') no-repeat scroll  0 0; }
+
+.viewlist .item.tab.add    { background: url('/images/tab-activity-add.png')    no-repeat scroll  0 0; }
+.viewlist .item.tab.follow { background: url('/images/tab-activity-follow.png') no-repeat scroll  0 0; }
+.viewlist .item.tab.like   { background: url('/images/tab-activity-like.png')   no-repeat scroll  0 0; }
+.viewlist .item.tab.share  { background: url('/images/tab-activity-share.png')  no-repeat scroll  0 0; }
+
+
+
 
 .viewlist .tab-centered{
     margin:13px 0;
@@ -164,7 +169,7 @@
 
 #you{
  margin: 30px 0px 20px 50px;
- width: 35%;
+ width: 100%;
 }
 
 #you .follow-picture{

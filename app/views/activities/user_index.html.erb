@@ -9,7 +9,7 @@
         Activities
       </div>
     </li>
-    <% @user.activities.each do |activity| %>
+    <% @activities.each do |activity| %>
         <%next unless activity.payload_valid? && activity.display_for?(current_user)%>
         <%case activity %>
         <%  when CreateAlbumActivity then%>
