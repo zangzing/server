@@ -330,9 +330,9 @@ pages.group_tab = {
                                     '<div class="description"></div>'+
                                 '</div>' +
                                 '<div class="footer">' +
-                                    '<div class="stream-to-facebook">' +
-                                        '<input type="checkbox">Automatically post new photos to Facebook' +
-                                    '</div>' +
+//                                    '<div class="stream-to-facebook">' +
+//                                        '<input type="checkbox">Automatically post new photos to Facebook' +
+//                                    '</div>' +
                                     '<div class="submit-button"></div>' +
                                     '<div class="cancel-button"></div>' +
                                 '</div>' +
@@ -342,9 +342,9 @@ pages.group_tab = {
                                 '<div class="header"></div>' +
                                 '<div class="share-with-followers">Share with your followers</div>' +
                                 '<textarea class="message"></textarea>' +
-                                '<div class="stream-to-twitter">' +
-                                    '<input type="checkbox">Automatically tweet new photos' +
-                                '</div>' +
+//                                '<div class="stream-to-twitter">' +
+//                                    '<input type="checkbox">Automatically tweet new photos' +
+//                                '</div>' +
 
                                 '<div class="chars-left">10</div>' +
                                 '<div class="submit-button"></div>' +
@@ -372,6 +372,8 @@ pages.group_tab = {
         var self = this;
 
         ZZAt.track('album.group_tab.view');
+
+
 
 
 
@@ -651,6 +653,9 @@ pages.group_tab = {
                         });
                         
                         update_char_left();
+
+
+                        content.find('input.stream-to-twitter').val()
 
 
                         var dialog = zz_dialog.show_dialog(content, {width:650, height:250});

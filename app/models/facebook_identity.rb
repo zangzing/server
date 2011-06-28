@@ -99,7 +99,8 @@ class FacebookIdentity < Identity
   
   def post_streaming_album_update(batch)
     album = batch.album
-
+    user = batch.user
+    photos = batch.photos
 
     if album.private?
       picture     = "http://#{Server::Application.config.application_host}/images/private_album.png"
@@ -107,8 +108,12 @@ class FacebookIdentity < Identity
       picture     = batch.photos[0].thumb_url
     end
 
+    #todo: move this to system settings
+    message = "#{user.name} added #{photos.count} #{(photos.count > 1 ? 'photos':'photo')} to #{album.name}"
+    
+
     self.facebook_graph.post( "me/feed",                                                #Where to post
-                              :message     => 'New photos added to album',              #Displayed right under the user's name
+                              :message     => message,                                  #Displayed right under the user's name
                               :picture     => picture,                                  #Displayed in the body of the post
                               :name        => album.name,                               #Displayed as a link to link
                               :link        => album_activities_pretty_url(album),       #The URL to where the name-link points to

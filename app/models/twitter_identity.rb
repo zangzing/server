@@ -37,14 +37,13 @@ class TwitterIdentity < Identity
 
   def post_streaming_album_update(batch)
     album = batch.album
+    user = batch.user
+    photos = batch.photos
+    
 
     link = bitly_url(album_activities_pretty_url(album))
 
-    if batch.photos.length == 1
-      message = "1 photo was added to #{album.name} @ZangZing"
-    else
-      message = "#{batch.photos.length} photos were added to #{album.name} @ZangZing"
-    end
+    message = "#{user.name} added #{photos.count} #{(photos.count > 1 ? 'photos':'photo')} to #{album.name} @ZangZing"
 
     self.post(link, message)
 
