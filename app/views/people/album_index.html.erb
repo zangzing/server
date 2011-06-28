@@ -35,6 +35,19 @@
         </li>
     <%end%>
 
+    <% if @photo_likers.length > 0 %>
+        <li class="header bar">
+          People Who Like Photos in This Album
+        </li>
+        <li class="item tab like">
+          <%@photo_likers.each do | user | %>
+              <div class="title">
+                <%= render :partial => 'users/stacked_badge', :locals => { :user => user }    %>
+              </div>
+          <%end%>
+        </li>
+    <%end%>
+    
     <% if @inactive_contributors.length > 0%>
         <li class="header bar">
             Invited Contributors

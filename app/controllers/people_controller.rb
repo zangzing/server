@@ -30,7 +30,8 @@ class PeopleController < ApplicationController
     @inactive_contributors = []
 
     # an array of the users who like this album
-    @likers = @album.likers | @album.users_who_like_albums_photos
+    @likers = @album.likers
+    @photo_likers = @album.users_who_like_albums_photos
   end
 
   def user_index
