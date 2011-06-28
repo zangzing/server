@@ -67,7 +67,7 @@ class FacebookIdentity < Identity
       album       = Album.find( share.subject_id )
       name        = "#{album.name} by #{album.user.username}"
       if album.private?
-        picture     = "http://#{Server::Application.config.application_host}/images/private_album.png"
+        picture     = "http://#{Server::Application.config.application_host}/images/private-album.png"
       else
         picture     = album.cover.thumb_url
       end
@@ -75,7 +75,7 @@ class FacebookIdentity < Identity
       photo       = Photo.find( share.subject_id )
       name        = "#{photo.caption} by #{photo.user.username}"
       if photo.album.private?
-        picture     = "http://#{Server::Application.config.application_host}/images/private_photo.png"
+        picture     = "http://#{Server::Application.config.application_host}/images/private-photo.png"
       else
         picture     = photo.thumb_url
       end
@@ -103,7 +103,7 @@ class FacebookIdentity < Identity
     photos = batch.photos
 
     if album.private?
-      picture     = "http://#{Server::Application.config.application_host}/images/private_album.png"
+      picture     = "http://#{Server::Application.config.application_host}/images/private-album.png"
     else
       picture     = batch.photos[0].thumb_url
     end
