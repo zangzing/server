@@ -4,6 +4,8 @@
 
 class FacebookIdentity < Identity
 
+  include PrettyUrlHelper
+
   def facebook_graph
     unless @graph
       raise InvalidToken unless self.credentials
@@ -92,4 +94,32 @@ class FacebookIdentity < Identity
                               :description => SystemSetting[:facebook_post_description],#Displayed under the name/link/caption combo can be multiline
                               :actions     => SystemSetting[:facebook_post_actions] )
   end
+
+
+  
+  def post_streaming_album_update(batch)
+    album = batch.album
+
+
+    if album.private?
+      picture     = "http://#{Server::Application.config.application_host}/images/private_album.png"
+    else
+      picture     = batch.photos[0].thumb_url
+    end
+
+    self.facebook_graph.post( "me/feed",                                                #Where to post
+                              :message     => 'New photos added to album',              #Displayed right under the user's name
+                              :picture     => picture,                                  #Displayed in the body of the post
+                              :name        => album.name,                                     #Displayed as a link to link
+                              :link        => album_pretty_url(album),                  #The URL to where the name-link points to
+                              :caption     => SystemSetting[:facebook_post_caption],    #Displayed under the name
+                              :description => SystemSetting[:facebook_post_description],#Displayed under the name/link/caption combo can be multiline
+                              :actions     => SystemSetting[:facebook_post_actions] )
+
+
+
+
+  end
+
+
 end

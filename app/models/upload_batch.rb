@@ -213,13 +213,15 @@ class UploadBatch < ActiveRecord::Base
 
 
 
-#            # streaming to email
-#            if album.stream_to_email?
-#
-#              update_notification_list = update_notification_list | album.viewers(true)
-#              update_notification_list = update_notification_list | album.contributors(true)
-#            end
-#
+            # streaming to email
+            if album.stream_to_email?
+              update_notification_list = update_notification_list | album.viewers(true)
+              update_notification_list = update_notification_list | album.contributors(true)
+            end
+
+
+
+
 #            # streaming to facebook
 #            if album.stream_to_facebook?
 #
