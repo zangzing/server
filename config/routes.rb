@@ -117,11 +117,11 @@ Server::Application.routes.draw do
 
     #activities
     get '/albums/:album_id/activities' => 'activities#album_index', :as => :album_activities
-    get '/users/:user_id/activities'   => 'activities#user_index',  :as => :user_activities
+    get '/users/:user_id/activities'   => 'activities#user_index'
 
     #people
     get '/albums/:album_id/people' => 'people#album_index',         :as => :album_people
-    get '/users/:user_id/people'   => 'people#user_index',          :as => :user_people
+    get '/users/:user_id/people'   => 'people#user_index'
 
     #contributors
     get    '/albums/:album_id/contributors/new'  => 'contributors#new',        :as => :new_album_contributor
@@ -345,12 +345,14 @@ Server::Application.routes.draw do
   get    '/:username/change_password'          => 'users#edit_password',     :as => :edit_user_password
 
 
-  get    '/:user_id'                           =>   'albums#index',               :as => :user
-  get    '/:user_id/:album_id'                 =>   'photos#index'
-  get    '/:user_id/:album_id/photos'          =>   'photos#index'
-  get    '/:user_id/:album_id/people'          =>   'people#album_index'
-  get    '/:user_id/:album_id/activities'      =>   'activities#album_index'
-  get    '/:user_id/:album_id/movie'           =>   'photos#movie'
+  get    '/:user_id'                           => 'albums#index',           :as => :user
+  get    '/:user_id/activities'                => 'activities#user_index',  :as => :user_activities
+  get    '/:user_id/people'                    => 'people#user_index',      :as => :user_people
+  get    '/:user_id/:album_id'                 => 'photos#index'
+  get    '/:user_id/:album_id/photos'          => 'photos#index'
+  get    '/:user_id/:album_id/people'          => 'people#album_index'
+  get    '/:user_id/:album_id/activities'      => 'activities#album_index'
+  get    '/:user_id/:album_id/movie'           => 'photos#movie'
 
 
 

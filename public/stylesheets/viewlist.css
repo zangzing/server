@@ -171,9 +171,16 @@
     height: 60px;
     width: 60px;
 }
-
-#you .follow-name a{
+#you .follow-name a.no-follow{
     top: 20px;
+}
+
+#you .follow-name a.with-follow{
+    top: 8px;
+}
+
+#you .follow-info .follow-button {
+    top: 18px;
 }
 
 .follow-info{

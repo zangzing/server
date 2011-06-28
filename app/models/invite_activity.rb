@@ -94,7 +94,7 @@ end
       return true  if current_user && self.album && self.album.viewer?(current_user.id)
     else
       return false unless self.invited_user_email
-      return true if self.album.admin?(current_user.id)
+      return true if current_user && self.album.admin?(current_user.id)
     end
     false
   end

@@ -5,7 +5,7 @@
     </div>
   </a>
   <div class="follow-name">
-    <a  href="<%=user_path(user)%>" <%=( !current_user || current_user!=user ? 'class="with-follow"' : 'class="no-follow"' )%>>
+    <a  href="<%=user_path(user)%>" <%=( current_user && current_user.id==user.id ? 'class=no-follow' : 'class=with-follow' )%>>
       <span class="user-name"><%=user.username%></span>
       <span class="full-name"><%=user.name%></span>
     </a>

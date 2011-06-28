@@ -2,12 +2,12 @@
     <%= render :partial => "facebook/user_opengraph_tags" %>
 <% end %>
 
-<% if current_user %>
+<% if @user %>
     <div id= "you" class="viewlist">
       <ul>
         <li class="item">
           <div class="content">
-            <%= render :partial => 'follow', :locals => { :user => current_user} %>
+            <%= render :partial => 'follow', :locals => { :user => @user} %>
           </div>
         </li>
       </ul>
@@ -19,7 +19,7 @@
     <% if @user.liked_users.count > 0 %>
         <li class="item">
           <div class="header bar">
-            Following <%=@user.liked_users.count%> People
+            Following <%=pluralize @user.liked_users.count, 'Person'%>
           </div>
         </li>
         <%@user.liked_users.each do | user | %>
@@ -36,7 +36,7 @@
     <% if @user.followers.count > 0 %>
         <li class="item">
           <div class="header bar">
-            Followed by <%=@user.followers.count%> People
+            Followed by <%=pluralize @user.followers.count, 'Person'%>
           </div>
         </li>
         <%@user.followers.each do | user | %>
