@@ -32,5 +32,18 @@ class ShareActivity < Activity
       return false
     end
   end
+
+  def display_for?( current_user )
+    if share.subject.is_a?(Photo)
+      return true if share.subject.album.public?
+      return true if current_user && share.subject.album.viewer?( current_user.id )
+    elsif share.subject.is_a?(Album)
+      return true if share.subject.public?
+      return true if current_user && share.subject.viewer?( current_user.id )
+    elsif share.subject.is_a?(User)
+      return true
+    end
+    false
+  end
 end
 

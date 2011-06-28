@@ -255,18 +255,33 @@ class Album < ActiveRecord::Base
   end
 
   def add_contributor( email)
-
      user = User.find_by_email( email )
      if user
           #if user does not have contributor role, add it
           unless acl.has_permission?( user.id, AlbumACL::CONTRIBUTOR_ROLE)
             acl.add_user user.id, AlbumACL::CONTRIBUTOR_ROLE
+            InviteActivity.create( :user => self.user,
+                                   :subject => self,
+                                   :invite_kind => InviteActivity::CONTRIBUTE,
+                                   :album_id => self.id,
+                                   :invited_user_id => user.id )
+            #reciprocal activity to go in invited_user's activity list.
+            InviteActivity.create( :user => user,
+                                   :subject => user,
+                                   :invite_kind => InviteActivity::CONTRIBUTE,
+                                   :album_id => self.id,
+                                   :invited_user_id => user.id )
           end
      else 
           # if the email does not have contributor role add it.
           unless acl.has_permission?( email, AlbumACL::CONTRIBUTOR_ROLE)
               acl.add_user email, AlbumACL::CONTRIBUTOR_ROLE
-              Guest.register( email, 'contributor' )
+              InviteActivity.create!( :user => self.user,
+                                     :subject => self,
+                                     :invite_kind => InviteActivity::CONTRIBUTE,
+                                     :album_id => self.id,
+                                     :invited_user_email => email )
+             # Guest.register( email, 'contributor' )
           end
      end
   end
@@ -274,18 +289,34 @@ class Album < ActiveRecord::Base
   # Adds the AlbumACL::VIEWER_ROLE to the user associated to this email
   # or to the email itself if there is no user yet.
   # If the email/user already has view permissions (through VIEWER or other
-  # ROLES) nothing happens
+  # ROLES) nothing happen
   def add_viewer( email )
      user = User.find_by_email( email )
      if user
           #is user does not have vie permissions, add them
           unless acl.has_permission?( user.id, AlbumACL::VIEWER_ROLE)
             acl.add_user user.id, AlbumACL::VIEWER_ROLE
+            InviteActivity.create( :user => self.user,
+                                   :subject => self,
+                                   :invite_kind => InviteActivity::VIEW,
+                                   :album_id => self.id,
+                                   :invited_user_id => user.id )
+            #reciprocal activity to go in invited_user's activity list.
+            InviteActivity.create( :user => user,
+                                   :subject => user,
+                                   :invite_kind => InviteActivity::VIEW,
+                                   :album_id => self.id,
+                                   :invited_user_id => user.id )
           end
      else
           # if the email does not have view permissions add  them
           unless acl.has_permission?( email, AlbumACL::VIEWER_ROLE)
               acl.add_user email, AlbumACL::VIEWER_ROLE
+              InviteActivity.create!( :user => self.user,
+                                     :subject => self,
+                                     :invite_kind => InviteActivity::VIEW,
+                                     :album_id => self.id,
+                                     :invited_user_email => email )
           end
      end
   end
@@ -404,6 +435,7 @@ class Album < ActiveRecord::Base
 
 private
   def make_create_album_activity
+    return if self.is_a?( ProfileAlbum )
     aca = CreateAlbumActivity.create( :user => self.user, :subject => self)
     self.activities << aca
   end

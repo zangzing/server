@@ -157,13 +157,30 @@ class Like < ActiveRecord::Base
 
   protected
   def create_like_activity
-     if self.subject_type == PHOTO
-        activity_subject = self.subject.album #boil photo activities to album
-      else
-        activity_subject = self.subject
-      end
-      la = LikeActivity.create( :user => self.user, :subject => activity_subject, :like => self )
-      activity_subject.activities << la
+    @activity_subject = nil
+    case self.subject_type
+      when PHOTO
+        @activity_subject = self.subject.album #boil photo activities to album
+        @subject_owner = self.subject.user
+      when ALBUM
+        @activity_subject = self.subject
+        @subject_owner = self.subject.user
+      when USER
+        @activity_subject = self.subject
+        @subject_owner = self.subject
+    end
+
+    # Like activities are reciprocal:
+    # - One activity is created for the subject so that it appears on the subject's activity list.
+    # - Another is created for the subject_owner so that it appears in the subject owner's activities list.
+    # Both activities point to the same like but we avoid having to do a triple join.
+    # Albums/Photos fetch their activity list using the subject_id field
+    # Users fetch their activity list by looking at the user_id field
+    LikeActivity.create( :user => self.user, :subject => @activity_subject, :like => self )
+    unless( self.user.id == @subject_owner.id )
+      # do not create a reciprocal like activity for self likes.
+      LikeActivity.create( :user => @subject_owner, :subject => @subject_owner, :like => self);
+    end
   end
 
   def set_type

@@ -259,7 +259,7 @@ zz.init = {
             }
         });
         zz.init.acct_badge();
-        zz.init.like_menu();
+        zz.init.like_button();
 
         setTimeout(function() {
             zz.init.preload_rollover_images();
@@ -657,8 +657,8 @@ zz.init = {
         });
     },
 
-//======================================= Like Menu  ==============================================
-    like_menu: function() {
+//======================================= Like Button  ==============================================
+    like_button: function() {
         zz.toolbars.build_like_button();
         like.init();
     }

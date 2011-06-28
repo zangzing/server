@@ -158,16 +158,6 @@ class Share < ActiveRecord::Base
   def after_share_album
     #if the share is attached to a batch, it will be delivered by the batch, otherwise deliver now
     ZZ::Async::DeliverShare.enqueue( self.id ) unless self.upload_batch_id
-
-    # if the owner is sharing the album, add VIEWER permsission
-    # to the recipients of this email share (if this is an email share)
-    if email? && subject.user.id == user_id
-      if self.viewer_invite?
-        recipients.each { |email| subject.add_viewer( email ) }
-      elsif self.contributor_invite?
-        recipients.each { |email| subject.add_contributor( email ) }
-      end
-    end
   end
 
   # after_create callback for photos

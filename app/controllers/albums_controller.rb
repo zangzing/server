@@ -92,7 +92,6 @@ class AlbumsController < ApplicationController
     end
   end
 
-
   # returns JSON used to populate
   # the "Group" tab
   def edit_group
@@ -158,17 +157,23 @@ class AlbumsController < ApplicationController
       type = Share::TYPE_VIEWER_INVITE
     end
 
+    # if the owner is sharing the album, add VIEWER permsission
+    # to the recipients of this email share (if this is an email share)
+    if  @album.admin?( current_user.id )
+      if type == Share::TYPE_VIEWER_INVITE
+        emails.each { |email| @album.add_viewer( email ) }
+      elsif type == Share::TYPE_CONTRIBUTOR_INVITE
+        emails.each { |email| @album.add_contributor( email ) }
+      end
+    end
 
-    share = Share.new(:user =>         current_user,
+    Share.create!(    :user =>         current_user,
                       :subject =>     @album,
                       :subject_url => album_pretty_url(@album),
                       :service =>     Share::SERVICE_EMAIL,
                       :recipients =>  emails,
                       :share_type =>  type,
                       :message    =>  params[:message])
-
-    share.save!
-
     render :json => get_group_members
   end
 

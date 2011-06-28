@@ -32,4 +32,16 @@ class LikeActivity < Activity
     end
   end
 
+  def display_for?( current_user )
+    if like.subject.is_a?(Photo)
+      return true if like.subject.album.public?
+      return true if current_user && like.subject.album.viewer?( current_user.id )
+    elsif like.subject.is_a?(Album)
+      return true if like.subject.public?
+      return true if current_user && like.subject.viewer?( current_user.id )
+    elsif like.subject.is_a?(User)
+      return true
+    end
+    false
+  end
 end

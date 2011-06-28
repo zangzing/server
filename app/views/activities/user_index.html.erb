@@ -2,46 +2,25 @@
     <%= render :partial => "facebook/user_opengraph_tags" %>
 <% end %>
 
-
-
 <div class="viewlist">
   <ul>
-    <li class="item">
-      <div class="header bar">
-        Following Users Activities
-      </div>
-    </li>
-    <% @user.liked_users_activities.each do |activity| %>
-        <%next unless activity.payload_valid?%>
-        <%case activity %>
-        <%  when UploadActivity then%>
-            <%= render :partial => 'upload_activity', :locals => {:activity => activity, :view => 'activity' } %>
-        <%  when ShareActivity then%>
-            <%= render :partial => 'share_activity', :locals => {:activity => activity, :view => 'activity' } %>
-        <%  when CreateAlbumActivity then%>
-            <%= render :partial => 'create_album_activity', :locals => {:activity => activity, :view => 'activity' } %>
-        <%  when LikeActivity then%>
-            <%= render :partial => 'like_activity', :locals => {:activity => activity, :view => 'activity' } %>
-        <%end%>
-    <%end%>
     <li class="item">
       <div class="header bar">
         Activities
       </div>
     </li>
     <% @user.activities.each do |activity| %>
-        <%next unless activity.payload_valid?%>
+        <%next unless activity.payload_valid? && activity.display_for?(current_user)%>
         <%case activity %>
-        <%  when UploadActivity then%>
-            <%= render :partial => 'upload_activity', :locals => {:activity => activity, :view => 'user' } %>
-        <%  when ShareActivity then%>
-            <%= render :partial => 'share_activity', :locals => {:activity => activity, :view => 'user' } %>
         <%  when CreateAlbumActivity then%>
             <%= render :partial => 'create_album_activity', :locals => {:activity => activity, :view => 'user' } %>
         <%  when LikeActivity then%>
             <%= render :partial => 'like_activity', :locals => {:activity => activity, :view => 'user' } %>
+        <%  when InviteActivity then%>
+            <%= render :partial => 'invite_activity', :locals => {:activity => activity, :view => 'user' } %>
+        <%else%>
+            <% #do not display any other kind of activity %>
         <%end%>
     <%end%>
   </ul>
-
-</div>    
+</div>
