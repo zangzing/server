@@ -1,4 +1,8 @@
-   <li class="item tab add">
+   <%if activity.like.subject.is_a?(User) %>
+    <li class="item tab follow">
+   <%else%>
+    <li class="item tab like">
+   <%end%>
       <a name="<%=activity.id%>"></a>
       <div class="title">
         <a href="<%=user_path(activity.like.user)%>">
