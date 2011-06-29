@@ -1,6 +1,6 @@
 var infomenu = {
 
-    template: '<ul>'+
+    owner_template: '<ul>'+
             '<li class="download"><a href="#download">Download</a></li>'+
 //           '<li class="privacy"><a href="#privacy">Privacy</a></li>'+
 //           '<li class="rotater"><a href="#rotater">Right</a></li>'+
@@ -9,7 +9,9 @@ var infomenu = {
             '<li class="delete"><a href="#deletephoto">Delete</a></li>'+
             '</ul>',
 
-
+    download_template: '<ul>'+
+                '<li class="download"><a href="#download">Download</a></li>'+
+                '</ul>',
 
     click_handler: function(event,data){
         var action  = data.action,

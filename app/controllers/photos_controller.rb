@@ -16,7 +16,7 @@ class PhotosController < ApplicationController
 
   before_filter :require_album_admin_role,                :only =>   [ :update, :position ]
   before_filter :require_photo_owner_or_album_admin_role, :only =>   [ :destroy ]
-  before_filter :require_album_contributor_role,          :only =>   [ :agent_create, :download ]
+  before_filter :require_album_contributor_role,          :only =>   [ :agent_create  ]
   before_filter :require_album_viewer_role,               :only =>   [ :index, :movie, :photos_json  ]
 
 
@@ -289,36 +289,42 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
     render :nothing => true
   end
 
-  # @photo is set by require_photo before_filter
+  # @photo and @album are  set by require_photo before_filter
   def download
-    if @photo
-      if @photo.ready?  #&& CHECK FOR PERMISSIONS HERE
-        type = @photo.image_content_type.split('/')[1]
-        extension = case( type )
-                      when 'jpg' then 'jpeg'
-                      when 'tiff' then 'tif'
-                      else type
-                    end
-        name = ( @photo.caption.nil? || @photo.caption.length <= 0 ? Time.now.strftime( '%y-%m-%d-%H-%M-%S' ): @photo.caption )
-        filename = "#{name}.#{extension}"
-        url = @photo.original_url.split('?')[0]
-
-        zza.track_event("photos.download.original")
-        Rails.logger.debug("Original download: #{ url}")
-
-        if (browser.ie? && request.headers['User-Agent'].include?('NT 5.1'))
-          # tricks to get IE to handle correctly
-#          request.headers['Cache-Control'] = 'must-revalidate, post-check=0, pre-check=0'
-           x_accel_redirect(url, :type=>"image/#{type}") and return
-         else
-          x_accel_redirect(url, :filename => filename, :type=>"image/#{type}") and return
-        end
-
-
+    unless  @album.can_user_download?( current_user )
+      flash.now[:error] = "Only Authorized Album Group Memebers can download photos"
+      if request.xhr?
+        head :status => 401
       else
-        flash[:error]="Photo has not finished Uploading"
-        head :not_found and return
+        render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
       end
+      return false
+    end
+
+    if @photo && @photo.ready?
+      type = @photo.image_content_type.split('/')[1]
+      extension = case( type )
+                    when 'jpg' then 'jpeg'
+                    when 'tiff' then 'tif'
+                    else type
+                  end
+      name = ( @photo.caption.nil? || @photo.caption.length <= 0 ? Time.now.strftime( '%y-%m-%d-%H-%M-%S' ): @photo.caption )
+      filename = "#{name}.#{extension}"
+      url = @photo.original_url.split('?')[0]
+
+      zza.track_event("photos.download.original")
+      Rails.logger.debug("Original download: #{ url}")
+
+      if (browser.ie? && request.headers['User-Agent'].include?('NT 5.1'))
+        # tricks to get IE to handle correctly
+        # request.headers['Cache-Control'] = 'must-revalidate, post-check=0, pre-check=0'
+        x_accel_redirect(url, :type=>"image/#{type}") and return
+      else
+        x_accel_redirect(url, :filename => filename, :type=>"image/#{type}") and return
+      end
+    else
+      flash[:error]="Photo has not finished Uploading"
+      head :not_found and return
     end
   end
 

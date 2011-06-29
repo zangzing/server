@@ -8,6 +8,7 @@
     $.widget( "ui.zz_photo", {
         options: {
             allowDelete: false,          //context
+            allowDownload: false,        //album model
             onDelete:jQuery.noop,        //model
             maxHeight:120,               //context
             maxWidth:120,                //context
@@ -27,7 +28,7 @@
             isUploading:false,           //model
             isError:false,               //model
             showButtonBar:false,         //model
-            showInfoMenu: false,         // show InfoMenu or not
+            infoMenuStyle: false,        // show InfoMenu or not and what style
 //            onClickShare: jQuery.noop,     //model
 //            noShadow:false,              //context / type
 //            lazyLoad:true ,              //context / type
@@ -216,7 +217,7 @@
                                     '<div class="buttons">' +
                                     '<div class="button share-button"></div>' +
                                     '<div class="button like-button zzlike" data-zzid="'+o.photoId+'" data-zztype="photo"><div class="zzlike-icon thumbdown"></div></div>';
-                            if( o.showInfoMenu ){
+                            if(  o.infoMenuStyle ){
                                 toolbarTemplate +=        '<div class="button info-button"></div>';
                             }
 
@@ -245,7 +246,18 @@
                             like.draw_tag( self.toolbarElement.find('.like-button') );
 
                             // info button
-                            if( o.showInfoMenu ){
+                            if( o.infoMenuStyle ){
+                                var menu_template = infomenu.download_template;
+                                switch( o.infoMenuStyle ){
+                                    case 'owner'   :
+                                        menu_template = infomenu.owner_template;
+                                        break;
+                                    case 'download':
+                                        menu_template = infomenu.download_template;
+                                        break;
+                                }
+
+
                                 self.toolbarElement.find('.info-button').zz_menu(
                                 {   zz_photo:          self,
                                     container:         $('#article'),
@@ -254,7 +266,7 @@
                                     style:             'auto',
                                     bind_click_open:   true,
                                     append_to_element: false, //use the el zzindex so overflow goes under bottom toolbar
-                                    menu_template:     infomenu.template,
+                                    menu_template:     menu_template,
                                     click:             infomenu.click_handler,
                                     open:  function(){ menuOpen = true; },
                                     close: function(){ menuOpen = false; checkCloseToolbar();}
