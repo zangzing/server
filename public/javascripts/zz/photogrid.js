@@ -12,6 +12,8 @@
             cellWidth: 200,               //context
             cellHeight: 200,              //context
 
+
+
             allowDelete: false,           //context
             onDelete:jQuery.noop,         //move to photo-model
 
@@ -37,6 +39,7 @@
 
             showButtonBar: false,          //model
             showInfoMenu : false,
+            infoMenuStyle: false,         //album model
 
             onClickShare: jQuery.noop
 //            spaceBarTriggersClick: true
@@ -148,7 +151,7 @@
                     context:       o.context,
                     type: _.isUndefined(photo.type) ? 'photo': photo.type,
                     showButtonBar: o.showButtonBar,
-                    showInfoMenu:  o.showInfoMenu,
+                    infoMenuStyle:  o.infoMenuStyle,
                     onClickShare:  o.onClickShare
                 });
 

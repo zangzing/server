@@ -3,7 +3,8 @@
 #
 
 class Album < ActiveRecord::Base
-  attr_accessible :name, :privacy, :cover_photo_id, :photos_last_updated_at, :updated_at, :cache_version, :stream_to_email, :stream_to_facebook, :stream_to_twitter, :who_can_download, :who_can_upload
+  attr_accessible :name, :privacy, :cover_photo_id, :photos_last_updated_at, :updated_at, :cache_version,
+                  :stream_to_email, :stream_to_facebook, :stream_to_twitter, :who_can_download, :who_can_upload
   attr_accessor :change_matters
 
   belongs_to :user
@@ -336,11 +337,15 @@ class Album < ActiveRecord::Base
   end
 
 
-  def viewer?(id)
-    if private?
-      acl.has_permission?( id, AlbumACL::VIEWER_ROLE)
+  def viewer?(id, private_only = true)
+    if( private_only )
+      if private?
+        return acl.has_permission?( id, AlbumACL::VIEWER_ROLE)
+      else
+        return true
+      end
     else
-      true
+      return acl.has_permission?( id, AlbumACL::VIEWER_ROLE)
     end
   end
 
@@ -429,12 +434,32 @@ class Album < ActiveRecord::Base
     self.privacy == 'hidden'
   end
 
+  def can_user_download?( user )
+     case who_can_download
+      when WHO_EVERYONE
+        return true
+      when WHO_OWNER
+        return true if user && admin?(user.id)
+      when WHO_VIEWERS
+        return true if user && viewer?( user.id, false) #check ACL even if it is public
+    end
+    false
+  end
+
   def make_hidden
     self.privacy = 'hidden'
   end
 
   def everyone_can_contribute?
     self.who_can_upload == WHO_EVERYONE
+  end
+
+  def to_json_lite()
+    # since the to_json method of an active record cannot take advantage of the much faster
+    # JSON.fast_generate, we pull the object apart into a hash and generate from there.
+    # In benchmarks Greg Seitz found that the generate method is 10x faster, so for instance the
+    # difference between 10000/sec and 1000/sec
+    JSON.fast_generate( self.attributes )
   end
 
 
