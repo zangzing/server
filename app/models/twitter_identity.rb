@@ -1,4 +1,6 @@
 class TwitterIdentity < Identity
+  include PrettyUrlHelper
+
   require 'connector_exceptions'
 
   DEFAULT_SHARE_MESSAGE = "Sharing some @ZangZing photos"
@@ -22,16 +24,28 @@ class TwitterIdentity < Identity
   end
 
   def post_share( share )
-     bitly = Bitly.new(BITLY_API_KEYS[:username], BITLY_API_KEYS[:api_key]).shorten( share.subject_url )
-
      # we decided to have the @ZangZing and the link as part of the message
      # if user deletes -- that's just the way it goes...
      post('', share.message )
   end
 
   def post_like( like, message )
-    bitly = Bitly.new(BITLY_API_KEYS[:username], BITLY_API_KEYS[:api_key]).shorten( like.url )
-    post( bitly.short_url, message )
+    post( bitly_url(like.url), message )
   end
 
+
+
+  def post_streaming_album_update(batch)
+    album = batch.album
+    user = batch.user
+    photos = batch.photos
+    
+
+    link = bitly_url(album_activities_pretty_url(album))
+
+    message = "#{user.name} added #{photos.count} #{(photos.count > 1 ? 'photos':'photo')} to #{album.name} #{link} @ZangZing"
+
+    self.post('', message)
+
+  end
 end

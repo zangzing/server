@@ -1,7 +1,12 @@
 class UploadBatch < ActiveRecord::Base
   attr_accessible :album_id, :custom_order, :open_activity_at, :original_batch_created_at
 
-  CLOSE_BATCH_INACTIVITY = 5.minutes
+  if Rails.env == "development"
+    CLOSE_BATCH_INACTIVITY = 1.minutes
+  else
+    CLOSE_BATCH_INACTIVITY = 5.minutes
+  end
+
   CLOSE_CALL_DEFER_TIME = 30.seconds
   FINALIZE_STALE_INACTIVITY = 1.hours
   STOP_FINALIZING_TIME = 48.hours
@@ -213,26 +218,35 @@ class UploadBatch < ActiveRecord::Base
 
 
 
-#            # streaming to email
-#            if album.stream_to_email?
-#
-#              update_notification_list = update_notification_list | album.viewers(true)
-#              update_notification_list = update_notification_list | album.contributors(true)
-#            end
-#
-#            # streaming to facebook
-#            if album.stream_to_facebook?
-#
-#            end
-#
-#            # streaming to twitter
-#            if album.stream_to_twitter?
-#
-#            end
+            # streaming to email
+            if album.stream_to_email?
+              update_notification_list = update_notification_list | album.viewers(true)
+              update_notification_list = update_notification_list | album.contributors(true)
+            end
+
+
+            # streaming to facebook
+            if album.stream_to_facebook?
+              ZZ::Async::StreamingAlbumUpdate.enqueue_facebook_post(self.id)
+            end
+
+            # streaming to twitter
+            if album.stream_to_twitter?
+              ZZ::Async::StreamingAlbumUpdate.enqueue_twitter_post(self.id)
+            end
+
+
+
+
+            # clean up any ids that are strings rather than integers and downcase to make
+            # sure they all match when we de-dup
+            # see: https://zangzing.lighthouseapp.com/projects/52486-beta/tickets/2374
+            update_notification_list = update_notification_list.map do |id|
+              id.to_s.downcase
+            end
 
             #de-dup
             update_notification_list.uniq!
-
 
             # if hidden or password album, remove all users who are not in ACL
             if album.hidden? || album.private?
