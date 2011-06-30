@@ -310,12 +310,16 @@
 
             if(confirm("Are you sure you want to delete this photo?")){
                 if(self.options.onDelete()){
-                    self.captionElement.hide();
-                    self.deleteButtonElement.hide();
+                    if( !_.isUndefined(self.captionElement )){
+                        self.captionElement.hide();
+                    }
+                    if( !_.isUndefined( self.deleteButtonElement )){
+                        self.deleteButtonElement.hide();
+                    }
                     self.borderElement.hide("scale", {}, 300, function(){
                         self.element.animate({width:0},500, function(){
                             self.element.remove();
-                            if(self.photoGrid){
+                            if(!_.isUndefined(self.photoGrid) ){
                                 self.photoGrid.resetLayout();
                             }
                         })

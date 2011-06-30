@@ -340,7 +340,9 @@ zz.init = {
     },
 
     album: function() {
-        //setup grid view
+        //
+        //  GRID VIEW
+        //
 
         var view = 'grid';
 
@@ -376,7 +378,10 @@ zz.init = {
                 }
 
 
-                if (view === 'grid') {   //grid view
+                if (view === 'grid') {
+                    //
+                    // GRID VIEW
+                    //
 
                     var gridElement = $('<div class="photogrid"></div>');
 
@@ -426,7 +431,7 @@ zz.init = {
 
                 } else {
                 //
-                // setup single picture view
+                // SINGLE PICTURE VIEW
                 //
                     //hide view selectors
                     $('#view-buttons').hide();
