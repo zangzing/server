@@ -231,20 +231,12 @@ class UploadBatch < ActiveRecord::Base
             update_notification_list &= viewers  # filters the set of items only in both lists (i.e. filters out everyone who does not show up in the acl in one fell swoop)
           end
 
-
           # never send 'album updated' email to current CONTRIBUTOR
           # current contributor gets the 'photos ready' email instead
           contributor_id = self.user.id.to_s
           update_notification_list.reject! do |id|
             id == contributor_id
           end
-
-
-          # SEND album updated email
-          update_notification_list.each do | recipient_id |
-            ZZ::Async::Email.enqueue( :album_updated, recipient_id, album.id, self.id )
-          end
-
 
           # stream to facebook
           if album.stream_to_facebook?
