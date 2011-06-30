@@ -257,8 +257,9 @@ class UploadBatch < ActiveRecord::Base
 
 
             # SEND
-            update_notification_list.each do | recipient_id |
-                ZZ::Async::Email.enqueue( :album_updated, recipient_id, album_id, self.id )
+            update_notification_list.each do | recipient_id_or_email |
+                #ZZ::Async::Email.enqueue( :album_updated, recipient_id, album_id, self.id )
+                ZZ::Async::Email.enqueue( :album_updated, contributor_id, recipient_id_or_email , album_id, self.id )
             end
          else
             Rails.logger.info "Destroying empty batch id: #{self.id}, user_id: #{self.user_id}, album_id: #{self.album_id}"
