@@ -596,8 +596,15 @@ pages.group_tab = {
                         content.find('.detail .url').text(json['share']['facebook']['url']);
                         content.find('.detail .description').text(json['share']['facebook']['description']);
 
-                        if(json['share']['facebook']['photo']){
-                            content.find('.detail .photo').attr('src', json['share']['facebook']['photo']);
+
+                        //yuck! this is why we need a model!
+                        if(container.find('.privacy-buttons .password-button').hasClass('selected')){
+                            content.find('.detail .photo').attr('src', '/images/private-album.png');
+                        }
+                        else{
+                            if(json['share']['facebook']['photo']){
+                                content.find('.detail .photo').attr('src', json['share']['facebook']['photo']);
+                            }
                         }
                         
                         content.find('textarea.message').placeholder();
