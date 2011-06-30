@@ -175,97 +175,94 @@ class UploadBatch < ActiveRecord::Base
         album.completed_batch_count += 1
         album.save
 
-         #send album shares even if there were no photos uploaded
-         shares.each { |share| share.deliver }
+        #send album shares even if there were no photos uploaded
+        shares.each { |share| share.deliver }
 
-         if @notify
-            #Create Activity
-            ua = UploadActivity.create( :user => self.user, :subject => album, :upload_batch => self )
-            album.activities << ua
+        if @notify
+          #Create Activity
+          ua = UploadActivity.create( :user => self.user, :subject => album, :upload_batch => self )
+          album.activities << ua
 
-            #Notify UPLOADER that upload batch is finished
-            ZZ::Async::Email.enqueue( :photos_ready, self.id )
-
-            # Merge Album-Likers with Contributor-follower and Album-followers
-            album_id = album.id
-            owner_id = album.user.id
-            contributor_id = self.user.id
-            update_notification_list = []
-
-            # add OWNER to list unless contributor is owner,
-            if owner_id != contributor_id
-                update_notification_list << owner_id
-            end
-
-            # add ALBUM LIKERS to list  unless liker is the owner or the current contributor
-            self.album.likers.each do |liker|
-               update_notification_list << liker.id unless ( liker.id == owner_id ) || (liker.id == contributor_id )
-            end
-
-            # add ALBUM OWNER'S FOLLOWERS to list  unless follower is the owner or the current contributor
-            self.album.user.followers.each do |follower|
-             update_notification_list << follower.id unless ( follower.id == owner_id ) || (follower.id == contributor_id )
-            end
-
-            # add CONTRIBUTOR'S FOLLOWERS  unless contributor is owner
-            # removed per request by Kathryn
-            #if contributor_id != owner_id
-            #  self.user.followers.each do |follower|
-            #    update_notification_list << follower.id unless ( follower.id == owner_id ) || (follower.id == contributor_id )
-            #  end
-            #end
+          #Notify UPLOADER that upload batch is finished
+          ZZ::Async::Email.enqueue( :photos_ready, self.id )
 
 
+          # list of user ids (as strings) and email addresses who will receive
+          # album updated email
+          update_notification_list = []
 
 
-            # streaming to email
-            if album.stream_to_email?
-              update_notification_list = update_notification_list | album.viewers(true)
-              update_notification_list = update_notification_list | album.contributors(true)
-            end
+          # add OWNER to list
+          update_notification_list << album.user.id.to_s
+
+          # add ALBUM LIKERS to list
+          album.likers.each do |liker|
+            update_notification_list << liker.id.to_s
+          end
+
+          # add ALBUM OWNER'S FOLLOWERS to list
+          album.user.followers.each do |follower|
+            update_notification_list << follower.id.to_s
+          end
+
+          # add CONTRIBUTOR'S FOLLOWERS  unless contributor is owner
+          # removed per request by Kathryn
+          #if contributor_id != owner_id
+          #  self.user.followers.each do |follower|
+          #    update_notification_list << follower.id.to_s
+          #  end
+          #end
 
 
-            # streaming to facebook
-            if album.stream_to_facebook?
-              ZZ::Async::StreamingAlbumUpdate.enqueue_facebook_post(self.id)
-            end
-
-            # streaming to twitter
-            if album.stream_to_twitter?
-              ZZ::Async::StreamingAlbumUpdate.enqueue_twitter_post(self.id)
-            end
+          # streaming to email
+          viewers = nil
+          if album.stream_to_email?
+            viewers ||= album.viewers(false)     # these are already strings, so no need to convert
+            update_notification_list |= viewers
+          end
 
 
+          #de-dup
+          update_notification_list.uniq!
+
+          # if hidden or password album, remove all users who are not in ACL
+          if album.hidden? || album.private?
+            viewers ||= album.viewers(false)     # these are already strings, so no need to convert
+            update_notification_list &= viewers  # filters the set of items only in both lists (i.e. filters out everyone who does not show up in the acl in one fell swoop)
+          end
 
 
-            # clean up any ids that are strings rather than integers and downcase to make
-            # sure they all match when we de-dup
-            # see: https://zangzing.lighthouseapp.com/projects/52486-beta/tickets/2374
-            update_notification_list = update_notification_list.map do |id|
-              id.to_s.downcase
-            end
-
-            #de-dup
-            update_notification_list.uniq!
-
-            # if hidden or password album, remove all users who are not in ACL
-            if album.hidden? || album.private?
-              update_notification_list.reject! do |id|
-                !album.acl.has_permission?( id, AlbumACL::VIEWER_ROLE)
-              end
-            end
+          # never send 'album updated' email to current CONTRIBUTOR
+          # current contributor gets the 'photos ready' email instead
+          contributor_id = self.user.id.to_s
+          update_notification_list.reject! do |id|
+            id == contributor_id
+          end
 
 
-            # SEND
-            update_notification_list.each do | recipient_id |
-                ZZ::Async::Email.enqueue( :album_updated, recipient_id, album_id, self.id )
-            end
-         else
-            Rails.logger.info "Destroying empty batch id: #{self.id}, user_id: #{self.user_id}, album_id: #{self.album_id}"
-            self.destroy #the batch has no photos, destroy it
-         end
-         # batch is done
-         return true
+          # SEND album updated email
+          update_notification_list.each do | recipient_id |
+            ZZ::Async::Email.enqueue( :album_updated, recipient_id, album.id, self.id )
+          end
+
+
+          # stream to facebook
+          if album.stream_to_facebook?
+            ZZ::Async::StreamingAlbumUpdate.enqueue_facebook_post(self.id)
+          end
+
+          # stream to twitter
+          if album.stream_to_twitter?
+            ZZ::Async::StreamingAlbumUpdate.enqueue_twitter_post(self.id)
+          end
+
+
+        else
+          Rails.logger.info "Destroying empty batch id: #{self.id}, user_id: #{self.user_id}, album_id: #{album.id}"
+          self.destroy #the batch has no photos, destroy it
+        end
+        # batch is done
+        return true
       end
     end
 
