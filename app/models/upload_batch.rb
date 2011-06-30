@@ -191,6 +191,8 @@ class UploadBatch < ActiveRecord::Base
           # album updated email
           update_notification_list = []
 
+          # list of viewers, contributors & owner
+          viewers = nil
 
           # add OWNER to list
           update_notification_list << album.user.id.to_s
@@ -200,9 +202,18 @@ class UploadBatch < ActiveRecord::Base
             update_notification_list << liker.id.to_s
           end
 
+          # if password album, remove all users who are not
+          # in ACL (these would have come from album.likers)
+          if album.private?
+            viewers ||= album.viewers(false)     # these are already strings, so no need to convert
+            update_notification_list &= viewers  # filters the set of items only in both lists (i.e. filters out everyone who does not show up in the acl in one fell swoop)
+          end
+
           # add ALBUM OWNER'S FOLLOWERS to list
-          album.user.followers.each do |follower|
-            update_notification_list << follower.id.to_s
+          if album.public?
+            album.user.followers.each do |follower|
+              update_notification_list << follower.id.to_s
+            end
           end
 
           # add CONTRIBUTOR'S FOLLOWERS  unless contributor is owner
@@ -213,9 +224,7 @@ class UploadBatch < ActiveRecord::Base
           #  end
           #end
 
-
-          # streaming to email
-          viewers = nil
+          # for streaming album always include viewers and contributors
           if album.stream_to_email?
             viewers ||= album.viewers(false)     # these are already strings, so no need to convert
             update_notification_list |= viewers
@@ -225,11 +234,6 @@ class UploadBatch < ActiveRecord::Base
           #de-dup
           update_notification_list.uniq!
 
-          # if hidden or password album, remove all users who are not in ACL
-          if album.hidden? || album.private?
-            viewers ||= album.viewers(false)     # these are already strings, so no need to convert
-            update_notification_list &= viewers  # filters the set of items only in both lists (i.e. filters out everyone who does not show up in the acl in one fell swoop)
-          end
 
           # never send 'album updated' email to current CONTRIBUTOR
           # current contributor gets the 'photos ready' email instead
@@ -237,6 +241,16 @@ class UploadBatch < ActiveRecord::Base
           update_notification_list.reject! do |id|
             id == contributor_id
           end
+
+          # SEND 'album updated' email
+          update_notification_list.each do | recipient_id_or_email |
+            #ZZ::Async::Email.enqueue( :album_updated, recipient_id, album_id, self.id )
+            ZZ::Async::Email.enqueue( :album_updated, contributor_id, recipient_id_or_email , album_id, self.id )
+          end
+
+
+
+
 
           # stream to facebook
           if album.stream_to_facebook?
@@ -248,11 +262,9 @@ class UploadBatch < ActiveRecord::Base
             ZZ::Async::StreamingAlbumUpdate.enqueue_twitter_post(self.id)
           end
 
-          # SEND
-          update_notification_list.each do | recipient_id_or_email |
-            #ZZ::Async::Email.enqueue( :album_updated, recipient_id, album_id, self.id )
-            ZZ::Async::Email.enqueue( :album_updated, contributor_id, recipient_id_or_email , album_id, self.id )
-          end
+
+
+
         else
             Rails.logger.info "Destroying empty batch id: #{self.id}, user_id: #{self.user_id}, album_id: #{self.album_id}"
             self.destroy #the batch has no photos, destroy it
