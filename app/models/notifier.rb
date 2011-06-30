@@ -1,5 +1,6 @@
 class Notifier < ActionMailer::Base
   add_template_helper(PrettyUrlHelper)
+  include PrettyUrlHelper
 
   ActionMailer::Base.logger = Rails.logger
   default :charset => "utf-8"
@@ -76,6 +77,7 @@ class Notifier < ActionMailer::Base
     @photo = Photo.find(photo_id)
     @message = message
     @recipient = User.find_by_email( to_address )
+    set_destination_link( ( @recipient? @recipient : to_address ), photo_pretty_url( @photo ) )
     Subscriptions.wants_email!( to_address, Email::INVITES, __method__ )
     create_message( binding(), __method__, template_id, ( @recipient? @recipient : to_address ), { :to => to_address })
   end
@@ -90,6 +92,7 @@ class Notifier < ActionMailer::Base
     @album = Album.find(album_id)
     @message = message
     @recipient = User.find_by_email( to_address )
+    set_destination_link( ( @recipient? @recipient : to_address ), album_pretty_url( @album ) )
     Subscriptions.wants_email!( to_address, Email::INVITES, __method__ )
     create_message( binding(), __method__, template_id, ( @recipient? @recipient : to_address ), { :user_id => @user.id } )
   end
@@ -100,6 +103,7 @@ class Notifier < ActionMailer::Base
     @recipient = User.find( recipient_id )
     @recipient.subscriptions.wants_email!( Email::SOCIAL, __method__ )
     @photos = UploadBatch.find( batch_id ).photos
+    set_destination_link( @recipient, album_pretty_url( @album ) )
     create_message( binding(), __method__, template_id, @recipient,   { :user_id => @user.id }  )
   end
 
@@ -118,7 +122,7 @@ class Notifier < ActionMailer::Base
       vc.add_email @album.short_email
     end
     attachments["#{@album.name}.vcf"] = vcard.to_s
-
+    set_destination_link( ( @recipient? @recipient : to_address ), album_pretty_url( @album ) )
     create_message( binding(), __method__, template_id, ( @recipient? @recipient : to_address ), { :user_id => @user.id })
   end
 
@@ -141,7 +145,7 @@ class Notifier < ActionMailer::Base
     logger.info "Mailed test_email: #{to}"
     mail( :to      => to,
           :subject => "Test from ZangZing #{Rails.env.capitalize} Environment") do |format|
-      format.text { render :text => "This is the message body of the test" }
+      format.text { render :inline => " <%=message.to.to_s%> This is the message body of the test" }
     end
   end
 
@@ -195,6 +199,14 @@ class Notifier < ActionMailer::Base
     end
      logger.info "MAIL SENT:  #{template_name} to: #{@to_address} triggered by "+
      "#{( @user? @user.username : 'notifications system')}"
+  end
+
+  def set_destination_link( recipient, destination_url )
+    if recipient.is_a?(User)
+      @destination_link = "#{signin_url}?return_to=#{destination_url}&email=#{recipient.email}"
+    else
+      @destination_link = "#{join_url}?return_to=#{destination_url}&email=#{recipient}"
+    end
   end
 end
 
