@@ -281,9 +281,9 @@ pages.group_tab = {
                                     '<div class="add-people-button create-group"></div>' +
                                     '<div class="stream-to-email"><input type="checkbox">Automatically email the group about new photos</div>' +
                                      '<div class="facebook-button"></div>' +
-                                     '<div class="stream-to-facebook"><input type="checkbox">Automatically post new photos to Facebook</div>' +
+                                     '<div class="stream-to-facebook"><input type="checkbox">Automatically share new photos on Facebook</div>' +
                                      '<div class="twitter-button"></div>' +
-                                     '<div class="stream-to-twitter"><input type="checkbox">Automatically tweet new photos</div>' +
+                                     '<div class="stream-to-twitter"><input type="checkbox">Automatically share new photos on Twitter</div>' +
                                  '</div>' +
                                  '<div class="divider-line"></div>' +
                                  '<div class="settings-header">Settings</div>' +
@@ -331,7 +331,7 @@ pages.group_tab = {
                                 '</div>' +
                                 '<div class="footer">' +
 //                                    '<div class="stream-to-facebook">' +
-//                                        '<input type="checkbox">Automatically post new photos to Facebook' +
+//                                        '<input type="checkbox">Automatically share new photos on Facebook' +
 //                                    '</div>' +
                                     '<div class="submit-button"></div>' +
                                     '<div class="cancel-button"></div>' +
@@ -343,7 +343,7 @@ pages.group_tab = {
                                 '<div class="share-with-followers">Share with your followers</div>' +
                                 '<textarea class="message"></textarea>' +
 //                                '<div class="stream-to-twitter">' +
-//                                    '<input type="checkbox">Automatically tweet new photos' +
+//                                    '<input type="checkbox">Automatically share new photos on Twitter' +
 //                                '</div>' +
 
                                 '<div class="chars-left">10</div>' +

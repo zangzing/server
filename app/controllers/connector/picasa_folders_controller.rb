@@ -36,7 +36,7 @@ class Connector::PicasaFoldersController < Connector::PicasaController
   def self.import_album(api, params)
     identity = params[:identity]
     doc = call_with_error_adapter do
-      Nokogiri::XML(api.get("https://picasaweb.google.com/data/feed/api/user/default/albumid/#{params[:picasa_album_id]}").body)
+      Nokogiri::XML(api.get("https://picasaweb.google.com/data/feed/api/user/default/albumid/#{params[:picasa_album_id]}?imgmax=d").body)
     end
     photos = []
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
