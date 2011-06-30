@@ -2,7 +2,7 @@ class UserSessionsController < ApplicationController
   ssl_required :new, :create
 
 
-  before_filter :require_no_user, :only => [:new, :create]
+  before_filter :only => [:new, :create]
   before_filter :require_user, :only => :destroy
 
   layout false
@@ -11,15 +11,14 @@ class UserSessionsController < ApplicationController
   def new
     if params[:return_to]
       session[:return_to] = params[:return_to]
-      redirect_to signin_url
-      return
+      #redirect_to signin_url and return
     end
 
 
     if ! current_user
       @user_session = UserSession.new(:email=> params[:email])
     else
-      redirect_to user_pretty_url(current_user)
+       redirect_back_or_default user_pretty_url(current_user)
     end
   end
 
