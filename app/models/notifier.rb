@@ -97,14 +97,14 @@ class Notifier < ActionMailer::Base
     create_message( binding(), __method__, template_id, ( @recipient? @recipient : to_address ), { :user_id => @user.id } )
   end
 
-  def album_updated( recipient_id, album_id, batch_id,  template_id = nil )
+  def album_updated( from_user_id, to_address, album_id, batch_id,  template_id = nil )
     @album     = Album.find( album_id )
-    @user      = @album.user
-    @recipient = User.find( recipient_id )
-    @recipient.subscriptions.wants_email!( Email::SOCIAL, __method__ )
+    @user      = User.find(from_user_id)
     @photos = UploadBatch.find( batch_id ).photos
-    set_destination_link( @recipient, album_pretty_url( @album ) )
-    create_message( binding(), __method__, template_id, @recipient,   { :user_id => @user.id }  )
+    @recipient = User.find_by_email( to_address )
+    set_destination_link( ( @recipient? @recipient : to_address ), album_pretty_url( @album ) )
+    Subscriptions.wants_email!( to_address, Email::INVITES, __method__ )
+    create_message( binding(), __method__, template_id, ( @recipient? @recipient : to_address ), { :user_id => @user.id } )
   end
 
   def contributor_added(album_id, to_address, message, template_id = nil )
