@@ -34,7 +34,7 @@ img {
 }
 #step2, #step3, #step4, #step5, #step6, #step7{
 	display:none;
-	overflow:hidden;
+	/*overflow:hidden;*/
 	width:760px;
 }
 .welcome h2{
