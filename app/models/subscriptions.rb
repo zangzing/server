@@ -84,7 +84,7 @@ class Subscriptions< ActiveRecord::Base
 
   def self.wants_email?( recipient,  kind, name )
     if recipient.is_a?User
-      recipient.preferences.wants_email?( kind, name  )
+      recipient.subscriptions.wants_email?( kind, name  )
     else
       Subscriptions.find_or_create_by_email( recipient ).wants_email?( kind, name )
     end
@@ -92,7 +92,7 @@ class Subscriptions< ActiveRecord::Base
 
   def self.wants_email!( recipient,  kind, name )
      if recipient.is_a?User
-       recipient.preferences.wants_email!( kind, name  )
+       recipient.subscriptions.wants_email!( kind, name  )
      else
        Subscriptions.find_or_create_by_email( recipient ).wants_email!( kind, name )
      end

@@ -10,18 +10,13 @@ class Notifier < ActionMailer::Base
     default :from => '"ZangZing '+Rails.env.capitalize+' Environment" <do-not-reply@zangzing.com>'
   end
 
-
-
   def photos_ready( batch_id, template_id = nil )
-    batch = UploadBatch.find( batch_id )
-    @user = batch.user
-    @recipient = @user
-    @album = batch.album
-    @album_url = album_url( @album )
+    batch   = UploadBatch.find( batch_id )
+    @user   = batch.user
+    @album  = batch.album
     @photos = batch.photos
-
-    @recipient.subscriptions.wants_email!( Email::STATUS, __method__ )
-
+    @recipient = @user
+    @album_url = album_pretty_url( @album )
     vcard = Vpim::Vcard::Maker.make2 do |vc|
       vc.add_name do |name|
         name.given = @album.name
@@ -31,6 +26,7 @@ class Notifier < ActionMailer::Base
     end
     attachments["#{@album.name}.vcf"] = vcard.to_s
 
+    @recipient.subscriptions.wants_email!( Email::STATUS, __method__ )
     create_message( binding(), __method__, template_id, @recipient,  { :user_id => @user.id })
   end
 
@@ -38,6 +34,7 @@ class Notifier < ActionMailer::Base
     @user = User.find(user_id)
     @recipient = @user
     @password_reset_url = edit_password_reset_url(@user.perishable_token)
+
     @recipient.subscriptions.wants_email!( Email::TRANSACTIONAL, __method__ )
     create_message( binding(), __method__, template_id, @recipient, { :user_id => @user.id } )
   end
@@ -46,6 +43,7 @@ class Notifier < ActionMailer::Base
     @user      = User.find( user_id )
     @album     = Album.find( album_id )
     @recipient = @album.user
+
     @recipient.subscriptions.wants_email!( Email::SOCIAL, __method__ )
     create_message( binding(), __method__, template_id, @recipient, { :user_id => @user.id } )
   end
@@ -62,12 +60,14 @@ class Notifier < ActionMailer::Base
   def user_liked( user_id, liked_user_id,  template_id = nil )
     @user      = User.find( user_id )
     @recipient = User.find( liked_user_id )
+
     @recipient.subscriptions.wants_email!( Email::SOCIAL, __method__ )
     create_message( binding(), __method__, template_id, @recipient, { :user_id => @user.id } )
   end
 
   def contribution_error( to_address, template_id = nil)
     @recipient = User.find_by_email( to_address )
+
     Subscriptions.wants_email!( to_address, Email::TRANSACTIONAL, __method__ )
     create_message( binding(), __method__, template_id, ( @recipient? @recipient : to_address ), { :to => to_address })
   end
@@ -76,10 +76,12 @@ class Notifier < ActionMailer::Base
     @user = User.find(from_user_id)
     @photo = Photo.find(photo_id)
     @message = message
-    @recipient = User.find_by_email( to_address )
-    set_destination_link( ( @recipient? @recipient : to_address ), photo_pretty_url( @photo ) )
+    rcp_user = User.find_by_email( to_address )
+    @recipient = ( rcp_user ? rcp_user : to_address )
+
+    set_destination_link( @recipient, photo_pretty_url( @photo ) )
     Subscriptions.wants_email!( to_address, Email::INVITES, __method__ )
-    create_message( binding(), __method__, template_id, ( @recipient? @recipient : to_address ), { :to => to_address })
+    create_message( binding(), __method__, template_id, @recipient, { :to => to_address })
   end
 
   def beta_invite(to_address,  template_id = nil)
@@ -91,29 +93,34 @@ class Notifier < ActionMailer::Base
     @user = User.find(from_user_id)
     @album = Album.find(album_id)
     @message = message
-    @recipient = User.find_by_email( to_address )
-    set_destination_link( ( @recipient? @recipient : to_address ), album_pretty_url( @album ) )
+    rcp_user = User.find_by_email( to_address )
+    @recipient = ( rcp_user ? rcp_user : to_address )
+    
+    set_destination_link(  @recipient, album_pretty_url( @album ) )
     Subscriptions.wants_email!( to_address, Email::INVITES, __method__ )
-    create_message( binding(), __method__, template_id, ( @recipient? @recipient : to_address ), { :user_id => @user.id } )
+    create_message( binding(), __method__, template_id, @recipient, { :user_id => @user.id } )
   end
 
   def album_updated( from_user_id, to_address_or_id, album_id, batch_id,  template_id = nil )
     @album     = Album.find( album_id )
     @user      = User.find( from_user_id )
     @photos = UploadBatch.find( batch_id ).photos
-    @recipient = User.find_by_id( to_address_or_id )
-    set_destination_link( ( @recipient? @recipient : to_address_or_id ), album_pretty_url( @album ) )
-    Subscriptions.wants_email!( ( @recipient? @recipient.email : to_address_or_id ), Email::SOCIAL, __method__ )
-    create_message( binding(), __method__, template_id, ( @recipient? @recipient : to_address_or_id ), { :user_id => @user.id } )
+    # if to_address_or_id is an email, we already know that the email is not a user yet.
+    rcp_user = User.find_by_id( to_address_or_id )
+    @recipient = ( rcp_user ? rcp_user : to_address_or_id )
+
+    set_destination_link( @recipient, album_pretty_url( @album ) )
+    Subscriptions.wants_email!( @recipient, Email::SOCIAL, __method__ )
+    create_message( binding(), __method__, template_id,  @recipient, { :user_id => @user.id } )
   end
 
   def contributor_added(album_id, to_address, message, template_id = nil )
     @album = Album.find(album_id)
     @user = @album.user
-    @recipient = User.find_by_email( to_address )
+    rcp_user = User.find_by_email( to_address )
+    @recipient = ( rcp_user ? rcp_user : to_address )
     @message = message
-    Subscriptions.wants_email!( to_address, Email::INVITES, __method__ )
-    
+
     vcard = Vpim::Vcard::Maker.make2 do |vc|
       vc.add_name do |name|
         name.given = @album.name
@@ -122,8 +129,10 @@ class Notifier < ActionMailer::Base
       vc.add_email @album.short_email
     end
     attachments["#{@album.name}.vcf"] = vcard.to_s
-    set_destination_link( ( @recipient? @recipient : to_address ), album_pretty_url( @album ) )
-    create_message( binding(), __method__, template_id, ( @recipient? @recipient : to_address ), { :user_id => @user.id })
+
+    set_destination_link( @recipient, album_pretty_url( @album ) )
+    Subscriptions.wants_email!( to_address, Email::INVITES, __method__ )
+    create_message( binding(), __method__, template_id, @recipient, { :user_id => @user.id })
   end
 
   def welcome(user_id, template_id = nil)
