@@ -97,14 +97,14 @@ class Notifier < ActionMailer::Base
     create_message( binding(), __method__, template_id, ( @recipient? @recipient : to_address ), { :user_id => @user.id } )
   end
 
-  def album_updated( from_user_id, to_address, album_id, batch_id,  template_id = nil )
+  def album_updated( from_user_id, to_address_or_id, album_id, batch_id,  template_id = nil )
     @album     = Album.find( album_id )
-    @user      = User.find(from_user_id)
+    @user      = User.find( from_user_id )
     @photos = UploadBatch.find( batch_id ).photos
-    @recipient = User.find_by_email( to_address )
-    set_destination_link( ( @recipient? @recipient : to_address ), album_pretty_url( @album ) )
-    Subscriptions.wants_email!( to_address, Email::INVITES, __method__ )
-    create_message( binding(), __method__, template_id, ( @recipient? @recipient : to_address ), { :user_id => @user.id } )
+    @recipient = User.find_by_id( to_address_or_id )
+    set_destination_link( ( @recipient? @recipient : to_address_or_id ), album_pretty_url( @album ) )
+    Subscriptions.wants_email!( ( @recipient? @recipient.email : to_address_or_id ), Email::SOCIAL, __method__ )
+    create_message( binding(), __method__, template_id, ( @recipient? @recipient : to_address_or_id ), { :user_id => @user.id } )
   end
 
   def contributor_added(album_id, to_address, message, template_id = nil )
@@ -203,7 +203,7 @@ class Notifier < ActionMailer::Base
 
   def set_destination_link( recipient, destination_url )
     if recipient.is_a?(User)
-      @destination_link = "#{signin_url}?return_to=#{destination_url}&email=#{recipient.email}"
+      @destination_link = "#{signin_url}?return_to=#{destination_url}&email=#{recipient.username}"
     else
       @destination_link = "#{join_url}?return_to=#{destination_url}&email=#{recipient}"
     end
