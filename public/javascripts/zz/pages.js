@@ -274,7 +274,7 @@ pages.group_tab = {
                                     '<div data-privacy="password" class="password-button"></div>' +
                                  '</div>' +
                                  '<div class="divider-line"></div>' +
-                                 '<div class="create-group-header">Create a group and share via email</div>' +
+                                 '<div class="create-group-header">Share</div>' +
                                  '<div class="people-list">' +
                                  '</div>' +
                                  '<div class="share-button-section">' +
