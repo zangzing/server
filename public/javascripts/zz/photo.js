@@ -321,6 +321,7 @@
                             self.element.remove();
                             if(!_.isUndefined(self.photoGrid) ){
                                 self.photoGrid.resetLayout();
+                                self.photoGrid.element.trigger('scroll');
                             }
                         })
                     });

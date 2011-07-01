@@ -12,8 +12,7 @@
         <%if (photo_count = @album.photos.find_all_by_user_id(user.id).length) > 0%>
             <%unless @header_added %>
                 <li class="item tab add">
-                  <div class="content">&nbsp</div>
-                  <div class="header bar">Contributors</div>
+                  <div class="bartabheader">Contributors</div>
                 </li>
                 <% @header_added = true %>
             <%end%>
@@ -25,8 +24,7 @@
     
     <% if @likers.length > 0 %>
         <li class="item tab like">
-                  <div class="content">&nbsp</div>
-                  <div class="header bar">People Who Like This Album</div>
+                  <div class="bartabheader">People Who Like This Album</div>
         </li>
         <li class="item">
             <%@likers.each do | user | %>
@@ -39,8 +37,7 @@
 
     <% if @photo_likers.length > 0 %>
         <li class="item tab like">
-                  <div class="content">&nbsp</div>
-                  <div class="header bar">People Who Like Photos in This Album</div>
+                  <div class="bartabheader">People Who Like Photos in This Album</div>
         </li>
         <li class="item">
           <%@photo_likers.each do | user | %>
@@ -53,8 +50,7 @@
     
     <% if @inactive_contributors.length > 0%>
         <li class="item tab share">
-                  <div class="content">&nbsp</div>
-                  <div class="header bar">Invited Contributors</div>
+                  <div class="bartabheader">Invited Contributors</div>
         </li>
         <li class="item tab">
             <%@inactive_contributors.each do | user | %>
