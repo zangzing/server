@@ -89,12 +89,13 @@ end
   end
 
   def display_for?( current_user )
-    if self.invited_user_id
-      return true  if self.album && self.album.public?
-      return true  if current_user && self.album && self.album.viewer?(current_user.id)
+    return false unless album
+    if album.public?
+      return true if invited_user_id
+      return true if invited_user_email && current_user && album.admin?( current_user.id )
     else
-      return false unless self.invited_user_email
-      return true if current_user && self.album.admin?(current_user.id)
+      return true if invited_user_id    && current_user &&  album.viewer_in_group?( current_user.id )
+      return true if invited_user_email && current_user &&  album.admin?( current_user.id )
     end
     false
   end
