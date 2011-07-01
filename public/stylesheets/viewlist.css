@@ -176,6 +176,12 @@
     height: 60px;
     width: 60px;
 }
+
+#you .follow-name{
+    top: 0px;
+    left: 65px;
+}
+
 #you .follow-name a.no-follow{
     top: 20px;
 }
@@ -210,6 +216,13 @@
     text-align: left;
     height: 100%;
     padding-left: 10px;
+    white-space: nowrap;
+}
+
+.follow-name{
+    position: absolute;
+    left: 45px;
+    top: 1px;
 }
 
 .follow-name a{
@@ -237,4 +250,5 @@
   margin: 50px;
   float: left;
   width: 30%;
+  white-space: nowrap;
 }
