@@ -11,8 +11,9 @@
     <%@contributors.each do | user | %>
         <%if (photo_count = @album.photos.find_all_by_user_id(user.id).length) > 0%>
             <%unless @header_added %>
-                <li class="header bar">
-                  Contributors
+                <li class="item tab add">
+                  <div class="content">&nbsp</div>
+                  <div class="header bar">Contributors</div>
                 </li>
                 <% @header_added = true %>
             <%end%>
@@ -23,10 +24,11 @@
     <%end%>
     
     <% if @likers.length > 0 %>
-        <li class="header bar">
-            People Who Like This Album
-        </li>
         <li class="item tab like">
+                  <div class="content">&nbsp</div>
+                  <div class="header bar">People Who Like This Album</div>
+        </li>
+        <li class="item">
             <%@likers.each do | user | %>
                 <div class="title">
                     <%= render :partial => 'users/stacked_badge', :locals => { :user => user }    %>
@@ -36,10 +38,11 @@
     <%end%>
 
     <% if @photo_likers.length > 0 %>
-        <li class="header bar">
-          People Who Like Photos in This Album
-        </li>
         <li class="item tab like">
+                  <div class="content">&nbsp</div>
+                  <div class="header bar">People Who Like Photos in This Album</div>
+        </li>
+        <li class="item">
           <%@photo_likers.each do | user | %>
               <div class="title">
                 <%= render :partial => 'users/stacked_badge', :locals => { :user => user }    %>
@@ -49,10 +52,11 @@
     <%end%>
     
     <% if @inactive_contributors.length > 0%>
-        <li class="header bar">
-            Invited Contributors
-        </li>
         <li class="item tab share">
+                  <div class="content">&nbsp</div>
+                  <div class="header bar">Invited Contributors</div>
+        </li>
+        <li class="item tab">
             <%@inactive_contributors.each do | user | %>
                 <div class="title">
                     <%= render :partial => 'users/stacked_badge', :locals => { :user => user }    %>
