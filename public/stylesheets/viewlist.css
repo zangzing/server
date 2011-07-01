@@ -11,6 +11,16 @@
   font-weight: 300;
 }
 
+.viewlist .bartabheader{
+  font-size: 20px;
+  line-height: 25px;
+  font-weight: 300;
+  padding: 16px 0 10px 0;
+  margin-bottom: 25px;
+  border-bottom: 1px solid #CCCCCC;
+}
+
+
 .viewlist .title{
   color: #333333;
   font-size: 14px;
