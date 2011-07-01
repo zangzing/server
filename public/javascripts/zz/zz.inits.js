@@ -645,6 +645,10 @@ zz.init = {
                         onClickShare: function(photo_id){
                             pages.share.share_in_dialog('photo', photo_id);
                         },
+                        onDelete: function(index, photo){
+                            zzapi_photo.delete_photo( photo.id );
+                            return true;
+                        },
                         infoMenuStyle: infoMenuStyle
                     }).data().zz_photogrid;
 
