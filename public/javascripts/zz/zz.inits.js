@@ -340,7 +340,9 @@ zz.init = {
     },
 
     album: function() {
-        //setup grid view
+        //
+        //  GRID VIEW
+        //
 
         var view = 'grid';
 
@@ -376,7 +378,10 @@ zz.init = {
                 }
 
 
-                if (view === 'grid') {   //grid view
+                if (view === 'grid') {
+                    //
+                    // GRID VIEW
+                    //
 
                     var gridElement = $('<div class="photogrid"></div>');
 
@@ -426,7 +431,7 @@ zz.init = {
 
                 } else {
                 //
-                // setup single picture view
+                // SINGLE PICTURE VIEW
                 //
                     //hide view selectors
                     $('#view-buttons').hide();
@@ -614,6 +619,13 @@ zz.init = {
                         var moreLessbuttonElement = $('.viewlist .more-less-btn[data-user-id="'+userId.toString()+'"]');
                     }
 
+                    var infoMenuStyle = false;
+                    if(zz.displayed_user_id == zz.current_user_id){
+                        infoMenuStyle = 'owner';
+                    }else if(zz.current_user_can_download ) {
+                        infoMenuStyle = 'download';
+                    }
+
 
                     var grid = $(element).zz_photogrid({
                         photos:filteredPhotos,
@@ -632,9 +644,8 @@ zz.init = {
                         showInfoMenu: zz.displayed_user_id == zz.current_user_id, //The owner of the album being displayed ios zz.displayed_user_id
                         onClickShare: function(photo_id){
                             pages.share.share_in_dialog('photo', photo_id);
-                        }
-
-
+                        },
+                        infoMenuStyle: infoMenuStyle
                     }).data().zz_photogrid;
 
 

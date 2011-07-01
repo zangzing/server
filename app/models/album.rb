@@ -50,6 +50,9 @@ class Album < ActiveRecord::Base
 
   PRIVACIES = {'Public' =>'public','Hidden' => 'hidden','Password' => 'password'};
 
+  PUBLIC   = 'public'
+  HIDDEN   = 'hidden'
+  PASSWORD = 'password'
 
   #constants for Album.who_can_upload and Album.who_can_download
   WHO_EVERYONE      = 'everyone'
@@ -337,17 +340,19 @@ class Album < ActiveRecord::Base
   end
 
 
-  def viewer?(id, private_only = true)
-    if( private_only )
+  def viewer?( id )
       if private?
-        return acl.has_permission?( id, AlbumACL::VIEWER_ROLE)
+        acl.has_permission?( id, AlbumACL::VIEWER_ROLE)
       else
-        return true
+        true
       end
-    else
-      return acl.has_permission?( id, AlbumACL::VIEWER_ROLE)
-    end
   end
+
+  #true if the id has viewer role or higher 
+  def viewer_in_group?( id )
+     acl.has_permission?( id, AlbumACL::VIEWER_ROLE)
+  end
+
 
   # Returns true if id has contributor role or equivalent
   def contributor?( id )
@@ -413,25 +418,25 @@ class Album < ActiveRecord::Base
 
   # Return true if album is private
   def private?
-    self.privacy == 'password'
+    self.privacy == PASSWORD
   end
 
   def make_private
-    self.privacy = 'password'
+    self.privacy = PASSWORD
   end
 
   # Return true if album is public
   def public?
-    self.privacy == 'public'
+    self.privacy == PUBLIC
   end
 
   def make_public
-    self.privacy = 'public'
+    self.privacy = PUBLIC
   end
 
   # Return true if album is hidden
   def hidden?
-    self.privacy == 'hidden'
+    self.privacy == HIDDEN
   end
 
   def can_user_download?( user )
@@ -441,13 +446,13 @@ class Album < ActiveRecord::Base
       when WHO_OWNER
         return true if user && admin?(user.id)
       when WHO_VIEWERS
-        return true if user && viewer?( user.id, false) #check ACL even if it is public
+        return true if user && viewer_in_group?( user.id ) #check ACL even if it is public
     end
     false
   end
 
   def make_hidden
-    self.privacy = 'hidden'
+    self.privacy = HIDDEN
   end
 
   def everyone_can_contribute?

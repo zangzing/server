@@ -99,20 +99,18 @@ class EmailTemplate < ActiveRecord::Base
     # group 1 is the image url
     # group 2 is the value in the alt tag in between <%=%>
     # group 3 is the whole style argument including the style=""
-    regex = /(<img.*src="(.*)".*alt="<%=(.*)%>".*(style=".*;").*>)/
+    regex = /(<img.*alt="<%=(.*)%>".*(style=".*;").*>)/
     @html = html
 
     @html.scan( regex ) do |match|
-      case match[2]
+      case match[1]
         when '@album.name'
           # This is an album picon, replace it
           img = []
           img << '<img'
           img << "src=\"<%=(@album.cover ? @album.cover.thumb_url : '')%>\""
           img << 'alt="<%=@album.name%>"'
-          img << match[3]  #the style argument
-          #img << "height=\"@album.cover.height\""
-          #img << "width=\"@album.cover.width\""
+          img << match[2]
           img << '>'
           img = img.flatten.compact.join(" ").strip.squeeze(" ")
           @html = @html.gsub( match[0], img )
@@ -122,9 +120,17 @@ class EmailTemplate < ActiveRecord::Base
           img << '<img'
           img << "src=\"<%=@photo.thumb_url%>\""
           img << 'alt="<%=@photo.caption%>"'
-          img << match[3]  #the style argument
-          #img << "height=\"@album.cover.height\""
-          #img << "width=\"@album.cover.width\""
+          img << match[2]  
+          img << '>'
+          img = img.flatten.compact.join(" ").strip.squeeze(" ")
+          @html = @html.gsub( match[0], img )
+        when  '@photos'
+          # This is the result of an uploadbatch operation, take @photos[0]
+          img = []
+          img << '<img'
+          img << "src=\"<%=@photos[0].thumb_url%>\""
+          img << 'alt="<%=@photos[0].caption%>"'
+          img << match[2]
           img << '>'
           img = img.flatten.compact.join(" ").strip.squeeze(" ")
           @html = @html.gsub( match[0], img )

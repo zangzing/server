@@ -12,8 +12,9 @@ class CreateAlbumActivity < Activity
   end
 
   def display_for?( current_user )
+    return false unless subject
     return true if subject.public?
-    return true if current_user && subject.viewer?(current_user.id)
+    return true if current_user && subject.viewer_in_group?( current_user.id )
     false
   end
 end

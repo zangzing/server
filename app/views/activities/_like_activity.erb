@@ -22,14 +22,14 @@
                   liked <a href="<%=photo_pretty_url(activity.like.subject)%>"> this photo </a>
               <%else %>
                   liked <a href="<%=photo_pretty_url(activity.like.subject)%>"> this photo </a>
-                  <span class="tagline"> by <a href="<%=user_pretty_url(activity.like.subject.user)%>"> <%=activity.like.subject.user.name%></a></span>
+                  by <a href="<%=user_pretty_url(activity.like.subject.user)%>"> <%=activity.like.subject.user.name%></a>
               <%end %>
           <%elsif activity.like.subject.is_a?(Album)%>
               <%if view == 'album' %>
                   liked this album
               <%else%>
                   liked album <a href="<%=album_pretty_url(activity.like.subject)%>"> <%=activity.like.subject.name%> </a>
-                  <span class="tagline"> by <a href="<%=user_pretty_url(activity.like.subject.user)%>"> <%=activity.like.subject.user.name%></a></span>
+                  by <a href="<%=user_pretty_url(activity.like.subject.user)%>"> <%=activity.like.subject.user.name%></a>
               <%end%>
           <%elsif activity.like.subject.is_a?(User) %>
               started following

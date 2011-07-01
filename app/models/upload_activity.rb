@@ -36,7 +36,7 @@ class UploadActivity < Activity
 
   def display_for?( current_user )
     return true if upload_batch.album.public?
-    return true if current_user && upload_batch.album.viewer?( current_user.id )
+    return true if current_user && upload_batch.album.viewer_in_group?( current_user.id )
     false
   end
   

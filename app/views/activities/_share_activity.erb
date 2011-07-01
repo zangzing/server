@@ -28,14 +28,11 @@
               <a href="<%=album_pretty_url(activity.subject)%>">
                 <%=activity.subject.name%>
               </a>
-              <span class="tagline">
-                by <a href="<%=user_pretty_url(activity.subject.user)%>"> <%=activity.subject.user.name%>  </a>
-              </span>
+              by <a href="<%=user_pretty_url(activity.subject.user)%>"> <%=activity.subject.user.name%>  </a>
+
           <% elsif activity.share.photo? %>
-              shared <a href="<%=photo_pretty_url(activity.subject)%>"> this photo </a> 
-              <span class="tagline">
-                by <a href="<%=user_pretty_url(activity.subject.user)%>"> <%=activity.subject.user.name%>  </a>
-              </span>
+              shared <a href="<%=photo_pretty_url(activity.subject)%>"> this photo </a>
+              by <a href="<%=user_pretty_url(activity.subject.user)%>"> <%=activity.subject.user.name%>  </a>             
           <% end %>
       <%end%>
 
