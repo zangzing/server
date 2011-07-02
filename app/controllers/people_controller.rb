@@ -36,6 +36,7 @@ class PeopleController < ApplicationController
 
   def user_index
     @user = User.find(params[:user_id])
+    @user_is_auto_follow = User.auto_like_ids.include?( @user.id )        
   end
 
 private
