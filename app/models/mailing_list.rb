@@ -39,7 +39,7 @@ class MailingList < ActiveRecord::Base
                        :email_address => user.email,
                        :send_notify => 'false'
     )
-    if( result['error'] && result['code'].to_i != NOT_IN_LIST)
+    if( result['error'] && result['code'].to_i != NOT_IN_LIST && result['code'].to_i != NOT_IN_THIS_LIST)
         raise Exception.new( "Cannot Unsubscribe User: #{result['code']} #{result['error']}")
     end
   end
