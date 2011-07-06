@@ -37,20 +37,11 @@ class MailingList < ActiveRecord::Base
   def unsubscribe_user user
     result = gb.list_unsubscribe( :id => self.mailchimp_list_id,
                        :email_address => user.email,
+                       :delete_member => 'true',
+                       :send_goodbye => 'false',
                        :send_notify => 'false'
     )
     if( result['error'] && result['code'].to_i != NOT_IN_LIST && result['code'].to_i != NOT_IN_THIS_LIST)
-        raise Exception.new( "Cannot Unsubscribe User: #{result['code']} #{result['error']}")
-    end
-  end
-
-  def remove_user user
-    result = gb.list_unsubscribe( :id => self.mailchimp_list_id,
-                       :email_address => user.email,
-                       :delete_member => 'true',
-                       :send_notify => 'false'
-    )
-    if( result['error'])
         raise Exception.new( "Cannot Unsubscribe User: #{result['code']} #{result['error']}")
     end
   end
