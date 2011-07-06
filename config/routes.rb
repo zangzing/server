@@ -39,9 +39,9 @@ Server::Application.routes.draw do
     match  '/users/:id/update_password' => 'users#update_password',   :as => :update_user_password, :requirements => {:protocol => 'https'}
 
     #email_subscirptions
-    post '/subscriptions/mcsync'      => 'subscriptions#mcsync'
-    get  '/subscriptions/:id'         => 'subscriptions#unsubscribe'   #see unsubscribe above
-    put  '/subscriptions/:id'         => 'subscriptions#update',       :as => :update_subscriptions
+    match '/subscriptions/mcsync'      => 'subscriptions#mcsync'
+    get   '/subscriptions/:id'         => 'subscriptions#unsubscribe'   #see unsubscribe above
+    put   '/subscriptions/:id'         => 'subscriptions#update',       :as => :update_subscriptions
 
     #identities
     get    '/users/:id/identities'     => 'identities#index',       :as => :user_identities
