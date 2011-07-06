@@ -139,7 +139,7 @@ class User < ActiveRecord::Base
 
 
   def subscribe_to_lists
-    MailingList.subscribe_new_user self.id
+    MailingList.subscribe_new_user id
   end
 
   def self.find_by_email_or_create_automatic( email, name='' )
