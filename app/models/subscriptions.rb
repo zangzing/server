@@ -9,8 +9,15 @@ class Subscriptions< ActiveRecord::Base
 
   validates_presence_of :email
 
+
   before_save( :if => :email_changed? ) do
+    @update_mailing_list_user = email_was
     self.unsubscribe_token = Digest::SHA1.hexdigest( UNSUBSCRIBE_TOKEN_SECRET+ self.email )
+  end
+
+  after_commit( :if => :update_mailing_list_user? ) do
+      ZZ::Async::MailingListSync.enqueue( 'update_user', @update_mailing_list_user , user.id )
+      @update_mailing_list_user = nil
   end
 
   NEVER       = 0
@@ -19,6 +26,11 @@ class Subscriptions< ActiveRecord::Base
   WEEKLY      = 3
 
   UNSUBSCRIBE_TOKEN_SECRET = "This-is-a-secret-number-6872296"
+
+
+  def update_mailing_list_user?
+    @update_mailing_list_user
+  end
 
   def user_id=( id )
     self.user = User.find(id)
@@ -38,7 +50,8 @@ class Subscriptions< ActiveRecord::Base
         when Email::STATUS    then  self.want_status_email    = period
         when Email::NEWS      then  self.want_news_email      = period
         when Email::MARKETING then  self.want_marketing_email = period
-      end
+        #There is no unsubscribe for Email::ONCE
+      end        
     else
       self.want_invites_email   = period
       self.want_social_email    = period
@@ -102,14 +115,13 @@ class Subscriptions< ActiveRecord::Base
   def want_marketing_email=( period )
     write_attribute( :want_marketing_email, period )
     if self.want_marketing_email_changed?
-      lists = MailingList.find_all_by_category( Email::MARKETING )
       if period.to_i == NEVER
-        #unsubscribe from marketing mailing lists
-        lists.each{ |list| list.unsubscribe_user( self.user )}
-      else
-        #subscribe to marketing mailing lists
-        lists.each{ |list| list.subscribe_user( self.user )}
-      end
+          #unsubscribe from mailing lists
+          ZZ::Async::MailingListSync.enqueue('unsubscribe_user', Email::MARKETING, user.id )
+        else
+          #subscribe to marketing mailing lists
+          ZZ::Async::MailingListSync.enqueue('subscribe_user', Email::MARKETING, user.id )
+        end
     end
   end
 
@@ -117,23 +129,14 @@ class Subscriptions< ActiveRecord::Base
   def want_news_email=( period )
       write_attribute( :want_news_email, period )
       if self.want_news_email_changed?
-        lists = MailingList.find_all_by_category( Email::NEWS )
         if period.to_i == NEVER
           #unsubscribe from mailing lists
-          lists.each{ |list| list.unsubscribe_user( self.user )}
+          ZZ::Async::MailingListSync.enqueue('unsubscribe_user', Email::NEWS, user.id )
         else
           #subscribe to marketing mailing lists
-          lists.each{ |list| list.subscribe_user( self.user )}
+          ZZ::Async::MailingListSync.enqueue('subscribe_user', Email::NEWS, user.id )
         end
       end
-  end
-
-  # When the email is updated, update mailing list addresses
-  def email=(email)
-    write_attribute( :email, email)
-    if email_changed?
-
-    end
   end
 
 

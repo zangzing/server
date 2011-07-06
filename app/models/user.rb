@@ -69,6 +69,7 @@ class User < ActiveRecord::Base
   before_create  :set_dependents
   after_commit   :update_acls_with_id, :on => :create
   after_commit   :like_mr_zz, :on => :create
+  after_commit   :subscribe_to_lists, :on => :create
 
   validates_presence_of   :name,      :unless => :automatic?
   validates_presence_of   :username,  :unless => :automatic?
@@ -134,6 +135,11 @@ class User < ActiveRecord::Base
 
     #build subscriptions
     self.subscriptions = Subscriptions.find_or_initialize_by_email( self.email )
+  end
+
+
+  def subscribe_to_lists
+    MailingList.subscribe_new_user self.id
   end
 
   def self.find_by_email_or_create_automatic( email, name='' )

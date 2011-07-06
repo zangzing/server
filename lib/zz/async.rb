@@ -11,6 +11,7 @@ require 'zz/async/test_noop'
 require 'zz/async/process_like'
 require 'zz/async/connector_worker'
 require 'zz/async/remote_job_worker'
+require 'zz/async/mailing_list_sync'
 
 module ZZ
   module Async

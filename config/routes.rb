@@ -12,6 +12,8 @@ Server::Application.routes.draw do
   get    '/join'               => 'users#join',          :as => :join
   get    '/unsubscribe/:id'    => 'subscriptions#unsubscribe', :as => :unsubscribe
 
+
+
   # the whole site has /service in front of it except for users
   scope '/service' do
 
@@ -25,6 +27,7 @@ Server::Application.routes.draw do
     end
 
     get    '/health_check'            => 'pages#health_check',      :as => :health_check
+    
 
     #users
     get    '/users/new'                 => 'users#new',               :as => :new_user
@@ -36,8 +39,9 @@ Server::Application.routes.draw do
     match  '/users/:id/update_password' => 'users#update_password',   :as => :update_user_password, :requirements => {:protocol => 'https'}
 
     #email_subscirptions
-    get '/subscriptions/:id'         => 'subscriptions#unsubscribe'   #see unsubscribe above
-    put '/subscriptions/:id'         => 'subscriptions#update',       :as => :update_subscriptions
+    post '/subscriptions/mcsync'      => 'subscriptions#mcsync'
+    get  '/subscriptions/:id'         => 'subscriptions#unsubscribe'   #see unsubscribe above
+    put  '/subscriptions/:id'         => 'subscriptions#update',       :as => :update_subscriptions
 
     #identities
     get    '/users/:id/identities'     => 'identities#index',       :as => :user_identities
