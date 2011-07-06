@@ -106,7 +106,7 @@ class MailingList < ActiveRecord::Base
   end
 
   def self.subscribe_new_user user_id
-    ZZ::Async::MailingListSync.enqueue( 'subscribe_user', [Email::NEWS, Email::MARKETING, Email::ONCE], self.id )
+    ZZ::Async::MailingListSync.enqueue( 'subscribe_user', [Email::NEWS, Email::MARKETING, Email::ONCE], user_id )
   end
 
   def self.update_user old_email, user_id
