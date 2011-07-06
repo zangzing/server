@@ -5,6 +5,11 @@ class MailingList < ActiveRecord::Base
   #category i.e. Email::MARKETING
   #name
 
+  #see http://apidocs.mailchimp.com/rtfm/exceptions.field.php
+  ALREADY_IN_LIST  = 214
+  NOT_IN_THIS_LIST = 215
+  NOT_IN_LIST      = 232
+
   def subscribe_user user
     result = gb.list_subscribe( :id => self.mailchimp_list_id,
                        :email_address => user.email,
@@ -19,8 +24,8 @@ class MailingList < ActiveRecord::Base
                        :double_optin => 'false'
 
     )
-    if( result['error'] && result['code'].to_i != 214 )
-        #214 is user already subscribed see http://apidocs.mailchimp.com/rtfm/exceptions.field.php
+    if( result['error'] && result['code'].to_i != ALREADY_IN_LIST )
+
         raise Exception.new( "Cannot Subscribe User: #{result['code']} #{result['error']}")
     end
   end
@@ -34,7 +39,7 @@ class MailingList < ActiveRecord::Base
                        :email_address => user.email,
                        :send_notify => 'false'
     )
-    if( result['error'])
+    if( result['error'] && result['code'].to_i != NOT_IN_LIST)
         raise Exception.new( "Cannot Unsubscribe User: #{result['code']} #{result['error']}")
     end
   end
@@ -59,9 +64,7 @@ class MailingList < ActiveRecord::Base
                            :USERNAME => user.username,
                            :EMAIL => user.email
                        })
-    if( result['error']&& result['code'].to_i != 215 && result['code'].to_i != 232)
-        #214 is user does not belong to list 
-        #232 is user not in MailChimp DB see http://apidocs.mailchimp.com/rtfm/exceptions.field.php
+    if( result['error']&& result['code'].to_i != NOT_IN_THIS_LIST && result['code'].to_i != NOT_IN_LIST)
         raise Exception.new( "Cannot Unsubscribe User: #{result['code']} #{result['error']}")
     end
   end
