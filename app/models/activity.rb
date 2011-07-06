@@ -12,6 +12,9 @@ class Activity < ActiveRecord::Base
   belongs_to :subject, :polymorphic => true  #the subject can be user,album or photo
   validates_presence_of :subject_id
 
+  ALBUM_VIEW = 'album'
+  USER_VIEW  = 'user'
+
   default_scope  :order => "created_at DESC"
   
   ##
@@ -27,7 +30,7 @@ class Activity < ActiveRecord::Base
     raise NotImplementedError.new("Activity sub-classes must implement a payload_valid? method to verify that their subject still exists")
   end
 
-  def display_for?( current_user )
+  def display_for?( current_user, view )
     raise NotImplementedError.new("Activity sub-classes must implement a display_for? method to verify that they can be displayed to the current user")
   end
 end

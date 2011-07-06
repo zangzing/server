@@ -12,18 +12,18 @@
       </div>
     </li>
     <% @activities.each do |activity| %>
-        <%next unless activity.payload_valid? && activity.display_for?(current_user) %>
+        <%next unless activity.payload_valid? && activity.display_for?(current_user, Activity::ALBUM_VIEW) %>
         <%case activity %>
         <%  when UploadActivity then%>
-            <%= render :partial => 'upload_activity', :locals => {:activity => activity, :view => 'album' } %>
+            <%= render :partial => 'upload_activity', :locals => {:activity => activity, :view => Activity::ALBUM_VIEW } %>
         <%  when ShareActivity then%>
-            <%= render :partial => 'share_activity', :locals => {:activity => activity, :view => 'album' } %>
+            <%= render :partial => 'share_activity', :locals => {:activity => activity, :view => Activity::ALBUM_VIEW } %>
         <%  when CreateAlbumActivity then%>
-            <%= render :partial => 'create_album_activity', :locals => {:activity => activity, :view => 'album' } %>
+            <%= render :partial => 'create_album_activity', :locals => {:activity => activity, :view => Activity::ALBUM_VIEW} %>
         <%  when LikeActivity then%>
-            <%= render :partial => 'like_activity', :locals => {:activity => activity, :view => 'album' } %>
+            <%= render :partial => 'like_activity', :locals => {:activity => activity, :view => Activity::ALBUM_VIEW } %>
         <%  when InviteActivity then%>
-            <%= render :partial => 'invite_activity', :locals => {:activity => activity, :view => 'album' } %>
+            <%= render :partial => 'invite_activity', :locals => {:activity => activity, :view => Activity::ALBUM_VIEW } %>
         <%end%>
     <%end%>
   </ul>

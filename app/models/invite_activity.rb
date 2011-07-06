@@ -88,14 +88,22 @@ end
     false
   end
 
-  def display_for?( current_user )
+  def display_for?( current_user, view )
     return false unless album
-    if album.public?
-      return true if invited_user_id
-      return true if invited_user_email && current_user && album.admin?( current_user.id )
-    else
-      return true if invited_user_id    && current_user &&  album.viewer_in_group?( current_user.id )
-      return true if invited_user_email && current_user &&  album.admin?( current_user.id )
+    case album.privacy
+      when Album::PUBLIC
+        return true if invited_user_id
+        return true if invited_user_email && current_user && album.admin?( current_user.id )
+      when Album::HIDDEN
+        if invited_user_id
+          return true if view == ALBUM_VIEW
+          return true if current_user &&  album.viewer_in_group?( current_user.id )
+        else
+          return true if invited_user_email && current_user &&  album.admin?( current_user.id )
+        end
+      when Album::PASSWORD
+        return true if invited_user_id    && current_user &&  album.viewer_in_group?( current_user.id )
+        return true if invited_user_email && current_user &&  album.admin?( current_user.id )
     end
     false
   end
