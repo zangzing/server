@@ -138,7 +138,7 @@ class Subscriptions< ActiveRecord::Base
       if self.want_marketing_email_changed?
         if period.to_i == NEVER
           #unsubscribe from mailing lists
-          usbs          ZZ::Async::MailingListSync.enqueue('unsubscribe_user', Email::MARKETING, user.id )
+          ZZ::Async::MailingListSync.enqueue('unsubscribe_user', Email::MARKETING, user.id )
         else
           #subscribe to marketing mailing lists
           ZZ::Async::MailingListSync.enqueue('subscribe_user', Email::MARKETING, user.id )
