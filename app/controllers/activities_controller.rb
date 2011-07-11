@@ -12,6 +12,7 @@ class ActivitiesController < ApplicationController
   def user_index
     @user = User.find(params[:user_id])
     @activities = @user.activities
+    @user_is_auto_follow = User.auto_like_ids.include?( @user.id )
   end
 
 private

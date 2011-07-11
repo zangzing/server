@@ -9,6 +9,7 @@
         Activities
       </div>
     </li>
+    <%if @user_is_auto_follow == false %>
     <% @activities.each do |activity| %>
         <%next unless activity.payload_valid? && activity.display_for?(current_user, Activity::USER_VIEW)%>
         <%case activity %>
@@ -21,6 +22,7 @@
         <%else%>
             <% #do not display any other kind of activity %>
         <%end%>
+    <%end%>
     <%end%>
   </ul>
 </div>
