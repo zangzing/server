@@ -146,6 +146,9 @@ class UploadBatch < ActiveRecord::Base
     end
   end
 
+
+
+
   # returns true if we are done
   # set the force flag to true if you want to finalized regardless of the
   # current state
@@ -227,6 +230,11 @@ class UploadBatch < ActiveRecord::Base
           # for streaming album always include viewers and contributors
           if album.stream_to_email?
             viewers ||= album.viewers(false)     # these are already strings, so no need to convert
+
+            if viewers.length > 0
+              zza.track_event('album.stream.email')
+            end
+
             update_notification_list |= viewers
           end
 
@@ -255,11 +263,13 @@ class UploadBatch < ActiveRecord::Base
           # stream to facebook
           if album.stream_to_facebook?
             ZZ::Async::StreamingAlbumUpdate.enqueue_facebook_post(self.id)
+            zza.track_event('album.stream.facebook')
           end
 
           # stream to twitter
           if album.stream_to_twitter?
             ZZ::Async::StreamingAlbumUpdate.enqueue_twitter_post(self.id)
+            zza.track_event('album.stream.twitter')
           end
 
 
@@ -314,6 +324,14 @@ class UploadBatch < ActiveRecord::Base
     end
 
     return (ready.length > 0)
+  end
+
+  def zza
+    return @zza if @zza
+    @zza = ZZ::ZZA.new
+    @zza.user = self.album.user.id
+    @zza.user_type = 1
+    @zza
   end
 
 

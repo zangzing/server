@@ -170,6 +170,8 @@ class AlbumsController < ApplicationController
        emails.each { |email| @album.add_viewer( email )}
     end
 
+    zza.track_event('album.share.email')
+
     render :json => get_group_members
   end
 
