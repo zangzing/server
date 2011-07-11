@@ -1,5 +1,20 @@
 require 'digest/sha1'
 
+# Subscriptions
+#
+# Subscriptions records are kept for all email addresses to which we have sent email.
+# Subscription records allow users and non-user to unsubscribe from our service.
+#
+# Testing for user.nil? is the preferred method to find out  which subscriptions are assoicated to a user
+# and which are only tracking known emails.
+#
+# When a user is created we review existing subscriptions and if a record exists for
+# their email, the subscription record is associated to them otherwise a new one is created.
+#
+# Methods in this class must work for user and non-user subscription records.
+#
+
+
 class Subscriptions< ActiveRecord::Base
   attr_accessible :email, :user_id,
                   :want_marketing_email, :want_news_email, :want_social_email, :want_status_email, :want_invites_email
