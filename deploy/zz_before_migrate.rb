@@ -19,6 +19,10 @@
 #puts zz_shared_dir
 #puts zz_current_dir
 #puts zz_release_dir
+#puts zz_app  (symbol)
+#puts zz_role (symbol)
+#puts zz_rails_env (symbol)
+#
 #
 puts "-----ZZ TEST_BEFORE_MIGRATE------"
 puts zz[:app_name]
@@ -26,12 +30,20 @@ puts zz_base_dir
 puts zz_shared_dir
 puts zz_current_dir
 puts zz_release_dir
+puts zz_app
+puts zz_role
+puts zz_rails_env
 puts "-----ZZ TEST_BEFORE_MIGRATE------"
 
 execute "test_chef_custom_hook" do
   command "ls -al #{zz_release_dir}"
 end
 
-# force an error
-x = nil
-x.failure
+# make sure v3homepage is deployed with the current tag, technically we really only
+# need this to run when we have newly added machines but there is really no way to know
+# so we run it each time.  The downside is that this is a fairly lengthy operation
+# We only need to run on one instance, so use the app_master or solo - they are mutually
+# exclusive
+if [:solo, :app_master].include?(zz_role)
+  run "bundle exec rails runner -e #{environment()} HomepageManager.deploy_homepage_current_tag_async"
+end
