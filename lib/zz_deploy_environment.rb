@@ -1,15 +1,60 @@
+# need this because the recursively symbolize may not be available when we are called
+#require "config/initializers/hash_extensions"
+
 # this class is a helper for the Deploy Environment setup
 class ZZDeployEnvironment
-  def initialize(node)
-    if (node.nil?)
-      # build enough of the map to get local defaults
-      node = {'instance_role' => 'solo', 'engineyard' => {'this' => 'local', 'environment' => {'instances' => []}}}
+  # creates an instance, looks for ey dna.json first and then
+  # zz_config_dna.json
+  #todo Change this to only open zz_config_dna.json once we
+  # are fully moved to Amazon
+  #
+  def initialize
+    # first try EY
+    node = nil
+    fname = "/home/deploy/dna.json"
+    if File.exists?( fname )
+      node =  ActiveSupport::JSON.decode( File.read(fname))
+    end
+    if node.nil?
+      # now try zz dna
+      fname = File.dirname(__FILE__) + "/../config/zz_app_dna.json"
+      node =  ActiveSupport::JSON.decode( File.read(fname))
+      node.recursively_symbolize_keys!
+    end
+    if node.nil?
+      raise "Neither dna.json for EY or zz_app_dna.json for Amazon have been defined."
     end
     @node = node
   end
 
+  def node
+    @node
+  end
+
   def ey
     @ey ||= @node['engineyard']
+  end
+
+  def zz
+    @zz ||= @node
+  end
+
+  # this entry should only exist on valid
+  # zz style config
+  def is_zz?
+    zz[:app_config] != nil
+  end
+
+  def app_config
+    @app_config ||= zz[:app_config]
+  end
+
+  def group_config
+    @group_config ||= zz[:group_config]
+  end
+
+  def is_ey?
+    !is_zz?
   end
 
   # determine if this instance should host
@@ -17,6 +62,10 @@ class ZZDeployEnvironment
   # true - yes we should install redis here
   #
   def should_host_redis?
+    if is_zz?
+      return app_config[:we_host_redis]
+    end
+
     return @should_host_redis if @should_host_redis != nil
     if redis_host_name == this_host_name
       @should_host_redis = true
@@ -32,6 +81,10 @@ class ZZDeployEnvironment
   # to be useless db_master since we will
   # use Amazon RDS for db
   def redis_host_name
+    if is_zz?
+      return app_config[:redis_host]
+    end
+
     return @redis_host_name if @redis_host_name != nil
 
     instances = ey['environment']['instances']
@@ -52,6 +105,10 @@ class ZZDeployEnvironment
   # return an array of all the app server machines
   # internal host names
   def all_app_servers
+    if is_zz?
+      return app_config[:app_servers]
+    end
+
     return @all_app_servers if @all_app_servers != nil
     @app_server_types ||= Set.new [ 'solo', 'app', 'app_master' ].freeze
 
@@ -72,6 +129,10 @@ class ZZDeployEnvironment
 
   # return an array of all the server machines regardless of type
   def all_servers
+    if is_zz?
+      return app_config[:all_servers]
+    end
+
     return @all_servers if @all_servers != nil
 
     instances = ey['environment']['instances']
@@ -92,6 +153,10 @@ class ZZDeployEnvironment
   # the resque cpu job instance
   #
   def should_host_resque_cpu?
+    if is_zz?
+      return app_config[:we_host_resque_cpu]
+    end
+
     return @should_host_resque_cpu if @should_host_resque_cpu != nil
     if resque_cpu_host_names.include?(this_host_name)
       @should_host_resque_cpu = true
@@ -102,6 +167,10 @@ class ZZDeployEnvironment
 
   # get the resque cpu bound jobs hosts
   def resque_cpu_host_names
+    if is_zz?
+      return app_config[:resque_cpus]
+    end
+
     return @resque_cpu_host_names if @resque_cpu_host_names != nil
 
     instances = ey['environment']['instances']
@@ -127,11 +196,19 @@ class ZZDeployEnvironment
   end
 
   def this_instance_id
+    if is_zz?
+      return zz[:instance_id]
+    end
+
     @this_instance_id ||= ey['this']
   end
 
   # get our own host address
   def this_host_name
+    if is_zz?
+      return zz[:local_hostname]
+    end
+
     return @this_host_name if @this_host_name != nil
 
     instances = ey['environment']['instances']
