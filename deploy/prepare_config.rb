@@ -24,7 +24,7 @@
 #puts zz_rails_env (symbol)
 #
 #
-puts "-----ZZ TEST_BEFORE_MIGRATE------"
+puts "-----ZZ PHOTOS_TEST_PREPARE_CONFIG------"
 puts zz_base_dir
 puts zz_shared_dir
 puts zz_current_dir
@@ -32,17 +32,40 @@ puts zz_release_dir
 puts zz_app
 puts zz_role
 puts zz_rails_env
-puts "-----ZZ TEST_BEFORE_MIGRATE------"
+puts "-----ZZ PHOTOS_TEST_PREPARE_CONFIG------"
 
 execute "test_chef_custom_hook" do
   command "ls -al #{zz_release_dir}"
 end
 
-# make sure v3homepage is deployed with the current tag, technically we really only
-# need this to run when we have newly added machines but there is really no way to know
-# so we run it each time.  The downside is that this is a fairly lengthy operation
-# We only need to run on one instance, so use the app_master or solo - they are mutually
-# exclusive
-if [:solo, :app_master].include?(zz_role)
-  run "bundle exec rails runner -e #{zz_rails_env} HomepageManager.deploy_homepage_current_tag_async"
+def move_assets(assets)
+  env = environment()
+  puts "Deploy environment is " + env
+
+  asset_dir = zz_release_dir + "/public"
+  puts "Asset Dir is " + asset_dir
+
+
+  assets.each do |asset|
+    # env-assetname is the form, if the file is not
+    # found we ignore and leave whatever was there in place
+    # so you can have a default file
+    from = "#{asset_dir}/#{asset}-#{env}"
+    to = asset_dir + "/" + asset
+    run "cp -f #{from} #{to}"
+  end
 end
+
+# put custom assets in place based on environment for app servers
+if [:solo, :app_master, :app].include?(zz_role)
+  assets = [
+      'robots.txt'
+  ]
+  move_assets(assets)
+end
+
+
+#Use Jammit gem to package css and javascript
+run "bundle exec jammit"
+run "rm -rf #{zz_release_dir}/public/javascripts"
+run "rm -rf #{zz_release_dir}/public/stylesheets"
