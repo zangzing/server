@@ -25,7 +25,6 @@
 #
 #
 puts "-----ZZ TEST_BEFORE_MIGRATE------"
-puts zz[:app_name]
 puts zz_base_dir
 puts zz_shared_dir
 puts zz_current_dir
@@ -45,5 +44,5 @@ end
 # We only need to run on one instance, so use the app_master or solo - they are mutually
 # exclusive
 if [:solo, :app_master].include?(zz_role)
-  run "bundle exec rails runner -e #{environment()} HomepageManager.deploy_homepage_current_tag_async"
+  run "bundle exec rails runner -e #{zz_rails_env} HomepageManager.deploy_homepage_current_tag_async"
 end
