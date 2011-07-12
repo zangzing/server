@@ -274,7 +274,7 @@ class ApplicationController < ActionController::Base
       unless current_user
         if request.xhr?
           flash.now[:notice] = "You have asked to see a password protected album. Please login so we know who you are."
-          head :status => 401
+          head :status => 401 and return
         else
           flash[:notice] = "You have asked to see a password protected album. Please login so we know who you are."
           store_location
