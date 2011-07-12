@@ -39,7 +39,7 @@ execute "test_chef_custom_hook" do
 end
 
 def move_assets(assets)
-  env = environment()
+  env = zz_rails_env
   puts "Deploy environment is " + env
 
   asset_dir = zz_release_dir + "/public"
