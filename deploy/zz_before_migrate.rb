@@ -30,7 +30,7 @@
 # zz[:instance_id]
 #
 #
-puts "-----ZZ PHOTOS_TEST_PREPARE_CONFIG------"
+puts "-----ZZ PHOTOS_TEST_BEFORE_MIGRATE------"
 puts zz_base_dir
 puts zz_shared_dir
 puts zz_current_dir
@@ -38,11 +38,12 @@ puts zz_release_dir
 puts zz_app
 puts zz_role
 puts zz_rails_env
-puts "-----ZZ PHOTOS_TEST_PREPARE_CONFIG------"
+puts "-----ZZ PHOTOS_TEST_BEFORE_MIGRATE------"
 
-execute "test_chef_custom_hook" do
-  command "ls -al #{zz_release_dir}"
-end
+# sample code showing use of chef resource
+#execute "test_chef_custom_hook" do
+#  command "ls -al #{zz_release_dir}"
+#end
 
 def move_assets(assets)
   env = zz_rails_env
