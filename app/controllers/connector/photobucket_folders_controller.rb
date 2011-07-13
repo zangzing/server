@@ -95,6 +95,37 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
     
     Photo.to_json_lite(photo)
   end
+
+  def self.get_all_albums_paths(api, subpath = nil)
+    album_contents = call_with_error_adapter do
+      api.open_album(subpath)
+    end
+    subalbums = case album_contents[:album]
+      when Array then (album_contents[:album] || [])
+      when Hash then [album_contents[:album]].compact
+      else []
+    end
+    paths = []
+    subalbums.each do |album|
+      album_path = subpath.nil? ? CGI::escape(album[:name]) : "#{subpath}#{CGI::escape('/'+album[:name])}"
+      paths << album_path
+      paths += get_all_albums_paths(api, album_path)
+    end
+    paths
+  end
+
+  def self.import_all_folders(api_client, params)
+    identity = params[:identity]
+    zz_albums = []
+    album_list = get_all_albums_paths(api_client)
+    album_list.each do |pb_album_path|
+      zz_album = create_album(identity, pb_album_path)
+      photos = import_folder(api_client, params.merge(:album_id => zz_album.id, :album_path => pb_album_path))
+      zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id, :photos => photos}
+    end
+    JSON.fast_generate(zz_albums)
+  end
+
   
   
   def index
@@ -108,5 +139,10 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
   def import_photo
     fire_async_response('import_certain_photo')
   end
+
+  def import_all
+    fire_async_response('import_all_folders')
+  end
+
 
 end
