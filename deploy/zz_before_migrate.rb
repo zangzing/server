@@ -62,23 +62,24 @@ def move_assets(assets)
   end
 end
 
-# put custom assets in place based on environment for app servers
-if [:solo, :app_master, :app].include?(zz_role)
-  assets = [
-      'robots.txt'
-  ]
-  move_assets(assets)
-end
 
-x = nil
-x.testbad
 
 # stop any resque workers if downtime
 if zz[:deploy_downtime]
   run "sudo monit stop all -g resque_photos"
 end
 
-#Use Jammit gem to package css and javascript
-run "bundle exec jammit"
-run "rm -rf #{zz_release_dir}/public/javascripts"
-run "rm -rf #{zz_release_dir}/public/stylesheets"
+# The following is only done on machines that host
+# the app server.  No need to to on util machines.
+if [:solo, :app_master, :app].include?(zz_role)
+  # move custom assets based on deploy environment
+  assets = [
+      'robots.txt'
+  ]
+  move_assets(assets)
+
+  #Use Jammit gem to package css and javascript
+  run "bundle exec jammit"
+  run "rm -rf #{zz_release_dir}/public/javascripts"
+  run "rm -rf #{zz_release_dir}/public/stylesheets"
+end
