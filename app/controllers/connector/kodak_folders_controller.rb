@@ -28,7 +28,7 @@ class Connector::KodakFoldersController < Connector::KodakController
     photos_list = call_with_error_adapter do
       api.send_request("/album/#{params[:kodak_album_id]}")
     end
-    photos_data = photos_list['pictures']
+    photos_data = photos_list['pictures'] || []
     photos = []
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     photos_data.each do |p|
@@ -69,7 +69,7 @@ class Connector::KodakFoldersController < Connector::KodakController
 
       kodak_albums.each do |k_album|
         zz_album = create_album(identity, k_album['name'])
-        photos = import_folder(api, params.merge(:album_id => zz_album.id, :kodak_album_id => k_album['id']))
+        photos = import_album(api, params.merge(:album_id => zz_album.id, :kodak_album_id => k_album['id']))
         zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id, :photos => photos}
       end
     end

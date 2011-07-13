@@ -55,13 +55,11 @@ class Connector::FlickrFoldersController < Connector::FlickrController
     folders_response = call_with_error_adapter do
       api_client.photosets.getList
     end
-    unless folders_response.empty?
-      folders_response.each do |fl_album|
-        zz_album = create_album(identity, fl_album.title)
-        photos = import_folder(api_client, params.merge(:album_id => zz_album.id, :set_id => fl_album.id))
-        zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id, :photos => photos}
+    folders_response.each do |fl_album|
+      zz_album = create_album(identity, fl_album.title)
+      photos = import_album(api_client, params.merge(:album_id => zz_album.id, :set_id => fl_album.id))
+      zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id, :photos => photos}
 
-      end
     end
     JSON.fast_generate(zz_albums)
   end

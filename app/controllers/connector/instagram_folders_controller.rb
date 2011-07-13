@@ -65,7 +65,7 @@ class Connector::InstagramFoldersController < Connector::InstagramController
     identity = params[:identity]
     zz_album = create_album(identity, 'My Instagram Photostream')
 
-    photos = import_folder(api_client, params.merge(:album_id => zz_album.id, :target => 'my-photos'))
+    photos = import_album(api_client, params.merge(:album_id => zz_album.id, :target => 'my-photos'))
     JSON.fast_generate([{:album_name => zz_album.name, :album_id => zz_album.id, :photos => photos}])
   end
 
@@ -77,7 +77,7 @@ class Connector::InstagramFoldersController < Connector::InstagramController
     fire_async_response('import_album')
   end
 
-  def import
+  def import_all
     fire_async_response('import_all_albums')
   end
 end
