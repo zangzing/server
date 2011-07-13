@@ -40,10 +40,10 @@ end
 
 def move_assets(assets)
   env = zz_rails_env
-  puts "Deploy environment is " + env
+  puts "Deploy environment is #{env}"
 
   asset_dir = zz_release_dir + "/public"
-  puts "Asset Dir is " + asset_dir
+  puts "Asset Dir is #{asset_dir}"
 
 
   assets.each do |asset|
