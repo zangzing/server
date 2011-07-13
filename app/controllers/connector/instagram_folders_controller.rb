@@ -61,6 +61,14 @@ class Connector::InstagramFoldersController < Connector::InstagramController
     bulk_insert(photos)
   end
 
+  def self.import_all_albums(api_client, params)
+    identity = params[:identity]
+    zz_album = create_album(identity, 'My Instagram Photostream')
+
+    photos = import_folder(api_client, params.merge(:album_id => zz_album.id, :target => 'my-photos'))
+    JSON.fast_generate([{:album_name => zz_album.name, :album_id => zz_album.id, :photos => photos}])
+  end
+
   def index
     fire_async_response('list_albums')
   end
@@ -69,4 +77,7 @@ class Connector::InstagramFoldersController < Connector::InstagramController
     fire_async_response('import_album')
   end
 
+  def import
+    fire_async_response('import_all_albums')
+  end
 end

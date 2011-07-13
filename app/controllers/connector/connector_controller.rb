@@ -91,6 +91,17 @@ class Connector::ConnectorController < ApplicationController
       nil 
     end
 
+    def create_album(identity, name)
+      album_type = 'PersonalAlbum'
+      album = album_type.constantize.new(:name => name)
+      album.user = identity.user
+      unless album.save
+        identity.user.albums << album
+        return nil
+      end
+      album
+    end
+
   end
 
 private

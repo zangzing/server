@@ -49,12 +49,30 @@ class Connector::SmugmugFoldersController < Connector::SmugmugController
     bulk_insert(photos)
   end
 
+  def self.import_all_albums(api, params)
+    identity = params[:identity]
+    zz_albums = []
+    album_list = call_with_error_adapter do
+      api.call_method('smugmug.albums.get', :Extras => 'Passworded,PasswordHint,Password')
+    end
+    album_list.each do |sm_album|
+      zz_album = create_album(identity, sm_album[:title])
+      photos = import_folder(api, params.merge(:album_id => zz_album.id, :sm_album_id =>"#{sm_album[:id]}_#{sm_album[:key]}"))
+      zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id, :photos => photos}
+    end
+    JSON.fast_generate(zz_albums)
+  end
+
   def index
     fire_async_response('list_albums')
   end
 
   def import
     fire_async_response('import_album')
+  end
+
+  def import_all
+    fire_async_response('import_all_albums')
   end
 
 end

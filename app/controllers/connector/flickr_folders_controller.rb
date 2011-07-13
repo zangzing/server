@@ -49,6 +49,23 @@ class Connector::FlickrFoldersController < Connector::FlickrController
     bulk_insert(photos)
   end
 
+  def self.import_all_albums(api_client, params)
+    identity = params[:identity]
+    zz_albums = []
+    folders_response = call_with_error_adapter do
+      api_client.photosets.getList
+    end
+    unless folders_response.empty?
+      folders_response.each do |fl_album|
+        zz_album = create_album(identity, fl_album.title)
+        photos = import_folder(api_client, params.merge(:album_id => zz_album.id, :set_id => fl_album.id))
+        zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id, :photos => photos}
+
+      end
+    end
+    JSON.fast_generate(zz_albums)
+  end
+
 
   def index
     fire_async_response('list_albums')
@@ -56,5 +73,9 @@ class Connector::FlickrFoldersController < Connector::FlickrController
   
   def import
     fire_async_response('import_album')
+  end
+
+  def import_all
+    fire_async_response('import_all_albums')
   end
 end
