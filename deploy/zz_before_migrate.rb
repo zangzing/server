@@ -70,6 +70,9 @@ if [:solo, :app_master, :app].include?(zz_role)
   move_assets(assets)
 end
 
+x = nil
+x.testbad
+
 # stop any resque workers if downtime
 if zz[:deploy_downtime]
   run "sudo monit stop all -g resque_photos"
