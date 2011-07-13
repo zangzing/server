@@ -38,15 +38,6 @@ execute "test_chef_custom_hook" do
   command "ls -al #{zz_release_dir}"
 end
 
-run "ls -al #{zz_release_dir}"
-run "ls -al #{zz_release_dir}"
-run "ls -al #{zz_release_dir}"
-run "ls -al #{zz_release_dir}"
-run "ls -al #{zz_release_dir}"
-run "ls -al #{zz_release_dir}"
-run "ls -al #{zz_release_dir}"
-run "ls -al #{zz_release_dir}"
-
 def move_assets(assets)
   env = zz_rails_env
   puts "Deploy environment is #{env}"
