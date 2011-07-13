@@ -70,7 +70,7 @@ if zz[:deploy_downtime]
 end
 
 # The following is only done on machines that host
-# the app server.  No need to to on util machines.
+# the app server.  No need to do on util machines.
 if [:solo, :app_master, :app].include?(zz_role)
   # move custom assets based on deploy environment
   assets = [
