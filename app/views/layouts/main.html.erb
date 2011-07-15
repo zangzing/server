@@ -120,6 +120,11 @@
       /* Vars our js fns need from ruby (calls/conditionals) - NO SECURE DATA
       ----------------------------------------------------------------------- */
 <%    if signed_in?  -%>
+      <% if  session[:impersonation_mode] == true %>
+        $('#system-message-banner span#banner-text').text('WARNING: Impersonating "<%= "#{current_user.username} #{ current_user.name}" %>" please logout.')
+                .css('color','red').css('text-decoration','blink');
+        $('body').css('background-color', '#FF9999').addClass( 'show-system-message-banner');
+      <%end %>
       zz.current_user_id = '<%= current_user.id %>';
       zz.current_user_name = '<%= escape_javascript current_user.username %>';
 <%    end -%>

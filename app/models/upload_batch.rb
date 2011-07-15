@@ -169,9 +169,9 @@ class UploadBatch < ActiveRecord::Base
 
         # if not forced, all photos are ready, then notify
         # if forced, notify only if there are ready photos
-        @notify = true
+        notify = self.photos.count > 0
         if force
-          @notify = force_split_of_pending_photos
+          notify = force_split_of_pending_photos
         end
 
         # now mark the albums as ok to display since it has completed at least one batch
@@ -181,7 +181,7 @@ class UploadBatch < ActiveRecord::Base
         #send album shares even if there were no photos uploaded
         shares.each { |share| share.deliver }
 
-        if @notify
+        if notify
           #Create Activity
           ua = UploadActivity.create( :user => self.user, :subject => album, :upload_batch => self )
           album.activities << ua
