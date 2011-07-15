@@ -324,9 +324,12 @@ Server::Application.routes.draw do
         get   'guests/:id'                       => 'guests#show',                :as => :guest
         put   'guests/:id/activate'              => 'guests#activate',            :as => :activate_guest
         get   'users'                            => 'users#index',                :as => :users
+        get   'users/unimpersonate'              => 'users#unimpersonate',        :as => :admin_unimpersonate
         get   'users/:id'                        => 'users#show',                 :as => :admin_user_show
         put   'users/:id/activate'               => 'users#activate',             :as => :admin_activate_user
         put   'users/:id/reset_password'         => 'users#reset_password',       :as => :admin_reset_password
+        put   'users/:id/impersonate'            => 'users#impersonate',          :as => :admin_impersonate
+
     end
 
     #Resque: mount the resque server

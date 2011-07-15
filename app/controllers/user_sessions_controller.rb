@@ -36,9 +36,12 @@ class UserSessionsController < ApplicationController
   end
 
   def destroy
-    current_user_session.destroy
-#    flash.now[:notice] = "Logout successful!"
-    redirect_back_or_default root_url
+    if  session[:impersonation_mode] == true
+      redirect_to admin_unimpersonate_url
+    else
+      current_user_session.destroy
+      redirect_back_or_default root_url
+    end
   end
 
 

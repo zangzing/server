@@ -181,7 +181,12 @@ class AlbumsController < ApplicationController
 
 # This is effectively the users homepage
   def index
-    @user = User.find(params[:user_id])
+    begin
+      @user = User.find(params[:user_id])
+    rescue ActiveRecord::RecordNotFound => e
+      render :file => "#{Rails.root}/public/404.html", :layout => false, :status => 404
+      return
+    end
 
     store_last_home_page @user.id
 
