@@ -1,5 +1,20 @@
 require 'digest/sha1'
 
+# Subscriptions
+#
+# Subscriptions records are kept for all email addresses to which we have sent email.
+# Subscription records allow users and non-user to unsubscribe from our service.
+#
+# Testing for user.nil? is the preferred method to find out  which subscriptions are assoicated to a user
+# and which are only tracking known emails.
+#
+# When a user is created we review existing subscriptions and if a record exists for
+# their email, the subscription record is associated to them otherwise a new one is created.
+#
+# Methods in this class must work for user and non-user subscription records.
+#
+
+
 class Subscriptions< ActiveRecord::Base
   attr_accessible :email, :user_id,
                   :want_marketing_email, :want_news_email, :want_social_email, :want_status_email, :want_invites_email
@@ -16,7 +31,9 @@ class Subscriptions< ActiveRecord::Base
   end
 
   after_commit( :if => :update_mailing_list_user? ) do
-      ZZ::Async::MailingListSync.enqueue( 'update_user', @update_mailing_list_user , user.id )
+      if user
+        ZZ::Async::MailingListSync.enqueue( 'update_user', @update_mailing_list_user , user.id )
+      end
       @update_mailing_list_user = nil
   end
 
@@ -114,20 +131,28 @@ class Subscriptions< ActiveRecord::Base
   # When the marketing preferences change, update subscriptions to marketing mailing lists
   def want_marketing_email=( period )
     write_attribute( :want_marketing_email, period )
-    if self.want_marketing_email_changed?
-      if period.to_i == NEVER
+
+    # Subscriptions records are kept for emails (with no associated users) and
+    # for emails with associated users, if it is a user then update mailing lists
+    if user
+      if self.want_marketing_email_changed?
+        if period.to_i == NEVER
           #unsubscribe from mailing lists
           ZZ::Async::MailingListSync.enqueue('unsubscribe_user', Email::MARKETING, user.id )
         else
           #subscribe to marketing mailing lists
           ZZ::Async::MailingListSync.enqueue('subscribe_user', Email::MARKETING, user.id )
         end
+      end
     end
   end
 
   # When the news preferences change, update subscriptions to news mailing lists
   def want_news_email=( period )
-      write_attribute( :want_news_email, period )
+    write_attribute( :want_news_email, period )
+    # Subscriptions records are kept for emails (with no associated users) and
+    # for emails with associated users, if it is a user then update mailing lists
+    if user
       if self.want_news_email_changed?
         if period.to_i == NEVER
           #unsubscribe from mailing lists
@@ -137,6 +162,7 @@ class Subscriptions< ActiveRecord::Base
           ZZ::Async::MailingListSync.enqueue('subscribe_user', Email::NEWS, user.id )
         end
       end
+    end
   end
 
 

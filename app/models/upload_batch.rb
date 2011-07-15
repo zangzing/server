@@ -146,6 +146,9 @@ class UploadBatch < ActiveRecord::Base
     end
   end
 
+
+
+
   # returns true if we are done
   # set the force flag to true if you want to finalized regardless of the
   # current state
@@ -166,9 +169,9 @@ class UploadBatch < ActiveRecord::Base
 
         # if not forced, all photos are ready, then notify
         # if forced, notify only if there are ready photos
-        @notify = true
+        notify = self.photos.count > 0
         if force
-          @notify = force_split_of_pending_photos
+          notify = force_split_of_pending_photos
         end
 
         # now mark the albums as ok to display since it has completed at least one batch
@@ -178,7 +181,7 @@ class UploadBatch < ActiveRecord::Base
         #send album shares even if there were no photos uploaded
         shares.each { |share| share.deliver }
 
-        if @notify
+        if notify
           #Create Activity
           ua = UploadActivity.create( :user => self.user, :subject => album, :upload_batch => self )
           album.activities << ua
@@ -227,6 +230,11 @@ class UploadBatch < ActiveRecord::Base
           # for streaming album always include viewers and contributors
           if album.stream_to_email?
             viewers ||= album.viewers(false)     # these are already strings, so no need to convert
+
+            if viewers.length > 0
+              zza.track_event('album.stream.email')
+            end
+
             update_notification_list |= viewers
           end
 
@@ -255,11 +263,13 @@ class UploadBatch < ActiveRecord::Base
           # stream to facebook
           if album.stream_to_facebook?
             ZZ::Async::StreamingAlbumUpdate.enqueue_facebook_post(self.id)
+            zza.track_event('album.stream.facebook')
           end
 
           # stream to twitter
           if album.stream_to_twitter?
             ZZ::Async::StreamingAlbumUpdate.enqueue_twitter_post(self.id)
+            zza.track_event('album.stream.twitter')
           end
 
 
@@ -314,6 +324,14 @@ class UploadBatch < ActiveRecord::Base
     end
 
     return (ready.length > 0)
+  end
+
+  def zza
+    return @zza if @zza
+    @zza = ZZ::ZZA.new
+    @zza.user = self.album.user.id
+    @zza.user_type = 1
+    @zza
   end
 
 
