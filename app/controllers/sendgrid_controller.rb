@@ -81,7 +81,7 @@ class SendgridController < ApplicationController
         from           = Mail::Address.new( params[:from].to_slug.to_ascii.to_s  )
         album_name     = to.local
         user_username  = to.domain.split('.')[0]
-        subject        = params[:subject] || '' #to be used as the caption
+        subject        = params[:subject] #to be used as the caption
 
         # FIND ALBUM
         # using the info in the to address, find an album
@@ -211,7 +211,7 @@ class SendgridController < ApplicationController
   end
 
   # take the incoming file attachments and make photos out of them
-  def add_photos(album, user, attachments, caption="")
+  def add_photos(album, user, attachments, caption=nil)
     if attachments.count > 0
       photos = []
       current_batch = UploadBatch.get_current_and_touch( user.id, album.id )
@@ -228,7 +228,7 @@ class SendgridController < ApplicationController
                 :user_id => user.id,
                 :album_id => album.id,
                 :upload_batch_id => current_batch.id,
-                :caption => caption,
+                :caption => ( caption && caption.length > 0 ? caption : fast_local_image["original_name"]),
                 :source => 'email',
                 #create random uuid for this photo
                 :source_guid => "email:"+UUIDTools::UUID.random_create.to_s})
