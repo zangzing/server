@@ -81,6 +81,7 @@ class SendgridController < ApplicationController
         from           = Mail::Address.new( params[:from].to_slug.to_ascii.to_s  )
         album_name     = to.local
         user_username  = to.domain.split('.')[0]
+        subject        = params[:subject] || '' #to be used as the caption
 
         # FIND ALBUM
         # using the info in the to address, find an album
@@ -99,7 +100,7 @@ class SendgridController < ApplicationController
         if attachments.count > 0 && @album
           user = @album.get_contributor_user_by_email( from.address )
           if user
-            add_photos(@album, user, attachments)
+            add_photos(@album, user, attachments, subject)
           else
             logger.error "Received a contribution email from an address that is not a contributor. Sending error email"
             ZZ::Async::Email.enqueue(:contribution_error, from.address )
@@ -210,7 +211,7 @@ class SendgridController < ApplicationController
   end
 
   # take the incoming file attachments and make photos out of them
-  def add_photos(album, user, attachments)
+  def add_photos(album, user, attachments, caption="")
     if attachments.count > 0
       photos = []
       current_batch = UploadBatch.get_current_and_touch( user.id, album.id )
@@ -227,7 +228,7 @@ class SendgridController < ApplicationController
                 :user_id => user.id,
                 :album_id => album.id,
                 :upload_batch_id => current_batch.id,
-                :caption => fast_local_image["original_name"],
+                :caption => caption,
                 :source => 'email',
                 #create random uuid for this photo
                 :source_guid => "email:"+UUIDTools::UUID.random_create.to_s})
