@@ -232,7 +232,7 @@ class AttachedImage
       # now that we have pulled in the original file, use it to generate the resized photos all in one call
       file_map = generate_resized_files(original_file_path, image_id)
 
-    rescue => ex
+    rescue Exception => ex
       Rails.logger.debug("Photo resizing failed: " + ex)
       raise ex
     ensure
@@ -274,7 +274,7 @@ class AttachedImage
     begin
     file_map = resize_photos
     upload_photos(file_map)
-    rescue => ex
+    rescue Exception => ex
       Rails.logger.debug("Photo resizing and upload failed: " + ex)
       raise ex
     ensure
