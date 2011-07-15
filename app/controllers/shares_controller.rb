@@ -68,7 +68,7 @@ class SharesController < ApplicationController
       # if sharing album by album owner, then add recipients to group
       if @subject.is_a?(Album)
         album = @subject
-        if album.user == current_user
+        if album.admin?( current_user.id )
           emails.each { |email| album.add_viewer( email )}
         end
       end
