@@ -5,6 +5,12 @@
 class ZZDeployEnvironment
   # creates an instance, looks for ey dna.json first and then
   # zz_config_dna.json
+
+  # returns the singleton for the environment
+  def self.env
+    @@env ||= ZZDeployEnvironment.new
+  end
+
   #todo Change this to only open zz_config_dna.json once we
   # are fully moved to Amazon
   #
@@ -13,12 +19,12 @@ class ZZDeployEnvironment
     node = nil
     fname = "/home/deploy/dna.json"
     if File.exists?( fname )
-      node =  ActiveSupport::JSON.decode( File.read(fname))
+      node =  JSON.parse( File.read(fname))
     end
     if node.nil?
       # now try zz dna
       fname = File.dirname(__FILE__) + "/../config/zz_app_dna.json"
-      node =  ActiveSupport::JSON.decode( File.read(fname))
+      node =  JSON.parse( File.read(fname))
       node.recursively_symbolize_keys!
     end
     if node.nil?

@@ -8,7 +8,7 @@ silence_warnings do #To avoid warning of overwriting constant
   # until we transition completely to amazon support
   # both EY and zz style dna.json
   # If we have the zz form that takes precedence
-  zz_deploy_environment = ZZDeployEnvironment.new
+  zz_deploy_environment = ZZDeployEnvironment.env
   zconfig.deploy_environment = zz_deploy_environment # make it available for use later
 
   # set up command path

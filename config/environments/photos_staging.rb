@@ -43,7 +43,9 @@ Server::Application.configure do
   config.action_mailer.logger = nil
 
 
-  app_host = config.application_host
+  zz = ZZDeployEnvironment.env.zz
+  app_host = zz[:group_config][:vhost]
+  puts "App host is: #{app_host}"
   ActionController::Base.asset_host = "%d.assets.#{app_host}"
 
 end
