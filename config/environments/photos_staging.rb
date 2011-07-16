@@ -43,6 +43,7 @@ Server::Application.configure do
   config.action_mailer.logger = nil
 
 
-  ActionController::Base.asset_host = "%d.assets.staging.photos.zangzing.com"
+  app_host = config.application_host
+  ActionController::Base.asset_host = "%d.assets.#{app_host}"
 
 end
