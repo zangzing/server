@@ -40,16 +40,16 @@ silence_warnings do #To avoid warning of overwriting constant
     ENV["RAILS_ASSET_ID"] = zconfig.zangzing_version.strip
   end
 
+  zconfig.application_host = zz_deploy_environment.app_host
   msg << "=> ZangZing Initializer"
   msg << "      Task started at             : " + Time.now.to_s
   msg << "      Tempfile Directory          : " + Dir.tmpdir
   msg << "      Command Path                : " + ZZ::CommandLineRunner.command_path
   msg << "      Path                        : " + ENV['PATH']
-  msg << "      Resque_CPU_hosts            : " + zz_deploy_environment.resque_cpu_host_names.to_s
+  msg << "      Resque_CPU_hosts            : " + zz_deploy_environment.resque_cpu_host_names.join(',')
   msg << "      Redis_host                  : " + zz_deploy_environment.redis_host_name
-  msg << "      Memcached hosts             : " + MemcachedConfig.server_list.to_s
+  msg << "      Memcached hosts             : " + MemcachedConfig.server_list.join(',')
   if zz_deploy_environment.is_ey?
-    zconfig.application_host = dna['engineyard']['environment']['apps'][0]['vhosts'][0]['domain_name']
     msg << "      ZangZing Server deployed at : EngineYard"
     msg << "      EngineYard environment      : "+dna['engineyard']['environment']['name']
     msg << "      Host public AWS name        : " + dna['engineyard']['environment']['instances'][0]['public_hostname']
@@ -61,7 +61,6 @@ silence_warnings do #To avoid warning of overwriting constant
     msg << "      Source Version (from git)   : " + zconfig.zangzing_version
   elsif zz[:dev_machine] == false
     # deployed at amazon
-    zconfig.application_host = zz[:group_config][:vhost]
     zconfig.album_email_host = zz[:group_config][:email_host]
     msg << "      ZangZing Server deployed at : Amazon"
     msg << "      Deploy Group                : "+ zz[:deploy_group_name]

@@ -63,6 +63,10 @@ class ZZDeployEnvironment
     !is_zz?
   end
 
+  def app_host
+    is_zz? ? group_config[:vhost] : ey['environment']['apps'][0]['vhosts'][0]['domain_name']
+  end
+
   # determine if this instance should host
   # the redis server
   # true - yes we should install redis here
