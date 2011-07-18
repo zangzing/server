@@ -3,7 +3,7 @@ class UserSessionsController < ApplicationController
 
 
   before_filter :only => [:new, :create]
-  before_filter :require_user, :only => :destroy
+#  before_filter :require_user, :only => :destroy
 
   layout false
 
@@ -36,11 +36,15 @@ class UserSessionsController < ApplicationController
   end
 
   def destroy
-    if  session[:impersonation_mode] == true
-      redirect_to admin_unimpersonate_url
+    if current_user
+      if  session[:impersonation_mode] == true
+        redirect_to admin_unimpersonate_url
+      else
+        current_user_session.destroy
+        redirect_back_or_default root_url
+      end
     else
-      current_user_session.destroy
-      redirect_back_or_default root_url
+        redirect_to root_url
     end
   end
 
