@@ -1,1 +1,0 @@
-before running agent selenium tests, add these folders to your /My Pictures folder 
