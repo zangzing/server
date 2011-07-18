@@ -17,8 +17,10 @@ var async_ajax = {
                 logger.debug(pollUrl);
 
                 if(pollUrl){
+                    webdriver.enter_async();  //allows webdriver to wait for ajax polling to complete
                     setTimeout(function(){
                         makeCall(pollUrl);
+                        webdriver.leave_async();
                     }, self.DELAY);
                 }
                 else{
