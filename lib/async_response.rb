@@ -24,8 +24,8 @@ class AsyncResponse
       #fetches response from memcache (or null)
       Rails.cache.read(response_id)
     end
-    
-    def store_error(response_id, exception)
+
+    def build_error_json(exception)
       info = {
         :exception => true,
         :code => case exception.class.name
@@ -35,8 +35,13 @@ class AsyncResponse
         end,
         :message => exception.message
       }
+      JSON.fast_generate(info)
+    end
+    
+    def store_error(response_id, exception)
+      error_json = build_error_json(exception)
       Rails.logger.info("AsyncResponse Exception: #{exception.class.name} - #{exception.message}\n#{exception.backtrace}")
-      Rails.cache.write(response_id, JSON.fast_generate(info), :expires_in => RESPONSE_EXPIRES_IN)
+      Rails.cache.write(response_id, error_json, :expires_in => RESPONSE_EXPIRES_IN)
     end
 
   end

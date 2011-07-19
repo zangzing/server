@@ -323,11 +323,16 @@ class Photo < ActiveRecord::Base
   # for now we just do rotation in the future
   # change to support more functionality
   def start_async_edit(rotate_to)
+    raise "Cannot rotate until photo is loaded or ready." unless loaded? || ready?
+
+    rotate_to = rotate_to.to_i
+    raise "Rotation out of range, must be 0-359, you specified: #{rotate_to}" unless (0..359) === rotate_to
+
     Rails.logger.debug("Sending async rotation request.")
     queued_at = Time.now
     self.generate_queued_at = queued_at
-    self.rotate_to = rotate_to.to_i
-    self.mark_loaded    # debatable whether we really want this, because it might be best to keep in ready state so others can see...
+    self.rotate_to = rotate_to
+    #mark_loaded    # debatable whether we really want this, because it might be best to keep in current (most likely ready) state so others can see...
     save!(false)  # don't want any cleanup since we are operating on an already upload file
     response_id = AsyncResponse.new_response_id
     ZZ::Async::GenerateThumbnails.enqueue_for_edit(self.id, queued_at.to_i, response_id)

@@ -306,10 +306,14 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
   # rotation via the photos.json
   #
   def async_edit
-    rotate_to = params[:rotate_to]
-    # queue up the rotate
-    response_id = @photo.start_async_edit(rotate_to)
-
+    begin
+      rotate_to = params[:rotate_to]
+      # queue up the rotate
+      response_id = @photo.start_async_edit(rotate_to)
+    rescue Exception => ex
+      render_json_error(ex)
+      return
+    end
     render_async_response_json response_id
   end
 
