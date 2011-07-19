@@ -273,6 +273,8 @@ class AttachedImage
   def resize_and_upload_photos
     begin
     file_map = resize_photos
+    time_stamp = Time.now
+    self.updated_at = Time.now
     upload_photos(file_map)
     rescue Exception => ex
       Rails.logger.debug("Photo resizing and upload failed: " + ex)

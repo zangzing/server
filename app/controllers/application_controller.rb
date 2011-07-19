@@ -371,4 +371,10 @@ class ApplicationController < ActionController::Base
     render :nothing => true
   end
 
+  # standard json response form for async result polling
+  def render_async_response_json(response_id)
+    response_url = async_response_url(response_id)
+    response.headers["x-poll-for-response"] = response_url
+    render :json => {:message => "poll-for-response", :response_id => response_id, :response_url => response_url}
+  end
 end

@@ -9,6 +9,12 @@ class AsyncResponse
       "AsyncResponse-#{SecureRandom.hex(16).to_s}"
     end
 
+    # takes a hash and converts to json
+    def store_response_hash(response_id, hash)
+      response_json = JSON.fast_generate(hash)
+      store_response(response_id, response_json)
+    end
+
     def store_response(response_id, response)
       #stores response in memcache
       Rails.cache.write(response_id, response, :expires_in => RESPONSE_EXPIRES_IN)
@@ -30,7 +36,7 @@ class AsyncResponse
         :message => exception.message
       }
       Rails.logger.info("AsyncResponse Exception: #{exception.class.name} - #{exception.message}\n#{exception.backtrace}")
-      Rails.cache.write(response_id, info.to_json, :expires_in => RESPONSE_EXPIRES_IN)
+      Rails.cache.write(response_id, JSON.fast_generate(info), :expires_in => RESPONSE_EXPIRES_IN)
     end
 
   end
