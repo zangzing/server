@@ -3,9 +3,9 @@
 #
 
 class AlbumsController < ApplicationController
-  before_filter :require_user,              :except => [ :index, :back_to_index, :my_albums_json, :liked_albums_json, :my_albums_public_json, :liked_albums_public_json, :liked_users_public_albums_json, :invalidate_cache ]
+  before_filter :require_user,              :except => [ :index, :back_to_index, :my_albums_json, :liked_albums_json, :my_albums_public_json, :liked_albums_public_json, :liked_users_public_albums_json, :invalidate_cache, :mobile_versions ]
   before_filter :require_user_json,         :only =>   [ :my_albums_json, :liked_albums_json, :invalidate_cache ]
-  before_filter :require_album,             :except => [ :index, :create, :new, :my_albums_json, :liked_albums_json, :my_albums_public_json, :liked_albums_public_json, :liked_users_public_albums_json, :invalidate_cache  ]
+  before_filter :require_album,             :except => [ :index, :create, :new, :my_albums_json, :liked_albums_json, :my_albums_public_json, :liked_albums_public_json, :liked_users_public_albums_json, :invalidate_cache, :mobile_versions  ]
   before_filter :require_album_admin_role,  :only =>   [ :destroy, :edit, :update, :add_group_members ]
 
   # displays the "Select album type screen" used in the wizard
@@ -179,7 +179,8 @@ class AlbumsController < ApplicationController
     render :json => get_group_members
   end
 
-# This is effectively the users homepage
+
+  # This is effectively the users homepage
   def index
     begin
       @user = User.find(params[:user_id])
@@ -210,6 +211,7 @@ class AlbumsController < ApplicationController
     @my_albums_path = my_albums_path(versions)
     @liked_albums_path = liked_albums_path(versions)
     @liked_users_albums_path = liked_users_albums_path(versions)
+    @sess_versions = nil
     @session_user_liked_albums_path = nil
 
     # When showing the view for a user who is not the current user we
@@ -223,8 +225,8 @@ class AlbumsController < ApplicationController
       # ok, we have a valid session user and we are viewing somebody else so pull in our liked_albums
       sess_loader = Cache::Album::Manager.shared.make_loader(current_user, false)
       sess_loader.pre_fetch_albums
-      sess_versions = sess_loader.current_versions
-      @session_user_liked_albums_path = liked_albums_path(sess_versions)
+      @sess_versions = sess_loader.current_versions
+      @session_user_liked_albums_path = liked_albums_path(@sess_versions)
     end
 
 
@@ -250,6 +252,23 @@ class AlbumsController < ApplicationController
 
     #Setup badge vars
     @badge_name = @user.name
+
+    respond_to do | format |
+      format.html{ render }
+      format.json{ render :json =>{
+           :user_id                        => versions.user_id,
+           :public                         => versions.public,
+           :my_albums                      => versions.my_albums,
+           :my_albums_path                 => @my_albums_path,
+           :liked_albums                   => versions.liked_albums,
+           :liked_albums_path              => @liked_albums_path,
+           :liked_users_albums             => versions.liked_users_albums,
+           :liked_users_albums_path        => @liked_users_albums_path,
+           :session_user_liked_albums      => (@sess_versions? @sess_versions.liked_users_albums : nil ),
+           :session_user_liked_albums_path => @session_user_liked_albums_path
+          }
+      }
+    end
   end
 
   # invalidate the current cache for this user - essentially a forced cache flush version change

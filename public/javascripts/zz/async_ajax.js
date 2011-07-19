@@ -14,10 +14,10 @@ var async_ajax = {
             var success = function(data, status, request){
                 var pollUrl = request.getResponseHeader('x-poll-for-response');
 
-                logger.debug(pollUrl);
-
                 if(pollUrl){
+                    webdriver.enter_async();  //allows webdriver to wait for ajax polling to complete
                     setTimeout(function(){
+                        webdriver.leave_async();
                         makeCall(pollUrl);
                     }, self.DELAY);
                 }
@@ -30,7 +30,6 @@ var async_ajax = {
             makeCall = function(callUrl){
                 calls ++;
 
-                logger.debug('making call ' + calls);
                 if(calls > self.MAX_CALLS){
                     failure_callback("timeout");
                 }

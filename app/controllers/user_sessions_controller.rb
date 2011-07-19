@@ -1,9 +1,10 @@
 class UserSessionsController < ApplicationController
-  ssl_required :new, :create
+  ssl_required :new, :create, :mobile_create
+  skip_filter  :verify_authenticity_token, :only => [:mobile_create]
 
 
   before_filter :only => [:new, :create]
-  before_filter :require_user, :only => :destroy
+#  before_filter :require_user, :only => :destroy
 
   layout false
 
@@ -36,13 +37,41 @@ class UserSessionsController < ApplicationController
   end
 
   def destroy
-    if  session[:impersonation_mode] == true
-      redirect_to admin_unimpersonate_url
+    if current_user
+      if  session[:impersonation_mode] == true
+        redirect_to admin_unimpersonate_url
+      else
+        current_user_session.destroy
+        redirect_back_or_default root_url
+      end
     else
-      current_user_session.destroy
-      redirect_back_or_default root_url
+        redirect_to root_url
     end
   end
+
+  def mobile_create
+      @user_session = UserSession.new(:email => params[:email], :password => params[:password], :remember_me => false)
+      if @user_session.save
+        render :json => { :user_credentials => @user_session.record.single_access_token,
+                          :user_id =>  @user_session.record.id,
+                          :username => @user_session.record.username 
+        }
+      else
+        errors_to_headers( @user_session )
+        head :status => 401
+       end
+  end
+
+  def mobile_destroy
+      if current_user
+          current_user_session.destroy
+      end
+      head :status => 200
+  end
+
+
+
+
 
 
   def inactive
