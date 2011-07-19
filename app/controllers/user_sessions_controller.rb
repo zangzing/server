@@ -52,7 +52,10 @@ class UserSessionsController < ApplicationController
   def mobile_create
       @user_session = UserSession.new(:email => params[:email], :password => params[:password], :remember_me => false)
       if @user_session.save
-        render :json => { :user_credentials => @user_session.record.single_access_token, :user_id =>  @user_session.record.id }
+        render :json => { :user_credentials => @user_session.record.single_access_token,
+                          :user_id =>  @user_session.record.id,
+                          :username => @user_session.record.username 
+        }
       else
         errors_to_headers( @user_session )
         head :status => 401
