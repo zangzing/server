@@ -319,6 +319,26 @@ class Photo < ActiveRecord::Base
     end
   end
 
+  # prepare and queue up an async rotate
+  # for now we just do rotation in the future
+  # change to support more functionality
+  def start_async_edit(rotate_to)
+    raise "Cannot rotate until photo is loaded or ready." unless loaded? || ready?
+
+    rotate_to = rotate_to.to_i
+    raise "Rotation out of range, must be 0-359, you specified: #{rotate_to}" unless (0..359) === rotate_to
+
+    Rails.logger.debug("Sending async rotation request.")
+    queued_at = Time.now
+    self.generate_queued_at = queued_at
+    self.rotate_to = rotate_to
+    #mark_loaded    # debatable whether we really want this, because it might be best to keep in current (most likely ready) state so others can see...
+    save!(false)  # don't want any cleanup since we are operating on an already upload file
+    response_id = AsyncResponse.new_response_id
+    ZZ::Async::GenerateThumbnails.enqueue_for_edit(self.id, queued_at.to_i, response_id)
+    return response_id
+  end
+
   #
   # resize the original into various sizes and then
   # upload the newly sized files to s3
@@ -578,8 +598,11 @@ class Photo < ActiveRecord::Base
           end
 
           # see if we should add any initial rotation based on the
-          # camera orientation info
-          self.rotate_to = orientation_as_rotation(self.orientation)
+          # camera orientation info  - if rotation is already set
+          # then do not change it - allows upload process to specify
+          # any rotation wanted, useful for cases such as fetching zz photos
+          # from the connector and not losing any existing rotation info
+          self.rotate_to ||= orientation_as_rotation(self.orientation)
 
         end
       end
@@ -631,6 +654,7 @@ class Photo < ActiveRecord::Base
       :id => photo.id,
       :caption => photo.caption,
       :state => photo.state,
+      :rotate_to => photo.rotate_to.nil? ? 0 : photo.rotate_to,
       :source_guid => photo.source_guid,
       :upload_batch_id => photo.upload_batch_id,
       :user_id => photo.user_id,
@@ -745,7 +769,7 @@ class PhotoAttachedImage < AttachedImage
   # until the custom_metadata call occurs
   #
   def custom_commands
-    rotate_to = model.rotate_to
+    rotate_to = model.rotate_to.nil? ? 0 : model.rotate_to
     if rotate_to != 0
       "-rotate #{rotate_to}"
     else
@@ -768,7 +792,7 @@ class PhotoAttachedImage < AttachedImage
   # is where you want to change the model state
   def custom_metadata
     custom_meta = custom_metadata_original
-    rotate_to = model.rotate_to
+    rotate_to = model.rotate_to.nil? ? 0 : model.rotate_to
     if rotate_to != 0
       custom_meta["x-amz-meta-rotate"] = rotate_to.to_s
     end

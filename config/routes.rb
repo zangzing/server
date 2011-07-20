@@ -118,6 +118,7 @@ Server::Application.routes.draw do
     get    '/photos/download/:id'           => 'photos#download',                   :as => :download_photo
     put    '/photos/:id'                    => 'photos#update',                     :as => :update_photo
     put    '/photos/:id/position'           => 'photos#position',                   :as => :photo_position
+    put    '/photos/:id/async_edit'         => 'photos#async_edit',                 :as => :photo_async_edit
 
     #activities
     get '/albums/:album_id/activities' => 'activities#album_index', :as => :album_activities
@@ -300,6 +301,14 @@ Server::Application.routes.draw do
     post   '/sendgrid/unsubscribe'   => 'sendgrid#un_subscribe',:as => :sendgrid_unsubscribe
     post   '/sendgrid/events'        => 'sendgrid#events',      :as => :sendgrid_events
 
+    # ====================================================================================================
+    # ============================================= MOBILE_API  ==========================================
+    # ====================================================================================================
+    scope  '/mobile', :defaults => { :format => 'json' } do
+      post  '/login'                 => 'user_sessions#mobile_create'
+      match '/logout'                => 'user_sessions#mobile_destroy'
+      get   '/users/:user_id/albums' => 'albums#index'
+    end
 
 
     # ====================================================================================================
@@ -318,7 +327,7 @@ Server::Application.routes.draw do
         put   'settings'                         => 'system_settings#update'
         get   'homepage'                         => 'homepage#show',              :as => :homepage
         put   'homepage'                         => 'homepage#update'
-
+  
         get   'guests'                           => 'guests#index',               :as => :guests
         post  'guests(.:format)'                 => 'guests#create'
         get   'guests/:id'                       => 'guests#show',                :as => :guest

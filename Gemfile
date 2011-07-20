@@ -1,7 +1,7 @@
 source :gemcutter
 #source 'http://gems.github.com'
 
-# bundler requires these gems in all environments
+# bundler requires these gems in all environments -
 gem "bundler", ">=1.0.14"
 gem "rails", "3.0.3"
 gem "unicorn"
