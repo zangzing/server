@@ -153,7 +153,49 @@ class SendgridController < ApplicationController
         zza.track_event("#{category}.#{event}", {:email => email })
       #TODO: Process SpamReport
       when 'click'
-        zza.track_event("#{category}.#{event}", {:email => email }, nil, nil, nil, params['url'])
+        url = params['url']
+
+        # send generic click event for email category
+        zza.track_event("#{category}.#{event}", {:email => email }, nil, nil, nil, url)
+
+
+        # create another click event that identifies the specific link back to zangzing.com
+        if(url.match("^http[s]?://[^/]*.zangzing.com"))
+
+         # need to remove "/#!..." and trailing "/" from url before resolving route
+          cleaned_url = url.gsub(/\/#!.*|\/$/,'')
+          begin
+            route = Rails.application.routes.recognize_path(cleaned_url)
+            link_name = nil
+
+            if route[:controller]=="albums" && route[:action]=="index"
+              link_name = "user_homepage_url"
+            elsif route[:controller]=="photos" && route[:action]=="index"
+              if url.include?("/#!")
+                link_name = "album_photo_url"
+              else
+                link_name = "album_grid_url"
+              end
+            elsif route[:controller]=="activities" && route[:action]=="album_index"
+              link_name = "album_activities_url"
+            elsif route[:controller]=="likes" && route[:action]=="like" && route[:user_id]
+              link_name = "like_user_url"
+            end
+
+            if link_name
+              zza.track_event("#{category}.#{link_name}.click", {:email => email }, nil, nil, nil, url)
+            end
+          rescue ActionController::RoutingError => e
+            #unrecognized route
+            logger.error "could not find route for #{cleaned_url}"
+            logger.info e.backtrace
+          end
+        end
+
+
+
+
+
       when 'unsubscribe'
         zza.track_event("#{category}.#{event}", {:email => email })
       else

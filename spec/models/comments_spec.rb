@@ -24,6 +24,10 @@ describe Comment do
     commentable = Commentable.find(commentable.id)
     commentable.comments.length.should eql(2)
     commentable.comments_count.should eql(2)
+
+    
+
+
   end
 
   it "should include user information in json" do
