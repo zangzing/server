@@ -23,7 +23,7 @@
 # compatible.
 #
 
-#run "sudo monit restart all -g resque_photos"
+run "sudo monit restart -g resque_photos"
 
 
 

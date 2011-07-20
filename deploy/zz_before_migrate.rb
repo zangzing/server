@@ -67,7 +67,7 @@ end
 
 # stop any resque workers if downtime
 if zz[:deploy_downtime]
-  run "sudo monit stop all -g resque_photos"
+  run "sudo monit stop -g resque_photos"
 end
 
 # The following is only done on machines that host
