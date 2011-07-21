@@ -207,19 +207,19 @@ class Notifier < ActionMailer::Base
       format.text { render :inline => @template.text_content }
       format.html { render :inline => @template.html_content }
     end
-    @log_entry =  "EMAIL SENT === #{template_name} to #{@to_address}"
+    log_entry =  "EMAIL SENT === #{template_name} to #{@to_address}"
     if @user
-      @log_entry += " Triggered by  #{@user.username} (#{@user.id})"
+      log_entry += " Triggered by  #{@user.username} (#{@user.id})"
     else
-      @log_entry += " Automatically "
+      log_entry += " Automatically "
     end
     if @album
-      @log_entry += " About album #{@album.name} (#{@album.id})"
+      log_entry += " About album #{@album.name} (#{@album.id})"
     end
     if @batch
-      @log_entry +=" UploadBatch (#{@batch.id})  with #{@batch.photos.count} photos"
+      log_entry +=" UploadBatch (#{@batch.id})  with #{@batch.photos.count} photos"
     end
-    logger.info @log_entry
+    logger.info log_entry
   end
 
   def set_destination_link( recipient, destination_url )
