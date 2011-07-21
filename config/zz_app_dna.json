@@ -1,0 +1,48 @@
+{
+  "public_hostname": "localhost",
+  "app_name": "photos",
+  "dev_machine": true,
+  "instances": {
+    "local": {
+      "public_hostname": "localhost",
+      "role": "local",
+      "local_hostname": "localhost"
+    }
+  },
+  "app_config": {
+    "we_host_app_server": true,
+    "redis_host": "localhost",
+    "resque_cpus": [
+      "localhost"
+    ],
+    "we_host_resque_worker": true,
+    "we_host_resque_cpu": true,
+    "resque_workers": [
+      "localhost"
+    ],
+    "we_host_resque_scheduler": true,
+    "we_host_db": true,
+    "all_servers": [
+      "localhost"
+    ],
+    "app_servers": [
+      "localhost"
+    ],
+    "db": "localhost",
+    "resque_scheduler": "localhost",
+    "we_host_redis": true
+  },
+  "instance_id": "local",
+  "deploy_user": "gseitz",
+  "root_group": "admin",
+  "group_config": {
+    "app_name": "photos",
+    "rails_env": "development",
+    "vhost": "localhost"
+  },
+  "deploy_role": "local",
+  "local_hostname": "localhost",
+  "deploy_what": "config",
+  "deploy_group": "ec2-user",
+  "root_user": "root"
+}

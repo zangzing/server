@@ -12,5 +12,5 @@ rescue LoadError
   STDERR.puts "Resque not installed. bundle install or gem install resque"
 end
 
-
+include Rake::DSL
 Server::Application.load_tasks

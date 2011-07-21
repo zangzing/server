@@ -118,6 +118,7 @@ Server::Application.routes.draw do
     get    '/photos/download/:id'           => 'photos#download',                   :as => :download_photo
     put    '/photos/:id'                    => 'photos#update',                     :as => :update_photo
     put    '/photos/:id/position'           => 'photos#position',                   :as => :photo_position
+    put    '/photos/:id/async_edit'         => 'photos#async_edit',                 :as => :photo_async_edit
 
     #activities
     get '/albums/:album_id/activities' => 'activities#album_index', :as => :album_activities
