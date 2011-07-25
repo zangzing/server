@@ -119,6 +119,8 @@ Server::Application.routes.draw do
     put    '/photos/:id'                    => 'photos#update',                     :as => :update_photo
     put    '/photos/:id/position'           => 'photos#position',                   :as => :photo_position
     put    '/photos/:id/async_edit'         => 'photos#async_edit',                 :as => :photo_async_edit
+    put    '/photos/:id/async_rotate_left'  => 'photos#async_rotate_left',          :as => :photo_async_rotate_left
+    put    '/photos/:id/async_rotate_right' => 'photos#async_rotate_right',         :as => :photo_async_rotate_right
 
     #activities
     get '/albums/:album_id/activities' => 'activities#album_index', :as => :album_activities

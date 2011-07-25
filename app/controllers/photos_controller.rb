@@ -12,7 +12,7 @@ class PhotosController < ApplicationController
   # oauthenticate :strategies => :two_legged, :interactive => false, :only =>   [ :upload_fast ]
 
   before_filter :require_album,                   :only =>   [ :agent_create, :index, :movie, :photos_json, :photos_json_invalidate ]
-  before_filter :require_photo,                   :only =>   [ :destroy, :update, :position, :async_edit, :download ]
+  before_filter :require_photo,                   :only =>   [ :destroy, :update, :position, :async_edit, :async_rotate_left, :async_rotate_right, :download ]
 
   before_filter :require_album_admin_role,                :only =>   [ :update, :position ]
   before_filter :require_photo_owner_or_album_admin_role, :only =>   [ :destroy, :async_edit ]
@@ -316,6 +316,34 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
     end
     render_async_response_json response_id
   end
+
+  def async_rotate_left
+    rotate_to = @photo.rotate_to.to_i - 90
+    if(rotate_to == -90)
+      rotate_to = 270
+    end
+
+    params[:rotate_to] = rotate_to
+
+    async_edit
+  end
+
+
+  def async_rotate_right
+    rotate_to = @photo.rotate_to.to_i + 90
+    if(rotate_to == 360)
+      rotate_to = 0
+    end
+
+    params[:rotate_to] = rotate_to
+
+    async_edit
+  end
+
+
+
+
+
 
   # @photo and @album are  set by require_photo before_filter
   def download

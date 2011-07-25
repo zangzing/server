@@ -357,6 +357,13 @@
             }
         },
 
+        changeSrc: function(src, previewSrc){
+            var self = this;
+            self.options.src = src;
+            self.options.previewSrc = previewSrc;
+            self.options.aspectRatio = null;
+            self._loadImage();
+        },
 
         _loadImage : function(){
             var self = this;
