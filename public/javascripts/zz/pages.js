@@ -76,7 +76,7 @@ pages.album_name_tab = {
                             }
                         });
                     }
-                }, 800);
+                }, 1200);
             });
 
             //setup album cover picker

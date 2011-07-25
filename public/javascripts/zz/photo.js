@@ -249,9 +249,13 @@
                             if( o.infoMenuStyle ){
                                 var menu_template = infomenu.download_template;
                                 switch( o.infoMenuStyle ){
-                                    case 'owner'   :
-                                        menu_template = infomenu.owner_template;
+                                    case 'album-owner'   :
+                                        menu_template = infomenu.album_owner_template;
                                         break;
+                                    case 'photo-owner' :
+                                        menu_template = infomenu.photo_owner_template;
+                                        break;
+
                                     case 'download':
                                         menu_template = infomenu.download_template;
                                         break;
@@ -357,6 +361,13 @@
             }
         },
 
+        changeSrc: function(src, previewSrc){
+            var self = this;
+            self.options.src = src;
+            self.options.previewSrc = previewSrc;
+            self.options.aspectRatio = null;
+            self._loadImage();
+        },
 
         _loadImage : function(){
             var self = this;

@@ -29,8 +29,8 @@ Server::Application.configure do
 #    # Enable threaded mode
 #  config.threadsafe!
 
-  # override location of temp directory on EY servers
-  ENV['TMPDIR'] = '/mnt/tmp'
+  # override location of temp directory for our rails app
+  ENV['TMPDIR'] = '/data/tmp'
 
   # set up location of file upload directory
   # this should be on EBS backed storage for production

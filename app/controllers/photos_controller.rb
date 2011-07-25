@@ -7,15 +7,15 @@ class PhotosController < ApplicationController
   skip_before_filter :verify_authenticity_token,  :only =>   [ :agent_index, :agent_create, :upload_fast, :simple_upload_fast]
 
   
-  before_filter :require_user,                    :only =>   [ :destroy, :update, :position, :download ]  #for interactive users
+  before_filter :require_user,                    :only =>   [ :destroy, :update, :position, :async_edit, :download ]  #for interactive users
   before_filter :oauth_required,                  :only =>   [ :agent_create, :agent_index ]   #for agent
   # oauthenticate :strategies => :two_legged, :interactive => false, :only =>   [ :upload_fast ]
 
   before_filter :require_album,                   :only =>   [ :agent_create, :index, :movie, :photos_json, :photos_json_invalidate ]
-  before_filter :require_photo,                   :only =>   [ :destroy, :update, :position, :download ]
+  before_filter :require_photo,                   :only =>   [ :destroy, :update, :position, :async_edit, :async_rotate_left, :async_rotate_right, :download ]
 
   before_filter :require_album_admin_role,                :only =>   [ :update, :position ]
-  before_filter :require_photo_owner_or_album_admin_role, :only =>   [ :destroy ]
+  before_filter :require_photo_owner_or_album_admin_role, :only =>   [ :destroy, :async_edit ]
   before_filter :require_album_contributor_role,          :only =>   [ :agent_create  ]
   before_filter :require_album_viewer_role,               :only =>   [ :index, :movie, :photos_json  ]
 
@@ -39,6 +39,7 @@ start_time = Time.now
     file_size_map     = params[:size]
     capture_date_map  = params[:capture_date]
     source_map        = params[:source]
+    rotate_to         = params[:rotate_to]    # optional initial rotation leave null to use rotation in file
 
     # optimize by ensuring we have the number of ids we need up front
     current_id = Photo.get_next_id(photo_count)
@@ -57,6 +58,7 @@ start_time = Time.now
                                     :source_screen_url =>   Photo.make_agent_source('screen', current_id, album_id),
                                     :source_guid       =>   source_guid_map[i_s],
                                     :source            =>   safe_hash_default(source_map, i_s, nil),
+                                    :rotate_to         =>   rotate_to,
                                     :caption           =>   safe_hash_default(caption_map, i_s, ""),
                                     :image_file_size   =>   file_size_map[i_s],
                                     :capture_date      =>   Time.at( max_safe_epoch_time(safe_hash_default(capture_date_map, i_s, 0).to_i) )
@@ -123,6 +125,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
         :upload_batch_id => current_batch.id,
         :caption => params[:fast_local_image][0][:original_name],
         :source => params[:source],
+        :rotate_to => params[:rotate_to],
         :source_guid => "simpleuploader:"+UUIDTools::UUID.random_create.to_s})
 
     photo.file_to_upload = params[:fast_local_image][0][:filepath]
@@ -228,7 +231,10 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
       cache_version = 0 if cache_version.nil?
 
       comp_flag = gzip_compress ? "Z1" : "Z0"
-      cache_key = "Album.Photos.#{comp_flag}.#{@album.id}.#{cache_version}"
+      # change the vN parm below anytime you make a change
+      # to the basic cache structure such as adding new
+      # data to the returned info
+      cache_key = "Album.Photos.#{comp_flag}.v2.#{@album.id}.#{cache_version}"
 
       logger.debug 'cache key: ' + cache_key
       json = Rails.cache.read(cache_key)
@@ -288,6 +294,56 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
     @photo.position_between( params[:before_id], params[:after_id])
     render :nothing => true
   end
+
+  # Called to start an async rotate
+  #
+  # Expects param: rotate_to=degs
+  # degs is specified as the clockwise rotation from 0, so 90 deg right
+  # is 90, 90 deg left is 270, upside down is 180.  You should examine
+  # the current rotation on the photo to determine the absolute rotation.
+  # for instance if the photo is already rotated 90 degreees and you want to
+  # rotate 90 more you need to pass 180.  You can obtain the current
+  # rotation via the photos.json
+  #
+  def async_edit
+    begin
+      rotate_to = params[:rotate_to]
+      # queue up the rotate
+      response_id = @photo.start_async_edit(rotate_to)
+    rescue Exception => ex
+      render_json_error(ex)
+      return
+    end
+    render_async_response_json response_id
+  end
+
+  def async_rotate_left
+    rotate_to = @photo.rotate_to.to_i - 90
+    if(rotate_to == -90)
+      rotate_to = 270
+    end
+
+    params[:rotate_to] = rotate_to
+
+    async_edit
+  end
+
+
+  def async_rotate_right
+    rotate_to = @photo.rotate_to.to_i + 90
+    if(rotate_to == 360)
+      rotate_to = 0
+    end
+
+    params[:rotate_to] = rotate_to
+
+    async_edit
+  end
+
+
+
+
+
 
   # @photo and @album are  set by require_photo before_filter
   def download

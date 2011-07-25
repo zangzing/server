@@ -192,10 +192,6 @@ class SendgridController < ApplicationController
           end
         end
 
-
-
-
-
       when 'unsubscribe'
         zza.track_event("#{category}.#{event}", {:email => email })
       else

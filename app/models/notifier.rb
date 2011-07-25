@@ -11,10 +11,10 @@ class Notifier < ActionMailer::Base
   end
 
   def photos_ready( batch_id, template_id = nil )
-    batch   = UploadBatch.find( batch_id )
-    @user   = batch.user
-    @album  = batch.album
-    @photos = batch.photos
+    @batch   = UploadBatch.find( batch_id )
+    @user    = @batch.user
+    @album   = @batch.album
+    @photos  = @batch.photos
     @recipient = @user
     @album_url = album_pretty_url( @album )
     vcard = Vpim::Vcard::Maker.make2 do |vc|
@@ -104,7 +104,8 @@ class Notifier < ActionMailer::Base
   def album_updated( from_user_id, to_address_or_id, album_id, batch_id,  template_id = nil )
     @album     = Album.find( album_id )
     @user      = User.find( from_user_id )
-    @photos = UploadBatch.find( batch_id ).photos
+    @batch     = UploadBatch.find( batch_id )
+    @photos    = @batch.photos
     # if to_address_or_id is an email, we already know that the email is not a user yet.
     rcp_user = User.find_by_id( to_address_or_id )
     @recipient = ( rcp_user ? rcp_user : to_address_or_id )
@@ -206,8 +207,19 @@ class Notifier < ActionMailer::Base
       format.text { render :inline => @template.text_content }
       format.html { render :inline => @template.html_content }
     end
-     logger.info "MAIL SENT:  #{template_name} to: #{@to_address} triggered by "+
-     "#{( @user? @user.username : 'notifications system')}"
+    log_entry =  "EMAIL SENT === #{template_name} to #{@to_address}"
+    if @user
+      log_entry += " Triggered by  #{@user.username} (#{@user.id})"
+    else
+      log_entry += " Automatically "
+    end
+    if @album
+      log_entry += " About album #{@album.name} (#{@album.id})"
+    end
+    if @batch
+      log_entry +=" UploadBatch (#{@batch.id})  with #{@batch.photos.count} photos"
+    end
+    logger.info log_entry
   end
 
   def set_destination_link( recipient, destination_url )

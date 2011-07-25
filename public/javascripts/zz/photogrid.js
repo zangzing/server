@@ -39,7 +39,7 @@
 
             showButtonBar: false,          //model
             showInfoMenu : false,
-            infoMenuStyle: false,         //album model
+            infoMenuStyleResolver: function(){return false;}, //album model
 
             onClickShare: jQuery.noop
 //            spaceBarTriggersClick: true
@@ -151,7 +151,7 @@
                     context:       o.context,
                     type: _.isUndefined(photo.type) ? 'photo': photo.type,
                     showButtonBar: o.showButtonBar,
-                    infoMenuStyle:  o.infoMenuStyle,
+                    infoMenuStyle:  o.infoMenuStyleResolver(photo),
                     onClickShare:  o.onClickShare
                 });
 
