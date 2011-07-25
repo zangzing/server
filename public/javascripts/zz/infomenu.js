@@ -1,13 +1,21 @@
 var infomenu = {
 
-    owner_template: '<ul>'+
+    album_owner_template: '<ul>'+
             '<li class="download"><a href="#download">Download</a></li>'+
-//           '<li class="privacy"><a href="#privacy">Privacy</a></li>'+
+
             '<li class="rotater"><a href="#rotater">Right</a></li>'+
             '<li class="rotatel"><a href="#rotatel">Left</a></li>'+
             '<li class="setcover"><a href="#setcover">Set Cover</a></li>'+
             '<li class="delete"><a href="#deletephoto">Delete</a></li>'+
             '</ul>',
+
+    photo_owner_template: '<ul>'+
+            '<li class="download"><a href="#download">Download</a></li>'+
+            '<li class="rotater"><a href="#rotater">Right</a></li>'+
+            '<li class="rotatel"><a href="#rotatel">Left</a></li>'+
+            '<li class="delete"><a href="#deletephoto">Delete</a></li>'+
+            '</ul>',
+
 
     download_template: '<ul>'+
                 '<li class="download"><a href="#download">Download</a></li>'+

@@ -395,13 +395,23 @@ zz.init = {
                         photo.src = agent.checkAddCredentialsToUrl(photo.thumb_url);
                     }
 
-                    var infoMenuStyle = false;
-                    if(zz.displayed_user_id == zz.current_user_id){
-                         infoMenuStyle = 'owner';
-                    }else if(zz.current_user_can_download ) {
-                        infoMenuStyle = 'download';
+                    var infoMenuStyleResolver = function(photo_json){
+                        if(zz.displayed_user_id == zz.current_user_id){
+                             return'album-owner';
+                        }
+                        else if(photo_json.user_id == zz.current_user_id){
+                            return 'photo-owner';
+                        }
+                        else if(zz.current_user_can_download ) {
+                            return 'download';
+                        }
+                        else{
+                            return false
+                        }
+
                     }
-                    
+
+
                     var grid = gridElement.zz_photogrid({
                         photos:json,
                         allowDelete: false,
@@ -425,7 +435,7 @@ zz.init = {
                         },
                         currentPhotoId: $.param.fragment(),
                         showButtonBar:true,
-                        infoMenuStyle: infoMenuStyle
+                        infoMenuStyleResolver: infoMenuStyleResolver
                     }).data().zz_photogrid;
 
 
@@ -621,7 +631,7 @@ zz.init = {
 
                     var infoMenuStyle = false;
                     if(zz.displayed_user_id == zz.current_user_id){
-                        infoMenuStyle = 'owner';
+                        infoMenuStyle = 'album-owner';
                     }else if(zz.current_user_can_download ) {
                         infoMenuStyle = 'download';
                     }
