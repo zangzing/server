@@ -3,7 +3,7 @@ source :gemcutter
 
 # bundler requires these gems in all environments -
 gem "bundler", ">=1.0.14"
-gem "rails", "3.0.3"
+gem "rails", "3.0.9"
 gem "unicorn"
 gem "dynamic_form"
 gem "require_all"                 # lets us pull in everything for our resque tasks
@@ -15,8 +15,15 @@ gem 'activerecord-import', '~>0.2'  # bulk database inserts
 gem 'syslogger',     "1.2.5", :git => 'git://github.com/zangzing/syslogger.git'
 
 gem 'oauth',         "0.4.5.pre2", :git => 'git://github.com/zangzing/oauth-ruby.git'
-gem "oauth-plugin", ">=0.4.0.pre1"
+gem "oauth-plugin", "0.4.0.pre4"
 
+gem 'spree_core', '0.60.1'
+gem 'spree_dash', '0.60.1'
+gem 'spree_sample', '0.60.1'
+gem "spree_zangzing", :require => "spree_zangzing", :path => "../commerce/spree_zangzing"
+
+
+gem 'faraday',      '0.5.4'
 gem 'i18n'
 gem 'aws-s3',        '>= 0.6.2', :require => 'aws/s3' # S3
 gem 'redis',        '~>2.1'
