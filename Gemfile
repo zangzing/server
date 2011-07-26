@@ -5,17 +5,19 @@ source :gemcutter
 gem "bundler", ">=1.0.14"
 gem "rails", "3.0.9"
 gem "unicorn"
-gem "dynamic_form"
-gem "require_all"                 # lets us pull in everything for our resque tasks
 gem "mysql2"
 gem 'authlogic',     '2.1.6'
+gem "friendly_id",   "3.2.1.1"                       #User-friendly links to albums and users' pages
 gem 'uuidtools'
 gem 'activerecord-import', '~>0.2'  # bulk database inserts
+gem "dynamic_form"
+gem "require_all"                 # lets us pull in everything for our resque tasks
 
 gem 'syslogger',     "1.2.5", :git => 'git://github.com/zangzing/syslogger.git'
 
 gem 'oauth',         "0.4.5.pre2", :git => 'git://github.com/zangzing/oauth-ruby.git'
 gem "oauth-plugin", "0.4.0.pre4"
+
 
 gem 'spree_core', '0.60.1'
 gem 'spree_dash', '0.60.1'
@@ -30,9 +32,7 @@ gem 'redis',        '~>2.1'
 gem 'resque',       '1.9.10'                          # Async work jobs
 gem 'resque-retry'
 gem 'SystemTimer'                                     # For Random numbers (resque uuid)
-gem 'actionmailer'
 gem 'will_paginate',        '3.0.pre2'                        # Pagination
-gem "friendly_id",   "3.1.8"                           #User-friendly links to albums and users' pages
 gem 'gdata',         '1.1.1'  						  # Google Data
 gem 'twitter_oauth'   		                          # Twitter 
 gem 'hyper-graph',   '0.3.1', :require=>'hyper_graph' # Facebook

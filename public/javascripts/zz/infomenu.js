@@ -6,6 +6,7 @@ var infomenu = {
 //           '<li class="rotater"><a href="#rotater">Right</a></li>'+
 //           '<li class="rotatel"><a href="#rotatel">Left</a></li>'+
             '<li class="setcover"><a href="#setcover">Set Cover</a></li>'+
+            '<li class="rotater"><a href="#add_to_cart">Add To Cart</a></li>'+
             '<li class="delete"><a href="#deletephoto">Delete</a></li>'+
             '</ul>',
 
@@ -38,6 +39,9 @@ var infomenu = {
             case 'setcover':
                 zzapi_album.set_cover( zz.album_id, id,
                         function(){ zz.toolbars.load_album_cover( photo.options.previewSrc); });
+                break;
+            case 'add_to_cart':
+                zzapi_photo.add_to_cart( id, function(){}, function(){});
                 break;
             case 'deletephoto':
                 photo.delete_photo();

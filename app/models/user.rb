@@ -56,6 +56,10 @@ class User < ActiveRecord::Base
   has_many :client_applications, :dependent => :destroy 
   has_many :tokens, :class_name=>"OauthToken",:order=>"authorized_at desc",:include=>[:client_application]
 
+
+  belongs_to :ship_address, :foreign_key => "ship_address_id", :class_name => "Address"
+  belongs_to :bill_address, :foreign_key => "bill_address_id", :class_name => "Address"
+
   # This delegates all authentication details to authlogic
   acts_as_authentic do |c|
     c.validates_confirmation_of_password_field_options = {:if => :require_password?, :on => :update }
@@ -305,6 +309,31 @@ class User < ActiveRecord::Base
       "#{self.name} <#{self.email}>"
   end
 
+  def self.anonymous!
+    token = User.generate_token(:persistence_token)
+    user = find_by_email_or_create_automatic( "#{token}@example.net" )
+    user.persistence_token = token
+    user.save
+    user
+  end
+
+  def anonymous?
+    email =~ /@example.net$/
+  end
+
+  # Generate a friendly string randomically to be used as token.
+  def self.friendly_token
+    ActiveSupport::SecureRandom.base64(15).tr('+/=', '-_ ').strip.delete("\n")
+  end
+
+  # Generate a token by looping and ensuring does not already exist.
+  def self.generate_token(column)
+    loop do
+      token = friendly_token
+      break token unless find(:first, :conditions => { column => token })
+    end
+  end
+  
 
   private
   def old_password_valid?
@@ -405,5 +434,7 @@ class User < ActiveRecord::Base
       end
     end
   end
+
+
 
 end

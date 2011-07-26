@@ -59,6 +59,10 @@ var zzapi_photo = {
         });
     },
 
+    add_to_cart: function( photo_id, success, error ){
+        
+    },
+
     download: function( photo_id, success, error ){
         var url = zz.path_prefix + "/photos/download/" + photo_id;
         $.ajax({

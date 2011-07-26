@@ -388,7 +388,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
     begin
       #will trhow exception if params[:album_id] is not defined or album not found
       if params[:user_id]
-        @album = Album.find(params[:album_id], :scope => params[:user_id])
+        @album = User.find( params[:user_id] ).albums.find(params[:album_id] )
       else
         @album = Album.find( params[:album_id] )
       end
