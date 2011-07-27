@@ -5,6 +5,7 @@ require 'zz/nginx_tempfile'
 require 'zz/picon'
 require 'zz/zza'
 require 'zz/email_validator'
+require 'zz/auth'
 
 module ZZ
 
