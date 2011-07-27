@@ -124,10 +124,10 @@ Server::Application.routes.draw do
 
 
     #comments
-    get  '/photos/:photo_id/comments'               => 'comments#index',     :as => :photo_comments
-    get  '/photos/:photo_id/comments/metadata'      => 'comments#metadata',  :as => :photo_comments_metadata
-    post '/photos/:photo_id/comments/:comment_id'   => 'comments#create',    :as => :create_photo_comment
-    delete '/photos/:photo_id/comments/:comment_id' => 'comments#destroy',   :as => :destroy_photo_comment
+    get  '/photos/:photo_id/comments'                      => 'comments#index',            :as => :photo_comments
+    get  '/albums/:album_id/photos/comments/metadata'      => 'comments#photos_metadata',  :as => :photo_comments_metadata
+    post '/photos/:photo_id/comments/:comment_id'          => 'comments#create',           :as => :create_photo_comment
+    delete '/photos/:photo_id/comments/:comment_id'        => 'comments#destroy',          :as => :destroy_photo_comment
 
 
     #activities

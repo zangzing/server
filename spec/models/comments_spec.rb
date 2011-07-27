@@ -38,4 +38,13 @@ describe Comment do
     commentable.comments_as_hash[:comments][0][:user][:first_name].should_not be_nil
     commentable.comments_as_hash[:comments][0][:user][:last_name].should_not be_nil
   end
+
+  it "should return metadata for all photos in album" do
+    Album.stub!(:find).and_return(Factory(:album_with_photos))
+    hash = Commentable.metadata_for_album_as_hash(12345)
+    puts hash.to_s
+
+  end
+
+
 end

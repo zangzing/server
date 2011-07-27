@@ -3,10 +3,13 @@ class CommentsController < ApplicationController
   before_filter :require_album
   before_filter :require_album_viewer_role
   
-  def metadata
-    commentable = Commentable.find_or_create_by_photo_id(@photo.id)
-    render :json=>JSON.fast_generate(commentable.metadata_as_hash)
+
+
+
+  def photos_metadata
+    render :json=>JSON.fast_generate(Commentable.metadata_for_album_as_hash(params[:album_id]))
   end
+
 
 
   def index

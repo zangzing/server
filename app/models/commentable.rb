@@ -6,6 +6,24 @@ class Commentable < ActiveRecord::Base
     self.find_or_create_by_subject_type_and_subject_id('photo', photo_id)
   end
 
+  def self.find_by_photo_id(photo_id)
+    self.find_by_subject_type_and_subject_id('photo', photo_id)
+  end
+
+  def self.metadata_for_album_as_hash(album_id)
+    album = Album.find(album_id)
+    results = []
+    album.photos.each do |photo|
+      commentable = Commentable.find_by_photo_id(photo.id)
+      if commentable
+        results << commentable.metadata_as_hash
+      end
+    end
+
+    return results
+  end
+
+
   def metadata_as_hash
     return self.attributes
   end
