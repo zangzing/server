@@ -528,7 +528,12 @@
                 return self.options.currentPhotoId;
             }
             else{
-                return self.options.photos[0].id;
+                if(self.options.photos.length > 0){
+                    return self.options.photos[0].id;
+                }
+                else{
+                    return null;
+                }
             }
 
         },
