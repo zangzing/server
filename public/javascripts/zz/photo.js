@@ -151,14 +151,12 @@
             if(o.isUploading && !o.isError){
                 self.uploadingElement    = $('<div class="photo-uploading-icon">');
                 self.borderElement.append( self.uploadingElement );
-                self.uploadingElement.show();
             }
 
             //error glyph
             if(o.isError){
                 self.errorElement = $('<div class="photo-error-icon">');
                 self.borderElement.append( self.errorElement );
-                self.errorElement.show();
             }
 
             //edit caption
