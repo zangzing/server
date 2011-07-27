@@ -5,10 +5,12 @@ var webdriver = {
 
     enter_async: function(){
         this.async_count+=1;
+        logger.debug('enter async: ' + this.async_count);
     },
 
     leave_async: function(){
         this.async_count-=1;
+        logger.debug('leave async: ' + this.async_count);
     },
 
     javascript_done: function(){

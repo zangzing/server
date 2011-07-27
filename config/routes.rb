@@ -122,6 +122,14 @@ Server::Application.routes.draw do
     put    '/photos/:id/async_rotate_left'  => 'photos#async_rotate_left',          :as => :photo_async_rotate_left
     put    '/photos/:id/async_rotate_right' => 'photos#async_rotate_right',         :as => :photo_async_rotate_right
 
+
+    #comments
+    get  '/photos/:photo_id/comments'               => 'comments#index',     :as => :photo_comments
+    get  '/photos/:photo_id/comments/metadata'      => 'comments#metadata',  :as => :photo_comments_metadata
+    post '/photos/:photo_id/comments/:comment_id'   => 'comments#create',    :as => :create_photo_comment
+    delete '/photos/:photo_id/comments/:comment_id' => 'comments#destroy',   :as => :destroy_photo_comment
+
+
     #activities
     get '/albums/:album_id/activities' => 'activities#album_index', :as => :album_activities
     get '/users/:user_id/activities'   => 'activities#user_index'

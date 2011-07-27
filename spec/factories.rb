@@ -5,7 +5,7 @@ Factory.define :user do |user|
   user.sequence(:username) {|n| "user#{n}"}
   user.sequence(:email)    {|n| "user#{n}@test.zangzing.com"}
   user.password            "password"
-  user.perishable_token    {|n| "token#{n}"}
+  user.perishable_token    {|n| "token-#{n}"}
 end
 
 # created a Factory sequence
@@ -21,5 +21,12 @@ end
 
 Factory.define :photo do |photo|
   photo.association :album
-  
+  photo.association :user
+  photo.association :upload_batch
+  photo.sequence(:id) {|n| n}
+end
+
+Factory.define :upload_batch do |upload_batch|
+  upload_batch.association :album
+  upload_batch.association :user
 end

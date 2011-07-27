@@ -25,9 +25,6 @@ describe Comment do
     commentable.comments.length.should eql(2)
     commentable.comments_count.should eql(2)
 
-    
-
-
   end
 
   it "should include user information in json" do
@@ -37,13 +34,8 @@ describe Comment do
     comment.user = @user
     comment.save
 
-
-    commentable.as_json[:comments][0][:user][:profile_photo_url].should_not be_nil
-    commentable.as_json[:comments][0][:user][:first_name].should_not be_nil
-    commentable.as_json[:comments][0][:user][:last_name].should_not be_nil
-
-
-
+    commentable.comments_as_hash[:comments][0][:user][:profile_photo_url].should_not be_nil
+    commentable.comments_as_hash[:comments][0][:user][:first_name].should_not be_nil
+    commentable.comments_as_hash[:comments][0][:user][:last_name].should_not be_nil
   end
-
 end

@@ -6,7 +6,11 @@ class Commentable < ActiveRecord::Base
     self.find_or_create_by_subject_type_and_subject_id('photo', photo_id)
   end
 
-  def as_json
+  def metadata_as_hash
+    return self.attributes
+  end
+
+  def comments_as_hash
     commentable_hash = self.attributes
     commentable_hash[:comments] = []
 
