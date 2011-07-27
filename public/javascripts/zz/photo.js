@@ -28,7 +28,7 @@
             isUploading:false,           //model
             isError:false,               //model
             showButtonBar:false,         //model
-            infoMenuStyle: false,        // show InfoMenu or not and what style
+            infoMenuTemplate: null,        // show InfoMenu or not and what style
 //            onClickShare: jQuery.noop,     //model
 //            noShadow:false,              //context / type
 //            lazyLoad:true ,              //context / type
@@ -217,7 +217,7 @@
                                     '<div class="buttons">' +
                                     '<div class="button share-button"></div>' +
                                     '<div class="button like-button zzlike" data-zzid="'+o.photoId+'" data-zztype="photo"><div class="zzlike-icon thumbdown"></div></div>';
-                            if(  o.infoMenuStyle ){
+                            if(  o.infoMenuTemplate ){
                                 toolbarTemplate +=        '<div class="button info-button"></div>';
                             }
 
@@ -246,21 +246,7 @@
                             like.draw_tag( self.toolbarElement.find('.like-button') );
 
                             // info button
-                            if( o.infoMenuStyle ){
-                                var menu_template = infomenu.download_template;
-                                switch( o.infoMenuStyle ){
-                                    case 'album-owner'   :
-                                        menu_template = infomenu.album_owner_template;
-                                        break;
-                                    case 'photo-owner' :
-                                        menu_template = infomenu.photo_owner_template;
-                                        break;
-
-                                    case 'download':
-                                        menu_template = infomenu.download_template;
-                                        break;
-                                }
-
+                            if( o.infoMenuTemplate ){
 
                                 self.toolbarElement.find('.info-button').zz_menu(
                                 {   zz_photo:          self,
@@ -270,7 +256,7 @@
                                     style:             'auto',
                                     bind_click_open:   true,
                                     append_to_element: false, //use the el zzindex so overflow goes under bottom toolbar
-                                    menu_template:     menu_template,
+                                    menu_template:     o.infoMenuTemplate,
                                     click:             infomenu.click_handler,
                                     open:  function(){ menuOpen = true; },
                                     close: function(){ menuOpen = false; checkCloseToolbar();}

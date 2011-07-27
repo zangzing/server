@@ -395,15 +395,25 @@ zz.init = {
                         photo.src = agent.checkAddCredentialsToUrl(photo.thumb_url);
                     }
 
-                    var infoMenuStyleResolver = function(photo_json){
+                    var intoMenuTemplateResolver = function(photo_json){
                         if(zz.displayed_user_id == zz.current_user_id){
-                             return'album-owner';
+                            if(photo_json.state == 'ready'){
+                                return infomenu.album_owner_template;
+                            }
+                            else{
+                                return infomenu.album_owner_template_photo_not_ready;
+                            }
                         }
                         else if(photo_json.user_id == zz.current_user_id){
-                            return 'photo-owner';
+                            if(photo_json.state == 'ready'){
+                                return infomenu.photo_owner_template;
+                            }
+                            else{
+                                return infomenu.photo_owner_template_photo_not_ready;
+                            }
                         }
                         else if(zz.current_user_can_download ) {
-                            return 'download';
+                            return infomenu.download_template;
                         }
                         else{
                             return false
@@ -434,7 +444,7 @@ zz.init = {
                         },
                         currentPhotoId: $.param.fragment(),
                         showButtonBar:true,
-                        infoMenuStyleResolver: infoMenuStyleResolver
+                        intoMenuTemplateResolver: intoMenuTemplateResolver
                     }).data().zz_photogrid;
 
 
@@ -628,15 +638,25 @@ zz.init = {
                         var moreLessbuttonElement = $('.viewlist .more-less-btn[data-user-id="'+userId.toString()+'"]');
                     }
 
-                    var infoMenuStyleResolver = function(photo_json){
+                    var intoMenuTemplateResolver = function(photo_json){
                         if(zz.displayed_user_id == zz.current_user_id){
-                             return'album-owner';
+                            if(photo_json.state == 'ready'){
+                                return infomenu.album_owner_template;
+                            }
+                            else{
+                                return infomenu.album_owner_template_photo_not_ready;
+                            }
                         }
                         else if(photo_json.user_id == zz.current_user_id){
-                            return 'photo-owner';
+                            if(photo_json.state == 'ready'){
+                                return infomenu.photo_owner_template;
+                            }
+                            else{
+                                return infomenu.photo_owner_template_photo_not_ready;
+                            }
                         }
                         else if(zz.current_user_can_download ) {
-                            return 'download';
+                            return infomenu.download_template;
                         }
                         else{
                             return false
@@ -665,7 +685,7 @@ zz.init = {
                             zzapi_photo.delete_photo( photo.id );
                             return true;
                         },
-                        infoMenuStyleResolver: infoMenuStyleResolver
+                        intoMenuTemplateResolver: intoMenuTemplateResolver
                     }).data().zz_photogrid;
 
 
