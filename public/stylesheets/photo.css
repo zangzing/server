@@ -175,7 +175,7 @@
     position: absolute;
     bottom: -16px;
     right: -16px;
-    display:none;
+    /*display:none;*/
     width:32px;
     height:32px;
     background-image: url("/images/photo/icon-uploading.png");
@@ -197,7 +197,7 @@
     position: absolute;
     bottom: -16px;
     right: -16px;
-    display:none;
+    /*display:none;*/
     width:32px;
     height:32px;
     background-image: url("/images/photo/icon-error.png");

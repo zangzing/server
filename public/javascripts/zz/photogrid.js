@@ -39,7 +39,7 @@
 
             showButtonBar: false,          //model
             showInfoMenu : false,
-            infoMenuStyle: false,         //album model
+            intoMenuTemplateResolver: function(){return false;}, //album model
 
             onClickShare: jQuery.noop
 //            spaceBarTriggersClick: true
@@ -151,7 +151,7 @@
                     context:       o.context,
                     type: _.isUndefined(photo.type) ? 'photo': photo.type,
                     showButtonBar: o.showButtonBar,
-                    infoMenuStyle:  o.infoMenuStyle,
+                    infoMenuTemplate:  o.intoMenuTemplateResolver(photo),
                     onClickShare:  o.onClickShare
                 });
 
@@ -528,7 +528,12 @@
                 return self.options.currentPhotoId;
             }
             else{
-                return self.options.photos[0].id;
+                if(self.options.photos.length > 0){
+                    return self.options.photos[0].id;
+                }
+                else{
+                    return null;
+                }
             }
 
         },
@@ -549,21 +554,17 @@
         scrollToPhoto: function(photoId, duration, highlightCell, callback){
             var self = this;
 
+            if(self.options.photos.length == 0){
+                return;
+            }
+
+
             var index = self.indexOfPhoto(photoId);
 
             if(index == -1){
                 index = 0;
                 photoId = self.options.photos[0].id;
             }
-
-//            if(highlightCell){
-//                var highlighted = self.cellAtIndex(index).find('.photo-border').addClass('highlighted');
-//
-//                setTimeout(function(){
-//                    highlighted.removeClass('highlighted');
-//
-//                },duration + 1500);
-//            }
 
             var onFinishAnimate = function(){
                 self.options.currentPhotoId = photoId

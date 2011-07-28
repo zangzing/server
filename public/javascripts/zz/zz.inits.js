@@ -395,13 +395,32 @@ zz.init = {
                         photo.src = agent.checkAddCredentialsToUrl(photo.thumb_url);
                     }
 
-                    var infoMenuStyle = false;
-                    if(zz.displayed_user_id == zz.current_user_id){
-                         infoMenuStyle = 'owner';
-                    }else if(zz.current_user_can_download ) {
-                        infoMenuStyle = 'download';
-                    }
-                    
+                    var intoMenuTemplateResolver = function(photo_json){
+                        if(zz.displayed_user_id == zz.current_user_id){
+                            if(photo_json.state == 'ready'){
+                                return infomenu.album_owner_template;
+                            }
+                            else{
+                                return infomenu.album_owner_template_photo_not_ready;
+                            }
+                        }
+                        else if(photo_json.user_id == zz.current_user_id){
+                            if(photo_json.state == 'ready'){
+                                return infomenu.photo_owner_template;
+                            }
+                            else{
+                                return infomenu.photo_owner_template_photo_not_ready;
+                            }
+                        }
+                        else if(zz.current_user_can_download ) {
+                            return infomenu.download_template;
+                        }
+                        else{
+                            return false
+                        }
+                    };
+
+
                     var grid = gridElement.zz_photogrid({
                         photos:json,
                         allowDelete: false,
@@ -425,7 +444,7 @@ zz.init = {
                         },
                         currentPhotoId: $.param.fragment(),
                         showButtonBar:true,
-                        infoMenuStyle: infoMenuStyle
+                        intoMenuTemplateResolver: intoMenuTemplateResolver
                     }).data().zz_photogrid;
 
 
@@ -619,13 +638,30 @@ zz.init = {
                         var moreLessbuttonElement = $('.viewlist .more-less-btn[data-user-id="'+userId.toString()+'"]');
                     }
 
-                    var infoMenuStyle = false;
-                    if(zz.displayed_user_id == zz.current_user_id){
-                        infoMenuStyle = 'owner';
-                    }else if(zz.current_user_can_download ) {
-                        infoMenuStyle = 'download';
-                    }
-
+                    var intoMenuTemplateResolver = function(photo_json){
+                        if(zz.displayed_user_id == zz.current_user_id){
+                            if(photo_json.state == 'ready'){
+                                return infomenu.album_owner_template;
+                            }
+                            else{
+                                return infomenu.album_owner_template_photo_not_ready;
+                            }
+                        }
+                        else if(photo_json.user_id == zz.current_user_id){
+                            if(photo_json.state == 'ready'){
+                                return infomenu.photo_owner_template;
+                            }
+                            else{
+                                return infomenu.photo_owner_template_photo_not_ready;
+                            }
+                        }
+                        else if(zz.current_user_can_download ) {
+                            return infomenu.download_template;
+                        }
+                        else{
+                            return false
+                        }
+                    };
 
                     var grid = $(element).zz_photogrid({
                         photos:filteredPhotos,
@@ -649,7 +685,7 @@ zz.init = {
                             zzapi_photo.delete_photo( photo.id );
                             return true;
                         },
-                        infoMenuStyle: infoMenuStyle
+                        intoMenuTemplateResolver: intoMenuTemplateResolver
                     }).data().zz_photogrid;
 
 

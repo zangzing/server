@@ -1,18 +1,36 @@
 var infomenu = {
 
-    owner_template: '<ul>'+
+    album_owner_template: '<ul>'+
             '<li class="download"><a href="#download">Download</a></li>'+
-//           '<li class="privacy"><a href="#privacy">Privacy</a></li>'+
-//           '<li class="rotater"><a href="#rotater">Right</a></li>'+
-//           '<li class="rotatel"><a href="#rotatel">Left</a></li>'+
+            '<li class="rotater"><a href="#rotater">Right</a></li>'+
+            '<li class="rotatel"><a href="#rotatel">Left</a></li>'+
             '<li class="setcover"><a href="#setcover">Set Cover</a></li>'+
             '<li class="rotater"><a href="#add_to_cart">Add To Cart</a></li>'+
             '<li class="delete"><a href="#deletephoto">Delete</a></li>'+
             '</ul>',
 
+    album_owner_template_photo_not_ready: '<ul>'+
+            '<li class="setcover"><a href="#setcover">Set Cover</a></li>'+
+            '<li class="delete"><a href="#deletephoto">Delete</a></li>'+
+            '</ul>',
+
+    photo_owner_template: '<ul>'+
+            '<li class="download"><a href="#download">Download</a></li>'+
+            '<li class="rotater"><a href="#rotater">Right</a></li>'+
+            '<li class="rotatel"><a href="#rotatel">Left</a></li>'+
+            '<li class="delete"><a href="#deletephoto">Delete</a></li>'+
+            '</ul>',
+
+    photo_owner_template_photo_not_ready: '<ul>'+
+            '<li class="delete"><a href="#deletephoto">Delete</a></li>'+
+            '</ul>',
+
+
     download_template: '<ul>'+
                 '<li class="download"><a href="#download">Download</a></li>'+
                 '</ul>',
+
+
 
     click_handler: function(event,data){
         var action  = data.action,
@@ -36,6 +54,19 @@ var infomenu = {
                     }
                 }
                 break;
+            case 'rotatel':
+                photo_manipulation.rotate_left(options.subject_id, function(json){
+                    options.zz_photo.changeSrc(json.thumb_url, json.stamp_url);
+                });
+
+                break;
+
+            case 'rotater':
+                photo_manipulation.rotate_right(options.subject_id, function(json){
+                    options.zz_photo.changeSrc(json.thumb_url, json.stamp_url);
+                });
+                break;
+
             case 'setcover':
                 zzapi_album.set_cover( zz.album_id, id,
                         function(){ zz.toolbars.load_album_cover( photo.options.previewSrc); });
