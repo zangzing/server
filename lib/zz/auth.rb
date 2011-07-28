@@ -7,200 +7,218 @@
 
 module ZZ
   module Auth
-    # Authlogic
-    # returns false or the current user session
-    def current_user_session
-      return @current_user_session if defined?(@current_user_session)
-      @current_user_session = UserSession.find
+    extend ActiveSupport::Concern
+
+    included do
+      protect_from_forgery # See ActionController::RequestForgeryProtection XSScripting protection
+
+      helper_method :current_user_session, :current_user, :current_user?,:signed_in?
+
+      # this basic filter uses a hardcoded username/password - we must turn off the
+      # AuthLogic  support with allow_http_basic_auth false on the UserSession since
+      # it can't seem to cope with a seperate scheme in rails 3
+      before_filter :protect_with_http_auth
     end
 
-    # Authlogic
-    # returns false or the current user
-    def current_user
-      return @current_user if defined?(@current_user)
-      @current_user = current_user_session && current_user_session.record
-    end
+    #No class methods to add so no module ClassMethods
 
-    # True if a user is signed in. Left in place for backwards compatibility
-    # better to use if current_user ......
-    alias_method :signed_in?, :current_user
-    alias_method :logged_in?, :current_user
-
-    # true if the given user is the current user
-    def current_user?(user)
-      user == current_user
-    end
-
-    #  Stores the intended destination of a rerquest to take the user there after log in
-    def store_location
-          session[:return_to] = request.fullpath
-    end
-
-    #
-    # Redirects the user to the desired location after log in. If no stored location then to the default location
-    def redirect_back_or_default(default)
-      redirect_to(session[:return_to] || default)
-      session[:return_to] = nil
-    end
-
-    #
-    # Filter for methods that require a log in
-    def require_user
-      unless current_user
-        if request.xhr?
-          flash.now[:error] = "You must be logged in to access this page"
-          head :status => 401
-        else
-          flash[:error] = "You must be logged in to access this page"
-          store_location
-          redirect_to new_user_session_url
-        end
+    module InstanceMethods
+      # Authlogic
+      # returns false or the current user session
+      def current_user_session
+        return @current_user_session if defined?(@current_user_session)
+        @current_user_session = UserSession.find
       end
-    end
 
-    # for act_as_authenticated compatibility with oauth plugin
-    alias_method :login_required, :require_user
-
-    # This is the json version of require user. Saves the request referer instead of the
-    # resquest fullpath so that the user returns to the page from where the xhr call originated
-    # instead of then json-location. Instead of redirecting, it just returns 401 with an informative
-    # json message that may or may not be used.
-    def require_user_json
-      unless current_user
-        session[:return_to] = request.referer
-        render :json => "You must be logged in to call this url", :status => 401
+      # Authlogic
+      # returns false or the current user
+      def current_user
+        return @current_user if defined?(@current_user)
+        @current_user = current_user_session && current_user_session.record
       end
-    end
 
+      # True if a user is signed in. Left in place for backwards compatibility
+      # better to use if current_user ......
+      alias_method :signed_in?, :current_user
+      alias_method :logged_in?, :current_user
 
-    # Filter for methods that require NO USER like sign in
-    def require_no_user
-      if current_user
-        store_location
-        flash[:notice] = "You must be logged out to access this page"
-        redirect_back_or_default root_path
+      # true if the given user is the current user
+      def current_user?(user)
+        user == current_user
       end
-    end
 
-    #
-    # An additional way to control access to certain actions like the ones that are only available to the owner
-    # TODO: Implement this if needed.
-    # Do not remove it its for act_as_Authenticated compatibility
-    #
-    def authorized?
-      true
-    end
-
-    def protect_with_http_auth
-      # see if we have http_auth turned on
-      return unless ZangZingConfig.config[:requires_http_auth]
-
-      allowed = {
-          :actions => ['photos#agent_index',
-                       'photos#agent_create',
-                       'photos#upload_fast',
-                       'photos#simple_upload_fast',
-                       'oauth#access_token',
-                       'oauth#request_token',
-                       'oauth#agentauthorize',
-                       'oauth#test_request',
-                       'oauth#test_session',
-                       'connector/local_contacts#import',
-                       'sendgrid#import_fast',
-                       'sendgrid#events',
-                       'sendgrid#un_subscribe',
-                       'pages#health_check',
-                       'agents#check',
-                       'agents#info',
-                       'agents#index',
-                       'admin/guests#create',
-
-                       #let facebook crawlers in
-                       'photos#index',
-                       'albums#index'
-          ]
-
-      }
-      unless allowed[:actions].include?("#{params[:controller]}##{params[:action]}")
-        authenticate_or_request_with_http_basic('ZangZing Photos') do |username, password|
-          username == Server::Application.config.http_auth_credentials[:login] && password == Server::Application.config.http_auth_credentials[:password]
-        end
+      #  Stores the intended destination of a rerquest to take the user there after log in
+      def store_location
+        session[:return_to] = request.fullpath
       end
-    end
 
-    #
-    # To be run as a before_filter
-
-    # Assumes @album is the album in question and current_user is the user we are evaluating
-    def require_album_admin_role
-      unless  @album.admin?( current_user.id ) || current_user.support_hero?
-        flash.now[:error] = "Only Album admins can perform this operation"
-        response.headers['X-Errors'] = flash[:error]
-        if request.xhr?
-          head :status => 401
-        else
-          render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
-        end
-        return false
+      #
+      # Redirects the user to the desired location after log in. If no stored location then to the default location
+      def redirect_back_or_default(default)
+        redirect_to(session[:return_to] || default)
+        session[:return_to] = nil
       end
-    end
 
-    #
-    # To be run as a before_filter
-    # Assumes @album is the album in question and current_user is the user we are evaluating
-    # User has viewer role if ( Album private and logged in and has viewer role ) OR
-    # ( Album not private )
-    def require_album_viewer_role
-      if @album.private?
+      #
+      # Filter for methods that require a log in
+      def require_user
         unless current_user
           if request.xhr?
-            flash.now[:notice] = "You have asked to see a password protected album. Please login so we know who you are."
-            head :status => 401 and return
-          else
-            flash[:notice] = "You have asked to see a password protected album. Please login so we know who you are."
-            store_location
-            redirect_to new_user_session_url and return
-          end
-        end
-        unless @album.viewer?( current_user.id ) || current_user.moderator?
-          if request.xhr?
-            flash[:notice] = "You have asked to see a password protected album. You do not have enough privileges to see it"
+            flash.now[:error] = "You must be logged in to access this page"
             head :status => 401
           else
-            session[:client_dialog] = album_pwd_dialog_url( @album )
-            redirect_to user_url( @album.user ) and return
+            flash[:error] = "You must be logged in to access this page"
+            store_location
+            redirect_to new_user_session_url
           end
         end
       end
-    end
 
-    #
-    # To be run as a before_filter
-    # Assumes @album is the album in question and current_user is the user we are evaluating
-    def require_album_contributor_role
-      unless  @album.contributor?( current_user.id ) || current_user.support_hero? || @album.everyone_can_contribute?
-        flash.now[:error] = "Only Contributors admins can perform this operation"
-        if request.xhr?
-          head :status => 401
-        else
-          render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
-        end
-        return false
-      end
-    end
+      # for act_as_authenticated compatibility with oauth plugin
+      alias_method :login_required, :require_user
 
-    # To be run as a before_filter
-    # Will render a 401 page if the currently logged in user is not an admin
-    def require_admin
-      unless current_user.admin?
-        flash.now[:error] = "Administrator privileges required for this operation"
-        if request.xhr?
-          head :status => 401
-        else
-          render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
+      # This is the json version of require user. Saves the request referer instead of the
+      # resquest fullpath so that the user returns to the page from where the xhr call originated
+      # instead of then json-location. Instead of redirecting, it just returns 401 with an informative
+      # json message that may or may not be used.
+      def require_user_json
+        unless current_user
+          session[:return_to] = request.referer
+          render :json => "You must be logged in to call this url", :status => 401
         end
       end
-    end
+
+
+      # Filter for methods that require NO USER like sign in
+      def require_no_user
+        if current_user
+          store_location
+          flash[:notice] = "You must be logged out to access this page"
+          redirect_back_or_default root_path
+        end
+      end
+
+      #
+      # An additional way to control access to certain actions like the ones that are only available to the owner
+      # TODO: Implement this if needed.
+      # Do not remove it its for act_as_Authenticated compatibility
+      #
+      def authorized?
+        true
+      end
+
+      def protect_with_http_auth
+        # see if we have http_auth turned on
+        return unless ZangZingConfig.config[:requires_http_auth]
+
+        allowed = {
+            :actions => ['photos#agent_index',
+                         'photos#agent_create',
+                         'photos#upload_fast',
+                         'photos#simple_upload_fast',
+                         'oauth#access_token',
+                         'oauth#request_token',
+                         'oauth#agentauthorize',
+                         'oauth#test_request',
+                         'oauth#test_session',
+                         'connector/local_contacts#import',
+                         'sendgrid#import_fast',
+                         'sendgrid#events',
+                         'sendgrid#un_subscribe',
+                         'pages#health_check',
+                         'agents#check',
+                         'agents#info',
+                         'agents#index',
+                         'admin/guests#create',
+
+                         #let facebook crawlers in
+                         'photos#index',
+                         'albums#index'
+            ]
+
+        }
+        unless allowed[:actions].include?("#{params[:controller]}##{params[:action]}")
+          authenticate_or_request_with_http_basic('ZangZing Photos') do |username, password|
+            username == Server::Application.config.http_auth_credentials[:login] && password == Server::Application.config.http_auth_credentials[:password]
+          end
+        end
+      end
+
+      #
+      # To be run as a before_filter
+
+      # Assumes @album is the album in question and current_user is the user we are evaluating
+      def require_album_admin_role
+        unless  @album.admin?( current_user.id ) || current_user.support_hero?
+          flash.now[:error] = "Only Album admins can perform this operation"
+          response.headers['X-Errors'] = flash[:error]
+          if request.xhr?
+            head :status => 401
+          else
+            render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
+          end
+          return false
+        end
+      end
+
+      #
+      # To be run as a before_filter
+      # Assumes @album is the album in question and current_user is the user we are evaluating
+      # User has viewer role if ( Album private and logged in and has viewer role ) OR
+      # ( Album not private )
+      def require_album_viewer_role
+        if @album.private?
+          unless current_user
+            if request.xhr?
+              flash.now[:notice] = "You have asked to see a password protected album. Please login so we know who you are."
+              head :status => 401 and return
+            else
+              flash[:notice] = "You have asked to see a password protected album. Please login so we know who you are."
+              store_location
+              redirect_to new_user_session_url and return
+            end
+          end
+          unless @album.viewer?( current_user.id ) || current_user.moderator?
+            if request.xhr?
+              flash[:notice] = "You have asked to see a password protected album. You do not have enough privileges to see it"
+              head :status => 401
+            else
+              session[:client_dialog] = album_pwd_dialog_url( @album )
+              redirect_to user_url( @album.user ) and return
+            end
+          end
+        end
+      end
+
+      #
+      # To be run as a before_filter
+      # Assumes @album is the album in question and current_user is the user we are evaluating
+      def require_album_contributor_role
+        unless  @album.contributor?( current_user.id ) || current_user.support_hero? || @album.everyone_can_contribute?
+          flash.now[:error] = "Only Contributors admins can perform this operation"
+          if request.xhr?
+            head :status => 401
+          else
+            render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
+          end
+          return false
+        end
+      end
+
+      # To be run as a before_filter
+      # Will render a 401 page if the currently logged in user is not an admin
+      def require_admin
+        unless current_user.admin?
+          flash.now[:error] = "Administrator privileges required for this operation"
+          if request.xhr?
+            head :status => 401
+          else
+            render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
+          end
+        end
+      end
+
+    end #Instance Methods
 
   end
 end

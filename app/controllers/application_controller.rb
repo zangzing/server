@@ -15,16 +15,9 @@ class ApplicationController < ActionController::Base
   include PrettyUrlHelper
 
   helper :all # include all helpers, all the time
-  protect_from_forgery # See ActionController::RequestForgeryProtection XSScripting protection
 
-  helper_method :current_user_session, :current_user, :current_user?,
-                :signed_in?, :user_pretty_url, :album_pretty_url,
-                :photo_pretty_url, :back_to_home_page_url, :back_to_home_page_caption
-
-  # this basic filter uses a hardcoded username/password - we must turn off the
-  # AuthLogic  support with allow_http_basic_auth false on the UserSession since
-  # it can't seem to cope with a seperate scheme in rails 3
-  before_filter :protect_with_http_auth
+  helper_method :user_pretty_url, :album_pretty_url, :photo_pretty_url,
+                :back_to_home_page_url, :back_to_home_page_caption
 
   before_filter :check_referrer_and_reset_last_home_page
 
