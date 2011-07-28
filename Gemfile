@@ -22,7 +22,7 @@ gem "oauth-plugin", "0.4.0.pre4"
 gem 'spree_core', '0.60.1'
 gem 'spree_dash', '0.60.1'
 gem 'spree_sample', '0.60.1'
-gem "spree_zangzing", :require => "spree_zangzing", :path => "../commerce/spree_zangzing"
+gem "spree_zangzing", :require => "spree_zangzing", :path => "./spree_zangzing"
 
 
 gem 'faraday',      '0.5.4'

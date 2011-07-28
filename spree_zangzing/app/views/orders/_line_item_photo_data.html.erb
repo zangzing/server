@@ -1,0 +1,18 @@
+<% if line_item.photo_data%>
+    <%= item_form.fields_for :photo_data do |photo_data| %>
+    <div>
+      <table>
+        <tr>
+          <td>
+            <%=photo_data.label :source_url, 'URL:'  %>
+            <%=photo_data.text_field :source_url%>
+          </td>
+          <td>
+            <%=photo_data.label :crop_instructions, 'Crop'  %>
+            <%=photo_data.text_field :crop_instructions%>
+          <td>
+        </tr>
+      </table>
+    </div>
+    <%end%>
+ <%end%>

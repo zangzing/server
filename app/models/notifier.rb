@@ -1,9 +1,8 @@
 class Notifier < ActionMailer::Base
   add_template_helper(PrettyUrlHelper)
   include PrettyUrlHelper
-
-  ActionMailer::Base.logger = Rails.logger
   default :charset => "utf-8"
+
   if Rails.env == 'production'
     default :from => '"ZangZing Communications" <do-not-reply@zangzing.com>'
   else
@@ -79,7 +78,7 @@ class Notifier < ActionMailer::Base
     rcp_user = User.find_by_email( to_address )
     @recipient = ( rcp_user ? rcp_user : to_address )
 
-    set_destination_link( @recipient, photo_pretty_url( @photo ) )
+    @destination_link = destination_link( @recipient, photo_pretty_url( @photo ) )
     Subscriptions.wants_email!( to_address, Email::INVITES, __method__ )
     create_message( binding(), __method__, template_id, @recipient, { :to => to_address })
   end
@@ -96,7 +95,7 @@ class Notifier < ActionMailer::Base
     rcp_user = User.find_by_email( to_address )
     @recipient = ( rcp_user ? rcp_user : to_address )
     
-    set_destination_link(  @recipient, album_pretty_url( @album ) )
+    @destination_link = destination_link(  @recipient, album_pretty_url( @album ) )
     Subscriptions.wants_email!( to_address, Email::INVITES, __method__ )
     create_message( binding(), __method__, template_id, @recipient, { :user_id => @user.id } )
   end
@@ -110,7 +109,7 @@ class Notifier < ActionMailer::Base
     rcp_user = User.find_by_id( to_address_or_id )
     @recipient = ( rcp_user ? rcp_user : to_address_or_id )
 
-    set_destination_link( @recipient, album_pretty_url( @album ) )
+    @destination_link = destination_link( @recipient, album_pretty_url( @album ) )
     Subscriptions.wants_email!( @recipient, Email::SOCIAL, __method__ )
     create_message( binding(), __method__, template_id,  @recipient, { :user_id => @user.id } )
   end
@@ -222,11 +221,11 @@ class Notifier < ActionMailer::Base
     logger.info log_entry
   end
 
-  def set_destination_link( recipient, destination_url )
+  def destination_link( recipient, destination_url )
     if recipient.is_a?(User)
-      @destination_link = "#{signin_url}?return_to=#{destination_url}&email=#{recipient.username}"
+      "#{signin_url}?return_to=#{destination_url}&email=#{recipient.username}"
     else
-      @destination_link = "#{join_url}?return_to=#{destination_url}&email=#{recipient}"
+      "#{join_url}?return_to=#{destination_url}&email=#{recipient}"
     end
   end
 end

@@ -11,7 +11,7 @@ GIT
     syslogger (1.2.5)
 
 PATH
-  remote: ../commerce/spree_zangzing
+  remote: ./spree_zangzing
   specs:
     spree_zangzing (0.60.1)
       spree_core (>= 0.60.1)

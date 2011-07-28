@@ -1,0 +1,11 @@
+ <% if ProductGroup.find_by_name('Photo Products').include?(@product)%>
+    THIS IS A PHOTO PRODUCT YES
+     <div>
+        <%=label_tag :source_url, 'URL:'  %>
+        <%=text_field_tag 'photo_data[source_url]'  %>
+     </div>
+     <div>
+        <%#=label_tag :crop_instructions, 'Crop'  %>
+        <%#=text_field_tag 'photo_data[crop_instructions]', 'Default'  %>
+    </div>
+ <%end%>
