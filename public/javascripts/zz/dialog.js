@@ -14,7 +14,7 @@ var zz_dialog = {
 
     show_progress_dialog: function(message){
         var template = '<span class="progress-dialog-content"><img src="/images/loading.gif">' + message + '</span>';
-        var dialog = zz_dialog.show_dialog(template, { width:300, height: 100, modal: true, autoOpen: true, cancelButton: false });
+        var dialog = zz_dialog.show_dialog(template, { width:300, height: 90, modal: true, autoOpen: true, cancelButton: false });
         return dialog;
     },
 

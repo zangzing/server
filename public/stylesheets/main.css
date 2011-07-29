@@ -103,8 +103,8 @@ div#container {
 #join-banner #join-button{
     position:absolute;
     top:4px;
-    right:120px;
-    width:60px;
+    right:45px;
+    width:75px;
 }
 
 
@@ -113,6 +113,7 @@ div#container {
     top:4px;
     right:40px;
     width:60px;
+    display:none;
 }
 
 /* system message banner
