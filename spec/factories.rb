@@ -23,8 +23,18 @@ end
 Factory.define :album_with_photos, :parent => :album do |album|
   album.name        "Foo bar album"
   album.association :user
-  album.after_create { |a| Factory(:photo, :album => a) }
+  album.after_create do |a|
+    a.photos = [
+                  Factory(:photo, :album => a),
+                  Factory(:photo, :album => a),
+                  Factory(:photo, :album => a)
+              ]
+  end
+
 end
+
+
+
 
 Factory.define :photo do |photo|
   photo.association :album
