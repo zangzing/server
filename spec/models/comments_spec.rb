@@ -9,12 +9,12 @@ describe "Comments Model" do
       commentable = Commentable.find_or_create_by_photo_id(12345)
 
       comment = commentable.comments.new
-      comment.comment = "this is a comment"
+      comment.text = "this is a comment"
       comment.user = Factory(:user)
       comment.save
 
       comment = commentable.comments.new
-      comment.comment = "this is another comment"
+      comment.text = "this is another comment"
       comment.user = Factory(:user)
       comment.save
 
@@ -24,16 +24,16 @@ describe "Comments Model" do
 
     end
 
-    it "should include user information in json" do
+    it "should include user information in comment json" do
       commentable = Commentable.find_or_create_by_photo_id(12345)
 
       comment = commentable.comments.new
-      comment.comment = "this is a comment"
+      comment.text = "this is a comment"
       comment.user = Factory(:user)
       comment.save
 
       comment = commentable.comments.new
-      comment.comment = "this is another comment"
+      comment.text = "this is another comment"
       comment.user = Factory(:user)
       comment.save
 
@@ -67,7 +67,7 @@ describe "Comments Model" do
 
       commentable = Commentable.find_or_create_by_photo_id(photo.id)
       comment = Comment.new
-      comment.comment = 'test'
+      comment.text = 'test'
       comment.user = Factory(:user)
       commentable.comments << comment
       comment.save!
@@ -75,7 +75,7 @@ describe "Comments Model" do
       hash = Commentable.photo_comments_as_json(photo.id)
       hash['comments_count'].should eql(1)
       hash['comments'].length.should eql(1)
-      hash['comments'][0]['comment'].should eql('test')
+      hash['comments'][0]['text'].should eql('test')
       
 
 

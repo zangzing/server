@@ -118,4 +118,29 @@ describe CommentsController do
       response.status.should be(401)
     end
   end
+
+  describe "#create action" do
+    it 'should create new comment for photo' do
+      photo = Factory(:photo)
+
+      xhr :post, :create, {:photo_id=>photo.id, :comment=>{:text=>"This is a comment"}}
+      response.status.should be(200)
+
+      commentable = Commentable.find_by_photo_id(photo.id)
+      commentable.comments.length.should eql(1)
+    end
+
+    it "should fail if user does not have permission to view album" do
+      photo = Factory(:photo)
+      album = Factory(:album)
+      photo.album = album
+      album.privacy = Album::PASSWORD
+
+      Photo.stub!(:find).and_return(photo)
+
+      xhr :post, :create, {:photo_id=>photo.id, :comment=>{:text=>"This is a comment"}}
+      response.status.should be(401)
+    end
+
+  end
 end

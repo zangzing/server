@@ -25,21 +25,27 @@ class CommentsController < ApplicationController
     comment.user = current_user
     commentable.comments << comment
     comment.save!
+    render :json => JSON.fast_generate(comment.attributes), :status => 200 and return
+
   end
 
   def destroy
     comment = Comment.find(params[:comment_id])
 
-    photo = Photo.find(comment.commentable.subject_id)
 
-    # only comment owner, album owner, and photo owner
-    # can delete comments
-    if current_user && [comment.user_id, photo.album.user.id, photo.user.id].include?(current_user.id)
-      comment.destroy
-      render :nothing => true, :status => 200
-    else
-      render :nothing => true, :status => 401
+    if comment.commentable.subject_type == Commentable::SUBJECT_TYPE_PHOTO
+      photo = Photo.find(comment.commentable.subject_id)
+
+      # only comment owner, album owner, and photo owner
+      # can delete comments
+      if current_user && [comment.user_id, photo.album.user.id, photo.user.id].include?(current_user.id)
+        comment.destroy
+        render :nothing => true, :status => 200 and return
+      end
     end
+
+    render :nothing => true, :status => 401 and return
+
   end
 
 private

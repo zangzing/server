@@ -2,8 +2,10 @@ class Commentable < ActiveRecord::Base
   has_many :comments
 
 
+  SUBJECT_TYPE_PHOTO = 'photo'
+
   def self.find_or_create_by_photo_id(photo_id)
-    self.find_or_create_by_subject_type_and_subject_id('photo', photo_id)
+    self.find_or_create_by_subject_type_and_subject_id(SUBJECT_TYPE_PHOTO, photo_id)
   end
 
   def self.find_by_photo_id(photo_id)

@@ -126,8 +126,8 @@ Server::Application.routes.draw do
     #comments
     get    '/photos/:photo_id/comments'                      => 'comments#index',                  :as => :photo_comments
     get    '/albums/:album_id/photos/comments/metadata'      => 'comments#album_photos_metadata',  :as => :album_photos_comments_metadata
-    post   '/photos/:photo_id/comments/:comment_id'          => 'comments#create',                 :as => :create_photo_comment
-    delete '/comments/:comment_id'                           => 'comments#destroy',                :as => :destroy_photo_comment
+    post   '/photos/:photo_id/comments'                      => 'comments#create',                 :as => :create_photo_comment
+    delete '/comments/:comment_id'                           => 'comments#destroy',                :as => :destroy_comment
 
 
     #activities
