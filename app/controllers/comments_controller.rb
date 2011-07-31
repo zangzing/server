@@ -1,14 +1,21 @@
 class CommentsController < ApplicationController
   before_filter :require_user
-  before_filter :require_album, :except => :destroy
-  before_filter :require_album_viewer_role, :except => :destroy
+  before_filter :require_album, :except => [:destroy, :metadata_for_subjects]
+  before_filter :require_album_viewer_role, :except => [:destroy, :metadata_for_subjects]
   
 
 
 
   # returns comment meta-data for each photo in album
-  def album_photos_metadata
-    render :json=>JSON.fast_generate(Commentable.album_photos_metadata_as_json(params[:album_id]))
+  def metadata_for_album_photos
+    commentables = Commentable.find_for_album_photos(params[:album_id])
+    render_commentables(commentables)
+  end
+
+
+  def metadata_for_subjects
+    commentables = Commentable.find_by_subjects(params[:subjects])
+    render_commentables(commentables)
   end
 
 
@@ -50,6 +57,16 @@ class CommentsController < ApplicationController
 
 private
 
+  def render_commentables(commentables)
+    results = []
+
+    commentables.each do |commentable|
+      results << commentable.metadata_as_json
+    end
+
+    render :json=>JSON.fast_generate(results)
+    
+  end
 
   def require_album
     if params[:photo_id]

@@ -12,6 +12,24 @@ class Commentable < ActiveRecord::Base
     self.find_by_subject_type_and_subject_id('photo', photo_id)
   end
 
+  # expect subjects to be array of hashes
+  # with :id and :type keys
+  def self.find_by_subjects(subjects)
+    db = Commentable.connection
+
+    in_clause = subjects.collect { |subject |
+
+      "(#{subject[:id].to_i}, #{db.quote(subject[:type].to_s)})"
+
+    }.join(',')
+
+    return Commentable.where("(subject_id, subject_type) IN (#{in_clause})")
+  end
+
+  def self.find_for_album_photos(album_id)
+    return Commentable.find_by_sql("SELECT commentables.* FROM commentables, photos WHERE commentables.subject_type = 'photo' AND commentables.subject_id = photos.id AND photos.album_id = #{album_id.to_i}")
+  end
+
   def self.photo_comments_as_json(photo_id)
     commentable = Commentable.find_by_photo_id(photo_id)
     if commentable
@@ -19,16 +37,6 @@ class Commentable < ActiveRecord::Base
     else
       return {}
     end
-  end
-
-  def self.album_photos_metadata_as_json(album_id)
-    results = []
-    commentables = Commentable.find_by_sql("SELECT commentables.* FROM commentables, photos WHERE commentables.subject_type = 'photo' AND commentables.subject_id = photos.id AND photos.album_id = #{album_id.to_i}")
-    commentables.each do |commentable|
-      results << commentable.metadata_as_json
-    end
-
-    return results
   end
 
 

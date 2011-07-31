@@ -20,6 +20,11 @@ Factory.define :album do |album|
 end
 
 
+Factory.define :comment do |comment|
+  comment.text "this is a comment"
+  comment.association :user
+end
+
 Factory.define :album_with_photos, :parent => :album do |album|
   album.name        "Foo bar album"
   album.association :user

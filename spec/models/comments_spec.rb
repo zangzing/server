@@ -7,16 +7,8 @@ describe "Comments Model" do
 
     it "should cache comment count" do
       commentable = Commentable.find_or_create_by_photo_id(12345)
-
-      comment = commentable.comments.new
-      comment.text = "this is a comment"
-      comment.user = Factory(:user)
-      comment.save
-
-      comment = commentable.comments.new
-      comment.text = "this is another comment"
-      comment.user = Factory(:user)
-      comment.save
+      Factory.create(:comment, :commentable => commentable)
+      Factory.create(:comment, :commentable => commentable)
 
       commentable = Commentable.find(commentable.id)
       commentable.comments.length.should eql(2)
@@ -26,16 +18,8 @@ describe "Comments Model" do
 
     it "should include user information in comment json" do
       commentable = Commentable.find_or_create_by_photo_id(12345)
-
-      comment = commentable.comments.new
-      comment.text = "this is a comment"
-      comment.user = Factory(:user)
-      comment.save
-
-      comment = commentable.comments.new
-      comment.text = "this is another comment"
-      comment.user = Factory(:user)
-      comment.save
+      Factory.create(:comment, :commentable => commentable)
+      Factory.create(:comment, :commentable => commentable)
 
       commentable = Commentable.find(commentable.id)
       commentable.comments.length.should eql(2)
@@ -56,8 +40,8 @@ describe "Comments Model" do
         comment.save!
       end
 
-      hash = Commentable.album_photos_metadata_as_json(album.id)
-      hash[0]['comments_count'].should eql(1)
+      commentables = Commentable.find_for_album_photos(album.id)
+      commentables[0].comments_count.should eql(1)
 
     end
 
@@ -86,7 +70,23 @@ describe "Comments Model" do
         hash.keys.length.should eql(0)
     end
 
+    it 'should allow searching by array of subject hashes; eg: [{:subject_id=>1,:subject_type=>"photo"}]' do
+      Commentable.find_or_create_by_photo_id(12345)
+      Commentable.find_or_create_by_photo_id(123456)
+
+      subjects = [
+        {
+          :id => 12345,
+          :type => 'photo'
+        },
+        {
+          :id => 123456,
+          :type => 'photo'
+        }
+      ]
+
+      commentables = Commentable.find_by_subjects(subjects)
+      commentables.length.should eql(2)
+    end
   end
-
-
 end

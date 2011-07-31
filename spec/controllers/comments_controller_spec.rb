@@ -102,10 +102,10 @@ describe CommentsController do
     end
   end
 
-  describe "#album_photos_metadata action" do
+  describe "#metadata_for_album_photos action" do
     it "should fail if no current user" do
       logout
-      xhr :get, :album_photos_metadata, {:album_id => 1}
+      xhr :get, :metadata_for_album_photos, {:album_id => 1}
       response.status.should be(401)
     end
 
@@ -114,10 +114,55 @@ describe CommentsController do
       album.privacy = Album::PASSWORD
       Album.stub!(:find).and_return(album)
 
-      xhr :get, :album_photos_metadata , {:album_id => album.id}
+      xhr :get, :metadata_for_album_photos , {:album_id => album.id}
       response.status.should be(401)
     end
+
+
   end
+
+  describe "#metadata_for_subjects action" do
+    it "should fail if no current user" do
+      logout
+      xhr :get, :metadata_for_subjects, {:subjects=>[]}
+      response.status.should be(401)
+    end
+
+
+    it 'should return metadata for all photos in album' do
+      album = Factory.create(:album)
+
+      photo1 = Factory.create(:photo, :album => album)
+      Factory.create(:comment, :commentable => Commentable.find_or_create_by_photo_id(photo1.id))
+
+      photo2 = Factory.create(:photo, :album => album)
+      Factory.create(:comment, :commentable => Commentable.find_or_create_by_photo_id(photo2.id))
+
+
+      params = {
+        :subjects => [
+          {
+            :id => photo1.id,
+            :type => 'photo'
+          },
+          {
+            :id => photo2.id,
+            :type => 'photo'
+          }
+        ]
+      }
+
+      xhr :get, :metadata_for_subjects, params
+      response.status.should be(200)
+
+      body = JSON.parse(response.body)
+      body.length.should eql(2)
+      body[0]['subject_type'].should eql('photo')
+      body[1]['subject_type'].should eql('photo')
+    end
+  end
+
+
 
   describe "#create action" do
     it 'should create new comment for photo' do
