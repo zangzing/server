@@ -1,0 +1,12 @@
+usps_firstclass:
+  name: US Postal Service First Class
+  zone_id: 2
+ups_ground:
+  name: UPS Ground
+  zone_id: 2
+ups_two_day:
+  name: UPS 2nd Day Air
+  zone_id: 2
+ups_one_day:
+  name: UPS Next Day Air
+  zone_id: 2

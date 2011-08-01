@@ -5,6 +5,7 @@ class CreateLineItemPhotoData < ActiveRecord::Migration
       t.column :photo_id, :bigint
       t.string :source_url
       t.string :crop_instructions
+      t.string :back_message
       t.timestamps
      end
 

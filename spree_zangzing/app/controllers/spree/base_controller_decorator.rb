@@ -1,5 +1,9 @@
-Spree::BaseController.class_eval do
+require File.expand_path(File.dirname(__FILE__) + '/../../../../lib/zz/auth')
+require File.expand_path(File.dirname(__FILE__) + '/../../../../lib/zz/zza')
+require File.expand_path(File.dirname(__FILE__) + '/../../../../lib/zz/zza_controller')
+require File.expand_path(File.dirname(__FILE__) + '/../../../../app/helpers/pretty_url_helper')
 
+Spree::BaseController.class_eval do
   include ZZ::Auth
   include ZZ::ZZAController
   include PrettyUrlHelper

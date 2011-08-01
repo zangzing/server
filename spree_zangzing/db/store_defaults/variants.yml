@@ -1,0 +1,84 @@
+4x6_matte_v:
+  product: 4x6_matte
+  sku: EZP-00011
+  price: .25
+  cost_price: .19
+  count_on_hand: 10
+  is_master: true
+5x7_matte_v:
+  product: 5x7_matte
+  sku: EZP-00012
+  price: .50
+  cost_price: .35
+  count_on_hand: 10
+  is_master: true
+8x10_matte_v:
+  product: 8x10_matte
+  sku: EZP-00013
+  price: 1.00
+  cost_price: .55
+  count_on_hand: 10
+  is_master: true
+4x6_lustre_v:
+  product: 4x6_lustre
+  sku: EZP-00021
+  price: .30
+  cost_price: .25
+  count_on_hand: 10
+  is_master: true
+5x7_lustre_v:
+  product: 5x7_lustre
+  sku: EZP-00022
+  price: .55
+  cost_price: .40
+  count_on_hand: 10
+  is_master: true
+8x10_lustre_v:
+  product: 8x10_lustre
+  sku: EZP-00023
+  price: 1.50
+  cost_price: .65
+  count_on_hand: 10
+  is_master: true
+4x6_glossy:
+  product: 4x6_glossy
+  sku: EZP-00031
+  price: .33
+  cost_price: .35
+  count_on_hand: 10
+  is_master: true
+5x7_glossy:
+  product: 5x7_glossy
+  sku: EZP-00032
+  price: .65
+  cost_price: .35
+  count_on_hand: 10
+  is_master: true
+8x10_glossy:
+  product: 8x10_glossy
+  sku: EZP-00033
+  price: 1.50
+  cost_price: .65
+  count_on_hand: 10
+  is_master: true
+4x6_metallic:
+  product: 4x6_metallic
+  sku: EZP-00041
+  price: .85
+  cost_price: .59
+  count_on_hand: 10
+  is_master: true
+5x7_metallic:
+  product: 5x7_metallic
+  sku: EZP-00042
+  price: 1.15
+  cost_price: .75
+  count_on_hand: 10
+  is_master: true
+8x10_metallic:
+  product: 8x10_metallic
+  sku: EZP-00043
+  price: 2.00
+  cost_price: 1.15
+  count_on_hand: 10
+  is_master: true

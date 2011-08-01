@@ -10,6 +10,8 @@ gem 'authlogic',     '2.1.6'
 gem "friendly_id",   "3.2.1.1"                       #User-friendly links to albums and users' pages
 gem 'uuidtools'
 gem 'activerecord-import', '~>0.2'  # bulk database inserts
+
+
 gem "dynamic_form"
 gem "require_all"                 # lets us pull in everything for our resque tasks
 
@@ -18,11 +20,6 @@ gem 'syslogger',     "1.2.5", :git => 'git://github.com/zangzing/syslogger.git'
 gem 'oauth',         "0.4.5.pre2", :git => 'git://github.com/zangzing/oauth-ruby.git'
 gem "oauth-plugin", "0.4.0.pre4"
 
-
-gem 'spree_core', '0.60.1'
-gem 'spree_dash', '0.60.1'
-gem 'spree_sample', '0.60.1'
-gem "spree_zangzing", :require => "spree_zangzing", :path => "./spree_zangzing"
 
 
 gem 'faraday',      '0.5.4'
@@ -74,3 +71,9 @@ end
 group :production do
   # bundler requires these gems for production
 end
+
+gem 'spree_core', '0.60.1'
+gem 'spree_dash', '0.60.1'
+gem 'spree_promo', '0.60.1'
+gem "spree_zangzing", :require => "spree_zangzing", :path => "./spree_zangzing"
+
