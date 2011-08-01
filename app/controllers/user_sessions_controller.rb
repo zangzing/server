@@ -1,6 +1,6 @@
 class UserSessionsController < ApplicationController
   ssl_required :new, :create, :mobile_create
-  skip_filter  :verify_authenticity_token, :only => [:mobile_create]
+  skip_filter  :verify_authenticity_token, :only => [:mobile_create, :create]
 
 
   before_filter :only => [:new, :create]
