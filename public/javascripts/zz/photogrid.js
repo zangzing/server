@@ -39,7 +39,7 @@
 
             showButtonBar: false,          //model
             showInfoMenu : false,
-            intoMenuTemplateResolver: function(){return false;}, //album model
+            infoMenuTemplateResolver: null, //album model
 
             onClickShare: jQuery.noop
 //            spaceBarTriggersClick: true
@@ -116,7 +116,7 @@
                 cell.appendTo(self.element);
 
                 cell.zz_photo({
-                    photo: photo,
+                    json: photo,
                     photoId: photo.id,
                     previewSrc: photo.previewSrc,
                     src: photo.src,
@@ -151,7 +151,7 @@
                     context:       o.context,
                     type: _.isUndefined(photo.type) ? 'photo': photo.type,
                     showButtonBar: o.showButtonBar,
-                    infoMenuTemplate:  o.intoMenuTemplateResolver(photo),
+                    infoMenuTemplateResolver:  o.infoMenuTemplateResolver,
                     onClickShare:  o.onClickShare
                 });
 
