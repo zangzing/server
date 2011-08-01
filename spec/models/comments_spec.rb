@@ -32,16 +32,17 @@ describe "Comments Model" do
     end
 
     it "should return comment metadata for all photos in album" do
-      album = Factory.create(:album_with_photos)
-      album.photos.each do |photo|
-        commentable = Commentable.find_or_create_by_photo_id(photo.id)
-        comment = commentable.comments.new
-        comment.user = Factory(:user)
-        comment.save!
+      album = Factory.create(:album)
+      3.times do
+        Factory.create(:comment, :commentable=> Commentable.find_or_create_by_photo_id(Factory.create(:photo, :album => album).id))
       end
 
       commentables = Commentable.find_for_album_photos(album.id)
+
+      commentables.length.should eql(3)
       commentables[0].comments_count.should eql(1)
+      commentables[1].comments_count.should eql(1)
+      commentables[2].comments_count.should eql(1)
 
     end
 
@@ -50,16 +51,12 @@ describe "Comments Model" do
       photo = Factory.create(:photo)
 
       commentable = Commentable.find_or_create_by_photo_id(photo.id)
-      comment = Comment.new
-      comment.text = 'test'
-      comment.user = Factory(:user)
-      commentable.comments << comment
-      comment.save!
+      comment = Factory.create(:comment, :commentable => commentable)
 
       hash = Commentable.photo_comments_as_json(photo.id)
       hash['comments_count'].should eql(1)
       hash['comments'].length.should eql(1)
-      hash['comments'][0]['text'].should eql('test')
+      hash['comments'][0]['text'].should eql(comment.text)
       
 
 
