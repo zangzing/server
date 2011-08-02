@@ -395,7 +395,7 @@ zz.init = {
                         photo.src = agent.checkAddCredentialsToUrl(photo.thumb_url);
                     }
 
-                    var intoMenuTemplateResolver = function(photo_json){
+                    var infoMenuTemplateResolver = function(photo_json){
                         if(zz.displayed_user_id == zz.current_user_id){
                             if(photo_json.state == 'ready'){
                                 return infomenu.album_owner_template;
@@ -444,7 +444,7 @@ zz.init = {
                         },
                         currentPhotoId: $.param.fragment(),
                         showButtonBar:true,
-                        intoMenuTemplateResolver: intoMenuTemplateResolver
+                        infoMenuTemplateResolver: infoMenuTemplateResolver
                     }).data().zz_photogrid;
 
 
@@ -638,7 +638,7 @@ zz.init = {
                         var moreLessbuttonElement = $('.viewlist .more-less-btn[data-user-id="'+userId.toString()+'"]');
                     }
 
-                    var intoMenuTemplateResolver = function(photo_json){
+                    var infoMenuTemplateResolver = function(photo_json){
                         if(zz.displayed_user_id == zz.current_user_id){
                             if(photo_json.state == 'ready'){
                                 return infomenu.album_owner_template;
@@ -685,7 +685,7 @@ zz.init = {
                             zzapi_photo.delete_photo( photo.id );
                             return true;
                         },
-                        intoMenuTemplateResolver: intoMenuTemplateResolver
+                        infoMenuTemplateResolver: infoMenuTemplateResolver
                     }).data().zz_photogrid;
 
 

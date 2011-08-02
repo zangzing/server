@@ -7,7 +7,7 @@ class PhotosController < ApplicationController
   skip_before_filter :verify_authenticity_token,  :only =>   [ :agent_index, :agent_create, :upload_fast, :simple_upload_fast]
 
   
-  before_filter :require_user,                    :only =>   [ :destroy, :update, :position, :async_edit, :download ]  #for interactive users
+  before_filter :require_user,                    :only =>   [ :destroy, :update, :position, :async_edit, :async_rotate_left, :async_rotate_right, :download ]  #for interactive users
   before_filter :oauth_required,                  :only =>   [ :agent_create, :agent_index ]   #for agent
   # oauthenticate :strategies => :two_legged, :interactive => false, :only =>   [ :upload_fast ]
 
@@ -15,7 +15,7 @@ class PhotosController < ApplicationController
   before_filter :require_photo,                   :only =>   [ :destroy, :update, :position, :async_edit, :async_rotate_left, :async_rotate_right, :download ]
 
   before_filter :require_album_admin_role,                :only =>   [ :update, :position ]
-  before_filter :require_photo_owner_or_album_admin_role, :only =>   [ :destroy, :async_edit ]
+  before_filter :require_photo_owner_or_album_admin_role, :only =>   [ :destroy, :async_edit, :async_rotate_left, :async_rotate_right ]
   before_filter :require_album_contributor_role,          :only =>   [ :agent_create  ]
   before_filter :require_album_viewer_role,               :only =>   [ :index, :movie, :photos_json  ]
 
