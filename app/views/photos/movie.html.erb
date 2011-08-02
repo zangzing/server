@@ -74,6 +74,13 @@
         back_url = "#{album_pretty_url( @album )}"
     end
 
+   if params[:start]
+      start_index = params[:start].to_i
+   else
+      start_index = 0
+   end
+
+
 %>
 
 
@@ -105,8 +112,9 @@
                         "transitionType=slide&" +
                         "slideShowControls=true&" +
                         "preloadAfter=3&" +
-                        "preloadBefore=1" +
-                        "alwaysUseFullscreenImages=true"
+                        "preloadBefore=1&" +
+                        "alwaysUseFullscreenImages=true&" +
+                        "startImageIndex=#{start_index}"
 
         %>
 
@@ -171,6 +179,8 @@
 
                 preloadAfter:		3,
                 preloadBefore:		1,
+
+                startImageIndex:   <%= start_index %>
 
 
             });

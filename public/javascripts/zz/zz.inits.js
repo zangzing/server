@@ -174,7 +174,7 @@ zz.init = {
                 'background-color':'#000000',
                 opacity: 0
             }).appendTo('body').animate({opacity:1}, 500, function() {
-                document.location.href = zz.album_base_url + '/movie?return_to=' + encodeURIComponent(document.location.href);
+                document.location.href = zz.album_base_url + '/movie?start=' + zz.current_photo_index + '&return_to=' + encodeURIComponent(document.location.href);
             });
 
         });
@@ -500,8 +500,9 @@ zz.init = {
                             },
                             singlePictureMode: true,
                             currentPhotoId: currentPhotoId,
-                            onScrollToPhoto: function(photoId) {
+                            onScrollToPhoto: function(photoId, index) {
                                 window.location.hash = '#!' + photoId
+                                zz.current_photo_index = index;
                                 ZZAt.track('photo.view',{id:photoId});
                             }
 
