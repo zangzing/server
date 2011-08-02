@@ -623,13 +623,15 @@ zz.init = {
                                 return (json[index].upload_batch_id === batchId)
                             });
                             var moreLessbuttonElement = $('.viewlist .more-less-btn[data-upload-batch-id="'+batchId.toString()+'"]');
-                        }else if( !_.isUndefined( $(element).attr('data-photo-id') ) ){
+                        }
+                        else if( !_.isUndefined( $(element).attr('data-photo-id') ) ){
                             var photoId = parseInt($(element).attr('data-photo-id'));
                             filteredPhotos = $(json).filter(function(index) {
                                 return (json[index].id === photoId)
                             });
                         }
-                    }else{
+                    }
+                    else{
                         var userId = parseInt($(element).attr('data-user-id'));
 
                         filteredPhotos = $(json).filter(function(index){
@@ -708,7 +710,7 @@ zz.init = {
                             else {
                                 moreLessbuttonElement.find("span").html("Show fewer photos");
                                 moreLessbuttonElement.addClass('open');
-                                $(element).animate({height: $(element).children().last().position().top + 180}, 500, 'swing', function() {
+                                $(element).animate({height: $(element).children().last().position().top + 230}, 500, 'swing', function() {
                                     $(element).trigger('scroll');  //hack: force the photos to load themselves now that they are visible
                                 });
                                 allShowing = true;
