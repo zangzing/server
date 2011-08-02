@@ -7,7 +7,7 @@ class PhotosController < ApplicationController
   skip_before_filter :verify_authenticity_token,  :only =>   [ :agent_index, :agent_create, :upload_fast, :simple_upload_fast]
 
   
-  before_filter :require_user,                    :only =>   [ :destroy, :update, :position, :async_edit, :async_rotate_left, :async_rotate_right, :download ]  #for interactive users
+  before_filter :require_user,                    :only =>   [ :destroy, :update, :position, :async_edit, :async_rotate_left, :async_rotate_right ]  #for interactive users
   before_filter :oauth_required,                  :only =>   [ :agent_create, :agent_index ]   #for agent
   # oauthenticate :strategies => :two_legged, :interactive => false, :only =>   [ :upload_fast ]
 
