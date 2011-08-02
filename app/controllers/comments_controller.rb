@@ -32,6 +32,17 @@ class CommentsController < ApplicationController
     comment.user = current_user
     commentable.comments << comment
     comment.save!
+
+    if(params[:share_to_facebook])
+      comment.share_to_facebook
+    end
+
+    if(params[:share_to_twitter])
+      comment.share_to_twitter
+    end
+
+    comment.send_notification_emails
+
     render :json => JSON.fast_generate(comment.attributes), :status => 200 and return
 
   end

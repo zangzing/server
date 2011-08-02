@@ -3,6 +3,33 @@ require 'factory_girl'
 
 describe "Comments Model" do
 
+  describe Comment do
+
+    it "should notify album owner, photo owner, and other commentors of new comments" do
+      # setup
+      photo = Factory.create(:photo, :album => Factory.create(:album), :user => Factory.create(:user))
+      commentable = Commentable.find_or_create_by_photo_id(photo.id)
+      existing_comment = Factory.create(:comment, :commentable => commentable, :user => Factory.create(:user))
+
+
+      # add comment to photo
+      comment = Factory.create(:comment, :commentable => commentable, :user => Factory.create(:user))
+
+      # expect email to album owner
+      ZZ::Async::Email.should_receive(:enqueue).with(:comment_added_to_photo, comment.user.id, photo.album.user.id, comment.id)
+
+      # expect email to photo owner
+      ZZ::Async::Email.should_receive(:enqueue).with(:comment_added_to_photo, comment.user.id, photo.user.id, comment.id)
+
+      # expect email to other commenters
+      ZZ::Async::Email.should_receive(:enqueue).with(:comment_added_to_photo, comment.user.id, existing_comment.user.id, comment.id)
+
+      # run the test
+      comment.send_notification_emails
+    end
+  end
+
+
   describe Commentable do
 
     it "should cache comment count" do

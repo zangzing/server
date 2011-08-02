@@ -68,4 +68,14 @@ class Commentable < ActiveRecord::Base
     return commentable_hash
 
   end
+
+  def subject
+    if subject_type == SUBJECT_TYPE_PHOTO
+      begin
+        return Photo.find(subject_id)
+      rescue
+        return nil
+      end
+    end
+  end
 end
