@@ -36,19 +36,16 @@ class Comment < ActiveRecord::Base
       end
 
     end
-
-
-
   end
 
 
-  def share_to_facebook
-    self.user.identity_for_facebook.
+  def post_to_facebook
+    ZZ::Async::Facebook.enqueue(:photo_comment, self.id)
   end
 
-
-  def share_to_twitter
-
+  def post_to_twitter
+    ZZ::Async::Twitter.enqueue(:photo_comment, self.id)
   end
+
 
 end

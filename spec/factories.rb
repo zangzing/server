@@ -26,6 +26,15 @@ Factory.define :comment do |comment|
 end
 
 
+Factory.define :photo_commentable, :class => Commentable do |commentable|
+  commentable.association :photo
+end
+
+Factory.define :photo_comment, :class => Comment do |comment|
+  comment.text "this is a comment"
+  comment.association :user
+  comment.association :commentable, :factory => :photo_commentable
+end
 
 Factory.define :photo do |photo|
   photo.association :album

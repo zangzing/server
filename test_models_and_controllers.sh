@@ -1,1 +1,0 @@
-bundle exec rspec -f d spec/controllers/*_spec.rb spec/models/*_spec.rb

@@ -1,6 +1,8 @@
 require 'spec_helper'
 require 'factory_girl'
 
+ZZ::Async::Base.synchronous_test_mode = true
+
 describe "Comments Model" do
 
   describe Comment do
@@ -16,17 +18,31 @@ describe "Comments Model" do
       comment = Factory.create(:comment, :commentable => commentable, :user => Factory.create(:user))
 
       # expect email to album owner
-      ZZ::Async::Email.should_receive(:enqueue).with(:comment_added_to_photo, comment.user.id, photo.album.user.id, comment.id)
+      Notifier.should_receive(:comment_added_to_photo).with(comment.user.id, photo.album.user.id, comment.id)
 
       # expect email to photo owner
-      ZZ::Async::Email.should_receive(:enqueue).with(:comment_added_to_photo, comment.user.id, photo.user.id, comment.id)
+      Notifier.should_receive(:comment_added_to_photo).with(comment.user.id, photo.user.id, comment.id)
 
       # expect email to other commenters
-      ZZ::Async::Email.should_receive(:enqueue).with(:comment_added_to_photo, comment.user.id, existing_comment.user.id, comment.id)
+      Notifier.should_receive(:comment_added_to_photo).with(comment.user.id, existing_comment.user.id, comment.id)
 
       # run the test
       comment.send_notification_emails
+
     end
+
+
+    it "should post comment to facebook" do
+      comment = Factory.create(:photo_comment)
+      FacebookPublisher.should_receive(:photo_comment).with(comment.id)
+      comment.post_to_facebook
+    end
+  end
+
+  it "should post comment to twitter" do
+    comment = Factory.create(:photo_comment)
+    TwitterPublisher.should_receive(:photo_comment).with(comment.id)
+    comment.post_to_twitter
   end
 
 
@@ -75,10 +91,8 @@ describe "Comments Model" do
 
 
     it 'should return comment metadata and comment details for photo' do
-      photo = Factory.create(:photo)
-
-      commentable = Commentable.find_or_create_by_photo_id(photo.id)
-      comment = Factory.create(:comment, :commentable => commentable)
+      comment = Factory.create(:photo_comment)
+      photo = comment.commentable.photo
 
       hash = Commentable.photo_comments_as_json(photo.id)
       hash['comments_count'].should eql(1)

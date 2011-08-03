@@ -1,5 +1,6 @@
 class Commentable < ActiveRecord::Base
   has_many :comments
+  belongs_to :subject
 
 
   SUBJECT_TYPE_PHOTO = 'photo'
@@ -69,13 +70,28 @@ class Commentable < ActiveRecord::Base
 
   end
 
+
   def subject
-    if subject_type == SUBJECT_TYPE_PHOTO
+    if self.subject_type == SUBJECT_TYPE_PHOTO
       begin
-        return Photo.find(subject_id)
+        return Photo.find(self.subject_id)
       rescue
         return nil
       end
     end
   end
+
+  def subject=(subject)
+    if subject.kind_of?(Photo)
+      self.subject_type = SUBJECT_TYPE_PHOTO
+      self.subject_id = subject.id
+    else
+      raise "subject can only be photo"
+    end
+  end
+
+  alias :photo :subject
+  alias :photo= :subject=
+
+
 end
