@@ -1,7 +1,6 @@
 Rails.application.routes.draw do
 
   namespace :admin, :path => '/service/admin/store' do
-
     resources :zones
     resources :users
     resources :countries do
@@ -137,14 +136,13 @@ Rails.application.routes.draw do
 
   end
 
-  # REMOVE THESE ROUTES FROM SPREE
-  match "/admin" => redirect("/404.html")
-  #match "/admin/*other" => redirect("/404.html")
-  #from spree_dash
-  #match '/admin/overview/get_report_data' => redirect("/404.html")
+  scope '/store' do
+    resources :products
 
+    match '/locale/set' => 'locale#set'
 
-  scope '/service/store' do
+    resources :tax_categories
+
 
     resources :states, :only => :index
     
@@ -172,6 +170,27 @@ Rails.application.routes.draw do
     match '/cart', :to => 'orders#edit', :via => :get, :as => :cart
     match '/cart', :to => 'orders#update', :via => :put, :as => :update_cart
     match '/cart/empty', :to => 'orders#empty', :via => :put, :as => :empty_cart
+
+    resources :shipments do
+       member do
+         get :shipping_method
+         put :shipping_method
+       end
+     end
+
+     #   # Search routes
+     match 's/*product_group_query' => 'products#index', :as => :simple_search
+     match '/pg/:product_group_name' => 'products#index', :as => :pg_search
+     match '/t/*id/s/*product_group_query' => 'taxons#show', :as => :taxons_search
+     match 't/*id/pg/:product_group_name' => 'taxons#show', :as => :taxons_pg_search
+
+     #   # route globbing for pretty nested taxon and product paths
+     match '/t/*id' => 'taxons#show', :as => :nested_taxons
+     #
+     #   #moved old taxons route to after nested_taxons so nested_taxons will be default route
+     #   #this route maybe removed in the near future (no longer used by core)
+     #   map.resources :taxons
+     #
   end
 
 end

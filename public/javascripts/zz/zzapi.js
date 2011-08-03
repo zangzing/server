@@ -64,7 +64,7 @@ var zzapi_photo = {
             type: "POST",
             dataType: "json",
             data:{photo_id:photo_id},
-            url: zz.path_prefix + "/store/orders/add_photo.json",
+            url: "/store/orders/add_photo.json",
             error: function(){
                 if(!_.isUndefined(error)){
                     error();

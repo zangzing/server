@@ -42,6 +42,7 @@ zz.init = {
         $(document).ajaxSend(function(event, request, settings) {
               settings.data = settings.data || "";
               settings.data += (settings.data ? "&" : "") + "authenticity_token=" + encodeURIComponent(zz.rails_authenticity_token);
+              request.setRequestHeader("X-CSRF-Token", zz.rails_authenticity_token);
         });
 
         /* Click Handlers    ----------------------------------------------------------------------- */
@@ -269,7 +270,8 @@ zz.init = {
 
         $('#footer #buy-button').click(function(){
             if (! $(this).hasClass('disabled')){
-                alert("This feature is still under construction.")
+                //alert("This feature is still under construction.")
+                document.location="/store/cart";
             }
         });
         zz.init.acct_badge();

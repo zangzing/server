@@ -8,7 +8,7 @@ module SpreeZangzing
 
     def self.activate
       Spree::BaseController.asset_path = "/store%s"
-      #Spree::Config.set(:mails_from => "robert@example.com")
+      # MUST OVERRIDE Spree::Config.set(:default_print_sku => "EZP-00011")
       Dir.glob(File.join(File.dirname(__FILE__), "../app/**/*_decorator*.rb")) do |c|
         Rails.env.production? ? require(c) : load(c)
       end

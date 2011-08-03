@@ -1,0 +1,40 @@
+
+<%= form_tag Braintree::TransparentRedirect.url do %>
+    <%= hidden_field_tag "tr_data", ERB::Util.html_escape( @tr_data )%>
+
+    <div>
+      <%= label_tag "credit_card[number]", "Number" %>
+      <%= text_field_tag "credit_card[number]" %>
+    </div>
+    <div>
+      <%= label_tag "credit_card[expiration_date]", "Expiration Date" %>
+      <%= text_field_tag "credit_card[expiration_date]" %>
+    </div>
+    <div>
+      <%= label_tag "credit_card[ccv]", "CCV" %>
+      <%= text_field_tag "credit_card[cvv]" %>
+    </div>
+    <div>
+      <%= label_tag "credit_card[cardholder_name]", "Cardholder Name"%>
+      <%= text_field_tag "credit_card[cardholder_name]" %>
+    </div>
+    <div>
+      <%= label_tag "credit_card[billing_address][street_address]", "Street" %>
+      <%= text_field_tag "credit_card[billing_address][street_address]" %>
+    </div>
+    <div>
+      <%= label_tag "credit_card[billing_address][locality]", "City" %>
+      <%= text_field_tag "credit_card[billing_address][locality]" %>
+    </div>
+    <div>
+      <%= label_tag "credit_card[billing_address][region]", "State" %>
+      <%= text_field_tag "credit_card[billing_address][region]" %>
+    </div>
+    <div>
+      <%= label_tag "credit_card[billing_address][postal_code]", "Zip" %>
+      <%= text_field_tag "credit_card[billing_address][postal_code]" %>
+    </div>
+    <div>
+      <%= submit_tag("Submit") %>
+    </div>
+<%end%>

@@ -77,7 +77,7 @@ var infomenu = {
                                          $('#flash-dialog #flash').text('Your photo has been added to the cart');
                                          $('#ok').click( function(){ $('#flash-dialog').zz_dialog('close').empty().remove(); });
                                          $('#checkout').css({ position: 'absolute', bottom: '30px', left: '40px', width: '80px' })
-                                             .click( function(){ window.location = zz.path_prefix+'/store/cart'  });
+                                             .click( function(){ window.location = '/store/cart'  });
                                          $('#flash-dialog').zz_dialog('open');
                 });
                 break;

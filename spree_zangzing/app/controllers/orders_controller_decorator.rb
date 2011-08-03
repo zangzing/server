@@ -3,7 +3,7 @@ OrdersController.class_eval do
 
   def add_photo
     @order = current_order(true)
-    variant = Variant.find_by_sku('ZZ-00023')
+    variant = Variant.find_by_sku(Spree::Config[:default_print_sku])
     photo = Photo.find( params[:photo_id] )
     li_photo_data = LineItemPhotoData.new(
         :photo_id   => params[:photo_id],
