@@ -6,7 +6,7 @@ ZZ::Async::Base.synchronous_test_mode = true
 describe "Comments Model" do
 
   describe Comment do
-
+   
     it "should notify album owner, photo owner, and other commentors of new comments" do
       # setup
       photo = Factory.create(:photo, :album => Factory.create(:album), :user => Factory.create(:user))

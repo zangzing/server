@@ -53,36 +53,7 @@ class Comment < ActiveRecord::Base
 protected
   def create_comment_activity
     if self.commentable.subject_type == Commentable::SUBJECT_TYPE_PHOTO
-      photo = self.commentable.photo
-
-      # this makes the comment show up on the photo's album's activity view
-      CommentActivity.create(:user => self.user, :subject => photo.album, :comment => self)
-
-      # this makes the comment show up on the commenter's activity view
-      unless (self.user.id == photo.user.id)
-        LikeActivity.create( :user => photo.album.owner, :subject => photo.album.owner, :comment => self);
-      end
-
-
-
-
-    end
-
-
-
-    # Like activities are reciprocal:
-    # - One activity is created for the subject so that it appears on the subject's activity list.
-    # - Another is created for the subject_owner so that it appears in the subject owner's activities list.
-    # Both activities point to the same like but we avoid having to do a triple join.
-    # Albums/Photos fetch their activity list using the subject_id field
-    # Users fetch their activity list by looking at the user_id field
-    LikeActivity.create( :user => self.user, :subject => @activity_subject, :like => self )
-    unless( self.user.id == @subject_owner.id )
-      # do not create a reciprocal like activity for self likes.
-      LikeActivity.create( :user => @subject_owner, :subject => @subject_owner, :like => self);
+      CommentActivity.create(:user => self.user, :subject => self.commentable.photo.album, :comment => self)
     end
   end
-
-
-
 end

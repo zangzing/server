@@ -20,7 +20,7 @@ class CommentActivity < Activity
     if comment.is_a?(Comment)
       @comment = comment
     else
-      raise new Exception("must be a Comment");
+      raise "must be a Comment"
     end
   end
 
@@ -34,17 +34,19 @@ class CommentActivity < Activity
 
   def display_for?(current_user, view)
     if comment.subject.is_a?(Photo)
+      case view
+        when ALBUM_VIEW
+          return true
 
-      # show comment activity for public albums
-      return true if comment.subject.album.public?
+        when USER_VIEW
+          # always show if comment was on public album
+          return true if comment.subject.album.public?
 
+          # show for hidden and passord albums if current_user is member of album's group
+          return true if current_user && comment.subject.album.viewer_in_group?(current_user.id)
+      end
 
-      # show comment on album view for hidden albums
-      return true if view == ALBUM_VIEW && comment.subject.album.hidden?
-
-      # show comment if current user is in the album's group
-      return true if current_user && comment.subject.album.viewer_in_group?(current_user.id)
+      return false
     end
-    return false
   end
 end
