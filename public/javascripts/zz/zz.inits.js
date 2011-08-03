@@ -50,7 +50,11 @@ zz.init = {
             $('#join-banner').fadeOut(200, function(){
                 $('#page-wrapper').animate({top:0},200);
                 $('body').removeClass('show-join-banner');
-                jQuery.cookie('hide_join_banner', 'true');
+
+                //create cookie that expires in 1 hour or when user quits browser
+                var expires = new Date();
+                expires.setTime(expires.getTime() + 60*60*1000);
+                jQuery.cookie('hide_join_banner', 'true', {expires: expires});
             });
         });
 
