@@ -578,7 +578,7 @@ pages.group_tab = {
                         $.post(zz.path_prefix + '/albums/' + zz.album_id + '/add_group_members.json', data, function(json){
                             refresh_person_list(json);
                             dialog.close();
-                            ZZAt.track('album.share.group_tab.email');
+                            //ZZAt.track('album.share.group_tab.email');
 
                         });
 
@@ -623,7 +623,7 @@ pages.group_tab = {
 
                             $.post(zz.path_prefix + '/albums/'+ zz.album_id +'/shares.json', data);
                             dialog.close();
-                            ZZAt.track('album.share.group_tab.facebook');
+                            //ZZAt.track('album.share.group_tab.facebook');
 
                         });
 
@@ -680,7 +680,7 @@ pages.group_tab = {
 
                             $.post(zz.path_prefix + '/albums/'+ zz.album_id +'/shares.json', data)
                             dialog.close();
-                            ZZAt.track('album.share.group_tab.twitter');
+                            //ZZAt.track('album.share.group_tab.twitter');
                         });
                     };
 
