@@ -153,7 +153,7 @@ Rails.application.routes.draw do
 
     resources :orders do
       post :populate, :on => :collection
-      match :add_photo,:on => :collection
+      post :add_photo,:on => :collection
 
 
       resources :line_items
