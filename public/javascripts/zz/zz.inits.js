@@ -53,7 +53,7 @@ zz.init = {
 
                 //create cookie that expires in 1 hour or when user quits browser
                 var expires = new Date();
-                expires.setTime(expires.getTime() + 60*60*1000);
+                expires.setTime(expires.getTime() + 60*1000);
                 jQuery.cookie('hide_join_banner', 'true', {expires: expires});
             });
         });
