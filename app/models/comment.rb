@@ -6,7 +6,7 @@ class Comment < ActiveRecord::Base
   belongs_to :user
 
 
-  after_commit  :create_comment_activity, :on => :create
+  after_create  :create_comment_activity #, :on => :create
 
 
   def send_notification_emails

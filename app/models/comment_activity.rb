@@ -33,17 +33,19 @@ class CommentActivity < Activity
   end
 
   def display_for?(current_user, view)
-    if comment.subject.is_a?(Photo)
+    subject = comment.commentable.subject
+
+    if subject.is_a?(Photo)
       case view
         when ALBUM_VIEW
           return true
 
         when USER_VIEW
           # always show if comment was on public album
-          return true if comment.subject.album.public?
+          return true if subject.album.public?
 
           # show for hidden and passord albums if current_user is member of album's group
-          return true if current_user && comment.subject.album.viewer_in_group?(current_user.id)
+          return true if current_user && subject.album.viewer_in_group?(current_user.id)
       end
 
       return false

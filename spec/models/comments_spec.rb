@@ -37,19 +37,38 @@ describe "Comments Model" do
       FacebookPublisher.should_receive(:photo_comment).with(comment.id)
       comment.post_to_facebook
     end
+
+    it "should post comment to twitter" do
+      comment = Factory.create(:photo_comment)
+      TwitterPublisher.should_receive(:photo_comment).with(comment.id)
+      comment.post_to_twitter
+    end
+
+
+    it "should create comment activity" do
+      comment = Factory.create(:photo_comment)
+      photo = comment.commentable.subject
+
+      comment.user.activities.length.should eql(1)
+      comment_activity = comment.user.activities[0]
+      comment_activity.should be_an_instance_of(CommentActivity)
+
+      comment_activity.comment.should == comment
+
+      comment_activity.subject.should == photo.album
+
+      comment_activity.user.should == comment.user
+    end
   end
 
-  it "should post comment to twitter" do
-    comment = Factory.create(:photo_comment)
-    TwitterPublisher.should_receive(:photo_comment).with(comment.id)
-    comment.post_to_twitter
-  end
+
 
 
   describe Commentable do
 
     it "should cache comment count" do
-      commentable = Commentable.find_or_create_by_photo_id(12345)
+
+      commentable = Factory.create(:photo_commentable)
       Factory.create(:comment, :commentable => commentable)
       Factory.create(:comment, :commentable => commentable)
 
@@ -60,7 +79,7 @@ describe "Comments Model" do
     end
 
     it "should include user information in comment json" do
-      commentable = Commentable.find_or_create_by_photo_id(12345)
+      commentable = Factory.create(:photo_commentable)
       Factory.create(:comment, :commentable => commentable)
       Factory.create(:comment, :commentable => commentable)
 
