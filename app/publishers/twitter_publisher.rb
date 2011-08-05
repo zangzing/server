@@ -11,18 +11,21 @@ class TwitterPublisher < ActionMailer::Base
       photo = Photo.find(comment.commentable.subject_id)
       url = bitly_url(photo_pretty_url(photo))
 
-      message = "#{comment.text} #{url}"
-
-      TwitterPublisher.post_to_twitter(user, message)
+      TwitterPublisher.post_link_to_twitter(user, message, url)
     end
   end
 
   
 
-private
-  
-  def self.post_to_twitter(user, message)
+
+  def self.post_message_to_twitter(user, message)
     user.identity_for_titter.twitter_api.client.update(message)
+  end
+
+  def self.post_link_to_twitter(user, message, url)
+    message = message[0,140 - (url.length + 1)]
+    message = "#{message} #{url}"
+    self.post_message_to_twitter(user, message)
   end
 
 
