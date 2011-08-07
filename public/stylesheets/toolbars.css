@@ -161,6 +161,18 @@
     top: 3px;
 }
 
+#header #admin-info{
+    position: relative;
+    display: inline-block;
+    text-align: center;
+}
+
+#header #admin-info .green-button{
+    border: 1px solid red;
+}
+
+
+
 /* For all disabled buttons
 ******************************************/
 #header .disabled, #footer .disabled{
@@ -223,6 +235,25 @@
 #help-button.selected{  background-position: 0 -110px;   }
 #help-button.disabled{  background-position: 0 0;}
 
+#admin-button{
+    text-decoration: none;
+    position: absolute;
+    top: 1px;
+    right: 58px;
+    width: 58px;
+    height: 55px;
+    background: url("/images/embed/toolbars/btn-header-admin.png") no-repeat scroll 0px 0px transparent;
+    cursor: pointer;
+}
+#admin-button:hover{     background-position: 0  -109px;   }
+#admin-button.disabled{  background-position: 0 0;}
+#admin-button .header-button-label{
+    color: black;
+    text-decoration: none;
+}
+
+
+
 #header #sign-in-button{
     position: absolute;
     top: 1px;
@@ -248,6 +279,12 @@
 #header #account-badge:hover {   background-position: 0 -55px; }
 #header #account-badge.selected{ background-position: 0  -110px; }
 #header #account-badge.disabled{ background-position: 0  0; }
+
+
+#header #account-badge.admin-badge {
+  background: url("/images/embed/toolbars/btn-header-account-settings.png") no-repeat scroll 0px -110px transparent;
+}
+
 
 #header #account-badge div#account-image {
     position:absolute;

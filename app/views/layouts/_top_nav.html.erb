@@ -87,11 +87,21 @@
       </ul>
   <% end %>
 
-  <div id="help-button"><div class="header-button-label">Help</div></div>
+  <%if current_user && current_user.admin?%>
+      <a href="/service/admin">
+        <div id="admin-button"><div class="header-button-label">Admin</div></div>
+      </a>
+  <%else%>
+    <div id="help-button"><div class="header-button-label">Help</div></div>
+  <%end%>
 
 
   <% if current_user %>
-    <div id="account-badge">
+      <%if current_user.admin?%>
+          <div id="account-badge" class="admin-badge">
+      <%else%>
+           <div id="account-badge">
+      <%end%>
        <div id="account-image" >
          <%= render :partial => 'users/profile_photo', :locals => { :user => current_user}    %>
        </div>

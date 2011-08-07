@@ -50,7 +50,11 @@ zz.init = {
             $('#join-banner').fadeOut(200, function(){
                 $('#page-wrapper').animate({top:0},200);
                 $('body').removeClass('show-join-banner');
-                jQuery.cookie('hide_join_banner', 'true');
+
+                //create cookie that expires in 1 hour or when user quits browser
+                var expires = new Date();
+                expires.setTime(expires.getTime() + 60*60*1000);
+                jQuery.cookie('hide_join_banner', 'true', {expires: expires});
             });
         });
 
@@ -174,7 +178,7 @@ zz.init = {
                 'background-color':'#000000',
                 opacity: 0
             }).appendTo('body').animate({opacity:1}, 500, function() {
-                document.location.href = zz.album_base_url + '/movie?return_to=' + encodeURIComponent(document.location.href);
+                document.location.href = zz.album_base_url + '/movie?start=' + zz.current_photo_index + '&return_to=' + encodeURIComponent(document.location.href);
             });
 
         });
@@ -397,15 +401,25 @@ zz.init = {
                         photo.src = agent.checkAddCredentialsToUrl(photo.thumb_url);
                     }
 
-                    var infoMenuStyleResolver = function(photo_json){
+                    var infoMenuTemplateResolver = function(photo_json){
                         if(zz.displayed_user_id == zz.current_user_id){
-                             return'album-owner';
+                            if(photo_json.state == 'ready'){
+                                return infomenu.album_owner_template;
+                            }
+                            else{
+                                return infomenu.album_owner_template_photo_not_ready;
+                            }
                         }
                         else if(photo_json.user_id == zz.current_user_id){
-                            return 'photo-owner';
+                            if(photo_json.state == 'ready'){
+                                return infomenu.photo_owner_template;
+                            }
+                            else{
+                                return infomenu.photo_owner_template_photo_not_ready;
+                            }
                         }
                         else if(zz.current_user_can_download ) {
-                            return 'download';
+                            return infomenu.download_template;
                         }
                         else{
                             return false
@@ -438,7 +452,7 @@ zz.init = {
                         },
                         currentPhotoId: $.param.fragment(),
                         showButtonBar:true,
-                        infoMenuStyleResolver: infoMenuStyleResolver
+                        infoMenuTemplateResolver: infoMenuTemplateResolver
                     }).data().zz_photogrid;
 
 
@@ -494,8 +508,9 @@ zz.init = {
                             },
                             singlePictureMode: true,
                             currentPhotoId: currentPhotoId,
-                            onScrollToPhoto: function(photoId) {
+                            onScrollToPhoto: function(photoId, index) {
                                 window.location.hash = '#!' + photoId
+                                zz.current_photo_index = index;
                                 ZZAt.track('photo.view',{id:photoId});
                             }
 
@@ -617,13 +632,15 @@ zz.init = {
                                 return (json[index].upload_batch_id === batchId)
                             });
                             var moreLessbuttonElement = $('.viewlist .more-less-btn[data-upload-batch-id="'+batchId.toString()+'"]');
-                        }else if( !_.isUndefined( $(element).attr('data-photo-id') ) ){
+                        }
+                        else if( !_.isUndefined( $(element).attr('data-photo-id') ) ){
                             var photoId = parseInt($(element).attr('data-photo-id'));
                             filteredPhotos = $(json).filter(function(index) {
                                 return (json[index].id === photoId)
                             });
                         }
-                    }else{
+                    }
+                    else{
                         var userId = parseInt($(element).attr('data-user-id'));
 
                         filteredPhotos = $(json).filter(function(index){
@@ -632,15 +649,25 @@ zz.init = {
                         var moreLessbuttonElement = $('.viewlist .more-less-btn[data-user-id="'+userId.toString()+'"]');
                     }
 
-                    var infoMenuStyleResolver = function(photo_json){
+                    var infoMenuTemplateResolver = function(photo_json){
                         if(zz.displayed_user_id == zz.current_user_id){
-                             return'album-owner';
+                            if(photo_json.state == 'ready'){
+                                return infomenu.album_owner_template;
+                            }
+                            else{
+                                return infomenu.album_owner_template_photo_not_ready;
+                            }
                         }
                         else if(photo_json.user_id == zz.current_user_id){
-                            return 'photo-owner';
+                            if(photo_json.state == 'ready'){
+                                return infomenu.photo_owner_template;
+                            }
+                            else{
+                                return infomenu.photo_owner_template_photo_not_ready;
+                            }
                         }
                         else if(zz.current_user_can_download ) {
-                            return 'download';
+                            return infomenu.download_template;
                         }
                         else{
                             return false
@@ -670,7 +697,7 @@ zz.init = {
                             zzapi_photo.delete_photo( photo.id );
                             return true;
                         },
-                        infoMenuStyleResolver: infoMenuStyleResolver
+                        infoMenuTemplateResolver: infoMenuTemplateResolver
                     }).data().zz_photogrid;
 
 
@@ -693,7 +720,7 @@ zz.init = {
                             else {
                                 moreLessbuttonElement.find("span").html("Show fewer photos");
                                 moreLessbuttonElement.addClass('open');
-                                $(element).animate({height: $(element).children().last().position().top + 180}, 500, 'swing', function() {
+                                $(element).animate({height: $(element).children().last().position().top + 230}, 500, 'swing', function() {
                                     $(element).trigger('scroll');  //hack: force the photos to load themselves now that they are visible
                                 });
                                 allShowing = true;

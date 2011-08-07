@@ -97,7 +97,11 @@ class Subscriptions< ActiveRecord::Base
 
   def wants_email!( kind, name )
     unless wants_email?( kind, name)
-      raise SubscriptionsException.new( "SUBSCRIPTIONS: #{user.id} #{user.name} does not want to receive message: #{name} kind: #{kind}" )
+      if user
+        raise SubscriptionsException.new( "SUBSCRIPTIONS: #{user.id} #{user.name} does not want to receive message: #{name} kind: #{kind}" )
+      else
+        raise SubscriptionsException.new( "SUBSCRIPTIONS: #{email} does not want to receive message: #{name} kind: #{kind}" )
+      end  
     end
   end
 
