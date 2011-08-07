@@ -326,8 +326,8 @@ zz.init = {
             }
 
             $('#article').animate({left: $('#article').width()}, 500, 'easeOutQuart');
-            $('#album-info').fadeOut('slow');
-            $('#header #back-button').fadeOut('slow');
+            $('#album-info').fadeOut(200);
+            $('#header #back-button').fadeOut(200);
             document.location.href = url;
         });
     },
@@ -442,7 +442,7 @@ zz.init = {
                             gridElement.css({overflow:'hidden'});
 
                             $('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()},500,'easeOutQuart');
-                            $('#header #back-button').fadeOut('slow');
+                            $('#header #back-button').fadeOut(200);
 
                             document.location.href = zz.album_base_url + "/photos/#!" + photo.id;
                         },
@@ -683,7 +683,7 @@ zz.init = {
                         cellHeight: 230,
                         onClickPhoto: function(index, photo) {
                             $('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()},500,'easeOutQuart');
-                            $('#header #back-button').fadeOut('slow');
+                            $('#header #back-button').fadeOut(200);
                             document.location.href = zz.album_base_url + "/photos/#!" + photo.id;
                         },
                         showThumbscroller: false,

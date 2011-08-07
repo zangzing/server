@@ -98,7 +98,7 @@ homepage = {
                     albumUrl: 'http://' + document.location.host + album.album_path,
                     onClick: function(){
                         $('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()},500,'easeOutQuart');
-                        $('#user-info').fadeOut('slow');
+                        $('#user-info').fadeOut(200);
                         document.location.href = album.album_path;
                     },
                     onLike: function(){
