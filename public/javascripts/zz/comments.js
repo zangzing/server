@@ -2,6 +2,26 @@ comments = {
 
     album_photos_metadata: null,
 
+
+
+    show_photo_comments: function(photo_id){
+        var url = "/service/photos/:photo_id/comments".replace(':photo_id', photo_id)
+        $.get(url, function(json){
+            
+
+
+            zz_dialog.
+
+
+
+
+        });
+    },
+
+
+
+
+
     load_album_photos_metadata: function(album_id){
         var self = this;
         var url = '/albums/:album_id/photos/comments/metadata'.replace(':album_id', album_id);

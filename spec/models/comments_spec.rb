@@ -111,7 +111,7 @@ describe "Comments Model" do
 
     it 'should return comment metadata and comment details for photo' do
       comment = Factory.create(:photo_comment)
-      photo = comment.commentable.photo
+      photo = comment.commentable.subject
 
       hash = Commentable.photo_comments_as_json(photo.id)
       hash['comments_count'].should eql(1)

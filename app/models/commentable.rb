@@ -90,8 +90,5 @@ class Commentable < ActiveRecord::Base
     end
   end
 
-  alias :photo :subject
-  alias :photo= :subject=
-
 
 end

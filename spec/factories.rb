@@ -27,7 +27,7 @@ end
 
 
 Factory.define :photo_commentable, :class => Commentable do |commentable|
-  commentable.association :photo
+  commentable.association :subject, :factory => :photo
 end
 
 Factory.define :photo_comment, :class => Comment do |comment|

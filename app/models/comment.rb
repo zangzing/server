@@ -53,7 +53,7 @@ class Comment < ActiveRecord::Base
 protected
   def create_comment_activity
     if self.commentable.subject_type == Commentable::SUBJECT_TYPE_PHOTO
-      CommentActivity.create(:user => self.user, :subject => self.commentable.photo.album, :comment => self)
+      CommentActivity.create(:user => self.user, :subject => self.commentable.subject.album, :comment => self)
     end
   end
 end
