@@ -17,14 +17,14 @@ Server::Application.routes.draw do
   # the whole site has /service in front of it except for users
   scope '/service' do
 
-    if Server::Application.config.bench_test_allowed
-      scope :module => "bench_test" do
-        get    '/bench_test'                   => 'bench_tests#showtests',             :as => :bench_tests
-      end
-      namespace :bench_test do resources :resque_no_ops end
-      namespace :bench_test do resources :s3s end
-      namespace :bench_test do resources :photo_gens end
-    end
+#    if Server::Application.config.bench_test_allowed
+#      scope :module => "bench_test" do
+#        get    '/bench_test'                   => 'bench_tests#showtests',             :as => :bench_tests
+#      end
+#      namespace :bench_test do resources :resque_no_ops end
+#      namespace :bench_test do resources :s3s end
+#      namespace :bench_test do resources :photo_gens end
+#    end
 
     get    '/health_check'            => 'pages#health_check',      :as => :health_check
     
@@ -131,10 +131,10 @@ Server::Application.routes.draw do
     get '/users/:user_id/people'   => 'people#user_index'
 
     #contributors
-    get    '/albums/:album_id/contributors/new'  => 'contributors#new',        :as => :new_album_contributor
-    get    '/albums/:album_id/contributors'      => 'contributors#index',      :as => :album_contributors
-    post   '/albums/:album_id/contributors'      => 'contributors#create',     :as => :create_album_contributor
-    delete '/albums/:album_id/contributors'      => 'contributors#destroy',    :as => :delete_contributor
+#    get    '/albums/:album_id/contributors/new'  => 'contributors#new',        :as => :new_album_contributor
+#    get    '/albums/:album_id/contributors'      => 'contributors#index',      :as => :album_contributors
+#    post   '/albums/:album_id/contributors'      => 'contributors#create',     :as => :create_album_contributor
+#    delete '/albums/:album_id/contributors'      => 'contributors#destroy',    :as => :delete_contributor
 
     #like
     match  '/likes'                              => 'likes#index',             :as => :likes
@@ -150,9 +150,9 @@ Server::Application.routes.draw do
 
 
     # oauth
-    match '/users/:id/agents'     => 'agents#index',                 :as => :agents
-    match '/agent/info'           => 'agents#info',                  :as => :agent_info
-    match '/agents/check'         => 'agents#check',                 :as => :check
+#    match '/users/:id/agents'     => 'agents#index',                 :as => :agents
+#    match '/agent/info'           => 'agents#info',                  :as => :agent_info
+#    match '/agents/check'         => 'agents#check',                 :as => :check
     match '/oauth/authorize'      => 'oauth#authorize',              :as => :authorize
     match '/oauth/agentauthorize' => 'oauth#agentauthorize',         :as => :agentauthorize
     match '/oauth/revoke'         => 'oauth#revoke',                 :as => :revoke
