@@ -255,7 +255,6 @@ zz.pages.edit_album_tab = {
     },
 
     bounce: function(success, failure) {
-//        zz.drawers.open_drawer(); //todo: is this needed?
         success();
     }
 

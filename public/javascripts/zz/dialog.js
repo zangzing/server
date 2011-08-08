@@ -16,6 +16,17 @@ zz.dialog = {
 
     },
 
+    show_flash_dialog: function(message){
+        var content = $("<div id='flash-dialog'><div><div id='flash'></div><a id='ok' class='newgreen-button'><span>OK</span></a></div></div>");
+        content.find('#flash').text(message);
+
+        var dialog = zz.dialog.show_dialog(content,{});
+
+        content.find('#ok').click(function(){
+           dialog.close();
+        });
+    },
+
 
     show_progress_dialog: function(message) {
         var template = '<span class="progress-dialog-content"><img src="/images/loading.gif">' + message + '</span>';
@@ -39,9 +50,7 @@ zz.dialog = {
 };
 
 
-//
-// Copyright 2011 ZangZing LLC
-//
+
 (function($, undefined) {
 
     $.widget("ui.zz_dialog", {

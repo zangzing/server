@@ -196,11 +196,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
     end
   end
 
-  # used by facebook and google crawlers but not by interactive users
-  # displays all the photos in an album
-  # @album is set by require_album before_filter
   def index
-
     if(!params[:user_id])
       redirect_to album_pretty_url(@album)
     else

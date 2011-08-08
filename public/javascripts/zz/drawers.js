@@ -19,14 +19,14 @@ zz.drawers = {
 
 
     drawer_state: 0,
-    screen_gap: 150,
+    SCREEN_GAP: 160,
 
 
     open_drawer: function(time, percent) {
 
         zz.screen_height = $('#page-wrapper').height(); // measure the screen height
         // adjust for out top and bottom bar, the gradient padding and a margin
-        zz.drawer_height = zz.screen_height - zz.screen_gap;
+        zz.drawer_height = zz.screen_height - zz.drawers.SCREEN_GAP;
 
         var opacity = 0;
 
@@ -53,7 +53,7 @@ zz.drawers = {
 
         zz.screen_height = $('#page-wrapper').height(); // measure the screen height
         // adjust for out top and bottom bar, the gradient padding and a margin
-        zz.drawer_height = zz.screen_height - zz.screen_gap;
+        zz.drawer_height = zz.screen_height - zz.drawers.SCREEN_GAP;
 
         if (typeof(size) != 'undefined' && size < zz.drawer_height)  zz.drawer_height = size;
 
@@ -64,7 +64,7 @@ zz.drawers = {
     },
 
     close_drawer_partially: function(time, size) {
-        zz.resize_drawer(time, size);
+        zz.drawers.resize_drawer(time, size);
         // fade in the grid
         $('#article').animate({ opacity: 1 }, time * 1.1);
         zz.drawers.drawer_state = zz.drawers.DRAWER_PARTIAL; // remember position of the drawer in
@@ -85,22 +85,9 @@ zz.drawers = {
 
     },
 
-    easy_drawer: function(time, opacity, url, funct) {
-        // time - how fast to animate the drawer
-        // opacity - how much to fade out the article contents
-        // url - partial to load into the drawer...
-        // fn gets loaded on callback
-        zz.drawers.open_drawer(time, opacity);
-
-        $('#tab-content').load(url, function() {
-            $('div#drawer-content div#scroll-body').css({height: (zz.drawer_height - 52) + 'px'});
-            funct();
-        });
-    },
-
     resized: function() {
         if (zz.drawers.drawer_state == zz.drawers.DRAWER_OPEN) {
-            zz.resize_drawer(50);
+            zz.drawers.resize_drawer(50);
         }
     }
 

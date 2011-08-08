@@ -115,11 +115,7 @@ zz.homepage = {
                 wanted_subjects[album.id] = 'album';
             });
 
-            // Update the like array if it exists.
-            // todo: why would it not exist? (jeremy 8/7)
-            if (typeof( zz.like ) != 'undefined') {
-                zz.like.add_id_array(wanted_subjects);
-            }
+            zz.like.add_id_array(wanted_subjects);
         };
 
         call_and_merge([my_albums_path, session_user_liked_albums_path], function(albums) {

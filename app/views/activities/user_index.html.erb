@@ -26,3 +26,13 @@
     <%end%>
   </ul>
 </div>
+
+
+<% content_for :page_javascript do %>
+
+    <script type="text/javascript">
+      zz.displayed_user_id = '<%=  @user.id %>';
+      zz.displayed_user_base_url = '<%=escape_javascript user_path( @user )%>';
+    </script>
+
+<% end %>

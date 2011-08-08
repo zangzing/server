@@ -26,19 +26,10 @@
             background-color: #000000;
         }
 
-        /*#content {*/
-            /*position: relative;*/
-            /*margin: auto;*/
-            /*text-align: center;*/
-        /*}*/
-
         #movie {
             height:100%;
             width:100%;
         }
-
-        /*.javascript-movie{*/
-        /*}*/
 
         #scrim{
             position:absolute;
@@ -54,7 +45,6 @@
 
 
     <%= render :partial => 'layouts/zza'  %>
-
 
 </head>
 
@@ -123,7 +113,7 @@
 
     <script type="text/javascript">
 
-        var force_javascript = (document.location.search.indexOf('js=true') !== -1)
+        var force_javascript = (document.location.search.indexOf('js=true') !== -1);
 
         var handle_no_flash = function(){
             $("#movie").replaceWith('<div id="movie" class="javascript-movie"></div>');
@@ -174,7 +164,7 @@
 
 
             });
-        }
+        };
 
 
 
@@ -200,11 +190,11 @@
                     height: $(window).height(),
                     width: $(window).width()
                 });
-            }
+            };
 
             $(window).resize(function(){
                 setSize();
-            })
+            });
 
             setSize();
         });

@@ -6,6 +6,8 @@
 
 zz.wizard = {
 
+    INDICATOR_TEMPLATE : $('<ul id="clone-indicator" class="clearfix"><li></li></ul>'),
+
     group_album: {
 
         // set up the album variables
@@ -100,10 +102,8 @@ zz.wizard = {
 
 
 
-    /* Wizard Functions
-     ------------------------------------------------------------------------- */
 
-    make_drawer: function(obj, step) {
+    open_drawer: function(obj, step) {
 
         obj.init();
 
@@ -125,16 +125,15 @@ zz.wizard = {
 
     change_step: function(id, obj) {
 
-//        zz.logger.debug(obj.steps[id].type + "    " + zz.drawer_state);
 
         var container = $('#tab-content');
 
         if (obj.steps[id].type == 'partial' && zz.drawers.drawer_state == zz.drawers.DRAWER_OPEN) {
             $('#tab-content').fadeOut('fast');
             if (obj.style == 'edit') {
-                zz.close_drawer_partially(obj.time, 40);
+                zz.drawers.close_drawer_partially(obj.time, 40);
             } else {
-                zz.close_drawer_partially(obj.time, 40);
+                zz.drawers.close_drawer_partially(obj.time, 40);
             }
             zz.wizard.build_nav(obj, id);
             obj.steps[id].init(container, function() {
@@ -177,7 +176,7 @@ zz.wizard = {
             });
         } else if (obj.steps[id].type == 'partial' && zz.drawers.drawer_state == zz.drawers.DRAWER_CLOSED) {
             zz.drawers.open_drawer(80, obj.percent);
-            zz.close_drawer_partially(obj.time);
+            zz.drawers.close_drawer_partially(obj.time);
             zz.wizard.build_nav(obj, id);
 
             obj.steps[id].init(container, function() {
@@ -235,11 +234,9 @@ zz.wizard = {
             $('#drawer-tabs').hide();
         }
         if (obj.style == 'edit') {
-            //      $('#clone-indicator').clone().attr('id', obj.list_element+'-'+temp_id).addClass('edit-'+value+'-'+temp_id).html(temp).prependTo('#drawer-content');
-            $('#drawer-tabs').html($('#clone-indicator').clone().attr('id', 'indicator' + '-' + temp_id).addClass('edit-' + value + '-' + temp_id).html(temp));
+            $('#drawer-tabs').html(this.INDICATOR_TEMPLATE.clone().attr('id', 'indicator' + '-' + temp_id).addClass('edit-' + value + '-' + temp_id).html(temp));
         } else {
-            $('#drawer-tabs').html($('#clone-indicator').clone().attr('id', 'indicator' + '-' + temp_id).addClass('step-' + value + '-' + temp_id).html(temp));
-            //      $('#clone-indicator').clone().attr('id', obj.list_element+'-'+temp_id).addClass('step-'+value+'-'+temp_id).html(temp).prependTo('#drawer-content');
+            $('#drawer-tabs').html(this.INDICATOR_TEMPLATE.clone().attr('id', 'indicator' + '-' + temp_id).addClass('step-' + value + '-' + temp_id).html(temp));
         }
         if (fade_in) {
             $('#drawer-tabs').fadeIn('fast');
@@ -267,7 +264,7 @@ zz.wizard = {
             $('#next-step').click(function(e) {
                 obj.steps[id].bounce(function() {
                     $('#drawer .body').fadeOut('fast');
-                    zz.close_drawer(400);
+                    zz.drawers.close_drawer(400);
                     obj.on_close();
                 });
             });
@@ -294,56 +291,29 @@ zz.wizard = {
         if (style == 'edit') {
             $('div#drawer').css('background-image', 'url(' + zz.routes.image_url('/images/bg-drawer-bottom-cap.png') + ')');
             $('div#cancel-drawer-btn').hide();
-            zz.screen_gap = 160;
+//            zz.screen_gap = 160;
         } else {
             $('div#drawer').css('background-image', 'url(' + zz.routes.image_url('/images/bg-drawer-bottom-cap-with-cancel.png') + ')');
             $('div#cancel-drawer-btn').show();
-            zz.screen_gap = 160;
+//            zz.screen_gap = 160;
         }
     },
 
-    /* Wizard Object Functions - used to make special things happen
-     ------------------------------------------------------------------------- */
-
-
-
-//    create_personal_album: function(){
-//        $.post('/users/'+zz.current_user_id+'/albums', { album_type: "PersonalAlbum" }, function(data){
-//            zz.album_id = data;
-//            zz.wizard.make_drawer(zz.drawers.personal_album, 'add');
-//        });
-//    },
 
     create_group_album: function() {
         $.post(zz.routes.path_prefix + '/users/' + zz.current_user_id + '/albums', { album_type: "GroupAlbum" }, function(data) {
             zz.album_id = data.id;
             $('#album-info h2').text(data.name);
-            zz.wizard.make_drawer(zz.wizard.group_album, 'add');
+            zz.wizard.open_drawer(zz.wizard.group_album, 'add');
         });
     },
 
     open_edit_album_wizard: function(step) {
-        zz.wizard.make_drawer(zz.drawers.group_album, step);
+        zz.wizard.group_album.style = 'edit';
+        zz.wizard.open_drawer(zz.wizard.group_album, step);
     },
 
 
-
-//=========================================== SETTINGS DRAWER =====================================    
-
-
-
-
-    open_settings_drawer: function(step) {
-        zz.wizard.make_drawer(zz.drawers.settings, step);
-    },
-
-    close_settings_drawer: function() {
-        $('#drawer .body').fadeOut('fast');
-        zz.close_drawer(400);
-        setTimeout(function() {
-            window.location.reload(false);
-        }, 1);
-    },
 
 
     display_flashes: function(request, delay) {

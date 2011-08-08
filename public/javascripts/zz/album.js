@@ -157,7 +157,7 @@ zz.album = {
                             cellHeight: gridElement.height() - 20,
                             onClickPhoto: function(index, photo) {
                                 grid.nextPicture();
-                                ZZAt.track('button.next.click');//todo: phil, is this right?
+                                ZZAt.track('button.next.click');
                             },
                             singlePictureMode: true,
                             currentPhotoId: currentPhotoId,
@@ -204,23 +204,20 @@ zz.album = {
                 }
 
 
-                // Update the like array if it exists.
-                // todo: why wouldn't it exist? (jeremy 8/7)
-                if (typeof( zz.like ) != 'undefined') {
-                    var wanted_subjects = {};
-                    for (var key in json) {
-                        var id = json[key].id;
-                        wanted_subjects[id] = 'photo';
-                    }
-                    zz.like.add_id_array(wanted_subjects);
+                var wanted_subjects = {};
+                for (var key in json) {
+                    var id = json[key].id;
+                    wanted_subjects[id] = 'photo';
                 }
+                zz.like.add_id_array(wanted_subjects);
+
             }
         });
 
     },
 
     init_timeline_view: function(){
-        this._init_timeline_or_people_view('activities');
+        this._init_timeline_or_people_view('timeline');
     },
 
     init_people_view: function(){

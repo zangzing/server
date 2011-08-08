@@ -28,7 +28,14 @@
 
 
 <% content_for :page_javascript do %>
+
     <script type="text/javascript">
+      zz.displayed_user_id = '<%=  @user.id %>';
+      zz.displayed_user_base_url = '<%=escape_javascript user_path( @user )%>';
+    </script>
+
+    <script type="text/javascript">
+
         (function(){
             var my_albums_path = '<%= @my_albums_path %>';
             // this is null unless you are looking at another users albums
