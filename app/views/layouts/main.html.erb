@@ -39,6 +39,8 @@
   </head>
 
   <%
+      # setup join banner
+
       show_join_banner_class = 'show-join-banner'
       if (current_user || cookies['hide_join_banner'])
         show_join_banner_class = ''
@@ -47,6 +49,8 @@
 
 
   <%
+      # setup system message banner
+
       show_system_message_class = ''
       system_message = ''
       if (SystemSetting[:system_message_enabled] && !cookies['hide_system_message_banner'])
@@ -55,9 +59,21 @@
       end
   %>
 
+  <%
+     # setup impersonation banner and color
+
+     if signed_in? && session[:impersonation_mode] == true
+        show_system_message_class = 'show-system-message-banner'
+        system_message = "WARNING: Impersonating #{ current_user.name} (#{current_user.username}). Please logout."
+        impersonation_body_class = "impersonation"
+    else
+        impersonation_body_class = ""
+    end
+  %>
 
 
-  <body id="<%= controller.controller_name + '-' + controller.action_name %>" class="<%= controller.controller_name %> <%= show_join_banner_class %> <%= show_system_message_class %>">
+
+  <body id="<%= controller.controller_name + '-' + controller.action_name %>" class="<%= controller.controller_name %> <%= show_join_banner_class %> <%= show_system_message_class %> <%= impersonation_body_class %> ">
 
     <div id='join-banner'>
         <span id="banner-text">ZangZing is a new group photo sharing service. Join today. It's free!</span>
@@ -91,13 +107,6 @@
    </div>
 
 
-    <!--todo:get rid of this. move to wizard.js -->
-    <div id="clones">
-      <ul id="clone-indicator" class="clearfix">
-        <li></li>
-      </ul>
-    </div>
-
 
 
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
@@ -110,93 +119,61 @@
     <%   # Pull in generated javascript for the page -%>
     <%= yield :page_javascript %>
 
-    <%if session[:flash_dialog] %>
-          <%= render :partial => 'pages/flash_dialog'%>
-      <% session[:flash_dialog] = nil %>
-    <%end%>
 
 
     <script type="text/javascript">
-      /* Vars our js fns need from ruby (calls/conditionals) - NO SECURE DATA
-      ----------------------------------------------------------------------- */
-<%    if signed_in?  -%>
-      <% if  session[:impersonation_mode] == true %>
-        $('#system-message-banner span#banner-text').text('WARNING: Impersonating "<%= "#{current_user.username} #{ current_user.name}" %>" please logout.')
-                .css('color','red').css('text-decoration','blink');
-        $('body').css('background-color', '#FF9999').addClass( 'show-system-message-banner');
-      <%end %>
-      zz.current_user_id = '<%= current_user.id %>';
-      zz.current_user_name = '<%= escape_javascript current_user.username %>';
-<%    end -%>
 
-<%  if @user   %>
-      zz.displayed_user_id = '<%=  @user.id %>';
-      zz.displayed_user_base_url = '<%=escape_javascript user_path( @user )%>';
+      var zz = zz || {};
+      zz.session = zz.session || {};
+
+<%  if signed_in?  -%>
+      zz.session.current_user_id = '<%= current_user.id %>';
+      zz.session.current_user_name = '<%= escape_javascript current_user.username %>';
 <%  end -%>
 
-<%  if @album  -%>
-      zz.album_id = '<%= @album.id %>';
-      zz.album_type = '<%=escape_javascript @album.type %>';
-      zz.album_lastmod = '<%= @album.cache_version %>';
-      zz.album_type = zz.album_type.split('Album')[0].toLowerCase();
-      zz.current_user_can_download = <%=( @album.can_user_download?( current_user )? 'true':'false')%>;
-      zz.displayed_user_id   = '<%= @album.user.id %>';
-      zz.album_base_url = '/<%=escape_javascript @album.user.username%>/<%=escape_javascript @album.friendly_id%>';
-      zz.user_base_url = '/<%=escape_javascript @album.user.username%>';
-      zz.album_name = '<%=escape_javascript @album.name %>';
-      zz.back_to_home_page_url = '<%= back_to_home_page_url @album %>';
-      zz.back_to_home_page_caption = '<%= escape_javascript back_to_home_page_caption @album %>';
+      zz.page = zz.page || {};
+      zz.page.rails_controller_name = '<%= controller.controller_name %>';
+      zz.page.rails_action_name = '<%= controller.action_name %>';
+      zz.page.rails_authenticity_token = '<%= form_authenticity_token %>';
 
-      zz.current_photo_index = 0;
+      zz.config = zz.config || {};
+      zz.config.win_download_url = '<%= ZangZingConfig.config[:agent_download_url_win] %>';
+      zz.config.mac_download_url = '<%= ZangZingConfig.config[:agent_download_url_mac] %>';
+      zz.config.agent_port = '<%= ZangZingConfig.config[:agent_port] %>';
+      zz.config.rails_asset_id = '<%= ENV["RAILS_ASSET_ID"] %>';
+      zz.config.rails_asset_host = '<%= ActionController::Base.asset_host %>';
 
-<%    end
-      # This is where we pass things on to js that we need from ruby.
-      # Remember to use the zz.zang namespace.
--%>
-
-
-      zz.rails_controller_name = '<%= controller.controller_name %>';
-      zz.rails_action_name = '<%= controller.action_name %>';
-      zz.rails_authenticity_token = '<%= form_authenticity_token %>';
-
-      zz.win_download_url = '<%= ZangZingConfig.config[:agent_download_url_win] %>';
-      zz.mac_download_url = '<%= ZangZingConfig.config[:agent_download_url_mac] %>';
-      zz.agent_port = '<%= ZangZingConfig.config[:agent_port] %>';
-
-      zz.rails_asset_id = '<%= ENV["RAILS_ASSET_ID"] %>';
-      zz.rails_asset_host = '<%= ActionController::Base.asset_host %>';
-
-      if( typeof( homepage_render )!= 'undefined' ){
-                    homepage.render();
-      }
 
       $(document).ready(function(){
 
-          /* init
-          ----------------------------------------------------------------------- */
-          <%case controller.controller_name%>
-          <%   when 'photos':%>
-          zz.init.album();
-          <%   when 'activities':%>
-          zz.init.album_timeline_or_people_view('timeline');
-          <%   when 'people':%>
-          zz.init.album_timeline_or_people_view('people');
-          <%end%>
-
           zz.init.template();
 
-          $(window).bind("load", function() {
-              setTimeout('zz.init.loaded()', 64);
-          });
-
-          $(window).bind("resize", function() {
-              zz.init.resized();
-          });
-
           <% if session[:show_welcome_dialog] %>
-              zz.init.show_welcome_dialog();
+              zz.welcome.show_welcome_dialog();
               <% session[:show_welcome_dialog] = nil %>
           <% end %>
+
+
+          <% if session[:client_dialog] %>
+          zz.client_dialog.show( '<%=raw session[:client_dialog] %>' );
+          <%   session[:client_dialog] = nil %>
+          <% end %>
+
+
+          <% if session[:flash_dialog] %>
+          zz.dialog.show_flash_dialog('<%=flash[:notice] %>')
+          <%  session[:flash_dialog] = nil %>
+          <% end %>
+
+          
+
+          <% if session[:send_zza_events_from_client]
+                session[:send_zza_events_from_client].each do |event| %>
+          ZZAt.track('<%= escape_javascript event.to_s %>');
+          <%   end
+               session[:send_zza_events_from_client] = nil
+          end %>
+
 
           Zenbox.init({
             dropboxID:   "14620",
@@ -205,19 +182,6 @@
             tabColor:    "black",
             tabPosition: "Left"
           });
-
-          <%if session[:client_dialog] %>
-          pages.alert_dialog.show( '<%=raw session[:client_dialog] %>' );
-          <% session[:client_dialog] = nil %>
-          <%end%>
-
-
-          <% if session[:send_zza_events_from_client]
-                session[:send_zza_events_from_client].each do |event| %>
-          ZZAt.track('<%= escape_javascript event.to_s %>');
-          <%   end
-               session[:send_zza_events_from_client] = nil
-          end %>
       });
 
     </script>

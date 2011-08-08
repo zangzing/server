@@ -8,3 +8,13 @@
 <% end %>
 
 
+<% content_for :page_javascript do %>
+
+    <%= render :partial => "photos/album_view_javascript" %>
+    
+    <script type="text/javascript">
+        $(document).ready(function(){
+            zz.album.init_grid_view();
+        });
+    </script>
+<% end %>

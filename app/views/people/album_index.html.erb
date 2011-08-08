@@ -64,6 +64,18 @@
 
 </div>
 
+<% content_for :page_javascript do %>
+
+    <%= render :partial => "photos/album_view_javascript" %>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            zz.album.init_people_view();
+        });
+    </script>
+
+<% end %>
+
 
 
 

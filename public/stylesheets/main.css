@@ -17,6 +17,11 @@ body {
   color: #0a0a0a;
   text-align: center;
 }
+
+body.impersonation {
+   background-color: #FF9999
+}
+
 a, a:visited{
     color: #466faa;
     text-decoration:none;
@@ -127,6 +132,13 @@ div#container {
     background-color: #333;
     display:block;
 }
+
+body.impersonation.show-system-message-banner #system-message-banner #banner-text {
+    color: red;
+    text-decoration: blink;
+}
+
+
 
 #system-message-banner #banner-text{
     position:relative;

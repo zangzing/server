@@ -140,10 +140,10 @@ Server::Application.routes.draw do
     get '/users/:user_id/people'   => 'people#user_index'
 
     #contributors
-    get    '/albums/:album_id/contributors/new'  => 'contributors#new',        :as => :new_album_contributor
-    get    '/albums/:album_id/contributors'      => 'contributors#index',      :as => :album_contributors
-    post   '/albums/:album_id/contributors'      => 'contributors#create',     :as => :create_album_contributor
-    delete '/albums/:album_id/contributors'      => 'contributors#destroy',    :as => :delete_contributor
+#    get    '/albums/:album_id/contributors/new'  => 'contributors#new',        :as => :new_album_contributor
+#    get    '/albums/:album_id/contributors'      => 'contributors#index',      :as => :album_contributors
+#    post   '/albums/:album_id/contributors'      => 'contributors#create',     :as => :create_album_contributor
+#    delete '/albums/:album_id/contributors'      => 'contributors#destroy',    :as => :delete_contributor
 
     #like
     match  '/likes'                              => 'likes#index',             :as => :likes
@@ -159,9 +159,9 @@ Server::Application.routes.draw do
 
 
     # oauth
-    match '/users/:id/agents'     => 'agents#index',                 :as => :agents
-    match '/agent/info'           => 'agents#info',                  :as => :agent_info
-    match '/agents/check'         => 'agents#check',                 :as => :check
+#    match '/users/:id/agents'     => 'agents#index',                 :as => :agents
+#    match '/agent/info'           => 'agents#info',                  :as => :agent_info
+#    match '/agents/check'         => 'agents#check',                 :as => :check
     match '/oauth/authorize'      => 'oauth#authorize',              :as => :authorize
     match '/oauth/agentauthorize' => 'oauth#agentauthorize',         :as => :agentauthorize
     match '/oauth/revoke'         => 'oauth#revoke',                 :as => :revoke
