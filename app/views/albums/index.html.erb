@@ -29,16 +29,19 @@
 
 <% content_for :page_javascript do %>
     <script type="text/javascript">
+        (function(){
+            var my_albums_path = '<%= @my_albums_path %>';
+            // this is null unless you are looking at another users albums
+            // from this you can determine which of the albums you like should
+            // show in the other users view from your perspective
+            var session_user_liked_albums_path = '<%= @session_user_liked_albums_path %>';
 
-        var homepage_render = true;
-        var my_albums_path = '<%= @my_albums_path %>';
-        // this is null unless you are looking at another users albums
-        // from this you can determine which of the albums you like should
-        // show in the other users view from your perspective
-        var session_user_liked_albums_path = '<%= @session_user_liked_albums_path %>';
 
+            var liked_albums_path ='<%= @liked_albums_path %>';
+            var liked_users_albums_path = '<%= @liked_users_albums_path %>';
 
-        var liked_albums_path ='<%= @liked_albums_path %>';
-        var liked_users_albums_path = '<%= @liked_users_albums_path %>';
+            zz.homepage.render(my_albums_path, session_user_liked_albums_path, liked_albums_path, liked_users_albums_path);
+        })();
+            
     </script>
 <% end %>

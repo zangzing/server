@@ -110,7 +110,9 @@
     <%   # Pull in generated javascript for the page -%>
     <%= yield :page_javascript %>
 
-    <%if session[:flash_dialog] %>
+
+    <% #todo: this should just call javascript function direclty. no need to pull in separate file with js and css
+       if session[:flash_dialog] %>
           <%= render :partial => 'pages/flash_dialog'%>
       <% session[:flash_dialog] = nil %>
     <%end%>
@@ -166,48 +168,32 @@
       zz.rails_asset_id = '<%= ENV["RAILS_ASSET_ID"] %>';
       zz.rails_asset_host = '<%= ActionController::Base.asset_host %>';
 
-      if( typeof( homepage_render )!= 'undefined' ){
-                    homepage.render();
-      }
 
       $(document).ready(function(){
 
           /* init
           ----------------------------------------------------------------------- */
-          <%case controller.controller_name%>
-          <%   when 'photos':%>
-          zz.init.album();
-          <%   when 'activities':%>
-          zz.init.album_timeline_or_people_view('timeline');
-          <%   when 'people':%>
-          zz.init.album_timeline_or_people_view('people');
+          <% if @album %>
+              <%case controller.controller_name%>
+              <%   when 'photos':%>
+              zz.album.init_grid_view();
+              <%   when 'activities':%>
+              zz.album.init_timeline_view();
+              <%   when 'people':%>
+              zz.album.init_people_view();
+              <%end%>
           <%end%>
 
           zz.init.template();
 
-          $(window).bind("load", function() {
-              setTimeout('zz.init.loaded()', 64);
-          });
-
-          $(window).bind("resize", function() {
-              zz.init.resized();
-          });
-
           <% if session[:show_welcome_dialog] %>
-              zz.init.show_welcome_dialog();
+              zz.welcome.show_welcome_dialog();
               <% session[:show_welcome_dialog] = nil %>
           <% end %>
 
-          Zenbox.init({
-            dropboxID:   "14620",
-            url:         "https://zangzing.zendesk.com",
-            tabID:       "help",
-            tabColor:    "black",
-            tabPosition: "Left"
-          });
 
           <%if session[:client_dialog] %>
-          pages.alert_dialog.show( '<%=raw session[:client_dialog] %>' );
+          zz.client_dialog.show( '<%=raw session[:client_dialog] %>' );
           <% session[:client_dialog] = nil %>
           <%end%>
 
@@ -218,6 +204,15 @@
           <%   end
                session[:send_zza_events_from_client] = nil
           end %>
+
+
+          Zenbox.init({
+            dropboxID:   "14620",
+            url:         "https://zangzing.zendesk.com",
+            tabID:       "help",
+            tabColor:    "black",
+            tabPosition: "Left"
+          });
       });
 
     </script>

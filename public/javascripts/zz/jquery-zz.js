@@ -8,9 +8,6 @@
 (function($) {
 
 
-
-
-
     $.fn.rowLeft = function() {
         var top = this.position().top;
         var sibling = this.prev();
@@ -48,7 +45,7 @@
     };
 
     $.fn.rotate = function(angle) {
-        css_transform.rotate(this, angle);
+        zz.css_transform.rotate(this, angle);
         return this;
     };
 
@@ -74,11 +71,11 @@
      */
     $.fn.center = function(container, center_x, center_y) {
 
-        if(! container){
+        if (! container) {
             container = $(this).parent();
         }
 
-        if ( $.isFunction(container.parent)) {
+        if ($.isFunction(container.parent)) {
             //assume its an element
             var container_element = $(container);
             container = {
@@ -96,18 +93,18 @@
             var left = Math.round((container.width - el.width()) / 2 + container.left);
             var top = Math.round((container.height - el.height()) / 2 + container.top);
 
-            if(center_x && center_y){
+            if (center_x && center_y) {
                 el.css({
                     left: left,
                     top: top
                 });
             }
-            else if(center_y){
+            else if (center_y) {
                 el.css({
                     top: top
                 });
             }
-            else if(center_x){
+            else if (center_x) {
                 el.css({
                     left: left
                 });
@@ -117,17 +114,13 @@
         });
 
 
-
-
-
-
         return this;
 
     };
 
 
-    $.fn.disableEnterKey = function(elements){
-        _.each(this, function(el){
+    $.fn.disableEnterKey = function(elements) {
+        _.each(this, function(el) {
             $(el).bind("keypress", function(e) {
                 if (e.keyCode == 13) {
                     return false;
@@ -135,8 +128,6 @@
             });
         });
     };
-
-
 
 
 })(jQuery);

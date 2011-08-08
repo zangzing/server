@@ -3,14 +3,12 @@
  *
  * Copyright 2011, ZangZing LLC. All rights reserved.
  */
+var zz = zz || {};
 
+zz.logger = {
 
-var logger = {
-
-    debug: function(message)
-    {
-        if(typeof(console) != "undefined")
-        {
+    debug: function(message) {
+        if (typeof(console) != "undefined") {
             console.log(message)
         }
 

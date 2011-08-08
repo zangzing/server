@@ -1,4 +1,7 @@
-var css_transform = {
+var zz = zz || {};
+
+
+zz.css_transform = {
 
     rotate : function(element, angle, left, top) {
         if ($.client.browser == "Explorer") {
@@ -33,11 +36,11 @@ var css_transform = {
         var w = target.width();
         var h = target.height();
 
-        if(left){
+        if (left) {
             x = left;
         }
 
-        if(top){
+        if (top) {
             y = top;
         }
 

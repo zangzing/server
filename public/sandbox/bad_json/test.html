@@ -17,7 +17,7 @@
                 url: '/sandbox/bad_json/badcache_decomp.json',
                 dataType:'json',
                 error: function(xhr, message, exception){
-                    if(cache_helper.check_bad_album_json(xhr, message, $('#album_id').val(), this.url)){
+                    if(zz.cache_helper.check_bad_album_json(xhr, message, $('#album_id').val(), this.url)){
                         alert('failed to parse: ' + this.url);
                     }
                 },
@@ -32,7 +32,7 @@
                 url: '/sandbox/bad_json/badcache_decomp.json',
                 dataType:'json',
                 error: function(xhr, message, exception){
-                    if(cache_helper.check_bad_homepage_json(xhr, message, $('#user_id').val(), this.url)){
+                    if(zz.cache_helper.check_bad_homepage_json(xhr, message, $('#user_id').val(), this.url)){
                         alert('failed to parse: ' + this.url);
                     };
                 },
