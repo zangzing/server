@@ -169,7 +169,7 @@
                                 selectedIndex = index;
                             }
                             var src = element.thumb_url;
-                            src = agent.checkAddCredentialsToUrl(src);
+                            src = zz.agent.checkAddCredentialsToUrl(src);
                             return {id:id, src:src};
                         });
                         callback(photos,selectedIndex);
