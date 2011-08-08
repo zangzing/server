@@ -5,7 +5,7 @@ namespace :jslint do
     #    sudo easy_install http://closure-linter.googlecode.com/files/closure_linter-latest.tar.gz
 
     task :gjslint  do
-      sh "gjslint --unix_mode -r public/javascripts/zz"
+      sh "gjslint --unix_mode --nojsdoc -r public/javascripts/zz"
     end
 
 #    task :fixjsstyle do
