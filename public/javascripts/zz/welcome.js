@@ -9,4 +9,4 @@ zz.welcome = {
             autoOpen: true
         });
     }
-}
+};

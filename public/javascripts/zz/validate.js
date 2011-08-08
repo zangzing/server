@@ -5,13 +5,13 @@
  */
 
 jQuery.validator.addMethod(
-        "regex",
+        'regex',
         function(value, element, regexp) {
             var check = false;
             var re = new RegExp(regexp);
             return this.optional(element) || re.test(value);
         },
-        "Please check your input."
+        'Please check your input.'
         );
 
 
@@ -40,26 +40,26 @@ zz.validate = {
         element: '#join-form',
         errorContainer: 'div#sign-up p.error-notice',
         rules: {
-            'user[name]':     { required: true,
+            'user[name]': { required: true,
                 minlength: 5 },
             'user[username]': { required: true,
                 minlength: 1,
-                maxlength:25,
-                regex: "(^[a-z0-9]+$|^[a-z0-9]+:.{8}$)",
+                maxlength: 25,
+                regex: '(^[a-z0-9]+$|^[a-z0-9]+:.{8}$)',
                 remote: zz.routes.path_prefix + '/users/validate_username' },
-            'user[email]':    { required: true,
+            'user[email]': { required: true,
                 email: true,
                 remote: zz.routes.path_prefix + '/users/validate_email' },
             'user[password]': { required: true,
                 minlength: 5 }
         },
         messages: {
-            'user[name]':    { required: 'Please enter your name.',
+            'user[name]': { required: 'Please enter your name.',
                 minlength: 'Please enter at least 5 letters'},
-            'user[username]':{ required: 'A username is required.',
+            'user[username]': { required: 'A username is required.',
                 regex: 'Only lowercase alphanumeric characters allowed',
                 remote: 'username not available'},
-            'user[email]':   { required: 'We promise we won&rsquo;t spam you.',
+            'user[email]': { required: 'We promise we won&rsquo;t spam you.',
                 email: 'Is that a valid email?',
                 remote: 'Email already used'},
             'user[password]': 'Six characters or more please.'

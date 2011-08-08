@@ -17,12 +17,12 @@ zz.simple_uploader = {
 
 (function($, undefined) {
 
-    $.widget("ui.zz_simpleuploader", {
+    $.widget('ui.zz_simpleuploader', {
         options: {
-            album_id:null,
-            on_done:function(uploads_completed) {
+            album_id: null,
+            on_done: function(uploads_completed) {
             },
-            button_placeholder_id:null
+            button_placeholder_id: null
         },
 
         _create: function() {
@@ -46,11 +46,11 @@ zz.simple_uploader = {
                     '</div>');
 
 
-            if (navigator.appVersion.indexOf("Mac") != -1) {
-                var photo_source = 'simple.osx'
+            if (navigator.appVersion.indexOf('Mac') != -1) {
+                var photo_source = 'simple.osx';
             }
             else {
-                var photo_source = 'simple.win'
+                var photo_source = 'simple.win';
             }
 
 
@@ -105,24 +105,24 @@ zz.simple_uploader = {
 
             self.uploader = new SWFUpload({
                 // Backend Settings
-                upload_url: "/service/albums/" + self.options.album_id + "/upload",
-                post_params: {"source" : photo_source},
+                upload_url: '/service/albums/' + self.options.album_id + '/upload',
+                post_params: {'source' : photo_source},
 
                 // File Upload Settings
-                file_size_limit : "102400",    // 100MB
-                file_types : "*.jpg;*.jpeg;*.png;*.gif;*.tiff;*.JPG;*.JPEG;*.PNG;*.GIF;*.TIFF",
-                file_types_description : "Image Files",
-                file_upload_limit : "0",
-                file_queue_limit : "0",
+                file_size_limit: '102400',    // 100MB
+                file_types: '*.jpg;*.jpeg;*.png;*.gif;*.tiff;*.JPG;*.JPEG;*.PNG;*.GIF;*.TIFF',
+                file_types_description: 'Image Files',
+                file_upload_limit: '0',
+                file_queue_limit: '0',
 
 
                 prevent_swf_caching: $.client.browser == 'Explorer',
 
-                file_dialog_start_handler : function() {
+                file_dialog_start_handler: function() {
                     ZZAt.track('simpleuploader.button.click');
                 },
 
-                file_queued_handler : function(file) {
+                file_queued_handler: function(file) {
 
                     if (!upload_started) {
                         open_progress_dialog();
@@ -137,7 +137,7 @@ zz.simple_uploader = {
                     self.queue_element.append(queued_file);
 
                     queued_file.find('.cancel-button').click(function() {
-                        self.uploader.cancelUpload(file.id, false)
+                        self.uploader.cancelUpload(file.id, false);
                         queued_file.fadeOut('fast');
                         ZZAt.track('simpleuploader.photo.cancel');
 
@@ -146,30 +146,30 @@ zz.simple_uploader = {
 
                 },
 
-                file_queue_error_handler : function(file, errorCode, message) {
+                file_queue_error_handler: function(file, errorCode, message) {
 
                 },
 
-                file_dialog_complete_handler : function(numFilesSelected, numFilesQueued) {
+                file_dialog_complete_handler: function(numFilesSelected, numFilesQueued) {
 
                 },
 
-                upload_start_handler : function(file) {
+                upload_start_handler: function(file) {
 
                 },
 
-                upload_progress_handler : function(file, bytesLoaded, bytesTotal) {
-                    $('.simpleuploader .queue .queued-file#' + file.id + ' .progress-bar').css('width', Math.floor(100 * bytesLoaded / bytesTotal) + "%")
+                upload_progress_handler: function(file, bytesLoaded, bytesTotal) {
+                    $('.simpleuploader .queue .queued-file#' + file.id + ' .progress-bar').css('width', Math.floor(100 * bytesLoaded / bytesTotal) + '%');
 
                 },
-                upload_error_handler : function(file, errorCode, message) {
+                upload_error_handler: function(file, errorCode, message) {
                     $('.simpleuploader .queue .queued-file#' + file.id + ' .status').addClass('error');
                     $('.simpleuploader .queue .queued-file#' + file.id + ' .progress-bar').hide();
                     $('.simpleuploader .queue .queued-file#' + file.id + ' .cancel-button').hide();
                     ZZAt.track('simpleuploader.photo.error');
 
                 },
-                upload_success_handler : function(file, serverData) {
+                upload_success_handler: function(file, serverData) {
                     uploads_completed++;
 
                     $('.simpleuploader .queue .queued-file#' + file.id + ' .status').addClass('done');
@@ -179,7 +179,7 @@ zz.simple_uploader = {
 
                 },
 
-                upload_complete_handler : function(file) {
+                upload_complete_handler: function(file) {
 
                 },
 
@@ -191,7 +191,7 @@ zz.simple_uploader = {
                 button_placeholder_id: self.options.button_placeholder_id,
 
                 // Flash Settings
-                flash_url : "/static/swf/swfupload.swf",
+                flash_url: '/static/swf/swfupload.swf',
 
 
 
@@ -206,7 +206,7 @@ zz.simple_uploader = {
 
         },
 
-        uploads_in_progress : function() {
+        uploads_in_progress: function() {
             return this.uploader.getStats().in_progress;
         },
 

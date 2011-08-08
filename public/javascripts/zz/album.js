@@ -29,7 +29,7 @@ zz.album = {
             success: function(json) {
 
 
-                ZZAt.track('album.view', {id:zz.page.album_id});
+                ZZAt.track('album.view', {id: zz.page.album_id});
 
                 json = zz.album._filterPhotosForUser(json);
 
@@ -78,13 +78,13 @@ zz.album = {
                             return zz.infomenu.download_template;
                         }
                         else {
-                            return false
+                            return false;
                         }
                     };
 
 
                     var grid = gridElement.zz_photogrid({
-                        photos:json,
+                        photos: json,
                         allowDelete: false,
                         allowEditCaption: false,
                         allowReorder: false,
@@ -95,19 +95,19 @@ zz.album = {
 
                             //get rid of scrollbars before animate transition
                             grid.hideThumbScroller();
-                            gridElement.css({overflow:'hidden'});
+                            gridElement.css({overflow: 'hidden'});
 
-                            $('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()}, 500, 'easeOutQuart');
+                            $('#article').css({overflow: 'hidden'}).animate({left: -1 * $('#article').width()}, 500, 'easeOutQuart');
                             $('#header #back-button').fadeOut(200);
 
-                            document.location.href = zz.page.album_base_url + "/photos/#!" + photo.id;
+                            document.location.href = zz.page.album_base_url + '/photos/#!' + photo.id;
                         },
                         onDelete: function(index, photo) {
                             zz.routes.call_delete_photo(photo.id);
                             return true;
                         },
                         currentPhotoId: $.param.fragment(),
-                        showButtonBar:true,
+                        showButtonBar: true,
                         infoMenuTemplateResolver: infoMenuTemplateResolver
                     }).data().zz_photogrid;
 
@@ -149,7 +149,7 @@ zz.album = {
 
 
                         var grid = gridElement.zz_photogrid({
-                            photos:json,
+                            photos: json,
                             allowDelete: false,
                             allowEditCaption: false,
                             allowReorder: false,
@@ -162,9 +162,9 @@ zz.album = {
                             singlePictureMode: true,
                             currentPhotoId: currentPhotoId,
                             onScrollToPhoto: function(photoId, index) {
-                                window.location.hash = '#!' + photoId
+                                window.location.hash = '#!' + photoId;
                                 zz.page.current_photo_index = index;
-                                ZZAt.track('photo.view', {id:photoId});
+                                ZZAt.track('photo.view', {id: photoId});
                             }
 
 
@@ -216,11 +216,11 @@ zz.album = {
 
     },
 
-    init_timeline_view: function(){
+    init_timeline_view: function() {
         this._init_timeline_or_people_view('timeline');
     },
 
-    init_people_view: function(){
+    init_people_view: function() {
         this._init_timeline_or_people_view('people');
     },
 
@@ -251,7 +251,7 @@ zz.album = {
                     var photo = json[i];
                     photo.previewSrc = zz.agent.checkAddCredentialsToUrl(photo.stamp_url);
                     photo.src = zz.agent.checkAddCredentialsToUrl(photo.thumb_url);
-                    wanted_subjects[ photo.id ] = 'photo';
+                    wanted_subjects[photo.id] = 'photo';
                 }
                 zz.like.add_id_array(wanted_subjects);
 
@@ -266,14 +266,14 @@ zz.album = {
                         if (!_.isUndefined($(element).attr('data-upload-batch-id'))) {
                             var batchId = parseInt($(element).attr('data-upload-batch-id'));
                             filteredPhotos = $(json).filter(function(index) {
-                                return (json[index].upload_batch_id === batchId)
+                                return (json[index].upload_batch_id === batchId);
                             });
                             var moreLessbuttonElement = $('.viewlist .more-less-btn[data-upload-batch-id="' + batchId.toString() + '"]');
                         }
                         else if (!_.isUndefined($(element).attr('data-photo-id'))) {
                             var photoId = parseInt($(element).attr('data-photo-id'));
                             filteredPhotos = $(json).filter(function(index) {
-                                return (json[index].id === photoId)
+                                return (json[index].id === photoId);
                             });
                         }
                     }
@@ -281,7 +281,7 @@ zz.album = {
                         var userId = parseInt($(element).attr('data-user-id'));
 
                         filteredPhotos = $(json).filter(function(index) {
-                            return (json[index].user_id === userId )
+                            return (json[index].user_id === userId);
                         });
                         var moreLessbuttonElement = $('.viewlist .more-less-btn[data-user-id="' + userId.toString() + '"]');
                     }
@@ -307,24 +307,24 @@ zz.album = {
                             return zz.infomenu.download_template;
                         }
                         else {
-                            return false
+                            return false;
                         }
                     };
 
                     var grid = $(element).zz_photogrid({
-                        photos:filteredPhotos,
+                        photos: filteredPhotos,
                         allowDelete: false,
                         allowEditCaption: false,
                         allowReorder: false,
                         cellWidth: 230,
                         cellHeight: 230,
                         onClickPhoto: function(index, photo) {
-                            $('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()}, 500, 'easeOutQuart');
+                            $('#article').css({overflow: 'hidden'}).animate({left: -1 * $('#article').width()}, 500, 'easeOutQuart');
                             $('#header #back-button').fadeOut(200);
-                            document.location.href = zz.page.album_base_url + "/photos/#!" + photo.id;
+                            document.location.href = zz.page.album_base_url + '/photos/#!' + photo.id;
                         },
                         showThumbscroller: false,
-                        showButtonBar:true,
+                        showButtonBar: true,
                         allowDownload: zz.page.current_user_can_download,
                         showInfoMenu: zz.page.displayed_user_id == zz.session.current_user_id, //The owner of the album being displayed ios zz.page.displayed_user_id
                         onClickShare: function(photo_id) {
@@ -339,7 +339,7 @@ zz.album = {
 
 
                     //force this back because grid turns on scrolling
-                    $(element).css({'overflow-x':'hidden', 'overflow-y':'hidden'});
+                    $(element).css({'overflow-x': 'hidden', 'overflow-y': 'hidden'});
 
                     var allShowing = false;
 
@@ -348,14 +348,14 @@ zz.album = {
                     if (!_.isUndefined(moreLessbuttonElement)) {
                         moreLessbuttonElement.click(function() {
                             if (allShowing) {
-                                moreLessbuttonElement.find("span").html("Show more photos");
+                                moreLessbuttonElement.find('span').html('Show more photos');
                                 moreLessbuttonElement.removeClass('open');
-                                $(element).animate({height:230}, 500, 'swing', function() {
+                                $(element).animate({height: 230}, 500, 'swing', function() {
                                 });
                                 allShowing = false;
                             }
                             else {
-                                moreLessbuttonElement.find("span").html("Show fewer photos");
+                                moreLessbuttonElement.find('span').html('Show fewer photos');
                                 moreLessbuttonElement.addClass('open');
                                 $(element).animate({height: $(element).children().last().position().top + 230}, 500, 'swing', function() {
                                     $(element).trigger('scroll');  //hack: force the photos to load themselves now that they are visible

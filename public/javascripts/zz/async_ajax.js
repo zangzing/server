@@ -29,16 +29,16 @@ zz.async_ajax = {
 
 
         makeCall = function(callUrl, method) {
-            calls ++;
+            calls++;
             var data = {};
 
             if (calls > self.MAX_CALLS) {
-                failure_callback("timeout");
+                failure_callback('timeout');
             }
             else {
                 if (method.toLowerCase() == 'put') {
                     method = 'post';
-                    data = {_method:'put'};
+                    data = {_method: 'put'};
                 }
 
                 $.ajax({

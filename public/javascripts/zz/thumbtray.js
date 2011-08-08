@@ -6,7 +6,7 @@
 
 (function($, undefined) {
 
-    $.widget("ui.zz_thumbtray", {
+    $.widget('ui.zz_thumbtray', {
         options: {
             photos: [],
             srcAttribute: 'src',
@@ -14,10 +14,10 @@
             selectionSize: 140,
             allowDelete: false,
             showSelection: false,
-            selectedIndex:-1,
+            selectedIndex: -1,
             thumbnailSize: 20,
-            showSelectedIndexIndicator:false,
-            repaintOnResize:false,
+            showSelectedIndexIndicator: false,
+            repaintOnResize: false,
             onDeletePhoto: function(index, photo) {
             },
             onSelectPhoto: function(index, photo) {
@@ -26,9 +26,9 @@
             }
         },
 
-        currentIndex : -1,
-        selectedIndex : -1,
-        traySize:null,
+        currentIndex: -1,
+        selectedIndex: -1,
+        traySize: null,
         orientation: null,
         ORIENTATION_X: 'x',
         ORIENTATION_Y: 'y',
@@ -40,7 +40,7 @@
 
             var html = '';
             html += '<div class="thumbtray-wrapper">';
-            html += '<div class="thumbtray-thumbnails"></div>'
+            html += '<div class="thumbtray-thumbnails"></div>';
             html += '<div class="thumbtray-selection">';
             html += '<img src="' + zz.routes.image_url('/images/photo_placeholder.png') + '">';
             html += '</div>';
@@ -80,24 +80,24 @@
                     self.orientation = self.ORIENTATION_Y;
                 }
 
-                self.wrapperElement.css({width:width, height:height});
-                self.scrimElement.css({width:width, height:height});
-                self.maskElement.css({width:width, height:height});
-                self.thumbnailsElement.css({width:width, height:height});
+                self.wrapperElement.css({width: width, height: height});
+                self.scrimElement.css({width: width, height: height});
+                self.maskElement.css({width: width, height: height});
+                self.thumbnailsElement.css({width: width, height: height});
 
 
                 if (self.orientation === self.ORIENTATION_X) {
                     self.previewElement.addClass('x');
                     self.selectionElement.addClass('x');
-                    self.selectionElement.find('img').css({height:self.options.selectionSize});
-                    self.previewElement.find('img').css({height:self.options.previewSize});
+                    self.selectionElement.find('img').css({height: self.options.selectionSize});
+                    self.previewElement.find('img').css({height: self.options.previewSize});
                     self.traySize = width;
                 }
                 else {
                     self.previewElement.addClass('y');
                     self.selectionElement.addClass('y');
-                    self.selectionElement.find('img').css({width:self.options.selectionSize});
-                    self.previewElement.find('img').css({width:self.options.previewSize});
+                    self.selectionElement.find('img').css({width: self.options.selectionSize});
+                    self.previewElement.find('img').css({width: self.options.previewSize});
                     self.traySize = height;
                 }
             };
@@ -109,12 +109,12 @@
                     self._repaintThumbnails();
                 });
             }
-            ;
+;
 
 
             this._repaintThumbnails();
 
-            this._setSelectedIndex(this.options.selectedIndex)
+            this._setSelectedIndex(this.options.selectedIndex);
 
 
             //delete button
@@ -122,7 +122,7 @@
                 self.previewElement.find('.thumbtray-delete-button').show().click(function() {
                     self.previewElement.find('.thumbtray-delete-button').hide();
                     self.removePhoto(self._getCurrentIndex());
-                    self.previewElement.hide("scale", {}, 300, function() {
+                    self.previewElement.hide('scale', {}, 300, function() {
                         self.previewElement.find('.thumbtray-delete-button').show();
                     });
 
@@ -148,7 +148,7 @@
                     if (!mouseOver) {
                         self.previewElement.fadeOut('fast');
                         if (self.options.showSelection) {
-                            self.selectionElement.animate({opacity:1}, 100);
+                            self.selectionElement.animate({opacity: 1}, 100);
                         }
                     }
                 }, 100);
@@ -180,7 +180,7 @@
             });
 
             self.scrimElement.mouseover(function(event) {
-                showPreview()
+                showPreview();
             });
 
             self.scrimElement.mouseout(function(event) {
@@ -192,13 +192,13 @@
                 self._setSelectedIndex(self._getCurrentIndex());
                 if (self.options.showSelection === true) {
                     self.previewElement.hide();
-                    self.selectionElement.css({opacity:1});
+                    self.selectionElement.css({opacity: 1});
                 }
             });
 
 
             self.previewElement.mouseover(function(event) {
-                showPreview()
+                showPreview();
             });
 
             self.previewElement.mouseout(function(event) {
@@ -216,7 +216,7 @@
         },
 
         showPreviewForPosition: function(position) {
-            var index = this._getIndexForPosition(position)
+            var index = this._getIndexForPosition(position);
             this._setCurrentIndex(index);
             this.options.onPreviewPhoto(index, this.options.photos[index]);
             this.previewElement.show();
@@ -258,7 +258,7 @@
 
 
                     if (this.options.showSelection) {
-                        this.selectionElement.css({opacity:.5});
+                        this.selectionElement.css({opacity: .5});
                     }
                 }
             }
@@ -274,9 +274,9 @@
             if (index !== -1) {
                 if (this.options.showSelection === true) {
                     this.selectionElement.find('img').attr('src', this.PLACEHOLDER_IMAGE);
-                    this.selectionElement.find('img').attr('src', this.options.photos[index][this.options.srcAttribute])
+                    this.selectionElement.find('img').attr('src', this.options.photos[index][this.options.srcAttribute]);
                     this.selectionElement.show();
-                    this.selectionElement.css({opacity:1});
+                    this.selectionElement.css({opacity: 1});
 
 
                     if (this.orientation === this.ORIENTATION_X) {
@@ -300,7 +300,7 @@
 
             }
 
-            this.options.onSelectPhoto(index, this.options.photos[index])
+            this.options.onSelectPhoto(index, this.options.photos[index]);
         },
 
         _getSelectedIndex: function() {
@@ -331,14 +331,14 @@
                 var extra = thumbnails.length - this._getMaxVisibleThumbnails();
                 var removeEach = (thumbnails.length - 2) / extra;
                 for (var i = extra; i > 0; i--) {
-                    var indexToRemove = Math.round(i * removeEach)
+                    var indexToRemove = Math.round(i * removeEach);
                     thumbnails.splice(indexToRemove, 1);
                 }
             }
 
             for (var i = 0; i < thumbnails.length; i++) {
                 var thumbnail = thumbnails[i];
-                html += '<img style="height:' + this._getThumbnailSize() + 'px; width:' + this._getThumbnailSize() + 'px" src="' + thumbnail[this.options.srcAttribute] + '">'
+                html += '<img style="height:' + this._getThumbnailSize() + 'px; width:' + this._getThumbnailSize() + 'px" src="' + thumbnail[this.options.srcAttribute] + '">';
             }
 
             this.thumbnailsElement.html(html);

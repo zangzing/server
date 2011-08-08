@@ -6,7 +6,7 @@ zz.cache_helper = {
         if (xhr.status == 200 && message == 'parsererror') {
             $.post(zz.routes.path_prefix + '/albums/' + album_id + '/photos_json_invalidate', {_method: 'put'});
 
-            ZZAt.track('album.cache.corruption', {album_id: album_id, url: url || ""});
+            ZZAt.track('album.cache.corruption', {album_id: album_id, url: url || ''});
             return true;
         }
         else {
@@ -19,7 +19,7 @@ zz.cache_helper = {
         if (xhr.status == 200 && message == 'parsererror') {
             $.post(zz.routes.path_prefix + '/users/' + user_id + '/invalidate_cache', {_method: 'put'});
 
-            ZZAt.track('homepage.cache.corruption', {user_id: user_id, url: url || ""});
+            ZZAt.track('homepage.cache.corruption', {user_id: user_id, url: url || ''});
             return true;
         }
         else {

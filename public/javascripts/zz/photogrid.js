@@ -6,7 +6,7 @@
 
 (function($, undefined) {
 
-    $.widget("ui.zz_photogrid", {
+    $.widget('ui.zz_photogrid', {
         options: {
             photos: [],
             cellWidth: 200,               //context
@@ -15,10 +15,10 @@
 
 
             allowDelete: false,           //context
-            onDelete:jQuery.noop,         //move to photo-model
+            onDelete: jQuery.noop,         //move to photo-model
 
-            allowEditCaption:false,       //context
-            onChangeCaption:jQuery.noop,  //move to photo-model
+            allowEditCaption: false,       //context
+            onChangeCaption: jQuery.noop,  //move to photo-model
 
             allowReorder: false,          //context
             onChangeOrder: jQuery.noop,   //move to photo-model
@@ -35,10 +35,10 @@
 
             context: 'album-grid',
 
-            lazyLoadThreshold:null,
+            lazyLoadThreshold: null,
 
             showButtonBar: false,          //model
-            showInfoMenu : false,
+            showInfoMenu: false,
             infoMenuTemplateResolver: null, //album model
 
             onClickShare: jQuery.noop
@@ -57,14 +57,14 @@
             //scroll direction
             if (o.singlePictureMode) {
                 self.element.css({
-                    'overflow-y':'hidden',
-                    'overflow-x':'scroll'
+                    'overflow-y': 'hidden',
+                    'overflow-x': 'scroll'
                 });
             }
             else {
                 self.element.css({
-                    'overflow-y':'auto',
-                    'overflow-x':'hidden'
+                    'overflow-y': 'auto',
+                    'overflow-x': 'hidden'
                 });
 
                 self.element.touchScrollY();
@@ -123,13 +123,13 @@
                     caption: photo.caption,
                     aspectRatio: photo.aspect_ratio,
 
-                    onDelete:function() {
+                    onDelete: function() {
                         return o.onDelete(index, photo);
                     },
 
-                    allowEditCaption:o.allowEditCaption,
+                    allowEditCaption: o.allowEditCaption,
 
-                    onChangeCaption:function(caption) {
+                    onChangeCaption: function(caption) {
                         return o.onChangeCaption(index, photo, caption);
                     },
 
@@ -144,11 +144,11 @@
 //                    noShadow: photo.type === 'folder',                                          //todo: move into photochooser.js
 //                    lazyLoad: photo.type !== 'folder',                                           //todo: move into photochooser.js
 
-                    context:       o.context,
+                    context: o.context,
                     type: _.isUndefined(photo.type) ? 'photo' : photo.type,
                     showButtonBar: o.showButtonBar,
-                    infoMenuTemplateResolver:  o.infoMenuTemplateResolver,
-                    onClickShare:  o.onClickShare
+                    infoMenuTemplateResolver: o.infoMenuTemplateResolver,
+                    onClickShare: o.onClickShare
                 });
 
                 //setup drag and drop
@@ -175,18 +175,18 @@
 
                         },
                         revert: 'invalid',
-                        revertDuration:400,
+                        revertDuration: 400,
                         zIndex: 2700,
-                        opacity:0.50,
+                        opacity: 0.50,
                         helper: function() {
                             return cell.data().zz_photo.dragHelper();
                         },
                         scroll: true,
                         scrollSensitivity: o.cellHeight / 8,
-                        scrollSpeed:o.cellHeight / 3
+                        scrollSpeed: o.cellHeight / 3
                     });
 
-                    var nudgeOnDragOver = Math.floor(o.cellWidth / 2)
+                    var nudgeOnDragOver = Math.floor(o.cellWidth / 2);
 
                     droppable.droppable({
                         tolerance: 'pointer',
@@ -349,12 +349,12 @@
                         });
 
                         self.thumbscroller = self.thumbscrollerElement.zz_thumbtray({
-                            photos:photos,
+                            photos: photos,
                             srcAttribute: 'previewSrc',
-                            showSelection:false,
-                            thumbnailSize:20,
-                            showSelectedIndexIndicator:true,
-                            repaintOnResize:true,
+                            showSelection: false,
+                            thumbnailSize: 20,
+                            showSelectedIndexIndicator: true,
+                            repaintOnResize: true,
                             onSelectPhoto: function(index, photo) {
                                 if (typeof photo != 'undefined') {
                                     if (!nativeScrollActive) {
@@ -447,7 +447,7 @@
 
                         //block events to grid
                         $(self.element).keydown(function(event) {
-                            event.preventDefault()
+                            event.preventDefault();
                         });
 
                     }
@@ -472,7 +472,7 @@
             }
         },
 
-        nextPrevActive : false,
+        nextPrevActive: false,
 
 
         nextPicture: function() {
@@ -480,7 +480,7 @@
 
             if (!self.nextPrevActive) {
                 var index = self.indexOfPhoto(self.currentPhotoId());
-                index ++;
+                index++;
 
                 if (index > self.options.photos.length - 1) {
                     return;
@@ -501,7 +501,7 @@
 
             if (!self.nextPrevActive) {
                 var index = self.indexOfPhoto(self.currentPhotoId());
-                index --;
+                index--;
 
                 if (index < 0) {
                     return;
@@ -562,7 +562,7 @@
             }
 
             var onFinishAnimate = function() {
-                self.options.currentPhotoId = photoId
+                self.options.currentPhotoId = photoId;
                 self.options.onScrollToPhoto(photoId, index);
                 if (typeof callback !== 'undefined') {
                     callback();
@@ -627,8 +627,8 @@
             return this.cellAtIndex(index);
         },
 
-        cellAtIndex : function(index) {
-            var cell = this.element.children(':nth-child(' + (index + 1 ) + ')');
+        cellAtIndex: function(index) {
+            var cell = this.element.children(':nth-child(' + (index + 1) + ')');
             if (cell.length === 0) {
                 return null;
             }
@@ -642,7 +642,7 @@
             return this.element.children('.photogrid-cell');
         },
 
-        cellsPerRow : function() {
+        cellsPerRow: function() {
             var self = this;
             if (self.options.singlePictureMode) {
                 return self.options.photos.length;
@@ -657,10 +657,10 @@
 
             if (self.options.singlePictureMode) {
                 return {
-                    top:0,
+                    top: 0,
                     left: (index * self.options.cellWidth)
 
-                }
+                };
             }
             else {
                 var cellsPerRow = self.cellsPerRow();

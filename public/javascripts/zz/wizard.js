@@ -6,7 +6,7 @@
 
 zz.wizard = {
 
-    INDICATOR_TEMPLATE : $('<ul id="clone-indicator" class="clearfix"><li></li></ul>'),
+    INDICATOR_TEMPLATE: $('<ul id="clone-indicator" class="clearfix"><li></li></ul>'),
 
     group_album: {
 
@@ -25,7 +25,7 @@ zz.wizard = {
         on_close: function() {
             ZZAt.track('album.done.click');
             $.ajax({
-                url:      zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/close_batch',
+                url: zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/close_batch',
                 complete: function(request, textStatus) {
                     zz.logger.debug('Batch closed because drawer was closed. Call to close_batch returned with status= ' + textStatus);
                     window.location = zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/photos';
@@ -59,7 +59,7 @@ zz.wizard = {
                 title: 'Name Album',
                 type: 'full',
 
-                init:   function(container, callback) {
+                init: function(container, callback) {
                     zz.pages.album_name_tab.init(container, callback);
                 },
                 bounce: function(success, failure) {
@@ -72,7 +72,7 @@ zz.wizard = {
                 title: 'Edit Album',
                 type: 'partial',
 
-                init:   function(container, callback) {
+                init: function(container, callback) {
                     zz.pages.edit_album_tab.init(container, callback);
                 },
                 bounce: function(success, failure) {
@@ -115,7 +115,7 @@ zz.wizard = {
         var container = $('#tab-content');
 
         obj.steps[step].init(container, function() {
-            zz.wizard.resize_scroll_body()
+            zz.wizard.resize_scroll_body();
         });
 
         $('body').addClass('drawer');
@@ -300,7 +300,7 @@ zz.wizard = {
 
 
     create_group_album: function() {
-        $.post(zz.routes.path_prefix + '/users/' + zz.session.current_user_id + '/albums', { album_type: "GroupAlbum" }, function(data) {
+        $.post(zz.routes.path_prefix + '/users/' + zz.session.current_user_id + '/albums', { album_type: 'GroupAlbum' }, function(data) {
             zz.page.album_id = data.id;
             $('#album-info h2').text(data.name);
             zz.wizard.open_drawer(zz.wizard.group_album, 'add');
@@ -324,7 +324,7 @@ zz.wizard = {
                     setTimeout(function() {
                         $('#flashes-notice').fadeOut('fast', function() {
                             $('#flashes-notice').text('    ');
-                        })
+                        });
                     }, delay + 3000);
                 });
             }
@@ -333,7 +333,7 @@ zz.wizard = {
                     setTimeout(function() {
                         $('#error-notice').fadeOut('fast', function() {
                             $('#error-notice').text('    ');
-                        })
+                        });
                     }, delay + 4000);
                 });
             }
@@ -346,7 +346,7 @@ zz.wizard = {
             var errors = $.parseJSON(data);
 
             //extract the value of the first attribute
-            var message = ""
+            var message = '';
             for (var i in errors) {
                 if (typeof(i) !== 'undefined') {
                     message = errors[i];
@@ -359,7 +359,7 @@ zz.wizard = {
                     setTimeout(function() {
                         $('#error-notice').fadeOut('fast', function() {
                             $('#error-notice').text('    ');
-                        })
+                        });
                     }, delay + 3000);
 
                 }
@@ -379,6 +379,6 @@ zz.wizard = {
 };
 
 
-$(window).bind("load", function() {
+$(window).bind('load', function() {
     setTimeout('zz.wizard.loaded()', 64);
 });

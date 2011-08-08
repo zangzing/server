@@ -10,37 +10,37 @@ zz.template_cache = zz.template_cache || {};
 
 (function($, undefined) {
 
-    $.widget("ui.zz_photo", {
+    $.widget('ui.zz_photo', {
         options: {
             json: null,
             allowDelete: false,          //context
             allowDownload: false,        //album model
-            onDelete:jQuery.noop,        //model
-            maxHeight:120,               //context
-            maxWidth:120,                //context
-            caption:null,                //model
-            allowEditCaption:false,      //context
-            onChangeCaption:jQuery.noop, //model
-            src:null,                    //model
-            previewSrc:null,             //model
-            rolloverSrc:null,            //model
-            scrollContainer:null,
-            lazyLoadThreshold:0,
-            onClick:jQuery.noop,         //model
-            onMagnify:jQuery.noop,       //model
-            photoId:null,                //model
-            aspectRatio:0,               //model
-            isUploading:false,           //model
-            isUploading:false,           //model
-            isError:false,               //model
-            showButtonBar:false,         //model
+            onDelete: jQuery.noop,        //model
+            maxHeight: 120,               //context
+            maxWidth: 120,                //context
+            caption: null,                //model
+            allowEditCaption: false,      //context
+            onChangeCaption: jQuery.noop, //model
+            src: null,                    //model
+            previewSrc: null,             //model
+            rolloverSrc: null,            //model
+            scrollContainer: null,
+            lazyLoadThreshold: 0,
+            onClick: jQuery.noop,         //model
+            onMagnify: jQuery.noop,       //model
+            photoId: null,                //model
+            aspectRatio: 0,               //model
+            isUploading: false,           //model
+            isUploading: false,           //model
+            isError: false,               //model
+            showButtonBar: false,         //model
             infoMenuTemplateResololver: null,        // show InfoMenu or not and what style
 //            onClickShare: jQuery.noop,     //model
 //            noShadow:false,              //context / type
 //            lazyLoad:true ,              //context / type
-            context:null,                //context -- album-edit, album-grid, album-picture, album-timeline, album-people, chooser-grid, chooser-picture
+            context: null,                //context -- album-edit, album-grid, album-picture, album-timeline, album-people, chooser-grid, chooser-picture
             type: 'photo',               //photo \ folder \ blank
-            captionHeight:30
+            captionHeight: 30
         },
 
         _create: function() {
@@ -79,7 +79,7 @@ zz.template_cache = zz.template_cache || {};
                 var srcWidth = o.aspectRatio;
                 var srcHeight = 1;
 
-                var scaled = zz.image_utils.scale({width:srcWidth, height:srcHeight}, {width:o.maxWidth, height:o.maxHeight - o.captionHeight});
+                var scaled = zz.image_utils.scale({width: srcWidth, height: srcHeight}, {width: o.maxWidth, height: o.maxHeight - o.captionHeight});
                 initialHeight = scaled.height;
                 initialWidth = scaled.width;
             } else {
@@ -93,7 +93,7 @@ zz.template_cache = zz.template_cache || {};
                 height: initialHeight
             });
 
-            self.bottomShadow.css({'width': (initialWidth + 14) + "px"});
+            self.bottomShadow.css({'width': (initialWidth + 14) + 'px'});
 
             //element is probably invisible at this point, so we need to check the css attributes
             self.width = parseInt(el.css('width'));
@@ -103,7 +103,7 @@ zz.template_cache = zz.template_cache || {};
             var borderHeight = initialHeight + 10;
 
             self.borderElement.css({
-                position: "relative",
+                position: 'relative',
                 top: (self.height - borderHeight - o.captionHeight) / 2,
                 left: (self.width - borderWidth) / 2,
                 width: borderWidth,
@@ -140,7 +140,7 @@ zz.template_cache = zz.template_cache || {};
                     });
                     self.photoMagnifyElement = $('<div class="magnify-button">')
                             .click(function(event) {
-                        o.onClick('magnify')
+                        o.onClick('magnify');
                     });
                     self.borderElement.append(self.photoAddElement).append(self.photoMagnifyElement);
                 } else {
@@ -150,7 +150,7 @@ zz.template_cache = zz.template_cache || {};
 
             //click
             self.imageElement.click(function(event) {
-                o.onClick('main')
+                o.onClick('main');
             });
 
             //uploading glyph
@@ -175,7 +175,7 @@ zz.template_cache = zz.template_cache || {};
 
             //lazy loading
             if (o.type !== 'photo') {
-                self._loadImage()
+                self._loadImage();
             } else {
                 self.imageElement.attr('src', zz.routes.image_url('/images/photo_placeholder.png'));
             }
@@ -239,17 +239,17 @@ zz.template_cache = zz.template_cache || {};
 
                             // share button
                             self.toolbarElement.find('.share-button').zz_menu(
-                            {   zz_photo:          self,
-                                container:         $('#article'),
-                                subject_id:        o.photoId,
-                                subject_type:      'photo',
-                                zza_context:       'frame',
-                                style:             'auto',
-                                bind_click_open:   true,
+                            { zz_photo: self,
+                                container: $('#article'),
+                                subject_id: o.photoId,
+                                subject_type: 'photo',
+                                zza_context: 'frame',
+                                style: 'auto',
+                                bind_click_open: true,
                                 append_to_element: false, //use the el zzindex so the overflow goes under bottom toolbar
-                                menu_template:     zz.sharemenu.template,
-                                click:             zz.sharemenu.click_handler,
-                                open:  function() {
+                                menu_template: zz.sharemenu.template,
+                                click: zz.sharemenu.click_handler,
+                                open: function() {
                                     menuOpen = true;
                                 },
                                 close: function() {
@@ -265,16 +265,16 @@ zz.template_cache = zz.template_cache || {};
                             if (infoMenuTemplate) {
 
                                 self.toolbarElement.find('.info-button').zz_menu(
-                                {   zz_photo:          self,
-                                    container:         $('#article'),
-                                    subject_id:        o.photoId,
-                                    subject_type:      'photo',
-                                    style:             'auto',
-                                    bind_click_open:   true,
+                                { zz_photo: self,
+                                    container: $('#article'),
+                                    subject_id: o.photoId,
+                                    subject_type: 'photo',
+                                    style: 'auto',
+                                    bind_click_open: true,
                                     append_to_element: false, //use the el zzindex so overflow goes under bottom toolbar
-                                    menu_template:     infoMenuTemplate,
-                                    click:             zz.infomenu.click_handler,
-                                    open:  function() {
+                                    menu_template: infoMenuTemplate,
+                                    click: zz.infomenu.click_handler,
+                                    open: function() {
                                         menuOpen = true;
                                     },
                                     close: function() {
@@ -312,14 +312,14 @@ zz.template_cache = zz.template_cache || {};
         },
 
         //delete
-        delete_photo:  function() {
+        delete_photo: function() {
             var self = this;
 
             if (self.options.scrollContainer.data().zz_photogrid) {
                 self.photoGrid = self.options.scrollContainer.data().zz_photogrid;
             }
 
-            if (confirm("Are you sure you want to delete this photo?")) {
+            if (confirm('Are you sure you want to delete this photo?')) {
                 if (self.options.onDelete()) {
                     if (!_.isUndefined(self.captionElement)) {
                         self.captionElement.hide();
@@ -327,22 +327,22 @@ zz.template_cache = zz.template_cache || {};
                     if (!_.isUndefined(self.deleteButtonElement)) {
                         self.deleteButtonElement.hide();
                     }
-                    self.borderElement.hide("scale", {}, 300, function() {
-                        self.element.animate({width:0}, 500, function() {
+                    self.borderElement.hide('scale', {}, 300, function() {
+                        self.element.animate({width: 0}, 500, function() {
                             self.element.remove();
                             if (!_.isUndefined(self.photoGrid)) {
                                 self.photoGrid.resetLayout();
                                 self.photoGrid.element.trigger('scroll');
                             }
-                        })
+                        });
                     });
                 }
             }
         },
 
-        checked:false,
+        checked: false,
 
-        isChecked:function() {
+        isChecked: function() {
             return this.checked;
         },
 
@@ -376,7 +376,7 @@ zz.template_cache = zz.template_cache || {};
             self._loadImage();
         },
 
-        _loadImage : function() {
+        _loadImage: function() {
             var self = this;
 
             var initialSrc = self.options.src;
@@ -392,12 +392,12 @@ zz.template_cache = zz.template_cache || {};
                 self._resize(1);
 
                 //show the small version
-                self.imageElement.attr("src", initialSrc);
+                self.imageElement.attr('src', initialSrc);
 
 
                 //show the full version
                 zz.image_utils.pre_load_image(self.options.src, function(image) {
-                    self.imageElement.attr("src", self.options.src);
+                    self.imageElement.attr('src', self.options.src);
                 });
             });
         },
@@ -406,7 +406,7 @@ zz.template_cache = zz.template_cache || {};
             var self = this,
                     o = self.options;
 
-            var scaled = zz.image_utils.scale({width:self.imageObject.width, height:self.imageObject.height}, {width:self.options.maxWidth, height:self.options.maxHeight - o.captionHeight});
+            var scaled = zz.image_utils.scale({width: self.imageObject.width, height: self.imageObject.height}, {width: self.options.maxWidth, height: self.options.maxHeight - o.captionHeight});
 
 
             var borderWidth = scaled.width + 10;
@@ -425,7 +425,7 @@ zz.template_cache = zz.template_cache || {};
                 height: scaled.height
             });
 
-            self.bottomShadow.css({'width': (scaled.width + 14) + "px"});
+            self.bottomShadow.css({'width': (scaled.width + 14) + 'px'});
 
 
         },
@@ -488,9 +488,9 @@ zz.template_cache = zz.template_cache || {};
                 var textBoxElement = captionEditor.find('input');
 
                 var commitChanges = function() {
-                    var newCaption = textBoxElement.val()
+                    var newCaption = textBoxElement.val();
                     if (newCaption !== self.options.caption) {
-                        self.options.caption = newCaption
+                        self.options.caption = newCaption;
                         self.options.onChangeCaption(newCaption);
                     }
                     self.captionElement.text(newCaption);

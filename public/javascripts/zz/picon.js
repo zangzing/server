@@ -4,23 +4,23 @@
 
 (function($, undefined) {
 
-    $.widget("ui.zz_picon", {
+    $.widget('ui.zz_picon', {
         options: {
-            caption        : "",
-            coverUrl       : "",
-            albumUrl       : null,
-            albumId        : null,
-            onClick        : $.noop,
-            onLike         : $.noop,
-            onDelete       : $.noop,
-            allowDelete    : false,
-            maxCoverWidth  : 180,
-            maxCoverHeight : 150,
-            captionHeight  : 80,
-            stackAngles    : [
-                [-6,-3],
-                [-3,3],
-                [6,3]
+            caption: '',
+            coverUrl: '',
+            albumUrl: null,
+            albumId: null,
+            onClick: $.noop,
+            onLike: $.noop,
+            onDelete: $.noop,
+            allowDelete: false,
+            maxCoverWidth: 180,
+            maxCoverHeight: 150,
+            captionHeight: 80,
+            stackAngles: [
+                [-6, -3],
+                [-3, 3],
+                [6, 3]
             ]
         },
 
@@ -88,16 +88,16 @@
 
                 // wire share button
                 share_button.zz_menu(
-                {   subject_id:      o.albumId,
-                    subject_type:    'album',
-                    container:       $('#article'),
-                    zza_context:     'frame',
-                    style:           'auto',
-                    bind_click_open:   true,
+                { subject_id: o.albumId,
+                    subject_type: 'album',
+                    container: $('#article'),
+                    zza_context: 'frame',
+                    style: 'auto',
+                    bind_click_open: true,
                     append_to_element: true, //use the element zzindex so the overflow goes under the bottom toolbar
-                    menu_template:   zz.sharemenu.template,
-                    click:           zz.sharemenu.click_handler,
-                    open:  function() {
+                    menu_template: zz.sharemenu.template,
+                    click: zz.sharemenu.click_handler,
+                    open: function() {
                         menuOpen = true;
                     },
                     close: function() {
@@ -139,7 +139,7 @@
             //load cover photos and display menus
             if (o.coverUrl) {
                 var onload = function(image) {
-                    var scaledSize = zz.image_utils.scale(image, {width:o.maxCoverWidth, height:o.maxCoverHeight});
+                    var scaledSize = zz.image_utils.scale(image, {width: o.maxCoverWidth, height: o.maxCoverHeight});
                     self._resize(scaledSize.width, scaledSize.height);
                     cover_photo.attr('src', image.src);
                     el.hover(mouse_in, mouse_out);
@@ -156,15 +156,15 @@
         _resize: function(coverWidth, coverHeight) {
             var self = this;
             self.template.find('.cover-photo').css({
-                height:coverHeight,
-                width:coverWidth
+                height: coverHeight,
+                width: coverWidth
             });
             self.template.find('.stacked-image').css({
-                height:coverHeight + 10,
-                width:coverWidth + 10
+                height: coverHeight + 10,
+                width: coverWidth + 10
             }).center_xy({
-                             top:40,
-                             left:0,
+                             top: 40,
+                             left: 0,
                              width: self.element.width(), //save room for caption
                              height: self.element.height() - (self.options.captionHeight + 40)
                          });

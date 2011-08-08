@@ -12,7 +12,7 @@ zz.like = {
         //obtain the array of wanted subjects from the divs of class zzlike  with data-zzid attributes
         var wanted_subjects = {};
         $('.zzlike').each(function(index, zzliketag) {
-            wanted_subjects[ $(zzliketag).attr('data-zzid') ] = $(zzliketag).attr('data-zztype');
+            wanted_subjects[$(zzliketag).attr('data-zzid')] = $(zzliketag).attr('data-zztype');
         });
 
         if (!$.isEmptyObject(wanted_subjects)) {
@@ -25,10 +25,10 @@ zz.like = {
     add_id_array: function(wanted_subjects) {
         if (!$.isEmptyObject(wanted_subjects)) {
             // get the wanted subjects. Use a POST because of GET query string size limitations
-            $.ajax({ type:       'POST',
-                url:        zz.routes.path_prefix + '/likes.json',
-                data:       {'wanted_subjects' : wanted_subjects },
-                success:    function(data) {
+            $.ajax({ type: 'POST',
+                url: zz.routes.path_prefix + '/likes.json',
+                data: {'wanted_subjects' : wanted_subjects },
+                success: function(data) {
                     if (zz.like.loaded) {
                         $.extend(zz.like.hash, data); // merge new data with existing hash
                         for (key in data)
@@ -44,10 +44,10 @@ zz.like = {
     },
 
     add_id: function(subject_id, subject_type) {
-        if (typeof( subject_id ) != 'undefined' && subject_id != 0) {
-            if (zz.like.loaded && typeof( zz.like.hash[subject_id]) == 'undefined') {
+        if (typeof(subject_id) != 'undefined' && subject_id != 0) {
+            if (zz.like.loaded && typeof(zz.like.hash[subject_id]) == 'undefined') {
                 var wanted_subjects = {};
-                wanted_subjects[ subject_id ] = subject_type;
+                wanted_subjects[subject_id] = subject_type;
                 zz.like.add_id_array(wanted_subjects);
             } else {
                 zz.like.refresh_tag(subject_id);
@@ -63,7 +63,7 @@ zz.like = {
         var subject_type = $(this).attr('data-zztype');
         var url = zz.routes.path_prefix + '/likes/' + subject_id;
 
-        var zzae = 'like.' + subject_type + '.'
+        var zzae = 'like.' + subject_type + '.';
         //Decide the action before the value is toggled in the hash
         var type = 'post';
         if (zz.like.hash[subject_id]['user'] == true) {
@@ -75,8 +75,8 @@ zz.like = {
 
         zz.like.toggle_in_hash(subject_id);
         $.ajax({ type: 'POST',
-            url:     url,
-            data:    {  subject_type : subject_type, _method: type },
+            url: url,
+            data: { subject_type: subject_type, _method: type },
             success: function(html) {
                 $('body').append(html);
                 zz.like.display_social_dialog(subject_id);
@@ -96,7 +96,7 @@ zz.like = {
     },
 
     toggle_in_hash: function(subject_id) {
-        if (zz.like.loaded && subject_id  in zz.like.hash) {  //If the hash is loaded and  subject is in our hash
+        if (zz.like.loaded && subject_id in zz.like.hash) {  //If the hash is loaded and  subject is in our hash
             if (zz.like.hash[subject_id]['user'] == true) {
                 // The user likes the subject, toggle it off and decrease counter
                 zz.like.hash[subject_id]['user'] = false;
@@ -131,7 +131,7 @@ zz.like = {
         var button, icon, counter;
         var id = $(tag).attr('data-zzid');
 
-        if ($(tag).attr('data-zzstyle') == "toolbar") {
+        if ($(tag).attr('data-zzstyle') == 'toolbar') {
             icon = $(tag);
             counter = $(tag).find('.zzlike-count');
         } else {
@@ -165,7 +165,7 @@ zz.like = {
         if (zz.like.hash[id]) {
             $('.zzlike[data-zzid="' + id + '"]').each(function() {
                 var icon;
-                if ($(this).attr('data-zzstyle') == "toolbar") {
+                if ($(this).attr('data-zzstyle') == 'toolbar') {
                     icon = $(this);
                 } else {
                     icon = $(this).find('.zzlike-icon');
@@ -188,22 +188,22 @@ zz.like = {
     },
 
     display_social_dialog: function(subject_id) {
-        $("#facebook_box").click(function() {
-            if ($(this).is(':checked') && !$("#facebook_box").attr('authorized')) {
+        $('#facebook_box').click(function() {
+            if ($(this).is(':checked') && !$('#facebook_box').attr('authorized')) {
                 $(this).attr('checked', false);
                 zz.oauthmanager.login(zz.routes.path_prefix + '/facebook/sessions/new', function() {
-                    $("#facebook_box").attr('checked', true);
-                    $("#facebook_box").attr('authorized', 'yes');
+                    $('#facebook_box').attr('checked', true);
+                    $('#facebook_box').attr('authorized', 'yes');
                 });
             }
         });
 
-        $("#twitter_box").click(function() {
-            if ($(this).is(':checked') && !$("#twitter_box").attr('authorized')) {
+        $('#twitter_box').click(function() {
+            if ($(this).is(':checked') && !$('#twitter_box').attr('authorized')) {
                 $(this).attr('checked', false);
                 zz.oauthmanager.login(zz.routes.path_prefix + '/twitter/sessions/new', function() {
-                    $("#twitter_box").attr('checked', true);
-                    $("#twitter_box").attr('authorized', 'yes');
+                    $('#twitter_box').attr('checked', true);
+                    $('#twitter_box').attr('authorized', 'yes');
                 });
             }
         });
@@ -216,8 +216,8 @@ zz.like = {
 
         $('#ld-ok').click(function() {
             $.ajax({ type: 'POST',
-                url:  zz.routes.path_prefix + '/likes/' + subject_id + '/post',
-                data:  $('#social_like_form_' + subject_id).serialize()
+                url: zz.routes.path_prefix + '/likes/' + subject_id + '/post',
+                data: $('#social_like_form_' + subject_id).serialize()
             });
             $('#social-like-dialog').zz_dialog('close');
             $('#social-like-dialog').zz_dialog().empty().remove();

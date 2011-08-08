@@ -9,7 +9,7 @@ var zz = zz || {};
 
 zz.toolbars = {
 
-    init: function(){
+    init: function() {
         //top bar
         $('#header #home-button').click(function() {
             document.location.href = zz.routes.path_prefix + '/';
@@ -32,8 +32,8 @@ zz.toolbars = {
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #grid-view-button').addClass('selected');
             $('#article').fadeOut(200);
-            if (typeof( zz.page.album_base_url ) != 'undefined') {
-                document.location.href = zz.page.album_base_url + "/photos";
+            if (typeof(zz.page.album_base_url) != 'undefined') {
+                document.location.href = zz.page.album_base_url + '/photos';
             } else {
                 document.location.href = zz.page.displayed_user_base_url;
             }
@@ -48,7 +48,7 @@ zz.toolbars = {
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #picture-view-button').addClass('selected');
             $('#article').fadeOut(200);
-            document.location.href = zz.page.album_base_url + "/photos/#!";
+            document.location.href = zz.page.album_base_url + '/photos/#!';
         });
 
         $('#header #view-buttons #people-view-button').click(function() {
@@ -59,10 +59,10 @@ zz.toolbars = {
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #people-view-button').addClass('selected');
             $('#article').fadeOut(200);
-            if (typeof( zz.page.album_base_url ) != 'undefined') {
-                document.location.href = zz.page.album_base_url + "/people";
+            if (typeof(zz.page.album_base_url) != 'undefined') {
+                document.location.href = zz.page.album_base_url + '/people';
             } else {
-                document.location.href = zz.page.displayed_user_base_url + "/people";
+                document.location.href = zz.page.displayed_user_base_url + '/people';
             }
 
         });
@@ -75,10 +75,10 @@ zz.toolbars = {
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #activities-view-button').addClass('selected');
             $('#article').fadeOut(200);
-            if (typeof( zz.page.album_base_url ) != 'undefined') {
-                document.location.href = zz.page.album_base_url + "/activities";
+            if (typeof(zz.page.album_base_url) != 'undefined') {
+                document.location.href = zz.page.album_base_url + '/activities';
             } else {
-                document.location.href = zz.page.displayed_user_base_url + "/activities";
+                document.location.href = zz.page.displayed_user_base_url + '/activities';
             }
         });
 
@@ -88,7 +88,7 @@ zz.toolbars = {
             Zenbox.show(event);
 
             //hack: force zendesk dialog to show scrollbars if screen too small
-            $('#zenbox_body').css({height:jQuery(window).height() - 100})
+            $('#zenbox_body').css({height: jQuery(window).height() - 100});
         });
 
         $('#header #sign-in-button').click(function() {
@@ -105,14 +105,14 @@ zz.toolbars = {
 
             $('<div></div>').css({
                 position: 'absolute',
-                top:0,
-                left:0,
-                height:'100%',
-                width:'100%',
-                'z-index':3000,
-                'background-color':'#000000',
+                top: 0,
+                left: 0,
+                height: '100%',
+                width: '100%',
+                'z-index': 3000,
+                'background-color': '#000000',
                 opacity: 0
-            }).appendTo('body').animate({opacity:1}, 500, function() {
+            }).appendTo('body').animate({opacity: 1}, 500, function() {
                 document.location.href = zz.page.album_base_url + '/movie?start=' + zz.page.current_photo_index + '&return_to=' + encodeURIComponent(document.location.href);
             });
 
@@ -176,10 +176,10 @@ zz.toolbars = {
             //todo: need better generic way to determine current view and get photo id -- this is duplicated elsewhere
             if (document.location.href.indexOf('/photos/#!') !== -1 || document.location.href.indexOf('/photos#!') !== -1) {
                 var photoId = jQuery.param.fragment().slice(1);
-                zz.sharemenu.show($(this), 'photo', photoId, {x:0,y:0}, 'toolbar', $.noop, $.noop);
+                zz.sharemenu.show($(this), 'photo', photoId, {x: 0, y: 0}, 'toolbar', $.noop, $.noop);
             }
             else {
-                zz.sharemenu.show($(this), 'album', zz.page.album_id, {x:0,y:0}, 'toolbar', $.noop, $.noop);
+                zz.sharemenu.show($(this), 'album', zz.page.album_id, {x: 0, y: 0}, 'toolbar', $.noop, $.noop);
             }
 
         });
@@ -195,13 +195,13 @@ zz.toolbars = {
 
             zz.toolbars._disable_buttons();
             $('#footer #edit-album-button').removeClass('disabled').addClass('selected');
-            zz.wizard.open_edit_album_wizard('add')
+            zz.wizard.open_edit_album_wizard('add');
         });
 
 
         $('#footer #buy-button').click(function() {
             if (! $(this).hasClass('disabled')) {
-                alert("This feature is still under construction.")
+                alert('This feature is still under construction.');
             }
         });
 
@@ -215,8 +215,8 @@ zz.toolbars = {
     _init_new_album: function() {
         $('#user-info').css('display', 'none');
 
-        $('#album-info h2').text("New Album");
-        $('#album-info h3').text("by " + zz.session.current_user_name);
+        $('#album-info h2').text('New Album');
+        $('#album-info h3').text('by ' + zz.session.current_user_name);
 
         $('#header .album-cover').attr('src', zz.routes.image_url('/images/album-no-cover.png'));
         $('#header .album-cover').css({width: '60px'});
@@ -227,7 +227,7 @@ zz.toolbars = {
 
         //tod: this should be in the wizard code
         $('div#cancel-drawer-btn').unbind('click').click(function() {
-            if (confirm("Are you sure you want to cancel creating this album?")) {
+            if (confirm('Are you sure you want to cancel creating this album?')) {
 
                 //reload after album is deleted to prevent race
                 //condition in cache manager on server
@@ -263,7 +263,7 @@ zz.toolbars = {
             document.location.href = zz.routes.edit_user_path(zz.session.current_user_name);
         });
         $('#acct-signout-btn').click(function() {
-            window.location = zz.routes.path_prefix + '/signout'
+            window.location = zz.routes.path_prefix + '/signout';
         });
 
 
@@ -273,7 +273,7 @@ zz.toolbars = {
                 return;
             }
 
-            if ($('#acct-dropdown').is(":visible")) {
+            if ($('#acct-dropdown').is(':visible')) {
                 $('#acct-dropdown').slideUp('fast');// Hide - slide up
             } else {
                 $('#acct-dropdown').slideDown('fast');// Show - slide down.
@@ -325,11 +325,11 @@ zz.toolbars = {
 
             $('#album-cover-border img.album-cover').css({
                 height: height,
-                width:width
+                width: width
             });
 
             $('#album-cover-border .bottom-shadow').css({
-                width:width + 4
+                width: width + 4
             });
 
             $('img.album-cover').attr('src', image.src);

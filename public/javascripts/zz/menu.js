@@ -1,25 +1,25 @@
 //
 // 2011 Copyright, ZangZing LLC  All Rights Reserved, http://www.zangzing.com
 //
-if (jQuery)( function() {
+if (jQuery)(function() {
 
-    $.widget("ui.zz_menu", {
-        options:{
-            subject_id       : '',          // This and other user defined options are passed to the click events
-            subject_type     : '',          // This and other user defined options are passed to the click events
-            auto_open        : false,       // open after creation
-            bind_click_open  : false,       // bind open to the elements click.
-            style            : 'dropdown',  // 'dropdown', 'popup' or 'auto'. 'auto' requires a container to decide
-            animation_length : 200,         // How far long is the animation
-            animation_y      : 10,          // How far is the opening animation
-            menu_template    : '',          // The menu structure, a ul with li's that contain an a
+    $.widget('ui.zz_menu', {
+        options: {
+            subject_id: '',          // This and other user defined options are passed to the click events
+            subject_type: '',          // This and other user defined options are passed to the click events
+            auto_open: false,       // open after creation
+            bind_click_open: false,       // bind open to the elements click.
+            style: 'dropdown',  // 'dropdown', 'popup' or 'auto'. 'auto' requires a container to decide
+            animation_length: 200,         // How far long is the animation
+            animation_y: 10,          // How far is the opening animation
+            menu_template: '',          // The menu structure, a ul with li's that contain an a
             append_to_element: false,       // Append the html to the el or to the end of <body> (relevant for zzindex)
-            container        : null,        // A jquery element used to decide if popup or dropdown see _compute_style
-            beforeopen       : $.noop,      // Beforeopen event listener (before starting opening sequence)
-            open             : $.noop,      // Open event listener (after menu is already opened and visible)
-            close            : $.noop,      // Close event listener (after menu is closed, cleaned up and not visible)
+            container: null,        // A jquery element used to decide if popup or dropdown see _compute_style
+            beforeopen: $.noop,      // Beforeopen event listener (before starting opening sequence)
+            open: $.noop,      // Open event listener (after menu is already opened and visible)
+            close: $.noop,      // Close event listener (after menu is closed, cleaned up and not visible)
             // the default click listener (an example of how to handle menu clicks
-            click            : function(event, data) {
+            click: function(event, data) {
                 alert('Action: ' + data.action + '\n\n' +
                         'Subject Type: ' + data.options.subject_type + '\n\n' +
                         'Subject ID: ' + data.options.subject_id + '\n\n');
@@ -93,7 +93,7 @@ if (jQuery)( function() {
             menu.find('LI:not(.disabled) A').click(function() {
                 self.close();
                 var action = $(this).attr('href').substr(1);
-                self._trigger('click', null, {'action':action, 'options': o});
+                self._trigger('click', null, {'action': action, 'options': o});
                 return false; //Stop the click from bubbling up
             });
 
@@ -132,7 +132,7 @@ if (jQuery)( function() {
                 menu.find('#menu-bottom').removeClass('arrowbottom').addClass('flatbottom');
             } else {
                 menu.find('#menu-top').removeClass('arrowtop').addClass('flattop');
-                menu.find('#menu-bottom').removeClass('flatbottom').addClass('arrowbottom')
+                menu.find('#menu-bottom').removeClass('flatbottom').addClass('arrowbottom');
             }
         },
 
@@ -159,20 +159,20 @@ if (jQuery)( function() {
                 self._compute_style();
 
                 // Hide other zz_menus that may be showing,excluding this instance
-                $(":ui-zz_menu").not(el).each(function() {
-                    $(this).zz_menu("close");
+                $(':ui-zz_menu').not(el).each(function() {
+                    $(this).zz_menu('close');
                 });
 
                 // calculate position
-                var x,y,offset;
+                var x, y, offset;
                 if (o.append_to_element) {
                     //Use this when appending the element to an anchor element
-                    x = -( (menu.width() / 2) - (el.outerWidth() / 2));
+                    x = -((menu.width() / 2) - (el.outerWidth() / 2));
                     y = el.height();
                 } else {
                     //Use this when appending the element to the end of the document
                     offset = $(el).offset();
-                    x = offset.left + ( $(el).outerWidth() / 2 ) - (menu.width() / 2);
+                    x = offset.left + ($(el).outerWidth() / 2) - (menu.width() / 2);
                     if (self.computed_style == 'dropdown') {
                         y = offset.top + el.height();
                     } else {
@@ -203,9 +203,9 @@ if (jQuery)( function() {
                 // Show the menu and bind mouseleave for menu
                 if (self.computed_style == 'dropdown') {
                     // Show zz_menu below and center of el, after animation is done bind hoverOut to close
-                    menu.css({display:'block',opacity:0,left:x,top:y - o.animation_y });
-                    menu.animate({top:y,opacity:1}, o.animation_length, function() {
-                        if ($.browser.mozilla && $.browser.version == "1.9.2.8") {
+                    menu.css({display: 'block', opacity: 0, left: x, top: y - o.animation_y });
+                    menu.animate({top: y, opacity: 1}, o.animation_length, function() {
+                        if ($.browser.mozilla && $.browser.version == '1.9.2.8') {
                             //zz.logger.debug('ff3.6 win fix for quick-closing menu in place');
                             //to avoid closing the menu upon animation in firefox3.6-windows
                             setTimeout(function() {
@@ -217,9 +217,9 @@ if (jQuery)( function() {
                     });
                 } else {
                     // Show zz_menu above and center of el, after animation is done bind hoverOut to close
-                    menu.css({display:'block',opacity:0,left:x,bottom:y - o.animation_y});
-                    menu.animate({bottom:y,opacity:1}, o.animation_length, function() {
-                        if ($.browser.mozilla && $.browser.version == "1.9.2.8") {
+                    menu.css({display: 'block', opacity: 0, left: x, bottom: y - o.animation_y});
+                    menu.animate({bottom: y, opacity: 1}, o.animation_length, function() {
+                        if ($.browser.mozilla && $.browser.version == '1.9.2.8') {
                             //zz.logger.debug('ff3.6 win fix for quick-closing menu in place');
                             //to avoid closing the menu upon animation in firefox3.6-windows
                             setTimeout(function() {
@@ -256,7 +256,7 @@ if (jQuery)( function() {
                             break;
                         case 27: // esc
                             $(document).trigger('click');
-                            break
+                            break;
                     }
 
                 });
@@ -272,7 +272,7 @@ if (jQuery)( function() {
 
                 //If the window resizes close menu (its bottom positioned so it will look out of place if not removed)
                 $(window).one('resize', function() {
-                    self.close()
+                    self.close();
                 });
                 self._trigger('open');
             } else {

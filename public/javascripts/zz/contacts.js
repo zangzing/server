@@ -18,28 +18,28 @@ zz.contact_list = {
 
         $(list_element).tokenInput(zz.contacts.find, {
             allowNewValues: true,
-            hintText: "Enter email address",
+            hintText: 'Enter email address',
             searchDelay: 0,
             validate: function(value) {
                 return self.EMAIL_REGEX_SHORT.test(value) || self.EMAIL_REGEX_LONG.test(value);
             },
             classes: {
-                tokenList: "token-input-list-facebook",
-                token: "token-input-token-facebook",
-                tokenDelete: "token-input-delete-token-facebook",
-                selectedToken: "token-input-selected-token-facebook",
-                highlightedToken: "token-input-highlighted-token-facebook",
-                dropdown: "token-input-dropdown-facebook",
-                dropdownItem: "token-input-dropdown-item-facebook",
-                dropdownItem2: "token-input-dropdown-item2-facebook",
-                selectedDropdownItem: "token-input-selected-dropdown-item-facebook",
-                inputToken: "token-input-input-token-facebook"
+                tokenList: 'token-input-list-facebook',
+                token: 'token-input-token-facebook',
+                tokenDelete: 'token-input-delete-token-facebook',
+                selectedToken: 'token-input-selected-token-facebook',
+                highlightedToken: 'token-input-highlighted-token-facebook',
+                dropdown: 'token-input-dropdown-facebook',
+                dropdownItem: 'token-input-dropdown-item-facebook',
+                dropdownItem2: 'token-input-dropdown-item2-facebook',
+                selectedDropdownItem: 'token-input-selected-dropdown-item-facebook',
+                inputToken: 'token-input-input-token-facebook'
             }
         });
     },
 
     has_errors: function() {
-        return $('li.token-input-token-facebook.error').length > 0
+        return $('li.token-input-token-facebook.error').length > 0;
     }
 
 
@@ -48,7 +48,7 @@ zz.contact_list = {
 
 zz.contacts = {
     ready: false,
-    data : [],
+    data: [],
     search_tree: [],
     settings: {},
 
@@ -77,11 +77,11 @@ zz.contacts = {
 
     find: function(q) {
         if (!zz.contacts.ready || !q) return null;
-        var regex = new RegExp(q, "gi");
+        var regex = new RegExp(q, 'gi');
         var results = [];
         for (var service in zz.contacts.data) {
             var service_results = jQuery.grep(zz.contacts.data[service].contacts, function(element) {
-                return ( element[0].match(regex) || element[1].match(regex) );
+                return (element[0].match(regex) || element[1].match(regex));
             });
             results = results.concat(service_results);
         }
@@ -124,7 +124,7 @@ zz.contacts = {
 
             oauth_succeeded = true;
 
-            var dialog = zz.dialog.show_progress_dialog("Importing contacts...");
+            var dialog = zz.dialog.show_progress_dialog('Importing contacts...');
 
 
             var url = zz.routes.path_prefix + '/' + service + '/contacts/import';
@@ -153,7 +153,7 @@ zz.contacts = {
             setTimeout(function() {
                 if (!oauth_succeeded) {
                     // 30 seconds went by and no oauthsuccess, call error and forget it
-                    failure('oauth', "OAuth authorization not possible");
+                    failure('oauth', 'OAuth authorization not possible');
                 }
             }, 20000);
         } else {
@@ -162,7 +162,7 @@ zz.contacts = {
     },
 
     _import_local_contacts: function(import_success, import_failure) {
-        var dialog = zz.dialog.show_progress_dialog("Importing contacts...");
+        var dialog = zz.dialog.show_progress_dialog('Importing contacts...');
 
 
         zz.agent.getStatus(function(status) {
@@ -175,7 +175,7 @@ zz.contacts = {
                         zz.contacts.data['local'].contacts = response.body;
                         zz.contacts.data['local'].last_import = 'A moment ago.'; //+new Date();
                         dialog.close();
-                        if ($.isFunction(import_success))  import_success();
+                        if ($.isFunction(import_success)) import_success();
                     },
                     error: function(options, textStatus) {
                         if ($.isFunction(import_failure)) import_failure('agent', textStatus);
@@ -193,7 +193,7 @@ zz.contacts = {
                         }
                         else {
                             if ($.isFunction(import_failure)) {
-                                import_failure('agent', "Please install agent.");
+                                import_failure('agent', 'Please install agent.');
                             }
                         }
                     });
@@ -204,7 +204,7 @@ zz.contacts = {
     },
 
     is_service_linked: function(service) {
-        return zz.contacts.ready && typeof( zz.contacts.data[service] ) != 'undefined';
+        return zz.contacts.ready && typeof(zz.contacts.data[service]) != 'undefined';
     },
 
     init_contact_button: function(b) {
@@ -250,8 +250,8 @@ zz.contacts = {
 
     },
 
-    init_buttons :function() {
-        $(".contacts-btn").each(function(index, button) {
+    init_buttons: function() {
+        $('.contacts-btn').each(function(index, button) {
             var b = $(button);
             zz.contacts.init_contact_button(b);
         });

@@ -12,15 +12,15 @@ zz.init = {
 
     template: function() {
         $(document).ajaxSend(function(event, request, settings) {
-            settings.data = settings.data || "";
-            settings.data += (settings.data ? "&" : "") + "authenticity_token=" + encodeURIComponent(zz.page.rails_authenticity_token);
+            settings.data = settings.data || '';
+            settings.data += (settings.data ? '&' : '') + 'authenticity_token=' + encodeURIComponent(zz.page.rails_authenticity_token);
         });
 
         /* Click Handlers    ----------------------------------------------------------------------- */
         //join banner
         $('#join-banner #close-button').click(function() {
             $('#join-banner').fadeOut(200, function() {
-                $('#page-wrapper').animate({top:0}, 200);
+                $('#page-wrapper').animate({top: 0}, 200);
                 $('body').removeClass('show-join-banner');
 
                 //create cookie that expires in 1 hour or when user quits browser
@@ -42,7 +42,7 @@ zz.init = {
         //system message banner
         $('#system-message-banner #close-button').click(function() {
             $('#system-message-banner').fadeOut(200, function() {
-                $('#page-wrapper').animate({top:0}, 200);
+                $('#page-wrapper').animate({top: 0}, 200);
                 $('body').removeClass('show-join-banner');
                 jQuery.cookie('hide_system_message_banner', 'true');
             });
@@ -72,15 +72,15 @@ zz.init = {
 
 
 
-    preload_rollover_images : function() {
+    preload_rollover_images: function() {
 
         //wizard buttons/tabs
         for (var i = 1; i <= 6; i++) {
-            var src = "/images/wiz-num-" + i + "-on.png"
-            zz.image_utils.pre_load_image(zz.routes.image_url(src))
+            var src = '/images/wiz-num-' + i + '-on.png';
+            zz.image_utils.pre_load_image(zz.routes.image_url(src));
 
-            var src = "/images/wiz-num-" + i + ".png"
-            zz.image_utils.pre_load_image(zz.routes.image_url(src))
+            var src = '/images/wiz-num-' + i + '.png';
+            zz.image_utils.pre_load_image(zz.routes.image_url(src));
         }
     }
 

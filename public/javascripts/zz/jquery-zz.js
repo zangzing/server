@@ -38,7 +38,7 @@
 
             el.animate({
                 left: parseInt(el.css('left')) + x,
-                top:  parseInt(el.css('top')) + y
+                top: parseInt(el.css('top')) + y
 
             }, duration, easing);
         });
@@ -121,7 +121,7 @@
 
     $.fn.disableEnterKey = function(elements) {
         _.each(this, function(el) {
-            $(el).bind("keypress", function(e) {
+            $(el).bind('keypress', function(e) {
                 if (e.keyCode == 13) {
                     return false;
                 }

@@ -4,14 +4,14 @@
  * Copyright 2011, ZangZing LLC. All rights reserved.
  */
 
-(function(){
+(function() {
     function loadScript(src, sslSrc, callback) {
         var script = document.createElement('script');
         script.type = 'text/javascript';
 
         if (script.readyState) {  //IE
             script.onreadystatechange = function() {
-                if (script.readyState == "loaded" || script.readyState == "complete") {
+                if (script.readyState == 'loaded' || script.readyState == 'complete') {
                     script.onreadystatechange = null;
                     if (callback) {
                         callback();
@@ -46,8 +46,8 @@
 
     function initMixpanel() {
         window.mpq = window.mpq || [];
-        window.mpq.push(["init", zz.zza_config.MIXPANEL_TOKEN]);
-        window.mpq.push(["register", "referrer", document.referrer]);
+        window.mpq.push(['init', zz.zza_config.MIXPANEL_TOKEN]);
+        window.mpq.push(['register', 'referrer', document.referrer]);
         $(document).ready(function() {
             loadScript('http://api.mixpanel.com/site_media/js/api/mixpanel.js', 'https://api.mixpanel.com/site_media/js/api/mixpanel.js', function() {
             });
@@ -67,21 +67,21 @@
 
         // ZZA wrapper
         window.ZZAt = {
-            track : function(event, properties) {
+            track: function(event, properties) {
 
                 if (typeof(properties) == 'undefined') {
                     _zza.track_event2(event, null);
 
                     if (typeof(console) != 'undefined') {
-                        console.log('ZZA event: ' + event)
+                        console.log('ZZA event: ' + event);
                     }
                 }
                 else {
                     _zza.track_event2(event, properties);
 
                     if (typeof(console) != 'undefined') {
-                        console.log('ZZA event: ' + event)
-                        console.log('ZZA properties: ' + properties)
+                        console.log('ZZA event: ' + event);
+                        console.log('ZZA properties: ' + properties);
                     }
                 }
             }
@@ -92,11 +92,11 @@
         window.onerror = function(message, url, line) {
             try {
                 if (url.indexOf('http://localhost:30777') == -1 && url.indexOf('http://localhost:30778') == -1) {
-                    ZZAt.track('js.error', {message: message, url:url, line:line});
+                    ZZAt.track('js.error', {message: message, url: url, line: line});
                 }
 
             }
-            catch(err) {
+            catch (err) {
             }
             return true;
         };

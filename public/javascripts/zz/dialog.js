@@ -16,13 +16,13 @@ zz.dialog = {
 
     },
 
-    show_flash_dialog: function(message){
+    show_flash_dialog: function(message) {
         var content = $("<div id='flash-dialog'><div><div id='flash'></div><a id='ok' class='newgreen-button'><span>OK</span></a></div></div>");
         content.find('#flash').text(message);
 
-        var dialog = zz.dialog.show_dialog(content,{});
+        var dialog = zz.dialog.show_dialog(content, {});
 
-        content.find('#ok').click(function(){
+        content.find('#ok').click(function() {
            dialog.close();
         });
     },
@@ -30,14 +30,14 @@ zz.dialog = {
 
     show_progress_dialog: function(message) {
         var template = '<span class="progress-dialog-content"><img src="/images/loading.gif">' + message + '</span>';
-        var dialog = zz.dialog.show_dialog(template, { width:300, height: 90, modal: true, autoOpen: true, cancelButton: false });
+        var dialog = zz.dialog.show_dialog(template, { width: 300, height: 90, modal: true, autoOpen: true, cancelButton: false });
         return dialog;
     },
 
 
-    CONFIRMATION_TEMPLATE : '<div class="message">{{message}}</div>',
-    ALERT_TEMPLATE : '<div class="message">{{message}}</div>',
-    BASE_Z_INDEX : 99990,
+    CONFIRMATION_TEMPLATE: '<div class="message">{{message}}</div>',
+    ALERT_TEMPLATE: '<div class="message">{{message}}</div>',
+    BASE_Z_INDEX: 99990,
     open_dialog_count: 0,
     scrim_z_index: function() {
         return this.BASE_Z_INDEX + this.open_dialog_count * 10;
@@ -53,15 +53,15 @@ zz.dialog = {
 
 (function($, undefined) {
 
-    $.widget("ui.zz_dialog", {
+    $.widget('ui.zz_dialog', {
         options: {
-            modal:         true,
-            cancelButton:  true,
-            top:          'auto',
-            left:         'auto',
-            autoOpen:      true,
-            height:       'auto',
-            width:        'auto'
+            modal: true,
+            cancelButton: true,
+            top: 'auto',
+            left: 'auto',
+            autoOpen: true,
+            height: 'auto',
+            width: 'auto'
         },
 
         _create: function() {
@@ -92,7 +92,7 @@ zz.dialog = {
             //Insert and activate the dialog closer
             if (self.options.cancelButton) {
                 self.dialogDiv.find('.zz_dialog_closer').show().click(function() {
-                    self.close()
+                    self.close();
                 });
             }
 
@@ -120,7 +120,7 @@ zz.dialog = {
         open: function() {
             var self = this;
 
-            zz.dialog.open_dialog_count ++;
+            zz.dialog.open_dialog_count++;
 
 
             if (self._trigger('beforeopen') === false) return; //If any listeners return false, then do not open
@@ -155,7 +155,7 @@ zz.dialog = {
             $(document).unbind('keypress', this.keypress_handler);
             this._trigger('close');
             this.destroy();
-            zz.dialog.open_dialog_count --;
+            zz.dialog.open_dialog_count--;
         },
 
         toggle: function() {
@@ -183,27 +183,27 @@ zz.dialog = {
                 var height = $(self.element).outerHeight(true);
                 self.dialogDiv.css('height', height);
             } else {
-                self.dialogDiv.css('height', o.height)
+                self.dialogDiv.css('height', o.height);
             }
 
             if (o.width == 'auto') {
                 var width = $(self.element).outerWidth(true);
                 self.dialogDiv.css('width', width);
             } else {
-                self.dialogDiv.css('width', o.width)
+                self.dialogDiv.css('width', o.width);
             }
         },
 
         _setPosition: function() {
             if (this.options.top == 'auto') {
-                var top = ( $(window).height() / 2 ) - (this.dialogDiv.height() / 2);
+                var top = ($(window).height() / 2) - (this.dialogDiv.height() / 2);
                 this.dialogDiv.css('top', top);
             } else {
                 this.dialogDiv.css('top', this.options.top);
             }
 
             if (this.options.left == 'auto') {
-                var left = ( $(window).width() / 2  ) - (this.dialogDiv.width() / 2);
+                var left = ($(window).width() / 2) - (this.dialogDiv.width() / 2);
                 this.dialogDiv.css('left', left);
             } else {
                 this.dialogDiv.css('left', this.options.left);
@@ -212,5 +212,5 @@ zz.dialog = {
 
     });
 
-})(jQuery)
+})(jQuery);
 

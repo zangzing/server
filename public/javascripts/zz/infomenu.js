@@ -42,11 +42,11 @@ zz.infomenu = {
 
         switch (action) {
             case 'download':
-                var url = zz.routes.path_prefix + "/photos/download/" + id;
-                if ($.client.os == "Mac") {
+                var url = zz.routes.path_prefix + '/photos/download/' + id;
+                if ($.client.os == 'Mac') {
                     document.location.href = url;
                 } else {
-                    if (navigator.appVersion.indexOf("NT 5.1") != -1 && $.client.browser == 'Explorer') {
+                    if (navigator.appVersion.indexOf('NT 5.1') != -1 && $.client.browser == 'Explorer') {
                         window.open(url);
                     } else if ($.client.browser == 'Chrome') { //on chrome on windows, using the same browser window to download causes js issues (stops pinging agent)
                         window.open(url);

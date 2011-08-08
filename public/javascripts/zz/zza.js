@@ -19,7 +19,7 @@ function ZZA(id, useridentifier, usemixpanel) {
     this.maxevts = 10;
     this.maxtime = 2500;
     this.maxpushbytes = 2000;
-    this.zzaurl = document.location.protocol + '//zza.zangzing.com'
+    this.zzaurl = document.location.protocol + '//zza.zangzing.com';
     this.pushed = 0;
     this.pindex = 0;
     this.closing = false;
@@ -44,7 +44,7 @@ function ZZA(id, useridentifier, usemixpanel) {
             var domain = null;
             var l = location.host.lastIndexOf(zdomain);
             if ((l != -1) && (l + zdomain.length == location.host.length))
-                domain = zdomain;		// share across all zangzing.com domains
+                domain = zdomain; // share across all zangzing.com domains
 
             this.zzv_id = this.createUUID();
             this._createCookie('_zzv_id', this.zzv_id, domain, 10950);
@@ -57,11 +57,11 @@ function ZZA(id, useridentifier, usemixpanel) {
     };
 
     this.track_event = function(evt, xdata) {
-        this._track(evt, this._getuserid(), this.usertype, null, xdata)
+        this._track(evt, this._getuserid(), this.usertype, null, xdata);
     };
 
     this.track_event2 = function(evt, xdata) {
-        this._track(evt, this._getuserid(), this.usertype, document.URL, xdata)
+        this._track(evt, this._getuserid(), this.usertype, document.URL, xdata);
     };
 
     this.track_event_from_user = function(evt, user, xdata) {
@@ -76,7 +76,7 @@ function ZZA(id, useridentifier, usemixpanel) {
         // close (flush all)
 
         this.closing = true;
-        this._flush(true)
+        this._flush(true);
     };
 
     this.count = function() {
@@ -125,7 +125,7 @@ function ZZA(id, useridentifier, usemixpanel) {
                 p[x] = e.x[x];
 
             if (typeof(mpq) != 'undefined') {
-                mpq.push(['track',e.e, p]);
+                mpq.push(['track', e.e, p]);
             }
         }
     };
@@ -202,7 +202,7 @@ function ZZA(id, useridentifier, usemixpanel) {
         //console.log('pushing evts: ' + pevts.length);
 
         this.pushed += pevts.length;
-        var d = {id: this.id, evts: pevts}
+        var d = {id: this.id, evts: pevts};
         return this.toJSONString(d);
     };
 
@@ -232,7 +232,7 @@ function ZZA(id, useridentifier, usemixpanel) {
 
             if (this.closing && this._usexhr()) {
                 xhr = new XMLHttpRequest();
-                xhr.open("GET", zi, false);
+                xhr.open('GET', zi, false);
                 xhr.send(null);
             }
             else {
@@ -301,14 +301,14 @@ function ZZA(id, useridentifier, usemixpanel) {
     this.createUUID = function() {
         // http://www.ietf.org/rfc/rfc4122.txt
         var s = [];
-        var hexDigits = "0123456789ABCDEF";
+        var hexDigits = '0123456789ABCDEF';
         for (var i = 0; i < 32; i++) {
             s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
         }
-        s[12] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
+        s[12] = '4';  // bits 12-15 of the time_hi_and_version field to 0010
         s[16] = hexDigits.substr((s[16] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
 
-        var uuid = s.join("");
+        var uuid = s.join('');
         return uuid;
     };
 
@@ -316,17 +316,17 @@ function ZZA(id, useridentifier, usemixpanel) {
         if (days) {
             var date = new Date();
             date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-            var expires = "; expires=" + date.toGMTString();
+            var expires = '; expires=' + date.toGMTString();
         }
-        else var expires = "";
-        var c = name + "=" + value + expires + "; path=/";
+        else var expires = '';
+        var c = name + '=' + value + expires + '; path=/';
         if (domain != null)
             c += '; domain=' + domain;
         document.cookie = c;
     };
 
     this._readCookie = function(name) {
-        var nameEQ = name + "=";
+        var nameEQ = name + '=';
         var ca = document.cookie.split(';');
         for (var i = 0; i < ca.length; i++) {
             var c = ca[i];

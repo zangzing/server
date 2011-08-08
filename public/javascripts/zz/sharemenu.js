@@ -11,14 +11,14 @@ zz.sharemenu = {
 
     show: function(button, object_type, object_id, offset, zza_context, onopen, onclose) {
         $(button).zz_menu(
-        { subject_id   : object_id,
-            subject_type : object_type,
-            zza_context  : zza_context,
+        { subject_id: object_id,
+            subject_type: object_type,
+            zza_context: zza_context,
             menu_template: zz.sharemenu.template,
-            click        : zz.sharemenu.click_handler,
-            style        : 'popup',
-            open         : onopen,
-            close        : onclose
+            click: zz.sharemenu.click_handler,
+            style: 'popup',
+            open: onopen,
+            close: onclose
         });
         $(button).zz_menu('open');
     },
@@ -72,7 +72,7 @@ zz.sharemenu = {
 
                 $('#new_email_share').validate({
                     rules: {
-                        'email_share[to]':      { required: true, minlength: 0 },
+                        'email_share[to]': { required: true, minlength: 0 },
                         'email_share[message]': { required: true, minlength: 0 }
                     },
                     messages: {
@@ -84,7 +84,7 @@ zz.sharemenu = {
                         var serialized = $('#new_email_share').serialize();
                         $.post(zz.routes.path_prefix + '/' + object_type + 's/' + object_id + '/shares.json', serialized, function(data, status, request) {
                             dialog.close();
-                        }, "json");
+                        }, 'json');
                     }
                 });
 

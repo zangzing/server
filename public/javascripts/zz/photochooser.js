@@ -11,14 +11,14 @@ zz.photochooser = {
             width: 895,
             modal: true,
             autoOpen: true,
-            open : function(event, ui) {
-                widget = template.zz_photochooser({album_id: album_id}).data().zz_photochooser
+            open: function(event, ui) {
+                widget = template.zz_photochooser({album_id: album_id}).data().zz_photochooser;
             },
             close: function(event, ui) {
                 widget.destroy();
 
                 $.ajax({
-                    url:      zz.routes.path_prefix + '/albums/' + album_id + '/close_batch',
+                    url: zz.routes.path_prefix + '/albums/' + album_id + '/close_batch',
                     complete: function(request, textStatus) {
                         zz.logger.debug('Batch closed because Add photos dialog was closed. Call to close_batch returned with status= ' + textStatus);
                     },
@@ -37,14 +37,14 @@ zz.photochooser = {
 
 (function($, undefined) {
 
-    $.widget("ui.zz_photochooser", {
+    $.widget('ui.zz_photochooser', {
         options: {
-            album_id:null
+            album_id: null
         },
 
-        stack:[],
-        grid:null,
-        destroyed:false,
+        stack: [],
+        grid: null,
+        destroyed: false,
 
         _create: function() {
             var self = this;
@@ -94,7 +94,7 @@ zz.photochooser = {
         },
 
 
-        callAgentOrServer : function(params) {
+        callAgentOrServer: function(params) {
             var url = params['url'];
             var success_handler = params['success'];
             var error_handler = params['error'];
@@ -133,7 +133,7 @@ zz.photochooser = {
             var self = this;
 
             self.openFolder({
-                name: "Home",
+                name: 'Home',
                 children: self.roots()
             });
         },
@@ -167,7 +167,7 @@ zz.photochooser = {
             else {
                 self.callAgentOrServer({
                     url: folder.open_url,
-                    success:function(children) {
+                    success: function(children) {
                         folder.children = children; //store children for going 'back'
                         self.showFolder(folder, children);
                     },
@@ -236,8 +236,8 @@ zz.photochooser = {
                 self.bodyElement.html(gridElement);
 
                 self.grid = gridElement.zz_photogrid({
-                    photos:children,
-                    showThumbscroller:false,
+                    photos: children,
+                    showThumbscroller: false,
                     cellWidth: 190,
                     cellHeight: 190,
                     context: 'chooser-grid',
@@ -279,7 +279,7 @@ zz.photochooser = {
 
         },
 
-        singlePictureView:function(folder, children, photoId) {
+        singlePictureView: function(folder, children, photoId) {
             var self = this;
 
             children = $.map(children, function(child, index) {
@@ -310,8 +310,8 @@ zz.photochooser = {
 
 
             self.grid = gridElement.zz_photogrid({
-                photos:children,
-                showThumbscroller:false,
+                photos: children,
+                showThumbscroller: false,
                 hideNativeScroller: true,
                 cellWidth: 720,
                 cellHeight: self.element.parent().height() - 130,
@@ -390,7 +390,7 @@ zz.photochooser = {
 
             template.find('#learn-more-link').click(function() {
                 ZZAt.track('simple_or_agent.learn_more.click');
-                window.open("http://help.zangzing.com/entries/20144013-simple-photo-uploader-and-desktop-photo-uploader")
+                window.open('http://help.zangzing.com/entries/20144013-simple-photo-uploader-and-desktop-photo-uploader');
             });
 
 
@@ -423,7 +423,7 @@ zz.photochooser = {
 
         },
 
-        open_login_window : function(folder, login_url) {
+        open_login_window: function(folder, login_url) {
             var self = this;
             zz.oauthmanager.login(login_url, function() {
                 self.openFolder(folder);
@@ -449,7 +449,7 @@ zz.photochooser = {
 
 
             //My Computer for Win and Mac
-            if (navigator.appVersion.indexOf("Mac") != -1 || navigator.appVersion.indexOf("Win") != -1 || navigator.platform.indexOf("Linux") != -1) {
+            if (navigator.appVersion.indexOf('Mac') != -1 || navigator.appVersion.indexOf('Win') != -1 || navigator.platform.indexOf('Linux') != -1) {
 
                 roots.push(
                 {
@@ -464,13 +464,13 @@ zz.photochooser = {
 
                         var children = [];
 
-                        if (navigator.appVersion.indexOf("Mac") != -1) {
+                        if (navigator.appVersion.indexOf('Mac') != -1) {
 
                             children = [
                                 //My Pictures
                                 {
                                     open_url: zz.agent.buildAgentUrl('/filesystem/folders/fi9QaWN0dXJlcw=='),
-                                    add_url:  zz.agent.buildAgentUrl('/filesystem/folders/fi9QaWN0dXJlcw==/add_to_album'),
+                                    add_url: zz.agent.buildAgentUrl('/filesystem/folders/fi9QaWN0dXJlcw==/add_to_album'),
                                     type: 'folder',
                                     name: 'My Pictures',
                                     on_error: file_system_on_error,
@@ -482,7 +482,7 @@ zz.photochooser = {
                                 //My Home
                                 {
                                     open_url: zz.agent.buildAgentUrl('/filesystem/folders/fg=='),
-                                    add_url:  zz.agent.buildAgentUrl('/filesystem/folders/fg==/add_to_album'),
+                                    add_url: zz.agent.buildAgentUrl('/filesystem/folders/fg==/add_to_album'),
                                     type: 'folder',
                                     name: 'My Home',
                                     on_error: file_system_on_error,
@@ -511,7 +511,7 @@ zz.photochooser = {
                                 //My Pictures
                                 {
                                     open_url: zz.agent.buildAgentUrl('/filesystem/folders/flxNeSBEb2N1bWVudHNcTXkgUGljdHVyZXM='),
-                                    add_url:  zz.agent.buildAgentUrl('/filesystem/folders/flxNeSBEb2N1bWVudHNcTXkgUGljdHVyZXM=/add_to_album'),
+                                    add_url: zz.agent.buildAgentUrl('/filesystem/folders/flxNeSBEb2N1bWVudHNcTXkgUGljdHVyZXM=/add_to_album'),
                                     type: 'folder',
                                     name: 'My Pictures',
                                     on_error: file_system_on_error,
@@ -523,7 +523,7 @@ zz.photochooser = {
                                 //My Home
                                 {
                                     open_url: zz.agent.buildAgentUrl('/filesystem/folders/fg=='),
-                                    add_url:  zz.agent.buildAgentUrl('/filesystem/folders/fg==/add_to_album'),
+                                    add_url: zz.agent.buildAgentUrl('/filesystem/folders/fg==/add_to_album'),
                                     type: 'folder',
                                     name: 'My Home',
                                     on_error: file_system_on_error,
@@ -561,7 +561,7 @@ zz.photochooser = {
 
 
             //mac
-            if (navigator.appVersion.indexOf("Mac") != -1) {
+            if (navigator.appVersion.indexOf('Mac') != -1) {
 
                 //iPhoto
                 roots.push(
@@ -591,7 +591,7 @@ zz.photochooser = {
 
 
             //windows
-            if (navigator.appVersion.indexOf("Win") != -1) {
+            if (navigator.appVersion.indexOf('Win') != -1) {
 
                 //Picassa
                 roots.push(
@@ -758,7 +758,7 @@ zz.photochooser = {
                 name: 'Photobucket',
                 src: zz.routes.image_url('/images/folders/photobucket_off.jpg'),
                 rolloverSrc: zz.routes.image_url('/images/folders/photobucket_on.jpg'),
-                add_url: zz.routes.path_prefix + "/photobucket/folders/import?album_path=/", //unlike other connectors, photobucket may have photos at the root level
+                add_url: zz.routes.path_prefix + '/photobucket/folders/import?album_path=/', //unlike other connectors, photobucket may have photos at the root level
 
                 on_error: function() {
                     var folder = this;
@@ -813,13 +813,13 @@ zz.photochooser = {
 
         init_tray: function() {
             var self = this;
-            self.tray_element = self.element.find(".added-pictures-tray")
+            self.tray_element = self.element.find('.added-pictures-tray');
             self.tray_widget = self.tray_element.zz_thumbtray({
-                photos:[],
-                allowDelete:true,
-                allowSelect:false,
+                photos: [],
+                allowDelete: true,
+                allowSelect: false,
 
-                onDeletePhoto:function(index, photo) {
+                onDeletePhoto: function(index, photo) {
                     self.remove_photo(photo.id);
                 }
             }).data().zz_thumbtray;
@@ -849,15 +849,15 @@ zz.photochooser = {
             }
         },
 
-        remove_photo:function(photo_id) {
+        remove_photo: function(photo_id) {
             var self = this;
 
             $.ajax({
-                type: "POST",
-                dataType: "json",
-                data:{_method:'delete'},
-                url: zz.routes.path_prefix + "/photos/" + photo_id + ".json",
-                success:function() {
+                type: 'POST',
+                dataType: 'json',
+                data: {_method: 'delete'},
+                url: zz.routes.path_prefix + '/photos/' + photo_id + '.json',
+                success: function() {
                     zz.agent.callAgent('/albums/' + self.options.album_id + '/photos/' + photo_id + '/cancel_upload');
                     self.reload_tray();
                 },
@@ -869,7 +869,7 @@ zz.photochooser = {
 
         },
 
-        reload_tray : function() {
+        reload_tray: function() {
             var self = this;
             $.ajax({
                 dataType: 'json',
@@ -901,7 +901,7 @@ zz.photochooser = {
 
 
             self.animate_to_tray(element, function() {
-                var dialog = self.show_processing_photos_dialog()
+                var dialog = self.show_processing_photos_dialog();
 
                 var callback = function() {
                     dialog.close();
@@ -922,7 +922,7 @@ zz.photochooser = {
         show_processing_photos_dialog: function() {
             var template = '<span class="processing-photos-dialog-content"><img src="{{src}}">Processing photos...</span>'.replace('{{src}}', zz.routes.image_url('/images/loading.gif'));
 
-            var dialog = zz.dialog.show_dialog(template, { width:300, height: 100, modal: true, autoOpen: true, cancelButton: false });
+            var dialog = zz.dialog.show_dialog(template, { width: 300, height: 100, modal: true, autoOpen: true, cancelButton: false });
             return dialog;
 
         },
@@ -953,7 +953,7 @@ zz.photochooser = {
             }
 
             imageElement.clone()
-                    .css({position: 'absolute', left: start_left, top: start_top,border:'1px solid #ffffff'})
+                    .css({position: 'absolute', left: start_left, top: start_top, border: '1px solid #ffffff'})
                     .appendTo('body')
                     .addClass('animate-photo-to-tray')
                     .animate({
@@ -969,7 +969,7 @@ zz.photochooser = {
         add_to_album: function(add_url, on_success, on_failure) {
             var self = this;
 
-            add_url += (add_url.indexOf('?') == -1) ? '?' : '&'
+            add_url += (add_url.indexOf('?') == -1) ? '?' : '&';
             add_url += 'album_id=' + self.options.album_id;
 
             self.tray_widget.showLoadingIndicator();
@@ -1004,7 +1004,7 @@ zz.photochooser = {
             return self.tray_photos;
         },
 
-        map_photos:function(photos) {
+        map_photos: function(photos) {
             if (! $.isArray(photos)) {
                 var photos = [photos];
             }
@@ -1015,7 +1015,7 @@ zz.photochooser = {
 
                 src = zz.agent.checkAddCredentialsToUrl(src);
 
-                return {id:id, src:src};
+                return {id: id, src: src};
             });
 
             return photos;

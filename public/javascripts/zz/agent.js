@@ -7,12 +7,12 @@ zz.agent = {
     STATUS: {
         READY: true,
         NOT_RUNNING: false,
-        NOT_READY: "not ready"
+        NOT_READY: 'not ready'
     },
 
 
-    getStatus:function(callback) {
-        var pingUrl = this.buildAgentUrl("/ping");
+    getStatus: function(callback) {
+        var pingUrl = this.buildAgentUrl('/ping');
 
 
         $.jsonp({
@@ -27,7 +27,7 @@ zz.agent = {
                 }
             },
             error: function() {
-                callback(zz.agent.STATUS.NOT_RUNNING)
+                callback(zz.agent.STATUS.NOT_RUNNING);
             }
         });
     },
@@ -85,7 +85,7 @@ zz.agent = {
 
 
         //fix agent port
-        url = url.replace(/http:\/\/localhost:[^\/]*/, "http://localhost:" + zz.config.agent_port);
+        url = url.replace(/http:\/\/localhost:[^\/]*/, 'http://localhost:' + zz.config.agent_port);
 
 
         return this.checkAddCredentialsToUrl(url);
@@ -96,12 +96,12 @@ zz.agent = {
 
     callAgent: function(path, onSuccess, onError) {
         var url;
-        var user_session = $.cookie("user_credentials");
+        var user_session = $.cookie('user_credentials');
         if (path.indexOf('?') == -1) {
-            url = "http://localhost:" + this.port + path + "?session=" + user_session + '&user_id=' + zz.session.current_user_id + "&callback=?";
+            url = 'http://localhost:' + this.port + path + '?session=' + user_session + '&user_id=' + zz.session.current_user_id + '&callback=?';
         }
         else {
-            url = "http://localhost:" + this.port + path + "&session=" + user_session + '&user_id=' + zz.session.current_user_id + "&callback=?";
+            url = 'http://localhost:' + this.port + path + '&session=' + user_session + '&user_id=' + zz.session.current_user_id + '&callback=?';
         }
 
 
@@ -121,10 +121,10 @@ zz.agent = {
         var errorHandler = function(response) {
             if (response.headers) {
                 //this error is wrapped in JSON
-                zz.logger.debug("error calling agent: " + response.headers.status + ":" + response.headers.error_message + " url:  " + url);
+                zz.logger.debug('error calling agent: ' + response.headers.status + ':' + response.headers.error_message + ' url:  ' + url);
             }
             else {
-                zz.logger.debug("no response or invalid response from agent. url: " + url);
+                zz.logger.debug('no response or invalid response from agent. url: ' + url);
             }
 
             if (typeof(onError) != 'undefined') {

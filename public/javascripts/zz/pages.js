@@ -98,13 +98,13 @@ zz.pages.album_name_tab = {
 
                         src = zz.agent.checkAddCredentialsToUrl(src);
 
-                        return {id:id, src:src};
+                        return {id: id, src: src};
                     });
 
-                    $("#album-cover-picker").zz_thumbtray({
-                        photos:photos,
+                    $('#album-cover-picker').zz_thumbtray({
+                        photos: photos,
 //                        showSelection:true,
-                        selectedIndex:selectedIndex,
+                        selectedIndex: selectedIndex,
                         onSelectPhoto: function(index, photo) {
                             var photo_id = '';
                             var photo_src = '/images/album-no-cover.png';
@@ -113,14 +113,14 @@ zz.pages.album_name_tab = {
                                 photo_src = photo.src;
 
                                 $('#album_cover_img').css({
-                                    height:100,
-                                    width:null
+                                    height: 100,
+                                    width: null
                                 });
                             }
                             else {
                                 $('#album_cover_img').css({
-                                    height:100,
-                                    width:150
+                                    height: 100,
+                                    width: 150
                                 });
                             }
 
@@ -141,9 +141,9 @@ zz.pages.album_name_tab = {
     bounce: function(success, failure) {
         $.ajax({ type: 'POST',
             url: zz.routes.path_prefix + '/albums/' + zz.page.album_id,
-            data:$(".edit_album").serialize(),
-            success: success ,
-            error:  function() {
+            data: $('.edit_album').serialize(),
+            success: success,
+            error: function() {
                 //restore name and header to valid value
                 $('#album_name').val(zz.pages.album_name_tab.original_album_name);
                 $('h2#album-header-title').text(zz.pages.album_name_tab.original_album_name);
@@ -171,9 +171,9 @@ zz.pages.edit_album_tab = {
                 //add empty cell a the end so that we have a place
                 //to drop after the last photo
                 json.push({
-                    id:null,
-                    type:'blank',
-                    caption:''
+                    id: null,
+                    type: 'blank',
+                    caption: ''
                 });
 
 
@@ -185,17 +185,17 @@ zz.pages.edit_album_tab = {
 
 
                 var grid = gridElement.zz_photogrid({
-                    photos:json,
+                    photos: json,
                     allowDelete: true,
                     cellWidth: 230,
                     cellHeight: 230,
 
                     onDelete: function(index, photo) {
                         $.ajax({
-                            type: "POST",
-                            dataType: "json",
-                            data:{_method:'delete'},
-                            url: zz.routes.path_prefix + "/photos/" + photo.id + ".json",
+                            type: 'POST',
+                            dataType: 'json',
+                            data: {_method: 'delete'},
+                            url: zz.routes.path_prefix + '/photos/' + photo.id + '.json',
                             error: function(error) {
                             },
                             success: function() {
@@ -208,10 +208,10 @@ zz.pages.edit_album_tab = {
                     allowEditCaption: true,
                     onChangeCaption: function(index, photo, caption) {
                         $.ajax({
-                            type: "POST",
-                            dataType: "json",
-                            url: zz.routes.path_prefix + "/photos/" + photo.id + ".json",
-                            data: {'photo[caption]':caption, _method:'put'},
+                            type: 'POST',
+                            dataType: 'json',
+                            url: zz.routes.path_prefix + '/photos/' + photo.id + '.json',
+                            data: {'photo[caption]': caption, _method: 'put'},
                             error: function(error) {
                             }
 
@@ -235,10 +235,10 @@ zz.pages.edit_album_tab = {
                         data._method = 'put';
 
                         $.ajax({
-                            type: "POST",
+                            type: 'POST',
                             data: data,
-                            dataType: "json",
-                            url: zz.routes.path_prefix + "/photos/" + photo_id + "/position",
+                            dataType: 'json',
+                            url: zz.routes.path_prefix + '/photos/' + photo_id + '/position',
                             error: function(error) {
                             }
 
@@ -305,7 +305,7 @@ zz.pages.group_tab = {
             '</div>' +
             '</div>',
 
-    PERSON_TEMPLATE:  '<div class="person">' +
+    PERSON_TEMPLATE: '<div class="person">' +
             '<div class="profile">' +
             '<img data-src="/images/default_profile.png" src="/images/default_profile.png">' +
             '</div>' +
@@ -336,7 +336,7 @@ zz.pages.group_tab = {
             '</div>' +
             '</div>',
 
-    TWITTER_DIALOG_TEMPLATE : '<div class="twitter-dialog">' +
+    TWITTER_DIALOG_TEMPLATE: '<div class="twitter-dialog">' +
             '<div class="header"></div>' +
             '<div class="share-with-followers">Share with your followers</div>' +
             '<textarea class="message"></textarea>' +
@@ -348,7 +348,7 @@ zz.pages.group_tab = {
             '<div class="submit-button"></div>' +
             '</div>',
 
-    ADD_PEOPLE_DIALOG_TEMPLATE:   '<div class="add-people-dialog">' +
+    ADD_PEOPLE_DIALOG_TEMPLATE: '<div class="add-people-dialog">' +
             '<div class="header">' +
             '<div class="title">Add people to your group</div>' +
             '<div class="import"><span>Import from </span>' +
@@ -394,12 +394,12 @@ zz.pages.group_tab = {
 
                 element.find('select.permission').val(person['permission']);
                 element.find('select.permission').change(function() {
-                    $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/update_group_member', {_method:'put', 'member[id]': person.id, 'member[permission]': $(this).val()});
+                    $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/update_group_member', {_method: 'put', 'member[id]': person.id, 'member[permission]': $(this).val()});
                 });
 
                 element.find('.delete-button').click(function() {
                     if (confirm('Are you sure you want to remove ' + person.name + '?')) {
-                        $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/delete_group_member', {_method:'delete', 'member[id]': person.id});
+                        $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/delete_group_member', {_method: 'delete', 'member[id]': person.id});
                         element.remove();
                         check_empty_list();
                     }
@@ -444,7 +444,7 @@ zz.pages.group_tab = {
                 container.find('.privacy-buttons').children().click(function() {
                     container.find('.privacy-buttons').children().removeClass('selected');
                     $(this).addClass('selected');
-                    $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id, {_method:'put', 'album[privacy]': $(this).attr('data-privacy')});
+                    $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id, {_method: 'put', 'album[privacy]': $(this).attr('data-privacy')});
                 });
 
 
@@ -454,21 +454,21 @@ zz.pages.group_tab = {
                 //bind stream-to-email checkbox
                 container.find('.stream-to-email input').attr('checked', json['album']['stream_to_email']);
                 container.find('.stream-to-email input').change(function() {
-                    $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id, {_method:'put', 'album[stream_to_email]': $(this).attr('checked')});
+                    $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id, {_method: 'put', 'album[stream_to_email]': $(this).attr('checked')});
                 });
 
 
                 //bind who-can-upload droppdown
                 container.find('.who-can-upload select').val(json['album']['who_can_upload']);
                 container.find('.who-can-upload select').change(function() {
-                    $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id, {_method:'put', 'album[who_can_upload]': $(this).val()});
+                    $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id, {_method: 'put', 'album[who_can_upload]': $(this).val()});
                 });
 
 
                 //bind who-can-download droppdown
                 container.find('.who-can-download select').val(json['album']['who_can_download']);
                 container.find('.who-can-download select').change(function() {
-                    $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id, {_method:'put', 'album[who_can_download]': $(this).val()});
+                    $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id, {_method: 'put', 'album[who_can_download]': $(this).val()});
                 });
 
 
@@ -483,7 +483,7 @@ zz.pages.group_tab = {
 
                     var set_value = function(value) {
                         element.attr('checked', value);
-                        $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id, {_method:'put', 'album[stream_to_facebook]': value});
+                        $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id, {_method: 'put', 'album[stream_to_facebook]': value});
                     }
 
                     if (element.attr('checked')) {
@@ -513,7 +513,7 @@ zz.pages.group_tab = {
 
                     var set_value = function(value) {
                         element.attr('checked', value);
-                        $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id, {_method:'put', 'album[stream_to_twitter]': value});
+                        $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id, {_method: 'put', 'album[stream_to_twitter]': value});
                     };
 
                     if (element.attr('checked')) {
@@ -539,7 +539,7 @@ zz.pages.group_tab = {
                 container.find('.add-people-button').click(function() {
                     var content = $(self.ADD_PEOPLE_DIALOG_TEMPLATE);
 
-                    var dialog = zz.dialog.show_dialog(content, {width:750, height:320});
+                    var dialog = zz.dialog.show_dialog(content, {width: 750, height: 320});
 
                     content.find('textarea.message').placeholder();
 
@@ -599,7 +599,7 @@ zz.pages.group_tab = {
 
                         content.find('textarea.message').placeholder();
 
-                        var dialog = zz.dialog.show_dialog(content, {width:650, height:285});
+                        var dialog = zz.dialog.show_dialog(content, {width: 650, height: 285});
 
                         content.find('.submit-button').click(function() {
                             var data = {
@@ -651,10 +651,10 @@ zz.pages.group_tab = {
                         update_char_left();
 
 
-                        content.find('input.stream-to-twitter').val()
+                        content.find('input.stream-to-twitter').val();
 
 
-                        var dialog = zz.dialog.show_dialog(content, {width:650, height:250});
+                        var dialog = zz.dialog.show_dialog(content, {width: 650, height: 250});
 
 
                         content.find('.submit-button').click(function() {
@@ -664,7 +664,7 @@ zz.pages.group_tab = {
                                 service: 'social'
                             };
 
-                            $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/shares.json', data)
+                            $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/shares.json', data);
                             dialog.close();
                             ZZAt.track('album.share.group_tab.twitter');
                         });
@@ -717,7 +717,7 @@ zz.pages.download_agent = {
                 modal: true,
                 width: 910,
                 height: 510,
-                close:  function() {
+                close: function() {
                     if (onClose) {
                         onClose();
                     }
@@ -741,7 +741,7 @@ zz.pages.download_agent = {
             //if this is IE and WinXp, don't auto-start download
             //because ie will pop up approval bar which forces
             //full page refresu
-            if (navigator.appVersion.indexOf("NT 5.1") != -1 && $.client.browser == 'Explorer') {
+            if (navigator.appVersion.indexOf('NT 5.1') != -1 && $.client.browser == 'Explorer') {
                 startDownload = false;
             }
 
@@ -773,7 +773,7 @@ zz.pages.download_agent = {
             else {
                 if (zz.pages.download_agent.keep_polling()) {
                     setTimeout(function() {
-                        zz.pages.download_agent.poll_agent(when_ready)
+                        zz.pages.download_agent.poll_agent(when_ready);
                     }, 1000);
                 }
             }
@@ -783,7 +783,7 @@ zz.pages.download_agent = {
     download: function() {
         ZZAt.track('agentdownload.get');
 
-        if ($.client.os == "Mac") {
+        if ($.client.os == 'Mac') {
             document.location.href = zz.config.mac_download_url; //'http://downloads.zangzing.com/agent/darwin/ZangZing-Setup.pkg'
         }
         else {

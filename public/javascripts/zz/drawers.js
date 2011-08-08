@@ -55,7 +55,7 @@ zz.drawers = {
         // adjust for out top and bottom bar, the gradient padding and a margin
         zz.drawer_height = zz.screen_height - zz.drawers.SCREEN_GAP;
 
-        if (typeof(size) != 'undefined' && size < zz.drawer_height)  zz.drawer_height = size;
+        if (typeof(size) != 'undefined' && size < zz.drawer_height) zz.drawer_height = size;
 
         $('div#drawer').animate({ height: zz.drawer_height + 'px', top: '52px' }, time);
         $('div#drawer-content').animate({ height: (zz.drawer_height - 0) + 'px'}, time);
@@ -93,7 +93,7 @@ zz.drawers = {
 
 };
 
-$(window).bind("resize", function() {
+$(window).bind('resize', function() {
     zz.drawers.resized();
 });
 

@@ -4,20 +4,20 @@ zz.routes = {
 
     path_prefix: '/service',
 
-    edit_user_path: function(username){
+    edit_user_path: function(username) {
         return '/:username/settings'.replace(':username', username);
     },
 
-    delete_identity_path: function(identity_name){
+    delete_identity_path: function(identity_name) {
         return '/service/:identity_name/sessions/destroy'.replace(':identity_name', identity_name);
     },
 
-    new_identity_path: function(identity_name){
+    new_identity_path: function(identity_name) {
         return '/service/:identity_name/sessions/new'.replace(':identity_name', identity_name);
 
     },
 
-    signin_path: function(){
+    signin_path: function() {
         return '/signin';
     },
 
@@ -38,19 +38,19 @@ zz.routes = {
     // todo: not sure these really belong here...
     //       but seems we do need central place to manage
     //       calls to server
-    
+
     call_delete_album: function(album_id, success, error) {
         $.ajax({
-            type: "POST",
-            dataType: "json",
-            data:{_method:'delete'},
-            url: zz.routes.path_prefix + "/albums/" + album_id + ".json",
+            type: 'POST',
+            dataType: 'json',
+            data: {_method: 'delete'},
+            url: zz.routes.path_prefix + '/albums/' + album_id + '.json',
             error: function() {
                 if (!_.isUndefined(error)) {
                     error();
                 }
             },
-            success:function() {
+            success: function() {
                 zz.agent.callAgent('/albums/' + album_id + '/photos/*/cancel_upload');
                 if (!_.isUndefined(success)) {
                     success();
@@ -63,7 +63,7 @@ zz.routes = {
     call_set_album_cover: function(album_id, photo_id, success, error) {
         $.ajax({ type: 'POST',
             url: zz.routes.path_prefix + '/albums/' + album_id,
-            data:{ '_method': 'put','album[cover_photo_id]': photo_id },
+            data: { '_method': 'put', 'album[cover_photo_id]': photo_id },
             error: function() {
                 if (!_.isUndefined(error)) {
                     error();
@@ -79,10 +79,10 @@ zz.routes = {
 
     call_delete_photo: function(photo_id, success, error) {
         $.ajax({
-            type: "POST",
-            dataType: "json",
-            data:{_method:'delete'},
-            url: zz.routes.path_prefix + "/photos/" + photo_id + ".json",
+            type: 'POST',
+            dataType: 'json',
+            data: {_method: 'delete'},
+            url: zz.routes.path_prefix + '/photos/' + photo_id + '.json',
             error: function() {
                 if (!_.isUndefined(error)) {
                     error();
@@ -98,17 +98,17 @@ zz.routes = {
     },
 
     call_rotate_photo_left: function(photo_id, success, failure) {
-        this._call_rotate_photo(photo_id, 'left', success, failure)
+        this._call_rotate_photo(photo_id, 'left', success, failure);
     },
 
     call_rotate_photo_right: function(photo_id, success, failure) {
-        this._call_rotate_photo(photo_id, 'right', success, failure)
+        this._call_rotate_photo(photo_id, 'right', success, failure);
     },
 
     // shows progress dialog and rotates photo on the server
     // success callback is passed the json of the rotated photo
     _call_rotate_photo: function(photo_id, direction, success, failure) {
-        var dialog = zz.dialog.show_progress_dialog("Rotating photo...");
+        var dialog = zz.dialog.show_progress_dialog('Rotating photo...');
 
         var on_success = function(json) {
             dialog.close();

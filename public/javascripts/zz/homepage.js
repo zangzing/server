@@ -95,16 +95,16 @@ zz.homepage = {
                     albumId: album.id,
                     albumUrl: 'http://' + document.location.host + album.album_path,
                     onClick: function() {
-                        $('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()}, 500, 'easeOutQuart');
+                        $('#article').css({overflow: 'hidden'}).animate({left: -1 * $('#article').width()}, 500, 'easeOutQuart');
                         $('#user-info').fadeOut(200);
                         document.location.href = album.album_path;
                     },
                     onLike: function() {
-                        alert('This feature is still under construction. It will allow you to like an album.')
+                        alert('This feature is still under construction. It will allow you to like an album.');
                     },
                     onDelete: function() {
-                        if (confirm("Are you sure you want to delete this album?")) {
-                            clone.find('.picon').hide("scale", {}, 300, function() {
+                        if (confirm('Are you sure you want to delete this album?')) {
+                            clone.find('.picon').hide('scale', {}, 300, function() {
                                 clone.remove();
                             });
                             zz.routes.call_delete_album(album.id);
