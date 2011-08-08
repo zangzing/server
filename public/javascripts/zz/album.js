@@ -103,7 +103,7 @@ zz.album = {
                             document.location.href = zz.page.album_base_url + "/photos/#!" + photo.id;
                         },
                         onDelete: function(index, photo) {
-                            zzapi_photo.delete_photo(photo.id);
+                            zz.routes.call_delete_photo(photo.id);
                             return true;
                         },
                         currentPhotoId: $.param.fragment(),
@@ -331,7 +331,7 @@ zz.album = {
                             zz.pages.share.share_in_dialog('photo', photo_id);
                         },
                         onDelete: function(index, photo) {
-                            zzapi_photo.delete_photo(photo.id);
+                            zz.routes.call_delete_photo(photo.id);
                             return true;
                         },
                         infoMenuTemplateResolver: infoMenuTemplateResolver

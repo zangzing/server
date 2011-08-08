@@ -107,7 +107,7 @@ zz.homepage = {
                             clone.find('.picon').hide("scale", {}, 300, function() {
                                 clone.remove();
                             });
-                            zzapi_album.delete_album(album.id);
+                            zz.routes.call_delete_album(album.id);
                         }
                     },
                     allowDelete: !album.profile_album && album.user_id == zz.session.current_user_id

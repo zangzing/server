@@ -35,10 +35,10 @@ zz.infomenu = {
 
     click_handler: function(event, data) {
         var action = data.action,
-                options = data.options,
-                photo = options.zz_photo,
-                id = options.subject_id,
-                type = options.subject_type;
+            options = data.options,
+            photo = options.zz_photo,
+            id = options.subject_id,
+            type = options.subject_type;
 
         switch (action) {
             case 'download':
@@ -55,34 +55,36 @@ zz.infomenu = {
                     }
                 }
                 break;
+
             case 'rotatel':
-                zzapi_photo.rotate_left(options.subject_id, function(json) {
+                zz.routes.call_rotate_photo_left(options.subject_id, function(json) {
                     options.zz_photo.changeSrc(json.thumb_url, json.stamp_url);
                 });
-
                 break;
 
             case 'rotater':
-                zzapi_photo.rotate_right(options.subject_id, function(json) {
+                zz.routes.call_rotate_photo_right(options.subject_id, function(json) {
                     options.zz_photo.changeSrc(json.thumb_url, json.stamp_url);
                 });
                 break;
 
             case 'setcover':
-                zzapi_album.set_cover(zz.page.album_id, id,
-                        function() {
-                            zz.toolbars.load_album_cover(photo.options.previewSrc);
-                        });
+                zz.routes.call_set_album_cover(zz.page.album_id, id, function() {
+                    zz.toolbars.load_album_cover(photo.options.previewSrc);
+                });
                 break;
+
             case 'deletephoto':
                 photo.delete_photo();
                 break;
+
             default:
                 alert('InfoMenu Click Handler\n\n' +
                         'Action: ' + action + '\n\n' +
                         'Subject Type: ' + type + '\n\n' +
                         'Subject ID: ' + id + '\n\n');
                 break;
+
         }
     }
 };

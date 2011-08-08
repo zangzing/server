@@ -235,7 +235,7 @@ zz.toolbars = {
                     window.location.reload();
                 };
 
-                zzapi_album.delete_album(zz.page.album_id, afterdelete, afterdelete);
+                zz.routes.call_delete_album(zz.page.album_id, afterdelete, afterdelete);
 
                 $('#drawer .body').fadeOut('fast');
                 zz.drawers.close_drawer(400);
