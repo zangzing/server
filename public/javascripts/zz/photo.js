@@ -3,6 +3,11 @@
  *
  * Copyright 2011, ZangZing LLC. All rights reserved.
  */
+
+var zz = zz || {};
+zz.template_cache = zz.template_cache || {};
+
+
 (function($, undefined) {
 
     $.widget("ui.zz_photo", {
@@ -40,8 +45,8 @@
 
         _create: function() {
             var self = this,
-                    el = self.element,
-                    o = self.options;
+                el = self.element,
+                o = self.options;
 
             //'<div class="photo-caption"></div>';
             //'<div class="photo-border">'
@@ -55,16 +60,16 @@
             //'</div>';
 
             // Store a finished template on the global namespace and re-use for every photo.
-            if (_.isUndefined(window.photo_template)) {
-                window.caption_template = $('<div class="photo-caption"></div>');
-                window.photo_template = $('<div class="photo-border">' +
-                        '<img class="photo-image" src="' + zz.routes.image_url('/images/blank.png') + '">' +
-                        '<img class="bottom-shadow" src="' + zz.routes.image_url('/images/photo/bottom-full.png') + '">' +
-                        '</div>');
+            if (_.isUndefined(zz.template_cache.photo_template)) {
+                zz.template_cache.photo_caption_template = $('<div class="photo-caption"></div>');
+                zz.template_cache.photo_template = $('<div class="photo-border">' +
+                                                     '<img class="photo-image" src="' + zz.routes.image_url('/images/blank.png') + '">' +
+                                                     '<img class="bottom-shadow" src="' + zz.routes.image_url('/images/photo/bottom-full.png') + '">' +
+                                                     '</div>');
             }
 
-            self.captionElement = window.caption_template.clone();
-            self.borderElement = window.photo_template.clone();
+            self.captionElement = zz.template_cache.photo_caption_template.clone();
+            self.borderElement = zz.template_cache.photo_template.clone();
             self.imageElement = self.borderElement.find('.photo-image');
             self.bottomShadow = self.borderElement.find('.bottom-shadow');
 
