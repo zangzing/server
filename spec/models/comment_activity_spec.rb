@@ -89,9 +89,20 @@ describe CommentActivity do
       end
 
       context "given albums's timeline view" do
-        it "should be visible to all registered users (who can see album)" do
+        it "should not be visible to registered users who are not in album's group" do
           @album.activities[0].display_for?(@some_user, Activity::ALBUM_VIEW).should be true
         end
+
+        it "should not be visible to guest users" do
+          @album.activities[0].display_for?(nil, Activity::ALBUM_VIEW).should be true
+        end
+
+        it "should be visible to registered user who is in album's group" do
+          @album.activities[0].display_for?(@group_member, Activity::ALBUM_VIEW).should be true
+        end
+
+
+
       end
 
       context "given commenter's homepage timeline view" do
