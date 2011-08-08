@@ -17,14 +17,14 @@ Server::Application.routes.draw do
   # the whole site has /service in front of it except for users
   scope '/service' do
 
-#    if Server::Application.config.bench_test_allowed
-#      scope :module => "bench_test" do
-#        get    '/bench_test'                   => 'bench_tests#showtests',             :as => :bench_tests
-#      end
-#      namespace :bench_test do resources :resque_no_ops end
-#      namespace :bench_test do resources :s3s end
-#      namespace :bench_test do resources :photo_gens end
-#    end
+    if Server::Application.config.bench_test_allowed
+      scope :module => "bench_test" do
+        get    '/bench_test'                   => 'bench_tests#showtests',             :as => :bench_tests
+      end
+      namespace :bench_test do resources :resque_no_ops end
+      namespace :bench_test do resources :s3s end
+      namespace :bench_test do resources :photo_gens end
+    end
 
     get    '/health_check'            => 'pages#health_check',      :as => :health_check
     
