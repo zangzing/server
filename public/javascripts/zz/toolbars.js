@@ -15,13 +15,13 @@ zz.toolbars = {
             document.location.href = zz.routes.path_prefix + '/';
             ZZAt.track('button.home.click');
         });
-        if (zz.rails_controller_name == 'photos' || zz.rails_controller_name == 'albums') {
+        if (zz.page.rails_controller_name == 'photos' || zz.page.rails_controller_name == 'albums') {
             $('#header #view-buttons #grid-view-button').addClass('selected');
         }
-        else if (zz.rails_controller_name == 'people') {
+        else if (zz.page.rails_controller_name == 'people') {
             $('#header #view-buttons #people-view-button').addClass('selected');
         }
-        else if (zz.rails_controller_name == 'activities') {
+        else if (zz.page.rails_controller_name == 'activities') {
             $('#header #view-buttons #activities-view-button').addClass('selected');
         }
         $('#header #view-buttons #grid-view-button').click(function() {
@@ -32,10 +32,10 @@ zz.toolbars = {
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #grid-view-button').addClass('selected');
             $('#article').fadeOut(200);
-            if (typeof( zz.album_base_url ) != 'undefined') {
-                document.location.href = zz.album_base_url + "/photos";
+            if (typeof( zz.page.album_base_url ) != 'undefined') {
+                document.location.href = zz.page.album_base_url + "/photos";
             } else {
-                document.location.href = zz.displayed_user_base_url;
+                document.location.href = zz.page.displayed_user_base_url;
             }
 
         });
@@ -48,7 +48,7 @@ zz.toolbars = {
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #picture-view-button').addClass('selected');
             $('#article').fadeOut(200);
-            document.location.href = zz.album_base_url + "/photos/#!";
+            document.location.href = zz.page.album_base_url + "/photos/#!";
         });
 
         $('#header #view-buttons #people-view-button').click(function() {
@@ -59,10 +59,10 @@ zz.toolbars = {
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #people-view-button').addClass('selected');
             $('#article').fadeOut(200);
-            if (typeof( zz.album_base_url ) != 'undefined') {
-                document.location.href = zz.album_base_url + "/people";
+            if (typeof( zz.page.album_base_url ) != 'undefined') {
+                document.location.href = zz.page.album_base_url + "/people";
             } else {
-                document.location.href = zz.displayed_user_base_url + "/people";
+                document.location.href = zz.page.displayed_user_base_url + "/people";
             }
 
         });
@@ -75,10 +75,10 @@ zz.toolbars = {
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #activities-view-button').addClass('selected');
             $('#article').fadeOut(200);
-            if (typeof( zz.album_base_url ) != 'undefined') {
-                document.location.href = zz.album_base_url + "/activities";
+            if (typeof( zz.page.album_base_url ) != 'undefined') {
+                document.location.href = zz.page.album_base_url + "/activities";
             } else {
-                document.location.href = zz.displayed_user_base_url + "/activities";
+                document.location.href = zz.page.displayed_user_base_url + "/activities";
             }
         });
 
@@ -113,7 +113,7 @@ zz.toolbars = {
                 'background-color':'#000000',
                 opacity: 0
             }).appendTo('body').animate({opacity:1}, 500, function() {
-                document.location.href = zz.album_base_url + '/movie?start=' + zz.current_photo_index + '&return_to=' + encodeURIComponent(document.location.href);
+                document.location.href = zz.page.album_base_url + '/movie?start=' + zz.page.current_photo_index + '&return_to=' + encodeURIComponent(document.location.href);
             });
 
         });
@@ -158,7 +158,7 @@ zz.toolbars = {
             $('#footer #add-photos-button').removeClass('disabled').addClass('selected');
 
 
-            zz.photochooser.open_in_dialog(zz.album_id, function() {
+            zz.photochooser.open_in_dialog(zz.page.album_id, function() {
                 window.location.reload(false);
             });
 
@@ -179,7 +179,7 @@ zz.toolbars = {
                 zz.sharemenu.show($(this), 'photo', photoId, {x:0,y:0}, 'toolbar', $.noop, $.noop);
             }
             else {
-                zz.sharemenu.show($(this), 'album', zz.album_id, {x:0,y:0}, 'toolbar', $.noop, $.noop);
+                zz.sharemenu.show($(this), 'album', zz.page.album_id, {x:0,y:0}, 'toolbar', $.noop, $.noop);
             }
 
         });
@@ -216,7 +216,7 @@ zz.toolbars = {
         $('#user-info').css('display', 'none');
 
         $('#album-info h2').text("New Album");
-        $('#album-info h3').text("by " + zz.current_user_name);
+        $('#album-info h3').text("by " + zz.session.current_user_name);
 
         $('#header .album-cover').attr('src', zz.routes.image_url('/images/album-no-cover.png'));
         $('#header .album-cover').css({width: '60px'});
@@ -235,7 +235,7 @@ zz.toolbars = {
                     window.location.reload();
                 };
 
-                zzapi_album.delete_album(zz.album_id, afterdelete, afterdelete);
+                zzapi_album.delete_album(zz.page.album_id, afterdelete, afterdelete);
 
                 $('#drawer .body').fadeOut('fast');
                 zz.drawers.close_drawer(400);
@@ -260,7 +260,7 @@ zz.toolbars = {
         $('#acct-settings-btn').click(function() {
             zz.toolbars._disable_buttons();
             $('#header #account-badge').removeClass('disabled').addClass('selected');
-            document.location.href = zz.routes.edit_user_path(zz.current_user_name);
+            document.location.href = zz.routes.edit_user_path(zz.session.current_user_name);
         });
         $('#acct-signout-btn').click(function() {
             window.location = zz.routes.path_prefix + '/signout'
@@ -304,14 +304,14 @@ zz.toolbars = {
                 }
             });
             //zz.logger.debug('toolbar like is for photo: '+hash.toString())
-        } else if (typeof zz.album_id != 'undefined') {
+        } else if (typeof zz.page.album_id != 'undefined') {
             //we are displaying an album's photo grid/people/activity.
-            tag.attr('data-zzid', zz.album_id).attr('data-zztype', 'album');
-            //zz.logger.debug('toolbar like is for album: '+zz.album_id )
-        } else if (typeof zz.displayed_user_id != 'undefined') {
+            tag.attr('data-zzid', zz.page.album_id).attr('data-zztype', 'album');
+            //zz.logger.debug('toolbar like is for album: '+zz.page.album_id )
+        } else if (typeof zz.page.displayed_user_id != 'undefined') {
             //we are displaying a user homepage
-            tag.attr('data-zzid', zz.displayed_user_id).attr('data-zztype', 'user');
-            //zz.logger.debug('toolbar like is for user: '+zz.displayed_user_id  )
+            tag.attr('data-zzid', zz.page.displayed_user_id).attr('data-zztype', 'user');
+            //zz.logger.debug('toolbar like is for user: '+zz.page.displayed_user_id  )
         }
 
         zz.like.init();

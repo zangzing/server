@@ -30,9 +30,6 @@
 
 <% content_for :page_javascript do %>
 
-    <script type="text/javascript">
-      zz.displayed_user_id = '<%=  @user.id %>';
-      zz.displayed_user_base_url = '<%=escape_javascript user_path( @user )%>';
-    </script>
+    <%= render :partial => "albums/homepage_view_javascript" %>
 
 <% end %>

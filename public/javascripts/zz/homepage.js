@@ -74,7 +74,7 @@ zz.homepage = {
                             check_is_done();
                         },
                         error: function(xhr, message, exception) {
-                            zz.cache_helper.check_bad_homepage_json(xhr, message, zz.displayed_user_id, this.url);
+                            zz.cache_helper.check_bad_homepage_json(xhr, message, zz.page.displayed_user_id, this.url);
                         }
                     });
                 }
@@ -110,7 +110,7 @@ zz.homepage = {
                             zzapi_album.delete_album(album.id);
                         }
                     },
-                    allowDelete: !album.profile_album && album.user_id == zz.current_user_id
+                    allowDelete: !album.profile_album && album.user_id == zz.session.current_user_id
                 });
                 wanted_subjects[album.id] = 'album';
             });
@@ -121,7 +121,7 @@ zz.homepage = {
         call_and_merge([my_albums_path, session_user_liked_albums_path], function(albums) {
             //show only albums for the current homepage
             albums = _.filter(albums, function(album) {
-                return album.user_id == zz.displayed_user_id;
+                return album.user_id == zz.page.displayed_user_id;
             });
 
             render_albums($('#my-albums'), albums);

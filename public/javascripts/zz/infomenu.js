@@ -69,7 +69,7 @@ zz.infomenu = {
                 break;
 
             case 'setcover':
-                zzapi_album.set_cover(zz.album_id, id,
+                zzapi_album.set_cover(zz.page.album_id, id,
                         function() {
                             zz.toolbars.load_album_cover(photo.options.previewSrc);
                         });

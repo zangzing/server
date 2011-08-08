@@ -13,7 +13,7 @@ zz.pages.album_add_photos_tab = {
     init: function(container, callback, drawer_style) {
         var template = $('<div class="photochooser-container"></div>');
         container.html(template);
-        this.chooserWidget = template.zz_photochooser({album_id: zz.album_id}).data().zz_photochooser;
+        this.chooserWidget = template.zz_photochooser({album_id: zz.page.album_id}).data().zz_photochooser;
 
         ZZAt.track('album.add_photos_tab.view');
 
@@ -30,7 +30,7 @@ zz.pages.album_add_photos_tab = {
 zz.pages.album_name_tab = {
     original_album_name: '',
     init: function(container, callback) {
-        var url = zz.routes.path_prefix + '/albums/' + zz.album_id + '/name_album';
+        var url = zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/name_album';
 
         ZZAt.track('album.name_tab.view');
 
@@ -64,7 +64,7 @@ zz.pages.album_name_tab = {
                     album_email_call_lock--;
                     if (album_email_call_lock == 0) {
                         $.ajax({
-                            url: zz.routes.path_prefix + '/albums/' + zz.album_id + '/preview_album_email?' + $.param({'album[name]': $('#album_name').val()}),
+                            url: zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/preview_album_email?' + $.param({'album[name]': $('#album_name').val()}),
                             success: function(json) {
                                 $('#album_name').removeClass('error');
                                 $('#album_email').text(json.email);
@@ -83,7 +83,7 @@ zz.pages.album_name_tab = {
             //setup album cover picker
             $.ajax({
                 dataType: 'json',
-                url: zz.routes.path_prefix + '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
+                url: zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
                 success: function(json) {
                     var selectedIndex = -1;
                     var currentId = $('#album_cover_photo').val();
@@ -140,7 +140,7 @@ zz.pages.album_name_tab = {
 
     bounce: function(success, failure) {
         $.ajax({ type: 'POST',
-            url: zz.routes.path_prefix + '/albums/' + zz.album_id,
+            url: zz.routes.path_prefix + '/albums/' + zz.page.album_id,
             data:$(".edit_album").serialize(),
             success: success ,
             error:  function() {
@@ -159,7 +159,7 @@ zz.pages.edit_album_tab = {
 
         $.ajax({
             dataType: 'json',
-            url: zz.routes.path_prefix + '/albums/' + zz.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss,
+            url: zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss,
             success: function(json) {
 
                 for (var i = 0; i < json.length; i++) {
@@ -199,7 +199,7 @@ zz.pages.edit_album_tab = {
                             error: function(error) {
                             },
                             success: function() {
-                                zz.agent.callAgent('/albums/' + zz.album_id + '/photos/' + photo.id + '/cancel_upload');
+                                zz.agent.callAgent('/albums/' + zz.page.album_id + '/photos/' + photo.id + '/cancel_upload');
                             }
 
                         });
@@ -394,12 +394,12 @@ zz.pages.group_tab = {
 
                 element.find('select.permission').val(person['permission']);
                 element.find('select.permission').change(function() {
-                    $.post(zz.routes.path_prefix + '/albums/' + zz.album_id + '/update_group_member', {_method:'put', 'member[id]': person.id, 'member[permission]': $(this).val()});
+                    $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/update_group_member', {_method:'put', 'member[id]': person.id, 'member[permission]': $(this).val()});
                 });
 
                 element.find('.delete-button').click(function() {
                     if (confirm('Are you sure you want to remove ' + person.name + '?')) {
-                        $.post(zz.routes.path_prefix + '/albums/' + zz.album_id + '/delete_group_member', {_method:'delete', 'member[id]': person.id});
+                        $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/delete_group_member', {_method:'delete', 'member[id]': person.id});
                         element.remove();
                         check_empty_list();
                     }
@@ -426,7 +426,7 @@ zz.pages.group_tab = {
 
         $.ajax({
             dataType: 'json',
-            url: zz.routes.path_prefix + '/albums/' + zz.album_id + '/edit_group.json',
+            url: zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/edit_group.json',
             error: function() {
                 alert('error!');
             },
@@ -444,7 +444,7 @@ zz.pages.group_tab = {
                 container.find('.privacy-buttons').children().click(function() {
                     container.find('.privacy-buttons').children().removeClass('selected');
                     $(this).addClass('selected');
-                    $.post(zz.routes.path_prefix + '/albums/' + zz.album_id, {_method:'put', 'album[privacy]': $(this).attr('data-privacy')});
+                    $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id, {_method:'put', 'album[privacy]': $(this).attr('data-privacy')});
                 });
 
 
@@ -454,21 +454,21 @@ zz.pages.group_tab = {
                 //bind stream-to-email checkbox
                 container.find('.stream-to-email input').attr('checked', json['album']['stream_to_email']);
                 container.find('.stream-to-email input').change(function() {
-                    $.post(zz.routes.path_prefix + '/albums/' + zz.album_id, {_method:'put', 'album[stream_to_email]': $(this).attr('checked')});
+                    $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id, {_method:'put', 'album[stream_to_email]': $(this).attr('checked')});
                 });
 
 
                 //bind who-can-upload droppdown
                 container.find('.who-can-upload select').val(json['album']['who_can_upload']);
                 container.find('.who-can-upload select').change(function() {
-                    $.post(zz.routes.path_prefix + '/albums/' + zz.album_id, {_method:'put', 'album[who_can_upload]': $(this).val()});
+                    $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id, {_method:'put', 'album[who_can_upload]': $(this).val()});
                 });
 
 
                 //bind who-can-download droppdown
                 container.find('.who-can-download select').val(json['album']['who_can_download']);
                 container.find('.who-can-download select').change(function() {
-                    $.post(zz.routes.path_prefix + '/albums/' + zz.album_id, {_method:'put', 'album[who_can_download]': $(this).val()});
+                    $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id, {_method:'put', 'album[who_can_download]': $(this).val()});
                 });
 
 
@@ -483,7 +483,7 @@ zz.pages.group_tab = {
 
                     var set_value = function(value) {
                         element.attr('checked', value);
-                        $.post(zz.routes.path_prefix + '/albums/' + zz.album_id, {_method:'put', 'album[stream_to_facebook]': value});
+                        $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id, {_method:'put', 'album[stream_to_facebook]': value});
                     }
 
                     if (element.attr('checked')) {
@@ -513,7 +513,7 @@ zz.pages.group_tab = {
 
                     var set_value = function(value) {
                         element.attr('checked', value);
-                        $.post(zz.routes.path_prefix + '/albums/' + zz.album_id, {_method:'put', 'album[stream_to_twitter]': value});
+                        $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id, {_method:'put', 'album[stream_to_twitter]': value});
                     };
 
                     if (element.attr('checked')) {
@@ -544,7 +544,7 @@ zz.pages.group_tab = {
                     content.find('textarea.message').placeholder();
 
 
-                    zz.contact_list.create(zz.current_user_id, content.find('.contact-list'), content.find('.contacts-btn'));
+                    zz.contact_list.create(zz.session.current_user_id, content.find('.contact-list'), content.find('.contacts-btn'));
 
 
                     content.find('.submit-button').click(function() {
@@ -562,7 +562,7 @@ zz.pages.group_tab = {
                             emails: emails
                         };
 
-                        $.post(zz.routes.path_prefix + '/albums/' + zz.album_id + '/add_group_members.json', data, function(json) {
+                        $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/add_group_members.json', data, function(json) {
                             refresh_person_list(json);
                             dialog.close();
                             ZZAt.track('album.share.group_tab.email');
@@ -608,7 +608,7 @@ zz.pages.group_tab = {
                                 service: 'social'
                             };
 
-                            $.post(zz.routes.path_prefix + '/albums/' + zz.album_id + '/shares.json', data);
+                            $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/shares.json', data);
                             dialog.close();
                             ZZAt.track('album.share.group_tab.facebook');
 
@@ -664,7 +664,7 @@ zz.pages.group_tab = {
                                 service: 'social'
                             };
 
-                            $.post(zz.routes.path_prefix + '/albums/' + zz.album_id + '/shares.json', data)
+                            $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/shares.json', data)
                             dialog.close();
                             ZZAt.track('album.share.group_tab.twitter');
                         });
@@ -711,7 +711,7 @@ zz.pages.group_tab = {
 //        }
 //
 //        if(_.isUndefined(subject_id)){
-//            subject_id = zz.album_id;
+//            subject_id = zz.page.album_id;
 //        }
 //
 //        var url = zz.routes.path_prefix +'/shares/new';
@@ -861,7 +861,7 @@ zz.pages.group_tab = {
 //                        inputToken: "token-input-input-token-facebook"
 //                    }
 //                });
-//                zz.contacts.init( zz.current_user_id );
+//                zz.contacts.init( zz.session.current_user_id );
 //                zz.wizard.resize_scroll_body();
 //
 //                $('#new_email_share').validate({
@@ -934,7 +934,7 @@ zz.pages.group_tab = {
 //
 //        ZZAt.track('album.contributors_tab.view');
 //
-//        this.url = zz.routes.path_prefix + '/albums/'+zz.album_id+'/contributors';
+//        this.url = zz.routes.path_prefix + '/albums/'+zz.page.album_id+'/contributors';
 //        pages.contributors.show_list(container, callback);
 //    },
 //
@@ -1004,7 +1004,7 @@ zz.pages.group_tab = {
 //    },
 //
 //    show_new: function(container, callback){
-//        container.load(zz.routes.path_prefix + '/albums/'+zz.album_id+'/contributors/new', function(){
+//        container.load(zz.routes.path_prefix + '/albums/'+zz.page.album_id+'/contributors/new', function(){
 //
 //            $("#contact-list").tokenInput( zz.contacts.find, {
 //                allowNewValues: true,
@@ -1022,7 +1022,7 @@ zz.pages.group_tab = {
 //                    inputToken: "token-input-input-token-facebook"
 //                }
 //            });
-//            zz.contacts.init( zz.current_user_id );
+//            zz.contacts.init( zz.session.current_user_id );
 //            zz.wizard.resize_scroll_body();
 //            $('#new_contributors').validate({
 //                rules: {
@@ -1037,7 +1037,7 @@ zz.pages.group_tab = {
 //                //todo: submit errors are not being shown properly
 //                submitHandler: function() {
 //                    $.ajax({ type:     'POST',
-//                        url:      zz.routes.path_prefix + '/albums/'+zz.album_id+'/contributors.json',
+//                        url:      zz.routes.path_prefix + '/albums/'+zz.page.album_id+'/contributors.json',
 //                        data:     $('#new_contributors').serialize(),
 //                        dataType: 'json',
 //                        success:  function(errors,status,request){
@@ -1168,15 +1168,15 @@ zz.pages.download_agent = {
         ZZAt.track('agentdownload.get');
 
         if ($.client.os == "Mac") {
-            document.location.href = zz.mac_download_url; //'http://downloads.zangzing.com/agent/darwin/ZangZing-Setup.pkg'
+            document.location.href = zz.config.mac_download_url; //'http://downloads.zangzing.com/agent/darwin/ZangZing-Setup.pkg'
         }
         else {
             if ($.client.browser == 'Chrome') {
                 //on chrome on windows, using the same browser window to download causes js issues (stops pinging agent)
-                window.open(zz.win_download_url);
+                window.open(zz.config.win_download_url);
             }
             else {
-                document.location.href = zz.win_download_url;
+                document.location.href = zz.config.win_download_url;
             }
 
         }

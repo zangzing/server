@@ -1,15 +1,15 @@
 <script type="text/javascript">
-  zz.album_id = '<%= @album.id %>';
-  zz.album_type = '<%=escape_javascript @album.type %>';
-  zz.album_lastmod = '<%= @album.cache_version %>';
-  zz.album_type = zz.album_type.split('Album')[0].toLowerCase();
-  zz.current_user_can_download = <%=( @album.can_user_download?( current_user )? 'true':'false')%>;
-  zz.displayed_user_id   = '<%= @album.user.id %>';
-  zz.album_base_url = '/<%=escape_javascript @album.user.username%>/<%=escape_javascript @album.friendly_id%>';
-  zz.user_base_url = '/<%=escape_javascript @album.user.username%>';
-  zz.album_name = '<%=escape_javascript @album.name %>';
-  zz.back_to_home_page_url = '<%= back_to_home_page_url @album %>';
-  zz.back_to_home_page_caption = '<%= escape_javascript back_to_home_page_caption @album %>';
-  zz.current_photo_index = 0;
+  var zz = zz || {};
+  zz.page = zz.page || {};
+
+  zz.page.album_id = '<%= @album.id %>';
+  zz.page.album_lastmod = '<%= @album.cache_version %>';
+  zz.page.current_user_can_download = <%=( @album.can_user_download?( current_user )? 'true':'false')%>;
+  zz.page.displayed_user_id   = '<%= @album.user.id %>';
+  zz.page.album_base_url = '/<%=escape_javascript @album.user.username%>/<%=escape_javascript @album.friendly_id%>';
+  zz.page.album_name = '<%=escape_javascript @album.name %>';
+  zz.page.back_to_home_page_url = '<%= back_to_home_page_url @album %>';
+  zz.page.back_to_home_page_caption = '<%= escape_javascript back_to_home_page_caption @album %>';
+  zz.page.current_photo_index = 0;
 </script>
 

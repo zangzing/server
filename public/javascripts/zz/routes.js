@@ -22,12 +22,12 @@ zz.routes = {
     },
 
     image_url: function(path) {
-        if (zz.rails_asset_host) {
+        if (zz.config.rails_asset_host) {
             var host_num = path.length % 4;
-            return document.location.protocol + '//' + zz.rails_asset_host.replace('%d', host_num) + path + '?' + zz.rails_asset_id;
+            return document.location.protocol + '//' + zz.config.rails_asset_host.replace('%d', host_num) + path + '?' + zz.config.rails_asset_id;
         }
         else {
-            return path + '?' + zz.rails_asset_id;
+            return path + '?' + zz.config.rails_asset_id;
         }
     }
     

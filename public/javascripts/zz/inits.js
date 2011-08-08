@@ -13,7 +13,7 @@ zz.init = {
     template: function() {
         $(document).ajaxSend(function(event, request, settings) {
             settings.data = settings.data || "";
-            settings.data += (settings.data ? "&" : "") + "authenticity_token=" + encodeURIComponent(zz.rails_authenticity_token);
+            settings.data += (settings.data ? "&" : "") + "authenticity_token=" + encodeURIComponent(zz.page.rails_authenticity_token);
         });
 
         /* Click Handlers    ----------------------------------------------------------------------- */

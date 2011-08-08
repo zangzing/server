@@ -45,7 +45,7 @@ zz.sharemenu = {
 
     share_to_email: function(object_type, object_id, context) {
         ZZAt.track(object_type + '.share.' + context + '.email');
-        if (!zz.current_user_id) {
+        if (!zz.session.current_user_id) {
             var url = '/service/' + object_type + 's/' + object_id + '/new_mailto_share';
             $.get(url, {}, function(json) {
                 document.location.href = json.mailto;
@@ -66,7 +66,7 @@ zz.sharemenu = {
                 });
 
 
-                zz.contact_list.create(zz.current_user_id, $('#contact-list'), $('.contacts-btn'));
+                zz.contact_list.create(zz.session.current_user_id, $('#contact-list'), $('.contacts-btn'));
 
                 zz.wizard.resize_scroll_body();
 

@@ -13,23 +13,23 @@ zz.album = {
         }
 
         if (view === 'grid') {
-            this._init_back_button(zz.back_to_home_page_caption, zz.back_to_home_page_url);
+            this._init_back_button(zz.page.back_to_home_page_caption, zz.page.back_to_home_page_url);
         }
         else {
-            this._init_back_button(zz.album_name, zz.album_base_url + '/photos');
+            this._init_back_button(zz.page.album_name, zz.page.album_base_url + '/photos');
         }
 
 
         $.ajax({
             dataType: 'json',
-            url: zz.routes.path_prefix + '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
+            url: zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/photos_json?' + zz.page.album_lastmod,
             error: function(xhr, message, exception) {
-                zz.cache_helper.check_bad_album_json(xhr, message, zz.album_id, this.url);
+                zz.cache_helper.check_bad_album_json(xhr, message, zz.page.album_id, this.url);
             },
             success: function(json) {
 
 
-                ZZAt.track('album.view', {id:zz.album_id});
+                ZZAt.track('album.view', {id:zz.page.album_id});
 
                 json = zz.album._filterPhotosForUser(json);
 
@@ -58,7 +58,7 @@ zz.album = {
                     }
 
                     var infoMenuTemplateResolver = function(photo_json) {
-                        if (zz.displayed_user_id == zz.current_user_id) {
+                        if (zz.page.displayed_user_id == zz.session.current_user_id) {
                             if (photo_json.state == 'ready') {
                                 return zz.infomenu.album_owner_template;
                             }
@@ -66,7 +66,7 @@ zz.album = {
                                 return zz.infomenu.album_owner_template_photo_not_ready;
                             }
                         }
-                        else if (photo_json.user_id == zz.current_user_id) {
+                        else if (photo_json.user_id == zz.session.current_user_id) {
                             if (photo_json.state == 'ready') {
                                 return zz.infomenu.photo_owner_template;
                             }
@@ -74,7 +74,7 @@ zz.album = {
                                 return zz.infomenu.photo_owner_template_photo_not_ready;
                             }
                         }
-                        else if (zz.current_user_can_download) {
+                        else if (zz.page.current_user_can_download) {
                             return zz.infomenu.download_template;
                         }
                         else {
@@ -100,7 +100,7 @@ zz.album = {
                             $('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()}, 500, 'easeOutQuart');
                             $('#header #back-button').fadeOut(200);
 
-                            document.location.href = zz.album_base_url + "/photos/#!" + photo.id;
+                            document.location.href = zz.page.album_base_url + "/photos/#!" + photo.id;
                         },
                         onDelete: function(index, photo) {
                             zzapi_photo.delete_photo(photo.id);
@@ -163,7 +163,7 @@ zz.album = {
                             currentPhotoId: currentPhotoId,
                             onScrollToPhoto: function(photoId, index) {
                                 window.location.hash = '#!' + photoId
-                                zz.current_photo_index = index;
+                                zz.page.current_photo_index = index;
                                 ZZAt.track('photo.view', {id:photoId});
                             }
 
@@ -226,15 +226,15 @@ zz.album = {
 
     _init_timeline_or_people_view: function(which) {
 
-        this._init_back_button(zz.back_to_home_page_caption, zz.back_to_home_page_url);
+        this._init_back_button(zz.page.back_to_home_page_caption, zz.page.back_to_home_page_url);
 
         $('#article').touchScrollY();
 
         $.ajax({
             dataType: 'json',
-            url: zz.routes.path_prefix + '/albums/' + zz.album_id + '/photos_json?' + zz.album_lastmod,
+            url: zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/photos_json?' + zz.page.album_lastmod,
             error: function(xhr, message, exception) {
-                zz.cache_helper.check_bad_album_json(xhr, message, zz.album_id, this.url);
+                zz.cache_helper.check_bad_album_json(xhr, message, zz.page.album_id, this.url);
             },
             success: function(json) {
 
@@ -287,7 +287,7 @@ zz.album = {
                     }
 
                     var infoMenuTemplateResolver = function(photo_json) {
-                        if (zz.displayed_user_id == zz.current_user_id) {
+                        if (zz.page.displayed_user_id == zz.session.current_user_id) {
                             if (photo_json.state == 'ready') {
                                 return zz.infomenu.album_owner_template;
                             }
@@ -295,7 +295,7 @@ zz.album = {
                                 return zz.infomenu.album_owner_template_photo_not_ready;
                             }
                         }
-                        else if (photo_json.user_id == zz.current_user_id) {
+                        else if (photo_json.user_id == zz.session.current_user_id) {
                             if (photo_json.state == 'ready') {
                                 return zz.infomenu.photo_owner_template;
                             }
@@ -303,7 +303,7 @@ zz.album = {
                                 return zz.infomenu.photo_owner_template_photo_not_ready;
                             }
                         }
-                        else if (zz.current_user_can_download) {
+                        else if (zz.page.current_user_can_download) {
                             return zz.infomenu.download_template;
                         }
                         else {
@@ -321,12 +321,12 @@ zz.album = {
                         onClickPhoto: function(index, photo) {
                             $('#article').css({overflow:'hidden'}).animate({left: -1 * $('#article').width()}, 500, 'easeOutQuart');
                             $('#header #back-button').fadeOut(200);
-                            document.location.href = zz.album_base_url + "/photos/#!" + photo.id;
+                            document.location.href = zz.page.album_base_url + "/photos/#!" + photo.id;
                         },
                         showThumbscroller: false,
                         showButtonBar:true,
-                        allowDownload: zz.current_user_can_download,
-                        showInfoMenu: zz.displayed_user_id == zz.current_user_id, //The owner of the album being displayed ios zz.displayed_user_id
+                        allowDownload: zz.page.current_user_can_download,
+                        showInfoMenu: zz.page.displayed_user_id == zz.session.current_user_id, //The owner of the album being displayed ios zz.page.displayed_user_id
                         onClickShare: function(photo_id) {
                             zz.pages.share.share_in_dialog('photo', photo_id);
                         },
@@ -374,7 +374,7 @@ zz.album = {
         //filter photos that haven't finished uploading
         return $.map(photos, function(element, index) {
             if (element['state'] !== 'ready') {
-                if (_.isUndefined(zz.current_user_id) || element['user_id'] != zz.current_user_id) {
+                if (_.isUndefined(zz.session.current_user_id) || element['user_id'] != zz.session.current_user_id) {
                     return null;
                 }
             }

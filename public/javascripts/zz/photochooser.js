@@ -877,7 +877,7 @@ zz.photochooser = {
                 success: function(photos) {
 
                     self.tray_photos = _.filter(photos, function(photo) {
-                        return zz.current_user_id == photo.user_id; //only show photos uploaded by this user
+                        return zz.session.current_user_id == photo.user_id; //only show photos uploaded by this user
                     });
 
                     self.tray_widget.setPhotos(self.map_photos(self.tray_photos));

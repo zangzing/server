@@ -20,16 +20,15 @@ zz.wizard = {
         time: 600,
 
         init: function() {
-            zz.album_type = 'group';
         },
 
         on_close: function() {
             ZZAt.track('album.done.click');
             $.ajax({
-                url:      zz.routes.path_prefix + '/albums/' + zz.album_id + '/close_batch',
+                url:      zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/close_batch',
                 complete: function(request, textStatus) {
                     zz.logger.debug('Batch closed because drawer was closed. Call to close_batch returned with status= ' + textStatus);
-                    window.location = zz.routes.path_prefix + '/albums/' + zz.album_id + '/photos';
+                    window.location = zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/photos';
                 }
             });
         },
@@ -301,8 +300,8 @@ zz.wizard = {
 
 
     create_group_album: function() {
-        $.post(zz.routes.path_prefix + '/users/' + zz.current_user_id + '/albums', { album_type: "GroupAlbum" }, function(data) {
-            zz.album_id = data.id;
+        $.post(zz.routes.path_prefix + '/users/' + zz.session.current_user_id + '/albums', { album_type: "GroupAlbum" }, function(data) {
+            zz.page.album_id = data.id;
             $('#album-info h2').text(data.name);
             zz.wizard.open_drawer(zz.wizard.group_album, 'add');
         });

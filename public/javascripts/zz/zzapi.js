@@ -51,7 +51,7 @@ var zzapi_photo = {
                 }
             },
             success: function() {
-                zz.agent.callAgent('/albums/' + zz.album_id + '/photos/' + photo_id + '/cancel_upload');
+                zz.agent.callAgent('/albums/' + zz.page.album_id + '/photos/' + photo_id + '/cancel_upload');
                 if (!_.isUndefined(success)) {
                     success();
                 }
