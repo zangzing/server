@@ -242,7 +242,7 @@
                 });
 
                 unlink_button.click(function(){
-                    var url = zz.routes.new_identity_path(service_key);
+                    var url = zz.routes.delete_identity_path(service_key);
 
                     //todo: should have failure handler here too
                     $.post(url, function(){
