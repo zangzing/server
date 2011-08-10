@@ -1,84 +1,90 @@
-var infomenu = {
+var zz = zz || {};
 
-    album_owner_template: '<ul>'+
-            '<li class="download"><a href="#download">Download</a></li>'+
-            '<li class="rotater"><a href="#rotater">Right</a></li>'+
-            '<li class="rotatel"><a href="#rotatel">Left</a></li>'+
-            '<li class="setcover"><a href="#setcover">Set Cover</a></li>'+
-            '<li class="delete"><a href="#deletephoto">Delete</a></li>'+
+zz.infomenu = {
+
+    album_owner_template: '<ul>' +
+            '<li class="download"><a href="#download">Download</a></li>' +
+            '<li class="rotater"><a href="#rotater">Right</a></li>' +
+            '<li class="rotatel"><a href="#rotatel">Left</a></li>' +
+            '<li class="setcover"><a href="#setcover">Set Cover</a></li>' +
+            '<li class="delete"><a href="#deletephoto">Delete</a></li>' +
             '</ul>',
 
-    album_owner_template_photo_not_ready: '<ul>'+
-            '<li class="setcover"><a href="#setcover">Set Cover</a></li>'+
-            '<li class="delete"><a href="#deletephoto">Delete</a></li>'+
+    album_owner_template_photo_not_ready: '<ul>' +
+            '<li class="setcover"><a href="#setcover">Set Cover</a></li>' +
+            '<li class="delete"><a href="#deletephoto">Delete</a></li>' +
             '</ul>',
 
-    photo_owner_template: '<ul>'+
-            '<li class="download"><a href="#download">Download</a></li>'+
-            '<li class="rotater"><a href="#rotater">Right</a></li>'+
-            '<li class="rotatel"><a href="#rotatel">Left</a></li>'+
-            '<li class="delete"><a href="#deletephoto">Delete</a></li>'+
+    photo_owner_template: '<ul>' +
+            '<li class="download"><a href="#download">Download</a></li>' +
+            '<li class="rotater"><a href="#rotater">Right</a></li>' +
+            '<li class="rotatel"><a href="#rotatel">Left</a></li>' +
+            '<li class="delete"><a href="#deletephoto">Delete</a></li>' +
             '</ul>',
 
-    photo_owner_template_photo_not_ready: '<ul>'+
-            '<li class="delete"><a href="#deletephoto">Delete</a></li>'+
+    photo_owner_template_photo_not_ready: '<ul>' +
+            '<li class="delete"><a href="#deletephoto">Delete</a></li>' +
             '</ul>',
 
 
-    download_template: '<ul>'+
-                '<li class="download"><a href="#download">Download</a></li>'+
-                '</ul>',
+    download_template: '<ul>' +
+            '<li class="download"><a href="#download">Download</a></li>' +
+            '</ul>',
 
 
 
-    click_handler: function(event,data){
-        var action  = data.action,
-                options = data.options,
-                photo   = options.zz_photo,
-                id      = options.subject_id,
-                type    = options.subject_type;
+    click_handler: function(event, data) {
+        var action = data.action,
+            options = data.options,
+            photo = options.zz_photo,
+            id = options.subject_id,
+            type = options.subject_type;
 
-        switch( action ){
+        switch (action) {
             case 'download':
-                var url = zz.path_prefix + "/photos/download/" + id;
-                if($.client.os =="Mac"){
+                var url = zz.routes.path_prefix + '/photos/download/' + id;
+                if ($.client.os == 'Mac') {
                     document.location.href = url;
-                }else{
-                    if(navigator.appVersion.indexOf("NT 5.1") !=  -1 && $.client.browser=='Explorer'){
+                } else {
+                    if (navigator.appVersion.indexOf('NT 5.1') != -1 && $.client.browser == 'Explorer') {
                         window.open(url);
-                    }else if($.client.browser == 'Chrome'){ //on chrome on windows, using the same browser window to download causes js issues (stops pinging agent)
+                    } else if ($.client.browser == 'Chrome') { //on chrome on windows, using the same browser window to download causes js issues (stops pinging agent)
                         window.open(url);
-                    }else{
+                    } else {
                         document.location.href = url;
                     }
                 }
                 break;
+
             case 'rotatel':
-                photo_manipulation.rotate_left(options.subject_id, function(json){
+                zz.routes.call_rotate_photo_left(options.subject_id, function(json) {
                     options.zz_photo.changeSrc(json.thumb_url, json.stamp_url);
                 });
-
                 break;
 
             case 'rotater':
-                photo_manipulation.rotate_right(options.subject_id, function(json){
+                zz.routes.call_rotate_photo_right(options.subject_id, function(json) {
                     options.zz_photo.changeSrc(json.thumb_url, json.stamp_url);
                 });
                 break;
 
             case 'setcover':
-                zzapi_album.set_cover( zz.album_id, id,
-                        function(){ zz.toolbars.load_album_cover( photo.options.previewSrc); });
+                zz.routes.call_set_album_cover(zz.page.album_id, id, function() {
+                    zz.toolbars.load_album_cover(photo.options.previewSrc);
+                });
                 break;
+
             case 'deletephoto':
                 photo.delete_photo();
                 break;
+
             default:
-                alert( 'InfoMenu Click Handler\n\n' +
+                alert('InfoMenu Click Handler\n\n' +
                         'Action: ' + action + '\n\n' +
                         'Subject Type: ' + type + '\n\n' +
-                        'Subject ID: ' +  id + '\n\n');
+                        'Subject ID: ' + id + '\n\n');
                 break;
+
         }
     }
 };
