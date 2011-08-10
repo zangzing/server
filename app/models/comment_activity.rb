@@ -26,7 +26,7 @@ class CommentActivity < Activity
 
   def payload_valid?
     begin
-      return true if comment && comment.user && comment.subject
+      return true if comment && comment.user && comment.commentable.subject
     rescue ActiveRecord::RecordNotFound
       return false
     end

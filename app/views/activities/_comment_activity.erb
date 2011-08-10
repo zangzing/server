@@ -1,0 +1,31 @@
+    <li class="item tab like">
+      <a name="<%=activity.id%>"></a>
+      <div class="title">
+        <a href="<%=user_path(activity.user)%>">
+          <div class="profile-photo">
+            <%= render :partial => 'users/profile_photo', :locals => { :user => activity.user }    %>
+          </div>
+        </a>
+        <div class="profile-name">
+          <% if current_user && current_user.id == activity.user.id %>
+              <a href="<%=user_path(activity.user)%>">You</a>
+          <% else %>
+              <a href="<%=user_path(activity.user)%>"><%=activity.user.name%></a>
+          <% end %>
+
+          <%if view== 'album' %>
+              commented on <a href="<%=photo_pretty_url(activity.comment.commentable.subject)%>"> this photo</a>:
+          <%else %>
+              commented <a href="<%=photo_pretty_url(activity.comment.commentable.subject)%>"> this photo</a>:
+              by <a href="<%=user_pretty_url(activity.comment.commentable.subject.user)%>"> <%=activity.comment.commentable.subject.user%></a>
+          <%end %>
+          "<%= activity.comment.text %>"
+          <div class="tagline"><%=time_ago_in_words(activity.created_at) %> ago</div>
+        </div>
+      </div>
+      <%if view == 'album' %>
+          <div class="content">
+              <div class="timeline-grid" data-photo-id="<%=activity.comment.commentable.subject.id%>"></div>
+          </div>
+      <%end%>
+    </li>
