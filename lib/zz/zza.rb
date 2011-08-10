@@ -56,7 +56,7 @@ module ZZ
     MAX_EVENTS_PER_FILE = 2500
 
     # our working directory
-    ZZA_TEMP_DIR = "/tmp/zza"
+    ZZA_TEMP_DIR = "/data/tmp/zza"
 
     # file suffix to indicate it is currently in use
     # and should not have its contents sent yet

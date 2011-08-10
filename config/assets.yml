@@ -9,6 +9,9 @@ compressor_options:
 
 
 javascripts:
+  jquery:
+    - public/javascripts/jquery/*.js
+
   lib:
     - public/javascripts/jquery-lib/jquery.ui.core.js
     - public/javascripts/jquery-lib/jquery.ui.widget.js
