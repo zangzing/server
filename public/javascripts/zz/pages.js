@@ -482,23 +482,14 @@ pages.group_tab = {
 
 
                 //bind stream-to-facebook checkbox
-                container.find('.stream-to-facebook input').attr('checked', json['album']['stream_to_facebook']);
-                container.find('.stream-to-facebook input').click(function(){
-                    //todo: same as twitter code below
-                    var element = $(this);
-
-                    //undo the toggle and start over...
-                    element.attr('checked', !element.attr('checked'));
-
+                var stream_to_facebook_checkbox_element = container.find('.stream-to-facebook input');
+                var set_stream_to_facebook = function(b){
                     var set_value = function(value){
-                        element.attr('checked', value);
+                        stream_to_facebook_checkbox_element.attr('checked', value);
                         $.post(zz.path_prefix + '/albums/' + zz.album_id, {_method:'put', 'album[stream_to_facebook]': value});
-                    }
+                    };
 
-                    if(element.attr('checked')){
-                        set_value(false);
-                    }
-                    else{
+                    if(b){
                         if(has_facebook_token){
                             set_value(true);
                         }
@@ -509,26 +500,31 @@ pages.group_tab = {
                             });
                         }
                     }
+                    else{
+                        set_value(false);
+                    }
+                };
+                stream_to_facebook_checkbox_element.attr('checked', json['album']['stream_to_facebook']);
+                stream_to_facebook_checkbox_element.click(function(){
+                    //undo the toggle and start over...
+                    stream_to_facebook_checkbox_element.attr('checked', !stream_to_facebook_checkbox_element.attr('checked'));
+
+                    set_stream_to_facebook(!stream_to_facebook_checkbox_element.attr('checked'));
+
                });
 
+
+
                 //bind stream-to-twitter checkbox
-                container.find('.stream-to-twitter input').attr('checked', json['album']['stream_to_twitter']);
-                container.find('.stream-to-twitter input').change(function(){
-                    //todo: same as facebook code above
-                    var element = $(this);
-
-                    //undo the toggle and start over...
-                    element.attr('checked', !element.attr('checked'));
-
+                var stream_to_twitter_checkbox_element = container.find('.stream-to-twitter input');
+                var set_stream_to_twitter = function(b){
                     var set_value = function(value){
-                        element.attr('checked', value);
+                        stream_to_twitter_checkbox_element.attr('checked', value);
                         $.post(zz.path_prefix + '/albums/' + zz.album_id, {_method:'put', 'album[stream_to_twitter]': value});
                     };
 
-                    if(element.attr('checked')){
-                        set_value(false);
-                    }
-                    else{
+
+                    if(b){
                         if(has_twitter_token){
                             set_value(true);
                         }
@@ -539,7 +535,19 @@ pages.group_tab = {
                             });
                         }
                     }
+                    else{
+                        set_value(false);
+                    }
 
+                };
+
+                stream_to_twitter_checkbox_element.attr('checked', json['album']['stream_to_twitter']);
+                stream_to_twitter_checkbox_element.change(function(){
+
+                    //undo the toggle and start over...
+                    stream_to_twitter_checkbox_element.attr('checked', !stream_to_twitter_checkbox_element.attr('checked'));
+
+                    set_stream_to_twitter(!stream_to_twitter_checkbox_element.attr('checked'));
 
                 });
 
@@ -622,6 +630,8 @@ pages.group_tab = {
 
                             $.post(zz.path_prefix + '/albums/'+ zz.album_id +'/shares.json', data);
                             dialog.close();
+                            set_stream_to_facebook(true);
+
                             ZZAt.track('album.share.group_tab.facebook');
 
                         });
@@ -679,6 +689,7 @@ pages.group_tab = {
 
                             $.post(zz.path_prefix + '/albums/'+ zz.album_id +'/shares.json', data)
                             dialog.close();
+                            set_stream_to_twitter(true);
                             ZZAt.track('album.share.group_tab.twitter');
                         });
                     };
