@@ -33,17 +33,17 @@ class CommentsController < ApplicationController
     commentable.comments << comment
     comment.save!
 
-    if(params[:share_to_facebook])
-      comment.share_to_facebook
+    if(params[:post_to_facebook])
+      comment.post_to_facebook
     end
 
-    if(params[:share_to_twitter])
-      comment.share_to_twitter
+    if(params[:post_to_twitter])
+      comment.post_to_twitter
     end
 
     comment.send_notification_emails
 
-    render :json => JSON.fast_generate(comment.attributes), :status => 200 and return
+    render :json => JSON.fast_generate(comment.as_json), :status => 200 and return
 
   end
 

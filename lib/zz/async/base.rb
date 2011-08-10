@@ -15,7 +15,7 @@ module ZZ
       end
 
       def self.synchronous_test_mode
-        @@synchronous_test_mode
+        @@synchronous_test_mode ||= false
       end
 
 

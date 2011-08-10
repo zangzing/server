@@ -50,17 +50,7 @@ class Commentable < ActiveRecord::Base
     commentable_hash['comments'] = []
 
     self.comments.each do |comment|
-      comment_hash = comment.attributes
-
-      user = comment.user
-
-      comment_hash['user'] = {
-          'first_name' => user.first_name,
-          'last_name' => user.first_name,
-          'username' => user.first_name,
-          'profile_photo_url' => user.profile_photo_url
-      }
-
+      comment_hash = comment.as_json
 
       commentable_hash['comments'] << comment_hash
 

@@ -30,8 +30,8 @@ module PrettyUrlHelper
         bitly = Bitly.new(BITLY_API_KEYS[:username], BITLY_API_KEYS[:api_key]).shorten(url)
         return bitly.short_url
       rescue Exception => e
-        logger.error e
-        logger.error e.backtrace
+        Rails.logger.error e
+        Rails.logger.error e.backtrace
         return url
       end
     end

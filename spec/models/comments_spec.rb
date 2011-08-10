@@ -89,8 +89,7 @@ describe "Comments Model" do
       hash = commentable.comments_as_json
 
       hash['comments'][0]['user']['profile_photo_url'].should_not be_nil
-      hash['comments'][0]['user']['first_name'].should_not be_nil
-      hash['comments'][0]['user']['last_name'].should_not be_nil
+      hash['comments'][0]['user']['name'].should_not be_nil
     end
 
     it "should return comment metadata for all photos in album" do

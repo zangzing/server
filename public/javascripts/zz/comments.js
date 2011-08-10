@@ -44,27 +44,76 @@ zz.comments = {
 
 
     test: function(){
+        var self = this;
+
         var photo_id = 169911139720
 
-        var comments_element = $(this.COMMENTS_TEMPLATE);
+        var comments_element = $(self.COMMENTS_TEMPLATE);
 
-        for(var i=0;i<100;i++){
-            var comment = $(this.COMMENT_TEMPLATE);
-            comment.find('.username').text('Jeremy Hermann');
-            comment.find('.when').text('About an hour ago');
-            comment.find('.text').text('This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. ');
-            comments_element.find('.comments').append(comment);
-        }
 
+        var build_comment_element = function(comment_json){
+            var comment = $(self.COMMENT_TEMPLATE);
+            comment.find('.username').text(comment_json['user']['name']);
+            comment.find('.when').text(comment_json['when'] + ' ago');
+            comment.find('.text').text(comment_json['text']);
+            comment.find('.profile-picture img').attr('data-src', comment_json['user']['profile_photo_url']);
+            return comment;
+        };
+
+
+        var refresh_comments = function(){
+            $.get(zz.routes.photo_comments_path(photo_id), function(comments_json){
+
+                // clear the list
+                comments_element.find('.comments').empty();
+
+                // add all the comments
+                _.each(comments_json['comments'], function(comment_json){
+                    var comment_element = build_comment_element(comment_json);
+                    comments_element.find('.comments').append(comment_element);
+                });
+
+                // show profile pictures -- need to do this after things are visible
+                zz.profile_pictures.init_profile_pictures(comments_element.find('.profile-picture'))
+
+                //resize comment rows to fit text -- no way to do this in css
+                comments_element.find('.comment').each(function(){
+                   var height = $(this).find('.text').height() + 45;
+                   $(this).css({height: height +'px'});
+                });
+            });
+        };
+
+
+        var add_comment = function(text, post_to_facebook, post_to_twitter){
+            var params = {
+                'comment[text]': text,
+                post_to_facebook: post_to_facebook,
+                post_to_twitter: post_to_twitter
+            };
+
+            $.post(zz.routes.create_photo_comment_path(photo_id), params, function(comment_json){
+                var comment_element = build_comment_element(comment_json);
+                comments_element.find('.comments').prepend(comment_element);
+                zz.profile_pictures.init_profile_pictures(comment_element.find('.profile-picture'));
+            });
+        };
+
+
+        comments_element.find('.submit-button').click(function(){
+            var text = comments_element.find('textarea.text').val();
+            var post_to_facebook = comments_element.find('input.facebook').attr('checked');
+            var post_to_twitter = comments_element.find('input.twitter').attr('checked');
+            add_comment(text, post_to_facebook, post_to_twitter);
+
+        });
 
         var dialog = zz.dialog.show_dialog(comments_element,{width:500, height:500});
+        
+        refresh_comments();
 
-        zz.profile_pictures.init_profile_pictures(comments_element.find('.profile-picture'))
 
-        comments_element.find('.comment').each(function(){
-           var height = $(this).find('.text').height() + 45;
-           $(this).css({height: height +'px'});
-        });
+
 
 
     },

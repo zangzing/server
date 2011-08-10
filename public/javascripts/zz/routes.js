@@ -4,6 +4,15 @@ zz.routes = {
 
     path_prefix: '/service',
 
+    photo_comments_path: function(photo_id){
+        return '/service/photos/:photo_id/comments'.replace(':photo_id', photo_id);
+    },
+
+    create_photo_comment_path: function(photo_id){
+        return '/service/photos/:photo_id/comments'.replace(':photo_id', photo_id);
+    },
+
+
     edit_user_path: function(username) {
         return '/:username/settings'.replace(':username', username);
     },

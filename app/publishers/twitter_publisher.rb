@@ -19,7 +19,7 @@ class TwitterPublisher < ActionMailer::Base
 
 
   def self.post_message_to_twitter(user, message)
-    user.identity_for_titter.twitter_api.client.update(message)
+    user.identity_for_twitter.twitter_api.client.update(message)
   end
 
   def self.post_link_to_twitter(user, message, url)

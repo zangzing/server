@@ -1,4 +1,6 @@
 class Comment < ActiveRecord::Base
+  include ActionView::Helpers::DateHelper
+
 
   attr_accessible :text
 
@@ -7,6 +9,23 @@ class Comment < ActiveRecord::Base
 
 
   after_create  :create_comment_activity #, :on => :create
+
+  default_scope  :order => "created_at DESC"
+
+
+  def as_json
+    comment_hash = self.attributes
+    comment_hash['when'] = time_ago_in_words(self.created_at)
+
+    comment_hash['user'] = {
+        'name' => self.user.name,
+        'username' => self.user.username,
+        'profile_photo_url' => self.user.profile_photo_url
+    }
+
+    return comment_hash
+
+  end
 
 
   def send_notification_emails
