@@ -15,8 +15,6 @@ describe "Comments Model" do
 
     TwitterPublisher.test_mode = true
     TwitterPublisher.test_posts = []
-
-
   end
 
 

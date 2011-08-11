@@ -3,7 +3,16 @@ require 'spec_helper'
 describe CommentsController do
 
   before(:each) do
-    Photo.stub!(:find).and_return(Factory(:photo))
+    ActionMailer::Base.delivery_method = :test
+    ActionMailer::Base.perform_deliveries = true
+    ActionMailer::Base.deliveries = []
+
+    FacebookPublisher.test_mode = true
+    FacebookPublisher.test_posts = []
+
+    TwitterPublisher.test_mode = true
+    TwitterPublisher.test_posts = []
+
     login
   end
 
@@ -23,54 +32,42 @@ describe CommentsController do
       response.status.should be(401)
     end
 
-    def setup_album_photo_and_comment
-      album = Factory(:album)
-      album.user = Factory(:user)
-
-      photo = Factory(:photo)
-      photo.album = album
-      photo.user = Factory(:user)
-
-      commentable = Commentable.new
-      commentable.subject_type = 'photo'
-      commentable.subject_id = photo.id
-
-      comment = Comment.new
-      comment.commentable = commentable
-      comment.user = Factory(:user)
-
-      Photo.stub!(:find).and_return(photo)
-      Comment.stub!(:find).and_return(comment)
-
-      return album, photo, comment
-
-    end
 
     it "should allow comment owner to delete comment" do
-      album, photo, comment = setup_album_photo_and_comment
+      comment = Factory.create(:photo_comment)
       comment.user = @current_user
-      xhr :delete, :destroy, {:comment_id => 1}
+      comment.save!
+
+      xhr :delete, :destroy, {:comment_id => comment.id}
       response.status.should be(200)
     end
 
 
     it "should allow photo owner to delete comment" do
-      album, photo, comment = setup_album_photo_and_comment
+      comment = Factory.create(:photo_comment)
+      photo = comment.commentable.subject
       photo.user = @current_user
-      xhr :delete, :destroy, {:comment_id => 1}
+      photo.save!
+
+      xhr :delete, :destroy, {:comment_id => comment.id}
       response.status.should be(200)
     end
 
     it "should allow album owner to delete comment" do
-      album, photo, comment = setup_album_photo_and_comment
+      comment = Factory.create(:photo_comment)
+      photo = comment.commentable.subject
+      album = photo.album
       album.user = @current_user
-      xhr :delete, :destroy, {:comment_id => 1}
+      album.save!
+
+      xhr :delete, :destroy, {:comment_id => comment.id}
       response.status.should be(200)
     end
 
     it "should not allow anyone else to delete comment" do
-      album, photo, comment = setup_album_photo_and_comment
-      xhr :delete, :destroy, {:comment_id => 1}
+      comment = Factory.create(:photo_comment)
+
+      xhr :delete, :destroy, {:comment_id => comment.id}
       response.status.should be(401)
     end
 
@@ -85,34 +82,36 @@ describe CommentsController do
     end
 
     it "should fail if user does not have permission to view album" do
-      photo = Factory(:photo)
-      album = Factory(:album)
-      photo.album = album
+      photo = Factory.create(:photo)
+      album = photo.album
       album.privacy = Album::PASSWORD
-
-      Photo.stub!(:find).and_return(photo)
+      album.save!
 
       xhr :get, :index , {:photo_id => photo.id}
       response.status.should be(401)
     end
 
     it "should return comment json for valid photo" do
-      xhr :get, :index , {:photo_id => 1}
+      photo = Factory.create(:photo)
+
+
+      xhr :get, :index , {:photo_id => photo.id}
       response.should be_success
     end
   end
 
   describe "#metadata_for_album_photos action" do
     it "should fail if no current user" do
+      album = Factory.create(:album)
       logout
-      xhr :get, :metadata_for_album_photos, {:album_id => 1}
+      xhr :get, :metadata_for_album_photos, {:album_id => album.id}
       response.status.should be(401)
     end
 
     it "should fail if user does not have permission to view album" do
-      album = Factory(:album)
+      album = Factory.create(:album)
       album.privacy = Album::PASSWORD
-      Album.stub!(:find).and_return(album)
+      album.save!
 
       xhr :get, :metadata_for_album_photos , {:album_id => album.id}
       response.status.should be(401)
@@ -180,8 +179,8 @@ describe CommentsController do
       album = Factory(:album)
       photo.album = album
       album.privacy = Album::PASSWORD
-
-      Photo.stub!(:find).and_return(photo)
+      photo.save!
+      album.save!
 
       xhr :post, :create, {:photo_id=>photo.id, :comment=>{:text=>"This is a comment"}}
       response.status.should be(401)
