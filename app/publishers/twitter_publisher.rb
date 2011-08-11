@@ -1,6 +1,21 @@
 class TwitterPublisher < ActionMailer::Base
   include PrettyUrlHelper
 
+    def self.test_mode=(b)
+    @@test_mode = b
+  end
+
+  def self.test_mode
+    @@test_mode ||= false
+  end
+
+  def self.test_posts=(posts)
+    @@deliveries = posts
+  end
+
+  def self.test_posts
+    @@deliveries ||= []
+  end
 
 
   def photo_comment(comment_id)
@@ -19,7 +34,11 @@ class TwitterPublisher < ActionMailer::Base
 
 
   def self.post_message_to_twitter(user, message)
-    user.identity_for_twitter.twitter_api.client.update(message)
+    if self.test_mode
+      self.test_posts << message
+    else
+      user.identity_for_twitter.twitter_api.client.update(message)
+    end
   end
 
   def self.post_link_to_twitter(user, message, url)

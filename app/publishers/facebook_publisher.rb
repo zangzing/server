@@ -2,6 +2,23 @@ class FacebookPublisher < ActionMailer::Base
   include PrettyUrlHelper
 
 
+  def self.test_mode=(b)
+    @@test_mode = b
+  end
+
+  def self.test_mode
+    @@test_mode ||= false
+  end
+
+  def self.test_posts=(posts)
+    @@deliveries = posts
+  end
+
+  def self.test_posts
+    @@deliveries ||= []
+  end
+
+
 
   def photo_comment(comment_id)
     comment = Comment.find(comment_id)
@@ -32,7 +49,11 @@ private
           :actions     => actions
       }
 
-      user.identity_for_facebook.facebook_graph.post("me/feed", params)
+      if self.test_mode
+        self.test_posts << params        
+      else
+        user.identity_for_facebook.facebook_graph.post("me/feed", params)
+      end
   end
 
 

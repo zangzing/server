@@ -166,6 +166,9 @@ class Notifier < ActionMailer::Base
 
     # todo: fill out template and send email...
 
+    mail( :to      => send_notification_to_user.email,
+          :subject => "comment added to photo" )
+
 
   end
 

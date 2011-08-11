@@ -5,6 +5,21 @@ ZZ::Async::Base.synchronous_test_mode = true
 
 describe "Comments Model" do
 
+  before(:each) do
+    ActionMailer::Base.delivery_method = :test
+    ActionMailer::Base.perform_deliveries = true
+    ActionMailer::Base.deliveries = []
+
+    FacebookPublisher.test_mode = true
+    FacebookPublisher.test_posts = []
+
+    TwitterPublisher.test_mode = true
+    TwitterPublisher.test_posts = []
+
+
+  end
+
+
   describe Comment do
    
     it "should notify album owner, photo owner, and other commentors of new comments" do
@@ -13,35 +28,49 @@ describe "Comments Model" do
       commentable = Commentable.find_or_create_by_photo_id(photo.id)
       existing_comment = Factory.create(:comment, :commentable => commentable, :user => Factory.create(:user))
 
-
       # add comment to photo
       comment = Factory.create(:comment, :commentable => commentable, :user => Factory.create(:user))
 
-      # expect email to album owner
-      Notifier.should_receive(:comment_added_to_photo).with(comment.user.id, photo.album.user.id, comment.id)
-
-      # expect email to photo owner
-      Notifier.should_receive(:comment_added_to_photo).with(comment.user.id, photo.user.id, comment.id)
-
-      # expect email to other commenters
-      Notifier.should_receive(:comment_added_to_photo).with(comment.user.id, existing_comment.user.id, comment.id)
-
       # run the test
       comment.send_notification_emails
+
+
+      ActionMailer::Base.deliveries.should have(3).things
+
+      # expect email to album owner
+      ActionMailer::Base.deliveries.should satisfy do |messages|
+        messages.index { |message| message.to == [photo.album.user.email] }
+      end
+
+      # expect email to photo owner
+      ActionMailer::Base.deliveries.should satisfy do |messages|
+        messages.index { |message| message.to == [photo.user.email] }
+      end
+
+      # expect email to other commenters
+      ActionMailer::Base.deliveries.should satisfy do |messages|
+        messages.index { |message| message.to == [existing_comment.user.email] }
+      end
 
     end
 
 
     it "should post comment to facebook" do
       comment = Factory.create(:photo_comment)
-      FacebookPublisher.should_receive(:photo_comment).with(comment.id)
       comment.post_to_facebook
+
+      FacebookPublisher.test_posts.should have(1).thing
+      FacebookPublisher.test_posts[0][:message].should eql(comment.text)
+
     end
 
     it "should post comment to twitter" do
       comment = Factory.create(:photo_comment)
-      TwitterPublisher.should_receive(:photo_comment).with(comment.id)
       comment.post_to_twitter
+
+      TwitterPublisher.test_posts.should have(1).thing
+      TwitterPublisher.test_posts[0].should satisfy{ |message| message.match(/^#{comment.text}/)}
+
     end
 
 
