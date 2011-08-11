@@ -26,19 +26,10 @@
             background-color: #000000;
         }
 
-        /*#content {*/
-            /*position: relative;*/
-            /*margin: auto;*/
-            /*text-align: center;*/
-        /*}*/
-
         #movie {
             height:100%;
             width:100%;
         }
-
-        /*.javascript-movie{*/
-        /*}*/
 
         #scrim{
             position:absolute;
@@ -53,17 +44,7 @@
     </style>
 
 
-    <script>
-        var zza_config_GOOGLE_ANALYTICS_TOKEN = '<%=ZZA_CONFIG[:GOOGLE_ANALYTICS_TOKEN]%>';
-        var zza_config_MIXPANEL_TOKEN = '<%=ZZA_CONFIG[:MIXPANEL_TOKEN]%>';
-        var zza_config_ZZA_ID = '<%=ZZA_CONFIG[:ZZA_ID]%>';
-<%    if signed_in?  -%>
-        zuserid = '<%= current_user.id %>';
-<%	  else %>
-        zuserid = null;
-<%    end -%>
-
-    </script>
+    <%= render :partial => 'layouts/zza'  %>
 
 </head>
 
@@ -130,7 +111,7 @@
 
     <script type="text/javascript">
 
-        var force_javascript = (document.location.search.indexOf('js=true') !== -1)
+        var force_javascript = (document.location.search.indexOf('js=true') !== -1);
 
         var handle_no_flash = function(){
             $("#movie").replaceWith('<div id="movie" class="javascript-movie"></div>');
@@ -181,7 +162,7 @@
 
 
             });
-        }
+        };
 
 
 
@@ -207,11 +188,11 @@
                     height: $(window).height(),
                     width: $(window).width()
                 });
-            }
+            };
 
             $(window).resize(function(){
                 setSize();
-            })
+            });
 
             setSize();
         });

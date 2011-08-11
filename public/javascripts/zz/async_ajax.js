@@ -1,8 +1,10 @@
-var async_ajax = {
+var zz = zz || {};
+
+zz.async_ajax = {
     MAX_CALLS: 35,
     DELAY: 1000,
 
-    call: function(url, method, success_callback, failure_callback){
+    call: function(url, method, success_callback, failure_callback) {
         var self = this;
 
         var makeCall;
@@ -10,34 +12,33 @@ var async_ajax = {
         var calls = 0;
 
 
-
-        var success = function(data, status, request){
+        var success = function(data, status, request) {
             var pollUrl = request.getResponseHeader('x-poll-for-response');
 
-            if(pollUrl){
+            if (pollUrl) {
                 webdriver.enter_async();  //allows webdriver to wait for ajax polling to complete
-                setTimeout(function(){
+                setTimeout(function() {
                     webdriver.leave_async();
                     makeCall(pollUrl, 'get'); //polling call is always GET
                 }, self.DELAY);
             }
-            else{
+            else {
                 success_callback(data);
             }
         };
 
 
-        makeCall = function(callUrl, method){
-            calls ++;
+        makeCall = function(callUrl, method) {
+            calls++;
             var data = {};
 
-            if(calls > self.MAX_CALLS){
-                failure_callback("timeout");
+            if (calls > self.MAX_CALLS) {
+                failure_callback('timeout');
             }
-            else{
-                if(method.toLowerCase() == 'put'){
-                    method='post';
-                    data = {_method:'put'};
+            else {
+                if (method.toLowerCase() == 'put') {
+                    method = 'post';
+                    data = {_method: 'put'};
                 }
 
                 $.ajax({
@@ -45,8 +46,8 @@ var async_ajax = {
                     type: method,
                     data: data,
                     success: success,
-                    error: function(request, error, errorThrown){
-                        logger.debug(error);
+                    error: function(request, error, errorThrown) {
+                        zz.logger.debug(error);
                         failure_callback(request, error, errorThrown);
                     }
                 });
@@ -58,11 +59,11 @@ var async_ajax = {
 
     },
 
-    get: function(url, success_callback, failure_callback){
+    get: function(url, success_callback, failure_callback) {
         this.call(url, 'get', success_callback, failure_callback);
     },
 
-    put: function(url, success_callback, failure_callback){
+    put: function(url, success_callback, failure_callback) {
         this.call(url, 'put', success_callback, failure_callback);
     }
 

@@ -1,2 +1,0 @@
-module Connector::InstagramHelper
-end
