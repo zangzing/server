@@ -136,7 +136,10 @@ class Photo < ActiveRecord::Base
   # on the id generator you will end up with duplicate ids
   def change_cache_version
     album_id = self.album_id
-    Album.change_cache_version(album_id) unless album_id.nil?
+    # see if the parent album is being deleted, in which case we don't want to do anything
+    if Album.album_being_deleted?(album_id) == false
+      Album.change_cache_version(album_id) unless album_id.nil?
+    end
   end
 
   # generate a guid and attach to this object
