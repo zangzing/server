@@ -16,8 +16,6 @@ class Comment < ActiveRecord::Base
   def as_json
     json = self.attributes
 
-    # todo: doesn't seem right to sanitize in the model
-    json['text'] = sanitize(json['text'])
     json['when'] = time_ago_in_words(self.created_at)
 
     json['user'] = {

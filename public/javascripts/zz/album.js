@@ -125,6 +125,7 @@ zz.album = {
 
                         $('#article').css('overflow', 'hidden');
 
+                        $('#article').empty(); 
                         $('#article').append(gridElement);
                         gridElement.css({right: '500px'});
 

@@ -40,7 +40,8 @@ class CommentsController < ApplicationController
 
   def create
     commentable = Commentable.find_or_create_by_photo_id(params[:photo_id])
-    comment = Comment.new(params[:comment])
+    comment = Comment.new
+    comment.text = sanitize(params[:comment][:text])
     comment.user = current_user
     commentable.comments << comment
     comment.save!
