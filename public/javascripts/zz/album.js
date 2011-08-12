@@ -9,11 +9,10 @@ zz.album = {};
     zz.album.init_picture_view = function(current_photo_id) {
         init_back_button(zz.page.album_name, zz.page.album_base_url + '/photos');
 
-        $('#view-buttons').hide();
+        $('#view-buttons').fadeOut('fast');
 
-        $('#footer #comments-button').show();
+        $('#footer #comments-button').fadeIn('fast');
 
-        ZZAt.track('album.view', {id: zz.page.album_id});
 
 
         load_photos_json(function(json) {
@@ -135,7 +134,6 @@ zz.album = {};
         init_back_button(zz.page.back_to_home_page_caption, zz.page.back_to_home_page_url);
 
         load_photos_json(function(json) {
-            ZZAt.track('album.view', {id: zz.page.album_id});
 
             //no movie mode if no photos
             if (json.length == 0) {
@@ -180,7 +178,7 @@ zz.album = {};
                     return true;
                 },
                 showButtonBar: true,
-                infoMenuTemplateResolver: zz.album.info_menu_template_resolver
+                infoMenuTemplateResolver: info_menu_template_resolver
             }).data().zz_photogrid;
         });
     };
@@ -286,6 +284,9 @@ zz.album = {};
 
 
     function load_photos_json(callback){
+
+        ZZAt.track('album.view', {id: zz.page.album_id});
+
         $.ajax({
             dataType: 'json',
             url: zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/photos_json?' + zz.page.album_lastmod,
@@ -385,7 +386,7 @@ zz.album = {};
                         zz.routes.call_delete_photo(photo.id);
                         return true;
                     },
-                    infoMenuTemplateResolver: zz.album.info_menu_template_resolver
+                    infoMenuTemplateResolver: info_menu_template_resolver
                 }).data().zz_photogrid;
 
 
@@ -440,6 +441,7 @@ zz.album = {};
                 return;
             }
 
+            $('#footer #comments-button').fadeOut(200);
             $('#article').animate({left: $('#article').width()}, 500, 'easeOutQuart');
             $('#album-info').fadeOut(200);
             $('#header #back-button').fadeOut(200);

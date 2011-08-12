@@ -46,15 +46,25 @@ zz.comments = {};
                                    '</div>';
 
 
+    // key is photo id, value is count
+    var comment_counts_for_photos = {};
+
+
+    zz.comments.load_comment_counts_for_photos = function(album_id){
+        comment_counts_for_photos = {};
+        zz.routes.comments.get_album_photos_comments_metadata(album_id, function(json){
+            _.each(json, function(commentable_json){
+                var photo_id = commentable_json['subject_id'];
+                var count = commentable_json['comments_count'];
+                comment_counts_for_photos[photo_id] = count;
+            });
+
+            zz.logger.debug(comment_counts_for_photos);
+        });
+    };
 
 
 
-
-//    zz.comments.test = function(){
-//        var photo_id = 169911139720;
-//        var element = zz.comments.build_comments_widget(photo_id)
-//        var dialog = zz.dialog.show_dialog(element,{width: 500, height: 500});
-//    };
 
 
     zz.comments.build_comments_widget = function(photo_id){
@@ -243,51 +253,10 @@ zz.comments = {};
             load_comments_for_photo: function(photo_id){
                 load_comments_for_photo(photo_id);
             }
-        };
+        }
 
     };
 
-//    show_photo_comments: function(photo_id){
-//        var url = "/service/photos/:photo_id/comments".replace(':photo_id', photo_id)
-//        $.get(url, function(json){
-//
-//
-//
-//
-//        });
-//    },
-//
-//
-//
-//
-//
-//    load_album_photos_metadata: function(album_id){
-//        var self = this;
-//        var url = '/albums/:album_id/photos/comments/metadata'.replace(':album_id', album_id);
-//        $.get(url, function(json){
-//            self.album_photos_metadata = json;
-//        });
-//
-//    },
-//
-//    comment_count_for_photo: function(photo_id, callback){
-//        var self = this;
-//        var try_again = function(){
-//            if(self.album_photos_metadata){
-//                for(var i=0; i<self.album_photos_metadata.length;i++){
-//                    if(self.album_photos_metadata[i].photo_id == photo_id){
-//                        callback(self.album_photos_metadata[i].comments_count);
-//                        return;
-//                    }
-//                }
-//            }
-//            else{
-//                setTimeout(try_again, 100);
-//            }
-//        };
-//
-//        try_again();
-//    }
 
 
 

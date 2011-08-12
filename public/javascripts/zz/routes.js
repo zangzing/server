@@ -18,6 +18,11 @@ zz.routes = {
         create_comment_for_photo: function(photo_id, comment_params, success, failure){
             var url = '/service/photos/:photo_id/comments'.replace(':photo_id', photo_id);
             return $.post(url, comment_params, success, failure);
+        },
+
+        get_album_photos_comments_metadata: function(album_id, success, failure){
+            var url = '/service/albums/:album_id/photos/comments/metadata'.replace(':album_id', album_id);
+            return $.get(url, success, failure);
         }
 
 
