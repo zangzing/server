@@ -224,7 +224,6 @@ zz.comments = {};
 
 
 
-
             var twitter_checkbox = comments_element.find('input.twitter');
             twitter_checkbox.change(function(){
 
@@ -248,7 +247,8 @@ zz.comments = {};
                 }
             });
 
-
+            // if no current user then hide facebook and twitter options
+            comments_element.find('.share').hide();
 
             comments_element.find('.submit-button').click(function(){
                 var text = $.trim(comments_element.find('textarea.text').val());
