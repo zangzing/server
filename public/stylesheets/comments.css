@@ -112,3 +112,21 @@
     width: 390px;
 }
 
+.comments-container .comments .comment .delete-button {
+    display:none;
+}
+
+.comments-container .comments .deletable.comment:hover .delete-button, .comments-container .deletable.comments .comment:hover .delete-button {
+    display:block;
+    position:absolute;
+    top:6px;
+    right:6px;
+    background: url(/images/comments/delete-button.png) no-repeat scroll 0px 0px transparent;
+    width: 20px;
+    height: 18px;
+    cursor: pointer;
+}
+
+
+
+

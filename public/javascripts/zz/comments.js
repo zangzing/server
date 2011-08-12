@@ -26,19 +26,20 @@ zz.comments = {};
 
 
     var COMMENT_TEMPLATE =      '<div class="comment">' +
-                                '<div class="comment-picture">' +
-                                    '<div class="profile-picture">' +
-                                        '<div class="mask">' +
-                                            '<img data-src="/images/default_profile.png" src="/images/default_profile.png">' +
+                                    '<div class="comment-picture">' +
+                                        '<div class="profile-picture">' +
+                                            '<div class="mask">' +
+                                                '<img data-src="/images/default_profile.png" src="/images/default_profile.png">' +
+                                            '</div>' +
                                         '</div>' +
                                     '</div>' +
-                                '</div>' +
-                                '<div class="posted-by">' +
-                                    '<span class="username"></span>&nbsp;&nbsp;'+
-                                    '<span class="when"></span>'+
-                                '</div>' +
-                                '<div class="text"></div>'+
-                           '</div>';
+                                    '<div class="posted-by">' +
+                                        '<span class="username"></span>&nbsp;&nbsp;'+
+                                        '<span class="when"></span>'+
+                                    '</div>' +
+                                    '<div class="text"></div>'+
+                                    '<div class="delete-button"></div>' +
+                                '</div>';
 
 
 
@@ -57,18 +58,37 @@ zz.comments = {};
             comment.find('.when').text(comment_json['when'] + ' ago');
             comment.find('.text').text(comment_json['text']);
             comment.find('.profile-picture img').attr('data-src', comment_json['user']['profile_photo_url']);
+            comment.find('.delete-button').click(function(){
+               if(confirm('Are you sure you want to delete this comment?')){
+                   zz.routes.call_destroy_comment_path(comment_json['id']);
+                   comment.fadeOut('fast', function(){
+                       comment.remove();
+                   });
+               }
+            });
+
+            if(comment_json['user_id'] == zz.session.current_user_id){
+                comment.addClass('deletable');
+            }
+
             return comment;
         };
 
 
         var refresh_comments = function(){
-            $.get(zz.routes.photo_comments_path(photo_id), function(comments_json){
+            $.get(zz.routes.photo_comments_path(photo_id), function(json){
 
                 // clear the list
                 comments_element.find('.comments').empty();
 
+                //set deleteable flag
+                if(json['current_user']['can_delete_comments']){
+                    comments_element.find('.comments').addClass('deleteable');
+                }
+                
+
                 // add all the comments
-                _.each(comments_json['comments'], function(comment_json){
+                _.each(json['commentable']['comments'], function(comment_json){
                     var comment_element = build_comment_element(comment_json);
                     comments_element.find('.comments').append(comment_element);
                 });

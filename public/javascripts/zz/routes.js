@@ -4,6 +4,12 @@ zz.routes = {
 
     path_prefix: '/service',
 
+    call_destroy_comment_path: function(comment_id, success, error){
+        var url = '/service/comments/:comment_id'.replace(':comment_id', comment_id);
+        $.post(url, {_method: 'delete'}, success, error);
+    },
+
+
     photo_comments_path: function(photo_id){
         return '/service/photos/:photo_id/comments'.replace(':photo_id', photo_id);
     },
