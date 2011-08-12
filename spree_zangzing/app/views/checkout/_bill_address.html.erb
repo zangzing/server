@@ -1,0 +1,21 @@
+<style>
+div.inner input[type=text], div.inner select { width: 80%; }
+.hidden { display: none; }
+</style>
+
+
+<%= render :partial =>'addressbook', :locals => { :order => @order, :address_id_field_name => 'order[bill_address_id]' } %>
+
+
+<fieldset id='shipping'>
+  <%= form.fields_for :bill_address do |bill_form| %>
+     <%= render :partial =>'address_fields', :locals => { :f => bill_form,
+                                                      :form_label =>t("billing_address"),
+                                                      :states => @order.bill_address.country.states} %>
+  <% end %>
+</fieldset>
+
+<hr class="space" />
+<div class="form-buttons">
+  <input type="submit" class="continue button primary" value="<%=t("save_and_continue") %>" />
+</div>

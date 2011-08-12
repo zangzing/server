@@ -1,0 +1,19 @@
+<% # Locals are:
+   #     order: the order for which the addressbook should be displayed
+   #     address_id_field_name: the name for the field where the address id will be passed %>
+
+<% if order.user.addresses.count > 0  %>
+    <b>Address Book</b>
+    <table>
+      <% order.user.addresses.each do |address| %>
+          <td>
+            <%= form_for order, :url => update_checkout_path(order.state), :html => { :method => :post, :class => "button-to", :id => "address_#{address.id}" } do |adf| %>
+                <%= hidden_field_tag address_id_field_name,  address.id %>
+                <%= adf.submit 'Use This Address' %>
+            <%end%>
+            <%= render :partial =>'address_display', :locals => { :address => address,:label =>"" } %>
+            <a href="javascript:void(0)"><span>edit</span></a> <a href="javascript:void(0)"><span>delete</span></a>
+          </td>
+      <%end %>
+    </table>
+<%end %>

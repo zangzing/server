@@ -1,5 +1,70 @@
 Order.class_eval do
- def add_variant(variant, photo_data, quantity = 1)
+attr_accessible :use_shipping_as_billing, :ship_address_id, :bill_address_id
+
+before_validation :clone_shipping_address, :if => "@use_shipping_as_billing"
+attr_accessor :use_shipping_as_billing
+
+def clone_shipping_address
+    self.bill_address_id = ship_address_id
+    true
+end
+
+before_create :assign_default_shipping_method
+
+def assign_default_shipping_method
+   self.shipping_method = available_shipping_methods(:front_end).first
+end
+
+
+# order state machine (see http://github.com/pluginaweek/state_machine/tree/master for details)
+  Order.state_machines[:state] = StateMachine::Machine.new(Order, :initial => 'cart') do
+
+    event :next do
+      transition :from => 'cart',          :to => 'ship_address'
+
+      transition :from => 'ship_address',  :to => 'confirm', :if => :payment
+      transition :from => 'ship_address',  :to => 'payment'
+
+      transition :from => 'bill_address',  :to => 'confirm'
+
+      transition :from => 'payment',       :to => 'confirm'
+      transition :from => 'delivery',      :to => 'confirm'
+      transition :from => 'confirm',       :to => 'complete'
+    end
+
+    event :cancel do
+      transition :to => 'canceled', :if => :allow_cancel?
+    end
+    event :return do
+      transition :to => 'returned', :from => 'awaiting_return'
+    end
+    event :resume do
+      transition :to => 'resumed', :from => 'canceled', :if => :allow_resume?
+    end
+    event :authorize_return do
+      transition :to => 'awaiting_return'
+    end
+
+
+    before_transition :to => 'complete' do |order|
+      begin
+        order.process_payments!
+      rescue Spree::GatewayError
+        if Spree::Config[:allow_checkout_on_gateway_error]
+          true
+        else
+          false
+        end
+      end
+    end
+
+    after_transition :to => 'payment', :do => :create_tax_charge!
+    after_transition :to => 'confirm', :do => :create_shipment!
+    after_transition :to => 'complete', :do => :finalize!
+    after_transition :to => 'canceled', :do => :after_cancel
+  end
+
+def add_variant(variant, photo_data, quantity = 1)
     current_item = contains?(variant,photo_data)
     if current_item
       current_item.quantity += quantity
@@ -27,9 +92,9 @@ Order.class_eval do
     end
 
     current_item
- end
+end
 
- def contains?(variant,photo_data = nil)
+def contains?(variant,photo_data = nil)
     line_items.detect{ |line_item|
       if line_item.photo_data && photo_data
         line_item.variant_id == variant.id &&
@@ -38,9 +103,9 @@ Order.class_eval do
         line_item.variant_id == variant.id
       end
     }
- end
+end
 
- def to_xml_ezporder(options = {})
+def to_xml_ezporder(options = {})
    options[:indent] ||= 2
    xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
    xml.instruct! unless options[:skip_instruct]
@@ -74,6 +139,6 @@ Order.class_eval do
        }
       }
    }
- end
+end
 
 end

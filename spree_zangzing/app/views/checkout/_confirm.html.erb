@@ -1,0 +1,97 @@
+<fieldset id="order_details">
+  <div class="clear"></div>
+  <legend><%= t(@order.state, :scope => :order_state).titleize %></legend>
+
+
+  <table>
+    <tr>
+    <td>
+          <%= render :partial =>'address_display', :locals => { :address => @order.ship_address,:label =>t("shipping_address") } %>
+          <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('ship_address')%>').submit();">change</a>
+    </td>
+    <td>
+      <table>
+        <tr><td>
+          Billing Information
+        </td></tr>
+        <tr><td>
+          <%= "#{@order.payment.source.spree_cc_type} #{@order.payments.first.source.display_number}" %>
+        </td></tr>
+        <tr><td>
+          <%= render :partial =>'address_display', :locals => { :address => @order.bill_address,:label =>t("billing_address") } %>
+           <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('bill_address')%>').submit();">change</a>
+        </td></tr>
+      </table>
+    </td>
+    <td>
+      Promotional Codes
+    </td>
+    </tr>
+    <tr>
+      <td>Shipping Method</td>
+      <td>
+        <%= select( :order,
+                    :shipping_method_id,
+                    @order.rate_hash.collect{|smethod|[ "#{smethod[:name]} #{number_to_currency smethod[:cost]}", smethod[:id] ]},
+                    {},
+                    { :onchange => "$('#checkout_form_confirm').attr('action','#{update_checkout_path('delivery')}').submit();"})%>
+      </td>
+    </tr>
+  </table>
+  <table class="index">
+    <tbody id='line-items'>
+      <tr>
+        <%= hook :order_details_line_items_headers do %>
+          <th><%= t('item_description') %></th>
+          <th class="price"><%= t('price') %></th>
+          <th class="qty"><%= t('qty') %></th>
+          <th class="total"><span><%= t('total') %></span></th>
+        <% end %>
+      </tr>
+      <% @order.line_items.each do |item| %>
+        <tr>
+          <%- locals = {:item => item} %>
+          <%= hook :order_details_line_item_row, locals do %>
+            <td width="300"><%=item.variant.product.name%> <%= "(" + variant_options(item.variant) + ")" unless item.variant .option_values.empty? %></td>
+            <td class="price"><%= number_to_currency item.price %></td>
+            <td class="qty"><%=item.quantity%></td>
+            <td class="total"><span><%= number_to_currency (item.price * item.quantity)%></span></td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+    <%= hook :order_details_subtotal do %>
+      <tbody id='subtotal'>
+        <tr class="total" id="subtotal-row">
+          <td colspan="3"><b><%= t('subtotal') %>:</b></td>
+          <td class="total"><span><%= number_to_currency @order.item_total %></span></td>
+        </tr>
+      </tbody>
+    <% end %>
+    <%= hook :order_details_adjustments do %>
+      <tbody id="order-charges">
+        <% @order.adjustments.each do |adjustment| %>
+          <tr class="total">
+            <td colspan="3"><strong><%= adjustment.label %></strong></td>
+            <td class="total"><span><%= number_to_currency adjustment.amount %></span></td>
+          </tr>
+        <% end %>
+      </tbody>
+    <% end %>
+    <%= hook :order_details_total do %>
+      <tbody id='order-total'>
+        <tr class="total">
+          <td colspan="3"><b><%= t('order_total') %>:</b></td>
+          <td class="total"><span id="order_total"><%= number_to_currency @order.total %></span></td>
+        </tr>
+      </tbody>
+    <% end %>
+  </table>
+  
+</fieldset>
+
+<hr />
+
+<div class="form-buttons">
+  <input type="submit" class="continue button primary" value="<%=t("place_order") %>"/>
+</div>

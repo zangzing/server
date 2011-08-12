@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
 
   namespace :admin, :path => '/service/admin/store' do
+
+    resources :promotions do
+      resources :promotion_rules
+    end
+
     resources :zones
     resources :users
     resources :countries do
@@ -149,7 +154,7 @@ Rails.application.routes.draw do
     # non-restful checkout stuff
     match '/checkout/update/:state' => 'checkout#update', :as => :update_checkout
     match '/checkout/:state' => 'checkout#edit', :as => :checkout_state
-    match '/checkout' => 'checkout#edit', :state => 'address', :as => :checkout
+    match '/checkout' => 'checkout#edit', :state => 'ship_address', :as => :checkout
 
     resources :orders do
       post :populate, :on => :collection
@@ -191,6 +196,7 @@ Rails.application.routes.draw do
      #   #this route maybe removed in the near future (no longer used by core)
      #   map.resources :taxons
      #
+     resource :account, :controller => "users"
   end
 
 end
