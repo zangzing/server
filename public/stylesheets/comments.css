@@ -11,7 +11,7 @@
 .comments-container .new-comment {
     position: relative;
     height: 125px;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #eaeaea;
 }
 
 .comments-container .new-comment .comment-picture {
@@ -76,7 +76,7 @@
 .comments-container .comments .comment{
     position: relative;
     height: 70px;
-    border-top: 1px solid #ccc;
+    border-top: 1px solid #eaeaea;
 }
 
 .comments-container .comments .comment .comment-picture {
@@ -144,7 +144,8 @@
     right: 0px;
     bottom: 20px;
     width: 450px;
-    border-left: 2px solid #ccc;
+    background: url(/images/comments/drawer-background.png) repeat-y scroll 0px 0px transparent;
+
 
 }
 
