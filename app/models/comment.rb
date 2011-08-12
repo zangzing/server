@@ -1,6 +1,6 @@
 class Comment < ActiveRecord::Base
   include ActionView::Helpers::DateHelper
-
+  include ActionView::Helpers::SanitizeHelper
 
   attr_accessible :text
 
@@ -8,22 +8,25 @@ class Comment < ActiveRecord::Base
   belongs_to :user
 
 
-  after_create  :create_comment_activity #, :on => :create
+  after_create  :create_comment_activity
 
   default_scope  :order => "created_at DESC"
 
 
   def as_json
-    comment_hash = self.attributes
-    comment_hash['when'] = time_ago_in_words(self.created_at)
+    json = self.attributes
 
-    comment_hash['user'] = {
+    # todo: doesn't seem right to sanitize in the model
+    json['text'] = sanitize(json['text'])
+    json['when'] = time_ago_in_words(self.created_at)
+
+    json['user'] = {
         'name' => self.user.name,
         'username' => self.user.username,
         'profile_photo_url' => self.user.profile_photo_url
     }
 
-    return comment_hash
+    return json
 
   end
 

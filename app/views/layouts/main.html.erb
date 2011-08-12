@@ -129,6 +129,7 @@
 <%  if signed_in?  -%>
       zz.session.current_user_id = '<%= current_user.id %>';
       zz.session.current_user_name = '<%= escape_javascript current_user.username %>';
+      zz.session.profile_photo_url = '<%= escape_javascript current_user.profile_photo_url %>';
 <%  end -%>
 
       zz.page = zz.page || {};

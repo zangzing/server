@@ -127,6 +127,16 @@
     cursor: pointer;
 }
 
+.comments-container .comments .comment .loading{
+    background: url(/images/loading_small.gif) no-repeat scroll 0px 0px transparent;
+    height: 24px;
+    width: 24px;
+    position: relative;
+    top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+
+}
 
 
 

@@ -15,7 +15,7 @@ zz.comments = {};
                                '</div>' +
                                '<textarea placeholder="Write something here" class="text"></textarea>' +
                                '<div class="share">' +
-                                   'Share on &nbsp;&nbsp;<input type="checkbox" class="facebook"> Facebook &nbsp;&nbsp;<input type="checkbox" class="twitter"> Twitter' +
+                                   'Share on &nbsp;&nbsp;<input type="checkbox" cl.ass="facebook"> Facebook &nbsp;&nbsp;<input type="checkbox" class="twitter"> Twitter' +
                                '</div>' +
                                '<a class="submit-button green-button"><span>Comment</span></a>' +
                             '</div>' +
@@ -41,7 +41,9 @@ zz.comments = {};
                                     '<div class="delete-button"></div>' +
                                 '</div>';
 
-
+    var COMMENT_LOADING_TEMPLATE = '<div class="comment">' +
+                                        '<div class="loading"></div>' +
+                                   '</div>';
 
 
 
@@ -53,10 +55,13 @@ zz.comments = {};
 
 
         var build_comment_element = function(comment_json){
+            var comment_text = comment_json['text'];
+            comment_text = comment_text.replace(/\n/g, '<br>');
+
             var comment = $(COMMENT_TEMPLATE);
             comment.find('.username').text(comment_json['user']['name']);
             comment.find('.when').text(comment_json['when'] + ' ago');
-            comment.find('.text').text(comment_json['text']);
+            comment.find('.text').html(comment_text);  //this was sanitized on the server, so html() is OK
             comment.find('.profile-picture img').attr('data-src', comment_json['user']['profile_photo_url']);
             comment.find('.delete-button').click(function(){
                if(confirm('Are you sure you want to delete this comment?')){
@@ -76,10 +81,17 @@ zz.comments = {};
 
 
         var refresh_comments = function(){
+            // clear the list
+            comments_element.find('.comments').empty();
+
+            var comment_loading_element = $(COMMENT_LOADING_TEMPLATE);
+
+            comments_element.find('.comments').append(comment_loading_element);
+
+
             zz.routes.comments.get_comments_for_photo(photo_id, function(json){
 
-                // clear the list
-                comments_element.find('.comments').empty();
+                comment_loading_element.remove();
 
                 //set deleteable flag
                 if(json['current_user']['can_delete_comments']){
@@ -96,14 +108,18 @@ zz.comments = {};
                 // show profile pictures -- need to do this after things are visible
                 zz.profile_pictures.init_profile_pictures(comments_element.find('.profile-picture'))
 
-                //resize comment rows to fit text -- no way to do this in css
-                comments_element.find('.comment').each(function(){
-                   var height = $(this).find('.text').height() + 45;
-                   $(this).css({height: height +'px'});
-                });
+                resize_comments();
+
             });
         };
 
+        var resize_comments = function(){
+            //resize comment rows to fit text -- no way to do this in css
+            comments_element.find('.comment').each(function(){
+               var height = $(this).find('.text').height() + 55;
+               $(this).css({height: height +'px'});
+            });
+        };
 
         var add_comment = function(text, post_to_facebook, post_to_twitter){
             var params = {
@@ -112,24 +128,43 @@ zz.comments = {};
                 post_to_twitter: post_to_twitter
             };
 
+            var comment_loading_element = $(COMMENT_LOADING_TEMPLATE);
+
+            comments_element.find('.comments').prepend(comment_loading_element);
+
             zz.routes.comments.create_comment_for_photo(photo_id, params, function(comment_json){
                 var comment_element = build_comment_element(comment_json);
+                comment_loading_element.remove();
                 comments_element.find('.comments').prepend(comment_element);
                 zz.profile_pictures.init_profile_pictures(comment_element.find('.profile-picture'));
+                resize_comments();
             });
         };
 
 
-        comments_element.find('.submit-button').click(function(){
-            var text = comments_element.find('textarea.text').val();
-            var post_to_facebook = comments_element.find('input.facebook').attr('checked');
-            var post_to_twitter = comments_element.find('input.twitter').attr('checked');
-            add_comment(text, post_to_facebook, post_to_twitter);
+        var build_new_comment_widget = function(){
+            if(zz.session.profile_photo_url){
+                comments_element.find('.new-comment .profile-picture img').attr('data-src', zz.session.profile_photo_url)
+                zz.profile_pictures.init_profile_pictures(comments_element.find('.new-comment .profile-picture'))
 
-        });
+                comments_element.find('.submit-button').click(function(){
+                    var text = comments_element.find('textarea.text').val();
+                    var post_to_facebook = comments_element.find('input.facebook').attr('checked');
+                    var post_to_twitter = comments_element.find('input.twitter').attr('checked');
+                    add_comment(text, post_to_facebook, post_to_twitter);
+
+                    comments_element.find('textarea.text').val('');
+
+                });
+
+            }
+        };
+
+
 
         var dialog = zz.dialog.show_dialog(comments_element,{width:500, height:500});
 
+        build_new_comment_widget();
         refresh_comments();
 
 
