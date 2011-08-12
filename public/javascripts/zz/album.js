@@ -123,8 +123,15 @@ zz.album = {
                     var renderPictureView = function() {
                         var gridElement = $('<div class="photogrid"></div>');
 
-                        $('#article').html(gridElement);
                         $('#article').css('overflow', 'hidden');
+
+                        $('#article').append(gridElement);
+                        gridElement.css({right: '500px'});
+
+
+                        var comments_panel = $('<div class="comments-right-panel"></div>');
+                        $('#article').append(comments_panel);
+
 
 
                         var bigScreen = ($(window).width() > 1200 && $(window).height() > 1000);
@@ -164,6 +171,7 @@ zz.album = {
                             onScrollToPhoto: function(photoId, index) {
                                 window.location.hash = '#!' + photoId;
                                 zz.page.current_photo_index = index;
+                                comments_panel.html(zz.comments.build_comments_widget(photoId));
                                 ZZAt.track('photo.view', {id: photoId});
                             }
 

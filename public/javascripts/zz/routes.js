@@ -23,7 +23,11 @@ zz.routes = {
 
     },
  
-
+    users: {
+        user_home_page_path: function(username){
+            return '/' + username;
+        }
+    },
 
     edit_user_path: function(username) {
         return '/:username/settings'.replace(':username', username);

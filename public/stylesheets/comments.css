@@ -27,7 +27,7 @@
     position:absolute;
     top: 15px;
     left: 65px;
-    width: 400px;
+    width: 350px;
     height: 60px;
     color: black;
     font-family: 'lucida grande', tahoma, verdana, arial, sans-serif;
@@ -138,5 +138,14 @@
 
 }
 
+.comments-right-panel {
+    position:absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 20px;
+    width: 450px;
+    border-left: 2px solid #ccc;
+
+}
 
 

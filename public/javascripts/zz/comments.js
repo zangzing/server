@@ -15,7 +15,7 @@ zz.comments = {};
                                '</div>' +
                                '<textarea placeholder="Write something here" class="text"></textarea>' +
                                '<div class="share">' +
-                                   'Share on &nbsp;&nbsp;<input type="checkbox" cl.ass="facebook"> Facebook &nbsp;&nbsp;<input type="checkbox" class="twitter"> Twitter' +
+                                   'Share on &nbsp;&nbsp;<input type="checkbox" class="facebook"> Facebook &nbsp;&nbsp;<input type="checkbox" class="twitter"> Twitter' +
                                '</div>' +
                                '<a class="submit-button green-button"><span>Comment</span></a>' +
                             '</div>' +
@@ -47,12 +47,18 @@ zz.comments = {};
 
 
 
+
+
+
     zz.comments.test = function(){
+        var photo_id = 169911139720;
+        var element = zz.comments.build_comments_widget(photo_id)
+        var dialog = zz.dialog.show_dialog(element,{width: 500, height: 500});
+    };
 
-        var photo_id = 169911139720
 
+    zz.comments.build_comments_widget = function(photo_id){
         var comments_element = $(COMMENTS_TEMPLATE);
-
 
         var build_comment_element = function(comment_json){
             var comment_text = comment_json['text'];
@@ -60,6 +66,9 @@ zz.comments = {};
 
             var comment = $(COMMENT_TEMPLATE);
             comment.find('.username').text(comment_json['user']['name']);
+            comment.find('.username').click(function(){
+                document.location.href = zz.routes.users.user_home_page_path(comment_json['user']['username']);
+            });
             comment.find('.when').text(comment_json['when'] + ' ago');
             comment.find('.text').html(comment_text);  //this was sanitized on the server, so html() is OK
             comment.find('.profile-picture img').attr('data-src', comment_json['user']['profile_photo_url']);
@@ -106,7 +115,7 @@ zz.comments = {};
                 });
 
                 // show profile pictures -- need to do this after things are visible
-                zz.profile_pictures.init_profile_pictures(comments_element.find('.profile-picture'))
+                zz.profile_pictures.init_profile_pictures(comments_element.find('.profile-picture'));
 
                 resize_comments();
 
@@ -142,35 +151,30 @@ zz.comments = {};
         };
 
 
-        var build_new_comment_widget = function(){
+        var build_new_comment_panel = function(){
             if(zz.session.profile_photo_url){
-                comments_element.find('.new-comment .profile-picture img').attr('data-src', zz.session.profile_photo_url)
-                zz.profile_pictures.init_profile_pictures(comments_element.find('.new-comment .profile-picture'))
+                comments_element.find('.new-comment .profile-picture img').attr('data-src', zz.session.profile_photo_url);
+
+                zz.profile_pictures.init_profile_pictures(comments_element.find('.new-comment .profile-picture'));
 
                 comments_element.find('.submit-button').click(function(){
-                    var text = comments_element.find('textarea.text').val();
-                    var post_to_facebook = comments_element.find('input.facebook').attr('checked');
-                    var post_to_twitter = comments_element.find('input.twitter').attr('checked');
-                    add_comment(text, post_to_facebook, post_to_twitter);
-
-                    comments_element.find('textarea.text').val('');
+                    var text = $.trim(comments_element.find('textarea.text').val());
+                    if(text.length > 0){
+                        var post_to_facebook = comments_element.find('input.facebook').attr('checked');
+                        var post_to_twitter = comments_element.find('input.twitter').attr('checked');
+                        add_comment(text, post_to_facebook, post_to_twitter);
+                        comments_element.find('textarea.text').val('');
+                    }
 
                 });
 
             }
         };
 
-
-
-        var dialog = zz.dialog.show_dialog(comments_element,{width:500, height:500});
-
-        build_new_comment_widget();
+        build_new_comment_panel();
         refresh_comments();
 
-
-
-
-
+        return comments_element;
     };
 
 //    show_photo_comments: function(photo_id){
