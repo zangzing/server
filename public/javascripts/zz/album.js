@@ -45,7 +45,7 @@ zz.album = {};
                 $('#article').append(gridElement);
 
                 if (comments_open()){
-                    gridElement.css({right: '500px'});
+                    gridElement.css({right: '450px'});
                 }
 
                 var grid = gridElement.zz_photogrid({
