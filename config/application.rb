@@ -68,7 +68,7 @@ module Server
     Bitly.use_api_version_3
 
 
-    # Add initalization hook to remove spree core routes
+    # SPREE: Add initalization hook to remove spree core routes
     initializer :add_routing_paths do |app|
         spree_route_paths = app.routes_reloader.paths.select{|path| path =~ /spree_core|spree_dash|spree_promo|spree_zangzing/}
         spree_route_paths.each{ |path| app.routes_reloader.paths.delete(path) }

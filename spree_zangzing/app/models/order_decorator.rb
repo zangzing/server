@@ -9,11 +9,8 @@ def clone_shipping_address
     true
 end
 
-before_create :assign_default_shipping_method
 
-def assign_default_shipping_method
-   self.shipping_method = available_shipping_methods(:front_end).first
-end
+
 
 
 # order state machine (see http://github.com/pluginaweek/state_machine/tree/master for details)
@@ -59,10 +56,17 @@ end
     end
 
     after_transition :to => 'payment', :do => :create_tax_charge!
+    before_transition:to => 'confirm', :do => :assign_default_shipping_method
     after_transition :to => 'confirm', :do => :create_shipment!
     after_transition :to => 'complete', :do => :finalize!
     after_transition :to => 'canceled', :do => :after_cancel
   end
+
+def assign_default_shipping_method
+  if shipping_method.nil?
+     self.shipping_method = available_shipping_methods(:front_end).first
+  end
+end
 
 def add_variant(variant, photo_data, quantity = 1)
     current_item = contains?(variant,photo_data)
