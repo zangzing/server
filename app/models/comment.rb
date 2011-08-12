@@ -1,6 +1,5 @@
 class Comment < ActiveRecord::Base
   include ActionView::Helpers::DateHelper
-  include ActionView::Helpers::SanitizeHelper
 
   attr_accessible :text
 

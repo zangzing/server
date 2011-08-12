@@ -1,4 +1,6 @@
 class CommentsController < ApplicationController
+  include ActionView::Helpers::SanitizeHelper
+
   before_filter :require_user
   before_filter :require_album, :except => [:destroy, :metadata_for_subjects]
   before_filter :require_album_viewer_role, :except => [:destroy, :metadata_for_subjects]
