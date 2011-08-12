@@ -31,8 +31,6 @@ class CommentsController < ApplicationController
         :commentable => Commentable.photo_comments_as_json(params[:photo_id]),
         :current_user => {
             :can_delete_comments => current_user && (current_user == photo.user || current_user == photo.album.user),
-            :has_facebook_token => !current_user.identity_for_facebook.credentials_valid?.nil?,
-            :has_twitter_token => !current_user.identity_for_twitter.credentials_valid?.nil?
         }
     }
 

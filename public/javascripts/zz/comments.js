@@ -169,23 +169,69 @@ zz.comments = {};
         var build_new_comment_panel = function(){
             if(zz.session.profile_photo_url){
                 comments_element.find('.new-comment .profile-picture img').attr('data-src', zz.session.profile_photo_url);
-
-
-
                 zz.profile_pictures.init_profile_pictures(comments_element.find('.new-comment .profile-picture'));
-
-                comments_element.find('.submit-button').click(function(){
-                    var text = $.trim(comments_element.find('textarea.text').val());
-                    if(text.length > 0){
-                        var post_to_facebook = comments_element.find('input.facebook').attr('checked');
-                        var post_to_twitter = comments_element.find('input.twitter').attr('checked');
-                        add_comment(text, post_to_facebook, post_to_twitter);
-                        comments_element.find('textarea.text').val('');
-                    }
-
-                });
-
             }
+
+            var facebook_checkbox = comments_element.find('input.facebook');
+            facebook_checkbox.change(function(){
+
+                //undo the toggle and start over...
+                facebook_checkbox.attr('checked', !facebook_checkbox.attr('checked'));
+
+                //if it is checked, we can just uncheck
+                if(facebook_checkbox.attr('checked')){
+                    facebook_checkbox.attr('checked', false);
+                }
+                else{
+                    // need to make sure we are signed into facebook
+                    if(zz.session.has_facebook_token) {
+                        facebook_checkbox.attr('checked', true);
+                    }
+                    else {
+                        zz.oauthmanager.login_facebook(function(){
+                            facebook_checkbox.attr('checked', true);
+                        });
+                    }
+                }
+            });
+
+
+
+
+            var twitter_checkbox = comments_element.find('input.twitter');
+            twitter_checkbox.change(function(){
+
+                //undo the toggle and start over...
+                twitter_checkbox.attr('checked', !twitter_checkbox.attr('checked'));
+
+                //if it is checked, we can just uncheck
+                if(twitter_checkbox.attr('checked')){
+                    twitter_checkbox.attr('checked', false);
+                }
+                else{
+                    // need to make sure we are signed into twitter
+                    if(zz.session.has_twitter_token){
+                        twitter_checkbox.attr('checked', true);
+                    }
+                    else {
+                        zz.oauthmanager.login_twitter(function(){
+                            twitter_checkbox.attr('checked', true);
+                        });
+                    }
+                }
+            });
+
+
+
+            comments_element.find('.submit-button').click(function(){
+                var text = $.trim(comments_element.find('textarea.text').val());
+                if(text.length > 0){
+                    var post_to_facebook = facebook_checkbox.attr('checked');
+                    var post_to_twitter = twitter_checkbox.attr('checked');
+                    add_comment(text, post_to_facebook, post_to_twitter);
+                    comments_element.find('textarea.text').val('');
+                }
+            });
         };
 
         build_new_comment_panel();
