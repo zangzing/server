@@ -60,7 +60,7 @@ zz.comments = {};
             comment.find('.profile-picture img').attr('data-src', comment_json['user']['profile_photo_url']);
             comment.find('.delete-button').click(function(){
                if(confirm('Are you sure you want to delete this comment?')){
-                   zz.routes.call_destroy_comment_path(comment_json['id']);
+                   zz.routes.comments.delete_comment(comment_json['id']);
                    comment.fadeOut('fast', function(){
                        comment.remove();
                    });
@@ -76,7 +76,7 @@ zz.comments = {};
 
 
         var refresh_comments = function(){
-            $.get(zz.routes.photo_comments_path(photo_id), function(json){
+            zz.routes.comments.get_comments_for_photo(photo_id, function(json){
 
                 // clear the list
                 comments_element.find('.comments').empty();
@@ -112,7 +112,7 @@ zz.comments = {};
                 post_to_twitter: post_to_twitter
             };
 
-            $.post(zz.routes.create_photo_comment_path(photo_id), params, function(comment_json){
+            zz.routes.comments.create_comment_for_photo(photo_id, params, function(comment_json){
                 var comment_element = build_comment_element(comment_json);
                 comments_element.find('.comments').prepend(comment_element);
                 zz.profile_pictures.init_profile_pictures(comment_element.find('.profile-picture'));
