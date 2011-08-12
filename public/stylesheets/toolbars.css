@@ -483,6 +483,7 @@
     height: 55px;
     background: url("/images/embed/toolbars/btn-footer-comments.png") no-repeat scroll 0px 0px transparent;
     cursor: pointer;
+    display: none;
 }
 #footer #comments-button:hover   { background-position: 0  -55px; }
 #footer #comments-button.selected{ background-position: 0 -110px; }

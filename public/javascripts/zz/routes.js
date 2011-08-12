@@ -7,17 +7,17 @@ zz.routes = {
     comments: {
         delete_comment: function(comment_id, success, error){
             var url = '/service/comments/:comment_id'.replace(':comment_id', comment_id);
-            $.post(url, {_method: 'delete'}, success, error);
+            return $.post(url, {_method: 'delete'}, success, error);
         },
 
         get_comments_for_photo: function(photo_id, success, error){
             var url = '/service/photos/:photo_id/comments'.replace(':photo_id', photo_id);
-            $.get(url, success, error);
+            return $.get(url, success, error);
         },
 
         create_comment_for_photo: function(photo_id, comment_params, success, failure){
             var url = '/service/photos/:photo_id/comments'.replace(':photo_id', photo_id);
-            $.post(url, comment_params, success, failure);
+            return $.post(url, comment_params, success, failure);
         }
 
 

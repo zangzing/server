@@ -14,7 +14,6 @@ zz.template_cache = zz.template_cache || {};
         options: {
             json: null,
             allowDelete: false,          //context
-            allowDownload: false,        //album model
             onDelete: jQuery.noop,        //model
             maxHeight: 120,               //context
             maxWidth: 120,                //context

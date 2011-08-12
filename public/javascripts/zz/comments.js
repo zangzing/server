@@ -60,6 +60,8 @@ zz.comments = {};
     zz.comments.build_comments_widget = function(photo_id){
         var comments_element = $(COMMENTS_TEMPLATE);
 
+        var pending_request_for_comments = null;
+
         var build_comment_element = function(comment_json){
             var comment_text = comment_json['text'];
             comment_text = comment_text.replace(/\n/g, '<br>');
@@ -92,6 +94,8 @@ zz.comments = {};
         var load_comments_for_photo = function(id){
             photo_id = id;
 
+
+
             // clear the list
             comments_element.find('.comments').empty();
 
@@ -100,7 +104,16 @@ zz.comments = {};
             comments_element.find('.comments').append(comment_loading_element);
 
 
-            zz.routes.comments.get_comments_for_photo(photo_id, function(json){
+            // cancel pending request in case we try to load next
+            // photo's comments before previous photo's comments finished.
+            if(pending_request_for_comments){
+                pending_request_for_comments.abort();
+                pending_request_for_comments = null;
+            }
+
+            pending_request_for_comments = zz.routes.comments.get_comments_for_photo(photo_id, function(json){
+
+                pending_request_for_comments = null;
 
                 comment_loading_element.remove();
 

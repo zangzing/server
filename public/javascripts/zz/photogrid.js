@@ -38,7 +38,6 @@
             lazyLoadThreshold: null,
 
             showButtonBar: false,          //model
-            showInfoMenu: false,
             infoMenuTemplateResolver: null, //album model
 
             onClickShare: jQuery.noop
