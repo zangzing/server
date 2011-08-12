@@ -490,6 +490,26 @@
 #footer #comments-button.disabled{ background-position: 0 0; }
 
 
+#footer #comments-button .comment-count{
+    position: absolute;
+    top: 22px;
+    left: 32px;
+    border: solid 1px #999999;
+    background: #ccc;
+    color:#111111;
+    text-align: right;
+    text-shadow: 0 .5px 1px #666666;
+    padding: .5px 2px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    font-size: 10px;
+    font-weight: 500;
+}
+#footer #comments-button .comment-count.empty{
+    display:none;
+}
+
+
 /*           Like Button
  ***************************************************/
 #footer #like-button{

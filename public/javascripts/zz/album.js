@@ -65,6 +65,9 @@ zz.album = {};
                         if(comments_open()){
                             load_comments_for_photo(current_photo_id);
                         }
+
+                        update_comment_count_on_toolbar(current_photo_id);
+
                         ZZAt.track('photo.view', {id: photoId});
                     }
 
@@ -448,4 +451,19 @@ zz.album = {};
             document.location.href = url;
         });
     }
+
+
+    function update_comment_count_on_toolbar(photo_id) {
+        zz.comments.get_comment_count_for_photo(zz.page.album_id, photo_id, function(count){
+           if(count && count > 0){
+               $('#footer #comments-button .comment-count').removeClass('empty')
+               $('#footer #comments-button .comment-count').text(count);
+           }
+           else{
+               $('#footer #comments-button .comment-count').addClass('empty')
+               $('#footer #comments-button .comment-count').text('');
+           }
+        });
+    }
+
 })();

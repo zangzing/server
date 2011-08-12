@@ -47,22 +47,26 @@ zz.comments = {};
 
 
     // key is photo id, value is count
-    var comment_counts_for_photos = {};
+    // todo: can only track for one album at a time
+    var comment_counts_for_photos = null;
 
 
-    zz.comments.load_comment_counts_for_photos = function(album_id){
-        comment_counts_for_photos = {};
-        zz.routes.comments.get_album_photos_comments_metadata(album_id, function(json){
-            _.each(json, function(commentable_json){
-                var photo_id = commentable_json['subject_id'];
-                var count = commentable_json['comments_count'];
-                comment_counts_for_photos[photo_id] = count;
+    zz.comments.get_comment_count_for_photo = function(album_id, photo_id, callback){
+        if(comment_counts_for_photos){
+            callback(comment_counts_for_photos[photo_id]);
+        }
+        else{
+            zz.routes.comments.get_album_photos_comments_metadata(album_id, function(json){
+                comment_counts_for_photos = {};
+                _.each(json, function(commentable_json){
+                    var photo_id = commentable_json['subject_id'];
+                    var count = commentable_json['comments_count'];
+                    comment_counts_for_photos[photo_id] = count;
+                });
+                callback(comment_counts_for_photos[photo_id]);
             });
-
-            zz.logger.debug(comment_counts_for_photos);
-        });
+        }
     };
-
 
 
 
