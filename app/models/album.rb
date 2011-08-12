@@ -41,8 +41,7 @@ class Album < ActiveRecord::Base
   # cache manager stuff
   after_save    :check_cache_manager_change
   after_commit  :make_create_album_activity, :on => :create
-  after_commit  :notify_cache_manager, :on => :create
-  after_commit  :notify_cache_manager, :on => :update
+  after_commit  :notify_cache_manager
   after_commit  :notify_cache_manager_delete, :on => :destroy
 
   after_create  :add_creator_as_admin
@@ -132,7 +131,9 @@ class Album < ActiveRecord::Base
   # the change check because we must do this after the commit to
   # make sure we are not in a transaction
   def notify_cache_manager
-    Cache::Album::Manager.shared.album_modified(self) if self.change_matters
+    if self.destroyed? == false
+      Cache::Album::Manager.shared.album_modified(self) if self.change_matters
+    end
     true
   end
 
