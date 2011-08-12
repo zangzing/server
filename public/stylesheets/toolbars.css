@@ -473,6 +473,22 @@
 #footer #share-button.selected{ background-position: 0 -110px; }
 #footer #share-button.disabled{ background-position: 0 0; }
 
+/*           Comments Button
+ ***************************************************/
+#footer #comments-button{
+    position: absolute;
+    top: 1px;
+    right: 174px;
+    width: 58px;
+    height: 55px;
+    background: url("/images/embed/toolbars/btn-footer-comments.png") no-repeat scroll 0px 0px transparent;
+    cursor: pointer;
+}
+#footer #comments-button:hover   { background-position: 0  -55px; }
+#footer #comments-button.selected{ background-position: 0 -110px; }
+#footer #comments-button.disabled{ background-position: 0 0; }
+
+
 /*           Like Button
  ***************************************************/
 #footer #like-button{
