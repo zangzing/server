@@ -187,7 +187,7 @@ zz.comments = {};
                 comments_element.find('.comments').prepend(comment_element);
                 zz.profile_pictures.init_profile_pictures(comment_element.find('.profile-picture'));
                 resize_comments();
-                comment_counts_for_photos[photo_id] += 1;
+                comment_counts_for_photos[photo_id] = (comment_counts_for_photos[photo_id] + 1) || 1;
                 notify_subscribers(photo_id);
             });
         };
