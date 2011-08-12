@@ -27,7 +27,7 @@ zz.routes = {
 
 
     },
- 
+
     users: {
         user_home_page_path: function(username){
             return '/' + username;

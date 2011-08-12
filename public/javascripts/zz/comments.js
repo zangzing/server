@@ -34,8 +34,8 @@ zz.comments = {};
                                         '</div>' +
                                     '</div>' +
                                     '<div class="posted-by">' +
-                                        '<span class="username"></span>&nbsp;&nbsp;'+
-                                        '<span class="when"></span>'+
+                                        '<span class="username"></span>&nbsp;&nbsp;' +
+                                        '<span class="when"></span>' +
                                     '</div>' +
                                     '<div class="text"></div>'+
                                     '<div class="delete-button"></div>' +
@@ -50,6 +50,11 @@ zz.comments = {};
     // todo: can only track for one album at a time
     var comment_counts_for_photos = null;
 
+    var like_count_subscribers = [];
+
+
+    /*         Public Stuff
+     ***********************************************************/
 
     zz.comments.get_comment_count_for_photo = function(album_id, photo_id, callback){
         if(comment_counts_for_photos){
@@ -68,6 +73,10 @@ zz.comments = {};
         }
     };
 
+
+    zz.comments.subscribe_to_like_counts = function(callback){
+       like_count_subscribers.push(callback);
+    }
 
 
 
@@ -94,6 +103,9 @@ zz.comments = {};
                    comment.fadeOut('fast', function(){
                        comment.remove();
                    });
+                   comment_counts_for_photos[photo_id] -= 1;
+                   notify_subscribers(photo_id);
+
                }
             });
 
@@ -135,7 +147,6 @@ zz.comments = {};
                 if(json['current_user']['can_delete_comments']){
                     comments_element.find('.comments').addClass('deleteable');
                 }
-                
 
                 // add all the comments
                 _.each(json['commentable']['comments'], function(comment_json){
@@ -176,6 +187,8 @@ zz.comments = {};
                 comments_element.find('.comments').prepend(comment_element);
                 zz.profile_pictures.init_profile_pictures(comment_element.find('.profile-picture'));
                 resize_comments();
+                comment_counts_for_photos[photo_id] += 1;
+                notify_subscribers(photo_id);
             });
         };
 
@@ -186,7 +199,6 @@ zz.comments = {};
             }
             zz.profile_pictures.init_profile_pictures(comments_element.find('.new-comment .profile-picture'));
 
-            
             var facebook_checkbox = comments_element.find('input.facebook');
             facebook_checkbox.change(function(){
 
@@ -257,10 +269,19 @@ zz.comments = {};
             load_comments_for_photo: function(photo_id){
                 load_comments_for_photo(photo_id);
             }
-        }
+        };
 
     };
 
+
+    /*         Private Stuff
+     ***********************************************************/
+
+    function notify_subscribers(photo_id){
+        _.each(like_count_subscribers, function(callback){
+            callback(photo_id, comment_counts_for_photos[photo_id]);
+        });
+    }
 
 
 

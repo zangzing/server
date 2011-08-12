@@ -6,8 +6,11 @@ zz.album = {};
 (function(){
 
 
-    zz.album.init_picture_view = function(current_photo_id) {
+    zz.album.init_picture_view = function(photo_id) {
+        current_photo_id = photo_id;
+
         init_back_button(zz.page.album_name, zz.page.album_base_url + '/photos');
+        init_comment_button();
 
         $('#view-buttons').fadeOut('fast');
 
@@ -91,7 +94,7 @@ zz.album = {};
             // setup comments drawer
             if(comments_open()){
                 $('#footer #comments-button').addClass('selected');
-                open_comments_drawer(false, current_photo_id, renderPictureView );
+                open_comments_drawer(false, current_photo_id, renderPictureView);
             }
             else{
                 renderPictureView();
@@ -105,10 +108,10 @@ zz.album = {};
                 $(this).toggleClass('selected');
 
                 if ($(this).hasClass('selected')) {
-                    open_comments_drawer(true, current_photo_id, renderPictureView );
+                    open_comments_drawer(true, current_photo_id, renderPictureView);
                 }
                 else{
-                    close_comments_drawer(true, renderPictureView );
+                    close_comments_drawer(true, renderPictureView);
                 }
 
 
@@ -204,6 +207,8 @@ zz.album = {};
 
     var comments_widget = null;
 
+    var current_photo_id = null;
+
     function comments_open() {
         return jQuery.cookie('show_comments');
     }
@@ -213,7 +218,7 @@ zz.album = {};
 
         var comments_panel = $('<div class="comments-right-panel"></div>');
         comments_widget = zz.comments.build_comments_widget(photo_id);
-        comments_panel.html(comments_widget.element)
+        comments_panel.html(comments_widget.element);
 
 
         if(animate) {
@@ -452,18 +457,26 @@ zz.album = {};
         });
     }
 
+    function init_comment_button(){
+        zz.comments.subscribe_to_like_counts(function(photo_id, count){
+            if(photo_id == current_photo_id){
+               update_comment_count_on_toolbar(current_photo_id);
+            }
+        });
+    }
 
     function update_comment_count_on_toolbar(photo_id) {
         zz.comments.get_comment_count_for_photo(zz.page.album_id, photo_id, function(count){
            if(count && count > 0){
-               $('#footer #comments-button .comment-count').removeClass('empty')
+               $('#footer #comments-button .comment-count').removeClass('empty');
                $('#footer #comments-button .comment-count').text(count);
            }
            else{
-               $('#footer #comments-button .comment-count').addClass('empty')
+               $('#footer #comments-button .comment-count').addClass('empty');
                $('#footer #comments-button .comment-count').text('');
            }
         });
     }
 
 })();
+

@@ -63,12 +63,6 @@
         return this.center(container, true, true);
     };
 
-    /**
-     *
-     * @param container {element | Object}
-     * @param center_x {boolean}
-     * @param center_y {boolean}
-     */
     $.fn.center = function(container, center_x, center_y) {
 
         if (! container) {

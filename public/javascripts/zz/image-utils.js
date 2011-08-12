@@ -17,12 +17,7 @@ zz.image_utils = {
 
 
 
-    /**
-     *
-     * @param {object} image_dimensions height/width.
-     * @param {object} target_dimensions height/width.
-     * @return {object} with top, left, height, width attributes.
-     */
+
     scale_center_and_crop: function(image_dimensions, target_dimensions) {
         var height, width, top, left;
 
@@ -51,12 +46,7 @@ zz.image_utils = {
 
     },
 
-    /**
-     *
-     * @param src
-     * @param success (optional).
-     * @param error (optional).
-     */
+
 
     pre_load_image: function(src, success, error) {
 
