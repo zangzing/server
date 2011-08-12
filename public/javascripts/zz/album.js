@@ -121,19 +121,6 @@ zz.album = {
 
 
                     var renderPictureView = function() {
-                        var gridElement = $('<div class="photogrid"></div>');
-
-                        $('#article').css('overflow', 'hidden');
-
-                        $('#article').empty(); 
-                        $('#article').append(gridElement);
-                        gridElement.css({right: '500px'});
-
-
-                        var comments_panel = $('<div class="comments-right-panel"></div>');
-                        $('#article').append(comments_panel);
-
-
 
                         var bigScreen = ($(window).width() > 1200 && $(window).height() > 1000);
 
@@ -156,6 +143,29 @@ zz.album = {
                         }
 
 
+
+
+
+
+                        var gridElement = $('<div class="photogrid"></div>');
+
+                        $('#article').css('overflow', 'hidden');
+
+                        $('#article').empty();
+                        $('#article').append(gridElement);
+                        gridElement.css({right: '500px'});
+
+
+                        var comments_panel = $('<div class="comments-right-panel"></div>');
+                        var comments_widget = zz.comments.build_comments_widget(currentPhotoId);
+                        comments_panel.html(comments_widget.element)
+                        $('#article').append(comments_panel);
+
+
+
+
+
+
                         var grid = gridElement.zz_photogrid({
                             photos: json,
                             allowDelete: false,
@@ -172,7 +182,7 @@ zz.album = {
                             onScrollToPhoto: function(photoId, index) {
                                 window.location.hash = '#!' + photoId;
                                 zz.page.current_photo_index = index;
-                                comments_panel.html(zz.comments.build_comments_widget(photoId));
+                                comments_widget.load_comments_for_photo(photoId);
                                 ZZAt.track('photo.view', {id: photoId});
                             }
 

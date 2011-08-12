@@ -76,7 +76,7 @@
 .comments-container .comments .comment{
     position: relative;
     height: 70px;
-    border-bottom: 1px solid #ccc;
+    border-top: 1px solid #ccc;
 }
 
 .comments-container .comments .comment .comment-picture {

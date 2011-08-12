@@ -50,11 +50,11 @@ zz.comments = {};
 
 
 
-    zz.comments.test = function(){
-        var photo_id = 169911139720;
-        var element = zz.comments.build_comments_widget(photo_id)
-        var dialog = zz.dialog.show_dialog(element,{width: 500, height: 500});
-    };
+//    zz.comments.test = function(){
+//        var photo_id = 169911139720;
+//        var element = zz.comments.build_comments_widget(photo_id)
+//        var dialog = zz.dialog.show_dialog(element,{width: 500, height: 500});
+//    };
 
 
     zz.comments.build_comments_widget = function(photo_id){
@@ -89,7 +89,9 @@ zz.comments = {};
         };
 
 
-        var refresh_comments = function(){
+        var load_comments_for_photo = function(id){
+            photo_id = id;
+
             // clear the list
             comments_element.find('.comments').empty();
 
@@ -155,6 +157,8 @@ zz.comments = {};
             if(zz.session.profile_photo_url){
                 comments_element.find('.new-comment .profile-picture img').attr('data-src', zz.session.profile_photo_url);
 
+
+
                 zz.profile_pictures.init_profile_pictures(comments_element.find('.new-comment .profile-picture'));
 
                 comments_element.find('.submit-button').click(function(){
@@ -172,9 +176,15 @@ zz.comments = {};
         };
 
         build_new_comment_panel();
-        refresh_comments();
 
-        return comments_element;
+        return {
+            element: comments_element,
+
+            load_comments_for_photo: function(photo_id){
+                load_comments_for_photo(photo_id);
+            }
+        };
+
     };
 
 //    show_photo_comments: function(photo_id){
