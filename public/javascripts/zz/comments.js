@@ -169,9 +169,10 @@ zz.comments = {};
         var build_new_comment_panel = function(){
             if(zz.session.profile_photo_url){
                 comments_element.find('.new-comment .profile-picture img').attr('data-src', zz.session.profile_photo_url);
-                zz.profile_pictures.init_profile_pictures(comments_element.find('.new-comment .profile-picture'));
             }
+            zz.profile_pictures.init_profile_pictures(comments_element.find('.new-comment .profile-picture'));
 
+            
             var facebook_checkbox = comments_element.find('input.facebook');
             facebook_checkbox.change(function(){
 

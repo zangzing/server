@@ -1,7 +1,7 @@
 class CommentsController < ApplicationController
   include ActionView::Helpers::SanitizeHelper
 
-  before_filter :require_user
+#  before_filter :require_user
   before_filter :require_album, :except => [:destroy, :metadata_for_subjects]
   before_filter :require_album_viewer_role, :except => [:destroy, :metadata_for_subjects]
   
@@ -46,12 +46,18 @@ class CommentsController < ApplicationController
     commentable.comments << comment
     comment.save!
 
+    zza.track_event("photo.comment.create", {:photo_id => params[:photo_id]})
+
+
     if(params[:post_to_facebook])
       comment.post_to_facebook
+      zza.track_event("photo.comment.post.facebook", {:photo_id => params[:photo_id]})
     end
+
 
     if(params[:post_to_twitter])
       comment.post_to_twitter
+      zza.track_event("photo.comment.post.twitter", {:photo_id => params[:photo_id]})
     end
 
     comment.send_notification_emails

@@ -1,9 +1,13 @@
 var zz = zz || {};
 
-zz.album = {
+zz.album = {};
 
-    init_picture_view: function(current_photo_id) {
-        this._init_back_button(zz.page.album_name, zz.page.album_base_url + '/photos');
+
+(function(){
+
+
+    zz.album.init_picture_view = function(current_photo_id) {
+        init_back_button(zz.page.album_name, zz.page.album_base_url + '/photos');
 
         $('#view-buttons').hide();
 
@@ -12,7 +16,7 @@ zz.album = {
         ZZAt.track('album.view', {id: zz.page.album_id});
 
 
-        this._load_photos_json(function(json) {
+        load_photos_json(function(json) {
 
             var renderPictureView = function() {
 
@@ -38,7 +42,7 @@ zz.album = {
                 $('#article .photogrid').remove();
                 $('#article').append(gridElement);
 
-                if (zz.album._comments_open()){
+                if (comments_open()){
                     gridElement.css({right: '500px'});
                 }
 
@@ -59,8 +63,8 @@ zz.album = {
                         window.location.hash = '#!' + photoId;
                         zz.page.current_photo_index = index; //this is used when we go to movie mode
                         current_photo_id = photoId;
-                        if(zz.album._comments_open()){
-                            zz.album._load_comments_for_photo(current_photo_id);
+                        if(comments_open()){
+                            load_comments_for_photo(current_photo_id);
                         }
                         ZZAt.track('photo.view', {id: photoId});
                     }
@@ -83,9 +87,9 @@ zz.album = {
             };
 
             // setup comments drawer
-            if(zz.album._comments_open()){
+            if(comments_open()){
                 $('#footer #comments-button').addClass('selected');
-                zz.album._open_comments_drawer(false, current_photo_id, renderPictureView );
+                open_comments_drawer(false, current_photo_id, renderPictureView );
             }
             else{
                 renderPictureView();
@@ -99,17 +103,15 @@ zz.album = {
                 $(this).toggleClass('selected');
 
                 if ($(this).hasClass('selected')) {
-                    zz.album._open_comments_drawer(true, current_photo_id, renderPictureView );
+                    open_comments_drawer(true, current_photo_id, renderPictureView );
                 }
                 else{
-                    zz.album._close_comments_drawer(true, renderPictureView );
+                    close_comments_drawer(true, renderPictureView );
                 }
 
 
 
             });
-
-
 
 
             //handle resize
@@ -125,19 +127,15 @@ zz.album = {
                 }, 100);
             });
         });
-    },
+    };
 
 
-    init_grid_view: function() {
+    zz.album.init_grid_view = function() {
 
-        this._init_back_button(zz.page.back_to_home_page_caption, zz.page.back_to_home_page_url);
+        init_back_button(zz.page.back_to_home_page_caption, zz.page.back_to_home_page_url);
 
-        this._load_photos_json(function(json) {
-
-
+        load_photos_json(function(json) {
             ZZAt.track('album.view', {id: zz.page.album_id});
-
-
 
             //no movie mode if no photos
             if (json.length == 0) {
@@ -185,20 +183,37 @@ zz.album = {
                 infoMenuTemplateResolver: zz.album.info_menu_template_resolver
             }).data().zz_photogrid;
         });
-    },
+    };
 
-    _comments_open: function() {
+    zz.album.init_timeline_view = function() {
+        init_timeline_or_people_view('timeline');
+    };
+
+
+    zz.album.init_people_view = function() {
+        init_timeline_or_people_view('people');
+    };
+
+
+
+
+
+    /*           Private Stuff
+     ***************************************************/
+
+    var comments_widget = null;
+
+    function comments_open() {
         return jQuery.cookie('show_comments');
-    },
+    }
 
-    _open_comments_drawer: function(animate, photo_id, callback) {
+    function open_comments_drawer(animate, photo_id, callback) {
         jQuery.cookie('show_comments', true);
 
         var comments_panel = $('<div class="comments-right-panel"></div>');
-        var comments_widget = zz.comments.build_comments_widget(photo_id);
+        comments_widget = zz.comments.build_comments_widget(photo_id);
         comments_panel.html(comments_widget.element)
 
-        zz.album._comments_widget = comments_widget;
 
         if(animate) {
             $('#article .photogrid').fadeOut('fast', function(){
@@ -213,14 +228,14 @@ zz.album = {
             $('#article').append(comments_panel);
             callback();
         }
-    },
+    }
 
-    _close_comments_drawer: function(animate, callback) {
+    function close_comments_drawer(animate, callback) {
         jQuery.cookie('show_comments', null);
 
         var comments_panel = $('#article .comments-right-panel');
 
-        zz.album._comments_widget = null;
+        comments_widget = null;
 
         if(animate){
             $('#article .photogrid').fadeOut('fast', function(){
@@ -235,22 +250,16 @@ zz.album = {
             callback();
 
         }
-    },
+    }
 
-    _load_comments_for_photo: function(photo_id) {
-        zz.album._comments_widget.load_comments_for_photo(photo_id);
-    },
-
-    init_timeline_view: function() {
-        this._init_timeline_or_people_view('timeline');
-    },
-
-    init_people_view: function() {
-        this._init_timeline_or_people_view('people');
-    },
+    function load_comments_for_photo(photo_id) {
+        comments_widget.load_comments_for_photo(photo_id);
+    }
 
 
-    info_menu_template_resolver: function(photo_json) {
+
+
+    function info_menu_template_resolver(photo_json) {
         if (zz.page.displayed_user_id == zz.session.current_user_id) {
             if (photo_json.state == 'ready') {
                 return zz.infomenu.album_owner_template;
@@ -273,10 +282,10 @@ zz.album = {
         else {
             return false;
         }
-    },
+    }
 
 
-    _load_photos_json: function(callback){
+    function load_photos_json(callback){
         $.ajax({
             dataType: 'json',
             url: zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/photos_json?' + zz.page.album_lastmod,
@@ -286,7 +295,7 @@ zz.album = {
             },
 
             success: function(json){
-                json = zz.album._filterPhotosForUser(json);
+                json = filterPhotosForUser(json);
 
                 callback(json);
 
@@ -307,22 +316,21 @@ zz.album = {
 
             }
         });
-    },
+    }
 
-    _init_timeline_or_people_view: function(which) {
+    function init_timeline_or_people_view(which) {
 
-        this._init_back_button(zz.page.back_to_home_page_caption, zz.page.back_to_home_page_url);
+        init_back_button(zz.page.back_to_home_page_caption, zz.page.back_to_home_page_url);
 
         $('#article').touchScrollY();
 
-        this._load_photos_json(function(json) {
+        load_photos_json(function(json) {
 
             for (var i = 0; i < json.length; i++) {
                 var photo = json[i];
                 photo.previewSrc = zz.agent.checkAddCredentialsToUrl(photo.stamp_url);
                 photo.src = zz.agent.checkAddCredentialsToUrl(photo.thumb_url);
             }
-
 
 
             $('.timeline-grid').each(function(index, element) {
@@ -410,9 +418,9 @@ zz.album = {
                 }
             });
         });
-    },
+    }
 
-    _filterPhotosForUser: function(photos) {
+    function filterPhotosForUser(photos) {
         //filter photos that haven't finished uploading
         return $.map(photos, function(element, index) {
             if (element['state'] !== 'ready') {
@@ -422,9 +430,9 @@ zz.album = {
             }
             return element;
         });
-    },
+    }
 
-    _init_back_button: function(caption, url) {
+    function init_back_button(caption, url) {
         $('#header #back-button span').text(caption);
 
         $('#header #back-button').click(function() {
@@ -438,4 +446,4 @@ zz.album = {
             document.location.href = url;
         });
     }
-};
+})();
