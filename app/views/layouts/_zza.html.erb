@@ -1,11 +1,15 @@
-	<script>
-		var zza_config_GOOGLE_ANALYTICS_TOKEN = '<%=ZZA_CONFIG[:GOOGLE_ANALYTICS_TOKEN]%>';
-		var zza_config_MIXPANEL_TOKEN = '<%=ZZA_CONFIG[:MIXPANEL_TOKEN]%>';
-		var zza_config_ZZA_ID = '<%=ZZA_CONFIG[:ZZA_ID]%>';
-<%    if signed_in?  -%>
-        zuserid = '<%= current_user.id %>';
-<%	  else %>
-        zuserid = null;
-<%    end -%>
+<script>
+        var zz = zz || {};
+        zz.zza_config = {};
 
-	</script>
+        zz.zza_config.GOOGLE_ANALYTICS_TOKEN = '<%=ZZA_CONFIG[:GOOGLE_ANALYTICS_TOKEN]%>';
+        zz.zza_config.MIXPANEL_TOKEN = '<%=ZZA_CONFIG[:MIXPANEL_TOKEN]%>';
+        zz.zza_config.ZZA_ID = '<%=ZZA_CONFIG[:ZZA_ID]%>';
+<% if signed_in?  -%>
+        zz.zza_config.user_id = '<%= current_user.id %>';
+<% else %>
+        zz.zza_config.user_id = null;
+<% end -%>
+        
+</script>
+

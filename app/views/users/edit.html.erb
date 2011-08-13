@@ -153,13 +153,13 @@
 
             //profile photo picker
             var profile_album_id = '<%= @user.profile_album.id.to_s %>';
-            profile_pictures.init_profile_pictures($('.profile-picture'));
+            zz.profile_pictures.init_profile_pictures($('.profile-picture'));
 
 
             var load_profile_photos = function(callback){
                 $.ajax({
                     dataType: 'json',
-                    url: zz.path_prefix + '/albums/' + profile_album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
+                    url: zz.routes.path_prefix + '/albums/' + profile_album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
                     success: function(json){
                         var selectedIndex=-1;
                         var currentId = $('#profile-photo-id').val();
@@ -169,7 +169,7 @@
                                 selectedIndex = index;
                             }
                             var src = element.thumb_url;
-                            src = agent.checkAddCredentialsToUrl(src);
+                            src = zz.agent.checkAddCredentialsToUrl(src);
                             return {id:id, src:src};
                         });
                         callback(photos,selectedIndex);
@@ -190,7 +190,7 @@
                                 $('#user_profile_picture img').attr('data-src', photo.src)
                                 $('#profile-photo-id').val(photo.id);
                             }
-                            profile_pictures.init_profile_pictures($('.profile-picture'));
+                            zz.profile_pictures.init_profile_pictures($('.profile-picture'));
 
 
 
@@ -208,7 +208,7 @@
 
 
             var upload_photos = function(){
-                photochooser.open_in_dialog(profile_album_id, function(){
+                zz.photochooser.open_in_dialog(profile_album_id, function(){
                     reload_profile_photo_picker();
                 });
             };
@@ -231,9 +231,9 @@
                 var account_linked = $(this).find('.account-linked');
 
                 link_button.click(function(){
-                    var url = path_helpers.rails_route('new_identity', service_key);
+                    var url = zz.routes.new_identity_path(service_key);
 
-                    oauthmanager.login( url , function(){
+                    zz.oauthmanager.login( url , function(){
                         link_button.hide();
                         unlink_button.show();
                         account_linked.show();
@@ -242,7 +242,7 @@
                 });
 
                 unlink_button.click(function(){
-                    var url = path_helpers.rails_route('delete_identity', service_key);
+                    var url = zz.routes.delete_identity_path(service_key);
 
                     //todo: should have failure handler here too
                     $.post(url, function(){
@@ -254,7 +254,7 @@
             });
 
 
-            mobile.lock_page_scroll();
+            zz.mobile.lock_page_scroll();
             $('#article').touchScrollY();
         });
 
