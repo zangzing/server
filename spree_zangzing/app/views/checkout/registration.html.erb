@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=100" > <!-- IE8 mode -->
+    <meta http-equiv="Content-Language" Content="en">
+    <meta charset="utf-8">
+    <meta name="copyright" content="Copyright 2011, ZangZing, LLC. All Rights Reserved." />
+    <meta name="DC.title" content="ZangZing" />
+    <meta name="title" content="ZangZing" />
+    <title>Group Photo Sharing - ZangZing</title>
+
+   <%= include_stylesheets :common %>
+
+
+</head>
+<body class="signin">
+  <img src="/images/background_signin.jpg" class="bg" />
+
+
+    <div class="user-session-dialog new-dialog">
+      <div class="background"></div>
+      <div class="frame"></div>
+      <div class="body">
+
+      <a class="logo" href="/"><img src="/error/img/logo.png" alt="logo" /></a>
+
+      <div class="content">
+        <h1>Checkout</h1>
+        <a id= "back-to-signin-button" href="<%=join_url%>" class="gray-button"><span>Join</span></a>
+        <div id="header-hairline"></div>
+
+        <%= form_for @order, :url => update_checkout_registration_path, :html => { :method => :put, :id => "checkout_form_registration"} do |f| %>
+            <table>
+              <tr>
+                <td class="label">&nbsp;</td>
+                <td class="field"> &nbsp;</td>
+              </tr>
+
+              <tr>
+                <td class="label"> <%= f.label :email, t("guest_email") %></td>
+                <td class="field"><%= f.text_field :email, :class => 'title'  %></td>
+              </tr>
+              <tr>
+                <td class="label"></td>
+                <td class="field"><a id="forgot-password-link" class="hyperlink-button" href="<%=signin_url%>"> ZangZing users login</a></td>
+              </tr>
+            </table>
+         <% end %>
+         <a id="submit-button" class="newgreen-button"><span>Continue</span></a>
+      </div>
+    </div>
+   </div>
+
+  <%= render :partial => 'layouts/zza'  %>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+  <%= include_javascripts :lib %>
+  <%= include_javascripts :zz %>
+
+
+  <script>
+    $(document).ready(function(){
+        $('#submit-button').click(function(){
+            $('form').submit();
+        });
+
+
+       $('form').bind('keypress', function(e){
+             if ( e.keyCode == 13 ) {
+                 $("form").submit();
+             }
+       });
+
+        $('.logo').center_y();
+
+
+        $('#email').focus();
+    });
+
+  </script>
+
+
+</body>
+</html>

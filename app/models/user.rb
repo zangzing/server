@@ -169,7 +169,7 @@ class User < ActiveRecord::Base
                            :username => username,  #username is in DB index, so '' won't work
                            :password => UUIDTools::UUID.random_create.to_s);
       user.reset_perishable_token
-      user.save!
+      user.save_without_session_maintenance
     end
     return user
   end

@@ -152,9 +152,11 @@ Rails.application.routes.draw do
     resources :states, :only => :index
     
     # non-restful checkout stuff
-    match '/checkout/update/:state' => 'checkout#update', :as => :update_checkout
-    match '/checkout/:state' => 'checkout#edit', :as => :checkout_state
-    match '/checkout' => 'checkout#edit', :state => 'ship_address', :as => :checkout
+    get   '/checkout/registration'    => 'checkout#registration', :as => :checkout_registration
+    put   '/checkout/registration'    => 'checkout#update_registration', :as => :update_checkout_registration
+    match '/checkout/update/:state'   => 'checkout#update', :as => :update_checkout
+    match '/checkout/:state'          => 'checkout#edit', :as => :checkout_state
+    match '/checkout'                 => 'checkout#edit', :state => 'ship_address', :as => :checkout
 
     resources :orders do
       post :populate, :on => :collection
