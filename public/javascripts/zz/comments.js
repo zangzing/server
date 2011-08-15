@@ -259,7 +259,9 @@ zz.comments = {};
             });
 
             // if no current user then hide facebook and twitter options
-            comments_element.find('.share').hide();
+            if(!zz.session.current_user_id){
+                comments_element.find('.share').hide();
+            }
 
             comments_element.find('.submit-button').click(function(){
                 var text = $.trim(comments_element.find('textarea.text').val());
