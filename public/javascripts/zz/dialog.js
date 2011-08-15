@@ -2,6 +2,52 @@ var zz = zz || {};
 
 
 zz.dialog = {
+
+    show_square_dialog: function(content, options) {
+        var scrim_element = $(zz.dialog.SQUARE_TEMPLATE);
+        scrim_element.appendTo($('body'));
+
+        var dialog_element = scrim_element.find('.square-dialog');
+        dialog_element.css({width: options.width, height: options.height});
+        dialog_element.append($(content));
+        dialog_element.click(function(event){
+            event.stopPropagation();
+        });
+
+
+
+        var close = function(){
+            if(options.on_close){
+                options.on_close();
+            }
+
+            scrim_element.fadeOut('fast', function(){
+                scrim_element.remove();
+            });
+        };
+
+
+        var close_button = dialog_element.find('.close-button');
+        close_button.click(function(){
+            close();
+        });
+
+
+        scrim_element.click(function(){
+            close();
+        });
+
+
+        dialog_element.center(scrim_element, true, true);
+
+
+        return {
+            element: dialog_element,
+            close: close
+        };
+    },
+
+
     show_dialog: function(element, options) {
         return $(element).zz_dialog(options).data().zz_dialog;
     },
@@ -39,6 +85,25 @@ zz.dialog = {
     ALERT_TEMPLATE: '<div class="message">{{message}}</div>',
     BASE_Z_INDEX: 99990,
     open_dialog_count: 0,
+
+
+    SQUARE_TEMPLATE:'<div class="square-dialog-scrim">' +
+                        '<div class="square-dialog">' +
+                            '<div class="tl-corner"></div>' +
+                            '<div class="tr-corner"></div>' +
+                            '<div class="br-corner"></div>' +
+                            '<div class="bl-corner"></div>' +
+                            '<div class="t-side"></div>' +
+                            '<div class="b-side"></div>' +
+                            '<div class="r-side"></div>' +
+                            '<div class="l-side"></div>' +
+                            '<div class="close-button"></div>' +
+                        '</div>' +
+                     '</div>',
+
+
+
+
     scrim_z_index: function() {
         return this.BASE_Z_INDEX + this.open_dialog_count * 10;
     },
