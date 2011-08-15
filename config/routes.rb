@@ -129,7 +129,7 @@ Server::Application.routes.draw do
     match  '/comments/metadata_for_subjects'                 => 'comments#metadata_for_subjects'
     post   '/photos/:photo_id/comments'                      => 'comments#create',                     :as => :create_photo_comment
     delete '/comments/:comment_id'                           => 'comments#destroy',                    :as => :destroy_comment
-    get    '/photos/:photo_id/comments/finish_guest_create'  => 'comments#finish_create',              :as => :finish_create_photo_comment
+    get    '/photos/:photo_id/comments/finish_create'  => 'comments#finish_create',              :as => :finish_create_photo_comment
 
     #activities
     get '/albums/:album_id/activities' => 'activities#album_index', :as => :album_activities

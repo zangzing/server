@@ -26,7 +26,7 @@ zz.routes = {
         },
 
         finish_create_photo_comment_path: function(photo_id){
-            return '/service/photos/:photo_id/comments/finish_guest_create'.replace(':photo_id', photo_id);
+            return '/service/photos/:photo_id/comments/finish_create'.replace(':photo_id', photo_id);
         }
 
 
