@@ -46,6 +46,10 @@ Server::Application.configure do
   config.action_mailer.logger = nil
 
   ActionController::Base.asset_host = "%d.assets.photos.zangzing.com"
-
+  #todo this should be removed after we migrate to amazon - it is
+  # only here for predeploy testing to amazon
+  if ZZDeployEnvironment.env.app_host == "hacktest.photos.zangzing.com"
+    ActionController::Base.asset_host = "%d.assets.#{ZZDeployEnvironment.env.app_host}"
+  end
 
 end
