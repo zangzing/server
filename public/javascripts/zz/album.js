@@ -210,7 +210,7 @@ zz.album = {};
     var current_photo_id = null;
 
     function comments_open() {
-        return jQuery.cookie('show_comments');
+        return jQuery.cookie('show_comments') == 'true';
     }
 
     function open_comments_drawer(animate, photo_id, callback) {
@@ -237,7 +237,7 @@ zz.album = {};
     }
 
     function close_comments_drawer(animate, callback) {
-        jQuery.cookie('show_comments', null);
+        jQuery.cookie('show_comments', 'false');
 
         var comments_panel = $('#article .comments-right-panel');
 
