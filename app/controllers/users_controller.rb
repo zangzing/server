@@ -28,6 +28,9 @@ class UsersController < ApplicationController
         redirect_to user_pretty_url(current_user)
         return
     end
+
+    prevent_session_fixation
+
     @user_session = UserSession.new
 
     # RESERVED NAMES

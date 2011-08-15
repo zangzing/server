@@ -1,7 +1,7 @@
 class CommentsController < ApplicationController
   include ActionView::Helpers::SanitizeHelper
 
-#  before_filter :require_user
+  before_filter :require_user, :only => [:finish_create, :destroy]
   before_filter :require_album, :except => [:destroy, :metadata_for_subjects]
   before_filter :require_album_viewer_role, :except => [:destroy, :metadata_for_subjects]
   
@@ -38,33 +38,48 @@ class CommentsController < ApplicationController
   end
 
 
+
+  # guest commenter is redirected here after signin
+  # releavent params have all been copied to session (see below in #create)
+  def finish_create
+    create_comment(session[:comment][:text])
+    set_show_comments_cookie
+    redirect_to photo_pretty_url(Photo.find(params[:photo_id]))
+  end
+
+
+  # create comment if there is user, or capture params in session
+  # and redirect to signin (and then to #finish_create)
   def create
-    commentable = Commentable.find_or_create_by_photo_id(params[:photo_id])
-    comment = Comment.new
-    comment.text = sanitize(params[:comment][:text])
-    comment.user = current_user
-    commentable.comments << comment
-    comment.save!
+    if current_user
 
-    zza.track_event("photo.comment.create", {:photo_id => params[:photo_id]})
+      comment = create_comment(params[:comment][:text])
 
-
-    if(params[:post_to_facebook])
-      comment.post_to_facebook
-      zza.track_event("photo.comment.post.facebook", {:photo_id => params[:photo_id]})
-    end
+      if(params[:post_to_facebook])
+        comment.post_to_facebook
+        zza.track_event("photo.comment.post.facebook", {:photo_id => params[:photo_id]})
+      end
 
 
-    if(params[:post_to_twitter])
-      comment.post_to_twitter
-      zza.track_event("photo.comment.post.twitter", {:photo_id => params[:photo_id]})
-    end
+      if(params[:post_to_twitter])
+        comment.post_to_twitter
+        zza.track_event("photo.comment.post.twitter", {:photo_id => params[:photo_id]})
+      end
 
-    comment.send_notification_emails
 
-    render :json => JSON.fast_generate(comment.as_json), :status => 200 and return
+      render :json => JSON.fast_generate(comment.as_json), :status => 200 and return
+
+    else
+      session[:comment] = params[:comment]
+      flash[:error] = 'You must sign in or join to post comments'
+      head :status => 401 # javascript looks for this status code and does a redirect in javascript
+    end  
+
+
 
   end
+
+
 
   def destroy
     comment = Comment.find(params[:comment_id])
@@ -86,6 +101,21 @@ class CommentsController < ApplicationController
   end
 
 private
+
+  def create_comment(text)
+    commentable = Commentable.find_or_create_by_photo_id(params[:photo_id])
+    comment = Comment.new
+    comment.text = sanitize(text)
+    comment.user = current_user
+    commentable.comments << comment
+    comment.save!
+
+    comment.send_notification_emails
+
+    zza.track_event("photo.comment.create", {:photo_id => params[:photo_id]})
+
+    return comment
+  end
 
   def render_commentables(commentables)
     results = []

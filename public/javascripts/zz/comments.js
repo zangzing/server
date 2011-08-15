@@ -181,7 +181,7 @@ zz.comments = {};
 
             comments_element.find('.comments').prepend(comment_loading_element);
 
-            zz.routes.comments.create_comment_for_photo(photo_id, params, function(comment_json){
+            var success = function(comment_json){
                 var comment_element = build_comment_element(comment_json);
                 comment_loading_element.remove();
                 comments_element.find('.comments').prepend(comment_element);
@@ -189,7 +189,18 @@ zz.comments = {};
                 resize_comments();
                 comment_counts_for_photos[photo_id] = (comment_counts_for_photos[photo_id] + 1) || 1;
                 notify_subscribers(photo_id);
-            });
+            };
+
+            var error = function(xhr){
+                if(xhr.status == 401 && !zz.session.current_user_id){
+                    // guest tried to create coment
+                    // comment params are stored in session -- just need to login/join
+                    // and then redirect to finish creting comment
+                    zz.routes.users.goto_signin_screen(zz.routes.comments.finish_create_photo_comment_path(photo_id));
+                }
+            };
+
+            zz.routes.comments.create_comment_for_photo(photo_id, params, success, error);
         };
 
 

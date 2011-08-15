@@ -12,18 +12,24 @@ zz.routes = {
 
         get_comments_for_photo: function(photo_id, success, error){
             var url = '/service/photos/:photo_id/comments'.replace(':photo_id', photo_id);
-            return $.get(url, success, error);
+            return zz.routes._get(url, {}, success, error);
         },
 
         create_comment_for_photo: function(photo_id, comment_params, success, failure){
             var url = '/service/photos/:photo_id/comments'.replace(':photo_id', photo_id);
-            return $.post(url, comment_params, success, failure);
+            return zz.routes._post(url, comment_params, success, failure);
         },
 
         get_album_photos_comments_metadata: function(album_id, success, failure){
             var url = '/service/albums/:album_id/photos/comments/metadata'.replace(':album_id', album_id);
-            return $.get(url, success, failure);
+            return zz.routes._get(url, {}, success, failure);
+        },
+
+        finish_create_photo_comment_path: function(photo_id){
+            return '/service/photos/:photo_id/comments/finish_guest_create'.replace(':photo_id', photo_id);
         }
+
+
 
 
     },
@@ -31,6 +37,24 @@ zz.routes = {
     users: {
         user_home_page_path: function(username){
             return '/' + username;
+        },
+
+        goto_join_screen: function(return_to){
+            if(return_to){
+                document.location.href = '/join?return_to=:return_to'.replace(':return_to', return_to);
+            }
+            else{
+                document.location.href = '/join';
+            }
+        },
+
+        goto_signin_screen: function(return_to){
+            if(return_to){
+                document.location.href = '/signin?return_to=:return_to'.replace(':return_to', encodeURIComponent(return_to));
+            }
+            else{
+                document.location.href = '/signin';
+            }
         }
     },
 
@@ -156,8 +180,55 @@ zz.routes = {
         };
 
         zz.async_ajax.put('/service/photos/' + photo_id + '/async_rotate_' + direction, on_success, on_failure);
-    }
+    },
 
+    _post: function(url, params, success, error){
+       return $.ajax({
+           type: 'post',
+           url: url,
+           data: params,
+           success: success,
+           error: error
+       });
+    },
+
+    _put: function(url, params, success, error){
+        params = params || {};
+        params['_method'] = 'put';
+
+        return $.ajax({
+            type: 'post',
+            url: url,
+            data: params,
+            success: success,
+            error: error
+        });
+
+    },
+
+    _delete: function(url, params, success, error){
+        params = params || {};
+        params['_method'] = 'delete';
+
+        return $.ajax({
+            type: 'post',
+            url: url,
+            data: params,
+            success: success,
+            error: error
+        });
+
+    },
+
+    _get: function(url, params, success, error){
+        return $.ajax({
+             type: 'get',
+             url: url,
+             data: params,
+             success: success,
+             error: error
+         });
+    }
 
 
 
