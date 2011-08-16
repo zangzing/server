@@ -181,7 +181,7 @@
     width:32px;
     height:32px;
     background-image: url("/images/photo/icon-uploading.png");
-    z-index:1000;
+    /*z-index:1000;*/
 }
 
 .photo-like-icon{
@@ -203,7 +203,7 @@
     width:32px;
     height:32px;
     background-image: url("/images/photo/icon-error.png");
-    z-index:1000;
+    /*z-index:1000;*/
 }
 
 .photo-delete-button{
@@ -259,7 +259,7 @@
 
 .photo-border:hover .photo-delete-button{
     display:block;
-    z-index:3000;
+    /*z-index:3000;*/
 }
 
 .photo-delete-button:hover {

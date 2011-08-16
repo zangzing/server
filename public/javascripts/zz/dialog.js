@@ -9,7 +9,7 @@ zz.dialog = {
 
         var dialog_element = scrim_element.find('.square-dialog');
         dialog_element.css({width: options.width, height: options.height});
-        dialog_element.append($(content));
+        dialog_element.find('.content').html($(content));
         dialog_element.click(function(event){
             event.stopPropagation();
         });
@@ -97,6 +97,7 @@ zz.dialog = {
                             '<div class="b-side"></div>' +
                             '<div class="r-side"></div>' +
                             '<div class="l-side"></div>' +
+                            '<div class="content"></div>' +
                             '<div class="close-button"></div>' +
                         '</div>' +
                      '</div>',
