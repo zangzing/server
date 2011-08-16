@@ -58,6 +58,15 @@ zz.routes = {
         }
     },
 
+    photos: {
+        photo_url: function(photo_id, album_base_url){
+            album_base_url = album_base_url || zz.page.album_base_url;
+            return ":album_url/photos/#!:photo_id".replace(':album_url', album_base_url).replace(':photo_id', photo_id);
+        }
+
+
+    },
+
     edit_user_path: function(username) {
         return '/:username/settings'.replace(':username', username);
     },

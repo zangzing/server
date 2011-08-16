@@ -341,42 +341,104 @@
 }
 
 
-.photo-toolbar{
-    display:block;
-    position:relative;
-    bottom:33px;
-    width:100%;
-    text-align:center;
+.photogrid-cell .photo-rollover-frame {
+    position: absolute;
+    width:231px;
+    height:299px;
+    top:0px;
+    background-image:url('/images/photo/photo-frame-rollover.png');
 }
 
-.photo-toolbar .buttons{
-    position:relative;
-    display:inline-block;
+
+.photogrid-cell .photo-rollover-frame .social-buttons {
+    position:absolute;
+    bottom: 50px;
+    height: 30px;
+    border: 1px solid red;
 }
 
-.photo-toolbar .button{
-    float:left;
+.photogrid-cell .photo-rollover-frame .social-buttons .facebook-button{
+    position: absolute;
+    left:20px
+}
+
+.photogrid-cell .photo-rollover-frame .social-buttons .twitter-button{
+    position: absolute;
+    left:120px
+}
+
+
+
+.photogrid-cell .photo-rollover-frame .button-bar {
+    position: absolute;
+    bottom: 10px;
+}
+
+.photogrid-cell .photo-rollover-frame .button-bar .button{
+    position: relative;
     width:20px;
     height:18px;
     cursor:pointer;
     margin:3px 0px;
     padding: 0px 6px;
+    display: inline-block;
 }
 
-.photo-toolbar .share-button{ background: url(/images/album_toolbar_share.png) no-repeat scroll 6px -19px transparent; }
-.photo-toolbar .share-button:hover{ background-position:  6px -1px; }
 
-.photo-toolbar .like-button{  width: auto; } /*The like button is styled inside by like.css */
+/*  Share Button
+ *************************************/
+.photogrid-cell .photo-rollover-frame .button-bar .share-button{
+    background: url(/images/album_toolbar_share.png) no-repeat scroll 6px -19px transparent;
+}
 
-.photo-toolbar .info-button{
+.photogrid-cell .photo-rollover-frame .button-bar .share-button:hover{
+    background-position:  6px -1px;
+}
+
+
+/*  Like Button
+ *************************************/
+.photogrid-cell .photo-rollover-frame .button-bar .like-button{
+     /*The like button is styled inside by like.css */
+    width: auto;
+}
+
+
+/*  Comment Button
+ *************************************/
+.photogrid-cell .photo-rollover-frame .button-bar .comment-button{
+    background: url(/images/album_toolbar_share.png) no-repeat scroll 6px -19px transparent;
+}
+
+.photogrid-cell .photo-rollover-frame .button-bar .comment-button:hover{
+    background-position:  6px -1px;
+}
+
+
+/*  Info Button
+ *************************************/
+.photogrid-cell .photo-rollover-frame .button-bar .info-button{
     position:relative;
     top:1px;
     height:17px;
     background: url(/images/album_toolbar_info.png) no-repeat scroll 6px -19px transparent;
-
 }
-.photo-toolbar .info-button:hover{  background-position: 6px -1px; }
 
+.photogrid-cell .photo-rollover-frame .button-bar .info-button:hover{
+    background-position: 6px -1px;
+}
+
+
+
+/*  Buy Button
+ *************************************/
+.photogrid-cell .photo-rollover-frame .button-bar .buy-button{
+    background: url(/images/album_toolbar_share.png) no-repeat scroll 6px -19px transparent;
+}
+
+.photogrid-cell .photo-rollover-frame .button-bar .buy-button:hover{
+    background-position:  6px -1px;
+}
 
 
 
