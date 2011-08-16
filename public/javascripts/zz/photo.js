@@ -30,7 +30,6 @@ zz.template_cache = zz.template_cache || {};
             photoId: null,                //model
             aspectRatio: 0,               //model
             isUploading: false,           //model
-            isUploading: false,           //model
             isError: false,               //model
             showButtonBar: false,         //model
             infoMenuTemplateResololver: null,        // show InfoMenu or not and what style
@@ -202,22 +201,30 @@ zz.template_cache = zz.template_cache || {};
 
                 el.mouseenter(function(){
 
+                    zz.logger.debug('show frame');
+
+
                     // setup the rollover frame
                     var rollover_frame = zz.template_cache.photo_rollover_frame.clone();
                     var menu_open = false;
                     var mouse_over = true;
 
+                    var hide_frame = function(){
+                        rollover_frame.remove();
+                        el.css({'z-index': 0});
+                        zz.logger.debug('hide frame');
+                    };
+
                     var check_hide_frame = function(){
                         if(!menu_open && !mouse_over){
-                            rollover_frame.remove();
-                            el.css({'z-index': 0});
+                            hide_frame();
                         }
                     };
 
-                    rollover_frame.mouseleave(function(){
-                        mouse_over = false;
-                        check_hide_frame()
-                    });
+//                    rollover_frame.mouseleave(function(){
+//                        mouse_over = false;
+//                        check_hide_frame()
+//                    });
 
                     el.mouseleave(function(){
                         mouse_over = false;
@@ -236,6 +243,7 @@ zz.template_cache = zz.template_cache || {};
                     var photo_url = zz.routes.photos.photo_url(o.photoId);
                     social_buttons.find('.twitter-button').append(zz.social_buttons.create_twitter_button_for_photo(photo_url));
                     social_buttons.find('.facebook-button').append(zz.social_buttons.create_facebook_button_for_photo(photo_url));
+                    zz.logger.debug('create social buttons');
 
 
                     // setup the button bar
@@ -256,6 +264,15 @@ zz.template_cache = zz.template_cache || {};
                     var like_button = button_bar.find('.like-button');
                     like_button.attr('data-zzid', o.photoId);
                     zz.like.draw_tag(like_button);
+
+
+
+                    // comment button
+                    var comment_button = button_bar.find('.comment-button');
+                    comment_button.click(function(){
+                        zz.comments.show_in_dialog(o.photoId);
+                        hide_frame();
+                    });
 
 
 

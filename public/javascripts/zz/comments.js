@@ -76,8 +76,15 @@ zz.comments = {};
 
     zz.comments.subscribe_to_like_counts = function(callback){
        like_count_subscribers.push(callback);
-    }
+    };
 
+
+    zz.comments.show_in_dialog = function(photo_id){
+        var comments_widget = zz.comments.build_comments_widget(photo_id);
+        zz.dialog.show_square_dialog(comments_widget.element, {width:450, height:500});
+        comments_widget.load_comments_for_photo(photo_id);
+
+    };
 
 
     zz.comments.build_comments_widget = function(photo_id){

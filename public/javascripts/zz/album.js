@@ -401,6 +401,8 @@ zz.album = {};
                 //force this back because grid turns on scrolling
                 $(element).css({'overflow-x': 'hidden', 'overflow-y': 'hidden'});
 
+                $(element).css({height: '300px'}); // make room for photo frame
+
                 var allShowing = false;
 
 
@@ -410,14 +412,14 @@ zz.album = {};
                         if (allShowing) {
                             moreLessbuttonElement.find('span').html('Show more photos');
                             moreLessbuttonElement.removeClass('open');
-                            $(element).animate({height: 230}, 500, 'swing', function() {
+                            $(element).animate({height: 300}, 500, 'swing', function() {
                             });
                             allShowing = false;
                         }
                         else {
                             moreLessbuttonElement.find('span').html('Show fewer photos');
                             moreLessbuttonElement.addClass('open');
-                            $(element).animate({height: $(element).children().last().position().top + 230}, 500, 'swing', function() {
+                            $(element).animate({height: $(element).children().last().position().top + 300}, 500, 'swing', function() {
                                 $(element).trigger('scroll');  //hack: force the photos to load themselves now that they are visible
                             });
                             allShowing = true;
