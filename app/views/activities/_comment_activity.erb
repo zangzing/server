@@ -13,12 +13,9 @@
               <a href="<%=user_path(activity.user)%>"><%=activity.user.name%></a>
           <% end %>
 
-          <%if view== 'album' %>
-              commented on <a href="<%=photo_pretty_url(activity.comment.commentable.subject)%>"> this photo</a>:
-          <%else %>
-              commented <a href="<%=photo_pretty_url(activity.comment.commentable.subject)%>"> this photo</a>:
-              by <a href="<%=user_pretty_url(activity.comment.commentable.subject.user)%>"> <%=activity.comment.commentable.subject.user%></a>
-          <%end %>
+          commented on <a href="<%=photo_pretty_url(activity.comment.commentable.subject)%>"> this photo</a>
+          by <a href="<%=user_pretty_url(activity.comment.commentable.subject.user)%>"> <%=activity.comment.commentable.subject.user.name%></a>
+
           <div class="tagline"><%=time_ago_in_words(activity.created_at) %> ago</div>
         </div>
       </div>
