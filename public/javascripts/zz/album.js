@@ -191,6 +191,16 @@ zz.album = {};
 
     zz.album.init_timeline_view = function() {
         init_timeline_or_people_view('timeline');
+        $('.timeline-comment span').center_y();
+        $('.timeline-comment span a').each(function(index, element){
+            var photo_id = $(element).attr('data-photo-id');
+
+            zz.logger.debug(photo_id);
+
+            $(element).click(function(){
+                zz.comments.show_in_dialog(photo_id);
+            });
+        });
     };
 
 
@@ -461,21 +471,21 @@ zz.album = {};
     function init_comment_button(){
         zz.comments.subscribe_to_like_counts(function(photo_id, count){
             if(photo_id == current_photo_id){
-               update_comment_count_on_toolbar(current_photo_id);
+                update_comment_count_on_toolbar(current_photo_id);
             }
         });
     }
 
     function update_comment_count_on_toolbar(photo_id) {
         zz.comments.get_comment_count_for_photo(zz.page.album_id, photo_id, function(count){
-           if(count && count > 0){
-               $('#footer #comments-button .comment-count').removeClass('empty');
-               $('#footer #comments-button .comment-count').text(count);
-           }
-           else{
-               $('#footer #comments-button .comment-count').addClass('empty');
-               $('#footer #comments-button .comment-count').text('');
-           }
+            if(count && count > 0){
+                $('#footer #comments-button .comment-count').removeClass('empty');
+                $('#footer #comments-button .comment-count').text(count);
+            }
+            else{
+                $('#footer #comments-button .comment-count').addClass('empty');
+                $('#footer #comments-button .comment-count').text('');
+            }
         });
     }
 

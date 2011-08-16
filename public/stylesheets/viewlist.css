@@ -99,12 +99,31 @@
     border-bottom: 1px solid #CCCCCC;
 }
 
+.viewlist .content{
+    position: relative;
+}
+
 .viewlist .timeline-grid { /* this positions the photo grid for upload activities in both views */
   position: relative;
   left: -20px;
   width: 100%;
   overflow: hidden;
   height: 230px;
+}
+
+.viewlist .timeline-comment{
+    position: absolute;
+    top: 0px;
+    left: 250px;
+    bottom: 30px;
+    width:200px;
+}
+
+.viewlist .timeline-comment span{
+    /* this get center aligned vertically by javascript */
+    position: absolute;
+    max-height: 200px;
+    overflow-y: auto;
 }
 
 .viewlist .more {

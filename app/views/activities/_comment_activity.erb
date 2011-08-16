@@ -19,13 +19,13 @@
               commented <a href="<%=photo_pretty_url(activity.comment.commentable.subject)%>"> this photo</a>:
               by <a href="<%=user_pretty_url(activity.comment.commentable.subject.user)%>"> <%=activity.comment.commentable.subject.user%></a>
           <%end %>
-          "<%= activity.comment.text %>"
           <div class="tagline"><%=time_ago_in_words(activity.created_at) %> ago</div>
         </div>
       </div>
       <%if view == 'album' %>
           <div class="content">
               <div class="timeline-grid" data-photo-id="<%=activity.comment.commentable.subject.id%>"></div>
+              <div class="timeline-comment"><span><a href="#" data-photo-id="<%=activity.comment.commentable.subject.id%>">"<%= truncate(activity.comment.text, :length => 140) %>"</a></span></div>
           </div>
       <%end%>
     </li>
