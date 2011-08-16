@@ -6,6 +6,7 @@ zz.comments = {};
 
     var COMMENTS_TEMPLATE = '<div class="comments-container">' +
                             '<div class="new-comment">' +
+                               '<div class="background"></div>' +
                                '<div class="comment-picture">' +
                                    '<div class="profile-picture">' +
                                        '<div class="mask">' +
@@ -81,7 +82,7 @@ zz.comments = {};
 
     zz.comments.show_in_dialog = function(photo_id){
         var comments_widget = zz.comments.build_comments_widget(photo_id);
-        zz.dialog.show_square_dialog(comments_widget.element, {width:450, height:500});
+        zz.dialog.show_square_dialog(comments_widget.element, {width:450, height:600});
         comments_widget.load_comments_for_photo(photo_id);
 
     };
