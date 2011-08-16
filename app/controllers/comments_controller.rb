@@ -37,7 +37,7 @@ class CommentsController < ApplicationController
     render :json=>JSON.fast_generate(json)
   end
 
-
+   
 
   # guest commenter is redirected here after signin
   # releavent params have all been copied to session (see below in #create)
