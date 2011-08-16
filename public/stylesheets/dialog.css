@@ -141,7 +141,7 @@
     height: 30px;
     right: -15px;
     top: -15px;
-    background: url('../../images/dialog/close-button.png');
+    background: url('/images/dialog/close-button.png');
     cursor: pointer;
 
 }
@@ -152,7 +152,7 @@
     width: 100px;
     top: -50px;
     left: -50px;
-    background: url('../../images/dialog/top-left-corner.png');
+    background: url('/images/dialog/top-left-corner.png');
 }
 
 .square-dialog .tr-corner {
@@ -161,7 +161,7 @@
     width: 100px;
     top: -50px;
     right: -50px;
-    background: url('../../images/dialog/top-right-corner.png');
+    background: url('/images/dialog/top-right-corner.png');
 
 }
 
@@ -171,7 +171,7 @@
     width: 100px;
     bottom: -50px;
     left: -50px;
-    background: url('../../images/dialog/bottom-left-corner.png');
+    background: url('/images/dialog/bottom-left-corner.png');
 
 }
 
@@ -181,7 +181,7 @@
     width: 100px;
     bottom: -50px;
     right: -50px;
-    background: url('../../images/dialog/bottom-right-corner.png');
+    background: url('/images/dialog/bottom-right-corner.png');
 }
 
 .square-dialog .t-side {
@@ -190,7 +190,7 @@
     top: -50px;
     left: 50px;
     right: 50px;
-    background: url('../../images/dialog/top-side.png');
+    background: url('/images/dialog/top-side.png');
 }
 
 .square-dialog .b-side {
@@ -199,7 +199,7 @@
     bottom: -50px;
     left: 50px;
     right: 50px;
-    background: url('../../images/dialog/bottom-side.png');
+    background: url('/images/dialog/bottom-side.png');
 }
 
 .square-dialog .r-side {
@@ -208,7 +208,7 @@
     top: 50px;
     right: -50px;
     bottom: 50px;
-    background: url('../../images/dialog/right-side.png');
+    background: url('/images/dialog/right-side.png');
 }
 
 .square-dialog .l-side {
@@ -217,6 +217,6 @@
     top: 50px;
     left: -50px;
     bottom: 50px;
-    background: url('../../images/dialog/left-side.png');
+    background: url('/images/dialog/left-side.png');
 }
 
