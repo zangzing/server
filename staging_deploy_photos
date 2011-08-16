@@ -24,17 +24,17 @@ tag = Readline.readline()
 tag = "master" if tag.empty?
 
 puts
-print "Do you want to skip migration (zero-downtime)? (Yes/n): "
-skip_migrate = Readline.readline()
-if (skip_migrate == "Yes")
-  migrate = "--no-migrate"
+print "Do you want zero downtime? (Yes/n): "
+zero_downtime = Readline.readline()
+if (zero_downtime == "Yes")
+  downtime = ""
 else
-  migrate = ""
+  downtime = "--downtime"
 end
 
 options = ARGV[0] ? ARGV[0] : ""
 
-cmd = "ey deploy -e photos_staging --ref #{tag} #{migrate} -v " + options
+cmd = "zz deploy #{downtime} --migrate -g photos_staging --tag #{tag} #{options}"
 puts
 puts "About to deploy to PHOTOS STAGING with the following command: "
 puts "\n" + cmd + "\n\n"
