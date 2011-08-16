@@ -55,13 +55,13 @@ class CommentsController < ApplicationController
 
       comment = create_comment(params[:comment][:text])
 
-      if(params[:post_to_facebook])
+      if(params[:post_to_facebook] == "true")
         comment.post_to_facebook
         zza.track_event("photo.comment.post.facebook", {:photo_id => params[:photo_id]})
       end
 
 
-      if(params[:post_to_twitter])
+      if(params[:post_to_twitter] == "true")
         comment.post_to_twitter
         zza.track_event("photo.comment.post.twitter", {:photo_id => params[:photo_id]})
       end
