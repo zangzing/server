@@ -35,7 +35,9 @@ zz.template_cache = zz.template_cache || {};
             infoMenuTemplateResololver: null,        // show InfoMenu or not and what style
             context: null,                //context -- album-edit, album-grid, album-picture, album-timeline, album-people, chooser-grid, chooser-picture
             type: 'photo',               //photo \ folder \ blank
-            captionHeight: 30
+            captionHeight: 30,
+            rolloverFrameContainer: null
+
         },
 
         _create: function() {
@@ -211,10 +213,14 @@ zz.template_cache = zz.template_cache || {};
                     // - while any of the menus is open, we need to keep the rollover frame open, even if mouse is no
                     //   longer over the frame
 
-                    var rollover_clone_parent = $('body');
-
+                    var rollover_clone_parent = self.options.rolloverFrameContainer;
                     var rollover_clone = el.clone();
-                    rollover_clone.css({left: el.offset().left, top: el.offset().top});
+
+                    var left = el.offset().left - rollover_clone_parent.offset().left ;
+                    var top = el.offset().top - rollover_clone_parent.offset().top + rollover_clone_parent.scrollTop();
+
+
+                    rollover_clone.css({left: left, top: top});
                     rollover_clone.appendTo(rollover_clone_parent);
 
 

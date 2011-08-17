@@ -184,7 +184,8 @@ zz.album = {};
                     return true;
                 },
                 showButtonBar: true,
-                infoMenuTemplateResolver: info_menu_template_resolver
+                infoMenuTemplateResolver: info_menu_template_resolver,
+                rolloverFrameContainer: gridElement
             }).data().zz_photogrid;
         });
     };
@@ -405,7 +406,9 @@ zz.album = {};
                         return true;
                     },
                     infoMenuTemplateResolver: info_menu_template_resolver,
-                    centerPhotos: false
+                    centerPhotos: false,
+                    rolloverFrameContainer: $('#article')
+
                 }).data().zz_photogrid;
 
 

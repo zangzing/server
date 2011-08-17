@@ -44,7 +44,9 @@
             infoMenuTemplateResolver: null, //album model
 
             onClickShare: jQuery.noop,
-            centerPhotos: true
+            centerPhotos: true,
+            rolloverFrameContainer: $('#article')
+
 //            spaceBarTriggersClick: true
 
         },
@@ -105,6 +107,7 @@
             }
 
 
+
             // This function is called below, inside a loop that regularly allows the system to
             // process other events.
             var create_photo = function(index, photo) {
@@ -151,7 +154,8 @@
                     type: _.isUndefined(photo.type) ? 'photo' : photo.type,
                     showButtonBar: o.showButtonBar,
                     infoMenuTemplateResolver: o.infoMenuTemplateResolver,
-                    onClickShare: o.onClickShare
+                    onClickShare: o.onClickShare,
+                    rolloverFrameContainer: o.rolloverFrameContainer
                 });
 
                 //setup drag and drop
@@ -466,6 +470,18 @@
             create_some_photos(0);
 
 
+        },
+
+        findFirstScrollableContainer: function(){
+            var self = this;
+            var container = self.element;
+
+            for(;;){
+                if(container.css('overflow-y') == 'auto'){
+                    return container;
+                }
+                container = container.parent();
+            }
         },
 
 

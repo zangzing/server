@@ -81,10 +81,25 @@
  padding: 7px 0 0 45px;
 }
 
-.viewlist .item.tab.add    { background: url('/images/tab-activity-add.png')    no-repeat scroll  0 0; }
-.viewlist .item.tab.follow { background: url('/images/tab-activity-follow.png') no-repeat scroll  0 0; }
-.viewlist .item.tab.like   { background: url('/images/tab-activity-like.png')   no-repeat scroll  0 0; }
-.viewlist .item.tab.share  { background: url('/images/tab-activity-share.png')  no-repeat scroll  0 0; }
+.viewlist .item.tab.add{
+    background: url('/images/tab-activity-add.png')    no-repeat scroll  0 0;
+}
+
+.viewlist .item.tab.follow{
+    background: url('/images/tab-activity-follow.png') no-repeat scroll  0 0;
+}
+
+.viewlist .item.tab.like{
+    background: url('/images/tab-activity-like.png')   no-repeat scroll  0 0;
+}
+
+.viewlist .item.tab.share{
+    background: url('/images/tab-activity-share.png')  no-repeat scroll  0 0;
+}
+
+.viewlist .item.tab.comment{
+    background: url('/images/tab-activity-comment.png')  no-repeat scroll  0 0;
+}
 
 
 
