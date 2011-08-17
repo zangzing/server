@@ -209,6 +209,8 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
     end
   end
 
+
+
   # returns the  movie view
   # @album is set by before_filter require_album
   def movie

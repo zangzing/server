@@ -49,6 +49,8 @@ perftest:
 test:
   <<: *common
   resque_zza_id: "dev.photos/svr"
+  requires_http_auth: false
+
 
 photos_production:
   <<: *common

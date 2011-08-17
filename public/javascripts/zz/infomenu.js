@@ -33,6 +33,29 @@ zz.infomenu = {
 
 
 
+    
+
+    show: function(button, info_menu_template, zz_photo, photo_id, onclose) {
+        button.zz_menu({
+            zz_photo: zz_photo,
+            container: $('#article'),
+            subject_id: photo_id,
+            subject_type: 'photo',
+            style: 'auto',
+            bind_click_open: false,
+            append_to_element: false, //use the el zzindex so overflow goes under bottom toolbar
+            menu_template: info_menu_template,
+            click: zz.infomenu.click_handler,
+            close: onclose
+        });
+        $(button).zz_menu('open');
+
+    },
+
+
+
+
+
     click_handler: function(event, data) {
         var action = data.action,
             options = data.options,

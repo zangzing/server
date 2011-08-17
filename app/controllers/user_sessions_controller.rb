@@ -12,7 +12,8 @@ class UserSessionsController < ApplicationController
   def new
     if params[:return_to]
       session[:return_to] = params[:return_to]
-      #redirect_to signin_url and return
+      redirect_to signin_url
+      return
     end
 
 
@@ -24,9 +25,7 @@ class UserSessionsController < ApplicationController
   end
 
   def create
-    return_to = session[:return_to] #save the intended destination of the user if any
-    reset_session # destroy the session to prevent Session Fixation Attack
-    session[:return_to] = return_to  #restore the intended user destination
+    prevent_session_fixation
     @user_session = UserSession.new(:email => params[:email], :password => params[:password], :remember_me => true)
     if @user_session.save
       @user_session.user.reset_perishable_token! #reset the perishable token
@@ -42,6 +41,7 @@ class UserSessionsController < ApplicationController
         redirect_to admin_unimpersonate_url
       else
         current_user_session.destroy
+        reset_session
         redirect_back_or_default root_url
       end
     else

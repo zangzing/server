@@ -6,6 +6,9 @@
 
 (function($, undefined) {
 
+    var PADDING_TOP = 10;
+
+
     $.widget('ui.zz_photogrid', {
         options: {
             photos: [],
@@ -38,10 +41,10 @@
             lazyLoadThreshold: null,
 
             showButtonBar: false,          //model
-            showInfoMenu: false,
             infoMenuTemplateResolver: null, //album model
 
-            onClickShare: jQuery.noop
+            onClickShare: jQuery.noop,
+            centerPhotos: true
 //            spaceBarTriggersClick: true
 
         },
@@ -667,13 +670,18 @@
                 var row = Math.floor(index / cellsPerRow);
                 var col = index % cellsPerRow;
 
-                var paddingLeft = Math.floor((self.width - (cellsPerRow * self.options.cellWidth)) / 2);
 
-                paddingLeft = paddingLeft - (20 / 2); //account for scroller //todo: use constant or lookup value for scroller width
+                var paddingLeft = 0;
+                
+                if(self.options.centerPhotos){
+                    paddingLeft = Math.floor((self.width - (cellsPerRow * self.options.cellWidth)) / 2);
+                    paddingLeft = paddingLeft - (20 / 2); //account for scroller //todo: use constant or lookup value for scroller width
+                }
+
 
 
                 return {
-                    top: row * self.options.cellHeight,
+                    top: row * self.options.cellHeight + PADDING_TOP,
                     left: paddingLeft + (col * self.options.cellWidth)
                 };
             }

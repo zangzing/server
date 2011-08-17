@@ -6,7 +6,7 @@ var zz = zz || {};
 
 zz.homepage = {
 
-    render: function(my_albums_path, session_user_liked_albums_path, liked_albums_path, liked_users_albums_path ) {
+    render: function(my_albums_path, session_user_liked_albums_path, liked_albums_path, liked_users_albums_path) {
         var cell = $('<div class="album-cell"></div>');
 
         var call_and_merge = function(urls, callback) {

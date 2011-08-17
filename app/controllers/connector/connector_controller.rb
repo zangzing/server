@@ -83,7 +83,7 @@ class Connector::ConnectorController < ApplicationController
       rescue SocketError => se
         raise HttpCallFail
       rescue Exception => e
-        raise moderate_exception(e) || e
+         raise moderate_exception(e) || e
       end
     end
     

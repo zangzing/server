@@ -7,7 +7,7 @@
 
 class ApplicationController < ActionController::Base
   include SslRequirement
-  
+
 
   # give the zza worker a chance to restart if we are running
   # as a forked process because it will have been killed in that
@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
 
   helper_method :current_user_session, :current_user, :current_user?, :signed_in?,
-      :user_pretty_url, :album_pretty_url, :photo_pretty_url, :back_to_home_page_url, :back_to_home_page_caption
+                :user_pretty_url, :album_pretty_url, :photo_pretty_url, :back_to_home_page_url, :back_to_home_page_caption
 
   # this basic filter uses a hardcoded username/password - we must turn off the
   # AuthLogic  support with allow_http_basic_auth false on the UserSession since
@@ -50,13 +50,12 @@ class ApplicationController < ActionController::Base
     # must pass status code as a string or you will kill rack since
     # it is expecting a string
     response.headers['X-Status'] = response.status.to_s
-    flash.discard  # don't want the flash to appear when you reload page 
   end
 
   def errors_to_headers( record )
-      #return unless request.xhr?
-      response.headers['X-RecordType'] = record.class.name
-      response.headers['X-Errors'] = record.errors.full_messages.to_json
+    #return unless request.xhr?
+    response.headers['X-RecordType'] = record.class.name
+    response.headers['X-Errors'] = record.errors.full_messages.to_json
   end
 
 
@@ -68,153 +67,170 @@ class ApplicationController < ActionController::Base
   end
 
 
-    # Authentication based on authlogic
-    # returns false or the current user session
-    def current_user_session
-      return @current_user_session if defined?(@current_user_session)
-      @current_user_session = UserSession.find
+  # change the session cookies, but keep
+  # contents of the session hash
+  def prevent_session_fixation
+    old_session = session.clone
+    reset_session
+
+    old_session.keys.each do |key|
+      session[key.to_sym] = old_session[key]
     end
 
-    #
-    # Authlogic
-    # returns false or the current user
-    def current_user
-      return @current_user if defined?(@current_user)
-      @current_user = current_user_session && current_user_session.record
-    end
-
-    #
-    # true if the given user is the current user
-    def current_user?(user)
-      user == current_user
-    end
-
-    #
-    # Filter for methods that require a log in
-    def require_user
-      unless current_user
-        if request.xhr?
-          flash.now[:error] = "You must be logged in to access this page"
-          head :status => 401
-        else
-          flash[:error] = "You must be logged in to access this page"
-          store_location
-          redirect_to new_user_session_url
-        end
-      end
-    end
+  end
 
 
-    # This is the json version of require user. Saves the request referer instead of the
-    # resquest fullpath so that the user returns to the page from where the xhr call originated
-    # instead of then json-location. Instead of redirecting, it just returns 401 with an informative
-    # json message that may or may not be used.
-    def require_user_json
-      unless current_user
-        session[:return_to] = request.referer
-        render :json => "You must be logged in to call this url", :status => 401
-        return false
-      end
-    end
+  # Authentication based on authlogic
+  # returns false or the current user session
+  def current_user_session
+    return @current_user_session if defined?(@current_user_session)
+    @current_user_session = UserSession.find
+  end
 
-    # for act_as_authenticated compatibility with oauth plugin
-    def login_required
-      require_user
-    end
+  #
+  # Authlogic
+  # returns false or the current user
+  def current_user
+    return @current_user if defined?(@current_user)
+    @current_user = current_user_session && current_user_session.record
+  end
 
-    #
-    # Filter for methods that require NO USER like sign in
-    def require_no_user
-      if current_user
+  #
+  # true if the given user is the current user
+  def current_user?(user)
+    user == current_user
+  end
+
+  #
+  # Filter for methods that require a log in
+  def require_user
+    unless current_user
+      if request.xhr?
+        flash.now[:error] = "You must be logged in to access this page"
+        head :status => 401
+      else
+        flash[:error] = "You must be logged in to access this page"
         store_location
-        flash[:notice] = "You must be logged out to access this page"
-        redirect_to root_path
-        return false
+        redirect_to new_user_session_url
       end
     end
+  end
 
 
-    #
-    #  Stores the intended destination of a rerquest to take the user there after log in
-    def store_location
-      session[:return_to] = request.fullpath
+  # This is the json version of require user. Saves the request referer instead of the
+  # resquest fullpath so that the user returns to the page from where the xhr call originated
+  # instead of then json-location. Instead of redirecting, it just returns 401 with an informative
+  # json message that may or may not be used.
+  def require_user_json
+    unless current_user
+      session[:return_to] = request.referer
+      render :json => "You must be logged in to call this url", :status => 401
+      return false
     end
+  end
 
-    #
-    #  these helpers and filters are used to manage the 'all albums' back button
-    def store_last_home_page(user_id)
-      session[:last_home_page] = user_id
+  # for act_as_authenticated compatibility with oauth plugin
+  def login_required
+    require_user
+  end
+
+  #
+  # Filter for methods that require NO USER like sign in
+  def require_no_user
+    if current_user
+      store_location
+      flash[:notice] = "You must be logged out to access this page"
+      redirect_to root_path
+      return false
     end
+  end
 
-    def last_home_page
-      session[:last_home_page]
+
+  #
+  #  Stores the intended destination of a rerquest to take the user there after log in
+  def store_location
+    session[:return_to] = request.fullpath
+  end
+
+  #
+  #  these helpers and filters are used to manage the 'all albums' back button
+  def store_last_home_page(user_id)
+    session[:last_home_page] = user_id
+  end
+
+  def last_home_page
+    session[:last_home_page]
+  end
+
+  def check_referrer_and_reset_last_home_page
+    unless request.referer.include? "http://#{request.host_with_port}"
+      session[:last_home_page] = nil
     end
+  end
 
-    def check_referrer_and_reset_last_home_page
-      unless request.referer.include? "http://#{request.host_with_port}"
-        session[:last_home_page] = nil
-      end
+  def back_to_home_page_url(album)
+    user_id = last_home_page
+    if user_id
+      return user_pretty_url User.find(user_id)
+    else
+      return user_pretty_url album.user
     end
+  end
 
-    def back_to_home_page_url(album)
-       user_id = last_home_page
-       if user_id
-         return user_pretty_url User.find(user_id)
-       else
-         return user_pretty_url album.user
-       end
+  def back_to_home_page_caption(album)
+    user_id = last_home_page
+    if current_user && user_id == current_user.id
+      return "My Albums"
+    elsif user_id
+      return User.find(user_id).posessive_short_name + " Albums"
+    else
+      return album.user.posessive_short_name + " Albums"
     end
-
-    def back_to_home_page_caption(album)
-       user_id = last_home_page
-       if current_user && user_id == current_user.id
-         return "My Albums"
-       elsif user_id
-         return User.find(user_id).posessive_short_name + " Albums"
-       else
-         return album.user.posessive_short_name + " Albums"
-       end
-    end
+  end
 
 
 
-
-
-    #
-    # Redirects the user to the desired location after log in. If no stored location then to the default location
-    def redirect_back_or_default(default)
-      redirect_to(session[:return_to] || default)
-      session[:return_to] = nil
-    end
-
-    # True if a user is signed in. Left in place for backwards compatibility
-    # better to use if current_user ......
-    def signed_in?
-       current_user
-    end
-
-    # True if a user is signed in. Left in place for backwards compatibility
-    # better to use if current_user ......
-    def logged_in?
-       current_user
-    end
+  def set_show_comments_cookie
+    cookies[:show_comments] = true
+  end
 
 
 
-    #
-    # An additional way to control access to certain actions like the ones that are only available to the owner
-    # TODO: Implement this if needed.
-    # Do not remove it its for act_as_Authenticated compatibility
-    #
-    def authorized?
-      true
-    end
+  #
+  # Redirects the user to the desired location after log in. If no stored location then to the default location
+  def redirect_back_or_default(default)
+    redirect_to(session[:return_to] || default)
+    session[:return_to] = nil
+  end
 
-    def protect_with_http_auth
-      # see if we have http_auth turned on
-      return unless ZangZingConfig.config[:requires_http_auth]
+  # True if a user is signed in. Left in place for backwards compatibility
+  # better to use if current_user ......
+  def signed_in?
+    current_user
+  end
 
-      allowed = {
+  # True if a user is signed in. Left in place for backwards compatibility
+  # better to use if current_user ......
+  def logged_in?
+    current_user
+  end
+
+
+
+  #
+  # An additional way to control access to certain actions like the ones that are only available to the owner
+  # TODO: Implement this if needed.
+  # Do not remove it its for act_as_Authenticated compatibility
+  #
+  def authorized?
+    true
+  end
+
+  def protect_with_http_auth
+    # see if we have http_auth turned on
+    return unless ZangZingConfig.config[:requires_http_auth]
+
+    allowed = {
         :actions => ['photos#agent_index',
                      'photos#agent_create',
                      'photos#upload_fast',
@@ -234,18 +250,18 @@ class ApplicationController < ActionController::Base
                      'agents#index',
                      'admin/guests#create',
 
-                      #let facebook crawlers in
-                      'photos#index',
-                      'albums#index'
-                      ]
-      
-      }
-      unless allowed[:actions].include?("#{params[:controller]}##{params[:action]}")
-        authenticate_or_request_with_http_basic('ZangZing Photos') do |username, password|
-          username == Server::Application.config.http_auth_credentials[:login] && password == Server::Application.config.http_auth_credentials[:password]
-        end
+                     #let facebook crawlers in
+                     'photos#index',
+                     'albums#index'
+        ]
+
+    }
+    unless allowed[:actions].include?("#{params[:controller]}##{params[:action]}")
+      authenticate_or_request_with_http_basic('ZangZing Photos') do |username, password|
+        username == Server::Application.config.http_auth_credentials[:login] && password == Server::Application.config.http_auth_credentials[:password]
       end
     end
+  end
 
   #
   # To be run as a before_filter
