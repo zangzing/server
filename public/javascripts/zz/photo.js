@@ -316,7 +316,7 @@ zz.template_cache = zz.template_cache || {};
                         }
                     });
                     comment_button.click(function(){
-                        zz.comments.show_in_dialog(o.photoId);
+                        zz.comments.show_in_dialog(o.photoId, self.element.clone());
                         hide_frame();
                     });
 
