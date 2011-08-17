@@ -221,9 +221,7 @@ zz.template_cache = zz.template_cache || {};
 
 
                     rollover_clone.css({left: left, top: top});
-                    rollover_clone.hide();
                     rollover_clone.appendTo(rollover_clone_parent);
-                    rollover_clone.fadeIn(100);
 
                     
                     // setup the rollover frame
@@ -233,9 +231,7 @@ zz.template_cache = zz.template_cache || {};
                     var mouse_over_clone = false;
 
                     var hide_frame = function(){
-                        rollover_clone.fadeOut(100, function(){
-                            rollover_clone.remove();
-                        });
+                        rollover_clone.remove();
                     };
 
                     var check_hide_frame = function(){
@@ -319,7 +315,6 @@ zz.template_cache = zz.template_cache || {};
                             count_element.text(count);
                         }
                     });
-
                     comment_button.click(function(){
                         zz.comments.show_in_dialog(o.photoId);
                         hide_frame();
