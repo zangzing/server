@@ -32,6 +32,8 @@ class Like < ActiveRecord::Base
   end
 
 
+
+
   def self.add( user_id, subject_id, subject_type )
 
     return if user_id == subject_id # do not allow following self
@@ -60,6 +62,16 @@ class Like < ActiveRecord::Base
     end
     nil
   end
+
+
+  def self.find_by_album_id(album_id)
+    Like.where(:subject_id => album_id, :subject_type => Like::ALBUM)
+  end
+
+  def self.find_by_photo_id(photo_id)
+    Like.where(:subject_id => photo_id, :subject_type => Like::PHOTO)
+  end
+
 
   def self.post( user_id, subject_id, subject_type, message=nil, tweet=false, facebook=false, dothis=false )
 
