@@ -47,6 +47,7 @@ zz.comments = {};
                                    '</div>';
 
 
+
     // key is photo id, value is count
     // todo: can only track for one album at a time
     var comment_counts_for_photos = null;
@@ -75,6 +76,20 @@ zz.comments = {};
     };
 
 
+    zz.comments.get_pretty_comment_count_for_photo = function(album_id, photo_id, callback){
+        zz.comments.get_comment_count_for_photo(album_id, photo_id, function(count){
+           if(count == 0){
+               count = null;
+           }
+           else if(count > 1000){
+                count = Math.floor(count / 1000) + 'k';
+           }
+
+           callback(count);
+        });
+    };
+
+
     zz.comments.subscribe_to_like_counts = function(callback){
        like_count_subscribers.push(callback);
     };
@@ -86,6 +101,8 @@ zz.comments = {};
         comments_widget.load_comments_for_photo(photo_id);
 
     };
+
+
 
 
     zz.comments.build_comments_widget = function(photo_id){

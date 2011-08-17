@@ -411,9 +411,28 @@
     background: url(/images/album_toolbar_comments.png) no-repeat scroll 6px -18px transparent;
 }
 
+
 .photogrid-cell .photo-rollover-frame .button-bar .comment-button:hover{
     background-position:  6px 0px;
 }
+
+.photogrid-cell .photo-rollover-frame .button-bar .comment-button .count{
+    position: absolute;
+    top: 8px;
+    left: 16px;
+    border: solid 1px #999;
+    background: white;
+    color: #111;
+    text-align: right;
+    text-shadow: 0 .5px 1px #666;
+    padding: .5px 2px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    font-size: 10px;
+    font-weight: 500;
+}
+
+
 
 
 /*  Info Button
