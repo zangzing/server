@@ -408,11 +408,11 @@
 /*  Comment Button
  *************************************/
 .photogrid-cell .photo-rollover-frame .button-bar .comment-button{
-    background: url(/images/album_toolbar_comments.png) no-repeat scroll 6px -19px transparent;
+    background: url(/images/album_toolbar_comments.png) no-repeat scroll 6px -18px transparent;
 }
 
 .photogrid-cell .photo-rollover-frame .button-bar .comment-button:hover{
-    background-position:  6px -1px;
+    background-position:  6px 0px;
 }
 
 
@@ -433,11 +433,11 @@
 /*  Buy Button
  *************************************/
 .photogrid-cell .photo-rollover-frame .button-bar .buy-button{
-    background: url(/images/album_toolbar_buy.png) no-repeat scroll 6px -19px transparent;
+    background: url(/images/album_toolbar_buy.png) no-repeat scroll 6px -18px transparent;
 }
 
 .photogrid-cell .photo-rollover-frame .button-bar .buy-button:hover{
-    background-position:  6px -1px;
+    background-position:  6px 0px;
 }
 
 
