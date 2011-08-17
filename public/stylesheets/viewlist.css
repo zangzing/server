@@ -105,7 +105,7 @@
 
 .viewlist .timeline-grid { /* this positions the photo grid for upload activities in both views */
   position: relative;
-  left: -20px;
+  left: 0px;
   width: 100%;
   overflow: hidden;
   height: 230px;
@@ -114,7 +114,7 @@
 .viewlist .timeline-comment{
     position: absolute;
     top: 0px;
-    left: 300px;
+    left: 240px;
     bottom: 30px;
     width:200px;
 }
@@ -130,7 +130,7 @@
     position: absolute;
     /*left: 764px;*/
     right: 5px;
-    top: 20px;
+    top: -35px;
 }
 .viewlist .more.higher {
     top: -15px;
@@ -162,7 +162,7 @@
 .follow-info{
     width: 160px;
     position:relative;
-    vertical-align: top;
+    vertical-align: top;    
     margin: 10px 5px;
 }
 .follow-info .follow-picture{

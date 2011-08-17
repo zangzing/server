@@ -135,16 +135,17 @@ zz.template_cache = zz.template_cache || {};
             if (o.context.indexOf('chooser') === 0) {
                 //magnify
                 if (o.type === 'photo') {
-                    self.photoAddElement = $('<div class="photo-add-button">')
-                            .click(function(event) {
+                    self.photoAddElement = $('<div class="photo-add-button">');
+                    self.photoAddElement.click(function(event) {
                         o.onClick('main');
                     });
-                    self.photoMagnifyElement = $('<div class="magnify-button">')
-                            .click(function(event) {
+                    self.photoMagnifyElement = $('<div class="magnify-button">');
+                    self.photoMagnifyElement.click(function(event) {
                         o.onClick('magnify');
                     });
                     self.borderElement.append(self.photoAddElement).append(self.photoMagnifyElement);
-                } else {
+                }
+                else {
                     self.borderElement.addClass('no-shadow');
                 }
             }
@@ -196,54 +197,85 @@ zz.template_cache = zz.template_cache || {};
             }
 
 
-            //todo: can these move to css?
             if (o.showButtonBar) {
 
                 el.mouseenter(function(){
 
-                    zz.logger.debug('show frame');
+                    // bunch of tricky stuff here
+                    // - on rollover, we need to clone the photo, add the rollover frame, then append
+                    //   it another element so that the rollover frame can spill out of the photo grid element
+                    //
+                    // - because the cloned element appears over the original, we need to 'hand off' the mouseover
+                    //   events from one to the other
+                    //
+                    // - while any of the menus is open, we need to keep the rollover frame open, even if mouse is no
+                    //   longer over the frame
+
+                    var rollover_clone_parent = $('body');
+
+                    var rollover_clone = el.clone();
+                    rollover_clone.css({left: el.offset().left, top: el.offset().top});
+                    rollover_clone.appendTo(rollover_clone_parent);
 
 
+                    
                     // setup the rollover frame
                     var rollover_frame = zz.template_cache.photo_rollover_frame.clone();
                     var menu_open = false;
-                    var mouse_over = true;
+                    var mouse_over_el = true;
+                    var mouse_over_clone = false;
 
                     var hide_frame = function(){
-                        rollover_frame.remove();
-                        el.css({'z-index': 0});
-                        zz.logger.debug('hide frame');
+                        rollover_clone.remove();
                     };
 
                     var check_hide_frame = function(){
-                        if(!menu_open && !mouse_over){
-                            hide_frame();
-                        }
+                        // defer so that all the event handlers have had a
+                        // chance to run (we might have one mouseout and one mouseover)
+
+                        _.defer(function(){
+                            if(!menu_open && !mouse_over_el && !mouse_over_clone){
+                                hide_frame();
+                            }
+                        });
                     };
 
-//                    rollover_frame.mouseleave(function(){
-//                        mouse_over = false;
-//                        check_hide_frame()
-//                    });
 
-                    el.mouseleave(function(){
-                        mouse_over = false;
-                        check_hide_frame()
+                    rollover_clone.mouseover(function(){
+                        mouse_over_clone = true;
+                    });
+
+                    rollover_clone.mouseleave(function(){
+                        mouse_over_clone = false;
+                        check_hide_frame();
+                    });
+
+                    el.mouseout(function(){
+                        mouse_over_el = false;
+                        check_hide_frame();
                     });
 
 
-                    el.prepend(rollover_frame);
+                    rollover_clone.prepend(rollover_frame);
                     rollover_frame.center_x();
+                    rollover_clone.css({'z-index': 100});
 
-                    el.css({'z-index': 100});
+
+                    // redirect clicks to the original element...
+                    rollover_clone.find('.photo-image').click(function(){
+                        rollover_clone.remove();
+                        self.imageElement.click();
+                    });
 
 
                     // setup facebook and twitter buttons
-                    var social_buttons = rollover_frame.find('.social-buttons');
-                    var photo_url = zz.routes.photos.photo_url(o.photoId);
-                    social_buttons.find('.twitter-button').append(zz.social_buttons.create_twitter_button_for_photo(photo_url));
-                    social_buttons.find('.facebook-button').append(zz.social_buttons.create_facebook_button_for_photo(photo_url));
-                    zz.logger.debug('create social buttons');
+                    // 'defer' seems to improve the feel 
+                    _.defer(function(){
+                        var social_buttons = rollover_frame.find('.social-buttons');
+                        var photo_url = zz.routes.photos.photo_url(o.photoId);
+                        social_buttons.find('.twitter-button').append(zz.social_buttons.create_twitter_button_for_photo(photo_url));
+                        social_buttons.find('.facebook-button').append(zz.social_buttons.create_facebook_button_for_photo(photo_url));
+                    });
 
 
                     // setup the button bar
@@ -301,109 +333,6 @@ zz.template_cache = zz.template_cache || {};
                     button_bar.center_x()
 
                 });
-
-
-
-
-
-//                var menuOpen = false;
-//                var hover = false;
-//
-//                var checkCloseToolbar = function() {
-//                    if (!menuOpen && !hover) {
-//                        self.borderElement.css({'padding-bottom': '0px'});
-//                        self.imageElement.css({'border-bottom': '5px solid #fff'});
-//                        self.toolbarElement.hide();
-//                    }
-//                };
-//
-//                el.mouseenter(function() {
-//                    hover = true;
-//
-//                    if (!menuOpen) {
-//
-//                        //create toolbar if it does not exist
-//                        if (_.isUndefined(self.toolbarElement)) {
-//                            //Instantiate the toolbartemplare only when the toolbar is fist needed and not during creation
-//                            var toolbarTemplate = '<div class="photo-toolbar">' +
-//                                    '<div class="buttons">' +
-//                                    '<div class="button share-button"></div>' +
-//                                    '<div class="button like-button zzlike" data-zzid="' + o.photoId + '" data-zztype="photo"><div class="zzlike-icon thumbdown"></div></div>';
-//
-//                            var infoMenuTemplate = null;
-//                            if (o.infoMenuTemplateResolver) {
-//                                infoMenuTemplate = o.infoMenuTemplateResolver(o.json);
-//                            }
-//
-//
-//                            if (infoMenuTemplate) {
-//                                toolbarTemplate += '<div class="button info-button"></div>';
-//                            }
-//
-//                            toolbarTemplate += '</div>' +
-//                                    '</div>';
-//                            self.toolbarElement = $(toolbarTemplate);
-//                            self.borderElement.append(self.toolbarElement);
-//
-//                            // share button
-//                            self.toolbarElement.find('.share-button').zz_menu(
-//                            { zz_photo: self,
-//                                container: $('#article'),
-//                                subject_id: o.photoId,
-//                                subject_type: 'photo',
-//                                zza_context: 'frame',
-//                                style: 'auto',
-//                                bind_click_open: true,
-//                                append_to_element: false, //use the el zzindex so the overflow goes under bottom toolbar
-//                                menu_template: zz.sharemenu.template,
-//                                click: zz.sharemenu.click_handler,
-//                                open: function() {
-//                                    menuOpen = true;
-//                                },
-//                                close: function() {
-//                                    menuOpen = false;
-//                                    checkCloseToolbar();
-//                                }
-//                            });
-//
-//                            // like button
-//                            zz.like.draw_tag(self.toolbarElement.find('.like-button'));
-//
-//                            // info button
-//                            if (infoMenuTemplate) {
-//
-//                                self.toolbarElement.find('.info-button').zz_menu(
-//                                { zz_photo: self,
-//                                    container: $('#article'),
-//                                    subject_id: o.photoId,
-//                                    subject_type: 'photo',
-//                                    style: 'auto',
-//                                    bind_click_open: true,
-//                                    append_to_element: false, //use the el zzindex so overflow goes under bottom toolbar
-//                                    menu_template: infoMenuTemplate,
-//                                    click: zz.infomenu.click_handler,
-//                                    open: function() {
-//                                        menuOpen = true;
-//                                    },
-//                                    close: function() {
-//                                        menuOpen = false;
-//                                        checkCloseToolbar();
-//                                    }
-//                                });
-//                            }
-//                        }
-//
-//                        //show toolbar
-//                        self.borderElement.css({'padding-bottom': '30px'});
-//                        self.imageElement.css({'border-bottom': '35px solid #fff'});
-//                        self.toolbarElement.show();
-//                    }
-//                });
-//
-//                el.mouseleave(function() {
-//                    hover = false;
-//                    checkCloseToolbar();
-//                });
             }
 
             // insert elements into DOM

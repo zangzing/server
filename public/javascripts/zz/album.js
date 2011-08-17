@@ -404,7 +404,8 @@ zz.album = {};
                         zz.routes.call_delete_photo(photo.id);
                         return true;
                     },
-                    infoMenuTemplateResolver: info_menu_template_resolver
+                    infoMenuTemplateResolver: info_menu_template_resolver,
+                    centerPhotos: false
                 }).data().zz_photogrid;
 
 
