@@ -301,13 +301,33 @@ module Cache
       # cache state to show that we are still around and
       # modify any dependencies
       def update_cache_state(force_touch)
+        # the order of these operations is critical to
+        # maintaining a consistent cache.  Since the
+        # invalidation logic first deletes the trackers
+        # and then zeroes the versions we must avoid
+        # a race condition causing us to end up with
+        # a valid version but no trackers. Therefore,
+        # we must first update the cache (and version)
+        # before updating the trackers.  This ensures
+        # that we always have trackers whenever the
+        # cache version is non zero.  If the invalidation
+        # code runs in between our update_caches and
+        # update_caches the worst case scenario is
+        # that we have to rebuild the cache on the next
+        # call.
+
+        # update the caches and versions first
+        update_caches
+
         # update the trackers that we are dependent on
         # any change to these will invalidate our cache version
         # by setting it to 0 when they change
+        # doing this last ensures we always have valid
+        # trackers - the edge case is we can end up
+        # with version trackers and a version of zero
+        # which is redundant but does no harm
         update_trackers(force_touch)
 
-        # update the caches and versions
-        update_caches
       end
 
       # Pre load all the albums for the current state (public/private) from db into
