@@ -61,7 +61,7 @@ zz.template_cache = zz.template_cache || {};
                                                                 '<div class="button-bar">' +
                                                                     '<div class="button share-button"></div>' +
                                                                     '<div class="button like-button zzlike" data-zzid="" data-zztype="photo"><div class="zzlike-icon thumbdown"></div></div>' +
-                                                                    '<div class="button comment-button"></div>' +
+                                                                    '<div class="button comment-button"><div class="count"></div></div>' +
                                                                     '<div class="button info-button"></div>' +
                                                                     '<div class="button buy-button"></div>' +
                                                                 '</div>' +
@@ -221,9 +221,7 @@ zz.template_cache = zz.template_cache || {};
 
 
                     rollover_clone.css({left: left, top: top});
-                    rollover_clone.hide();
                     rollover_clone.appendTo(rollover_clone_parent);
-                    rollover_clone.fadeIn(100);
 
                     
                     // setup the rollover frame
@@ -233,9 +231,7 @@ zz.template_cache = zz.template_cache || {};
                     var mouse_over_clone = false;
 
                     var hide_frame = function(){
-                        rollover_clone.fadeOut(100, function(){
-                            rollover_clone.remove();
-                        });
+                        rollover_clone.remove();
                     };
 
                     var check_hide_frame = function(){
@@ -310,8 +306,17 @@ zz.template_cache = zz.template_cache || {};
 
                     // comment button
                     var comment_button = button_bar.find('.comment-button');
+                    zz.comments.get_pretty_comment_count_for_photo(zz.page.album_id, o.photoId, function(count){
+                        var count_element = comment_button.find('.count');
+                        if(!count){
+                            count_element.hide();
+                        }
+                        else{
+                            count_element.text(count);
+                        }
+                    });
                     comment_button.click(function(){
-                        zz.comments.show_in_dialog(o.photoId);
+                        zz.comments.show_in_dialog(o.photoId, self.element.clone());
                         hide_frame();
                     });
 

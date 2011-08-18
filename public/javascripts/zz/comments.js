@@ -4,6 +4,13 @@ zz.comments = {};
 
 (function(){
 
+
+    var COMMENTS_DIALOG =  '<div class="comments-dialog">' +
+                                '<div class="header"></div>' +
+                                '<div class="body"></div>' +
+                           '</div>'
+
+
     var COMMENTS_TEMPLATE = '<div class="comments-container">' +
                             '<div class="new-comment">' +
                                '<div class="background"></div>' +
@@ -47,6 +54,7 @@ zz.comments = {};
                                    '</div>';
 
 
+
     // key is photo id, value is count
     // todo: can only track for one album at a time
     var comment_counts_for_photos = null;
@@ -75,21 +83,45 @@ zz.comments = {};
     };
 
 
+    zz.comments.get_pretty_comment_count_for_photo = function(album_id, photo_id, callback){
+        zz.comments.get_comment_count_for_photo(album_id, photo_id, function(count){
+           if(count == 0){
+               count = null;
+           }
+           else if(count > 1000){
+                count = Math.floor(count / 1000) + 'k';
+           }
+
+           callback(count);
+        });
+    };
+
+
     zz.comments.subscribe_to_like_counts = function(callback){
        like_count_subscribers.push(callback);
     };
 
 
-    zz.comments.show_in_dialog = function(photo_id){
+    zz.comments.show_in_dialog = function(photo_id, header_element){
+        var comments_dialog = $(COMMENTS_DIALOG);
         var comments_widget = zz.comments.build_comments_widget(photo_id);
-        zz.dialog.show_square_dialog(comments_widget.element, {width:450, height:600});
-        comments_widget.load_comments_for_photo(photo_id);
 
+        comments_dialog.find('.header').html(header_element);
+        comments_dialog.find('.body').html(comments_widget.element);
+
+        zz.dialog.show_square_dialog(comments_dialog, {width:450, height:600});
+        comments_widget.load_comments_for_photo(photo_id);
+        header_element.center_xy();
     };
+
+
 
 
     zz.comments.build_comments_widget = function(photo_id){
         var comments_element = $(COMMENTS_TEMPLATE);
+
+        // setup one-finger scroll for ipad
+        comments_element.find('.comments').touchScrollY();
 
         var pending_request_for_comments = null;
 

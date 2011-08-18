@@ -7,6 +7,29 @@
     background: url(/images/comments/drawer-background.png) repeat-y scroll 0px 0px transparent;
 }
 
+.comments-dialog {
+
+}
+
+.comments-dialog .header {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    height: 255px;
+    width: 100%;
+    border-bottom: 1px solid #dedede;
+}
+
+.comments-dialog .body {
+    position: absolute;
+    top: 255px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+}
+
+
 
 .comments-container{
     position: absolute;

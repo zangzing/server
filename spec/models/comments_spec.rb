@@ -19,7 +19,45 @@ describe "Comments Model" do
 
 
   describe Comment do
-   
+
+    it "should notify album likers and photo likers of new comments" do
+      # setup
+      photo = Factory.create(:photo, :album => Factory.create(:album), :user => Factory.create(:user))
+      photo.save!
+
+      commentable = Commentable.find_or_create_by_photo_id(photo.id)
+
+      user_who_likes_photo  = Factory.create(:user)
+      user_who_likes_photo.save!
+      Like.add(user_who_likes_photo.id, photo.id, Like::PHOTO)
+      
+      user_who_likes_album  = Factory.create(:user)
+      user_who_likes_album.save!
+      Like.add(user_who_likes_album.id, photo.album.id, Like::ALBUM)
+
+
+
+      # add comment to photo
+      comment = Factory.create(:comment, :commentable => commentable, :user => Factory.create(:user))
+
+      # run the test
+      comment.send_notification_emails
+
+      # expect email to user who likes photo
+      ActionMailer::Base.deliveries.should satisfy do |messages|
+        messages.index { |message| message.to == [user_who_likes_photo.email] }
+      end
+
+      # expect email to user who likes album
+      ActionMailer::Base.deliveries.should satisfy do |messages|
+        messages.index { |message| message.to == [user_who_likes_album.email] }
+      end
+
+
+
+    end
+
+
     it "should notify album owner, photo owner, and other commentors of new comments" do
       # setup
       photo = Factory.create(:photo, :album => Factory.create(:album), :user => Factory.create(:user))

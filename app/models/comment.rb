@@ -47,6 +47,18 @@ class Comment < ActiveRecord::Base
         users_to_notify << comment.user
       end
 
+
+      # users who like photo
+      Like.find_by_photo_id(photo.id).each do |like|
+        users_to_notify << like.user
+      end
+
+
+      # users who like album
+      Like.find_by_album_id(photo.album.id).each do |like|
+        users_to_notify << like.user
+      end
+
       # de-dup and remove current user
       users_to_notify.uniq!
 
