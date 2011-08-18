@@ -7,7 +7,7 @@ module Cache
     # this class manages the album cache for users - it tracks
     # what is needed for the album index page
     class Manager < Cache::Base
-      KEY_PREFIX = "Cache.Album.".freeze
+      KEY_PREFIX = "Cache.Album".freeze
 
       CACHE_MAX_INACTIVITY = 72.hours
 
