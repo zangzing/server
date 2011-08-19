@@ -11,7 +11,7 @@ class PhotosController < ApplicationController
   before_filter :oauth_required,                  :only =>   [ :agent_create, :agent_index ]   #for agent
   # oauthenticate :strategies => :two_legged, :interactive => false, :only =>   [ :upload_fast ]
 
-  before_filter :require_album,                   :only =>   [ :agent_create, :index, :movie, :photos_json, :photos_json_invalidate ]
+  before_filter :require_album,                   :only =>   [ :agent_create, :index, :movie, :photos_json, :photos_json_invalidate, :show ]
   before_filter :require_photo,                   :only =>   [ :destroy, :update, :position, :async_edit, :async_rotate_left, :async_rotate_right, :download ]
 
   before_filter :require_album_admin_role,                :only =>   [ :update, :position ]
@@ -209,7 +209,11 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
     end
   end
 
-
+  # redirects to single picture view
+  def show
+    photo = @album.photos.find(params[:photo_id])
+    redirect_to photo_pretty_url(photo)
+  end
 
   # returns the  movie view
   # @album is set by before_filter require_album

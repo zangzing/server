@@ -81,6 +81,7 @@
 
 
 .photo-border{
+    position:relative;
     cursor: pointer;
     box-shadow: 0px 0px 3px #aaa;
     -webkit-box-shadow: 0px 0px 3px #aaa;
@@ -88,7 +89,6 @@
     padding-bottom:0px;
     display:inline-block;
     margin:0px;
-    /*z-index:100;*/
 }
 
 .ua-ie .photo-border{
@@ -111,7 +111,7 @@
 
 /*.photo-border:hover{*/
     /*box-shadow: 0px 0px 3px #FDD042;*/
-    /*-webkit-box-shadow: 0px 0px 3px #FDD042;*/
+        /*-webkit-box-shadow: 0px 0px 3px #FDD042;*/
     /*-moz-box-shadow: 0px 0px 3px #FDD042;*/
 /*}*/
 
@@ -399,7 +399,6 @@
  *************************************/
 .photogrid-cell .photo-rollover-frame .button-bar .like-button{
      /*The like button is styled inside by like.css */
-
     top:-2px;
     width: auto;
 }

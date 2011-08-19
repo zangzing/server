@@ -199,7 +199,7 @@ zz.album = {};
             zz.logger.debug(photo_id);
 
             $(element).click(function(){
-                zz.comments.show_in_dialog(photo_id);
+                zz.comments.show_in_dialog(zz.page.album_id, zz.page.album_lastmod, photo_id);
             });
         });
     };
@@ -306,37 +306,27 @@ zz.album = {};
 
         ZZAt.track('album.view', {id: zz.page.album_id});
 
-        $.ajax({
-            dataType: 'json',
-            url: zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/photos_json?' + zz.page.album_lastmod,
 
-            error: function(xhr, message, exception) {
-                zz.cache_helper.check_bad_album_json(xhr, message, zz.page.album_id, this.url);
-            },
+        zz.routes.photos.get_album_photos_json(zz.page.album_id, zz.page.album_lastmod, function(json){
+            json = filterPhotosForUser(json);
 
-            success: function(json){
-                json = filterPhotosForUser(json);
-
-                callback(json);
+            callback(json);
 
 
-                // setup like
-                var wanted_subjects = {};
-                for (var key in json) {
-                    var id = json[key].id;
-                    wanted_subjects[id] = 'photo';
-                }
-                zz.like.add_id_array(wanted_subjects);
+            // setup like
+            var wanted_subjects = {};
+            for (var key in json) {
+                var id = json[key].id;
+                wanted_subjects[id] = 'photo';
+            }
+            zz.like.add_id_array(wanted_subjects);
 
-
-                //no movie mode if no photos
-                if (json.length == 0) {
-                    $('#footer #play-button').addClass('disabled');
-                }
-
+            //no movie mode if no photos
+            if (json.length == 0) {
+                $('#footer #play-button').addClass('disabled');
             }
         });
-    }
+    };
 
     function init_timeline_or_people_view(which) {
 

@@ -59,14 +59,59 @@ zz.routes = {
     },
 
     photos: {
+
+        _cache: {},  //key is <album_id>-<cache_version>, value is album photos json
+
         photo_url: function(photo_id, album_base_url){
             album_base_url = album_base_url || zz.page.album_base_url;
             return "http://{{host}}{{album_base_url}}/photos/#!:photo_id".replace('{{host}}', document.location.host)
                                                                          .replace('{{album_base_url}}', album_base_url)
                                                                          .replace(':photo_id', photo_id);
+        },
+
+        album_photos_url: function(album_id, cache_version){
+            return zz.routes.path_prefix + '/albums/' + album_id + '/photos_json?' + cache_version
+        },
+
+        get_photo_json: function(album_id, cache_version, photo_id, success){
+            var json = zz.routes.photos._cache[album_id + '-' + cache_version];
+
+            var find_photo = function(json, photo_id){
+                return _.detect(json, function(photo){
+                   if(photo.id == photo_id){
+                       return true;
+                   }
+                });
+            };
+
+            if(json){
+                success(find_photo(json, photo_id));
+            }
+            else{
+                zz.routes.photos.get_album_photos_json(album_id, cache_version, function(json){
+                    success(find_photo(json, photo_id));
+                });
+            }
+        },
+
+        get_album_photos_json: function(album_id, cache_version, success, error){
+            var url = zz.routes.photos.album_photos_url(album_id, cache_version);
+
+            var on_success = function(json){
+                zz.routes.photos._cache[album_id + '-' + cache_version] = json;
+                success(json);
+            };
+
+            var on_error = function(xhr, message, exception){
+                zz.cache_helper.check_bad_album_json(xhr, message, album_id, url);
+                if(error){
+                    error(xhr, message, exception);
+                }
+            };
+
+            zz.routes._get(url, {}, on_success, on_error);
+
         }
-
-
     },
 
     edit_user_path: function(username) {

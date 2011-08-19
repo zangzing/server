@@ -4,11 +4,25 @@ zz.comments = {};
 
 (function(){
 
-
+    // todo: don't expand urls inline here. this gets called at page load. should do it lazy
+    
     var COMMENTS_DIALOG =  '<div class="comments-dialog">' +
-                                '<div class="header"></div>' +
+                                '<div class="header">' +
+                                    '<div class="commented-photo">' +
+                                        '<div class="photo-border">' +
+                                            '<img class="photo-image" src="' + zz.routes.image_url('/images/blank.png') + '">' +
+                                            '<img class="bottom-shadow" src="' + zz.routes.image_url('/images/photo/bottom-full.png') + '">' +
+                                        '</div>' +
+                                    '</div>' +
+                                    '<div class="commented-photo-caption"></div>' +
+                                    '<div class="button-bar">' +
+                                        '<div class="button share-button"></div>' +
+                                        '<div class="button like-button zzlike" data-zzid="" data-zztype="photo"><div class="zzlike-icon thumbdown"></div></div>' +
+                                        '<div class="button buy-button"></div>' +
+                                    '</div>' +
+                                '</div>' +
                                 '<div class="body"></div>' +
-                           '</div>'
+                           '</div>';
 
 
     var COMMENTS_TEMPLATE = '<div class="comments-container">' +
@@ -52,6 +66,8 @@ zz.comments = {};
     var COMMENT_LOADING_TEMPLATE = '<div class="comment">' +
                                         '<div class="loading"></div>' +
                                    '</div>';
+
+
 
 
 
@@ -102,16 +118,60 @@ zz.comments = {};
     };
 
 
-    zz.comments.show_in_dialog = function(photo_id, header_element){
-        var comments_dialog = $(COMMENTS_DIALOG);
-        var comments_widget = zz.comments.build_comments_widget(photo_id);
+    zz.comments.show_in_dialog = function(album_id, cache_version, photo_id){
+        zz.routes.photos.get_photo_json(album_id, cache_version, photo_id, function(photo){
 
-        comments_dialog.find('.header').html(header_element);
-        comments_dialog.find('.body').html(comments_widget.element);
+            var comments_dialog = $(COMMENTS_DIALOG);
 
-        zz.dialog.show_square_dialog(comments_dialog, {width:450, height:600});
-        comments_widget.load_comments_for_photo(photo_id);
-        header_element.center_xy();
+            zz.image_utils.pre_load_image(photo.thumb_url, function(image){
+                var photo_element = comments_dialog.find('.header .photo-border');
+
+                var scaled = zz.image_utils.scale({width: image.width, height: image.height}, {width: 180, height: 160});
+                
+                var image_element = photo_element.find('.photo-image');
+                image_element.css({height: scaled.height, width: scaled.width});
+                image_element.attr('src', photo.thumb_url);
+
+
+                photo_element.find('.bottom-shadow').css({'width': (scaled.width + 14) + 'px'});
+                photo_element.center_y();
+
+                var photo_caption_element = comments_dialog.find('.header .commented-photo-caption');
+                photo_caption_element.text(photo.caption);
+
+
+                //share button
+                var share_button = comments_dialog.find('.share-button');
+                share_button.click(function(){
+                    zz.sharemenu.show(share_button, 'photo', photo.id, {x: 0, y: 0}, 'comment-dialog', 'auto', function(){});
+                });
+
+
+                // like button
+                var like_button = comments_dialog.find('.like-button');
+                like_button.attr('data-zzid', photo.id);
+                zz.like.draw_tag(like_button);
+
+                var buy_button = comments_dialog.find('.buy-button');
+                buy_button.click(function(){
+                    alert('This feature is still under construction.');
+                });
+
+
+                
+
+
+            });
+
+
+            var comments_widget = zz.comments.build_comments_widget(photo_id);
+
+            comments_dialog.find('.body').html(comments_widget.element);
+
+            zz.dialog.show_square_dialog(comments_dialog, {width:450, height:600});
+            comments_widget.load_comments_for_photo(photo_id);
+
+        });
     };
 
 

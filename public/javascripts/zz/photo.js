@@ -106,7 +106,6 @@ zz.template_cache = zz.template_cache || {};
             var borderHeight = initialHeight + 10;
 
             self.borderElement.css({
-                position: 'relative',
                 top: (self.height - borderHeight - o.captionHeight) / 2,
                 left: (self.width - borderWidth) / 2,
                 width: borderWidth,
@@ -283,6 +282,9 @@ zz.template_cache = zz.template_cache || {};
                     });
 
 
+
+         
+
                     // setup the button bar
                     var button_bar = rollover_frame.find('.button-bar');
 
@@ -316,7 +318,7 @@ zz.template_cache = zz.template_cache || {};
                         }
                     });
                     comment_button.click(function(){
-                        zz.comments.show_in_dialog(o.photoId, self.element.clone());
+                        zz.comments.show_in_dialog(zz.page.album_id, zz.page.album_lastmod, o.photoId);
                         hide_frame();
                     });
 
@@ -342,6 +344,11 @@ zz.template_cache = zz.template_cache || {};
                     else{
                        info_button.hide(); 
                     }
+
+                    var buy_button = button_bar.find('.buy-button');
+                    buy_button.click(function(){
+                        alert('This feature is still under construction.');
+                    });
 
 
                     button_bar.center_x()
