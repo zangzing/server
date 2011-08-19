@@ -494,6 +494,7 @@
         nextPrevActive: false,
 
 
+
         nextPicture: function() {
             var self = this;
 
@@ -502,7 +503,8 @@
                 index++;
 
                 if (index > self.options.photos.length - 1) {
-                    return;
+                    // if at the end, then go to beginning
+                    index = 0;
                 }
 
                 var id = self.options.photos[index].id;
@@ -523,7 +525,8 @@
                 index--;
 
                 if (index < 0) {
-                    return;
+                    // go to the end
+                    index = self.options.photos.length-1;
                 }
 
                 var id = self.options.photos[index].id;
