@@ -414,6 +414,15 @@
                         });
 
 
+                        self.element.swipe({
+                            swipeRight: function(){
+                                self.previousPicture();
+                            },
+                            swipeLeft: function(){
+                                self.nextPicture();
+                            }
+                        });
+
                         //capture all events
                         $(document.documentElement).keydown(function(event) {
                             if (event.keyCode === 40) {
@@ -440,16 +449,6 @@
                                 //page up
                                 self.previousPicture();
                             }
-//                    else if(event.keyCode === 32){
-//                        if(o.spaceBarTriggersClick){
-//                            var index = self.indexOfPhoto(self.currentPhotoId());
-//                            var cell = self.cellAtIndex(index);
-//                            var photo = cell.data().zz_photo.options.photo;
-//                            o.onClickPhoto(index, photo, cell, 'main');
-//
-//
-//                        }
-//                     }
                         });
 
                         //block events to grid
