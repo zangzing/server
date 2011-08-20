@@ -498,18 +498,21 @@
             var self = this;
 
             if (!self.nextPrevActive) {
+                var animateDuration = 500;
+
                 var index = self.indexOfPhoto(self.currentPhotoId());
                 index++;
 
                 if (index > self.options.photos.length - 1) {
                     // if at the end, then go to beginning
                     index = 0;
+                    animateDuration = 0;
                 }
 
                 var id = self.options.photos[index].id;
 
                 self.nextPrevActive = true;
-                self.scrollToPhoto(id, 500, true, function() {
+                self.scrollToPhoto(id, animateDuration, true, function() {
                     self.nextPrevActive = false;
                 });
             }
@@ -520,18 +523,21 @@
             var self = this;
 
             if (!self.nextPrevActive) {
+                var animateDuration = 500;
+
                 var index = self.indexOfPhoto(self.currentPhotoId());
                 index--;
 
                 if (index < 0) {
                     // go to the end
                     index = self.options.photos.length-1;
+                    var animateDuration = 0;
                 }
 
                 var id = self.options.photos[index].id;
 
                 self.nextPrevActive = true;
-                self.scrollToPhoto(id, 500, true, function() {
+                self.scrollToPhoto(id, animateDuration, true, function() {
                     self.nextPrevActive = false;
                 });
             }
