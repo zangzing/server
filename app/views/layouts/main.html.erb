@@ -186,6 +186,10 @@
             url:         "https://zangzing.zendesk.com",
             tabID:       "help",
             tabColor:    "black",
+<% if current_user %>
+            requester_name: "<%= escape_javascript current_user.name %>",
+            requester_email: "<%= escape_javascript current_user.email %>",
+<% end %>
             tabPosition: "Left"
           });
       });
