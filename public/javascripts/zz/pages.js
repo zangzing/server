@@ -352,7 +352,7 @@ zz.pages.group_tab = {
                                     '</div>' +
                                     '<div class="to"><input class="contact-list"></div>' +
                                     '<textarea placeholder="Type a personal note" class="message"></textarea>' +
-                                    '<div class="permission">Add them as: <select size="1"><option value="viewer">Viewer</option><option value="contributor">Contributor</option></select></div>' +
+                                    '<div class="permission">Add them as: <select size="1"><option value="viewer">Viewer</option><option selected="true" value="contributor">Contributor</option></select></div>' +
                                     '<a class="cancel-button black-button"><span>Cancel</span></a>' +
                                     '<a class="submit-button green-button"><span>OK</span></a>' +
                                 '</div>',
