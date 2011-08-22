@@ -2,28 +2,32 @@ CheckoutController.class_eval do
 
    before_filter :update_address_id, :only =>[:update]
 
-   before_filter :check_registration, :except => [:registration, :update_registration]
+   before_filter :check_registration, :except => [:registration, :guest_checkout]
 
    def registration
+     @user_session = UserSession.new(:email=> params[:email])
      Spree::BaseController.asset_path = "%s"
      render :layout => false
      Spree::BaseController.asset_path = "/store%s"
    end
 
-   def update_registration
-     # hack - temporarily change the state to something other than cart so we can validate the order email address
-     current_order.state = "ship_address"
-     if current_order.update_attributes(params[:order])
+   def guest_checkout
+     if current_order.enable_guest_checkout
        redirect_to checkout_path
      else
-       render 'registration'
+      redirect_to checkout_registration_url
      end
    end
 
    private
    # Introduces a registration step whenever the +registration_step+ preference is true.
    def check_registration
-     return if current_user or current_order.email
+     if current_user || current_order.email
+       if current_user and current_order.email.nil?
+          current_order.associate_user!(current_user)
+       end
+       return
+     end
      store_location
      redirect_to checkout_registration_path
    end
@@ -35,32 +39,80 @@ CheckoutController.class_eval do
      token_order_path(@order, @order.token)
    end
 
+  #executed when clicking checkout from cart
+  def before_first_step
+    if @order.ship_address
+      if @order.payment
+        @order.state = 'confirm'
+      else
+        @order.state = 'payment'
+      end
+    else
+      @order.state = 'ship_address'
+    end
+    state_callback(:before)
+  end
+
   #executed before displaying the ship address view
   def before_ship_address
     #new or edit existing order ship address view.
-    @order.ship_address = Address.default
-    @order.ship_address.user = current_user
+    if current_user
+      @order.ship_address = Address.default
+      @order.ship_address.user = current_user
+    else
+      @order.ship_address ||= Address.default
+    end
   end
 
   #executed before displaying the bill address view
   def before_bill_address
       #new or edit existing order ship address yet.
+    if current_user
       @order.bill_address = Address.default
       @order.bill_address.user = current_user
+    else
+      @order.bill_address ||= Address.default
     end
+  end
 
   #executed before displaying the payment view
   def before_payment
     #remove any payments if you are updatind
     current_order.payments.destroy_all if request.put?
-
-    #If there is no billing address create an empty one
-    if @order.bill_address.nil?
-      @order.bill_address = Address.default
-      @order.bill_address.user = current_user
-      @capture_bill_address = true
-    end
   end
+
+  # Executed after order is complete
+  # Make the last used addresses, the user's default addresses
+  # clone the used addresses and leave the non-user-associated addresses as part of the order
+  # this prevents the user from editing addresses from a completed order
+   def after_complete
+     # If a user is looged in, save as default and backup order addresses (no need to do this for guests)
+     if current_user
+       original_ship = @order.ship_address
+       original_bill = @order.bill_address
+
+       new_ship = Address.create( original_ship.attributes.except("id", "user_id", "updated_at", "created_at"))
+       @order.ship_address_id = new_ship.id
+       if original_ship.id == original_bill.id
+         @order.bill_address_id = new_ship.id
+       else
+         if original_ship.same_as?( original_bill )
+            @order.bill_address.id = new_ship.id
+         else
+            @order.bill_address = Address.create( original_bill.attributes.except("id", "user_id", "updated_at", "created_at"))
+         end
+       end
+       @order.save
+
+       #make addresses, user's default
+       if @order.bill_address_id && order.ship_address_id
+         @order.user.update_attributes!(
+             :bill_address_id => original_bill.id,
+             :ship_address_id => original_ship.id )
+       end
+     end
+   end
+
 
   # When the user clicks on an address from the addressbook, the order gets updated with
   # the appropriate address id.
@@ -72,16 +124,19 @@ CheckoutController.class_eval do
           @order.ship_address = address
         end
         params[:order].delete :ship_address_id
+        params[:order].delete :ship_address_attributes
       elsif params[:order][:bill_address_id]
         address = Address.find_by_id( params[:order][:bill_address_id] )
         if address
           @order.bill_address = address
         end
         params[:order].delete :bill_address_id
+        params[:order].delete :bill_address_attributes
       end
     end
     true
   end
+
 
 
 end

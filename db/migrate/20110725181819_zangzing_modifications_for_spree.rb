@@ -7,6 +7,9 @@ class ZangzingModificationsForSpree < ActiveRecord::Migration
       # allow users to have multiple addresses
       add_column    :addresses, :user_id, :bigint
       add_index     :addresses, :user_id
+
+      # add token to orders
+      add_column    :orders, :token, :string
   end
 
   def self.down
@@ -15,5 +18,7 @@ class ZangzingModificationsForSpree < ActiveRecord::Migration
       
       remove_index     :addresses,  :user_id
       remove_column    :addresses, :user_id
+
+      remove_column    :orders, :token
   end
 end

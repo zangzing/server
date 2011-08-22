@@ -74,7 +74,7 @@ var infomenu = {
                 break;
             
             case 'add_to_cart':
-                zzapi_photo.add_to_cart( id, function(){
+                zz.routes.call_add_to_cart( id, function(){
                     $("<div id='flash-dialog'><div><div id='flash'></div>><a id='checkout' class='newgreen-button'><span>Checkout</span></a><a id='ok' class='newgreen-button'><span>OK</span></a></div></div>").zz_dialog({ autoOpen: false });
                                          $('#flash-dialog #flash').text('Your photo has been added to the cart');
                                          $('#ok').click( function(){ $('#flash-dialog').zz_dialog('close').empty().remove(); });

@@ -579,6 +579,8 @@ en:
   order_state:
     # keys correspond to Checkout state names:
     address: address
+    ship_address: "Shipping Address"
+    bill_address: "Billing Address"
     adjustments: adjustments
     awaiting_return: awaiting return
     canceled: canceled

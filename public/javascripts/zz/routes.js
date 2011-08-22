@@ -39,6 +39,26 @@ zz.routes = {
     //       but seems we do need central place to manage
     //       calls to server
 
+
+    call_add_to_cart: function( photo_id, success, error ){
+          $.ajax({
+            type: "POST",
+            dataType: "json",
+            data:{photo_id:photo_id},
+            url: "/store/orders/add_photo.json",
+            error: function(){
+                if(!_.isUndefined(error)){
+                    error();
+                }
+            },
+            success: function(){
+                if( !_.isUndefined( success ) ){
+                    success();
+                }
+            }
+        });
+    },
+
     call_delete_album: function(album_id, success, error) {
         $.ajax({
             type: 'POST',

@@ -49,6 +49,19 @@ class ApplicationController < ActionController::Base
     session[:send_zza_events_from_client] = events
   end
 
+
+  # change the session cookies, but keep
+  # contents of the session hash
+  def prevent_session_fixation
+    old_session = session.clone
+    reset_session
+
+    old_session.keys.each do |key|
+      session[key.to_sym] = old_session[key]
+    end
+
+  end
+
   #
   #  these helpers and filters are used to manage the 'all albums' back button
   def store_last_home_page(user_id)

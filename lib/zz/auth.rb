@@ -34,7 +34,7 @@ module ZZ
       # returns false or the current user
       def current_user
         return @current_user if defined?(@current_user)
-        @current_user = current_user_session && current_user_session.record
+        @current_user = current_user_session && current_user_session.user
       end
 
       # True if a user is signed in. Left in place for backwards compatibility
@@ -196,12 +196,7 @@ module ZZ
       def require_album_contributor_role
         unless  @album.contributor?( current_user.id ) || current_user.support_hero? || @album.everyone_can_contribute?
           flash.now[:error] = "Only Contributors admins can perform this operation"
-          if request.xhr?
-            head :status => 401
-          else
-            render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
-          end
-          return false
+          render_401
         end
       end
 
@@ -210,15 +205,26 @@ module ZZ
       def require_admin
         unless current_user.admin?
           flash.now[:error] = "Administrator privileges required for this operation"
-          if request.xhr?
-            head :status => 401
-          else
-            render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
-          end
+          render_401
         end
       end
 
     end #Instance Methods
+
+
+    def render_404(exception = nil)
+         respond_to do |type|
+           type.html { render :status => :not_found, :file    => "#{Rails.root}/public/404.html", :layout => nil}
+           type.all  { render :status => :not_found, :nothing => true }
+         end
+    end
+
+    def render_401(exception = nil)
+         respond_to do |type|
+           type.html { render :status => :unauthorized, :file    => "#{Rails.root}/public/401.html", :layout => nil}
+           type.all  { render :status => :unauthorized, :nothing => true }
+         end
+    end
 
   end
 end

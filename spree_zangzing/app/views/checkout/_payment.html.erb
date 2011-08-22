@@ -15,6 +15,13 @@
         <li id="payment_method_<%= method.id %>"<%= ' class="last"' if method == @order.available_payment_methods.last %>>
           <fieldset>
             <%= render "checkout/payment/#{method.method_type}", :payment_method => method %>
+            <%unless @order.user %>
+                <p class="field">
+                <label for=""><%= t("email") %> </label><br />
+                <%= text_field_tag "#{param_prefix}[verification_value]", '', options_hash.merge(:id => 'card_code', :class => 'required', :size => 5) %>
+                <span class="req">*</span><span>( We will use it for order confirmation and status. )</span>
+               </p>
+            <%end%>
           </fieldset>
         </li>
       <% end %>
@@ -22,16 +29,6 @@
     <br style='clear:both;' />
     <%= hook :coupon_code_field, {:form => form} %>
   <% end %>
-
-  <% if @capture_bill_address %>
-      <fieldset id='billing'>
-        <%= form.fields_for :bill_address do |bill_form| %>
-           <%= render :partial =>'address_fields', :locals => { :f => bill_form,
-                                                            :form_label =>t("billing_address"),
-                                                            :states => @order.bill_address.country.states} %>
-        <% end %>
-      </fieldset>
-  <%end%>
 
 </fieldset>
 

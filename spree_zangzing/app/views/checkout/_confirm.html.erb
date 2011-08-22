@@ -16,6 +16,7 @@
         </td></tr>
         <tr><td>
           <%= "#{@order.payment.source.spree_cc_type} #{@order.payments.first.source.display_number}" %>
+          <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('payment')%>').submit();">change</a>
         </td></tr>
         <tr><td>
           <%= render :partial =>'address_display', :locals => { :address => @order.bill_address,:label =>t("billing_address") } %>

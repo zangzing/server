@@ -1,12 +1,13 @@
 module CheckoutHelper
 
+  #The checkout breadcrumb
   def checkout_progress
     if Gateway.current and Gateway.current.payment_profiles_supported?
-      states = %w(ship_address payment   confirm complete)
+      states = %w(ship_address payment bill_address confirm complete)
     else
-      states = %w(ship_address  payment  complete)
+      states = %w(ship_address payment bill_address complete)
     end
-    order_state = (@order.state == "bill_address" ? 'payment': @order.state )
+    order_state = @order.state
     items = states.map do |state|
       text = t("order_state.#{state}").titleize
 
@@ -27,6 +28,26 @@ module CheckoutHelper
       content_tag('li', content_tag('span', text), :class => css_classes.join('-'))
     end
     content_tag('ol', raw(items.join("\n")), :class => 'progress-steps', :id => "checkout-step-#{order_state}")
+  end
+
+  # Creates the state field for addresses, keeps views cleaner.
+  def address_state(form, country)
+    country ||= Country.find(Spree::Config[:default_country_id])
+    have_states = !country.states.empty?
+    state_elements = [
+        form.collection_select(:state_id, country.states.order(:name),
+                               :id, :name,
+                               {:include_blank => true},
+                               {:class => have_states ? "required" : "hidden",
+                                :disabled => !have_states}) +
+            form.text_field(:state_name,
+                            :class => !have_states ? "required" : "hidden",
+                            :disabled => have_states)
+    ].join.gsub('"', "'").gsub("\n", "")
+
+    form.label(:state, t(:state)) + '<span class="req">*</span><br />'.html_safe +
+        content_tag(:noscript, form.text_field(:state_name, :class => 'required')) +
+        javascript_tag("document.write(\"#{state_elements.html_safe}\");")
   end
 
 end

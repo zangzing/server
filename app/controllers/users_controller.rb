@@ -86,13 +86,17 @@ class UsersController < ApplicationController
 
     # CREATE USER
     if @new_user.active
+
+      prevent_session_fixation
       # Save active user,authlogic creates a session to log user in when we save
       if @new_user.save
+
         if @guest
           @guest.user_id = @new_user.id
           @guest.status = 'Active Account'
           @guest.save
         end
+
         flash[:success] = "Welcome to ZangZing!"
         @new_user.deliver_welcome!
         session[:show_welcome_dialog] = true unless( session[:return_to] )

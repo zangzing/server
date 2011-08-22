@@ -2,82 +2,250 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=100" > <!-- IE8 mode -->
-    <meta http-equiv="Content-Language" Content="en">
-    <meta charset="utf-8">
-    <meta name="copyright" content="Copyright 2011, ZangZing, LLC. All Rights Reserved." />
-    <meta name="DC.title" content="ZangZing" />
-    <meta name="title" content="ZangZing" />
-    <title>Group Photo Sharing - ZangZing</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=100" > <!-- IE8 mode -->
+  <meta http-equiv="Content-Language" Content="en">
+  <meta charset="utf-8">
+  <meta name="copyright" content="Copyright 2011, ZangZing, LLC. All Rights Reserved." />
+  <meta name="DC.title" content="ZangZing" />
+  <meta name="title" content="ZangZing" />
+  <title>Group Photo Sharing - ZangZing</title>
+  <%= include_stylesheets :common %>
 
-   <%= include_stylesheets :common %>
+  <style type="text/css">
+      .checkout-session-dialog{
+          top: 200px;
+          width: 700px;
+          height: 280px;
+          color: #6A6A6C;
+          text-shadow: 1px 1px white;
+      }
+      .checkout-session-dialog .logo{
+          position: absolute;
+          right: 5px;
+          height: 70px;
+      }
+
+      .checkout-session-dialog .header{
+        position: absolute;
+        top: 0;
+        left: 0px;
+        width: 500px;
+        text-align: left;
+        padding-top:  2px;
+      }
+      .header h1{
+        font-size: 19px;
+        margin-left: 10px;
+      }
+
+      .header #header-hairline{
+          margin-top:10px;
+          margin-bottom:12px;
+          left: 0px;
+          right:0px;
+          border-bottom:1px solid #c3c3c3;
+      }
+
+      .checkout-session-dialog #signin{
+          position:absolute;
+          top:40px;
+          left:10px;
+          width: 330px;
+          bottom:0px;
+
+      }
+
+      .checkout-session-dialog #guest{
+          position:absolute;
+          top:40px;
+          left:350px;
+          right: 10px;
+          bottom:0px;
+          padding: 35px 0 0 15px;
+          border-left:2px solid #c3c3c3;
+      }
+
+      .content table{
+          width:100%
+      }
+
+      .content table td{
+          padding:3px;
+          padding-left:0px;
+      }
+
+      .content table td.label{
+          text-align:left;
+          white-space:nowrap;
+      }
+
+      .content table td.field{
+          text-align:right;
+          height: 25px;
+      }
+
+
+
+
+      .content #flash-error{
+          text-align:left;
+          color:red;
+          min-height:20px;
+          margin-bottom:5px
+      }
+
+      .content form{
+          text-align:right;
+          font-size:14px;
+      }
+
+      .content input{
+          width:170px;
+          margin-left:10px;
+          -moz-border-radius: 3px;
+          border-radius: 3px;
+      }
+
+      .content #submit-button{
+          position:absolute;
+          right:0px;
+          bottom:10px;
+          width:100px;
+      }
+
+      .content #guest-checkout-button{
+                position:absolute;
+                right:0px;
+                bottom:10px;
+                width:100px;
+      }
+
+
+      .checkout-session-dialog h2{
+          font-size:   16px;
+          text-align:  left;
+          font-weight: 400;
+          margin-bottom: 18px;
+      }
+
+      #guest p{
+          text-align:  left;
+          font-size:14px;
+          font-weight: 200;
+      }
+    
+
+
+      #forgot-password-link{
+          margin-top:5px;
+      }
+
+      .content  label.error{
+          position: absolute;
+          background-color: #000;
+          opacity: .5;
+          filter: alpha(opacity = 60);
+          text-shadow: none;
+          color: white;
+          width: 230px;
+          height: 19px;
+          border: 1px solid white;
+          text-align: left;
+          padding: 4px 4px 4px 10px;
+          right: -250px;
+          /*-moz-border-radius: 3px;*/
+          /*border-radius: 3px;*/
+          -moz-box-shadow: 0 0 10px black;
+          -webkit-box-shadow: 0 0 10px black;
+          top: -1px;
+          font-weight: 200;
+      }
+
+
+
+  </style>
 
 
 </head>
 <body class="signin">
-  <img src="/images/background_signin.jpg" class="bg" />
+<img src="/images/background_signin.jpg" class="bg" />
 
 
-    <div class="user-session-dialog new-dialog">
-      <div class="background"></div>
-      <div class="frame"></div>
-      <div class="body">
+<div class="checkout-session-dialog new-dialog">
+  <div class="background"></div>
+  <div class="frame"></div>
+  <div class="body">
 
-      <a class="logo" href="/"><img src="/error/img/logo.png" alt="logo" /></a>
 
-      <div class="content">
-        <h1>Checkout</h1>
-        <a id= "back-to-signin-button" href="<%=join_url%>" class="gray-button"><span>Join</span></a>
-        <div id="header-hairline"></div>
-
-        <%= form_for @order, :url => update_checkout_registration_path, :html => { :method => :put, :id => "checkout_form_registration"} do |f| %>
-            <table>
-              <tr>
-                <td class="label">&nbsp;</td>
-                <td class="field"> &nbsp;</td>
-              </tr>
-
-              <tr>
-                <td class="label"> <%= f.label :email, t("guest_email") %></td>
-                <td class="field"><%= f.text_field :email, :class => 'title'  %></td>
-              </tr>
-              <tr>
-                <td class="label"></td>
-                <td class="field"><a id="forgot-password-link" class="hyperlink-button" href="<%=signin_url%>"> ZangZing users login</a></td>
-              </tr>
-            </table>
-         <% end %>
-         <a id="submit-button" class="newgreen-button"><span>Continue</span></a>
-      </div>
+    <img class="logo" src="/error/img/logo.png" alt="ZangZing" />
+    <div class="header">
+      <h1> <img style="height: 20px; vertical-align: text-top;" src="/images/icon-lock.png" alt="Secure" />&nbsp &nbspSecure Checkout </h1>
+      <div id="header-hairline"></div>
     </div>
-   </div>
 
-  <%= render :partial => 'layouts/zza'  %>
-  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-  <%= include_javascripts :lib %>
-  <%= include_javascripts :zz %>
+    <div id="signin" class="content">
+      <%= form_tag create_user_session_url,  :id => "signin-form" do %>
+          <div id="flash-error">
+            <% if @user_session.errors.length > 0 %>
+                Invalid user or password
+            <% end %>
+            <%= flash[:error] %>
+            <span style="color: green;"><%= flash[:notice] %></span>
+          </div>
+          <%= hidden_field_tag :return_to, checkout_registration_url %>
+          <h2>Users</h2>
+          <table>
+            <tr>
+              <td class="label">Username or Email</td>
+              <td class="field"><%= text_field_tag :email, @user_session.email %></td>
+            </tr>
+
+            <tr>
+              <td class="label">Password</td>
+              <td class="field"><%= password_field_tag :password %></td>
+            </tr>
+
+            <tr>
+              <td class="label"></td>
+              <td class="field"><a id="forgot-password-link" class="hyperlink-button" href="<%=new_password_reset_url%>">Forgot your password?</a></td>
+            </tr>
+
+          </table>
+          <a id="submit-button" class="newgreen-button"><span>Sign In</span></a>
+      <% end %>
+
+    </div>
+    <div id= "guest" class="content">
+      <%= form_tag guest_checkout_url, :id => "guest-form" do %>
+          <h2>Guest Checkout</h2>
+            <p>Proceed to checkout, you will have a chance to create a ZangZing account at the end.</p>
+      
+            <a id="guest-checkout-button" class="newgreen-button" href="javascript:$('#guest-form').submit();"><span>Continue</span></a>
+      <%end%>
+    </div>
+  </div>
+</div>
+
+<%= render :partial => 'layouts/zza'  %>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+<%= include_javascripts :lib %>
+<%= include_javascripts :zz %>
 
 
-  <script>
+<script>
     $(document).ready(function(){
         $('#submit-button').click(function(){
-            $('form').submit();
+            $('#signin-form').submit();
         });
-
-
-       $('form').bind('keypress', function(e){
-             if ( e.keyCode == 13 ) {
-                 $("form").submit();
-             }
-       });
-
-        $('.logo').center_y();
-
-
+        $('form').bind('keypress', function(e){
+            if ( e.keyCode == 13 ) {
+                $('form').submit();
+            }
+        });
         $('#email').focus();
     });
 
-  </script>
+</script>
 
 
 </body>

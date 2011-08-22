@@ -1,4 +1,7 @@
 OrdersController.class_eval do
+  before_filter :check_authorization
+
+
   respond_to :json, :only => [:add_photo]
 
   def add_photo
@@ -46,5 +49,19 @@ OrdersController.class_eval do
     end
     ppcd
   end
+
+  def check_authorization
+    session[:access_token] ||= params[:token]
+    order = current_order || Order.find_by_number(params[:id])
+
+    if order
+      unless current_user || order.token == session[:access_token]
+         render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
+      end
+    else
+      true
+    end
+  end
+
 end
 

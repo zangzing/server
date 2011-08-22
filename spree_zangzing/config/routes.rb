@@ -153,10 +153,10 @@ Rails.application.routes.draw do
     
     # non-restful checkout stuff
     get   '/checkout/registration'    => 'checkout#registration', :as => :checkout_registration
-    put   '/checkout/registration'    => 'checkout#update_registration', :as => :update_checkout_registration
+    post  '/checkout/registration'    => 'checkout#guest_checkout', :as => :guest_checkout
     match '/checkout/update/:state'   => 'checkout#update', :as => :update_checkout
     match '/checkout/:state'          => 'checkout#edit', :as => :checkout_state
-    match '/checkout'                 => 'checkout#edit', :state => 'ship_address', :as => :checkout
+    match '/checkout'                 => 'checkout#edit', :state => 'first_step', :as => :checkout
 
     resources :orders do
       post :populate, :on => :collection
@@ -174,6 +174,8 @@ Rails.application.routes.draw do
       end
 
     end
+    match '/orders/:id/token/:token' => 'orders#show', :via => :get, :as => :token_order
+
     match '/cart', :to => 'orders#edit', :via => :get, :as => :cart
     match '/cart', :to => 'orders#update', :via => :put, :as => :update_cart
     match '/cart/empty', :to => 'orders#empty', :via => :put, :as => :empty_cart

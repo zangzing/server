@@ -1,15 +1,17 @@
 Order.class_eval do
-attr_accessible :use_shipping_as_billing, :ship_address_id, :bill_address_id
+  attr_accessible :use_shipping_as_billing, :ship_address_id, :bill_address_id
 
-before_validation :clone_shipping_address, :if => "@use_shipping_as_billing"
-attr_accessor :use_shipping_as_billing
+  before_validation :clone_shipping_address, :if => "@use_shipping_as_billing"
+  attr_accessor :use_shipping_as_billing
 
-def clone_shipping_address
+  def clone_shipping_address
     self.bill_address_id = ship_address_id
     true
-end
+  end
 
-
+  before_create do
+    self.token = ::SecureRandom::hex(8)
+  end
 
 
 
@@ -19,13 +21,13 @@ end
     event :next do
       transition :from => 'cart',          :to => 'ship_address'
 
-      transition :from => 'ship_address',  :to => 'confirm', :if => :payment
+      transition :from => 'ship_address',  :to => 'confirm',  :if => :payment
       transition :from => 'ship_address',  :to => 'payment'
 
-      transition :from => 'bill_address',  :to => 'confirm'
+      transition :from => 'payment',       :to => 'confirm', :if => :bill_address
+      transition :from => 'payment',       :to => 'bill_address'
 
-      transition :from => 'payment',       :to => 'confirm'
-      transition :from => 'delivery',      :to => 'confirm'
+      transition :from => 'bill_address',  :to => 'confirm'
       transition :from => 'confirm',       :to => 'complete'
     end
 
@@ -62,13 +64,24 @@ end
     after_transition :to => 'canceled', :do => :after_cancel
   end
 
-def assign_default_shipping_method
-  if shipping_method.nil?
-     self.shipping_method = available_shipping_methods(:front_end).first
+  # Associates the specified user with the order and destroys any previous association with guest user if
+  # necessary.
+  def associate_user!(user)
+    self.user = user
+    self.email = user.email
+    # disable validations since this can cause issues when associating an incomplete address during the address step
+    save(:validate => false)
   end
-end
 
-def add_variant(variant, photo_data, quantity = 1)
+
+  def assign_default_shipping_method
+    if shipping_method.nil?
+      self.shipping_method = available_shipping_methods(:front_end).first
+    end
+  end
+
+
+  def add_variant(variant, photo_data, quantity = 1)
     current_item = contains?(variant,photo_data)
     if current_item
       current_item.quantity += quantity
@@ -96,34 +109,34 @@ def add_variant(variant, photo_data, quantity = 1)
     end
 
     current_item
-end
+  end
 
-def contains?(variant,photo_data = nil)
+  def contains?(variant,photo_data = nil)
     line_items.detect{ |line_item|
       if line_item.photo_data && photo_data
         line_item.variant_id == variant.id &&
-        line_item.photo_data.source_url == photo_data.source_url
+            line_item.photo_data.source_url == photo_data.source_url
       else
         line_item.variant_id == variant.id
       end
     }
-end
+  end
 
-def to_xml_ezporder(options = {})
-   options[:indent] ||= 2
-   xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
-   xml.instruct! unless options[:skip_instruct]
-   xml.orders{
-     xml.images{
-       line_items.each{ |li| li.to_xml_ezpimage( :builder => xml, :skip_instruct => true )}
-     }
-     xml.ordersession{
-       xml.sessionid self.number
-       xml.vendor( :logoimageid => 3) {
+  def to_xml_ezporder(options = {})
+    options[:indent] ||= 2
+    xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
+    xml.instruct! unless options[:skip_instruct]
+    xml.orders{
+      xml.images{
+        line_items.each{ |li| li.to_xml_ezpimage( :builder => xml, :skip_instruct => true )}
+      }
+      xml.ordersession{
+        xml.sessionid self.number
+        xml.vendor( :logoimageid => 3) {
           xml.name 'ZangZing'
-       }
-       #xml.customer{}
-       xml.order {
+        }
+        #xml.customer{}
+        xml.order {
           xml.orderid number
           xml.shippingaddress{
             xml.title       ' '
@@ -140,9 +153,23 @@ def to_xml_ezporder(options = {})
           }
           line_items.each{ |li| li.to_xml_ezporderline( :builder => xml, :skip_instruct => true )}
           xml.shippingmethod 'FC'
-       }
+        }
       }
-   }
-end
+    }
+  end
+
+  def create_user
+    # Override method to prevent order from creating anonymous user for guest checkin
+    # In ZangZing for guest checkin the order never gets a user just an email
+  end
+
+  def require_email
+    return true unless new_record? or state == 'cart' or state == 'ship_address'or state == 'payment'
+  end
+
+  def enable_guest_checkout
+     self.email="#{User.generate_token(:persistence_token)}.guest.shopper@example.net"
+     self.save
+  end
 
 end
