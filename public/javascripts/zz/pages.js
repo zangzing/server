@@ -477,7 +477,7 @@ zz.pages.group_tab = {
                 var set_stream_to_facebook = function(b){
                     var set_value = function(value){
                         stream_to_facebook_checkbox_element.attr('checked', value);
-                        $.post(zz.path_prefix + '/albums/' + zz.page.album_id, {_method:'put', 'album[stream_to_facebook]': value});
+                        $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id, {_method:'put', 'album[stream_to_facebook]': value});
                     };
 
                     if(b){
@@ -511,7 +511,7 @@ zz.pages.group_tab = {
                 var set_stream_to_twitter = function(b){
                     var set_value = function(value){
                         stream_to_twitter_checkbox_element.attr('checked', value);
-                        $.post(zz.path_prefix + '/albums/' + zz.page.album_id, {_method:'put', 'album[stream_to_twitter]': value});
+                        $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id, {_method:'put', 'album[stream_to_twitter]': value});
                     };
 
 
