@@ -15,11 +15,17 @@ zz.oauthmanager = {
     },
 
     login_facebook: function(callback){
-        this.login(zz.routes.path_prefix + '/facebook/sessions/new', callback);
+        this.login(zz.routes.path_prefix + '/facebook/sessions/new', function(){
+            zz.session.has_facebook_token = true;
+            callback();
+        });
     },
 
     login_twitter: function(callback){
-        this.login(zz.routes.path_prefix + '/twitter/sessions/new', callback);
+        this.login(zz.routes.path_prefix + '/twitter/sessions/new', function(){
+            zz.session.has_twitter_token = true;
+            callback();
+        });
     },
 
 

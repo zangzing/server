@@ -26,15 +26,15 @@ if (confirm_tag != tag)
 end
 
 puts
-print "Do you want to skip migration (zero-downtime)? (Yes/n): "
-skip_migrate = Readline.readline()
-if (skip_migrate == "Yes")
-  migrate = "--no-migrate"
+print "Do you want zero downtime? (Yes/n): "
+zero_downtime = Readline.readline()
+if (zero_downtime == "Yes")
+  downtime = ""
 else
-  migrate = ""
+  downtime = "--downtime"
 end
 
-cmd = "ey deploy -e photos_production -a photos -v --ref #{tag} #{migrate}"
+cmd = "zz deploy #{downtime} --migrate -g photos_production --tag #{tag}"
 puts
 puts "About to deploy to PHOTOS PRODUCTION with the following command: "
 puts "\n" + cmd + "\n\n"

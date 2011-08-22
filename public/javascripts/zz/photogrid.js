@@ -6,6 +6,9 @@
 
 (function($, undefined) {
 
+    var PADDING_TOP = 10;
+
+
     $.widget('ui.zz_photogrid', {
         options: {
             photos: [],
@@ -38,10 +41,12 @@
             lazyLoadThreshold: null,
 
             showButtonBar: false,          //model
-            showInfoMenu: false,
             infoMenuTemplateResolver: null, //album model
 
-            onClickShare: jQuery.noop
+            onClickShare: jQuery.noop,
+            centerPhotos: true,
+            rolloverFrameContainer: $('#article')
+
 //            spaceBarTriggersClick: true
 
         },
@@ -102,6 +107,7 @@
             }
 
 
+
             // This function is called below, inside a loop that regularly allows the system to
             // process other events.
             var create_photo = function(index, photo) {
@@ -148,7 +154,8 @@
                     type: _.isUndefined(photo.type) ? 'photo' : photo.type,
                     showButtonBar: o.showButtonBar,
                     infoMenuTemplateResolver: o.infoMenuTemplateResolver,
-                    onClickShare: o.onClickShare
+                    onClickShare: o.onClickShare,
+                    rolloverFrameContainer: o.rolloverFrameContainer
                 });
 
                 //setup drag and drop
@@ -407,6 +414,15 @@
                         });
 
 
+                        self.element.swipe({
+                            swipeRight: function(){
+                                self.previousPicture();
+                            },
+                            swipeLeft: function(){
+                                self.nextPicture();
+                            }
+                        });
+
                         //capture all events
                         $(document.documentElement).keydown(function(event) {
                             if (event.keyCode === 40) {
@@ -433,16 +449,6 @@
                                 //page up
                                 self.previousPicture();
                             }
-//                    else if(event.keyCode === 32){
-//                        if(o.spaceBarTriggersClick){
-//                            var index = self.indexOfPhoto(self.currentPhotoId());
-//                            var cell = self.cellAtIndex(index);
-//                            var photo = cell.data().zz_photo.options.photo;
-//                            o.onClickPhoto(index, photo, cell, 'main');
-//
-//
-//                        }
-//                     }
                         });
 
                         //block events to grid
@@ -465,6 +471,18 @@
 
         },
 
+        findFirstScrollableContainer: function(){
+            var self = this;
+            var container = self.element;
+
+            for(;;){
+                if(container.css('overflow-y') == 'auto'){
+                    return container;
+                }
+                container = container.parent();
+            }
+        },
+
 
         hideThumbScroller: function() {
             if (this.thumbscrollerElement) {
@@ -475,21 +493,26 @@
         nextPrevActive: false,
 
 
+
         nextPicture: function() {
             var self = this;
 
             if (!self.nextPrevActive) {
+                var animateDuration = 500;
+
                 var index = self.indexOfPhoto(self.currentPhotoId());
                 index++;
 
                 if (index > self.options.photos.length - 1) {
-                    return;
+                    // if at the end, then go to beginning
+                    index = 0;
+                    animateDuration = 0;
                 }
 
                 var id = self.options.photos[index].id;
 
                 self.nextPrevActive = true;
-                self.scrollToPhoto(id, 500, true, function() {
+                self.scrollToPhoto(id, animateDuration, true, function() {
                     self.nextPrevActive = false;
                 });
             }
@@ -500,17 +523,21 @@
             var self = this;
 
             if (!self.nextPrevActive) {
+                var animateDuration = 500;
+
                 var index = self.indexOfPhoto(self.currentPhotoId());
                 index--;
 
                 if (index < 0) {
-                    return;
+                    // go to the end
+                    index = self.options.photos.length-1;
+                    var animateDuration = 0;
                 }
 
                 var id = self.options.photos[index].id;
 
                 self.nextPrevActive = true;
-                self.scrollToPhoto(id, 500, true, function() {
+                self.scrollToPhoto(id, animateDuration, true, function() {
                     self.nextPrevActive = false;
                 });
             }
@@ -667,13 +694,18 @@
                 var row = Math.floor(index / cellsPerRow);
                 var col = index % cellsPerRow;
 
-                var paddingLeft = Math.floor((self.width - (cellsPerRow * self.options.cellWidth)) / 2);
 
-                paddingLeft = paddingLeft - (20 / 2); //account for scroller //todo: use constant or lookup value for scroller width
+                var paddingLeft = 0;
+                
+                if(self.options.centerPhotos){
+                    paddingLeft = Math.floor((self.width - (cellsPerRow * self.options.cellWidth)) / 2);
+                    paddingLeft = paddingLeft - (20 / 2); //account for scroller //todo: use constant or lookup value for scroller width
+                }
+
 
 
                 return {
-                    top: row * self.options.cellHeight,
+                    top: row * self.options.cellHeight + PADDING_TOP,
                     left: paddingLeft + (col * self.options.cellWidth)
                 };
             }

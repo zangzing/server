@@ -32,7 +32,7 @@ module ZZ
       # * <tt>event_data_hash</tt> - A hash of information that will be sent with to ZZA as xdata
       def create_message( template_name, template_id=nil, recipient=nil, zza_xdata=nil )
 
-        # Load the appropriate template
+        # Load the appropriate template either the production version or the given id (for testing)
         if template_id
           @template  = EmailTemplate.find( template_id )
         else
@@ -42,7 +42,7 @@ module ZZ
         #check subscription preferences
         Subscriptions.wants_email!( recipient, @template.email )
 
-        #Recipient  address formating
+        #Process recipient ( decide if it is an address or a user, build address and clean the double bytes)
         if recipient.is_a?(User)
           encoded_name = Mail::Encodings::decode_encode( recipient.name, :encode )
           @to_address  = Mail::Address.new("\"#{encoded_name}\" <#{recipient.email}>")
@@ -50,7 +50,7 @@ module ZZ
           @to_address = Mail::Address.new( recipient.to_slug.to_ascii.to_s )
         end
 
-        #Add unsubscribe data
+        # Add unsubscribe links and headers see http://www.list-unsubscribe.com/
         @unsubscribe_url   = unsubscribe_url(  @unsubscribe_token = Subscriptions.unsubscribe_token( recipient ) )
         @unsubscribe_email = Mail::Address.new( "#{@unsubscribe_token}@unsubscribe.#{Server::Application.config.album_email_host}" ).address
         headers @template.sendgrid_category_header     #set sendgrid category header

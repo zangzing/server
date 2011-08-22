@@ -1,9 +1,11 @@
 .photogrid{
-    width:100%;
+    top: 0px;
+    left: 0px;
+    right: 0px;
     height:100%;
     overflow-y:auto;
     overflow-x:scroll;
-    position:relative;
+    position:absolute;
 
 }
 
@@ -79,6 +81,7 @@
 
 
 .photo-border{
+    position:relative;
     cursor: pointer;
     box-shadow: 0px 0px 3px #aaa;
     -webkit-box-shadow: 0px 0px 3px #aaa;
@@ -86,7 +89,6 @@
     padding-bottom:0px;
     display:inline-block;
     margin:0px;
-    /*z-index:100;*/
 }
 
 .ua-ie .photo-border{
@@ -109,7 +111,7 @@
 
 /*.photo-border:hover{*/
     /*box-shadow: 0px 0px 3px #FDD042;*/
-    /*-webkit-box-shadow: 0px 0px 3px #FDD042;*/
+        /*-webkit-box-shadow: 0px 0px 3px #FDD042;*/
     /*-moz-box-shadow: 0px 0px 3px #FDD042;*/
 /*}*/
 
@@ -179,7 +181,7 @@
     width:32px;
     height:32px;
     background-image: url("/images/photo/icon-uploading.png");
-    z-index:1000;
+    /*z-index:1000;*/
 }
 
 .photo-like-icon{
@@ -201,7 +203,7 @@
     width:32px;
     height:32px;
     background-image: url("/images/photo/icon-error.png");
-    z-index:1000;
+    /*z-index:1000;*/
 }
 
 .photo-delete-button{
@@ -257,7 +259,7 @@
 
 .photo-border:hover .photo-delete-button{
     display:block;
-    z-index:3000;
+    /*z-index:3000;*/
 }
 
 .photo-delete-button:hover {
@@ -267,7 +269,7 @@
 .photo-caption{
     text-align: center;
     position:absolute;
-    bottom:5px;
+    bottom:12px;
     left:5px;
     right:5px;
     display:block;
@@ -339,42 +341,122 @@
 }
 
 
-.photo-toolbar{
-    display:block;
-    position:relative;
-    bottom:33px;
-    width:100%;
-    text-align:center;
+.photogrid-cell .photo-rollover-frame {
+    position: absolute;
+    width:231px;
+    height:299px;
+    top:0px;
+    background-image:url('/images/photo/photo-frame-rollover.png');
 }
 
-.photo-toolbar .buttons{
-    position:relative;
-    display:inline-block;
+
+.photogrid-cell .photo-rollover-frame .social-buttons {
+    position:absolute;
+    bottom: 45px;
+    height: 30px;
 }
 
-.photo-toolbar .button{
-    float:left;
+.photogrid-cell .photo-rollover-frame .social-buttons .facebook-button{
+    position: absolute;
+    left:20px
+}
+
+.photogrid-cell .photo-rollover-frame .social-buttons .twitter-button{
+    position: absolute;
+    left:115px
+}
+
+
+
+.photogrid-cell .photo-rollover-frame .button-bar {
+    position: absolute;
+    bottom: 10px;
+}
+
+.photogrid-cell .photo-rollover-frame .button-bar .button{
+    position: relative;
     width:20px;
     height:18px;
     cursor:pointer;
     margin:3px 0px;
     padding: 0px 6px;
+    display: inline-block;
 }
 
-.photo-toolbar .share-button{ background: url(/images/album_toolbar_share.png) no-repeat scroll 6px -19px transparent; }
-.photo-toolbar .share-button:hover{ background-position:  6px -1px; }
 
-.photo-toolbar .like-button{  width: auto; } /*The like button is styled inside by like.css */
+/*  Share Button
+ *************************************/
+.photogrid-cell .photo-rollover-frame .button-bar .share-button{
+    background: url(/images/album_toolbar_share.png) no-repeat scroll 6px -19px transparent;
+}
 
-.photo-toolbar .info-button{
-    position:relative;
-    top:1px;
+.photogrid-cell .photo-rollover-frame .button-bar .share-button:hover{
+    background-position:  6px -1px;
+}
+
+
+/*  Like Button
+ *************************************/
+.photogrid-cell .photo-rollover-frame .button-bar .like-button{
+     /*The like button is styled inside by like.css */
+    top:-2px;
+    width: auto;
+}
+
+
+/*  Comment Button
+ *************************************/
+.photogrid-cell .photo-rollover-frame .button-bar .comment-button{
+    background: url(/images/album_toolbar_comments.png) no-repeat scroll 6px -18px transparent;
+}
+
+
+.photogrid-cell .photo-rollover-frame .button-bar .comment-button:hover{
+    background-position:  6px 0px;
+}
+
+.photogrid-cell .photo-rollover-frame .button-bar .comment-button .count{
+    position: absolute;
+    top: 8px;
+    left: 16px;
+    border: solid 1px #999;
+    background: white;
+    color: #111;
+    text-align: right;
+    text-shadow: 0 .5px 1px #666;
+    padding: .5px 2px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    font-size: 10px;
+    font-weight: 500;
+}
+
+
+
+
+/*  Info Button
+ *************************************/
+.photogrid-cell .photo-rollover-frame .button-bar .info-button{
+    top:0px;
     height:17px;
     background: url(/images/album_toolbar_info.png) no-repeat scroll 6px -19px transparent;
-
 }
-.photo-toolbar .info-button:hover{  background-position: 6px -1px; }
 
+.photogrid-cell .photo-rollover-frame .button-bar .info-button:hover{
+    background-position: 6px -1px;
+}
+
+
+
+/*  Buy Button
+ *************************************/
+.photogrid-cell .photo-rollover-frame .button-bar .buy-button{
+    background: url(/images/album_toolbar_buy.png) no-repeat scroll 6px -18px transparent;
+}
+
+.photogrid-cell .photo-rollover-frame .button-bar .buy-button:hover{
+    background-position:  6px 0px;
+}
 
 
 

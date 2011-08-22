@@ -129,6 +129,12 @@
 <%  if signed_in?  -%>
       zz.session.current_user_id = '<%= current_user.id %>';
       zz.session.current_user_name = '<%= escape_javascript current_user.username %>';
+      zz.session.profile_photo_url = '<%= escape_javascript current_user.profile_photo_url %>';
+
+      zz.session.has_facebook_token = <%= !current_user.identity_for_facebook.credentials_valid?.nil? %>;
+      zz.session.has_twitter_token =  <%= !current_user.identity_for_twitter.credentials_valid?.nil? %>;
+      
+
 <%  end -%>
 
       zz.page = zz.page || {};
@@ -142,7 +148,7 @@
       zz.config.agent_port = '<%= ZangZingConfig.config[:agent_port] %>';
       zz.config.rails_asset_id = '<%= ENV["RAILS_ASSET_ID"] %>';
       zz.config.rails_asset_host = '<%= ActionController::Base.asset_host %>';
-
+      zz.config.facebook_app_id = '<%=FACEBOOK_API_KEYS[:app_id]%>';
 
       $(document).ready(function(){
 
@@ -180,6 +186,10 @@
             url:         "https://zangzing.zendesk.com",
             tabID:       "help",
             tabColor:    "black",
+<% if current_user %>
+            requester_name: "<%= escape_javascript current_user.name %>",
+            requester_email: "<%= escape_javascript current_user.email %>",
+<% end %>
             tabPosition: "Left"
           });
       });

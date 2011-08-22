@@ -121,7 +121,7 @@ GEM
       thor (~> 0.14.4)
     json (1.5.1)
     json_pure (1.4.6)
-    kgio (2.1.1)
+    kgio (2.6.0)
     launchy (0.3.7)
       configuration (>= 0.0.5)
       rake (>= 0.8.1)
@@ -141,7 +141,7 @@ GEM
     mime-types (1.16)
     multi_json (0.0.5)
     multipart-post (1.1.0)
-    mysql2 (0.2.6)
+    mysql2 (0.2.7)
     nested_set (1.6.6)
       activerecord (>= 3.0.0)
       railties (>= 3.0.0)
@@ -160,7 +160,6 @@ GEM
       mail (> 2.0)
     rack (1.2.3)
     rack-mount (0.6.14)
-      rack (>= 1.0.0)
     rack-test (0.5.7)
       rack (>= 1.0)
     rails (3.0.9)
@@ -255,10 +254,9 @@ GEM
       json (>= 1.1.9)
       mime-types (>= 1.16)
       oauth (>= 0.4.1)
-    tzinfo (0.3.29)
+    tzinfo (0.3.24)
     unicorn (3.3.1)
       kgio (~> 2.1)
-      rack
     uuidtools (2.1.2)
     vegas (0.1.8)
       rack (>= 1.0.0)
@@ -299,7 +297,7 @@ DEPENDENCIES
   launchy
   mechanize
   memcache-client
-  mysql2
+  mysql2 (~> 0.2.7)
   nokogiri
   oauth (= 0.4.5.pre2)!
   oauth-plugin (= 0.4.0.pre4)

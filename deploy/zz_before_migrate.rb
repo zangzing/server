@@ -59,7 +59,7 @@ def move_assets(assets)
     # so you can have a default file
     from = "#{asset_dir}/#{asset}-#{env}"
     to = asset_dir + "/" + asset
-    run "cp -f #{from} #{to}"
+    run "cp -f #{from} #{to}; true" # the ; true is to cause chef to ignore errors since we don't care if doesn't exist
   end
 end
 

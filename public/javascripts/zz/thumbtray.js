@@ -109,7 +109,7 @@
                     self._repaintThumbnails();
                 });
             }
-;
+
 
 
             this._repaintThumbnails();

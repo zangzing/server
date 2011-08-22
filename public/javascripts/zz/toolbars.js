@@ -165,6 +165,9 @@ zz.toolbars = {
 
         });
 
+
+
+
         //any signed in user can do this
         $('#footer #share-button').click(function() {
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
@@ -173,13 +176,14 @@ zz.toolbars = {
 
             ZZAt.track('button.share.click');
 
+
             //todo: need better generic way to determine current view and get photo id -- this is duplicated elsewhere
             if (document.location.href.indexOf('/photos/#!') !== -1 || document.location.href.indexOf('/photos#!') !== -1) {
                 var photoId = jQuery.param.fragment().slice(1);
-                zz.sharemenu.show($(this), 'photo', photoId, {x: 0, y: 0}, 'toolbar', $.noop, $.noop);
+                zz.sharemenu.show($(this), 'photo', photoId, {x: 0, y: 0}, 'toolbar', 'popup', $.noop);
             }
             else {
-                zz.sharemenu.show($(this), 'album', zz.page.album_id, {x: 0, y: 0}, 'toolbar', $.noop, $.noop);
+                zz.sharemenu.show($(this), 'album', zz.page.album_id, {x: 0, y: 0}, 'toolbar', 'popup', $.noop);
             }
 
         });
@@ -359,6 +363,7 @@ zz.toolbars = {
         $('#footer #edit-album-button').addClass('disabled');
         $('#footer #buy-button').addClass('disabled');
         $('#footer #like-button').addClass('disabled');
+        $('#footer #comments-button').addClass('disabled');
     }
 
 //    enable_buttons:function() {

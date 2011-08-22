@@ -34,7 +34,6 @@ class ApplicationController < ActionController::Base
     # must pass status code as a string or you will kill rack since
     # it is expecting a string
     response.headers['X-Status'] = response.status.to_s
-    flash.discard  # don't want the flash to appear when you reload page 
   end
 
   def errors_to_headers( record )
@@ -43,23 +42,21 @@ class ApplicationController < ActionController::Base
     response.headers['X-Errors'] = record.errors.full_messages.to_json
   end
 
-  def send_zza_event_from_client (event)
-    events = session[:send_zza_events_from_client] || []
-    events << event
-    session[:send_zza_events_from_client] = events
+  #
+  #  Stores the intended destination of a rerquest to take the user there after log in
+  def store_location
+    session[:return_to] = request.fullpath
   end
 
+  def set_show_comments_cookie
+    cookies[:show_comments] = true
+  end
 
-  # change the session cookies, but keep
-  # contents of the session hash
-  def prevent_session_fixation
-    old_session = session.clone
-    reset_session
-
-    old_session.keys.each do |key|
-      session[key.to_sym] = old_session[key]
-    end
-
+  #
+  # Redirects the user to the desired location after log in. If no stored location then to the default location
+  def redirect_back_or_default(default)
+    redirect_to(session[:return_to] || default)
+    session[:return_to] = nil
   end
 
   #

@@ -47,5 +47,4 @@ Server::Application.configure do
 
   ActionController::Base.asset_host = "%d.assets.photos.zangzing.com"
 
-
 end

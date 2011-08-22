@@ -5,7 +5,9 @@ source :gemcutter
 gem "bundler", ">=1.0.14"
 gem "rails", "3.0.9"
 gem "unicorn"
-gem "mysql2"
+gem "dynamic_form"
+gem "require_all"                 # lets us pull in everything for our resque tasks
+gem "mysql2",     "~> 0.2.7"
 gem 'authlogic',     '2.1.6'
 gem "friendly_id",   "3.2.1.1"                       #User-friendly links to albums and users' pages
 gem 'uuidtools'

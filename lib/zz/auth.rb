@@ -23,6 +23,18 @@ module ZZ
     #No class methods to add so no module ClassMethods
 
     module InstanceMethods
+      # change the session cookies, but keep
+      # contents of the session hash
+      def prevent_session_fixation
+        old_session = session.clone
+        reset_session
+        old_session.keys.each do |key|
+          session[key.to_sym] = old_session[key]
+        end
+      end
+
+
+
       # Authlogic
       # returns false or the current user session
       def current_user_session

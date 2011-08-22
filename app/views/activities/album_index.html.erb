@@ -24,6 +24,8 @@
             <%= render :partial => 'like_activity', :locals => {:activity => activity, :view => Activity::ALBUM_VIEW } %>
         <%  when InviteActivity then%>
             <%= render :partial => 'invite_activity', :locals => {:activity => activity, :view => Activity::ALBUM_VIEW } %>
+        <%  when CommentActivity then%>
+            <%= render :partial => 'comment_activity', :locals => {:activity => activity, :view => Activity::ALBUM_VIEW } %>
         <%end%>
     <%end%>
   </ul>

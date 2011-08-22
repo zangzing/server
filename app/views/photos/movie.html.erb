@@ -159,14 +159,16 @@
                 preloadBefore:		1,
 
                 startImageIndex:   <%= start_index %>
-
-
             });
+
         };
 
 
 
         $(document).ready(function(){
+
+            zz.mobile.lock_page_scroll();
+
 
             if(swfobject.getFlashPlayerVersion().major == 0){
                 //this handles the case where IE has flash installed,

@@ -9,6 +9,17 @@ module ZZ
       extend Resque::Plugins::ExponentialBackoff
 
 
+      # allow async jobs to run sycnchronously for testing
+      def self.synchronous_test_mode=(synchronous_test_mode)
+        @@synchronous_test_mode = synchronous_test_mode
+      end
+
+      def self.synchronous_test_mode
+        @@synchronous_test_mode ||= false
+      end
+
+
+
 #      # plug ourselves into the retry framework
 #      # unfortunately they don't pass the instance back in
 #      # so we have no frame of reference and have to use
@@ -108,12 +119,20 @@ module ZZ
       # called from the subclass. The idea is that this should be the only place to call
       # Resque enqueue
       def self.enqueue( *args )
-        Resque.enqueue( self, *args)
+        if self.synchronous_test_mode
+          self.perform(*args)
+        else
+          Resque.enqueue( self, *args)
+        end
       end
 
       # lets you enqueue on on a named queue
       def self.enqueue_on_queue(queue, *args)
-        Resque::Job.create(queue, self, *args)
+        if self.synchronous_test_mode
+          self.perform(*args)
+        else
+          Resque::Job.create(queue, self, *args)
+        end
       end
 
       # resque hook to perform GC after job

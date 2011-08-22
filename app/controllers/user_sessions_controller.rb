@@ -13,7 +13,8 @@ class UserSessionsController < ApplicationController
   def new
     if params[:return_to]
       session[:return_to] = params[:return_to]
-      #redirect_to signin_url and return
+      redirect_to signin_url
+      return
     end
 
 
@@ -25,9 +26,7 @@ class UserSessionsController < ApplicationController
   end
 
   def create
-    
     prevent_session_fixation
-
     @user_session = UserSession.new(:email => params[:email], :password => params[:password], :remember_me => true)
     if @user_session.save
       @user_session.user.reset_perishable_token! #reset the perishable token

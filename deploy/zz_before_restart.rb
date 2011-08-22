@@ -25,6 +25,8 @@
 
 run "sudo monit restart -g resque_photos"
 
+# clear out the nginx cache
+#run "find /media/ephemeral0/nginx/cache -type f -exec rm {} \\;"
 
 
 # make sure v3homepage is deployed with the current tag, technically we really only

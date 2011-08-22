@@ -61,6 +61,34 @@ class Album < ActiveRecord::Base
   WHO_OWNER         = 'owner'
 
 
+  # need to override basic destroy behavior since
+  # we have to know when we are being destroyed in
+  # dependent photos so we don't perform unnecessary
+  # we can't simply set an instance variable because
+  # if you try to fetch the photo.album when it is being
+  # deleted it will fetch a new one from the db and
+  # will not be the same object that we are using here
+  #
+  # So, we need to resort to using a thread local that
+  # holds the state so we can get to it from within the
+  # child.
+  #
+  def destroy
+    Thread.current[:the_album_being_deleted] = self
+    super
+  rescue Exception => ex
+    raise ex
+  ensure
+    Thread.current[:the_album_being_deleted] = nil
+  end
+
+  # using the thread local storage determine
+  # if the given album_id is being deleted
+  def self.album_being_deleted?(album_id)
+    album = Thread.current[:the_album_being_deleted]
+    return false if album.nil?
+    album.id == album_id
+  end
 
   def uniquify_name
     @uname = name
@@ -103,7 +131,9 @@ class Album < ActiveRecord::Base
   # the change check because we must do this after the commit to
   # make sure we are not in a transaction
   def notify_cache_manager
-    Cache::Album::Manager.shared.album_modified(self) if self.change_matters
+    if self.destroyed? == false
+      Cache::Album::Manager.shared.album_modified(self) if self.change_matters
+    end
     true
   end
 

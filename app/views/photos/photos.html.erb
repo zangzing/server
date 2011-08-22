@@ -14,7 +14,21 @@
     
     <script type="text/javascript">
         $(document).ready(function(){
-            zz.album.init_grid_view();
+
+            if (document.location.href.indexOf('#!') !== -1) {
+                var photo_id = null;
+
+                var hash = jQuery.param.fragment();
+                if (hash !== '') {
+                    photo_id = hash.slice(1); //remove the '!'
+                }
+
+                zz.album.init_picture_view(photo_id);
+            }
+            else {
+                zz.album.init_grid_view();
+            }
+
         });
     </script>
 <% end %>

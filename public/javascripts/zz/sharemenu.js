@@ -9,16 +9,18 @@ zz.sharemenu = {
             '</ul>',
 
 
-    show: function(button, object_type, object_id, offset, zza_context, onopen, onclose) {
-        $(button).zz_menu(
-        { subject_id: object_id,
+    show: function(button, object_type, object_id, offset, zza_context, style, onclose) {
+        $(button).zz_menu({
+            subject_id: object_id,
             subject_type: object_type,
             zza_context: zza_context,
             menu_template: zz.sharemenu.template,
             click: zz.sharemenu.click_handler,
-            style: 'popup',
-            open: onopen,
-            close: onclose
+            style: style,
+            open: $.noop,
+            close: onclose,
+            container: $('#article')
+
         });
         $(button).zz_menu('open');
     },
