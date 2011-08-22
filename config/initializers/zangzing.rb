@@ -26,14 +26,20 @@ silence_warnings do #To avoid warning of overwriting constant
   ver = nil
   deploy_tag = zz[:app_deploy_tag]
   if !deploy_tag.nil?
-    ver = ZZ::CommandLineRunner.run('git', "show-ref --head --abbrev #{deploy_tag}").split[0] rescue ver = nil
-    ver = "#{deploy_tag}-#{ver}"
+    results = ZZ::CommandLineRunner.run('git', "show-ref --dereference --head --abbrev #{deploy_tag}").map rescue results = []
+    case results.length
+      when 1
+        ver = results[0].split[0]
+      when 2
+        ver = results[1].split[0]
+    end
+    ver = "#{deploy_tag}-#{ver}" unless ver.nil?
   end
   if ver.nil?
     # don't have deploy tag so do it old way via describe which is not accurate
-    ver = ZZ::CommandLineRunner.run('git', 'describe') rescue zconfig.zangzing_version = "UNKNOWN"
+    ver = ZZ::CommandLineRunner.run('git', 'describe') rescue ver = "UNKNOWN"
   end
-  zconfig.zangzing_version = ver
+  zconfig.zangzing_version = ver.strip
 
   # set rails asset id
   if Rails.env != 'development'

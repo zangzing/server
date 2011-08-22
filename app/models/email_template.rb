@@ -99,7 +99,7 @@ class EmailTemplate < ActiveRecord::Base
     # group 1 is the image url
     # group 2 is the value in the alt tag in between <%=%>
     # group 3 is the whole style argument including the style=""
-    regex = /(<img.*alt="<%=(.*)%>".*(style=".*;").*>)/
+    regex = /(<img.*alt="<%=(.*)%>".*(style=".*;")[^<]*>)/
     @html = html
 
     @html.scan( regex ) do |match|
