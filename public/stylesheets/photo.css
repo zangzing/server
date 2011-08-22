@@ -269,12 +269,12 @@
 .photo-caption{
     text-align: center;
     position:absolute;
-    bottom:12px;
+    bottom:3px;
     left:5px;
     right:5px;
     display:block;
     padding:5px;
-    height:25px;
+    height:35px;
     font-size:13px;
     color: #636363;
     padding-left:10px;
@@ -352,7 +352,7 @@
 
 .photogrid-cell .photo-rollover-frame .social-buttons {
     position:absolute;
-    bottom: 45px;
+    bottom: 5px;
     height: 30px;
 }
 
@@ -370,7 +370,7 @@
 
 .photogrid-cell .photo-rollover-frame .button-bar {
     position: absolute;
-    bottom: 10px;
+    bottom: 50px;
 }
 
 .photogrid-cell .photo-rollover-frame .button-bar .button{

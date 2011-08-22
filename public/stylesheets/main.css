@@ -47,6 +47,17 @@ h3 {
     position:relative;
 }
 
+
+.ellipsis {
+        white-space: nowrap;
+        overflow: hidden;
+}
+
+.ellipsis.multiline {
+        white-space: normal;
+}
+
+
 /* For placeholder plugin
  ********************************************************/
 
