@@ -19,13 +19,17 @@ Order.class_eval do
   Order.state_machines[:state] = StateMachine::Machine.new(Order, :initial => 'cart') do
 
     event :next do
-      transition :from => 'cart',          :to => 'ship_address'
+      transition :from => 'cart', :to => 'confirm',      :if => Proc.new{ |order| order.ship_address && order.payment && order.bill_address }
+      transition :from => 'cart', :to => 'bill_address', :if => Proc.new{ |order| order.ship_address  && order.payment }
+      transition :from => 'cart', :to => 'payment',      :if => :ship_address
+      transition :from => 'cart', :to => 'ship_address'
 
-      transition :from => 'ship_address',  :to => 'confirm',  :if => :payment
-      transition :from => 'ship_address',  :to => 'payment'
+      transition :from => 'ship_address', :to => 'confirm',      :if => Proc.new{ |order| order.payment && order.bill_address }
+      transition :from => 'ship_address', :to => 'bill_address', :if => :payment
+      transition :from => 'ship_address', :to => 'payment'
 
-      transition :from => 'payment',       :to => 'confirm', :if => :bill_address
-      transition :from => 'payment',       :to => 'bill_address'
+      transition :from => 'payment', :to => 'confirm', :if => :bill_address
+      transition :from => 'payment', :to => 'bill_address'
 
       transition :from => 'bill_address',  :to => 'confirm'
       transition :from => 'confirm',       :to => 'complete'
@@ -64,11 +68,22 @@ Order.class_eval do
     after_transition :to => 'canceled', :do => :after_cancel
   end
 
+  # Associates the specified user with the order NO SAVE
+  def associate_user(user)
+    if user
+      self.user =  user
+      self.email = user.email
+      self.ship_address_id = user.ship_address.id if user.ship_address
+      self.bill_address_id = user.bill_address.id if user.bill_address
+    end
+  end
+
+
+
   # Associates the specified user with the order and destroys any previous association with guest user if
-  # necessary.
+  # necessary. SAVES ORDER
   def associate_user!(user)
-    self.user = user
-    self.email = user.email
+    self.associate_user( user )
     # disable validations since this can cause issues when associating an incomplete address during the address step
     save(:validate => false)
   end

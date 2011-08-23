@@ -58,8 +58,11 @@ class User < ActiveRecord::Base
 
   #SPREE
   has_many   :addresses
+  has_many   :creditcards
+
   belongs_to :ship_address, :foreign_key => "ship_address_id", :class_name => "Address"
   belongs_to :bill_address, :foreign_key => "bill_address_id", :class_name => "Address"
+  belongs_to :creditcard
 
   # This delegates all authentication details to authlogic
   acts_as_authentic do |c|

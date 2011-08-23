@@ -22,12 +22,7 @@ CheckoutController.class_eval do
    private
    # Introduces a registration step whenever the +registration_step+ preference is true.
    def check_registration
-     if current_user || current_order.email
-       if current_user and current_order.email.nil?
-          current_order.associate_user!(current_user)
-       end
-       return
-     end
+     return if  current_user || current_order.email
      store_location
      redirect_to checkout_registration_path
    end
@@ -38,20 +33,6 @@ CheckoutController.class_eval do
      return order_path(@order) if current_user
      token_order_path(@order, @order.token)
    end
-
-  #executed when clicking checkout from cart
-  def before_first_step
-    if @order.ship_address
-      if @order.payment
-        @order.state = 'confirm'
-      else
-        @order.state = 'payment'
-      end
-    else
-      @order.state = 'ship_address'
-    end
-    state_callback(:before)
-  end
 
   #executed before displaying the ship address view
   def before_ship_address
@@ -77,8 +58,8 @@ CheckoutController.class_eval do
 
   #executed before displaying the payment view
   def before_payment
-    #remove any payments if you are updatind
-    current_order.payments.destroy_all if request.put?
+      #remove any payments if you are updatind
+      current_order.payments.destroy_all if request.put?
   end
 
   # Executed after order is complete
@@ -105,12 +86,13 @@ CheckoutController.class_eval do
        @order.save
 
        #make addresses, user's default
-       if @order.bill_address_id && order.ship_address_id
+       if @order.bill_address_id && @order.ship_address_id
          @order.user.update_attributes!(
              :bill_address_id => original_bill.id,
              :ship_address_id => original_ship.id )
        end
      end
+     session[:order_id] = nil
    end
 
 

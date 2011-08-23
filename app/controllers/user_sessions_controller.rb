@@ -4,8 +4,7 @@ class UserSessionsController < ApplicationController
   skip_filter  :verify_authenticity_token, :only => [:mobile_create, :create]
 
 
-  before_filter :only => [:new, :create]
-#  before_filter :require_user, :only => :destroy
+  after_filter :associate_order, :only => [:create]
 
   layout false
 
@@ -69,5 +68,6 @@ class UserSessionsController < ApplicationController
       end
       head :status => 200
   end
-  
+
+
 end

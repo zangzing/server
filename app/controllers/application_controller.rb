@@ -13,6 +13,7 @@ class ApplicationController < ActionController::Base
   include ZZ::Auth
   include ZZ::ZZAController
   include PrettyUrlHelper
+  include Spree::CurrentOrder
 
   helper :all # include all helpers, all the time
 
@@ -142,4 +143,10 @@ class ApplicationController < ActionController::Base
     render :status => 509, :json => error_json
   end
 
+  def associate_order
+    return unless current_user and current_order
+    current_order.associate_user!(current_user)
+    session[:guest_token] = nil
+  end
+  
 end

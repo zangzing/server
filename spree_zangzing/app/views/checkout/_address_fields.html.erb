@@ -2,7 +2,7 @@
   #  form in :f,
   #  address in address
 %>
-<%= f.hidden_field :user_id unless address.user.id.nil?%>
+<%= f.hidden_field :user_id if address.user %>
 <p id="sfname" class="field">
   <%= f.label :firstname, t(:first_name) %>
   <%= f.text_field :firstname, :class => 'required' %><span class="req">*</span>

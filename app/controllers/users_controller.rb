@@ -25,7 +25,7 @@ class UsersController < ApplicationController
     if current_user
         flash[:notice] = "You are currently logged in as #{current_user.username}. Please log out before creating a new account."
         session[:flash_dialog] = true
-        redirect_to user_pretty_url(current_user)
+         redirect_back_or_default user_pretty_url(current_user)
         return
     end
 
@@ -93,7 +93,7 @@ class UsersController < ApplicationController
       prevent_session_fixation
       # Save active user,authlogic creates a session to log user in when we save
       if @new_user.save
-
+        associate_order
         if @guest
           @guest.user_id = @new_user.id
           @guest.status = 'Active Account'

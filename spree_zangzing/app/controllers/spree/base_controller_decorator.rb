@@ -1,7 +1,9 @@
-#require File.expand_path(File.dirname(__FILE__) + '/../../../../lib/zz/auth')
-#require File.expand_path(File.dirname(__FILE__) + '/../../../../lib/zz/zza')
-#require File.expand_path(File.dirname(__FILE__) + '/../../../../lib/zz/zza_controller')
-#require File.expand_path(File.dirname(__FILE__) + '/../../../../app/helpers/pretty_url_helper')
+unless defined? ZZ::ZZASender::ZZA_TEMP_DIR
+  require File.expand_path(File.dirname(__FILE__) + '/../../../../lib/zz/zza')
+  require File.expand_path(File.dirname(__FILE__) + '/../../../../lib/zz/zza_controller')
+  require File.expand_path(File.dirname(__FILE__) + '/../../../../lib/zz/auth')
+  require File.expand_path(File.dirname(__FILE__) + '/../../../../app/helpers/pretty_url_helper')
+end
 
 
 Spree::BaseController.class_eval do
@@ -13,7 +15,7 @@ Spree::BaseController.class_eval do
   # This should be overridden by an auth-related extension which would then have the
   # opportunity to associate the new order with the # current user before saving.
   def before_save_new_order
-    @current_order.user  ||= current_user 
+    @current_order.associate_user( current_user )
   end
 
   def after_save_new_order
