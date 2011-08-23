@@ -230,16 +230,23 @@ body.impersonation.show-system-message-banner #system-message-banner #banner-tex
     vertical-align: middle;
 }
 
-input[type=text], input[type=password], input[type=checkbox] {
+input[type=text], input[type=password], input[type=checkbox] , textarea{
     text-align: left;
     font-size: 14px;
     background-color: #fff;
     border: solid 1px #afafaf;
     padding: 5px;
+  /*font-family: "Lucida Grande", "Lucida Sans Unicode", "Trebuchet MS", Tahoma, Helvetica, Arial, sans-serif;*/
+  /*font-family:Arial;*/
 }
 
 input[type=text]:focus, input[type=password]:focus, input[type=checkbox]:focus , textarea:focus{
+    /*border: solid 1px #FDD042;*/
     outline: none;
+    /*box-shadow: 0px 0px 10px #FDD042;*/
+    /*-webkit-box-shadow: 0px 0px 10px #FDD042;*/
+    /*-moz-box-shadow: 0px 0px 10px #FDD042;*/
+    /*filter: progid:DXImageTransform.Microsoft.dropShadow(color=#FDD042, offX=2, offY=2, positive=true);*/
 }
 
 
@@ -248,10 +255,11 @@ input[type=text].error, input[type=password].error, input[type=checkbox].error ,
 }
 
 textarea{
-    background-color: #fff;
-    border: solid 1px #afafaf;
-    padding: 0px;
+  /*font-family: "Lucida Grande", "Lucida Sans Unicode", "Trebuchet MS", Tahoma, Helvetica, Arial, sans-serif;*/
+  /*font-family:Arial;*/
+
     font-weight: 400;
+  font-size: 14px;
 }
 
 
