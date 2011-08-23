@@ -151,6 +151,7 @@ class BaseACL
         redis.zadd user_key, priority, acl_id
       end
     end
+    notify_user_acl_modified([user_id])
   end
     
   # Remove the user from the acl
@@ -168,6 +169,7 @@ class BaseACL
         redis.zrem user_key, acl_id
       end
     end
+    notify_user_acl_modified([user_id])
   end
 
   # Remove an acl - removes all users from the
@@ -212,7 +214,12 @@ class BaseACL
       end
       completed = result.nil? ? false : true
     end
+    notify_user_acl_modified(user_ids)
     return true
+  end
+
+  # override this if you want to be notified of a users acl being modified in some way
+  def notify_user_acl_modified(user_ids)
   end
 
   # return the user role if we have one for the

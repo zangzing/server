@@ -18,3 +18,5 @@ log/*
 .bundle/*
 .bundle
 logs/*.log
+*.log
+
