@@ -313,6 +313,8 @@ zz.comments = {};
             };
 
             zz.routes.comments.create_comment_for_photo(photo_id, params, success, error);
+
+            ZZAt.track('photo.comment.' + zza_page_context() + '.submit');
         };
 
 
@@ -454,7 +456,19 @@ zz.comments = {};
         });
     }
 
-
+    function zza_page_context(){
+        if(zz.page.rails_controller_name == 'photos'){
+            if(document.location.href.indexOf('#!') >= 0){
+                return 'picture';
+            }
+            else{
+                return 'grid';
+            }
+        }
+        else{
+            return zz.page.rails_controller_name;
+        }
+    }
 
 })();
 
