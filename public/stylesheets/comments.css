@@ -16,6 +16,7 @@
     top: 0px;
     left: 0px;
     right: 0px;
+
     height: 255px;
     width: 100%;
     border-bottom: 1px solid #dedede;
@@ -30,13 +31,19 @@
 }
 
 .comments-dialog .header .commented-photo-caption{
+    position: relative;
+    bottom: 8px;
+    margin-left:auto;
+    margin-right:auto;
+    width:200px;
     padding:5px;
-    height:25px;
+    height:30px;
     font-size:13px;
     color: #636363;
     padding-left:10px;
     padding-right:10px;
     text-shadow: white 1px 1px 0px;
+
 }
 
 
@@ -46,9 +53,10 @@
 
 .comments-dialog .header .button-bar {
     position: relative;
-    bottom: 10px;
+    bottom: 12px;
     margin-left: auto;
     margin-right: auto;
+
 }
 
 .comments-dialog .header .button-bar .button{

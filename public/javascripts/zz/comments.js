@@ -14,7 +14,7 @@ zz.comments = {};
                                             '<img class="bottom-shadow" src="' + zz.routes.image_url('/images/photo/bottom-full.png') + '">' +
                                         '</div>' +
                                     '</div>' +
-                                    '<div class="commented-photo-caption"></div>' +
+                                    '<div class="commented-photo-caption ellipsis multiline"></div>' +
                                     '<div class="button-bar">' +
                                         '<div class="button share-button"></div>' +
                                         '<div class="button like-button zzlike" data-zzid="" data-zztype="photo"><div class="zzlike-icon thumbdown"></div></div>' +
@@ -138,6 +138,7 @@ zz.comments = {};
 
                 var photo_caption_element = comments_dialog.find('.header .commented-photo-caption');
                 photo_caption_element.text(photo.caption);
+                photo_caption_element.ellipsis();
 
 
                 //share button
