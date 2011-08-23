@@ -205,6 +205,12 @@ zz.toolbars = {
 
         $('#footer #buy-button').click(function() {
             if (! $(this).hasClass('disabled')) {
+                if(document.location.href.indexOf('#!') >= 0){
+                    ZZAt.track('photo.buy.toolbar.click');
+                }
+                else{
+                    ZZAt.track('album.buy.toolbar.click');
+                }
                 alert('This feature is still under construction.');
             }
         });

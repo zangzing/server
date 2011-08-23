@@ -155,6 +155,7 @@ zz.comments = {};
 
                 var buy_button = comments_dialog.find('.buy-button');
                 buy_button.click(function(){
+                    ZZAt.track('photo.buy.comment.click');
                     alert('This feature is still under construction.');
                 });
 
