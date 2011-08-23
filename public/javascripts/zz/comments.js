@@ -314,7 +314,7 @@ zz.comments = {};
 
             zz.routes.comments.create_comment_for_photo(photo_id, params, success, error);
 
-            ZZAt.track('photo.comment.' + zza_page_context() + '.submit');
+            ZZAt.track('photo.comment.' + zza_page_context() + '.add');
         };
 
 
