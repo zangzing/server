@@ -35,7 +35,7 @@ zz.comments = {};
                                        '</div>' +
                                    '</div>' +
                                '</div>' +
-                               '<textarea placeholder="Write something here" class="text"></textarea>' +
+                               '<textarea placeholder="Write a comment..." class="text"></textarea>' +
                                '<div class="share">' +
                                    'Share on &nbsp;&nbsp;<input type="checkbox" class="facebook"> Facebook &nbsp;&nbsp;<input type="checkbox" class="twitter"> Twitter' +
                                '</div>' +
@@ -136,6 +136,13 @@ zz.comments = {};
                 photo_element.find('.bottom-shadow').css({'width': (scaled.width + 14) + 'px'});
                 photo_element.center_y();
 
+
+                photo_element.click(function(){
+                    jQuery.cookie('show_comments', 'true'); //todo: should manage this centrally
+                    dialog.close();
+                    zz.album.goto_single_picture(photo_id);
+                });
+
                 var photo_caption_element = comments_dialog.find('.header .commented-photo-caption');
                 photo_caption_element.text(photo.caption);
                 photo_caption_element.ellipsis();
@@ -170,7 +177,7 @@ zz.comments = {};
 
             comments_dialog.find('.body').html(comments_widget.element);
 
-            zz.dialog.show_square_dialog(comments_dialog, {width:450, height:600});
+            var dialog = zz.dialog.show_square_dialog(comments_dialog, {width:450, height:600});
             comments_widget.load_comments_for_photo(photo_id);
 
         });
@@ -214,6 +221,9 @@ zz.comments = {};
             if(comment_json['user_id'] == zz.session.current_user_id){
                 comment.addClass('deletable');
             }
+
+
+
 
             return comment;
         };
@@ -365,14 +375,60 @@ zz.comments = {};
                 comments_element.find('.share').hide();
             }
 
-            comments_element.find('.submit-button').click(function(){
+
+            var submit_comment = function(){
                 var text = $.trim(comments_element.find('textarea.text').val());
                 if(text.length > 0){
                     var post_to_facebook = facebook_checkbox.attr('checked');
                     var post_to_twitter = twitter_checkbox.attr('checked');
                     add_comment(text, post_to_facebook, post_to_twitter);
                     comments_element.find('textarea.text').val('');
+                    comments_element.find('textarea.text').blur();
                 }
+                else{
+                    event.preventDefault();
+                }
+            };
+
+            // trap arrow keys and enter keuy
+            comments_element.find('textarea.text').keydown(function(event) {
+                if (event.keyCode === 40) {
+                    //down
+                    event.stopPropagation();
+                }
+                else if (event.keyCode === 39) {
+                    //right
+                    event.stopPropagation();
+                }
+                else if (event.keyCode === 34) {
+                    //page down
+                    event.stopPropagation();
+                }
+                else if (event.keyCode === 38) {
+                    //up
+                    event.stopPropagation();
+                }
+                else if (event.keyCode === 37) {
+                    //left
+                    event.stopPropagation();
+                }
+                else if (event.keyCode === 33) {
+                    //page up
+                    event.stopPropagation();
+                }
+                else if (event.keyCode === 13) {
+                    //enter
+                    if(!event.altKey && !event.ctrlKey){
+                        submit_comment();
+                    }
+                }
+            });
+
+
+
+
+            comments_element.find('.submit-button').click(function(){
+                submit_comment();
             });
         };
 
