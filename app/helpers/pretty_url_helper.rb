@@ -20,6 +20,12 @@ module PrettyUrlHelper
       album_photos(photo.album) + "/#!{photo.id}"
    end
 
+   def photo_url_with_comments(photo)
+      album_photos(photo.album) + "/{photo.id}?show_comments=true"
+   end
+
+
+
    def user_pretty_url(user)
      user_url( user )
    end
