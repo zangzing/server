@@ -163,7 +163,7 @@ class Admin::EmailTemplatesController < Admin::AdminController
 
   def comment
     commentable = Commentable.find_or_create_by_photo_id(photo.id)
-    comment = commentable.comments.create({:text => 'this is a comment'})
+    comment = commentable.comments.create({:text => 'this is a comment', :user_id => sender.id})
     comment
   end
 
