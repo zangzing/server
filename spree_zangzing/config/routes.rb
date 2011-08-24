@@ -156,7 +156,7 @@ Rails.application.routes.draw do
     post  '/checkout/registration'    => 'checkout#guest_checkout', :as => :guest_checkout
     match '/checkout/update/:state'   => 'checkout#update', :as => :update_checkout
     match '/checkout/:state'          => 'checkout#edit', :as => :checkout_state
-    match '/checkout'                 => 'checkout#update', :state => 'cart', :as => :checkout
+    match '/checkout'                 => 'checkout#edit', :state => 'cart', :as => :checkout
 
     resources :orders do
       post :populate, :on => :collection

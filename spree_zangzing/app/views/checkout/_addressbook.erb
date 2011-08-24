@@ -6,27 +6,29 @@
    style = 'dropdown'
 %>
 
-<b>Address Book</b>
-<% if style=='table' %>
-    <%= form.hidden_field "#{address_kind}_id"%>
-    <table>
-      <% column = 0 %>
-      <% order.user.addresses.each do |address| %>
-          <%if column % column_width == 0 %>
-              <tr>
-          <%end%>
-          <td>
-            <%= form.submit button_text,  {:onclick => "$('#order_#{address_kind}_id').val('#{address.id}'); this.form.submit();"} %>
-            <%= render :partial =>'address_display', :locals => { :address => address,:label =>"" } %>
-            <a href="javascript:void(0)"><span>edit</span></a> <a href="javascript:void(0)"><span>delete</span></a>
-          </td>
-          <%if column %column_width == column_width-1 %>
-              </tr>
-          <%end%>
-          <% column = column + 1 %>
-      <%end %>
-    </table>
-<% else  %>
-    <%= addressbook_dropdown(form, address_kind, order.user.addresses) %>
-<% end %>
+<%if order.user && order.user.addresses.count > 0 %>
+    <b>Address Book</b>
+    <% if style=='table' %>
+        <%= form.hidden_field "#{address_kind}_id"%>
+        <table>
+          <% column = 0 %>
+          <% order.user.addresses.each do |address| %>
+              <%if column % column_width == 0 %>
+                  <tr>
+              <%end%>
+              <td>
+                <%= form.submit button_text,  {:onclick => "$('#order_#{address_kind}_id').val('#{address.id}'); this.form.submit();"} %>
+                <%= render :partial =>'address_display', :locals => { :address => address,:label =>"" } %>
+                <a href="javascript:void(0)"><span>edit</span></a> <a href="javascript:void(0)"><span>delete</span></a>
+              </td>
+              <%if column %column_width == column_width-1 %>
+                  </tr>
+              <%end%>
+              <% column = column + 1 %>
+          <%end %>
+        </table>
+    <% else  %>
+        <%= addressbook_dropdown(form, address_kind, order.user.addresses) %>
+    <% end %>
 
+<%end %>

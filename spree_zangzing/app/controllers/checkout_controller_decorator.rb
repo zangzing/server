@@ -2,6 +2,7 @@ CheckoutController.class_eval do
 
    before_filter :update_address_id, :only =>[:update]
 
+   skip_before_filter :load_order, :only => [:registration, :guest_checkout]
    before_filter :check_registration, :except => [:registration, :guest_checkout]
 
    def registration
@@ -24,7 +25,7 @@ CheckoutController.class_eval do
    def check_registration
      return if  current_user || current_order.email
      store_location
-     redirect_to checkout_registration_path
+     redirect_to checkout_registration_path 
    end
 
    # Overrides the equivalent method defined in spree_core. This variation of the method will ensure that users
@@ -33,6 +34,17 @@ CheckoutController.class_eval do
      return order_path(@order) if current_user
      token_order_path(@order, @order.token)
    end
+
+  def before_cart
+    if  current_user || current_order.email
+      if @order.next
+        redirect_to checkout_state_path(@order.state)
+      end
+    else
+      store_location
+      redirect_to checkout_registration_path
+    end
+  end
 
   #executed before displaying the ship address view
   def before_ship_address
