@@ -237,6 +237,7 @@ zz.album = {};
                 $('#article').append(comments_panel);
                 comments_panel.animate({right:'0px'}, 300, function(){
                     callback();
+                    comments_widget.set_focus();
                 });
             });
         }

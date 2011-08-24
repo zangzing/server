@@ -179,6 +179,7 @@ zz.comments = {};
 
             var dialog = zz.dialog.show_square_dialog(comments_dialog, {width:450, height:600});
             comments_widget.load_comments_for_photo(photo_id);
+            comments_widget.set_focus();
 
         });
     };
@@ -272,6 +273,10 @@ zz.comments = {};
                 resize_comments();
 
             });
+        };
+
+        var set_focus = function(){
+            comments_element.find('textarea.text').focus();  
         };
 
         var resize_comments = function(){
@@ -441,6 +446,10 @@ zz.comments = {};
 
             load_comments_for_photo: function(photo_id){
                 load_comments_for_photo(photo_id);
+            },
+
+            set_focus: function(){
+                set_focus();
             }
         };
 
