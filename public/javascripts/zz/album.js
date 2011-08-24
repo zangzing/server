@@ -248,7 +248,7 @@ zz.album = {};
     }
 
     function close_comments_drawer(animate, callback) {
-        jQuery.cookie('show_comments', 'false');
+        jQuery.cookie('show_comments', null);
 
         var comments_panel = $('#article .comments-right-panel');
 
