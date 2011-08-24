@@ -149,7 +149,7 @@ class Admin::EmailTemplatesController < Admin::AdminController
 
 
   def test_photo_comment( template_id )
-    Notifier.photo_shared( sender.id, recipient.id, comment.id, template_id)
+    Notifier.photo_comment( sender.id, recipient.id, comment.id, template_id)
   end
 
 
