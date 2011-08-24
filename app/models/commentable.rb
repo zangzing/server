@@ -50,10 +50,12 @@ class Commentable < ActiveRecord::Base
     commentable_hash['comments'] = []
 
     self.comments.each do |comment|
-      comment_hash = comment.as_json
-
-      commentable_hash['comments'] << comment_hash
-
+      begin
+        comment_hash = comment.as_json
+        commentable_hash['comments'] << comment_hash
+      rescue Exception => ex
+        Rails.logger.error("skipping comment because of error (probably missing user) - #{ex.message}\n#{ex.backtrace}")
+      end
     end
 
     return commentable_hash
