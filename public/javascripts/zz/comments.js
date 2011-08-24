@@ -390,43 +390,52 @@ zz.comments = {};
                     var post_to_twitter = twitter_checkbox.attr('checked');
                     add_comment(text, post_to_facebook, post_to_twitter);
                     comments_element.find('textarea.text').val('');
-                    comments_element.find('textarea.text').blur();
-                }
-                else{
-                    event.preventDefault();
                 }
             };
 
             // trap arrow keys and enter keuy
             comments_element.find('textarea.text').keydown(function(event) {
+
+                var cancel_arrow_key = function(){
+                    if (comments_element.find('textarea.text').val().length > 0){
+                        event.stopPropagation();
+
+                    }
+
+                };
+
+
+
+
                 if (event.keyCode === 40) {
                     //down
-                    event.stopPropagation();
+                    cancel_arrow_key();
                 }
                 else if (event.keyCode === 39) {
                     //right
-                    event.stopPropagation();
+                    cancel_arrow_key();
                 }
                 else if (event.keyCode === 34) {
                     //page down
-                    event.stopPropagation();
+                    cancel_arrow_key();
                 }
                 else if (event.keyCode === 38) {
                     //up
-                    event.stopPropagation();
+                    cancel_arrow_key();
                 }
                 else if (event.keyCode === 37) {
                     //left
-                    event.stopPropagation();
+                    cancel_arrow_key();
                 }
                 else if (event.keyCode === 33) {
                     //page up
-                    event.stopPropagation();
+                    cancel_arrow_key();
                 }
                 else if (event.keyCode === 13) {
                     //enter
                     if(!event.altKey && !event.ctrlKey){
                         submit_comment();
+                        event.preventDefault();
                     }
                 }
             });
