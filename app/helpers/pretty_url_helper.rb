@@ -16,13 +16,15 @@ module PrettyUrlHelper
      "#{user_url( photo.album.user)}/#{photo.album.friendly_id}/photos/#!#{photo.id}"
    end
 
+   def photo_url_with_comments(photo)
+     "#{user_url( photo.album.user)}/#{photo.album.friendly_id}/photos/#{photo.id}?show_comments=true"
+   end
+
+
    def photo_url(photo)
       album_photos(photo.album) + "/#!{photo.id}"
    end
 
-   def photo_url_with_comments(photo)
-      album_photos(photo.album) + "/{photo.id}?show_comments=true"
-   end
 
 
 
