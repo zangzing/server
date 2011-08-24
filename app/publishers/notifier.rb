@@ -159,7 +159,7 @@ class Notifier < ActionMailer::Base
     end
   end
 
-  def comment_added_to_photo(comment_added_by_user_id, send_notification_to_user_id, comment_id)
+  def photo_comment(comment_added_by_user_id, send_notification_to_user_id, comment_id)
     comment_added_by_user = User.find(comment_added_by_user_id)
     send_notification_to_user = User.find(send_notification_to_user_id)
     comment = Comment.find(comment_id)
