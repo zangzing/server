@@ -6,4 +6,7 @@ Address.class_eval do
     new_record? || !user_id.nil?
   end
 
+  def one_line
+    "#{firstname} #{lastname} #{address1} #{city} #{state_text}"
+  end
 end

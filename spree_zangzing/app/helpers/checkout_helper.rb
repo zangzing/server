@@ -50,4 +50,23 @@ module CheckoutHelper
         javascript_tag("document.write(\"#{state_elements.html_safe}\");")
   end
 
+  def addressbook_dropdown(form, address_kind, addresses )
+      return if addresses.nil? or addresses.length <= 0
+      address_elements = [
+          form.collection_select( address_kind+"_id",
+                                  addresses,
+                                 :id,
+                                 :one_line,
+                                 {:include_blank => true},
+                                 {:class => "required",
+                                  :onchange=> "javascript:this.form.submit();"})
+      ].join.gsub('"', "'")
+
+      form.label(address_kind+"_id", t(address_kind)) +
+          '<span class="req">*</span><br />'.html_safe +
+          address_elements.html_safe
+    end
+
+
+
 end

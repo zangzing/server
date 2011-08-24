@@ -10,7 +10,8 @@ class User < ActiveRecord::Base
   attr_writer      :name
   attr_accessor    :old_password, :reset_password
   attr_accessible  :email, :name, :first_name, :last_name, :username,  :password, :password_confirmation,
-                   :old_password, :automatic, :profile_photo_id, :subscriptions_attributes
+                   :old_password, :automatic, :profile_photo_id, :subscriptions_attributes,
+                   :ship_address_id, :bill_address_id, :creditcard_id
 
   has_many :albums,              :dependent => :destroy
 

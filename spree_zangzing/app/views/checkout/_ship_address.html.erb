@@ -20,10 +20,9 @@
 
 <h1>Shipping Address</h1>
 <%= render :partial =>'addressbook', :locals => { :form => form,
-                                                  :form_id => 'checkout_form_ship_address',
                                                   :order => @order,
-                                                  :button_text => "Ship To This Address",
-                                                  :address_id_field_name => 'order[ship_address_id]' } %>
+                                                  :address_kind => 'ship_address',
+                                                  :button_text => "Ship To This Address"  } %>
 
 <p class="field checkbox">
       <label for="order_use_billing" id="use_billing">

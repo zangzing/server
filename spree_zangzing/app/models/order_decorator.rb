@@ -75,6 +75,10 @@ Order.class_eval do
       self.email = user.email
       self.ship_address_id = user.ship_address.id if user.ship_address
       self.bill_address_id = user.bill_address.id if user.bill_address
+
+      if user.creditcard
+        self.payments.build( :source => user.creditcard, :payment_method => PaymentMethod.all.first)
+      end
     end
   end
 

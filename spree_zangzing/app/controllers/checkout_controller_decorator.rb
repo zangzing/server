@@ -85,13 +85,15 @@ CheckoutController.class_eval do
        end
        @order.save
 
-       #make addresses, user's default
-       if @order.bill_address_id && @order.ship_address_id
-         @order.user.update_attributes!(
+       #make addresses, creditcard user's default
+        @order.user.update_attributes!(
              :bill_address_id => original_bill.id,
-             :ship_address_id => original_ship.id )
-       end
+             :ship_address_id => original_ship.id,
+             :creditcard_id   => @order.payment.source.id
+        )
      end
+
+     #remove the order from the session
      session[:order_id] = nil
    end
 

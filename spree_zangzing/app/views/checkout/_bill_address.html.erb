@@ -5,10 +5,9 @@ div.inner input[type=text], div.inner select { width: 80%; }
 
 <h1>Billing Address</h1>
 <%= render :partial =>'addressbook', :locals => { :form => form,
-                                                  :form_id => 'checkout_form_bill_address',
                                                   :order => @order,
-                                                  :button_text => "Use This Address",
-                                                  :address_id_field_name => 'order[bill_address_id]' } %>
+                                                  :address_kind => 'bill_address',
+                                                  :button_text => "Use This Address" } %>
 
 
 <fieldset id='shipping'>
