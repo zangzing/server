@@ -57,9 +57,8 @@ class UserSessionsController < ApplicationController
                           :username => @user_session.record.username 
         }
       else
-        errors_to_headers( @user_session )
-        head :status => 401
-       end
+        render_json_error( nil, @user_session.errors.full_messages, 401 )
+      end
   end
 
   def mobile_destroy

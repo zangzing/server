@@ -498,6 +498,20 @@ class Album < ActiveRecord::Base
     JSON.fast_generate( self.attributes )
   end
 
+  # this is here so we can manually update the photos
+  # counts - the server should not be running
+  # when this is called to ensure that we end up
+  # with accurate counts
+  def self.update_all_photo_counts
+    # set the current counts
+    Album.reset_column_information
+    albums = Album.all
+    albums.each do |album|
+      Album.reset_counters album.id, :photos
+    end
+
+    albums.count
+  end
 
 private
   def make_create_album_activity

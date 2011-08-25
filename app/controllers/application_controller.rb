@@ -395,8 +395,8 @@ class ApplicationController < ActionController::Base
   end
 
   # standard json response error
-  def render_json_error(ex)
-    error_json = AsyncResponse.build_error_json(ex)
+  def render_json_error(ex, message = nil, code = nil)
+    error_json = AsyncResponse.build_error_json(ex, message, code)
     render :status => 509, :json => error_json
   end
 

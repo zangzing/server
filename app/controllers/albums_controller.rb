@@ -3,9 +3,15 @@
 #
 
 class AlbumsController < ApplicationController
-  before_filter :require_user,              :except => [ :index, :back_to_index, :my_albums_json, :liked_albums_json, :my_albums_public_json, :liked_albums_public_json, :liked_users_public_albums_json, :invalidate_cache, :mobile_versions ]
+  before_filter :require_user,              :except => [ :index, :back_to_index,  :invalidate_cache, :mobile_albums,
+      :my_albums_json, :liked_albums_json, :my_albums_public_json, :liked_albums_public_json, :liked_users_public_albums_json,
+      :mobile_my_albums_json, :mobile_liked_albums_json, :mobile_my_albums_public_json, :mobile_liked_albums_public_json, :mobile_liked_users_public_albums_json
+  ]
   before_filter :require_user_json,         :only =>   [ :my_albums_json, :liked_albums_json, :invalidate_cache ]
-  before_filter :require_album,             :except => [ :index, :create, :new, :my_albums_json, :liked_albums_json, :my_albums_public_json, :liked_albums_public_json, :liked_users_public_albums_json, :invalidate_cache, :mobile_versions  ]
+  before_filter :require_album,             :except => [ :index, :create, :new, :invalidate_cache, :mobile_albums,
+      :my_albums_json, :liked_albums_json, :my_albums_public_json, :liked_albums_public_json, :liked_users_public_albums_json,
+      :mobile_my_albums_json, :mobile_liked_albums_json, :mobile_my_albums_public_json, :mobile_liked_albums_public_json, :mobile_liked_users_public_albums_json
+  ]
   before_filter :require_album_admin_role,  :only =>   [ :destroy, :edit, :update, :add_group_members ]
 
   # displays the "Select album type screen" used in the wizard
@@ -180,39 +186,26 @@ class AlbumsController < ApplicationController
   end
 
 
-  # This is effectively the users homepage
-  def index
-    begin
-      @user = User.find(params[:user_id])
-    rescue ActiveRecord::RecordNotFound => e
-      render :file => "#{Rails.root}/public/404.html", :layout => false, :status => 404
-      return
-    end
-
-    store_last_home_page @user.id
-
-    # Note For Jeremy:
-    # This section would be used when you build the index page and set up the json links for the 3 types
-    # of album data
-
+  # fetches the album paths, this is common code shared
+  # between mobile and normal apis
+  # returns @versions, and @sess_versions context which
+  # can be used to create the specific form of data that
+  # each type of call wants
+  def get_albums(user, mobile)
     # determine if we should be fetching the view based on public or private data
-    user_is_me = current_user?(@user)
+    user_is_me = current_user?(user)
     public = (user_is_me || (!current_user.nil? && current_user.support_hero?)) == false
 
     # preload the expected cache data
-    loader = Cache::Album::Manager.shared.make_loader(@user, public)
+    loader = Cache::Album::Manager.shared.make_loader(user, public)
     loader.pre_fetch_albums
-    versions = loader.current_versions
+    @versions = loader.current_versions
 
     # call the following methods to get the json paths for my_albums, my_liked_albums, etc
     # The url paths returned are based on whether we are viewing ourselves or somebody else (based on the public flag)
     #
     # The paths are relative to the host so start with /service/...
-    @my_albums_path = my_albums_path(versions)
-    @liked_albums_path = liked_albums_path(versions)
-    @liked_users_albums_path = liked_users_albums_path(versions)
     @sess_versions = nil
-    @session_user_liked_albums_path = nil
 
     # When showing the view for a user who is not the current user we
     # fetch the public information.  However, if we have a current user
@@ -226,49 +219,62 @@ class AlbumsController < ApplicationController
       sess_loader = Cache::Album::Manager.shared.make_loader(current_user, false)
       sess_loader.pre_fetch_albums
       @sess_versions = sess_loader.current_versions
-      @session_user_liked_albums_path = liked_albums_path(@sess_versions)
+    end
+  end
+
+  # This is effectively the users homepage
+  def index
+    begin
+      @user = User.find(params[:user_id])
+    rescue ActiveRecord::RecordNotFound => e
+      render :file => "#{Rails.root}/public/404.html", :layout => false, :status => 404
+      return
     end
 
+    store_last_home_page @user.id
 
-#    liked_users_public_albums = @user.liked_users_public_albums
-    # if we are showing the owners albums, show them all as well as any linked albums and any public albums for users that the user likes
-    # for a different user than the current logged in user, just show all public albums including any that the users likes and
-    # any public ones that get pulled in from users that we like
-    # When the user visits her hompage show
-    #    -All of her albums
-    #    -All he liked albums
-    #    -All of her liked users public albums
-    # When the user visits joe's homepage show
-    #    -All of joe's user public albums
-    #    -All of joe's liked public albums
-    #    -All of joe's lked users' public albums
-#    if public == false
-#      @albums = @user.albums | @user.liked_albums | liked_users_public_albums #show all of current_user's albums
-#    else
-#      @albums = @user.albums.where("privacy = 'public' AND completed_batch_count > 0") |
-#                @user.liked_public_albums | liked_users_public_albums
-#    end
-    #@albums = @albums.sort { |a1, a2| a2.updated_at <=> a1.updated_at }
+    get_albums(@user, false)
 
-    #Setup badge vars
     @badge_name = @user.name
+    @my_albums_path = my_albums_path(@versions)
+    @liked_albums_path = liked_albums_path(@versions)
+    @liked_users_albums_path = liked_users_albums_path(@versions)
+    @session_user_liked_albums_path = @sess_versions.nil? ? nil : liked_albums_path(@sess_versions)
+  end
 
-    respond_to do | format |
-      format.html{ render }
-      format.json{ render :json =>{
-           :user_id                        => versions.user_id,
-           :public                         => versions.public,
-           :my_albums                      => versions.my_albums,
-           :my_albums_path                 => @my_albums_path,
-           :liked_albums                   => versions.liked_albums,
-           :liked_albums_path              => @liked_albums_path,
-           :liked_users_albums             => versions.liked_users_albums,
-           :liked_users_albums_path        => @liked_users_albums_path,
-           :session_user_liked_albums      => (@sess_versions? @sess_versions.liked_users_albums : nil ),
-           :session_user_liked_albums_path => @session_user_liked_albums_path
-          }
-      }
+
+  def mobile_albums()
+    begin
+      user = User.find(params[:user_id])
+    rescue ActiveRecord::RecordNotFound => e
+      render_json_error( e ) and return
     end
+
+    album_meta = get_albums(user, true)
+    versions = @versions
+    sess_versions = @sess_versions
+    if !sess_versions.nil?
+      sess_liked_users_albums = sess_versions.liked_users_albums
+      sess_liked_users_albums_path = mobile_liked_users_albums_path(sess_versions)
+    else
+      sess_liked_users_albums = nil
+      sess_liked_users_albums_path = nil
+    end
+
+    album_meta = {
+      :user_id                        => versions.user_id,
+      :public                         => versions.public,
+      :my_albums                      => versions.my_albums,
+      :my_albums_path                 => mobile_my_albums_path(versions),
+      :liked_albums                   => versions.liked_albums,
+      :liked_albums_path              => mobile_liked_albums_path(versions),
+      :liked_users_albums             => versions.liked_users_albums,
+      :liked_users_albums_path        => mobile_liked_users_albums_path(versions),
+      :session_user_liked_albums      => sess_liked_users_albums,
+      :session_user_liked_albums_path => sess_liked_users_albums_path
+    }
+
+    render :json => JSON.fast_generate(album_meta)
   end
 
   # invalidate the current cache for this user - essentially a forced cache flush version change
@@ -287,15 +293,32 @@ class AlbumsController < ApplicationController
     url << "?ver=#{ver}"
   end
 
+  def mobile_my_albums_path(versions, force_zero_ver = false)
+    ver = force_zero_ver ? 0 : versions.my_albums
+    url = versions.public ? mobile_my_albums_public_json_path(versions.user_id) : mobile_my_albums_json_path(versions.user_id)
+    url << "?ver=#{ver}"
+  end
+
   def liked_albums_path(versions, force_zero_ver = false)
     ver = force_zero_ver ? 0 : versions.liked_albums
     url = versions.public ? liked_albums_public_json_path(versions.user_id) : liked_albums_json_path(versions.user_id)
     url << "?ver=#{ver}"
   end
 
+  def mobile_liked_albums_path(versions, force_zero_ver = false)
+    ver = force_zero_ver ? 0 : versions.liked_albums
+    url = versions.public ? mobile_liked_albums_public_json_path(versions.user_id) : mobile_liked_albums_json_path(versions.user_id)
+    url << "?ver=#{ver}"
+  end
+
   def liked_users_albums_path(versions, force_zero_ver = false)
     ver = force_zero_ver ? 0 : versions.liked_users_albums
     liked_users_public_albums_json_path(versions.user_id) + "?ver=#{ver}"
+  end
+
+  def mobile_liked_users_albums_path(versions, force_zero_ver = false)
+    ver = force_zero_ver ? 0 : versions.liked_users_albums
+    mobile_liked_users_public_albums_json_path(versions.user_id) + "?ver=#{ver}"
   end
 
   def albums_cache_setup(public)
@@ -334,8 +357,16 @@ class AlbumsController < ApplicationController
     my_albums_json_common(false)
   end
 
+  def mobile_my_albums_json
+    my_albums_json_common(false)
+  end
+
 # fetch public albums for a given user
   def my_albums_public_json
+    my_albums_json_common(true)
+  end
+
+  def mobile_my_albums_public_json
     my_albums_json_common(true)
   end
 
@@ -356,13 +387,21 @@ class AlbumsController < ApplicationController
     liked_albums_json_common(false)
   end
 
+  def mobile_liked_albums_json
+    liked_albums_json_common(false)
+  end
+
 # fetch the albums that a given user likes
   def liked_albums_public_json
     liked_albums_json_common(true)
   end
 
+  def mobile_liked_albums_public_json
+    liked_albums_json_common(true)
+  end
+
 # fetch the public albums of a user we like
-  def liked_users_public_albums_json
+  def liked_users_public_albums_json_common
     public = true
     loader = albums_cache_setup(public)
     versions = loader.current_versions
@@ -373,6 +412,14 @@ class AlbumsController < ApplicationController
       json = loader.fetch_liked_users_albums_json
       render_cached_json(json, public, loader.liked_users_albums_json_compressed)
     end
+  end
+
+  def liked_users_public_albums_json
+    liked_users_public_albums_json_common
+  end
+
+  def mobile_liked_users_public_albums_json
+    liked_users_public_albums_json_common
   end
 
 #deletes an album
