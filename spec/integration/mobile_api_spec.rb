@@ -13,8 +13,7 @@ describe "Mobile API" do
       path = build_full_path(mobile_login_path, true)
       post path, :email => "test1", :password => "badpassword"
       j = JSON.parse(response.body).recursively_symbolize_keys!
-      pj = JSON.pretty_generate(j)
-      puts pj
+      #puts JSON.pretty_generate(j)
       j[:code].should eql(401)
     end
 
@@ -37,13 +36,12 @@ describe "Mobile API" do
       @user_id = login_info[:user_id]
     end
 
-    it "should fetch albums" do
+    it "should fetch albums and verify liked_user_albums_path" do
       path = build_full_path(mobile_albums_path(@user_id))
       get path
       response.status.should eql(200)
       j = JSON.parse(response.body).recursively_symbolize_keys!
-      pj = JSON.pretty_generate(j)
-      puts pj
+      #puts JSON.pretty_generate(j)
       j[:public].should == false
 
       # verify that we have the expected data
@@ -51,9 +49,8 @@ describe "Mobile API" do
       path.should_not == nil
       get path
       response.status.should eql(200)
-      puts response.body
       albums = JSON.parse(response.body)
-      puts JSON.pretty_generate(albums)
+      #puts JSON.pretty_generate(albums)
       albums.count.should == 2
       albums.each do |album|
         album.recursively_symbolize_keys!
@@ -73,8 +70,7 @@ describe "Mobile API" do
       response.status.should eql(200)
       body = response.body
       j = JSON.parse(response.body).recursively_symbolize_keys!
-      pj = JSON.pretty_generate(j)
-      puts pj
+      #puts JSON.pretty_generate(j)
       j[:public].should == true
     end
   end
