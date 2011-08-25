@@ -100,7 +100,13 @@ class SendgridController < ApplicationController
         if attachments.count > 0 && @album
           user = @album.get_contributor_user_by_email( from.address )
           if user
-            add_photos(@album, user, attachments, subject)
+            if !subject.match(/^RE:.*/i)
+              add_photos(@album, user, attachments, subject)
+            else
+              # don't use set caption if user is replying to email
+              add_photos(@album, user, attachments)
+            end 
+
           else
             logger.error "Received a contribution email from an address that is not a contributor. Sending error email"
             ZZ::Async::Email.enqueue(:contribution_error, from.address )
