@@ -176,6 +176,12 @@ class SendgridController < ApplicationController
 
             if route[:controller]=="albums" && route[:action]=="index"
               link_name = "user_homepage_url"
+            elsif route[:controller]=="photos" && route[:action]=="show"
+              if(url.match(/.*\?show_comments=true/))
+                link_name = 'album_photo_url_with_comments'
+              else
+                link_name = 'album_photo_url'
+              end
             elsif route[:controller]=="photos" && route[:action]=="index"
               if url.include?("/#!")
                 link_name = "album_photo_url"
