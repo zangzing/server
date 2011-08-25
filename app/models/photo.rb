@@ -95,7 +95,8 @@ class Photo < ActiveRecord::Base
   # wrap the import call so we can do some of the things that normally
   # happen via callbacks
   def self.batch_insert(photos)
-    return if (photos.count == 0)
+    num_photos = photos.count
+    return if (num_photos == 0)
 
     # batch insert
     results = self.import(photos)
@@ -103,11 +104,11 @@ class Photo < ActiveRecord::Base
     # we assume all share the same album, so extract
     # the album_id and touch that album without instantiating a
     # new album
-    if photos.count > 0
-      photo = photos[0]
-      album_id = photo.album_id
-      Album.change_cache_version(album_id)
-    end
+    photo = photos[0]
+    album_id = photo.album_id
+    # bump the photo counter
+    Album.update_counters album_id, :photos_count => num_photos
+    Album.change_cache_version(album_id)
 
     # now kick off the uploads since bulk does not call after commit (I don't think)
     photos.each do |photo|
