@@ -124,7 +124,11 @@ describe "Comments Model" do
 
       comment_activity.user.should == comment.user
     end
+
   end
+
+
+
 
 
 

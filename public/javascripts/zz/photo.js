@@ -320,6 +320,7 @@ zz.template_cache = zz.template_cache || {};
                     comment_button.click(function(){
                         zz.comments.show_in_dialog(zz.page.album_id, zz.page.album_lastmod, o.photoId);
                         hide_frame();
+                        ZZAt.track('photo.comment.frame.click');
                     });
 
 
