@@ -212,6 +212,9 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
   # redirects to single picture view
   def show
     photo = @album.photos.find(params[:photo_id])
+    if(params[:show_comments])
+      cookies[:show_comments] = {:value => 'true', :path => '/'}
+    end
     redirect_to photo_pretty_url(photo)
   end
 

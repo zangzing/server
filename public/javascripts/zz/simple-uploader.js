@@ -166,7 +166,7 @@ zz.simple_uploader = {
                     $('.simpleuploader .queue .queued-file#' + file.id + ' .status').addClass('error');
                     $('.simpleuploader .queue .queued-file#' + file.id + ' .progress-bar').hide();
                     $('.simpleuploader .queue .queued-file#' + file.id + ' .cancel-button').hide();
-                    ZZAt.track('simpleuploader.photo.error');
+                    ZZAt.track('simpleuploader.photo.error', {errorCode: errorCode, errorMessage: message});
 
                 },
                 upload_success_handler: function(file, serverData) {
