@@ -56,7 +56,7 @@ class Photo < ActiveRecord::Base
   attr_accessor :temp_url, :inserting_for_batch
 
   has_one :photo_info, :dependent => :destroy
-  belongs_to :album, :touch => :photos_last_updated_at
+  belongs_to :album, :touch => :photos_last_updated_at, :counter_cache => true
   belongs_to :user
   belongs_to :upload_batch
 

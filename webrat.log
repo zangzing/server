@@ -84,3 +84,6 @@ REQUESTING PAGE: GET https://www.example.com/signin?return_to=%2Fservice%2Fphoto
 REQUESTING PAGE: GET http://www.example.com/user1/foo-bar-album/photos/#!1 with {} and HTTP headers {}
 REQUESTING PAGE: GET /signin?return_to=%2Fservice%2Fphotos%2F1%2Fcomments%2Ffinish_guest_create with {} and HTTP headers {"HTTP_REFERER"=>"http://www.example.com/user1/foo-bar-album/photos/#!1"}
 REQUESTING PAGE: GET https://www.example.com/signin?return_to=%2Fservice%2Fphotos%2F1%2Fcomments%2Ffinish_guest_create with {} and HTTP headers {"HTTP_REFERER"=>"/signin?return_to=%2Fservice%2Fphotos%2F1%2Fcomments%2Ffinish_guest_create"}
+REQUESTING PAGE: GET http://www.example.com/user1/foo-bar-album/photos/#!1 with {} and HTTP headers {}
+REQUESTING PAGE: GET http://www.example.com/user1/foo-bar-album/photos/#!1 with {} and HTTP headers {}
+REQUESTING PAGE: GET http://www.example.com/user1/foo-bar-album/photos/#!1 with {} and HTTP headers {}

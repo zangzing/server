@@ -3,6 +3,12 @@ module PrettyUrlHelper
      return "/#{username}/#{friendly_id}"
    end
 
+   # build the fully qualified url with scheme, host, uri
+   def build_full_path(path, secure = false)
+     scheme = secure ? "https://" : "http://"
+     full_path = "#{scheme}#{Server::Application.config.application_host}#{path}"
+   end
+
    def album_pretty_url(album, friendly_id = nil)
      friendly_id = friendly_id.nil? ? album.friendly_id : friendly_id
      return "http://#{Server::Application.config.application_host}#{album_pretty_path(album.user.username, friendly_id)}"

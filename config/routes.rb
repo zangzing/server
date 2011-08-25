@@ -312,14 +312,6 @@ Server::Application.routes.draw do
     post   '/sendgrid/unsubscribe'   => 'sendgrid#un_subscribe',:as => :sendgrid_unsubscribe
     post   '/sendgrid/events'        => 'sendgrid#events',      :as => :sendgrid_events
 
-    # ====================================================================================================
-    # ============================================= MOBILE_API  ==========================================
-    # ====================================================================================================
-    scope  '/mobile', :defaults => { :format => 'json' } do
-      post  '/login'                 => 'user_sessions#mobile_create'
-      match '/logout'                => 'user_sessions#mobile_destroy'
-      get   '/users/:user_id/albums' => 'albums#index'
-    end
 
 
     # ====================================================================================================
@@ -367,6 +359,24 @@ Server::Application.routes.draw do
   }
   
 
+  # ====================================================================================================
+  # ============================================= MOBILE_API  ==========================================
+  # ====================================================================================================
+  scope  '/mobile', :defaults => { :format => 'json' } do
+    post  '/login'                 => 'user_sessions#mobile_create',    :as => :mobile_login
+    match '/logout'                => 'user_sessions#mobile_destroy',   :as => :mobile_logout
+
+    #albums
+    get    '/users/:user_id/albums' => 'albums#mobile_albums',                  :as => :mobile_albums
+    get    '/users/:user_id/my_albums_json'                 => 'albums#mobile_my_albums_json',                 :as => :mobile_my_albums_json
+    get    '/users/:user_id/my_albums_public_json'          => 'albums#mobile_my_albums_public_json',          :as => :mobile_my_albums_public_json
+    get    '/users/:user_id/liked_albums_json'              => 'albums#mobile_liked_albums_json',              :as => :mobile_liked_albums_json
+    get    '/users/:user_id/liked_albums_public_json'       => 'albums#mobile_liked_albums_public_json',       :as => :mobile_liked_albums_public_json
+    get    '/users/:user_id/liked_users_public_albums_json' => 'albums#mobile_liked_users_public_albums_json', :as => :mobile_liked_users_public_albums_json
+  end
+
+
+  # Root level user
   get    '/:username/settings'                 => 'users#edit',              :as => :edit_user
   get    '/:username/change_password'          => 'users#edit_password',     :as => :edit_user_password
 
@@ -380,6 +390,7 @@ Server::Application.routes.draw do
   get    '/:user_id/:album_id/activities'      => 'activities#album_index'
   get    '/:user_id/:album_id/movie'           => 'photos#movie'
   get    '/:user_id/:album_id/photos/:photo_id' => 'photos#show'
+
 
 
 
