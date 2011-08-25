@@ -140,15 +140,15 @@ class Notifier < ActionMailer::Base
     end
   end
 
-  def comment_added_to_photo(comment_added_by_user_id, send_notification_to_user_id, comment_id)
-    comment_added_by_user = User.find(comment_added_by_user_id)
-    send_notification_to_user = User.find(send_notification_to_user_id)
-    comment = Comment.find(comment_id)
+  def photo_comment(comment_added_by_user_id, send_notification_to_user_id, comment_id, template_id = nil)
+    @user = User.find(comment_added_by_user_id)
+    @recipient = User.find(send_notification_to_user_id)
+    @comment = Comment.find(comment_id)
+    @photo = @comment.commentable.subject
 
-    # todo: fill out template and send email...
+    Subscriptions.wants_email!( @recipient, Email::SOCIAL, __method__ )
+    create_message( binding(), __method__, template_id,  @recipient, { :user_id => @user.id } )
 
-    mail( :to      => send_notification_to_user.email,
-          :subject => "comment added to photo" )
   end
 end
 

@@ -29,6 +29,22 @@ class AlbumACL < BaseACL
     AlbumACLTuple.new
   end
 
+  # called by base class to inform us that the user acl has
+  # been modified in some way for the set of users given
+  # currently we only care that a modification happened so
+  # we don't need the specifics
+  def notify_user_acl_modified(user_ids)
+    user_ids.each do |user_id|
+      #todo call album cache manager here to let it know
+      # it should invalidate the trackers for this user on
+      # contributor albums
+      num_id = user_id.to_i
+      if num_id != 0
+        # only notify if it is a valid numeric user id
+      end
+    end
+  end
+
 end
 
 # let the class initialize and register

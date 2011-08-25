@@ -62,8 +62,8 @@ zz.sharemenu = {
             container.load(zz.routes.path_prefix + '/shares/newemail', function() {
 
                 var dialog = zz.dialog.show_dialog(container, {
-                    height: 450,
-                    width: 830,
+                    height: 400,
+                    width: 820,
                     modal: true
                 });
 

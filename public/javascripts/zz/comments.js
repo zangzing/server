@@ -14,7 +14,7 @@ zz.comments = {};
                                             '<img class="bottom-shadow" src="' + zz.routes.image_url('/images/photo/bottom-full.png') + '">' +
                                         '</div>' +
                                     '</div>' +
-                                    '<div class="commented-photo-caption"></div>' +
+                                    '<div class="commented-photo-caption ellipsis multiline"></div>' +
                                     '<div class="button-bar">' +
                                         '<div class="button share-button"></div>' +
                                         '<div class="button like-button zzlike" data-zzid="" data-zztype="photo"><div class="zzlike-icon thumbdown"></div></div>' +
@@ -35,7 +35,7 @@ zz.comments = {};
                                        '</div>' +
                                    '</div>' +
                                '</div>' +
-                               '<textarea placeholder="Write something here" class="text"></textarea>' +
+                               '<textarea placeholder="Write a comment..." class="text"></textarea>' +
                                '<div class="share">' +
                                    'Share on &nbsp;&nbsp;<input type="checkbox" class="facebook"> Facebook &nbsp;&nbsp;<input type="checkbox" class="twitter"> Twitter' +
                                '</div>' +
@@ -136,8 +136,16 @@ zz.comments = {};
                 photo_element.find('.bottom-shadow').css({'width': (scaled.width + 14) + 'px'});
                 photo_element.center_y();
 
+
+                photo_element.click(function(){
+                    jQuery.cookie('show_comments', 'true', {path:'/'}); //todo: should manage this centrally
+                    dialog.close();
+                    zz.album.goto_single_picture(photo_id);
+                });
+
                 var photo_caption_element = comments_dialog.find('.header .commented-photo-caption');
                 photo_caption_element.text(photo.caption);
+                photo_caption_element.ellipsis();
 
 
                 //share button
@@ -154,6 +162,7 @@ zz.comments = {};
 
                 var buy_button = comments_dialog.find('.buy-button');
                 buy_button.click(function(){
+                    ZZAt.track('photo.buy.comment.click');
                     alert('This feature is still under construction.');
                 });
 
@@ -168,8 +177,9 @@ zz.comments = {};
 
             comments_dialog.find('.body').html(comments_widget.element);
 
-            zz.dialog.show_square_dialog(comments_dialog, {width:450, height:600});
+            var dialog = zz.dialog.show_square_dialog(comments_dialog, {width:450, height:600});
             comments_widget.load_comments_for_photo(photo_id);
+            comments_widget.set_focus();
 
         });
     };
@@ -212,6 +222,9 @@ zz.comments = {};
             if(comment_json['user_id'] == zz.session.current_user_id){
                 comment.addClass('deletable');
             }
+
+
+
 
             return comment;
         };
@@ -262,6 +275,10 @@ zz.comments = {};
             });
         };
 
+        var set_focus = function(){
+            comments_element.find('textarea.text').focus();  
+        };
+
         var resize_comments = function(){
             //resize comment rows to fit text -- no way to do this in css
             comments_element.find('.comment').each(function(){
@@ -301,6 +318,8 @@ zz.comments = {};
             };
 
             zz.routes.comments.create_comment_for_photo(photo_id, params, success, error);
+
+            ZZAt.track('photo.comment.' + zza_page_context() + '.add');
         };
 
 
@@ -363,7 +382,8 @@ zz.comments = {};
                 comments_element.find('.share').hide();
             }
 
-            comments_element.find('.submit-button').click(function(){
+
+            var submit_comment = function(){
                 var text = $.trim(comments_element.find('textarea.text').val());
                 if(text.length > 0){
                     var post_to_facebook = facebook_checkbox.attr('checked');
@@ -371,6 +391,60 @@ zz.comments = {};
                     add_comment(text, post_to_facebook, post_to_twitter);
                     comments_element.find('textarea.text').val('');
                 }
+            };
+
+            // trap arrow keys and enter keuy
+            comments_element.find('textarea.text').keydown(function(event) {
+
+                var cancel_arrow_key = function(){
+                    if (comments_element.find('textarea.text').val().length > 0){
+                        event.stopPropagation();
+
+                    }
+
+                };
+
+
+
+
+                if (event.keyCode === 40) {
+                    //down
+                    cancel_arrow_key();
+                }
+                else if (event.keyCode === 39) {
+                    //right
+                    cancel_arrow_key();
+                }
+                else if (event.keyCode === 34) {
+                    //page down
+                    cancel_arrow_key();
+                }
+                else if (event.keyCode === 38) {
+                    //up
+                    cancel_arrow_key();
+                }
+                else if (event.keyCode === 37) {
+                    //left
+                    cancel_arrow_key();
+                }
+                else if (event.keyCode === 33) {
+                    //page up
+                    cancel_arrow_key();
+                }
+                else if (event.keyCode === 13) {
+                    //enter
+                    if(!event.altKey && !event.ctrlKey){
+                        submit_comment();
+                        event.preventDefault();
+                    }
+                }
+            });
+
+
+
+
+            comments_element.find('.submit-button').click(function(){
+                submit_comment();
             });
         };
 
@@ -381,6 +455,10 @@ zz.comments = {};
 
             load_comments_for_photo: function(photo_id){
                 load_comments_for_photo(photo_id);
+            },
+
+            set_focus: function(){
+                set_focus();
             }
         };
 
@@ -396,7 +474,19 @@ zz.comments = {};
         });
     }
 
-
+    function zza_page_context(){
+        if(zz.page.rails_controller_name == 'photos'){
+            if(document.location.href.indexOf('#!') >= 0){
+                return 'picture';
+            }
+            else{
+                return 'grid';
+            }
+        }
+        else{
+            return zz.page.rails_controller_name;
+        }
+    }
 
 })();
 

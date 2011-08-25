@@ -23,7 +23,12 @@
 # compatible.
 #
 
-run "sudo monit restart -g resque_photos"
+# restart the resque workers, do not use monit directly since
+# it is very slow (on the order of minutes) to cycle through all
+# of them.  Instead we create a script that does the starting and
+# stopping more directly.
+#
+run "sudo /usr/bin/zzscripts/photos_resque_stop_all && sudo /usr/bin/zzscripts/photos_resque_start_all"
 
 # clear out the nginx cache
 #run "find /media/ephemeral0/nginx/cache -type f -exec rm {} \\;"

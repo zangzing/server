@@ -66,7 +66,7 @@ class Comment < ActiveRecord::Base
       users_to_notify.delete(self.user)
 
       users_to_notify.each do |user_to_notify|
-        ZZ::Async::Email.enqueue(:comment_added_to_photo, self.user.id, user_to_notify.id, self.id)
+        ZZ::Async::Email.enqueue(:photo_comment, self.user.id, user_to_notify.id, self.id)
       end
 
     end

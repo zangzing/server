@@ -42,7 +42,7 @@ class Album < ActiveRecord::Base
   after_save    :check_cache_manager_change
   after_commit  :make_create_album_activity, :on => :create
   after_commit  :notify_cache_manager
-  after_commit  :notify_cache_manager_delete, :on => :destroy
+  after_commit  :after_destroy_cleanup, :on => :destroy
 
   after_create  :add_creator_as_admin
 
@@ -63,7 +63,7 @@ class Album < ActiveRecord::Base
 
   # need to override basic destroy behavior since
   # we have to know when we are being destroyed in
-  # dependent photos so we don't perform unnecessary
+  # dependent photos so we don't perform unnecessary cache changes
   # we can't simply set an instance variable because
   # if you try to fetch the photo.album when it is being
   # deleted it will fetch a new one from the db and
@@ -137,9 +137,10 @@ class Album < ActiveRecord::Base
     true
   end
 
-  # We have been deleted, let the cache know.
-  def notify_cache_manager_delete
+  # We have been deleted, let the cache know and the acl manager
+  def after_destroy_cleanup
     Cache::Album::Manager.shared.album_deleted(self)
+    acl.remove_acl    # remove the acl associated with us
     true
   end
 

@@ -30,7 +30,7 @@ describe "Comments Model" do
       user_who_likes_photo  = Factory.create(:user)
       user_who_likes_photo.save!
       Like.add(user_who_likes_photo.id, photo.id, Like::PHOTO)
-      
+
       user_who_likes_album  = Factory.create(:user)
       user_who_likes_album.save!
       Like.add(user_who_likes_album.id, photo.album.id, Like::ALBUM)
@@ -130,6 +130,24 @@ describe "Comments Model" do
 
 
   describe Commentable do
+
+    it "should return comments even if commenting user was deleted" do
+      commentable = Factory.create(:photo_commentable)
+      commentable.comments << Factory.build(:comment)
+      commentable.comments << Factory.build(:comment)
+      commentable.save!
+
+      # delete user
+      commentable.comments.first.user.destroy
+
+      # for some reasn, we need to re-fetch
+      commentable = Commentable.find(commentable.id)
+
+      # make sure we can still get comments (first coment will be filtered out because user is missing)
+      puts commentable.comments_as_json.inspect
+
+
+    end
 
     it "should cache comment count" do
 

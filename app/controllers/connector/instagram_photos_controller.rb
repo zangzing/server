@@ -2,7 +2,7 @@ class Connector::InstagramPhotosController < Connector::InstagramController
   
   def self.list_photos(api, params)
     photo_list = call_with_error_adapter do
-      api.user_recent_media(feed_owner(params), :min_timestamp => Time.at(0), :max_timestamp => Time.now)
+      api.user_recent_media(feed_owner(params), :min_timestamp => Time.at(0), :max_timestamp => Time.now, :count => 99999)
     end
     photo_list.reject! { |item| item[:type] != 'image' }
     photos = photo_list.map { |p|

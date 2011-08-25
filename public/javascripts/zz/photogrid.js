@@ -624,6 +624,9 @@
                 duration = 0;
             }
 
+            this.element.find('.scroll-padding').remove();
+
+            var top_of_last_row = 0;
 
             this.element.children('.photogrid-cell').each(function(index, element) {
                 if (! $(element).data().zz_photo) {
@@ -646,7 +649,18 @@
                 }
 
 
+                top_of_last_row = position.top;
+
             });
+
+            if(!self.options.singlePictureMode){
+                var top = top_of_last_row + 330; // add the right of the rollover frame
+                var scroll_padding = $('<div class="scroll-padding"></div>');
+                scroll_padding.css({top: top});
+                this.element.append(scroll_padding);
+            }
+
+
         },
 
         cellForId: function(id) {

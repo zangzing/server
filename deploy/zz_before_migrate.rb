@@ -67,7 +67,11 @@ end
 
 # stop any resque workers if downtime
 if zz[:deploy_downtime]
-  run "sudo monit stop -g resque_photos"
+  # stop the resque workers, do not use monit directly since
+  # it is very slow (on the order of minutes) to cycle through all
+  # of them.
+  #
+  run "/usr/bin/zzscripts/photos_resque_stop_all"
 end
 
 # The following is only done on machines that host

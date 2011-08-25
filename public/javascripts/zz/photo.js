@@ -47,7 +47,7 @@ zz.template_cache = zz.template_cache || {};
 
             // Store a finished template on the global namespace and re-use for every photo.
             if (_.isUndefined(zz.template_cache.photo_template)) {
-                zz.template_cache.photo_caption_template = $('<div class="photo-caption"></div>');
+                zz.template_cache.photo_caption_template = $('<div class="photo-caption ellipsis multiline"></div>');
                 zz.template_cache.photo_template = $('<div class="photo-border">' +
                                                      '<img class="photo-image" src="' + zz.routes.image_url('/images/blank.png') + '">' +
                                                      '<img class="bottom-shadow" src="' + zz.routes.image_url('/images/photo/bottom-full.png') + '">' +
@@ -347,6 +347,7 @@ zz.template_cache = zz.template_cache || {};
 
                     var buy_button = button_bar.find('.buy-button');
                     buy_button.click(function(){
+                        ZZAt.track('photo.buy.frame.click');
                         alert('This feature is still under construction.');
                     });
 
@@ -422,6 +423,7 @@ zz.template_cache = zz.template_cache || {};
             if (!self.imageLoaded) {
                 if (self._inLazyLoadRegion(containerDimensions)) {
                     self._loadImage();
+                    self.captionElement.ellipsis();
                 }
             }
         },
@@ -552,6 +554,7 @@ zz.template_cache = zz.template_cache || {};
                         self.options.onChangeCaption(newCaption);
                     }
                     self.captionElement.text(newCaption);
+                    self.captionElement.ellipsis();
                     self.isEditingCaption = false;
                 }
 

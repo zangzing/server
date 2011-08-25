@@ -215,9 +215,16 @@ zz.toolbars = {
                                          $('#flash-dialog').zz_dialog('open');
                 });
                 //alert('This feature is still under construction.');
+
+                if(document.location.href.indexOf('#!') >= 0){
+                    ZZAt.track('photo.buy.toolbar.click');
+                }
+                else{
+                    ZZAt.track('album.buy.toolbar.click');
+                }
+                alert('This feature is still under construction.');
             }
         });
-
 
         zz.toolbars._init_account_badge();
         zz.toolbars._init_like_button();
