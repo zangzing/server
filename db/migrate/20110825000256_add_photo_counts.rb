@@ -1,6 +1,5 @@
 class AddPhotoCounts < ActiveRecord::Migration
   def self.up
-    remove_column :albums, :photos_count
     add_column :albums, :photos_count, :int, :default => 0
 
     # Only run the update for the counts on non production
