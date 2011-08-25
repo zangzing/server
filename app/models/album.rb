@@ -185,20 +185,19 @@ class Album < ActiveRecord::Base
       cover_ids << cover_photo_id unless cover_photo_id.nil?
     end
 
+    cover_map = {}
     if cover_ids.empty? == false
       # now perform the bulk query
-      coverPhotos = Photo.where(:id => cover_ids)
+      cover_photos = Photo.where(:id => cover_ids)
 
       # ok, now map these by id to cover
-      coverMap = {}
-      coverPhotos.each do |cover|
-        coverMap[cover.id.to_s] = cover
+      cover_photos.each do |cover|
+        cover_map[cover.id.to_s] = cover
       end
-
-      # and finally associate them back to each album
-      albums.each do |album|
-        album.set_cached_cover(coverMap[album.cover_photo_id.to_s])
-      end
+    end
+    # and finally associate them back to each album
+    albums.each do |album|
+      album.set_cached_cover(cover_map[album.cover_photo_id.to_s])
     end
   end
 
