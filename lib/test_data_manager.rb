@@ -22,7 +22,7 @@ class TestDataManager
   # prior to generating the dump file used by the
   # rspec tests.
   # The format should be: INITIALS-DATE-REV
-  VERSION = "GWS-2011-08-24-03"
+  VERSION = "GWS-2011-08-24-04"
 
   # do not change
   KEY_NAME = :test_data_ver
