@@ -11,6 +11,7 @@ var zz = zz || {};
 
     zz.social_buttons.create_twitter_button_for_photo = function(url){
         var message = 'Check out this photo on ZangZing';
+        url = url.replace('#!', '');  //convert to the non-hashbang url
         var template = TWITTER_TEMPLATE.replace('{{url}}', encodeURIComponent(url)).replace('{{counturl}}', encodeURIComponent(url)).replace('{{text}}', encodeURIComponent(message));
         return $(template);
     };
