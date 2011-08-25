@@ -434,6 +434,7 @@ module Cache
               :profile_album => album.type == 'ProfileAlbum',
               :c_url => album_cover.nil? ? nil : album_cover.thumb_url,
               :photos_count => album.photos_count,
+              :photos_ready_count => album.photos_ready_count,
               :updated_at => album_updated_at
           }
           fast_albums << hash_album

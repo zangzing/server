@@ -313,6 +313,7 @@ class Photo < ActiveRecord::Base
     # will keep the upload from ever taking place
     # also, we can't rely on the photo object itself since it won't 
     # exist by the time it gets processed.
+    Album.update_photos_ready_count(self.album_id, -1) if ready?
     if self.image_bucket
       # get all of the keys to remove
       keys = attached_image.all_keys
@@ -355,8 +356,11 @@ class Photo < ActiveRecord::Base
     z.track_transaction("photo.upload.resize.done", self.id)
     z.track_transaction("photo.upload.done", self.id)
     # tell the photo object it is good to go
+    was_ready = ready?
     mark_ready
     save!
+    # bump count of ready photos if this one just became ready
+    Album.update_photos_ready_count(self.album_id, 1) unless was_ready
     # this is a sanity check to work around a small
     # race condition we currently have with client side batch closes
     batch = self.upload_batch
