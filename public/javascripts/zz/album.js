@@ -109,9 +109,12 @@ zz.album = {};
 
                 if ($(this).hasClass('selected')) {
                     open_comments_drawer(true, current_photo_id, renderPictureView);
+                    ZZAt.track('button.open_comments.click');
+
                 }
                 else{
                     close_comments_drawer(true, renderPictureView);
+                    ZZAt.track('button.close_comments.click');
                 }
 
 
