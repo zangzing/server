@@ -11,7 +11,7 @@ common: &common
   album_email_host: "mauricio-post.zangzing.com"
 
   # time in seconds before we timeout certain resque jobs
-  async_job_timeout: 20
+  async_job_timeout: 30
   async_connector_timeout: 60
   remote_job_timeout: 45
 
@@ -66,7 +66,6 @@ photos_production:
 
 photos_staging:
   <<: *common
-  async_job_timeout: 1000 #testing
   reserved_names: true
   resque_zza_id: "staging.photos/svr"
   album_email_host: "staging.zangzing.com"

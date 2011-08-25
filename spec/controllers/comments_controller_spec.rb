@@ -117,7 +117,7 @@ describe CommentsController do
       album.save!
 
       xhr :get, :metadata_for_album_photos , {:album_id => album.id}
-      response.status.should be(401)
+      response.status.should == 401
     end
 
 
