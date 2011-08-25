@@ -100,7 +100,13 @@ class SendgridController < ApplicationController
         if attachments.count > 0 && @album
           user = @album.get_contributor_user_by_email( from.address )
           if user
-            add_photos(@album, user, attachments, subject)
+            if !subject.match(/^RE:.*/i)
+              add_photos(@album, user, attachments, subject)
+            else
+              # don't use set caption if user is replying to email
+              add_photos(@album, user, attachments)
+            end 
+
           else
             logger.error "Received a contribution email from an address that is not a contributor. Sending error email"
             ZZ::Async::Email.enqueue(:contribution_error, from.address )
@@ -170,6 +176,12 @@ class SendgridController < ApplicationController
 
             if route[:controller]=="albums" && route[:action]=="index"
               link_name = "user_homepage_url"
+            elsif route[:controller]=="photos" && route[:action]=="show"
+              if(url.match(/.*\?show_comments=true/))
+                link_name = 'album_photo_url_with_comments'
+              else
+                link_name = 'album_photo_url'
+              end
             elsif route[:controller]=="photos" && route[:action]=="index"
               if url.include?("/#!")
                 link_name = "album_photo_url"
