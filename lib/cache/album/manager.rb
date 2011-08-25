@@ -8,7 +8,7 @@ module Cache
     # what is needed for the album index page
     class Manager < Cache::Base
       # the prefix for the memcache key - change the number at the end if you update what the cache holds
-      KEY_PREFIX = "Cache.Album.1".freeze
+      KEY_PREFIX = "Cache.Album.v1".freeze
 
       CACHE_MAX_INACTIVITY = 72.hours
 
