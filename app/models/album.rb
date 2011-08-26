@@ -192,12 +192,12 @@ class Album < ActiveRecord::Base
 
       # ok, now map these by id to cover
       cover_photos.each do |cover|
-        cover_map[cover.id.to_s] = cover
+        cover_map[cover.id] = cover
       end
     end
     # and finally associate them back to each album
     albums.each do |album|
-      album.set_cached_cover(cover_map[album.cover_photo_id.to_s])
+      album.set_cached_cover(cover_map[album.cover_photo_id])
     end
   end
 
