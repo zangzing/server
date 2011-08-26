@@ -429,7 +429,7 @@ zz.album = {};
                         else {
                             moreLessbuttonElement.find('span').html('Show fewer photos');
                             moreLessbuttonElement.addClass('open');
-                            $(element).animate({height: $(element).children().last().position().top + 230}, 500, 'swing', function() {
+                            $(element).animate({height: $(element).find('.photogrid-cell').last().position().top + 230}, 500, 'swing', function() {
                                 $(element).trigger('scroll');  //hack: force the photos to load themselves now that they are visible
                             });
                             allShowing = true;
