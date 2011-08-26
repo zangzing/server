@@ -18,10 +18,12 @@
           <fieldset>
             <%= render "checkout/payment/#{method.method_type}", :payment_method => method %>
             <%unless current_user %>
-                <p class="field">
-                <label for=""><%= t("email") %> </label><br />
-                <span class="req">*</span><span>( We will use it for order confirmation and status. )</span>
-               </p>
+                <% clean_guest_checkout_email( @order ) %>
+                <p id="email" class="field">
+                    <%= form.label :email, t("email") %>
+                    <%= form.text_field :email, :class => 'required' %><span class="req">*</span>
+                    <div>( <%=t("email_needed")%> )</div>
+                </p>
             <%end%>
           </fieldset>
         </li>

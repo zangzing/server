@@ -23,7 +23,7 @@ CheckoutController.class_eval do
    private
    # Introduces a registration step whenever the +registration_step+ preference is true.
    def check_registration
-     return if  current_user || current_order.email
+     return if  current_user || current_order.guest_checkout?
      store_location
      redirect_to checkout_registration_path 
    end
@@ -36,7 +36,7 @@ CheckoutController.class_eval do
    end
 
   def before_cart
-    if  current_user || current_order.email
+    if  current_user || current_order.guest_checkout?
       if @order.next
         redirect_to checkout_state_path(@order.state)
       end

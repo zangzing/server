@@ -187,8 +187,11 @@ Order.class_eval do
   end
 
   def enable_guest_checkout
-     self.email="#{User.generate_token(:persistence_token)}.guest.shopper@example.net"
+     self.guest = true
      self.save
   end
 
+  def guest_checkout?
+    guest
+  end
 end

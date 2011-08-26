@@ -205,6 +205,12 @@ zz.toolbars = {
 
         $('#footer #buy-button').click(function() {
             if (! $(this).hasClass('disabled')) {
+                if(document.location.href.indexOf('#!') >= 0){
+                      ZZAt.track('photo.buy.toolbar.click');
+                  }
+                  else{
+                      ZZAt.track('album.buy.toolbar.click');
+                  }
                 var id = $('#like-button').attr('data-zzid');
                 zz.routes.call_add_to_cart( id, function(){
                     $("<div id='flash-dialog'><div><div id='flash'></div><a id='checkout' class='newgreen-button'><span>Checkout</span></a><a id='ok' class='newgreen-button'><span>OK</span></a></div></div>").zz_dialog({ autoOpen: false });
@@ -214,15 +220,6 @@ zz.toolbars = {
                                              .click( function(){ window.location = '/store/cart'  });
                                          $('#flash-dialog').zz_dialog('open');
                 });
-                //alert('This feature is still under construction.');
-
-                if(document.location.href.indexOf('#!') >= 0){
-                    ZZAt.track('photo.buy.toolbar.click');
-                }
-                else{
-                    ZZAt.track('album.buy.toolbar.click');
-                }
-                alert('This feature is still under construction.');
             }
         });
 

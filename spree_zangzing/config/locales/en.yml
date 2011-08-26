@@ -1014,3 +1014,4 @@ en:
   zone_based: "Zone Based"
   zone_setting_description: "Collections of countries, states or other zones to be used in various calculations."
   zones: Zones
+  email_needed: "We will use it for order confirmation and status."
