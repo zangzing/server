@@ -168,13 +168,6 @@ zz.template_cache = zz.template_cache || {};
                 self.borderElement.append(self.errorElement);
             }
 
-            //edit caption
-            self.isEditingCaption = false;
-            if (o.allowEditCaption) {
-                self.captionElement.click(function(event) {
-                    self.editCaption();
-                });
-            }
 
             //lazy loading
             if (o.type !== 'photo') {
@@ -419,12 +412,27 @@ zz.template_cache = zz.template_cache || {};
             }
         },
 
+        _setupCaptionEditing: function(){
+            //edit caption
+            var self = this;
+            var o = self.options;
+            self.isEditingCaption = false;
+            if (o.allowEditCaption) {
+                self.captionElement.unbind('click');
+                self.captionElement.click(function(event) {
+                    self.editCaption();
+                });
+            }
+
+        },
+
         loadIfVisible: function(containerDimensions) {
             var self = this;
             if (!self.imageLoaded) {
                 if (self._inLazyLoadRegion(containerDimensions)) {
                     self._loadImage();
                     self.captionElement.ellipsis();
+                    self._setupCaptionEditing();
                 }
             }
         },
@@ -556,6 +564,7 @@ zz.template_cache = zz.template_cache || {};
                     }
                     self.captionElement.text(newCaption);
                     self.captionElement.ellipsis();
+                    self._setupCaptionEditing();
                     self.isEditingCaption = false;
                 }
 
