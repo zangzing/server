@@ -432,6 +432,9 @@ zz.template_cache = zz.template_cache || {};
                 if (self._inLazyLoadRegion(containerDimensions)) {
                     self._loadImage();
                     self.captionElement.ellipsis();
+
+                    // for some reason, the .ellipsis() call messes up the caption click handler on IE
+                    // so we need to set up again...
                     self._setupCaptionEditing();
                 }
             }
@@ -564,6 +567,9 @@ zz.template_cache = zz.template_cache || {};
                     }
                     self.captionElement.text(newCaption);
                     self.captionElement.ellipsis();
+
+                    // for some reason, the .ellipsis() call messes up the caption click handler on IE
+                    // so we need to set up again...
                     self._setupCaptionEditing();
                     self.isEditingCaption = false;
                 }
