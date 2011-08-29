@@ -1,7 +1,7 @@
 <%# Caller must provide address and label%>
 <table>
-      <tr><b><%=label%></b></td></tr>
-      <tr><td><b><%= address.full_name%><b></td></tr>
+      <tr><td style="font-weight: bold;"><%=label%></td></tr>
+      <tr><td style="font-weight: bold;"><%= address.full_name%></td></tr>
       <tr><td><%= address.address1%></td></tr>
       <% if address.address2 && address.address2.length > 0 %>
             <tr><td><%= address.address2%></td></tr>

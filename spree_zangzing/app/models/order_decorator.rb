@@ -20,18 +20,16 @@ Order.class_eval do
 
     event :next do
       transition :from => 'cart', :to => 'confirm',      :if => Proc.new{ |order| order.ship_address && order.payment && order.bill_address }
-      transition :from => 'cart', :to => 'bill_address', :if => Proc.new{ |order| order.ship_address  && order.payment }
       transition :from => 'cart', :to => 'payment',      :if => :ship_address
       transition :from => 'cart', :to => 'ship_address'
 
       transition :from => 'ship_address', :to => 'confirm',      :if => Proc.new{ |order| order.payment && order.bill_address }
-      transition :from => 'ship_address', :to => 'bill_address', :if => :payment
       transition :from => 'ship_address', :to => 'payment'
 
-      transition :from => 'payment', :to => 'confirm', :if => :bill_address
-      transition :from => 'payment', :to => 'bill_address'
+      transition :from => 'payment', :to => 'confirm'
+      transition :from => 'delivery', :to => 'confirm'
 
-      transition :from => 'bill_address',  :to => 'confirm'
+
       transition :from => 'confirm',       :to => 'complete'
     end
 
@@ -77,7 +75,7 @@ Order.class_eval do
       self.bill_address_id = user.bill_address.id if user.bill_address
 
       if user.creditcard
-        self.payments.build( :source => user.creditcard, :payment_method => PaymentMethod.all.first)
+        self.payments.build( :source => user.creditcard, :payment_method => user.creditcard.payment_method )
       end
     end
   end
@@ -193,5 +191,9 @@ Order.class_eval do
 
   def guest_checkout?
     guest
+  end
+
+  def default_payment_method
+   available_payment_methods.first
   end
 end

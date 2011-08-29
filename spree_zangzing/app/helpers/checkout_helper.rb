@@ -3,9 +3,9 @@ module CheckoutHelper
   #The checkout breadcrumb
   def checkout_progress
     if Gateway.current and Gateway.current.payment_profiles_supported?
-      states = %w(ship_address payment bill_address confirm complete)
+      states = %w(signin ship_address payment confirm complete)
     else
-      states = %w(ship_address payment bill_address complete)
+      states = %w(signin ship_address payment complete)
     end
     order_state = @order.state
     items = states.map do |state|
@@ -61,10 +61,7 @@ module CheckoutHelper
                                  {:class => "required",
                                   :onchange=> "javascript:this.form.submit();"})
       ].join.gsub('"', "'")
-
-      form.label(address_kind+"_id", t(address_kind)) +
-          '<span class="req">*</span><br />'.html_safe +
-          address_elements.html_safe
+      address_elements.html_safe
     end
 
   def clean_guest_checkout_email( order )

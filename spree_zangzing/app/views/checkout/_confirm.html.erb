@@ -19,8 +19,8 @@
           <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('payment')%>').submit();">change</a>
         </td></tr>
         <tr><td>
-          <%= render :partial =>'address_display', :locals => { :address => @order.bill_address,:label =>t("billing_address") } %>
-           <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('bill_address')%>').submit();">change</a>
+          <%= render :partial =>'address_display', :locals => { :address => @order.bill_address,:label =>t('payment') } %>
+           <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('payment')%>').submit();">change</a>
         </td></tr>
       </table>
     </td>

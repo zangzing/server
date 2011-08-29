@@ -10,6 +10,7 @@ class ZangzingModificationsForSpree < ActiveRecord::Migration
       add_index     :addresses, :user_id
 
       #allow users to have multiple credit cards
+      add_column    :creditcards, :payment_method_id, :integer
       add_column    :creditcards, :user_id, :bigint
       add_index     :creditcards, :user_id
 
@@ -25,6 +26,11 @@ class ZangzingModificationsForSpree < ActiveRecord::Migration
       remove_index     :addresses,  :user_id
       remove_column    :addresses, :user_id
 
+      remove_column    :creditcards, :payment_method_id
+      remove_column    :creditcards, :user_id
+      remove_index     :creditcards, :user_id
+
       remove_column    :orders, :token
+      remove_column    :orders, :guest
   end
 end

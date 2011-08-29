@@ -5,18 +5,24 @@ CheckoutController.class_eval do
    skip_before_filter :load_order, :only => [:registration, :guest_checkout]
    before_filter :check_registration, :except => [:registration, :guest_checkout]
 
+
+   # Displays the store's "Login or Guest checkout" screen
    def registration
+     redirect_to checkout_path and return if current_user || current_order.guest_checkout?
      @user_session = UserSession.new(:email=> params[:email])
      Spree::BaseController.asset_path = "%s"
      render :layout => false
      Spree::BaseController.asset_path = "/store%s"
    end
 
+   # When a guest proceeds with guest checkout
    def guest_checkout
+      redirect_to checkout_path and return if current_user || current_order.guest_checkout?
+      
      if current_order.enable_guest_checkout
        redirect_to checkout_path
      else
-      redirect_to checkout_registration_url
+       redirect_to checkout_registration_url
      end
    end
 
@@ -46,7 +52,6 @@ CheckoutController.class_eval do
     end
   end
 
-  #executed before displaying the ship address view
   def before_ship_address
     #new or edit existing order ship address view.
     if current_user
@@ -57,9 +62,10 @@ CheckoutController.class_eval do
     end
   end
 
-  #executed before displaying the bill address view
-  def before_bill_address
-      #new or edit existing order ship address yet.
+  #executed before displaying the payment view
+  def before_payment
+    #remove any payments if you are updatind
+    current_order.payments.destroy_all if request.put?
     if current_user
       @order.bill_address = Address.default
       @order.bill_address.user = current_user
@@ -68,19 +74,19 @@ CheckoutController.class_eval do
     end
   end
 
-  #executed before displaying the payment view
-  def before_payment
-      #remove any payments if you are updatind
-      current_order.payments.destroy_all if request.put?
-  end
-
   # Executed after order is complete
   # Make the last used addresses, the user's default addresses
   # clone the used addresses and leave the non-user-associated addresses as part of the order
   # this prevents the user from editing addresses from a completed order
    def after_complete
-     # If a user is looged in, save as default and backup order addresses (no need to do this for guests)
+     #remove the order from the session
+     session[:order_id] = nil
+     
      if current_user
+       # If a user is looged in, save  addresses and creditcard as default
+       # Backup order addresses with addresses that cannot be modified by user.
+       # creditcards are non editable just erasable.
+       #(no need to do this for guests)
        original_ship = @order.ship_address
        original_bill = @order.bill_address
 
@@ -97,6 +103,13 @@ CheckoutController.class_eval do
        end
        @order.save
 
+        # new creditcards should be saved in the user's wallet
+        if @order.payment.source.user.nil?
+          @order.payment.source.update_attributes!(
+              :user_id => current_user.id
+          )
+        end
+
        #make addresses, creditcard user's default
         @order.user.update_attributes!(
              :bill_address_id => original_bill.id,
@@ -105,8 +118,7 @@ CheckoutController.class_eval do
         )
      end
 
-     #remove the order from the session
-     session[:order_id] = nil
+
    end
 
 
@@ -132,8 +144,5 @@ CheckoutController.class_eval do
     end
     true
   end
-
-
-
 end
 

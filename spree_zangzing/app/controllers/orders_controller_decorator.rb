@@ -50,12 +50,16 @@ OrdersController.class_eval do
     ppcd
   end
 
+
+  # This method allows guests who placed an order to view it online
+  # (via a cookie placed in their session)
+  # users to view the orders they own.
   def check_authorization
     session[:access_token] ||= params[:token]
     order = current_order || Order.find_by_number(params[:id])
 
     if order
-      unless current_user || order.token == session[:access_token]
+      unless current_user.id == order.user.id || order.token == session[:access_token]
          render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
       end
     else

@@ -5,16 +5,17 @@
    #     form_id:     the id of the form being used
 %>
 
-<% column_width = 4 %>
+<% column_width = 2 %>
 <% if order.user && order.user.creditcards.count > 0  %>
     <table>
       <% column = 0 %>
       <% order.user.creditcards.each do |creditcard| %>
-          <%=(column % column_width == 0 ? "<tr>" : "" )%>
+          <%= raw (column % column_width == 0 ? '<tr>' : '' )%>
           <td>
+            <%= radio_button_tag 'credit_card_id', creditcard.id %>
            <%= "#{creditcard.spree_cc_type} #{creditcard.display_number}" %>
           </td>
-          <%=( column %column_width == column_width-1? "</tr>" : "" )%>
+          <%=raw ( column %column_width == column_width-1? "</tr>" : "" )%>
           <% column = column + 1 %>
       <%end %>
     </table>

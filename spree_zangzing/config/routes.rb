@@ -135,6 +135,7 @@ Rails.application.routes.draw do
     resources :payment_methods
     resources :mail_methods
 
+
     #from spree_dash
     match '/' => 'overview#index', :as => :admin
     match '/overview/get_report_data' => 'overview#get_report_data'
@@ -153,6 +154,7 @@ Rails.application.routes.draw do
     
     # non-restful checkout stuff
     get   '/checkout/registration'    => 'checkout#registration', :as => :checkout_registration
+    match '/checkout/signin'          => 'checkout#registration'
     post  '/checkout/registration'    => 'checkout#guest_checkout', :as => :guest_checkout
     match '/checkout/update/:state'   => 'checkout#update', :as => :update_checkout
     match '/checkout/:state'          => 'checkout#edit', :as => :checkout_state
@@ -185,22 +187,24 @@ Rails.application.routes.draw do
          get :shipping_method
          put :shipping_method
        end
-     end
+    end
 
-     #   # Search routes
-     match 's/*product_group_query' => 'products#index', :as => :simple_search
-     match '/pg/:product_group_name' => 'products#index', :as => :pg_search
-     match '/t/*id/s/*product_group_query' => 'taxons#show', :as => :taxons_search
-     match 't/*id/pg/:product_group_name' => 'taxons#show', :as => :taxons_pg_search
+    #   # Search routes
+    match 's/*product_group_query' => 'products#index', :as => :simple_search
+    match '/pg/:product_group_name' => 'products#index', :as => :pg_search
+    match '/t/*id/s/*product_group_query' => 'taxons#show', :as => :taxons_search
+    match 't/*id/pg/:product_group_name' => 'taxons#show', :as => :taxons_pg_search
 
-     #   # route globbing for pretty nested taxon and product paths
-     match '/t/*id' => 'taxons#show', :as => :nested_taxons
-     #
-     #   #moved old taxons route to after nested_taxons so nested_taxons will be default route
-     #   #this route maybe removed in the near future (no longer used by core)
-     #   map.resources :taxons
-     #
-     resource :account, :controller => "users"
+    #   # route globbing for pretty nested taxon and product paths
+    match '/t/*id' => 'taxons#show', :as => :nested_taxons
+    #
+    #   #moved old taxons route to after nested_taxons so nested_taxons will be default route
+    #   #this route maybe removed in the near future (no longer used by core)
+    #   map.resources :taxons
+    #
+    resource :account, :controller => "users"
+
+    match '/content/cvv' => 'content#cvv'
   end
 
 end
