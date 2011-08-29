@@ -461,7 +461,7 @@ zz.template_cache = zz.template_cache || {};
             zz.image_utils.pre_load_image(initialSrc, function(image) {
                 self.imageObject = image;
                 self.imageLoaded = true;
-                self._resize(1);
+                self._resize();
 
                 //show the small version
                 self.imageElement.attr('src', initialSrc);
@@ -470,15 +470,25 @@ zz.template_cache = zz.template_cache || {};
                 //show the full version
                 zz.image_utils.pre_load_image(self.options.src, function(image) {
                     self.imageElement.attr('src', self.options.src);
+                    self._resize({height: image.height, width: image.width});
                 });
             });
         },
 
-        _resize: function(percent) {
+        _resize: function(imageSize) {
             var self = this,
                     o = self.options;
 
             var scaled = zz.image_utils.scale({width: self.imageObject.width, height: self.imageObject.height}, {width: self.options.maxWidth, height: self.options.maxHeight - o.captionHeight});
+
+
+            // make sure we don't stretch smaller photos. they should not
+            // be bigger than their natural size
+            if(imageSize){
+                if(scaled.width > imageSize.width){
+                    scaled = imageSize;
+                }
+            }
 
 
             var borderWidth = scaled.width + 10;
