@@ -57,9 +57,9 @@ module CheckoutHelper
                                   addresses,
                                  :id,
                                  :one_line,
-                                 {:include_blank => true},
-                                 {:class => "required",
-                                  :onchange=> "javascript:this.form.submit();"})
+                                 {    :selected => '',
+                                     :include_blank => 'Select from addressbook or enter new address'},
+                                 {:class => "required"})
       ].join.gsub('"', "'")
       address_elements.html_safe
     end

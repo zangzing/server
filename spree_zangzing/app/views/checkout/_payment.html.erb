@@ -9,6 +9,11 @@
     div#checkout #checkout_form_payment select#order_bill_address_id {
         width: 300px;
     }
+    .lightgray{
+        color: #CCCCCC;
+    }
+
+
 </style>
 
 
@@ -18,7 +23,7 @@
 <fieldset id="payment">
   <% method = @order.default_payment_method %>
   <%=hidden_field_tag "order[payments_attributes][][payment_method_id]",  method.id%>
-  <fieldset>
+  <fieldset id="creditcard">
     <div class="inner">
       <%= render "checkout/payment/#{method.method_type}", :payment_method => method %>
       <%unless current_user %>
@@ -35,18 +40,11 @@
 
   <fieldset>
     <legend><%= t("billing_address") %></legend>
-    <p>
-      <label for="order_use_shipping_as_billing"><%= t("use_shipping_address") %></label>
-      <%= check_box_tag 'order[use_shipping_as_billing]', '1', (!( (@order.bill_address && @order.bill_address.empty?) && @order.ship_address.empty?) && @order.bill_address.eql?(@order.ship_address)) %>
-    </p>
-
-    <fieldset id="billing">
     <%= render :partial =>'addressbook', :locals => { :form => form,
-                                                      :order => @order,
-                                                      :address_kind => 'bill_address',
-                                                      :button_text => "Use This Address" } %>
-
-    <legend><%= t("Enter a new Billing Address")%></legend>
+                                                          :order => @order,
+                                                          :address_kind => 'bill_address',
+                                                          :button_text => "Use This Address" } %>
+    <fieldset id="billing">
     <div class="inner">
       <%= form.fields_for :bill_address do |bill_form| %>
           <%= render :partial =>'address_fields', :locals => { :f => bill_form,
@@ -54,10 +52,6 @@
       <% end %>
     </div>
     </fieldset>
-    <fieldset id="shipping" class="hidden">
-      <%= render :partial =>'address_display', :locals => { :address => @order.ship_address,:label =>"" } %>
-    </fieldset>
-
   </fieldset>
 
 </fieldset>
@@ -68,13 +62,18 @@
 </div>
 
 <script type="text/javascript">
-  $('#order_use_shipping_as_billing').click(function(){
-      if( this.checked ){
-        $('#billing').addClass('hidden');
-        $('#shipping').removeClass('hidden');
-        }else{
-        $('#billing').removeClass('hidden');
-        $('#shipping').addClass('hidden');
+  $("input[name='order[creditcard_id]']").click(function(){
+
+            $('#creditcard :input').attr('disabled', true);
+            $('#creditcard').css('opacity',0.5);
+  });
+  $('#order_bill_address_id').change(function(){
+      if( $(this).val() == '' ){
+          $('#billing :input').attr('disabled', false);
+          $('#billing').removeClass("lightgray");
+      }else{
+          $('#billing :input').attr('disabled', true);
+          $('#billing').addClass("lightgray");
       }
   })
 
