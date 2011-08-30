@@ -138,7 +138,7 @@ zz.comments = {};
 
 
                 photo_element.click(function(){
-                    jQuery.cookie('show_comments', 'true', {path:'/'}); //todo: should manage this centrally
+                    jQuery.cookie('hide_comments', 'false', {path:'/'}); //todo: should manage this centrally
                     dialog.close();
                     zz.album.goto_single_picture(photo_id);
                 });

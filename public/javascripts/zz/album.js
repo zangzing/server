@@ -223,14 +223,12 @@ zz.album = {};
     var current_photo_id = null;
 
     function comments_open() {
-        return jQuery.cookie('show_comments') == 'true';
+        return jQuery.cookie('hide_comments') != 'true';
     }
 
     function open_comments_drawer(animate, photo_id, callback) {
 
-        // for some reason setting same value more than once
-        // causes problems -- multiple cookies that you cant' delete
-        jQuery.cookie('show_comments', 'true', {path:'/'});
+        jQuery.cookie('hide_comments', 'false', {path:'/'});
 
 
         var comments_panel = $('<div class="comments-right-panel"></div>');
@@ -255,7 +253,7 @@ zz.album = {};
     }
 
     function close_comments_drawer(animate, callback) {
-        jQuery.cookie('show_comments', null, {path:'/'});
+        jQuery.cookie('hide_comments', 'true', {path:'/'});
 
         var comments_panel = $('#article .comments-right-panel');
 

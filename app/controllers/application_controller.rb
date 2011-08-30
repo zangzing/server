@@ -191,7 +191,7 @@ class ApplicationController < ActionController::Base
 
 
   def set_show_comments_cookie
-    cookies[:show_comments] = true
+    cookies[:hide_comments] = {:value => 'false', :path => '/'}
   end
 
 
