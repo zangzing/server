@@ -1,5 +1,7 @@
 class Admin::UsersController < Admin::AdminController
 
+  skip_filter :require_admin, :only => :unimpersonate
+
  # Used by The Admin Interface to display a list of users
   def index
     @page = "users"
@@ -62,11 +64,60 @@ class Admin::UsersController < Admin::AdminController
     @user = User.find(params[:id])
     GeoIp.api_key = "b3be65bc4b850a03cc12200100937debca7a842d9afc7ae40394d1d823c22cae"
     if @user.current_login_ip
-      @current_login_ip_info = GeoIp.geolocation(@user.current_login_ip)
+      @current_login_ip_info = false
+      #@current_login_ip_info = GeoIp.geolocation(@user.current_login_ip)
     end
     if @user.last_login_ip
-      @last_login_ip_info = GeoIp.geolocation(@user.last_login_ip)
+      @last_login_ip_info = false
+      #@last_login_ip_info = GeoIp.geolocation(@user.last_login_ip)
     end
     @agent = Agent.where(:user_id => @user.id).order('authorized_at DESC').first
   end
+
+  # Used by The Admin Interface to impersonate another user
+  def impersonate
+   @user = User.find(params[:id])
+   if @user
+
+         perishable_token = current_user.perishable_token
+         @impersonate_session = UserSession.create( @user )
+         if( @impersonate_session )
+          session[:impersonation_mode]   = true
+          session[:impersonation_startpoint] = request.referer
+          session[:perishable_token] = perishable_token
+          flash[:notice] = "You are now logged in as #{@user.username} #{@user.name}"
+          redirect_to user_pretty_url( @user ) and return
+         end
+   end
+   flash[:error] = "Sorry, we could not find a user with id <#{params[:id]} in our records"
+   redirect_to :back
+  end
+
+  # Used by The Admin Interface to impersonate another user
+  def unimpersonate
+   @user = User.find_by_perishable_token(session[:perishable_token])
+   if @user && @user.admin?
+     impersonation_startpoint = session[:impersonation_startpoint]
+     current_user_session.destroy
+     flash[:notice]="\tImpersonation session has ended, please re-enter admin credentials"
+     redirect_to "#{signin_url}?email=#{@user.username}&return_to=#{impersonation_startpoint}"
+     return
+     #reset_session
+     #@restored_session = UserSession.create( @user )
+     #if( @restored_session )
+     #   @user.reset_perishable_token!
+     #   flash[:notice]="Impersonation Session Has Ended. You are back in your session as as #{@user.username}"
+     #   redirect_to impersonation_startpoint
+     #   return
+     #end
+   end
+   reset_session
+   flash.now[:error] = "Administrator privileges required for this operation"
+   if request.xhr?
+        head :status => 401
+   else
+        render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
+   end
+  end
+
 end

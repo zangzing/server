@@ -8,7 +8,7 @@
   <meta name="copyright" content="Copyright 2011, ZangZing, LLC. All Rights Reserved." />
   <meta name="DC.title" content="ZangZing" />
   <meta name="title" content="ZangZing" />
-  <title>Group Photo Sharing - ZangZing</title>
+  <title>Join | Photo Sharing - ZangZing</title>
   <%= include_stylesheets :common %>
 
 
@@ -84,7 +84,7 @@
 
           <tr>
             <td colspan="2" class="label">
-              <div id="tos">By joining you accept and agree to <a class="hyperlink-button" target="_blank" href="http://www.zangzing.com/about/terms/">the terms of service</a>.</div>
+              <div id="tos">By joining you accept and agree to <a class="hyperlink-button" target="_blank" href="http://www.zangzing.com/terms">the terms of service</a>.</div>
             </td>
 
           </tr>
@@ -120,6 +120,7 @@
 
         $('form').bind('keypress', function(e){
             if ( e.keyCode == 13 ) {
+                ZZAt.track('button.join.click');
                 $("form").submit();
             }
         });
@@ -144,12 +145,12 @@
                     minlength: 1,
                     maxlength:25,
                     regex: "(^[a-z0-9]+$|^[a-z0-9]+:.{8}$)",
-                    remote: zz.path_prefix + '/users/validate_username'
+                    remote: zz.routes.path_prefix + '/users/validate_username'
                 },
                 'user[email]': {
                     required: true,
                     email: true,
-                    remote: zz.path_prefix + '/users/validate_email'
+                    remote: zz.routes.path_prefix + '/users/validate_email'
                 },
                 'user[password]': {
                     required: true,

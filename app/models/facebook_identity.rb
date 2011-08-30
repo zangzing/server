@@ -4,6 +4,8 @@
 
 class FacebookIdentity < Identity
 
+  include PrettyUrlHelper
+
   def facebook_graph
     unless @graph
       raise InvalidToken unless self.credentials
@@ -39,7 +41,11 @@ class FacebookIdentity < Identity
        when Like::USER, 'user'
         user        = User.find( like.subject_id )
         name        = user.username
-        picture     = user.profile_album.cover.thumb_url
+        if user.profile_album.cover
+          picture     = user.profile_album.cover.thumb_url
+        else
+          picture     = "http://#{Server::Application.config.application_host}/images/default_profile.png"
+        end
       else
         post( like.url, message)  #generic post
         return
@@ -60,11 +66,19 @@ class FacebookIdentity < Identity
     if share.album?
       album       = Album.find( share.subject_id )
       name        = "#{album.name} by #{album.user.username}"
-      picture     = album.cover.thumb_url
+      if album.private?
+        picture     = "http://#{Server::Application.config.application_host}/images/private-album.png"
+      else
+        picture     = album.cover.thumb_url
+      end
     elsif share.photo?
       photo       = Photo.find( share.subject_id )
       name        = "#{photo.caption} by #{photo.user.username}"
-      picture     = photo.thumb_url
+      if photo.album.private?
+        picture     = "http://#{Server::Application.config.application_host}/images/private-photo.png"
+      else
+        picture     = photo.thumb_url
+      end
     else
       post( share.subject_url, share.subject_message )  #generic post
       return
@@ -80,4 +94,37 @@ class FacebookIdentity < Identity
                               :description => SystemSetting[:facebook_post_description],#Displayed under the name/link/caption combo can be multiline
                               :actions     => SystemSetting[:facebook_post_actions] )
   end
+
+
+  
+  def post_streaming_album_update(batch)
+    album = batch.album
+    user = batch.user
+    photos = batch.photos
+
+    if album.private?
+      picture     = "http://#{Server::Application.config.application_host}/images/private-album.png"
+    else
+      picture     = batch.photos[0].thumb_url
+    end
+
+    #todo: move this to system settings
+    message = "#{user.name} added #{photos.count} #{(photos.count > 1 ? 'photos':'photo')} to #{album.name}"
+    
+
+    self.facebook_graph.post( "me/feed",                                                #Where to post
+                              :message     => message,                                  #Displayed right under the user's name
+                              :picture     => picture,                                  #Displayed in the body of the post
+                              :name        => album.name,                               #Displayed as a link to link
+                              :link        => album_activities_pretty_url(album),       #The URL to where the name-link points to
+                              :caption     => SystemSetting[:facebook_post_caption],    #Displayed under the name
+                              :description => SystemSetting[:facebook_post_description],#Displayed under the name/link/caption combo can be multiline
+                              :actions     => SystemSetting[:facebook_post_actions] )
+
+
+
+
+  end
+
+
 end

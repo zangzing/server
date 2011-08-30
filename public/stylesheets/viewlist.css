@@ -4,20 +4,26 @@
 
 /* ---------- fonts --------------*/
 .viewlist{
-  color: #cccccc;
+  color: #666666;
 }
 .viewlist .header{
   font-size: 20px;
   font-weight: 300;
 }
 
-.viewlist .title{
-  color: #999999;
-  font-size: 14px;
+.viewlist .bartabheader{
+  font-size: 20px;
+  line-height: 25px;
+  font-weight: 300;
+  padding: 16px 0 10px 0;
+  margin-bottom: 25px;
+  border-bottom: 1px solid #CCCCCC;
 }
 
-.blue{
-  color: #466faa;
+
+.viewlist .title{
+  color: #333333;
+  font-size: 14px;
 }
 
 .viewlist .tagline{
@@ -33,7 +39,6 @@
 }
 
 .viewlist ul{}
-.viewlist a{ text-decoration:none;}
 
 /* the size of the user profile-picture-name badge mostly the peopleview*/
 .viewlist .badge{
@@ -75,9 +80,29 @@
  width: 100%;
  padding: 7px 0 0 45px;
 }
-.viewlist .item.tab.add{   background: url('/images/tab-activity-add.png')   no-repeat scroll  0 0; }
-.viewlist .item.tab.like{  background: url('/images/tab-activity-like.png')  no-repeat scroll  0 0; }
-.viewlist .item.tab.share{ background: url('/images/tab-activity-share.png') no-repeat scroll  0 0; }
+
+.viewlist .item.tab.add{
+    background: url('/images/tab-activity-add.png')    no-repeat scroll  0 0;
+}
+
+.viewlist .item.tab.follow{
+    background: url('/images/tab-activity-follow.png') no-repeat scroll  0 0;
+}
+
+.viewlist .item.tab.like{
+    background: url('/images/tab-activity-like.png')   no-repeat scroll  0 0;
+}
+
+.viewlist .item.tab.share{
+    background: url('/images/tab-activity-share.png')  no-repeat scroll  0 0;
+}
+
+.viewlist .item.tab.comment{
+    background: url('/images/tab-activity-comment.png')  no-repeat scroll  0 0;
+}
+
+
+
 
 .viewlist .tab-centered{
     margin:13px 0;
@@ -86,22 +111,41 @@
 /*add this to any item and it will get a bottom bar */
 .viewlist .bar{
     padding-bottom: 5px;
-    border-bottom: 1px solid #cccccc;
+    border-bottom: 1px solid #CCCCCC;
+}
+
+.viewlist .content{
+    position: relative;
 }
 
 .viewlist .timeline-grid { /* this positions the photo grid for upload activities in both views */
   position: relative;
-  left: -20px;
+  left: 0px;
   width: 100%;
   overflow: hidden;
   height: 230px;
+}
+
+.viewlist .timeline-comment{
+    position: absolute;
+    top: 0px;
+    left: 240px;
+    bottom: 30px;
+    width:200px;
+}
+
+.viewlist .timeline-comment span{
+    /* this get center aligned vertically by javascript */
+    position: absolute;
+    max-height: 200px;
+    overflow-y: auto;
 }
 
 .viewlist .more {
     position: absolute;
     /*left: 764px;*/
     right: 5px;
-    top: 20px;
+    top: -35px;
 }
 .viewlist .more.higher {
     top: -15px;
@@ -126,3 +170,129 @@
     background: #dddee3 url('/images/bg-right-down-arrow.png')   no-repeat scroll  8px 6px;
 }
 .viewlist .more-less-btn.open{  background: #dddee3 url('/images/bg-right-down-arrow.png')   no-repeat scroll  6px -30px;}
+
+
+/*--------------------- Follow ------------------*/
+/*
+.follow-info{
+    width: 160px;
+    position:relative;
+    vertical-align: top;    
+    margin: 10px 5px;
+}
+.follow-info .follow-picture{
+    display: block;
+    margin: 0 auto;
+    width:  40px;
+    height: 40px;
+}
+
+.follow-info .follow-name {
+    display:  block;
+    margin: 0 auto;
+    text-align: center;
+    height: 100%;
+    position: relative;
+    top: 5px;
+    left: 3px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.follow-name .follow-fname,.follow-name .follow-lname{
+    max-height: 16px;
+    overflow: hidden;
+}
+
+.follow-name .follow-lname{
+    position: relative;
+    top: -1px;
+}
+*/
+
+#you{
+ margin: 30px 0px 20px 50px;
+ width: 100%;
+}
+
+#you .follow-picture{
+    height: 60px;
+    width: 60px;
+}
+
+#you .follow-name{
+    top: 0px;
+    left: 65px;
+}
+
+#you .follow-name a.no-follow{
+    top: 20px;
+}
+
+#you .follow-name a.with-follow{
+    top: 8px;
+}
+
+#you .follow-info .follow-button {
+    top: 18px;
+}
+
+.follow-info{
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 40px;
+    margin: 18px 0;
+    text-align: left;
+}
+
+.follow-info .follow-picture{
+    height: 40px;
+    width: 40px;
+    vertical-align: top;
+    display: inline-block;
+}
+
+.follow-info .follow-name {
+    display: inline-block;
+    vertical-align: top;
+    text-align: left;
+    height: 100%;
+    padding-left: 10px;
+    white-space: nowrap;
+}
+
+.follow-name{
+    position: absolute;
+    left: 45px;
+    top: 1px;
+}
+
+.follow-name a{
+    vertical-align: top;
+    position: relative;
+    font-size: 16px;
+    top: -2px;
+}
+
+.follow-name a .full-name{
+  color: #666666;
+}
+
+.follow-name a .user-name{
+}
+
+.follow-info .follow-button {
+    position: relative;
+    top: 3px;
+}
+
+.follow-info .zzlike-follow{}
+
+.two-col{
+  margin: 50px;
+  float: left;
+  width: 30%;
+  white-space: nowrap;
+}

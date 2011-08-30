@@ -56,7 +56,7 @@ module ZZ
     MAX_EVENTS_PER_FILE = 2500
 
     # our working directory
-    ZZA_TEMP_DIR = "/tmp/zza"
+    ZZA_TEMP_DIR = "/data/tmp/zza"
 
     # file suffix to indicate it is currently in use
     # and should not have its contents sent yet
@@ -390,7 +390,7 @@ module ZZ
     end
 
     # package up the event as a json string and add to output file
-    def track_event(zza_id, event, xdata, transaction_id, user_type, user, referrer_uri, page_uri)
+    def track_event(zza_id, event, xdata, transaction_id, user_type, user, referrer_uri, page_uri, ip_address)
       evt = {
           :s => zza_id,
           :e => event,
@@ -400,7 +400,8 @@ module ZZ
           :v => user_type,
           :r => referrer_uri,
           :x => xdata,
-          :p => page_uri
+          :p => page_uri,
+          :ip => ip_address
       }
       json_str = JSON.generate(evt)
       post_to_file(json_str)
@@ -409,7 +410,7 @@ module ZZ
 
   # this class manages the creation and queueing of events.
   class ZZA
-    attr_accessor :transaction_id, :referrer_uri, :page_uri, :user_type, :user, :xdata
+    attr_accessor :transaction_id, :referrer_uri, :page_uri, :user_type, :user, :xdata, :ip_address
     attr_reader :zza_id
 
     # create the initial infrastructure
@@ -482,18 +483,19 @@ module ZZ
     # this will pick up the saved values for all attributes except event and
     # in this case pick up the user and user_type you set on the object
     #
-    def track_event(event, xdata = nil, user_type = nil, user = nil, referrer_uri = nil, page_uri = nil)
+    def track_event(event, xdata = nil, user_type = nil, user = nil, referrer_uri = nil, page_uri = nil, ip_address = nil)
       ZZA.after_fork_check
       xdata = self.xdata if xdata.nil?
       user_type = self.user_type if user_type.nil?
       user = self.user if user.nil?
       referrer_uri = self.referrer_uri if referrer_uri.nil?
       page_uri = self.page_uri if page_uri.nil?
-      ZZA.sender.track_event(zza_id, event, xdata, nil, user_type, user, referrer_uri, page_uri)
+      ip_address = self.ip_address if ip_address.nil?
+      ZZA.sender.track_event(zza_id, event, xdata, nil, user_type, user, referrer_uri, page_uri, ip_address)
     end
 
     # same as above but tracks a transaction - a set of related operations
-    def track_transaction(event, transaction_id, xdata = nil, user_type = nil, user = nil, referrer_uri = nil, page_uri = nil)
+    def track_transaction(event, transaction_id, xdata = nil, user_type = nil, user = nil, referrer_uri = nil, page_uri = nil, ip_address = nil)
       ZZA.after_fork_check
       xdata = self.xdata if xdata.nil?
       transaction_id = self.transaction_id if transaction_id.nil?
@@ -501,7 +503,8 @@ module ZZ
       user = self.user if user.nil?
       referrer_uri = self.referrer_uri if referrer_uri.nil?
       page_uri = self.page_uri if page_uri.nil?
-      ZZA.sender.track_event(zza_id, event, xdata, transaction_id, user_type, user, referrer_uri, page_uri)
+      ip_address = self.ip_address if ip_address.nil?
+      ZZA.sender.track_event(zza_id, event, xdata, transaction_id, user_type, user, referrer_uri, page_uri,ip_address)
     end
 
 

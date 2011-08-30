@@ -8,20 +8,25 @@
 common: &common
   reserved_names: false
   resque_zza_id: "dev.photos/svr"
-  album_email_host: "greg-post.zangzing.com"
+  album_email_host: "mauricio-post.zangzing.com"
 
   # time in seconds before we timeout certain resque jobs
-  async_job_timeout: 20
+  async_job_timeout: 30
   async_connector_timeout: 60
   remote_job_timeout: 45
 
   # turns on/off http basic auth for the whole site
   requires_http_auth: true
 
-  agent_download_url_mac: "http://staging.downloads.zangzing.com/agent/darwin/ZangZing-Setup(STAGED).pkg"
-  agent_download_url_win: "http://staging.downloads.zangzing.com/agent/win32/ZangZing-Setup(STAGED).exe"
+  agent_download_url_mac: "http://downloads.zangzing.com/agent/darwin/ZangZing-Setup-X.pkg"
+  agent_download_url_win: "http://downloads.zangzing.com/agent/win32/ZangZing-Setup-X.exe"
+  agent_port: 30778
 
-  v3homepage_repo_root: "../v3deploy/v3homepage"
+  v3homepage_repo_root: "/data/v3homepage"
+
+  # we seem to have a problem with corrupt gzip/memcached data so we have an option that can turn on/off
+  memcached_gzip: true
+
 
 development:
   <<: *common
@@ -30,6 +35,9 @@ development:
   async_connector_timeout: 7200
   async_job_timeout: 7200
   remote_job_timeout: 7200
+  requires_http_auth: false
+  agent_port: 30777
+
 
 perftest:
   <<: *common
@@ -41,6 +49,8 @@ perftest:
 test:
   <<: *common
   resque_zza_id: "dev.photos/svr"
+  requires_http_auth: false
+  memcached_gzip: false
 
 photos_production:
   <<: *common
@@ -50,14 +60,16 @@ photos_production:
   requires_http_auth: false
   agent_download_url_mac: "http://downloads.zangzing.com/agent/darwin/ZangZing-Setup.pkg"
   agent_download_url_win: "http://downloads.zangzing.com/agent/win32/ZangZing-Setup.exe"
-  v3homepage_repo_root: "/data/v3homepage"
+  agent_port: 30777
+
+
 
 photos_staging:
   <<: *common
   reserved_names: true
   resque_zza_id: "staging.photos/svr"
   album_email_host: "staging.zangzing.com"
-  v3homepage_repo_root: "/data/v3homepage"
+  requires_http_auth: false
 
 
 eytest:

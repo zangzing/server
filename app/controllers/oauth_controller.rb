@@ -1,9 +1,13 @@
 class OauthController < ApplicationController
+  ssl_allowed :request_token, :authorize, :agentauthorize, :access_token, :revoke, :invalidate, :capabilities, :test_request, :test_session
+
+
   before_filter :require_user, :only => [:authorize,:revoke, :agentauthorize]
   before_filter :oauth_required, :only => [:invalidate,:capabilities, :test_request, :test_session]
   before_filter :verify_oauth_consumer_signature_agent, :only => [:request_token]
   before_filter :verify_oauth_request_token, :only => [:access_token]
   skip_before_filter :verify_authenticity_token, :only=>[:request_token, :access_token, :invalidate, :test_request, :test_session]
+
 
 
   def request_token
@@ -74,7 +78,7 @@ class OauthController < ApplicationController
   def access_token
     @token = current_token && current_token.exchange!
     if @token
-      @token = @token.get_agent_token( params['agent_id'] )
+      @token = @token.get_agent_token( params['agent_id'], request.headers['HTTP_X_ZZ_AGENT_VER'] )
       render :text => @token.to_query
     else
       render :nothing => true, :status => 401
@@ -125,6 +129,7 @@ class OauthController < ApplicationController
     if( current_token )
       @user = current_token.user
       if current_user_session && current_user_session.valid? && current_user?(current_user_session.user)
+        current_token.update_attribute( :agent_version,  request.headers['HTTP_X_ZZ_AGENT_VER'] )
         render :text => "Valid Session", :status => 200
       else
         render :text => "Session/Token Missmatched. The signed-in user cannot use this agent", :status => 412

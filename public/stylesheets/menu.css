@@ -1,0 +1,116 @@
+.zz_menu {
+	position: absolute;
+	width: 120px;
+    z-index: 100000;
+	padding: 0px;
+	margin: 0px;
+	display: none;
+	color: #FAFAFA;
+}
+
+.zz_menu ul{
+	background: #333; /* For ie and other non css3 browsers */
+	/*filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#666666', endColorstr='#333333'); /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#666), to(#333)); /* for webkit browsers */
+	background: -moz-linear-gradient(top,  #666,  #333); /* for firefox 3.6+ */
+}
+
+.zz_menu LI {
+    list-style: none;
+}
+
+.zz_menu A {
+	display: block;
+	
+	color: #FAFAFA;
+	text-decoration: none;
+	text-align: left;
+	font-size:  12px;
+	font-weight: 600;
+	text-shadow: 0 1px black;
+	line-height: 27px;
+	
+	height: 27px;
+	background-repeat: no-repeat;
+	outline: none;
+	padding: 1px 5px 1px 35px;
+}
+
+.zz_menu LI.disabled A {
+	color: #AAA;
+	cursor: default;
+}
+
+.zz_menu LI.hover.disabled A {
+	background-color: transparent;
+}
+
+.zz_menu LI.separator {
+	border-top: solid 1px #CCC;
+}
+
+.zz_menu LI.hover A {
+	color: #FFFFFF;
+	background-color: rgba(255, 255, 255, 0.1);;
+}
+
+.zz_menu .arrowtop    { 	background-image: url(/images/menu/arrowtop.png);   padding-bottom: 15px;}
+.ua-ie .zz_menu .arrowtop { background-image: url(/images/menu/arrowtop-333.png);   padding-bottom: 15px;}
+.zz_menu .flatbottom  {  	background-image: url(/images/menu/flatbottom.png); padding-top: 5px;}
+
+.zz_menu .flattop        { 	background-image: url(/images/menu/flattop.png);     padding-bottom: 5px;}
+.ua-ie .zz_menu .flattop { 	background-image: url(/images/menu/flattop-333.png); padding-bottom: 5px;}
+.zz_menu .arrowbottom    {  background-image: url(/images/menu/arrowbottom.png); padding-top:    16px;}
+
+
+/* i menu items*/
+.zz_menu LI.download A { background: url(/images/menu/icn-download-white.png) no-repeat scroll  0 5px;}
+.zz_menu LI.download.hover A { background-position: 0 -20px;}
+
+.zz_menu LI.privacy A { background: url(/images/menu/icn-rotatel-white.png) no-repeat scroll 0 5px; }
+.zz_menu LI.privacy.hover A { background-position: 0 -20px;}
+
+.zz_menu LI.delete A { background: url(/images/menu/icn-delete-white.png) no-repeat scroll 3px 5px;}
+.zz_menu LI.delete.hover A { background-position: 3px -20px;}
+
+.zz_menu LI.setcover A { background: url(/images/menu/icn-setcover-white.png) no-repeat scroll 5px 5px;}
+.zz_menu LI.setcover.hover A { background-position: 5px -20px;}
+.zz_menu LI.setcover.disabled A { background-position: 5px -20px;}
+
+.zz_menu LI.rotater A { background: url(/images/menu/icn-rotater-white.png) no-repeat scroll 0 5px;}
+.zz_menu LI.rotater.hover A { background-position: 0 -20px;}
+
+.zz_menu LI.rotatel A { background: url(/images/menu/icn-rotatel-white.png) no-repeat scroll 0 5px;}
+.zz_menu LI.rotatel.hover A { background-position: 0 -20px;}
+
+/* share menu items*/
+.zz_menu LI.email A    { background: url(/images/menu/icn-email-white.png) no-repeat scroll 7px 8px; }
+.zz_menu LI.email.hover A    { background-position: 7px -21px; }
+
+.zz_menu LI.twitter A  { background: url(/images/menu/icn-twitter-white.png) no-repeat scroll 6px 5px; }
+.zz_menu LI.twitter.hover A  { background-position: 6px -19px; }
+
+.zz_menu LI.facebook A { background: url(/images/menu/icn-facebook-white.png) no-repeat scroll 7px 6px; }
+.zz_menu LI.facebook.hover A { background-position: 7px -19px; }
+
+
+/* like menu items*/
+.zz_menu span.like-count{
+    font-size: 11px;
+    font-weight: 300;
+}
+.zz_menu LI.like-user  A{  background: url("/images/menu/icns-like-white.png") no-repeat scroll 7px 10px; }
+.zz_menu LI.like-user.hover  A {  background-position: 7px -77px; }
+
+.zz_menu LI.like-album A{  background: url("/images/menu/icns-like-white.png") no-repeat scroll 7px -20px; }
+.zz_menu LI.like-album.hover A {  background-position: 7px -107px; }
+
+.zz_menu LI.like-photo A{  background: url("/images/menu/icns-like-white.png") no-repeat scroll 7px -50px; }
+.zz_menu LI.like-photo.hover A {   background-position: 7px -137px; }
+
+.downloading-dialog-content{
+    position:relative;
+    top:15px;
+    font-size:16px;
+    width: 280px;
+}

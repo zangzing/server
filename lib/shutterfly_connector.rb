@@ -55,7 +55,17 @@ class ShutterflyConnector
 
   def get_images(album_id)
     data = call_api("/userid/#{userid_token}/albumid/#{album_id}?category-type=image")
-    data[:entry] || []
+
+    images = data[:entry] || []
+
+    if !images.kind_of?(Array)
+      # if there is just one image in the ablum, then the
+      # response is just a hash for that image
+      # need to wrap it in an array
+      images = [images]
+    end
+    
+    return images
   end
 
 private

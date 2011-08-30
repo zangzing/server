@@ -2,7 +2,6 @@ class UsersController < ApplicationController
   ssl_required :join, :create, :edit_password, :update_password
   ssl_allowed :validate_email, :validate_username
 
-  before_filter :require_no_user, :only => [:create]
   before_filter :require_user,    :only => [ :activate,:edit, :update]
   before_filter :require_admin,   :only => [ :activate]
   before_filter :correct_user,    :only => [:edit, :update]
@@ -10,16 +9,28 @@ class UsersController < ApplicationController
   skip_before_filter :verify_authenticity_token, :only=>[:create]
 
   def join
+    if params[:return_to]
+        session[:return_to] = params[:return_to]
+      end
     if ! current_user
       @new_user = User.new(:email => params[:email])
       @user_session = UserSession.new
       render :layout => false
     else
-      redirect_to user_pretty_url(current_user)
+       redirect_back_or_default user_pretty_url(current_user)
     end
   end
 
   def create
+    if current_user
+        flash[:notice] = "You are currently logged in as #{current_user.username}. Please log out before creating a new account."
+        session[:flash_dialog] = true
+        redirect_to user_pretty_url(current_user)
+        return
+    end
+
+    prevent_session_fixation
+
     @user_session = UserSession.new
 
     # RESERVED NAMES
@@ -87,8 +98,10 @@ class UsersController < ApplicationController
         end
         flash[:success] = "Welcome to ZangZing!"
         @new_user.deliver_welcome!
-        session[:show_welcome_dialog] = true
-        redirect_to user_pretty_url( @new_user ) and return
+        session[:show_welcome_dialog] = true unless( session[:return_to] )
+        send_zza_event_from_client('user.join')
+        redirect_back_or_default user_pretty_url( @new_user )
+        return
       end
     else
       # Saving without session maintenance to skip
@@ -100,6 +113,7 @@ class UsersController < ApplicationController
           @guest.status = 'Inactive'
           @guest.save
         end
+        send_zza_event_from_client('user.join')
         redirect_to inactive_url and return
       end
     end
@@ -172,7 +186,6 @@ class UsersController < ApplicationController
     end
     render :json => true #Invalid call return not valid
   end
-
 
   private
   def admin_user

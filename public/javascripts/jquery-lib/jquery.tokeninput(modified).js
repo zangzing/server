@@ -32,7 +32,8 @@
          dataType: "json",
          queryParam: "q",
          onResult: null,
-         hideEntered: true
+         hideEntered: true,
+         validate: null
       }, options);
 
       settings.prePopulate = $.extend({
@@ -107,11 +108,17 @@
 
       // Create a new text input an attach keyup events
       var input_box = $("<input type=\"text\">")
+         .attr('placeholder', settings.hintText) //can't use the placeholder plugin because it will pick up the value
+         .placeholder()
          .css({
             outline: "none",
             width: "100%"
          })
          .focus(function(){
+
+            //scroll to bottom of list.
+            $(token_list).scrollTop(1000);
+
             if(settings.tokenLimit == null || settings.tokenLimit != token_count){
                show_dropdown_hint();
             } else {
@@ -125,6 +132,8 @@
          .keydown(function(event){
             var previous_token;
             var next_token;
+
+
 
             switch(event.keyCode){
                case KEY.LEFT:
@@ -189,10 +198,10 @@
                case KEY.TAB:
                    if(selected_dropdown_item){
                       add_token($(selected_dropdown_item));
-                      return false;
-                   }
-                    else{
-                       return true;
+                      return true;
+                   }else if(settings.allowNewValues) {
+                      create_new_token();
+                      return true;
                    }
                case KEY.RETURN:
                case KEY.COMMA:
@@ -436,6 +445,16 @@
             "name": value
          });
 
+
+
+         // make sure value is valid
+         if(settings.validate){
+             if(!settings.validate(id)){
+                this_token.addClass('error');
+             }
+         }
+
+
          return this_token;
       }
 
@@ -488,7 +507,7 @@
 
        function create_new_token () {
             var string = input_box.val(); //.toLowerCase();
-            if(string.length > 0){
+            if(string.length > 0 && string != settings.hintText){
                 // split the string by tabs,commas,returns or spaces and
                 // make each part a token.
                 var string_parts =  string.split(/\s*,\s*|\s*\t\s*/);

@@ -1,6 +1,10 @@
 # https://manage.dev.live.com
 
 --- 
+test:   #these won't work on localhost
+  :client_id: 000000004804221F
+  :secret_key: wNKEtVYRfY7Yy1wpq2JdKZExE1ZTRIIw
+
 development:   #these won't work on localhost
   :client_id: 000000004804221F
   :secret_key: wNKEtVYRfY7Yy1wpq2JdKZExE1ZTRIIw

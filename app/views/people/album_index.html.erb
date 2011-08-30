@@ -1,3 +1,6 @@
+<% content_for :page_title do %><%= @album.name %> People<% end %>
+
+
 <% content_for :meta_tags do %>
     <%= render :partial => "facebook/album_opengraph_tags" %>
 <% end %>
@@ -5,22 +8,28 @@
 
 <div class="viewlist">
   <ul>
-    <li class="header bar">
-      Contributors
-    </li>
+
+
+    <% @header_added = false %>
     <%@contributors.each do | user | %>
         <%if (photo_count = @album.photos.find_all_by_user_id(user.id).length) > 0%>
-               <%=render :partial => 'contributor', :locals => { :user => user, :photo_count => photo_count }%>
-           <%else
+            <%unless @header_added %>
+                <li class="item tab add">
+                  <div class="bartabheader">Contributors</div>
+                </li>
+                <% @header_added = true %>
+            <%end%>
+            <%=render :partial => 'contributor', :locals => { :user => user, :photo_count => photo_count }%>
+  <%else
                @inactive_contributors << user
         end%>
     <%end%>
-
+    
     <% if @likers.length > 0 %>
-        <li class="header bar">
-            People Who Like This Album
-        </li>
         <li class="item tab like">
+                  <div class="bartabheader">People Who Like This Album</div>
+        </li>
+        <li class="item">
             <%@likers.each do | user | %>
                 <div class="title">
                     <%= render :partial => 'users/stacked_badge', :locals => { :user => user }    %>
@@ -29,11 +38,24 @@
         </li>
     <%end%>
 
-    <% if @inactive_contributors.length > 0%>
-        <li class="header bar">
-            Invited Contributors
+    <% if @photo_likers.length > 0 %>
+        <li class="item tab like">
+                  <div class="bartabheader">People Who Like Photos in This Album</div>
         </li>
+        <li class="item">
+          <%@photo_likers.each do | user | %>
+              <div class="title">
+                <%= render :partial => 'users/stacked_badge', :locals => { :user => user }    %>
+              </div>
+          <%end%>
+        </li>
+    <%end%>
+    
+    <% if @inactive_contributors.length > 0%>
         <li class="item tab share">
+                  <div class="bartabheader">Invited Contributors</div>
+        </li>
+        <li class="item tab">
             <%@inactive_contributors.each do | user | %>
                 <div class="title">
                     <%= render :partial => 'users/stacked_badge', :locals => { :user => user }    %>
@@ -44,6 +66,18 @@
   </ul>
 
 </div>
+
+<% content_for :page_javascript do %>
+
+    <%= render :partial => "photos/album_view_javascript" %>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            zz.album.init_people_view();
+        });
+    </script>
+
+<% end %>
 
 
 

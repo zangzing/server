@@ -10,5 +10,6 @@ class Email < ActiveRecord::Base
   NEWS          ='news'
   MARKETING     ='marketing'
   TRANSACTIONAL ='transactional'
+  ONCE          ='once'
 
 end

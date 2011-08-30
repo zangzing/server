@@ -12,7 +12,10 @@
 
 
     <%= render :partial => "facebook/album_opengraph_tags" %>
-    
+
+    <title><%=@album.name%> by <%=@album.user.name%> | Photo Sharing - ZangZing</title>
+
+
 
     <style type="text/css">
         html{
@@ -26,19 +29,10 @@
             background-color: #000000;
         }
 
-        /*#content {*/
-            /*position: relative;*/
-            /*margin: auto;*/
-            /*text-align: center;*/
-        /*}*/
-
         #movie {
             height:100%;
             width:100%;
         }
-
-        /*.javascript-movie{*/
-        /*}*/
 
         #scrim{
             position:absolute;
@@ -53,17 +47,9 @@
     </style>
 
 
-    <script>
-        var zza_config_GOOGLE_ANALYTICS_TOKEN = '<%=ZZA_CONFIG[:GOOGLE_ANALYTICS_TOKEN]%>';
-        var zza_config_MIXPANEL_TOKEN = '<%=ZZA_CONFIG[:MIXPANEL_TOKEN]%>';
-        var zza_config_ZZA_ID = '<%=ZZA_CONFIG[:ZZA_ID]%>';
-<%    if signed_in?  -%>
-        zuserid = '<%= current_user.id %>';
-<%	  else %>
-        zuserid = null;
-<%    end -%>
+    <%= render :partial => 'layouts/zza'  %>
 
-    </script>
+
 
 </head>
 
@@ -73,6 +59,12 @@
     else
         back_url = "#{album_pretty_url( @album )}"
     end
+
+   if params[:start]
+      start_index = params[:start].to_i
+   else
+      start_index = 0
+   end
 
 %>
 
@@ -105,18 +97,18 @@
                         "transitionType=slide&" +
                         "slideShowControls=true&" +
                         "preloadAfter=3&" +
-                        "preloadBefore=1"
+                        "preloadBefore=1&" +
+                        "alwaysUseFullscreenImages=true&" +
+                        "startImageIndex=#{start_index}"
 
         %>
 
       
-        <param name="flashvars" value="source=<%=album_photos_json_url @album%>?<%=@album.photos_last_updated_at.to_i%>&<%=flash_params%>"/>
+        <param name="flashvars" value="source=<%=album_photos_json_url @album%>?<%=@album.cache_version%>&<%=flash_params%>"/>
     </object>
     <div id="scrim"></div>
 
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-
-
+    <%= include_javascripts :jquery %>
     <%= include_javascripts :lib %>
     <%= include_javascripts :zz %>
     <%= include_javascripts :movie %>
@@ -124,63 +116,78 @@
 
     <script type="text/javascript">
 
-        var force_javascript = (document.location.search.indexOf('js=true') !== -1)
+        var force_javascript = (document.location.search.indexOf('js=true') !== -1);
+
+        var handle_no_flash = function(){
+            $("#movie").replaceWith('<div id="movie" class="javascript-movie"></div>');
+
+
+            $.CustomSimpleFade.init({
+
+                appendToID:			'movie',
+                source:				'<%=album_photos_json_url @album%>?<%=@album.cache_version%>',
+                width: $(window).width(),
+                height: $(window).height(),
+
+                autoHideControls:	false,
+                autoSlideShow:		true,
+
+                backgroundColor:	'#000000',
+                backgroundImage:	'',
+                backgroundVisible:	true,
+                borderColor:		'#ffffff',
+                borderSize:			5,
+
+                controlsHideSpeed:	2,
+
+                backButton:			true,
+                backButtonURL:		'<%=back_url%>',
+
+                iconsURL:			'/images/movie/',
+
+                backButtonText:     'Back to Album',
+
+                loadOriginalImages: false,
+
+                scaleBackground:	true,
+                scaleMode:			'scale',
+                shadowColor:		'#000000',
+                shadowDistance:		5,
+                slideShowSpeed:		6,
+
+                transitionSpeed:	0.5,
+                transitionType:		'slide',
+
+                slideShowControls: true,
+
+                preloadAfter:		3,
+                preloadBefore:		1,
+
+                startImageIndex:   <%= start_index %>
+            });
+
+        };
+
 
 
         $(document).ready(function(){
 
-            swfobject.registerObject("movie", "9.0.115", "", function(e) {
-                if (e.success == false || force_javascript) {
-                    var err;
-
-                    $("#movie").replaceWith('<div id="movie" class="javascript-movie"></div>');
+            zz.mobile.lock_page_scroll();
 
 
-                    $.CustomSimpleFade.init({
+            if(swfobject.getFlashPlayerVersion().major == 0){
+                //this handles the case where IE has flash installed,
+                //but it has been 'disabled'
+                handle_no_flash();
+            }
+            else{
+                swfobject.registerObject("movie", "9.0.115", "", function(e) {
+                    if (e.success == false || force_javascript) {
+                        handle_no_flash();
+                    }
+                });
+            }
 
-                        appendToID:			'movie',
-                        source:				'<%=album_photos_json_url @album%>?<%=@album.photos_last_updated_at.to_i%>',
-                        width: $(window).width(),
-                        height: $(window).height(),
-
-                        autoHideControls:	false,
-                        autoSlideShow:		true,
-
-                        backgroundColor:	'#000000',
-                        backgroundImage:	'',
-                        backgroundVisible:	true,
-                        borderColor:		'#ffffff',
-                        borderSize:			5,
-
-                        controlsHideSpeed:	2,
-
-                        backButton:			true,
-                        backButtonURL:		'<%=back_url%>',
-
-                        iconsURL:			'/images/movie/',
-
-                        backButtonText:     'Back to Album',
-
-                        loadOriginalImages: false,
-
-                        scaleBackground:	true,
-                        scaleMode:			'scale',
-                        shadowColor:		'#000000',
-                        shadowDistance:		5,
-                        slideShowSpeed:		6,
-
-                        transitionSpeed:	0.5,
-                        transitionType:		'slide',
-
-                        slideShowControls: true,
-
-                        preloadAfter:		3,
-				        preloadBefore:		1,
-
-
-                    });
-                }
-            });
 
 
             var setSize = function(){
@@ -188,11 +195,11 @@
                     height: $(window).height(),
                     width: $(window).width()
                 });
-            }
+            };
 
             $(window).resize(function(){
                 setSize();
-            })
+            });
 
             setSize();
         });

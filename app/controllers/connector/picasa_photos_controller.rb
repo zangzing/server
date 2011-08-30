@@ -2,7 +2,7 @@ class Connector::PicasaPhotosController < Connector::PicasaController
   
   def self.list_photos(api, params)
     doc = call_with_error_adapter do
-      Nokogiri::XML(api.get("https://picasaweb.google.com/data/feed/api/user/default/albumid/#{params[:picasa_album_id]}").body)
+      Nokogiri::XML(api.get("https://picasaweb.google.com/data/feed/api/user/default/albumid/#{params[:picasa_album_id]}?imgmax=d").body)
     end
     photos = []
     doc.xpath('//a:entry', NS).each do |entry|
@@ -24,7 +24,7 @@ class Connector::PicasaPhotosController < Connector::PicasaController
   def self.import_photo(api, params)
     identity = params[:identity]
     doc = call_with_error_adapter do
-      Nokogiri::XML(api.get("https://picasaweb.google.com/data/feed/api/user/default/albumid/#{params[:picasa_album_id]}").body)
+      Nokogiri::XML(api.get("https://picasaweb.google.com/data/feed/api/user/default/albumid/#{params[:picasa_album_id]}?imgmax=d").body)
     end
     photo = nil
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )

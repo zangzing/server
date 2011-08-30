@@ -20,19 +20,21 @@ module ApplicationHelper
 
    def compatible_browser?
 
-    if browser.safari? && browser.full_version.to_f >= 4
-      return true
-    elsif browser.firefox? && browser.full_version.to_f >= 3.6
-      return true
-    elsif browser.ie? && browser.full_version.to_f >= 8
-      return true
-    elsif browser.chrome? && browser.full_version.to_f >= 9
-      return true
-    elsif browser.ipad? || browser.ipod? || browser.iphone?
-      return true
-    end
+     return true
 
-    return false
+#    if browser.safari? && browser.full_version.to_f >= 4
+#      return true
+#    elsif browser.firefox? && browser.full_version.to_f >= 3.6
+#      return true
+#    elsif browser.ie?
+#      return true
+#    elsif browser.chrome? && browser.full_version.to_f >= 9
+#      return true
+#    elsif browser.ipad? || browser.ipod? || browser.iphone?
+#      return true
+#    end
+#
+#    return false
 
    end
 
@@ -52,7 +54,7 @@ module ApplicationHelper
 
    #note: this is duplicated in agent.js
    def add_credentials_to_agent_url(url)
-      if url.starts_with? 'http://localhost:30777'
+      if url.starts_with? "http://localhost:#{ZangZingConfig.config[:agent_port]}"
         if ! url.include? '?'
           url += '?'
         end

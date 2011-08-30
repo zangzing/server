@@ -1,16 +1,18 @@
 source :gemcutter
 #source 'http://gems.github.com'
 
-# bundler requires these gems in all environments
-gem "bundler", ">=1.0.7"
+# bundler requires these gems in all environments -
+gem "bundler", ">=1.0.14"
 gem "rails", "3.0.3"
 gem "unicorn"
 gem "dynamic_form"
 gem "require_all"                 # lets us pull in everything for our resque tasks
-gem "mysql2"
+gem "mysql2",     "~> 0.2.7"
 gem 'authlogic',     '2.1.6'
 gem 'uuidtools'
 gem 'activerecord-import', '~>0.2'  # bulk database inserts
+
+gem 'syslogger',     "1.2.5", :git => 'git://github.com/zangzing/syslogger.git'
 
 gem 'oauth',         "0.4.5.pre2", :git => 'git://github.com/zangzing/oauth-ruby.git'
 gem "oauth-plugin", ">=0.4.0.pre1"

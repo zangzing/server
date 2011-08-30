@@ -1,12 +1,12 @@
 
 
-<li class="item tab add">
+<li class="item">
       <div class="title">
               <%= render :partial => 'users/stacked_badge', :locals => { :user => user }    %>
       </div>
       <div class="content">
        <%if photo_count > 4 %>
-            <div class="more"><a href="javascript:void(0);" class="more-less-btn blue" data-user-id="<%=user.id%>"><div class="slit-right"></div><span>Show more photos</span></a> </div>
+            <div class="more"><a href="javascript:void(0);" class="more-less-btn" data-user-id="<%=user.id%>"><div class="slit-right"></div><span>Show more photos</span></a> </div>
        <%end%>
        <div class="timeline-grid" data-user-id="<%=user.id%>"></div>
       </div>

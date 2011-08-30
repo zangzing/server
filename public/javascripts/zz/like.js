@@ -1,87 +1,93 @@
 //
 //  Copyright 2011. ZangZing LLC www.zangzing.com
 //
+var zz = zz || {};
 
-var like = {
+zz.like = {
 
     hash: {},      // Hash keys are ids of liked subjects values are 'liked'
     loaded: false, // True when the hash is loaded for the logged in user
 
-    init: function(){
+    init: function() {
         //obtain the array of wanted subjects from the divs of class zzlike  with data-zzid attributes
-        var wanted_subjects={};
-        $('.zzlike').each( function(index, zzliketag){
-            wanted_subjects[ $(zzliketag).attr('data-zzid') ]= $(zzliketag).attr('data-zztype');
+        var wanted_subjects = {};
+        $('.zzlike').each(function(index, zzliketag) {
+            wanted_subjects[$(zzliketag).attr('data-zzid')] = $(zzliketag).attr('data-zztype');
         });
 
-        if( !$.isEmptyObject( wanted_subjects ) ){
-            like.add_id_array( wanted_subjects );
+        if (!$.isEmptyObject(wanted_subjects)) {
+            zz.like.add_id_array(wanted_subjects);
         } else {
-            like.loaded = true;
+            zz.like.loaded = true;
         }
     },
 
-    add_id_array: function( wanted_subjects ){
-        if( !$.isEmptyObject( wanted_subjects ) ){
-             // get the wanted subjects. Use a POST because of GET query string size limitations
-            $.ajax({ type:       'POST',
-                url:        zz.path_prefix + '/likes.json',
-                data:       {'wanted_subjects' : wanted_subjects },
-                success:    function( data ){
-                    if( like.loaded ){
-                        $.extend( like.hash,  data); // merge new data with existing hash
-                        for( key in data )
-                                like.refresh_tag( key );
+    add_id_array: function(wanted_subjects) {
+        if (!$.isEmptyObject(wanted_subjects)) {
+            // get the wanted subjects. Use a POST because of GET query string size limitations
+            $.ajax({ type: 'POST',
+                url: zz.routes.path_prefix + '/likes.json',
+                data: {'wanted_subjects' : wanted_subjects },
+                success: function(data) {
+                    if (zz.like.loaded) {
+                        $.extend(zz.like.hash, data); // merge new data with existing hash
+                        for (key in data)
+                            zz.like.refresh_tag(key);
                     } else {
-                        like.hash = data;
-                        like.draw_tags();
-                        like.loaded = true;
-                    }},
+                        zz.like.hash = data;
+                        zz.like.draw_tags();
+                        zz.like.loaded = true;
+                    }
+                },
                 dataType: 'json'});
         }
     },
 
-    add_id: function( subject_id, subject_type ){
-        if( typeof( subject_id ) != 'undefined' && typeof( like.hash[subject_id]) == 'undefined' ){
-             var wanted_subjects = {};
-             wanted_subjects[ subject_id ] = subject_type;
-             like.add_id_array( wanted_subjects );
-        } else {
-             like.refresh_tag( subject_id );
+    add_id: function(subject_id, subject_type) {
+        if (typeof(subject_id) != 'undefined' && subject_id != 0) {
+            if (zz.like.loaded && typeof(zz.like.hash[subject_id]) == 'undefined') {
+                var wanted_subjects = {};
+                wanted_subjects[subject_id] = subject_type;
+                zz.like.add_id_array(wanted_subjects);
+            } else {
+                zz.like.refresh_tag(subject_id);
+            }
         }
     },
 
-    toggle: function(){
-        var subject_id   = $(this).attr('data-zzid');
+    toggle: function() {
+        if ($(this).hasClass('disabled')) {
+            return;
+        }
+        var subject_id = $(this).attr('data-zzid');
         var subject_type = $(this).attr('data-zztype');
-        var url = zz.path_prefix + '/likes/'+subject_id;
+        var url = zz.routes.path_prefix + '/likes/' + subject_id;
 
-        var zzae = 'like.' + subject_type + '.'
+        var zzae = 'like.' + subject_type + '.';
         //Decide the action before the value is toggled in the hash
-        var type='post';
-        if( like.hash[subject_id]['user'] == true ){
-            type='delete';
+        var type = 'post';
+        if (zz.like.hash[subject_id]['user'] == true) {
+            type = 'delete';
             zzae += 'unlike';
         } else {
             zzae += 'like';
         }
 
-        like.toggle_in_hash( subject_id );
+        zz.like.toggle_in_hash(subject_id);
         $.ajax({ type: 'POST',
-            url:     url,
-            data:    {  subject_type : subject_type, _method: type },
-            success: function(html){
+            url: url,
+            data: { subject_type: subject_type, _method: type },
+            success: function(html) {
                 $('body').append(html);
-                like.display_social_dialog( subject_id );
+                zz.like.display_social_dialog(subject_id);
             },
-            error: function( xhr ){
-                // toggle in server failed, return hash and screen to previous state
-                like.toggle_in_hash( subject_id );
-                if( xhr.status == 401 ){
-//                    if(confirm('You must be logged in to like this '+ subject_type + '. Would you like to sign in or join now?')){
-                        var returnUrl = zz.path_prefix + '/' + subject_type + 's/' + subject_id + '/like';
-                        document.location.href = path_helpers.rails_route('signin') + '?return_to=' + returnUrl;
-//                    }
+            error: function(xhr) {
+                if (xhr.status == 401) {
+                    var returnUrl = 'https://' + document.location.hostname + zz.routes.path_prefix + '/' + subject_type + 's/' + subject_id + '/like';
+                    document.location.href = zz.routes.signin_path() + '?return_to=' + returnUrl;
+                } else {
+                    // toggle in server failed, return hash and screen to previous state
+                    zz.like.toggle_in_hash(subject_id);
                 }
             }
         });
@@ -89,95 +95,129 @@ var like = {
         ZZAt.track(zzae);
     },
 
-    toggle_in_hash: function(subject_id){
-        if( like.loaded && subject_id  in like.hash){  //If the hash is loaded and  subject is in our hash
-            if( like.hash[subject_id]['user'] == true ){
+    toggle_in_hash: function(subject_id) {
+        if (zz.like.loaded && subject_id in zz.like.hash) {  //If the hash is loaded and  subject is in our hash
+            if (zz.like.hash[subject_id]['user'] == true) {
                 // The user likes the subject, toggle it off and decrease counter
-                like.hash[subject_id]['user'] = false;
-                like.hash[subject_id]['count'] -= 1;
-            }else{
+                zz.like.hash[subject_id]['user'] = false;
+                zz.like.hash[subject_id]['count'] -= 1;
+            } else {
                 // The user does not like the subject, toggle it on and increase counter
-                like.hash[subject_id]['user'] = true;
-                like.hash[subject_id]['count'] += 1;
+                zz.like.hash[subject_id]['user'] = true;
+                zz.like.hash[subject_id]['count'] += 1;
             }
-            like.refresh_tag( subject_id );
+            zz.like.refresh_tag(subject_id);
         }
     },
 
+    _count: function(id) {
+        var count = zz.like.hash[id]['count'];
+        if (count <= 0) {
+            return '';
+        } else if (count <= 1000) {
+            return count.toString();
+        } else if (count <= 1000000) {
+            return Math.floor(count / 1000).toString() + 'K';
+        }
+    },
 
-    draw_tags: function(){
-        $('.zzlike').each( function(index, zzliketag){
-            var tag = $(zzliketag);
-            var id = tag.attr('data-zzid');
-
-            if( tag.attr('data-zzstyle') =="menu" ){
-                tag.find("span.like-count").html( '('+like.hash[id]['count'].toString()+')' );
-            }else{
-                button  = $( ' <div class="zzlike-button">Like</div>');
-                icon    = $( '<span></span>' )
-                counter = $( '<div class="zzlike-count">'+like.hash[id]['count']+'</div>');
-                if( like.hash[id]['user'] ){
-                    $(icon).addClass( 'zzlike-thumbup' );
-                } else {
-                    $(icon).addClass( 'zzlike-vader' );
-                }
-                $(button).prepend( icon );
-                tag.empty();
-                tag.append( button ).append( counter );
-            }
-            tag.click( like.toggle );
+    draw_tags: function() {
+        $('.zzlike').each(function(index, zzliketag) {
+            zz.like.draw_tag(zzliketag);
         });
     },
 
-    refresh_tag: function(id){
-        if( like.hash[id]){
-            $('.zzlike[data-zzid="'+id+'"]').each( function(){
-                if( $(this).attr('data-zzstyle') =="menu" ){
-                    $(this).find('span.like-count').html( '('+like.hash[id]['count'].toString()+')' );
-                } else {
-                    if( like.hash[id]['user'] ){
-                        $(this).find('span.zzlike-vader').addClass('zzlike-thumbup').removeClass( 'zzlike-vader' );
-                    } else {
-                        $(this).find('span.zzlike-thumbup').addClass('zzlike-vader').removeClass( 'zzlike-thumbup' );
-                    }
-                    $(this).find('div.zzlike-count').html(like.hash[id]['count']);
-                }
-            });
+    draw_tag: function(tag) {
+        var button, icon, counter;
+        var id = $(tag).attr('data-zzid');
 
+        if ($(tag).attr('data-zzstyle') == 'toolbar') {
+            icon = $(tag);
+            counter = $(tag).find('.zzlike-count');
+        } else {
+            button = $('<div class="zzlike-button">'),
+                    icon = $('<div class="zzlike-icon">'),
+                    counter = $('<div class="zzlike-count empty">');
+            $(button).append(icon).append(counter);
+            $(tag).empty().append(button);
+        }
+
+        if (typeof(zz.like.hash[id]) != 'undefined') {
+            // set the counter
+            if (zz.like.hash[id]['count'] <= 0) {
+                counter.addClass('empty').empty();
+            } else {
+                counter.removeClass('empty').text(zz.like._count(id));
+            }
+
+            // change the icon
+            if (zz.like.hash[id]['user']) {
+                icon.addClass('thumbup').removeClass('thumbdown');
+            } else {
+                icon.addClass('thumbdown');
+            }
+
+        }
+        $(tag).click(zz.like.toggle);
+    },
+
+    refresh_tag: function(id) {
+        if (zz.like.hash[id]) {
+            $('.zzlike[data-zzid="' + id + '"]').each(function() {
+                var icon;
+                if ($(this).attr('data-zzstyle') == 'toolbar') {
+                    icon = $(this);
+                } else {
+                    icon = $(this).find('.zzlike-icon');
+                }
+                //update icon
+                if (zz.like.hash[id]['user']) {
+                    icon.addClass('thumbup').removeClass('thumbdown');
+                } else {
+                    icon.addClass('thumbdown').removeClass('thumbup');
+                }
+                //update counter
+                if (zz.like.hash[id]['count'] <= 0) {
+                    $(this).find('.zzlike-count').addClass('empty');
+                } else {
+                    $(this).find('.zzlike-count').removeClass('empty').text(zz.like._count(id));
+                }
+                $(this).unbind('click', zz.like.toggle).click(zz.like.toggle);
+            });
         }
     },
 
-    display_social_dialog: function( subject_id ){
-        $("#facebook_box").click( function(){
-            if( $(this).is(':checked')  && !$("#facebook_box").attr('authorized')){
+    display_social_dialog: function(subject_id) {
+        $('#facebook_box').click(function() {
+            if ($(this).is(':checked') && !$('#facebook_box').attr('authorized')) {
                 $(this).attr('checked', false);
-                oauthmanager.login( zz.path_prefix + '/facebook/sessions/new', function(){
-                    $("#facebook_box").attr('checked', true);
-                    $("#facebook_box").attr('authorized', 'yes');
+                zz.oauthmanager.login(zz.routes.path_prefix + '/facebook/sessions/new', function() {
+                    $('#facebook_box').attr('checked', true);
+                    $('#facebook_box').attr('authorized', 'yes');
                 });
             }
         });
 
-        $("#twitter_box").click( function(){
-            if($(this).is(':checked') && !$("#twitter_box").attr('authorized')){
+        $('#twitter_box').click(function() {
+            if ($(this).is(':checked') && !$('#twitter_box').attr('authorized')) {
                 $(this).attr('checked', false);
-                oauthmanager.login( zz.path_prefix + '/twitter/sessions/new', function(){
-                    $("#twitter_box").attr('checked', true);
-                    $("#twitter_box").attr('authorized', 'yes');
+                zz.oauthmanager.login(zz.routes.path_prefix + '/twitter/sessions/new', function() {
+                    $('#twitter_box').attr('checked', true);
+                    $('#twitter_box').attr('authorized', 'yes');
                 });
             }
         });
 
         $('#social-like-dialog').zz_dialog({ autoOpen: false });
-        $('#ld-cancel').click( function(){
+        $('#ld-cancel').click(function() {
             $('#social-like-dialog').zz_dialog('close');
             $('#social-like-dialog').zz_dialog().empty().remove();
         });
 
-        $('#ld-ok').click( function(){
+        $('#ld-ok').click(function() {
             $.ajax({ type: 'POST',
-                url:  zz.path_prefix + '/likes/'+subject_id+'/post',
-                data:  $('#social_like_form_'+subject_id).serialize()
+                url: zz.routes.path_prefix + '/likes/' + subject_id + '/post',
+                data: $('#social_like_form_' + subject_id).serialize()
             });
             $('#social-like-dialog').zz_dialog('close');
             $('#social-like-dialog').zz_dialog().empty().remove();
@@ -185,96 +225,3 @@ var like = {
         $('#social-like-dialog').zz_dialog('open');
     }
 };
-
-
-(function( $, undefined ) {
-
-$.widget("ui.zzlike_menu", {
-        options: {
-            anchor: false
-        },
-        _create: function() {
-            var self   = this;
-            var menu   = this.element;
-
-            // make sure element is not visible
-
-
-
-            //set classes to hide it make it s like-menu
-            menu.css('display','none').addClass( 'like-menu');
-            var items = $(menu).find('.zzlike').attr('data-zzstyle', 'menu');
-
-            //Choose the class for the right size background
-            switch (items.length ){
-                case 1: menu.addClass('one-item'); break;
-                case 2: menu.addClass('two-items'); break;
-                case 3: menu.addClass('three-items'); break;
-            }
-            //Add the right title and space for the counter
-            $.each(items, function(){
-                switch( $(this).attr('data-zztype') ){
-                    case 'user':    $(this).addClass( 'like-user').html('Person <span class="like-count"></span>'); break;
-                    case 'album':   $(this).addClass( 'like-album').html('Album <span class="like-count"></span>'); break;
-                    case 'photo':   $(this).addClass( 'like-photo').html('Photo <span class="like-count"></span>'); break;
-                }
-            });
-
-            //Check if element is already in DOM, if not, insert it at end of body.
-            if( menu.parent().size() <= 0 ){
-               $('body').append(menu);
-            }
-
-            // if there is an optional anchor. link it to it.               
-            if( self.options.anchor ){
-                //When anchor is clicked, display menu
-                $(self.options.anchor).click(  function(){
-                    self.open( this );
-                });
-            }
-        },
-
-    open: function(anchor){
-        var self = this;
-        var menu = self.element;
-
-        if(menu.is(':hidden')){
-            if(self._trigger('beforeopen') === false) return; //If any listeners return false, then do not open
-
-            //get the position of the clicked element and display popup above center of it
-            var offset = $(anchor).offset();
-            var x = ( $(anchor).outerWidth()/2 ) + offset.left - (menu.width()/2);
-            var y = $(document).height() - offset.top;
-
-
-            menu.css({display:'block',opacity:0,left:x,bottom:y-10});
-            menu.animate({bottom:y,opacity:1},200);
-
-
-
-//            menu.css({ left: x, bottom: y }).fadeIn( 'fast' );// Show = slide down
-
-            //Close menu when mouse hovers out of the menu or clicks
-            $(menu).hover(  function(){}, function(){ $(this).fadeOut('fast'); });
-            setTimeout( function() { // Delay for Mozilla
-                $(document).click( function() {
-                    if(menu.is(':visible')){
-                        $(document).unbind('click')
-                        $(menu).fadeOut('fast');
-                    }
-                    return false;
-                });
-            }, 0);
-
-            //If the window resizes close menu (its bottom positioned so it will look out of place if not removed)
-            $(window).one('resize',function() {  $(menu).css('display','none');  });
-            self._trigger('open');
-        }
-    },
-
-        destroy: function() {
-            $.Widget.prototype.destroy.apply( this, arguments );
-        }
-});
-
-})( jQuery );

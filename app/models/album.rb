@@ -3,12 +3,14 @@
 #
 
 class Album < ActiveRecord::Base
-  attr_accessible :name, :privacy, :cover_photo_id, :photos_last_updated_at, :updated_at
+  attr_accessible :name, :privacy, :cover_photo_id, :photos_last_updated_at, :updated_at, :cache_version, :photos_ready_count,
+                  :stream_to_email, :stream_to_facebook, :stream_to_twitter, :who_can_download, :who_can_upload
+  attr_accessor :change_matters
 
   belongs_to :user
   has_many :photos,           :dependent => :destroy
   has_many :shares,           :as => :subject, :dependent => :destroy
-  has_many :activities,       :dependent => :destroy
+  has_many :activities,       :as => :subject, :dependent => :destroy
   has_many :upload_batches
 
   has_many :like_mees,      :foreign_key => :subject_id, :class_name => "Like"
@@ -16,11 +18,16 @@ class Album < ActiveRecord::Base
 
   has_many :users_who_like_albums_photos, :class_name => "User", :finder_sql =>
           'SELECT u.* ' +
-          'FROM photos p, likes l, users u WHERE '+
-          'l.subject_type = "P" AND l.subject_id = p.id AND p.album_id = #{id} '+
-          'AND l.user_id = u.id ORDER BY u.first_name DESC'
+          'FROM photos p, likes l, users u '+
+          'WHERE '+
+          'l.subject_type = "P" AND '+
+          'l.subject_id = p.id AND '+
+          'p.album_id = #{id} AND '+
+          'l.user_id = u.id '+
+          'GROUP BY u.id '+
+          'ORDER BY u.first_name DESC'
 
-  has_friendly_id :name, :use_slug => true, :scope => :user, :reserved_words => ["photos", "shares", 'activities', 'slides_source', 'people'], :approximate_ascii => true
+  has_friendly_id :name, :use_slug => true, :scope => :user, :reserved_words => ["photos", "shares", 'activities', 'slides_source', 'people', 'activity'], :approximate_ascii => true
 
   validates_presence_of  :user_id
   validates_presence_of  :name
@@ -30,16 +37,58 @@ class Album < ActiveRecord::Base
   before_validation   :uniquify_name, :on => :create
 
   before_save   :cover_photo_id_valid?, :if => :cover_photo_id_changed?
-  after_save    :notify_cache_manager
 
+  # cache manager stuff
+  after_save    :check_cache_manager_change
+  after_commit  :make_create_album_activity, :on => :create
+  after_commit  :notify_cache_manager
+  after_commit  :after_destroy_cleanup, :on => :destroy
 
   after_create  :add_creator_as_admin
-
-  after_commit  :notify_cache_manager_delete, :on => :destroy
 
   default_scope :order => "`albums`.updated_at DESC"
 
   PRIVACIES = {'Public' =>'public','Hidden' => 'hidden','Password' => 'password'};
+
+  PUBLIC   = 'public'
+  HIDDEN   = 'hidden'
+  PASSWORD = 'password'
+
+  #constants for Album.who_can_upload and Album.who_can_download
+  WHO_EVERYONE      = 'everyone'
+  WHO_VIEWERS       = 'viewers'
+  WHO_CONTRIBUTORS  = 'contributors'
+  WHO_OWNER         = 'owner'
+
+
+  # need to override basic destroy behavior since
+  # we have to know when we are being destroyed in
+  # dependent photos so we don't perform unnecessary cache changes
+  # we can't simply set an instance variable because
+  # if you try to fetch the photo.album when it is being
+  # deleted it will fetch a new one from the db and
+  # will not be the same object that we are using here
+  #
+  # So, we need to resort to using a thread local that
+  # holds the state so we can get to it from within the
+  # child.
+  #
+  def destroy
+    Thread.current[:the_album_being_deleted] = self
+    super
+  rescue Exception => ex
+    raise ex
+  ensure
+    Thread.current[:the_album_being_deleted] = nil
+  end
+
+  # using the thread local storage determine
+  # if the given album_id is being deleted
+  def self.album_being_deleted?(album_id)
+    album = Thread.current[:the_album_being_deleted]
+    return false if album.nil?
+    album.id == album_id
+  end
 
   def uniquify_name
     @uname = name
@@ -67,28 +116,55 @@ class Album < ActiveRecord::Base
     @@_model_name ||= ActiveModel::Name.new(Album)
   end
 
-  # We have been saved so call the album cache manager
-  # to let it invalidate caches if needed.  Need to do this
-  # before the commit since we have to know what changed.
-  # todo: probably should set up for the modify by tracking
-  # what we need and setting a flag to know if we should
-  # do the actual change after the commit.
+
+  # check to see if the change matters - we do this
+  # before the commit because once it is commited we
+  # no longer know what changed
+  #
+  def check_cache_manager_change
+    self.change_matters = Cache::Album::Manager.shared.album_change_matters?(self)
+    true
+  end
+
+  # We have been committed so call the album cache manager
+  # to let it invalidate caches if needed.  We do this separately from
+  # the change check because we must do this after the commit to
+  # make sure we are not in a transaction
   def notify_cache_manager
-    Cache::Album::Manager.shared.album_modified(self)
+    if self.destroyed? == false
+      Cache::Album::Manager.shared.album_modified(self) if self.change_matters
+    end
     true
   end
 
-  # We have been deleted, let the cache know.
-  def notify_cache_manager_delete
+  # We have been deleted, let the cache know and the acl manager
+  def after_destroy_cleanup
     Cache::Album::Manager.shared.album_deleted(self)
+    acl.remove_acl    # remove the acl associated with us
     true
   end
 
-  # generate a quick touch without having to
-  # instantiate an object
-  def self.touch_photos_last_updated(album_id)
+  # never, never, never call get_next_id inside a transaction since failure of the transaction would rollback the
+  # fetch of the id which could result in duplicates being used.
+  #
+  # This call changes the cache version that we use to invalidate the photo cache for this album.  We
+  # use the id generator to ensure a unique id for each change.  One thing to note is that the id used
+  # does not guarantee any kind of ordering.  It is only guaranteed to be unique.
+  #
+  # Note: we rely on the update causing the after_ notifications to trigger
+  def self.change_cache_version(album_id)
+    version = BulkIdManager.next_id_for('album_cache_version')
     now = Time.now
-    Album.update(album_id, :photos_last_updated_at => now, :updated_at => now)
+    Album.update(album_id, :cache_version => version, :photos_last_updated_at => now, :updated_at => now)
+  end
+
+  def cache_key
+    case
+    when !persisted?
+      "#{self.class.model_name.cache_key}/new"
+    else
+      "#{self.class.model_name.cache_key}/#{id}-#{self.cache_version}"
+    end
   end
 
   # detect the state of the safe delete
@@ -109,20 +185,19 @@ class Album < ActiveRecord::Base
       cover_ids << cover_photo_id unless cover_photo_id.nil?
     end
 
+    cover_map = {}
     if cover_ids.empty? == false
       # now perform the bulk query
-      coverPhotos = Photo.where(:id => cover_ids)
+      cover_photos = Photo.where(:id => cover_ids)
 
       # ok, now map these by id to cover
-      coverMap = {}
-      coverPhotos.each do |cover|
-        coverMap[cover.id.to_s] = cover
+      cover_photos.each do |cover|
+        cover_map[cover.id] = cover
       end
-
-      # and finally associate them back to each album
-      albums.each do |album|
-        album.set_cached_cover(coverMap[album.cover_photo_id.to_s])
-      end
+    end
+    # and finally associate them back to each album
+    albums.each do |album|
+      album.set_cached_cover(cover_map[album.cover_photo_id])
     end
   end
 
@@ -219,21 +294,34 @@ class Album < ActiveRecord::Base
     @acl ||= AlbumACL.new( self.id )
   end
 
-  def add_contributor( email, msg='' )
-
+  def add_contributor( email)
      user = User.find_by_email( email )
      if user
           #if user does not have contributor role, add it
           unless acl.has_permission?( user.id, AlbumACL::CONTRIBUTOR_ROLE)
             acl.add_user user.id, AlbumACL::CONTRIBUTOR_ROLE
-            ZZ::Async::Email.enqueue( :contributor_added, self.id, email, msg )
+            InviteActivity.create( :user => self.user,
+                                   :subject => self,
+                                   :invite_kind => InviteActivity::CONTRIBUTE,
+                                   :album_id => self.id,
+                                   :invited_user_id => user.id )
+            #reciprocal activity to go in invited_user's activity list.
+            InviteActivity.create( :user => user,
+                                   :subject => user,
+                                   :invite_kind => InviteActivity::CONTRIBUTE,
+                                   :album_id => self.id,
+                                   :invited_user_id => user.id )
           end
      else 
           # if the email does not have contributor role add it.
           unless acl.has_permission?( email, AlbumACL::CONTRIBUTOR_ROLE)
               acl.add_user email, AlbumACL::CONTRIBUTOR_ROLE
-              Guest.register( email, 'contributor' )
-              ZZ::Async::Email.enqueue( :contributor_added, self.id, email, msg )
+              InviteActivity.create!( :user => self.user,
+                                     :subject => self,
+                                     :invite_kind => InviteActivity::CONTRIBUTE,
+                                     :album_id => self.id,
+                                     :invited_user_email => email )
+             # Guest.register( email, 'contributor' )
           end
      end
   end
@@ -241,18 +329,34 @@ class Album < ActiveRecord::Base
   # Adds the AlbumACL::VIEWER_ROLE to the user associated to this email
   # or to the email itself if there is no user yet.
   # If the email/user already has view permissions (through VIEWER or other
-  # ROLES) nothing happens
+  # ROLES) nothing happen
   def add_viewer( email )
      user = User.find_by_email( email )
      if user
           #is user does not have vie permissions, add them
           unless acl.has_permission?( user.id, AlbumACL::VIEWER_ROLE)
             acl.add_user user.id, AlbumACL::VIEWER_ROLE
+            InviteActivity.create( :user => self.user,
+                                   :subject => self,
+                                   :invite_kind => InviteActivity::VIEW,
+                                   :album_id => self.id,
+                                   :invited_user_id => user.id )
+            #reciprocal activity to go in invited_user's activity list.
+            InviteActivity.create( :user => user,
+                                   :subject => user,
+                                   :invite_kind => InviteActivity::VIEW,
+                                   :album_id => self.id,
+                                   :invited_user_id => user.id )
           end
      else
           # if the email does not have view permissions add  them
           unless acl.has_permission?( email, AlbumACL::VIEWER_ROLE)
               acl.add_user email, AlbumACL::VIEWER_ROLE
+              InviteActivity.create!( :user => self.user,
+                                     :subject => self,
+                                     :invite_kind => InviteActivity::VIEW,
+                                     :album_id => self.id,
+                                     :invited_user_email => email )
           end
      end
   end
@@ -262,13 +366,24 @@ class Album < ActiveRecord::Base
      acl.remove_user( id ) if contributor? id
   end
 
-  def viewer?(id)
-    if private?
-      acl.has_permission?( id, AlbumACL::VIEWER_ROLE)
-    else
-      true
-    end
+  def remove_viewer( id )
+     acl.remove_user( id ) if viewer? id
   end
+
+
+  def viewer?( id )
+      if private?
+        acl.has_permission?( id, AlbumACL::VIEWER_ROLE)
+      else
+        true
+      end
+  end
+
+  #true if the id has viewer role or higher 
+  def viewer_in_group?( id )
+     acl.has_permission?( id, AlbumACL::VIEWER_ROLE)
+  end
+
 
   # Returns true if id has contributor role or equivalent
   def contributor?( id )
@@ -284,16 +399,24 @@ class Album < ActiveRecord::Base
   # If the email is that of a valid contributor, it will return the
   # user object for the contributor.
   # It will return nil if the email is not that of a contributor.
+  # If album is set to allow anyone to contribute, it will skip the contributor
+  # check and always create a new user if necessary
   def get_contributor_user_by_email( email )
     user = nil
-    if contributor?( email )
+
+    if self.everyone_can_contribute?
+      # this is open album, so go ahead and create anonymouse user if necessary
+      user = User.find_by_email_or_create_automatic( email, "Anonymous" )
+    elsif contributor?( email )
       # was in the ACL via email address so turn into real user, no need to test again as we already passed
       user = User.find_by_email_or_create_automatic( email, "Anonymous" )
     else
-      # not a contributor by  email account, could still be one via user id
+      # not a contributor by email account, could still be one via user id
       user = User.find_by_email( email )
-      if user && contributor?(user.id) == false
-        user = nil  # clear out the user to indicate not valid
+
+      if contributor?(user.id) == false
+        # clear out the user to indicate not valid
+        user = nil  
       end
     end
     user
@@ -303,6 +426,13 @@ class Album < ActiveRecord::Base
   def contributors( exact = false)
     acl.get_users_with_role( AlbumACL::CONTRIBUTOR_ROLE, exact )
   end
+
+  #Returns album contributors if exact = true, only the ones with CONTRIBUTOR_ROLE not equivalent ROLES are returned
+  def viewers( exact = false)
+    acl.get_users_with_role( AlbumACL::VIEWER_ROLE, exact )
+  end
+
+  
 
   def long_email
       " \"#{self.name}\" <#{short_email}>"
@@ -319,33 +449,91 @@ class Album < ActiveRecord::Base
 
   # Return true if album is private
   def private?
-    self.privacy == 'password'
+    self.privacy == PASSWORD
   end
 
   def make_private
-    self.privacy = 'password'
+    self.privacy = PASSWORD
   end
 
   # Return true if album is public
   def public?
-    self.privacy == 'public'
+    self.privacy == PUBLIC
   end
 
   def make_public
-    self.privacy = 'public'
+    self.privacy = PUBLIC
   end
 
   # Return true if album is hidden
   def hidden?
-    self.privacy == 'hidden'
+    self.privacy == HIDDEN
+  end
+
+  def can_user_download?( user )
+     case who_can_download
+      when WHO_EVERYONE
+        return true
+      when WHO_OWNER
+        return true if user && admin?(user.id)
+      when WHO_VIEWERS
+        return true if user && viewer_in_group?( user.id ) #check ACL even if it is public
+    end
+    false
   end
 
   def make_hidden
-    self.privacy = 'hidden'
+    self.privacy = HIDDEN
+  end
+
+  def everyone_can_contribute?
+    self.who_can_upload == WHO_EVERYONE
+  end
+
+  def to_json_lite()
+    # since the to_json method of an active record cannot take advantage of the much faster
+    # JSON.fast_generate, we pull the object apart into a hash and generate from there.
+    # In benchmarks Greg Seitz found that the generate method is 10x faster, so for instance the
+    # difference between 10000/sec and 1000/sec
+    JSON.fast_generate( self.attributes )
+  end
+
+  # update the photo counters for a given albums
+  # in a single update
+  def self.update_photo_counters(album_id)
+    photo_count = Photo.count('id', :conditions => "album_id = #{album_id}")
+    ready_count = Photo.count('id', :conditions => "album_id = #{album_id} AND state = 'ready'")
+    connection.execute("UPDATE albums SET photos_count = #{photo_count}, photos_ready_count = #{ready_count} WHERE id = #{album_id};")
+  end
+
+  # this is here so we can manually update the photos
+  # counts - the server should not be running
+  # when this is called to ensure that we end up
+  # with accurate counts
+  def self.update_all_photo_counters
+    # set the current counts
+    albums = Album.all
+    albums.each do |album|
+      update_photo_counters(album.id)
+    end
+
+    albums.count
+  end
+
+  # update the photos ready counter by the specified amount
+  # can be negative or positive
+  def self.update_photos_ready_count(album_id, amount)
+    Album.update_counters album_id, :photos_ready_count => amount
+  end
+
+private
+  def make_create_album_activity
+    return if self.is_a?( ProfileAlbum )
+    aca = CreateAlbumActivity.create( :user => self.user, :subject => self)
+    self.activities << aca
   end
 
 
-private
   def cover_photo_id_valid?
     begin
       return true if cover_photo_id.nil?

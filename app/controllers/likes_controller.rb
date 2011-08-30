@@ -12,7 +12,7 @@ class LikesController < ApplicationController
       subjects[wanted_id] = { :count => 0, :user => false, :type => Like.clean_type( wanted_subjects[wanted_id].downcase ) }
     end
 
-    wanted_values = subjects.map{ |key, value| "(#{key}, '#{value[:type]}')" }.join(',')
+    wanted_values = subjects.map{ |key, value| "(#{key.to_i}, '#{value[:type]}')" }.join(',')
     counters = LikeCounter.where("(subject_id, subject_type) IN ( #{wanted_values} )").all
     # filter down the set based on the results of the counter lookup - if items
     # were missing from the counter table no reason to pass them on to the likes table
@@ -54,22 +54,39 @@ class LikesController < ApplicationController
       @user = User.find( @subject_id )
       @redirect_url = user_pretty_url( @user  )
       @subject_id = @user.id
+      redirect_to @redirect_url and return if @user == current_user
     elsif params[:album_id]
       @subject_id   = params[:album_id]
       @subject_type = 'album'
       @album = Album.find(@subject_id)
       @redirect_url = album_pretty_url( @album )
       @subject_id = @album.id
+
     elsif params[:photo_id]
       @subject_id   = params[:photo_id]
       @subject_type = 'photo'
-      @redirect_url = photo_pretty_url( Photo.find(@subject_id) )
+      @photo        = Photo.find(@subject_id)
+      @redirect_url = photo_pretty_url( @photo )
+      @message = "like this photo by #{@photo.user.name}"
     else
       #params are not complete
       render :text => "subject_id and/or subject_type not in params, unalbe to process", status => 400 and return
     end
     #ZZ::Async::ProcessLike.enqueue( 'add', current_user.id, @subject_id , @subject_type )
-    Like.add( current_user.id, @subject_id, @subject_type )
+    if Like.add( current_user.id, @subject_id, @subject_type )
+      case @subject_type
+        when 'user'  then  flash[:notice] = "You are now following  #{@user.name}"
+        when 'album' then  flash[:notice] = "You now like #{@album.name} by #{@album.user.name}"
+        when 'photo' then  flash[:notice] = "You now like this photo by #{@photo.user.name}"
+      end
+    else
+      case @subject_type
+        when 'user'  then  flash[:notice] = "You are already following  #{@user.name}"
+        when 'album' then  flash[:notice] = "You already like #{@album.name} by #{@album.user.name}"
+        when 'photo' then  flash[:notice] = "You already like this photo by #{@photo.user.name}"
+      end
+    end
+    session[:flash_dialog] = true
     redirect_to @redirect_url
   end
 

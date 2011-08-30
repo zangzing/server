@@ -68,10 +68,6 @@ class KodakConnector
     bin_io.read
   end
   
-  def response_as_file(url)
-    RemoteFile.new(url, PhotoGenHelper.photo_upload_dir, compose_request_header)
-  end
-
   def compose_request_header
     {
       'Host' => 'www.kodakgallery.com',

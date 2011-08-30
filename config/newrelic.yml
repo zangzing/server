@@ -1,3 +1,11 @@
+# NOTE-NOTE-NOTE-NOTE-NOTE-NOTE-NOTE-NOTE-NOTE-NOTE
+# NOTE: This is only used for development.  The production and staging file
+# lives in the zz-chef-repo since we have to make configuration based
+# decisions about whether to enable monitoring or not based on license count
+# NOTE-NOTE-NOTE-NOTE-NOTE-NOTE-NOTE-NOTE-NOTE-NOTE
+
+
+
 #
 # This file configures the New Relic RPM Agent.  New Relic RPM monitors
 # Rails and Java applications with deep visibility and low overhead.  For more

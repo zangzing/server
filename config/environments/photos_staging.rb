@@ -8,6 +8,10 @@ Server::Application.configure do
   # since you don't have to restart the webserver when you make code changes.
   config.cache_classes = true
 
+  # use syslogger
+  app_tag = ZangZingConfig.running_as_resque? ? "rails/stag/rqphotos" : "rails/stag/photos"
+  config.logger = Syslogger.new(app_tag)
+  config.colorize_logging = false
   config.log_level = :debug
 
   # Log error messages when you accidentally call methods on nil.
@@ -22,8 +26,8 @@ Server::Application.configure do
 #    # Enable threaded mode
 #  config.threadsafe!
 
-  # override location of temp directory on EY servers
-  ENV['TMPDIR'] = '/mnt/tmp'
+  # override location of temp directory for our rails app
+  ENV['TMPDIR'] = '/data/tmp'
 
   # set up location of file upload directory
   # this should be on EBS backed storage for production
@@ -39,6 +43,6 @@ Server::Application.configure do
   config.action_mailer.logger = nil
 
 
-  ActionController::Base.asset_host = "%d.assets.staging.photos.zangzing.com"
+  ActionController::Base.asset_host = "%d.assets.#{ZZDeployEnvironment.env.app_host}"
 
 end

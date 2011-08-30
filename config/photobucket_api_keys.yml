@@ -1,4 +1,9 @@
 ---
+test:
+  :consumer_key: 149830627
+  :consumer_secret: bbcf09d3d2f6731afab642ec9de6a6ca
+
+
 development:
   :consumer_key: 149830627
   :consumer_secret: bbcf09d3d2f6731afab642ec9de6a6ca

@@ -1,0 +1,1 @@
+bundle exec rspec -f d spec/models/*_spec.rb spec/publishers/*_spec.rb spec/controllers/*_spec.rb spec/integration/mobile_api_spec.rb

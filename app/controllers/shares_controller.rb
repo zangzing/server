@@ -29,14 +29,17 @@ class SharesController < ApplicationController
       @subject = User.find(params[:user_id])
       @subject_type = Like::USER
       @subject_url = user_pretty_url(@subject)
+      share_event = 'user'
     elsif params[:album_id]
       @subject = Album.find(params[:album_id])
       @subject_type = Like::ALBUM
       @subject_url = album_pretty_url(@subject)
+      share_event = 'album'
     elsif params[:photo_id]
       @subject = Photo.find(params[:photo_id])
       @subject_type = Like::PHOTO
       @subject_url = photo_pretty_url(@subject)
+      share_event = 'photo'
     else
       render :json => "subject_type not specified via params", :status => 400 and return
     end
@@ -46,13 +49,30 @@ class SharesController < ApplicationController
     # postshare submits an array of social services
     if params[:recipients].is_a?(Array)
       @rcp = params[:recipients] #this is post share
+      if params[:recipients].include?('twitter')
+        zza.track_event("#{share_event}.share.twitter")
+      end
+      if params[:recipients].include?('facebook')
+        zza.track_event("#{share_event}.share.facebook")
+      end
     else
-      # We are in an email, validate emails, if they ALL pass create share otherwise return error info
-      emails,errors = validate_email_list(  params[:recipients] )
+      # We are in an email, validate emails, if they ALL pass
+      # create share otherwise return error info
+      zza.track_event("#{share_event}.share.email")
+      emails,errors = Share.validate_email_list(  params[:recipients] )
       if errors.length > 0
         flash[:error] = "Please verify highlighted addresses"
         render :json => errors, :status => 200 and return
       end
+
+      # if sharing album by album owner, then add recipients to group
+      if @subject.is_a?(Album)
+        album = @subject
+        if album.admin?( current_user.id )
+          emails.each { |email| album.add_viewer( email )}
+        end
+      end
+
       @rcp = emails
     end
 
@@ -61,6 +81,7 @@ class SharesController < ApplicationController
                         :subject_url => @subject_url,
                         :service =>     params[:service],
                         :recipients =>  @rcp,
+                        :share_type =>  Share::TYPE_VIEWER_INVITE,
                         :message    =>  params[:message])
 
     unless @share.save
@@ -86,18 +107,20 @@ class SharesController < ApplicationController
       user = User.find(params[:user_id])
       shareable_url = user_pretty_url(user)
       message = "Check out #{user.posessive_name} Albums on @ZangZing"
+      zza.track_event('user.share.twitter')
     elsif params[:album_id]
       album = Album.find(params[:album_id])
       shareable_url = album_pretty_url(album)
-      message = "Check out #{album.user.posessive_name} #{album.name} on @ZangZing"
+      message = "Check out #{album.user.posessive_name} #{album.name} Album on @ZangZing"
+      zza.track_event('album.share.twitter')
     elsif params[:photo_id]
       photo = Photo.find(params[:photo_id])
       shareable_url = photo_pretty_url(photo)
       message = "Check out #{photo.user.posessive_name} photo on @ZangZing"
+      zza.track_event('photo.share.twitter')
     end
 
     shareable_url = bitly_url(shareable_url)
-
     redirect_to "http://twitter.com/share?text=#{URI.escape message}&url=#{URI.escape shareable_url}"
 
   end
@@ -106,12 +129,15 @@ class SharesController < ApplicationController
     if  params[:user_id]
       user = User.find(params[:user_id])
       shareable_url = user_pretty_url(user)
+      zza.track_event('user.share.facebook')
     elsif params[:album_id]
       album = Album.find(params[:album_id])
       shareable_url = album_pretty_url(album)
+      zza.track_event('album.share.facebook')
     elsif params[:photo_id]
       photo = Photo.find(params[:photo_id])
       shareable_url = photo_pretty_url(photo)
+      zza.track_event('photo.share.facebook')
     end
 
     redirect_to "http://www.facebook.com/share.php?u=#{URI.escape shareable_url}"
@@ -123,23 +149,26 @@ class SharesController < ApplicationController
       user = User.find(params[:user_id])
       shareable_url = user_pretty_url(user)
       shareable_url = bitly_url(shareable_url)
-
       subject = "Check out a ZangZing homepage"
       message = "Hi, I thought you would like to see this ZangZing homepage.\n\n #{shareable_url}"
+      zza.track_event('user.share.email')
+
     elsif params[:album_id]
       album = Album.find(params[:album_id])
       shareable_url = album_pretty_url(album)
       shareable_url = bitly_url(shareable_url)
-
       subject = "Check out #{album.name} album on ZangZing"
       message = "Hi, I thought you would like to see #{album.user.posessive_name} #{album.name} album on ZangZing.\n\n #{shareable_url}"
+      zza.track_event('album.share.email')
+
     elsif params[:photo_id]
       photo = Photo.find(params[:photo_id])
       shareable_url = photo_pretty_url(photo)
       shareable_url = bitly_url(shareable_url)
-
       subject = "Check out this photo on ZangZing"
       message = "Hi, I thought you would like to see #{photo.user.posessive_name} photo on ZangZing.\n\n #{shareable_url}"
+      zza.track_event('photo.share.email')
+
     end
 
     render :json=> {:mailto => "mailto:?subject=#{URI.escape subject}&body=#{URI.escape message}"}
@@ -150,39 +179,6 @@ class SharesController < ApplicationController
 
 
 
-  private
 
-  def bitly_url(url)
-    begin
-      bitly = Bitly.new(BITLY_API_KEYS[:username], BITLY_API_KEYS[:api_key]).shorten(url)
-      return bitly.short_url
-    rescue Exception => e
-      logger.error e
-      logger.error e.backtrace
-      return url
-    end
-  end
-
-  def validate_email_list( email_list )
-    #split the comma seprated list into array removing any spaces before or after commma
-    tokens = email_list.split(/\s*,\s*/)
-
-    # Loop through the tokens and add the bad ones to the errors array
-    token_index = 0
-    emails = []
-    errors = []
-    tokens.each do |t|
-      begin
-        e = Mail::Address.new( t )
-        # An address like 'foobar' is a valid local address with no domain so avoid it
-        raise Mail::Field::ParseError.new if e.domain.nil?
-        emails << e.address #TODO: Email validator in share.rb does not handle formatted_emails just the address
-      rescue Mail::Field::ParseError
-        errors << { :index => token_index, :token => t, :error => "Invalid Email Address" }
-      end
-      token_index+= 1
-    end
-    return emails,errors
-  end
 
 end

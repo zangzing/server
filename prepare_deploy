@@ -26,7 +26,7 @@ puts "Create a tag for production releases."
 confirm_continue
 
 puts
-print "Enter the tag would you like to create: "
+print "Enter the tag you would like to create: "
 tag = Readline.readline()
 
 puts
@@ -43,15 +43,16 @@ print "Type the branch/tag name to use for the basis of the tag you want to crea
 branch = Readline.readline()
 branch = "master" if branch.empty?
 
-print "Do you want a bugfix branch created? (Yes/n)?"
-r = Readline.readline()
-want_bugfix = r == "Yes"
-
-puts
-bugfix_branch = "#{tag}-bugfix"
-puts "About to create the deploy tag: #{tag} on the branch: #{branch}."
-puts "Also creating a bugfix branch: #{bugfix_branch} to be used for any bug fixes related to this deploy." if want_bugfix
-confirm_continue
+want_bugfix = false
+#print "Do you want a bugfix branch created? (Yes/n)?"
+#r = Readline.readline()
+#want_bugfix = r == "Yes"
+#
+#puts
+#bugfix_branch = "#{tag}-bugfix"
+#puts "About to create the deploy tag: #{tag} on the branch: #{branch}."
+#puts "Also creating a bugfix branch: #{bugfix_branch} to be used for any bug fixes related to this deploy." if want_bugfix
+#confirm_continue
 
 
 cur_dir = Dir.pwd
@@ -61,7 +62,7 @@ auto_deploy_dir = base_dir + "/auto_deploy"
 Dir.mkdir(auto_deploy_dir) rescue nil
 Dir.chdir(auto_deploy_dir)
 
-repos = ["server", "homepage", "agent", "ey-cloud-recipes", "site"]
+repos = ["server"]
 
 repos.each do |repo|
   Dir.chdir(auto_deploy_dir)

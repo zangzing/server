@@ -1,9 +1,10 @@
 class UserSessionsController < ApplicationController
-  ssl_required :new, :create
+  ssl_required :new, :create, :mobile_create
+  skip_filter  :verify_authenticity_token, :only => [:mobile_create, :create]
 
 
-  before_filter :require_no_user, :only => [:new, :create]
-  before_filter :require_user, :only => :destroy
+  before_filter :only => [:new, :create]
+#  before_filter :require_user, :only => :destroy
 
   layout false
 
@@ -19,14 +20,12 @@ class UserSessionsController < ApplicationController
     if ! current_user
       @user_session = UserSession.new(:email=> params[:email])
     else
-      redirect_to user_pretty_url(current_user)
+       redirect_back_or_default user_pretty_url(current_user)
     end
   end
 
   def create
-    return_to = session[:return_to] #save the intended destination of the user if any
-    reset_session # destroy the session to prevent Session Fixation Attack
-    session[:return_to] = return_to  #restore the intended user destination
+    prevent_session_fixation
     @user_session = UserSession.new(:email => params[:email], :password => params[:password], :remember_me => true)
     if @user_session.save
       @user_session.user.reset_perishable_token! #reset the perishable token
@@ -37,10 +36,41 @@ class UserSessionsController < ApplicationController
   end
 
   def destroy
-    current_user_session.destroy
-#    flash.now[:notice] = "Logout successful!"
-    redirect_back_or_default root_url
+    if current_user
+      if  session[:impersonation_mode] == true
+        redirect_to admin_unimpersonate_url
+      else
+        current_user_session.destroy
+        reset_session
+        redirect_back_or_default root_url
+      end
+    else
+        redirect_to root_url
+    end
   end
+
+  def mobile_create
+      @user_session = UserSession.new(:email => params[:email], :password => params[:password], :remember_me => false)
+      if @user_session.save
+        render :json => { :user_credentials => @user_session.record.single_access_token,
+                          :user_id =>  @user_session.record.id,
+                          :username => @user_session.record.username 
+        }
+      else
+        render_json_error( nil, @user_session.errors.full_messages, 401 )
+      end
+  end
+
+  def mobile_destroy
+      if current_user
+          current_user_session.destroy
+      end
+      head :status => 200
+  end
+
+
+
+
 
 
   def inactive

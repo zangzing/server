@@ -17,7 +17,7 @@ class Connector::TwitterSessionsController < Connector::TwitterController
         end
         service_identity.update_attribute(:credentials, twitter_api.access_token)
         flash[:notice] = "You are now able to share your ZangZing albums through Twitter"
-      rescue TwitterError => e
+      rescue Exception => e
         @error = e.message
       end
     end

@@ -9,8 +9,10 @@ Server::Application.routes.draw do
   get    '/beta'               => 'pages#home'
   get    '/service'            => 'pages#home',          :as => :service
   get    '/signin'             => 'user_sessions#new',   :as => :signin
-  get    '/join'               => 'users#join',           :as => :join
+  get    '/join'               => 'users#join',          :as => :join
   get    '/unsubscribe/:id'    => 'subscriptions#unsubscribe', :as => :unsubscribe
+
+
 
   # the whole site has /service in front of it except for users
   scope '/service' do
@@ -25,6 +27,7 @@ Server::Application.routes.draw do
     end
 
     get    '/health_check'            => 'pages#health_check',      :as => :health_check
+    
 
     #users
     get    '/users/new'                 => 'users#new',               :as => :new_user
@@ -36,8 +39,9 @@ Server::Application.routes.draw do
     match  '/users/:id/update_password' => 'users#update_password',   :as => :update_user_password, :requirements => {:protocol => 'https'}
 
     #email_subscirptions
-    get '/subscriptions/:id'         => 'subscriptions#unsubscribe'   #see unsubscribe above
-    put '/subscriptions/:id'         => 'subscriptions#update',       :as => :update_subscriptions
+    match '/subscriptions/mcsync'      => 'subscriptions#mcsync'
+    get   '/subscriptions/:id'         => 'subscriptions#unsubscribe'   #see unsubscribe above
+    put   '/subscriptions/:id'         => 'subscriptions#update',       :as => :update_subscriptions
 
     #identities
     get    '/users/:id/identities'     => 'identities#index',       :as => :user_identities
@@ -57,6 +61,7 @@ Server::Application.routes.draw do
 
 
     get    '/users/:user_id/albums'          => 'albums#index'             #, :as => :user_albums  user albums defined below
+    put    '/users/:user_id/invalidate_cache' => 'albums#invalidate_cache',    :as => :invalidate_user_album_cache
     get    '/users/:user_id/albums/new'      => 'albums#new',                 :as => :new_user_album
     post   '/users/:user_id/albums'          => 'albums#create',              :as => :create_user_album
     get    '/albums/:id/name_album'          => 'albums#name_album',          :as => :name_album
@@ -69,6 +74,13 @@ Server::Application.routes.draw do
     delete '/albums/:id'                     => 'albums#destroy',             :as => :delete_album
     get    'albums/:id/pwd_dialog'           => 'albums#pwd_dialog',          :as => :album_pwd_dialog
     post   'albums/:id/request_access'       => 'albums#request_access',      :as => :request_album_access
+    get    '/albums/:id/edit_group'          => 'albums#edit_group'
+
+    #todo: these are not very REST-ful
+    post   '/albums/:id/add_group_members'   => 'albums#add_group_members'
+    put    '/albums/:id/update_group_member' => 'albums#update_group_member'
+    delete '/albums/:id/delete_group_member' => 'albums#delete_group_member'
+    get    '/albums/:id/group_members'       => 'albums#group_members'
 
     #shares
     get '/albums/:album_id/shares'          => 'shares#index',      :as => :album_shares
@@ -95,28 +107,43 @@ Server::Application.routes.draw do
 
     #photos
     get    '/albums/:album_id/photos_json'  => 'photos#photos_json',                :as => :album_photos_json
+    put    '/albums/:album_id/photos_json_invalidate'  => 'photos#photos_json_invalidate',  :as => :album_invalidate_photos_json
     get    '/albums/:album_id/photos'       => 'photos#index',                      :as => :album
     get    '/albums/:album_id/movie'        => 'photos#movie',                      :as => :album_movie
     delete '/photos/:id'                    => 'photos#destroy',                    :as => :destroy_photo
     put    '/photos/:id/upload_fast'        => 'photos#upload_fast',                :as => :upload_photo_fast
-    get    '/agents/:agent_id/photos'       => 'photos#agent_index',                 :as => :agent_photos
+    put   '/albums/:album_id/upload_fast'   => 'photos#simple_upload_fast',    :as => :simple_upload_photo_fast
+    get    '/agents/:agent_id/photos'       => 'photos#agent_index',                :as => :agent_photos
     post   '/albums/:album_id/photos/agent_create.:format' => 'photos#agent_create',:as => :agent_create
+    get    '/photos/download/:id'           => 'photos#download',                   :as => :download_photo
     put    '/photos/:id'                    => 'photos#update',                     :as => :update_photo
     put    '/photos/:id/position'           => 'photos#position',                   :as => :photo_position
+    put    '/photos/:id/async_edit'         => 'photos#async_edit',                 :as => :photo_async_edit
+    put    '/photos/:id/async_rotate_left'  => 'photos#async_rotate_left',          :as => :photo_async_rotate_left
+    put    '/photos/:id/async_rotate_right' => 'photos#async_rotate_right',         :as => :photo_async_rotate_right
+
+
+    #comments
+    get    '/photos/:photo_id/comments'                      => 'comments#index',                      :as => :photo_comments
+    get    '/albums/:album_id/photos/comments/metadata'      => 'comments#metadata_for_album_photos',  :as => :album_photos_comments_metadata
+    match  '/comments/metadata_for_subjects'                 => 'comments#metadata_for_subjects'
+    post   '/photos/:photo_id/comments'                      => 'comments#create',                     :as => :create_photo_comment
+    delete '/comments/:comment_id'                           => 'comments#destroy',                    :as => :destroy_comment
+    get    '/photos/:photo_id/comments/finish_create'  => 'comments#finish_create',              :as => :finish_create_photo_comment
 
     #activities
     get '/albums/:album_id/activities' => 'activities#album_index', :as => :album_activities
-    get '/users/:user_id/activities'   => 'activities#user_index',  :as => :user_activities
+    get '/users/:user_id/activities'   => 'activities#user_index'
 
     #people
     get '/albums/:album_id/people' => 'people#album_index',         :as => :album_people
-    get '/users/:user_id/people'   => 'people#user_index',          :as => :user_people
+    get '/users/:user_id/people'   => 'people#user_index'
 
     #contributors
-    get    '/albums/:album_id/contributors/new'  => 'contributors#new',        :as => :new_album_contributor
-    get    '/albums/:album_id/contributors'      => 'contributors#index',      :as => :album_contributors
-    post   '/albums/:album_id/contributors'      => 'contributors#create',     :as => :create_album_contributor
-    delete '/albums/:album_id/contributors'      => 'contributors#destroy',    :as => :delete_contributor
+#    get    '/albums/:album_id/contributors/new'  => 'contributors#new',        :as => :new_album_contributor
+#    get    '/albums/:album_id/contributors'      => 'contributors#index',      :as => :album_contributors
+#    post   '/albums/:album_id/contributors'      => 'contributors#create',     :as => :create_album_contributor
+#    delete '/albums/:album_id/contributors'      => 'contributors#destroy',    :as => :delete_contributor
 
     #like
     match  '/likes'                              => 'likes#index',             :as => :likes
@@ -132,9 +159,9 @@ Server::Application.routes.draw do
 
 
     # oauth
-    match '/users/:id/agents'     => 'agents#index',                 :as => :agents
-    match '/agent/info'           => 'agents#info',                  :as => :agent_info
-    match '/agents/check'         => 'agents#check',                 :as => :check
+#    match '/users/:id/agents'     => 'agents#index',                 :as => :agents
+#    match '/agent/info'           => 'agents#info',                  :as => :agent_info
+#    match '/agents/check'         => 'agents#check',                 :as => :check
     match '/oauth/authorize'      => 'oauth#authorize',              :as => :authorize
     match '/oauth/agentauthorize' => 'oauth#agentauthorize',         :as => :agentauthorize
     match '/oauth/revoke'         => 'oauth#revoke',                 :as => :revoke
@@ -148,7 +175,6 @@ Server::Application.routes.draw do
     post '/user_sessions/create'       => 'user_sessions#create',          :as => :create_user_session, :requirements => {:protocol => 'https'}
     
     match '/signin'                    => 'user_sessions#new'
-    match '/join'                      => 'user_sessions#join'
     match '/inactive'                  => 'user_sessions#inactive',       :as => :inactive
     match '/signout'                   => 'user_sessions#destroy',        :as => :signout
 
@@ -311,15 +337,18 @@ Server::Application.routes.draw do
         put   'settings'                         => 'system_settings#update'
         get   'homepage'                         => 'homepage#show',              :as => :homepage
         put   'homepage'                         => 'homepage#update'
-
+  
         get   'guests'                           => 'guests#index',               :as => :guests
         post  'guests(.:format)'                 => 'guests#create'
         get   'guests/:id'                       => 'guests#show',                :as => :guest
         put   'guests/:id/activate'              => 'guests#activate',            :as => :activate_guest
         get   'users'                            => 'users#index',                :as => :users
+        get   'users/unimpersonate'              => 'users#unimpersonate',        :as => :admin_unimpersonate
         get   'users/:id'                        => 'users#show',                 :as => :admin_user_show
         put   'users/:id/activate'               => 'users#activate',             :as => :admin_activate_user
         put   'users/:id/reset_password'         => 'users#reset_password',       :as => :admin_reset_password
+        put   'users/:id/impersonate'            => 'users#impersonate',          :as => :admin_impersonate
+
     end
 
     #Resque: mount the resque server
@@ -337,16 +366,38 @@ Server::Application.routes.draw do
   }
   
 
+  # ====================================================================================================
+  # ============================================= MOBILE_API  ==========================================
+  # ====================================================================================================
+  scope  '/mobile', :defaults => { :format => 'json' } do
+    post  '/login'                 => 'user_sessions#mobile_create',    :as => :mobile_login
+    match '/logout'                => 'user_sessions#mobile_destroy',   :as => :mobile_logout
+
+    #albums
+    get    '/users/:user_id/albums' => 'albums#mobile_albums',                  :as => :mobile_albums
+    get    '/users/:user_id/my_albums_json'                 => 'albums#mobile_my_albums_json',                 :as => :mobile_my_albums_json
+    get    '/users/:user_id/my_albums_public_json'          => 'albums#mobile_my_albums_public_json',          :as => :mobile_my_albums_public_json
+    get    '/users/:user_id/liked_albums_json'              => 'albums#mobile_liked_albums_json',              :as => :mobile_liked_albums_json
+    get    '/users/:user_id/liked_albums_public_json'       => 'albums#mobile_liked_albums_public_json',       :as => :mobile_liked_albums_public_json
+    get    '/users/:user_id/liked_users_public_albums_json' => 'albums#mobile_liked_users_public_albums_json', :as => :mobile_liked_users_public_albums_json
+  end
+
+
+  # Root level user
   get    '/:username/settings'                 => 'users#edit',              :as => :edit_user
   get    '/:username/change_password'          => 'users#edit_password',     :as => :edit_user_password
 
 
-  get    '/:user_id'                           =>   'albums#index',               :as => :user
-  get    '/:user_id/:album_id'                 =>   'photos#index'
-  get    '/:user_id/:album_id/photos'          =>   'photos#index'
-  get    '/:user_id/:album_id/people'          =>   'people#album_index'
-  get    '/:user_id/:album_id/activities'      =>   'activities#album_index'
-  get    '/:user_id/:album_id/movie'           =>   'photos#movie'
+  get    '/:user_id'                           => 'albums#index',           :as => :user
+  get    '/:user_id/activities'                => 'activities#user_index',  :as => :user_activities
+  get    '/:user_id/people'                    => 'people#user_index',      :as => :user_people
+  get    '/:user_id/:album_id'                 => 'photos#index'
+  get    '/:user_id/:album_id/photos'          => 'photos#index'
+  get    '/:user_id/:album_id/people'          => 'people#album_index'
+  get    '/:user_id/:album_id/activities'      => 'activities#album_index'
+  get    '/:user_id/:album_id/movie'           => 'photos#movie'
+  get    '/:user_id/:album_id/photos/:photo_id' => 'photos#show'
+
 
 
 

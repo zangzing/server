@@ -1,26 +1,16 @@
 <%= render :partial =>  'admin/admin_screens/adminmenu' %>
 <div id="main-container">
-  <div style="margin-top: 5px; margin-bottom: 10px; font-size: 1em;">
-    <% [:notice, :error].each do |key| %>
-        <% if flash[key] %>
-            <div style="<%=( key == :error ? 'color:red;' : 'color:green;' )%>" id="flash">
-              <%= flash[key] %>
-            </div>
-        <% end %>
-    <% end %>
-  </div>
-
   <div class="viewlist" style="width:800px;">
     <li class="item">
       <div class="header bar">
         Email
       </div>
       <div class="content">
-      <table frame="box" width="700px" border="0"  cellspacing="20" >
+      <table frame="box" width="800px" border="0"  cellspacing="20" >
         <tr style="font-weight: 700; font-size: 110%; margin: 10px;">
 
           <th> Email     </th>
-          <th> Production Template  </th>
+          <th> Active Template  </th>
           <th> Template Last Loaded   </th>
           <th></th>
         </tr>
@@ -40,7 +30,7 @@
                     <%=f.select :production_template_id,
                                 options_for_select(email_template_options,email.production_template_id),
                                 {:prompt => 'Select Email Template' },
-                                {:style => "width: 160px;",
+                                {:style => "width: 300px;",
                                  :onchange =>"if( confirm('Are you sure you want change this email template (change is immediate)? ')){ this.form.submit();}else{this.form.reset();}",
                                 }
                     %>

@@ -29,6 +29,8 @@
 #account-settings .done-button{
     width: 80px;
     float: right;
+    position: relative;
+    bottom: 4px;
 }
 
 #account-settings input{

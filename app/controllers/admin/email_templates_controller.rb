@@ -14,6 +14,7 @@ class Admin::EmailTemplatesController < Admin::AdminController
   def create
     @email_template=  EmailTemplate.new( params[:email_template ])
     if @email_template.save
+      flash[:notice]="Template #{@email_template.name} has been created"
       redirect_to email_templates_path()
     else
       load_info
@@ -37,7 +38,8 @@ class Admin::EmailTemplatesController < Admin::AdminController
   def update
     fetch_email_template
     if @email_template.update_attributes(params[:email_template])
-       redirect_to :back
+      flash[:notice]="Template '#{@email_template.name}' has been updated"
+      redirect_to email_templates_path()
     else
       load_info
       render :edit
@@ -47,7 +49,8 @@ class Admin::EmailTemplatesController < Admin::AdminController
   def destroy
     fetch_email_template
     if @email_template.destroy
-       redirect_to email_templates_path()
+      flash[:notice]="Template '#{@email_template.name}' has been deleted"
+      redirect_to email_templates_path()
     else
       load_info
       render :edit
@@ -60,34 +63,59 @@ class Admin::EmailTemplatesController < Admin::AdminController
     redirect_to :back
   end
 
+
   def test
-   begin
-      @template = EmailTemplate.find( params[:id] )
-      @message = send( 'test_'+@template.email.name, @template.id )
-      if params[:onscreen]
-        render :layout => false
-      else
-        @message.deliver
-        flash[:notice]="Test #{@template.email.name} message sent to #{current_user.email}."
-        redirect_to :back
+    if params[:id] && params[:id]=='all'
+      i = 0
+      EmailTemplate.all.each do | et |
+        begin
+          @message = send( 'test_'+et.email.name, et.id )
+          @message[:to]=params[:target_address] unless params[:target_address].blank?
+          @message.deliver
+          i += 1
+        rescue SubscriptionsException => e
+          flash[:error]= "#{i} messages sent but there was an error on #{et.name} "+e.message
+          redirect_to :back and return
+        rescue Exception => e
+          flash[:error]="#{i} messages sent but unable to test template #{et.name} because: #{(e.message && e.message.length >0 ? e.message : e )}."
+          redirect_to :back and return
+        end
       end
-    rescue SubscriptionsException => e
-          flash[:error]= e.message
+      flash[:notice]="#{i} test messages sent to #{params[:target_address]}."
+      redirect_to :back and return
+    else
+      begin
+        @template = EmailTemplate.find( params[:id] )
+        @message = send( 'test_'+@template.email.name, @template.id )
+        if params[:onscreen]
+          render :layout => false
+        else
+          @message[:to]=params[:target_address] unless params[:target_address].blank?
+          @message.deliver
+          flash[:notice]="Test #{@template.email.name} message sent to #{@message[:to]}."
           redirect_to :back
-    rescue Exception => e
+        end
+      rescue SubscriptionsException => e
+        flash[:error]= e.message
+        redirect_to :back
+      rescue Exception => e
         flash[:error]="Unable to test template because: #{(e.message && e.message.length >0 ? e.message : e )}."
         redirect_to :back
+      end
     end
+
   end
 
-private
+  private
+
+
   def load_info
     gb = Gibbon::API.new(MAILCHIMP_API_KEYS[:api_key])
 
     @campaigns = gb.campaigns('filters' => {'folder_id' => "21177"})['data']
     @campaign_options = []
     @campaigns.each { |c|   @campaign_options << [ c['title'], "#{c['id']}"] }
-    
+
     @emails = Email.find(:all)
     @email_options = []
     @emails.each { |e|   @email_options << [ e.name, "#{e.id}"] }
@@ -99,11 +127,11 @@ private
 
 
   def test_photos_ready( template_id )
-      Notifier.photos_ready( upload_batch.id, template_id )
+    Notifier.photos_ready( upload_batch.id, template_id )
   end
 
   def test_password_reset( template_id )
-      Notifier.password_reset( recipient.id, template_id )
+    Notifier.password_reset( recipient.id, template_id )
   end
 
   def test_album_liked(  template_id )
@@ -111,52 +139,75 @@ private
   end
 
   def test_photo_liked(  template_id )
-    Notifier.photo_liked( sender.id, photo.id, template_id)
+    Notifier.photo_liked( sender.id, photo.id, recipient.id, template_id)
   end
 
   def test_user_liked(  template_id )
-      Notifier.user_liked( sender.id, recipient.id, template_id)
+    Notifier.user_liked( sender.id, recipient.id, template_id)
   end
 
   def test_contribution_error(  template_id )
-        Notifier.contribution_error( recipient.email, template_id)
+    Notifier.contribution_error( recipient.email, template_id)
   end
 
   def test_album_shared( template_id )
-     Notifier.album_shared( sender.id, recipient.email, album.id, message, template_id)
+    Notifier.album_shared( sender.id, user_or_not_user_email_address, album.id, message, template_id)
   end
 
   def test_album_updated( template_id )
-     Notifier.album_updated( recipient.id, album.id, template_id)
+    Notifier.album_updated( sender.id,  recipient.id, album.id, upload_batch.id, template_id)
   end
 
   def test_contributor_added( template_id )
-       Notifier.contributor_added( album.id, recipient.email, message, template_id)
+    Notifier.contributor_added( album.id, user_or_not_user_email_address, message, template_id)
   end
 
   def test_welcome( template_id )
-       Notifier.welcome( recipient.id, template_id)
+    Notifier.welcome( recipient.id, template_id)
   end
 
   def test_photo_shared( template_id )
-      Notifier.photo_shared( sender.id, recipient.email, photo.id, message, template_id)
+    Notifier.photo_shared( sender.id, user_or_not_user_email_address, photo.id, message, template_id)
   end
 
   def test_beta_invite( template_id )
-       Notifier.beta_invite( recipient.email, template_id)
+    Notifier.beta_invite( recipient.email, template_id)
+  end
+
+  def test_photo_comment( template_id )
+    Notifier.photo_comment( sender.id, recipient.id, comment.id, template_id)
   end
 
 
-  def
+  def user_or_not_user_email_address
+    if rand(2) <= 0
+      current_user.email
+    else
+      "not-a-user-for-emailsample@bucket.zangzing.com"
+    end
+  end
 
-  end
-  end
   def recipient
     current_user
   end
 
   def sender
     User.find_by_username!('zangzing')
+  end
+
+  def comment
+    commentable = Commentable.find_or_create_by_photo_id(photo.id)
+
+    if commentable.comments.count == 0
+      comment = Comment.new
+      comment.user = current_user
+      comment.text = 'this is a comment'
+      commentable.comments << comment
+    else
+      comment = commentable.comments.first
+    end
+
+    comment
   end
 
   def album
@@ -168,7 +219,11 @@ private
   end
 
   def photo
-    album.photos[ rand( album.photos.count )]
+    photo = nil
+    while photo.nil?
+      photo = album.photos[ rand( album.photos.count )]
+    end
+    photo
   end
 
   def upload_batch
@@ -179,10 +234,12 @@ private
   end
 
   def message
-    if rand(2) == 1
-    "This message is automatically generated for test emails, Its mimics a custom message written by a user. "+
-        "It will be included randomly so you may or may not see it. The following symbols are part of the test  "+
-        "<This is full & of HTML symbols <which></should> &Be<> escaped> END OF TEST MESSAGE"
+    if rand(4) >= 2
+      "This message is automatically generated for test emails, Its mimics a custom message written by a user. "+
+          "It will be included randomly so you may or may not see it. Line break here ==>\n"+
+          "The following symbols are part of the test. It contains backslash n line breaks for testing "+
+          "<This is full & of HTML symbols <which></should> Line Break here ==>\n"+
+          "&Be<> escaped> END OF TEST MESSAGE"
     else
       ""
     end

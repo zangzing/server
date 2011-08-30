@@ -2,10 +2,6 @@ module ZZ
   module Async
 
     class GeneralImport < Base
-      extend Resque::Plugins::Retry
-      @retry_limit = 5
-      @retry_delay = 10
-
       @queue = :io_bound
       
       # only add ourselves one time
@@ -26,15 +22,7 @@ module ZZ
         SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
           photo = Photo.find(photo_id)
           if photo.assigned? || photo.error?
-            if options.has_key?('url_making_method')
-              klass_name, method_name = options['url_making_method'].split('.')
-              klass = klass_name.constantize
-              target_url = klass.send(method_name.to_sym, photo, source_url)
-            end
-            file = RemoteFile.new(target_url, PhotoGenHelper.photo_upload_dir, @headers)
-            file_path = file.path
-            file.close()
-            file.validate_size
+            file_path = RemoteFile.read_remote_file(source_url, PhotoGenHelper.photo_upload_dir, @headers)
             photo.file_to_upload = file_path
             photo.save
           end
@@ -42,29 +30,29 @@ module ZZ
       end
 
       def self.on_failure_retry(exception, *args)
-        photo_id = args[0]
-        photo = Photo.find(photo_id)
-        if retry_criteria_valid?(exception, *args)
-          photo.update_attribute(:error_message, "General Import exception: #{exception}")
+        will_retry = retry_criteria_valid?(exception, *args)
+        msg = "General Import exception: #{exception}"
+        Rails.logger.error(msg)
+        NewRelic::Agent.notice_error(exception, :custom_params=>{:klass_name => ZZ::Async::GeneralImport.name, :method_name => 'perform', :params => args})
+        begin
+          SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
+            photo_id = args[0]
+            photo = Photo.find(photo_id)
+            if will_retry
+              photo.update_attributes(:error_message => msg) unless photo.nil?
+            else
+              photo.update_attributes(:state => 'error', :error_message => msg ) unless photo.nil?
+            end
+          end
+        rescue Exception => ex
+          # don't let the exception make it out
+        end
+        if will_retry
           try_again(*args)
         else
-          photo.update_attributes(:state => 'error', :error_message => "Failed to load photo from General Import because of network issues #{exception}" )
           Resque.redis.del(redis_retry_key(*args))
         end
       end
-
-=begin
-      def self.on_failure_notify_photo(e, photo_id, source_url )
-        begin
-          SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
-            photo = Photo.find(photo_id)
-            photo.update_attributes(:state => 'error', :error_message => "Failed to load photo from General Import because of network issues #{e}" )
-          end
-        rescue Exception => ex
-          # eat any exception in the error handler
-        end
-      end
-=end
 
     end
   end

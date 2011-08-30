@@ -1,0 +1,58 @@
+<html>
+
+    <script>
+        var zza_config_GOOGLE_ANALYTICS_TOKEN = 'UA-18597985-4';
+		var zza_config_MIXPANEL_TOKEN = '17540e499e4c7032071b48abcbfeb742';
+		var zza_config_ZZA_ID = 'staging.photos/web';
+        zuserid = '123456789';
+    </script>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+    <script type="text/javascript" src="/assets/lib.js"></script>
+    <script type="text/javascript" src="/assets/zz.js"></script>
+
+    <script>
+        function test_album(){
+            $.ajax({
+                url: '/sandbox/bad_json/badcache_decomp.json',
+                dataType:'json',
+                error: function(xhr, message, exception){
+                    if(zz.cache_helper.check_bad_album_json(xhr, message, $('#album_id').val(), this.url)){
+                        alert('failed to parse: ' + this.url);
+                    }
+                },
+                success: function(json){
+
+                }
+            });
+        }
+
+        function test_homepage(){
+            $.ajax({
+                url: '/sandbox/bad_json/badcache_decomp.json',
+                dataType:'json',
+                error: function(xhr, message, exception){
+                    if(zz.cache_helper.check_bad_homepage_json(xhr, message, $('#user_id').val(), this.url)){
+                        alert('failed to parse: ' + this.url);
+                    };
+                },
+                success: function(json){
+
+                }
+            });
+        }
+
+
+
+
+
+    </script>
+
+    <body>
+        album id: <input id="album_id" type="text"> <a href="#" onclick="test_album(); return false">test album</a>
+        <br>
+        user id:<input id="user_id" type="text"><a href="#" onclick="test_homepage(); return false">test homepage</a>
+    </body>
+
+
+</html>

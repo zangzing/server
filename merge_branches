@@ -1,0 +1,69 @@
+#!/usr/bin/env ruby
+
+# this script can be used to safely merge from
+# a feature branch back into master
+#
+#
+require 'readline'
+
+def confirm_continue
+  print "Do you want to continue? (Yes/n): "
+  r = Readline.readline()
+  if r != "Yes"
+    puts "Exiting. Bye."
+    exit
+  end
+end
+
+def get_input(prompt)
+  print prompt
+  r = Readline.readline()
+  if r.empty?
+    puts "Input cannot be empty. Exiting. Bye."
+    exit
+  end
+  return r
+end
+
+def do_cmd(cmd)
+  puts cmd
+  Kernel.system(cmd)
+  if $?.exitstatus != 0
+    puts "An error occurred, exiting script"
+    exit
+  end
+end
+
+
+puts "Merge branches. Typically used to merge feature branch back into master."
+puts "NOTE: This merge is done in place so make sure your working directory is clean."
+confirm_continue
+
+puts
+feature_branch = get_input("Enter the feature branch you would like to merge from: ")
+
+puts
+print "Type the branch name you want to merge into (master): "
+branch = Readline.readline()
+branch = "master" if branch.empty?
+
+puts
+puts "About to merge the branch: #{feature_branch} into #{branch}.  You will end up in #{branch}."
+confirm_continue
+
+do_cmd("git checkout #{feature_branch}")
+do_cmd("git pull")
+do_cmd("git checkout #{branch}")
+do_cmd("git pull")
+do_cmd("git merge #{feature_branch}")
+
+puts
+puts "Verify that there were no issues with the above merge."
+confirm_continue
+do_cmd("git push origin #{branch}")
+
+
+puts
+puts "You should now be on branch: #{branch}"
+puts
+do_cmd("git branch")

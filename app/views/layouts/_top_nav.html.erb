@@ -4,7 +4,7 @@
   <div id="header-right"></div>
 
 
-  <div id="home-button" class="has-tooltip" title="Goto Your Homepage"></div>
+  <div id="home-button"></div>
 
 
   <% if @album %>
@@ -16,8 +16,6 @@
               <img class="album-cover" style="width:60px; height:40px" src="/images/album-no-cover.png"/>
               <img class="bottom-shadow" style="width:64px;" src="/images/photo/bottom-full.png"/>
         </div>
-
-
 <%
     else 
 %>
@@ -29,28 +27,10 @@
         <% content_for :page_javascript do %>
             <script type="text/javascript">
                 $(document).ready(function(){
-                    var image = new Image();
-                    image.onload = function(){
-                        var height = 40
-                        var width = Math.floor(image.width * (height / image.height));
-
-                        $('#album-cover-border img.album-cover').css({
-                            height: height,
-                            width:width
-                        });
-
-                        $('#album-cover-border .bottom-shadow').css({
-                            width:width + 4
-                        });
-
-                        $('img.album-cover').attr('src', image.src);
-                    };
-                    image.src = agent.checkAddCredentialsToUrl('<%= @album.cover.thumb_url%>');
-
+                    zz.toolbars.load_album_cover( '<%= @album.cover.thumb_url%>');
                 })
             </script>
         <% end %>
-
 <%
     end
 %>
@@ -58,6 +38,9 @@
           <div id='album-name-and-owner'>
                 <h2 id="album-header-title"><%= truncate((@album.name), :length => 50) %></h2>
                 <h3>by <a href="<%= user_pretty_url @album.user %>"><%="#{@album.user.first_name} #{@album.user.last_name}"%></a></h3>
+              <%if !current_user || current_user!=@album.user # do not show like for self%>
+                <div id="owner-follow" class="zzlike zzlike-follow" data-zzid="<%=@album.user.id%>" data-zztype="user" data-zzstyle="toolbar" ></div>
+              <%end%>
           </div>
       </div>
 
@@ -77,7 +60,7 @@
 <% end %>
 
 <% if @album #this needs to be after album and user info so that it floats on top%>
-  <a id="back-button" class="back-button"><span>All Albums</span></a>
+  <a id="back-button" class="back-button"><span></span></a>
 <% end %>
 
 
@@ -87,23 +70,38 @@
         <div id="user-info-picture" >
          <%= render :partial => 'users/profile_photo', :locals => { :user => @user }    %>
         </div>
-        <h2><%="#{@user.first_name} #{@user.last_name}"%></h2>
+        <div id="user-name">
+            <h2 <%=( !current_user || current_user!=@user ? 'class=with-follow' : '' )%> ><%="#{@user.first_name} #{@user.last_name}"%></h2>
+            <%if !current_user || current_user!=@user # do not show like for self%>
+                <div id="owner-follow" class="zzlike zzlike-follow" data-zzid="<%=@user.id%>" data-zztype="user" data-zzstyle="toolbar" ></div>
+            <%end%>
+        </div>
   </div>
 <% end %>
 
-  <% if @album %>
+  <% if @album || (@user && /albums|people|activities/.match( @controller.controller_name)) %>
       <ul id="view-buttons">
-          <li id="grid-view-button" class="has-tooltip" title="Grid View"></li>
-          <li id="people-view-button" class="has-tooltip" title="People View"></li>
-          <li id="activities-view-button" class="has-tooltip" title="Timeline View"></li>
+          <li id="grid-view-button"></li>
+          <li id="people-view-button" ></li>
+          <li id="activities-view-button"></li>
       </ul>
   <% end %>
 
-  <div id="help-button"><div class="header-button-label">Help</div></div>
+  <%if current_user && current_user.admin?%>
+      <a href="/service/admin">
+        <div id="admin-button"><div class="header-button-label">Admin</div></div>
+      </a>
+  <%else%>
+    <div id="help-button"><div class="header-button-label">Help</div></div>
+  <%end%>
 
 
   <% if current_user %>
-    <div id="account-badge">
+      <%if current_user.admin?%>
+          <div id="account-badge" class="admin-badge">
+      <%else%>
+           <div id="account-badge">
+      <%end%>
        <div id="account-image" >
          <%= render :partial => 'users/profile_photo', :locals => { :user => current_user}    %>
        </div>

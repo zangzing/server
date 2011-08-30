@@ -9,7 +9,7 @@ echo 'Starting nginx'
 script/nginx &
 
 echo 'Starting redis-server'
-sudo redis-server /etc/redis/redis.conf &
+sudo redis-server /etc/redis.conf &
 
 echo 'Starting resque:work'
 QUEUE=* rake resque:work &

@@ -4,6 +4,15 @@ require 'resque_scheduler/tasks'
 require 'zz/zza'
 require 'config/initializers/zangzing_config'
 
+ZangZingConfig.running_as_resque = true
+
+pid = Process.pid
+puts "PID IS #{pid}"
+pid_file = ENV['PIDFILE'] || ''
+puts "PIDFILE is #{pid_file}"
+File.open(pid_file, 'w') {|f| f.write(pid) } unless pid_file.empty?
+
+
 task "resque:setup" => :environment do
   puts "resque:setup"
 
@@ -32,7 +41,5 @@ task "resque:setup" => :environment do
 
   # init ZZA with resque specific ids
   ZZ::ZZA.default_zza_id = ZangZingConfig.config[:resque_zza_id]
-
-  ZangZingConfig.running_as_resque = true
 
 end

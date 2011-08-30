@@ -129,6 +129,7 @@ private
         status_msg << append_time(start_time)
       end
 
+      status_msg << "<p>App Servers: #{Server::Application.config.deploy_environment.all_app_servers}</p>"
       #status_msg << "ZZA Thread state: " +  ZZ::ZZA.sender.thread.status.to_s
 
       z.track_event("health_check.ok", status_msg)

@@ -1,6 +1,7 @@
-.contacts-btn{
-    /*width: 100px;*/
-    margin-left:5px;
+a.gray-button.contacts-btn{
+    display: inline-block;
+    /*margin-left:5px;*/
+    font-size:12px;
 }
 
 .contacts-btn span div{
@@ -8,7 +9,7 @@
     height: 18px;
     vertical-align: middle;
     display: inline-block;
-    margin-right: 10px;
+    margin-right: 5px;
 }
 
 .contacts-btn .off{
@@ -35,4 +36,17 @@
 .tokenizer input{
     border: 0;
     -moz-box-shadow: none;
+}
+
+
+.importing-contacts-dialog-content{
+    position:relative;
+    top:15px;
+    font-size:16px;
+
+}
+
+.importing-contacts-dialog-content img{
+    position: relative;
+    top: 10px;
 }

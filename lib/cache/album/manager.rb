@@ -7,7 +7,8 @@ module Cache
     # this class manages the album cache for users - it tracks
     # what is needed for the album index page
     class Manager < Cache::Base
-      KEY_PREFIX = "Cache.Album.".freeze
+      # the prefix for the memcache key - change the number at the end if you update what the cache holds
+      KEY_PREFIX = "Cache.Album.v1".freeze
 
       CACHE_MAX_INACTIVITY = 72.hours
 
@@ -63,6 +64,7 @@ module Cache
             "name",
             "completed_batch_count",
             "photos_last_updated_at",
+            "cache_version",
             "deleted_at"
         ]
         changed = album.changed
@@ -71,11 +73,6 @@ module Cache
         end
 
         return false
-      end
-
-      # if we have been safe deleted in the past return true
-      def previously_deleted?(album)
-        return (!album.deleted_at.nil? && album.deleted_at_changed? == false) ? true : false
       end
 
       # invalidate the tracks for this album
@@ -102,13 +99,15 @@ module Cache
         invalidator.invalidate
       end
 
+      # invalidate the tracks for this album
+      def user_invalidate_cache(user_id)
+        Invalidator.flush_versions(self, user_id)
+      end
+
       # from a given album determine which caches and state tracking needs to be invalidated
+      # before calling this album_change_matters should have been checked.  We don't do it
+      # here because we want this outside of the transaction and no longer know what changed.
       def album_modified(album)
-        # first check to make sure the change is something we care about
-        return unless album_change_matters?(album)
-
-        return if previously_deleted?(album)
-
         album_invalidate(album)
       end
 

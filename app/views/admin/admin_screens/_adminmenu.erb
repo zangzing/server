@@ -38,7 +38,7 @@
         <a href="<%=emails_path() %>"> Email </a>
     </li>
     <li id="logs-topic"   class="sidemenu-item <%=(@page=='logs' ? 'sidemenu-item-selected' : '')%>">
-        <a href="<%=logs_path() %>">Logs</a>
+        <a href="<%=logs_path() %>">Logs/Headers</a>
     </li>
     <li id="users-topic"   class="sidemenu-item <%=(@page=='users' ? 'sidemenu-item-selected' : '')%>">
         <a href="<%=users_path() %>">Users</a>
@@ -48,6 +48,9 @@
     </li>
     <li id="resque-topic"  class="sidemenu-item <%=(@page=='resque' ? 'sidemenu-item-selected' : '')%>">
         <a href="<%=root_url()+'service/admin/resque' %>" target="_blank">Resque</a>
+    </li>
+    <li id="store-topic"  class="sidemenu-item <%=(@page=='store' ? 'sidemenu-item-selected' : '')%>">
+        <a href="<%=root_url()+'service/admin/store' %>" target="_blank">Store</a>
     </li>
   </ul>
 </div>

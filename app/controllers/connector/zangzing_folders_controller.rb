@@ -30,7 +30,8 @@ class Connector::ZangzingFoldersController < Connector::ZangzingController
                 :source_guid => p.source_guid,
                 :source_thumb_url => p.thumb_url,
                 :source_screen_url => p.screen_url,
-                :source => 'zangzing'
+                :source => 'zangzing',
+                :rotate_to => p.rotate_to
 
       })
 

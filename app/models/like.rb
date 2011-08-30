@@ -11,6 +11,8 @@ class Like < ActiveRecord::Base
 
   before_create :set_type
   after_commit  :post, :on => :create
+  after_commit  :create_like_activity, :on => :create
+
 
   #Like Subject Types
   USER = 'U'
@@ -30,7 +32,12 @@ class Like < ActiveRecord::Base
   end
 
 
+
+
   def self.add( user_id, subject_id, subject_type )
+
+    return if user_id == subject_id # do not allow following self
+
     begin
       #Create Like record, increase the subject_ids like counter
       like = Like.create( :user_id      => user_id,
@@ -41,7 +48,13 @@ class Like < ActiveRecord::Base
       case subject_type
         when USER,  'user'  then ZZ::Async::Email.enqueue( :user_liked,  user_id, subject_id )
         when ALBUM, 'album' then ZZ::Async::Email.enqueue( :album_liked, user_id, subject_id )
-        when PHOTO, 'photo' then ZZ::Async::Email.enqueue( :photo_liked, user_id, subject_id )
+        when PHOTO, 'photo' then
+          photo = Photo.find_by_id( subject_id )
+          ZZ::Async::Email.enqueue( :photo_liked, user_id, photo.id, photo.user.id ) unless user_id == photo.user.id
+          if( photo.user.id != photo.album.user.id )
+            # if the contributor is different than the album owner, then also notify the album owner.
+            ZZ::Async::Email.enqueue( :photo_liked, user_id, photo.id, photo.album.user.id  ) unless user_id == photo.album.user.id
+          end
       end
       return like
     rescue  ActiveRecord::RecordNotUnique
@@ -49,6 +62,16 @@ class Like < ActiveRecord::Base
     end
     nil
   end
+
+
+  def self.find_by_album_id(album_id)
+    Like.where(:subject_id => album_id, :subject_type => Like::ALBUM)
+  end
+
+  def self.find_by_photo_id(photo_id)
+    Like.where(:subject_id => photo_id, :subject_type => Like::PHOTO)
+  end
+
 
   def self.post( user_id, subject_id, subject_type, message=nil, tweet=false, facebook=false, dothis=false )
 
@@ -82,7 +105,7 @@ class Like < ActiveRecord::Base
     case subject_type
       when USER, 'user'
         liked_user = User.find( subject_id )
-        return 'I like '+liked_user.name+'\'s Photos on ZangZing - Group Photo Sharing'
+        return 'I am following '+liked_user.name+' on ZangZing - Group Photo Sharing'
       when ALBUM, 'album'
         liked_album = Album.find(subject_id )
         return 'I like '+liked_album.user.name+'\'s '+liked_album.name+' Album on ZangZing - Group Photo Sharing'
@@ -119,18 +142,59 @@ class Like < ActiveRecord::Base
   def url
     case subject_type
       when USER, 'user'
-        user_pretty_url(  User.find( subject_id ))
+        user_pretty_url(  subject )
       when ALBUM, 'album'
-        album_pretty_url( Album.find( subject_id ))
+        album_pretty_url( subject )
       when PHOTO, 'photo'
-        photo_pretty_url( Photo.find( subject_id ))
+        photo_pretty_url( subject )
       else
         'http://www.zangzing.com'
     end
   end
 
+  def subject
+    return @subject if @subject
+    case subject_type
+      when USER, 'user'
+          @subject = User.find( subject_id )
+      when ALBUM, 'album'
+          @subject = Album.find( subject_id )
+      when PHOTO, 'photo'
+          @subject = Photo.find( subject_id )
+      else
+        raise ActiveRecord::RecordNotFound.new().message = "Like subject_type #{subject_type} unknown"
+    end
+  end
+
 
   protected
+  def create_like_activity
+    @activity_subject = nil
+    case self.subject_type
+      when PHOTO
+        @activity_subject = self.subject.album #boil photo activities to album
+        @subject_owner = self.subject.user
+      when ALBUM
+        @activity_subject = self.subject
+        @subject_owner = self.subject.user
+      when USER
+        @activity_subject = self.subject
+        @subject_owner = self.subject
+    end
+
+    # Like activities are reciprocal:
+    # - One activity is created for the subject so that it appears on the subject's activity list.
+    # - Another is created for the subject_owner so that it appears in the subject owner's activities list.
+    # Both activities point to the same like but we avoid having to do a triple join.
+    # Albums/Photos fetch their activity list using the subject_id field
+    # Users fetch their activity list by looking at the user_id field
+    LikeActivity.create( :user => self.user, :subject => @activity_subject, :like => self )
+    unless( self.user.id == @subject_owner.id )
+      # do not create a reciprocal like activity for self likes.
+      LikeActivity.create( :user => @subject_owner, :subject => @subject_owner, :like => self);
+    end
+  end
+
   def set_type
     self.subject_type = Like.clean_type( subject_type )       
   end

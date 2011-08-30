@@ -1,95 +1,93 @@
 /*===================================== LIKE TAG =============================================*/
-div.zzlike{
+.zzlike{
     position: relative;
-}
 
-div.zzlike div.zzlike-button{
+}
+.zzlike div.zzlike-button{
+    display: inline-block;
     position: relative;
-    width:   25px;
-    height:  20px;
-    line-height: 20px;
-    border: solid 1px black;
-    background: #ffce00;
-    text-align: left;
-    padding: 0 5px 0 20px;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    font-size: 11px;
-
+    height:  18px;
 }
-div.zzlike span.zzlike-vader{
-    position: absolute;
-    top: 1px;
-    left: 3px;
-    width:  14px;
+
+div.zzlike-button .zzlike-icon{
+    left: 0;
+    width:  20px;
     height: 18px;
-    background: url('/images/zangvader.png') scroll no-repeat   left 0;
+    background: url('/images/album_toolbar_love.png');
 }
 
-div.zzlike span.zzlike-thumbup{
+div.zzlike-button .zzlike-icon.thumbup  {  background-position:   1px -54px; }
+div.zzlike-button .zzlike-icon.thumbdown{  background-position:   1px -18px; }
+div.zzlike-button .zzlike-icon.thumbup:hover  { background-position: 1px -36px; }
+div.zzlike-button .zzlike-icon.thumbdown:hover{ background-position: 1px 0px;     }
+
+div.zzlike-button div.zzlike-count{
     position: absolute;
-    top: 1px;
-    left: 3px;
-    width:  13px;
-    height: 18px;
-    background: url('/images/icon-like-off.png') scroll no-repeat   left 0;
+    top: 7px;
+    left: 11px;
+    border: solid 1px #999999;
+    background: #ffffff;
+    color:#111111;
+    text-align: right;
+    text-shadow: 0 .5px 1px #666666;
+    padding: .5px 2px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    font-size: 10px;
+    font-weight: 500;
+}
+div.zzlike-count.empty{
+    display:none;
 }
 
+.zzlike-toolbar{
+    background: url("/images/embed/toolbars/btn-footer-love.png");
+}
 
-div.zzlike div.zzlike-count{
+.zzlike-toolbar.thumbup  {  background-position:      0 -110px; }
+.zzlike-toolbar.thumbdown{  background-position:      0    0; }
+.zzlike-toolbar.thumbup:hover  { background-position: 0 -165px; }
+.zzlike-toolbar.thumbdown:hover{ background-position: 0  -55px;     }
+
+.zzlike-toolbar div.zzlike-count{
     position: absolute;
-    top:1px;
-    left: 52px;
+    top: 22px;
+    left: 31px;
+    border: solid 1px #888888;
+    background: #cccccc;
+    color:#111111;
+    text-align: right;
+    text-shadow: 0 .5px 1px #666666;
+    padding: 0 2px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    font-size: 10px;
+    font-weight: 500;
+    /*
+    -moz-box-shadow:inset 0 0 1px #111111;
+    -webkit-box-shadow:inset 0 0 1px #111111;
+    box-shadow:inset 0 0 1px #111111;
+    */
+}
+
+.ua-ie .zzlike-toolbar div.zzlike-count{
+    border: solid 1px #999999;
+}
+
+.zzlike-follow{
+    width:  70px;
     height: 20px;
-    width: 20px;
-    line-height: 20px;
-    padding: 0 0 0 5px;
-    background: url('/images/like-countbox.png') scroll no-repeat;
+    background-repeat: no-repeat;
 }
+.zzlike-follow.thumbup  {     background: url("/images/embed/toolbars/btn-header-follow.png") 0 0; }
+.zzlike-follow.thumbdown{     background: url("/images/embed/toolbars/btn-header-follow.png") 0  -40px; }
+.zzlike-follow.thumbdown:hover{     background: url("/images/embed/toolbars/btn-header-follow.png") 0  -60px; }
+.zzlike-follow.thumbdown:active{     background: url("/images/embed/toolbars/btn-header-follow.png") 0  -80px; }
+.zzlike-follow.thumbup:hover{ background: url("/images/embed/toolbars/btn-header-follow.png") 0 -20px;  }
+
+/*.zzlike-follow.thumbdown:hover{ background-position: 0     }*/
 
 
-
-
-/*======================================LIKE popup  MENU =====================================*/
-
-
-.like-menu{
-    position:absolute;
-    width: 120px;
-    z-index: 99990;
-    background: url("/images/bg-like-popup.png") no-repeat scroll;
-    padding: 0;
-    margin: 0;
-    font-size: 12px;
-    font-weight: 700;
-    color: #FAFAFA;
-    text-shadow: 0 1px black;
-    text-align: left;
-}
-
-.like-menu span.like-count{
-    font-size: 11px;
-    font-weight: 300;
-}
-
-.like-menu.one-item{    height:  56px;  background-position:    0   -61px; }
-.like-menu.two-items{   height:  85px;  background-position: -123px -31px; }
-.like-menu.three-items{ height: 117px;  background-position: -247px   0;   }
-
-.like-menu li{
-    background: url("/images/btn-like.png") no-repeat scroll;
-    margin-left: 0;
-    padding: 10px 0 5px 38px;
-    cursor:pointer;
-}
-
-.like-menu li:hover{ color: #FFFFFF; background-color: rgba(255, 255, 255, 0.1);}
-.like-menu li.like-user{  background-position: 7px 10px; }
-.like-menu li.like-album {  background-position: 7px -20px; }
-.like-menu li.like-photo {  background-position: 7px -50px; }
-.like-menu li.like-user:hover{  background-position: 7px -77px; }
-.like-menu li.like-album:hover {  background-position: 7px -107px; }
-.like-menu li.like-photo:hover {   background-position: 7px -137px; }
 
 
 

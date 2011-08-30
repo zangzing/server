@@ -56,7 +56,7 @@ class Photo < ActiveRecord::Base
   attr_accessor :temp_url, :inserting_for_batch
 
   has_one :photo_info, :dependent => :destroy
-  belongs_to :album, :touch => :photos_last_updated_at
+  belongs_to :album, :touch => :photos_last_updated_at, :counter_cache => true
   belongs_to :user
   belongs_to :upload_batch
 
@@ -74,6 +74,8 @@ class Photo < ActiveRecord::Base
 
   # Set up an async call for managing the deleted photo from s3
   after_commit  :queue_delete_from_s3, :on => :destroy
+
+  after_commit  :change_cache_version
 
   validates_presence_of             :album_id, :user_id, :upload_batch_id
 
@@ -93,7 +95,8 @@ class Photo < ActiveRecord::Base
   # wrap the import call so we can do some of the things that normally
   # happen via callbacks
   def self.batch_insert(photos)
-    return if (photos.count == 0)
+    num_photos = photos.count
+    return if (num_photos == 0)
 
     # batch insert
     results = self.import(photos)
@@ -101,11 +104,11 @@ class Photo < ActiveRecord::Base
     # we assume all share the same album, so extract
     # the album_id and touch that album without instantiating a
     # new album
-    if photos.count > 0
-      photo = photos[0]
-      album_id = photo.album_id
-      Album.touch_photos_last_updated(album_id)
-    end
+    photo = photos[0]
+    album_id = photo.album_id
+    # bump the photo counter
+    Album.update_counters album_id, :photos_count => num_photos
+    Album.change_cache_version(album_id)
 
     # now kick off the uploads since bulk does not call after commit (I don't think)
     photos.each do |photo|
@@ -123,7 +126,6 @@ class Photo < ActiveRecord::Base
     set_default_position
   end
 
-
   # never, never, never call get_next_id inside a transaction since failure of the transaction would rollback the
   # fetch of the id which could result in duplicates being used.  If you need a set number of ids, set the reserve_count
   # to the amount that you want and manage them yourself
@@ -131,6 +133,15 @@ class Photo < ActiveRecord::Base
     BulkIdManager.next_id_for(Photo.table_name, reserved_count)
   end
 
+  # never call this within a transaction because if a rollback happens
+  # on the id generator you will end up with duplicate ids
+  def change_cache_version
+    album_id = self.album_id
+    # see if the parent album is being deleted, in which case we don't want to do anything
+    if Album.album_being_deleted?(album_id) == false
+      Album.change_cache_version(album_id) unless album_id.nil?
+    end
+  end
 
   # generate a guid and attach to this object
   def set_guid_for_path
@@ -303,6 +314,7 @@ class Photo < ActiveRecord::Base
     # will keep the upload from ever taking place
     # also, we can't rely on the photo object itself since it won't 
     # exist by the time it gets processed.
+    Album.update_photos_ready_count(self.album_id, -1) if ready?
     if self.image_bucket
       # get all of the keys to remove
       keys = attached_image.all_keys
@@ -310,6 +322,26 @@ class Photo < ActiveRecord::Base
       ZZ::Async::S3Cleanup.enqueue(self.image_bucket, keys)
       logger.debug("Photo queued for s3 cleanup")
     end
+  end
+
+  # prepare and queue up an async rotate
+  # for now we just do rotation in the future
+  # change to support more functionality
+  def start_async_edit(rotate_to)
+    raise "Cannot rotate until photo is loaded or ready." unless loaded? || ready?
+
+    rotate_to = rotate_to.to_i
+    raise "Rotation out of range, must be 0-359, you specified: #{rotate_to}" unless (0..359) === rotate_to
+
+    Rails.logger.debug("Sending async rotation request.")
+    queued_at = Time.now
+    self.generate_queued_at = queued_at
+    self.rotate_to = rotate_to
+    #mark_loaded    # debatable whether we really want this, because it might be best to keep in current (most likely ready) state so others can see...
+    save!(false)  # don't want any cleanup since we are operating on an already upload file
+    response_id = AsyncResponse.new_response_id
+    ZZ::Async::GenerateThumbnails.enqueue_for_edit(self.id, queued_at.to_i, response_id)
+    return response_id
   end
 
   #
@@ -325,8 +357,11 @@ class Photo < ActiveRecord::Base
     z.track_transaction("photo.upload.resize.done", self.id)
     z.track_transaction("photo.upload.done", self.id)
     # tell the photo object it is good to go
+    was_ready = ready?
     mark_ready
     save!
+    # bump count of ready photos if this one just became ready
+    Album.update_photos_ready_count(self.album_id, 1) unless was_ready
     # this is a sanity check to work around a small
     # race condition we currently have with client side batch closes
     batch = self.upload_batch
@@ -422,7 +457,7 @@ class Photo < ActiveRecord::Base
 
   # build the agent source url
   def self.make_agent_source(type, id, album_id)
-    "http://localhost:30777/albums/#{album_id}/photos/#{id}.#{type}"
+    "http://localhost:#{ZangZingConfig.config[:agent_port]}/albums/#{album_id}/photos/#{id}.#{type}"
   end
 
 
@@ -571,8 +606,11 @@ class Photo < ActiveRecord::Base
           end
 
           # see if we should add any initial rotation based on the
-          # camera orientation info
-          self.rotate_to = orientation_as_rotation(self.orientation)
+          # camera orientation info  - if rotation is already set
+          # then do not change it - allows upload process to specify
+          # any rotation wanted, useful for cases such as fetching zz photos
+          # from the connector and not losing any existing rotation info
+          self.rotate_to ||= orientation_as_rotation(self.orientation)
 
         end
       end
@@ -624,6 +662,7 @@ class Photo < ActiveRecord::Base
       :id => photo.id,
       :caption => photo.caption,
       :state => photo.state,
+      :rotate_to => photo.rotate_to.nil? ? 0 : photo.rotate_to,
       :source_guid => photo.source_guid,
       :upload_batch_id => photo.upload_batch_id,
       :user_id => photo.user_id,
@@ -738,7 +777,7 @@ class PhotoAttachedImage < AttachedImage
   # until the custom_metadata call occurs
   #
   def custom_commands
-    rotate_to = model.rotate_to
+    rotate_to = model.rotate_to.nil? ? 0 : model.rotate_to
     if rotate_to != 0
       "-rotate #{rotate_to}"
     else
@@ -761,7 +800,7 @@ class PhotoAttachedImage < AttachedImage
   # is where you want to change the model state
   def custom_metadata
     custom_meta = custom_metadata_original
-    rotate_to = model.rotate_to
+    rotate_to = model.rotate_to.nil? ? 0 : model.rotate_to
     if rotate_to != 0
       custom_meta["x-amz-meta-rotate"] = rotate_to.to_s
     end

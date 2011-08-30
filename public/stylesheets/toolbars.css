@@ -1,6 +1,5 @@
 /*  Top Tool Bar
 *********************************************************************/
-
 #header {
   position: absolute;
   height: 60px;
@@ -12,31 +11,27 @@
 
 #header-left{
     position:absolute;
-    background-image: url("/images/embed/toolbars/bg-header-left.png");
-    background-repeat: no-repeat;
+    background: url("/images/embed/toolbars/bg-header-left.png") no-repeat;
     width:173px;
     height:59px;
     left:0px;
-
 }
 
 #header-middle{
     position:absolute;
-    background-image: url("/images/embed/toolbars/bg-header-middle.png");
-    background-repeat: repeat-x;
+    background: url("/images/embed/toolbars/bg-header-middle.png") repeat-x;
     height:59px;
-    left:173px;
-    right:174px;
+    left:172px;     /* need overlap here to prevent gaps on iOS */
+    right:173px;    /* need overlap here to prevent gaps on iOS */
+    
 }
 
 #header-right{
     position:absolute;
-    background-image: url("/images/embed/toolbars/bg-header-right.png");
-    background-repeat: no-repeat;
+    background: url("/images/embed/toolbars/bg-header-right.png") no-repeat;
     width:174px;
     height:59px;
     right:0px;
-
 }
 
 .header-button-label{
@@ -48,7 +43,6 @@
     text-shadow: #EEE 1px 1px 0px;
 }
 
-
 #header #home-button{
     position: absolute;
     top: 1px;
@@ -58,16 +52,11 @@
     cursor: pointer;
 }
 
-
-
-
 #header #back-button{
     position: absolute;
     left: 140px;
     top: 14px;
 }
-
-
 
 #header #album-info{
     position:relative;
@@ -75,7 +64,6 @@
     width:490px;
     margin-left:auto;
     margin-right:auto;
-
 }
 
 #header #album-info #album-cover-border{
@@ -103,18 +91,17 @@
 
 #header #album-info #album-name-and-owner {
     display: inline-block;
+    vertical-align: top;
     text-align: left;
-    position: relative;
-    top: -6px;
     padding-left: 5px;
-    /*overflow:hidden;*/
-    /*max-width:410px;*/
 }
 
-
-
-
-
+#album-info #owner-follow{
+    position: relative;
+    top: -1px;
+    display: inline-block;
+    margin: 0 0 0 10px;
+}
 
 #header #album-info #album-name-and-owner h2{
     font-size: 16px;
@@ -122,43 +109,13 @@
     line-height: 24px;
     color:#2c2c2c;
     white-space: nowrap;
-    /*max-width: 410px;*/
-
-    /*note: this does not work on firefox */
-    /*overflow: hidden;*/
-    /*text-overflow: ellipsis;*/
 }
-
-
-
 #header #album-info #album-name-and-owner h3{
+    display: inline-block;
+    vertical-align:top;
+    line-height: 20px;
     color:#7a7a7a
 }
-
-#header #album-info #album-name-and-owner h3 a{
-    color: #466FAA;
-    text-decoration:none;
-}
-
-#header #album-info #album-name-and-owner h3 a:visited{
-    color: #466FAA;
-    text-decoration:none;
-}
-
-
-#header #album-info #album-name-and-owner h3 a:hover{
-    color: #333333;
-    text-decoration:underline;
-}
-
-
-#header #album-info #album-name-and-owner h3 a:active{
-    color: #333333;
-    text-decoration:underline;
-}
-
-
-
 
 #header #user-info{
     position: relative;
@@ -171,28 +128,57 @@
     text-align: center;
 }
 
-
-
-#header #user-info #user-info-picture{
+#user-info #user-info-picture{
     height: 40px;
     width: 40px;
     vertical-align: bottom;
     display: inline-block;
 }
 
-#header #user-info h2{
-    left: 6px;
-    top: -10px;
+#user-info #user-name {
     display: inline-block;
-    position: relative;
+    vertical-align: top;
+    text-align: left;
+    height: 100%;
+    padding-left: 5px;
+}
 
+#user-name h2{
+    vertical-align: top;
+    position: relative;
+    top: 10px;
     font-size: 16px;
     font-weight: bold;
     color: #2C2C2C;
+}
 
+#user-name h2.with-follow{
+    top: 0;
+}
+
+#user-name #owner-follow{
+    position: relative;
+    top: 3px;
+}
+
+#header #admin-info{
+    position: relative;
+    display: inline-block;
+    text-align: center;
+}
+
+#header #admin-info .green-button{
+    border: 1px solid red;
 }
 
 
+
+/* For all disabled buttons
+******************************************/
+#header .disabled, #footer .disabled{
+    cursor:default;
+    opacity:0.5;
+}
 
 
 /*   View Buttons
@@ -203,93 +189,40 @@
     top:14px;
 }
 
-#header #view-buttons #grid-view-button{
+#grid-view-button{
     float:left;
     width:37px;
     height:32px;
     background: url("/images/embed/toolbars/btn-header-grid-view.png") no-repeat scroll 0px 0px transparent;
     cursor:pointer;
 }
+#grid-view-button:hover{    background-position: 0 -32px;  }
+#grid-view-button.selected{ background-position: 0 -64px;  }
+#grid-view-button.disabled{ background-position: 0 0;}
 
-#header #view-buttons #grid-view-button:hover{
-    /*background-position-y: -32px;*/
-    background: url("/images/embed/toolbars/btn-header-grid-view.png") no-repeat scroll 0px -32px transparent;
-}
-
-#header #view-buttons #grid-view-button.selected{
-    /*background-position-y: -64px;*/
-    background: url("/images/embed/toolbars/btn-header-grid-view.png") no-repeat scroll 0px -64px transparent;
-}
-
-#header #view-buttons #grid-view-button.disabled{
-    /*background-position-y: 0px;*/
-    background: url("/images/embed/toolbars/btn-header-grid-view.png") no-repeat scroll 0px 0px transparent;
-    cursor:default;
-    opacity:0.5;
-}
-
-
-
-
-
-
-
-#header #view-buttons #people-view-button{
+#people-view-button{
     float:left;
     width:32px;
     height:32px;
     background: url("/images/embed/toolbars/btn-header-people-view.png") no-repeat scroll 0px 0px transparent;
     cursor:pointer;
 }
+#people-view-button:hover{     background-position: 0 -32px; }
+#people-view-button.selected{  background-position: 0 -64px; }
+#people-view-button.disabled{  background-position: 0 0;}
 
-#header #view-buttons #people-view-button:hover{
-    /*background-position-y: -32px;*/
-    background: url("/images/embed/toolbars/btn-header-people-view.png") no-repeat scroll 0px -32px transparent;
-}
-
-#header #view-buttons #people-view-button.selected{
-    /*background-position-y: -64px;*/
-    background: url("/images/embed/toolbars/btn-header-people-view.png") no-repeat scroll 0px -64px transparent;
-}
-
-#header #view-buttons #people-view-button.disabled{
-    /*background-position-y: 0px;*/
-
-    background: url("/images/embed/toolbars/btn-header-people-view.png") no-repeat scroll 0px 0px transparent;
-    cursor:default;
-    opacity:0.5;
-}
-
-
-
-#header #view-buttons #activities-view-button{
+#activities-view-button{
     float:left;
     width:37px;
     height:32px;
     background: url("/images/embed/toolbars/btn-header-activitites-view.png") no-repeat scroll 0px 0px transparent;
     cursor:pointer;
 }
+#activities-view-button:hover{    background-position: 0 -32px;  }
+#activities-view-button.selected{ background-position: 0  -64px; }
+#activities-view-button.disabled{ background-position: 0 0;}
 
-#header #view-buttons #activities-view-button:hover{
-    /*background-position-y: -32px;*/
-   background: url("/images/embed/toolbars/btn-header-activitites-view.png") no-repeat scroll 0px -32px transparent;
-}
-
-#header #view-buttons #activities-view-button.selected{
-    /*background-position-y: -64px;*/
-    background: url("/images/embed/toolbars/btn-header-activitites-view.png") no-repeat scroll 0px -64px transparent;
-}
-
-#header #view-buttons #activities-view-button.disabled{
-    /*background-position-y: 0px;*/
-    background: url("/images/embed/toolbars/btn-header-activitites-view.png") no-repeat scroll 0px 0px transparent;
-    cursor:default;
-    opacity:0.5;
-}
-
-
-
-#header #help-button{
+#help-button{
     position: absolute;
     top: 1px;
     right: 58px;
@@ -298,19 +231,26 @@
     background: url("/images/embed/toolbars/btn-header-help.png") no-repeat scroll 0px 0px transparent;
     cursor: pointer;
 }
+#help-button:hover{     background-position: 0  -55px;   }
+#help-button.selected{  background-position: 0 -110px;   }
+#help-button.disabled{  background-position: 0 0;}
 
-
-
-#header #help-button:hover{
-    /*background-position-y: -55px;*/
-    background: url("/images/embed/toolbars/btn-header-help.png") no-repeat scroll 0px -55px transparent;
+#admin-button{
+    text-decoration: none;
+    position: absolute;
+    top: 1px;
+    right: 58px;
+    width: 58px;
+    height: 55px;
+    background: url("/images/embed/toolbars/btn-header-admin.png") no-repeat scroll 0px 0px transparent;
+    cursor: pointer;
 }
-
-#header #help-button.selected{
-    /*background-position-y: -110px;*/
-    background: url("/images/embed/toolbars/btn-header-help.png") no-repeat scroll 0px -110px transparent;
+#admin-button:hover{     background-position: 0  -109px;   }
+#admin-button.disabled{  background-position: 0 0;}
+#admin-button .header-button-label{
+    color: black;
+    text-decoration: none;
 }
-
 
 
 
@@ -322,20 +262,10 @@
     height: 55px;
     background: url("/images/embed/toolbars/btn-header-sign-in.png") no-repeat scroll 0px 0px transparent;
     cursor: pointer;
-
 }
-
-#header #sign-in-button:hover{
-    /*background-position-y: -55px;*/
-    background: url("/images/embed/toolbars/btn-header-sign-in.png") no-repeat scroll 0px -55px transparent;
-}
-
-#header #sign-in-button.selected{
-    /*background-position-y: -110px;*/
-    background: url("/images/embed/toolbars/btn-header-sign-in.png") no-repeat scroll 0px -110px transparent;
-}
-
-
+#header #sign-in-button:hover{    background-position: 0 -55px;  }
+#header #sign-in-button.selected{ background-position: 0 -110px; }
+#header #sign-in-button.disabled{ background-position: 0  0; }
 
 #header #account-badge {
   position:absolute;
@@ -346,19 +276,14 @@
   cursor: pointer;
   background: url("/images/embed/toolbars/btn-header-account-settings.png") no-repeat scroll 0px 0px transparent;
 }
+#header #account-badge:hover {   background-position: 0 -55px; }
+#header #account-badge.selected{ background-position: 0  -110px; }
+#header #account-badge.disabled{ background-position: 0  0; }
 
 
-#header #account-badge:hover {
-    /*background-position-y: -55px;*/
-    background: url("/images/embed/toolbars/btn-header-account-settings.png") no-repeat scroll 0px -55px transparent;
-
+#header #account-badge.admin-badge {
+  background: url("/images/embed/toolbars/btn-header-account-settings.png") no-repeat scroll 0px -110px transparent;
 }
-
-#header #account-badge.selected{
-    /*background-position-y: -110px;*/
-    background: url("/images/embed/toolbars/btn-header-account-settings.png") no-repeat scroll 0px -110px transparent;
-}
-
 
 
 #header #account-badge div#account-image {
@@ -368,14 +293,6 @@
     height: 25px;
     width: 25px;
 }
-
-
-#header #account-badge.disabled {
-    cursor:default;
-    opacity:0.5;
-    background: url("/images/embed/toolbars/btn-header-account-settings.png") no-repeat scroll 0px 0px transparent;
-}
-
 
 #header #account-badge img#arrow-image {
     position:absolute;
@@ -390,10 +307,8 @@
 }
 
 
-
 /*  Footer
  **************************************************************************************/
-
 #footer {
   position: absolute;
   height: 59px;
@@ -403,23 +318,17 @@
   right:10px;
 }
 
-
-
 #footer-left{
     position:absolute;
-    background-image: url("/images/embed/toolbars/bg-footer-left.png");
-    background-repeat: no-repeat;
+    background: url("/images/embed/toolbars/bg-footer-left.png") no-repeat;
     width:18px;
     height:59px;
     left:0px;
-    /*bottom:-2px*/
-
 }
 
 #footer-middle{
     position:absolute;
-    background-image: url("/images/embed/toolbars/bg-footer-middle.png");
-    background-repeat: repeat-x;
+    background: url("/images/embed/toolbars/bg-footer-middle.png") repeat-x;
     height:59px;
     left:18px;
     right:18px;
@@ -427,14 +336,11 @@
 
 #footer-right{
     position:absolute;
-    background-image: url("/images/embed/toolbars/bg-footer-right.png");
-    background-repeat: no-repeat;
+    background: url("/images/embed/toolbars/bg-footer-right.png") no-repeat;
     width:18px;
     height:59px;
     right:0px;
 }
-
-
 
 .footer-button-label{
     position:relative;
@@ -443,7 +349,6 @@
     font-size: 12px;
     text-shadow: #EEE 1px 1px 0px;
 }
-
 
 /*           New Album Button
  ***************************************************/
@@ -456,24 +361,9 @@
     background: url("/images/embed/toolbars/btn-footer-new-album.png") no-repeat scroll 0px 0px transparent;
     cursor: pointer;
 }
-
-#footer #new-album-button:hover{
-    /*background-position-y: -55px;*/
-
-    background: url("/images/embed/toolbars/btn-footer-new-album.png") no-repeat scroll 0px -55px transparent;
-}
-
-#footer #new-album-button.selected{
-    /*background-position-y: -110px;*/
-    background: url("/images/embed/toolbars/btn-footer-new-album.png") no-repeat scroll 0px -110px transparent;
-}
-
-#footer #new-album-button.disabled{
-    /*background-position-y: 0px;*/
-    background: url("/images/embed/toolbars/btn-footer-new-album.png") no-repeat scroll 0px 0px transparent;
-    opacity:0.5;
-    cursor: default;
-}
+#footer #new-album-button:hover    { background-position: 0 -55px;  }
+#footer #new-album-button.selected { background-position: 0 -110px; }
+#footer #new-album-button.disabled { background-position: 0 0; }
 
 
 /*           Edit Album Button
@@ -487,30 +377,12 @@
     background: url("/images/embed/toolbars/btn-footer-edit-album.png") no-repeat scroll 0px 0px transparent;
     cursor: pointer;
 }
-
-#footer #edit-album-button:hover{
-    /*background-position-y: -55px;*/
-    background: url("/images/embed/toolbars/btn-footer-edit-album.png") no-repeat scroll 0px -55px transparent;
-}
-
-#footer #edit-album-button.selected{
-    /*background-position-y: -110px;*/
-
-    background: url("/images/embed/toolbars/btn-footer-edit-album.png") no-repeat scroll 0px -110px transparent;
-    cursor: default;
-}
-
-#footer #edit-album-button.disabled{
-    opacity:0.5;
-    cursor: default;
-    background: url("/images/embed/toolbars/btn-footer-edit-album.png") no-repeat scroll 0px 0px transparent;
-}
-
-
+#footer #edit-album-button:hover    { background-position: 0 -55px; }
+#footer #edit-album-button.selected { background-position: 0 -110px; cursor: default; }
+#footer #edit-album-button.disabled { background-position: 0 0; }
 
 /*           Add Photos Button
  ***************************************************/
-
 #footer #add-photos-button{
     position:relative;
     width: 58px;
@@ -520,30 +392,12 @@
     background: url("/images/embed/toolbars/btn-footer-add-photos.png") no-repeat scroll 0px 0px transparent;
     cursor: pointer;
 }
-
-#footer #add-photos-button:hover{
-    /*background-position-y: -55px;*/
-
-    background: url("/images/embed/toolbars/btn-footer-add-photos.png") no-repeat scroll 0px -55px transparent;
-}
-
-#footer #add-photos-button.selected{
-    /*background-position-y: -110px;*/
-    background: url("/images/embed/toolbars/btn-footer-add-photos.png") no-repeat scroll 0px -110px transparent;
-}
-
-#footer #add-photos-button.disabled{
-    opacity:0.5;
-    cursor: default;
-    /*background-position-y: 0px;*/
-    background: url("/images/embed/toolbars/btn-footer-add-photos.png") no-repeat scroll 0px 0px transparent;
-}
-
-
+#footer #add-photos-button:hover    { background-position: 0 -55px;  }
+#footer #add-photos-button.selected { background-position: 0 -110px; }
+#footer #add-photos-button.disabled { background-position: 0 0; }
 
 /*           Control Buttons
  ***************************************************/
-
 #footer #control-buttons{
     position:relative;
     top: 6px;
@@ -551,15 +405,10 @@
     width:160px;
     margin-left:auto;
     margin-right:auto;
-    /*background-color:white;*/
 }
-
-
 
 /*           Prev Button
  ***************************************************/
-
-
 #footer #prev-button{
     position: absolute;
     width: 44px;
@@ -569,33 +418,13 @@
     background: url("/images/embed/toolbars/btn-footer-prev.png") no-repeat scroll 0px 0px transparent;
     cursor: pointer;
     display:none;
-
 }
-
-#footer #prev-button:hover{
-    /*background-position-y: -44px;*/
-    background: url("/images/embed/toolbars/btn-footer-prev.png") no-repeat scroll 0px -44px transparent;
-}
-
-#footer #prev-button:active{
-    /*background-position-y: -88px;*/
-    background: url("/images/embed/toolbars/btn-footer-prev.png") no-repeat scroll 0px -88px transparent;
-}
-
-#footer #prev-button.disabled{
-    opacity:0.5;
-    cursor: default;
-    /*background-position-y: 0px;*/
-    background: url("/images/embed/toolbars/btn-footer-prev.png") no-repeat scroll 0px 0px transparent;
-}
-
-
-
-
+#footer #prev-button:hover   {    background-position: 0 -44px; }
+#footer #prev-button:active  {   background-position: 0 -88px; }
+#footer #prev-button.disabled{   background-position: 0 0;     }
 
 /*           Play Button
  ***************************************************/
-
 #footer #play-button{
     position: relative;
     width: 44px;
@@ -606,27 +435,11 @@
     margin-left:auto;
     margin-right:auto;
     display:block;
-
 }
 
-#footer #play-button:hover{
-    /*background-position-y: -44px;*/
-    background: url("/images/embed/toolbars/btn-footer-play.png") no-repeat scroll 0px -44px transparent;
-}
-
-#footer #play-button:active{
-    /*background-position-y: -88px;*/
-
-    background: url("/images/embed/toolbars/btn-footer-play.png") no-repeat scroll 0px -88px transparent;
-}
-
-
-#footer #play-button.disabled{
-    opacity:0.5;
-    cursor: default;
-    /*background-position-y: 0px;*/
-    background: url("/images/embed/toolbars/btn-footer-play.png") no-repeat scroll 0px 0px transparent;
-}
+#footer #play-button:hover    { background-position: 0 -44px; }
+#footer #play-button:active   { background-position: 0 -88px; }
+#footer #play-button.disabled { background-position: 0 0; }
 
 /*           Next Button
  ***************************************************/
@@ -639,32 +452,14 @@
     background: url("/images/embed/toolbars/btn-footer-next.png") no-repeat scroll 0px 0px transparent;
     cursor: pointer;
     display:none;
-
 }
-
-#footer #next-button:hover{
-    /*background-position-y: -44px;*/
-    background: url("/images/embed/toolbars/btn-footer-next.png") no-repeat scroll 0px -44px transparent;
-}
-
-#footer #next-button:active{
-    /*background-position-y: -88px;*/
-    background: url("/images/embed/toolbars/btn-footer-next.png") no-repeat scroll 0px -88px transparent;
-}
-
-
-#footer #next-button.disabled{
-    opacity:0.5;
-    cursor: default;
-    /*background-position-y: 0px;*/
-    background: url("/images/embed/toolbars/btn-footer-next.png") no-repeat scroll 0px 0px transparent;
-}
-
+#footer #next-button:hover   { background-position: 0 -44px; }
+#footer #next-button:active  { background-position: 0 -88px; }
+#footer #next-button.disabled{ background-position: 0 0; }
 
 
 /*           Share Button
  ***************************************************/
-
 #footer #share-button{
     position: absolute;
     top: 1px;
@@ -674,24 +469,44 @@
     background: url("/images/embed/toolbars/btn-footer-share.png") no-repeat scroll 0px 0px transparent;
     cursor: pointer;
 }
+#footer #share-button:hover   { background-position: 0  -55px; }
+#footer #share-button.selected{ background-position: 0 -110px; }
+#footer #share-button.disabled{ background-position: 0 0; }
 
-#footer #share-button:hover{
-    /*background-position-y: -55px;*/
-
-    background: url("/images/embed/toolbars/btn-footer-share.png") no-repeat scroll 0px -55px transparent;
+/*           Comments Button
+ ***************************************************/
+#footer #comments-button{
+    position: absolute;
+    top: 1px;
+    right: 174px;
+    width: 58px;
+    height: 55px;
+    background: url("/images/embed/toolbars/btn-footer-comments.png") no-repeat scroll 0px 0px transparent;
+    cursor: pointer;
+    display: none;
 }
+#footer #comments-button:hover   { background-position: 0  -55px; }
+#footer #comments-button.selected{ background-position: 0 -110px; }
+#footer #comments-button.disabled{ background-position: 0 0; }
 
-#footer #share-button.selected{
-    /*background-position-y: -110px;*/
-    background: url("/images/embed/toolbars/btn-footer-share.png") no-repeat scroll 0px -110px transparent;
+
+#footer #comments-button .comment-count{
+    position: absolute;
+    top: 22px;
+    left: 32px;
+    border: solid 1px #999999;
+    background: #ccc;
+    color:#111111;
+    text-align: right;
+    text-shadow: 0 .5px 1px #666666;
+    padding: .5px 2px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    font-size: 10px;
+    font-weight: 500;
 }
-
-#footer #share-button.disabled{
-    opacity:0.5;
-    cursor: default;
-    /*background-position-y: 0px;*/
-
-    background: url("/images/embed/toolbars/btn-footer-share.png") no-repeat scroll 0px 0px transparent;
+#footer #comments-button .comment-count.empty{
+    display:none;
 }
 
 
@@ -703,33 +518,11 @@
     right: 58px;
     width: 58px;
     height: 55px;
-    background: url("/images/embed/toolbars/btn-footer-like.png") no-repeat scroll 0px 0px transparent;
     cursor: pointer;
 }
-
-#footer #like-button:hover{
-    /*background-position-y: -55px;*/
-
-    background: url("/images/embed/toolbars/btn-footer-like.png") no-repeat scroll 0px -55px transparent;
-}
-
-#footer #like-button.selected{
-    /*background-position-y: -110px;*/
-
-    background: url("/images/embed/toolbars/btn-footer-like.png") no-repeat scroll 0px -110px transparent;
-}
-
-#footer #like-button.disabled{
-    opacity:0.5;
-    cursor: default;
-    /*background-position-y: 0px;*/
-    background: url("/images/embed/toolbars/btn-footer-like.png") no-repeat scroll 0px 0px transparent;
-}
-
-
-/*           Like Button
+#footer #like-button.disabled { background-position: 0 0; }
+/*           Buy Button
  ***************************************************/
-
 #footer #buy-button{
     position: absolute;
     top: 1px;
@@ -739,23 +532,6 @@
     background: url("/images/embed/toolbars/btn-footer-buy.png") no-repeat scroll 0px 0px transparent;
     cursor: pointer;
 }
-
-#footer #buy-button:hover{
-    /*background-position-y: -55px;*/
-
-    background: url("/images/embed/toolbars/btn-footer-buy.png") no-repeat scroll 0px -55px transparent;
-}
-
-#footer #buy-button.selected{
-    /*background-position-y: -110px;*/
-
-    background: url("/images/embed/toolbars/btn-footer-buy.png") no-repeat scroll 0px -110px transparent;
-}
-
-#footer #buy-button.disabled{
-    opacity:0.5;
-    cursor: default;
-    /*background-position-y: 0px;*/
-
-    background: url("/images/embed/toolbars/btn-footer-buy.png") no-repeat scroll 0px 0px transparent;
-}
+#footer #buy-button:hover    { background-position: 0 -55px;  }
+#footer #buy-button.selected { background-position: 0 -110px; }
+#footer #buy-button.disabled { background-position: 0 0; }

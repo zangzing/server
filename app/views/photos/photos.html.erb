@@ -1,3 +1,6 @@
+<% content_for :page_title do %><%= @album.name %> by <%= @album.user.name %><% end %>
+
+
 
 <% content_for :meta_tags do %>
     <% if @photo %>
@@ -8,3 +11,27 @@
 <% end %>
 
 
+<% content_for :page_javascript do %>
+
+    <%= render :partial => "photos/album_view_javascript" %>
+    
+    <script type="text/javascript">
+        $(document).ready(function(){
+
+            if (document.location.href.indexOf('#!') !== -1) {
+                var photo_id = null;
+
+                var hash = jQuery.param.fragment();
+                if (hash !== '') {
+                    photo_id = hash.slice(1); //remove the '!'
+                }
+
+                zz.album.init_picture_view(photo_id);
+            }
+            else {
+                zz.album.init_grid_view();
+            }
+
+        });
+    </script>
+<% end %>

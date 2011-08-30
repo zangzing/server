@@ -1,3 +1,6 @@
+<% content_for :page_title do %><%= @album.name %> Activity<% end %>
+
+
 <% content_for :meta_tags do %>
     <%= render :partial => "facebook/album_opengraph_tags" %>
 <% end %>
@@ -5,22 +8,43 @@
 
 
 <div class="viewlist">
-<ul>
-  <li class="item">
-   <div class="header bar">
-        Timeline
-   </div>
-  </li>
+  <ul>
+    <li class="item">
+      <div class="header bar">
+        Activities
+      </div>
+    </li>
+    <% @activities.each do |activity| %>
+        <%next unless activity.payload_valid? && activity.display_for?(current_user, Activity::ALBUM_VIEW) %>
+        <%case activity %>
+        <%  when UploadActivity then%>
+            <%= render :partial => 'upload_activity', :locals => {:activity => activity, :view => Activity::ALBUM_VIEW } %>
+        <%  when ShareActivity then%>
+            <%= render :partial => 'share_activity', :locals => {:activity => activity, :view => Activity::ALBUM_VIEW } %>
+        <%  when CreateAlbumActivity then%>
+            <%= render :partial => 'create_album_activity', :locals => {:activity => activity, :view => Activity::ALBUM_VIEW} %>
+        <%  when LikeActivity then%>
+            <%= render :partial => 'like_activity', :locals => {:activity => activity, :view => Activity::ALBUM_VIEW } %>
+        <%  when InviteActivity then%>
+            <%= render :partial => 'invite_activity', :locals => {:activity => activity, :view => Activity::ALBUM_VIEW } %>
+        <%  when CommentActivity then%>
+            <%= render :partial => 'comment_activity', :locals => {:activity => activity, :view => Activity::ALBUM_VIEW } %>
+        <%end%>
+    <%end%>
+  </ul>
 
-  <% @activities.each do |activity| %>
-                    <%case activity %>
-                        <% when UploadActivity then%>
-                            <%= render :partial => 'upload_activity', :locals => {:activity => activity, :view => 'activity' } %>
-                        <% when ShareActivity then%>
-                            <%= render :partial => 'share_activity', :locals => {:activity => activity, :view => 'activity' } %>
-                    <%end%>
-  <%end%>
+</div>
 
-</ul>
 
-</div>    
+<% content_for :page_javascript do %>
+
+    <%= render :partial => "photos/album_view_javascript" %>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            zz.album.init_timeline_view();
+        });
+    </script>
+    
+
+<% end %>
