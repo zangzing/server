@@ -1,5 +1,10 @@
+<title> <%=@template.name%></title>
+<H1><%=@template.name%></H1>
+<h2><%=@template.email.name%> </h2>
+<hr>
 
-
+<%=render :partial => "email_body", :locals => { :body => @message.body, :sub_type => @message.sub_type } %>
+<hr>
 <H4>Headers</H4>
 <table>
     <%@message.header.fields.each do |field|%>
@@ -9,6 +14,3 @@
         </tr>
     <%end%>
 </table>
-<hr>
-
-<%=render :partial => "email_body", :locals => { :body => @message.body, :sub_type => @message.sub_type } %>

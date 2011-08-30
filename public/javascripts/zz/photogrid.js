@@ -124,7 +124,7 @@
                     src: photo.src,
                     rolloverSrc: photo.rolloverSrc,
                     maxWidth: Math.floor(o.cellWidth - 50),
-                    maxHeight: Math.floor(o.cellHeight - 50),
+                    maxHeight: Math.floor(o.cellHeight - 50 - 5),  //35 accounts for height if caption. this is also set in photo.js
                     allowDelete: o.allowDelete,
                     caption: photo.caption,
                     aspectRatio: photo.aspect_ratio,
