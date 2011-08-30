@@ -624,7 +624,7 @@
     left: 20px;
     right: 20px;
     top: 80px;
-    height: 55px;
+    height: 85px;
     border: 2px solid #D5D5D5;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
@@ -643,7 +643,7 @@
     left: 20px;
     /*right: 20px; doesn't work on IE*/
     width: 696px;
-    top:150px;
+    top:180px;
     height:80px;
     border: 2px solid #D5D5D5;
     resize:none;
