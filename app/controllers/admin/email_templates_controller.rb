@@ -70,7 +70,7 @@ class Admin::EmailTemplatesController < Admin::AdminController
       EmailTemplate.all.each do | et |
         begin
           @message = send( 'test_'+et.email.name, et.id )
-          @message[:to]=params[:target_address] if params[:target_address] 
+          @message[:to]=params[:target_address] unless params[:target_address].blank?
           @message.deliver
           i += 1
         rescue SubscriptionsException => e
@@ -90,7 +90,7 @@ class Admin::EmailTemplatesController < Admin::AdminController
         if params[:onscreen]
           render :layout => false
         else
-          @message[:to]=params[:target_address] if params[:target_address]
+          @message[:to]=params[:target_address] unless params[:target_address].blank?
           @message.deliver
           flash[:notice]="Test #{@template.email.name} message sent to #{@message[:to]}."
           redirect_to :back
