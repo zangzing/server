@@ -256,16 +256,19 @@ zz.comments = {};
 
                 comment_loading_element.remove();
 
-                //set deleteable flag
-                if(json['current_user']['can_delete_comments']){
-                    comments_element.find('.comments').addClass('deleteable');
-                }
 
                 // add all the comments
                 _.each(json['commentable']['comments'], function(comment_json){
                     var comment_element = build_comment_element(comment_json);
                     comments_element.find('.comments').append(comment_element);
                 });
+
+                //set deleteable flag
+                if(json['current_user']['can_delete_comments']){
+                    comments_element.find('.comments').addClass('deleteable');
+                }
+
+
 
                 // show profile pictures -- need to do this after things are visible
                 zz.profile_pictures.init_profile_pictures(comments_element.find('.profile-picture'));
