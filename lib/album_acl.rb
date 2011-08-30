@@ -38,9 +38,10 @@ class AlbumACL < BaseACL
       #todo call album cache manager here to let it know
       # it should invalidate the trackers for this user on
       # contributor albums
-      num_id = user_id.to_i
-      if num_id != 0
+      num_user_id = user_id.to_i
+      if num_user_id != 0
         # only notify if it is a valid numeric user id
+        Cache::Album::Manager.shared.user_albums_acl_modified(num_user_id)
       end
     end
   end

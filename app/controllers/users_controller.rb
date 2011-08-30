@@ -187,6 +187,29 @@ class UsersController < ApplicationController
     render :json => true #Invalid call return not valid
   end
 
+  # mobile api
+  def mobile_user_info
+    begin
+      user_id = params[:user_id]
+      user = User.find(user_id)
+
+      user_info = {
+        :user_id                        => user_id,
+        :username                       => user.username,
+        :first_name                     => user.first_name,
+        :last_name                      => user.last_name,
+        :profile_url                    => user.profile_photo_url,
+      }
+
+      render :json => JSON.fast_generate(user_info)
+
+
+    rescue Exception => ex
+      render_json_error( ex ) and return
+    end
+  end
+
+
   private
   def admin_user
     redirect_to( root_path ) unless current_user.admin?
@@ -215,5 +238,7 @@ class UsersController < ApplicationController
 
     return checked_user_name
   end
+
+
 
 end

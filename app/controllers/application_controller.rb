@@ -6,6 +6,11 @@
 #  Base class for all controllers
 
 class ApplicationController < ActionController::Base
+  JSON_MEDIA_TYPE = 'application/json'.freeze
+  ZZ_API_HEADER = 'X-ZangZing-API'.freeze
+  ZZ_API_HEADER_RAILS = 'HTTP_X_ZANGZING_API'.freeze
+  ZZ_API_VALID_VALUES = ['mobile'].freeze
+
   include SslRequirement
 
 
@@ -105,7 +110,10 @@ class ApplicationController < ActionController::Base
   # Filter for methods that require a log in
   def require_user
     unless current_user
-      if request.xhr?
+      if ZZ_API_VALID_VALUES.include?(request.headers[ZZ_API_HEADER])
+        # this is the standard api error response format
+        render_json_error(nil, "You must be logged in", 401)
+      elsif request.xhr?
         flash.now[:error] = "You must be logged in to access this page"
         head :status => 401
       else
@@ -123,11 +131,38 @@ class ApplicationController < ActionController::Base
   # json message that may or may not be used.
   def require_user_json
     unless current_user
-      session[:return_to] = request.referer
-      render :json => "You must be logged in to call this url", :status => 401
+      if ZZ_API_VALID_VALUES.include?(request.headers[ZZ_API_HEADER_RAILS])
+        # this is the standard api error response format
+        render_json_error(nil, "You must be logged in", 401)
+      else
+        session[:return_to] = request.referer
+        render :json => "You must be logged in to call this url", :status => 401
+      end
       return false
     end
+    return true
   end
+
+  # A variation of require_user_json that also requires the user_id param
+  # to be the same user as current user
+  def require_same_user_json
+    user_id = params[:user_id].to_i
+    return false unless require_user_json
+    # if we pass the first test, verify we are the user we want info on
+    if current_user.id != user_id
+      msg = "You do not have permissions to access this data, you can only access your own data"
+      if ZZ_API_VALID_VALUES.include?(request.headers[ZZ_API_HEADER_RAILS])
+        # this is the standard api error response format
+        render_json_error(nil, msg, 401)
+      else
+        session[:return_to] = request.referer
+        render :json => msg, :status => 401
+      end
+      return false
+    end
+    return true
+  end
+
 
   # for act_as_authenticated compatibility with oauth plugin
   def login_required

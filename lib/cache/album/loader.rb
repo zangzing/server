@@ -5,10 +5,8 @@ module Cache
     # the cache.  It also tracks cache versions and sets up the tracked dependencies.
     class Loader
       attr_accessor :user, :user_id, :cache_man, :public, :current_versions, :user_id_to_name_map,
-                    :tracker, :version_tracker, :user_last_touch_at,
-                    :my_albums, :my_albums_json, :my_albums_json_compressed,
-                    :liked_albums, :liked_albums_json, :liked_albums_json_compressed,
-                    :liked_users_albums, :liked_users_albums_json, :liked_users_albums_json_compressed
+                    :tracker, :version_tracker, :user_last_touch_at, :album_loaders,
+                    :my_album_loader, :liked_album_loader, :liked_users_album_loader, :invited_album_loader
 
 
       def initialize(cache_man, user, public)
@@ -16,6 +14,19 @@ module Cache
         self.user_id = user.id
         self.cache_man = cache_man
         self.public = public
+
+        # make the albums loaders and put them in the
+        # album_loaders array so we can do easy matching
+        # operations
+        self.album_loaders = []
+        self.my_album_loader = MyAlbumLoader.new(self, Loader.compressed)
+        self.album_loaders << self.my_album_loader
+        self.liked_album_loader = LikedAlbumLoader.new(self, Loader.compressed)
+        self.album_loaders << self.liked_album_loader
+        self.liked_users_album_loader = LikedUserAlbumLoader.new(self, Loader.compressed)
+        self.album_loaders << self.liked_users_album_loader
+        self.invited_album_loader = InvitedAlbumLoader.new(self, Loader.compressed)
+        self.album_loaders << self.invited_album_loader
 
         # see what the current versions are
         self.current_versions = load_current_versions()
@@ -34,28 +45,20 @@ module Cache
         # grab a consistent time to mark the last touch and
         # any cache version changes
         self.user_last_touch_at = Time.now().to_i
+
+      end
+
+      def self.compressed
+        @@compressed ||= ZangZingConfig.config[:memcached_gzip]
+      end
+
+      def self.make_cache_key(user_id, album_type, ver)
+        comp_flag = compressed ? "Z1" : "Z0"
+        Manager::KEY_PREFIX + ".#{comp_flag}.#{album_type}.#{user_id}.#{ver}"
       end
 
       def cache
         Rails.cache
-      end
-
-      def add_tracked_user(user_id, track_type)
-        tracker.add([self.user_id, user_id, TrackTypes::USER, track_type])
-      end
-
-      # tracks that a user likes other users and cares about like membership changes
-      def add_tracked_user_like_membership(user_id, track_type)
-        tracker.add([self.user_id, user_id, TrackTypes::USER_LIKE_MEMBERSHIP, track_type])
-      end
-
-      def add_tracked_album(album_id, track_type)
-        tracker.add([self.user_id, album_id, TrackTypes::ALBUM, track_type])
-      end
-
-      # tracks that a user likes other albums and cares about like membership changes
-      def add_tracked_album_like_membership(user_id, track_type)
-        tracker.add([self.user_id, user_id, TrackTypes::ALBUM_LIKE_MEMBERSHIP, track_type])
       end
 
       # get a new version, we use time in seconds
@@ -67,79 +70,6 @@ module Cache
         return self.user_last_touch_at
       end
 
-      def self.make_cache_key(user_id, track_type, ver)
-        comp_flag = ZangZingConfig.config[:memcached_gzip] ? "Z1" : "Z0"
-        Manager::KEY_PREFIX + ".#{comp_flag}.#{track_type}.#{user_id}.#{ver}"
-      end
-
-      # attempt to fetch the item from the cache
-      # return nil if not found, otherwise convert
-      # back to an object
-      def cache_fetch(track_type, ver)
-        key = Loader.make_cache_key(self.user.id, track_type, ver)
-        cache_man.logger.info("Fetching albums cache key: #{key}")
-        json = cache.read(key)
-        z = ZZ::ZZA.new
-        if(json.nil?)
-          cache_man.logger.info("Cache miss key: #{key}")
-          z.track_event("cache.miss.album", key)
-        else
-          cache_man.logger.info("Cache hit key: #{key}")
-          z.track_event("cache.hit.album", key)
-          return json
-        end
-
-        return nil
-      end
-
-      # updates the caches and does a single
-      # database operation to update any changed cache versions
-      def update_caches
-        ver_values = []
-        user_id = self.user.id
-        use_compression = ZangZingConfig.config[:memcached_gzip]
-        version_tracker.each do |item|
-          did_compress = use_compression
-          track_type = item[0]
-          albums = item[1]
-          ver = item[2]
-          key = Loader.make_cache_key(user_id, track_type, ver)
-
-          json = JSON.fast_generate(albums)
-
-          begin
-            # compress the content once before caching: save memory and save nginx from compressing every response
-            json = checked_gzip_compress(json, 'homepage.cache.corruption', "Key: #{key}, UserId: #{user_id}") if use_compression
-            cache.write(key, json, :expires_in => Manager::CACHE_MAX_INACTIVITY)
-            cache_man.logger.info "Caching #{key}"
-          rescue Exception => ex
-            # log the message but continue
-            did_compress = false
-            cache_man.logger.error "Failed to cache: #{key} due to #{ex.message}"
-          end
-
-          ver_values << [user_id, track_type, ver, user_last_touch_at]
-
-          # now store the json for this cache for later retrieval
-          case track_type
-            when TrackTypes::MY_ALBUMS, TrackTypes::MY_ALBUMS_PUBLIC
-              self.my_albums_json = json
-              self.my_albums_json_compressed = did_compress
-            when TrackTypes::LIKED_ALBUMS, TrackTypes::LIKED_ALBUMS_PUBLIC
-              self.liked_albums_json = json
-              self.liked_albums_json_compressed = did_compress
-            when TrackTypes::LIKED_USERS_ALBUMS_PUBLIC
-              self.liked_users_albums_json = json
-              self.liked_users_albums_json_compressed = did_compress
-          end
-        end
-        version_tracker.clear
-
-        # ok, now that the caches have been stored, save the versions
-        base_cmd = "INSERT INTO c_versions(user_id, track_type, ver, user_last_touch_at) VALUES "
-        end_cmd = " ON DUPLICATE KEY UPDATE ver = VALUES(ver), user_last_touch_at = VALUES(user_last_touch_at)"
-        cache_man.fast_insert(ver_values, base_cmd, end_cmd)
-      end
 
       # updates all of the specified trackers in a single insert/update
       # if the force_touch flag is set to true we will update the user_last_touch_at
@@ -168,7 +98,49 @@ module Cache
         tracker.clear
       end
 
-      # load the current versions for the 3 types based on public or not
+      # updates the caches and does a single
+      # database operation to update any changed cache versions
+      def update_caches
+        ver_values = []
+        user_id = self.user.id
+        use_compression = Loader.compressed
+        version_tracker.each do |item|
+          did_compress = use_compression
+          album_type = item[0]
+          albums = item[1]
+          ver = item[2]
+          key = Loader.make_cache_key(user_id, album_type, ver)
+
+          json = JSON.fast_generate(albums)
+
+          begin
+            # compress the content once before caching: save memory and save nginx from compressing every response
+            json = checked_gzip_compress(json, 'homepage.cache.corruption', "Key: #{key}, UserId: #{user_id}") if use_compression
+            cache.write(key, json, :expires_in => Manager::CACHE_MAX_INACTIVITY)
+            cache_man.logger.info "Caching #{key}"
+          rescue Exception => ex
+            # log the message but continue
+            did_compress = false
+            cache_man.logger.error "Failed to cache: #{key} due to #{ex.message}"
+          end
+
+          ver_values << [user_id, album_type, ver, user_last_touch_at]
+
+          # now store the json for this cache for later retrieval
+          # we hit them all to let them decide which one matches
+          album_loaders.each do |album_loader|
+            album_loader.store_json(json, did_compress, album_type)
+          end
+        end
+        version_tracker.clear
+
+        # ok, now that the caches have been stored, save the versions
+        base_cmd = "INSERT INTO c_versions(user_id, track_type, ver, user_last_touch_at) VALUES "
+        end_cmd = " ON DUPLICATE KEY UPDATE ver = VALUES(ver), user_last_touch_at = VALUES(user_last_touch_at)"
+        cache_man.fast_insert(ver_values, base_cmd, end_cmd)
+      end
+
+      # load the current versions for the various types based on public or not
       def load_current_versions
         begin
           user_id = user.id
@@ -177,22 +149,13 @@ module Cache
           # take the results and put them in a hash so we can pull what we need
           ver_map = {}
           results.each do |r|
-            track_type = r[0]
+            album_type = r[0]
             ver = r[1]
-            ver_map[track_type] = ver
+            ver_map[album_type] = ver
           end
 
-          # now that we have them mapped build a version object from them
-          liked_users_albums = ver_map[TrackTypes::LIKED_USERS_ALBUMS_PUBLIC]
-          if public
-            my_albums = ver_map[TrackTypes::MY_ALBUMS_PUBLIC]
-            liked_albums = ver_map[TrackTypes::LIKED_ALBUMS_PUBLIC]
-          else
-            my_albums = ver_map[TrackTypes::MY_ALBUMS]
-            liked_albums = ver_map[TrackTypes::LIKED_ALBUMS]
-          end
-
-          return Versions.new(user, public, my_albums, liked_albums, liked_users_albums)
+          # the ver_map contains the album_type to version data
+          return Versions.new(user, public, ver_map)
 
         rescue Exception => ex
           # ignore the exception and fall through to return 0 versions
@@ -203,97 +166,22 @@ module Cache
 
       # load or fetch from cache my_albums
       def load_my_albums
-        track_type = get_my_albums_type
-        if (self.my_albums_json = cache_fetch(track_type, current_versions.my_albums)) == nil
-          # not found in the cache, need to call the database to fetch them
-          if (public)
-            albums = user.albums.where("privacy = 'public' AND completed_batch_count > 0")
-          else
-            albums = user.albums
-          end
-
-          # add ourselves to the track set because we want to be
-          # invalidated if our albums change
-          # user_id, tracked_id, track_type
-          user_id = user.id
-          add_tracked_user(user_id, track_type)
-
-          # and update the cache with the albums
-          current_versions.my_albums = updated_cache_version if current_versions.my_albums == 0
-          self.my_albums = albums_to_hash(albums)
-          version_tracker.add([track_type, self.my_albums, current_versions.my_albums])
-        end
+        my_album_loader.load_albums
       end
-
 
       # load or fetch from cache the liked_albums
       def load_liked_albums
-        track_type = get_liked_albums_type
-        if (self.liked_albums_json = cache_fetch(track_type, current_versions.liked_albums)) == nil
-          # not found in the cache, need to call the database to fetch them
-          # we need to track all of them regardless of their current state because we
-          # have to know of their existence so that when they do change to a visible
-          # state we will know.  This means we fetch all and track all but only put
-          # the visible ones into the cache
-          albums = user.liked_albums
-
-          user_id = user.id
-          # now build the list of ones we should put in the cache
-          # don't put in ones that haven't been completed or belong to us
-          # if someone is fetching our public view, only show public albums
-          visible_albums = []
-          albums.each do |album|
-            next if (album.completed_batch_count == 0) || (user_id == album.user_id)
-            visible_albums << album if public == false || (album.privacy == 'public')
-          end
-
-          # add all the albums to the tracker even
-          # if we can't see it currently so we have
-          # a chance to see it change
-          # don't track our own albums that we like
-          # since they should not show up
-          albums.each do |album|
-            add_tracked_album(album.id, track_type) unless album.user_id == user_id
-          end
-          # and add a user_id tracker for ourselves so we know if we like or unlike an album
-          add_tracked_album_like_membership(user_id, track_type)
-
-          # and update the cache with the albums
-          current_versions.liked_albums = updated_cache_version if current_versions.liked_albums == 0
-          self.liked_albums = albums_to_hash(visible_albums)
-          version_tracker.add([track_type, self.liked_albums, current_versions.liked_albums])
-        end
+        liked_album_loader.load_albums
       end
 
       # load or fetch from cache the liked_user_albums
       def load_liked_users_albums
-        track_type = get_liked_users_albums_type
-        if (self.liked_users_albums_json = cache_fetch(track_type, current_versions.liked_users_albums)) == nil
-          # not found in the cache, need to call the database to fetch them
-          albums = user.liked_users_public_albums
-          # now build the list of ones we should put in the cache
-          # don't put in ones that belong to us
-          user_id = user.id
-          visible_albums = []
-          albums.each do |album|
-            next if user_id == album.user_id
-            visible_albums << album if public == false || (album.privacy == 'public')
-          end
+        liked_users_album_loader.load_albums
+      end
 
-          # add the users we like to the tracker set
-          # because it is a set, duplicates will be filtered
-          # user_id, tracked_id, track_type
-          albums.each do |album|
-            add_tracked_user(album.user_id, track_type)
-          end
-          # and add a user_id tracker for ourselves so we know if we like or unlike a user
-          add_tracked_user_like_membership(user_id, track_type)
-
-          # and update the cache with the albums
-          current_versions.liked_users_albums = updated_cache_version if current_versions.liked_users_albums == 0
-          self.liked_users_albums = albums_to_hash(visible_albums)
-          version_tracker.add([track_type, self.liked_users_albums, current_versions.liked_users_albums])
-        end
+      # load or fetch from cache invited_albums
+      def load_invited_albums
+        invited_album_loader.load_albums
       end
 
       # this is called after all the loads are done and
@@ -334,57 +222,17 @@ module Cache
       # cache only if we have no version info for that item.  When the caller returns to
       # get the actual data if it's not in the cache we fetch it for them at that time.
       def pre_fetch_albums
-        load_my_albums() if current_versions.my_albums == 0
-        load_liked_albums() if current_versions.liked_albums == 0
-        load_liked_users_albums() if current_versions.liked_users_albums == 0
+        # walk the array of loaders and call each one that has no version
+        album_loaders.each do |album_loader|
+          if album_loader.current_version == 0
+            album_loader.load_albums
+          end
+        end
 
         # now update the cache state in the cache db
         update_cache_state(true)
       end
 
-      # get albums from the cache or load from db if out of date
-      def fetch_my_albums_json()
-        self.my_albums_json_compressed = ZangZingConfig.config[:memcached_gzip]
-        load_my_albums()
-        # now update the cache state in the cache db
-        update_cache_state(false)
-
-        # and return the albums
-        return my_albums_json
-      end
-
-      def fetch_liked_albums_json()
-        self.liked_albums_json_compressed = ZangZingConfig.config[:memcached_gzip]
-        load_liked_albums()
-        # now update the cache state in the cache db
-        update_cache_state(false)
-
-        # and return the albums
-        return liked_albums_json
-      end
-
-      def fetch_liked_users_albums_json()
-        self.liked_users_albums_json_compressed = ZangZingConfig.config[:memcached_gzip]
-        load_liked_users_albums()
-        # now update the cache state in the cache db
-        update_cache_state(false)
-
-        # and return the albums
-        return liked_users_albums_json
-      end
-
-      # returns the type based on public or not
-      def get_my_albums_type
-        public ? TrackTypes::MY_ALBUMS_PUBLIC : TrackTypes::MY_ALBUMS
-      end
-
-      def get_liked_albums_type
-        public ? TrackTypes::LIKED_ALBUMS_PUBLIC : TrackTypes::LIKED_ALBUMS
-      end
-
-      def get_liked_users_albums_type
-        TrackTypes::LIKED_USERS_ALBUMS_PUBLIC
-      end
 
       include PrettyUrlHelper
       # this method returns the album as a map which allows us to perform
@@ -435,7 +283,8 @@ module Cache
               :c_url => album_cover.nil? ? nil : album_cover.thumb_url,
               :photos_count => album.photos_count,
               :photos_ready_count => album.photos_ready_count,
-              :updated_at => album_updated_at
+              :updated_at => album_updated_at,
+              :my_role => album.my_role # valid values are Viewer, Contrib, Admin
           }
           fast_albums << hash_album
         end
