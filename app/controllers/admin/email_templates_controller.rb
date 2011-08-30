@@ -14,6 +14,7 @@ class Admin::EmailTemplatesController < Admin::AdminController
   def create
     @email_template=  EmailTemplate.new( params[:email_template ])
     if @email_template.save
+      flash[:notice]="Template #{@email_template.name} has been created"
       redirect_to email_templates_path()
     else
       load_info
@@ -37,7 +38,8 @@ class Admin::EmailTemplatesController < Admin::AdminController
   def update
     fetch_email_template
     if @email_template.update_attributes(params[:email_template])
-      redirect_to :back
+      flash[:notice]="Template '#{@email_template.name}' has been updated"
+      redirect_to email_templates_path()
     else
       load_info
       render :edit
@@ -47,6 +49,7 @@ class Admin::EmailTemplatesController < Admin::AdminController
   def destroy
     fetch_email_template
     if @email_template.destroy
+      flash[:notice]="Template '#{@email_template.name}' has been deleted"
       redirect_to email_templates_path()
     else
       load_info
@@ -67,6 +70,7 @@ class Admin::EmailTemplatesController < Admin::AdminController
       EmailTemplate.all.each do | et |
         begin
           @message = send( 'test_'+et.email.name, et.id )
+          @message[:to]=params[:target_address] unless params[:target_address].blank?
           @message.deliver
           i += 1
         rescue SubscriptionsException => e
@@ -77,7 +81,7 @@ class Admin::EmailTemplatesController < Admin::AdminController
           redirect_to :back and return
         end
       end
-      flash[:notice]="Test #{i} messages sent to #{current_user.email}."
+      flash[:notice]="#{i} test messages sent to #{params[:target_address]}."
       redirect_to :back and return
     else
       begin
@@ -86,8 +90,9 @@ class Admin::EmailTemplatesController < Admin::AdminController
         if params[:onscreen]
           render :layout => false
         else
+          @message[:to]=params[:target_address] unless params[:target_address].blank?
           @message.deliver
-          flash[:notice]="Test #{@template.email.name} message sent to #{current_user.email}."
+          flash[:notice]="Test #{@template.email.name} message sent to #{@message[:to]}."
           redirect_to :back
         end
       rescue SubscriptionsException => e
@@ -146,7 +151,7 @@ class Admin::EmailTemplatesController < Admin::AdminController
   end
 
   def test_album_shared( template_id )
-    Notifier.album_shared( sender.id, recipient.email, album.id, message, template_id)
+    Notifier.album_shared( sender.id, user_or_not_user_email_address, album.id, message, template_id)
   end
 
   def test_album_updated( template_id )
@@ -154,7 +159,7 @@ class Admin::EmailTemplatesController < Admin::AdminController
   end
 
   def test_contributor_added( template_id )
-    Notifier.contributor_added( album.id, recipient.email, message, template_id)
+    Notifier.contributor_added( album.id, user_or_not_user_email_address, message, template_id)
   end
 
   def test_welcome( template_id )
@@ -162,7 +167,7 @@ class Admin::EmailTemplatesController < Admin::AdminController
   end
 
   def test_photo_shared( template_id )
-    Notifier.photo_shared( sender.id, recipient.email, photo.id, message, template_id)
+    Notifier.photo_shared( sender.id, user_or_not_user_email_address, photo.id, message, template_id)
   end
 
   def test_beta_invite( template_id )
@@ -173,6 +178,14 @@ class Admin::EmailTemplatesController < Admin::AdminController
     Notifier.photo_comment( sender.id, recipient.id, comment.id, template_id)
   end
 
+
+  def user_or_not_user_email_address
+    if rand(2) <= 0
+      current_user.email
+    else
+      "not-a-user-for-emailsample@bucket.zangzing.com"
+    end
+  end
 
   def recipient
     current_user
