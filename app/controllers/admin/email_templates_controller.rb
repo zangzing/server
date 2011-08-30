@@ -60,27 +60,50 @@ class Admin::EmailTemplatesController < Admin::AdminController
     redirect_to :back
   end
 
+
   def test
-    begin
-      @template = EmailTemplate.find( params[:id] )
-      @message = send( 'test_'+@template.email.name, @template.id )
-      if params[:onscreen]
-        render :layout => false
-      else
-        @message.deliver
-        flash[:notice]="Test #{@template.email.name} message sent to #{current_user.email}."
+    if params[:id] && params[:id]=='all'
+      i = 0
+      EmailTemplate.all.each do | et |
+        begin
+          @message = send( 'test_'+et.email.name, et.id )
+          @message.deliver
+          i += 1
+        rescue SubscriptionsException => e
+          flash[:error]= "#{i} messages sent but there was an error on #{et.name} "+e.message
+          redirect_to :back and return
+        rescue Exception => e
+          flash[:error]="#{i} messages sent but unable to test template #{et.name} because: #{(e.message && e.message.length >0 ? e.message : e )}."
+          redirect_to :back and return
+        end
+      end
+      flash[:notice]="Test #{i} messages sent to #{current_user.email}."
+      redirect_to :back and return
+    else
+      begin
+        @template = EmailTemplate.find( params[:id] )
+        @message = send( 'test_'+@template.email.name, @template.id )
+        if params[:onscreen]
+          render :layout => false
+        else
+          @message.deliver
+          flash[:notice]="Test #{@template.email.name} message sent to #{current_user.email}."
+          redirect_to :back
+        end
+      rescue SubscriptionsException => e
+        flash[:error]= e.message
+        redirect_to :back
+      rescue Exception => e
+        flash[:error]="Unable to test template because: #{(e.message && e.message.length >0 ? e.message : e )}."
         redirect_to :back
       end
-    rescue SubscriptionsException => e
-      flash[:error]= e.message
-      redirect_to :back
-    rescue Exception => e
-      flash[:error]="Unable to test template because: #{(e.message && e.message.length >0 ? e.message : e )}."
-      redirect_to :back
     end
+
   end
 
   private
+
+
   def load_info
     gb = Gibbon::API.new(MAILCHIMP_API_KEYS[:api_key])
 
@@ -146,8 +169,6 @@ class Admin::EmailTemplatesController < Admin::AdminController
     Notifier.beta_invite( recipient.email, template_id)
   end
 
-
-
   def test_photo_comment( template_id )
     Notifier.photo_comment( sender.id, recipient.id, comment.id, template_id)
   end
@@ -185,7 +206,11 @@ class Admin::EmailTemplatesController < Admin::AdminController
   end
 
   def photo
-    album.photos[ rand( album.photos.count )]
+    photo = nil
+    while photo.nil?
+      photo = album.photos[ rand( album.photos.count )]
+    end
+    photo
   end
 
   def upload_batch
@@ -196,10 +221,12 @@ class Admin::EmailTemplatesController < Admin::AdminController
   end
 
   def message
-    if rand(2) == 1
+    if rand(4) >= 2
       "This message is automatically generated for test emails, Its mimics a custom message written by a user. "+
-          "It will be included randomly so you may or may not see it. The following symbols are part of the test  "+
-          "<This is full & of HTML symbols <which></should> &Be<> escaped> END OF TEST MESSAGE"
+          "It will be included randomly so you may or may not see it. Line break here ==>\n"+
+          "The following symbols are part of the test. It contains backslash n line breaks for testing "+
+          "<This is full & of HTML symbols <which></should> Line Break here ==>\n"+
+          "&Be<> escaped> END OF TEST MESSAGE"
     else
       ""
     end
