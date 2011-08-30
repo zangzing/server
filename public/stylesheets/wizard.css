@@ -539,7 +539,7 @@ table#email-share-form td{
 }
 
 table#email-share-form td.to{
-    vertical-align:bottom;
+    vertical-align:top;
     text-align:right;
 }
 
