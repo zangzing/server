@@ -187,7 +187,7 @@ zz.comments = {};
 
 
 
-    zz.comments.build_comments_widget = function(photo_id, current_user_can_delete){
+    zz.comments.build_comments_widget = function(photo_id){
         var comments_element = $(COMMENTS_TEMPLATE);
 
         // setup one-finger scroll for ipad
@@ -195,7 +195,7 @@ zz.comments = {};
 
         var pending_request_for_comments = null;
 
-        var build_comment_element = function(comment_json){
+        var build_comment_element = function(comment_json, current_user_can_delete){
             var comment_text = comment_json['text'];
             comment_text = comment_text.replace(/\n/g, '<br>');
 
@@ -257,12 +257,12 @@ zz.comments = {};
                 comment_loading_element.remove();
 
 
-                var current_user_can_delete = json['current_user']['can_delete_comments']=="true";
+                var current_user_can_delete = json['current_user']['can_delete_comments'];
 
 
                 // add all the comments
-                _.each(json['commentable']['comments'], function(comment_json, current_user_can_delete){
-                    var comment_element = build_comment_element(comment_json);
+                _.each(json['commentable']['comments'], function(comment_json){
+                    var comment_element = build_comment_element(comment_json, current_user_can_delete);
                     comments_element.find('.comments').append(comment_element);
                 });
 
