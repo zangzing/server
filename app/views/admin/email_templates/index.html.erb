@@ -68,10 +68,7 @@
                   <%=button_to "Send Me A Test",   {:action => :test, :id=> et.id}, {:method => :get}  %>
                 </td>
                 <td>
-                  <%= form_for et, :url => test_email_template_url( et ), :html => { :method => :get, :class=>"button-to", :target=> "_blank" } do | f | %>
-                      <input type="hidden" name="onscreen" value="true" />
-                      <input value="View" type="submit"/>
-                  <%end%>
+                  <button onclick="window.open('<%="#{test_email_template_url( et )}?onscreen=true"%>','_blank','left=20,top=20,width=700,height=900,toolbar=0,resizable=0,scrollbars=1');return false">View</button>
                 </td>
 
               </tr>
@@ -79,7 +76,33 @@
 
         </table>
       </div>
-      <%=button_to "Back to emails", emails_url, :method => 'get'%>
-      <%=button_to "Create new Template", new_email_template_url, :method => 'get'%>
+      <div>
+      <table>
+      <tr>
+      <td><%=button_to "Back to emails", emails_url, :method => 'get'%></td>
+       <td><%=button_to "Create new Template", new_email_template_url, :method => 'get'%></td>
+        <td width="50%">&nbsp</td>
+        <td><%=button_to "Send Me All",   {:action => :test, :id=> 'all'}, {:method => :get}  %></td>
+        <td><button onclick="show_all_email_templates();return false">View All</button></td>
+       </tr>
+      </table>
+      </div>
   </div>
 </div>
+
+
+<script type="text/javascript">
+  function show_all_email_templates(){
+    <%left = 20
+      top  = 20
+      EmailTemplate.all.each do |et| %>
+        window.open('<%="#{test_email_template_url( et )}?onscreen=true"%>','<%=et.name%>','left=<%=left%>,top=<%=top%>,width=700,height=900,toolbar=0,resizable=0,scrollbars=1');
+    <% left +=10
+       top += 10
+      end%>
+  }
+
+  function mail_all_email_templates(){
+
+  }
+</script>
