@@ -21,6 +21,7 @@ zz.contact_list = {
             hintText: 'Enter email address',
             searchDelay: 0,
             validate: function(value) {
+                value = $.trim(value);
                 return self.EMAIL_REGEX_SHORT.test(value) || self.EMAIL_REGEX_LONG.test(value);
             },
             classes: {
