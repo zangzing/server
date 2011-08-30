@@ -187,7 +187,7 @@ zz.comments = {};
 
 
 
-    zz.comments.build_comments_widget = function(photo_id){
+    zz.comments.build_comments_widget = function(photo_id, current_user_can_delete){
         var comments_element = $(COMMENTS_TEMPLATE);
 
         // setup one-finger scroll for ipad
@@ -219,7 +219,7 @@ zz.comments = {};
                }
             });
 
-            if(comment_json['user_id'] == zz.session.current_user_id){
+            if(current_user_can_delete || comment_json['user_id'] == zz.session.current_user_id){
                 comment.addClass('deletable');
             }
 
@@ -257,16 +257,15 @@ zz.comments = {};
                 comment_loading_element.remove();
 
 
+                var current_user_can_delete = json['current_user']['can_delete_comments']=="true";
+
+
                 // add all the comments
-                _.each(json['commentable']['comments'], function(comment_json){
+                _.each(json['commentable']['comments'], function(comment_json, current_user_can_delete){
                     var comment_element = build_comment_element(comment_json);
                     comments_element.find('.comments').append(comment_element);
                 });
 
-                //set deleteable flag
-                if(json['current_user']['can_delete_comments']){
-                    comments_element.find('.comments').addClass('deleteable');
-                }
 
 
 
