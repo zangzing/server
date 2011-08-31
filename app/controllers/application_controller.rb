@@ -144,12 +144,12 @@ class ApplicationController < ActionController::Base
   end
 
   # A variation of require_user_json that also requires the user_id param
-  # to be the same user as current user
+  # to be the same user as current user or that the user is a support admin
   def require_same_user_json
     user_id = params[:user_id].to_i
     return false unless require_user_json
     # if we pass the first test, verify we are the user we want info on
-    if current_user.id != user_id
+    if current_user.id != user_id && current_user.support_hero? == false
       msg = "You do not have permissions to access this data, you can only access your own data"
       if ZZ_API_VALID_VALUES.include?(request.headers[ZZ_API_HEADER_RAILS])
         # this is the standard api error response format
