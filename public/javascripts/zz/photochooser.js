@@ -773,6 +773,32 @@ zz.photochooser = {
             });
 
 
+            if(zz.config.rails_env != 'photos_production'){
+
+                //Dropbox
+                roots.push(
+                {
+                    open_url: zz.routes.path_prefix + '/dropbox/folders', //No need for .json cause this connector has unusual structure
+                    type: 'folder',
+                    name: 'Dropbox',
+                    src: zz.routes.image_url('/images/folders/dropbox_off.jpg'),
+                    rolloverSrc: zz.routes.image_url('/images/folders/dropbox_on.jpg'),
+                    add_url: zz.routes.path_prefix + "/dropbox/folders/import?path=/", //unlike other connectors, dropbox may have photos at the root level
+
+                    on_error: function(){
+                        var folder = this;
+                        self.bodyElement.hide().load('/static/connect_messages/connect_to_dropbox.html', function(){
+                            self.bodyElement.find('#connect-button').click(function(){
+                                self.open_login_window(folder, zz.routes.path_prefix + '/dropbox/sessions/new');
+                            });
+                            self.bodyElement.fadeIn('fast');
+                        });
+                    }
+
+                });
+
+            }
+
             //ZangZing
             roots.push(
             {
