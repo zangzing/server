@@ -58,6 +58,7 @@ Server::Application.routes.draw do
     get    '/users/:user_id/liked_albums_json'              => 'albums#liked_albums_json',              :as => :liked_albums_json
     get    '/users/:user_id/liked_albums_public_json'       => 'albums#liked_albums_public_json',       :as => :liked_albums_public_json
     get    '/users/:user_id/liked_users_public_albums_json' => 'albums#liked_users_public_albums_json', :as => :liked_users_public_albums_json
+    get    '/users/:user_id/invited_albums_json'            => 'albums#invited_albums_json',            :as => :invited_albums_json
 
 
     get    '/users/:user_id/albums'          => 'albums#index'             #, :as => :user_albums  user albums defined below
@@ -380,6 +381,10 @@ Server::Application.routes.draw do
     get    '/users/:user_id/liked_albums_json'              => 'albums#mobile_liked_albums_json',              :as => :mobile_liked_albums_json
     get    '/users/:user_id/liked_albums_public_json'       => 'albums#mobile_liked_albums_public_json',       :as => :mobile_liked_albums_public_json
     get    '/users/:user_id/liked_users_public_albums_json' => 'albums#mobile_liked_users_public_albums_json', :as => :mobile_liked_users_public_albums_json
+    get    '/users/:user_id/invited_albums_json'            => 'albums#mobile_invited_albums_json',            :as => :mobile_invited_albums_json
+
+    #users
+    get    '/users/:user_id/info' => 'users#mobile_user_info',                  :as => :mobile_user_info
   end
 
 

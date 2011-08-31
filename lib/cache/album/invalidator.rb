@@ -37,6 +37,11 @@ module Cache
         tracker.add([user_id, TrackTypes::ALBUM_LIKE_MEMBERSHIP, track_type])
       end
 
+      # this tracks changes to the viewer/contrib album acl for a given user
+      def add_tracked_user_invites(user_id, track_type)
+        tracker.add([user_id, TrackTypes::USER_INVITES, track_type])
+      end
+
       # Invalidate the tracks and related versions
       # in the db.  Also deletes the tracks from
       # the database.
