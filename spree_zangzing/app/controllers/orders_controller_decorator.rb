@@ -1,4 +1,5 @@
 OrdersController.class_eval do
+  before_filter :require_user, :only => [:index]
   before_filter :check_authorization
 
 
@@ -14,6 +15,11 @@ OrdersController.class_eval do
     )
     @order.add_variant( variant,  li_photo_data, 1 )
     respond_with( @order )
+  end
+
+  def index
+     @orders = Order.complete.find_all_by_user_id( current_user.id )
+    respond_with( @orders )
   end
 
   # the inbound variant is determined either from products[pid]=vid or variants[master_vid], depending on whether or not the product has_variants, or not
@@ -59,8 +65,10 @@ OrdersController.class_eval do
     order = current_order || Order.find_by_number(params[:id])
 
     if order
-      unless current_user.id == order.user.id || order.token == session[:access_token]
-         render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
+      if current_user
+          render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401 unless current_user.id == order.user.id
+      else
+         render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401 unless order.token == session[:access_token]
       end
     else
       true

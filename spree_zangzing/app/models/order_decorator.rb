@@ -61,7 +61,7 @@ Order.class_eval do
       end
     end
 
-    after_transition :to => 'payment', :do => :create_tax_charge!
+    before_transition :to => 'confirm', :do => :create_tax_charge!
     before_transition:to => 'confirm', :do => :assign_default_shipping_method
     after_transition :to => 'confirm', :do => :create_shipment!
     after_transition :to => 'complete', :do => :finalize!
