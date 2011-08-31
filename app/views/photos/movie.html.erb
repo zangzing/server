@@ -12,7 +12,10 @@
 
 
     <%= render :partial => "facebook/album_opengraph_tags" %>
-    
+
+    <title><%=@album.name%> by <%=@album.user.name%> | Photo Sharing - ZangZing</title>
+
+
 
     <style type="text/css">
         html{
@@ -45,6 +48,8 @@
 
 
     <%= render :partial => 'layouts/zza'  %>
+
+
 
 </head>
 
