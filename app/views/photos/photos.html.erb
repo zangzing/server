@@ -36,6 +36,9 @@
                 zz.album.init_picture_view(photo_id);
             }
             else if(zz.page.url_params['_escaped_fragment_']){
+                // this is the google crawler (or maybe facebook)
+                // get the photo id from escaped param
+                // we could also do this with the @photo param from Rails
                 zz.album.init_picture_view(zz.page.url_params['_escaped_fragment_']);
             }
             else {
