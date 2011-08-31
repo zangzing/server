@@ -1,24 +1,12 @@
 Order.class_eval do
-  attr_accessible :use_shipping_as_billing, :ship_address_id, :bill_address_id, :creditcard_id
+  attr_accessible :use_shipping_as_billing, :ship_address_id, :bill_address_id
 
   before_validation :clone_shipping_address, :if => "@use_shipping_as_billing"
   attr_accessor  :use_shipping_as_billing
-  attr_accessor :creditcard_id
+
 
   before_create do
       self.token = ::SecureRandom::hex(8)
-  end
-
-  before_save :create_payment_from_ccid
-
-
-  # If the attr accessor creditcard_id has been set,
-  #  create a creditcard using the given id.
-  def create_payment_from_ccid
-      creditcard = Creditcard.find_by_id( @creditcard_id  )
-      if creditcard
-        self.payments.build( :source => creditcard, :payment_method => creditcard.payment_method )
-      end
   end
 
   def clone_shipping_address

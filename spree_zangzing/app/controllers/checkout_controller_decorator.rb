@@ -55,7 +55,7 @@ CheckoutController.class_eval do
   def before_ship_address
     #new or edit existing order ship address view.
     if current_user
-      @order.ship_address = Address.default
+      @order.ship_address ||= Address.default
       @order.ship_address.user = current_user
     else
       @order.ship_address ||= Address.default
@@ -67,21 +67,21 @@ CheckoutController.class_eval do
     #remove any payments if you are updatind
     current_order.payments.destroy_all if request.put?
     if current_user
-      @order.bill_address = Address.default
+      @order.bill_address ||= Address.default
       @order.bill_address.user = current_user
     else
       @order.bill_address ||= Address.default
     end
   end
 
-  # Executed after order is complete
-  # Make the last used addresses, the user's default addresses
-  # clone the used addresses and leave the non-user-associated addresses as part of the order
-  # this prevents the user from editing addresses from a completed order
+   # Executed after order is complete
+   # Make the last used addresses, the user's default addresses
+   # clone the used addresses and leave the non-user-associated addresses as part of the order
+   # this prevents the user from editing addresses from a completed order
    def after_complete
      #remove the order from the session
      session[:order_id] = nil
-     
+
      if current_user
        # If a user is looged in, save  addresses and creditcard as default
        # Backup order addresses with addresses that cannot be modified by user.
@@ -96,53 +96,81 @@ CheckoutController.class_eval do
          @order.bill_address_id = new_ship.id
        else
          if original_ship.same_as?( original_bill )
-            @order.bill_address.id = new_ship.id
+           @order.bill_address.id = new_ship.id
          else
-            @order.bill_address = Address.create( original_bill.attributes.except("id", "user_id", "updated_at", "created_at"))
+           @order.bill_address = Address.create( original_bill.attributes.except("id", "user_id", "updated_at", "created_at"))
          end
        end
        @order.save
 
-        # new creditcards should be saved in the user's wallet
-        if @order.payment.source.user.nil?
-          @order.payment.source.update_attributes!(
-              :user_id => current_user.id
-          )
-        end
+       # new creditcards should be saved in the user's wallet
+       if @order.payment.source.user.nil?
+         @order.payment.source.update_attributes!(
+             :user_id => current_user.id
+         )
+       end
 
        #make addresses, creditcard user's default
-        @order.user.update_attributes!(
-             :bill_address_id => original_bill.id,
-             :ship_address_id => original_ship.id,
-             :creditcard_id   => @order.payment.source.id
-        )
+       @order.user.update_attributes!(
+           :bill_address_id => original_bill.id,
+           :ship_address_id => original_ship.id,
+           :creditcard_id   => @order.payment.source.id
+       )
      end
-
-
    end
 
+   # When the user clicks on an address from the addressbook, the order gets updated with
+   # the appropriate address id.
+   def update_address_id
+     if params[:order]
+       if params[:order][:ship_address_id]
 
-  # When the user clicks on an address from the addressbook, the order gets updated with
-  # the appropriate address id.
-  def update_address_id
-    if params[:order]
-      if params[:order][:ship_address_id]
-        address = Address.find_by_id( params[:order][:ship_address_id] )
-        if address
-          @order.ship_address = address
-        end
-        params[:order].delete :ship_address_id
-        params[:order].delete :ship_address_attributes
-      elsif params[:order][:bill_address_id]
-        address = Address.find_by_id( params[:order][:bill_address_id] )
-        if address
-          @order.bill_address = address
-        end
-        params[:order].delete :bill_address_id
-        params[:order].delete :bill_address_attributes
+         ship_address_id = params[:order][:ship_address_id]
+         params[:order].delete :ship_address_id
+
+         unless ship_address_id.blank?
+           address = Address.find_by_id( ship_address_id )
+           if address
+             @order.ship_address = address
+             params[:order].delete :ship_address_attributes
+           end
+           return true
+         end
+       end
+       if params[:order][:bill_address_id]
+
+         bill_address_id = params[:order][:bill_address_id]
+         params[:order].delete :bill_address_id
+
+         unless bill_address_id.blank?
+           bill_address = Address.find_by_id( bill_address_id )
+           if bill_address
+             @order.bill_address = bill_address
+             params[:order].delete :bill_address_attributes
+           end
+           return true
+         end
+       end
+       true
+     end
+   end
+
+  def object_params
+    # For payment step, filter order parameters to produce the expected nested attributes for a single payment and its source, discarding attributes for payment methods other than the one selected
+    if @order.payment?
+      if params[:payment_source].present? && source_params = params.delete(:payment_source)[params[:order][:payments_attributes].first[:payment_method_id].underscore]
+        params[:order][:payments_attributes].first[:source_attributes] = source_params
+      end
+      if (params[:order][:payments_attributes])
+        params[:order][:payments_attributes].first[:amount] = @order.total
+      end
+      if ( params[:order][:creditcard_id] )
+            params[:order][:payments_attributes].first[:creditcard_id] = params[:order][:creditcard_id]
+            params[:order].delete(:creditcard_id )
       end
     end
-    true
+    params[:order]
   end
+
 end
 
