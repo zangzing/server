@@ -435,4 +435,45 @@ class ApplicationController < ActionController::Base
     render :status => 509, :json => error_json
   end
 
+  # wraps a mobile api call and ensures that
+  # we handle exceptions cleanly and put into proper
+  # format - does the render so expects the block
+  # to return a hash that represents the result
+  #
+  # we pass custom_err to the block which allows the
+  # block to set specific error messages and code
+  # if this is not set and no exception is thrown
+  # we assume success and will create a json string
+  # of the result hash.  If the hash is nil we assume
+  # no response is wanted and return only head
+  #
+  # Keep in mind that because we call a block, that
+  # block must not use return at the top level since
+  # return in a block exits out to our caller without
+  # coming back to us first
+  def mobile_api_core(skip_render, block)
+    begin
+      custom_err = MobileError.new
+      result = block.call(custom_err)
+      if skip_render == false
+        if custom_err.err_set
+          render_json_error(nil, custom_err.message, custom_err.code)
+        elsif result.nil?
+          head :status => 200
+        else
+          render :json => JSON.fast_generate(result)
+        end
+      end
+    rescue Exception => ex
+      render_json_error(ex)
+    end
+  end
+
+  def mobile_api_self_render(&block)
+    mobile_api_core(true, block)
+  end
+
+  def mobile_api(&block)
+    mobile_api_core(false, block)
+  end
 end

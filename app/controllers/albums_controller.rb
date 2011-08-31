@@ -254,7 +254,7 @@ class AlbumsController < ApplicationController
 
 
   def mobile_albums()
-    begin
+    mobile_api do
       user = User.find(params[:user_id])
 
       get_albums(user, true)
@@ -282,11 +282,6 @@ class AlbumsController < ApplicationController
         :invited_albums                 => loader.invited_album_loader.current_version,
         :invited_albums_path            => mobile_invited_albums_path(loader)
       }
-
-      render :json => JSON.fast_generate(album_meta)
-
-    rescue Exception => ex
-      render_json_error( ex ) and return
     end
   end
 
@@ -381,11 +376,8 @@ class AlbumsController < ApplicationController
   end
 
   def mobile_my_albums_json
-    begin
+    mobile_api_self_render do
       my_albums_json_common(false)
-
-    rescue Exception => ex
-      render_json_error( ex ) and return
     end
   end
 
@@ -395,11 +387,8 @@ class AlbumsController < ApplicationController
   end
 
   def mobile_my_albums_public_json
-    begin
+    mobile_api_self_render do
       my_albums_json_common(true)
-
-    rescue Exception => ex
-      render_json_error( ex ) and return
     end
   end
 
@@ -415,11 +404,8 @@ class AlbumsController < ApplicationController
   end
 
   def mobile_liked_albums_json
-    begin
+    mobile_api_self_render do
       liked_albums_json_common(false)
-
-    rescue Exception => ex
-      render_json_error( ex ) and return
     end
   end
 
@@ -429,11 +415,8 @@ class AlbumsController < ApplicationController
   end
 
   def mobile_liked_albums_public_json
-    begin
+    mobile_api_self_render do
       liked_albums_json_common(true)
-
-    rescue Exception => ex
-      render_json_error( ex ) and return
     end
   end
 
@@ -450,11 +433,8 @@ class AlbumsController < ApplicationController
   end
 
   def mobile_invited_albums_json
-    begin
+    mobile_api_self_render do
       invited_albums_json_common
-
-    rescue Exception => ex
-      render_json_error( ex ) and return
     end
   end
 
@@ -472,11 +452,8 @@ class AlbumsController < ApplicationController
   end
 
   def mobile_liked_users_public_albums_json
-    begin
+    mobile_api_self_render do
       liked_users_public_albums_json_common
-
-    rescue Exception => ex
-      render_json_error( ex ) and return
     end
   end
 

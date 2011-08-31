@@ -189,7 +189,7 @@ class UsersController < ApplicationController
 
   # mobile api
   def mobile_user_info
-    begin
+    mobile_api do
       user_id = params[:user_id]
       user = User.find(user_id)
 
@@ -200,12 +200,6 @@ class UsersController < ApplicationController
         :last_name                      => user.last_name,
         :profile_url                    => user.profile_photo_url,
       }
-
-      render :json => JSON.fast_generate(user_info)
-
-
-    rescue Exception => ex
-      render_json_error( ex ) and return
     end
   end
 
