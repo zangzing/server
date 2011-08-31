@@ -1,2 +1,0 @@
-module Connector::DropboxHelper
-end
