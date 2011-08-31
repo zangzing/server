@@ -1,6 +1,12 @@
 <% content_for :page_title do %><%= @album.name %> by <%= @album.user.name %><% end %>
 
-<% content_for :canonical_url do %><%=album_pretty_url(@album)%><% end %>
+<% if @photo %>
+    <% content_for :canonical_url do %><%=photo_pretty_url(@photo)%><% end %>
+<% else %>
+    <% content_for :canonical_url do %><%=album_pretty_url(@album)%><% end %>
+<% end %>
+
+
 
 
 <% content_for :meta_tags do %>
@@ -28,6 +34,9 @@
                 }
 
                 zz.album.init_picture_view(photo_id);
+            }
+            else if(zz.page.url_params['_escaped_fragment_']){
+                zz.album.init_picture_view(zz.page.url_params['_escaped_fragment_']);
             }
             else {
                 zz.album.init_grid_view();
