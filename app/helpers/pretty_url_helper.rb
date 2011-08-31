@@ -18,6 +18,10 @@ module PrettyUrlHelper
      "#{album_pretty_url( album )}/activities"
    end
 
+   def album_people_pretty_url( album )
+     "#{album_pretty_url( album )}/people"
+   end
+
    def photo_pretty_url(photo)
      "#{user_url( photo.album.user)}/#{photo.album.friendly_id}/photos/#!#{photo.id}"
    end
@@ -26,16 +30,20 @@ module PrettyUrlHelper
      "#{user_url( photo.album.user)}/#{photo.album.friendly_id}/photos/#{photo.id}?show_comments=true"
    end
 
-
    def photo_url(photo)
       album_photos(photo.album) + "/#!{photo.id}"
    end
 
-
-
-
    def user_pretty_url(user)
      user_url( user )
+   end
+
+   def user_activities_pretty_url(user)
+     return "#{user_pretty_url(user)}/activities"
+   end
+
+   def user_people_pretty_url(user)
+     return "#{user_pretty_url(user)}/people"
    end
 
 

@@ -1,5 +1,8 @@
 <% content_for :page_title do %><%= @user.posessive_short_name %> People<% end %>
 
+<% content_for :canonical_url do %><%=user_people_pretty_url(@user)%><% end %>
+
+
 
 <% content_for :meta_tags do %>
     <%= render :partial => "facebook/user_opengraph_tags" %>
