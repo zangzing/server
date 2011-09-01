@@ -8,11 +8,10 @@ module SpreeZangzing
 
     def self.activate
        Spree::BaseController.asset_path = "/store%s"
-       Spree::Config.set( :logo => '/images/zz-logo.png')
        initializer 'spree_zangzing.set_spree_configuration_values' do |app|
           puts "Initializing spree_zangzing"
-          #Spree::Config.set( :logo => '/images/zz-logo.png')
-	        # MUST OVERRIDE Spree::Config.set(:default_print_sku => "EZP-00011")
+          # Spree::Config.set( :logo => '/images/zz-logo.png')
+          # Spree::Config.set(:default_print_sku => "10040")
           # Spree::Config.set( :allow_guest_checkout => true)
        end
 

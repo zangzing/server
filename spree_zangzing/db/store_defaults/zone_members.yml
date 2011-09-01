@@ -167,3 +167,9 @@ zone_members_007:
   updated_at: 2009-06-04 13:22:26
   zone_id: "1"
   zoneable_type: Country
+zone_members_415:
+  zoneable_id: "276110813"
+  created_at: 2011-08-31 22:55:00
+  updated_at: 2011-08-31 22:55:00
+  zone_id: "3"
+  zoneable_type: State

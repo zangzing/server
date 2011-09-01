@@ -20,7 +20,7 @@ class ZangzingModificationsForSpree < ActiveRecord::Migration
       add_index     :creditcards, :user_id
 
       # add token to orders
-      add_column    :orders, :guest, :boolean, :default => :false
+      add_column    :orders, :guest, :boolean, :default => false
       add_column    :orders, :token, :string
   end
 
