@@ -1,0 +1,20 @@
+<% if line_item.photo%>
+    <div>
+      <table>
+        <tr>
+          <td>
+            <%=item_form.label :photo_id, 'Photo ID:'  %>
+            <%=item_form.text_field :photo_id%>
+          </td>
+           <td>
+            <%=item_form.label :crop_instructions, 'Crop Instructions'  %>
+            <%=item_form.text_field :crop_instructions%>
+          </td>
+          <td>
+            <%=item_form.label :back_message, 'Back Message'  %>
+            <%=item_form.text_field :back_message%>
+          </td>
+        </tr>
+      </table>
+    </div>
+ <%end%>

@@ -100,15 +100,15 @@ Order.class_eval do
   end
 
 
-  def add_variant(variant, photo_data, quantity = 1)
-    current_item = contains?(variant,photo_data)
+  def add_variant(variant, photo, quantity = 1)
+    current_item = contains?(variant,photo)
     if current_item
       current_item.quantity += quantity
       current_item.save
     else
       logger.debug "CREATING NEW LINE ITEM"
       current_item = LineItem.new(:quantity => quantity)
-      current_item.photo_data = photo_data
+      current_item.photo = photo
       current_item.variant = variant
       current_item.price   = variant.price
       self.line_items << current_item
@@ -130,11 +130,11 @@ Order.class_eval do
     current_item
   end
 
-  def contains?(variant,photo_data = nil)
+  def contains?(variant,photo = nil)
     line_items.detect{ |line_item|
-      if line_item.photo_data && photo_data
+      if line_item.photo && photo
         line_item.variant_id == variant.id &&
-            line_item.photo_data.source_url == photo_data.source_url
+            line_item.photo.id == photo.id
       else
         line_item.variant_id == variant.id
       end

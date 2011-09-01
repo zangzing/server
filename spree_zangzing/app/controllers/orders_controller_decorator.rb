@@ -9,11 +9,7 @@ OrdersController.class_eval do
     @order = current_order(true)
     variant = Variant.find_by_sku(Spree::Config[:default_print_sku])
     photo = Photo.find( params[:photo_id] )
-    li_photo_data = LineItemPhotoData.new(
-        :photo_id   => params[:photo_id],
-        :source_url => photo.thumb_url
-    )
-    @order.add_variant( variant,  li_photo_data, 1 )
+    @order.add_variant( variant,  photo, 1 )
     respond_with( @order )
   end
 
@@ -33,12 +29,12 @@ OrdersController.class_eval do
     params[:products].each do |product_id,variant_id|
       quantity = params[:quantity].to_i if !params[:quantity].is_a?(Hash)
       quantity = params[:quantity][variant_id].to_i if params[:quantity].is_a?(Hash)
-      @order.add_variant(Variant.find(variant_id), photo_data, quantity) if quantity > 0
+      @order.add_variant(Variant.find(variant_id), photo, quantity) if quantity > 0
     end if params[:products]
 
     params[:variants].each do |variant_id, quantity|
       quantity = quantity.to_i
-      @order.add_variant(Variant.find(variant_id),  photo_data, quantity) if quantity > 0
+      @order.add_variant(Variant.find(variant_id),  photo, quantity) if quantity > 0
     end if params[:variants]
 
     redirect_to cart_path
@@ -47,13 +43,8 @@ OrdersController.class_eval do
 
   private
   # given params[:customizations], return a non-persisted  PhotoProductCustomData object
-  def photo_data
-    # do we have any photo_data?
-    ppcd = nil
-    if params[:photo_data]
-      ppcd = LineItemPhotoData.new( params[:photo_data] )
-    end
-    ppcd
+  def photo
+    Photo.find_by_id( params[:photo_id] ) if params[:photo_id]
   end
 
 

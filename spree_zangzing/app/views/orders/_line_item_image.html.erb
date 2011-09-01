@@ -1,5 +1,5 @@
-<% if line_item.photo_data %>
-        <%=  image_tag line_item.photo_data.source_url   %>
+<% if line_item.photo %>
+        <%=  image_tag line_item.photo.thumb_url   %>
 <% else %>
       <% if variant.images.length == 0 %>
         <%= small_image(variant.product) %>
