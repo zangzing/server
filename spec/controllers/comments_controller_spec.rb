@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe CommentsController do
+  include ControllerSpecHelper
+  
 
   before(:each) do
     ActionMailer::Base.delivery_method = :test
@@ -16,14 +18,6 @@ describe CommentsController do
     login
   end
 
-  def login
-    @current_user = Factory(:user)
-    controller.stub!(:current_user).and_return(@current_user)
-  end
-
-  def logout
-    controller.stub!(:current_user).and_return(nil)
-  end
 
   describe '#delete action' do
     it "should fail if no current user" do

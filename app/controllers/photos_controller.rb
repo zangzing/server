@@ -430,7 +430,12 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
       if request.xhr?
         head :not_found
       else
-        render :file => "#{Rails.root}/public/404.html", :layout => false, :status => 404
+        if params[:user_id]
+          album_not_found_redirect_to_owners_homepage(params[:user_id])
+        else
+          render :file => "#{Rails.root}/public/404.html", :layout => false, :status => 404
+        end
+
       end
       return false
     end

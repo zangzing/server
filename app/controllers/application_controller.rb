@@ -231,6 +231,24 @@ class ApplicationController < ActionController::Base
 
 
 
+
+
+  def album_not_found_redirect_to_owners_homepage(user_id)
+    flash[:notice] = "Sorry, we could not find the album that you were looking for."
+    session[:flash_dialog] = true
+    redirect_to user_url(user_id), :status => 301
+  end
+
+  def user_not_found_redirect_to_homepage_or_potd
+    flash[:notice] = "Sorry, we could not find the ZangZing user that you were looking for."
+    session[:flash_dialog] = true
+    if current_user
+      redirect_to user_url(current_user)
+    else
+      redirect_to potd_path, :status => 301
+    end
+  end
+
   #
   # Redirects the user to the desired location after log in. If no stored location then to the default location
   def redirect_back_or_default(default)

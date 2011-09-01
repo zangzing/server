@@ -237,7 +237,7 @@ class AlbumsController < ApplicationController
     begin
       @user = User.find(params[:user_id])
     rescue ActiveRecord::RecordNotFound => e
-      render :file => "#{Rails.root}/public/404.html", :layout => false, :status => 404
+      user_not_found_redirect_to_homepage_or_potd
       return
     end
 
