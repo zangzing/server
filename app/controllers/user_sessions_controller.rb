@@ -12,6 +12,7 @@ class UserSessionsController < ApplicationController
   def new
     if params[:return_to]
       session[:return_to] = params[:return_to]
+      flash.keep
       redirect_to signin_url
       return
     end
