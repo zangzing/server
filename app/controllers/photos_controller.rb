@@ -11,13 +11,13 @@ class PhotosController < ApplicationController
   before_filter :oauth_required,                  :only =>   [ :agent_create, :agent_index ]   #for agent
   # oauthenticate :strategies => :two_legged, :interactive => false, :only =>   [ :upload_fast ]
 
-  before_filter :require_album,                   :only =>   [ :agent_create, :index, :movie, :photos_json, :photos_json_invalidate, :show ]
+  before_filter :require_album,                   :only =>   [ :agent_create, :index, :movie, :mobile_photos_json, :photos_json, :photos_json_invalidate, :show ]
   before_filter :require_photo,                   :only =>   [ :destroy, :update, :position, :async_edit, :async_rotate_left, :async_rotate_right, :download ]
 
   before_filter :require_album_admin_role,                :only =>   [ :update, :position ]
   before_filter :require_photo_owner_or_album_admin_role, :only =>   [ :destroy, :async_edit, :async_rotate_left, :async_rotate_right ]
   before_filter :require_album_contributor_role,          :only =>   [ :agent_create  ]
-  before_filter :require_album_viewer_role,               :only =>   [ :index, :movie, :photos_json  ]
+  before_filter :require_album_viewer_role,               :only =>   [ :index, :movie, :mobile_photos_json, :photos_json  ]
 
 
   # Used by the agent to create photos duh?
@@ -227,7 +227,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
 
   # returns a json string of the album photos
   # @album is set by before_filter require_album
-  def photos_json
+  def photos_loader
      gzip_compress = ZangZingConfig.config[:memcached_gzip]
      compressed = gzip_compress
      if stale?(:etag => @album)
@@ -268,6 +268,16 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
       render :json => json
     else
       logger.debug 'etag match, sending 304'
+    end
+  end
+
+  def photos_json
+    photos_loader
+  end
+
+  def mobile_photos_json
+    mobile_api_self_render do
+      photos_loader
     end
   end
 

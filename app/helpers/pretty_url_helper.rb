@@ -50,6 +50,10 @@ module PrettyUrlHelper
     return '/zangzing/zangzing-photo-of-the-day'
   end
 
+  def mobile_album_json_path(album_id, cache_ver)
+    return "/mobile/albums/#{album_id}/photos_json?#{cache_ver}"
+  end
+
   def bitly_url(url)
     begin
       bitly = Bitly.new(BITLY_API_KEYS[:username], BITLY_API_KEYS[:api_key]).shorten(url)
