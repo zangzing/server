@@ -124,6 +124,36 @@
        <%end%>
       </div>
     </li>
+    <% if order_count = @user.orders.complete.count > 0 %>
+        <li class="item tab add">
+          <div class="header tab-centered">
+            Order History
+          </div>
+          <div class="indented content">
+            <table>
+              <tr>
+                <th>Order Date</th>
+                <th>Order Number</th>
+                <th>Shipped To</th>
+                <th>Status</th>
+              </tr>
+              <%@user.orders.complete.each_index do |i|%>
+                  <% order = @user.orders.complete[i] %>
+                  <tr>
+                    <td><%=link_to order.completed_at.strftime("%d %b %Y"), order_path( order) %></td>
+                    <td><%=link_to order.number,  order_path( order) %></td>
+                    <td><%= "#{order.ship_address.firstname} #{order.ship_address.lastname}"%></td>
+                    <td><%=order.state%></td>
+                  </tr>
+                  <%if i >= 0 %>
+                      <tr><td></td><td></td><td></td><td>MORE</td></tr>
+                  <%break%>
+                  <%end %>
+              <%end%>
+            </table>
+          </div>
+        </li>
+    <%end%>
   </ul>
 <% end #user form%>
 <ul>

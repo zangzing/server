@@ -13,6 +13,7 @@ module SpreeCore
       #register all payment methods (unless we're in middle of rake task since migrations cannot be run for this first time without this check)
       if File.basename( $0 ) != "rake"
         [
+          Gateway::Braintree,
           Gateway::Bogus,
           Gateway::AuthorizeNet,
           Gateway::AuthorizeNetCim,
@@ -21,7 +22,6 @@ module SpreeCore
           Gateway::PayPal,
           Gateway::SagePay,
           Gateway::Beanstream,
-          Gateway::Braintree,
           PaymentMethod::Check
         ].each{|gw|
           begin
