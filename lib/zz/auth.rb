@@ -9,6 +9,11 @@ module ZZ
   module Auth
     extend ActiveSupport::Concern
 
+     ZZ_API_HEADER = 'X-ZangZing-API'.freeze
+     ZZ_API_HEADER_RAILS = 'HTTP_X_ZANGZING_API'.freeze
+     ZZ_API_VALID_VALUES = ['mobile'].freeze
+
+
     included do
       protect_from_forgery # See ActionController::RequestForgeryProtection XSScripting protection
 

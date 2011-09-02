@@ -10,9 +10,7 @@
 
 class ApplicationController < ActionController::Base
   JSON_MEDIA_TYPE = 'application/json'.freeze
-  ZZ_API_HEADER = 'X-ZangZing-API'.freeze
-  ZZ_API_HEADER_RAILS = 'HTTP_X_ZANGZING_API'.freeze
-  ZZ_API_VALID_VALUES = ['mobile'].freeze
+
 
   include SslRequirement
   include ZZ::Auth
