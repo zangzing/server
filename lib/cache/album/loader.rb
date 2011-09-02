@@ -282,7 +282,7 @@ module Cache
               :c_url => album_cover.nil? ? nil : album_cover.thumb_url,
               :photos_count => album.photos_count,
               :photos_ready_count => album.photos_ready_count,
-              :updated_at => album.cache_version.to_i,
+              :cache_version => album.cache_version.to_i,
               :my_role => album.my_role # valid values are Viewer, Contrib, Admin
           }
           fast_albums << hash_album

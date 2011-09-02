@@ -42,6 +42,7 @@ describe "Mobile API" do
       j = JSON.parse(response.body).recursively_symbolize_keys!
       #puts JSON.pretty_generate(j)
       j[:public].should == false
+      j[:logged_in_user_id].should == @user_id
 
       # verify that we have the expected data
       path = j[:liked_users_albums_path]
@@ -78,6 +79,7 @@ describe "Mobile API" do
       j = JSON.parse(body).recursively_symbolize_keys!
       #puts JSON.pretty_generate(j)
       j[:public].should == true
+      j[:logged_in_user_id].should == nil
     end
 
     it "should fail to get user info" do
