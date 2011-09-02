@@ -270,6 +270,7 @@ class AlbumsController < ApplicationController
 
       album_meta = {
         :user_id                        => loader.user_id,
+        :logged_in_user_id              => current_user.nil? ? nil : current_user.id,
         :public                         => loader.public,
         :my_albums                      => loader.my_album_loader.current_version,
         :my_albums_path                 => mobile_my_albums_path(loader),
