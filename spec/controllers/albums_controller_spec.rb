@@ -50,7 +50,15 @@ describe AlbumsController do
 
     describe 'Albums I Like section' do
 
-      def should_show_all_liked_albums_with_privacy(privacy)
+      def should_show_liked_albums_with_privacy(privacy)
+        verify_liked_albums_with_privacy(privacy, true)
+      end
+
+      def should_not_show_liked_albums_with_privacy(privacy)
+        verify_liked_albums_with_privacy(privacy, false)
+      end
+
+      def verify_liked_albums_with_privacy(privacy, should_show)
         album_i_like = Factory.create(:album, :privacy=>privacy, :completed_batch_count=>1)
         Like.add(@me.id, album_i_like.id, Like::ALBUM)
 
@@ -63,21 +71,26 @@ describe AlbumsController do
 
 
         albums = JSON.parse(response.body)
-        albums.count.should == 1
-        albums[0]['id'].should == album_i_like.id
+
+        if should_show
+          albums.count.should == 1
+          albums[0]['id'].should == album_i_like.id
+        else
+          albums.count.should == 0
+        end
       end
 
 
       it 'should show all the public albums i like' do
-        should_show_all_liked_albums_with_privacy(Album::PUBLIC)
+        should_show_liked_albums_with_privacy(Album::PUBLIC)
       end
 
       it 'should show all the hidden albums i like' do
-        should_show_all_liked_albums_with_privacy(Album::HIDDEN)
+        should_show_liked_albums_with_privacy(Album::HIDDEN)
       end
 
       it 'should show all the password albums i like' do
-        should_show_all_liked_albums_with_privacy(Album::PASSWORD)
+        should_show_liked_albums_with_privacy(Album::PASSWORD)
       end
 
       it 'should show all the public albums of people i follow' do
