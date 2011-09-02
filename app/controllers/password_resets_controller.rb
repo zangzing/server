@@ -34,7 +34,7 @@ class PasswordResetsController < ApplicationController
         @user = User.find_by_username(params[:email])
       end
       
-      if @user
+      if @user && !@user.automatic?
          @user.deliver_password_reset_instructions!
          @reset_success = true
       else

@@ -100,13 +100,19 @@ class SendgridController < ApplicationController
         if attachments.count > 0 && @album
           user = @album.get_contributor_user_by_email( from.address )
           if user
-            add_photos(@album, user, attachments, subject)
+            if !subject.match(/^RE:.*/i)
+              add_photos(@album, user, attachments, subject)
+            else
+              # don't use set caption if user is replying to email
+              add_photos(@album, user, attachments)
+            end
+
           else
             logger.error "Received a contribution email from an address that is not a contributor. Sending error email"
             ZZ::Async::Email.enqueue(:contribution_error, from.address )
           end
         end
-        
+
         render :nothing => true, :status => :ok
 
       rescue ActiveRecord::RecordNotFound => ex
@@ -162,34 +168,50 @@ class SendgridController < ApplicationController
         # create another click event that identifies the specific link back to zangzing.com
         if(url.match("^http[s]?://[^/]*.zangzing.com"))
 
-         # need to remove "/#!..." and trailing "/" from url before resolving route
+          # need to remove "/#!..." and trailing "/" from url before resolving route
           cleaned_url = url.gsub(/\/#!.*|\/$/,'')
-          begin
-            route = Rails.application.routes.recognize_path(cleaned_url)
-            link_name = nil
 
-            if route[:controller]=="albums" && route[:action]=="index"
-              link_name = "user_homepage_url"
-            elsif route[:controller]=="photos" && route[:action]=="index"
-              if url.include?("/#!")
-                link_name = "album_photo_url"
-              else
-                link_name = "album_grid_url"
+          link_name = nil
+
+          if(cleaned_url == 'http://www.zangzing.com')
+            link_name = 'zangzing_dot_com_url'
+          else
+            begin
+              route = Rails.application.routes.recognize_path(cleaned_url)
+
+              if route[:controller]=="albums" && route[:action]=="index"
+                link_name = "user_homepage_url"
+              elsif route[:controller]=="photos" && route[:action]=="show"
+                if(url.match(/.*\?show_comments=true/))
+                  link_name = 'album_photo_url_with_comments'
+                else
+                  link_name = 'album_photo_url'
+                end
+              elsif route[:controller]=="photos" && route[:action]=="index"
+                if url.include?("/#!")
+                  link_name = "album_photo_url"
+                else
+                  link_name = "album_grid_url"
+                end
+              elsif route[:controller]=="activities" && route[:action]=="album_index"
+                link_name = "album_activities_url"
+              elsif route[:controller]=="likes" && route[:action]=="like" && route[:user_id]
+                link_name = "like_user_url"
+              elsif route[:controller]=="users" && route[:action]=="join"
+                link_name = "join_url"
               end
-            elsif route[:controller]=="activities" && route[:action]=="album_index"
-              link_name = "album_activities_url"
-            elsif route[:controller]=="likes" && route[:action]=="like" && route[:user_id]
-              link_name = "like_user_url"
-            end
 
-            if link_name
-              zza.track_event("#{category}.#{link_name}.click", {:email => email }, nil, nil, nil, url)
+            rescue ActionController::RoutingError => e
+              #unrecognized route
+              logger.error "could not find route for #{cleaned_url}"
+              logger.info e.backtrace
             end
-          rescue ActionController::RoutingError => e
-            #unrecognized route
-            logger.error "could not find route for #{cleaned_url}"
-            logger.info e.backtrace
           end
+
+          if link_name
+            zza.track_event("#{category}.#{link_name}.click", {:email => email }, nil, nil, nil, url)
+          end
+
         end
 
       when 'unsubscribe'

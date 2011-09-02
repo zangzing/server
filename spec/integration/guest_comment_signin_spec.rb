@@ -20,16 +20,14 @@ describe 'commenting as guest' do
 
     # signin and follow redirect back to photo single pic vuew
     post create_user_session_path, :email => user.email, :password => "password"
-    response.should be_redirect
-    response.should redirect_to(finish_create_photo_comment_url(photo))
-    get finish_create_photo_comment_url(photo) # for some reason follow_redirect! is not working
+
+    while redirect?
+      follow_redirect!
+    end
 
     # verify that comment has been added to database
     get photo_comments_url(photo)
-    follow_redirect!
     response.body.should match(/this is a comment/)
-
-
 
   end
 end

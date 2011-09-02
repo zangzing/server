@@ -58,6 +58,7 @@ Server::Application.routes.draw do
     get    '/users/:user_id/liked_albums_json'              => 'albums#liked_albums_json',              :as => :liked_albums_json
     get    '/users/:user_id/liked_albums_public_json'       => 'albums#liked_albums_public_json',       :as => :liked_albums_public_json
     get    '/users/:user_id/liked_users_public_albums_json' => 'albums#liked_users_public_albums_json', :as => :liked_users_public_albums_json
+    get    '/users/:user_id/invited_albums_json'            => 'albums#invited_albums_json',            :as => :invited_albums_json
 
 
     get    '/users/:user_id/albums'          => 'albums#index'             #, :as => :user_albums  user albums defined below
@@ -252,13 +253,20 @@ Server::Application.routes.draw do
       match '/instagram/folders.:format' => 'instagram_folders#index', :as => :instagram_folders
       match '/instagram/folders/:target/:action.:format' => 'instagram_folders#index', :as => :instagram_folder_action
 
-
       #photobucket
       match '/photobucket/sessions/new' => 'photobucket_sessions#new', :as => :new_photobucket_session
       match '/photobucket/sessions/create' => 'photobucket_sessions#create', :as => :create_photobucket_session
       match '/photobucket/sessions/destroy' => 'photobucket_sessions#destroy', :as => :destroy_photobucket_session
       match '/photobucket/folders' => 'photobucket_folders#index', :as => :photobucket_folders
       match '/photobucket/folders/:action' => 'photobucket_folders', :as => :photobucket
+
+      #dropbox
+      match '/dropbox/sessions/new' => 'dropbox_sessions#new', :as => :new_dropbox_session
+      match '/dropbox/sessions/create' => 'dropbox_sessions#create', :as => :create_dropbox_session
+      match '/dropbox/sessions/destroy' => 'dropbox_sessions#destroy', :as => :destroy_dropbox_session
+      match '/dropbox/folders' => 'dropbox_folders#index', :as => :dropbox_folders
+      match '/dropbox/folders/:action' => 'dropbox_folders', :as => :dropbox
+      match '/dropbox/urls/:root/*path' => 'dropbox_urls#serve_image', :as => :dropbox_image
 
       #zangzing
       match '/zangzing/folders/:zz_album_id/photos.:format' => 'zangzing_photos#index', :as => :zangzing_photos
@@ -312,14 +320,6 @@ Server::Application.routes.draw do
     post   '/sendgrid/unsubscribe'   => 'sendgrid#un_subscribe',:as => :sendgrid_unsubscribe
     post   '/sendgrid/events'        => 'sendgrid#events',      :as => :sendgrid_events
 
-    # ====================================================================================================
-    # ============================================= MOBILE_API  ==========================================
-    # ====================================================================================================
-    scope  '/mobile', :defaults => { :format => 'json' } do
-      post  '/login'                 => 'user_sessions#mobile_create'
-      match '/logout'                => 'user_sessions#mobile_destroy'
-      get   '/users/:user_id/albums' => 'albums#index'
-    end
 
 
     # ====================================================================================================
@@ -373,6 +373,31 @@ Server::Application.routes.draw do
       :extension => /.+/
   }
 
+  # ====================================================================================================
+  # ============================================= MOBILE_API  ==========================================
+  # ====================================================================================================
+  scope  '/mobile', :defaults => { :format => 'json' } do
+    post  '/login'                 => 'user_sessions#mobile_create',    :as => :mobile_login
+    match '/logout'                => 'user_sessions#mobile_destroy',   :as => :mobile_logout
+
+    #albums
+    get    '/users/:user_id/albums' => 'albums#mobile_albums',                  :as => :mobile_albums
+    get    '/users/:user_id/my_albums_json'                 => 'albums#mobile_my_albums_json',                 :as => :mobile_my_albums_json
+    get    '/users/:user_id/my_albums_public_json'          => 'albums#mobile_my_albums_public_json',          :as => :mobile_my_albums_public_json
+    get    '/users/:user_id/liked_albums_json'              => 'albums#mobile_liked_albums_json',              :as => :mobile_liked_albums_json
+    get    '/users/:user_id/liked_albums_public_json'       => 'albums#mobile_liked_albums_public_json',       :as => :mobile_liked_albums_public_json
+    get    '/users/:user_id/liked_users_public_albums_json' => 'albums#mobile_liked_users_public_albums_json', :as => :mobile_liked_users_public_albums_json
+    get    '/users/:user_id/invited_albums_json'            => 'albums#mobile_invited_albums_json',            :as => :mobile_invited_albums_json
+
+    #photos
+    get    '/albums/:album_id/photos_json'                  => 'photos#mobile_photos_json',                    :as => :mobile_album_photos_json
+
+    #users
+    get    '/users/:user_id/info' => 'users#mobile_user_info',                  :as => :mobile_user_info
+  end
+
+
+  # Root level user
   get    '/:username/settings'                 => 'users#edit',              :as => :edit_user
   get    '/:username/change_password'          => 'users#edit_password',     :as => :edit_user_password
 
@@ -386,6 +411,7 @@ Server::Application.routes.draw do
   get    '/:user_id/:album_id/activities'      => 'activities#album_index'
   get    '/:user_id/:album_id/movie'           => 'photos#movie'
   get    '/:user_id/:album_id/photos/:photo_id' => 'photos#show'
+
 
 
 

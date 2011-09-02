@@ -3,9 +3,9 @@
 #
 
 class Album < ActiveRecord::Base
-  attr_accessible :name, :privacy, :cover_photo_id, :photos_last_updated_at, :updated_at, :cache_version,
+  attr_accessible :name, :privacy, :cover_photo_id, :photos_last_updated_at, :updated_at, :cache_version, :photos_ready_count,
                   :stream_to_email, :stream_to_facebook, :stream_to_twitter, :who_can_download, :who_can_upload
-  attr_accessor :change_matters
+  attr_accessor :change_matters, :my_role
 
   belongs_to :user
   has_many :photos,           :dependent => :destroy
@@ -151,9 +151,10 @@ class Album < ActiveRecord::Base
   # use the id generator to ensure a unique id for each change.  One thing to note is that the id used
   # does not guarantee any kind of ordering.  It is only guaranteed to be unique.
   #
+  # Note: we rely on the update causing the after_ notifications to trigger
   def self.change_cache_version(album_id)
-    now = Time.now
     version = BulkIdManager.next_id_for('album_cache_version')
+    now = Time.now
     Album.update(album_id, :cache_version => version, :photos_last_updated_at => now, :updated_at => now)
   end
 
@@ -184,20 +185,19 @@ class Album < ActiveRecord::Base
       cover_ids << cover_photo_id unless cover_photo_id.nil?
     end
 
+    cover_map = {}
     if cover_ids.empty? == false
       # now perform the bulk query
-      coverPhotos = Photo.where(:id => cover_ids)
+      cover_photos = Photo.where(:id => cover_ids)
 
       # ok, now map these by id to cover
-      coverMap = {}
-      coverPhotos.each do |cover|
-        coverMap[cover.id.to_s] = cover
+      cover_photos.each do |cover|
+        cover_map[cover.id] = cover
       end
-
-      # and finally associate them back to each album
-      albums.each do |album|
-        album.set_cached_cover(coverMap[album.cover_photo_id.to_s])
-      end
+    end
+    # and finally associate them back to each album
+    albums.each do |album|
+      album.set_cached_cover(cover_map[album.cover_photo_id])
     end
   end
 
@@ -498,6 +498,33 @@ class Album < ActiveRecord::Base
     JSON.fast_generate( self.attributes )
   end
 
+  # update the photo counters for a given albums
+  # in a single update
+  def self.update_photo_counters(album_id)
+    photo_count = Photo.count('id', :conditions => "album_id = #{album_id}")
+    ready_count = Photo.count('id', :conditions => "album_id = #{album_id} AND state = 'ready'")
+    connection.execute("UPDATE albums SET photos_count = #{photo_count}, photos_ready_count = #{ready_count} WHERE id = #{album_id};")
+  end
+
+  # this is here so we can manually update the photos
+  # counts - the server should not be running
+  # when this is called to ensure that we end up
+  # with accurate counts
+  def self.update_all_photo_counters
+    # set the current counts
+    albums = Album.all
+    albums.each do |album|
+      update_photo_counters(album.id)
+    end
+
+    albums.count
+  end
+
+  # update the photos ready counter by the specified amount
+  # can be negative or positive
+  def self.update_photos_ready_count(album_id, amount)
+    Album.update_counters album_id, :photos_ready_count => amount
+  end
 
 private
   def make_create_album_activity

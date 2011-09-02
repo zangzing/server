@@ -9,6 +9,11 @@
 #  helper_method methods will also be available in all views
 
 class ApplicationController < ActionController::Base
+  JSON_MEDIA_TYPE = 'application/json'.freeze
+  ZZ_API_HEADER = 'X-ZangZing-API'.freeze
+  ZZ_API_HEADER_RAILS = 'HTTP_X_ZANGZING_API'.freeze
+  ZZ_API_VALID_VALUES = ['mobile'].freeze
+
   include SslRequirement
   include ZZ::Auth
   include ZZ::ZZAController
@@ -41,23 +46,6 @@ class ApplicationController < ActionController::Base
     #return unless request.xhr?
     response.headers['X-RecordType'] = record.class.name
     response.headers['X-Errors'] = record.errors.full_messages.to_json
-  end
-
-  #
-  #  Stores the intended destination of a rerquest to take the user there after log in
-  def store_location
-    session[:return_to] = request.fullpath
-  end
-
-  def set_show_comments_cookie
-    cookies[:show_comments] = true
-  end
-
-  #
-  # Redirects the user to the desired location after log in. If no stored location then to the default location
-  def redirect_back_or_default(default)
-    redirect_to(session[:return_to] || default)
-    session[:return_to] = nil
   end
 
   #
@@ -96,10 +84,25 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  #def x_accel_pdf(path, filename)
-  #  x_accel_redirect(path, :type => "application/pdf",
-  #                         :filename => filename)
-  #end
+  def set_show_comments_cookie
+    cookies[:hide_comments] = {:value => 'false', :path => '/'}
+  end
+
+  def album_not_found_redirect_to_owners_homepage(user_id)
+    flash[:notice] = "Sorry, we could not find the album that you were looking for."
+    session[:flash_dialog] = true
+    redirect_to user_url(user_id), :status => 301
+  end
+
+  def user_not_found_redirect_to_homepage_or_potd
+    flash[:notice] = "Sorry, we could not find the ZangZing user that you were looking for."
+    session[:flash_dialog] = true
+    if current_user
+      redirect_to user_url(current_user)
+    else
+      redirect_to potd_path, :status => 301
+    end
+  end
 
   def x_accel_redirect(path, opts ={})
     if opts[:type]
@@ -137,16 +140,52 @@ class ApplicationController < ActionController::Base
     render :json => {:message => "poll-for-response", :response_id => response_id, :response_url => response_url}
   end
 
-  # standard json response error
-  def render_json_error(ex)
-    error_json = AsyncResponse.build_error_json(ex)
-    render :status => 509, :json => error_json
-  end
-
   def associate_order
     return unless current_user and current_order
     current_order.associate_user!(current_user)
     session[:guest_token] = nil
   end
-  
+
+  # wraps a mobile api call and ensures that
+  # we handle exceptions cleanly and put into proper
+  # format - does the render so expects the block
+  # to return a hash that represents the result
+  #
+  # we pass custom_err to the block which allows the
+  # block to set specific error messages and code
+  # if this is not set and no exception is thrown
+  # we assume success and will create a json string
+  # of the result hash.  If the hash is nil we assume
+  # no response is wanted and return only head
+  #
+  # Keep in mind that because we call a block, that
+  # block must not use return at the top level since
+  # return in a block exits out to our caller without
+  # coming back to us first
+  def mobile_api_core(skip_render, block)
+    begin
+      custom_err = MobileError.new
+      result = block.call(custom_err)
+      if skip_render == false
+        if custom_err.err_set
+          render_json_error(nil, custom_err.message, custom_err.code)
+        elsif result.nil?
+          head :status => 200
+        else
+          render :json => JSON.fast_generate(result)
+        end
+      end
+    rescue Exception => ex
+      render_json_error(ex)
+    end
+  end
+
+  def mobile_api_self_render(&block)
+    mobile_api_core(true, block)
+  end
+
+  def mobile_api(&block)
+    mobile_api_core(false, block)
+  end
+
 end

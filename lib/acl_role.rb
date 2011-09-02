@@ -25,7 +25,8 @@ class ACLRole
   # return true if the current role has
   # at least the level of privileges as the
   # role specified
-  def has_permission(role)
-    self.priority <= role.priority
+  # if exact is set the permission level must match
+  def has_permission(role, exact = false)
+    exact ? self.priority == role.priority : self.priority <= role.priority
   end
 end

@@ -95,6 +95,11 @@ GEM
     configuration (1.2.0)
     crack (0.1.8)
     diff-lcs (1.1.2)
+    dropbox (1.2.3)
+      json (>= 1.2.0)
+      mechanize (>= 1.0.0)
+      multipart-post (>= 1.0)
+      oauth (>= 0.3.6)
     dynamic_form (1.1.4)
     erubis (2.6.6)
       abstract (>= 1.0.0)
@@ -286,6 +291,7 @@ DEPENDENCIES
   browser
   bundler (>= 1.0.14)
   closure-compiler
+  dropbox
   dynamic_form
   factory_girl
   faker

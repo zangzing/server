@@ -13,7 +13,9 @@
 
     <link rel="shortcut icon" href="/favicon.ico"/>
 
-    <title>ZangZing - Group Photo Sharing</title>
+    <link rel="canonical" href="<%= yield :canonical_url %>" />
+
+    <title><%= yield :page_title %> | Photo Sharing - ZangZing</title>
 
 
     <% if ! compatible_browser? %>
@@ -149,6 +151,7 @@
       zz.config.rails_asset_id = '<%= ENV["RAILS_ASSET_ID"] %>';
       zz.config.rails_asset_host = '<%= ActionController::Base.asset_host %>';
       zz.config.facebook_app_id = '<%=FACEBOOK_API_KEYS[:app_id]%>';
+      zz.config.rails_env = '<%= ENV["RAILS_ENV"] %>';
 
       $(document).ready(function(){
 

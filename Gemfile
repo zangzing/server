@@ -39,6 +39,7 @@ gem 'flickraw',      '0.8.2'                          # Flickr
 gem 'bitly'                                           # Bitly duh?
 gem 'gibbon',         '0.1.2'                          # MailChimp API
 gem 'instagram'                                       # Instagram
+gem 'dropbox'                                         # Dropbox
 
 gem 'vpim'                                            # VCard creator
 gem 'rpm_contrib'                                     # For New Relic Performance Instrumentation

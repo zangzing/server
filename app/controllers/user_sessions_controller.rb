@@ -12,6 +12,7 @@ class UserSessionsController < ApplicationController
   def new
     if params[:return_to]
       session[:return_to] = params[:return_to]
+      flash.keep
       redirect_to signin_url
       return
     end
@@ -50,24 +51,31 @@ class UserSessionsController < ApplicationController
   end
 
   def mobile_create
-      @user_session = UserSession.new(:email => params[:email], :password => params[:password], :remember_me => false)
-      if @user_session.save
-        render :json => { :user_credentials => @user_session.record.single_access_token,
-                          :user_id =>  @user_session.record.id,
-                          :username => @user_session.record.username 
+    mobile_api do |custom_err|
+      result = nil
+      user_session = UserSession.new(:email => params[:email], :password => params[:password], :remember_me => false)
+      if user_session.save
+        result = {
+            :user_credentials => user_session.record.persistence_token,
+            :user_id =>  user_session.record.id,
+            :username => user_session.record.username
         }
       else
-        errors_to_headers( @user_session )
-        head :status => 401
-       end
+        custom_err.set(user_session.errors.full_messages, 401)
+      end
+      result
+    end
   end
 
   def mobile_destroy
-      if current_user
-          current_user_session.destroy
-      end
-      head :status => 200
+    mobile_api do
+      current_user_session.destroy if current_user
+      nil
+    end
   end
 
+
+  def inactive
+  end
 
 end

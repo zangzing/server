@@ -109,9 +109,12 @@ zz.album = {};
 
                 if ($(this).hasClass('selected')) {
                     open_comments_drawer(true, current_photo_id, renderPictureView);
+                    ZZAt.track('button.open_comments.click');
+
                 }
                 else{
                     close_comments_drawer(true, renderPictureView);
+                    ZZAt.track('button.close_comments.click');
                 }
 
 
@@ -220,14 +223,12 @@ zz.album = {};
     var current_photo_id = null;
 
     function comments_open() {
-        return jQuery.cookie('show_comments') == 'true';
+        return jQuery.cookie('hide_comments') != 'true';
     }
 
     function open_comments_drawer(animate, photo_id, callback) {
 
-        // for some reason setting same value more than once
-        // causes problems -- multiple cookies that you cant' delete
-        jQuery.cookie('show_comments', 'true', {path:'/'});
+        jQuery.cookie('hide_comments', 'false', {path:'/'});
 
 
         var comments_panel = $('<div class="comments-right-panel"></div>');
@@ -252,7 +253,7 @@ zz.album = {};
     }
 
     function close_comments_drawer(animate, callback) {
-        jQuery.cookie('show_comments', null, {path:'/'});
+        jQuery.cookie('hide_comments', 'true', {path:'/'});
 
         var comments_panel = $('#article .comments-right-panel');
 
@@ -426,7 +427,7 @@ zz.album = {};
                         else {
                             moreLessbuttonElement.find('span').html('Show fewer photos');
                             moreLessbuttonElement.addClass('open');
-                            $(element).animate({height: $(element).children().last().position().top + 230}, 500, 'swing', function() {
+                            $(element).animate({height: $(element).find('.photogrid-cell').last().position().top + 230}, 500, 'swing', function() {
                                 $(element).trigger('scroll');  //hack: force the photos to load themselves now that they are visible
                             });
                             allShowing = true;

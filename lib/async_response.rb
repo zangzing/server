@@ -25,15 +25,17 @@ class AsyncResponse
       Rails.cache.read(response_id)
     end
 
-    def build_error_json(exception)
+    # exception can be passed as nil, in which
+    # case you must supply message and code
+    def build_error_json(exception, message = nil, code = nil)
       info = {
-        :exception => true,
-        :code => case exception.class.name
+        :exception => exception.nil? ? false : true,
+        :code => code || case exception.class.name
           when 'InvalidToken' then 401
           when 'HttpCallFail' then 509
           else 509
         end,
-        :message => exception.message
+        :message => message || exception.message
       }
       JSON.fast_generate(info)
     end

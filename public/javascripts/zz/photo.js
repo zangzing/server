@@ -168,13 +168,6 @@ zz.template_cache = zz.template_cache || {};
                 self.borderElement.append(self.errorElement);
             }
 
-            //edit caption
-            self.isEditingCaption = false;
-            if (o.allowEditCaption) {
-                self.captionElement.click(function(event) {
-                    self.editCaption();
-                });
-            }
 
             //lazy loading
             if (o.type !== 'photo') {
@@ -320,6 +313,7 @@ zz.template_cache = zz.template_cache || {};
                     comment_button.click(function(){
                         zz.comments.show_in_dialog(zz.page.album_id, zz.page.album_lastmod, o.photoId);
                         hide_frame();
+                        ZZAt.track('photo.comment.frame.click');
                     });
 
 
@@ -418,12 +412,30 @@ zz.template_cache = zz.template_cache || {};
             }
         },
 
+        _setupCaptionEditing: function(){
+            //edit caption
+            var self = this;
+            var o = self.options;
+            self.isEditingCaption = false;
+            if (o.allowEditCaption) {
+                self.captionElement.unbind('click');
+                self.captionElement.click(function(event) {
+                    self.editCaption();
+                });
+            }
+
+        },
+
         loadIfVisible: function(containerDimensions) {
             var self = this;
             if (!self.imageLoaded) {
                 if (self._inLazyLoadRegion(containerDimensions)) {
                     self._loadImage();
                     self.captionElement.ellipsis();
+
+                    // for some reason, the .ellipsis() call messes up the caption click handler on IE
+                    // so we need to set up again...
+                    self._setupCaptionEditing();
                 }
             }
         },
@@ -449,7 +461,7 @@ zz.template_cache = zz.template_cache || {};
             zz.image_utils.pre_load_image(initialSrc, function(image) {
                 self.imageObject = image;
                 self.imageLoaded = true;
-                self._resize(1);
+                self._resize();
 
                 //show the small version
                 self.imageElement.attr('src', initialSrc);
@@ -458,15 +470,25 @@ zz.template_cache = zz.template_cache || {};
                 //show the full version
                 zz.image_utils.pre_load_image(self.options.src, function(image) {
                     self.imageElement.attr('src', self.options.src);
+                    self._resize({height: image.height, width: image.width});
                 });
             });
         },
 
-        _resize: function(percent) {
+        _resize: function(imageSize) {
             var self = this,
                     o = self.options;
 
             var scaled = zz.image_utils.scale({width: self.imageObject.width, height: self.imageObject.height}, {width: self.options.maxWidth, height: self.options.maxHeight - o.captionHeight});
+
+
+            // make sure we don't stretch smaller photos. they should not
+            // be bigger than their natural size
+            if(imageSize){
+                if(scaled.width > imageSize.width){
+                    scaled = imageSize;
+                }
+            }
 
 
             var borderWidth = scaled.width + 10;
@@ -555,6 +577,10 @@ zz.template_cache = zz.template_cache || {};
                     }
                     self.captionElement.text(newCaption);
                     self.captionElement.ellipsis();
+
+                    // for some reason, the .ellipsis() call messes up the caption click handler on IE
+                    // so we need to set up again...
+                    self._setupCaptionEditing();
                     self.isEditingCaption = false;
                 }
 

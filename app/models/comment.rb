@@ -33,6 +33,7 @@ class Comment < ActiveRecord::Base
 
     if subject.is_a?(Photo)
       photo = subject
+      album = photo.album
 
       users_to_notify = []
 
@@ -40,7 +41,7 @@ class Comment < ActiveRecord::Base
       users_to_notify << photo.user
 
       # album owner
-      users_to_notify << photo.album.user
+      users_to_notify << album.user
 
       # others who have commented
       self.commentable.comments.each do |comment|
@@ -64,6 +65,15 @@ class Comment < ActiveRecord::Base
 
       # remove current user
       users_to_notify.delete(self.user)
+
+
+      # if pasaword album, remove users who are not in ACL
+      if album.private?
+        users_to_notify.reject! { |user|
+          !album.viewer?(user.id)
+        }
+      end
+
 
       users_to_notify.each do |user_to_notify|
         ZZ::Async::Email.enqueue(:photo_comment, self.user.id, user_to_notify.id, self.id)

@@ -71,11 +71,19 @@ module ZZ
         session[:return_to] = nil
       end
 
-      #
+      # standard json response error
+      def render_json_error(ex, message = nil, code = nil)
+        error_json = AsyncResponse.build_error_json(ex, message, code)
+        render :status => 509, :json => error_json
+      end
+
       # Filter for methods that require a log in
       def require_user
         unless current_user
-          if request.xhr?
+          if ZZ_API_VALID_VALUES.include?(request.headers[ZZ_API_HEADER])
+            # this is the standard api error response format
+            render_json_error(nil, "You must be logged in", 401)
+          elsif request.xhr?
             flash.now[:error] = "You must be logged in to access this page"
             head :status => 401
           else
@@ -86,6 +94,7 @@ module ZZ
         end
       end
 
+
       # for act_as_authenticated compatibility with oauth plugin
       alias_method :login_required, :require_user
 
@@ -95,11 +104,37 @@ module ZZ
       # json message that may or may not be used.
       def require_user_json
         unless current_user
-          session[:return_to] = request.referer
-          render :json => "You must be logged in to call this url", :status => 401
+          if ZZ_API_VALID_VALUES.include?(request.headers[ZZ_API_HEADER_RAILS])
+            # this is the standard api error response format
+            render_json_error(nil, "You must be logged in", 401)
+          else
+            session[:return_to] = request.referer
+            render :json => "You must be logged in to call this url", :status => 401
+          end
+          return false
         end
+        return true
       end
 
+      # A variation of require_user_json that also requires the user_id param
+      # to be the same user as current user or that the user is a support admin
+      def require_same_user_json
+        user_id = params[:user_id].to_i
+        return false unless require_user_json
+        # if we pass the first test, verify we are the user we want info on
+        if current_user.id != user_id && current_user.support_hero? == false
+          msg = "You do not have permissions to access this data, you can only access your own data"
+          if ZZ_API_VALID_VALUES.include?(request.headers[ZZ_API_HEADER_RAILS])
+            # this is the standard api error response format
+            render_json_error(nil, msg, 401)
+          else
+            session[:return_to] = request.referer
+            render :json => msg, :status => 401
+          end
+          return false
+        end
+        return true
+      end
 
       # Filter for methods that require NO USER like sign in
       def require_no_user
@@ -225,17 +260,17 @@ module ZZ
 
 
     def render_404(exception = nil)
-         respond_to do |type|
-           type.html { render :status => :not_found, :file    => "#{Rails.root}/public/404.html", :layout => nil}
-           type.all  { render :status => :not_found, :nothing => true }
-         end
+      respond_to do |type|
+        type.html { render :status => :not_found, :file    => "#{Rails.root}/public/404.html", :layout => nil}
+        type.all  { render :status => :not_found, :nothing => true }
+      end
     end
 
     def render_401(exception = nil)
-         respond_to do |type|
-           type.html { render :status => :unauthorized, :file    => "#{Rails.root}/public/401.html", :layout => nil}
-           type.all  { render :status => :unauthorized, :nothing => true }
-         end
+      respond_to do |type|
+        type.html { render :status => :unauthorized, :file    => "#{Rails.root}/public/401.html", :layout => nil}
+        type.all  { render :status => :unauthorized, :nothing => true }
+      end
     end
 
   end

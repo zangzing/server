@@ -11,7 +11,7 @@ common: &common
   album_email_host: "mauricio-post.zangzing.com"
 
   # time in seconds before we timeout certain resque jobs
-  async_job_timeout: 20
+  async_job_timeout: 40
   async_connector_timeout: 60
   remote_job_timeout: 45
 
@@ -50,7 +50,7 @@ test:
   <<: *common
   resque_zza_id: "dev.photos/svr"
   requires_http_auth: false
-
+  memcached_gzip: false
 
 photos_production:
   <<: *common

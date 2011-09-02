@@ -19,6 +19,42 @@ describe "Comments Model" do
 
 
   describe Comment do
+    it "should not notify likers who are not in the ablums ACL who liked the album before it was made private" do
+      # setup
+      photo = Factory.create(:photo, :album => Factory.create(:album), :user => Factory.create(:user))
+      photo.save!
+
+      # people like album and photo before album made private
+      user_who_likes_photo  = Factory.create(:user)
+      user_who_likes_photo.save!
+      Like.add(user_who_likes_photo.id, photo.id, Like::PHOTO)
+
+      user_who_likes_album  = Factory.create(:user)
+      user_who_likes_album.save!
+      Like.add(user_who_likes_album.id, photo.album.id, Like::ALBUM)
+
+      # album made private
+      album = photo.album
+      album.make_private
+      album.save!
+
+      # comment created and notifications sent
+      commentable = Commentable.find_or_create_by_photo_id(photo.id)
+      comment = Factory.create(:comment, :commentable => commentable, :user => Factory.create(:user))
+      comment.send_notification_emails
+
+
+      # make sure the likers are not notified
+      ActionMailer::Base.deliveries.should_not satisfy do |messages|
+        messages.index { |message| message.to == [user_who_likes_photo.email] }
+      end
+
+      ActionMailer::Base.deliveries.should_not satisfy do |messages|
+        messages.index { |message| message.to == [user_who_likes_album.email] }
+      end
+      
+
+    end
 
     it "should notify album likers and photo likers of new comments" do
       # setup
@@ -124,7 +160,11 @@ describe "Comments Model" do
 
       comment_activity.user.should == comment.user
     end
+
   end
+
+
+
 
 
 

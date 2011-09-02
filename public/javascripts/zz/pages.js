@@ -263,99 +263,111 @@ zz.pages.edit_album_tab = {
 
 zz.pages.group_tab = {
 
-    GROUP_EDITOR_TEMPLATE: '<div class="group-editor-container">' +
-                                '<div class="group-editor">' +
-                                    '<div class="who-can-access-header">Privacy</div>' +
-                                    '<div class="privacy-buttons">' +
-                                        '<div data-privacy="public" class="public-button"></div>' +
-                                        '<div data-privacy="hidden" class="hidden-button"></div>' +
-                                        '<div data-privacy="password" class="password-button"></div>' +
-                                    '</div>' +
-                                    '<div class="divider-line"></div>' +
-                                    '<div class="create-group-header">Share</div>' +
-                                    '<div class="people-list"></div>' +
-                                    '<div class="share-button-section">' +
-                                        '<div class="add-people-button create-group"></div>' +
-                                        '<div class="stream-to-email"><input type="checkbox">Automatically email the group about new photos</div>' +
-                                        '<div class="facebook-button"></div>' +
-                                        '<div class="stream-to-facebook"><input type="checkbox">Automatically share new photos on Facebook</div>' +
-                                        '<div class="twitter-button"></div>' +
-                                        '<div class="stream-to-twitter"><input type="checkbox">Automatically share new photos on Twitter</div>' +
-                                    '</div>' +
-                                    '<div class="divider-line"></div>' +
-                                    '<div class="settings-header">Settings</div>' +
-                                    '<div class="settings-section">' +
-                                        '<div class="who-can-upload">' +
-                                            '<select>' +
-                                                '<option value="everyone">Everyone</option>' +
-                                                '<option value="contributors">Contributors</option>' +
-                                            '</select>' +
-                                            '<span>can add photos</span>' +
-                                        '</div>' +
-                                        '<div class="who-can-download">' +
-                                            '<select>' +
-                                                '<option value="everyone">Everyone</option>' +
-                                                '<option value="viewers">Group</option>' +
-                                                '<option value="owner">No one</option>' +
-                                            '</select>' +
-                                            '<span>can download full resolution photos</span>' +
-                                        '</div>' +
-                                    '</div>' +
-                                '</div>' +
-                            '</div>',
-
-    PERSON_TEMPLATE:    '<div class="person">' +
-                            '<div class="profile">' +
-                                '<img data-src="/images/default_profile.png" src="/images/default_profile.png">' +
+    GROUP_EDITOR_TEMPLATE: function(){
+        return '<div class="group-editor-container">' +
+                    '<div class="group-editor">' +
+                        '<div class="who-can-access-header">Privacy</div>' +
+                        '<div class="privacy-buttons">' +
+                            '<div data-privacy="public" class="public-button"></div>' +
+                            '<div data-privacy="hidden" class="hidden-button"></div>' +
+                            '<div data-privacy="password" class="password-button"></div>' +
+                        '</div>' +
+                        '<div class="divider-line"></div>' +
+                        '<div class="create-group-header">Share</div>' +
+                        '<div class="people-list"></div>' +
+                        '<div class="share-button-section">' +
+                            '<div class="add-people-button create-group"></div>' +
+                            '<div class="stream-to-email"><input type="checkbox">Automatically email the group about new photos</div>' +
+                            '<div class="facebook-button"></div>' +
+                            '<div class="stream-to-facebook"><input type="checkbox">Automatically share new photos on Facebook</div>' +
+                            '<div class="twitter-button"></div>' +
+                            '<div class="stream-to-twitter"><input type="checkbox">Automatically share new photos on Twitter</div>' +
+                        '</div>' +
+                        '<div class="divider-line"></div>' +
+                        '<div class="settings-header">Settings</div>' +
+                        '<div class="settings-section">' +
+                            '<div class="who-can-upload">' +
+                                '<select>' +
+                                    '<option value="everyone">Everyone</option>' +
+                                    '<option value="contributors">Contributors</option>' +
+                                '</select>' +
+                                '<span>can add photos</span>' +
                             '</div>' +
-                            '<div class="name"></div>' +
-                            '<select class="permission" size="1">' +
-                            '<option value="viewer">Viewer</option>' +
-                            '<option value="contributor">Contributor</option>' +
-                            '</select>' +
-                            '<div class="delete-button"></div>' +
-                        '</div>',
+                            '<div class="who-can-download">' +
+                                '<select>' +
+                                    '<option value="everyone">Everyone</option>' +
+                                    '<option value="viewers">Group</option>' +
+                                    '<option value="owner">No one</option>' +
+                                '</select>' +
+                                '<span>can download full resolution photos</span>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
+    },
+
+    PERSON_TEMPLATE: function(){
+       return '<div class="person">' +
+                    '<div class="profile">' +
+                        '<img data-src="/images/default_profile.png" src="/images/default_profile.png">' +
+                    '</div>' +
+                    '<div class="name"></div>' +
+                    '<select class="permission" size="1">' +
+                    '<option value="viewer">Viewer</option>' +
+                    '<option value="contributor">Contributor</option>' +
+                    '</select>' +
+                    '<div class="delete-button"></div>' +
+                '</div>';
+    },
 
 
-    FACEBOOK_DIALOG_TEMPLATE:   '<div class="facebook-dialog">' +
-                                    '<div class="header"><div class="title">Share to Facebook</div></div>' +
-                                    '<textarea placeholder="Write something" class="message"></textarea>' +
-                                    '<div class="detail">' +
-                                        '<img class="photo" src="/images/album-no-cover.png">' +
-                                        '<div class="title"></div>' +
-                                        '<div class="url"></div>' +
-                                        '<div class="description"></div>' +
-                                    '</div>' +
-                                    '<div class="footer">' +
-                                        '<div class="submit-button"></div>' +
-                                        '<div class="cancel-button"></div>' +
-                                    '</div>' +
-                                '</div>',
+    FACEBOOK_DIALOG_TEMPLATE: function(){
+        return '<div class="facebook-dialog">' +
+                    '<div class="header"><div class="title">Share to Facebook</div></div>' +
+                    '<textarea placeholder="Write something" class="message"></textarea>' +
+                    '<div class="detail">' +
+                        '<img class="photo" src="/images/album-no-cover.png">' +
+                        '<div class="title"></div>' +
+                        '<div class="url"></div>' +
+                        '<div class="description"></div>' +
+                    '</div>' +
+                    '<div class="footer">' +
+                        '<div class="submit-button"></div>' +
+                        '<div class="cancel-button"></div>' +
+                    '</div>' +
+                '</div>';
+    },
 
-    TWITTER_DIALOG_TEMPLATE:    '<div class="twitter-dialog">' +
-                                    '<div class="header"></div>' +
-                                    '<div class="share-with-followers">Share with your followers</div>' +
-                                    '<textarea class="message"></textarea>' +
-                                    '<div class="chars-left">10</div>' +
-                                    '<div class="submit-button"></div>' +
-                                '</div>',
+    TWITTER_DIALOG_TEMPLATE: function(){
 
-    ADD_PEOPLE_DIALOG_TEMPLATE: '<div class="add-people-dialog">' +
-                                    '<div class="header">' +
-                                        '<div class="title">Add people to your group</div>' +
-                                        '<div class="import"><span>Import from </span>' +
-                                            '<a data-service="google" class="gray-square-button contacts-btn"><span><div class="off"></div>Google</span></a>' +
-                                            '<a data-service="local" class="gray-square-button contacts-btn"><span><div class="off"></div>Local</span></a>' +
-                                            '<a data-service="yahoo" class="gray-square-button contacts-btn"><span><div class="off"></div>Yahoo</span></a>' +
-                                            '<a data-service="mslive" class="gray-square-button contacts-btn"><span><div class="off"></div>Hotmail</span></a>' +
-                                        '</div>' +
-                                    '</div>' +
-                                    '<div class="to"><input class="contact-list"></div>' +
-                                    '<textarea placeholder="Type a personal note" class="message"></textarea>' +
-                                    '<div class="permission">Add them as: <select size="1"><option value="viewer">Viewer</option><option selected="true" value="contributor">Contributor</option></select></div>' +
-                                    '<a class="cancel-button black-button"><span>Cancel</span></a>' +
-                                    '<a class="submit-button green-button"><span>OK</span></a>' +
-                                '</div>',
+        return  '<div class="twitter-dialog">' +
+                    '<div class="header"></div>' +
+                    '<div class="share-with-followers">Share with your followers</div>' +
+                    '<textarea class="message"></textarea>' +
+                    '<div class="chars-left">10</div>' +
+                    '<div class="submit-button"></div>' +
+                '</div>';
+    },
+
+    ADD_PEOPLE_DIALOG_TEMPLATE: function(){
+
+        return '<div class="add-people-dialog">' +
+                    '<div class="header">' +
+                        '<div class="title">Add people to your group</div>' +
+                        '<div class="import"><span>Import from </span>' +
+                            '<a data-service="google" class="gray-square-button contacts-btn"><span><div class="off"></div>Google</span></a>' +
+                            '<a data-service="local" class="gray-square-button contacts-btn"><span><div class="off"></div>Local</span></a>' +
+                            '<a data-service="yahoo" class="gray-square-button contacts-btn"><span><div class="off"></div>Yahoo</span></a>' +
+                            '<a data-service="mslive" class="gray-square-button contacts-btn"><span><div class="off"></div>Hotmail</span></a>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="to"><input class="contact-list"></div>' +
+                    '<textarea placeholder="Type a personal note" class="message"></textarea>' +
+                    '<div class="permission">Add them as: <select size="1"><option value="viewer">Viewer</option><option selected="true" value="contributor">Contributor</option></select></div>' +
+                    '<a class="cancel-button black-button"><span>Cancel</span></a>' +
+                    '<a class="submit-button green-button"><span>OK</span></a>' +
+                '</div>';
+    },
 
 
     init: function(container, callback) {
@@ -381,7 +393,7 @@ zz.pages.group_tab = {
 
             // populate the list
             _.each(people, function(person) {
-                var element = $(self.PERSON_TEMPLATE);
+                var element = $(self.PERSON_TEMPLATE());
                 element.find('.name').text(person['name']);
 
                 element.find('select.permission').val(person['permission']);
@@ -428,7 +440,7 @@ zz.pages.group_tab = {
                 var has_facebook_token = json['user']['has_facebook_token'];
                 var has_twitter_token = json['user']['has_twitter_token'];
 
-                container.html(self.GROUP_EDITOR_TEMPLATE);
+                container.html(self.GROUP_EDITOR_TEMPLATE());
 
 
                 //bind privacy buttons
@@ -537,9 +549,9 @@ zz.pages.group_tab = {
 
                 //set up event handlers
                 container.find('.add-people-button').click(function() {
-                    var content = $(self.ADD_PEOPLE_DIALOG_TEMPLATE);
+                    var content = $(self.ADD_PEOPLE_DIALOG_TEMPLATE());
 
-                    var dialog = zz.dialog.show_dialog(content, {width: 750, height: 320});
+                    var dialog = zz.dialog.show_dialog(content, {width: 750, height: 350});
 
                     content.find('textarea.message').placeholder();
 
@@ -580,7 +592,7 @@ zz.pages.group_tab = {
                 container.find('.facebook-button').click(function() {
 
                     var show_facebook_dialog = function() {
-                        var content = $(self.FACEBOOK_DIALOG_TEMPLATE);
+                        var content = $(self.FACEBOOK_DIALOG_TEMPLATE());
 
                         content.find('.detail .title').text(json['share']['facebook']['title']);
                         content.find('.detail .url').text(json['share']['facebook']['url']);
@@ -636,7 +648,7 @@ zz.pages.group_tab = {
                 container.find('.twitter-button').click(function() {
 
                     var show_twitter_dialog = function() {
-                        var content = $(self.TWITTER_DIALOG_TEMPLATE);
+                        var content = $(self.TWITTER_DIALOG_TEMPLATE());
 
 
                         var update_char_left = function() {

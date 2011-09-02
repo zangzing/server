@@ -1,3 +1,9 @@
+<% content_for :page_title do %><%= @album.name %> People<% end %>
+
+<% content_for :canonical_url do %><%=album_people_pretty_url(@album)%><% end %>
+
+
+
 <% content_for :meta_tags do %>
     <%= render :partial => "facebook/album_opengraph_tags" %>
 <% end %>

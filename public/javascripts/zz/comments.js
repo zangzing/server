@@ -4,68 +4,76 @@ zz.comments = {};
 
 (function(){
 
-    // todo: don't expand urls inline here. this gets called at page load. should do it lazy
-    
-    var COMMENTS_DIALOG =  '<div class="comments-dialog">' +
-                                '<div class="header">' +
-                                    '<div class="commented-photo">' +
-                                        '<div class="photo-border">' +
-                                            '<img class="photo-image" src="' + zz.routes.image_url('/images/blank.png') + '">' +
-                                            '<img class="bottom-shadow" src="' + zz.routes.image_url('/images/photo/bottom-full.png') + '">' +
-                                        '</div>' +
-                                    '</div>' +
-                                    '<div class="commented-photo-caption ellipsis multiline"></div>' +
-                                    '<div class="button-bar">' +
-                                        '<div class="button share-button"></div>' +
-                                        '<div class="button like-button zzlike" data-zzid="" data-zztype="photo"><div class="zzlike-icon thumbdown"></div></div>' +
-                                        '<div class="button buy-button"></div>' +
-                                    '</div>' +
-                                '</div>' +
-                                '<div class="body"></div>' +
-                           '</div>';
+
+    var COMMENTS_DIALOG_TEMPLATE = function(){
+        return '<div class="comments-dialog">' +
+                '<div class="header">' +
+                    '<div class="commented-photo">' +
+                        '<div class="photo-border">' +
+                            '<img class="photo-image" src="' + zz.routes.image_url('/images/blank.png') + '">' +
+                            '<img class="bottom-shadow" src="' + zz.routes.image_url('/images/photo/bottom-full.png') + '">' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="commented-photo-caption ellipsis multiline"></div>' +
+                    '<div class="button-bar">' +
+                        '<div class="button share-button"></div>' +
+                        '<div class="button like-button zzlike" data-zzid="" data-zztype="photo"><div class="zzlike-icon thumbdown"></div></div>' +
+                        '<div class="button buy-button"></div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="body"></div>' +
+           '</div>';
+    };
 
 
-    var COMMENTS_TEMPLATE = '<div class="comments-container">' +
-                            '<div class="new-comment">' +
-                               '<div class="background"></div>' +
-                               '<div class="comment-picture">' +
-                                   '<div class="profile-picture">' +
-                                       '<div class="mask">' +
-                                           '<img data-src="/images/default_profile.png" src="/images/default_profile.png">' +
-                                       '</div>' +
-                                   '</div>' +
-                               '</div>' +
-                               '<textarea placeholder="Write a comment..." class="text"></textarea>' +
-                               '<div class="share">' +
-                                   'Share on &nbsp;&nbsp;<input type="checkbox" class="facebook"> Facebook &nbsp;&nbsp;<input type="checkbox" class="twitter"> Twitter' +
-                               '</div>' +
-                               '<a class="submit-button green-button"><span>Comment</span></a>' +
+    var COMMENTS_TEMPLATE = function(){
+        return '<div class="comments-container">' +
+                        '<div class="new-comment">' +
+                        '<div class="background"></div>' +
+                        '<div class="comment-picture">' +
+                        '<div class="profile-picture">' +
+                        '<div class="mask">' +
+                        '<img data-src="/images/default_profile.png" src="/images/default_profile.png">' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '<textarea placeholder="Write a comment..." class="text"></textarea>' +
+                        '<div class="share">' +
+                        'Share on &nbsp;&nbsp;<input type="checkbox" class="facebook"> Facebook &nbsp;&nbsp;<input type="checkbox" class="twitter"> Twitter' +
+                        '</div>' +
+                        '<a class="submit-button green-button"><span>Comment</span></a>' +
+                        '</div>' +
+                        '<div class="comments">' +
+                        '</div>' +
+                '</div>';
+    };
+
+
+
+    var COMMENT_TEMPLATE = function(){
+
+         return '<div class="comment">' +
+                    '<div class="comment-picture">' +
+                        '<div class="profile-picture">' +
+                            '<div class="mask">' +
+                                '<img data-src="/images/default_profile.png" src="/images/default_profile.png">' +
                             '</div>' +
-                            '<div class="comments">' +
-                            '</div>' +
-                        '</div>';
+                        '</div>' +
+                    '</div>' +
+                    '<div class="posted-by">' +
+                        '<span class="username"></span>&nbsp;&nbsp;' +
+                        '<span class="when"></span>' +
+                    '</div>' +
+                    '<div class="text"></div>'+
+                    '<div class="delete-button"></div>' +
+                '</div>';
+    };
 
-
-
-    var COMMENT_TEMPLATE =      '<div class="comment">' +
-                                    '<div class="comment-picture">' +
-                                        '<div class="profile-picture">' +
-                                            '<div class="mask">' +
-                                                '<img data-src="/images/default_profile.png" src="/images/default_profile.png">' +
-                                            '</div>' +
-                                        '</div>' +
-                                    '</div>' +
-                                    '<div class="posted-by">' +
-                                        '<span class="username"></span>&nbsp;&nbsp;' +
-                                        '<span class="when"></span>' +
-                                    '</div>' +
-                                    '<div class="text"></div>'+
-                                    '<div class="delete-button"></div>' +
-                                '</div>';
-
-    var COMMENT_LOADING_TEMPLATE = '<div class="comment">' +
-                                        '<div class="loading"></div>' +
-                                   '</div>';
+    var COMMENT_LOADING_TEMPLATE = function(){
+        return '<div class="comment">' +
+                   '<div class="loading"></div>' +
+                '</div>';
+    };
 
 
 
@@ -121,7 +129,7 @@ zz.comments = {};
     zz.comments.show_in_dialog = function(album_id, cache_version, photo_id){
         zz.routes.photos.get_photo_json(album_id, cache_version, photo_id, function(photo){
 
-            var comments_dialog = $(COMMENTS_DIALOG);
+            var comments_dialog = $(COMMENTS_DIALOG_TEMPLATE());
 
             zz.image_utils.pre_load_image(photo.thumb_url, function(image){
                 var photo_element = comments_dialog.find('.header .photo-border');
@@ -138,7 +146,7 @@ zz.comments = {};
 
 
                 photo_element.click(function(){
-                    jQuery.cookie('show_comments', 'true', {path:'/'}); //todo: should manage this centrally
+                    jQuery.cookie('hide_comments', 'false', {path:'/'}); //todo: should manage this centrally
                     dialog.close();
                     zz.album.goto_single_picture(photo_id);
                 });
@@ -188,18 +196,18 @@ zz.comments = {};
 
 
     zz.comments.build_comments_widget = function(photo_id){
-        var comments_element = $(COMMENTS_TEMPLATE);
+        var comments_element = $(COMMENTS_TEMPLATE());
 
         // setup one-finger scroll for ipad
         comments_element.find('.comments').touchScrollY();
 
         var pending_request_for_comments = null;
 
-        var build_comment_element = function(comment_json){
+        var build_comment_element = function(comment_json, current_user_can_delete){
             var comment_text = comment_json['text'];
             comment_text = comment_text.replace(/\n/g, '<br>');
 
-            var comment = $(COMMENT_TEMPLATE);
+            var comment = $(COMMENT_TEMPLATE());
             comment.find('.username').text(comment_json['user']['name']);
             comment.find('.username').click(function(){
                 document.location.href = zz.routes.users.user_home_page_path(comment_json['user']['username']);
@@ -219,7 +227,7 @@ zz.comments = {};
                }
             });
 
-            if(comment_json['user_id'] == zz.session.current_user_id){
+            if(current_user_can_delete || comment_json['user_id'] == zz.session.current_user_id){
                 comment.addClass('deletable');
             }
 
@@ -238,7 +246,7 @@ zz.comments = {};
             // clear the list
             comments_element.find('.comments').empty();
 
-            var comment_loading_element = $(COMMENT_LOADING_TEMPLATE);
+            var comment_loading_element = $(COMMENT_LOADING_TEMPLATE());
 
             comments_element.find('.comments').append(comment_loading_element);
 
@@ -256,16 +264,18 @@ zz.comments = {};
 
                 comment_loading_element.remove();
 
-                //set deleteable flag
-                if(json['current_user']['can_delete_comments']){
-                    comments_element.find('.comments').addClass('deleteable');
-                }
+
+                var current_user_can_delete = json['current_user']['can_delete_comments'];
+
 
                 // add all the comments
                 _.each(json['commentable']['comments'], function(comment_json){
-                    var comment_element = build_comment_element(comment_json);
+                    var comment_element = build_comment_element(comment_json, current_user_can_delete);
                     comments_element.find('.comments').append(comment_element);
                 });
+
+
+
 
                 // show profile pictures -- need to do this after things are visible
                 zz.profile_pictures.init_profile_pictures(comments_element.find('.profile-picture'));
@@ -294,7 +304,7 @@ zz.comments = {};
                 post_to_twitter: post_to_twitter
             };
 
-            var comment_loading_element = $(COMMENT_LOADING_TEMPLATE);
+            var comment_loading_element = $(COMMENT_LOADING_TEMPLATE());
 
             comments_element.find('.comments').prepend(comment_loading_element);
 

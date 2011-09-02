@@ -19,4 +19,6 @@ log/*
 .bundle
 logs/*.log
 *.log
+spec/support/db_init/*.seedbackup
+
 
