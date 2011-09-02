@@ -383,6 +383,9 @@ Server::Application.routes.draw do
     get    '/users/:user_id/liked_users_public_albums_json' => 'albums#mobile_liked_users_public_albums_json', :as => :mobile_liked_users_public_albums_json
     get    '/users/:user_id/invited_albums_json'            => 'albums#mobile_invited_albums_json',            :as => :mobile_invited_albums_json
 
+    #photos
+    get    '/albums/:album_id/photos_json'                  => 'photos#mobile_photos_json',                    :as => :mobile_album_photos_json
+
     #users
     get    '/users/:user_id/info' => 'users#mobile_user_info',                  :as => :mobile_user_info
   end
