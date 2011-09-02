@@ -6,7 +6,7 @@ gem "bundler", ">=1.0.14"
 gem "rails", "3.0.9"
 gem "unicorn"
 gem "dynamic_form"
-gem "require_all"                 # lets us pull in everything for our resque tasks
+#gem "require_all"                 # lets us pull in everything for our resque tasks
 gem "mysql2",     "~> 0.2.7"
 gem 'authlogic',     '2.1.6'
 gem "friendly_id",   "3.2.1.1"                       #User-friendly links to albums and users' pages
@@ -74,7 +74,7 @@ group :production do
   # bundler requires these gems for production
 end
 
-gem 'spree_core', '0.60.1'
+gem 'spree_core', :path => "./spree_core-0.60.1"
 gem 'spree_dash', '0.60.1'
 gem 'spree_promo', '0.60.1'
 gem "spree_zangzing", :require => "spree_zangzing", :path => "./spree_zangzing"
