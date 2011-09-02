@@ -6,7 +6,7 @@
   <table>
     <tr>
     <td>
-          <%= render :partial =>'address_display', :locals => { :address => @order.ship_address,:label =>t("shipping_address") } %>
+          <%#= render :partial =>'address_display', :locals => { :address => @order.ship_address,:label =>t("shipping_address") } %>
           <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('ship_address')%>').submit();">change</a>
     </td>
     <td>
