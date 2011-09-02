@@ -13,7 +13,7 @@
           <%= raw (column % column_width == 0 ? '<tr>' : '' )%>
           <td>
             <%= radio_button_tag 'order[creditcard_id]', creditcard.id %>
-           <%= "#{ creditcard.spree_cc_type.titleize } #{creditcard.display_number}" %>
+           <%= " #{creditcard.display_number}" %>
           </td>
           <%=raw ( column %column_width == column_width-1? "</tr>" : "" )%>
           <% column = column + 1 %>
