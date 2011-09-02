@@ -6,7 +6,10 @@ Server::Application.configure do
   # In the development environment your application's code is reloaded on
   # every request.  This slows down response time but is perfect for development
   # since you don't have to restart the webserver when you make code changes.
-  config.cache_classes = false
+
+  # define USE_CLASS_CACHE in your environment if you want to override the default of false
+  class_cache = ENV["USE_CLASS_CACHE"].nil? ? false : true
+  config.cache_classes = class_cache
 
   # Log error messages when you accidentally call methods on nil.
   config.whiny_nils = true
