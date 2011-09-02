@@ -283,6 +283,7 @@ module Cache
               :photos_count => album.photos_count,
               :photos_ready_count => album.photos_ready_count,
               :cache_version => album.cache_version.to_i,
+              :updated_at => album.updated_at.to_i,
               :my_role => album.my_role # valid values are Viewer, Contrib, Admin
           }
           fast_albums << hash_album

@@ -36,7 +36,7 @@ zz.homepage = {
 
                 //sort
                 var sorted_results = _.sortBy(combined_results, function(album) {
-                    return -1 * album.cache_version;
+                    return -1 * album.updated_at;
                 });
 
 
