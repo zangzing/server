@@ -3,8 +3,6 @@ module ZZ
     extend ActiveSupport::Concern
 
     included do
-      include PrettyUrlHelper
-      add_template_helper(PrettyUrlHelper)
       default :charset => "utf-8"
 
       if Rails.env == 'production'

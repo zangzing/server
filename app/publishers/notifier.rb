@@ -1,5 +1,9 @@
 class Notifier < ActionMailer::Base
   include ZZ::Mailer
+  include PrettyUrlHelper
+
+  add_template_helper(PrettyUrlHelper)
+
 
   def photos_ready( batch_id, template_id = nil )
     @batch   = UploadBatch.find( batch_id )
