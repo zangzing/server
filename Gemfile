@@ -75,7 +75,7 @@ group :production do
 end
 
 gem 'spree_core', '0.60.1'
-gem 'spree_dash', '0.60.1'
-gem 'spree_promo', '0.60.1'
+#gem 'spree_dash', '0.60.1'
+#gem 'spree_promo', '0.60.1'
 gem "spree_zangzing", :require => "spree_zangzing", :path => "./spree_zangzing"
 

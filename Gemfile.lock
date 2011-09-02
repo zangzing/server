@@ -240,10 +240,6 @@ GEM
       state_machine (= 0.9.4)
       stringex (= 1.0.3)
       will_paginate (= 3.0.pre2)
-    spree_dash (0.60.1)
-      spree_core (= 0.60.1)
-    spree_promo (0.60.1)
-      spree_core (= 0.60.1)
     state_machine (0.9.4)
     stringex (1.0.3)
     thor (0.14.6)
@@ -314,8 +310,6 @@ DEPENDENCIES
   selenium
   selenium-client
   spree_core (= 0.60.1)
-  spree_dash (= 0.60.1)
-  spree_promo (= 0.60.1)
   spree_zangzing!
   syslogger (= 1.2.5)!
   twitter_oauth
