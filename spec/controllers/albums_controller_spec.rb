@@ -116,8 +116,8 @@ describe AlbumsController do
     before(:each) do
       login
       @user = Factory.create(:user)
-      @followed_by_user = Factory.create(:user)
-      Like.add(@user.id, @followed_by_user.id, Like::USER)
+      @following_user = Factory.create(:user)
+      Like.add(@user.id, @following_user.id, Like::USER)
     end
 
     describe 'His Albums section' do
