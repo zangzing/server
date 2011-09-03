@@ -9,7 +9,7 @@ LineItem.class_eval do
     xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
     xml.instruct! unless options[:skip_instruct]
     xml.uri( {:id  => photo.id,
-             :title => 'A Photo'}, photo.source_url)
+             :title => 'A Photo'}, photo.original_url)
   end
 
   def to_xml_ezporderline(options = {})

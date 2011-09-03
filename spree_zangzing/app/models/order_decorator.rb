@@ -1,4 +1,6 @@
 Order.class_eval do
+  include PrettyUrlHelper
+
   attr_accessible :use_shipping_as_billing, :ship_address_id, :bill_address_id
 
   before_validation :clone_shipping_address, :if => "@use_shipping_as_billing"
@@ -142,16 +144,20 @@ Order.class_eval do
   end
 
   def to_xml_ezporder(options = {})
+    logo_id = 1
     options[:indent] ||= 2
     xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
     xml.instruct! unless options[:skip_instruct]
-    xml.orders{
+    xml.orders({ :partnerid => ZangZingConfig.config[:ezp_partner_id], :version => 1 }) {
       xml.images{
+        xml.uri( {:id  => logo_id,
+#                 :title => 'ZangZing Logo'}, build_full_path("/images/zz-logo.png"))
+                 :title => 'ZangZing Logo'}, "http:www.zangzing.com/images/zz-logo.png")
         line_items.each{ |li| li.to_xml_ezpimage( :builder => xml, :skip_instruct => true )}
       }
       xml.ordersession{
         xml.sessionid self.number
-        xml.vendor( :logoimageid => 3) {
+        xml.vendor( :logoimageid => 1) {
           xml.name 'ZangZing'
         }
         #xml.customer{}
