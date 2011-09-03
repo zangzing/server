@@ -156,7 +156,7 @@ Order.class_eval do
       }
       xml.ordersession{
         xml.sessionid self.number
-        xml.vendor( :logoimageid => 1) {
+        xml.vendor( :logoimageid => logo_id) {
           xml.name 'ZangZing'
         }
         #xml.customer{}
