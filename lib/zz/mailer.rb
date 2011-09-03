@@ -3,8 +3,9 @@ module ZZ
     extend ActiveSupport::Concern
 
     included do
+      ActionMailer::Base.logger = Rails.logger
+      
       default :charset => "utf-8"
-
       if Rails.env == 'production'
         default :from => '"ZangZing Communications" <do-not-reply@zangzing.com>'
       else
