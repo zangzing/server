@@ -149,10 +149,7 @@ class Notifier < ActionMailer::Base
     @recipient = User.find(send_notification_to_user_id)
     @comment = Comment.find(comment_id)
     @photo = @comment.commentable.subject
-
-    Subscriptions.wants_email!( @recipient, Email::SOCIAL, __method__ )
-    create_message( binding(), __method__, template_id,  @recipient, { :user_id => @user.id } )
-
+    create_message( __method__, template_id,  @recipient, { :user_id => @user.id } )
   end
 end
 

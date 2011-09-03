@@ -3,8 +3,9 @@ module ZZ
     extend ActiveSupport::Concern
 
     included do
+      ActionMailer::Base.logger = Rails.logger
+      
       default :charset => "utf-8"
-
       if Rails.env == 'production'
         default :from => '"ZangZing Communications" <do-not-reply@zangzing.com>'
       else
@@ -68,8 +69,8 @@ module ZZ
         #create message
         mail( :to       => @to_address.format,
               :from     => @template.formatted_from,
-              :reply_to => ERB.new( @template.formatted_reply_to).result,
-              :subject  => ERB.new( @template.subject).result
+              :reply_to => ERB.new( @template.formatted_reply_to).result( binding()),
+              :subject  => ERB.new( @template.subject).result(binding())
         ) do |format|
           format.text { render :inline => @template.text_content }
           format.html { render :inline => @template.html_content }
