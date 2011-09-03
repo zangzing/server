@@ -151,8 +151,7 @@ Order.class_eval do
     xml.orders({ :partnerid => ZangZingConfig.config[:ezp_partner_id], :version => 1 }) {
       xml.images{
         xml.uri( {:id  => logo_id,
-#                 :title => 'ZangZing Logo'}, build_full_path("/images/zz-logo.png"))
-                 :title => 'ZangZing Logo'}, "http:www.zangzing.com/images/zz-logo.png")
+                 :title => 'ZangZing Logo'}, build_full_path("/images/zz-logo.png"))
         line_items.each{ |li| li.to_xml_ezpimage( :builder => xml, :skip_instruct => true )}
       }
       xml.ordersession{
