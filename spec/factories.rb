@@ -1,49 +1,74 @@
+require 'factory_girl'
+
+# use the bulk id generator to give us persistent ids across runs to allow
+# us to use the database persistently if we choose
+def next_id
+  BulkIdManager.next_id_for("cache_tx_generator", 1)
+end
+
+
 # By using the symbol ':user', we get Factory Girl to simulate the User model.
-Factory.define :user do |user|
-  user.first_name          "Juan"
-  user.last_name           "Penas"
-  user.sequence(:username) {|n| "user#{n}"}
-  user.sequence(:email)    {|n| "user#{n}@test.zangzing.com"}
-  user.password            "password"
-  user.perishable_token    {|n| "token-#{n}"}
+Factory.define :user do |this|
+  this.first_name          "Juan"
+  this.last_name           "Penas"
+  this.username            {"user#{next_id}"}
+  this.email                {"user#{next_id}@test.zangzing.com"}
+  this.password            "password"
+  this.perishable_token    {"token-#{next_id}"}
 end
 
 # created a Factory sequence
 Factory.sequence :email do |n|
-  "person-#{n}@example.com"
+  "person-#{next_id}@example.com"
 end
 
 
-Factory.define :album do |album|
-  album.name        "Foo bar album"
-  album.association :user
+Factory.define :album do |this|
+  this.name        "Foo bar album"
+#  album.association :user
+  this.after_build do |this, proxy|
+    this.user ||= Factory.create(:user)
+  end
 end
 
 
-Factory.define :comment do |comment|
-  comment.text "this is a comment"
-  comment.association :user
+Factory.define :comment do |this|
+  this.text "this is a comment"
+  this.after_build do |this, proxy|
+    this.user ||= Factory.create(:user)
+  end
 end
 
 
-Factory.define :photo_commentable, :class => Commentable do |commentable|
-  commentable.association :subject, :factory => :photo
+Factory.define :photo_commentable, :class => Commentable do |this|
+  this.after_build do |this, proxy|
+    this.subject ||= Factory.create(:photo)
+  end
 end
 
-Factory.define :photo_comment, :class => Comment do |comment|
-  comment.text "this is a comment"
-  comment.association :user
-  comment.association :commentable, :factory => :photo_commentable
+Factory.define :photo_comment, :class => Comment do |this|
+  this.text "this is a comment"
+  this.after_build do |this, proxy|
+    this.user ||= Factory.create(:user)
+    this.commentable ||= Factory.create(:photo_commentable)
+  end
 end
 
-Factory.define :photo do |photo|
-  photo.association :album
-  photo.association :user
-  photo.association :upload_batch
-  photo.sequence(:id) {|n| n}
+Factory.define :photo do |this|
+  this.id                  {Photo.get_next_id}
+  this.after_build do |this, proxy|
+    this.user = Factory.create(:user) if this.user.nil?
+    this.album = Factory.create(:album, :user => this.user) if this.album.nil?
+    this.upload_batch = Factory.create(:upload_batch, :album => this.album, :user => this.user)
+  end
 end
 
-Factory.define :upload_batch do |upload_batch|
-  upload_batch.association :album
-  upload_batch.association :user
+Factory.define :full_photo, :parent => :photo do |photo|
+end
+
+Factory.define :upload_batch do |this|
+  this.after_build do |this, proxy|
+    this.user ||= Factory.create(:user)
+    this.album ||= Factory.create(:album, :user => this.user)
+  end
 end
