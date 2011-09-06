@@ -1,9 +1,9 @@
 class Notifier < ActionMailer::Base
   include ZZ::Mailer
   include PrettyUrlHelper
-
   add_template_helper(PrettyUrlHelper)
 
+  include OrderNotifier
 
   def photos_ready( batch_id, template_id = nil )
     @batch   = UploadBatch.find( batch_id )
@@ -24,6 +24,9 @@ class Notifier < ActionMailer::Base
     create_message( __method__, template_id, @recipient,  { :user_id => @user.id })
   end
 
+
+
+
   def password_reset(user_id, template_id = nil)
     @user = User.find(user_id)
     @recipient = @user
@@ -31,6 +34,9 @@ class Notifier < ActionMailer::Base
 
     create_message(  __method__, template_id, @recipient, { :user_id => @user.id } )
   end
+
+
+
 
   def album_liked( user_id, album_id,  template_id = nil )
     @user      = User.find( user_id )
@@ -40,6 +46,9 @@ class Notifier < ActionMailer::Base
     create_message(  __method__, template_id, @recipient, { :user_id => @user.id } )
   end
 
+
+
+
   def photo_liked( user_id, photo_id, recipient_id, template_id = nil )
     @user      = User.find( user_id )
     @photo     = Photo.find( photo_id )
@@ -48,6 +57,9 @@ class Notifier < ActionMailer::Base
     create_message(  __method__, template_id, @recipient, { :user_id => @user.id } )
   end
 
+
+
+
   def user_liked( user_id, liked_user_id,  template_id = nil )
     @user      = User.find( user_id )
     @recipient = User.find( liked_user_id )
@@ -55,11 +67,17 @@ class Notifier < ActionMailer::Base
     create_message(  __method__, template_id, @recipient, { :user_id => @user.id } )
   end
 
+
+
+
   def contribution_error( to_address, template_id = nil)
     @recipient = User.find_by_email( to_address )
 
     create_message(  __method__, template_id, ( @recipient? @recipient : to_address ), { :to => to_address })
   end
+
+
+
 
   def photo_shared(from_user_id,to_address,photo_id, message, template_id = nil)
     @user = User.find(from_user_id)
@@ -72,10 +90,15 @@ class Notifier < ActionMailer::Base
     create_message(  __method__, template_id, @recipient, { :to => to_address })
   end
 
-  def beta_invite(to_address,  template_id = nil)
 
+
+
+  def beta_invite(to_address,  template_id = nil)
     create_message(  __method__, template_id,  to_address, { :to => to_address })
   end
+
+
+
 
   def album_shared(from_user_id,to_address,album_id, message, template_id = nil)
     @user = User.find(from_user_id)
@@ -89,6 +112,9 @@ class Notifier < ActionMailer::Base
     create_message(  __method__, template_id, @recipient, { :user_id => @user.id } )
   end
 
+
+
+
   def album_updated( from_user_id, to_address_or_id, album_id, batch_id,  template_id = nil )
     @album     = Album.find( album_id )
     @user      = User.find( from_user_id )
@@ -101,6 +127,9 @@ class Notifier < ActionMailer::Base
 
     create_message(  __method__, template_id,  @recipient, { :user_id => @user.id } )
   end
+
+
+
 
   def contributor_added(album_id, to_address, message, template_id = nil )
     @album = Album.find(album_id)
@@ -121,12 +150,18 @@ class Notifier < ActionMailer::Base
     create_message(  __method__, template_id, @recipient, { :user_id => @user.id })
   end
 
+
+
+
   def welcome(user_id, template_id = nil)
     @user = User.find(user_id)
     @recipient = @user
 
     create_message(  __method__, template_id, @recipient,   { :user_id => @user.id })
   end
+
+
+
 
   def activation_instructions(user_id)
     user = User.find(user_id)
@@ -136,6 +171,9 @@ class Notifier < ActionMailer::Base
           :subject => "Account Activation Instructions for your ZangZing Account" )
   end
 
+
+
+
   def test_email( to )
     logger.info "Mailed test_email: #{to}"
     mail( :to      => to,
@@ -143,6 +181,9 @@ class Notifier < ActionMailer::Base
       format.text { render :inline => " <%=message.to.to_s%> This is the message body of the test" }
     end
   end
+
+
+
 
   def photo_comment(comment_added_by_user_id, send_notification_to_user_id, comment_id, template_id = nil)
     @user = User.find(comment_added_by_user_id)
