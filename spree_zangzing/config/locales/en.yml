@@ -1,8 +1,5 @@
----
 en:
-  'no': "No"
-  'yes': "Yes"
-  5_biggest_spenders: "5 Biggest Spenders"
+  biggest_spenders: "5 Biggest Spenders"
   a_copy_of_all_mail_will_be_sent_to_the_following_addresses: A copy of all mail be sent to the following addresses
   abbreviation: Abbreviation
   access_denied: "Access Denied"
@@ -256,6 +253,8 @@ en:
   back: Back
   back_end: Back End
   back_to_store: "Go Back To Store"
+  back_to_account_settings: "Go Back to Account Settings"
+  back_to_homepage: "Go Back to your Homepage"
   backordered: Backordered
   backordering_is_allowed: "Backordering %{not} allowed"
   balance_due: "Balance Due"
@@ -573,7 +572,7 @@ en:
     cancel_email:
       subject: "Cancellation of Order"
   order_not_in_system: That order number is not valid on this site.
-  order_number: Order
+  order_number: "Order Number"
   order_operation_authorize: Authorize
   order_processed_but_following_items_are_out_of_stock: "Your order has been processed, but following items are out of stock:"
   order_processed_successfully: "Your order has been processed successfully"
@@ -1019,3 +1018,5 @@ en:
   zone_setting_description: "Collections of countries, states or other zones to be used in various calculations."
   zones: Zones
   email_needed: "We will use it for order confirmation and status."
+  order_history: "Order History"
+  shipped_to: "Shipped To"

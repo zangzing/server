@@ -178,6 +178,17 @@ class Admin::EmailTemplatesController < Admin::AdminController
     Notifier.photo_comment( sender.id, recipient.id, comment.id, template_id)
   end
 
+  def test_order_confirmed( template_id )
+      Notifier.order_confirmed( order.id, template_id)
+  end
+
+  def test_order_cancelled( template_id )
+      Notifier.order_cancelled( order.id, template_id)
+  end
+
+  def test_order_shipped( template_id )
+      Notifier.order_shipped( order.id, template_id)
+  end
 
   def user_or_not_user_email_address
     if rand(2) <= 0
@@ -243,6 +254,10 @@ class Admin::EmailTemplatesController < Admin::AdminController
     else
       ""
     end
+  end
+
+  def order
+    Order.complete[ rand( Order.complete.count )]
   end
 
 end
