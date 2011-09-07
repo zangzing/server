@@ -36,13 +36,9 @@
 
       <form id="join-form" method="post" enctype="multipart/form-data" action=<%=create_user_url%>>
         <input style="visibility:hidden" type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>"/>
-        <!--<div id="flash-error">-->
-        <!--<% @new_user.errors.map do |field, error| %>-->
-            <%= "#{field.to_s.capitalize} #{error}" %><br>
-            <!--<% end %>-->
-        <!--<%= flash[:errors] %>-->
-
-        <!--</div>-->
+        <div id="flash-error">
+            <%= flash[:error] %>
+        </div>
 
         <table>
           <tr>
