@@ -1,4 +1,5 @@
 require 'factory_girl'
+require 'fileutils'
 
 # use the bulk id generator to give us persistent ids across runs to allow
 # us to use the database persistently if we choose
@@ -71,16 +72,28 @@ Factory.define :photo do |this|
   this.after_build do |this, proxy|
     this.user ||= Factory.create(:user)
     this.album ||= Factory.create(:album, :user => this.user)
-    this.upload_batch ||= Factory.create(:upload_batch, :album => this.album, :user => this.user)
+    this.upload_batch = UploadBatch.get_current_and_touch( this.user.id, this.album.id )
   end
 end
 
-Factory.define :full_photo, :parent => :photo do |photo|
-end
-
-Factory.define :upload_batch do |this|
+Factory.define :full_photo, :parent => :photo do |this|
   this.after_build do |this, proxy|
-    this.user ||= Factory.create(:user)
-    this.album ||= Factory.create(:album, :user => this.user)
+    if this.temp_url.nil?
+      # if you set temp_url we will use that as the file to upload
+      # otherwise we use a default file
+      source_path = spec_dir + "/assets/test_photo.jpg"
+    else
+      source_path = this.temp_url
+    end
+    dest_path = "#{Dir.tmpdir}/#{Time.now.to_f}-#{rand(999999)}"
+    FileUtils.copy_file(source_path, dest_path, true)
+    this.file_to_upload = dest_path
   end
 end
+
+#Factory.define :upload_batch do |this|
+#  this.after_build do |this, proxy|
+#    this.user ||= Factory.create(:user)
+#    this.album ||= Factory.create(:album, :user => this.user)
+#  end
+#end

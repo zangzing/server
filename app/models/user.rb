@@ -13,7 +13,7 @@ class User < ActiveRecord::Base
                    :old_password, :automatic, :profile_photo_id, :subscriptions_attributes,
                    :ship_address_id, :bill_address_id, :creditcard_id
 
-  has_many :albums,              :dependent => :destroy
+  has_many :albums      # we have a manual dependency to delete albums on destroy since nested rails callbacks don't seem to be triggered
 
   #things I like, join with likes table
   has_many :likes
@@ -100,6 +100,24 @@ class User < ActiveRecord::Base
       end
       identity
     end
+  end
+
+  # taking over the dependent delete since rails does not seem to call the :on => :destroy callbacks
+  # for the second level and beyond dependencies.  In other words, if a dependent delete causes
+  # an album to be deleted, the :on => :destroy condition for the photos under it does not seem to trigger.
+  #
+  # Later on we should make the dependent deletes more efficient by not having them instantiate objects
+  # when possible.  In most cases it will be sufficient to simply have the object ids passed down
+  # in bulk.
+  #
+  def destroy
+    albums = self.albums
+    if !albums.nil?
+      albums.each do |album|
+        album.destroy
+      end
+    end
+    super
   end
 
   # cohort related calculations

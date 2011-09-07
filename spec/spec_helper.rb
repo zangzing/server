@@ -48,3 +48,6 @@ def logout
   @user_session = nil
 end
 
+def spec_dir
+  File.expand_path('.', File.dirname(__FILE__))
+end
