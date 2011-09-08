@@ -15,9 +15,13 @@
 
 
 </style>
+<%content_for :page_title do
+    t(@order.state, :scope => :order_state).titleize
+end %>
 
+<div class="row">
 
-<legend><%= t("payment_information") %></legend>
+<div class="span7 columns offset1"
 <%= render :partial =>'creditcard_wallet', :locals => { :order => @order }%>
 
 <fieldset id="payment">
@@ -36,7 +40,7 @@
       <%end%>
     </div>
   </fieldset>
-  <br style='clear:both;' />
+  
 
   <fieldset>
     <legend><%= t("billing_address") %></legend>
@@ -55,6 +59,7 @@
   </fieldset>
 
 </fieldset>
+</div>
 
 <hr class="space" />
 <div class="form-buttons">
