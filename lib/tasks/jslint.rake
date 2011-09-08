@@ -5,7 +5,7 @@ namespace :jslint do
     #    sudo easy_install http://closure-linter.googlecode.com/files/closure_linter-latest.tar.gz
 
     task :gjslint  do
-      results = %x( gjslint --unix_mode --nojsdoc -r public/javascripts/zz )
+      results = %x( gjslint --unix_mode --nojsdoc -r public/javascripts/zz -r public/store/javascripts)
 
       results.each_line do |line|
         if line.include?('(0110) Line too long') ||
