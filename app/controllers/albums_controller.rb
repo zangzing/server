@@ -249,6 +249,7 @@ class AlbumsController < ApplicationController
     @my_albums_path = my_albums_path(@loader)
     @liked_albums_path = liked_albums_path(@loader)
     @liked_users_albums_path = liked_users_albums_path(@loader)
+    @invited_albums_path = invited_albums_path(@loader)
     @session_user_liked_albums_path = @session_loader.nil? ? nil : liked_albums_path(@session_loader)
   end
 
@@ -328,6 +329,11 @@ class AlbumsController < ApplicationController
   def mobile_liked_users_albums_path(loader, force_zero_ver = false)
     ver = force_zero_ver ? 0 : loader.liked_users_album_loader.current_version
     mobile_liked_users_public_albums_json_path(loader.user_id) + "?ver=#{ver}"
+  end
+
+  def invited_albums_path(loader, force_zero_ver = false)
+    ver = force_zero_ver ? 0 : loader.invited_album_loader.current_version
+    invited_albums_json_path(loader.user_id) + "?ver=#{ver}"
   end
 
   def mobile_invited_albums_path(loader, force_zero_ver = false)
