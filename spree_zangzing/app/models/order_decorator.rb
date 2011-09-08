@@ -144,6 +144,11 @@ Order.class_eval do
   end
 
   def to_xml_ezporder(options = {})
+    product_total = Money.new(0)
+    shipping_price = Money.new(0)
+    tax = Money.new(0)
+    order_total = Money.new(0)
+
     logo_id = 1
     options[:indent] ||= 2
     xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
@@ -159,7 +164,18 @@ Order.class_eval do
         xml.vendor( :logoimageid => logo_id) {
           xml.name 'ZangZing'
         }
-        #xml.customer{}
+        xml.customer{
+          xml.firstname   ship_address.firstname
+          xml.lastname    ship_address.lastname
+          xml.address1    ship_address.address1
+          xml.address2    ship_address.address2
+          xml.city        ship_address.city
+          xml.state       ship_address.state
+          xml.zip         ship_address.zipcode
+          xml.countrycode ship_address.country.iso3
+          xml.phone       ship_address.phone
+          xml.email       email
+        }
         xml.order {
           xml.orderid number
           xml.shippingaddress{
@@ -175,9 +191,26 @@ Order.class_eval do
             xml.phone       ship_address.phone
             xml.email       email
           }
-          line_items.each{ |li| li.to_xml_ezporderline( :builder => xml, :skip_instruct => true )}
+          line_items.each do |li|
+            li.to_xml_ezporderline( :builder => xml, :skip_instruct => true )
+            # totals
+            variant = li.variant
+            # money is expressed in cents
+            product_total += Money.new(variant.price * 100) * li.quantity
+            #shipping_price
+            #tax
+            order_total = product_total + shipping_price + tax
+          end
+          xml.producttotal  product_total.to_s
+          xml.shippingprice shipping_price.to_s
+          xml.tax           tax.to_s
+          xml.ordertotal    order_total.to_s
           xml.shippingmethod 'FC'
         }
+        xml.producttotal  product_total.to_s
+        xml.shippingtotal shipping_price.to_s
+        xml.taxtotal      tax.to_s
+        xml.total         order_total.to_s
       }
     }
   end

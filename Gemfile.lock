@@ -164,6 +164,8 @@ GEM
       activesupport (~> 3.0.2)
       arel (~> 2.0.2)
     mime-types (1.16)
+    money (3.7.1)
+      i18n (~> 0.4)
     multi_json (0.0.5)
     multipart-post (1.1.0)
     mysql2 (0.2.7)
@@ -307,6 +309,7 @@ DEPENDENCIES
   launchy
   mechanize
   memcache-client
+  money
   mysql2 (~> 0.2.7)
   nokogiri
   oauth (= 0.4.5.pre2)!

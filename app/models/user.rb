@@ -447,6 +447,16 @@ class User < ActiveRecord::Base
     end
   end
 
+  # handy utility method to delete an array of ids all at once
+  def self.delete_list_of_user_ids(user_ids)
+    user_ids.each do |user_id|
+      u = User.find_by_id(user_id)
+      if !u.nil?
+        puts u.id
+        u.destroy
+      end
+    end
+  end
 
 
 end
