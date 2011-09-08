@@ -1,85 +1,55 @@
-<style>
-    div.inner input[type=text], div.inner select { width: 90%; }
-    .hidden { display: none; }
-    #checkout-summary{
-        position: absolute;
-        top: 22px;
-        right: 0;
-    }
-    div#checkout #checkout_form_payment select#order_bill_address_id {
-        width: 300px;
-    }
-    .lightgray{
-        color: #CCCCCC;
-    }
 
-
-</style>
 <%content_for :page_title do
     t(@order.state, :scope => :order_state).titleize
 end %>
 
 <div class="row">
+  <div class="span8 columns">
+    <%= render :partial =>'creditcard_wallet', :locals => { :order => @order }%>
+    <% method = @order.default_payment_method %>
+    <%=hidden_field_tag "order[payments_attributes][][payment_method_id]",  method.id%>
 
-<div class="span7 columns offset1"
-<%= render :partial =>'creditcard_wallet', :locals => { :order => @order }%>
-
-<fieldset id="payment">
-  <% method = @order.default_payment_method %>
-  <%=hidden_field_tag "order[payments_attributes][][payment_method_id]",  method.id%>
-  <fieldset id="creditcard">
-    <div class="inner">
       <%= render "checkout/payment/#{method.method_type}", :payment_method => method %>
       <%unless current_user %>
           <% clean_guest_checkout_email( @order ) %>
-          <p id="email" class="field">
             <%= form.label :email, t("email") %>
             <%= form.text_field :email, :class => 'required' %><span class="req">*</span>
           <div>( <%=t("email_needed")%> )</div>
           </p>
       <%end%>
-    </div>
-  </fieldset>
-  
+  </div>
 
-  <fieldset>
-    <legend><%= t("billing_address") %></legend>
+  <div class="span6 columns">
+    <h4><%= t("billing_contact") %></h4>
     <%= render :partial =>'addressbook', :locals => { :form => form,
-                                                          :order => @order,
-                                                          :address_kind => 'bill_address',
-                                                          :button_text => "Use This Address" } %>
-    <fieldset id="billing">
-    <div class="inner">
-      <%= form.fields_for :bill_address do |bill_form| %>
-          <%= render :partial =>'address_fields', :locals => { :f => bill_form,
-                                                               :address => @order.bill_address } %>
-      <% end %>
-    </div>
-    </fieldset>
-  </fieldset>
-
-</fieldset>
+                                                      :order => @order,
+                                                      :address_kind => 'bill_address',
+                                                      :button_text => "Use This Address" } %>
+    <%= form.fields_for :bill_address do |bill_form| %>
+        <%= render :partial =>'address_fields', :locals => { :f => bill_form,
+                                                             :address => @order.bill_address } %>
+    <% end %>
+  </div>
 </div>
 
-<hr class="space" />
 <div class="form-buttons">
   <input type="submit" class="continue button primary" value="<%=t("save_and_continue") %>" />
 </div>
 
 <script type="text/javascript">
-  $("input[name='order[creditcard_id]']").click(function(){
+    $("input[name='order[creditcard_id]']").click(function(){
 
-            $('#creditcard :input').attr('disabled', true);
-            $('#creditcard').css('opacity',0.5);
-  });
-  $('#order_bill_address_id').change(function(){
-      if( $(this).val() == '' ){
-          $('#billing :input').attr('disabled', false);
-          $('#billing').removeClass("lightgray");
-      }else{
-          $('#billing :input').attr('disabled', true);
-          $('#billing').addClass("lightgray");
-      }
-  })
+        $('#creditcard :input').attr('disabled', true);
+        $('#creditcard').css('opacity',0.5);
+    });
+    $('#order_bill_address_id').change(function(){
+        if( $(this).val() == '' ){
+            $('#billing :input').attr('disabled', false);
+            $('#billing').removeClass("lightgray");
+        }else{
+            $('#billing :input').attr('disabled', true);
+            $('#billing').addClass("lightgray");
+        }
+    })
 
 </script>
