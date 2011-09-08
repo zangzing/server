@@ -156,7 +156,7 @@ Order.class_eval do
     xml.orders({ :partnerid => ZangZingConfig.config[:ezp_partner_id], :version => 1 }) {
       xml.images{
         xml.uri( {:id  => logo_id,
-                 :title => 'ZangZing Logo'}, build_full_path("/images/zz-logo.png"))
+                 :title => 'ZangZing Logo'}, "http:www.zangzing.com/images/zz-logo.png")
         line_items.each{ |li| li.to_xml_ezpimage( :builder => xml, :skip_instruct => true )}
       }
       xml.ordersession{
@@ -201,16 +201,16 @@ Order.class_eval do
             #tax
             order_total = product_total + shipping_price + tax
           end
-          xml.producttotal  product_total.to_s
-          xml.shippingprice shipping_price.to_s
-          xml.tax           tax.to_s
-          xml.ordertotal    order_total.to_s
+          xml.producttotal  product_total
+          xml.shippingprice shipping_price
+          xml.tax           tax
+          xml.ordertotal    order_total
           xml.shippingmethod 'FC'
         }
-        xml.producttotal  product_total.to_s
-        xml.shippingtotal shipping_price.to_s
-        xml.taxtotal      tax.to_s
-        xml.total         order_total.to_s
+        xml.producttotal  product_total
+        xml.shippingtotal shipping_price
+        xml.taxtotal      tax
+        xml.total         order_total
       }
     }
   end
