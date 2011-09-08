@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'factory_girl'
 
-ZZ::Async::Base.synchronous_test_mode = true
+ZZ::Async::Base.loopback = true
 
 describe "Comments Model" do
 
