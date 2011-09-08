@@ -30,15 +30,15 @@ javascripts:
     - public/javascripts/zz-oauthmanager/oauthmanager.js
   movie:
     - public/javascripts/movie/*.js
-  store:
-    - public/store/javascripts/*.js
+#  store:
+#    - public/store/javascripts/*.js
 
 stylesheets:
   common:
     - public/stylesheets/reset.css
     - public/stylesheets/main.css
     - public/stylesheets/*.css
-  store:
-    - public/stylesheets/dialog.css
-    - public/stylesheets/new-dialog.css
-    - public/store/stylesheets/*.css
+#  store:
+#    - public/stylesheets/dialog.css
+#    - public/stylesheets/new-dialog.css
+#    - public/store/stylesheets/*.css
