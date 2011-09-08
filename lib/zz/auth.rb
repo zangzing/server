@@ -207,7 +207,7 @@ module ZZ
           if request.xhr?
             head :status => 401
           else
-            render :file => "#{Rails.root}/public/401.html", :layouts => false, :status => 401
+            render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
           end
           return false
         end
@@ -266,14 +266,14 @@ module ZZ
 
     def render_404(exception = nil)
       respond_to do |type|
-        type.html { render :status => :not_found, :file    => "#{Rails.root}/public/404.html", :layouts => nil}
+        type.html { render :status => :not_found, :file    => "#{Rails.root}/public/404.html", :layout => nil}
         type.all  { render :status => :not_found, :nothing => true }
       end
     end
 
     def render_401(exception = nil)
       respond_to do |type|
-        type.html { render :status => :unauthorized, :file    => "#{Rails.root}/public/401.html", :layouts => nil}
+        type.html { render :status => :unauthorized, :file    => "#{Rails.root}/public/401.html", :layout => nil}
         type.all  { render :status => :unauthorized, :nothing => true }
       end
     end

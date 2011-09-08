@@ -88,7 +88,7 @@ class Admin::EmailTemplatesController < Admin::AdminController
         @template = EmailTemplate.find( params[:id] )
         @message = send( 'test_'+@template.email.name, @template.id )
         if params[:onscreen]
-          render :layouts => false
+          render :layout => false
         else
           @message[:to]=params[:target_address] unless params[:target_address].blank?
           @message.deliver

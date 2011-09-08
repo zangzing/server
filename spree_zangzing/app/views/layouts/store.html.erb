@@ -24,6 +24,7 @@
 
   <body class="checkout-body">
 
+  <div class="container">
     <div class="checkout-header row">
       <div class="spans16 columns">
         <%= render 'shared/nav_bar' %>
@@ -50,6 +51,7 @@
         <%= render :partial => 'shared/footer'%>
        </div>
       </div>
+  </div>
       <%= include_javascripts :jquery, :store %>
       <% unless I18n.locale.to_s[0..1] == 'en' %>
           <%= javascript_include_tag ['localization/messages_', I18n.locale.to_s[0..1], '.js'].join %>

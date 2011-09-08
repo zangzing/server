@@ -116,7 +116,7 @@ class Admin::UsersController < Admin::AdminController
    if request.xhr?
         head :status => 401
    else
-        render :file => "#{Rails.root}/public/401.html", :layouts => false, :status => 401
+        render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
    end
   end
 
