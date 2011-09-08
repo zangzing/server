@@ -287,7 +287,20 @@ div#headline {
     position: absolute;
     top:57px;
     left:0px;
-    width:100%;
+    /*width:100%;*/
     bottom:60px;
+    right:450px;
 }
 
+#right-drawer{
+    position:absolute;
+    width:435px;
+    top:57px;
+    right:0px;
+    bottom:57px;
+    border:1px solid #ccc;
+    overflow-y:auto;
+    text-align:left;
+    padding:5px;
+
+}
