@@ -1,5 +1,4 @@
 require 'spree_core'
-require 'spree_zangzing_hooks'
 
 module SpreeZangzing
   class Engine < Rails::Engine
@@ -7,7 +6,7 @@ module SpreeZangzing
     config.autoload_paths += %W(#{config.root}/lib #{config.root}/../lib/zz)
 
     def self.activate
-      Spree::BaseController.asset_path = "/store%s"
+      #Spree::BaseController.asset_path = "/store%s"
       initializer 'spree_zangzing.set_spree_configuration_values' do |app|
         puts "Initializing spree_zangzing"
         # Spree::Config.set( :logo => '/images/zz-logo.png')

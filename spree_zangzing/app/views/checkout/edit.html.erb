@@ -2,8 +2,8 @@
   <script type="text/javascript" src="/store/states.js"></script>
   <%= javascript_include_tag  'checkout'%>
 <% end %>
+
 <div id="checkout">
-  <%= checkout_progress %>
   <br clear="left" />
   <%= render "shared/error_messages", :target => @order %>
    <%= hook :checkout_summary_box do %>

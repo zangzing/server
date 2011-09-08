@@ -2,11 +2,8 @@ module CheckoutHelper
 
   #The checkout breadcrumb
   def checkout_progress
-    if Gateway.current and Gateway.current.payment_profiles_supported?
-      states = %w(signin ship_address payment confirm complete)
-    else
-      states = %w(signin ship_address payment complete)
-    end
+
+    states = %w(cart signin ship_address payment confirm)
     order_state = @order.state
     items = states.map do |state|
       text = t("order_state.#{state}").titleize
@@ -25,9 +22,10 @@ module CheckoutHelper
       css_classes << 'first' if state_index == 0
       css_classes << 'last' if state_index == states.length - 1
       # It'd be nice to have separate classes but combining them with a dash helps out for IE6 which only sees the last class
-      content_tag('li', content_tag('span', text), :class => css_classes.join('-'))
+      content_tag('td', content_tag('span', text), :class => css_classes.join('-'))
     end
-    content_tag('ol', raw(items.join("\n")), :class => 'progress-steps', :id => "checkout-step-#{order_state}")
+    row = content_tag('tr', raw(items.join("\n")), :class => 'progress-steps', :id => "checkout-step-#{order_state}")
+    content_tag( 'table', row)
   end
 
   # Creates the state field for addresses, keeps views cleaner.

@@ -1,177 +1,157 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<% content_for :page_stylesheet do%>
 
-<head>
-  <meta http-equiv="X-UA-Compatible" content="IE=100" > <!-- IE8 mode -->
-  <meta http-equiv="Content-Language" Content="en">
-  <meta charset="utf-8">
-  <meta name="copyright" content="Copyright 2011, ZangZing, LLC. All Rights Reserved." />
-  <meta name="DC.title" content="ZangZing" />
-  <meta name="title" content="ZangZing" />
-  <title>Group Photo Sharing - ZangZing</title>
-  <%= include_stylesheets :common %>
+<style type="text/css">
+    .checkout-session-dialog{
+        height: 280px;
+        color: #6A6A6C;
+        text-shadow: 1px 1px white;
+    }
+    .checkout-session-dialog .logo{
+        position: absolute;
+        right: 5px;
+        height: 70px;
+    }
 
-  <style type="text/css">
-      .checkout-session-dialog{
-          top: 200px;
-          width: 700px;
-          height: 280px;
-          color: #6A6A6C;
-          text-shadow: 1px 1px white;
-      }
-      .checkout-session-dialog .logo{
-          position: absolute;
-          right: 5px;
-          height: 70px;
-      }
-
-      .checkout-session-dialog .header{
+    .checkout-session-dialog .header{
         position: absolute;
         top: 0;
         left: 0px;
         width: 500px;
         text-align: left;
         padding-top:  2px;
-      }
-      .header h1{
+    }
+    .header h1{
         font-size: 19px;
         margin-left: 10px;
-      }
+    }
 
-      .header #header-hairline{
-          margin-top:10px;
-          margin-bottom:12px;
-          left: 0px;
-          right:0px;
-          border-bottom:1px solid #c3c3c3;
-      }
+    .header #header-hairline{
+        margin-top:10px;
+        margin-bottom:12px;
+        left: 0px;
+        right:0px;
+        border-bottom:1px solid #c3c3c3;
+    }
 
-      .checkout-session-dialog #signin{
-          position:absolute;
-          top:40px;
-          left:10px;
-          width: 330px;
-          bottom:0px;
+    .checkout-session-dialog #signin{
+        position:absolute;
+        top:40px;
+        left:10px;
+        width: 330px;
+        bottom:0px;
 
-      }
+    }
 
-      .checkout-session-dialog #guest{
-          position:absolute;
-          top:40px;
-          left:350px;
-          right: 10px;
-          bottom:0px;
-          padding: 35px 0 0 15px;
-          border-left:2px solid #c3c3c3;
-      }
+    .checkout-session-dialog #guest{
+        position:absolute;
+        top:40px;
+        left:350px;
+        right: 10px;
+        bottom:0px;
+        padding: 35px 0 0 15px;
+        border-left:2px solid #c3c3c3;
+    }
 
-      .content table{
-          width:100%
-      }
+    .content table{
+        width:100%
+    }
 
-      .content table td{
-          padding:3px;
-          padding-left:0px;
-      }
+    .content table td{
+        padding:3px;
+        padding-left:0px;
+    }
 
-      .content table td.label{
-          text-align:left;
-          white-space:nowrap;
-      }
+    .content table td.label{
+        text-align:left;
+        white-space:nowrap;
+    }
 
-      .content table td.field{
-          text-align:right;
-          height: 25px;
-      }
+    .content table td.field{
+        text-align:right;
+        height: 25px;
+    }
+ .content #flash-error{
+        text-align:left;
+        color:red;
+        min-height:20px;
+        margin-bottom:5px
+    }
 
+    .content form{
+        text-align:right;
+        font-size:14px;
+    }
 
+    .content input{
+        width:170px;
+        margin-left:10px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+    }
 
+    .content #submit-button{
+        position:absolute;
+        right:0px;
+        bottom:10px;
+        width:100px;
+    }
 
-      .content #flash-error{
-          text-align:left;
-          color:red;
-          min-height:20px;
-          margin-bottom:5px
-      }
-
-      .content form{
-          text-align:right;
-          font-size:14px;
-      }
-
-      .content input{
-          width:170px;
-          margin-left:10px;
-          -moz-border-radius: 3px;
-          border-radius: 3px;
-      }
-
-      .content #submit-button{
-          position:absolute;
-          right:0px;
-          bottom:10px;
-          width:100px;
-      }
-
-      .content #guest-checkout-button{
-                position:absolute;
-                right:0px;
-                bottom:10px;
-                width:100px;
-      }
+    .content #guest-checkout-button{
+        position:absolute;
+        right:0px;
+        bottom:10px;
+        width:100px;
+    }
 
 
-      .checkout-session-dialog h2{
-          font-size:   16px;
-          text-align:  left;
-          font-weight: 400;
-          margin-bottom: 18px;
-      }
+    .checkout-session-dialog h2{
+        font-size:   16px;
+        text-align:  left;
+        font-weight: 400;
+        margin-bottom: 18px;
+    }
 
-      #guest p{
-          text-align:  left;
-          font-size:14px;
-          font-weight: 200;
-      }
-    
-
-
-      #forgot-password-link{
-          margin-top:5px;
-      }
-
-      .content  label.error{
-          position: absolute;
-          background-color: #000;
-          opacity: .5;
-          filter: alpha(opacity = 60);
-          text-shadow: none;
-          color: white;
-          width: 230px;
-          height: 19px;
-          border: 1px solid white;
-          text-align: left;
-          padding: 4px 4px 4px 10px;
-          right: -250px;
-          /*-moz-border-radius: 3px;*/
-          /*border-radius: 3px;*/
-          -moz-box-shadow: 0 0 10px black;
-          -webkit-box-shadow: 0 0 10px black;
-          top: -1px;
-          font-weight: 200;
-      }
+    #guest p{
+        text-align:  left;
+        font-size:14px;
+        font-weight: 200;
+    }
 
 
 
-  </style>
+    #forgot-password-link{
+        margin-top:5px;
+    }
+
+    .content  label.error{
+        position: absolute;
+        background-color: #000;
+        opacity: .5;
+        filter: alpha(opacity = 60);
+        text-shadow: none;
+        color: white;
+        width: 230px;
+        height: 19px;
+        border: 1px solid white;
+        text-align: left;
+        padding: 4px 4px 4px 10px;
+        right: -250px;
+        /*-moz-border-radius: 3px;*/
+        /*border-radius: 3px;*/
+        -moz-box-shadow: 0 0 10px black;
+        -webkit-box-shadow: 0 0 10px black;
+        top: -1px;
+        font-weight: 200;
+    }
+</style>
+<%end%>
 
 
-</head>
-<body class="signin">
-<img src="/images/background_signin.jpg" class="bg" />
-
-
-<div class="checkout-session-dialog new-dialog">
+<%content_for :page_title do
+    t('please_sign_in')
+end %>
+<div class="row">
+<div class="checkout-session-dialog new-dialog clearfix spans14 columns offset1">
   <div class="background"></div>
   <div class="frame"></div>
   <div class="body">
@@ -225,15 +205,12 @@
     </div>
   </div>
 </div>
+</div>
 
-<%= render :partial => 'layouts/zza'  %>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-<%= include_javascripts :lib %>
-<%= include_javascripts :zz %>
-
-
+<%content_for :page_javascript do%>
 <script>
     $(document).ready(function(){
+
         $('#submit-button').click(function(){
             $('#signin-form').submit();
         });
@@ -244,9 +221,5 @@
         });
         $('#email').focus();
     });
-
 </script>
-
-
-</body>
-</html>
+<%end %>

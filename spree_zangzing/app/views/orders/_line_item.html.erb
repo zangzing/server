@@ -1,0 +1,46 @@
+<tr>
+  <td>
+    <% locals = {:item_form => item_form, :variant => variant, :line_item => line_item} %>
+
+    <% if line_item.photo %>
+        <%=  image_tag line_item.photo.thumb_url   %>
+    <% else %>
+        <% if variant.images.length == 0 %>
+            <%= small_image(variant.product) %>
+        <% else %>
+            <%=  image_tag variant.images.first.attachment.url(:small)   %>
+        <% end %>
+    <%end%>
+
+  </td>
+  <td>
+    <h4><%= link_to variant.product.name,  product_path(variant.product) %></h4>
+    <%= variant_options variant %>
+    <%= truncate(variant.product.description, :length => 100, :omission => "...") %>
+    <% if line_item.photo%>
+        <div class="clearfix">
+                <%=item_form.label :photo_id, 'Photo ID:'  %>
+                <%=item_form.text_field :photo_id%>
+        </div>
+        <div class="clearfix">
+                <%=item_form.text_field :crop_instructions, { :placeholder => 'Crop Instructions...'  }%>
+        </div>
+        <div class="clearfix">
+                <%=item_form.text_field :back_message,  { :placeholder => 'Back Message...'}  %>
+        </div>
+    <%end%>
+  </td>
+  <td>
+      <%=  product_price(line_item) %>
+  </td>
+  <td>
+      <%= item_form.text_field :quantity, {:size => "10"} %>
+  </td>
+
+  <td>
+      <%= format_price(product_price(line_item, :format_as_currency => false) * line_item.quantity) unless line_item.quantity.nil? %>
+  </td>
+  <td>
+      <%= link_to(image_tag('/images/admin/icons/delete.png'), '#', :class => 'delete') %>
+  </td>
+</tr>

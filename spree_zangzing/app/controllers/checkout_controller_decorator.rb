@@ -8,11 +8,11 @@ CheckoutController.class_eval do
 
    # Displays the store's "Login or Guest checkout" screen
    def registration
+     #If the order started checkout as guest or if a user is logged in then continue
      redirect_to checkout_path and return if current_user || current_order.guest_checkout?
+     @order = current_order
+     redirect_to cart_path and return unless @order and @order.checkout_allowed?
      @user_session = UserSession.new(:email=> params[:email])
-     Spree::BaseController.asset_path = "%s"
-     render :layout => false
-     Spree::BaseController.asset_path = "/store%s"
    end
 
    # When a guest proceeds with guest checkout

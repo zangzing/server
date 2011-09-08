@@ -1,11 +1,10 @@
 <%# Caller must provide address and label%>
-<table>
-      <tr><td style="font-weight: bold;"><%=label%></td></tr>
-      <tr><td style="font-weight: bold;"><%= address.full_name%></td></tr>
-      <tr><td><%= address.address1%></td></tr>
+<address>
+      <%= address.full_name%><br/>
+      <%= address.address1%><br/>
       <% if address.address2 && address.address2.length > 0 %>
-            <tr><td><%= address.address2%></td></tr>
+            <%= address.address2%><br/>
       <%end%>
-      <tr><td><%= "#{address.city} #{address.state_text} #{address.zipcode}"%></td></tr>
-      <tr><td><%= number_to_phone address.phone%></td></tr>
-</table>
+      <%= "#{address.city} #{address.state_text} #{address.zipcode}"%><br/>
+      <%= number_to_phone address.phone, :area_code => true%><br/>
+</address>

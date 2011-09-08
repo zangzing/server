@@ -578,16 +578,16 @@ en:
   order_processed_successfully: "Your order has been processed successfully"
   order_state:
     # keys correspond to Checkout state names:
+    cart: "Review"
     signin: signin
     address: address
-    ship_address: "Shipping Address"
+    ship_address: "Shipping"
     bill_address: "Billing Address"
     adjustments: adjustments
     awaiting_return: awaiting return
     canceled: canceled
-    cart: cart
     complete: complete
-    confirm: confirm
+    confirm: Order
     delivery: delivery
     payment: payment
     resumed: resumed

@@ -11,7 +11,7 @@ class Admin::LogsController < Admin::AdminController
   def retrieve
       #send_file "#{Rails.root}/log/#{Base64.decode64(params[:logname])}", :type => 'text/plain'
       render :file => "#{Rails.root}/log/#{Base64.decode64(params[:logname])}",
-             :layout =>false,
+             :layouts =>false,
              :content_type => 'text/plain'
   end
 
