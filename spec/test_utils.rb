@@ -19,3 +19,16 @@ def mobile_body(data)
   JSON.fast_generate(data)
 end
 
+# safe wrapper for turning on or off loopback mode
+# for resque jobs
+def resque_loopback(loopback = true, &block)
+  begin
+    prev_loopback = ZZ::Async::Base.loopback
+    ZZ::Async::Base.loopback = loopback
+    block.call()
+  rescue Exception => ex
+    raise ex
+  ensure
+    ZZ::Async::Base.loopback = prev_loopback
+  end
+end

@@ -10,12 +10,12 @@ module ZZ
 
 
       # allow async jobs to run sycnchronously for testing
-      def self.synchronous_test_mode=(synchronous_test_mode)
-        @@synchronous_test_mode = synchronous_test_mode
+      def self.loopback=(synchronous_test_mode)
+        @@loopback = synchronous_test_mode
       end
 
-      def self.synchronous_test_mode
-        @@synchronous_test_mode ||= false
+      def self.loopback
+        @@loopback ||= false
       end
 
 
@@ -119,7 +119,7 @@ module ZZ
       # called from the subclass. The idea is that this should be the only place to call
       # Resque enqueue
       def self.enqueue( *args )
-        if self.synchronous_test_mode
+        if self.loopback
           self.perform(*args)
         else
           Resque.enqueue( self, *args)
@@ -128,7 +128,7 @@ module ZZ
 
       # lets you enqueue on on a named queue
       def self.enqueue_on_queue(queue, *args)
-        if self.synchronous_test_mode
+        if self.loopback
           self.perform(*args)
         else
           Resque::Job.create(queue, self, *args)
