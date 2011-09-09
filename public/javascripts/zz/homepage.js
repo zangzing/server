@@ -1,4 +1,3 @@
-$('#right-drawer .content').fadeOut(200);
 var zz = zz || {};
 
 
@@ -98,8 +97,6 @@ zz.homepage = {
                     onClick: function() {
                         $('#article').css({overflow: 'hidden'}).animate({left: -1 * $('#article').width()}, 500, 'easeOutQuart');
                         $('#user-info').fadeOut(200);
-                        $('#right-drawer .content').fadeOut(200);
-
                         document.location.href = album.album_path;
                     },
                     onLike: function() {
