@@ -18,31 +18,29 @@ module ZZ
       
       def self.perform( photo_id, source_url, options = {} )
         @headers = options['headers'] || {}
-        @inplace_retries = (options['inplace_retries'] || 0).to_i
         direct_image_url = source_url
         SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
           photo = Photo.find(photo_id)
           if photo.assigned? || photo.error?
-            begin
-              # some connectors (eg dropbox) have expensive
-              # calls to get the url to import. we need to do these
-              # inside of resque job. so we pass 'url_making_method' callback
-              # and call it here
-              if options.has_key?('url_making_method')
-                klass_name, method_name = options['url_making_method'].split('.')
-                klass = klass_name.constantize
-                direct_image_url = klass.send(method_name.to_sym, photo, source_url)
-              end
-              file_path = RemoteFile.read_remote_file(direct_image_url, PhotoGenHelper.photo_upload_dir, @headers)
-              photo.file_to_upload = file_path
-              photo.save
-            rescue Exception => e
-              if @inplace_retries > 0
-                @inplace_retries -= 1
-                retry
-              end
-              raise e
+            # some connectors (eg dropbox) have expensive
+            # calls to get the url to import. we need to do these
+            # inside of resque job. so we pass 'url_making_method' callback
+            # and call it here
+            if options.has_key?('url_making_method')
+              klass_name, method_name = options['url_making_method'].split('.')
+              klass = klass_name.constantize
+              direct_image_url = klass.send(method_name.to_sym, photo, source_url)
             end
+            # same for headers
+            if options.has_key?('headers_making_method')
+              klass_name, method_name = options['headers_making_method'].split('.')
+              klass = klass_name.constantize
+              additional_headers = klass.send(method_name.to_sym, photo, source_url)
+              @headers.merge!(additional_headers)
+            end
+            file_path = RemoteFile.read_remote_file(direct_image_url, PhotoGenHelper.photo_upload_dir, @headers)
+            photo.file_to_upload = file_path
+            photo.save
           end
         end
       end

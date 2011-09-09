@@ -50,13 +50,17 @@ protected
     "dropbox_"+Photo.generate_source_guid(url)
   end
 
-  def self.make_signed_url(access_token, entry_path, options = {})
+  def self.make_url(entry_path, options = {})
       root = options.delete(:root) || 'files'
       path = entry_path.sub(/^\//, '')
       rest = Dropbox.check_path(path).split('/')
       rest << { :ssl => false }
       rest.last.merge! options
-      url = Dropbox.api_url(root, 'dropbox', *rest)
+      Dropbox.api_url(root, 'dropbox', *rest)
+  end
+
+  def self.make_signed_url(access_token, entry_path, options = {})
+      url = make_url(entry_path, options)
       request_uri = URI.parse(url)
       signed_url = "#{request_uri.scheme}://#{request_uri.host}"
       access_token.consumer.request(:get, url, access_token, {:scheme => :query_string}) do |http_request|
@@ -64,6 +68,19 @@ protected
         :done
       end
       signed_url
+  end
+
+  def self.extract_auth_headers(access_token, entry_path, options = {})
+      url = make_url(entry_path, options)
+      auth_headers = nil
+      access_token.consumer.request(:get, url, access_token) do |http_request|
+      auth_headers = http_request.instance_variable_get(:@header).inject({}) do |hsh,e|
+        hsh[e.first] = e.last.first
+        hsh
+      end
+        :done
+      end
+      auth_headers
   end
   
 end

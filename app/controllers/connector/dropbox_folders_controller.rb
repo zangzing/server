@@ -7,6 +7,17 @@ class Connector::DropboxFoldersController < Connector::DropboxController
     list = call_with_error_adapter do
       api.list(path)
     end
+    list.sort! do |a, b|
+      if a.is_dir==b.is_dir
+        a.path <=> b.path
+      elsif a.is_dir && !b.is_dir
+        -1
+      elsif !a.is_dir && b.is_dir
+        1
+      else
+        0 #Dunno if this can happen.. o_O
+      end
+    end
     contents = list.map do |entry|
       entry_id = Base64::encode64(entry.path)
       entry_name = File.split(entry.path).last
@@ -60,7 +71,10 @@ class Connector::DropboxFoldersController < Connector::DropboxController
     Photo.batch_insert(photos)
     # must send after all saved
     photos.each do |photo|
-      ZZ::Async::GeneralImport.enqueue( photo.id, photo.temp_url, :url_making_method => 'Connector::DropboxUrlsController.get_file_signed_url', :inplace_retries => 2 )
+      ZZ::Async::GeneralImport.enqueue( photo.id, photo.temp_url, 
+        :headers_making_method => 'Connector::DropboxUrlsController.get_file_auth_headers',
+        :url_making_method => 'Connector::DropboxUrlsController.get_file_unsigned_url'
+      )
     end
     Photo.to_json_lite(photos)
   end
@@ -86,7 +100,10 @@ class Connector::DropboxFoldersController < Connector::DropboxController
     ).tap do |p|
       p.temp_url = photo_url
     end
-    ZZ::Async::GeneralImport.enqueue( photo.id, photo_data.path, :url_making_method => 'Connector::DropboxUrlsController.get_file_signed_url', :inplace_retries => 2 )
+    ZZ::Async::GeneralImport.enqueue( photo.id, photo_data.path,
+      :headers_making_method => 'Connector::DropboxUrlsController.get_file_auth_headers',
+      :url_making_method => 'Connector::DropboxUrlsController.get_file_unsigned_url'
+    )
 
     Photo.to_json_lite(photo)
   end
