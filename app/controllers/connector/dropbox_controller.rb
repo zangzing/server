@@ -58,11 +58,12 @@ protected
       rest.last.merge! options
       url = Dropbox.api_url(root, 'dropbox', *rest)
       request_uri = URI.parse(url)
-
-      http = Net::HTTP.new(request_uri.host, request_uri.port)
-      req = Net::HTTP::Get.new(request_uri.request_uri)
-      req.oauth!(http, access_token.consumer, access_token, {:scheme => :query_string})
-      "#{request_uri.scheme}://#{request_uri.host}#{req.path}"
+      signed_url = "#{request_uri.scheme}://#{request_uri.host}"
+      access_token.consumer.request(:get, url, access_token, {:scheme => :query_string}) do |http_request|
+        signed_url << http_request.path
+        :done
+      end
+      signed_url
   end
-
+  
 end

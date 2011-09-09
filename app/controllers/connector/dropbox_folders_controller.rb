@@ -1,6 +1,6 @@
 class Connector::DropboxFoldersController < Connector::DropboxController
 
-  LISTABLE_TYPES = %w(image/jpeg image/gif image/bmp)
+  LISTABLE_TYPES = Photo.supported_image_types.to_a
 
   def self.list_dir(api, params)
     path = params[:path] || '/'
@@ -60,7 +60,7 @@ class Connector::DropboxFoldersController < Connector::DropboxController
     Photo.batch_insert(photos)
     # must send after all saved
     photos.each do |photo|
-      ZZ::Async::GeneralImport.enqueue( photo.id, photo.temp_url, :url_making_method => 'Connector::DropboxUrlsController.get_file_signed_url' )
+      ZZ::Async::GeneralImport.enqueue( photo.id, photo.temp_url, :url_making_method => 'Connector::DropboxUrlsController.get_file_signed_url', :inplace_retries => 2 )
     end
     Photo.to_json_lite(photos)
   end
@@ -86,7 +86,7 @@ class Connector::DropboxFoldersController < Connector::DropboxController
     ).tap do |p|
       p.temp_url = photo_url
     end
-    ZZ::Async::GeneralImport.enqueue( photo.id, photo_data.path, :url_making_method => 'Connector::DropboxUrlsController.get_file_signed_url' )
+    ZZ::Async::GeneralImport.enqueue( photo.id, photo_data.path, :url_making_method => 'Connector::DropboxUrlsController.get_file_signed_url', :inplace_retries => 2 )
 
     Photo.to_json_lite(photo)
   end
