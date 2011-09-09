@@ -142,6 +142,8 @@ zz.album = {};
         $('.photogrid').css({overflow: 'hidden'});
         $('#article').css({overflow: 'hidden'}).animate({left: -1 * $('#article').width()}, 500, 'easeOutQuart');
         $('#header #back-button').fadeOut(200);
+        $('#right-drawer .content').fadeOut(200);
+
         document.location.href = zz.page.album_base_url + '/photos/#!' + photo_id;
     };
 
@@ -463,6 +465,8 @@ zz.album = {};
             $('#article').animate({left: $('#article').width()}, 500, 'easeOutQuart');
             $('#album-info').fadeOut(200);
             $('#header #back-button').fadeOut(200);
+            $('#right-drawer .content').fadeOut(200);
+            
             document.location.href = url;
         });
     }

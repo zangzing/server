@@ -32,6 +32,7 @@ zz.toolbars = {
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #grid-view-button').addClass('selected');
             $('#article').fadeOut(200);
+            $('#right-drawer .content').fadeOut(200);
             if (typeof(zz.page.album_base_url) != 'undefined') {
                 document.location.href = zz.page.album_base_url + '/photos';
             } else {
@@ -48,6 +49,7 @@ zz.toolbars = {
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #picture-view-button').addClass('selected');
             $('#article').fadeOut(200);
+            $('#right-drawer .content').fadeOut(200);
             document.location.href = zz.page.album_base_url + '/photos/#!';
         });
 
@@ -59,6 +61,7 @@ zz.toolbars = {
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #people-view-button').addClass('selected');
             $('#article').fadeOut(200);
+            $('#right-drawer .content').fadeOut(200);
             if (typeof(zz.page.album_base_url) != 'undefined') {
                 document.location.href = zz.page.album_base_url + '/people';
             } else {
@@ -75,6 +78,7 @@ zz.toolbars = {
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #activities-view-button').addClass('selected');
             $('#article').fadeOut(200);
+            $('#right-drawer .content').fadeOut(200);
             if (typeof(zz.page.album_base_url) != 'undefined') {
                 document.location.href = zz.page.album_base_url + '/activities';
             } else {
