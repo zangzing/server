@@ -1,13 +1,11 @@
 <% # Locals are:
    #     order: the order for which the addressbook should be displayed
-   #     button_text: the text to be shown in the address button
    #     address_kind:     'bill_address' or 'ship_address'
    column_width = 4
    style = 'dropdown'
 %>
 
 <%if order.user && order.user.addresses.count > 0 %>
-    <b>Address Book</b>
     <% if style=='table' %>
         <%= form.hidden_field "#{address_kind}_id"%>
         <table>
@@ -17,7 +15,6 @@
                   <tr>
               <%end%>
               <td>
-                <%= form.submit button_text,  {:onclick => "$('#order_#{address_kind}_id').val('#{address.id}'); this.form.submit();"} %>
                 <%= render :partial =>'address_display', :locals => { :address => address,:label =>"" } %>
                 <a href="javascript:void(0)"><span>edit</span></a> <a href="javascript:void(0)"><span>delete</span></a>
               </td>
@@ -28,7 +25,9 @@
           <%end %>
         </table>
     <% else  %>
+       <p id="addressbook" class="field">
         <%= addressbook_dropdown(form, address_kind, order.user.addresses) %>
+       </p>
     <% end %>
 
 <%end %>

@@ -1,34 +1,31 @@
-<%= image_tag "creditcard.gif", :id => 'creditcard-image' %>
 <% param_prefix = "payment_source[#{payment_method.id}]" %>
 
 <%= hidden_field_tag "#{param_prefix}[payment_method_id]",  payment_method.id%>
-<table>
-  <tr>
-    <td>
-      <p class="field">
-        <label for=""><%= t("card_number") %></label><span class="req">*</span><br />
-        <% options_hash = Rails.env.production? ? {:autocomplete => "off"} : {} %>
-        <%= text_field_tag "#{param_prefix}[number]", '', options_hash.merge(:id => 'card_number', :class => 'required', :size => 16, :maxlength => 16) %>
-
-      </p>
-    </td>
-    <td>
-      <p class="field">
-        <label for=""><%= t("card_code") %><span class="req">*</span></label>
-        <a href="/store/content/cvv" target="_blank" onclick="window.open(this.href,'cvv_info','left=20,top=20,width=500,height=500,toolbar=0,resizable=0,scrollbars=1');return false">
-          (<%= t("?") %>)
-        </a><br />
-        <%= text_field_tag "#{param_prefix}[verification_value]", '', options_hash.merge(:id => 'card_code', :class => 'required', :size => 4) %>
-
-      </p>
-    </td>
-  </tr>
-</table>
-<p class="field">
-  <label for=""><%= t("expiration") %></label><br />
-  <%= select_month(Date.today, {:prefix => param_prefix, :field_name => 'month', :use_month_numbers => true}, {:class => 'required expmonth'}) %>
-  <%= select_year(Date.today,  {:prefix => param_prefix, :field_name => 'year', :start_year => Date.today.year, :end_year => Date.today.year + 15}, {:class => 'required expdyear'}) %>
-  <span class="req">*</span>
+<p id="ccimages">
+<%= image_tag   'store/creditcards.png'%>
 </p>
+<p id="secure_lock">
+  <%= image_tag 'store/secure-lock.png'%>
+  <%=t('learn_more_security')%>
+</p>
+<p id="ccnumber" class="field">
+  <label for="card_number"><%= t("card_number") %></label>
+  <% options_hash = Rails.env.production? ? {:autocomplete => "off"} : {} %>
+  <%= text_field_tag "#{param_prefix}[number]", '', options_hash.merge(:id => 'card_number', :class => 'required', :size => 16, :maxlength => 16) %>
+</p>
+
+<p id="ccv" class="field">
+  <label for="card_code"><%= t("card_code") %></label>
+  <%= text_field_tag "#{param_prefix}[verification_value]", '', options_hash.merge(:id => 'card_code', :class => 'required', :size => 4) %>
+  <a href="/store/content/cvv" target="_blank" onclick="window.open(this.href,'cvv_info','left=20,top=20,width=500,height=500,toolbar=0,resizable=0,scrollbars=1');return false">
+  </a>
+</p>
+
+<p id="expires" class="field right">
+  <%= select_year(Date.today,  {:prefix => param_prefix, :field_name => 'year', :start_year => Date.today.year, :end_year => Date.today.year + 15}, {:id => "expire_year", :class => 'required expdyear right'}) %>
+  <%= select_month(Date.today, {:prefix => param_prefix, :field_name => 'month', :use_month_numbers => true}, {:id => "expire_month", :class => 'required expmonth right'}) %>
+  <label id="expire_label" class="right"><%= t("expiration_date") %></label>
+</p>
+
 <%= hidden_field param_prefix, 'first_name', :value => @order.billing_firstname %>
 <%= hidden_field param_prefix, 'last_name',  :value => @order.billing_lastname %>

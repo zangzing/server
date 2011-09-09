@@ -3,53 +3,68 @@
     t(@order.state, :scope => :order_state).titleize
 end %>
 
-<div class="row">
-  <div class="span8 columns">
+<div id="payment_creditcard" >
+    <fieldset>
+    <h4><%=t('credit_card')%></h4>
     <%= render :partial =>'creditcard_wallet', :locals => { :order => @order }%>
+
     <% method = @order.default_payment_method %>
     <%=hidden_field_tag "order[payments_attributes][][payment_method_id]",  method.id%>
 
       <%= render "checkout/payment/#{method.method_type}", :payment_method => method %>
+
       <%unless current_user %>
-          <% clean_guest_checkout_email( @order ) %>
+          <p id="email" class="field">
+            <% clean_guest_checkout_email( @order ) %>
             <%= form.label :email, t("email") %>
             <%= form.text_field :email, :class => 'required' %><span class="req">*</span>
           <div>( <%=t("email_needed")%> )</div>
           </p>
       <%end%>
-  </div>
+      </fieldset>
+</div>
 
-  <div class="span6 columns">
+
+<div id="payment_bill_address">
+    <fieldset>
     <h4><%= t("billing_contact") %></h4>
     <%= render :partial =>'addressbook', :locals => { :form => form,
                                                       :order => @order,
-                                                      :address_kind => 'bill_address',
-                                                      :button_text => "Use This Address" } %>
+                                                      :address_kind => 'bill_address' } %>
+    
     <%= form.fields_for :bill_address do |bill_form| %>
         <%= render :partial =>'address_fields', :locals => { :f => bill_form,
+                                                             :legend => t('billing_address'),
                                                              :address => @order.bill_address } %>
     <% end %>
-  </div>
+    </fieldset>
 </div>
+
 
 <%content_for :next_button do %>
   <input type="submit" class="continue button primary" value="<%="#{t('next')} : #{t('place_order')}"%>" onclick="checkout_form_payment.submit();"/>
 <%end%>
 
-<script type="text/javascript">
-    $("input[name='order[creditcard_id]']").click(function(){
+<%content_for :page_javascript do %>
+    <script type="text/javascript">
 
-        $('#creditcard :input').attr('disabled', true);
-        $('#creditcard').css('opacity',0.5);
-    });
-    $('#order_bill_address_id').change(function(){
-        if( $(this).val() == '' ){
-            $('#billing :input').attr('disabled', false);
-            $('#billing').removeClass("lightgray");
-        }else{
-            $('#billing :input').attr('disabled', true);
-            $('#billing').addClass("lightgray");
-        }
-    })
+        $(document).ready(function(){
+            $('form p.field label').inFieldLabels();
+            $("input[name='order[creditcard_id]']").click(function(){
 
-</script>
+                $('#creditcard :input').attr('disabled', true);
+                $('#creditcard').css('opacity',0.5);
+            });
+            $('#order_bill_address_id').change(function(){
+                if( $(this).val() == '' ){
+                    $('#billing :input').attr('disabled', false);
+                    $('#billing').removeClass("lightgray");
+                }else{
+                    $('#billing :input').attr('disabled', true);
+                    $('#billing').addClass("lightgray");
+                }
+            });
+        });
+    </script>
+<% end %>
+

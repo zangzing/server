@@ -29,23 +29,15 @@ module CheckoutHelper
   end
 
   # Creates the state field for addresses, keeps views cleaner.
-  def address_state(form, country)
+  def states_dropdown(form, country)
     country ||= Country.find(Spree::Config[:default_country_id])
-    have_states = !country.states.empty?
     state_elements = [
         form.collection_select(:state_id, country.states.order(:name),
                                :id, :name,
-                               {:include_blank => true},
-                               {:class => have_states ? "required" : "hidden",
-                                :disabled => !have_states}) +
-            form.text_field(:state_name,
-                            :class => !have_states ? "required" : "hidden",
-                            :disabled => have_states)
+                               {:include_blank => t('select_state')},
+                               {:class => "required"})
     ].join.gsub('"', "'").gsub("\n", "")
-
-    form.label(:state, t(:state)) + '<span class="req">*</span><br />'.html_safe +
-        content_tag(:noscript, form.text_field(:state_name, :class => 'required')) +
-        javascript_tag("document.write(\"#{state_elements.html_safe}\");")
+    javascript_tag("document.write(\"#{state_elements.html_safe}\");")
   end
 
   def addressbook_dropdown(form, address_kind, addresses )
@@ -56,7 +48,7 @@ module CheckoutHelper
                                  :id,
                                  :one_line,
                                  {    :selected => '',
-                                     :include_blank => 'Select from addressbook or enter new address'},
+                                     :include_blank => 'Select from Address Book or enter new address'},
                                  {:class => "required"})
       ].join.gsub('"', "'")
       address_elements.html_safe

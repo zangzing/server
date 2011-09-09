@@ -1,3 +1,7 @@
+.hidden {
+    display: none;
+}
+
 html{
     height: 100%;
 }
@@ -16,6 +20,7 @@ html{
 }
 .checkout-content{
     background-color: white;
+    border: 1px solid #CCCCCC;
 }
 .checkout-next-button{
     text-align:right;
@@ -27,3 +32,91 @@ html{
 .grey-border{
     border: 2px solid #CCCCCC;
 }
+
+
+/*------------- Forms --------------------*/
+fieldset{
+    /*width: 350px;*/
+}
+form p.field{
+     width: 100%;
+     position:relative
+}
+form p.field label{
+    width: auto;
+    padding-left: 5px;
+    position:absolute; top:0; left:0
+}
+form p.field input{
+        width: 90%;
+        display: inline-block;
+}
+ form p.field select {
+        width: 93%;
+        display: inline-block;
+}
+form p.field span.req {
+    display:inline-block;
+    float: none;
+}
+
+form p.field#fname{
+    width: 39%;
+    display: inline-block;
+}
+form p.field#lname{
+    width: 55%;
+    display: inline-block;
+}
+
+/* --------------------- payment --------------------------*/
+#payment_creditcard{
+    display: inline-block;
+    vertical-align:top;
+    width: 50%;
+}
+
+#payment_bill_address{
+    width: auto;
+    display:inline-block;
+    border-left: 1px solid #CCCCCC;
+    padding-left: 30px;
+}
+
+form p.field#secure_lock img{
+    vertical-align: text-top;
+}
+
+form p.field#ccnumber{
+    width: 60%;
+    display: inline-block;
+}
+form p.field#ccv{
+    width: auto;
+    display: inline-block;
+}
+
+form .right{
+  margin:  0 5px;
+  float: right;
+}
+
+form p.field label#expire_label{
+  text-align: left;
+  position: relative;
+  margin: 0 10px 0 15px;
+  width: 20%;
+  display: inline-block;
+
+}
+form p.field select#expire_month{
+    width: 15%;
+    display: inline-block;
+
+}
+form p.field select#expire_year{
+    width: 20%;
+    display: inline-block;
+    
+}
+

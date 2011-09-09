@@ -275,7 +275,7 @@ en:
   cannot_destory_line_item_as_inventory_units_have_shipped: Cannot destory line item as some inventory units have shipped.
   cannot_perform_operation: "Cannot perform requested operation"
   capture: Capture
-  card_code: "Card Code"
+  card_code: "CVV"
   card_details: "Card details"
   card_number: "Card Number"
   card_type_is: Card type is
@@ -921,7 +921,7 @@ en:
   stop: Stop
   store: Store
   street_address: "Street Address"
-  street_address_2: "Street Address (cont'd)"
+  street_address_2: "Company, Suite, PO (optional)"
   subtotal: Subtotal
   subtract: Subtract
   successfully_created: "%{resource} has been successfully created!"
@@ -1020,3 +1020,9 @@ en:
   email_needed: "We will use it for order confirmation and status."
   order_history: "Order History"
   shipped_to: "Shipped To"
+  select_state: "State or Province"
+  shipping_contact: "Shipping Contact"
+  billing_contact: "Billing Contact"
+  ends_with: "Ends with"
+  expiration_date: "Expiration Date"
+  learn_more_security: "Learn More about our Security"

@@ -5,19 +5,12 @@
    #     form_id:     the id of the form being used
 %>
 
-<% column_width = 2 %>
 <% if order.user && order.user.creditcards.count > 0  %>
-    <table>
-      <% column = 0 %>
       <% order.user.creditcards.each do |creditcard| %>
-          <%= raw (column % column_width == 0 ? '<tr>' : '' )%>
-          <td>
+        <p id="creditcard_<%=creditcard.id%>" class="field">
             <%= radio_button_tag 'order[creditcard_id]', creditcard.id %>
-           <%= " #{creditcard.display_number}" %>
-          </td>
-          <%=raw ( column %column_width == column_width-1? "</tr>" : "" )%>
-          <% column = column + 1 %>
+            <%= label 'order[creditcard_id]', "#{t('ends_with')} #{creditcard.last_digits}" %>
+        </p>
       <%end %>
-    </table>
 <%end %>
 

@@ -35,6 +35,7 @@ javascripts:
     - public/store/javascripts/rails.js
     - public/store/javascripts/application.js
     - public/store/javascripts/less-1.1.3.js
+    - public/store/javascripts/jquery.infieldlabel.js
   store_admin:
     - public/store/javascripts/rails.js
     - public/javascripts/jquery-lib/jquery.ui.*.js
