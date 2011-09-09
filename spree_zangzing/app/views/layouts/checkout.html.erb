@@ -26,12 +26,19 @@
 
 <div class="checkout-header">
   <div class="container">
-    <%= render 'shared/nav_bar' %>
+    <%= render 'checkout/checkout_nav_bar' %>
   </div>
 </div>
 
 <div class="checkout-message container">
-    <H5><%=yield :page_title%></H5>
+  <div class="row">
+    <div class="span-one-third column offset-one-third">
+        <H5><%=yield :page_title%></H5>
+    </div>
+    <div class="span-one-third column checkout-next-button">
+        <%=yield :next_button%>
+    </div>
+  </div>
 </div>
 
 <div class="container">
@@ -39,7 +46,12 @@
 </div>
 
 <div class="checkout-footer container">
-    <%= render :partial => 'shared/footer'%>
+  <div class="row">
+    <div class="span-one-third column offset-two-thirds checkout-next-button">
+        <%=yield :next_button%>
+    </div>
+  </div>
+   <%= render :partial => 'shared/footer'%>
 </div>
 
 

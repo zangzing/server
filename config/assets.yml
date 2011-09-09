@@ -31,7 +31,25 @@ javascripts:
   movie:
     - public/javascripts/movie/*.js
   store:
-    - public/store/javascripts/*.js
+    - public/javascripts/jquery-lib/jquery.validate.js
+    - public/store/javascripts/rails.js
+    - public/store/javascripts/application.js
+  store_admin:
+    - public/store/javascripts/rails.js
+    - public/javascripts/jquery-lib/jquery.ui.*.js
+    - public/store/javascripts/jquery.suggest.js
+    - public/store/javascripts/jquery.tokeninput.js
+    - public/store/javascripts/jquery.delayedobserver.js
+    - public/store/javascripts/admin.js
+    - public/store/javascripts/nested-attribute.js
+    - public/store/javascripts/zone.js
+    - public/store/javascripts/calculator.js
+    - public/store/javascripts/gateway.js
+    - public/store/javascripts/jquery.alerts/jquery.alerts.js
+    - public/store/javascripts/jquery.autocomplete.js
+    - public/store/javascripts/datepicker.js
+  store_admin_template:
+    - public/store/javascripts/jquery.template.js
 
 stylesheets:
   common:
@@ -41,4 +59,9 @@ stylesheets:
   store:
     - public/stylesheets/dialog.css
     - public/stylesheets/new-dialog.css
-    - public/store/stylesheets/*.css
+    - public/store/stylesheets/screen.css
+  store_admin:
+    - public/store/stylesheets/admin/*.css
+    - public/store/javascripts/jquery.alerts/jquery.alerts.css
+    - public/store/javascripts/jquery.alerts/jquery.alerts.spree.css
+    - public/store/stylesheets/datepicker.css

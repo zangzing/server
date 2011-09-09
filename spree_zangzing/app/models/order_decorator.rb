@@ -85,7 +85,6 @@ Order.class_eval do
   end
 
 
-
   # Associates the specified user with the order and destroys any previous association with guest user if
   # necessary. SAVES ORDER
   def associate_user!(user)
@@ -236,4 +235,24 @@ Order.class_eval do
   def default_payment_method
    available_payment_methods.first
   end
+
+  # Finalizes an in progress order after checkout is complete.
+  # Called after transition to complete state when payments will have been processed
+  def finalize!
+    update_attribute(:completed_at, Time.now)
+    self.out_of_stock_items = InventoryUnit.assign_opening_inventory(self)
+    # lock any optional adjustments (coupon promotions, etc.)
+    adjustments.optional.each { |adjustment| adjustment.update_attribute("locked", true) }
+
+    ZZ::Async::Email.enqueue( :order_confirmed, self.id )
+
+    self.state_events.create({
+      :previous_state => "cart",
+      :next_state     => "complete",
+      :name           => "order" ,
+      :user_id        => (User.respond_to?(:current) && User.current.try(:id)) || self.user_id
+    })
+  end
+
+
 end

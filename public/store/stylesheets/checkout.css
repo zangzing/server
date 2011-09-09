@@ -14,8 +14,16 @@ html{
 }
 .checkout-footer{
 }
-
 .checkout-content{
     background-color: white;
 }
-
+.checkout-next-button{
+    text-align:right;
+}
+.checkout-summary{
+    background-color: #CCFFCC;
+    border: 2px solid #666666;
+}
+.grey-border{
+    border: 2px solid #CCCCCC;
+}

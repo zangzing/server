@@ -5,6 +5,7 @@ CheckoutController.class_eval do
    skip_before_filter :load_order, :only => [:registration, :guest_checkout]
    before_filter :check_registration, :except => [:registration, :guest_checkout]
 
+   layout :checkout
 
    # Displays the store's "Login or Guest checkout" screen
    def registration

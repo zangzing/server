@@ -27,23 +27,13 @@ end %>
                                                         :address_kind => 'ship_address',
                                                         :button_text => "Ship To This Address"  } %>
 
-      <fieldset id='shipping'>
-        <div class="inner">
-          <p class="field checkbox">
             <label for="order_use_shipping_as_billing"><%= t("use_shipping_as_billing") %></label>
             <%= check_box_tag 'order[use_shipping_as_billing]', '1', (!( (@order.bill_address && @order.bill_address.empty?) && @order.ship_address.empty?) && @order.bill_address.eql?(@order.ship_address)) %>
-          </p>
-          <legend><%= t("enter_a_new_shipping_addresss")%></legend>
           <%= form.fields_for :ship_address do |ship_form| %>
               <%= render :partial =>'address_fields', :locals => { :f => ship_form,
                                                                    :address => @order.ship_address } %>
           <% end %>
-        </div>
-      </fieldset>
-      <hr class="space" />
-      <div class="form-buttons">
-        <input type="submit" class="continue button primary" value="<%=t("save_and_continue") %>" />
-      </div>
-    </div>
-  </div>
-</div>
+
+<%content_for :next_button do %>
+      <input type="submit" class="continue button primary" value="<%="#{t('next')}:#{t('payment')}"%>"  onclick="checkout_form_ship_address.submit();"/>
+<%end%>
