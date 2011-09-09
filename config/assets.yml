@@ -34,6 +34,7 @@ javascripts:
     - public/javascripts/jquery-lib/jquery.validate.js
     - public/store/javascripts/rails.js
     - public/store/javascripts/application.js
+    - public/store/javascripts/less-1.1.3.js
   store_admin:
     - public/store/javascripts/rails.js
     - public/javascripts/jquery-lib/jquery.ui.*.js
@@ -57,9 +58,11 @@ stylesheets:
     - public/stylesheets/main.css
     - public/stylesheets/*.css
   store:
+    - public/store/stylesheets/screen.css
+  store_checkout:
     - public/stylesheets/dialog.css
     - public/stylesheets/new-dialog.css
-    - public/store/stylesheets/screen.css
+    - public/store/stylesheets/checkout.css
   store_admin:
     - public/store/stylesheets/admin/*.css
     - public/store/javascripts/jquery.alerts/jquery.alerts.css
