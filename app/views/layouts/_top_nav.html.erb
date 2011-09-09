@@ -6,18 +6,13 @@
 
   <div id="home-button"></div>
 
-
   <% if @album %>
       <div id="album-info">
 <%
     if(!@album.cover)  #no cover photo
 %>
-        <div id="album-cover-border">
-              <img class="album-cover" style="width:60px; height:40px" src="/images/album-no-cover.png"/>
-              <img class="bottom-shadow" style="width:64px;" src="/images/photo/bottom-full.png"/>
-        </div>
 <%
-    else 
+    else
 %>
         <div id="album-cover-border">
               <img class="album-cover" style="width:60px; height:40px" src="/images/album-no-cover.png"/>
@@ -78,6 +73,8 @@
         </div>
   </div>
 <% end %>
+
+
 
   <% if @album || (@user && /albums|people|activities/.match( @controller.controller_name)) %>
       <ul id="view-buttons">
