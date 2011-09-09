@@ -11,7 +11,6 @@ Spree::BaseController.class_eval do
   include ZZ::ZZAController
   include PrettyUrlHelper
 
-  layout 'store'
 
   # This method is originally defined in lib/spree/current_order.rb
   # This should be overridden by an auth-related extension which would then have the

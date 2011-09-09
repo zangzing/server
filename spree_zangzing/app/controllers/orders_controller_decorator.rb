@@ -19,6 +19,13 @@ OrdersController.class_eval do
     respond_with( @orders )
   end
 
+   # Shows the current incomplete order from the session
+  def edit
+    @order = current_order(true)
+    render :layout => 'checkout'
+  end
+
+
   # the inbound variant is determined either from products[pid]=vid or variants[master_vid], depending on whether or not the product has_variants, or not
   #
   # Currently, we are assuming the inbound ad_hoc_option_values and customizations apply to the entire inbound product/variant 'group', as more surgery

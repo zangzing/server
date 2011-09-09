@@ -15,20 +15,16 @@
   %>
 <% end %>
 
-<%= stylesheet_link_tag 'admin/admin-reset', 'admin/grids', 'admin/admin-typography', 'admin/admin-forms', 'admin/admin-tables', 'admin/admin', 'admin/autocomplete', 'admin/token-input', :cache => 'admin/admin-all' %>
-<%= javascript_include_tag 'jquery-1.4.2.min.js', 'rails.js', 'jquery-ui.js', 'jquery.suggest.js', 'jquery.tokeninput.js', 'jquery.delayedobserver.js', :cache => 'jquery-admin-plugins' %>
-<%= javascript_include_tag('jquery.template.js') unless controller.controller_name == "overview" %>
-<%= javascript_include_tag 'admin', 'nested-attribute', 'zone', 'calculator', 'gateway' %>
+
+<%= include_stylesheets :store_admin %>
+
+<%= include_javascripts :jquery %>
 <%= javascript_tag "$ = jQuery;" %>
+<%= include_javascripts :store_admin %>
+<%= include_javascripts :store_admin_template unless controller.controller_name == "overview" %>
 <%= javascript_tag "var AUTH_TOKEN = #{form_authenticity_token.inspect};" if protect_against_forgery? %>
-<%= javascript_include_tag 'jquery.alerts/jquery.alerts.js' %>
-<%= javascript_include_tag 'jquery.autocomplete.min.js' %>
-
-<%= stylesheet_link_tag '/javascripts/jquery.alerts/jquery.alerts.css' %>
-<%= stylesheet_link_tag '/javascripts/jquery.alerts/jquery.alerts.spree.css' %>
-<%#= stylesheet_link_tag 'jquery.autocomplete.css'
-%>
-
 <%= javascript_tag "jQuery.alerts.dialogClass = 'spree';" %>
+
 <%== unobtrusive_datepicker_includes %>
+
 <%= yield :head %>
