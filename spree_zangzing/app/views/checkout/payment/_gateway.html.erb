@@ -8,6 +8,8 @@
   <%= image_tag 'store/secure-lock.png'%>
   <%=t('learn_more_security')%>
 </p>
+
+<div id="cc">
 <p id="ccnumber" class="field">
   <label for="card_number"><%= t("card_number") %></label>
   <% options_hash = Rails.env.production? ? {:autocomplete => "off"} : {} %>
@@ -17,15 +19,17 @@
 <p id="ccv" class="field">
   <label for="card_code"><%= t("card_code") %></label>
   <%= text_field_tag "#{param_prefix}[verification_value]", '', options_hash.merge(:id => 'card_code', :class => 'required', :size => 4) %>
-  <a href="/store/content/cvv" target="_blank" onclick="window.open(this.href,'cvv_info','left=20,top=20,width=500,height=500,toolbar=0,resizable=0,scrollbars=1');return false">
-  </a>
 </p>
+<a id="cvv_question" href="/static/store/cvv_question.html" target="_blank" onclick="window.open(this.href,'cvv_info','left=20,top=20,width=500,height=500,toolbar=0,resizable=0,scrollbars=1');return false">
+    <%= image_tag 'store/question.png' %>
+</a>
 
-<p id="expires" class="field right">
-  <%= select_year(Date.today,  {:prefix => param_prefix, :field_name => 'year', :start_year => Date.today.year, :end_year => Date.today.year + 15}, {:id => "expire_year", :class => 'required expdyear right'}) %>
-  <%= select_month(Date.today, {:prefix => param_prefix, :field_name => 'month', :use_month_numbers => true}, {:id => "expire_month", :class => 'required expmonth right'}) %>
+</div>
+<div id="expires">
   <label id="expire_label" class="right"><%= t("expiration_date") %></label>
-</p>
+  <%= select_month(Date.today, {:prefix => param_prefix, :field_name => 'month', :use_month_numbers => true}, {:id => "expire_month", :class => 'required expmonth'}) %>
+  <%= select_year(Date.today,  {:prefix => param_prefix, :field_name => 'year', :start_year => Date.today.year, :end_year => Date.today.year + 15}, {:id => "expire_year", :class => 'required expdyear'}) %>
+</div>
 
 <%= hidden_field param_prefix, 'first_name', :value => @order.billing_firstname %>
 <%= hidden_field param_prefix, 'last_name',  :value => @order.billing_lastname %>

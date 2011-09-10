@@ -1,6 +1,12 @@
 <div class="checkout-navbar row">
   <div class="span4 columns offset2">
-    <%= logo %>
+    <div id="logo">
+    <%= link_to image_tag('zz-logo-inline.png', {:id => 'logo'}), root_path%>
+    <p id="logo_secure_lock">
+        <%= image_tag 'store/secure-lock.png'%>
+        <%=t('secure_checkout')%>
+    </p>
+    </div>
   </div>
   <div class="span7 columns offset2">
    <%= checkout_progress %>

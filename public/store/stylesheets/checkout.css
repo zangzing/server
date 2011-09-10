@@ -5,6 +5,20 @@
 html{
     height: 100%;
 }
+
+#logo{
+    width: 140px;
+    margin: 3px 0 0 0;
+}
+#logo_secure_lock{
+   padding: 5px 0 0 30px;
+   font-size: 12px;
+}
+
+#logo_secure_lock img{
+    vertical-align: text-bottom;
+}
+
 .checkout-body{
     min-height: 100%;
     background-color: #EEEEEE;
@@ -61,7 +75,7 @@ form p.field span.req {
 }
 
 form p.field#fname{
-    width: 39%;
+    width: 40%;
     display: inline-block;
 }
 form p.field#lname{
@@ -70,51 +84,73 @@ form p.field#lname{
 }
 
 /* --------------------- payment --------------------------*/
-#payment_creditcard{
+#payment_creditcard{ /*left half of screen*/
     display: inline-block;
     vertical-align:top;
-    width: 50%;
+    width: 45%;
+    padding-left: 30px;
 }
 
-#payment_bill_address{
+#payment_bill_address{ /*right half of screen */
     width: auto;
     display:inline-block;
     border-left: 1px solid #CCCCCC;
     padding-left: 30px;
 }
 
+
+form div.wallet input{
+    margin: 0 5px;
+}
+
+form div.wallet label{
+    width: 100%;
+    display: block;
+    color: red;
+    text-align: left;
+}
+
+
 form p.field#secure_lock img{
     vertical-align: text-top;
 }
-
+form p#secure_lock{
+    padding-left: 5px;
+}
+div#cc{
+    width: 100%;
+}
 form p.field#ccnumber{
-    width: 60%;
+    width: 50%;
     display: inline-block;
 }
 form p.field#ccv{
+    width: 20%;
+    display: inline-block;
+}
+p.field a#cvv_question{
     width: auto;
     display: inline-block;
 }
-
-form .right{
-  margin:  0 5px;
-  float: right;
+#cvv_question img{
+    vertical-align: middle;
+}
+div#expires{
+    width: 100%
 }
 
-form p.field label#expire_label{
+label#expire_label{
   text-align: left;
   position: relative;
-  margin: 0 10px 0 15px;
-  width: 20%;
+  width: auto;
   display: inline-block;
-
+  margin-right: 10px;
 }
-form p.field select#expire_month{
+select#expire_month{
     width: 15%;
     display: inline-block;
-
 }
-form p.field select#expire_year{
+select#expire_year{
     width: 20%;
     display: inline-block;
     

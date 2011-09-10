@@ -6,11 +6,11 @@
 %>
 
 <% if order.user && order.user.creditcards.count > 0  %>
+    <div class="wallet">
+      Select a saved card or enter a new one
       <% order.user.creditcards.each do |creditcard| %>
-        <p id="creditcard_<%=creditcard.id%>" class="field">
-            <%= radio_button_tag 'order[creditcard_id]', creditcard.id %>
-            <%= label 'order[creditcard_id]', "#{t('ends_with')} #{creditcard.last_digits}" %>
-        </p>
+          <label> <%= radio_button_tag 'order[creditcard_id]', creditcard.id %><%="#{t('ends_with')} #{creditcard.last_digits}" %></label>
       <%end %>
+    </div>
 <%end %>
 
