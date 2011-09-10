@@ -85,6 +85,9 @@ Factory.define :full_photo, :parent => :photo do |this|
     else
       source_path = this.temp_url
     end
+    this.caption ||= "Full Photo #{next_id}"
+    this.source_guid ||= "rspec_full_photo: #{UUIDTools::UUID.random_create}"
+    this.source ||= "rspec"
     dest_path = "#{Dir.tmpdir}/#{Time.now.to_f}-#{rand(999999)}"
     FileUtils.copy_file(source_path, dest_path, true)
     this.file_to_upload = dest_path

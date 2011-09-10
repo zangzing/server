@@ -16,7 +16,7 @@ describe CommentActivity do
 
 
       @album.activities.each do |activity|
-        if activity.instance_of?(InviteActivity)
+        if activity.instance_of?(InviteActivity) || activity.instance_of?(CreateAlbumActivity)
           activity.destroy
         end
       end

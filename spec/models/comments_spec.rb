@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'factory_girl'
 
-ZZ::Async::Base.loopback = true
+comments_resque_filter = { :except => [ZZ::Async::MailingListSync] }
 
 describe "Comments Model" do
 
@@ -20,147 +20,153 @@ describe "Comments Model" do
 
   describe Comment do
     it "should not notify likers who are not in the ablums ACL who liked the album before it was made private" do
-      # setup
-      photo = Factory.create(:photo, :album => Factory.create(:album), :user => Factory.create(:user))
-      photo.save!
+      resque_loopback(comments_resque_filter) do
+        # setup
+        photo = Factory.create(:photo)
 
-      # people like album and photo before album made private
-      user_who_likes_photo  = Factory.create(:user)
-      user_who_likes_photo.save!
-      Like.add(user_who_likes_photo.id, photo.id, Like::PHOTO)
+        # people like album and photo before album made private
+        user_who_likes_photo  = Factory.create(:user)
+        user_who_likes_photo.save!
+        Like.add(user_who_likes_photo.id, photo.id, Like::PHOTO)
 
-      user_who_likes_album  = Factory.create(:user)
-      user_who_likes_album.save!
-      Like.add(user_who_likes_album.id, photo.album.id, Like::ALBUM)
+        user_who_likes_album  = Factory.create(:user)
+        user_who_likes_album.save!
+        Like.add(user_who_likes_album.id, photo.album.id, Like::ALBUM)
 
-      # album made private
-      album = photo.album
-      album.make_private
-      album.save!
+        # album made private
+        album = photo.album
+        album.make_private
+        album.save!
 
-      # comment created and notifications sent
-      commentable = Commentable.find_or_create_by_photo_id(photo.id)
-      comment = Factory.create(:comment, :commentable => commentable, :user => Factory.create(:user))
-      comment.send_notification_emails
+        # comment created and notifications sent
+        commentable = Commentable.find_or_create_by_photo_id(photo.id)
+        comment = Factory.create(:comment, :commentable => commentable)
+        comment.send_notification_emails
 
 
-      # make sure the likers are not notified
-      ActionMailer::Base.deliveries.should_not satisfy do |messages|
-        messages.index { |message| message.to == [user_who_likes_photo.email] }
+        # make sure the likers are not notified
+        ActionMailer::Base.deliveries.should_not satisfy do |messages|
+          messages.index { |message| message.to == [user_who_likes_photo.email] }
+        end
+
+        ActionMailer::Base.deliveries.should_not satisfy do |messages|
+          messages.index { |message| message.to == [user_who_likes_album.email] }
+        end
       end
-
-      ActionMailer::Base.deliveries.should_not satisfy do |messages|
-        messages.index { |message| message.to == [user_who_likes_album.email] }
-      end
-      
-
     end
 
     it "should notify album likers and photo likers of new comments" do
-      # setup
-      photo = Factory.create(:photo, :album => Factory.create(:album), :user => Factory.create(:user))
-      photo.save!
+      resque_loopback(comments_resque_filter) do
+        # setup
+        photo = Factory.create(:photo)
 
-      commentable = Commentable.find_or_create_by_photo_id(photo.id)
+        commentable = Commentable.find_or_create_by_photo_id(photo.id)
 
-      user_who_likes_photo  = Factory.create(:user)
-      user_who_likes_photo.save!
-      Like.add(user_who_likes_photo.id, photo.id, Like::PHOTO)
+        user_who_likes_photo  = Factory.create(:user)
+        user_who_likes_photo.save!
+        Like.add(user_who_likes_photo.id, photo.id, Like::PHOTO)
 
-      user_who_likes_album  = Factory.create(:user)
-      user_who_likes_album.save!
-      Like.add(user_who_likes_album.id, photo.album.id, Like::ALBUM)
+        user_who_likes_album  = Factory.create(:user)
+        user_who_likes_album.save!
+        Like.add(user_who_likes_album.id, photo.album.id, Like::ALBUM)
 
 
 
-      # add comment to photo
-      comment = Factory.create(:comment, :commentable => commentable, :user => Factory.create(:user))
+        # add comment to photo
+        comment = Factory.create(:comment, :commentable => commentable)
 
-      # run the test
-      comment.send_notification_emails
+        # run the test
+        comment.send_notification_emails
 
-      # expect email to user who likes photo
-      ActionMailer::Base.deliveries.should satisfy do |messages|
-        messages.index { |message| message.to == [user_who_likes_photo.email] }
+        # expect email to user who likes photo
+        ActionMailer::Base.deliveries.should satisfy do |messages|
+          messages.index { |message| message.to == [user_who_likes_photo.email] }
+        end
+
+        # expect email to user who likes album
+        ActionMailer::Base.deliveries.should satisfy do |messages|
+          messages.index { |message| message.to == [user_who_likes_album.email] }
+        end
       end
-
-      # expect email to user who likes album
-      ActionMailer::Base.deliveries.should satisfy do |messages|
-        messages.index { |message| message.to == [user_who_likes_album.email] }
-      end
-
-
-
     end
 
 
     it "should notify album owner, photo owner, and other commentors of new comments" do
-      # setup
-      photo = Factory.create(:photo, :album => Factory.create(:album), :user => Factory.create(:user))
-      commentable = Commentable.find_or_create_by_photo_id(photo.id)
-      existing_comment = Factory.create(:comment, :commentable => commentable, :user => Factory.create(:user))
+      resque_loopback(comments_resque_filter) do
+        # setup
+        photo = Factory.create(:photo)
+#todo NOTE FROM GREG - Jeremy, this test no longer works because we now properly create associations for the photo
+# previously due to the association factory issues you were getting a photo that had an album with its own
+# user vs a single photo with a consistent user for its album and itself so you don't get the extra email that
+# you expect - I left this broken so you can decide how you want to fix by either only expecting 2 emails or
+# creating a new test that produces all 3
+        commentable = Commentable.find_or_create_by_photo_id(photo.id)
+        existing_comment = Factory.create(:comment, :commentable => commentable, :user => Factory.create(:user))
 
-      # add comment to photo
-      comment = Factory.create(:comment, :commentable => commentable, :user => Factory.create(:user))
+        # add comment to photo
+        comment = Factory.create(:comment, :commentable => commentable, :user => Factory.create(:user))
 
-      # run the test
-      comment.send_notification_emails
+        # run the test
+        comment.send_notification_emails
 
 
-      ActionMailer::Base.deliveries.should have(3).things
+        ActionMailer::Base.deliveries.should have(3).things
 
-      # expect email to album owner
-      ActionMailer::Base.deliveries.should satisfy do |messages|
-        messages.index { |message| message.to == [photo.album.user.email] }
+        # expect email to album owner
+        ActionMailer::Base.deliveries.should satisfy do |messages|
+          messages.index { |message| message.to == [photo.album.user.email] }
+        end
+
+        # expect email to photo owner
+        ActionMailer::Base.deliveries.should satisfy do |messages|
+          messages.index { |message| message.to == [photo.user.email] }
+        end
+
+        # expect email to other commenters
+        ActionMailer::Base.deliveries.should satisfy do |messages|
+          messages.index { |message| message.to == [existing_comment.user.email] }
+        end
       end
-
-      # expect email to photo owner
-      ActionMailer::Base.deliveries.should satisfy do |messages|
-        messages.index { |message| message.to == [photo.user.email] }
-      end
-
-      # expect email to other commenters
-      ActionMailer::Base.deliveries.should satisfy do |messages|
-        messages.index { |message| message.to == [existing_comment.user.email] }
-      end
-
     end
 
 
     it "should post comment to facebook" do
-      comment = Factory.create(:photo_comment)
-      comment.post_to_facebook
+      resque_loopback(comments_resque_filter) do
+        comment = Factory.create(:photo_comment)
+        comment.post_to_facebook
 
-      FacebookPublisher.test_posts.should have(1).thing
-      FacebookPublisher.test_posts[0][:message].should eql(comment.text)
-
+        FacebookPublisher.test_posts.should have(1).thing
+        FacebookPublisher.test_posts[0][:message].should eql(comment.text)
+      end
     end
 
     it "should post comment to twitter" do
-      comment = Factory.create(:photo_comment)
-      comment.post_to_twitter
+      resque_loopback(comments_resque_filter) do
+        comment = Factory.create(:photo_comment)
+        comment.post_to_twitter
 
-      TwitterPublisher.test_posts.should have(1).thing
-      TwitterPublisher.test_posts[0].should satisfy{ |message| message.match(/^#{comment.text}/)}
-
+        TwitterPublisher.test_posts.should have(1).thing
+        TwitterPublisher.test_posts[0].should satisfy{ |message| message.match(/^#{comment.text}/)}
+      end
     end
 
 
     it "should create comment activity" do
-      comment = Factory.create(:photo_comment)
-      photo = comment.commentable.subject
+      resque_loopback(comments_resque_filter) do
+        comment = Factory.create(:photo_comment)
+        photo = comment.commentable.subject
 
-      comment.user.activities.length.should eql(1)
-      comment_activity = comment.user.activities[0]
-      comment_activity.should be_an_instance_of(CommentActivity)
+        comment.user.activities.length.should eql(1)
+        comment_activity = comment.user.activities[0]
+        comment_activity.should be_an_instance_of(CommentActivity)
 
-      comment_activity.comment.should == comment
+        comment_activity.comment.should == comment
 
-      comment_activity.subject.should == photo.album
+        comment_activity.subject.should == photo.album
 
-      comment_activity.user.should == comment.user
+        comment_activity.user.should == comment.user
+      end
     end
-
   end
 
 
@@ -172,100 +178,107 @@ describe "Comments Model" do
   describe Commentable do
 
     it "should return comments even if commenting user was deleted" do
-      commentable = Factory.create(:photo_commentable)
-      commentable.comments << Factory.build(:comment)
-      commentable.comments << Factory.build(:comment)
-      commentable.save!
+      resque_loopback(comments_resque_filter) do
+        commentable = Factory.create(:photo_commentable)
+        commentable.comments << Factory.build(:comment)
+        commentable.comments << Factory.build(:comment)
+        commentable.save!
 
-      # delete user
-      commentable.comments.first.user.destroy
+        # delete user
+        commentable.comments.first.user.destroy
 
-      # for some reasn, we need to re-fetch
-      commentable = Commentable.find(commentable.id)
+        # for some reasn, we need to re-fetch
+        commentable = Commentable.find(commentable.id)
 
-      # make sure we can still get comments (first coment will be filtered out because user is missing)
-      puts commentable.comments_as_json.inspect
-
-
+        # make sure we can still get comments (first coment will be filtered out because user is missing)
+        puts commentable.comments_as_json.inspect
+      end
     end
 
     it "should cache comment count" do
+      resque_loopback(comments_resque_filter) do
 
-      commentable = Factory.create(:photo_commentable)
-      Factory.create(:comment, :commentable => commentable)
-      Factory.create(:comment, :commentable => commentable)
+        commentable = Factory.create(:photo_commentable)
+        Factory.create(:comment, :commentable => commentable)
+        Factory.create(:comment, :commentable => commentable)
 
-      commentable = Commentable.find(commentable.id)
-      commentable.comments.length.should eql(2)
-      commentable.comments_count.should eql(2)
-
+        commentable = Commentable.find(commentable.id)
+        commentable.comments.length.should eql(2)
+        commentable.comments_count.should eql(2)
+      end
     end
 
     it "should include user information in comment json" do
-      commentable = Factory.create(:photo_commentable)
-      Factory.create(:comment, :commentable => commentable)
-      Factory.create(:comment, :commentable => commentable)
+      resque_loopback(comments_resque_filter) do
+        commentable = Factory.create(:photo_commentable)
+        Factory.create(:comment, :commentable => commentable)
+        Factory.create(:comment, :commentable => commentable)
 
-      commentable = Commentable.find(commentable.id)
-      commentable.comments.length.should eql(2)
+        commentable = Commentable.find(commentable.id)
+        commentable.comments.length.should eql(2)
 
-      hash = commentable.comments_as_json
+        hash = commentable.comments_as_json
 
-      hash['comments'][0]['user']['profile_photo_url'].should_not be_nil
-      hash['comments'][0]['user']['name'].should_not be_nil
+        hash['comments'][0]['user']['profile_photo_url'].should_not be_nil
+        hash['comments'][0]['user']['name'].should_not be_nil
+      end
     end
 
     it "should return comment metadata for all photos in album" do
-      album = Factory.create(:album)
-      3.times do
-        Factory.create(:comment, :commentable=> Commentable.find_or_create_by_photo_id(Factory.create(:photo, :album => album).id))
+      resque_loopback(comments_resque_filter) do
+        album = Factory.create(:album)
+        3.times do
+          Factory.create(:comment, :commentable=> Commentable.find_or_create_by_photo_id(Factory.create(:photo, :album => album).id))
+        end
+
+        commentables = Commentable.find_for_album_photos(album.id)
+
+        commentables.length.should eql(3)
+        commentables[0].comments_count.should eql(1)
+        commentables[1].comments_count.should eql(1)
+        commentables[2].comments_count.should eql(1)
       end
-
-      commentables = Commentable.find_for_album_photos(album.id)
-
-      commentables.length.should eql(3)
-      commentables[0].comments_count.should eql(1)
-      commentables[1].comments_count.should eql(1)
-      commentables[2].comments_count.should eql(1)
-
     end
 
 
     it 'should return comment metadata and comment details for photo' do
-      comment = Factory.create(:photo_comment)
-      photo = comment.commentable.subject
+      resque_loopback(comments_resque_filter) do
+        comment = Factory.create(:photo_comment)
+        photo = comment.commentable.subject
 
-      hash = Commentable.photo_comments_as_json(photo.id)
-      hash['comments_count'].should eql(1)
-      hash['comments'].length.should eql(1)
-      hash['comments'][0]['text'].should eql(comment.text)
-      
-
-
+        hash = Commentable.photo_comments_as_json(photo.id)
+        hash['comments_count'].should eql(1)
+        hash['comments'].length.should eql(1)
+        hash['comments'][0]['text'].should eql(comment.text)
+      end
     end
 
     it 'should return emtpy metadata and no comments if photo has no comments' do
+      resque_loopback(comments_resque_filter) do
         hash = Commentable.photo_comments_as_json(Factory.create(:photo).id)
         hash.keys.length.should eql(0)
+      end
     end
 
     it 'should allow searching by array of subject hashes; eg: [{:subject_id=>1,:subject_type=>"photo"}]' do
-      Commentable.find_or_create_by_photo_id(12345)
-      Commentable.find_or_create_by_photo_id(123456)
+      resque_loopback(comments_resque_filter) do
+        Commentable.find_or_create_by_photo_id(12345)
+        Commentable.find_or_create_by_photo_id(123456)
 
-      subjects = [
-        {
-          :id => 12345,
-          :type => 'photo'
-        },
-        {
-          :id => 123456,
-          :type => 'photo'
-        }
-      ]
+        subjects = [
+          {
+            :id => 12345,
+            :type => 'photo'
+          },
+          {
+            :id => 123456,
+            :type => 'photo'
+          }
+        ]
 
-      commentables = Commentable.find_by_subjects(subjects)
-      commentables.length.should eql(2)
+        commentables = Commentable.find_by_subjects(subjects)
+        commentables.length.should eql(2)
+      end
     end
   end
 end

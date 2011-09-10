@@ -10,12 +10,22 @@ module ZZ
 
 
       # allow async jobs to run sycnchronously for testing
-      def self.loopback=(synchronous_test_mode)
-        @@loopback = synchronous_test_mode
+      def self.loopback_filter=(filter)
+        @@loopback_filter = filter
+        @@loopback_on = !filter.nil?
       end
 
-      def self.loopback
-        @@loopback ||= false
+      def self.loopback_filter
+        @@loopback_filter
+      end
+
+      # check to see if we should use loopback for this class
+      def self.should_loopback?
+        loopback_on? && @@loopback_filter.allow?(self)
+      end
+
+      def self.loopback_on?
+        @@loopback_on ||= false
       end
 
 
@@ -119,19 +129,19 @@ module ZZ
       # called from the subclass. The idea is that this should be the only place to call
       # Resque enqueue
       def self.enqueue( *args )
-        if self.loopback
+        if should_loopback?
           self.perform(*args)
         else
-          Resque.enqueue( self, *args)
+          Resque.enqueue( self, *args) unless loopback_on?
         end
       end
 
       # lets you enqueue on on a named queue
       def self.enqueue_on_queue(queue, *args)
-        if self.loopback
+        if should_loopback?
           self.perform(*args)
         else
-          Resque::Job.create(queue, self, *args)
+          Resque::Job.create(queue, self, *args) unless loopback_on?  # when loopback_on just drop it if was not allowed
         end
       end
 

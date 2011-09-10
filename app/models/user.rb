@@ -431,8 +431,17 @@ class User < ActiveRecord::Base
     auto_like_ids
   end
 
+  def self.auto_liking=(value)
+    @@auto_liking = value
+  end
+
+  def self.auto_liking?
+    @@auto_liking = true unless defined?(@@auto_liking)
+    @@auto_liking
+  end
+
   def self.auto_like_ids
-    @@auto_like_ids ||= fetch_auto_like_ids
+    auto_liking? ? @@auto_like_ids ||= fetch_auto_like_ids : []
   end
 
   # Make sure everybody likes the zangzing users
