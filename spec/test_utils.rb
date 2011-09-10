@@ -59,7 +59,7 @@ def flush_redis_test_db
   parts = server.split(':')
   host = parts[0]
   port = parts[1]
-  db = parts[2].nil? ? 0 : parts[2]
+  db = parts[2].nil? ? (raise ArgumentError, "You MUST specify the test db part") : parts[2]
   redis = Redis.new(:host => host, :port => port, :db => db)
   redis.flushdb
 end
