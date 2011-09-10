@@ -3,7 +3,11 @@ require 'spec_helper'
 describe Photo do
 
   it "should create and delete photo dependencies" do
-    resque_loopback(:only => []) do
+    # The default is no loopback but just showing this as
+    # an example of the resque_loopback usage model.
+    # If you don't want any resque jobs to trigger
+    # you can simply leave this explicit call off.
+    resque_jobs(:only => []) do
       photo = Factory.create(:photo)
       photo_id = photo.id
       photo_id.should_not == 0
@@ -17,8 +21,7 @@ describe Photo do
   it "should create a full photo" do
     # perform this with resque in loopback so the complete operation takes place
     # note, we don't want subscribe emails so we filter out ZZ::Async::MailingListSync
-    # but just including to show its usage
-    resque_loopback(:except => [ZZ::Async::MailingListSync]) do
+    resque_jobs(:except => [ZZ::Async::MailingListSync]) do
       photo = Factory.create(:full_photo)
       photo_id = photo.id
       photo_id.should_not == 0

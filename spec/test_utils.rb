@@ -39,7 +39,7 @@ end
 # }
 # Above allows all except for str4 and str5
 #
-def resque_loopback(options = nil, &block)
+def resque_jobs(options = nil, &block)
   begin
     filter = FilterHelper.new(options)
     prev_filter = ZZ::Async::Base.loopback_filter

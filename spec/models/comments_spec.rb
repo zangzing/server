@@ -20,7 +20,7 @@ describe "Comments Model" do
 
   describe Comment do
     it "should not notify likers who are not in the ablums ACL who liked the album before it was made private" do
-      resque_loopback(comments_resque_filter) do
+      resque_jobs(comments_resque_filter) do
         # setup
         photo = Factory.create(:photo)
 
@@ -56,7 +56,7 @@ describe "Comments Model" do
     end
 
     it "should notify album likers and photo likers of new comments" do
-      resque_loopback(comments_resque_filter) do
+      resque_jobs(comments_resque_filter) do
         # setup
         photo = Factory.create(:photo)
 
@@ -92,14 +92,14 @@ describe "Comments Model" do
 
 
     it "should notify album owner, photo owner, and other commentors of new comments" do
-      resque_loopback(comments_resque_filter) do
+      resque_jobs(comments_resque_filter) do
         # setup
         photo = Factory.create(:photo)
-#todo NOTE FROM GREG - Jeremy, this test no longer works because we now properly create associations for the photo
-# previously due to the association factory issues you were getting a photo that had an album with its own
-# user vs a single photo with a consistent user for its album and itself so you don't get the extra email that
+#todo NOTE FROM GREG - Jeremy, this test no longer works because we now properly create associations for the photo.
+# Previously, due to the association factory issues you were getting a photo that had an album with its own
+# user vs a single photo with the same user for its album and the photo.  Due to this you don't get the extra email that
 # you expect - I left this broken so you can decide how you want to fix by either only expecting 2 emails or
-# creating a new test that produces all 3
+# creating a new test that produces all 3.
         commentable = Commentable.find_or_create_by_photo_id(photo.id)
         existing_comment = Factory.create(:comment, :commentable => commentable, :user => Factory.create(:user))
 
@@ -131,7 +131,7 @@ describe "Comments Model" do
 
 
     it "should post comment to facebook" do
-      resque_loopback(comments_resque_filter) do
+      resque_jobs(comments_resque_filter) do
         comment = Factory.create(:photo_comment)
         comment.post_to_facebook
 
@@ -141,7 +141,7 @@ describe "Comments Model" do
     end
 
     it "should post comment to twitter" do
-      resque_loopback(comments_resque_filter) do
+      resque_jobs(comments_resque_filter) do
         comment = Factory.create(:photo_comment)
         comment.post_to_twitter
 
@@ -152,7 +152,7 @@ describe "Comments Model" do
 
 
     it "should create comment activity" do
-      resque_loopback(comments_resque_filter) do
+      resque_jobs(comments_resque_filter) do
         comment = Factory.create(:photo_comment)
         photo = comment.commentable.subject
 
@@ -178,7 +178,7 @@ describe "Comments Model" do
   describe Commentable do
 
     it "should return comments even if commenting user was deleted" do
-      resque_loopback(comments_resque_filter) do
+      resque_jobs(comments_resque_filter) do
         commentable = Factory.create(:photo_commentable)
         commentable.comments << Factory.build(:comment)
         commentable.comments << Factory.build(:comment)
@@ -196,7 +196,7 @@ describe "Comments Model" do
     end
 
     it "should cache comment count" do
-      resque_loopback(comments_resque_filter) do
+      resque_jobs(comments_resque_filter) do
 
         commentable = Factory.create(:photo_commentable)
         Factory.create(:comment, :commentable => commentable)
@@ -209,7 +209,7 @@ describe "Comments Model" do
     end
 
     it "should include user information in comment json" do
-      resque_loopback(comments_resque_filter) do
+      resque_jobs(comments_resque_filter) do
         commentable = Factory.create(:photo_commentable)
         Factory.create(:comment, :commentable => commentable)
         Factory.create(:comment, :commentable => commentable)
@@ -225,7 +225,7 @@ describe "Comments Model" do
     end
 
     it "should return comment metadata for all photos in album" do
-      resque_loopback(comments_resque_filter) do
+      resque_jobs(comments_resque_filter) do
         album = Factory.create(:album)
         3.times do
           Factory.create(:comment, :commentable=> Commentable.find_or_create_by_photo_id(Factory.create(:photo, :album => album).id))
@@ -242,7 +242,7 @@ describe "Comments Model" do
 
 
     it 'should return comment metadata and comment details for photo' do
-      resque_loopback(comments_resque_filter) do
+      resque_jobs(comments_resque_filter) do
         comment = Factory.create(:photo_comment)
         photo = comment.commentable.subject
 
@@ -254,14 +254,14 @@ describe "Comments Model" do
     end
 
     it 'should return emtpy metadata and no comments if photo has no comments' do
-      resque_loopback(comments_resque_filter) do
+      resque_jobs(comments_resque_filter) do
         hash = Commentable.photo_comments_as_json(Factory.create(:photo).id)
         hash.keys.length.should eql(0)
       end
     end
 
     it 'should allow searching by array of subject hashes; eg: [{:subject_id=>1,:subject_type=>"photo"}]' do
-      resque_loopback(comments_resque_filter) do
+      resque_jobs(comments_resque_filter) do
         Commentable.find_or_create_by_photo_id(12345)
         Commentable.find_or_create_by_photo_id(123456)
 
