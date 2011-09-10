@@ -1,12 +1,10 @@
 require 'factory_girl'
 require 'fileutils'
 
-BASE_ID = Time.now.to_i
-
 # use the bulk id generator to give us persistent ids across runs to allow
 # us to use the database persistently if we choose
 def next_id
-  BASE_ID + BulkIdManager.next_id_for("cache_tx_generator", 1)
+  BulkIdManager.next_id_for("cache_tx_generator", 1)
 end
 
 # NOTE: instead of using associations use the style shown below in :album
@@ -87,6 +85,9 @@ Factory.define :full_photo, :parent => :photo do |this|
     else
       source_path = this.temp_url
     end
+    this.caption ||= "Full Photo #{next_id}"
+    this.source_guid ||= "rspec_full_photo: #{UUIDTools::UUID.random_create}"
+    this.source ||= "rspec"
     dest_path = "#{Dir.tmpdir}/#{Time.now.to_f}-#{rand(999999)}"
     FileUtils.copy_file(source_path, dest_path, true)
     this.file_to_upload = dest_path

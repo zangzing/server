@@ -295,9 +295,9 @@ div#headline {
 #right-drawer{
     position:absolute;
     width:435px;
-    top:57px;
+    top:56px;
     right:0px;
-    bottom:57px;
+    bottom:56px;
     border:1px solid #ccc;
     overflow-y:auto;
     text-align:left;

@@ -11,6 +11,16 @@ require "test_utils"
 # in spec/support/ and its subdirectories.
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
+# flush the redis db used for testing
+flush_redis_test_db
+
+# set up the top level resque loopback filter by default, loopback is off
+# for specific tests that need it they should use resque_loopback with
+# the appropriate filters
+filter = FilterHelper.new(:only => [])
+ZZ::Async::Base.loopback_filter = filter
+User.auto_liking = false
+
 RSpec.configure do |config|
   # == Mock Framework
   #
