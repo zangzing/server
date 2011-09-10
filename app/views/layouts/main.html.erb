@@ -91,6 +91,9 @@
 
     <div id='page-wrapper'>
 
+        <div id='right-drawer'>
+          <div class="content"></div>
+        </div>
         <div id='article'>
 
           <%= yield :layout %>
@@ -195,6 +198,16 @@
 <% end %>
             tabPosition: "Left"
           });
+
+
+          var html = ""
+          for(var i=0;i<100;i++){
+              html += "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus eu porta lectus. Aenean ipsum nisl, egestas non ultricies varius, tristique nec sem. Proin vel urna et felis ultrices consequat et vel nisl. Ut ultrices elit magna, et consectetur elit. Nunc id ante eu diam varius semper vel ac neque. Quisque luctus euismod lectus sit amet egestas. Ut rutrum arcu hendrerit metus malesuada tristique. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean feugiat tincidunt ullamcorper. Sed bibendum, quam non dictum semper, nunc nisi adipiscing justo, eget vulputate augue ligula ut sapien. Nulla facilisi. Vivamus vitae faucibus est. In mi lorem, tincidunt vitae aliquet vitae, commodo mollis mauris. Sed pellentesque tempor lacus in bibendum. Integer eget scelerisque odio.<br><br>"
+              html += '<img src="http://d.1.zz.s3.amazonaws.com/i/75a38f16-c287-4fa7-b37b-0bdd21dbe64e-t?1314307961" width="180" height="120"><br>'
+          }
+
+          $('#right-drawer .content').html(html);
+          $('#right-drawer').scrollTop(1000);
       });
 
     </script>

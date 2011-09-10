@@ -1,10 +1,29 @@
-
+html{
+    height: 100%;
+}
 .checkout-body{
+    min-height: 100%;
     background-color: #EEEEEE;
 }
 .checkout-header{
     background-color: white;
+    border-bottom: 1px solid #CCCCCC;
 }
 .checkout-message{
    text-align: center;
+}
+.checkout-footer{
+}
+.checkout-content{
+    background-color: white;
+}
+.checkout-next-button{
+    text-align:right;
+}
+.checkout-summary{
+    background-color: #CCFFCC;
+    border: 2px solid #666666;
+}
+.grey-border{
+    border: 2px solid #CCCCCC;
 }

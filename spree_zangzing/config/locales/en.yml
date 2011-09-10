@@ -615,7 +615,7 @@ en:
   password_updated: "Password successfully updated"
   path: Path
   pay: pay
-  payment: Payment
+  payment: "Payment"
   payment_actions: "Actions"
   payment_gateway: "Payment Gateway"
   payment_information: "Payment Information"

@@ -1,31 +1,41 @@
+
+
 <% @body_id = 'cart' %>
 
-<h1><%= t("shopping_cart")%></h1>
+<%content_for :page_title do
+    t("shopping_cart")
+end %>
 
-<% if @order.line_items.empty? %>
-    <p><%= t("your_cart_is_empty.") %></p>
-    <p><%=link_to t("continue_shopping"), products_path, :class => 'button continue' %></p>
-<% else %>
-    <%= form_for(@order, :url => update_cart_path, :html=>{:id=>'updatecart'}) do |order_form| %>
+<div class="checkout-content">
+  <div class="row">
+    <div class="span14 columns offset1">
+      <% if @order.line_items.empty? %>
+          <p><%= t("your_cart_is_empty.") %></p>
+          <p><%=link_to t("continue_shopping"), products_path, :class => 'button continue' %></p>
+      <% else %>
+          <%= form_for(@order, :url => update_cart_path, :html=>{:id=>'updatecart'}) do |order_form| %>
 
-        <%= render :partial => 'form', :locals => {:order_form => order_form} %>
+              <%= render :partial => 'form', :locals => {:order_form => order_form} %>
 
-        <div class="row" id="subtotal">
-          <div class="span3 columns offset11">
-            <h3><%= "#{t("subtotal")}: #{order_price(@order)}" %></h3>
-            <div class="links">
-              <%= link_to image_tag('/images/update.png') + t("update"), '#', :class => 'button checkout primary', :onclick => "$('form#updatecart').submit(); return false;" %>
-              <%= link_to image_tag('/images/checkout.png') + t("checkout"), checkout_path, :class => 'button checkout primary' %>
-            </div>
-          </div>
-        </div>
+              <div class="row" id="subtotal">
+                <div class="span3 columns offset11">
+                  <h3><%= "#{t("subtotal")}: #{order_price(@order)}" %></h3>
+                  <div class="links">
+                    <%= link_to image_tag('/images/update.png') + t("update"), '#', :class => 'button checkout primary', :onclick => "$('form#updatecart').submit(); return false;" %>
+                    <%= link_to image_tag('/images/checkout.png') + t("checkout"), checkout_path, :class => 'button checkout primary' %>
+                  </div>
+                </div>
+              </div>
 
-        <p><%=link_to t("continue_shopping"), products_path, :class => 'button continue' %></p>
-    <% end %>
+              <p><%=link_to t("continue_shopping"), products_path, :class => 'button continue' %></p>
+          <% end %>
 
-    <%= form_tag empty_cart_path, :method => :put do %>
-        <p id="clear_cart_link">
-          <input type="submit" value="<%= t('empty_cart') %>" class="button" />
-        </p>
-    <% end %>
-<% end %>
+          <%= form_tag empty_cart_path, :method => :put do %>
+              <p id="clear_cart_link">
+                <input type="submit" value="<%= t('empty_cart') %>" class="button" />
+              </p>
+          <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>
