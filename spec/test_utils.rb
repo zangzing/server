@@ -41,8 +41,8 @@ end
 #
 def resque_jobs(options = nil, &block)
   begin
-    filter = FilterHelper.new(options)
     prev_filter = ZZ::Async::Base.loopback_filter
+    filter = FilterHelper.new(options)
     ZZ::Async::Base.loopback_filter = filter
     block.call()
   rescue Exception => ex
