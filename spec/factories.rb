@@ -1,12 +1,10 @@
 require 'factory_girl'
 require 'fileutils'
 
-BASE_ID = Time.now.to_i
-
 # use the bulk id generator to give us persistent ids across runs to allow
 # us to use the database persistently if we choose
 def next_id
-  BASE_ID + BulkIdManager.next_id_for("cache_tx_generator", 1)
+  BulkIdManager.next_id_for("cache_tx_generator", 1)
 end
 
 # NOTE: instead of using associations use the style shown below in :album
