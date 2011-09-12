@@ -101,6 +101,12 @@
     background: url('/images/tab-activity-comment.png')  no-repeat scroll  0 0;
 }
 
+.viewlist .item .description{
+    font-size: 12px;
+    color: #CCC;
+    margin: 10px 2px;
+    width: 400px;
+}
 
 
 
