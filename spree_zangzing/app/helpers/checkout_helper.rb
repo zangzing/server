@@ -14,18 +14,24 @@ module CheckoutHelper
 
       if state_index < current_index
         css_classes << 'completed'
-        text = link_to text, checkout_state_path(state)
+        #text = link_to text, checkout_state_path(state)
       end
-
       css_classes << 'next' if state_index == current_index + 1
       css_classes << 'current' if state == order_state
       css_classes << 'first' if state_index == 0
       css_classes << 'last' if state_index == states.length - 1
       # It'd be nice to have separate classes but combining them with a dash helps out for IE6 which only sees the last class
-      content_tag('td', content_tag('span', text), :class => css_classes.join('-'))
+
+      cell_options ={ :class => css_classes.join(' ') }
+      if state_index < current_index
+        cell_options[:onclick] = "document.location.href='#{checkout_state_path(state)}';"
+      end
+      content_tag('td',
+                  content_tag('div', state_index+1,:class => 'state_index' )+content_tag('div', text, :class => 'state_name'),
+                  cell_options)
     end
     row = content_tag('tr', raw(items.join("\n")), :class => 'progress-steps', :id => "checkout-step-#{order_state}")
-    content_tag( 'table', row)
+    content_tag( 'table', row, :class => 'progress-bar' )
   end
 
   # Creates the state field for addresses, keeps views cleaner.

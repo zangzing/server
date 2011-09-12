@@ -27,6 +27,11 @@ html{
     background-color: white;
     border-bottom: 1px solid #CCCCCC;
 }
+
+.checkout-navbar{
+    margin-bottom: 0 !important;
+}
+
 .checkout-message{
    text-align: center;
 }
@@ -40,6 +45,10 @@ html{
     margin: 10px 0 0 0;
     float: right;
     text-align:right;
+}
+.checkout-next-button a{
+    text-decoration: none !important;
+    color: white !important;
 }
 .checkout-summary{
     background-color: #CCFFCC;
@@ -167,3 +176,53 @@ select#expire_year{
     
 }
 
+/*----------------- Progress Bar ------------------- */
+.progress-bar{
+    margin: 10px 0 0 0;
+}
+.progress-steps td{
+    position: relative;
+    height: 50px;
+    border:  none;
+    background: url('/images/store/progress/black_bullet.png') scroll no-repeat 0 0;
+}
+
+.progress-steps td.current{
+    font-weight: 600;
+    background: url('/images/store/progress/yellow_bullet.png') scroll no-repeat 0 0;
+    color: black;
+}
+.progress-steps td.current div.state_index{
+    top: 9px;
+    font-weight: 600;
+}
+
+.progress-steps td.completed{
+    background: url('/images/store/progress/black_bullet.png') scroll no-repeat 0 0;
+    cursor: pointer;
+}
+.progress-steps td.completed div.state_name{
+    font-weight: 600;
+}
+
+
+.progress-steps td div.state_index{
+    position:absolute;
+    color: white;
+    font-weight: 400;
+    top: 10px;
+    left: 13px;
+}
+
+.progress-steps td div.state_name{
+    position: absolute;
+    text-align: center;
+    width: 54px;
+    top: 38px;
+    left: -10px;
+}
+
+.progress-steps td div.state_name a{
+    text-decoration: none;
+    color: gray;
+}
