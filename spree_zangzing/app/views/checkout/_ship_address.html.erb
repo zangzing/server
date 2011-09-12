@@ -4,7 +4,7 @@ end %>
 
 <div class="row">
 <div class="span6 columns offset5">
-<fieldset>
+<fieldset class="address">
       <h4><%=t('shipping_contact')%></h4>
       <p id="addressbook" class="field">
       <%= render :partial =>'addressbook', :locals => { :form => form,
@@ -25,7 +25,7 @@ end %>
 </div>
 </div>
 <%content_for :next_button do %>
-      <input type="submit" class="continue button primary" value="<%="#{t('next')}:#{t('payment')}"%>"  onclick="checkout_form_ship_address.submit();"/>
+      <a href="javascript:void(0)" onclick="checkout_form_ship_address.submit();" class="next-button"><span><%="#{t('continue')}"%></span></a>
 <%end%>
 
 

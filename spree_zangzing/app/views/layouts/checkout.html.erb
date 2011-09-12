@@ -35,8 +35,10 @@
     <div class="span-one-third column offset-one-third">
         <H5><%=yield :page_title%></H5>
     </div>
-    <div class="span-one-third column checkout-next-button">
+    <div class="span-one-third column">
+      <div class="checkout-next-button">
         <%=yield :next_button%>
+        </div>
     </div>
   </div>
 </div>
@@ -47,8 +49,10 @@
 
 <div class="checkout-footer container">
   <div class="row">
-    <div class="span-one-third column offset-two-thirds checkout-next-button">
-        <%=yield :next_button%>
+    <div class="span-one-third column offset-two-thirds">
+      <div class="checkout-next-button">
+       <%=yield :next_button%>
+     </div>
     </div>
   </div>
    <%= render :partial => 'shared/footer'%>

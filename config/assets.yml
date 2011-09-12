@@ -63,6 +63,7 @@ stylesheets:
   store_checkout:
     - public/stylesheets/dialog.css
     - public/stylesheets/new-dialog.css
+    - public/stylesheets/buttons.css
     - public/store/stylesheets/checkout.css
   store_admin:
     - public/store/stylesheets/admin/*.css

@@ -28,12 +28,12 @@ end %>
 
 
 <div id="payment_bill_address">
-    <fieldset>
+    <fieldset class="address">
     <h4><%= t("billing_contact") %></h4>
     <%= render :partial =>'addressbook', :locals => { :form => form,
                                                       :order => @order,
                                                       :address_kind => 'bill_address' } %>
-    
+      
     <%= form.fields_for :bill_address do |bill_form| %>
         <%= render :partial =>'address_fields', :locals => { :f => bill_form,
                                                              :legend => t('billing_address'),
@@ -44,11 +44,18 @@ end %>
 
 
 <%content_for :next_button do %>
-  <input type="submit" class="continue button primary" value="<%="#{t('next')} : #{t('place_order')}"%>" onclick="checkout_form_payment.submit();"/>
+  <a href="javascript:void(0)" onclick="checkout_form_payment.submit();" class="next-button"><span><%="#{t('continue')}"%></span></a>
 <%end%>
 
 <%content_for :page_javascript do %>
     <script type="text/javascript">
+
+
+
+
+
+
+
 
         $(document).ready(function(){
             $('form p.field label').inFieldLabels();

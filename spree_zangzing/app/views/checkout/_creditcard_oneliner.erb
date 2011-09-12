@@ -1,0 +1,4 @@
+<%# User must pass credit card %>
+
+<%= creditcard_logo( creditcard ) %>
+<%="#{t('ends_in')} #{creditcard.last_digits} #{t('expires')} #{creditcard.month}/#{creditcard.year}" %>

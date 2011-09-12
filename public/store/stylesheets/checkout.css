@@ -37,6 +37,8 @@ html{
     border: 1px solid #CCCCCC;
 }
 .checkout-next-button{
+    margin: 10px 0 0 0;
+    float: right;
     text-align:right;
 }
 .checkout-summary{
@@ -83,6 +85,12 @@ form p.field#lname{
     display: inline-block;
 }
 
+/* --------------------- shipping -------------------------*/
+#ship_as_bill label{
+    left: 15px;
+    top:  -7px;
+}
+
 /* --------------------- payment --------------------------*/
 #payment_creditcard{ /*left half of screen*/
     display: inline-block;
@@ -106,10 +114,13 @@ form div.wallet input{
 form div.wallet label{
     width: 100%;
     display: block;
-    color: red;
     text-align: left;
 }
 
+form img.cclogo{
+    vertical-align:middle;
+    margin: 0 5px;
+}
 
 form p.field#secure_lock img{
     vertical-align: text-top;

@@ -47,9 +47,10 @@ module CheckoutHelper
                                   addresses,
                                  :id,
                                  :one_line,
-                                 {    :selected => '',
-                                     :include_blank => 'Select from Address Book or enter new address'},
-                                 {:class => "required"})
+                                 { :selected => '',
+                                   :include_blank => 'Select from Address Book or enter new address'},
+                                 { :id => 'addressbook_dropdown',
+                                   :class => "required"})
       ].join.gsub('"', "'")
       address_elements.html_safe
     end
@@ -60,5 +61,14 @@ module CheckoutHelper
     end
   end
 
+  def creditcard_logo(creditcard)
+    type = creditcard.cc_type
+    if type.nil? || type.length <=0
+      ""
+    else
+      src = "/images/store/#{type}_logo.png"
+      image_tag src, { :class => "cclogo" }
+    end
+  end
 
 end

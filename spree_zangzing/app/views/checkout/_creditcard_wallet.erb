@@ -9,7 +9,10 @@
     <div class="wallet">
       Select a saved card or enter a new one
       <% order.user.creditcards.each do |creditcard| %>
-          <label> <%= radio_button_tag 'order[creditcard_id]', creditcard.id %><%="#{t('ends_with')} #{creditcard.last_digits}" %></label>
+          <label>
+            <%= radio_button_tag 'order[creditcard_id]', creditcard.id %>
+             <%= render :partial => 'creditcard_oneliner', :locals => { :creditcard => creditcard } %>
+          </label>
       <%end %>
     </div>
 <%end %>

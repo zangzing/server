@@ -156,22 +156,31 @@ CheckoutController.class_eval do
      end
    end
 
-  def object_params
-    # For payment step, filter order parameters to produce the expected nested attributes for a single payment and its source, discarding attributes for payment methods other than the one selected
-    if @order.payment?
-      if params[:payment_source].present? && source_params = params.delete(:payment_source)[params[:order][:payments_attributes].first[:payment_method_id].underscore]
-        params[:order][:payments_attributes].first[:source_attributes] = source_params
-      end
-      if (params[:order][:payments_attributes])
-        params[:order][:payments_attributes].first[:amount] = @order.total
-      end
-      if ( params[:order][:creditcard_id] )
-            params[:order][:payments_attributes].first[:creditcard_id] = params[:order][:creditcard_id]
-            params[:order].delete(:creditcard_id )
-      end
-    end
-    params[:order]
-  end
+   def object_params
+     # For payment step, filter order parameters to produce the expected nested attributes for a single payment and its source, discarding attributes for payment methods other than the one selected
+     if @order.payment?
+       if params[:order][:creditcard_id]
+         creditcard = Creditcard.find( params[:order][:creditcard_id] )
+         #The payment method needs id and amount (set below) and payment method id, source_id and source_type
+         params[:order][:payments_attributes].first[:payment_method_id] = creditcard.payment_method_id
+         params[:order][:payments_attributes].first[:source_id] = creditcard.id
+         params[:order][:payments_attributes].first[:source_type] = creditcard.class.name
+         
+         #clear creditcard id from order
+         params[:order].delete( :creditcard_id )
+         #delete all other credit card attributes to prevent validation errors
+         params.delete(:payment_source) if params[:payment_source]
+       end
+       if params[:payment_source].present? && source_params = params.delete(:payment_source)[params[:order][:payments_attributes].first[:payment_method_id].underscore]
+         params[:order][:payments_attributes].first[:source_attributes] = source_params
+       end
+       if (params[:order][:payments_attributes])
+         params[:order][:payments_attributes].first[:amount] = @order.total
+       end
+
+     end
+     params[:order]
+   end
 
 end
 
