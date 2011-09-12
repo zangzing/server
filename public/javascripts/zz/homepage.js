@@ -6,7 +6,7 @@ var zz = zz || {};
 
 zz.homepage = {
 
-    render: function(current_users_home_page, my_albums_path, session_user_liked_albums_path, liked_albums_path, liked_users_albums_path, invited_albums_path) {
+    render: function(current_users_home_page, my_albums_path, session_user_liked_albums_path, liked_albums_path, liked_users_albums_path, invited_albums_path, session_user_invited_albums_path) {
         var cell = $('<div class="album-cell"></div>');
 
         var call_and_merge = function(urls, callback) {
@@ -118,7 +118,7 @@ zz.homepage = {
             zz.like.add_id_array(wanted_subjects);
         };
 
-        call_and_merge([my_albums_path, session_user_liked_albums_path], function(albums) {
+        call_and_merge([my_albums_path, session_user_liked_albums_path, session_user_invited_albums_path], function(albums) {
             //show only albums for the current homepage
             albums = _.filter(albums, function(album) {
                 return album.user_id == zz.page.displayed_user_id;
