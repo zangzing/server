@@ -251,6 +251,7 @@ class AlbumsController < ApplicationController
     @liked_users_albums_path = liked_users_albums_path(@loader)
     @invited_albums_path = invited_albums_path(@loader)
     @session_user_liked_albums_path = @session_loader.nil? ? nil : liked_albums_path(@session_loader)
+    @session_user_invited_albums_path = @session_loader.nil? ? nil : invited_albums_path(@session_loader)
   end
 
 
@@ -264,9 +265,13 @@ class AlbumsController < ApplicationController
       if !session_loader.nil?
         session_liked_users_albums = session_loader.liked_users_album_loader.current_version
         session_liked_users_albums_path = mobile_liked_users_albums_path(session_loader)
+        session_invited_albums = session_loader.invited_album_loader.current_version
+        session_invited_albums_path = mobile_invited_albums_path(session_loader)
       else
         session_liked_users_albums = nil
         session_liked_users_albums_path = nil
+        session_invited_albums = nil
+        session_invited_albums_path = nil
       end
 
       album_meta = {
@@ -282,7 +287,9 @@ class AlbumsController < ApplicationController
         :session_user_liked_albums      => session_liked_users_albums,
         :session_user_liked_albums_path => session_liked_users_albums_path,
         :invited_albums                 => loader.invited_album_loader.current_version,
-        :invited_albums_path            => mobile_invited_albums_path(loader)
+        :invited_albums_path            => mobile_invited_albums_path(loader),
+        :session_user_invited_albums      => session_invited_albums,
+        :session_user_invited_albums_path => session_invited_albums_path
       }
     end
   end
