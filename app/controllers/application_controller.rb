@@ -46,8 +46,6 @@ class ApplicationController < ActionController::Base
     response.headers['X-Errors'] = record.errors.full_messages.to_json
   end
 
-<<<<<<< HEAD
-=======
 
 
   def send_zza_event_from_client (event)
@@ -178,7 +176,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
->>>>>>> 2011-09-14-feature
   #
   #  these helpers and filters are used to manage the 'all albums' back button
   def store_last_home_page(user_id)
