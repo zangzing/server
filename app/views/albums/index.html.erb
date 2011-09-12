@@ -32,6 +32,14 @@
 </div>
 
 
+<% if current_user == @user %>
+<div id="invited-albums" class="albums-list">
+  <div class="album-section-header">
+    Albums I Have Been Invited To
+  </div>
+</div>
+<% end %>
+
 
 <% content_for :page_javascript do %>
 
@@ -49,8 +57,12 @@
 
             var liked_albums_path ='<%= @liked_albums_path %>';
             var liked_users_albums_path = '<%= @liked_users_albums_path %>';
+            var invited_albums_path = '<%= @invited_albums_path %>';
 
-            zz.homepage.render(my_albums_path, session_user_liked_albums_path, liked_albums_path, liked_users_albums_path);
+            var is_current_users_homepage = <%= current_user == @user ? 'true' : 'false' %>;
+
+
+            zz.homepage.render(is_current_users_homepage, my_albums_path, session_user_liked_albums_path, liked_albums_path, liked_users_albums_path, invited_albums_path);
         })();
             
     </script>
