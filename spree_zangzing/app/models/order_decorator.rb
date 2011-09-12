@@ -159,6 +159,7 @@ Order.class_eval do
     options[:indent] ||= 2
     xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
     xml.instruct! unless options[:skip_instruct]
+#    xml.instruct!(:xml, {:version => '1.0', :encoding => 'iso-8859-1'}) unless options[:skip_instruct]
     xml.orders({ :partnerid => ZangZingConfig.config[:ezp_partner_id], :version => 1 }) {
       xml.images{
         xml.uri( {:id  => logo_id,
