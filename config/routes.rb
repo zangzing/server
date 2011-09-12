@@ -266,7 +266,7 @@ Server::Application.routes.draw do
       match '/dropbox/sessions/destroy' => 'dropbox_sessions#destroy', :as => :destroy_dropbox_session
       match '/dropbox/folders' => 'dropbox_folders#index', :as => :dropbox_folders
       match '/dropbox/folders/:action' => 'dropbox_folders', :as => :dropbox
-      match '/dropbox/urls/:root/*path' => 'dropbox_urls#serve_image', :as => :dropbox_image
+      match '/dropbox/urls/:root/*path' => 'dropbox_urls#serve_image', :as => :dropbox_image, :defaults => {:dont_store_location => true}
 
       #zangzing
       match '/zangzing/folders/:zz_album_id/photos.:format' => 'zangzing_photos#index', :as => :zangzing_photos

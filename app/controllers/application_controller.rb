@@ -184,7 +184,13 @@ class ApplicationController < ActionController::Base
   #
   #  Stores the intended destination of a rerquest to take the user there after log in
   def store_location
-    session[:return_to] = request.fullpath
+
+    # the dont_store_location param can be set by routes
+    # that should not be stored for use after signin
+    # see routes.rb for eaxmples
+    if params[:dont_store_location] != true
+      session[:return_to] = request.fullpath
+    end
   end
 
   #
@@ -494,4 +500,8 @@ class ApplicationController < ActionController::Base
   def mobile_api(&block)
     mobile_api_core(false, block)
   end
+
+
+
+
 end
