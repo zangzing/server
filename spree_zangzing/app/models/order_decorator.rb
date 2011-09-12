@@ -3,7 +3,7 @@ Order.class_eval do
 
   attr_accessible :use_shipping_as_billing, :ship_address_id, :bill_address_id
 
-  before_validation :clone_shipping_address, :if => "@use_shipping_as_billing"
+  before_validation :clone_shipping_address, :if => "state=='ship_address'"
   attr_accessor  :use_shipping_as_billing
 
 
@@ -12,7 +12,14 @@ Order.class_eval do
   end
 
   def clone_shipping_address
-    self.bill_address_id = ship_address_id
+    if @use_shipping_as_billing
+      self.bill_address_id = ship_address_id
+    else
+      if self.bill_address_id == ship_address_id
+        self.bill_address_id = nil
+        self.bill_address    = nil
+      end
+    end
     true
   end
 

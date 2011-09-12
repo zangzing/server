@@ -26,7 +26,7 @@
         </table>
     <% else  %>
        <p id="addressbook" class="field">
-        <%= addressbook_dropdown(form, address_kind, order.user.addresses) %>
+        <%= addressbook_dropdown(form, address_kind, order) %>
        </p>
 
         <%content_for :page_javascript do %>
@@ -36,14 +36,24 @@
                 function find_address( id ) {
                     for(var i=0; i< addressbook.length; i++) {
                         if (addressbook[i].id == id){
-                            return i;
+                            return addressbook[i];
                         }
                     }
-                    return -1;
+                    return null;
                 }
 
+                function reset_dropdown(){
+                        addressbook_dropdown.selectedIndex = 0;
+                        $('fieldset.address input').unbind('keypress', reset_dropdown  );
+                        $('fieldset.address select').not('#addressbook_dropdown').unbind( 'change', reset_dropdown);
+                }
+
+                function bind_dropdown(){
+                    $('fieldset.address input').keypress(reset_dropdown );
+                    $('fieldset.address select').not('#addressbook_dropdown').change(reset_dropdown );
+                }
                 $('#addressbook_dropdown').change( function(){
-                    var id = $("#addressbook_dropdown").val()
+                    var id = $("#addressbook_dropdown").val();
                     var address= find_address( id );
                     $('#order_<%=address_kind%>_attributes_firstname').val( address.firstname);
                     $('#order_<%=address_kind%>_attributes_lastname').val( address.lastname);
@@ -54,14 +64,10 @@
                     $('#order_<%=address_kind%>_attributes_state_id').val( address.state_id);
                     $('#order_<%=address_kind%>_attributes_zipcode').val( address.zipcode);
                     $('#order_<%=address_kind%>_attributes_country_id').val( address.country_id);
-                    var reset_dropdown = function(){
-                        addressbook_dropdown.selectedIndex = 0;
-                        $('fieldset.address input').unbind('keypress', reset_dropdown  );
-                        $('fieldset.address select').not('#addressbook_dropdown').unbind( 'change', reset_dropdown);
-                    };
-                    $('fieldset.address input').keypress(reset_dropdown );
-                    $('fieldset.address select').not('#addressbook_dropdown').change(reset_dropdown );
+                    $('fieldset.address input').trigger('keydown' );
+
                 });
+                bind_dropdown();
             </script>
         <%end%>
     <% end %>

@@ -129,7 +129,9 @@ CheckoutController.class_eval do
          ship_address_id = params[:order][:ship_address_id]
          params[:order].delete :ship_address_id
 
-         unless ship_address_id.blank?
+         if ship_address_id.blank?
+          params[:order][:ship_address_attributes].delete( :id ) if params[:order][:ship_address_attributes] && params[:order][:ship_address_attributes][:id]
+         else
            address = Address.find_by_id( ship_address_id )
            if address
              @order.ship_address = address
@@ -143,7 +145,9 @@ CheckoutController.class_eval do
          bill_address_id = params[:order][:bill_address_id]
          params[:order].delete :bill_address_id
 
-         unless bill_address_id.blank?
+         if bill_address_id.blank?
+           params[:order][:bill_address_attributes].delete( :id ) if params[:order][:bill_address_attributes] && params[:order][:bill_address_attributes][:id]
+         else
            bill_address = Address.find_by_id( bill_address_id )
            if bill_address
              @order.bill_address = bill_address

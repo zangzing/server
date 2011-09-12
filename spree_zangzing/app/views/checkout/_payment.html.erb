@@ -26,21 +26,29 @@ end %>
       </fieldset>
 </div>
 
-
 <div id="payment_bill_address">
-    <fieldset class="address">
+  <fieldset class="address">
+
+<% if @order.ship_address_id != @order.bill_address_id  %>
     <h4><%= t("billing_contact") %></h4>
     <%= render :partial =>'addressbook', :locals => { :form => form,
                                                       :order => @order,
                                                       :address_kind => 'bill_address' } %>
-      
+
     <%= form.fields_for :bill_address do |bill_form| %>
         <%= render :partial =>'address_fields', :locals => { :f => bill_form,
                                                              :legend => t('billing_address'),
                                                              :address => @order.bill_address } %>
     <% end %>
-    </fieldset>
+<%else%>
+  <h4><%= t("billing_address") %>&nbsp<small><%=t("same_as_shipping")%></small></h4>
+  <%= render :partial =>'address_display', :locals => { :address => @order.bill_address,:label => ''} %>
+  <a href="javascript:void(0)" onclick="$('#checkout_form_payment').attr('action','<%=checkout_state_path('ship_address')%>').submit();">change</a>
+<%end%>
+  </fieldset>
 </div>
+
+
 
 
 <%content_for :next_button do %>

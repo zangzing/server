@@ -40,15 +40,15 @@ module CheckoutHelper
     javascript_tag("document.write(\"#{state_elements.html_safe}\");")
   end
 
-  def addressbook_dropdown(form, address_kind, addresses )
+  def addressbook_dropdown(form, address_kind, order )
+      addresses = order.user.addresses
       return if addresses.nil? or addresses.length <= 0
       address_elements = [
           form.collection_select( address_kind+"_id",
                                   addresses,
                                  :id,
                                  :one_line,
-                                 { :selected => '',
-                                   :include_blank => 'Select from Address Book or enter new address'},
+                                 { :include_blank => 'Select from Address Book or enter new address'},
                                  { :id => 'addressbook_dropdown',
                                    :class => "required"})
       ].join.gsub('"', "'")
@@ -63,11 +63,12 @@ module CheckoutHelper
 
   def creditcard_logo(creditcard)
     type = creditcard.cc_type
-    if type.nil? || type.length <=0
-      ""
-    else
+
+    if  %w( discover master visa american_express).include? type
       src = "/images/store/#{type}_logo.png"
       image_tag src, { :class => "cclogo" }
+    else
+      ''
     end
   end
 
