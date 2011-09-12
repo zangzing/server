@@ -8,6 +8,8 @@
   <meta name="copyright" content="Copyright 2011, ZangZing, LLC. All Rights Reserved." />
   <meta name="DC.title" content="ZangZing" />
   <meta name="title" content="ZangZing" />
+  <meta name="description" content="Join ZangZing - a free photo sharing site for groups to share photos, simply, beautifully, publicly or privately and without any ads.">
+
   <title>Join | Photo Sharing - ZangZing</title>
   <link rel="canonical" href="<%= join_url %>" />
 
@@ -36,13 +38,9 @@
 
       <form id="join-form" method="post" enctype="multipart/form-data" action=<%=create_user_url%>>
         <input style="visibility:hidden" type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>"/>
-        <!--<div id="flash-error">-->
-        <!--<% @new_user.errors.map do |field, error| %>-->
-            <%= "#{field.to_s.capitalize} #{error}" %><br>
-            <!--<% end %>-->
-        <!--<%= flash[:errors] %>-->
-
-        <!--</div>-->
+        <div id="flash-error">
+            <%= flash[:error] %>
+        </div>
 
         <table>
           <tr>

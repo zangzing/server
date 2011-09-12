@@ -9,9 +9,15 @@ class UsersController < ApplicationController
   skip_before_filter :verify_authenticity_token, :only=>[:create]
 
   def join
+
     if params[:return_to]
-        session[:return_to] = params[:return_to]
-      end
+      session[:return_to] = params[:return_to]
+      flash.keep
+      redirect_to join_url
+      return
+    end
+
+    
     if ! current_user
       @new_user = User.new(:email => params[:email])
       @user_session = UserSession.new
