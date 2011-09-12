@@ -24,9 +24,9 @@
 <div id="liked-albums" class="albums-list">
   <div class="album-section-header">
 <% if current_user == @user %>
-    Liked Albums
+    Liked and Followed Albums
 <% else %>
-    <%= @user.posessive_short_name%> Liked Albums
+    <%= @user.posessive_short_name%> Liked and Followed Albums
 <% end %>
   </div>
 </div>
