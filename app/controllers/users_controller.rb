@@ -14,16 +14,15 @@ class UsersController < ApplicationController
     if params[:return_to] || params[:email]
       session[:return_to] = params[:return_to] if params[:return_to]
       flash.keep
-      if current_user
-        redirect_back_or_default user_pretty_url(current_user) and return
-      else
+      unless current_user
         session[:email] = params[:email] if params[:email]
         redirect_to join_url and return
       end
     end
 
     if current_user
-      redirect_to user_pretty_url(current_user) and return
+      redirect_back_or_default user_pretty_url(current_user)
+      return
     end
 
     if session[:email]
