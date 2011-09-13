@@ -77,4 +77,16 @@ module PrettyUrlHelper
     URI::escape(url)
   end
 
+  def signin_pretty_url( return_to=nil, email=nil )
+      url = []
+      url << signin_url
+      query = []
+      query << "return_to=#{return_to}" if return_to
+      query << "email=#{email}" if email
+      query = query.join('&')
+      url << query
+      url = url.join('?')
+      URI::escape(url)
+  end
+
 end
