@@ -10,18 +10,27 @@ class UserSessionsController < ApplicationController
 
 
   def new
-    if params[:return_to]
-      session[:return_to] = params[:return_to]
+     # URL Cleaning cycle
+    if params[:return_to] || params[:email]
+      session[:return_to] = params[:return_to] if params[:return_to]
       flash.keep
-      redirect_to signin_url
-      return
+      if current_user
+        redirect_back_or_default user_pretty_url(current_user) and return
+      else
+        session[:email] = params[:email] if params[:email]
+        redirect_to signin_url and return
+      end
     end
 
+    if current_user
+      redirect_to user_pretty_url(current_user) and return
+    end
 
-    if ! current_user
-      @user_session = UserSession.new(:email=> params[:email])
+    if session[:email]
+      @user_session = UserSession.new(:email=> session[:email] )
+      session.delete(:email)
     else
-       redirect_back_or_default user_pretty_url(current_user)
+      @user_session = UserSession.new
     end
   end
 
