@@ -16,7 +16,7 @@
 
   <title><%= title %></title>
 
-  <link rel="stylesheet/less" href="/store/stylesheets/lib/bootstrap.less">
+  <link rel="stylesheet/less" href="/store/stylesheets/lib/bootstrap.less" media="all">
   <%= include_stylesheets :store_checkout %>
   <%= yield :page_stylesheet %>
   <%= csrf_meta_tag %>
@@ -32,8 +32,13 @@
 
 <div class="checkout-message container">
   <div class="row">
-    <div class="span-one-third column offset-one-third">
-        <H5><%=yield :page_title%></H5>
+    <div class="span-one-third column">
+      <div class="checkout-back-button">
+        <%=yield :back_button%>
+        </div>
+    </div>
+    <div id="page_title" class="span-one-third column">
+        <%=yield :page_title%>
     </div>
     <div class="span-one-third column">
       <div class="checkout-next-button">

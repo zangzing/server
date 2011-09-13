@@ -24,7 +24,14 @@ module CheckoutHelper
 
       cell_options ={ :class => css_classes.join(' ') }
       if state_index < current_index
-        cell_options[:onclick] = "document.location.href='#{checkout_state_path(state)}';"
+        case state
+        when 'cart':
+          cell_options[:onclick] = "document.location.href='#{cart_path(state)}';"
+        when 'signin'
+          cell_options[:onclick] = ''
+        else
+          cell_options[:onclick] = "document.location.href='#{checkout_state_path(state)}';"
+        end
       end
       content_tag('td',
                   content_tag('div', state_index+1,:class => 'state_index' )+content_tag('div', text, :class => 'state_name'),

@@ -21,7 +21,12 @@
     </tbody>
 
   </table>
-  <center>
-    <input type="submit" class="continue button primary" value="<%=t("place_order") %>"/>
-  </center>
+  <div id="place_order">
+    <a href="javascript:void(0);" onclick="$('#checkout_form_confirm').attr('action','<%=update_checkout_path('confirm')%>').submit();" class="green-button"><span><%=t('place_order')%></span></a>
+    <div id="logo_secure_lock">
+        <%= image_tag 'store/secure-lock.png'%>
+        <%=t('secure_checkout')%>
+    </div>
+  </div>
+
 </div>
