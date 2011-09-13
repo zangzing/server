@@ -1,13 +1,19 @@
 module EZPrints
   class EZPManager
 
+    def header_options
+#      @@header_options ||= {'Content-Type' => 'text/xml;charset=utf-8'}
+      @@header_options ||= {'Content-Type' => 'text/xml'}
+    end
+
     # takes an order in the shipping calc format from the order class
     # and transmits that to EZprints returning a hash with the shipping
     # options and prices
     def shipping_costs(order)
       order_xml = order.to_xml_ezporder
       result_xml = submit_http_request("http://www.ezprints.com/ezpartners/shippingcalculator/xmlshipcalc.asp",
-          order_xml.to_s, {'Content-Type' => 'text/xml;charset=utf-8'})
+#          order_xml.to_s, header_options)
+          order_xml.to_s, header_options)
       err = result_xml.at_xpath("//shippingOptions/error")
       if err
         desc = err['description'] || "Error description not returned."
@@ -20,7 +26,7 @@ module EZPrints
     def submit_order(order)
       order_xml = order.to_xml_ezporder
       result_xml = submit_http_request("http://order.ezprints.com/PostXmlOrder.axd?PartnerNumber=#{ZangZingConfig.config[:ezp_partner_id]}&PartnerReference=#{order.number}",
-          order_xml.to_s, {'Content-Type' => 'text/xml;charset=utf-8'})
+          order_xml.to_s, header_options)
       result_xml
     end
 
@@ -30,7 +36,7 @@ module EZPrints
       raise "Redirect limit reached" if redirect_limit == 0
       redirect_limit -= 1
 
-      puts data if redirect_limit == 4  # testing hack
+      #puts data if redirect_limit == 4  # testing hack
 
       # now send the request
       uri = URI.parse(URI.escape(url))
