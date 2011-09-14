@@ -16,14 +16,6 @@ end %>
 
       <%= render "checkout/payment/#{method.method_type}", :payment_method => method %>
 
-      <%unless current_user %>
-          <p id="email" class="field">
-            <% clean_guest_checkout_email( @order ) %>
-            <%= form.label :email, t("email") %>
-            <%= form.text_field :email, :class => 'required' %><span class="req">*</span>
-          <div>( <%=t("email_needed")%> )</div>
-          </p>
-      <%end%>
       </fieldset>
 </div>
 
@@ -42,7 +34,7 @@ end %>
                                                              :address => @order.bill_address } %>
     <% end %>
 <%else%>
-  <h4><%= t("billing_address") %>&nbsp<small><%=t("same_as_shipping")%></small></h4>
+  <h4><%= t("billing_address") %>&nbsp &nbsp<small>(<%=t("same_as_shipping")%>)</small></h4>
   <%= render :partial =>'address_display', :locals => { :address => @order.bill_address,:label => ''} %>
   <a href="javascript:void(0)" onclick="$('#checkout_form_payment').attr('action','<%=checkout_state_path('ship_address')%>').submit();">change</a>
 <%end%>

@@ -68,12 +68,6 @@ module CheckoutHelper
       address_elements.html_safe
     end
 
-  def clean_guest_checkout_email( order )
-    if /^.*\.guest\.shopper@example.net$/.match( order.email )
-      order.email = ''
-    end
-  end
-
   def creditcard_logo(creditcard)
     type = creditcard.cc_type
 

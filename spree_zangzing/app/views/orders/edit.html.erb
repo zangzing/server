@@ -56,31 +56,25 @@ end %>
         }
      });
 
-     $('.item_quantity').change(function( ){
-
-     });
-
      var recalc_pending = false;
-     function recalculate_subtotal(){
+     $('.item_quantity').change(function( ){
          if( !recalc_pending ){
-             //console.debug('recalculate for '+$(this).val());
-             new Spinner({ lines: 8,
-                 length: 4,
-                 width: 3,
-                 radius: 3,
-                 color: '#666666',
-                 speed: 1,
-                 trail: 50, // Afterglow percentage
-                 shadow: false
-             }).spin( document.getElementById('spin_here'));
-             setTimeout( function(){
-                 $('form#updatecart').submit();
-                 recalc_pending = false;
-             }, 500 );
-         }
-
-         }
-     }
+                      recalc_pending= true;
+                      new Spinner({ lines: 8,
+                          length: 4,
+                          width: 3,
+                          radius: 3,
+                          color: '#666666',
+                          speed: 1,
+                          trail: 50, // Afterglow percentage
+                          shadow: false
+                      }).spin( document.getElementById('spin_here'));
+                      setTimeout( function(){
+                          $('form#updatecart').submit();
+                          recalc_pending = false;
+                      }, 500 );
+                  }
+     });
  });
 </script>
 <%end%>

@@ -197,6 +197,7 @@ p#ship_as_bill label{
 }
 
 #payment_bill_address{ /*right half of screen */
+    min-height: 300px;
     width: auto;
     display:inline-block;
     border-left: 1px solid #CCCCCC;
@@ -237,15 +238,16 @@ form p.field#ccv{
     width: 20%;
     display: inline-block;
 }
-p.field a#cvv_question{
+a.field_question{
     width: auto;
     display: inline-block;
 }
-#cvv_question img{
+a.field_question img{
     vertical-align: middle;
 }
 div#expires{
-    width: 100%
+    width: 100%;
+    margin-bottom: 12px;
 }
 
 label#expire_label{
@@ -263,6 +265,9 @@ select#expire_year{
     width: 20%;
     display: inline-block;
     
+}
+p.field#order_email input{
+    width: 290px;
 }
 
 /* --------------------------------- confirm ------------------- */
