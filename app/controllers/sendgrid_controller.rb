@@ -173,8 +173,10 @@ class SendgridController < ApplicationController
 
           link_name = nil
 
-          if(cleaned_url == 'http://www.zangzing.com')
+          if cleaned_url == 'http://www.zangzing.com' 
             link_name = 'zangzing_dot_com_url'
+          elsif cleaned_url.match("http://[^/]*.zangzing.com/blog")
+            link_name = 'blog_url'
           else
             begin
               route = Rails.application.routes.recognize_path(cleaned_url)
