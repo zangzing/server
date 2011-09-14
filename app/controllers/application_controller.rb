@@ -348,17 +348,17 @@ class ApplicationController < ActionController::Base
     if @album.private?
       unless current_user
         if request.xhr?
-          flash.now[:notice] = "You have asked to see a password protected album. Please login so we know who you are."
+          flash.now[:notice] = "Please login to view this Invite Only album"
           head :status => 401 and return
         else
-          flash[:notice] = "You have asked to see a password protected album. Please login so we know who you are."
+          flash[:notice] = "Please login to view this Invite Only album"
           store_location
           redirect_to new_user_session_url and return
         end
       end
       unless @album.viewer?( current_user.id ) || current_user.moderator?
         if request.xhr?
-          flash[:notice] = "You have asked to see a password protected album. You do not have enough privileges to see it"
+          flash[:notice] = "This is an Invite Only album. You do not have enough privileges to see it"
           head :status => 401
         else
           session[:client_dialog] = album_pwd_dialog_url( @album )
