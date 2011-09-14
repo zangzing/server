@@ -376,8 +376,11 @@ class User < ActiveRecord::Base
       end
     end
 
-    # if the method was queued, clear the queue flag.
-    @update_acls_with_id_queued = false if @update_acls_with_id_queued
+    # if the method was queued because of an email change, clear the queue flag.
+     if @update_acls_with_id_queued
+        @update_acls_with_id_queued = false
+        Cache::Album::Manager.shared.user_albums_acl_modified(id)
+     end
   end
 
   # returns an array of auto like ids
