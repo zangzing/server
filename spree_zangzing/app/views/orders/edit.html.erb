@@ -10,37 +10,41 @@ end %>
 
 <div class="checkout-content" id="cart">
 
-  <% unless @order.line_items.empty? %>
+
+
+  <% if @order.line_items.empty? %>
+      <a href="/" class="newgreen-button" id="continue-shopping-greenbutton"><span><%= "#{t('continue_shopping')}"%></span></a>
+  <%else%>
       <%= form_for(@order, :url => update_cart_path, :html=>{:id=>'updatecart'}) do |order_form| %>
           <%= render :partial => 'form', :locals => {:order_form => order_form} %>
       <% end %>
   <% end %>
 
+  <% unless @order.line_items.empty? %>
+      <div id="subtotal" class="clearfix">
 
-  <div id="subtotal" class="clearfix">
-    <% unless @order.line_items.empty? %>
         <div id="spin_here">&nbsp</div>
         <div id="amount">
           <h3><%= "#{t("subtotal")}: #{order_price(@order)}" %></h3>
         </div>
-    <%end%>
 
-  </div>
-
+      </div>
+  <%end%>
 </div>
 
+<%unless @order.line_items.empty? %>
 
+    <%content_for :next_button do %>
 
-<%content_for :next_button do %>
-    <%unless @order.line_items.empty? %>
-        <a href="/store/checkout" class="next-button"><span><%= "#{t('continue')}"%></span></a>
+        <a href="/store/checkout" class="next-button"><span><%= "#{t('checkout')}"%></span></a>
+
     <%end%>
-<%end%>
 
-<%content_for :back_button do %>
-  <a href="/" class="back-button"><span><%= "#{t('continue_shopping')}"%></span></a>
-<%end%>
+    <%content_for :back_button do %>
+        <a href="/" class="back-button"><span><%= "#{t('continue_shopping')}"%></span></a>
+    <%end%>
 
+<%end%>
 
 <%content_for :page_javascript  do%>
 <script type="text/javascript">
@@ -53,7 +57,12 @@ end %>
      });
 
      $('.item_quantity').change(function( ){
-         if( $(this).val() >= 1 ){
+
+     });
+
+     var recalc_pending = false;
+     function recalculate_subtotal(){
+         if( !recalc_pending ){
              //console.debug('recalculate for '+$(this).val());
              new Spinner({ lines: 8,
                  length: 4,
@@ -64,10 +73,14 @@ end %>
                  trail: 50, // Afterglow percentage
                  shadow: false
              }).spin( document.getElementById('spin_here'));
-             $('form#updatecart').submit();
+             setTimeout( function(){
+                 $('form#updatecart').submit();
+                 recalc_pending = false;
+             }, 500 );
          }
-     });
 
+         }
+     }
  });
 </script>
 <%end%>
