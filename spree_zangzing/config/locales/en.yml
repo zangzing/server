@@ -282,7 +282,7 @@ en:
   cart: Cart
   categories: Categories
   category: Category
-  change: Change
+  change: change
   change_language: "Change Language"
   change_my_password: "Change my password"
   charge_total: Charge Total
@@ -304,7 +304,7 @@ en:
   confirm_delete: "Confirm Deletion"
   confirm_password: "Password Confirmation"
   continue: Continue
-  continue_shopping: "Continue shopping"
+  continue_shopping: Continue Shopping
   copy_all_mails_to: Copy All Mails To
   cost_price: "Cost Price"
   count: Count
@@ -1029,3 +1029,6 @@ en:
   expires: "Exp."
   ends_in: "Ends In"
   same_as_shipping: "Same as Shipping Address"
+  gift_card_promo: "Gift card or Promo"
+  items_in_your_cart: "Items in your Cart"
+  place_your_order: "Place Your Order"

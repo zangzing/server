@@ -19,6 +19,13 @@ html{
     vertical-align: text-bottom;
 }
 
+#page_title{
+    font-size: 16px;
+    font-weight: 400;
+    margin-top: 20px;
+    color: black;
+}
+
 .checkout-body{
     min-height: 100%;
     background-color: #EEEEEE;
@@ -46,11 +53,19 @@ html{
     float: right;
     text-align:right;
 }
-.checkout-next-button a{
+
+.checkout-back-button{
+    margin: 10px 0 0 0;
+    float: left;
+    text-align:left;
+}
+
+.checkout-next-button a,.checkout-back-button a{
     text-decoration: none !important;
     color: white !important;
 }
 .checkout-summary{
+    padding:  15px;
     background-color: #CCFFCC;
     border: 2px solid #666666;
 }
@@ -58,123 +73,6 @@ html{
     border: 2px solid #CCCCCC;
 }
 
-
-/*------------- Forms --------------------*/
-fieldset{
-    /*width: 350px;*/
-}
-form p.field{
-     width: 100%;
-     position:relative
-}
-form p.field label{
-    width: auto;
-    padding-left: 5px;
-    position:absolute; top:0; left:0
-}
-form p.field input{
-        width: 90%;
-        display: inline-block;
-}
- form p.field select {
-        width: 93%;
-        display: inline-block;
-}
-form p.field span.req {
-    display:inline-block;
-    float: none;
-}
-
-form p.field#fname{
-    width: 40%;
-    display: inline-block;
-}
-form p.field#lname{
-    width: 55%;
-    display: inline-block;
-}
-
-/* --------------------- shipping -------------------------*/
-#ship_as_bill label{
-    left: 15px;
-    top:  -7px;
-}
-
-/* --------------------- payment --------------------------*/
-#payment_creditcard{ /*left half of screen*/
-    display: inline-block;
-    vertical-align:top;
-    width: 45%;
-    padding-left: 30px;
-}
-
-#payment_bill_address{ /*right half of screen */
-    width: auto;
-    display:inline-block;
-    border-left: 1px solid #CCCCCC;
-    padding-left: 30px;
-}
-
-
-form div.wallet input{
-    margin: 0 5px;
-}
-
-form div.wallet label{
-    width: 100%;
-    display: block;
-    text-align: left;
-}
-
-form img.cclogo{
-    vertical-align:middle;
-    margin: 0 5px;
-}
-
-form p.field#secure_lock img{
-    vertical-align: text-top;
-}
-form p#secure_lock{
-    padding-left: 5px;
-}
-div#cc{
-    width: 100%;
-}
-form p.field#ccnumber{
-    width: 50%;
-    display: inline-block;
-}
-form p.field#ccv{
-    width: 20%;
-    display: inline-block;
-}
-p.field a#cvv_question{
-    width: auto;
-    display: inline-block;
-}
-#cvv_question img{
-    vertical-align: middle;
-}
-div#expires{
-    width: 100%
-}
-
-label#expire_label{
-  text-align: left;
-  position: relative;
-  width: auto;
-  display: inline-block;
-  margin-right: 10px;
-}
-select#expire_month{
-    width: 15%;
-    display: inline-block;
-}
-select#expire_year{
-    width: 20%;
-    display: inline-block;
-    
-}
 
 /*----------------- Progress Bar ------------------- */
 .progress-bar{
@@ -225,4 +123,248 @@ select#expire_year{
 .progress-steps td div.state_name a{
     text-decoration: none;
     color: gray;
+}
+
+
+/*------------- Forms --------------------*/
+form.edit_order{
+    margin-bottom: 0;
+}
+fieldset.address{
+        margin-bottom: 0;
+}
+form p.field{
+     width: 100%;
+     position:relative
+}
+form p.field label{
+    width: auto;
+    padding-left: 5px;
+    position:absolute; top:0; left:0
+}
+form p.field input{
+        width: 90%;
+        display: inline-block;
+}
+ form p.field select {
+        width: 93%;
+        display: inline-block;
+}
+form p.field span.req {
+    display:inline-block;
+    float: none;
+}
+
+form p.field#fname{
+    width: 40%;
+    display: inline-block;
+}
+form p.field#lname{
+    width: 55%;
+    display: inline-block;
+}
+
+
+form p.field#state{
+    width: 53%;
+    display: inline-block;
+}
+form p.field#zip{
+    width: 40%;
+    display: inline-block;
+}
+
+/* --------------------- shipping -------------------------*/
+
+p#ship_as_bill label{
+    display:block;
+    width: 100%;
+    text-align: left;
+    padding:  0 0 9px 0;
+}
+
+/* --------------------- payment --------------------------*/
+
+
+
+#payment_creditcard{ /*left half of screen*/
+    display: inline-block;
+    vertical-align:top;
+    width: 45%;
+    padding-left: 30px;
+}
+
+#payment_bill_address{ /*right half of screen */
+    width: auto;
+    display:inline-block;
+    border-left: 1px solid #CCCCCC;
+    padding-left: 30px;
+    padding-bottom: 18px;
+}
+
+
+form div.wallet input{
+    margin: 0 5px;
+}
+
+form div.wallet label{
+    width: 100%;
+    display: block;
+    text-align: left;
+}
+
+form img.cclogo{
+    vertical-align:middle;
+    margin-right: 5px;
+}
+
+form p.field#secure_lock img{
+    vertical-align: text-top;
+}
+form p#secure_lock{
+    padding-left: 5px;
+}
+div#cc{
+    width: 100%;
+}
+form p.field#ccnumber{
+    width: 50%;
+    display: inline-block;
+}
+form p.field#ccv{
+    width: 20%;
+    display: inline-block;
+}
+p.field a#cvv_question{
+    width: auto;
+    display: inline-block;
+}
+#cvv_question img{
+    vertical-align: middle;
+}
+div#expires{
+    width: 100%
+}
+
+label#expire_label{
+  text-align: left;
+  position: relative;
+  width: auto;
+  display: inline-block;
+  margin-right: 10px;
+}
+select#expire_month{
+    width: 15%;
+    display: inline-block;
+}
+select#expire_year{
+    width: 20%;
+    display: inline-block;
+    
+}
+
+/* --------------------------------- confirm ------------------- */
+#confirm h5{
+  line-height: 16px;
+}
+#left_side{
+ float: left;
+ min-width: 685px;
+ border-right: solid 1px gray;
+}
+#right_side{
+  float: right;
+  width: 250px;
+}
+
+#order_info{
+    padding: 20px 0 20px 20px;
+    border-bottom: solid 1px gray;
+}
+
+#confirm address{
+    margin-bottom: 0;
+}
+
+
+#ship_address{
+ float: left;
+ margin-right: 50px;
+}
+
+#bill_address{
+ float: left;
+}
+
+#bill_address div{
+    display: inline-block;
+}
+#cclogo{
+    vertical-align: text-bottom;
+}
+
+#promo{
+  margin: 20px 0 0 20px;
+  display: inline-block;
+  width: 150px;
+}
+
+#apply_promo{
+ display: inline-block;
+}
+
+#order_items{
+ 
+}
+
+#order_summary{
+}
+
+#place_order{
+    width: 65%;
+    margin: auto;
+}
+
+#place_order #logo_secure_lock{
+   width: 75%;
+   margin: auto;
+   padding: 10px 0 0 0;
+}
+/*---------------------------- Review ------------------ */
+#subtotal{
+    margin: 0;
+    height: 75px;
+    border-top: solid 1px #dddddd;
+}
+
+div#amount{
+    display: inline-block;
+    float: right;
+    margin: 20px 5px;
+}
+
+div#spin_here{
+    display: inline-block;
+    min-width: 20px;
+    float: right;
+    margin: 28px 5px 0 0;
+}
+
+div#go_shop{
+    display: inline-block;
+    float: left;
+    margin: 20px 50px;
+}
+tr.line_item td{
+    vertical-align: top;
+    line-height: 36px;
+}
+.line_item div.quantity{
+    line-height: 18px;
+}
+.line_item div.quantity input{
+    width: 25px;
+}
+table#cart-detail{
+    margin: 0;
 }

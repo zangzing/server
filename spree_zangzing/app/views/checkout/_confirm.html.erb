@@ -1,76 +1,98 @@
 <%content_for :page_title do
-    t(@order.state, :scope => :order_state).titleize
+    t('place_your_order')
 end %>
 
-<div class="row">
-  <div class="span9 columns">
 
-    <div class="row">
-      <div class="span5 columns">
-        <h5><%=t('shipping_address')%></h5>
-        <p>
-          <%= render :partial =>'address_display', :locals => { :address => @order.ship_address,:label =>t("shipping_address") } %>
-          <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('ship_address')%>').submit();">change</a>
-        </p><br/>
 
-        <%= select( :order,
-                    :shipping_method_id,
-                    @order.rate_hash.collect{|smethod|[ "#{smethod[:name]} #{number_to_currency smethod[:cost]}", smethod[:id] ]},
-                    {},
-                    { :onchange => "$('#checkout_form_confirm').attr('action','#{update_checkout_path('delivery')}').submit();"})%>
+<div id="confirm" class="clearfix">
+<div id="right_side" class="clearfix">
+  <div id="order_summary">
+    <%= render 'summary', :order => @order %>
+  </div>
+  <div id="order_promo">
+    <p class="field" id="promo">
+      <%= form.label :coupon_code, t('gift_card_promo') %>
+      <%= form.text_field :coupon_code %>
+    </p>
+    <a href="javascript:void(0);" onclick="$('#checkout_form_confirm').attr('action','<%=update_checkout_path('confirm')%>').submit();" id="apply_promo" class="gray-button"><span><%=t('apply')%></span></a>
+  </div>
+</div>
+
+
+<div id="left_side">
+  <div id="order_info" class="clearfix">
+    <div id="ship_address" >
+      <h5><%=t('shipping_address')%></h5>
+      <p>
+        <%= render :partial =>'address_display', :locals => { :address => @order.ship_address,:label =>t("shipping_address") } %>
+        <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('ship_address')%>').submit();">change</a>
+      </p><br/>
+
+      <%= select( :order,
+                  :shipping_method_id,
+                  @order.rate_hash.collect{|smethod|[ "#{smethod[:name]} #{number_to_currency smethod[:cost]}", smethod[:id] ]},
+                  {},
+                  { :onchange => "$('#checkout_form_confirm').attr('action','#{update_checkout_path('delivery')}').submit();"})%>
+    </div>
+
+    <div id="bill_address">
+      <h5><%=t('billing_address')%></h5>
+      <p>
+        <%= render :partial =>'address_display', :locals => { :address => @order.bill_address,:label =>t('billing_address') } %>
+        <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('payment')%>').submit();">change</a>
+      </p><br/>
+      <div id="cclogo">
+        <%= creditcard_logo( @order.payments.first.source ) %>
       </div>
-      <div class="span4 columns">
-        <h5><%=t('billing_address')%></h5>
-        <p>
-          <%= render :partial =>'address_display', :locals => { :address => @order.bill_address,:label =>t('billing_address') } %>
-          <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('payment')%>').submit();">change</a>
-        </p><br/>
-        <%= render :partial => 'creditcard_oneliner', :locals => { :creditcard => @order.payments.first.source } %>
-        <br/>
+      <div>
+        <%="#{t('ends_in')} #{@order.payments.first.source.last_digits} #{t('expires')} #{@order.payments.first.source.month}/#{@order.payments.first.source.year}" %></br>
         <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('payment')%>').submit();">change</a>
       </div>
+      
     </div>
+  </div>
 
-    <div class="row">
-      <div class="spans10 columns">
-        <table class="index">
-          <thead>
-          <tr>
-            <th></th>
-            <th><%= t('item_description') %></th>
-            <th class="price"><%= t('price') %></th>
-            <th class="qty"><%= t('qty') %></th>
-            <th class="total"><span><%= t('total') %></span></th>
+  <div id="order_items">
+    <table class="index">
+      <thead>
+      <tr>
+        <th></th>
+        <th><%= t('item_description') %></th>
+        <th class="price"><%= t('price') %></th>
+        <th class="qty"><%= t('qty') %></th>
+        <th class="total"><span><%= t('total') %></span></th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @order.line_items.each do |item| %>
+          <%locals = {:item => item} %>
+          <tr class="line_item">
+            <td>
+              <%=( item.photo ? image_tag( item.photo.thumb_url ) : '&nbsp'  )%>
+            </td>
+            <td>
+              <h4><%=item.variant.product.name%> <%= "(" + variant_options(item.variant) + ")" unless item.variant .option_values.empty? %></h4>
+              <p>SIZE HERE</p>
+              <%= link_to t('change'), cart_path %>
+            </td>
+            <td ><%= number_to_currency item.price %></td>
+            <td ><%=item.quantity%></td>
+            <td ><span><%= number_to_currency (item.price * item.quantity)%></span></td>
           </tr>
-          </thead>
-          <tbody>
-          <% @order.line_items.each do |item| %>
-              <%locals = {:item => item} %>
-              <tr>
-                <td>
-                  <%=( item.photo ? image_tag( item.photo.thumb_url ) : '&nbsp'  )%>
-                </td>
-                <td style="vertical-align:bottom;">
-                  <h4><%=item.variant.product.name%> <%= "(" + variant_options(item.variant) + ")" unless item.variant .option_values.empty? %></h4>
-                  SIZE HERE
-                </td>
-                <td style="vertical-align:bottom;"><%= number_to_currency item.price %></td>
-                <td style="vertical-align:bottom;"><%=item.quantity%></td>
-                <td style="vertical-align:bottom;"><span><%= number_to_currency (item.price * item.quantity)%></span></td>
-              </tr>
-          <% end %>
-          </tbody>
-        </table>
-      </div>
-    </div>
+      <% end %>
+      </tbody>
+    </table>
   </div>
-
-  <div class="span5 columns">
-
-        <%= render 'summary', :order => @order %>
-    Promotional Codes
-  </div>
+</div>
 
 </div>
 
+
+<%content_for :page_javascript do %>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('form p.field label').inFieldLabels();
+        });
+    </script>
+<% end %>
 

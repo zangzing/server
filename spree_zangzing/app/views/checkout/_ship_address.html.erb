@@ -3,17 +3,19 @@
 end %>
 
 <div class="row">
-<div class="span6 columns offset5">
+<div class="span7 columns offset6">
 <fieldset class="address">
       <h4><%=t('shipping_contact')%></h4>
-      <p id="addressbook" class="field">
-      <%= render :partial =>'addressbook', :locals => { :form => form,
+
+     <%= render :partial =>'addressbook', :locals => { :form => form,
                                                         :order => @order,
                                                         :address_kind => 'ship_address'} %>
-      </p>
-      <p id="ship_as_bill" class="field">
-            <label for="order_use_shipping_as_billing"><%= t("use_shipping_as_billing") %></label>
-            <%= check_box_tag 'order[use_shipping_as_billing]', '1', (!( (@order.bill_address && @order.bill_address.empty?) && @order.ship_address.empty?) && @order.bill_address.eql?(@order.ship_address)) %>
+      
+      <p id="ship_as_bill">
+            <label>
+                <%= check_box_tag 'order[use_shipping_as_billing]', '1', (!( (@order.bill_address && @order.bill_address.empty?) && @order.ship_address.empty?) && @order.bill_address.eql?(@order.ship_address)) %>
+                <span><%= t("use_shipping_as_billing") %></span>
+            </label>
       </p>
       <%= form.fields_for :ship_address do |ship_form| %>
               <%= render :partial =>'address_fields', :locals => { :f => ship_form,
@@ -24,6 +26,7 @@ end %>
 </fieldset>
 </div>
 </div>
+
 <%content_for :next_button do %>
       <a href="javascript:void(0)" onclick="checkout_form_ship_address.submit();" class="next-button"><span><%="#{t('continue')}"%></span></a>
 <%end%>
