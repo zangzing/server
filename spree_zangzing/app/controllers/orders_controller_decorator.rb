@@ -22,6 +22,7 @@ OrdersController.class_eval do
    # Shows the current incomplete order from the session
   def edit
     @order = current_order(true)
+    @order.state = 'cart'
     render :layout => 'checkout'
   end
 

@@ -9,18 +9,37 @@ module EZPrints
     # takes an order in the shipping calc format from the order class
     # and transmits that to EZprints returning a hash with the shipping
     # options and prices
+    # returns an array of the shipping options in the form:
+    # [
+    # {
+    #   :type => FC, PM, SD, ON, etc
+    #   :price => cost of shipping
+    #   :shippingMethod => USFC, etc
+    #   :description => Description of shipping method
+    # }
+    # ...
+    # ]
+    #
     def shipping_costs(order)
       order_xml = order.to_xml_ezporder
       result_xml = submit_http_request("http://www.ezprints.com/ezpartners/shippingcalculator/xmlshipcalc.asp",
-#          order_xml.to_s, header_options)
           order_xml.to_s, header_options)
       err = result_xml.at_xpath("//shippingOptions/error")
       if err
         desc = err['description'] || "Error description not returned."
         err_num = err['number'] || -1
         raise "Error returned from EZPrints shipping calculator: #{err_num}. #{desc}"
+      else
+        # put the result into an array of hashes
+        path = result_xml.at_xpath("//shippingOptions/order")
+        hash = HashConverter.from_xml(path, false, true)
+        ship_options = hash[:order][:option]
+        if ship_options.is_a?(Hash)
+          ship_options = [ship_options]
+        end
       end
-      result_xml
+
+      ship_options
     end
 
     def submit_order(order)
