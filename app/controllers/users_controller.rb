@@ -10,21 +10,28 @@ class UsersController < ApplicationController
 
   def join
 
-    if params[:return_to]
-      session[:return_to] = params[:return_to]
+    # URL Cleaning cycle
+    if params[:return_to] || params[:email]
+      session[:return_to] = params[:return_to] if params[:return_to]
       flash.keep
-      redirect_to join_url
+      unless current_user
+        session[:email] = params[:email] if params[:email]
+        redirect_to join_url and return
+      end
+    end
+
+    if current_user
+      redirect_back_or_default user_pretty_url(current_user)
       return
     end
 
-    
-    if ! current_user
-      @new_user = User.new(:email => params[:email])
-      @user_session = UserSession.new
-      render :layout => false
+    if session[:email]
+      @new_user = User.new(:email => session[:email] )
+      session.delete(:email)
     else
-       redirect_back_or_default user_pretty_url(current_user)
+      @new_user = User.new
     end
+    render :layout => false
   end
 
   def create

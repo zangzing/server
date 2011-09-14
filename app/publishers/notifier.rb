@@ -110,7 +110,7 @@ class Notifier < ActionMailer::Base
     rcp_user = User.find_by_id( to_address_or_id )
     @recipient = ( rcp_user ? rcp_user : to_address_or_id )
 
-    set_destination_link( @recipient, album_pretty_url( @album ) )
+    set_destination_link( @recipient, album_activities_pretty_url( @album ) )
     Subscriptions.wants_email!( @recipient, Email::SOCIAL, __method__ )
     create_message( binding(), __method__, template_id,  @recipient, { :user_id => @user.id } )
   end

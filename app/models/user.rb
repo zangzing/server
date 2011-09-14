@@ -71,6 +71,9 @@ class User < ActiveRecord::Base
   after_commit   :like_mr_zz, :on => :create
   after_commit   :subscribe_to_lists, :on => :create
 
+  before_save    :queue_update_acls_with_id, :if => :email_changed?
+  after_commit   :update_acls_with_id, :if => '@update_acls_with_id_queued'
+
   validates_presence_of   :name,      :unless => :automatic?
   validates_presence_of   :username,  :unless => :automatic?
   validates_format_of     :username,  :with => /^[a-z0-9]+$/, :message => 'should contain only lowercase alphanumeric characters', :unless => :automatic?
@@ -331,13 +334,20 @@ class User < ActiveRecord::Base
       end
   end
 
+
+  # if we trigger the update within a transaction, it will be rolled back so
+  # we set a variable and then we do the update after commit
+  def queue_update_acls_with_id
+    @update_acls_with_id_queued = true
+  end
+
   # Replaces any occurrences of the new user's email
   # in acl keys with the users new id
   # (runs as an after_create callback)
   def update_acls_with_id
     ACLManager.global_replace_user_key( self.email, self.id )
     # set proper acl rights - new users default to regular user rights
-    SystemRightsACL.singleton.add_user(self.id, SystemRightsACL::USER_ROLE)
+    SystemRightsACL.singleton.add_user(self.id, SystemRightsACL::USER_ROLE) unless self.moderator?
 
     # Look for invitation activities that may need to be created and updated
     #now that we have a user for an email
@@ -365,6 +375,9 @@ class User < ActiveRecord::Base
         end
       end
     end
+
+    # if the method was queued, clear the queue flag.
+    @update_acls_with_id_queued = false if @update_acls_with_id_queued
   end
 
   # returns an array of auto like ids
