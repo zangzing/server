@@ -73,7 +73,7 @@ class Photo < ActiveRecord::Base
   after_commit  :queue_upload_to_s3
 
   # Set up an async call for managing the deleted photo from s3
-  after_commit  :queue_delete_from_s3, :on => :destroy
+  after_commit  :add_to_pending_delete, :on => :destroy
 
   after_commit  :change_cache_version
 
@@ -303,24 +303,33 @@ class Photo < ActiveRecord::Base
     end
   end
 
+  # Add to pending delete table
+  # used to hold the underlying image link for future delete from s3
   #
-  # Delete the s3 related objects in a deferred fashion
-  #
-  def queue_delete_from_s3
-    # if we have uploaded the original
-    # put the delete into the queue so that the s3 files get removed
-    # in the unlikely event that the delete gets processed before the
-    # upload then the photo object itself will no longer exist which
-    # will keep the upload from ever taking place
-    # also, we can't rely on the photo object itself since it won't 
-    # exist by the time it gets processed.
+  # in the unlikely event that the delete gets processed before the
+  # upload then the photo object itself will no longer exist which
+  # will keep the upload from ever taking place
+  # also, we can't rely on the photo object itself since it won't
+  # exist by the time it gets processed.
+  def add_to_pending_delete
     Album.update_photos_ready_count(self.album_id, -1) if ready?
     if self.image_bucket
+      include_original = self.for_print.nil? ? true : !self.for_print
+      encoded_sizes = S3PendingDeletePhoto.encode_sizes(attached_image.sizes, include_original)
+      pd = S3PendingDeletePhoto.create(
+          :photo_id => self.id,
+          :user_id => self.user_id,
+          :album_id => self.album_id,
+          :caption => self.caption,
+          :prefix => attached_image.prefix,
+          :encoded_sizes => encoded_sizes,
+          :image_bucket => self.image_bucket,
+          :guid_part => self.guid_part,
+          :deleted_at => Time.now
+      )
       # get all of the keys to remove
-      keys = attached_image.all_keys
-      ZZ::ZZA.new.track_transaction("photo.upload.s3.delete", self.id)
-      ZZ::Async::S3Cleanup.enqueue(self.image_bucket, keys)
-      logger.debug("Photo queued for s3 cleanup")
+      ZZ::ZZA.new.track_transaction("photo.upload.s3.pending_delete", self.id)
+      logger.debug("Photo posted to pending delete")
     end
   end
 
@@ -758,17 +767,30 @@ class PhotoAttachedImage < AttachedImage
     @@prefix ||= "/i/"
   end
 
+  # when for_print is set we return the print
+  # sizes that we want for print generation
+  def self.image_sizes(for_print = false)
+    if for_print
+      @@normal_sizes ||= [
+          {FULL    => "-strip -quality 90"},  # this represents the full size image
+      ]
+    else
+      @@normal_sizes ||= [
+          {LARGE    => "-resize '2560x1440>' -strip -quality 80"},  # large
+          {MEDIUM   => "-resize '1024x768>' -strip -quality 80"},  # medium
+          {THUMB    => "-resize '180x180>' -strip -quality 93"},   # thumb
+          {STAMP    => "-resize '100x100>' -strip -quality 80"}    # stamp
+      ]
+    end
+  end
+
   # the template for the photo_sizes, specify the image suffix
   # followed by the options to pass to ImageMagick
   # these must be defined in order from largest to smallest size
   def sizes
-    @@sizes ||= [
-        {LARGE    => "-resize '2560x1440>' -strip -quality 80"},  # large
-        {MEDIUM   => "-resize '1024x768>' -strip -quality 80"},  # medium
-        {THUMB    => "-resize '180x180>' -strip -quality 93"},   # thumb
-        {STAMP    => "-resize '100x100>' -strip -quality 80"}    # stamp
-    ]
+    PhotoAttachedImage.image_sizes(model.for_print)
   end
+
 
   # return any custom commands such as rotation
   # this string is applied before any of the size operations

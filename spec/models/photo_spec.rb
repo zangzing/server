@@ -18,7 +18,7 @@ describe Photo do
     end
   end
 
-  it "should create a full photo" do
+  it "should create a full photo and verify delete" do
     # perform this with resque in loopback so the complete operation takes place
     # note, we don't want subscribe emails so we filter out ZZ::Async::MailingListSync
     resque_jobs(:except => [ZZ::Async::MailingListSync]) do
@@ -33,6 +33,25 @@ describe Photo do
       upload_batch = photo.upload_batch
       upload_batch.force_finish_no_notify
       upload_batch.state.should == "finished"
+
+      # now delete the photo
+      photo.destroy
+
+      # and verify that it was moved to pending deletes table
+      pd = S3PendingDeletePhoto.find_by_photo_id(photo_id)
+      pd.should_not == nil
+      pd.photo_id.should == photo_id
+
+      # now verify that the s3 link still exists
+      url = pd.build_s3_url(AttachedImage::THUMB)
+      res = Net::HTTP.get_response(URI.parse(url))
+      res.class.should == Net::HTTPOK
+
+      # now delete the pending delete object and verify s3 object is gone
+      pd.destroy
+      res = Net::HTTP.get_response(URI.parse(url))
+      res.class.should == Net::HTTPNotFound
+
     end
   end
 end
