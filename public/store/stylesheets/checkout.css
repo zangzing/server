@@ -60,7 +60,9 @@ html{
     text-align:left;
 }
 
-.checkout-next-button a,.checkout-back-button a{
+.newgreen-button,
+.next-button,
+.back-button{
     text-decoration: none !important;
     color: white !important;
 }
@@ -195,6 +197,7 @@ p#ship_as_bill label{
 }
 
 #payment_bill_address{ /*right half of screen */
+    min-height: 300px;
     width: auto;
     display:inline-block;
     border-left: 1px solid #CCCCCC;
@@ -235,15 +238,16 @@ form p.field#ccv{
     width: 20%;
     display: inline-block;
 }
-p.field a#cvv_question{
+a.field_question{
     width: auto;
     display: inline-block;
 }
-#cvv_question img{
+a.field_question img{
     vertical-align: middle;
 }
 div#expires{
-    width: 100%
+    width: 100%;
+    margin-bottom: 12px;
 }
 
 label#expire_label{
@@ -261,6 +265,9 @@ select#expire_year{
     width: 20%;
     display: inline-block;
     
+}
+p.field#order_email input{
+    width: 372px;
 }
 
 /* --------------------------------- confirm ------------------- */
@@ -367,4 +374,54 @@ tr.line_item td{
 }
 table#cart-detail{
     margin: 0;
+}
+
+a#continue-shopping-greenbutton{
+    width: 150px;
+    margin:  50px auto;
+}
+
+/*--------------------- Registration ----------------------*/
+.half{
+    padding-top: 20px;
+    display: inline-block;
+    width: 49%;
+    vertical-align: top;
+}
+
+.centered{
+    margin: 0 auto;
+    text-align: center;
+}
+
+.right-border{
+    border-right: 1px solid #CCCCCC;
+}
+
+.buttons{
+    padding-right:  8%;
+    float: right;
+    text-align: right;
+}
+
+#signin-form{
+    width: 65%;
+    margin:  0 auto;
+}
+
+#submit-button{
+    float: right;
+    margin: 10px 0;
+    width: 100px;
+}
+
+#guest-checkout-button{
+    width: 150px;
+    margin: 38px auto 0 auto;
+}
+
+#guest-blurb{
+    font-size: 14px;
+    width: 50%;
+    margin: 18px auto 0 auto;
 }

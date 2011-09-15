@@ -401,7 +401,7 @@ en:
   flat_rate_per_item: "Flat Rate (per item)"
   flat_rate_per_order: "Flat Rate (per order)"
   flexible_rate: "Flexible Rate"
-  forgot_password: "Forgot Password?"
+  forgot_password: "Forgot your password?"
   from_state: From State
   front_end: Front End
   full_name: "Full Name"
@@ -1032,3 +1032,8 @@ en:
   gift_card_promo: "Gift card or Promo"
   items_in_your_cart: "Items in your Cart"
   place_your_order: "Place Your Order"
+  guest: "Guest"
+  checkout_as_guest: "Checkout as Guest"
+  account_later:     "You will have the option to create a ZangZing account after your order."
+  continue_as_guest: "Continue as Guest"
+  only_for_order_updates: "only for order updates"

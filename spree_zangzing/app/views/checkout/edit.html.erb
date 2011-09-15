@@ -9,4 +9,5 @@
             <%= render @order.state, :form => form %>
             <input id="post-final" type="submit" style="display:none"/>
         <% end %>
+        <%= yield :outside_edit_form %>
 </div>

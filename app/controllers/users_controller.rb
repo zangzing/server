@@ -35,7 +35,6 @@ class UsersController < ApplicationController
         return
     end
 
-    prevent_session_fixation
 
     @user_session = UserSession.new
 
@@ -96,9 +95,9 @@ class UsersController < ApplicationController
     # CREATE USER
     if @new_user.active
 
-      prevent_session_fixation
       # Save active user,authlogic creates a session to log user in when we save
       if @new_user.save
+        prevent_session_fixation
         associate_order
         if @guest
           @guest.user_id = @new_user.id
@@ -118,6 +117,7 @@ class UsersController < ApplicationController
       # auto-login which can't happen here because
       # the User has not yet been activated
       if @new_user.save_without_session_maintenance
+        prevent_session_fixation
         if @guest
           @guest.user_id = @new_user.id
           @guest.status = 'Inactive'

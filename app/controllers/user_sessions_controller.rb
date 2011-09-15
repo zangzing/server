@@ -26,13 +26,18 @@ class UserSessionsController < ApplicationController
   end
 
   def create
-    prevent_session_fixation
     @user_session = UserSession.new(:email => params[:email], :password => params[:password], :remember_me => true)
     if @user_session.save
+      prevent_session_fixation
       @user_session.user.reset_perishable_token! #reset the perishable token
       redirect_back_or_default user_url( @user_session.record )
     else
-      render :action => :new
+      if params[:store_signin]
+        flash[:error] = "Invalid user/password combination"
+        redirect_to checkout_registration_url
+      else
+        render :action => :new
+      end
     end
   end
 
