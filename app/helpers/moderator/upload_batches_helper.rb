@@ -1,0 +1,2 @@
+module Moderator::UploadBatchesHelper
+end
