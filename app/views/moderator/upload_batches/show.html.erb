@@ -8,8 +8,8 @@
   <div class="batch-inro" style="text-align: left;">
     <h3>Batch #<%= batch.id %> from <%= batch.created_at %></h3>
     Finished at: <%= batch.updated_at %><br/>
-    User: <%= link_to batch.user.username, user_path(batch.user) %><br/>
-    Album: <%= link_to batch.album.name, album_pretty_url(batch.album) rescue '<b>ALBUM DELETED</b>'.html_safe %><br/>
+    User: <%= link_to batch.user.username, user_path(batch.user) rescue "<b>USER DOESN'T EXISTS</b>".html_safe %><br/>
+    Album: <%= link_to batch.album.name, album_pretty_url(batch.album) rescue "<b>ALBUM DELETED</b>".html_safe %><br/>
   </div>
   <div class="upload-batch-photos">
     <%= render :partial => 'photos_from_batch', :locals => {:upload_batch => batch} %>

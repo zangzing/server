@@ -7,7 +7,7 @@ class Moderator::UploadBatchesController < Moderator::BaseController
 
   def show
     date = DateTime.parse(params[:date])
-    @upload_batches = UploadBatch.where(:created_at => (date.beginning_of_day..date.end_of_day), :state => 'finished').order(:created_at)
+    @upload_batches = UploadBatch.where(:created_at => (date.beginning_of_day..date.end_of_day), :state => 'finished').order('created_at DESC')
   end
 
 
