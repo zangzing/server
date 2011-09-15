@@ -1,2 +1,0 @@
-module Moderator::BaseHelper
-end
