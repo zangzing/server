@@ -12,7 +12,7 @@ Order.class_eval do
   end
 
   def clone_shipping_address
-    if @use_shipping_as_billing
+    if @use_shipping_as_billing == '1'
       self.bill_address_id = ship_address_id
     else
       if self.bill_address_id == ship_address_id
