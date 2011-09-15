@@ -10,14 +10,14 @@ describe EZPrints::EZPManager do
     #todo create the objects needed for an order. Currently
     # as a shortcut just doing this with an existing object since
     # we want to benchmark the EZPrints shipping API to see if it is fast enough
-    calc = EZPrints::EZPManager.new
+    ez = EZPrints::EZPManager.new
     order = Order.find(5)
     Benchmark.bm(25) do |x|
       x.report('EZPrints ShipCalc') do
         1.times do
-          prices = calc.shipping_costs(order)
-          prices[:type].should == 'FC'
-          prices[:price].should == 1.75
+          prices = ez.shipping_costs(order)
+          prices[0][:type].should == 'FC'
+          prices[0][:price].should == 1.75
         end
       end
     end

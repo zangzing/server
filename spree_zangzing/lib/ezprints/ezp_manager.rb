@@ -7,16 +7,19 @@ module EZPrints
     end
 
     # takes an order in the shipping calc format from the order class
-    # and transmits that to EZprints returning a hash with the shipping
+    # and transmits that to EZprints returning an array of hashes with the shipping
     # options and prices
-    # returns a hash of the shipping options in the form:
     #
+    # Returns an array of the shipping option hashes in the form:
+    # [
     # {
     #   :type => FC, PM, SD, ON, etc (this is what you include when you want to place an order what they call shipping method on the order side)
     #   :price => cost of shipping
     #   :shippingMethod => USFC, etc (this is not the shipping method used in the actual order, not sure why they include this as it adds little other than confusion)
     #   :description => Description of shipping method
     # }
+    # ...
+    # ]
     #
     def shipping_costs(order)
       order_xml = order.to_xml_ezporder
@@ -33,8 +36,8 @@ module EZPrints
         path = result_xml.at_xpath("//shippingOptions/order")
         hash = HashConverter.from_xml(path, false, true)
         ship_options = hash[:order][:option]
-        if ship_options.is_a?(Array)
-          ship_options = ship_options[0]
+        if ship_options.is_a?(Hash)
+          ship_options = [ship_options]
         end
       end
 
