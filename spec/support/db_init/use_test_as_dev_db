@@ -3,14 +3,16 @@
 #
 # This will let you build upon the test data from within the app.  First it backs up the
 # current server_development and cache_dev databases to server_dev.seedbackup and cache_dev.seedbackup.
-# Then t takes the currrent server_test.dump and cache_test.dump files and imports them into
+# Then it takes the current server_test.seed and cache_test.seed files and imports them into
 # server_development and cache_dev respectively.  The net is that you end up with the test
 # data in your development database where you can make any additions that you need.  When
-# done, you should modify the VERSION in TestDataManager and import the data with:
+# done, you should modify the VERSION in TestDataManager and import the data with to following
 #
 # To create the seed data, change the VERSION in TestDataManger and
 # then run the rails console.  From the console type:
+#
 # TestDataManager.create_seed_data
+#
 #
 # when you want to switch back to your previous developer data run
 # ./restore_dev from the spec/support/db_init dir.

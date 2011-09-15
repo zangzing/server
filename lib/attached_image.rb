@@ -59,7 +59,7 @@ class AttachedImage
   # customize this in the child class if you want a different s3
   # privacy policy
   def s3_privacy_policy
-    :public_read
+    'public-read'
   end
   
   # return the array of prefixes to ImageMagick operations
@@ -128,20 +128,20 @@ class AttachedImage
   # build the full url for the given image id and suffix
   def self.build_s3_url(bucket, prefix, image_id, suffix, time_stamp)
     key = build_s3_key(prefix, image_id, suffix)
-    "http://#{bucket}.s3.amazonaws.com#{key}?" + time_stamp.to_i.to_s
+    "http://#{bucket}.s3.amazonaws.com/#{key}?" + time_stamp.to_i.to_s
   end
 
   # upload a single s3 photo with the given suffix
   def self.upload_s3_photo(file, bucket, key, options)
     file.rewind
-    AWS::S3::S3Object.store(key, file, bucket, options)
+    PhotoGenHelper.s3.store_object(:bucket => bucket, :key => key, :data => file, :headers => options)
   end
 
   # download a photo from s3 and return the local file
   def self.download_s3_photo(bucket, prefix, image_id, suffix)
     file_path = PhotoGenHelper.photo_download_dir + '/' + image_id + '-' + suffix + '-' + Process.pid.to_s + "-" + rand(9999999999).to_s
     file = File.new(file_path, "wb")
-    AWS::S3::S3Object.stream(build_s3_key(prefix, image_id, suffix), bucket) do |chunk|
+    PhotoGenHelper.s3.retrieve_object(:bucket => bucket, :key => build_s3_key(prefix, image_id, suffix)) do |chunk|
       file.write chunk
     end
     return file
@@ -191,8 +191,8 @@ class AttachedImage
   # remove a single photo from s3 - does not throw an
   # exception if file not found
   def self.remove_s3_photo(image_bucket, key)
-    AWS::S3::S3Object.delete key, image_bucket
-  rescue AWS::S3::NoSuchKey => ex
+    PhotoGenHelper.s3.delete(image_bucket, key)
+  rescue RightAws::AwsError => ex
     # just ignore this one
   end
 
@@ -244,8 +244,8 @@ class AttachedImage
 
   def s3_options(content_type, metadata)
     options = {
-        :content_type => content_type,
-        :access => s3_privacy_policy
+        'Content-Type' => content_type,
+        'x-amz-acl' => s3_privacy_policy
     }.merge(s3_headers)
     options.merge(metadata) unless metadata.nil?
   end
@@ -258,13 +258,12 @@ class AttachedImage
     # we only call this once per operation so the custom_metadata can also reset any state it cares about
     # without worrying about being called multiple times
     meta = custom_metadata
-    options = s3_options(content_type, meta)
+    options = s3_options(resized_content_type, meta)
     # walk the list of files to upload
     file_map.each do |file_info|
       local_file_path = file_info[:local_path]
       file = File.open(local_file_path, "rb")
       key = file_info[:s3_key]
-      content_type = resized_content_type
       AttachedImage.upload_s3_photo(file, bucket, key, options)
       file.close
     end
