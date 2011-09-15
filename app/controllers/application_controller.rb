@@ -398,6 +398,22 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def require_moderator
+    unless current_user.moderator?
+      flash.now[:error] = "Administrator privileges required for this operation"
+      if request.xhr?
+        head :status => 401
+      else
+        render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
+      end
+      return false
+    end
+  end
+
+
+
+
+
   # Return a correctly initialized reference to zza tracking service
   def zza
     return @zza if @zza
