@@ -22,7 +22,7 @@ class TestDataManager
   # prior to generating the dump file used by the
   # rspec tests.
   # The format should be: INITIALS-DATE-REV
-  VERSION = "GWS-2011-09-12-01"
+  VERSION = "GWS-2011-09-15-01"
 
   # do not change
   KEY_NAME = :test_data_ver
@@ -63,7 +63,7 @@ class TestDataManager
       # now verify the version matches what was expected
       new_version = SystemSetting[KEY_NAME] rescue ''
       if new_version != VERSION
-        raise "The imported data version does not match what was expected.  We expected #{VERSION} and got #{new_version} - please make sure you have a valid set of .dump files in your #{path_to_db_init} directory."
+        raise "The imported data version does not match what was expected.  We expected #{VERSION} and got #{new_version} - please make sure you have a valid set of .seed files in your #{path_to_db_init} directory."
       end
     end
   end

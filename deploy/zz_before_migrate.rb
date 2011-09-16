@@ -88,3 +88,13 @@ if [:solo, :app_master, :app].include?(zz_role)
   run "rm -rf #{zz_release_dir}/public/javascripts"
   run "rm -rf #{zz_release_dir}/public/stylesheets"
 end
+
+
+# make sure v3homepage is deployed with the current tag, technically we really only
+# need this to run when we have newly added machines but there is really no way to know
+# so we run it each time.  The downside is that this is a fairly lengthy operation
+# We only need to run on one instance, so use the app_master or solo - they are mutually
+# exclusive
+if [:solo, :app_master].include?(zz_role)
+  run "bundle exec rails runner -e #{zz_rails_env} HomepageManager.deploy_homepage_current_tag_async"
+end
