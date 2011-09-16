@@ -4,48 +4,36 @@
 end %>
 
 <div id="payment">
-<div id="payment_creditcard" >
+  <div id="payment_creditcard" >
     <fieldset>
-    <h4><%=t('credit_card')%></h4>
-    <%= render :partial =>'creditcard_wallet', :locals => { :order => @order }%>
+      <h4><%=t('credit_card')%></h4>
+      <%= render :partial =>'creditcard_wallet', :locals => { :order => @order }%>
     </fieldset>
-  
+
     <fieldset>
-    <% method = @order.default_payment_method %>
-    <%=hidden_field_tag "order[payments_attributes][][payment_method_id]",  method.id%>
+      <% method = @order.default_payment_method %>
+      <%=hidden_field_tag "order[payments_attributes][][payment_method_id]",  method.id%>
 
       <%= render "checkout/payment/#{method.method_type}", :payment_method => method %>
 
-      </fieldset>
-</div>
-
-<div id="payment_bill_address">
-
-<% if @order.ship_address_id != @order.bill_address_id  %>
-     <fieldset class="address">
-    <h4><%= t("billing_contact") %></h4>
-    <%= render :partial =>'addressbook', :locals => { :form => form,
-                                                      :order => @order,
-                                                      :address_kind => 'bill_address' } %>
-
-    <%= form.fields_for :bill_address do |bill_form| %>
-        <%= render :partial =>'address_fields', :locals => { :f => bill_form,
-                                                             :email_form => form,
-                                                             :legend => t('billing_address'),
-                                                             :address => @order.bill_address } %>
     </fieldset>
-    <% end %>
-    <%else%>
-      <fieldset class="address">
-        <h4><%= t("billing_address") %>&nbsp &nbsp<small>(<%=t("same_as_shipping")%>)</small></h4>
-        <%= render :partial =>'address_display', :locals => { :address => @order.bill_address,:label => ''} %>
+  </div>
 
-        <a id="change_ba" href="javascript:void(0)" onclick="change_ba_form.submit();">change</a>
+  <div id="payment_bill_address">
+
+    <% if @order.use_shipping_as_billing?  %>
+
+
+        <fieldset class="address">
+          <h4><%= t("billing_address") %>&nbsp &nbsp<small>(<%=t("same_as_shipping")%>)</small></h4>
+          <%= render :partial =>'address_display', :locals => { :address => @order.bill_address,:label => ''} %>
+
+          <a id="change_ba" href="javascript:void(0)" onclick="change_ba_form.submit();">change</a>
         </fieldset>
 
         <fieldset>
           <h4><%= t("email").titleize%></h4>
-          <p id="order_email" class="field">
+          <p id="orderemail" class="field">
             <%= form.label :email, "#{t("email")} (#{t('only_for_order_updates')})" %>
             <%= form.text_field :email, {:class => "required email"}%>
 
@@ -53,10 +41,31 @@ end %>
               <%= image_tag 'store/question.png' %>
             </a>
           </p>
-         </fieldset>
+        </fieldset>
+
+
+    <%else%>
+
+
+
+        <fieldset class="address">
+          <h4><%= t("billing_contact") %></h4>
+          <%= render :partial =>'addressbook', :locals => { :form => form,
+                                                            :order => @order,
+                                                            :address_kind => 'bill_address' } %>
+
+          <%= form.fields_for :bill_address do |bill_form| %>
+              <%= render :partial =>'address_fields', :locals => { :f => bill_form,
+                                                                   :email_form => form,
+                                                                   :legend => t('billing_address'),
+                                                                   :address => @order.bill_address } %>
+              </fieldset>
+          <% end %>
+
+
     <%end%>
 
-</div>
+  </div>
 </div>
 
 <%content_for :outside_edit_form do %>
@@ -66,61 +75,13 @@ end %>
 <%end%>
 
 <%content_for :next_button do %>
-  <a href="javascript:void(0)" onclick="$('#checkout_form_payment').submit();" class="next-button"><span><%="#{t('continue')}"%></span></a>
+    <a href="javascript:void(0)" onclick="$('#checkout_form_payment').submit();" class="next-button"><span><%="#{t('continue')}"%></span></a>
 <%end%>
 
 <%content_for :page_javascript do %>
     <script type="text/javascript">
         $(document).ready(function(){
-            $('form p.field label').inFieldLabels();
-            $("input[name='order[creditcard_id]']").click(function(){
-
-                $('#creditcard :input').attr('disabled', true);
-                $('#creditcard').css('opacity',0.5);
-            });
-            $('#order_bill_address_id').change(function(){
-                if( $(this).val() == '' ){
-                    $('#billing :input').attr('disabled', false);
-                    $('#billing').removeClass("lightgray");
-                }else{
-                    $('#billing :input').attr('disabled', true);
-                    $('#billing').addClass("lightgray");
-                }
-            });
-            $('#checkout_form_payment').validate({
-			rules: {
-					'user[email]': {
-							required: true,
-							email: true
-					},
-                    'payment_source[1034433118][number]':{
-                        	required: true,
-							creditcard: true
-                    },
-                    'payment_source[1034433118][verification_value]':{
-                        	required: true,
-							minlength: 3,
-                            maxlength: 4
-                    }
-
-			},
-
-			messages: {
-                'user[email]': {
-                    required: 'promise we won&rsquo;t spam you',
-                    email: 'valid email, please',
-                }
-            },
-            submitHandler: function(form){
-                form.submit();
-            }
-        });
-
-
-
-
-
-
+            zz.store.checkout.init_payment_screen();
         });
     </script>
 <% end %>
