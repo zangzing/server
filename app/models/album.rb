@@ -581,7 +581,7 @@ end
 class PiconAttachedImage < AttachedImage
   # return the s3 key prefix
   def prefix
-    @@prefix ||= "/p/"
+    @@prefix ||= "p/"
   end
 end
 

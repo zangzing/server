@@ -1,5 +1,4 @@
 require 'faker'
-require 'aws/s3'
 
 class SampleDataLoader
 

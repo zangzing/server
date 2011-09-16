@@ -3,6 +3,7 @@
   #  address in address
   #  legend for address section in legend
 %>
+
 <%= f.hidden_field :user_id if address.user %>
 <p id="fname" class="field">
   <%= f.label :firstname, t(:first_name) %>
@@ -17,6 +18,19 @@
     <%= f.label :phone, t(:phone) %>
     <%= f.text_field :phone, :class => 'required' %>
 </p>
+
+<%if( defined?(email_form) )%>
+         <p id="orderemail" class="field">
+            <%= email_form.label :email, "#{t("email")} (#{t('only_for_order_updates')})" %>
+            <%= email_form.text_field :email, :class => 'required' %>
+
+          <a id="email_question" class="field_question" href="/static/store/cvv_question.html" target="_blank" onclick="window.open(this.href,'cvv_info','left=20,top=20,width=500,height=500,toolbar=0,resizable=0,scrollbars=1');return false">
+              <%= image_tag 'store/question.png' %>
+          </a>
+            </p>
+
+<%end%>
+
 
 </fieldset>
 <fieldset class="address">

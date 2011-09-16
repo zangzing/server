@@ -28,7 +28,7 @@ end %>
 </div>
 
 <%content_for :next_button do %>
-      <a href="javascript:void(0)" onclick="checkout_form_ship_address.submit();" class="next-button"><span><%="#{t('continue')}"%></span></a>
+      <a href="javascript:void(0)" onclick="$('#checkout_form_ship_address').submit();" class="next-button"><span><%="#{t('continue')}"%></span></a>
 <%end%>
 
 
@@ -36,7 +36,7 @@ end %>
 <%content_for :page_javascript do %>
     <script type="text/javascript">
         $(document).ready(function(){
-            $('form p.field label').inFieldLabels();
+          zz.store.checkout.init_ship_address_screen();
         });
     </script>
 <% end %>

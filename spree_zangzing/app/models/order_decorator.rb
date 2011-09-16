@@ -12,8 +12,12 @@ Order.class_eval do
   end
 
   def clone_shipping_address
-    if @use_shipping_as_billing
-      self.bill_address_id = ship_address_id
+    if @use_shipping_as_billing == '1'
+      if ship_address.new_record?
+        self.bill_address = Address.new( self.ship_address.attributes.except("id","user_id","updated_at", "created_at") )
+      else
+        self.bill_address_id = ship_address_id
+      end
     else
       if self.bill_address_id == ship_address_id
         self.bill_address_id = nil
@@ -23,7 +27,9 @@ Order.class_eval do
     true
   end
 
-
+  def use_shipping_as_billing?
+    (bill_address_id == ship_address_id) || bill_address.same_as?( ship_address )
+  end
 
 
 # order state machine (see http://github.com/pluginaweek/state_machine/tree/master for details)

@@ -2,19 +2,20 @@ module EZPrints
   class EZPManager
 
     def header_options
-#      @@header_options ||= {'Content-Type' => 'text/xml;charset=utf-8'}
+#      @@header_options ||= {'Content-Type' => 'text/xml;charset=utf-8'} # ezprints doesn't like the charset here
       @@header_options ||= {'Content-Type' => 'text/xml'}
     end
 
     # takes an order in the shipping calc format from the order class
-    # and transmits that to EZprints returning a hash with the shipping
+    # and transmits that to EZprints returning an array of hashes with the shipping
     # options and prices
-    # returns an array of the shipping options in the form:
+    #
+    # Returns an array of the shipping option hashes in the form:
     # [
     # {
-    #   :type => FC, PM, SD, ON, etc
+    #   :type => FC, PM, SD, ON, etc (this is what you include when you want to place an order what they call shipping method on the order side)
     #   :price => cost of shipping
-    #   :shippingMethod => USFC, etc
+    #   :shippingMethod => USFC, etc (this is not the shipping method used in the actual order, not sure why they include this as it adds little other than confusion)
     #   :description => Description of shipping method
     # }
     # ...
@@ -25,10 +26,11 @@ module EZPrints
       result_xml = submit_http_request("http://www.ezprints.com/ezpartners/shippingcalculator/xmlshipcalc.asp",
           order_xml.to_s, header_options)
       err = result_xml.at_xpath("//shippingOptions/error")
+
       if err
         desc = err['description'] || "Error description not returned."
         err_num = err['number'] || -1
-        raise "Error returned from EZPrints shipping calculator: #{err_num}. #{desc}"
+        raise EZError.new("Error returned from EZPrints shipping calculator: #{err_num}. #{desc}")
       else
         # put the result into an array of hashes
         path = result_xml.at_xpath("//shippingOptions/order")
@@ -52,7 +54,7 @@ module EZPrints
     private
 
     def submit_http_request(url, data, options, redirect_limit = 5)
-      raise "Redirect limit reached" if redirect_limit == 0
+      raise EZError.new("Redirect limit reached") if redirect_limit == 0
       redirect_limit -= 1
 
       #puts data if redirect_limit == 4  # testing hack
@@ -71,12 +73,16 @@ module EZPrints
         when Net::HTTPRedirection
           return submit_http_request(url, data, options, redirect_limit) # go again
         else
-          raise "HTTP Error returned from ezprints request: #{response.code}"
+          raise EZError.new("HTTP Error returned from ezprints request: #{response.code}")
       end
 
-      puts body.to_s
+      #puts body.to_s
       result_xml = Nokogiri::XML(body.to_s)
     end
 
   end
+
+  class EZError < StandardError
+  end
+
 end

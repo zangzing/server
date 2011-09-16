@@ -151,7 +151,10 @@ Rails.application.routes.draw do
 
 
     resources :states, :only => :index
-    
+
+    # ezprints integration
+    post   '/integration/ezprint/events'    => 'ez_print#event_handler', :as => :ezprint_event_handler
+
     # non-restful checkout stuff
     get   '/checkout/registration'    => 'checkout#registration', :as => :checkout_registration
     match '/checkout/signin'          => 'checkout#registration'

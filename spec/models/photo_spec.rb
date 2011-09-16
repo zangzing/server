@@ -18,9 +18,11 @@ describe Photo do
     end
   end
 
-  it "should create a full photo and verify delete" do
+  it "should create a full photo rotate and verify delete" do
     # perform this with resque in loopback so the complete operation takes place
     # note, we don't want subscribe emails so we filter out ZZ::Async::MailingListSync
+    # trying to get the most bang for our buck with this single test since the
+    # overhead of creating new full photo objects is relatively high
     resque_jobs(:except => [ZZ::Async::MailingListSync]) do
       photo = Factory.create(:full_photo)
       photo_id = photo.id
@@ -33,6 +35,12 @@ describe Photo do
       upload_batch = photo.upload_batch
       upload_batch.force_finish_no_notify
       upload_batch.state.should == "finished"
+
+      # now apply an edit and verify response is ready
+      response_id = photo.start_async_edit(:rotate_to => 90,
+                                           :crop => { :top => '0.1', :left => 0.15, :bottom => 0.95, :right => 0.88 })
+      photo_hash = JSON.parse(AsyncResponse.get_response(response_id))
+      photo_hash['id'].should == photo_id
 
       # now delete the photo
       photo.destroy

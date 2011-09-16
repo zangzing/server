@@ -20,10 +20,11 @@ class PhotoGenHelper
     zconfig.s3_buckets = s3config[:buckets]
     zconfig.s3_reduced_redundancy = s3config[:reduced_redundancy]
 
-    AWS::S3::Base.establish_connection!(
-            :access_key_id => zconfig.s3_access_key_id,
-           :secret_access_key => zconfig.s3_secret_access_key
-    )    
+    @@s3 = RightAws::S3Interface.new(zconfig.s3_access_key_id, zconfig.s3_secret_access_key, {:logger => Rails.logger})
+  end
+
+  def self.s3
+    @@s3
   end
 
   def self.zconfig

@@ -55,6 +55,9 @@ test:
   resque_zza_id: "dev.photos/svr"
   requires_http_auth: false
   memcached_gzip: false
+  async_connector_timeout: 300
+  async_job_timeout: 300
+  remote_job_timeout: 300
 
 photos_production:
   <<: *common

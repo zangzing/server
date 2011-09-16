@@ -36,6 +36,7 @@ javascripts:
     - public/store/javascripts/application.js
     - public/store/javascripts/less-1.1.3.js
     - public/store/javascripts/jquery.infieldlabel.js
+    - public/javascripts/store/checkout.js
     - public/javascripts/jquery-lib/jquery.ui.core.js
     - public/javascripts/jquery-lib/jquery.ui.widget.js
     - public/javascripts/jquery-lib/jquery.ui.button.js

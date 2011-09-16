@@ -1,4 +1,7 @@
 Address.class_eval do
+
+  before_validation :clean_phone, :if => :phone_changed?
+
   belongs_to :user
 
    # can modify an address if it's not been used in an order
@@ -8,5 +11,9 @@ Address.class_eval do
 
   def one_line
     "#{firstname} #{lastname} #{address1} #{city} #{state_text}"
+  end
+
+  def clean_phone
+    self.phone = phone.to_s.gsub(/\D/, '')
   end
 end

@@ -336,16 +336,52 @@ class Photo < ActiveRecord::Base
   # prepare and queue up an async rotate
   # for now we just do rotation in the future
   # change to support more functionality
-  def start_async_edit(rotate_to)
+  # We accept the following:
+  # :rotate_to => the absolute degrees of rotation from the original
+  # :crop => {:top => 0.12, :left => 0.0, :bottom => 0.9, :right => 0.8}
+  #   crop amounts are floats that represent the percentage of crop from the left
+  #   edge in the case of :left, :right, and percentage of crop from the top
+  #   edge in the case of :top, :bottom.  0 for left, and 1 for right represents the full
+  #   width and likewise 0 for top and 1 for bottom represents the full width.
+  #
+  #   The cropping is always done against the original unrotated photo, so if you
+  #   apply rotation you need to make sure the crop coordinates make sense for that rotation
+  #   For instance if you rotated 90 deg, from the users point of view the original left
+  #   edge has now become the top.  To crop the left edge from the users perspective you would
+  #   apply the cropping to the bottom which is now visually the left edge from the users perspective.
+  #
+  def start_async_edit(options)
+    @@allowed_edit_options ||= Set.new([:rotate_to, :crop])
+    @@required_crop_options ||= Set.new([:top, :left, :bottom, :right])
+
     raise "Cannot rotate until photo is loaded or ready." unless loaded? || ready?
+    ZZUtils.require_at_least_one(options, @@allowed_edit_options, true)
 
-    rotate_to = rotate_to.to_i
-    raise "Rotation out of range, must be 0-359, you specified: #{rotate_to}" unless (0..359) === rotate_to
+    rotate_to = options[:rotate_to]
+    unless rotate_to.nil?
+      rotate_to = rotate_to.to_i
+      raise "Rotation out of range, must be 0-359, you specified: #{rotate_to}" unless (0..359) === rotate_to
+      self.rotate_to = rotate_to
+    end
 
-    Rails.logger.debug("Sending async rotation request.")
+    crop = options[:crop]
+    unless crop.nil?
+      ZZUtils.require_all(crop, @@required_crop_options, true) do |key, value|
+        f = Float(value)
+        raise ArgumentError.new("Crop value for #{key} out of range, should be between 0 and 1 inclusive") if f < 0.0 || f > 1.0
+        f
+      end
+      raise ArgumentError.new("left crop must be < right crop") unless crop[:left] <= crop[:right]
+      raise ArgumentError.new("top crop must be < bottom crop") unless crop[:top] <= crop[:bottom]
+
+      crop_json = JSON.fast_generate(crop)
+      self.crop_json = crop_json
+    end
+
+    Rails.logger.debug("Sending async edit request.")
     queued_at = Time.now
     self.generate_queued_at = queued_at
-    self.rotate_to = rotate_to
+
     #mark_loaded    # debatable whether we really want this, because it might be best to keep in current (most likely ready) state so others can see...
     save!(false)  # don't want any cleanup since we are operating on an already upload file
     response_id = AsyncResponse.new_response_id
@@ -764,7 +800,7 @@ class PhotoAttachedImage < AttachedImage
 
   # return the s3 key prefix
   def prefix
-    @@prefix ||= "/i/"
+    @@prefix ||= "i/"
   end
 
   # when for_print is set we return the print
