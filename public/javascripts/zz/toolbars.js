@@ -203,23 +203,19 @@ zz.toolbars = {
         });
 
 
+        if(zz.buy.is_buy_mode_active()){
+            $('#footer #buy-button').addClass('selected');
+        }
         $('#footer #buy-button').click(function() {
             if (! $(this).hasClass('disabled')) {
-                if(document.location.href.indexOf('#!') >= 0){
-                      ZZAt.track('photo.buy.toolbar.click');
-                  }
-                  else{
-                      ZZAt.track('album.buy.toolbar.click');
-                  }
-                var id = $('#like-button').attr('data-zzid');
-                zz.routes.call_add_to_cart( id, function(){
-                    $("<div id='flash-dialog'><div><div id='flash'></div><a id='checkout' class='newgreen-button'><span>Checkout</span></a><a id='ok' class='newgreen-button'><span>OK</span></a></div></div>").zz_dialog({ autoOpen: false });
-                                         $('#flash-dialog #flash').text('Your photo has been added to the cart');
-                                         $('#ok').click( function(){ $('#flash-dialog').zz_dialog('close').empty().remove(); });
-                                         $('#checkout').css({ position: 'absolute', bottom: '30px', left: '40px', width: '80px' })
-                                             .click( function(){ window.location = '/store/cart'  });
-                                         $('#flash-dialog').zz_dialog('open');
-                });
+                if(zz.buy.is_buy_mode_active()){
+                    zz.buy.deactivate_buy_mode();
+                    $(this).removeClass('selected');
+                }
+                else{
+                    zz.buy.activate_buy_mode();
+                    $(this).addClass('selected');
+                }
             }
         });
 
