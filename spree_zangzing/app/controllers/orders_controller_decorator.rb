@@ -26,6 +26,11 @@ OrdersController.class_eval do
     render :layout => 'checkout'
   end
 
+  def show
+    @order = Order.find_by_number(params[:id])
+    render :layout => 'checkout'
+  end
+
 
   # the inbound variant is determined either from products[pid]=vid or variants[master_vid], depending on whether or not the product has_variants, or not
   #
