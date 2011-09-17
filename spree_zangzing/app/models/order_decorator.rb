@@ -8,7 +8,7 @@ Order.class_eval do
 
   before_validation :clone_shipping_address, :if => "state=='ship_address'"
 
-  after_validation :shipping_may_change, :if => 'ship_address.zipcode_changed?'
+  after_validation :shipping_may_change, :if => 'ship_address && ship_address.zipcode_changed?'
 
 
   before_create do
@@ -23,7 +23,7 @@ Order.class_eval do
         self.bill_address_id = ship_address_id
       end
     else
-      if self.bill_address_id == ship_address_id
+      if use_shipping_as_billing?
         self.bill_address_id = nil
         self.bill_address    = nil
       end
