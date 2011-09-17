@@ -201,6 +201,8 @@ class SendgridController < ApplicationController
                 link_name = "like_user_url"
               elsif route[:controller]=="users" && route[:action]=="join"
                 link_name = "join_url"
+              elsif route[:controller]=="user_sessions" && route[:action]=="new"
+                link_name = "signin_url"
               end
 
             rescue ActionController::RoutingError => e
