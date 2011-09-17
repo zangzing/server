@@ -16,6 +16,10 @@ var zz = zz || {};
             $('#buy-drawer').css('right', 0).show();
             $('#article').css('right', 445);
         }
+
+        $('#buy-drawer #checkout-button').click(function(){
+            document.location.href = '/store/cart'
+        })
     };
 
     zz.buy.is_buy_mode_active = function(){
@@ -39,6 +43,9 @@ var zz = zz || {};
     };
 
     zz.buy.select_photo = function(photo_id, element, callback){
+        zz.routes.call_add_to_cart( photo_id);
+
+        
         var imageElement;
 
         if (element.hasClass('add-all-button')) {
@@ -63,14 +70,6 @@ var zz = zz || {};
             $(this).remove();
 
 
-            zz.routes.call_add_to_cart( photo_id, function(){
-                $("<div id='flash-dialog'><div><div id='flash'></div><a id='checkout' class='newgreen-button'><span>Checkout</span></a><a id='ok' class='newgreen-button'><span>OK</span></a></div></div>").zz_dialog({ autoOpen: false });
-                $('#flash-dialog #flash').text('Your photo has been added to the cart');
-                $('#ok').click( function(){ $('#flash-dialog').zz_dialog('close').empty().remove(); });
-                $('#checkout').css({ position: 'absolute', bottom: '30px', left: '40px', width: '80px' })
-                 .click( function(){ window.location = '/store/cart'  });
-                $('#flash-dialog').zz_dialog('open');
-            });
         };
 
         imageElement.clone()
