@@ -3,7 +3,8 @@ require 'spree_core'
 module SpreeZangzing
   class Engine < Rails::Engine
 
-    config.autoload_paths += %W(#{config.root}/lib #{config.root}/../lib/zz)
+    #config.autoload_paths += %W(#{config.root}/lib #{config.root}/../lib/zz)
+    config.autoload_paths += %W( #{config.root}/../lib/zz)
 
     def self.activate
       #Spree::BaseController.asset_path = "/store%s"
@@ -21,6 +22,14 @@ module SpreeZangzing
           acts_as_production? ? require(c) : load(c)
         end
       end
+
+      #Register EZPrints Shipping calculator
+      #begin
+      #  Calculator::EzpShipping.register if Calculator::EzpShipping.table_exists?
+      #rescue Exception => e
+      #  $stderr.puts "Error registering calculator #{Calculator::EzpShipping}"
+      #end
+
 
     end
 

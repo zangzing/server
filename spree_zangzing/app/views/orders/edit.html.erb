@@ -1,5 +1,4 @@
 
-
 <%content_for :page_title do
     if @order.line_items.empty?
         t('your_cart_is_empty')
@@ -8,10 +7,11 @@
     end
 end %>
 
+<%content_for :nav_bar_center do
+    checkout_progress
+ end%>
+
 <div class="checkout-content" id="cart">
-
-
-
   <% if @order.line_items.empty? %>
       <a href="/" class="newgreen-button" id="continue-shopping-greenbutton"><span><%= "#{t('continue_shopping')}"%></span></a>
   <%else%>

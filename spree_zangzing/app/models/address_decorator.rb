@@ -1,8 +1,6 @@
 Address.class_eval do
-
-  before_validation :clean_phone, :if => :phone_changed?
-
   belongs_to :user
+  before_validation :clean_phone, :if => :phone_changed?
 
    # can modify an address if it's not been used in an order
   def editable?

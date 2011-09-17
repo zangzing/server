@@ -1,73 +1,54 @@
 <% # Locals are:
    #     order: the order for which the addressbook should be displayed
    #     address_kind:     'bill_address' or 'ship_address'
-   column_width = 4
-   style = 'dropdown'
 %>
 
 <%if order.user && order.user.addresses.count > 0 %>
-    <% if style=='table' %>
-        <%= form.hidden_field "#{address_kind}_id"%>
-        <table>
-          <% column = 0 %>
-          <% order.user.addresses.each do |address| %>
-              <%if column % column_width == 0 %>
-                  <tr>
-              <%end%>
-              <td>
-                <%= render :partial =>'address_display', :locals => { :address => address,:label =>"" } %>
-                <a href="javascript:void(0)"><span>edit</span></a> <a href="javascript:void(0)"><span>delete</span></a>
-              </td>
-              <%if column %column_width == column_width-1 %>
-                  </tr>
-              <%end%>
-              <% column = column + 1 %>
-          <%end %>
-        </table>
-    <% else  %>
-       <p id="addressbook" class="field">
-        <%= addressbook_dropdown(form, address_kind, order) %>
-       </p>
+    <p id="addressbook" class="field">
+      <%= addressbook_dropdown(form, address_kind, order) %>
+    </p>
 
-        <%content_for :page_javascript do %>
-            <script type='text/javascript'>
-                var addressbook= <%=raw order.user.addresses.to_json%>;
+    <%content_for :page_javascript do %>
+        <script type='text/javascript'>
+            var addressbook= <%=raw order.user.addresses.to_json%>;
 
-                function find_address( id ) {
-                    for(var i=0; i< addressbook.length; i++) {
-                        if (addressbook[i].id == id){
-                            return addressbook[i];
-                        }
+            function find_address( id ) {
+                for(var i=0; i< addressbook.length; i++) {
+                    if (addressbook[i].id == id){
+                        return addressbook[i];
                     }
-                    return null;
                 }
+                return null;
+            }
 
-                function reset_dropdown(){
-                        addressbook_dropdown.selectedIndex = 0;
-                        $('fieldset.address input').unbind('keypress', reset_dropdown  );
-                        $('fieldset.address select').not('#addressbook_dropdown').unbind( 'change', reset_dropdown);
-                }
+            function reset_dropdown(){
+                addressbook_dropdown.selectedIndex = 0;
+                $('#order_<%=address_kind%>_attributes_id').val('').remove();
+                $('fieldset.address input').unbind('keypress', reset_dropdown  );
+                $('fieldset.address select').not('#addressbook_dropdown').unbind( 'change', reset_dropdown);
+            }
 
-                function bind_dropdown(){
-                    $('fieldset.address input').keypress(reset_dropdown );
-                    $('fieldset.address select').not('#addressbook_dropdown').change(reset_dropdown );
-                }
-                $('#addressbook_dropdown').change( function(){
-                    var id = $("#addressbook_dropdown").val();
-                    var address= find_address( id );
-                    $('#order_<%=address_kind%>_attributes_firstname').val( address.firstname);
-                    $('#order_<%=address_kind%>_attributes_lastname').val( address.lastname);
-                    $('#order_<%=address_kind%>_attributes_phone').val( address.phone);
-                    $('#order_<%=address_kind%>_attributes_address1').val( address.address1);
-                    $('#order_<%=address_kind%>_attributes_address2').val( address.address2);
-                    $('#order_<%=address_kind%>_attributes_city').val( address.city);
-                    $('#order_<%=address_kind%>_attributes_state_id').val( address.state_id);
-                    $('#order_<%=address_kind%>_attributes_zipcode').val( address.zipcode);
-                    $('#order_<%=address_kind%>_attributes_country_id').val( address.country_id);
-                    $('fieldset.address input').trigger('keydown' );
-                });
+            function bind_dropdown(){
+                $('fieldset.address input').keypress(reset_dropdown );
+                $('fieldset.address select').not('#addressbook_dropdown').change(reset_dropdown );
+            }
+            $('#addressbook_dropdown').change( function(){
+                var id = $("#addressbook_dropdown").val();
+                var address= find_address( id );
+                $('#order_<%=address_kind%>_attributes_id').val('').remove();
+                $('#order_<%=address_kind%>_attributes_firstname').val( address.firstname);
+                $('#order_<%=address_kind%>_attributes_lastname').val( address.lastname);
+                $('#order_<%=address_kind%>_attributes_phone').val( address.phone);
+                $('#order_<%=address_kind%>_attributes_address1').val( address.address1);
+                $('#order_<%=address_kind%>_attributes_address2').val( address.address2);
+                $('#order_<%=address_kind%>_attributes_city').val( address.city);
+                $('#order_<%=address_kind%>_attributes_state_id').val( address.state_id);
+                $('#order_<%=address_kind%>_attributes_zipcode').val( address.zipcode);
+                $('#order_<%=address_kind%>_attributes_country_id').val( address.country_id);
+                $('fieldset.address input').trigger('keydown' );
                 bind_dropdown();
-            </script>
-        <%end%>
+            });
+            bind_dropdown();
+        </script>
     <% end %>
 <%end %>

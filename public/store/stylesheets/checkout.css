@@ -197,6 +197,7 @@ p#ship_as_bill label{
 }
 
 #payment_bill_address{ /*right half of screen */
+    min-width: 330px;
     min-height: 300px;
     width: auto;
     display:inline-block;
@@ -266,8 +267,9 @@ select#expire_year{
     display: inline-block;
     
 }
+
 p.field#order_email input{
-    width: 372px;
+    width: 355px;
 }
 
 /* --------------------------------- confirm ------------------- */

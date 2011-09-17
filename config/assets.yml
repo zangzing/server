@@ -73,8 +73,10 @@ stylesheets:
     - public/stylesheets/new-dialog.css
     - public/stylesheets/buttons.css
     - public/store/stylesheets/checkout.css
-    - public/stylesheets/jquery.ui.*.css
-    - public/stylesheets/jquery-ui-numeric.css
+    - public/stylesheets/jquery-lib/jquery.ui.button.css
+    - public/stylesheets/jquery-lib/jquery.ui.theme.css
+    - public/stylesheets/jquery-lib/jquery-ui-numeric.css
+    
   store_admin:
     - public/store/stylesheets/admin/*.css
     - public/store/javascripts/jquery.alerts/jquery.alerts.css
