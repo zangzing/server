@@ -236,7 +236,14 @@ zz.album = {};
                     }
                     else{
                         if(action=='main'){
-                            alert('this will add photo to the cart');
+                            zz.routes.call_add_to_cart( photo.id, function(){
+                                $("<div id='flash-dialog'><div><div id='flash'></div><a id='checkout' class='newgreen-button'><span>Checkout</span></a><a id='ok' class='newgreen-button'><span>OK</span></a></div></div>").zz_dialog({ autoOpen: false });
+                                $('#flash-dialog #flash').text('Your photo has been added to the cart');
+                                $('#ok').click( function(){ $('#flash-dialog').zz_dialog('close').empty().remove(); });
+                                $('#checkout').css({ position: 'absolute', bottom: '30px', left: '40px', width: '80px' })
+                                 .click( function(){ window.location = '/store/cart'  });
+                                $('#flash-dialog').zz_dialog('open');
+                            });
                         }
                         else if(action='magnify'){
                             zz.album.goto_single_picture(photo.id);
