@@ -1,0 +1,14 @@
+#buy-drawer{
+    position:absolute;
+    width:435px;
+    top:56px;
+    right:-400px;
+    bottom:56px;
+    border:1px solid #ccc;
+    overflow-y:auto;
+    text-align:left;
+    padding:5px;
+    display:none;
+    background: url(/images/comments/drawer-background.png) repeat-y scroll 0px 0px transparent;
+
+}

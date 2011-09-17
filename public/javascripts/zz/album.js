@@ -5,8 +5,13 @@ zz.album = {};
 
 (function(){
 
+    var comments_widget = null;
+
+    var current_photo_id = null;
+
 
     zz.album.init_picture_view = function(photo_id) {
+
         current_photo_id = photo_id;
 
         init_back_button(zz.page.album_name, zz.page.album_base_url + '/photos');
@@ -149,47 +154,22 @@ zz.album = {};
 
         init_back_button(zz.page.back_to_home_page_caption, zz.page.back_to_home_page_url);
 
-        load_photos_json(function(json) {
+        var on_before_change_buy_mode = function(){
+            $('.photogrid').fadeOut('fast');
+        };
 
-            //no movie mode if no photos
-            if (json.length == 0) {
-                $('#footer #play-button').addClass('disabled');
-            }
+        var on_change_buy_mode = function(){
+            render_grid_view();
+        };
 
+        zz.pubsub.subscribe(zz.buy.EVENTS.ACTIVATE, on_change_buy_mode);
+        zz.pubsub.subscribe(zz.buy.EVENTS.DEACTIVATE, on_change_buy_mode);
 
-            var gridElement = $('<div class="photogrid"></div>');
+        zz.pubsub.subscribe(zz.buy.EVENTS.BEFORE_ACTIVATE, on_before_change_buy_mode);
+        zz.pubsub.subscribe(zz.buy.EVENTS.BEFORE_DEACTIVATE, on_before_change_buy_mode);
 
-            $('#article').html(gridElement);
-            $('#article').css('overflow', 'hidden');
+        render_grid_view();
 
-
-            for (var i = 0; i < json.length; i++) {
-                var photo = json[i];
-                photo.previewSrc = zz.agent.checkAddCredentialsToUrl(photo.stamp_url);
-                photo.src = zz.agent.checkAddCredentialsToUrl(photo.thumb_url);
-            }
-
-
-            var grid = gridElement.zz_photogrid({
-                photos: json,
-                allowDelete: false,
-                allowEditCaption: false,
-                allowReorder: false,
-                cellWidth: 230,
-                cellHeight: 230,
-                showThumbscroller: false,
-                onClickPhoto: function(index, photo) {
-                    zz.album.goto_single_picture(photo.id);
-                },
-                onDelete: function(index, photo) {
-                    zz.routes.call_delete_photo(photo.id);
-                    return true;
-                },
-                showButtonBar: true,
-                infoMenuTemplateResolver: info_menu_template_resolver,
-                rolloverFrameContainer: gridElement
-            }).data().zz_photogrid;
-        });
     };
 
     zz.album.init_timeline_view = function() {
@@ -218,9 +198,65 @@ zz.album = {};
     /*           Private Stuff
      ***************************************************/
 
-    var comments_widget = null;
+    function render_grid_view(){
+        load_photos_json(function(json) {
 
-    var current_photo_id = null;
+            //no movie mode if no photos
+            if (json.length == 0) {
+                $('#footer #play-button').addClass('disabled');
+            }
+
+
+            var gridElement = $('<div class="photogrid"></div>');
+
+            $('#article').html(gridElement);
+            $('#article').css('overflow', 'hidden');
+
+
+            for (var i = 0; i < json.length; i++) {
+                var photo = json[i];
+                photo.previewSrc = zz.agent.checkAddCredentialsToUrl(photo.stamp_url);
+                photo.src = zz.agent.checkAddCredentialsToUrl(photo.thumb_url);
+            }
+
+
+            var buy_mode = zz.buy.is_buy_mode_active();
+
+            var grid = gridElement.zz_photogrid({
+                photos: json,
+                allowDelete: false,
+                allowEditCaption: false,
+                allowReorder: false,
+                cellWidth: 230,
+                cellHeight: 230,
+                showThumbscroller: false,
+                onClickPhoto: function(index, photo, element, action) {
+                    if(!buy_mode){
+                        zz.album.goto_single_picture(photo.id);
+                    }
+                    else{
+                        if(action=='main'){
+                            alert('this will add photo to the cart');
+                        }
+                        else if(action='magnify'){
+                            zz.album.goto_single_picture(photo.id);
+                        }
+                    }
+                },
+                onDelete: function(index, photo) {
+                    zz.routes.call_delete_photo(photo.id);
+                    return true;
+                },
+                showButtonBar: !buy_mode,
+                context: buy_mode ? 'chooser-grid' : 'album-grid',
+                infoMenuTemplateResolver: info_menu_template_resolver,
+                rolloverFrameContainer: gridElement
+            }).data().zz_photogrid;
+
+
+        });
+    }
+
 
     function comments_open() {
         return jQuery.cookie('hide_comments') != 'true';
