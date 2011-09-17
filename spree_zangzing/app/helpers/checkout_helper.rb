@@ -62,8 +62,7 @@ module CheckoutHelper
                                  :id,
                                  :one_line,
                                  { :include_blank => 'Select from Address Book or enter new address'},
-                                 { :id => 'addressbook_dropdown',
-                                   :class => "required"})
+                                 { :id => 'addressbook_dropdown'})
       ].join.gsub('"', "'")
       address_elements.html_safe
     end

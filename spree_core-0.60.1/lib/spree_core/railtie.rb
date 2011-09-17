@@ -38,7 +38,8 @@ module SpreeCore
           Calculator::FlexiRate,
           Calculator::PerItem,
           Calculator::SalesTax,
-          Calculator::Vat#,
+          Calculator::Vat,
+          Calculator::EzpShipping
           #Calculator::PriceBucket
         ].each{|c_model|
           begin

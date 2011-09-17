@@ -83,6 +83,9 @@ CheckoutController.class_eval do
      #remove the order from the session
      session[:order_id] = nil
 
+     #clear the ezp cache of shipping cost arrays
+     @order.shipping_costs_done
+
      if current_user
        # If a user is looged in, save  addresses and creditcard as default
        # Backup order addresses with addresses that cannot be modified by user.
@@ -124,14 +127,16 @@ CheckoutController.class_eval do
    # the appropriate address id.
    def update_address_id
      if params[:order]
-       if params[:order][:ship_address_id]
 
+       # [:order][:ship_address_id] was inserted by the address book
+       # it will be blank if no address from the book was selected
+       # it will have the id if an address from the book was selected
+       
+       if params[:order][:ship_address_id]
          ship_address_id = params[:order][:ship_address_id]
          params[:order].delete :ship_address_id
 
-         if ship_address_id.blank?
-          params[:order][:ship_address_attributes].delete( :id ) if params[:order][:ship_address_attributes] && params[:order][:ship_address_attributes][:id]
-         else
+        if !ship_address_id.blank?
            address = Address.find_by_id( ship_address_id )
            if address
              @order.ship_address = address
@@ -145,9 +150,7 @@ CheckoutController.class_eval do
          bill_address_id = params[:order][:bill_address_id]
          params[:order].delete :bill_address_id
 
-         if bill_address_id.blank?
-           params[:order][:bill_address_attributes].delete( :id ) if params[:order][:bill_address_attributes] && params[:order][:bill_address_attributes][:id]
-         else
+         if !bill_address_id.blank?
            bill_address = Address.find_by_id( bill_address_id )
            if bill_address
              @order.bill_address = bill_address

@@ -62,7 +62,7 @@ zz.store.checkout = {};
 
         });
     };
-//======================= Payment =========================
+//======================= ship_address =========================
     zz.store.checkout.init_ship_address_screen = function(){
          $('form p.field label').inFieldLabels();
          $('#checkout_form_ship_address').validate({
@@ -76,6 +76,7 @@ zz.store.checkout = {};
                     required:true,
                     postalcode: true
                 }
+                
             },
             messages: {
                 'order[ship_address_attributes][phone]': {
@@ -99,7 +100,7 @@ zz.store.checkout = {};
 
 
 
-//======================= Payment =========================
+//======================= payment =========================
     zz.store.checkout.init_payment_screen = function(){
         $('form p.field label').inFieldLabels();
 
@@ -118,15 +119,36 @@ zz.store.checkout = {};
             }
         });
 
+        var clear_wallet_radio = function(element){
+            $('input[name*=creditcard_id]:checked').each(function(){
+                $(this).attr('checked','');
+            });
+        };
+
+        // ckear credit card fields when wallet is selected
+        $('input[name*=creditcard_id]').click( function(){
+            $("#card_number").val('').removeClass('errormsg').trigger('blur');
+            $("#card_code").val('').removeClass('errormsg').trigger('blur');
+        });
+
+        // clear radio button when crdit card fields are used
+        $("#card_number").keypress(clear_wallet_radio);
+        $("#card_code").keypress(clear_wallet_radio);
+
+        
         $('#checkout_form_payment').validate({
             //debug: true,
             rules: {
                 'payment_source[1034433118][number]':{
-                    required: true,
+                    required: function(element){
+                        return $('input[name*=creditcard_id]:checked').length <=0;
+                    },
                     creditcard: true
                 },
                 'payment_source[1034433118][verification_value]':{
-                    required: true,
+                    required: function(element){
+                        return $('input[name*=creditcard_id]:checked').length <=0;
+                    },
                     number: true,
                     minlength: 3,
                     maxlength: 4
@@ -150,9 +172,9 @@ zz.store.checkout = {};
                     email: 'valid email, please'
                 },
                 'payment_source[1034433118][verification_value]':{
-                    required:'Need help?, click the question mark ==>',
-                    number: 'Need help?, click the question mark ==>',
-                    minlength: 'Need help?, click the question mark ==>'
+                    required:'Need help?, click the question mark',
+                    number: 'Need help?, click the question mark',
+                    minlength: 'Need help?, click the question mark'
                 },
                 'order[bill_address_attributes][zipcode]':{
                                     required: ' your zip is really important!',

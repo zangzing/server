@@ -1037,3 +1037,4 @@ en:
   account_later:     "You will have the option to create a ZangZing account after your order."
   continue_as_guest: "Continue as Guest"
   only_for_order_updates: "only for order updates"
+  ezp_shipping_calculator: "ezPrints Shipping (per order)"

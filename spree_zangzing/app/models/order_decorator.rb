@@ -3,8 +3,12 @@ Order.class_eval do
 
   attr_accessible :use_shipping_as_billing, :ship_address_id, :bill_address_id
 
-  before_validation :clone_shipping_address, :if => "state=='ship_address'"
+
   attr_accessor  :use_shipping_as_billing
+
+  before_validation :clone_shipping_address, :if => "state=='ship_address'"
+
+  after_validation :shipping_may_change, :if => 'ship_address.zipcode_changed?'
 
 
   before_create do
@@ -141,6 +145,8 @@ Order.class_eval do
       current_item.update_attribute(field[:name].gsub(" ", "_").downcase, value)
     end
 
+    shipping_may_change
+    
     current_item
   end
 
@@ -269,4 +275,27 @@ Order.class_eval do
   end
 
 
+  # keeps a class level cache of the shipping costs coming from ezp.
+  # this cache avoids having to call ezp more than necessary. Spree's
+  # architecture recalculates the order every save which would mean an ezp call
+  def shipping_costs_array
+    @@shipping_costs_arrays ||= {}
+    @@shipping_costs_arrays[self.number] ||= ez.shipping_costs(self)
+  end
+
+  #invalidate the shipping cost cache for the order forcing it to
+  # re-fetch next time
+  def shipping_may_change
+    @@shipping_costs_arrays ||= {}
+    @@shipping_costs_arrays.delete( self.number )
+  end
+
+  #clear the  shipping cost cache when the order has been placed
+  alias shipping_costs_done shipping_may_change
+
+  private
+  def ez
+     @@ezpm ||= EZPrints::EZPManager.new
+  end
+  
 end
