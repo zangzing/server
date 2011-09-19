@@ -23,15 +23,10 @@ zz.buy = zz.buy || {};
 
     zz.buy.init = function(){
         if(zz.buy.is_buy_mode_active()){
-            $('#right-drawer').css('right', 0).show();
-            $('#article').css('right', 445);
-        }
-
-
-
-        if(zz.buy.is_buy_mode_active()){
+            open_drawer(false, function(){});
             $('#footer #buy-button').addClass('selected');
         }
+
         $('#footer #buy-button').click(function() {
             if (! $(this).hasClass('disabled')) {
                 if(zz.buy.is_buy_mode_active()){
@@ -73,7 +68,7 @@ zz.buy = zz.buy || {};
     zz.buy.activate_buy_mode = function(){
         zz.pubsub.publish(EVENTS.BEFORE_ACTIVATE);
         jQuery.cookie('buy_mode', 'true', {path:'/'});
-        open_drawer(function(){
+        open_drawer(true, function(){
             zz.pubsub.publish(EVENTS.ACTIVATE);
         });
     };
@@ -172,21 +167,34 @@ zz.buy = zz.buy || {};
     }
 
 
-    function open_drawer(callback){
-        $('#article').fadeOut('fast', function(){
-            $('#right-drawer').html('<a id="checkout-button" class="newgreen-button"><span>Checkout</span></a>');
+    function open_drawer(animate, callback){
+        if(animate){
+            $('#article').fadeOut('fast', function(){
+                $('#right-drawer').html('<a id="checkout-button" class="newgreen-button"><span>Checkout</span></a>');
 
+
+
+                $('#right-drawer').show().animate({right:0},500, function(){
+                    $('#article').css({right:445});
+                    $('#article').show();
+                    callback();
+                });
+            });
+        }
+        else{
+            $('#article').css({right:445});
+            $('#article').show();
+
+            $('#right-drawer').css({right:0})
+                              .html('<a id="checkout-button" class="newgreen-button"><span>Checkout</span></a>')
+                              .show();
+            
             $('#right-drawer #checkout-button').click(function(){
                 document.location.href = '/store/cart'
             });
 
-
-            $('#right-drawer').show().animate({right:0},500, function(){
-                $('#article').css({right:445});
-                $('#article').show();
-                callback();
-            });
-        });
+            callback();
+        }
     }
 
     function close_drawer(callback){
