@@ -14,7 +14,7 @@ zz.buy = zz.buy || {};
     var current_drawer_screen = DRAWER_SCREENS.SELECT_PHOTOS;
 
 
-    zz.buy.EVENTS = {
+    var EVENTS = {
         BEFORE_ACTIVATE: 'zz.buy.before_activate',
         ACTIVATE: 'zz.buy.activate',
         BEFORE_DEACTIVATE: 'zz.buy.BEFORE_deactivate',
@@ -23,14 +23,47 @@ zz.buy = zz.buy || {};
 
     zz.buy.init = function(){
         if(zz.buy.is_buy_mode_active()){
-            $('#buy-drawer').css('right', 0).show();
+            $('#right-drawer').css('right', 0).show();
             $('#article').css('right', 445);
         }
 
-        $('#buy-drawer #checkout-button').click(function(){
-            document.location.href = '/store/cart'
+
+
+        if(zz.buy.is_buy_mode_active()){
+            $('#footer #buy-button').addClass('selected');
+        }
+        $('#footer #buy-button').click(function() {
+            if (! $(this).hasClass('disabled')) {
+                if(zz.buy.is_buy_mode_active()){
+                    zz.buy.deactivate_buy_mode();
+                    $(this).removeClass('selected');
+                }
+                else{
+                    zz.buy.activate_buy_mode();
+                    $(this).addClass('selected');
+                }
+            }
         });
 
+
+
+    };
+
+
+    zz.buy.toggle_visibility_with_buy_mode = function(element){
+        if(zz.buy.is_buy_mode_active()){
+            $(element).hide();
+        }
+
+        zz.buy.on_before_activate(function(){
+            $(element).fadeOut('fast');
+
+        });
+
+        zz.buy.on_before_deactivate(function(){
+            $(element).fadeIn('fast');
+
+        });
     };
 
     zz.buy.is_buy_mode_active = function(){
@@ -38,18 +71,18 @@ zz.buy = zz.buy || {};
     };
 
     zz.buy.activate_buy_mode = function(){
-        zz.pubsub.publish(zz.buy.EVENTS.BEFORE_ACTIVATE);
+        zz.pubsub.publish(EVENTS.BEFORE_ACTIVATE);
         jQuery.cookie('buy_mode', 'true', {path:'/'});
         open_drawer(function(){
-            zz.pubsub.publish(zz.buy.EVENTS.ACTIVATE);
+            zz.pubsub.publish(EVENTS.ACTIVATE);
         });
     };
 
     zz.buy.deactivate_buy_mode = function(){
-        zz.pubsub.publish(zz.buy.EVENTS.BEFORE_DEACTIVATE);
+        zz.pubsub.publish(EVENTS.BEFORE_DEACTIVATE);
         jQuery.cookie('buy_mode', 'false', {path:'/'});
         close_drawer(function(){
-            zz.pubsub.publish(zz.buy.EVENTS.DEACTIVATE);
+            zz.pubsub.publish(EVENTS.DEACTIVATE);
         });
     };
 
@@ -62,7 +95,7 @@ zz.buy = zz.buy || {};
 
         selected_photo_ids.push(photo_id);
 
-        zz.routes.call_add_to_cart( photo_id);
+        zz.routes.call_add_to_cart(photo_id);
 
 
         var imageElement = element.find('.photo-image');
@@ -100,9 +133,31 @@ zz.buy = zz.buy || {};
         return _.include(selected_photo_ids, photo_id);
     };
 
+    zz.buy.on_before_activate = function(callback){
+        zz.pubsub.subscribe(EVENTS.BEFORE_ACTIVATE, callback)
+    };
 
+    zz.buy.on_activate = function(callback){
+        zz.pubsub.subscribe(EVENTS.ACTIVATE, callback)
+    };
 
+    zz.buy.on_before_deactivate = function(callback){
+        zz.pubsub.subscribe(EVENTS.BEFORE_DEACTIVATE, callback)
+    };
 
+    zz.buy.on_deactivate = function(callback){
+        zz.pubsub.subscribe(EVENTS.DEACTIVATE, callback)
+    };
+
+    zz.buy.on_before_change_buy_mode = function(callback){
+        zz.buy.on_before_activate(callback);
+        zz.buy.on_before_deactivate(callback);
+    };
+
+    zz.buy.on_change_buy_mode = function(callback){
+        zz.buy.on_activate(callback);
+        zz.buy.on_deactivate(callback);
+    };
 
     function render_select_product_screen(){
 
@@ -119,9 +174,16 @@ zz.buy = zz.buy || {};
 
     function open_drawer(callback){
         $('#article').fadeOut('fast', function(){
-            $('#buy-drawer').show().animate({right:0},500, function(){
+            $('#right-drawer').html('<a id="checkout-button" class="newgreen-button"><span>Checkout</span></a>');
+
+            $('#right-drawer #checkout-button').click(function(){
+                document.location.href = '/store/cart'
+            });
+
+
+            $('#right-drawer').show().animate({right:0},500, function(){
                 $('#article').css({right:445});
-                $('#article').fadeIn('fast');
+                $('#article').show();
                 callback();
             });
         });
@@ -129,10 +191,10 @@ zz.buy = zz.buy || {};
 
     function close_drawer(callback){
         $('#article').fadeOut('fast', function(){
-            $('#buy-drawer').show().animate({right:-450},500, function(){
+            $('#right-drawer').animate({right:-450},500, function(){
                 $('#article').css({right:0});
-                $('#article').fadeIn('fast');
-                $(this).hide();
+                $('#article').show();
+                $('#right-drawer').hide();
                 callback();
             });
         });

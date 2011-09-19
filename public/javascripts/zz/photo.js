@@ -145,10 +145,14 @@ zz.template_cache = zz.template_cache || {};
                         o.onClick('magnify');
                     });
                     self.borderElement.append(self.photoAddElement).append(self.photoMagnifyElement);
+
+
                 }
                 else {
                     self.borderElement.addClass('no-shadow');
                 }
+
+
             }
 
             //click
@@ -354,7 +358,13 @@ zz.template_cache = zz.template_cache || {};
 
             // insert elements into DOM
             el.append(self.captionElement).append(self.borderElement);
+
+            if (o.context.indexOf('chooser') === 0) {
+                self.updateChecked();
+            }
+            
         },
+
 
         setMenuOpen: function(open) {
             if (open) {
@@ -394,23 +404,29 @@ zz.template_cache = zz.template_cache || {};
             }
         },
 
-        checked: false,
 
-        isChecked: function() {
-            return this.checked;
-        },
-
-        setChecked: function(checked) {
+        updateChecked: function(){
             var self = this;
-            self.checked = checked;
+
             if (self.options.context.indexOf('chooser') === 0) {
-                if (checked) {
+                if (self.isChecked()) {
                     self.element.find('.photo-add-button').addClass('checked');
                 }
                 else {
                     self.element.find('.photo-add-button').removeClass('checked');
                 }
             }
+        },
+
+
+        isChecked: function() {
+            return this.options.json.checked;
+        },
+
+        setChecked: function(checked) {
+            var self = this;
+            self.options.json.checked = checked;
+            self.updateChecked();
         },
 
         _setupCaptionEditing: function(){
