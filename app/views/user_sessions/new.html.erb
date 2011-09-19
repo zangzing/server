@@ -33,7 +33,7 @@
         <a id= "back-to-signin-button" href="/join" class="gray-button"><span>Join</span></a>
         <div id="header-hairline"></div>
 
-        <%= form_tag create_user_session_url do %>
+        <%= form_tag create_user_session_url, :id=>"signin-form" do %>
           <div id="flash-error">
         <% if @user_session.errors.length > 0 %>
                Invalid user or password

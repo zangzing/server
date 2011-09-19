@@ -6,7 +6,7 @@ var zz = zz || {};
     zz.social_buttons = {};
 
     var TWITTER_TEMPLATE = function(){
-        return '<iframe allowtransparency="true" frameborder="0" scrolling="no" src="http://platform.twitter.com/widgets/tweet_button.html?count=horizontal&related=ZangZing&url={{url}}&counturl={{counturl}}&text={{text}}&related=ZangZing" style="width:130px; height:50px;"></iframe>'
+        return '<iframe allowtransparency="true" frameborder="0" scrolling="no" src="http://platform.twitter.com/widgets/tweet_button.html?count=none&related=ZangZing&url={{url}}&text={{text}}&related=ZangZing" style="width:130px; height:50px;"></iframe>'
     };
 
     var FACEBOOK_TEMPLATE = function(){
