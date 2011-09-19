@@ -17,6 +17,14 @@ zz.store.checkout = {};
                 .match(/(^\d{5}(-\d{4})?$)|(^[ABCEGHJKLMNPRSTVXYabceghjklmnpstvxy]{1}\d{1}[A-Za-z]{1} ?\d{1}[A-Za-z]{1}\d{1})$/);
         }, "Please specify a valid postal/zip code");
 
+    jQuery.validator.addMethod(
+        'regex',
+        function(value, element, regexp) {
+            var check = false;
+            var re = new RegExp(regexp);
+            return this.optional(element) || re.test(value);
+        }, 'Please check your input.'  );
+
     //used to place and display form errors as you tab around
     var error_placement_handler = function(error, element) {
         var location, left, top;
@@ -188,5 +196,53 @@ zz.store.checkout = {};
             errorClass: "errormsg",
             errorPlacement: error_placement_handler
         });
+    };
+    //======================= thankyou =========================
+    zz.store.checkout.init_thankyou_screen = function(){
+        $('form p.field label').inFieldLabels();
+
+        $('form').bind('keypress', function(e){
+            if ( e.keyCode == 13 ) {
+                $("form").submit();
+            }
+        });
+        $('#user_username').keyup(function(event){
+            var username = $('#user_username').val();
+            //set the value in the homepage url
+            $('#blue_username').text(username);
+            $('#username_display').fadeIn('fast');
+
+        });
+
+        $('#join_form').validate({
+        rules: {
+                'user[username]': {
+                    required: true,
+                    minlength: 1,
+                    maxlength:25,
+                    //regex: "(^[a-z0-9]+$|^[a-z0-9]+:.{8}$)",
+                    remote: zz.routes.path_prefix + '/users/validate_username'
+                },
+                'user[password]': {
+                    required: true,
+                    minlength: 5
+                }
+            },
+            messages: {
+                'user[username]':{
+                    required: 'please enter a username',
+                    regex: 'only lower case letters and numbers',
+                    remote: 'username already taken'
+                },
+                'user[password]': '6 characters or more, please'
+            },
+            submitHandler: function(form){
+                form.submit();
+            },
+            errorElement: "div",
+            errorClass: "errormsg",
+            errorPlacement: error_placement_handler
+        });
+
     };
 })();

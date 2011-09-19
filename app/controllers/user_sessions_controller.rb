@@ -34,7 +34,7 @@ class UserSessionsController < ApplicationController
     else
       if params[:store_signin]
         flash[:error] = "Invalid user/password combination"
-        redirect_to checkout_registration_url
+        redirect_to params[:store_signin]
       else
         render :action => :new
       end

@@ -427,3 +427,78 @@ a#continue-shopping-greenbutton{
     width: 50%;
     margin: 18px auto 0 auto;
 }
+
+
+/*-------------------- thank you ----------------*/
+
+div.checkout_thankyou{
+    min-height: 300px;
+}
+div.user_topty{
+    margin: 140px auto;
+}
+
+div.guest_topty{
+    margin-top: 60px;
+}
+
+div#top_ty{
+    text-align: center;
+    font-weight: 200;
+}
+div#big_ty{
+    font-size: 46px;
+    color:black;
+    line-height: 50px;
+    margin-bottom: 10px;
+}
+div.sub_top_ty{
+    font-size: 18px;
+    line-height: 26px;
+}
+
+div#want_to_share{
+    line-height: 45px;
+    font-size: 34px;
+    margin: 80px 0;
+}
+
+div#useraction_ty{
+    margin: 50px 0;
+}
+a#goback_btn{
+    margin: 0 auto;
+    width: 190px;
+}
+
+div#guestaction_ty{
+    width: 600px;
+    margin: 0 auto 60px auto;
+}
+
+form p.field#username,
+form p.field#password
+{
+    display: inline-block;
+    width: 40%;
+    vertical-align: top;
+}
+
+.blue{
+    color: blue;
+}
+
+#username_display{
+    display:none;
+    padding-left: 15px;
+}
+
+form p.field#submit_button{
+    display: inline-block;
+    width: 15%;
+}
+
+#join-btn{
+   width: 100px;
+}
+

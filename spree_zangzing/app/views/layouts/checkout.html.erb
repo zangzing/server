@@ -53,6 +53,11 @@
 </div>
 
 <div class="checkout-footer container">
+  <div style="text-align: center;">
+    <small>
+        <%=yield :small_print %>
+    </small>
+  </div>
   <div class="row">
     <div class="span-one-third column offset-two-thirds">
       <div class="checkout-next-button">
@@ -60,6 +65,7 @@
      </div>
     </div>
   </div>
+
    <%= render :partial => 'shared/footer'%>
 </div>
 

@@ -35,12 +35,6 @@ CheckoutController.class_eval do
      redirect_to checkout_registration_path 
    end
 
-   # Overrides the equivalent method defined in spree_core. This variation of the method will ensure that users
-   # are redirected to the tokenized order url unless authenticated as a registered user.
-   def completion_route
-     return order_path(@order) if current_user
-     token_order_path(@order, @order.token)
-   end
 
   def before_cart
     if  current_user || current_order.guest_checkout?
@@ -82,6 +76,10 @@ CheckoutController.class_eval do
    def after_complete
      #remove the order from the session
      session[:order_id] = nil
+
+     #add the order access token to the session so user can see thank you window
+     #and order status, all through the orders controller.
+     session[:access_token] ||= @order.token
 
      #clear the ezp cache of shipping cost arrays
      @order.shipping_costs_done
@@ -188,6 +186,17 @@ CheckoutController.class_eval do
      end
      params[:order]
    end
+
+  def completion_route
+
+  end
+
+# Overrides the equivalent method defined in spree_core. This variation of the method will ensure that users
+   # are redirected to the tokenized order url unless authenticated as a registered user.
+   def completion_route
+    thankyou_order_url(@order)
+   end
+
 
 end
 
