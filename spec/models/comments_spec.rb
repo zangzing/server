@@ -94,12 +94,12 @@ describe "Comments Model" do
     it "should notify album owner, photo owner, and other commentors of new comments" do
       resque_jobs(comments_resque_filter) do
         # setup
-        photo = Factory.create(:photo)
-#todo NOTE FROM GREG - Jeremy, this test no longer works because we now properly create associations for the photo.
-# Previously, due to the association factory issues you were getting a photo that had an album with its own
-# user vs a single photo with the same user for its album and the photo.  Due to this you don't get the extra email that
-# you expect - I left this broken so you can decide how you want to fix by either only expecting 2 emails or
-# creating a new test that produces all 3.
+        album_owner = Factory.create(:user)
+        album = Factory.create(:album, :user => album_owner)
+
+        photo_owner = Factory.create(:user)
+        photo = Factory.create(:photo, :user => photo_owner, :album => album)
+
         commentable = Commentable.find_or_create_by_photo_id(photo.id)
         existing_comment = Factory.create(:comment, :commentable => commentable, :user => Factory.create(:user))
 
