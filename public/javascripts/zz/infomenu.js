@@ -1,12 +1,13 @@
-var infomenu = {
+var zz = zz || {};
 
-    album_owner_template: '<ul>'+
-            '<li class="download"><a href="#download">Download</a></li>'+
-            '<li class="rotater"><a href="#rotater">Right</a></li>'+
-            '<li class="rotatel"><a href="#rotatel">Left</a></li>'+
-            '<li class="setcover"><a href="#setcover">Set Cover</a></li>'+
-            '<li class="rotater"><a href="#add_to_cart">Add To Cart</a></li>'+
-            '<li class="delete"><a href="#deletephoto">Delete</a></li>'+
+zz.infomenu = {
+
+    album_owner_template: '<ul>' +
+            '<li class="download"><a href="#download">Download</a></li>' +
+            '<li class="rotater"><a href="#rotater">Right</a></li>' +
+            '<li class="rotatel"><a href="#rotatel">Left</a></li>' +
+            '<li class="setcover"><a href="#setcover">Set Cover</a></li>' +
+            '<li class="delete"><a href="#deletephoto">Delete</a></li>' +
             '</ul>',
 
     album_owner_template_photo_not_ready: '<ul>' +
@@ -17,7 +18,7 @@ var infomenu = {
     photo_owner_template: '<ul>' +
             '<li class="download"><a href="#download">Download</a></li>' +
             '<li class="rotater"><a href="#rotater">Right</a></li>' +
-            '<li class"rotatel"><a href="#rotatel">Left</a></li>' +
+            '<li class="rotatel"><a href="#rotatel">Left</a></li>' +
             '<li class="delete"><a href="#deletephoto">Delete</a></li>' +
             '</ul>',
 
@@ -93,17 +94,6 @@ var infomenu = {
             case 'setcover':
                 zz.routes.call_set_album_cover(zz.page.album_id, id, function() {
                     zz.toolbars.load_album_cover(photo.options.previewSrc);
-                });
-                break;
-            
-            case 'add_to_cart':
-                zz.routes.call_add_to_cart( id, function(){
-                    $("<div id='flash-dialog'><div><div id='flash'></div>><a id='checkout' class='newgreen-button'><span>Checkout</span></a><a id='ok' class='newgreen-button'><span>OK</span></a></div></div>").zz_dialog({ autoOpen: false });
-                                         $('#flash-dialog #flash').text('Your photo has been added to the cart');
-                                         $('#ok').click( function(){ $('#flash-dialog').zz_dialog('close').empty().remove(); });
-                                         $('#checkout').css({ position: 'absolute', bottom: '30px', left: '40px', width: '80px' })
-                                             .click( function(){ window.location = '/store/cart'  });
-                                         $('#flash-dialog').zz_dialog('open');
                 });
                 break;
 

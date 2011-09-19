@@ -1,8 +1,18 @@
 var zz = zz || {};
+zz.buy = zz.buy || {};
 
 (function(){
 
-    zz.buy = zz.buy || {};
+    var DRAWER_SCREENS = {
+        SELECT_PRODUCT: 'select_product',
+        CONFIGURE_PRODUCT: 'configure_product',
+        SELECT_PHOTOS: 'select_photos'
+    };
+
+    var selected_photo_ids = [];
+
+    var current_drawer_screen = DRAWER_SCREENS.SELECT_PHOTOS;
+
 
     zz.buy.EVENTS = {
         BEFORE_ACTIVATE: 'zz.buy.before_activate',
@@ -19,7 +29,8 @@ var zz = zz || {};
 
         $('#buy-drawer #checkout-button').click(function(){
             document.location.href = '/store/cart'
-        })
+        });
+
     };
 
     zz.buy.is_buy_mode_active = function(){
@@ -43,18 +54,18 @@ var zz = zz || {};
     };
 
     zz.buy.select_photo = function(photo_id, element, callback){
+
+        if(zz.buy.is_photo_selected(photo_id)){
+            // don't allow selecting the same photo more than once
+            return; 
+        }
+
+        selected_photo_ids.push(photo_id);
+
         zz.routes.call_add_to_cart( photo_id);
 
-        
-        var imageElement;
 
-        if (element.hasClass('add-all-button')) {
-            imageElement = element;
-        }
-        else {
-            imageElement = element.find('.photo-image');
-        }
-
+        var imageElement = element.find('.photo-image');
 
         var start_top = imageElement.offset().top;
         var start_left = imageElement.offset().left;
@@ -83,17 +94,27 @@ var zz = zz || {};
                              left: (end_left) + 'px'
                          }, 1000, 'easeInOutCubic', on_finish_animation);
 
+    };
 
-
-
-
-
-
-
-
+    zz.buy.is_photo_selected = function(photo_id){
+        return _.include(selected_photo_ids, photo_id);
     };
 
 
+
+
+
+    function render_select_product_screen(){
+
+    }
+
+    function render_configure_product_screen(){
+
+    }
+
+    function render_select_photos_screen(){
+
+    }
 
 
     function open_drawer(callback){

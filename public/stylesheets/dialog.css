@@ -119,7 +119,7 @@
     left: 0px;
     width: 100%;
     height: 100%;
-    background: url('images/dialog/transparent.png'); /* if you just use transparend color, then scrim on IE won't trap events */
+    background: url('/images/dialog/transparent.png'); /* if you just use transparend color, then scrim on IE won't trap events */
     z-index: 99990;
 
 }
