@@ -14,7 +14,7 @@ module OrderNotifier
       else
         @recipient = @order.email
       end
-      @order_status_link = token_order_url(@order, @order.token)
+      #@order_status_link = token_order_url(@order, @order.token)
       create_message(  __method__, template_id, @recipient, (@user ? { :user_id => @user.id } : nil ) )
     end
 

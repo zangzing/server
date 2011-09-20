@@ -81,8 +81,7 @@ html{
     margin: 10px 0 0 0;
 }
 .progress-steps td{
-    position: relative;
-    height: 50px;
+    padding: 0;
     border:  none;
     background: url('/images/store/progress/black_bullet.png') scroll no-repeat 0 0;
 }
@@ -92,7 +91,14 @@ html{
     background: url('/images/store/progress/yellow_bullet.png') scroll no-repeat 0 0;
     color: black;
 }
-.progress-steps td.current div.state_index{
+
+.progress-steps td div.state{
+    position: relative;
+    height: 50px;
+
+}
+
+.progress-steps td.current div.state div.state_index{
     top: 9px;
     font-weight: 600;
 }
@@ -101,12 +107,12 @@ html{
     background: url('/images/store/progress/black_bullet.png') scroll no-repeat 0 0;
     cursor: pointer;
 }
-.progress-steps td.completed div.state_name{
+.progress-steps td.completed div.state div.state_name{
     font-weight: 600;
 }
 
 
-.progress-steps td div.state_index{
+.progress-steps td div.state div.state_index{
     position:absolute;
     color: white;
     font-weight: 400;
@@ -114,7 +120,11 @@ html{
     left: 13px;
 }
 
-.progress-steps td div.state_name{
+.ua-firefox .progress-steps td div.state div.state_index{
+    top: 9px;
+}
+
+.progress-steps td div.state div.state_name{
     position: absolute;
     text-align: center;
     width: 54px;
@@ -122,7 +132,7 @@ html{
     left: -10px;
 }
 
-.progress-steps td div.state_name a{
+.progress-steps td div.state div.state_name a{
     text-decoration: none;
     color: gray;
 }

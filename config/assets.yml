@@ -43,6 +43,7 @@ javascripts:
     - public/javascripts/jquery-lib/jquery.ui.button.js
     - public/javascripts/jquery-lib/jquery.ui.numeric.js
     - public/javascripts/lib/spin.js
+    - public/javascripts/lib/cssua.js
     - public/javascripts/store/checkout.js
   store_admin:
     - public/javascripts/store/admin/rails.js
