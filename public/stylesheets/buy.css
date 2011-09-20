@@ -1,4 +1,4 @@
-#buy-drawer{
+#right-drawer{
     position:absolute;
     width:435px;
     top:56px;
@@ -12,7 +12,7 @@
     background: url(/images/comments/drawer-background.png) repeat-y scroll 0px 0px transparent;
 }
 
-#buy-drawer #checkout-button{
+#right-drawer #checkout-button{
     position: absolute;
     right:20px;
     bottom:20px;
