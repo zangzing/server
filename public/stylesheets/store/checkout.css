@@ -103,6 +103,11 @@ html{
     font-weight: 600;
 }
 
+.ua-chrome .progress-steps td.current div.state div.state_index{
+    top: 9px;
+}
+
+
 .progress-steps td.completed{
     background: url('/images/store/progress/black_bullet.png') scroll no-repeat 0 0;
     cursor: pointer;
@@ -116,12 +121,12 @@ html{
     position:absolute;
     color: white;
     font-weight: 400;
-    top: 10px;
+    top: 9px;
     left: 13px;
 }
 
-.ua-firefox .progress-steps td div.state div.state_index{
-    top: 9px;
+.ua-chrome .progress-steps td div.state div.state_index{
+    top: 10px;
 }
 
 .progress-steps td div.state div.state_name{
