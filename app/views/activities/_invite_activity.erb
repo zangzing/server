@@ -16,13 +16,17 @@
     </a>
     Invited
     <%if activity.invited_user_id%>
-      <a href="<%=user_path(activity.invited_user_id)%>">
-      <% if current_user && current_user.id == activity.invited_user_id %>
-        You
-      <%else%>
-        <%=activity.invited_user.name%>
-      <%end%>
-      </a>
+      <% if activity.invited_user.automatic? %>
+          <%=activity.invited_user.name%>
+      <% else %>
+          <a href="<%=user_path(activity.invited_user_id)%>">
+              <% if current_user && current_user.id == activity.invited_user_id %>
+                You
+              <%else%>
+                <%=activity.invited_user.name%>
+              <%end%>
+          </a>
+      <% end %>
     <%else%>
          <a href="mailto:<%=activity.invited_user_email%>">
         <%=activity.invited_user_email%>
