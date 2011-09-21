@@ -11,7 +11,6 @@ compressor_options:
 javascripts:
   jquery:
     - public/javascripts/jquery/*.js
-
   lib:
     - public/javascripts/jquery-lib/jquery.ui.core.js
     - public/javascripts/jquery-lib/jquery.ui.widget.js
@@ -35,7 +34,6 @@ javascripts:
     - public/javascripts/zz/routes.js
     - public/javascripts/store/rails.js
     - public/javascripts/store/application.js
-    - public/javascripts/store/less-1.1.3.js
     - public/javascripts/store/jquery.infieldlabel.js
     - public/javascripts/jquery-lib/jquery.validate.js
     - public/javascripts/jquery-lib/jquery.ui.core.js
@@ -45,6 +43,8 @@ javascripts:
     - public/javascripts/lib/spin.js
     - public/javascripts/lib/cssua.js
     - public/javascripts/store/checkout.js
+  less:
+    - public/javascripts/store/less-1.1.3.js
   store_admin:
     - public/javascripts/store/admin/rails.js
     - public/javascripts/store/admin/jquery.ui.js
