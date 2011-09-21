@@ -74,6 +74,7 @@ stylesheets:
     - public/stylesheets/jquery-lib/jquery.ui.theme.css
     - public/stylesheets/jquery-lib/jquery-ui-numeric.css
     - public/stylesheets/store/checkout.css
+    - public/stylesheets/store/bootstrap.css
   store_admin:
     - public/stylesheets/store/admin/*.css
     - public/javascripts/store/admin/jquery.alerts/jquery.alerts.css

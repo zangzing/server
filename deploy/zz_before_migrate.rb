@@ -83,6 +83,9 @@ if [:solo, :app_master, :app].include?(zz_role)
   ]
   move_assets(assets)
 
+  #precompile less
+  run "cd public/stylesheets/store/lib; bundle exec lessc bootstrap.less > ../bootstrap.css; cd -"
+  
   #Use Jammit gem to package css and javascript
   run "bundle exec jammit"
   run "rm -rf #{zz_release_dir}/public/javascripts"
