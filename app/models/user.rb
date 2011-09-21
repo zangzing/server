@@ -148,23 +148,13 @@ class User < ActiveRecord::Base
   def self.find_by_email_or_create_automatic( email, name='' )
     user = User.find_by_email( email )
     if user.nil?
-      # Get the username part of the email and remove special characters (a.k.a parameterize)
-      mail_name = username = email.parameterize('')
-      
-      # Make sure the username is unique by adding a number until there are no matches
-      i = 1
-      while User.find_by_username(username) do
-        username = "#{mail_name}#{i}"
-        i += 1
-      end
-      #the username is now clean and valid
-      
+
       name = ( name == '' ? email.split('@')[0] : name )
       #user not fount create an automatic user with a random password
       user = User.new(  :automatic => true,
                            :email => email,
                            :name => name,
-                           :username => username,  #username is in DB index, so '' won't work
+                           :username => UUIDTools::UUID.random_create.to_s.gsub('-','').to_s,
                            :password => UUIDTools::UUID.random_create.to_s);
       user.reset_perishable_token
       user.save!
