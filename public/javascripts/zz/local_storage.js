@@ -3,15 +3,22 @@ zz.local_storage = zz.local_storage || {};
 
 (function(){
 
+    var cache = {}
+
     zz.local_storage.set = function(name, value){
-        window.localStorage.setItem(name, value);
+        cache[name] = value;
+        window.localStorage.setItem(name, JSON.stringify(value));
     };
 
     zz.local_storage.get = function(name){
-        return window.localStorage.getItem(name);
+        if(!cache[name]){
+            cache[name] = JSON.parse(window.localStorage.getItem(name));
+        }
+        return cache[name];
     };
 
     zz.local_storage.remove = function(name){
+        cache[name] = null;
         window.localStorage.removeItem(name);
     };
 

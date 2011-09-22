@@ -9,9 +9,11 @@ zz.buy = zz.buy || {};
         SELECT_PHOTOS: 'select_photos'
     };
 
-    var selected_photo_ids = [];
 
-    var current_drawer_screen = DRAWER_SCREENS.SELECT_PHOTOS;
+
+
+
+
 
 
     var EVENTS = {
@@ -66,6 +68,13 @@ zz.buy = zz.buy || {};
     };
 
     zz.buy.activate_buy_mode = function(){
+
+        localStorage['zz.buy.current_screen'] = localStorage['zz.buy.current_screen'] || DRAWER_SCREENS.SELECT_PRODUCT;
+        localStorage['zz.buy.current_product'] = localStorage['zz.buy.zz.buy.current_product'] || {};
+        localStorage['zz.buy.selected_photos'] = localStorage['zz.buy.selected_photos'] || [];
+
+
+
         zz.pubsub.publish(EVENTS.BEFORE_ACTIVATE);
         jQuery.cookie('buy_mode', 'true', {path:'/'});
         open_drawer(true, function(){
@@ -88,7 +97,9 @@ zz.buy = zz.buy || {};
             return; 
         }
 
-        selected_photo_ids.push(photo_id);
+        var selected_photos = zz.local_storage.get('zz.buy.selected_photos') || [];
+        selected_photos.push(photo_id);
+        zz.local_storage.set('zz.buy.selected_photos', selected_photos);
 
         zz.routes.call_add_to_cart(photo_id);
 
@@ -125,7 +136,7 @@ zz.buy = zz.buy || {};
     };
 
     zz.buy.is_photo_selected = function(photo_id){
-        return _.include(selected_photo_ids, photo_id);
+        return _.include(zz.local_storage.get('zz.buy.selected_photos'), photo_id);
     };
 
     zz.buy.on_before_activate = function(callback){
