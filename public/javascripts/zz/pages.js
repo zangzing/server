@@ -431,9 +431,6 @@ zz.pages.group_tab = {
         $.ajax({
             dataType: 'json',
             url: zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/edit_group.json',
-            error: function() {
-                alert('error!');
-            },
             success: function(json) {
 
 

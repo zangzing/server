@@ -91,12 +91,19 @@
 
     <div id='page-wrapper'>
 
-        <div id='right-drawer'></div>
-        <div id='article'>
 
-          <%= yield :layout %>
-
+        <div id='right-drawer'>
+            <div class='header'>
+              <div class='title'></div>
+              <div class='close-button'></div>
+            </div>
+            <div class='content'></div>
         </div>
+
+      <div id='article'>
+        <%= yield :layout %>
+      </div>
+
 
         <div id="container">
           <div id="dialog-modal" title="Basic modal dialog"></div>

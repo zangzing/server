@@ -598,8 +598,11 @@ zz.comments = {};
         zz.logger.debug('comments_widget 1...');
         zz.logger.debug(comments_widget);
 
-
-        $('#right-drawer').html(comments_widget.element);
+        $('#right-drawer .header .title').html("Comments");
+        $('#right-drawer .content').html(comments_widget.element);
+        $('#right-drawer .header .close-button').click(function(){
+            $('#footer #comments-button').click(); //todo: this is a hack; should be a better way to wire this together
+        });
 
 
         if(animate) {
@@ -638,13 +641,13 @@ zz.comments = {};
                      $('#article').css({right:0});
                      $('#article').fadeIn('fast');
                      $(this).hide();
-                     callback();
+                     if(callback) callback();
                  });
              });
          }
          else{
              $('#right-drawer').hide();
-             callback();
+             if(callback) callback();
 
          }
     };

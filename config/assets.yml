@@ -22,7 +22,6 @@ javascripts:
     - public/javascripts/lib/*.js
   zz:
     - public/javascripts/zz/license.js
-    - public/javascripts/zz/namespaces.js
     - public/javascripts/zz/zza.js
     - public/javascripts/zz/routes.js
     - public/javascripts/zz/*.js
