@@ -168,9 +168,22 @@ zz.buy = zz.buy || {};
 
 
     function open_drawer(animate, callback){
+
+
+        $('#right-drawer .content').html('<a id="checkout-button" class="newgreen-button"><span>Checkout</span></a>');
+        $('#right-drawer .content #checkout-button').click(function(){
+            document.location.href = '/store/cart'
+        });
+
+        $('#right-drawer .header .title').html('Choose a product');
+        $('#right-drawer .header .close-button').click(function(){
+            $('#footer #buy-button').click(); //todo: hack -- should be better way to wire these together
+        });
+
+
+
         if(animate){
             $('#article').fadeOut('fast', function(){
-                $('#right-drawer').html('<a id="checkout-button" class="newgreen-button"><span>Checkout</span></a>');
 
 
 
@@ -185,13 +198,8 @@ zz.buy = zz.buy || {};
             $('#article').css({right:445});
             $('#article').show();
 
-            $('#right-drawer').css({right:0})
-                              .html('<a id="checkout-button" class="newgreen-button"><span>Checkout</span></a>')
-                              .show();
-            
-            $('#right-drawer #checkout-button').click(function(){
-                document.location.href = '/store/cart'
-            });
+            $('#right-drawer').css({right:0}).show();
+
 
             callback();
         }
