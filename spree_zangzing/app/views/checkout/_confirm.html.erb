@@ -28,11 +28,10 @@ end %>
 <div id="left_side">
   <div id="order_info" class="clearfix">
     <div id="ship_address" >
-      <h5><%=t('shipping_address')%></h5>
-      <p>
-        <%= render :partial =>'address_display', :locals => { :address => @order.ship_address,:label =>t("shipping_address") } %>
-        <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('ship_address')%>').submit();">change</a>
-      </p><br/>
+
+      <%= render :partial =>'address_display', :locals => { :address => @order.ship_address,:label =>t("shipping_address") } %>
+      <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('ship_address')%>').submit();">change</a>
+      <p>&nbsp</p>
 
       <%= select( :order,
                   :shipping_method_id,
@@ -42,11 +41,10 @@ end %>
     </div>
 
     <div id="bill_address">
-      <h5><%=t('billing_address')%></h5>
-      <p>
-        <%= render :partial =>'address_display', :locals => { :address => @order.bill_address,:label =>t('billing_address') } %>
-        <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('payment')%>').submit();">change</a>
-      </p><br/>
+      <%= render :partial =>'address_display', :locals => { :address => @order.bill_address,:label =>t('billing_address') } %>
+      <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('payment')%>').submit();">change</a>
+      <p>&nbsp</p>
+      
       <div id="cclogo">
         <%= creditcard_logo( @order.payments.first.source ) %>
       </div>

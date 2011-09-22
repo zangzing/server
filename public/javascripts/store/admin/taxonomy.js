@@ -94,7 +94,7 @@ jQuery(document).ready(function(){
     },
     "themes" : {
       "theme" : "apple",
-      "url" : "/store/javascripts/jsTree/themes/apple/style.css"
+      "url" : "/javascripts/store/admin/jsTree/themes/apple/style.css"
     },
     "strings" : {
       "new_node" : new_taxon,

@@ -46,22 +46,27 @@ javascripts:
   less:
     - public/javascripts/store/less-1.1.3.js
   store_admin:
-    - public/javascripts/store/admin/rails.js
     - public/javascripts/store/admin/jquery.ui.js
     - public/javascripts/store/admin/jquery.suggest.js
     - public/javascripts/store/admin/jquery.tokeninput.js
     - public/javascripts/store/admin/jquery.delayedobserver.js
+    - public/javascripts/store/admin/jquery.alerts/jquery.alerts.js
+    - public/javascripts/store/admin/jquery.autocomplete.js
+    - public/javascripts/store/admin/rails.js
+    - public/javascripts/store/admin/datepicker.js
     - public/javascripts/store/admin/admin.js
     - public/javascripts/store/admin/nested-attribute.js
     - public/javascripts/store/admin/zone.js
     - public/javascripts/store/admin/calculator.js
     - public/javascripts/store/admin/gateway.js
-    - public/javascripts/store/admin/jquery.alerts/jquery.alerts.js
-    - public/javascripts/store/admin/jquery.autocomplete.js
-    - public/javascripts/store/admin/datepicker.js
-    - public/javascripts/store/admin/unobtrusive_handlers.js
+  store_admin_taxonomies:
+    - public/javascripts/store/admin/taxonomy.js
+    - public/javascripts/store/admin/jquery.cookie.js
+    - public/javascripts/store/admin/jsTree/jquery.jstree.js
   store_admin_template:
     - public/javascripts/store/admin/jquery.template.js
+  store_admin_handlers:
+    - public/javascripts/store/admin/unobtrusive_handlers.js
 
 stylesheets:
   common:
@@ -80,3 +85,4 @@ stylesheets:
     - public/javascripts/store/admin/jquery.alerts/jquery.alerts.css
     - public/javascripts/store/admin/jquery.alerts/jquery.alerts.spree.css
     - public/stylesheets/store/admin/datepicker.css
+    - public/javascripts/store/admin/jsTree/themes/apple/style.css

@@ -75,6 +75,11 @@ html{
     border: 2px solid #CCCCCC;
 }
 
+.address_label{
+    color:#404040;
+    font-weight: 700;
+    font-size: 110%;
+}
 
 /*----------------- Progress Bar ------------------- */
 .progress-bar{
