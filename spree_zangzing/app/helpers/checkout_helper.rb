@@ -34,7 +34,10 @@ module CheckoutHelper
         end
       end
       content_tag('td',
-                  content_tag('div', state_index+1,:class => 'state_index' )+content_tag('div', text, :class => 'state_name'),
+                  content_tag('div',
+                      content_tag('div', state_index+1,:class => 'state_index' )+
+                      content_tag('div', text, :class => 'state_name'),
+                  :class=>'state'),
                   cell_options)
     end
     row = content_tag('tr', raw(items.join("\n")), :class => 'progress-steps', :id => "checkout-step-#{order_state}")

@@ -31,36 +31,37 @@ javascripts:
   movie:
     - public/javascripts/movie/*.js
   store:
-    - public/javascripts/jquery-lib/jquery.validate.js
-    - public/store/javascripts/rails.js
-    - public/store/javascripts/application.js
-    - public/store/javascripts/less-1.1.3.js
-    - public/store/javascripts/jquery.infieldlabel.js
     - public/javascripts/zz/routes.js
-    - public/javascripts/store/checkout.js
+    - public/javascripts/store/rails.js
+    - public/javascripts/store/application.js
+    - public/javascripts/store/jquery.infieldlabel.js
+    - public/javascripts/jquery-lib/jquery.validate.js
     - public/javascripts/jquery-lib/jquery.ui.core.js
     - public/javascripts/jquery-lib/jquery.ui.widget.js
     - public/javascripts/jquery-lib/jquery.ui.button.js
     - public/javascripts/jquery-lib/jquery.ui.numeric.js
     - public/javascripts/lib/spin.js
-
+    - public/javascripts/lib/cssua.js
+    - public/javascripts/store/checkout.js
+  less:
+    - public/javascripts/store/less-1.1.3.js
   store_admin:
-    - public/store/javascripts/rails.js
-    - public/javascripts/jquery-lib/jquery.ui.*.js
-    - public/store/javascripts/jquery.suggest.js
-    - public/store/javascripts/jquery.tokeninput.js
-    - public/store/javascripts/jquery.delayedobserver.js
-    - public/store/javascripts/admin.js
-    - public/store/javascripts/nested-attribute.js
-    - public/store/javascripts/zone.js
-    - public/store/javascripts/calculator.js
-    - public/store/javascripts/gateway.js
-    - public/store/javascripts/jquery.alerts/jquery.alerts.js
-    - public/store/javascripts/jquery.autocomplete.js
-    - public/store/javascripts/datepicker.js
-
+    - public/javascripts/store/admin/rails.js
+    - public/javascripts/store/admin/jquery.ui.js
+    - public/javascripts/store/admin/jquery.suggest.js
+    - public/javascripts/store/admin/jquery.tokeninput.js
+    - public/javascripts/store/admin/jquery.delayedobserver.js
+    - public/javascripts/store/admin/admin.js
+    - public/javascripts/store/admin/nested-attribute.js
+    - public/javascripts/store/admin/zone.js
+    - public/javascripts/store/admin/calculator.js
+    - public/javascripts/store/admin/gateway.js
+    - public/javascripts/store/admin/jquery.alerts/jquery.alerts.js
+    - public/javascripts/store/admin/jquery.autocomplete.js
+    - public/javascripts/store/admin/datepicker.js
+    - public/javascripts/store/admin/unobtrusive_handlers.js
   store_admin_template:
-    - public/store/javascripts/jquery.template.js
+    - public/javascripts/store/admin/jquery.template.js
 
 stylesheets:
   common:
@@ -68,18 +69,14 @@ stylesheets:
     - public/stylesheets/main.css
     - public/stylesheets/*.css
   store:
-    - public/store/stylesheets/screen.css
-  store_checkout:
-    - public/stylesheets/dialog.css
-    - public/stylesheets/new-dialog.css
     - public/stylesheets/buttons.css
-    - public/store/stylesheets/checkout.css
     - public/stylesheets/jquery-lib/jquery.ui.button.css
     - public/stylesheets/jquery-lib/jquery.ui.theme.css
     - public/stylesheets/jquery-lib/jquery-ui-numeric.css
-    
+    - public/stylesheets/store/checkout.css
+    - public/stylesheets/store/bootstrap.css
   store_admin:
-    - public/store/stylesheets/admin/*.css
-    - public/store/javascripts/jquery.alerts/jquery.alerts.css
-    - public/store/javascripts/jquery.alerts/jquery.alerts.spree.css
-    - public/store/stylesheets/datepicker.css
+    - public/stylesheets/store/admin/*.css
+    - public/javascripts/store/admin/jquery.alerts/jquery.alerts.css
+    - public/javascripts/store/admin/jquery.alerts/jquery.alerts.spree.css
+    - public/stylesheets/store/admin/datepicker.css

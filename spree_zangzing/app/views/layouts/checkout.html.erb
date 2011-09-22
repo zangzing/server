@@ -16,8 +16,10 @@
 
   <title><%= title %></title>
 
-  <link rel="stylesheet/less" href="/store/stylesheets/lib/bootstrap.less" media="all">
-  <%= include_stylesheets :store_checkout %>
+  <% if Rails.env.development? %>
+    <link rel="stylesheet/less" href="/stylesheets/store/lib/bootstrap.less" media="all">
+  <%end%>
+  <%= include_stylesheets :store %>
   <%= yield :page_stylesheet %>
   <%= csrf_meta_tag %>
 </head>
@@ -71,7 +73,14 @@
 
 
 
+<%= include_javascripts :jquery%>
+
+ <% if Rails.env.development? %>
+    <%= include_javascripts :less%>
+<%end%>
+
 <%= include_javascripts :jquery, :store %>
+
 <% unless I18n.locale.to_s[0..1] == 'en' %>
     <%= javascript_include_tag ['localization/messages_', I18n.locale.to_s[0..1], '.js'].join %>
 <% end %>

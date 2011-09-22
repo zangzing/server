@@ -23,7 +23,6 @@ end %>
 
     <% if @order.use_shipping_as_billing?  %>
 
-
         <fieldset class="address">
           <h4><%= t("billing_address") %>&nbsp &nbsp<small>(<%=t("same_as_shipping")%>)</small></h4>
           <%= render :partial =>'address_display', :locals => { :address => @order.bill_address,:label => ''} %>
@@ -31,6 +30,7 @@ end %>
           <a id="change_ba" href="javascript:void(0)" onclick="change_ba_form.submit();">change</a>
         </fieldset>
 
+        <% if current_user.nil? %>
         <fieldset>
           <h4><%= t("email").titleize%></h4>
           <p id="orderemail" class="field">
@@ -42,12 +42,8 @@ end %>
             </a>
           </p>
         </fieldset>
-
-
+        <%end%>
     <%else%>
-
-
-
         <fieldset class="address">
           <h4><%= t("billing_contact") %></h4>
           <%= render :partial =>'addressbook', :locals => { :form => form,
@@ -55,10 +51,16 @@ end %>
                                                             :address_kind => 'bill_address' } %>
 
           <%= form.fields_for :bill_address do |bill_form| %>
+            <%if current_user %>
+              <%= render :partial =>'address_fields', :locals => { :f => bill_form,
+                                                                   :legend => t('billing_address'),
+                                                                   :address => @order.bill_address } %>
+            <% else %>
               <%= render :partial =>'address_fields', :locals => { :f => bill_form,
                                                                    :email_form => form,
                                                                    :legend => t('billing_address'),
                                                                    :address => @order.bill_address } %>
+            <%end%>
               </fieldset>
           <% end %>
 
