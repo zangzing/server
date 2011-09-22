@@ -45,19 +45,19 @@ javascripts:
   less:
     - public/javascripts/store/less-1.1.3.js
   store_admin:
-    - public/javascripts/store/admin/jquery.ui.js
+    - public/javascripts/store/admin/rails.js
+    - public/javascripts/store/admin/jquery-ui.js
     - public/javascripts/store/admin/jquery.suggest.js
     - public/javascripts/store/admin/jquery.tokeninput.js
     - public/javascripts/store/admin/jquery.delayedobserver.js
-    - public/javascripts/store/admin/jquery.alerts/jquery.alerts.js
-    - public/javascripts/store/admin/jquery.autocomplete.js
-    - public/javascripts/store/admin/rails.js
-    - public/javascripts/store/admin/datepicker.js
     - public/javascripts/store/admin/admin.js
     - public/javascripts/store/admin/nested-attribute.js
     - public/javascripts/store/admin/zone.js
     - public/javascripts/store/admin/calculator.js
     - public/javascripts/store/admin/gateway.js
+    - public/javascripts/store/admin/jquery.alerts/jquery.alerts.js
+    - public/javascripts/store/admin/jquery.autocomplete.js
+    - public/javascripts/store/admin/datepicker.js
   store_admin_taxonomies:
     - public/javascripts/store/admin/taxonomy.js
     - public/javascripts/store/admin/jquery.cookie.js
@@ -80,7 +80,14 @@ stylesheets:
     - public/stylesheets/store/checkout.css
     - public/stylesheets/store/bootstrap.css
   store_admin:
-    - public/stylesheets/store/admin/*.css
+    - public/stylesheets/store/admin/admin-reset.css
+    - public/stylesheets/store/admin/grids.css
+    - public/stylesheets/store/admin/admin-typography.css
+    - public/stylesheets/store/admin/admin-forms.css
+    - public/stylesheets/store/admin/admin-tables.css
+    - public/stylesheets/store/admin/admin.css
+    - public/stylesheets/store/admin/autocomplete.css
+    - public/stylesheets/store/admin/token-input.css
     - public/javascripts/store/admin/jquery.alerts/jquery.alerts.css
     - public/javascripts/store/admin/jquery.alerts/jquery.alerts.spree.css
     - public/stylesheets/store/admin/datepicker.css
