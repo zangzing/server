@@ -7,7 +7,11 @@
       </div>
     </a>
     <div class="profile-name">
-    <a href="<%=user_path(activity.user)%>"><%=activity.user.name%> </a>
+    <% if activity.user.automatic? %>
+         <%=activity.user.name%>
+    <% else %>
+         <a href="<%=user_path(activity.user)%>"><%=activity.user.name%> </a>
+    <% end %>
     added <%=pluralize( i = activity.upload_batch.photos.length, "photo" )%>
     <% if view != 'album' %>
     <%end %>
