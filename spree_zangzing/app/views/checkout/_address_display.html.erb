@@ -1,4 +1,7 @@
 <%# Caller must provide address and label%>
+<%if defined?( label )%>
+<span class="address_label"><%=label%></span>
+<%end%>
 <address>
       <%= address.full_name%><br/>
       <%= address.address1%><br/>
