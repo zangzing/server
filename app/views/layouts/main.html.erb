@@ -90,9 +90,6 @@
     </div>
 
     <div id='page-wrapper'>
-      <div id='article'>
-        <%= yield :layout %>
-      </div>
 
 
         <div id='right-drawer'>
@@ -102,6 +99,11 @@
             </div>
             <div class='content'></div>
         </div>
+
+      <div id='article'>
+        <%= yield :layout %>
+      </div>
+
 
         <div id="container">
           <div id="dialog-modal" title="Basic modal dialog"></div>
