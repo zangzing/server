@@ -1,0 +1,82 @@
+.buy-screens{
+    position:absolute;
+    width: 1335px;
+    top:0px;
+    bottom:0px;
+}
+
+.buy-screens .select-product-screen{
+    position:absolute;
+    width:445px;
+    left:0px;
+    top:0px;
+    bottom:0px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.buy-screens .select-product-screen .product{
+    position:relative;
+    height:123px;
+    width:445px;
+    border-bottom: 1px solid #aaaaaa;
+    cursor: pointer;
+}
+
+.buy-screens .select-product-screen .product:hover{
+    background-color: #f9f9fa;
+}
+
+.buy-screens .select-product-screen .product .image{
+    position:absolute;
+    width:85px;
+    height:85px;
+    top:20px;
+    left:15px;
+}
+
+.buy-screens .select-product-screen .product .name{
+    position:absolute;
+    left: 109px;
+    top: 30px;
+    font-weight: 500;
+    font-size: 14px
+}
+
+.buy-screens .select-product-screen .product .description{
+    position:absolute;
+    left: 109px;
+    top: 50px;
+    font-size: 14px
+}
+
+.buy-screens .select-product-screen .product .learn-more{
+    color: #466FAA;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.buy-screens .select-product-screen .product .learn-more:hover{
+    text-decoration: underline;
+}
+
+
+
+
+.buy-screens .configure-product-screen{
+    position:absolute;
+    width:445px;
+    left:445px;
+    top:0px;
+    bottom:0px;
+    background-color: red;
+}
+
+.buy-screens .configure-product-screen{
+    position:absolute;
+    width:445px;
+    right:0px;
+    top:0px;
+    bottom:0px;
+    background-color: green;
+}

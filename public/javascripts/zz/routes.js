@@ -4,6 +4,13 @@ zz.routes = {
 
     path_prefix: '/service',
 
+    store: {
+        get_products: function(success, error){
+            return zz.routes._get('/store/products.json', {}, success, error);
+        }
+
+    },
+
     comments: {
         delete_comment: function(comment_id, success, error){
             var url = '/service/comments/:comment_id'.replace(':comment_id', comment_id);
