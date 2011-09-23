@@ -5,6 +5,10 @@
     bottom:0px;
 }
 
+
+/*
+ * select product screen */
+
 .buy-screens .select-product-screen{
     position:absolute;
     width:445px;
@@ -63,20 +67,138 @@
 
 
 
+/*
+ * configure product screen */
+
 .buy-screens .configure-product-screen{
     position:absolute;
     width:445px;
     left:445px;
     top:0px;
     bottom:0px;
-    background-color: red;
 }
 
-.buy-screens .configure-product-screen{
+.buy-screens .configure-product-screen .main-section .image{
+    position: absolute;
+    top:10px;
+    width:180px;
+    height:180px;
+    left:133px;
+}
+.buy-screens .configure-product-screen .main-section .learn-more{
+    position: absolute;
+    top:200px;
+    left:0px;
+    right:0px;
+    text-align: center;
+
+    color: #466FAA;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.buy-screens .configure-product-screen .main-section .learn-more:hover{
+    text-decoration: underline;
+}
+
+
+
+
+/*
+ * select photos screen */
+
+
+.buy-screens .select-photos-screen{
     position:absolute;
     width:445px;
     right:0px;
     top:0px;
     bottom:0px;
-    background-color: green;
+}
+
+.buy-screens .select-photos-screen .main-section .selected-photo{
+    position: relative;
+}
+
+.buy-screens .select-photos-screen .main-section .selected-photo .image{
+    position:relative;
+    width: 180px;
+    left:130px;
+}
+
+
+
+
+/*
+ * configure product & select photo shared stuff  */
+
+
+.buy-screens .main-section{
+    position:absolute;
+    top:0px;
+    bottom: 180px;
+    left:0px;
+    right:0px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+
+.buy-screens .footer-section{
+    position:absolute;
+    bottom:0px;
+    height:180px;
+    left:0px;
+    right:0px;
+    background-color: #f9f9fa;
+    border-top: 1px solid #cccccc;
+}
+
+.buy-screens .footer-section .image{
+    position:absolute;
+    width:85px;
+    height:85px;
+    left:25px;
+    top:20px;
+}
+
+.buy-screens .footer-section .name{
+    position: absolute;
+    left: 125px;
+    top: 30px;
+    font-size: 14px;
+    font-weight: 500;
+    text-shadow: 1px 1px #fff;
+}
+
+.buy-screens .footer-section .options{
+    position: absolute;
+    left: 125px;
+    top: 50px;
+    font-size: 14px;
+}
+
+.buy-screens .footer-section .price{
+    position: absolute;
+    left: 125px;
+    top: 70px;
+    font-size: 14px;
+}
+
+.buy-screens .footer-section .price .value{
+    font-weight: 500;
+}
+
+.buy-screens .footer-section .back{
+    position:absolute;
+    left:30px;
+    bottom:20px;
+    width:125px;
+}
+
+.buy-screens .footer-section .next{
+    position:absolute;
+    right:30px;
+    bottom:20px;
+    width:190px;
 }
