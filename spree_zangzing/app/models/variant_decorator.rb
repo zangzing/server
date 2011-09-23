@@ -5,7 +5,6 @@ Variant.class_eval do
     {
       :id => id,
       :sku => sku,
-      :name => name,
       :price => number_to_currency( price ),
       :description => custom_description,
       :image_url => custom_image_url,

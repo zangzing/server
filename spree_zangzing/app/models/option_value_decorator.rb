@@ -3,7 +3,7 @@ OptionValue.class_eval do
     {
       :id => id,
       :type_id => option_type.id,
-      :name => name
+      :name => presentation
     }
   end
 
