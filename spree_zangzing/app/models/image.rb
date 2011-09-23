@@ -8,7 +8,13 @@
 
 class Image < Asset
    alias_attribute :description, :alt
-   alias_attribute :url, :attachment_file_name
+   alias_attribute :photo_id, :attachment_file_name
+
+   validates_presence_of :photo_id
+
+   def photo
+     @photo ||= Photo.find( photo_id )
+   end
 
    # This definition gets around a block inside the spree
    # Spree::BaseHelper used for setting up paperclip. By
@@ -17,18 +23,31 @@ class Image < Asset
       {:attachment => { :styles => {}}}
     end
 
+   # this definition is to deal with spree expecting an image using
+   # paperclip
     def attachment
       @attachment ||= Attachment.new( self )
     end
 
-   class Attachment
 
+   class Attachment
        def initialize( image )
          @image = image
        end
 
        def url( size )
-           return @image.url
+         case size
+           when :mini
+             @image.photo.stamp_url
+           when :product
+             @image.photo.screen_url
+           when :screen
+             @image.photo.screen_url
+           when :full_screen
+             @image.photo.full_screen_url
+           else
+             @image.photo.screen_url
+         end
        end
    end
 
