@@ -7,15 +7,26 @@ Variant.class_eval do
       :sku => sku,
       :name => name,
       :price => number_to_currency( price ),
+      :description => custom_description,
+      :image_url => custom_image_url,
       :values => option_values.collect { | ov | ov.as_json }
     }
+  end
+
+  def custom_image_url
+    i = custom_image
+    if i
+      i.photo.screen_url
+    else
+      ''
+    end
   end
 
   def custom_image
     if images.count > 0
       images.first
     else
-      product.custom_image
+      product.images.first
     end
   end
 
