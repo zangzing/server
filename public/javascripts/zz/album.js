@@ -271,8 +271,9 @@ zz.album = {};
 
 
     function buy_photo(photo_id, element){
-        element.data().zz_photo.setChecked(true);
-        zz.buy.select_photo(photo_id, element);
+        zz.buy.select_photo(photo_id, element, function(){
+            element.data().zz_photo.setChecked(true);
+        });
     }
 
 

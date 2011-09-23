@@ -16,7 +16,12 @@ zz.local_storage = zz.local_storage || {};
             if (value == ""){
                 value = null;
             }
-            cache[name] = JSON.parse(value);
+            try{
+                cache[name] = JSON.parse(value);
+            }
+            catch(err){
+                cache[name] = value;  // must be raw value not json
+            }
         }
         return cache[name];
     };

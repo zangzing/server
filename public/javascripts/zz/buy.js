@@ -24,7 +24,22 @@ zz.buy = zz.buy || {};
     var BUY_SCREENS_TEMPLATE = function(){
         return '<div class="buy-screens">' +
                     '<div class="select-product-screen"></div>' +
-                    '<div class="configure-product-screen"></div>' +
+                    '<div class="configure-product-screen">' +
+                        '<div class="main-section">' +
+                            '<img class="image" src="/images/photo_placeholder.png">' +
+                            '<div class="learn-more">Learn More</div>' +
+                            '<div class="options">' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="footer-section">' +
+                            '<img class="image" src="/images/photo_placeholder.png">' +
+                            '<div class="name">Modern Framed Poster Print</div>' +
+                            '<div class="options">12x23 Framed Matte</div>' +
+                            '<div class="price">Price <span class="value">$200.94</span></div>' +
+                            '<a class="gray-button back"><span>Back</span></a>'+
+                            '<a class="next-button next"><span>Next: Choose Photos</span></a>'+
+                        '</div>' +
+                    '</div>' +
                     '<div class="select-photos-screen"></div>' +
                '</div>';
     };
@@ -112,6 +127,11 @@ zz.buy = zz.buy || {};
             return; 
         }
 
+        if(zz.buy.is_buy_mode_active() && current_screen() != DRAWER_SCREENS.SELECT_PHOTOS){
+            alert('Plese select and configure a product and then add photos.');
+            return;
+        }
+
         var selected_photos = zz.local_storage.get('zz.buy.selected_photos') || [];
         selected_photos.push(photo_id);
         zz.local_storage.set('zz.buy.selected_photos', selected_photos);
@@ -128,14 +148,6 @@ zz.buy = zz.buy || {};
         var end_left = $('#footer #buy-button').offset().left;
 
 
-        var on_finish_animation = function() {
-            if(callback){
-                callback();
-            }
-            $(this).remove();
-
-
-        };
 
         imageElement.clone()
                 .css({position: 'absolute', left: start_left, top: start_top, border: '1px solid #ffffff'})
@@ -146,7 +158,17 @@ zz.buy = zz.buy || {};
                              height: '20px',
                              top: (end_top) + 'px',
                              left: (end_left) + 'px'
-                         }, 1000, 'easeInOutCubic', on_finish_animation);
+                         }, 1000, 'easeInOutCubic', function(){
+                                                        $(this).remove();
+                                                     }
+                );
+
+
+        // don't wait for animation to finish
+        if(callback){
+            callback();
+        }
+
 
     };
 
@@ -190,12 +212,20 @@ zz.buy = zz.buy || {};
                 product_element.find('.name').text(product.name);
                 product_element.find('.description .text').text(product.description);
                 screen_element.append(product_element);
+                product_element.click(function(){
+                    render_configure_product_screen();
+                    slide_to_screen(DRAWER_SCREENS.CONFIGURE_PRODUCT, product.name + ' Settings');
+                });
             });
 
         });
     }
 
     function render_configure_product_screen(){
+        buy_screens_element.find('.configure-product-screen .footer-section .back').unbind('click');
+        buy_screens_element.find('.configure-product-screen .footer-section .back').click(function(){
+            slide_to_screen(DRAWER_SCREENS.SELECT_PRODUCT);
+        });
 
     }
 
@@ -203,10 +233,35 @@ zz.buy = zz.buy || {};
 
     }
 
-    function slide_to_screen(name){
+    function slide_to_screen(name, title, callback){
+        var left;
+        switch (name){
+            case DRAWER_SCREENS.SELECT_PRODUCT:
+                left = '0px';
+                title = 'Select a product'
+                break;
+            case DRAWER_SCREENS.CONFIGURE_PRODUCT:
+                left = '-445px';
+                break;
+            case DRAWER_SCREENS.SELECT_PHOTOS:
+                left = '-890px';
+                break;
+        }
+
+        $('#right-drawer .header .title').fadeOut('fast');
+        buy_screens_element.animate({left:left},500, function(){
+            $('#right-drawer .header .title').html(title);
+            $('#right-drawer .header .title').fadeIn('fast');
+
+            if(callback) callback();
+
+        });
 
     }
 
+    function current_screen(){
+        return zz.local_storage.get('zz.buy.current_screen') || DRAWER_SCREENS.SELECT_PRODUCT;
+    }
 
     function open_drawer(animate, callback){
 
