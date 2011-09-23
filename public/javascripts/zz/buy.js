@@ -264,8 +264,9 @@ zz.buy = zz.buy || {};
         });
 
         buy_screens_element.find('.select-photos-screen .footer-section .next').unbind('click').click(function(){
-            add_selected_photos_to_cart();
-            zz.routes.store.goto_cart();
+            add_selected_photos_to_cart(function(){
+                zz.routes.store.goto_cart();
+            });
         });
 
         var photo_list_element = buy_screens_element.find('.select-photos-screen .main-section');
@@ -287,8 +288,24 @@ zz.buy = zz.buy || {};
 
     }
 
-    function add_selected_photos_to_cart(){
+    function add_selected_photos_to_cart(callback){
+        // todo: need single call for adding many photos to cart
+        // todo: need to pass product info
+
+        _.each(zz.local_storage.get('zz.buy.selected_photos'), function(photo){
+            zz.routes.store.add_photo_to_cart(photo.id);
+        });
         zz.local_storage.set('zz.buy.selected_photos',[]);
+
+
+        zz.local_storage.set('zz.buy.current_screen', null);
+
+        if(callback) {
+            _.delay(callback, 1000);
+        }
+
+
+
     }
 
     function slide_to_screen(name, title, callback){

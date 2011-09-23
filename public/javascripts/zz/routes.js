@@ -11,8 +11,11 @@ zz.routes = {
 
         goto_cart: function(){
             document.location.href = '/store/cart';
-        }
+        },
 
+        add_photo_to_cart: function( photo_id, success, error ){
+            zz.routes._post('/store/orders/add_photo.json', {photo_id:photo_id}, success, error);
+        }
     },
 
     comments: {
@@ -161,24 +164,7 @@ zz.routes = {
     //       calls to server
 
 
-    call_add_to_cart: function( photo_id, success, error ){
-          $.ajax({
-            type: "POST",
-            dataType: "json",
-            data:{photo_id:photo_id},
-            url: "/store/orders/add_photo.json",
-            error: function(){
-                if(!_.isUndefined(error)){
-                    error();
-                }
-            },
-            success: function(){
-                if( !_.isUndefined( success ) ){
-                    success();
-                }
-            }
-        });
-    },
+
 
     call_delete_album: function(album_id, success, error) {
         $.ajax({
