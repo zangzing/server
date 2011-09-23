@@ -9,17 +9,34 @@ zz.buy = zz.buy || {};
         SELECT_PHOTOS: 'select_photos'
     };
 
-    var selected_photo_ids = [];
-
-    var current_drawer_screen = DRAWER_SCREENS.SELECT_PHOTOS;
 
 
     var EVENTS = {
         BEFORE_ACTIVATE: 'zz.buy.before_activate',
         ACTIVATE: 'zz.buy.activate',
-        BEFORE_DEACTIVATE: 'zz.buy.BEFORE_deactivate',
+        BEFORE_DEACTIVATE: 'zz.buy.before_deactivate',
         DEACTIVATE: 'zz.buy.deactivate'
     };
+
+
+    var buy_screens_element = null;
+
+    var BUY_SCREENS_TEMPLATE = function(){
+        return '<div class="buy-screens">' +
+                    '<div class="select-product-screen"></div>' +
+                    '<div class="configure-product-screen"></div>' +
+                    '<div class="select-photos-screen"></div>' +
+               '</div>';
+    };
+
+    var PRODUCT_TEMPLATE = function(){
+        return '<div class="product">' +
+                   '<img class="image" src="/images/photo_placeholder.png">' +
+                   '<div class="name"></div>' +
+                   '<div class="description"><span class="text"></span>&nbsp;<span class="learn-more">Learn more.</span></div>' +
+               '</div>';
+    };
+
 
     zz.buy.init = function(){
         if(zz.buy.is_buy_mode_active()){
@@ -66,6 +83,13 @@ zz.buy = zz.buy || {};
     };
 
     zz.buy.activate_buy_mode = function(){
+
+        localStorage['zz.buy.current_screen'] = localStorage['zz.buy.current_screen'] || DRAWER_SCREENS.SELECT_PRODUCT;
+        localStorage['zz.buy.current_product'] = localStorage['zz.buy.zz.buy.current_product'] || {};
+        localStorage['zz.buy.selected_photos'] = localStorage['zz.buy.selected_photos'] || [];
+
+
+
         zz.pubsub.publish(EVENTS.BEFORE_ACTIVATE);
         jQuery.cookie('buy_mode', 'true', {path:'/'});
         open_drawer(true, function(){
@@ -88,7 +112,9 @@ zz.buy = zz.buy || {};
             return; 
         }
 
-        selected_photo_ids.push(photo_id);
+        var selected_photos = zz.local_storage.get('zz.buy.selected_photos') || [];
+        selected_photos.push(photo_id);
+        zz.local_storage.set('zz.buy.selected_photos', selected_photos);
 
         zz.routes.call_add_to_cart(photo_id);
 
@@ -125,7 +151,7 @@ zz.buy = zz.buy || {};
     };
 
     zz.buy.is_photo_selected = function(photo_id){
-        return _.include(selected_photo_ids, photo_id);
+        return _.include(zz.local_storage.get('zz.buy.selected_photos'), photo_id);
     };
 
     zz.buy.on_before_activate = function(callback){
@@ -155,7 +181,18 @@ zz.buy = zz.buy || {};
     };
 
     function render_select_product_screen(){
+        zz.routes.store.get_products(function(products){
+            var screen_element = buy_screens_element.find('.select-product-screen');
+            screen_element.empty();
 
+            _.each(products, function(product){
+                var product_element = $(PRODUCT_TEMPLATE());
+                product_element.find('.name').text(product.name);
+                product_element.find('.description .text').text(product.description);
+                screen_element.append(product_element);
+            });
+
+        });
     }
 
     function render_configure_product_screen(){
@@ -166,11 +203,16 @@ zz.buy = zz.buy || {};
 
     }
 
+    function slide_to_screen(name){
+
+    }
+
 
     function open_drawer(animate, callback){
 
+        buy_screens_element = $(BUY_SCREENS_TEMPLATE());
 
-        $('#right-drawer .content').html('<a id="checkout-button" class="newgreen-button"><span>Checkout</span></a>');
+        $('#right-drawer .content').html(buy_screens_element);
         $('#right-drawer .content #checkout-button').click(function(){
             document.location.href = '/store/cart'
         });
@@ -180,6 +222,7 @@ zz.buy = zz.buy || {};
             $('#footer #buy-button').click(); //todo: hack -- should be better way to wire these together
         });
 
+        render_select_product_screen();
 
 
         if(animate){
