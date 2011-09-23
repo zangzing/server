@@ -37,7 +37,7 @@ Order.class_eval do
 
 
 # order state machine (see http://github.com/pluginaweek/state_machine/tree/master for details)
-  Order.state_machines[:state] = StateMachine::Machine.new(Order, :initial => 'cart') do
+  Order.state_machines[:state] = StateMachine::Machine.new(Order, :initial => 'cart', :use_transactions => false) do
 
     event :next do
       transition :from => 'cart', :to => 'confirm',      :if => Proc.new{ |order| order.ship_address && order.payment && order.bill_address }
@@ -287,6 +287,16 @@ Order.class_eval do
       :name           => "order" ,
       :user_id        => (User.respond_to?(:current) && User.current.try(:id)) || self.user_id
     })
+
+    #todo get rid of this once mau hooks up the new states
+    # since the state machine transitions are called within a transaction we need
+    # to ensure that any external triggers such as starting a resque job happen
+    # after we have officially moved to the complete state and outside of that
+    # transaction because we want to make sure the photos are prepped before
+    # we give resque a chance to run.  Otherwise it could run before the photos
+    # are committed to the db.  So the following line of code is now called from
+    # within the checkout controller.
+    #prepare_for_submit
   end
 
   # EZPrints processing stages
@@ -380,9 +390,16 @@ Order.class_eval do
   # will be called if no more retries will happen
   #
   def ezp_submit_order
+    test_mode = true # for now turned off so we don't submit orders to ezprints, when mau adds flag we will base our decision on that so we can have some real orders
+
     ezp = EZPrints::EZPManager.new
-    ezp_reference_id = ezp.submit_order(self)
-    self.ezp_reference_id = ezp_reference_id
+    if test_mode
+      #todo kick off loopback generation of simulated events via resque jobs
+    else
+      # real order placement
+      ezp_reference_id = ezp.submit_order(self)
+      self.ezp_reference_id = ezp_reference_id
+    end
     # should advance to order submitted state as well...
     #todo advance state
     save!

@@ -6,6 +6,8 @@ class EzPrintController < Spree::BaseController
 
   def event_handler
     begin
+      in_data = request.raw_post
+      Rails.logger.info(in_data.to_s)
       result = success_result # assume success
 
       orders = params['OrderEventNotification']['Order']
@@ -15,7 +17,9 @@ class EzPrintController < Spree::BaseController
         order_id = order['id']
         # use the ezp_ref_num to find original request to ezprints - maybe order id is sufficient...
         ezp_ref_num = order['EZPReferenceNumber']
+
         spree_order = {}  #todo wire this up to actual orders
+#        spree_order = Order.find_by_ezp_reference_id(ezp_ref_num)
 
         # if matches one of our valid event types, call the method in this class
         order.each_pair do |key, value|
@@ -84,5 +88,5 @@ end
    </Order>
 </OrderEventNotification>
 EOP
-) | curl -X POST -H 'Content-type: text/xml' -d @- http://localhost/store/integration/ezprint/events
+) | curl -X POST -H 'Content-type: text/xml' -d @- http://ezprints.integration.zangzing.com/store/integration/ezprint/events
 SAMPLE_REQUEST

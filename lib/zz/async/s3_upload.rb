@@ -33,6 +33,7 @@ module ZZ
         end 
           
         def self.perform( photo_id, options = {} )
+          options.recursively_symbolize_keys!
           SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
             photo = Photo.find(photo_id)
             self.upload_to_s3(photo, options)

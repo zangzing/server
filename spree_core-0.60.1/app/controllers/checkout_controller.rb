@@ -81,6 +81,9 @@ class CheckoutController < Spree::BaseController
 
   def after_complete
     session[:order_id] = nil
+    # trigger the photo copy and preparation, this is done here because normal state machine transitions
+    # happen in a transaction and could allow resque work to begin too soon.  See comment in order_decorator.rb
+    @order.prepare_for_submit
   end
 
   def rescue_from_spree_gateway_error
