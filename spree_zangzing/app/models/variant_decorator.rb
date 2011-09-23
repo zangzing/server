@@ -10,4 +10,21 @@ Variant.class_eval do
       :values => option_values.collect { | ov | ov.as_json }
     }
   end
+
+  def custom_image
+    if images.count > 0
+      images.first
+    else
+      product.custom_image
+    end
+  end
+
+  def custom_description
+      if images.count > 0
+        images.first.description
+      else
+        product.description
+      end
+  end
+
 end
