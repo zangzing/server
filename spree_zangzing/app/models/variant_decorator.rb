@@ -32,7 +32,11 @@ Variant.class_eval do
 
   def custom_description
       if images.count > 0
-        images.first.description
+        if images.first.description.nil? || images.first.description.length <=0
+          product.description
+        else
+          images.first.description
+        end
       else
         product.description
       end
