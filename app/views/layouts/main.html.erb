@@ -91,14 +91,20 @@
 
     <div id='page-wrapper'>
 
+
+
         <div id='right-drawer'>
-          <div class="content"></div>
+            <div class='header'>
+              <div class='title'></div>
+              <div class='close-button'></div>
+            </div>
+            <div class='content'></div>
         </div>
-        <div id='article'>
 
-          <%= yield :layout %>
+      <div id='article'>
+        <%= yield :layout %>
+      </div>
 
-        </div>
 
         <div id="container">
           <div id="dialog-modal" title="Basic modal dialog"></div>
@@ -138,7 +144,7 @@
 
       zz.session.has_facebook_token = <%= !current_user.identity_for_facebook.credentials_valid?.nil? %>;
       zz.session.has_twitter_token =  <%= !current_user.identity_for_twitter.credentials_valid?.nil? %>;
-      
+
 
 <%  end -%>
 
@@ -177,7 +183,7 @@
           <%  session[:flash_dialog] = nil %>
           <% end %>
 
-          
+
 
           <% if session[:send_zza_events_from_client]
                 session[:send_zza_events_from_client].each do |event| %>
@@ -206,8 +212,7 @@
               html += '<img src="http://d.1.zz.s3.amazonaws.com/i/75a38f16-c287-4fa7-b37b-0bdd21dbe64e-t?1314307961" width="180" height="120"><br>'
           }
 
-          $('#right-drawer .content').html(html);
-          $('#right-drawer').scrollTop(1000);
+          zz.buy.init();
       });
 
     </script>

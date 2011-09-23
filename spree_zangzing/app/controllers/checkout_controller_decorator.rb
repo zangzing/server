@@ -35,12 +35,6 @@ CheckoutController.class_eval do
      redirect_to checkout_registration_path 
    end
 
-   # Overrides the equivalent method defined in spree_core. This variation of the method will ensure that users
-   # are redirected to the tokenized order url unless authenticated as a registered user.
-   def completion_route
-     return order_path(@order) if current_user
-     token_order_path(@order, @order.token)
-   end
 
   def before_cart
     if  current_user || current_order.guest_checkout?
@@ -83,6 +77,13 @@ CheckoutController.class_eval do
      #remove the order from the session
      session[:order_id] = nil
 
+     #add the order access token to the session so user can see thank you window
+     #and order status, all through the orders controller.
+     session[:access_token] ||= @order.token
+
+     #clear the ezp cache of shipping cost arrays
+     @order.shipping_costs_done
+
      if current_user
        # If a user is looged in, save  addresses and creditcard as default
        # Backup order addresses with addresses that cannot be modified by user.
@@ -124,14 +125,16 @@ CheckoutController.class_eval do
    # the appropriate address id.
    def update_address_id
      if params[:order]
-       if params[:order][:ship_address_id]
 
+       # [:order][:ship_address_id] was inserted by the address book
+       # it will be blank if no address from the book was selected
+       # it will have the id if an address from the book was selected
+       
+       if params[:order][:ship_address_id]
          ship_address_id = params[:order][:ship_address_id]
          params[:order].delete :ship_address_id
 
-         if ship_address_id.blank?
-          params[:order][:ship_address_attributes].delete( :id ) if params[:order][:ship_address_attributes] && params[:order][:ship_address_attributes][:id]
-         else
+        if !ship_address_id.blank?
            address = Address.find_by_id( ship_address_id )
            if address
              @order.ship_address = address
@@ -145,9 +148,7 @@ CheckoutController.class_eval do
          bill_address_id = params[:order][:bill_address_id]
          params[:order].delete :bill_address_id
 
-         if bill_address_id.blank?
-           params[:order][:bill_address_attributes].delete( :id ) if params[:order][:bill_address_attributes] && params[:order][:bill_address_attributes][:id]
-         else
+         if !bill_address_id.blank?
            bill_address = Address.find_by_id( bill_address_id )
            if bill_address
              @order.bill_address = bill_address
@@ -185,6 +186,17 @@ CheckoutController.class_eval do
      end
      params[:order]
    end
+
+  def completion_route
+
+  end
+
+# Overrides the equivalent method defined in spree_core. This variation of the method will ensure that users
+   # are redirected to the tokenized order url unless authenticated as a registered user.
+   def completion_route
+    thankyou_order_url(@order)
+   end
+
 
 end
 

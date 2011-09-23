@@ -10,18 +10,26 @@ class UserSessionsController < ApplicationController
 
 
   def new
-    if params[:return_to]
-      session[:return_to] = params[:return_to]
+     # URL Cleaning cycle
+    if params[:return_to] || params[:email]
+      session[:return_to] = params[:return_to] if params[:return_to]
       flash.keep
-      redirect_to signin_url
+      unless current_user
+        session[:email] = params[:email] if params[:email]
+        redirect_to signin_url and return
+      end
+    end
+
+    if current_user
+      redirect_back_or_default user_pretty_url(current_user)
       return
     end
 
-
-    if ! current_user
-      @user_session = UserSession.new(:email=> params[:email])
+    if session[:email]
+      @user_session = UserSession.new(:email=> session[:email] )
+      session.delete(:email)
     else
-       redirect_back_or_default user_pretty_url(current_user)
+      @user_session = UserSession.new
     end
   end
 
@@ -34,7 +42,7 @@ class UserSessionsController < ApplicationController
     else
       if params[:store_signin]
         flash[:error] = "Invalid user/password combination"
-        redirect_to checkout_registration_url
+        redirect_to params[:store_signin]
       else
         render :action => :new
       end

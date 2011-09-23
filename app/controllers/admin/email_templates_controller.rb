@@ -112,7 +112,7 @@ class Admin::EmailTemplatesController < Admin::AdminController
   def load_info
     gb = Gibbon::API.new(MAILCHIMP_API_KEYS[:api_key])
 
-    @campaigns = gb.campaigns('filters' => {'folder_id' => "21177"})['data']
+    @campaigns = gb.campaigns({'filters' => {'folder_id' => "21177"}, 'limit' => 100 })['data']
     @campaign_options = []
     @campaigns.each { |c|   @campaign_options << [ c['title'], "#{c['id']}"] }
 

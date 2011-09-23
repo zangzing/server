@@ -4,6 +4,12 @@ LineItem.class_eval do
   belongs_to :photo
   belongs_to :print_photo, :class_name => "Photo"
 
+  before_save :shipping_may_change, :if => :quantity_changed?
+
+  def shipping_may_change
+    order.shipping_may_change
+  end
+  
   def to_xml_ezpimage( options = {})
     return unless photo
     options[:indent] ||= 2

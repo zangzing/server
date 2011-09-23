@@ -26,6 +26,11 @@ OrdersController.class_eval do
     render :layout => 'checkout'
   end
 
+  def show
+    @order = Order.find_by_number(params[:id])
+    render :layout => 'checkout'
+  end
+
 
   # the inbound variant is determined either from products[pid]=vid or variants[master_vid], depending on whether or not the product has_variants, or not
   #
@@ -36,8 +41,11 @@ OrdersController.class_eval do
     @order = current_order(true)
 
     params[:products].each do |product_id,variant_id|
-      quantity = params[:quantity].to_i if !params[:quantity].is_a?(Hash)
-      quantity = params[:quantity][variant_id].to_i if params[:quantity].is_a?(Hash)
+      if params[:quantity].is_a?(Hash)
+        quantity = params[:quantity][variant_id].to_i
+      else
+        quantity = params[:quantity].to_i 
+      end
       @order.add_variant(Variant.find(variant_id), photo, quantity) if quantity > 0
     end if params[:products]
 
@@ -49,13 +57,33 @@ OrdersController.class_eval do
     redirect_to cart_path
   end
 
+  def thankyou
+    @order = Order.find_by_number(params[:id])
+    if @order.nil?
+        redirect_to cart_path and return
+    end
+
+    if !current_user
+      user = User.find_by_email(@order.email)
+      if user  #a user exists wit the email used
+        @user_session = UserSession.new( :email => @order.email )
+      else    #a never seen email
+       session[:return_to]=root_path
+       @user = User.new(
+           :first_name => @order.bill_address.firstname,
+           :last_name  => @order.bill_address.lastname,
+           :email      => @order.email
+       )
+      end
+    end
+    render :layout => 'checkout'
+   end
 
   private
   # given params[:customizations], return a non-persisted  PhotoProductCustomData object
   def photo
     Photo.find_by_id( params[:photo_id] ) if params[:photo_id]
   end
-
 
   # This method allows guests who placed an order to view it online
   # (via a cookie placed in their session)
@@ -65,11 +93,10 @@ OrdersController.class_eval do
     order = current_order || Order.find_by_number(params[:id])
 
     if order
-      if current_user
-          render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401 unless current_user.id == order.user.id
-      else
-         render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401 unless order.token == session[:access_token]
-      end
+      return true if current_user && current_user.id == order.user.id
+      return true if order.token == session[:access_token]
+      render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
+      return false
     else
       true
     end

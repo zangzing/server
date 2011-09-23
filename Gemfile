@@ -76,6 +76,10 @@ group :production do
   # bundler requires these gems for production
 end
 
+group :deployment do
+  gem 'less'
+end
+
 gem 'spree_core', :path => "./spree_core-0.60.1"
 gem 'spree_dash', '0.60.1'
 gem 'spree_promo', '0.60.1'

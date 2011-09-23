@@ -34,7 +34,10 @@ module CheckoutHelper
         end
       end
       content_tag('td',
-                  content_tag('div', state_index+1,:class => 'state_index' )+content_tag('div', text, :class => 'state_name'),
+                  content_tag('div',
+                      content_tag('div', state_index+1,:class => 'state_index' )+
+                      content_tag('div', text, :class => 'state_name'),
+                  :class=>'state'),
                   cell_options)
     end
     row = content_tag('tr', raw(items.join("\n")), :class => 'progress-steps', :id => "checkout-step-#{order_state}")
@@ -62,8 +65,7 @@ module CheckoutHelper
                                  :id,
                                  :one_line,
                                  { :include_blank => 'Select from Address Book or enter new address'},
-                                 { :id => 'addressbook_dropdown',
-                                   :class => "required"})
+                                 { :id => 'addressbook_dropdown'})
       ].join.gsub('"', "'")
       address_elements.html_safe
     end

@@ -3,8 +3,12 @@ Order.class_eval do
 
   attr_accessible :use_shipping_as_billing, :ship_address_id, :bill_address_id
 
-  before_validation :clone_shipping_address, :if => "state=='ship_address'"
+
   attr_accessor  :use_shipping_as_billing
+
+  before_validation :clone_shipping_address, :if => "state=='ship_address'"
+
+  after_validation :shipping_may_change, :if => 'ship_address && ship_address.zipcode_changed?'
 
 
   before_create do
@@ -13,9 +17,13 @@ Order.class_eval do
 
   def clone_shipping_address
     if @use_shipping_as_billing == '1'
-      self.bill_address_id = ship_address_id
+      if ship_address.new_record?
+        self.bill_address = Address.new( self.ship_address.attributes.except("id","user_id","updated_at", "created_at") )
+      else
+        self.bill_address_id = ship_address_id
+      end
     else
-      if self.bill_address_id == ship_address_id
+      if use_shipping_as_billing?
         self.bill_address_id = nil
         self.bill_address    = nil
       end
@@ -23,7 +31,9 @@ Order.class_eval do
     true
   end
 
-
+  def use_shipping_as_billing?
+    (bill_address_id == ship_address_id) || bill_address.same_as?( ship_address )
+  end
 
 
 # order state machine (see http://github.com/pluginaweek/state_machine/tree/master for details)
@@ -135,6 +145,8 @@ Order.class_eval do
       current_item.update_attribute(field[:name].gsub(" ", "_").downcase, value)
     end
 
+    shipping_may_change
+    
     current_item
   end
 
@@ -393,4 +405,27 @@ Order.class_eval do
     album.destroy unless album.nil?
   end
 
+  # keeps a class level cache of the shipping costs coming from ezp.
+  # this cache avoids having to call ezp more than necessary. Spree's
+  # architecture recalculates the order every save which would mean an ezp call
+  def shipping_costs_array
+    @@shipping_costs_arrays ||= {}
+    @@shipping_costs_arrays[self.number] ||= ez.shipping_costs(self)
+  end
+
+  #invalidate the shipping cost cache for the order forcing it to
+  # re-fetch next time
+  def shipping_may_change
+    @@shipping_costs_arrays ||= {}
+    @@shipping_costs_arrays.delete( self.number )
+  end
+
+  #clear the  shipping cost cache when the order has been placed
+  alias shipping_costs_done shipping_may_change
+
+  private
+  def ez
+     @@ezpm ||= EZPrints::EZPManager.new
+  end
+  
 end

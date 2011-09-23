@@ -166,7 +166,7 @@ Rails.application.routes.draw do
     resources :orders do
       post :populate, :on => :collection
       post :add_photo,:on => :collection
-
+      get  :thankyou, :on => :member
 
       resources :line_items
       resources :creditcards

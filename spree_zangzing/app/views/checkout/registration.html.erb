@@ -23,8 +23,7 @@ end %>
 
           <fieldset id="user-signin">
 
-            <%= hidden_field_tag :return_to, checkout_registration_url %>
-            <%= hidden_field_tag :store_signin, 'store_signin' %>
+            <%= hidden_field_tag :store_signin, checkout_registration_url %>
             <p class="field">
               <label for="email">Username or Email</label>
               <%= text_field_tag :email, @user_session.email %>

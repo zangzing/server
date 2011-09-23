@@ -80,6 +80,9 @@ class User < ActiveRecord::Base
   after_commit   :like_mr_zz, :on => :create
   after_commit   :subscribe_to_lists, :on => :create
 
+  before_save    :queue_update_acls_with_id, :if => :email_changed?
+  after_commit   :update_acls_with_id, :if => '@update_acls_with_id_queued'
+
   validates_presence_of   :name,      :unless => :automatic?
   validates_presence_of   :username,  :unless => :automatic?
   validates_format_of     :username,  :with => /^[a-z0-9]+$/, :message => 'should contain only lowercase alphanumeric characters', :unless => :automatic?
@@ -172,23 +175,13 @@ class User < ActiveRecord::Base
   def self.find_by_email_or_create_automatic( email, name='' )
     user = User.find_by_email( email )
     if user.nil?
-      # Get the username part of the email and remove special characters (a.k.a parameterize)
-      mail_name = username = email.parameterize('')
-      
-      # Make sure the username is unique by adding a number until there are no matches
-      i = 1
-      while User.find_by_username(username) do
-        username = "#{mail_name}#{i}"
-        i += 1
-      end
-      #the username is now clean and valid
-      
+
       name = ( name == '' ? email.split('@')[0] : name )
       #user not fount create an automatic user with a random password
       user = User.new(  :automatic => true,
                            :email => email,
                            :name => name,
-                           :username => username,  #username is in DB index, so '' won't work
+                           :username => UUIDTools::UUID.random_create.to_s.gsub('-','').to_s,
                            :password => UUIDTools::UUID.random_create.to_s);
       user.reset_perishable_token
       user.save_without_session_maintenance
@@ -372,13 +365,20 @@ class User < ActiveRecord::Base
       end
   end
 
+
+  # if we trigger the update within a transaction, it will be rolled back so
+  # we set a variable and then we do the update after commit
+  def queue_update_acls_with_id
+    @update_acls_with_id_queued = true
+  end
+
   # Replaces any occurrences of the new user's email
   # in acl keys with the users new id
   # (runs as an after_create callback)
   def update_acls_with_id
     ACLManager.global_replace_user_key( self.email, self.id )
     # set proper acl rights - new users default to regular user rights
-    SystemRightsACL.singleton.add_user(self.id, SystemRightsACL::USER_ROLE)
+    SystemRightsACL.singleton.add_user(self.id, SystemRightsACL::USER_ROLE) unless self.moderator?
 
     # Look for invitation activities that may need to be created and updated
     #now that we have a user for an email
@@ -406,6 +406,12 @@ class User < ActiveRecord::Base
         end
       end
     end
+
+    # if the method was queued because of an email change, clear the queue flag.
+     if @update_acls_with_id_queued
+        @update_acls_with_id_queued = false
+        Cache::Album::Manager.shared.user_albums_acl_modified(id)
+     end
   end
 
   # returns an array of auto like ids

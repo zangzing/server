@@ -3,8 +3,9 @@
   #  address in address
   #  legend for address section in legend
 %>
-
+<%= f.hidden_field  :id %>
 <%= f.hidden_field :user_id if address.user %>
+
 <p id="fname" class="field">
   <%= f.label :firstname, t(:first_name) %>
   <%= f.text_field :firstname, :class => 'required' %>
@@ -20,7 +21,7 @@
 </p>
 
 <%if( defined?(email_form) )%>
-         <p id="order_email" class="field">
+         <p id="orderemail" class="field">
             <%= email_form.label :email, "#{t("email")} (#{t('only_for_order_updates')})" %>
             <%= email_form.text_field :email, :class => 'required' %>
 
