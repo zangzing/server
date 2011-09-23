@@ -28,18 +28,18 @@ module ZZ
 #          @backoff_strategy ||= [12.seconds, 1.minute, 5.minutes, 30.minutes, 2.hours, 8.hours, 24.hours]
 #        end
 
-        def self.enqueue( photo_id )
-          super( photo_id )
+        def self.enqueue( photo_id, options = {} )
+          super( photo_id, options )
         end 
           
-        def self.perform( photo_id )
+        def self.perform( photo_id, options = {} )
           SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
             photo = Photo.find(photo_id)
-            self.upload_to_s3(photo)
+            self.upload_to_s3(photo, options)
           end
         end
 
-        def self.on_failure_notify_photo(e, photo_id )
+        def self.on_failure_notify_photo(e, photo_id, options )
           begin
             SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
               photo = Photo.find(photo_id)
@@ -60,9 +60,9 @@ module ZZ
         # until it determines the outcome at which point it will either hold onto
         # it for a retry or remove it if we will not be retrying.
         #
-        def self.upload_to_s3(photo)
+        def self.upload_to_s3(photo, options)
           begin
-            photo.upload_source
+            photo.upload_source(options)
           rescue Exception => ex
             Rails.logger.debug("Upload to S3 Failed: " + ex)
             if self.should_retry(ex) == false

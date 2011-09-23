@@ -26,8 +26,9 @@
 class AttachedImage
   include NewRelic::Agent::Instrumentation::ControllerInstrumentation
 
-  # photo suffixes for naming
+  # photo suffixes for naming must be a single char
   ORIGINAL =  'o'
+  FULL =      'f'
   LARGE =     'l'
   MEDIUM =    'm'
   THUMB =     't'
@@ -137,6 +138,11 @@ class AttachedImage
     PhotoGenHelper.s3.store_object(:bucket => bucket, :key => key, :data => file, :headers => options)
   end
 
+  # duplicate a single s3 photo with the given suffix
+  def self.copy_s3_photo(src_bucket, src_key, dst_bucket, dst_key, headers)
+    PhotoGenHelper.s3.copy(src_bucket, src_key, dst_bucket, dst_key, :replace, headers)
+  end
+
   # download a photo from s3 and return the local file
   def self.download_s3_photo(bucket, prefix, image_id, suffix)
     file_path = PhotoGenHelper.photo_download_dir + '/' + image_id + '-' + suffix + '-' + Process.pid.to_s + "-" + rand(9999999999).to_s
@@ -145,6 +151,11 @@ class AttachedImage
       file.write chunk
     end
     return file
+  end
+
+  # make our key and return it
+  def key(suffix)
+    AttachedImage.build_s3_key(prefix, model.guid_part, suffix)
   end
 
   # given the source file, we generate the resized files by building the ImageMagick
@@ -209,10 +220,10 @@ class AttachedImage
     path = self.path
     if (path != nil)
       bucket = self.bucket
-      AttachedImage.remove_s3_photo(bucket, build_s3_key(prefix, image_id, PhotoGenHelper.ORIGINAL))
+      AttachedImage.remove_s3_photo(bucket, key(ORIGINAL))
       # now remove resized photos
       self.sizes.each do |suffix, options|
-        AttachedImage.remove_s3_photo(bucket, build_s3_key(prefix, image_id, suffix))
+        AttachedImage.remove_s3_photo(bucket, key(suffix))
       end
     end
   end
@@ -291,21 +302,11 @@ class AttachedImage
   end
 
 
-  # upload a single photo and update the photo related
-  # state - this should only be used for the original file
-  # not the resized ones as they derive their state from
-  # the original
-  #
-  # We expect content_type and file_size to already have
-  # been set before this call.  This is to avoid the extra
-  # overhead of discovering them again because in general
-  # they would have already been known so we don't want
-  # to duplicate effort and overhead here.
-  #
-  def upload file
+  # prepare to move or copy object on s3
+  def prepare_for_s3_store
     path = self.path
     image_id = model.guid_part
-    key = AttachedImage.build_s3_key(prefix, image_id, ORIGINAL)
+    key = key(ORIGINAL)
     if (path.nil?)
       # first time in pick a bucket to store into
       bucket = AttachedImage.pick_bucket
@@ -318,9 +319,32 @@ class AttachedImage
     time_stamp = Time.now
     self.updated_at = time_stamp
     content_type = self.content_type
+    headers = s3_options(content_type, custom_metadata_original)
     url = AttachedImage.build_s3_url(bucket, prefix, image_id, ORIGINAL, time_stamp)
     self.path = url
-    AttachedImage.upload_s3_photo(file, bucket, key, s3_options(content_type, custom_metadata_original))
+    [bucket, key, headers]
+  end
+
+  # upload a single photo and update the photo related
+  # state - this should only be used for the original file
+  # not the resized ones as they derive their state from
+  # the original
+  #
+  # We expect content_type and file_size to already have
+  # been set before this call.  This is to avoid the extra
+  # overhead of discovering them again because in general
+  # they would have already been known so we don't want
+  # to duplicate effort and overhead here.
+  #
+  def upload(file)
+    bucket, key, headers = prepare_for_s3_store
+    AttachedImage.upload_s3_photo(file, bucket, key, headers)
+  end
+
+  # copy the source photo from s3 into a new s3 bucket
+  def copy(src_bucket, src_key)
+    dst_bucket, dst_key, headers = prepare_for_s3_store
+    AttachedImage.copy_s3_photo(src_bucket, src_key, dst_bucket, dst_key, headers)
   end
 
   # build the url from this model and field
@@ -333,12 +357,12 @@ class AttachedImage
   # we no longer have the original object
   def all_keys
     image_id = model.guid_part
-    key = AttachedImage.build_s3_key(prefix, image_id, ORIGINAL)
+    key = key(ORIGINAL)
     keys = [key]
     # now see if any resized photos to go with
     self.sizes.each do |map|
       map.each do |suffix, option|
-        key = AttachedImage.build_s3_key(prefix, image_id, suffix)
+        key = key(suffix)
         keys << key
       end
     end

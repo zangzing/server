@@ -4,7 +4,7 @@
 
 class Album < ActiveRecord::Base
   attr_accessible :name, :privacy, :cover_photo_id, :photos_last_updated_at, :updated_at, :cache_version, :photos_ready_count,
-                  :stream_to_email, :stream_to_facebook, :stream_to_twitter, :who_can_download, :who_can_upload
+                  :stream_to_email, :stream_to_facebook, :stream_to_twitter, :who_can_download, :who_can_upload, :user_id, :for_print
   attr_accessor :change_matters, :my_role
 
   belongs_to :user

@@ -7,6 +7,10 @@ require 'spec/factories.rb'
 require 'spec/controller_spec_helper.rb'
 require "test_utils"
 
+# set this to true if you want transactional fixtures, false if you want real transactions
+use_transactional_fixtures = true
+require 'after_commit_with_transactional_fixtures' if use_transactional_fixtures
+
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
@@ -19,6 +23,11 @@ flush_redis_test_db
 # the appropriate filters
 filter = FilterHelper.new(:only => [])
 ZZ::Async::Base.loopback_filter = filter
+
+# auto_liking flag tells the User class if it should
+# add greg, joseph, mauricio, jeremy, phil, etc as users
+# that a new user likes.  For testing we don't generally
+# want that behavior so we turn it off
 User.auto_liking = false
 
 RSpec.configure do |config|
@@ -37,7 +46,7 @@ RSpec.configure do |config|
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
-  config.use_transactional_fixtures = true
+  config.use_transactional_fixtures = use_transactional_fixtures
 end
 
 

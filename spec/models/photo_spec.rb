@@ -38,13 +38,25 @@ describe Photo do
 
       # now apply an edit and verify response is ready
       response_id = photo.start_async_edit(:rotate_to => 90,
-                                           :crop => { :top => '0.1', :left => 0.15, :bottom => 0.95, :right => 0.88 })
+                                           :crop => { :top => '0.039', :left => 0.04, :bottom => 0.995, :right => 0.991 })
       photo_hash = JSON.parse(AsyncResponse.get_response(response_id))
       photo_hash['id'].should == photo_id
 
+      # now make a copy in print mode
+      options = {}
+      crop = ImageCrop.new(0.2, 0, 1, 1)
+      options[:crop] = crop
+      options[:rotate_to] = 0
+      options[:for_print] = true
+
+      photo_copy = Photo.copy_photo(photo, options)
+      photo_copy.reload
+      photo_copy.ready?.should == true
+      photo_copy.id.should_not == photo.id
+      photo_copy.image_path.should_not == photo.image_path
+
       # now delete the photo
       photo.destroy
-
       # and verify that it was moved to pending deletes table
       pd = S3PendingDeletePhoto.find_by_photo_id(photo_id)
       pd.should_not == nil

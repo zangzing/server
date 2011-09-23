@@ -97,7 +97,7 @@ class UploadBatch < ActiveRecord::Base
   def self.close_pending_batches
     expired_batches = UploadBatch.unscoped.where("state = 'open' AND open_activity_at < ?", CLOSE_BATCH_INACTIVITY.ago)
     expired_batches.each do |batch|
-      batch.close_internal   # close the batch
+      batch.close_immediate   # close the batch
     end
   end
 
@@ -137,8 +137,10 @@ class UploadBatch < ActiveRecord::Base
   end
 
   # NOTE: this is for internal use, a proper close is done by calling close_batch since it
-  # does it in a deferred fashion.
-  def close_internal
+  # does it in a deferred fashion.  The only time this should be called outside of this class
+  # is when you know you will not be adding any more items to the batch.  Otherwise, you should
+  # call the normal close which gives you a window before the close occurs.
+  def close_immediate
     if self.state == 'open'
       if safe_state_change('closed')
         self.finish
@@ -164,7 +166,8 @@ class UploadBatch < ActiveRecord::Base
     # if the batch has already finished once, dont finish it again even if photos are still pending
     return true if self.state == 'finished'
 
-    if force || (self.state == 'closed' && self.ready?)
+    all_ready = self.state == 'closed' && ready?
+    if force || all_ready
 
       if safe_state_change('finished')
         album = self.album
@@ -174,16 +177,29 @@ class UploadBatch < ActiveRecord::Base
           return true
         end
 
-        # if not forced, all photos are ready, then notify
-        # if forced, notify only if there are ready photos
-        notify = self.photos.count > 0
-        if force
-          notify = force_split_of_pending_photos
-        end
-
         # now mark the albums as ok to display since it has completed at least one batch
         album.completed_batch_count += 1
         album.save
+
+        if album.for_print
+          order = Order.find_by_number(album.name)
+          return true if order.nil?
+          if all_ready
+            # we are a special print album and all photos are ready so notify order
+            order.photos_processed
+          else
+            # not all photos are ready, so let the order know we gave up
+            order.photos_failed
+          end
+          return true
+        end
+
+        # if not forced, all photos are ready, then notify
+        # if forced, notify only if there are ready photos
+        notify = self.photos.count > 0
+        if force && all_ready == false
+          notify = force_split_of_pending_photos
+        end
 
         if allow_notifications
           #send album shares even if there were no photos uploaded
