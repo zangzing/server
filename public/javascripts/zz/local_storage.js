@@ -12,7 +12,11 @@ zz.local_storage = zz.local_storage || {};
 
     zz.local_storage.get = function(name){
         if(!cache[name]){
-            cache[name] = JSON.parse(window.localStorage.getItem(name));
+            var value = window.localStorage.getItem(name);
+            if (value == ""){
+                value = null;
+            }
+            cache[name] = JSON.parse(value);
         }
         return cache[name];
     };
