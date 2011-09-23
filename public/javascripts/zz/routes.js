@@ -6,7 +6,11 @@ zz.routes = {
 
     store: {
         get_products: function(success, error){
-            return zz.routes._get('/store/products.json', {}, success, error);
+            return zz.routes._get('/store/products.json?per_page=100', {}, success, error);
+        },
+
+        goto_cart: function(){
+            document.location.href = '/store/cart';
         }
 
     },

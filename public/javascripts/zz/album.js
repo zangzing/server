@@ -131,7 +131,7 @@ zz.album = {};
                     }
                     else{
                         if(action=='main'){
-                            buy_photo(photo.id, element);
+                            buy_photo(photo, element);
                         }
                         else if(action='magnify'){
                             zz.album.goto_single_picture(photo.id);
@@ -209,7 +209,7 @@ zz.album = {};
                         }
                         else{
                             if(action=='main'){
-                                buy_photo(photo.id, element);
+                                buy_photo(photo, element);
                             }
                             else if(action='magnify'){
                                 click_back_button();
@@ -270,8 +270,8 @@ zz.album = {};
 
 
 
-    function buy_photo(photo_id, element){
-        zz.buy.select_photo(photo_id, element, function(){
+    function buy_photo(photo_json, element){
+        zz.buy.select_photo(photo_json, element, function(){
             element.data().zz_photo.setChecked(true);
         });
     }
@@ -424,7 +424,7 @@ zz.album = {};
                         }
                         else{
                             if(action=='main'){
-                                buy_photo(photo.id, element);
+                                buy_photo(photo, element);
                             }
                             else if(action='magnify'){
                                 zz.album.goto_single_picture(photo.id);
