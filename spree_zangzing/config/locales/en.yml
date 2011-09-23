@@ -232,7 +232,7 @@ en:
   allow_ssl_to_be_used_when_in_production_mode: Allow SSL to be used in production mode
   allowed_ssl_in_production_mode: "SSL will %{not} be used in production"
   already_registered: Already Registered?
-  alt_text: Alternative Text
+  alt_text: Description
   alternative_phone: Alternative Phone
   amount: Amount
   analytics_trackers: Analytics Trackers
@@ -1048,3 +1048,5 @@ en:
   username: "User Name"
   join: "Join"
   you_already_have_an_account: "We believe you already have a ZangZing account"
+  url: "Image URL"
+  photo_id: "Photo ID"
