@@ -351,7 +351,7 @@ zz.template_cache = zz.template_cache || {};
                     });
 
 
-                    button_bar.center_x()
+                    button_bar.center_x();
 
                 });
             }

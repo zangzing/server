@@ -177,7 +177,7 @@ zz.comments = {};
     };
 
     zz.comments.set_current_photo_id = function(photo_id){
-        current_photo_id = photo_id
+        current_photo_id = photo_id;
 
         if(zz.buy.is_buy_mode_active()){
             return;

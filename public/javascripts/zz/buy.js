@@ -145,7 +145,7 @@ zz.buy = zz.buy || {};
         }
 
         if(zz.buy.is_buy_mode_active() && current_screen() != DRAWER_SCREENS.SELECT_PHOTOS){
-            alert('Plese select and configure a product and then add photos.');
+            alert('Please select and configure a product and then add photos.');
             return;
         }
 
@@ -202,19 +202,19 @@ zz.buy = zz.buy || {};
     };
 
     zz.buy.on_before_activate = function(callback){
-        zz.pubsub.subscribe(EVENTS.BEFORE_ACTIVATE, callback)
+        zz.pubsub.subscribe(EVENTS.BEFORE_ACTIVATE, callback);
     };
 
     zz.buy.on_activate = function(callback){
-        zz.pubsub.subscribe(EVENTS.ACTIVATE, callback)
+        zz.pubsub.subscribe(EVENTS.ACTIVATE, callback);
     };
 
     zz.buy.on_before_deactivate = function(callback){
-        zz.pubsub.subscribe(EVENTS.BEFORE_DEACTIVATE, callback)
+        zz.pubsub.subscribe(EVENTS.BEFORE_DEACTIVATE, callback);
     };
 
     zz.buy.on_deactivate = function(callback){
-        zz.pubsub.subscribe(EVENTS.DEACTIVATE, callback)
+        zz.pubsub.subscribe(EVENTS.DEACTIVATE, callback);
     };
 
     zz.buy.on_before_change_buy_mode = function(callback){
@@ -350,9 +350,6 @@ zz.buy = zz.buy || {};
         buy_screens_element = $(BUY_SCREENS_TEMPLATE());
 
         $('#right-drawer .content').html(buy_screens_element);
-        $('#right-drawer .content #checkout-button').click(function(){
-            document.location.href = '/store/cart'
-        });
 
         $('#right-drawer .header .title').html('Choose a product');
         $('#right-drawer .header .close-button').click(function(){
@@ -361,8 +358,6 @@ zz.buy = zz.buy || {};
 
         if(animate){
             $('#article').fadeOut('fast', function(){
-
-
 
                 $('#right-drawer').show().animate({right:0},500, function(){
                     $('#article').css({right:445});
