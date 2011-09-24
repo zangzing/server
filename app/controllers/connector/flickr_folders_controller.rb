@@ -1,18 +1,52 @@
 class Connector::FlickrFoldersController < Connector::FlickrController
 
   def self.list_albums(api_client, params)
-    folders_response = call_with_error_adapter do
-      api_client.photosets.getList
-    end
-    @folders = folders_response.map { |f|
-      {
-        :name => f.title,
+    if params[:my_stream]
+      page_names = []
+
+      page_num = 1
+      page_count = nil
+      begin
+        stream_page = call_with_error_adapter do
+          api_client.people.getPhotos :user_id => 'me', :page => page_num, :per_page => 100, :extras => 'date_upload'
+        end
+        page_count = stream_page.pages unless page_count
+        upload_dates = stream_page.photo.map{|p| Time.at(p.dateupload.to_i) }
+        page_names << "#{upload_dates.max.strftime('%b %d, %Y')} - #{upload_dates.min.strftime('%b %d, %Y')}"
+        page_num += 1
+      end while page_num <= page_count
+
+      @folders = []
+      page_names.each_with_index do |page_name, i|
+        @folders << {
+          :name => page_name,
+          :type => "folder",
+          :id => "my-stream_#{i}",
+          :open_url => flickr_photos_path(:set_id => 'my-stream', :format => 'json', :page => i+1),
+          :add_url => flickr_folder_action_path(:set_id => 'my-stream', :action => 'import', :format => 'json', :page => i+1)
+        }
+      end
+    else
+      folders_response = call_with_error_adapter do
+        api_client.photosets.getList
+      end
+      @folders = folders_response.map do |f|
+        {
+          :name => f.title,
+          :type => "folder",
+          :id  =>  f.id,
+          :open_url => flickr_photos_path(f.id, :format => 'json'),
+          :add_url => flickr_folder_action_path(:set_id =>f.id, :action => 'import', :format => 'json')
+        }
+      end
+
+      @folders.insert(0, {
+        :name => 'My Stream',
         :type => "folder",
-        :id  =>  f.id,
-        :open_url => flickr_photos_path(f.id, :format => 'json'),
-        :add_url => flickr_folder_action_path(:set_id =>f.id, :action => 'import', :format => 'json')
-      }
-    }
+        :id  =>  'my-stream',
+        :open_url => flickr_folders_path(:format => 'json', :my_stream => true)
+      })
+    end
     #expires_in 10.minutes, :public => false
     JSON.fast_generate(@folders)
   end
@@ -20,7 +54,11 @@ class Connector::FlickrFoldersController < Connector::FlickrController
   def self.import_album(api_client, params)
     identity = params[:identity]
     photo_set = call_with_error_adapter do
-      api_client.photosets.getPhotos :photoset_id => params[:set_id], :extras => 'original_format,url_m,url_z,url_l,url_o', :media => 'photos'
+      if params[:set_id]=='my-stream'
+        api_client.people.getPhotos :user_id => 'me', :page => params[:page], :per_page => 100, :extras => 'date_upload,original_format,url_m,url_z,url_l,url_o'
+      else
+        api_client.photosets.getPhotos :photoset_id => params[:set_id], :extras => 'original_format,url_m,url_z,url_l,url_o', :media => 'photos'
+      end
     end
     photos = []
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
