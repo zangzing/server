@@ -78,6 +78,10 @@ GEM
     arel (2.0.10)
     authlogic (2.1.6)
       activesupport
+    aws-s3 (0.6.2)
+      builder
+      mime-types
+      xml-simple
     babosa (0.3.5)
     bitly (0.6.1)
       crack (>= 0.1.4)
@@ -281,6 +285,7 @@ GEM
       rack (>= 1.0)
       rack-test (>= 0.5.3)
     will_paginate (3.0.pre2)
+    xml-simple (1.1.0)
     yaml_db (0.2.1)
     yui-compressor (0.9.3)
     zip (2.0.2)
@@ -292,6 +297,7 @@ DEPENDENCIES
   SystemTimer
   activerecord-import (~> 0.2)
   authlogic (= 2.1.6)
+  aws-s3
   bitly
   browser
   bundler (>= 1.0.14)
