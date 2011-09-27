@@ -3,7 +3,7 @@ zz.local_storage = zz.local_storage || {};
 
 (function(){
 
-    var cache = {}
+    var cache = {};
 
     zz.local_storage.set = function(name, value){
         cache[name] = value;

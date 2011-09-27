@@ -26,6 +26,7 @@ gem "oauth-plugin", "0.4.0.pre4"
 
 gem 'faraday',      '0.5.4'
 gem 'i18n'
+gem 'aws-s3',       :require => 'aws/s3'
 gem 'right_aws'
 gem 'redis',        '~>2.1'
 gem 'resque',       '1.9.10'                          # Async work jobs
@@ -52,6 +53,7 @@ gem "yui-compressor"
 gem "closure-compiler"
 gem "nokogiri"
 gem "browser" 
+gem "yaml_db"
 
 group :development do
   # bundler requires these gems in development

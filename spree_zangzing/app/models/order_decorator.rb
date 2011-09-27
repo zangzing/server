@@ -57,12 +57,15 @@ Order.class_eval do
     event :cancel do
       transition :to => 'canceled', :if => :allow_cancel?
     end
+
     event :return do
       transition :to => 'returned', :from => 'awaiting_return'
     end
+
     event :resume do
       transition :to => 'resumed', :from => 'canceled', :if => :allow_resume?
     end
+
     event :authorize_return do
       transition :to => 'awaiting_return'
     end
@@ -92,11 +95,22 @@ Order.class_eval do
     if user
       self.user =  user
       self.email = user.email
-      self.ship_address_id = user.ship_address.id if user.ship_address
-      self.bill_address_id = user.bill_address.id if user.bill_address
+      if user.ship_address 
+        self.ship_address = user.ship_address
+      else
+        user.ship_address_id = nil
+      end
+
+      if user.bill_address
+        self.bill_address = user.bill_address
+      else
+        user.bill_address_id = nil
+      end
 
       if user.creditcard
         self.payments.build( :source => user.creditcard, :payment_method => user.creditcard.payment_method )
+      else
+        user.creditcard_id = nil
       end
     end
   end
