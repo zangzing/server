@@ -3,11 +3,12 @@ require 'readline'
 namespace :commerce do
 
   desc "Dump and Export Catalog to S3"
-  task :export do
+  task :export => :environment do
     # we use mysqldump to export the catalog,
     # manual is here http://dev.mysql.com/doc/refman/5.6/en/mysqldump.html
     db_config = Rails.application.config.database_configuration[Rails.env]
-    @output_file = Time.now().strftime( '%Y-%m-%d-%H-%M-%S-catalog-export.sql')
+    deploy_group = Server::Application.config.deploy_environment.zz[:deploy_group_name]
+    @output_file = Time.now().strftime( "%Y-%m-%d-%H-%M-%S-catalog-export-#{deploy_group}.sql")
     cmd =[]
     cmd << "mysqldump"   #command
     cmd << "-u#{db_config['username']}"
