@@ -350,9 +350,10 @@ zz.buy = zz.buy || {};
         set_drawer_title("Choose Photos");
 
         buy_screens_element.find('.select-photos-screen .footer-section .back').unbind('click').click(function(){
-            add_selected_photos_to_cart();
-            zz.local_storage.set('zz.buy.current_screen', null);
-            window.location.reload();
+            add_selected_photos_to_cart(function(){
+                zz.local_storage.set('zz.buy.current_screen', null);
+                window.location.reload();
+            });
         });
 
         buy_screens_element.find('.select-photos-screen .footer-section .next').unbind('click').click(function(){
@@ -432,20 +433,24 @@ zz.buy = zz.buy || {};
     }
 
     function add_selected_photos_to_cart(callback){
-        // todo: need single call for adding many photos to cart
-        // todo: need to pass product info
-
+        var sku = get_selected_variant().sku
+        var photo_ids = []
         _.each(zz.local_storage.get('zz.buy.selected_photos'), function(photo){
-            zz.routes.store.add_photo_to_cart(photo.id);
+            photo_ids.push(photo.id);
         });
-        zz.local_storage.set('zz.buy.selected_photos',[]);
+
+        zz.routes.store.add_to_cart(sku, photo_ids, function(){
+            zz.local_storage.set('zz.buy.selected_photos',[]);
+            zz.local_storage.set('zz.buy.current_screen', null);
+
+            if(callback){
+                callback()
+            }
+        }, function(){
+            alert('Sorry, there was an error adding items to your cart');
+        })
 
 
-        zz.local_storage.set('zz.buy.current_screen', null);
-
-        if(callback) {
-            _.delay(callback, 1000);
-        }
     }
 
 
