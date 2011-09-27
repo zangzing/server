@@ -70,7 +70,7 @@ describe Photo do
       # now delete the pending delete object and verify s3 object is gone
       pd.destroy
       res = Net::HTTP.get_response(URI.parse(url))
-      res.class.should == Net::HTTPNotFound
+      res.class.should_not == Net::HTTPOK
 
     end
   end

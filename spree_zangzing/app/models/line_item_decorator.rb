@@ -46,9 +46,8 @@ LineItem.class_eval do
                   :imageid   => photo_id){
      xml.affiliatekey self.id
      #xml.description
-     xml.productprice variant.price
      xml.quantity quantity
-     xml.position crop_instructions
+     xml.position crop_instructions.nil? ? 'Crop' : crop_instructions
    }
  end
 

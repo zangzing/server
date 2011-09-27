@@ -29,8 +29,8 @@ class ZZUtils
   # return true or false
   def self.as_boolean(val)
     return false if val.nil?
-    return true if val == true || val == 'true'
-    return false if val == false || val == 'false'
+    return true if val == true || val == 'true' || val == 1 || val == '1'
+    return false if val == false || val == 'false' || val == 0 || val == '0'
     false # catch all for any non true or false value
   end
 end

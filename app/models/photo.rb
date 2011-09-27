@@ -206,6 +206,12 @@ class Photo < ActiveRecord::Base
 
   # get an instance of the attached image helper class
   def attached_image
+    # don't know why but in development with resque worker the very first time it tries to access the image_bucket
+    # attribute from within the PhotoAttachedImage initializer via the send method it throws an exception claiming
+    # image_bucket is not a method on this class, touching it first seems to make it happy.  Something strange
+    # with ActiveRecord?
+    #
+    wake = self.image_bucket
     @attached_image ||= PhotoAttachedImage.new(self, "image")
   end
 

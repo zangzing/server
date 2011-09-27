@@ -174,10 +174,7 @@ Order.class_eval do
   end
 
   def to_xml_ezporder(options = {})
-    product_total = Money.new(0)
-    shipping_price = Money.new(0)
-    tax = Money.new(0)
-    order_total = Money.new(0)
+    shipping_calc = ZZUtils.as_boolean(options[:shipping_calc])
 
     logo_id = 1
     options[:indent] ||= 2
@@ -187,7 +184,7 @@ Order.class_eval do
     xml.orders({ :partnerid => ZangZingConfig.config[:ezp_partner_id], :version => 1 }) {
       xml.images{
         xml.uri( {:id  => logo_id,
-                 :title => 'ZangZing Logo'}, "http:www.zangzing.com/images/zz-logo.png")
+                 :title => 'ZangZing Logo'}, "http://www.zangzing.com/images/zz-logo.png")
         line_items.each{ |li| li.to_xml_ezpimage( options )}
       }
       xml.ordersession{
@@ -210,7 +207,7 @@ Order.class_eval do
         xml.order {
           xml.orderid number
           xml.shippingaddress{
-            xml.title       ' '
+            xml.title
             xml.firstname   ship_address.firstname
             xml.lastname    ship_address.lastname
             xml.address1    ship_address.address1
@@ -224,27 +221,22 @@ Order.class_eval do
           }
           line_items.each do |li|
             li.to_xml_ezporderline( options )
-            # totals
-            variant = li.variant
-            # money is expressed in cents
-            product_total += Money.new(variant.price * 100) * li.quantity
-            #shipping_price
-            #tax
-            order_total = product_total + shipping_price + tax
           end
-          xml.producttotal  product_total
-          xml.shippingprice shipping_price
-          xml.tax           tax
-          xml.ordertotal    order_total
-          unless options[:shipping_calc]
-            xml.shippingmethod 'FC'   #todo Ask Mau where this comes from on a real order
+          if shipping_calc == false
+            xml.producttotal  item_total
+            xml.shippingprice ship_total
+            xml.tax           tax_total
+            xml.ordertotal    total
+            xml.shippingmethod shipping_method.calculator.preferred_ezp_shipping_type
           end
           xml.comment       'Thank you for your order!'   # probably want to have some system setting or such where we get the comments
         }
-        xml.producttotal  product_total
-        xml.shippingtotal shipping_price
-        xml.taxtotal      tax
-        xml.total         order_total
+        if shipping_calc == false
+          xml.producttotal  item_total
+          xml.shippingtotal ship_total
+          xml.taxtotal      tax_total
+          xml.total         total
+        end
       }
     }
   end
@@ -363,7 +355,7 @@ Order.class_eval do
     album = GroupAlbum.create(:user_id => Order.ez_prints_user_id, :privacy => 'password', :name => self.number, :for_print => true)
 
     # create a new upload batch to group them all together
-    batch = UploadBatch.factory( Order.ez_prints_user_id, album.id )
+    batch = UploadBatch.factory( Order.ez_prints_user_id, album.id, true )
 
     # now set up the photos we need to copy and track them in the line items
     line_items.each do |li|
@@ -382,7 +374,7 @@ Order.class_eval do
   # everything is ready to go, so time to submit the order to ezprints
   def photos_processed
     # maybe advance the state here and let state engine move us along
-    ZZ::Async::EZPSubmitOrder.enqueue(self.id)
+    ZZ::Async::EZPSubmitOrder.enqueue_in(ZangZingConfig.config[:order_cancel_window], self.id)
   end
 
   # submit the order to ezprints, this is a callback from a resque
@@ -390,11 +382,17 @@ Order.class_eval do
   # will be called if no more retries will happen
   #
   def ezp_submit_order
-    test_mode = true # for now turned off so we don't submit orders to ezprints, when mau adds flag we will base our decision on that so we can have some real orders
+    # if this callback fires and we've been canceled do not place order
+    return if canceled?
 
+    # the test_mode flag tells us if we should submit "real" orders (when false) to ezprints or simulate the order flow internally (when true)
+if Rails.env == 'development' && ENV['EZP_ORDERS'] == 'true'
+  self.test_mode = false #todo - take this out once we have ui support to turn test order on/off
+end
     ezp = EZPrints::EZPManager.new
-    if test_mode
+    if self.test_mode
       #todo kick off loopback generation of simulated events via resque jobs
+      self.ezp_reference_id = UUIDTools::UUID.random_create.to_s
     else
       # real order placement
       ezp_reference_id = ezp.submit_order(self)

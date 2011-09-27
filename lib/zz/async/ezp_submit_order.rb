@@ -25,6 +25,10 @@ module ZZ
         super( order_id, options )
       end
 
+      def self.enqueue_in( secs_from_now, order_id, options = {} )
+        super( secs_from_now, @queue, order_id, options )
+      end
+
       def self.perform( order_id, options )
         options.recursively_symbolize_keys!
         SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do

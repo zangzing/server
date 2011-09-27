@@ -84,6 +84,10 @@ CheckoutController.class_eval do
      #clear the ezp cache of shipping cost arrays
      @order.shipping_costs_done
 
+     # trigger the photo copy and preparation, this is done here because normal state machine transitions
+     # happen in a transaction and could allow resque work to begin too soon.  See comment in order_decorator.rb
+     @order.prepare_for_submit
+
      if current_user
        # If a user is looged in, save  addresses and creditcard as default
        # Backup order addresses with addresses that cannot be modified by user.

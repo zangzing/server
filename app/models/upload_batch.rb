@@ -1,5 +1,5 @@
 class UploadBatch < ActiveRecord::Base
-  attr_accessible :album_id, :custom_order, :open_activity_at, :original_batch_created_at
+  attr_accessible :album_id, :for_print, :custom_order, :open_activity_at, :original_batch_created_at
 
   if Rails.env == "development"
     CLOSE_BATCH_INACTIVITY = 1.minutes
@@ -9,6 +9,7 @@ class UploadBatch < ActiveRecord::Base
 
   CLOSE_CALL_DEFER_TIME = 30.seconds
   FINALIZE_STALE_INACTIVITY = 1.hours
+  FINALIZE_STALE_INACTIVITY_FOR_PRINT = 24.hours
   STOP_FINALIZING_TIME = 48.hours
 
   belongs_to :user
@@ -54,7 +55,7 @@ class UploadBatch < ActiveRecord::Base
 
         if current_batch.nil?
           if new_if_not_found
-            return UploadBatch.factory( user_id, album_id )
+            return UploadBatch.factory( user_id, album_id, false )
           end
           return nil
         end
@@ -82,7 +83,12 @@ class UploadBatch < ActiveRecord::Base
   # that could still be closed by normal means.  The consequences in this
   # rare case are that emails may go out on an incomplete album
   def self.finalize_stale_batches
-    expired_batches = UploadBatch.unscoped.where("state <> 'finished' AND updated_at < ?", FINALIZE_STALE_INACTIVITY.ago)
+    expired_batches = UploadBatch.unscoped.where("
+state <> 'finished' AND (
+(updated_at < ? AND for_print IS NOT true) OR
+(updated_at < ? AND for_print IS true)
+)", FINALIZE_STALE_INACTIVITY.ago, FINALIZE_STALE_INACTIVITY_FOR_PRINT.ago)
+
     expired_batches.each do |batch|
       batch.finish(true)  # force it to finish
     end
@@ -181,7 +187,7 @@ class UploadBatch < ActiveRecord::Base
         album.completed_batch_count += 1
         album.save
 
-        if album.for_print
+        if self.for_print
           order = Order.find_by_number(album.name)
           return true if order.nil?
           if all_ready
@@ -335,7 +341,7 @@ class UploadBatch < ActiveRecord::Base
       # the system will take care of dealing with this new batch
       # propagate the original batch creation time so we can eventually
       # stop if we never get or process all the photos
-      ub = UploadBatch.factory( self.user.id, self.album.id, self.original_batch_created_at, true )
+      ub = UploadBatch.factory( self.user.id, self.album.id, self.for_print, self.original_batch_created_at, true )
       pending.each do |p|
         p.upload_batch = ub
         p.save
@@ -358,14 +364,14 @@ class UploadBatch < ActiveRecord::Base
   # we track when the original batch was created so we can eventually stop
   # making new ones if the photos are not becoming ready after a long period
   # of time
-  def self.factory( user_id, album_id, original_batch_created_at = nil, state_closed = false )
+  def self.factory( user_id, album_id, for_print, original_batch_created_at = nil, state_closed = false )
     raise Exception.new( "User and Album Params must not be null for the UploadBatch factory") if( user_id.nil? or album_id.nil? )
 
     user = User.find( user_id )
     album = Album.find( album_id)
     now = Time.now
     original_batch_created_at ||= now
-    nb = user.upload_batches.build({:album_id => album.id, :open_activity_at => now, :original_batch_created_at => original_batch_created_at })
+    nb = user.upload_batches.build({:album_id => album_id, :for_print => for_print, :open_activity_at => now, :original_batch_created_at => original_batch_created_at })
     nb.state = 'closed' if state_closed
     if album.custom_order
       last_photo = album.photos.last

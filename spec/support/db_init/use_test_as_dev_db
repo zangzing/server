@@ -19,10 +19,10 @@
 #
 
 # back up existing data
-/usr/local/mysql/bin/mysqldump -hlocalhost -uroot server_development > server_dev.seedbackup
-/usr/local/mysql/bin/mysqldump -hlocalhost -uroot cache_dev > cache_dev.seedbackup
+mysqldump -hlocalhost -uroot server_development > server_dev.seedbackup
+mysqldump -hlocalhost -uroot cache_dev > cache_dev.seedbackup
 
 # import test data
-/usr/local/mysql/bin/mysql -hlocalhost -uroot server_development < server_test.seed
-/usr/local/mysql/bin/mysql -hlocalhost -uroot cache_dev < cache_test.seed
+mysql -hlocalhost -uroot server_development < server_test.seed
+mysql -hlocalhost -uroot cache_dev < cache_test.seed
 

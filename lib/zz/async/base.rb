@@ -9,7 +9,7 @@ module ZZ
       extend Resque::Plugins::ExponentialBackoff
 
 
-      # allow async jobs to run sycnchronously for testing
+      # allow async jobs to run synchronously for testing
       def self.loopback_filter=(filter)
         @@loopback_filter = filter
         @@loopback_on = !filter.nil?
@@ -142,6 +142,22 @@ module ZZ
           self.perform(*args)
         else
           Resque::Job.create(queue, self, *args) unless loopback_on?  # when loopback_on just drop it if was not allowed
+        end
+      end
+
+      def self.enqueue_in(secs_from_now, queue, *args)
+        if should_loopback?
+          self.perform(*args)
+        else
+          begin
+            current_queue = @queue
+            @queue = queue
+            Resque.enqueue_in(secs_from_now, self, *args)
+          rescue Exception => ex
+            raise ex
+          ensure
+            @queue = current_queue
+          end
         end
       end
 
