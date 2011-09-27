@@ -4,14 +4,27 @@ OrdersController.class_eval do
 
   helper 'checkout'
 
-  respond_to :json, :only => [:add_photo]
+  respond_to :json, :only => [:add_photo, :add_to_order]
 
-  def add_photo
-    @order = current_order(true)
-    variant = Variant.find_by_sku(Spree::Config[:default_print_sku])
-    photo = Photo.find( params[:photo_id] )
-    @order.add_variant( variant,  photo, 1 )
-    respond_with( @order )
+  #def add_photo
+  #  @order = current_order(true)
+  #  variant = Variant.find_by_sku(Spree::Config[:default_print_sku])
+  #  photo = Photo.find( params[:photo_id] )
+  #  @order.add_variant( variant,  photo, 1 )
+  #  respond_with( @order )
+  #end
+
+  def add_to_order
+    order = current_order(true)
+    variant = Variant.find_by_sku(params[:sku])
+
+    params[:photo_ids].each do |photo_id|
+      photo = Photo.find( photo_id )
+      order.add_variant( variant,  photo, 1 )
+    end
+
+    respond_with( order )
+
   end
 
   def index
