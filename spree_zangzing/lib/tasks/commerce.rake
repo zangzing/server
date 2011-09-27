@@ -62,7 +62,7 @@ namespace :commerce do
     s3_keys = YAML.load(File.read("#{Rails.root}/config/s3.yml"))[Rails.env]
     s3 = RightAws::S3.new(s3_keys['access_key_id'], s3_keys['secret_access_key'], {:logger       =>Logger.new(STDOUT)})
     bucket = s3.bucket('products.zz')
-    bucket.put( "catalog_export/#{@output_file}",  File.open("#{Rails.root}/#{@output_file}"), {}, 'public-read', {})
+    bucket.put( "catalog_export/#{@output_file}",  File.open("#{Rails.root}/#{@output_file}"))
     puts "\n\n #{@output_file}\n\n"
   end
 
@@ -83,17 +83,20 @@ namespace :commerce do
     key = keys[index -1]
     filename = key.to_s.gsub('catalog_export/','')
 
-    path = RemoteFile.read_remote_file(key.public_link)
+    sqlfile = Tempfile.new( filename )
+    sqlfile.write( key.get() )
+    sqlfile.close()
 
-    
     db_config = Rails.application.config.database_configuration[Rails.env]
     cmd =[]
     cmd << "mysql"   #command
     cmd << "-u#{db_config['username']}"
     cmd << " -p#{db_config['password']}" if db_config['password']
     cmd << ( db_config['host'] ? " -h#{db_config['host']}" : "-h localhost" )
+    cmd << "--verbose"
+    cmd << "--debug-info"
     cmd << "#{db_config['database']}"
-    cmd << "< #{path}"
+    cmd << "< #{sqlfile.path}"
     puts "\n\nImporting catalog into commerce from S3 file #{filename}"
     sh cmd.flatten.compact.join(" ").strip.squeeze(" ")
   end
