@@ -8,7 +8,7 @@ namespace :commerce do
     # manual is here http://dev.mysql.com/doc/refman/5.6/en/mysqldump.html
     db_config = Rails.application.config.database_configuration[Rails.env]
     deploy_group = Server::Application.config.deploy_environment.zz[:deploy_group_name]
-    @output_file = Time.now().strftime( "%Y-%m-%d-%H-%M-%S-catalog-export-#{deploy_group}.sql")
+    @output_file = Time.now().strftime( "%Y%m%d_%H%M_%S_#{deploy_group}.sql")
     cmd =[]
     cmd << "mysqldump"   #command
     cmd << "-u#{db_config['username']}"
@@ -49,18 +49,19 @@ namespace :commerce do
     zone_members
     zones
     )  #tables
-    cmd << "> #{@output_file}" if @output_file#capture output to file
+    cmd << "> #{Rails.root}/#{@output_file}" if @output_file#capture output to file
 
     puts "\n\nDumping commerce catalog to local file"
     sh cmd.flatten.compact.join(" ").strip.squeeze(" ")
 
+
     #Export to S3
-    puts "\nUploading to S3 bucket => products.zz, key => catalog_export/#{@output_file}"
+    puts "\nUploading to S3 bucket => products.zz"
 
     s3_keys = YAML.load(File.read("#{Rails.root}/config/s3.yml"))[Rails.env]
     s3 = RightAws::S3.new(s3_keys['access_key_id'], s3_keys['secret_access_key'], {:logger       =>Logger.new(STDOUT)})
     bucket = s3.bucket('products.zz')
-    bucket.put( "/catalog_export/#{@output_file}",  File.open(@output_file))
+    bucket.put( "catalog_export/#{@output_file}",  File.open("#{Rails.root}/#{@output_file}"))
     puts "\n\n #{@output_file}\n\n"
   end
 
