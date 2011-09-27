@@ -42,6 +42,9 @@ zz.buy = zz.buy || {};
                     '</div>' +
                     '<div class="select-photos-screen">' +
                         '<div class="main-section">' +
+                            '<div class="add-photos-message">Browse your photos and click on each one you would like for this product.</div>' +
+                            '<a class="clear-all-photos hyperlink-button">Clear All Selected Photos</a>' +
+                            '<div class="selected-photos"></div>' +
                         '</div>' +
                         '<div class="footer-section">' +
                             '<img class="image" src="/images/photo_placeholder.png">' +
@@ -362,11 +365,12 @@ zz.buy = zz.buy || {};
             slide_to_screen(DRAWER_SCREENS.CONFIGURE_PRODUCT, true);
         });
 
-        var photo_list_element = buy_screens_element.find('.select-photos-screen .main-section');
-        photo_list_element.empty();
 
-        _.each(zz.local_storage.get('zz.buy.selected_photos'), function(photo_json){
-            add_photo_to_selected_photos_screen(photo_json);
+        refresh_selected_photos_list();
+
+        buy_screens_element.find('.select-photos-screen .main-section .clear-all-photos').unbind('click').click(function(){
+            zz.local_storage.set('zz.buy.selected_photos',[]);
+            refresh_selected_photos_list();
         });
 
 
@@ -378,14 +382,33 @@ zz.buy = zz.buy || {};
 
     }
 
+    function refresh_selected_photos_list(){
+        var selected_photos = zz.local_storage.get('zz.buy.selected_photos');
+
+        var photo_list_element = buy_screens_element.find('.select-photos-screen .main-section .selected-photos');
+        photo_list_element.empty();
+
+        if(selected_photos && selected_photos.length > 0){
+            _.each(selected_photos, function(photo_json){
+                 add_photo_to_selected_photos_screen(photo_json);
+             });
+        }
+        else{
+            buy_screens_element.find('.select-photos-screen .main-section .add-photos-message').show();
+            buy_screens_element.find('.select-photos-screen .main-section .clear-all-photos').hide();
+        }
+    }
+
     function add_photo_to_selected_photos_screen(photo_json){
-        var photo_list_element = buy_screens_element.find('.select-photos-screen .main-section');
+        var photo_list_element = buy_screens_element.find('.select-photos-screen .main-section .selected-photos');
 
         var photo_element = $(SELECTED_PHOTO_TEMPLATE());
         photo_element.find('.image').attr('src', photo_json.thumb_url);
 
         photo_list_element.append(photo_element);
 
+        buy_screens_element.find('.select-photos-screen .main-section .add-photos-message').hide();
+        buy_screens_element.find('.select-photos-screen .main-section .clear-all-photos').show();
     }
 
     function set_drawer_title(title){

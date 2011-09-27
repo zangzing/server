@@ -155,6 +155,35 @@
     left:130px;
 }
 
+.buy-screens .select-photos-screen .main-section .clear-all-photos{
+    position:absolute;
+    width: 180px;
+    left:130px;
+    top:10px;
+    text-align: center;
+    display: none;
+}
+
+.buy-screens .select-photos-screen .main-section .selected-photos{
+    position: absolute;
+    top: 40px;
+}
+
+.buy-screens .select-photos-screen .main-section .add-photos-message{
+
+    position: relative;
+    width: 180px;
+    top: 100px;
+    left: 99px;
+    background-color: #F9F9FA;
+    border: 1px solid #D7D7D7;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    padding: 20px 40px 20px 40px;
+    font-size: 14px;
+    text-align: center;
+}
+
 
 
 
