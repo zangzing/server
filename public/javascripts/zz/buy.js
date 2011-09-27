@@ -251,6 +251,10 @@ zz.buy = zz.buy || {};
                 var product_element = $(PRODUCT_TEMPLATE());
                 product_element.find('.name').text(product.name);
                 product_element.find('.description .text').text(product.description);
+                product_element.find('.learn-more').click(function(event){
+                    show_glamour_page(null);
+                    event.stopPropagation();
+                });
                 screen_element.append(product_element);
                 product_element.click(function(){
                     set_selected_product(product);
@@ -279,6 +283,9 @@ zz.buy = zz.buy || {};
         var variant = get_selected_variant();
 
 
+        buy_screens_element.find('.configure-product-screen .main-section .learn-more').unbind('click').click(function(){
+            show_glamour_page(null);
+        });
 
         // build the product configuration options
         var options_element = buy_screens_element.find('.configure-product-screen .main-section .options');
@@ -506,6 +513,11 @@ zz.buy = zz.buy || {};
                 callback();
             });
         });
+    }
+
+
+    function show_glamour_page(product_id){
+        zz.dialog.show_square_dialog('glamour page', {width:640, height:480});
     }
 
 
