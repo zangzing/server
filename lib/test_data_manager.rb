@@ -62,6 +62,10 @@ class TestDataManager
       # out of date, pull the full set in via mysql script
       `cd #{path_to_db_init} && ./load_test_db`
 
+      # now reset the column info since the database changed
+      ActiveRecord::Base.reset_column_information
+      ActiveRecord::Base.send(:subclasses).each{|klass| klass.reset_column_information rescue nil}
+
       # now verify the version matches what was expected
       new_version = SystemSetting[KEY_NAME] rescue ''
       if new_version != VERSION
