@@ -4,11 +4,11 @@ module Cache
     class InvitedAlbumLoader < BaseAlbumLoader
 
       def match_type(album_type)
-        album_type == AlbumTypes::MY_INVITED_ALBUMS
+        album_type == AlbumTypes::MY_INVITED_ALBUMS || album_type == AlbumTypes::MY_INVITED_ALBUMS_PUBLIC
       end
 
       def album_type
-        AlbumTypes::MY_INVITED_ALBUMS
+        public ? AlbumTypes::MY_INVITED_ALBUMS_PUBLIC : AlbumTypes::MY_INVITED_ALBUMS
       end
 
       # load or fetch from cache my_albums

@@ -175,6 +175,11 @@ module Cache
         invalidator = Invalidator.new(self, user_id)
         invalidator.add_tracked_user(user_id, AlbumTypes::MY_INVITED_ALBUMS)
         invalidator.add_tracked_user_invites(user_id, AlbumTypes::MY_INVITED_ALBUMS)
+
+        # since we don't show anything other than an empty album list for the public view, no need to notify on change
+        #invalidator.add_tracked_user(user_id, AlbumTypes::MY_INVITED_ALBUMS_PUBLIC)
+        #invalidator.add_tracked_user_invites(user_id, AlbumTypes::MY_INVITED_ALBUMS_PUBLIC)
+
         invalidator.invalidate
       end
 
