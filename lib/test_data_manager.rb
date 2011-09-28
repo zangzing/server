@@ -22,7 +22,7 @@ class TestDataManager
   # prior to generating the dump file used by the
   # rspec tests.
   # The format should be: INITIALS-DATE-REV
-  VERSION = "GWS-2011-09-23-01"
+  VERSION = "GWS-2011-09-27-01"
 
   # do not change
   KEY_NAME = :test_data_ver
@@ -56,7 +56,9 @@ class TestDataManager
   def self.load_seed_data
     cur_version = SystemSetting[KEY_NAME] rescue ''
     if cur_version != VERSION
-      Rails.logger.info "Loading seed data into test database."
+      msg = "*** Your test database is out of date.  Loading seed data into test database."
+      Rails.logger.info msg
+      puts msg
       # out of date, pull the full set in via mysql script
       `cd #{path_to_db_init} && ./load_test_db`
 

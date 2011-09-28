@@ -23,13 +23,18 @@ describe EZPrints::EZPManager do
     end
   end
 
-  it 'should send an order to EZPrints' do
+  # one side effect of calling this is that ezprints
+  # will call us back in the near future with a failure
+  # notification so maybe we should pull this test...
+  it 'should send a fake order to EZPrints' do
     order = Order.find(5)
     reference = @ezp.submit_order(order, true)
     reference.should_not == nil
   end
 
-  it 'should copy photos and submit an order to ezprints' do
+  # this goes through all the motions but doesn't actuall
+  # submit the order because this order is in test_mode
+  it 'should copy photos and submit a test_mode order' do
     resque_jobs(:except => [ZZ::Async::MailingListSync]) do
       order = Order.find(5)
       # this will kick off a chain of events
