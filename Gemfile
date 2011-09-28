@@ -53,7 +53,6 @@ gem "yui-compressor"
 gem "closure-compiler"
 gem "nokogiri"
 gem "browser" 
-gem "yaml_db"
 
 group :development do
   # bundler requires these gems in development
