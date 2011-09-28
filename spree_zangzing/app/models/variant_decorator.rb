@@ -15,7 +15,7 @@ Variant.class_eval do
   def custom_image_url
     i = custom_image
     if i
-      i.photo.screen_url
+      i.attachment.url(:product)
     else
       ''
     end
@@ -31,10 +31,10 @@ Variant.class_eval do
 
   def custom_description
       if images.count > 0
-        if images.first.description.nil? || images.first.description.length <=0
+        if images.first.alt.nil? || images.first.alt.length <=0
           product.description
         else
-          images.first.description
+          images.first.alt
         end
       else
         product.description
