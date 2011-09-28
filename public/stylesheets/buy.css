@@ -221,26 +221,27 @@
 }
 
 .buy-screens .footer-section .product{
-    position: absolute;
+    position: relative;
     left: 125px;
-    top: 30px;
     font-size: 14px;
     font-weight: 500;
     text-shadow: 1px 1px #fff;
+    margin-top: 20px;
 }
 
 .buy-screens .footer-section .variant{
-    position: absolute;
+    position: relative;
     left: 125px;
-    top: 50px;
     font-size: 14px;
+    width: 290px;
+    margin-top: 5px;
 }
 
 .buy-screens .footer-section .price{
-    position: absolute;
+    position: relative;
     left: 125px;
-    top: 70px;
     font-size: 14px;
+    margin-top: 5px;
 }
 
 .buy-screens .footer-section .price .value{

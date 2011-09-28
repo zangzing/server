@@ -283,12 +283,12 @@ zz.buy = zz.buy || {};
         });
 
 
-        var variant = get_selected_variant();
 
-
+        // learn more button
         buy_screens_element.find('.configure-product-screen .main-section .learn-more').unbind('click').click(function(){
             show_glamour_page(null);
         });
+
 
         // build the product configuration options
         var options_element = buy_screens_element.find('.configure-product-screen .main-section .options');
@@ -310,9 +310,13 @@ zz.buy = zz.buy || {};
             set_selected_variant(current_variant);
 
             if(current_variant){
+                buy_screens_element.find('.configure-product-screen .main-section .image').attr('src', current_variant.image_url);
                 buy_screens_element.find('.configure-product-screen .footer-section .product').text(current_product.name);
-                buy_screens_element.find('.configure-product-screen .footer-section .variant').text(current_variant.name);
-                buy_screens_element.find('.configure-product-screen .footer-section .price').text(current_variant.price);
+                buy_screens_element.find('.configure-product-screen .footer-section .variant').text(current_variant.description);
+                buy_screens_element.find('.configure-product-screen .footer-section .price .value').text(current_variant.price);
+                buy_screens_element.find('.configure-product-screen .footer-section .image').attr('src', get_selected_variant().image_url);
+
+
             }
             else{
                 alert("Sorry, there was an unexpected error: no matching variant");
@@ -376,8 +380,9 @@ zz.buy = zz.buy || {};
 
 
         buy_screens_element.find('.select-photos-screen .footer-section .product').text(get_selected_product().name);
-        buy_screens_element.find('.select-photos-screen .footer-section .variant').text(get_selected_variant().name);
-        buy_screens_element.find('.select-photos-screen .footer-section .price').text(get_selected_variant().price);
+        buy_screens_element.find('.select-photos-screen .footer-section .variant').text(get_selected_variant().description);
+        buy_screens_element.find('.select-photos-screen .footer-section .price .value').text(get_selected_variant().price);
+        buy_screens_element.find('.select-photos-screen .footer-section .image').attr('src', get_selected_variant().image_url);
 
 
 
