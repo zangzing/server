@@ -11,12 +11,12 @@ namespace :db do
           "/sub_migrates/cache_builder"
       ]
 
+      d = Dir.pwd
       sub_task_dirs.each do |sub_task_dir|
-        d = Dir.pwd
         sub = sub_task_dir
-        Dir.chdir(d + sub)
-        system "rake #{task}"
-        Dir.chdir(d)
+        Dir.chdir(d + sub) do
+          sh "rake #{task}"
+        end
       end
     end
 
