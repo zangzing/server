@@ -8,7 +8,7 @@ var zz = zz || {};
 
         store: {
             get_products: function(success, error){
-                do_get('/store/products.json?per_page=100', {}, success, error);
+                do_get('/store/products.json', {}, success, error);
             },
 
             goto_cart: function(){
