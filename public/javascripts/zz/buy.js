@@ -252,6 +252,7 @@ zz.buy = zz.buy || {};
 
             _.each(products, function(product){
                 var product_element = $(PRODUCT_TEMPLATE());
+                product_element.find('.image').attr('src', product.image_url);
                 product_element.find('.name').text(product.name);
                 product_element.find('.description .text').text(product.description);
                 product_element.find('.learn-more').click(function(event){
