@@ -475,7 +475,7 @@ end
     # if no ready shipment, create a new one
     return if line_item_id_array.blank?
     
-    shp = shipments.detect{|shp| shp.ready? }
+    shp = shipments.detect{|shp| shp.ready? || shp.pending? }
     if !shp
       shp = self.shipments.build( :shipping_method => ShippingMethod.find_by_name!('ezPrintsPartialShipment'),
                                     :address => self.ship_address)

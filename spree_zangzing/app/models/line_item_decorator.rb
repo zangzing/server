@@ -10,7 +10,7 @@ LineItem.class_eval do
 
   scope :shipped, joins(:shipment).where("line_items.shipment_id IS NOT NULL AND line_items.shipment_id = shipments.id AND shipments.state = 'shipped'")
   scope :ready,   joins(:shipment).where("line_items.shipment_id IS NOT NULL AND line_items.shipment_id = shipments.id AND shipments.state = 'ready'")
-  scope :pending, joins(:shipment).where("line_items.shipment_id IS NULL OR line_items.shipment_id = shipments.id AND shipments.state = 'pending'")
+  scope :pending, where("line_items.shipment_id IS NULL")
 
 
 
