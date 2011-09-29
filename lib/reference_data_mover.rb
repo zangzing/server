@@ -40,6 +40,7 @@ class ReferenceDataMover
     prototypes
     shipping_categories
     shipping_methods
+    states
     tax_categories
     tax_rates
     taxonomies

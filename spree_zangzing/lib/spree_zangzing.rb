@@ -23,6 +23,17 @@ module SpreeZangzing
         end
       end
 
+      if Spree::Config.instance
+        Spree::Config.set(:site_name => 'ZangZing Prints')
+        Spree::Config.set(:default_seo_title => 'ZangZing Group Photo Sharing Prints')
+        Spree::Config.set(:allow_backorder_shipping => true )
+        #Spree::Config.set(:track_inventory_levels => false )
+        #Spree::Config.set(:create_inventory_units => false )
+        Spree::Config.set(:checkout_zone => 'North America' )
+        Spree::Config.set(:zz_environments => 'development,photos_staging,photos_production' )
+      end
+
+
       #Register EZPrints Shipping calculator
       #begin
       #  Calculator::EzpShipping.register if Calculator::EzpShipping.table_exists?
