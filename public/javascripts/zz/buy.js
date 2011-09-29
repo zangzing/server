@@ -20,6 +20,11 @@ zz.buy = zz.buy || {};
     };
 
 
+    var SELECTED_PHOTO_MAX_SIZE = {
+        WIDTH: 185,
+        HEIGHT: 145
+    };
+
     var buy_screens_element = null;
 
     var BUY_SCREENS_TEMPLATE = function(){
@@ -164,6 +169,11 @@ zz.buy = zz.buy || {};
             return; 
         }
 
+        if(photo_json.state != 'ready'){
+            alert("Sorry, you can't purchase a photo until it has finished uploading.");
+            return;
+        }
+
         if(zz.buy.is_buy_mode_active() && current_screen() != DRAWER_SCREENS.SELECT_PHOTOS){
             alert('Please select and configure a product and then add photos.');
             return;
@@ -194,7 +204,7 @@ zz.buy = zz.buy || {};
                 end_left = main_section.offset().left + 100;
             }
             else{
-                end_top = last_selected_photo.offset().top + 130;
+                end_top = last_selected_photo.offset().top + SELECTED_PHOTO_MAX_SIZE.HEIGHT;
                 end_left = main_section.offset().left + 100;
 
                 var fold = main_section.offset().top + main_section.height();
@@ -206,14 +216,23 @@ zz.buy = zz.buy || {};
         }
 
 
+        var size = zz.image_utils.scale({
+                                            width: imageElement.width(),
+                                            height: imageElement.height()
+                                        },
+                                        {
+                                            width:SELECTED_PHOTO_MAX_SIZE.WIDTH,
+                                            height:SELECTED_PHOTO_MAX_SIZE.HEIGHT
+                                        });
+
 
         imageElement.clone()
                 .css({position: 'absolute', left: start_left, top: start_top, border: '1px solid #ffffff'})
                 .appendTo('body')
                 .addClass('animate-photo-to-tray')
                 .animate({
-                             width: '140px',
-                             height: '140px',
+                             width: size.width,
+                             height: size.height,
                              top: (end_top) + 'px',
                              left: (end_left) + 'px'
                          },
@@ -450,8 +469,20 @@ zz.buy = zz.buy || {};
 
         var photo_element = $(SELECTED_PHOTO_TEMPLATE());
 
+
+        var size = zz.image_utils.scale({
+                                    width: 100 * photo_json.aspect_ratio,
+                                    height: 100
+                                    },
+                                    {
+                                        width:SELECTED_PHOTO_MAX_SIZE.WIDTH,
+                                        height:SELECTED_PHOTO_MAX_SIZE.HEIGHT
+                                    });
+
+
+
         photo_element.find('.photo-image').attr('src', photo_json.thumb_url)
-                                          .css({width:150, height:100});  //todo: need to calculate dimensions based on aspect ratio
+                                          .css({width: size.width, height: size.height});
 
 
         photo_element.find('.photo-delete-button').click(function(){
