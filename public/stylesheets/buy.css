@@ -147,7 +147,17 @@
 
 .buy-screens .select-photos-screen .main-section .selected-photo{
     position: relative;
+    margin-bottom: 30px;
+    text-align:center;
 }
+
+.buy-screens .select-photos-screen .main-section .selected-photo .photo-border{
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+
 
 .buy-screens .select-photos-screen .main-section .selected-photo .image{
     position:relative;
@@ -167,6 +177,8 @@
 .buy-screens .select-photos-screen .main-section .selected-photos{
     position: absolute;
     top: 40px;
+    left:0px;
+    right:0px;
 }
 
 .buy-screens .select-photos-screen .main-section .add-photos-message{

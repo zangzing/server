@@ -70,7 +70,11 @@ zz.buy = zz.buy || {};
 
     var SELECTED_PHOTO_TEMPLATE = function(){
         return '<div class="selected-photo">' +
-                    '<img class="image" src="/images/photo_placeholder.png">' +
+                    '<div class="photo-border">' +
+                        '<img class="photo-image" src="/images/photo_placeholder.png">' +
+                        '<div class="photo-delete-button"></div>' +
+                        '<img class="bottom-shadow" src="/images/photo/bottom-full.png?1">' +
+                    '</div>' +
                '</div>';
     };
 
@@ -151,7 +155,9 @@ zz.buy = zz.buy || {};
         });
     };
 
-    zz.buy.select_photo = function(photo_json, element, callback){
+
+
+    zz.buy.add_selected_photo = function(photo_json, element, callback){
 
         if(zz.buy.is_photo_selected(photo_json.id)){
             // don't allow selecting the same photo more than once
@@ -443,7 +449,23 @@ zz.buy = zz.buy || {};
         var photo_list_element = buy_screens_element.find('.select-photos-screen .main-section .selected-photos');
 
         var photo_element = $(SELECTED_PHOTO_TEMPLATE());
-        photo_element.find('.image').attr('src', photo_json.thumb_url);
+
+        photo_element.find('.photo-image').attr('src', photo_json.thumb_url)
+                                          .css({width:150, height:100});  //todo: need to calculate dimensions based on aspect ratio
+
+
+        photo_element.find('.photo-delete-button').click(function(){
+            photo_element.fadeOut('fast', function(){
+                photo_element.remove();
+            });
+            var selected_photos = zz.local_storage.get('zz.buy.selected_photos');
+            selected_photos = _.reject(selected_photos, function(selected_photo){
+                return photo_json.id == selected_photo.id;
+            });
+            zz.local_storage.set('zz.buy.selected_photos', selected_photos);
+            zz.pubsub.publish(EVENTS.REMOVE_SELECTED_PHOTO, [photo_json.id]);
+
+        });
 
         photo_list_element.append(photo_element);
 
