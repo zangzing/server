@@ -24,4 +24,13 @@ class ZZUtils
     raise ArgumentError.new("Not all required arguments were specified") if raise_err && found_all == false
     found_all
   end
+
+  # if value is nil return false, otherwise
+  # return true or false
+  def self.as_boolean(val)
+    return false if val.nil?
+    return true if val == true || val == 'true' || val == 1 || val == '1'
+    return false if val == false || val == 'false' || val == 0 || val == '0'
+    false # catch all for any non true or false value
+  end
 end

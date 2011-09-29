@@ -15,7 +15,8 @@ zz.buy = zz.buy || {};
         BEFORE_ACTIVATE: 'zz.buy.before_activate',
         ACTIVATE: 'zz.buy.activate',
         BEFORE_DEACTIVATE: 'zz.buy.before_deactivate',
-        DEACTIVATE: 'zz.buy.deactivate'
+        DEACTIVATE: 'zz.buy.deactivate',
+        REMOVE_SELECTED_PHOTO: 'zz.buy.remove_selected_photo'
     };
 
 
@@ -169,8 +170,34 @@ zz.buy = zz.buy || {};
         var start_top = imageElement.offset().top;
         var start_left = imageElement.offset().left;
 
-        var end_top = $('#footer #buy-button').offset().top;
-        var end_left = $('#footer #buy-button').offset().left;
+
+        var end_top;
+        var end_left;
+
+        if(!zz.buy.is_buy_mode_active()){
+            end_top = $('#footer #buy-button').offset().top;
+            end_left = $('#footer #buy-button').offset().left;
+        }
+        else{
+            //figure out position of last photo in selected photo screen
+            var main_section = $('.select-photos-screen .main-section');
+            var last_selected_photo = $('.select-photos-screen .main-section .selected-photos .selected-photo:last');
+
+            if(last_selected_photo.length == 0){
+                end_top = main_section.offset().top;
+                end_left = main_section.offset().left + 100;
+            }
+            else{
+                end_top = last_selected_photo.offset().top + 130;
+                end_left = main_section.offset().left + 100;
+
+                var fold = main_section.offset().top + main_section.height();
+                if(end_top > fold){
+                    end_top = fold - 150;
+                }
+
+            }
+        }
 
 
 
@@ -179,15 +206,16 @@ zz.buy = zz.buy || {};
                 .appendTo('body')
                 .addClass('animate-photo-to-tray')
                 .animate({
-                             width: '20px',
-                             height: '20px',
+                             width: '140px',
+                             height: '140px',
                              top: (end_top) + 'px',
                              left: (end_left) + 'px'
                          },
-                         1000,
+                         500,
                          'easeInOutCubic',
                          function(){
                             $(this).remove();
+                             add_photo_to_selected_photos_screen(photo_json);
                          }
                 );
 
@@ -197,7 +225,6 @@ zz.buy = zz.buy || {};
         selected_photos.push(photo_json);
         zz.local_storage.set('zz.buy.selected_photos', selected_photos);
 
-        add_photo_to_selected_photos_screen(photo_json);
 
 
 
@@ -240,6 +267,10 @@ zz.buy = zz.buy || {};
         zz.buy.on_deactivate(callback);
     };
 
+    zz.buy.on_remove_selected_photo = function(callback){
+        zz.pubsub.subscribe(EVENTS.REMOVE_SELECTED_PHOTO, callback);
+    };
+
 
 
     function render_select_product_screen(){
@@ -252,6 +283,7 @@ zz.buy = zz.buy || {};
 
             _.each(products, function(product){
                 var product_element = $(PRODUCT_TEMPLATE());
+                product_element.find('.image').attr('src', product.image_url);
                 product_element.find('.name').text(product.name);
                 product_element.find('.description .text').text(product.description);
                 product_element.find('.learn-more').click(function(event){
@@ -283,12 +315,12 @@ zz.buy = zz.buy || {};
         });
 
 
-        var variant = get_selected_variant();
 
-
+        // learn more button
         buy_screens_element.find('.configure-product-screen .main-section .learn-more').unbind('click').click(function(){
             show_glamour_page(null);
         });
+
 
         // build the product configuration options
         var options_element = buy_screens_element.find('.configure-product-screen .main-section .options');
@@ -310,9 +342,13 @@ zz.buy = zz.buy || {};
             set_selected_variant(current_variant);
 
             if(current_variant){
+                buy_screens_element.find('.configure-product-screen .main-section .image').attr('src', current_variant.image_url);
                 buy_screens_element.find('.configure-product-screen .footer-section .product').text(current_product.name);
-                buy_screens_element.find('.configure-product-screen .footer-section .variant').text(current_variant.name);
-                buy_screens_element.find('.configure-product-screen .footer-section .price').text(current_variant.price);
+                buy_screens_element.find('.configure-product-screen .footer-section .variant').text(current_variant.description);
+                buy_screens_element.find('.configure-product-screen .footer-section .price .value').text(current_variant.price);
+                buy_screens_element.find('.configure-product-screen .footer-section .image').attr('src', get_selected_variant().image_url);
+
+
             }
             else{
                 alert("Sorry, there was an unexpected error: no matching variant");
@@ -370,14 +406,17 @@ zz.buy = zz.buy || {};
         refresh_selected_photos_list();
 
         buy_screens_element.find('.select-photos-screen .main-section .clear-all-photos').unbind('click').click(function(){
+            var selected_photos = zz.local_storage.get('zz.buy.selected_photos');
             zz.local_storage.set('zz.buy.selected_photos',[]);
             refresh_selected_photos_list();
+            zz.pubsub.publish(EVENTS.REMOVE_SELECTED_PHOTO, selected_photos);
         });
 
 
         buy_screens_element.find('.select-photos-screen .footer-section .product').text(get_selected_product().name);
-        buy_screens_element.find('.select-photos-screen .footer-section .variant').text(get_selected_variant().name);
-        buy_screens_element.find('.select-photos-screen .footer-section .price').text(get_selected_variant().price);
+        buy_screens_element.find('.select-photos-screen .footer-section .variant').text(get_selected_variant().description);
+        buy_screens_element.find('.select-photos-screen .footer-section .price .value').text(get_selected_variant().price);
+        buy_screens_element.find('.select-photos-screen .footer-section .image').attr('src', get_selected_variant().image_url);
 
 
 

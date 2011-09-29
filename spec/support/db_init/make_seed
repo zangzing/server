@@ -16,5 +16,5 @@
 # The plus side to using this approach is that it tests more "real" code and can handle more
 # complex interactions and scenarios.
 #
-/usr/local/mysql/bin/mysqldump -hlocalhost -uroot server_development > server_test.seed
-/usr/local/mysql/bin/mysqldump -hlocalhost -uroot cache_dev > cache_test.seed
+mysqldump -hlocalhost -uroot server_development > server_test.seed
+mysqldump -hlocalhost -uroot cache_dev > cache_test.seed

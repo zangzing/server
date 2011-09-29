@@ -70,7 +70,7 @@ class Photo < ActiveRecord::Base
 
 
   # Set up an async call for Processing and Upload to S3
-  after_commit  :queue_upload_to_s3
+  after_commit  :do_upload_to_s3
 
   # Set up an async call for managing the deleted photo from s3
   after_commit  :add_to_pending_delete, :on => :destroy
@@ -91,6 +91,62 @@ class Photo < ActiveRecord::Base
     photo.init_for_create
     return photo
   end
+
+  # this method takes an existing object in the ready
+  # state and makes a copy of it.  You can supply a hash
+  # of options that can be used to override some of the
+  # original values.  You can set:
+  #
+  # :user_id
+  # :album_id
+  # :upload_batch_id
+  # :crop - new crop to be applied to copy
+  # :rotate_to - new rotation
+  # :for_print - will only produce print related resized photos
+  #
+  # returns the new copy - the copy still has to go through the
+  # resque jobs for copy of the s3 data and resizing steps so
+  # is initially in the uploading state
+  def self.copy_photo(original, attr = {})
+    raise ArgumentError.new("Cannot copy a source photos that is not in the ready state") unless original.ready?
+
+    photo = Photo.new(original.attributes)
+    photo.id = Photo.get_next_id
+    photo.photo_info = PhotoInfo.new(:photo_id => photo.id, :metadata => original.photo_info.metadata)
+    custom = attr[:user_id]
+    photo.user_id = custom unless custom.nil?
+    custom = attr[:album_id]
+    photo.album_id = custom unless custom.nil?
+    custom = attr[:upload_batch_id]
+    upload_batch_id = custom.nil? ? UploadBatch.get_current_and_touch(photo.user_id, photo.album_id).id : custom
+    photo.upload_batch_id = upload_batch_id
+
+    custom = attr[:rotate_to]
+    photo.rotate_to = custom unless custom.nil?
+    crop = attr[:crop]
+    photo.crop_json = crop.to_json unless crop.nil?
+    custom = attr[:for_print]
+    photo.for_print = custom unless custom.nil?
+
+    photo.mark_uploading
+    photo.set_guid_for_path
+    photo.image_path = nil
+    photo.image_bucket = nil
+    photo.source_path = nil
+    photo.source_guid = "copy:"+UUIDTools::UUID.random_create.to_s
+    photo.error_message = nil
+    photo.set_default_position
+    photo.save
+
+    options = {}
+    options[:copy_s3_object] = true
+    options[:src_bucket] = original.image_bucket
+    options[:src_key] = original.attached_image.key(AttachedImage::ORIGINAL)
+    photo.queue_upload_to_s3(options)
+
+    photo
+  end
+
 
   # wrap the import call so we can do some of the things that normally
   # happen via callbacks
@@ -113,7 +169,7 @@ class Photo < ActiveRecord::Base
     # now kick off the uploads since bulk does not call after commit (I don't think)
     photos.each do |photo|
       photo.inserting_for_batch = false
-      photo.queue_upload_to_s3
+      photo.do_upload_to_s3
     end
 
     results
@@ -150,6 +206,12 @@ class Photo < ActiveRecord::Base
 
   # get an instance of the attached image helper class
   def attached_image
+    # don't know why but in development with resque worker the very first time it tries to access the image_bucket
+    # attribute from within the PhotoAttachedImage initializer via the send method it throws an exception claiming
+    # image_bucket is not a method on this class, touching it first seems to make it happy.  Something strange
+    # with ActiveRecord?
+    #
+    wake = self.image_bucket
     @attached_image ||= PhotoAttachedImage.new(self, "image")
   end
 
@@ -290,16 +352,23 @@ class Photo < ActiveRecord::Base
     end
   end
 
+  # queue the upload with no checks
+  def queue_upload_to_s3(options = {})
+    ZZ::ZZA.new.track_transaction("photo.upload.s3.start", self.id)
+    ZZ::Async::S3Upload.enqueue( self.id, options )
+    logger.debug("queued for upload")
+  end
+
   #
   # Used to queue loading and processing for async.
+  # This is a callback from ActiveRecord so see if
+  # we have something to do first.
   #
-  def queue_upload_to_s3
+  def do_upload_to_s3
     # If state marked as uploading, pass it on
     if !self.destroyed? && self.uploading? && @do_upload
       @do_upload = false
-      ZZ::ZZA.new.track_transaction("photo.upload.s3.start", self.id)
-      ZZ::Async::S3Upload.enqueue( self.id )
-      logger.debug("queued for upload")
+      queue_upload_to_s3
     end
   end
 
@@ -422,11 +491,20 @@ class Photo < ActiveRecord::Base
   # this is called from the resque worker to avoid the upload
   # having to be done in the main app server dispatch
   #
-  def upload_source
+  def upload_source(options = {})
     begin
-      if (self.source_path != nil)
-        file = File.open(self.source_path, "rb")
-        attached_image.upload(file)
+      copy_s3_object = ZZUtils.as_boolean(options[:copy_s3_object])
+      if (copy_s3_object || self.source_path != nil)
+        if copy_s3_object
+          # copying an exist s3 object
+          src_bucket = options[:src_bucket]
+          src_key = options[:src_key]
+          attached_image.copy(src_bucket, src_key)
+        else
+          # doing a local file system copy
+          file = File.open(self.source_path, "rb")
+          attached_image.upload(file)
+        end
         # original file is now up on S3 - the existence of image_path lets us know that
         # it has been uploaded
 
@@ -546,6 +624,13 @@ class Photo < ActiveRecord::Base
     end
   end
 
+  def full_size_url
+    if self.ready?
+      attached_image.url(PhotoAttachedImage::FULL)
+    else
+      return safe_url(self.source_screen_url)
+    end
+  end
 
   def original_url
     if self.ready?
@@ -807,8 +892,8 @@ class PhotoAttachedImage < AttachedImage
   # sizes that we want for print generation
   def self.image_sizes(for_print = false)
     if for_print
-      @@normal_sizes ||= [
-          {FULL    => "-strip -quality 90"},  # this represents the full size image
+      @@print_sizes ||= [
+          {FULL    => "-strip -quality 90"},  # no resize wanted since this will be used for print
       ]
     else
       @@normal_sizes ||= [
@@ -836,11 +921,13 @@ class PhotoAttachedImage < AttachedImage
   #
   def custom_commands
     rotate_to = model.rotate_to.nil? ? 0 : model.rotate_to
-    if rotate_to != 0
-      "-rotate #{rotate_to}"
-    else
-      nil
-    end
+
+    crop = ImageCrop.from_json(model.crop_json)
+    crop_cmd = crop.crop_str(model.width, model.height) unless crop.nil?
+
+    custom_command = crop_cmd || ''
+    custom_command << " -rotate #{rotate_to}" if rotate_to != 0
+    custom_command.empty? ? nil : custom_command
   end
 
   # tack on any custom data you want to go with the original
@@ -861,6 +948,13 @@ class PhotoAttachedImage < AttachedImage
     rotate_to = model.rotate_to.nil? ? 0 : model.rotate_to
     if rotate_to != 0
       custom_meta["x-amz-meta-rotate"] = rotate_to.to_s
+    end
+    crop = ImageCrop.from_json(model.crop_json)
+    unless crop.nil?
+      custom_meta["x-amz-meta-crop-top"] = crop.top.to_s
+      custom_meta["x-amz-meta-crop-left"] = crop.left.to_s
+      custom_meta["x-amz-meta-crop-bottom"] = crop.bottom.to_s
+      custom_meta["x-amz-meta-crop-right"] = crop.right.to_s
     end
     custom_meta
   end

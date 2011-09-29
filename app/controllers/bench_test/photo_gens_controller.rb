@@ -219,7 +219,7 @@ class BenchTest::PhotoGensController < BenchTest::BenchTestsController
       # this should remain since only used
       # for timing test an we want the batch closed
       # since they are grouped together
-      last_photo.upload_batch.close_internal
+      last_photo.upload_batch.close_immediate
     end
   end
 

@@ -30,6 +30,7 @@ common: &common
   # EZPrints
   ezp_dev_key: 3ed2642a-302e-44d7-b62e-a223f3790545
   ezp_partner_id: 940
+  order_cancel_window: 1800     # time in seconds between completion of photo preparation and submission of order to ez prints, lets user cancel in this window
 
 
 development:
@@ -41,6 +42,7 @@ development:
   remote_job_timeout: 7200
   requires_http_auth: false
   agent_port: 30777
+  order_cancel_window: 180
 
 
 perftest:

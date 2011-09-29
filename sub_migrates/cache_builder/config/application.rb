@@ -1,10 +1,14 @@
-require File.expand_path('../boot', __FILE__)
+#require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
 
 # If you have a Gemfile, require the gems listed there, including any gems
 # you've limited to :test, :development, or :production.
-Bundler.require(:default, Rails.env) if defined?(Bundler)
+
+# Because this is a sub_migrate, we don't need any bundle stuff since
+# already included by parent - in fact if we pull it in we run into problems
+# since it tries to load parent level files when we don't want them
+#Bundler.require(:default, Rails.env) if defined?(Bundler)
 
 module CacheBuilder
   class Application < Rails::Application
