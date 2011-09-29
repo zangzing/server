@@ -2,6 +2,11 @@ class Calculator::EzpShipping < Calculator
   preference :ezp_shipping_type, :string, :default => ''
   preference :markup_amount, :decimal, :default => 0
 
+  FIRST_CLASS ='FC'
+  PRIORITY    ='PM'
+  SECOND_DAY  ='SD'
+  
+
   def self.description
     I18n.t("ezp_shipping_calculator")
   end

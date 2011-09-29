@@ -32,7 +32,7 @@ Order.class_eval do
   end
 
   def use_shipping_as_billing?
-    (bill_address_id == ship_address_id) || bill_address.same_as?( ship_address )
+    (bill_address_id == ship_address_id) ||(bill_address && ship_address &&  bill_address.same_as?( ship_address ))
   end
 
 
@@ -125,12 +125,20 @@ Order.class_eval do
   end
 
 
+  #Assign the ezPrints FC shipping method by default, (the cheapest)
   def assign_default_shipping_method
     if shipping_method.nil?
-      self.shipping_method = available_shipping_methods(:front_end).first
+      default_sm = available_shipping_methods.detect do |sm|
+        sm.calculator.is_a?(Calculator::EzpShipping) &&
+        sm.calculator.preferred_ezp_shipping_type == Calculator::EzpShipping::FIRST_CLASS
+      end
+      if default_sm
+        self.shipping_method = default_sm
+      else
+        self.shipping_method = available_shipping_methods(:front_end).first
+      end
     end
   end
-
 
   def add_variant(variant, photo, quantity = 1)
     current_item = contains?(variant,photo)
@@ -434,6 +442,7 @@ end
     album.destroy unless album.nil?
   end
 
+  # ezp Shipping calculator integration
   # keeps a class level cache of the shipping costs coming from ezp.
   # this cache avoids having to call ezp more than necessary. Spree's
   # architecture recalculates the order every save which would mean an ezp call
@@ -442,6 +451,7 @@ end
     @@shipping_costs_arrays[self.number] ||= ez.shipping_costs(self)
   end
 
+  # ezp Shipping calculator integration
   #invalidate the shipping cost cache for the order forcing it to
   # re-fetch next time
   def shipping_may_change
@@ -449,10 +459,86 @@ end
     @@shipping_costs_arrays.delete( self.number )
   end
 
+  # ezp Shipping calculator integration
   #clear the  shipping cost cache when the order has been placed
   alias shipping_costs_done shipping_may_change
 
+
+  # When receiving an ezp shippment notice,
+  # mark the line items as shipped and add a carrier::tracking number combo
+  # Orders have a shipment ready by default,
+  # The first time this method is called, the ready shipment is used and marked as shipped
+  # Subsequent calls will create a new shipment each
+  #
+  def line_items_shipped( tracking_number, carrier, line_item_id_array )
+    # Get the first ready shipment from the shipment list,
+    # if no ready shipment, create a new one
+    return if line_item_id_array.blank?
+    
+    shp = shipments.detect{|shp| shp.ready? || shp.pending? }
+    if !shp
+      shp = self.shipments.build( :shipping_method => ShippingMethod.find_by_name!('ezPrintsPartialShipment'),
+                                    :address => self.ship_address)
+    end
+
+    if carrier.present? && tracking_number.present?
+      shp.tracking        = "#{carrier}::#{tracking_number}"
+    else
+      shp.tracking        = "#{carrier}#{tracking_number}"
+    end
+
+    shp.line_item_ids   = line_item_id_array
+
+    if shp.save
+      # reload and move state to shipped by
+      # calling ship event
+      shp.reload
+      if shp.ship
+        return true
+      end
+    else
+      return false
+    end
+    return false
+  end
+
+  # Updates the +shipment_state+ attribute according to the following logic:
+  #
+  # shipped   when all Line items are shipped? state
+  # partial   when at least one line_item is "shipped?" and there is another line_item not shipped  #
+  # ready     when all Shipments are in the "ready" state
+  # pending   when all Shipments are in the "pending" state
+  #
+  # The +shipment_state+ value helps with reporting, etc. since it provides a quick and easy way to locate Orders needing attention.
+  def update_shipment_state
+    self.shipment_state =
+    case line_items.count
+    when 0
+      nil
+    when line_items.shipped.count
+      "shipped"
+    when line_items.pending.count
+      "pending"
+    when line_items.ready.count
+      "ready"
+    else
+      "partial"
+    end
+
+    if old_shipment_state = self.changed_attributes["shipment_state"]
+      self.state_events.create({
+        :previous_state => old_shipment_state,
+        :next_state     => self.shipment_state,
+        :name           => "shipment" ,
+        :user_id        => (User.respond_to?(:current) && User.current && User.current.id) || self.user_id
+      })
+    end
+
+  end
+
+
   private
+
   def ez
      @@ezpm ||= EZPrints::EZPManager.new
   end
