@@ -50,7 +50,7 @@ class EzPrintController < Spree::BaseController
     @@success_xml ||= lambda {
       xml = Builder::XmlMarkup.new(:indent => 2)
       xml.instruct!
-      xml.OrderEventNotificationReceived({ :Result => "Success"})
+      xml.OrderEventNotificationReceived({ :result => "Success", :msg => 'Success'})
       xml.target!
     }.call
   end
@@ -155,6 +155,6 @@ EOP
    <message>4002 Error: Type mismatch</message>
 </orderfailed>
 EOP
-) | curl -X POST -H 'Content-type: text/xml' -d @- http://ezprints.integration.zangzing.com/store/integration/ezprint/events
+) | curl -X POST -H 'Content-type: text/xml' --dump-header headers.txt -d @- http://ezprints.integration.zangzing.com/store/integration/ezprint/events
 
 SAMPLE_REQUEST
