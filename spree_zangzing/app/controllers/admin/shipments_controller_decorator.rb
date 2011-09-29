@@ -1,4 +1,5 @@
 Admin::ShipmentsController.class_eval do
+  helper :tracking
   def update
     assign_line_items
     if @shipment.update_attributes params[:shipment]
