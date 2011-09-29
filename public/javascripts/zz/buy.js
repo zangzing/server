@@ -408,7 +408,7 @@ zz.buy = zz.buy || {};
     }
 
     function render_select_photos_screen(){
-        set_drawer_title("Choose Photos");
+        set_drawer_title("Selected Photos");
 
         buy_screens_element.find('.select-photos-screen .footer-section .back').unbind('click').click(function(){
             add_selected_photos_to_cart(function(){
