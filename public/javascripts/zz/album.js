@@ -21,14 +21,14 @@ zz.album = {};
         $('#footer #comments-button').fadeIn('fast');
 
 
-     
-        zz.buy.on_before_change_buy_mode(function(){
-//            $('.photogrid').hide();
-        });
-
         zz.buy.on_change_buy_mode(function(){
             render_picture_view();
         });
+
+        zz.buy.on_remove_selected_photo(function(){
+            update_checkmarks_on_photos();
+        });
+
 
 
         // setup comments drawer
@@ -36,7 +36,6 @@ zz.album = {};
             render_picture_view();
         });
 
-//        render_picture_view();
 
         is_single_picture_view = true;
 
@@ -65,6 +64,11 @@ zz.album = {};
         zz.buy.on_change_buy_mode(function(){
             render_grid_view();
         });
+
+        zz.buy.on_remove_selected_photo(function(){
+            update_checkmarks_on_photos();
+        });
+
 
 
         render_grid_view();
@@ -147,9 +151,8 @@ zz.album = {};
                 infoMenuTemplateResolver: info_menu_template_resolver,
                 rolloverFrameContainer: gridElement
             }).data().zz_photogrid;
-
-
         });
+
     }
 
 
@@ -236,6 +239,8 @@ zz.album = {};
 
                 }).data().zz_photogrid;
 
+
+
                 $('#footer #next-button').unbind('click');
                 $('#footer #next-button').show().click(function() {
                     grid.nextPicture();
@@ -272,7 +277,7 @@ zz.album = {};
 
     function buy_photo(photo_json, element){
         zz.buy.select_photo(photo_json, element, function(){
-            element.data().zz_photo.setChecked(true);
+            update_checkmarks_on_photos();
         });
     }
 
@@ -343,6 +348,11 @@ zz.album = {};
         zz.buy.on_change_buy_mode(function(){
             render_timeline_or_people_view(which);
         });
+
+        zz.buy.on_remove_selected_photo(function(){
+            update_checkmarks_on_photos();
+        });
+
 
 
 
@@ -450,6 +460,7 @@ zz.album = {};
                 }).data().zz_photogrid;
 
 
+
                 //force this back because grid turns on scrolling
                 $(element).css({'overflow-x': 'hidden', 'overflow-y': 'hidden'});
 
@@ -529,6 +540,15 @@ zz.album = {};
         $('#header #back-button').click();
     }
 
+
+    function update_checkmarks_on_photos(){
+         _.each($('.photogrid-cell'), function(element){
+             var photo = $(element).data().zz_photo;
+             if(photo){
+                 photo.setChecked(zz.buy.is_photo_selected(photo.getPhotoId()));
+             }
+         });
+    }
 
 })();
 

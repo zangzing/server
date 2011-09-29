@@ -88,7 +88,8 @@
 
                 // wire share button
                 share_button.zz_menu(
-                { subject_id: o.albumId,
+                {
+                    subject_id: o.albumId,
                     subject_type: 'album',
                     container: $('#article'),
                     zza_context: 'frame',
@@ -119,15 +120,18 @@
 
             var mouse_in = function() {
                 hover = true;
-                if (!menuOpen) {
-                    if (!buttonBarWired) {
-                        wire_button_bar();
-                        buttonBarWired = true;
+
+                if(! zz.buy.is_buy_mode_active()){
+                    if (!menuOpen) {
+                        if (!buttonBarWired) {
+                            wire_button_bar();
+                            buttonBarWired = true;
+                        }
+                        //display toolbar
+                        height = self.topOfStack.height();
+                        self.topOfStack.css({height: height + 30});
+                        button_bar.show();
                     }
-                    //display toolbar
-                    height = self.topOfStack.height();
-                    self.topOfStack.css({height: height + 30});
-                    button_bar.show();
                 }
             };
 
