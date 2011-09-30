@@ -7,15 +7,11 @@ end %>
 <div id="confirm" class="clearfix">
 <div id="right_side" class="clearfix">
   <div id="order_summary">
-    <%= render 'summary', :order => @order %>
+    <%= render :partial => 'summary', :locals =>{:order => @order, :form => form} %>
   </div>
-  <div id="order_promo">
-    <p class="field" id="promo">
-      <%= form.label :coupon_code, t('gift_card_promo') %>
-      <%= form.text_field :coupon_code %>
-    </p>
-    <a href="javascript:void(0);" onclick="$('#checkout_form_confirm').attr('action','<%=update_checkout_path('confirm')%>').submit();" id="apply_promo" class="gray-button"><span><%=t('apply')%></span></a>
-  </div>
+
+
+  
   <div id="order_message" class="clearfix">
       Message Here
     </div>

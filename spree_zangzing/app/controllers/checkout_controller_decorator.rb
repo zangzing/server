@@ -86,7 +86,7 @@ CheckoutController.class_eval do
 
      # trigger the photo copy and preparation, this is done here because normal state machine transitions
      # happen in a transaction and could allow resque work to begin too soon.  See comment in order_decorator.rb
-     @order.prepare_for_submit
+     @order.prepare!
 
      if current_user
        # If a user is looged in, save  addresses and creditcard as default

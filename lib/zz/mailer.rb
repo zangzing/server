@@ -4,13 +4,7 @@ module ZZ
 
     included do
       ActionMailer::Base.logger = Rails.logger
-      
       default :charset => "utf-8"
-      if Rails.env == 'production'
-        default :from => '"ZangZing Communications" <do-not-reply@zangzing.com>'
-      else
-        default :from => '"ZangZing '+Rails.env.capitalize+' Environment" <do-not-reply@zangzing.com>'
-      end
     end
 
     #No class methods to add so no module ClassMethods

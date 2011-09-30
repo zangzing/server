@@ -22,6 +22,25 @@
 
   </table>
   <div id="place_order">
+
+<% unless Rails.env.photos_production? %>
+    <% content_for :page_stylesheet  do %>
+        <style type="text/css">
+          .on_off{margin: 10px auto; padding-left: 18px}
+          .on_off .iPhoneCheckLabelOn{ text-align: center;}
+          .on_off label.iPhoneCheckLabelOff{
+              color: #444444;
+              background-image: url("/images/iphone-style-checkboxes/off_red.png");
+          }
+        </style>
+    <%end%>
+  <div id="order_promo" class="on_off">
+    <div class="centered">
+        <%= form.check_box :test_mode %>
+    </div>
+  </div>
+<%end%>
+
     <a href="javascript:void(0);" onclick="$('#checkout_form_confirm').attr('action','<%=update_checkout_path('confirm')%>').submit();" class="green-button"><span><%=t('place_order')%></span></a>
     <div id="logo_secure_lock">
         <%= image_tag 'store/secure-lock.png'%>
@@ -30,3 +49,18 @@
   </div>
 
 </div>
+
+
+
+
+<%content_for :page_javascript do %>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('form p.field label').inFieldLabels();
+            <% unless Rails.env.photos_production? %>
+            $('.on_off :checkbox').iphoneStyle({ checkedLabel: 'Test', uncheckedLabel: 'ezP' });
+            <%end%>
+        });
+    </script>
+<% end %>
+

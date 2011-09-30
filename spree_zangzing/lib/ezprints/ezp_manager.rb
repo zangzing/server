@@ -54,6 +54,9 @@ module EZPrints
       order_xml = order.to_xml_ezporder(:shipping_calc => use_test_images)
       result_xml = submit_http_request("http://order.ezprints.com/PostXmlOrder.axd?PartnerNumber=#{ZangZingConfig.config[:ezp_partner_id]}&PartnerReference=#{order.number}",
           order_xml.to_s, header_options)
+
+      order.log_entries.create(:details => result_xml )
+      
       # see if we have an error
       err = result_xml.at_xpath("/XmlOrderFailed/@Reason")
       if err

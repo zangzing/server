@@ -300,7 +300,7 @@ class Order < ActiveRecord::Base
   end
 
   def process_payments!
-    ret = payments.each(&:process!)
+    payments.each(&:process!)
   end
 
   # Finalizes an in progress order after checkout is complete.

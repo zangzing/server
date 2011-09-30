@@ -1,10 +1,12 @@
 Order.class_eval do
   include PrettyUrlHelper
 
-  attr_accessible :use_shipping_as_billing, :ship_address_id, :bill_address_id
-
+  attr_accessible :use_shipping_as_billing, :ship_address_id, :bill_address_id, :test_mode
 
   attr_accessor  :use_shipping_as_billing
+
+
+  has_many :log_entries, :as => :source
 
   before_validation :clone_shipping_address, :if => "state=='ship_address'"
 
@@ -35,62 +37,82 @@ Order.class_eval do
     (bill_address_id == ship_address_id) ||(bill_address && ship_address &&  bill_address.same_as?( ship_address ))
   end
 
-
-# order state machine (see http://github.com/pluginaweek/state_machine/tree/master for details)
+  # order state machine (see http://github.com/pluginaweek/state_machine/tree/master for details)
   Order.state_machines[:state] = StateMachine::Machine.new(Order, :initial => 'cart', :use_transactions => false) do
 
+    #This is the checkout funnel
     event :next do
-      transition :from => 'cart', :to => 'confirm',      :if => Proc.new{ |order| order.ship_address && order.payment && order.bill_address }
-      transition :from => 'cart', :to => 'payment',      :if => :ship_address
+      transition :from => 'cart', :to => 'confirm',         :if => Proc.new{ |order| order.ship_address && order.payment && order.bill_address }
+      transition :from => 'cart', :to => 'payment',         :if => :ship_address
       transition :from => 'cart', :to => 'ship_address'
 
-      transition :from => 'ship_address', :to => 'confirm',      :if => Proc.new{ |order| order.payment && order.bill_address }
+      transition :from => 'ship_address', :to => 'confirm', :if => Proc.new{ |order| order.payment && order.bill_address }
       transition :from => 'ship_address', :to => 'payment'
 
-      transition :from => 'payment', :to => 'confirm'
+      transition :from => 'payment',  :to => 'confirm'
       transition :from => 'delivery', :to => 'confirm'
 
+      transition :from => 'confirm',  :to => 'complete'
+    end
+    before_transition :to => 'confirm',  :do => :create_tax_charge!
+    before_transition :to => 'confirm',  :do => :assign_default_shipping_method
+    before_transition :to => 'complete', :do => :process_payments!
+    after_transition  :to => 'confirm',  :do => :create_shipment!
+    after_transition  :to => 'complete', :do => :finalize!
 
-      transition :from => 'confirm',       :to => 'complete'
+    event :prepare do
+      transition :from =>'complete', :to => 'preparing'
+    end
+
+    event :submit do
+      transition :from => 'preparing', :to => 'submitted'
+    end
+    before_transition :to => 'submitted', :do => :capture_payments
+    before_transition :to => 'submitted', :do => :ezp_submit_order
+
+    event :accept do
+      transition :from => 'submitted', :to => 'accepted'
+    end
+
+    event :in_process do
+      transition :from => [ 'submitted','accepted'] , :to => 'processing'
+    end
+
+    event :has_shipped do
+        transition :from => ['submitted','accepted','processing'], :to => 'shipped'
     end
 
     event :cancel do
-      transition :to => 'canceled', :if => :allow_cancel?
+      transition :from => ['complete','preparing'], :to => 'canceled'
     end
+    after_transition :to => 'returned', :do => :send_order_cancel_notification
+    after_transition  :to => 'canceled', :do => :after_cancel
+
+    event :error do
+      transition :to => 'failed'
+    end
+    after_transition :to => 'failed', :do => :send_order_failure_notification
 
     event :return do
-      transition :to => 'returned', :from => 'awaiting_return'
+      transition :from => 'shipped', :to => 'returned'
     end
+    after_transition :to => 'returned', :do => :send_order_return_notification
 
     event :resume do
       transition :to => 'resumed', :from => 'canceled', :if => :allow_resume?
     end
 
-    event :authorize_return do
-      transition :to => 'awaiting_return'
+    after_transition ['complete','preparing',
+                      'submitted','accepted',
+                      'processing','shipped',
+                      'failed','returned'] => any do  | order, transition|
+      order.audit_trail( transition )
     end
-
-
-    before_transition :to => 'complete' do |order|
-      begin
-        order.process_payments!
-      rescue Spree::GatewayError
-        if Spree::Config[:allow_checkout_on_gateway_error]
-          true
-        else
-          false
-        end
-      end
-    end
-
-    before_transition :to => 'confirm', :do => :create_tax_charge!
-    before_transition:to => 'confirm', :do => :assign_default_shipping_method
-    after_transition :to => 'confirm', :do => :create_shipment!
-    after_transition :to => 'complete', :do => :finalize!
-    after_transition :to => 'canceled', :do => :after_cancel
   end
 
   # Associates the specified user with the order NO SAVE
+  # used when a user logs in half way through the checkout process, the
+  # until then guest order is associated to that user.
   def associate_user(user)
     if user
       self.user =  user
@@ -114,7 +136,6 @@ Order.class_eval do
       end
     end
   end
-
 
   # Associates the specified user with the order and destroys any previous association with guest user if
   # necessary. SAVES ORDER
@@ -140,6 +161,7 @@ Order.class_eval do
     end
   end
 
+  # Add an line_item to the cart
   def add_variant(variant, photo, quantity = 1)
     current_item = contains?(variant,photo)
     if current_item
@@ -167,11 +189,15 @@ Order.class_eval do
       current_item.update_attribute(field[:name].gsub(" ", "_").downcase, value)
     end
 
+    #notify shipping calculator cache that shipping params have changed
+    #need to get shipping costs again
     shipping_may_change
-    
     current_item
   end
 
+  # When adding an item to a cart, if the exact variant with the same photo
+  # is already there then we just increment the quantity of the existing
+  # line_item
   def contains?(variant,photo = nil)
     line_items.detect{ |line_item|
       if line_item.photo && photo
@@ -182,6 +208,94 @@ Order.class_eval do
       end
     }
   end
+
+  def create_user
+    # Override method to prevent order from creating anonymous user for guest checkin
+    # In ZangZing for guest checkin the order never gets a user just an email
+  end
+
+  # used to decide when to validate the presence of an email address.
+  def require_email
+    return true unless new_record? or state == 'cart' or state == 'ship_address'or state == 'payment'
+  end
+
+  # When a user decides to checkout as guest
+  def enable_guest_checkout
+     self.guest = true
+     self.save
+  end
+
+  def guest_checkout?
+    guest
+  end
+
+  def default_payment_method
+   available_payment_methods.first
+  end
+
+  # Finalizes an in progress order after checkout is complete.
+  # Called after transition to complete state when payments will have been processed
+  def finalize!
+    update_attribute(:completed_at, Time.now)
+    self.out_of_stock_items = InventoryUnit.assign_opening_inventory(self)
+    # lock any optional adjustments (coupon promotions, etc.)
+    adjustments.optional.each { |adjustment| adjustment.update_attribute("locked", true) }
+
+    ZZ::Async::Email.enqueue( :order_confirmed, self.id )
+
+    self.state_events.create({
+      :previous_state => "cart",
+      :next_state     => "complete",
+      :name           => "order" ,
+      :user_id        => (User.respond_to?(:current) && User.current.try(:id)) || self.user_id
+    })
+  end
+
+  def prepare!
+    # since the state machine transitions are called within a transaction we need
+    # to ensure that any external triggers such as starting a resque job happen
+    # after we have officially moved to the complete state and outside of that
+    # transaction because we want to make sure the photos are prepped before
+    # we give resque a chance to run.  Otherwise it could run before the photos
+    # are committed to the db. So instead of calling prepare_for_submit as a
+    # before_transition action, we have to call it here and then transition
+    prepare_for_submit
+    prepare
+  end
+
+
+  # Gaaaht meh mah moneeeeeh!
+  def capture_payments
+    payments.each{ |p| p.payment_source.capture(p) }
+  end
+
+  def audit_trail( transition )
+    self.state_events.create({
+        :previous_state => transition.from ,
+        :next_state     => transition.to,
+        :name           => transition.event,
+        :user_id        => self.user_id
+    })
+    true
+  end
+
+  #used to create a ZendDesk ticket for customer support for a failed order
+  def send_order_failure_notification
+    Notifier.order_support_request( self, " Had an ERROR and needs attention").deliver
+  end
+
+  #used to create a ZendDesk ticket for customer support for a returned order
+  def send_order_return_notification
+    Notifier.order_support_request( self, " Was just RETURNED by the user and needs attention").deliver
+  end
+
+  #used to create a ZendDesk ticket for customer support for a canceled order
+  def send_order_cancel_notification
+    Notifier.order_support_request( self, " Was just CANCELED and may need attention").deliver
+  end
+
+
+
 
   # return a standard placeholder image
   # for use in shipping calc since we won't
@@ -195,6 +309,7 @@ Order.class_eval do
     }
   end
 
+  # output the exp version of the order xml
   def to_xml_ezporder(options = {})
     shipping_calc = ZZUtils.as_boolean(options[:shipping_calc])
 
@@ -263,56 +378,6 @@ Order.class_eval do
     }
   end
 
-  def create_user
-    # Override method to prevent order from creating anonymous user for guest checkin
-    # In ZangZing for guest checkin the order never gets a user just an email
-  end
-
-  def require_email
-    return true unless new_record? or state == 'cart' or state == 'ship_address'or state == 'payment'
-  end
-
-  def enable_guest_checkout
-     self.guest = true
-     self.save
-  end
-
-  def guest_checkout?
-    guest
-  end
-
-  def default_payment_method
-   available_payment_methods.first
-  end
-
-  # Finalizes an in progress order after checkout is complete.
-  # Called after transition to complete state when payments will have been processed
-  def finalize!
-    update_attribute(:completed_at, Time.now)
-    self.out_of_stock_items = InventoryUnit.assign_opening_inventory(self)
-    # lock any optional adjustments (coupon promotions, etc.)
-    adjustments.optional.each { |adjustment| adjustment.update_attribute("locked", true) }
-
-    ZZ::Async::Email.enqueue( :order_confirmed, self.id )
-
-    self.state_events.create({
-      :previous_state => "cart",
-      :next_state     => "complete",
-      :name           => "order" ,
-      :user_id        => (User.respond_to?(:current) && User.current.try(:id)) || self.user_id
-    })
-
-    #todo get rid of this once mau hooks up the new states
-    # since the state machine transitions are called within a transaction we need
-    # to ensure that any external triggers such as starting a resque job happen
-    # after we have officially moved to the complete state and outside of that
-    # transaction because we want to make sure the photos are prepped before
-    # we give resque a chance to run.  Otherwise it could run before the photos
-    # are committed to the db.  So the following line of code is now called from
-    # within the checkout controller.
-    #prepare_for_submit
-  end
-
   # EZPrints processing stages
   #
   # When an order is completed by a user we then kick off
@@ -349,6 +414,16 @@ Order.class_eval do
   # If after the max time allowed we have not been able to get the order
   # submitted we stop trying and update the order state to error.
   #
+  # 1.- prepare      called by after_complete in the checkout controller
+  # 2.- submit       called by the prepare resque async job after the cooling period
+  # 3.- accept       called by ezp controller when accept message is received
+  # 3.- shipped      ezp controller calls line_items_shipped when shipped message is received
+  #                  then line_items_shipped calls shipped
+  # 4.- has_shipped  called by ezp controller when shipment_complete is received or when
+  #                  all line items have shipped via line_items_shipped calls
+  # error            called by prepare! if the preparation job cannot be completed and queued #TODO
+  #                  called by ezp submit order failed
+  #                  called by ezp controller if error message is received
 
   # fetch the id of the special ez prints user
   def self.ez_prints_user_id
@@ -395,7 +470,7 @@ Order.class_eval do
   # called when all photos have been successfully processed
   # everything is ready to go, so time to submit the order to ezprints
   def photos_processed
-    # maybe advance the state here and let state engine move us along
+    # start the cooling off timer at the end, the order will be submited
     ZZ::Async::EZPSubmitOrder.enqueue_in(ZangZingConfig.config[:order_cancel_window], self.id)
   end
 
@@ -408,9 +483,9 @@ Order.class_eval do
     return if canceled?
 
     # the test_mode flag tells us if we should submit "real" orders (when false) to ezprints or simulate the order flow internally (when true)
-if Rails.env == 'development' && ENV['EZP_ORDERS'] == 'true'
-  self.test_mode = false #todo - take this out once we have ui support to turn test order on/off
-end
+    #"#{if Rails.env == 'development' && ENV['EZP_ORDERS'] == 'true'
+    #  self.test_mode = false #todo - take this out once we have ui support to turn test order on/off
+    #end}"
     ezp = EZPrints::EZPManager.new
     if self.test_mode
       #todo kick off loopback generation of simulated events via resque jobs
@@ -420,13 +495,12 @@ end
       ezp_reference_id = ezp.submit_order(self)
       self.ezp_reference_id = ezp_reference_id
     end
-    # should advance to order submitted state as well...
-    #todo advance state
     save!
   end
 
   def ezp_submit_order_failed
     # set the state to failed - we were unable to submit the ezp order after multiple attempts
+    error
   end
 
   # called when one or more of the photos was not ready in the batch processing time
@@ -477,35 +551,35 @@ end
     
     shp = shipments.detect{|shp| shp.ready? || shp.pending? }
     if !shp
-      shp = self.shipments.build( :shipping_method => ShippingMethod.find_by_name!('ezPrintsPartialShipment'),
+      shp = self.shipments.create( :shipping_method => ShippingMethod.find_by_name!('ezPrintsPartialShipment'),
                                     :address => self.ship_address)
+      shp.reload
     end
 
+    # Store carrier::tracking number in the shipment tracking field
     if carrier.present? && tracking_number.present?
       shp.tracking        = "#{carrier}::#{tracking_number}"
     else
       shp.tracking        = "#{carrier}#{tracking_number}"
     end
-
     shp.line_item_ids   = line_item_id_array
+    shp.shipped_at = Time.now()
+    old_state = self.state
+    shp.ship
 
-    if shp.save
-      # reload and move state to shipped by
-      # calling ship event
-      shp.reload
-      if shp.ship
-        return true
-      end
-    else
-      return false
-    end
-    return false
+    # audit trail
+    self.state_events.create({
+        :previous_state => old_state,
+        :next_state     => self.state,
+        :name           => "ezp shipment" ,
+        :user_id        => (User.respond_to?(:current) && User.current && User.current.id) || self.user_id
+    })
   end
 
   # Updates the +shipment_state+ attribute according to the following logic:
   #
-  # shipped   when all Line items are shipped? state
-  # partial   when at least one line_item is "shipped?" and there is another line_item not shipped  #
+  # shipped   when all Line items are shipped?
+  # partial   when at least one line_item is "shipped?" and there is another line_item not shipped  
   # ready     when all Shipments are in the "ready" state
   # pending   when all Shipments are in the "pending" state
   #
@@ -526,12 +600,14 @@ end
     end
 
     if old_shipment_state = self.changed_attributes["shipment_state"]
+      #if shipment_state changed
       self.state_events.create({
         :previous_state => old_shipment_state,
         :next_state     => self.shipment_state,
         :name           => "shipment" ,
         :user_id        => (User.respond_to?(:current) && User.current && User.current.id) || self.user_id
       })
+      self.has_shipped if shipment_state == "shipped"
     end
 
   end
