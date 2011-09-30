@@ -22,7 +22,12 @@ class EzPrintController < Spree::BaseController
         # use the ezp_ref_num to find original request to ezprints - maybe order id is sufficient...
         ezp_ref_num = order[:EZPReferenceNumber]
         spree_order = Order.find_by_ezp_reference_id(ezp_ref_num) || Order.find_by_number(order_id)
-#        spree_order = {}  #todo wire this up to actual orders
+        spree_order.log_entries.create(:details => params.to_yaml )
+        # todo wire this up to actual orders
+        #   spree_order.accept
+        #   spree_order.in_process
+        #   spree_order.line_items_shipped( tracking_number, carrier, [line_item_id_array] )
+        #   spree_order.has_shipped
         next if spree_order.nil?
 
         # if matches one of our valid event types, call the method in this class
@@ -116,7 +121,9 @@ class EzPrintController < Spree::BaseController
       order_number = spree_order.number
       spree_order.ezp_error_message = ezp_error_message
       spree_order.save!
+      spree_order.log_entries.create(:details => order_failed.to_yaml )
       #todo: Advance the state to error
+      #spree_order.error
     end
     raise "Incoming order failed, EZPrints Ref Number: #{ezp_ref_num} - Order number: #{order_number} - Error: #{ezp_error_message}"
   end

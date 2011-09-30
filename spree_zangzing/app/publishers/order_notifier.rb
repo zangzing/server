@@ -3,6 +3,7 @@ module OrderNotifier
 
   included do
     helper "spree/base"
+    helper :tracking
   end
 
   module InstanceMethods
@@ -46,6 +47,22 @@ module OrderNotifier
         @recipient = @order.email
       end
       create_message(  __method__, template_id, @recipient, (@user ? { :user_id => @user.id } : nil ) )
+    end
+
+    #This is an internal message to create a Zendesk ticket,
+    # this email is not part of the standard templating system
+    def order_support_request( order, subject)
+      @order = order
+      if Rails.env.photos_production?
+        full_subject = "[Store] Order #{@order.number} #{subject}"
+      else
+        full_subject = "[Store #{Rails.env}]  Order #{@order.number} #{subject}"
+      end
+      #create message
+      mail( :to       => "help@zangzing.com",
+            :from     => "ZangZing Store <store@zangzing.com>",
+            :subject  => full_subject )
+
     end
   end
 end

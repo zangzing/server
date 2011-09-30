@@ -33,7 +33,7 @@ module ZZ
         options.recursively_symbolize_keys!
         SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
           order = Order.find(order_id)
-          order.ezp_submit_order
+          order.submit
         end
       end
 

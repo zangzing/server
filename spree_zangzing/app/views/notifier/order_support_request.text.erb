@@ -1,0 +1,25 @@
+            Number               : <%= @order.number %>
+            Status               : <%= @order.state  %>
+            Bill Customer Name   : <%= "#{@order.bill_address.firstname} #{@order.bill_address.lastname}" %>
+            Bill Email           : <%= @order.email %>
+            Bill Customer Phone  : <%= number_to_phone @order.bill_address.phone, :area_code => true %>
+            <% if @order.user %>
+                Checked out as       : <%= user_pretty_url( @order.user ) %>
+            <% else %>
+                Checked out as       : Guest
+            <% end %>
+            EZP Reference        : <%= @order.ezp_reference_id   %>
+            EZP Error Message    : <%= @order.ezp_error_message  %>
+            Payment State        : <%= @order.payment_state %>  Total <%= @order.total %>
+            <% @order.payments.each_with_index do | payment, index | %>
+                       Payment <%=index+1%> : <%=payment.state%>
+            <% end %>
+            Shipping State       : <%= @order.shipment_state %>
+            <% @order.shipments.each_with_index do | shipment, index | %>
+                      Shipment <%=index+1%> : <%=shipment.state %> <%=tracking_url( shipment.tracking )%>
+            <% end %>
+
+            Admin Order Page           :  <%= admin_order_url( @order ) %>
+            Customer Order Page        :  <%= token_order_url( @order.number, @order.token )%>
+            ezPrints Order Status Page :  <%= ezp_tracking_url( @order.ezp_reference_id )%>
+            Braintree Pay Status Page  :  <%= braintree_transaction_url( @order.payment.response_code ) %>

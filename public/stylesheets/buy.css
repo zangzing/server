@@ -64,6 +64,17 @@
     text-decoration: underline;
 }
 
+.buy-screens .select-product-screen .product .arrow{
+    position:absolute;
+    right:10px;
+    top:50px;
+    background: url("/images/buy/product-list-arrow.png") no-repeat scroll top right;
+    width: 9px;
+    height:14px;
+
+}
+
+
 
 
 
@@ -77,6 +88,12 @@
     top:0px;
     bottom:0px;
 }
+
+.buy-screens .configure-product-screen .header-section {
+    border-bottom: 1px solid #ccc;
+    height: 48px;
+}
+
 
 .buy-screens .configure-product-screen .main-section .image{
     position: absolute;
@@ -97,6 +114,21 @@
     cursor: pointer;
 }
 
+.buy-screens .configure-product-screen .main-section .price{
+    position: absolute;
+    top:220px;
+    left:0px;
+    right:0px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.buy-screens .configure-product-screen .main-section .price .value{
+    font-weight: 500;
+}
+
+
+
 .buy-screens .configure-product-screen .main-section .learn-more:hover{
     text-decoration: underline;
 }
@@ -104,7 +136,7 @@
 
 .buy-screens .configure-product-screen .main-section .options{
     position: absolute;
-    top:240px;
+    top:250px;
     left:0px;
     right:0px;
     bottom:0px;
@@ -145,9 +177,100 @@
     bottom:0px;
 }
 
+.buy-screens .select-photos-screen .main-section{
+    position: absolute;
+    top: 180px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+
+.buy-screens .select-photos-screen .header-section{
+    position: absolute;
+    top: 0px;
+    height: 180px;
+    left: 0px;
+    right: 0px;
+    background-color: #F9F9FA;
+    border-top: 1px solid #CCC;
+    border-bottom: 1px solid #ccc;
+
+}
+
+.buy-screens .select-photos-screen .header-section .image{
+    position:absolute;
+    width:85px;
+    height:85px;
+    left:25px;
+    top:50px;
+}
+
+.buy-screens .select-photos-screen .header-section .product{
+    position: relative;
+    left: 125px;
+    font-size: 14px;
+    font-weight: 500;
+    text-shadow: 1px 1px #fff;
+    margin-top: 50px;
+}
+
+.buy-screens .select-photos-screen .header-section .variant{
+    position: relative;
+    left: 125px;
+    font-size: 14px;
+    width: 290px;
+    margin-top: 5px;
+}
+
+.buy-screens .select-photos-screen .header-section .price{
+    position: relative;
+    left: 125px;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.buy-screens .select-photos-screen .header-section .price .value{
+    font-weight: 500;
+}
+
+.buy-screens .select-photos-screen .header-section .back{
+    position:absolute;
+    left:10px;
+    top:10px;
+    width:100px;
+}
+
+.buy-screens .select-photos-screen .header-section .add-and-buy-more-button{
+    position: absolute;
+    right: 156px;
+    top: 10px;
+    width: 120px;
+}
+
+.buy-screens .select-photos-screen .header-section .checkout-button{
+    position:absolute;
+    right:5px;
+    top:10px;
+    width:100px;
+}
+
+
 .buy-screens .select-photos-screen .main-section .selected-photo{
     position: relative;
+    margin-bottom: 30px;
+    text-align:center;
 }
+
+.buy-screens .select-photos-screen .main-section .selected-photo .photo-border{
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+
 
 .buy-screens .select-photos-screen .main-section .selected-photo .image{
     position:relative;
@@ -167,6 +290,8 @@
 .buy-screens .select-photos-screen .main-section .selected-photos{
     position: absolute;
     top: 40px;
+    left:0px;
+    right:0px;
 }
 
 .buy-screens .select-photos-screen .main-section .add-photos-message{
@@ -187,85 +312,38 @@
 
 
 
+
+
 /*
  * configure product & select photo shared stuff  */
 
-
-.buy-screens .main-section{
+.buy-screens .configure-product-screen .next{
     position:absolute;
-    top:0px;
-    bottom: 180px;
-    left:0px;
-    right:0px;
+    right:30px;
+    top:10px;
+    width:190px;
+}
+
+.buy-screens .configure-product-screen .back{
+    position:absolute;
+    left:30px;
+    top:10px;
+    width:125px;
+}
+
+
+
+
+.buy-screens .configure-product-screen .main-section{
+    position: absolute;
+    top: 50px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
     overflow-y: auto;
     overflow-x: hidden;
 }
 
 
-.buy-screens .footer-section{
-    position:absolute;
-    bottom:0px;
-    height:180px;
-    left:0px;
-    right:0px;
-    background-color: #f9f9fa;
-    border-top: 1px solid #cccccc;
-}
-
-.buy-screens .footer-section .image{
-    position:absolute;
-    width:85px;
-    height:85px;
-    left:25px;
-    top:20px;
-}
-
-.buy-screens .footer-section .product{
-    position: relative;
-    left: 125px;
-    font-size: 14px;
-    font-weight: 500;
-    text-shadow: 1px 1px #fff;
-    margin-top: 20px;
-}
-
-.buy-screens .footer-section .variant{
-    position: relative;
-    left: 125px;
-    font-size: 14px;
-    width: 290px;
-    margin-top: 5px;
-}
-
-.buy-screens .footer-section .price{
-    position: relative;
-    left: 125px;
-    font-size: 14px;
-    margin-top: 5px;
-}
-
-.buy-screens .footer-section .price .value{
-    font-weight: 500;
-}
-
-.buy-screens .footer-section .change{
-    position:absolute;
-    left:30px;
-    bottom:55px;
-    width:125px;
-}
 
 
-.buy-screens .footer-section .back{
-    position:absolute;
-    left:30px;
-    bottom:20px;
-    width:125px;
-}
-
-.buy-screens .footer-section .next{
-    position:absolute;
-    right:30px;
-    bottom:20px;
-    width:190px;
-}
