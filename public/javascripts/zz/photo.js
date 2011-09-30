@@ -54,10 +54,6 @@ zz.template_cache = zz.template_cache || {};
                                                      '</div>');
 
                 zz.template_cache.photo_rollover_frame = $('<div class="photo-rollover-frame">' +
-                                                                '<div class="social-buttons">' +
-                                                                    '<div class="facebook-button"></div>' +
-                                                                    '<div class="twitter-button"></div>' +
-                                                                '</div>' +
                                                                 '<div class="button-bar">' +
                                                                     '<div class="button share-button"></div>' +
                                                                     '<div class="button like-button zzlike" data-zzid="" data-zztype="photo"><div class="zzlike-icon thumbdown"></div></div>' +
@@ -264,19 +260,6 @@ zz.template_cache = zz.template_cache || {};
                         self.imageElement.click();
                     });
 
-
-                    // setup facebook and twitter buttons
-                    // 'defer' seems to improve the feel 
-                    _.defer(function(){
-                        var social_buttons = rollover_frame.find('.social-buttons');
-                        var photo_url = zz.routes.photos.photo_url(o.photoId);
-                        social_buttons.find('.twitter-button').append(zz.social_buttons.create_twitter_button_for_photo(photo_url));
-                        social_buttons.find('.facebook-button').append(zz.social_buttons.create_facebook_button_for_photo(photo_url));
-                    });
-
-
-
-         
 
                     // setup the button bar
                     var button_bar = rollover_frame.find('.button-bar');
