@@ -20,6 +20,11 @@ zz.buy = zz.buy || {};
     };
 
 
+    var SELECTED_PHOTO_MAX_SIZE = {
+        WIDTH: 185,
+        HEIGHT: 145
+    };
+
     var buy_screens_element = null;
 
     var BUY_SCREENS_TEMPLATE = function(){
@@ -70,7 +75,11 @@ zz.buy = zz.buy || {};
 
     var SELECTED_PHOTO_TEMPLATE = function(){
         return '<div class="selected-photo">' +
-                    '<img class="image" src="/images/photo_placeholder.png">' +
+                    '<div class="photo-border">' +
+                        '<img class="photo-image" src="/images/photo_placeholder.png">' +
+                        '<div class="photo-delete-button"></div>' +
+                        '<img class="bottom-shadow" src="/images/photo/bottom-full.png?1">' +
+                    '</div>' +
                '</div>';
     };
 
@@ -151,11 +160,18 @@ zz.buy = zz.buy || {};
         });
     };
 
-    zz.buy.select_photo = function(photo_json, element, callback){
+
+
+    zz.buy.add_selected_photo = function(photo_json, element, callback){
 
         if(zz.buy.is_photo_selected(photo_json.id)){
             // don't allow selecting the same photo more than once
             return; 
+        }
+
+        if(photo_json.state != 'ready'){
+            alert("Sorry, you can't purchase a photo until it has finished uploading.");
+            return;
         }
 
         if(zz.buy.is_buy_mode_active() && current_screen() != DRAWER_SCREENS.SELECT_PHOTOS){
@@ -188,7 +204,7 @@ zz.buy = zz.buy || {};
                 end_left = main_section.offset().left + 100;
             }
             else{
-                end_top = last_selected_photo.offset().top + 130;
+                end_top = last_selected_photo.offset().top + SELECTED_PHOTO_MAX_SIZE.HEIGHT;
                 end_left = main_section.offset().left + 100;
 
                 var fold = main_section.offset().top + main_section.height();
@@ -200,14 +216,23 @@ zz.buy = zz.buy || {};
         }
 
 
+        var size = zz.image_utils.scale({
+                                            width: imageElement.width(),
+                                            height: imageElement.height()
+                                        },
+                                        {
+                                            width:SELECTED_PHOTO_MAX_SIZE.WIDTH,
+                                            height:SELECTED_PHOTO_MAX_SIZE.HEIGHT
+                                        });
+
 
         imageElement.clone()
                 .css({position: 'absolute', left: start_left, top: start_top, border: '1px solid #ffffff'})
                 .appendTo('body')
                 .addClass('animate-photo-to-tray')
                 .animate({
-                             width: '140px',
-                             height: '140px',
+                             width: size.width,
+                             height: size.height,
                              top: (end_top) + 'px',
                              left: (end_left) + 'px'
                          },
@@ -383,7 +408,7 @@ zz.buy = zz.buy || {};
     }
 
     function render_select_photos_screen(){
-        set_drawer_title("Choose Photos");
+        set_drawer_title("Selected Photos");
 
         buy_screens_element.find('.select-photos-screen .footer-section .back').unbind('click').click(function(){
             add_selected_photos_to_cart(function(){
@@ -443,7 +468,35 @@ zz.buy = zz.buy || {};
         var photo_list_element = buy_screens_element.find('.select-photos-screen .main-section .selected-photos');
 
         var photo_element = $(SELECTED_PHOTO_TEMPLATE());
-        photo_element.find('.image').attr('src', photo_json.thumb_url);
+
+
+        var size = zz.image_utils.scale({
+                                    width: 100 * photo_json.aspect_ratio,
+                                    height: 100
+                                    },
+                                    {
+                                        width:SELECTED_PHOTO_MAX_SIZE.WIDTH,
+                                        height:SELECTED_PHOTO_MAX_SIZE.HEIGHT
+                                    });
+
+
+
+        photo_element.find('.photo-image').attr('src', photo_json.thumb_url)
+                                          .css({width: size.width, height: size.height});
+
+
+        photo_element.find('.photo-delete-button').click(function(){
+            photo_element.fadeOut('fast', function(){
+                photo_element.remove();
+            });
+            var selected_photos = zz.local_storage.get('zz.buy.selected_photos');
+            selected_photos = _.reject(selected_photos, function(selected_photo){
+                return photo_json.id == selected_photo.id;
+            });
+            zz.local_storage.set('zz.buy.selected_photos', selected_photos);
+            zz.pubsub.publish(EVENTS.REMOVE_SELECTED_PHOTO, [photo_json.id]);
+
+        });
 
         photo_list_element.append(photo_element);
 

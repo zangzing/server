@@ -276,7 +276,7 @@ zz.album = {};
 
 
     function buy_photo(photo_json, element){
-        zz.buy.select_photo(photo_json, element, function(){
+        zz.buy.add_selected_photo(photo_json, element, function(){
             update_checkmarks_on_photos();
         });
     }

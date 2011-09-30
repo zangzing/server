@@ -1,6 +1,10 @@
 Variant.class_eval do
   include ActionView::Helpers::NumberHelper
 
+  MIN_DPI = 150
+  DEFAULT_MIN_PHOTO_WIDTH = 3000
+  DEFAULT_MIN_PHOTO_HEIGHT = 2000
+
   def as_json
     {
       :id => id,
@@ -8,8 +12,11 @@ Variant.class_eval do
       :price => number_to_currency( price ),
       :description => custom_description,
       :image_url => custom_image_url,
-      :values => option_values.collect { | ov | ov.as_json }
+      :values => option_values.collect { | ov | ov.as_json },
+      :min_photo_width => self.width ? self.width * MIN_DPI : DEFAULT_MIN_PHOTO_WIDTH,
+      :min_photo_height => self.height ? self.height * MIN_DPI : DEFAULT_MIN_PHOTO_HEIGHT
     }
+
   end
 
   def custom_image_url
