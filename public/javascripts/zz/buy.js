@@ -31,35 +31,32 @@ zz.buy = zz.buy || {};
         return '<div class="buy-screens">' +
                     '<div class="select-product-screen"></div>' +
                     '<div class="configure-product-screen">' +
+                        '<div class="header-section">' +
+                            '<a class="gray-button back"><span>Back</span></a>'+
+                            '<a class="next-button next"><span>Next: Choose Photos</span></a>'+
+                        '</div>' +
                         '<div class="main-section">' +
                             '<img class="image" src="/images/photo_placeholder.png">' +
                             '<div class="learn-more">Learn More</div>' +
+                            '<div class="price">Price <span class="value">$200.94</span></div>' +
                             '<div class="options">' +
                             '</div>' +
                         '</div>' +
-                        '<div class="footer-section">' +
+                    '</div>' +
+                    '<div class="select-photos-screen">' +
+                        '<div class="header-section">' +
                             '<img class="image" src="/images/photo_placeholder.png">' +
                             '<div class="product">Modern Framed Poster Print</div>' +
                             '<div class="variant">12x23 Framed Matte</div>' +
                             '<div class="price">Price <span class="value">$200.94</span></div>' +
-                            '<a class="gray-button back"><span>Back</span></a>'+
-                            '<a class="next-button next"><span>Next: Choose Photos</span></a>'+
+                            '<a class="gray-button back"><span>Back</span></a>' +
+                            '<a class="gray-button add-and-buy-more-button"><span>Add and Buy More</span></a>'+
+                            '<a class="next-button checkout-button"><span>Checkout</span></a>'+
                         '</div>' +
-                    '</div>' +
-                    '<div class="select-photos-screen">' +
                         '<div class="main-section">' +
                             '<div class="add-photos-message">Browse your photos and click on each one you would like for this product.</div>' +
                             '<a class="clear-all-photos hyperlink-button">Clear All Selected Photos</a>' +
                             '<div class="selected-photos"></div>' +
-                        '</div>' +
-                        '<div class="footer-section">' +
-                            '<img class="image" src="/images/photo_placeholder.png">' +
-                            '<div class="product">Modern Framed Poster Print</div>' +
-                            '<div class="variant">12x23 Framed Matte</div>' +
-                            '<div class="price">Price <span class="value">$200.94</span></div>' +
-                            '<a class="hyperlink-button change">Change</a>' +
-                            '<a class="gray-button back"><span>Add and Buy More</span></a>'+
-                            '<a class="next-button next"><span>Add to Cart & Checkout</span></a>'+
                         '</div>' +
                     '</div>' +
                '</div>';
@@ -70,6 +67,7 @@ zz.buy = zz.buy || {};
                    '<img class="image" src="/images/photo_placeholder.png">' +
                    '<div class="name"></div>' +
                    '<div class="description"><span class="text"></span>&nbsp;<span class="learn-more">Learn more.</span></div>' +
+                   '<div class="arrow"></div>' +
                '</div>';
     };
 
@@ -331,11 +329,11 @@ zz.buy = zz.buy || {};
         set_drawer_title(get_selected_product().name + " Settings");
 
 
-        buy_screens_element.find('.configure-product-screen .footer-section .back').unbind('click').click(function(){
+        buy_screens_element.find('.configure-product-screen .back').unbind('click').click(function(){
             slide_to_screen(DRAWER_SCREENS.SELECT_PRODUCT, true);
         });
 
-        buy_screens_element.find('.configure-product-screen .footer-section .next').unbind('click').click(function(){
+        buy_screens_element.find('.configure-product-screen .next').unbind('click').click(function(){
             slide_to_screen(DRAWER_SCREENS.SELECT_PHOTOS, true);
         });
 
@@ -368,12 +366,7 @@ zz.buy = zz.buy || {};
 
             if(current_variant){
                 buy_screens_element.find('.configure-product-screen .main-section .image').attr('src', current_variant.image_url);
-                buy_screens_element.find('.configure-product-screen .footer-section .product').text(current_product.name);
-                buy_screens_element.find('.configure-product-screen .footer-section .variant').text(current_variant.description);
-                buy_screens_element.find('.configure-product-screen .footer-section .price .value').text(current_variant.price);
-                buy_screens_element.find('.configure-product-screen .footer-section .image').attr('src', get_selected_variant().image_url);
-
-
+                buy_screens_element.find('.configure-product-screen .main-section .price .value').text(current_variant.price);
             }
             else{
                 alert("Sorry, there was an unexpected error: no matching variant");
@@ -410,20 +403,20 @@ zz.buy = zz.buy || {};
     function render_select_photos_screen(){
         set_drawer_title("Selected Photos");
 
-        buy_screens_element.find('.select-photos-screen .footer-section .back').unbind('click').click(function(){
+        buy_screens_element.find('.select-photos-screen .header-section .add-and-buy-more-button').unbind('click').click(function(){
             add_selected_photos_to_cart(function(){
                 zz.local_storage.set('zz.buy.current_screen', null);
                 window.location.reload();
             });
         });
 
-        buy_screens_element.find('.select-photos-screen .footer-section .next').unbind('click').click(function(){
+        buy_screens_element.find('.select-photos-screen .header-section .checkout-button').unbind('click').click(function(){
             add_selected_photos_to_cart(function(){
                 zz.routes.store.goto_cart();
             });
         });
 
-        buy_screens_element.find('.select-photos-screen .footer-section .change').unbind('click').click(function(){
+        buy_screens_element.find('.select-photos-screen .header-section .back').unbind('click').click(function(){
             slide_to_screen(DRAWER_SCREENS.CONFIGURE_PRODUCT, true);
         });
 
@@ -438,10 +431,10 @@ zz.buy = zz.buy || {};
         });
 
 
-        buy_screens_element.find('.select-photos-screen .footer-section .product').text(get_selected_product().name);
-        buy_screens_element.find('.select-photos-screen .footer-section .variant').text(get_selected_variant().description);
-        buy_screens_element.find('.select-photos-screen .footer-section .price .value').text(get_selected_variant().price);
-        buy_screens_element.find('.select-photos-screen .footer-section .image').attr('src', get_selected_variant().image_url);
+        buy_screens_element.find('.select-photos-screen .header-section .product').text(get_selected_product().name);
+        buy_screens_element.find('.select-photos-screen .header-section .variant').text(get_selected_variant().description);
+        buy_screens_element.find('.select-photos-screen .header-section .price .value').text(get_selected_variant().price);
+        buy_screens_element.find('.select-photos-screen .header-section .image').attr('src', get_selected_variant().image_url);
 
 
 
