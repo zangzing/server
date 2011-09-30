@@ -2,6 +2,7 @@ module TrackingHelper
 #This helper take a carrier::number combo from
 # commerce shipping
   def tracking_url( carrier,tracking=nil )
+    return '' if carrier.nil?
     if tracking.nil?
      c,t = carrier.split('::')
      c.upcase!

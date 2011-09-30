@@ -259,8 +259,14 @@ Order.class_eval do
     # we give resque a chance to run.  Otherwise it could run before the photos
     # are committed to the db. So instead of calling prepare_for_submit as a
     # before_transition action, we have to call it here and then transition
-    prepare_for_submit
-    prepare
+    begin
+      prepare_for_submit
+      prepare
+    rescue Exception => e
+      self.ezp_error_message = "prepare_for_submit: #{e.message}"
+      save
+      error
+    end
   end
 
 
@@ -507,7 +513,7 @@ Order.class_eval do
   # should clean up and transition to an error state
   def photos_failed
     cleanup_photos
-    # move the state to the error condition
+    error
   end
 
   # no longer need the photos or album for the order so clean them up
