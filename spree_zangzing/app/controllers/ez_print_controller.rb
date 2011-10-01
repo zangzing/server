@@ -14,7 +14,7 @@ class EzPrintController < Spree::BaseController
       # see if we got an error notification
       check_order_failed
 
-      orders = params['OrderEventNotification']['Order']
+      orders = params[:OrderEventNotification][:Order]
       orders = [orders] unless orders.is_a?(Array)
 
       orders.each do |order|
@@ -72,7 +72,7 @@ class EzPrintController < Spree::BaseController
 
   # event handler methods
   def accepted(order, details)
-    #order.accepted
+    order.accept
   end
 
   def assets_collected(order, details)
@@ -80,11 +80,17 @@ class EzPrintController < Spree::BaseController
   end
 
   def in_production(order, details)
-    #order.in_production
+    order.in_process
   end
 
   def canceled(order, details)
-    #order.canceled
+    #todo we probably want to have an ezp canceled state to distinguish between our zangizing side
+    # cancels and ones that come from ezprints since they have different rules that apply to them
+    # From ezprints we can receive a cancel which means the order will not go through.  On the other
+    # hand we CANNOT cancel after we reach the submitted state so if we opened up the state machine
+    # it could lead to allowing cancel when it would not work...
+    # For now we will go to the error state
+    order.error
   end
 
   def shipment(order, details)
@@ -92,16 +98,21 @@ class EzPrintController < Spree::BaseController
     return if items.nil?
     # turn it into an array if only a single instance
     items = [items] unless items.is_a?(Array)
-    item_ids = items.map { |item| item[:Id] }
+    item_ids = items.map { |item| item[:Id].to_i }
     order.line_items_shipped(details[:TrackingNumber], details[:Carrier], item_ids)
   end
 
   def complete_shipment(order, details)
-    # not sure we are receiving this but really don't need as long as they call shipment for each part
+    # follows same for as shipment but will be called multiple times
+    details = [details] unless details.is_a?(Array)
+    details.each do |detail|
+      shipment(order, detail)
+    end
   end
 
   def complete(order, details)
     # not sure we are receiving this but really don't need as long as they call shipment for each part
+    order.has_shipped
   end
 
   private
@@ -122,8 +133,7 @@ class EzPrintController < Spree::BaseController
       spree_order.ezp_error_message = ezp_error_message
       spree_order.save!
       spree_order.log_entries.create(:details => order_failed.to_yaml )
-      #todo: Advance the state to error
-      #spree_order.error
+      spree_order.error
     end
     raise "Incoming order failed, EZPrints Ref Number: #{ezp_ref_num} - Order number: #{order_number} - Error: #{ezp_error_message}"
   end
