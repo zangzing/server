@@ -9,7 +9,7 @@ zz.album = {};
     zz.album.init_picture_view = function(photo_id) {
         current_photo_id = photo_id;
 
-        init_back_button(zz.page.album_name, zz.page.album_base_url + '/photos');
+        init_back_button(zz.page.album_base_url + '/photos');
         init_comment_button();
 
         $('#view-buttons').fadeOut('fast');
@@ -147,7 +147,7 @@ zz.album = {};
 
     zz.album.init_grid_view = function() {
 
-        init_back_button(zz.page.back_to_home_page_caption, zz.page.back_to_home_page_url);
+        init_back_button(zz.page.back_to_home_page_url);
 
         load_photos_json(function(json) {
 
@@ -335,7 +335,7 @@ zz.album = {};
 
     function init_timeline_or_people_view(which) {
 
-        init_back_button(zz.page.back_to_home_page_caption, zz.page.back_to_home_page_url);
+        init_back_button(zz.page.back_to_home_page_url);
 
         $('#article').touchScrollY();
 
@@ -451,9 +451,7 @@ zz.album = {};
         });
     }
 
-    function init_back_button(caption, url) {
-        $('#header #back-button span').text(caption);
-
+    function init_back_button(url) {
         $('#header #back-button').click(function() {
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
