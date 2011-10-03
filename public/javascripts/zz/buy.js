@@ -50,8 +50,8 @@ zz.buy = zz.buy || {};
                             '<div class="variant">12x23 Framed Matte</div>' +
                             '<div class="price">Price <span class="value">$200.94</span></div>' +
                             '<a class="gray-button back"><span>Back</span></a>' +
-                            '<a class="gray-button add-and-buy-more-button"><span>Add and Buy More</span></a>'+
-                            '<a class="next-button checkout-button"><span>Checkout</span></a>'+
+                            '<a class="gray-button add-and-buy-more-button"><span>Add & Buy More</span></a>'+
+                            '<a class="next-button checkout-button"><span>Add & Checkout</span></a>'+
                         '</div>' +
                         '<div class="main-section">' +
                             '<div class="add-photos-message">Browse your photos and click on each one you would like for this product.</div>' +

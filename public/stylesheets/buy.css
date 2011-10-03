@@ -116,7 +116,7 @@
 
 .buy-screens .configure-product-screen .main-section .price{
     position: absolute;
-    top:220px;
+    top:225px;
     left:0px;
     right:0px;
     text-align: center;
@@ -136,7 +136,7 @@
 
 .buy-screens .configure-product-screen .main-section .options{
     position: absolute;
-    top:250px;
+    top:280px;
     left:0px;
     right:0px;
     bottom:0px;
@@ -241,20 +241,25 @@
     left:10px;
     top:10px;
     width:100px;
+    color: black;
+    font-weight: 500;
 }
 
 .buy-screens .select-photos-screen .header-section .add-and-buy-more-button{
     position: absolute;
     right: 156px;
     top: 10px;
-    width: 120px;
+    width: 123px;
+    color: black;
+    font-weight: 500;
+
 }
 
 .buy-screens .select-photos-screen .header-section .checkout-button{
     position:absolute;
     right:5px;
     top:10px;
-    width:100px;
+    width:105px;
 }
 
 
@@ -329,6 +334,8 @@
     left:30px;
     top:10px;
     width:125px;
+    color: black;
+    font-weight: 500;
 }
 
 
