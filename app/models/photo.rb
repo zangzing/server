@@ -108,7 +108,7 @@ class Photo < ActiveRecord::Base
   # resque jobs for copy of the s3 data and resizing steps so
   # is initially in the uploading state
   def self.copy_photo(original, attr = {})
-    raise ArgumentError.new("Cannot copy a source photos that is not in the ready state") unless original.ready?
+    raise ArgumentError.new("Cannot copy a source photo that is not in the ready state") unless original.ready?
 
     photo = Photo.new(original.attributes)
     photo.id = Photo.get_next_id

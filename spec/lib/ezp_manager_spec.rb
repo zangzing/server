@@ -32,7 +32,7 @@ describe EZPrints::EZPManager do
     reference.should_not == nil
   end
 
-  # this goes through all the motions but doesn't actuall
+  # this goes through all the motions but doesn't actually
   # submit the order because this order is in test_mode
   it 'should copy photos and submit a test_mode order' do
     resque_jobs(:except => [ZZ::Async::MailingListSync]) do
@@ -43,7 +43,12 @@ describe EZPrints::EZPManager do
       # by checking the order ezp_reference_id
       # to see if it changed
       old_ref_id = order.ezp_reference_id
-      order.prepare_for_submit
+      order.test_mode = true
+      order.prepare # call the prepare state transition, does not actually kick off any work so do prepare! below
+#todo want to make sure the order simulator is turned off since we only want to test the prepare and submit phase
+#      resque_jobs(:except => [ZZ::Async::EZPOrderSimulator]) do
+        order.prepare!
+#      end
 
       order.reload
       order.cleanup_photos

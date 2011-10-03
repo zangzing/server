@@ -81,6 +81,7 @@ Order.class_eval do
     event :has_shipped do
         transition :from => ['submitted','accepted','processing'], :to => 'shipped'
     end
+    after_transition :to => 'shipped', :do => :cleanup_photos
 
     event :cancel do
       transition :from => ['complete','preparing'], :to => 'canceled'
@@ -259,8 +260,14 @@ Order.class_eval do
     # we give resque a chance to run.  Otherwise it could run before the photos
     # are committed to the db. So instead of calling prepare_for_submit as a
     # before_transition action, we have to call it here and then transition
-    prepare_for_submit
-    prepare
+    begin
+      prepare_for_submit
+      prepare
+    rescue Exception => e
+      self.ezp_error_message = "prepare_for_submit: #{e.message}"
+      save
+      error
+    end
   end
 
 
@@ -470,7 +477,13 @@ Order.class_eval do
   # called when all photos have been successfully processed
   # everything is ready to go, so time to submit the order to ezprints
   def photos_processed
-    # start the cooling off timer at the end, the order will be submited
+    # since this is called via batch completion, no point in moving on if we have already been canceled or have failed
+    return if canceled? || failed?
+
+    # start the cooling off timer which gives us a window in which we can cancel
+    # before we submit to ezprints - at the end of the window resque calls order.submit
+    # which in turn calls ezp_submit_order, after this point we have no control
+    # over the ezprints order process so cannot cancel from our end
     ZZ::Async::EZPSubmitOrder.enqueue_in(ZangZingConfig.config[:order_cancel_window], self.id)
   end
 
@@ -479,13 +492,7 @@ Order.class_eval do
   # will be called if no more retries will happen
   #
   def ezp_submit_order
-    # if this callback fires and we've been canceled do not place order
-    return if canceled?
-
     # the test_mode flag tells us if we should submit "real" orders (when false) to ezprints or simulate the order flow internally (when true)
-    #"#{if Rails.env == 'development' && ENV['EZP_ORDERS'] == 'true'
-    #  self.test_mode = false #todo - take this out once we have ui support to turn test order on/off
-    #end}"
     ezp = EZPrints::EZPManager.new
     if self.test_mode
       #todo kick off loopback generation of simulated events via resque jobs
@@ -507,7 +514,7 @@ Order.class_eval do
   # should clean up and transition to an error state
   def photos_failed
     cleanup_photos
-    # move the state to the error condition
+    error
   end
 
   # no longer need the photos or album for the order so clean them up
@@ -548,7 +555,15 @@ Order.class_eval do
     # Get the first ready shipment from the shipment list,
     # if no ready shipment, create a new one
     return if line_item_id_array.blank?
-    
+    line_item_id_array.uniq!    # get rid of any duplicates
+
+    # make sure we only include line items that have not already been associated with a shipment
+    filtered_line_item_ids = []
+    self.line_items.select do |line_item|
+      filtered_line_item_ids << line_item.id if line_item.shipment_id.nil? && line_item_id_array.include?(line_item.id)
+    end
+    return if filtered_line_item_ids.blank?
+
     shp = shipments.detect{|shp| shp.ready? || shp.pending? }
     if !shp
       shp = self.shipments.create( :shipping_method => ShippingMethod.find_by_name!('ezPrintsPartialShipment'),
@@ -562,7 +577,7 @@ Order.class_eval do
     else
       shp.tracking        = "#{carrier}#{tracking_number}"
     end
-    shp.line_item_ids   = line_item_id_array
+    shp.line_item_ids   = filtered_line_item_ids
     shp.shipped_at = Time.now()
     old_state = self.state
     shp.ship

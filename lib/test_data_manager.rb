@@ -10,7 +10,12 @@
 #
 # To create the seed data, change the VERSION below and
 # then run the rails console.  From the console type:
+#
 # TestDataManager.create_seed_data
+#
+# or you can use the following to run without the console from the command line
+#
+# bundle exec rails runner -e development TestDataManager.create_seed_data
 #
 # The above will create a mysql dump file for the cache and database
 # which will be imported with the rpsec tests are run if the current
@@ -22,7 +27,7 @@ class TestDataManager
   # prior to generating the dump file used by the
   # rspec tests.
   # The format should be: INITIALS-DATE-REV
-  VERSION = "GWS-2011-09-29-01"
+  VERSION = "GWS-2011-10-03-02"
 
   # do not change
   KEY_NAME = :test_data_ver

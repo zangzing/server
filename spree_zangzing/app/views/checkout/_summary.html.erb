@@ -26,7 +26,7 @@
 <% unless Rails.env.photos_production? %>
     <% content_for :page_stylesheet  do %>
         <style type="text/css">
-          .on_off{margin: 10px auto; padding-left: 18px}
+          .on_off{margin: 10px auto; width: 200px;}
           .on_off .iPhoneCheckLabelOn{ text-align: center;}
           .on_off label.iPhoneCheckLabelOff{
               color: #444444;
@@ -58,7 +58,7 @@
         $(document).ready(function(){
             $('form p.field label').inFieldLabels();
             <% unless Rails.env.photos_production? %>
-            $('.on_off :checkbox').iphoneStyle({ checkedLabel: 'Test', uncheckedLabel: 'ezP' });
+            $('.on_off :checkbox').iphoneStyle({ checkedLabel: 'Loopbk', uncheckedLabel: 'ezP' });
             <%end%>
         });
     </script>

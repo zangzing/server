@@ -5,18 +5,20 @@ zz.store.checkout = {};
 
 (function(){
 
-    //add validatore to jquery validate
+    //add phone validator to jquery validate
     jQuery.validator.addMethod("phoneUS", function(phone_number, element) {
         phone_number = phone_number.replace(/\s+/g, "");
         return this.optional(element) || phone_number.length > 9 &&
             phone_number.match(/^(1-?)?(\([2-9]\d{2}\)|[2-9]\d{2})-?[2-9]\d{2}-?\d{4}$/);
     }, "Please specify a valid phone number");
 
+    // add zip code validatore
     jQuery.validator.addMethod("postalcode", function(postalcode, element) {
 	    return this.optional(element) || postalcode
                 .match(/(^\d{5}(-\d{4})?$)|(^[ABCEGHJKLMNPRSTVXYabceghjklmnpstvxy]{1}\d{1}[A-Za-z]{1} ?\d{1}[A-Za-z]{1}\d{1})$/);
         }, "Please specify a valid postal/zip code");
 
+    // add regex validator
     jQuery.validator.addMethod(
         'regex',
         function(value, element, regexp) {
@@ -28,7 +30,6 @@ zz.store.checkout = {};
     //used to place and display form errors as you tab around
     var error_placement_handler = function(error, element) {
         var location, left, top;
-
         //Insert, position and hide error message
         location = element;
         top    = -40;
@@ -46,7 +47,6 @@ zz.store.checkout = {};
         var distance = 3;
         var end    = top;
         var start =  top - distance;
-
         element.focus(function(){
             // Animate the error message
             error.css({

@@ -150,7 +150,7 @@
                     <td><%= "#{order.ship_address.firstname} #{order.ship_address.lastname}"%></td>
                     <td><%= order.state%></td>
                   </tr>
-                  <%if i >= 0 %>
+                  <%if i >= 9 %>
                       <tr><td></td><td></td><td></td><td><%= link_to "More", orders_url %></td></tr>
                   <%break%>
                   <%end %>
