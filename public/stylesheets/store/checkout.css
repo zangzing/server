@@ -298,7 +298,7 @@ p.field#order_email input{
 }
 #left_side{
  float: left;
- min-width: 685px;
+ width: 685px;
  border-right: solid 1px gray;
 }
 #right_side{
@@ -355,8 +355,8 @@ p.field#order_email input{
 }
 
 #place_order #logo_secure_lock{
-   width: 75%;
    margin: auto;
+   text-align: center;
    padding: 10px 0 0 0;
 }
 /*---------------------------- Review ------------------ */
