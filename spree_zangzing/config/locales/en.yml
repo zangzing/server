@@ -450,7 +450,7 @@ en:
   issue_number: Issue Number
   item: Item
   item_description: "Item Description"
-  item_total: "Item Total"
+  item_total: "Subtotal"
   items: "Items"
   last_14_days: "Last 14 Days"
   last_5_orders: "Last 5 Orders"
@@ -601,7 +601,7 @@ en:
     shipped: Shipped
   order_summary: Order Summary
   order_sure_want_to: "Are you sure you want to %{event} this order?"
-  order_total: "Order Total"
+  order_total: "Total"
   order_total_message: "The total amount charged to your card will be"
   order_updated: "Order Updated"
   orders: Orders
