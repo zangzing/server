@@ -27,7 +27,7 @@ end %>
           <h4><%= t("billing_address") %>&nbsp &nbsp<small>(<%=t("same_as_shipping")%>)</small></h4>
           <%= render :partial =>'address_display', :locals => { :address => @order.bill_address,:label => ''} %>
 
-          <a id="change_ba" href="javascript:void(0)" onclick="change_ba_form.submit();">change</a>
+          <a id="change_ba" href="javascript:void(0)" onclick="$('#change_ba_form').submit();">change</a>
         </fieldset>
 
         <% if current_user.nil? %>

@@ -22,7 +22,7 @@
             }
 
             function reset_dropdown(){
-                addressbook_dropdown.selectedIndex = 0;
+                $('#addressbook_dropdown').attr('selectedIndex', 0);
                 $('#order_<%=address_kind%>_attributes_id').val('').remove();
                 $('fieldset.address input').unbind('keypress', reset_dropdown  );
                 $('fieldset.address select').not('#addressbook_dropdown').unbind( 'change', reset_dropdown);
