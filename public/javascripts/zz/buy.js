@@ -32,8 +32,8 @@ zz.buy = zz.buy || {};
                     '<div class="select-product-screen"></div>' +
                     '<div class="configure-product-screen">' +
                         '<div class="header-section">' +
-                            '<a class="gray-button back"><span>Back</span></a>'+
-                            '<a class="next-button next"><span>Next: Choose Photos</span></a>'+
+                            '<a class="gray-back-button back"><span>Back</span></a>'+
+                            '<a class="next-button next"><span>Choose Photos</span></a>'+
                         '</div>' +
                         '<div class="main-section">' +
                             '<img class="image" src="/images/photo_placeholder.png">' +
@@ -49,7 +49,7 @@ zz.buy = zz.buy || {};
                             '<div class="product">Modern Framed Poster Print</div>' +
                             '<div class="variant">12x23 Framed Matte</div>' +
                             '<div class="price">Price <span class="value">$200.94</span></div>' +
-                            '<a class="gray-button back"><span>Back</span></a>' +
+                            '<a class="gray-back-button back"><span>Back</span></a>' +
                             '<a class="gray-button add-and-buy-more-button"><span>Add & Buy More</span></a>'+
                             '<a class="next-button checkout-button"><span>Add & Checkout</span></a>'+
                         '</div>' +

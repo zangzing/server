@@ -463,7 +463,7 @@
 #footer #share-button{
     position: absolute;
     top: 1px;
-    right: 116px;
+    right: 174px;
     width: 58px;
     height: 55px;
     background: url("/images/embed/toolbars/btn-footer-share.png") no-repeat scroll 0px 0px transparent;
@@ -478,7 +478,7 @@
 #footer #comments-button{
     position: absolute;
     top: 1px;
-    right: 174px;
+    right: 232px;
     width: 58px;
     height: 55px;
     background: url("/images/embed/toolbars/btn-footer-comments.png") no-repeat scroll 0px 0px transparent;
@@ -515,12 +515,49 @@
 #footer #like-button{
     position: absolute;
     top: 1px;
-    right: 58px;
+    right: 116px;
     width: 58px;
     height: 55px;
     cursor: pointer;
 }
 #footer #like-button.disabled { background-position: 0 0; }
+
+/*           Cart Button
+ ***************************************************/
+#footer #cart-button{
+    position: absolute;
+    top: 1px;
+    right: 58px;
+    width: 58px;
+    height: 55px;
+    background: url("/images/embed/toolbars/btn-footer-cart.png") no-repeat scroll 0px 0px transparent;
+    cursor: pointer;
+}
+#footer #cart-button:hover    { background-position: 0 -55px;  }
+#footer #cart-button.selected { background-position: 0 -110px; }
+#footer #cart-button.disabled { background-position: 0 0; }
+
+#footer #cart-button .cart-count{
+    position: absolute;
+    top: 4px;
+    left: 30px;
+    border: solid 1px #999999;
+    background: #ffffff;
+    color:#111111;
+    text-align: right;
+    text-shadow: 0 .5px 1px #666666;
+    padding: .5px 2px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    font-size: 10px;
+    font-weight: 500;
+}
+#footer #cart-button .cart-count.empty{
+    display:none;
+}
+
+
+
 /*           Buy Button
  ***************************************************/
 #footer #buy-button{
