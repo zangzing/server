@@ -48,9 +48,8 @@ module ZZ
             order_id = args[0]
             options = args[1]
             order = Order.find(order_id)
-            if will_retry
-              # ignore the retry case since we will have another chance
-            else
+            if will_retry == false
+              # not going to retry, we are done so notify order
               order.ezp_submit_order_failed
             end
           end

@@ -147,6 +147,7 @@ module ZZ
 
       def self.enqueue_in(secs_from_now, queue, *args)
         if should_loopback?
+          # delay not supported in loopback mode
           self.perform(*args)
         else
           begin

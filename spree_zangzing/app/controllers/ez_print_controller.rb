@@ -6,22 +6,21 @@ class EzPrintController < Spree::BaseController
 
   def event_handler
     begin
-      #todo following code is for debugging only while we hook into ezprints
       in_data = request.raw_post
-      Rails.logger.info(in_data.to_s)
+      Rails.logger.info("EZPrints, notification XML: " + in_data.to_s)
 
       result = success_result # assume success
 
       # see if we got an error notification
       check_order_failed
 
-      orders = params['OrderEventNotification']['Order']
+      orders = params[:OrderEventNotification][:Order]
       orders = [orders] unless orders.is_a?(Array)
 
       orders.each do |order|
-        order_id = order['Id']
+        order_id = order[:Id]
         # use the ezp_ref_num to find original request to ezprints - maybe order id is sufficient...
-        ezp_ref_num = order['EZPReferenceNumber']
+        ezp_ref_num = order[:EZPReferenceNumber]
         spree_order = Order.find_by_ezp_reference_id(ezp_ref_num) || Order.find_by_number(order_id)
         spree_order.log_entries.create(:details => params.to_yaml )
         # todo wire this up to actual orders
@@ -36,8 +35,9 @@ class EzPrintController < Spree::BaseController
           if valid_events.include?(key)
             # underscore it and call method
             meth_name = key.underscore.to_sym
+            Rails.logger.info("EZPrints, notification called for #{meth_name}: EZPrints Ref Number: #{ezp_ref_num} - Order Number #{spree_order.number}")
             self.send(meth_name, spree_order, value)
-            Rails.logger.info("Incoming EZPrints request was processed successfully: EZPrints Ref Number: #{ezp_ref_num} - Order Number #{spree_order.number}")
+            Rails.logger.info("EZPrints, notification complete for #{meth_name}: EZPrints Ref Number: #{ezp_ref_num} - Order Number #{spree_order.number}")
           end
         end
       end
@@ -72,31 +72,47 @@ class EzPrintController < Spree::BaseController
 
   # event handler methods
   def accepted(order, details)
-    puts "accepted called"
+    order.accept
   end
 
   def assets_collected(order, details)
-    puts "assets_collected called"
+    # nothing to do on this one
   end
 
   def in_production(order, details)
-    puts "in_production called"
+    order.in_process
   end
 
   def canceled(order, details)
-    puts "canceled called"
+    #todo we probably want to have an ezp canceled state to distinguish between our zangizing side
+    # cancels and ones that come from ezprints since they have different rules that apply to them
+    # From ezprints we can receive a cancel which means the order will not go through.  On the other
+    # hand we CANNOT cancel after we reach the submitted state so if we opened up the state machine
+    # it could lead to allowing cancel when it would not work...
+    # For now we will go to the error state
+    order.error
   end
 
   def shipment(order, details)
-    puts "shipment called"
+    items = details[:Item]
+    return if items.nil?
+    # turn it into an array if only a single instance
+    items = [items] unless items.is_a?(Array)
+    item_ids = items.map { |item| item[:Id].to_i }
+    order.line_items_shipped(details[:TrackingNumber], details[:Carrier], item_ids)
   end
 
   def complete_shipment(order, details)
-    puts "Complete shipment called"
+    # follows same for as shipment but will be called multiple times
+    details = [details] unless details.is_a?(Array)
+    details.each do |detail|
+      shipment(order, detail)
+    end
   end
 
   def complete(order, details)
-    puts "complete called"
+    # not sure we are receiving this but really don't need as long as they call shipment for each part
+    order.has_shipped
   end
 
   private
@@ -104,12 +120,12 @@ class EzPrintController < Spree::BaseController
   # checks to see if this is an order failed message
   # and if so, update the state and raise an error
   def check_order_failed
-    order_failed = params['orderfailed']
+    order_failed = params[:orderfailed]
     return if order_failed.nil?
 
     # yes, order failed, get info and raise exception
-    ezp_ref_num = order_failed['referencenumber']
-    ezp_error_message = order_failed['message']
+    ezp_ref_num = order_failed[:referencenumber]
+    ezp_error_message = order_failed[:message]
     spree_order = Order.find_by_ezp_reference_id(ezp_ref_num)
     order_number = "order not found"
     unless spree_order.nil?
@@ -117,8 +133,7 @@ class EzPrintController < Spree::BaseController
       spree_order.ezp_error_message = ezp_error_message
       spree_order.save!
       spree_order.log_entries.create(:details => order_failed.to_yaml )
-      #todo: Advance the state to error
-      #spree_order.error
+      spree_order.error
     end
     raise "Incoming order failed, EZPrints Ref Number: #{ezp_ref_num} - Order number: #{order_number} - Error: #{ezp_error_message}"
   end
