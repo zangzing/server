@@ -210,6 +210,10 @@ form p.field#zip{
 
 /* --------------------- shipping -------------------------*/
 
+#ship-address{
+    margin-left: 305px;
+}
+
 p#ship_as_bill label{
     display:block;
     width: 100%;
@@ -224,18 +228,16 @@ p#ship_as_bill label{
 #payment_creditcard{ /*left half of screen*/
     display: inline-block;
     vertical-align:top;
-    width: 45%;
-    padding-left: 30px;
+    width: 350px;
+    padding-left: 55px;
 }
 
 #payment_bill_address{ /*right half of screen */
-    min-width: 330px;
-    min-height: 300px;
-    width: auto;
+    width: 430px;
+    border-right: 1px solid #CCCCCC;
+    min-height: 400px;
     display:inline-block;
-    border-left: 1px solid #CCCCCC;
-    padding-left: 30px;
-    padding-bottom: 18px;
+    padding: 0 30px 18px 55px;
 }
 
 
@@ -248,11 +250,13 @@ form div.wallet label{
     display: block;
     text-align: left;
 }
-
-form img.cclogo{
+.wallet .cclogo{
+    width: 40px;
+    height: 24px;
     vertical-align:middle;
     margin-right: 5px;
 }
+
 
 form p.field#secure_lock img{
     vertical-align: text-top;
@@ -325,11 +329,6 @@ p.field#order_email input{
     padding: 20px 0 20px 20px;
     border-bottom: solid 1px gray;
 }
-
-#confirm address{
-    margin-bottom: 0;
-}
-
 
 #ship_address{
  float: left;
