@@ -10,6 +10,23 @@ describe SendgridController do
     end
 
 
+
+
+    it "should send <category>.click and <category>.album_grid_url_show_add_photos_dialog.click zza events for links to add photos" do
+      params = {
+          :category => "foo",
+          :event => "click",
+          :email => "jeremyhermann@gmail.com",
+          :url => "http://www.zangzing.com/jlh/bowie?show_add_photos_dialog=true"
+      }
+
+      @mock_zza.should_receive(:track_event).with("foo.click", anything(), anything(), anything(), anything(), anything())
+      @mock_zza.should_receive(:track_event).with("foo.album_grid_url_show_add_photos_dialog.click", anything(), anything(), anything(), anything(), anything())
+
+      post :events, params
+
+    end
+
     it "should send <category>.click and <category>.signin_url.click zza events for links to blog page" do
       params = {
           :category => "foo",
