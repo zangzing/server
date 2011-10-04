@@ -145,8 +145,9 @@
       zz.session.has_facebook_token = <%= !current_user.identity_for_facebook.credentials_valid?.nil? %>;
       zz.session.has_twitter_token =  <%= !current_user.identity_for_twitter.credentials_valid?.nil? %>;
 
-
 <%  end -%>
+
+      zz.session.cart_item_count = <%= current_order ? current_order.line_items.count : 0 %>
 
       zz.page = zz.page || {};
       zz.page.rails_controller_name = '<%= controller.controller_name %>';

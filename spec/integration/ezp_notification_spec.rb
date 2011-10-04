@@ -271,27 +271,6 @@ describe "EZPrints Notification Handler" do
     order_state_should_match(order_id, 'shipped')
   end
 
-  it "should handle Complete and advance order state" do
-
-    body = <<-BLOCK
-<OrderEventNotification Id="1176390">
-   <Order Id="#{order_number}" EZPReferenceNumber="#{ez_ref_num}">
-      <Complete DateTime="2008-06-13T13:01:51.0000000" />
-   </Order>
-</OrderEventNotification>
-    BLOCK
-
-    post ez_path, body, ez_headers
-    response.status.should eql(200)
-
-    xml = Nokogiri::XML(response.body)
-    msg = xml.at_xpath("/OrderEventNotificationReceived/@msg").content.to_s
-
-    msg.match(/^Success/).should_not == nil
-
-    order_state_should_match(order_id, 'shipped')
-  end
-
   it "should handle Canceled and advance order state" do
 
     body = <<-BLOCK

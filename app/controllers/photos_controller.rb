@@ -205,6 +205,20 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
       if params['_escaped_fragment_'] #this is google or facebook
         @photo = Photo.find(params['_escaped_fragment_'])
       end
+
+      if params[:show_add_photos_dialog]
+        if current_user
+          if @album.contributor?(current_user.id)
+            flash[:show_add_photos_dialog] = true
+          end
+          redirect_to album_pretty_url(@album)
+          return
+        else
+          redirect_to "#{join_url}?return_to=#{album_pretty_url(@album)}?show_add_photos_dialog=true"
+          return
+        end
+      end
+
       render 'photos'
     end
   end

@@ -14,6 +14,11 @@ module PrettyUrlHelper
     return "http://#{Server::Application.config.application_host}#{album_pretty_path(album.user.username, friendly_id)}"
   end
 
+  def album_pretty_url_show_add_photos_dialog(album, friendly_id = nil)
+    return "#{album_pretty_url(album, friendly_id)}?show_add_photos_dialog=true"
+  end
+
+
   def album_activities_pretty_url( album )
     "#{album_pretty_url( album )}/activities"
   end

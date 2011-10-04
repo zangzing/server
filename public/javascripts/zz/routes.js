@@ -15,6 +15,10 @@ var zz = zz || {};
                 document.location.href = '/store/cart';
             },
 
+            goto_checkout: function(){
+                document.location.href = '/store/checkout';
+            },
+
             add_to_cart: function( sku, photo_ids, success, error ){
                 do_post('/store/orders/add_to_order.json', {sku: sku, photo_ids:photo_ids}, success, error);
             }

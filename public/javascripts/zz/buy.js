@@ -32,8 +32,8 @@ zz.buy = zz.buy || {};
                     '<div class="select-product-screen"></div>' +
                     '<div class="configure-product-screen">' +
                         '<div class="header-section">' +
-                            '<a class="gray-button back"><span>Back</span></a>'+
-                            '<a class="next-button next"><span>Next: Choose Photos</span></a>'+
+                            '<a class="gray-back-button back"><span>Back</span></a>'+
+                            '<a class="next-button next"><span>Choose Photos</span></a>'+
                         '</div>' +
                         '<div class="main-section">' +
                             '<img class="image" src="/images/photo_placeholder.png">' +
@@ -49,9 +49,9 @@ zz.buy = zz.buy || {};
                             '<div class="product">Modern Framed Poster Print</div>' +
                             '<div class="variant">12x23 Framed Matte</div>' +
                             '<div class="price">Price <span class="value">$200.94</span></div>' +
-                            '<a class="gray-button back"><span>Back</span></a>' +
-                            '<a class="gray-button add-and-buy-more-button"><span>Add and Buy More</span></a>'+
-                            '<a class="next-button checkout-button"><span>Checkout</span></a>'+
+                            '<a class="gray-back-button back"><span>Back</span></a>' +
+                            '<a class="gray-button add-and-buy-more-button"><span>Add & Buy More</span></a>'+
+                            '<a class="next-button checkout-button"><span>Add & Checkout</span></a>'+
                         '</div>' +
                         '<div class="main-section">' +
                             '<div class="add-photos-message">Browse your photos and click on each one you would like for this product.</div>' +
@@ -110,8 +110,51 @@ zz.buy = zz.buy || {};
             }
         });
 
+        if(zz.session.cart_item_count > 0 && jQuery.cookie('hide_checkout_banner') != 'true'){
+            $('#checkout-banner').show();
+            $('#checkout-banner .message').text('You have ' + zz.session.cart_item_count + ' items in your cart.');
+
+            $('#checkout-banner .close-button').click(function(){
+                //create cookie that expires in 1 hour or when user quits browser
+                var expires = new Date();
+                expires.setTime(expires.getTime() + 60 * 60 * 1000);
+                jQuery.cookie('hide_checkout_banner', 'true', {expires: expires});
+
+                $('#checkout-banner').fadeOut('fast');
+            });
 
 
+            $('#checkout-banner .view-cart-button').click(function(){
+                zz.routes.store.goto_cart();
+            });
+
+            $('#checkout-banner .checkout-button').click(function(){
+                zz.routes.store.goto_checkout();
+            });
+
+            var center = function(){
+                $('#checkout-banner').center_x($('#article'));
+            };
+
+            $(window).resize(function() {
+                center();
+            });
+
+            zz.comments.on_close_comments(function(){
+                center();
+            });
+
+            zz.comments.on_open_comments(function(){
+                center();
+            });
+
+            zz.buy.on_change_buy_mode(function(){
+                center();
+            });
+
+            center();
+
+        }
     };
 
 

@@ -14,7 +14,7 @@ zz.album = {};
 
         current_photo_id = photo_id;
 
-        init_back_button(zz.page.album_name, zz.page.album_base_url + '/photos');
+        init_back_button(zz.page.album_base_url + '/photos');
 
         $('#view-buttons').fadeOut('fast');
 
@@ -55,7 +55,7 @@ zz.album = {};
 
     zz.album.init_grid_view = function() {
 
-        init_back_button(zz.page.back_to_home_page_caption, zz.page.back_to_home_page_url);
+        init_back_button(zz.page.back_to_home_page_url);
 
         zz.buy.on_before_change_buy_mode(function(){
             $('.photogrid').fadeOut('fast');
@@ -336,7 +336,7 @@ zz.album = {};
 
     function init_timeline_or_people_view(which) {
 
-        init_back_button(zz.page.back_to_home_page_caption, zz.page.back_to_home_page_url);
+        init_back_button(zz.page.back_to_home_page_url);
 
         $('#article').touchScrollY();
 
@@ -519,9 +519,7 @@ zz.album = {};
         });
     }
 
-    function init_back_button(caption, url) {
-        $('#header #back-button span').text(caption);
-
+     function init_back_button(url) {
         $('#header #back-button').click(function() {
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
@@ -534,6 +532,7 @@ zz.album = {};
             document.location.href = url;
         });
     }
+
 
     function click_back_button(){
         //todo:hack

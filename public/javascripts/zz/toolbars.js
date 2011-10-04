@@ -226,6 +226,23 @@ zz.toolbars = {
         zz.toolbars._init_account_badge();
         zz.toolbars._init_like_button();
 
+
+
+
+        // only album contributers can do this
+        $('#footer #cart-button').click(function() {
+            if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
+                return;
+            }
+
+            zz.routes.store.goto_cart();
+        });
+
+        if(zz.session.cart_item_count > 0){
+            $('#footer #cart-button .cart-count').removeClass('empty').text(zz.session.cart_item_count);
+        }
+
+
     },
 
 
@@ -368,6 +385,7 @@ zz.toolbars = {
         $('#footer #add-photos-button').addClass('disabled');
         $('#footer #share-button').addClass('disabled');
         $('#footer #edit-album-button').addClass('disabled');
+        $('#footer #cart-button').addClass('disabled');
         $('#footer #buy-button').addClass('disabled');
         $('#footer #like-button').addClass('disabled');
         $('#footer #comments-button').addClass('disabled');

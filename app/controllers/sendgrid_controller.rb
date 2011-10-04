@@ -192,6 +192,8 @@ class SendgridController < ApplicationController
               elsif route[:controller]=="photos" && route[:action]=="index"
                 if url.include?("/#!")
                   link_name = "album_photo_url"
+                elsif(url.match(/.*\?show_add_photos_dialog=true/))
+                  link_name = 'album_grid_url_show_add_photos_dialog'
                 else
                   link_name = "album_grid_url"
                 end

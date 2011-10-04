@@ -4,6 +4,10 @@ zz.comments = {};
 
 (function(){
 
+    var EVENTS = {
+        OPEN_COMMENTS : 'zz.comments.open',
+        CLOSE_COMMENTS : 'zz.comments.close'
+    };
 
 
     var COMMENTS_DIALOG_TEMPLATE = function(){
@@ -95,6 +99,13 @@ zz.comments = {};
     /*         Public Stuff
      ***********************************************************/
 
+    zz.comments.on_open_comments = function(callback){
+        zz.pubsub.subscribe(EVENTS.OPEN_COMMENTS, callback);
+    };
+
+    zz.comments.on_close_comments = function(callback){
+        zz.pubsub.subscribe(EVENTS.CLOSE_COMMENTS, callback);
+    };
 
 
     zz.comments.get_pretty_comment_count_for_photo = function(album_id, photo_id, callback){
@@ -612,6 +623,8 @@ zz.comments = {};
                     $('#article').fadeIn('fast');
                     callback();
 
+                    zz.pubsub.publish(EVENTS.OPEN_COMMENTS);
+
                     zz.logger.debug('comments_widget 2...');
                     zz.logger.debug(comments_widget);
 
@@ -622,6 +635,7 @@ zz.comments = {};
         else{
             $('#right-drawer').show().css({right:0});
             $('#article').css({right:445});
+            zz.pubsub.publish(EVENTS.OPEN_COMMENTS);
             callback();
         }
     };
@@ -642,13 +656,14 @@ zz.comments = {};
                      $('#article').fadeIn('fast');
                      $(this).hide();
                      if(callback) callback();
+                     zz.pubsub.publish(EVENTS.CLOSE_COMMENTS);
                  });
              });
          }
          else{
              $('#right-drawer').hide();
              if(callback) callback();
-
+             zz.pubsub.publish(EVENTS.CLOSE_COMMENTS);
          }
     };
 
