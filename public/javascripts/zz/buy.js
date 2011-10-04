@@ -110,8 +110,51 @@ zz.buy = zz.buy || {};
             }
         });
 
+        if(zz.session.cart_item_count > 0 && jQuery.cookie('hide_checkout_banner') != 'true'){
+            $('#checkout-banner').show();
+            $('#checkout-banner .message').text('You have ' + zz.session.cart_item_count + ' items in your cart.');
+
+            $('#checkout-banner .close-button').click(function(){
+                //create cookie that expires in 1 hour or when user quits browser
+                var expires = new Date();
+                expires.setTime(expires.getTime() + 60 * 60 * 1000);
+                jQuery.cookie('hide_checkout_banner', 'true', {expires: expires});
+
+                $('#checkout-banner').fadeOut('fast');
+            });
 
 
+            $('#checkout-banner .view-cart-button').click(function(){
+                zz.routes.store.goto_cart();
+            });
+
+            $('#checkout-banner .checkout-button').click(function(){
+                zz.routes.store.goto_checkout();
+            });
+
+            var center = function(){
+                $('#checkout-banner').center_x($('#article'));
+            };
+
+            $(window).resize(function() {
+                center();
+            });
+
+            zz.comments.on_close_comments(function(){
+                center();
+            });
+
+            zz.comments.on_open_comments(function(){
+                center();
+            });
+
+            zz.buy.on_change_buy_mode(function(){
+                center();
+            });
+
+            center();
+
+        }
     };
 
 

@@ -351,6 +351,77 @@
     overflow-x: hidden;
 }
 
+#checkout-banner {
+    position: absolute;
+    width: 530px;
+    height: 55px;
+    top: 55px;
+    background-color: white;
+    display: none;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    -moz-border-bottom-left-radius: 15px;
+    -moz-border-bottom-right-radius: 15px;
+    z-index: 200;
+}
+
+#checkout-banner .border{
+    position: absolute;
+    left: -5px;
+    bottom: -5px;
+    right: -5px;
+    border: 7px #FDC113 solid;
+    border-top: 0px;
+    opacity: 0.75;
+    top: 0px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    -moz-border-bottom-left-radius: 15px;
+    -moz-border-bottom-right-radius: 15px;
+}
+
+#checkout-banner .message{
+    position: absolute;
+    width:240px;
+    font-size: 15px;
+    font-weight: 500;
+    text-shadow: 1px 1px white;
+    left: 42px;
+    top: 15px;
+    text-align: left;
+}
+
+#checkout-banner .view-cart-button{
+    position: absolute;
+    right: 150px;
+    top: 10px;
+    color: black;
+    font-weight: 500;
+    width:100px;
+}
+
+#checkout-banner .checkout-button{
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    width:100px;
+}
+
+#checkout-banner .close-button{
+    position: absolute;
+    top: 14px;
+    left: 17px;
+    background: url(/images/buy/delete-button.png) no-repeat scroll 0px 0px transparent;
+    width: 20px;
+    height: 18px;
+    cursor: pointer;
+}
+
+
+#checkout-banner .close-button:hover{
+    background: url(/images/buy/delete-button.png) no-repeat scroll 0px -19px transparent;
+}
+
 
 
 

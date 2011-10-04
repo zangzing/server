@@ -238,6 +238,9 @@ zz.toolbars = {
             zz.routes.store.goto_cart();
         });
 
+        if(zz.session.cart_item_count > 0){
+            $('#footer #cart-button .cart-count').removeClass('empty').text(zz.session.cart_item_count);
+        }
 
 
     },

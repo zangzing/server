@@ -46,11 +46,7 @@
   <% end %>
   <div id="cart-button">
     <div class="footer-button-label">Cart</div>
-<% if current_order && current_order.line_items.count > 0 %>
-     <div class="cart-count"><%= current_order.line_items.count %></div>
-<% else %>
      <div class="cart-count empty"></div>
-<% end %>
   </div>
   <div id="buy-button"><div class="footer-button-label">Buy</div></div>
 
