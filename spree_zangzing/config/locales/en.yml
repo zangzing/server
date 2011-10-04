@@ -239,7 +239,7 @@ en:
   apply: "Apply"
   are_you_sure: "Are you sure?"
   are_you_sure_category: "Are you sure you want to delete this category?"
-  are_you_sure_delete: "Are you sure you want to delete this record?"
+  are_you_sure_delete: "Are you sure you want to delete this item?"
   are_you_sure_delete_image: "Are you sure you want to delete this image?"
   are_you_sure_option_type: "Are you sure you want to delete this option type?"
   are_you_sure_you_want_to_capture: "Are you sure you want to capture?"
@@ -582,7 +582,7 @@ en:
     error: Error
     signin: Sign-in
     address: address
-    ship_address: "Ship Address"
+    ship_address: "Shipping"
     bill_address: "Bill Address"
     adjustments: adjustments
     awaiting_return: awaiting return
@@ -855,7 +855,7 @@ en:
   settings: Settings
   ship: ship
   signin: "Signin"
-  ship_address: "Ship Address"
+  ship_address: "Shipping"
   shipment: Shipment
   shipment_details: Shipment Details
   shipment_mailer:
@@ -1039,7 +1039,7 @@ en:
   gift_card_promo: "Gift card or Promo"
   items_in_your_cart: "Items in your Cart"
   place_your_order: "Place Your Order"
-  guest: "Guest"
+  guest: guest
   checkout_as_guest: "Checkout as Guest"
   account_later:     "You will have the option to create a ZangZing account after your order."
   continue_as_guest: "Continue as Guest"

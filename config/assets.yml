@@ -34,10 +34,6 @@ javascripts:
     - public/javascripts/store/application.js
     - public/javascripts/store/jquery.infieldlabel.js
     - public/javascripts/jquery-lib/jquery.validate.js
-    - public/javascripts/jquery-lib/jquery.ui.core.js
-    - public/javascripts/jquery-lib/jquery.ui.widget.js
-    - public/javascripts/jquery-lib/jquery.ui.button.js
-    - public/javascripts/jquery-lib/jquery.ui.numeric.js
     - public/javascripts/lib/spin.js
     - public/javascripts/lib/cssua.js
     - public/javascripts/store/checkout.js
@@ -76,12 +72,11 @@ stylesheets:
     - public/stylesheets/*.css
   store:
     - public/stylesheets/buttons.css
-    - public/stylesheets/jquery-lib/jquery.ui.button.css
-    - public/stylesheets/jquery-lib/jquery.ui.theme.css
-    - public/stylesheets/jquery-lib/jquery-ui-numeric.css
     - public/stylesheets/store/checkout.css
     - public/stylesheets/store/bootstrap.css
     - public/stylesheets/iphone-style-checkboxes.css
+    - public/stylesheets/photo.css
+    
   store_admin:
     - public/stylesheets/store/admin/admin-reset.css
     - public/stylesheets/store/admin/grids.css

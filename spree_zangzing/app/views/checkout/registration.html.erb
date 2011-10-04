@@ -32,8 +32,9 @@ end %>
               <label for="password">Password</label>
               <%= password_field_tag :password %>
             </p>
+
             <div class="buttons" >
-                <a id="forgot-password-link" class="hyperlink-button" href="<%=new_password_reset_url%>"><%=t('forgot_password')%></a>
+              <a id="forgot-password-link" class="hyperlink-button" href="<%=new_password_reset_url%>"><%=t('forgot_password')%></a>
               <a id="submit-button" href="javascript: $('#signin-form').submit();" class="newgreen-button"><span>Sign In</span></a>
             </div>
           </fieldset>
@@ -42,19 +43,15 @@ end %>
     </div>
   <div id="guest" class="half">
     <div class="centered">
-        <h2><%=t('guest')%></h2>
+        <h3><%=t('checkout_as_guest')%></h3>
         <div id="guest-blurb" class="centered">
-          <%=t('checkout_as_guest')%></p>
+          &nbsp</p>
           <%=t('account_later')%>
           <%= form_tag guest_checkout_url, :id => "guest-form" do %>
                 <%end%>
-          <a id="guest-checkout-button" class="newgreen-button" href="javascript:$('#guest-form').submit();"><span><%=t('continue_as_guest')%></span></a>
+          <a id="guest-checkout-button" class="newgreen-button" href="javascript:$('#guest-form').submit();"><span><%=t('checkout_as_guest')%></span></a>
                       
         </div>
-      <div>
-        <div class="buttons">
-       </div>
-      </div>
     </div>
   </div>
 

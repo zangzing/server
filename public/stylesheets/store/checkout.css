@@ -20,10 +20,11 @@ html{
 }
 
 #page_title{
-    font-size: 16px;
-    font-weight: 400;
+    font-size: 18px;
+    font-weight: 500;
     margin-top: 20px;
     color: black;
+    text-shadow: 1px 1px 1px white;
 }
 
 .checkout-body{
@@ -52,6 +53,9 @@ html{
     margin: 10px 0 0 0;
     float: right;
     text-align:right;
+    min-width: 150px;
+    font-weight: 500;
+    text-shadow: 1px 1px 1px #333;
 }
 
 .checkout-back-button{
@@ -66,6 +70,14 @@ html{
     text-decoration: none !important;
     color: white !important;
 }
+
+.gray-button{
+    text-decoration: none !important;
+    color: gray !important;
+}
+
+
+
 .checkout-summary{
     padding:  15px;
     background-color: #CCFFCC;
@@ -198,6 +210,10 @@ form p.field#zip{
 
 /* --------------------- shipping -------------------------*/
 
+#ship-address{
+    margin-left: 305px;
+}
+
 p#ship_as_bill label{
     display:block;
     width: 100%;
@@ -212,18 +228,16 @@ p#ship_as_bill label{
 #payment_creditcard{ /*left half of screen*/
     display: inline-block;
     vertical-align:top;
-    width: 45%;
-    padding-left: 30px;
+    width: 350px;
+    padding-left: 55px;
 }
 
 #payment_bill_address{ /*right half of screen */
-    min-width: 330px;
-    min-height: 300px;
-    width: auto;
+    width: 430px;
+    border-right: 1px solid #CCCCCC;
+    min-height: 400px;
     display:inline-block;
-    border-left: 1px solid #CCCCCC;
-    padding-left: 30px;
-    padding-bottom: 18px;
+    padding: 0 30px 18px 55px;
 }
 
 
@@ -236,11 +250,13 @@ form div.wallet label{
     display: block;
     text-align: left;
 }
-
-form img.cclogo{
+.wallet .cclogo{
+    width: 40px;
+    height: 24px;
     vertical-align:middle;
     margin-right: 5px;
 }
+
 
 form p.field#secure_lock img{
     vertical-align: text-top;
@@ -293,6 +309,9 @@ p.field#order_email input{
 }
 
 /* --------------------------------- confirm ------------------- */
+#confirm{
+    margin-bottom: 0;
+}
 #confirm h5{
   line-height: 16px;
 }
@@ -311,15 +330,17 @@ p.field#order_email input{
     border-bottom: solid 1px gray;
 }
 
-#confirm address{
-    margin-bottom: 0;
-}
-
-
 #ship_address{
  float: left;
  margin-right: 50px;
+ min-width: 300px;
 }
+
+#ship_address select{
+   width: 250px;
+}
+
+
 
 #bill_address{
  float: left;
@@ -421,7 +442,9 @@ a#continue-shopping-greenbutton{
 }
 
 .buttons{
-    padding-right:  8%;
+    position: relative;
+    height: 41px;
+    padding-right:  23px;
     float: right;
     text-align: right;
 }
@@ -431,10 +454,22 @@ a#continue-shopping-greenbutton{
     margin:  0 auto;
 }
 
+#user-signin .buttons{
+width: 100%;
+}
+
 #submit-button{
-    float: right;
-    margin: 10px 0;
+    position: absolute;
+    right: 20px;
+    bottom: 0;
     width: 100px;
+}
+
+#forgot-password-link{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding-left: 25px;
 }
 
 #guest-checkout-button{
@@ -522,3 +557,11 @@ form p.field#submit_button{
    width: 100px;
 }
 
+/*----------------------------- cart -------------------*/
+#cart #subtotal{
+    background-color: #EEEEEE;
+    text-shadow: 1px 1px 1px white;
+}
+#cart #subtotal .gray-button{
+    min-width: 120px;
+}

@@ -4,20 +4,6 @@
 end %>
 
 <div id="payment">
-  <div id="payment_creditcard" >
-    <fieldset>
-      <h4><%=t('credit_card')%></h4>
-      <%= render :partial =>'creditcard_wallet', :locals => { :order => @order }%>
-    </fieldset>
-
-    <fieldset>
-      <% method = @order.default_payment_method %>
-      <%=hidden_field_tag "order[payments_attributes][][payment_method_id]",  method.id%>
-
-      <%= render "checkout/payment/#{method.method_type}", :payment_method => method %>
-
-    </fieldset>
-  </div>
 
   <div id="payment_bill_address">
 
@@ -68,6 +54,18 @@ end %>
     <%end%>
 
   </div>
+  <div id="payment_creditcard" >
+    <fieldset>
+      <h4><%=t('credit_card')%></h4>
+      <%= render :partial =>'creditcard_wallet', :locals => { :order => @order }%>
+      <% method = @order.default_payment_method %>
+      <%=hidden_field_tag "order[payments_attributes][][payment_method_id]",  method.id%>
+
+      <%= render "checkout/payment/#{method.method_type}", :payment_method => method %>
+
+    </fieldset>
+  </div>
+
 </div>
 
 <%content_for :outside_edit_form do %>

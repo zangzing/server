@@ -20,7 +20,12 @@
   <label for="card_code"><%= t("card_code") %></label>
   <%= text_field_tag "#{param_prefix}[verification_value]", '', options_hash.merge(:id => 'card_code', :class => 'required', :size => 4, :maxlength => 4) %>
 </p>
-<a id="cvv_question" class="field_question" href="/static/store/cvv_question.html" target="_blank" onclick="window.open(this.href,'cvv_info','left=300,top=300,width=500,location=no,height=200,toolbar=no,resizable=0,scrollbars=1');return false">
+<a id="cvv_question"
+   class="field_question"
+   tabindex="-1"
+   href="/static/store/cvv_question.html"
+   target="_blank"
+   onclick="window.open(this.href,'cvv_info','left=300,top=300,width=550,location=no,height=240,toolbar=no,resizable=0,scrollbars=1');return false">
     <%= image_tag 'store/question.png' %>
 </a>
 

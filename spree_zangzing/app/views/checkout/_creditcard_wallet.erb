@@ -6,7 +6,7 @@
 %>
 
 <% if order.user && order.user.creditcards.count > 0  %>
-    <div class="wallet">
+    <div class="wallet clearfix">
       Select a saved card or enter a new one
       <% order.user.creditcards.each do |creditcard| %>
           <label>

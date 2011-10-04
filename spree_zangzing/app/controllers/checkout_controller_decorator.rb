@@ -7,6 +7,10 @@ CheckoutController.class_eval do
 
    layout 'checkout'
 
+   helper 'photo', 'products'
+
+
+
    # Displays the store's "Login or Guest checkout" screen
    def registration
      #If the order started checkout as guest or if a user is logged in then continue

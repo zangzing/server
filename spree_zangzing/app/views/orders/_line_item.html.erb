@@ -1,56 +1,36 @@
-<tr class="line_item">
-  <td>
-    <% locals = {:item_form => item_form, :variant => variant, :line_item => line_item} %>
+<%# locals = {:item_form => item_form, :line_item => line_item} %>
+<% item_form = nil unless defined?(item_form) %>
+<% variant = line_item.variant %>
 
-    <% if line_item.photo %>
-        <%=  image_tag line_item.photo.thumb_url   %>
-    <% else %>
-        <% if variant.images.length == 0 %>
-            <%= small_image(variant.product) %>
-        <% else %>
-            <%=  image_tag variant.images.first.attachment.url(:small)   %>
-        <% end %>
-    <%end%>
+<tr>
+  <td style="text-align: center;">
+       <%= framed_photo_tag( line_item.photo, 140, 100 )%>
+  </td>
+  <td>
+    <table>
+      <tr>
+        <td class="product no-border">
+          <% if item_form.present?  %>
+              <div class="product_name"><%= variant.product.name %></div>
+          <%else%>
+              <div class="product_name"> <%= pluralize  line_item.quantity, variant.product.name %></div>
+          <%end%>
+          <div class="variant_description"> <%= variant_options variant %>   </div>
+          <div class="variant_description"><%= truncate(variant.product.description, :length => 100, :omission => "...") %> </div>
+          <% if item_form.present? %>
+            <div class="variant_description"> <%= link_to t('delete').downcase, '#', :class => 'delete' %></div>
+          <%else%>
+            <div class="variant_description">  <%= link_to t('change'), cart_path %></div>
+          <%end%>
+        </td>
 
+        <% if item_form.present? %>
+            <td class="price no-border"><%=  product_price(line_item) %></td>
+            <td class="price no-border"><%= item_form.text_field :quantity, { :class => "item_quantity"} %></td>
+        <%end%>
+        <td class="price no-border"><%=format_price(product_price(line_item, :format_as_currency => false) * line_item.quantity) unless line_item.quantity.nil?%></td>
+      </tr>
+    </table>
   </td>
-  <td>
-          <div class="product">
-            <h4><%= link_to variant.product.name,  product_path(variant.product) %></h4>
-          </div>
-          <div class="variant">
-            <%= variant_options variant %>
-          </div>
-          <div class="description">
-            <%= truncate(variant.product.description, :length => 100, :omission => "...") %>
-          </div>
-          <div>
-             <%= link_to t('delete').downcase, '#', :class => 'delete' %>
-          </div>
-  </td>
-  <td class="price">
-      <%=  product_price(line_item) %>
-  </td>
-  <td>
-    <div class="quantity">
-     <%= item_form.text_field :quantity, { :class => "item_quantity"} %>
-    </div>
-  </td>
-
-  <%#
-  <td>
-       format_price(product_price(line_item, :format_as_currency => false) * line_item.quantity) unless line_item.quantity.nil?
-  </td>
-    %>
 
 </tr>
-
-<% content_for :page_javascript do %>
-<script type="text/javascript" >
-   $(document).ready( function(){
-        $('.item_quantity').numeric({ emptyValue: false,
-                                      minValue: 1,
-                                      maxValue: 500,
-                                      increment: 1 });
-    });
-</script>
-<%end%>

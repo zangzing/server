@@ -25,7 +25,12 @@ end %>
 
         <div id="spin_here">&nbsp</div>
         <div id="amount">
-          <h3><%= "#{t("subtotal")}: #{order_price(@order)}" %></h3>
+
+        <h3>
+          <a id="update-cart" href="javascript:void(0);" class="gray-button"><span><%= "#{t('update').titleize}"%></span></a>
+          &nbsp &nbsp
+          <%= "#{t("subtotal")}  #{order_price(@order)}" %>
+        </h3>
         </div>
 
       </div>
@@ -52,28 +57,25 @@ end %>
      $('form#updatecart a.delete').click( function(e){
         e.preventDefault();
         if( confirm('<%=t('are_you_sure_delete')%>') ){
-            $(this).parents('tr').find('input.item_quantity').val(0);
+            subject = $(this).parents('tr');
+            subject.find('input.item_quantity').val(0);
+            subject.fadeOut('slow')
         }
      });
 
-     var recalc_pending = false;
-     $('.item_quantity').change(function( ){
-         if( !recalc_pending ){
-                      recalc_pending= true;
-                      new Spinner({ lines: 8,
-                          length: 4,
-                          width: 3,
-                          radius: 3,
-                          color: '#666666',
-                          speed: 1,
-                          trail: 50, // Afterglow percentage
-                          shadow: false
-                      }).spin( document.getElementById('spin_here'));
-                      setTimeout( function(){
-                          $('form#updatecart').submit();
-                          recalc_pending = false;
-                      }, 500 );
-                  }
+     $('#update-cart').click( function(){
+         $(this).attr('disabled', 'disabled');
+         $(this).unbind('click');
+         new Spinner({ lines: 8,
+             length: 4,
+             width: 3,
+             radius: 3,
+             color: '#333',
+             speed: 1,
+             trail: 50, // Afterglow percentage
+             shadow: false
+         }).spin( document.getElementById('spin_here'));
+         $('form#updatecart').submit();
      });
  });
 </script>
