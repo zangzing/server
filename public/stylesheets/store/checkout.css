@@ -24,6 +24,7 @@ html{
     font-weight: 500;
     margin-top: 20px;
     color: black;
+    text-shadow: 1px 1px 1px white;
 }
 
 .checkout-body{
@@ -304,6 +305,9 @@ p.field#order_email input{
 }
 
 /* --------------------------------- confirm ------------------- */
+#confirm{
+    margin-bottom: 0;
+}
 #confirm h5{
   line-height: 16px;
 }
@@ -330,7 +334,14 @@ p.field#order_email input{
 #ship_address{
  float: left;
  margin-right: 50px;
+ min-width: 300px;
 }
+
+#ship_address select{
+   width: 250px;
+}
+
+
 
 #bill_address{
  float: left;
@@ -536,6 +547,7 @@ form p.field#submit_button{
 /*----------------------------- cart -------------------*/
 #cart #subtotal{
     background-color: #EEEEEE;
+    text-shadow: 1px 1px 1px white;
 }
 #cart #subtotal .gray-button{
     min-width: 120px;

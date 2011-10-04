@@ -54,31 +54,9 @@ end %>
 
   <div id="order_items">
     <table class="index">
-      <thead>
-      <tr>
-        <th></th>
-        <th><%= t('item_description') %></th>
-        <th class="price"><%= t('price') %></th>
-        <th class="qty"><%= t('qty') %></th>
-        <th class="total"><span><%= t('total') %></span></th>
-      </tr>
-      </thead>
       <tbody>
-      <% @order.line_items.each do |item| %>
-          <%locals = {:item => item} %>
-          <tr class="line_item">
-            <td>
-              <%=( item.photo ? image_tag( item.photo.thumb_url ) : '&nbsp'  )%>
-            </td>
-            <td>
-              <h4><%=item.variant.product.name%> <%= "(" + variant_options(item.variant) + ")" unless item.variant .option_values.empty? %></h4>
-              <p>SIZE HERE</p>
-              <%= link_to t('change'), cart_path %>
-            </td>
-            <td ><%= number_to_currency item.price %></td>
-            <td ><%=item.quantity%></td>
-            <td ><span><%= number_to_currency (item.price * item.quantity)%></span></td>
-          </tr>
+      <% @order.line_items.each do |line_item| %>
+        <%= render 'orders/line_item', :line_item => line_item%>
       <% end %>
       </tbody>
     </table>

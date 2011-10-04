@@ -1,29 +1,33 @@
+<%# locals = {:item_form => item_form, :line_item => line_item} %>
+<% item_form = nil unless defined?(item_form) %>
+<% variant = line_item.variant %>
+
 <tr>
   <td style="text-align: center;">
-    <% locals = {:item_form => item_form, :variant => variant, :line_item => line_item} %>
-
-    <% if line_item.photo %>
-        <%= framed_photo_tag( line_item.photo, 185, 145 )%>
-  <% else %>
-        <% if variant.images.length == 0 %>
-            <%= small_image(variant.product) %>
-        <% else %>
-            <%=  image_tag variant.images.first.attachment.url(:small)   %>
-        <% end %>
-    <%end%>
-
+       <%= framed_photo_tag( line_item.photo, 140, 100 )%>
   </td>
   <td>
     <table>
       <tr>
-        <td class="price no-border">
-          <div class="product_name"> <%= variant.product.name %></div>
+        <td class="product no-border">
+          <% if item_form.present?  %>
+              <div class="product_name"><%= variant.product.name %></div>
+          <%else%>
+              <div class="product_name"> <%= pluralize  line_item.quantity, variant.product.name %></div>
+          <%end%>
           <div class="variant_description"> <%= variant_options variant %>   </div>
           <div class="variant_description"><%= truncate(variant.product.description, :length => 100, :omission => "...") %> </div>
-          <div class="variant_description"> <%= link_to t('delete').downcase, '#', :class => 'delete' %></div>
+          <% if item_form.present? %>
+            <div class="variant_description"> <%= link_to t('delete').downcase, '#', :class => 'delete' %></div>
+          <%else%>
+            <div class="variant_description">  <%= link_to t('change'), cart_path %></div>
+          <%end%>
         </td>
-        <td class="price no-border"><%=  product_price(line_item) %></td>
-        <td class="price no-border"><%= item_form.text_field :quantity, { :class => "item_quantity"} %></td>
+
+        <% if item_form.present? %>
+            <td class="price no-border"><%=  product_price(line_item) %></td>
+            <td class="price no-border"><%= item_form.text_field :quantity, { :class => "item_quantity"} %></td>
+        <%end%>
         <td class="price no-border"><%=format_price(product_price(line_item, :format_as_currency => false) * line_item.quantity) unless line_item.quantity.nil?%></td>
       </tr>
     </table>
