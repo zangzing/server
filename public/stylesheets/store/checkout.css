@@ -443,7 +443,9 @@ a#continue-shopping-greenbutton{
 }
 
 .buttons{
-    padding-right:  8%;
+    position: relative;
+    height: 41px;
+    padding-right:  23px;
     float: right;
     text-align: right;
 }
@@ -453,10 +455,22 @@ a#continue-shopping-greenbutton{
     margin:  0 auto;
 }
 
+#user-signin .buttons{
+width: 100%;
+}
+
 #submit-button{
-    float: right;
-    margin: 10px 0;
+    position: absolute;
+    right: 20px;
+    bottom: 0;
     width: 100px;
+}
+
+#forgot-password-link{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding-left: 25px;
 }
 
 #guest-checkout-button{

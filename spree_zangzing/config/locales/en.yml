@@ -582,7 +582,7 @@ en:
     error: Error
     signin: Sign-in
     address: address
-    ship_address: "Ship Address"
+    ship_address: "Shipping"
     bill_address: "Bill Address"
     adjustments: adjustments
     awaiting_return: awaiting return
@@ -855,7 +855,7 @@ en:
   settings: Settings
   ship: ship
   signin: "Signin"
-  ship_address: "Ship Address"
+  ship_address: "Shipping"
   shipment: Shipment
   shipment_details: Shipment Details
   shipment_mailer:
@@ -1039,7 +1039,7 @@ en:
   gift_card_promo: "Gift card or Promo"
   items_in_your_cart: "Items in your Cart"
   place_your_order: "Place Your Order"
-  guest: "Guest"
+  guest: guest
   checkout_as_guest: "Checkout as Guest"
   account_later:     "You will have the option to create a ZangZing account after your order."
   continue_as_guest: "Continue as Guest"
