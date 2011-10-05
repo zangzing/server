@@ -29,7 +29,7 @@
             }
 
             function bind_dropdown(){
-                $('fieldset.address input').keypress(reset_dropdown );
+                $('fieldset.address input').keyup(reset_dropdown );
                 $('fieldset.address select').not('#addressbook_dropdown').change(reset_dropdown );
             }
             $('#addressbook_dropdown').change( function(){

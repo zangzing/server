@@ -17,7 +17,18 @@
 </p>
 <p id="phone" class="field">
     <%= f.label :phone, t(:phone) %>
-    <%= f.text_field :phone, :class => 'required', 'data-original-title'=>t(:phone) %>
+    <%= f.text_field :phone,
+                     :value => number_to_phone( f.object.phone, :area_code => true),
+                     :class => 'required',
+                     'data-original-title'=>t(:phone) %>
+          <a id="email_question"
+             class="field_question"
+             tabindex="-1"
+             data-controls-modal="phone-question-modal"
+             data-backdrop="true"
+             data-keyboard="true">
+              <%= image_tag 'store/question.png' %>
+          </a>
 </p>
 
 <%if( defined?(email_form) )%>
@@ -28,12 +39,12 @@
           <a id="email_question"
              class="field_question"
              tabindex="-1"
-             href="/static/store/cvv_question.html"
-             target="_blank"
-             onclick="window.open(this.href,'cvv_info','left=20,top=20,width=500,height=500,toolbar=0,resizable=0,scrollbars=1');return false">
-              <%= image_tag 'store/question.png' %>
+             data-controls-modal="email-question-modal"
+             data-backdrop="true"
+             data-keyboard="true">
+            <%= image_tag 'store/question.png' %>
           </a>
-            </p>
+         </p>
 
 <%end%>
 
@@ -70,4 +81,21 @@
     <%= f.collection_select :country_id, available_countries, :id, :name, {}, {:class => 'required'} %>
   </span>
 </p>
+
+<!--------------- This is the content of the modal phone_question dialog -->
+  <div style="display: none;" id="phone-question-modal" class="modal hide">
+    <div class="modal-body">
+      <p>
+        <strong>Why do you ask for my phone number?</strong>
+        <br>
+        Most carriers require a phone number to help locate you in case there
+        is trouble with your delivery.  Your credit card company needs it to verify
+        that it is indeed you who is making a purchase and we need it in case we
+        have to reach you with questions about your order.
+      </p>
+    </div>
+    <div class="modal-footer">
+      <a href="#" onclick="$('#phone-question-modal').modal('hide');" class="btn success">OK</a>
+    </div>
+  </div>
 

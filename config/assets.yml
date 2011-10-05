@@ -38,6 +38,7 @@ javascripts:
     - public/javascripts/lib/cssua.js
     - public/javascripts/store/checkout.js
     - public/javascripts/lib/iphone-style-checkboxes.js
+    - public/javascripts/store/bootstrap-modal.js
     - public/javascripts/store/bootstrap-twipsy.js
     - public/javascripts/store/bootstrap-popover.js
   less:

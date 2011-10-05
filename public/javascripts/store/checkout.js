@@ -155,8 +155,8 @@ zz.store.checkout = {};
             },
             messages: {
                 'order[email]': {
-                    required: 'promise we won&rsquo;t spam you',
-                    email: 'valid email, please'
+                    required: 'We promise we won&rsquo;t spam you',
+                    email: 'Valid email, pretty pleahse :)'
                 },
                 'payment_source[1034433118][verification_value]':{
                     required:'Need help?, click the question mark',
@@ -164,17 +164,18 @@ zz.store.checkout = {};
                     minlength: 'Need help?, click the question mark'
                 },
                 'order[bill_address_attributes][zipcode]':{
-                                    required: ' your zip is really important!',
-                                    postalcode: 'huh? is that a zip?'
+                                    required: ' Your zip is really important!',
+                                    postalcode: 'Huh? is that a zip?'
                  }
             },
             submitHandler: function(form){
                 form.submit();
             },
-            focusInvalid: true,
+            onkeyup: false,
             errorElement: "div",
             errorClass: "errormsg",
-            errorPlacement: error_placement_handler
+            errorPlacement: error_placement_handler,
+            unhighlight: remove_popover
         });
     };
     //======================= thankyou =========================
@@ -222,7 +223,8 @@ zz.store.checkout = {};
             focusInvalid: true,
             errorElement: "div",
             errorClass: "errormsg",
-            errorPlacement: error_placement_handler
+            errorPlacement: error_placement_handler,
+            unhighlight: remove_popover
         });
 
     };

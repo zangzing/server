@@ -280,6 +280,7 @@ a.field_question{
     display: inline-block;
 }
 a.field_question img{
+    margin-left: 4px;
     vertical-align: middle;
 }
 div#expires{
