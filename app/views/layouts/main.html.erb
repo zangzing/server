@@ -91,11 +91,21 @@
 
     <div id='page-wrapper'>
 
-        <div id='article'>
 
-          <%= yield :layout %>
 
+        <div id='right-drawer'>
+            <div class='header'>
+              <div class='title'></div>
+              <a class="gray-back-button"><span>Change</span></a>
+              <div class='close-button'></div>
+            </div>
+            <div class='content'></div>
         </div>
+
+      <div id='article'>
+        <%= yield :layout %>
+      </div>
+
 
         <div id="container">
           <div id="dialog-modal" title="Basic modal dialog"></div>
@@ -135,9 +145,10 @@
 
       zz.session.has_facebook_token = <%= !current_user.identity_for_facebook.credentials_valid?.nil? %>;
       zz.session.has_twitter_token =  <%= !current_user.identity_for_twitter.credentials_valid?.nil? %>;
-      
 
 <%  end -%>
+
+      zz.session.cart_item_count = <%= current_order ? current_order.line_items.count : 0 %>
 
       zz.page = zz.page || {};
       zz.page.rails_controller_name = '<%= controller.controller_name %>';
@@ -174,7 +185,7 @@
           <%  session[:flash_dialog] = nil %>
           <% end %>
 
-          
+
 
           <% if session[:send_zza_events_from_client]
                 session[:send_zza_events_from_client].each do |event| %>
@@ -195,6 +206,15 @@
 <% end %>
             tabPosition: "Left"
           });
+
+
+          var html = ""
+          for(var i=0;i<100;i++){
+              html += "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus eu porta lectus. Aenean ipsum nisl, egestas non ultricies varius, tristique nec sem. Proin vel urna et felis ultrices consequat et vel nisl. Ut ultrices elit magna, et consectetur elit. Nunc id ante eu diam varius semper vel ac neque. Quisque luctus euismod lectus sit amet egestas. Ut rutrum arcu hendrerit metus malesuada tristique. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean feugiat tincidunt ullamcorper. Sed bibendum, quam non dictum semper, nunc nisi adipiscing justo, eget vulputate augue ligula ut sapien. Nulla facilisi. Vivamus vitae faucibus est. In mi lorem, tincidunt vitae aliquet vitae, commodo mollis mauris. Sed pellentesque tempor lacus in bibendum. Integer eget scelerisque odio.<br><br>"
+              html += '<img src="http://d.1.zz.s3.amazonaws.com/i/75a38f16-c287-4fa7-b37b-0bdd21dbe64e-t?1314307961" width="180" height="120"><br>'
+          }
+
+          zz.buy.init();
       });
 
     </script>

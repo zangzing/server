@@ -7,6 +7,7 @@ a.green-download-button,
 a.newgreen-button,
 a.newblack-button,
 a.gray-button,
+a.gray-back-button,
 a.gray-square-button{
     border: 0;
     margin: 0;
@@ -29,6 +30,7 @@ a.green-download-button span,
 a.newgreen-button span,
 a.newblack-button span,
 a.gray-button span,
+a.gray-back-button span,
 a.gray-square-button span{
     display:block;
     line-height:30px;
@@ -68,6 +70,32 @@ a.back-button.disabled span{
     background-position:  0 -30px;
     cursor: default;
 }
+
+/*  gray back button
+ *************************************************************/
+a.gray-back-button{
+    margin-right: 6px;
+    background: url("/images/btn-gray-back-endcap.png") no-repeat scroll top right;
+}
+a.gray-back-button:hover { background-position: right -30px; }
+a.gray-back-button:active{ background-position: right -60px; }
+a.gray-back-button.disabled{
+    cursor: default;
+    opacity:0.5;
+    background-position: top right; !important
+}
+
+a.gray-back-button span{
+    padding: 0 5px 0 18px;
+    background: transparent url('/images/btn-gray-back.png') no-repeat;
+}
+a.gray-back-button:hover span { background-position: 0 -30px; }
+a.gray-back-button:active span{ background-position: 0 -60px; }
+a.gray-back-button.disabled span{
+    background-position:  0 -30px;
+    cursor: default;
+}
+
 
 /*  next button
  *************************************************************/

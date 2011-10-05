@@ -205,6 +205,20 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
       if params['_escaped_fragment_'] #this is google or facebook
         @photo = Photo.find(params['_escaped_fragment_'])
       end
+
+      if params[:show_add_photos_dialog]
+        if current_user
+          if @album.contributor?(current_user.id)
+            flash[:show_add_photos_dialog] = true
+          end
+          redirect_to album_pretty_url(@album)
+          return
+        else
+          redirect_to "#{join_url}?return_to=#{album_pretty_url(@album)}?show_add_photos_dialog=true"
+          return
+        end
+      end
+
       render 'photos'
     end
   end
@@ -323,8 +337,9 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
   def async_edit
     begin
       rotate_to = params[:rotate_to]
+      crop = params[:crop]
       # queue up the rotate
-      response_id = @photo.start_async_edit(rotate_to)
+      response_id = @photo.start_async_edit(:rotate_to => rotate_to, :crop => crop)
     rescue Exception => ex
       render_json_error(ex)
       return
@@ -431,7 +446,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
     begin
       #will trhow exception if params[:album_id] is not defined or album not found
       if params[:user_id]
-        @album = Album.find(params[:album_id], :scope => params[:user_id])
+        @album = User.find( params[:user_id] ).albums.find(params[:album_id] )
       else
         @album = Album.find( params[:album_id] )
       end

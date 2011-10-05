@@ -38,11 +38,10 @@ class UsersController < ApplicationController
     if current_user
         flash[:notice] = "You are currently logged in as #{current_user.username}. Please log out before creating a new account."
         session[:flash_dialog] = true
-        redirect_to user_pretty_url(current_user)
+         redirect_back_or_default user_pretty_url(current_user)
         return
     end
 
-    prevent_session_fixation
 
     @user_session = UserSession.new
 
@@ -102,13 +101,17 @@ class UsersController < ApplicationController
 
     # CREATE USER
     if @new_user.active
+
       # Save active user,authlogic creates a session to log user in when we save
       if @new_user.save
+        prevent_session_fixation
+        associate_order
         if @guest
           @guest.user_id = @new_user.id
           @guest.status = 'Active Account'
           @guest.save
         end
+
         flash[:success] = "Welcome to ZangZing!"
         @new_user.deliver_welcome!
         session[:show_welcome_dialog] = true unless( session[:return_to] )
@@ -121,6 +124,7 @@ class UsersController < ApplicationController
       # auto-login which can't happen here because
       # the User has not yet been activated
       if @new_user.save_without_session_maintenance
+        prevent_session_fixation
         if @guest
           @guest.user_id = @new_user.id
           @guest.status = 'Inactive'

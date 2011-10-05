@@ -281,13 +281,12 @@ div#headline {
 ----------------------------------------------------------------------------- */
 
 #article {
-
     overflow-y:auto;
     overflow-x:hidden;
     position: absolute;
     top:57px;
     left:0px;
-    width:100%;
     bottom:60px;
+    right:0px;
 }
 

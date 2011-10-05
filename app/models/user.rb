@@ -10,9 +10,10 @@ class User < ActiveRecord::Base
   attr_writer      :name
   attr_accessor    :old_password, :reset_password
   attr_accessible  :email, :name, :first_name, :last_name, :username,  :password, :password_confirmation,
-                   :old_password, :automatic, :profile_photo_id, :subscriptions_attributes
+                   :old_password, :automatic, :profile_photo_id, :subscriptions_attributes,
+                   :ship_address_id, :bill_address_id, :creditcard_id
 
-  has_many :albums,              :dependent => :destroy
+  has_many :albums      # we have a manual dependency to delete albums on destroy since nested rails callbacks don't seem to be triggered
 
   #things I like, join with likes table
   has_many :likes
@@ -56,6 +57,14 @@ class User < ActiveRecord::Base
   has_many :client_applications, :dependent => :destroy 
   has_many :tokens, :class_name=>"OauthToken",:order=>"authorized_at desc",:include=>[:client_application]
 
+  #SPREE
+  has_many   :addresses
+  has_many   :creditcards
+  has_many   :orders
+  belongs_to :ship_address, :foreign_key => "ship_address_id", :class_name => "Address"
+  belongs_to :bill_address, :foreign_key => "bill_address_id", :class_name => "Address"
+  belongs_to :creditcard
+
   # This delegates all authentication details to authlogic
   acts_as_authentic do |c|
     c.validates_confirmation_of_password_field_options = {:if => :require_password?, :on => :update }
@@ -94,6 +103,24 @@ class User < ActiveRecord::Base
       end
       identity
     end
+  end
+
+  # taking over the dependent delete since rails does not seem to call the :on => :destroy callbacks
+  # for the second level and beyond dependencies.  In other words, if a dependent delete causes
+  # an album to be deleted, the :on => :destroy condition for the photos under it does not seem to trigger.
+  #
+  # Later on we should make the dependent deletes more efficient by not having them instantiate objects
+  # when possible.  In most cases it will be sufficient to simply have the object ids passed down
+  # in bulk.
+  #
+  def destroy
+    albums = self.albums
+    if !albums.nil?
+      albums.each do |album|
+        album.destroy
+      end
+    end
+    super
   end
 
   # cohort related calculations
@@ -148,26 +175,16 @@ class User < ActiveRecord::Base
   def self.find_by_email_or_create_automatic( email, name='' )
     user = User.find_by_email( email )
     if user.nil?
-      # Get the username part of the email and remove special characters (a.k.a parameterize)
-      mail_name = username = email.parameterize('')
-      
-      # Make sure the username is unique by adding a number until there are no matches
-      i = 1
-      while User.find_by_username(username) do
-        username = "#{mail_name}#{i}"
-        i += 1
-      end
-      #the username is now clean and valid
-      
+
       name = ( name == '' ? email.split('@')[0] : name )
       #user not fount create an automatic user with a random password
       user = User.new(  :automatic => true,
                            :email => email,
                            :name => name,
-                           :username => username,  #username is in DB index, so '' won't work
+                           :username => UUIDTools::UUID.random_create.to_s.gsub('-','').to_s,
                            :password => UUIDTools::UUID.random_create.to_s);
       user.reset_perishable_token
-      user.save!
+      user.save_without_session_maintenance
     end
     return user
   end
@@ -309,6 +326,20 @@ class User < ActiveRecord::Base
   end
 
 
+  # Generate a friendly string randomically to be used as token.
+  def self.friendly_token
+    ActiveSupport::SecureRandom.base64(15).tr('+/=', '-_ ').strip.delete("\n")
+  end
+
+  # Generate a token by looping and ensuring does not already exist.
+  def self.generate_token(column)
+    loop do
+      token = friendly_token
+      break token unless find(:first, :conditions => { column => token })
+    end
+  end
+  
+
   private
   def old_password_valid?
     if (require_password? || (old_password && old_password.length > 0) ) && !new_record? && !valid_password?(old_password)
@@ -406,8 +437,17 @@ class User < ActiveRecord::Base
     auto_like_ids
   end
 
+  def self.auto_liking=(value)
+    @@auto_liking = value
+  end
+
+  def self.auto_liking?
+    @@auto_liking = true unless defined?(@@auto_liking)
+    @@auto_liking
+  end
+
   def self.auto_like_ids
-    @@auto_like_ids ||= fetch_auto_like_ids
+    auto_liking? ? @@auto_like_ids ||= fetch_auto_like_ids : []
   end
 
   # Make sure everybody likes the zangzing users
@@ -421,5 +461,17 @@ class User < ActiveRecord::Base
       end
     end
   end
+
+  # handy utility method to delete an array of ids all at once
+  def self.delete_list_of_user_ids(user_ids)
+    user_ids.each do |user_id|
+      u = User.find_by_id(user_id)
+      if !u.nil?
+        puts u.id
+        u.destroy
+      end
+    end
+  end
+
 
 end

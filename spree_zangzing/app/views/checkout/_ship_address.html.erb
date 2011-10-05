@@ -1,0 +1,42 @@
+<%content_for :page_title do
+    t('shipping')
+end %>
+
+<div class="row">
+<div id="ship-address" class="span7 columns offset5">
+<fieldset class="address">
+      <h4><%=t('shipping_contact')%></h4>
+
+     <%= render :partial =>'addressbook', :locals => { :form => form,
+                                                        :order => @order,
+                                                        :address_kind => 'ship_address'} %>
+      
+      <p id="ship_as_bill">
+            <label>
+                <%= check_box_tag 'order[use_shipping_as_billing]', '1', (!( (@order.bill_address && @order.bill_address.empty?) && @order.ship_address.empty?) && @order.bill_address.eql?(@order.ship_address)) %>
+                <span><%= t("use_shipping_as_billing") %></span>
+            </label>
+      </p>
+      <%= form.fields_for :ship_address do |ship_form| %>
+              <%= render :partial =>'address_fields', :locals => { :f => ship_form,
+                                                                   :legend => t('shipping_address'),
+                                                                   :address => @order.ship_address } %>
+      <% end %>
+
+</fieldset>
+</div>
+</div>
+
+<%content_for :next_button do %>
+      <a href="javascript:void(0)" onclick="$('#checkout_form_ship_address').submit();" class="next-button"><span><%="#{t('continue')}"%></span></a>
+<%end%>
+
+
+
+<%content_for :page_javascript do %>
+    <script type="text/javascript">
+        $(document).ready(function(){
+          zz.store.checkout.init_ship_address_screen();
+        });
+    </script>
+<% end %>

@@ -183,7 +183,7 @@
     position:absolute;
     top: 15px;
     left: 65px;
-    width: 350px;
+    width: 280px;
     height: 60px;
     color: black;
     font-family: 'lucida grande', tahoma, verdana, arial, sans-serif;
@@ -266,7 +266,7 @@
     top: 35px;
     color: #333;
     text-align: left;
-    width: 340px;
+    width: 280px;
 }
 
 .comments-container .comments .comment .delete-button {

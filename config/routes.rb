@@ -361,10 +361,17 @@ Server::Application.routes.draw do
 
     #Resque: mount the resque server
     mount Resque::Server.new,   :at => '/admin/resque'
+    
+    scope :module =>:store do
+      get 'creditcards/new' => 'creditcards#new'
+    end
   end
 
 
-  # this stuff stays at the root
+  # STORE ROUTES
+  require File.expand_path(File.dirname(__FILE__) + '/../spree_zangzing/config/routes')
+
+
 
   #jammit routes -- needs to be before catch all user routes below (copied from jammit/rails/routes.rb
   match "/#{Jammit.package_path}/:package.:extension",
@@ -372,7 +379,6 @@ Server::Application.routes.draw do
       # A hack to allow extension to include "."
       :extension => /.+/
   }
-  
 
   # ====================================================================================================
   # ============================================= MOBILE_API  ==========================================

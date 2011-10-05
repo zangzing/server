@@ -115,8 +115,10 @@ zz.toolbars = {
             }).appendTo('body').animate({opacity: 1}, 500, function() {
                 document.location.href = zz.page.album_base_url + '/movie?start=' + zz.page.current_photo_index + '&return_to=' + encodeURIComponent(document.location.href);
             });
-
         });
+        zz.buy.toggle_visibility_with_buy_mode($('#footer #play-button'));
+
+
 
 
         // new album button -- buttom toolbar
@@ -132,6 +134,9 @@ zz.toolbars = {
             zz.toolbars._init_new_album();
             zz.wizard.create_group_album();
         });
+        zz.buy.toggle_visibility_with_buy_mode($('#footer #new-album-button'));
+
+
 
         // new album buttons -- inline
         $('#inline-new-album-button').click(function() {
@@ -146,6 +151,9 @@ zz.toolbars = {
             zz.toolbars._init_new_album();
             zz.wizard.create_group_album();
         });
+        zz.buy.toggle_visibility_with_buy_mode($('#inline-new-album-button'));
+
+
 
 
         // only album contributers can do this
@@ -161,9 +169,9 @@ zz.toolbars = {
             zz.photochooser.open_in_dialog(zz.page.album_id, function() {
                 window.location.reload(false);
             });
-
-
         });
+        zz.buy.toggle_visibility_with_buy_mode($('#footer #add-photos-button'));
+
 
 
 
@@ -185,8 +193,12 @@ zz.toolbars = {
             else {
                 zz.sharemenu.show($(this), 'album', zz.page.album_id, {x: 0, y: 0}, 'toolbar', 'popup', $.noop);
             }
-
         });
+        zz.buy.toggle_visibility_with_buy_mode($('#footer #share-button'));
+
+
+
+
 
         //only album owner can do this
         $('#footer #edit-album-button').click(function() {
@@ -201,23 +213,23 @@ zz.toolbars = {
             $('#footer #edit-album-button').removeClass('disabled').addClass('selected');
             zz.wizard.open_edit_album_wizard('add');
         });
+        zz.buy.toggle_visibility_with_buy_mode($('#footer #edit-album-button'));
 
 
-        $('#footer #buy-button').click(function() {
-            if (! $(this).hasClass('disabled')) {
-                if(document.location.href.indexOf('#!') >= 0){
-                    ZZAt.track('photo.buy.toolbar.click');
-                }
-                else{
-                    ZZAt.track('album.buy.toolbar.click');
-                }
-                alert('This feature is still under construction.');
-            }
-        });
+        // buy button is managed in buy.js
 
+        // comments button is managed in comments.js
+        if(zz.album.is_single_picture_view()){
+            zz.buy.toggle_visibility_with_buy_mode($('#footer #comments-button'));
+        }
 
         zz.toolbars._init_account_badge();
         zz.toolbars._init_like_button();
+
+
+
+
+
 
     },
 
@@ -325,6 +337,9 @@ zz.toolbars = {
         }
 
         zz.like.init();
+
+        zz.buy.toggle_visibility_with_buy_mode($('#footer #like-button'));
+
     },
 
     load_album_cover: function(src) {
@@ -358,6 +373,7 @@ zz.toolbars = {
         $('#footer #add-photos-button').addClass('disabled');
         $('#footer #share-button').addClass('disabled');
         $('#footer #edit-album-button').addClass('disabled');
+        $('#footer #cart-button').addClass('disabled');
         $('#footer #buy-button').addClass('disabled');
         $('#footer #like-button').addClass('disabled');
         $('#footer #comments-button').addClass('disabled');

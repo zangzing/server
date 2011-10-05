@@ -1,0 +1,96 @@
+<div class="checkout-content">
+  <div class="checkout_thankyou">
+        <div id="top_ty" class="<%=(current_user ? 'user_topty' : 'guest_topty')%>">
+            <div id="big_ty" class=""><%=t('thank_you')%>.</div>
+            <div id="allset" class="sub_top_ty" ><%= t('your_order_is_all_set') %>.</div>
+            <%if current_user %>
+                <div id="status" class="sub_top_ty" >
+                    <%= t('you_can_check_the_status') %>
+                    <%= link_to  t('account_menu'), edit_user_url(current_user)%>
+                </div>
+            <%elsif @user_session%>
+              <div id="want_to_share">
+                  <%=t('you_already_have_an_account')%></br>
+                  <%=t('sign_in')%>!</br>
+                  <small><a id="forgot-password-link" class="hyperlink-button" href="<%=new_password_reset_url%>"><%=t('forgot_password')%></a></small>
+              </div>
+            <%else%>
+              <div id="want_to_share">
+                  <%=t('want_to_share_photos_on_zz')%></br>
+                  <%=t('its_free_to_join')%>
+              </div>
+          <%end%>
+        </div>
+        <%if current_user #FOR LOGGED IN USERS%>
+            <div id="useraction_ty">
+                <a id="goback_btn" class="newgreen-button" href="<%=root_url%>"><span><%=t('go_back_to_viewing_photos')%></span></a>
+            </div>
+        <%elsif  @user_session #FOR LOGGED OUT USERS%>
+                <div id="guestaction_ty">
+                            <%= form_tag create_user_session_url,  :id => "signin_form" do %>
+                            <div id="flash-error" class="centered">
+                            <span style="color: red;"> <%= flash[:error] %></span>
+                                &nbsp
+                            </div>
+
+                            <%= hidden_field_tag :store_signin, thankyou_order_url %>
+                            <p id="username" class="field">
+                                 <label for="email">Username or Email</label>
+                                 <%= text_field_tag :email, @user_session.email %>
+                            </p>
+
+                            <p id="password" class="field">
+                                <label for="password">Password</label>
+                                <%= password_field_tag :password %>
+                            </p>
+
+                            <p id="submit_button" class="field">
+                              <a id="join_btn" href="javascript: $('#signin_form').submit();" class="newgreen-button"><span>Sign In</span></a>
+                            </p>
+                         <%end%>
+                    </div>
+        <%elsif @user #FOR NEW USERS%>
+            <div id="guestaction_ty">
+              <%= form_for @user, :url => create_user_url, :html => {:id => "join_form"} do |f| %>
+                   <div id="flash-error">
+                       <%= flash[:error] %>
+                   </div>
+                    <%= f.hidden_field :first_name %>
+                    <%= f.hidden_field :last_name %>
+                    <%= f.hidden_field :email %>
+                    
+                    <p id="username" class="field">
+                         <%= f.label :username, t(:username) %>
+                         <%= f.text_field :username, :class => 'required' %>
+                      <span id="username_display">  zangzing.com/<span class="blue" id="blue_username">your_user_name</span> </span>
+                    </p>
+
+                    <p id="password" class="field">
+                         <%= f.label :password, t(:password) %>
+                         <%= f.password_field :password, :class => 'required' %>
+                    </p>
+                    <p id="submit_button" class="field">
+                        <a id="join_btn" class="newgreen-button" href="javascript:$('#join_form').submit();"><span><%=t('join')%></span></a>
+                    </p>
+                 <%end%>
+            </div>
+
+        <%end%>
+  </div>
+</div>
+
+
+<%if @user %>
+    <%content_for :small_print do %>
+    By joining you agree to ZangZing's <a class="hyperlink-button" target="_blank" href="http://www.zangzing.com/terms">the terms of service</a> and <a class="hyperlink-button" target="_blank" href="http://www.zangzing.com/terms">privacy policy</a>.
+    <%end%>
+<%end%>
+<% if @user || @user_session%>
+    <%content_for :page_javascript do %>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                zz.store.checkout.init_thankyou_screen();
+            });
+        </script>
+    <% end %>
+<%end%>

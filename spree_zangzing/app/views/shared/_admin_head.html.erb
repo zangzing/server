@@ -1,0 +1,26 @@
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title><%= "Spree #{t('administration')}: " %>
+<%= t(controller.controller_name, :default => controller.controller_name.titleize) %></title>
+
+<%= javascript_tag do %>
+  ajax_urls = <%== {
+    :product_search_json       => admin_products_url(:format => 'json'),
+    :product_search_basic_json => admin_products_url(:format => 'json', :json_format => 'basic', :limit => 10),
+    :user_search_basic_json    => admin_users_url(:format => 'json', :json_format => 'basic', :limit => 10)
+  }.to_json %>;
+
+  strings = <%==
+    [:no_results, :type_to_search, :searching].
+    inject({}){|memo, item| {item => t(item) }}.to_json
+  %>
+<% end %>
+
+
+<%= include_stylesheets :store_admin %>
+<%= include_javascripts :store_admin %>
+<%= javascript_tag "$ = jQuery;" %>
+<%= include_javascripts :store_admin_template unless controller.controller_name == "overview" %>
+<%= javascript_tag "var AUTH_TOKEN = #{form_authenticity_token.inspect};" if protect_against_forgery? %>
+<%= javascript_tag "jQuery.alerts.dialogClass = 'spree';" %>
+
+<%= yield :head %>

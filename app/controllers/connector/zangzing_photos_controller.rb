@@ -33,7 +33,8 @@ class Connector::ZangzingPhotosController < Connector::ZangzingController
               :source_thumb_url => source_photo.thumb_url,
               :source_screen_url => source_photo.screen_url,
               :source => 'zangzing',
-              :rotate_to => source_photo.rotate_to
+              :rotate_to => source_photo.rotate_to,
+              :crop_json => source_photo.crop_json
     )
 
     ZZ::Async::GeneralImport.enqueue( photo.id, source_photo.original_url )

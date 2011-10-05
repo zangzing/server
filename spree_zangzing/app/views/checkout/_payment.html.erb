@@ -1,0 +1,106 @@
+
+<%content_for :page_title do
+    t(@order.state, :scope => :order_state).titleize
+end %>
+
+<div id="payment">
+
+  <div id="payment_bill_address">
+
+    <% if @order.use_shipping_as_billing?  %>
+
+        <fieldset class="address">
+          <h4><%= t("billing_address") %>&nbsp &nbsp<small>(<%=t("same_as_shipping")%>)</small></h4>
+          <%= render :partial =>'address_display', :locals => { :address => @order.bill_address,:label => ''} %>
+
+          <a id="change_ba" href="javascript:void(0)" onclick="$('#change_ba_form').submit();">change</a>
+        </fieldset>
+
+        <% if current_user.nil? %>
+        <fieldset>
+          <h4><%= t("email").titleize%></h4>
+          <p id="orderemail" class="field">
+            <%= form.label :email, "#{t("email")} (#{t('only_for_order_updates')})" %>
+            <%= form.text_field :email, {:class => "required email", 'data-original-title'=>t(:email)}%>
+            <a id="email_question"
+                class="field_question"
+                tabindex="-1"
+                data-controls-modal="email-question-modal"
+                data-backdrop="true"
+                data-keyboard="true">
+                <%= image_tag 'store/question.png' %>
+            </a>
+          </p>
+        </fieldset>
+        <%end%>
+    <%else%>
+        <fieldset class="address">
+          <h4><%= t("billing_contact") %></h4>
+          <%= render :partial =>'addressbook', :locals => { :form => form,
+                                                            :order => @order,
+                                                            :address_kind => 'bill_address' } %>
+
+          <%= form.fields_for :bill_address do |bill_form| %>
+            <%if current_user %>
+              <%= render :partial =>'address_fields', :locals => { :f => bill_form,
+                                                                   :legend => t('billing_address'),
+                                                                   :address => @order.bill_address } %>
+            <% else %>
+              <%= render :partial =>'address_fields', :locals => { :f => bill_form,
+                                                                   :email_form => form,
+                                                                   :legend => t('billing_address'),
+                                                                   :address => @order.bill_address } %>
+            <%end%>
+              </fieldset>
+          <% end %>
+
+
+    <%end%>
+
+  </div>
+  <div id="payment_creditcard" >
+    <fieldset>
+      <h4><%=t('credit_card')%></h4>
+      <%= render :partial =>'creditcard_wallet', :locals => { :order => @order }%>
+      <% method = @order.default_payment_method %>
+      <%=hidden_field_tag "order[payments_attributes][][payment_method_id]",  method.id%>
+
+      <%= render "checkout/payment/#{method.method_type}", :payment_method => method %>
+
+    </fieldset>
+  </div>
+
+</div>
+
+<%content_for :outside_edit_form do %>
+    <%= form_for @order, :url => update_checkout_path("ship_address"), :html => { :id => "change_ba_form" } do |cba_form| %>
+        <input  id="order_use_shipping_as_billing" name="order[use_shipping_as_billing]" type="hidden" value="0" />
+    <% end %>
+<%end%>
+
+<%content_for :next_button do %>
+    <a href="javascript:void(0)" onclick="$('#checkout_form_payment').submit();" class="next-button"><span><%="#{t('continue')}"%></span></a>
+<%end%>
+
+<%content_for :page_javascript do %>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            zz.store.checkout.init_payment_screen();
+        });
+    </script>
+<% end %>
+
+<!--------------- This is the content of the modal email_question dialog -->
+  <div style="display: none;" id="email-question-modal" class="modal hide">
+    <div class="modal-body">
+      <p>
+        <strong>Why do you need my email?</strong>
+        <br>
+        We need an address to send you your order confirmation and invoice. We also send you
+        order status updates with tracking numbers. We promise not to spam you!
+      </p>
+    </div>
+    <div class="modal-footer">
+      <a href="#" onclick="$('#email-question-modal').modal('hide');" class="btn success">OK</a>
+    </div>
+  </div>

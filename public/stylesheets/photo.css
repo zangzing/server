@@ -166,6 +166,7 @@
 
 .photo-image{
     border: #fff solid 5px;
+    border-bottom: #fff solid 2px;
     margin: 0px;
 }
 
@@ -348,33 +349,17 @@
 .photogrid-cell .photo-rollover-frame {
     position: absolute;
     width:231px;
-    height:299px;
+    height:255px;
     top:0px;
-    background-image:url('/images/photo/photo-frame-rollover.png');
+    background-image:url('/images/photo/photo-frame-rollover.png?2');
 }
 
-
-.photogrid-cell .photo-rollover-frame .social-buttons {
-    position:absolute;
-    bottom: 5px;
-    height: 30px;
-}
-
-.photogrid-cell .photo-rollover-frame .social-buttons .facebook-button{
-    position: absolute;
-    left:20px
-}
-
-.photogrid-cell .photo-rollover-frame .social-buttons .twitter-button{
-    position: absolute;
-    left:115px
-}
 
 
 
 .photogrid-cell .photo-rollover-frame .button-bar {
     position: absolute;
-    bottom: 50px;
+    bottom: 10px;
 }
 
 .photogrid-cell .photo-rollover-frame .button-bar .button{

@@ -3,29 +3,36 @@ source :gemcutter
 
 # bundler requires these gems in all environments -
 gem "bundler", ">=1.0.14"
-gem "rails", "3.0.3"
+gem "rails", "3.0.9"
 gem "unicorn"
 gem "dynamic_form"
-gem "require_all"                 # lets us pull in everything for our resque tasks
+#gem "require_all"                 # lets us pull in everything for our resque tasks
 gem "mysql2",     "~> 0.2.7"
 gem 'authlogic',     '2.1.6'
+gem "friendly_id",   "3.2.1.1"                       #User-friendly links to albums and users' pages
 gem 'uuidtools'
 gem 'activerecord-import', '~>0.2'  # bulk database inserts
+
+
+gem "dynamic_form"
+gem "require_all"                 # lets us pull in everything for our resque tasks
 
 gem 'syslogger',     "1.2.5", :git => 'git://github.com/zangzing/syslogger.git'
 
 gem 'oauth',         "0.4.5.pre2", :git => 'git://github.com/zangzing/oauth-ruby.git'
-gem "oauth-plugin", ">=0.4.0.pre1"
+gem "oauth-plugin", "0.4.0.pre4"
 
+
+
+gem 'faraday',      '0.5.4'
 gem 'i18n'
-gem 'aws-s3',        '>= 0.6.2', :require => 'aws/s3' # S3
+gem 'aws-s3',       :require => 'aws/s3'
+gem 'right_aws'
 gem 'redis',        '~>2.1'
 gem 'resque',       '1.9.10'                          # Async work jobs
 gem 'resque-retry'
 gem 'SystemTimer'                                     # For Random numbers (resque uuid)
-gem 'actionmailer'
 gem 'will_paginate',        '3.0.pre2'                        # Pagination
-gem "friendly_id",   "3.1.8"                           #User-friendly links to albums and users' pages
 gem 'gdata',         '1.1.1'  						  # Google Data
 gem 'twitter_oauth'   		                          # Twitter 
 gem 'hyper-graph',   '0.3.1', :require=>'hyper_graph' # Facebook
@@ -34,6 +41,7 @@ gem 'bitly'                                           # Bitly duh?
 gem 'gibbon',         '0.1.2'                          # MailChimp API
 gem 'instagram'                                       # Instagram
 gem 'dropbox'                                         # Dropbox
+gem 'money'
 
 gem 'vpim'                                            # VCard creator
 gem 'rpm_contrib'                                     # For New Relic Performance Instrumentation
@@ -68,3 +76,13 @@ end
 group :production do
   # bundler requires these gems for production
 end
+
+group :deployment do
+  gem 'less'
+end
+
+gem 'spree_core', :path => "./spree_core-0.60.1"
+gem 'spree_dash', '0.60.1'
+gem 'spree_promo', '0.60.1'
+gem "spree_zangzing", :require => "spree_zangzing", :path => "./spree_zangzing"
+

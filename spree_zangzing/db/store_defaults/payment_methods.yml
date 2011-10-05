@@ -1,0 +1,7 @@
+braintree_creditcard:
+    name: Credit Card
+    description: Braintree Gateway Creditcard
+    environment: development
+    active: true
+    type: Gateway::Braintree
+    created_at: 2011-08-16 22:07:09

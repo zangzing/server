@@ -8,6 +8,10 @@ var zz = zz || {};
 zz.template_cache = zz.template_cache || {};
 
 
+
+
+
+
 (function($, undefined) {
 
     $.widget('ui.zz_photo', {
@@ -54,10 +58,6 @@ zz.template_cache = zz.template_cache || {};
                                                      '</div>');
 
                 zz.template_cache.photo_rollover_frame = $('<div class="photo-rollover-frame">' +
-                                                                '<div class="social-buttons">' +
-                                                                    '<div class="facebook-button"></div>' +
-                                                                    '<div class="twitter-button"></div>' +
-                                                                '</div>' +
                                                                 '<div class="button-bar">' +
                                                                     '<div class="button share-button"></div>' +
                                                                     '<div class="button like-button zzlike" data-zzid="" data-zztype="photo"><div class="zzlike-icon thumbdown"></div></div>' +
@@ -145,10 +145,14 @@ zz.template_cache = zz.template_cache || {};
                         o.onClick('magnify');
                     });
                     self.borderElement.append(self.photoAddElement).append(self.photoMagnifyElement);
+
+
                 }
                 else {
                     self.borderElement.addClass('no-shadow');
                 }
+
+
             }
 
             //click
@@ -265,19 +269,6 @@ zz.template_cache = zz.template_cache || {};
                     });
 
 
-                    // setup facebook and twitter buttons
-                    // 'defer' seems to improve the feel 
-                    _.defer(function(){
-                        var social_buttons = rollover_frame.find('.social-buttons');
-                        var photo_url = zz.routes.photos.photo_url(o.photoId);
-                        social_buttons.find('.twitter-button').append(zz.social_buttons.create_twitter_button_for_photo(photo_url));
-                        social_buttons.find('.facebook-button').append(zz.social_buttons.create_facebook_button_for_photo(photo_url));
-                    });
-
-
-
-         
-
                     // setup the button bar
                     var button_bar = rollover_frame.find('.button-bar');
 
@@ -342,18 +333,25 @@ zz.template_cache = zz.template_cache || {};
                     var buy_button = button_bar.find('.buy-button');
                     buy_button.click(function(){
                         ZZAt.track('photo.buy.frame.click');
-                        alert('This feature is still under construction.');
+                        zz.buy.add_selected_photo(o.json, self.element);
+                        zz.buy.activate_buy_mode();
                     });
 
 
-                    button_bar.center_x()
+                    button_bar.center_x();
 
                 });
             }
 
             // insert elements into DOM
             el.append(self.captionElement).append(self.borderElement);
+
+            if (o.context.indexOf('chooser') === 0) {
+                self.updateChecked();
+            }
+            
         },
+
 
         setMenuOpen: function(open) {
             if (open) {
@@ -393,23 +391,29 @@ zz.template_cache = zz.template_cache || {};
             }
         },
 
-        checked: false,
 
-        isChecked: function() {
-            return this.checked;
-        },
-
-        setChecked: function(checked) {
+        updateChecked: function(){
             var self = this;
-            self.checked = checked;
+
             if (self.options.context.indexOf('chooser') === 0) {
-                if (checked) {
+                if (self.isChecked()) {
                     self.element.find('.photo-add-button').addClass('checked');
                 }
                 else {
                     self.element.find('.photo-add-button').removeClass('checked');
                 }
             }
+        },
+
+
+        isChecked: function() {
+            return this.options.json.checked;
+        },
+
+        setChecked: function(checked) {
+            var self = this;
+            self.options.json.checked = checked;
+            self.updateChecked();
         },
 
         _setupCaptionEditing: function(){

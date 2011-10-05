@@ -80,9 +80,9 @@ class Subscriptions< ActiveRecord::Base
   end
 
 
-  def wants_email?( kind, name )
-    false if kind.nil?
-    allow = case kind
+  def wants_email?( zzemail )
+    false if zzemail.nil?
+    allow = case zzemail.kind
               when Email::TRANSACTIONAL: true
               when Email::INVITES   then  want_invites_email   > NEVER
               when Email::SOCIAL    then  want_social_email    > NEVER
@@ -91,21 +91,19 @@ class Subscriptions< ActiveRecord::Base
               when Email::MARKETING then  want_marketing_email > NEVER
               else false
             end
-    update_email_track( kind, name ) if allow
+    update_email_track( zzemail ) if allow
     allow
   end
 
-  def wants_email!( kind, name )
-    unless wants_email?( kind, name)
+  def wants_email!( zzemail )
+    unless wants_email?( zzemail )
       if user
-        raise SubscriptionsException.new( "SUBSCRIPTIONS: #{user.id} #{user.name} does not want to receive message: #{name} kind: #{kind}" )
+        raise SubscriptionsException.new( "SUBSCRIPTIONS: #{user.id} #{user.name} does not want to receive message: #{zzemail.name} kind: #{zzemail.kind}" )
       else
-        raise SubscriptionsException.new( "SUBSCRIPTIONS: #{email} does not want to receive message: #{name} kind: #{kind}" )
+        raise SubscriptionsException.new( "SUBSCRIPTIONS: #{email} does not want to receive message: #{zzemail.name} kind: #{zzemail.kind}" )
       end  
     end
   end
-
-
 
   def self.unsubscribe_token( recipient )
     if recipient.is_a?User
@@ -116,19 +114,11 @@ class Subscriptions< ActiveRecord::Base
   end
 
 
-  def self.wants_email?( recipient,  kind, name )
-    if recipient.is_a?User
-      recipient.subscriptions.wants_email?( kind, name  )
-    else
-      Subscriptions.find_or_create_by_email( recipient ).wants_email?( kind, name )
-    end
-  end
-
-  def self.wants_email!( recipient,  kind, name )
+  def self.wants_email!( recipient,  zzemail )
      if recipient.is_a?User
-       recipient.subscriptions.wants_email!( kind, name  )
+       recipient.subscriptions.wants_email!( zzemail  )
      else
-       Subscriptions.find_or_create_by_email( recipient ).wants_email!( kind, name )
+       Subscriptions.find_or_create_by_email( recipient ).wants_email!( zzemail )
      end
   end
 
@@ -171,9 +161,9 @@ class Subscriptions< ActiveRecord::Base
 
 
   private
-  def update_email_track( kind, name )
-    self.last_email_kind = kind
-    self.last_email_name = name
+  def update_email_track( zzemail )
+    self.last_email_kind = zzemail.kind
+    self.last_email_name = zzemail.name
     self.last_email_at   = Time.now
     self.save
   end

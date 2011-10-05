@@ -1,0 +1,75 @@
+#right-drawer{
+    position:absolute;
+    width:381px;
+    top:56px;
+    right:-400px;
+    bottom:56px;
+    border:1px solid #ccc;
+    border-left: none;
+    overflow-y:auto;
+    text-align:left;
+    padding:5px;
+    display:none;
+    background: url(/images/comments/drawer-background.png) repeat-y scroll 0px 0px transparent;
+}
+
+#right-drawer .header{
+    position: absolute;
+    top:0px;
+    left:12px;
+    right:0px;
+    height:43px;
+    border-bottom: 1px solid #aaaaaa;
+    background: url(/images/comments/drawer-title-bar.png) repeat-y scroll 0px 0px transparent;
+}
+
+#right-drawer .header .gray-back-button{
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    width: 65px;
+    color: black;
+    font-weight: 500;
+    display:none;
+}
+
+#right-drawer .header .title{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    text-align: center;
+    top: 13px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #2c2c2c;
+    text-shadow: 1px 1px #fff;
+}
+
+#right-drawer .header .close-button{
+    position: absolute;
+    top:13px;
+    right:5px;
+    height:20px;
+    width:20px;
+    background: url(/images/comments/delete-button.png) 0px 19px transparent;
+    cursor: pointer;
+}
+
+#right-drawer .header .close-button:hover{
+    background: url(/images/comments/delete-button.png) 0px 0px transparent;
+}
+
+#right-drawer .content{
+    position: absolute;
+    top:45px;
+    left:12px;
+    right:0px;
+    bottom:0px;
+    overflow: hidden;
+}
+
+#right-drawer #checkout-button{
+    position: absolute;
+    right:20px;
+    bottom:20px;
+}

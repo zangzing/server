@@ -31,8 +31,8 @@ class Connector::ZangzingFoldersController < Connector::ZangzingController
                 :source_thumb_url => p.thumb_url,
                 :source_screen_url => p.screen_url,
                 :source => 'zangzing',
-                :rotate_to => p.rotate_to
-
+                :rotate_to => p.rotate_to,
+                :crop_json => p.crop_json
       })
 
       photo.temp_url = photo_url

@@ -192,6 +192,8 @@ class SendgridController < ApplicationController
               elsif route[:controller]=="photos" && route[:action]=="index"
                 if url.include?("/#!")
                   link_name = "album_photo_url"
+                elsif(url.match(/.*\?show_add_photos_dialog=true/))
+                  link_name = 'album_grid_url_show_add_photos_dialog'
                 else
                   link_name = "album_grid_url"
                 end
@@ -201,6 +203,8 @@ class SendgridController < ApplicationController
                 link_name = "like_user_url"
               elsif route[:controller]=="users" && route[:action]=="join"
                 link_name = "join_url"
+              elsif route[:controller]=="user_sessions" && route[:action]=="new"
+                link_name = "signin_url"
               end
 
             rescue ActionController::RoutingError => e

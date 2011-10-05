@@ -38,10 +38,11 @@
 
       <form id="join-form" method="post" enctype="multipart/form-data" action=<%=create_user_url%>>
         <input style="visibility:hidden" type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>"/>
+        <% if flash[:error] %>
         <div id="flash-error">
             <%= flash[:error] %>
         </div>
-
+        <% end %>
         <table>
           <tr>
             <td class="label">First and Last Name</td>
@@ -179,6 +180,8 @@
             }
         });
         $('#user_name').focus();
+
+        ZZAt.track('page.join.visit');
     });
 
 </script>

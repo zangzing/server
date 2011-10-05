@@ -1,0 +1,11 @@
+photo_products_taxon:
+  id: "1"
+  taxonomy: photo_products_taxonomy
+  name: Photo Products
+  permalink: "photo-products"
+prints_taxon:
+  id: 2
+  taxonomy: photo_products_taxonomy
+  parent: photo_products_taxon
+  name: Prints
+  permalink: photo-products/prints

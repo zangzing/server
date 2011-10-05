@@ -1,0 +1,66 @@
+<div class="checkout-summary">
+  <h3><%= t(:order_summary) %></h3>
+  <table>
+    <tbody>
+    <tr>
+      <td><strong><%= t('item_total') %>:</strong></td>
+      <td><strong><%= number_to_currency order.item_total %></strong></td>
+    </tr>
+    <tbody id="summary-order-charges">
+    <% order.adjustments.each do |adjustment| %>
+        <tr>
+          <td><%= adjustment.label %>: </td>
+          <td><%= number_to_currency adjustment.amount %></td>
+        </tr>
+    <% end %>
+    </tbody>
+    <tr>
+      <td><strong><%= t('order_total') %>:</strong></td>
+      <td><strong><span id='summary-order-total'><%= number_to_currency @order.total %></span></strong></td>
+    </tr>
+    </tbody>
+
+  </table>
+  <div id="place_order">
+
+<% unless Rails.env.photos_production? %>
+    <% content_for :page_stylesheet  do %>
+        <style type="text/css">
+          .on_off{margin: 10px auto; width: 200px;}
+          .on_off .iPhoneCheckLabelOn{ text-align: center;}
+          .on_off label.iPhoneCheckLabelOff{
+              color: #444444;
+              background-image: url("/images/iphone-style-checkboxes/off_red.png");
+          }
+        </style>
+    <%end%>
+  <div id="order_promo" class="on_off">
+    <div class="centered">
+        <%= form.check_box :test_mode %>
+    </div>
+  </div>
+<%end%>
+
+    <a href="javascript:void(0);" onclick="$('#checkout_form_confirm').attr('action','<%=update_checkout_path('confirm')%>').submit();" class="green-button"><span><%=t('place_order')%></span></a>
+    <div id="logo_secure_lock">
+        <%= image_tag 'store/secure-lock.png'%>
+        <%=t('secure_checkout')%>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+<%content_for :page_javascript do %>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('form p.field label').inFieldLabels();
+            <% unless Rails.env.photos_production? %>
+            $('.on_off :checkbox').iphoneStyle({ checkedLabel: 'Loopbk', uncheckedLabel: 'ezP' });
+            <%end%>
+        });
+    </script>
+<% end %>
+

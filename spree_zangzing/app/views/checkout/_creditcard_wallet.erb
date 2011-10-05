@@ -1,0 +1,19 @@
+<% # Locals are:
+   #     order: the order for which the addressbook should be displayed
+   #     address_id_field_name: the name for the field where the address id will be passed
+   #     button_text: the text to be shown in the address button
+   #     form_id:     the id of the form being used
+%>
+
+<% if order.user && order.user.creditcards.count > 0  %>
+    <div class="wallet clearfix">
+      Select a saved card or enter a new one
+      <% order.user.creditcards.each do |creditcard| %>
+          <label>
+            <%= radio_button_tag 'order[creditcard_id]', creditcard.id %>
+             <%= render :partial => 'creditcard_oneliner', :locals => { :creditcard => creditcard } %>
+          </label>
+      <%end %>
+    </div>
+<%end %>
+

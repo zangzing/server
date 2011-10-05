@@ -4,47 +4,30 @@
 #  2010 Copyright  ZangZing LLC
 #
 #  Base class for all controllers
+#  Filters added to this controller apply to all controllers in the application.
+#  Public Methods added will be available for all controllers.
+#  helper_method methods will also be available in all views
 
 class ApplicationController < ActionController::Base
   JSON_MEDIA_TYPE = 'application/json'.freeze
-  ZZ_API_HEADER = 'X-ZangZing-API'.freeze
-  ZZ_API_HEADER_RAILS = 'HTTP_X_ZANGZING_API'.freeze
-  ZZ_API_VALID_VALUES = ['mobile'].freeze
+
 
   include SslRequirement
-
-
-  # give the zza worker a chance to restart if we are running
-  # as a forked process because it will have been killed in that
-  # case.  Later when we move to Amazon we can control the Unicorn
-  # config file directly and do it only once from within there
-  ZZ::ZZA.after_fork_check
-
-  # Filters added to this controller apply to all controllers in the application.
-  # Public Methods added will be available for all controllers.
-  # helper_method methods will also be available in all views
-
+  include ZZ::Auth
+  include ZZ::ZZAController
+  include PrettyUrlHelper
+  include Spree::CurrentOrder
 
   helper :all # include all helpers, all the time
 
-  helper_method :current_user_session, :current_user, :current_user?, :signed_in?,
-                :user_pretty_url, :album_pretty_url, :photo_pretty_url, :back_to_home_page_url, :back_to_home_page_caption
+  helper_method :user_pretty_url, :album_pretty_url, :photo_pretty_url,
+                :back_to_home_page_url, :back_to_home_page_caption, :current_order
 
-  # this basic filter uses a hardcoded username/password - we must turn off the
-  # AuthLogic  support with allow_http_basic_auth false on the UserSession since
-  # it can't seem to cope with a seperate scheme in rails 3
-  before_filter :protect_with_http_auth
   before_filter :check_referrer_and_reset_last_home_page
 
   after_filter :flash_to_headers
 
-  protect_from_forgery # See ActionController::RequestForgeryProtection XSScripting protection
-
   layout  proc{ |c| c.request.xhr? ? false : 'main' }
-
-  private
-  include PrettyUrlHelper
-
 
   # If its an AJAX request, move the flashes to a custom header for JS handling on the client
   # removes the flash from the session because it was a json cal so we do not want it there
@@ -229,15 +212,9 @@ class ApplicationController < ActionController::Base
     end
   end
 
-
-
   def set_show_comments_cookie
     cookies[:hide_comments] = {:value => 'false', :path => '/'}
   end
-
-
-
-
 
   def album_not_found_redirect_to_owners_homepage(user_id)
     flash[:notice] = "Sorry, we could not find the album that you were looking for."
@@ -254,184 +231,6 @@ class ApplicationController < ActionController::Base
       redirect_to potd_path, :status => 301
     end
   end
-
-  #
-  # Redirects the user to the desired location after log in. If no stored location then to the default location
-  def redirect_back_or_default(default)
-    redirect_to(session[:return_to] || default)
-    session[:return_to] = nil
-  end
-
-  # True if a user is signed in. Left in place for backwards compatibility
-  # better to use if current_user ......
-  def signed_in?
-    current_user
-  end
-
-  # True if a user is signed in. Left in place for backwards compatibility
-  # better to use if current_user ......
-  def logged_in?
-    current_user
-  end
-
-
-
-  #
-  # An additional way to control access to certain actions like the ones that are only available to the owner
-  # TODO: Implement this if needed.
-  # Do not remove it its for act_as_Authenticated compatibility
-  #
-  def authorized?
-    true
-  end
-
-  def protect_with_http_auth
-    # see if we have http_auth turned on
-    return unless ZangZingConfig.config[:requires_http_auth]
-
-    allowed = {
-        :actions => ['photos#agent_index',
-                     'photos#agent_create',
-                     'photos#upload_fast',
-                     'photos#simple_upload_fast',
-                     'oauth#access_token',
-                     'oauth#request_token',
-                     'oauth#agentauthorize',
-                     'oauth#test_request',
-                     'oauth#test_session',
-                     'connector/local_contacts#import',
-                     'sendgrid#import_fast',
-                     'sendgrid#events',
-                     'sendgrid#un_subscribe',
-                     'pages#health_check',
-                     'agents#check',
-                     'agents#info',
-                     'agents#index',
-                     'admin/guests#create',
-
-                     #let facebook crawlers in
-                     'photos#index',
-                     'albums#index'
-        ]
-
-    }
-    unless allowed[:actions].include?("#{params[:controller]}##{params[:action]}")
-      authenticate_or_request_with_http_basic('ZangZing Photos') do |username, password|
-        username == Server::Application.config.http_auth_credentials[:login] && password == Server::Application.config.http_auth_credentials[:password]
-      end
-    end
-  end
-
-  #
-  # To be run as a before_filter
-
-  # Assumes @album is the album in question and current_user is the user we are evaluating
-  def require_album_admin_role
-    unless  @album.admin?( current_user.id ) || current_user.support_hero?
-      flash.now[:error] = "Only Album admins can perform this operation"
-      response.headers['X-Errors'] = flash[:error]
-      if request.xhr?
-        head :status => 401
-      else
-        render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
-      end
-      return false
-    end
-  end
-
-  #
-  # To be run as a before_filter
-  # Assumes @album is the album in question and current_user is the user we are evaluating
-  # User has viewer role if ( Album private and logged in and has viewer role ) OR
-  # ( Album not private )
-  def require_album_viewer_role
-    if @album.private?
-      unless current_user
-        if request.xhr?
-          flash.now[:notice] = "Please login to view this Invite Only album"
-          head :status => 401 and return
-        else
-          flash[:notice] = "Please login to view this Invite Only album"
-          store_location
-          redirect_to new_user_session_url and return
-        end
-      end
-      unless @album.viewer?( current_user.id ) || current_user.moderator?
-        if request.xhr?
-          flash[:notice] = "This is an Invite Only album. You do not have enough privileges to see it"
-          head :status => 401
-        else
-          session[:client_dialog] = album_pwd_dialog_url( @album )
-          redirect_to user_url( @album.user ) and return
-        end
-      end
-    end
-  end
-
-
-  #
-  # To be run as a before_filter
-  # Assumes @album is the album in question and current_user is the user we are evaluating
-  def require_album_contributor_role
-    unless  @album.contributor?( current_user.id ) || current_user.support_hero? || @album.everyone_can_contribute?
-      flash.now[:error] = "Only Contributors admins can perform this operation"
-      if request.xhr?
-        head :status => 401
-      else
-        render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
-      end
-      return false
-    end
-  end
-
-  # To be run as a before_filter
-  # Will render a 401 page if the currently logged in user is not an admin
-  def require_admin
-    unless current_user.admin?
-      flash.now[:error] = "Administrator privileges required for this operation"
-      if request.xhr?
-        head :status => 401
-      else
-        render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
-      end
-      return false
-    end
-  end
-
-  def require_moderator
-    unless current_user.moderator?
-      flash.now[:error] = "Administrator privileges required for this operation"
-      if request.xhr?
-        head :status => 401
-      else
-        render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
-      end
-      return false
-    end
-  end
-
-
-
-
-
-  # Return a correctly initialized reference to zza tracking service
-  def zza
-    return @zza if @zza
-    @zza = ZZ::ZZA.new
-    if current_user
-      @zza.user = current_user.id
-      @zza.user_type = 1
-    else
-      @zza.user = request.cookies['_zzv_id']
-      @zza.user_type = 2
-    end
-    @zza
-  end
-
-  #def x_accel_pdf(path, filename)
-  #  x_accel_redirect(path, :type => "application/pdf",
-  #                         :filename => filename)
-  #end
 
   def x_accel_redirect(path, opts ={})
     if opts[:type]
@@ -469,10 +268,10 @@ class ApplicationController < ActionController::Base
     render :json => {:message => "poll-for-response", :response_id => response_id, :response_url => response_url}
   end
 
-  # standard json response error
-  def render_json_error(ex, message = nil, code = nil)
-    error_json = AsyncResponse.build_error_json(ex, message, code)
-    render :status => 509, :json => error_json
+  def associate_order
+    return unless current_user and current_order
+    current_order.associate_user!(current_user)
+    session[:guest_token] = nil
   end
 
   # wraps a mobile api call and ensures that
@@ -516,8 +315,5 @@ class ApplicationController < ActionController::Base
   def mobile_api(&block)
     mobile_api_core(false, block)
   end
-
-
-
 
 end

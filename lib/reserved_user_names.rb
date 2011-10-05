@@ -210,6 +210,7 @@ class ReservedUserNames
       "status",
       "steffi",
       "steffibeisel",
+      "store",
       "support",
       "svb",
       "team",
