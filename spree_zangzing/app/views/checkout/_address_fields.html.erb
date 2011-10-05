@@ -8,22 +8,22 @@
 
 <p id="fname" class="field">
   <%= f.label :firstname, t(:first_name) %>
-  <%= f.text_field :firstname, :class => 'required' %>
+  <%= f.text_field :firstname, {:class => 'required', 'data-original-title'=>t(:first_name) } %>
 </p>
 
 <p id="lname" class="field">
   <%= f.label :lastname, t(:last_name) %>
-  <%= f.text_field :lastname, :class => 'required' %>
+  <%= f.text_field :lastname, :class => 'required', 'data-original-title'=>t(:last_name) %>
 </p>
 <p id="phone" class="field">
     <%= f.label :phone, t(:phone) %>
-    <%= f.text_field :phone, :class => 'required' %>
+    <%= f.text_field :phone, :class => 'required', 'data-original-title'=>t(:phone) %>
 </p>
 
 <%if( defined?(email_form) )%>
          <p id="orderemail" class="field">
             <%= email_form.label :email, "#{t("email")} (#{t('only_for_order_updates')})" %>
-            <%= email_form.text_field :email, :class => 'required' %>
+            <%= email_form.text_field :email, :class => 'required','data-original-title'=>t(:email) %>
 
           <a id="email_question"
              class="field_question"
@@ -43,17 +43,17 @@
 <h4><%=legend%></h4>
 <p id="address" class="field">
   <%= f.label :address1, t(:street_address) %>
-  <%= f.text_field :address1, :class => 'required' %>
+  <%= f.text_field :address1, :class => 'required','data-original-title'=>t(:street_address) %>
 </p>
 
 <p id="address2" class="field">
   <%= f.label :address2, t(:street_address_2) %>
-  <%= f.text_field :address2 %>
+  <%= f.text_field :address2, 'data-original-title'=>t(:street_address_2) %>
 </p>
 
 <p id="city" class="field">
   <%= f.label :city, t(:city) %>
-  <%= f.text_field :city, :class => 'required' %>
+  <%= f.text_field :city, :class => 'required', 'data-original-title'=>t(:city) %>
 </p>
 
 <p id="state" class="field">
@@ -62,10 +62,12 @@
 
 <p id="zip" class="field">
   <%= f.label :zipcode, t(:zip) %>
-  <%= f.text_field :zipcode, :class => 'required' %>
+  <%= f.text_field :zipcode, :class => 'required', 'data-original-title'=>t(:zip)%>
 </p>
 
 <p id="country" class="field">
-  <span id="scountry"><%= f.collection_select :country_id, available_countries, :id, :name, {}, {:class => 'required'} %></span>
+  <span id="scountry">
+    <%= f.collection_select :country_id, available_countries, :id, :name, {}, {:class => 'required'} %>
+  </span>
 </p>
 

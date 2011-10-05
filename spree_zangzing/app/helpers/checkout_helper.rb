@@ -51,7 +51,8 @@ module CheckoutHelper
         form.collection_select(:state_id, country.states.order(:name),
                                :id, :name,
                                {:include_blank => t('select_state')},
-                               {:class => "required"})
+                               {:class => "required",
+                                'data-original-title'=>t(:state)})
     ].join.gsub('"', "'").gsub("\n", "")
     javascript_tag("document.write(\"#{state_elements.html_safe}\");")
   end
