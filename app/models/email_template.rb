@@ -51,6 +51,7 @@ class EmailTemplate < ActiveRecord::Base
     remove_double_http
     unescape_links
     replace_unsub
+    replace_at_media
     true
   end
 
@@ -94,12 +95,33 @@ class EmailTemplate < ActiveRecord::Base
     self.text_content.gsub!( regex, repl)
   end
 
+  # MC does not like @media css tags. We use a trick to pass them from the template to us
+  # 1.- insert an #at_media_block{} css tag
+  # 2.- remove the @media from the begining of your tag and enclose it in double quotes
+  # 3.- replace curly braces with square braces and semi colons with bars
+  # 4.- MC will let that combination through
+  # We fix it here.
+  def replace_at_media
+    # look for </style> and replace with <%= @unsubscribe_url %>
+    regex = /#at_media_block\{[\s.]*"([^{]*)";[\s.]*\}/
+    matches = regex.match( self.html_content )
+    if matches
+      tag_content = matches[1]
+      tag_content.gsub!(/\[/,'{') # replace square braces with curly ones
+      tag_content.gsub!(/\]/,'}')
+      tag_content.gsub!(/\|/,';') # replace bar with semi-colon
+      tag_content.insert(0, '@media ') # insert @media tag at front  Tag content is now ready.
+      self.html_content_will_change!
+      self.html_content.gsub!( regex, tag_content)
+    end
+  end
+
   def self.interpolate_images( html )
     # Group 0 is the whole image tag
     # group 1 is the image url
     # group 2 is the value in the alt tag in between <%=%>
     # group 3 is the whole style argument including the style=""
-    regex = /(<img.*alt="<%=(.*)%>".*(style=".*;").*>)/
+    regex = /(<img.*alt="<%=(.*)%>".*(style=".*;")[^<]*>)/
     @html = html
 
     @html.scan( regex ) do |match|

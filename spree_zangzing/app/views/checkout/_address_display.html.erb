@@ -1,0 +1,13 @@
+<%# Caller must provide address and label%>
+<%if defined?( label )%>
+<span class="address_label"><%=label%></span>
+<%end%>
+<address>
+      <%= address.full_name%><br/>
+      <%= address.address1%><br/>
+      <% if address.address2 && address.address2.length > 0 %>
+            <%= address.address2%><br/>
+      <%end%>
+      <%= "#{address.city} #{address.state_text} #{address.zipcode}"%><br/>
+      <%= number_to_phone address.phone, :area_code => true%><br/>
+</address>

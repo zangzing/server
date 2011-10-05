@@ -30,9 +30,24 @@
 
 
   <% if @album %>
-      <div id="share-button"><div class="footer-button-label">Share</div></div>
-      <div id="like-button" class="zzlike zzlike-toolbar thumbdown" data-zzstyle="toolbar" ><div class="footer-button-label">Like</div><div class="zzlike-count empty"></div></div>
+      <div id="comments-button">
+        <div class="footer-button-label">Comment</div>
+        <div class="comment-count empty"></div>
+      </div>
+
+      <div id="share-button">
+        <div class="footer-button-label">Share</div>
+      </div>
+
+      <div id="like-button" class="zzlike zzlike-toolbar thumbdown" data-zzstyle="toolbar" >
+        <div class="footer-button-label">Like</div>
+        <div class="zzlike-count empty"></div>
+      </div>
   <% end %>
+  <div id="cart-button">
+    <div class="footer-button-label">Cart</div>
+     <div class="cart-count empty"></div>
+  </div>
   <div id="buy-button"><div class="footer-button-label">Buy</div></div>
 
 

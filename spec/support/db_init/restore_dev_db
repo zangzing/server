@@ -1,0 +1,11 @@
+#!/bin/bash
+
+#!/bin/bash
+
+#
+# This will restore your data after a previous run of use_test_as_dev_db
+#
+
+mysql -hlocalhost -uroot server_development < server_dev.seedbackup
+mysql -hlocalhost -uroot cache_dev < cache_dev.seedbackup
+

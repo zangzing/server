@@ -58,6 +58,7 @@ Server::Application.routes.draw do
     get    '/users/:user_id/liked_albums_json'              => 'albums#liked_albums_json',              :as => :liked_albums_json
     get    '/users/:user_id/liked_albums_public_json'       => 'albums#liked_albums_public_json',       :as => :liked_albums_public_json
     get    '/users/:user_id/liked_users_public_albums_json' => 'albums#liked_users_public_albums_json', :as => :liked_users_public_albums_json
+    get    '/users/:user_id/invited_albums_json'            => 'albums#invited_albums_json',            :as => :invited_albums_json
 
 
     get    '/users/:user_id/albums'          => 'albums#index'             #, :as => :user_albums  user albums defined below
@@ -118,6 +119,18 @@ Server::Application.routes.draw do
     get    '/photos/download/:id'           => 'photos#download',                   :as => :download_photo
     put    '/photos/:id'                    => 'photos#update',                     :as => :update_photo
     put    '/photos/:id/position'           => 'photos#position',                   :as => :photo_position
+    put    '/photos/:id/async_edit'         => 'photos#async_edit',                 :as => :photo_async_edit
+    put    '/photos/:id/async_rotate_left'  => 'photos#async_rotate_left',          :as => :photo_async_rotate_left
+    put    '/photos/:id/async_rotate_right' => 'photos#async_rotate_right',         :as => :photo_async_rotate_right
+
+
+    #comments
+    get    '/photos/:photo_id/comments'                      => 'comments#index',                      :as => :photo_comments
+    get    '/albums/:album_id/photos/comments/metadata'      => 'comments#metadata_for_album_photos',  :as => :album_photos_comments_metadata
+    match  '/comments/metadata_for_subjects'                 => 'comments#metadata_for_subjects'
+    post   '/photos/:photo_id/comments'                      => 'comments#create',                     :as => :create_photo_comment
+    delete '/comments/:comment_id'                           => 'comments#destroy',                    :as => :destroy_comment
+    get    '/photos/:photo_id/comments/finish_create'  => 'comments#finish_create',              :as => :finish_create_photo_comment
 
     #activities
     get '/albums/:album_id/activities' => 'activities#album_index', :as => :album_activities
@@ -128,10 +141,10 @@ Server::Application.routes.draw do
     get '/users/:user_id/people'   => 'people#user_index'
 
     #contributors
-    get    '/albums/:album_id/contributors/new'  => 'contributors#new',        :as => :new_album_contributor
-    get    '/albums/:album_id/contributors'      => 'contributors#index',      :as => :album_contributors
-    post   '/albums/:album_id/contributors'      => 'contributors#create',     :as => :create_album_contributor
-    delete '/albums/:album_id/contributors'      => 'contributors#destroy',    :as => :delete_contributor
+#    get    '/albums/:album_id/contributors/new'  => 'contributors#new',        :as => :new_album_contributor
+#    get    '/albums/:album_id/contributors'      => 'contributors#index',      :as => :album_contributors
+#    post   '/albums/:album_id/contributors'      => 'contributors#create',     :as => :create_album_contributor
+#    delete '/albums/:album_id/contributors'      => 'contributors#destroy',    :as => :delete_contributor
 
     #like
     match  '/likes'                              => 'likes#index',             :as => :likes
@@ -147,9 +160,9 @@ Server::Application.routes.draw do
 
 
     # oauth
-    match '/users/:id/agents'     => 'agents#index',                 :as => :agents
-    match '/agent/info'           => 'agents#info',                  :as => :agent_info
-    match '/agents/check'         => 'agents#check',                 :as => :check
+#    match '/users/:id/agents'     => 'agents#index',                 :as => :agents
+#    match '/agent/info'           => 'agents#info',                  :as => :agent_info
+#    match '/agents/check'         => 'agents#check',                 :as => :check
     match '/oauth/authorize'      => 'oauth#authorize',              :as => :authorize
     match '/oauth/agentauthorize' => 'oauth#agentauthorize',         :as => :agentauthorize
     match '/oauth/revoke'         => 'oauth#revoke',                 :as => :revoke
@@ -254,6 +267,14 @@ Server::Application.routes.draw do
       match '/photobucket/folders/:action' => 'photobucket_folders', :as => :photobucket
       match '/photobucket/folders/import_all.:format' => 'photobucket_folders#import_all', :as => :photobucket_import_all
 
+      #dropbox
+      match '/dropbox/sessions/new' => 'dropbox_sessions#new', :as => :new_dropbox_session
+      match '/dropbox/sessions/create' => 'dropbox_sessions#create', :as => :create_dropbox_session
+      match '/dropbox/sessions/destroy' => 'dropbox_sessions#destroy', :as => :destroy_dropbox_session
+      match '/dropbox/folders' => 'dropbox_folders#index', :as => :dropbox_folders
+      match '/dropbox/folders/:action' => 'dropbox_folders', :as => :dropbox
+      match '/dropbox/urls/:root/*path' => 'dropbox_urls#serve_image', :as => :dropbox_image, :defaults => {:dont_store_location => true}
+
       #zangzing
       match '/zangzing/folders/:zz_album_id/photos.:format' => 'zangzing_photos#index', :as => :zangzing_photos
       match '/zangzing/folders/:zz_album_id/photos/:photo_id/:action' => 'zangzing_photos#index', :as => :zangzing_photo_action
@@ -312,6 +333,13 @@ Server::Application.routes.draw do
     # ====================================================================================================
     # =============================================== ADMIN ==============================================
     # ====================================================================================================
+    scope  '/moderator', :module => "moderator" do
+        get   '/'                               => 'base#index',            :as => :moderator
+        get   'upload_batches'                  => 'upload_batches#index',  :as => :moderator_upload_batches
+        get   'upload_batches/:date'            => 'upload_batches#show',   :as => :moderator_upload_batch
+        get   'upload_batches/:id/report_abuse' => 'upload_batches#report', :as => :moderator_upload_batch_report
+    end
+
     scope  '/admin', :module => "admin" do
         get   '/'                               => 'admin_screens#index',         :as => :admin
         get   'logs'                            => 'logs#index',                  :as => :logs
@@ -325,23 +353,33 @@ Server::Application.routes.draw do
         put   'settings'                         => 'system_settings#update'
         get   'homepage'                         => 'homepage#show',              :as => :homepage
         put   'homepage'                         => 'homepage#update'
-
+  
         get   'guests'                           => 'guests#index',               :as => :guests
         post  'guests(.:format)'                 => 'guests#create'
         get   'guests/:id'                       => 'guests#show',                :as => :guest
         put   'guests/:id/activate'              => 'guests#activate',            :as => :activate_guest
         get   'users'                            => 'users#index',                :as => :users
+        get   'users/unimpersonate'              => 'users#unimpersonate',        :as => :admin_unimpersonate
         get   'users/:id'                        => 'users#show',                 :as => :admin_user_show
         put   'users/:id/activate'               => 'users#activate',             :as => :admin_activate_user
         put   'users/:id/reset_password'         => 'users#reset_password',       :as => :admin_reset_password
+        put   'users/:id/impersonate'            => 'users#impersonate',          :as => :admin_impersonate
+
     end
 
     #Resque: mount the resque server
     mount Resque::Server.new,   :at => '/admin/resque'
+    
+    scope :module =>:store do
+      get 'creditcards/new' => 'creditcards#new'
+    end
   end
 
 
-  # this stuff stays at the root
+  # STORE ROUTES
+  require File.expand_path(File.dirname(__FILE__) + '/../spree_zangzing/config/routes')
+
+
 
   #jammit routes -- needs to be before catch all user routes below (copied from jammit/rails/routes.rb
   match "/#{Jammit.package_path}/:package.:extension",
@@ -349,8 +387,32 @@ Server::Application.routes.draw do
       # A hack to allow extension to include "."
       :extension => /.+/
   }
-  
 
+  # ====================================================================================================
+  # ============================================= MOBILE_API  ==========================================
+  # ====================================================================================================
+  scope  '/mobile', :defaults => { :format => 'json' } do
+    post  '/login'                 => 'user_sessions#mobile_create',    :as => :mobile_login
+    match '/logout'                => 'user_sessions#mobile_destroy',   :as => :mobile_logout
+
+    #albums
+    get    '/users/:user_id/albums' => 'albums#mobile_albums',                  :as => :mobile_albums
+    get    '/users/:user_id/my_albums_json'                 => 'albums#mobile_my_albums_json',                 :as => :mobile_my_albums_json
+    get    '/users/:user_id/my_albums_public_json'          => 'albums#mobile_my_albums_public_json',          :as => :mobile_my_albums_public_json
+    get    '/users/:user_id/liked_albums_json'              => 'albums#mobile_liked_albums_json',              :as => :mobile_liked_albums_json
+    get    '/users/:user_id/liked_albums_public_json'       => 'albums#mobile_liked_albums_public_json',       :as => :mobile_liked_albums_public_json
+    get    '/users/:user_id/liked_users_public_albums_json' => 'albums#mobile_liked_users_public_albums_json', :as => :mobile_liked_users_public_albums_json
+    get    '/users/:user_id/invited_albums_json'            => 'albums#mobile_invited_albums_json',            :as => :mobile_invited_albums_json
+
+    #photos
+    get    '/albums/:album_id/photos_json'                  => 'photos#mobile_photos_json',                    :as => :mobile_album_photos_json
+
+    #users
+    get    '/users/:user_id/info' => 'users#mobile_user_info',                  :as => :mobile_user_info
+  end
+
+
+  # Root level user
   get    '/:username/settings'                 => 'users#edit',              :as => :edit_user
   get    '/:username/change_password'          => 'users#edit_password',     :as => :edit_user_password
 
@@ -363,6 +425,8 @@ Server::Application.routes.draw do
   get    '/:user_id/:album_id/people'          => 'people#album_index'
   get    '/:user_id/:album_id/activities'      => 'activities#album_index'
   get    '/:user_id/:album_id/movie'           => 'photos#movie'
+  get    '/:user_id/:album_id/photos/:photo_id' => 'photos#show'
+
 
 
 

@@ -33,7 +33,7 @@ class Connector::InstagramFoldersController < Connector::InstagramController
   def self.import_album(api, params)
     identity = params[:identity]
     photos_list = call_with_error_adapter do
-      api.user_recent_media(feed_owner(params), :min_timestamp => Time.at(0), :max_timestamp => Time.now)
+      api.user_recent_media(feed_owner(params), :min_timestamp => Time.at(0), :max_timestamp => Time.now, :count => 99999)
     end
     photos = []
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )

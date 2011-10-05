@@ -1,3 +1,13 @@
+<% content_for :page_title do %><%= @album.name %> by <%= @album.user.name %><% end %>
+
+<% if @photo %>
+    <% content_for :canonical_url do %><%=photo_pretty_url(@photo)%><% end %>
+<% else %>
+    <% content_for :canonical_url do %><%=album_pretty_url(@album)%><% end %>
+<% end %>
+
+
+
 
 <% content_for :meta_tags do %>
     <% if @photo %>
@@ -8,3 +18,33 @@
 <% end %>
 
 
+<% content_for :page_javascript do %>
+
+    <%= render :partial => "photos/album_view_javascript" %>
+    
+    <script type="text/javascript">
+        $(document).ready(function(){
+
+            if (document.location.href.indexOf('#!') !== -1) {
+                var photo_id = null;
+
+                var hash = jQuery.param.fragment();
+                if (hash !== '') {
+                    photo_id = hash.slice(1); //remove the '!'
+                }
+
+                zz.album.init_picture_view(photo_id);
+            }
+            else if(zz.page.url_params['_escaped_fragment_']){
+                // this is the google crawler (or maybe facebook)
+                // get the photo id from escaped param
+                // we could also do this with the @photo param from Rails
+                zz.album.init_picture_view(zz.page.url_params['_escaped_fragment_']);
+            }
+            else {
+                zz.album.init_grid_view();
+            }
+
+        });
+    </script>
+<% end %>

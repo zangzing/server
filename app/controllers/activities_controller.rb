@@ -10,8 +10,15 @@ class ActivitiesController < ApplicationController
   end
 
   def user_index
-    @user = User.find(params[:user_id])
-    @activities = @user.activities
+    begin
+      @user = User.find(params[:user_id])
+      @activities = @user.activities
+      @user_is_auto_follow = User.auto_like_ids.include?( @user.id )
+    rescue ActiveRecord::RecordNotFound => e
+      user_not_found_redirect_to_homepage_or_potd
+      return
+    end
+
   end
 
 private
@@ -19,8 +26,15 @@ private
   # To be run as a before_filter
   # sets @album
   def require_album
-    @album = (params[:user_id] ? Album.find(params[:album_id], :scope => params[:user_id]) : Album.find( params[:album_id] ) )
+    begin
+      if params[:user_id]
+        @album =  User.find(params[:user_id]).albums.find(params[:album_id])
+      else
+        @album = Album.find( params[:album_id] )
+      end
+    rescue ActiveRecord::RecordNotFound => e
+      album_not_found_redirect_to_owners_homepage(params[:user_id])
+      return
+    end
   end
-
-
 end

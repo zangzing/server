@@ -1,0 +1,95 @@
+4x6_matte:
+  name: 4x6 Matte Paper
+  description: Photo print on Matte Paper
+  available_on: <%= Time.zone.now.to_s(:db) %>
+  created_at: <%= Time.zone.now.to_s(:db) %>
+  permalink: 4x6_matte
+  count_on_hand: 45
+  tax_category_id: 1
+5x7_matte:
+  name: 5x7 Matte Paper
+  description: Photo print on Matte Paper
+  available_on: <%= Time.zone.now.to_s(:db) %>
+  created_at: <%= Time.zone.now.to_s(:db) %>
+  permalink: 5x7_matte
+  count_on_hand: 45
+  tax_category_id: 1
+8x10_matte:
+  name: 8x10 Matte Paper
+  description: Photo print on Matte Paper
+  available_on: <%= Time.zone.now.to_s(:db) %>
+  created_at: <%= Time.zone.now.to_s(:db) %>
+  permalink: 8x10_matte
+  tax_category_id: 1
+4x6_glossy:
+  name: 4x6 Glossy Paper
+  description: Photo print on Glossy Paper
+  available_on: <%= Time.zone.now.to_s(:db) %>
+  created_at: <%= Time.zone.now.to_s(:db) %>
+  permalink: 4x6_glossy
+  count_on_hand: 75
+  tax_category_id: 1
+5x7_glossy:
+  name: 5x7 Glossy Paper
+  description: Photo print on Glossy Paper
+  available_on: <%= Time.zone.now.to_s(:db) %>
+  created_at: <%= Time.zone.now.to_s(:db) %>
+  permalink: 5x7_glossy
+  count_on_hand: 75
+  tax_category_id: 1
+8x10_glossy:
+  name: 8x10 Glossy Paper
+  description: Photo print on Glossy Paper
+  available_on: <%= Time.zone.now.to_s(:db) %>
+  created_at: <%= Time.zone.now.to_s(:db) %>
+  permalink: 8x10_glossy
+  count_on_hand: 75
+  tax_category_id: 1
+4x6_lustre:
+  name: 4x6 Lustre Paper
+  description: Photo print on Lustre Paper
+  available_on: <%= Time.zone.now.to_s(:db) %>
+  created_at: <%= Time.zone.now.to_s(:db) %>
+  permalink: 4x6_lustre
+  count_on_hand: 75
+  tax_category_id: 1
+5x7_lustre:
+  name: 5x7 Lustre Paper
+  description: Photo print on Lustre Paper
+  available_on: <%= Time.zone.now.to_s(:db) %>
+  created_at: <%= Time.zone.now.to_s(:db) %>
+  permalink: 5x7_lustre
+  count_on_hand: 75
+  tax_category_id: 1
+8x10_lustre:
+  name: 8x10 Lustre Paper
+  description: Photo print on Lustre Paper
+  available_on: <%= Time.zone.now.to_s(:db) %>
+  created_at: <%= Time.zone.now.to_s(:db) %>
+  permalink: 8x10_lustre
+  count_on_hand: 75
+  tax_category_id: 1
+4x6_metallic:
+  name: 4x6 Metallic Paper
+  description: Photo print on Metallic Paper
+  available_on: <%= Time.zone.now.to_s(:db) %>
+  created_at: <%= Time.zone.now.to_s(:db) %>
+  permalink: 4x6_metallic
+  count_on_hand: 75
+  tax_category_id: 1
+5x7_metallic:
+  name: 5x7 Metallic Paper
+  description: Photo print on Metallic Paper
+  available_on: <%= Time.zone.now.to_s(:db) %>
+  created_at: <%= Time.zone.now.to_s(:db) %>
+  permalink: 5x7_metallic
+  count_on_hand: 75
+  tax_category_id: 1
+8x10_metallic:
+  name: 8x10 Metallic Paper
+  description: Photo print on Metallic Paper
+  available_on: <%= Time.zone.now.to_s(:db) %>
+  created_at: <%= Time.zone.now.to_s(:db) %>
+  permalink: 8x10_metallic
+  count_on_hand: 0
+  tax_category_id: 1

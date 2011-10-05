@@ -1,5 +1,5 @@
 class UploadBatch < ActiveRecord::Base
-  attr_accessible :album_id, :custom_order, :open_activity_at, :original_batch_created_at
+  attr_accessible :album_id, :for_print, :custom_order, :open_activity_at, :original_batch_created_at
 
   if Rails.env == "development"
     CLOSE_BATCH_INACTIVITY = 1.minutes
@@ -9,6 +9,7 @@ class UploadBatch < ActiveRecord::Base
 
   CLOSE_CALL_DEFER_TIME = 30.seconds
   FINALIZE_STALE_INACTIVITY = 1.hours
+  FINALIZE_STALE_INACTIVITY_FOR_PRINT = 24.hours
   STOP_FINALIZING_TIME = 48.hours
 
   belongs_to :user
@@ -54,7 +55,7 @@ class UploadBatch < ActiveRecord::Base
 
         if current_batch.nil?
           if new_if_not_found
-            return UploadBatch.factory( user_id, album_id )
+            return UploadBatch.factory( user_id, album_id, false )
           end
           return nil
         end
@@ -82,7 +83,12 @@ class UploadBatch < ActiveRecord::Base
   # that could still be closed by normal means.  The consequences in this
   # rare case are that emails may go out on an incomplete album
   def self.finalize_stale_batches
-    expired_batches = UploadBatch.unscoped.where("state <> 'finished' AND updated_at < ?", FINALIZE_STALE_INACTIVITY.ago)
+    expired_batches = UploadBatch.unscoped.where("
+state <> 'finished' AND (
+(updated_at < ? AND for_print IS NOT true) OR
+(updated_at < ? AND for_print IS true)
+)", FINALIZE_STALE_INACTIVITY.ago, FINALIZE_STALE_INACTIVITY_FOR_PRINT.ago)
+
     expired_batches.each do |batch|
       batch.finish(true)  # force it to finish
     end
@@ -97,7 +103,7 @@ class UploadBatch < ActiveRecord::Base
   def self.close_pending_batches
     expired_batches = UploadBatch.unscoped.where("state = 'open' AND open_activity_at < ?", CLOSE_BATCH_INACTIVITY.ago)
     expired_batches.each do |batch|
-      batch.close_internal   # close the batch
+      batch.close_immediate   # close the batch
     end
   end
 
@@ -137,8 +143,10 @@ class UploadBatch < ActiveRecord::Base
   end
 
   # NOTE: this is for internal use, a proper close is done by calling close_batch since it
-  # does it in a deferred fashion.
-  def close_internal
+  # does it in a deferred fashion.  The only time this should be called outside of this class
+  # is when you know you will not be adding any more items to the batch.  Otherwise, you should
+  # call the normal close which gives you a window before the close occurs.
+  def close_immediate
     if self.state == 'open'
       if safe_state_change('closed')
         self.finish
@@ -146,15 +154,26 @@ class UploadBatch < ActiveRecord::Base
     end
   end
 
+
+  # handy helper method useful to rspec tests
+  # when you want to finish out the batch immediately
+  # but not trigger notifications
+  def force_finish_no_notify
+    finish(true, false)
+  end
+
   # returns true if we are done
   # set the force flag to true if you want to finalized regardless of the
   # current state
-  def finish(force = false)
+  # allow_notifications can be set to false where we do not want
+  # to have any notifications triggered - this is useful for some rpsec tests
+  def finish(force = false, allow_notifications = true)
 
     # if the batch has already finished once, dont finish it again even if photos are still pending
     return true if self.state == 'finished'
 
-    if force || (self.state == 'closed' && self.ready?)
+    all_ready = self.state == 'closed' && ready?
+    if force || all_ready
 
       if safe_state_change('finished')
         album = self.album
@@ -164,113 +183,129 @@ class UploadBatch < ActiveRecord::Base
           return true
         end
 
-        # if not forced, all photos are ready, then notify
-        # if forced, notify only if there are ready photos
-        @notify = true
-        if force
-          @notify = force_split_of_pending_photos
-        end
-
         # now mark the albums as ok to display since it has completed at least one batch
         album.completed_batch_count += 1
         album.save
 
-        #send album shares even if there were no photos uploaded
-        shares.each { |share| share.deliver }
-
-        if @notify
-          #Create Activity
-          ua = UploadActivity.create( :user => self.user, :subject => album, :upload_batch => self )
-          album.activities << ua
-
-          #Notify UPLOADER that upload batch is finished
-          ZZ::Async::Email.enqueue( :photos_ready, self.id )
-
-
-          # list of user ids (as strings) and email addresses who will receive
-          # album updated email
-          update_notification_list = []
-
-          # list of viewers, contributors & owner
-          viewers = nil
-
-          # add OWNER to list
-          update_notification_list << album.user.id.to_s
-
-          # add ALBUM LIKERS to list
-          album.likers.each do |liker|
-            update_notification_list << liker.id.to_s
+        if self.for_print
+          order = Order.find_by_number(album.name)
+          return true if order.nil?
+          if all_ready
+            # we are a special print album and all photos are ready so notify order
+            order.photos_processed
+          else
+            # not all photos are ready, so let the order know we gave up
+            order.photos_failed
           end
+          return true
+        end
 
-          # if password album, remove all users who are not
-          # in ACL (these would have come from album.likers)
-          if album.private?
-            viewers ||= album.viewers(false)     # these are already strings, so no need to convert
-            update_notification_list &= viewers  # filters the set of items only in both lists (i.e. filters out everyone who does not show up in the acl in one fell swoop)
-          end
+        # if not forced, all photos are ready, then notify
+        # if forced, notify only if there are ready photos
+        notify = self.photos.count > 0
+        if force && all_ready == false
+          notify = force_split_of_pending_photos
+        end
 
-          # add ALBUM OWNER'S FOLLOWERS to list
-          if album.public?
-            album.user.followers.each do |follower|
-              update_notification_list << follower.id.to_s
+        if allow_notifications
+          #send album shares even if there were no photos uploaded
+          shares.each { |share| share.deliver }
+
+          if notify
+            #Create Activity
+            ua = UploadActivity.create( :user => self.user, :subject => album, :upload_batch => self )
+            album.activities << ua
+
+            #Notify UPLOADER that upload batch is finished
+            ZZ::Async::Email.enqueue( :photos_ready, self.id )
+
+
+            # list of user ids (as strings) and email addresses who will receive
+            # album updated email
+            update_notification_list = []
+
+            # list of viewers, contributors & owner
+            viewers = nil
+
+            # add OWNER to list
+            update_notification_list << album.user.id.to_s
+
+            # add ALBUM LIKERS to list
+            album.likers.each do |liker|
+              update_notification_list << liker.id.to_s
             end
-          end
 
-          # add CONTRIBUTOR'S FOLLOWERS  unless contributor is owner
-          # removed per request by Kathryn
-          #if contributor_id != owner_id
-          #  self.user.followers.each do |follower|
-          #    update_notification_list << follower.id.to_s
-          #  end
-          #end
+            # if password album, remove all users who are not
+            # in ACL (these would have come from album.likers)
+            if album.private?
+              viewers ||= album.viewers(false)     # these are already strings, so no need to convert
+              update_notification_list &= viewers  # filters the set of items only in both lists (i.e. filters out everyone who does not show up in the acl in one fell swoop)
+            end
 
-          # for streaming album always include viewers and contributors
-          if album.stream_to_email?
-            viewers ||= album.viewers(false)     # these are already strings, so no need to convert
-            update_notification_list |= viewers
-          end
+            # add ALBUM OWNER'S FOLLOWERS to list
+            if album.public?
+              album.user.followers.each do |follower|
+                update_notification_list << follower.id.to_s
+              end
+            end
 
+            # add CONTRIBUTOR'S FOLLOWERS  unless contributor is owner
+            # removed per request by Kathryn
+            #if contributor_id != owner_id
+            #  self.user.followers.each do |follower|
+            #    update_notification_list << follower.id.to_s
+            #  end
+            #end
 
-          #de-dup
-          update_notification_list.uniq!
+            # for streaming album always include viewers and contributors
+            if album.stream_to_email?
+              viewers ||= album.viewers(false)     # these are already strings, so no need to convert
 
+              if viewers.length > 0
+                zza.track_event('album.stream.email')
+              end
 
-          # never send 'album updated' email to current CONTRIBUTOR
-          # current contributor gets the 'photos ready' email instead
-          contributor_id = self.user.id.to_s
-          update_notification_list.reject! do |id|
-            id == contributor_id
-          end
-
-          # SEND 'album updated' email
-          update_notification_list.each do | recipient_id_or_email |
-            #ZZ::Async::Email.enqueue( :album_updated, recipient_id, album_id, self.id )
-            ZZ::Async::Email.enqueue( :album_updated, contributor_id, recipient_id_or_email , album_id, self.id )
-          end
-
-
+              update_notification_list |= viewers
+            end
 
 
-
-          # stream to facebook
-          if album.stream_to_facebook?
-            ZZ::Async::StreamingAlbumUpdate.enqueue_facebook_post(self.id)
-          end
-
-          # stream to twitter
-          if album.stream_to_twitter?
-            ZZ::Async::StreamingAlbumUpdate.enqueue_twitter_post(self.id)
-          end
+            #de-dup
+            update_notification_list.uniq!
 
 
+            # never send 'album updated' email to current CONTRIBUTOR
+            # current contributor gets the 'photos ready' email instead
+            contributor_id = self.user.id.to_s
+            update_notification_list.reject! do |id|
+              id == contributor_id
+            end
+
+            # SEND 'album updated' email
+            update_notification_list.each do | recipient_id_or_email |
+              #ZZ::Async::Email.enqueue( :album_updated, recipient_id, album_id, self.id )
+              ZZ::Async::Email.enqueue( :album_updated, contributor_id, recipient_id_or_email , album_id, self.id )
+            end
 
 
-        else
+            # stream to facebook
+            if album.stream_to_facebook?
+              ZZ::Async::StreamingAlbumUpdate.enqueue_facebook_post(self.id)
+              zza.track_event('album.stream.facebook')
+            end
+
+            # stream to twitter
+            if album.stream_to_twitter?
+              ZZ::Async::StreamingAlbumUpdate.enqueue_twitter_post(self.id)
+              zza.track_event('album.stream.twitter')
+            end
+
+          else
             Rails.logger.info "Destroying empty batch id: #{self.id}, user_id: #{self.user_id}, album_id: #{self.album_id}"
             self.destroy #the batch has no photos, destroy it
-         end
-         # batch is done
-         return true
+          end
+        end
+        # batch is done
+        return true
       end
     end
 
@@ -306,7 +341,7 @@ class UploadBatch < ActiveRecord::Base
       # the system will take care of dealing with this new batch
       # propagate the original batch creation time so we can eventually
       # stop if we never get or process all the photos
-      ub = UploadBatch.factory( self.user.id, self.album.id, self.original_batch_created_at, true )
+      ub = UploadBatch.factory( self.user.id, self.album.id, self.for_print, self.original_batch_created_at, true )
       pending.each do |p|
         p.upload_batch = ub
         p.save
@@ -316,19 +351,27 @@ class UploadBatch < ActiveRecord::Base
     return (ready.length > 0)
   end
 
+  def zza
+    return @zza if @zza
+    @zza = ZZ::ZZA.new
+    @zza.user = self.album.user.id
+    @zza.user_type = 1
+    @zza
+  end
+
 
 
   # we track when the original batch was created so we can eventually stop
   # making new ones if the photos are not becoming ready after a long period
   # of time
-  def self.factory( user_id, album_id, original_batch_created_at = nil, state_closed = false )
+  def self.factory( user_id, album_id, for_print, original_batch_created_at = nil, state_closed = false )
     raise Exception.new( "User and Album Params must not be null for the UploadBatch factory") if( user_id.nil? or album_id.nil? )
 
     user = User.find( user_id )
     album = Album.find( album_id)
     now = Time.now
     original_batch_created_at ||= now
-    nb = user.upload_batches.build({:album_id => album.id, :open_activity_at => now, :original_batch_created_at => original_batch_created_at })
+    nb = user.upload_batches.build({:album_id => album_id, :for_print => for_print, :open_activity_at => now, :original_batch_created_at => original_batch_created_at })
     nb.state = 'closed' if state_closed
     if album.custom_order
       last_photo = album.photos.last

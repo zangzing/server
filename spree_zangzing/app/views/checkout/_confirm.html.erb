@@ -1,0 +1,81 @@
+<%content_for :page_title do
+    t('place_your_order')
+end %>
+
+
+
+<div id="confirm" class="clearfix">
+<div id="right_side" class="clearfix">
+  <div id="order_summary">
+    <%= render :partial => 'summary', :locals =>{:order => @order, :form => form} %>
+  </div>
+
+
+  
+  <div id="order_message" class="clearfix">
+      Message Here
+    </div>
+    <div id="order_smallprint">
+      Small Print Here
+    </div>
+</div>
+
+
+<div id="left_side">
+  <div id="order_info" class="clearfix">
+    <div id="ship_address" >
+
+      <%= render :partial =>'address_display', :locals => { :address => @order.ship_address,:label =>t("shipping_address") } %>
+      <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('ship_address')%>').submit();">change</a>
+      <p>&nbsp</p>
+
+      <%= select( :order,
+                  :shipping_method_id,
+                  @order.rate_hash.collect{|smethod|[ "#{smethod[:name]} #{number_to_currency smethod[:cost]}", smethod[:id] ]},
+                  {},
+                  { :onchange => "$('#checkout_form_confirm').attr('action','#{update_checkout_path('delivery')}').submit();"})%>
+    </div>
+
+    <div id="bill_address">
+      <%= render :partial =>'address_display', :locals => { :address => @order.bill_address,:label =>t('billing_address') } %>
+      <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('payment')%>').submit();">change</a>
+      <p>&nbsp</p>
+      
+      <div id="cclogo">
+        <%= creditcard_logo( @order.payments.first.source ) %>
+      </div>
+      <div>
+        <%="#{t('ends_in')} #{@order.payments.first.source.last_digits} #{t('expires')} #{@order.payments.first.source.month}/#{@order.payments.first.source.year}" %></br>
+        <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('payment')%>').submit();">change</a>
+      </div>
+      
+    </div>
+  </div>
+
+  <div id="order_items">
+    <table class="index">
+      <tbody>
+      <% @order.line_items.each do |line_item| %>
+        <%= render 'orders/line_item', :line_item => line_item%>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+
+<%content_for :small_print do %>
+By placing your order you agree ot ZangZing's <a class="hyperlink-button" target="_blank" href="http://www.zangzing.com/terms">the terms of service</a> and <a class="hyperlink-button" target="_blank" href="http://www.zangzing.com/terms">privacy policy</a>.
+<%end%>
+
+
+
+<%content_for :page_javascript do %>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('form p.field label').inFieldLabels();
+        });
+    </script>
+<% end %>
+

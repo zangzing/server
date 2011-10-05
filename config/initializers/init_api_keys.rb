@@ -1,7 +1,7 @@
 
 api_creds = {}
 [:flickr, :facebook, :smugmug, :shutterfly, :twitter, :yahoo, :photobucket, :ms_live,
-:bitly, :mailchimp, :zza, :instagram].each do |service|
+:bitly, :mailchimp, :zza, :instagram, :dropbox].each do |service|
   all_env_keys = YAML.load(File.read("#{Rails.root}/config/#{service}_api_keys.yml"))
   api_creds[service] = all_env_keys[Rails.env]
 end
@@ -15,6 +15,7 @@ INSTAGRAM_API_KEYS    = api_creds[:instagram]
 YAHOO_API_KEYS        = api_creds[:yahoo]
 TWITTER_API_KEYS      = api_creds[:twitter]
 WINDOWS_LIVE_API_KEYS = api_creds[:ms_live]
+DROPBOX_API_KEYS      = api_creds[:dropbox]
 BITLY_API_KEYS        = api_creds[:bitly]  #YAML.load(File.read("#{Rails.root}/config/bitly_api_keys.yml"))
 MAILCHIMP_API_KEYS    = api_creds[:mailchimp]
 ZZA_CONFIG            = api_creds[:zza]

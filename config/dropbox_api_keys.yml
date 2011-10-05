@@ -1,0 +1,27 @@
+---
+development:
+  :shared_secret: m491fj9g1177z6m
+  :api_key: rim4t172z2eoait
+
+perftest:
+  :shared_secret: m491fj9g1177z6m
+  :api_key: rim4t172z2eoait
+
+test:
+  :shared_secret: m491fj9g1177z6m
+  :api_key: rim4t172z2eoait
+
+photos_staging:
+  :shared_secret: m491fj9g1177z6m
+  :api_key: rim4t172z2eoait
+
+
+eytest:
+  :shared_secret: m491fj9g1177z6m
+  :api_key: rim4t172z2eoait
+
+
+photos_production:
+  :shared_secret: m491fj9g1177z6m
+  :api_key: rim4t172z2eoait
+

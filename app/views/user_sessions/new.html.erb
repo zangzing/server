@@ -8,7 +8,11 @@
     <meta name="copyright" content="Copyright 2011, ZangZing, LLC. All Rights Reserved." />
     <meta name="DC.title" content="ZangZing" />
     <meta name="title" content="ZangZing" />
-    <title>Group Photo Sharing - ZangZing</title>
+    <meta name="description" content="Sign in to ZangZing - a free photo sharing site for groups to share photos, simply, beautifully, publicly or privately and without any ads.">
+    <title>Sign In | Photo Sharing - ZangZing</title>
+
+    <link rel="canonical" href="<%= signin_url %>" />
+
     <%= include_stylesheets :common %>
 
 
@@ -29,14 +33,14 @@
         <a id= "back-to-signin-button" href="/join" class="gray-button"><span>Join</span></a>
         <div id="header-hairline"></div>
 
-        <%= form_tag create_user_session_url do %>
+        <%= form_tag create_user_session_url, :id=>"signin-form" do %>
           <div id="flash-error">
         <% if @user_session.errors.length > 0 %>
                Invalid user or password
         <% end %>
         <%= flash[:error] %>
         <span style="color: green;"><%= flash[:notice] %></span>
-              </div>
+           </div>
 
               <table>
                 <tr>
@@ -64,8 +68,9 @@
     </div>
    </div>
 
-  <%= render :partial => 'layouts/zza'  %>
+
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+  <%= render :partial => 'layouts/zza'  %>
   <%= include_javascripts :lib %>
   <%= include_javascripts :zz %>
 

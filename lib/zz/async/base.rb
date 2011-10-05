@@ -9,6 +9,27 @@ module ZZ
       extend Resque::Plugins::ExponentialBackoff
 
 
+      # allow async jobs to run synchronously for testing
+      def self.loopback_filter=(filter)
+        @@loopback_filter = filter
+        @@loopback_on = !filter.nil?
+      end
+
+      def self.loopback_filter
+        @@loopback_filter
+      end
+
+      # check to see if we should use loopback for this class
+      def self.should_loopback?
+        loopback_on? && @@loopback_filter.allow?(self)
+      end
+
+      def self.loopback_on?
+        @@loopback_on ||= false
+      end
+
+
+
 #      # plug ourselves into the retry framework
 #      # unfortunately they don't pass the instance back in
 #      # so we have no frame of reference and have to use
@@ -108,12 +129,37 @@ module ZZ
       # called from the subclass. The idea is that this should be the only place to call
       # Resque enqueue
       def self.enqueue( *args )
-        Resque.enqueue( self, *args)
+        if should_loopback?
+          self.perform(*args)
+        else
+          Resque.enqueue( self, *args) unless loopback_on?
+        end
       end
 
       # lets you enqueue on on a named queue
       def self.enqueue_on_queue(queue, *args)
-        Resque::Job.create(queue, self, *args)
+        if should_loopback?
+          self.perform(*args)
+        else
+          Resque::Job.create(queue, self, *args) unless loopback_on?  # when loopback_on just drop it if was not allowed
+        end
+      end
+
+      def self.enqueue_in(secs_from_now, queue, *args)
+        if should_loopback?
+          # delay not supported in loopback mode
+          self.perform(*args)
+        else
+          begin
+            current_queue = @queue
+            @queue = queue
+            Resque.enqueue_in(secs_from_now, self, *args)
+          rescue Exception => ex
+            raise ex
+          ensure
+            @queue = current_queue
+          end
+        end
       end
 
       # resque hook to perform GC after job

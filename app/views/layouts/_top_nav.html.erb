@@ -6,18 +6,13 @@
 
   <div id="home-button"></div>
 
-
   <% if @album %>
       <div id="album-info">
 <%
     if(!@album.cover)  #no cover photo
 %>
-        <div id="album-cover-border">
-              <img class="album-cover" style="width:60px; height:40px" src="/images/album-no-cover.png"/>
-              <img class="bottom-shadow" style="width:64px;" src="/images/photo/bottom-full.png"/>
-        </div>
 <%
-    else 
+    else
 %>
         <div id="album-cover-border">
               <img class="album-cover" style="width:60px; height:40px" src="/images/album-no-cover.png"/>
@@ -60,7 +55,7 @@
 <% end %>
 
 <% if @album #this needs to be after album and user info so that it floats on top%>
-  <a id="back-button" class="back-button"><span></span></a>
+  <a id="back-button" class="back-button"><span>Back</span></a>
 <% end %>
 
 
@@ -79,6 +74,8 @@
   </div>
 <% end %>
 
+
+
   <% if @album || (@user && /albums|people|activities/.match( @controller.controller_name)) %>
       <ul id="view-buttons">
           <li id="grid-view-button"></li>
@@ -87,11 +84,21 @@
       </ul>
   <% end %>
 
-  <div id="help-button"><div class="header-button-label">Help</div></div>
+  <%if current_user && current_user.admin?%>
+      <a href="/service/admin">
+        <div id="admin-button"><div class="header-button-label">Admin</div></div>
+      </a>
+  <%else%>
+    <div id="help-button"><div class="header-button-label">Help</div></div>
+  <%end%>
 
 
   <% if current_user %>
-    <div id="account-badge">
+      <%if current_user.admin?%>
+          <div id="account-badge" class="admin-badge">
+      <%else%>
+           <div id="account-badge">
+      <%end%>
        <div id="account-image" >
          <%= render :partial => 'users/profile_photo', :locals => { :user => current_user}    %>
        </div>
@@ -121,5 +128,14 @@
     </div>
   </div>
   <div id="cancel-drawer-btn" style="display:none;">Cancel New Album</div>
+</div>
+
+
+<div id="checkout-banner">
+  <div class="border"></div>
+  <div class="close-button"></div>
+  <div class="message"></div>
+  <a class="gray-button view-cart-button"><span>View Cart</span></a>
+  <a class="green-button checkout-button"><span>Checkout</span></a>
 </div>
 

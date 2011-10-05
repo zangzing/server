@@ -56,13 +56,23 @@ class SharesController < ApplicationController
         zza.track_event("#{share_event}.share.facebook")
       end
     else
-      # We are in an email, validate emails, if they ALL pass create share otherwise return error info
+      # We are in an email, validate emails, if they ALL pass
+      # create share otherwise return error info
       zza.track_event("#{share_event}.share.email")
       emails,errors = Share.validate_email_list(  params[:recipients] )
       if errors.length > 0
         flash[:error] = "Please verify highlighted addresses"
         render :json => errors, :status => 200 and return
       end
+
+      # if sharing album by album owner, then add recipients to group
+      if @subject.is_a?(Album)
+        album = @subject
+        if album.admin?( current_user.id )
+          emails.each { |email| album.add_viewer( email )}
+        end
+      end
+
       @rcp = emails
     end
 

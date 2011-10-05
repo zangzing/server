@@ -35,6 +35,7 @@
         <div >
             <%=button_to( "Send Password Reset Email", admin_reset_password_path( :id => @user.id), :method => :put, :style =>'display: inline; float: right; margin: 0 5px;' )%>
             <%=button_to( ( @user.active ? "Deactivate" :  "Activate"), admin_activate_user_path( :id => @user.id), :method => :put, :style =>'display: inline; float: right;'  )%>
+            <%=button_to( "Impersonate This User", admin_impersonate_path( :id => @user.id), :method => :put, :style =>'display: inline; float: right; margin: 0 5px;' )%>
         </div>
       </div>
     </li>

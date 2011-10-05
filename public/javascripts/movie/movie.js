@@ -97,6 +97,9 @@
 			// Slideshow speed value
 			this.slideShowSpeed = 6,
 
+			// starting image index
+			this.startImageIndex = 0,
+
 			// Transition speed value
 			this.transitionSpeed = 0.4,
 
@@ -358,6 +361,11 @@
 			// slideShowSpeed
 			if (typeof configs.slideShowSpeed != 'undefined' && configs.slideShowSpeed >= 0) {
 				this.slideShowSpeed = parseFloat(configs.slideShowSpeed) * 1000;
+			}
+
+			//	startImageIndex
+			if (typeof configs.startImageIndex != 'undefined' && configs.startImageIndex >= 0) {
+				this.startImageIndex = parseInt(configs.startImageIndex);
 			}
 
 			// transitionSpeed
@@ -866,6 +874,7 @@
 
 			this.inCanvas = false;
 			this.controlBarFocused = false;
+			this.currentImage = this.startImageIndex;
 			this.oldImage = this.currentImage;
 			this.firstLoad = true;
 			clearTimeout(this.slideTimeout);
@@ -1747,8 +1756,9 @@
 			if (this.callStack != callStack) {
 				return;
 			}
-			if (typeof this.currentImage != 'number') {
+			if (typeof this.currentImage != 'number' || this.currentImage>this.images.length-1) {
 				this.currentImage = 0;
+				this.oldImage = 0;
 			}
 			this.setFrozenFlagOff();
 			this.setBusyFlagOff();

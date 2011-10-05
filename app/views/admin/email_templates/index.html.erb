@@ -16,8 +16,8 @@
             <th>   </th>
             <th> MC Campaign </th>
             <th> email         </th>
-            <th> Status        </th>
-            <th> Last Loaded   </th>
+            <th width="50px"> Status        </th>
+            <th width="150px"> Last Loaded   </th>
             <th></th>
             <th></th>
           </tr>
@@ -48,7 +48,7 @@
 
                 <td>
                   <%if et.production_email %>
-                      <span style="color: red;">production</span>
+                      <span style="color: red;">active</span>
                   <%else%>
                       <span style="color: green;">testing</span>
                   <%end%>
@@ -65,21 +65,55 @@
                   <%end%>
                 </td>
                 <td>
-                  <%=button_to "Send Me A Test",   {:action => :test, :id=> et.id}, {:method => :get}  %>
+                  <%=button_to "Send A Test",   {:action => :test, :id=> et.id}, {:method => :get, :onclick =>'insert_target_address(this); return true;'}  %>
                 </td>
                 <td>
-                  <%= form_for et, :url => test_email_template_url( et ), :html => { :method => :get, :class=>"button-to", :target=> "_blank" } do | f | %>
-                      <input type="hidden" name="onscreen" value="true" />
-                      <input value="View" type="submit"/>
-                  <%end%>
+                  <%=button_to "View","javascript:void(0);" ,{:onclick => "window.open('#{test_email_template_url( et )}?onscreen=true','_blank','left=20,top=20,width=700,height=900,toolbar=0,resizable=0,scrollbars=1');return false;" } %>
                 </td>
-
-              </tr>
+                </tr>
           <%end%>
-
+            <tr><td>&nbsp</td></tr>
+            <tr>
+                 <td></td>
+                 <td><%=button_to "Back to emails", emails_url, :method => 'get'%></td>
+                 <td><%=button_to "New Template", new_email_template_url, :method => 'get'%></td>
+                 <td></td>
+                 <td></td>
+                 <td></td>
+                 <td><%=button_to "Send  All",   {:action => :test, :id=> 'all'}, {:method => :get, :onclick =>'insert_target_address(this); return true;'}  %></td>
+                 <td><%=button_to "View All","javascript:void(0);" ,{:onclick =>"show_all_email_templates();return false"}%></td>
+                </tr>
         </table>
       </div>
-      <%=button_to "Back to emails", emails_url, :method => 'get'%>
-      <%=button_to "Create new Template", new_email_template_url, :method => 'get'%>
+      <div>
+      </div>
+    <div style="text-align: right; margin-top: 20px;">
+            Messages will be sent to <%= text_field_tag 'target_address', current_user.email, { :size=>40 } %>
+        </div>
   </div>
 </div>
+
+
+<script type="text/javascript">
+  function show_processing_dialog( legend ) {
+
+                   return dialog;
+       }
+  function show_all_email_templates(){
+    <%left = 20
+	      top  = 20
+	      EmailTemplate.all.each do |et| %>
+	        window.open('<%="#{test_email_template_url( et )}?onscreen=true"%>','<%=et.name%>','left=<%=left%>,top=<%=top%>,width=700,height=900,toolbar=0,resizable=0,scrollbars=1');
+	    <% left +=10
+	       top += 10
+	      end%>
+  }
+
+  function insert_target_address(button){
+      var template = '<span class="processing-photos-dialog-content"><img src="{{src}}">Sending sample emails...</span>'.replace('{{src}}', zz.routes.image_url('/images/loading.gif'));
+      zz.dialog.show_dialog(template, { width: 300, height: 100, modal: true, autoOpen: true, cancelButton: false });
+      var field = $('<input type="hidden" name="target_address">');
+      $(field).val($('#target_address').val());
+      $(button.form).append($(field));
+  }      
+</script>

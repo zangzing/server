@@ -1,0 +1,62 @@
+<% param_prefix = "payment_source[#{payment_method.id}]" %>
+
+<%= hidden_field_tag "#{param_prefix}[payment_method_id]",  payment_method.id%>
+<p id="ccimages">
+<%= image_tag   'store/creditcards.png'%>
+</p>
+<p id="secure_lock">
+  <%= image_tag 'store/secure-lock.png'%>
+  <%=t('learn_more_security')%>
+</p>
+
+<div id="cc">
+<p id="ccnumber" class="field">
+  <label for="card_number"><%= t("card_number") %></label>
+  <% options_hash = Rails.env.production? ? {:autocomplete => "off"} : {} %>
+  <%= text_field_tag "#{param_prefix}[number]", '', options_hash.merge(:id => 'card_number', :class => 'required', :size => 16, :maxlength => 16, 'data-original-title'=>t(:card_number)) %>
+</p>
+
+<p id="ccv" class="field">
+  <label for="card_code"><%= t("card_code") %></label>
+  <%= text_field_tag "#{param_prefix}[verification_value]", '', options_hash.merge(:id => 'card_code', :class => 'required', :size => 4, :maxlength => 4, 'data-original-title'=>t(:card_code)) %>
+</p>
+<a id="cvv_question"
+   class="field_question"
+   tabindex="-1"
+    data-controls-modal="cvv-question-modal"
+    data-backdrop="true"
+    data-keyboard="true">
+   <%= image_tag 'store/question.png' %>
+</a>
+
+</div>
+<div id="expires">
+  <label id="expire_label" class="right"><%= t("expiration_date") %></label>
+  <%= select_month(Date.today, {:prefix => param_prefix, :field_name => 'month', :use_month_numbers => true}, {:id => "expire_month", :class => 'required expmonth'}) %>
+  <%= select_year(Date.today,  {:prefix => param_prefix, :field_name => 'year', :start_year => Date.today.year, :end_year => Date.today.year + 15}, {:id => "expire_year", :class => 'required expdyear'}) %>
+</div>
+
+<%= hidden_field param_prefix, 'first_name', :value => @order.billing_firstname %>
+<%= hidden_field param_prefix, 'last_name',  :value => @order.billing_lastname %>
+
+
+
+<!--------------- This is the content of the modal cvv_question dialog -->
+  <div style="display: none;" id="cvv-question-modal" class="modal hide">
+    <div style="margin: 30px;">
+    <p>
+        <img align="right" style="margin-left:10px" src="/images/store/cid.gif">
+        <strong>Visa/Mastercard/Discover/JCB</strong>
+        <br>
+        You can find the 3-digit code located on the back of your credit card.
+    </p>
+    <p>
+        <strong>American Express</strong>
+        <br>
+        You can find the 4-digit code on the front of your card, above your credit card number.
+    </p>
+    </div>
+    <div class="modal-footer">
+      <a href="#" onclick="$('#cvv-question-modal').modal('hide');" class="btn success">OK</a>
+    </div>
+  </div>

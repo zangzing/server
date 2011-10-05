@@ -1,95 +1,171 @@
 require 'spec_helper'
 
 describe AlbumsController do
+  include ControllerSpecHelper
 
-  integrate_views
 
-  describe "access control" do
-    before(:each) do
-       @user = Factory(:user)
-       @attr = { :name => "Lorem ipsum dolor" }
-       @album = Factory(:album, @attr.merge(:user => @user))
-       @user.albums.stub!(:build).and_return(@album)      
-    end
-    it "should deny access to 'create'" do
-      post :create, :user_id =>@user.id
-      response.should redirect_to(signin_path)
-    end
-
-    it "should deny access to 'destroy'" do
-      delete :destroy,  {:user_id =>@user.id, :id => @album.id }
-      response.should redirect_to(signin_path)
-    end
+  def get_action_and_cache_version(path)
+      route = Rails.application.routes.recognize_path(path)
+      action = route[:action]
+      cache_version = path.match(/\?ver=(.*)/)[1]
+      return action, cache_version
   end
-  
-  #
-  #   create
-  #
-  
-  describe "POST 'create'" do
+
+  context 'when i view my homepage' do
     before(:each) do
-       @user = test_sign_in(Factory(:user))
-       @attr = { :name => "Album for Testing" }
-       @album = Factory(:album, @attr.merge(:user => @user))
-       @user.albums.stub!(:build).and_return(@album)
+      login
+      @me = @current_user
+      @person_i_follow = Factory.create(:user)
+      Like.add(@me.id, @person_i_follow.id, Like::USER)
     end
 
-    describe "failure" do
-      before(:each) do
-         @album.should_receive(:save).and_return(false) 
+    describe 'My Albums section' do
+      it 'should show all my public albums' do
+        pending 'test not implemented'
       end
-      it "should render the home page" do
-         post :create, {:user_id => @user.id, :album => @attr}
-         response.should render_template('albums/new')
+
+      it 'should show all my hidden albums' do
+        pending 'test not implemented'
+      end
+
+      it 'should show all my password albums' do
+        pending 'test not implemented'
+      end
+
+      it 'should show changed album names' do
+        pending 'test not implemented'
+      end
+
+      it 'should not show deleted albums' do
+        pending 'test not implemented'
+      end
+
+      it 'should show new albums' do
+        pending 'test not implemented'
+      end
+
+
+
+    end
+
+    describe 'Albums I Like section' do
+
+      def should_show_liked_albums_with_privacy(privacy)
+        verify_liked_albums_with_privacy(privacy, true)
+      end
+
+      def should_not_show_liked_albums_with_privacy(privacy)
+        verify_liked_albums_with_privacy(privacy, false)
+      end
+
+      def verify_liked_albums_with_privacy(privacy, should_show)
+        album_i_like = Factory.create(:album, :privacy=>privacy, :completed_batch_count=>1)
+        Like.add(@me.id, album_i_like.id, Like::ALBUM)
+
+        # get the homepage 'html'
+        get :index, {:user_id => @me.id}
+
+        # make the json call based on the @liked_albums_path variable
+        action, cache_version = get_action_and_cache_version(assigns[:liked_albums_path])
+        xhr :get, action, {:user_id => @me.id, :ver=>cache_version}
+
+
+        albums = JSON.parse(response.body)
+
+        if should_show
+          albums.count.should == 1
+          albums[0]['id'].should == album_i_like.id
+        else
+          albums.count.should == 0
+        end
+      end
+
+
+      it 'should show all the public albums i like' do
+        should_show_liked_albums_with_privacy(Album::PUBLIC)
+      end
+
+      it 'should show all the hidden albums i like' do
+        should_show_liked_albums_with_privacy(Album::HIDDEN)
+      end
+
+      it 'should show all the password albums i like' do
+        should_show_liked_albums_with_privacy(Album::PASSWORD)
+      end
+
+      it 'should show all the public albums of people i follow' do
+        pending 'test not implemented'
+      end
+
+      it 'should not show the hidden albums of people i follow' do
+        pending 'test not implemented'
+      end
+
+      it 'should not show the password albums of people i follow' do
+        pending 'test not implemented'
+      end
+
+      it 'should not show albums or people i follow where the album was changed from public to password' do
+        pending 'test not implemented'
       end
     end
-    describe "success" do
-      before(:each) do
-         @album.should_receive(:save).and_return(true)
-      end
-      it "should redirect to the album page" do
-         post :create, {:user_id =>@user.id, :album => @attr}
-         response.should redirect_to( album_path( @album ))
-      end
-      it "should have a flash message" do
-         post :create, {:user_id =>@user.id, :album => @attr}
-         flash[:success].should =~ /album created/i
-      end
-    end
+
   end
-  
-  #
-  # destroy
-  #
-  
-  describe "DELETE 'destroy'" do
-    describe "for an unauthorized user" do
-      before(:each) do
-         @user = Factory(:user)
-         wrong_user = Factory(:user, :email => Factory.next(:email))
-         test_sign_in(wrong_user)
-         @album = Factory(:album, :user => @user)
+
+  context 'when i view someone else\'s homepage' do
+    before(:each) do
+      login
+      @user = Factory.create(:user)
+      @user_being_followed = Factory.create(:user)
+      Like.add(@user.id, @user_being_followed.id, Like::USER)
+    end
+
+    describe 'His Albums section' do
+      it 'should show all his public albums' do
+        pending 'test not implemented'
       end
 
-       it "should deny access" do
-         @album.should_not_receive(:destroy)
-         delete :destroy, :id => @album
-         response.should redirect_to(root_path)
-       end
-     end
-     describe "for an authorized user" do
+      it 'should not show any of his hidden albums' do
+        pending 'test not implemented'
+      end
 
-       before(:each) do
-         @user = test_sign_in(Factory(:user))
-         @album = Factory(:album, :user => @user)
-         Album.should_receive(:find).with(@album).and_return(@album)
-       end
+      it 'should not show any of his password albums' do
+        pending 'test not implemented'
+      end
 
-       it "should destroy the album" do
-         @album.should_receive(:destroy).and_return(@album)
-         delete :destroy, { :id => @album, :user_id =>@user.id }
-       end
-     end
-   end
-    
+    end
+
+    describe 'Album He Likes section' do
+      it 'should show all the public albums that he likes' do
+        pending 'test not implemented'
+      end
+
+      it 'should not show any of the hidden albums that he likes' do
+        pending 'test not implemented'
+      end
+
+      it 'should not show any of the password albums that he likes' do
+        pending 'test not implemented'
+      end
+
+      it 'should show all the public albums of people he follows' do
+        pending 'test not implemented'
+      end
+
+      it 'should not show any of the hidden albums of people he follows' do
+        pending 'test not implemented'
+      end
+
+      it 'should not show any of the password albums of people he follows' do
+        pending 'test not implemented'
+      end
+
+    end
+
+  end
+
+  
+
+
 end
+

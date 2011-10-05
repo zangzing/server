@@ -8,27 +8,26 @@
         </td>
       </tr>
 
-      <% unless subs.user.nil? %>
-          <tr class="on_off">
-            <th>
-              <%=f.label :want_social_email, 'Social'%><br>
-              <div class="sub-th">e.g. when new photos have been added or when someone "likes you", "likes your album", or "follows you"</div>
-            </th>
-            <td>
-              <%=f.check_box :want_social_email%>
-            </td>
-          </tr>
+      <tr class="on_off">
+        <th>
+          <%=f.label :want_social_email, 'Social'%><br>
+          <div class="sub-th">e.g. when new photos have been added or when someone "likes you", "likes your album", or "follows you"</div>
+        </th>
+        <td>
+          <%=f.check_box :want_social_email%>
+        </td>
+      </tr>
 
-          <tr class="on_off">
-            <th>
-              <%=f.label :want_status_email, 'Confirmations'%><br>
-              <div class="sub-th">e.g. when your photos have been successfully uploaded to an album</div>
-            </th>
-            <td >
-              <%=f.check_box :want_status_email%>
-            </td>
-          </tr>
-      <%end%>
+      <tr class="on_off">
+        <th>
+          <%=f.label :want_status_email, 'Confirmations'%><br>
+          <div class="sub-th">e.g. when your photos have been successfully uploaded to an album</div>
+        </th>
+        <td >
+          <%=f.check_box :want_status_email%>
+        </td>
+      </tr>
+
       <tr class="on_off">
         <th>
           <%=f.label :want_news_email, 'ZangZing News' %><br>

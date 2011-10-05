@@ -26,7 +26,7 @@ class LikeActivity < Activity
 
   def payload_valid?
     begin
-      return true if like && like.subject
+      return true if like  && like.user && like.subject
     rescue ActiveRecord::RecordNotFound
       return false
     end

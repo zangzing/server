@@ -1,0 +1,131 @@
+-- MySQL dump 10.13  Distrib 5.1.58, for apple-darwin10.3.0 (i386)
+--
+-- Host: localhost    Database: cache_dev
+-- ------------------------------------------------------
+-- Server version	5.1.58
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `c_tracks`
+--
+
+DROP TABLE IF EXISTS `c_tracks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `c_tracks` (
+  `user_id` bigint(20) NOT NULL,
+  `tracked_id` bigint(20) NOT NULL,
+  `tracked_id_type` tinyint(4) NOT NULL,
+  `track_type` tinyint(4) NOT NULL,
+  `user_last_touch_at` int(11) DEFAULT NULL,
+  UNIQUE KEY `track_info_index` (`user_id`,`track_type`,`tracked_id`,`tracked_id_type`),
+  KEY `index_c_tracks_on_user_last_touch_at` (`user_last_touch_at`),
+  KEY `index_c_tracks_on_tracked_id` (`tracked_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `c_tracks`
+--
+
+LOCK TABLES `c_tracks` WRITE;
+/*!40000 ALTER TABLE `c_tracks` DISABLE KEYS */;
+INSERT INTO `c_tracks` VALUES (249900073725,249900073725,100,11,1317253084),(249900073725,249900073725,102,21,1317253084),(249900073725,249900073725,101,32,1317253084),(249900073725,249900073727,100,32,1317253084),(249900073725,249900073728,100,32,1317253084),(249900073725,29900073729,103,41,1317253084),(249900073725,29900073736,103,41,1317253084),(249900073725,249900073725,104,41,1317253084);
+/*!40000 ALTER TABLE `c_tracks` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `c_versions`
+--
+
+DROP TABLE IF EXISTS `c_versions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `c_versions` (
+  `user_id` bigint(20) NOT NULL,
+  `track_type` tinyint(4) NOT NULL,
+  `ver` int(11) DEFAULT NULL,
+  `user_last_touch_at` int(11) DEFAULT NULL,
+  UNIQUE KEY `index_c_versions_on_user_id_and_track_type` (`user_id`,`track_type`),
+  KEY `index_c_versions_on_user_last_touch_at` (`user_last_touch_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `c_versions`
+--
+
+LOCK TABLES `c_versions` WRITE;
+/*!40000 ALTER TABLE `c_versions` DISABLE KEYS */;
+INSERT INTO `c_versions` VALUES (249900073725,11,1317253084,1317253084),(249900073725,21,1317253084,1317253084),(249900073725,32,1317253084,1317253084),(249900073725,41,1317253084,1317253084);
+/*!40000 ALTER TABLE `c_versions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `c_working_track_set`
+--
+
+DROP TABLE IF EXISTS `c_working_track_set`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `c_working_track_set` (
+  `user_id` bigint(20) NOT NULL,
+  `track_type` tinyint(4) NOT NULL,
+  `tx_id` bigint(20) NOT NULL,
+  UNIQUE KEY `working_track_set_index` (`user_id`,`track_type`,`tx_id`),
+  KEY `index_c_working_track_set_on_tx_id` (`tx_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `c_working_track_set`
+--
+
+LOCK TABLES `c_working_track_set` WRITE;
+/*!40000 ALTER TABLE `c_working_track_set` DISABLE KEYS */;
+/*!40000 ALTER TABLE `c_working_track_set` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `schema_migrations`
+--
+
+DROP TABLE IF EXISTS `schema_migrations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `schema_migrations` (
+  `version` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  UNIQUE KEY `unique_schema_migrations` (`version`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `schema_migrations`
+--
+
+LOCK TABLES `schema_migrations` WRITE;
+/*!40000 ALTER TABLE `schema_migrations` DISABLE KEYS */;
+INSERT INTO `schema_migrations` VALUES ('20110331213234'),('20110407145731');
+/*!40000 ALTER TABLE `schema_migrations` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2011-10-03 11:56:45

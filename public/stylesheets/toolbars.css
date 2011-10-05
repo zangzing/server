@@ -6,7 +6,7 @@
   top: -2px;
   left:10px;
   right:10px;
-  z-index: 10;
+  z-index: 300;
 }
 
 #header-left{
@@ -161,6 +161,18 @@
     top: 3px;
 }
 
+#header #admin-info{
+    position: relative;
+    display: inline-block;
+    text-align: center;
+}
+
+#header #admin-info .green-button{
+    border: 1px solid red;
+}
+
+
+
 /* For all disabled buttons
 ******************************************/
 #header .disabled, #footer .disabled{
@@ -223,6 +235,25 @@
 #help-button.selected{  background-position: 0 -110px;   }
 #help-button.disabled{  background-position: 0 0;}
 
+#admin-button{
+    text-decoration: none;
+    position: absolute;
+    top: 1px;
+    right: 58px;
+    width: 58px;
+    height: 55px;
+    background: url("/images/embed/toolbars/btn-header-admin.png") no-repeat scroll 0px 0px transparent;
+    cursor: pointer;
+}
+#admin-button:hover{     background-position: 0  -109px;   }
+#admin-button.disabled{  background-position: 0 0;}
+#admin-button .header-button-label{
+    color: black;
+    text-decoration: none;
+}
+
+
+
 #header #sign-in-button{
     position: absolute;
     top: 1px;
@@ -248,6 +279,12 @@
 #header #account-badge:hover {   background-position: 0 -55px; }
 #header #account-badge.selected{ background-position: 0  -110px; }
 #header #account-badge.disabled{ background-position: 0  0; }
+
+
+#header #account-badge.admin-badge {
+  background: url("/images/embed/toolbars/btn-header-account-settings.png") no-repeat scroll 0px -110px transparent;
+}
+
 
 #header #account-badge div#account-image {
     position:absolute;
@@ -426,7 +463,7 @@
 #footer #share-button{
     position: absolute;
     top: 1px;
-    right: 116px;
+    right: 174px;
     width: 58px;
     height: 55px;
     background: url("/images/embed/toolbars/btn-footer-share.png") no-repeat scroll 0px 0px transparent;
@@ -436,17 +473,91 @@
 #footer #share-button.selected{ background-position: 0 -110px; }
 #footer #share-button.disabled{ background-position: 0 0; }
 
+/*           Comments Button
+ ***************************************************/
+#footer #comments-button{
+    position: absolute;
+    top: 1px;
+    right: 232px;
+    width: 58px;
+    height: 55px;
+    background: url("/images/embed/toolbars/btn-footer-comments.png") no-repeat scroll 0px 0px transparent;
+    cursor: pointer;
+    display: none;
+}
+#footer #comments-button:hover   { background-position: 0  -55px; }
+#footer #comments-button.selected{ background-position: 0 -110px; }
+#footer #comments-button.disabled{ background-position: 0 0; }
+
+
+#footer #comments-button .comment-count{
+    position: absolute;
+    top: 22px;
+    left: 32px;
+    border: solid 1px #999999;
+    background: #ccc;
+    color:#111111;
+    text-align: right;
+    text-shadow: 0 .5px 1px #666666;
+    padding: .5px 2px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    font-size: 10px;
+    font-weight: 500;
+}
+#footer #comments-button .comment-count.empty{
+    display:none;
+}
+
+
 /*           Like Button
  ***************************************************/
 #footer #like-button{
     position: absolute;
     top: 1px;
-    right: 58px;
+    right: 116px;
     width: 58px;
     height: 55px;
     cursor: pointer;
 }
 #footer #like-button.disabled { background-position: 0 0; }
+
+/*           Cart Button
+ ***************************************************/
+#footer #cart-button{
+    position: absolute;
+    top: 1px;
+    right: 58px;
+    width: 58px;
+    height: 55px;
+    background: url("/images/embed/toolbars/btn-footer-cart.png") no-repeat scroll 0px 0px transparent;
+    cursor: pointer;
+}
+#footer #cart-button:hover    { background-position: 0 -55px;  }
+#footer #cart-button.selected { background-position: 0 -110px; }
+#footer #cart-button.disabled { background-position: 0 0; }
+
+#footer #cart-button .cart-count{
+    position: absolute;
+    top: 4px;
+    left: 30px;
+    border: solid 1px #999999;
+    background: #ffffff;
+    color:#111111;
+    text-align: right;
+    text-shadow: 0 .5px 1px #666666;
+    padding: .5px 2px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    font-size: 10px;
+    font-weight: 500;
+}
+#footer #cart-button .cart-count.empty{
+    display:none;
+}
+
+
+
 /*           Buy Button
  ***************************************************/
 #footer #buy-button{

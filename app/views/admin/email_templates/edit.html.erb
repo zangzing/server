@@ -55,6 +55,7 @@
     <li class="item">
       <div style="float:left;">
         <form method="post" action="<%=email_template_url( @email_template )%>" class="button-to">
+          <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" />
           <input type="hidden" name="_method" value="delete" />
           <input onclick="return confirm('Are you sure you want to delete the template?');" value="Delete" type="submit" />
         </form>

@@ -61,8 +61,7 @@ module ZZ
       def end_test
         if @test_file
           File.delete(@test_file.path)
-          AWS::S3::S3Object.delete self.file_name, self.s3_bucket
-#          @s3.delete self.s3_bucket, self.file_name if @s3
+          PhotoGenHelper.s3.delete(self.s3_bucket, self.file_name)
         end
         @s3 = nil
         @test_file = nil
@@ -87,10 +86,6 @@ module ZZ
         # now open the file we just created
         @test_file = File.new(file_path, "rb")
         self.s3_bucket = "perftest.dev.zangzing"
-#        @s3 = RightAws::S3Interface.new(Server::Application.config.s3_access_key_id,
-#          Server::Application.config.s3_secret_access_key,
-#          {:port => 80, :protocol => 'http', :multi_thread => false}
-#        )
       end
 
       # perform the upload test
@@ -105,8 +100,7 @@ module ZZ
       def upload_one
         # make sure file is at start
         @test_file.rewind
-        AWS::S3::S3Object.store(self.file_name, @test_file, self.s3_bucket)
-        #@s3.put(self.s3_bucket, self.file_name, @test_file)
+        PhotoGenHelper.s3.put(self.s3_bucket, self.file_name, @test_file)
         true
       end
 
@@ -123,9 +117,7 @@ module ZZ
 
       # download a single file
       def download_one
-        raw_data = AWS::S3::S3Object.value(self.file_name, self.s3_bucket)
-        #raw_data = @s3.get(self.s3_bucket, self.file_name)
-        raw_data
+        raw_data = PhotoGenHelper.s3.get(self.s3_bucket, self.file_name)
       end
     end
 

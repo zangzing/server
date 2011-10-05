@@ -1,20 +1,23 @@
-var css_transform = {
+var zz = zz || {};
 
-    rotate : function(element, angle, left, top) {
-        if ($.client.browser == "Explorer") {
+
+zz.css_transform = {
+
+    rotate: function(element, angle, left, top) {
+        if ($.client.browser == 'Explorer') {
             this._ie_rotate(element, angle, left, top);
         }
         else {
-            var rotate = "rotate(" + angle + "deg)";
+            var rotate = 'rotate(' + angle + 'deg)';
 
             $(element).css({
-                '-moz-transform':    rotate,
+                '-moz-transform': rotate,
                 '-webkit-transform': rotate
             });
         }
     },
 
-    _ie_rotate : function(element, angle, left, top) {
+    _ie_rotate: function(element, angle, left, top) {
 
         //
         // copied from http://extremelysatisfactorytotalitarianism.com/projects/misc/2010/02/ie8_live/rotate_math_correction.html
@@ -33,11 +36,11 @@ var css_transform = {
         var w = target.width();
         var h = target.height();
 
-        if(left){
+        if (left) {
             x = left;
         }
 
-        if(top){
+        if (top) {
             y = top;
         }
 
@@ -81,7 +84,7 @@ var css_transform = {
             // rounding helps--but doesn't eliminate--integer jittering
             left: Math.round(x + e - sx) + 'px',
             top: Math.round(y + f - sy) + 'px'
-        })
+        });
 
     }
 };

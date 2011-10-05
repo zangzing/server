@@ -7,7 +7,8 @@ module Cache
     # this class manages the album cache for users - it tracks
     # what is needed for the album index page
     class Manager < Cache::Base
-      KEY_PREFIX = "Cache.Album.".freeze
+      # the prefix for the memcache key - change the number at the end if you update what the cache holds
+      KEY_PREFIX = "Cache.Album.v3".freeze
 
       CACHE_MAX_INACTIVITY = 72.hours
 
@@ -30,29 +31,33 @@ module Cache
       # for the user specified, invalidate any dependent
       # cache entries tied to public albums
       def invalidate_liked_user(invalidator, user_id)
-        invalidator.add_tracked_user(user_id, TrackTypes::LIKED_USERS_ALBUMS_PUBLIC)
+        invalidator.add_tracked_user(user_id, AlbumTypes::LIKED_USERS_ALBUMS_PUBLIC)
       end
 
       # for the user specified, invalidate any dependent
       # cache entries tied to public albums
       def invalidate_my_public_albums(invalidator, user_id)
-        invalidator.add_tracked_user(user_id, TrackTypes::MY_ALBUMS_PUBLIC)
+        invalidator.add_tracked_user(user_id, AlbumTypes::MY_ALBUMS_PUBLIC)
       end
 
       # for the user specified, invalidate any dependent
       # cache entries tied to this user
       def invalidate_my_albums(invalidator, user_id)
-        invalidator.add_tracked_user(user_id, TrackTypes::MY_ALBUMS)
+        invalidator.add_tracked_user(user_id, AlbumTypes::MY_ALBUMS)
       end
 
       # invalidate this specific public album
       def invalidate_public_album(invalidator, album_id)
-        invalidator.add_tracked_album(album_id, TrackTypes::LIKED_ALBUMS_PUBLIC)
+        invalidator.add_tracked_album(album_id, AlbumTypes::LIKED_ALBUMS_PUBLIC)
       end
 
       # invalidate this specific album
-      def invalidate_album(invalidator, album_id)
-        invalidator.add_tracked_album(album_id, TrackTypes::LIKED_ALBUMS)
+      def invalidate_liked_album(invalidator, album_id)
+        invalidator.add_tracked_album(album_id, AlbumTypes::LIKED_ALBUMS)
+      end
+
+      def invalidate_invited_album(invalidator, album_id)
+        invalidator.add_tracked_album(album_id, AlbumTypes::MY_INVITED_ALBUMS)
       end
 
       def album_change_matters?(album)
@@ -92,7 +97,8 @@ module Cache
         invalidate_my_albums(invalidator, user_id)
 
         # and finally invalidate anything dependent on this specific album
-        invalidate_album(invalidator, album_id)
+        invalidate_liked_album(invalidator, album_id)
+        invalidate_invited_album(invalidator, album_id)
 
         # and now invalidate the caches and tracked items
         invalidator.invalidate
@@ -122,8 +128,8 @@ module Cache
       # be re-fetched when next requested which will retrack any items of interest
       def user_like_modified(user_id, tracked_user_id)
         invalidator = Invalidator.new(self, user_id)
-        invalidator.add_tracked_user(user_id, TrackTypes::LIKED_USERS_ALBUMS_PUBLIC)
-        invalidator.add_tracked_user_like_membership(user_id, TrackTypes::LIKED_USERS_ALBUMS_PUBLIC)
+        invalidator.add_tracked_user(user_id, AlbumTypes::LIKED_USERS_ALBUMS_PUBLIC)
+        invalidator.add_tracked_user_like_membership(user_id, AlbumTypes::LIKED_USERS_ALBUMS_PUBLIC)
         invalidator.invalidate
       end
 
@@ -134,10 +140,10 @@ module Cache
       # that user cares about
       def album_like_modified(user_id, tracked_album_id)
         invalidator = Invalidator.new(self, user_id)
-        invalidator.add_tracked_user(user_id, TrackTypes::LIKED_ALBUMS)
-        invalidator.add_tracked_album_like_membership(user_id, TrackTypes::LIKED_ALBUMS)
-        invalidator.add_tracked_user(user_id, TrackTypes::LIKED_ALBUMS_PUBLIC)
-        invalidator.add_tracked_album_like_membership(user_id, TrackTypes::LIKED_ALBUMS_PUBLIC)
+        invalidator.add_tracked_user(user_id, AlbumTypes::LIKED_ALBUMS)
+        invalidator.add_tracked_album_like_membership(user_id, AlbumTypes::LIKED_ALBUMS)
+        invalidator.add_tracked_user(user_id, AlbumTypes::LIKED_ALBUMS_PUBLIC)
+        invalidator.add_tracked_album_like_membership(user_id, AlbumTypes::LIKED_ALBUMS_PUBLIC)
         invalidator.invalidate
       end
 
@@ -163,6 +169,18 @@ module Cache
       # called when a like is removed
       def like_removed(user_id, like)
         like_modified(user_id, like)
+      end
+
+      def user_albums_acl_modified(user_id)
+        invalidator = Invalidator.new(self, user_id)
+        invalidator.add_tracked_user(user_id, AlbumTypes::MY_INVITED_ALBUMS)
+        invalidator.add_tracked_user_invites(user_id, AlbumTypes::MY_INVITED_ALBUMS)
+
+        # since we don't show anything other than an empty album list for the public view, no need to notify on change
+        #invalidator.add_tracked_user(user_id, AlbumTypes::MY_INVITED_ALBUMS_PUBLIC)
+        #invalidator.add_tracked_user_invites(user_id, AlbumTypes::MY_INVITED_ALBUMS_PUBLIC)
+
+        invalidator.invalidate
       end
 
       # trim out old entries, called by

@@ -1,0 +1,298 @@
+.comments-right-panel {
+    position:absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 20px;
+    width: 450px;
+    background: url(/images/comments/drawer-background.png) repeat-y scroll 0px 0px transparent;
+}
+
+.comments-dialog {
+
+}
+
+.comments-dialog .header {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+
+    height: 255px;
+    width: 100%;
+    border-bottom: 1px solid #dedede;
+}
+
+.comments-dialog .header .commented-photo{
+    position: relative;
+    top:0px;
+    left:0px;
+    right:0px;
+    height:200px;
+}
+
+.comments-dialog .header .commented-photo-caption{
+    position: relative;
+    bottom: 11px;
+    margin-left:auto;
+    margin-right:auto;
+    width:200px;
+    padding:5px;
+    height:35px;
+    font-size:13px;
+    color: #636363;
+    padding-left:10px;
+    padding-right:10px;
+    text-shadow: white 1px 1px 0px;
+
+}
+
+
+
+
+
+
+.comments-dialog .header .button-bar {
+    position: relative;
+    bottom: 20px;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+.comments-dialog .header .button-bar .button{
+    position: relative;
+    width:20px;
+    height:18px;
+    cursor:pointer;
+    margin:3px 0px;
+    padding: 0px 6px;
+    display: inline-block;
+}
+
+
+/*  Share Button
+ *************************************/
+.comments-dialog .header .button-bar .share-button{
+    background: url(/images/album_toolbar_share.png) no-repeat scroll 6px -19px transparent;
+}
+
+.comments-dialog .header .button-bar .share-button:hover{
+    background-position:  6px -1px;
+}
+
+
+/*  Like Button
+ *************************************/
+.comments-dialog .header .button-bar .like-button{
+     /*The like button is styled inside by like.css */
+    top:-2px;
+    width: auto;
+}
+
+
+
+/*  Buy Button
+ *************************************/
+.comments-dialog .header .button-bar .buy-button{
+    background: url(/images/album_toolbar_buy.png) no-repeat scroll 6px -18px transparent;
+}
+
+.comments-dialog .header .button-bar .buy-button:hover{
+    background-position:  6px 0px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.comments-dialog .body {
+    position: absolute;
+    top: 255px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+}
+
+
+
+.comments-container{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+}
+
+.comments-right-panel .comments-container{
+    /* when showing comments in the drawer, we need to leave room for the drawer's bevel */
+    left: 2px;
+}
+
+
+
+
+.comments-container .new-comment {
+    position: relative;
+    height: 125px;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.comments-container .new-comment .background {
+    position: absolute;
+    top:1px;
+    left: 1px;
+    right: 1px;
+    bottom: 1px;
+    background-color: #f9f9fa;
+}
+
+
+.comments-container .new-comment .comment-picture {
+    position: absolute;
+    left: 15px;
+    top: 15px;
+    width:35px;
+    height: 35px;
+}
+
+.comments-container .new-comment textarea.text {
+    resize:none;
+    position:absolute;
+    top: 15px;
+    left: 65px;
+    width: 280px;
+    height: 60px;
+    color: black;
+    font-family: 'lucida grande', tahoma, verdana, arial, sans-serif;
+    font-size: 11px;
+
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    border: 1px solid #CCC;
+    
+
+}
+
+.comments-container .new-comment .share {
+    position: absolute;
+    left: 65px;
+    top: 94px;
+    color: #666;
+}
+
+.comments-container .new-comment .submit-button {
+    position: absolute;
+    width: 70px;
+    right: 35px;
+    top: 85px;
+}
+
+
+
+.comments-container .comments {
+    position: absolute;
+    top: 125px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+
+.comments-container .comments .comment{
+    position: relative;
+    height: 70px;
+    border-top: 1px solid #eaeaea;
+}
+
+
+.comments-container .comments .comment .comment-picture {
+    position: absolute;
+    left: 15px;
+    top: 15px;
+    width:35px;
+    height: 35px;
+}
+
+.comments-container .comments .comment .posted-by {
+    position: absolute;
+    left: 65px;
+    top: 15px;
+}
+
+.comments-container .comments .comment .posted-by .username {
+    color: #466FAA;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.comments-container .comments .comment .posted-by .when {
+    color: #999;
+}
+
+.comments-container .comments .comment .text {
+    position: absolute;
+    left: 65px;
+    top: 35px;
+    color: #333;
+    text-align: left;
+    width: 280px;
+}
+
+.comments-container .comments .comment .delete-button {
+    display:none;
+}
+
+.comments-container .comments .deletable.comment:hover .delete-button, .comments-container .deletable.comments .comment:hover .delete-button {
+    display:block;
+    position:absolute;
+    top:6px;
+    right:6px;
+    background: url(/images/comments/delete-button.png) no-repeat scroll 0px 0px transparent;
+    width: 20px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.comments-container .comments .comment .loading{
+    background: url(/images/loading_small.gif) no-repeat scroll 0px 0px transparent;
+    height: 24px;
+    width: 24px;
+    position: relative;
+    top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+

@@ -26,8 +26,9 @@
 class AttachedImage
   include NewRelic::Agent::Instrumentation::ControllerInstrumentation
 
-  # photo suffixes for naming
+  # photo suffixes for naming must be a single char
   ORIGINAL =  'o'
+  FULL =      'f'
   LARGE =     'l'
   MEDIUM =    'm'
   THUMB =     't'
@@ -59,7 +60,7 @@ class AttachedImage
   # customize this in the child class if you want a different s3
   # privacy policy
   def s3_privacy_policy
-    :public_read
+    'public-read'
   end
   
   # return the array of prefixes to ImageMagick operations
@@ -128,23 +129,33 @@ class AttachedImage
   # build the full url for the given image id and suffix
   def self.build_s3_url(bucket, prefix, image_id, suffix, time_stamp)
     key = build_s3_key(prefix, image_id, suffix)
-    "http://#{bucket}.s3.amazonaws.com#{key}?" + time_stamp.to_i.to_s
+    "http://#{bucket}.s3.amazonaws.com/#{key}?" + time_stamp.to_i.to_s
   end
 
   # upload a single s3 photo with the given suffix
   def self.upload_s3_photo(file, bucket, key, options)
     file.rewind
-    AWS::S3::S3Object.store(key, file, bucket, options)
+    PhotoGenHelper.s3.store_object(:bucket => bucket, :key => key, :data => file, :headers => options)
+  end
+
+  # duplicate a single s3 photo with the given suffix
+  def self.copy_s3_photo(src_bucket, src_key, dst_bucket, dst_key, headers)
+    PhotoGenHelper.s3.copy(src_bucket, src_key, dst_bucket, dst_key, :replace, headers)
   end
 
   # download a photo from s3 and return the local file
   def self.download_s3_photo(bucket, prefix, image_id, suffix)
     file_path = PhotoGenHelper.photo_download_dir + '/' + image_id + '-' + suffix + '-' + Process.pid.to_s + "-" + rand(9999999999).to_s
     file = File.new(file_path, "wb")
-    AWS::S3::S3Object.stream(build_s3_key(prefix, image_id, suffix), bucket) do |chunk|
+    PhotoGenHelper.s3.retrieve_object(:bucket => bucket, :key => build_s3_key(prefix, image_id, suffix)) do |chunk|
       file.write chunk
     end
     return file
+  end
+
+  # make our key and return it
+  def key(suffix)
+    AttachedImage.build_s3_key(prefix, model.guid_part, suffix)
   end
 
   # given the source file, we generate the resized files by building the ImageMagick
@@ -191,8 +202,8 @@ class AttachedImage
   # remove a single photo from s3 - does not throw an
   # exception if file not found
   def self.remove_s3_photo(image_bucket, key)
-    AWS::S3::S3Object.delete key, image_bucket
-  rescue AWS::S3::NoSuchKey => ex
+    PhotoGenHelper.s3.delete(image_bucket, key)
+  rescue RightAws::AwsError => ex
     # just ignore this one
   end
 
@@ -209,10 +220,10 @@ class AttachedImage
     path = self.path
     if (path != nil)
       bucket = self.bucket
-      AttachedImage.remove_s3_photo(bucket, build_s3_key(prefix, image_id, PhotoGenHelper.ORIGINAL))
+      AttachedImage.remove_s3_photo(bucket, key(ORIGINAL))
       # now remove resized photos
       self.sizes.each do |suffix, options|
-        AttachedImage.remove_s3_photo(bucket, build_s3_key(prefix, image_id, suffix))
+        AttachedImage.remove_s3_photo(bucket, key(suffix))
       end
     end
   end
@@ -232,7 +243,7 @@ class AttachedImage
       # now that we have pulled in the original file, use it to generate the resized photos all in one call
       file_map = generate_resized_files(original_file_path, image_id)
 
-    rescue => ex
+    rescue Exception => ex
       Rails.logger.debug("Photo resizing failed: " + ex)
       raise ex
     ensure
@@ -244,8 +255,8 @@ class AttachedImage
 
   def s3_options(content_type, metadata)
     options = {
-        :content_type => content_type,
-        :access => s3_privacy_policy
+        'Content-Type' => content_type,
+        'x-amz-acl' => s3_privacy_policy
     }.merge(s3_headers)
     options.merge(metadata) unless metadata.nil?
   end
@@ -258,13 +269,12 @@ class AttachedImage
     # we only call this once per operation so the custom_metadata can also reset any state it cares about
     # without worrying about being called multiple times
     meta = custom_metadata
-    options = s3_options(content_type, meta)
+    options = s3_options(resized_content_type, meta)
     # walk the list of files to upload
     file_map.each do |file_info|
       local_file_path = file_info[:local_path]
       file = File.open(local_file_path, "rb")
       key = file_info[:s3_key]
-      content_type = resized_content_type
       AttachedImage.upload_s3_photo(file, bucket, key, options)
       file.close
     end
@@ -273,8 +283,10 @@ class AttachedImage
   def resize_and_upload_photos
     begin
     file_map = resize_photos
+    time_stamp = Time.now
+    self.updated_at = Time.now
     upload_photos(file_map)
-    rescue => ex
+    rescue Exception => ex
       Rails.logger.debug("Photo resizing and upload failed: " + ex)
       raise ex
     ensure
@@ -290,21 +302,11 @@ class AttachedImage
   end
 
 
-  # upload a single photo and update the photo related
-  # state - this should only be used for the original file
-  # not the resized ones as they derive their state from
-  # the original
-  #
-  # We expect content_type and file_size to already have
-  # been set before this call.  This is to avoid the extra
-  # overhead of discovering them again because in general
-  # they would have already been known so we don't want
-  # to duplicate effort and overhead here.
-  #
-  def upload file
+  # prepare to move or copy object on s3
+  def prepare_for_s3_store
     path = self.path
     image_id = model.guid_part
-    key = AttachedImage.build_s3_key(prefix, image_id, ORIGINAL)
+    key = key(ORIGINAL)
     if (path.nil?)
       # first time in pick a bucket to store into
       bucket = AttachedImage.pick_bucket
@@ -317,9 +319,32 @@ class AttachedImage
     time_stamp = Time.now
     self.updated_at = time_stamp
     content_type = self.content_type
+    headers = s3_options(content_type, custom_metadata_original)
     url = AttachedImage.build_s3_url(bucket, prefix, image_id, ORIGINAL, time_stamp)
     self.path = url
-    AttachedImage.upload_s3_photo(file, bucket, key, s3_options(content_type, custom_metadata_original))
+    [bucket, key, headers]
+  end
+
+  # upload a single photo and update the photo related
+  # state - this should only be used for the original file
+  # not the resized ones as they derive their state from
+  # the original
+  #
+  # We expect content_type and file_size to already have
+  # been set before this call.  This is to avoid the extra
+  # overhead of discovering them again because in general
+  # they would have already been known so we don't want
+  # to duplicate effort and overhead here.
+  #
+  def upload(file)
+    bucket, key, headers = prepare_for_s3_store
+    AttachedImage.upload_s3_photo(file, bucket, key, headers)
+  end
+
+  # copy the source photo from s3 into a new s3 bucket
+  def copy(src_bucket, src_key)
+    dst_bucket, dst_key, headers = prepare_for_s3_store
+    AttachedImage.copy_s3_photo(src_bucket, src_key, dst_bucket, dst_key, headers)
   end
 
   # build the url from this model and field
@@ -332,12 +357,12 @@ class AttachedImage
   # we no longer have the original object
   def all_keys
     image_id = model.guid_part
-    key = AttachedImage.build_s3_key(prefix, image_id, ORIGINAL)
+    key = key(ORIGINAL)
     keys = [key]
     # now see if any resized photos to go with
     self.sizes.each do |map|
       map.each do |suffix, option|
-        key = AttachedImage.build_s3_key(prefix, image_id, suffix)
+        key = key(suffix)
         keys << key
       end
     end

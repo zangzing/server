@@ -1,44 +1,90 @@
 class UserSessionsController < ApplicationController
-  ssl_required :new, :create
+
+  ssl_required :new, :create, :mobile_create
+  skip_filter  :verify_authenticity_token, :only => [:mobile_create, :create]
 
 
-  before_filter :only => [:new, :create]
-  before_filter :require_user, :only => :destroy
+  after_filter :associate_order, :only => [:create]
 
   layout false
 
 
   def new
-    if params[:return_to]
-      session[:return_to] = params[:return_to]
-      #redirect_to signin_url and return
+     # URL Cleaning cycle
+    if params[:return_to] || params[:email]
+      session[:return_to] = params[:return_to] if params[:return_to]
+      flash.keep
+      unless current_user
+        session[:email] = params[:email] if params[:email]
+        redirect_to signin_url and return
+      end
     end
 
+    if current_user
+      redirect_back_or_default user_pretty_url(current_user)
+      return
+    end
 
-    if ! current_user
-      @user_session = UserSession.new(:email=> params[:email])
+    if session[:email]
+      @user_session = UserSession.new(:email=> session[:email] )
+      session.delete(:email)
     else
-       redirect_back_or_default user_pretty_url(current_user)
+      @user_session = UserSession.new
     end
   end
 
   def create
-    return_to = session[:return_to] #save the intended destination of the user if any
-    reset_session # destroy the session to prevent Session Fixation Attack
-    session[:return_to] = return_to  #restore the intended user destination
     @user_session = UserSession.new(:email => params[:email], :password => params[:password], :remember_me => true)
     if @user_session.save
+      prevent_session_fixation
       @user_session.user.reset_perishable_token! #reset the perishable token
       redirect_back_or_default user_url( @user_session.record )
     else
-      render :action => :new
+      if params[:store_signin]
+        flash[:error] = "Invalid user/password combination"
+        redirect_to params[:store_signin]
+      else
+        render :action => :new
+      end
     end
   end
 
   def destroy
-    current_user_session.destroy
-#    flash.now[:notice] = "Logout successful!"
-    redirect_back_or_default root_url
+    if current_user
+      if  session[:impersonation_mode] == true
+        redirect_to admin_unimpersonate_url
+      else
+        current_user_session.destroy
+        reset_session
+        redirect_back_or_default root_url
+      end
+    else
+        redirect_to root_url
+    end
+  end
+
+  def mobile_create
+    mobile_api do |custom_err|
+      result = nil
+      user_session = UserSession.new(:email => params[:email], :password => params[:password], :remember_me => false)
+      if user_session.save
+        result = {
+            :user_credentials => user_session.record.persistence_token,
+            :user_id =>  user_session.record.id,
+            :username => user_session.record.username
+        }
+      else
+        custom_err.set(user_session.errors.full_messages, 401)
+      end
+      result
+    end
+  end
+
+  def mobile_destroy
+    mobile_api do
+      current_user_session.destroy if current_user
+      nil
+    end
   end
 
 

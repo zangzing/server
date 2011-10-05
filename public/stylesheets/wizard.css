@@ -539,12 +539,14 @@ table#email-share-form td{
 }
 
 table#email-share-form td.to{
-    vertical-align:bottom;
+    vertical-align:top;
     text-align:right;
 }
 
 table#email-share-form .contact-list-wrapper{
     border: solid 1px #AFAFAF;
+    height: 85px;
+    width:690px;
 }
 
 table#email-share-form .contact-list-wrapper div.token-input-dropdown-facebook{

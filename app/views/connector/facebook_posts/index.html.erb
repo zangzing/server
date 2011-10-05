@@ -1,6 +1,0 @@
-<% @feed.each do |entry| %>
-<p>
-  <b><i><%= entry[:created_time].to_s %></i> from <%= entry[:from][:name] %></b><br/>
-  <%= entry[:message] || '&lt;<i>message is empty</i>&gt;' %>
-</p>
-<% end %>

@@ -27,6 +27,12 @@
     left:15px;
 }
 
+.user-session-dialog .logo img{
+    width:195px;
+    height:106px;
+}
+
+
 .user-session-dialog .content{
     position:absolute;
     top:0px;

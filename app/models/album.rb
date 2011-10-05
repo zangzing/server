@@ -3,9 +3,9 @@
 #
 
 class Album < ActiveRecord::Base
-  attr_accessible :name, :privacy, :cover_photo_id, :photos_last_updated_at, :updated_at, :cache_version,
-                  :stream_to_email, :stream_to_facebook, :stream_to_twitter, :who_can_download, :who_can_upload
-  attr_accessor :change_matters
+  attr_accessible :name, :privacy, :cover_photo_id, :photos_last_updated_at, :updated_at, :cache_version, :photos_ready_count,
+                  :stream_to_email, :stream_to_facebook, :stream_to_twitter, :who_can_download, :who_can_upload, :user_id, :for_print
+  attr_accessor :change_matters, :my_role
 
   belongs_to :user
   has_many :photos,           :dependent => :destroy
@@ -42,7 +42,7 @@ class Album < ActiveRecord::Base
   after_save    :check_cache_manager_change
   after_commit  :make_create_album_activity, :on => :create
   after_commit  :notify_cache_manager
-  after_commit  :notify_cache_manager_delete, :on => :destroy
+  after_commit  :after_destroy_cleanup, :on => :destroy
 
   after_create  :add_creator_as_admin
 
@@ -61,6 +61,34 @@ class Album < ActiveRecord::Base
   WHO_OWNER         = 'owner'
 
 
+  # need to override basic destroy behavior since
+  # we have to know when we are being destroyed in
+  # dependent photos so we don't perform unnecessary cache changes
+  # we can't simply set an instance variable because
+  # if you try to fetch the photo.album when it is being
+  # deleted it will fetch a new one from the db and
+  # will not be the same object that we are using here
+  #
+  # So, we need to resort to using a thread local that
+  # holds the state so we can get to it from within the
+  # child.
+  #
+  def destroy
+    Thread.current[:the_album_being_deleted] = self
+    super
+  rescue Exception => ex
+    raise ex
+  ensure
+    Thread.current[:the_album_being_deleted] = nil
+  end
+
+  # using the thread local storage determine
+  # if the given album_id is being deleted
+  def self.album_being_deleted?(album_id)
+    album = Thread.current[:the_album_being_deleted]
+    return false if album.nil?
+    album.id == album_id
+  end
 
   def uniquify_name
     @uname = name
@@ -103,13 +131,16 @@ class Album < ActiveRecord::Base
   # the change check because we must do this after the commit to
   # make sure we are not in a transaction
   def notify_cache_manager
-    Cache::Album::Manager.shared.album_modified(self) if self.change_matters
+    if self.destroyed? == false
+      Cache::Album::Manager.shared.album_modified(self) if self.change_matters
+    end
     true
   end
 
-  # We have been deleted, let the cache know.
-  def notify_cache_manager_delete
+  # We have been deleted, let the cache know and the acl manager
+  def after_destroy_cleanup
     Cache::Album::Manager.shared.album_deleted(self)
+    acl.remove_acl    # remove the acl associated with us
     true
   end
 
@@ -120,9 +151,10 @@ class Album < ActiveRecord::Base
   # use the id generator to ensure a unique id for each change.  One thing to note is that the id used
   # does not guarantee any kind of ordering.  It is only guaranteed to be unique.
   #
+  # Note: we rely on the update causing the after_ notifications to trigger
   def self.change_cache_version(album_id)
-    now = Time.now
     version = BulkIdManager.next_id_for('album_cache_version')
+    now = Time.now
     Album.update(album_id, :cache_version => version, :photos_last_updated_at => now, :updated_at => now)
   end
 
@@ -153,20 +185,19 @@ class Album < ActiveRecord::Base
       cover_ids << cover_photo_id unless cover_photo_id.nil?
     end
 
+    cover_map = {}
     if cover_ids.empty? == false
       # now perform the bulk query
-      coverPhotos = Photo.where(:id => cover_ids)
+      cover_photos = Photo.where(:id => cover_ids)
 
       # ok, now map these by id to cover
-      coverMap = {}
-      coverPhotos.each do |cover|
-        coverMap[cover.id.to_s] = cover
+      cover_photos.each do |cover|
+        cover_map[cover.id] = cover
       end
-
-      # and finally associate them back to each album
-      albums.each do |album|
-        album.set_cached_cover(coverMap[album.cover_photo_id.to_s])
-      end
+    end
+    # and finally associate them back to each album
+    albums.each do |album|
+      album.set_cached_cover(cover_map[album.cover_photo_id])
     end
   end
 
@@ -467,6 +498,33 @@ class Album < ActiveRecord::Base
     JSON.fast_generate( self.attributes )
   end
 
+  # update the photo counters for a given albums
+  # in a single update
+  def self.update_photo_counters(album_id)
+    photo_count = Photo.count('id', :conditions => "album_id = #{album_id}")
+    ready_count = Photo.count('id', :conditions => "album_id = #{album_id} AND state = 'ready'")
+    connection.execute("UPDATE albums SET photos_count = #{photo_count}, photos_ready_count = #{ready_count} WHERE id = #{album_id};")
+  end
+
+  # this is here so we can manually update the photos
+  # counts - the server should not be running
+  # when this is called to ensure that we end up
+  # with accurate counts
+  def self.update_all_photo_counters
+    # set the current counts
+    albums = Album.all
+    albums.each do |album|
+      update_photo_counters(album.id)
+    end
+
+    albums.count
+  end
+
+  # update the photos ready counter by the specified amount
+  # can be negative or positive
+  def self.update_photos_ready_count(album_id, amount)
+    Album.update_counters album_id, :photos_ready_count => amount
+  end
 
 private
   def make_create_album_activity
@@ -523,7 +581,7 @@ end
 class PiconAttachedImage < AttachedImage
   # return the s3 key prefix
   def prefix
-    @@prefix ||= "/p/"
+    @@prefix ||= "p/"
   end
 end
 

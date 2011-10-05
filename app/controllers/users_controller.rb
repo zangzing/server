@@ -9,25 +9,40 @@ class UsersController < ApplicationController
   skip_before_filter :verify_authenticity_token, :only=>[:create]
 
   def join
-    if params[:return_to]
-        session[:return_to] = params[:return_to]
+
+    # URL Cleaning cycle
+    if params[:return_to] || params[:email]
+      session[:return_to] = params[:return_to] if params[:return_to]
+      flash.keep
+      unless current_user
+        session[:email] = params[:email] if params[:email]
+        redirect_to join_url and return
       end
-    if ! current_user
-      @new_user = User.new(:email => params[:email])
-      @user_session = UserSession.new
-      render :layout => false
-    else
-       redirect_back_or_default user_pretty_url(current_user)
     end
+
+    if current_user
+      redirect_back_or_default user_pretty_url(current_user)
+      return
+    end
+
+    if session[:email]
+      @new_user = User.new(:email => session[:email] )
+      session.delete(:email)
+    else
+      @new_user = User.new
+    end
+    render :layout => false
   end
 
   def create
     if current_user
         flash[:notice] = "You are currently logged in as #{current_user.username}. Please log out before creating a new account."
         session[:flash_dialog] = true
-        redirect_to user_pretty_url(current_user)
+         redirect_back_or_default user_pretty_url(current_user)
         return
     end
+
+
     @user_session = UserSession.new
 
     # RESERVED NAMES
@@ -86,13 +101,17 @@ class UsersController < ApplicationController
 
     # CREATE USER
     if @new_user.active
+
       # Save active user,authlogic creates a session to log user in when we save
       if @new_user.save
+        prevent_session_fixation
+        associate_order
         if @guest
           @guest.user_id = @new_user.id
           @guest.status = 'Active Account'
           @guest.save
         end
+
         flash[:success] = "Welcome to ZangZing!"
         @new_user.deliver_welcome!
         session[:show_welcome_dialog] = true unless( session[:return_to] )
@@ -105,6 +124,7 @@ class UsersController < ApplicationController
       # auto-login which can't happen here because
       # the User has not yet been activated
       if @new_user.save_without_session_maintenance
+        prevent_session_fixation
         if @guest
           @guest.user_id = @new_user.id
           @guest.status = 'Inactive'
@@ -184,6 +204,23 @@ class UsersController < ApplicationController
     render :json => true #Invalid call return not valid
   end
 
+  # mobile api
+  def mobile_user_info
+    mobile_api do
+      user_id = params[:user_id]
+      user = User.find(user_id)
+
+      user_info = {
+        :user_id                        => user_id,
+        :username                       => user.username,
+        :first_name                     => user.first_name,
+        :last_name                      => user.last_name,
+        :profile_url                    => user.profile_photo_url,
+      }
+    end
+  end
+
+
   private
   def admin_user
     redirect_to( root_path ) unless current_user.admin?
@@ -212,5 +249,7 @@ class UsersController < ApplicationController
 
     return checked_user_name
   end
+
+
 
 end
