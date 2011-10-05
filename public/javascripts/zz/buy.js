@@ -42,7 +42,7 @@ zz.buy = zz.buy || {};
                            '<img class="image" src="/images/photo_placeholder.png">' +
                            '<div class="description">16x20 Mounted Print with a Black Frame</div>' +
                            '<div class="count-and-price">12 for $200.00</div>' +
-                           '<a class="green-button checkout-button"><span>Checkout</span></a>' +
+                           '<a class="green-button checkout-button"><span>Add to Cart</span></a>' +
                         '</div>' +
                         '<div class="bad-photos-error">' +
                            '<div class="icon"></div>' +
