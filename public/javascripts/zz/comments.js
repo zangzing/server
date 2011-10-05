@@ -619,7 +619,7 @@ zz.comments = {};
         if(animate) {
             $('#article').fadeOut('fast', function(){
                 $('#right-drawer').show().animate({right:0},500, function(){
-                    $('#article').css({right:445});
+                    $('#article').css({right:381});
                     $('#article').fadeIn('fast');
                     callback();
 
@@ -634,7 +634,7 @@ zz.comments = {};
         }
         else{
             $('#right-drawer').show().css({right:0});
-            $('#article').css({right:445});
+            $('#article').css({right:381});
             zz.pubsub.publish(EVENTS.OPEN_COMMENTS);
             callback();
         }

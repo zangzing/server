@@ -229,18 +229,6 @@ zz.toolbars = {
 
 
 
-        // only album contributers can do this
-        $('#footer #cart-button').click(function() {
-            if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
-                return;
-            }
-
-            zz.routes.store.goto_cart();
-        });
-
-        if(zz.session.cart_item_count > 0){
-            $('#footer #cart-button .cart-count').removeClass('empty').text(zz.session.cart_item_count);
-        }
 
 
     },

@@ -1,6 +1,6 @@
 #right-drawer{
     position:absolute;
-    width:445px;
+    width:381px;
     top:56px;
     right:-400px;
     bottom:56px;
@@ -18,9 +18,19 @@
     top:0px;
     left:12px;
     right:0px;
-    height:45px;
-    background-color: #E5E5E5;
+    height:43px;
     border-bottom: 1px solid #aaaaaa;
+    background: url(/images/comments/drawer-title-bar.png) repeat-y scroll 0px 0px transparent;
+}
+
+#right-drawer .header .gray-back-button{
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    width: 65px;
+    color: black;
+    font-weight: 500;
+    display:none;
 }
 
 #right-drawer .header .title{
