@@ -51,7 +51,7 @@ jQuery(document).ready(function(){
 	var orders_by_day_settings = {
 		title: {
 			textColor: '#476D9B',
-			fontSize: '12pt',
+			fontSize: '12pt'
 		}, 
 		grid: {background:'#fff', gridLineColor:'#fff',borderColor: '#476D9B'},
 	  axes:{
