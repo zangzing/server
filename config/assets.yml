@@ -43,6 +43,7 @@ javascripts:
     - public/javascripts/store/bootstrap-popover.js
   less:
     - public/javascripts/store/less-1.1.3.js
+
   store_admin:
     - public/javascripts/store/admin/jquery-1.4.2.js
     - public/javascripts/store/admin/rails.js
@@ -67,6 +68,12 @@ javascripts:
     - public/javascripts/store/admin/jquery.template.js
   store_admin_handlers:
     - public/javascripts/store/admin/unobtrusive_handlers.js
+  store_admin_dashboard:
+    - public/javascripts/store/admin/jqPlot/jquery.jqplot.js
+    - public/javascripts/store/admin/jqPlot/plugins/*.js
+    - public/javascripts/store/admin/dashboard.js
+  store_admin_excanvas:
+    - public/javascripts/store/admin/jqPlot/excanvas.js
 
 stylesheets:
   common:
@@ -79,7 +86,6 @@ stylesheets:
     - public/stylesheets/store/bootstrap.css
     - public/stylesheets/iphone-style-checkboxes.css
     - public/stylesheets/photo.css
-    
   store_admin:
     - public/stylesheets/store/admin/admin-reset.css
     - public/stylesheets/store/admin/grids.css
@@ -93,3 +99,4 @@ stylesheets:
     - public/javascripts/store/admin/jquery.alerts/jquery.alerts.spree.css
     - public/stylesheets/store/admin/datepicker.css
     - public/javascripts/store/admin/jsTree/themes/apple/style.css
+    - public/stylesheets/store/admin/dashboard.css
