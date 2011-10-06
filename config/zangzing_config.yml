@@ -30,7 +30,7 @@ common: &common
   # EZPrints
   ezp_dev_key: 3ed2642a-302e-44d7-b62e-a223f3790545
   ezp_partner_id: 940
-  order_cancel_window: 1800     # time in seconds between completion of photo preparation and submission of order to ez prints, lets user cancel in this window
+  order_cancel_window: 60     # time in seconds between completion of photo preparation and submission of order to ez prints, lets user cancel in this window
 
 
 development:
@@ -42,7 +42,6 @@ development:
   remote_job_timeout: 7200
   requires_http_auth: false
   agent_port: 30777
-  order_cancel_window: 60
 
 
 perftest:
@@ -70,6 +69,7 @@ photos_production:
   agent_download_url_mac: "http://downloads.zangzing.com/agent/darwin/ZangZing-Setup.pkg"
   agent_download_url_win: "http://downloads.zangzing.com/agent/win32/ZangZing-Setup.exe"
   agent_port: 30777
+  order_cancel_window: 1800     # time in seconds between completion of photo preparation and submission of order to ez prints, lets user cancel in this window
 
 
 
@@ -79,6 +79,7 @@ photos_staging:
   resque_zza_id: "staging.photos/svr"
   album_email_host: "staging.zangzing.com"
   requires_http_auth: false
+  order_cancel_window: 300     # time in seconds between completion of photo preparation and submission of order to ez prints, lets user cancel in this window
 
 
 eytest:
