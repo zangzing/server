@@ -27,4 +27,9 @@ var zz = zz || {};
             });
         }
     };
+
+    zz.pubsub.subscriptions = function(){
+        return subscriptions;
+    };
+
 })();
