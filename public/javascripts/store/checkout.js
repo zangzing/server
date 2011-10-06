@@ -36,7 +36,7 @@ zz.store.checkout = {};
                 placement: 'above',
                 offset: 5,
                 animate:false,
-                content: function(){ return $(element).data('error'); },
+                content: function(){ return $(element).data('error'); }
             });
         } else {
             $(element).data('error', $(error).text() );
