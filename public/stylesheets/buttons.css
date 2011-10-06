@@ -14,11 +14,14 @@ a.gray-square-button{
     display: block;
     height: 30px;
     color:#ffffff;
-    font-size: 13px;
     text-decoration: none;
     text-align:center;
     cursor: pointer;
     padding-right: 8px;
+    font-family: Arial, sans-serif;
+    font-size:  14px;
+    text-shadow: 0 1px 3px #000000;
+    font-weight: 500;
 }
 
 a.back-button span,
@@ -33,11 +36,43 @@ a.gray-button span,
 a.gray-back-button span,
 a.gray-square-button span{
     display:block;
-    line-height:30px;
+    line-height:28px;
     height:30px;
     cursor:pointer;
     white-space: nowrap;
 }
+
+
+.ua-chrome a.back-button,
+.ua-chrome a.next-button,
+.ua-chrome a.green-button,
+.ua-chrome a.black-button,
+.ua-chrome a.green-add-button,
+.ua-chrome a.green-download-button,
+.ua-chrome a.newgreen-button,
+.ua-chrome a.newblack-button,
+.ua-chrome a.gray-button,
+.ua-chrome a.gray-back-button,
+.ua-chrome a.gray-square-button{
+    font-weight: 600;
+}
+
+.ua-ie a.back-button,
+.ua-ie a.next-button,
+.ua-ie a.green-button,
+.ua-ie a.black-button,
+.ua-ie a.green-add-button,
+.ua-ie a.green-download-button,
+.ua-ie a.newgreen-button,
+.ua-ie a.newblack-button,
+.ua-ie a.gray-button,
+.ua-ie a.gray-back-button,
+.ua-ie a.gray-square-button{
+    font-weight: 600;
+}
+
+
+
 
 /*  hyperlink button
  **************************************************************************/
@@ -76,6 +111,8 @@ a.back-button.disabled span{
 a.gray-back-button{
     margin-right: 6px;
     background: url("/images/btn-gray-back-endcap.png") no-repeat scroll top right;
+    color:       #000;
+    text-shadow: 0 1px 3px #fff;
 }
 a.gray-back-button:hover { background-position: right -30px; }
 a.gray-back-button:active{ background-position: right -60px; }
@@ -179,8 +216,6 @@ a.green-download-button:active span{ background-position: 0 -60px; }
 /*  newgreen-button
  *************************************************************/
 a.newgreen-button{
-    font-size:  14px;
-    text-shadow: 0 1px 3px #000000;
     padding-right: 5px;
     background: url("/images/btn-green-endcap.png") no-repeat right top;
 }
@@ -198,8 +233,6 @@ a.newgreen-button:active span{ background-position: left -60px; }
 /* newblack-button
 *************************************************************/
 a.newblack-button{
-    font-size:  14px;
-    text-shadow: 0 1px 3px #000000;
     padding-right:    5px;
     background: url("/images/btn-black-endcap.png") no-repeat right top;
 }
@@ -218,7 +251,8 @@ a.newblack-button:active span{ background-position: left -60px; }
 *************************************************************/
 a.gray-button{
     display: inline-block;
-    color:       gray;
+    color:       #000;
+    text-shadow: 0 1px 3px #fff;
     padding-right:  10px;
     background: url("/images/btn-gray-endcap.png") no-repeat right top;
 }
@@ -238,7 +272,8 @@ a.gray-button:active span{ background-position: left -60px; }
 *************************************************************/
 a.gray-square-button{
     display: inline-block;
-    color:       gray;
+    color:       #000;
+    text-shadow: 0 1px 3px #fff;
     padding-right:  10px;
     background: url("/images/btn-gray-square-endcap.png") no-repeat right top;
 }
