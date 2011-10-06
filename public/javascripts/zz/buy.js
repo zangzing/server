@@ -541,7 +541,14 @@ zz.buy = zz.buy || {};
                  add_photo_to_selected_photos_screen(photo_json);
              });
         }
-        else{
+
+        check_empty_photo_list();
+    }
+
+    function check_empty_photo_list(){
+        var selected_photos = zz.local_storage.get('zz.buy.selected_photos');
+
+        if(selected_photos && selected_photos.length == 0){
             buy_screens_element.find('.configure-product-screen .main-section .selected-photos-section .add-photos-message').show();
             buy_screens_element.find('.configure-product-screen .main-section .selected-photos-section .clear-all-photos').hide();
         }
@@ -602,7 +609,7 @@ zz.buy = zz.buy || {};
             zz.local_storage.set('zz.buy.selected_photos', selected_photos);
             zz.pubsub.publish(EVENTS.REMOVE_SELECTED_PHOTO, [photo_json.id]);
             update_price_and_count();
-
+            check_empty_photo_list();
         });
 
         photo_list_element.append(photo_element);
