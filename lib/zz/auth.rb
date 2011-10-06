@@ -9,9 +9,11 @@ module ZZ
   module Auth
     extend ActiveSupport::Concern
 
-     ZZ_API_HEADER = 'X-ZangZing-API'.freeze
-     ZZ_API_HEADER_RAILS = 'HTTP_X_ZANGZING_API'.freeze
-     ZZ_API_VALID_VALUES = ['mobile'].freeze
+    unless defined? ZZ_API_HEADER
+      ZZ_API_HEADER = 'X-ZangZing-API'.freeze
+      ZZ_API_HEADER_RAILS = 'HTTP_X_ZANGZING_API'.freeze
+      ZZ_API_VALID_VALUES = ['mobile'].freeze
+    end
 
 
     included do
