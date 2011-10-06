@@ -490,46 +490,6 @@ zz.buy = zz.buy || {};
 
     }
 
-//    function render_select_photos_screen(){
-//        set_drawer_title("Selected Photos");
-//
-//        buy_screens_element.find('.select-photos-screen .header-section .add-and-buy-more-button').unbind('click').click(function(){
-//            add_selected_photos_to_cart(function(){
-//                zz.local_storage.set('zz.buy.current_screen', null);
-//                window.location.reload();
-//            });
-//        });
-//
-//        buy_screens_element.find('.select-photos-screen .header-section .checkout-button').unbind('click').click(function(){
-//            add_selected_photos_to_cart(function(){
-//                zz.routes.store.goto_cart();
-//            });
-//        });
-//
-//        buy_screens_element.find('.select-photos-screen .header-section .back').unbind('click').click(function(){
-//            slide_to_screen(DRAWER_SCREENS.CONFIGURE_PRODUCT, true);
-//        });
-//
-//
-//        refresh_selected_photos_list();
-//
-//        buy_screens_element.find('.select-photos-screen .main-section .clear-all-photos').unbind('click').click(function(){
-//            var selected_photos = zz.local_storage.get('zz.buy.selected_photos');
-//            zz.local_storage.set('zz.buy.selected_photos',[]);
-//            refresh_selected_photos_list();
-//            zz.pubsub.publish(EVENTS.REMOVE_SELECTED_PHOTO, selected_photos);
-//        });
-//
-//
-//        buy_screens_element.find('.select-photos-screen .header-section .product').text(get_selected_product().name);
-//        buy_screens_element.find('.select-photos-screen .header-section .variant').text(get_selected_variant().description);
-//        buy_screens_element.find('.select-photos-screen .header-section .price .value').text(get_selected_variant().price);
-//        buy_screens_element.find('.select-photos-screen .header-section .image').attr('src', get_selected_variant().image_url);
-//
-//
-//
-//    }
-
     function refresh_selected_photos_list(){
         var selected_photos = zz.local_storage.get('zz.buy.selected_photos');
 
@@ -738,7 +698,7 @@ zz.buy = zz.buy || {};
 
         $('#right-drawer .content').html(buy_screens_element);
 
-        $('#right-drawer .header .close-button').click(function(){
+        $('#right-drawer .header .close-button').unbind('click').click(function(){
             $('#footer #buy-button').click(); //todo: hack -- should be better way to wire these together
         });
 
