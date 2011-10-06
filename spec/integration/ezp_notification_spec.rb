@@ -294,7 +294,7 @@ describe "EZPrints Notification Handler" do
     msg.match(/^Success/).should_not == nil
 
     order = Order.find(cancel_order_id)
-    order_state_should_match(cancel_order_id, 'failed')
+    order_state_should_match(cancel_order_id, 'ezp_canceled')
 
   end
 
