@@ -1,4 +1,6 @@
 OrdersController.class_eval do
+  ssl_required
+
   before_filter :require_user, :only => [:index]
   before_filter :check_authorization
 

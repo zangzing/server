@@ -1,4 +1,6 @@
 CheckoutController.class_eval do
+   ssl_required
+
 
    before_filter :update_address_id, :only =>[:update]
 
