@@ -136,7 +136,7 @@ zz.template_cache = zz.template_cache || {};
             if (o.context.indexOf('chooser') === 0) {
                 //magnify
                 if (o.type === 'photo') {
-                    self.photoAddElement = $('<div class="photo-add-button">');
+                    self.photoAddElement = $('<div class="photo-add-button"><div class="scrim"></div><div class="icon"></div></div>');
                     self.photoAddElement.click(function(event) {
                         o.onClick('main');
                     });

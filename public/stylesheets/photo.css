@@ -230,11 +230,48 @@
     bottom:0px;
 }
 
-.photo-border:hover .photo-add-button{
+.photo-border .photo-add-button .scrim{
+    position:absolute;
+    top:0px;
+    left:0px;
+    right:0px;
+    bottom:0px;
+    display:none;
+}
+
+
+.photo-border .photo-add-button .icon{
+    position:absolute;
+    top:0px;
+    left:0px;
+    right:0px;
+    bottom:0px;
+    display:none;
+}
+
+.photo-border:hover .photo-add-button .scrim, .photo-border .photo-add-button.checked .scrim{
+    background-color: #fff;
+    opacity: 0.5;
+    filter: alpha(opacity = 50); /* for ie */
+    display: block;
+}
+
+.photo-border:hover .photo-add-button .icon{
     background-image:url('/images/photo/btn-add-photo-small.png');
     background-repeat:no-repeat;
     background-position:center center;
+    display:block;
 }
+
+
+.photo-border .photo-add-button.checked .icon{
+    background-image:url('/images/photo/photo-added-small.png');
+    background-repeat:no-repeat;
+    background-position:center center;
+    display:block;
+
+}
+
 
 .photo-border .magnify-button{
     position:absolute;
@@ -253,11 +290,6 @@
 
 
 
-.photo-border .photo-add-button.checked{
-    background-image:url('/images/photo/photo-added-small.png');
-    background-repeat:no-repeat;
-    background-position:center center;
-}
 
 
 
