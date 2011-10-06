@@ -658,18 +658,19 @@ zz.buy = zz.buy || {};
 
 
     function add_selected_photos_to_cart(callback){
-        var sku = get_selected_variant().sku
-        var photo_ids = []
+        var sku = get_selected_variant().sku;
+        var product_id = get_selected_product().id;
+        var photo_ids = [];
         _.each(zz.local_storage.get('zz.buy.selected_photos'), function(photo){
             photo_ids.push(photo.id);
         });
 
-        zz.routes.store.add_to_cart(sku, photo_ids, function(){
+        zz.routes.store.add_to_cart(product_id, sku, photo_ids, function(){
             zz.local_storage.set('zz.buy.selected_photos',[]);
             zz.local_storage.set('zz.buy.current_screen', null);
 
             if(callback){
-                callback()
+                callback();
             }
         }, function(){
             alert('Sorry, there was an error adding items to your cart');

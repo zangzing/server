@@ -19,8 +19,8 @@ var zz = zz || {};
                 document.location.href = '/store/checkout';
             },
 
-            add_to_cart: function( sku, photo_ids, success, error ){
-                do_post('/store/orders/add_to_order.json', {sku: sku, photo_ids:photo_ids}, success, error);
+            add_to_cart: function(product_id, sku, photo_ids, success, error ){
+                do_post('/store/orders/add_to_order.json', {product_id: product_id, sku: sku, photo_ids:photo_ids}, success, error);
             }
         },
 

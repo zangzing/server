@@ -118,13 +118,13 @@
     left: 72px;
     top: 10px;
     width: 200px;
-    font-size: 13px;
+    font-size: 14px;
     height: 30px;
     overflow: hidden;
 }
 
 .buy-screens .configure-product-screen .product-summary-section .count-and-price{
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 500;
     position: absolute;
     top: 48px;
@@ -136,7 +136,7 @@
     position:absolute;
     top: 20px;
     right: 15px;
-    width:80px;
+    width:85px;
 }
 
 
