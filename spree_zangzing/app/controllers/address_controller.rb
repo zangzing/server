@@ -1,5 +1,4 @@
 class AddressesController < Spree::BaseController
-  ssl_required
 
   #rescue_from ActiveRecord::RecordNotFound, :with => :render_404
   #

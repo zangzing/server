@@ -10,7 +10,6 @@ Spree::BaseController.class_eval do
   include ZZ::Auth
   include ZZ::ZZAController
   include PrettyUrlHelper
-  include SslRequirement
 
   helper :tracking
   
