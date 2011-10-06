@@ -462,10 +462,11 @@ zz.buy = zz.buy || {};
                 update_price_and_count();
             }
             else{
-                alert("Sorry, there was an unexpected error: no matching variant");
+                buy_screens_element.find('.configure-product-screen .product-summary-section .image').attr('src', '');
+                buy_screens_element.find('.configure-product-screen .product-summary-section .description').text('!!ERROR!!');
+                buy_screens_element.find('.configure-product-screen .product-summary-section .count-and-price').text('!!ERROR!!');
+                buy_screens_element.find('.configure-product-screen .options-section .price .value').text('!!ERROR!!');
             }
-
-
         };
 
 
