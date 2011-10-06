@@ -46,7 +46,7 @@ class Photo < ActiveRecord::Base
   # all of these need to be accessible because of batch insert
   attr_accessible :user_id, :album_id, :upload_batch_id, :agent_id, :source_guid, :caption,
                   :image_file_size, :capture_date, :source_thumb_url, :source_screen_url,
-                  :rotate_to, :source_path, :guid_part, :latitude, :created_at, :id,
+                  :rotate_to, :crop_json, :source_path, :guid_part, :latitude, :created_at, :id,
                   :updated_at, :image_content_type, :headline, :error_message, :image_bucket,
                   :orientation, :height, :suspended, :longitude, :pos, :image_path, :image_updated_at,
                   :generate_queued_at, :width, :state, :source, :deleted_at

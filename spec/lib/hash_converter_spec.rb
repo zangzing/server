@@ -2,6 +2,21 @@ require "rspec"
 require 'nokogiri'
 require "hash_converter"
 
+class MyTestBase
+  def self.test_method(one, options)
+    puts self.name
+    puts one
+    puts options.to_s
+  end
+
+  def self.call_self(method_name, one, options)
+    self.send(method_name.to_sym, one, options)
+  end
+end
+
+class MyTest < MyTestBase
+
+end
 
 describe "HashConverter" do
   before(:each) do
@@ -18,6 +33,9 @@ describe "HashConverter" do
 
     @xml = Nokogiri::XML(test_str)
   end
+it "should be painless" do
+  MyTest.call_self('test_method', 1, { :a => 5})
+end
 
   it "should convert xml with separate attributes" do
     hash = HashConverter.from_xml(@xml, true)

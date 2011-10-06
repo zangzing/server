@@ -67,6 +67,46 @@ module EZPrints
       reference.to_s
     end
 
+    # these are used because EZPrints notification is tied to
+    # a single URL and we would like to be able to receive order
+    # notifications in various environments so we prepend
+    # a single char that represents our environment.  That way
+    # when a notification arrives it can be routed to the proper
+    # servers.  Essentially once in production EZPrints will
+    # always point at production and from there we will decide
+    # where to go or if it should be handle by the current environment
+    def prefix_to_host(prefix)
+      @@order_routes = {
+          'D' => "development.photos.zangzing.com",
+          'S' => "staging.photos.zangzing.com",
+          'P' => "www.zangzing.com"
+      }
+      host = @@order_routes[prefix] || @@order_routes['D']
+    end
+
+    # return the order prefix based on our environment
+    def env_to_prefix
+      @@env_to_prefix = {
+          'development'       => 'D',
+          'photos_staging'    => 'S',
+          'photos_production' => 'P'
+      }
+      @@my_prefix ||= @@env_to_prefix[Rails.env] || @@env_to_prefix['development']
+    end
+
+    # returns the host that we should redirect to if not
+    # for us
+    # if it's for us we return nil
+    def should_redirect_notification_to(order_number)
+      return nil if order_number.blank?
+
+      prefix = order_number[0..0] # grab first char
+      return nil if prefix == env_to_prefix
+
+      prefix_to_host(prefix)
+    end
+
+
     private
     # perform the request up to the retry_limit if we get an error
     def submit_http_request_with_retry(url, data, options, redirect_limit = 5, retry_limit = 3)
@@ -115,6 +155,7 @@ module EZPrints
     end
 
   end
+
 
   class EZError < StandardError
   end

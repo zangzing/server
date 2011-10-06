@@ -42,7 +42,7 @@ development:
   remote_job_timeout: 7200
   requires_http_auth: false
   agent_port: 30777
-  order_cancel_window: 180
+  order_cancel_window: 60
 
 
 perftest:
