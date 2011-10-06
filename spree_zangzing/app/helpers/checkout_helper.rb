@@ -3,7 +3,7 @@ module CheckoutHelper
   #The checkout breadcrumb
   def checkout_progress
 
-    states = %w(cart signin ship_address payment confirm)
+    states = %w(ship_address payment confirm)
     order_state = @order.state
     items = states.map do |state|
       text = t("order_state.#{state}").titleize

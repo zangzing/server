@@ -50,14 +50,14 @@ Order.class_eval do
       transition :from => 'ship_address', :to => 'payment'
 
       transition :from => 'payment',  :to => 'confirm'
-      transition :from => 'delivery', :to => 'confirm'
 
       transition :from => 'confirm',  :to => 'complete'
     end
     before_transition :to => 'confirm',  :do => :create_tax_charge!
     before_transition :to => 'confirm',  :do => :assign_default_shipping_method
-    before_transition :to => 'complete', :do => :process_payments!
     after_transition  :to => 'confirm',  :do => :create_shipment!
+    
+    before_transition :to => 'complete', :do => :process_payments!
     after_transition  :to => 'complete', :do => :finalize!
 
     event :prepare do
@@ -86,18 +86,24 @@ Order.class_eval do
     event :cancel do
       transition :from => ['complete','preparing'], :to => 'canceled'
     end
-    after_transition :to => 'returned', :do => :send_order_cancel_notification
+    after_transition :to => 'returned', :do => :send_cancel_email
+    after_transition  :to => 'canceled', :do => :after_cancel
+
+    event :ezp_cancel do
+      transition :from => ['submitted', 'accepted','processing'], :to => 'ezp_canceled'
+    end
+    after_transition :to => 'ezp_canceled', :do => :send_ezpcancel_email
     after_transition  :to => 'canceled', :do => :after_cancel
 
     event :error do
       transition :to => 'failed'
     end
-    after_transition :to => 'failed', :do => :send_order_failure_notification
+    after_transition :to => 'failed', :do => :send_failure_email
 
     event :return do
       transition :from => 'shipped', :to => 'returned'
     end
-    after_transition :to => 'returned', :do => :send_order_return_notification
+    after_transition :to => 'returned', :do => :send_return_email
 
     event :resume do
       transition :to => 'resumed', :from => 'canceled', :if => :allow_resume?
@@ -287,20 +293,24 @@ Order.class_eval do
   end
 
   #used to create a ZendDesk ticket for customer support for a failed order
-  def send_order_failure_notification
+  def send_failure_email
     Notifier.order_support_request( self, " Had an ERROR and needs attention").deliver
   end
 
   #used to create a ZendDesk ticket for customer support for a returned order
-  def send_order_return_notification
+  def send_return_email
     Notifier.order_support_request( self, " Was just RETURNED by the user and needs attention").deliver
   end
 
   #used to create a ZendDesk ticket for customer support for a canceled order
-  def send_order_cancel_notification
-    Notifier.order_support_request( self, " Was just CANCELED and may need attention").deliver
+  def send_cancel_email
+    Notifier.order_support_request( self, " Was just CANCELED by the customer and may need attention").deliver
   end
 
+  #used to create a ZendDesk ticket for customer support for a canceled order by EZP
+  def send_ezpcancel_email
+    Notifier.order_support_request( self, " Was just CANCELED BY ezPRINTS and may need attention").deliver
+  end
 
 
 
