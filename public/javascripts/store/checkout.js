@@ -29,46 +29,23 @@ zz.store.checkout = {};
 
     //used to place and display form errors as you tab around
     var error_placement_handler = function(error, element) {
-        var location, left, top;
-        //Insert, position and hide error message
-        location = element;
-        top    = -40;
-        left   = (location.outerWidth()/2)-100;
-        error.insertAfter( location );
-        error.css({
-            top:  0,
-            left: 0,
-            opacity: 0,
-            'z-index': -1
-        });
-
-        // Set the distance for the error animation
-        // Calculate starting/end  position
-        var distance = 3;
-        var end    = top;
-        var start =  top - distance;
-        element.focus(function(){
-            // Animate the error message
-            error.css({
-                opacity: 0,
-                top: start,
-                left: left+'px',
-                'z-index': 100
-            }).animate({
-                    top: end,
-                    opacity: 1
-                }, 'fast');
-        });
-
-        element.blur(function(){
-            error.css({
-                top:  0,
-                left: 0,
-                opacity: 0,
-                'z-index': -1
+        if( typeof( $('element').data('popover') ) == 'undefined' ){
+            $(element).data('error', $(error).text() );
+            $(element).popover({
+                trigger: 'focus',
+                placement: 'above',
+                offset: 5,
+                animate:false,
+                content: function(){ return $(element).data('error'); },
             });
-
-        });
+        } else {
+            $(element).data('error', $(error).text() );
+            $(element).popover('setContent');
+            $(element).popover('enable');
+        }
+    };
+    var remove_popover = function( element, errorClass, validClass ){
+        $(element).removeClass(errorClass).popover('disable');
     };
 //======================= ship_address =========================
     zz.store.checkout.init_ship_address_screen = function(){
@@ -88,20 +65,22 @@ zz.store.checkout = {};
             },
             messages: {
                 'order[ship_address_attributes][phone]': {
-                    required: 'a phone number required by most shippers',
-                    phoneUS: 'is that a US phone?'
+                    required: 'A phone number is required by most shippers',
+                    phoneUS: 'Is that a US/Canada phone?'
                 },
                 'order[ship_address_attributes][zipcode]':{
-                    required: ' your zip is really important!',
+                    required: 'Your zip code is really important!',
                     postalcode: 'huh? is that a zip?'
                 }
             },
             submitHandler: function(form){
                 form.submit();
             },
+            onkeyup: false,
             errorElement: "div",
             errorClass: "errormsg",
-            errorPlacement: error_placement_handler
+            errorPlacement: error_placement_handler,
+            unhighlight: remove_popover
         });
     }
 
@@ -176,8 +155,8 @@ zz.store.checkout = {};
             },
             messages: {
                 'order[email]': {
-                    required: 'promise we won&rsquo;t spam you',
-                    email: 'valid email, please'
+                    required: 'We promise we won&rsquo;t spam you',
+                    email: 'Valid email, pretty pleahse :)'
                 },
                 'payment_source[1034433118][verification_value]':{
                     required:'Need help?, click the question mark',
@@ -185,16 +164,18 @@ zz.store.checkout = {};
                     minlength: 'Need help?, click the question mark'
                 },
                 'order[bill_address_attributes][zipcode]':{
-                                    required: ' your zip is really important!',
-                                    postalcode: 'huh? is that a zip?'
+                                    required: ' Your zip is really important!',
+                                    postalcode: 'Huh? is that a zip?'
                  }
             },
             submitHandler: function(form){
                 form.submit();
             },
+            onkeyup: false,
             errorElement: "div",
             errorClass: "errormsg",
-            errorPlacement: error_placement_handler
+            errorPlacement: error_placement_handler,
+            unhighlight: remove_popover
         });
     };
     //======================= thankyou =========================
@@ -239,9 +220,11 @@ zz.store.checkout = {};
             submitHandler: function(form){
                 form.submit();
             },
+            focusInvalid: true,
             errorElement: "div",
             errorClass: "errormsg",
-            errorPlacement: error_placement_handler
+            errorPlacement: error_placement_handler,
+            unhighlight: remove_popover
         });
 
     };

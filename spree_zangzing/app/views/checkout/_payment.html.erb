@@ -21,10 +21,14 @@ end %>
           <h4><%= t("email").titleize%></h4>
           <p id="orderemail" class="field">
             <%= form.label :email, "#{t("email")} (#{t('only_for_order_updates')})" %>
-            <%= form.text_field :email, {:class => "required email"}%>
-
-            <a id="email_question" class="field_question" href="/static/store/cvv_question.html" target="_blank" onclick="window.open(this.href,'cvv_info','left=20,top=20,width=500,height=500,toolbar=0,resizable=0,scrollbars=1');return false">
-              <%= image_tag 'store/question.png' %>
+            <%= form.text_field :email, {:class => "required email", 'data-original-title'=>t(:email)}%>
+            <a id="email_question"
+                class="field_question"
+                tabindex="-1"
+                data-controls-modal="email-question-modal"
+                data-backdrop="true"
+                data-keyboard="true">
+                <%= image_tag 'store/question.png' %>
             </a>
           </p>
         </fieldset>
@@ -86,3 +90,17 @@ end %>
     </script>
 <% end %>
 
+<!--------------- This is the content of the modal email_question dialog -->
+  <div style="display: none;" id="email-question-modal" class="modal hide">
+    <div class="modal-body">
+      <p>
+        <strong>Why do you need my email?</strong>
+        <br>
+        We need an address to send you your order confirmation and invoice. We also send you
+        order status updates with tracking numbers. We promise not to spam you!
+      </p>
+    </div>
+    <div class="modal-footer">
+      <a href="#" onclick="$('#email-question-modal').modal('hide');" class="btn success">OK</a>
+    </div>
+  </div>

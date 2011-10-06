@@ -27,36 +27,40 @@ zz.buy = zz.buy || {};
 
     var buy_screens_element = null;
 
+    var SCRIM_TEMPLATE = function(){
+        return '<div class="buy-drawer-scrim">' +
+                   '<div class="scrim"></div>'+
+                   '<div class="message">Please select a product, then you will be able to select photos for that product.</div>' +
+               '</div>';
+    };
+
     var BUY_SCREENS_TEMPLATE = function(){
         return '<div class="buy-screens">' +
                     '<div class="select-product-screen"></div>' +
                     '<div class="configure-product-screen">' +
-                        '<div class="header-section">' +
-                            '<a class="gray-back-button back"><span>Back</span></a>'+
-                            '<a class="next-button next"><span>Choose Photos</span></a>'+
+                        '<div class="product-summary-section">' +
+                           '<img class="image" src="/images/photo_placeholder.png">' +
+                           '<div class="description">16x20 Mounted Print with a Black Frame</div>' +
+                           '<div class="count-and-price">12 for $200.00</div>' +
+                           '<a class="green-button checkout-button"><span>Add to Cart</span></a>' +
+                        '</div>' +
+                        '<div class="bad-photos-error">' +
+                           '<div class="icon"></div>' +
+                           '<div class="message">Some of your photos are not large enough for this product. Please remove the photos or select a different product.</div>' +
                         '</div>' +
                         '<div class="main-section">' +
-                            '<img class="image" src="/images/photo_placeholder.png">' +
-                            '<div class="learn-more">Learn More</div>' +
-                            '<div class="price">Price <span class="value">$200.94</span></div>' +
-                            '<div class="options">' +
+                            '<div class="options-section">' +
+                                '<div class="price">' +
+                                    '<div class="label">Price</div>' +
+                                    '<div class="value"></div>' +
+                                '</div>' +
+                                '<div class="options"></div>' +
                             '</div>' +
-                        '</div>' +
-                    '</div>' +
-                    '<div class="select-photos-screen">' +
-                        '<div class="header-section">' +
-                            '<img class="image" src="/images/photo_placeholder.png">' +
-                            '<div class="product">Modern Framed Poster Print</div>' +
-                            '<div class="variant">12x23 Framed Matte</div>' +
-                            '<div class="price">Price <span class="value">$200.94</span></div>' +
-                            '<a class="gray-back-button back"><span>Back</span></a>' +
-                            '<a class="gray-button add-and-buy-more-button"><span>Add & Buy More</span></a>'+
-                            '<a class="next-button checkout-button"><span>Add & Checkout</span></a>'+
-                        '</div>' +
-                        '<div class="main-section">' +
-                            '<div class="add-photos-message">Browse your photos and click on each one you would like for this product.</div>' +
-                            '<a class="clear-all-photos hyperlink-button">Clear All Selected Photos</a>' +
-                            '<div class="selected-photos"></div>' +
+                            '<div class="selected-photos-section">' +
+                                '<a class="clear-all-photos hyperlink-button">Clear All Selected Photos</a>' +
+                                '<div class="add-photos-message">Browse your photos and click on each one you would like for this product.</div>' +
+                                '<div class="selected-photos"></div>' +
+                            '</div>' +
                         '</div>' +
                     '</div>' +
                '</div>';
@@ -66,7 +70,8 @@ zz.buy = zz.buy || {};
         return '<div class="product">' +
                    '<img class="image" src="/images/photo_placeholder.png">' +
                    '<div class="name"></div>' +
-                   '<div class="description"><span class="text"></span>&nbsp;<span class="learn-more">Learn more.</span></div>' +
+                   '<div class="description"></div>' +
+                   '<div class="learn-more">Learn more.</div>' +
                    '<div class="arrow"></div>' +
                '</div>';
     };
@@ -101,14 +106,35 @@ zz.buy = zz.buy || {};
             if (! $(this).hasClass('disabled')) {
                 if(zz.buy.is_buy_mode_active()){
                     zz.buy.deactivate_buy_mode();
-                    $(this).removeClass('selected');
                 }
                 else{
                     zz.buy.activate_buy_mode();
-                    $(this).addClass('selected');
                 }
             }
         });
+
+        $('#footer #cart-button').click(function() {
+            if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
+                return;
+            }
+
+            if(zz.session.cart_item_count > 0){
+                zz.routes.store.goto_cart();
+            }
+            else{
+               if(!zz.buy.is_buy_mode_active()){
+                   zz.buy.activate_buy_mode();
+               }
+            }
+
+
+        });
+
+        if(zz.session.cart_item_count > 0){
+            $('#footer #cart-button .cart-count').removeClass('empty').text(zz.session.cart_item_count);
+        }
+
+
 
         if(zz.session.cart_item_count > 0 && jQuery.cookie('hide_checkout_banner') != 'true'){
             $('#checkout-banner').show();
@@ -191,6 +217,9 @@ zz.buy = zz.buy || {};
         open_drawer(true, function(){
             zz.pubsub.publish(EVENTS.ACTIVATE);
         });
+
+        $('#footer #buy-button').addClass('selected');
+
     };
 
     zz.buy.deactivate_buy_mode = function(){
@@ -199,6 +228,8 @@ zz.buy = zz.buy || {};
         close_drawer(function(){
             zz.pubsub.publish(EVENTS.DEACTIVATE);
         });
+        $('#footer #buy-button').removeClass('selected');
+
     };
 
 
@@ -215,8 +246,8 @@ zz.buy = zz.buy || {};
             return;
         }
 
-        if(zz.buy.is_buy_mode_active() && current_screen() != DRAWER_SCREENS.SELECT_PHOTOS){
-            alert('Please select and configure a product and then add photos.');
+        if(zz.buy.is_buy_mode_active() && current_screen() != DRAWER_SCREENS.CONFIGURE_PRODUCT){
+            alert('Please select select a product and then add photos.');
             return;
         }
 
@@ -237,18 +268,18 @@ zz.buy = zz.buy || {};
         }
         else{
             //figure out position of last photo in selected photo screen
-            var main_section = $('.select-photos-screen .main-section');
-            var last_selected_photo = $('.select-photos-screen .main-section .selected-photos .selected-photo:last');
+            var selected_photos_section = $('.configure-product-screen .main-section .selected-photos-section .selected-photos');
+            var last_selected_photo = $('.configure-product-screen .main-section .selected-photos-section .selected-photos .selected-photo:last');
 
             if(last_selected_photo.length == 0){
-                end_top = main_section.offset().top;
-                end_left = main_section.offset().left + 100;
+                end_top = selected_photos_section.offset().top;
+                end_left = selected_photos_section.offset().left + 100;
             }
             else{
                 end_top = last_selected_photo.offset().top + SELECTED_PHOTO_MAX_SIZE.HEIGHT;
-                end_left = main_section.offset().left + 100;
+                end_left = selected_photos_section.offset().left + 100;
 
-                var fold = main_section.offset().top + main_section.height();
+                var fold = selected_photos_section.offset().top + selected_photos_section.height();
                 if(end_top > fold){
                     end_top = fold - 150;
                 }
@@ -340,7 +371,10 @@ zz.buy = zz.buy || {};
 
 
     function render_select_product_screen(){
-        set_drawer_title("Choose Product")
+        show_scrim();
+
+        set_drawer_title("Choose a Product")
+
 
         zz.routes.store.get_products(function(products){
 
@@ -351,7 +385,7 @@ zz.buy = zz.buy || {};
                 var product_element = $(PRODUCT_TEMPLATE());
                 product_element.find('.image').attr('src', product.image_url);
                 product_element.find('.name').text(product.name);
-                product_element.find('.description .text').text(product.description);
+                product_element.find('.description').text(product.description);
                 product_element.find('.learn-more').click(function(event){
                     show_glamour_page(null);
                     event.stopPropagation();
@@ -369,23 +403,24 @@ zz.buy = zz.buy || {};
 
 
     function render_configure_product_screen(){
-        set_drawer_title(get_selected_product().name + " Settings");
+        hide_scrim();
+
+        //header section
+
+        set_drawer_title(get_selected_product().name);
 
 
-        buy_screens_element.find('.configure-product-screen .back').unbind('click').click(function(){
+        $('#right-drawer .header .gray-back-button').unbind('click').click(function(){
             slide_to_screen(DRAWER_SCREENS.SELECT_PRODUCT, true);
         });
 
-        buy_screens_element.find('.configure-product-screen .next').unbind('click').click(function(){
-            slide_to_screen(DRAWER_SCREENS.SELECT_PHOTOS, true);
+
+        buy_screens_element.find('.configure-product-screen .product-summary-section .checkout-button').unbind('click').click(function(){
+            add_selected_photos_to_cart(function(){
+                zz.routes.store.goto_cart();
+            });
         });
 
-
-
-        // learn more button
-        buy_screens_element.find('.configure-product-screen .main-section .learn-more').unbind('click').click(function(){
-            show_glamour_page(null);
-        });
 
 
         // build the product configuration options
@@ -408,8 +443,10 @@ zz.buy = zz.buy || {};
             set_selected_variant(current_variant);
 
             if(current_variant){
-                buy_screens_element.find('.configure-product-screen .main-section .image').attr('src', current_variant.image_url);
-                buy_screens_element.find('.configure-product-screen .main-section .price .value').text(current_variant.price);
+                buy_screens_element.find('.configure-product-screen .product-summary-section .image').attr('src', current_variant.image_url);
+                buy_screens_element.find('.configure-product-screen .product-summary-section .description').text(current_variant.description);
+                buy_screens_element.find('.configure-product-screen .options-section .price .value').text(current_variant.price);
+                update_price_and_count();
             }
             else{
                 alert("Sorry, there was an unexpected error: no matching variant");
@@ -437,56 +474,66 @@ zz.buy = zz.buy || {};
         on_change_variant();
 
 
-
-
-
-
-    }
-
-    function render_select_photos_screen(){
-        set_drawer_title("Selected Photos");
-
-        buy_screens_element.find('.select-photos-screen .header-section .add-and-buy-more-button').unbind('click').click(function(){
-            add_selected_photos_to_cart(function(){
-                zz.local_storage.set('zz.buy.current_screen', null);
-                window.location.reload();
-            });
-        });
-
-        buy_screens_element.find('.select-photos-screen .header-section .checkout-button').unbind('click').click(function(){
-            add_selected_photos_to_cart(function(){
-                zz.routes.store.goto_cart();
-            });
-        });
-
-        buy_screens_element.find('.select-photos-screen .header-section .back').unbind('click').click(function(){
-            slide_to_screen(DRAWER_SCREENS.CONFIGURE_PRODUCT, true);
-        });
-
-
-        refresh_selected_photos_list();
-
-        buy_screens_element.find('.select-photos-screen .main-section .clear-all-photos').unbind('click').click(function(){
+        // selected photos section
+        buy_screens_element.find('.configure-product-screen .main-section .selected-photos-section .clear-all-photos').unbind('click').click(function(){
             var selected_photos = zz.local_storage.get('zz.buy.selected_photos');
             zz.local_storage.set('zz.buy.selected_photos',[]);
             refresh_selected_photos_list();
             zz.pubsub.publish(EVENTS.REMOVE_SELECTED_PHOTO, selected_photos);
+            update_price_and_count();
         });
 
+        refresh_selected_photos_list();
 
-        buy_screens_element.find('.select-photos-screen .header-section .product').text(get_selected_product().name);
-        buy_screens_element.find('.select-photos-screen .header-section .variant').text(get_selected_variant().description);
-        buy_screens_element.find('.select-photos-screen .header-section .price .value').text(get_selected_variant().price);
-        buy_screens_element.find('.select-photos-screen .header-section .image').attr('src', get_selected_variant().image_url);
 
 
 
     }
 
+//    function render_select_photos_screen(){
+//        set_drawer_title("Selected Photos");
+//
+//        buy_screens_element.find('.select-photos-screen .header-section .add-and-buy-more-button').unbind('click').click(function(){
+//            add_selected_photos_to_cart(function(){
+//                zz.local_storage.set('zz.buy.current_screen', null);
+//                window.location.reload();
+//            });
+//        });
+//
+//        buy_screens_element.find('.select-photos-screen .header-section .checkout-button').unbind('click').click(function(){
+//            add_selected_photos_to_cart(function(){
+//                zz.routes.store.goto_cart();
+//            });
+//        });
+//
+//        buy_screens_element.find('.select-photos-screen .header-section .back').unbind('click').click(function(){
+//            slide_to_screen(DRAWER_SCREENS.CONFIGURE_PRODUCT, true);
+//        });
+//
+//
+//        refresh_selected_photos_list();
+//
+//        buy_screens_element.find('.select-photos-screen .main-section .clear-all-photos').unbind('click').click(function(){
+//            var selected_photos = zz.local_storage.get('zz.buy.selected_photos');
+//            zz.local_storage.set('zz.buy.selected_photos',[]);
+//            refresh_selected_photos_list();
+//            zz.pubsub.publish(EVENTS.REMOVE_SELECTED_PHOTO, selected_photos);
+//        });
+//
+//
+//        buy_screens_element.find('.select-photos-screen .header-section .product').text(get_selected_product().name);
+//        buy_screens_element.find('.select-photos-screen .header-section .variant').text(get_selected_variant().description);
+//        buy_screens_element.find('.select-photos-screen .header-section .price .value').text(get_selected_variant().price);
+//        buy_screens_element.find('.select-photos-screen .header-section .image').attr('src', get_selected_variant().image_url);
+//
+//
+//
+//    }
+
     function refresh_selected_photos_list(){
         var selected_photos = zz.local_storage.get('zz.buy.selected_photos');
 
-        var photo_list_element = buy_screens_element.find('.select-photos-screen .main-section .selected-photos');
+        var photo_list_element = buy_screens_element.find('.configure-product-screen .main-section .selected-photos-section .selected-photos');
         photo_list_element.empty();
 
         if(selected_photos && selected_photos.length > 0){
@@ -495,25 +542,48 @@ zz.buy = zz.buy || {};
              });
         }
         else{
-            buy_screens_element.find('.select-photos-screen .main-section .add-photos-message').show();
-            buy_screens_element.find('.select-photos-screen .main-section .clear-all-photos').hide();
+            buy_screens_element.find('.configure-product-screen .main-section .selected-photos-section .add-photos-message').show();
+            buy_screens_element.find('.configure-product-screen .main-section .selected-photos-section .clear-all-photos').hide();
         }
     }
 
+    function update_price_and_count(){
+           var count = get_selected_photos().length;
+           var price = parseFloat(get_selected_variant().price.substring(1));
+           var count_and_price = count + ' for $' + format_currency(count * price);
+           $('.configure-product-screen .product-summary-section .count-and-price').text(count_and_price);
+
+    }
+
+    function format_currency(amount){
+        var i = parseFloat(amount);
+        if(isNaN(i)) { i = 0.00; }
+        var minus = '';
+        if(i < 0) { minus = '-'; }
+        i = Math.abs(i);
+        i = parseInt((i + .005) * 100);
+        i = i / 100;
+        s = new String(i);
+        if(s.indexOf('.') < 0) { s += '.00'; }
+        if(s.indexOf('.') == (s.length - 2)) { s += '0'; }
+        s = minus + s;
+        return s;
+    }
+
     function add_photo_to_selected_photos_screen(photo_json){
-        var photo_list_element = buy_screens_element.find('.select-photos-screen .main-section .selected-photos');
+        var photo_list_element = buy_screens_element.find('.configure-product-screen .main-section .selected-photos-section .selected-photos');
 
         var photo_element = $(SELECTED_PHOTO_TEMPLATE());
 
 
         var size = zz.image_utils.scale({
-                                    width: 100 * photo_json.aspect_ratio,
-                                    height: 100
-                                    },
-                                    {
-                                        width:SELECTED_PHOTO_MAX_SIZE.WIDTH,
-                                        height:SELECTED_PHOTO_MAX_SIZE.HEIGHT
-                                    });
+                                            width: 100 * photo_json.aspect_ratio,
+                                            height: 100
+                                         },
+                                         {
+                                             width:SELECTED_PHOTO_MAX_SIZE.WIDTH,
+                                             height:SELECTED_PHOTO_MAX_SIZE.HEIGHT
+                                         });
 
 
 
@@ -531,13 +601,31 @@ zz.buy = zz.buy || {};
             });
             zz.local_storage.set('zz.buy.selected_photos', selected_photos);
             zz.pubsub.publish(EVENTS.REMOVE_SELECTED_PHOTO, [photo_json.id]);
+            update_price_and_count();
 
         });
 
         photo_list_element.append(photo_element);
 
-        buy_screens_element.find('.select-photos-screen .main-section .add-photos-message').hide();
-        buy_screens_element.find('.select-photos-screen .main-section .clear-all-photos').show();
+        buy_screens_element.find('.configure-product-screen .main-section .selected-photos-section .add-photos-message').hide();
+        buy_screens_element.find('.configure-product-screen .main-section .selected-photos-section .clear-all-photos').show();
+
+        update_price_and_count();
+    }
+
+
+    function show_scrim(){
+        var scrim = $(SCRIM_TEMPLATE());
+        $('body').append(scrim);
+        scrim.fadeIn('fast', function(){
+            scrim.find('.message').show().center_x();
+        });
+    }
+
+    function hide_scrim(){
+        $('.buy-drawer-scrim').fadeOut('fast',function(){
+            $(this).remove();
+        });
     }
 
     function set_drawer_title(title){
@@ -559,6 +647,15 @@ zz.buy = zz.buy || {};
     function get_selected_variant(){
         return zz.local_storage.get('zz.buy.selected_variant');
     }
+
+    function get_selected_photos(){
+        return zz.local_storage.get('zz.buy.selected_photos') || [];
+    }
+
+    function set_selected_photos(photos){
+        zz.local_storage.set('zz.buy.selected_photos', photos);
+    }
+
 
     function add_selected_photos_to_cart(callback){
         var sku = get_selected_variant().sku
@@ -587,6 +684,7 @@ zz.buy = zz.buy || {};
 
         if(animate){
             $('#right-drawer .header .title').hide();
+            $('#right-drawer .header .gray-back-button').hide();
         }
 
         switch (name){
@@ -595,13 +693,8 @@ zz.buy = zz.buy || {};
                 render_select_product_screen();
                 break;
             case DRAWER_SCREENS.CONFIGURE_PRODUCT:
-                left = '-445px';
+                left = '-381px';
                 render_configure_product_screen();
-                break;
-            case DRAWER_SCREENS.SELECT_PHOTOS:
-                left = '-890px';
-
-                render_select_photos_screen();
                 break;
         }
 
@@ -610,12 +703,17 @@ zz.buy = zz.buy || {};
         if(animate){
             buy_screens_element.animate({left:left},500, function(){
                 $('#right-drawer .header .title').fadeIn('fast');
-
+                if(name == DRAWER_SCREENS.CONFIGURE_PRODUCT){
+                    $('#right-drawer .header .gray-back-button').fadeIn('fast');  //todo: this should be managed somewher else
+                }
                 if(callback) callback();
             });
         }
         else{
             buy_screens_element.css({left:left});
+            if(name == DRAWER_SCREENS.CONFIGURE_PRODUCT){
+                $('#right-drawer .header .gray-back-button').show(); //todo: this should be managed somewher else
+            }
             if(callback) callback();
 
        }
@@ -640,14 +738,14 @@ zz.buy = zz.buy || {};
             $('#article').fadeOut('fast', function(){
 
                 $('#right-drawer').show().animate({right:0},500, function(){
-                    $('#article').css({right:445});
+                    $('#article').css({right:381});
                     $('#article').show();
                     callback();
                 });
             });
         }
         else{
-            $('#article').css({right:445});
+            $('#article').css({right:381});
             $('#article').show();
 
             $('#right-drawer').css({right:0}).show();
@@ -661,6 +759,7 @@ zz.buy = zz.buy || {};
     }
 
     function close_drawer(callback){
+        hide_scrim();
         $('#article').fadeOut('fast', function(){
             $('#right-drawer').animate({right:-450},500, function(){
                 $('#article').css({right:0});

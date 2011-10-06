@@ -276,9 +276,14 @@ zz.album = {};
 
 
     function buy_photo(photo_json, element){
-        zz.buy.add_selected_photo(photo_json, element, function(){
-            update_checkmarks_on_photos();
-        });
+        if(zz.buy.is_photo_selected(photo_json.id)){
+
+        }
+        else{
+            zz.buy.add_selected_photo(photo_json, element, function(){
+                 update_checkmarks_on_photos();
+             });
+        }
     }
 
 

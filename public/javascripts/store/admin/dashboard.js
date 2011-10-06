@@ -51,7 +51,7 @@ jQuery(document).ready(function(){
 	var orders_by_day_settings = {
 		title: {
 			textColor: '#476D9B',
-			fontSize: '12pt',
+			fontSize: '12pt'
 		}, 
 		grid: {background:'#fff', gridLineColor:'#fff',borderColor: '#476D9B'},
 	  axes:{
@@ -95,14 +95,14 @@ jQuery(document).ready(function(){
 	
 		jQuery.ajax({
 	       type: 'GET',
-	       url: 'admin/overview/get_report_data',
+	       url: '/service/admin/store/overview/get_report_data',
 	       data: ({report: 'orders_by_day', name: report, value: value, authenticity_token: AUTH_TOKEN}),
 	       success: handle_orders_by_day
 		});
 		
 		jQuery.ajax({
 	       type: 'GET',
-	       url: 'admin/overview/get_report_data',
+	       url: '/service/admin/store/overview/get_report_data',
 	       data: ({report: 'orders_totals', name: report, authenticity_token: AUTH_TOKEN}),
 	       success: handle_orders_total
 		});

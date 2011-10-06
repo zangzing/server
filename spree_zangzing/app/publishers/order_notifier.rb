@@ -55,11 +55,13 @@ module OrderNotifier
       @order = order
       if Rails.env.photos_production?
         full_subject = "[Store] Order #{@order.number} #{subject}"
+        to = "help@zangzing.com"
       else
         full_subject = "[Store #{Rails.env}]  Order #{@order.number} #{subject}"
+        to = "help@bucket.zangzing.com"
       end
       #create message
-      mail( :to       => "help@zangzing.com",
+      mail( :to       => to,
             :from     => "ZangZing Store <store@zangzing.com>",
             :subject  => full_subject )
 
