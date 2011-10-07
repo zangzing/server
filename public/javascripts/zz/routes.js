@@ -90,7 +90,7 @@ var zz = zz || {};
             },
 
             album_photos_url: function(album_id, cache_version){
-                return zz.routes.path_prefix + '/albums/' + album_id + '/photos_json?' + cache_version;
+                return zz.routes.path_prefix + '/albums/' + album_id + '/photos_json?ver=' + cache_version;
             },
 
             get_photo_json: function(album_id, cache_version, photo_id, success){

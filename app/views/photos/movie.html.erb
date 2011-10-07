@@ -104,7 +104,7 @@
         %>
 
       
-        <param name="flashvars" value="source=<%=album_photos_json_url @album%>?<%=@album.cache_version_key%>&<%=flash_params%>"/>
+        <param name="flashvars" value="source=<%=album_photos_json_url @album%>?ver=<%=@album.cache_version_key%>&<%=flash_params%>"/>
     </object>
     <div id="scrim"></div>
 
@@ -125,7 +125,7 @@
             $.CustomSimpleFade.init({
 
                 appendToID:			'movie',
-                source:				'<%=album_photos_json_url @album%>?<%=@album.cache_version_key%>',
+                source:				'<%=album_photos_json_url @album%>?ver=<%=@album.cache_version_key%>',
                 width: $(window).width(),
                 height: $(window).height(),
 

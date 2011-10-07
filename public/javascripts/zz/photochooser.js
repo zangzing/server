@@ -897,7 +897,7 @@ zz.photochooser = {
             var self = this;
             $.ajax({
                 dataType: 'json',
-                url: zz.routes.path_prefix + '/albums/' + self.options.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
+                url: zz.routes.path_prefix + '/albums/' + self.options.album_id + '/photos_json?ver=0',  //force browser cache miss
                 success: function(photos) {
 
                     self.tray_photos = _.filter(photos, function(photo) {

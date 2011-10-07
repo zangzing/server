@@ -83,7 +83,7 @@ zz.pages.album_name_tab = {
             //setup album cover picker
             $.ajax({
                 dataType: 'json',
-                url: zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
+                url: zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/photos_json?ver=0',  //force browser cache miss
                 success: function(json) {
                     var selectedIndex = -1;
                     var currentId = $('#album_cover_photo').val();
@@ -159,7 +159,7 @@ zz.pages.edit_album_tab = {
 
         $.ajax({
             dataType: 'json',
-            url: zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss,
+            url: zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/photos_json?ver=0',  //force browser cache miss,
             success: function(json) {
 
                 for (var i = 0; i < json.length; i++) {
