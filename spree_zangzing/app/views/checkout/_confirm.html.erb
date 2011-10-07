@@ -45,7 +45,7 @@ end %>
         <%= creditcard_logo( @order.payments.first.source ) %>
       </div>
       <div>
-        <%="#{t('ends_in')} #{@order.payments.first.source.last_digits} #{t('expires')} #{@order.payments.first.source.month}/#{@order.payments.first.source.year}" %></br>
+        <%="#{t('ends_in')} #{@order.payments.first.source.last_digits} #{t('expires')} #{@order.payments.first.source.month}/#{@order.payments.first.source.year}" %><br/>
         <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('payment')%>').submit();">change</a>
       </div>
       
@@ -55,7 +55,10 @@ end %>
   <div id="order_items">
     <table class="index">
       <tbody>
-      <% @order.line_items.each do |line_item| %>
+      <%if @order.line_items.prints.present? %>
+        <%= render 'orders/prints_line_item', :order => @order%>
+      <% end %>
+      <% @order.line_items.not_prints.each do |line_item| %>
         <%= render 'orders/line_item', :line_item => line_item%>
       <% end %>
       </tbody>
@@ -66,7 +69,7 @@ end %>
 
 
 <%content_for :small_print do %>
-By placing your order you agree ot ZangZing's <a class="hyperlink-button" target="_blank" href="http://www.zangzing.com/terms">the terms of service</a> and <a class="hyperlink-button" target="_blank" href="http://www.zangzing.com/terms">privacy policy</a>.
+By placing your order you agree to ZangZing's <a class="hyperlink-button" target="_blank" href="http://www.zangzing.com/terms">terms of service and privacy policy</a>.
 <%end%>
 
 

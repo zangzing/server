@@ -11,8 +11,8 @@ describe OrdersController do
         photo_2 = Factory.create(:photo)
 
         params = {
-            :product_id => 138563031,    # this is defined in the server_test.seed
-            :sku => 10083,               # this is defined in the server_test.seed
+            :product_id => 941187647,    # this is defined in the server_test.seed
+            :sku => 90140,               # this is defined in the server_test.seed
             :photo_ids => [photo_1.id, photo_2.id],
             :format => "json"
         }

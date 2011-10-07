@@ -1,7 +1,7 @@
 Order.class_eval do
   include PrettyUrlHelper
 
-  attr_accessible :use_shipping_as_billing, :ship_address_id, :bill_address_id, :test_mode
+  attr_accessible :use_shipping_as_billing, :ship_address_id, :bill_address_id, :test_mode, :printset_quantity
 
   attr_accessor  :use_shipping_as_billing
 
@@ -65,6 +65,7 @@ Order.class_eval do
       transition :from => 'ship_address', :to => 'payment'
 
       transition :from => 'payment',  :to => 'confirm'
+      transition :from => 'delivery', :to => 'confirm'
 
       transition :from => 'confirm',  :to => 'complete'
     end
@@ -221,14 +222,18 @@ Order.class_eval do
   # is already there then we just increment the quantity of the existing
   # line_item
   def contains?(variant,photo = nil)
-    line_items.detect{ |line_item|
-      if line_item.photo && photo
-        line_item.variant_id == variant.id &&
-            line_item.photo.id == photo.id
-      else
-        line_item.variant_id == variant.id
-      end
-    }
+    if variant.print?
+      nil
+    else
+      line_items.detect{ |line_item|
+        if line_item.photo && photo
+          line_item.variant_id == variant.id &&
+              line_item.photo.id == photo.id
+        else
+          line_item.variant_id == variant.id
+        end
+      }
+    end
   end
 
   def create_user
@@ -651,6 +656,17 @@ Order.class_eval do
 
   end
 
+  def printset_quantity=( qty )
+    self.line_items.prints.each do |li|
+      li.quantity = qty
+      li.save
+    end
+    @printset_quantity = qty
+  end
+
+  def printset_quantity
+    @printset_quantity ||= self.line_items.prints.first.quantity
+  end
 
   private
 
