@@ -62,6 +62,11 @@ describe Order do
       first_item.quantity.should be 1
       @order.line_items.count.should be 2
     end
+    after(:each) do
+      @photo.user.destroy
+      @photo.destroy
+      @order.destroy
+    end
   end
 
   describe "Prints Roll Up" do
