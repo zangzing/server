@@ -1,4 +1,5 @@
 OrdersController.class_eval do
+  ssl_required :index, :edit, :show, :populate, :thankyou  # all except :add_top_order
 
   before_filter :require_user, :only => [:index]
   before_filter :check_authorization
