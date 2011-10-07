@@ -1,3 +1,3 @@
 AppConfiguration.class_eval do
-  preference :default_print_sku, :string, :default => '10040'
+  preference :printset_threshold, :decimal, :default => 35.00
 end

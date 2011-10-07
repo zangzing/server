@@ -1,6 +1,7 @@
 LineItem.class_eval do
   attr_accessible :photo_id, :crop_instructions, :back_message, :print_photo
 
+
   belongs_to :photo
   belongs_to :print_photo, :class_name => "Photo"
   belongs_to :shipment
@@ -12,8 +13,11 @@ LineItem.class_eval do
   scope :ready,   joins(:shipment).where("line_items.shipment_id IS NOT NULL AND line_items.shipment_id = shipments.id AND shipments.state = 'ready'")
   scope :pending, where("line_items.shipment_id IS NULL")
 
+  scope :prints, joins(:product).joins(:variant).where("products.name = 'Prints' AND variants.price < ? ",Spree::Config[:printset_threshold]).order('variants.price ASC')
+  scope :group_by_variant, joins(:variant).group('variants.id').order('variants.price ASC')
+  scope :not_prints, joins(:product).joins(:variant).where("products.name != 'Prints' || variants.price >=?",Spree::Config[:printset_threshold])
 
-
+  
   def shipping_may_change
     order.shipping_may_change
   end
@@ -66,4 +70,11 @@ LineItem.class_eval do
     false
   end
 
+  def option_values
+    OptionValue.in_line_item( self )
+  end
+
+  def print?
+    variant.print?
+  end
 end

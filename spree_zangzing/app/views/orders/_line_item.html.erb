@@ -15,8 +15,7 @@
           <%else%>
               <div class="product_name"> <%= pluralize  line_item.quantity, variant.product.name %></div>
           <%end%>
-          <div class="variant_description"> <%= variant_options variant %>   </div>
-          <div class="variant_description"><%= truncate(variant.product.description, :length => 100, :omission => "...") %> </div>
+          <div class="variant_description"><%= truncate(variant.custom_description, :length => 100, :omission => "...") %> </div>
           <% if item_form.present? %>
             <div class="variant_description"> <%= link_to t('delete').downcase, '#', :class => 'delete' %></div>
           <%else%>

@@ -1,0 +1,49 @@
+<%# locals = {:order => order} %>
+<% unless order.line_items.prints.empty? %>
+    <%
+     line_items         = order.line_items.prints
+     printset_quantity  = order.printset_quantity
+     printset_price     = line_items.map{|li| li.price}.reduce(:+)
+     line_item_variants = order.line_items.prints.group_by_variant
+     variant_count      = order.line_items.prints.group_by_variant.count
+     product            = line_item_variants.first.variant.product
+     order_form         = nil unless defined?(order_form)
+    %>
+    <tr>
+      <td style="text-align: center;">
+        <%= image_tag product.images.first.attachment.url(:small) %>
+      </td>
+      <td>
+        <table>
+          <tr>
+            <td class="product no-border">
+
+              <% if order_form.present?  %>
+                  <div class="product_name"><%= "Set of #{product.name}" %></div>
+              <%else%>
+                  <div class="product_name"> <%= pluralize  printset_quantity, 'Set' %><%=" of #{product.name}"%></div>
+              <%end%>
+
+              <div class="variant_description">Each Set Contains:</div>
+              <% line_item_variants.each do |li| %>
+                <div class="variant_description">&nbsp-&nbsp<%=pluralize variant_count[li.variant.id], li.variant.custom_description %></div>
+              <% end %>
+
+              <% if order_form.present? %>
+                  <div class="variant_description"> <%= link_to t('delete').downcase, '#', :class => 'delete' %></div>
+              <%else%>
+                  <div class="variant_description">  <%= link_to t('change'), cart_path %></div>
+              <%end%>
+            </td>
+
+            <% if order_form.present? %>
+                <td class="price no-border"><%= format_price( printset_price) %></td>
+                <td class="price no-border"><%= order_form.text_field :printset_quantity, { :class => "item_quantity"} %></td>
+            <%end%>
+            <td class="price no-border"><%=format_price( printset_price * printset_quantity) unless printset_quantity <= 0%></td>
+          </tr>
+        </table>
+      </td>
+
+    </tr>
+<% end %>

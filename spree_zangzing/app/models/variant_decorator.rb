@@ -48,4 +48,8 @@ Variant.class_eval do
       end
   end
 
+  def print?
+    product.name == "Prints" && price < Spree::Config[:printset_threshold]
+  end
+
 end
