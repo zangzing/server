@@ -100,6 +100,10 @@ zz.buy = zz.buy || {};
 
 
     zz.buy.init = function(){
+        if(zz.page.rails_controller_name == 'users'){
+            return;
+        }
+
         if(zz.buy.is_buy_mode_active()){
             open_drawer(false, function(){});
             $('#footer #buy-button').addClass('selected');
