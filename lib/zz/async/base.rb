@@ -61,7 +61,7 @@ module ZZ
       # not retry - this is used by the shouldRetry method to define the default
       # conditions we want to not retry for.  Modify the subclasses copy if
       # it wants to override any behavior - this is an instance per class
-      # so modifying in a subclass will not effect other subclasses
+      # so modifying in a subclass will not affect other subclasses
       #
       # Use the name of the exception that you want to match directly as a String
       # or the Exception class itself.  Warning, if you use the Exception class
@@ -69,7 +69,8 @@ module ZZ
       # so use with caution
       #
       self.dont_retry_filter = {
-        BitlyError.name                               => /^MISSING_ARG"/i,
+        Exception.name                                => /^Cannot Subscribe User/i,
+        BitlyError.name                               => /^MISSING_ARG/i,
         "Errno::ENOENT"                               => /.*/,
         ArgumentError.name                            => /.*/,
         NoMethodError.name                            => /.*/,
@@ -160,6 +161,40 @@ module ZZ
             @queue = current_queue
           end
         end
+      end
+
+      #
+      # hook into the resque retry failure mechanism
+      # we want to know if we will be retrying based
+      # on the exception and current state.  Pass
+      # this info on to the child class in a single
+      # handle_failure method that is all set up
+      # with the info needed - we also wrap the call
+      # in a SystemTimer and ensure that we catch
+      # any exceptions coming out of the handle_failure method
+      #
+      def self.on_failure_retry(exception, *args)
+        begin
+          will_retry = retry_criteria_valid?(exception, *args)
+          msg = "#{self.name} failed: #{exception}"
+          Rails.logger.error(msg)
+          Rails.logger.error( small_back_trace(exception))
+          NewRelic::Agent.notice_error(exception, :custom_params=>{:klass_name => self.name, :method_name => 'perform', :params => args})
+          SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
+            self.handle_failure(exception, will_retry, *args)
+          end
+        rescue Exception => ex
+          # don't let the exception make it out
+        end
+        if will_retry
+          try_again(*args)
+        else
+          Resque.redis.del(redis_retry_key(*args))
+        end
+      end
+
+      # override this method if you want info about failure
+      def self.handle_failure(exception, will_retry, *args)
       end
 
       # resque hook to perform GC after job

@@ -1,4 +1,6 @@
 OrdersController.class_eval do
+  ssl_required :index, :edit, :show, :populate, :thankyou, :update  # all except :add_top_order
+
   before_filter :require_user, :only => [:index]
   before_filter :check_authorization
 
@@ -8,7 +10,7 @@ OrdersController.class_eval do
 
   def add_to_order
     order = current_order(true)
-    variant = Variant.find_by_sku(params[:sku])
+    variant = Variant.find_by_product_id_and_sku(params[:product_id], params[:sku])
 
     params[:photo_ids].each do |photo_id|
       photo = Photo.find( photo_id )

@@ -17,6 +17,21 @@ Order.class_eval do
       self.token = ::SecureRandom::hex(8)
   end
 
+  # we override the base class order number generator so we
+  # can use the first character to tell us what environment
+  # was used.  Will be used to let us proxy the incoming
+  # EZPrints requests based on environment since they only
+  # have one mapping.
+  def generate_order_number
+    record = true
+    while record
+      random = "#{ez.env_to_prefix}#{Array.new(9){rand(9)}.join}"
+      record = self.class.find(:first, :conditions => ["number = ?", random])
+    end
+    self.number = random if self.number.blank?
+    self.number
+  end
+
   def clone_shipping_address
     if @use_shipping_as_billing == '1'
       if ship_address.new_record?
@@ -271,8 +286,8 @@ Order.class_eval do
     # are committed to the db. So instead of calling prepare_for_submit as a
     # before_transition action, we have to call it here and then transition
     begin
-      prepare_for_submit
       prepare
+      prepare_for_submit
     rescue Exception => e
       self.ezp_error_message = "prepare_for_submit: #{e.message}"
       save
@@ -507,16 +522,15 @@ Order.class_eval do
   #
   def ezp_submit_order
     # the test_mode flag tells us if we should submit "real" orders (when false) to ezprints or simulate the order flow internally (when true)
-    ezp = EZPrints::EZPManager.new
     if self.test_mode
-      #todo kick off loopback generation of simulated events via resque jobs
-      self.ezp_reference_id = UUIDTools::UUID.random_create.to_s
+      # kick off loopback mode for order simulation - the EZPSimulator will
+      # call back to simulate the order notification flow as if it was coming from EZPrints
+      ZZ::Async::EZPSimulator.simulate_order(self)
     else
       # real order placement
-      ezp_reference_id = ezp.submit_order(self)
-      self.ezp_reference_id = ezp_reference_id
+      self.ezp_reference_id = ez.submit_order(self)
+      save!
     end
-    save!
   end
 
   def ezp_submit_order_failed
@@ -573,7 +587,7 @@ Order.class_eval do
 
     # make sure we only include line items that have not already been associated with a shipment
     filtered_line_item_ids = []
-    self.line_items.select do |line_item|
+    self.line_items.each do |line_item|
       filtered_line_item_ids << line_item.id if line_item.shipment_id.nil? && line_item_id_array.include?(line_item.id)
     end
     return if filtered_line_item_ids.blank?

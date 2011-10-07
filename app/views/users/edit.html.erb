@@ -199,7 +199,7 @@
             var load_profile_photos = function(callback){
                 $.ajax({
                     dataType: 'json',
-                    url: zz.routes.path_prefix + '/albums/' + profile_album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
+                    url: zz.routes.path_prefix + '/albums/' + profile_album_id + '/photos_json?ver=0',  //force browser cache miss
                     success: function(json){
                         var selectedIndex=-1;
                         var currentId = $('#profile-photo-id').val();

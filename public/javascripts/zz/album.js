@@ -25,7 +25,7 @@ zz.album = {};
             render_picture_view();
         });
 
-        zz.buy.on_remove_selected_photo(function(){
+        zz.buy.on_change_selected_photos(function(){
             update_checkmarks_on_photos();
         });
 
@@ -65,7 +65,7 @@ zz.album = {};
             render_grid_view();
         });
 
-        zz.buy.on_remove_selected_photo(function(){
+        zz.buy.on_change_selected_photos(function(){
             update_checkmarks_on_photos();
         });
 
@@ -280,9 +280,7 @@ zz.album = {};
 
         }
         else{
-            zz.buy.add_selected_photo(photo_json, element, function(){
-                 update_checkmarks_on_photos();
-             });
+            zz.buy.add_selected_photo(photo_json, element);
         }
     }
 
@@ -318,7 +316,7 @@ zz.album = {};
         ZZAt.track('album.view', {id: zz.page.album_id});
 
 
-        zz.routes.photos.get_album_photos_json(zz.page.album_id, zz.page.album_lastmod, function(json){
+        zz.routes.photos.get_album_photos_json(zz.page.album_id, zz.page.cache_version_key, function(json){
             json = filterPhotosForUser(json);
 
             callback(json);
@@ -354,7 +352,7 @@ zz.album = {};
             render_timeline_or_people_view(which);
         });
 
-        zz.buy.on_remove_selected_photo(function(){
+        zz.buy.on_change_selected_photos(function(){
             update_checkmarks_on_photos();
         });
 
@@ -505,7 +503,7 @@ zz.album = {};
                 zz.logger.debug(photo_id);
 
                 $(element).click(function(){
-                    zz.comments.show_in_dialog(zz.page.album_id, zz.page.album_lastmod, photo_id);
+                    zz.comments.show_in_dialog(zz.page.album_id, zz.page.cache_version_key, photo_id);
                 });
             });
         }

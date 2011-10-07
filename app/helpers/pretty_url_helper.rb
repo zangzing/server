@@ -56,7 +56,7 @@ module PrettyUrlHelper
   end
 
   def mobile_album_json_path(album_id, cache_ver)
-    return "/mobile/albums/#{album_id}/photos_json?#{cache_ver}"
+    return "/mobile/albums/#{album_id}/photos_json?ver=#{cache_ver}"
   end
 
   def bitly_url(url)

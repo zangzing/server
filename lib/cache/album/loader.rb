@@ -54,7 +54,7 @@ module Cache
 
       def self.make_cache_key(user_id, album_type, ver)
         comp_flag = compressed ? "Z1" : "Z0"
-        Manager::KEY_PREFIX + ".#{comp_flag}.#{album_type}.#{user_id}.#{ver}"
+        "Cache.Album.#{comp_flag}.#{album_type}.#{user_id}.#{hash_schema_version}.#{ver}"
       end
 
       def cache
@@ -235,6 +235,17 @@ module Cache
 
 
       include PrettyUrlHelper
+      # This tracks the version of the data
+      # provided in a single hashed album for
+      # our api usage.  If you make a change
+      # to the albums_to_hash method below
+      # make sure you bump this version so
+      # we invalidate the browsers cache for
+      # old items.
+      def self.hash_schema_version
+        'v3'
+      end
+
       # this method returns the album as a map which allows us to perform
       # very fast json conversion on it
       def albums_to_hash(albums)
@@ -282,7 +293,7 @@ module Cache
               :c_url => album_cover.nil? ? nil : album_cover.thumb_url,
               :photos_count => album.photos_count,
               :photos_ready_count => album.photos_ready_count,
-              :cache_version => album.cache_version.to_i,
+              :cache_version => album.cache_version_key,
               :updated_at => album.updated_at.to_i,
               :my_role => album.my_role # valid values are Viewer, Contrib, Admin
           }

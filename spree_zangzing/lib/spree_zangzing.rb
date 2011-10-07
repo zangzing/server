@@ -15,7 +15,7 @@ module SpreeZangzing
         # Spree::Config.set( :allow_guest_checkout => true)
       end
 
-      pre_load = ["../app/**/*_decorator*.rb","../lib/ezprints/**/*.rb"]
+      pre_load = ["../app/**/*_decorator*.rb","../lib/ezprints/**/*.rb","../lib/spree_core/**/*.rb"]
       pre_load.each do |g|
         glob = File.join(File.dirname(__FILE__), g)
         Dir.glob(glob) do |c|

@@ -45,29 +45,13 @@ module ZZ
         end
       end
 
-      def self.on_failure_retry(exception, *args)
-        will_retry = retry_criteria_valid?(exception, *args)
-        msg = "General Import exception: #{exception}"
-        Rails.logger.error(msg)
-        Rails.logger.error( small_back_trace(exception))
-        NewRelic::Agent.notice_error(exception, :custom_params=>{:klass_name => ZZ::Async::GeneralImport.name, :method_name => 'perform', :params => args})
-        begin
-          SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
-            photo_id = args[0]
-            photo = Photo.find(photo_id)
-            if will_retry
-              photo.update_attributes(:error_message => msg) unless photo.nil?
-            else
-              photo.update_attributes(:state => 'error', :error_message => msg ) unless photo.nil?
-            end
-          end
-        rescue Exception => ex
-          # don't let the exception make it out
-        end
+      # the perform failed so take appropriate action
+      def self.handle_failure(exception, will_retry, photo_id, source_url, options)
+        photo = Photo.find(photo_id)
         if will_retry
-          try_again(*args)
+          photo.update_attributes(:error_message => msg) unless photo.nil?
         else
-          Resque.redis.del(redis_retry_key(*args))
+          photo.update_attributes(:state => 'error', :error_message => msg ) unless photo.nil?
         end
       end
 

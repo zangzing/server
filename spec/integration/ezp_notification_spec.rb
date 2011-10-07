@@ -24,15 +24,15 @@ describe "EZPrints Notification Handler" do
   end
 
   def order_id
-    5
+    9
   end
 
   def ez_ref_num
-    '00123-200708031121-62724'
+    'ba6cfaa9-9d9b-4543-8b54-ef80022eca68'
   end
 
   def line_items
-    [1,2]
+    [8,9]
   end
 
   def ez_path
@@ -191,6 +191,10 @@ describe "EZPrints Notification Handler" do
 </OrderEventNotification>
     BLOCK
 
+    order = Order.find(order_id)
+    order.accept
+    order.in_process
+
     post ez_path, body, ez_headers
     response.status.should eql(200)
 
@@ -290,7 +294,7 @@ describe "EZPrints Notification Handler" do
     msg.match(/^Success/).should_not == nil
 
     order = Order.find(cancel_order_id)
-    order_state_should_match(cancel_order_id, 'failed')
+    order_state_should_match(cancel_order_id, 'ezp_canceled')
 
   end
 

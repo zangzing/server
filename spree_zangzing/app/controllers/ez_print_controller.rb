@@ -84,13 +84,12 @@ class EzPrintController < Spree::BaseController
   end
 
   def canceled(order, details)
-    #todo we probably want to have an ezp canceled state to distinguish between our zangizing side
     # cancels and ones that come from ezprints since they have different rules that apply to them
     # From ezprints we can receive a cancel which means the order will not go through.  On the other
     # hand we CANNOT cancel after we reach the submitted state so if we opened up the state machine
     # it could lead to allowing cancel when it would not work...
-    # For now we will go to the error state
-    order.error
+    # Show the order has been canceled by ez prints
+    order.ezp_cancel
   end
 
   def shipment(order, details)
@@ -127,8 +126,9 @@ class EzPrintController < Spree::BaseController
     ezp_ref_num = order_failed[:referencenumber]
     ezp_error_message = order_failed[:message]
     spree_order = Order.find_by_ezp_reference_id(ezp_ref_num)
-    order_number = "order not found"
-    unless spree_order.nil?
+    if spree_order.nil?
+      order_number = "#{params[:ordernumber]} - not found"
+    else
       order_number = spree_order.number
       spree_order.ezp_error_message = ezp_error_message
       spree_order.save!

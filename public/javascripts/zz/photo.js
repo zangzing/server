@@ -136,7 +136,7 @@ zz.template_cache = zz.template_cache || {};
             if (o.context.indexOf('chooser') === 0) {
                 //magnify
                 if (o.type === 'photo') {
-                    self.photoAddElement = $('<div class="photo-add-button">');
+                    self.photoAddElement = $('<div class="photo-add-button"><div class="scrim"></div><div class="icon"></div></div>');
                     self.photoAddElement.click(function(event) {
                         o.onClick('main');
                     });
@@ -302,7 +302,7 @@ zz.template_cache = zz.template_cache || {};
                         }
                     });
                     comment_button.click(function(){
-                        zz.comments.show_in_dialog(zz.page.album_id, zz.page.album_lastmod, o.photoId);
+                        zz.comments.show_in_dialog(zz.page.album_id, zz.page.cache_version_key, o.photoId);
                         hide_frame();
                         ZZAt.track('photo.comment.frame.click');
                     });

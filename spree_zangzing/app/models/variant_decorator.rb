@@ -1,9 +1,12 @@
 Variant.class_eval do
   include ActionView::Helpers::NumberHelper
 
-  MIN_DPI = 150
-  DEFAULT_MIN_PHOTO_WIDTH = 3000
-  DEFAULT_MIN_PHOTO_HEIGHT = 2000
+  unless defined? MIN_DPI
+    MIN_DPI = 150
+    DEFAULT_MIN_PHOTO_WIDTH = 3000
+    DEFAULT_MIN_PHOTO_HEIGHT = 2000
+  end
+
 
   def as_json
     {

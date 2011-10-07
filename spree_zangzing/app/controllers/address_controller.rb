@@ -1,4 +1,5 @@
 class AddressesController < Spree::BaseController
+
   #rescue_from ActiveRecord::RecordNotFound, :with => :render_404
   #
   #before_filter  load_and_authorize_address
