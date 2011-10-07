@@ -317,16 +317,16 @@ class Photo < ActiveRecord::Base
 
   # calculation of height that takes into account any rotation
   def rotated_height
-    case self.orientation
-      when 6, 8 then self.width
+    case self.rotate_to
+      when 90, 270 then self.width
       else self.height
     end
   end
 
   # calculation of width that takes into account any rotation
   def rotated_width
-    case self.orientation
-      when 6, 8 then self.height
+    case self.rotate_to
+      when 90, 270 then self.height
       else self.width
     end
   end
@@ -785,6 +785,17 @@ class Photo < ActiveRecord::Base
     end
   end
 
+  # This tracks the version of the data
+  # provided in a single hashed photo for
+  # our api usage.  If you make a change
+  # to the hash_one_photo method below
+  # make sure you bump this version so
+  # we invalidate the browsers cache for
+  # old items.
+  def self.hash_schema_version
+    'v4'
+  end
+
   # this method packages up the fields
   # we care about for return via json
   def self.hash_one_photo(photo)
@@ -800,7 +811,9 @@ class Photo < ActiveRecord::Base
       :stamp_url => photo.stamp_url,
       :thumb_url => photo.thumb_url,
       :screen_url => photo.screen_url,
-      :full_screen_url => photo.full_screen_url
+      :full_screen_url => photo.full_screen_url,
+      :width => photo.width,
+      :height => photo.height
     }
   end
 

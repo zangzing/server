@@ -244,16 +244,16 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
   def photos_loader
      gzip_compress = ZangZingConfig.config[:memcached_gzip]
      compressed = gzip_compress
-     if stale?(:etag => @album)
-
-      cache_version = @album.cache_version
-      cache_version = 0 if cache_version.nil?
+     ver = params[:ver]
+     no_cache = ver.nil? || ver == '0'
+     if stale?(:etag => @album) || no_cache
+      cache_version_key = @album.cache_version_key || 0
 
       comp_flag = gzip_compress ? "Z1" : "Z0"
       # change the vN parm below anytime you make a change
       # to the basic cache structure such as adding new
       # data to the returned info
-      cache_key = "Album.Photos.#{comp_flag}.v2.#{@album.id}.#{cache_version}"
+      cache_key = "Album.Photos.#{comp_flag}.#{@album.id}.#{cache_version_key}"
 
       logger.debug 'cache key: ' + cache_key
       json = Rails.cache.read(cache_key)
@@ -277,7 +277,11 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
         logger.debug 'using cached photos_json: ' + cache_key
       end
 
-      expires_in 1.year, :public => @album.public?
+      if no_cache
+        expires_now
+      else
+        expires_in 1.year, :public => @album.public?
+      end
       response.headers['Content-Encoding'] = "gzip" if compressed
       render :json => json
     else

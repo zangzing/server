@@ -89,10 +89,10 @@ module ZZ
         # now queue up the next stage which is in production
         if random_chance(20)
           # cancel the order from the ezp side
-          enqueue_in(random_seconds(30, 180), order.id, :canceled)
+          enqueue_in(random_seconds(30, 90), order.id, :canceled)
         else
           # continue as normal
-          enqueue_in(random_seconds(60, 180), order.id, :shipment)
+          enqueue_in(random_seconds(30, 60), order.id, :shipment)
         end
       end
 
@@ -144,7 +144,7 @@ module ZZ
 
         if items_remaining > 0
           # go again since not all shipped yet
-          enqueue_in(random_seconds(30, 180), order.id, :shipment)
+          enqueue_in(random_seconds(30, 60), order.id, :shipment)
         else
           # move on to the next phase which is complete
           enqueue_in(random_seconds(10, 60), order.id, :complete)

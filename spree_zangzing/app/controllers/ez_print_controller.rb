@@ -126,8 +126,9 @@ class EzPrintController < Spree::BaseController
     ezp_ref_num = order_failed[:referencenumber]
     ezp_error_message = order_failed[:message]
     spree_order = Order.find_by_ezp_reference_id(ezp_ref_num)
-    order_number = "order not found"
-    unless spree_order.nil?
+    if spree_order.nil?
+      order_number = "#{params[:ordernumber]} - not found"
+    else
       order_number = spree_order.number
       spree_order.ezp_error_message = ezp_error_message
       spree_order.save!

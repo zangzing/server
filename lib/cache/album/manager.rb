@@ -7,10 +7,7 @@ module Cache
     # this class manages the album cache for users - it tracks
     # what is needed for the album index page
     class Manager < Cache::Base
-      unless defined? KEY_PREFIX
-        # the prefix for the memcache key - change the number at the end if you update what the cache holds
-        KEY_PREFIX = "Cache.Album.v3".freeze
-
+      unless defined? CACHE_MAX_INACTIVITY
         CACHE_MAX_INACTIVITY = 72.hours
       end
 

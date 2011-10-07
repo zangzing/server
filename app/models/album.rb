@@ -158,12 +158,13 @@ class Album < ActiveRecord::Base
     Album.update(album_id, :cache_version => version, :photos_last_updated_at => now, :updated_at => now)
   end
 
+  # this is used for ETAG generation only
   def cache_key
     case
     when !persisted?
       "#{self.class.model_name.cache_key}/new"
     else
-      "#{self.class.model_name.cache_key}/#{id}-#{self.cache_version}"
+      "#{self.class.model_name.cache_key}/#{id}-#{self.cache_version_key}"
     end
   end
 
@@ -227,6 +228,11 @@ class Album < ActiveRecord::Base
     @cover_set = true
   end
 
+  # this returns a versioned key that handles schema chagnes
+  # to the underlying photo hash
+  def cache_version_key
+    "#{Photo.hash_schema_version}.#{self.cache_version}"
+  end
 
   # lets hold a temp copy of the cover to
   # avoid running queries multiple times

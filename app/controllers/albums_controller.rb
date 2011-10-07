@@ -263,9 +263,9 @@ class AlbumsController < ApplicationController
       loader = @loader
       session_loader = @session_loader
       if !session_loader.nil?
-        session_liked_users_albums = session_loader.liked_users_album_loader.current_version
+        session_liked_users_albums = session_loader.liked_users_album_loader.current_version_key
         session_liked_users_albums_path = mobile_liked_users_albums_path(session_loader)
-        session_invited_albums = session_loader.invited_album_loader.current_version
+        session_invited_albums = session_loader.invited_album_loader.current_version_key
         session_invited_albums_path = mobile_invited_albums_path(session_loader)
       else
         session_liked_users_albums = nil
@@ -278,15 +278,15 @@ class AlbumsController < ApplicationController
         :user_id                        => loader.user_id,
         :logged_in_user_id              => current_user.nil? ? nil : current_user.id,
         :public                         => loader.public,
-        :my_albums                      => loader.my_album_loader.current_version,
+        :my_albums                      => loader.my_album_loader.current_version_key,
         :my_albums_path                 => mobile_my_albums_path(loader),
-        :liked_albums                   => loader.liked_album_loader.current_version,
+        :liked_albums                   => loader.liked_album_loader.current_version_key,
         :liked_albums_path              => mobile_liked_albums_path(loader),
-        :liked_users_albums             => loader.liked_users_album_loader.current_version,
+        :liked_users_albums             => loader.liked_users_album_loader.current_version_key,
         :liked_users_albums_path        => mobile_liked_users_albums_path(loader),
         :session_user_liked_albums      => session_liked_users_albums,
         :session_user_liked_albums_path => session_liked_users_albums_path,
-        :invited_albums                 => loader.invited_album_loader.current_version,
+        :invited_albums                 => loader.invited_album_loader.current_version_key,
         :invited_albums_path            => mobile_invited_albums_path(loader),
         :session_user_invited_albums      => session_invited_albums,
         :session_user_invited_albums_path => session_invited_albums_path
@@ -305,46 +305,46 @@ class AlbumsController < ApplicationController
 # Some helpers to return the json paths, would be cleaner if these lived in Versions class but we need
 # the route helpers accessible to controller
   def my_albums_path(loader, force_zero_ver = false)
-    ver = force_zero_ver ? 0 : loader.my_album_loader.current_version
+    ver = force_zero_ver ? 0 : loader.my_album_loader.current_version_key
     url = loader.public ? my_albums_public_json_path(loader.user_id) : my_albums_json_path(loader.user_id)
     url << "?ver=#{ver}"
   end
 
   def mobile_my_albums_path(loader, force_zero_ver = false)
-    ver = force_zero_ver ? 0 : loader.my_album_loader.current_version
+    ver = force_zero_ver ? 0 : loader.my_album_loader.current_version_key
     url = loader.public ? mobile_my_albums_public_json_path(loader.user_id) : mobile_my_albums_json_path(loader.user_id)
     url << "?ver=#{ver}"
   end
 
   def liked_albums_path(loader, force_zero_ver = false)
-    ver = force_zero_ver ? 0 : loader.liked_album_loader.current_version
+    ver = force_zero_ver ? 0 : loader.liked_album_loader.current_version_key
     url = loader.public ? liked_albums_public_json_path(loader.user_id) : liked_albums_json_path(loader.user_id)
     url << "?ver=#{ver}"
   end
 
   def mobile_liked_albums_path(loader, force_zero_ver = false)
-    ver = force_zero_ver ? 0 : loader.liked_album_loader.current_version
+    ver = force_zero_ver ? 0 : loader.liked_album_loader.current_version_key
     url = loader.public ? mobile_liked_albums_public_json_path(loader.user_id) : mobile_liked_albums_json_path(loader.user_id)
     url << "?ver=#{ver}"
   end
 
   def liked_users_albums_path(loader, force_zero_ver = false)
-    ver = force_zero_ver ? 0 : loader.liked_users_album_loader.current_version
+    ver = force_zero_ver ? 0 : loader.liked_users_album_loader.current_version_key
     liked_users_public_albums_json_path(loader.user_id) + "?ver=#{ver}"
   end
 
   def mobile_liked_users_albums_path(loader, force_zero_ver = false)
-    ver = force_zero_ver ? 0 : loader.liked_users_album_loader.current_version
+    ver = force_zero_ver ? 0 : loader.liked_users_album_loader.current_version_key
     mobile_liked_users_public_albums_json_path(loader.user_id) + "?ver=#{ver}"
   end
 
   def invited_albums_path(loader, force_zero_ver = false)
-    ver = force_zero_ver ? 0 : loader.invited_album_loader.current_version
+    ver = force_zero_ver ? 0 : loader.invited_album_loader.current_version_key
     invited_albums_json_path(loader.user_id) + "?ver=#{ver}"
   end
 
   def mobile_invited_albums_path(loader, force_zero_ver = false)
-    ver = force_zero_ver ? 0 : loader.invited_album_loader.current_version
+    ver = force_zero_ver ? 0 : loader.invited_album_loader.current_version_key
     mobile_invited_albums_json_path(loader.user_id) + "?ver=#{ver}"
   end
 
@@ -355,7 +355,7 @@ class AlbumsController < ApplicationController
 
   def render_cached_json(json, public, compressed)
     ver = params[:ver]
-    if ver.nil? || ver == 0
+    if ver.nil? || ver == '0'
       # no cache
       expires_now
     else
@@ -369,10 +369,9 @@ class AlbumsController < ApplicationController
 
   # pass the loader that you want to use and the public flag
   def cached_albums_json_common(album_loader, public)
-    ver_time = Time.at(album_loader.current_version).utc
     etag = album_loader.etag
 
-    if stale?(:last_modified => ver_time, :etag => etag)
+    if stale?(:etag => etag)
       json = album_loader.fetch_loaded_json
       render_cached_json(json, public, album_loader.compressed)
     end
