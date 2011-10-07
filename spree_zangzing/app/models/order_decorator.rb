@@ -65,6 +65,7 @@ Order.class_eval do
       transition :from => 'ship_address', :to => 'payment'
 
       transition :from => 'payment',  :to => 'confirm'
+      transition :from => 'delivery', :to => 'confirm'
 
       transition :from => 'confirm',  :to => 'complete'
     end
