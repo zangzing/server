@@ -1,5 +1,6 @@
 CheckoutController.class_eval do
 
+
    before_filter :update_address_id, :only =>[:update]
 
    skip_before_filter :load_order, :only => [:registration, :guest_checkout]

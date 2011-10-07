@@ -16,7 +16,8 @@ zz.buy = zz.buy || {};
         ACTIVATE: 'zz.buy.activate',
         BEFORE_DEACTIVATE: 'zz.buy.before_deactivate',
         DEACTIVATE: 'zz.buy.deactivate',
-        REMOVE_SELECTED_PHOTO: 'zz.buy.remove_selected_photo'
+        REMOVE_SELECTED_PHOTO: 'zz.buy.remove_selected_photo',
+        ADD_SELECTED_PHOTO: 'zz.buy.add_selected_photo'
     };
 
 
@@ -57,7 +58,9 @@ zz.buy = zz.buy || {};
                                 '<div class="options"></div>' +
                             '</div>' +
                             '<div class="selected-photos-section">' +
-                                '<a class="clear-all-photos hyperlink-button">Clear All Selected Photos</a>' +
+                                '<a class="add-all-photos hyperlink-button">Add All Photos from Album</a>' +
+                                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                                '<a class="clear-all-photos hyperlink-button">Clear Selected Photos</a>' +
                                 '<div class="add-photos-message">Browse your photos and click on each one you would like for this product.</div>' +
                                 '<div class="selected-photos"></div>' +
                             '</div>' +
@@ -201,19 +204,19 @@ zz.buy = zz.buy || {};
     };
 
     zz.buy.is_buy_mode_active = function(){
-        return jQuery.cookie('buy_mode') == 'true';
+        return zz.local_storage.get('zz.buy.buy_mode_active') == true;
+
     };
 
     zz.buy.activate_buy_mode = function(){
 
-        localStorage['zz.buy.current_screen'] = localStorage['zz.buy.current_screen'] || DRAWER_SCREENS.SELECT_PRODUCT;
-        localStorage['zz.buy.current_product'] = localStorage['zz.buy.zz.buy.current_product'] || {};
-        localStorage['zz.buy.selected_photos'] = localStorage['zz.buy.selected_photos'] || [];
-
+        zz.local_storage.set('zz.buy.current_screen', zz.local_storage.get('zz.buy.current_screen') || DRAWER_SCREENS.SELECT_PRODUCT);
+        zz.local_storage.set('zz.buy.current_product', zz.local_storage.get('zz.buy.zz.buy.current_product') || {});
+        zz.local_storage.set('zz.buy.selected_photos', zz.local_storage.get('zz.buy.selected_photos') || []);
 
 
         zz.pubsub.publish(EVENTS.BEFORE_ACTIVATE);
-        jQuery.cookie('buy_mode', 'true', {path:'/'});
+        zz.local_storage.set('zz.buy.buy_mode_active', true);
         open_drawer(true, function(){
             zz.pubsub.publish(EVENTS.ACTIVATE);
         });
@@ -224,7 +227,7 @@ zz.buy = zz.buy || {};
 
     zz.buy.deactivate_buy_mode = function(){
         zz.pubsub.publish(EVENTS.BEFORE_DEACTIVATE);
-        jQuery.cookie('buy_mode', 'false', {path:'/'});
+        zz.local_storage.set('zz.buy.buy_mode_active', false)
         close_drawer(function(){
             zz.pubsub.publish(EVENTS.DEACTIVATE);
         });
@@ -252,76 +255,78 @@ zz.buy = zz.buy || {};
         }
 
 
+        if(element){
+            var imageElement = element.find('.photo-image');
 
-        var imageElement = element.find('.photo-image');
-
-        var start_top = imageElement.offset().top;
-        var start_left = imageElement.offset().left;
+            var start_top = imageElement.offset().top;
+            var start_left = imageElement.offset().left;
 
 
-        var end_top;
-        var end_left;
+            var end_top;
+            var end_left;
 
-        if(!zz.buy.is_buy_mode_active()){
-            end_top = $('#footer #buy-button').offset().top;
-            end_left = $('#footer #buy-button').offset().left;
-        }
-        else{
-            //figure out position of last photo in selected photo screen
-            var selected_photos_section = $('.configure-product-screen .main-section .selected-photos-section .selected-photos');
-            var last_selected_photo = $('.configure-product-screen .main-section .selected-photos-section .selected-photos .selected-photo:last');
-
-            if(last_selected_photo.length == 0){
-                end_top = selected_photos_section.offset().top;
-                end_left = selected_photos_section.offset().left + 100;
+            if(!zz.buy.is_buy_mode_active()){
+                end_top = $('#footer #buy-button').offset().top;
+                end_left = $('#footer #buy-button').offset().left;
             }
             else{
-                end_top = last_selected_photo.offset().top + SELECTED_PHOTO_MAX_SIZE.HEIGHT;
-                end_left = selected_photos_section.offset().left + 100;
+                //figure out position of last photo in selected photo screen
+                var selected_photos_section = $('.configure-product-screen .main-section .selected-photos-section .selected-photos');
+                var last_selected_photo = $('.configure-product-screen .main-section .selected-photos-section .selected-photos .selected-photo:last');
 
-                var fold = selected_photos_section.offset().top + selected_photos_section.height();
-                if(end_top > fold){
-                    end_top = fold - 150;
+                if(last_selected_photo.length == 0){
+                    end_top = selected_photos_section.offset().top;
+                    end_left = selected_photos_section.offset().left + 100;
                 }
+                else{
+                    end_top = last_selected_photo.offset().top + SELECTED_PHOTO_MAX_SIZE.HEIGHT;
+                    end_left = selected_photos_section.offset().left + 100;
 
+                    var fold = selected_photos_section.offset().top + selected_photos_section.height();
+                    if(end_top > fold){
+                        end_top = fold - 150;
+                    }
+
+                }
             }
+
+
+            var size = zz.image_utils.scale({
+                                                width: imageElement.width(),
+                                                height: imageElement.height()
+                                            },
+                                            {
+                                                width:SELECTED_PHOTO_MAX_SIZE.WIDTH,
+                                                height:SELECTED_PHOTO_MAX_SIZE.HEIGHT
+                                            });
+
+
+            imageElement.clone()
+                    .css({position: 'absolute', left: start_left, top: start_top, border: '1px solid #ffffff'})
+                    .appendTo('body')
+                    .addClass('animate-photo-to-tray')
+                    .animate({
+                                 width: size.width,
+                                 height: size.height,
+                                 top: (end_top) + 'px',
+                                 left: (end_left) + 'px'
+                             },
+                             500,
+                             'easeInOutCubic',
+                             function(){
+                                $(this).remove();
+                                 add_photo_to_selected_photos_screen(photo_json);
+                             }
+                    );
+
         }
-
-
-        var size = zz.image_utils.scale({
-                                            width: imageElement.width(),
-                                            height: imageElement.height()
-                                        },
-                                        {
-                                            width:SELECTED_PHOTO_MAX_SIZE.WIDTH,
-                                            height:SELECTED_PHOTO_MAX_SIZE.HEIGHT
-                                        });
-
-
-        imageElement.clone()
-                .css({position: 'absolute', left: start_left, top: start_top, border: '1px solid #ffffff'})
-                .appendTo('body')
-                .addClass('animate-photo-to-tray')
-                .animate({
-                             width: size.width,
-                             height: size.height,
-                             top: (end_top) + 'px',
-                             left: (end_left) + 'px'
-                         },
-                         500,
-                         'easeInOutCubic',
-                         function(){
-                            $(this).remove();
-                             add_photo_to_selected_photos_screen(photo_json);
-                         }
-                );
-
 
 
         var selected_photos = zz.local_storage.get('zz.buy.selected_photos') || [];
         selected_photos.push(photo_json);
         zz.local_storage.set('zz.buy.selected_photos', selected_photos);
 
+        zz.pubsub.publish(EVENTS.ADD_SELECTED_PHOTO);
 
 
 
@@ -368,6 +373,14 @@ zz.buy = zz.buy || {};
         zz.pubsub.subscribe(EVENTS.REMOVE_SELECTED_PHOTO, callback);
     };
 
+    zz.buy.on_add_selected_photo = function(callback){
+        zz.pubsub.subscribe(EVENTS.ADD_SELECTED_PHOTO, callback);
+    };
+
+    zz.buy.on_change_selected_photos= function(callback){
+        zz.buy.on_remove_selected_photo(callback);
+        zz.buy.on_add_selected_photo(callback);
+    };
 
 
     function render_select_product_screen(){
@@ -449,10 +462,11 @@ zz.buy = zz.buy || {};
                 update_price_and_count();
             }
             else{
-                alert("Sorry, there was an unexpected error: no matching variant");
+                buy_screens_element.find('.configure-product-screen .product-summary-section .image').attr('src', '');
+                buy_screens_element.find('.configure-product-screen .product-summary-section .description').text('!!ERROR!!');
+                buy_screens_element.find('.configure-product-screen .product-summary-section .count-and-price').text('!!ERROR!!');
+                buy_screens_element.find('.configure-product-screen .options-section .price .value').text('!!ERROR!!');
             }
-
-
         };
 
 
@@ -483,52 +497,26 @@ zz.buy = zz.buy || {};
             update_price_and_count();
         });
 
+
+        if(zz.page.album_id){
+            buy_screens_element.find('.configure-product-screen .main-section .selected-photos-section .add-all-photos').show().unbind('click').click(function(){
+                zz.routes.photos.get_album_photos_json(zz.page.album_id, zz.page.album_lastmod, function(photos){
+                    _.each(photos, function(photo){
+                        if(photo.state == 'ready'){
+                            zz.buy.add_selected_photo(photo);
+                        }
+                    });
+                    refresh_selected_photos_list();
+                });
+            });
+        }
+
         refresh_selected_photos_list();
 
 
 
 
     }
-
-//    function render_select_photos_screen(){
-//        set_drawer_title("Selected Photos");
-//
-//        buy_screens_element.find('.select-photos-screen .header-section .add-and-buy-more-button').unbind('click').click(function(){
-//            add_selected_photos_to_cart(function(){
-//                zz.local_storage.set('zz.buy.current_screen', null);
-//                window.location.reload();
-//            });
-//        });
-//
-//        buy_screens_element.find('.select-photos-screen .header-section .checkout-button').unbind('click').click(function(){
-//            add_selected_photos_to_cart(function(){
-//                zz.routes.store.goto_cart();
-//            });
-//        });
-//
-//        buy_screens_element.find('.select-photos-screen .header-section .back').unbind('click').click(function(){
-//            slide_to_screen(DRAWER_SCREENS.CONFIGURE_PRODUCT, true);
-//        });
-//
-//
-//        refresh_selected_photos_list();
-//
-//        buy_screens_element.find('.select-photos-screen .main-section .clear-all-photos').unbind('click').click(function(){
-//            var selected_photos = zz.local_storage.get('zz.buy.selected_photos');
-//            zz.local_storage.set('zz.buy.selected_photos',[]);
-//            refresh_selected_photos_list();
-//            zz.pubsub.publish(EVENTS.REMOVE_SELECTED_PHOTO, selected_photos);
-//        });
-//
-//
-//        buy_screens_element.find('.select-photos-screen .header-section .product').text(get_selected_product().name);
-//        buy_screens_element.find('.select-photos-screen .header-section .variant').text(get_selected_variant().description);
-//        buy_screens_element.find('.select-photos-screen .header-section .price .value').text(get_selected_variant().price);
-//        buy_screens_element.find('.select-photos-screen .header-section .image').attr('src', get_selected_variant().image_url);
-//
-//
-//
-//    }
 
     function refresh_selected_photos_list(){
         var selected_photos = zz.local_storage.get('zz.buy.selected_photos');
@@ -541,7 +529,14 @@ zz.buy = zz.buy || {};
                  add_photo_to_selected_photos_screen(photo_json);
              });
         }
-        else{
+
+        check_empty_photo_list();
+    }
+
+    function check_empty_photo_list(){
+        var selected_photos = zz.local_storage.get('zz.buy.selected_photos');
+
+        if(selected_photos && selected_photos.length == 0){
             buy_screens_element.find('.configure-product-screen .main-section .selected-photos-section .add-photos-message').show();
             buy_screens_element.find('.configure-product-screen .main-section .selected-photos-section .clear-all-photos').hide();
         }
@@ -602,7 +597,7 @@ zz.buy = zz.buy || {};
             zz.local_storage.set('zz.buy.selected_photos', selected_photos);
             zz.pubsub.publish(EVENTS.REMOVE_SELECTED_PHOTO, [photo_json.id]);
             update_price_and_count();
-
+            check_empty_photo_list();
         });
 
         photo_list_element.append(photo_element);
@@ -731,7 +726,7 @@ zz.buy = zz.buy || {};
 
         $('#right-drawer .content').html(buy_screens_element);
 
-        $('#right-drawer .header .close-button').click(function(){
+        $('#right-drawer .header .close-button').unbind('click').click(function(){
             $('#footer #buy-button').click(); //todo: hack -- should be better way to wire these together
         });
 

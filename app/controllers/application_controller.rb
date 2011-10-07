@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
   JSON_MEDIA_TYPE = 'application/json'.freeze
 
 
-  include SslRequirement
+  include ZZSslRequirement
   include ZZ::Auth
   include ZZ::ZZAController
   include PrettyUrlHelper

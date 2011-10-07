@@ -12,11 +12,11 @@ var zz = zz || {};
             },
 
             goto_cart: function(){
-                document.location.href = '/store/cart';
+                document.location.href = 'https://' + document.location.host + '/store/cart';
             },
 
             goto_checkout: function(){
-                document.location.href = '/store/checkout';
+                document.location.href = 'https://' + document.location.host + '/store/checkout';
             },
 
             add_to_cart: function(product_id, sku, photo_ids, success, error ){

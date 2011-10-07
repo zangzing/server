@@ -241,6 +241,7 @@
 
 .buy-screens .configure-product-screen .main-section .selected-photos-section {
     position: relative;
+    text-align: center;
 }
 
 
@@ -248,9 +249,14 @@
 }
 
 
+.buy-screens .configure-product-screen .main-section .selected-photos-section .add-all-photos{
+    position: relative;
+    top: 17px;
+    display:none;
+}
+
 .buy-screens .configure-product-screen .main-section .selected-photos-section .clear-all-photos{
     position: relative;
-    left: 115px;
     top: 17px;
 }
 
@@ -490,7 +496,7 @@
 #checkout-banner {
     position: absolute;
     width: 530px;
-    height: 55px;
+    height: 48px;
     top: 55px;
     background-color: white;
     display: none;
