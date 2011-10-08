@@ -4,7 +4,7 @@ OrdersController.class_eval do
   before_filter :require_user, :only => [:index]
   before_filter :check_authorization
 
-  helper 'checkout','photo'
+  helper 'checkout','photo', 'tracking'
 
   respond_to :json, :only => [:add_photo, :add_to_order]
 

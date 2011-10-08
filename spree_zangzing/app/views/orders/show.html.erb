@@ -2,6 +2,7 @@
 
 <div class="checkout-content">
   <div id="order">
+    <span class="address_label">Placed On:</span><%= @order.completed_at.strftime( "%A %B %d %Y at %I:%M%p %Z" ) %>
     <div id="order_info" class="clearfix">
       <div id="ship_address" >
           <%= render :partial =>'checkout/address_display', :locals => { :address => @order.ship_address,:label =>t("shipping_address") } %>
@@ -12,15 +13,29 @@
 
       <div id="bill_address">
         <%= render :partial =>'checkout/address_display', :locals => { :address => @order.bill_address,:label =>t('billing_address') } %>
+        <br/>
         <div id="cclogo">
           <%= creditcard_logo( @order.payments.first.source ) %>
-        </div>
-        <div>
-        <%="#{t('ends_in')} #{@order.payments.first.source.last_digits} #{t('expires')} #{@order.payments.first.source.month}/#{@order.payments.first.source.year}" %>
-          <p>&nbsp</p>
+          <%="#{t('ends_in')} #{@order.payments.first.source.last_digits}" %>
         </div>
       </div>
+      <div id="tracking">
+        <% if @order.shipments.shipped.count > 0 %>
+        <div class="address_label"><%=t('tracking_info')%></div>
+            <% @order.shipments.shipped.each do |shp| %>
+                <div><%=link_to shp.tracking, tracking_url( shp.tracking ),{:target => "_blank"} %></div>
+            <%end%>
+            <br/>
+        <%end%>
+        <div class="address_label">
+          <a href="javascript:void(0);" onclick="Zenbox.show();"> <%=t('support')%></a>
+        </div>
+      </div>
+
     </div>
+
+
+
 
     <div id="order_items">
       <table class="index">
@@ -32,15 +47,54 @@
             <%= render 'line_item', :line_item => line_item%>
         <% end %>
         </tbody>
+
+        <tbody>
+        <tr id="total">
+          <td>&nbsp</td>
+          <td>
+            <table>
+              <tr>
+                <td class="product no-border variant_description"><%= t('subtotal') %></td>
+                <td class="price no-border variant_description"><span><%= number_to_currency @order.item_total %></span></td>
+              </tr>
+              <% @order.adjustments.each do |adjustment| %>
+                  <tr>
+                    <td class="product no-border variant_description"><%= adjustment.label %></td>
+                    <td class="price no-border variant_description"><%= number_to_currency adjustment.amount %></td>
+                  </tr>
+              <% end %>
+              <tr>
+                <td class="product no-border"><h3><%= t('order_total') %></h3></td>
+                <td class="price no-border"><h3><%= number_to_currency @order.total %></h3></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        </tbody>
       </table>
     </div>
   </div>
-
 </div>
 
 <%content_for :small_print do %>
     By placing your order you agreed to ZangZing's <a class="hyperlink-button" target="_blank" href="http://www.zangzing.com/terms">terms of service and privacy policy</a>.
 <%end%>
 
-
-
+<%content_for :page_javascript do %>
+<script type="text/javascript">
+        if (typeof(Zenbox) !== "undefined") {
+            Zenbox.init({
+                hide_tab: true,
+                dropboxID:   "20023482",
+                url:         "https://zangzing.zendesk.com",
+                request_subject: "<%= escape_javascript "[#{@order.number}] Order Needs Attention" %>",
+                requester_name:  "<%= escape_javascript @order.bill_address.full_name %>",
+                requester_email: "<%= escape_javascript @order.email %>",
+                request_description: "<%= escape_javascript "[Order #{@order.number}]. Please describe your request in detail below this line." %>",
+                tabID:       "support",
+                tabColor:    "black",
+                tabPosition: "Left"
+            });
+        }
+</script>
+<%end%>

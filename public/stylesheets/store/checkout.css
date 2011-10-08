@@ -566,3 +566,26 @@ form p.field#submit_button{
 #cart #subtotal .gray-button{
     min-width: 120px;
 }
+
+/*------------------------ order status -------------------*/
+#order #cclogo img{
+    vertical-align: middle;
+}
+
+#order #total{
+    background-color: #EEEEEE;
+    border-top: solid 2px #dddddd;
+    text-shadow: 1px 1px 1px white;
+}
+
+
+
+#order #total .variant_description{
+    color: #404040;
+}
+
+#order #tracking{
+    float: right;
+    margin-right: 50px;
+    min-width: 200px;
+}
