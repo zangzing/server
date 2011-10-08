@@ -62,15 +62,16 @@ describe Order do
       first_item.quantity.should be 1
       @order.line_items.count.should be 2
     end
+
     after(:each) do
-      @photo.user.destroy
-      @photo.destroy
-      @order.destroy
+      @photo.user.destroy rescue nil
+      @photo.destroy rescue nil
+      @order.destroy rescue nil
     end
   end
 
   describe "Prints Roll Up" do
-    before(:all) do
+    before(:each) do
       #Create an order and add prints and non prints line items
       @photo = Factory.create(:photo)
       @photo2 = Factory.create(:photo)
@@ -122,12 +123,21 @@ describe Order do
       @order.printset_quantity.should be 5
     end
 
-    after(:all) do
-      @photo.user.destroy
-      @photo.destroy
-      @photo2.user.destroy
-      @photo2.destroy
-      @order.destroy
+    after(:each) do
+      # if you change this to use before and after(:all), rspec does not like to
+      # pass instance vars such as @photo but if they are defined as class vars @@photo
+      # they do exist.  Anyways for now I am just using :each to avoid the problem.  This
+      # seems like an rspec bug.
+      # Also FYI, if you use :all you must clean up on your own because those objects get
+      # inserted into the database and are not cleaned up by transactional fixtures since
+      # they are done outside of a transaction.
+      #
+      # The stuff below isn't strictly necessary if we run as :each rather than :all
+      @photo.user.destroy rescue nil
+      @photo.destroy rescue nil
+      @photo2.user.destroy rescue nil
+      @photo2.destroy rescue nil
+      @order.destroy rescue nil
     end
   end
 end
