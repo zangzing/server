@@ -24,15 +24,15 @@ describe "EZPrints Notification Handler" do
   end
 
   def order_id
-    9
+    10
   end
 
   def ez_ref_num
-    'ba6cfaa9-9d9b-4543-8b54-ef80022eca68'
+    'ae57ac6e-6926-441f-9f2c-e28acf758dee'
   end
 
   def line_items
-    [8,9]
+    [10,11]
   end
 
   def ez_path

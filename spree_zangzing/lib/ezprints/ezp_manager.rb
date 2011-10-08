@@ -81,7 +81,7 @@ module EZPrints
           'S' => "staging.photos.zangzing.com",
           'P' => "www.zangzing.com"
       }
-      host = @@order_routes[prefix] || @@order_routes['D']
+      host = @@order_routes[prefix]
     end
 
     # return the order prefix based on our environment
@@ -91,7 +91,7 @@ module EZPrints
           'photos_staging'    => 'S',
           'photos_production' => 'P'
       }
-      @@my_prefix ||= @@env_to_prefix[Rails.env] || @@env_to_prefix['development']
+      @@my_prefix ||= @@env_to_prefix[Rails.env]
     end
 
     # returns the host that we should redirect to if not
