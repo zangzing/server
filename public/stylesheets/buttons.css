@@ -74,6 +74,8 @@ a.gray-square-button span{
 
 
 
+
+
 /*  hyperlink button
  **************************************************************************/
 a.hyperlink-button{
@@ -175,7 +177,6 @@ a.black-button:hover { background-position: right -30px; }
 a.black-button:active{ background-position: right -60px; }
 
 a.black-button span{
-    font-weight: normal;
     padding-left: 8px;
     background: transparent url('/images/btn-black.png') no-repeat;
 }
@@ -271,8 +272,9 @@ a.gray-button:active span{ background-position: left -60px; }
 /* gray-square-button
 *************************************************************/
 a.gray-square-button{
+    font-weight: normal !important;
     display: inline-block;
-    color:       #000;
+    color:       gray;
     text-shadow: 0 1px 3px #fff;
     padding-right:  10px;
     background: url("/images/btn-gray-square-endcap.png") no-repeat right top;
