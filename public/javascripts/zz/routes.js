@@ -261,7 +261,7 @@ var zz = zz || {};
             alert(error);
         };
 
-        do_put('/service/photos/' + photo_id + '/async_rotate_' + direction, on_success, on_failure);
+        zz.async_ajax.put('/service/photos/' + photo_id + '/async_rotate_' + direction, on_success, on_failure);
     }
 
     function do_post(url, params, success, error){
