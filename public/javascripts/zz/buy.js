@@ -152,7 +152,7 @@ zz.buy = zz.buy || {};
         },
         {
             type_id: 7, // frame
-            id: 33,     // Black with No Matte
+            id: 34,     // Black with No Matte
             option_values_to_remove: [
                 {
                     type_id: 3,
