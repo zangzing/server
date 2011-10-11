@@ -170,6 +170,12 @@
     margin: 0px;
 }
 
+.ua-ie .photo-image{
+    border: #fff solid 5px;
+}
+
+
+
 /*.photo-undeveloped{*/
     /*border: #fff solid 5px;*/
     /*margin: 0px;*/
