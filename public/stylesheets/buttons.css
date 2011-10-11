@@ -252,7 +252,7 @@ a.newblack-button:active span{ background-position: left -60px; }
 *************************************************************/
 a.gray-button{
     display: inline-block;
-    color:       #000;
+    color:       #666;
     text-shadow: 0 1px 3px #fff;
     padding-right:  10px;
     background: url("/images/btn-gray-endcap.png") no-repeat right top;
