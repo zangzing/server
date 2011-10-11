@@ -10,7 +10,7 @@
       </div>
     </li>
   </ul>
- <% form_for @user, :url => update_user_path(@user), :html => { :method => :put} do |user_form| %>
+ <%= form_for @user, :url => update_user_path(@user), :html => { :method => :put} do |user_form| %>
   <ul>
     <li class="item tab add">
       <div class="header tab-centered">
