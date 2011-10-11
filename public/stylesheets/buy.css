@@ -25,6 +25,8 @@
     width:381px;
     border-bottom: 1px solid #aaaaaa;
     cursor: pointer;
+    background-color: #fff;
+
 }
 
 .buy-screens .select-product-screen .product:hover{
