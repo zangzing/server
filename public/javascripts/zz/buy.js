@@ -671,13 +671,22 @@ zz.buy = zz.buy || {};
 
         var render_options = function(){
             options_element.empty();
-            var selected_option_values = get_selected_variant().values;
-            var option_values_to_remove = get_option_values_to_remove(selected_option_values);
+            var selected_variant = get_selected_variant();
+            if(selected_variant){
+                var selected_option_values = get_selected_variant().values;
+                var option_values_to_remove = get_option_values_to_remove(selected_option_values);
+            }
+
 
             var should_remove_option_value = function(option_value){
-                return _.detect(option_values_to_remove, function(option_value_to_remove){
-                    return (option_value.type_id == option_value_to_remove.type_id && option_value.id == option_value_to_remove.id);
-                });
+                if(option_values_to_remove){
+                    return _.detect(option_values_to_remove, function(option_value_to_remove){
+                        return (option_value.type_id == option_value_to_remove.type_id && option_value.id == option_value_to_remove.id);
+                    });
+                }
+                else{
+                    return false;
+                }
             };
 
             _.each(get_selected_product().options, function(option){
