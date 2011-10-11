@@ -3,6 +3,179 @@ zz.buy = zz.buy || {};
 
 (function(){
 
+    var OPTION_FILTERS = [
+        {
+            type_id: 4, // size
+            id: 15,     // 4x6
+            option_values_to_remove: [
+                {
+                    type_id: 7, //frame
+                    id: 31      //chocolate with no matte
+                },
+                {
+                    type_id: 7, //frame
+                    id: 34      //black with no matte
+                }
+            ]
+        },
+        {
+            type_id: 4, // size
+            id: 20,     // 20x30
+            option_values_to_remove: [
+                {
+                    type_id: 7, //frame
+                    id: 29      //chocolate with white matte
+                },
+                {
+                    type_id: 7, //frame
+                    id: 30      //chocolate with off-white matte
+                },
+                {
+                    type_id: 7, //frame
+                    id: 32      //black with white matte
+                },
+                {
+                    type_id: 7, //frame
+                    id: 33      //black with off-white matte
+                }
+            ]
+        },
+        {
+            type_id: 7, // frame
+            id: 29,     // Chocolate with White Matte
+            option_values_to_remove: [
+                {
+                    type_id: 3,
+                    id: 11       // Glossy
+                },
+                {
+                    type_id: 3,
+                    id: 12       // Matte
+                },
+                {
+                    type_id: 3,
+                    id: 13      // Lustre
+                },
+                {
+                    type_id: 3,
+                    id: 14          // Metallic
+                }
+            ]
+        },
+        {
+            type_id: 7, // frame
+            id: 30,     // Chocolate with Off-White Matte
+            option_values_to_remove: [
+                {
+                    type_id: 3,
+                    id: 11       // Glossy
+                },
+                {
+                    type_id: 3,
+                    id: 12       // Matte
+                },
+                {
+                    type_id: 3,
+                    id: 13      // Lustre
+                },
+                {
+                    type_id: 3,
+                    id: 14          // Metallic
+                }
+            ]
+        },
+        {
+            type_id: 7, // frame
+            id: 31,     // Chocolate with No Matte
+            option_values_to_remove: [
+                {
+                    type_id: 3,
+                    id: 11       // Glossy
+                },
+                {
+                    type_id: 3,
+                    id: 12       // Matte
+                },
+                {
+                    type_id: 3,
+                    id: 13      // Lustre
+                },
+                {
+                    type_id: 3,
+                    id: 14          // Metallic
+                }
+            ]
+        },
+        {
+            type_id: 7, // frame
+            id: 32,     // Black with White Matte
+            option_values_to_remove: [
+                {
+                    type_id: 3,
+                    id: 11       // Glossy
+                },
+                {
+                    type_id: 3,
+                    id: 12       // Matte
+                },
+                {
+                    type_id: 3,
+                    id: 13      // Lustre
+                },
+                {
+                    type_id: 3,
+                    id: 14          // Metallic
+                }
+            ]
+        },
+        {
+            type_id: 7, // frame
+            id: 33,     // Black with Off-White Matte
+            option_values_to_remove: [
+                {
+                    type_id: 3,
+                    id: 11       // Glossy
+                },
+                {
+                    type_id: 3,
+                    id: 12       // Matte
+                },
+                {
+                    type_id: 3,
+                    id: 13      // Lustre
+                },
+                {
+                    type_id: 3,
+                    id: 14          // Metallic
+                }
+            ]
+        },
+        {
+            type_id: 7, // frame
+            id: 33,     // Black with No Matte
+            option_values_to_remove: [
+                {
+                    type_id: 3,
+                    id: 11       // Glossy
+                },
+                {
+                    type_id: 3,
+                    id: 12       // Matte
+                },
+                {
+                    type_id: 3,
+                    id: 13      // Lustre
+                },
+                {
+                    type_id: 3,
+                    id: 14          // Metallic
+                }
+            ]
+        }
+    ];
+
+
+
     var DRAWER_SCREENS = {
         SELECT_PRODUCT: 'select_product',
         CONFIGURE_PRODUCT: 'configure_product',
@@ -231,7 +404,7 @@ zz.buy = zz.buy || {};
 
     zz.buy.deactivate_buy_mode = function(){
         zz.pubsub.publish(EVENTS.BEFORE_DEACTIVATE);
-        zz.local_storage.set('zz.buy.buy_mode_active', false)
+        zz.local_storage.set('zz.buy.buy_mode_active', false);
         close_drawer(function(){
             zz.pubsub.publish(EVENTS.DEACTIVATE);
         });
@@ -387,10 +560,27 @@ zz.buy = zz.buy || {};
     };
 
 
+    function get_option_values_to_remove(selected_option_values){
+        var option_values_to_remove = [];
+
+        // loop thru the selected option values
+        _.each(selected_option_values, function(option_value){
+
+            // find all the filters that match these option values
+            _.each(OPTION_FILTERS, function(option_filter){
+                if(option_value.id == option_filter.id && option_value.type_id == option_filter.type_id){
+                    option_values_to_remove = _.union(option_values_to_remove, option_filter.option_values_to_remove);
+                }
+            });
+        });
+
+        return option_values_to_remove;
+    }
+
     function render_select_product_screen(){
         show_scrim();
 
-        set_drawer_title("Choose a Product")
+        set_drawer_title("Choose a Product");
 
 
         zz.routes.store.get_products(function(products){
@@ -474,21 +664,50 @@ zz.buy = zz.buy || {};
         };
 
 
-        _.each(get_selected_product().options, function(option){
-            var option_element = $(PRODUCT_OPTION_TEMPLATE());
-            option_element.find('.label').text(option.name);
-            option_element.change(function(){
-                on_change_variant();
-            });
+        var render_options = function(){
+            options_element.empty();
+            var selected_option_values = get_selected_variant().values;
+            var option_values_to_remove = get_option_values_to_remove(selected_option_values);
 
-            _.each(option.values, function(value){
-                var value_element = $('<option>' + value.name + '</option>');
-                value_element.data('value', value); // hang onto this for later
-                option_element.find('.drop-down').append(value_element);
-            });
+            var should_remove_option_value = function(option_value){
+                return _.detect(option_values_to_remove, function(option_value_to_remove){
+                    return (option_value.type_id == option_value_to_remove.type_id && option_value.id == option_value_to_remove.id);
+                });
+            };
 
-            options_element.append(option_element);
-        });
+            _.each(get_selected_product().options, function(option){
+                var option_element = $(PRODUCT_OPTION_TEMPLATE());
+                option_element.find('.label').text(option.name);
+                option_element.change(function(){
+                    on_change_variant();
+                    render_options();
+                    on_change_variant(); // capture the variant again in case an option was removed during render
+                });
+
+                var has_values = false;
+                _.each(option.values, function(value){
+                    if(!should_remove_option_value(value)){
+                        has_values = true;
+                        var value_element = $('<option>' + value.name + '</option>');
+                        value_element.data('value', value); // hang onto this for later
+                        option_element.find('.drop-down').append(value_element);
+
+                        _.detect(selected_option_values, function(selected_option_value){
+                            if(_.isEqual(value, selected_option_value)){
+                                value_element.attr('selected', true);
+                                return true;
+                            }
+                        });
+                    }
+                });
+
+                if(has_values){
+                    options_element.append(option_element);
+                }
+            });
+        };
+
+        render_options();
         on_change_variant();
 
 
@@ -673,9 +892,7 @@ zz.buy = zz.buy || {};
             }
         }, function(){
             alert('Sorry, there was an error adding items to your cart');
-        })
-
-
+        });
     }
 
 
