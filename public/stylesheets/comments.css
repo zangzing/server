@@ -146,6 +146,13 @@
     right: 0px;
 }
 
+.ua-ie .comments-container{
+    font-size:11px;
+}
+
+
+
+
 .comments-right-panel .comments-container{
     /* when showing comments in the drawer, we need to leave room for the drawer's bevel */
     left: 2px;
@@ -210,6 +217,11 @@
     left: 65px;
     top: 94px;
     color: #666;
+}
+
+.ua-ie .comments-container .new-comment .share {
+    top: 87px;
+
 }
 
 .comments-container .new-comment .submit-button {
