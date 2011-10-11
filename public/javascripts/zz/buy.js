@@ -387,6 +387,11 @@ zz.buy = zz.buy || {};
 
     zz.buy.activate_buy_mode = function(){
 
+        if(!is_beta_user()){
+            alert("This feature is still under construction");
+            return;
+        }
+
         zz.local_storage.set('zz.buy.current_screen', zz.local_storage.get('zz.buy.current_screen') || DRAWER_SCREENS.SELECT_PRODUCT);
         zz.local_storage.set('zz.buy.current_product', zz.local_storage.get('zz.buy.zz.buy.current_product') || {});
         zz.local_storage.set('zz.buy.selected_photos', zz.local_storage.get('zz.buy.selected_photos') || []);
@@ -990,6 +995,10 @@ zz.buy = zz.buy || {};
 
     function show_glamour_page(product_id){
         zz.dialog.show_square_dialog('glamour page', {width:640, height:480});
+    }
+
+    function is_beta_user(){
+        return true;
     }
 
 
