@@ -684,9 +684,17 @@ zz.buy = zz.buy || {};
                 var option_element = $(PRODUCT_OPTION_TEMPLATE());
                 option_element.find('.label').text(option.name);
                 option_element.change(function(){
+
+                    // todo: fix this
+                    // ok, this is stupid -- but it works
+                    // need to do this several times so that we get thru
+                    // all the filtering and settle on the right set of options,
+                    // then capture the variant
                     on_change_variant();
                     render_options();
-                    on_change_variant(); // capture the variant again in case an option was removed during render
+                    on_change_variant();
+                    render_options();
+                    on_change_variant();
                 });
 
                 var has_values = false;
