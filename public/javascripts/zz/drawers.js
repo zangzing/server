@@ -35,7 +35,7 @@ zz.drawers = {
         }
 
         // fade out the grid
-        $('#article').empty();
+        $('#article').empty().css({right:0}); //clear content and make it will width in case drawer was open
         $('#right-drawer').remove();
 
         // pull out the drawer
