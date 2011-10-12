@@ -24,6 +24,9 @@ a.gray-square-button{
     font-weight: 500;
 }
 
+
+
+
 a.back-button span,
 a.next-button span,
 a.green-button span,
@@ -57,18 +60,19 @@ a.gray-square-button span{
     font-weight: 600;
 }
 
-.ua-ie a.back-button,
-.ua-ie a.next-button,
-.ua-ie a.green-button,
-.ua-ie a.black-button,
-.ua-ie a.green-add-button,
-.ua-ie a.green-download-button,
-.ua-ie a.newgreen-button,
-.ua-ie a.newblack-button,
-.ua-ie a.gray-button,
-.ua-ie a.gray-back-button,
-.ua-ie a.gray-square-button{
+.os-win a.back-button,
+.os-win a.next-button,
+.os-win a.green-button,
+.os-win a.black-button,
+.os-win a.green-add-button,
+.os-win a.green-download-button,
+.os-win a.newgreen-button,
+.os-win a.newblack-button,
+.os-win a.gray-button,
+.os-win a.gray-back-button,
+.os-win a.gray-square-button{
     font-weight: 600;
+    font-size: 13px;
 }
 
 
