@@ -36,7 +36,7 @@ zz.drawers = {
 
         // fade out the grid
         $('#article').empty();
-
+        $('#right-drawer').remove();
 
         // pull out the drawer
         $('div#drawer').show().animate({ height: zz.drawer_height + 'px', top: '52px' }, time);
