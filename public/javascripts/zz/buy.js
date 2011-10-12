@@ -295,7 +295,7 @@ zz.buy = zz.buy || {};
                    '<img class="image" src="/images/photo_placeholder.png">' +
                    '<div class="name"></div>' +
                    '<div class="description"></div>' +
-                   '<div class="learn-more">Learn more.</div>' +
+                   '<div class="learn-more">Learn more</div>' +
                    '<div class="arrow"></div>' +
                '</div>';
     };
