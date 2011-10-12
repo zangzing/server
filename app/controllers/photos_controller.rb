@@ -24,8 +24,6 @@ class PhotosController < ApplicationController
   # logged in via oauth
   # @album set by require_album
   def agent_create
-    in_data = request.raw_post
-    Rails.logger.info("agent create raw_data: " + in_data.to_s)
 start_time = Time.now
     if params[:source_guid].nil?
       render :json => "source_guid parameter required. Unable to create photos", :status=>400 and return
