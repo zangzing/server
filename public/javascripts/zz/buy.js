@@ -3,6 +3,54 @@ zz.buy = zz.buy || {};
 
 (function(){
 
+    var BETA_USERS = [
+        //jeremy
+        'hope',
+        'lauriehermann',
+        'jlh',
+        'jeremyhermann',
+
+        //joseph
+        'j',
+        'david',
+        'jamesrharker',
+        'ebothwell',
+        'jaymce',
+        'rosen',
+        'joseph',
+
+        //kathryn
+        'k',
+        'erika',
+        'maegondo',
+        'sheripollock',
+        'tyler',
+
+        //mauricio
+        'mauricio',
+        'ximena',
+        'eugetomelu',
+        'wythes',
+        'mm',
+
+        //mauricio
+        'sfmishras',
+        'rimish',
+        'sintak',
+        'richamisra',
+        'richamisra',
+
+         //greg
+        'gseitz',
+        'lyogi',
+
+        //phil
+        'pbeisel',
+        'surfkayak',
+        'dgfoster',
+        'beiselpaul'
+    ];
+
     var OPTION_FILTERS = [
         {
             type_id: 4, // size
@@ -1015,7 +1063,9 @@ zz.buy = zz.buy || {};
     }
 
     function is_beta_user(){
-        return true;
+        return _.detect(BETA_USERS, function(name){
+            return (zz.session.current_user_name == name);
+        });
     }
 
 
