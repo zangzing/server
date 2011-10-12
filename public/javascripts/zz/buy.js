@@ -782,7 +782,6 @@ zz.buy = zz.buy || {};
         // need to do this several times so that we get thru
         // all the filtering and settle on the right set of options,
         // then capture the variant
-        on_change_variant();
         render_options();
         on_change_variant();
         render_options();
