@@ -3,7 +3,7 @@ class Connector::FlickrPhotosController < Connector::FlickrController
   def self.list_photos(api_client, params)
     photos_response = call_with_error_adapter do
       if params[:set_id]=='my-stream'
-        api_client.people.getPhotos :user_id => 'me', :page => params[:page], :per_page => 100, :extras => 'date_upload,original_format,url_m,url_z,url_l,url_o'
+        api_client.people.getPhotos :user_id => 'me', :page => params[:page], :per_page => MY_STREAM_PER_PAGE, :extras => 'date_upload,original_format,url_m,url_z,url_l,url_o'
       else
         api_client.photosets.getPhotos :photoset_id => params[:set_id], :extras => 'original_format,url_m,url_z,url_l,url_o', :media => 'photos'
       end

@@ -7,12 +7,13 @@ class Connector::FlickrFoldersController < Connector::FlickrController
       page_num = 1
       page_count = nil
       begin
-        stream_page = call_with_error_adapter do
-          api_client.people.getPhotos :user_id => 'me', :page => page_num, :per_page => 100, :extras => 'date_upload'
+        unless page_count
+          first_page = call_with_error_adapter do
+            api_client.people.getPhotos :user_id => 'me', :page => page_num, :per_page => MY_STREAM_PER_PAGE, :extras => 'date_upload'
+          end
+          page_count = first_page.pages
         end
-        page_count = stream_page.pages unless page_count
-        upload_dates = stream_page.photo.map{|p| Time.at(p.dateupload.to_i) }
-        page_names << "#{upload_dates.max.strftime('%b %d, %Y')} - #{upload_dates.min.strftime('%b %d, %Y')}"
+        page_names << "My Stream #{(page_num-1)*MY_STREAM_PER_PAGE + 1} - #{page_num*MY_STREAM_PER_PAGE}"
         page_num += 1
       end while page_num <= page_count
 
@@ -55,7 +56,7 @@ class Connector::FlickrFoldersController < Connector::FlickrController
     identity = params[:identity]
     photo_set = call_with_error_adapter do
       if params[:set_id]=='my-stream'
-        api_client.people.getPhotos :user_id => 'me', :page => params[:page], :per_page => 100, :extras => 'date_upload,original_format,url_m,url_z,url_l,url_o'
+        api_client.people.getPhotos :user_id => 'me', :page => params[:page], :per_page => MY_STREAM_PER_PAGE, :extras => 'date_upload,original_format,url_m,url_z,url_l,url_o'
       else
         api_client.photosets.getPhotos :photoset_id => params[:set_id], :extras => 'original_format,url_m,url_z,url_l,url_o', :media => 'photos'
       end
