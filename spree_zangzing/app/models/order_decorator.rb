@@ -102,19 +102,22 @@ Order.class_eval do
     event :cancel do
       transition :from => ['complete','preparing'], :to => 'canceled'
     end
-    after_transition :to => 'returned', :do => :send_cancel_email
+    after_transition :to => 'canceled', :do => :send_cancel_email
     after_transition  :to => 'canceled', :do => :after_cancel
+    after_transition :to => 'canceled', :do => :cleanup_photos
 
     event :ezp_cancel do
       transition :from => ['submitted', 'accepted','processing'], :to => 'ezp_canceled'
     end
     after_transition :to => 'ezp_canceled', :do => :send_ezpcancel_email
-    after_transition  :to => 'canceled', :do => :after_cancel
+    after_transition  :to => 'ezp_canceled', :do => :after_cancel
+    after_transition :to => 'ezp_canceled', :do => :cleanup_photos
 
     event :error do
       transition :to => 'failed'
     end
     after_transition :to => 'failed', :do => :send_failure_email
+    after_transition :to => 'failed', :do => :cleanup_photos
 
     event :return do
       transition :from => 'shipped', :to => 'returned'
@@ -128,6 +131,7 @@ Order.class_eval do
     after_transition ['complete','preparing',
                       'submitted','accepted',
                       'processing','shipped',
+                      'canceled','ezp_canceled',
                       'failed','returned'] => any do  | order, transition|
       order.audit_trail( transition )
     end
