@@ -44,7 +44,7 @@ zz.comments = {};
                         '</div>' +
                         '<textarea placeholder="Write a comment..." class="text"></textarea>' +
                         '<div class="share">' +
-                        'Share on &nbsp;&nbsp;<input type="checkbox" class="facebook"> Facebook &nbsp;&nbsp;<input type="checkbox" class="twitter"> Twitter' +
+                        'Share on &nbsp;&nbsp;<input type="checkbox" class="facebook">Facebook &nbsp;&nbsp;<input type="checkbox" class="twitter">Twitter' +
                         '</div>' +
                         '<a class="submit-button green-button"><span>Comment</span></a>' +
                         '</div>' +

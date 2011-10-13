@@ -178,6 +178,7 @@
 #header .disabled, #footer .disabled{
     cursor:default;
     opacity:0.5;
+    filter: alpha(opacity = 50); /* for ie */
 }
 
 

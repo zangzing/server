@@ -109,5 +109,10 @@ OrdersController.class_eval do
     end
   end
 
+  #Added this method to avoid the DEPRECATION warning with human_name
+  def accurate_title
+    @order && @order.completed? ? "#{Order.model_name.human} #{@order.number}" : I18n.t(:shopping_cart)
+  end
+
 end
 

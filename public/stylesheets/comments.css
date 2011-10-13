@@ -146,6 +146,13 @@
     right: 0px;
 }
 
+.ua-ie .comments-container{
+    font-size:11px;
+}
+
+
+
+
 .comments-right-panel .comments-container{
     /* when showing comments in the drawer, we need to leave room for the drawer's bevel */
     left: 2px;
@@ -183,7 +190,7 @@
     position:absolute;
     top: 15px;
     left: 65px;
-    width: 280px;
+    width: 296px;
     height: 60px;
     color: black;
     font-family: 'lucida grande', tahoma, verdana, arial, sans-serif;
@@ -201,7 +208,7 @@
 }
 
 .comments-dialog .comments-container .new-comment textarea.text {
-    width: 349px;
+    width: 365px;
 }
 
 
@@ -212,10 +219,15 @@
     color: #666;
 }
 
+.ua-ie .comments-container .new-comment .share {
+    top: 87px;
+
+}
+
 .comments-container .new-comment .submit-button {
     position: absolute;
     width: 70px;
-    right: 35px;
+    right: 19px;
     top: 85px;
 }
 

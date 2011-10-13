@@ -128,8 +128,6 @@
 
 
 
-    <%   # Pull in generated javascript for the page -%>
-    <%= yield :page_javascript %>
 
 
 
@@ -218,5 +216,10 @@
       });
 
     </script>
+
+    <%   # Pull in generated javascript for the page -%>
+    <%= yield :page_javascript %>
+
+
   </body>
 </html>

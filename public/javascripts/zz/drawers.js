@@ -35,8 +35,8 @@ zz.drawers = {
         }
 
         // fade out the grid
-        $('#article').empty();
-
+        $('#article').empty().css({right:0}); //clear content and make it will width in case drawer was open
+        $('#right-drawer').remove();
 
         // pull out the drawer
         $('div#drawer').show().animate({ height: zz.drawer_height + 'px', top: '52px' }, time);

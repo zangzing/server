@@ -219,9 +219,8 @@ zz.toolbars = {
         // buy button is managed in buy.js
 
         // comments button is managed in comments.js
-        if(zz.album.is_single_picture_view()){
-            zz.buy.toggle_visibility_with_buy_mode($('#footer #comments-button'));
-        }
+        zz.buy.toggle_visibility_with_buy_mode($('#footer #comments-button'));
+
 
         zz.toolbars._init_account_badge();
         zz.toolbars._init_like_button();

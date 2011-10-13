@@ -76,8 +76,9 @@ GEM
     acts_as_list (0.1.2)
     addressable (2.2.4)
     arel (2.0.10)
-    authlogic (2.1.6)
-      activesupport
+    authlogic (3.0.0)
+      activerecord (~> 3.0.7)
+      activerecord (~> 3.0.7)
     aws-s3 (0.6.2)
       builder
       mime-types
@@ -109,7 +110,7 @@ GEM
     faraday (0.5.4)
       addressable (~> 2.2.2)
       multipart-post (~> 1.1.0)
-      rack (< 2, >= 1.1.0)
+      rack (>= 1.1.0, < 2)
     faraday_middleware (0.3.2)
       faraday (~> 0.5.4)
     flickraw (0.8.2)
@@ -295,7 +296,7 @@ PLATFORMS
 DEPENDENCIES
   SystemTimer
   activerecord-import (~> 0.2)
-  authlogic (= 2.1.6)
+  authlogic (= 3.0.0)
   aws-s3
   bitly
   browser

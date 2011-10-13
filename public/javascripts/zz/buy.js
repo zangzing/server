@@ -3,6 +3,54 @@ zz.buy = zz.buy || {};
 
 (function(){
 
+    var BETA_USERS = [
+        //jeremy
+        'hope',
+        'lauriehermann',
+        'jlh',
+        'jeremyhermann',
+
+        //joseph
+        'j',
+        'david',
+        'jamesrharker',
+        'ebothwell',
+        'jaymce',
+        'rosen',
+        'joseph',
+
+        //kathryn
+        'k',
+        'erika',
+        'maegondo',
+        'sheripollock',
+        'tyler',
+
+        //mauricio
+        'mauricio',
+        'ximena',
+        'eugetomelu',
+        'wythes',
+        'mm',
+
+        //mauricio
+        'sfmishras',
+        'rimish',
+        'sintak',
+        'richamisra',
+        'richamisra',
+
+         //greg
+        'gseitz',
+        'lyogi',
+
+        //phil
+        'pbeisel',
+        'surfkayak',
+        'dgfoster',
+        'beiselpaul'
+    ];
+
     var OPTION_FILTERS = [
         {
             type_id: 4, // size
@@ -247,7 +295,7 @@ zz.buy = zz.buy || {};
                    '<img class="image" src="/images/photo_placeholder.png">' +
                    '<div class="name"></div>' +
                    '<div class="description"></div>' +
-                   '<div class="learn-more">Learn more.</div>' +
+                   '<div class="learn-more">Learn more</div>' +
                    '<div class="arrow"></div>' +
                '</div>';
     };
@@ -671,13 +719,22 @@ zz.buy = zz.buy || {};
 
         var render_options = function(){
             options_element.empty();
-            var selected_option_values = get_selected_variant().values;
-            var option_values_to_remove = get_option_values_to_remove(selected_option_values);
+            var selected_variant = get_selected_variant();
+            if(selected_variant){
+                var selected_option_values = get_selected_variant().values;
+                var option_values_to_remove = get_option_values_to_remove(selected_option_values);
+            }
+
 
             var should_remove_option_value = function(option_value){
-                return _.detect(option_values_to_remove, function(option_value_to_remove){
-                    return (option_value.type_id == option_value_to_remove.type_id && option_value.id == option_value_to_remove.id);
-                });
+                if(option_values_to_remove){
+                    return _.detect(option_values_to_remove, function(option_value_to_remove){
+                        return (option_value.type_id == option_value_to_remove.type_id && option_value.id == option_value_to_remove.id);
+                    });
+                }
+                else{
+                    return false;
+                }
             };
 
             _.each(get_selected_product().options, function(option){
@@ -720,6 +777,13 @@ zz.buy = zz.buy || {};
             });
         };
 
+        // todo: fix this
+        // ok, this is stupid -- but it works
+        // need to do this several times so that we get thru
+        // all the filtering and settle on the right set of options,
+        // then capture the variant
+        render_options();
+        on_change_variant();
         render_options();
         on_change_variant();
 
@@ -1006,7 +1070,9 @@ zz.buy = zz.buy || {};
     }
 
     function is_beta_user(){
-        return true;
+        return _.detect(BETA_USERS, function(name){
+            return (zz.session.current_user_name == name);
+        });
     }
 
 

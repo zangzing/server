@@ -99,6 +99,7 @@
     padding: 1px;
     background-color: #e6e6e6;
     border: 1px #f4f4f4 solid;
+    border-right: 0px #f4f4f4 solid;
 }
 
 
@@ -169,6 +170,12 @@
     border-bottom: #fff solid 2px;
     margin: 0px;
 }
+
+.ua-ie .photo-image{
+    border: #fff solid 5px;
+}
+
+
 
 /*.photo-undeveloped{*/
     /*border: #fff solid 5px;*/
