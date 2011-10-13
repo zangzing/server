@@ -292,9 +292,10 @@ class SendgridController < ApplicationController
           remove_file(file_path)
         else
           begin
-            # since we have the photo ready to go, we can't use bulk insert
+            #
+            # Since we have the photo ready to go, we can't use bulk insert
             # because it will not write the associated photo_info object.  Due
-            # to this, it deosn't really make any sense to break it into the
+            # to this, it doesn't really make any sense to break it into the
             # two parts that would be needed so just do single creates at a time
             #
             photo = Photo.new(
