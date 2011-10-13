@@ -213,6 +213,12 @@ module ZZ
         #GC.start # force gc to cleanup before we leave
       end
 
+      # handy helper to get at our deploy environment
+      def self.env
+        @@env ||= ZZDeployEnvironment.env
+      end
+
+
     end
   end
 

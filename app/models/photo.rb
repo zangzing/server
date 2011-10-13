@@ -49,11 +49,11 @@ class Photo < ActiveRecord::Base
                   :rotate_to, :crop_json, :source_path, :guid_part, :latitude, :created_at, :id,
                   :updated_at, :image_content_type, :headline, :error_message, :image_bucket,
                   :orientation, :height, :suspended, :longitude, :pos, :image_path, :image_updated_at,
-                  :generate_queued_at, :width, :state, :source, :deleted_at
+                  :generate_queued_at, :width, :state, :source, :deleted_at, :for_print
 
   # this is just a placeholder used by the connectors to track some extra state
   # now that we do batch operations
-  attr_accessor :temp_url, :inserting_for_batch
+  attr_accessor :temp_url, :inserting_for_batch, :temp_file_placeholder
 
   has_one :photo_info, :dependent => :destroy
   belongs_to :album, :touch => :photos_last_updated_at, :counter_cache => true
@@ -112,7 +112,7 @@ class Photo < ActiveRecord::Base
 
     photo = Photo.new(original.attributes)
     photo.id = Photo.get_next_id
-    photo.photo_info = PhotoInfo.new(:photo_id => photo.id, :metadata => original.photo_info.metadata)
+    photo.photo_info = PhotoInfo.new(:photo_id => photo.id, :metadata => original.photo_info.metadata) unless original.photo_info.nil?
     custom = attr[:user_id]
     photo.user_id = custom unless custom.nil?
     custom = attr[:album_id]

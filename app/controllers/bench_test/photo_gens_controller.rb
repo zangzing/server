@@ -208,6 +208,7 @@ class BenchTest::PhotoGensController < BenchTest::BenchTestsController
                 #create random uuid for this photo
                 :source_guid => "perftest:"+UUIDTools::UUID.random_create.to_s})
         # use the passed in temp file to attach to the photo
+        #todo this doesn't actually do the right thing because a bulk insert does not write the child object photo_info
         photo.file_to_upload = fast_local_image['filepath']
         photos << photo
         last_photo = photo

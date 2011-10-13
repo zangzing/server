@@ -12,6 +12,14 @@
   "app_config": {
     "we_host_app_server": true,
     "redis_host": "localhost",
+    "redis_slaves": [
+
+    ],
+    "redis_servers": [
+      "localhost"
+    ],
+    "resque_worker_count": 1,
+    "we_host_redis_slave": false,
     "resque_cpus": [
       "localhost"
     ],
@@ -21,21 +29,24 @@
       "localhost"
     ],
     "we_host_resque_scheduler": true,
-    "we_host_db": true,
+    "resque_cpu_worker_count": 1,
     "all_servers": [
       "localhost"
     ],
     "app_servers": [
       "localhost"
     ],
-    "db": "localhost",
     "resque_scheduler": "localhost",
-    "we_host_redis": true
+    "we_host_redis": true,
+    "util_servers": [
+
+    ]
   },
   "instance_id": "local",
   "deploy_user": "gseitz",
   "root_group": "admin",
   "group_config": {
+    "amazon_elb": "",
     "app_name": "photos",
     "rails_env": "development",
     "vhost": "localhost"

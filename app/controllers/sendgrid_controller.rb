@@ -88,7 +88,8 @@ class SendgridController < ApplicationController
         @album = nil
         begin
           user = User.find_by_username(user_username)
-          @album = Album.find_by_name_and_user_id(album_name, user.id )
+          #@album = Album.find_by_name_and_user_id(album_name, user.id )
+          @album = user.albums.find(album_name)
         rescue ActiveRecord::RecordNotFound => e
           # NEW ALBUM BY EMAIL
           # if album_name is 'new' and the account owner is emailing photos, create a new
@@ -136,6 +137,7 @@ class SendgridController < ApplicationController
       # call did not come through remapped upload via nginx or we have no attachments so reject it
       logger.error "Incoming email import album invalid arguments or no attachments will not retry."
       ZZ::Async::Email.enqueue(:contribution_error, params[:from] )
+      clean_up_temp_files(attachments)
       render :nothing => true, :status=> :ok
     end
   end
@@ -290,7 +292,12 @@ class SendgridController < ApplicationController
           remove_file(file_path)
         else
           begin
-            photo = Photo.new_for_batch(current_batch, {
+            # since we have the photo ready to go, we can't use bulk insert
+            # since it will not write the associated photo_info object.  Due
+            # to this, it deosn't really make any sense to break it into the
+            # two parts that would be needed so just do single creates at a time
+            #
+            photo = Photo.new(
                 :id => Photo.get_next_id,
                 :user_id => user.id,
                 :album_id => album.id,
@@ -298,19 +305,16 @@ class SendgridController < ApplicationController
                 :caption => ( caption && caption.length > 0 ? caption : fast_local_image["original_name"]),
                 :source => 'email',
                 #create random uuid for this photo
-                :source_guid => "email:"+UUIDTools::UUID.random_create.to_s})
-            # use the passed in temp file to attach to the photo
+                :source_guid => "email:"+UUIDTools::UUID.random_create.to_s
+            )
             photo.file_to_upload = file_path
-            photos << photo
-          rescue PhotoValidationError => ex
-            # if it's a validation error, ignore and continue.  Probably just
+            photo.save
+          rescue Exception => ex
+            # if it's any type of error just continue.  Probably just
             # a bad type of upload (i.e. not a photo)
           end
         end
       end
-
-      # bulk insert
-      Photo.batch_insert(photos)
       current_batch.close()
     end
   end
