@@ -16,7 +16,7 @@
 #
 class S3PendingDeletePhoto < ActiveRecord::Base
   MAX_DELETES_PER_SWEEP = 300  # maximum number we will delete in each sweep
-  DELETE_AFTER = 1.days
+  DELETE_AFTER = 15.days
 
   attr_accessible :photo_id, :user_id, :album_id, :caption, :prefix, :encoded_sizes,
                   :guid_part, :image_bucket,:deleted_at
