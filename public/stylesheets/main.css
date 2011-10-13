@@ -246,6 +246,11 @@ input[type=checkbox]{
     background-color: transparent;
     border: none;
     padding: 5px;
+    margin-right: 5px;
+}
+
+.ua-ie input[type=checkbox]{
+    margin-right: 0px;
 }
 
 

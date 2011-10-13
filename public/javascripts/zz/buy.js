@@ -3,6 +3,54 @@ zz.buy = zz.buy || {};
 
 (function(){
 
+    var BETA_USERS = [
+        //jeremy
+        'hope',
+        'lauriehermann',
+        'jlh',
+        'jeremyhermann',
+
+        //joseph
+        'j',
+        'david',
+        'jamesrharker',
+        'ebothwell',
+        'jaymce',
+        'rosen',
+        'joseph',
+
+        //kathryn
+        'k',
+        'erika',
+        'maegondo',
+        'sheripollock',
+        'tyler',
+
+        //mauricio
+        'mauricio',
+        'ximena',
+        'eugetomelu',
+        'wythes',
+        'mm',
+
+        //mauricio
+        'sfmishras',
+        'rimish',
+        'sintak',
+        'richamisra',
+        'richamisra',
+
+         //greg
+        'gseitz',
+        'lyogi',
+
+        //phil
+        'pbeisel',
+        'surfkayak',
+        'dgfoster',
+        'beiselpaul'
+    ];
+
     var OPTION_FILTERS = [
         {
             type_id: 4, // size
@@ -247,7 +295,7 @@ zz.buy = zz.buy || {};
                    '<img class="image" src="/images/photo_placeholder.png">' +
                    '<div class="name"></div>' +
                    '<div class="description"></div>' +
-                   '<div class="learn-more">Learn more.</div>' +
+                   '<div class="learn-more">Learn more</div>' +
                    '<div class="arrow"></div>' +
                '</div>';
     };
@@ -729,6 +777,13 @@ zz.buy = zz.buy || {};
             });
         };
 
+        // todo: fix this
+        // ok, this is stupid -- but it works
+        // need to do this several times so that we get thru
+        // all the filtering and settle on the right set of options,
+        // then capture the variant
+        render_options();
+        on_change_variant();
         render_options();
         on_change_variant();
 
@@ -1015,7 +1070,9 @@ zz.buy = zz.buy || {};
     }
 
     function is_beta_user(){
-        return true;
+        return _.detect(BETA_USERS, function(name){
+            return (zz.session.current_user_name == name);
+        });
     }
 
 
