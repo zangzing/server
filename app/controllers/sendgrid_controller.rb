@@ -293,7 +293,7 @@ class SendgridController < ApplicationController
         else
           begin
             # since we have the photo ready to go, we can't use bulk insert
-            # since it will not write the associated photo_info object.  Due
+            # because it will not write the associated photo_info object.  Due
             # to this, it deosn't really make any sense to break it into the
             # two parts that would be needed so just do single creates at a time
             #
