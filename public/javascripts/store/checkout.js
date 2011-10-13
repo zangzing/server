@@ -27,6 +27,15 @@ zz.store.checkout = {};
             return this.optional(element) || re.test(value);
         }, 'Please check your input.'  );
 
+    //used to send focus to first errored-out field
+    var invalid_handler = function(form, validator) {
+        var errors = validator.numberOfInvalids();
+        if (errors) {
+            validator.errorList[0].element.focus(); //Set Focus
+        }
+    }
+
+
     //used to place and display form errors as you tab around
     var error_placement_handler = function(error, element) {
         if( typeof( $('element').data('popover') ) == 'undefined' ){
@@ -79,6 +88,7 @@ zz.store.checkout = {};
             onkeyup: false,
             errorElement: "div",
             errorClass: "errormsg",
+            invalidHandler: invalid_handler,
             errorPlacement: error_placement_handler,
             unhighlight: remove_popover
         });
@@ -123,7 +133,7 @@ zz.store.checkout = {};
         $("#card_code").keypress(clear_wallet_radio);
 
         
-        $('#checkout_form_payment').validate({
+        zz.store.checkout.validator = $('#checkout_form_payment').validate({
             //debug: true,
             rules: {
                 'payment_source[1034433118][number]':{
@@ -174,6 +184,7 @@ zz.store.checkout = {};
             onkeyup: false,
             errorElement: "div",
             errorClass: "errormsg",
+            invalidHandler: invalid_handler,
             errorPlacement: error_placement_handler,
             unhighlight: remove_popover
         });
@@ -223,6 +234,7 @@ zz.store.checkout = {};
             focusInvalid: true,
             errorElement: "div",
             errorClass: "errormsg",
+            invalidHandler: invalid_handler,
             errorPlacement: error_placement_handler,
             unhighlight: remove_popover
         });

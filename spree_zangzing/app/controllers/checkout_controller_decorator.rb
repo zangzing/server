@@ -206,6 +206,23 @@ CheckoutController.class_eval do
     thankyou_order_url(@order)
    end
 
+  def rescue_from_spree_gateway_error( exception )
+      flash[:error] = t('spree_gateway_error_flash_for_checkout')
+      flash[:payment] = exception.message
+      render :edit
+  end
+
 
 end
 
+  # def gateway_error(error)
+  #  if error.is_a? ActiveMerchant::Billing::Response
+  #    text = error.params['message'] || error.params['response_reason_text'] || error.message
+  #  else
+  #    text = error.to_s
+  #  end
+  #  logger.error(I18n.t('gateway_error'))
+  #  logger.error("  #{error.to_yaml}")
+  #  self.errors.add( :number, text )
+  #  raise Spree::GatewayError.new(text)
+  #end
