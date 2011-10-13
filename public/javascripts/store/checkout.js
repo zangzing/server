@@ -38,8 +38,8 @@ zz.store.checkout = {};
 
     //used to place and display form errors as you tab around
     var error_placement_handler = function(error, element) {
-        if( typeof( $('element').data('popover') ) == 'undefined' ){
-            $(element).data('error', $(error).text() );
+        $(element).data('error', $(error).text() );
+         if( typeof( $('element').data('popover') ) == 'undefined' ){
             $(element).popover({
                 trigger: 'focus',
                 placement: 'above',
@@ -48,13 +48,25 @@ zz.store.checkout = {};
                 content: function(){ return $(element).data('error'); }
             });
         } else {
-            $(element).data('error', $(error).text() );
-            $(element).popover('setContent');
-            $(element).popover('enable');
+            $(element).popover('enable')
+                 .popover('hide')
+                .popover('setContent')
+                .popover('show');
         }
     };
-    var remove_popover = function( element, errorClass, validClass ){
-        $(element).removeClass(errorClass).popover('disable');
+    var highlighter = function(element, errorClass){
+         $(element).addClass( errorClass );
+         $(element).popover('setContent')
+             .popover('enable');
+
+    };
+    var unhighlighter = function( element, errorClass, validClass ){
+        $(element).removeClass(errorClass);//.popover('disable');
+    };
+    var success_handler = function( label ){
+                var input_id = $(label).attr('for');
+                $('#'+input_id).popover('hide').
+                    popover('disable');
     };
 //======================= ship_address =========================
     zz.store.checkout.init_ship_address_screen = function(){
@@ -85,12 +97,14 @@ zz.store.checkout = {};
             submitHandler: function(form){
                 form.submit();
             },
-            onkeyup: false,
             errorElement: "div",
             errorClass: "errormsg",
             invalidHandler: invalid_handler,
+            focusCleanup: true,
             errorPlacement: error_placement_handler,
-            unhighlight: remove_popover
+            success: success_handler,
+            highlight: highlighter,
+            unhighlight: unhighlighter
         });
     }
 
@@ -181,12 +195,14 @@ zz.store.checkout = {};
             submitHandler: function(form){
                 form.submit();
             },
-            onkeyup: false,
             errorElement: "div",
             errorClass: "errormsg",
             invalidHandler: invalid_handler,
+            focusCleanup: true,
             errorPlacement: error_placement_handler,
-            unhighlight: remove_popover
+            success: success_handler,
+            highlight: highlighter,
+            unhighlight: unhighlighter
         });
     };
     //======================= thankyou =========================
@@ -231,12 +247,14 @@ zz.store.checkout = {};
             submitHandler: function(form){
                 form.submit();
             },
-            focusInvalid: true,
-            errorElement: "div",
+             errorElement: "div",
             errorClass: "errormsg",
             invalidHandler: invalid_handler,
+            focusCleanup: true,
             errorPlacement: error_placement_handler,
-            unhighlight: remove_popover
+            success: success_handler,
+            highlight: highlighter,
+            unhighlight: unhighlighter
         });
 
     };
