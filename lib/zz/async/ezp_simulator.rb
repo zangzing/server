@@ -47,7 +47,7 @@ module ZZ
 
       # return seconds randomly between min and max inclusive
       def self.random_seconds(min, max)
-#        return 1  #todo testing only
+        #return 1  #todo testing only
         min + rand(max - min + 1)
       end
 

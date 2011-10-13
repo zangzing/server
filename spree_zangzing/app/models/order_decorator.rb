@@ -548,8 +548,14 @@ Order.class_eval do
 
   # no longer need the photos or album for the order so clean them up
   def cleanup_photos
-    album = Album.find_by_name(self.number)
-    album.destroy unless album.nil?
+    user = User.find(Order.ez_prints_user_id)
+    album = user.albums.find(self.number)
+    # this needs to run as a delayed job because Rails does not
+    # properly notify the full chain of dependent objects on after commit for delete
+    # so we don't get to clean up properly - the issue appears to be when
+    # destroy is called within a transaction, so we run it as a delayed
+    # job where it runs outside of a transaction
+    ZZ::Async::DelayedUtils.delayed_destroy_album(album) unless album.nil?
   end
 
   # ezp Shipping calculator integration
