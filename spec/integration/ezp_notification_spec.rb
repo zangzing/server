@@ -7,18 +7,6 @@ describe "EZPrints Notification Handler" do
     940
   end
 
-  def cancel_order_number
-    'R564117518'
-  end
-
-  def cancel_order_id
-    7
-  end
-
-  def cancel_ez_ref_num
-    '00123-200708031121-55555'
-  end
-
   def order_number
     'R464822726'
   end
@@ -279,7 +267,7 @@ describe "EZPrints Notification Handler" do
 
     body = <<-BLOCK
 <OrderEventNotification Id="1176390">
-   <Order Id="#{cancel_order_number}" EZPReferenceNumber="#{cancel_ez_ref_num}">
+   <Order Id="#{order_number}" EZPReferenceNumber="#{ez_ref_num}">
       <Canceled DateTime="2008-06-13T13:01:51.0000000" />
    </Order>
 </OrderEventNotification>
@@ -293,8 +281,8 @@ describe "EZPrints Notification Handler" do
 
     msg.match(/^Success/).should_not == nil
 
-    order = Order.find(cancel_order_id)
-    order_state_should_match(cancel_order_id, 'ezp_canceled')
+    order = Order.find(order_id)
+    order_state_should_match(order_id, 'ezp_canceled')
 
   end
 

@@ -106,6 +106,31 @@ module EZPrints
       prefix_to_host(prefix)
     end
 
+    #
+    # Fetch the marketing insert photo id.  We look for
+    # the specified user, and then for an album with
+    # the specified name.  When that album is found
+    # we randomly choose one of the photos contained
+    # within it.  If the photo is not found we return
+    # a nil which indicates no marketing insert line_item
+    # should be created.
+    #
+    def marketing_insert(user_name = 'zangzing', album_name = 'EZPrint Inserts')
+      user = User.find(user_name) rescue nil
+      return nil if user.nil?
+
+      album = user.albums.find_by_name(album_name) rescue nil
+      return nil if album.nil?
+
+      # find all ready photos
+      photos = Photo.where(:user_id => user.id, :album_id => album.id, :state => 'ready').all
+      photos_length = photos.nil? ? 0 : photos.length
+      return nil if photos_length == 0
+
+      picked_photo = photos[rand(photos_length)]
+
+      return picked_photo.id
+    end
 
     private
     # perform the request up to the retry_limit if we get an error
