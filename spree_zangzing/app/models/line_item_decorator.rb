@@ -21,7 +21,14 @@ LineItem.class_eval do
   def shipping_may_change
     order.shipping_may_change
   end
-  
+
+  # return nil if nil or empty
+  # simplifies assignments with multiple ORs
+  #
+  def nil_if_empty(value)
+    value.nil? || value.empty? ? nil : value
+  end
+
   def to_xml_ezpimage( options = {})
     return unless photo
     options[:indent] ||= 2
@@ -35,7 +42,7 @@ LineItem.class_eval do
       photo_url = placeholder[:url]
     else
       photo_id = print_photo.id
-      photo_title = back_message || print_photo.caption || 'www.zangzing.com'
+      photo_title = nil_if_empty(back_message) || nil_if_empty(print_photo.caption) || 'www.zangzing.com'
       photo_url = print_photo.full_size_url
     end
     xml.uri( {:id  => photo_id,
