@@ -25,6 +25,8 @@ javascripts:
     - public/javascripts/zz/zza.js
     - public/javascripts/zz/routes.js
     - public/javascripts/zz/*.js
+  css:
+    - public/javascripts/css/*.js
   zz_oauthmanager:
     - public/javascripts/zz-oauthmanager/oauthmanager.js
   movie:

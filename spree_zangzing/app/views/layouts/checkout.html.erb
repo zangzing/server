@@ -19,6 +19,7 @@
   <% if Rails.env.development? %>
     <link rel="stylesheet/less" href="/stylesheets/store/lib/bootstrap.less" media="all">
   <%end%>
+  <%= include_javascripts :css %>
   <%= include_stylesheets :store %>
   <%= yield :page_stylesheet %>
   <%= csrf_meta_tag %>
