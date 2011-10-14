@@ -24,6 +24,7 @@
     </script>
     <% end %>
 
+    <%= include_javascripts :css %>
     <%= include_stylesheets :common %>
 
 <% if Rails.env.development? && browser.ie? %>
