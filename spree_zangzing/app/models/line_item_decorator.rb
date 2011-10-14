@@ -22,7 +22,9 @@ LineItem.class_eval do
     order.shipping_may_change
   end
 
-  # return nil if nil or empty
+  # return nil if nil or empty, otherwise
+  # the passed value is returned
+  #
   # simplifies assignments with multiple ORs
   #
   def nil_if_empty(value)
