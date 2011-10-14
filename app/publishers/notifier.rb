@@ -1,9 +1,12 @@
 class Notifier < ActionMailer::Base
   include ZZ::Mailer
   include PrettyUrlHelper
+  include TrackingHelper
+  add_template_helper(TrackingHelper)
   add_template_helper(PrettyUrlHelper)
 
   include OrderNotifier
+
 
   def photos_ready( batch_id, template_id = nil )
     @batch   = UploadBatch.find( batch_id )
