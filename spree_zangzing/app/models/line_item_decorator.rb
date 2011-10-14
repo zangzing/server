@@ -35,7 +35,7 @@ LineItem.class_eval do
       photo_url = placeholder[:url]
     else
       photo_id = print_photo.id
-      photo_title = back_message || print_photo.caption || ''
+      photo_title = back_message || print_photo.caption || 'www.zangzing.com'
       photo_url = print_photo.full_size_url
     end
     xml.uri( {:id  => photo_id,
