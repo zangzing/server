@@ -23,7 +23,7 @@
         <% if @order.shipments.shipped.count > 0 %>
         <div class="address_label"><%=t('tracking_info')%></div>
             <% @order.shipments.shipped.each do |shp| %>
-                <div><%=link_to shp.tracking, tracking_url( shp.tracking ),{:target => "_blank"} %></div>
+                <div><%=tracking_link( shp.tracking )%></div>
             <%end%>
             <br/>
         <%end%>
