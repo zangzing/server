@@ -277,9 +277,8 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
         logger.debug 'using cached photos_json: ' + cache_key
       end
 
-      expires_in 1.year, :public => @album.public?
-      response.headers['Content-Encoding'] = "gzip" if compressed
-      render :json => json
+      params[:ver] = "dont_merge"  #todo don't merge this, hack to use common code in this branch (pre version for photos)
+      render_cached_json(json, @album.public?, compressed)
     else
       logger.debug 'etag match, sending 304'
     end

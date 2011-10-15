@@ -353,18 +353,6 @@ class AlbumsController < ApplicationController
     return Cache::Album::Manager.shared.make_loader(@user, public)
   end
 
-  def render_cached_json(json, public, compressed)
-    ver = params[:ver]
-    if ver.nil? || ver == 0
-      # no cache
-      expires_now
-    else
-      expires_in 1.year, :public => public
-    end
-    response.headers['Content-Encoding'] = "gzip" if compressed
-    render :json => json
-  end
-
 # the calls to fetch json for various album parts
 
   # pass the loader that you want to use and the public flag
