@@ -441,7 +441,6 @@ zz.buy = zz.buy || {};
         }
 
         zz.local_storage.set('zz.buy.current_screen', zz.local_storage.get('zz.buy.current_screen') || DRAWER_SCREENS.SELECT_PRODUCT);
-        zz.local_storage.set('zz.buy.current_product', zz.local_storage.get('zz.buy.zz.buy.current_product') || {});
         zz.local_storage.set('zz.buy.selected_photos', zz.local_storage.get('zz.buy.selected_photos') || []);
 
 
