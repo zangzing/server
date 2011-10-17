@@ -462,7 +462,7 @@ zz.buy = zz.buy || {};
             zz.pubsub.publish(EVENTS.DEACTIVATE);
         });
         $('#footer #buy-button').removeClass('selected');
-
+        $('#right-drawer .header .gray-back-button').hide();
     };
 
 
