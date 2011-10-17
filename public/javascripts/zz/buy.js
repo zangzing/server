@@ -468,6 +468,11 @@ zz.buy = zz.buy || {};
 
     zz.buy.add_selected_photo = function(photo_json, element, callback){
 
+        if(!is_beta_user()){
+            alert("This feature is still under construction");
+            return;
+        }
+
         if(zz.buy.is_photo_selected(photo_json.id)){
             // don't allow selecting the same photo more than once
             return; 
