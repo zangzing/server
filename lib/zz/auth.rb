@@ -263,6 +263,18 @@ module ZZ
         end
       end
 
+      # To be run as a before_filter
+      # Will render a 401 page if the currently logged in user is not an admin
+      def require_moderator
+         unless current_user.moderator?
+          flash.now[:error] = "Moderator privileges required for this operation"
+          render_401
+        end
+      end
+
+
+
+
     end #Instance Methods
 
 
