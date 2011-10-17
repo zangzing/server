@@ -3,7 +3,7 @@ OptionType.class_eval do
     {
       :id => id,
       :name => presentation,
-      :values => option_values.collect { | ov | ov.as_json }
+      :values => option_values.select{ |ov| ov.presentation.downcase != 'framed' }.collect { | ov | ov.as_json }
     }
   end
 end
