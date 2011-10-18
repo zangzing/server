@@ -92,13 +92,26 @@
 
 
 /*  Buy Button
+ /**************************************/
+/*.comments-dialog .header .button-bar .buy-button{*/
+    /*background: url(/images/album_toolbar_buy.png) no-repeat scroll 6px -18px transparent;*/
+/*}*/
+
+/*.comments-dialog .header .button-bar .buy-button:hover{*/
+    /*background-position:  6px 0px;*/
+/*}*/
+
+
+/*  Buy Button
  *************************************/
 .comments-dialog .header .button-bar .buy-button{
-    background: url(/images/album_toolbar_buy.png) no-repeat scroll 6px -18px transparent;
+    height:23px;
+    top:2px;
+    background: url(/images/album_toolbar_buy.png) no-repeat scroll 6px -22px transparent;
 }
 
 .comments-dialog .header .button-bar .buy-button:hover{
-    background-position:  6px 0px;
+    background-position:  6px 2px;
 }
 
 
