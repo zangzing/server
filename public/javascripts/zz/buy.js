@@ -814,11 +814,7 @@ zz.buy = zz.buy || {};
 
         refresh_selected_photos_list();
 
-
-        setTimeout(function(){
-            on_change_option();
-        },500);
-
+        on_change_option();
     }
 
     function refresh_selected_photos_list(){
