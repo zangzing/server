@@ -43,6 +43,11 @@ class Gateway::Braintree < Gateway
     provider.credit(amount, payment)
   end
 
+  # ZANGZING Added refund functionality
+  def refund( amount, transaction_id, options )
+      provider.refund(amount, transaction_id, options )
+  end
+
   def credit_without_payment_profiles(amount, response_code, options)
     transaction = ::Braintree::Transaction.find(response_code)
     if BigDecimal.new(amount.to_s) == (transaction.amount * 100)
