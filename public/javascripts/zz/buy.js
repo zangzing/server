@@ -52,6 +52,184 @@ zz.buy = zz.buy || {};
     ];
 
     var OPTION_FILTERS = [
+
+    /*****************************
+     *        Franed Prints
+     ******************************/
+        {
+            type_id: 4, // size
+            id: 15,     // 4x6
+            option_values_to_remove: [
+                {
+                    type_id: 12, //frame
+                    id: 50      //chocolate with no matte
+                },
+                {
+                    type_id: 12, //frame
+                    id: 47      //black with no matte
+                }
+            ]
+        },
+        {
+            type_id: 4, // size
+            id: 20,     // 20x30
+            option_values_to_remove: [
+                {
+                    type_id: 12, //frame
+                    id: 51      //chocolate with white matte
+                },
+                {
+                    type_id: 12, //frame
+                    id: 52      //chocolate with off-white matte
+                },
+                {
+                    type_id: 12, //frame
+                    id: 48      //black with white matte
+                },
+                {
+                    type_id: 12, //frame
+                    id: 49      //black with off-white matte
+                }
+            ]
+        },
+        {
+            type_id: 12, // frame
+            id: 51,     // Chocolate with White Matte
+            option_values_to_remove: [
+                {
+                    type_id: 3,
+                    id: 11       // Glossy
+                },
+                {
+                    type_id: 3,
+                    id: 12       // Matte
+                },
+                {
+                    type_id: 3,
+                    id: 13      // Lustre
+                },
+                {
+                    type_id: 3,
+                    id: 14          // Metallic
+                }
+            ]
+        },
+        {
+            type_id: 12, // frame
+            id: 52,     // Chocolate with Off-White Matte
+            option_values_to_remove: [
+                {
+                    type_id: 3,
+                    id: 11       // Glossy
+                },
+                {
+                    type_id: 3,
+                    id: 12       // Matte
+                },
+                {
+                    type_id: 3,
+                    id: 13      // Lustre
+                },
+                {
+                    type_id: 3,
+                    id: 14          // Metallic
+                }
+            ]
+        },
+        {
+            type_id: 12, // frame
+            id: 50,     // Chocolate with No Matte
+            option_values_to_remove: [
+                {
+                    type_id: 3,
+                    id: 11       // Glossy
+                },
+                {
+                    type_id: 3,
+                    id: 12       // Matte
+                },
+                {
+                    type_id: 3,
+                    id: 13      // Lustre
+                },
+                {
+                    type_id: 3,
+                    id: 14          // Metallic
+                }
+            ]
+        },
+        {
+            type_id: 12, // frame
+            id: 48,     // Black with White Matte
+            option_values_to_remove: [
+                {
+                    type_id: 3,
+                    id: 11       // Glossy
+                },
+                {
+                    type_id: 3,
+                    id: 12       // Matte
+                },
+                {
+                    type_id: 3,
+                    id: 13      // Lustre
+                },
+                {
+                    type_id: 3,
+                    id: 14          // Metallic
+                }
+            ]
+        },
+        {
+            type_id: 12, // frame
+            id: 49,     // Black with Off-White Matte
+            option_values_to_remove: [
+                {
+                    type_id: 3,
+                    id: 11       // Glossy
+                },
+                {
+                    type_id: 3,
+                    id: 12       // Matte
+                },
+                {
+                    type_id: 3,
+                    id: 13      // Lustre
+                },
+                {
+                    type_id: 3,
+                    id: 14          // Metallic
+                }
+            ]
+        },
+        {
+            type_id: 12, // frame
+            id: 47,     // Black with No Matte
+            option_values_to_remove: [
+                {
+                    type_id: 3,
+                    id: 11       // Glossy
+                },
+                {
+                    type_id: 3,
+                    id: 12       // Matte
+                },
+                {
+                    type_id: 3,
+                    id: 13      // Lustre
+                },
+                {
+                    type_id: 3,
+                    id: 14          // Metallic
+                }
+            ]
+        },
+
+
+
+    /*****************************
+     *        Prints
+     ******************************/
         {
             type_id: 4, // size
             id: 15,     // 4x6
@@ -691,20 +869,28 @@ zz.buy = zz.buy || {};
         var options_element = buy_screens_element.find('.configure-product-screen .main-section .options');
         options_element.empty();
 
-
-        var on_change_variant = function(){
+        var resolve_selected_variant = function(){
             var current_product = get_selected_product();
 
+
+            zz.logger.debug('-- selected options --');
+            _.each(options_element.find('.drop-down option:selected'), function(el){
+                zz.logger.debug(el.text);
+            });
+
+            // find variant that matches all the selected options
             var current_variant =_.detect(current_product.variants, function(variant){
                 return _.all(variant.values, function(value){
+
                     return _.detect(options_element.find('.drop-down option:selected'), function(option_element){
                         var selected_option_value = $(option_element).data('value');
-                        return value.type_id == selected_option_value.type_id && value.id == selected_option_value.id;
+                         return value.type_id == selected_option_value.type_id && value.id == selected_option_value.id;
                     });
                 });
             });
 
             set_selected_variant(current_variant);
+
 
             if(current_variant){
                 buy_screens_element.find('.configure-product-screen .product-summary-section .image').attr('src', current_variant.image_url);
@@ -721,14 +907,13 @@ zz.buy = zz.buy || {};
         };
 
 
-        var render_options = function(){
-            options_element.empty();
-            var selected_variant = get_selected_variant();
-            if(selected_variant){
-                var selected_option_values = get_selected_variant().values;
-                var option_values_to_remove = get_option_values_to_remove(selected_option_values);
-            }
 
+        var on_change_option = function(){
+            var selected_option_values = _.map(options_element.find('.drop-down option:selected'), function(option_element){
+                return $(option_element).data('value');
+            });
+
+            var option_values_to_remove = get_option_values_to_remove(selected_option_values);
 
             var should_remove_option_value = function(option_value){
                 if(option_values_to_remove){
@@ -741,21 +926,18 @@ zz.buy = zz.buy || {};
                 }
             };
 
+            options_element.empty();
+
             _.each(get_selected_product().options, function(option){
                 var option_element = $(PRODUCT_OPTION_TEMPLATE());
                 option_element.find('.label').text(option.name);
                 option_element.change(function(){
-
-                    // todo: fix this
-                    // ok, this is stupid -- but it works
-                    // need to do this several times so that we get thru
-                    // all the filtering and settle on the right set of options,
-                    // then capture the variant
-                    on_change_variant();
-                    render_options();
-                    on_change_variant();
-                    render_options();
-                    on_change_variant();
+                    // hack: need to run this one time for each option
+                    //       so that we capture all the cases where dependent
+                    //       options need to be shown or removed
+                    on_change_option();
+                    on_change_option();
+                    on_change_option();
                 });
 
                 var has_values = false;
@@ -779,20 +961,13 @@ zz.buy = zz.buy || {};
                     options_element.append(option_element);
                 }
             });
+
+            resolve_selected_variant();
         };
 
-        // todo: fix this
-        // ok, this is stupid -- but it works
-        // need to do this several times so that we get thru
-        // all the filtering and settle on the right set of options,
-        // then capture the variant
-        render_options();
-        on_change_variant();
-        render_options();
-        on_change_variant();
 
 
-        // selected photos section
+
         buy_screens_element.find('.configure-product-screen .main-section .selected-photos-section .clear-all-photos').unbind('click').click(function(){
             var selected_photos = zz.local_storage.get('zz.buy.selected_photos');
             zz.local_storage.set('zz.buy.selected_photos',[]);
@@ -817,9 +992,9 @@ zz.buy = zz.buy || {};
 
         refresh_selected_photos_list();
 
-
-
-
+        on_change_option();
+        on_change_option();
+        on_change_option();
     }
 
     function refresh_selected_photos_list(){
@@ -862,7 +1037,7 @@ zz.buy = zz.buy || {};
         i = Math.abs(i);
         i = parseInt((i + .005) * 100);
         i = i / 100;
-        s = new String(i);
+        var s = new String(i);
         if(s.indexOf('.') < 0) { s += '.00'; }
         if(s.indexOf('.') == (s.length - 2)) { s += '0'; }
         s = minus + s;
