@@ -180,7 +180,7 @@
     left: 0px;
     width:380px;
     bottom:0px;
-    background-color: #fcfcfd;
+    background-color: #fff;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -213,6 +213,7 @@
     position: relative;
     border-bottom: 1px solid #ccc;
     padding-bottom: 20px;
+    color:#333
 }
 
 .buy-screens .configure-product-screen .main-section .options-section .options{
@@ -220,6 +221,7 @@
     left: 72px;
     top: 10px;
 }
+
 
 .buy-screens .configure-product-screen .main-section .options-section .options .option{
     position:relative;
@@ -237,6 +239,64 @@
     position:absolute;
     left:70px;
     top: -3px;
+
+
+    -webkit-appearance: menulist-button;
+    -webkit-box-align: center;
+    -webkit-box-shadow: none;
+    -webkit-rtl-ordering: logical;
+    -webkit-transition-delay: 0s, 0s;
+    -webkit-transition-duration: 0.20000000298023224s, 0.20000000298023224s;
+    -webkit-transition-property: border, box-shadow;
+    -webkit-transition-timing-function: linear, linear;
+    background-color: white;
+    border-bottom-color: #CCC;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-left-color: #CCC;
+    border-left-style: solid;
+    border-left-width: 1px;
+    border-right-color: #CCC;
+    border-right-style: solid;
+    border-right-width: 1px;
+    border-top-color: #CCC;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-top-style: solid;
+    border-top-width: 1px;
+    box-shadow: none;
+    box-sizing: border-box;
+    color: #333;
+    cursor: default;
+    display: inline-block;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    height: 23px;
+    letter-spacing: normal;
+    line-height: normal;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    overflow-y: visible;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 0px;
+    text-align: -webkit-auto;
+    text-indent: 0px;
+    text-shadow: none;
+    text-transform: none;
+    vertical-align: baseline;
+    white-space: pre;
+    /*width: 250px;*/
+    word-spacing: 0px;
+
 }
 
 
@@ -274,6 +334,9 @@
     padding: 20px 40px 20px 40px;
     font-size: 14px;
     text-align: center;
+    font-weight: 500;
+    color: #333;
+    text-shadow: 1px 1px white;
 }
 
 .buy-screens .configure-product-screen .main-section .selected-photos-section .selected-photos{

@@ -460,7 +460,7 @@ zz.buy = zz.buy || {};
                                 '<a class="add-all-photos hyperlink-button">Add All Photos from Album</a>' +
                                 '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
                                 '<a class="clear-all-photos hyperlink-button">Clear Selected Photos</a>' +
-                                '<div class="add-photos-message">Browse your photos and click on each one you would like for this product.</div>' +
+                                '<div class="add-photos-message">Choose product settings and then click to choose your photos.</div>' +
                                 '<div class="selected-photos"></div>' +
                             '</div>' +
                         '</div>' +
