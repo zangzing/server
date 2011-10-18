@@ -8,7 +8,7 @@ html{
 
 #logo{
     width: 123px;
-    margin: 3px 0 0 0;
+    margin: 6px 0;
 }
 #logo_secure_lock{
    padding: 5px 0 0 30px;
@@ -20,10 +20,10 @@ html{
 }
 
 #page_title{
-    font-size: 18px;
+    font-size: 19px;
     font-weight: 500;
     margin-top: 20px;
-    color: black;
+    color: #333333;
     text-shadow: 1px 1px 1px white;
 }
 
@@ -50,7 +50,7 @@ html{
     border: 1px solid #CCCCCC;
 }
 .checkout-next-button{
-    margin: 10px 0 0 0;
+    margin: 18px 0 0 0;
     float: right;
     text-align:right;
     min-width: 150px;
@@ -103,17 +103,35 @@ html{
     background: url('/images/store/progress/black_bullet.png') scroll no-repeat 0 0;
 }
 
-.progress-steps td.current{
-    font-weight: 600;
-    background: url('/images/store/progress/yellow_bullet.png') scroll no-repeat 0 0;
-    color: black;
-}
 
 .progress-steps td div.state{
     position: relative;
     height: 50px;
-
 }
+
+.progress-steps td div.state div.state_name{
+    position: absolute;
+    text-align: center;
+    width: 54px;
+    top: 38px;
+    left: -10px;
+    font-weight: normal;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #666
+}
+
+.progress-steps td.current{
+    background: url('/images/store/progress/yellow_bullet.png') scroll no-repeat 0 0;
+}
+
+.progress-steps td.current div.state div.state_name{
+    font-weight: 700;
+    color: black;
+}
+
+
+
 
 .progress-steps td.current div.state div.state_index{
     top: 9px;
@@ -129,9 +147,7 @@ html{
     background: url('/images/store/progress/black_bullet.png') scroll no-repeat 0 0;
     cursor: pointer;
 }
-.progress-steps td.completed div.state div.state_name{
-    font-weight: 600;
-}
+
 
 
 .progress-steps td div.state div.state_index{
@@ -146,13 +162,6 @@ html{
     top: 10px;
 }
 
-.progress-steps td div.state div.state_name{
-    position: absolute;
-    text-align: center;
-    width: 54px;
-    top: 38px;
-    left: -10px;
-}
 
 .progress-steps td div.state div.state_name a{
     text-decoration: none;
