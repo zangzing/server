@@ -135,10 +135,10 @@
 
 
 .buy-screens .configure-product-screen .product-summary-section .checkout-button{
-    position:absolute;
-    top: 20px;
-    right: 15px;
-    width:85px;
+    position: absolute;
+    top: 5px;
+    right: 7px;
+    width: 85px;
 }
 
 
@@ -624,18 +624,4 @@
     filter: alpha(opacity = 50); /* for ie */
 }
 
-.buy-drawer-scrim .message{
-    position:absolute;
-    background-color: #F9F9FA;
-    border: 1px solid #D7D7D7;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    padding: 20px 40px 20px 40px;
-    font-size: 14px;
-    text-align: center;
-    display:none;
-    height:100px;
-    width:100px;
-    top:200px;
-}
 

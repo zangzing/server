@@ -430,7 +430,6 @@ zz.buy = zz.buy || {};
     var SCRIM_TEMPLATE = function(){
         return '<div class="buy-drawer-scrim">' +
                    '<div class="scrim"></div>'+
-                   '<div class="message">Please select a product, then you will be able to select photos for that product.</div>' +
                '</div>';
     };
 
