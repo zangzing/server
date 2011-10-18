@@ -814,12 +814,10 @@ zz.buy = zz.buy || {};
 
         refresh_selected_photos_list();
 
-        // hack: need to run this one time for each option
-        //       so that we capture all the cases where dependent
-        //       options need to be shown or removed
-        on_change_option();
-        on_change_option();
-        on_change_option();
+
+        setTimeout(function(){
+            on_change_option();
+        },500);
 
     }
 
