@@ -811,10 +811,12 @@ zz.buy = zz.buy || {};
 
         refresh_selected_photos_list();
 
-
-        _.defer(function(){
-            on_change_option();
-        });
+        // hack: need to run this one time for each option
+        //       so that we capture all the cases where dependent
+        //       options need to be shown or removed
+        on_change_option();
+        on_change_option();
+        on_change_option();
 
     }
 
@@ -858,7 +860,7 @@ zz.buy = zz.buy || {};
         i = Math.abs(i);
         i = parseInt((i + .005) * 100);
         i = i / 100;
-        s = new String(i);
+        var s = new String(i);
         if(s.indexOf('.') < 0) { s += '.00'; }
         if(s.indexOf('.') == (s.length - 2)) { s += '0'; }
         s = minus + s;
