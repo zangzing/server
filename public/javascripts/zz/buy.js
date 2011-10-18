@@ -52,6 +52,184 @@ zz.buy = zz.buy || {};
     ];
 
     var OPTION_FILTERS = [
+
+    /*****************************
+     *        Franed Prints
+     ******************************/
+        {
+            type_id: 4, // size
+            id: 15,     // 4x6
+            option_values_to_remove: [
+                {
+                    type_id: 12, //frame
+                    id: 50      //chocolate with no matte
+                },
+                {
+                    type_id: 12, //frame
+                    id: 47      //black with no matte
+                }
+            ]
+        },
+        {
+            type_id: 4, // size
+            id: 20,     // 20x30
+            option_values_to_remove: [
+                {
+                    type_id: 12, //frame
+                    id: 51      //chocolate with white matte
+                },
+                {
+                    type_id: 12, //frame
+                    id: 52      //chocolate with off-white matte
+                },
+                {
+                    type_id: 12, //frame
+                    id: 48      //black with white matte
+                },
+                {
+                    type_id: 12, //frame
+                    id: 49      //black with off-white matte
+                }
+            ]
+        },
+        {
+            type_id: 12, // frame
+            id: 51,     // Chocolate with White Matte
+            option_values_to_remove: [
+                {
+                    type_id: 3,
+                    id: 11       // Glossy
+                },
+                {
+                    type_id: 3,
+                    id: 12       // Matte
+                },
+                {
+                    type_id: 3,
+                    id: 13      // Lustre
+                },
+                {
+                    type_id: 3,
+                    id: 14          // Metallic
+                }
+            ]
+        },
+        {
+            type_id: 12, // frame
+            id: 52,     // Chocolate with Off-White Matte
+            option_values_to_remove: [
+                {
+                    type_id: 3,
+                    id: 11       // Glossy
+                },
+                {
+                    type_id: 3,
+                    id: 12       // Matte
+                },
+                {
+                    type_id: 3,
+                    id: 13      // Lustre
+                },
+                {
+                    type_id: 3,
+                    id: 14          // Metallic
+                }
+            ]
+        },
+        {
+            type_id: 12, // frame
+            id: 50,     // Chocolate with No Matte
+            option_values_to_remove: [
+                {
+                    type_id: 3,
+                    id: 11       // Glossy
+                },
+                {
+                    type_id: 3,
+                    id: 12       // Matte
+                },
+                {
+                    type_id: 3,
+                    id: 13      // Lustre
+                },
+                {
+                    type_id: 3,
+                    id: 14          // Metallic
+                }
+            ]
+        },
+        {
+            type_id: 12, // frame
+            id: 48,     // Black with White Matte
+            option_values_to_remove: [
+                {
+                    type_id: 3,
+                    id: 11       // Glossy
+                },
+                {
+                    type_id: 3,
+                    id: 12       // Matte
+                },
+                {
+                    type_id: 3,
+                    id: 13      // Lustre
+                },
+                {
+                    type_id: 3,
+                    id: 14          // Metallic
+                }
+            ]
+        },
+        {
+            type_id: 12, // frame
+            id: 49,     // Black with Off-White Matte
+            option_values_to_remove: [
+                {
+                    type_id: 3,
+                    id: 11       // Glossy
+                },
+                {
+                    type_id: 3,
+                    id: 12       // Matte
+                },
+                {
+                    type_id: 3,
+                    id: 13      // Lustre
+                },
+                {
+                    type_id: 3,
+                    id: 14          // Metallic
+                }
+            ]
+        },
+        {
+            type_id: 12, // frame
+            id: 47,     // Black with No Matte
+            option_values_to_remove: [
+                {
+                    type_id: 3,
+                    id: 11       // Glossy
+                },
+                {
+                    type_id: 3,
+                    id: 12       // Matte
+                },
+                {
+                    type_id: 3,
+                    id: 13      // Lustre
+                },
+                {
+                    type_id: 3,
+                    id: 14          // Metallic
+                }
+            ]
+        },
+
+
+
+    /*****************************
+     *        Prints
+     ******************************/
         {
             type_id: 4, // size
             id: 15,     // 4x6
@@ -814,6 +992,8 @@ zz.buy = zz.buy || {};
 
         refresh_selected_photos_list();
 
+        on_change_option();
+        on_change_option();
         on_change_option();
     }
 
