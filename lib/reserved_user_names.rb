@@ -377,6 +377,7 @@ class ReservedUserNames
       "admin",
       "support",
       "supporthero",
+      "zz_api",
 
     ].freeze
   end

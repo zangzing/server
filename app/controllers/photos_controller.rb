@@ -11,13 +11,13 @@ class PhotosController < ApplicationController
   before_filter :oauth_required,                  :only =>   [ :agent_create, :agent_index ]   #for agent
   # oauthenticate :strategies => :two_legged, :interactive => false, :only =>   [ :upload_fast ]
 
-  before_filter :require_album,                   :only =>   [ :agent_create, :index, :show, :movie, :mobile_photos_json, :photos_json, :photos_json_invalidate ]
+  before_filter :require_album,                   :only =>   [ :agent_create, :index, :show, :movie, :zz_api_photos_json, :photos_json, :photos_json_invalidate ]
   before_filter :require_photo,                   :only =>   [ :destroy, :update, :position, :async_edit, :async_rotate_left, :async_rotate_right, :download ]
 
   before_filter :require_album_admin_role,                :only =>   [ :update, :position ]
   before_filter :require_photo_owner_or_album_admin_role, :only =>   [ :destroy, :async_edit, :async_rotate_left, :async_rotate_right ]
   before_filter :require_album_contributor_role,          :only =>   [ :agent_create  ]
-  before_filter :require_album_viewer_role,               :only =>   [ :index, :show, :movie, :mobile_photos_json, :photos_json  ]
+  before_filter :require_album_viewer_role,               :only =>   [ :index, :show, :movie, :zz_api_photos_json, :photos_json  ]
 
 
   # Used by the agent to create photos duh?
@@ -287,8 +287,8 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
     photos_loader
   end
 
-  def mobile_photos_json
-    mobile_api_self_render do
+  def zz_api_photos_json
+    zz_api_self_render do
       photos_loader
     end
   end
