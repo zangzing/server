@@ -860,6 +860,12 @@ zz.buy = zz.buy || {};
 
 
         buy_screens_element.find('.configure-product-screen .product-summary-section .checkout-button').unbind('click').click(function(){
+
+            // remove click handler to prevent multiple clicks
+            buy_screens_element.find('.configure-product-screen .product-summary-section .checkout-button').unbind('click');
+
+            // add the photos and go to the cart
+            var dialog = zz.dialog.show_progress_dialog('Adding to cart...');
             add_selected_photos_to_cart(function(){
                 zz.routes.store.goto_cart();
             });
