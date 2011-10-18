@@ -785,7 +785,6 @@ zz.buy = zz.buy || {};
         };
 
 
-        on_change_option();
 
 
         buy_screens_element.find('.configure-product-screen .main-section .selected-photos-section .clear-all-photos').unbind('click').click(function(){
@@ -813,7 +812,9 @@ zz.buy = zz.buy || {};
         refresh_selected_photos_list();
 
 
-
+        _.defer(function(){
+            on_change_option();
+        });
 
     }
 
