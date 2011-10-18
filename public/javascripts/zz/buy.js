@@ -551,7 +551,7 @@ zz.buy = zz.buy || {};
                 expires.setTime(expires.getTime() + 60 * 60 * 1000);
                 jQuery.cookie('hide_checkout_banner', 'true', {expires: expires});
 
-                $('#checkout-banner').fadeOut('fast');
+                $('#checkout-banner').animate({top:-20}, 200);
             });
 
 
