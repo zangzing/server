@@ -691,20 +691,25 @@ zz.buy = zz.buy || {};
         var options_element = buy_screens_element.find('.configure-product-screen .main-section .options');
         options_element.empty();
 
-
-        var on_change_variant = function(){
+        var resolve_selected_variant = function(){
             var current_product = get_selected_product();
 
+
+            zz.logger.debug(options_element.find('.drop-down option:selected'));
+
+            // find variant that matches all the selected options
             var current_variant =_.detect(current_product.variants, function(variant){
                 return _.all(variant.values, function(value){
+
                     return _.detect(options_element.find('.drop-down option:selected'), function(option_element){
                         var selected_option_value = $(option_element).data('value');
-                        return value.type_id == selected_option_value.type_id && value.id == selected_option_value.id;
+                         return value.type_id == selected_option_value.type_id && value.id == selected_option_value.id;
                     });
                 });
             });
 
             set_selected_variant(current_variant);
+
 
             if(current_variant){
                 buy_screens_element.find('.configure-product-screen .product-summary-section .image').attr('src', current_variant.image_url);
@@ -721,14 +726,13 @@ zz.buy = zz.buy || {};
         };
 
 
-        var render_options = function(){
-            options_element.empty();
-            var selected_variant = get_selected_variant();
-            if(selected_variant){
-                var selected_option_values = get_selected_variant().values;
-                var option_values_to_remove = get_option_values_to_remove(selected_option_values);
-            }
 
+        var on_change_option = function(){
+            var selected_option_values = _.map(options_element.find('.drop-down option:selected'), function(option_element){
+                return $(option_element).data('value');
+            });
+
+            var option_values_to_remove = get_option_values_to_remove(selected_option_values);
 
             var should_remove_option_value = function(option_value){
                 if(option_values_to_remove){
@@ -741,21 +745,18 @@ zz.buy = zz.buy || {};
                 }
             };
 
+            options_element.empty();
+
             _.each(get_selected_product().options, function(option){
                 var option_element = $(PRODUCT_OPTION_TEMPLATE());
                 option_element.find('.label').text(option.name);
                 option_element.change(function(){
-
-                    // todo: fix this
-                    // ok, this is stupid -- but it works
-                    // need to do this several times so that we get thru
-                    // all the filtering and settle on the right set of options,
-                    // then capture the variant
-                    on_change_variant();
-                    render_options();
-                    on_change_variant();
-                    render_options();
-                    on_change_variant();
+                    // hack: need to run this one time for each option
+                    //       so that we capture all the cases where dependent
+                    //       options need to be shown or removed
+                    on_change_option();
+                    on_change_option();
+                    on_change_option();
                 });
 
                 var has_values = false;
@@ -779,20 +780,14 @@ zz.buy = zz.buy || {};
                     options_element.append(option_element);
                 }
             });
+
+            resolve_selected_variant();
         };
 
-        // todo: fix this
-        // ok, this is stupid -- but it works
-        // need to do this several times so that we get thru
-        // all the filtering and settle on the right set of options,
-        // then capture the variant
-        render_options();
-        on_change_variant();
-        render_options();
-        on_change_variant();
+
+        on_change_option();
 
 
-        // selected photos section
         buy_screens_element.find('.configure-product-screen .main-section .selected-photos-section .clear-all-photos').unbind('click').click(function(){
             var selected_photos = zz.local_storage.get('zz.buy.selected_photos');
             zz.local_storage.set('zz.buy.selected_photos',[]);
