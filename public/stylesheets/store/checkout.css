@@ -112,9 +112,9 @@ html{
 .progress-steps td div.state div.state_name{
     position: absolute;
     text-align: center;
-    width: 54px;
+    width: 80px;
     top: 38px;
-    left: -10px;
+    left: -22px;
     font-weight: normal;
     font-family: Arial, sans-serif;
     font-size: 14px;
