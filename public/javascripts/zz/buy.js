@@ -552,6 +552,7 @@ zz.buy = zz.buy || {};
                 jQuery.cookie('hide_checkout_banner', 'true', {expires: expires});
 
                 $('#checkout-banner').animate({top:-20}, 200);
+                $('#checkout-banner').animate({top:-20}, 200);
             });
 
 
@@ -860,6 +861,11 @@ zz.buy = zz.buy || {};
 
 
         buy_screens_element.find('.configure-product-screen .product-summary-section .checkout-button').unbind('click').click(function(){
+            if(get_selected_photos().length == 0){
+                alert("Please select one or more photos for this product.");
+                return;
+            }
+
 
             // remove click handler to prevent multiple clicks
             buy_screens_element.find('.configure-product-screen .product-summary-section .checkout-button').unbind('click');
