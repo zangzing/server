@@ -695,7 +695,10 @@ zz.buy = zz.buy || {};
             var current_product = get_selected_product();
 
 
-            zz.logger.debug(options_element.find('.drop-down option:selected'));
+            zz.logger.debug('-- selected options --');
+            _.each(options_element.find('.drop-down option:selected'), function(el){
+                zz.logger.debug(el.text);
+            });
 
             // find variant that matches all the selected options
             var current_variant =_.detect(current_product.variants, function(variant){
