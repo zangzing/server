@@ -117,6 +117,10 @@
 
 <script>
     $(document).ready(function(){
+
+        zz.local_storage.clear();
+
+
         $('#submit-button').click(function(){
             ZZAt.track('button.join.click');
             $('form').submit();
