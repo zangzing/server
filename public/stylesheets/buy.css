@@ -497,62 +497,38 @@
 
 #checkout-banner {
     position: absolute;
-    width: 530px;
-    height: 48px;
-    top: 55px;
-    background-color: white;
+    width: 381px;
+    height: 71px;
+    top: 35px;
+    background-color: transparent;
     display: none;
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
-    -moz-border-bottom-left-radius: 15px;
-    -moz-border-bottom-right-radius: 15px;
     z-index: 200;
+    background: url(/images/buy/checkout-banner.png) no-repeat scroll 0px 0px transparent;
 }
 
-#checkout-banner .border{
-    position: absolute;
-    left: -5px;
-    bottom: -5px;
-    right: -5px;
-    border: 7px #FDC113 solid;
-    border-top: 0px;
-    opacity: 0.75;
-    top: 0px;
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
-    -moz-border-bottom-left-radius: 15px;
-    -moz-border-bottom-right-radius: 15px;
-}
 
 #checkout-banner .message{
     position: absolute;
-    width:240px;
+    width: 240px;
     font-size: 15px;
     font-weight: 500;
     text-shadow: 1px 1px white;
-    left: 42px;
-    top: 15px;
+    left: 59px;
+    top: 33px;
     text-align: left;
-}
-
-#checkout-banner .view-cart-button{
-    position: absolute;
-    right: 150px;
-    top: 10px;
-    width:100px;
 }
 
 #checkout-banner .checkout-button{
     position: absolute;
-    right: 20px;
-    top: 10px;
-    width:100px;
+    right: 15px;
+    top: 28px;
+    width: 80px;
 }
 
 #checkout-banner .close-button{
     position: absolute;
-    top: 14px;
-    left: 17px;
+    top: 33px;
+    left: 20px;
     background: url(/images/buy/delete-button.png) no-repeat scroll 0px 0px transparent;
     width: 20px;
     height: 18px;
