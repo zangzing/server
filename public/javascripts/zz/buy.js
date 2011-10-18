@@ -589,6 +589,9 @@ zz.buy = zz.buy || {};
         }
     };
 
+    zz.buy.hide_checkout_banner = function(){
+        $('#checkout-banner').hide();
+    };
 
     zz.buy.toggle_visibility_with_buy_mode = function(element){
         if(zz.buy.is_buy_mode_active()){
