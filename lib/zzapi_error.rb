@@ -1,5 +1,5 @@
-# this class tracks any mobile api error condition set
-class MobileError
+# this class tracks any zz api error condition set
+class ZZAPIError
   attr_reader :err_set, :message, :code
 
   def self.initialize

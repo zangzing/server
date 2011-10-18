@@ -314,7 +314,7 @@ class ApplicationController < ActionController::Base
     session[:guest_token] = nil
   end
 
-  # wraps a mobile api call and ensures that
+  # wraps a zz api call and ensures that
   # we handle exceptions cleanly and put into proper
   # format - does the render so expects the block
   # to return a hash that represents the result
@@ -330,9 +330,9 @@ class ApplicationController < ActionController::Base
   # block must not use return at the top level since
   # return in a block exits out to our caller without
   # coming back to us first
-  def mobile_api_core(skip_render, block)
+  def zz_api_core(skip_render, block)
     begin
-      custom_err = MobileError.new
+      custom_err = ZZAPIError.new
       result = block.call(custom_err)
       if skip_render == false
         if custom_err.err_set
@@ -348,12 +348,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def mobile_api_self_render(&block)
-    mobile_api_core(true, block)
+  def zz_api_self_render(&block)
+    zz_api_core(true, block)
   end
 
-  def mobile_api(&block)
-    mobile_api_core(false, block)
+  def zz_api(&block)
+    zz_api_core(false, block)
   end
 
 end
