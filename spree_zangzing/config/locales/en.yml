@@ -1027,7 +1027,7 @@ en:
   email_needed: "We will use it for order confirmation and status."
   order_history: "Order History"
   shipped_to: "Shipped To"
-  select_state: "State or Province"
+  select_state: "State"
   shipping_contact: "Shipping Contact"
   billing_contact: "Billing Contact"
   expiration_date: "Expiration Date"
