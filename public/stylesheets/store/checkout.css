@@ -572,9 +572,6 @@ form p.field#submit_button{
     background-color: #EEEEEE;
     text-shadow: 1px 1px 1px white;
 }
-#cart #subtotal .gray-button{
-    min-width: 120px;
-}
 
 /*------------------------ order status -------------------*/
 #order #cclogo img{
