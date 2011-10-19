@@ -76,8 +76,6 @@ html{
     color: gray !important;
 }
 
-
-
 .checkout-summary{
     padding:  15px;
     background-color: #CCFFCC;
@@ -86,7 +84,6 @@ html{
 .grey-border{
     border: 2px solid #CCCCCC;
 }
-
 .address_label{
     color:#404040;
     font-weight: 700;
@@ -102,7 +99,6 @@ html{
     border:  none;
     background: url('/images/store/progress/black_bullet.png') scroll no-repeat 0 0;
 }
-
 
 .progress-steps td div.state{
     position: relative;
@@ -130,11 +126,9 @@ html{
     color: black;
 }
 
-
-
-
 .progress-steps td.current div.state div.state_index{
     top: 9px;
+    left: 13px;
     font-weight: 600;
 }
 
@@ -148,20 +142,17 @@ html{
     cursor: pointer;
 }
 
-
-
 .progress-steps td div.state div.state_index{
     position:absolute;
     color: white;
     font-weight: 400;
     top: 9px;
-    left: 13px;
+    left: 14px;
 }
-
 .ua-chrome .progress-steps td div.state div.state_index{
     top: 10px;
+    left:13px;
 }
-
 
 .progress-steps td div.state div.state_name a{
     text-decoration: none;
