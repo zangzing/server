@@ -593,15 +593,15 @@
     position: absolute;
     top: 33px;
     left: 20px;
-    background: url(/images/buy/delete-button.png) no-repeat scroll 0px 0px transparent;
     width: 20px;
     height: 18px;
     cursor: pointer;
+    background: url(/images/buy/delete-button.png) no-repeat scroll 0px -19px transparent;
 }
 
 
 #checkout-banner .close-button:hover{
-    background: url(/images/buy/delete-button.png) no-repeat scroll 0px -19px transparent;
+    background: url(/images/buy/delete-button.png) no-repeat scroll 0px 0px transparent;
 }
 
 
