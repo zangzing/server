@@ -20,7 +20,8 @@ class Gateway::Braintree < Gateway
 
   def create_profile(payment)
     if payment.source.gateway_customer_profile_id.nil?
-      response = provider.store(payment.source)
+      #ZANGZING added email
+      response = provider.store(payment.source, { :email => payment.order.email })
       if response.success?
         payment.source.update_attributes!(:gateway_customer_profile_id => response.params["customer_vault_id"])
       else

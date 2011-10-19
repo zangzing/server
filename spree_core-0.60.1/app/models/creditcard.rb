@@ -201,10 +201,7 @@ class Creditcard < ActiveRecord::Base
     gateway_error I18n.t(:unable_to_connect_to_gateway)
   end
 
-
-
-
-
+  # ZANGZING added refund
   def actions
     %w{capture void refund}
   end
