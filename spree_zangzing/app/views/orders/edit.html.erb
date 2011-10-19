@@ -51,26 +51,30 @@ end %>
 <%content_for :page_javascript  do%>
 <script type="text/javascript">
  $(document).ready( function(){
+     var spin = function(){
+              new Spinner({ lines: 8,
+                  length: 4,
+                  width: 3,
+                  radius: 3,
+                  color: '#333',
+                  speed: 1,
+                  trail: 50, // Afterglow percentage
+                  shadow: false
+              }).spin( document.getElementById('spin_here'));
+          };
+
      $('form#updatecart a.delete').click( function(e){
         e.preventDefault();
         if( confirm('<%=t('are_you_sure_delete')%>') ){
+            spin();
+            $('form#updatecart a.delete').css('color', '#666666' );
             subject = $(this).parents('tr');
+            subject.fadeOut(1000);
             subject.find('input.item_quantity').val(0);
-            subject.fadeOut('slow')
+            $('form#updatecart').submit();
         }
+        return false;
      });
-
-     var spin = function(){
-         new Spinner({ lines: 8,
-             length: 4,
-             width: 3,
-             radius: 3,
-             color: '#333',
-             speed: 1,
-             trail: 50, // Afterglow percentage
-             shadow: false
-         }).spin( document.getElementById('spin_here'));
-     };
 
      $('#update-cart').click( function(){
          $(this).attr('disabled', 'disabled');
