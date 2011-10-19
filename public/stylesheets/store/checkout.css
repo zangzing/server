@@ -48,6 +48,10 @@ html{
 .checkout-content{
     background-color: white;
     border: 1px solid #CCCCCC;
+    border-radius:         10px;
+    -moz-border-radius:    10px;
+    -webkit-border-radius: 10px;
+    overflow: hidden;
 }
 .checkout-next-button{
     margin: 18px 0 0 0;
@@ -562,6 +566,12 @@ form p.field#submit_button{
 #cart #subtotal{
     background-color: #EEEEEE;
     text-shadow: 1px 1px 1px white;
+    -webkit-border-bottom-right-radius: 10px;
+    -webkit-border-bottom-left-radius: 10px;
+    -moz-border-radius-bottomright: 10px;
+    -moz-border-radius-bottomleft: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
 }
 
 /*------------------------ order status -------------------*/
@@ -574,7 +584,16 @@ form p.field#submit_button{
     border-top: solid 2px #dddddd;
     text-shadow: 1px 1px 1px white;
 }
-
+div#order_items,
+#order_items table.index{
+    -webkit-border-bottom-right-radius: 10px;
+    -webkit-border-bottom-left-radius: 10px;
+    -moz-border-radius-bottomright: 10px;
+    -moz-border-radius-bottomleft: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    overflow: hidden;
+}
 
 
 #order #total .variant_description{

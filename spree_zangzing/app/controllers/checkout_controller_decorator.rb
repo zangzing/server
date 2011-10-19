@@ -226,15 +226,3 @@ CheckoutController.class_eval do
 
 
 end
-
-  # def gateway_error(error)
-  #  if error.is_a? ActiveMerchant::Billing::Response
-  #    text = error.params['message'] || error.params['response_reason_text'] || error.message
-  #  else
-  #    text = error.to_s
-  #  end
-  #  logger.error(I18n.t('gateway_error'))
-  #  logger.error("  #{error.to_yaml}")
-  #  self.errors.add( :number, text )
-  #  raise Spree::GatewayError.new(text)
-  #end

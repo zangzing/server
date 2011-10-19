@@ -40,10 +40,10 @@ Order.class_eval do
         self.bill_address_id = ship_address_id
       end
     else
-      if use_shipping_as_billing?
+      #if use_shipping_as_billing?
         self.bill_address_id = nil
         self.bill_address    = nil
-      end
+      #end
     end
     true
   end
@@ -677,6 +677,11 @@ Order.class_eval do
   def printset_quantity
     @printset_quantity ||= self.line_items.prints.first.quantity
   end
+
+  def billing_zipcode
+     bill_address.try(:zipcode)
+   end
+
 
   private
 
