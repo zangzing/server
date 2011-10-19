@@ -2,6 +2,8 @@ Creditcard.class_eval do
    belongs_to :user
    belongs_to :payment_method
 
+  attr_accessor :zipcode
+
    include ActiveMerchant::Billing::CreditCardMethods
 
    before_validation :set_type

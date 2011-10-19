@@ -45,7 +45,7 @@ class Admin::PaymentsController < Admin::BaseController
     rescue Spree::GatewayError => e
       flash[:error] = "#{e.message}"
       
-      respond_with(@payment) { |format| format.html { redirect_to new_admin_payment_path(@order) } }
+      respond_with(@payment) { |format| format.html { redirect_to new_admin_order_payment_path(@order) } }
     end
   end
 
@@ -54,6 +54,11 @@ class Admin::PaymentsController < Admin::BaseController
     return unless event = params[:e] and @payment.payment_source
     if @payment.payment_source.send("#{event}", @payment)
       flash.notice = t('payment_updated')
+      # ZANGZING update order after events
+      order = @payment.order
+      order.reload
+      order.update!
+      order.save
     else
       flash[:error] = t('cannot_perform_operation')
     end
