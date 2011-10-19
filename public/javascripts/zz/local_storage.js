@@ -36,5 +36,9 @@ zz.local_storage = zz.local_storage || {};
         window.localStorage.clear();
     };
 
+    zz.local_storage.debug = function(){
+        return cache;
+    };
+
 })();
 
