@@ -542,7 +542,13 @@ zz.buy = zz.buy || {};
 
         if(zz.session.cart_item_count > 0 && jQuery.cookie('hide_checkout_banner') != 'true'){
             $('#checkout-banner').show();
-            $('#checkout-banner .message').text('You have ' + zz.session.cart_item_count + ' items in your cart.');
+            if(zz.session.cart_item_count == 1){
+                $('#checkout-banner .message').text('You have ' + zz.session.cart_item_count + ' item in your cart.');
+            }
+            else{
+                $('#checkout-banner .message').text('You have ' + zz.session.cart_item_count + ' items in your cart.');
+            }
+
 
             $('#checkout-banner .close-button').click(function(){
                 //create cookie that expires in 1 hour or when user quits browser
