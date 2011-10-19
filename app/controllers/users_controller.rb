@@ -204,9 +204,9 @@ class UsersController < ApplicationController
     render :json => true #Invalid call return not valid
   end
 
-  # mobile api
-  def mobile_user_info
-    mobile_api do
+  # zz api
+  def zz_api_user_info
+    zz_api do
       user_id = params[:user_id]
       user = User.find(user_id)
 

@@ -284,6 +284,7 @@ zz.toolbars = {
             document.location.href = zz.routes.edit_user_path(zz.session.current_user_name);
         });
         $('#acct-signout-btn').click(function() {
+            zz.local_storage.clear();
             window.location = zz.routes.path_prefix + '/signout';
         });
 

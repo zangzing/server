@@ -31,5 +31,10 @@ zz.local_storage = zz.local_storage || {};
         window.localStorage.removeItem(name);
     };
 
+    zz.local_storage.clear = function(){
+        cache = {};
+        window.localStorage.clear();
+    };
+
 })();
 
