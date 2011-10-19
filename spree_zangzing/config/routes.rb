@@ -15,6 +15,9 @@ Rails.application.routes.draw do
     resources :tax_categories
     resources :configurations, :only => :index
     resources :products do
+      collection do
+        get :table, :as => :products_table
+      end
       resources :product_properties
       resources :images do
         collection do
