@@ -566,7 +566,7 @@ zz.buy = zz.buy || {};
             });
 
             $('#checkout-banner .checkout-button').click(function(){
-                zz.routes.store.goto_checkout();
+                zz.routes.store.goto_cart();
             });
 
             var center = function(){

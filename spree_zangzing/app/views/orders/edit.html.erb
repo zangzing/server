@@ -39,13 +39,11 @@ end %>
 <%unless @order.line_items.empty? %>
 
     <%content_for :next_button do %>
-
-        <a href="/store/checkout" class="next-button"><span><%= "#{t('checkout')}"%></span></a>
-
+        <a  href="javascript:void(0);" class="next-button checkout-cart"><span><%= "#{t('checkout')}"%></span></a>
     <%end%>
 
     <%content_for :back_button do %>
-        <a href="/" class="back-button"><span><%= "#{t('buy_more')}"%></span></a>
+        <a href="javascript:void(0);" class="back-button"><span><%= "#{t('buy_more')}"%></span></a>
     <%end%>
 
 <%end%>
@@ -62,9 +60,7 @@ end %>
         }
      });
 
-     $('#update-cart').click( function(){
-         $(this).attr('disabled', 'disabled');
-         $(this).unbind('click');
+     var spin = function(){
          new Spinner({ lines: 8,
              length: 4,
              width: 3,
@@ -74,8 +70,23 @@ end %>
              trail: 50, // Afterglow percentage
              shadow: false
          }).spin( document.getElementById('spin_here'));
+     };
+
+     $('#update-cart').click( function(){
+         $(this).attr('disabled', 'disabled');
+         $(this).unbind('click');
+         spin();
          $('form#updatecart').submit();
      });
+
+     $('a.checkout-cart').click( function(){
+              $(this).attr('disabled', 'disabled');
+              $(this).unbind('click');
+              spin();
+              $('form#updatecart').attr('action', '<%=checkout_cart_path%>');
+              $('form#updatecart').submit();
+     });
+
  });
 </script>
 <%end%>

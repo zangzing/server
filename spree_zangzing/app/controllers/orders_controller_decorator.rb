@@ -1,5 +1,5 @@
 OrdersController.class_eval do
-  ssl_required :index, :edit, :show, :populate, :thankyou, :update  # all except :add_top_order
+  ssl_required :index, :edit, :show, :populate, :thankyou, :update, :checkout  # all except :add_top_order
 
   before_filter :require_user, :only => [:index]
   before_filter :check_authorization
@@ -37,7 +37,6 @@ OrdersController.class_eval do
     @order = Order.find_by_number(params[:id])
     render :layout => 'checkout'
   end
-
 
   # the inbound variant is determined either from products[pid]=vid or variants[master_vid], depending on whether or not the product has_variants, or not
   #
@@ -84,7 +83,18 @@ OrdersController.class_eval do
       end
     end
     render :layout => 'checkout'
-   end
+  end
+
+  def checkout
+    @order = current_order
+    if @order.update_attributes(params[:order])
+      @order.line_items = @order.line_items.select {|li| li.quantity > 0 }
+      respond_with(@order) { |format| format.html { redirect_to checkout_path } }
+    else
+      respond_with(@order)
+    end
+  end
+
 
   private
   # given params[:customizations], return a non-persisted  PhotoProductCustomData object
