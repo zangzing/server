@@ -48,6 +48,10 @@ html{
 .checkout-content{
     background-color: white;
     border: 1px solid #CCCCCC;
+    border-radius:         10px;
+    -moz-border-radius:    10px;
+    -webkit-border-radius: 10px;
+    overflow: hidden;
 }
 .checkout-next-button{
     margin: 18px 0 0 0;
@@ -76,8 +80,6 @@ html{
     color: gray !important;
 }
 
-
-
 .checkout-summary{
     padding:  15px;
     background-color: #CCFFCC;
@@ -86,7 +88,6 @@ html{
 .grey-border{
     border: 2px solid #CCCCCC;
 }
-
 .address_label{
     color:#404040;
     font-weight: 700;
@@ -102,7 +103,6 @@ html{
     border:  none;
     background: url('/images/store/progress/black_bullet.png') scroll no-repeat 0 0;
 }
-
 
 .progress-steps td div.state{
     position: relative;
@@ -130,11 +130,9 @@ html{
     color: black;
 }
 
-
-
-
 .progress-steps td.current div.state div.state_index{
     top: 9px;
+    left: 13px;
     font-weight: 600;
 }
 
@@ -148,20 +146,17 @@ html{
     cursor: pointer;
 }
 
-
-
 .progress-steps td div.state div.state_index{
     position:absolute;
     color: white;
     font-weight: 400;
     top: 9px;
-    left: 13px;
+    left: 14px;
 }
-
 .ua-chrome .progress-steps td div.state div.state_index{
     top: 10px;
+    left:13px;
 }
-
 
 .progress-steps td div.state div.state_name a{
     text-decoration: none;
@@ -571,6 +566,12 @@ form p.field#submit_button{
 #cart #subtotal{
     background-color: #EEEEEE;
     text-shadow: 1px 1px 1px white;
+    -webkit-border-bottom-right-radius: 10px;
+    -webkit-border-bottom-left-radius: 10px;
+    -moz-border-radius-bottomright: 10px;
+    -moz-border-radius-bottomleft: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
 }
 
 /*------------------------ order status -------------------*/
@@ -583,7 +584,16 @@ form p.field#submit_button{
     border-top: solid 2px #dddddd;
     text-shadow: 1px 1px 1px white;
 }
-
+div#order_items,
+#order_items table.index{
+    -webkit-border-bottom-right-radius: 10px;
+    -webkit-border-bottom-left-radius: 10px;
+    -moz-border-radius-bottomright: 10px;
+    -moz-border-radius-bottomleft: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    overflow: hidden;
+}
 
 
 #order #total .variant_description{

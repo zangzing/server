@@ -262,7 +262,7 @@ class Photo < ActiveRecord::Base
     data = PhotoInfo.get_image_metadata(self.source_path)
     self.photo_info = PhotoInfo.factory(data)
     if exif = data['EXIF']
-      val = exif['DateTimeOriginal']
+      val =  exif['DateTimeOriginal'] || self.capture_date # if nil keep the existing one, otherwise update
       self.capture_date = (DateTime.parse(val) unless val.nil?) rescue nil
       val = exif['Orientation']
       self.orientation = decode_orientation(val) unless val.nil?

@@ -37,7 +37,6 @@ javascripts:
     - public/javascripts/store/jquery.infieldlabel.js
     - public/javascripts/jquery-lib/jquery.validate.js
     - public/javascripts/lib/spin.js
-    - public/javascripts/lib/cssua.js
     - public/javascripts/store/checkout.js
     - public/javascripts/lib/iphone-style-checkboxes.js
     - public/javascripts/store/bootstrap-modal.js

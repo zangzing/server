@@ -12,7 +12,7 @@
 <div id="cc">
 <p id="ccnumber" class="field">
   <label for="card_number"><%= t("card_number") %></label>
-  <%= text_field_tag "card_number", '', {:id => 'card_number', :class => 'required', :size => 16, :maxlength => 16, 'data-original-title'=>t(:card_number), :autocomplete => "off"} %>
+  <%= text_field_tag "card_number", '', {:id => 'card_number', :class => 'required', :size => 16, :maxlength => 20, 'data-original-title'=>t(:card_number), :autocomplete => "off"} %>
 </p>
 
 <p id="ccv" class="field">
@@ -39,7 +39,7 @@
 <%= hidden_field param_prefix, 'last_name',  :value => @order.billing_lastname,  :id => 'cc_lastname'  %>
 <%= hidden_field param_prefix, 'number', :id => 'cc_number' %>
 <%= hidden_field param_prefix, 'verification_value', :id => 'cc_code' %>
-<%= hidden_field param_prefix, 'zipcode', :id => 'cc_zipcode' %>
+<%= hidden_field param_prefix, 'zipcode', :value => @order.billing_zipcode, :id => 'cc_zipcode' %>
 
 <!--------------- This is the content of the modal cvv_question dialog -->
   <div style="display: none;" id="cvv-question-modal" class="modal hide">

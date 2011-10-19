@@ -193,11 +193,13 @@ zz.store.checkout = {};
                  }
             },
             submitHandler: function(form){
-                $('#cc_firstname').val($('#order_bill_address_attributes_firstname').val());
-                $('#cc_lastname').val($('#order_bill_address_attributes_lastname').val());
+                if ($('#order_bill_address_attributes_firstname').length > 0){
+                    $('#cc_firstname').val($('#order_bill_address_attributes_firstname').val());
+                    $('#cc_lastname').val($('#order_bill_address_attributes_lastname').val());
+                    $('#cc_zipcode').val($('#order_bill_address_attributes_zipcode').val());
+                }
                 $('#cc_number').val($('#card_number').val());
                 $('#cc_code').val($('#card_code').val());
-                $('#cc_zipcode').val($('#order_bill_address_attributes_zipcode').val());
                 form.submit();
             },
             errorElement: "div",
