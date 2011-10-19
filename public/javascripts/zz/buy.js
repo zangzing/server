@@ -25,6 +25,7 @@ zz.buy = zz.buy || {};
         'maegondo',
         'sheripollock',
         'tyler',
+        'jrwatts',
 
         //mauricio
         'mauricio',
