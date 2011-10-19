@@ -793,7 +793,7 @@ class Photo < ActiveRecord::Base
   # we invalidate the browsers cache for
   # old items.
   def self.hash_schema_version
-    'v4'
+    'v5'
   end
 
   # this method packages up the fields
@@ -813,7 +813,9 @@ class Photo < ActiveRecord::Base
       :screen_url => photo.screen_url,
       :full_screen_url => photo.full_screen_url,
       :width => photo.width,
-      :height => photo.height
+      :height => photo.height,
+      :rotated_width => photo.rotated_width,
+      :rotated_height => photo.rotated_height
     }
   end
 

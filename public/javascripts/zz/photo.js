@@ -82,7 +82,7 @@ zz.template_cache = zz.template_cache || {};
                 var srcWidth = o.aspectRatio;
                 var srcHeight = 1;
 
-                var scaled = zz.image_utils.scale({width: srcWidth, height: srcHeight}, {width: o.maxWidth, height: o.maxHeight - o.captionHeight});
+                var scaled = zz.image_utils.scale({width: srcWidth, height: srcHeight}, {width: Math.min(o.maxWidth, o.json.rotated_width), height: Math.min(o.maxHeight - o.captionHeight, o.json.rotated_height)});
                 initialHeight = scaled.height;
                 initialWidth = scaled.width;
             } else {

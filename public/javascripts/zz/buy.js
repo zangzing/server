@@ -603,6 +603,9 @@ zz.buy = zz.buy || {};
         if(zz.buy.is_buy_mode_active()){
             $(element).hide();
         }
+        else{
+            $(element).show();
+        }
 
         zz.buy.on_before_activate(function(){
             $(element).fadeOut('fast');
@@ -1322,7 +1325,9 @@ zz.buy = zz.buy || {};
             $('.buy-screens .configure-product-screen').removeClass('bad-photos');
         }
 
-        $('.buy-screens .configure-product-screen .main-section .selected-photos-section .selected-photos .selected-photo.bad-size .photo-border .error-icon').center_xy();
+        _.defer(function(){
+            $('.buy-screens .configure-product-screen .main-section .selected-photos-section .selected-photos .selected-photo.bad-size .photo-border .error-icon').center_xy().show();;
+        });
 
     }
 
