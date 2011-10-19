@@ -1000,6 +1000,8 @@ zz.buy = zz.buy || {};
             refresh_selected_photos_list();
             zz.pubsub.publish(EVENTS.REMOVE_SELECTED_PHOTO, selected_photos);
             update_price_and_count();
+            check_bad_photos();
+
         });
 
 
