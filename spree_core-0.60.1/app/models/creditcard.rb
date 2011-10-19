@@ -116,7 +116,12 @@ class Creditcard < ActiveRecord::Base
     record_log payment, response
 
     if response.success?
-      payment.response_code = response.authorization
+      # ZANGZING
+      # Commented out this line because ActiveMerchant does not return the authorization number
+      # in the respose for capture it just returns text. The result should be parsed and improved
+      # by active merchant. If we do not comment out this line, the authorization gets blanked and we
+      # cannot void or refund the payment
+      #payment.response_code = response.authorization
       payment.complete
     else
       payment.fail
@@ -171,8 +176,34 @@ class Creditcard < ActiveRecord::Base
     gateway_error I18n.t(:unable_to_connect_to_gateway)
   end
 
+  # ZANGZING Added refund functionality
+  def refund(payment)
+    payment_gateway = payment.payment_method
+    check_environment(payment_gateway)
+
+    amount = payment.credit_allowed >= payment.order.outstanding_balance.abs ? payment.order.outstanding_balance.abs : payment.credit_allowed.abs
+
+    response = payment_gateway.refund( (amount * 100).round, payment.response_code, minimal_gateway_options(payment))
+
+    record_log payment, response
+
+    if response.success?
+      payment.order.payments.create(
+          :source => payment,
+          :payment_method => payment.payment_method,
+          :amount => amount.abs * -1,
+          :response_code => response.authorization,
+          :state => 'completed')
+    else
+      gateway_error(response)
+    end
+  rescue ActiveMerchant::ConnectionError
+    gateway_error I18n.t(:unable_to_connect_to_gateway)
+  end
+
+  # ZANGZING added refund
   def actions
-    %w{capture void credit}
+    %w{capture void refund}
   end
 
   # Indicates whether its possible to capture the payment
@@ -187,7 +218,7 @@ class Creditcard < ActiveRecord::Base
 
   # Indicates whether its possible to credit the payment.  Note that most gateways require that the
   # payment be settled first which generally happens within 12-24 hours of the transaction.
-  def can_credit?(payment)
+  def can_refund?(payment)
     return false unless payment.state == "completed"
     return false unless payment.order.payment_state == "credit_owed"
     payment.credit_allowed > 0

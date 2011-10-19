@@ -20,7 +20,8 @@ class Gateway::Braintree < Gateway
 
   def create_profile(payment)
     if payment.source.gateway_customer_profile_id.nil?
-      response = provider.store(payment.source)
+      #ZANGZING added email
+      response = provider.store(payment.source, { :email => payment.order.email })
       if response.success?
         payment.source.update_attributes!(:gateway_customer_profile_id => response.params["customer_vault_id"])
       else
@@ -41,6 +42,11 @@ class Gateway::Braintree < Gateway
 
   def credit_with_payment_profiles(amount, payment, response_code, option)
     provider.credit(amount, payment)
+  end
+
+  # ZANGZING Added refund functionality
+  def refund( amount, transaction_id, options )
+      provider.refund(amount, transaction_id, options )
   end
 
   def credit_without_payment_profiles(amount, response_code, options)

@@ -150,13 +150,13 @@ zz.store.checkout = {};
         zz.store.checkout.validator = $('#checkout_form_payment').validate({
             //debug: true,
             rules: {
-                'payment_source[1034433118][number]':{
+                'card_number':{
                     required: function(element){
                         return $('input[name*=creditcard_id]:checked').length <=0;
                     },
                     creditcard: true
                 },
-                'payment_source[1034433118][verification_value]':{
+                'card_code':{
                     required: function(element){
                         return $('input[name*=creditcard_id]:checked').length <=0;
                     },
@@ -182,7 +182,7 @@ zz.store.checkout = {};
                     required: 'We promise we won&rsquo;t spam you',
                     email: 'Valid email, pretty pleahse :)'
                 },
-                'payment_source[1034433118][verification_value]':{
+                'card_code':{
                     required:'Need help?, click the question mark',
                     number: 'Need help?, click the question mark',
                     minlength: 'Need help?, click the question mark'
@@ -193,6 +193,11 @@ zz.store.checkout = {};
                  }
             },
             submitHandler: function(form){
+                $('#cc_firstname').val($('#order_bill_address_attributes_firstname').val());
+                $('#cc_lastname').val($('#order_bill_address_attributes_lastname').val());
+                $('#cc_number').val($('#card_number').val());
+                $('#cc_code').val($('#card_code').val());
+                $('#cc_zipcode').val($('#order_bill_address_attributes_zipcode').val());
                 form.submit();
             },
             errorElement: "div",

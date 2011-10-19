@@ -65,7 +65,7 @@ CheckoutController.class_eval do
   #executed before displaying the payment view
   def before_payment
     #remove any payments if you are updatind
-    current_order.payments.destroy_all if request.put?
+    # current_order.payments.destroy_all if request.put?
     if current_user
       @order.bill_address ||= Address.default
       @order.bill_address.user = current_user
@@ -171,27 +171,39 @@ CheckoutController.class_eval do
    end
 
    def object_params
-     # For payment step, filter order parameters to produce the expected nested attributes for a single payment and its source, discarding attributes for payment methods other than the one selected
+     # For payment step, filter order parameters to produce the expected nested attributes
+     # for a single payment and its source, discarding attributes for payment methods
+     # other than the one selected
      if @order.payment?
        if params[:order][:creditcard_id]
-         creditcard = Creditcard.find( params[:order][:creditcard_id] )
-         #The payment method needs id and amount (set below) and payment method id, source_id and source_type
-         params[:order][:payments_attributes].first[:payment_method_id] = creditcard.payment_method_id
-         params[:order][:payments_attributes].first[:source_id] = creditcard.id
-         params[:order][:payments_attributes].first[:source_type] = creditcard.class.name
-         
+         #The user did not type a new creditcard, she used the checkboxes
+         if @order.payment && @order.payment.source && @order.payment.source.id.to_s == params[:order][:creditcard_id]
+           # The selected checkbox/creditcard did NOT CHANGE don't change payment
+           # delete all payment attributes to prevent payment from changing
+           params[:order].delete( :payments_attributes )
+         else
+           # The selected creditcard changed delete current payments and set
+           # params to create a new payemtn using the selected creditcard
+           @order.payments.destroy_all
+           creditcard = Creditcard.find( params[:order][:creditcard_id] )
+           #The payment method needs id and amount (set below) and payment method id, source_id and source_type
+           params[:order][:payments_attributes].first[:payment_method_id] = creditcard.payment_method_id
+           params[:order][:payments_attributes].first[:source_id] = creditcard.id
+           params[:order][:payments_attributes].first[:source_type] = creditcard.class.name
+           params[:order][:payments_attributes].first[:amount] = @order.total
+         end
          #clear creditcard id from order
          params[:order].delete( :creditcard_id )
-         #delete all other credit card attributes to prevent validation errors
+         #delete all other empty credit card attributes to prevent validation errors
          params.delete(:payment_source) if params[:payment_source]
+       else
+          #the user typed a new creditcard, delete existing payments and setup a new one with the new crdit card
+          @order.payments.destroy_all
+          if params[:payment_source].present? && source_params = params.delete(:payment_source)[params[:order][:payments_attributes].first[:payment_method_id].underscore]
+            params[:order][:payments_attributes].first[:source_attributes] = source_params
+            params[:order][:payments_attributes].first[:amount] = @order.total
+         end
        end
-       if params[:payment_source].present? && source_params = params.delete(:payment_source)[params[:order][:payments_attributes].first[:payment_method_id].underscore]
-         params[:order][:payments_attributes].first[:source_attributes] = source_params
-       end
-       if (params[:order][:payments_attributes])
-         params[:order][:payments_attributes].first[:amount] = @order.total
-       end
-
      end
      params[:order]
    end

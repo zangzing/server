@@ -42,21 +42,22 @@
 }
 
 .buy-screens .select-product-screen .product .name{
-    position:absolute;
+    position: absolute;
     left: 109px;
-    top: 30px;
+    top: 18px;
     font-weight: 500;
-    font-size: 14px
+    font-size: 14px;
 }
 
 .buy-screens .select-product-screen .product .description{
     position: absolute;
     left: 109px;
-    top: 50px;
-    font-size: 14px;
-    width: 245px;
+    top: 39px;
+    width: 230px;
     height: 50px;
     overflow: hidden;
+    font-size: 13px;
+    color: #333;
 }
 
 
@@ -65,8 +66,8 @@
     text-decoration: none;
     cursor: pointer;
     position: absolute;
-    left: 28px;
-    top: 107px;
+    left: 110px;
+    top: 89px;
 }
 
 .buy-screens .select-product-screen .product .learn-more:hover{
@@ -75,7 +76,7 @@
 
 .buy-screens .select-product-screen .product .arrow{
     position:absolute;
-    right:10px;
+    right:23px;
     top:50px;
     background: url("/images/buy/product-list-arrow.png") no-repeat scroll top right;
     width: 9px;
@@ -119,9 +120,9 @@
     position: absolute;
     left: 72px;
     top: 10px;
-    width: 200px;
+    width: 190px;
     font-size: 14px;
-    height: 30px;
+    height: 38px;
     overflow: hidden;
 }
 
@@ -135,10 +136,10 @@
 
 
 .buy-screens .configure-product-screen .product-summary-section .checkout-button{
-    position:absolute;
-    top: 20px;
-    right: 15px;
-    width:85px;
+    position: absolute;
+    top: 5px;
+    right: 7px;
+    width: 85px;
 }
 
 
@@ -180,7 +181,7 @@
     left: 0px;
     width:380px;
     bottom:0px;
-    background-color: #fcfcfd;
+    background-color: #fff;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -212,7 +213,8 @@
 .buy-screens .configure-product-screen .main-section .options-section{
     position: relative;
     border-bottom: 1px solid #ccc;
-    padding-bottom: 20px;
+    padding-bottom: 15px;
+    color:#333
 }
 
 .buy-screens .configure-product-screen .main-section .options-section .options{
@@ -220,6 +222,7 @@
     left: 72px;
     top: 10px;
 }
+
 
 .buy-screens .configure-product-screen .main-section .options-section .options .option{
     position:relative;
@@ -237,6 +240,64 @@
     position:absolute;
     left:70px;
     top: -3px;
+
+
+    -webkit-appearance: menulist-button;
+    -webkit-box-align: center;
+    -webkit-box-shadow: none;
+    -webkit-rtl-ordering: logical;
+    -webkit-transition-delay: 0s, 0s;
+    -webkit-transition-duration: 0.20000000298023224s, 0.20000000298023224s;
+    -webkit-transition-property: border, box-shadow;
+    -webkit-transition-timing-function: linear, linear;
+    background-color: white;
+    border-bottom-color: #CCC;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-left-color: #CCC;
+    border-left-style: solid;
+    border-left-width: 1px;
+    border-right-color: #CCC;
+    border-right-style: solid;
+    border-right-width: 1px;
+    border-top-color: #CCC;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-top-style: solid;
+    border-top-width: 1px;
+    box-shadow: none;
+    box-sizing: border-box;
+    color: #333;
+    cursor: default;
+    display: inline-block;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    height: 23px;
+    letter-spacing: normal;
+    line-height: normal;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    overflow-y: visible;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 0px;
+    text-align: -webkit-auto;
+    text-indent: 0px;
+    text-shadow: none;
+    text-transform: none;
+    vertical-align: baseline;
+    white-space: pre;
+    /*width: 250px;*/
+    word-spacing: 0px;
+
 }
 
 
@@ -274,6 +335,9 @@
     padding: 20px 40px 20px 40px;
     font-size: 14px;
     text-align: center;
+    font-weight: 500;
+    color: #333;
+    text-shadow: 1px 1px white;
 }
 
 .buy-screens .configure-product-screen .main-section .selected-photos-section .selected-photos{
@@ -497,71 +561,47 @@
 
 #checkout-banner {
     position: absolute;
-    width: 530px;
-    height: 48px;
-    top: 55px;
-    background-color: white;
+    width: 381px;
+    height: 71px;
+    top: 35px;
+    background-color: transparent;
     display: none;
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
-    -moz-border-bottom-left-radius: 15px;
-    -moz-border-bottom-right-radius: 15px;
     z-index: 200;
+    background: url(/images/buy/checkout-banner.png) no-repeat scroll 0px 0px transparent;
 }
 
-#checkout-banner .border{
-    position: absolute;
-    left: -5px;
-    bottom: -5px;
-    right: -5px;
-    border: 7px #FDC113 solid;
-    border-top: 0px;
-    opacity: 0.75;
-    top: 0px;
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
-    -moz-border-bottom-left-radius: 15px;
-    -moz-border-bottom-right-radius: 15px;
-}
 
 #checkout-banner .message{
     position: absolute;
-    width:240px;
+    width: 240px;
     font-size: 15px;
     font-weight: 500;
     text-shadow: 1px 1px white;
-    left: 42px;
-    top: 15px;
+    left: 59px;
+    top: 33px;
     text-align: left;
-}
-
-#checkout-banner .view-cart-button{
-    position: absolute;
-    right: 150px;
-    top: 10px;
-    width:100px;
 }
 
 #checkout-banner .checkout-button{
     position: absolute;
-    right: 20px;
-    top: 10px;
-    width:100px;
+    right: 15px;
+    top: 28px;
+    width: 80px;
 }
 
 #checkout-banner .close-button{
     position: absolute;
-    top: 14px;
-    left: 17px;
-    background: url(/images/buy/delete-button.png) no-repeat scroll 0px 0px transparent;
+    top: 33px;
+    left: 20px;
     width: 20px;
     height: 18px;
     cursor: pointer;
+    background: url(/images/buy/delete-button.png) no-repeat scroll 0px -19px transparent;
 }
 
 
 #checkout-banner .close-button:hover{
-    background: url(/images/buy/delete-button.png) no-repeat scroll 0px -19px transparent;
+    background: url(/images/buy/delete-button.png) no-repeat scroll 0px 0px transparent;
 }
 
 
@@ -571,32 +611,10 @@
     left:0px;
     right:380px;
     bottom:0px;
-    display:none;
-}
-
-.buy-drawer-scrim .scrim{
-    position:absolute;
-    top:0px;
-    left:0px;
-    right:0px;
-    bottom:0px;
     background-color: #000;
     opacity: 0.5;
     filter: alpha(opacity = 50); /* for ie */
 }
 
-.buy-drawer-scrim .message{
-    position:absolute;
-    background-color: #F9F9FA;
-    border: 1px solid #D7D7D7;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    padding: 20px 40px 20px 40px;
-    font-size: 14px;
-    text-align: center;
-    display:none;
-    height:100px;
-    width:100px;
-    top:200px;
-}
+
 

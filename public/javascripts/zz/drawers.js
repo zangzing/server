@@ -24,6 +24,8 @@ zz.drawers = {
 
     open_drawer: function(time, percent) {
 
+        zz.buy.hide_checkout_banner();
+
         zz.screen_height = $('#page-wrapper').height(); // measure the screen height
         // adjust for out top and bottom bar, the gradient padding and a margin
         zz.drawer_height = zz.screen_height - zz.drawers.SCREEN_GAP;

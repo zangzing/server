@@ -25,6 +25,7 @@ zz.buy = zz.buy || {};
         'maegondo',
         'sheripollock',
         'tyler',
+        'jrwatts',
 
         //mauricio
         'mauricio',
@@ -428,10 +429,7 @@ zz.buy = zz.buy || {};
     var buy_screens_element = null;
 
     var SCRIM_TEMPLATE = function(){
-        return '<div class="buy-drawer-scrim">' +
-                   '<div class="scrim"></div>'+
-                   '<div class="message">Please select a product, then you will be able to select photos for that product.</div>' +
-               '</div>';
+        return '<div class="buy-drawer-scrim"></div>';
     };
 
     var BUY_SCREENS_TEMPLATE = function(){
@@ -460,7 +458,7 @@ zz.buy = zz.buy || {};
                                 '<a class="add-all-photos hyperlink-button">Add All Photos from Album</a>' +
                                 '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
                                 '<a class="clear-all-photos hyperlink-button">Clear Selected Photos</a>' +
-                                '<div class="add-photos-message">Browse your photos and click on each one you would like for this product.</div>' +
+                                '<div class="add-photos-message">Choose product settings and then click to choose your photos.</div>' +
                                 '<div class="selected-photos"></div>' +
                             '</div>' +
                         '</div>' +
@@ -544,7 +542,13 @@ zz.buy = zz.buy || {};
 
         if(zz.session.cart_item_count > 0 && jQuery.cookie('hide_checkout_banner') != 'true'){
             $('#checkout-banner').show();
-            $('#checkout-banner .message').text('You have ' + zz.session.cart_item_count + ' items in your cart.');
+            if(zz.session.cart_item_count == 1){
+                $('#checkout-banner .message').text('You have ' + zz.session.cart_item_count + ' item in your cart.');
+            }
+            else{
+                $('#checkout-banner .message').text('You have ' + zz.session.cart_item_count + ' items in your cart.');
+            }
+
 
             $('#checkout-banner .close-button').click(function(){
                 //create cookie that expires in 1 hour or when user quits browser
@@ -552,7 +556,8 @@ zz.buy = zz.buy || {};
                 expires.setTime(expires.getTime() + 60 * 60 * 1000);
                 jQuery.cookie('hide_checkout_banner', 'true', {expires: expires});
 
-                $('#checkout-banner').fadeOut('fast');
+                $('#checkout-banner').animate({top:-20}, 200);
+                $('#checkout-banner').animate({top:-20}, 200);
             });
 
 
@@ -589,6 +594,9 @@ zz.buy = zz.buy || {};
         }
     };
 
+    zz.buy.hide_checkout_banner = function(){
+        $('#checkout-banner').hide();
+    };
 
     zz.buy.toggle_visibility_with_buy_mode = function(element){
         if(zz.buy.is_buy_mode_active()){
@@ -858,6 +866,17 @@ zz.buy = zz.buy || {};
 
 
         buy_screens_element.find('.configure-product-screen .product-summary-section .checkout-button').unbind('click').click(function(){
+            if(get_selected_photos().length == 0){
+                alert("Please select one or more photos for this product.");
+                return;
+            }
+
+
+            // remove click handler to prevent multiple clicks
+            buy_screens_element.find('.configure-product-screen .product-summary-section .checkout-button').unbind('click');
+
+            // add the photos and go to the cart
+            var dialog = zz.dialog.show_progress_dialog('Adding to cart...');
             add_selected_photos_to_cart(function(){
                 zz.routes.store.goto_cart();
             });
@@ -1091,15 +1110,11 @@ zz.buy = zz.buy || {};
     function show_scrim(){
         var scrim = $(SCRIM_TEMPLATE());
         $('body').append(scrim);
-        scrim.fadeIn('fast', function(){
-            scrim.find('.message').show().center_x();
-        });
+        scrim.show();
     }
 
     function hide_scrim(){
-        $('.buy-drawer-scrim').fadeOut('fast',function(){
-            $(this).remove();
-        });
+        $('.buy-drawer-scrim').remove();
     }
 
     function set_drawer_title(title){

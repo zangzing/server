@@ -12,13 +12,12 @@
 <div id="cc">
 <p id="ccnumber" class="field">
   <label for="card_number"><%= t("card_number") %></label>
-  <% options_hash = Rails.env.production? ? {:autocomplete => "off"} : {} %>
-  <%= text_field_tag "#{param_prefix}[number]", '', options_hash.merge(:id => 'card_number', :class => 'required', :size => 16, :maxlength => 16, 'data-original-title'=>t(:card_number)) %>
+  <%= text_field_tag "card_number", '', {:id => 'card_number', :class => 'required', :size => 16, :maxlength => 16, 'data-original-title'=>t(:card_number), :autocomplete => "off"} %>
 </p>
 
 <p id="ccv" class="field">
   <label for="card_code"><%= t("card_code") %></label>
-  <%= text_field_tag "#{param_prefix}[verification_value]", '', options_hash.merge(:id => 'card_code', :class => 'required', :size => 4, :maxlength => 4, 'data-original-title'=>t(:card_code)) %>
+  <%= text_field_tag "card_code", '', {:id => 'card_code', :class => 'required', :size => 4, :maxlength => 4, 'data-original-title'=>t(:card_code), :autocomplete => "off"} %>
 </p>
 <a id="cvv_question"
    class="field_question"
@@ -36,10 +35,11 @@
   <%= select_year(Date.today,  {:prefix => param_prefix, :field_name => 'year', :start_year => Date.today.year, :end_year => Date.today.year + 15}, {:id => "expire_year", :class => 'required expdyear'}) %>
 </div>
 
-<%= hidden_field param_prefix, 'first_name', :value => @order.billing_firstname %>
-<%= hidden_field param_prefix, 'last_name',  :value => @order.billing_lastname %>
-
-
+<%= hidden_field param_prefix, 'first_name', :value => @order.billing_firstname, :id => 'cc_firstname' %>
+<%= hidden_field param_prefix, 'last_name',  :value => @order.billing_lastname,  :id => 'cc_lastname'  %>
+<%= hidden_field param_prefix, 'number', :id => 'cc_number' %>
+<%= hidden_field param_prefix, 'verification_value', :id => 'cc_code' %>
+<%= hidden_field param_prefix, 'zipcode', :id => 'cc_zipcode' %>
 
 <!--------------- This is the content of the modal cvv_question dialog -->
   <div style="display: none;" id="cvv-question-modal" class="modal hide">
