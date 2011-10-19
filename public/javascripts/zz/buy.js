@@ -933,10 +933,18 @@ zz.buy = zz.buy || {};
 
 
 
-        var on_change_option = function(){
-            var selected_option_values = _.map(options_element.find('.drop-down option:selected'), function(option_element){
-                return $(option_element).data('value');
-            });
+        var on_change_option = function(set_to_current_variant){
+            var selected_option_values = null;
+
+            if(set_to_current_variant && get_selected_variant()){
+                selected_option_values = get_selected_variant().values;
+            }
+            else{
+                selected_option_values = _.map(options_element.find('.drop-down option:selected'), function(option_element){
+                    return $(option_element).data('value');
+
+                });
+            }
 
             var option_values_to_remove = get_option_values_to_remove(selected_option_values);
 
@@ -1018,9 +1026,14 @@ zz.buy = zz.buy || {};
             });
         }
 
+
         refresh_selected_photos_list();
 
-        on_change_option();
+
+        // hack: need to run this one time for each option
+        //       so that we capture all the cases where dependent
+        //       options need to be shown or removed
+        on_change_option(true);
         on_change_option();
         on_change_option();
         check_bad_photos();
