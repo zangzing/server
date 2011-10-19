@@ -135,7 +135,7 @@ module ZZ
         carriers = ['USPS', 'UPS', 'FEDEX']
         carrier = carriers[rand(carriers.count)]
         details = {
-            :TrackingNumber => "#{carrier}-#{rand(999999999)}-#{rand(999999999)}",
+            :TrackingNumber => carrier == 'USPS' ? '' : "#{carrier}-#{rand(999999999)}-#{rand(999999999)}",
             :Carrier        => carrier,
             :Item           => items
         }
