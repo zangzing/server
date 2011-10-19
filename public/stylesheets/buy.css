@@ -367,7 +367,7 @@
     background: url(/images/buy/large-error-icon.png) no-repeat scroll 0px 0px transparent;
     height:66px;
     width:66px;
-    display:none;
+    top:-1000px; /* hide to begin */
 }
 
 

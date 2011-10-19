@@ -1326,7 +1326,7 @@ zz.buy = zz.buy || {};
         }
 
         _.defer(function(){
-            $('.buy-screens .configure-product-screen .main-section .selected-photos-section .selected-photos .selected-photo.bad-size .photo-border .error-icon').center_xy().show();;
+            $('.buy-screens .configure-product-screen .main-section .selected-photos-section .selected-photos .selected-photo.bad-size .photo-border .error-icon').center_xy();;
         });
 
     }
