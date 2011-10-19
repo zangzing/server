@@ -22,7 +22,7 @@
             </label>
         <%end %>
     <%end%>
-    <%if order.payment && order.payment.source.user_id.nil? %>
+    <%if order.payment && !order.payment.changed? && order.payment.source.user_id.nil? %>
         <label>
           <%= radio_button_tag 'order[creditcard_id]', order.payment.source.id, :checked => true %>
           <%= render :partial => 'creditcard_oneliner', :locals => { :creditcard => order.payment.source } %>
@@ -32,7 +32,7 @@
         </div>
     <%end%>
 <%else%>
-    <%if order.payment %>
+    <%if order.payment && !order.payment.changed?%>
         <div class="wallet clearfix">
           <label>
             <%= radio_button_tag 'order[creditcard_id]', order.payment.source.id %>

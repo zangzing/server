@@ -12,7 +12,7 @@
 <div id="cc">
 <p id="ccnumber" class="field">
   <label for="card_number"><%= t("card_number") %></label>
-  <%= text_field_tag "card_number", '', {:id => 'card_number', :class => 'required', :size => 16, :maxlength => 16, 'data-original-title'=>t(:card_number), :autocomplete => "off"} %>
+  <%= text_field_tag "card_number", '', {:id => 'card_number', :class => 'required', :size => 16, :maxlength => 20, 'data-original-title'=>t(:card_number), :autocomplete => "off"} %>
 </p>
 
 <p id="ccv" class="field">

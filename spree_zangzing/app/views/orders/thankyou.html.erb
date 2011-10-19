@@ -6,7 +6,7 @@
             <%if current_user %>
                 <div id="status" class="sub_top_ty" >
                     <%= t('you_can_check_the_status') %>
-                    <%= link_to  t('account_menu'), edit_user_url(current_user)%>
+                    <%= link_to  t('account_menu'), edit_user_url(current_user)+'#orders'%>
                 </div>
             <%elsif @user_session%>
               <div id="want_to_share">
