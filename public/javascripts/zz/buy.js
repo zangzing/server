@@ -428,9 +428,7 @@ zz.buy = zz.buy || {};
     var buy_screens_element = null;
 
     var SCRIM_TEMPLATE = function(){
-        return '<div class="buy-drawer-scrim">' +
-                   '<div class="scrim"></div>'+
-               '</div>';
+        return '<div class="buy-drawer-scrim"></div>';
     };
 
     var BUY_SCREENS_TEMPLATE = function(){
@@ -1105,15 +1103,11 @@ zz.buy = zz.buy || {};
     function show_scrim(){
         var scrim = $(SCRIM_TEMPLATE());
         $('body').append(scrim);
-        scrim.fadeIn('fast', function(){
-            scrim.find('.message').show().center_x();
-        });
+        scrim.show();
     }
 
     function hide_scrim(){
-        $('.buy-drawer-scrim').fadeOut('fast',function(){
-            $(this).remove();
-        });
+        $('.buy-drawer-scrim').remove();
     }
 
     function set_drawer_title(title){

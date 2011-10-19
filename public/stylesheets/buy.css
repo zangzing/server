@@ -611,18 +611,10 @@
     left:0px;
     right:380px;
     bottom:0px;
-    display:none;
-}
-
-.buy-drawer-scrim .scrim{
-    position:absolute;
-    top:0px;
-    left:0px;
-    right:0px;
-    bottom:0px;
     background-color: #000;
     opacity: 0.5;
     filter: alpha(opacity = 50); /* for ie */
 }
+
 
 
