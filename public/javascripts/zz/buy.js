@@ -904,20 +904,27 @@ zz.buy = zz.buy || {};
         var resolve_selected_variant = function(){
             var current_product = get_selected_product();
 
-
-            zz.logger.debug('-- selected options --');
-            _.each(options_element.find('.drop-down option:first'), function(el){
-                zz.logger.debug(el.text);
-            });
-
             // find variant that matches all the selected options
             var current_variant =_.detect(current_product.variants, function(variant){
                 return _.all(variant.values, function(value){
 
-                    return _.detect(options_element.find('.drop-down option:selected'), function(option_element){
-                        var selected_option_value = $(option_element).data('value');
-                         return value.type_id == selected_option_value.type_id && value.id == selected_option_value.id;
-                    });
+                    if(options_element.find('.drop-down option:selected').length > 0){
+
+                        // this is the standard case. get the variant for the selected options
+                        return _.detect(options_element.find('.drop-down option:selected'), function(option_element){
+                             var selected_option_value = $(option_element).data('value');
+                             return value.type_id == selected_option_value.type_id && value.id == selected_option_value.id;
+                        });
+                    }
+                    else{
+
+                       // for some reason, IE9 does not give us anything for :selected the first time in, so we just grab the first options
+                        return _.detect(options_element.find('.drop-down option:first'), function(option_element){
+                             var selected_option_value = $(option_element).data('value');
+                             return value.type_id == selected_option_value.type_id && value.id == selected_option_value.id;
+                        });
+
+                    }
                 });
             });
 
@@ -1100,7 +1107,6 @@ zz.buy = zz.buy || {};
         var photo_element = $(SELECTED_PHOTO_TEMPLATE());
         photo_element.addClass('photo-id-' + photo_json.id);
 
-        zz.logger.debug(photo_element.find('.selected-photo'));
 
         var size = zz.image_utils.scale({
                                             width: 100 * photo_json.aspect_ratio,
