@@ -11,7 +11,7 @@
     %>
     <tr>
       <td style="text-align: center;">
-        <%= image_tag product.images.first.attachment.url(:small) %>
+        <%= image_tag ssl_url(product.images.first.attachment.url(:small) )%>
       </td>
       <td>
         <table>
