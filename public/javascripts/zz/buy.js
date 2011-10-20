@@ -438,7 +438,7 @@ zz.buy = zz.buy || {};
 
     var BUY_SCREENS_TEMPLATE = function(){
         return '<div class="buy-screens">' +
-                    '<div class="select-product-screen"></div>' +
+                    '<div class="select-product-screen"><div class="loading"></div></div>' +
                     '<div class="configure-product-screen">' +
                         '<div class="product-summary-section">' +
                            '<img class="image" src="/images/photo_placeholder.png">' +
