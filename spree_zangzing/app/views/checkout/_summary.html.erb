@@ -44,7 +44,7 @@
 <%end%>
 
 
-    <a href="javascript:void(0);" onclick="$('#checkout_form_confirm').attr('action','<%=update_checkout_path('confirm')%>').submit();" class="green-button"><span><%=t('place_order')%></span></a>
+    <a href="javascript:void(0);" class="green-button" id="place-order-button"><span><%=t('place_order')%></span></a>
     <div id="logo_secure_lock">
         <%= image_tag 'store/secure-lock.png'%>
         <%=t('secure_checkout')%>
@@ -63,6 +63,11 @@
             <% unless Rails.env.photos_production? %>
             $('.on_off :checkbox').iphoneStyle({ checkedLabel: 'Loopbk', uncheckedLabel: 'ezP' });
             <%end%>
+
+            $('#place-order-button').click(function(){
+                zz.dialog.show_progress_dialog("Submitting order...");
+                $('#checkout_form_confirm').attr('action','<%=update_checkout_path('confirm')%>').submit();
+            });
         });
     </script>
 <% end %>

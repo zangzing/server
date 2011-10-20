@@ -79,7 +79,7 @@ end %>
 <%end%>
 
 <%content_for :next_button do %>
-    <a href="javascript:void(0)" onclick="$('#checkout_form_payment').submit();" class="next-button"><span><%="#{t('continue')}"%></span></a>
+    <a href="javascript:void(0)" class="next-button"><span><%="#{t('continue')}"%></span></a>
 <%end%>
 
 <%content_for :page_javascript do %>
@@ -98,6 +98,11 @@ end %>
                 });
                 $("[name='<%=@order.errors.first[0]%>']").focus();
             <%end%>
+
+            $('.next-button').click(function(){
+                zz.dialog.show_progress_dialog("Verifying payment information...");
+                $('#checkout_form_payment').submit();
+            });
         });
     </script>
 <% end %>

@@ -84,6 +84,7 @@ stylesheets:
     - public/stylesheets/*.css
   store:
     - public/stylesheets/buttons.css
+    - public/stylesheets/dialog.css
     - public/stylesheets/store/checkout.css
     - public/stylesheets/store/bootstrap.css
     - public/stylesheets/iphone-style-checkboxes.css
