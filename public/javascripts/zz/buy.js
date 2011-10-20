@@ -22,10 +22,11 @@ zz.buy = zz.buy || {};
         //kathryn
         'k',
         'erika',
-        'maegondo',
         'sheripollock',
         'tyler',
         'jrwatts',
+        'kmcmaster',
+
 
         //mauricio
         'mauricio',
@@ -33,12 +34,12 @@ zz.buy = zz.buy || {};
         'eugetomelu',
         'wythes',
         'mm',
+        'castiron',
 
-        //mauricio
+        //richa
         'sfmishras',
         'rimish',
         'sintak',
-        'richamisra',
         'richamisra',
 
          //greg
