@@ -430,7 +430,10 @@ zz.buy = zz.buy || {};
     var buy_screens_element = null;
 
     var SCRIM_TEMPLATE = function(){
-        return '<div class="buy-drawer-scrim"></div>';
+        return '<div class="buy-drawer-scrim" style="display: block; ">' +
+                   '<div class="scrim"></div>' +
+                   '<div class="message" style="display: block; left: 403px; ">Please choose a product, then you will be able to select photos for that product.</div>' +
+                '</div>'
     };
 
     var BUY_SCREENS_TEMPLATE = function(){
@@ -1142,6 +1145,7 @@ zz.buy = zz.buy || {};
     function show_scrim(){
         var scrim = $(SCRIM_TEMPLATE());
         $('body').append(scrim);
+        $('.buy-drawer-scrim .message ').center_x();
         scrim.show();
     }
 

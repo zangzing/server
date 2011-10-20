@@ -619,16 +619,39 @@
 }
 
 
-.buy-drawer-scrim{
-    position:absolute;
-    top:0px;
-    left:0px;
-    right:380px;
-    bottom:0px;
-    background-color: #000;
-    opacity: 0.5;
-    filter: alpha(opacity = 50); /* for ie */
+.buy-drawer-scrim {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 380px;
+    bottom: 0;
+    display: none;
+}
+
+.buy-drawer-scrim .scrim {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: black;
+    opacity: .5;
+    filter: alpha(opacity = 50);
 }
 
 
-
+.buy-drawer-scrim .message {
+    position: absolute;
+    background-color: #F9F9FA;
+    border: 1px solid #D7D7D7;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    padding: 20px 40px 20px 40px;
+    font-size: 16px;
+    text-align: center;
+    display: none;
+    height: 100px;
+    width: 206px;
+    top: 200px;
+    line-height: 24px;
+}
