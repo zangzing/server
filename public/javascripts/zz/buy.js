@@ -914,7 +914,7 @@ zz.buy = zz.buy || {};
                 // for some reason, the first time in, IE9 won't have any values at this point, so we need to just grab the first ones
 
                 selected_option_values = _.map(options_element.find('.drop-down'), function(drop_down_element){
-                    return drop_down_element.find('option:first').data('value');
+                    return $(drop_down_element).find('option:first').data('value');
                 });
             }
 
