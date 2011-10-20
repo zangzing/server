@@ -904,27 +904,27 @@ zz.buy = zz.buy || {};
         var resolve_selected_variant = function(){
             var current_product = get_selected_product();
 
+            // figure ou the selected options
+            var selected_option_values = _.map(options_element.find('.drop-down option:selected'), function(option_element){
+                return $(option_element).data('value');
+            });
+
+
+            if(selected_option_values.length == 0){
+                // for some reason, the first time in, IE9 won't have any values at this point, so we need to just grab the first ones
+
+                selected_option_values = _.map(options_element.find('.drop-down'), function(drop_down_element){
+                    return drop_down_element.find('option:first').data('value');
+                });
+            }
+
+
             // find variant that matches all the selected options
             var current_variant =_.detect(current_product.variants, function(variant){
                 return _.all(variant.values, function(value){
-
-                    if(options_element.find('.drop-down option:selected').length > 0){
-
-                        // this is the standard case. get the variant for the selected options
-                        return _.detect(options_element.find('.drop-down option:selected'), function(option_element){
-                             var selected_option_value = $(option_element).data('value');
-                             return value.type_id == selected_option_value.type_id && value.id == selected_option_value.id;
-                        });
-                    }
-                    else{
-
-                       // for some reason, IE9 does not give us anything for :selected the first time in, so we just grab the first options
-                        return _.detect(options_element.find('.drop-down option:first'), function(option_element){
-                             var selected_option_value = $(option_element).data('value');
-                             return value.type_id == selected_option_value.type_id && value.id == selected_option_value.id;
-                        });
-
-                    }
+                    return _.detect(selected_option_values, function(selected_option_value){
+                         return value.type_id == selected_option_value.type_id && value.id == selected_option_value.id;
+                    });
                 });
             });
 
@@ -956,7 +956,6 @@ zz.buy = zz.buy || {};
             else{
                 selected_option_values = _.map(options_element.find('.drop-down option:selected'), function(option_element){
                     return $(option_element).data('value');
-
                 });
             }
 
