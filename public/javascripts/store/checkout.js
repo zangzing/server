@@ -265,4 +265,6 @@ zz.store.checkout = {};
         });
 
     };
+      //======================= thankyou =========================
+    zz.store.checkout.init_cart_screen = function(){};
 })();

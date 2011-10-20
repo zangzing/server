@@ -43,7 +43,7 @@ end %>
     <%end%>
 
     <%content_for :back_button do %>
-        <a href="javascript:void(0);" class="back-button"><span><%= "#{t('buy_more')}"%></span></a>
+        <a href="<%=(session[:store_entrance_referer] ? session[:store_entrance_referer] : root_path )%>" class="back-button"><span><%= "#{t('buy_more')}"%></span></a>
     <%end%>
 
 <%end%>

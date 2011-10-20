@@ -56,14 +56,11 @@ html{
 .checkout-next-button{
     margin: 18px 0 0 0;
     float: right;
-    text-align:right;
-    min-width: 150px;
-    font-weight: 500;
-    text-shadow: 1px 1px 1px #333;
+    min-width: 130px;
 }
 
 .checkout-back-button{
-    margin: 10px 0 0 0;
+    margin: 18px 0 0 0;
     float: left;
     text-align:left;
 }
