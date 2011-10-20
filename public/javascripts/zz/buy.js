@@ -22,10 +22,11 @@ zz.buy = zz.buy || {};
         //kathryn
         'k',
         'erika',
-        'maegondo',
         'sheripollock',
         'tyler',
         'jrwatts',
+        'kmcmaster',
+
 
         //mauricio
         'mauricio',
@@ -33,12 +34,12 @@ zz.buy = zz.buy || {};
         'eugetomelu',
         'wythes',
         'mm',
+        'castiron',
 
-        //mauricio
+        //richa
         'sfmishras',
         'rimish',
         'sintak',
-        'richamisra',
         'richamisra',
 
          //greg
@@ -429,12 +430,15 @@ zz.buy = zz.buy || {};
     var buy_screens_element = null;
 
     var SCRIM_TEMPLATE = function(){
-        return '<div class="buy-drawer-scrim"></div>';
+        return '<div class="buy-drawer-scrim" style="display: block; ">' +
+                   '<div class="scrim"></div>' +
+                   '<div class="message" style="display: block; left: 403px; ">Please choose a product, then you will be able to select photos for that product.</div>' +
+                '</div>'
     };
 
     var BUY_SCREENS_TEMPLATE = function(){
         return '<div class="buy-screens">' +
-                    '<div class="select-product-screen"></div>' +
+                    '<div class="select-product-screen"><div class="loading"></div></div>' +
                     '<div class="configure-product-screen">' +
                         '<div class="product-summary-section">' +
                            '<img class="image" src="/images/photo_placeholder.png">' +
@@ -900,18 +904,25 @@ zz.buy = zz.buy || {};
         var resolve_selected_variant = function(){
             var current_product = get_selected_product();
 
+            // figure ou the selected options
+            var selected_option_values = _.map(options_element.find('.drop-down option:selected'), function(option_element){
+                return $(option_element).data('value');
+            });
 
-//            zz.logger.debug('-- selected options --');
-//            _.each(options_element.find('.drop-down option:selected'), function(el){
-//                zz.logger.debug(el.text);
-//            });
+
+            if(selected_option_values.length == 0){
+                // for some reason, the first time in, IE9 won't have any values at this point, so we need to just grab the first ones
+
+                selected_option_values = _.map(options_element.find('.drop-down'), function(drop_down_element){
+                    return $(drop_down_element).find('option:first').data('value');
+                });
+            }
+
 
             // find variant that matches all the selected options
             var current_variant =_.detect(current_product.variants, function(variant){
                 return _.all(variant.values, function(value){
-
-                    return _.detect(options_element.find('.drop-down option:selected'), function(option_element){
-                        var selected_option_value = $(option_element).data('value');
+                    return _.detect(selected_option_values, function(selected_option_value){
                          return value.type_id == selected_option_value.type_id && value.id == selected_option_value.id;
                     });
                 });
@@ -945,7 +956,6 @@ zz.buy = zz.buy || {};
             else{
                 selected_option_values = _.map(options_element.find('.drop-down option:selected'), function(option_element){
                     return $(option_element).data('value');
-
                 });
             }
 
@@ -1096,7 +1106,6 @@ zz.buy = zz.buy || {};
         var photo_element = $(SELECTED_PHOTO_TEMPLATE());
         photo_element.addClass('photo-id-' + photo_json.id);
 
-        zz.logger.debug(photo_element.find('.selected-photo'));
 
         var size = zz.image_utils.scale({
                                             width: 100 * photo_json.aspect_ratio,
@@ -1141,6 +1150,7 @@ zz.buy = zz.buy || {};
     function show_scrim(){
         var scrim = $(SCRIM_TEMPLATE());
         $('body').append(scrim);
+        $('.buy-drawer-scrim .message ').center_x();
         scrim.show();
     }
 
