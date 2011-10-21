@@ -602,3 +602,9 @@ div#order_items,
     margin-right: 50px;
     min-width: 200px;
 }
+
+a.change,
+a.delete,
+a.details {
+    color: #336699;
+}

@@ -2,9 +2,10 @@
 <table id="cart-detail">
   
   <tbody id="line_items">
-    <%=render 'prints_line_item', :order => @order, :order_form => order_form %>
-    <% not_print_line_items = order_form.object.line_items.not_prints %>
-    <%= order_form.fields_for :line_items, not_print_line_items do |item_form| %>
+    <%= order_form.fields_for :line_items, order_form.object.line_items.prints.group_by_variant do |item_form| %>
+        <%=render 'prints_line_item',  :variant => item_form.object.variant, :item_form => item_form %>
+    <%end%>
+    <%= order_form.fields_for :line_items, order_form.object.line_items.not_prints do |item_form| %>
       <%= render 'line_item', :line_item => item_form.object, :item_form => item_form %>
     <% end %>
   </tbody>

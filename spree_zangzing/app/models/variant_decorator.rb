@@ -52,7 +52,7 @@ Variant.class_eval do
   end
 
   def print?
-    product.name == "Prints" && price < Spree::Config[:printset_threshold]
+    product_id == LineItem::PRINTS_PRODUCT_ID && option_values.find_by_id( LineItem::NO_FRAME_VALUE_ID )
   end
 
 end

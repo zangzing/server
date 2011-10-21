@@ -40,9 +40,10 @@
     <div id="order_items">
       <table class="index">
         <tbody>
-        <%if @order.line_items.prints.present? %>
-            <%= render 'prints_line_item', :order => @order%>
+        <% @order.line_items.prints.group_by_variant.each do |line_item| %>
+            <%= render 'prints_line_item', :variant => line_item.variant%>
         <% end %>
+
         <% @order.line_items.not_prints.each do |line_item| %>
             <%= render 'line_item', :line_item => line_item%>
         <% end %>
@@ -97,5 +98,9 @@ By placing your order you agreed to ZangZing's <a class="hyperlink-button" targe
                 tabPosition: "Left"
             });
         }
+        $('a.details').click( function(e){
+            var variant_id = $(this).attr('data_variant');
+            $('.'+variant_id).toggle();
+        });
 </script>
 <%end%>

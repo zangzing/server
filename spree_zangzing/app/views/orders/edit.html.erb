@@ -79,6 +79,7 @@ end %>
      $('#update-cart').click( function(){
          $(this).unbind('click');
          $('a.checkout-cart').unbind('click');
+         $('a.delete').unbind('click');
          $(this).attr('disabled', 'disabled');
          $(this).unbind('click');
          spin();
@@ -88,13 +89,18 @@ end %>
      $('a.checkout-cart').click( function(){
         $(this).unbind('click');
         $('#update-cart').unbind('click');
-        $(this).attr('disabled', 'disabled');
+        $('a.delete').unbind('click');
         $(this).unbind('click');
         spin();
         $('form#updatecart').attr('action', '<%=checkout_cart_path%>');
         $('form#updatecart').submit();
      });
 
+
+     $('a.details').click( function(e){
+            var variant_id = $(this).attr('data_variant');
+            $('.'+variant_id).toggle();
+     });
  });
 </script>
 <%end%>
