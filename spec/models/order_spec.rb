@@ -11,9 +11,22 @@ describe Order do
   end
 
   describe "Product Catalog" do
-    it "should be loaded with a product named 'Prints'" do
-      Product.find_by_name('Prints').should_not be nil
+    it "should be loaded with a product named 'Prints' with ID #{LineItem::PRINTS_PRODUCT_ID}" do
+      p = Product.find_by_name('Prints')
+      p.should_not be nil
+      p.id.should be == LineItem::PRINTS_PRODUCT_ID
     end
+    it "should be loaded with an Option Value named 'No Frame' with ID #{LineItem::NO_FRAME_VALUE_ID}" do
+          ov = OptionValue.find_by_name('No Frame')
+          ov.should_not be nil
+          ov.id.should be == LineItem::NO_FRAME_VALUE_ID
+    end
+    it "should be loaded with an Option Value named 'FRAMED' with ID #{LineItem::FRAMED_VALUE_ID}" do
+          ov = OptionValue.find_by_name('FRAMED')
+          ov.should_not be nil
+          ov.id.should be == LineItem::FRAMED_VALUE_ID
+    end
+
     it "should have at least one product not named 'Prints' with variants" do
       ps = Product.where("products.name != 'Prints'")
       ps.count.should be > 0
@@ -80,8 +93,8 @@ describe Order do
 
       #PRINTS
       prints = Product.find_by_name('Prints')
-      printset_variants    = prints.variants.where("price < ?", Spree::Config[:printset_threshold])
-      notprintset_variants = prints.variants.where("price >= ?", Spree::Config[:printset_threshold])
+      printset_variants    = prints.variants.select{ |v| v.print? }
+      notprintset_variants = prints.variants.select{ |v| !v.print? }
       @order.add_variant( printset_variants.first,  @photo, 1 )
       @order.add_variant( printset_variants.first,  @photo2, 1 )
       @order.add_variant( printset_variants.third,  @photo, 1 )
@@ -100,12 +113,16 @@ describe Order do
 
 
       # The order has
-      # - 5 printset line items using 3 variants
+      # - 3 printset line items using 3 variants
       # - 7 no prints line items using 4 variants
     end
 
+    it 'there should be line items' do
+      @order.line_items.count.should be 12
+    end
+
     it "should return all non-print line-items" do
-      @order.line_items.not_prints.count.should be 7
+      @order.line_items.not_prints.length.should be 7
     end
 
     it "should return all print line-items" do
@@ -113,14 +130,18 @@ describe Order do
     end
     it "should return prints line_items grouped by variants" do
       @order.line_items.prints.group_by_variant.length.should be 3
-      @order.line_items.not_prints.group_by_variant.length.should be 4
     end
 
     it "order.printset_quantity should change the quantity of all printset line items" do
-      @order.line_items.prints.each { |li| li.quantity.should be 1 }
-      @order.printset_quantity = 5
-      @order.line_items.prints.each { |li| li.quantity.should be 5 }
-      @order.printset_quantity.should be 5
+      #iterate the variants
+      variant = @order.line_items.prints.group_by_variant.first
+      @order.line_items.find_all_by_variant_id( variant.id ).each { |li| li.quantity.should be 1 }
+      @order.printset_quantity = { variant.id => 5} 
+      @order.line_items.find_all_by_variant_id( variant.id ).each { |li| li.quantity.should be 5 }
+    end
+
+    it "#cart_count should return correct cart count" do
+      @order.cart_count.should be 10
     end
 
     after(:each) do
