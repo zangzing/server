@@ -100,11 +100,7 @@ end %>
             <%end%>
 
             $('.next-button').click(function(){
-                zz.dialog.show_progress_dialog("Verifying payment information...");
-                // need to defer the submit otherwise progress dialog spinner doesn't load
-                _.defer(function(){
-                    $('#checkout_form_payment').submit();
-                });
+                $('#checkout_form_payment').submit();
             });
         });
     </script>
