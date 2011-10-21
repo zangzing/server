@@ -1,49 +1,72 @@
 <%# locals = {:order => order} %>
-<% unless order.line_items.prints.empty? %>
+<%  line_items         = @order.line_items.find_all_by_variant_id( variant.id )
+   unless line_items.empty? %>
     <%
-     line_items         = order.line_items.prints
-     printset_quantity  = order.printset_quantity
+     printset_quantity  = line_items.first.quantity
      printset_price     = line_items.map{|li| li.price}.reduce(:+)
-     line_item_variants = order.line_items.prints.group_by_variant
-     variant_count      = order.line_items.prints.group_by_variant.count
-     product            = line_item_variants.first.variant.product
-     order_form         = nil unless defined?(order_form)
+     variant_count      = line_items.count
+     product            = variant.product
+     item_form         = nil unless defined?(item_form)
+     change            = nil unless defined?(change)
     %>
     <tr>
-      <td style="text-align: center;">
-        <%= image_tag ssl_url(product.images.first.attachment.url(:small) )%>
+      <td style="text-align: center; position: relative;">
+        <div class="clearfix">
+        <div style="position: relative; min-width: 152px; min-height:75px;" class="clearfix">
+            <%= stacked_photo_tag( line_items.first.photo, 100, 100 )%>
+        </div>
+        </div>
       </td>
       <td>
         <table>
           <tr>
             <td class="product no-border">
 
-              <% if order_form.present?  %>
+              <% if item_form.present?  %>
                   <div class="product_name"><%= "Set of #{product.name}" %></div>
               <%else%>
                   <div class="product_name"> <%= pluralize  printset_quantity, 'Set' %><%=" of #{product.name}"%></div>
               <%end%>
 
-              <div class="variant_description">Each Set Contains:</div>
-              <% line_item_variants.each do |li| %>
-                <div class="variant_description">&nbsp-&nbsp<%=pluralize variant_count[li.variant.id], li.variant.custom_description %></div>
-              <% end %>
+              <div class="variant_description"><%=pluralize variant_count, variant.custom_description %></div>
 
-              <% if order_form.present? %>
-                  <div class="variant_description"> <%= link_to t('delete').downcase, '#', :class => 'delete' %></div>
+
+              <% if item_form.present? %>
+                  <div class="variant_description">
+                    <%= link_to t('delete').downcase, 'javascript:void(0);', :class => 'delete' %>&nbsp&nbsp
+                    <%= link_to t('details').downcase, 'javascript:void(0);', :class => 'details', :data_variant => variant.id %>
+                  </div>
+              <%elsif change.present?%>
+                  <div class="variant_description">
+                    <%= link_to t('change'), cart_path,  :class => 'change' %>
+                    &nbsp&nbsp
+                    <%= link_to t('details').downcase, 'javascript:void(0);', :class => 'details', :data_variant => variant.id %>
+                  </div>
               <%else%>
-                  <div class="variant_description">  <%= link_to t('change'), cart_path %></div>
+                 <div class="variant_description">
+                    <%= link_to t('details').downcase, 'javascript:void(0);', :class => 'details', :data_variant => variant.id %>
+                 </div>
               <%end%>
             </td>
 
-            <% if order_form.present? %>
+            <% if item_form.present? %>
                 <td class="price no-border"><%= format_price( printset_price) %></td>
-                <td class="price no-border"><%= order_form.text_field :printset_quantity, { :class => "item_quantity"} %></td>
+                <td class="price no-border"><%= text_field_tag "order[printset_quantity][#{variant.id}]",printset_quantity,{ :class => "item_quantity"} %></td>
             <%end%>
             <td class="price no-border"><%=format_price( printset_price * printset_quantity) unless printset_quantity <= 0%></td>
           </tr>
         </table>
       </td>
-
     </tr>
+    <% line_items.each do |line_item|%>
+    <tr class="<%=variant.id%>" style="display:none;">
+      <td>
+      </td>
+      <td style="text-align: left; ">
+        <div style="text-align: center; width: 110px;">
+            <%= framed_photo_tag( line_item.photo, 100, 100 )%>
+        </div>
+      </td>
+    </tr>
+    <%end%>
 <% end %>

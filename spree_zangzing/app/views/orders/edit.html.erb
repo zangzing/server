@@ -91,6 +91,12 @@ end %>
               $('form#updatecart').submit();
      });
 
+
+     $('a.details').click( function(e){
+            var variant_id = $(this).attr('data_variant');
+            $('.'+variant_id).toggle();
+     });
+
  });
 </script>
 <%end%>

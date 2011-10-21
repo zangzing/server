@@ -666,18 +666,16 @@ Order.class_eval do
 
   end
 
-  def printset_quantity=( qty )
-    self.line_items.prints.each do |li|
-      li.quantity = qty
-      li.save
+  def printset_quantity=( qty_hash )
+    qty_hash.each_pair do | variant_id, qty|
+      line_items.find_all_by_variant_id( variant_id ).each do |li|
+        li.quantity = qty
+        li.save
+      end
     end
-    @printset_quantity = qty
   end
 
-  def printset_quantity
-    @printset_quantity ||= self.line_items.prints.first.quantity
-  end
-
+  
   def billing_zipcode
      bill_address.try(:zipcode)
    end
