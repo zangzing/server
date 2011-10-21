@@ -283,6 +283,20 @@ module Cache
               user_id_to_name_map[album_user_id] = album_user_name
           end
 
+          # prep for substitution
+          cover_base = nil
+          cover_sizes = nil
+          if album_cover
+            cover_base = album_cover.base_subst_url
+            if cover_base
+              # ok, photos are ready include sizes map
+              cover_sizes = {
+                  AttachedImage::THUMB            => album_cover.suffix_based_on_version(AttachedImage::THUMB),
+                  AttachedImage::IPHONE_COVER     => album_cover.suffix_based_on_version(AttachedImage::IPHONE_COVER),
+                  AttachedImage::IPHONE_COVER_RET => album_cover.suffix_based_on_version(AttachedImage::IPHONE_COVER_RET)
+              }
+            end
+          end
           hash_album = {
               :id => album_id,
               :name => album_name,
@@ -290,7 +304,9 @@ module Cache
               :user_id => album_user_id,
               :album_path => album_pretty_path(album_user_name, album_friendly_id),
               :profile_album => album.type == 'ProfileAlbum',
-              :c_url => album_cover.nil? ? nil : album_cover.thumb_url,
+              :c_url => album_cover.nil? ? nil : album_cover.thumb_url,  #todo: this should only return non nil if cover_base is nil
+              :c_base => cover_base,
+              :c_sizes => cover_sizes,
               :photos_count => album.photos_count,
               :photos_ready_count => album.photos_ready_count,
               :cache_version => album.cache_version_key,

@@ -48,6 +48,9 @@ start_time = Time.now
 
     (0...photo_count).each do |index|
       i_s = index.to_s
+      capture_date = Integer(capture_date_map[i_s]) rescue nil
+      capture_date = nil if capture_date == 0 # treat 0 as nil since no way to pass real NULL value using post
+      capture_date = (Time.at(max_safe_epoch_time(capture_date)) rescue nil) unless capture_date.nil?
       photo = Photo.new_for_batch(current_batch,  {
                                     :id                =>   current_id,
                                     :album_id          =>   album_id,
@@ -61,7 +64,7 @@ start_time = Time.now
                                     :rotate_to         =>   rotate_to,
                                     :caption           =>   safe_hash_default(caption_map, i_s, ""),
                                     :image_file_size   =>   file_size_map[i_s],
-                                    :capture_date      =>   Time.at( max_safe_epoch_time(safe_hash_default(capture_date_map, i_s, 0).to_i) )
+                                    :capture_date      =>   capture_date
                                     }
                                     )
       current_id += 1

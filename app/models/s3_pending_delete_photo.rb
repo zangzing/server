@@ -36,24 +36,26 @@ class S3PendingDeletePhoto < ActiveRecord::Base
     logger.debug("Photo queued for s3 cleanup")
   end
 
-  # given a sizes map, convert to a string with a char for each size
-  def self.encode_sizes(sizes, include_original)
+  # given a sizes map, convert to a string with : as a separator
+  def self.encode_sizes(sizes, original_suffix)
     encoded_sizes = ""
-    encoded_sizes << AttachedImage::ORIGINAL if include_original
+    encoded_sizes << original_suffix if original_suffix
     # now see if any resized photos to go with
     sizes.each do |map|
       map.each do |suffix, option|
+        encoded_sizes << ':' if encoded_sizes.length > 0
         encoded_sizes << suffix
       end
     end
     encoded_sizes
   end
 
-  # given a sizes string (such as omt), convert
+  # given a sizes string (such as o:m:t), convert
   # to a set of s3 keys for removal
   def self.make_keys(guid_part, prefix, encoded_sizes)
     keys = []
-    encoded_sizes.chars.each do |suffix|
+    encoded_sizes = encoded_sizes.split(':')
+    encoded_sizes.each do |suffix|
       key = AttachedImage.build_s3_key(prefix, guid_part, suffix)
       keys << key
     end
