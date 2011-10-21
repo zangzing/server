@@ -50,7 +50,14 @@ zz.buy = zz.buy || {};
         'pbeisel',
         'surfkayak',
         'dgfoster',
-        'beiselpaul'
+        'beiselpaul',
+
+        //user testing
+        'usertesting001',
+        'usertesting002',
+        'usertesting003'
+
+
     ];
 
     var OPTION_FILTERS = [
