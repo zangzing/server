@@ -675,7 +675,11 @@ Order.class_eval do
     end
   end
 
-  
+  def cart_count
+    line_items.prints.group_by_variant.count.length + line_items.not_prints.count.length
+  end
+
+
   def billing_zipcode
      bill_address.try(:zipcode)
    end
