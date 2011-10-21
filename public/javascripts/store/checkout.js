@@ -200,7 +200,12 @@ zz.store.checkout = {};
                 }
                 $('#cc_number').val($('#card_number').val());
                 $('#cc_code').val($('#card_code').val());
-                form.submit();
+
+                zz.dialog.show_progress_dialog("Verifying payment information...");
+                // need to defer the submit otherwise progress dialog spinner doesn't load
+                _.defer(function(){
+                    form.submit();
+                });
             },
             errorElement: "div",
             errorClass: "errormsg",
@@ -265,4 +270,6 @@ zz.store.checkout = {};
         });
 
     };
+      //======================= thankyou =========================
+    zz.store.checkout.init_cart_screen = function(){};
 })();

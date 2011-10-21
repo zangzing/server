@@ -64,28 +64,30 @@
     };
 
     $.fn.center = function(container, center_x, center_y) {
-
-        if (! container) {
-            container = $(this).parent();
-        }
-
-        if ($.isFunction(container.parent)) {
-            //assume its an element
-            var container_element = $(container);
-            container = {
-                left: 0,
-                top: 0,
-                width: container_element.width(),
-                height: container_element.height()
-            };
-        }
-
         _.each(this, function(el) {
             el = $(el);
 
+            var my_container = container;
+            if (! my_container) {
+                my_container = $(el).parent();
+            }
 
-            var left = Math.round((container.width - el.width()) / 2 + container.left);
-            var top = Math.round((container.height - el.height()) / 2 + container.top);
+            if ($.isFunction(my_container.parent)) {
+                //assume its an element
+                var container_element = $(my_container);
+                my_container = {
+                    left: 0,
+                    top: 0,
+                    width: container_element.width(),
+                    height: container_element.height()
+                };
+            }
+
+
+
+
+            var left = Math.round((my_container.width - el.width()) / 2 + my_container.left);
+            var top = Math.round((my_container.height - el.height()) / 2 + my_container.top);
 
             if (center_x && center_y) {
                 el.css({

@@ -22,6 +22,7 @@
   <%= include_stylesheets :store %>
   <%= yield :page_stylesheet %>
   <%= csrf_meta_tag %>
+   <%= render :partial => 'layouts/zza'  %>
 </head>
 
 <body class="checkout-body">
@@ -79,7 +80,7 @@
     <%= include_javascripts :less%>
 <%end%>
 
-<%= include_javascripts :jquery, :store %>
+<%= include_javascripts :jquery, :lib,:zz, :store %>
 
 <% unless I18n.locale.to_s[0..1] == 'en' %>
     <%= javascript_include_tag ['localization/messages_', I18n.locale.to_s[0..1], '.js'].join %>

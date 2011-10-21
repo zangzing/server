@@ -246,12 +246,18 @@ zz.comments = {};
             }
         });
 
-
-        zz.buy.on_deactivate(function(){
+        zz.buy.on_before_activate(function(){
             if(comments_open()){
-                open_comments_drawer(true, current_photo_id, callback);
+                $('#footer #comments-button').removeClass('selected');
+                close_comments_drawer(false);
             }
         });
+
+//        zz.buy.on_deactivate(function(){
+//            if(comments_open()){
+//                open_comments_drawer(true, current_photo_id, callback);
+//            }
+//        });
 
 
     };

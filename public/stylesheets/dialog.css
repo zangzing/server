@@ -77,7 +77,7 @@
     position:relative;
     top:15px;
     font-size:16px;
-
+    text-align: center;
 }
 
 .progress-dialog-content img{

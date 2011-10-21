@@ -1,7 +1,7 @@
 class Moderator::UploadBatchesController < Moderator::BaseController
 
   def index
-    sql = "SELECT DISTINCT DATE_FORMAT(created_at, '%Y-%m-%d') as date FROM upload_batches WHERE state = 'finished' ORDER BY created_at DESC"
+    sql = "   SELECT DISTINCT DATE_FORMAT(created_at, '%Y-%m-%d') as date FROM upload_batches WHERE state = 'finished' ORDER BY created_at DESC"
     @upload_batches_days = UploadBatch.connection.select_values(sql)
   end
 

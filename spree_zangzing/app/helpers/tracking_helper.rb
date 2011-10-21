@@ -5,13 +5,22 @@ module TrackingHelper
     return '' if carrier.blank?
     if tracking.nil?
      c,t = carrier.split('::')
+
      c.upcase!
-     t.upcase!
+     if t
+       t.upcase!
+     end
+
     else
       c = carrier.upcase
       t = tracking.upcase
     end
     
+
+    if t.nil?
+      return ''
+    end
+
     case( c )
       when 'UPS':
         return "http://wwwapps.ups.com/WebTracking/processInputRequest?tracknum=#{t}"

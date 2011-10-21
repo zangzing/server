@@ -84,10 +84,12 @@ stylesheets:
     - public/stylesheets/*.css
   store:
     - public/stylesheets/buttons.css
+    - public/stylesheets/dialog.css
     - public/stylesheets/store/checkout.css
     - public/stylesheets/store/bootstrap.css
     - public/stylesheets/iphone-style-checkboxes.css
     - public/stylesheets/photo.css
+    - public/stylesheets/picon.css
     - public/stylesheets/zendesk.css
   store_admin:
     - public/stylesheets/store/admin/admin-reset.css

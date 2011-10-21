@@ -26,10 +26,17 @@ OrdersController.class_eval do
     respond_with( @orders )
   end
 
-   # Shows the current incomplete order from the session
+  # Shows the current incomplete order from the session
   def edit
     @order = current_order(true)
     @order.state = 'cart'
+
+    # If the referer is  from the photo service save it.
+    # If the referer is  from within the store do not save it.
+    uri = URI::parse( request.referer )
+    unless uri.path =~ /^\/store\//
+      session[:store_entrance_referer] = request.referer
+    end
     render :layout => 'checkout'
   end
 

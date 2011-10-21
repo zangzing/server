@@ -18,8 +18,7 @@ zz.album = {};
 
         $('#view-buttons').fadeOut('fast');
 
-        $('#footer #comments-button').fadeIn('fast');
-
+        zz.buy.toggle_visibility_with_buy_mode($('#footer #comments-button'));
 
         zz.buy.on_change_buy_mode(function(){
             render_picture_view();

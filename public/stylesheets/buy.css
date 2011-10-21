@@ -19,6 +19,16 @@
     overflow-x: hidden;
 }
 
+.buy-screens .select-product-screen .loading{
+    background: url(/images/loading_small.gif) no-repeat scroll 0px 0px transparent;
+    height: 24px;
+    width: 24px;
+    position: relative;
+    top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .buy-screens .select-product-screen .product{
     position:relative;
     height:123px;
@@ -130,7 +140,7 @@
     font-size: 14px;
     font-weight: 500;
     position: absolute;
-    top: 48px;
+    top: 45px;
     left: 73px;
 }
 
@@ -367,6 +377,7 @@
     background: url(/images/buy/large-error-icon.png) no-repeat scroll 0px 0px transparent;
     height:66px;
     width:66px;
+    top:-1000px; /* hide to begin */
 }
 
 
@@ -618,16 +629,39 @@
 }
 
 
-.buy-drawer-scrim{
-    position:absolute;
-    top:0px;
-    left:0px;
-    right:380px;
-    bottom:0px;
-    background-color: #000;
-    opacity: 0.5;
-    filter: alpha(opacity = 50); /* for ie */
+.buy-drawer-scrim {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 380px;
+    bottom: 0;
+    display: none;
+}
+
+.buy-drawer-scrim .scrim {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: black;
+    opacity: .5;
+    filter: alpha(opacity = 50);
 }
 
 
-
+.buy-drawer-scrim .message {
+    position: absolute;
+    background-color: #F9F9FA;
+    border: 1px solid #D7D7D7;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    padding: 20px 40px 20px 40px;
+    font-size: 16px;
+    text-align: center;
+    display: none;
+    height: 100px;
+    width: 206px;
+    top: 200px;
+    line-height: 24px;
+}

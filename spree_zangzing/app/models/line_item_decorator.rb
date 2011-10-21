@@ -1,3 +1,10 @@
+unless defined? LineItem::PRINTS_PRODUCT_ID
+  LineItem::PRINTS_PRODUCT_ID = 941187648  # Prints product id
+  LineItem::NO_FRAME_VALUE_ID = 28         # No Frame (for prints-frame-and-mate option_type )
+  LineItem::FRAMED_VALUE_ID   = 53         # Framed (for prints-finish option-type )
+ end
+
+
 LineItem.class_eval do
   attr_accessible :photo_id, :crop_instructions, :back_message, :print_photo
 
@@ -13,11 +20,22 @@ LineItem.class_eval do
   scope :ready,   joins(:shipment).where("line_items.shipment_id IS NOT NULL AND line_items.shipment_id = shipments.id AND shipments.state = 'ready'")
   scope :pending, where("line_items.shipment_id IS NULL")
 
-  scope :prints, joins(:product).joins(:variant).where("products.name = 'Prints' AND variants.price < ? ",Spree::Config[:printset_threshold]).order('variants.price ASC')
-  scope :group_by_variant, joins(:variant).group('variants.id').order('variants.price ASC')
-  scope :not_prints, joins(:product).joins(:variant).where("products.name != 'Prints' || variants.price >=?",Spree::Config[:printset_threshold])
 
-  
+  # Line items for prints that do not have a frame (checking the frame_matte== 'No Frame' option_type value)
+  scope :prints, joins(:variant)\
+              .joins("join option_values_variants on option_values_variants.variant_id = variants.id")\
+              .where("variants.product_id = ? AND option_values_variants.option_value_id = ?", LineItem::PRINTS_PRODUCT_ID, LineItem::NO_FRAME_VALUE_ID)\
+              .order('variants.price ASC')
+
+  # Line items for not prints or prints that have a frame (checking the prints_finish == framed option_type value)
+  scope :not_prints, joins(:variant)\
+              .joins("join option_values_variants on option_values_variants.variant_id = variants.id")\
+              .where("variants.product_id <> ? || (  variants.product_id = ? AND option_values_variants.option_value_id = ?)",LineItem::PRINTS_PRODUCT_ID,LineItem::PRINTS_PRODUCT_ID, LineItem::FRAMED_VALUE_ID)\
+              .group('line_items.id')\
+              .order('variants.price ASC')
+
+  scope :group_by_variant, joins(:variant).group('variants.id').order('variants.price ASC')
+
   def shipping_may_change
     order.shipping_may_change
   end

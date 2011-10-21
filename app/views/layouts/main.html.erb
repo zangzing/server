@@ -147,7 +147,7 @@
 
 <%  end -%>
 
-      zz.session.cart_item_count = <%= current_order ? current_order.line_items.count : 0 %>
+      zz.session.cart_item_count = <%= current_order ? current_order.cart_count : 0 %>
 
       zz.page = zz.page || {};
       zz.page.rails_controller_name = '<%= controller.controller_name %>';
