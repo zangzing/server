@@ -67,7 +67,7 @@ end %>
             <%=render 'orders/prints_line_item',  :variant => line_item.variant, :change => 1 %>
         <%end%>
         <% @order.line_items.not_prints.each do |line_item| %>
-            <%= render 'orders/line_item', :line_item => line_item%>
+            <%= render 'orders/line_item', :line_item => line_item, :change => 1 %>
         <% end %>
       </tbody>
     </table>
