@@ -77,6 +77,8 @@ end %>
      });
 
      $('#update-cart').click( function(){
+         $(this).unbind('click');
+         $('a.checkout-cart').unbind('click');
          $(this).attr('disabled', 'disabled');
          $(this).unbind('click');
          spin();
@@ -84,11 +86,13 @@ end %>
      });
 
      $('a.checkout-cart').click( function(){
-              $(this).attr('disabled', 'disabled');
-              $(this).unbind('click');
-              spin();
-              $('form#updatecart').attr('action', '<%=checkout_cart_path%>');
-              $('form#updatecart').submit();
+        $(this).unbind('click');
+        $('#update-cart').unbind('click');
+        $(this).attr('disabled', 'disabled');
+        $(this).unbind('click');
+        spin();
+        $('form#updatecart').attr('action', '<%=checkout_cart_path%>');
+        $('form#updatecart').submit();
      });
 
 

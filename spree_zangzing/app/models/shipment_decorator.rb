@@ -6,15 +6,23 @@ Shipment.class_eval do
   end
 
   def tracking_number
-      carrier,number = tracking.split('::')
-      number
+      if tracking
+        carrier,number = tracking.split('::')
+        return number
+      else
+        return nil
+      end
+
   end
 
   def tracking_carrier
-      carrier,number = tracking.split('::')
-      carrier
+      if tracking
+        carrier,number = tracking.split('::')
+        return carrier
+      else
+        return nil
+      end
   end
-
 
 end
 
