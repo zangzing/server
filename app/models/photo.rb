@@ -817,6 +817,19 @@ class Photo < ActiveRecord::Base
   # this method packages up the fields
   # we care about for return via json
   def self.hash_one_photo(photo)
+    photo_sizes = nil
+    photo_base = photo.base_subst_url
+    if photo_base
+      # ok, photo is ready so include sizes map
+      photo_sizes = {
+          :stamp            => photo.suffix_based_on_version(AttachedImage::STAMP),
+          :thumb            => photo.suffix_based_on_version(AttachedImage::THUMB),
+          :screen           => photo.suffix_based_on_version(AttachedImage::MEDIUM),
+          :full_screen      => photo.suffix_based_on_version(AttachedImage::LARGE),
+          :iphone_grid      => photo.suffix_based_on_version(AttachedImage::IPHONE_GRID),
+          :iphone_grid_ret  => photo.suffix_based_on_version(AttachedImage::IPHONE_GRID_RET)
+      }
+    end
     hashed_photo = {
       :id => photo.id,
       :caption => photo.caption,
@@ -826,10 +839,12 @@ class Photo < ActiveRecord::Base
       :upload_batch_id => photo.upload_batch_id,
       :user_id => photo.user_id,
       :aspect_ratio => photo.aspect_ratio,
-      :stamp_url => photo.stamp_url,
+      :stamp_url => photo.stamp_url,  # todo, the 4 urls should be nil if photo_base is non nil
       :thumb_url => photo.thumb_url,
       :screen_url => photo.screen_url,
       :full_screen_url => photo.full_screen_url,
+      :photo_base => photo_base,
+      :photo_sizes => photo_sizes,
       :width => photo.width,
       :height => photo.height,
       :rotated_width => photo.rotated_width,
