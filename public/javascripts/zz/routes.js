@@ -119,6 +119,7 @@ var zz = zz || {};
 
                 var on_success = function(json){
                     zz.routes.photos._cache[album_id + '-' + cache_version] = json;
+                    json = translate_photos_json(json);
                     success(json);
                 };
 
@@ -311,4 +312,23 @@ var zz = zz || {};
              error: error
          });
     }
+
+
+
+    function translate_photos_json(photos){
+        // use native loop to keep fast
+        for(var i=0;i<photos.length; i++){
+            var photo = photos[i];
+            if(photo.photo_base){
+                photo.stamp_url = photo.photo_base.replace('#{size}',photo.photo_sizes.stamp);
+                photo.thumb_url = photo.photo_base.replace('#{size}',photo.photo_sizes.thumb);
+                photo.screen_url = photo.photo_base.replace('#{size}',photo.photo_sizes.screen);
+                photo.full_screen_url = photo.photo_base.replace('#{size}',photo.photo_sizes.full_screen);
+            }
+        }
+        return photos;
+    }
+
+
+
 })();

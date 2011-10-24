@@ -315,7 +315,7 @@ zz.album = {};
         ZZAt.track('album.view', {id: zz.page.album_id});
 
 
-        zz.routes.photos.get_album_photos_json(zz.page.album_id, zz.page.cache_version_key, function(json){
+        zz.routes.photos.get_album_photos_json(zz.page.album_id, zz.page.album_cache_version_key, function(json){
             json = filterPhotosForUser(json);
 
             callback(json);
@@ -502,7 +502,7 @@ zz.album = {};
                 zz.logger.debug(photo_id);
 
                 $(element).click(function(){
-                    zz.comments.show_in_dialog(zz.page.album_id, zz.page.cache_version_key, photo_id);
+                    zz.comments.show_in_dialog(zz.page.album_id, zz.page.album_cache_version_key, photo_id);
                 });
             });
         }

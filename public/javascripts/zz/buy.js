@@ -1043,7 +1043,7 @@ zz.buy = zz.buy || {};
 
         if(zz.page.album_id){
             buy_screens_element.find('.configure-product-screen .main-section .selected-photos-section .add-all-photos').show().unbind('click').click(function(){
-                zz.routes.photos.get_album_photos_json(zz.page.album_id, zz.page.cache_version_key, function(photos){
+                zz.routes.photos.get_album_photos_json(zz.page.album_id, zz.page.album_cache_version_key, function(photos){
                     _.each(photos, function(photo){
                         if(photo.state == 'ready'){
                             zz.buy.add_selected_photo(photo);
