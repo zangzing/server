@@ -413,8 +413,7 @@ zz.buy = zz.buy || {};
 
     var DRAWER_SCREENS = {
         SELECT_PRODUCT: 'select_product',
-        CONFIGURE_PRODUCT: 'configure_product',
-        SELECT_PHOTOS: 'select_photos'
+        CONFIGURE_PRODUCT: 'configure_product'
     };
 
 
@@ -676,7 +675,7 @@ zz.buy = zz.buy || {};
 
         if(zz.buy.is_photo_selected(photo_json.id)){
             // don't allow selecting the same photo more than once
-            return; 
+            return;
         }
 
         if(photo_json.state != 'ready'){
@@ -750,7 +749,16 @@ zz.buy = zz.buy || {};
                              'easeInOutCubic',
                              function(){
                                 $(this).remove();
-                                 add_photo_to_selected_photos_screen(photo_json);
+                                 // todo: this needs to be refactored/cleaned up
+                                 //       too much logic here.
+                                 if(!zz.buy.is_buy_mode_active()){
+                                     zz.buy.activate_buy_mode();
+                                 }
+                                 else{
+                                     if(current_screen() == DRAWER_SCREENS.CONFIGURE_PRODUCT){
+                                        add_photo_to_selected_photos_screen(photo_json);
+                                     }
+                                 }
                              }
                     );
 
@@ -1047,15 +1055,16 @@ zz.buy = zz.buy || {};
         }
 
 
-        refresh_selected_photos_list();
-
-
         // hack: need to run this one time for each option
         //       so that we capture all the cases where dependent
         //       options need to be shown or removed
         on_change_option(true);
         on_change_option();
         on_change_option();
+
+
+        refresh_selected_photos_list();
+
         check_bad_photos();
 
     }

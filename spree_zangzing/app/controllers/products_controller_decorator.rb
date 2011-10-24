@@ -6,7 +6,7 @@ ProductsController.class_eval do
     @searcher = Spree::Config.searcher_class.new(params)
     @products = @searcher.retrieve_products
 
-    expires_in 10.minutes, :public => true
+    #expires_in 10.minutes, :public => true
 
     respond_with(@products)
   end

@@ -334,7 +334,6 @@ zz.template_cache = zz.template_cache || {};
                     buy_button.click(function(){
                         ZZAt.track('photo.buy.frame.click');
                         zz.buy.add_selected_photo(o.json, self.element);
-                        zz.buy.activate_buy_mode();
                     });
 
 
