@@ -49,7 +49,7 @@ class Photo < ActiveRecord::Base
                   :rotate_to, :crop_json, :source_path, :guid_part, :latitude, :created_at, :id,
                   :updated_at, :image_content_type, :headline, :error_message, :image_bucket,
                   :orientation, :height, :suspended, :longitude, :pos, :image_path, :image_updated_at,
-                  :generate_queued_at, :width, :state, :source, :deleted_at, :for_print
+                  :generate_queued_at, :width, :state, :source, :deleted_at, :for_print, :original_suffix, :size_version
 
   # this is just a placeholder used by the connectors to track some extra state
   # now that we do batch operations
@@ -141,7 +141,7 @@ class Photo < ActiveRecord::Base
     options = {}
     options[:copy_s3_object] = true
     options[:src_bucket] = original.image_bucket
-    options[:src_key] = original.attached_image.key(AttachedImage::ORIGINAL)
+    options[:src_key] = original.attached_image.key(AttachedImage.original_suffix(original.original_suffix))
     photo.queue_upload_to_s3(options)
 
     photo
@@ -180,6 +180,9 @@ class Photo < ActiveRecord::Base
   def init_for_create
     set_guid_for_path
     set_default_position
+    # assign a large random number to original suffix up to max unsigned 32 bit integer
+    # we do this to ensure no one can guess the original from one of the smaller size photos
+    self.original_suffix = rand(4294967295)
   end
 
   # never, never, never call get_next_id inside a transaction since failure of the transaction would rollback the
@@ -263,7 +266,7 @@ class Photo < ActiveRecord::Base
     self.photo_info = PhotoInfo.factory(data)
     if exif = data['EXIF']
       val =  exif['DateTimeOriginal'] || self.capture_date # if nil keep the existing one, otherwise update
-      self.capture_date = (DateTime.parse(val) unless val.nil?) rescue nil
+      self.capture_date = (DateTime.parse(val) rescue nil) unless val.nil?
       val = exif['Orientation']
       self.orientation = decode_orientation(val) unless val.nil?
       val = exif['GPSLatitude']
@@ -383,8 +386,8 @@ class Photo < ActiveRecord::Base
   def add_to_pending_delete
     Album.update_photos_ready_count(self.album_id, -1) if ready?
     if self.image_bucket
-      include_original = self.for_print.nil? ? true : !self.for_print
-      encoded_sizes = S3PendingDeletePhoto.encode_sizes(attached_image.sizes, include_original)
+      original_suffix = AttachedImage.original_suffix(self.original_suffix)
+      encoded_sizes = S3PendingDeletePhoto.encode_sizes(attached_image.sizes, original_suffix)
       pd = S3PendingDeletePhoto.create(
           :photo_id => self.id,
           :user_id => self.user_id,
@@ -634,11 +637,26 @@ class Photo < ActiveRecord::Base
 
   def original_url
     if self.ready?
-      attached_image.url(PhotoAttachedImage::ORIGINAL)
+      attached_image.url(AttachedImage.original_suffix(self.original_suffix))
     else
       return safe_url(self.source_screen_url)
     end
   end
+
+  # return the substitution form of the url
+  # expects caller to perform a string substitution
+  # with the type of resized photo wanted
+  def base_subst_url
+    # use #{size} literally as the suffix
+    # since the client will substitute
+    self.ready? ? attached_image.url('#{size}') : nil
+  end
+
+  # convert suffix if needed based on size version
+  def suffix_based_on_version(suffix)
+    attached_image.suffix_based_on_version(suffix)
+  end
+
 
   def aspect_ratio
     if(self.width && self.height && self.width != 0 && self.height != 0)
@@ -799,6 +817,19 @@ class Photo < ActiveRecord::Base
   # this method packages up the fields
   # we care about for return via json
   def self.hash_one_photo(photo)
+    photo_sizes = nil
+    photo_base = photo.base_subst_url
+    if photo_base
+      # ok, photo is ready so include sizes map
+      photo_sizes = {
+          :stamp            => photo.suffix_based_on_version(AttachedImage::STAMP),
+          :thumb            => photo.suffix_based_on_version(AttachedImage::THUMB),
+          :screen           => photo.suffix_based_on_version(AttachedImage::MEDIUM),
+          :full_screen      => photo.suffix_based_on_version(AttachedImage::LARGE),
+          :iphone_grid      => photo.suffix_based_on_version(AttachedImage::IPHONE_GRID),
+          :iphone_grid_ret  => photo.suffix_based_on_version(AttachedImage::IPHONE_GRID_RET)
+      }
+    end
     hashed_photo = {
       :id => photo.id,
       :caption => photo.caption,
@@ -808,10 +839,12 @@ class Photo < ActiveRecord::Base
       :upload_batch_id => photo.upload_batch_id,
       :user_id => photo.user_id,
       :aspect_ratio => photo.aspect_ratio,
-      :stamp_url => photo.stamp_url,
+      :stamp_url => photo.stamp_url,  # todo, the 4 urls should be nil if photo_base is non nil
       :thumb_url => photo.thumb_url,
       :screen_url => photo.screen_url,
       :full_screen_url => photo.full_screen_url,
+      :photo_base => photo_base,
+      :photo_sizes => photo_sizes,
       :width => photo.width,
       :height => photo.height,
       :rotated_width => photo.rotated_width,
@@ -843,8 +876,8 @@ class Photo < ActiveRecord::Base
 
   def set_default_position
 
-    #start with position as capture date in seconds
-    self.pos = capture_date.to_i
+    #start with position as capture date in seconds, if we have none use created_at, and finally now
+    self.pos = Integer(self.capture_date || self.created_at || Time.now) rescue 0
     custom_order_offset = upload_batch.custom_order_offset
 
     # The current batch will be custom ordered if the album was custom ordered when batch was created.
@@ -908,14 +941,26 @@ class PhotoAttachedImage < AttachedImage
   def self.image_sizes(for_print = false)
     if for_print
       @@print_sizes ||= [
-          {FULL    => "-strip -quality 90"},  # no resize wanted since this will be used for print
+          {FULL    => {:cmd => "-strip -quality 90"}},  # no resize wanted since this will be used for print
       ]
     else
       @@normal_sizes ||= [
-          {LARGE    => "-resize '2560x1440>' -strip -quality 80"},  # large
-          {MEDIUM   => "-resize '1024x768>' -strip -quality 80"},  # medium
-          {THUMB    => "-resize '180x180>' -strip -quality 93"},   # thumb
-          {STAMP    => "-resize '100x100>' -strip -quality 80"}    # stamp
+          {LARGE            => {:cmd => "-resize '2560x1440>' -strip -quality 80"}},  # large
+          {MEDIUM           => {:cmd => "-resize '1024x768>' -strip -quality 80"}},  # medium
+
+          # we use clone since we are center cropping and want to revert to current image chain after our operation
+          # when we set clone to true we save the current image so the resize does not affect it as it does when
+          # not cloning so place this under the next greater size than we need
+          {IPHONE_COVER_RET => {:cmd => "-resize 620x188^ -gravity center -extent 620x188 -strip -quality 80", :clone => true}},
+          {IPHONE_COVER     => {:cmd => "-resize 310x94^ -gravity center -extent 310x94 -strip -quality 80", :clone => true}},
+          {IPHONE_GRID_RET  => {:cmd => "-resize 188x188^ -gravity center -extent 188x188 -strip -quality 80", :clone => true}},
+          {IPHONE_GRID      => {:cmd => "-resize 94x94^ -gravity center -extent 94x94 -strip -quality 80", :clone => true}},
+
+          {THUMB            => {:cmd => "-resize '180x180>' -strip -quality 93"}},   # thumb
+          # due to the way the imagemagick convert call works where it always wants to do an implicit
+          # -write on the last item we cannot use clone so make sure any items that need clone are always
+          # above the last one
+          {STAMP            => {:cmd => "-resize '100x100>' -strip -quality 80"}},    # stamp
       ]
     end
   end

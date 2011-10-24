@@ -26,13 +26,23 @@
 class AttachedImage
   include NewRelic::Agent::Instrumentation::ControllerInstrumentation
 
-  # photo suffixes for naming must be a single char
-  ORIGINAL =  'o'
-  FULL =      'f'
-  LARGE =     'l'
-  MEDIUM =    'm'
-  THUMB =     't'
-  STAMP =     's'
+  # indicates the current sizing version scheme, this will be used
+  # by a process that allows us to resize all old versioned photos
+  # we record the size with the photo so we know which scheme
+  # was applied and whether it needs upgrading or not.
+  CURRENT_SIZE_VERSION = 2
+
+  # photo suffixes based on size
+  ORIGINAL          = 'o'
+  FULL              = 'f'
+  LARGE             = 'l'
+  MEDIUM            = 'm'
+  THUMB             = 't'
+  STAMP             = 's'
+  IPHONE_COVER      = 'ic'
+  IPHONE_COVER_RET  = 'icr'
+  IPHONE_GRID       = 'ig'
+  IPHONE_GRID_RET   = 'igr'
 
   TRACE_CATEGORY = :task
 
@@ -45,6 +55,10 @@ class AttachedImage
   # so that Photos are distributed across the buckets
   def self.pick_bucket
     buckets[rand(buckets.count)]
+  end
+
+  def self.original_suffix(suffix)
+    suffix.nil? ? ORIGINAL : suffix.to_s
   end
 
   def s3_headers
@@ -71,6 +85,42 @@ class AttachedImage
   def sizes
     @@sizes ||= []
   end
+
+  # return the proper suffix based on our version mapped
+  # to the current version - if a suffix is passed
+  # that has no version mapping, we keep the suffix passed
+  # this should only be the case when using the random suffix
+  # for the original photo
+  def suffix_based_on_version(suffix)
+    # map of maps from the old versions to the latest
+    @@version_map ||= {
+        1 => {
+            ORIGINAL            => ORIGINAL,
+            FULL                => FULL,
+            LARGE               => LARGE,
+            MEDIUM              => MEDIUM,
+            THUMB               => THUMB,
+            STAMP               => STAMP,
+            IPHONE_COVER        => MEDIUM,
+            IPHONE_COVER_RET    => MEDIUM,
+            IPHONE_GRID         => THUMB,
+            IPHONE_GRID_RET     => THUMB
+        }
+    }
+
+    photo_ver = model.size_version
+    photo_ver = 1 if photo_ver.nil?
+    if photo_ver != CURRENT_SIZE_VERSION
+      # look up old version map
+      suffix_map = @@version_map[photo_ver]
+      # if no map the the old version, assume it is a direct 1:1 mapping
+      # and just return the passed in suffix
+      new_suffix = suffix_map.nil? ? suffix : suffix_map[suffix]
+      suffix = new_suffix unless new_suffix.nil?  # when not found stick with suffix passed in
+    end
+    suffix
+  end
+
 
   # make a helper and set up the dynamic method references to the model we are
   # associated with
@@ -178,16 +228,21 @@ class AttachedImage
       self.sizes.each do |map|
         # it is expected that the map only contain 1 key/value pair for each
         # array entry
-        map.each do |suffix, option|
+        map.each do |suffix, options|
+          cmd = options[:cmd]
+          clone = options[:clone]
           local_path = resize_dir + image_id + '-' + suffix + ".jpg"
           s3_key = AttachedImage.build_s3_key(prefix, image_id, suffix)
           path_map = {:local_path => local_path, :s3_key => s3_key}
           if current < last
             # not the last one so gets normal treatment
-            args << option + " -write " + '"' + local_path + '"' + " \\\n "
+            args << "\\( +clone " if clone
+            args << cmd + " -write " + '"' + local_path + '"'
+            args << " +delete \\)" if clone
+            args << " \\\n "
           else
-            # special case on the last one due to strange ImageMagick command form
-            args << option + ' "' + local_path + '"'
+            # special case on the last one due to ImageMagick always doing an implicit -write
+            args << cmd + ' "' + local_path + '"'
           end
           out_paths << path_map
           current += 1
@@ -220,7 +275,7 @@ class AttachedImage
     path = self.path
     if (path != nil)
       bucket = self.bucket
-      AttachedImage.remove_s3_photo(bucket, key(ORIGINAL))
+      AttachedImage.remove_s3_photo(bucket, key(AttachedImage.original_suffix(model.original_suffix)))
       # now remove resized photos
       self.sizes.each do |suffix, options|
         AttachedImage.remove_s3_photo(bucket, key(suffix))
@@ -231,12 +286,12 @@ class AttachedImage
 
   # download the original image and perform resize operations on it
   # to produce files that are then ready to be uploaded
-  def resize_photos()
+  def resize_photos
     begin
       bucket = self.bucket
       image_id = model.guid_part
       # download the original file
-      original_file = AttachedImage.download_s3_photo(bucket, prefix, image_id, ORIGINAL)
+      original_file = AttachedImage.download_s3_photo(bucket, prefix, image_id, AttachedImage.original_suffix(model.original_suffix))
       original_file_path = original_file.path
       original_file.close
 
@@ -286,6 +341,10 @@ class AttachedImage
     time_stamp = Time.now
     self.updated_at = Time.now
     upload_photos(file_map)
+    # indicate the sizing version - used to know if
+    # we have the latest sizing scheme or an earlier one
+    # whenever we upgrade photo sizes
+    model.size_version = CURRENT_SIZE_VERSION
     rescue Exception => ex
       Rails.logger.debug("Photo resizing and upload failed: " + ex)
       raise ex
@@ -306,7 +365,8 @@ class AttachedImage
   def prepare_for_s3_store
     path = self.path
     image_id = model.guid_part
-    key = key(ORIGINAL)
+    original_suffix = AttachedImage.original_suffix(model.original_suffix)
+    key = key(original_suffix)
     if (path.nil?)
       # first time in pick a bucket to store into
       bucket = AttachedImage.pick_bucket
@@ -320,7 +380,7 @@ class AttachedImage
     self.updated_at = time_stamp
     content_type = self.content_type
     headers = s3_options(content_type, custom_metadata_original)
-    url = AttachedImage.build_s3_url(bucket, prefix, image_id, ORIGINAL, time_stamp)
+    url = AttachedImage.build_s3_url(bucket, prefix, image_id, original_suffix, time_stamp)
     self.path = url
     [bucket, key, headers]
   end
@@ -348,7 +408,12 @@ class AttachedImage
   end
 
   # build the url from this model and field
-  def url suffix
+  # also take into account the size_version of
+  # the photo for backwards compatability of
+  # old photos that have not been upgraded to the
+  # new sizes
+  def url(suffix)
+    suffix = suffix_based_on_version(suffix)
     AttachedImage.build_s3_url(self.bucket, prefix, model.guid_part, suffix, self.updated_at)
   end
 
@@ -357,7 +422,7 @@ class AttachedImage
   # we no longer have the original object
   def all_keys
     image_id = model.guid_part
-    key = key(ORIGINAL)
+    key = key(AttachedImage.original_suffix(model.original_suffix))
     keys = [key]
     # now see if any resized photos to go with
     self.sizes.each do |map|

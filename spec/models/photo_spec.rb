@@ -73,7 +73,7 @@ describe Photo do
       pd.photo_id.should == photo_id
 
       # now verify that the s3 link still exists
-      url = pd.build_s3_url(AttachedImage::THUMB)
+      url = pd.build_s3_url(AttachedImage::IPHONE_GRID)
       res = Net::HTTP.get_response(URI.parse(url))
       res.class.should == Net::HTTPOK
 
