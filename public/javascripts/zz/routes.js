@@ -21,6 +21,11 @@ var zz = zz || {};
 
             add_to_cart: function(product_id, sku, photo_ids, success, error ){
                 do_post('/store/orders/add_to_order.json', {product_id: product_id, sku: sku, photo_ids:photo_ids}, success, error);
+            },
+
+            get_glamour_page_html: function(product_id, success, failure){
+                var url = '/store/products/' + product_id;
+                do_get_html(url, {}, success, failure);
             }
         },
 
@@ -305,6 +310,17 @@ var zz = zz || {};
 
     function do_get(url, params, success, error){
         return $.ajax({
+             type: 'get',
+             url: url,
+             data: params,
+             success: success,
+             error: error
+         });
+    }
+
+    function do_get_html(url, params, success, error){
+        return $.ajax({
+             dataType: 'html',
              type: 'get',
              url: url,
              data: params,

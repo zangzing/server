@@ -860,7 +860,7 @@ zz.buy = zz.buy || {};
                 product_element.find('.name').text(product.name);
                 product_element.find('.description').text(product.description);
                 product_element.find('.learn-more').click(function(event){
-                    show_glamour_page(null);
+                    show_glamour_page(product.id);
                     event.stopPropagation();
                 });
                 screen_element.append(product_element);
@@ -1317,7 +1317,9 @@ zz.buy = zz.buy || {};
 
 
     function show_glamour_page(product_id){
-        zz.dialog.show_square_dialog('glamour page', {width:640, height:480});
+        zz.routes.store.get_glamour_page_html(product_id, function(html){
+            zz.dialog.show_square_dialog(html, {width:640, height:480});
+        });
     }
 
     function is_beta_user(){
