@@ -1,6 +1,6 @@
 <div class='glamour-page'>
     <div class="product-image">
-        <%= render 'image' %>
+      <%= image_tag(@product.images.first.attachment(:large)) %>
     </div>
 
     <div class="product-name">

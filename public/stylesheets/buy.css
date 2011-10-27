@@ -678,10 +678,15 @@
     left: 34px;
 }
 
+.glamour-page .product-image img{
+    width: 370px;
+    height: 375px;
+}
+
 .glamour-page .product-name{
     position: absolute;
     top: 30px;
-    left: 320px;
+    left: 430px;
     font-size: 24px;
     font-weight: bold;
 }
@@ -689,7 +694,7 @@
 .glamour-page .product-description{
     position: absolute;
     top: 80px;
-    left: 340px;
+    left: 450px;
     font-size: 16px;
     text-align: left;
     right: 30px;
@@ -724,13 +729,13 @@
     display: inline-block;
     width: 110px;
     position: relative;
-    top: 18px;
+    top: 25px;
     text-align: left;
 }
 
 .glamour-page .product-prices .column.middle{
-    margin-left:20px;
-    margin-right:20px;
+    margin-left:40px;
+    margin-right:40px;
 
 }
 
