@@ -7,6 +7,7 @@ zz.album = {};
 
 
     var current_photo_id = null;
+    var current_photo_json = null;
 
     var is_single_picture_view = false;
 
@@ -28,6 +29,12 @@ zz.album = {};
             update_checkmarks_on_photos();
         });
 
+        zz.buy.on_before_activate(function(){
+            var photo = zz.routes.photos.get_photo_json(current_photo_id);
+            if(!zz.buy.is_photo_selected(current_photo_id)){
+                zz.buy.add_selected_photo(current_photo_json);
+            }
+        });
 
 
         // setup comments drawer
@@ -226,6 +233,7 @@ zz.album = {};
                         window.location.hash = '#!' + photoId;
                         zz.page.current_photo_index = index; //this is used when we go to movie mode
                         current_photo_id = photoId;
+                        current_photo_json = json[index];
 
                         zz.comments.set_current_photo_id(photoId);
 
