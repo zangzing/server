@@ -1,30 +1,12 @@
-<h1><%= accurate_title %></h1>
+<div class='glamour-page'>
+    <div class="product-image">
+        <%= render 'image' %>
+    </div>
 
-<div id="product-images">
-  <div id="main-image">
-    <%= render 'image' %>
-  </div>
+    <div class="product-name">
+      <%= @product.name %>
+    </div>
+
+    <%= render "product_#{@product.id}" %>
+
 </div>
-
-<div id="product-description">
-  <%= @product.long_description %>
-</div>
-
-<div id="product-variants">
-<h2><%= t('variants') %></h2>
-<ul>
-  <% @product.variants.active.each_with_index do |v,index|
-    next if v.option_values.empty? || (!v.in_stock && !Spree::Config[:show_zero_stock_products]) %>
-    <li>
-      <label>
-        <span class="variant-description">
-          <%= v.custom_description %>
-        </span>
-        <span class="price"><%= product_price v %></span>
-      </label>
-    </li>
-  <% end%>
-</ul>
-</div>
-
-
