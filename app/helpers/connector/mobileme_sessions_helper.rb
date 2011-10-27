@@ -1,0 +1,2 @@
+module Connector::MobilemeSessionsHelper
+end
