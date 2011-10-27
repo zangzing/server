@@ -125,6 +125,7 @@ zz.comments = {};
         zz.routes.photos.get_photo_json(album_id, cache_version, photo_id, function(photo){
 
             var comments_dialog = $(COMMENTS_DIALOG_TEMPLATE());
+            var dialog = null
 
             zz.image_utils.pre_load_image(photo.thumb_url, function(image){
                 var photo_element = comments_dialog.find('.header .photo-border');
@@ -166,7 +167,14 @@ zz.comments = {};
                 var buy_button = comments_dialog.find('.buy-button');
                 buy_button.click(function(){
                     ZZAt.track('photo.buy.comment.click');
-                    alert('This feature is still under construction.');
+                    if(zz.buy.is_photo_selected(photo.id)){
+                        zz.buy.activate_buy_mode();
+                    }
+                    else{
+                        zz.buy.add_selected_photo(photo, photo_element);
+                    }
+                    dialog.close();
+
                 });
 
 
@@ -180,7 +188,7 @@ zz.comments = {};
 
             comments_dialog.find('.body').html(comments_widget.element);
 
-            var dialog = zz.dialog.show_square_dialog(comments_dialog, {width:450, height:600});
+            dialog = zz.dialog.show_square_dialog(comments_dialog, {width:450, height:600});
             comments_widget.load_comments_for_photo(photo_id);
             comments_widget.set_focus();
 
