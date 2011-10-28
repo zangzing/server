@@ -268,9 +268,10 @@ Order.class_eval do
   # Called after transition to complete state when payments will have been processed
   def finalize!
     update_attribute(:completed_at, Time.now)
-    self.out_of_stock_items = InventoryUnit.assign_opening_inventory(self)
     # lock any optional adjustments (coupon promotions, etc.)
     adjustments.optional.each { |adjustment| adjustment.update_attribute("locked", true) }
+
+    add_marketing_print
 
     ZZ::Async::Email.enqueue( :order_confirmed, self.id )
 
@@ -297,6 +298,13 @@ Order.class_eval do
       self.ezp_error_message = "prepare_for_submit: #{e.message}"
       save
       error
+    end
+  end
+
+  def add_marketing_print
+    index_print_product_ids = Product.taxons_name_eq('index_print').map{|p| p.id }
+    if line_items.detect { |li| index_print_product_ids.include? li.variant.product_id }
+      self.line_items << LineItem.for_mktg_print
     end
   end
 
@@ -682,7 +690,14 @@ Order.class_eval do
 
   def billing_zipcode
      bill_address.try(:zipcode)
-   end
+  end
+
+  def visible_line_items
+    visible_line_items = line_items.prints.group_by_variant
+    visible_line_items.concat( line_items.not_prints )
+    visible_line_items.sort!{ |a,b| b.created_at <=> a.created_at }
+    visible_line_items
+  end
 
 
   private

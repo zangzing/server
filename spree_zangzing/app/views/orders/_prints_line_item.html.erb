@@ -1,5 +1,5 @@
 <%# locals = {:order => order} %>
-<%  line_items         = @order.line_items.find_all_by_variant_id( variant.id )
+<%  line_items         = @order.line_items.visible_by_variant( variant )
    unless line_items.empty? %>
     <%
      printset_quantity  = line_items.first.quantity

@@ -28,7 +28,7 @@
             <br/>
         <%end%>
         <div class="address_label">
-          <a href="javascript:void(0);" onclick="Zenbox.show();"> <%=t('support')%></a>
+          <a href="javascript:void(0);" onclick="Zenbox.show();"> <%=t('customer_support')%></a>
         </div>
       </div>
 
@@ -40,13 +40,13 @@
     <div id="order_items">
       <table class="index">
         <tbody>
-        <% @order.line_items.prints.group_by_variant.each do |line_item| %>
-            <%= render 'prints_line_item', :variant => line_item.variant%>
-        <% end %>
-
-        <% @order.line_items.not_prints.each do |line_item| %>
-            <%= render 'line_item', :line_item => line_item%>
-        <% end %>
+        <% @order.visible_line_items.each do |li|%>
+            <% if li.variant.print? %>
+                <%= render 'prints_line_item', :variant => li.variant%>
+            <%else%>
+                <%= render 'line_item', :line_item => li%>
+            <%end%>
+        <%end%>
         </tbody>
 
         <tbody>
