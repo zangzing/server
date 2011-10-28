@@ -665,6 +665,31 @@ zz.buy = zz.buy || {};
     };
 
 
+    zz.buy.add_selected_photos = function(photos_json){
+        if(!is_beta_user()){
+            alert("This feature is still under construction");
+            return;
+        }
+
+        //remove photos that are not ready or that are already added
+        photos_json = _.filter(photos_json, function(photo){
+            if(zz.buy.is_photo_selected(photo.id) || photo.state != 'ready'){
+                return false;
+            }
+            else{
+                return true;
+            }
+        });
+
+
+        var selected_photos = zz.local_storage.get('zz.buy.selected_photos') || [];
+        selected_photos = selected_photos.concat(photos_json);
+        zz.logger.debug(selected_photos);
+        zz.local_storage.set('zz.buy.selected_photos', selected_photos);
+
+        zz.pubsub.publish(EVENTS.ADD_SELECTED_PHOTO);
+
+    };
 
     zz.buy.add_selected_photo = function(photo_json, element, callback){
 
@@ -1046,11 +1071,7 @@ zz.buy = zz.buy || {};
                 zz.routes.photos.get_album_photos_json(zz.page.album_id, zz.page.album_cache_version_key, function(photos){
                     var dialog = zz.dialog.show_progress_dialog("Adding photos...");
                     _.delay(function(){
-                        _.each(photos, function(photo){
-                            if(photo.state == 'ready'){
-                                zz.buy.add_selected_photo(photo);
-                            }
-                        });
+                        zz.buy.add_selected_photos(photos);
                         refresh_selected_photos_list();
                         scroll_to_bottom_of_selected_photos();
                         dialog.close();
