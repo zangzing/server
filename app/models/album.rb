@@ -477,7 +477,9 @@ class Album < ActiveRecord::Base
   end
 
   def can_user_download?( user )
-     case who_can_download
+    #album owner can always download
+    return true if user && (user.id == self.user_id)
+    case who_can_download
       when WHO_EVERYONE
         return true
       when WHO_OWNER

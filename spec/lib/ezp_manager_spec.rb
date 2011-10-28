@@ -91,7 +91,7 @@ describe EZPrints::EZPManager do
     6.times do
       pick = @ezp.marketing_insert(user.username, album.name)
       pick.should_not == nil
-      test_photos.include?(pick).should_not == nil
+      test_photos.include?(pick.id).should_not == nil
     end
   end
 

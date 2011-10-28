@@ -643,6 +643,44 @@ class Photo < ActiveRecord::Base
     end
   end
 
+  # return filename with extension
+  # derived from the caption
+  # append_info if set will be appended to the no_caption case
+  def file_name_with_extention(append_info = nil)
+    full_type = safe_file_type
+    extension = extension_from_type(full_type)
+    name = self.caption.blank? ? no_caption_filler(append_info) : self.caption
+    # ok, now see if the name already has an extension that matches this extension, if so don't append
+    if (name =~ /\.#{extension}$/i) == nil
+      filename = "#{name}.#{extension}"
+    else
+      filename = name
+    end
+    filename
+  end
+
+  def no_caption_filler(append_info)
+    base = Time.now.strftime( '%y-%m-%d-%H-%M-%S' )
+    base += "-#{append_info}" if append_info
+    base
+  end
+
+  def extension_from_type(full_type)
+    type = full_type.split('/')[1]
+    extension = case( type )
+                  when 'jpeg' then 'jpg'
+                  when 'tiff' then 'tif'
+                  else type
+                end
+  end
+
+  # look at the file type and determine the best choice
+  # based on our current state - defaults to returning image/jpeg
+  # if all else fails
+  def safe_file_type
+    type = self.image_content_type.nil? ? 'image/jpeg' : self.image_content_type
+  end
+
   # return the substitution form of the url
   # expects caller to perform a string substitution
   # with the type of resized photo wanted

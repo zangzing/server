@@ -251,7 +251,8 @@ class ApplicationController < ActionController::Base
 
     escaped_url = URI::escape(path.to_s)
     uri = URI.parse(escaped_url)
-    response.headers['X-Accel-Redirect'] = "/nginx_redirect/#{uri.host}#{uri.path}"
+    query = uri.query.blank? ? '' : "?#{uri.query}"
+    response.headers['X-Accel-Redirect'] = "/nginx_redirect/#{uri.host}#{uri.path}#{query}"
 
     #response.headers["X-Accel-Redirect"] = path # nginx
     #response.headers['X-Sendfile'] = path # Apache and Lighttpd >= 1.5
@@ -260,6 +261,21 @@ class ApplicationController < ActionController::Base
     Rails.logger.info "#{path} sent to client using X-Accel-Redirect"
     render :nothing => true
   end
+
+  # return with preparation for a album zip
+  def nginx_zip_mod(filename, contents)
+    filename += '.zip'
+    response.headers['Content-Type'] = "application/octet-stream"
+    # Set a binary Content-Transfer-Encoding, or ActionController::AbstractResponse#assign_default_content_type_and_charset!
+    # will set a charset to the Content-Type header.
+    response.headers['Content-Transfer-Encoding'] = 'binary'
+    response.headers['Content-Disposition'] =
+        ( browser.chrome? ? "attachment; filename=#{filename}" : "attachment; filename=\"#{filename}\"" )
+    response.headers['X-Archive-Files'] = 'zip'
+    Rails.logger.info "Sending zipped album #{filename} to client"
+    render :text => contents
+  end
+
 
   # standard json response form for async result polling
   def render_async_response_json(response_id)
