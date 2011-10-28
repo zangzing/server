@@ -13,7 +13,7 @@ class Connector::FlickrFoldersController < Connector::FlickrController
           end
           page_count = first_page.pages
         end
-        page_names << "My Stream #{(page_num-1)*MY_STREAM_PER_PAGE + 1} - #{page_num*MY_STREAM_PER_PAGE}"
+        page_names << "Photos #{(page_num-1)*MY_STREAM_PER_PAGE + 1} - #{page_num*MY_STREAM_PER_PAGE}"
         page_num += 1
       end while page_num <= page_count
 
@@ -42,7 +42,7 @@ class Connector::FlickrFoldersController < Connector::FlickrController
       end
 
       @folders.insert(0, {
-        :name => 'My Stream',
+        :name => 'My Photostream',
         :type => "folder",
         :id  =>  'my-stream',
         :open_url => flickr_folders_path(:format => 'json', :my_stream => true)
