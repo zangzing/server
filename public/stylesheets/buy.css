@@ -3,6 +3,7 @@
     width: 1335px;
     top:0px;
     bottom:0px;
+    color: #333;
 }
 
 
@@ -44,25 +45,26 @@
 }
 
 .buy-screens .select-product-screen .product .image{
-    position:absolute;
-    width:85px;
-    height:85px;
-    top:20px;
-    left:15px;
+    position: absolute;
+    width: 85px;
+    height: 85px;
+    top: 20px;
+    left: 13px;
 }
 
 .buy-screens .select-product-screen .product .name{
     position: absolute;
     left: 109px;
-    top: 18px;
+    top: 19px;
     font-weight: 500;
     font-size: 14px;
+
 }
 
 .buy-screens .select-product-screen .product .description{
     position: absolute;
-    left: 109px;
-    top: 39px;
+    left: 110px;
+    top: 37px;
     width: 230px;
     height: 50px;
     overflow: hidden;
@@ -77,7 +79,7 @@
     cursor: pointer;
     position: absolute;
     left: 110px;
-    top: 89px;
+    top: 84px;
 }
 
 .buy-screens .select-product-screen .product .learn-more:hover{
