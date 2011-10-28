@@ -311,13 +311,20 @@ Order.class_eval do
   def add_marketing_insert
     index_print_product_ids = Product.taxons_name_eq('index_print').map{|p| p.id }
     if line_items.detect { |li| index_print_product_ids.include? li.variant.product_id }
-      li = LineItem.new()
-      li.quantity = 1
-      li.price    = 0.0
-      li.variant  = Variant.find( Order::MKTG_INSERT_VARIANT_ID )
-      li.photo    = ez.marketing_insert( Order::MKTG_INSERT_USER_NAME, Order::MKTG_INSERT_ALBUM_NAME)
-      li.hidden   = true
-      self.line_items << li
+      variant = Variant.find_by_id( Order::MKTG_INSERT_VARIANT_ID )
+      photo = ez.marketing_insert( Order::MKTG_INSERT_USER_NAME, Order::MKTG_INSERT_ALBUM_NAME)
+      if variant && photo
+        li = LineItem.new()
+        li.quantity = 1
+        li.price    = 0.0
+        li.variant  = variant
+        li.photo    = photo
+        li.hidden   = true
+        self.line_items << li
+      else
+        Rails.logger.error( "MARKETING INSERT ERROR: Variant with id=#{Order::MKTG_INSERT_VARIANT_ID} not found") if variant.nil?
+        Rails.logger.error( "MARKETING INSERT ERROR: No marketing insert image found. Looking in user=#{Order::MKTG_INSERT_USER_NAME} album=#{Order::MKTG_INSERT_ALBUM_NAME}") if photo.nil?
+      end
     end
   end
 
