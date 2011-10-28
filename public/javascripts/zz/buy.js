@@ -732,31 +732,6 @@ zz.buy = zz.buy || {};
             var end_top;
             var end_left;
 
-            if(!zz.buy.is_buy_mode_active()){
-                end_top = $('#footer #buy-button').offset().top;
-                end_left = $('#footer #buy-button').offset().left;
-            }
-            else{
-                //figure out position of last photo in selected photo screen
-                var selected_photos_section = $('.configure-product-screen .main-section .selected-photos-section .selected-photos');
-                var last_selected_photo = $('.configure-product-screen .main-section .selected-photos-section .selected-photos .selected-photo:last');
-
-                if(last_selected_photo.length == 0){
-                    end_top = selected_photos_section.offset().top;
-                    end_left = selected_photos_section.offset().left + 100;
-                }
-                else{
-                    end_top = last_selected_photo.offset().top + SELECTED_PHOTO_MAX_SIZE.HEIGHT;
-                    end_left = selected_photos_section.offset().left + 100;
-
-                    var fold = selected_photos_section.offset().top + selected_photos_section.height();
-                    if(end_top > fold){
-                        end_top = fold - 150;
-                    }
-
-                }
-            }
-
 
             var size = zz.image_utils.scale({
                                                 width: imageElement.width(),
@@ -766,6 +741,32 @@ zz.buy = zz.buy || {};
                                                 width:SELECTED_PHOTO_MAX_SIZE.WIDTH,
                                                 height:SELECTED_PHOTO_MAX_SIZE.HEIGHT
                                             });
+
+
+            if(!zz.buy.is_buy_mode_active()){
+                end_top = $('#footer #buy-button').offset().top;
+                end_left = $('#footer #buy-button').offset().left;
+            }
+            else{
+                //figure out position of last photo in selected photo screen
+                var selected_photos_section = $('.configure-product-screen .main-section .selected-photos-section .selected-photos');
+                var last_selected_photo = $('.configure-product-screen .main-section .selected-photos-section .selected-photos .selected-photo:last');
+                var selected_photo_count = get_selected_photos().length;
+
+                if( selected_photo_count == 0){
+                    end_top = selected_photos_section.offset().top-90;
+                }
+                else{
+//                    end_top = last_selected_photo.offset().top + SELECTED_PHOTO_MAX_SIZE.HEIGHT + 10;
+                    end_top = selected_photos_section.offset().top + selected_photo_count * (SELECTED_PHOTO_MAX_SIZE.HEIGHT + 25);
+
+
+                }
+
+                end_left = selected_photos_section.offset().left + (selected_photos_section.width() - size.width)/2;
+            }
+
+
 
 
             imageElement.clone()
