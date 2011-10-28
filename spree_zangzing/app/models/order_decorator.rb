@@ -261,7 +261,7 @@ Order.class_eval do
   end
 
   def default_payment_method
-   available_payment_methods.first
+   available_payment_methods.last
   end
 
   # Finalizes an in progress order after checkout is complete.
