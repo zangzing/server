@@ -6,13 +6,13 @@
             <%if current_user %>
                 <div id="status" class="sub_top_ty" >
                     <%= t('you_can_check_the_status') %>
-                    <%= link_to  t('account_menu'), edit_user_url(current_user)%>
+                    <%= link_to  t('account_menu'), user_pretty_url(current_user)+'/settings#orders'%>
                 </div>
             <%elsif @user_session%>
               <div id="want_to_share">
                   <%=t('you_already_have_an_account')%></br>
                   <%=t('sign_in')%>!</br>
-                  <small><a id="forgot-password-link" class="hyperlink-button" href="<%=new_password_reset_url%>"><%=t('forgot_password')%></a></small>
+                  <small><a id="" class="hyperlink-button" href="<%=new_password_reset_url%>"><%=t('forgot_password')%></a></small>
               </div>
             <%else%>
               <div id="want_to_share">
@@ -23,7 +23,7 @@
         </div>
         <%if current_user #FOR LOGGED IN USERS%>
             <div id="useraction_ty">
-                <a id="goback_btn" class="newgreen-button" href="<%=root_url%>"><span><%=t('go_back_to_viewing_photos')%></span></a>
+                <a id="goback_btn" class="newgreen-button" href="<%=(session[:store_entrance_referer] ? session[:store_entrance_referer] : root_path )%>" ><span><%=t('go_back_to_viewing_photos')%></span></a>
             </div>
         <%elsif  @user_session #FOR LOGGED OUT USERS%>
                 <div id="guestaction_ty">

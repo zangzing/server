@@ -55,8 +55,8 @@ module PrettyUrlHelper
     return '/zangzing/zangzing-photo-of-the-day'
   end
 
-  def mobile_album_json_path(album_id, cache_ver)
-    return "/mobile/albums/#{album_id}/photos_json?#{cache_ver}"
+  def zz_api_album_json_path(album_id, cache_ver)
+    return "/zz_api/albums/#{album_id}/photos_json?ver=#{cache_ver}"
   end
 
   def bitly_url(url)

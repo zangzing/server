@@ -12,15 +12,20 @@ var zz = zz || {};
             },
 
             goto_cart: function(){
-                document.location.href = '/store/cart';
+                document.location.href = 'https://' + document.location.host + '/store/cart';
             },
 
             goto_checkout: function(){
-                document.location.href = '/store/checkout';
+                document.location.href = 'https://' + document.location.host + '/store/checkout';
             },
 
-            add_to_cart: function( sku, photo_ids, success, error ){
-                do_post('/store/orders/add_to_order.json', {sku: sku, photo_ids:photo_ids}, success, error);
+            add_to_cart: function(product_id, sku, photo_ids, success, error ){
+                do_post('/store/orders/add_to_order.json', {product_id: product_id, sku: sku, photo_ids:photo_ids}, success, error);
+            },
+
+            get_glamour_page_html: function(product_id, success, failure){
+                var url = '/store/products/' + product_id;
+                do_get_html(url, {}, success, failure);
             }
         },
 
@@ -90,7 +95,7 @@ var zz = zz || {};
             },
 
             album_photos_url: function(album_id, cache_version){
-                return zz.routes.path_prefix + '/albums/' + album_id + '/photos_json?' + cache_version;
+                return zz.routes.path_prefix + '/albums/' + album_id + '/photos_json?ver=' + cache_version;
             },
 
             get_photo_json: function(album_id, cache_version, photo_id, success){
@@ -119,6 +124,7 @@ var zz = zz || {};
 
                 var on_success = function(json){
                     zz.routes.photos._cache[album_id + '-' + cache_version] = json;
+                    json = translate_photos_json(json);
                     success(json);
                 };
 
@@ -261,7 +267,7 @@ var zz = zz || {};
             alert(error);
         };
 
-        do_put('/service/photos/' + photo_id + '/async_rotate_' + direction, on_success, on_failure);
+        zz.async_ajax.put('/service/photos/' + photo_id + '/async_rotate_' + direction, on_success, on_failure);
     }
 
     function do_post(url, params, success, error){
@@ -311,4 +317,34 @@ var zz = zz || {};
              error: error
          });
     }
+
+    function do_get_html(url, params, success, error){
+        return $.ajax({
+             dataType: 'html',
+             type: 'get',
+             url: url,
+             data: params,
+             success: success,
+             error: error
+         });
+    }
+
+
+
+    function translate_photos_json(photos){
+        // use native loop to keep fast
+        for(var i=0;i<photos.length; i++){
+            var photo = photos[i];
+            if(photo.photo_base){
+                photo.stamp_url = photo.photo_base.replace('#{size}',photo.photo_sizes.stamp);
+                photo.thumb_url = photo.photo_base.replace('#{size}',photo.photo_sizes.thumb);
+                photo.screen_url = photo.photo_base.replace('#{size}',photo.photo_sizes.screen);
+                photo.full_screen_url = photo.photo_base.replace('#{size}',photo.photo_sizes.full_screen);
+            }
+        }
+        return photos;
+    }
+
+
+
 })();

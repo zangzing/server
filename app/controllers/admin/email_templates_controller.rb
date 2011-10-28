@@ -187,7 +187,7 @@ class Admin::EmailTemplatesController < Admin::AdminController
   end
 
   def test_order_shipped( template_id )
-      Notifier.order_shipped( order.id, template_id)
+      Notifier.order_shipped( order.shipment.id, template_id)
   end
 
   def user_or_not_user_email_address
@@ -257,7 +257,9 @@ class Admin::EmailTemplatesController < Admin::AdminController
   end
 
   def order
-    Order.complete[ rand( Order.complete.count )]
+    orders = Order.by_state( 'shipped' )
+    order_count = orders.count
+    orders[ rand( order_count )]
   end
 
 end

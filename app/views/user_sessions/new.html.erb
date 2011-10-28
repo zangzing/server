@@ -13,7 +13,8 @@
 
     <link rel="canonical" href="<%= signin_url %>" />
 
-    <%= include_stylesheets :common %>
+  <%= include_javascripts :css %>
+  <%= include_stylesheets :common %>
 
 
 </head>
@@ -77,6 +78,10 @@
 
   <script>
     $(document).ready(function(){
+
+        zz.local_storage.clear();
+
+
         $('#submit-button').click(function(){
             $('form').submit();
         });

@@ -1,7 +1,7 @@
 class UserSessionsController < ApplicationController
 
-  ssl_required :new, :create, :mobile_create
-  skip_filter  :verify_authenticity_token, :only => [:mobile_create, :create]
+  ssl_required :new, :create, :zz_api_create
+  skip_filter  :verify_authenticity_token, :only => [:zz_api_create, :create]
 
 
   after_filter :associate_order, :only => [:create]
@@ -63,8 +63,8 @@ class UserSessionsController < ApplicationController
     end
   end
 
-  def mobile_create
-    mobile_api do |custom_err|
+  def zz_api_create
+    zz_api do |custom_err|
       result = nil
       user_session = UserSession.new(:email => params[:email], :password => params[:password], :remember_me => false)
       if user_session.save
@@ -80,8 +80,8 @@ class UserSessionsController < ApplicationController
     end
   end
 
-  def mobile_destroy
-    mobile_api do
+  def zz_api_destroy
+    zz_api do
       current_user_session.destroy if current_user
       nil
     end

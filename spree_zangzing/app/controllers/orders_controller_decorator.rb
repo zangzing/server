@@ -1,14 +1,16 @@
 OrdersController.class_eval do
+  ssl_required :index, :edit, :show, :populate, :thankyou, :update, :checkout  # all except :add_top_order
+
   before_filter :require_user, :only => [:index]
   before_filter :check_authorization
 
-  helper 'checkout','photo'
+  helper 'checkout','photo', 'tracking'
 
   respond_to :json, :only => [:add_photo, :add_to_order]
 
   def add_to_order
     order = current_order(true)
-    variant = Variant.find_by_sku(params[:sku])
+    variant = Variant.find_by_product_id_and_sku(params[:product_id], params[:sku])
 
     params[:photo_ids].each do |photo_id|
       photo = Photo.find( photo_id )
@@ -24,10 +26,17 @@ OrdersController.class_eval do
     respond_with( @orders )
   end
 
-   # Shows the current incomplete order from the session
+  # Shows the current incomplete order from the session
   def edit
     @order = current_order(true)
     @order.state = 'cart'
+
+    # If the referer is  from the photo service save it.
+    # If the referer is  from within the store do not save it.
+    uri = URI::parse( request.referer )
+    unless uri.path =~ /^\/store\//
+      session[:store_entrance_referer] = request.referer
+    end
     render :layout => 'checkout'
   end
 
@@ -35,7 +44,6 @@ OrdersController.class_eval do
     @order = Order.find_by_number(params[:id])
     render :layout => 'checkout'
   end
-
 
   # the inbound variant is determined either from products[pid]=vid or variants[master_vid], depending on whether or not the product has_variants, or not
   #
@@ -82,7 +90,18 @@ OrdersController.class_eval do
       end
     end
     render :layout => 'checkout'
-   end
+  end
+
+  def checkout
+    @order = current_order
+    if @order.update_attributes(params[:order])
+      @order.line_items = @order.line_items.select {|li| li.quantity > 0 }
+      respond_with(@order) { |format| format.html { redirect_to checkout_path } }
+    else
+      respond_with(@order)
+    end
+  end
+
 
   private
   # given params[:customizations], return a non-persisted  PhotoProductCustomData object
@@ -105,6 +124,11 @@ OrdersController.class_eval do
     else
       true
     end
+  end
+
+  #Added this method to avoid the DEPRECATION warning with human_name
+  def accurate_title
+    @order && @order.completed? ? "#{Order.model_name.human} #{@order.number}" : I18n.t(:shopping_cart)
   end
 
 end

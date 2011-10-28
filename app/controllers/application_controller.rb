@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
   JSON_MEDIA_TYPE = 'application/json'.freeze
 
 
-  include SslRequirement
+  include ZZSslRequirement
   include ZZ::Auth
   include ZZ::ZZAController
   include PrettyUrlHelper
@@ -268,13 +268,53 @@ class ApplicationController < ActionController::Base
     render :json => {:message => "poll-for-response", :response_id => response_id, :response_url => response_url}
   end
 
+  # determine if we can return pre zipped data based on the
+  # the client accept encodings
+  def client_accepts_gzip?
+    # now see if they accept gzip
+    return false if request.accept_encoding.nil?
+    encoding_types = request.accept_encoding.split(',')
+    encoding_types.each do |type|
+      return true if type.strip == 'gzip'
+    end
+    return false
+  end
+
+
+  # a helper to handle json return to client
+  # if the data is compressed we determine if
+  # the client can handle it, if so it is passed
+  # on, otherwise we must decompress and then hand
+  # it back
+  def render_cached_json(json, public, compressed)
+    ver = params[:ver]
+    if ver.nil? || ver == '0'
+      # no cache
+      expires_now
+    else
+      expires_in 1.year, :public => public
+    end
+    if compressed
+      # data is currently compressed see if client can handle it
+      if client_accepts_gzip?
+        # ok, client can take it as is
+        response.headers['Content-Encoding'] = 'gzip'
+      else
+        # must deflate it and send plain
+        Rails.logger.warn("render_cached_json had to convert compressed json to decompressed json since browser does not accept gzip encoding - user agent: #{request.user_agent} - accept_enconding: #{request.accept_encoding}")
+        json = ActiveSupport::Gzip.decompress(json)
+      end
+    end
+    render :json => json
+  end
+
   def associate_order
     return unless current_user and current_order
     current_order.associate_user!(current_user)
     session[:guest_token] = nil
   end
 
-  # wraps a mobile api call and ensures that
+  # wraps a zz api call and ensures that
   # we handle exceptions cleanly and put into proper
   # format - does the render so expects the block
   # to return a hash that represents the result
@@ -290,9 +330,9 @@ class ApplicationController < ActionController::Base
   # block must not use return at the top level since
   # return in a block exits out to our caller without
   # coming back to us first
-  def mobile_api_core(skip_render, block)
+  def zz_api_core(skip_render, block)
     begin
-      custom_err = MobileError.new
+      custom_err = ZZAPIError.new
       result = block.call(custom_err)
       if skip_render == false
         if custom_err.err_set
@@ -308,12 +348,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def mobile_api_self_render(&block)
-    mobile_api_core(true, block)
+  def zz_api_self_render(&block)
+    zz_api_core(true, block)
   end
 
-  def mobile_api(&block)
-    mobile_api_core(false, block)
+  def zz_api(&block)
+    zz_api_core(false, block)
   end
 
 end

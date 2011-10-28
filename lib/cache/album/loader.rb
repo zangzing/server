@@ -54,7 +54,7 @@ module Cache
 
       def self.make_cache_key(user_id, album_type, ver)
         comp_flag = compressed ? "Z1" : "Z0"
-        Manager::KEY_PREFIX + ".#{comp_flag}.#{album_type}.#{user_id}.#{ver}"
+        "Cache.Album.#{comp_flag}.#{album_type}.#{user_id}.#{hash_schema_version}.#{ver}"
       end
 
       def cache
@@ -235,6 +235,17 @@ module Cache
 
 
       include PrettyUrlHelper
+      # This tracks the version of the data
+      # provided in a single hashed album for
+      # our api usage.  If you make a change
+      # to the albums_to_hash method below
+      # make sure you bump this version so
+      # we invalidate the browsers cache for
+      # old items.
+      def self.hash_schema_version
+        'v4'
+      end
+
       # this method returns the album as a map which allows us to perform
       # very fast json conversion on it
       def albums_to_hash(albums)
@@ -272,6 +283,20 @@ module Cache
               user_id_to_name_map[album_user_id] = album_user_name
           end
 
+          # prep for substitution
+          cover_base = nil
+          cover_sizes = nil
+          if album_cover
+            cover_base = album_cover.base_subst_url
+            if cover_base
+              # ok, photo is ready so include sizes map
+              cover_sizes = {
+                  :thumb            => album_cover.suffix_based_on_version(AttachedImage::THUMB),
+                  :iphone_cover     => album_cover.suffix_based_on_version(AttachedImage::IPHONE_COVER),
+                  :iphone_cover_ret => album_cover.suffix_based_on_version(AttachedImage::IPHONE_COVER_RET)
+              }
+            end
+          end
           hash_album = {
               :id => album_id,
               :name => album_name,
@@ -279,10 +304,12 @@ module Cache
               :user_id => album_user_id,
               :album_path => album_pretty_path(album_user_name, album_friendly_id),
               :profile_album => album.type == 'ProfileAlbum',
-              :c_url => album_cover.nil? ? nil : album_cover.thumb_url,
+              :c_url => album_cover.nil? ? nil : album_cover.thumb_url,  #todo: this should only return non nil if cover_base is nil
+              :cover_base => cover_base,
+              :cover_sizes => cover_sizes,
               :photos_count => album.photos_count,
               :photos_ready_count => album.photos_ready_count,
-              :cache_version => album.cache_version.to_i,
+              :cache_version => album.cache_version_key,
               :updated_at => album.updated_at.to_i,
               :my_role => album.my_role # valid values are Viewer, Contrib, Admin
           }

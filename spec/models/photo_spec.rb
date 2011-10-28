@@ -18,7 +18,7 @@ describe Photo do
     end
   end
 
-  it "should create a full photo rotate and verify delete" do
+  it "should create a full photo, crop, rotate, and verify delete" do
     # perform this with resque in loopback so the complete operation takes place
     # note, we don't want subscribe emails so we filter out ZZ::Async::MailingListSync
     # trying to get the most bang for our buck with this single test since the
@@ -42,6 +42,16 @@ describe Photo do
       photo_hash = JSON.parse(AsyncResponse.get_response(response_id))
       photo_hash['id'].should == photo_id
 
+      # verify dimensions and rotation
+      photo.reload
+      photo.rotated_width.should == photo.height
+      photo.rotated_height.should == photo.width
+
+      # now create hash and make sure height and width are there
+      photo_hash = Photo.hash_one_photo(photo)
+      photo_hash[:width].should == photo.width
+      photo_hash[:height].should == photo.height
+
       # now make a copy in print mode
       options = {}
       crop = ImageCrop.new(0.2, 0, 1, 1)
@@ -63,7 +73,7 @@ describe Photo do
       pd.photo_id.should == photo_id
 
       # now verify that the s3 link still exists
-      url = pd.build_s3_url(AttachedImage::THUMB)
+      url = pd.build_s3_url(AttachedImage::IPHONE_GRID)
       res = Net::HTTP.get_response(URI.parse(url))
       res.class.should == Net::HTTPOK
 
@@ -74,4 +84,5 @@ describe Photo do
 
     end
   end
+
 end

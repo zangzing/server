@@ -55,7 +55,7 @@
   , tip: function() {
       if (!this.$tip) {
         this.$tip = $('<div class="popover" />')
-          .html('<div class="arrow"></div><div class="inner"><h3 class="title"></h3><div class="content"><p></p></div></div>')
+          .html('<div class="arrow"></div><div class="inner"><div class="content"><p></p></div></div>')
       }
       return this.$tip
     }

@@ -10,7 +10,7 @@
       </div>
     </li>
   </ul>
- <% form_for @user, :url => update_user_path(@user), :html => { :method => :put} do |user_form| %>
+ <%= form_for @user, :url => update_user_path(@user), :html => { :method => :put} do |user_form| %>
   <ul>
     <li class="item tab add">
       <div class="header tab-centered">
@@ -131,6 +131,7 @@
     </li>
     <% if order_count = @user.orders.complete.count > 0 %>
         <li class="item tab add">
+          <a name="orders" href="#"></a>
           <div class="header tab-centered">
             Order History
           </div>
@@ -150,10 +151,12 @@
                     <td><%= "#{order.ship_address.firstname} #{order.ship_address.lastname}"%></td>
                     <td><%= order.state%></td>
                   </tr>
-                  <%if i >= 9 %>
-                      <tr><td></td><td></td><td></td><td><%= link_to "More", orders_url %></td></tr>
-                  <%break%>
-                  <%end %>
+                  <%
+                    #if i >= 9
+                    #<tr><td></td><td></td><td></td><td><%= link_to "More", orders_url </td></tr>
+                    #break
+                    #end
+                  %>
               <%end%>
             </table>
           </div>
@@ -195,23 +198,19 @@
 
 
             var load_profile_photos = function(callback){
-                $.ajax({
-                    dataType: 'json',
-                    url: zz.routes.path_prefix + '/albums/' + profile_album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
-                    success: function(json){
-                        var selectedIndex=-1;
-                        var currentId = $('#profile-photo-id').val();
-                        var photos = $.map(json, function(element, index){
-                            var id = element.id;
-                            if(id == currentId){
-                                selectedIndex = index;
-                            }
-                            var src = element.thumb_url;
-                            src = zz.agent.checkAddCredentialsToUrl(src);
-                            return {id:id, src:src};
-                        });
-                        callback(photos,selectedIndex);
-                    }
+                zz.routes.photos.get_album_photos_json(profile_album_id, 0, function(json){
+                    var selectedIndex=-1;
+                    var currentId = $('#profile-photo-id').val();
+                    var photos = $.map(json, function(element, index){
+                        var id = element.id;
+                        if(id == currentId){
+                            selectedIndex = index;
+                        }
+                        var src = element.thumb_url;
+                        src = zz.agent.checkAddCredentialsToUrl(src);
+                        return {id:id, src:src};
+                    });
+                    callback(photos,selectedIndex);
                 });
             };
 

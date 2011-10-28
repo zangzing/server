@@ -82,7 +82,7 @@ zz.template_cache = zz.template_cache || {};
                 var srcWidth = o.aspectRatio;
                 var srcHeight = 1;
 
-                var scaled = zz.image_utils.scale({width: srcWidth, height: srcHeight}, {width: o.maxWidth, height: o.maxHeight - o.captionHeight});
+                var scaled = zz.image_utils.scale({width: srcWidth, height: srcHeight}, {width: Math.min(o.maxWidth, o.json.rotated_width), height: Math.min(o.maxHeight - o.captionHeight, o.json.rotated_height)});
                 initialHeight = scaled.height;
                 initialWidth = scaled.width;
             } else {
@@ -136,7 +136,7 @@ zz.template_cache = zz.template_cache || {};
             if (o.context.indexOf('chooser') === 0) {
                 //magnify
                 if (o.type === 'photo') {
-                    self.photoAddElement = $('<div class="photo-add-button">');
+                    self.photoAddElement = $('<div class="photo-add-button"><div class="scrim"></div><div class="icon"></div></div>');
                     self.photoAddElement.click(function(event) {
                         o.onClick('main');
                     });
@@ -302,7 +302,7 @@ zz.template_cache = zz.template_cache || {};
                         }
                     });
                     comment_button.click(function(){
-                        zz.comments.show_in_dialog(zz.page.album_id, zz.page.album_lastmod, o.photoId);
+                        zz.comments.show_in_dialog(zz.page.album_id, zz.page.album_cache_version_key, o.photoId);
                         hide_frame();
                         ZZAt.track('photo.comment.frame.click');
                     });
@@ -333,8 +333,12 @@ zz.template_cache = zz.template_cache || {};
                     var buy_button = button_bar.find('.buy-button');
                     buy_button.click(function(){
                         ZZAt.track('photo.buy.frame.click');
-                        zz.buy.add_selected_photo(o.json, self.element);
-                        zz.buy.activate_buy_mode();
+                        if(zz.buy.is_photo_selected(o.photoId)){
+                            zz.buy.activate_buy_mode();
+                        }
+                        else{
+                            zz.buy.add_selected_photo(o.json, self.element);
+                        }
                     });
 
 

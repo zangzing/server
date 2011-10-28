@@ -79,13 +79,29 @@ end %>
 <%end%>
 
 <%content_for :next_button do %>
-    <a href="javascript:void(0)" onclick="$('#checkout_form_payment').submit();" class="next-button"><span><%="#{t('continue')}"%></span></a>
+    <a href="javascript:void(0)" class="next-button"><span><%="#{t('continue')}"%></span></a>
 <%end%>
 
 <%content_for :page_javascript do %>
     <script type="text/javascript">
         $(document).ready(function(){
             zz.store.checkout.init_payment_screen();
+            <%
+            if @order.errors.any?
+                err = []
+                @order.errors.each do | field_name, error |
+                    err << "\"#{field_name}\":\"#{error}\""
+                end
+                %>
+                zz.store.checkout.validator.showErrors({
+                    <%=raw err.join(',')%>
+                });
+                $("[name='<%=@order.errors.first[0]%>']").focus();
+            <%end%>
+
+            $('.next-button').click(function(){
+                $('#checkout_form_payment').submit();
+            });
         });
     </script>
 <% end %>
@@ -95,7 +111,7 @@ end %>
     <div class="modal-body">
       <p>
         <strong>Why do you need my email?</strong>
-        <br>
+        </p>
         We need an address to send you your order confirmation and invoice. We also send you
         order status updates with tracking numbers. We promise not to spam you!
       </p>

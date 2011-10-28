@@ -8,7 +8,6 @@
 end %>
 
 <%content_for :nav_bar_center do
-    checkout_progress
  end%>
 
 <div class="checkout-content" id="cart">
@@ -40,13 +39,11 @@ end %>
 <%unless @order.line_items.empty? %>
 
     <%content_for :next_button do %>
-
-        <a href="/store/checkout" class="next-button"><span><%= "#{t('checkout')}"%></span></a>
-
+        <a  href="javascript:void(0);" class="next-button checkout-cart"><span><%= "#{t('checkout')}"%></span></a>
     <%end%>
 
     <%content_for :back_button do %>
-        <a href="/" class="back-button"><span><%= "#{t('buy_more')}"%></span></a>
+        <a href="<%=(session[:store_entrance_referer] ? session[:store_entrance_referer] : root_path )%>" class="back-button"><span><%= "#{t('buy_more')}"%></span></a>
     <%end%>
 
 <%end%>
@@ -54,28 +51,55 @@ end %>
 <%content_for :page_javascript  do%>
 <script type="text/javascript">
  $(document).ready( function(){
+     var spin = function(){
+              new Spinner({ lines: 8,
+                  length: 4,
+                  width: 3,
+                  radius: 3,
+                  color: '#333',
+                  speed: 1,
+                  trail: 50, // Afterglow percentage
+                  shadow: false
+              }).spin( document.getElementById('spin_here'));
+          };
+
      $('form#updatecart a.delete').click( function(e){
         e.preventDefault();
         if( confirm('<%=t('are_you_sure_delete')%>') ){
+            spin();
+            $('form#updatecart a.delete').css('color', '#666666' );
             subject = $(this).parents('tr');
+            subject.fadeOut(1000);
             subject.find('input.item_quantity').val(0);
-            subject.fadeOut('slow')
+            $('form#updatecart').submit();
         }
+        return false;
      });
 
      $('#update-cart').click( function(){
+         $(this).unbind('click');
+         $('a.checkout-cart').unbind('click');
+         $('a.delete').unbind('click');
          $(this).attr('disabled', 'disabled');
          $(this).unbind('click');
-         new Spinner({ lines: 8,
-             length: 4,
-             width: 3,
-             radius: 3,
-             color: '#333',
-             speed: 1,
-             trail: 50, // Afterglow percentage
-             shadow: false
-         }).spin( document.getElementById('spin_here'));
+         spin();
          $('form#updatecart').submit();
+     });
+
+     $('a.checkout-cart').click( function(){
+        $(this).unbind('click');
+        $('#update-cart').unbind('click');
+        $('a.delete').unbind('click');
+        $(this).unbind('click');
+        spin();
+        $('form#updatecart').attr('action', '<%=checkout_cart_path%>');
+        $('form#updatecart').submit();
+     });
+
+
+     $('a.details').click( function(e){
+            var variant_id = $(this).attr('data_variant');
+            $('.'+variant_id).toggle();
      });
  });
 </script>

@@ -37,29 +37,11 @@ module ZZ
         end
       end
 
-      def self.on_failure_retry(exception, *args)
-        will_retry = retry_criteria_valid?(exception, *args)
-        msg = "EZPSubmitOrder failed: #{exception}"
-        Rails.logger.error(msg)
-        Rails.logger.error( small_back_trace(exception))
-        NewRelic::Agent.notice_error(exception, :custom_params=>{:klass_name => self.name, :method_name => 'perform', :params => args})
-        begin
-          SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
-            order_id = args[0]
-            options = args[1]
-            order = Order.find(order_id)
-            if will_retry == false
-              # not going to retry, we are done so notify order
-              order.ezp_submit_order_failed
-            end
-          end
-        rescue Exception => ex
-          # don't let the exception make it out
-        end
-        if will_retry
-          try_again(*args)
-        else
-          Resque.redis.del(redis_retry_key(*args))
+      def self.handle_failure(exception, will_retry, order_id, options)
+        if will_retry == false
+          # not going to retry, we are done so notify order
+          order = Order.find(order_id)
+          order.ezp_submit_order_failed
         end
       end
 

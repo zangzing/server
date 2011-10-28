@@ -1,13 +1,27 @@
-<% if target && target.errors.any? %>
-<div class="alert-message block-message error">
-  <div id="errorExplanation" class="errorExplanation">
-    <h2><%= t(:errors_prohibited_this_record_from_being_saved, :count => target.errors.count) %>:</h2>
-    <p><%= t(:there_were_problems_with_the_following_fields) %>:</p>
-     <ul>
-     <% target.errors.full_messages.each do |msg| %>
-       <li><%= msg %></li>
-     <% end %>
-     </ul>
-  </div>
-  </div>
+
+
+<% if (target && target.errors.any?) || flash[:error]%>
+    <div class="alert-message block-message error">
+      <div id="errorExplanation" class="errorExplanation">
+        <%if target && target.errors.any? %>
+            <h2><%= t(:there_were_problems_with_the_following_fields) %>:</h2>
+        <%elsif flash[:payment] %>
+            <h4><%=flash[:error]%></h4>
+        <%end%>
+        <ul>
+          <%if target && target.errors.any? %>
+          <% target.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+          <% end %>
+          <%end%>
+          <% if flash[:payment]
+                payment_errors = flash[:payment].split(')')
+                payment_errors.each do |pe |
+          %>
+                <li><%= pe.gsub(/\. \(.*$/, '') %></li>
+          <%    end
+             end%>
+        </ul>
+      </div>
+    </div>
 <% end %>

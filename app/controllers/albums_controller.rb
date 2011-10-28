@@ -8,16 +8,16 @@ class AlbumsController < ApplicationController
   # this is the common set the is excepted from require_user and require_album
   def self.except_methods
     return [
-        :index, :invalidate_cache, :mobile_albums,
+        :index, :invalidate_cache, :zz_api_albums,
         :my_albums_json, :liked_albums_json, :my_albums_public_json, :liked_albums_public_json, :liked_users_public_albums_json,
-        :mobile_my_albums_json, :mobile_liked_albums_json, :mobile_my_albums_public_json, :mobile_liked_albums_public_json, :mobile_liked_users_public_albums_json,
-        :invited_albums_json, :mobile_invited_albums_json
+        :zz_api_my_albums_json, :zz_api_liked_albums_json, :zz_api_my_albums_public_json, :zz_api_liked_albums_public_json, :zz_api_liked_users_public_albums_json,
+        :invited_albums_json, :zz_api_invited_albums_json
     ]
   end
 
   before_filter :require_user,              :except => except_methods
-  before_filter :require_same_user_json,    :only =>   [ :my_albums_json, :liked_albums_json, :mobile_my_albums_json, :mobile_liked_albums_json,
-      :invited_albums_json, :mobile_invited_albums_json, :invalidate_cache
+  before_filter :require_same_user_json,    :only =>   [ :my_albums_json, :liked_albums_json, :zz_api_my_albums_json, :zz_api_liked_albums_json,
+      :invited_albums_json, :zz_api_invited_albums_json, :invalidate_cache
   ]
   before_filter :require_album,             :except => except_methods + [ :create, :new ]
   before_filter :require_album_admin_role,  :only =>   [ :destroy, :edit, :update, :add_group_members ]
@@ -195,11 +195,11 @@ class AlbumsController < ApplicationController
 
 
   # fetches the album paths, this is common code shared
-  # between mobile and normal apis
+  # between zz_api and normal apis
   # returns @loader, and @session_loader context which
   # can be used to create the specific form of data that
   # each type of call wants
-  def get_albums(user, mobile)
+  def get_albums(user, zz_api)
     # determine if we should be fetching the view based on public or private data
     user_is_me = current_user?(user)
     private_view = user_is_me || (!current_user.nil? && current_user.support_hero?)
@@ -255,18 +255,18 @@ class AlbumsController < ApplicationController
   end
 
 
-  def mobile_albums()
-    mobile_api do
+  def zz_api_albums()
+    zz_api do
       user = User.find(params[:user_id])
 
       get_albums(user, true)
       loader = @loader
       session_loader = @session_loader
       if !session_loader.nil?
-        session_liked_users_albums = session_loader.liked_users_album_loader.current_version
-        session_liked_users_albums_path = mobile_liked_users_albums_path(session_loader)
-        session_invited_albums = session_loader.invited_album_loader.current_version
-        session_invited_albums_path = mobile_invited_albums_path(session_loader)
+        session_liked_users_albums = session_loader.liked_users_album_loader.current_version_key
+        session_liked_users_albums_path = zz_api_liked_users_albums_path(session_loader)
+        session_invited_albums = session_loader.invited_album_loader.current_version_key
+        session_invited_albums_path = zz_api_invited_albums_path(session_loader)
       else
         session_liked_users_albums = nil
         session_liked_users_albums_path = nil
@@ -278,16 +278,16 @@ class AlbumsController < ApplicationController
         :user_id                        => loader.user_id,
         :logged_in_user_id              => current_user.nil? ? nil : current_user.id,
         :public                         => loader.public,
-        :my_albums                      => loader.my_album_loader.current_version,
-        :my_albums_path                 => mobile_my_albums_path(loader),
-        :liked_albums                   => loader.liked_album_loader.current_version,
-        :liked_albums_path              => mobile_liked_albums_path(loader),
-        :liked_users_albums             => loader.liked_users_album_loader.current_version,
-        :liked_users_albums_path        => mobile_liked_users_albums_path(loader),
+        :my_albums                      => loader.my_album_loader.current_version_key,
+        :my_albums_path                 => zz_api_my_albums_path(loader),
+        :liked_albums                   => loader.liked_album_loader.current_version_key,
+        :liked_albums_path              => zz_api_liked_albums_path(loader),
+        :liked_users_albums             => loader.liked_users_album_loader.current_version_key,
+        :liked_users_albums_path        => zz_api_liked_users_albums_path(loader),
         :session_user_liked_albums      => session_liked_users_albums,
         :session_user_liked_albums_path => session_liked_users_albums_path,
-        :invited_albums                 => loader.invited_album_loader.current_version,
-        :invited_albums_path            => mobile_invited_albums_path(loader),
+        :invited_albums                 => loader.invited_album_loader.current_version_key,
+        :invited_albums_path            => zz_api_invited_albums_path(loader),
         :session_user_invited_albums      => session_invited_albums,
         :session_user_invited_albums_path => session_invited_albums_path
       }
@@ -305,47 +305,47 @@ class AlbumsController < ApplicationController
 # Some helpers to return the json paths, would be cleaner if these lived in Versions class but we need
 # the route helpers accessible to controller
   def my_albums_path(loader, force_zero_ver = false)
-    ver = force_zero_ver ? 0 : loader.my_album_loader.current_version
+    ver = force_zero_ver ? 0 : loader.my_album_loader.current_version_key
     url = loader.public ? my_albums_public_json_path(loader.user_id) : my_albums_json_path(loader.user_id)
     url << "?ver=#{ver}"
   end
 
-  def mobile_my_albums_path(loader, force_zero_ver = false)
-    ver = force_zero_ver ? 0 : loader.my_album_loader.current_version
-    url = loader.public ? mobile_my_albums_public_json_path(loader.user_id) : mobile_my_albums_json_path(loader.user_id)
+  def zz_api_my_albums_path(loader, force_zero_ver = false)
+    ver = force_zero_ver ? 0 : loader.my_album_loader.current_version_key
+    url = loader.public ? zz_api_my_albums_public_json_path(loader.user_id) : zz_api_my_albums_json_path(loader.user_id)
     url << "?ver=#{ver}"
   end
 
   def liked_albums_path(loader, force_zero_ver = false)
-    ver = force_zero_ver ? 0 : loader.liked_album_loader.current_version
+    ver = force_zero_ver ? 0 : loader.liked_album_loader.current_version_key
     url = loader.public ? liked_albums_public_json_path(loader.user_id) : liked_albums_json_path(loader.user_id)
     url << "?ver=#{ver}"
   end
 
-  def mobile_liked_albums_path(loader, force_zero_ver = false)
-    ver = force_zero_ver ? 0 : loader.liked_album_loader.current_version
-    url = loader.public ? mobile_liked_albums_public_json_path(loader.user_id) : mobile_liked_albums_json_path(loader.user_id)
+  def zz_api_liked_albums_path(loader, force_zero_ver = false)
+    ver = force_zero_ver ? 0 : loader.liked_album_loader.current_version_key
+    url = loader.public ? zz_api_liked_albums_public_json_path(loader.user_id) : zz_api_liked_albums_json_path(loader.user_id)
     url << "?ver=#{ver}"
   end
 
   def liked_users_albums_path(loader, force_zero_ver = false)
-    ver = force_zero_ver ? 0 : loader.liked_users_album_loader.current_version
+    ver = force_zero_ver ? 0 : loader.liked_users_album_loader.current_version_key
     liked_users_public_albums_json_path(loader.user_id) + "?ver=#{ver}"
   end
 
-  def mobile_liked_users_albums_path(loader, force_zero_ver = false)
-    ver = force_zero_ver ? 0 : loader.liked_users_album_loader.current_version
-    mobile_liked_users_public_albums_json_path(loader.user_id) + "?ver=#{ver}"
+  def zz_api_liked_users_albums_path(loader, force_zero_ver = false)
+    ver = force_zero_ver ? 0 : loader.liked_users_album_loader.current_version_key
+    zz_api_liked_users_public_albums_json_path(loader.user_id) + "?ver=#{ver}"
   end
 
   def invited_albums_path(loader, force_zero_ver = false)
-    ver = force_zero_ver ? 0 : loader.invited_album_loader.current_version
+    ver = force_zero_ver ? 0 : loader.invited_album_loader.current_version_key
     invited_albums_json_path(loader.user_id) + "?ver=#{ver}"
   end
 
-  def mobile_invited_albums_path(loader, force_zero_ver = false)
-    ver = force_zero_ver ? 0 : loader.invited_album_loader.current_version
-    mobile_invited_albums_json_path(loader.user_id) + "?ver=#{ver}"
+  def zz_api_invited_albums_path(loader, force_zero_ver = false)
+    ver = force_zero_ver ? 0 : loader.invited_album_loader.current_version_key
+    zz_api_invited_albums_json_path(loader.user_id) + "?ver=#{ver}"
   end
 
   def albums_cache_setup(public)
@@ -353,26 +353,13 @@ class AlbumsController < ApplicationController
     return Cache::Album::Manager.shared.make_loader(@user, public)
   end
 
-  def render_cached_json(json, public, compressed)
-    ver = params[:ver]
-    if ver.nil? || ver == 0
-      # no cache
-      expires_now
-    else
-      expires_in 1.year, :public => public
-    end
-    response.headers['Content-Encoding'] = "gzip" if compressed
-    render :json => json
-  end
-
 # the calls to fetch json for various album parts
 
   # pass the loader that you want to use and the public flag
   def cached_albums_json_common(album_loader, public)
-    ver_time = Time.at(album_loader.current_version).utc
     etag = album_loader.etag
 
-    if stale?(:last_modified => ver_time, :etag => etag)
+    if stale?(:etag => etag)
       json = album_loader.fetch_loaded_json
       render_cached_json(json, public, album_loader.compressed)
     end
@@ -389,8 +376,8 @@ class AlbumsController < ApplicationController
     my_albums_json_common(false)
   end
 
-  def mobile_my_albums_json
-    mobile_api_self_render do
+  def zz_api_my_albums_json
+    zz_api_self_render do
       my_albums_json_common(false)
     end
   end
@@ -400,8 +387,8 @@ class AlbumsController < ApplicationController
     my_albums_json_common(true)
   end
 
-  def mobile_my_albums_public_json
-    mobile_api_self_render do
+  def zz_api_my_albums_public_json
+    zz_api_self_render do
       my_albums_json_common(true)
     end
   end
@@ -417,8 +404,8 @@ class AlbumsController < ApplicationController
     liked_albums_json_common(false)
   end
 
-  def mobile_liked_albums_json
-    mobile_api_self_render do
+  def zz_api_liked_albums_json
+    zz_api_self_render do
       liked_albums_json_common(false)
     end
   end
@@ -428,8 +415,8 @@ class AlbumsController < ApplicationController
     liked_albums_json_common(true)
   end
 
-  def mobile_liked_albums_public_json
-    mobile_api_self_render do
+  def zz_api_liked_albums_public_json
+    zz_api_self_render do
       liked_albums_json_common(true)
     end
   end
@@ -446,8 +433,8 @@ class AlbumsController < ApplicationController
     invited_albums_json_common
   end
 
-  def mobile_invited_albums_json
-    mobile_api_self_render do
+  def zz_api_invited_albums_json
+    zz_api_self_render do
       invited_albums_json_common
     end
   end
@@ -465,8 +452,8 @@ class AlbumsController < ApplicationController
     liked_users_public_albums_json_common
   end
 
-  def mobile_liked_users_public_albums_json
-    mobile_api_self_render do
+  def zz_api_liked_users_public_albums_json
+    zz_api_self_render do
       liked_users_public_albums_json_common
     end
   end

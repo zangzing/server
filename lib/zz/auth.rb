@@ -9,9 +9,11 @@ module ZZ
   module Auth
     extend ActiveSupport::Concern
 
-     ZZ_API_HEADER = 'X-ZangZing-API'.freeze
-     ZZ_API_HEADER_RAILS = 'HTTP_X_ZANGZING_API'.freeze
-     ZZ_API_VALID_VALUES = ['mobile'].freeze
+    unless defined? ZZ_API_HEADER
+      ZZ_API_HEADER = 'X-ZangZing-API'.freeze
+      ZZ_API_HEADER_RAILS = 'HTTP_X_ZANGZING_API'.freeze
+      ZZ_API_VALID_VALUES = ['iphone'].freeze
+    end
 
 
     included do
@@ -260,6 +262,18 @@ module ZZ
           render_401
         end
       end
+
+      # To be run as a before_filter
+      # Will render a 401 page if the currently logged in user is not an admin
+      def require_moderator
+         unless current_user.moderator?
+          flash.now[:error] = "Moderator privileges required for this operation"
+          render_401
+        end
+      end
+
+
+
 
     end #Instance Methods
 

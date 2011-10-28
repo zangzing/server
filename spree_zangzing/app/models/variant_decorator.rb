@@ -1,9 +1,12 @@
 Variant.class_eval do
   include ActionView::Helpers::NumberHelper
 
-  MIN_DPI = 150
-  DEFAULT_MIN_PHOTO_WIDTH = 3000
-  DEFAULT_MIN_PHOTO_HEIGHT = 2000
+  unless defined? MIN_DPI
+    MIN_DPI = 100
+    DEFAULT_MIN_PHOTO_WIDTH = 3000
+    DEFAULT_MIN_PHOTO_HEIGHT = 2000
+  end
+
 
   def as_json
     {
@@ -12,7 +15,7 @@ Variant.class_eval do
       :price => number_to_currency( price ),
       :description => custom_description,
       :image_url => custom_image_url,
-      :values => option_values.collect { | ov | ov.as_json },
+      :values => option_values.select{ |ov| ov.presentation.downcase != 'framed' }.collect { | ov | ov.as_json },
       :min_photo_width => self.width ? self.width * MIN_DPI : DEFAULT_MIN_PHOTO_WIDTH,
       :min_photo_height => self.height ? self.height * MIN_DPI : DEFAULT_MIN_PHOTO_HEIGHT
     }
@@ -46,6 +49,10 @@ Variant.class_eval do
       else
         product.description
       end
+  end
+
+  def print?
+    product_id == LineItem::PRINTS_PRODUCT_ID && option_values.find_by_id( LineItem::NO_FRAME_VALUE_ID )
   end
 
 end

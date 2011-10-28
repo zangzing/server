@@ -13,10 +13,10 @@ end %>
 
   
   <div id="order_message" class="clearfix">
-      Message Here
+
     </div>
     <div id="order_smallprint">
-      Small Print Here
+     
     </div>
 </div>
 
@@ -34,6 +34,14 @@ end %>
                   @order.rate_hash.collect{|smethod|[ "#{smethod[:name]} #{number_to_currency smethod[:cost]}", smethod[:id] ]},
                   {},
                   { :onchange => "$('#checkout_form_confirm').attr('action','#{update_checkout_path('delivery')}').submit();"})%>
+       <a id="shipping_question"
+             class="field_question"
+             tabindex="-1"
+             data-controls-modal="phone-question-modal"
+             data-backdrop="true"
+             data-keyboard="true">
+              <%= image_tag 'store/question.png' %>
+          </a>
     </div>
 
     <div id="bill_address">
@@ -45,7 +53,7 @@ end %>
         <%= creditcard_logo( @order.payments.first.source ) %>
       </div>
       <div>
-        <%="#{t('ends_in')} #{@order.payments.first.source.last_digits} #{t('expires')} #{@order.payments.first.source.month}/#{@order.payments.first.source.year}" %></br>
+        <%="#{t('ends_in')} #{@order.payments.first.source.last_digits} #{t('expires')} #{@order.payments.first.source.month}/#{@order.payments.first.source.year}" %><br/>
         <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('payment')%>').submit();">change</a>
       </div>
       
@@ -54,10 +62,13 @@ end %>
 
   <div id="order_items">
     <table class="index">
-      <tbody>
-      <% @order.line_items.each do |line_item| %>
-        <%= render 'orders/line_item', :line_item => line_item%>
-      <% end %>
+       <tbody id="line_items">
+        <% @order.line_items.prints.group_by_variant.each do |line_item| %>
+            <%=render 'orders/prints_line_item',  :variant => line_item.variant, :change => 1 %>
+        <%end%>
+        <% @order.line_items.not_prints.each do |line_item| %>
+            <%= render 'orders/line_item', :line_item => line_item, :change => 1 %>
+        <% end %>
       </tbody>
     </table>
   </div>
@@ -66,7 +77,7 @@ end %>
 
 
 <%content_for :small_print do %>
-By placing your order you agree ot ZangZing's <a class="hyperlink-button" target="_blank" href="http://www.zangzing.com/terms">the terms of service</a> and <a class="hyperlink-button" target="_blank" href="http://www.zangzing.com/terms">privacy policy</a>.
+By placing your order you agree to ZangZing's <a class="hyperlink-button" target="_blank" href="http://www.zangzing.com/terms">terms of service</a> and <a class="hyperlink-button" target="_blank" href="http://www.zangzing.com/privacy">privacy policy</a>.
 <%end%>
 
 
@@ -75,7 +86,30 @@ By placing your order you agree ot ZangZing's <a class="hyperlink-button" target
     <script type="text/javascript">
         $(document).ready(function(){
             $('form p.field label').inFieldLabels();
+
+        $('a.details').click( function(e){
+            var variant_id = $(this).attr('data_variant');
+            $('.'+variant_id).toggle();
+        });
         });
     </script>
 <% end %>
+
+<!--------------- This is the content of the modal phone_question dialog -->
+  <div style="display: none;" id="phone-question-modal" class="modal hide">
+    <div class="modal-body">
+      <p>
+        <strong>How long will it take to get my photos?</strong>
+        </p>
+        High quality prints usually take 2 working days to produce. Gallery Wrapped Canvas and
+        framed products are crafted by hand and they usually take 4 days to assemble.
+        When your order is ready we will ship it to you using the service of your choice.</p>
+        If your order contains framed products and prints, we will
+        ship them separately so you get them as soon as possible.
+      </p>
+    </div>
+    <div class="modal-footer">
+      <a href="#" onclick="$('#phone-question-modal').modal('hide');" class="btn success">OK</a>
+    </div>
+  </div>
 

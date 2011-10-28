@@ -57,6 +57,11 @@ module Cache
         current_versions.version(self.album_type)
       end
 
+      # key form of current version, takes schema version into account
+      def current_version_key
+        "#{Loader.hash_schema_version}.#{current_versions.version(self.album_type)}"
+      end
+
       def etag
         current_versions.etag(self.album_type)
       end

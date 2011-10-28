@@ -1,9 +1,10 @@
+
+
 module OrderNotifier
   extend ActiveSupport::Concern
 
   included do
     helper "spree/base"
-    helper :tracking
   end
 
   module InstanceMethods
@@ -21,7 +22,7 @@ module OrderNotifier
         end
       end
 
-      @order_status_link = token_order_url(@order, @order.token)
+      @order_status_url = token_order_url(@order, @order.token)
       create_message(  __method__, template_id, @recipient, (@user ? { :user_id => @user.id } : nil ) )
     end
 
@@ -46,6 +47,10 @@ module OrderNotifier
       else
         @recipient = @order.email
       end
+      @order_status_url = token_order_url(@order, @order.token)
+      @tracking_number  = @shipment.tracking_number
+      @tracking_carrier = @shipment.tracking_carrier
+      @tracking_url     = tracking_url( @shipment.tracking )
       create_message(  __method__, template_id, @recipient, (@user ? { :user_id => @user.id } : nil ) )
     end
 
@@ -55,11 +60,13 @@ module OrderNotifier
       @order = order
       if Rails.env.photos_production?
         full_subject = "[Store] Order #{@order.number} #{subject}"
+        to = "help@zangzing.com"
       else
         full_subject = "[Store #{Rails.env}]  Order #{@order.number} #{subject}"
+        to = "help@bucket.zangzing.com"
       end
       #create message
-      mail( :to       => "help@zangzing.com",
+      mail( :to       => to,
             :from     => "ZangZing Store <store@zangzing.com>",
             :subject  => full_subject )
 

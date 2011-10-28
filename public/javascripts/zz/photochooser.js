@@ -895,20 +895,14 @@ zz.photochooser = {
 
         reload_tray: function() {
             var self = this;
-            $.ajax({
-                dataType: 'json',
-                url: zz.routes.path_prefix + '/albums/' + self.options.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
-                success: function(photos) {
+            zz.routes.photos.get_album_photos_json(self.options.album_id, 0, function(photos){
+                self.tray_photos = _.filter(photos, function(photo) {
+                     return zz.session.current_user_id == photo.user_id; //only show photos uploaded by this user
+                 });
 
-                    self.tray_photos = _.filter(photos, function(photo) {
-                        return zz.session.current_user_id == photo.user_id; //only show photos uploaded by this user
-                    });
-
-                    self.tray_widget.setPhotos(self.map_photos(self.tray_photos));
-                    self.updateCheckmarks();
-                }
-
-            });
+                 self.tray_widget.setPhotos(self.map_photos(self.tray_photos));
+                 self.updateCheckmarks();
+             });
         },
 
         add_photo_to_album: function(add_url, element) {

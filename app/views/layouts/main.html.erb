@@ -24,6 +24,7 @@
     </script>
     <% end %>
 
+    <%= include_javascripts :css %>
     <%= include_stylesheets :common %>
 
 <% if Rails.env.development? && browser.ie? %>
@@ -96,7 +97,7 @@
         <div id='right-drawer'>
             <div class='header'>
               <div class='title'></div>
-              <a class="gray-back-button"><span>Change</span></a>
+              <a class="gray-back-button"><span>Back</span></a>
               <div class='close-button'></div>
             </div>
             <div class='content'></div>
@@ -128,8 +129,6 @@
 
 
 
-    <%   # Pull in generated javascript for the page -%>
-    <%= yield :page_javascript %>
 
 
 
@@ -148,7 +147,7 @@
 
 <%  end -%>
 
-      zz.session.cart_item_count = <%= current_order ? current_order.line_items.count : 0 %>
+      zz.session.cart_item_count = <%= current_order ? current_order.cart_count : 0 %>
 
       zz.page = zz.page || {};
       zz.page.rails_controller_name = '<%= controller.controller_name %>';
@@ -218,5 +217,10 @@
       });
 
     </script>
+
+    <%   # Pull in generated javascript for the page -%>
+    <%= yield :page_javascript %>
+
+
   </body>
 </html>

@@ -7,8 +7,8 @@ html{
 }
 
 #logo{
-    width: 140px;
-    margin: 3px 0 0 0;
+    width: 123px;
+    margin: 6px 0;
 }
 #logo_secure_lock{
    padding: 5px 0 0 30px;
@@ -20,10 +20,10 @@ html{
 }
 
 #page_title{
-    font-size: 18px;
+    font-size: 19px;
     font-weight: 500;
     margin-top: 20px;
-    color: black;
+    color: #333333;
     text-shadow: 1px 1px 1px white;
 }
 
@@ -48,18 +48,19 @@ html{
 .checkout-content{
     background-color: white;
     border: 1px solid #CCCCCC;
+    border-radius:         10px;
+    -moz-border-radius:    10px;
+    -webkit-border-radius: 10px;
+    overflow: hidden;
 }
 .checkout-next-button{
-    margin: 10px 0 0 0;
+    margin: 18px 0 0 0;
     float: right;
-    text-align:right;
-    min-width: 150px;
-    font-weight: 500;
-    text-shadow: 1px 1px 1px #333;
+    min-width: 130px;
 }
 
 .checkout-back-button{
-    margin: 10px 0 0 0;
+    margin: 18px 0 0 0;
     float: left;
     text-align:left;
 }
@@ -76,8 +77,6 @@ html{
     color: gray !important;
 }
 
-
-
 .checkout-summary{
     padding:  15px;
     background-color: #CCFFCC;
@@ -86,7 +85,6 @@ html{
 .grey-border{
     border: 2px solid #CCCCCC;
 }
-
 .address_label{
     color:#404040;
     font-weight: 700;
@@ -103,20 +101,35 @@ html{
     background: url('/images/store/progress/black_bullet.png') scroll no-repeat 0 0;
 }
 
-.progress-steps td.current{
-    font-weight: 600;
-    background: url('/images/store/progress/yellow_bullet.png') scroll no-repeat 0 0;
-    color: black;
-}
-
 .progress-steps td div.state{
     position: relative;
     height: 50px;
+}
 
+.progress-steps td div.state div.state_name{
+    position: absolute;
+    text-align: center;
+    width: 80px;
+    top: 38px;
+    left: -22px;
+    font-weight: normal;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #666
+}
+
+.progress-steps td.current{
+    background: url('/images/store/progress/yellow_bullet.png') scroll no-repeat 0 0;
+}
+
+.progress-steps td.current div.state div.state_name{
+    font-weight: 700;
+    color: black;
 }
 
 .progress-steps td.current div.state div.state_index{
     top: 9px;
+    left: 13px;
     font-weight: 600;
 }
 
@@ -129,29 +142,17 @@ html{
     background: url('/images/store/progress/black_bullet.png') scroll no-repeat 0 0;
     cursor: pointer;
 }
-.progress-steps td.completed div.state div.state_name{
-    font-weight: 600;
-}
-
 
 .progress-steps td div.state div.state_index{
     position:absolute;
     color: white;
     font-weight: 400;
     top: 9px;
-    left: 13px;
+    left: 14px;
 }
-
 .ua-chrome .progress-steps td div.state div.state_index{
     top: 10px;
-}
-
-.progress-steps td div.state div.state_name{
-    position: absolute;
-    text-align: center;
-    width: 54px;
-    top: 38px;
-    left: -10px;
+    left:13px;
 }
 
 .progress-steps td div.state div.state_name a{
@@ -562,7 +563,48 @@ form p.field#submit_button{
 #cart #subtotal{
     background-color: #EEEEEE;
     text-shadow: 1px 1px 1px white;
+    -webkit-border-bottom-right-radius: 10px;
+    -webkit-border-bottom-left-radius: 10px;
+    -moz-border-radius-bottomright: 10px;
+    -moz-border-radius-bottomleft: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
 }
-#cart #subtotal .gray-button{
-    min-width: 120px;
+
+/*------------------------ order status -------------------*/
+#order #cclogo img{
+    vertical-align: middle;
+}
+
+#order #total{
+    background-color: #EEEEEE;
+    border-top: solid 2px #dddddd;
+    text-shadow: 1px 1px 1px white;
+}
+div#order_items,
+#order_items table.index{
+    -webkit-border-bottom-right-radius: 10px;
+    -webkit-border-bottom-left-radius: 10px;
+    -moz-border-radius-bottomright: 10px;
+    -moz-border-radius-bottomleft: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    overflow: hidden;
+}
+
+
+#order #total .variant_description{
+    color: #404040;
+}
+
+#order #tracking{
+    float: right;
+    margin-right: 50px;
+    min-width: 200px;
+}
+
+a.change,
+a.delete,
+a.details {
+    color: #336699;
 }

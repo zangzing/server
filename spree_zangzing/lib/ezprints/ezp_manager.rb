@@ -67,6 +67,71 @@ module EZPrints
       reference.to_s
     end
 
+    # these are used because EZPrints notification is tied to
+    # a single URL and we would like to be able to receive order
+    # notifications in various environments so we prepend
+    # a single char that represents our environment.  That way
+    # when a notification arrives it can be routed to the proper
+    # servers.  Essentially once in production EZPrints will
+    # always point at production and from there we will decide
+    # where to go or if it should be handle by the current environment
+    def prefix_to_host(prefix)
+      @@order_routes = {
+          'D' => "development.photos.zangzing.com",
+          'S' => "staging.photos.zangzing.com",
+          'P' => "www.zangzing.com"
+      }
+      host = @@order_routes[prefix]
+    end
+
+    # return the order prefix based on our environment
+    def env_to_prefix
+      @@env_to_prefix = {
+          'development'       => 'D',
+          'photos_staging'    => 'S',
+          'photos_production' => 'P'
+      }
+      @@my_prefix ||= @@env_to_prefix[Rails.env]
+    end
+
+    # returns the host that we should redirect to if not
+    # for us
+    # if it's for us we return nil
+    def should_redirect_notification_to(order_number)
+      return nil if order_number.blank?
+
+      prefix = order_number[0..0] # grab first char
+      return nil if prefix == env_to_prefix
+
+      prefix_to_host(prefix)
+    end
+
+    #
+    # Fetch the marketing insert photo id.  We look for
+    # the specified user, and then for an album with
+    # the specified name.  When that album is found
+    # we randomly choose one of the photos contained
+    # within it.  If the photo is not found we return
+    # a nil which indicates no marketing insert line_item
+    # should be created.
+    #
+    def marketing_insert(user_name = 'zangzing', album_name = 'EZPrint Inserts')
+      user = User.find(user_name) rescue nil
+      return nil if user.nil?
+
+      album = user.albums.find_by_name(album_name) rescue nil
+      return nil if album.nil?
+
+      # find all ready photos
+      photos = Photo.where(:user_id => user.id, :album_id => album.id, :state => 'ready').all
+      photos_length = photos.nil? ? 0 : photos.length
+      return nil if photos_length == 0
+
+      picked_photo = photos[rand(photos_length)]
+
+      return picked_photo.id
+    end
+
     private
     # perform the request up to the retry_limit if we get an error
     def submit_http_request_with_retry(url, data, options, redirect_limit = 5, retry_limit = 3)
@@ -115,6 +180,7 @@ module EZPrints
     end
 
   end
+
 
   class EZError < StandardError
   end

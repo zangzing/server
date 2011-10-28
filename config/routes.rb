@@ -205,6 +205,7 @@ Server::Application.routes.draw do
       match '/flickr/folders/:set_id/photos/:photo_id/:action' => 'flickr_photos#action', :as => :flickr_photo_action
       match '/flickr/folders.:format' => 'flickr_folders#index', :as => :flickr_folders
       match '/flickr/folders/:set_id/:action.:format' => 'flickr_folders#index', :as => :flickr_folder_action
+      match '/flickr/folders/import_all.:format' => 'flickr_folders#import_all', :as => :flickr_import_all
 
       #kodak
       match '/kodak/sessions/new' => 'kodak_sessions#new', :as => :new_kodak_session
@@ -214,6 +215,7 @@ Server::Application.routes.draw do
       match '/kodak/folders/:kodak_album_id/photos/:photo_id/:action' => 'kodak_photos#index', :as => :kodak_photo_action
       match '/kodak/folders.:format' => 'kodak_folders#index', :as => :kodak_folders
       match '/kodak/folders/:kodak_album_id/:action.:format' => 'kodak_folders#index', :as => :kodak_folder_action
+      match '/kodak/folders/import_all.:format' => 'kodak_folders#import_all', :as => :kodak_import_all
 
       #facebook
       match '/facebook/sessions/new' => 'facebook_sessions#new', :as => :new_facebook_session
@@ -225,6 +227,7 @@ Server::Application.routes.draw do
       match '/facebook/folders/:fb_album_id/:action.:format' => 'facebook_folders#index', :as => :facebook_folder_action
 #      match '/facebook/posts.:format' => 'facebook_posts#index', :as => :facebook_posts
 #      match '/facebook/posts/create' => 'facebook_posts#create', :as => :create_facebook_post
+      match '/facebook/folders/import_all.:format' => 'facebook_folders#import_all', :as => :facebook_import_all
 
       #smugmug
       match '/smugmug/sessions/new' => 'smugmug_sessions#new', :as => :new_smugmug_session
@@ -234,6 +237,7 @@ Server::Application.routes.draw do
       match '/smugmug/folders/:sm_album_id/photos/:photo_id/:action' => 'smugmug_photos#index', :as => :smugmug_photo_action
       match '/smugmug/folders.:format' => 'smugmug_folders#index', :as => :smugmug_folders
       match '/smugmug/folders/:sm_album_id/:action.:format' => 'smugmug_folders#index', :as => :smugmug_folder_action
+      match '/smugmug/folders/import_all.:format' => 'smugmug_folders#import_all', :as => :smugmug_import_all
 
       #shutterfly
       match '/shutterfly/sessions/new' => 'shutterfly_sessions#new', :as => :new_shutterfly_session
@@ -243,6 +247,7 @@ Server::Application.routes.draw do
       match '/shutterfly/folders/:sf_album_id/photos/:photo_id/:action' => 'shutterfly_photos#index', :as => :shutterfly_photo_action
       match '/shutterfly/folders.:format' => 'shutterfly_folders#index', :as => :shutterfly_folders
       match '/shutterfly/folders/:sf_album_id/:action.:format' => 'shutterfly_folders#index', :as => :shutterfly_folder_action
+      match '/shutterfly/folders/import_all.:format' => 'shutterfly_folders#import_all', :as => :shutterfly_import_all
 
       #instagram
       match '/instagram/sessions/new' => 'instagram_sessions#new', :as => :new_instagram_session
@@ -252,6 +257,7 @@ Server::Application.routes.draw do
       match '/instagram/folders/:target/photos/:photo_id/:action' => 'instagram_photos#index', :as => :instagram_photo_action
       match '/instagram/folders.:format' => 'instagram_folders#index', :as => :instagram_folders
       match '/instagram/folders/:target/:action.:format' => 'instagram_folders#index', :as => :instagram_folder_action
+      match '/instagram/folders/import_all.:format' => 'instagram_folders#import_all', :as => :instagram_import_all
 
       #photobucket
       match '/photobucket/sessions/new' => 'photobucket_sessions#new', :as => :new_photobucket_session
@@ -259,6 +265,7 @@ Server::Application.routes.draw do
       match '/photobucket/sessions/destroy' => 'photobucket_sessions#destroy', :as => :destroy_photobucket_session
       match '/photobucket/folders' => 'photobucket_folders#index', :as => :photobucket_folders
       match '/photobucket/folders/:action' => 'photobucket_folders', :as => :photobucket
+      match '/photobucket/folders/import_all.:format' => 'photobucket_folders#import_all', :as => :photobucket_import_all
 
       #dropbox
       match '/dropbox/sessions/new' => 'dropbox_sessions#new', :as => :new_dropbox_session
@@ -286,6 +293,7 @@ Server::Application.routes.draw do
       match '/picasa_web/folders/:picasa_album_id/photos/:photo_id/:action' => 'picasa_photos#index', :as => :picasa_photo_action
       match '/picasa_web/folders.:format' => 'picasa_folders#index', :as => :picasa_folders
       match '/picasa_web/folders/:picasa_album_id/:action.:format' => 'picasa_folders#index', :as => :picasa_folder_action
+      match '/picasa_web/folders/import_all.:format' => 'picasa_folders#import_all', :as => :picasa_import_all
 
       #local contacts
       match '/local/contacts/import' => 'local_contacts#import', :as => :local_contacts
@@ -381,26 +389,26 @@ Server::Application.routes.draw do
   }
 
   # ====================================================================================================
-  # ============================================= MOBILE_API  ==========================================
+  # ============================================= ZZ_API  ==========================================
   # ====================================================================================================
-  scope  '/mobile', :defaults => { :format => 'json' } do
-    post  '/login'                 => 'user_sessions#mobile_create',    :as => :mobile_login
-    match '/logout'                => 'user_sessions#mobile_destroy',   :as => :mobile_logout
+  scope  '/zz_api', :defaults => { :format => 'json' } do
+    post  '/login'                 => 'user_sessions#zz_api_create',    :as => :zz_api_login
+    match '/logout'                => 'user_sessions#zz_api_destroy',   :as => :zz_api_logout
 
     #albums
-    get    '/users/:user_id/albums' => 'albums#mobile_albums',                  :as => :mobile_albums
-    get    '/users/:user_id/my_albums_json'                 => 'albums#mobile_my_albums_json',                 :as => :mobile_my_albums_json
-    get    '/users/:user_id/my_albums_public_json'          => 'albums#mobile_my_albums_public_json',          :as => :mobile_my_albums_public_json
-    get    '/users/:user_id/liked_albums_json'              => 'albums#mobile_liked_albums_json',              :as => :mobile_liked_albums_json
-    get    '/users/:user_id/liked_albums_public_json'       => 'albums#mobile_liked_albums_public_json',       :as => :mobile_liked_albums_public_json
-    get    '/users/:user_id/liked_users_public_albums_json' => 'albums#mobile_liked_users_public_albums_json', :as => :mobile_liked_users_public_albums_json
-    get    '/users/:user_id/invited_albums_json'            => 'albums#mobile_invited_albums_json',            :as => :mobile_invited_albums_json
+    get    '/users/:user_id/albums' => 'albums#zz_api_albums',                  :as => :zz_api_albums
+    get    '/users/:user_id/my_albums_json'                 => 'albums#zz_api_my_albums_json',                 :as => :zz_api_my_albums_json
+    get    '/users/:user_id/my_albums_public_json'          => 'albums#zz_api_my_albums_public_json',          :as => :zz_api_my_albums_public_json
+    get    '/users/:user_id/liked_albums_json'              => 'albums#zz_api_liked_albums_json',              :as => :zz_api_liked_albums_json
+    get    '/users/:user_id/liked_albums_public_json'       => 'albums#zz_api_liked_albums_public_json',       :as => :zz_api_liked_albums_public_json
+    get    '/users/:user_id/liked_users_public_albums_json' => 'albums#zz_api_liked_users_public_albums_json', :as => :zz_api_liked_users_public_albums_json
+    get    '/users/:user_id/invited_albums_json'            => 'albums#zz_api_invited_albums_json',            :as => :zz_api_invited_albums_json
 
     #photos
-    get    '/albums/:album_id/photos_json'                  => 'photos#mobile_photos_json',                    :as => :mobile_album_photos_json
+    get    '/albums/:album_id/photos_json'                  => 'photos#zz_api_photos_json',                    :as => :zz_api_album_photos_json
 
     #users
-    get    '/users/:user_id/info' => 'users#mobile_user_info',                  :as => :mobile_user_info
+    get    '/users/:user_id/info' => 'users#zz_api_user_info',                  :as => :zz_api_user_info
   end
 
 

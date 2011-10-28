@@ -99,6 +99,7 @@
     padding: 1px;
     background-color: #e6e6e6;
     border: 1px #f4f4f4 solid;
+    border-right: 0px #f4f4f4 solid;
 }
 
 
@@ -170,6 +171,12 @@
     margin: 0px;
 }
 
+.ua-ie .photo-image{
+    border: #fff solid 5px;
+}
+
+
+
 /*.photo-undeveloped{*/
     /*border: #fff solid 5px;*/
     /*margin: 0px;*/
@@ -230,11 +237,48 @@
     bottom:0px;
 }
 
-.photo-border:hover .photo-add-button{
+.photo-border .photo-add-button .scrim{
+    position:absolute;
+    top:0px;
+    left:0px;
+    right:0px;
+    bottom:0px;
+    display:none;
+}
+
+
+.photo-border .photo-add-button .icon{
+    position:absolute;
+    top:0px;
+    left:0px;
+    right:0px;
+    bottom:0px;
+    display:none;
+}
+
+.photo-border:hover .photo-add-button .scrim, .photo-border .photo-add-button.checked .scrim{
+    background-color: #fff;
+    opacity: 0.5;
+    filter: alpha(opacity = 50); /* for ie */
+    display: block;
+}
+
+.photo-border:hover .photo-add-button .icon{
     background-image:url('/images/photo/btn-add-photo-small.png');
     background-repeat:no-repeat;
     background-position:center center;
+    display:block;
 }
+
+
+.photo-border .photo-add-button.checked .icon{
+    background-image:url('/images/photo/photo-added-small.png');
+    background-repeat:no-repeat;
+    background-position:center center;
+    display:block;
+
+}
+
 
 .photo-border .magnify-button{
     position:absolute;
@@ -253,11 +297,6 @@
 
 
 
-.photo-border .photo-add-button.checked{
-    background-image:url('/images/photo/photo-added-small.png');
-    background-repeat:no-repeat;
-    background-position:center center;
-}
 
 
 
@@ -440,11 +479,13 @@
 /*  Buy Button
  *************************************/
 .photogrid-cell .photo-rollover-frame .button-bar .buy-button{
-    background: url(/images/album_toolbar_buy.png) no-repeat scroll 6px -18px transparent;
+    height:20px;
+    top:0px;
+    background: url(/images/album_toolbar_buy.png) no-repeat scroll 6px -19px transparent;
 }
 
 .photogrid-cell .photo-rollover-frame .button-bar .buy-button:hover{
-    background-position:  6px 0px;
+    background-position:  6px 1px;
 }
 
 

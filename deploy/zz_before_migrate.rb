@@ -98,6 +98,7 @@ end
 # so we run it each time.  The downside is that this is a fairly lengthy operation
 # We only need to run on one instance, so use the app_master or solo - they are mutually
 # exclusive
+#todo - turn this back on after first production deploy, or move to before_restart
 if [:solo, :app_master].include?(zz_role)
   run "bundle exec rails runner -e #{zz_rails_env} HomepageManager.deploy_homepage_current_tag_async"
 end

@@ -31,6 +31,9 @@
 run "sudo /usr/bin/zzscripts/photos_resque_stop_all && sudo /usr/bin/zzscripts/photos_resque_start_all"
 
 # clear out the nginx cache
-#run "find /media/ephemeral0/nginx/cache -type f -exec rm {} \\;"
+#run "find /media/ephemeral0/nginx/cache -type f | xargs /bin/rm -f"
+# if you want to manually clear the cache of all front end servers with photos_staging from the command line you can use for example:
+#zz multi_ssh -g photos_staging -r app,app_master 'find /media/ephemeral0/nginx/cache -type f | xargs /bin/rm -f'
+
 
 

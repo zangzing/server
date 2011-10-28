@@ -1,7 +1,7 @@
 Order.class_eval do
   include PrettyUrlHelper
 
-  attr_accessible :use_shipping_as_billing, :ship_address_id, :bill_address_id, :test_mode
+  attr_accessible :use_shipping_as_billing, :ship_address_id, :bill_address_id, :test_mode, :printset_quantity
 
   attr_accessor  :use_shipping_as_billing
 
@@ -17,6 +17,21 @@ Order.class_eval do
       self.token = ::SecureRandom::hex(8)
   end
 
+  # we override the base class order number generator so we
+  # can use the first character to tell us what environment
+  # was used.  Will be used to let us proxy the incoming
+  # EZPrints requests based on environment since they only
+  # have one mapping.
+  def generate_order_number
+    record = true
+    while record
+      random = "#{ez.env_to_prefix}#{Array.new(9){rand(9)}.join}"
+      record = self.class.find(:first, :conditions => ["number = ?", random])
+    end
+    self.number = random if self.number.blank?
+    self.number
+  end
+
   def clone_shipping_address
     if @use_shipping_as_billing == '1'
       if ship_address.new_record?
@@ -25,10 +40,10 @@ Order.class_eval do
         self.bill_address_id = ship_address_id
       end
     else
-      if use_shipping_as_billing?
+      #if use_shipping_as_billing?
         self.bill_address_id = nil
         self.bill_address    = nil
-      end
+      #end
     end
     true
   end
@@ -56,8 +71,9 @@ Order.class_eval do
     end
     before_transition :to => 'confirm',  :do => :create_tax_charge!
     before_transition :to => 'confirm',  :do => :assign_default_shipping_method
-    before_transition :to => 'complete', :do => :process_payments!
     after_transition  :to => 'confirm',  :do => :create_shipment!
+    
+    before_transition :to => 'complete', :do => :process_payments!
     after_transition  :to => 'complete', :do => :finalize!
 
     event :prepare do
@@ -86,18 +102,27 @@ Order.class_eval do
     event :cancel do
       transition :from => ['complete','preparing'], :to => 'canceled'
     end
-    after_transition :to => 'returned', :do => :send_order_cancel_notification
+    after_transition :to => 'canceled', :do => :send_cancel_email
     after_transition  :to => 'canceled', :do => :after_cancel
+    after_transition :to => 'canceled', :do => :cleanup_photos
+
+    event :ezp_cancel do
+      transition :from => ['submitted', 'accepted','processing'], :to => 'ezp_canceled'
+    end
+    after_transition :to => 'ezp_canceled', :do => :send_ezpcancel_email
+    after_transition  :to => 'ezp_canceled', :do => :after_cancel
+    after_transition :to => 'ezp_canceled', :do => :cleanup_photos
 
     event :error do
       transition :to => 'failed'
     end
-    after_transition :to => 'failed', :do => :send_order_failure_notification
+    after_transition :to => 'failed', :do => :send_failure_email
+    after_transition :to => 'failed', :do => :cleanup_photos
 
     event :return do
       transition :from => 'shipped', :to => 'returned'
     end
-    after_transition :to => 'returned', :do => :send_order_return_notification
+    after_transition :to => 'returned', :do => :send_return_email
 
     event :resume do
       transition :to => 'resumed', :from => 'canceled', :if => :allow_resume?
@@ -106,6 +131,7 @@ Order.class_eval do
     after_transition ['complete','preparing',
                       'submitted','accepted',
                       'processing','shipped',
+                      'canceled','ezp_canceled',
                       'failed','returned'] => any do  | order, transition|
       order.audit_trail( transition )
     end
@@ -200,14 +226,18 @@ Order.class_eval do
   # is already there then we just increment the quantity of the existing
   # line_item
   def contains?(variant,photo = nil)
-    line_items.detect{ |line_item|
-      if line_item.photo && photo
-        line_item.variant_id == variant.id &&
-            line_item.photo.id == photo.id
-      else
-        line_item.variant_id == variant.id
-      end
-    }
+    if variant.print?
+      nil
+    else
+      line_items.detect{ |line_item|
+        if line_item.photo && photo
+          line_item.variant_id == variant.id &&
+              line_item.photo.id == photo.id
+        else
+          line_item.variant_id == variant.id
+        end
+      }
+    end
   end
 
   def create_user
@@ -261,8 +291,8 @@ Order.class_eval do
     # are committed to the db. So instead of calling prepare_for_submit as a
     # before_transition action, we have to call it here and then transition
     begin
-      prepare_for_submit
       prepare
+      prepare_for_submit
     rescue Exception => e
       self.ezp_error_message = "prepare_for_submit: #{e.message}"
       save
@@ -287,20 +317,24 @@ Order.class_eval do
   end
 
   #used to create a ZendDesk ticket for customer support for a failed order
-  def send_order_failure_notification
+  def send_failure_email
     Notifier.order_support_request( self, " Had an ERROR and needs attention").deliver
   end
 
   #used to create a ZendDesk ticket for customer support for a returned order
-  def send_order_return_notification
+  def send_return_email
     Notifier.order_support_request( self, " Was just RETURNED by the user and needs attention").deliver
   end
 
   #used to create a ZendDesk ticket for customer support for a canceled order
-  def send_order_cancel_notification
-    Notifier.order_support_request( self, " Was just CANCELED and may need attention").deliver
+  def send_cancel_email
+    Notifier.order_support_request( self, " Was just CANCELED by the customer and may need attention").deliver
   end
 
+  #used to create a ZendDesk ticket for customer support for a canceled order by EZP
+  def send_ezpcancel_email
+    Notifier.order_support_request( self, " Was just CANCELED BY ezPRINTS and may need attention").deliver
+  end
 
 
 
@@ -493,16 +527,15 @@ Order.class_eval do
   #
   def ezp_submit_order
     # the test_mode flag tells us if we should submit "real" orders (when false) to ezprints or simulate the order flow internally (when true)
-    ezp = EZPrints::EZPManager.new
     if self.test_mode
-      #todo kick off loopback generation of simulated events via resque jobs
-      self.ezp_reference_id = UUIDTools::UUID.random_create.to_s
+      # kick off loopback mode for order simulation - the EZPSimulator will
+      # call back to simulate the order notification flow as if it was coming from EZPrints
+      ZZ::Async::EZPSimulator.simulate_order(self)
     else
       # real order placement
-      ezp_reference_id = ezp.submit_order(self)
-      self.ezp_reference_id = ezp_reference_id
+      self.ezp_reference_id = ez.submit_order(self)
+      save!
     end
-    save!
   end
 
   def ezp_submit_order_failed
@@ -519,8 +552,14 @@ Order.class_eval do
 
   # no longer need the photos or album for the order so clean them up
   def cleanup_photos
-    album = Album.find_by_name(self.number)
-    album.destroy unless album.nil?
+    user = User.find(Order.ez_prints_user_id)
+    album = user.albums.find_by_name(self.number)
+    # this needs to run as a delayed job because Rails does not
+    # properly notify the full chain of dependent objects on after commit for delete
+    # so we don't get to clean up properly - the issue appears to be when
+    # destroy is called within a transaction, so we run it as a delayed
+    # job where it runs outside of a transaction
+    ZZ::Async::DelayedUtils.delayed_destroy_album(album) unless album.nil?
   end
 
   # ezp Shipping calculator integration
@@ -559,7 +598,7 @@ Order.class_eval do
 
     # make sure we only include line items that have not already been associated with a shipment
     filtered_line_item_ids = []
-    self.line_items.select do |line_item|
+    self.line_items.each do |line_item|
       filtered_line_item_ids << line_item.id if line_item.shipment_id.nil? && line_item_id_array.include?(line_item.id)
     end
     return if filtered_line_item_ids.blank?
@@ -626,6 +665,24 @@ Order.class_eval do
     end
 
   end
+
+  def printset_quantity=( qty_hash )
+    qty_hash.each_pair do | variant_id, qty|
+      line_items.find_all_by_variant_id( variant_id ).each do |li|
+        li.quantity = qty
+        li.save
+      end
+    end
+  end
+
+  def cart_count
+    line_items.prints.group_by_variant.count.length + line_items.not_prints.count.length
+  end
+
+
+  def billing_zipcode
+     bill_address.try(:zipcode)
+   end
 
 
   private

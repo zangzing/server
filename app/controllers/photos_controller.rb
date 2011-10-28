@@ -11,13 +11,13 @@ class PhotosController < ApplicationController
   before_filter :oauth_required,                  :only =>   [ :agent_create, :agent_index ]   #for agent
   # oauthenticate :strategies => :two_legged, :interactive => false, :only =>   [ :upload_fast ]
 
-  before_filter :require_album,                   :only =>   [ :agent_create, :index, :show, :movie, :mobile_photos_json, :photos_json, :photos_json_invalidate ]
+  before_filter :require_album,                   :only =>   [ :agent_create, :index, :show, :movie, :zz_api_photos_json, :photos_json, :photos_json_invalidate ]
   before_filter :require_photo,                   :only =>   [ :destroy, :update, :position, :async_edit, :async_rotate_left, :async_rotate_right, :download ]
 
   before_filter :require_album_admin_role,                :only =>   [ :update, :position ]
   before_filter :require_photo_owner_or_album_admin_role, :only =>   [ :destroy, :async_edit, :async_rotate_left, :async_rotate_right ]
   before_filter :require_album_contributor_role,          :only =>   [ :agent_create  ]
-  before_filter :require_album_viewer_role,               :only =>   [ :index, :show, :movie, :mobile_photos_json, :photos_json  ]
+  before_filter :require_album_viewer_role,               :only =>   [ :index, :show, :movie, :zz_api_photos_json, :photos_json  ]
 
 
   # Used by the agent to create photos duh?
@@ -48,6 +48,9 @@ start_time = Time.now
 
     (0...photo_count).each do |index|
       i_s = index.to_s
+      capture_date = Integer(capture_date_map[i_s]) rescue nil
+      capture_date = nil if capture_date == 0 # treat 0 as nil since no way to pass real NULL value using post
+      capture_date = (Time.at(max_safe_epoch_time(capture_date)) rescue nil) unless capture_date.nil?
       photo = Photo.new_for_batch(current_batch,  {
                                     :id                =>   current_id,
                                     :album_id          =>   album_id,
@@ -61,7 +64,7 @@ start_time = Time.now
                                     :rotate_to         =>   rotate_to,
                                     :caption           =>   safe_hash_default(caption_map, i_s, ""),
                                     :image_file_size   =>   file_size_map[i_s],
-                                    :capture_date      =>   Time.at( max_safe_epoch_time(safe_hash_default(capture_date_map, i_s, 0).to_i) )
+                                    :capture_date      =>   capture_date
                                     }
                                     )
       current_id += 1
@@ -244,16 +247,16 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
   def photos_loader
      gzip_compress = ZangZingConfig.config[:memcached_gzip]
      compressed = gzip_compress
-     if stale?(:etag => @album)
-
-      cache_version = @album.cache_version
-      cache_version = 0 if cache_version.nil?
+     ver = params[:ver]
+     no_cache = ver.nil? || ver == '0'
+     if stale?(:etag => @album) || no_cache
+      cache_version_key = @album.cache_version_key || 0
 
       comp_flag = gzip_compress ? "Z1" : "Z0"
       # change the vN parm below anytime you make a change
       # to the basic cache structure such as adding new
       # data to the returned info
-      cache_key = "Album.Photos.#{comp_flag}.v2.#{@album.id}.#{cache_version}"
+      cache_key = "Album.Photos.#{comp_flag}.#{@album.id}.#{cache_version_key}"
 
       logger.debug 'cache key: ' + cache_key
       json = Rails.cache.read(cache_key)
@@ -277,9 +280,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
         logger.debug 'using cached photos_json: ' + cache_key
       end
 
-      expires_in 1.year, :public => @album.public?
-      response.headers['Content-Encoding'] = "gzip" if compressed
-      render :json => json
+      render_cached_json(json, @album.public?, compressed)
     else
       logger.debug 'etag match, sending 304'
     end
@@ -289,8 +290,8 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
     photos_loader
   end
 
-  def mobile_photos_json
-    mobile_api_self_render do
+  def zz_api_photos_json
+    zz_api_self_render do
       photos_loader
     end
   end

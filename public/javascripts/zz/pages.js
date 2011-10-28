@@ -80,56 +80,51 @@ zz.pages.album_name_tab = {
                 }, 1200);
             });
 
-            //setup album cover picker
-            $.ajax({
-                dataType: 'json',
-                url: zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss
-                success: function(json) {
-                    var selectedIndex = -1;
-                    var currentId = $('#album_cover_photo').val();
-                    var photos = $.map(json, function(element, index) {
-                        var id = element.id;
+            zz.routes.photos.get_album_photos_json(zz.page.album_id, 0, function(json){
+                var selectedIndex = -1;
+                var currentId = $('#album_cover_photo').val();
+                var photos = $.map(json, function(element, index) {
+                    var id = element.id;
 
-                        if (id == currentId) {
-                            selectedIndex = index;
-                        }
-                        var src = element.thumb_url;
+                    if (id == currentId) {
+                        selectedIndex = index;
+                    }
+                    var src = element.thumb_url;
 
 
-                        src = zz.agent.checkAddCredentialsToUrl(src);
+                    src = zz.agent.checkAddCredentialsToUrl(src);
 
-                        return {id: id, src: src};
-                    });
+                    return {id: id, src: src};
+                });
 
-                    $('#album-cover-picker').zz_thumbtray({
-                        photos: photos,
+                $('#album-cover-picker').zz_thumbtray({
+                    photos: photos,
 //                        showSelection:true,
-                        selectedIndex: selectedIndex,
-                        onSelectPhoto: function(index, photo) {
-                            var photo_id = '';
-                            var photo_src = '/images/album-no-cover.png';
-                            if (index !== -1) {
-                                photo_id = photo.id;
-                                photo_src = photo.src;
+                    selectedIndex: selectedIndex,
+                    onSelectPhoto: function(index, photo) {
+                        var photo_id = '';
+                        var photo_src = '/images/album-no-cover.png';
+                        if (index !== -1) {
+                            photo_id = photo.id;
+                            photo_src = photo.src;
 
-                                $('#album_cover_img').css({
-                                    height: 100,
-                                    width: null
-                                });
-                            }
-                            else {
-                                $('#album_cover_img').css({
-                                    height: 100,
-                                    width: 150
-                                });
-                            }
-
-                            $('#album_cover_photo').val(photo_id);
-                            $('#album_cover_img').attr('src', photo_src);
-
+                            $('#album_cover_img').css({
+                                height: 100,
+                                width: null
+                            });
                         }
-                    });
-                }
+                        else {
+                            $('#album_cover_img').css({
+                                height: 100,
+                                width: 150
+                            });
+                        }
+
+                        $('#album_cover_photo').val(photo_id);
+                        $('#album_cover_img').attr('src', photo_src);
+
+                    }
+                });
             });
 
             callback();
@@ -157,100 +152,95 @@ zz.pages.edit_album_tab = {
     init: function(container, callback) {
         ZZAt.track('album.edit_tab.view');
 
-        $.ajax({
-            dataType: 'json',
-            url: zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/photos_json?' + (new Date()).getTime(),  //force browser cache miss,
-            success: function(json) {
-
-                for (var i = 0; i < json.length; i++) {
-                    var photo = json[i];
-                    photo.previewSrc = zz.agent.checkAddCredentialsToUrl(photo.stamp_url);
-                    photo.src = zz.agent.checkAddCredentialsToUrl(photo.thumb_url);
-                }
-
-                //add empty cell a the end so that we have a place
-                //to drop after the last photo
-                json.push({
-                    id: null,
-                    type: 'blank',
-                    caption: ''
-                });
-
-
-                var gridElement = $('<div class="photogrid"></div>');
-
-                $('#article').html(gridElement);
-                $('#article').css('overflow', 'hidden');
-                $('#article').css('top', '120px'); //make room for wizard tabs
-
-
-                var grid = gridElement.zz_photogrid({
-                    photos: json,
-                    allowDelete: true,
-                    cellWidth: 230,
-                    cellHeight: 230,
-
-                    onDelete: function(index, photo) {
-                        $.ajax({
-                            type: 'POST',
-                            dataType: 'json',
-                            data: {_method: 'delete'},
-                            url: zz.routes.path_prefix + '/photos/' + photo.id + '.json',
-                            error: function(error) {
-                            },
-                            success: function() {
-                                zz.agent.callAgent('/albums/' + zz.page.album_id + '/photos/' + photo.id + '/cancel_upload');
-                            }
-
-                        });
-                        return true;
-                    },
-                    allowEditCaption: true,
-                    onChangeCaption: function(index, photo, caption) {
-                        $.ajax({
-                            type: 'POST',
-                            dataType: 'json',
-                            url: zz.routes.path_prefix + '/photos/' + photo.id + '.json',
-                            data: {'photo[caption]': caption, _method: 'put'},
-                            error: function(error) {
-                            }
-
-                        });
-                        return true;
-
-                    },
-                    allowReorder: true,
-                    onChangeOrder: function(photo_id, before_id, after_id) {
-                        var data = {};
-
-
-                        if (before_id) {
-                            data.before_id = before_id;
-                        }
-
-                        if (after_id) {
-                            data.after_id = after_id;
-                        }
-
-                        data._method = 'put';
-
-                        $.ajax({
-                            type: 'POST',
-                            data: data,
-                            dataType: 'json',
-                            url: zz.routes.path_prefix + '/photos/' + photo_id + '/position',
-                            error: function(error) {
-                            }
-
-                        });
-                        return true;
-
-                    },
-                    showThumbscroller: false
-                }).data().zz_photogrid;
-
-                $('#article').show();
+        zz.routes.photos.get_album_photos_json(zz.page.album_id, 0, function(json){
+            for (var i = 0; i < json.length; i++) {
+                var photo = json[i];
+                photo.previewSrc = zz.agent.checkAddCredentialsToUrl(photo.stamp_url);
+                photo.src = zz.agent.checkAddCredentialsToUrl(photo.thumb_url);
             }
+
+            //add empty cell a the end so that we have a place
+            //to drop after the last photo
+            json.push({
+                id: null,
+                type: 'blank',
+                caption: ''
+            });
+
+
+            var gridElement = $('<div class="photogrid"></div>');
+
+            $('#article').html(gridElement);
+            $('#article').css('overflow', 'hidden');
+            $('#article').css('top', '120px'); //make room for wizard tabs
+
+
+            var grid = gridElement.zz_photogrid({
+                photos: json,
+                allowDelete: true,
+                cellWidth: 230,
+                cellHeight: 230,
+
+                onDelete: function(index, photo) {
+                    $.ajax({
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {_method: 'delete'},
+                        url: zz.routes.path_prefix + '/photos/' + photo.id + '.json',
+                        error: function(error) {
+                        },
+                        success: function() {
+                            zz.agent.callAgent('/albums/' + zz.page.album_id + '/photos/' + photo.id + '/cancel_upload');
+                        }
+
+                    });
+                    return true;
+                },
+                allowEditCaption: true,
+                onChangeCaption: function(index, photo, caption) {
+                    $.ajax({
+                        type: 'POST',
+                        dataType: 'json',
+                        url: zz.routes.path_prefix + '/photos/' + photo.id + '.json',
+                        data: {'photo[caption]': caption, _method: 'put'},
+                        error: function(error) {
+                        }
+
+                    });
+                    return true;
+
+                },
+                allowReorder: true,
+                onChangeOrder: function(photo_id, before_id, after_id) {
+                    var data = {};
+
+
+                    if (before_id) {
+                        data.before_id = before_id;
+                    }
+
+                    if (after_id) {
+                        data.after_id = after_id;
+                    }
+
+                    data._method = 'put';
+
+                    $.ajax({
+                        type: 'POST',
+                        data: data,
+                        dataType: 'json',
+                        url: zz.routes.path_prefix + '/photos/' + photo_id + '/position',
+                        error: function(error) {
+                        }
+
+                    });
+                    return true;
+
+                },
+                showThumbscroller: false
+            }).data().zz_photogrid;
+
+            $('#article').show();
         });
     },
 

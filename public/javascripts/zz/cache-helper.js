@@ -7,6 +7,12 @@ zz.cache_helper = {
             $.post(zz.routes.path_prefix + '/albums/' + album_id + '/photos_json_invalidate', {_method: 'put'});
 
             ZZAt.track('album.cache.corruption', {album_id: album_id, url: url || ''});
+            ZZAt.track('album.cache.corruption.ua', {ua: navigator.userAgent});
+
+            if(xhr.responseText.length < 1000){
+                ZZAt.track('album.cache.corruption.body', {body: encodeURIComponent(xhr.responseText)});
+            }
+
             return true;
         }
         else {
@@ -20,6 +26,10 @@ zz.cache_helper = {
             $.post(zz.routes.path_prefix + '/users/' + user_id + '/invalidate_cache', {_method: 'put'});
 
             ZZAt.track('homepage.cache.corruption', {user_id: user_id, url: url || ''});
+            ZZAt.track('homepage.cache.corruption.ua', {ua: navigator.userAgent});
+            if(xhr.responseText.length < 1000){
+                ZZAt.track('homepage.cache.corruption.body', {body: encodeURIComponent(xhr.responseText)});
+            }
             return true;
         }
         else {

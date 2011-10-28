@@ -15,6 +15,9 @@ Rails.application.routes.draw do
     resources :tax_categories
     resources :configurations, :only => :index
     resources :products do
+      collection do
+        get :table, :as => :products_table
+      end
       resources :product_properties
       resources :images do
         collection do
@@ -165,7 +168,6 @@ Rails.application.routes.draw do
 
     resources :orders do
       post :populate, :on => :collection
-      #post :add_photo,:on => :collection
       post :add_to_order,:on => :collection
       get  :thankyou, :on => :member
 
@@ -182,9 +184,10 @@ Rails.application.routes.draw do
     end
     match '/orders/:id/token/:token' => 'orders#show', :via => :get, :as => :token_order
 
-    match '/cart', :to => 'orders#edit', :via => :get, :as => :cart
-    match '/cart', :to => 'orders#update', :via => :put, :as => :update_cart
-    match '/cart/empty', :to => 'orders#empty', :via => :put, :as => :empty_cart
+    get '/cart', :to => 'orders#edit', :as => :cart
+    put '/cart', :to => 'orders#update', :as => :update_cart
+    put '/cart/checkout', :to => 'orders#checkout', :as => :checkout_cart
+    put '/cart/empty', :to => 'orders#empty',  :as => :empty_cart
 
     resources :shipments do
        member do

@@ -24,6 +24,8 @@ zz.drawers = {
 
     open_drawer: function(time, percent) {
 
+        zz.buy.hide_checkout_banner();
+
         zz.screen_height = $('#page-wrapper').height(); // measure the screen height
         // adjust for out top and bottom bar, the gradient padding and a margin
         zz.drawer_height = zz.screen_height - zz.drawers.SCREEN_GAP;
@@ -35,8 +37,8 @@ zz.drawers = {
         }
 
         // fade out the grid
-        $('#article').empty();
-
+        $('#article').empty().css({right:0}); //clear content and make it will width in case drawer was open
+        $('#right-drawer').remove();
 
         // pull out the drawer
         $('div#drawer').show().animate({ height: zz.drawer_height + 'px', top: '52px' }, time);

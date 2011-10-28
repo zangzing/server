@@ -5,15 +5,40 @@
    #     form_id:     the id of the form being used
 %>
 
-<% if order.user && order.user.creditcards.count > 0  %>
-    <div class="wallet clearfix">
-      Select a saved card or enter a new one
-      <% order.user.creditcards.each do |creditcard| %>
+<% if order.user%>
+    <%if order.payment || order.user.creditcards.count > 0  %>
+        <div class="wallet clearfix">
+    <%end%>
+    <% if order.user.creditcards.count > 0  %>
+        Select a saved card or enter a new one
+        <% order.user.creditcards.each do |creditcard| %>
+            <label>
+              <%if order.payment && order.payment.source && order.payment.source.id == creditcard.id %>
+                  <%= radio_button_tag 'order[creditcard_id]', creditcard.id , :checked => true %>
+              <% else%>
+                  <%= radio_button_tag 'order[creditcard_id]', creditcard.id %>
+              <%end%>
+              <%= render :partial => 'creditcard_oneliner', :locals => { :creditcard => creditcard } %>
+            </label>
+        <%end %>
+    <%end%>
+    <%if order.payment && !order.payment.changed? && order.payment.source.user_id.nil? %>
+        <label>
+          <%= radio_button_tag 'order[creditcard_id]', order.payment.source.id, :checked => true %>
+          <%= render :partial => 'creditcard_oneliner', :locals => { :creditcard => order.payment.source } %>
+        </label>
+    <%end%>
+    <%if order.payment || order.user.creditcards.count > 0  %>
+        </div>
+    <%end%>
+<%else%>
+    <%if order.payment && !order.payment.changed?%>
+        <div class="wallet clearfix">
           <label>
-            <%= radio_button_tag 'order[creditcard_id]', creditcard.id %>
-             <%= render :partial => 'creditcard_oneliner', :locals => { :creditcard => creditcard } %>
+            <%= radio_button_tag 'order[creditcard_id]', order.payment.source.id %>
+            <%= render :partial => 'creditcard_oneliner', :locals => { :creditcard => order.payment.source } %>
           </label>
-      <%end %>
+    <%end%>
     </div>
-<%end %>
+<%end%>
 

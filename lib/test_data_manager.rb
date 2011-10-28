@@ -15,6 +15,10 @@
 #
 # or you can use the following to run without the console from the command line
 #
+# if you want to export the current TEST database as seed data do this
+# bundle exec rails runner -e test TestDataManager.create_seed_data
+#
+# if you want to export the current DEVELOPMENT database as seed data do this
 # bundle exec rails runner -e development TestDataManager.create_seed_data
 #
 # The above will create a mysql dump file for the cache and database
@@ -27,7 +31,7 @@ class TestDataManager
   # prior to generating the dump file used by the
   # rspec tests.
   # The format should be: INITIALS-DATE-REV
-  VERSION = "GWS-2011-10-03-02"
+  VERSION = "MAA-2011-10-21"
 
   # do not change
   KEY_NAME = :test_data_ver
@@ -53,7 +57,7 @@ class TestDataManager
       SystemSetting[KEY_NAME] = VERSION
     end
     # make the seed files
-    `cd #{path_to_db_init} && ./make_seed`
+    `cd #{path_to_db_init} && ./make_seed_from_#{Rails.env}`
   end
 
   # load the seed data if we are out of date with

@@ -913,7 +913,7 @@ en:
   spree:
     date: Date
     time: Time
-  spree_gateway_error_flash_for_checkout: "There was a problem with your payment information. Please check your information and try again."
+  spree_gateway_error_flash_for_checkout: "There were problems with your payment information. Please correct them and try again"
   ssl_will_be_used_in_development_and_test_modes: "SSL will be used in development and test mode if necessary."
   ssl_will_be_used_in_production_mode: "SSL will be used in production mode"
   ssl_will_not_be_used_in_development_and_test_modes: "SSL will not be used in development and test mode if necessary."
@@ -1027,7 +1027,7 @@ en:
   email_needed: "We will use it for order confirmation and status."
   order_history: "Order History"
   shipped_to: "Shipped To"
-  select_state: "State or Province"
+  select_state: "State"
   shipping_contact: "Shipping Contact"
   billing_contact: "Billing Contact"
   expiration_date: "Expiration Date"
@@ -1058,3 +1058,7 @@ en:
   url: "Image URL"
   photo_id: "Photo ID"
   buy_more: "Buy More"
+  sets_of: "Sets Of"
+  tracking_info: "Tracking Information"
+  support: "Customer Support"
+  details: "details"

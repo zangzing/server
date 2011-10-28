@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml">
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+  <meta http-equiv="Content-Language" Content="en">
+  <meta charset="utf-8">
+  <meta name="copyright" content="Copyright 2011, ZangZing, LLC. All Rights Reserved." />
+  <meta name="DC.title" content="ZangZing" />
+  <meta name="title" content="ZangZing" />
+  <meta name="description" content="Group Photo Sharing" />
+</head>
+<body>
+
+<table class="index" id='listing_products'>
+  <tr>
+    <th>Product Id</th>
+    <th>Variant Id</th>
+    <th>Image Id</th>
+    <th>Product Name</th>
+    <th>Height</th>
+    <th>Width</th>
+    <th>Description</th>
+    <th>SKU</th>
+    <th>Price</th>
+    <th>Cost</th>
+  </tr>
+  <% @collection.each do |product| %>
+      <%product.variants.each do |variant| %>
+          <tr>
+            <td><%= product.id %></td>
+            <td><%= variant.id %></td>
+            <td><%= variant.images.first.id %></td>
+            <td><%= product.name %></td>
+            <td><%= variant.height %></td>
+            <td><%= variant.width %></td>
+            <td><%= variant.images.first.alt %></td>
+            <td><%= variant.sku %></td>
+            <td><%= variant.price %></td>
+            <td><%= variant.cost_price %></td>
+          </tr>
+      <% end %>
+  <%end%>
+</table>
+</body>
+</html>

@@ -219,9 +219,7 @@ zz.toolbars = {
         // buy button is managed in buy.js
 
         // comments button is managed in comments.js
-        if(zz.album.is_single_picture_view()){
-            zz.buy.toggle_visibility_with_buy_mode($('#footer #comments-button'));
-        }
+
 
         zz.toolbars._init_account_badge();
         zz.toolbars._init_like_button();
@@ -285,6 +283,7 @@ zz.toolbars = {
             document.location.href = zz.routes.edit_user_path(zz.session.current_user_name);
         });
         $('#acct-signout-btn').click(function() {
+            zz.local_storage.clear();
             window.location = zz.routes.path_prefix + '/signout';
         });
 

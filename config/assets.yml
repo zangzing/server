@@ -25,6 +25,8 @@ javascripts:
     - public/javascripts/zz/zza.js
     - public/javascripts/zz/routes.js
     - public/javascripts/zz/*.js
+  css:
+    - public/javascripts/css/*.js
   zz_oauthmanager:
     - public/javascripts/zz-oauthmanager/oauthmanager.js
   movie:
@@ -35,12 +37,12 @@ javascripts:
     - public/javascripts/store/jquery.infieldlabel.js
     - public/javascripts/jquery-lib/jquery.validate.js
     - public/javascripts/lib/spin.js
-    - public/javascripts/lib/cssua.js
     - public/javascripts/store/checkout.js
     - public/javascripts/lib/iphone-style-checkboxes.js
     - public/javascripts/store/bootstrap-modal.js
     - public/javascripts/store/bootstrap-twipsy.js
     - public/javascripts/store/bootstrap-popover.js
+    - public/javascripts/lib/zendesk.js
   less:
     - public/javascripts/store/less-1.1.3.js
 
@@ -82,10 +84,13 @@ stylesheets:
     - public/stylesheets/*.css
   store:
     - public/stylesheets/buttons.css
+    - public/stylesheets/dialog.css
     - public/stylesheets/store/checkout.css
     - public/stylesheets/store/bootstrap.css
     - public/stylesheets/iphone-style-checkboxes.css
     - public/stylesheets/photo.css
+    - public/stylesheets/picon.css
+    - public/stylesheets/zendesk.css
   store_admin:
     - public/stylesheets/store/admin/admin-reset.css
     - public/stylesheets/store/admin/grids.css

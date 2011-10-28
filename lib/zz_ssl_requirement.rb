@@ -28,7 +28,7 @@
 # bundler to import - jeremy
 #
 
-module SslRequirement
+module ZZSslRequirement
   def self.included(controller)
     controller.extend(ClassMethods)
     controller.before_filter(:ensure_proper_protocol)

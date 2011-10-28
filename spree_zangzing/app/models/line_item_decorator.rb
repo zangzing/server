@@ -1,5 +1,13 @@
+unless defined? LineItem::PRINTS_PRODUCT_ID
+  LineItem::PRINTS_PRODUCT_ID = 941187648  # Prints product id
+  LineItem::NO_FRAME_VALUE_ID = 28         # No Frame (for prints-frame-and-mate option_type )
+  LineItem::FRAMED_VALUE_ID   = 53         # Framed (for prints-finish option-type )
+ end
+
+
 LineItem.class_eval do
   attr_accessible :photo_id, :crop_instructions, :back_message, :print_photo
+
 
   belongs_to :photo
   belongs_to :print_photo, :class_name => "Photo"
@@ -13,11 +21,34 @@ LineItem.class_eval do
   scope :pending, where("line_items.shipment_id IS NULL")
 
 
+  # Line items for prints that do not have a frame (checking the frame_matte== 'No Frame' option_type value)
+  scope :prints, joins(:variant)\
+              .joins("join option_values_variants on option_values_variants.variant_id = variants.id")\
+              .where("variants.product_id = ? AND option_values_variants.option_value_id = ?", LineItem::PRINTS_PRODUCT_ID, LineItem::NO_FRAME_VALUE_ID)\
+              .order('variants.price ASC')
+
+  # Line items for not prints or prints that have a frame (checking the prints_finish == framed option_type value)
+  scope :not_prints, joins(:variant)\
+              .joins("join option_values_variants on option_values_variants.variant_id = variants.id")\
+              .where("variants.product_id <> ? || (  variants.product_id = ? AND option_values_variants.option_value_id = ?)",LineItem::PRINTS_PRODUCT_ID,LineItem::PRINTS_PRODUCT_ID, LineItem::FRAMED_VALUE_ID)\
+              .group('line_items.id')\
+              .order('variants.price ASC')
+
+  scope :group_by_variant, joins(:variant).group('variants.id').order('variants.price ASC')
 
   def shipping_may_change
     order.shipping_may_change
   end
-  
+
+  # return nil if nil or empty, otherwise
+  # the passed value is returned
+  #
+  # simplifies assignments with multiple ORs
+  #
+  def nil_if_empty(value)
+    value.nil? || value.empty? ? nil : value
+  end
+
   def to_xml_ezpimage( options = {})
     return unless photo
     options[:indent] ||= 2
@@ -31,7 +62,7 @@ LineItem.class_eval do
       photo_url = placeholder[:url]
     else
       photo_id = print_photo.id
-      photo_title = back_message || print_photo.caption || ''
+      photo_title = nil_if_empty(back_message) || nil_if_empty(print_photo.caption) || 'www.zangzing.com'
       photo_url = print_photo.full_size_url
     end
     xml.uri( {:id  => photo_id,
@@ -66,4 +97,11 @@ LineItem.class_eval do
     false
   end
 
+  def option_values
+    OptionValue.in_line_item( self )
+  end
+
+  def print?
+    variant.print?
+  end
 end

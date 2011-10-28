@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# create the test dump files containing the seed data needed to run our tests
+# the model here is to prep the initial database state wanted with the development
+# database getting it to a state that has the seed data we need to run our tests
+# then creating a dump from the dev database which can be used prior to each
+# test run to put our local test database into a known state each time
+#
+# This isn't a perfect solution but it does let us test complex scenarios without
+# a lot of setup to get the database into a known state each time.  The downsides is that
+# it is more fragile since it needs to be kept up to date with changes to the underlying
+# database schema and also subject to merge issues.  Longer term a solution that incorporates the
+# selenium UI drivers to build the seed database would help since it would give us a reproducible
+# way to keep the data consistent.
+#
+# The plus side to using this approach is that it tests more "real" code and can handle more
+# complex interactions and scenarios.
+#
+mysqldump -hlocalhost -uroot server_test > server_test.seed
+mysqldump -hlocalhost -uroot cache_test > cache_test.seed

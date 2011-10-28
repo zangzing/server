@@ -27,10 +27,19 @@ zz.store.checkout = {};
             return this.optional(element) || re.test(value);
         }, 'Please check your input.'  );
 
+    //used to send focus to first errored-out field
+    var invalid_handler = function(form, validator) {
+        var errors = validator.numberOfInvalids();
+        if (errors) {
+            validator.errorList[0].element.focus(); //Set Focus
+        }
+    }
+
+
     //used to place and display form errors as you tab around
     var error_placement_handler = function(error, element) {
-        if( typeof( $('element').data('popover') ) == 'undefined' ){
-            $(element).data('error', $(error).text() );
+        $(element).data('error', $(error).text() );
+         if( typeof( $('element').data('popover') ) == 'undefined' ){
             $(element).popover({
                 trigger: 'focus',
                 placement: 'above',
@@ -39,13 +48,25 @@ zz.store.checkout = {};
                 content: function(){ return $(element).data('error'); }
             });
         } else {
-            $(element).data('error', $(error).text() );
-            $(element).popover('setContent');
-            $(element).popover('enable');
+            $(element).popover('enable')
+                 .popover('hide')
+                .popover('setContent')
+                .popover('show');
         }
     };
-    var remove_popover = function( element, errorClass, validClass ){
-        $(element).removeClass(errorClass).popover('disable');
+    var highlighter = function(element, errorClass){
+         $(element).addClass( errorClass );
+         $(element).popover('setContent')
+             .popover('enable');
+
+    };
+    var unhighlighter = function( element, errorClass, validClass ){
+        $(element).removeClass(errorClass);//.popover('disable');
+    };
+    var success_handler = function( label ){
+                var input_id = $(label).attr('for');
+                $('#'+input_id).popover('hide').
+                    popover('disable');
     };
 //======================= ship_address =========================
     zz.store.checkout.init_ship_address_screen = function(){
@@ -76,11 +97,14 @@ zz.store.checkout = {};
             submitHandler: function(form){
                 form.submit();
             },
-            onkeyup: false,
             errorElement: "div",
             errorClass: "errormsg",
+            invalidHandler: invalid_handler,
+            focusCleanup: true,
             errorPlacement: error_placement_handler,
-            unhighlight: remove_popover
+            success: success_handler,
+            highlight: highlighter,
+            unhighlight: unhighlighter
         });
     }
 
@@ -123,16 +147,16 @@ zz.store.checkout = {};
         $("#card_code").keypress(clear_wallet_radio);
 
         
-        $('#checkout_form_payment').validate({
+        zz.store.checkout.validator = $('#checkout_form_payment').validate({
             //debug: true,
             rules: {
-                'payment_source[1034433118][number]':{
+                'card_number':{
                     required: function(element){
                         return $('input[name*=creditcard_id]:checked').length <=0;
                     },
                     creditcard: true
                 },
-                'payment_source[1034433118][verification_value]':{
+                'card_code':{
                     required: function(element){
                         return $('input[name*=creditcard_id]:checked').length <=0;
                     },
@@ -158,7 +182,7 @@ zz.store.checkout = {};
                     required: 'We promise we won&rsquo;t spam you',
                     email: 'Valid email, pretty pleahse :)'
                 },
-                'payment_source[1034433118][verification_value]':{
+                'card_code':{
                     required:'Need help?, click the question mark',
                     number: 'Need help?, click the question mark',
                     minlength: 'Need help?, click the question mark'
@@ -169,13 +193,28 @@ zz.store.checkout = {};
                  }
             },
             submitHandler: function(form){
-                form.submit();
+                if ($('#order_bill_address_attributes_firstname').length > 0){
+                    $('#cc_firstname').val($('#order_bill_address_attributes_firstname').val());
+                    $('#cc_lastname').val($('#order_bill_address_attributes_lastname').val());
+                    $('#cc_zipcode').val($('#order_bill_address_attributes_zipcode').val());
+                }
+                $('#cc_number').val($('#card_number').val());
+                $('#cc_code').val($('#card_code').val());
+
+                zz.dialog.show_progress_dialog("Verifying payment information...");
+                // need to defer the submit otherwise progress dialog spinner doesn't load
+                _.defer(function(){
+                    form.submit();
+                });
             },
-            onkeyup: false,
             errorElement: "div",
             errorClass: "errormsg",
+            invalidHandler: invalid_handler,
+            focusCleanup: true,
             errorPlacement: error_placement_handler,
-            unhighlight: remove_popover
+            success: success_handler,
+            highlight: highlighter,
+            unhighlight: unhighlighter
         });
     };
     //======================= thankyou =========================
@@ -220,12 +259,17 @@ zz.store.checkout = {};
             submitHandler: function(form){
                 form.submit();
             },
-            focusInvalid: true,
-            errorElement: "div",
+             errorElement: "div",
             errorClass: "errormsg",
+            invalidHandler: invalid_handler,
+            focusCleanup: true,
             errorPlacement: error_placement_handler,
-            unhighlight: remove_popover
+            success: success_handler,
+            highlight: highlighter,
+            unhighlight: unhighlighter
         });
 
     };
+      //======================= thankyou =========================
+    zz.store.checkout.init_cart_screen = function(){};
 })();

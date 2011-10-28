@@ -39,7 +39,7 @@ class Order < ActiveRecord::Base
   scope :between, lambda {|*dates| where("orders.created_at between ? and ?", dates.first.to_date, dates.last.to_date)}
   scope :by_customer, lambda {|customer| joins(:user).where("users.email =?", customer)}
   scope :by_state, lambda {|state| where("state = ?", state)}
-  scope :complete, where("orders.completed_at IS NOT NULL")
+  scope :complete, where("orders.completed_at IS NOT NULL").order("completed_at DESC")
   scope :incomplete, where("orders.completed_at IS NULL")
 
   make_permalink :field => :number
