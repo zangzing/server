@@ -59,7 +59,8 @@ javascripts:
     - public/javascripts/store/admin/zone.js
     - public/javascripts/store/admin/calculator.js
     - public/javascripts/store/admin/gateway.js
-    - public/javascripts/store/admin/lang/en.js
+    - public/javascripts/store/admin/lang/*.js
+    - public/javascripts/store/localization/*.js
     - public/javascripts/store/admin/datepicker.js
     - public/javascripts/store/admin/jquery.autocomplete.js
   store_admin_taxonomies:

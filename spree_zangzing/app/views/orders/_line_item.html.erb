@@ -15,7 +15,11 @@ change            = nil unless defined?(change)
           <% if item_form.present?  %>
               <div class="product_name"><%= variant.product.name %></div>
           <%else%>
-              <div class="product_name"> <%= pluralize  line_item.quantity, variant.product.name %></div>
+              <%if variant.product.name == 'Framed Prints'%>
+                <div class="product_name"> <%= pluralize  line_item.quantity, "Framed Print" %></div>
+              <%else %>
+                <div class="product_name"> <%= pluralize  line_item.quantity, variant.product.name %></div>
+              <%end%>
           <%end%>
           <div class="variant_description"><%= truncate(variant.custom_description, :length => 100, :omission => "...") %> </div>
           <% if item_form.present? %>

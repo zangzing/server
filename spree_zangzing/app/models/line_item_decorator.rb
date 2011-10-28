@@ -2,11 +2,14 @@ unless defined? LineItem::PRINTS_PRODUCT_ID
   LineItem::PRINTS_PRODUCT_ID = 941187648  # Prints product id
   LineItem::NO_FRAME_VALUE_ID = 28         # No Frame (for prints-frame-and-mate option_type )
   LineItem::FRAMED_VALUE_ID   = 53         # Framed (for prints-finish option-type )
- end
+  LineItem::MKTG_PRINT_VARIANT_ID  = 791384334
+  LineItem::MKTG_PRINT_USER_NAME   = 'zzmarketing'
+  LineItem::MKTG_PRINT_ALBUM_NAME  = 'Marketing Prints'
+end
 
 
 LineItem.class_eval do
-  attr_accessible :photo_id, :crop_instructions, :back_message, :print_photo
+  attr_accessible :photo_id, :crop_instructions, :back_message, :print_photo, :hidden
 
 
   belongs_to :photo
@@ -16,6 +19,7 @@ LineItem.class_eval do
 
   before_save :shipping_may_change, :if => :quantity_changed?
 
+ 
   scope :shipped, joins(:shipment).where("line_items.shipment_id IS NOT NULL AND line_items.shipment_id = shipments.id AND shipments.state = 'shipped'")
   scope :ready,   joins(:shipment).where("line_items.shipment_id IS NOT NULL AND line_items.shipment_id = shipments.id AND shipments.state = 'ready'")
   scope :pending, where("line_items.shipment_id IS NULL")
@@ -24,17 +28,20 @@ LineItem.class_eval do
   # Line items for prints that do not have a frame (checking the frame_matte== 'No Frame' option_type value)
   scope :prints, joins(:variant)\
               .joins("join option_values_variants on option_values_variants.variant_id = variants.id")\
-              .where("variants.product_id = ? AND option_values_variants.option_value_id = ?", LineItem::PRINTS_PRODUCT_ID, LineItem::NO_FRAME_VALUE_ID)\
-              .order('variants.price ASC')
+              .where("line_items.hidden = 0 AND variants.product_id = ? AND option_values_variants.option_value_id = ?", LineItem::PRINTS_PRODUCT_ID, LineItem::NO_FRAME_VALUE_ID)\
+              .order('line_items.created_at DESC')
+
 
   # Line items for not prints or prints that have a frame (checking the prints_finish == framed option_type value)
   scope :not_prints, joins(:variant)\
               .joins("join option_values_variants on option_values_variants.variant_id = variants.id")\
-              .where("variants.product_id <> ? || (  variants.product_id = ? AND option_values_variants.option_value_id = ?)",LineItem::PRINTS_PRODUCT_ID,LineItem::PRINTS_PRODUCT_ID, LineItem::FRAMED_VALUE_ID)\
-              .group('line_items.id')\
-              .order('variants.price ASC')
+              .where("line_items.hidden = 0 AND variants.product_id <> ? || (  variants.product_id = ? AND option_values_variants.option_value_id = ?)",LineItem::PRINTS_PRODUCT_ID,LineItem::PRINTS_PRODUCT_ID, LineItem::FRAMED_VALUE_ID)\
+              .group('line_items.id').order('line_items.created_at DESC')
 
-  scope :group_by_variant, joins(:variant).group('variants.id').order('variants.price ASC')
+
+  scope :group_by_variant, joins(:variant).group('variants.id').order('line_items.created_at DESC')
+
+  scope :visible_by_variant, lambda { |variant| where('line_items.variant_id = ? AND line_items.hidden = 0', variant.id).order('created_at DESC') }
 
   def shipping_may_change
     order.shipping_may_change
@@ -104,4 +111,18 @@ LineItem.class_eval do
   def print?
     variant.print?
   end
+
+  def self.for_mktg_print
+    variant = Variant.find( LineItem::MKTG_PRINT_VARIANT_ID )
+    user = User.find( LineItem::MKTG_PRINT_USER_NAME )
+    album = user.albums.find_by_name( LineItem::MKTG_PRINT_ALBUM_NAME )
+    li = LineItem.new()
+    li.quantity = 1
+    li.price    = 0.0
+    li.variant  = variant
+    li.photo    = album.cover
+    li.hidden   = true
+    li
+  end
+  
 end

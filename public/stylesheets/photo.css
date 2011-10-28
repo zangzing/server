@@ -96,10 +96,13 @@
 }
 
 .ua-ie .photo-border{
-    padding: 1px;
-    background-color: #e6e6e6;
-    border: 1px #f4f4f4 solid;
-    border-right: 0px #f4f4f4 solid;
+    /*padding: 1px;*/
+    /*background-color: #e6e6e6;*/
+    border-top: 1px #f4f4f4 solid;
+    border-left: 1px #f4f4f4 solid;
+    border-right: 1px #f4f4f4 solid;
+    border-bottom: none;
+    /*border-right: 0px #f4f4f4 solid;*/
 }
 
 

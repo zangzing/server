@@ -3,6 +3,7 @@
     width: 1335px;
     top:0px;
     bottom:0px;
+    color: #333;
 }
 
 
@@ -44,25 +45,26 @@
 }
 
 .buy-screens .select-product-screen .product .image{
-    position:absolute;
-    width:85px;
-    height:85px;
-    top:20px;
-    left:15px;
+    position: absolute;
+    width: 85px;
+    height: 85px;
+    top: 20px;
+    left: 13px;
 }
 
 .buy-screens .select-product-screen .product .name{
     position: absolute;
     left: 109px;
-    top: 18px;
+    top: 19px;
     font-weight: 500;
     font-size: 14px;
+
 }
 
 .buy-screens .select-product-screen .product .description{
     position: absolute;
-    left: 109px;
-    top: 39px;
+    left: 110px;
+    top: 37px;
     width: 230px;
     height: 50px;
     overflow: hidden;
@@ -77,11 +79,12 @@
     cursor: pointer;
     position: absolute;
     left: 110px;
-    top: 89px;
+    top: 84px;
 }
 
 .buy-screens .select-product-screen .product .learn-more:hover{
     text-decoration: underline;
+    cursor: pointer;
 }
 
 .buy-screens .select-product-screen .product .arrow{
@@ -665,3 +668,100 @@
     top: 200px;
     line-height: 24px;
 }
+
+
+.glamour-page{
+
+}
+
+.glamour-page .product-image{
+    position: absolute;
+    top: 30px;
+    left: 34px;
+}
+
+.glamour-page .product-image img{
+    width: 370px;
+    height: 375px;
+}
+
+.glamour-page .product-name{
+    position: absolute;
+    top: 30px;
+    left: 430px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.glamour-page .product-description{
+    position: absolute;
+    top: 80px;
+    left: 450px;
+    font-size: 16px;
+    text-align: left;
+    right: 30px;
+}
+
+.glamour-page .product-description li{
+    list-style: disc;
+    margin-bottom: 15px;
+    line-height: 25px;
+}
+
+.glamour-page .product-prices{
+    position:absolute;
+    bottom:0px;
+    left:0px;
+    right:0px;
+    height:120px;
+    text-align: center;
+    border-top:  1px solid #d5d5d5;
+    background-color: #f9f9fa;
+}
+
+.glamour-page .product-prices .title{
+    position:relative;
+    top:10px;
+    font-size:19px;
+    font-weight: bold;
+}
+
+
+.glamour-page .product-prices .column{
+    display: inline-block;
+    width: 110px;
+    position: relative;
+    top: 25px;
+    text-align: left;
+}
+
+.glamour-page .product-prices .column.middle{
+    margin-left:40px;
+    margin-right:40px;
+
+}
+
+
+.glamour-page .product-prices .column .option{
+    margin-bottom:5px;
+}
+
+.glamour-page .product-prices .column .option .name{
+    font-size:14px;
+    font-weight: bold;
+    width: 50px;
+    display: inline-block;
+}
+
+.glamour-page .product-prices .column .option .price{
+    font-size:14px;
+    margin-left: 4px;
+    width: 50px;
+    display: inline-block;
+}
+
+.glamour-page .loading{
+    position: relative;
+    top:100px;
+}
+
