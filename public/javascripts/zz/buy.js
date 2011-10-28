@@ -3,62 +3,6 @@ zz.buy = zz.buy || {};
 
 (function(){
 
-    var BETA_USERS = [
-        //jeremy
-        'hope',
-        'lauriehermann',
-        'jlh',
-        'jeremyhermann',
-
-        //joseph
-        'j',
-        'david',
-        'jamesrharker',
-        'ebothwell',
-        'jaymce',
-        'rosen',
-        'joseph',
-
-        //kathryn
-        'k',
-        'erika',
-        'sheripollock',
-        'tyler',
-        'jrwatts',
-        'kmcmaster',
-
-
-        //mauricio
-        'mauricio',
-        'ximena',
-        'eugetomelu',
-        'wythes',
-        'mm',
-        'castiron',
-
-        //richa
-        'sfmishras',
-        'rimish',
-        'sintak',
-        'richamisra',
-
-         //greg
-        'gseitz',
-        'lyogi',
-
-        //phil
-        'pbeisel',
-        'surfkayak',
-        'dgfoster',
-        'beiselpaul',
-
-        //user testing
-        'usertesting001',
-        'usertesting002',
-        'usertesting003'
-
-
-    ];
 
     var OPTION_FILTERS = [
 
@@ -638,10 +582,6 @@ zz.buy = zz.buy || {};
 
     zz.buy.activate_buy_mode = function(){
 
-        if(!is_beta_user()){
-            alert("This feature is still under construction");
-            return;
-        }
 
         zz.local_storage.set('zz.buy.current_screen', zz.local_storage.get('zz.buy.current_screen') || DRAWER_SCREENS.SELECT_PRODUCT);
         zz.local_storage.set('zz.buy.selected_photos', zz.local_storage.get('zz.buy.selected_photos') || []);
@@ -672,10 +612,6 @@ zz.buy = zz.buy || {};
 
 
     zz.buy.add_selected_photos = function(photos_json){
-        if(!is_beta_user()){
-            alert("This feature is still under construction");
-            return;
-        }
 
         //remove photos that are not ready or that are already added
         photos_json = _.filter(photos_json, function(photo){
@@ -700,11 +636,6 @@ zz.buy = zz.buy || {};
     };
 
     zz.buy.add_selected_photo = function(photo_json, element, callback){
-
-        if(!is_beta_user()){
-            alert("This feature is still under construction");
-            return;
-        }
 
         if(zz.buy.is_photo_selected(photo_json.id)){
             // don't allow selecting the same photo more than once
@@ -1390,11 +1321,6 @@ zz.buy = zz.buy || {};
         });
     }
 
-    function is_beta_user(){
-        return _.detect(BETA_USERS, function(name){
-            return (zz.session.current_user_name == name);
-        });
-    }
 
     function check_bad_photos(){
         var min_width = get_selected_variant().min_photo_width;
