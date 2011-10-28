@@ -40,14 +40,17 @@ module PhotoHelper
 
 
 
-
+  # Remove the protocol so the photo picks up
+  # whatever the protocol from the requesting page is.
+  # We also rejigger the s3 url to use s3.amazonaws.com which does have a
+  # ssl certificate
   def ssl_url( url )
     if url =~ /^https:.*/
       url
     else
       if url =~ /http:\/\/.+zz.s3.amazonaws.com.*$/
         url.match(/^http:\/\/(.*).s3.amazonaws.com(.*)$/)
-        "https://s3.amazonaws.com/#{$1}#{$2}"
+        "//s3.amazonaws.com/#{$1}#{$2}"
       else
         url.gsub(/^http:/,'https:')
       end

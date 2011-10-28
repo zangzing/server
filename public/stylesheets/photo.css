@@ -96,10 +96,13 @@
 }
 
 .ua-ie .photo-border{
-    padding: 1px;
-    background-color: #e6e6e6;
-    border: 1px #f4f4f4 solid;
-    border-right: 0px #f4f4f4 solid;
+    /*padding: 1px;*/
+    /*background-color: #e6e6e6;*/
+    border-top: 1px #f4f4f4 solid;
+    border-left: 1px #f4f4f4 solid;
+    border-right: 1px #f4f4f4 solid;
+    border-bottom: none;
+    /*border-right: 0px #f4f4f4 solid;*/
 }
 
 
@@ -479,13 +482,13 @@
 /*  Buy Button
  *************************************/
 .photogrid-cell .photo-rollover-frame .button-bar .buy-button{
-    height:23px;
-    top:1px;
-    background: url(/images/album_toolbar_buy.png) no-repeat scroll 6px -22px transparent;
+    height:20px;
+    top:0px;
+    background: url(/images/album_toolbar_buy.png) no-repeat scroll 6px -19px transparent;
 }
 
 .photogrid-cell .photo-rollover-frame .button-bar .buy-button:hover{
-    background-position:  6px 2px;
+    background-position:  6px 1px;
 }
 
 

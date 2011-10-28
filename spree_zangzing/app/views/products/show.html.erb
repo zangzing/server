@@ -1,0 +1,12 @@
+<div class='glamour-page'>
+    <div class="product-image">
+      <%= image_tag(@product.images.first.attachment(:large)) %>
+    </div>
+
+    <div class="product-name">
+      <%= @product.name %>
+    </div>
+
+    <%= render "product_#{@product.id}" %>
+
+</div>

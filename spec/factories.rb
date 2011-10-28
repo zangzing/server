@@ -94,6 +94,28 @@ Factory.define :full_photo, :parent => :photo do |this|
   end
 end
 
+Factory.define :address, :class => Address do |this|
+  this.firstname  Faker::Name.first_name
+  this.lastname   Faker::Name.last_name
+  this.address1   Faker::Address.street_address
+  this.city       Faker::Address.city
+  this.state_id   276110813
+  this.zipcode    Faker::Address.zip_code
+  this.phone      Faker::PhoneNumber.phone_number
+  this.country_id 214
+end
+
+Factory.define :order, :class => Order do |this|
+  this.after_build do |this, proxy|
+      this.user ||= Factory.create(:user)
+      this.email ||= this.user.email
+      this.bill_address  ||= Factory.create(:address)
+  end
+end
+
+
+
+
 #Factory.define :upload_batch do |this|
 #  this.after_build do |this, proxy|
 #    this.user ||= Factory.create(:user)

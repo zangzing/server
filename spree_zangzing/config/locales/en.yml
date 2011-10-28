@@ -1060,5 +1060,13 @@ en:
   buy_more: "Buy More"
   sets_of: "Sets Of"
   tracking_info: "Tracking Information"
-  support: "Customer Support"
+  customer_support: "Customer Support"
   details: "details"
+
+  # Used in array.to_sentence.
+  support:
+    array:
+      words_connector: ", "
+      two_words_connector: " and "
+      last_word_connector: ", and "
+
