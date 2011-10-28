@@ -2,9 +2,6 @@ unless defined? LineItem::PRINTS_PRODUCT_ID
   LineItem::PRINTS_PRODUCT_ID = 941187648  # Prints product id
   LineItem::NO_FRAME_VALUE_ID = 28         # No Frame (for prints-frame-and-mate option_type )
   LineItem::FRAMED_VALUE_ID   = 53         # Framed (for prints-finish option-type )
-  LineItem::MKTG_PRINT_VARIANT_ID  = 791384334
-  LineItem::MKTG_PRINT_USER_NAME   = 'zzmarketing'
-  LineItem::MKTG_PRINT_ALBUM_NAME  = 'Marketing Prints'
 end
 
 
@@ -112,17 +109,4 @@ LineItem.class_eval do
     variant.print?
   end
 
-  def self.for_mktg_print
-    variant = Variant.find( LineItem::MKTG_PRINT_VARIANT_ID )
-    user = User.find( LineItem::MKTG_PRINT_USER_NAME )
-    album = user.albums.find_by_name( LineItem::MKTG_PRINT_ALBUM_NAME )
-    li = LineItem.new()
-    li.quantity = 1
-    li.price    = 0.0
-    li.variant  = variant
-    li.photo    = album.cover
-    li.hidden   = true
-    li
-  end
-  
 end

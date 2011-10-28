@@ -43,15 +43,6 @@ describe Order do
     end
   end
 
-  describe "Marketing Print" do
-    it "Line Item should be able to create a ' Hidden Marketing Print Line Item'" do
-      mp_li = LineItem.for_mktg_print
-      mp_li.should_not be nil
-      mp_li.hidden.should == true
-    end
-
-  end
-  
   describe "#add_variant" do
     before(:each) do
       #Create an order and add prints and non prints line items
@@ -116,7 +107,7 @@ describe Order do
       @order.add_variant( printset_variants.third,  @photo, 1 )
       @order.add_variant( printset_variants.third,  @photo2, 1 )
       @order.add_variant( printset_variants.fifth,  @photo, 1 )
-      @order.line_items << LineItem.for_mktg_print
+      @order.add_marketing_insert
 
 
       #NOT_PRINTS

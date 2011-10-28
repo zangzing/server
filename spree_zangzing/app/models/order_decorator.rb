@@ -1,3 +1,10 @@
+unless defined? Order::MKTG_INSERT_VARIANT_ID
+  Order::MKTG_INSERT_VARIANT_ID  = 791384334
+  Order::MKTG_INSERT_USER_NAME   = 'zzmarketing'
+  Order::MKTG_INSERT_ALBUM_NAME  = 'Marketing Prints'
+end
+
+
 Order.class_eval do
   include PrettyUrlHelper
 
@@ -271,7 +278,7 @@ Order.class_eval do
     # lock any optional adjustments (coupon promotions, etc.)
     adjustments.optional.each { |adjustment| adjustment.update_attribute("locked", true) }
 
-    add_marketing_print
+    add_marketing_insert
 
     ZZ::Async::Email.enqueue( :order_confirmed, self.id )
 
@@ -301,10 +308,16 @@ Order.class_eval do
     end
   end
 
-  def add_marketing_print
+  def add_marketing_insert
     index_print_product_ids = Product.taxons_name_eq('index_print').map{|p| p.id }
     if line_items.detect { |li| index_print_product_ids.include? li.variant.product_id }
-      self.line_items << LineItem.for_mktg_print
+      li = LineItem.new()
+      li.quantity = 1
+      li.price    = 0.0
+      li.variant  = Variant.find( Order::MKTG_INSERT_VARIANT_ID )
+      li.photo    = ez.marketing_insert( Order::MKTG_INSERT_USER_NAME, Order::MKTG_INSERT_ALBUM_NAME)
+      li.hidden   = true
+      self.line_items << li
     end
   end
 
