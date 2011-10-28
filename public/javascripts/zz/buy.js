@@ -542,6 +542,8 @@ zz.buy = zz.buy || {};
                }
             }
 
+            ZZAt.track('button.cart.click');
+
 
         });
 
@@ -569,16 +571,17 @@ zz.buy = zz.buy || {};
 
                 $('#checkout-banner').animate({top:-20}, 200);
                 $('#checkout-banner').animate({top:-20}, 200);
+
+                ZZAt.track('buy.checkout-banner.close.click');
+
             });
 
-
-            $('#checkout-banner .view-cart-button').click(function(){
-                zz.routes.store.goto_cart();
-            });
 
             $('#checkout-banner .checkout-button').click(function(){
+                ZZAt.track('buy.checkout-banner.cart-button.click');
                 zz.routes.store.goto_cart();
             });
+
 
             var center = function(){
                 $('#checkout-banner').center_x($('#article'));
@@ -898,6 +901,7 @@ zz.buy = zz.buy || {};
                 });
                 screen_element.append(product_element);
                 product_element.click(function(){
+                    ZZAt.track('buy.select-product.click', {product_id: product.id});
                     set_selected_product(product);
                     slide_to_screen(DRAWER_SCREENS.CONFIGURE_PRODUCT, true);
                 });
@@ -1381,6 +1385,7 @@ zz.buy = zz.buy || {};
 
         zz.routes.store.get_glamour_page_html(product_id, function(html){
             zz.dialog.show_square_dialog(html, {width:800, height:600});
+            ZZAt.track('buy.glamour-page.open', {product_id: product_id});
         });
     }
 
