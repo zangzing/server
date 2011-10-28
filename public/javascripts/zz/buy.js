@@ -1045,7 +1045,7 @@ zz.buy = zz.buy || {};
             buy_screens_element.find('.configure-product-screen .main-section .selected-photos-section .add-all-photos').show().unbind('click').click(function(){
                 zz.routes.photos.get_album_photos_json(zz.page.album_id, zz.page.album_cache_version_key, function(photos){
                     var dialog = zz.dialog.show_progress_dialog("Adding photos...");
-                    _.defer(function(){
+                    _.delay(function(){
                         _.each(photos, function(photo){
                             if(photo.state == 'ready'){
                                 zz.buy.add_selected_photo(photo);
@@ -1054,7 +1054,7 @@ zz.buy = zz.buy || {};
                         refresh_selected_photos_list();
                         scroll_to_bottom_of_selected_photos();
                         dialog.close();
-                    });
+                    },100);
                 });
             });
         }
