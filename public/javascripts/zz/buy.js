@@ -652,6 +652,7 @@ zz.buy = zz.buy || {};
 
         $('#footer #buy-button').addClass('selected');
 
+        ZZAt.track('buy.activate');
     };
 
     zz.buy.deactivate_buy_mode = function(){
@@ -662,6 +663,8 @@ zz.buy = zz.buy || {};
         });
         $('#footer #buy-button').removeClass('selected');
         $('#right-drawer .header .gray-back-button').hide();
+        ZZAt.track('buy.deactivate');
+
     };
 
 
@@ -684,10 +687,12 @@ zz.buy = zz.buy || {};
 
         var selected_photos = zz.local_storage.get('zz.buy.selected_photos') || [];
         selected_photos = selected_photos.concat(photos_json);
-        zz.logger.debug(selected_photos);
+
         zz.local_storage.set('zz.buy.selected_photos', selected_photos);
 
         zz.pubsub.publish(EVENTS.ADD_SELECTED_PHOTO);
+
+
 
     };
 
@@ -802,6 +807,9 @@ zz.buy = zz.buy || {};
         if(callback){
             callback();
         }
+
+        ZZAt.track('buy.add-photo.click');
+
     };
 
 
@@ -933,6 +941,8 @@ zz.buy = zz.buy || {};
             add_selected_photos_to_cart(function(){
                 zz.routes.store.goto_cart();
             });
+
+            ZZAt.track('buy.add-to-cart.click');
         });
 
 
@@ -1062,13 +1072,14 @@ zz.buy = zz.buy || {};
             zz.pubsub.publish(EVENTS.REMOVE_SELECTED_PHOTO, selected_photos);
             update_price_and_count();
             check_bad_photos();
-
+            ZZAt.track('buy.remove-all-photos.click');
         });
 
 
         if(zz.page.album_id){
             buy_screens_element.find('.configure-product-screen .main-section .selected-photos-section .add-all-photos').show().unbind('click').click(function(){
                 zz.routes.photos.get_album_photos_json(zz.page.album_id, zz.page.album_cache_version_key, function(photos){
+                    ZZAt.track('buy.add-all-photos.click');
                     var dialog = zz.dialog.show_progress_dialog("Adding photos...");
                     _.delay(function(){
                         zz.buy.add_selected_photos(photos);
@@ -1186,6 +1197,8 @@ zz.buy = zz.buy || {};
             zz.pubsub.publish(EVENTS.REMOVE_SELECTED_PHOTO, [photo_json.id]);
             update_price_and_count();
             check_empty_photo_list();
+            ZZAt.track('buy.remove-photo.click');
+
         });
 
         return photo_element;

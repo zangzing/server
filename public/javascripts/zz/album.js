@@ -34,6 +34,7 @@ zz.album = {};
             if(!zz.buy.is_photo_selected(current_photo_id)){
                 zz.buy.add_selected_photo(current_photo_json);
             }
+            ZZAt.track('photo.buy.toolbar.click');
         });
 
 
@@ -49,7 +50,7 @@ zz.album = {};
 
     zz.album.is_single_picture_view = function(){
         return is_single_picture_view;
-    }
+    };
 
     zz.album.goto_single_picture = function(photo_id){
         //get rid of scrollbars before animate transition
@@ -75,6 +76,9 @@ zz.album = {};
             update_checkmarks_on_photos();
         });
 
+        zz.buy.on_before_activate(function(){
+            ZZAt.track('album.buy.toolbar.click');
+        });
 
 
         render_grid_view();
@@ -83,11 +87,17 @@ zz.album = {};
 
     zz.album.init_timeline_view = function() {
         init_timeline_or_people_view('timeline');
+        zz.buy.on_before_activate(function(){
+            ZZAt.track('album.buy.toolbar.click');
+        });
     };
 
 
     zz.album.init_people_view = function() {
         init_timeline_or_people_view('people');
+        zz.buy.on_before_activate(function(){
+            ZZAt.track('album.buy.toolbar.click');
+        });
     };
 
 
@@ -506,8 +516,6 @@ zz.album = {};
             $('.timeline-comment span').center_y();
             $('.timeline-comment span a').each(function(index, element){
                 var photo_id = $(element).attr('data-photo-id');
-
-                zz.logger.debug(photo_id);
 
                 $(element).click(function(){
                     zz.comments.show_in_dialog(zz.page.album_id, zz.page.album_cache_version_key, photo_id);

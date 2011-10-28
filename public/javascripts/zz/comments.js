@@ -616,12 +616,8 @@ zz.comments = {};
     function open_comments_drawer(animate, photo_id, callback){
         jQuery.cookie('hide_comments', 'false', {path:'/'});
 
-        zz.logger.debug('open comments drawer');
 
         comments_widget = build_comments_widget(photo_id);
-
-        zz.logger.debug('comments_widget 1...');
-        zz.logger.debug(comments_widget);
 
         $('#right-drawer .header .title').html("Comments");
         $('#right-drawer .content').html(comments_widget.element);
@@ -639,8 +635,6 @@ zz.comments = {};
 
                     zz.pubsub.publish(EVENTS.OPEN_COMMENTS);
 
-                    zz.logger.debug('comments_widget 2...');
-                    zz.logger.debug(comments_widget);
 
                     comments_widget.set_focus();
                 });
@@ -657,7 +651,6 @@ zz.comments = {};
     function close_comments_drawer(animate, callback){
         jQuery.cookie('hide_comments', 'true', {path:'/'});
 
-        zz.logger.debug('close comments drawer');
 
 
          comments_widget = null;
