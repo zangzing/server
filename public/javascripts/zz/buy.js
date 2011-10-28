@@ -1050,6 +1050,7 @@ zz.buy = zz.buy || {};
                         }
                     });
                     refresh_selected_photos_list();
+                    scroll_to_bottom_of_selected_photos();
                 });
             });
         }
@@ -1158,8 +1159,13 @@ zz.buy = zz.buy || {};
         buy_screens_element.find('.configure-product-screen .main-section .selected-photos-section .add-photos-message').hide();
         buy_screens_element.find('.configure-product-screen .main-section .selected-photos-section .clear-all-photos').show();
 
+        scroll_to_bottom_of_selected_photos();
         update_price_and_count();
         check_bad_photos();
+    }
+
+    function scroll_to_bottom_of_selected_photos(){
+        buy_screens_element.find('.configure-product-screen .main-section').scrollTop(10000);
     }
 
 
