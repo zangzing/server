@@ -27,12 +27,7 @@ describe "ZZ API" do
 
   describe "albums" do
     before(:each) do
-      body = zz_api_body({ :email => "test1", :password => "testtest" })
-      path = build_full_path(zz_api_login_path, true)
-      post path, body, zz_api_headers
-      response.status.should eql(200)
-      login_info = JSON.parse(response.body).recursively_symbolize_keys!
-      @user_id = login_info[:user_id]
+      @user_id = zz_login("test1", "testtest")
     end
 
     it "should fetch albums and verify liked_user_albums_path and invited_users_path" do

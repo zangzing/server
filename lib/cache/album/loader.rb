@@ -286,7 +286,7 @@ module Cache
           # prep for substitution
           cover_base = nil
           cover_sizes = nil
-          if album_cover
+          if album_cover && album_cover.ready?
             cover_base = album_cover.base_subst_url
             if cover_base
               # ok, photo is ready so include sizes map

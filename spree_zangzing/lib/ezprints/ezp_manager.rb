@@ -107,7 +107,7 @@ module EZPrints
     end
 
     #
-    # Fetch the marketing insert photo id.  We look for
+    # Fetch the marketing insert photo.  We look for
     # the specified user, and then for an album with
     # the specified name.  When that album is found
     # we randomly choose one of the photos contained
@@ -129,7 +129,7 @@ module EZPrints
 
       picked_photo = photos[rand(photos_length)]
 
-      return picked_photo.id
+      return picked_photo
     end
 
     private
