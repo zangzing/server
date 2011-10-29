@@ -95,7 +95,8 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
 
 
   def index
-    fire_async_response('list_albums')
+    #fire_async_response('list_albums')
+    render :json => self.class.list_albums(connector, params)
   end
   
   def photos
