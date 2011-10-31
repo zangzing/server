@@ -16,6 +16,7 @@ class ApplicationController < ActionController::Base
   include ZZ::Auth
   include ZZ::ZZAController
   include PrettyUrlHelper
+  include BuyHelper
   include Spree::CurrentOrder
 
   helper :all # include all helpers, all the time
@@ -215,6 +216,8 @@ class ApplicationController < ActionController::Base
   def set_show_comments_cookie
     cookies[:hide_comments] = {:value => 'false', :path => '/'}
   end
+
+
 
   def album_not_found_redirect_to_owners_homepage(user_id)
     flash[:notice] = "Sorry, we could not find the album that you were looking for."

@@ -1,7 +1,7 @@
 <div class="row checkout-navbar">
   <div class="span3 columns offset3">
     <div id="logo">
-     <a href="<%=(session[:store_entrance_referer] ? session[:store_entrance_referer] : root_path )%>">
+     <a href="<%=back_to_shopping_url%>">
         <%= image_tag('store/zz-secure-logo.png', {:id => 'logo'})%>
      </a>
     </div>
