@@ -713,7 +713,7 @@ Order.class_eval do
   end
 
   def visible_line_items
-    visible_line_items = line_items.prints.group_by_variant
+    visible_line_items = line_items.prints_by_variant
     visible_line_items.concat( line_items.not_prints )
     visible_line_items.sort!{ |a,b| b.created_at <=> a.created_at }
     visible_line_items
