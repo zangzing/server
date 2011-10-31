@@ -19,7 +19,6 @@ Order.class_eval do
 
   after_validation :shipping_may_change, :if => 'ship_address && ship_address.zipcode_changed?'
 
-
   before_create do
       self.token = ::SecureRandom::hex(8)
   end
@@ -698,7 +697,7 @@ Order.class_eval do
     qty_hash.each_pair do | variant_id, qty|
       line_items.find_all_by_variant_id( variant_id ).each do |li|
         li.quantity = qty
-        li.save
+        li.save if li.changed?
       end
     end
   end
@@ -719,6 +718,17 @@ Order.class_eval do
     visible_line_items
   end
 
+  def must_update
+    @must_update ||= false
+  end
+
+  def set_must_update
+      @must_update = true
+  end
+
+  def clear_must_update
+       @must_update = true
+  end
 
   private
 
