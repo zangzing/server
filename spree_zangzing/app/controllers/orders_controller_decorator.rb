@@ -92,6 +92,17 @@ OrdersController.class_eval do
     render :layout => 'checkout'
   end
 
+  # desctivate buy mode and go back to last screen before store
+  def back_to_viewing_photos
+    clear_buy_mode_cookie
+    redirect_to session[:store_entrance_referer] ? session[:store_entrance_referer] : root_path
+  end
+
+  def back_to_shopping
+    redirect_to session[:store_entrance_referer] ? session[:store_entrance_referer] : root_path
+  end
+
+
   def checkout
     @order = current_order
     if @order.update_attributes(params[:order])

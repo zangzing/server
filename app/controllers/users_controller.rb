@@ -35,6 +35,7 @@ class UsersController < ApplicationController
   end
 
   def create
+
     if current_user
         flash[:notice] = "You are currently logged in as #{current_user.username}. Please log out before creating a new account."
         session[:flash_dialog] = true
@@ -42,6 +43,7 @@ class UsersController < ApplicationController
         return
     end
 
+    clear_buy_mode_cookie
 
     @user_session = UserSession.new
 
