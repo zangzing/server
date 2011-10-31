@@ -23,7 +23,7 @@
         </div>
         <%if current_user #FOR LOGGED IN USERS%>
             <div id="useraction_ty">
-                <a id="goback_btn" class="newgreen-button" href="<%=(session[:store_entrance_referer] ? session[:store_entrance_referer] : root_path )%>" ><span><%=t('go_back_to_viewing_photos')%></span></a>
+                <a id="goback_btn" class="newgreen-button" href="<%=back_to_viewing_photos_url%>" ><span><%=t('go_back_to_viewing_photos')%></span></a>
             </div>
         <%elsif  @user_session #FOR LOGGED OUT USERS%>
                 <div id="guestaction_ty">
@@ -33,7 +33,6 @@
                                 &nbsp
                             </div>
 
-                            <%= hidden_field_tag :store_signin, thankyou_order_url %>
                             <p id="username" class="field">
                                  <label for="email">Username or Email</label>
                                  <%= text_field_tag :email, @user_session.email %>

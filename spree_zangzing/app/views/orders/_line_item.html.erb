@@ -30,7 +30,7 @@ change            = nil unless defined?(change)
         </td>
 
         <% if item_form.present? %>
-            <td class="price no-border"><%=  product_price(line_item) %></td>
+            <td class="price no-border"><%= product_price(line_item) %></td>
             <td class="price no-border"><%= item_form.text_field :quantity, { :class => "item_quantity"} %></td>
         <%end%>
         <td class="price no-border"><%=format_price(product_price(line_item, :format_as_currency => false) * line_item.quantity) unless line_item.quantity.nil?%></td>
