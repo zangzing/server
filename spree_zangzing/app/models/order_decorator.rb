@@ -1,3 +1,10 @@
+unless defined? Order::MKTG_INSERT_VARIANT_ID
+  Order::MKTG_INSERT_VARIANT_ID  = 791384334
+  Order::MKTG_INSERT_USER_NAME   = 'zzmarketing'
+  Order::MKTG_INSERT_ALBUM_NAME  = 'Marketing Prints'
+end
+
+
 Order.class_eval do
   include PrettyUrlHelper
 
@@ -11,7 +18,6 @@ Order.class_eval do
   before_validation :clone_shipping_address, :if => "state=='ship_address'"
 
   after_validation :shipping_may_change, :if => 'ship_address && ship_address.zipcode_changed?'
-
 
   before_create do
       self.token = ::SecureRandom::hex(8)
@@ -271,7 +277,7 @@ Order.class_eval do
     # lock any optional adjustments (coupon promotions, etc.)
     adjustments.optional.each { |adjustment| adjustment.update_attribute("locked", true) }
 
-    add_marketing_print
+    add_marketing_insert
 
     ZZ::Async::Email.enqueue( :order_confirmed, self.id )
 
@@ -301,10 +307,23 @@ Order.class_eval do
     end
   end
 
-  def add_marketing_print
+  def add_marketing_insert
     index_print_product_ids = Product.taxons_name_eq('index_print').map{|p| p.id }
     if line_items.detect { |li| index_print_product_ids.include? li.variant.product_id }
-      self.line_items << LineItem.for_mktg_print
+      variant = Variant.find_by_id( Order::MKTG_INSERT_VARIANT_ID )
+      photo = ez.marketing_insert( Order::MKTG_INSERT_USER_NAME, Order::MKTG_INSERT_ALBUM_NAME)
+      if variant && photo
+        li = LineItem.new()
+        li.quantity = 1
+        li.price    = 0.0
+        li.variant  = variant
+        li.photo    = photo
+        li.hidden   = true
+        self.line_items << li
+      else
+        Rails.logger.error( "MARKETING INSERT ERROR: Variant with id=#{Order::MKTG_INSERT_VARIANT_ID} not found") if variant.nil?
+        Rails.logger.error( "MARKETING INSERT ERROR: No marketing insert image found. Looking in user=#{Order::MKTG_INSERT_USER_NAME} album=#{Order::MKTG_INSERT_ALBUM_NAME}") if photo.nil?
+      end
     end
   end
 
@@ -678,7 +697,7 @@ Order.class_eval do
     qty_hash.each_pair do | variant_id, qty|
       line_items.find_all_by_variant_id( variant_id ).each do |li|
         li.quantity = qty
-        li.save
+        li.save if li.changed?
       end
     end
   end
@@ -693,12 +712,23 @@ Order.class_eval do
   end
 
   def visible_line_items
-    visible_line_items = line_items.prints.group_by_variant
+    visible_line_items = line_items.prints_by_variant
     visible_line_items.concat( line_items.not_prints )
     visible_line_items.sort!{ |a,b| b.created_at <=> a.created_at }
     visible_line_items
   end
 
+  def must_update
+    @must_update ||= false
+  end
+
+  def set_must_update
+      @must_update = true
+  end
+
+  def clear_must_update
+       @must_update = true
+  end
 
   private
 

@@ -40,6 +40,23 @@ OrdersController.class_eval do
     render :layout => 'checkout'
   end
 
+   def update
+    @order = current_order
+    @order.clear_must_update
+    if @order.update_attributes(params[:order])
+      if @order.must_update
+        @order.update!
+        @order.save
+        @order.clear_must_update
+      end
+      @order.line_items = @order.line_items.select {|li| li.quantity > 0 }
+      respond_with(@order) { |format| format.html { redirect_to cart_path } }
+    else
+      respond_with(@order)
+    end
+  end
+
+
   def show
     @order = Order.find_by_number(params[:id])
     render :layout => 'checkout'
@@ -91,6 +108,17 @@ OrdersController.class_eval do
     end
     render :layout => 'checkout'
   end
+
+  # desctivate buy mode and go back to last screen before store
+  def back_to_viewing_photos
+    clear_buy_mode_cookie
+    redirect_to session[:store_entrance_referer] ? session[:store_entrance_referer] : root_path
+  end
+
+  def back_to_shopping
+    redirect_to session[:store_entrance_referer] ? session[:store_entrance_referer] : root_path
+  end
+
 
   def checkout
     @order = current_order

@@ -576,8 +576,8 @@ zz.buy = zz.buy || {};
     };
 
     zz.buy.is_buy_mode_active = function(){
-        return zz.local_storage.get('zz.buy.buy_mode_active') == true;
-
+        //return zz.local_storage.get('zz.buy.buy_mode_active') == true;
+        return jQuery.cookie('zz.buy.buy_mode_active') == 'true';
     };
 
     zz.buy.activate_buy_mode = function(){
@@ -588,7 +588,9 @@ zz.buy = zz.buy || {};
 
 
         zz.pubsub.publish(EVENTS.BEFORE_ACTIVATE);
-        zz.local_storage.set('zz.buy.buy_mode_active', true);
+//        zz.local_storage.set('zz.buy.buy_mode_active', true);
+        jQuery.cookie('zz.buy.buy_mode_active', 'true', {path:'/'});
+
         open_drawer(true, function(){
             zz.pubsub.publish(EVENTS.ACTIVATE);
         });
@@ -600,7 +602,9 @@ zz.buy = zz.buy || {};
 
     zz.buy.deactivate_buy_mode = function(){
         zz.pubsub.publish(EVENTS.BEFORE_DEACTIVATE);
-        zz.local_storage.set('zz.buy.buy_mode_active', false);
+//        zz.local_storage.set('zz.buy.buy_mode_active', false);
+        jQuery.cookie('zz.buy.buy_mode_active', 'false', {path:'/'});
+
         close_drawer(function(){
             zz.pubsub.publish(EVENTS.DEACTIVATE);
         });

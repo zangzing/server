@@ -477,15 +477,23 @@ class Album < ActiveRecord::Base
   end
 
   def can_user_download?( user )
-    #album owner can always download
-    return true if user && (user.id == self.user_id)
-    case who_can_download
-      when WHO_EVERYONE
-        return true
-      when WHO_OWNER
-        return true if user && admin?(user.id)
-      when WHO_VIEWERS
-        return true if user && viewer_in_group?( user.id ) #check ACL even if it is public
+    if user.nil?
+      # check conditions for no user given
+      return false if private?
+      return true if who_can_download == WHO_EVERYONE
+    else
+      user_id = user.id
+      #album owner can always download
+      return true if user_id == self.user_id
+
+      case who_can_download
+        when WHO_EVERYONE
+          return true
+        when WHO_OWNER
+          return true if admin?(user_id)
+        when WHO_VIEWERS
+          return true if viewer_in_group?( user_id ) #check ACL even if it is public
+      end
     end
     false
   end

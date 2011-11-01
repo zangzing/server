@@ -34,6 +34,7 @@ class UserSessionsController < ApplicationController
   end
 
   def create
+    clear_buy_mode_cookie
     @user_session = UserSession.new(:email => params[:email], :password => params[:password], :remember_me => true)
     if @user_session.save
       prevent_session_fixation

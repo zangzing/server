@@ -2,9 +2,6 @@ unless defined? LineItem::PRINTS_PRODUCT_ID
   LineItem::PRINTS_PRODUCT_ID = 941187648  # Prints product id
   LineItem::NO_FRAME_VALUE_ID = 28         # No Frame (for prints-frame-and-mate option_type )
   LineItem::FRAMED_VALUE_ID   = 53         # Framed (for prints-finish option-type )
-  LineItem::MKTG_PRINT_VARIANT_ID  = 791384334
-  LineItem::MKTG_PRINT_USER_NAME   = 'zzmarketing'
-  LineItem::MKTG_PRINT_ALBUM_NAME  = 'Marketing Prints'
 end
 
 
@@ -28,8 +25,7 @@ LineItem.class_eval do
   # Line items for prints that do not have a frame (checking the frame_matte== 'No Frame' option_type value)
   scope :prints, joins(:variant)\
               .joins("join option_values_variants on option_values_variants.variant_id = variants.id")\
-              .where("line_items.hidden = 0 AND variants.product_id = ? AND option_values_variants.option_value_id = ?", LineItem::PRINTS_PRODUCT_ID, LineItem::NO_FRAME_VALUE_ID)\
-              .order('line_items.created_at DESC')
+              .where("line_items.hidden = 0 AND variants.product_id = ? AND option_values_variants.option_value_id = ?", LineItem::PRINTS_PRODUCT_ID, LineItem::NO_FRAME_VALUE_ID)
 
 
   # Line items for not prints or prints that have a frame (checking the prints_finish == framed option_type value)
@@ -38,6 +34,12 @@ LineItem.class_eval do
               .where("line_items.hidden = 0 AND variants.product_id <> ? || (  variants.product_id = ? AND option_values_variants.option_value_id = ?)",LineItem::PRINTS_PRODUCT_ID,LineItem::PRINTS_PRODUCT_ID, LineItem::FRAMED_VALUE_ID)\
               .group('line_items.id').order('line_items.created_at DESC')
 
+  scope :prints_by_variant, select('line_items.*, MAX( line_items.created_at) as created_at')\
+                .joins(:variant)\
+                .joins("join option_values_variants on option_values_variants.variant_id = variants.id")\
+                .where("line_items.hidden = 0 AND variants.product_id = ? AND option_values_variants.option_value_id = ?", LineItem::PRINTS_PRODUCT_ID, LineItem::NO_FRAME_VALUE_ID)\
+                .group('variants.id')\
+                .order(' created_at ASC')
 
   scope :group_by_variant, joins(:variant).group('variants.id').order('line_items.created_at DESC')
 
@@ -112,17 +114,9 @@ LineItem.class_eval do
     variant.print?
   end
 
-  def self.for_mktg_print
-    variant = Variant.find( LineItem::MKTG_PRINT_VARIANT_ID )
-    user = User.find( LineItem::MKTG_PRINT_USER_NAME )
-    album = user.albums.find_by_name( LineItem::MKTG_PRINT_ALBUM_NAME )
-    li = LineItem.new()
-    li.quantity = 1
-    li.price    = 0.0
-    li.variant  = variant
-    li.photo    = album.cover
-    li.hidden   = true
-    li
+  def update_order
+      # update the order totals, etc.
+      order.set_must_update
   end
-  
+
 end
