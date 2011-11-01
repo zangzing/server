@@ -19,7 +19,6 @@ Order.class_eval do
 
   after_validation :shipping_may_change, :if => 'ship_address && ship_address.zipcode_changed?'
 
-
   before_create do
       self.token = ::SecureRandom::hex(8)
   end
@@ -208,19 +207,6 @@ Order.class_eval do
       current_item.variant = variant
       current_item.price   = variant.price
       self.line_items << current_item
-    end
-
-    # populate line_items attributes for additional_fields entries
-    # that have populate => [:line_item]
-    Variant.additional_fields.select{|f| !f[:populate].nil? && f[:populate].include?(:line_item) }.each do |field|
-      value = ""
-
-      if field[:only].nil? || field[:only].include?(:variant)
-        value = variant.send(field[:name].gsub(" ", "_").downcase)
-      elsif field[:only].include?(:product)
-        value = variant.product.send(field[:name].gsub(" ", "_").downcase)
-      end
-      current_item.update_attribute(field[:name].gsub(" ", "_").downcase, value)
     end
 
     #notify shipping calculator cache that shipping params have changed
@@ -698,7 +684,7 @@ Order.class_eval do
     qty_hash.each_pair do | variant_id, qty|
       line_items.find_all_by_variant_id( variant_id ).each do |li|
         li.quantity = qty
-        li.save
+        li.save if li.changed?
       end
     end
   end
@@ -713,12 +699,23 @@ Order.class_eval do
   end
 
   def visible_line_items
-    visible_line_items = line_items.prints.group_by_variant
+    visible_line_items = line_items.prints_by_variant
     visible_line_items.concat( line_items.not_prints )
     visible_line_items.sort!{ |a,b| b.created_at <=> a.created_at }
     visible_line_items
   end
 
+  def must_update
+    @must_update ||= false
+  end
+
+  def set_must_update
+      @must_update = true
+  end
+
+  def clear_must_update
+       @must_update = true
+  end
 
   private
 

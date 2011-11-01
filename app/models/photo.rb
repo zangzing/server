@@ -142,6 +142,7 @@ class Photo < ActiveRecord::Base
     options[:copy_s3_object] = true
     options[:src_bucket] = original.image_bucket
     options[:src_key] = original.attached_image.key(AttachedImage.original_suffix(original.original_suffix))
+    options[:src_crc32] = original.crc32
     photo.queue_upload_to_s3(options)
 
     photo
@@ -490,6 +491,17 @@ class Photo < ActiveRecord::Base
     end
   end
 
+  # computes crc32 given a file
+  def self.compute_crc32(path)
+    crc = 0
+    File.open(path, 'rb') do |f|
+      while bytes = f.read(128 * 1024) do
+      crc = Zlib.crc32(bytes,crc)
+      end
+    end
+    crc
+  end
+
   # upload our temp source file to s3 and remove the temp if successful
   # this is called from the resque worker to avoid the upload
   # having to be done in the main app server dispatch
@@ -502,11 +514,19 @@ class Photo < ActiveRecord::Base
           # copying an exist s3 object
           src_bucket = options[:src_bucket]
           src_key = options[:src_key]
+          self.crc32 = options[:src_crc32]
           attached_image.copy(src_bucket, src_key)
         else
           # doing a local file system copy
-          file = File.open(self.source_path, "rb")
-          attached_image.upload(file)
+          path = self.source_path
+          self.crc32 = Photo.compute_crc32(path)
+          file = nil
+          begin
+            file = File.open(path, "rb")
+            attached_image.upload(file)
+          ensure
+            file.close rescue nil if file
+          end
         end
         # original file is now up on S3 - the existence of image_path lets us know that
         # it has been uploaded

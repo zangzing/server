@@ -1,17 +1,15 @@
 <%= render "shared/error_messages", :target => @order %>
 <table id="cart-detail">
-
   <tbody id="line_items">
-    <% @order.visible_line_items.each do |li|
-            if li.variant.print? %>
-              <%= order_form.fields_for :line_item, li do |item_form| %>
-                  <%=render 'prints_line_item',  :variant => item_form.object.variant, :item_form => item_form %>
-              <% end %>
+  
+  <% @order.visible_line_items.each do |li|%>
+      <%= order_form.fields_for :line_items, li do |item_form| %>
+          <%if li.variant.print? %>
+              <%=render 'prints_line_item',  :variant => item_form.object.variant, :item_form => item_form %>
           <% else %>
-              <%= order_form.fields_for :line_item, li do |item_form| %>
-                  <%= render 'line_item', :line_item => item_form.object, :item_form => item_form %>
-              <% end %>
+              <%= render 'line_item', :line_item => item_form.object, :item_form => item_form %>
           <% end %>
-     <%end%>
+      <%end%>
+  <%end%>
   </tbody>
 </table>

@@ -23,14 +23,14 @@ change            = nil unless defined?(change)
           <%end%>
           <div class="variant_description"><%= truncate(variant.custom_description, :length => 100, :omission => "...") %> </div>
           <% if item_form.present? %>
-            <div class="variant_description"> <%= link_to t('delete').downcase, 'javascript:void(0)', :class => 'delete' %></div>
+            <div class="variant_description"> <%= link_to t('delete').titleize, 'javascript:void(0)', :class => 'delete' %></div>
            <%elsif change.present?%>
-            <div class="variant_description">  <%= link_to t('change'), cart_path %></div>
+            <div class="variant_description">  <%= link_to t('change').titleize, cart_path %></div>
           <%end%>
         </td>
 
         <% if item_form.present? %>
-            <td class="price no-border"><%=  product_price(line_item) %></td>
+            <td class="price no-border"><%= product_price(line_item) %></td>
             <td class="price no-border"><%= item_form.text_field :quantity, { :class => "item_quantity"} %></td>
         <%end%>
         <td class="price no-border"><%=format_price(product_price(line_item, :format_as_currency => false) * line_item.quantity) unless line_item.quantity.nil?%></td>

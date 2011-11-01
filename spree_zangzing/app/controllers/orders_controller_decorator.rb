@@ -10,7 +10,7 @@ OrdersController.class_eval do
 
   def add_to_order
     order = current_order(true)
-    variant = Variant.find_by_product_id_and_sku(params[:product_id], params[:sku])
+    variant = Variant.active.find_by_product_id_and_sku(params[:product_id], params[:sku])
 
     params[:photo_ids].each do |photo_id|
       photo = Photo.find( photo_id )
@@ -39,6 +39,23 @@ OrdersController.class_eval do
     end
     render :layout => 'checkout'
   end
+
+   def update
+    @order = current_order
+    @order.clear_must_update
+    if @order.update_attributes(params[:order])
+      if @order.must_update
+        @order.update!
+        @order.save
+        @order.clear_must_update
+      end
+      @order.line_items = @order.line_items.select {|li| li.quantity > 0 }
+      respond_with(@order) { |format| format.html { redirect_to cart_path } }
+    else
+      respond_with(@order)
+    end
+  end
+
 
   def show
     @order = Order.find_by_number(params[:id])

@@ -6,7 +6,6 @@ gem "bundler", ">=1.0.14"
 gem "rails", "3.0.9"
 gem "unicorn"
 gem "dynamic_form"
-#gem "require_all"                 # lets us pull in everything for our resque tasks
 gem "mysql2",     "~> 0.2.7"
 gem 'authlogic',     '3.0.0'
 gem "friendly_id",   "3.2.1.1"                       #User-friendly links to albums and users' pages
@@ -14,7 +13,7 @@ gem 'uuidtools'
 gem 'activerecord-import', '~>0.2'  # bulk database inserts
 
 
-gem "dynamic_form"
+
 gem "require_all"                 # lets us pull in everything for our resque tasks
 
 gem 'syslogger',     "1.2.5", :git => 'git://github.com/zangzing/syslogger.git'

@@ -79,8 +79,8 @@ html{
 
 .checkout-summary{
     padding:  15px;
-    background-color: #CCFFCC;
-    border: 2px solid #666666;
+    background-color: #c1e8c2;
+    border: 3px solid #7ea77f;
 }
 .grey-border{
     border: 2px solid #CCCCCC;
@@ -89,6 +89,14 @@ html{
     color:#404040;
     font-weight: 700;
     font-size: 110%;
+}
+
+.errorExplanation{
+    text-align: center;
+}
+
+.errorExplanation ul li{
+    list-style:  none;
 }
 
 /*----------------- Progress Bar ------------------- */
@@ -182,6 +190,7 @@ form p.field input{
         display: inline-block;
 }
  form p.field select {
+        height: 29px;
         width: 93%;
         display: inline-block;
 }
@@ -324,7 +333,8 @@ p.field#order_email input{
 }
 #right_side{
   float: right;
-  width: 250px;
+  width: 252px;
+  margin: 0;
 }
 
 #order_info{
@@ -370,6 +380,7 @@ p.field#order_email input{
 }
 
 #order_summary{
+    width: 100%;
 }
 
 #place_order{
@@ -382,6 +393,35 @@ p.field#order_email input{
    text-align: center;
    padding: 10px 0 0 0;
 }
+
+
+.checkout-summary td{
+    border: none;
+}
+
+.order-total{
+    color: #333333;
+    font-size: 16px;
+}
+
+.order-total td{
+
+    font-weight: bold;
+    border-top:  3px groove white;
+}
+
+.summary-lines{
+    color: #333333;
+    font-size: 14px;
+}
+
+.summary-bold{
+    font-size: 16px;
+    font-weight: bold;
+    color: #333333;
+    text-shadow: 1px 1px 1px white;
+}
+
 /*---------------------------- Review ------------------ */
 #subtotal{
     margin: 0;

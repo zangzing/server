@@ -26,7 +26,7 @@ end %>
     <div id="ship_address" >
 
       <%= render :partial =>'address_display', :locals => { :address => @order.ship_address,:label =>t("shipping_address") } %>
-      <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('ship_address')%>').submit();">change</a>
+      <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('ship_address')%>').submit();"><%= t('change').titleize%></a>
       <p>&nbsp</p>
 
       <%= select( :order,
@@ -46,7 +46,7 @@ end %>
 
     <div id="bill_address">
       <%= render :partial =>'address_display', :locals => { :address => @order.bill_address,:label =>t('billing_address') } %>
-      <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('payment')%>').submit();">change</a>
+      <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('payment')%>').submit();"><%= t('change').titleize%></a>
       <p>&nbsp</p>
       
       <div id="cclogo">
@@ -54,7 +54,7 @@ end %>
       </div>
       <div>
         <%="#{t('ends_in')} #{@order.payments.first.source.last_digits} #{t('expires')} #{@order.payments.first.source.month}/#{@order.payments.first.source.year}" %><br/>
-        <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('payment')%>').submit();">change</a>
+        <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('payment')%>').submit();"><%= t('change').titleize%></a>
       </div>
       
     </div>

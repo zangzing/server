@@ -12,7 +12,7 @@
     <tr>
       <td style="text-align: center; position: relative;">
         <div class="clearfix">
-        <div style="position: relative; min-width: 152px; min-height:75px;" class="clearfix">
+        <div style="position: relative; min-width: 152px; min-height:80px;" class="clearfix">
             <%= stacked_photo_tag( line_items.first.photo, 100, 100 )%>
         </div>
         </div>
@@ -33,18 +33,18 @@
 
               <% if item_form.present? %>
                   <div class="variant_description">
-                    <%= link_to t('delete').downcase, 'javascript:void(0);', :class => 'delete' %>&nbsp&nbsp
-                    <%= link_to t('details').downcase, 'javascript:void(0);', :class => 'details', :data_variant => variant.id %>
+                    <%= link_to t('delete').titleize, 'javascript:void(0);', :class => 'delete' %>&nbsp&nbsp
+                    <%= link_to t('details').titleize, 'javascript:void(0);', :class => 'details', :data_variant => variant.id %>
                   </div>
               <%elsif change.present?%>
                   <div class="variant_description">
-                    <%= link_to t('change'), cart_path,  :class => 'change' %>
+                    <%= link_to t('change').titleize, cart_path,  :class => 'change' %>
                     &nbsp&nbsp
-                    <%= link_to t('details').downcase, 'javascript:void(0);', :class => 'details', :data_variant => variant.id %>
+                    <%= link_to t('details').titleize, 'javascript:void(0);', :class => 'details', :data_variant => variant.id %>
                   </div>
               <%else%>
                  <div class="variant_description">
-                    <%= link_to t('details').downcase, 'javascript:void(0);', :class => 'details', :data_variant => variant.id %>
+                    <%= link_to t('details').titleize, 'javascript:void(0);', :class => 'details', :data_variant => variant.id %>
                  </div>
               <%end%>
             </td>

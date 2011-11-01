@@ -506,11 +506,13 @@ class AlbumsController < ApplicationController
       return false
     end
 
-    # walk the list of all photos and build a plain test response in the form
+    # Walk the list of all photos and build a plain test response in the form
     # crc32 size custom_url name_in_zip_file
-    # since we currently don't calculate or track crc32 it is permissible for it
-    # to be just a -.  We may want to include in the future because it will allow
-    # restartable downloads in theory.
+    # since we just added crc32 some files don't have it so it is permissible for it
+    # to be just a -.  When we perform the next full photos resize sweep we can compute
+    # and add it to those that are missing.   The benifit to having this is that it
+    # gives us restartable downloads from an arbitrary point.
+    #
     # The custom_url must be of the form
     # /nginx_redirect/host/uri
     # the nginx_redirect part tells us to proxy through to a remote
@@ -527,7 +529,8 @@ class AlbumsController < ApplicationController
         escaped_url = URI::escape(image_path.to_s)
         uri = URI.parse(escaped_url)
         query = uri.query.blank? ? '' : "?#{uri.query}"
-        files << "- #{image_file_size} /nginx_redirect/#{uri.host}#{uri.path}#{query} #{full_name}\n"
+        crc32 = photo.crc32.nil? ? '-' : photo.crc32.to_s(16)
+        files << "#{crc32} #{image_file_size} /nginx_redirect/#{uri.host}#{uri.path}#{query} #{full_name}\n"
       end
     end
 
