@@ -409,8 +409,6 @@ zz.buy = zz.buy || {};
                                 '<div class="options"></div>' +
                             '</div>' +
                             '<div class="selected-photos-section">' +
-                                '<a class="add-all-photos hyperlink-button">Add All Photos from Album</a>' +
-                                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
                                 '<a class="clear-all-photos hyperlink-button">Clear Selected Photos</a>' +
                                 '<div class="add-photos-message">Choose product settings and then click to choose your photos.</div>' +
                                 '<div class="selected-photos"></div>' +
@@ -1016,20 +1014,20 @@ zz.buy = zz.buy || {};
         });
 
 
-        if(zz.page.album_id){
-            buy_screens_element.find('.configure-product-screen .main-section .selected-photos-section .add-all-photos').show().unbind('click').click(function(){
-                zz.routes.photos.get_album_photos_json(zz.page.album_id, zz.page.album_cache_version_key, function(photos){
-                    ZZAt.track('buy.add-all-photos.click');
-                    var dialog = zz.dialog.show_progress_dialog("Adding photos...");
-                    _.delay(function(){
-                        zz.buy.add_selected_photos(photos);
-                        refresh_selected_photos_list();
-                        scroll_to_bottom_of_selected_photos();
-                        dialog.close();
-                    },100);
-                });
-            });
-        }
+//        if(zz.page.album_id){
+//            buy_screens_element.find('.configure-product-screen .main-section .selected-photos-section .add-all-photos').show().unbind('click').click(function(){
+//                zz.routes.photos.get_album_photos_json(zz.page.album_id, zz.page.album_cache_version_key, function(photos){
+//                    ZZAt.track('buy.add-all-photos.click');
+//                    var dialog = zz.dialog.show_progress_dialog("Adding photos...");
+//                    _.delay(function(){
+//                        zz.buy.add_selected_photos(photos);
+//                        refresh_selected_photos_list();
+//                        scroll_to_bottom_of_selected_photos();
+//                        dialog.close();
+//                    },100);
+//                });
+//            });
+//        }
 
 
         // hack: need to run this one time for each option
@@ -1044,6 +1042,19 @@ zz.buy = zz.buy || {};
 
         check_bad_photos();
 
+    }
+
+    zz.buy.add_all_photos_from_current_album = function(){
+        zz.routes.photos.get_album_photos_json(zz.page.album_id, zz.page.album_cache_version_key, function(photos){
+            ZZAt.track('buy.add-all-photos.click');
+            var dialog = zz.dialog.show_progress_dialog("Adding photos...");
+            _.delay(function(){
+                zz.buy.add_selected_photos(photos);
+                refresh_selected_photos_list();
+                scroll_to_bottom_of_selected_photos();
+                dialog.close();
+            },100);
+        });
     }
 
     function refresh_selected_photos_list(){

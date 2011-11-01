@@ -136,6 +136,18 @@ zz.album = {};
             }
 
 
+            // add placeholder for add-all button
+            if(buy_mode){
+                var addAllButton = {
+                    id: 'add-all-photos',
+                    src: zz.routes.image_url('/images/blank.png'),
+                    caption: '',
+                    type: 'blank'
+                };
+
+                json.unshift(addAllButton);
+            }
+
 
             var grid = gridElement.zz_photogrid({
                 photos: json,
@@ -167,6 +179,20 @@ zz.album = {};
                 infoMenuTemplateResolver: info_menu_template_resolver,
                 rolloverFrameContainer: gridElement
             }).data().zz_photogrid;
+
+
+
+            if (buy_mode) {
+                var addAllButton = $('<img class="add-all-button" src="' + zz.routes.image_url('/images/folders/add_all_photos.png') + '">');
+                addAllButton.click(function() {
+                    zz.buy.add_all_photos_from_current_album();
+                });
+
+                gridElement.append(addAllButton);
+            }
+
+
+
         });
 
     }
