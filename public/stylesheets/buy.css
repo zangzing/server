@@ -653,21 +653,15 @@
 }
 
 
-.buy-drawer-scrim .message {
+.buy-drawer-scrim .dialog {
     position: absolute;
-    background-color: #F9F9FA;
-    border: 1px solid #D7D7D7;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    padding: 20px 40px 20px 40px;
-    font-size: 16px;
-    text-align: center;
-    display: none;
-    height: 100px;
-    width: 206px;
-    top: 200px;
-    line-height: 24px;
+    height: 500px;
+    width: 710px;
+    top: 170px;
+    background: url(/images/buy/three-steps-to-buy.png) no-repeat scroll 0px 0px transparent;
 }
+
+
 
 
 .glamour-page{
