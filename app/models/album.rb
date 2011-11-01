@@ -484,7 +484,7 @@ class Album < ActiveRecord::Base
     else
       user_id = user.id
       #album owner can always download
-      return true if user && (user_id == self.user_id)
+      return true if user_id == self.user_id
 
       case who_can_download
         when WHO_EVERYONE
