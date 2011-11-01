@@ -85,6 +85,11 @@
     top: 10px;
 }
 
+.progress-dialog-content #dspin_here{
+    position: relative;
+    top: 45px;
+}
+
 #flash-dialog{
     width:  350px;
     height: 150px;

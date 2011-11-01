@@ -23,9 +23,9 @@ change            = nil unless defined?(change)
           <%end%>
           <div class="variant_description"><%= truncate(variant.custom_description, :length => 100, :omission => "...") %> </div>
           <% if item_form.present? %>
-            <div class="variant_description"> <%= link_to t('delete').downcase, 'javascript:void(0)', :class => 'delete' %></div>
+            <div class="variant_description"> <%= link_to t('delete').titleize, 'javascript:void(0)', :class => 'delete' %></div>
            <%elsif change.present?%>
-            <div class="variant_description">  <%= link_to t('change'), cart_path %></div>
+            <div class="variant_description">  <%= link_to t('change').titleize, cart_path %></div>
           <%end%>
         </td>
 
