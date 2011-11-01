@@ -380,9 +380,10 @@ zz.buy = zz.buy || {};
     var buy_screens_element = null;
 
     var SCRIM_TEMPLATE = function(){
-        return '<div class="buy-drawer-scrim" style="display: block; ">' +
+        return '<div class="buy-drawer-scrim">' +
                    '<div class="scrim"></div>' +
-                   '<div class="message" style="display: block; left: 403px; ">Please choose a product, then you will be able to select photos for that product.</div>' +
+                   '<div class="dialog">' +
+                   '</div>' +
                 '</div>'
     };
 
@@ -409,8 +410,6 @@ zz.buy = zz.buy || {};
                                 '<div class="options"></div>' +
                             '</div>' +
                             '<div class="selected-photos-section">' +
-                                '<a class="add-all-photos hyperlink-button">Add All Photos from Album</a>' +
-                                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
                                 '<a class="clear-all-photos hyperlink-button">Clear Selected Photos</a>' +
                                 '<div class="add-photos-message">Choose product settings and then click to choose your photos.</div>' +
                                 '<div class="selected-photos"></div>' +
@@ -1016,20 +1015,20 @@ zz.buy = zz.buy || {};
         });
 
 
-        if(zz.page.album_id){
-            buy_screens_element.find('.configure-product-screen .main-section .selected-photos-section .add-all-photos').show().unbind('click').click(function(){
-                zz.routes.photos.get_album_photos_json(zz.page.album_id, zz.page.album_cache_version_key, function(photos){
-                    ZZAt.track('buy.add-all-photos.click');
-                    var dialog = zz.dialog.show_progress_dialog("Adding photos...");
-                    _.delay(function(){
-                        zz.buy.add_selected_photos(photos);
-                        refresh_selected_photos_list();
-                        scroll_to_bottom_of_selected_photos();
-                        dialog.close();
-                    },100);
-                });
-            });
-        }
+//        if(zz.page.album_id){
+//            buy_screens_element.find('.configure-product-screen .main-section .selected-photos-section .add-all-photos').show().unbind('click').click(function(){
+//                zz.routes.photos.get_album_photos_json(zz.page.album_id, zz.page.album_cache_version_key, function(photos){
+//                    ZZAt.track('buy.add-all-photos.click');
+//                    var dialog = zz.dialog.show_progress_dialog("Adding photos...");
+//                    _.delay(function(){
+//                        zz.buy.add_selected_photos(photos);
+//                        refresh_selected_photos_list();
+//                        scroll_to_bottom_of_selected_photos();
+//                        dialog.close();
+//                    },100);
+//                });
+//            });
+//        }
 
 
         // hack: need to run this one time for each option
@@ -1044,6 +1043,19 @@ zz.buy = zz.buy || {};
 
         check_bad_photos();
 
+    }
+
+    zz.buy.add_all_photos_from_current_album = function(){
+        zz.routes.photos.get_album_photos_json(zz.page.album_id, zz.page.album_cache_version_key, function(photos){
+            ZZAt.track('buy.add-all-photos.click');
+            var dialog = zz.dialog.show_progress_dialog("Adding photos...");
+            _.delay(function(){
+                zz.buy.add_selected_photos(photos);
+                refresh_selected_photos_list();
+                scroll_to_bottom_of_selected_photos();
+                dialog.close();
+            },100);
+        });
     }
 
     function refresh_selected_photos_list(){
@@ -1166,7 +1178,7 @@ zz.buy = zz.buy || {};
     function show_scrim(){
         var scrim = $(SCRIM_TEMPLATE());
         $('body').append(scrim);
-        $('.buy-drawer-scrim .message ').center_x();
+        $('.buy-drawer-scrim .dialog ').center_x();
         scrim.show();
     }
 
@@ -1320,7 +1332,13 @@ zz.buy = zz.buy || {};
         var template = $('<div class="glamouf"')
 
         zz.routes.store.get_glamour_page_html(product_id, function(html){
-            zz.dialog.show_square_dialog(html, {width:800, height:600});
+            var dialog = zz.dialog.show_square_dialog(html, {width:800, height:600}).element;
+
+            // force glamour page to shup up centered
+            // over the left part of the screen
+            dialog.center_x($('.buy-drawer-scrim'));
+            dialog.css('top', '125px');
+
             ZZAt.track('buy.glamour-page.open', {product_id: product_id});
         });
     }

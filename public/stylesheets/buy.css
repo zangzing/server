@@ -653,21 +653,15 @@
 }
 
 
-.buy-drawer-scrim .message {
+.buy-drawer-scrim .dialog {
     position: absolute;
-    background-color: #F9F9FA;
-    border: 1px solid #D7D7D7;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    padding: 20px 40px 20px 40px;
-    font-size: 16px;
-    text-align: center;
-    display: none;
-    height: 100px;
-    width: 206px;
-    top: 200px;
-    line-height: 24px;
+    height: 500px;
+    width: 710px;
+    top: 125px;
+    background: url(/images/buy/three-steps-to-buy.png) no-repeat scroll 0px 0px transparent;
 }
+
+
 
 
 .glamour-page{
@@ -676,30 +670,62 @@
 
 .glamour-page .product-image{
     position: absolute;
-    top: 30px;
+    top: 66px;
     left: 34px;
 }
 
+.glamour-page.product-id-941187647 .product-image{
+    top:80px;
+}
+
+.glamour-page.product-id-941187649 .product-image{
+    left:14px;
+}
+
+
+
 .glamour-page .product-image img{
-    width: 370px;
-    height: 375px;
+width: 370px;
+height: 375px;
 }
 
 .glamour-page .product-name{
-    position: absolute;
-    top: 30px;
-    left: 430px;
+    position: relative;
+    top: 26px;
+    left: 0px;
+    right:0px;
+    text-align: center;
     font-size: 24px;
     font-weight: bold;
 }
 
 .glamour-page .product-description{
     position: absolute;
-    top: 80px;
+    top: 95px;
     left: 450px;
     font-size: 16px;
     text-align: left;
     right: 30px;
+}
+
+.glamour-page.product-id-941187651 .product-description{
+    top: 133px;
+}
+
+.glamour-page.product-id-941187648 .product-description{
+    top: 84px;
+}
+
+.glamour-page.product-id-941187649 .product-description{
+    top: 118px;
+}
+
+.glamour-page.product-id-941187650 .product-description{
+    top: 109px;
+}
+
+.glamour-page.product-id-941187653 .product-description{
+    top: 148px;
 }
 
 .glamour-page .product-description li{
