@@ -38,7 +38,7 @@
             <%= radio_button_tag 'order[creditcard_id]', order.payment.source.id %>
             <%= render :partial => 'creditcard_oneliner', :locals => { :creditcard => order.payment.source } %>
           </label>
+        </div>
     <%end%>
-    </div>
 <%end%>
 

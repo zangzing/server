@@ -32,9 +32,9 @@ javascripts:
   movie:
     - public/javascripts/movie/*.js
   store:
+    - public/javascripts/store/jquery.infieldlabel.js
     - public/javascripts/zz/routes.js
     - public/javascripts/store/application.js
-    - public/javascripts/store/jquery.infieldlabel.js
     - public/javascripts/jquery-lib/jquery.validate.js
     - public/javascripts/lib/spin.js
     - public/javascripts/store/checkout.js
