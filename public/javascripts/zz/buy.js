@@ -1332,7 +1332,13 @@ zz.buy = zz.buy || {};
         var template = $('<div class="glamouf"')
 
         zz.routes.store.get_glamour_page_html(product_id, function(html){
-            zz.dialog.show_square_dialog(html, {width:800, height:600});
+            var dialog = zz.dialog.show_square_dialog(html, {width:800, height:600}).element;
+
+            // force glamour page to shup up centered
+            // over the left part of the screen
+            dialog.center_x($('.buy-drawer-scrim'));
+            dialog.css('top', '125px');
+
             ZZAt.track('buy.glamour-page.open', {product_id: product_id});
         });
     }
