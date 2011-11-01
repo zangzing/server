@@ -10,7 +10,7 @@ OrdersController.class_eval do
 
   def add_to_order
     order = current_order(true)
-    variant = Variant.find_by_product_id_and_sku(params[:product_id], params[:sku])
+    variant = Variant.active.find_by_product_id_and_sku(params[:product_id], params[:sku])
 
     params[:photo_ids].each do |photo_id|
       photo = Photo.find( photo_id )
