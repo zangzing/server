@@ -51,7 +51,7 @@ html{
     border-radius:         10px;
     -moz-border-radius:    10px;
     -webkit-border-radius: 10px;
-    overflow: hidden;
+    /*overflow: hidden;*/
 }
 .checkout-next-button{
     margin: 18px 0 0 0;
@@ -405,7 +405,6 @@ p.field#order_email input{
 }
 
 .order-total td{
-
     font-weight: bold;
     border-top:  3px groove white;
 }
@@ -413,7 +412,16 @@ p.field#order_email input{
 .summary-lines{
     color: #333333;
     font-size: 14px;
+    text-shadow: 1px 1px 1px white;
 }
+
+.summary-centered-lines{
+    color: #333333;
+    text-shadow: 1px 1px 1px white;
+    text-align:center;
+    font-size: 12px;
+}
+
 
 .summary-bold{
     font-size: 16px;
@@ -421,6 +429,48 @@ p.field#order_email input{
     color: #333333;
     text-shadow: 1px 1px 1px white;
 }
+
+/*----------------------------- Show Summary --------------- */
+#show{
+    position: relative;
+    height: 100%;
+       top: 0;
+    bottom: 0;
+    margin-bottom: 0;
+}
+
+#show .summary-lines td {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+#show #order_summary td{
+    border: none;
+}
+
+#show #order_summary .order-total td{
+    font-weight: bold;
+    border-top:  3px groove white;
+}
+
+
+#show #right_side{
+    width: 222px;
+    position: absolute;
+    height: 99.5%;
+    top: 0;
+    right: 0;
+    background-color: #c1e8c2;
+    border: 3px solid #7ea77f;
+    -webkit-border-top-right-radius: 10px;
+    -webkit-border-bottom-right-radius: 10px;
+    -moz-border-radius-topright: 10px;
+    -moz-border-radius-bottomright: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding:   0 15px 0 15px;
+}
+
 
 /*---------------------------- Review ------------------ */
 #subtotal{

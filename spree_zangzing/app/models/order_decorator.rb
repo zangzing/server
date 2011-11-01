@@ -705,17 +705,6 @@ Order.class_eval do
     visible_line_items
   end
 
-  def must_update
-    @must_update ||= false
-  end
-
-  def set_must_update
-      @must_update = true
-  end
-
-  def clear_must_update
-       @must_update = true
-  end
 
   private
 

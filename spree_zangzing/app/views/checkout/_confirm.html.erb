@@ -81,7 +81,7 @@ end %>
 By placing your order you agree to ZangZing's <a class="hyperlink-button" target="_blank" href="http://www.zangzing.com/terms">terms of service</a> and <a class="hyperlink-button" target="_blank" href="http://www.zangzing.com/privacy">privacy policy</a>.
 <%end%>
 
-
+<%= render 'shared/shipping_question' %>
 
 <%content_for :page_javascript do %>
     <script type="text/javascript">
@@ -96,21 +96,4 @@ By placing your order you agree to ZangZing's <a class="hyperlink-button" target
     </script>
 <% end %>
 
-<!--------------- This is the content of the modal phone_question dialog -->
-  <div style="display: none;" id="phone-question-modal" class="modal hide">
-    <div class="modal-body">
-      <p>
-        <strong>How long will it take to get my photos?</strong>
-        </p>
-        High quality prints usually take 2 working days to produce. Gallery Wrapped Canvas and
-        framed products are crafted by hand and they usually take 4 days to assemble.
-        When your order is ready we will ship it to you using the service of your choice.</p>
-        If your order contains framed products and prints, we will
-        ship them separately so you get them as soon as possible.
-      </p>
-    </div>
-    <div class="modal-footer">
-      <a href="#" onclick="$('#phone-question-modal').modal('hide');" class="btn success">OK</a>
-    </div>
-  </div>
 
