@@ -62,36 +62,33 @@ end %>
                   shadow: false
               }).spin( document.getElementById('spin_here'));
           };
+     var links_off = function(){
+          //$('a.checkout-cart').unbind('click');
+          //$('a.delete').unbind('click');
+          //$('a.details').unbind('click');
+          //$('a#update-cart').unbind('click');
+          //spin();
+          zz.dialog.show_spinner_progress_dialog("Recalculating your order...");
+     };
 
-     $('form#updatecart a.delete').click( function(e){
+     $('a.delete').click( function(e){
         e.preventDefault();
         if( confirm('<%=t('are_you_sure_delete')%>') ){
-            spin();
-            $('form#updatecart a.delete').css('color', '#666666' );
+            links_off();
             subject = $(this).parents('tr');
-            subject.fadeOut(1000);
             subject.find('input.item_quantity').val(0);
             $('form#updatecart').submit();
         }
         return false;
      });
 
-     $('#update-cart').click( function(){
-         $(this).unbind('click');
-         $('a.checkout-cart').unbind('click');
-         $('a.delete').unbind('click');
-         $(this).attr('disabled', 'disabled');
-         $(this).unbind('click');
-         spin();
+     $('a#update-cart').click( function(){
+         links_off();
          $('form#updatecart').submit();
      });
 
      $('a.checkout-cart').click( function(){
-        $(this).unbind('click');
-        $('#update-cart').unbind('click');
-        $('a.delete').unbind('click');
-        $(this).unbind('click');
-        spin();
+        links_off();
         $('form#updatecart').attr('action', '<%=checkout_cart_path%>');
         $('form#updatecart').submit();
      });
