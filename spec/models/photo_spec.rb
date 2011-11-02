@@ -58,12 +58,33 @@ describe Photo do
       options[:crop] = crop
       options[:rotate_to] = 0
       options[:for_print] = true
+      upload_batch = UploadBatch.get_current_and_touch(photo.user_id, photo.album_id)
+      options[:upload_batch] = upload_batch
 
-      photo_copy = Photo.copy_photo(photo, options)
+      originals = [{:photo => photo, :options => options}]
+      photo_copies = Photo.copy_photos(originals)
+      photo_copy = photo_copies[0]
       photo_copy.reload
       photo_copy.ready?.should == true
       photo_copy.id.should_not == photo.id
       photo_copy.image_path.should_not == photo.image_path
+      photo_copy.destroy
+
+      # now a benchmark to measure cost of copy prep on a set of photos
+      Benchmark.bm(25) do |x|
+        test_items = 10
+        x.report("Copy #{test_items} photos") do
+          1.times do
+            originals = []
+            test_items.times do
+              originals << {:photo => photo, :options => options}
+            end
+            resque_jobs(:except => [ZZ::Async::MailingListSync, ZZ::Async::S3Upload]) do
+              photo_copies = Photo.copy_photos(originals)
+            end
+          end
+        end
+      end
 
       # now delete the photo
       photo.destroy

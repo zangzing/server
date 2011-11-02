@@ -373,6 +373,8 @@ Order.class_eval do
     xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
     xml.instruct! unless options[:skip_instruct]
     options[:skip_instruct] = true
+    # fast load line items and associated print photos
+    line_items = LineItem.includes(:print_photo, :variant).find_all_by_order_id(self.id)
     xml.orders({ :partnerid => ZangZingConfig.config[:ezp_partner_id], :version => 1 }) {
       xml.images{
         xml.uri( {:id  => logo_id,
@@ -488,6 +490,19 @@ Order.class_eval do
     }.call
   end
 
+  # validate that all of the photos associated with the
+  # line items exist - will return true if they all exist and are ready,
+  # false otherwise
+  def all_photos_valid?
+    # bulk load all the line items and photos
+    lines = LineItem.includes(:photo).find_all_by_order_id(self.id)
+    lines.each do |line|
+      photo = line.photo
+      return false if photo.nil? || !photo.ready?
+    end
+    true
+  end
+
   # prepare an order for submission
   # we create the album and photos here
   # the photos still need to be processed
@@ -510,13 +525,39 @@ Order.class_eval do
     batch = UploadBatch.factory( Order.ez_prints_user_id, album.id, true )
 
     # now set up the photos we need to copy and track them in the line items
-    line_items.each do |li|
+    # first preload everything we need in three queries (line_items, photos, photo_infos)
+    lines = LineItem.includes(:photo => :photo_info).find_all_by_order_id(self.id)
+    originals = []
+    line_rows = []
+    lines.each do |li|
       photo = li.photo
-      print_photo = Photo.copy_photo(photo, :user_id => Order.ez_prints_user_id, :album_id => album.id,
-                      :upload_batch_id => batch.id, :for_print => true)
-      li.print_photo = print_photo
-      li.save!
+      options = { :user_id => Order.ez_prints_user_id, :album_id => album.id,
+                  :upload_batch => batch, :for_print => true }
+      originals << { :photo => photo, :options => options }
+      line_rows << li.id  # ensure the ordering matches the copied photos
     end
+
+    # copy the originals
+    print_photos = Photo.copy_photos(originals)
+
+    # Now update line items to use new copies for print_photo id.
+    # The lists are in sync so item 0 of lines gets photos 0, etc...
+    i = 0
+    rows = []
+    line_rows.each do |line_item_id|
+      # build data for fast insert into line_items
+      row = [ line_item_id, print_photos[i].id ]
+      rows << row
+      i += 1
+    end
+
+    # use a direct update to avoid any callbacks - saving a changed line item is
+    # unbelievably inefficient - the batch insert/update below on the other hand is
+    # incredibly fast
+    db = LineItem.connection
+    base_cmd = "INSERT INTO #{LineItem.quoted_table_name}(id, print_photo_id) VALUES "
+    end_cmd = " ON DUPLICATE KEY UPDATE print_photo_id = VALUES(print_photo_id)"
+    RawDB.fast_insert(db, LineItem.max_insert_size, rows, base_cmd, end_cmd)
 
     # close out this batch since no new photos will be added to it
     batch.close_immediate

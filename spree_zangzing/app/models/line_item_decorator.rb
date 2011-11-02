@@ -45,6 +45,12 @@ LineItem.class_eval do
 
   scope :visible_by_variant, lambda { |variant| where('line_items.variant_id = ? AND line_items.hidden = 0', variant.id).order('created_at DESC') }
 
+  # used to determine max safe statement size for
+  # a bulk insert on this connection
+  def self.max_insert_size
+    @@safe_max_size ||= RawDB.safe_max_size(LineItem.connection)
+  end
+
   def shipping_may_change
     order.shipping_may_change
   end
@@ -59,7 +65,6 @@ LineItem.class_eval do
   end
 
   def to_xml_ezpimage( options = {})
-    return unless photo
     options[:indent] ||= 2
     xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
     xml.instruct! unless options[:skip_instruct]
@@ -70,6 +75,7 @@ LineItem.class_eval do
       photo_title = placeholder[:title]
       photo_url = placeholder[:url]
     else
+      raise ArgumentError.new("Missing print photo for line item id: #{self.id}, order id: #{self.order_id}") if print_photo.nil?
       photo_id = print_photo.id
       photo_title = nil_if_empty(back_message) || nil_if_empty(print_photo.caption) || 'www.zangzing.com'
       photo_url = print_photo.full_size_url
@@ -79,7 +85,6 @@ LineItem.class_eval do
   end
 
   def to_xml_ezporderline(options = {})
-   return unless photo
    options[:indent] ||= 2
    xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
    xml.instruct! unless options[:skip_instruct]
@@ -88,6 +93,7 @@ LineItem.class_eval do
      placeholder = Order.placeholder_image
      photo_id = placeholder[:id]
    else
+     raise ArgumentError.new("Missing print photo for line item id: #{self.id}, order id: #{self.order_id}") if print_photo.nil?
      photo_id = print_photo.id
    end
    xml.orderline( :productid => variant.sku,
