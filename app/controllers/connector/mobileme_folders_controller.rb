@@ -47,7 +47,7 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
     photos = []
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     album_contents.each do |photo_data|
-      next if photo_data.type=='Album'
+      next if photo_data['type']=='Album'
       photo = Photo.new_for_batch(current_batch, {
               :id => Photo.get_next_id,
               :caption => photo_data.title,
@@ -95,23 +95,19 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
 
 
   def index
-    #fire_async_response('list_albums')
-    render :json => self.class.list_albums(connector, params)
+    fire_async_response('list_albums')
   end
   
   def photos
-    #fire_async_response('list_photos')
-    render :json => self.class.list_photos(connector, params)
+    fire_async_response('list_photos')
   end
 
   def import_photo
-    #fire_async_response('import_certain_photo')
-    render :json => self.class.import_certain_photo(connector, params)
+    fire_async_response('import_certain_photo')
   end
 
   def import_all
-    #fire_async_response('import_dir_photos')
-    render :json => self.class.import_dir_photos(connector, params)
+    fire_async_response('import_dir_photos')
   end
 
 end
