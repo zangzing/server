@@ -65,11 +65,8 @@
             <%end%>
 
             $('#place-order-button').click(function(){
-                zz.dialog.show_progress_dialog("Submitting order...");
-                // need to defer the submit otherwise progress dialog spinner doesn't load
-                _.defer(function(){
-                    $('#checkout_form_confirm').attr('action','<%=update_checkout_path('confirm')%>').submit();
-                });
+                zz.dialog.show_spinner_progress_dialog("Submitting order...");
+                $('#checkout_form_confirm').attr('action','<%=update_checkout_path('confirm')%>').submit();
             });
         });
     </script>
