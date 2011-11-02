@@ -611,10 +611,7 @@ Order.class_eval do
     line_item_id_array.uniq!    # get rid of any duplicates
 
     # make sure we only include line items that have not already been associated with a shipment
-    filtered_line_item_ids = []
-    self.line_items.each do |line_item|
-      filtered_line_item_ids << line_item.id if line_item.shipment_id.nil? && line_item_id_array.include?(line_item.id)
-    end
+    filtered_line_item_ids = self.line_items.select{ |li| li.shipment_id.nil? && line_item_id_array.include?(li.id)}
     return if filtered_line_item_ids.blank?
 
     shp = shipments.detect{|shp| shp.ready? || shp.pending? }
@@ -626,6 +623,14 @@ Order.class_eval do
 
     # Store carrier::tracking number in the shipment tracking field
     if carrier.present? && tracking_number.present?
+      # FILTER CARRIER, ezPrints feeds tracking numbers like UPS 12345678
+      # which are NOT United Parcel Service tracking numbers but USPS so make carrier USPS unless
+      # the tracking number is indeed a UPS number
+      if carrier == 'UPS'
+        unless /\b(1Z ?[0-9A-Z]{3} ?[0-9A-Z]{3} ?[0-9A-Z]{2} ?[0-9A-Z]{4} ?[0-9A-Z]{3} ?[0-9A-Z]|[\dT]\d\d\d ?\d\d\d\d ?\d\d\d)\b/ =~ tracking_number
+          carrier = 'USPS'
+        end
+      end
       shp.tracking        = "#{carrier}::#{tracking_number}"
     else
       shp.tracking        = "#{carrier}#{tracking_number}"
@@ -634,7 +639,6 @@ Order.class_eval do
     shp.shipped_at = Time.now()
     old_state = self.state
     shp.ship
-
     # audit trail
     self.state_events.create({
         :previous_state => old_state,
@@ -642,6 +646,7 @@ Order.class_eval do
         :name           => "ezp shipment" ,
         :user_id        => (User.respond_to?(:current) && User.current && User.current.id) || self.user_id
     })
+    shp
   end
 
   # Updates the +shipment_state+ attribute according to the following logic:
