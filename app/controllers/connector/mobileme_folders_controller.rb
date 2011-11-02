@@ -24,7 +24,7 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
     end
     photos = []
     album_contents.each do |photo_data|
-      next if photo_data.type=='Album'
+      next if photo_data['type']=='Album'
       photo = {
         :name => photo_data.title,
         :id   => photo_data.guid,
@@ -100,15 +100,18 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
   end
   
   def photos
-    fire_async_response('list_photos')
+    #fire_async_response('list_photos')
+    render :json => self.class.list_photos(connector, params)
   end
 
   def import_photo
-    fire_async_response('import_certain_photo')
+    #fire_async_response('import_certain_photo')
+    render :json => self.class.import_certain_photo(connector, params)
   end
 
   def import_all
-    fire_async_response('import_dir_photos')
+    #fire_async_response('import_dir_photos')
+    render :json => self.class.import_dir_photos(connector, params)
   end
 
 end

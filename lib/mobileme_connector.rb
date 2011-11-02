@@ -9,64 +9,49 @@ class MobilemeError < StandardError
   end
 end
 
+require 'faraday'
+
 class MobilemeConnector
-  include HTTParty
-  
+
   AUTH_ENDPOINT = 'https://auth.me.com/authenticate'
   API_ENDPOINT = 'https://www.me.com/ro/%s/Galleries' #?webdav-method=truthget&feedfmt=galleryowner&depth=1&synchronize=true&lang=en
+  TOKEN_SPLITTER = '<//>'
 
   attr_accessor :default_username, :auth_cookies
 
-  def initialize(auth_cookies = nil)
-    @auth_cookies = auth_cookies
+  def initialize(token = nil)
+    self.token = token if token
+  end
+
+  def token=(val)
+    data = YAML.load(val)
+    @auth_cookies = data[:cookies]
+    @default_username = data[:user]
+  end
+
+  def token
+    {
+      :cookies => @auth_cookies,
+      :user => @default_username
+    }.to_yaml
   end
 
   def login(email, password)
     email = 	'alvarezm50@me.com'
     password = 'Share1001photos'
-    entry_page = self.class.get(AUTH_ENDPOINT,
-    :headers => {
-        'Cookie' => 'mmls=1; lua=1',
-        'Host' => 'auth.me.com',
-        'User-Agent' => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; ru; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3',
-        'Connection' => 'keep-alive',
-        'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Language' => 'en-us;q=0.7,en;q=0.3',
-        'Accept-Charset' => '	windows-1251,utf-8;q=0.7,*;q=0.7'
-    })
 
-    doc = Nokogiri::HTML(entry_page.body)
-    @login_params = {}
-    doc.xpath('//form[@name="loginForm"]/input[@type="hidden"]').each do |hidden_field|
-      @login_params[hidden_field["name"]]=hidden_field['value']
-    end
-    @login_params['ssoNamespace']='appleid'
-    begin
-    response = self.class.post(AUTH_ENDPOINT,
-      :headers => {
-        'Content-Type' => 'application/x-www-form-urlencoded',
-        'Referer' => AUTH_ENDPOINT,
-        'Cookie' => 'mmls=1; lua=1',
-        'Host' => 'auth.me.com',
-        'User-Agent' => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; ru; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3',
-        'Connection' => 'keep-alive',
-        'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Language' => 'en-us;q=0.7,en;q=0.3',
-        'Accept-Charset' => '	windows-1251,utf-8;q=0.7,*;q=0.7'
-      },
-      :body => @login_params.merge('username' => email, 'password' => password) #extra_login_params
-#:body => 'cancelURL=http%3A%2F%2Fwww.me.com%2Fmail&formID=loginForm&mailstatus=&ownerPrsId=&password=Share1001photos&returnURL=aHR0cHM6Ly93d3cubWUuY29tL2dhbGxlcnkv&service=mail&ssoNamespace=appleid&ssoOpaqueToken=&username=alvarezm50%40me.com'
-    )
-    rescue Exception => e
-      puts e  #Breakpoint here!
-      raise e
-    end
-    success = (response.body =~ /src="\/my\/core_gallery/i) && (response.code = 302)
-    if success
-      @default_username = email.split('@').first
-      @auth_cookies = response.cookies
-    end
+    response = Faraday.post AUTH_ENDPOINT, extra_login_params.merge('username' => email, 'password' => password)
+    success = (response.headers['location'] =~ /me\.com\/gallery/i) && (response.status = 302)
     raise MobilemeError.new(401, 'Invalid credentials') unless success
+    @default_username = email.split('@').first
+    @auth_cookies = parse_cookies(response.headers['set-cookie'])
+
+    response = Faraday.get "https://www.me.com/ro/" do |req|
+      req.params = {'protocol' => 'roap', 'item' => 'properties', 'mode' => 'find', 'depth' => '1'}
+      req.headers['Cookie'] = cookies_as_string
+    end
+    new_cookies = parse_cookies(response.headers['set-cookie'])
+    @auth_cookies.merge!(new_cookies)
   end
 
   def logout
@@ -76,17 +61,28 @@ class MobilemeConnector
 
   def get_albums_list(options = {})
     request(:get, API_ENDPOINT % [@default_username], :depth => 1).reject do |e|
-      e.type == 'Movie'
+      e['type'] == 'Movie'
     end
   end
 
   def get_album_contents(album_id, options = {})
     request(:get, "#{API_ENDPOINT % [@default_username]}/#{album_id}", :depth => 'album').reject do |e|
-      e.type == 'Movie'
+      e['type'] == 'Movie'
     end
   end
 
 protected
+  def parse_cookies(set_cookie_header)
+    set_cookie_header.scan(/([a-z0-9\-_\.]+)=([a-z0-9=:]+);/i).inject({}) do |hsh, kuk|
+      hsh[kuk[0]] = kuk[1]
+      hsh
+    end
+  end
+
+  def cookies_as_string
+    @auth_cookies.map{|k,v| "#{k}=#{v}" }.join('; ')
+  end
+
   def extra_login_params
     {
       'service' => 'gallery',
@@ -96,16 +92,33 @@ protected
       'ssoNamespace' => 'appleid',
       'ssoOpaqueToken' => '',
       'ownerPrsId' => '',
-      'formID' => 'loginForm'
-      #'username' => sdfsdfsd@me.com
-      #'password' => sdfsdf
+      'formID' => 'loginForm',
+      'keepLoggedIn' =>'true'
     }
   end
 
   def request(http_method, api_path, options = {})
-    response = self.class.send(http_method, api_path, :query => options.merge(default_options))
-    raise MobilemeError.new(401, response.body.to_s) if response.body =~ /Error:/
-    mash_response = Hashie::Mash.new(response)
+    conn = Faraday::Connection.new(:url => api_path) do |builder|
+      #builder.use Faraday::Request::UrlEncoded
+      #builder.use Faraday::Response::ParseJson
+      builder.use Faraday::Adapter::NetHttp
+    end
+
+    response = conn.send(http_method) do |req|
+      req.params = options.merge(default_options)
+      req.headers['Cookie'] = cookies_as_string
+      req.headers['X-Mobileme-Isc'] = @auth_cookies['isc-www.me.com']
+      req.headers['X-Mobileme-Version'] = '1.0'
+      req.headers['X-Prototype-Version'] = '1.0.3'
+      req.headers['X-Requested-With'] = "XMLHttpRequest"
+    end
+    raise MobilemeError.new(403, response.body) if response.body =~ /Error:/
+    #begin
+      json_response = MultiJson.decode(response.body)
+    #rescue MultiJson::DecodeError => de
+    #  raise MobilemeError.new(401, response.body)
+    #end
+    mash_response = Hashie::Mash.new(json_response)
     #TODO Handle unsuccessful response
     mash_response.records
   end
@@ -113,7 +126,9 @@ protected
   def default_options
     {
       'webdav-method' => 'truthget',
-      'feedfmt' => 'galleryowner'
+      'feedfmt' => 'galleryowner',
+      'synchronize' => 'true',
+      'lang' => 'en'
       #'depth' => 1
     }
   end

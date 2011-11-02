@@ -3,20 +3,21 @@ class Connector::MobilemeSessionsController < Connector::MobilemeController
   skip_before_filter :require_user, :only => [:new, :create]
 
   def create
-    begin
+    #begin
       SystemTimer.timeout_after(http_timeout) do
         connector.login(params[:email], params[:password])
-        service_identity.update_attribute(:credentials, connector.auth_cookies)
+        service_identity.update_attribute(:credentials, connector.token)
       end
       render 'connector/sessions/create'
-    rescue Exception => ex
-      flash.now[:error] = ex.message
-      render "new"
-    end
+    #rescue Exception => ex
+    #  flash.now[:error] = ex.message
+    #  render "new"
+    #end
   end
 
   def destroy
     connector.logout
+    service_identity.update_attribute(:credentials, nil)
     render 'connector/sessions/destroy'
   end
 

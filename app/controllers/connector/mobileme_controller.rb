@@ -29,11 +29,12 @@ protected
   end
 
   def self.get_photo_url(photo_info, size)
-    case size
-    when :thumb then photo_info.smallDerivativeUrl
-    when :screen then photo_info.webImageUrl #mediumDerivativeUrl
-    when :full then ping_url(photo_info.largeImageUrl) ? photo_info.largeImageUrl : photo_info.webImageUrl
+    url = case size
+      when :thumb then photo_info.smallDerivativeUrl
+      when :screen then photo_info.webImageUrl #mediumDerivativeUrl
+      when :full then ping_url(photo_info.largeImageUrl) ? photo_info.largeImageUrl : photo_info.webImageUrl
     end
+    url ? url.gsub('https://www.me.com/ro', 'http://gallery.me.com').gsub('/Galleries/', '/') : nil
   end
   
   def self.ping_url(url)
