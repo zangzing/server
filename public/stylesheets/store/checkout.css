@@ -77,11 +77,6 @@ html{
     color: gray !important;
 }
 
-.checkout-summary{
-    padding:  15px;
-    background-color: #c1e8c2;
-    border: 3px solid #7ea77f;
-}
 .grey-border{
     border: 2px solid #CCCCCC;
 }
@@ -328,12 +323,12 @@ p.field#order_email input{
 }
 #left_side{
  float: left;
- width: 685px;
+ width: 680px;
  border-right: solid 1px gray;
 }
 #right_side{
   float: right;
-  width: 252px;
+  width: 255px;
   margin: 0;
 }
 
@@ -380,8 +375,24 @@ p.field#order_email input{
 }
 
 #order_summary{
+    position: relative;
     width: 100%;
 }
+
+.checkout-summary{
+    background-color: #c1e8c2;
+    border: 3px solid #7ea77f;
+    width: 222px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    -webkit-border-top-right-radius: 10px;
+    -moz-border-radius-topright: 10px;
+    border-top-right-radius: 10px;
+    padding:   0 15px 0 15px;
+}
+
+
 
 #place_order{
     width: 65%;
