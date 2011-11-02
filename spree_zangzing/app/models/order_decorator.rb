@@ -573,7 +573,8 @@ Order.class_eval do
     # before we submit to ezprints - at the end of the window resque calls order.submit
     # which in turn calls ezp_submit_order, after this point we have no control
     # over the ezprints order process so cannot cancel from our end
-    ZZ::Async::EZPSubmitOrder.enqueue_in(ZangZingConfig.config[:order_cancel_window], self.id)
+    cancel_window = ZangZingConfig.fast_ezp_simulator? ? 1 : ZangZingConfig.config[:order_cancel_window]
+    ZZ::Async::EZPSubmitOrder.enqueue_in(cancel_window, self.id)
   end
 
   # submit the order to ezprints, this is a callback from a resque
@@ -652,8 +653,8 @@ Order.class_eval do
     line_item_id_array.uniq!    # get rid of any duplicates
 
     # make sure we only include line items that have not already been associated with a shipment
-    filtered_line_item_ids = self.line_items.select{ |li| li.shipment_id.nil? && line_item_id_array.include?(li.id)}
-    return if filtered_line_item_ids.blank?
+    filtered_line_items = self.line_items.select{ |li| li.shipment_id.nil? && line_item_id_array.include?(li.id)}
+    return if filtered_line_items.blank?
 
     shp = shipments.detect{|shp| shp.ready? || shp.pending? }
     if !shp
@@ -676,7 +677,7 @@ Order.class_eval do
     else
       shp.tracking        = "#{carrier}#{tracking_number}"
     end
-    shp.line_item_ids   = filtered_line_item_ids
+    shp.line_items   = filtered_line_items
     shp.shipped_at = Time.now()
     old_state = self.state
     shp.ship
