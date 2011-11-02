@@ -79,6 +79,7 @@ OrdersController.class_eval do
     if !current_user
       user = User.find_by_email(@order.email)
       if user  #a user exists wit the email used
+        session[:return_to]=user_pretty_url( user )
         @user_session = UserSession.new( :email => @order.email )
       else    #a never seen email
        session[:return_to]=root_path
