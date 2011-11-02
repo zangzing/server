@@ -52,34 +52,33 @@
     left: 13px;
 }
 
-.buy-screens .select-product-screen .product .name{
-    position: absolute;
+.buy-screens .select-product-screen .product .name-and-description{
+    position:absolute;
     left: 109px;
     top: 19px;
+    width:221px;
+}
+
+
+.buy-screens .select-product-screen .product .name-and-description .name{
     font-weight: 500;
     font-size: 14px;
 
 }
 
-.buy-screens .select-product-screen .product .description{
-    position: absolute;
-    left: 110px;
-    top: 37px;
-    width: 230px;
-    height: 50px;
+.buy-screens .select-product-screen .product .name-and-description .description{
     overflow: hidden;
     font-size: 13px;
     color: #333;
+    margin-top:3px;
+    margin-bottom: 3px;
 }
 
 
-.buy-screens .select-product-screen .product .learn-more{
+.buy-screens .select-product-screen .product .name-and-description .learn-more{
     color: #466FAA;
     text-decoration: none;
     cursor: pointer;
-    position: absolute;
-    left: 110px;
-    top: 84px;
 }
 
 .buy-screens .select-product-screen .product .learn-more:hover{
@@ -717,7 +716,7 @@ height: 375px;
 }
 
 .glamour-page.product-id-941187649 .product-description{
-    top: 118px;
+    top: 139px;
 }
 
 .glamour-page.product-id-941187650 .product-description{

@@ -422,9 +422,11 @@ zz.buy = zz.buy || {};
     var PRODUCT_TEMPLATE = function(){
         return '<div class="product">' +
                    '<img class="image" src="/images/photo_placeholder.png">' +
-                   '<div class="name"></div>' +
-                   '<div class="description"></div>' +
-                   '<div class="learn-more">Learn more</div>' +
+                   '<div class="name-and-description">' +
+                       '<div class="name"></div>' +
+                       '<div class="description"></div>' +
+                       '<div class="learn-more">Learn more</div>' +
+                   '</div>' +
                    '<div class="arrow"></div>' +
                '</div>';
     };
