@@ -16,9 +16,7 @@ OrdersController.class_eval do
       photo = Photo.find( photo_id )
       order.add_variant( variant,  photo, 1 )
     end
-
     respond_with( order )
-
   end
 
   def index
@@ -40,22 +38,7 @@ OrdersController.class_eval do
     render :layout => 'checkout'
   end
 
-   def update
-    @order = current_order
-    @order.clear_must_update
-    if @order.update_attributes(params[:order])
-      if @order.must_update
-        @order.update!
-        @order.save
-        @order.clear_must_update
-      end
-      @order.line_items = @order.line_items.select {|li| li.quantity > 0 }
-      respond_with(@order) { |format| format.html { redirect_to cart_path } }
-    else
-      respond_with(@order)
-    end
-  end
-
+   
 
   def show
     @order = Order.find_by_number(params[:id])
@@ -96,6 +79,7 @@ OrdersController.class_eval do
     if !current_user
       user = User.find_by_email(@order.email)
       if user  #a user exists wit the email used
+        session[:return_to]=user_pretty_url( user )
         @user_session = UserSession.new( :email => @order.email )
       else    #a never seen email
        session[:return_to]=root_path

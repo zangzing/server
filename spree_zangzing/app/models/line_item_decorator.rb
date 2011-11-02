@@ -120,9 +120,4 @@ LineItem.class_eval do
     variant.print?
   end
 
-  def update_order
-      # update the order totals, etc.
-      order.set_must_update
-  end
-
 end

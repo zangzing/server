@@ -380,9 +380,10 @@ zz.buy = zz.buy || {};
     var buy_screens_element = null;
 
     var SCRIM_TEMPLATE = function(){
-        return '<div class="buy-drawer-scrim" style="display: block; ">' +
+        return '<div class="buy-drawer-scrim">' +
                    '<div class="scrim"></div>' +
-                   '<div class="message" style="display: block; left: 403px; ">Please choose a product, then you will be able to select photos for that product.</div>' +
+                   '<div class="dialog">' +
+                   '</div>' +
                 '</div>'
     };
 
@@ -421,9 +422,11 @@ zz.buy = zz.buy || {};
     var PRODUCT_TEMPLATE = function(){
         return '<div class="product">' +
                    '<img class="image" src="/images/photo_placeholder.png">' +
-                   '<div class="name"></div>' +
-                   '<div class="description"></div>' +
-                   '<div class="learn-more">Learn more</div>' +
+                   '<div class="name-and-description">' +
+                       '<div class="name"></div>' +
+                       '<div class="description"></div>' +
+                       '<div class="learn-more">Learn more</div>' +
+                   '</div>' +
                    '<div class="arrow"></div>' +
                '</div>';
     };
@@ -1177,7 +1180,7 @@ zz.buy = zz.buy || {};
     function show_scrim(){
         var scrim = $(SCRIM_TEMPLATE());
         $('body').append(scrim);
-        $('.buy-drawer-scrim .message ').center_x();
+        $('.buy-drawer-scrim .dialog ').center_x();
         scrim.show();
     }
 
@@ -1331,7 +1334,13 @@ zz.buy = zz.buy || {};
         var template = $('<div class="glamouf"')
 
         zz.routes.store.get_glamour_page_html(product_id, function(html){
-            zz.dialog.show_square_dialog(html, {width:800, height:600});
+            var dialog = zz.dialog.show_square_dialog(html, {width:800, height:600}).element;
+
+            // force glamour page to shup up centered
+            // over the left part of the screen
+            dialog.center_x($('.buy-drawer-scrim'));
+            dialog.css('top', '125px');
+
             ZZAt.track('buy.glamour-page.open', {product_id: product_id});
         });
     }

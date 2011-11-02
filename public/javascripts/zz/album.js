@@ -188,7 +188,7 @@ zz.album = {};
                     zz.buy.add_all_photos_from_current_album();
                 });
 
-                gridElement.append(addAllButton);
+                gridElement.find('.photogrid-cell:first').append(addAllButton);
             }
 
 
