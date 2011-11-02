@@ -80,7 +80,7 @@ zz.dialog = {
         new Spinner({ lines: 12,
                           length: 6,
                           width: 3,
-                          radius: 7,
+                          radius: 6,
                           color: '#333',
                           speed: 1,
                           trail: 40, // Afterglow percentage
