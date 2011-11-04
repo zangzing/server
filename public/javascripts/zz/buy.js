@@ -391,12 +391,14 @@ zz.buy = zz.buy || {};
         return '<div class="buy-screens">' +
                     '<div class="select-product-screen"><div class="loading"></div></div>' +
                     '<div class="configure-product-screen">' +
-                        '<div class="header-section">' +
-                           '<img class="image" src="/images/photo_placeholder.png">' +
-                           '<div class="description">16x20 Mounted Print with a Black Frame</div>' +
-                           '<div class="learn-more">Learn more</div>' +
-                        '</div>' +
                         '<div class="main-section">' +
+                            '<div class="header-section">' +
+                               '<img class="image" src="/images/photo_placeholder.png">' +
+                               '<div class="description">' +
+                                   '<span class="text"></span>' +
+                                   '<div class="learn-more">Learn more</div>' +
+                                '</div>' +
+                            '</div>' +
                             '<div class="options-section">' +
                                 '<div class="price">' +
                                     '<div class="label">Price</div>' +
@@ -406,7 +408,7 @@ zz.buy = zz.buy || {};
                             '</div>' +
                             '<div class="selected-photos-section">' +
                                 '<a class="clear-all-photos hyperlink-button">Clear Selected Photos</a>' +
-                                '<div class="add-photos-message">Choose product settings and then click to choose your photos.</div>' +
+                                '<div class="add-photos-message">Customize the product and then click each photo you would like for this product</div>' +
                                 '<div class="selected-photos"></div>' +
                             '</div>' +
                         '</div>' +
@@ -868,6 +870,9 @@ zz.buy = zz.buy || {};
             slide_to_screen(DRAWER_SCREENS.SELECT_PRODUCT, true);
         });
 
+        buy_screens_element.find('.configure-product-screen .header-section .description .learn-more').unbind('click').click(function(){
+            show_glamour_page(get_selected_product().id);
+        });
 
         buy_screens_element.find('.configure-product-screen .footer-section .checkout-button').unbind('click').click(function(){
             if(get_selected_photos().length == 0){
@@ -931,7 +936,7 @@ zz.buy = zz.buy || {};
 
             if(current_variant){
                 buy_screens_element.find('.configure-product-screen .header-section .image').attr('src', current_variant.image_url);
-                buy_screens_element.find('.configure-product-screen .header-section .description').text(current_variant.description);
+                buy_screens_element.find('.configure-product-screen .header-section .description .text').text(current_variant.description);
 
                 buy_screens_element.find('.configure-product-screen .footer-section .image').attr('src', current_variant.image_url);
                 buy_screens_element.find('.configure-product-screen .footer-section .description').text(current_variant.description);
