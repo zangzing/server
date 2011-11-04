@@ -10,6 +10,33 @@ describe Order do
     ActionMailer::Base.deliveries = []
   end
 
+  describe "Line Item validation" do
+    before(:each) do
+      @order = Order.create
+      variants = Product.find_by_name('Prints').variants
+      @print_variant = variants.detect{ |variant| variant.print? }
+    end
+
+    it 'should verify that all line items have photos' do
+      photo = Factory.create(:photo)
+      photo.mark_ready
+      photo.save
+      @order.add_variant( @print_variant,  photo, 1 )
+      @order.line_items.count.should be 1
+      @order.all_photos_valid?.should be true
+    end
+
+    it 'should fail to verify a line item with a missing photo' do
+      photo = Factory.create(:photo)
+      @order.add_variant( @print_variant,  photo, 1 )
+      @order.line_items.count.should be 1
+      line = @order.line_items[0]
+      line.photo = nil
+      line.save
+      @order.all_photos_valid?.should be false
+    end
+  end
+
   describe "Product Catalog" do
     it "should be loaded with a product named 'Prints' with ID #{LineItem::PRINTS_PRODUCT_ID}" do
       p = Product.find_by_name('Prints')
