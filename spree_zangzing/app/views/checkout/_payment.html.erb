@@ -23,6 +23,7 @@ end %>
             <%= form.label :email, "#{t("email")} (#{t('only_for_order_updates')})" %>
             <%= form.text_field :email, {:class => "required email", 'data-original-title'=>t(:email)}%>
             <a id="email_question"
+               href="javascript:void(0);"
                 class="field_question"
                 tabindex="-1"
                 data-controls-modal="email-question-modal"
@@ -100,6 +101,7 @@ end %>
             <%end%>
 
             $('.next-button').click(function(){
+                ZZAt.track('buy.checkout.payment.continue.click');
                 $('#checkout_form_payment').submit();
             });
         });
