@@ -111,101 +111,72 @@
     bottom:0px;
 }
 
-.buy-screens .configure-product-screen .product-summary-section{
+.buy-screens .configure-product-screen .header-section{
     position:relative;
     top: 0px;
     left: 0px;
     right:0px;
-    height: 76px;
+    height: 95px;
     border-bottom: 1px solid #cccccc;
 }
 
-.buy-screens .configure-product-screen .product-summary-section .image{
+.buy-screens .configure-product-screen .header-section .image{
     position: absolute;
-    height: 55px;
-    width: 55px;
-    left: 10px;
-    top: 10px;
+    height: 85px;
+    width: 85px;
+    left: 8px;
+    top: 4px;
 }
 
-.buy-screens .configure-product-screen .product-summary-section .description{
+.buy-screens .configure-product-screen .header-section .description{
     position: absolute;
-    left: 72px;
+    left: 100px;
     top: 10px;
-    width: 190px;
+    width: 230px;
     font-size: 14px;
     height: 38px;
     overflow: hidden;
 }
 
-.buy-screens .configure-product-screen .product-summary-section .count-and-price{
-    font-size: 14px;
-    font-weight: 500;
+
+.buy-screens .configure-product-screen .header-section .learn-more{
     position: absolute;
+    color: #466FAA;
+    text-decoration: none;
+    font-size: 12px;
+    cursor: pointer;
+    left: 100px;
     top: 45px;
-    left: 73px;
 }
 
-
-.buy-screens .configure-product-screen .product-summary-section .checkout-button{
-    position: absolute;
-    top: 22px;
-    right: 10px;
-    width: 85px;
+.buy-screens .configure-product-screen .header-section .learn-more:hover{
+    text-decoration: underline;
 }
 
 
 
-.buy-screens .configure-product-screen .bad-photos-error{
-    position: relative;
-    left: 0px;
-    width: 379px;
-    height: 71px;
-    background-color: #FCC;
-
-}
-
-.buy-screens .configure-product-screen .bad-photos-error .icon{
-    position: absolute;
-    left: 20px;
-    top: 17px;
-    width: 34px;
-    height: 34px;
-    background: url("/images/buy/error-icon.png") no-repeat scroll
-}
-
-.buy-screens .configure-product-screen .bad-photos-error .message{
-    position: absolute;
-    left: 71px;
-    top: 10px;
-    right: 25px;
-    bottom: 10px;
-    font-size: 13px;
-    font-weight: 500;
-    text-align: left
-}
 
 
 
 .buy-screens .configure-product-screen .main-section{
     position:absolute;
-    top:77px;
+    top:96px;
     left: 0px;
     width:380px;
-    bottom:0px;
+    bottom:101px;
     background-color: #fff;
     overflow-y: auto;
     overflow-x: hidden;
 }
 
 .buy-screens .configure-product-screen.bad-photos .main-section{
-    top:148px;
+    bottom:172px;
 }
 
 
 .buy-screens .configure-product-screen .main-section .price{
     position: relative;
-    left: 72px;
+    left: 30px;
     top: 10px;
     width: 200px;
     font-size: 14px;
@@ -231,7 +202,7 @@
 
 .buy-screens .configure-product-screen .main-section .options-section .options{
     position:relative;
-    left: 72px;
+    left: 30px;
     top: 10px;
 }
 
@@ -393,197 +364,95 @@
 
 
 
+.buy-screens .configure-product-screen .footer-section{
+    position: absolute;
+    height:100px;
+    left:0px;
+    right:0px;
+    bottom:0px;
+    border-top: 1px solid #CCC;
+
+}
+
+
+.buy-screens .configure-product-screen .bad-photos-error{
+    position: absolute;
+    left: 0px;
+    width: 379px;
+    height: 71px;
+    background-color: #FCC;
+    bottom:101px;
+    display:none;
+}
+
+.buy-screens .configure-product-screen.bad-photos .bad-photos-error{
+    display:block;
+}
+
+
+.buy-screens .configure-product-screen  .bad-photos-error .icon{
+    position: absolute;
+    left: 20px;
+    top: 17px;
+    width: 34px;
+    height: 34px;
+    background: url("/images/buy/error-icon.png") no-repeat scroll
+}
+
+.buy-screens .configure-product-screen .bad-photos-error .message{
+    position: absolute;
+    left: 71px;
+    top: 10px;
+    right: 25px;
+    bottom: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: left;
+}
+
+
+
+.buy-screens .configure-product-screen .footer-section .image{
+    position: absolute;
+    height: 85px;
+    width: 85px;
+    left: 8px;
+    top: 4px;
+}
+
+.buy-screens .configure-product-screen .footer-section .description{
+    position: absolute;
+    left: 100px;
+    top: 10px;
+    width: 230px;
+    font-size: 14px;
+    height: 38px;
+    overflow: hidden;
+}
+
+.buy-screens .configure-product-screen .footer-section .count-and-price{
+    font-size: 14px;
+    font-weight: 500;
+    position: absolute;
+    top: 45px;
+    left: 100px;
+}
+
+
+.buy-screens .configure-product-screen .footer-section .checkout-button{
+    position: absolute;
+    top: 68px;
+    left: 100px;
+    width: 85px;
+}
 
 
 
 
 
 
-/*
- * select photos screen */
-
-
-/*.buy-screens .select-photos-screen{*/
-    /*position:absolute;*/
-    /*width:381px;*/
-    /*right:0px;*/
-    /*top:0px;*/
-    /*bottom:0px;*/
-/*}*/
-
-/*.buy-screens .select-photos-screen .main-section{*/
-    /*position: absolute;*/
-    /*top: 180px;*/
-    /*bottom: 0px;*/
-    /*left: 0px;*/
-    /*right: 0px;*/
-    /*overflow-y: auto;*/
-    /*overflow-x: hidden;*/
-/*}*/
-
-
-/*.buy-screens .select-photos-screen .header-section{*/
-    /*position: absolute;*/
-    /*top: 0px;*/
-    /*height: 180px;*/
-    /*left: 0px;*/
-    /*right: 0px;*/
-    /*background-color: #F9F9FA;*/
-    /*border-top: 1px solid #CCC;*/
-    /*border-bottom: 1px solid #ccc;*/
-
-/*}*/
-
-/*.buy-screens .select-photos-screen .header-section .image{*/
-    /*position:absolute;*/
-    /*width:85px;*/
-    /*height:85px;*/
-    /*left:25px;*/
-    /*top:50px;*/
-/*}*/
-
-/*.buy-screens .select-photos-screen .header-section .product{*/
-    /*position: relative;*/
-    /*left: 125px;*/
-    /*font-size: 14px;*/
-    /*font-weight: 500;*/
-    /*text-shadow: 1px 1px #fff;*/
-    /*margin-top: 50px;*/
-/*}*/
-
-/*.buy-screens .select-photos-screen .header-section .variant{*/
-    /*position: relative;*/
-    /*left: 125px;*/
-    /*font-size: 14px;*/
-    /*width: 290px;*/
-    /*margin-top: 5px;*/
-/*}*/
-
-/*.buy-screens .select-photos-screen .header-section .price{*/
-    /*position: relative;*/
-    /*left: 125px;*/
-    /*font-size: 14px;*/
-    /*margin-top: 5px;*/
-/*}*/
-
-/*.buy-screens .select-photos-screen .header-section .price .value{*/
-    /*font-weight: 500;*/
-/*}*/
-
-/*.buy-screens .select-photos-screen .header-section .back{*/
-    /*position:absolute;*/
-    /*left:10px;*/
-    /*top:10px;*/
-    /*width:90px;*/
-    /*color: black;*/
-    /*font-weight: 500;*/
-/*}*/
-
-/*.buy-screens .select-photos-screen .header-section .add-and-buy-more-button{*/
-    /*position: absolute;*/
-    /*right: 156px;*/
-    /*top: 10px;*/
-    /*width: 123px;*/
-    /*color: black;*/
-    /*font-weight: 500;*/
-
-/*}*/
-
-/*.buy-screens .select-photos-screen .header-section .checkout-button{*/
-    /*position:absolute;*/
-    /*right:5px;*/
-    /*top:10px;*/
-    /*width:105px;*/
-/*}*/
-
-
-/*.buy-screens .select-photos-screen .main-section .selected-photo{*/
-    /*position: relative;*/
-    /*margin-bottom: 30px;*/
-    /*text-align:center;*/
-/*}*/
-
-/*.buy-screens .select-photos-screen .main-section .selected-photo .photo-border{*/
-    /*margin-left: auto;*/
-    /*margin-right: auto;*/
-
-/*}*/
-
-
-
-/*.buy-screens .select-photos-screen .main-section .selected-photo .image{*/
-    /*position:relative;*/
-    /*width: 180px;*/
-    /*left:130px;*/
-/*}*/
-
-/*.buy-screens .select-photos-screen .main-section .clear-all-photos{*/
-    /*position:absolute;*/
-    /*width: 180px;*/
-    /*left:130px;*/
-    /*top:10px;*/
-    /*text-align: center;*/
-    /*display: none;*/
-/*}*/
-
-/*.buy-screens .select-photos-screen .main-section .selected-photos{*/
-    /*position: absolute;*/
-    /*top: 40px;*/
-    /*left:0px;*/
-    /*right:0px;*/
-/*}*/
-
-/*.buy-screens .select-photos-screen .main-section .add-photos-message{*/
-
-    /*position: relative;*/
-    /*width: 180px;*/
-    /*top: 100px;*/
-    /*left: 99px;*/
-    /*background-color: #F9F9FA;*/
-    /*border: 1px solid #D7D7D7;*/
-    /*-webkit-border-radius: 5px;*/
-    /*-moz-border-radius: 5px;*/
-    /*padding: 20px 40px 20px 40px;*/
-    /*font-size: 14px;*/
-    /*text-align: center;*/
-/*}*/
-
-
-
-
-
-
-/*
- * configure product & select photo shared stuff  */
-
-/*.buy-screens .configure-product-screen .next{*/
-    /*position:absolute;*/
-    /*right:30px;*/
-    /*top:10px;*/
-    /*width:190px;*/
-/*}*/
-
-/*.buy-screens .configure-product-screen .back{*/
-    /*position:absolute;*/
-    /*left:30px;*/
-    /*top:10px;*/
-    /*width:90px;*/
-    /*color: black;*/
-    /*font-weight: 500;*/
-/*}*/
-
-
-
-
-/*.buy-screens .configure-product-screen .main-section{*/
-    /*position: absolute;*/
-    /*top: 50px;*/
-    /*bottom: 0px;*/
-    /*left: 0px;*/
-    /*right: 0px;*/
-    /*overflow-y: auto;*/
-    /*overflow-x: hidden;*/
-/*}*/
+/*  checkout banner
+ *************************************************/
 
 #checkout-banner {
     position: absolute;
