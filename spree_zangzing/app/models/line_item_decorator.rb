@@ -51,6 +51,33 @@ LineItem.class_eval do
     @@safe_max_size ||= RawDB.safe_max_size(LineItem.connection)
   end
 
+  # fast low level database operations
+
+  # perform a bulk insert of shipment ids
+  # takes rows in the form
+  # [ [id, shipment_id], ... ]
+  # does an update on all of the rows specified in
+  # a minimal number of queries
+  def self.fast_update_shipment_ids(rows)
+    db = LineItem.connection
+    base_cmd = "INSERT INTO #{LineItem.quoted_table_name}(id, shipment_id) VALUES "
+    end_cmd = " ON DUPLICATE KEY UPDATE shipment_id = VALUES(shipment_id)"
+    RawDB.fast_insert(db, LineItem.max_insert_size, rows, base_cmd, end_cmd)
+  end
+
+  # perform a bulk insert of shipment ids
+  # takes rows in the form
+  # [ [id, print_photo_id], ... ]
+  # does an update on all of the rows specified in
+  # a minimal number of queries
+  def self.fast_update_print_photo_ids(rows)
+    db = LineItem.connection
+    base_cmd = "INSERT INTO #{LineItem.quoted_table_name}(id, print_photo_id) VALUES "
+    end_cmd = " ON DUPLICATE KEY UPDATE print_photo_id = VALUES(print_photo_id)"
+    RawDB.fast_insert(db, LineItem.max_insert_size, rows, base_cmd, end_cmd)
+  end
+
+
   def shipping_may_change
     order.shipping_may_change
   end
