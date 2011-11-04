@@ -178,14 +178,19 @@ Order.class_eval do
     save(:validate => false)
   end
 
+  # cache this - only downside is that if we want
+  # to change markup it will require a server restart
+  def first_class_shipping_method
+    @@first_class ||= available_shipping_methods.detect do |sm|
+        sm.calculator.is_a?(Calculator::EzpShipping) &&
+        sm.calculator.preferred_ezp_shipping_type == Calculator::EzpShipping::FIRST_CLASS
+    end
+  end
 
   #Assign the ezPrints FC shipping method by default, (the cheapest)
   def assign_default_shipping_method
     if shipping_method.nil?
-      default_sm = available_shipping_methods.detect do |sm|
-        sm.calculator.is_a?(Calculator::EzpShipping) &&
-        sm.calculator.preferred_ezp_shipping_type == Calculator::EzpShipping::FIRST_CLASS
-      end
+      default_sm = first_class_shipping_method
       if default_sm
         self.shipping_method = default_sm
       else
@@ -554,10 +559,7 @@ Order.class_eval do
     # use a direct update to avoid any callbacks - saving a changed line item is
     # unbelievably inefficient - the batch insert/update below on the other hand is
     # incredibly fast
-    db = LineItem.connection
-    base_cmd = "INSERT INTO #{LineItem.quoted_table_name}(id, print_photo_id) VALUES "
-    end_cmd = " ON DUPLICATE KEY UPDATE print_photo_id = VALUES(print_photo_id)"
-    RawDB.fast_insert(db, LineItem.max_insert_size, rows, base_cmd, end_cmd)
+    LineItem.fast_update_print_photo_ids(rows)
 
     # close out this batch since no new photos will be added to it
     batch.close_immediate
@@ -663,6 +665,14 @@ Order.class_eval do
       shp.reload
     end
 
+    # if the original shipping method was first class, we can't rely on the
+    # tracking number to be meaningful according to EzPrints so ditch
+    # the tracking number and pretend it is a USPS order even though
+    # they might have sent it through some other bizarre means
+    if first_class_shipping_method && self.shipping_method_id == first_class_shipping_method.id
+      carrier = 'USPS'
+      tracking_number = ''
+    end
     # Store carrier::tracking number in the shipment tracking field
     if carrier.present? && tracking_number.present?
       # FILTER CARRIER, ezPrints feeds tracking numbers like UPS 12345678
@@ -677,7 +687,11 @@ Order.class_eval do
     else
       shp.tracking        = "#{carrier}#{tracking_number}"
     end
-    shp.line_items   = filtered_line_items
+#    shp.line_items   = filtered_line_items
+    # use direct insert for performance this is many many times faster than above line
+    rows = filtered_line_items.map {|item| [item.id, shp.id]}
+    LineItem.fast_update_shipment_ids(rows)
+
     shp.shipped_at = Time.now()
     old_state = self.state
     shp.ship
