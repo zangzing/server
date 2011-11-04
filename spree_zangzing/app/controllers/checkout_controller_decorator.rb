@@ -74,6 +74,28 @@ CheckoutController.class_eval do
     end
   end
 
+   # executed when the user places the order
+   # verifies that all the photos still exist
+   # otherwise it warns the user that a photo has
+   # been deleted and recalculates the order
+   def before_confirm
+     if request.method == "POST" && !@order.all_photos_valid?
+       if @order.line_items.count > 0
+        flash.now[:error]="Please Review Your Order"
+        flash.now[:payment]='A photo in your order was deleted while you were checking out. )'+\
+                                      ' The item has been removed and your order re-calculated.)'+\
+                                      ' You can now place your order. '
+          respond_with(@order) { |format| format.html { render :edit } } and return
+       else
+         flash[:error]="Please Select More Photos"
+         flash[:payment]='The photo in your order was deleted while you were checking out. )'+\
+                                      ' The line item has been removed and your cart is now empty'
+         redirect_to cart_url
+       end
+     end
+   end
+
+
    # Executed after order is complete
    # Make the last used addresses, the user's default addresses
    # clone the used addresses and leave the non-user-associated addresses as part of the order

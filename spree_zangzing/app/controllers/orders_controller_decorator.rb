@@ -35,6 +35,14 @@ OrdersController.class_eval do
     unless uri.path =~ /^\/store\//
       session[:store_entrance_referer] = request.referer
     end
+
+    #validate all photos in the cart
+    if !@order.all_photos_valid?
+       flash.now[:error]="Please Review Your Order"
+      flash.now[:payment]='A photo was deleted while in your cart. )'+\
+                                      ' The item has been removed and your cart re-calculated.)'
+    end
+
     render :layout => 'checkout'
   end
 

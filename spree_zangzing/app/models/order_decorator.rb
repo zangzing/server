@@ -500,12 +500,16 @@ Order.class_eval do
   # false otherwise
   def all_photos_valid?
     # bulk load all the line items and photos
+    all_valid = true
     lines = LineItem.includes(:photo).find_all_by_order_id(self.id)
     lines.each do |line|
       photo = line.photo
-      return false if photo.nil? || !photo.ready?
+      if photo.nil? || !photo.ready?
+        line.destroy
+        all_valid = false
+      end
     end
-    true
+    all_valid
   end
 
   # prepare an order for submission

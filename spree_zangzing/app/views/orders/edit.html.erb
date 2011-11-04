@@ -11,6 +11,7 @@ end %>
  end%>
 
 <div class="checkout-content" id="cart">
+  <%= render "shared/error_messages", :target => @order %>
   <% if @order.line_items.empty? %>
       <a href="/" class="newgreen-button" id="continue-shopping-greenbutton"><span><%= "#{t('continue_shopping')}"%></span></a>
   <%else%>
