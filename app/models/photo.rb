@@ -49,11 +49,12 @@ class Photo < ActiveRecord::Base
                   :rotate_to, :crop_json, :source_path, :guid_part, :latitude, :created_at, :id,
                   :updated_at, :image_content_type, :headline, :error_message, :image_bucket,
                   :orientation, :height, :suspended, :longitude, :pos, :image_path, :image_updated_at,
-                  :generate_queued_at, :width, :state, :source, :deleted_at, :for_print, :original_suffix, :size_version
+                  :generate_queued_at, :width, :state, :source, :deleted_at, :for_print, :original_suffix, :size_version,
+                  :crc32
 
   # this is just a placeholder used by the connectors to track some extra state
   # now that we do batch operations
-  attr_accessor :temp_url, :inserting_for_batch, :temp_file_placeholder
+  attr_accessor :temp_url, :inserting_for_batch, :temp_file_placeholder, :s3_upload_options
 
   has_one :photo_info, :dependent => :destroy
   belongs_to :album, :touch => :photos_last_updated_at, :counter_cache => true
@@ -92,60 +93,81 @@ class Photo < ActiveRecord::Base
     return photo
   end
 
-  # this method takes an existing object in the ready
-  # state and makes a copy of it.  You can supply a hash
-  # of options that can be used to override some of the
-  # original values.  You can set:
+  # this method takes existing photos in the ready
+  # state and makes a copy of them.  you pass an array of
+  # hashes that represent each photo and its options as:
+  # [ {:photo => photo, :options => {:user_id =>, etc}}, ... ]
+  #
+  # The hash options you can set are:
   #
   # :user_id
   # :album_id
-  # :upload_batch_id
+  # :upload_batch
   # :crop - new crop to be applied to copy
   # :rotate_to - new rotation
   # :for_print - will only produce print related resized photos
   #
-  # returns the new copy - the copy still has to go through the
+  # returns the new copys array - the copy still has to go through the
   # resque jobs for copy of the s3 data and resizing steps so
   # is initially in the uploading state
-  def self.copy_photo(original, attr = {})
-    raise ArgumentError.new("Cannot copy a source photo that is not in the ready state") unless original.ready?
+  def self.copy_photos(originals)
+    photos = []
 
-    photo = Photo.new(original.attributes)
-    photo.id = Photo.get_next_id
-    photo.photo_info = PhotoInfo.new(:photo_id => photo.id, :metadata => original.photo_info.metadata) unless original.photo_info.nil?
-    custom = attr[:user_id]
-    photo.user_id = custom unless custom.nil?
-    custom = attr[:album_id]
-    photo.album_id = custom unless custom.nil?
-    custom = attr[:upload_batch_id]
-    upload_batch_id = custom.nil? ? UploadBatch.get_current_and_touch(photo.user_id, photo.album_id).id : custom
-    photo.upload_batch_id = upload_batch_id
+    # fetch all the ids we need up front
+    original_count = originals.length
+    current_id = Photo.get_next_id(original_count) if original_count
 
-    custom = attr[:rotate_to]
-    photo.rotate_to = custom unless custom.nil?
-    crop = attr[:crop]
-    photo.crop_json = crop.to_json unless crop.nil?
-    custom = attr[:for_print]
-    photo.for_print = custom unless custom.nil?
+    # copy all the photos
+    originals.each do |original|
+      # verify that all the originals are in the ready state
+      original_photo = original[:photo]
+      attr = original[:options] ? original[:options] : {}
+      raise ArgumentError.new("Cannot copy a source photo that is not in the ready state") unless original_photo.ready?
 
-    photo.mark_uploading
-    photo.set_guid_for_path
-    photo.image_path = nil
-    photo.image_bucket = nil
-    photo.source_path = nil
-    photo.source_guid = "copy:"+UUIDTools::UUID.random_create.to_s
-    photo.error_message = nil
-    photo.set_default_position
-    photo.save
+      # now prepare to copy
+      custom = attr[:upload_batch]
+      upload_batch = custom.nil? ? UploadBatch.get_current_and_touch(original_photo.user_id, original_photo.album_id) : custom
+      original_attrs = original_photo.attributes.dup.recursively_symbolize_keys!
 
-    options = {}
-    options[:copy_s3_object] = true
-    options[:src_bucket] = original.image_bucket
-    options[:src_key] = original.attached_image.key(AttachedImage.original_suffix(original.original_suffix))
-    options[:src_crc32] = original.crc32
-    photo.queue_upload_to_s3(options)
+      original_attrs[:id] = current_id
+      current_id += 1 # bump for next one
 
-    photo
+      custom = attr[:user_id]
+      original_attrs[:user_id] = custom unless custom.nil?
+      custom = attr[:album_id]
+      original_attrs[:album_id] = custom unless custom.nil?
+
+      custom = attr[:rotate_to]
+      original_attrs[:rotate_to] = custom unless custom.nil?
+      crop = attr[:crop]
+      original_attrs[:crop_json] = crop.to_json unless crop.nil?
+      custom = attr[:for_print]
+      original_attrs[:for_print] = custom unless custom.nil?
+
+
+      photo = Photo.new_for_batch(upload_batch, original_attrs)
+      photo.photo_info = PhotoInfo.new(:photo_id => photo.id, :metadata => original_photo.photo_info.metadata) unless original_photo.photo_info.nil?
+
+      photo.mark_uploading
+      photo.set_guid_for_path
+      photo.image_path = nil
+      photo.image_bucket = nil
+      photo.source_path = nil
+      photo.source_guid = "copy:"+UUIDTools::UUID.random_create.to_s
+      photo.error_message = nil
+      options = {}
+      options[:copy_s3_object] = true
+      options[:src_bucket] = original_photo.image_bucket
+      options[:src_key] = original_photo.attached_image.key(AttachedImage.original_suffix(original_photo.original_suffix))
+      options[:src_crc32] = original_photo.crc32
+      photo.s3_upload_options = options
+      photos << photo
+    end
+
+    # ok, now we have all of the photos ready to go, so do the bulk insert
+    Photo.batch_insert(photos)
+
+    photos
   end
 
 
@@ -155,19 +177,37 @@ class Photo < ActiveRecord::Base
     num_photos = photos.count
     return if (num_photos == 0)
 
-    # batch insert
+    photo_infos = []
+    album_ids = {}
+    # gather details about the insert
+    photos.each do |photo|
+      album_id = photo.album_id
+      album_count = album_ids[album_id]
+      album_count = 0 if album_count.nil?
+      album_count += 1
+      album_ids[album_id] = album_count
+      photo_info = photo.photo_info
+      if photo_info
+        photo_infos << photo_info
+        photo_info.photo = photo # keep it from loading when referenced
+      end
+    end
+
+    # batch insert the base photos
     results = self.import(photos)
 
-    # we assume all share the same album, so extract
-    # the album_id and touch that album without instantiating a
-    # new album
-    photo = photos[0]
-    album_id = photo.album_id
-    # bump the photo counter
-    Album.update_counters album_id, :photos_count => num_photos
-    Album.change_cache_version(album_id)
+    # and now the photo infos
+    PhotoInfo.import(photo_infos) unless photo_infos.empty?
 
-    # now kick off the uploads since bulk does not call after commit (I don't think)
+    # Touch each album_id without instantiating a
+    # new album
+    album_ids.each_pair do |album_id, photo_count|
+      # bump the photo counter
+      Album.update_counters album_id, :photos_count => photo_count
+      Album.change_cache_version(album_id)
+    end
+
+    # now kick off the uploads since bulk does not call after commit
     photos.each do |photo|
       photo.inserting_for_batch = false
       photo.do_upload_to_s3
@@ -372,7 +412,8 @@ class Photo < ActiveRecord::Base
     # If state marked as uploading, pass it on
     if !self.destroyed? && self.uploading? && @do_upload
       @do_upload = false
-      queue_upload_to_s3
+      options = self.s3_upload_options ? self.s3_upload_options : {}
+      queue_upload_to_s3(options)
     end
   end
 
@@ -582,6 +623,7 @@ class Photo < ActiveRecord::Base
 
   def mark_uploading
     self.state = 'uploading'
+    @do_upload = true
   end
 
   def ready?
@@ -792,7 +834,6 @@ class Photo < ActiveRecord::Base
         else
           ZZ::ZZA.new.track_transaction("photo.upload.start", self.id)
 
-          @do_upload = true
           self.mark_uploading
           self.source_path = file_path
           self.image_file_size = File.size(file_path)

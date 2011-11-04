@@ -165,7 +165,6 @@ describe "EZPrints Notification Handler" do
 
 
   it "should handle full Shipment in one message and advance order state" do
-
     body = <<-BLOCK
 <OrderEventNotification Id="1176390">
    <Order Id="#{order_number}" EZPReferenceNumber="#{ez_ref_num}">
@@ -178,6 +177,7 @@ describe "EZPrints Notification Handler" do
    </Order>
 </OrderEventNotification>
     BLOCK
+
 
     order = Order.find(order_id)
     order.accept

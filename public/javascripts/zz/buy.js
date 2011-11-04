@@ -391,17 +391,14 @@ zz.buy = zz.buy || {};
         return '<div class="buy-screens">' +
                     '<div class="select-product-screen"><div class="loading"></div></div>' +
                     '<div class="configure-product-screen">' +
-                        '<div class="product-summary-section">' +
-                           '<img class="image" src="/images/photo_placeholder.png">' +
-                           '<div class="description">16x20 Mounted Print with a Black Frame</div>' +
-                           '<div class="count-and-price">12 for $200.00</div>' +
-                           '<a class="green-button checkout-button"><span>Add to Cart</span></a>' +
-                        '</div>' +
-                        '<div class="bad-photos-error">' +
-                           '<div class="icon"></div>' +
-                           '<div class="message">Some of your photos are not large enough for this product. Please remove the photos or select a different product.</div>' +
-                        '</div>' +
                         '<div class="main-section">' +
+                            '<div class="header-section">' +
+                               '<img class="image" src="/images/photo_placeholder.png">' +
+                               '<div class="description">' +
+                                   '<span class="text"></span>' +
+                                   '<div class="learn-more">Learn more</div>' +
+                                '</div>' +
+                            '</div>' +
                             '<div class="options-section">' +
                                 '<div class="price">' +
                                     '<div class="label">Price</div>' +
@@ -411,20 +408,34 @@ zz.buy = zz.buy || {};
                             '</div>' +
                             '<div class="selected-photos-section">' +
                                 '<a class="clear-all-photos hyperlink-button">Clear Selected Photos</a>' +
-                                '<div class="add-photos-message">Choose product settings and then click to choose your photos.</div>' +
+                                '<div class="add-photos-message">Customize the product and then click each photo you would like for this product</div>' +
                                 '<div class="selected-photos"></div>' +
                             '</div>' +
                         '</div>' +
+                        '<div class="bad-photos-error">' +
+                           '<div class="icon"></div>' +
+                           '<div class="message">Some of your photos are not large enough for this product. Please remove the photos or select a different product.</div>' +
+                        '</div>' +
+                        '<div class="footer-section">' +
+                            '<img class="image" src="/images/photo_placeholder.png">' +
+                            '<div class="description">16x20 Mounted Print with a Black Frame</div>' +
+                            '<div class="count-and-price">12 for $200.00</div>' +
+                            '<a class="next-button checkout-button"><span>Add to Cart</span></a>' +
+                        '</div>' +
                     '</div>' +
                '</div>';
+
+
     };
 
     var PRODUCT_TEMPLATE = function(){
         return '<div class="product">' +
                    '<img class="image" src="/images/photo_placeholder.png">' +
-                   '<div class="name"></div>' +
-                   '<div class="description"></div>' +
-                   '<div class="learn-more">Learn more</div>' +
+                   '<div class="name-and-description">' +
+                       '<div class="name"></div>' +
+                       '<div class="description"></div>' +
+                       '<div class="learn-more">Learn more</div>' +
+                   '</div>' +
                    '<div class="arrow"></div>' +
                '</div>';
     };
@@ -688,11 +699,11 @@ zz.buy = zz.buy || {};
                 var selected_photo_count = get_selected_photos().length;
 
                 if( selected_photo_count == 0){
-                    end_top = selected_photos_section.offset().top-90;
+                    end_top = selected_photos_section.offset().top-75;
                 }
                 else{
 //                    end_top = last_selected_photo.offset().top + SELECTED_PHOTO_MAX_SIZE.HEIGHT + 10;
-                    end_top = selected_photos_section.offset().top + selected_photo_count * (SELECTED_PHOTO_MAX_SIZE.HEIGHT + 25);
+                    end_top = selected_photos_section.offset().top + selected_photo_count * (SELECTED_PHOTO_MAX_SIZE.HEIGHT + 26);
 
 
                 }
@@ -859,8 +870,11 @@ zz.buy = zz.buy || {};
             slide_to_screen(DRAWER_SCREENS.SELECT_PRODUCT, true);
         });
 
+        buy_screens_element.find('.configure-product-screen .header-section .description .learn-more').unbind('click').click(function(){
+            show_glamour_page(get_selected_product().id);
+        });
 
-        buy_screens_element.find('.configure-product-screen .product-summary-section .checkout-button').unbind('click').click(function(){
+        buy_screens_element.find('.configure-product-screen .footer-section .checkout-button').unbind('click').click(function(){
             if(get_selected_photos().length == 0){
                 alert("Please select one or more photos for this product.");
                 return;
@@ -921,8 +935,11 @@ zz.buy = zz.buy || {};
 
 
             if(current_variant){
-                buy_screens_element.find('.configure-product-screen .product-summary-section .image').attr('src', current_variant.image_url);
-                buy_screens_element.find('.configure-product-screen .product-summary-section .description').text(current_variant.description);
+                buy_screens_element.find('.configure-product-screen .header-section .image').attr('src', current_variant.image_url);
+                buy_screens_element.find('.configure-product-screen .header-section .description .text').text(current_variant.description);
+
+                buy_screens_element.find('.configure-product-screen .footer-section .image').attr('src', current_variant.image_url);
+                buy_screens_element.find('.configure-product-screen .footer-section .description').text(current_variant.description);
                 buy_screens_element.find('.configure-product-screen .options-section .price .value').text(current_variant.price);
                 update_price_and_count();
             }
@@ -1015,20 +1032,6 @@ zz.buy = zz.buy || {};
         });
 
 
-//        if(zz.page.album_id){
-//            buy_screens_element.find('.configure-product-screen .main-section .selected-photos-section .add-all-photos').show().unbind('click').click(function(){
-//                zz.routes.photos.get_album_photos_json(zz.page.album_id, zz.page.album_cache_version_key, function(photos){
-//                    ZZAt.track('buy.add-all-photos.click');
-//                    var dialog = zz.dialog.show_progress_dialog("Adding photos...");
-//                    _.delay(function(){
-//                        zz.buy.add_selected_photos(photos);
-//                        refresh_selected_photos_list();
-//                        scroll_to_bottom_of_selected_photos();
-//                        dialog.close();
-//                    },100);
-//                });
-//            });
-//        }
 
 
         // hack: need to run this one time for each option
@@ -1096,7 +1099,7 @@ zz.buy = zz.buy || {};
            var count = get_selected_photos().length;
            var price = parseFloat(get_selected_variant().price.substring(1));
            var count_and_price = count + ' for $' + format_currency(count * price);
-           $('.configure-product-screen .product-summary-section .count-and-price').text(count_and_price);
+           $('.configure-product-screen .footer-section .count-and-price').text(count_and_price);
 
     }
 
@@ -1336,7 +1339,12 @@ zz.buy = zz.buy || {};
 
             // force glamour page to shup up centered
             // over the left part of the screen
-            dialog.center_x($('.buy-drawer-scrim'));
+            if($(window).width() < 1200){
+                dialog.center_x($(document));
+            }
+            else{
+                dialog.center_x($('.buy-drawer-scrim'));
+            }
             dialog.css('top', '125px');
 
             ZZAt.track('buy.glamour-page.open', {product_id: product_id});
