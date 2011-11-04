@@ -699,11 +699,11 @@ zz.buy = zz.buy || {};
                 var selected_photo_count = get_selected_photos().length;
 
                 if( selected_photo_count == 0){
-                    end_top = selected_photos_section.offset().top-90;
+                    end_top = selected_photos_section.offset().top-75;
                 }
                 else{
 //                    end_top = last_selected_photo.offset().top + SELECTED_PHOTO_MAX_SIZE.HEIGHT + 10;
-                    end_top = selected_photos_section.offset().top + selected_photo_count * (SELECTED_PHOTO_MAX_SIZE.HEIGHT + 25);
+                    end_top = selected_photos_section.offset().top + selected_photo_count * (SELECTED_PHOTO_MAX_SIZE.HEIGHT + 26);
 
 
                 }
