@@ -1094,7 +1094,7 @@ zz.buy = zz.buy || {};
            var count = get_selected_photos().length;
            var price = parseFloat(get_selected_variant().price.substring(1));
            var count_and_price = count + ' for $' + format_currency(count * price);
-           $('.configure-product-screen .product-summary-section .count-and-price').text(count_and_price);
+           $('.configure-product-screen .footer-section .count-and-price').text(count_and_price);
 
     }
 
