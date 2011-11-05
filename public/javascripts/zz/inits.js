@@ -15,6 +15,11 @@ zz.init = {
             settings.data = settings.data || '';
             settings.data += (settings.data ? '&' : '') + 'authenticity_token=' + encodeURIComponent(zz.page.rails_authenticity_token);
         });
+        $.ajaxSetup({
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('X-CSRF-Token', zz.page.rails_authenticity_token);
+            }
+        });
 
         /* Click Handlers    ----------------------------------------------------------------------- */
         //join banner
