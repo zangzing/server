@@ -509,6 +509,7 @@ Order.class_eval do
         all_valid = false
       end
     end
+    self.reload unless all_valid
     all_valid
   end
 
