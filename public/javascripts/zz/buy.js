@@ -418,8 +418,10 @@ zz.buy = zz.buy || {};
                         '</div>' +
                         '<div class="footer-section">' +
                             '<img class="image" src="/images/photo_placeholder.png">' +
-                            '<div class="description">16x20 Mounted Print with a Black Frame</div>' +
-                            '<div class="count-and-price">12 for $200.00</div>' +
+                            '<div class="description">' +
+                                '<div class="text"> 16x20 Mounted Print with a Black Frame</div>' +
+                                '<div class="count-and-price">12 for $200.00</div>' +
+                            '</div>' +
                             '<a class="next-button checkout-button"><span>Add to Cart</span></a>' +
                         '</div>' +
                     '</div>' +
@@ -939,7 +941,7 @@ zz.buy = zz.buy || {};
                 buy_screens_element.find('.configure-product-screen .header-section .description .text').text(current_variant.description);
 
                 buy_screens_element.find('.configure-product-screen .footer-section .image').attr('src', current_variant.image_url);
-                buy_screens_element.find('.configure-product-screen .footer-section .description').text(current_variant.description);
+                buy_screens_element.find('.configure-product-screen .footer-section .description .text').text(current_variant.description);
                 buy_screens_element.find('.configure-product-screen .options-section .price .value').text(current_variant.price);
                 update_price_and_count();
             }
@@ -1099,7 +1101,7 @@ zz.buy = zz.buy || {};
            var count = get_selected_photos().length;
            var price = parseFloat(get_selected_variant().price.substring(1));
            var count_and_price = count + ' for $' + format_currency(count * price);
-           $('.configure-product-screen .footer-section .count-and-price').text(count_and_price);
+           $('.configure-product-screen .footer-section .description .count-and-price').text(count_and_price);
 
     }
 
