@@ -525,8 +525,8 @@
 
 .buy-drawer-scrim .dialog {
     position: absolute;
-    height: 500px;
-    width: 710px;
+    height: 432px;
+    width: 622px;
     top: 125px;
     background: url(/images/buy/three-steps-to-buy.png) no-repeat scroll 0px 0px transparent;
 }
@@ -555,8 +555,8 @@
 
 
 .glamour-page .product-image img{
-width: 370px;
-height: 375px;
+    width: 375px;
+    height: 375px;
 }
 
 .glamour-page .product-name{
