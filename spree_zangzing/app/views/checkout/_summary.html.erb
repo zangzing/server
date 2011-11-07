@@ -66,6 +66,7 @@
 
             $('#place-order-button').click(function(){
                 zz.dialog.show_spinner_progress_dialog("Submitting order...");
+                ZZAt.track('buy.checkout.confirm.place-order.click');
                 $('#checkout_form_confirm').attr('action','<%=update_checkout_path('confirm')%>').submit();
             });
         });

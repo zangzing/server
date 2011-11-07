@@ -11,6 +11,7 @@ end %>
  end%>
 
 <div class="checkout-content" id="cart">
+  <%= render "shared/error_messages", :target => @order %>
   <% if @order.line_items.empty? %>
       <a href="/" class="newgreen-button" id="continue-shopping-greenbutton"><span><%= "#{t('continue_shopping')}"%></span></a>
   <%else%>
@@ -43,7 +44,7 @@ end %>
     <%end%>
 
     <%content_for :back_button do %>
-        <a href="<%=back_to_shopping_url%>" class="back-button"><span><%= "#{t('buy_more')}"%></span></a>
+        <a id="buy-more" href="javascript:void(0);" class="back-button"><span><%= "#{t('buy_more')}"%></span></a>
     <%end%>
 
 <%end%>
@@ -63,13 +64,13 @@ end %>
               }).spin( document.getElementById('spin_here'));
           };
      var links_off = function(){
-          //$('a.checkout-cart').unbind('click');
-          //$('a.delete').unbind('click');
-          //$('a.details').unbind('click');
-          //$('a#update-cart').unbind('click');
-          //spin();
           zz.dialog.show_spinner_progress_dialog("Calculating your order...");
      };
+
+     $('a#buy-more').click( function(e){
+         ZZAt.track('buy.checkout.cart.buy-more.click');
+         window.location='<%=back_to_shopping_url%>';
+     });
 
      $('a.delete').click( function(e){
         e.preventDefault();
@@ -84,12 +85,14 @@ end %>
 
      $('a#update-cart').click( function(){
          links_off();
+         ZZAt.track('buy.checkout.cart.update.click');
          $('form#updatecart').submit();
      });
 
      $('a.checkout-cart').click( function(){
         links_off();
         $('form#updatecart').attr('action', '<%=checkout_cart_path%>');
+          ZZAt.track('buy.checkout.cart.checkout.click');
         $('form#updatecart').submit();
      });
 
@@ -98,6 +101,7 @@ end %>
             var variant_id = $(this).attr('data_variant');
             $('.'+variant_id).toggle();
      });
+     ZZAt.track('buy.checkout.cart.open');
  });
 </script>
 <%end%>

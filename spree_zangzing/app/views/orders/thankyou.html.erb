@@ -44,7 +44,7 @@
                             </p>
 
                             <p id="submit_button" class="field">
-                              <a id="join_btn" href="javascript: $('#signin_form').submit();" class="newgreen-button"><span>Sign In</span></a>
+                              <a id="join_btn" href="javascript: ZZAt.track('buy.checkout.thankyou.signin.click'); $('#signin_form').submit();" class="newgreen-button"><span>Sign In</span></a>
                             </p>
                          <%end%>
                     </div>
@@ -69,7 +69,7 @@
                          <%= f.password_field :password, :class => 'required' %>
                     </p>
                     <p id="submit_button" class="field">
-                        <a id="join_btn" class="newgreen-button" href="javascript:$('#join_form').submit();"><span><%=t('join')%></span></a>
+                        <a id="join_btn" class="newgreen-button" href="javascript: ZZAt.track('buy.checkout.thankyou.join.click'); $('#join_form').submit();"><span><%=t('join')%></span></a>
                     </p>
                  <%end%>
             </div>

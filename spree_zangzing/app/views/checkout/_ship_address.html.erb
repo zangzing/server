@@ -28,7 +28,7 @@ end %>
 </div>
 
 <%content_for :next_button do %>
-      <a href="javascript:void(0)" onclick="$('#checkout_form_ship_address').submit();" class="next-button"><span><%="#{t('continue')}"%></span></a>
+      <a href="javascript:void(0)" onclick="ZZAt.track('buy.checkout.shipping.continue.click'); $('#checkout_form_ship_address').submit();" class="next-button"><span><%="#{t('continue')}"%></span></a>
 <%end%>
 
 

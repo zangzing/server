@@ -26,15 +26,16 @@ end %>
     <div id="ship_address" >
 
       <%= render :partial =>'address_display', :locals => { :address => @order.ship_address,:label =>t("shipping_address") } %>
-      <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('ship_address')%>').submit();"><%= t('change').titleize%></a>
+      <a href="javascript:void(0)" id="change-ship-address"><%= t('change').titleize%></a>
       <p>&nbsp</p>
 
       <%= select( :order,
                   :shipping_method_id,
                   @order.rate_hash.collect{|smethod|[ "#{smethod[:name]} #{number_to_currency smethod[:cost]}", smethod[:id] ]},
                   {},
-                  { :onchange => "$('#checkout_form_confirm').attr('action','#{update_checkout_path('delivery')}').submit();"})%>
+                  { :onchange => "ZZAt.track('buy.checkout.confirm.change-shipping-method.click'); $('#checkout_form_confirm').attr('action','#{update_checkout_path('delivery')}').submit();"})%>
        <a id="shipping_question"
+             href="javascript:void(0);"
              class="field_question"
              tabindex="-1"
              data-controls-modal="phone-question-modal"
@@ -46,7 +47,7 @@ end %>
 
     <div id="bill_address">
       <%= render :partial =>'address_display', :locals => { :address => @order.bill_address,:label =>t('billing_address') } %>
-      <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('payment')%>').submit();"><%= t('change').titleize%></a>
+      <a href="javascript:void(0)" id="change-bill-address"><%= t('change').titleize%></a>
       <p>&nbsp</p>
       
       <div id="cclogo">
@@ -54,7 +55,7 @@ end %>
       </div>
       <div>
         <%="#{t('ends_in')} #{@order.payments.first.source.last_digits} #{t('expires')} #{@order.payments.first.source.month}/#{@order.payments.first.source.year}" %><br/>
-        <a href="javascript:void(0)" onclick="$('#checkout_form_confirm').attr('action','<%=checkout_state_path('payment')%>').submit();"><%= t('change').titleize%></a>
+        <a href="javascript:void(0)" id="change-payment"><%= t('change').titleize%></a>
       </div>
       
     </div>
@@ -88,10 +89,27 @@ By placing your order you agree to ZangZing's <a class="hyperlink-button" target
         $(document).ready(function(){
             $('form p.field label').inFieldLabels();
 
+        $('a#change-ship-address').click(function(){
+            ZZAt.track('buy.checkout.confirm.change-ship-address.click');
+            $('#checkout_form_confirm').attr('action','<%=checkout_state_path('ship_address')%>').submit();
+        });
+
+        $('a#change-bill-address').click(function(){
+            ZZAt.track('buy.checkout.confirm.change-bill-address.click');
+           $('#checkout_form_confirm').attr('action','<%=checkout_state_path('payment')%>').submit();
+        });
+
+        $('a#change-payment').click(function(){
+            ZZAt.track('buy.checkout.confirm.change-payment.click');
+           $('#checkout_form_confirm').attr('action','<%=checkout_state_path('payment')%>').submit();
+        });
+
         $('a.details').click( function(e){
             var variant_id = $(this).attr('data_variant');
             $('.'+variant_id).toggle();
         });
+
+        ZZAt.track('buy.checkout.confirm.open');
         });
     </script>
 <% end %>
