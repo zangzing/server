@@ -18,9 +18,9 @@ module PhotoHelper
 
   def stacked_photo_tag( photo, targetw, targeth )
 
-    scale  = [ targetw / photo.width.to_f, targeth / photo.height.to_f].min
-    width  = (photo.width * scale).floor
-    height = (photo.height * scale).floor
+    scale  = [ targetw / photo.rotated_width.to_f, targeth / photo.rotated_height.to_f].min
+    width  = (photo.rotated_width * scale).floor
+    height = (photo.rotated_height * scale).floor
 
     fheight= height+10
     fwidth = width+10
