@@ -8,7 +8,7 @@ Product.class_eval do
           :description => description,
           :options =>  option_types.collect{ | ot | ot.as_json },
           :variants => variants.active.collect{ |v |  v.as_json },
-          :image_url => images.first ? images.first.attachment.url(:product) : nil
+          :image_url => images.first ? images.first.attachment.url(:small) : nil
     }
   end
   
