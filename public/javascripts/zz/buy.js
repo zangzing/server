@@ -508,9 +508,15 @@ zz.buy = zz.buy || {};
         }
 
 
+        show_or_hide_checkout_banner();
 
-        if(zz.session.cart_item_count > 0 && jQuery.cookie('hide_checkout_banner') != 'true'){
+    };
+
+    function show_or_hide_checkout_banner(){
+        if(!zz.buy.is_buy_mode_active() && zz.session.cart_item_count > 0 && jQuery.cookie('hide_checkout_banner') != 'true'){
+
             $('#checkout-banner').show();
+
             if(zz.session.cart_item_count == 1){
                 $('#checkout-banner .message').text('You have ' + zz.session.cart_item_count + ' item in your cart.');
             }
@@ -562,7 +568,11 @@ zz.buy = zz.buy || {};
             center();
 
         }
-    };
+        else{
+            $('#checkout-banner').hide();
+        }
+
+    }
 
     zz.buy.hide_checkout_banner = function(){
         $('#checkout-banner').hide();
@@ -610,6 +620,8 @@ zz.buy = zz.buy || {};
         $('#footer #buy-button').addClass('selected');
 
         ZZAt.track('buy.activate');
+
+        show_or_hide_checkout_banner();
     };
 
     zz.buy.deactivate_buy_mode = function(){
@@ -619,10 +631,12 @@ zz.buy = zz.buy || {};
 
         close_drawer(function(){
             zz.pubsub.publish(EVENTS.DEACTIVATE);
+            show_or_hide_checkout_banner();
         });
         $('#footer #buy-button').removeClass('selected');
         $('#right-drawer .header .gray-back-button').hide();
         ZZAt.track('buy.deactivate');
+
 
     };
 
