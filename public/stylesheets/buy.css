@@ -417,13 +417,13 @@
     height: 85px;
     width: 85px;
     left: 14px;
-    top: 19px;
+    bottom: 19px;
 }
 
 .buy-screens .configure-product-screen .footer-section .description{
     position: absolute;
     left: 112px;
-    top: 20px;
+    bottom: 53px;
     width: 230px;
     overflow: hidden;
 }
@@ -444,7 +444,7 @@
 
 .buy-screens .configure-product-screen .footer-section .checkout-button{
     position: absolute;
-    top: 85px;
+    bottom: 19px;
     left: 112px;
     width: 85px;
 }
