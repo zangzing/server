@@ -801,7 +801,7 @@ zz.photochooser = {
             {
                 open_url: zz.routes.path_prefix + '/mobileme/folders.json',
                 type: 'folder',
-                name: 'Mobile.Me',
+                name: 'MobileMe',
                 src: zz.routes.image_url('/images/folders/mobileme_off.jpg'),
                 rolloverSrc: zz.routes.image_url('/images/folders/mobileme_on.jpg'),
                 //add_url: zz.routes.path_prefix + "/mobileme/folders/import?path=/",
