@@ -10,15 +10,13 @@ OrdersController.class_eval do
 
   def add_to_order
     order = current_order(true)
-    variant = Variant.find_by_product_id_and_sku(params[:product_id], params[:sku])
+    variant = Variant.active.find_by_product_id_and_sku(params[:product_id], params[:sku])
 
     params[:photo_ids].each do |photo_id|
       photo = Photo.find( photo_id )
       order.add_variant( variant,  photo, 1 )
     end
-
     respond_with( order )
-
   end
 
   def index
@@ -37,8 +35,18 @@ OrdersController.class_eval do
     unless uri.path =~ /^\/store\//
       session[:store_entrance_referer] = request.referer
     end
+
+    #validate all photos in the cart
+    if !@order.all_photos_valid?
+       flash.now[:error]="Please Review Your Order"
+      flash.now[:payment]='A photo was deleted while in your cart. )'+\
+                                      ' The item has been removed and your cart re-calculated.)'
+    end
+
     render :layout => 'checkout'
   end
+
+   
 
   def show
     @order = Order.find_by_number(params[:id])
@@ -79,6 +87,7 @@ OrdersController.class_eval do
     if !current_user
       user = User.find_by_email(@order.email)
       if user  #a user exists wit the email used
+        session[:return_to]=user_pretty_url( user )
         @user_session = UserSession.new( :email => @order.email )
       else    #a never seen email
        session[:return_to]=root_path
@@ -91,6 +100,17 @@ OrdersController.class_eval do
     end
     render :layout => 'checkout'
   end
+
+  # desctivate buy mode and go back to last screen before store
+  def back_to_viewing_photos
+    clear_buy_mode_cookie
+    redirect_to session[:store_entrance_referer] ? session[:store_entrance_referer] : root_path
+  end
+
+  def back_to_shopping
+    redirect_to session[:store_entrance_referer] ? session[:store_entrance_referer] : root_path
+  end
+
 
   def checkout
     @order = current_order

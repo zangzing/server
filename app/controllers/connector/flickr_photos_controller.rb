@@ -2,9 +2,13 @@ class Connector::FlickrPhotosController < Connector::FlickrController
   
   def self.list_photos(api_client, params)
     photos_response = call_with_error_adapter do
-      api_client.photosets.getPhotos :photoset_id => params[:set_id], :extras => 'original_format,url_m,url_z,url_l,url_o', :media => 'photos'
+      if params[:set_id]=='my-stream'
+        api_client.people.getPhotos :user_id => 'me', :page => params[:page], :per_page => MY_STREAM_PER_PAGE, :extras => 'date_upload,original_format,url_m,url_z,url_l,url_o'
+      else
+        api_client.photosets.getPhotos :photoset_id => params[:set_id], :extras => 'original_format,url_m,url_z,url_l,url_o', :media => 'photos'
+      end
     end
-    @photos = photos_response.photo.map { |p|
+    @photos = photos_response.photo.map do |p|
       {
         :name => p.title,
         :id   => p.id,
@@ -14,7 +18,7 @@ class Connector::FlickrPhotosController < Connector::FlickrController
         :add_url => flickr_photo_action_path(params.merge(:photo_id =>p.id, :action => 'import', :format => 'json')),
         :source_guid => make_source_guid(p)
       }
-    }
+    end
     JSON.fast_generate(@photos)
   end
   

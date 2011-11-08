@@ -4,7 +4,7 @@
     <div class="alert-message block-message error">
       <div id="errorExplanation" class="errorExplanation">
         <%if target && target.errors.any? %>
-            <h2><%= t(:there_were_problems_with_the_following_fields) %>:</h2>
+            <h3><%= t(:there_is_a_problem_with_your_order) %></h3>
         <%elsif flash[:payment] %>
             <h4><%=flash[:error]%></h4>
         <%end%>

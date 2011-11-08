@@ -166,6 +166,10 @@ Rails.application.routes.draw do
     match '/checkout/:state'          => 'checkout#edit', :as => :checkout_state
     match '/checkout'                 => 'checkout#edit', :state => 'cart', :as => :checkout
 
+
+    match '/orders/back_to_viewing_photos' => 'orders#back_to_viewing_photos', :via => :get, :as => :back_to_viewing_photos
+    match '/orders/back_to_shopping' => 'orders#back_to_shopping', :via => :get, :as => :back_to_shopping
+
     resources :orders do
       post :populate, :on => :collection
       post :add_to_order,:on => :collection
@@ -183,6 +187,7 @@ Rails.application.routes.draw do
 
     end
     match '/orders/:id/token/:token' => 'orders#show', :via => :get, :as => :token_order
+
 
     get '/cart', :to => 'orders#edit', :as => :cart
     put '/cart', :to => 'orders#update', :as => :update_cart

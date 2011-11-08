@@ -40,6 +40,12 @@ class ZangZingConfig
     @@running_as_resque ||= false # initialize if not done yet
     @@running_as_resque
   end
+
+  # returns true if we should move
+  # quickly through the ezp simulator states
+  def self.fast_ezp_simulator?
+    ENV["FAST_EZP_SIMULATOR"].nil? ? false : true
+  end
 end
 
 # this class wraps redis config - putting it here to avoid having too many

@@ -576,29 +576,53 @@ en:
   order_operation_authorize: Authorize
   order_processed_but_following_items_are_out_of_stock: "Your order has been processed, but following items are out of stock:"
   order_processed_successfully: "Your order has been processed successfully"
+  customer_order_state:
+    # keys correspond to Checkout state names:
+    cart:         review
+    signin:       sign-in
+    ship_address: shipping
+    bill_address: bill address
+    complete:     complete
+    confirm:      place order
+    preparing:    preparing
+    canceled:     canceled
+    payment:      payment
+    submitted:    sumbitted
+    accepted:     printing
+    processing:   printing
+    partial:      partially shipped
+    shipped:      shipped
+    awaiting_return: awaiting return
+    payment:      payment
+    resumed:      resumed
+    returned:     returned
+    delivery:     delivery
+    failed:       having a problem
+    ezp_canceled: having a problem
+    error:        error
   order_state:
     # keys correspond to Checkout state names:
-    cart: Review
-    error: Error
-    signin: Sign-in
-    address: address
-    ship_address: "Shipping"
-    bill_address: "Bill Address"
-    adjustments: adjustments
+    cart:         cart
+    signin:       cart sign-in
+    ship_address: cart ship address
+    bill_address: cart bill address
+    payment:      cart payment
+    confirm:      cart confirm
+    complete:     placed
+    preparing:    preparing
+    canceled:     canceled
+    ezp_canceled: ezp canceled
+    submitted:    sumbitted
+    accepted:     accepted
+    processing:   processing
+    partial:      partially shipped
+    shipped:      shipped
     awaiting_return: awaiting return
-    canceled: canceled
-    complete: Complete
-    confirm: Confirm
-    processing: Processing
-    preparing: Preparing
-    payment: Payment
-    submitted: Sumbitted
-    accepted: Accepted
-    delivery: delivery
     payment: payment
+    adjustments: adjustments
     resumed: resumed
-    returned: Returned
-    shipped: Shipped
+    returned: returned
+    delivery: delivery
   order_summary: Order Summary
   order_sure_want_to: "Are you sure you want to %{event} this order?"
   order_total: "Total"
@@ -957,6 +981,7 @@ en:
   test_mode: Test Mode
   thank_you_for_your_order: "Thank you for your business.  Please print out a copy of this confirmation page for your records."
   there_were_problems_with_the_following_fields: "There were problems with the following fields"
+  there_is_a_problem_with_your_order: "There is a problem with your order"
   this_file_language: "English (US)"
   this_month: "This Month"
   this_year: "This Year"
@@ -1060,5 +1085,13 @@ en:
   buy_more: "Buy More"
   sets_of: "Sets Of"
   tracking_info: "Tracking Information"
-  support: "Customer Support"
+  customer_support: "Customer Support"
   details: "details"
+
+  # Used in array.to_sentence.
+  support:
+    array:
+      words_connector: ", "
+      two_words_connector: " and "
+      last_word_connector: ", and "
+

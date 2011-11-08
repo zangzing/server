@@ -4,4 +4,9 @@
   
   zz.page.displayed_user_id = '<%=  @user.id %>';
   zz.page.displayed_user_base_url = '<%=escape_javascript user_path( @user )%>';
+
+  zz.buy.on_before_activate(function(){
+      ZZAt.track('homepage.buy.toolbar.click');
+  });
+
 </script>

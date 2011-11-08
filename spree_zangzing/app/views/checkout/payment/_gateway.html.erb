@@ -6,7 +6,7 @@
 </p>
 <p id="secure_lock">
   <%= image_tag 'store/secure-lock.png'%>
-  <%=t('learn_more_security')%>
+  <%=t(:secure_checkout)%>
 </p>
 
 <div id="cc">
@@ -55,8 +55,11 @@
         <br>
         You can find the 4-digit code on the front of your card, above your credit card number.
     </p>
+      <p>
+        &nbsp
+      </p>
     </div>
     <div class="modal-footer">
-      <a href="#" onclick="$('#cvv-question-modal').modal('hide');" class="btn success">OK</a>
+      <a href="#" onclick="$('#cvv-question-modal').modal('hide');" class="green-button" style="float: right; width: 75px;"><span>OK</span></a>
     </div>
   </div>

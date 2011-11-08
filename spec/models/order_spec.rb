@@ -10,6 +10,33 @@ describe Order do
     ActionMailer::Base.deliveries = []
   end
 
+  describe "Line Item validation" do
+    before(:each) do
+      @order = Order.create
+      variants = Product.find_by_name('Prints').variants
+      @print_variant = variants.detect{ |variant| variant.print? }
+    end
+
+    it 'should verify that all line items have photos' do
+      photo = Factory.create(:photo)
+      photo.mark_ready
+      photo.save
+      @order.add_variant( @print_variant,  photo, 1 )
+      @order.line_items.count.should be 1
+      @order.all_photos_valid?.should be true
+    end
+
+    it 'should fail to verify a line item with a missing photo' do
+      photo = Factory.create(:photo)
+      @order.add_variant( @print_variant,  photo, 1 )
+      @order.line_items.count.should be 1
+      line = @order.line_items[0]
+      line.photo = nil
+      line.save
+      @order.all_photos_valid?.should be false
+    end
+  end
+
   describe "Product Catalog" do
     it "should be loaded with a product named 'Prints' with ID #{LineItem::PRINTS_PRODUCT_ID}" do
       p = Product.find_by_name('Prints')
@@ -33,6 +60,13 @@ describe Order do
       has_variants = false
       ps.each{ |p| has_variants = true if p.variants.count > 0}
       has_variants.should be true
+    end
+    it "should have an packing_type taxonomy with an index_print taxon" do
+      taxonomy = Taxonomy.find_by_name('packing_type')
+      taxonomy.should_not be nil
+      taxon_names = taxonomy.taxons.map{ |taxon|  taxon.name }
+      included = taxon_names.include? "index_print"
+      included.should_not be nil
     end
   end
 
@@ -100,6 +134,8 @@ describe Order do
       @order.add_variant( printset_variants.third,  @photo, 1 )
       @order.add_variant( printset_variants.third,  @photo2, 1 )
       @order.add_variant( printset_variants.fifth,  @photo, 1 )
+      @order.add_marketing_insert
+
 
       #NOT_PRINTS
       nop = Product.where("products.name != 'Prints'").first
@@ -115,10 +151,11 @@ describe Order do
       # The order has
       # - 3 printset line items using 3 variants
       # - 7 no prints line items using 4 variants
+      # - 1 Marketing print line item (hidden)
     end
 
     it 'there should be line items' do
-      @order.line_items.count.should be 12
+      @order.line_items.count.should be 13
     end
 
     it "should return all non-print line-items" do
@@ -161,4 +198,50 @@ describe Order do
       @order.destroy rescue nil
     end
   end
+
+  describe "Finalize" do
+    before(:each) do
+      @order = Factory.create(:order)
+      @photo = Factory.create(:photo)
+
+    end
+    
+    it 'should add a line item for a marketing print if order contains IndexPrint products' do
+      index_print_product = Product.taxons_name_eq('index_print').first
+      index_print_variant = index_print_product.variants.first
+      @order.line_items.count.should be 0
+      @order.add_variant( index_print_variant,  @photo, 1 )
+      @order.line_items.count.should be 1
+      @order.finalize!
+      @order.line_items.count.should be 2
+      visible_line_items = @order.line_items.prints.length + @order.line_items.not_prints.length
+      visible_line_items.should be 1
+    end
+
+    it 'should NOT add a line_item for marketing print if the order does not contain IndexPrint products' do
+      work_order_product = Product.taxons_name_eq('work_order').first
+      work_order_variant = work_order_product.variants.first
+      @order.line_items.count.should be 0
+      @order.add_variant( work_order_variant,  @photo, 1 )
+      @order.line_items.count.should be 1
+      @order.finalize!
+      @order.line_items.count.should be 1
+      visible_line_items = @order.line_items.prints.length + @order.line_items.not_prints.length
+      visible_line_items.should be 1
+    end
+
+    it 'should send order confirmed email' do
+      resque_jobs(:except => [ZZ::Async::MailingListSync]) do
+
+        ActionMailer::Base.delivery_method = :test
+        ActionMailer::Base.perform_deliveries = true
+        ActionMailer::Base.deliveries = []
+        @order.finalize!
+        ActionMailer::Base.deliveries.count.should == 1
+        ActionMailer::Base.deliveries[0].header['X-SMTPAPI'].value.should include "email.store.orderconfirmed"
+      end
+    end
+  end
+
+
 end

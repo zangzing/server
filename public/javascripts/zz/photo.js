@@ -302,7 +302,7 @@ zz.template_cache = zz.template_cache || {};
                         }
                     });
                     comment_button.click(function(){
-                        zz.comments.show_in_dialog(zz.page.album_id, zz.page.cache_version_key, o.photoId);
+                        zz.comments.show_in_dialog(zz.page.album_id, zz.page.album_cache_version_key, o.photoId);
                         hide_frame();
                         ZZAt.track('photo.comment.frame.click');
                     });
@@ -333,8 +333,12 @@ zz.template_cache = zz.template_cache || {};
                     var buy_button = button_bar.find('.buy-button');
                     buy_button.click(function(){
                         ZZAt.track('photo.buy.frame.click');
-                        zz.buy.add_selected_photo(o.json, self.element);
-                        zz.buy.activate_buy_mode();
+                        if(zz.buy.is_photo_selected(o.photoId)){
+                            zz.buy.activate_buy_mode();
+                        }
+                        else{
+                            zz.buy.add_selected_photo(o.json, self.element);
+                        }
                     });
 
 

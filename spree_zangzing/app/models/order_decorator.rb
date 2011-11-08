@@ -1,3 +1,10 @@
+unless defined? Order::MKTG_INSERT_VARIANT_ID
+  Order::MKTG_INSERT_VARIANT_ID  = 791384334
+  Order::MKTG_INSERT_USER_NAME   = 'zzmarketing'
+  Order::MKTG_INSERT_ALBUM_NAME  = 'Marketing Prints'
+end
+
+
 Order.class_eval do
   include PrettyUrlHelper
 
@@ -11,7 +18,6 @@ Order.class_eval do
   before_validation :clone_shipping_address, :if => "state=='ship_address'"
 
   after_validation :shipping_may_change, :if => 'ship_address && ship_address.zipcode_changed?'
-
 
   before_create do
       self.token = ::SecureRandom::hex(8)
@@ -172,14 +178,19 @@ Order.class_eval do
     save(:validate => false)
   end
 
+  # cache this - only downside is that if we want
+  # to change markup it will require a server restart
+  def first_class_shipping_method
+    @@first_class ||= available_shipping_methods.detect do |sm|
+        sm.calculator.is_a?(Calculator::EzpShipping) &&
+        sm.calculator.preferred_ezp_shipping_type == Calculator::EzpShipping::FIRST_CLASS
+    end
+  end
 
   #Assign the ezPrints FC shipping method by default, (the cheapest)
   def assign_default_shipping_method
     if shipping_method.nil?
-      default_sm = available_shipping_methods.detect do |sm|
-        sm.calculator.is_a?(Calculator::EzpShipping) &&
-        sm.calculator.preferred_ezp_shipping_type == Calculator::EzpShipping::FIRST_CLASS
-      end
+      default_sm = first_class_shipping_method
       if default_sm
         self.shipping_method = default_sm
       else
@@ -201,19 +212,6 @@ Order.class_eval do
       current_item.variant = variant
       current_item.price   = variant.price
       self.line_items << current_item
-    end
-
-    # populate line_items attributes for additional_fields entries
-    # that have populate => [:line_item]
-    Variant.additional_fields.select{|f| !f[:populate].nil? && f[:populate].include?(:line_item) }.each do |field|
-      value = ""
-
-      if field[:only].nil? || field[:only].include?(:variant)
-        value = variant.send(field[:name].gsub(" ", "_").downcase)
-      elsif field[:only].include?(:product)
-        value = variant.product.send(field[:name].gsub(" ", "_").downcase)
-      end
-      current_item.update_attribute(field[:name].gsub(" ", "_").downcase, value)
     end
 
     #notify shipping calculator cache that shipping params have changed
@@ -261,16 +259,17 @@ Order.class_eval do
   end
 
   def default_payment_method
-   available_payment_methods.first
+   available_payment_methods.last
   end
 
   # Finalizes an in progress order after checkout is complete.
   # Called after transition to complete state when payments will have been processed
   def finalize!
     update_attribute(:completed_at, Time.now)
-    self.out_of_stock_items = InventoryUnit.assign_opening_inventory(self)
     # lock any optional adjustments (coupon promotions, etc.)
     adjustments.optional.each { |adjustment| adjustment.update_attribute("locked", true) }
+
+    add_marketing_insert
 
     ZZ::Async::Email.enqueue( :order_confirmed, self.id )
 
@@ -297,6 +296,26 @@ Order.class_eval do
       self.ezp_error_message = "prepare_for_submit: #{e.message}"
       save
       error
+    end
+  end
+
+  def add_marketing_insert
+    index_print_product_ids = Product.taxons_name_eq('index_print').map{|p| p.id }
+    if line_items.detect { |li| index_print_product_ids.include? li.variant.product_id }
+      variant = Variant.find_by_id( Order::MKTG_INSERT_VARIANT_ID )
+      photo = ez.marketing_insert( Order::MKTG_INSERT_USER_NAME, Order::MKTG_INSERT_ALBUM_NAME)
+      if variant && photo
+        li = LineItem.new()
+        li.quantity = 1
+        li.price    = 0.0
+        li.variant  = variant
+        li.photo    = photo
+        li.hidden   = true
+        self.line_items << li
+      else
+        Rails.logger.error( "MARKETING INSERT ERROR: Variant with id=#{Order::MKTG_INSERT_VARIANT_ID} not found") if variant.nil?
+        Rails.logger.error( "MARKETING INSERT ERROR: No marketing insert image found. Looking in user=#{Order::MKTG_INSERT_USER_NAME} album=#{Order::MKTG_INSERT_ALBUM_NAME}") if photo.nil?
+      end
     end
   end
 
@@ -359,6 +378,8 @@ Order.class_eval do
     xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
     xml.instruct! unless options[:skip_instruct]
     options[:skip_instruct] = true
+    # fast load line items and associated print photos
+    line_items = LineItem.includes(:print_photo, :variant).find_all_by_order_id(self.id)
     xml.orders({ :partnerid => ZangZingConfig.config[:ezp_partner_id], :version => 1 }) {
       xml.images{
         xml.uri( {:id  => logo_id,
@@ -474,6 +495,24 @@ Order.class_eval do
     }.call
   end
 
+  # validate that all of the photos associated with the
+  # line items exist - will return true if they all exist and are ready,
+  # false otherwise
+  def all_photos_valid?
+    # bulk load all the line items and photos
+    all_valid = true
+    lines = LineItem.includes(:photo).find_all_by_order_id(self.id)
+    lines.each do |line|
+      photo = line.photo
+      if photo.nil? || !photo.ready?
+        line.destroy
+        all_valid = false
+      end
+    end
+    self.reload unless all_valid
+    all_valid
+  end
+
   # prepare an order for submission
   # we create the album and photos here
   # the photos still need to be processed
@@ -496,13 +535,36 @@ Order.class_eval do
     batch = UploadBatch.factory( Order.ez_prints_user_id, album.id, true )
 
     # now set up the photos we need to copy and track them in the line items
-    line_items.each do |li|
+    # first preload everything we need in three queries (line_items, photos, photo_infos)
+    lines = LineItem.includes(:photo => :photo_info).find_all_by_order_id(self.id)
+    originals = []
+    line_rows = []
+    lines.each do |li|
       photo = li.photo
-      print_photo = Photo.copy_photo(photo, :user_id => Order.ez_prints_user_id, :album_id => album.id,
-                      :upload_batch_id => batch.id, :for_print => true)
-      li.print_photo = print_photo
-      li.save!
+      options = { :user_id => Order.ez_prints_user_id, :album_id => album.id,
+                  :upload_batch => batch, :for_print => true }
+      originals << { :photo => photo, :options => options }
+      line_rows << li.id  # ensure the ordering matches the copied photos
     end
+
+    # copy the originals
+    print_photos = Photo.copy_photos(originals)
+
+    # Now update line items to use new copies for print_photo id.
+    # The lists are in sync so item 0 of lines gets photos 0, etc...
+    i = 0
+    rows = []
+    line_rows.each do |line_item_id|
+      # build data for fast insert into line_items
+      row = [ line_item_id, print_photos[i].id ]
+      rows << row
+      i += 1
+    end
+
+    # use a direct update to avoid any callbacks - saving a changed line item is
+    # unbelievably inefficient - the batch insert/update below on the other hand is
+    # incredibly fast
+    LineItem.fast_update_print_photo_ids(rows)
 
     # close out this batch since no new photos will be added to it
     batch.close_immediate
@@ -518,7 +580,8 @@ Order.class_eval do
     # before we submit to ezprints - at the end of the window resque calls order.submit
     # which in turn calls ezp_submit_order, after this point we have no control
     # over the ezprints order process so cannot cancel from our end
-    ZZ::Async::EZPSubmitOrder.enqueue_in(ZangZingConfig.config[:order_cancel_window], self.id)
+    cancel_window = ZangZingConfig.fast_ezp_simulator? ? 1 : ZangZingConfig.config[:order_cancel_window]
+    ZZ::Async::EZPSubmitOrder.enqueue_in(cancel_window, self.id)
   end
 
   # submit the order to ezprints, this is a callback from a resque
@@ -597,11 +660,8 @@ Order.class_eval do
     line_item_id_array.uniq!    # get rid of any duplicates
 
     # make sure we only include line items that have not already been associated with a shipment
-    filtered_line_item_ids = []
-    self.line_items.each do |line_item|
-      filtered_line_item_ids << line_item.id if line_item.shipment_id.nil? && line_item_id_array.include?(line_item.id)
-    end
-    return if filtered_line_item_ids.blank?
+    filtered_line_items = self.line_items.select{ |li| li.shipment_id.nil? && line_item_id_array.include?(li.id)}
+    return if filtered_line_items.blank?
 
     shp = shipments.detect{|shp| shp.ready? || shp.pending? }
     if !shp
@@ -610,17 +670,36 @@ Order.class_eval do
       shp.reload
     end
 
+    # if the original shipping method was first class, we can't rely on the
+    # tracking number to be meaningful according to EzPrints so ditch
+    # the tracking number and pretend it is a USPS order even though
+    # they might have sent it through some other bizarre means
+    if first_class_shipping_method && self.shipping_method_id == first_class_shipping_method.id
+      carrier = 'USPS'
+      tracking_number = ''
+    end
     # Store carrier::tracking number in the shipment tracking field
     if carrier.present? && tracking_number.present?
+      # FILTER CARRIER, ezPrints feeds tracking numbers like UPS 12345678
+      # which are NOT United Parcel Service tracking numbers but USPS so make carrier USPS unless
+      # the tracking number is indeed a UPS number
+      if carrier == 'UPS'
+        unless /\b(1Z ?[0-9A-Z]{3} ?[0-9A-Z]{3} ?[0-9A-Z]{2} ?[0-9A-Z]{4} ?[0-9A-Z]{3} ?[0-9A-Z]|[\dT]\d\d\d ?\d\d\d\d ?\d\d\d)\b/ =~ tracking_number
+          carrier = 'USPS'
+        end
+      end
       shp.tracking        = "#{carrier}::#{tracking_number}"
     else
       shp.tracking        = "#{carrier}#{tracking_number}"
     end
-    shp.line_item_ids   = filtered_line_item_ids
+#    shp.line_items   = filtered_line_items
+    # use direct insert for performance this is many many times faster than above line
+    rows = filtered_line_items.map {|item| [item.id, shp.id]}
+    LineItem.fast_update_shipment_ids(rows)
+
     shp.shipped_at = Time.now()
     old_state = self.state
     shp.ship
-
     # audit trail
     self.state_events.create({
         :previous_state => old_state,
@@ -628,6 +707,7 @@ Order.class_eval do
         :name           => "ezp shipment" ,
         :user_id        => (User.respond_to?(:current) && User.current && User.current.id) || self.user_id
     })
+    shp
   end
 
   # Updates the +shipment_state+ attribute according to the following logic:
@@ -670,7 +750,7 @@ Order.class_eval do
     qty_hash.each_pair do | variant_id, qty|
       line_items.find_all_by_variant_id( variant_id ).each do |li|
         li.quantity = qty
-        li.save
+        li.save if li.changed?
       end
     end
   end
@@ -682,7 +762,14 @@ Order.class_eval do
 
   def billing_zipcode
      bill_address.try(:zipcode)
-   end
+  end
+
+  def visible_line_items
+    visible_line_items = line_items.prints_by_variant
+    visible_line_items.concat( line_items.not_prints )
+    visible_line_items.sort!{ |a,b| b.created_at <=> a.created_at }
+    visible_line_items
+  end
 
 
   private

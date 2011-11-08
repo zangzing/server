@@ -49,11 +49,12 @@ class Photo < ActiveRecord::Base
                   :rotate_to, :crop_json, :source_path, :guid_part, :latitude, :created_at, :id,
                   :updated_at, :image_content_type, :headline, :error_message, :image_bucket,
                   :orientation, :height, :suspended, :longitude, :pos, :image_path, :image_updated_at,
-                  :generate_queued_at, :width, :state, :source, :deleted_at, :for_print
+                  :generate_queued_at, :width, :state, :source, :deleted_at, :for_print, :original_suffix, :size_version,
+                  :crc32
 
   # this is just a placeholder used by the connectors to track some extra state
   # now that we do batch operations
-  attr_accessor :temp_url, :inserting_for_batch, :temp_file_placeholder
+  attr_accessor :temp_url, :inserting_for_batch, :temp_file_placeholder, :s3_upload_options
 
   has_one :photo_info, :dependent => :destroy
   belongs_to :album, :touch => :photos_last_updated_at, :counter_cache => true
@@ -92,59 +93,81 @@ class Photo < ActiveRecord::Base
     return photo
   end
 
-  # this method takes an existing object in the ready
-  # state and makes a copy of it.  You can supply a hash
-  # of options that can be used to override some of the
-  # original values.  You can set:
+  # this method takes existing photos in the ready
+  # state and makes a copy of them.  you pass an array of
+  # hashes that represent each photo and its options as:
+  # [ {:photo => photo, :options => {:user_id =>, etc}}, ... ]
+  #
+  # The hash options you can set are:
   #
   # :user_id
   # :album_id
-  # :upload_batch_id
+  # :upload_batch
   # :crop - new crop to be applied to copy
   # :rotate_to - new rotation
   # :for_print - will only produce print related resized photos
   #
-  # returns the new copy - the copy still has to go through the
+  # returns the new copys array - the copy still has to go through the
   # resque jobs for copy of the s3 data and resizing steps so
   # is initially in the uploading state
-  def self.copy_photo(original, attr = {})
-    raise ArgumentError.new("Cannot copy a source photo that is not in the ready state") unless original.ready?
+  def self.copy_photos(originals)
+    photos = []
 
-    photo = Photo.new(original.attributes)
-    photo.id = Photo.get_next_id
-    photo.photo_info = PhotoInfo.new(:photo_id => photo.id, :metadata => original.photo_info.metadata) unless original.photo_info.nil?
-    custom = attr[:user_id]
-    photo.user_id = custom unless custom.nil?
-    custom = attr[:album_id]
-    photo.album_id = custom unless custom.nil?
-    custom = attr[:upload_batch_id]
-    upload_batch_id = custom.nil? ? UploadBatch.get_current_and_touch(photo.user_id, photo.album_id).id : custom
-    photo.upload_batch_id = upload_batch_id
+    # fetch all the ids we need up front
+    original_count = originals.length
+    current_id = Photo.get_next_id(original_count) if original_count
 
-    custom = attr[:rotate_to]
-    photo.rotate_to = custom unless custom.nil?
-    crop = attr[:crop]
-    photo.crop_json = crop.to_json unless crop.nil?
-    custom = attr[:for_print]
-    photo.for_print = custom unless custom.nil?
+    # copy all the photos
+    originals.each do |original|
+      # verify that all the originals are in the ready state
+      original_photo = original[:photo]
+      attr = original[:options] ? original[:options] : {}
+      raise ArgumentError.new("Cannot copy a source photo that is not in the ready state") unless original_photo.ready?
 
-    photo.mark_uploading
-    photo.set_guid_for_path
-    photo.image_path = nil
-    photo.image_bucket = nil
-    photo.source_path = nil
-    photo.source_guid = "copy:"+UUIDTools::UUID.random_create.to_s
-    photo.error_message = nil
-    photo.set_default_position
-    photo.save
+      # now prepare to copy
+      custom = attr[:upload_batch]
+      upload_batch = custom.nil? ? UploadBatch.get_current_and_touch(original_photo.user_id, original_photo.album_id) : custom
+      original_attrs = original_photo.attributes.dup.recursively_symbolize_keys!
 
-    options = {}
-    options[:copy_s3_object] = true
-    options[:src_bucket] = original.image_bucket
-    options[:src_key] = original.attached_image.key(AttachedImage::ORIGINAL)
-    photo.queue_upload_to_s3(options)
+      original_attrs[:id] = current_id
+      current_id += 1 # bump for next one
 
-    photo
+      custom = attr[:user_id]
+      original_attrs[:user_id] = custom unless custom.nil?
+      custom = attr[:album_id]
+      original_attrs[:album_id] = custom unless custom.nil?
+
+      custom = attr[:rotate_to]
+      original_attrs[:rotate_to] = custom unless custom.nil?
+      crop = attr[:crop]
+      original_attrs[:crop_json] = crop.to_json unless crop.nil?
+      custom = attr[:for_print]
+      original_attrs[:for_print] = custom unless custom.nil?
+
+
+      photo = Photo.new_for_batch(upload_batch, original_attrs)
+      photo.photo_info = PhotoInfo.new(:photo_id => photo.id, :metadata => original_photo.photo_info.metadata) unless original_photo.photo_info.nil?
+
+      photo.mark_uploading
+      photo.set_guid_for_path
+      photo.image_path = nil
+      photo.image_bucket = nil
+      photo.source_path = nil
+      photo.source_guid = "copy:"+UUIDTools::UUID.random_create.to_s
+      photo.error_message = nil
+      options = {}
+      options[:copy_s3_object] = true
+      options[:src_bucket] = original_photo.image_bucket
+      options[:src_key] = original_photo.attached_image.key(AttachedImage.original_suffix(original_photo.original_suffix))
+      options[:src_crc32] = original_photo.crc32
+      photo.s3_upload_options = options
+      photos << photo
+    end
+
+    # ok, now we have all of the photos ready to go, so do the bulk insert
+    Photo.batch_insert(photos)
+
+    photos
   end
 
 
@@ -154,19 +177,37 @@ class Photo < ActiveRecord::Base
     num_photos = photos.count
     return if (num_photos == 0)
 
-    # batch insert
+    photo_infos = []
+    album_ids = {}
+    # gather details about the insert
+    photos.each do |photo|
+      album_id = photo.album_id
+      album_count = album_ids[album_id]
+      album_count = 0 if album_count.nil?
+      album_count += 1
+      album_ids[album_id] = album_count
+      photo_info = photo.photo_info
+      if photo_info
+        photo_infos << photo_info
+        photo_info.photo = photo # keep it from loading when referenced
+      end
+    end
+
+    # batch insert the base photos
     results = self.import(photos)
 
-    # we assume all share the same album, so extract
-    # the album_id and touch that album without instantiating a
-    # new album
-    photo = photos[0]
-    album_id = photo.album_id
-    # bump the photo counter
-    Album.update_counters album_id, :photos_count => num_photos
-    Album.change_cache_version(album_id)
+    # and now the photo infos
+    PhotoInfo.import(photo_infos) unless photo_infos.empty?
 
-    # now kick off the uploads since bulk does not call after commit (I don't think)
+    # Touch each album_id without instantiating a
+    # new album
+    album_ids.each_pair do |album_id, photo_count|
+      # bump the photo counter
+      Album.update_counters album_id, :photos_count => photo_count
+      Album.change_cache_version(album_id)
+    end
+
+    # now kick off the uploads since bulk does not call after commit
     photos.each do |photo|
       photo.inserting_for_batch = false
       photo.do_upload_to_s3
@@ -180,6 +221,9 @@ class Photo < ActiveRecord::Base
   def init_for_create
     set_guid_for_path
     set_default_position
+    # assign a large random number to original suffix up to max unsigned 32 bit integer
+    # we do this to ensure no one can guess the original from one of the smaller size photos
+    self.original_suffix = rand(4294967295)
   end
 
   # never, never, never call get_next_id inside a transaction since failure of the transaction would rollback the
@@ -263,7 +307,7 @@ class Photo < ActiveRecord::Base
     self.photo_info = PhotoInfo.factory(data)
     if exif = data['EXIF']
       val =  exif['DateTimeOriginal'] || self.capture_date # if nil keep the existing one, otherwise update
-      self.capture_date = (DateTime.parse(val) unless val.nil?) rescue nil
+      self.capture_date = (DateTime.parse(val) rescue nil) unless val.nil?
       val = exif['Orientation']
       self.orientation = decode_orientation(val) unless val.nil?
       val = exif['GPSLatitude']
@@ -368,7 +412,8 @@ class Photo < ActiveRecord::Base
     # If state marked as uploading, pass it on
     if !self.destroyed? && self.uploading? && @do_upload
       @do_upload = false
-      queue_upload_to_s3
+      options = self.s3_upload_options ? self.s3_upload_options : {}
+      queue_upload_to_s3(options)
     end
   end
 
@@ -383,8 +428,8 @@ class Photo < ActiveRecord::Base
   def add_to_pending_delete
     Album.update_photos_ready_count(self.album_id, -1) if ready?
     if self.image_bucket
-      include_original = self.for_print.nil? ? true : !self.for_print
-      encoded_sizes = S3PendingDeletePhoto.encode_sizes(attached_image.sizes, include_original)
+      original_suffix = AttachedImage.original_suffix(self.original_suffix)
+      encoded_sizes = S3PendingDeletePhoto.encode_sizes(attached_image.sizes, original_suffix)
       pd = S3PendingDeletePhoto.create(
           :photo_id => self.id,
           :user_id => self.user_id,
@@ -469,7 +514,7 @@ class Photo < ActiveRecord::Base
     z.track_transaction("photo.upload.resize.start", self.id)
     attached_image.resize_and_upload_photos
     z.track_transaction("photo.upload.resize.done", self.id)
-    z.track_transaction("photo.upload.done", self.id)
+    z.track_transaction("photo.upload.done", self.id, nil, 1, self.user_id)
     # tell the photo object it is good to go
     was_ready = ready?
     mark_ready
@@ -487,6 +532,17 @@ class Photo < ActiveRecord::Base
     end
   end
 
+  # computes crc32 given a file
+  def self.compute_crc32(path)
+    crc = 0
+    File.open(path, 'rb') do |f|
+      while bytes = f.read(128 * 1024) do
+      crc = Zlib.crc32(bytes,crc)
+      end
+    end
+    crc
+  end
+
   # upload our temp source file to s3 and remove the temp if successful
   # this is called from the resque worker to avoid the upload
   # having to be done in the main app server dispatch
@@ -499,11 +555,19 @@ class Photo < ActiveRecord::Base
           # copying an exist s3 object
           src_bucket = options[:src_bucket]
           src_key = options[:src_key]
+          self.crc32 = options[:src_crc32]
           attached_image.copy(src_bucket, src_key)
         else
           # doing a local file system copy
-          file = File.open(self.source_path, "rb")
-          attached_image.upload(file)
+          path = self.source_path
+          self.crc32 = Photo.compute_crc32(path)
+          file = nil
+          begin
+            file = File.open(path, "rb")
+            attached_image.upload(file)
+          ensure
+            file.close rescue nil if file
+          end
         end
         # original file is now up on S3 - the existence of image_path lets us know that
         # it has been uploaded
@@ -559,6 +623,7 @@ class Photo < ActiveRecord::Base
 
   def mark_uploading
     self.state = 'uploading'
+    @do_upload = true
   end
 
   def ready?
@@ -634,11 +699,64 @@ class Photo < ActiveRecord::Base
 
   def original_url
     if self.ready?
-      attached_image.url(PhotoAttachedImage::ORIGINAL)
+      attached_image.url(AttachedImage.original_suffix(self.original_suffix))
     else
       return safe_url(self.source_screen_url)
     end
   end
+
+  # return filename with extension
+  # derived from the caption
+  # append_info if set will be appended to the no_caption case
+  def file_name_with_extention(append_info = nil)
+    full_type = safe_file_type
+    extension = extension_from_type(full_type)
+    name = self.caption.blank? ? no_caption_filler(append_info) : self.caption
+    # ok, now see if the name already has an extension that matches this extension, if so don't append
+    if (name =~ /\.#{extension}$/i) == nil
+      filename = "#{name}.#{extension}"
+    else
+      filename = name
+    end
+    filename
+  end
+
+  def no_caption_filler(append_info)
+    base = Time.now.strftime( '%y-%m-%d-%H-%M-%S' )
+    base += "-#{append_info}" if append_info
+    base
+  end
+
+  def extension_from_type(full_type)
+    type = full_type.split('/')[1]
+    extension = case( type )
+                  when 'jpeg' then 'jpg'
+                  when 'tiff' then 'tif'
+                  else type
+                end
+  end
+
+  # look at the file type and determine the best choice
+  # based on our current state - defaults to returning image/jpeg
+  # if all else fails
+  def safe_file_type
+    type = self.image_content_type.nil? ? 'image/jpeg' : self.image_content_type
+  end
+
+  # return the substitution form of the url
+  # expects caller to perform a string substitution
+  # with the type of resized photo wanted
+  def base_subst_url
+    # use #{size} literally as the suffix
+    # since the client will substitute
+    self.ready? ? attached_image.url('#{size}') : nil
+  end
+
+  # convert suffix if needed based on size version
+  def suffix_based_on_version(suffix)
+    attached_image.suffix_based_on_version(suffix)
+  end
+
 
   def aspect_ratio
     if(self.width && self.height && self.width != 0 && self.height != 0)
@@ -716,7 +834,6 @@ class Photo < ActiveRecord::Base
         else
           ZZ::ZZA.new.track_transaction("photo.upload.start", self.id)
 
-          @do_upload = true
           self.mark_uploading
           self.source_path = file_path
           self.image_file_size = File.size(file_path)
@@ -799,6 +916,19 @@ class Photo < ActiveRecord::Base
   # this method packages up the fields
   # we care about for return via json
   def self.hash_one_photo(photo)
+    photo_sizes = nil
+    photo_base = photo.base_subst_url
+    if photo_base
+      # ok, photo is ready so include sizes map
+      photo_sizes = {
+          :stamp            => photo.suffix_based_on_version(AttachedImage::STAMP),
+          :thumb            => photo.suffix_based_on_version(AttachedImage::THUMB),
+          :screen           => photo.suffix_based_on_version(AttachedImage::MEDIUM),
+          :full_screen      => photo.suffix_based_on_version(AttachedImage::LARGE),
+          :iphone_grid      => photo.suffix_based_on_version(AttachedImage::IPHONE_GRID),
+          :iphone_grid_ret  => photo.suffix_based_on_version(AttachedImage::IPHONE_GRID_RET)
+      }
+    end
     hashed_photo = {
       :id => photo.id,
       :caption => photo.caption,
@@ -808,10 +938,12 @@ class Photo < ActiveRecord::Base
       :upload_batch_id => photo.upload_batch_id,
       :user_id => photo.user_id,
       :aspect_ratio => photo.aspect_ratio,
-      :stamp_url => photo.stamp_url,
+      :stamp_url => photo.stamp_url,  # todo, the 4 urls should be nil if photo_base is non nil
       :thumb_url => photo.thumb_url,
       :screen_url => photo.screen_url,
       :full_screen_url => photo.full_screen_url,
+      :photo_base => photo_base,
+      :photo_sizes => photo_sizes,
       :width => photo.width,
       :height => photo.height,
       :rotated_width => photo.rotated_width,
@@ -843,8 +975,8 @@ class Photo < ActiveRecord::Base
 
   def set_default_position
 
-    #start with position as capture date in seconds
-    self.pos = capture_date.to_i
+    #start with position as capture date in seconds, if we have none use created_at, and finally now
+    self.pos = Integer(self.capture_date || self.created_at || Time.now) rescue 0
     custom_order_offset = upload_batch.custom_order_offset
 
     # The current batch will be custom ordered if the album was custom ordered when batch was created.
@@ -908,14 +1040,26 @@ class PhotoAttachedImage < AttachedImage
   def self.image_sizes(for_print = false)
     if for_print
       @@print_sizes ||= [
-          {FULL    => "-strip -quality 90"},  # no resize wanted since this will be used for print
+          {FULL    => {:cmd => "-strip -quality 90"}},  # no resize wanted since this will be used for print
       ]
     else
       @@normal_sizes ||= [
-          {LARGE    => "-resize '2560x1440>' -strip -quality 80"},  # large
-          {MEDIUM   => "-resize '1024x768>' -strip -quality 80"},  # medium
-          {THUMB    => "-resize '180x180>' -strip -quality 93"},   # thumb
-          {STAMP    => "-resize '100x100>' -strip -quality 80"}    # stamp
+          {LARGE            => {:cmd => "-resize '2560x1440>' -strip -quality 80"}},  # large
+          {MEDIUM           => {:cmd => "-resize '1024x768>' -strip -quality 80"}},  # medium
+
+          # we use clone since we are center cropping and want to revert to current image chain after our operation
+          # when we set clone to true we save the current image so the resize does not affect it as it does when
+          # not cloning so place this under the next greater size than we need
+          {IPHONE_COVER_RET => {:cmd => "-resize 620x188^ -gravity center -extent 620x188 -strip -quality 80", :clone => true}},
+          {IPHONE_COVER     => {:cmd => "-resize 310x94^ -gravity center -extent 310x94 -strip -quality 80", :clone => true}},
+          {IPHONE_GRID_RET  => {:cmd => "-resize 188x188^ -gravity center -extent 188x188 -strip -quality 80", :clone => true}},
+          {IPHONE_GRID      => {:cmd => "-resize 94x94^ -gravity center -extent 94x94 -strip -quality 80", :clone => true}},
+
+          {THUMB            => {:cmd => "-resize '180x180>' -strip -quality 93"}},   # thumb
+          # due to the way the imagemagick convert call works where it always wants to do an implicit
+          # -write on the last item we cannot use clone so make sure any items that need clone are always
+          # above the last one
+          {STAMP            => {:cmd => "-resize '100x100>' -strip -quality 80"}},    # stamp
       ]
     end
   end

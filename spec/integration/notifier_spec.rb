@@ -1,4 +1,4 @@
-require 'spec_helper'
+require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Notifier do
 
@@ -50,26 +50,52 @@ describe Notifier do
 
 
     it "should send user_liked when somebody start following you" do
-      pending "not implemented yet"
+      resque_jobs(:except => [ZZ::Async::MailingListSync]) do
+        user_a = Factory.create(:user)
+        user_b = Factory.create(:user)
+
+        Like.add( user_a.id, user_b.id, Like::USER)
+        ActionMailer::Base.deliveries.count.should == 1
+        ActionMailer::Base.deliveries[0].header['X-SMTPAPI'].value.should include "email.userliked"
+      end
     end
 
     it "should send album_liked when somebody likes your album" do
-      pending "not implemented yet"
+      resque_jobs(:except => [ZZ::Async::MailingListSync]) do
+        user_a = Factory.create(:user)
+        album = Factory.create(:album)
+
+        Like.add( user_a.id, album.id, Like::ALBUM)
+        ActionMailer::Base.deliveries.count.should == 1
+        ActionMailer::Base.deliveries[0].header['X-SMTPAPI'].value.should include "email.albumliked"
+      end
     end
 
     it "should send photo_liked when somebody likes your photo" do
+      resque_jobs(:except => [ZZ::Async::MailingListSync]) do
+        user_a = Factory.create(:user)
+        photo = Factory.create(:full_photo)
+        photo.reload
+        photo.ready?.should == true
+
+        Like.add( user_a.id, photo.id, Like::PHOTO)
+        ActionMailer::Base.deliveries.count.should == 1
+        ActionMailer::Base.deliveries[0].header['X-SMTPAPI'].value.should include "email.photoliked"
+      end
+    end
+    it "should send album_shared when someone shares an album by email with you" do
       pending "not implemented yet"
     end
 
-    it "should send album_updated when you like an album" do
+    it "should send album_updated to album_likers when somebody uploads a photo into an album" do
       pending "not implemented yet"
     end
 
-    it "should send album_updated when you follow someone" do
-      pending "not implemented yet"
-    end
+    it "should send album_updated to album_onwner_followers when somebody uploads a photo into an album" do
+          pending "not implemented yet"
+        end
 
-    it "should send album_updated when you are a contributor" do
+    it "should send album_updated to contributors when somebody uploads a photo into an album" do
       pending "not implemented yet"
     end
 
@@ -77,13 +103,7 @@ describe Notifier do
       pending "not implemented yet"
     end
 
-    it "should send contributor_added when you are invited to contribute into an album" do
-      pending "not implemented yet"
-    end
 
-    it "should send album_shared when someone shares an album by email with you" do
-      pending "not implemented yet"
-    end
 
     it "should send album_shared when someone invites you into an album as  viewer " do
       pending "not implemented yet"
@@ -109,6 +129,4 @@ describe Notifier do
       pending "not implemented yet"
     end
     ########################
-
-
 end

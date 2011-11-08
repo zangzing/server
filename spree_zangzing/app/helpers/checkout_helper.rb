@@ -6,11 +6,7 @@ module CheckoutHelper
     states = %w(ship_address payment confirm)
     order_state = @order.state
     items = states.map do |state|
-      if state == 'confirm'
-        text = t('place_order').titleize
-      else
-        text = t("order_state.#{state}").titleize
-      end
+      text = t("customer_order_state.#{state}").titleize
 
       css_classes = []
       current_index = states.index(order_state)

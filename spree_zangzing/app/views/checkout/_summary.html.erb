@@ -1,22 +1,30 @@
-<div class="checkout-summary">
-  <h3><%= t(:order_summary) %></h3>
+<div class="checkout-summary clearfix">
+  <h3 class="center-block summary-bold" style="text-align:center; "><%= t(:order_summary) %></h3>
   <table>
     <tbody>
-    <tr>
-      <td><strong><%= t('item_total') %>:</strong></td>
-      <td><strong><%= number_to_currency order.item_total %></strong></td>
+    <tr class="summary-lines">
+      <td><%= t('item_total') %></td>
+      <td style="text-align: right;"><%= number_to_currency order.item_total %></td>
     </tr>
-    <tbody id="summary-order-charges">
-    <% order.adjustments.each do |adjustment| %>
+    <tbody class="summary-lines">
+    <%
+       order.adjustments.each do |adjustment|
+           # remove any without an ammount. most likely, these will be
+           # extra shipping adjustments when the order is split
+           if(adjustment.amount != 0)
+    %>
         <tr>
-          <td><%= adjustment.label %>: </td>
-          <td><%= number_to_currency adjustment.amount %></td>
+          <td><%= adjustment.label %></td>
+          <td style="text-align: right;"><%= number_to_currency adjustment.amount %></td>
         </tr>
-    <% end %>
+    <%
+           end
+       end
+    %>
     </tbody>
-    <tr>
-      <td><strong><%= t('order_total') %>:</strong></td>
-      <td><strong><span id='summary-order-total'><%= number_to_currency @order.total %></span></strong></td>
+    <tr class="order-total summary-bold">
+      <td><%= t('order_total') %></td>
+      <td style="text-align: right;"><%= number_to_currency @order.total %></td>
     </tr>
     </tbody>
 
@@ -65,11 +73,9 @@
             <%end%>
 
             $('#place-order-button').click(function(){
-                zz.dialog.show_progress_dialog("Submitting order...");
-                // need to defer the submit otherwise progress dialog spinner doesn't load
-                _.defer(function(){
-                    $('#checkout_form_confirm').attr('action','<%=update_checkout_path('confirm')%>').submit();
-                });
+                zz.dialog.show_spinner_progress_dialog("Submitting order...");
+                ZZAt.track('buy.checkout.confirm.place-order.click');
+                $('#checkout_form_confirm').attr('action','<%=update_checkout_path('confirm')%>').submit();
             });
         });
     </script>

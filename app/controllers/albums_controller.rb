@@ -15,7 +15,7 @@ class AlbumsController < ApplicationController
     ]
   end
 
-  before_filter :require_user,              :except => except_methods
+  before_filter :require_user,              :except => except_methods + [ :download ]
   before_filter :require_same_user_json,    :only =>   [ :my_albums_json, :liked_albums_json, :zz_api_my_albums_json, :zz_api_liked_albums_json,
       :invited_albums_json, :zz_api_invited_albums_json, :invalidate_cache
   ]
@@ -490,6 +490,59 @@ class AlbumsController < ApplicationController
     #TODO: Receive and process current_users request for access into the current album
   end
 
+  # @album is set by require_album before_filter
+  # prepare to download an on the fly zip of the photos
+  # we return.  The heavy lifting is handled by the mod_zip
+  # plugin to nginx, so our job is to put together the list
+  # of all photos that have been uploaded to amazon
+  def download
+    unless  @album.can_user_download?( current_user )
+      flash.now[:error] = "Only Authorized Album Group Members can download albums"
+      if request.xhr?
+        head :status => 401
+      else
+        render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
+      end
+      return false
+    end
+
+    # Walk the list of all photos and build a plain test response in the form
+    # crc32 size custom_url name_in_zip_file
+    # since we just added crc32 some files don't have it so it is permissible for it
+    # to be just a -.  When we perform the next full photos resize sweep we can compute
+    # and add it to those that are missing.   The benifit to having this is that it
+    # gives us restartable downloads from an arbitrary point.
+    #
+    # The custom_url must be of the form
+    # /nginx_redirect/host/uri
+    # the nginx_redirect part tells us to proxy through to a remote
+    # server to fetch the actual contents for that file
+    #
+    files = ""
+    i = 0
+    @album.photos.each do |photo|
+      i += 1
+      image_path = photo.image_path
+      image_file_size = photo.image_file_size.nil? ? 0 : photo.image_file_size.to_i
+      if image_path && image_file_size > 0
+        full_name = photo.file_name_with_extention(i)
+        escaped_url = URI::escape(image_path.to_s)
+        uri = URI.parse(escaped_url)
+        query = uri.query.blank? ? '' : "?#{uri.query}"
+        crc32 = photo.crc32.nil? ? '-' : photo.crc32.to_s(16)
+        files << "#{crc32} #{image_file_size} /nginx_redirect/#{uri.host}#{uri.path}#{query} #{full_name}\n"
+      end
+    end
+
+    if files.blank?
+      flash[:error]="Album has no photos ready for download"
+      head :not_found and return
+    else
+      zza.track_event("albums.download.full")
+      Rails.logger.debug("Full album download: #{@album.name}")
+      nginx_zip_mod(@album.name, files) and return
+    end
+  end
 
   private
 #

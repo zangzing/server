@@ -47,8 +47,7 @@ module ZZ
 
       # return seconds randomly between min and max inclusive
       def self.random_seconds(min, max)
-        #return 1  #todo testing only
-        min + rand(max - min + 1)
+        ZangZingConfig.fast_ezp_simulator? ? 1 : min + rand(max - min + 1)
       end
 
       # specify an integer from 0-100 which

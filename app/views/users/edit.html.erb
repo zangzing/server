@@ -149,7 +149,7 @@
                     <td><%=link_to order.number,  order_path( order) %></td>
                     <td><%= order.completed_at.strftime("%d %b %Y") %></td>
                     <td><%= "#{order.ship_address.firstname} #{order.ship_address.lastname}"%></td>
-                    <td><%= order.state%></td>
+                    <td><%= t(order.state, :scope => :customer_order_state ).titleize%></td>
                   </tr>
                   <%
                     #if i >= 9
@@ -198,23 +198,19 @@
 
 
             var load_profile_photos = function(callback){
-                $.ajax({
-                    dataType: 'json',
-                    url: zz.routes.path_prefix + '/albums/' + profile_album_id + '/photos_json?ver=0',  //force browser cache miss
-                    success: function(json){
-                        var selectedIndex=-1;
-                        var currentId = $('#profile-photo-id').val();
-                        var photos = $.map(json, function(element, index){
-                            var id = element.id;
-                            if(id == currentId){
-                                selectedIndex = index;
-                            }
-                            var src = element.thumb_url;
-                            src = zz.agent.checkAddCredentialsToUrl(src);
-                            return {id:id, src:src};
-                        });
-                        callback(photos,selectedIndex);
-                    }
+                zz.routes.photos.get_album_photos_json(profile_album_id, 0, function(json){
+                    var selectedIndex=-1;
+                    var currentId = $('#profile-photo-id').val();
+                    var photos = $.map(json, function(element, index){
+                        var id = element.id;
+                        if(id == currentId){
+                            selectedIndex = index;
+                        }
+                        var src = element.thumb_url;
+                        src = zz.agent.checkAddCredentialsToUrl(src);
+                        return {id:id, src:src};
+                    });
+                    callback(photos,selectedIndex);
                 });
             };
 

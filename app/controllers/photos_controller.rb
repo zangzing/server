@@ -48,6 +48,9 @@ start_time = Time.now
 
     (0...photo_count).each do |index|
       i_s = index.to_s
+      capture_date = Integer(capture_date_map[i_s]) rescue nil
+      capture_date = nil if capture_date == 0 # treat 0 as nil since no way to pass real NULL value using post
+      capture_date = (Time.at(max_safe_epoch_time(capture_date)) rescue nil) unless capture_date.nil?
       photo = Photo.new_for_batch(current_batch,  {
                                     :id                =>   current_id,
                                     :album_id          =>   album_id,
@@ -61,7 +64,7 @@ start_time = Time.now
                                     :rotate_to         =>   rotate_to,
                                     :caption           =>   safe_hash_default(caption_map, i_s, ""),
                                     :image_file_size   =>   file_size_map[i_s],
-                                    :capture_date      =>   Time.at( max_safe_epoch_time(safe_hash_default(capture_date_map, i_s, 0).to_i) )
+                                    :capture_date      =>   capture_date
                                     }
                                     )
       current_id += 1
@@ -376,7 +379,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
   # @photo and @album are  set by require_photo before_filter
   def download
     unless  @album.can_user_download?( current_user )
-      flash.now[:error] = "Only Authorized Album Group Memebers can download photos"
+      flash.now[:error] = "Only Authorized Album Group Members can download photos"
       if request.xhr?
         head :status => 401
       else
@@ -386,25 +389,19 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
     end
 
     if @photo && @photo.ready?
-      type = @photo.image_content_type.split('/')[1]
-      extension = case( type )
-                    when 'jpg' then 'jpeg'
-                    when 'tiff' then 'tif'
-                    else type
-                  end
-      name = ( @photo.caption.nil? || @photo.caption.length <= 0 ? Time.now.strftime( '%y-%m-%d-%H-%M-%S' ): @photo.caption )
-      filename = "#{name}.#{extension}"
-      url = @photo.original_url.split('?')[0]
-
+      type = @photo.safe_file_type
+      filename = @photo.file_name_with_extention
+      #url = @photo.original_url.split('?')[0]
+      url = @photo.original_url
       zza.track_event("photos.download.original")
       Rails.logger.debug("Original download: #{ url}")
 
       if (browser.ie? && request.headers['User-Agent'].include?('NT 5.1'))
         # tricks to get IE to handle correctly
         # request.headers['Cache-Control'] = 'must-revalidate, post-check=0, pre-check=0'
-        x_accel_redirect(url, :type=>"image/#{type}") and return
+        x_accel_redirect(url, :type=>type) and return
       else
-        x_accel_redirect(url, :filename => filename, :type=>"image/#{type}") and return
+        x_accel_redirect(url, :filename => filename, :type=>type) and return
       end
     else
       flash[:error]="Photo has not finished Uploading"

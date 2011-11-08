@@ -81,7 +81,7 @@ describe EZPrints::EZPManager do
     album = photo.album
     test_photos = Set.new( [photo.id] )
 
-    # create 10 more and add the ids to the set
+    # create 5 more and add the ids to the set
     5.times do
       test_photo = Factory.create(:photo, :user => user, :album => album, :state => 'ready')
       test_photos << test_photo.id
@@ -91,9 +91,8 @@ describe EZPrints::EZPManager do
     6.times do
       pick = @ezp.marketing_insert(user.username, album.name)
       pick.should_not == nil
-      test_photos.include?(pick).should_not == nil
+      test_photos.include?(pick.id).should_not == nil
     end
   end
-
 
 end

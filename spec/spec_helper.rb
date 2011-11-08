@@ -71,3 +71,16 @@ end
 def spec_dir
   File.expand_path('.', File.dirname(__FILE__))
 end
+
+# use the handy zz_api login method, works
+# for web stuff also
+# returns user_id
+def zz_login(username, password)
+  body = zz_api_body({ :email => username, :password => password })
+  path = build_full_path(zz_api_login_path, true)
+  post path, body, zz_api_headers
+  response.status.should eql(200)
+  login_info = JSON.parse(response.body).recursively_symbolize_keys!
+  user_id = login_info[:user_id]
+end
+

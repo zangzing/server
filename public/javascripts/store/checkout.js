@@ -95,6 +95,7 @@ zz.store.checkout = {};
                 }
             },
             submitHandler: function(form){
+                ZZAt.track('buy.checkout.shipping.submit');
                 form.submit();
             },
             errorElement: "div",
@@ -106,6 +107,7 @@ zz.store.checkout = {};
             highlight: highlighter,
             unhighlight: unhighlighter
         });
+        ZZAt.track('buy.checkout.shipping.open');
     }
 
 
@@ -201,8 +203,9 @@ zz.store.checkout = {};
                 $('#cc_number').val($('#card_number').val());
                 $('#cc_code').val($('#card_code').val());
 
-                zz.dialog.show_progress_dialog("Verifying payment information...");
+                zz.dialog.show_spinner_progress_dialog("Verifying payment information...");
                 // need to defer the submit otherwise progress dialog spinner doesn't load
+                ZZAt.track('buy.checkout.payment.submit');
                 _.defer(function(){
                     form.submit();
                 });
@@ -216,6 +219,7 @@ zz.store.checkout = {};
             highlight: highlighter,
             unhighlight: unhighlighter
         });
+        ZZAt.track('buy.checkout.payment.open');
     };
     //======================= thankyou =========================
     zz.store.checkout.init_thankyou_screen = function(){
@@ -257,6 +261,7 @@ zz.store.checkout = {};
                 'user[password]': '6 characters or more, please'
             },
             submitHandler: function(form){
+                ZZAt.track('buy.checkout.thankyou.join.submit');
                 form.submit();
             },
              errorElement: "div",
@@ -268,7 +273,7 @@ zz.store.checkout = {};
             highlight: highlighter,
             unhighlight: unhighlighter
         });
-
+         ZZAt.track('buy.checkout.thankyou.open');
     };
       //======================= thankyou =========================
     zz.store.checkout.init_cart_screen = function(){};

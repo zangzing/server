@@ -1,7 +1,12 @@
 class PhotoInfo < ActiveRecord::Base
+  attr_accessible :id, :photo_id, :metadata
   belongs_to :photo
 
-  validates_presence_of :photo
+# the following is commented out because it has the side
+# effect of loading the parent photo object when we do
+# our batch inserts - we are fine without it since
+# you only get at photo infos from the parent photo object
+#  validates_presence_of :photo
 
   def self.factory(meta_data)
     PhotoInfo.new(:metadata => meta_data.to_json)
