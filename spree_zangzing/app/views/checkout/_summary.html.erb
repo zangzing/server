@@ -7,12 +7,20 @@
       <td style="text-align: right;"><%= number_to_currency order.item_total %></td>
     </tr>
     <tbody class="summary-lines">
-    <% order.adjustments.each do |adjustment| %>
+    <%
+       order.adjustments.each do |adjustment|
+           # remove any without an ammount. most likely, these will be
+           # extra shipping adjustments when the order is split
+           if(adjustment.amount != 0)
+    %>
         <tr>
           <td><%= adjustment.label %></td>
           <td style="text-align: right;"><%= number_to_currency adjustment.amount %></td>
         </tr>
-    <% end %>
+    <%
+           end
+       end
+    %>
     </tbody>
     <tr class="order-total summary-bold">
       <td><%= t('order_total') %></td>

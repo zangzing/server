@@ -418,8 +418,10 @@ zz.buy = zz.buy || {};
                         '</div>' +
                         '<div class="footer-section">' +
                             '<img class="image" src="/images/photo_placeholder.png">' +
-                            '<div class="description">16x20 Mounted Print with a Black Frame</div>' +
-                            '<div class="count-and-price">12 for $200.00</div>' +
+                            '<div class="description">' +
+                                '<div class="text"> 16x20 Mounted Print with a Black Frame</div>' +
+                                '<div class="count-and-price">12 for $200.00</div>' +
+                            '</div>' +
                             '<a class="next-button checkout-button"><span>Add to Cart</span></a>' +
                         '</div>' +
                     '</div>' +
@@ -506,9 +508,15 @@ zz.buy = zz.buy || {};
         }
 
 
+        show_or_hide_checkout_banner();
 
-        if(zz.session.cart_item_count > 0 && jQuery.cookie('hide_checkout_banner') != 'true'){
+    };
+
+    function show_or_hide_checkout_banner(){
+        if(!zz.buy.is_buy_mode_active() && zz.session.cart_item_count > 0 && jQuery.cookie('hide_checkout_banner') != 'true'){
+
             $('#checkout-banner').show();
+
             if(zz.session.cart_item_count == 1){
                 $('#checkout-banner .message').text('You have ' + zz.session.cart_item_count + ' item in your cart.');
             }
@@ -560,7 +568,11 @@ zz.buy = zz.buy || {};
             center();
 
         }
-    };
+        else{
+            $('#checkout-banner').hide();
+        }
+
+    }
 
     zz.buy.hide_checkout_banner = function(){
         $('#checkout-banner').hide();
@@ -608,6 +620,8 @@ zz.buy = zz.buy || {};
         $('#footer #buy-button').addClass('selected');
 
         ZZAt.track('buy.activate');
+
+        show_or_hide_checkout_banner();
     };
 
     zz.buy.deactivate_buy_mode = function(){
@@ -617,10 +631,12 @@ zz.buy = zz.buy || {};
 
         close_drawer(function(){
             zz.pubsub.publish(EVENTS.DEACTIVATE);
+            show_or_hide_checkout_banner();
         });
         $('#footer #buy-button').removeClass('selected');
         $('#right-drawer .header .gray-back-button').hide();
         ZZAt.track('buy.deactivate');
+
 
     };
 
@@ -939,7 +955,7 @@ zz.buy = zz.buy || {};
                 buy_screens_element.find('.configure-product-screen .header-section .description .text').text(current_variant.description);
 
                 buy_screens_element.find('.configure-product-screen .footer-section .image').attr('src', current_variant.image_url);
-                buy_screens_element.find('.configure-product-screen .footer-section .description').text(current_variant.description);
+                buy_screens_element.find('.configure-product-screen .footer-section .description .text').text(current_variant.description);
                 buy_screens_element.find('.configure-product-screen .options-section .price .value').text(current_variant.price);
                 update_price_and_count();
             }
@@ -1099,7 +1115,7 @@ zz.buy = zz.buy || {};
            var count = get_selected_photos().length;
            var price = parseFloat(get_selected_variant().price.substring(1));
            var count_and_price = count + ' for $' + format_currency(count * price);
-           $('.configure-product-screen .footer-section .count-and-price').text(count_and_price);
+           $('.configure-product-screen .footer-section .description .count-and-price').text(count_and_price);
 
     }
 
@@ -1335,17 +1351,22 @@ zz.buy = zz.buy || {};
         var template = $('<div class="glamouf"')
 
         zz.routes.store.get_glamour_page_html(product_id, function(html){
-            var dialog = zz.dialog.show_square_dialog(html, {width:800, height:600}).element;
 
-            // force glamour page to shup up centered
-            // over the left part of the screen
-            if($(window).width() < 1200){
-                dialog.center_x($(document));
-            }
-            else{
-                dialog.center_x($('.buy-drawer-scrim'));
-            }
-            dialog.css('top', '125px');
+
+            // if we are on the product selection page, need to hide and then
+            // show the 1,2,3 steps dialog so that it doesn't collide witht he
+            // glamour page
+            $('.buy-drawer-scrim .dialog').hide();
+
+            var on_close = function(){
+                $('.buy-drawer-scrim .dialog').fadeIn('fast');
+            };
+
+            var dialog = zz.dialog.show_square_dialog(html, {width:800, height:600, on_close: on_close}).element;
+
+
+
+
 
             ZZAt.track('buy.glamour-page.open', {product_id: product_id});
         });
