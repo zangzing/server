@@ -6,7 +6,8 @@ end
 
 
 LineItem.class_eval do
-  attr_accessible :photo_id, :crop_instructions, :back_message, :print_photo, :hidden
+  attr_accessible :price, :created_at, :shipment_id, :order_id, :updated_at, :variant_id,
+                  :photo_id, :crop_instructions, :back_message, :print_photo_id, :hidden
 
 
   belongs_to :photo
@@ -14,9 +15,6 @@ LineItem.class_eval do
   belongs_to :shipment
 
 
-  before_save :shipping_may_change, :if => :quantity_changed?
-
- 
   scope :shipped, joins(:shipment).where("line_items.shipment_id IS NOT NULL AND line_items.shipment_id = shipments.id AND shipments.state = 'shipped'")
   scope :ready,   joins(:shipment).where("line_items.shipment_id IS NOT NULL AND line_items.shipment_id = shipments.id AND shipments.state = 'ready'")
   scope :pending, where("line_items.shipment_id IS NULL")
@@ -77,9 +75,17 @@ LineItem.class_eval do
     RawDB.fast_insert(db, LineItem.max_insert_size, rows, base_cmd, end_cmd)
   end
 
-
-  def shipping_may_change
-    order.shipping_may_change
+  # perform a bulk insert of items and bumps the quantity by the quantity specified
+  # takes rows in the form
+  # [ [id, order_id, variant_id, quantity_change, price, created_at, updated_at, photo_id], ... ]
+  # does an update on all of the rows specified in
+  # a minimal number of queries
+  def self.fast_update_items(rows)
+    db = LineItem.connection
+    base_cmd = "INSERT INTO #{LineItem.quoted_table_name}(id, order_id, variant_id, quantity, price, created_at, updated_at, photo_id) VALUES "
+    end_cmd = "ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity),
+              updated_at = VALUES(updated_at)"
+    RawDB.fast_insert(db, LineItem.max_insert_size, rows, base_cmd, end_cmd)
   end
 
   # return nil if nil or empty, otherwise

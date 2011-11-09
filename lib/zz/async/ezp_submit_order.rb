@@ -21,19 +21,20 @@ module ZZ
         @backoff_strategy ||= [12.seconds, 1.minute, 5.minutes, 30.minutes, 2.hours, 6.hours, 16.hours]
       end
 
-      def self.enqueue( order_id, options = {} )
-        super( order_id, options )
+      def self.enqueue( order_id, method_name, options = {} )
+        super( order_id, method_name, options )
       end
 
-      def self.enqueue_in( secs_from_now, order_id, options = {} )
-        super( secs_from_now, @queue, order_id, options )
+      def self.enqueue_in( secs_from_now, order_id, method_name, options = {} )
+        super( secs_from_now, @queue, order_id, method_name, options )
       end
 
-      def self.perform( order_id, options )
+      def self.perform( order_id, method_name, options )
         options.recursively_symbolize_keys!
-        SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
+        timeout_multiplier = options[:timeout_multiplier].nil? ? 1.0 : options[:timeout_multiplier].to_f
+        SystemTimer.timeout_after((ZangZingConfig.config[:async_job_timeout] * timeout_multiplier).to_i) do
           order = Order.find(order_id)
-          order.submit
+          self.send(method_name.to_sym, order, options)
         end
       end
 
@@ -44,6 +45,21 @@ module ZZ
           order.ezp_submit_order_failed
         end
       end
+
+      # the method stubs that call the appropriate order related code
+
+      # copy and process photos
+      def self.prepare_for_submit(order, options)
+        # prepare for the submit
+        order.prepare_for_submit
+      end
+
+      # submit the order to ez prints
+      def self.ezp_submit_order(order, options)
+        # submit the order
+        order.submit
+      end
+
 
     end
   end

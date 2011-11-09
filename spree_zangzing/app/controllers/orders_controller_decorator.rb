@@ -9,14 +9,41 @@ OrdersController.class_eval do
   respond_to :json, :only => [:add_photo, :add_to_order]
 
   def add_to_order
-    order = current_order(true)
-    variant = Variant.active.find_by_product_id_and_sku(params[:product_id], params[:sku])
+    # set the per thread options to control order behavior
+    order = nil
+    Order.call_with_thread_options({ :prevent_update => true, :no_shipping_calc => true, :skip_tax => true }) do
+      order = current_order(true)
 
-    params[:photo_ids].each do |photo_id|
-      photo = Photo.find( photo_id )
-      order.add_variant( variant,  photo, 1 )
+      variant = Variant.active.find_by_product_id_and_sku(params[:product_id], params[:sku])
+
+      # grab all the photo ids at once, we do this to trim the list down to valid photo ids
+      # this assumes we don't want to allow the same photo id twice as it will get reduced to a single
+      # photo by this check
+      photo_ids = Photo.select(:id).find_all_by_id(params[:photo_ids]).map(&:id)
+      order.fast_add_photos(variant, photo_ids, 1)
+
+      # force reload of line items since we changed via direct db calls above
+      Order.uncached do
+        order.line_items.reload
+      end
     end
+
+    # reload the order state but no reason to recalc shipping
+    Order.call_with_thread_options({ :no_shipping_calc => true, :skip_tax => true  }) do
+      order.update!
+    end
+
     respond_with( order )
+  end
+
+  def update
+    changed = update_order_shared(true)
+
+    if changed
+      respond_with(@order) { |format| format.html { redirect_to cart_path } }
+    else
+      respond_with(@order)
+    end
   end
 
   def index
@@ -113,9 +140,8 @@ OrdersController.class_eval do
 
 
   def checkout
-    @order = current_order
-    if @order.update_attributes(params[:order])
-      @order.line_items = @order.line_items.select {|li| li.quantity > 0 }
+    changed = update_order_shared(false)
+    if changed
       respond_with(@order) { |format| format.html { redirect_to checkout_path } }
     else
       respond_with(@order)
@@ -127,6 +153,33 @@ OrdersController.class_eval do
   # given params[:customizations], return a non-persisted  PhotoProductCustomData object
   def photo
     Photo.find_by_id( params[:photo_id] ) if params[:photo_id]
+  end
+
+  # common shared code for handling update order attributes
+  # returns true if something changed
+  def update_order_shared(no_adjustments)
+    @order = current_order
+    # pull in variants, products, and tax categories
+    @order.line_items.includes(:variant => {:product => :tax_category})
+
+    changed = false
+    # no update!, no shipping calculation in the first phase
+    Order.call_with_thread_options({ :prevent_update => true, :no_shipping_calc => true, :skip_tax => true }) do
+      changed = @order.update_attributes(params[:order])
+      # delete any line items that went to 0
+      @order.delete_line_items_at_zero
+      # re-fetch line items since something changed
+      #@order.line_items = @order.line_items.select {|li| li.quantity > 0 } if changed
+    end
+
+    # now that the bulk operation is done, go ahead and perform the update
+    if changed
+      Order.call_with_thread_options({ :no_shipping_calc => no_adjustments, :skip_tax => true }) do
+        @order.update!
+      end
+    end
+
+    changed
   end
 
   # This method allows guests who placed an order to view it online

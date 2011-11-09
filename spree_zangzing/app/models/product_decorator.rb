@@ -1,4 +1,7 @@
 Product.class_eval do
+  unless defined?(CACHE_KEY)
+    CACHE_KEY = "Spree.Product.all.1"
+  end
 
   def as_json( options={} )
 
@@ -11,6 +14,27 @@ Product.class_eval do
           :image_url => images.first ? images.first.attachment.url(:product) : nil
     }
   end
-  
+
+  # clear all of our cached data
+  def self.clear_caches
+    Rails.cache.delete(CACHE_KEY)
+  end
+
+
+  # fetch the data from the cache, if we don't have it cached fetch and then cache
+  # returns result as json data
+  # simple, no versioning for now
+  def self.fetch_all_compressed_json
+    json_str = Rails.cache.read(CACHE_KEY)
+    if json_str.nil?
+      products = Product.where('deleted_at' => nil).order('created_at')
+      json_str = JSON.fast_generate(products.as_json)
+      json_str = ActiveSupport::Gzip.compress(json_str)
+      Rails.cache.write(CACHE_KEY, json_str, :expires_in => 30.days)
+    end
+    json_str
+  end
+
+
 end
 

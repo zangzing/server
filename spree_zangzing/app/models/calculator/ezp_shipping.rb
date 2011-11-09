@@ -23,7 +23,12 @@ class Calculator::EzpShipping < Calculator
   end
 
   def cost( order )
-    ca =order.shipping_costs_array
+    # the !! below forces nil to be false
+    no_calc = !!Order.thread_options[:no_shipping_calc]
+    return 0.0 if no_calc
+
+    # get real shipping charges
+    ca = order.shipping_costs
     i = ca.index{ |x| x[:type] == preferred_ezp_shipping_type }
     service = ca[i]
     service[:price].to_f

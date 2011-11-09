@@ -190,6 +190,7 @@ class Photo < ActiveRecord::Base
       if photo_info
         photo_infos << photo_info
         photo_info.photo = photo # keep it from loading when referenced
+        photo_info.photo_id = photo.id
       end
     end
 

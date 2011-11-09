@@ -292,13 +292,7 @@ class SendgridController < ApplicationController
           remove_file(file_path)
         else
           begin
-            #
-            # Since we have the photo ready to go, we can't use bulk insert
-            # because it will not write the associated photo_info object.  Due
-            # to this, it doesn't really make any sense to break it into the
-            # two parts that would be needed so just do single creates at a time
-            #
-            photo = Photo.new(
+            photo = Photo.new_for_batch(current_batch, {
                 :id => Photo.get_next_id,
                 :user_id => user.id,
                 :album_id => album.id,
@@ -306,16 +300,19 @@ class SendgridController < ApplicationController
                 :caption => ( caption && caption.length > 0 ? caption : fast_local_image["original_name"]),
                 :source => 'email',
                 #create random uuid for this photo
-                :source_guid => "email:"+UUIDTools::UUID.random_create.to_s
-            )
+                :source_guid => "email:"+UUIDTools::UUID.random_create.to_s})
+            # use the passed in temp file to attach to the photo
             photo.file_to_upload = file_path
-            photo.save
+            photos << photo
           rescue Exception => ex
             # if it's any type of error just continue.  Probably just
             # a bad type of upload (i.e. not a photo)
           end
         end
       end
+
+      # bulk insert
+      Photo.batch_insert(photos)
       current_batch.close()
     end
   end
