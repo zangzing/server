@@ -75,7 +75,7 @@ Order.class_eval do
     end
     before_transition :to => 'confirm',  :do => :create_tax_charge!
     before_transition :to => 'confirm',  :do => :assign_default_shipping_method
-    after_transition  :to => 'confirm',  :do => :create_shipment!
+    after_transition  :to => 'confirm',  :do => :create_default_shipment!
     
     before_transition :to => 'complete', :do => :process_payments!
     after_transition  :to => 'complete', :do => :finalize!
@@ -197,6 +197,15 @@ Order.class_eval do
       self.line_items.includes(:variant => {:product => :tax_category})
 
       @@original_update_bang.bind(self).call
+    end
+  end
+
+  # create a default shipment if we don't already have one
+  # this forces the shipping calc to on even if the options
+  # have it set to off
+  def create_default_shipment!
+    Order.call_with_thread_options({}) do
+      create_shipment!
     end
   end
 

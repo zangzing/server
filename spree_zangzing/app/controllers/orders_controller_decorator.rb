@@ -167,7 +167,7 @@ OrdersController.class_eval do
     Order.call_with_thread_options({ :prevent_update => true, :no_shipping_calc => true, :skip_tax => true }) do
       changed = @order.update_attributes(params[:order])
       # delete any line items that went to 0
-      @order.delete_line_items_at_zero
+      @order.delete_line_items_at_zero if changed
       # re-fetch line items since something changed
       #@order.line_items = @order.line_items.select {|li| li.quantity > 0 } if changed
     end
