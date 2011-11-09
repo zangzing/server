@@ -1059,6 +1059,10 @@ zz.buy = zz.buy || {};
         on_change_option();
 
 
+        buy_screens_element.find('.configure-product-screen .main-section').touchScrollY();
+
+
+
         refresh_selected_photos_list();
 
         check_bad_photos();
@@ -1083,7 +1087,6 @@ zz.buy = zz.buy || {};
 
         var photo_list_element = buy_screens_element.find('.configure-product-screen .main-section .selected-photos-section .selected-photos');
         photo_list_element.empty();
-        photo_list_element.touchScrollY();
 
         var elements = [];
         if(selected_photos && selected_photos.length > 0){
