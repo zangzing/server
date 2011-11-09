@@ -19,22 +19,44 @@ CheckoutController.class_eval do
      #  @@original_update.bind(self).call
      #end
 
+     previous_total = @order.total
      changed = false
-     next_ok = false
-     # refetch order to pull in nested items
+     err_code = nil
      Order.call_with_thread_options({ :prevent_update => true, :no_shipping_calc => true, :skip_tax => true }) do
        changed = @order.update_attributes(object_params)
-       if changed && next_ok = @order.next
-         state_callback(:after)
-       end
      end
 
      if changed
        Order.call_with_thread_options({ :no_shipping_calc => false }) do
          @order.update!
        end
-       if next_ok == false
-          flash[:error] = I18n.t(:payment_processing_failed)
+
+       Order.call_with_thread_options({ :prevent_update => true, :no_shipping_calc => true, :skip_tax => true }) do
+         # if we are about to move to complete and charge the user make sure that the totals have not changed
+         # this could happen if they updated quantities in another window
+         if @order.state == 'confirm'
+           if previous_total.round(2) != @order.total.round(2)
+             err_code = :amounts_in_cart_changed
+           end
+         end
+         if err_code.nil?
+           if @order.next
+             state_callback(:after)
+           else
+             err_code = :payment_processing_failed
+           end
+         end
+       end
+
+       if err_code == :amounts_in_cart_changed
+         flash[:error] = I18n.t(err_code)
+         flash[:payment] = 'The amounts in your cart have changed. )'+\
+                                       ' Your order has been re-calculated.)'+\
+                                       ' You can now place your order. '
+         respond_with(@order) { |format| format.html { render :edit } }
+         return
+       elsif err_code
+          flash[:error] = I18n.t(err_code)
           respond_with(@order, :location => checkout_state_path(@order.state))
           return
        end
