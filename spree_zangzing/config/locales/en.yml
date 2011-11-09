@@ -576,6 +576,7 @@ en:
   order_operation_authorize: Authorize
   order_processed_but_following_items_are_out_of_stock: "Your order has been processed, but following items are out of stock:"
   order_processed_successfully: "Your order has been processed successfully"
+  amounts_in_cart_changed: "Please review your order"
   customer_order_state:
     # keys correspond to Checkout state names:
     cart:         review

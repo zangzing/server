@@ -911,7 +911,7 @@ Have a wonderful time sharing photos! And, we hope you think of us and visit www
   def delete_line_items_at_zero
     # change the line item counts
     LineItem.delete_all(:quantity => 0, :order_id => self.id)
-    self.line_items.reload
+    self.line_items.order(:id).reload
   end
 
   def cart_count
@@ -926,7 +926,7 @@ Have a wonderful time sharing photos! And, we hope you think of us and visit www
   def visible_line_items
     visible_line_items = line_items.prints_by_variant.includes(:photo, :variant => [:product, :images])
     visible_line_items.concat( line_items.not_prints.includes(:photo, :variant => [:product, :images]) )
-    visible_line_items.sort!{ |a,b| b.created_at <=> a.created_at }
+    visible_line_items.sort!{ |a,b| b.id <=> a.id }
     visible_line_items
   end
 
