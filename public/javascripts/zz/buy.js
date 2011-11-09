@@ -851,6 +851,7 @@ zz.buy = zz.buy || {};
 
             var screen_element = buy_screens_element.find('.select-product-screen');
             screen_element.empty();
+            screen_element.touchScrollY();
 
             _.each(products, function(product){
                 var product_element = $(PRODUCT_TEMPLATE());
@@ -1056,6 +1057,10 @@ zz.buy = zz.buy || {};
         on_change_option(true);
         on_change_option();
         on_change_option();
+
+
+        buy_screens_element.find('.configure-product-screen .main-section').touchScrollY();
+
 
 
         refresh_selected_photos_list();

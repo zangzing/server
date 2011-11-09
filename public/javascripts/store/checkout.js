@@ -71,7 +71,11 @@ zz.store.checkout = {};
 //======================= ship_address =========================
     zz.store.checkout.init_ship_address_screen = function(){
          $('form p.field label').inFieldLabels();
-         $('#checkout_form_ship_address').validate({
+
+         // need to expose this so that we can clear after address is picked from dropdown.
+         // todo: this should be refactored. dependend code is all over the place. it should all be here
+         //       in this init function
+         zz.store.checkout.validator = $('#checkout_form_ship_address').validate({
             //debug: true,
             rules: {
                 'order[ship_address_attributes][phone]':{
@@ -148,7 +152,10 @@ zz.store.checkout = {};
         $("#card_number").keypress(clear_wallet_radio);
         $("#card_code").keypress(clear_wallet_radio);
 
-        
+
+        // need to expose this so that we can clear after address is picked from dropdown.
+        // todo: this should be refactored. dependend code is all over the place. it should all be here
+        //       in this init function
         zz.store.checkout.validator = $('#checkout_form_payment').validate({
             //debug: true,
             rules: {

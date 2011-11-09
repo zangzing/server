@@ -585,7 +585,7 @@ en:
     bill_address: bill address
     complete:     complete
     confirm:      place order
-    preparing:    preparing
+    preparing:    being prepared
     canceled:     canceled
     payment:      payment
     submitted:    sumbitted

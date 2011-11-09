@@ -18,14 +18,14 @@ zz.mobile = {
         var touch_start_y;
         var scroll_start_y;
 
-        $(this).bind('touchstart', function(event) {
+        $(this).unbind('touchstart').bind('touchstart', function(event) {
             var touch = event.originalEvent.touches[0];
             touch_start_y = touch.pageY;
             scroll_start_y = $(this).scrollTop();
         });
 
 
-        $(this).bind('touchmove', function(event) {
+        $(this).unbind('touchmove').bind('touchmove', function(event) {
             var touch = event.originalEvent.touches[0];
             var move_y = touch.pageY;
 

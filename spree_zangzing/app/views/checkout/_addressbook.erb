@@ -47,6 +47,9 @@
                 $('#order_<%=address_kind%>_attributes_country_id').val( address.country_id);
                 $('fieldset.address input').trigger('keydown' );
                 bind_dropdown();
+
+                // clear any validation errors
+                zz.store.checkout.validator.resetForm();
             });
             bind_dropdown();
         </script>
