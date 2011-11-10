@@ -142,6 +142,7 @@ Rails.application.routes.draw do
     #from spree_dash
     match '/' => 'overview#index', :as => :admin
     match '/overview/get_report_data' => 'overview#get_report_data'
+    match '/overview/clear_caches' => 'overview#clear_all_caches'
 
   end
 

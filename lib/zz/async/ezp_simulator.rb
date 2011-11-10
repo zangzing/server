@@ -47,8 +47,7 @@ module ZZ
 
       # return seconds randomly between min and max inclusive
       def self.random_seconds(min, max)
-        #return 1  #todo testing only
-        min + rand(max - min + 1)
+        ZangZingConfig.fast_ezp_simulator? ? 1 : min + rand(max - min + 1)
       end
 
       # specify an integer from 0-100 which
@@ -87,7 +86,7 @@ module ZZ
       def self.in_production(order, options)
         notification_handler.in_production(order, empty_details)
         # now queue up the next stage which is in production
-        if random_chance(10)
+        if random_chance(3)
           # cancel the order from the ezp side
           enqueue_in(random_seconds(30, 90), order.id, :canceled)
         else

@@ -380,9 +380,10 @@ zz.buy = zz.buy || {};
     var buy_screens_element = null;
 
     var SCRIM_TEMPLATE = function(){
-        return '<div class="buy-drawer-scrim" style="display: block; ">' +
+        return '<div class="buy-drawer-scrim">' +
                    '<div class="scrim"></div>' +
-                   '<div class="message" style="display: block; left: 403px; ">Please choose a product, then you will be able to select photos for that product.</div>' +
+                   '<div class="dialog">' +
+                   '</div>' +
                 '</div>'
     };
 
@@ -390,17 +391,14 @@ zz.buy = zz.buy || {};
         return '<div class="buy-screens">' +
                     '<div class="select-product-screen"><div class="loading"></div></div>' +
                     '<div class="configure-product-screen">' +
-                        '<div class="product-summary-section">' +
-                           '<img class="image" src="/images/photo_placeholder.png">' +
-                           '<div class="description">16x20 Mounted Print with a Black Frame</div>' +
-                           '<div class="count-and-price">12 for $200.00</div>' +
-                           '<a class="green-button checkout-button"><span>Add to Cart</span></a>' +
-                        '</div>' +
-                        '<div class="bad-photos-error">' +
-                           '<div class="icon"></div>' +
-                           '<div class="message">Some of your photos are not large enough for this product. Please remove the photos or select a different product.</div>' +
-                        '</div>' +
                         '<div class="main-section">' +
+                            '<div class="header-section">' +
+                               '<img class="image" src="/images/photo_placeholder.png">' +
+                               '<div class="description">' +
+                                   '<span class="text"></span>' +
+                                   '<div class="learn-more">Learn more</div>' +
+                                '</div>' +
+                            '</div>' +
                             '<div class="options-section">' +
                                 '<div class="price">' +
                                     '<div class="label">Price</div>' +
@@ -409,23 +407,37 @@ zz.buy = zz.buy || {};
                                 '<div class="options"></div>' +
                             '</div>' +
                             '<div class="selected-photos-section">' +
-                                '<a class="add-all-photos hyperlink-button">Add All Photos from Album</a>' +
-                                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
                                 '<a class="clear-all-photos hyperlink-button">Clear Selected Photos</a>' +
-                                '<div class="add-photos-message">Choose product settings and then click to choose your photos.</div>' +
+                                '<div class="add-photos-message">Customize the product and then click each photo you would like for this product</div>' +
                                 '<div class="selected-photos"></div>' +
                             '</div>' +
                         '</div>' +
+                        '<div class="bad-photos-error">' +
+                           '<div class="icon"></div>' +
+                           '<div class="message">Some of your photos are not large enough for this product. Please remove the photos or select a different product.</div>' +
+                        '</div>' +
+                        '<div class="footer-section">' +
+                            '<img class="image" src="/images/photo_placeholder.png">' +
+                            '<div class="description">' +
+                                '<div class="text"> 16x20 Mounted Print with a Black Frame</div>' +
+                                '<div class="count-and-price">12 for $200.00</div>' +
+                            '</div>' +
+                            '<a class="next-button checkout-button"><span>Add to Cart</span></a>' +
+                        '</div>' +
                     '</div>' +
                '</div>';
+
+
     };
 
     var PRODUCT_TEMPLATE = function(){
         return '<div class="product">' +
                    '<img class="image" src="/images/photo_placeholder.png">' +
-                   '<div class="name"></div>' +
-                   '<div class="description"></div>' +
-                   '<div class="learn-more">Learn more</div>' +
+                   '<div class="name-and-description">' +
+                       '<div class="name"></div>' +
+                       '<div class="description"></div>' +
+                       '<div class="learn-more">Learn more</div>' +
+                   '</div>' +
                    '<div class="arrow"></div>' +
                '</div>';
     };
@@ -496,9 +508,15 @@ zz.buy = zz.buy || {};
         }
 
 
+        show_or_hide_checkout_banner();
 
-        if(zz.session.cart_item_count > 0 && jQuery.cookie('hide_checkout_banner') != 'true'){
+    };
+
+    function show_or_hide_checkout_banner(){
+        if(!zz.buy.is_buy_mode_active() && zz.session.cart_item_count > 0 && jQuery.cookie('hide_checkout_banner') != 'true'){
+
             $('#checkout-banner').show();
+
             if(zz.session.cart_item_count == 1){
                 $('#checkout-banner .message').text('You have ' + zz.session.cart_item_count + ' item in your cart.');
             }
@@ -550,7 +568,11 @@ zz.buy = zz.buy || {};
             center();
 
         }
-    };
+        else{
+            $('#checkout-banner').hide();
+        }
+
+    }
 
     zz.buy.hide_checkout_banner = function(){
         $('#checkout-banner').hide();
@@ -598,6 +620,8 @@ zz.buy = zz.buy || {};
         $('#footer #buy-button').addClass('selected');
 
         ZZAt.track('buy.activate');
+
+        show_or_hide_checkout_banner();
     };
 
     zz.buy.deactivate_buy_mode = function(){
@@ -607,10 +631,12 @@ zz.buy = zz.buy || {};
 
         close_drawer(function(){
             zz.pubsub.publish(EVENTS.DEACTIVATE);
+            show_or_hide_checkout_banner();
         });
         $('#footer #buy-button').removeClass('selected');
         $('#right-drawer .header .gray-back-button').hide();
         ZZAt.track('buy.deactivate');
+
 
     };
 
@@ -689,11 +715,11 @@ zz.buy = zz.buy || {};
                 var selected_photo_count = get_selected_photos().length;
 
                 if( selected_photo_count == 0){
-                    end_top = selected_photos_section.offset().top-90;
+                    end_top = selected_photos_section.offset().top-75;
                 }
                 else{
 //                    end_top = last_selected_photo.offset().top + SELECTED_PHOTO_MAX_SIZE.HEIGHT + 10;
-                    end_top = selected_photos_section.offset().top + selected_photo_count * (SELECTED_PHOTO_MAX_SIZE.HEIGHT + 25);
+                    end_top = selected_photos_section.offset().top + selected_photo_count * (SELECTED_PHOTO_MAX_SIZE.HEIGHT + 26);
 
 
                 }
@@ -825,6 +851,7 @@ zz.buy = zz.buy || {};
 
             var screen_element = buy_screens_element.find('.select-product-screen');
             screen_element.empty();
+            screen_element.touchScrollY();
 
             _.each(products, function(product){
                 var product_element = $(PRODUCT_TEMPLATE());
@@ -860,8 +887,11 @@ zz.buy = zz.buy || {};
             slide_to_screen(DRAWER_SCREENS.SELECT_PRODUCT, true);
         });
 
+        buy_screens_element.find('.configure-product-screen .header-section .description .learn-more').unbind('click').click(function(){
+            show_glamour_page(get_selected_product().id);
+        });
 
-        buy_screens_element.find('.configure-product-screen .product-summary-section .checkout-button').unbind('click').click(function(){
+        buy_screens_element.find('.configure-product-screen .footer-section .checkout-button').unbind('click').click(function(){
             if(get_selected_photos().length == 0){
                 alert("Please select one or more photos for this product.");
                 return;
@@ -922,8 +952,11 @@ zz.buy = zz.buy || {};
 
 
             if(current_variant){
-                buy_screens_element.find('.configure-product-screen .product-summary-section .image').attr('src', current_variant.image_url);
-                buy_screens_element.find('.configure-product-screen .product-summary-section .description').text(current_variant.description);
+                buy_screens_element.find('.configure-product-screen .header-section .image').attr('src', current_variant.image_url);
+                buy_screens_element.find('.configure-product-screen .header-section .description .text').text(current_variant.description);
+
+                buy_screens_element.find('.configure-product-screen .footer-section .image').attr('src', current_variant.image_url);
+                buy_screens_element.find('.configure-product-screen .footer-section .description .text').text(current_variant.description);
                 buy_screens_element.find('.configure-product-screen .options-section .price .value').text(current_variant.price);
                 update_price_and_count();
             }
@@ -1016,20 +1049,6 @@ zz.buy = zz.buy || {};
         });
 
 
-        if(zz.page.album_id){
-            buy_screens_element.find('.configure-product-screen .main-section .selected-photos-section .add-all-photos').show().unbind('click').click(function(){
-                zz.routes.photos.get_album_photos_json(zz.page.album_id, zz.page.album_cache_version_key, function(photos){
-                    ZZAt.track('buy.add-all-photos.click');
-                    var dialog = zz.dialog.show_progress_dialog("Adding photos...");
-                    _.delay(function(){
-                        zz.buy.add_selected_photos(photos);
-                        refresh_selected_photos_list();
-                        scroll_to_bottom_of_selected_photos();
-                        dialog.close();
-                    },100);
-                });
-            });
-        }
 
 
         // hack: need to run this one time for each option
@@ -1040,10 +1059,27 @@ zz.buy = zz.buy || {};
         on_change_option();
 
 
+        buy_screens_element.find('.configure-product-screen .main-section').touchScrollY();
+
+
+
         refresh_selected_photos_list();
 
         check_bad_photos();
 
+    }
+
+    zz.buy.add_all_photos_from_current_album = function(){
+        zz.routes.photos.get_album_photos_json(zz.page.album_id, zz.page.album_cache_version_key, function(photos){
+            ZZAt.track('buy.add-all-photos.click');
+            var dialog = zz.dialog.show_progress_dialog("Adding photos...");
+            _.delay(function(){
+                zz.buy.add_selected_photos(photos);
+                refresh_selected_photos_list();
+                scroll_to_bottom_of_selected_photos();
+                dialog.close();
+            },100);
+        });
     }
 
     function refresh_selected_photos_list(){
@@ -1084,7 +1120,7 @@ zz.buy = zz.buy || {};
            var count = get_selected_photos().length;
            var price = parseFloat(get_selected_variant().price.substring(1));
            var count_and_price = count + ' for $' + format_currency(count * price);
-           $('.configure-product-screen .product-summary-section .count-and-price').text(count_and_price);
+           $('.configure-product-screen .footer-section .description .count-and-price').text(count_and_price);
 
     }
 
@@ -1166,7 +1202,7 @@ zz.buy = zz.buy || {};
     function show_scrim(){
         var scrim = $(SCRIM_TEMPLATE());
         $('body').append(scrim);
-        $('.buy-drawer-scrim .message ').center_x();
+        $('.buy-drawer-scrim .dialog ').center_x();
         scrim.show();
     }
 
@@ -1320,7 +1356,23 @@ zz.buy = zz.buy || {};
         var template = $('<div class="glamouf"')
 
         zz.routes.store.get_glamour_page_html(product_id, function(html){
-            zz.dialog.show_square_dialog(html, {width:800, height:600});
+
+
+            // if we are on the product selection page, need to hide and then
+            // show the 1,2,3 steps dialog so that it doesn't collide witht he
+            // glamour page
+            $('.buy-drawer-scrim .dialog').hide();
+
+            var on_close = function(){
+                $('.buy-drawer-scrim .dialog').fadeIn('fast');
+            };
+
+            var dialog = zz.dialog.show_square_dialog(html, {width:800, height:600, on_close: on_close}).element;
+
+
+
+
+
             ZZAt.track('buy.glamour-page.open', {product_id: product_id});
         });
     }

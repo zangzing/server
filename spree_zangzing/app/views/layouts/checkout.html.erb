@@ -80,6 +80,13 @@
     <%= include_javascripts :less%>
 <%end%>
 
+<script type="text/javascript">
+    // this is needed in init.js to setup ajax calls
+    var zz = zz || {};
+    zz.page = zz.page || {};
+    zz.page.rails_authenticity_token = '<%= form_authenticity_token %>';
+</script>
+
 <%= include_javascripts :jquery, :lib,:zz, :store %>
 
 <% unless I18n.locale.to_s[0..1] == 'en' %>

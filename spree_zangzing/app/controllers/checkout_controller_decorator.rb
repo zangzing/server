@@ -11,6 +11,82 @@ CheckoutController.class_eval do
    helper 'photo', 'products'
 
 
+   # update is where the top level state transitions take place
+   @@original_update ||= instance_method('update')
+   def update
+     # call with an empty context so we can collect and cache shipping info
+     #Order.call_with_thread_options({}) do
+     #  @@original_update.bind(self).call
+     #end
+
+     previous_total = @order.total
+     changed = false
+     err_code = nil
+     Order.call_with_thread_options({ :prevent_update => true, :no_shipping_calc => true, :skip_tax => true }) do
+       changed = @order.update_attributes(object_params)
+     end
+
+     if changed
+       Order.call_with_thread_options({ :no_shipping_calc => false }) do
+         @order.update!
+       end
+
+       Order.call_with_thread_options({ :prevent_update => true, :no_shipping_calc => true, :skip_tax => true }) do
+         # if we are about to move to complete and charge the user make sure that the totals have not changed
+         # this could happen if they updated quantities in another window
+         if @order.state == 'confirm'
+           if previous_total.round(2) != @order.total.round(2)
+             err_code = :amounts_in_cart_changed
+           end
+         end
+         if err_code.nil?
+           if @order.next
+             state_callback(:after)
+           else
+             err_code = :payment_processing_failed
+           end
+         end
+       end
+
+       if err_code == :amounts_in_cart_changed
+         flash[:error] = I18n.t(err_code)
+         flash[:payment] = 'The amounts in your cart have changed. )'+\
+                                       ' Your order has been re-calculated.)'+\
+                                       ' You can now place your order. '
+         respond_with(@order) { |format| format.html { render :edit } }
+         return
+       elsif err_code
+          flash[:error] = I18n.t(err_code)
+          respond_with(@order, :location => checkout_state_path(@order.state))
+          return
+       end
+       if @order.state == "complete" || @order.completed?
+         flash[:notice] = I18n.t(:order_processed_successfully)
+         flash[:commerce_tracking] = "nothing special"
+         respond_with(@order, :location => completion_route)
+       else
+         respond_with(@order, :location => checkout_state_path(@order.state))
+       end
+     else
+       respond_with(@order) { |format| format.html { render :edit } }
+     end
+   end
+
+   # update is where the top level state transitions take place
+   @@original_load_order ||= instance_method('load_order')
+   def load_order
+     # call with an empty context so we can collect and cache shipping info
+     Order.call_with_thread_options({:prevent_update => true, :no_shipping_calc => true}) do
+       @@original_load_order.bind(self).call
+     end
+   end
+
+   def edit
+     # call with an empty context so we can collect and cache shipping info
+     Order.call_with_thread_options({}) do
+       respond_with(@order) { |format| format.html { render :edit } }
+     end
+   end
 
    # Displays the store's "Login or Guest checkout" screen
    def registration
@@ -74,6 +150,28 @@ CheckoutController.class_eval do
     end
   end
 
+   # executed when the user places the order
+   # verifies that all the photos still exist
+   # otherwise it warns the user that a photo has
+   # been deleted and recalculates the order
+   def before_confirm
+     if !@order.all_photos_valid?
+       if @order.line_items.count > 0
+        flash.now[:error]="Please Review Your Order"
+        flash.now[:payment]='A photo in your order was deleted while you were checking out. )'+\
+                                      ' The item has been removed and your order re-calculated.)'+\
+                                      ' You can now place your order. '
+          respond_with(@order) { |format| format.html { render :edit } } and return
+       else
+         flash[:error]="Please Select More Photos"
+         flash[:payment]='The photo in your order was deleted while you were checking out. )'+\
+                                      ' The line item has been removed and your cart is now empty'
+         redirect_to cart_url
+       end
+     end
+   end
+
+
    # Executed after order is complete
    # Make the last used addresses, the user's default addresses
    # clone the used addresses and leave the non-user-associated addresses as part of the order
@@ -85,9 +183,6 @@ CheckoutController.class_eval do
      #add the order access token to the session so user can see thank you window
      #and order status, all through the orders controller.
      session[:access_token] ||= @order.token
-
-     #clear the ezp cache of shipping cost arrays
-     @order.shipping_costs_done
 
      # trigger the photo copy and preparation, this is done here because normal state machine transitions
      # happen in a transaction and could allow resque work to begin too soon.  See comment in order_decorator.rb

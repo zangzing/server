@@ -6,15 +6,18 @@
 
 var zz = zz || {};
 
-zz.init = {
+(function(){
+    $(document).ajaxSend(function(event, request, settings) {
+        settings.data = settings.data || '';
+        settings.data += (settings.data ? '&' : '') + 'authenticity_token=' + encodeURIComponent(zz.page.rails_authenticity_token);
+        request.setRequestHeader('X-CSRF-Token', zz.page.rails_authenticity_token);
+    });
 
 
+    zz.init = {
 
-    template: function() {
-        $(document).ajaxSend(function(event, request, settings) {
-            settings.data = settings.data || '';
-            settings.data += (settings.data ? '&' : '') + 'authenticity_token=' + encodeURIComponent(zz.page.rails_authenticity_token);
-        });
+
+     template: function() {
 
         /* Click Handlers    ----------------------------------------------------------------------- */
         //join banner
@@ -66,12 +69,6 @@ zz.init = {
 
 
 
-
-
-
-
-
-
     preload_rollover_images: function() {
 
         //wizard buttons/tabs
@@ -85,4 +82,7 @@ zz.init = {
     }
 
 };
+
+
+}());
 

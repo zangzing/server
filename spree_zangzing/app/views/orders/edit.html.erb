@@ -1,4 +1,3 @@
-
 <%content_for :page_title do
     if @order.line_items.empty?
         t('your_cart_is_empty')
@@ -11,6 +10,7 @@ end %>
  end%>
 
 <div class="checkout-content" id="cart">
+  <%= render "shared/error_messages", :target => @order %>
   <% if @order.line_items.empty? %>
       <a href="/" class="newgreen-button" id="continue-shopping-greenbutton"><span><%= "#{t('continue_shopping')}"%></span></a>
   <%else%>
@@ -43,7 +43,7 @@ end %>
     <%end%>
 
     <%content_for :back_button do %>
-        <a href="<%=back_to_shopping_url%>" class="back-button"><span><%= "#{t('buy_more')}"%></span></a>
+        <a id="buy-more" href="javascript:void(0);" class="back-button"><span><%= "#{t('buy_more')}"%></span></a>
     <%end%>
 
 <%end%>
@@ -62,37 +62,36 @@ end %>
                   shadow: false
               }).spin( document.getElementById('spin_here'));
           };
+     var links_off = function(){
+          zz.dialog.show_spinner_progress_dialog("Calculating your order...");
+     };
 
-     $('form#updatecart a.delete').click( function(e){
+     $('a#buy-more').click( function(e){
+         ZZAt.track('buy.checkout.cart.buy-more.click');
+         window.location='<%=back_to_shopping_url%>';
+     });
+
+     $('a.delete').click( function(e){
         e.preventDefault();
         if( confirm('<%=t('are_you_sure_delete')%>') ){
-            spin();
-            $('form#updatecart a.delete').css('color', '#666666' );
+            links_off();
             subject = $(this).parents('tr');
-            subject.fadeOut(1000);
             subject.find('input.item_quantity').val(0);
             $('form#updatecart').submit();
         }
         return false;
      });
 
-     $('#update-cart').click( function(){
-         $(this).unbind('click');
-         $('a.checkout-cart').unbind('click');
-         $('a.delete').unbind('click');
-         $(this).attr('disabled', 'disabled');
-         $(this).unbind('click');
-         spin();
+     $('a#update-cart').click( function(){
+         links_off();
+         ZZAt.track('buy.checkout.cart.update.click');
          $('form#updatecart').submit();
      });
 
      $('a.checkout-cart').click( function(){
-        $(this).unbind('click');
-        $('#update-cart').unbind('click');
-        $('a.delete').unbind('click');
-        $(this).unbind('click');
-        spin();
+        links_off();
         $('form#updatecart').attr('action', '<%=checkout_cart_path%>');
+          ZZAt.track('buy.checkout.cart.checkout.click');
         $('form#updatecart').submit();
      });
 
@@ -101,6 +100,7 @@ end %>
             var variant_id = $(this).attr('data_variant');
             $('.'+variant_id).toggle();
      });
+     ZZAt.track('buy.checkout.cart.open');
  });
 </script>
 <%end%>

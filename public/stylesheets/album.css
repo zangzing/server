@@ -1,0 +1,6 @@
+.photos #article .photogrid .photogrid-cell .add-all-button {
+    position: absolute;
+    left: 54px;
+    top: 27px;
+    cursor: pointer;
+}

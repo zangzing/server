@@ -128,6 +128,8 @@ class EzPrintController < Spree::BaseController
     # turn it into an array if only a single instance
     items = [items] unless items.is_a?(Array)
     item_ids = items.map { |item| item[:Id].to_i }
+    # optimize the order to pull in the line items since we know we'll need them
+    order = Order.includes(:line_items).find_by_id(order.id)
     order.line_items_shipped(details[:TrackingNumber], details[:Carrier], item_ids)
   end
 

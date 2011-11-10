@@ -74,6 +74,21 @@ zz.dialog = {
     },
 
 
+    show_spinner_progress_dialog: function(message) {
+        var template = '<span class="progress-dialog-content"><div id="dspin_here"></div>' + message + '</span>';
+        var dialog = zz.dialog.show_dialog(template, { width: 300, height: 90, modal: true, autoOpen: true, cancelButton: false });
+        new Spinner({ lines: 12,
+                          length: 6,
+                          width: 3,
+                          radius: 6,
+                          color: '#333',
+                          speed: 1,
+                          trail: 40, // Afterglow percentage
+                          shadow: false
+                      }).spin( document.getElementById('dspin_here'));
+        return dialog;
+    },
+
     show_progress_dialog: function(message) {
         var template = '<span class="progress-dialog-content"><img src="/images/loading.gif">' + message + '</span>';
         var dialog = zz.dialog.show_dialog(template, { width: 300, height: 90, modal: true, autoOpen: true, cancelButton: false });

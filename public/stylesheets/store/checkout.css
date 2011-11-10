@@ -51,7 +51,7 @@ html{
     border-radius:         10px;
     -moz-border-radius:    10px;
     -webkit-border-radius: 10px;
-    overflow: hidden;
+    /*overflow: hidden;*/
 }
 .checkout-next-button{
     margin: 18px 0 0 0;
@@ -77,11 +77,6 @@ html{
     color: gray !important;
 }
 
-.checkout-summary{
-    padding:  15px;
-    background-color: #CCFFCC;
-    border: 2px solid #666666;
-}
 .grey-border{
     border: 2px solid #CCCCCC;
 }
@@ -89,6 +84,14 @@ html{
     color:#404040;
     font-weight: 700;
     font-size: 110%;
+}
+
+.errorExplanation{
+    text-align: center;
+}
+
+.errorExplanation ul li{
+    list-style:  none;
 }
 
 /*----------------- Progress Bar ------------------- */
@@ -182,6 +185,7 @@ form p.field input{
         display: inline-block;
 }
  form p.field select {
+        height: 29px;
         width: 93%;
         display: inline-block;
 }
@@ -319,12 +323,13 @@ p.field#order_email input{
 }
 #left_side{
  float: left;
- width: 685px;
+ width: 680px;
  border-right: solid 1px gray;
 }
 #right_side{
   float: right;
-  width: 250px;
+  width: 255px;
+  margin: 0;
 }
 
 #order_info{
@@ -370,7 +375,24 @@ p.field#order_email input{
 }
 
 #order_summary{
+    position: relative;
+    width: 100%;
 }
+
+.checkout-summary{
+    background-color: #c1e8c2;
+    border: 3px solid #7ea77f;
+    width: 222px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    -webkit-border-top-right-radius: 10px;
+    -moz-border-radius-topright: 10px;
+    border-top-right-radius: 10px;
+    padding:   0 15px 0 15px;
+}
+
+
 
 #place_order{
     width: 65%;
@@ -382,6 +404,85 @@ p.field#order_email input{
    text-align: center;
    padding: 10px 0 0 0;
 }
+
+
+.checkout-summary td{
+    border: none;
+}
+
+.order-total{
+    color: #333333;
+    font-size: 16px;
+}
+
+.order-total td{
+    font-weight: bold;
+    border-top:  3px groove white;
+}
+
+.summary-lines{
+    color: #333333;
+    font-size: 14px;
+    text-shadow: 1px 1px 1px white;
+}
+
+.summary-centered-lines{
+    color: #333333;
+    text-shadow: 1px 1px 1px white;
+    text-align:center;
+    font-size: 12px;
+}
+
+
+.summary-bold{
+    font-size: 16px;
+    font-weight: bold;
+    color: #333333;
+    text-shadow: 1px 1px 1px white;
+}
+
+/*----------------------------- Show Summary --------------- */
+#show{
+    position: relative;
+    height: 100%;
+       top: 0;
+    bottom: 0;
+    margin-bottom: 0;
+}
+
+#show .summary-lines td {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+#show #order_summary td{
+    border: none;
+}
+
+#show #order_summary .order-total td{
+    font-weight: bold;
+    border-top:  3px groove white;
+}
+
+
+#show #right_side{
+    width: 222px;
+    position: absolute;
+    height: 99.5%;
+    top: 0;
+    right: 0;
+    background-color: #c1e8c2;
+    border: 3px solid #7ea77f;
+    -webkit-border-top-right-radius: 10px;
+    -webkit-border-bottom-right-radius: 10px;
+    -moz-border-radius-topright: 10px;
+    -moz-border-radius-bottomright: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding:   0 15px 0 15px;
+}
+
+
 /*---------------------------- Review ------------------ */
 #subtotal{
     margin: 0;
