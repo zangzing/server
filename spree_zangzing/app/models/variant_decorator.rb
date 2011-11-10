@@ -25,7 +25,7 @@ Variant.class_eval do
   def custom_image_url
     i = custom_image
     if i
-      i.attachment.url(:product)
+      i.attachment.url(:small)
     else
       ''
     end

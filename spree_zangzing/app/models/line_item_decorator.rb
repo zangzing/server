@@ -6,7 +6,8 @@ end
 
 
 LineItem.class_eval do
-  attr_accessible :photo_id, :crop_instructions, :back_message, :print_photo, :hidden
+  attr_accessible :price, :created_at, :shipment_id, :order_id, :updated_at, :variant_id,
+                  :photo_id, :crop_instructions, :back_message, :print_photo_id, :hidden
 
 
   belongs_to :photo
@@ -14,9 +15,6 @@ LineItem.class_eval do
   belongs_to :shipment
 
 
-  before_save :shipping_may_change, :if => :quantity_changed?
-
- 
   scope :shipped, joins(:shipment).where("line_items.shipment_id IS NOT NULL AND line_items.shipment_id = shipments.id AND shipments.state = 'shipped'")
   scope :ready,   joins(:shipment).where("line_items.shipment_id IS NOT NULL AND line_items.shipment_id = shipments.id AND shipments.state = 'ready'")
   scope :pending, where("line_items.shipment_id IS NULL")
@@ -32,18 +30,19 @@ LineItem.class_eval do
   scope :not_prints, joins(:variant)\
               .joins("join option_values_variants on option_values_variants.variant_id = variants.id")\
               .where("line_items.hidden = 0 AND variants.product_id <> ? || (  variants.product_id = ? AND option_values_variants.option_value_id = ?)",LineItem::PRINTS_PRODUCT_ID,LineItem::PRINTS_PRODUCT_ID, LineItem::FRAMED_VALUE_ID)\
-              .group('line_items.id').order('line_items.created_at DESC')
+              .group('line_items.id').order('line_items.id DESC')
 
-  scope :prints_by_variant, select('line_items.*, MAX( line_items.created_at) as created_at')\
+  # this is composed as a subquery since it returns the latest grouped ids for a print variant
+  scope :grouped_ids_by_variant, select('MAX( line_items.id) as id')\
                 .joins(:variant)\
                 .joins("join option_values_variants on option_values_variants.variant_id = variants.id")\
                 .where("line_items.hidden = 0 AND variants.product_id = ? AND option_values_variants.option_value_id = ?", LineItem::PRINTS_PRODUCT_ID, LineItem::NO_FRAME_VALUE_ID)\
                 .group('variants.id')\
-                .order(' created_at ASC')
+                .order(' id DESC')
 
-  scope :group_by_variant, joins(:variant).group('variants.id').order('line_items.created_at DESC')
+  scope :group_by_variant, joins(:variant).group('variants.id').order('line_items.id DESC')
 
-  scope :visible_by_variant, lambda { |variant| where('line_items.variant_id = ? AND line_items.hidden = 0', variant.id).order('created_at DESC') }
+  scope :visible_by_variant, lambda { |variant| where('line_items.variant_id = ? AND line_items.hidden = 0', variant.id).order('id DESC') }
 
   # used to determine max safe statement size for
   # a bulk insert on this connection
@@ -77,9 +76,17 @@ LineItem.class_eval do
     RawDB.fast_insert(db, LineItem.max_insert_size, rows, base_cmd, end_cmd)
   end
 
-
-  def shipping_may_change
-    order.shipping_may_change
+  # perform a bulk insert of items and bumps the quantity by the quantity specified
+  # takes rows in the form
+  # [ [id, order_id, variant_id, quantity_change, price, created_at, updated_at, photo_id], ... ]
+  # does an update on all of the rows specified in
+  # a minimal number of queries
+  def self.fast_update_items(rows)
+    db = LineItem.connection
+    base_cmd = "INSERT INTO #{LineItem.quoted_table_name}(id, order_id, variant_id, quantity, price, created_at, updated_at, photo_id) VALUES "
+    end_cmd = "ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity),
+              updated_at = VALUES(updated_at)"
+    RawDB.fast_insert(db, LineItem.max_insert_size, rows, base_cmd, end_cmd)
   end
 
   # return nil if nil or empty, otherwise

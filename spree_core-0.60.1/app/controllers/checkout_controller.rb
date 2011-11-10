@@ -53,6 +53,7 @@ class CheckoutController < Spree::BaseController
   end
 
   def load_order
+    #@order = Order.includes(:line_items => [:product => :tax_category, :variant => {:product => :tax_category}]).find(@order.id)
     @order = current_order
     redirect_to cart_path and return unless @order and @order.checkout_allowed?
     redirect_to cart_path and return if @order.completed?

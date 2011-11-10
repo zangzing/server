@@ -44,6 +44,15 @@ module EZPrints
       ship_options
     end
 
+    def empty_shipping_costs
+      @@empty_shipping_costs = {
+          :type => 'FC',
+          :price => 0.0,
+          :shippingMethod => 'USFC',
+          :description => 'Place Holder for No Shipping Costs'
+      }
+    end
+
     # submit the order to ezprints, if use_test_images
     # is set we just use the placeholder image for testing
     #

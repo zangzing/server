@@ -1,5 +1,5 @@
 <%# locals = {:order => order} %>
-<%  line_items         = @order.line_items.visible_by_variant( variant )
+<%  line_items         = @order.line_items.visible_by_variant( variant ).includes(:photo)
    unless line_items.empty? %>
     <%
      printset_quantity  = line_items.first.quantity

@@ -81,10 +81,10 @@ class Identity < ActiveRecord::Base
 
     # build an array of arrays that contain the data to insert
     identity_id = self.id
-    now = db.quote(DateTime.now.to_formatted_s(:db))
+    now = DateTime.now
     rows = []
     contacts_array.each do |contact|
-      row = [ identity_id, db.quote(contact.name), db.quote(contact.address), now, now ]
+      row = [ identity_id, contact.name, contact.address, now, now ]
       rows << row
     end
 
