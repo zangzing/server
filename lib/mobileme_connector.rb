@@ -37,9 +37,6 @@ class MobilemeConnector
   end
 
   def login(email, password)
-    email = 	'alvarezm50@me.com'
-    password = 'Share1001photos'
-
     response = Faraday.post AUTH_ENDPOINT, extra_login_params.merge('username' => email, 'password' => password)
     success = (response.headers['location'] =~ /me\.com\/gallery/i) && (response.status = 302)
     raise MobilemeError.new(401, 'Invalid credentials') unless success
