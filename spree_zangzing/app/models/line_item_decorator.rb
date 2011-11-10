@@ -30,18 +30,19 @@ LineItem.class_eval do
   scope :not_prints, joins(:variant)\
               .joins("join option_values_variants on option_values_variants.variant_id = variants.id")\
               .where("line_items.hidden = 0 AND variants.product_id <> ? || (  variants.product_id = ? AND option_values_variants.option_value_id = ?)",LineItem::PRINTS_PRODUCT_ID,LineItem::PRINTS_PRODUCT_ID, LineItem::FRAMED_VALUE_ID)\
-              .group('line_items.id').order('line_items.created_at DESC')
+              .group('line_items.id').order('line_items.id DESC')
 
-  scope :prints_by_variant, select('line_items.*, MAX( line_items.created_at) as created_at')\
+  # this is composed as a subquery since it returns the latest grouped ids for a print variant
+  scope :grouped_ids_by_variant, select('MAX( line_items.id) as id')\
                 .joins(:variant)\
                 .joins("join option_values_variants on option_values_variants.variant_id = variants.id")\
                 .where("line_items.hidden = 0 AND variants.product_id = ? AND option_values_variants.option_value_id = ?", LineItem::PRINTS_PRODUCT_ID, LineItem::NO_FRAME_VALUE_ID)\
                 .group('variants.id')\
-                .order(' created_at ASC')
+                .order(' id DESC')
 
-  scope :group_by_variant, joins(:variant).group('variants.id').order('line_items.created_at DESC')
+  scope :group_by_variant, joins(:variant).group('variants.id').order('line_items.id DESC')
 
-  scope :visible_by_variant, lambda { |variant| where('line_items.variant_id = ? AND line_items.hidden = 0', variant.id).order('created_at DESC') }
+  scope :visible_by_variant, lambda { |variant| where('line_items.variant_id = ? AND line_items.hidden = 0', variant.id).order('id DESC') }
 
   # used to determine max safe statement size for
   # a bulk insert on this connection
