@@ -60,7 +60,13 @@ OrdersController.class_eval do
     # If the referer is  from within the store do not save it.
     uri = URI::parse( request.referer )
     unless uri.path =~ /^\/store\//
-      session[:store_entrance_referer] = request.referer
+      # need to remove trailing /. we will have one of these
+      # if coming from single picture view becaise referrer won't
+      # containg the #!
+      ref = request.referer.chomp('/')
+
+      # store for later
+      session[:store_entrance_referer] = ref
     end
 
     #validate all photos in the cart
