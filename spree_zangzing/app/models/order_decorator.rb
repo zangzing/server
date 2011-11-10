@@ -925,7 +925,7 @@ Have a wonderful time sharing photos! And, we hope you think of us and visit www
 
   def visible_line_items
     grouped_id_sql = line_items.grouped_ids_by_variant.to_sql
-    visible_line_items = line_items.find_by_sql("SELECT * FROM line_items WHERE id IN (#{grouped_id_sql})")
+    visible_line_items = line_items.find_by_sql("SELECT line_items.* FROM line_items INNER JOIN (#{grouped_id_sql}) print_sets on print_sets.id = line_items.id")
     visible_line_items.concat( line_items.not_prints.includes(:photo, :variant => [:product, :images]) )
     visible_line_items.sort!{ |a,b| b.id <=> a.id }
     visible_line_items
