@@ -282,6 +282,7 @@ Server::Application.routes.draw do
       match '/mobileme/sessions/destroy' => 'mobileme_sessions#destroy', :as => :destroy_mobileme_session
       match '/mobileme/folders.:format' => 'mobileme_folders#index', :as => :mobileme_folders
       match '/mobileme/folders/:mm_album_id/:action.:format' => 'mobileme_folders#album_index', :as => :mobileme_photos
+      match '/mobileme/folders/import_all.:format' => 'mobileme_folders#import_all', :as => :mobileme_import_all
 
       #zangzing
       match '/zangzing/folders/:zz_album_id/photos.:format' => 'zangzing_photos#index', :as => :zangzing_photos
