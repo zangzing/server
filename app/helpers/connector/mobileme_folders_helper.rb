@@ -1,0 +1,2 @@
+module Connector::MobilemeFoldersHelper
+end
