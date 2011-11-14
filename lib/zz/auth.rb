@@ -237,7 +237,8 @@ module ZZ
               flash[:notice] = "You have asked to see a password protected album. You do not have enough privileges to see it"
               head :status => 401
             else
-              session[:client_dialog] = album_pwd_dialog_url( @album )
+              session[:show_request_access_dialog] = @album.id
+              #session[:client_dialog] = album_pwd_dialog_url( @album )
               redirect_to user_url( @album.user ) and return
             end
           end

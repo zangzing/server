@@ -83,6 +83,12 @@ var zz = zz || {};
             }
         },
 
+        albums:{
+            request_access: function(album_id, message, success, error){
+                do_post('/service/albums/' +album_id+'/request_access', {message: message}, success, error);
+            }
+        },
+
         photos: {
 
             _cache: {},  //key is <album_id>-<cache_version>, value is album photos json
@@ -139,6 +145,7 @@ var zz = zz || {};
 
             }
         },
+
 
         edit_user_path: function(username) {
             return '/:username/settings'.replace(':username', username);

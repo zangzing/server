@@ -61,13 +61,13 @@
 
 <div id="social-like-dialog">
   <div id="ld-inner">
-    <%= form_for @album, :url => request_album_access_url(@album), :html => { :id => "social_like_form_#{@album.id}" } do |f | %>
+    <%= form_for 'album', :url => request_album_access_url(album_id),  :html => { :method => :post, :id => "request_access_form" } do |f | %>
     <div id="ld-top">
       You have not yet been invited to see this Invite Only
       album. Enter a brief message for the owner if you would like to request access.
     </div>
     <div id="ld-middle">
-      <textarea name="message"></textarea>
+      <textarea id="request_access_message" name="message"></textarea>
     </div>
     <a id="ld-cancel" class="newblack-button" href="javascript:void(0)"><span>No thanks</span></a>
     <a id="ld-ok" class="newgreen-button" href="javascript:void(0)"><span>RequestAccess</span></a>
@@ -81,10 +81,21 @@
                          $('#social-like-dialog').zz_dialog('close');
                          $('#social-like-dialog').zz_dialog().empty().remove();
                      });
-
                      $('#ld-ok').click( function(){
+                         var message =  $('#request_access_message').val();
                          $('#social-like-dialog').zz_dialog('close');
                          $('#social-like-dialog').zz_dialog().empty().remove();
+                         var dialog = zz.dialog.show_progress_dialog('Requesting Access...');
+                         zz.routes.albums.request_access( '<%=album_id%>',
+                                                          message,
+                                                          function(){
+                                                              dialog.close();
+                                                              zz.dialog.show_flash_dialog('Your request has been sent. You will receive an invitation once access is granted');
+                                                          },
+                                                          function(){
+                                                              dialog.close();
+                                                              zz.dialog.show_flash_dialog('Unable to request access at the moment. Please try again later')
+                                                          })
                      });
                      $('#social-like-dialog').zz_dialog('open');
 </script>
