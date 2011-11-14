@@ -796,6 +796,28 @@ zz.photochooser = {
 
             });
 
+            //Mobile.me
+            roots.push(
+            {
+                open_url: zz.routes.path_prefix + '/mobileme/folders.json',
+                type: 'folder',
+                name: 'MobileMe',
+                src: zz.routes.image_url('/images/folders/mobileme_off.jpg'),
+                rolloverSrc: zz.routes.image_url('/images/folders/mobileme_on.jpg'),
+                //add_url: zz.routes.path_prefix + "/mobileme/folders/import?path=/",
+
+                on_error: function(){
+                    var folder = this;
+                    self.bodyElement.hide().load('/static/connect_messages/connect_to_mobileme.html', function(){
+                        self.bodyElement.find('#connect-button').click(function(){
+                            self.open_login_window(folder, zz.routes.path_prefix + '/mobileme/sessions/new');
+                        });
+                        self.bodyElement.fadeIn('fast');
+                    });
+                }
+
+            });
+
 
             //ZangZing
             roots.push(
