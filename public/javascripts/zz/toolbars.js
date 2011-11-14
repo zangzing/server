@@ -154,6 +154,21 @@ zz.toolbars = {
         zz.buy.toggle_visibility_with_buy_mode($('#inline-new-album-button'));
 
 
+        $('#footer #import-button').click(function() {
+            if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
+                return;
+            }
+            ZZAt.track('button.import.click');
+
+            zz.toolbars._disable_buttons();
+            $('#footer #import-button').removeClass('disabled').addClass('selected');
+
+            zz.import_albums.show_import_dialog();
+
+        });
+        zz.buy.toggle_visibility_with_buy_mode($('#footer #import-button'));
+
+
 
 
         // only album contributers can do this
@@ -376,26 +391,24 @@ zz.toolbars = {
         $('#footer #buy-button').addClass('disabled');
         $('#footer #like-button').addClass('disabled');
         $('#footer #comments-button').addClass('disabled');
+    },
+
+    enable_buttons:function() {
+        $('#header #back-button').removeClass('disabled');
+        $('#header #view-buttons').children().removeClass('disabled');
+        $('#header #account-badge').removeClass('disabled');
+        $('#footer #play-button').removeClass('disabled');
+        $('#footer #next-button').removeClass('disabled');
+        $('#footer #prev-button').removeClass('disabled');
+        $('#footer #new-album-button').removeClass('disabled');
+        $('#footer #add-photos-button').removeClass('disabled');
+        $('#footer #share-button').removeClass('disabled');
+        $('#footer #edit-album-button').removeClass('disabled');
+        $('#footer #buy-button').removeClass('disabled');
+        $('#footer #like-button').removeClass('disabled');
+        $('#footer #import-button').removeClass('disabled').removeClass('selected');
+
     }
-
-//    enable_buttons:function() {
-//        $('#header #back-button').removeClass('disabled');
-//        $('#header #view-buttons').children().removeClass('disabled');
-//        $('#header #account-badge').removeClass('disabled');
-//        $('#footer #play-button').removeClass('disabled');
-//        $('#footer #next-button').removeClass('disabled');
-//        $('#footer #prev-button').removeClass('disabled');
-//        $('#footer #new-album-button').removeClass('disabled');
-//        $('#footer #add-photos-button').removeClass('disabled');
-//        $('#footer #share-button').removeClass('disabled');
-//        $('#footer #edit-album-button').removeClass('disabled');
-//        $('#footer #buy-button').removeClass('disabled');
-//        $('#footer #like-button').removeClass('disabled');
-//    },
-
-
-
-
 
 
 };
