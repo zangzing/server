@@ -73,6 +73,7 @@ zz.import_albums = zz.import_albums || {};
                         show_progress_screen(service_name);
                     });
 
+                    alert(identity.last_import_all);
 
                     if(identity.last_import_all){
                         var d = new Date(identity.last_import_all);
