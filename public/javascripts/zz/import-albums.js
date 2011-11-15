@@ -45,13 +45,25 @@ zz.import_albums = zz.import_albums || {};
 
                 service_element.click(function(){
                     var service_name = $(this).attr('data-name');
-                    show_service_screen(service_name);
+
+                    var identity = _.detect(identities, function(identity){
+                        return identity.identity_source == service_name;
+                    });
+
+                    if(identity && identity.credentials){
+                        show_service_screen(service_name);
+                    }
+                    else{
+                        zz.oauthmanager.login(zz.routes.identities.login_url_for_service(service_name), function() {
+                            show_service_screen(service_name);
+                        });
+                    }
                 });
             });
 
 
             var show_service_screen = function(service_name){
-                zz.routes.identities.get_identity_for_service(service_name, function(json){
+                zz.routes.identities.get_identity_for_service(service_name, function(identity){
                     content.find('.select-service').hide();
                     content.find('.confirm-import').show();
                     content.find('.confirm-import .service-name').text(service_name);
@@ -62,17 +74,14 @@ zz.import_albums = zz.import_albums || {};
                     });
 
 
-                    if(json.last_import_all){
-                        var d = new Date(json.last_import_all);
+                    if(identity.last_import_all){
+                        var d = new Date(identity.last_import_all);
                         var formatted_date = d.getMonth() + '-' + d.getDate() + '-' + d.getFullYear();
                         content.find('.confirm-import .warning-message .service-name').text(service_name);
                         content.find('.confirm-import .warning-message .date').text(formatted_date);
                         content.find('.confirm-import .warning-message').show();
                     }
-
-
                 });
-
             };
 
 

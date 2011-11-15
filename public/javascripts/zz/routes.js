@@ -99,7 +99,13 @@ var zz = zz || {};
             get_identity_for_service: function(service_name, callback){
                 var url = '/zz_api/identities/' + service_name;
                 do_get(url, {}, callback);
+            },
+
+            login_url_for_service: function(service_name){
+                return '/service/' + service_name + '/sessions/new';
             }
+
+
         },
 
         photos: {
