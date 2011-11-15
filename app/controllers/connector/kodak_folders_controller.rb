@@ -73,6 +73,11 @@ class Connector::KodakFoldersController < Connector::KodakController
         zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id, :photos => photos}
       end
     end
+
+    identity.last_import_all = Time.now
+    identity.save
+
+
     JSON.fast_generate(zz_albums)
   end
 

@@ -43,14 +43,7 @@ Server::Application.routes.draw do
     get   '/subscriptions/:id'         => 'subscriptions#unsubscribe'   #see unsubscribe above
     put   '/subscriptions/:id'         => 'subscriptions#update',       :as => :update_subscriptions
 
-    #identities
-    get    '/users/:id/identities'     => 'identities#index',       :as => :user_identities
-    get    '/users/:id/identities/new' => 'identities#new',         :as => :new_user_identity
-    post   '/users/:id/identities'     => 'identities#create',      :as => :create_user_identity
-    get    '/identities/:id'          => 'identities#show',        :as => :identity
-    get    '/identities/:id/edit'      => 'identities#edit',        :as => :edit_identity
-    put    '/identities/:id'          => 'identities#update',      :as => :update_identity
-    delete '/identities/:id'          => 'identities#destroy',     :as => :delete_identity
+
 
     #albums
     get    '/users/:user_id/my_albums_json'                 => 'albums#my_albums_json',                 :as => :my_albums_json
@@ -418,6 +411,12 @@ Server::Application.routes.draw do
 
     #users
     get    '/users/:user_id/info' => 'users#zz_api_user_info',                  :as => :zz_api_user_info
+
+
+    #identities
+    get     '/identities' => 'identities#zz_api_identities'
+    get     '/identities/:service_name' => 'identities#zz_api_identity'
+
   end
 
 

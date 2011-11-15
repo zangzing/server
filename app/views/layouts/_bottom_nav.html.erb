@@ -5,7 +5,7 @@
 
 
 
-  <% if current_user == @user %>
+  <% if @user && (current_user == @user) %>
       <div id="new-album-button"><div class='footer-button-label'>New</div></div>
       <div id="import-button"><div class='footer-button-label'>Import</div></div>
   <% end %>

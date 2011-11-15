@@ -60,6 +60,10 @@ class Connector::SmugmugFoldersController < Connector::SmugmugController
       photos = import_album(api, params.merge(:album_id => zz_album.id, :sm_album_id =>"#{sm_album[:id]}_#{sm_album[:key]}"))
       zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id, :photos => photos}
     end
+
+    identity.last_import_all = Time.now
+    identity.save
+
     JSON.fast_generate(zz_albums)
   end
 

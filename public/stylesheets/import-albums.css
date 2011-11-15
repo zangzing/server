@@ -1,0 +1,141 @@
+.import-all .header{
+    font-size: 16px;
+    position: absolute;
+    top: 25px;
+    left: 0px;
+    right: 0px
+}
+
+.import-all .select-service{
+    display: block;
+}
+
+.import-all .select-service .services{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 100px;
+}
+
+
+.import-all .select-service .services .service{
+    position:relative;
+    left:30px;
+    right:0px;
+    height:23px;
+    text-align: left;
+    font-size:14px;
+    padding-left:40px;
+    padding-top:3px;
+    margin-bottom: 10px;
+    color: #466FAA;
+    cursor: pointer;
+}
+
+.import-all .select-service .services .service:hover{
+    text-decoration: underline
+}
+
+
+
+.import-all .select-service .services .service.google{
+    background: url(/images/logos/google-sq.png) no-repeat scroll 0px 0px transparent;
+}
+
+.import-all .select-service .services .service.flickr{
+    background: url(/images/logos/flickr-sq.png) no-repeat scroll 0px 0px transparent;
+}
+
+.import-all .select-service .services .service.facebook{
+    background: url(/images/logos/facebook-sq.png) no-repeat scroll 0px 0px transparent;
+}
+
+.import-all .select-service .services .service.smugmug{
+    background: url(/images/logos/smugmug-sq.png) no-repeat scroll 0px 0px transparent;
+}
+
+.import-all .select-service .services .service.photobucket{
+    background: url(/images/logos/photobucket-sq.png) no-repeat scroll 0px 0px transparent;
+}
+
+.import-all .select-service .services .service.instagram{
+    background: url(/images/logos/instagram-sq.png) no-repeat scroll 0px 0px transparent;
+}
+
+.import-all .select-service .services .service.dropbox{
+    background: url(/images/logos/dropbox-sq.png) no-repeat scroll 0px 0px transparent;
+}
+
+.import-all .select-service .services .service.mobileme{
+    background: url(/images/logos/mobileme-sq.png) no-repeat scroll 0px 0px transparent;
+}
+
+.import-all .select-service .services .service.shutterfly{
+    background: url(/images/logos/shutterfly-sq.png) no-repeat scroll 0px 0px transparent;
+}
+
+.import-all .select-service .services .service.kodak{
+    background: url(/images/logos/kodak-sq.png) no-repeat scroll 0px 0px transparent;
+}
+
+
+
+.import-all .confirm-import{
+    display: none;
+}
+
+.import-all .confirm-import img.import-image {
+    position: absolute;
+    top: 175px;
+    left: 67px;
+    right: 0px;
+    height: 150px;
+    width: 463px;
+}
+
+
+.import-all .confirm-import .warning-message{
+    font-size: 14px;
+    position: absolute;
+    top: 400px;
+    left: 0px;
+    right: 0px;
+}
+
+.import-all .confirm-import .import-all-button{
+    position:absolute;
+    bottom:40px;
+    left:240px;
+}
+
+
+
+.import-all .import-progress{
+    display: none;
+}
+
+.import-all .import-progress img.import-image {
+    position: absolute;
+    top: 175px;
+    left: 67px;
+    right: 0px;
+    height: 150px;
+    width: 463px;
+}
+
+.import-all .import-progress img.spinner {
+    position: absolute;
+    top: 399px;
+    left: 288px;
+    right: 0px;
+    height: 23px;
+    width: 23px;
+}
+
+.import-all .import-progress .message {
+    font-size: 14px;
+    position: absolute;
+    top: 360px;
+}
+
+

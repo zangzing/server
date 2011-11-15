@@ -91,6 +91,11 @@ class Connector::PicasaFoldersController < Connector::PicasaController
       photos = import_album(api, params.merge(:album_id => zz_album.id, :picasa_album_id => albumid))
       zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id, :photos => photos}
     end
+
+    identity.last_import_all = Time.now
+    identity.save
+
+
     JSON.fast_generate(zz_albums)
   end
 

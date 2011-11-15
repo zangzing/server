@@ -83,6 +83,25 @@ var zz = zz || {};
             }
         },
 
+        albums: {
+            import_all_from_service: function(service_name, callback){
+                var url = '/service/' + service_name + '/folders/import_all.json'
+                zz.async_ajax.call(url, 'get', callback, callback);
+            }
+        },
+
+        identities: {
+            get_identities: function(callback){
+                var url = '/zz_api/identities';
+                do_get(url, {}, callback);
+            },
+
+            get_identity_for_service: function(service_name, callback){
+                var url = '/zz_api/identities/' + service_name;
+                do_get(url, {}, callback);
+            }
+        },
+
         photos: {
 
             _cache: {},  //key is <album_id>-<cache_version>, value is album photos json
