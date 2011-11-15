@@ -101,6 +101,7 @@
     left: 0px;
     right: 0px;
     display:none;
+    color: red;
 }
 
 .import-all .confirm-import .import-all-button{
