@@ -163,7 +163,7 @@ zz.homepage = {
                 }
                 break;
             case 'owner':
-                if( zz.session.current_user_id == album.user_id ){
+                if( album.user_id == zz.session.current_user_id ){
                     download = 1;
                 }
                 break;
