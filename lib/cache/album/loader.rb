@@ -312,7 +312,7 @@ module Cache
               :cache_version => album.cache_version_key,
               :updated_at => album.updated_at.to_i,
               :my_role => album.my_role, # valid values are Viewer, Contrib, Admin
-              :who_can_download => album.who_can_download #Valid values are Viewers, Contributors, Everyone
+              :who_can_download => album.who_can_download #Valid values are viewers, owner, everyone
           }
           fast_albums << hash_album
         end

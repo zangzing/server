@@ -3,9 +3,20 @@
  */
 
 (function($, undefined) {
+    //stackAngles: [   [-6, -3], [-3, 3], [6, 3] ]
+    var rbPlus3  = $('<div class="stacked-image">').rotate( 3),
+        rbMinus3 = $('<div class="stacked-image">').rotate(-3),
+        rbPlus6  = $('<div class="stacked-image">').rotate( 6),
+        rbMinus6 = $('<div class="stacked-image">').rotate(-6),
+        rotated_borders = [
+            [rbMinus6,rbMinus3],
+            [rbMinus3,rbPlus3],
+            [rbPlus6,rbPlus3]
+        ];
 
     $.widget('ui.zz_picon', {
         options: {
+            album: null, //album json
             caption: '',
             coverUrl: '',
             albumUrl: null,
@@ -13,15 +24,10 @@
             onClick: $.noop,
             onLike: $.noop,
             onDelete: $.noop,
-            allowDelete: false,
             maxCoverWidth: 180,
             maxCoverHeight: 150,
             captionHeight: 80,
-            stackAngles: [
-                [-6, -3],
-                [-3, 3],
-                [6, 3]
-            ]
+            infoMenuTemplateResolver: null        // show InfoMenu or not and what style
         },
 
         _create: function() {
@@ -38,25 +44,22 @@
                     buttons = $('<div class="buttons">'),
                     share_button = $('<div class="button share-button">'),
                     like_button = $('<div class="button like-button zzlike" data-zzid="' + o.albumId + '" data-zztype="album"><div class="zzlike-icon thumbdown">'),
-                    delete_button = $('<div class="button delete-button">');
+                    info_button = $('<div class="button info-button">');
 
             self.topOfStack = $('<div class="stacked-image">').append(cover_photo);
+
+            //rotate stack
+            var stackOption = Math.floor(Math.random() * rotated_borders.length);
+            stacked_image_0 = rotated_borders[stackOption][0].clone();
+            stacked_image_1 = rotated_borders[stackOption][1].clone();
+
+            //for selenium tests...
+            self.template.attr('id', 'picon-' + o.caption.replace(/[\W]+/g, '-'));
 
             self.template.append(caption)
                     .append(stacked_image_0)
                     .append(stacked_image_1)
                     .append(self.topOfStack);
-
-            // insert picon into DOM
-            this.element.append(self.template);
-
-            //for selenium tests...
-            el.find('.picon').attr('id', 'picon-' + o.caption.replace(/[\W]+/g, '-'));
-
-            //rotate stack
-            var stackOption = Math.floor(Math.random() * o.stackAngles.length);
-            stacked_image_0.rotate(o.stackAngles[stackOption][0]);
-            stacked_image_1.rotate(o.stackAngles[stackOption][1]);
 
             //set caption
             caption.text(o.caption);
@@ -66,25 +69,45 @@
                 o.onClick();
             });
 
+            // insert picon into DOM
+            el.append(self.template);
+
             //calculate size
             self._resize(o.maxCoverWidth, o.maxCoverHeight);
 
-            var buttonBarWired = false;
-            var menuOpen = false;
-            var hover = false;
-            var height;
+
+            var buttonBarWired = false,
+                menuOpen = false,
+                hover = false,
+                height;
 
             var wire_button_bar = function() {
                 //build and insert buttonbar into dom
-                buttons.append(share_button).append(like_button);
-                if (o.allowDelete) {
-                    buttons.append(delete_button);
-                    delete_button.click(function() {
-                        o.onDelete();
-                    });
-                }
+                buttons.append(share_button).append(like_button).append(info_button);
                 button_bar.append(buttons);
                 self.topOfStack.append(button_bar);
+
+                // wire info button
+                var info_menu_template = null;
+                if (o.infoMenuTemplateResolver) {
+                    info_menu_template = o.infoMenuTemplateResolver(o.album);
+                }
+
+                if(info_menu_template){
+                    info_button.click(function(){
+                        zz.infomenu.show_in_picon(info_button, info_menu_template, self,
+                            function(){
+                                menuOpen = true;
+                            },
+                            function(){
+                                menuOpen = false;
+                                checkCloseToolbar();
+                        });
+                    });
+                }
+                else{
+                    info_button.hide();
+                }
 
                 // wire share button
                 share_button.zz_menu(
@@ -112,10 +135,13 @@
             };
 
             var checkCloseToolbar = function() {
+              _.defer(function(){
                 if (!menuOpen && !hover) {
                     self.topOfStack.css({height: height});
                     button_bar.hide();
                 }
+              });
+
             };
 
             var mouse_in = function() {
