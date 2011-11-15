@@ -68,7 +68,7 @@ zz.infomenu = {
 
         switch (action) {
             case 'download':
-                var url = zz.routes.path_prefix + '/photos/download/' + id;
+                var url = zz.routes.path_prefix + '/photos/'+id+'/download';
                 if ($.client.os == 'Mac') {
                     document.location.href = url;
                 } else {
