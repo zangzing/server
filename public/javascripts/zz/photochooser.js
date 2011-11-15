@@ -673,7 +673,7 @@ zz.photochooser = {
             //Picasa Web
             roots.push(
             {
-                open_url: zz.routes.path_prefix + '/picasa_web/folders.json',
+                open_url: zz.routes.path_prefix + '/google/folders.json',
                 type: 'folder',
                 name: 'Picasa Web',
                 src: zz.routes.image_url('/images/folders/picasa_web_off.jpg'),

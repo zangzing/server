@@ -22,7 +22,7 @@ zz.import_albums = zz.import_albums || {};
                     '<div class="confirm-import">' +
                         '<div class="header">Import all your albums from <span class="service-name"></span>. You will see the new ZangZing albums immediately and the photos will continue to load in the background.</div>' +
                         '<img class="import-image">'+
-                        '<div class="warning-message">Warning: you already imported photos from <span class="service-name"></span> on <span class="date"></span>. If you import again, you may end up with duplicate albums in ZangZing</div>'+
+                        '<div class="warning-message">Warning: you already imported albums from <span class="service-name"></span> on <span class="date"></span>. If you import again, you may end up with duplicate albums in ZangZing</div>'+
                         '<a class="green-button import-all-button"><span>Import All Albums</span></a>' +
                     '</div>' +
                     '<div class="import-progress">' +

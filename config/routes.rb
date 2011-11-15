@@ -291,11 +291,11 @@ Server::Application.routes.draw do
       
       #picasa
       #google session controller used
-      match '/picasa_web/folders/:picasa_album_id/photos.:format' => 'picasa_photos#index', :as => :picasa_photos
-      match '/picasa_web/folders/:picasa_album_id/photos/:photo_id/:action' => 'picasa_photos#index', :as => :picasa_photo_action
-      match '/picasa_web/folders.:format' => 'picasa_folders#index', :as => :picasa_folders
-      match '/picasa_web/folders/:picasa_album_id/:action.:format' => 'picasa_folders#index', :as => :picasa_folder_action
-      match '/picasa_web/folders/import_all.:format' => 'picasa_folders#import_all', :as => :picasa_import_all
+      match '/google/folders/:picasa_album_id/photos.:format' => 'picasa_photos#index', :as => :picasa_photos
+      match '/google/folders/:picasa_album_id/photos/:photo_id/:action' => 'picasa_photos#index', :as => :picasa_photo_action
+      match '/google/folders.:format' => 'picasa_folders#index', :as => :picasa_folders
+      match '/google/folders/:picasa_album_id/:action.:format' => 'picasa_folders#index', :as => :picasa_folder_action
+      match '/google/folders/import_all.:format' => 'picasa_folders#import_all', :as => :picasa_import_all
 
       #local contacts
       match '/local/contacts/import' => 'local_contacts#import', :as => :local_contacts
