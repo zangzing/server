@@ -54,6 +54,7 @@ class Identity < ActiveRecord::Base
     :photobucket => {:name => 'Photobucket', :icon => ''},
     :instagram => {:name => 'Instagram', :icon => ''},
     :dropbox => {:name => 'Dropbox', :icon => ''},
+    :mobileme => {:name => 'MobileMe', :icon => ''},
     :shutterfly => {:name => 'Shutterfly', :icon => ''},
     :kodak => {:name => 'Kodak Gallery', :icon => ''},
     :local => {:name => 'ZangZing Local Contacts', :icon => ''},
