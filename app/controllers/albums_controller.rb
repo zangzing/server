@@ -106,6 +106,17 @@ class AlbumsController < ApplicationController
     end
   end
 
+  def zz_api_update
+    zz_api do
+
+    end
+  end
+
+
+
+
+
+
   # returns JSON used to populate
   # the "Group" tab
   def edit_group

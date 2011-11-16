@@ -223,7 +223,7 @@ zz.toolbars = {
 
         zz.toolbars._init_account_badge();
         zz.toolbars._init_like_button();
-
+        zz.toolbars._init_album_title();
 
 
 
@@ -376,7 +376,7 @@ zz.toolbars = {
         $('#footer #buy-button').addClass('disabled');
         $('#footer #like-button').addClass('disabled');
         $('#footer #comments-button').addClass('disabled');
-    }
+    },
 
 //    enable_buttons:function() {
 //        $('#header #back-button').removeClass('disabled');
@@ -393,8 +393,42 @@ zz.toolbars = {
 //        $('#footer #like-button').removeClass('disabled');
 //    },
 
+    _init_album_title:function(){
+        var title = $('#album-header-title');
+        if( title ){
 
+            title.click(function(){
+                var edit = $('<div id="edit-album-title"><input id="album-title-input" class="album-title-input" type="text" name="album_title" value="'+ zz.page.album_name +'"><div class="title-ok-button"></div>');
+                var text_field = edit.find( '#album-title-input');
+                edit.width( title.width()+32);
+                text_field.width( title.width() );
+                $('#album-name-and-owner').append( edit );
+                text_field.select();
 
+                var commit_title_change = function(evt){
+                    var new_title = text_field.val();
+
+                    // send it to the back end
+
+                    zz.page.album_name = new_title;
+                    if( new_title.length > 40){
+                        new_title = new_title.substr(0, 39)+'...';
+                    }
+                    title.text( new_title );
+                    edit.remove();
+                };
+
+                edit.find('.title-ok-button').click(commit_title_change);
+                text_field.blur(commit_title_change);
+                text_field.keypress(function(event){
+	                var keycode = (event.keyCode ? event.keyCode : event.which);
+	                if(keycode == '13' || keycode == '9' ){
+                        commit_title_change( event );
+	                }
+                });
+            });
+        }
+    }
 
 
 
