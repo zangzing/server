@@ -277,6 +277,9 @@ zz.toolbars = {
         });
 
         //Bind Each Menu Item
+        $('#acct-get-started-btn').click(function() {
+            window.open('/about/getting-started','Getting Started with ZangZing','width=1000,height=1000,scrollbars=1');
+        });
         $('#acct-settings-btn').click(function() {
             zz.toolbars._disable_buttons();
             $('#header #account-badge').removeClass('disabled').addClass('selected');
@@ -286,8 +289,6 @@ zz.toolbars = {
             zz.local_storage.clear();
             window.location = zz.routes.path_prefix + '/signout';
         });
-
-
 
         $('#account-badge').click(function() {
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
