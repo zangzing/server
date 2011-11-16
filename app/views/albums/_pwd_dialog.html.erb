@@ -63,14 +63,14 @@
   <div id="ld-inner">
     <%= form_for 'album', :url => request_album_access_url(album_id),  :html => { :method => :post, :id => "request_access_form" } do |f | %>
     <div id="ld-top">
-      You have not yet been invited to see this Invite Only
-      album. Enter a brief message for the owner if you would like to request access.
+      You are trying to view an Invite Only album.
+      Send a message to the owner for an invitation.
     </div>
     <div id="ld-middle">
       <textarea id="request_access_message" name="message"></textarea>
     </div>
     <a id="ld-cancel" class="newblack-button" href="javascript:void(0)"><span>No thanks</span></a>
-    <a id="ld-ok" class="newgreen-button" href="javascript:void(0)"><span>Request Invite</span></a>
+    <a id="ld-ok" class="newgreen-button" href="javascript:void(0)"><span>Send</span></a>
     <%end%>
   </div>
 </div>
@@ -90,11 +90,11 @@
                                                           message,
                                                           function(){
                                                               dialog.close();
-                                                              zz.dialog.show_flash_dialog('Your request has been sent. You will receive an invitation once access is granted');
+                                                              zz.dialog.show_flash_dialog('Your message has been sent. You will receive an email when you are invited');
                                                           },
                                                           function(){
                                                               dialog.close();
-                                                              zz.dialog.show_flash_dialog('Unable to request access at the moment. Please try again later')
+                                                              zz.dialog.show_flash_dialog('Unable to send the message at the moment. Please try again later...')
                                                           })
                      });
                      $('#social-like-dialog').zz_dialog('open');
