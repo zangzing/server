@@ -153,20 +153,22 @@ zz.homepage = {
             del = 1;
         } 
         //download
-        switch( album.who_can_download ){
-            case 'everyone':
-                download = 1;
-                break;
-            case 'viewers': // group
-                if( album.id in zz.session.current_user_membership ){
+        if( album.c_url ){
+            switch( album.who_can_download ){
+                case 'everyone':
                     download = 1;
-                }
-                break;
-            case 'owner':
-                if( album.user_id == zz.session.current_user_id ){
-                    download = 1;
-                }
-                break;
+                    break;
+                case 'viewers': // group
+                    if( album.id in zz.session.current_user_membership ){
+                        download = 1;
+                    }
+                    break;
+                case 'owner':
+                    if( album.user_id == zz.session.current_user_id ){
+                        download = 1;
+                    }
+                    break;
+            }
         }
         return zz.homepage.infomenu_template_matrix[del][download];
     }
