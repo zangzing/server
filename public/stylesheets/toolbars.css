@@ -58,6 +58,12 @@
     top: 14px;
 }
 
+#header #inline-new-album-button{
+    position: absolute;
+    left: 140px;
+    top: 14px;
+}
+
 #header #album-info{
     position:relative;
     top:6px;

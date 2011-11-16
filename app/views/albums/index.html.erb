@@ -16,9 +16,6 @@
         <%= @user.posessive_short_name%> Albums
     <% end %>
   </div>
-  <% if current_user == @user %>
-    <a id="inline-new-album-button" class="green-add-button"><span>New Album</span></a>
-  <% end %>
 </div>
 
 <div id="liked-albums" class="albums-list">
@@ -64,8 +61,6 @@
 
 
             zz.homepage.render(is_current_users_homepage, my_albums_path, session_user_liked_albums_path, liked_albums_path, liked_users_albums_path, invited_albums_path, session_user_invited_albums_path);
-
-
         })();
             
     </script>

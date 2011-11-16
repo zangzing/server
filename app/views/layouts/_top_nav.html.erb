@@ -58,6 +58,11 @@
   <a id="back-button" class="back-button"><span>Back</span></a>
 <% end %>
 
+<% @user && if current_user == @user %>
+  <a id="inline-new-album-button" class="green-add-button"><span>New Album</span></a>
+<% end %>
+
+
 
 
 <% if @user %>

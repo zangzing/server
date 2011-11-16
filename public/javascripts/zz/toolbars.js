@@ -146,7 +146,6 @@ zz.toolbars = {
             ZZAt.track('button.createalbum-top.click');
 
             zz.toolbars._disable_buttons();
-            $('#footer #new-album-button').removeClass('disabled').addClass('selected');
 
             zz.toolbars._init_new_album();
             zz.wizard.create_group_album();
@@ -384,6 +383,7 @@ zz.toolbars = {
         $('#footer #next-button').addClass('disabled');
         $('#footer #prev-button').addClass('disabled');
         $('#footer #new-album-button').addClass('disabled');
+        $('#footer #import-button').addClass('disabled');
         $('#footer #add-photos-button').addClass('disabled');
         $('#footer #share-button').addClass('disabled');
         $('#footer #edit-album-button').addClass('disabled');
@@ -391,6 +391,7 @@ zz.toolbars = {
         $('#footer #buy-button').addClass('disabled');
         $('#footer #like-button').addClass('disabled');
         $('#footer #comments-button').addClass('disabled');
+        $('#header #inline-new-album-button').addClass('disabled');
     },
 
     enable_buttons:function() {
@@ -401,12 +402,14 @@ zz.toolbars = {
         $('#footer #next-button').removeClass('disabled');
         $('#footer #prev-button').removeClass('disabled');
         $('#footer #new-album-button').removeClass('disabled');
+        $('#footer #import-button').removeClass('disabled');
         $('#footer #add-photos-button').removeClass('disabled');
         $('#footer #share-button').removeClass('disabled');
         $('#footer #edit-album-button').removeClass('disabled');
         $('#footer #buy-button').removeClass('disabled');
         $('#footer #like-button').removeClass('disabled');
         $('#footer #import-button').removeClass('disabled').removeClass('selected');
+        $('#header #inline-new-album-button').removeClass('disabled');
 
     }
 
